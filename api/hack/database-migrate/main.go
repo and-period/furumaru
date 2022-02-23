@@ -24,12 +24,10 @@ const (
 
 var (
 	databases = []string{
-		"classrooms",
-		"lessons",
 		"users",
 	}
 	skipDDLs = []string{
-		"2021120901-setup.sql",
+		"2022022301-setup.sql",
 	}
 )
 
