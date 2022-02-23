@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  mysql:
+    container_name: mysql
+    platform: linux/x86_64
+    build:
+      context: ./infra/docker/infra/mysql
+      dockerfile: Dockerfile
+    volumes:
+      - ./infra/mysql/development.cnf:/etc/mysql/conf.d/my.cnf
+      - ./infra/mysql/schema:/docker-entrypoint-initdb.d
+      - ./tmp/logs/mysql:/var/log/mysql:delegated
+      - ./tmp/data/mysql:/var/lib/mysql:delegated
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    ports:
+      - 3316:3306
+
+  mysql_test:
+    container_name: mysql_test
+    platform: linux/x86_64
+    build:
+      context: ./infra/docker/infra/mysql
+      dockerfile: Dockerfile
+    volumes:
+      - ./infra/mysql/test.cnf:/etc/mysql/conf.d/my.cnf
+      - ./infra/mysql/schema:/docker-entrypoint-initdb.d
+      - ./tmp/logs/mysql_test:/var/log/mysql:delegated
+      - ./tmp/data/mysql_test:/var/lib/mysql:delegated
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    ports:
+      - 3326:3306
+
+  executor:
+    container_name: executor
+    build:
+      context: .
+      dockerfile: ./infra/docker/api/hack/Dockerfile
+    working_dir: /go/src/github.com/and-period/marche/api
+    volumes:
+      - ./api:/go/src/github.com/and-period/marche/api:cached
+      - ./infra:/go/src/github.com/and-period/marche/infra:cached
+    environment:
+      - DB_USERNAME=root
+      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
