@@ -1,0 +1,35 @@
+# not ignore file
+!.keep
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+*.bak
+
+# Log file
+*.log
+
+# secret variables file
+.env
+.envrc
+!.env.temp
+!.envrc.temp
+*.tfvars
+*.tfstate*
+
+# secret directory
+secrets/
+
+# temporary directory
+tmp/

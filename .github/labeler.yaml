@@ -1,0 +1,43 @@
+##################################################
+# Frontend
+##################################################
+frontend (admin):
+- web/admin/**/*
+frontend (user):
+- web/user/**/*
+frontend (store):
+- web/store/**/*
+
+##################################################
+# Backend
+##################################################
+backend (gateway):
+- api/**/gateway/**/*
+backend (user):
+- api/**/user/**/*
+
+##################################################
+# Infrastructure
+##################################################
+infra (container):
+- infra/docker/**/*
+- infra/helm/**
+- infra/kubernetes/**
+infra (functions):
+- infra/functions/**/*
+infra (terraform):
+- infra/terraform/**/*
+infra (database):
+- infra/mysq/**/*
+
+##################################################
+# Other
+##################################################
+docs:
+- docs/**/*
+test:
+- api/**/*_test.go
+- web/**/*.spec.ts
+- web/**/*.test.ts
+workflow:
+- .github/**/*
