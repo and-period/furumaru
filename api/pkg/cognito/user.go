@@ -109,7 +109,7 @@ func (c *client) ConfirmForgotPassword(ctx context.Context, params *ConfirmForgo
 }
 
 func (c *client) ChangeEmail(ctx context.Context, params *ChangeEmailParams) error {
-	// 新しいメールアドレスへの変更と、サポート対応用に、古いメールアドレスは一時的にカスタムフィールドへ追加
+	// 新しいメールアドレスへの変更と運用サポート対応用に、古いメールアドレスは一時的にカスタムフィールドへ追加
 	changeEmailIn := &cognito.UpdateUserAttributesInput{
 		AccessToken: aws.String(params.AccessToken),
 		UserAttributes: []types.AttributeType{
