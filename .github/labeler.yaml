@@ -28,7 +28,7 @@ infra (functions):
 infra (terraform):
 - infra/terraform/**/*
 infra (database):
-- infra/mysq/**/*
+- infra/mysql/**/*
 
 ##################################################
 # Other
