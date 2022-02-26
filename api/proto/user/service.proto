@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "github.com/and-period/marche/api/proto/user";
+
+import "github.com/envoyproxy/protoc-gen-validate/validate/validate.proto";
+
+import "user/auth.proto";
+
+service UserService {
+  rpc SignInUser(SignInUserRequest) returns (SignInUserResponse);
+  rpc SignOutUser(SignOutUserRequest) returns (SignOutUserResponse);
+  rpc RefreshUserToken(RefreshUserTokenRequest) returns (RefreshUserTokenResponse);
+}
+
+message SignInUserRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message SignInUserResponse {
+  Auth auth = 1;
+}
+
+message SignOutUserRequest {
+  string access_token = 1 [(validate.rules).string = { min_len: 1 }];
+}
+
+message SignOutUserResponse {}
+
+message RefreshUserTokenRequest {
+  string refresh_token = 1 [(validate.rules).string = { min_len: 1 }];
+}
+
+message RefreshUserTokenResponse {
+  Auth auth = 1;
+}

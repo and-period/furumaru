@@ -15,8 +15,7 @@ build:
 	docker-compose build --parallel
 
 start: migrate
-	docker-compose up -d --remove-orphans
-	$(MAKE) pubsub
+	docker-compose up --remove-orphans
 
 stop:
 	docker-compose stop
@@ -36,7 +35,7 @@ logs:
 .PHONY: start-api start-test
 
 start-api: migrate
-	docker-compose up mysql
+	docker-compose up user_api mysql
 
 start-test:
 	docker-compose up mysql_test
