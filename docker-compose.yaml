@@ -1,6 +1,34 @@
 version: '3.9'
 
 services:
+  user_api:
+    container_name: user_api
+    build:
+      context: .
+      dockerfile: ./infra/docker/api/user/server/Dockerfile.development
+    working_dir: /go/src/github.com/and-period/marche/api
+    volumes:
+      - ./api:/go/src/github.com/and-period/marche/api:cached
+      - ./tmp/data/go/pkg/mod:/go/pkg/mod:delegated
+      - ./tmp/logs/api/user:/var/log/api:delegated
+    environment:
+      - PORT=8080
+      - METRICS_PORT=9090
+      - SHUTDOWN_DELAY_SEC=0
+      - LOG_LEVEL=debug
+      - LOG_PATH=/var/log/api
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - AWS_REGION=${AWS_REGION}
+      - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
+      - COGNITO_CLIENT_ID=${COGNITO_CLIENT_ID}
+    ports:
+      - 19000:8080
+      - 19001:9090
+    command: make dev SERVICE=user/server
+
   mysql:
     container_name: mysql
     platform: linux/x86_64
