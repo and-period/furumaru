@@ -19,7 +19,7 @@ func GetAuthToken(c *gin.Context) (string, error) {
 		return "", errNotExistsAuthorizationHeader
 	}
 
-	token := strings.TrimSuffix(authorization, "Bearer ")
+	token := strings.TrimPrefix(authorization, "Bearer ")
 	return token, nil
 }
 
