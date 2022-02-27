@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"crypto/tls"
 	"crypto/x509"
 	"sync"
@@ -11,6 +10,7 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type registry struct {
@@ -33,7 +33,7 @@ func withLogger(logger *zap.Logger) option {
 	}
 }
 
-func newRegistry(ctx context.Context, conf *config, opts ...option) (*registry, error) {
+func newRegistry(conf *config, opts ...option) (*registry, error) {
 	// オプション設定の取得
 	dopts := &options{
 		logger: zap.NewNop(),
@@ -78,17 +78,20 @@ func newGRPCClient(conf *config) (*gRPCClient, error) {
 
 func newGRPCOptions(conf *config) ([]grpc.DialOption, error) {
 	var opts []grpc.DialOption
+
+	var cred credentials.TransportCredentials
 	if conf.GRPCInsecure {
-		opts = append(opts, grpc.WithInsecure())
+		cred = insecure.NewCredentials()
 	} else {
 		systemRoots, err := x509.SystemCertPool()
 		if err != nil {
 			return nil, err
 		}
-		cred := credentials.NewTLS(&tls.Config{
+		cred = credentials.NewTLS(&tls.Config{
 			RootCAs: systemRoots,
 		})
-		opts = append(opts, grpc.WithTransportCredentials(cred))
 	}
+	opts = append(opts, grpc.WithTransportCredentials(cred))
+
 	return opts, nil
 }

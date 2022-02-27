@@ -113,6 +113,6 @@ func setAuth(ctx *gin.Context, userID string) {
 	}
 }
 
-func getUserID(ctx *gin.Context) string {
-	return ctx.GetHeader("userId")
-}
+// func getUserID(ctx *gin.Context) string {
+// 	return ctx.GetHeader("userId")
+// }

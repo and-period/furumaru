@@ -9,7 +9,6 @@ import (
 
 	"github.com/and-period/marche/api/pkg/cors"
 	"github.com/and-period/marche/api/pkg/http"
-	aphttp "github.com/and-period/marche/api/pkg/http"
 	"github.com/and-period/marche/api/pkg/log"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -18,8 +17,8 @@ import (
 
 type app struct {
 	logger  *zap.Logger
-	server  aphttp.Server
-	metrics aphttp.Server
+	server  http.Server
+	metrics http.Server
 }
 
 func Exec() error {
@@ -31,7 +30,7 @@ func Exec() error {
 		return err
 	}
 
-	app, err := newApp(ctx, conf)
+	app, err := newApp(conf)
 	if err != nil {
 		return err
 	}
@@ -77,7 +76,7 @@ func Exec() error {
 	return eg.Wait()
 }
 
-func newApp(ctx context.Context, conf *config) (*app, error) {
+func newApp(conf *config) (*app, error) {
 	// Loggerの設定
 	logParams := &log.Params{
 		Path:  conf.LogPath,
@@ -89,7 +88,7 @@ func newApp(ctx context.Context, conf *config) (*app, error) {
 	}
 
 	// 依存関係の解決
-	reg, err := newRegistry(ctx, conf, withLogger(logger))
+	reg, err := newRegistry(conf, withLogger(logger))
 	if err != nil {
 		return nil, err
 	}
