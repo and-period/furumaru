@@ -1,0 +1,26 @@
+authResponse:
+  type: object
+  properties:
+    userId:
+      type: string
+      description: ユーザーID
+    accessToken:
+      type: string
+      description: アクセストークン
+    refreshToken:
+      type: string
+      description: 更新トークン
+    expiresIn:
+      type: integer
+      format: int32
+      description: 有効期限
+  required:
+  - userId
+  - accessToken
+  - refreshToken
+  - expiresIn
+  example:
+    userId: 'kSByoE6FetnPs5Byk3a9Zx'
+    accessToken: 'xxxxxxxxxx'
+    refreshToken: 'xxxxxxxxxx'
+    expiresIn: 3600
