@@ -17,11 +17,15 @@ services:
       - SHUTDOWN_DELAY_SEC=0
       - LOG_LEVEL=debug
       - LOG_PATH=/var/log/api
-      - DB_HOST=mysql
-      - DB_PORT=3306
-      - DB_USERNAME=root
-      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - DB_HOST=${MYSQL_HOST}
+      - DB_PORT=${MYSQL_PORT}
+      - DB_USERNAME=${MYSQL_USERNAME}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - DB_TIMEZONE=${MYSQL_TIMEZONE}
+      - DB_ENABLED_TLS=${MYSQL_ENABLED_TLS}
       - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
       - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
       - COGNITO_CLIENT_ID=${COGNITO_CLIENT_ID}
     ports:
@@ -41,7 +45,7 @@ services:
       - ./tmp/logs/mysql:/var/log/mysql:delegated
       - ./tmp/data/mysql:/var/lib/mysql:delegated
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=12345678
     ports:
       - 3316:3306
 
@@ -57,7 +61,7 @@ services:
       - ./tmp/logs/mysql_test:/var/log/mysql:delegated
       - ./tmp/data/mysql_test:/var/lib/mysql:delegated
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=12345678
     ports:
       - 3326:3306
 
@@ -72,4 +76,15 @@ services:
       - ./infra:/go/src/github.com/and-period/marche/infra:cached
     environment:
       - DB_USERNAME=root
-      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - DB_PASSWORD=12345678
+
+  proto:
+    container_name: proto
+    platform: linux/x86_64
+    build:
+      context: ./infra/docker/infra/proto
+      dockerfile: Dockerfile
+    working_dir: /go/src/github.com/and-period/marche
+    volumes:
+      - ./api:/go/src/github.com/calmato/shs-web/api:cached
+      - ./tmp/data/go/pkg/mod:/go/pkg/mod:delegated

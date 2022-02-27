@@ -3,3 +3,54 @@
 
 // Package mock_database is a generated GoMock package.
 package mock_database
+
+import (
+	context "context"
+	reflect "reflect"
+
+	entity "github.com/and-period/marche/api/internal/user/entity"
+	gomock "github.com/golang/mock/gomock"
+)
+
+// MockUser is a mock of User interface.
+type MockUser struct {
+	ctrl     *gomock.Controller
+	recorder *MockUserMockRecorder
+}
+
+// MockUserMockRecorder is the mock recorder for MockUser.
+type MockUserMockRecorder struct {
+	mock *MockUser
+}
+
+// NewMockUser creates a new mock instance.
+func NewMockUser(ctrl *gomock.Controller) *MockUser {
+	mock := &MockUser{ctrl: ctrl}
+	mock.recorder = &MockUserMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockUser) EXPECT() *MockUserMockRecorder {
+	return m.recorder
+}
+
+// GetByCognitoID mocks base method.
+func (m *MockUser) GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.User, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, cognitoID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetByCognitoID", varargs...)
+	ret0, _ := ret[0].(*entity.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByCognitoID indicates an expected call of GetByCognitoID.
+func (mr *MockUserMockRecorder) GetByCognitoID(ctx, cognitoID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, cognitoID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByCognitoID", reflect.TypeOf((*MockUser)(nil).GetByCognitoID), varargs...)
+}

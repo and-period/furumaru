@@ -3,7 +3,7 @@
 ##################################################
 .PHONY: setup build install start stop down remove logs
 
-setup: build install migrate
+setup: build install proto migrate
 	if [ ! -f $(PWD)/.env ]; then \
 		cp $(PWD)/.env.temp $(PWD)/.env; \
 	fi
@@ -14,7 +14,7 @@ install:
 build:
 	docker-compose build --parallel
 
-start: migrate
+start: proto migrate
 	docker-compose up --remove-orphans
 
 stop:
@@ -34,8 +34,8 @@ logs:
 ##################################################
 .PHONY: start-api start-test
 
-start-api: migrate
-	docker-compose up user_api mysql
+start-api: proto migrate
+	docker-compose up user_api
 
 start-test:
 	docker-compose up mysql_test
@@ -43,7 +43,10 @@ start-test:
 ##################################################
 # Container Commands - Single
 ##################################################
-.PHONY: migrate
+.PHONY: proto migrate
+
+proto:
+	docker-compose run --rm proto bash -c "cd ./api; make install; make protoc"
 
 migrate:
 	docker-compose up -d mysql mysql_test

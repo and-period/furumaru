@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/and-period/marche/api/internal/user/database"
+	"github.com/and-period/marche/api/pkg/cognito"
 	"github.com/and-period/marche/api/pkg/jst"
 	"github.com/and-period/marche/api/proto/user"
 	"go.uber.org/zap"
@@ -18,6 +19,7 @@ type Params struct {
 	Logger    *zap.Logger
 	WaitGroup *sync.WaitGroup
 	Database  *database.Database
+	UserAuth  cognito.Client
 }
 
 type userService struct {
@@ -27,6 +29,7 @@ type userService struct {
 	sharedGroup *singleflight.Group
 	waitGroup   *sync.WaitGroup
 	db          *database.Database
+	userAuth    cognito.Client
 }
 
 func NewUserService(params *Params) user.UserServiceServer {
@@ -36,6 +39,7 @@ func NewUserService(params *Params) user.UserServiceServer {
 		sharedGroup: &singleflight.Group{},
 		waitGroup:   params.WaitGroup,
 		db:          params.Database,
+		userAuth:    params.UserAuth,
 	}
 }
 
@@ -57,9 +61,7 @@ func gRPCError(err error) error {
 		return status.Error(codes.AlreadyExists, err.Error())
 	case errors.Is(err, database.ErrNotImplemented):
 		return status.Error(codes.Unimplemented, err.Error())
-	case errors.Is(err, database.ErrInternal):
-		return status.Error(codes.Internal, err.Error())
 	default:
-		return status.Error(codes.Unknown, err.Error())
+		return status.Error(codes.Internal, err.Error())
 	}
 }

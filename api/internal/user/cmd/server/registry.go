@@ -8,7 +8,9 @@ import (
 	"github.com/and-period/marche/api/pkg/cognito"
 	"github.com/and-period/marche/api/pkg/database"
 	"github.com/and-period/marche/api/proto/user"
+	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
+	awscredentials "github.com/aws/aws-sdk-go-v2/credentials"
 	"go.uber.org/zap"
 )
 
@@ -39,13 +41,15 @@ func newRegistry(ctx context.Context, conf *config, opts ...option) (*registry, 
 
 	// MySQLの設定
 	mysqlParams := &database.Params{
-		Socket:   conf.DBSocket,
-		Host:     conf.DBHost,
-		Port:     conf.DBPort,
-		Database: conf.DBDatabase,
-		Username: conf.DBUsername,
-		Password: conf.DBPassword,
-		TimeZone: conf.DBTimeZone,
+		Socket:     conf.DBSocket,
+		Host:       conf.DBHost,
+		Port:       conf.DBPort,
+		Database:   conf.DBDatabase,
+		Username:   conf.DBUsername,
+		Password:   conf.DBPassword,
+		TimeZone:   conf.DBTimeZone,
+		EnabledTLS: conf.DBEnabledTLS,
+		Logger:     dopts.logger,
 	}
 	mysql, err := database.NewClient(mysqlParams)
 	if err != nil {
@@ -53,7 +57,13 @@ func newRegistry(ctx context.Context, conf *config, opts ...option) (*registry, 
 	}
 
 	// Amazon Cognitoの設定
-	awscfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(conf.AWSRegion))
+	awscreds := aws.NewCredentialsCache(
+		awscredentials.NewStaticCredentialsProvider(conf.AWSAccessKey, conf.AWSSecretKey, ""),
+	)
+	awscfg, err := awsconfig.LoadDefaultConfig(ctx,
+		awsconfig.WithRegion(conf.AWSRegion),
+		awsconfig.WithCredentialsProvider(awscreds),
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -67,13 +77,13 @@ func newRegistry(ctx context.Context, conf *config, opts ...option) (*registry, 
 	// Databaseの設定
 	dbParams := &db.Params{
 		Database: mysql,
-		UserAuth: userAuth,
 	}
 
 	// User Serviceの設定
 	apiParams := &api.Params{
 		Logger:   dopts.logger,
 		Database: db.NewDatabase(dbParams),
+		UserAuth: userAuth,
 	}
 
 	return &registry{

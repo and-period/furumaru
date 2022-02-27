@@ -19,26 +19,24 @@ func TestNewClient(t *testing.T) {
 		{
 			name: "success",
 			params: &Params{
-				Socket:        "tcp",
-				Host:          os.Getenv("DB_HOST"),
-				Port:          os.Getenv("DB_PORT"),
-				Database:      "users",
-				Username:      os.Getenv("DB_USERNAME"),
-				Password:      os.Getenv("DB_PASSWORD"),
-				DisableLogger: true,
+				Socket:   "tcp",
+				Host:     os.Getenv("DB_HOST"),
+				Port:     os.Getenv("DB_PORT"),
+				Database: "users",
+				Username: os.Getenv("DB_USERNAME"),
+				Password: os.Getenv("DB_PASSWORD"),
 			},
 			isErr: false,
 		},
 		{
 			name: "failed to connect mysql",
 			params: &Params{
-				Socket:        "tcp",
-				Host:          "127.0.0.1",
-				Port:          "80",
-				Database:      "users",
-				Username:      "",
-				Password:      "",
-				DisableLogger: false,
+				Socket:   "tcp",
+				Host:     "127.0.0.1",
+				Port:     "80",
+				Database: "users",
+				Username: "",
+				Password: "",
 			},
 			isErr: true,
 		},
@@ -61,13 +59,12 @@ func TestNewClient(t *testing.T) {
 func TestBeginAndClose(t *testing.T) {
 	setEnv()
 	params := &Params{
-		Socket:        "tcp",
-		Host:          os.Getenv("DB_HOST"),
-		Port:          os.Getenv("DB_PORT"),
-		Database:      "users",
-		Username:      os.Getenv("DB_USERNAME"),
-		Password:      os.Getenv("DB_PASSWORD"),
-		DisableLogger: true,
+		Socket:   "tcp",
+		Host:     os.Getenv("DB_HOST"),
+		Port:     os.Getenv("DB_PORT"),
+		Database: "users",
+		Username: os.Getenv("DB_USERNAME"),
+		Password: os.Getenv("DB_PASSWORD"),
 	}
 	client, err := NewClient(params)
 	require.NoError(t, err)
@@ -97,6 +94,20 @@ func TestGetConfig(t *testing.T) {
 			expect: "root:12345678@tcp(127.0.0.1:3306)/test?charset=utf8mb4&parseTime=True&loc=Asia%2FTokyo",
 		},
 		{
+			name: "tcp socket with options",
+			params: &Params{
+				Socket:     "tcp",
+				Host:       "127.0.0.1",
+				Port:       "3306",
+				Database:   "test",
+				Username:   "root",
+				Password:   "12345678",
+				EnabledTLS: true,
+				TimeZone:   "UTC",
+			},
+			expect: "root:12345678@tcp(127.0.0.1:3306)/test?charset=utf8mb4&parseTime=True&tls=true&loc=UTC",
+		},
+		{
 			name: "unix socket",
 			params: &Params{
 				Socket:   "unix",
@@ -106,6 +117,18 @@ func TestGetConfig(t *testing.T) {
 				Password: "12345678",
 			},
 			expect: "root:12345678@unix(127.0.0.1)/test?charset=utf8mb4&parseTime=true",
+		},
+		{
+			name: "unix socket with options",
+			params: &Params{
+				Socket:     "unix",
+				Host:       "127.0.0.1",
+				Database:   "test",
+				Username:   "root",
+				Password:   "12345678",
+				EnabledTLS: true,
+			},
+			expect: "root:12345678@unix(127.0.0.1)/test?charset=utf8mb4&parseTime=true&tls=true",
 		},
 		{
 			name:   "invalid socket type",
