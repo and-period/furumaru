@@ -120,6 +120,8 @@ func accessLogUnaryServerInterceptor() grpc.UnaryServerInterceptor {
 }
 
 func filterParams(pb proto.Message) (map[string]interface{}, error) {
+	var fields = []string{"auth", "password"}
+
 	bs, err := protojson.Marshal(pb)
 	if err != nil {
 		return nil, fmt.Errorf("jsonpb serializer failed: %v", err)
@@ -130,7 +132,10 @@ func filterParams(pb proto.Message) (map[string]interface{}, error) {
 
 	var toFilter []string
 	for k := range bj {
-		if strings.Contains(strings.ToLower(k), "password") {
+		for i := range fields {
+			if !strings.Contains(strings.ToLower(k), fields[i]) {
+				continue
+			}
 			toFilter = append(toFilter, k)
 		}
 	}

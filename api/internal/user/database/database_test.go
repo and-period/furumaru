@@ -7,7 +7,6 @@ import (
 	"os"
 	"testing"
 
-	mock_cognito "github.com/and-period/marche/api/mock/pkg/cognito"
 	"github.com/and-period/marche/api/pkg/database"
 	"github.com/go-sql-driver/mysql"
 	"github.com/golang/mock/gomock"
@@ -19,31 +18,26 @@ import (
 var errmock = errors.New("some error")
 
 type mocks struct {
-	db       *database.Client
-	userAuth *mock_cognito.MockClient
+	db *database.Client
 }
 
 func newMocks(ctrl *gomock.Controller) (*mocks, error) {
 	setEnv()
 	// テスト用Database接続用クライアントの生成
 	params := &database.Params{
-		Socket:        "tcp",
-		Host:          os.Getenv("DB_HOST"),
-		Port:          os.Getenv("DB_PORT"),
-		Database:      "users",
-		Username:      os.Getenv("DB_USERNAME"),
-		Password:      os.Getenv("DB_PASSWORD"),
-		DisableLogger: true,
+		Socket:   "tcp",
+		Host:     os.Getenv("DB_HOST"),
+		Port:     os.Getenv("DB_PORT"),
+		Database: "users",
+		Username: os.Getenv("DB_USERNAME"),
+		Password: os.Getenv("DB_PASSWORD"),
 	}
 	db, err := database.NewClient(params)
 	if err != nil {
 		return nil, err
 	}
 
-	return &mocks{
-		db:       db,
-		userAuth: mock_cognito.NewMockClient(ctrl),
-	}, nil
+	return &mocks{db: db}, nil
 }
 
 func (m *mocks) dbDelete(ctx context.Context, tables ...string) error {

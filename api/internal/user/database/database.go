@@ -3,10 +3,11 @@
 package database
 
 import (
+	"context"
 	"errors"
 	"fmt"
 
-	"github.com/and-period/marche/api/pkg/cognito"
+	"github.com/and-period/marche/api/internal/user/entity"
 	"github.com/and-period/marche/api/pkg/database"
 	"github.com/go-sql-driver/mysql"
 	"gorm.io/gorm"
@@ -23,18 +24,24 @@ var (
 
 type Params struct {
 	Database *database.Client
-	UserAuth cognito.Client
 }
 
-type Database struct{}
+type Database struct {
+	User User
+}
 
 func NewDatabase(params *Params) *Database {
-	return &Database{}
+	return &Database{
+		User: NewUser(params.Database),
+	}
 }
 
 /**
  * interface
  */
+type User interface {
+	GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.User, error)
+}
 
 /**
  * params

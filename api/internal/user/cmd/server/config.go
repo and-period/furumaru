@@ -19,10 +19,13 @@ type config struct {
 	DBPassword          string `envconfig:"DB_PASSWORD" default:""`
 	DBDatabase          string `envconfig:"DB_DATABASE" default:"users"`
 	DBTimeZone          string `envconfig:"DB_TIMEZONE" default:""`
+	DBEnabledTLS        bool   `envconfig:"DB_ENABLED_TLS" default:"false"`
 	AWSRegion           string `envconfig:"AWS_REGION" default:"ap-northeast-1"`
+	AWSAccessKey        string `envconfig:"AWS_ACCESS_KEY" default:""`
+	AWSSecretKey        string `envconfig:"AWS_SECRET_KEY" default:""`
 	CognitoUserPoolID   string `envconfig:"COGNITO_USER_POOL_ID" default:""`
-	CognitoClientID     string `cnvconfig:"COGNITO_CLIENT_ID" default:""`
-	CognitoClientSecret string `cnvconfig:"COGNITO_CLIENT_SECRET" default:""`
+	CognitoClientID     string `envconfig:"COGNITO_CLIENT_ID" default:""`
+	CognitoClientSecret string `envconfig:"COGNITO_CLIENT_SECRET" default:""`
 }
 
 func newConfig() (*config, error) {

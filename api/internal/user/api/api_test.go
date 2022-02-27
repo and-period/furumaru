@@ -9,6 +9,8 @@ import (
 	"time"
 
 	"github.com/and-period/marche/api/internal/user/database"
+	mock_cognito "github.com/and-period/marche/api/mock/pkg/cognito"
+	mock_database "github.com/and-period/marche/api/mock/user/database"
 	"github.com/and-period/marche/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -23,10 +25,13 @@ import (
 var errmock = errors.New("some error")
 
 type mocks struct {
-	db *dbMocks
+	db       *dbMocks
+	userAuth *mock_cognito.MockClient
 }
 
-type dbMocks struct{}
+type dbMocks struct {
+	User *mock_database.MockUser
+}
 
 type testResponse struct {
 	code codes.Code
@@ -51,12 +56,15 @@ type grpcCaller func(ctx context.Context, service *userService) (proto.Message, 
 
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
-		db: newDBMocks(ctrl),
+		db:       newDBMocks(ctrl),
+		userAuth: mock_cognito.NewMockClient(ctrl),
 	}
 }
 
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
-	return &dbMocks{}
+	return &dbMocks{
+		User: mock_database.NewMockUser(ctrl),
+	}
 }
 
 func newUserService(mocks *mocks, opts *testOptions) *userService {
@@ -65,7 +73,10 @@ func newUserService(mocks *mocks, opts *testOptions) *userService {
 		logger:      zap.NewNop(),
 		sharedGroup: &singleflight.Group{},
 		waitGroup:   &sync.WaitGroup{},
-		db:          &database.Database{},
+		db: &database.Database{
+			User: mocks.db.User,
+		},
+		userAuth: mocks.userAuth,
 	}
 }
 
@@ -157,14 +168,9 @@ func TestGRPCError(t *testing.T) {
 			expect: codes.Unimplemented,
 		},
 		{
-			name:   "internal",
-			err:    fmt.Errorf("%w: %s", database.ErrInternal, errmock),
-			expect: codes.Internal,
-		},
-		{
 			name:   "other error",
 			err:    errmock,
-			expect: codes.Unknown,
+			expect: codes.Internal,
 		},
 	}
 
