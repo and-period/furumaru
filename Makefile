@@ -35,7 +35,7 @@ logs:
 .PHONY: start-api start-test
 
 start-api: proto migrate
-	docker-compose up user_api
+	docker-compose up user_gateway user_api
 
 start-test:
 	docker-compose up mysql_test
