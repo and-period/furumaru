@@ -31,6 +31,7 @@ func TestAuth(t *testing.T) {
 				AccessToken:  "access-token",
 				RefreshToken: "refresh-token",
 				ExpiresIn:    3600,
+				TokenType:    "Bearer",
 			},
 		},
 	}
