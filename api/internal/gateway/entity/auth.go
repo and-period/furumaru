@@ -2,12 +2,12 @@ package entity
 
 import "github.com/and-period/marche/api/proto/user"
 
-type Auth struct {
-	*user.Auth
+type UserAuth struct {
+	*user.UserAuth
 }
 
-func NewAuth(auth *user.Auth) *Auth {
-	return &Auth{
-		Auth: auth,
+func NewUserAuth(auth *user.UserAuth) *UserAuth {
+	return &UserAuth{
+		UserAuth: auth,
 	}
 }

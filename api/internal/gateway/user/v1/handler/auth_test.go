@@ -14,7 +14,7 @@ import (
 func TestSignIn(t *testing.T) {
 	t.Parallel()
 
-	auth := &user.Auth{
+	auth := &user.UserAuth{
 		UserId:       "user-id",
 		AccessToken:  "access-token",
 		RefreshToken: "refresh-token",
@@ -49,6 +49,7 @@ func TestSignIn(t *testing.T) {
 						AccessToken:  "access-token",
 						RefreshToken: "refresh-token",
 						ExpiresIn:    3600,
+						TokenType:    "Bearer",
 					},
 				},
 			},
@@ -86,7 +87,7 @@ func TestSignIn(t *testing.T) {
 func TestRefreshAuthToken(t *testing.T) {
 	t.Parallel()
 
-	auth := &user.Auth{
+	auth := &user.UserAuth{
 		UserId:       "user-id",
 		AccessToken:  "access-token",
 		RefreshToken: "",
@@ -119,6 +120,7 @@ func TestRefreshAuthToken(t *testing.T) {
 						AccessToken:  "access-token",
 						RefreshToken: "",
 						ExpiresIn:    3600,
+						TokenType:    "Bearer",
 					},
 				},
 			},

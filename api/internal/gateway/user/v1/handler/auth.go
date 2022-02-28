@@ -30,7 +30,7 @@ func (h *apiV1Handler) SignIn(ctx *gin.Context) {
 		httpError(ctx, err)
 		return
 	}
-	auth := gentity.NewAuth(out.Auth)
+	auth := gentity.NewUserAuth(out.Auth)
 
 	res := &response.AuthResponse{
 		Auth: entity.NewAuth(auth),
@@ -75,7 +75,7 @@ func (h *apiV1Handler) RefreshAuthToken(ctx *gin.Context) {
 		httpError(ctx, err)
 		return
 	}
-	auth := gentity.NewAuth(out.Auth)
+	auth := gentity.NewUserAuth(out.Auth)
 
 	res := &response.AuthResponse{
 		Auth: entity.NewAuth(auth),

@@ -11,6 +11,8 @@ import (
 	gmd "google.golang.org/grpc/metadata"
 )
 
+var AuthTokenType = "Bearer"
+
 var errNotExistsAuthorizationHeader = errors.New("util: authorization header is not contain")
 
 func GetAuthToken(c *gin.Context) (string, error) {
@@ -19,7 +21,7 @@ func GetAuthToken(c *gin.Context) (string, error) {
 		return "", errNotExistsAuthorizationHeader
 	}
 
-	token := strings.TrimPrefix(authorization, "Bearer ")
+	token := strings.TrimPrefix(authorization, AuthTokenType+" ")
 	return token, nil
 }
 

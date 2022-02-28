@@ -87,21 +87,20 @@ func unauthorized(ctx *gin.Context, err error) {
  */
 func (h *apiV1Handler) Authentication() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		// TODO: User Serviceの実装完了後に修正
-		// token, err := util.GetAuthToken(ctx)
-		// if err != nil {
-		// 	unauthorized(ctx, err)
-		// 	return
-		// }
+		token, err := util.GetAuthToken(ctx)
+		if err != nil {
+			unauthorized(ctx, err)
+			return
+		}
 
-		// in := &user.GetUserAuthRequest{AccessToken: token}
-		// out, err := h.user.GetUserAuth(ctx, in)
-		// if err != nil || out.UserID == "" {
-		// 	unauthorized(ctx, err)
-		// 	return
-		// }
+		in := &user.GetUserAuthRequest{AccessToken: token}
+		out, err := h.user.GetUserAuth(ctx, in)
+		if err != nil || out.Auth.UserId == "" {
+			unauthorized(ctx, err)
+			return
+		}
 
-		setAuth(ctx, "")
+		setAuth(ctx, out.Auth.UserId)
 
 		ctx.Next()
 	}
@@ -113,6 +112,6 @@ func setAuth(ctx *gin.Context, userID string) {
 	}
 }
 
-// func getUserID(ctx *gin.Context) string {
-// 	return ctx.GetHeader("userId")
-// }
+func getUserID(ctx *gin.Context) string {
+	return ctx.GetHeader("userId")
+}

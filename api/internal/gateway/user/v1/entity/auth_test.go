@@ -13,13 +13,13 @@ func TestAuth(t *testing.T) {
 
 	tests := []struct {
 		name   string
-		auth   *entity.Auth
+		auth   *entity.UserAuth
 		expect *Auth
 	}{
 		{
 			name: "success",
-			auth: &entity.Auth{
-				Auth: &user.Auth{
+			auth: &entity.UserAuth{
+				UserAuth: &user.UserAuth{
 					UserId:       "user-id",
 					AccessToken:  "access-token",
 					RefreshToken: "refresh-token",

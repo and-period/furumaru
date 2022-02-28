@@ -187,3 +187,13 @@ func TestAPIV1Handler(t *testing.T) {
 	t.Parallel()
 	assert.NotNil(t, NewAPIV1Handler(&Params{}))
 }
+
+func TestSetAuth(t *testing.T) {
+	t.Parallel()
+	gin.SetMode(gin.TestMode)
+	w := httptest.NewRecorder()
+	ctx, _ := gin.CreateTestContext(w)
+	ctx.Request = &http.Request{Header: http.Header{}}
+	setAuth(ctx, "user-id")
+	assert.Equal(t, "user-id", getUserID(ctx))
+}

@@ -36,6 +36,26 @@ func (m *MockUserServiceClient) EXPECT() *MockUserServiceClientMockRecorder {
 	return m.recorder
 }
 
+// GetUserAuth mocks base method.
+func (m *MockUserServiceClient) GetUserAuth(ctx context.Context, in *user.GetUserAuthRequest, opts ...grpc.CallOption) (*user.GetUserAuthResponse, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, in}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetUserAuth", varargs...)
+	ret0, _ := ret[0].(*user.GetUserAuthResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUserAuth indicates an expected call of GetUserAuth.
+func (mr *MockUserServiceClientMockRecorder) GetUserAuth(ctx, in interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, in}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserAuth", reflect.TypeOf((*MockUserServiceClient)(nil).GetUserAuth), varargs...)
+}
+
 // RefreshUserToken mocks base method.
 func (m *MockUserServiceClient) RefreshUserToken(ctx context.Context, in *user.RefreshUserTokenRequest, opts ...grpc.CallOption) (*user.RefreshUserTokenResponse, error) {
 	m.ctrl.T.Helper()
@@ -117,6 +137,21 @@ func NewMockUserServiceServer(ctrl *gomock.Controller) *MockUserServiceServer {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockUserServiceServer) EXPECT() *MockUserServiceServerMockRecorder {
 	return m.recorder
+}
+
+// GetUserAuth mocks base method.
+func (m *MockUserServiceServer) GetUserAuth(arg0 context.Context, arg1 *user.GetUserAuthRequest) (*user.GetUserAuthResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUserAuth", arg0, arg1)
+	ret0, _ := ret[0].(*user.GetUserAuthResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUserAuth indicates an expected call of GetUserAuth.
+func (mr *MockUserServiceServerMockRecorder) GetUserAuth(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserAuth", reflect.TypeOf((*MockUserServiceServer)(nil).GetUserAuth), arg0, arg1)
 }
 
 // RefreshUserToken mocks base method.
