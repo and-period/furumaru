@@ -66,7 +66,7 @@ services:
     container_name: proto
     platform: linux/x86_64
     build:
-      context: ./infra/docker/infra/proto
+      context: ./infra/docker/api/proto
       dockerfile: Dockerfile
     working_dir: /go/src/github.com/and-period/marche
     volumes:
@@ -76,7 +76,7 @@ services:
   swagger_generator:
     container_name: swagger_generator
     build:
-      context: ./infra/docker/infra/swagger/generator
+      context: ./infra/docker/docs/swagger/generator
       dockerfile: Dockerfile
     working_dir: /var/swagger
     volumes:
@@ -88,7 +88,7 @@ services:
   swagger_user:
     container_name: swagger_user
     build:
-      context: ./infra/docker/infra/swagger/user
+      context: ./infra/docker/docs/swagger/user
       dockerfile: Dockerfile
     volumes:
       - ./tmp/data/swagger/user/docs/openapi:/var/swagger:cached
