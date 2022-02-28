@@ -215,7 +215,7 @@ func TestGetUserAuth(t *testing.T) {
 			name: "failed to get by cognito id",
 			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
 				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("username", nil)
-				mocks.db.User.EXPECT().GetByCognitoID(ctx, "username", "id").Return(u, nil)
+				mocks.db.User.EXPECT().GetByCognitoID(ctx, "username", "id").Return(u, errmock)
 			},
 			req: &user.GetUserAuthRequest{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
