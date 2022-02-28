@@ -1,0 +1,25 @@
+signInRequest:
+  type: object
+  properties:
+    username:
+      type: string
+      description: ユーザー名 (メールアドレス,電話番号)
+    password:
+      type: string
+      description: パスワード
+  required:
+  - username
+  - password
+  example:
+    username: 'test-user@and-period.jp'
+    password: '12345678'
+refreshAuthTokenRequest:
+  type: object
+  properties:
+    refreshToken:
+      type: string
+      description: 更新トークン
+  required:
+  - refreshToken
+  example:
+    refreshToken: 'xxxxxxxxxx'

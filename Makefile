@@ -3,13 +3,13 @@
 ##################################################
 .PHONY: setup build install start stop down remove logs
 
-setup: build install proto migrate
+setup: build install proto swagger migrate
 	if [ ! -f $(PWD)/.env ]; then \
 		cp $(PWD)/.env.temp $(PWD)/.env; \
 	fi
 
 install:
-	echo 'wip...'
+	docker-compose run --rm swagger_generator yarn
 
 build:
 	docker-compose build --parallel
@@ -32,10 +32,13 @@ logs:
 ##################################################
 # Container Commands - Run Container Group
 ##################################################
-.PHONY: start-api start-test
+.PHONY: start-api start-swagger start-test
 
 start-api: proto migrate
 	docker-compose up user_gateway user_api
+
+start-swagger:
+	docker-compose up swagger_generator swagger_user
 
 start-test:
 	docker-compose up mysql_test
@@ -43,10 +46,13 @@ start-test:
 ##################################################
 # Container Commands - Single
 ##################################################
-.PHONY: proto migrate
+.PHONY: proto swagger migrate
 
 proto:
 	docker-compose run --rm proto bash -c "cd ./api; make install; make protoc"
+
+swagger:
+	docker-compose run --rm swagger_generator yarn generate
 
 migrate:
 	docker-compose up -d mysql_test
