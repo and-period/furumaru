@@ -1,6 +1,28 @@
 version: '3.9'
 
 services:
+  user_gateway:
+    container_name: user_gateway
+    build:
+      context: .
+      dockerfile: ./infra/docker/api/gateway/user/Dockerfile.development
+    working_dir: /go/src/github.com/and-period/marche/api
+    volumes:
+      - ./api:/go/src/github.com/and-period/marche/api:cached
+      - ./tmp/data/go/pkg/mod:/go/pkg/mod:delegated
+      - ./tmp/logs/api/gateway/user:/var/log/api:delegated
+    environment:
+      - PORT=8080
+      - METRICS_PORT=9090
+      - SHUTDOWN_DELAY_SEC=0
+      - LOG_LEVEL=debug
+      - LOG_PATH=/var/log/api
+      - USER_SERVICE_URL=user_api:8080
+    ports:
+      - 18000:8080
+      - 18001:9090
+    command: make dev SERVICE=gateway/user
+
   user_api:
     container_name: user_api
     build:
@@ -10,7 +32,7 @@ services:
     volumes:
       - ./api:/go/src/github.com/and-period/marche/api:cached
       - ./tmp/data/go/pkg/mod:/go/pkg/mod:delegated
-      - ./tmp/logs/api/user:/var/log/api:delegated
+      - ./tmp/logs/api/user/server:/var/log/api:delegated
     environment:
       - PORT=8080
       - METRICS_PORT=9090

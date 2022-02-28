@@ -108,6 +108,9 @@ jobs:
     ############################################
     # Build check
     ############################################
+    - name: Build user gateway
+      run: make build SERVICE=gateway/user
+
     - name: Build user server
       run: make build SERVICE=user/server
 
