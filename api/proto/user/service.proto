@@ -11,6 +11,7 @@ import "user/auth.proto";
 service UserService {
   rpc SignInUser(SignInUserRequest) returns (SignInUserResponse);
   rpc SignOutUser(SignOutUserRequest) returns (SignOutUserResponse);
+  rpc GetUserAuth(GetUserAuthRequest) returns (GetUserAuthResponse);
   rpc RefreshUserToken(RefreshUserTokenRequest) returns (RefreshUserTokenResponse);
 }
 
@@ -20,7 +21,7 @@ message SignInUserRequest {
 }
 
 message SignInUserResponse {
-  Auth auth = 1;
+  UserAuth auth = 1;
 }
 
 message SignOutUserRequest {
@@ -29,10 +30,18 @@ message SignOutUserRequest {
 
 message SignOutUserResponse {}
 
+message GetUserAuthRequest {
+  string access_token = 1 [(validate.rules).string = { min_len: 1 }];
+}
+
+message GetUserAuthResponse {
+  UserAuth auth = 1;
+}
+
 message RefreshUserTokenRequest {
   string refresh_token = 1 [(validate.rules).string = { min_len: 1 }];
 }
 
 message RefreshUserTokenResponse {
-  Auth auth = 1;
+  UserAuth auth = 1;
 }

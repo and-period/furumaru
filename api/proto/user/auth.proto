@@ -4,13 +4,15 @@ package user;
 
 option go_package = "github.com/and-period/marche/api/proto/user";
 
+// ProviderType - 認証方法
 enum ProviderType {
   PROVIDER_TYPE_UNKNOWN = 0;
   PROVIDER_TYPE_EMAIL   = 1; // メール/電話認証
   PROVIDER_TYPE_OAUTH   = 2; // OAuth認証
 }
 
-message Auth {
+// UserAuth - 購入者認証情報
+message UserAuth {
   string user_id       = 1; // ユーザーID
   string access_token  = 2; // アクセストークン
   string refresh_token = 3; // 更新トークン

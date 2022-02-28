@@ -5,15 +5,15 @@ import (
 	"github.com/and-period/marche/api/proto/user"
 )
 
-type Auth struct {
+type UserAuth struct {
 	UserID       string
 	AccessToken  string
 	RefreshToken string
 	ExpiresIn    int32
 }
 
-func NewAuth(userID string, rs *cognito.AuthResult) *Auth {
-	return &Auth{
+func NewUserAuth(userID string, rs *cognito.AuthResult) *UserAuth {
+	return &UserAuth{
 		UserID:       userID,
 		AccessToken:  rs.AccessToken,
 		RefreshToken: rs.RefreshToken,
@@ -21,8 +21,8 @@ func NewAuth(userID string, rs *cognito.AuthResult) *Auth {
 	}
 }
 
-func (a *Auth) Proto() *user.Auth {
-	return &user.Auth{
+func (a *UserAuth) Proto() *user.UserAuth {
+	return &user.UserAuth{
 		UserId:       a.UserID,
 		AccessToken:  a.AccessToken,
 		RefreshToken: a.RefreshToken,

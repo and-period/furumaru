@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/and-period/marche/api/internal/user/entity"
+	"github.com/and-period/marche/api/pkg/cognito"
 	"github.com/and-period/marche/api/proto/user"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -16,15 +17,10 @@ func (s *userService) SignInUser(
 	if err != nil {
 		return nil, status.Error(codes.Unauthenticated, err.Error())
 	}
-	username, err := s.userAuth.GetUsername(ctx, rs.AccessToken)
+	auth, err := s.getUserAuth(ctx, rs)
 	if err != nil {
 		return nil, gRPCError(err)
 	}
-	out, err := s.db.User.GetByCognitoID(ctx, username, "id")
-	if err != nil {
-		return nil, gRPCError(err)
-	}
-	auth := entity.NewAuth(out.ID, rs)
 	res := &user.SignInUserResponse{
 		Auth: auth.Proto(),
 	}
@@ -43,6 +39,23 @@ func (s *userService) SignOutUser(
 	return &user.SignOutUserResponse{}, nil
 }
 
+func (s *userService) GetUserAuth(
+	ctx context.Context, req *user.GetUserAuthRequest,
+) (*user.GetUserAuthResponse, error) {
+	if err := req.ValidateAll(); err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+	rs := &cognito.AuthResult{AccessToken: req.AccessToken}
+	auth, err := s.getUserAuth(ctx, rs)
+	if err != nil {
+		return nil, status.Error(codes.Unauthenticated, err.Error())
+	}
+	res := &user.GetUserAuthResponse{
+		Auth: auth.Proto(),
+	}
+	return res, nil
+}
+
 func (s *userService) RefreshUserToken(
 	ctx context.Context, req *user.RefreshUserTokenRequest,
 ) (*user.RefreshUserTokenResponse, error) {
@@ -53,17 +66,25 @@ func (s *userService) RefreshUserToken(
 	if err != nil {
 		return nil, status.Error(codes.Unauthenticated, err.Error())
 	}
-	username, err := s.userAuth.GetUsername(ctx, rs.AccessToken)
+	auth, err := s.getUserAuth(ctx, rs)
 	if err != nil {
 		return nil, gRPCError(err)
 	}
-	out, err := s.db.User.GetByCognitoID(ctx, username, "id")
-	if err != nil {
-		return nil, gRPCError(err)
-	}
-	auth := entity.NewAuth(out.ID, rs)
 	res := &user.RefreshUserTokenResponse{
 		Auth: auth.Proto(),
 	}
 	return res, nil
+}
+
+func (s *userService) getUserAuth(ctx context.Context, rs *cognito.AuthResult) (*entity.UserAuth, error) {
+	username, err := s.userAuth.GetUsername(ctx, rs.AccessToken)
+	if err != nil {
+		return nil, err
+	}
+	out, err := s.db.User.GetByCognitoID(ctx, username, "id")
+	if err != nil {
+		return nil, err
+	}
+	auth := entity.NewUserAuth(out.ID, rs)
+	return auth, nil
 }

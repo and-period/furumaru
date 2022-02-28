@@ -8,14 +8,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestAuth(t *testing.T) {
+func TestUserAuth(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
 		name   string
 		userID string
 		result *cognito.AuthResult
-		expect *Auth
+		expect *UserAuth
 	}{
 		{
 			name:   "success",
@@ -26,7 +26,7 @@ func TestAuth(t *testing.T) {
 				RefreshToken: "refresh-token",
 				ExpiresIn:    3600,
 			},
-			expect: &Auth{
+			expect: &UserAuth{
 				UserID:       "user-id",
 				AccessToken:  "access-token",
 				RefreshToken: "refresh-token",
@@ -39,29 +39,29 @@ func TestAuth(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewAuth(tt.userID, tt.result)
+			actual := NewUserAuth(tt.userID, tt.result)
 			assert.Equal(t, tt.expect, actual)
 		})
 	}
 }
 
-func TestAuth_Proto(t *testing.T) {
+func TestUserAuth_Proto(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
 		name   string
-		auth   *Auth
-		expect *user.Auth
+		auth   *UserAuth
+		expect *user.UserAuth
 	}{
 		{
 			name: "success",
-			auth: &Auth{
+			auth: &UserAuth{
 				UserID:       "user-id",
 				AccessToken:  "access-token",
 				RefreshToken: "refresh-token",
 				ExpiresIn:    3600,
 			},
-			expect: &user.Auth{
+			expect: &user.UserAuth{
 				UserId:       "user-id",
 				AccessToken:  "access-token",
 				RefreshToken: "refresh-token",
