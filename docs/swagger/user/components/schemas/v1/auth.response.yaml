@@ -14,13 +14,18 @@ authResponse:
       type: integer
       format: int32
       description: 有効期限
+    tokenType:
+      type: string
+      description: トークン種別
   required:
   - userId
   - accessToken
   - refreshToken
   - expiresIn
+  - tokenType
   example:
     userId: 'kSByoE6FetnPs5Byk3a9Zx'
     accessToken: 'xxxxxxxxxx'
     refreshToken: 'xxxxxxxxxx'
     expiresIn: 3600
+    tokenType: 'Bearer'
