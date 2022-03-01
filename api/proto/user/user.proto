@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "github.com/and-period/marche/api/proto/user";
+
+import "user/auth.proto";
+
+// User - 購入者情報
+message User {
+  string       id            = 1; // ユーザーID
+  ProviderType provider_type = 2; // 認証種別
+  string       email         = 3; // メールアドレス
+  string       phone_number  = 4; // 電話番号
+  string       created_at    = 5; // 登録日時
+  string       updated_at    = 6; // 更新日時
+  string       verified_at   = 7; // 本人確認日時
+  string       deleted_at    = 8; // 退会日時
+}

@@ -7,12 +7,23 @@ option go_package = "github.com/and-period/marche/api/proto/user";
 import "github.com/envoyproxy/protoc-gen-validate/validate/validate.proto";
 
 import "user/auth.proto";
+import "user/user.proto";
 
 service UserService {
   rpc SignInUser(SignInUserRequest) returns (SignInUserResponse);
   rpc SignOutUser(SignOutUserRequest) returns (SignOutUserResponse);
   rpc GetUserAuth(GetUserAuthRequest) returns (GetUserAuthResponse);
   rpc RefreshUserToken(RefreshUserTokenRequest) returns (RefreshUserTokenResponse);
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+  rpc VerifyUser(VerifyUserRequest) returns (VerifyUserResponse);
+  rpc CreateUserWithOAuth(CreateUserWithOAuthRequest) returns (CreateUserWithOAuthResponse);
+  rpc UpdateUserEmail(UpdateUserEmailRequest) returns (UpdateUserEmailResponse);
+  rpc VerifyUserEmail(VerifyUserEmailRequest) returns (VerifyUserEmailResponse);
+  rpc UpdateUserPassword(UpdateUserPasswordRequest) returns (UpdateUserPasswordResponse);
+  rpc ForgotUserPassword(ForgotUserPasswordRequest) returns (ForgotUserPasswordResponse);
+  rpc VerifyUserPassword(VerifyUserPasswordRequest) returns (VerifyUserPasswordResponse);
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteuserResponse);
 }
 
 message SignInUserRequest {
@@ -45,3 +56,81 @@ message RefreshUserTokenRequest {
 message RefreshUserTokenResponse {
   UserAuth auth = 1;
 }
+
+message GetUserRequest {
+  string user_id = 1 [(validate.rules).string = { min_len: 1 }];
+}
+
+message GetUserResponse {
+  User user = 1;
+}
+
+message CreateUserRequest {
+  string email                 = 1 [(validate.rules).string = { min_len: 1 max_len: 256 email: true }];
+  string phone_number          = 2 [(validate.rules).string = { min_len: 12, max_len: 18, pattern: "^\\+[0-9]{11,17}$" }];
+  string password              = 3 [(validate.rules).string = { min_len: 8, max_len: 32, pattern: "^[a-zA-Z0-9_!@#$_%^&*.?()-=+]*$" }];
+  string password_confirmation = 4 [(validate.rules).string = { min_len: 1 }];
+}
+
+message CreateUserResponse {
+  string user_id = 1;
+}
+
+message VerifyUserRequest {
+  string user_id      = 1 [(validate.rules).string = { min_len: 1 }];
+  string verify_code  = 2 [(validate.rules).string = { min_len: 1 }];
+}
+
+message VerifyUserResponse {}
+
+message CreateUserWithOAuthRequest {
+  string access_token = 1 [(validate.rules).string = { min_len: 1 }];
+}
+
+message CreateUserWithOAuthResponse {
+  User user = 1;
+}
+
+message UpdateUserEmailRequest {
+  string access_token = 1 [(validate.rules).string = { min_len: 1 }];
+  string email        = 2 [(validate.rules).string = { min_len: 1 max_len: 256 email: true }];
+}
+
+message UpdateUserEmailResponse {}
+
+message VerifyUserEmailRequest {
+  string access_token = 1 [(validate.rules).string = { min_len: 1 }];
+  string verify_code  = 2 [(validate.rules).string = { min_len: 1 }];
+}
+
+message VerifyUserEmailResponse {}
+
+message UpdateUserPasswordRequest {
+  string access_token          = 1 [(validate.rules).string = { min_len: 1 }];
+  string old_password          = 2 [(validate.rules).string = { min_len: 1 }];
+  string new_password          = 3 [(validate.rules).string = { min_len: 8, max_len: 32, pattern: "^[a-zA-Z0-9_!@#$_%^&*.?()-=+]*$" }];
+  string password_confirmation = 4 [(validate.rules).string = { min_len: 1 }];
+}
+
+message UpdateUserPasswordResponse {}
+
+message ForgotUserPasswordRequest {
+  string email = 1 [(validate.rules).string = { min_len: 1 max_len: 256 email: true }];
+}
+
+message ForgotUserPasswordResponse {}
+
+message VerifyUserPasswordRequest {
+  string email                 = 1 [(validate.rules).string = { min_len: 1 max_len: 256 email: true }];
+  string verify_code           = 2 [(validate.rules).string = { min_len: 1 }];
+  string new_password          = 3 [(validate.rules).string = { min_len: 8, max_len: 32, pattern: "^[a-zA-Z0-9_!@#$_%^&*.?()-=+]*$" }];
+  string password_confirmation = 4 [(validate.rules).string = { min_len: 1 }];
+}
+
+message VerifyUserPasswordResponse {}
+
+message DeleteUserRequest {
+  string user_id = 1 [(validate.rules).string = { min_len: 1 }];
+}
+
+message DeleteuserResponse {}
