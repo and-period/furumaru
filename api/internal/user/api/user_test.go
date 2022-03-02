@@ -4,6 +4,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/marche/api/internal/user/entity"
+	"github.com/and-period/marche/api/pkg/jst"
 	"github.com/and-period/marche/api/proto/user"
 	"github.com/golang/mock/gomock"
 	"google.golang.org/grpc/codes"
@@ -13,6 +15,18 @@ import (
 func TestGetUser(t *testing.T) {
 	t.Parallel()
 
+	now := jst.Now()
+	u := &entity.User{
+		ID:           "user-id",
+		CognitoID:    "cognito-id",
+		ProviderType: entity.ProviderTypeEmail,
+		Email:        "test-user@and-period.jp",
+		PhoneNumber:  "+810000000000",
+		CreatedAt:    now,
+		UpdatedAt:    now,
+		VerifiedAt:   now,
+	}
+
 	tests := []struct {
 		name   string
 		setup  func(ctx context.Context, t *testing.T, mocks *mocks)
@@ -20,14 +34,26 @@ func TestGetUser(t *testing.T) {
 		expect *testResponse
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
+			},
 			req: &user.GetUserRequest{
 				UserId: "user-id",
 			},
 			expect: &testResponse{
 				code: codes.OK,
-				body: &user.GetUserResponse{},
+				body: &user.GetUserResponse{
+					User: &user.User{
+						Id:           "user-id",
+						ProviderType: user.ProviderType_PROVIDER_TYPE_EMAIL,
+						Email:        "test-user@and-period.jp",
+						PhoneNumber:  "+810000000000",
+						CreatedAt:    now.Unix(),
+						UpdatedAt:    now.Unix(),
+						VerifiedAt:   now.Unix(),
+					},
+				},
 			},
 		},
 		{
@@ -36,6 +62,18 @@ func TestGetUser(t *testing.T) {
 			req:   &user.GetUserRequest{},
 			expect: &testResponse{
 				code: codes.InvalidArgument,
+			},
+		},
+		{
+			name: "failed to get user",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(nil, errmock)
+			},
+			req: &user.GetUserRequest{
+				UserId: "user-id",
+			},
+			expect: &testResponse{
+				code: codes.Internal,
 			},
 		},
 	}

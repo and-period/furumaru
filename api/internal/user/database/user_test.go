@@ -16,6 +16,83 @@ func TestUser(t *testing.T) {
 	assert.NotNil(t, NewUser(nil))
 }
 
+func TestUser_Get(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, userTable)
+	u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
+	err = m.db.DB.Create(&u).Error
+	require.NoError(t, err)
+
+	type args struct {
+		userID string
+	}
+	type want struct {
+		user   *entity.User
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				userID: "user-id",
+			},
+			want: want{
+				user:   u,
+				hasErr: false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				userID: "",
+			},
+			want: want{
+				user:   nil,
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &user{db: m.db, now: now}
+			actual, err := db.Get(ctx, tt.args.userID)
+			if tt.want.hasErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			fillIgnoreUserField(actual, now())
+			assert.Equal(t, tt.want.user, actual)
+		})
+	}
+}
+
 func TestUser_GetByCognitoID(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

@@ -41,6 +41,7 @@ func NewDatabase(params *Params) *Database {
  * interface
  */
 type User interface {
+	Get(ctx context.Context, userID string, fields ...string) (*entity.User, error)
 	GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.User, error)
 	Create(ctx context.Context, user *entity.User) error
 	UpdateVerified(ctx context.Context, userID string) error

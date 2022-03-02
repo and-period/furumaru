@@ -12,8 +12,8 @@ message User {
   ProviderType provider_type = 2; // 認証種別
   string       email         = 3; // メールアドレス
   string       phone_number  = 4; // 電話番号
-  string       created_at    = 5; // 登録日時
-  string       updated_at    = 6; // 更新日時
-  string       verified_at   = 7; // 本人確認日時
-  string       deleted_at    = 8; // 退会日時
+  int64        created_at    = 5; // 登録日時
+  int64        updated_at    = 6; // 更新日時
+  int64        verified_at   = 7; // 本人確認日時
+  int64        deleted_at    = 8; // 退会日時
 }

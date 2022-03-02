@@ -29,6 +29,22 @@ func NewUser(db *database.Client) User {
 	}
 }
 
+func (u *user) Get(ctx context.Context, userID string, fields ...string) (*entity.User, error) {
+	var user *entity.User
+	if len(fields) == 0 {
+		fields = userFields
+	}
+
+	stmt := u.db.DB.
+		Table(userTable).Select(fields).
+		Where("id = ?", userID)
+
+	if err := stmt.First(&user).Error; err != nil {
+		return nil, dbError(err)
+	}
+	return user, nil
+}
+
 func (u *user) GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.User, error) {
 	var user *entity.User
 	if len(fields) == 0 {

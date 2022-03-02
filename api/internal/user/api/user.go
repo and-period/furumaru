@@ -17,8 +17,14 @@ func (s *userService) GetUser(
 	if err := req.ValidateAll(); err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	// TODO: 詳細の実装
-	return &user.GetUserResponse{}, nil
+	u, err := s.db.User.Get(ctx, req.UserId)
+	if err != nil {
+		return nil, gRPCError(err)
+	}
+	res := &user.GetUserResponse{
+		User: u.Proto(),
+	}
+	return res, nil
 }
 
 func (s *userService) CreateUser(
