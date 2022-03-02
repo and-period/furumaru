@@ -35,6 +35,20 @@ func (m *MockUser) EXPECT() *MockUserMockRecorder {
 	return m.recorder
 }
 
+// Create mocks base method.
+func (m *MockUser) Create(ctx context.Context, user *entity.User) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, user)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockUserMockRecorder) Create(ctx, user interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockUser)(nil).Create), ctx, user)
+}
+
 // GetByCognitoID mocks base method.
 func (m *MockUser) GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.User, error) {
 	m.ctrl.T.Helper()
@@ -53,4 +67,18 @@ func (mr *MockUserMockRecorder) GetByCognitoID(ctx, cognitoID interface{}, field
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, cognitoID}, fields...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByCognitoID", reflect.TypeOf((*MockUser)(nil).GetByCognitoID), varargs...)
+}
+
+// UpdateVerified mocks base method.
+func (m *MockUser) UpdateVerified(ctx context.Context, userID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateVerified", ctx, userID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateVerified indicates an expected call of UpdateVerified.
+func (mr *MockUserMockRecorder) UpdateVerified(ctx, userID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateVerified", reflect.TypeOf((*MockUser)(nil).UpdateVerified), ctx, userID)
 }

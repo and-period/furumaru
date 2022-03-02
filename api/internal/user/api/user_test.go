@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/and-period/marche/api/proto/user"
+	"github.com/golang/mock/gomock"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/protobuf/proto"
 )
@@ -57,8 +58,11 @@ func TestCreateUser(t *testing.T) {
 		expect *testResponse
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				mocks.db.User.EXPECT().Create(ctx, gomock.Any()).Return(nil)
+				mocks.userAuth.EXPECT().SignUp(ctx, gomock.Any()).Return(nil)
+			},
 			req: &user.CreateUserRequest{
 				Email:                "test@and-period.jp",
 				PhoneNumber:          "+819012345678",
@@ -67,7 +71,6 @@ func TestCreateUser(t *testing.T) {
 			},
 			expect: &testResponse{
 				code: codes.OK,
-				body: &user.CreateUserResponse{},
 			},
 		},
 		{
@@ -76,6 +79,37 @@ func TestCreateUser(t *testing.T) {
 			req:   &user.CreateUserRequest{},
 			expect: &testResponse{
 				code: codes.InvalidArgument,
+			},
+		},
+		{
+			name: "failed to create",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				mocks.db.User.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
+			},
+			req: &user.CreateUserRequest{
+				Email:                "test@and-period.jp",
+				PhoneNumber:          "+819012345678",
+				Password:             "12345678",
+				PasswordConfirmation: "12345678",
+			},
+			expect: &testResponse{
+				code: codes.Internal,
+			},
+		},
+		{
+			name: "failed to create",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				mocks.db.User.EXPECT().Create(ctx, gomock.Any()).Return(nil)
+				mocks.userAuth.EXPECT().SignUp(ctx, gomock.Any()).Return(errmock)
+			},
+			req: &user.CreateUserRequest{
+				Email:                "test@and-period.jp",
+				PhoneNumber:          "+819012345678",
+				Password:             "12345678",
+				PasswordConfirmation: "12345678",
+			},
+			expect: &testResponse{
+				code: codes.Internal,
 			},
 		},
 	}
@@ -98,8 +132,11 @@ func TestVerifyUser(t *testing.T) {
 		expect *testResponse
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				mocks.userAuth.EXPECT().ConfirmSignUp(ctx, "user-id", "123456").Return(nil)
+				mocks.db.User.EXPECT().UpdateVerified(ctx, "user-id").Return(nil)
+			},
 			req: &user.VerifyUserRequest{
 				UserId:     "user-id",
 				VerifyCode: "123456",
@@ -115,6 +152,33 @@ func TestVerifyUser(t *testing.T) {
 			req:   &user.VerifyUserRequest{},
 			expect: &testResponse{
 				code: codes.InvalidArgument,
+			},
+		},
+		{
+			name: "failed to confirm sign up",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				mocks.userAuth.EXPECT().ConfirmSignUp(ctx, "user-id", "123456").Return(errmock)
+			},
+			req: &user.VerifyUserRequest{
+				UserId:     "user-id",
+				VerifyCode: "123456",
+			},
+			expect: &testResponse{
+				code: codes.Internal,
+			},
+		},
+		{
+			name: "failed to update verified",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				mocks.userAuth.EXPECT().ConfirmSignUp(ctx, "user-id", "123456").Return(nil)
+				mocks.db.User.EXPECT().UpdateVerified(ctx, "user-id").Return(errmock)
+			},
+			req: &user.VerifyUserRequest{
+				UserId:     "user-id",
+				VerifyCode: "123456",
+			},
+			expect: &testResponse{
+				code: codes.Internal,
 			},
 		},
 	}

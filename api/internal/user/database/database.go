@@ -14,12 +14,13 @@ import (
 )
 
 var (
-	ErrInvalidArgument = errors.New("database: invalid argument")
-	ErrNotFound        = errors.New("database: not found")
-	ErrAlreadyExists   = errors.New("database: already exists")
-	ErrNotImplemented  = errors.New("database: not implemented")
-	ErrInternal        = errors.New("database: internal")
-	ErrUnknown         = errors.New("database: unknown")
+	ErrInvalidArgument    = errors.New("database: invalid argument")
+	ErrNotFound           = errors.New("database: not found")
+	ErrFailedPrecondition = errors.New("database: failed precondition")
+	ErrAlreadyExists      = errors.New("database: already exists")
+	ErrNotImplemented     = errors.New("database: not implemented")
+	ErrInternal           = errors.New("database: internal")
+	ErrUnknown            = errors.New("database: unknown")
 )
 
 type Params struct {
@@ -41,6 +42,8 @@ func NewDatabase(params *Params) *Database {
  */
 type User interface {
 	GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.User, error)
+	Create(ctx context.Context, user *entity.User) error
+	UpdateVerified(ctx context.Context, userID string) error
 }
 
 /**
@@ -53,6 +56,9 @@ type User interface {
 func dbError(err error) error {
 	if err == nil {
 		return nil
+	}
+	if errors.Is(err, ErrFailedPrecondition) {
+		return err
 	}
 
 	//nolint:gocritic

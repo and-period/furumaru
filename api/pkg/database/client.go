@@ -51,7 +51,6 @@ func (c *Client) Begin(opts ...*sql.TxOptions) (*gorm.DB, error) {
 	if err := tx.Error; err != nil {
 		return nil, err
 	}
-
 	return tx, nil
 }
 
@@ -62,6 +61,27 @@ func (c *Client) Close(tx *gorm.DB) func() {
 			tx.Rollback()
 		}
 	}
+}
+
+// Transaction - トランザクション処理
+func (c *Client) Transaction(f func(tx *gorm.DB) (interface{}, error)) (data interface{}, err error) {
+	tx, err := c.Begin()
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+			return
+		}
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit().Error
+	}()
+	data, err = f(tx)
+	return
 }
 
 func getDBClient(config string, params *Params) (*gorm.DB, error) {
