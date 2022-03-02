@@ -7,6 +7,7 @@ import (
 	"github.com/and-period/marche/api/internal/user/entity"
 	"github.com/and-period/marche/api/pkg/database"
 	"github.com/and-period/marche/api/pkg/jst"
+	"gorm.io/gorm"
 )
 
 const userTable = "users"
@@ -42,4 +43,41 @@ func (u *user) GetByCognitoID(ctx context.Context, cognitoID string, fields ...s
 		return nil, dbError(err)
 	}
 	return user, nil
+}
+
+func (u *user) Create(ctx context.Context, user *entity.User) error {
+	_, err := u.db.Transaction(func(tx *gorm.DB) (interface{}, error) {
+		now := u.now()
+		user.CreatedAt, user.UpdatedAt = now, now
+
+		err := tx.Table(userTable).Create(&user).Error
+		return nil, err
+	})
+	return dbError(err)
+}
+
+func (u *user) UpdateVerified(ctx context.Context, userID string) error {
+	_, err := u.db.Transaction(func(tx *gorm.DB) (interface{}, error) {
+		var current *entity.User
+		err := tx.Table(userTable).Select("id", "verified_at").
+			Where("id = ?", userID).
+			First(&current).Error
+		if err != nil || current.ID == "" {
+			return nil, err
+		}
+		if !current.VerifiedAt.IsZero() {
+			return nil, ErrFailedPrecondition
+		}
+
+		now := u.now()
+		params := map[string]interface{}{
+			"verified_at": now,
+			"updated_at":  now,
+		}
+		err = tx.Table(userTable).
+			Where("id = ?", userID).
+			Updates(params).Error
+		return nil, err
+	})
+	return dbError(err)
 }

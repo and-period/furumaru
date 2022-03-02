@@ -3,6 +3,9 @@ package api
 import (
 	"context"
 
+	"github.com/and-period/marche/api/internal/user/entity"
+	"github.com/and-period/marche/api/pkg/cognito"
+	"github.com/and-period/marche/api/pkg/uuid"
 	"github.com/and-period/marche/api/proto/user"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -24,8 +27,27 @@ func (s *userService) CreateUser(
 	if err := req.ValidateAll(); err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	// TODO: 詳細の実装
-	return &user.CreateUserResponse{}, nil
+	if req.Password != req.PasswordConfirmation {
+		return nil, status.Error(codes.InvalidArgument, "password is unmatch")
+	}
+	userID := uuid.Base58Encode(uuid.New())
+	u := entity.NewUser(userID, userID, entity.ProviderTypeEmail, req.Email, req.PhoneNumber)
+	if err := s.db.User.Create(ctx, u); err != nil {
+		return nil, gRPCError(err)
+	}
+	params := &cognito.SignUpParams{
+		Username:    u.CognitoID,
+		Email:       u.Email,
+		PhoneNumber: u.PhoneNumber,
+		Password:    req.Password,
+	}
+	if err := s.userAuth.SignUp(ctx, params); err != nil {
+		return nil, gRPCError(err)
+	}
+	res := &user.CreateUserResponse{
+		UserId: userID,
+	}
+	return res, nil
 }
 
 func (s *userService) VerifyUser(
@@ -34,7 +56,12 @@ func (s *userService) VerifyUser(
 	if err := req.ValidateAll(); err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	// TODO: 詳細の実装
+	if err := s.userAuth.ConfirmSignUp(ctx, req.UserId, req.VerifyCode); err != nil {
+		return nil, gRPCError(err)
+	}
+	if err := s.db.User.UpdateVerified(ctx, req.UserId); err != nil {
+		return nil, gRPCError(err)
+	}
 	return &user.VerifyUserResponse{}, nil
 }
 

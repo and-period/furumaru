@@ -6,6 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"gorm.io/gorm"
 )
 
 func TestNewClient(t *testing.T) {
@@ -72,6 +73,25 @@ func TestBeginAndClose(t *testing.T) {
 	require.NoError(t, err)
 	f := client.Close(tx)
 	require.NotNil(t, f)
+}
+
+func TestTransaction(t *testing.T) {
+	setEnv()
+	params := &Params{
+		Socket:   "tcp",
+		Host:     os.Getenv("DB_HOST"),
+		Port:     os.Getenv("DB_PORT"),
+		Database: "users",
+		Username: os.Getenv("DB_USERNAME"),
+		Password: os.Getenv("DB_PASSWORD"),
+	}
+	client, err := NewClient(params)
+	require.NoError(t, err)
+	data, err := client.Transaction(func(tx *gorm.DB) (interface{}, error) {
+		return "data", nil
+	})
+	require.NoError(t, err)
+	require.NotNil(t, data)
 }
 
 func TestGetConfig(t *testing.T) {

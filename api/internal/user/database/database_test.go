@@ -68,6 +68,11 @@ func TestDBError(t *testing.T) {
 			expect: nil,
 		},
 		{
+			name:   "internal error to failed precondition",
+			err:    ErrFailedPrecondition,
+			expect: ErrFailedPrecondition,
+		},
+		{
 			name:   "mysql error",
 			err:    &mysql.MySQLError{},
 			expect: ErrUnknown,

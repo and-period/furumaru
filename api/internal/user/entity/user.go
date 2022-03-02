@@ -25,3 +25,13 @@ type User struct {
 	VerifiedAt   time.Time      `gorm:"default:null"`
 	DeletedAt    gorm.DeletedAt `gorm:"default:null"`
 }
+
+func NewUser(id, cognitoID string, provider ProviderType, email, phoneNumber string) *User {
+	return &User{
+		ID:           id,
+		CognitoID:    cognitoID,
+		ProviderType: provider,
+		Email:        email,
+		PhoneNumber:  phoneNumber,
+	}
+}
