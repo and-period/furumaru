@@ -82,6 +82,19 @@ func TestCreateUser(t *testing.T) {
 			},
 		},
 		{
+			name:  "failed to unmatch password",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
+			req: &user.CreateUserRequest{
+				Email:                "test@and-period.jp",
+				PhoneNumber:          "+819012345678",
+				Password:             "12345678",
+				PasswordConfirmation: "11111111",
+			},
+			expect: &testResponse{
+				code: codes.InvalidArgument,
+			},
+		},
+		{
 			name: "failed to create",
 			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
 				mocks.db.User.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
