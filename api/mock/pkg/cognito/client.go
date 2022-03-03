@@ -133,6 +133,21 @@ func (mr *MockClientMockRecorder) ForgotPassword(ctx, username interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ForgotPassword", reflect.TypeOf((*MockClient)(nil).ForgotPassword), ctx, username)
 }
 
+// GetUser mocks base method.
+func (m *MockClient) GetUser(ctx context.Context, accessToken string) (*cognito.AuthUser, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUser", ctx, accessToken)
+	ret0, _ := ret[0].(*cognito.AuthUser)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUser indicates an expected call of GetUser.
+func (mr *MockClientMockRecorder) GetUser(ctx, accessToken interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUser", reflect.TypeOf((*MockClient)(nil).GetUser), ctx, accessToken)
+}
+
 // GetUsername mocks base method.
 func (m *MockClient) GetUsername(ctx context.Context, accessToken string) (string, error) {
 	m.ctrl.T.Helper()

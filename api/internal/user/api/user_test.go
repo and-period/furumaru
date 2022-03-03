@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/and-period/marche/api/internal/user/entity"
+	"github.com/and-period/marche/api/pkg/cognito"
 	"github.com/and-period/marche/api/pkg/jst"
 	"github.com/and-period/marche/api/proto/user"
 	"github.com/golang/mock/gomock"
@@ -245,6 +246,12 @@ func TestVerifyUser(t *testing.T) {
 func TestCreateUserWithOAuth(t *testing.T) {
 	t.Parallel()
 
+	auth := &cognito.AuthUser{
+		Username:    "cognito-id",
+		Email:       "test-user@and-period.jp",
+		PhoneNumber: "+810000000000",
+	}
+
 	tests := []struct {
 		name   string
 		setup  func(ctx context.Context, t *testing.T, mocks *mocks)
@@ -252,14 +259,16 @@ func TestCreateUserWithOAuth(t *testing.T) {
 		expect *testResponse
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				mocks.userAuth.EXPECT().GetUser(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(auth, nil)
+				mocks.db.User.EXPECT().Create(ctx, gomock.Any()).Return(nil)
+			},
 			req: &user.CreateUserWithOAuthRequest{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect: &testResponse{
 				code: codes.OK,
-				body: &user.CreateUserWithOAuthResponse{},
 			},
 		},
 		{
@@ -268,6 +277,31 @@ func TestCreateUserWithOAuth(t *testing.T) {
 			req:   &user.CreateUserWithOAuthRequest{},
 			expect: &testResponse{
 				code: codes.InvalidArgument,
+			},
+		},
+		{
+			name: "failed to get user",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				mocks.userAuth.EXPECT().GetUser(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(nil, errmock)
+			},
+			req: &user.CreateUserWithOAuthRequest{
+				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+			},
+			expect: &testResponse{
+				code: codes.Unauthenticated,
+			},
+		},
+		{
+			name: "failed to create user",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				mocks.userAuth.EXPECT().GetUser(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(auth, nil)
+				mocks.db.User.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
+			},
+			req: &user.CreateUserWithOAuthRequest{
+				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+			},
+			expect: &testResponse{
+				code: codes.Internal,
 			},
 		},
 	}
