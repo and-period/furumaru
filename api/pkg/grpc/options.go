@@ -41,9 +41,7 @@ func NewGRPCOptions(params *OptionParams) []grpc.ServerOption {
  */
 func grpcStreamServerInterceptors(logger *zap.Logger) []grpc.StreamServerInterceptor {
 	opts := []grpc_zap.Option{
-		grpc_zap.WithDecider(func(fullMethodName string, err error) bool {
-			return err != nil || fullMethodName != "/grpc.health.v1.Health/Check"
-		}),
+		grpc_zap.WithDecider(shouldLog),
 	}
 
 	interceptors := []grpc.StreamServerInterceptor{
@@ -60,9 +58,7 @@ func grpcStreamServerInterceptors(logger *zap.Logger) []grpc.StreamServerInterce
  */
 func grpcUnaryServerInterceptors(logger *zap.Logger) []grpc.UnaryServerInterceptor {
 	opts := []grpc_zap.Option{
-		grpc_zap.WithDecider(func(fullMethodName string, err error) bool {
-			return err != nil || fullMethodName != "/grpc.health.v1.Health/Check"
-		}),
+		grpc_zap.WithDecider(shouldLog),
 	}
 
 	interceptors := []grpc.UnaryServerInterceptor{
@@ -82,7 +78,7 @@ func accessLogUnaryServerInterceptor() grpc.UnaryServerInterceptor {
 		res, err := handler(ctx, req)
 
 		// ヘルスチェック時はログ出力のスキップ
-		if info.FullMethod == "/grpc.health.v1.Health/Check" {
+		if !shouldLog(info.FullMethod, err) {
 			return res, err
 		}
 
@@ -130,6 +126,10 @@ func accessLogUnaryServerInterceptor() grpc.UnaryServerInterceptor {
 
 		return res, err
 	}
+}
+
+func shouldLog(fullMethodName string, err error) bool {
+	return err != nil || fullMethodName != "/grpc.health.v1.Health/Check"
 }
 
 func filterParams(pb proto.Message) (map[string]interface{}, error) {
