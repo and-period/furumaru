@@ -23,7 +23,9 @@ func NewGRPCServer(server *grpc.Server, port int64) (Server, error) {
 	if err != nil {
 		return nil, fmt.Errorf("grpc: failed to listen port: %w", err)
 	}
-	return &gRPCServer{server: server, lister: lis}, nil
+	s := &gRPCServer{server: server, lister: lis}
+	s.registerHealthServer()
+	return s, nil
 }
 
 // Serve - サーバーの起動
@@ -34,4 +36,9 @@ func (s *gRPCServer) Serve() error {
 // Stop - サーバーの停止
 func (s *gRPCServer) Stop() {
 	s.server.GracefulStop()
+}
+
+// registerHealthServer - ヘルスチェックエンドポイントの追加
+func (s *gRPCServer) registerHealthServer() {
+	RegisterHealthServer(s.server)
 }

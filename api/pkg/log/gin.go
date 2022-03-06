@@ -12,5 +12,9 @@ func NewGinMiddleware(params *Params) (gin.HandlerFunc, error) {
 	if err != nil {
 		return nil, err
 	}
-	return ginzap.Ginzap(logger, time.RFC3339, true), nil
+	return ginzap.GinzapWithConfig(logger, &ginzap.Config{
+		TimeFormat: time.RFC3339,
+		UTC:        false,
+		SkipPaths:  []string{"/health"},
+	}), nil
 }

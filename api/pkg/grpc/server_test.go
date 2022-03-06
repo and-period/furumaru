@@ -17,7 +17,7 @@ func TestGRPCServer(t *testing.T) {
 	}{
 		{
 			name:   "success",
-			server: &grpc.Server{},
+			server: grpc.NewServer(),
 			port:   28080,
 			isErr:  false,
 		},

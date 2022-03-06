@@ -13,6 +13,7 @@ type config struct {
 	LogPath          string `envconfig:"LOG_PATH" default:""`
 	LogLevel         string `envconfig:"LOG_LEVEL" default:"info"`
 	GRPCInsecure     bool   `envconfig:"GRPC_INSECURE" default:"true"`
+	ProxyHost        string `envconfig:"PROXY_HOST" default:""`
 	UserServiceURL   string `envconfig:"USER_SERVICE_URL" default:""`
 }
 

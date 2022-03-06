@@ -40,7 +40,11 @@ func NewGRPCOptions(params *OptionParams) []grpc.ServerOption {
  * ServerOptions - StremServerInterceptor
  */
 func grpcStreamServerInterceptors(logger *zap.Logger) []grpc.StreamServerInterceptor {
-	opts := []grpc_zap.Option{}
+	opts := []grpc_zap.Option{
+		grpc_zap.WithDecider(func(fullMethodName string, err error) bool {
+			return err != nil || fullMethodName != "/grpc.health.v1.Health/Check"
+		}),
+	}
 
 	interceptors := []grpc.StreamServerInterceptor{
 		grpc_ctxtags.StreamServerInterceptor(),
@@ -55,7 +59,11 @@ func grpcStreamServerInterceptors(logger *zap.Logger) []grpc.StreamServerInterce
  * ServerOptions - UnaryServerInterceptor
  */
 func grpcUnaryServerInterceptors(logger *zap.Logger) []grpc.UnaryServerInterceptor {
-	opts := []grpc_zap.Option{}
+	opts := []grpc_zap.Option{
+		grpc_zap.WithDecider(func(fullMethodName string, err error) bool {
+			return err != nil || fullMethodName != "/grpc.health.v1.Health/Check"
+		}),
+	}
 
 	interceptors := []grpc.UnaryServerInterceptor{
 		grpc_ctxtags.UnaryServerInterceptor(),
@@ -71,6 +79,13 @@ func accessLogUnaryServerInterceptor() grpc.UnaryServerInterceptor {
 	return func(
 		ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler,
 	) (interface{}, error) {
+		res, err := handler(ctx, req)
+
+		// ヘルスチェック時はログ出力のスキップ
+		if info.FullMethod == "/grpc.health.v1.Health/Check" {
+			return res, err
+		}
+
 		clientIP := ""
 		if p, ok := peer.FromContext(ctx); ok {
 			clientIP = p.Addr.String()
@@ -89,8 +104,6 @@ func accessLogUnaryServerInterceptor() grpc.UnaryServerInterceptor {
 				userAgent = strings.Join(u, ",")
 			}
 		}
-
-		res, err := handler(ctx, req)
 
 		// Request / Response Messages
 		reqParams := map[string]interface{}{}
