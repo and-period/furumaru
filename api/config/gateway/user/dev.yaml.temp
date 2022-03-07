@@ -1,0 +1,59 @@
+nameOverride: user-gateway
+
+replicaCount: 1
+revisionHistoryLimit: 5
+
+image:
+  repository: marche/user-gateway
+  pullPolicy: Always
+  tag: ""
+
+service:
+  enabled: true
+  type: ClusterIP
+  clusterIP: None
+  externalPort: 9002
+  internalPort: 9002
+
+app:
+  port: 9000
+  proxyHost: "127.0.0.1:9003"
+
+metrics:
+  enabled: true
+  port: 9001
+
+envoy:
+  enabled: true
+  image:
+    repository: envoyproxy/envoy-alpine
+    pullPolicy: IfNotPresent
+    tag: "v1.21.1"
+  config: "configs/user-gateway-dev-envoy.yaml"
+  admin:
+    port: 9004
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+
+health:
+  liveness:
+    enabled: true
+    path: /health
+    port: 9000
+    interval: 3
+    initialDelay: 20
+  readiness:
+    enabled: true
+    path: /health
+    port: 9000
+    interval: 3
+    initialDelay: 20
+
+env:
+- name: LOG_LEVEL
+  value: "info"
+- name: SHUTDOWN_DELAY_SEC
+  value: "0"

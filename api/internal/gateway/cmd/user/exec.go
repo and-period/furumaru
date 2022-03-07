@@ -10,6 +10,7 @@ import (
 	"github.com/and-period/marche/api/pkg/cors"
 	"github.com/and-period/marche/api/pkg/http"
 	"github.com/and-period/marche/api/pkg/log"
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
@@ -94,7 +95,7 @@ func newApp(conf *config) (*app, error) {
 	}
 
 	// HTTP Serverの設定
-	httpOpts := []gin.HandlerFunc{gin.Recovery()}
+	httpOpts := []gin.HandlerFunc{gin.Recovery(), gzip.Gzip(gzip.DefaultCompression)}
 
 	cm := cors.NewGinMiddleware()
 	httpOpts = append(httpOpts, cm)

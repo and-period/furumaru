@@ -66,6 +66,10 @@ func newGRPCClient(conf *config) (*gRPCClient, error) {
 		return nil, err
 	}
 
+	if conf.ProxyHost != "" {
+		conf.UserServiceURL = conf.ProxyHost
+	}
+
 	userConn, err := grpc.Dial(conf.UserServiceURL, opts...)
 	if err != nil {
 		return nil, err
