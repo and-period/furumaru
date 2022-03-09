@@ -317,6 +317,12 @@ func TestCreateUserWithOAuth(t *testing.T) {
 func TestUpdateUserEmail(t *testing.T) {
 	t.Parallel()
 
+	u := &entity.User{
+		ID:           "user-id",
+		ProviderType: entity.ProviderTypeEmail,
+		Email:        "test-user@and-period.jp",
+	}
+
 	tests := []struct {
 		name   string
 		setup  func(ctx context.Context, t *testing.T, mocks *mocks)
@@ -324,11 +330,21 @@ func TestUpdateUserEmail(t *testing.T) {
 		expect *testResponse
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				params := &cognito.ChangeEmailParams{
+					AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+					Username:    "cognito-id",
+					OldEmail:    "test-user@and-period.jp",
+					NewEmail:    "test-other@and-period.jp",
+				}
+				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
+				mocks.db.User.EXPECT().GetByCognitoID(ctx, "cognito-id", "id", "provider_type", "email").Return(u, nil)
+				mocks.userAuth.EXPECT().ChangeEmail(ctx, params).Return(nil)
+			},
 			req: &user.UpdateUserEmailRequest{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
-				Email:       "test@and-period.jp",
+				Email:       "test-other@and-period.jp",
 			},
 			expect: &testResponse{
 				code: codes.OK,
@@ -341,6 +357,73 @@ func TestUpdateUserEmail(t *testing.T) {
 			req:   &user.UpdateUserEmailRequest{},
 			expect: &testResponse{
 				code: codes.InvalidArgument,
+			},
+		},
+		{
+			name: "failed to get username",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("", errmock)
+			},
+			req: &user.UpdateUserEmailRequest{
+				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+				Email:       "test-other@and-period.jp",
+			},
+			expect: &testResponse{
+				code: codes.Unauthenticated,
+			},
+		},
+		{
+			name: "failed to get by cognito id",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
+				mocks.db.User.EXPECT().GetByCognitoID(ctx, "cognito-id", "id", "provider_type", "email").Return(nil, errmock)
+			},
+			req: &user.UpdateUserEmailRequest{
+				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+				Email:       "test-other@and-period.jp",
+			},
+			expect: &testResponse{
+				code: codes.Internal,
+			},
+		},
+		{
+			name: "failed to unmatch provider type",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				u := &entity.User{
+					ID:           "user-id",
+					ProviderType: entity.ProviderTypeOAuth,
+					Email:        "test-user@and-period.jp",
+				}
+				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
+				mocks.db.User.EXPECT().GetByCognitoID(ctx, "cognito-id", "id", "provider_type", "email").Return(u, nil)
+			},
+			req: &user.UpdateUserEmailRequest{
+				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+				Email:       "test-other@and-period.jp",
+			},
+			expect: &testResponse{
+				code: codes.FailedPrecondition,
+			},
+		},
+		{
+			name: "failed to change email",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				params := &cognito.ChangeEmailParams{
+					AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+					Username:    "cognito-id",
+					OldEmail:    "test-user@and-period.jp",
+					NewEmail:    "test-other@and-period.jp",
+				}
+				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
+				mocks.db.User.EXPECT().GetByCognitoID(ctx, "cognito-id", "id", "provider_type", "email").Return(u, nil)
+				mocks.userAuth.EXPECT().ChangeEmail(ctx, params).Return(errmock)
+			},
+			req: &user.UpdateUserEmailRequest{
+				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+				Email:       "test-other@and-period.jp",
+			},
+			expect: &testResponse{
+				code: codes.Internal,
 			},
 		},
 	}
@@ -356,6 +439,10 @@ func TestUpdateUserEmail(t *testing.T) {
 func TestVerifyUserEmail(t *testing.T) {
 	t.Parallel()
 
+	u := &entity.User{
+		ID: "user-id",
+	}
+
 	tests := []struct {
 		name   string
 		setup  func(ctx context.Context, t *testing.T, mocks *mocks)
@@ -363,8 +450,18 @@ func TestVerifyUserEmail(t *testing.T) {
 		expect *testResponse
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				params := &cognito.ConfirmChangeEmailParams{
+					AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+					Username:    "cognito-id",
+					VerifyCode:  "123456",
+				}
+				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
+				mocks.db.User.EXPECT().GetByCognitoID(ctx, "cognito-id", "id").Return(u, nil)
+				mocks.userAuth.EXPECT().ConfirmChangeEmail(ctx, params).Return("test-user@and-period.jp", nil)
+				mocks.db.User.EXPECT().UpdateEmail(ctx, "user-id", "test-user@and-period.jp").Return(nil)
+			},
 			req: &user.VerifyUserEmailRequest{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				VerifyCode:  "123456",
@@ -380,6 +477,74 @@ func TestVerifyUserEmail(t *testing.T) {
 			req:   &user.VerifyUserEmailRequest{},
 			expect: &testResponse{
 				code: codes.InvalidArgument,
+			},
+		},
+		{
+			name: "failed to get username",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("", errmock)
+			},
+			req: &user.VerifyUserEmailRequest{
+				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+				VerifyCode:  "123456",
+			},
+			expect: &testResponse{
+				code: codes.Unauthenticated,
+			},
+		},
+		{
+			name: "failed to get by cognito id",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
+				mocks.db.User.EXPECT().GetByCognitoID(ctx, "cognito-id", "id").Return(nil, errmock)
+			},
+			req: &user.VerifyUserEmailRequest{
+				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+				VerifyCode:  "123456",
+			},
+			expect: &testResponse{
+				code: codes.Internal,
+			},
+		},
+		{
+			name: "failed to confirm change email",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				params := &cognito.ConfirmChangeEmailParams{
+					AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+					Username:    "cognito-id",
+					VerifyCode:  "123456",
+				}
+				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
+				mocks.db.User.EXPECT().GetByCognitoID(ctx, "cognito-id", "id").Return(u, nil)
+				mocks.userAuth.EXPECT().ConfirmChangeEmail(ctx, params).Return("", errmock)
+			},
+			req: &user.VerifyUserEmailRequest{
+				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+				VerifyCode:  "123456",
+			},
+			expect: &testResponse{
+				code: codes.Internal,
+			},
+		},
+		{
+			name: "failed to update email",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				params := &cognito.ConfirmChangeEmailParams{
+					AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+					Username:    "cognito-id",
+					VerifyCode:  "123456",
+				}
+				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
+				mocks.db.User.EXPECT().GetByCognitoID(ctx, "cognito-id", "id").Return(u, nil)
+				mocks.userAuth.EXPECT().ConfirmChangeEmail(ctx, params).Return("test-user@and-period.jp", nil)
+				mocks.db.User.EXPECT().UpdateEmail(ctx, "user-id", "test-user@and-period.jp").Return(errmock)
+			},
+			req: &user.VerifyUserEmailRequest{
+				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+				VerifyCode:  "123456",
+			},
+			expect: &testResponse{
+				code: codes.Internal,
 			},
 		},
 	}

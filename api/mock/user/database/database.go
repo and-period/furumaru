@@ -123,6 +123,20 @@ func (mr *MockUserMockRecorder) GetByEmail(ctx, email interface{}, fields ...int
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByEmail", reflect.TypeOf((*MockUser)(nil).GetByEmail), varargs...)
 }
 
+// UpdateEmail mocks base method.
+func (m *MockUser) UpdateEmail(ctx context.Context, userID, email string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateEmail", ctx, userID, email)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateEmail indicates an expected call of UpdateEmail.
+func (mr *MockUserMockRecorder) UpdateEmail(ctx, userID, email interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateEmail", reflect.TypeOf((*MockUser)(nil).UpdateEmail), ctx, userID, email)
+}
+
 // UpdateVerified mocks base method.
 func (m *MockUser) UpdateVerified(ctx context.Context, userID string) error {
 	m.ctrl.T.Helper()

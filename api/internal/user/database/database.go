@@ -46,6 +46,7 @@ type User interface {
 	GetByEmail(ctx context.Context, email string, fields ...string) (*entity.User, error)
 	Create(ctx context.Context, user *entity.User) error
 	UpdateVerified(ctx context.Context, userID string) error
+	UpdateEmail(ctx context.Context, userID, email string) error
 	Delete(ctx context.Context, userID string) error
 }
 

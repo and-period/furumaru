@@ -115,6 +115,31 @@ func (u *user) UpdateVerified(ctx context.Context, userID string) error {
 	return dbError(err)
 }
 
+func (u *user) UpdateEmail(ctx context.Context, userID, email string) error {
+	_, err := u.db.Transaction(func(tx *gorm.DB) (interface{}, error) {
+		var current *entity.User
+		err := tx.Table(userTable).Select("id", "provider_type").
+			Where("id = ?", userID).
+			First(&current).Error
+		if err != nil || current.ID == "" {
+			return nil, err
+		}
+		if current.ProviderType != entity.ProviderTypeEmail {
+			return nil, ErrFailedPrecondition
+		}
+
+		params := map[string]interface{}{
+			"email":      email,
+			"updated_at": u.now(),
+		}
+		err = tx.Table(userTable).
+			Where("id = ?", userID).
+			Updates(params).Error
+		return nil, err
+	})
+	return dbError(err)
+}
+
 func (u *user) Delete(ctx context.Context, userID string) error {
 	_, err := u.db.Transaction(func(tx *gorm.DB) (interface{}, error) {
 		var current *entity.User

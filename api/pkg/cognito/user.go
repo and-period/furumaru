@@ -2,6 +2,7 @@ package cognito
 
 import (
 	"context"
+	"errors"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	cognito "github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
@@ -146,7 +147,7 @@ func (c *client) ChangeEmail(ctx context.Context, params *ChangeEmailParams) err
 	return err
 }
 
-func (c *client) ConfirmChangeEmail(ctx context.Context, params *ConfirmChangeEmailParams) error {
+func (c *client) ConfirmChangeEmail(ctx context.Context, params *ConfirmChangeEmailParams) (string, error) {
 	username := aws.String(params.Username)
 	// 新しいメールアドレス情報の取得
 	userIn := &cognito.AdminGetUserInput{
@@ -155,7 +156,7 @@ func (c *client) ConfirmChangeEmail(ctx context.Context, params *ConfirmChangeEm
 	}
 	out, err := c.cognito.AdminGetUser(ctx, userIn)
 	if err != nil {
-		return err
+		return "", err
 	}
 	var email string
 	for i := range out.UserAttributes {
@@ -163,6 +164,9 @@ func (c *client) ConfirmChangeEmail(ctx context.Context, params *ConfirmChangeEm
 			email = aws.ToString(out.UserAttributes[i].Value)
 			break
 		}
+	}
+	if email == "" {
+		return "", errors.New("cognito: not found requested email")
 	}
 	// コードの検証
 	verifyIn := &cognito.VerifyUserAttributeInput{
@@ -172,7 +176,7 @@ func (c *client) ConfirmChangeEmail(ctx context.Context, params *ConfirmChangeEm
 	}
 	_, err = c.cognito.VerifyUserAttribute(ctx, verifyIn)
 	if err != nil {
-		return err
+		return "", err
 	}
 	// メールアドレス情報の更新
 	updateIn := &cognito.AdminUpdateUserAttributesInput{
@@ -194,7 +198,7 @@ func (c *client) ConfirmChangeEmail(ctx context.Context, params *ConfirmChangeEm
 		},
 	}
 	_, err = c.cognito.AdminUpdateUserAttributes(ctx, updateIn)
-	return err
+	return email, err
 }
 
 func (c *client) ChangePassword(ctx context.Context, params *ChangePasswordParams) error {

@@ -37,7 +37,7 @@ type Client interface {
 	// メールアドレス更新
 	ChangeEmail(ctx context.Context, params *ChangeEmailParams) error
 	// メールアドレス変更 (コード検証)
-	ConfirmChangeEmail(ctx context.Context, params *ConfirmChangeEmailParams) error
+	ConfirmChangeEmail(ctx context.Context, params *ConfirmChangeEmailParams) (string, error)
 	// パスワード更新
 	ChangePassword(ctx context.Context, params *ChangePasswordParams) error
 	// ユーザー削除

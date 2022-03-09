@@ -64,11 +64,12 @@ func (mr *MockClientMockRecorder) ChangePassword(ctx, params interface{}) *gomoc
 }
 
 // ConfirmChangeEmail mocks base method.
-func (m *MockClient) ConfirmChangeEmail(ctx context.Context, params *cognito.ConfirmChangeEmailParams) error {
+func (m *MockClient) ConfirmChangeEmail(ctx context.Context, params *cognito.ConfirmChangeEmailParams) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ConfirmChangeEmail", ctx, params)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // ConfirmChangeEmail indicates an expected call of ConfirmChangeEmail.
