@@ -15,6 +15,12 @@ type AuthResult struct {
 	ExpiresIn    int32
 }
 
+type AuthUser struct {
+	Username    string
+	Email       string
+	PhoneNumber string
+}
+
 func (c *client) SignIn(ctx context.Context, username, password string) (*AuthResult, error) {
 	in := &cognito.InitiateAuthInput{
 		ClientId: c.appClientID,
@@ -43,6 +49,32 @@ func (c *client) SignOut(ctx context.Context, accessToken string) error {
 	}
 	_, err := c.cognito.GlobalSignOut(ctx, in)
 	return err
+}
+
+func (c *client) GetUser(ctx context.Context, accessToken string) (*AuthUser, error) {
+	in := &cognito.GetUserInput{
+		AccessToken: aws.String(accessToken),
+	}
+	out, err := c.cognito.GetUser(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	var email, phoneNumber string
+	for i := range out.UserAttributes {
+		if aws.ToString(out.UserAttributes[i].Name) == *emailField {
+			email = aws.ToString(out.UserAttributes[i].Value)
+			continue
+		}
+		if aws.ToString(out.UserAttributes[i].Name) == *phoneNumberField {
+			phoneNumber = aws.ToString(out.UserAttributes[i].Value)
+		}
+	}
+	auth := &AuthUser{
+		Username:    aws.ToString(out.Username),
+		Email:       email,
+		PhoneNumber: phoneNumber,
+	}
+	return auth, nil
 }
 
 func (c *client) GetUsername(ctx context.Context, accessToken string) (string, error) {

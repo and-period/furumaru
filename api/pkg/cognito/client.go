@@ -17,6 +17,8 @@ type Client interface {
 	// サインアウト (アクセストークン使用)
 	SignOut(ctx context.Context, accessToken string) error
 	// ユーザー情報取得 (アクセストークン使用)
+	GetUser(ctx context.Context, accessToken string) (*AuthUser, error)
+	// ユーザーID取得 (アクセストークン使用)
 	GetUsername(ctx context.Context, accessToken string) (string, error)
 	// トークンの更新 (更新トークン使用)
 	RefreshToken(ctx context.Context, refreshToken string) (*AuthResult, error)

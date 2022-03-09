@@ -77,8 +77,19 @@ func (s *userService) CreateUserWithOAuth(
 	if err := req.ValidateAll(); err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	// TODO: 詳細の実装
-	return &user.CreateUserWithOAuthResponse{}, nil
+	auth, err := s.userAuth.GetUser(ctx, req.AccessToken)
+	if err != nil {
+		return nil, status.Error(codes.Unauthenticated, err.Error())
+	}
+	userID := uuid.Base58Encode(uuid.New())
+	u := entity.NewUser(userID, auth.Username, entity.ProviderTypeOAuth, auth.Email, auth.PhoneNumber)
+	if err := s.db.User.Create(ctx, u); err != nil {
+		return nil, gRPCError(err)
+	}
+	res := &user.CreateUserWithOAuthResponse{
+		User: u.Proto(),
+	}
+	return res, nil
 }
 
 func (s *userService) UpdateUserEmail(
