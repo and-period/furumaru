@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/and-period/marche/api/internal/user/entity"
+	"github.com/and-period/marche/api/pkg/cognito"
 	"github.com/and-period/marche/api/pkg/jst"
 	"github.com/and-period/marche/api/proto/user"
 	"github.com/golang/mock/gomock"
@@ -368,8 +369,15 @@ func TestUpdateUserPassword(t *testing.T) {
 		expect *testResponse
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				params := &cognito.ChangePasswordParams{
+					AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+					OldPassword: "12345678",
+					NewPassword: "12345678",
+				}
+				mocks.userAuth.EXPECT().ChangePassword(ctx, params).Return(nil)
+			},
 			req: &user.UpdateUserPasswordRequest{
 				AccessToken:          "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				OldPassword:          "12345678",
@@ -389,6 +397,39 @@ func TestUpdateUserPassword(t *testing.T) {
 				code: codes.InvalidArgument,
 			},
 		},
+		{
+			name:  "invalid argument for password unmatch",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
+			req: &user.UpdateUserPasswordRequest{
+				AccessToken:          "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+				OldPassword:          "12345678",
+				NewPassword:          "12345678",
+				PasswordConfirmation: "123456789",
+			},
+			expect: &testResponse{
+				code: codes.InvalidArgument,
+			},
+		},
+		{
+			name: "failed to change password",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				params := &cognito.ChangePasswordParams{
+					AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+					OldPassword: "12345678",
+					NewPassword: "12345678",
+				}
+				mocks.userAuth.EXPECT().ChangePassword(ctx, params).Return(errmock)
+			},
+			req: &user.UpdateUserPasswordRequest{
+				AccessToken:          "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+				OldPassword:          "12345678",
+				NewPassword:          "12345678",
+				PasswordConfirmation: "12345678",
+			},
+			expect: &testResponse{
+				code: codes.Internal,
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -402,6 +443,8 @@ func TestUpdateUserPassword(t *testing.T) {
 func TestForgotUserPassword(t *testing.T) {
 	t.Parallel()
 
+	u := &entity.User{CognitoID: "cognito-id"}
+
 	tests := []struct {
 		name   string
 		setup  func(ctx context.Context, t *testing.T, mocks *mocks)
@@ -409,8 +452,11 @@ func TestForgotUserPassword(t *testing.T) {
 		expect *testResponse
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				mocks.db.User.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(u, nil)
+				mocks.userAuth.EXPECT().ForgotPassword(ctx, "cognito-id").Return(nil)
+			},
 			req: &user.ForgotUserPasswordRequest{
 				Email: "test-user@and-period.jp",
 			},
@@ -427,6 +473,31 @@ func TestForgotUserPassword(t *testing.T) {
 				code: codes.InvalidArgument,
 			},
 		},
+		{
+			name: "failed to get by email",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				mocks.db.User.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(nil, errmock)
+			},
+			req: &user.ForgotUserPasswordRequest{
+				Email: "test-user@and-period.jp",
+			},
+			expect: &testResponse{
+				code: codes.Internal,
+			},
+		},
+		{
+			name: "failed to forget password",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				mocks.db.User.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(u, nil)
+				mocks.userAuth.EXPECT().ForgotPassword(ctx, "cognito-id").Return(errmock)
+			},
+			req: &user.ForgotUserPasswordRequest{
+				Email: "test-user@and-period.jp",
+			},
+			expect: &testResponse{
+				code: codes.NotFound,
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -440,6 +511,8 @@ func TestForgotUserPassword(t *testing.T) {
 func TestVerifyUserPassword(t *testing.T) {
 	t.Parallel()
 
+	u := &entity.User{CognitoID: "cognito-id"}
+
 	tests := []struct {
 		name   string
 		setup  func(ctx context.Context, t *testing.T, mocks *mocks)
@@ -447,8 +520,16 @@ func TestVerifyUserPassword(t *testing.T) {
 		expect *testResponse
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				params := &cognito.ConfirmForgotPasswordParams{
+					Username:    "cognito-id",
+					VerifyCode:  "123456",
+					NewPassword: "12345678",
+				}
+				mocks.db.User.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(u, nil)
+				mocks.userAuth.EXPECT().ConfirmForgotPassword(ctx, params).Return(nil)
+			},
 			req: &user.VerifyUserPasswordRequest{
 				Email:                "test-user@and-period.jp",
 				VerifyCode:           "123456",
@@ -466,6 +547,55 @@ func TestVerifyUserPassword(t *testing.T) {
 			req:   &user.VerifyUserPasswordRequest{},
 			expect: &testResponse{
 				code: codes.InvalidArgument,
+			},
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
+			req: &user.VerifyUserPasswordRequest{
+				Email:                "test-user@and-period.jp",
+				VerifyCode:           "123456",
+				NewPassword:          "12345678",
+				PasswordConfirmation: "123456789",
+			},
+			expect: &testResponse{
+				code: codes.InvalidArgument,
+			},
+		},
+		{
+			name: "failed to get by email",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				mocks.db.User.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(nil, errmock)
+			},
+			req: &user.VerifyUserPasswordRequest{
+				Email:                "test-user@and-period.jp",
+				VerifyCode:           "123456",
+				NewPassword:          "12345678",
+				PasswordConfirmation: "12345678",
+			},
+			expect: &testResponse{
+				code: codes.Internal,
+			},
+		},
+		{
+			name: "failed to confirm forgot password",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				params := &cognito.ConfirmForgotPasswordParams{
+					Username:    "cognito-id",
+					VerifyCode:  "123456",
+					NewPassword: "12345678",
+				}
+				mocks.db.User.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(u, nil)
+				mocks.userAuth.EXPECT().ConfirmForgotPassword(ctx, params).Return(errmock)
+			},
+			req: &user.VerifyUserPasswordRequest{
+				Email:                "test-user@and-period.jp",
+				VerifyCode:           "123456",
+				NewPassword:          "12345678",
+				PasswordConfirmation: "12345678",
+			},
+			expect: &testResponse{
+				code: codes.Internal,
 			},
 		},
 	}

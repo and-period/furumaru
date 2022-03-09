@@ -107,7 +107,17 @@ func (s *userService) UpdateUserPassword(
 	if err := req.ValidateAll(); err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	// TODO: 詳細の実装
+	if req.NewPassword != req.PasswordConfirmation {
+		return nil, status.Error(codes.InvalidArgument, "password is unmatch")
+	}
+	params := &cognito.ChangePasswordParams{
+		AccessToken: req.AccessToken,
+		OldPassword: req.OldPassword,
+		NewPassword: req.NewPassword,
+	}
+	if err := s.userAuth.ChangePassword(ctx, params); err != nil {
+		return nil, gRPCError(err)
+	}
 	return &user.UpdateUserPasswordResponse{}, nil
 }
 
@@ -117,7 +127,13 @@ func (s *userService) ForgotUserPassword(
 	if err := req.ValidateAll(); err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	// TODO: 詳細の実装
+	u, err := s.db.User.GetByEmail(ctx, req.Email, "cognito_id")
+	if err != nil {
+		return nil, gRPCError(err)
+	}
+	if err := s.userAuth.ForgotPassword(ctx, u.CognitoID); err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
+	}
 	return &user.ForgotUserPasswordResponse{}, nil
 }
 
@@ -127,7 +143,21 @@ func (s *userService) VerifyUserPassword(
 	if err := req.ValidateAll(); err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	// TODO: 詳細の実装
+	if req.NewPassword != req.PasswordConfirmation {
+		return nil, status.Error(codes.InvalidArgument, "password is unmatch")
+	}
+	u, err := s.db.User.GetByEmail(ctx, req.Email, "cognito_id")
+	if err != nil {
+		return nil, gRPCError(err)
+	}
+	params := &cognito.ConfirmForgotPasswordParams{
+		Username:    u.CognitoID,
+		VerifyCode:  req.VerifyCode,
+		NewPassword: req.NewPassword,
+	}
+	if err := s.userAuth.ConfirmForgotPassword(ctx, params); err != nil {
+		return nil, gRPCError(err)
+	}
 	return &user.VerifyUserPasswordResponse{}, nil
 }
 

@@ -61,6 +61,23 @@ func (u *user) GetByCognitoID(ctx context.Context, cognitoID string, fields ...s
 	return user, nil
 }
 
+func (u *user) GetByEmail(ctx context.Context, email string, fields ...string) (*entity.User, error) {
+	var user *entity.User
+	if len(fields) == 0 {
+		fields = userFields
+	}
+
+	stmt := u.db.DB.
+		Table(userTable).Select(fields).
+		Where("email = ?", email).
+		Where("provider_type = ?", entity.ProviderTypeEmail)
+
+	if err := stmt.First(&user).Error; err != nil {
+		return nil, dbError(err)
+	}
+	return user, nil
+}
+
 func (u *user) Create(ctx context.Context, user *entity.User) error {
 	_, err := u.db.Transaction(func(tx *gorm.DB) (interface{}, error) {
 		now := u.now()
