@@ -45,6 +45,7 @@ type User interface {
 	GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.User, error)
 	Create(ctx context.Context, user *entity.User) error
 	UpdateVerified(ctx context.Context, userID string) error
+	Delete(ctx context.Context, userID string) error
 }
 
 /**
