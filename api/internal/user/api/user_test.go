@@ -644,6 +644,18 @@ func TestVerifyUserPassword(t *testing.T) {
 func TestDeleteUser(t *testing.T) {
 	t.Parallel()
 
+	now := jst.Now()
+	u := &entity.User{
+		ID:           "user-id",
+		CognitoID:    "cognito-id",
+		ProviderType: entity.ProviderTypeEmail,
+		Email:        "test-user@and-period.jp",
+		PhoneNumber:  "+810000000000",
+		CreatedAt:    now,
+		UpdatedAt:    now,
+		VerifiedAt:   now,
+	}
+
 	tests := []struct {
 		name   string
 		setup  func(ctx context.Context, t *testing.T, mocks *mocks)
@@ -651,8 +663,12 @@ func TestDeleteUser(t *testing.T) {
 		expect *testResponse
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
+				mocks.userAuth.EXPECT().DeleteUser(ctx, "cognito-id").Return(nil)
+				mocks.db.User.EXPECT().Delete(ctx, "user-id").Return(nil)
+			},
 			req: &user.DeleteUserRequest{
 				UserId: "user-id",
 			},
@@ -667,6 +683,45 @@ func TestDeleteUser(t *testing.T) {
 			req:   &user.DeleteUserRequest{},
 			expect: &testResponse{
 				code: codes.InvalidArgument,
+			},
+		},
+		{
+			name: "failed to delete cognito user",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, errmock)
+			},
+			req: &user.DeleteUserRequest{
+				UserId: "user-id",
+			},
+			expect: &testResponse{
+				code: codes.Internal,
+			},
+		},
+		{
+			name: "failed to delete cognito user",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
+				mocks.userAuth.EXPECT().DeleteUser(ctx, "cognito-id").Return(errmock)
+			},
+			req: &user.DeleteUserRequest{
+				UserId: "user-id",
+			},
+			expect: &testResponse{
+				code: codes.Internal,
+			},
+		},
+		{
+			name: "failed to delete user",
+			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
+				mocks.userAuth.EXPECT().DeleteUser(ctx, "cognito-id").Return(nil)
+				mocks.db.User.EXPECT().Delete(ctx, "user-id").Return(errmock)
+			},
+			req: &user.DeleteUserRequest{
+				UserId: "user-id",
+			},
+			expect: &testResponse{
+				code: codes.Internal,
 			},
 		},
 	}

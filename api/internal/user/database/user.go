@@ -114,3 +114,24 @@ func (u *user) UpdateVerified(ctx context.Context, userID string) error {
 	})
 	return dbError(err)
 }
+
+func (u *user) Delete(ctx context.Context, userID string) error {
+	_, err := u.db.Transaction(func(tx *gorm.DB) (interface{}, error) {
+		var current *entity.User
+		err := tx.Table(userTable).Select("id").
+			Where("id = ?", userID).
+			First(&current).Error
+		if err != nil || current.ID == "" {
+			return nil, err
+		}
+
+		params := map[string]interface{}{
+			"deleted_at": u.now(),
+		}
+		err = tx.Table(userTable).
+			Where("id = ?", userID).
+			Updates(params).Error
+		return nil, err
+	})
+	return dbError(err)
+}

@@ -178,6 +178,15 @@ func (s *userService) DeleteUser(
 	if err := req.ValidateAll(); err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	// TODO: 詳細の実装
+	u, err := s.db.User.Get(ctx, req.UserId)
+	if err != nil {
+		return nil, gRPCError(err)
+	}
+	if err := s.userAuth.DeleteUser(ctx, u.CognitoID); err != nil {
+		return nil, gRPCError(err)
+	}
+	if err := s.db.User.Delete(ctx, u.ID); err != nil {
+		return nil, gRPCError(err)
+	}
 	return &user.DeleteuserResponse{}, nil
 }
