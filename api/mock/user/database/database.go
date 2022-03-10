@@ -89,6 +89,26 @@ func (mr *MockUserMockRecorder) GetByCognitoID(ctx, cognitoID interface{}, field
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByCognitoID", reflect.TypeOf((*MockUser)(nil).GetByCognitoID), varargs...)
 }
 
+// GetByEmail mocks base method.
+func (m *MockUser) GetByEmail(ctx context.Context, email string, fields ...string) (*entity.User, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, email}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetByEmail", varargs...)
+	ret0, _ := ret[0].(*entity.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByEmail indicates an expected call of GetByEmail.
+func (mr *MockUserMockRecorder) GetByEmail(ctx, email interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, email}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByEmail", reflect.TypeOf((*MockUser)(nil).GetByEmail), varargs...)
+}
+
 // UpdateVerified mocks base method.
 func (m *MockUser) UpdateVerified(ctx context.Context, userID string) error {
 	m.ctrl.T.Helper()
