@@ -13,7 +13,7 @@ import (
 )
 
 func (h *apiV1Handler) GetAuth(ctx *gin.Context) {
-	// TOOD: 詳細の実装
+	// TODO: 詳細の実装
 	res := &response.AuthResponse{}
 	ctx.JSON(http.StatusOK, res)
 }
