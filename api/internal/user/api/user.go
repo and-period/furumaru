@@ -98,7 +98,26 @@ func (s *userService) UpdateUserEmail(
 	if err := req.ValidateAll(); err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	// TODO: 詳細の実装
+	username, err := s.userAuth.GetUsername(ctx, req.AccessToken)
+	if err != nil {
+		return nil, status.Error(codes.Unauthenticated, err.Error())
+	}
+	u, err := s.db.User.GetByCognitoID(ctx, username, "id", "provider_type", "email")
+	if err != nil {
+		return nil, gRPCError(err)
+	}
+	if u.ProviderType != entity.ProviderTypeEmail {
+		return nil, status.Error(codes.FailedPrecondition, "api: not allow provider type to change email")
+	}
+	params := &cognito.ChangeEmailParams{
+		AccessToken: req.AccessToken,
+		Username:    username,
+		OldEmail:    u.Email,
+		NewEmail:    req.Email,
+	}
+	if err := s.userAuth.ChangeEmail(ctx, params); err != nil {
+		return nil, gRPCError(err)
+	}
 	return &user.UpdateUserEmailResponse{}, nil
 }
 
@@ -108,7 +127,26 @@ func (s *userService) VerifyUserEmail(
 	if err := req.ValidateAll(); err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	// TODO: 詳細の実装
+	username, err := s.userAuth.GetUsername(ctx, req.AccessToken)
+	if err != nil {
+		return nil, status.Error(codes.Unauthenticated, err.Error())
+	}
+	u, err := s.db.User.GetByCognitoID(ctx, username, "id")
+	if err != nil {
+		return nil, gRPCError(err)
+	}
+	params := &cognito.ConfirmChangeEmailParams{
+		AccessToken: req.AccessToken,
+		Username:    username,
+		VerifyCode:  req.VerifyCode,
+	}
+	email, err := s.userAuth.ConfirmChangeEmail(ctx, params)
+	if err != nil {
+		return nil, gRPCError(err)
+	}
+	if err := s.db.User.UpdateEmail(ctx, u.ID, email); err != nil {
+		return nil, gRPCError(err)
+	}
 	return &user.VerifyUserEmailResponse{}, nil
 }
 
