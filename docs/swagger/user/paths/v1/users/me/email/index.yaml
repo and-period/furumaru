@@ -1,0 +1,25 @@
+patch:
+  summary: メールアドレス更新
+  operationId: v1UpdateUserEmail
+  tags:
+  - User
+  security:
+  - BearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../../../openapi.yaml#/components/schemas/v1UpdateUserEmailRequest'
+  responses:
+    204:
+      description: A successful response.
+      content:
+        application/json:
+          schema: {}
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'

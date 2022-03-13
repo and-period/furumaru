@@ -11,6 +11,35 @@ import (
 	"github.com/golang/mock/gomock"
 )
 
+func TestGetAuth(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		setup  func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		expect *testResponse
+	}{
+		{
+			name:  "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			expect: &testResponse{
+				code: http.StatusOK,
+				body: &response.AuthResponse{},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			const path = "/v1/auth"
+			req := newHTTPRequest(t, http.MethodGet, path, nil)
+			testHTTP(t, tt.setup, tt.expect, req)
+		})
+	}
+}
+
 func TestSignIn(t *testing.T) {
 	t.Parallel()
 

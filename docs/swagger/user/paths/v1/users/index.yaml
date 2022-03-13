@@ -1,23 +1,21 @@
 post:
-  summary: トークン更新
-  operationId: v1RefreshAuthToken
+  summary: 購入者登録 (メール/SMS認証)
+  operationId: v1CreateUser
   tags:
-  - Auth
-  security:
-  - BearerAuth: []
+  - User
   requestBody:
     required: true
     content:
       application/json:
         schema:
-          $ref: './../../../openapi.yaml#/components/schemas/v1RefreshAuthTokenRequest'
+          $ref: './../../../openapi.yaml#/components/schemas/v1CreateUserRequest'
   responses:
     200:
       description: A successful response.
       content:
         application/json:
           schema:
-            $ref: './../../../openapi.yaml#/components/schemas/v1AuthResponse'
+            $ref: './../../../openapi.yaml#/components/schemas/v1UserMeResponse'
     default:
       description: An unexpected error response.
       content:
