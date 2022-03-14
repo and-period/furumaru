@@ -2,7 +2,7 @@ import colors from 'vuetify/es5/util/colors'
 
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
-  ssr: false,
+  ssr: true,
   srcDir: 'src',
 
   // Target: https://go.nuxtjs.dev/config-target
@@ -13,7 +13,7 @@ export default {
     titleTemplate: '%s - admin',
     title: 'admin',
     htmlAttrs: {
-      lang: 'en',
+      lang: 'ja',
     },
     meta: [
       { charset: 'utf-8' },
