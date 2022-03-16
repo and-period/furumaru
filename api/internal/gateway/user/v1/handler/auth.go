@@ -12,6 +12,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func (h *apiV1Handler) GetAuth(ctx *gin.Context) {
+	// TODO: 詳細の実装
+	res := &response.AuthResponse{}
+	ctx.JSON(http.StatusOK, res)
+}
+
 func (h *apiV1Handler) SignIn(ctx *gin.Context) {
 	c := util.SetMetadata(ctx)
 

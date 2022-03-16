@@ -1,0 +1,23 @@
+post:
+  summary: パスワードリセット
+  operationId: v1ForgotUserPassword
+  tags:
+  - User
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../../../openapi.yaml#/components/schemas/v1ForgotUserPasswordRequest'
+  responses:
+    204:
+      description: A successful response.
+      content:
+        application/json:
+          schema: {}
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'

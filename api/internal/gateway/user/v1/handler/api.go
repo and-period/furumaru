@@ -53,12 +53,24 @@ func NewAPIV1Handler(params *Params) APIV1Handler {
  * routes
  * ###############################################
  */
-func (h *apiV1Handler) AuthRoutes(rg *gin.RouterGroup) {}
+func (h *apiV1Handler) AuthRoutes(rg *gin.RouterGroup) {
+	rg.GET("/v1/users/me", h.GetUserMe)
+	rg.DELETE("/v1/users/me", h.DeleteUser)
+	rg.PATCH("/v1/users/me/email", h.UpdateUserEmail)
+	rg.PATCH("/v1/users/me/password", h.UpdateUserPassword)
+}
 
 func (h *apiV1Handler) NoAuthRoutes(rg *gin.RouterGroup) {
+	rg.GET("/v1/auth", h.GetAuth)
 	rg.POST("/v1/auth", h.SignIn)
 	rg.DELETE("/v1/auth", h.SignOut)
 	rg.POST("/v1/auth/refresh-token", h.RefreshAuthToken)
+	rg.POST("/v1/users", h.CreateUser)
+	rg.POST("/v1/users/oauth", h.CreateUserWithOAuth)
+	rg.POST("/v1/users/verified", h.VerifyUser)
+	rg.POST("/v1/users/me/email/verified", h.VerifyUserEmail)
+	rg.POST("/v1/users/me/forgot-password", h.ForgotUserPassword)
+	rg.POST("/v1/users/me/forgot-password/verified", h.ResetUserPassword)
 }
 
 /**

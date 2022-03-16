@@ -1,0 +1,30 @@
+createUserResponse:
+  type: object
+  properties:
+    id:
+      type: string
+      description: ユーザーID
+  required:
+  - id
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+userMeResponse:
+  type: object
+  properties:
+    id:
+      type: string
+      description: ユーザーID
+    email:
+      type: string
+      description: メールアドレス
+    phoneNumber:
+      type: string
+      description: 電話番号
+  required:
+  - id
+  - email
+  - phoneNumber
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    email: 'test-user@and-period.jp'
+    phoneNumber: '+819012345678'
