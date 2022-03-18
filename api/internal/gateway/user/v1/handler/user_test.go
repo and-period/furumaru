@@ -6,11 +6,24 @@ import (
 
 	"github.com/and-period/marche/api/internal/gateway/user/v1/request"
 	"github.com/and-period/marche/api/internal/gateway/user/v1/response"
+	"github.com/and-period/marche/api/pkg/jst"
+	"github.com/and-period/marche/api/proto/user"
 	"github.com/golang/mock/gomock"
 )
 
 func TestGetUserMe(t *testing.T) {
 	t.Parallel()
+
+	now := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	u := &user.User{
+		Id:           "user-id",
+		ProviderType: user.ProviderType_PROVIDER_TYPE_EMAIL,
+		Email:        "test@and-period.jp",
+		PhoneNumber:  "+819012345678",
+		CreatedAt:    now.Unix(),
+		UpdatedAt:    now.Unix(),
+		VerifiedAt:   now.Unix(),
+	}
 
 	tests := []struct {
 		name   string
@@ -18,11 +31,29 @@ func TestGetUserMe(t *testing.T) {
 		expect *testResponse
 	}{
 		{
-			name:  "success",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := &user.GetUserRequest{UserId: idmock}
+				out := &user.GetUserResponse{User: u}
+				mocks.user.EXPECT().GetUser(gomock.Any(), in).Return(out, nil)
+			},
 			expect: &testResponse{
 				code: http.StatusOK,
-				body: &response.UserMeResponse{},
+				body: &response.UserMeResponse{
+					ID:          "user-id",
+					Email:       "test@and-period.jp",
+					PhoneNumber: "+819012345678",
+				},
+			},
+		},
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := &user.GetUserRequest{UserId: idmock}
+				mocks.user.EXPECT().GetUser(gomock.Any(), in).Return(nil, errmock)
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
 			},
 		},
 	}

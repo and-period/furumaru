@@ -4,12 +4,28 @@ import (
 	"net/http"
 
 	"github.com/and-period/marche/api/internal/gateway/user/v1/response"
+	"github.com/and-period/marche/api/internal/gateway/util"
+	"github.com/and-period/marche/api/proto/user"
 	"github.com/gin-gonic/gin"
 )
 
 func (h *apiV1Handler) GetUserMe(ctx *gin.Context) {
-	// TODO: 詳細の実装
-	res := &response.UserMeResponse{}
+	c := util.SetMetadata(ctx)
+
+	in := &user.GetUserRequest{
+		UserId: getUserID(ctx),
+	}
+	out, err := h.user.GetUser(c, in)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	res := &response.UserMeResponse{
+		ID:          out.User.Id,
+		Email:       out.User.Email,
+		PhoneNumber: out.User.PhoneNumber,
+	}
 	ctx.JSON(http.StatusOK, res)
 }
 
