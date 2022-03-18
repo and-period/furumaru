@@ -6,6 +6,7 @@ import (
 
 	"github.com/and-period/marche/api/internal/gateway/user/v1/request"
 	"github.com/and-period/marche/api/internal/gateway/user/v1/response"
+	"github.com/and-period/marche/api/proto/user"
 	"github.com/golang/mock/gomock"
 )
 
@@ -210,8 +211,17 @@ func TestUpdateUserPassword(t *testing.T) {
 		expect *testResponse
 	}{
 		{
-			name:  "success",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := &user.UpdateUserPasswordRequest{
+					AccessToken:          tokenmock,
+					OldPassword:          "!Qaz2wsx",
+					NewPassword:          "!Qaz3edc",
+					PasswordConfirmation: "!Qaz3edc",
+				}
+				out := &user.UpdateUserPasswordResponse{}
+				mocks.user.EXPECT().UpdateUserPassword(gomock.Any(), in).Return(out, nil)
+			},
 			req: &request.UpdateUserPasswordRequest{
 				OldPassword:          "!Qaz2wsx",
 				NewPassword:          "!Qaz3edc",
@@ -219,6 +229,26 @@ func TestUpdateUserPassword(t *testing.T) {
 			},
 			expect: &testResponse{
 				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to update user password",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := &user.UpdateUserPasswordRequest{
+					AccessToken:          tokenmock,
+					OldPassword:          "!Qaz2wsx",
+					NewPassword:          "!Qaz3edc",
+					PasswordConfirmation: "!Qaz3edc",
+				}
+				mocks.user.EXPECT().UpdateUserPassword(gomock.Any(), in).Return(nil, errmock)
+			},
+			req: &request.UpdateUserPasswordRequest{
+				OldPassword:          "!Qaz2wsx",
+				NewPassword:          "!Qaz3edc",
+				PasswordConfirmation: "!Qaz3edc",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
 			},
 		},
 	}
@@ -244,13 +274,30 @@ func TestForgotUserPassword(t *testing.T) {
 		expect *testResponse
 	}{
 		{
-			name:  "success",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := &user.ForgotUserPasswordRequest{Email: "test-user@and-period.jp"}
+				out := &user.ForgotUserPasswordResponse{}
+				mocks.user.EXPECT().ForgotUserPassword(gomock.Any(), in).Return(out, nil)
+			},
 			req: &request.ForgotUserPasswordRequest{
 				Email: "test-user@and-period.jp",
 			},
 			expect: &testResponse{
 				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to forget user password",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := &user.ForgotUserPasswordRequest{Email: "test-user@and-period.jp"}
+				mocks.user.EXPECT().ForgotUserPassword(gomock.Any(), in).Return(nil, errmock)
+			},
+			req: &request.ForgotUserPasswordRequest{
+				Email: "test-user@and-period.jp",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
 			},
 		},
 	}
@@ -276,8 +323,17 @@ func TestResetUserPassword(t *testing.T) {
 		expect *testResponse
 	}{
 		{
-			name:  "success",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := &user.VerifyUserPasswordRequest{
+					Email:                "test-user@and-period.jp",
+					VerifyCode:           "123456",
+					NewPassword:          "!Qaz2wsx",
+					PasswordConfirmation: "!Qaz2wsx",
+				}
+				out := &user.VerifyUserPasswordResponse{}
+				mocks.user.EXPECT().VerifyUserPassword(gomock.Any(), in).Return(out, nil)
+			},
 			req: &request.ResetUserPasswordRequest{
 				Email:                "test-user@and-period.jp",
 				VerifyCode:           "123456",
@@ -286,6 +342,27 @@ func TestResetUserPassword(t *testing.T) {
 			},
 			expect: &testResponse{
 				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to verify user password",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := &user.VerifyUserPasswordRequest{
+					Email:                "test-user@and-period.jp",
+					VerifyCode:           "123456",
+					NewPassword:          "!Qaz2wsx",
+					PasswordConfirmation: "!Qaz2wsx",
+				}
+				mocks.user.EXPECT().VerifyUserPassword(gomock.Any(), in).Return(nil, errmock)
+			},
+			req: &request.ResetUserPasswordRequest{
+				Email:                "test-user@and-period.jp",
+				VerifyCode:           "123456",
+				Password:             "!Qaz2wsx",
+				PasswordConfirmation: "!Qaz2wsx",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
 			},
 		},
 	}
