@@ -6,6 +6,7 @@ import (
 
 	"github.com/and-period/marche/api/internal/gateway/user/v1/request"
 	"github.com/and-period/marche/api/internal/gateway/user/v1/response"
+	"github.com/and-period/marche/api/proto/user"
 	"github.com/golang/mock/gomock"
 )
 
@@ -310,10 +311,24 @@ func TestDeleteUser(t *testing.T) {
 		expect *testResponse
 	}{
 		{
-			name:  "success",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := &user.DeleteUserRequest{UserId: idmock}
+				out := &user.DeleteUserResponse{}
+				mocks.user.EXPECT().DeleteUser(gomock.Any(), in).Return(out, nil)
+			},
 			expect: &testResponse{
 				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to delete user",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := &user.DeleteUserRequest{UserId: idmock}
+				mocks.user.EXPECT().DeleteUser(gomock.Any(), in).Return(nil, errmock)
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
 			},
 		},
 	}
