@@ -47,7 +47,7 @@ func TestGetUserMe(t *testing.T) {
 			},
 		},
 		{
-			name: "success",
+			name: "failed to get user",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				in := &user.GetUserRequest{UserId: idmock}
 				mocks.user.EXPECT().GetUser(gomock.Any(), in).Return(nil, errmock)
