@@ -13,8 +13,27 @@ import (
 )
 
 func (h *apiV1Handler) GetAuth(ctx *gin.Context) {
-	// TODO: 詳細の実装
-	res := &response.AuthResponse{}
+	c := util.SetMetadata(ctx)
+
+	token, err := util.GetAuthToken(ctx)
+	if err != nil {
+		unauthorized(ctx, err)
+		return
+	}
+
+	in := &user.GetUserAuthRequest{
+		AccessToken: token,
+	}
+	out, err := h.user.GetUserAuth(c, in)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+	auth := gentity.NewUserAuth(out.Auth)
+
+	res := &response.AuthResponse{
+		Auth: entity.NewAuth(auth),
+	}
 	ctx.JSON(http.StatusOK, res)
 }
 
