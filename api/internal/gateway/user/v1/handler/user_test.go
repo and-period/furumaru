@@ -262,13 +262,36 @@ func TestUpdateUserEmail(t *testing.T) {
 		expect *testResponse
 	}{
 		{
-			name:  "success",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := &user.UpdateUserEmailRequest{
+					AccessToken: tokenmock,
+					Email:       "test-user@and-period.jp",
+				}
+				out := &user.UpdateUserEmailResponse{}
+				mocks.user.EXPECT().UpdateUserEmail(gomock.Any(), in).Return(out, nil)
+			},
 			req: &request.UpdateUserEmailRequest{
 				Email: "test-user@and-period.jp",
 			},
 			expect: &testResponse{
 				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to update user email",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := &user.UpdateUserEmailRequest{
+					AccessToken: tokenmock,
+					Email:       "test-user@and-period.jp",
+				}
+				mocks.user.EXPECT().UpdateUserEmail(gomock.Any(), in).Return(nil, errmock)
+			},
+			req: &request.UpdateUserEmailRequest{
+				Email: "test-user@and-period.jp",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
 			},
 		},
 	}
@@ -294,13 +317,36 @@ func TestVerifyUserEmail(t *testing.T) {
 		expect *testResponse
 	}{
 		{
-			name:  "success",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := &user.VerifyUserEmailRequest{
+					AccessToken: tokenmock,
+					VerifyCode:  "123456",
+				}
+				out := &user.VerifyUserEmailResponse{}
+				mocks.user.EXPECT().VerifyUserEmail(gomock.Any(), in).Return(out, nil)
+			},
 			req: &request.VerifyUserEmailRequest{
 				VerifyCode: "123456",
 			},
 			expect: &testResponse{
 				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to veirify user email",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := &user.VerifyUserEmailRequest{
+					AccessToken: tokenmock,
+					VerifyCode:  "123456",
+				}
+				mocks.user.EXPECT().VerifyUserEmail(gomock.Any(), in).Return(nil, errmock)
+			},
+			req: &request.VerifyUserEmailRequest{
+				VerifyCode: "123456",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
 			},
 		},
 	}

@@ -106,12 +106,56 @@ func (h *apiV1Handler) CreateUserWithOAuth(ctx *gin.Context) {
 }
 
 func (h *apiV1Handler) UpdateUserEmail(ctx *gin.Context) {
-	// TODO: 詳細の実装
+	c := util.SetMetadata(ctx)
+
+	token, err := util.GetAuthToken(ctx)
+	if err != nil {
+		unauthorized(ctx, err)
+		return
+	}
+	req := &request.UpdateUserEmailRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	in := &user.UpdateUserEmailRequest{
+		AccessToken: token,
+		Email:       req.Email,
+	}
+	_, err = h.user.UpdateUserEmail(c, in)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
 func (h *apiV1Handler) VerifyUserEmail(ctx *gin.Context) {
-	// TODO: 詳細の実装
+	c := util.SetMetadata(ctx)
+
+	token, err := util.GetAuthToken(ctx)
+	if err != nil {
+		unauthorized(ctx, err)
+		return
+	}
+	req := &request.VerifyUserEmailRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	in := &user.VerifyUserEmailRequest{
+		AccessToken: token,
+		VerifyCode:  req.VerifyCode,
+	}
+	_, err = h.user.VerifyUserEmail(c, in)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
