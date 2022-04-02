@@ -28,8 +28,9 @@ import (
 )
 
 var (
-	idmock  = "kSByoE6FetnPs5Byk3a9Zx"
-	errmock = errors.New("some error")
+	idmock    = "kSByoE6FetnPs5Byk3a9Zx"
+	tokenmock = "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ"
+	errmock   = errors.New("some error")
 )
 
 type mocks struct {
@@ -134,6 +135,7 @@ func newHTTPRequest(t *testing.T, method, path string, body interface{}) *http.R
 	require.NoError(t, err, err)
 
 	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", tokenmock))
 	req.Header.Add("userId", idmock)
 	return req
 }
@@ -166,6 +168,7 @@ func newMultipartRequest(t *testing.T, method, path, field string) *http.Request
 	require.NoError(t, err, err)
 
 	req.Header.Add("Content-Type", writer.FormDataContentType())
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", tokenmock))
 	req.Header.Add("userId", idmock)
 	return req
 }
