@@ -70,6 +70,8 @@ message CreateUserRequest {
   string phone_number          = 2 [(validate.rules).string = { min_len: 12, max_len: 18, pattern: "^\\+[0-9]{11,17}$" }];
   string password              = 3 [(validate.rules).string = { min_len: 8, max_len: 32, pattern: "^[a-zA-Z0-9_!@#$_%^&*.?()-=+]*$" }];
   string password_confirmation = 4 [(validate.rules).string = { min_len: 1 }];
+  string username              = 5 [(validate.rules).string = { min_len: 1, max_len: 32 }];
+  string user_id               = 6 [(validate.rules).string = { min_len: 1, max_len: 32 }];
 }
 
 message CreateUserResponse {
