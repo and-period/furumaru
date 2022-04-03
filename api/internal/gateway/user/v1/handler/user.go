@@ -234,6 +234,16 @@ func (h *apiV1Handler) ResetUserPassword(ctx *gin.Context) {
 }
 
 func (h *apiV1Handler) DeleteUser(ctx *gin.Context) {
-	// TODO: 詳細の実装
+	c := util.SetMetadata(ctx)
+
+	in := &user.DeleteUserRequest{
+		UserId: getUserID(ctx),
+	}
+	_, err := h.user.DeleteUser(c, in)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
