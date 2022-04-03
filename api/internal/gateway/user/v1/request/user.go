@@ -1,8 +1,6 @@
 package request
 
 type CreateUserRequest struct {
-	Username             string `json:"username,omitempty"`             // ユーザー名
-	UserID               string `json:"userId,omitempty"`               // ユーザーID
 	Email                string `json:"email,omitempty"`                // メールアドレス
 	PhoneNumber          string `json:"phoneNumber,omitempty"`          // 電話番号
 	Password             string `json:"password,omitempty"`             // パスワード
@@ -12,6 +10,11 @@ type CreateUserRequest struct {
 type VerifyUserRequest struct {
 	ID         string `json:"id,omitempty"`         // ユーザーID
 	VerifyCode string `json:"verifyCode,omitempty"` // 検証コード
+}
+
+type InitializeUserRequest struct {
+	Username string `json:"username,omitempty"` // ユーザー名
+	UserID   string `json:"userId,omitempty"`   // ユーザーID
 }
 
 type UpdateUserEmailRequest struct {
