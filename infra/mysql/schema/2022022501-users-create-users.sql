@@ -1,9 +1,12 @@
 CREATE SCHEMA IF NOT EXISTS `users` DEFAULT CHARACTER SET utf8mb4;
 
 CREATE TABLE `users`.`users` (
-  `id`            VARCHAR(22)  NOT NULL,          -- ユーザーID
+
+  `id`            VARCHAR(22)  NOT NULL,          -- ユーザーID (Primary Key用)
+  `user_id`       VARCHAR(32)  NOT NULL,          -- ユーザーID (表示用)
   `cognito_id`    VARCHAR(36)  NOT NULL,          -- ユーザーID (Cognito)
   `provider_type` INT          NOT NULL,          -- 認証種別
+  `username`      VARCHAR(32)  NOT NULL,          -- ユーザー名 (表示用)
   `email`         VARCHAR(256) NULL DEFAULT NULL, -- メールアドレス
   `phone_number`  VARCHAR(18)  NULL DEFAULT NULL, -- 電話番号 (国際番号(3桁)+国番号以下(15桁))
   `created_at`    DATETIME     NOT NULL,          -- 登録日時
