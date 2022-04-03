@@ -77,14 +77,14 @@ func (mr *MockUserServiceClientMockRecorder) CreateUserWithOAuth(ctx, in interfa
 }
 
 // DeleteUser mocks base method.
-func (m *MockUserServiceClient) DeleteUser(ctx context.Context, in *user.DeleteUserRequest, opts ...grpc.CallOption) (*user.DeleteuserResponse, error) {
+func (m *MockUserServiceClient) DeleteUser(ctx context.Context, in *user.DeleteUserRequest, opts ...grpc.CallOption) (*user.DeleteUserResponse, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{ctx, in}
 	for _, a := range opts {
 		varargs = append(varargs, a)
 	}
 	ret := m.ctrl.Call(m, "DeleteUser", varargs...)
-	ret0, _ := ret[0].(*user.DeleteuserResponse)
+	ret0, _ := ret[0].(*user.DeleteUserResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -370,10 +370,10 @@ func (mr *MockUserServiceServerMockRecorder) CreateUserWithOAuth(arg0, arg1 inte
 }
 
 // DeleteUser mocks base method.
-func (m *MockUserServiceServer) DeleteUser(arg0 context.Context, arg1 *user.DeleteUserRequest) (*user.DeleteuserResponse, error) {
+func (m *MockUserServiceServer) DeleteUser(arg0 context.Context, arg1 *user.DeleteUserRequest) (*user.DeleteUserResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteUser", arg0, arg1)
-	ret0, _ := ret[0].(*user.DeleteuserResponse)
+	ret0, _ := ret[0].(*user.DeleteUserResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

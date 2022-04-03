@@ -212,7 +212,7 @@ func (s *userService) VerifyUserPassword(
 
 func (s *userService) DeleteUser(
 	ctx context.Context, req *user.DeleteUserRequest,
-) (*user.DeleteuserResponse, error) {
+) (*user.DeleteUserResponse, error) {
 	if err := req.ValidateAll(); err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
@@ -226,5 +226,5 @@ func (s *userService) DeleteUser(
 	if err := s.db.User.Delete(ctx, u.ID); err != nil {
 		return nil, gRPCError(err)
 	}
-	return &user.DeleteuserResponse{}, nil
+	return &user.DeleteUserResponse{}, nil
 }

@@ -839,7 +839,7 @@ func TestDeleteUser(t *testing.T) {
 			},
 			expect: &testResponse{
 				code: codes.OK,
-				body: &user.DeleteuserResponse{},
+				body: &user.DeleteUserResponse{},
 			},
 		},
 		{

@@ -23,7 +23,7 @@ service UserService {
   rpc UpdateUserPassword(UpdateUserPasswordRequest) returns (UpdateUserPasswordResponse);
   rpc ForgotUserPassword(ForgotUserPasswordRequest) returns (ForgotUserPasswordResponse);
   rpc VerifyUserPassword(VerifyUserPasswordRequest) returns (VerifyUserPasswordResponse);
-  rpc DeleteUser(DeleteUserRequest) returns (DeleteuserResponse);
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
 }
 
 message SignInUserRequest {
@@ -133,4 +133,4 @@ message DeleteUserRequest {
   string user_id = 1 [(validate.rules).string = { min_len: 1 }];
 }
 
-message DeleteuserResponse {}
+message DeleteUserResponse {}
