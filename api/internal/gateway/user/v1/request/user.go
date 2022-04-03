@@ -1,6 +1,8 @@
 package request
 
 type CreateUserRequest struct {
+	Username             string `json:"username,omitempty"`             // ユーザー名
+	UserID               string `json:"userId,omitempty"`               // ユーザーID
 	Email                string `json:"email,omitempty"`                // メールアドレス
 	PhoneNumber          string `json:"phoneNumber,omitempty"`          // 電話番号
 	Password             string `json:"password,omitempty"`             // パスワード
