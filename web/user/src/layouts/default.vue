@@ -41,7 +41,7 @@
         <v-icon>mdi-menu</v-icon>
       </v-btn>
     </v-app-bar>
-    <v-main>
+    <v-main class="bg-color">
       <v-container>
         <Nuxt />
       </v-container>
@@ -90,3 +90,6 @@ export default {
   },
 }
 </script>
+<style scoped>
+  .bg-color {background-color: #FAF2E2;}
+</style>
