@@ -1,6 +1,7 @@
 import colors from 'vuetify/es5/util/colors'
+import { NuxtConfig } from '@nuxt/types'
 
-export default {
+const config: NuxtConfig = {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: true,
   srcDir: 'src',
@@ -61,7 +62,7 @@ export default {
     vueI18nLoader: true,
     vueI18n: {
       fallbackLocale: 'ja',
-    }
+    },
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -72,7 +73,7 @@ export default {
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
-    customVariables: ['~/assets/variables.scss',],
+    customVariables: ['~/assets/variables.scss'],
     treeShake: true,
     theme: {
       dark: false,
@@ -86,10 +87,24 @@ export default {
           error: colors.deepOrange.accent4,
           success: colors.green.accent3,
         },
+        light: {
+          primary: colors.lightGreen.darken1,
+          accent: colors.orange.darken1,
+        },
       },
     },
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
+
+  typescript: {
+    typeCheck: {
+      eslint: {
+        files: './src/**/*.{ts,js,vue}',
+      },
+    },
+  },
 }
+
+export default config
