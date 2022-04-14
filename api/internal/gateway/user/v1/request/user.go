@@ -13,8 +13,8 @@ type VerifyUserRequest struct {
 }
 
 type InitializeUserRequest struct {
-	Username string `json:"username,omitempty"` // ユーザー名
-	UserID   string `json:"userId,omitempty"`   // ユーザーID
+	Username  string `json:"username,omitempty"`  // ユーザー名
+	AccountID string `json:"accountId,omitempty"` // ユーザーID(表示名)
 }
 
 type UpdateUserEmailRequest struct {
