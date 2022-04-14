@@ -85,7 +85,7 @@ message VerifyUserRequest {
 message VerifyUserResponse {}
 
 message InitializeUserRequest {
-  string id       = 1 [(validate.rules).string = { min_len: 1 }];
+  string user_id       = 1 [(validate.rules).string = { min_len: 1 }];
   string username = 2 [(validate.rules).string = { min_len: 1, max_len: 32 }];
   string account_id  = 3 [(validate.rules).string = { min_len: 1, max_len: 32 }];
 }
