@@ -3,14 +3,21 @@ package handler
 import (
 	"net/http"
 
-	gentity "github.com/and-period/marche/api/internal/gateway/entity"
-	"github.com/and-period/marche/api/internal/gateway/user/v1/entity"
+	"github.com/and-period/marche/api/internal/gateway/entity"
 	"github.com/and-period/marche/api/internal/gateway/user/v1/request"
 	"github.com/and-period/marche/api/internal/gateway/user/v1/response"
+	"github.com/and-period/marche/api/internal/gateway/user/v1/service"
 	"github.com/and-period/marche/api/internal/gateway/util"
 	"github.com/and-period/marche/api/proto/user"
 	"github.com/gin-gonic/gin"
 )
+
+func (h *apiV1Handler) authRoutes(rg *gin.RouterGroup) {
+	rg.GET("", h.GetAuth)
+	rg.POST("", h.SignIn)
+	rg.DELETE("", h.SignOut)
+	rg.POST("/refresh-token", h.RefreshAuthToken)
+}
 
 func (h *apiV1Handler) GetAuth(ctx *gin.Context) {
 	c := util.SetMetadata(ctx)
@@ -29,10 +36,10 @@ func (h *apiV1Handler) GetAuth(ctx *gin.Context) {
 		httpError(ctx, err)
 		return
 	}
-	auth := gentity.NewUserAuth(out.Auth)
+	auth := entity.NewUserAuth(out.Auth)
 
 	res := &response.AuthResponse{
-		Auth: entity.NewAuth(auth),
+		Auth: service.NewAuth(auth).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -55,10 +62,10 @@ func (h *apiV1Handler) SignIn(ctx *gin.Context) {
 		httpError(ctx, err)
 		return
 	}
-	auth := gentity.NewUserAuth(out.Auth)
+	auth := entity.NewUserAuth(out.Auth)
 
 	res := &response.AuthResponse{
-		Auth: entity.NewAuth(auth),
+		Auth: service.NewAuth(auth).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -100,10 +107,10 @@ func (h *apiV1Handler) RefreshAuthToken(ctx *gin.Context) {
 		httpError(ctx, err)
 		return
 	}
-	auth := gentity.NewUserAuth(out.Auth)
+	auth := entity.NewUserAuth(out.Auth)
 
 	res := &response.AuthResponse{
-		Auth: entity.NewAuth(auth),
+		Auth: service.NewAuth(auth).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

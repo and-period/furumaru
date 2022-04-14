@@ -10,6 +10,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func (h *apiV1Handler) userRoutes(rg *gin.RouterGroup) {
+	rg.POST("", h.CreateUser)
+	rg.POST("/oauth", h.CreateUserWithOAuth)
+	rg.POST("/verified", h.VerifyUser)
+	rg.GET("/me", h.authentication(), h.GetUserMe)
+	rg.DELETE("/me", h.authentication(), h.DeleteUser)
+	rg.PATCH("/me/email", h.authentication(), h.UpdateUserEmail)
+	rg.POST("/me/email/verified", h.VerifyUserEmail)
+	rg.PATCH("/me/password", h.authentication(), h.UpdateUserPassword)
+	rg.POST("/me/forgot-password", h.ForgotUserPassword)
+	rg.POST("/me/forgot-password/verified", h.ResetUserPassword)
+}
+
 func (h *apiV1Handler) GetUserMe(ctx *gin.Context) {
 	c := util.SetMetadata(ctx)
 
