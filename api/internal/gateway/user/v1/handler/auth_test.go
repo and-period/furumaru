@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/and-period/marche/api/internal/gateway/user/v1/entity"
 	"github.com/and-period/marche/api/internal/gateway/user/v1/request"
 	"github.com/and-period/marche/api/internal/gateway/user/v1/response"
 	"github.com/and-period/marche/api/proto/user"
@@ -36,7 +35,7 @@ func TestGetAuth(t *testing.T) {
 			expect: &testResponse{
 				code: http.StatusOK,
 				body: &response.AuthResponse{
-					Auth: &entity.Auth{
+					Auth: &response.Auth{
 						UserID:       "user-id",
 						AccessToken:  "access-token",
 						RefreshToken: "refresh-token",
@@ -102,7 +101,7 @@ func TestSignIn(t *testing.T) {
 			expect: &testResponse{
 				code: http.StatusOK,
 				body: &response.AuthResponse{
-					Auth: &entity.Auth{
+					Auth: &response.Auth{
 						UserID:       "user-id",
 						AccessToken:  "access-token",
 						RefreshToken: "refresh-token",
@@ -215,7 +214,7 @@ func TestRefreshAuthToken(t *testing.T) {
 			expect: &testResponse{
 				code: http.StatusOK,
 				body: &response.AuthResponse{
-					Auth: &entity.Auth{
+					Auth: &response.Auth{
 						UserID:       "user-id",
 						AccessToken:  "access-token",
 						RefreshToken: "",

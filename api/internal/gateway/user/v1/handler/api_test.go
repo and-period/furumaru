@@ -73,8 +73,7 @@ func newAPIV1Handler(mocks *mocks, opts *testOptions) APIV1Handler {
 }
 
 func newRoutes(h APIV1Handler, r *gin.Engine) {
-	h.AuthRoutes(r.Group(""))
-	h.NoAuthRoutes(r.Group(""))
+	h.Routes(r.Group(""))
 }
 
 func testHTTP(
