@@ -17,6 +17,7 @@ service UserService {
   rpc GetUser(GetUserRequest) returns (GetUserResponse);
   rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
   rpc VerifyUser(VerifyUserRequest) returns (VerifyUserResponse);
+  rpc InitializeUser(InitializeUserRequest) returns (InitializeUserResponse);
   rpc CreateUserWithOAuth(CreateUserWithOAuthRequest) returns (CreateUserWithOAuthResponse);
   rpc UpdateUserEmail(UpdateUserEmailRequest) returns (UpdateUserEmailResponse);
   rpc VerifyUserEmail(VerifyUserEmailRequest) returns (VerifyUserEmailResponse);
@@ -82,6 +83,14 @@ message VerifyUserRequest {
 }
 
 message VerifyUserResponse {}
+
+message InitializeUserRequest {
+  string user_id       = 1 [(validate.rules).string = { min_len: 1 }];
+  string username = 2 [(validate.rules).string = { min_len: 1, max_len: 32 }];
+  string account_id  = 3 [(validate.rules).string = { min_len: 1, max_len: 32 }];
+}
+
+message InitializeUserResponse {}
 
 message CreateUserWithOAuthRequest {
   string access_token = 1 [(validate.rules).string = { min_len: 1 }];

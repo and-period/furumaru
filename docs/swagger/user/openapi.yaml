@@ -22,6 +22,8 @@ paths:
     $ref: './paths/v1/users/index.yaml'
   /v1/users/me:
     $ref: './paths/v1/users/me/index.yaml'
+  /v1/users/me/initialized:
+    $ref: './paths/v1/users/me/initialized.yaml'
   /v1/users/me/email:
     $ref: './paths/v1/users/me/email/index.yaml'
   /v1/users/me/email/verified:
@@ -50,6 +52,8 @@ components:
       $ref: './components/schemas/v1/auth.request.yaml#/refreshAuthTokenRequest'
     v1CreateUserRequest:
       $ref: './components/schemas/v1/users.request.yaml#/createUserRequest'
+    v1InitializeUserRequest:
+      $ref: './components/schemas/v1/users.request.yaml#/initializeUserRequest'
     v1VerifyUserRequest:
       $ref: './components/schemas/v1/users.request.yaml#/verifyUserRequest'
     v1UpdateUserEmailRequest:
