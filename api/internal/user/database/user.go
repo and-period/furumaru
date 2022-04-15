@@ -13,7 +13,8 @@ import (
 const userTable = "users"
 
 var userFields = []string{
-	"id", "cognito_id", "provider_type", "email", "phone_number",
+	"id", "account_id", "cognito_id", "provider_type",
+	"username", "email", "phone_number",
 	"created_at", "updated_at", "verified_at", "deleted_at",
 }
 
