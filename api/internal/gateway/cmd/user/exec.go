@@ -79,11 +79,7 @@ func Exec() error {
 
 func newApp(conf *config) (*app, error) {
 	// Loggerの設定
-	logParams := &log.Params{
-		Path:  conf.LogPath,
-		Level: conf.LogLevel,
-	}
-	logger, err := log.NewLogger(logParams)
+	logger, err := log.NewLogger(log.WithLogLevel(conf.LogLevel), log.WithOutput(conf.LogPath))
 	if err != nil {
 		return nil, err
 	}
@@ -100,7 +96,7 @@ func newApp(conf *config) (*app, error) {
 	cm := cors.NewGinMiddleware()
 	httpOpts = append(httpOpts, cm)
 
-	lm, err := log.NewGinMiddleware(logParams)
+	lm, err := log.NewGinMiddleware(log.WithLogLevel(conf.LogLevel), log.WithOutput(conf.LogPath))
 	if err != nil {
 		return nil, err
 	}

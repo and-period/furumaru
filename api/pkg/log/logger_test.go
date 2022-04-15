@@ -10,15 +10,15 @@ import (
 func TestLogger(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name   string
-		params *Params
-		isErr  bool
+		name    string
+		options []Option
+		isErr   bool
 	}{
 		{
 			name: "success only stdout",
-			params: &Params{
-				Level: "debug",
-				Path:  "",
+			options: []Option{
+				WithLogLevel("debug"),
+				WithOutput(""),
 			},
 			isErr: false,
 		},
@@ -28,7 +28,7 @@ func TestLogger(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			logger, err := NewLogger(tt.params)
+			logger, err := NewLogger(tt.options...)
 			if tt.isErr {
 				assert.Error(t, err)
 				assert.Nil(t, logger)

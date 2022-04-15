@@ -41,17 +41,19 @@ func newRegistry(ctx context.Context, conf *config, opts ...option) (*registry, 
 
 	// MySQLの設定
 	mysqlParams := &database.Params{
-		Socket:     conf.DBSocket,
-		Host:       conf.DBHost,
-		Port:       conf.DBPort,
-		Database:   conf.DBDatabase,
-		Username:   conf.DBUsername,
-		Password:   conf.DBPassword,
-		TimeZone:   conf.DBTimeZone,
-		EnabledTLS: conf.DBEnabledTLS,
-		Logger:     dopts.logger,
+		Socket:   conf.DBSocket,
+		Host:     conf.DBHost,
+		Port:     conf.DBPort,
+		Database: conf.DBDatabase,
+		Username: conf.DBUsername,
+		Password: conf.DBPassword,
 	}
-	mysql, err := database.NewClient(mysqlParams)
+	mysql, err := database.NewClient(
+		mysqlParams,
+		database.WithLogger(dopts.logger),
+		database.WithTLS(conf.DBEnabledTLS),
+		database.WithTimeZone(conf.DBTimeZone),
+	)
 	if err != nil {
 		return nil, err
 	}
