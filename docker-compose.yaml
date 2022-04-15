@@ -1,6 +1,42 @@
 version: '3.9'
 
 services:
+  user_web:
+    container_name: user_web
+    build:
+      context: ./infra/docker/web/user
+      dockerfile: Dockerfile.development
+    working_dir: /var/web
+    volumes:
+      - ./web/user:/var/web:cached
+    ports:
+      - 3000:3000
+    command: yarn dev -H 0.0.0.0 -p 3000
+
+  shop_web:
+    container_name: shop_web
+    build:
+      context: ./infra/docker/web/shop
+      dockerfile: Dockerfile.development
+    working_dir: /var/web
+    volumes:
+      - ./web/shop:/var/web:cached
+    ports:
+      - 3010:3000
+    command: yarn dev -H 0.0.0.0 -p 3000
+
+  admin_web:
+    container_name: admin_web
+    build:
+      context: ./infra/docker/web/admin
+      dockerfile: Dockerfile.development
+    working_dir: /var/web
+    volumes:
+      - ./web/admin:/var/web:cached
+    ports:
+      - 3020:3000
+    command: yarn dev -H 0.0.0.0 -p 3000
+
   user_gateway:
     container_name: user_gateway
     build:
