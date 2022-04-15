@@ -5,7 +5,7 @@ services:
     container_name: user_gateway
     build:
       context: .
-      dockerfile: ./infra/docker/api/gateway/user/Dockerfile.local
+      dockerfile: ./infra/docker/api/Dockerfile.development
     working_dir: /go/src/github.com/and-period/marche/api
     volumes:
       - ./api:/go/src/github.com/and-period/marche/api:cached
@@ -27,7 +27,7 @@ services:
     container_name: user_api
     build:
       context: .
-      dockerfile: ./infra/docker/api/user/server/Dockerfile.local
+      dockerfile: ./infra/docker/api/Dockerfile.development
     working_dir: /go/src/github.com/and-period/marche/api
     volumes:
       - ./api:/go/src/github.com/and-period/marche/api:cached
