@@ -21,19 +21,34 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type OptionParams struct {
-	Logger *zap.Logger
+type options struct {
+	logger *zap.Logger
 }
 
-func NewGRPCOptions(params *OptionParams) []grpc.ServerOption {
-	streamInterceptors := grpcStreamServerInterceptors(params.Logger)
-	unaryInterceptors := grpcUnaryServerInterceptors(params.Logger)
+type Option func(opts *options)
 
-	opts := []grpc.ServerOption{
+func WithLogger(logger *zap.Logger) Option {
+	return func(opts *options) {
+		opts.logger = logger
+	}
+}
+
+func NewGRPCOptions(opts ...Option) []grpc.ServerOption {
+	dopts := &options{
+		logger: zap.NewNop(),
+	}
+	for i := range opts {
+		opts[i](dopts)
+	}
+
+	streamInterceptors := grpcStreamServerInterceptors(dopts.logger)
+	unaryInterceptors := grpcUnaryServerInterceptors(dopts.logger)
+
+	gopts := []grpc.ServerOption{
 		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(streamInterceptors...)),
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(unaryInterceptors...)),
 	}
-	return opts
+	return gopts
 }
 
 /*

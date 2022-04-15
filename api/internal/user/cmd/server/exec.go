@@ -77,11 +77,7 @@ func Exec() error {
 
 func newApp(ctx context.Context, conf *config) (*app, error) {
 	// Loggerの設定
-	logParams := &log.Params{
-		Path:  conf.LogPath,
-		Level: conf.LogLevel,
-	}
-	logger, err := log.NewLogger(logParams)
+	logger, err := log.NewLogger(log.WithLogLevel(conf.LogLevel), log.WithOutput(conf.LogPath))
 	if err != nil {
 		return nil, err
 	}
@@ -93,10 +89,7 @@ func newApp(ctx context.Context, conf *config) (*app, error) {
 	}
 
 	// gRPC Serverの設定
-	gRPCParams := &apgrpc.OptionParams{
-		Logger: logger,
-	}
-	gRPCOpts := apgrpc.NewGRPCOptions(gRPCParams)
+	gRPCOpts := apgrpc.NewGRPCOptions(apgrpc.WithLogger(logger))
 
 	s := grpc.NewServer(gRPCOpts...)
 	user.RegisterUserServiceServer(s, reg.userServer)

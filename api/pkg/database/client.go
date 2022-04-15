@@ -1,6 +1,7 @@
 package database
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"strings"
@@ -17,23 +18,53 @@ type Client struct {
 }
 
 type Params struct {
-	Socket     string
-	Host       string
-	Port       string
-	Database   string
-	Username   string
-	Password   string
-	TimeZone   string
-	EnabledTLS bool
-	Logger     *zap.Logger
+	Socket   string
+	Host     string
+	Port     string
+	Database string
+	Username string
+	Password string
+}
+
+type options struct {
+	logger     *zap.Logger
+	timezone   string
+	enabledTLS bool
+}
+
+type Option func(opts *options)
+
+func WithTimeZone(timezone string) Option {
+	return func(opts *options) {
+		opts.timezone = timezone
+	}
+}
+
+func WithTLS(enabled bool) Option {
+	return func(opts *options) {
+		opts.enabledTLS = enabled
+	}
+}
+
+func WithLogger(logger *zap.Logger) Option {
+	return func(opts *options) {
+		opts.logger = logger
+	}
 }
 
 // NewClient - DBクライアントの構造体
-func NewClient(params *Params) (*Client, error) {
-	con := getConfig(params)
+func NewClient(params *Params, opts ...Option) (*Client, error) {
+	dopts := &options{
+		logger:     zap.NewNop(),
+		timezone:   "",
+		enabledTLS: false,
+	}
+	for i := range opts {
+		opts[i](dopts)
+	}
 
 	// プライマリレプリカの作成
-	db, err := getDBClient(con, params)
+	db, err := newDBClient(params, dopts)
 	if err != nil {
 		return nil, err
 	}
@@ -41,13 +72,12 @@ func NewClient(params *Params) (*Client, error) {
 	c := &Client{
 		DB: db,
 	}
-
 	return c, nil
 }
 
 // Begin - トランザクションの開始処理
-func (c *Client) Begin(opts ...*sql.TxOptions) (*gorm.DB, error) {
-	tx := c.DB.Begin()
+func (c *Client) Begin(ctx context.Context, opts ...*sql.TxOptions) (*gorm.DB, error) {
+	tx := c.DB.WithContext(ctx).Begin()
 	if err := tx.Error; err != nil {
 		return nil, err
 	}
@@ -64,8 +94,10 @@ func (c *Client) Close(tx *gorm.DB) func() {
 }
 
 // Transaction - トランザクション処理
-func (c *Client) Transaction(f func(tx *gorm.DB) (interface{}, error)) (data interface{}, err error) {
-	tx, err := c.Begin()
+func (c *Client) Transaction(
+	ctx context.Context, f func(tx *gorm.DB) (interface{}, error),
+) (data interface{}, err error) {
+	tx, err := c.Begin(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -84,19 +116,16 @@ func (c *Client) Transaction(f func(tx *gorm.DB) (interface{}, error)) (data int
 	return
 }
 
-func getDBClient(config string, params *Params) (*gorm.DB, error) {
-	if params.Logger == nil {
-		params.Logger = zap.NewNop()
+func newDBClient(params *Params, opts *options) (*gorm.DB, error) {
+	conf := &gorm.Config{
+		Logger: zapgorm2.New(opts.logger),
 	}
 
-	opt := &gorm.Config{
-		Logger: zapgorm2.New(params.Logger),
-	}
-
-	return gorm.Open(mysql.Open(config), opt)
+	dsn := newDSN(params, opts)
+	return gorm.Open(mysql.Open(dsn), conf)
 }
 
-func getConfig(params *Params) string {
+func newDSN(params *Params, opts *options) string {
 	switch params.Socket {
 	case "tcp":
 		return fmt.Sprintf(
@@ -106,8 +135,8 @@ func getConfig(params *Params) string {
 			params.Host,
 			params.Port,
 			params.Database,
-			withTLS(params.EnabledTLS),
-			withTimeZone(params.TimeZone),
+			withTLS(opts.enabledTLS),
+			withTimeZone(opts.timezone),
 		)
 	case "unix":
 		return fmt.Sprintf(
@@ -116,7 +145,7 @@ func getConfig(params *Params) string {
 			params.Password,
 			params.Host,
 			params.Database,
-			withTLS(params.EnabledTLS),
+			withTLS(opts.enabledTLS),
 		)
 	default:
 		return ""

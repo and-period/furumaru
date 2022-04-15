@@ -8,14 +8,36 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-type Params struct {
-	Level string
-	Path  string
+type options struct {
+	logLevel   string
+	outputPath string
+}
+
+type Option func(opts *options)
+
+func WithLogLevel(level string) Option {
+	return func(opts *options) {
+		opts.logLevel = level
+	}
+}
+
+func WithOutput(path string) Option {
+	return func(opts *options) {
+		opts.outputPath = path
+	}
 }
 
 // NewLogger - ログ出力用クライアントの生成
-func NewLogger(params *Params) (*zap.Logger, error) {
-	level := getLogLevel(params.Level)
+func NewLogger(opts ...Option) (*zap.Logger, error) {
+	dopts := &options{
+		logLevel:   "info",
+		outputPath: "",
+	}
+	for i := range opts {
+		opts[i](dopts)
+	}
+
+	level := getLogLevel(dopts.logLevel)
 	encoderConfig := zapcore.EncoderConfig{
 		MessageKey:     "msg",
 		LevelKey:       "level",
@@ -38,13 +60,13 @@ func NewLogger(params *Params) (*zap.Logger, error) {
 	)
 
 	// Path==""のとき、標準出力のみ
-	if params.Path == "" {
+	if dopts.outputPath == "" {
 		logger := zap.New(zapcore.NewTee(consoleCore))
 		return logger, nil
 	}
 
 	// logPath!==""のとき、ファイル出力も追加
-	outputPath := fmt.Sprintf("%s/outputs.log", params.Path)
+	outputPath := fmt.Sprintf("%s/outputs.log", dopts.outputPath)
 	file, err := os.OpenFile(outputPath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0755)
 	if err != nil {
 		return nil, err

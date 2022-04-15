@@ -7,8 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewGinMiddleware(params *Params) (gin.HandlerFunc, error) {
-	logger, err := NewLogger(params)
+func NewGinMiddleware(opts ...Option) (gin.HandlerFunc, error) {
+	logger, err := NewLogger(opts...)
 	if err != nil {
 		return nil, err
 	}
