@@ -1,4 +1,4 @@
 // TODO: 後で削除
-describe('exec test', () => {
+it('exec test', () => {
   expect(true).toBeTruthy()
 })
