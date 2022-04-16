@@ -17,8 +17,10 @@ const (
 
 type User struct {
 	ID           string         `gorm:"primaryKey;<-:create"`
+	AccountID    string         `gorm:""`
 	CognitoID    string         `gorm:""`
 	ProviderType ProviderType   `gorm:""`
+	Username     string         `gorm:""`
 	Email        string         `gorm:"default:null"`
 	PhoneNumber  string         `gorm:"default:null"`
 	CreatedAt    time.Time      `gorm:"<-:create"`

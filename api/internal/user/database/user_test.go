@@ -548,7 +548,9 @@ func TestUser_Delete(t *testing.T) {
 func testUser(id, email, phoneNumber string, now time.Time) *entity.User {
 	return &entity.User{
 		ID:           id,
+		AccountID:    id,
 		CognitoID:    id,
+		Username:     id,
 		ProviderType: entity.ProviderTypeEmail,
 		Email:        email,
 		PhoneNumber:  phoneNumber,

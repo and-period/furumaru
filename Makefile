@@ -32,10 +32,13 @@ logs:
 ##################################################
 # Container Commands - Run Container Group
 ##################################################
-.PHONY: start-api start-swagger start-test
+.PHONY: start-web start-api start-swagger start-test
+
+start-web:
+	docker-compose up user_web shop_web admin_web
 
 start-api: proto migrate
-	docker-compose up user_gateway user_api
+	docker-compose up user_gateway user_api mysql mysql_test
 
 start-swagger:
 	docker-compose up swagger_generator swagger_user
