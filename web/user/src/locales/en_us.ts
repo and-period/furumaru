@@ -1,4 +1,4 @@
-import { I18n } from '~/types/locales'
+import { I18n } from '../types/locales'
 
 const lang: I18n = {
   auth: {
@@ -9,6 +9,10 @@ const lang: I18n = {
       passwordConfirm: 'Confirm Password',
       signUp: 'Sign Up',
       alreadyHas: 'Do you already have an account?',
+    },
+    verify: {
+      message: 'Enter the verification code',
+      btnText: 'Verify',
     },
   },
 }
