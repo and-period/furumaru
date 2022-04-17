@@ -28,7 +28,9 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: [
+    { src: 'plugins/icons', ssr: false },
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -72,6 +74,10 @@ export default {
         },
         light: {
           primary: "#F48D26",
+          accent: "#F48D26",
+          base: "#FAF2E2",
+          facebook: "#1877F2",
+          line: "#06C755",
         }
       },
     },

@@ -41,22 +41,37 @@
         <v-btn  
           type="submit"
           block
-          class="my-5"
+          class="my-5 accent"
         >ログイン</v-btn>
         <div class="px-5 my-3">
           <v-btn  
             block
-          >Log In with Google</v-btn>
+            style="text-transform: none"
+            class="base"
+          >
+          <v-icon left>fa-brands fa-google</v-icon>
+            Log In with Google
+          </v-btn>
         </div>
         <div class="px-5 my-3">
-        <v-btn  
-          block
-        >Log In with Facebook</v-btn>
+          <v-btn  
+            block
+            style="text-transform: none"
+            class="facebook white--text"
+          >
+          <v-icon left>fa-brands fa-facebook</v-icon>
+          Log In with Facebook
+          </v-btn>
         </div>
         <div class="px-5 my-3">
-        <v-btn  
-          block
-        >Log In with Line</v-btn>
+          <v-btn  
+            block
+            style="text-transform: none"
+            class="line white--text"
+          >
+            <v-icon left>fa-brands fa-line</v-icon>
+            Log In with LINE
+          </v-btn>
         </div>
       </v-col>
     </v-row>
