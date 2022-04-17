@@ -2,7 +2,7 @@
   <div>
     <v-card outlined class="mx-auto" :max-width="isMobile ? 360 : 440">
       <v-card-text class="pa-md-12 pa-sm-4">
-        <form>
+        <form @submit.prevent="handleSubmit">
           <v-text-field
             type="tel"
             :label="$t('auth.signUp.tel')"
@@ -31,16 +31,9 @@
             dense
             required
           />
-          <v-btn
-            class="rounded-xl"
-            color="accent"
-            block
-            type="submit"
-            elevation="0"
-            :height="isMobile ? 40 : 64"
-            :x-large="!isMobile"
-            >{{ $t('auth.signUp.signUp') }}</v-btn
-          >
+          <the-submit-button :is-mobile="isMobile">
+            {{ $t('auth.signUp.signUp') }}
+          </the-submit-button>
         </form>
       </v-card-text>
     </v-card>
@@ -51,18 +44,33 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, computed } from '@nuxtjs/composition-api'
+import {
+  defineComponent,
+  useContext,
+  computed,
+  useRouter,
+} from '@nuxtjs/composition-api'
+import TheSubmitButton from '~/components/molecules/TheSubmitButton.vue'
 
 export default defineComponent({
+  components: {
+    TheSubmitButton,
+  },
   layout: 'auth',
   setup() {
     const { $vuetify } = useContext()
+    const router = useRouter()
     const isMobile = computed(() =>
       ['sm', 'xs'].includes($vuetify.breakpoint.name)
     )
 
+    const handleSubmit = () => {
+      router.push('/verify')
+    }
+
     return {
       isMobile,
+      handleSubmit,
     }
   },
 })
