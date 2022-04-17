@@ -1,9 +1,9 @@
 <template>
   <div class="text-center">
-    <p>
-      &amp;.Marche
-    </p>
-    <form>
+    <h2>
+      &amp;. Marche
+    </h2>
+    <v-form>
     <v-row justify="center">
       <v-col
         cols="12"
@@ -60,7 +60,7 @@
         </div>
       </v-col>
     </v-row>
-    </form>
+    </v-form>
     <p>アカウントをお持ちではないですか？
       <nuxt-link to="/">
         登録する
