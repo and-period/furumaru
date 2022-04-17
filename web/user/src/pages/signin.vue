@@ -32,17 +32,19 @@
         パスワードを忘れた場合
       </nuxt-link>
     </div>
-    <v-row justify="center">
+    <v-row justify="center" class="my-0">
       <v-col
         cols="12"
         sm="12"
         md="6"
       >
-        <v-btn  
-          type="submit"
-          block
-          class="my-5 accent"
-        >ログイン</v-btn>
+        <div class="px-5 my-3">
+          <v-btn  
+            type="submit"
+            block
+            class="accent"
+          >ログイン</v-btn>
+        </div>
         <div class="px-5 my-3">
           <v-btn  
             block
