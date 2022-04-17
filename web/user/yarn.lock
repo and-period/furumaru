@@ -11352,6 +11352,13 @@ vue-no-ssr@^1.1.1:
   resolved "https://registry.yarnpkg.com/vue-no-ssr/-/vue-no-ssr-1.1.1.tgz#875f3be6fb0ae41568a837f3ac1a80eaa137b998"
   integrity sha512-ZMjqRpWabMPqPc7gIrG0Nw6vRf1+itwf0Itft7LbMXs2g3Zs/NFmevjZGN1x7K3Q95GmIjWbQZTVerxiBxI+0g==
 
+vue-pincode-input@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/vue-pincode-input/-/vue-pincode-input-0.4.0.tgz#9f4f162e2171ff268cd146570520f8d48d5e14fb"
+  integrity sha512-A1DtG9J+o5AhdxRcgmuW8xxh7w5+GGVd6Di1J3n12xI99qSyKm9kBNJx4AzrNDgzr2TwUbleAdw7YTy3B68ohQ==
+  dependencies:
+    core-js "^2.6.5"
+
 vue-router@^3.5.1:
   version "3.5.3"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.5.3.tgz#041048053e336829d05dafacf6a8fb669a2e7999"
