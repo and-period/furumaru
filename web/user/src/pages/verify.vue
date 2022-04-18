@@ -5,13 +5,15 @@
       class="mx-auto bg-transparent"
       :max-width="isMobile ? 360 : 440"
     >
-      <v-card-text class="pa-md-12 pa-sm-4 text-center">
-        <p>{{ $t('auth.verify.message') }}</p>
+      <v-card-text class="pa-md-12 pa-sm-4">
         <form>
-          <the-pincode-input value="" :length="6" />
-          <the-submit-button :is-mobile="isMobile">{{
-            $t('auth.verify.btnText')
-          }}</the-submit-button>
+          <stack :space="24" class="text-center">
+            <p class="text-h6">{{ $t('auth.verify.message') }}</p>
+            <the-pincode-input value="" :length="6" class="mt-6" />
+            <the-submit-button :is-mobile="isMobile">{{
+              $t('auth.verify.btnText')
+            }}</the-submit-button>
+          </stack>
         </form>
       </v-card-text>
     </v-card>
@@ -20,6 +22,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
+import Stack from '~/components/atoms/Stack.vue'
 import ThePincodeInput from '~/components/molecules/ThePincodeInput.vue'
 import TheSubmitButton from '~/components/molecules/TheSubmitButton.vue'
 
@@ -27,6 +30,7 @@ export default defineComponent({
   components: {
     ThePincodeInput,
     TheSubmitButton,
+    Stack,
   },
   layout: 'auth',
   setup() {
