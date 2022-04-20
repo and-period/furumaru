@@ -27,11 +27,12 @@ export default defineComponent({
   layout: 'auth',
   setup() {
     const { isMobile } = useIsMobile()
-    const translate = useI18n()
+    const { i18n } = useI18n()
 
     const t = (str: keyof I18n['auth']['verify']) => {
-      return translate.t(`auth.verify.${str}`)
+      return i18n.t(`auth.verify.${str}`)
     }
+    // const t = (str: string) => str
 
     const handleSubmit = () => {
       console.log('submit not implemented')

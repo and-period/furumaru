@@ -46,10 +46,9 @@ export default defineComponent({
   layout: 'auth',
   setup() {
     const { isMobile } = useIsMobile()
-    const translate = useI18n()
-
+    const { i18n } = useI18n()
     const t = (str: keyof I18n['auth']['signUp']) => {
-      return translate.t(`auth.signUp.${str}`)
+      return i18n.t(`auth.signUp.${str}`)
     }
     const router = useRouter()
 
