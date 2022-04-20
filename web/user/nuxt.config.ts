@@ -37,7 +37,13 @@ const config: NuxtConfig = {
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
-  components: true,
+  components: [
+    { path: '~/components' },
+    { path: '~/components/atoms' },
+    { path: '~/components/molecules' },
+    { path: '~/components/organisms' },
+    { path: '~/components/templates' },
+  ],
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
