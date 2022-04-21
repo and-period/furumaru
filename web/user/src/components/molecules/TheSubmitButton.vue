@@ -19,7 +19,7 @@ export default defineComponent({
   props: {
     isMobile: {
       type: Boolean,
-      required: true,
+      default: false,
     },
   },
 })
