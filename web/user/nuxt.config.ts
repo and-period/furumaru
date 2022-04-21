@@ -112,7 +112,7 @@ const config: NuxtConfig = {
   typescript: {
     typeCheck: {
       eslint: {
-        files: './src/**/*.{ts,js,vue}',
+        files: './src/**/*.{ts,vue}',
       },
     },
   },
