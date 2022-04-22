@@ -1,5 +1,6 @@
 <template>
   <div>
+    <the-marche-logo class="text-center mb-6" />
     <v-card outlined class="mx-auto" :max-width="isMobile ? 360 : 440">
       <v-card-text class="pa-md-12 pa-sm-4">
         <form @submit.prevent="handleSubmit">
@@ -41,8 +42,10 @@
 import { defineComponent, useRouter } from '@nuxtjs/composition-api'
 import { I18n } from '~/types/locales'
 import { useIsMobile, useI18n } from '~/lib/hooks'
+import TheMarcheLogo from '~/components/atoms/TheMarcheLogo.vue'
 
 export default defineComponent({
+  components: { TheMarcheLogo },
   layout: 'auth',
   setup() {
     const { isMobile } = useIsMobile()
