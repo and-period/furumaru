@@ -1074,6 +1074,11 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@fontsource/stix-two-text@^4.5.8":
+  version "4.5.8"
+  resolved "https://registry.yarnpkg.com/@fontsource/stix-two-text/-/stix-two-text-4.5.8.tgz#a2d683c8aa60bdd6fe35c81f5f433611fef02fb3"
+  integrity sha512-tHZpL1jxHds1KrQ2BUhfOn8nV8KBBJUmiaE3wSNXgyaEhOBkSGnpGvO7FacFH04RjTBbVmvRtbbwH/tj5e1+Gg==
+
 "@gar/promisify@^1.0.1":
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/@gar/promisify/-/promisify-1.1.3.tgz#555193ab2e3bb3b6adc3d551c9c030d9e860daf6"
