@@ -35,7 +35,6 @@ export default defineComponent({
     const t = (str: keyof I18n['auth']['verify']) => {
       return i18n.t(`auth.verify.${str}`)
     }
-    // const t = (str: string) => str
 
     const handleSubmit = () => {
       console.log('submit not implemented')
