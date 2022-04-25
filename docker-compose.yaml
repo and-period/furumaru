@@ -128,7 +128,7 @@ services:
       dockerfile: Dockerfile
     working_dir: /go/src/github.com/and-period/marche
     volumes:
-      - ./api:/go/src/github.com/calmato/marche/api:cached
+      - ./api:/go/src/github.com/and-period/marche/api:cached
       - ./tmp/data/go/pkg/mod:/go/pkg/mod:delegated
 
   swagger_generator:
