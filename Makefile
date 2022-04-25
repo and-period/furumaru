@@ -3,13 +3,16 @@
 ##################################################
 .PHONY: setup build install start stop down remove logs
 
-setup: build install proto swagger migrate
+setup: build install swagger
 	if [ ! -f $(PWD)/.env ]; then \
 		cp $(PWD)/.env.temp $(PWD)/.env; \
 	fi
 
-install:
+install: proto migrate
 	docker-compose run --rm swagger_generator yarn
+	docker-compose run --rm user_web yarn
+	docker-compose run --rm shop_web yarn
+	docker-compose run --rm admin yarn
 
 build:
 	docker-compose build --parallel
