@@ -24,6 +24,21 @@ createUserRequest:
     phoneNumber: '+819012345678'
     password: '12345678'
     passwordConfirmation: '12345678'
+initializeUserRequest:
+  type: object
+  properties:
+    username:
+      type: string
+      description: ユーザー名(表示用)
+    accountId:
+      type: string
+      description: ユーザーID(検索用)
+  required:
+  - username
+  - accountId
+  example:
+    username: 'あんどぴりおど'
+    accountId: '12345678'
 verifyUserRequest:
   type: object
   properties:

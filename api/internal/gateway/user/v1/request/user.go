@@ -12,6 +12,11 @@ type VerifyUserRequest struct {
 	VerifyCode string `json:"verifyCode,omitempty"` // 検証コード
 }
 
+type InitializeUserRequest struct {
+	Username  string `json:"username,omitempty"`  // ユーザー名
+	AccountID string `json:"accountId,omitempty"` // ユーザーID(表示名)
+}
+
 type UpdateUserEmailRequest struct {
 	Email string `json:"email,omitempty"` // メールアドレス
 }

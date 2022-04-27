@@ -156,6 +156,26 @@ func (mr *MockUserServiceClientMockRecorder) GetUserAuth(ctx, in interface{}, op
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserAuth", reflect.TypeOf((*MockUserServiceClient)(nil).GetUserAuth), varargs...)
 }
 
+// InitializeUser mocks base method.
+func (m *MockUserServiceClient) InitializeUser(ctx context.Context, in *user.InitializeUserRequest, opts ...grpc.CallOption) (*user.InitializeUserResponse, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, in}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "InitializeUser", varargs...)
+	ret0, _ := ret[0].(*user.InitializeUserResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// InitializeUser indicates an expected call of InitializeUser.
+func (mr *MockUserServiceClientMockRecorder) InitializeUser(ctx, in interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, in}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InitializeUser", reflect.TypeOf((*MockUserServiceClient)(nil).InitializeUser), varargs...)
+}
+
 // RefreshUserToken mocks base method.
 func (m *MockUserServiceClient) RefreshUserToken(ctx context.Context, in *user.RefreshUserTokenRequest, opts ...grpc.CallOption) (*user.RefreshUserTokenResponse, error) {
 	m.ctrl.T.Helper()
@@ -427,6 +447,21 @@ func (m *MockUserServiceServer) GetUserAuth(arg0 context.Context, arg1 *user.Get
 func (mr *MockUserServiceServerMockRecorder) GetUserAuth(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserAuth", reflect.TypeOf((*MockUserServiceServer)(nil).GetUserAuth), arg0, arg1)
+}
+
+// InitializeUser mocks base method.
+func (m *MockUserServiceServer) InitializeUser(arg0 context.Context, arg1 *user.InitializeUserRequest) (*user.InitializeUserResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "InitializeUser", arg0, arg1)
+	ret0, _ := ret[0].(*user.InitializeUserResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// InitializeUser indicates an expected call of InitializeUser.
+func (mr *MockUserServiceServerMockRecorder) InitializeUser(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InitializeUser", reflect.TypeOf((*MockUserServiceServer)(nil).InitializeUser), arg0, arg1)
 }
 
 // RefreshUserToken mocks base method.

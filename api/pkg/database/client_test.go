@@ -1,11 +1,13 @@
 package database
 
 import (
+	"context"
 	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -59,6 +61,8 @@ func TestNewClient(t *testing.T) {
 
 func TestBeginAndClose(t *testing.T) {
 	setEnv()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	params := &Params{
 		Socket:   "tcp",
 		Host:     os.Getenv("DB_HOST"),
@@ -69,7 +73,7 @@ func TestBeginAndClose(t *testing.T) {
 	}
 	client, err := NewClient(params)
 	require.NoError(t, err)
-	tx, err := client.Begin()
+	tx, err := client.Begin(ctx)
 	require.NoError(t, err)
 	f := client.Close(tx)
 	require.NotNil(t, f)
@@ -77,6 +81,8 @@ func TestBeginAndClose(t *testing.T) {
 
 func TestTransaction(t *testing.T) {
 	setEnv()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	params := &Params{
 		Socket:   "tcp",
 		Host:     os.Getenv("DB_HOST"),
@@ -87,19 +93,20 @@ func TestTransaction(t *testing.T) {
 	}
 	client, err := NewClient(params)
 	require.NoError(t, err)
-	data, err := client.Transaction(func(tx *gorm.DB) (interface{}, error) {
+	data, err := client.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		return "data", nil
 	})
 	require.NoError(t, err)
 	require.NotNil(t, data)
 }
 
-func TestGetConfig(t *testing.T) {
+func TestNewDSN(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name   string
-		params *Params
-		expect string
+		name    string
+		params  *Params
+		options *options
+		expect  string
 	}{
 		{
 			name: "tcp socket",
@@ -111,19 +118,27 @@ func TestGetConfig(t *testing.T) {
 				Username: "root",
 				Password: "12345678",
 			},
+			options: &options{
+				logger:     zap.NewNop(),
+				timezone:   "",
+				enabledTLS: false,
+			},
 			expect: "root:12345678@tcp(127.0.0.1:3306)/test?charset=utf8mb4&parseTime=True&loc=Asia%2FTokyo",
 		},
 		{
 			name: "tcp socket with options",
 			params: &Params{
-				Socket:     "tcp",
-				Host:       "127.0.0.1",
-				Port:       "3306",
-				Database:   "test",
-				Username:   "root",
-				Password:   "12345678",
-				EnabledTLS: true,
-				TimeZone:   "UTC",
+				Socket:   "tcp",
+				Host:     "127.0.0.1",
+				Port:     "3306",
+				Database: "test",
+				Username: "root",
+				Password: "12345678",
+			},
+			options: &options{
+				logger:     zap.NewNop(),
+				timezone:   "UTC",
+				enabledTLS: true,
 			},
 			expect: "root:12345678@tcp(127.0.0.1:3306)/test?charset=utf8mb4&parseTime=True&tls=true&loc=UTC",
 		},
@@ -136,17 +151,26 @@ func TestGetConfig(t *testing.T) {
 				Username: "root",
 				Password: "12345678",
 			},
+			options: &options{
+				logger:     zap.NewNop(),
+				timezone:   "",
+				enabledTLS: false,
+			},
 			expect: "root:12345678@unix(127.0.0.1)/test?charset=utf8mb4&parseTime=true",
 		},
 		{
 			name: "unix socket with options",
 			params: &Params{
-				Socket:     "unix",
-				Host:       "127.0.0.1",
-				Database:   "test",
-				Username:   "root",
-				Password:   "12345678",
-				EnabledTLS: true,
+				Socket:   "unix",
+				Host:     "127.0.0.1",
+				Database: "test",
+				Username: "root",
+				Password: "12345678",
+			},
+			options: &options{
+				logger:     zap.NewNop(),
+				timezone:   "UTC",
+				enabledTLS: true,
 			},
 			expect: "root:12345678@unix(127.0.0.1)/test?charset=utf8mb4&parseTime=true&tls=true",
 		},
@@ -161,7 +185,7 @@ func TestGetConfig(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, getConfig(tt.params))
+			assert.Equal(t, tt.expect, newDSN(tt.params, tt.options))
 		})
 	}
 }

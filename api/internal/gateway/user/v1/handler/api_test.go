@@ -19,6 +19,7 @@ import (
 
 	mock_user "github.com/and-period/marche/api/mock/proto/user"
 	"github.com/and-period/marche/api/pkg/jst"
+	"github.com/and-period/marche/api/proto/user"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -73,8 +74,7 @@ func newAPIV1Handler(mocks *mocks, opts *testOptions) APIV1Handler {
 }
 
 func newRoutes(h APIV1Handler, r *gin.Engine) {
-	h.AuthRoutes(r.Group(""))
-	h.NoAuthRoutes(r.Group(""))
+	h.Routes(r.Group(""))
 }
 
 func testHTTP(
@@ -100,6 +100,11 @@ func testHTTP(
 	_, r := gin.CreateTestContext(w)
 	newRoutes(h, r)
 	setup(t, mocks, ctrl)
+
+	out := &user.GetUserAuthResponse{
+		Auth: &user.UserAuth{UserId: idmock},
+	}
+	mocks.user.EXPECT().GetUserAuth(gomock.Any(), gomock.Any()).Return(out, nil).MaxTimes(1)
 
 	// test
 	r.ServeHTTP(w, req)

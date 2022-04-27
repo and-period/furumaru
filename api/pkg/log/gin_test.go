@@ -9,15 +9,15 @@ import (
 func TestGinMiddleware(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name   string
-		params *Params
-		isErr  bool
+		name    string
+		options []Option
+		isErr   bool
 	}{
 		{
 			name: "success",
-			params: &Params{
-				Level: "debug",
-				Path:  "",
+			options: []Option{
+				WithLogLevel("debug"),
+				WithOutput(""),
 			},
 			isErr: false,
 		},
@@ -27,7 +27,7 @@ func TestGinMiddleware(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			logger, err := NewGinMiddleware(tt.params)
+			logger, err := NewGinMiddleware(tt.options...)
 			if tt.isErr {
 				assert.Error(t, err)
 				assert.Nil(t, logger)

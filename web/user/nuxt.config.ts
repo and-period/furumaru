@@ -34,6 +34,7 @@ const config: NuxtConfig = {
       src: '~/plugins/pincodeInput',
       mode: 'client',
     },
+    { src: 'plugins/icons', ssr: false },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -101,6 +102,9 @@ const config: NuxtConfig = {
         light: {
           primary: colors.lightGreen.darken1,
           accent: colors.orange.darken1,
+          base: '#FAF2E2',
+          facebook: '#1877F2',
+          line: '#06C755',
         },
       },
     },

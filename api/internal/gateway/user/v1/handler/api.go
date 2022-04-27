@@ -20,9 +20,7 @@ import (
  * ###############################################
  */
 type APIV1Handler interface {
-	AuthRoutes(rg *gin.RouterGroup)   // 認証済みでアクセス可能なエンドポイント一覧
-	NoAuthRoutes(rg *gin.RouterGroup) // 未認証でもアクセス可能なエンドポイント一覧
-	Authentication() gin.HandlerFunc  // 認証情報の検証
+	Routes(rg *gin.RouterGroup) // エンドポイント一覧の定義
 }
 
 type Params struct {
@@ -53,24 +51,10 @@ func NewAPIV1Handler(params *Params) APIV1Handler {
  * routes
  * ###############################################
  */
-func (h *apiV1Handler) AuthRoutes(rg *gin.RouterGroup) {
-	rg.GET("/v1/users/me", h.GetUserMe)
-	rg.DELETE("/v1/users/me", h.DeleteUser)
-	rg.PATCH("/v1/users/me/email", h.UpdateUserEmail)
-	rg.PATCH("/v1/users/me/password", h.UpdateUserPassword)
-}
-
-func (h *apiV1Handler) NoAuthRoutes(rg *gin.RouterGroup) {
-	rg.GET("/v1/auth", h.GetAuth)
-	rg.POST("/v1/auth", h.SignIn)
-	rg.DELETE("/v1/auth", h.SignOut)
-	rg.POST("/v1/auth/refresh-token", h.RefreshAuthToken)
-	rg.POST("/v1/users", h.CreateUser)
-	rg.POST("/v1/users/oauth", h.CreateUserWithOAuth)
-	rg.POST("/v1/users/verified", h.VerifyUser)
-	rg.POST("/v1/users/me/email/verified", h.VerifyUserEmail)
-	rg.POST("/v1/users/me/forgot-password", h.ForgotUserPassword)
-	rg.POST("/v1/users/me/forgot-password/verified", h.ResetUserPassword)
+func (h *apiV1Handler) Routes(rg *gin.RouterGroup) {
+	v1 := rg.Group("/v1")
+	h.authRoutes(v1.Group("/auth"))
+	h.userRoutes(v1.Group("/users"))
 }
 
 /**
@@ -97,7 +81,7 @@ func unauthorized(ctx *gin.Context, err error) {
  * other
  * ###############################################
  */
-func (h *apiV1Handler) Authentication() gin.HandlerFunc {
+func (h *apiV1Handler) authentication() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		token, err := util.GetAuthToken(ctx)
 		if err != nil {
