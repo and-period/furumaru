@@ -4,6 +4,8 @@
 ###
 # .gitignore content is duplicated here due to https://github.com/prettier/prettier/issues/8506
 
+src/types/api/**
+
 # Created by .ignore support plugin (hsz.mobi)
 ### Node template
 # Logs

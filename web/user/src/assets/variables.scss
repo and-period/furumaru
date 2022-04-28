@@ -2,3 +2,10 @@
 //
 // The variables you want to modify
 // $font-size-root: 20px;
+@import '@fontsource/stix-two-text/index.css';
+
+$btn-text-transform: none;
+
+.bg-transparent {
+  background-color: rgba(0, 0, 0, 0) !important ;
+}

@@ -11,5 +11,13 @@ module.exports = {
   ],
   plugins: [],
   // add your custom rules here
-  rules: {},
+  rules: {
+    'dot-notation': 'off',
+    'no-unused-expressions': 'off',
+    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'import/named': 'off',
+    'vue/multi-word-component-names': 'off',
+    'vue/no-mutating-props': 'off',
+  },
 }

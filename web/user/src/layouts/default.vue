@@ -91,7 +91,7 @@ export default {
 }
 </script>
 <style scoped>
-  .bg-color {
-    background-color: #FAF2E2;
-    }
+.bg-color {
+  background-color: #faf2e2;
+}
 </style>
