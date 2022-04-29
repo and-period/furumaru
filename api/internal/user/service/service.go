@@ -93,6 +93,7 @@ func userError(err error) error {
 		return nil
 	}
 
+	//nolint:gocritic
 	switch v := err.(type) {
 	case validator.ValidationErrors:
 		return fmt.Errorf("%w: %s", ErrInvalidArgument, v.Error())
