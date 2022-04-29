@@ -4,12 +4,178 @@ import (
 	"net/http"
 	"testing"
 
+	user "github.com/and-period/marche/api/internal/user/service"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 func TestErrorResponse(t *testing.T) {
+	t.Parallel()
+
+	const msg = "some error"
+	tests := []struct {
+		name         string
+		err          error
+		expect       *ErrorResponse
+		expectStatus int
+	}{
+		{
+			name: "internal error",
+			err:  user.ErrInternal,
+			expect: &ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Internal Server Error",
+				Detail:  user.ErrInternal.Error(),
+			},
+			expectStatus: http.StatusInternalServerError,
+		},
+		{
+			name: "grpc error",
+			err:  status.Error(codes.Internal, msg),
+			expect: &ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Internal Server Error",
+				Detail:  status.Error(codes.Internal, msg).Error(),
+			},
+			expectStatus: http.StatusInternalServerError,
+		},
+		{
+			name: "err is empty",
+			err:  nil,
+			expect: &ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "unknown error code",
+				Detail:  "unknown error",
+			},
+			expectStatus: http.StatusInternalServerError,
+		},
+		{
+			name: "unknown error",
+			err:  assert.AnError,
+			expect: &ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "unknown error code",
+				Detail:  "assert.AnError general error for testing",
+			},
+			expectStatus: http.StatusInternalServerError,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			res, code := NewErrorResponse(tt.err)
+			assert.Equal(t, tt.expectStatus, code)
+			assert.Equal(t, tt.expect, res)
+		})
+	}
+}
+
+func TestErrorResponse_InternalError(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name         string
+		err          error
+		expect       *ErrorResponse
+		expectStatus int
+	}{
+		{
+			name: "invalid argument",
+			err:  user.ErrInvalidArgument,
+			expect: &ErrorResponse{
+				Status:  http.StatusBadRequest,
+				Message: "Bad Request",
+				Detail:  user.ErrInvalidArgument.Error(),
+			},
+			expectStatus: http.StatusBadRequest,
+		},
+		{
+			name: "unauthenticated",
+			err:  user.ErrUnauthenticated,
+			expect: &ErrorResponse{
+				Status:  http.StatusUnauthorized,
+				Message: "Unauthorized",
+				Detail:  user.ErrUnauthenticated.Error(),
+			},
+			expectStatus: http.StatusUnauthorized,
+		},
+		{
+			name: "not found",
+			err:  user.ErrNotFound,
+			expect: &ErrorResponse{
+				Status:  http.StatusNotFound,
+				Message: "Not Found",
+				Detail:  user.ErrNotFound.Error(),
+			},
+			expectStatus: http.StatusNotFound,
+		},
+		{
+			name: "already exists",
+			err:  user.ErrAlreadyExists,
+			expect: &ErrorResponse{
+				Status:  http.StatusConflict,
+				Message: "Conflict",
+				Detail:  user.ErrAlreadyExists.Error(),
+			},
+			expectStatus: http.StatusConflict,
+		},
+		{
+			name: "failed precondition",
+			err:  user.ErrFailedPrecondition,
+			expect: &ErrorResponse{
+				Status:  http.StatusPreconditionFailed,
+				Message: "Precondition Failed",
+				Detail:  user.ErrFailedPrecondition.Error(),
+			},
+			expectStatus: http.StatusPreconditionFailed,
+		},
+		{
+			name: "not implemented",
+			err:  user.ErrNotImplemented,
+			expect: &ErrorResponse{
+				Status:  http.StatusNotImplemented,
+				Message: "Not Implemented",
+				Detail:  user.ErrNotImplemented.Error(),
+			},
+			expectStatus: http.StatusNotImplemented,
+		},
+		{
+			name: "internal",
+			err:  user.ErrInternal,
+			expect: &ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Internal Server Error",
+				Detail:  user.ErrInternal.Error(),
+			},
+			expectStatus: http.StatusInternalServerError,
+		},
+		{
+			name: "not internal error",
+			err:  nil,
+			expect: &ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "unknown error code",
+				Detail:  "unknown error",
+			},
+			expectStatus: http.StatusInternalServerError,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			res, code := NewErrorResponse(tt.err)
+			assert.Equal(t, tt.expectStatus, code)
+			assert.Equal(t, tt.expect, res)
+		})
+	}
+}
+
+func TestErrorResponse_GRPCError(t *testing.T) {
 	t.Parallel()
 
 	const msg = "some error"
@@ -140,12 +306,12 @@ func TestErrorResponse(t *testing.T) {
 			expectStatus: http.StatusUnauthorized,
 		},
 		{
-			name: "default",
+			name: "not grpc error",
 			err:  nil,
 			expect: &ErrorResponse{
 				Status:  http.StatusInternalServerError,
 				Message: "unknown error code",
-				Detail:  "util: <nil>",
+				Detail:  "unknown error",
 			},
 			expectStatus: http.StatusInternalServerError,
 		},

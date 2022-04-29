@@ -3,9 +3,8 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/marche/api/internal/gateway/entity"
 	"github.com/and-period/marche/api/internal/gateway/user/v1/response"
-	"github.com/and-period/marche/api/proto/user"
+	"github.com/and-period/marche/api/internal/user/entity"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,12 +19,10 @@ func TestAuth(t *testing.T) {
 		{
 			name: "success",
 			auth: &entity.UserAuth{
-				UserAuth: &user.UserAuth{
-					UserId:       "user-id",
-					AccessToken:  "access-token",
-					RefreshToken: "refresh-token",
-					ExpiresIn:    3600,
-				},
+				UserID:       "user-id",
+				AccessToken:  "access-token",
+				RefreshToken: "refresh-token",
+				ExpiresIn:    3600,
 			},
 			expect: &Auth{
 				Auth: &response.Auth{

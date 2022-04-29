@@ -1,4 +1,4 @@
-package api
+package service
 
 import (
 	"context"
@@ -7,10 +7,8 @@ import (
 	"github.com/and-period/marche/api/internal/user/entity"
 	"github.com/and-period/marche/api/pkg/cognito"
 	"github.com/and-period/marche/api/pkg/jst"
-	"github.com/and-period/marche/api/proto/user"
 	"github.com/golang/mock/gomock"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/protobuf/proto"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetUser(t *testing.T) {
@@ -19,7 +17,9 @@ func TestGetUser(t *testing.T) {
 	now := jst.Now()
 	u := &entity.User{
 		ID:           "user-id",
+		AccountID:    "",
 		CognitoID:    "cognito-id",
+		Username:     "",
 		ProviderType: entity.ProviderTypeEmail,
 		Email:        "test-user@and-period.jp",
 		PhoneNumber:  "+810000000000",
@@ -29,60 +29,60 @@ func TestGetUser(t *testing.T) {
 	}
 
 	tests := []struct {
-		name   string
-		setup  func(ctx context.Context, t *testing.T, mocks *mocks)
-		req    *user.GetUserRequest
-		expect *testResponse
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *GetUserInput
+		expect    *entity.User
+		expectErr error
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
 			},
-			req: &user.GetUserRequest{
-				UserId: "user-id",
+			input: &GetUserInput{
+				UserID: "user-id",
 			},
-			expect: &testResponse{
-				code: codes.OK,
-				body: &user.GetUserResponse{
-					User: &user.User{
-						Id:           "user-id",
-						ProviderType: user.ProviderType_PROVIDER_TYPE_EMAIL,
-						Email:        "test-user@and-period.jp",
-						PhoneNumber:  "+810000000000",
-						CreatedAt:    now.Unix(),
-						UpdatedAt:    now.Unix(),
-						VerifiedAt:   now.Unix(),
-					},
-				},
+			expect: &entity.User{
+				ID:           "user-id",
+				AccountID:    "",
+				CognitoID:    "cognito-id",
+				Username:     "",
+				ProviderType: entity.ProviderTypeEmail,
+				Email:        "test-user@and-period.jp",
+				PhoneNumber:  "+810000000000",
+				CreatedAt:    now,
+				UpdatedAt:    now,
+				VerifiedAt:   now,
 			},
+			expectErr: nil,
 		},
 		{
-			name:  "invalid argument",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
-			req:   &user.GetUserRequest{},
-			expect: &testResponse{
-				code: codes.InvalidArgument,
-			},
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &GetUserInput{},
+			expect:    nil,
+			expectErr: ErrInvalidArgument,
 		},
 		{
 			name: "failed to get user",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(nil, errmock)
 			},
-			req: &user.GetUserRequest{
-				UserId: "user-id",
+			input: &GetUserInput{
+				UserID: "user-id",
 			},
-			expect: &testResponse{
-				code: codes.Internal,
-			},
+			expect:    nil,
+			expectErr: ErrInternal,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testGRPC(tt.setup, tt.expect, func(ctx context.Context, service *userService) (proto.Message, error) {
-			return service.GetUser(ctx, tt.req)
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, service *userService) {
+			actual, err := service.GetUser(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
 		}))
 	}
 }
@@ -91,85 +91,76 @@ func TestCreateUser(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name   string
-		setup  func(ctx context.Context, t *testing.T, mocks *mocks)
-		req    *user.CreateUserRequest
-		expect *testResponse
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *CreateUserInput
+		expectErr error
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().Create(ctx, gomock.Any()).Return(nil)
 				mocks.userAuth.EXPECT().SignUp(ctx, gomock.Any()).Return(nil)
 			},
-			req: &user.CreateUserRequest{
+			input: &CreateUserInput{
 				Email:                "test@and-period.jp",
 				PhoneNumber:          "+819012345678",
 				Password:             "12345678",
 				PasswordConfirmation: "12345678",
 			},
-			expect: &testResponse{
-				code: codes.OK,
-			},
+			expectErr: nil,
 		},
 		{
-			name:  "invalid argument",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
-			req:   &user.CreateUserRequest{},
-			expect: &testResponse{
-				code: codes.InvalidArgument,
-			},
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &CreateUserInput{},
+			expectErr: ErrInvalidArgument,
 		},
 		{
 			name:  "failed to unmatch password",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
-			req: &user.CreateUserRequest{
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &CreateUserInput{
 				Email:                "test@and-period.jp",
 				PhoneNumber:          "+819012345678",
 				Password:             "12345678",
 				PasswordConfirmation: "11111111",
 			},
-			expect: &testResponse{
-				code: codes.InvalidArgument,
-			},
+			expectErr: ErrInvalidArgument,
 		},
 		{
 			name: "failed to create",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
 			},
-			req: &user.CreateUserRequest{
+			input: &CreateUserInput{
 				Email:                "test@and-period.jp",
 				PhoneNumber:          "+819012345678",
 				Password:             "12345678",
 				PasswordConfirmation: "12345678",
 			},
-			expect: &testResponse{
-				code: codes.Internal,
-			},
+			expectErr: ErrInternal,
 		},
 		{
 			name: "failed to create",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().Create(ctx, gomock.Any()).Return(nil)
 				mocks.userAuth.EXPECT().SignUp(ctx, gomock.Any()).Return(errmock)
 			},
-			req: &user.CreateUserRequest{
+			input: &CreateUserInput{
 				Email:                "test@and-period.jp",
 				PhoneNumber:          "+819012345678",
 				Password:             "12345678",
 				PasswordConfirmation: "12345678",
 			},
-			expect: &testResponse{
-				code: codes.Internal,
-			},
+			expectErr: ErrInternal,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testGRPC(tt.setup, tt.expect, func(ctx context.Context, service *userService) (proto.Message, error) {
-			return service.CreateUser(ctx, tt.req)
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, service *userService) {
+			_, err := service.CreateUser(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
 }
@@ -178,67 +169,59 @@ func TestVerifyUser(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name   string
-		setup  func(ctx context.Context, t *testing.T, mocks *mocks)
-		req    *user.VerifyUserRequest
-		expect *testResponse
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *VerifyUserInput
+		expectErr error
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().ConfirmSignUp(ctx, "user-id", "123456").Return(nil)
 				mocks.db.User.EXPECT().UpdateVerified(ctx, "user-id").Return(nil)
 			},
-			req: &user.VerifyUserRequest{
-				UserId:     "user-id",
+			input: &VerifyUserInput{
+				UserID:     "user-id",
 				VerifyCode: "123456",
 			},
-			expect: &testResponse{
-				code: codes.OK,
-				body: &user.VerifyUserResponse{},
-			},
+			expectErr: nil,
 		},
 		{
-			name:  "invalid argument",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
-			req:   &user.VerifyUserRequest{},
-			expect: &testResponse{
-				code: codes.InvalidArgument,
-			},
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &VerifyUserInput{},
+			expectErr: ErrInvalidArgument,
 		},
 		{
 			name: "failed to confirm sign up",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().ConfirmSignUp(ctx, "user-id", "123456").Return(errmock)
 			},
-			req: &user.VerifyUserRequest{
-				UserId:     "user-id",
+			input: &VerifyUserInput{
+				UserID:     "user-id",
 				VerifyCode: "123456",
 			},
-			expect: &testResponse{
-				code: codes.Internal,
-			},
+			expectErr: ErrInternal,
 		},
 		{
 			name: "failed to update verified",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().ConfirmSignUp(ctx, "user-id", "123456").Return(nil)
 				mocks.db.User.EXPECT().UpdateVerified(ctx, "user-id").Return(errmock)
 			},
-			req: &user.VerifyUserRequest{
-				UserId:     "user-id",
+			input: &VerifyUserInput{
+				UserID:     "user-id",
 				VerifyCode: "123456",
 			},
-			expect: &testResponse{
-				code: codes.Internal,
-			},
+			expectErr: ErrInternal,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testGRPC(tt.setup, tt.expect, func(ctx context.Context, service *userService) (proto.Message, error) {
-			return service.VerifyUser(ctx, tt.req)
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, service *userService) {
+			err := service.VerifyUser(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
 }
@@ -253,63 +236,83 @@ func TestCreateUserWithOAuth(t *testing.T) {
 	}
 
 	tests := []struct {
-		name   string
-		setup  func(ctx context.Context, t *testing.T, mocks *mocks)
-		req    *user.CreateUserWithOAuthRequest
-		expect *testResponse
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *CreateUserWithOAuthInput
+		expect    *entity.User
+		expectErr error
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().GetUser(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(auth, nil)
 				mocks.db.User.EXPECT().Create(ctx, gomock.Any()).Return(nil)
 			},
-			req: &user.CreateUserWithOAuthRequest{
+			input: &CreateUserWithOAuthInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
-			expect: &testResponse{
-				code: codes.OK,
-			},
+			expectErr: nil,
 		},
 		{
-			name:  "invalid argument",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
-			req:   &user.CreateUserWithOAuthRequest{},
-			expect: &testResponse{
-				code: codes.InvalidArgument,
-			},
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &CreateUserWithOAuthInput{},
+			expectErr: ErrInvalidArgument,
 		},
 		{
 			name: "failed to get user",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().GetUser(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(nil, errmock)
 			},
-			req: &user.CreateUserWithOAuthRequest{
+			input: &CreateUserWithOAuthInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
-			expect: &testResponse{
-				code: codes.Unauthenticated,
-			},
+			expectErr: ErrUnauthenticated,
 		},
 		{
 			name: "failed to create user",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().GetUser(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(auth, nil)
 				mocks.db.User.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
 			},
-			req: &user.CreateUserWithOAuthRequest{
+			input: &CreateUserWithOAuthInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
-			expect: &testResponse{
-				code: codes.Internal,
-			},
+			expectErr: ErrInternal,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testGRPC(tt.setup, tt.expect, func(ctx context.Context, service *userService) (proto.Message, error) {
-			return service.CreateUserWithOAuth(ctx, tt.req)
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, service *userService) {
+			_, err := service.CreateUserWithOAuth(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestInitializeUser(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *InitializeUserInput
+		expectErr error
+	}{
+		{
+			name:      "failed to create user",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &InitializeUserInput{},
+			expectErr: ErrNotImplemented,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, service *userService) {
+			err := service.InitializeUser(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
 }
@@ -324,14 +327,14 @@ func TestUpdateUserEmail(t *testing.T) {
 	}
 
 	tests := []struct {
-		name   string
-		setup  func(ctx context.Context, t *testing.T, mocks *mocks)
-		req    *user.UpdateUserEmailRequest
-		expect *testResponse
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *UpdateUserEmailInput
+		expectErr error
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				params := &cognito.ChangeEmailParams{
 					AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 					Username:    "cognito-id",
@@ -342,53 +345,44 @@ func TestUpdateUserEmail(t *testing.T) {
 				mocks.db.User.EXPECT().GetByCognitoID(ctx, "cognito-id", "id", "provider_type", "email").Return(u, nil)
 				mocks.userAuth.EXPECT().ChangeEmail(ctx, params).Return(nil)
 			},
-			req: &user.UpdateUserEmailRequest{
+			input: &UpdateUserEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				Email:       "test-other@and-period.jp",
 			},
-			expect: &testResponse{
-				code: codes.OK,
-				body: &user.UpdateUserEmailResponse{},
-			},
+			expectErr: nil,
 		},
 		{
-			name:  "invalid argument",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
-			req:   &user.UpdateUserEmailRequest{},
-			expect: &testResponse{
-				code: codes.InvalidArgument,
-			},
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &UpdateUserEmailInput{},
+			expectErr: ErrInvalidArgument,
 		},
 		{
 			name: "failed to get username",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("", errmock)
 			},
-			req: &user.UpdateUserEmailRequest{
+			input: &UpdateUserEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				Email:       "test-other@and-period.jp",
 			},
-			expect: &testResponse{
-				code: codes.Unauthenticated,
-			},
+			expectErr: ErrUnauthenticated,
 		},
 		{
 			name: "failed to get by cognito id",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
 				mocks.db.User.EXPECT().GetByCognitoID(ctx, "cognito-id", "id", "provider_type", "email").Return(nil, errmock)
 			},
-			req: &user.UpdateUserEmailRequest{
+			input: &UpdateUserEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				Email:       "test-other@and-period.jp",
 			},
-			expect: &testResponse{
-				code: codes.Internal,
-			},
+			expectErr: ErrInternal,
 		},
 		{
 			name: "failed to unmatch provider type",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				u := &entity.User{
 					ID:           "user-id",
 					ProviderType: entity.ProviderTypeOAuth,
@@ -397,17 +391,15 @@ func TestUpdateUserEmail(t *testing.T) {
 				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
 				mocks.db.User.EXPECT().GetByCognitoID(ctx, "cognito-id", "id", "provider_type", "email").Return(u, nil)
 			},
-			req: &user.UpdateUserEmailRequest{
+			input: &UpdateUserEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				Email:       "test-other@and-period.jp",
 			},
-			expect: &testResponse{
-				code: codes.FailedPrecondition,
-			},
+			expectErr: ErrFailedPrecondition,
 		},
 		{
 			name: "failed to change email",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				params := &cognito.ChangeEmailParams{
 					AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 					Username:    "cognito-id",
@@ -418,20 +410,19 @@ func TestUpdateUserEmail(t *testing.T) {
 				mocks.db.User.EXPECT().GetByCognitoID(ctx, "cognito-id", "id", "provider_type", "email").Return(u, nil)
 				mocks.userAuth.EXPECT().ChangeEmail(ctx, params).Return(errmock)
 			},
-			req: &user.UpdateUserEmailRequest{
+			input: &UpdateUserEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				Email:       "test-other@and-period.jp",
 			},
-			expect: &testResponse{
-				code: codes.Internal,
-			},
+			expectErr: ErrInternal,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testGRPC(tt.setup, tt.expect, func(ctx context.Context, service *userService) (proto.Message, error) {
-			return service.UpdateUserEmail(ctx, tt.req)
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, service *userService) {
+			err := service.UpdateUserEmail(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
 }
@@ -444,14 +435,14 @@ func TestVerifyUserEmail(t *testing.T) {
 	}
 
 	tests := []struct {
-		name   string
-		setup  func(ctx context.Context, t *testing.T, mocks *mocks)
-		req    *user.VerifyUserEmailRequest
-		expect *testResponse
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *VerifyUserEmailInput
+		expectErr error
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				params := &cognito.ConfirmChangeEmailParams{
 					AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 					Username:    "cognito-id",
@@ -462,53 +453,44 @@ func TestVerifyUserEmail(t *testing.T) {
 				mocks.userAuth.EXPECT().ConfirmChangeEmail(ctx, params).Return("test-user@and-period.jp", nil)
 				mocks.db.User.EXPECT().UpdateEmail(ctx, "user-id", "test-user@and-period.jp").Return(nil)
 			},
-			req: &user.VerifyUserEmailRequest{
+			input: &VerifyUserEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				VerifyCode:  "123456",
 			},
-			expect: &testResponse{
-				code: codes.OK,
-				body: &user.VerifyUserEmailResponse{},
-			},
+			expectErr: nil,
 		},
 		{
-			name:  "invalid argument",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
-			req:   &user.VerifyUserEmailRequest{},
-			expect: &testResponse{
-				code: codes.InvalidArgument,
-			},
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &VerifyUserEmailInput{},
+			expectErr: ErrInvalidArgument,
 		},
 		{
 			name: "failed to get username",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("", errmock)
 			},
-			req: &user.VerifyUserEmailRequest{
+			input: &VerifyUserEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				VerifyCode:  "123456",
 			},
-			expect: &testResponse{
-				code: codes.Unauthenticated,
-			},
+			expectErr: ErrUnauthenticated,
 		},
 		{
 			name: "failed to get by cognito id",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
 				mocks.db.User.EXPECT().GetByCognitoID(ctx, "cognito-id", "id").Return(nil, errmock)
 			},
-			req: &user.VerifyUserEmailRequest{
+			input: &VerifyUserEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				VerifyCode:  "123456",
 			},
-			expect: &testResponse{
-				code: codes.Internal,
-			},
+			expectErr: ErrInternal,
 		},
 		{
 			name: "failed to confirm change email",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				params := &cognito.ConfirmChangeEmailParams{
 					AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 					Username:    "cognito-id",
@@ -518,17 +500,15 @@ func TestVerifyUserEmail(t *testing.T) {
 				mocks.db.User.EXPECT().GetByCognitoID(ctx, "cognito-id", "id").Return(u, nil)
 				mocks.userAuth.EXPECT().ConfirmChangeEmail(ctx, params).Return("", errmock)
 			},
-			req: &user.VerifyUserEmailRequest{
+			input: &VerifyUserEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				VerifyCode:  "123456",
 			},
-			expect: &testResponse{
-				code: codes.Internal,
-			},
+			expectErr: ErrInternal,
 		},
 		{
 			name: "failed to update email",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				params := &cognito.ConfirmChangeEmailParams{
 					AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 					Username:    "cognito-id",
@@ -539,20 +519,19 @@ func TestVerifyUserEmail(t *testing.T) {
 				mocks.userAuth.EXPECT().ConfirmChangeEmail(ctx, params).Return("test-user@and-period.jp", nil)
 				mocks.db.User.EXPECT().UpdateEmail(ctx, "user-id", "test-user@and-period.jp").Return(errmock)
 			},
-			req: &user.VerifyUserEmailRequest{
+			input: &VerifyUserEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				VerifyCode:  "123456",
 			},
-			expect: &testResponse{
-				code: codes.Internal,
-			},
+			expectErr: ErrInternal,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testGRPC(tt.setup, tt.expect, func(ctx context.Context, service *userService) (proto.Message, error) {
-			return service.VerifyUserEmail(ctx, tt.req)
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, service *userService) {
+			err := service.VerifyUserEmail(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
 }
@@ -561,14 +540,14 @@ func TestUpdateUserPassword(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name   string
-		setup  func(ctx context.Context, t *testing.T, mocks *mocks)
-		req    *user.UpdateUserPasswordRequest
-		expect *testResponse
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *UpdateUserPasswordInput
+		expectErr error
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				params := &cognito.ChangePasswordParams{
 					AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 					OldPassword: "12345678",
@@ -576,41 +555,34 @@ func TestUpdateUserPassword(t *testing.T) {
 				}
 				mocks.userAuth.EXPECT().ChangePassword(ctx, params).Return(nil)
 			},
-			req: &user.UpdateUserPasswordRequest{
+			input: &UpdateUserPasswordInput{
 				AccessToken:          "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				OldPassword:          "12345678",
 				NewPassword:          "12345678",
 				PasswordConfirmation: "12345678",
 			},
-			expect: &testResponse{
-				code: codes.OK,
-				body: &user.UpdateUserPasswordResponse{},
-			},
+			expectErr: nil,
 		},
 		{
-			name:  "invalid argument",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
-			req:   &user.UpdateUserPasswordRequest{},
-			expect: &testResponse{
-				code: codes.InvalidArgument,
-			},
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &UpdateUserPasswordInput{},
+			expectErr: ErrInvalidArgument,
 		},
 		{
 			name:  "invalid argument for password unmatch",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
-			req: &user.UpdateUserPasswordRequest{
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &UpdateUserPasswordInput{
 				AccessToken:          "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				OldPassword:          "12345678",
 				NewPassword:          "12345678",
 				PasswordConfirmation: "123456789",
 			},
-			expect: &testResponse{
-				code: codes.InvalidArgument,
-			},
+			expectErr: ErrInvalidArgument,
 		},
 		{
 			name: "failed to change password",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				params := &cognito.ChangePasswordParams{
 					AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 					OldPassword: "12345678",
@@ -618,22 +590,21 @@ func TestUpdateUserPassword(t *testing.T) {
 				}
 				mocks.userAuth.EXPECT().ChangePassword(ctx, params).Return(errmock)
 			},
-			req: &user.UpdateUserPasswordRequest{
+			input: &UpdateUserPasswordInput{
 				AccessToken:          "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				OldPassword:          "12345678",
 				NewPassword:          "12345678",
 				PasswordConfirmation: "12345678",
 			},
-			expect: &testResponse{
-				code: codes.Internal,
-			},
+			expectErr: ErrInternal,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testGRPC(tt.setup, tt.expect, func(ctx context.Context, service *userService) (proto.Message, error) {
-			return service.UpdateUserPassword(ctx, tt.req)
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, service *userService) {
+			err := service.UpdateUserPassword(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
 }
@@ -644,64 +615,56 @@ func TestForgotUserPassword(t *testing.T) {
 	u := &entity.User{CognitoID: "cognito-id"}
 
 	tests := []struct {
-		name   string
-		setup  func(ctx context.Context, t *testing.T, mocks *mocks)
-		req    *user.ForgotUserPasswordRequest
-		expect *testResponse
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *ForgotUserPasswordInput
+		expectErr error
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(u, nil)
 				mocks.userAuth.EXPECT().ForgotPassword(ctx, "cognito-id").Return(nil)
 			},
-			req: &user.ForgotUserPasswordRequest{
+			input: &ForgotUserPasswordInput{
 				Email: "test-user@and-period.jp",
 			},
-			expect: &testResponse{
-				code: codes.OK,
-				body: &user.ForgotUserPasswordResponse{},
-			},
+			expectErr: nil,
 		},
 		{
-			name:  "invalid argument",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
-			req:   &user.ForgotUserPasswordRequest{},
-			expect: &testResponse{
-				code: codes.InvalidArgument,
-			},
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &ForgotUserPasswordInput{},
+			expectErr: ErrInvalidArgument,
 		},
 		{
 			name: "failed to get by email",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(nil, errmock)
 			},
-			req: &user.ForgotUserPasswordRequest{
+			input: &ForgotUserPasswordInput{
 				Email: "test-user@and-period.jp",
 			},
-			expect: &testResponse{
-				code: codes.Internal,
-			},
+			expectErr: ErrInternal,
 		},
 		{
 			name: "failed to forget password",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(u, nil)
 				mocks.userAuth.EXPECT().ForgotPassword(ctx, "cognito-id").Return(errmock)
 			},
-			req: &user.ForgotUserPasswordRequest{
+			input: &ForgotUserPasswordInput{
 				Email: "test-user@and-period.jp",
 			},
-			expect: &testResponse{
-				code: codes.NotFound,
-			},
+			expectErr: ErrNotFound,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testGRPC(tt.setup, tt.expect, func(ctx context.Context, service *userService) (proto.Message, error) {
-			return service.ForgotUserPassword(ctx, tt.req)
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, service *userService) {
+			err := service.ForgotUserPassword(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
 }
@@ -712,14 +675,14 @@ func TestVerifyUserPassword(t *testing.T) {
 	u := &entity.User{CognitoID: "cognito-id"}
 
 	tests := []struct {
-		name   string
-		setup  func(ctx context.Context, t *testing.T, mocks *mocks)
-		req    *user.VerifyUserPasswordRequest
-		expect *testResponse
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *VerifyUserPasswordInput
+		expectErr error
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				params := &cognito.ConfirmForgotPasswordParams{
 					Username:    "cognito-id",
 					VerifyCode:  "123456",
@@ -728,56 +691,47 @@ func TestVerifyUserPassword(t *testing.T) {
 				mocks.db.User.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(u, nil)
 				mocks.userAuth.EXPECT().ConfirmForgotPassword(ctx, params).Return(nil)
 			},
-			req: &user.VerifyUserPasswordRequest{
+			input: &VerifyUserPasswordInput{
 				Email:                "test-user@and-period.jp",
 				VerifyCode:           "123456",
 				NewPassword:          "12345678",
 				PasswordConfirmation: "12345678",
 			},
-			expect: &testResponse{
-				code: codes.OK,
-				body: &user.VerifyUserPasswordResponse{},
-			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &VerifyUserPasswordInput{},
+			expectErr: ErrInvalidArgument,
 		},
 		{
 			name:  "invalid argument",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
-			req:   &user.VerifyUserPasswordRequest{},
-			expect: &testResponse{
-				code: codes.InvalidArgument,
-			},
-		},
-		{
-			name:  "invalid argument",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
-			req: &user.VerifyUserPasswordRequest{
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &VerifyUserPasswordInput{
 				Email:                "test-user@and-period.jp",
 				VerifyCode:           "123456",
 				NewPassword:          "12345678",
 				PasswordConfirmation: "123456789",
 			},
-			expect: &testResponse{
-				code: codes.InvalidArgument,
-			},
+			expectErr: ErrInvalidArgument,
 		},
 		{
 			name: "failed to get by email",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(nil, errmock)
 			},
-			req: &user.VerifyUserPasswordRequest{
+			input: &VerifyUserPasswordInput{
 				Email:                "test-user@and-period.jp",
 				VerifyCode:           "123456",
 				NewPassword:          "12345678",
 				PasswordConfirmation: "12345678",
 			},
-			expect: &testResponse{
-				code: codes.Internal,
-			},
+			expectErr: ErrInternal,
 		},
 		{
 			name: "failed to confirm forgot password",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				params := &cognito.ConfirmForgotPasswordParams{
 					Username:    "cognito-id",
 					VerifyCode:  "123456",
@@ -786,22 +740,21 @@ func TestVerifyUserPassword(t *testing.T) {
 				mocks.db.User.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(u, nil)
 				mocks.userAuth.EXPECT().ConfirmForgotPassword(ctx, params).Return(errmock)
 			},
-			req: &user.VerifyUserPasswordRequest{
+			input: &VerifyUserPasswordInput{
 				Email:                "test-user@and-period.jp",
 				VerifyCode:           "123456",
 				NewPassword:          "12345678",
 				PasswordConfirmation: "12345678",
 			},
-			expect: &testResponse{
-				code: codes.Internal,
-			},
+			expectErr: ErrInternal,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testGRPC(tt.setup, tt.expect, func(ctx context.Context, service *userService) (proto.Message, error) {
-			return service.VerifyUserPassword(ctx, tt.req)
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, service *userService) {
+			err := service.VerifyUserPassword(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
 }
@@ -822,79 +775,69 @@ func TestDeleteUser(t *testing.T) {
 	}
 
 	tests := []struct {
-		name   string
-		setup  func(ctx context.Context, t *testing.T, mocks *mocks)
-		req    *user.DeleteUserRequest
-		expect *testResponse
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *DeleteUserInput
+		expectErr error
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
 				mocks.userAuth.EXPECT().DeleteUser(ctx, "cognito-id").Return(nil)
 				mocks.db.User.EXPECT().Delete(ctx, "user-id").Return(nil)
 			},
-			req: &user.DeleteUserRequest{
-				UserId: "user-id",
+			input: &DeleteUserInput{
+				UserID: "user-id",
 			},
-			expect: &testResponse{
-				code: codes.OK,
-				body: &user.DeleteUserResponse{},
-			},
+			expectErr: nil,
 		},
 		{
-			name:  "invalid argument",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
-			req:   &user.DeleteUserRequest{},
-			expect: &testResponse{
-				code: codes.InvalidArgument,
-			},
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &DeleteUserInput{},
+			expectErr: ErrInvalidArgument,
 		},
 		{
 			name: "failed to delete cognito user",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, errmock)
 			},
-			req: &user.DeleteUserRequest{
-				UserId: "user-id",
+			input: &DeleteUserInput{
+				UserID: "user-id",
 			},
-			expect: &testResponse{
-				code: codes.Internal,
-			},
+			expectErr: ErrInternal,
 		},
 		{
 			name: "failed to delete cognito user",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
 				mocks.userAuth.EXPECT().DeleteUser(ctx, "cognito-id").Return(errmock)
 			},
-			req: &user.DeleteUserRequest{
-				UserId: "user-id",
+			input: &DeleteUserInput{
+				UserID: "user-id",
 			},
-			expect: &testResponse{
-				code: codes.Internal,
-			},
+			expectErr: ErrInternal,
 		},
 		{
 			name: "failed to delete user",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
 				mocks.userAuth.EXPECT().DeleteUser(ctx, "cognito-id").Return(nil)
 				mocks.db.User.EXPECT().Delete(ctx, "user-id").Return(errmock)
 			},
-			req: &user.DeleteUserRequest{
-				UserId: "user-id",
+			input: &DeleteUserInput{
+				UserID: "user-id",
 			},
-			expect: &testResponse{
-				code: codes.Internal,
-			},
+			expectErr: ErrInternal,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testGRPC(tt.setup, tt.expect, func(ctx context.Context, service *userService) (proto.Message, error) {
-			return service.DeleteUser(ctx, tt.req)
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, service *userService) {
+			err := service.DeleteUser(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
 }

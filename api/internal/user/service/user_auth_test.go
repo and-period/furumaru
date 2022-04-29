@@ -1,4 +1,4 @@
-package api
+package service
 
 import (
 	"context"
@@ -6,9 +6,7 @@ import (
 
 	"github.com/and-period/marche/api/internal/user/entity"
 	"github.com/and-period/marche/api/pkg/cognito"
-	"github.com/and-period/marche/api/proto/user"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/protobuf/proto"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestSignInUser(t *testing.T) {
@@ -23,82 +21,85 @@ func TestSignInUser(t *testing.T) {
 	u := &entity.User{ID: "user-id"}
 
 	tests := []struct {
-		name   string
-		setup  func(ctx context.Context, t *testing.T, mocks *mocks)
-		req    *user.SignInUserRequest
-		expect *testResponse
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *SignInUserInput
+		expect    *entity.UserAuth
+		expectErr error
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().SignIn(ctx, "username", "password").Return(result, nil)
 				mocks.userAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.User.EXPECT().GetByCognitoID(ctx, "username", "id").Return(u, nil)
 			},
-			req: &user.SignInUserRequest{
-				Username: "username",
+			input: &SignInUserInput{
+				Key:      "username",
 				Password: "password",
 			},
-			expect: &testResponse{
-				code: codes.OK,
-				body: &user.SignInUserResponse{
-					Auth: &user.UserAuth{
-						UserId:       "user-id",
-						AccessToken:  "access-token",
-						RefreshToken: "refresh-token",
-						ExpiresIn:    3600,
-					},
-				},
+			expect: &entity.UserAuth{
+				UserID:       "user-id",
+				AccessToken:  "access-token",
+				RefreshToken: "refresh-token",
+				ExpiresIn:    3600,
 			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &SignInUserInput{},
+			expect:    nil,
+			expectErr: ErrInvalidArgument,
 		},
 		{
 			name: "failed to sign in",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().SignIn(ctx, "username", "password").Return(nil, errmock)
 			},
-			req: &user.SignInUserRequest{
-				Username: "username",
+			input: &SignInUserInput{
+				Key:      "username",
 				Password: "password",
 			},
-			expect: &testResponse{
-				code: codes.Unauthenticated,
-			},
+			expect:    nil,
+			expectErr: ErrUnauthenticated,
 		},
 		{
 			name: "failed to get username",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().SignIn(ctx, "username", "password").Return(result, nil)
 				mocks.userAuth.EXPECT().GetUsername(ctx, "access-token").Return("", errmock)
 			},
-			req: &user.SignInUserRequest{
-				Username: "username",
+			input: &SignInUserInput{
+				Key:      "username",
 				Password: "password",
 			},
-			expect: &testResponse{
-				code: codes.Internal,
-			},
+			expect:    nil,
+			expectErr: ErrInternal,
 		},
 		{
 			name: "failed to get by cognito id",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().SignIn(ctx, "username", "password").Return(result, nil)
 				mocks.userAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.User.EXPECT().GetByCognitoID(ctx, "username", "id").Return(nil, errmock)
 			},
-			req: &user.SignInUserRequest{
-				Username: "username",
+			input: &SignInUserInput{
+				Key:      "username",
 				Password: "password",
 			},
-			expect: &testResponse{
-				code: codes.Internal,
-			},
+			expect:    nil,
+			expectErr: ErrInternal,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testGRPC(tt.setup, tt.expect, func(ctx context.Context, service *userService) (proto.Message, error) {
-			return service.SignInUser(ctx, tt.req)
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, service *userService) {
+			actual, err := service.SignInUser(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
 		}))
 	}
 }
@@ -107,52 +108,46 @@ func TestSignOutUser(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name   string
-		setup  func(ctx context.Context, t *testing.T, mocks *mocks)
-		req    *user.SignOutUserRequest
-		expect *testResponse
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *SignOutUserInput
+		expectErr error
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().SignOut(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(nil)
 			},
-			req: &user.SignOutUserRequest{
+			input: &SignOutUserInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
-			expect: &testResponse{
-				code: codes.OK,
-				body: &user.SignOutUserResponse{},
-			},
+			expectErr: nil,
 		},
 		{
 			name:  "invalid argument",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
-			req: &user.SignOutUserRequest{
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &SignOutUserInput{
 				AccessToken: "",
 			},
-			expect: &testResponse{
-				code: codes.InvalidArgument,
-			},
+			expectErr: ErrInvalidArgument,
 		},
 		{
 			name: "failed to sign out",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().SignOut(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(errmock)
 			},
-			req: &user.SignOutUserRequest{
+			input: &SignOutUserInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
-			expect: &testResponse{
-				code: codes.Unauthenticated,
-			},
+			expectErr: ErrUnauthenticated,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testGRPC(tt.setup, tt.expect, func(ctx context.Context, service *userService) (proto.Message, error) {
-			return service.SignOutUser(ctx, tt.req)
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, service *userService) {
+			err := service.SignOutUser(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
 }
@@ -163,73 +158,69 @@ func TestGetUserAuth(t *testing.T) {
 	u := &entity.User{ID: "user-id"}
 
 	tests := []struct {
-		name   string
-		setup  func(ctx context.Context, t *testing.T, mocks *mocks)
-		req    *user.GetUserAuthRequest
-		expect *testResponse
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *GetUserAuthInput
+		expect    *entity.UserAuth
+		expectErr error
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("username", nil)
 				mocks.db.User.EXPECT().GetByCognitoID(ctx, "username", "id").Return(u, nil)
 			},
-			req: &user.GetUserAuthRequest{
+			input: &GetUserAuthInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
-			expect: &testResponse{
-				code: codes.OK,
-				body: &user.GetUserAuthResponse{
-					Auth: &user.UserAuth{
-						UserId:       "user-id",
-						AccessToken:  "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
-						RefreshToken: "",
-						ExpiresIn:    0,
-					},
-				},
+			expect: &entity.UserAuth{
+				UserID:       "user-id",
+				AccessToken:  "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+				RefreshToken: "",
+				ExpiresIn:    0,
 			},
+			expectErr: nil,
 		},
 		{
 			name:  "invalid argument",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
-			req: &user.GetUserAuthRequest{
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &GetUserAuthInput{
 				AccessToken: "",
 			},
-			expect: &testResponse{
-				code: codes.InvalidArgument,
-			},
+			expect:    nil,
+			expectErr: ErrInvalidArgument,
 		},
 		{
 			name: "failed to get username",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("", errmock)
 			},
-			req: &user.GetUserAuthRequest{
+			input: &GetUserAuthInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
-			expect: &testResponse{
-				code: codes.Unauthenticated,
-			},
+			expect:    nil,
+			expectErr: ErrUnauthenticated,
 		},
 		{
 			name: "failed to get by cognito id",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("username", nil)
 				mocks.db.User.EXPECT().GetByCognitoID(ctx, "username", "id").Return(u, errmock)
 			},
-			req: &user.GetUserAuthRequest{
+			input: &GetUserAuthInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
-			expect: &testResponse{
-				code: codes.Unauthenticated,
-			},
+			expect:    nil,
+			expectErr: ErrUnauthenticated,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testGRPC(tt.setup, tt.expect, func(ctx context.Context, service *userService) (proto.Message, error) {
-			return service.GetUserAuth(ctx, tt.req)
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, service *userService) {
+			actual, err := service.GetUserAuth(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
 		}))
 	}
 }
@@ -246,88 +237,83 @@ func TestRefreshUserToken(t *testing.T) {
 	u := &entity.User{ID: "user-id"}
 
 	tests := []struct {
-		name   string
-		setup  func(ctx context.Context, t *testing.T, mocks *mocks)
-		req    *user.RefreshUserTokenRequest
-		expect *testResponse
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *RefreshUserTokenInput
+		expect    *entity.UserAuth
+		expectErr error
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(result, nil)
 				mocks.userAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.User.EXPECT().GetByCognitoID(ctx, "username", "id").Return(u, nil)
 			},
-			req: &user.RefreshUserTokenRequest{
+			input: &RefreshUserTokenInput{
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
-			expect: &testResponse{
-				code: codes.OK,
-				body: &user.RefreshUserTokenResponse{
-					Auth: &user.UserAuth{
-						UserId:       "user-id",
-						AccessToken:  "access-token",
-						RefreshToken: "",
-						ExpiresIn:    3600,
-					},
-				},
+			expect: &entity.UserAuth{
+				UserID:       "user-id",
+				AccessToken:  "access-token",
+				RefreshToken: "",
+				ExpiresIn:    3600,
 			},
+			expectErr: nil,
 		},
 		{
 			name:  "invalid argument",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {},
-			req: &user.RefreshUserTokenRequest{
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &RefreshUserTokenInput{
 				RefreshToken: "",
 			},
-			expect: &testResponse{
-				code: codes.InvalidArgument,
-			},
+			expect:    nil,
+			expectErr: ErrInvalidArgument,
 		},
 		{
 			name: "failed to sign in",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(nil, errmock)
 			},
-			req: &user.RefreshUserTokenRequest{
+			input: &RefreshUserTokenInput{
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
-			expect: &testResponse{
-				code: codes.Unauthenticated,
-			},
+			expect:    nil,
+			expectErr: ErrUnauthenticated,
 		},
 		{
 			name: "failed to get username",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(result, nil)
 				mocks.userAuth.EXPECT().GetUsername(ctx, "access-token").Return("", errmock)
 			},
-			req: &user.RefreshUserTokenRequest{
+			input: &RefreshUserTokenInput{
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
-			expect: &testResponse{
-				code: codes.Internal,
-			},
+			expect:    nil,
+			expectErr: ErrInternal,
 		},
 		{
 			name: "failed to get by cognito id",
-			setup: func(ctx context.Context, t *testing.T, mocks *mocks) {
+			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(result, nil)
 				mocks.userAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.User.EXPECT().GetByCognitoID(ctx, "username", "id").Return(nil, errmock)
 			},
-			req: &user.RefreshUserTokenRequest{
+			input: &RefreshUserTokenInput{
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
-			expect: &testResponse{
-				code: codes.Internal,
-			},
+			expect:    nil,
+			expectErr: ErrInternal,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testGRPC(tt.setup, tt.expect, func(ctx context.Context, service *userService) (proto.Message, error) {
-			return service.RefreshUserToken(ctx, tt.req)
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, service *userService) {
+			actual, err := service.RefreshUserToken(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
 		}))
 	}
 }

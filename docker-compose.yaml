@@ -53,28 +53,6 @@ services:
       - SHUTDOWN_DELAY_SEC=0
       - LOG_LEVEL=debug
       - LOG_PATH=/var/log/api
-      - USER_SERVICE_URL=user_api:9000
-    ports:
-      - 18000:9000
-      - 18001:9001
-    command: make dev SERVICE=gateway/user
-
-  user_api:
-    container_name: user_api
-    build:
-      context: .
-      dockerfile: ./infra/docker/api/Dockerfile.development
-    working_dir: /go/src/github.com/and-period/marche/api
-    volumes:
-      - ./api:/go/src/github.com/and-period/marche/api:cached
-      - ./tmp/data/go/pkg/mod:/go/pkg/mod:delegated
-      - ./tmp/logs/api/user/server:/var/log/api:delegated
-    environment:
-      - PORT=9000
-      - METRICS_PORT=9001
-      - SHUTDOWN_DELAY_SEC=0
-      - LOG_LEVEL=debug
-      - LOG_PATH=/var/log/api
       - DB_HOST=${MYSQL_HOST}
       - DB_PORT=${MYSQL_PORT}
       - DB_USERNAME=${MYSQL_USERNAME}
@@ -87,9 +65,9 @@ services:
       - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
       - COGNITO_CLIENT_ID=${COGNITO_CLIENT_ID}
     ports:
-      - 19000:9000
-      - 19001:9001
-    command: make dev SERVICE=user/server
+      - 18000:9000
+      - 18001:9001
+    command: make dev SERVICE=gateway/user
 
   mysql_test:
     container_name: mysql_test
@@ -119,17 +97,6 @@ services:
     environment:
       - DB_USERNAME=root
       - DB_PASSWORD=12345678
-
-  proto:
-    container_name: proto
-    platform: linux/x86_64
-    build:
-      context: ./infra/docker/api/proto
-      dockerfile: Dockerfile
-    working_dir: /go/src/github.com/and-period/marche
-    volumes:
-      - ./api:/go/src/github.com/and-period/marche/api:cached
-      - ./tmp/data/go/pkg/mod:/go/pkg/mod:delegated
 
   swagger_generator:
     container_name: swagger_generator

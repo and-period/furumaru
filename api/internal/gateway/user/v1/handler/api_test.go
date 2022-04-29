@@ -17,9 +17,9 @@ import (
 	"testing"
 	"time"
 
-	mock_user "github.com/and-period/marche/api/mock/proto/user"
+	uentity "github.com/and-period/marche/api/internal/user/entity"
+	mock_user "github.com/and-period/marche/api/mock/user/service"
 	"github.com/and-period/marche/api/pkg/jst"
-	"github.com/and-period/marche/api/proto/user"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -35,7 +35,7 @@ var (
 )
 
 type mocks struct {
-	user *mock_user.MockUserServiceClient
+	user *mock_user.MockUserService
 }
 
 type testResponse struct {
@@ -59,7 +59,7 @@ func withNow(now time.Time) testOption {
 
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
-		user: mock_user.NewMockUserServiceClient(ctrl),
+		user: mock_user.NewMockUserService(ctrl),
 	}
 }
 
@@ -101,10 +101,8 @@ func testHTTP(
 	newRoutes(h, r)
 	setup(t, mocks, ctrl)
 
-	out := &user.GetUserAuthResponse{
-		Auth: &user.UserAuth{UserId: idmock},
-	}
-	mocks.user.EXPECT().GetUserAuth(gomock.Any(), gomock.Any()).Return(out, nil).MaxTimes(1)
+	auth := &uentity.UserAuth{UserID: idmock}
+	mocks.user.EXPECT().GetUserAuth(gomock.Any(), gomock.Any()).Return(auth, nil).MaxTimes(1)
 
 	// test
 	r.ServeHTTP(w, req)
@@ -193,7 +191,8 @@ func getFilepath(t *testing.T) string {
 
 func TestAPIV1Handler(t *testing.T) {
 	t.Parallel()
-	assert.NotNil(t, NewAPIV1Handler(&Params{}))
+	h := NewAPIV1Handler(&Params{}, WithLogger(zap.NewNop()))
+	assert.NotNil(t, h)
 }
 
 func TestSetAuth(t *testing.T) {

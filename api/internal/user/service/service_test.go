@@ -1,10 +1,9 @@
-package api
+package service
 
 import (
 	"context"
 	"errors"
 	"fmt"
-	"sync"
 	"testing"
 	"time"
 
@@ -12,14 +11,11 @@ import (
 	mock_cognito "github.com/and-period/marche/api/mock/pkg/cognito"
 	mock_database "github.com/and-period/marche/api/mock/user/database"
 	"github.com/and-period/marche/api/pkg/jst"
+	"github.com/go-playground/validator/v10"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 	"golang.org/x/sync/singleflight"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-	"google.golang.org/protobuf/proto"
 )
 
 var errmock = errors.New("some error")
@@ -31,11 +27,6 @@ type mocks struct {
 
 type dbMocks struct {
 	User *mock_database.MockUser
-}
-
-type testResponse struct {
-	code codes.Code
-	body proto.Message
 }
 
 type testOptions struct {
@@ -52,7 +43,7 @@ func withNow(now time.Time) testOption {
 	}
 }
 
-type grpcCaller func(ctx context.Context, service *userService) (proto.Message, error)
+type testCaller func(ctx context.Context, service *userService)
 
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
@@ -67,12 +58,18 @@ func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	}
 }
 
-func newUserService(mocks *mocks, opts *testOptions) *userService {
+func newUserService(mocks *mocks, opts ...testOption) *userService {
+	dopts := &testOptions{
+		now: jst.Now,
+	}
+	for i := range opts {
+		opts[i](dopts)
+	}
 	return &userService{
-		now:         jst.Now,
+		now:         dopts.now,
 		logger:      zap.NewNop(),
 		sharedGroup: &singleflight.Group{},
-		waitGroup:   &sync.WaitGroup{},
+		validator:   newValidator(),
 		db: &database.Database{
 			User: mocks.db.User,
 		},
@@ -80,10 +77,9 @@ func newUserService(mocks *mocks, opts *testOptions) *userService {
 	}
 }
 
-func testGRPC(
-	setup func(context.Context, *testing.T, *mocks),
-	expect *testResponse,
-	grpcFn grpcCaller,
+func testService(
+	setup func(ctx context.Context, mocks *mocks),
+	testFunc testCaller,
 	opts ...testOption,
 ) func(t *testing.T) {
 	return func(t *testing.T) {
@@ -92,85 +88,62 @@ func testGRPC(
 		defer cancel()
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
-
-		dopts := &testOptions{
-			now: jst.Now,
-		}
-		for i := range opts {
-			opts[i](dopts)
-		}
-
 		mocks := newMocks(ctrl)
-		service := newUserService(mocks, dopts)
-		if setup != nil {
-			setup(ctx, t, mocks)
-		}
 
-		res, err := grpcFn(ctx, service)
-		if expect != nil {
-			switch expect.code {
-			case codes.OK:
-				require.NoError(t, err)
-			default:
-				require.Error(t, err)
-				status, ok := status.FromError(err)
-				require.True(t, ok)
-				require.Equal(t, expect.code, status.Code(), status.Code().String())
-			}
-			if expect.body != nil {
-				require.Equal(t, expect.body, res)
-			}
-		}
-		service.waitGroup.Wait()
+		srv := newUserService(mocks)
+		setup(ctx, mocks)
+
+		testFunc(ctx, srv)
 	}
 }
 
 func TestUserService(t *testing.T) {
 	t.Parallel()
-	assert.NotNil(t, NewUserService(&Params{}))
+	srv := NewUserService(&Params{}, WithLogger(zap.NewNop()))
+	assert.NotNil(t, srv)
 }
 
-func TestGRPCError(t *testing.T) {
+func TestUserError(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name   string
 		err    error
-		expect codes.Code
+		expect error
 	}{
 		{
 			name:   "error is nil",
 			err:    nil,
-			expect: codes.OK,
+			expect: nil,
 		},
 		{
-			name:   "grpc error",
-			err:    status.Error(codes.Unavailable, errmock.Error()),
-			expect: codes.Unavailable,
+			name:   "validation error",
+			err:    validator.ValidationErrors{},
+			expect: ErrInvalidArgument,
 		},
 		{
 			name:   "invalid argument",
 			err:    fmt.Errorf("%w: %s", database.ErrInvalidArgument, errmock),
-			expect: codes.InvalidArgument,
+			expect: ErrInvalidArgument,
 		},
 		{
 			name:   "not found",
 			err:    fmt.Errorf("%w: %s", database.ErrNotFound, errmock),
-			expect: codes.NotFound,
+			expect: ErrNotFound,
 		},
 		{
 			name:   "already exists",
 			err:    fmt.Errorf("%w: %s", database.ErrAlreadyExists, errmock),
-			expect: codes.AlreadyExists,
+			expect: ErrAlreadyExists,
 		},
 		{
 			name:   "unimplemented",
 			err:    fmt.Errorf("%w: %s", database.ErrNotImplemented, errmock),
-			expect: codes.Unimplemented,
+			expect: ErrNotImplemented,
 		},
 		{
 			name:   "other error",
 			err:    errmock,
-			expect: codes.Internal,
+			expect: ErrInternal,
 		},
 	}
 
@@ -178,8 +151,8 @@ func TestGRPCError(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			err := gRPCError(tt.err)
-			assert.Equal(t, tt.expect, status.Code(err))
+			err := userError(tt.err)
+			assert.ErrorIs(t, err, tt.expect)
 		})
 	}
 }

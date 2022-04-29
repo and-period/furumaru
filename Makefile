@@ -8,11 +8,11 @@ setup: build install swagger
 		cp $(PWD)/.env.temp $(PWD)/.env; \
 	fi
 
-install: proto migrate
+install: migrate
 	docker-compose run --rm swagger_generator yarn
 	docker-compose run --rm user_web yarn
 	docker-compose run --rm shop_web yarn
-	docker-compose run --rm admin yarn
+	docker-compose run --rm admin_web yarn
 
 build:
 	docker-compose build --parallel
@@ -40,8 +40,8 @@ logs:
 start-web:
 	docker-compose up user_web shop_web admin_web
 
-start-api: proto migrate
-	docker-compose up user_gateway user_api mysql mysql_test
+start-api: migrate
+	docker-compose up user_gateway mysql_test
 
 start-swagger:
 	docker-compose up swagger_generator swagger_user
@@ -53,9 +53,6 @@ start-test:
 # Container Commands - Single
 ##################################################
 .PHONY: proto swagger migrate
-
-proto:
-	docker-compose run --rm proto bash -c "cd ./api; make install; make protoc"
 
 swagger:
 	docker-compose run --rm swagger_generator yarn generate

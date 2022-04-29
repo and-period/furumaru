@@ -1,16 +1,18 @@
 package cmd
 
 import (
-	"crypto/tls"
-	"crypto/x509"
+	"context"
 	"sync"
 
 	v1 "github.com/and-period/marche/api/internal/gateway/user/v1/handler"
-	"github.com/and-period/marche/api/proto/user"
+	userdb "github.com/and-period/marche/api/internal/user/database"
+	user "github.com/and-period/marche/api/internal/user/service"
+	"github.com/and-period/marche/api/pkg/cognito"
+	"github.com/and-period/marche/api/pkg/database"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	awsconfig "github.com/aws/aws-sdk-go-v2/config"
+	awscredentials "github.com/aws/aws-sdk-go-v2/credentials"
 	"go.uber.org/zap"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 type registry struct {
@@ -23,17 +25,13 @@ type options struct {
 
 type option func(opts *options)
 
-type gRPCClient struct {
-	user user.UserServiceClient
-}
-
 func withLogger(logger *zap.Logger) option {
 	return func(opts *options) {
 		opts.logger = logger
 	}
 }
 
-func newRegistry(conf *config, opts ...option) (*registry, error) {
+func newRegistry(ctx context.Context, conf *config, opts ...option) (*registry, error) {
 	// オプション設定の取得
 	dopts := &options{
 		logger: zap.NewNop(),
@@ -42,60 +40,76 @@ func newRegistry(conf *config, opts ...option) (*registry, error) {
 		opts[i](dopts)
 	}
 
-	// gRPC Clientの設定
-	grpcCli, err := newGRPCClient(conf)
+	userService, err := newUserService(ctx, conf, dopts)
 	if err != nil {
 		return nil, err
 	}
 
 	// Handlerの設定
 	v1Params := &v1.Params{
-		Logger:      dopts.logger,
 		WaitGroup:   &sync.WaitGroup{},
-		UserService: grpcCli.user,
+		UserService: userService,
 	}
 
 	return &registry{
-		v1: v1.NewAPIV1Handler(v1Params),
+		v1: v1.NewAPIV1Handler(v1Params, v1.WithLogger(dopts.logger)),
 	}, nil
 }
 
-func newGRPCClient(conf *config) (*gRPCClient, error) {
-	opts, err := newGRPCOptions(conf)
+func newDatabase(db string, conf *config, opts *options) (*database.Client, error) {
+	params := &database.Params{
+		Socket:   conf.DBSocket,
+		Host:     conf.DBHost,
+		Port:     conf.DBPort,
+		Database: db,
+		Username: conf.DBUsername,
+		Password: conf.DBPassword,
+	}
+	return database.NewClient(
+		params,
+		database.WithLogger(opts.logger),
+		database.WithTLS(conf.DBEnabledTLS),
+		database.WithTimeZone(conf.DBTimeZone),
+	)
+}
+
+func newUserService(ctx context.Context, conf *config, opts *options) (user.UserService, error) {
+	// MySQLの設定
+	mysql, err := newDatabase("users", conf, opts)
 	if err != nil {
 		return nil, err
 	}
 
-	if conf.ProxyHost != "" {
-		conf.UserServiceURL = conf.ProxyHost
-	}
-
-	userConn, err := grpc.Dial(conf.UserServiceURL, opts...)
+	// Amazon Cognitoの設定
+	awscreds := aws.NewCredentialsCache(
+		awscredentials.NewStaticCredentialsProvider(conf.AWSAccessKey, conf.AWSSecretKey, ""),
+	)
+	awscfg, err := awsconfig.LoadDefaultConfig(ctx,
+		awsconfig.WithRegion(conf.AWSRegion),
+		awsconfig.WithCredentialsProvider(awscreds),
+	)
 	if err != nil {
 		return nil, err
 	}
-
-	return &gRPCClient{
-		user: user.NewUserServiceClient(userConn),
-	}, nil
-}
-
-func newGRPCOptions(conf *config) ([]grpc.DialOption, error) {
-	var opts []grpc.DialOption
-
-	var cred credentials.TransportCredentials
-	if conf.GRPCInsecure {
-		cred = insecure.NewCredentials()
-	} else {
-		systemRoots, err := x509.SystemCertPool()
-		if err != nil {
-			return nil, err
-		}
-		cred = credentials.NewTLS(&tls.Config{
-			RootCAs: systemRoots,
-		})
+	userAuthParams := &cognito.Params{
+		UserPoolID:      conf.CognitoUserPoolID,
+		AppClientID:     conf.CognitoClientID,
+		AppClientSecret: conf.CognitoClientSecret,
 	}
-	opts = append(opts, grpc.WithTransportCredentials(cred))
+	userAuth := cognito.NewClient(awscfg, userAuthParams)
 
-	return opts, nil
+	// Databaseの設定
+	dbParams := &userdb.Params{
+		Database: mysql,
+	}
+
+	// User Serviceの設定
+	params := &user.Params{
+		Database: userdb.NewDatabase(dbParams),
+		UserAuth: userAuth,
+	}
+	return user.NewUserService(
+		params,
+		user.WithLogger(opts.logger),
+	), nil
 }

@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/and-period/marche/api/internal/gateway/util"
+	user "github.com/and-period/marche/api/internal/user/service"
 	"github.com/and-period/marche/api/pkg/jst"
-	"github.com/and-period/marche/api/proto/user"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"golang.org/x/sync/singleflight"
@@ -24,9 +24,8 @@ type APIV1Handler interface {
 }
 
 type Params struct {
-	Logger      *zap.Logger
 	WaitGroup   *sync.WaitGroup
-	UserService user.UserServiceClient
+	UserService user.UserService
 }
 
 type apiV1Handler struct {
@@ -34,13 +33,31 @@ type apiV1Handler struct {
 	logger      *zap.Logger
 	sharedGroup *singleflight.Group
 	waitGroup   *sync.WaitGroup
-	user        user.UserServiceClient
+	user        user.UserService
 }
 
-func NewAPIV1Handler(params *Params) APIV1Handler {
+type options struct {
+	logger *zap.Logger
+}
+
+type Option func(opts *options)
+
+func WithLogger(logger *zap.Logger) Option {
+	return func(opts *options) {
+		opts.logger = logger
+	}
+}
+
+func NewAPIV1Handler(params *Params, opts ...Option) APIV1Handler {
+	dopts := &options{
+		logger: zap.NewNop(),
+	}
+	for i := range opts {
+		opts[i](dopts)
+	}
 	return &apiV1Handler{
 		now:       jst.Now,
-		logger:    params.Logger,
+		logger:    dopts.logger,
 		waitGroup: params.WaitGroup,
 		user:      params.UserService,
 	}
@@ -89,14 +106,14 @@ func (h *apiV1Handler) authentication() gin.HandlerFunc {
 			return
 		}
 
-		in := &user.GetUserAuthRequest{AccessToken: token}
-		out, err := h.user.GetUserAuth(ctx, in)
-		if err != nil || out.Auth.UserId == "" {
+		in := &user.GetUserAuthInput{AccessToken: token}
+		auth, err := h.user.GetUserAuth(ctx, in)
+		if err != nil || auth.UserID == "" {
 			unauthorized(ctx, err)
 			return
 		}
 
-		setAuth(ctx, out.Auth.UserId)
+		setAuth(ctx, auth.UserID)
 
 		ctx.Next()
 	}
