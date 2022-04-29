@@ -1,9 +1,6 @@
 package entity
 
-import (
-	"github.com/and-period/marche/api/pkg/cognito"
-	"github.com/and-period/marche/api/proto/user"
-)
+import "github.com/and-period/marche/api/pkg/cognito"
 
 type UserAuth struct {
 	UserID       string
@@ -18,14 +15,5 @@ func NewUserAuth(userID string, rs *cognito.AuthResult) *UserAuth {
 		AccessToken:  rs.AccessToken,
 		RefreshToken: rs.RefreshToken,
 		ExpiresIn:    rs.ExpiresIn,
-	}
-}
-
-func (a *UserAuth) Proto() *user.UserAuth {
-	return &user.UserAuth{
-		UserId:       a.UserID,
-		AccessToken:  a.AccessToken,
-		RefreshToken: a.RefreshToken,
-		ExpiresIn:    a.ExpiresIn,
 	}
 }

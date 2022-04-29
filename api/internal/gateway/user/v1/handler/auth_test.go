@@ -6,15 +6,16 @@ import (
 
 	"github.com/and-period/marche/api/internal/gateway/user/v1/request"
 	"github.com/and-period/marche/api/internal/gateway/user/v1/response"
-	"github.com/and-period/marche/api/proto/user"
+	uentity "github.com/and-period/marche/api/internal/user/entity"
+	user "github.com/and-period/marche/api/internal/user/service"
 	"github.com/golang/mock/gomock"
 )
 
 func TestGetAuth(t *testing.T) {
 	t.Parallel()
 
-	auth := &user.UserAuth{
-		UserId:       "user-id",
+	auth := &uentity.UserAuth{
+		UserID:       "user-id",
 		AccessToken:  "access-token",
 		RefreshToken: "refresh-token",
 		ExpiresIn:    3600,
@@ -28,9 +29,8 @@ func TestGetAuth(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.GetUserAuthRequest{AccessToken: tokenmock}
-				out := &user.GetUserAuthResponse{Auth: auth}
-				mocks.user.EXPECT().GetUserAuth(gomock.Any(), in).Return(out, nil)
+				in := &user.GetUserAuthInput{AccessToken: tokenmock}
+				mocks.user.EXPECT().GetUserAuth(gomock.Any(), in).Return(auth, nil)
 			},
 			expect: &testResponse{
 				code: http.StatusOK,
@@ -48,7 +48,7 @@ func TestGetAuth(t *testing.T) {
 		{
 			name: "failed to get user auth",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.GetUserAuthRequest{AccessToken: tokenmock}
+				in := &user.GetUserAuthInput{AccessToken: tokenmock}
 				mocks.user.EXPECT().GetUserAuth(gomock.Any(), in).Return(nil, errmock)
 			},
 			expect: &testResponse{
@@ -71,8 +71,8 @@ func TestGetAuth(t *testing.T) {
 func TestSignIn(t *testing.T) {
 	t.Parallel()
 
-	auth := &user.UserAuth{
-		UserId:       "user-id",
+	auth := &uentity.UserAuth{
+		UserID:       "user-id",
 		AccessToken:  "access-token",
 		RefreshToken: "refresh-token",
 		ExpiresIn:    3600,
@@ -87,12 +87,11 @@ func TestSignIn(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.SignInUserRequest{
-					Username: "username",
+				in := &user.SignInUserInput{
+					Key:      "username",
 					Password: "password",
 				}
-				out := &user.SignInUserResponse{Auth: auth}
-				mocks.user.EXPECT().SignInUser(gomock.Any(), in).Return(out, nil)
+				mocks.user.EXPECT().SignInUser(gomock.Any(), in).Return(auth, nil)
 			},
 			req: &request.SignInRequest{
 				Username: "username",
@@ -114,8 +113,8 @@ func TestSignIn(t *testing.T) {
 		{
 			name: "failed to sign in user",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.SignInUserRequest{
-					Username: "username",
+				in := &user.SignInUserInput{
+					Key:      "username",
 					Password: "password",
 				}
 				mocks.user.EXPECT().SignInUser(gomock.Any(), in).Return(nil, errmock)
@@ -152,9 +151,8 @@ func TestSignOut(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.SignOutUserRequest{AccessToken: tokenmock}
-				out := &user.SignOutUserResponse{}
-				mocks.user.EXPECT().SignOutUser(gomock.Any(), in).Return(out, nil)
+				in := &user.SignOutUserInput{AccessToken: tokenmock}
+				mocks.user.EXPECT().SignOutUser(gomock.Any(), in).Return(nil)
 			},
 			expect: &testResponse{
 				code: http.StatusNoContent,
@@ -163,8 +161,8 @@ func TestSignOut(t *testing.T) {
 		{
 			name: "failed to sign out user",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.SignOutUserRequest{AccessToken: tokenmock}
-				mocks.user.EXPECT().SignOutUser(gomock.Any(), in).Return(nil, errmock)
+				in := &user.SignOutUserInput{AccessToken: tokenmock}
+				mocks.user.EXPECT().SignOutUser(gomock.Any(), in).Return(errmock)
 			},
 			expect: &testResponse{
 				code: http.StatusInternalServerError,
@@ -186,8 +184,8 @@ func TestSignOut(t *testing.T) {
 func TestRefreshAuthToken(t *testing.T) {
 	t.Parallel()
 
-	auth := &user.UserAuth{
-		UserId:       "user-id",
+	auth := &uentity.UserAuth{
+		UserID:       "user-id",
 		AccessToken:  "access-token",
 		RefreshToken: "",
 		ExpiresIn:    3600,
@@ -202,11 +200,10 @@ func TestRefreshAuthToken(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.RefreshUserTokenRequest{
+				in := &user.RefreshUserTokenInput{
 					RefreshToken: "refresh-token",
 				}
-				out := &user.RefreshUserTokenResponse{Auth: auth}
-				mocks.user.EXPECT().RefreshUserToken(gomock.Any(), in).Return(out, nil)
+				mocks.user.EXPECT().RefreshUserToken(gomock.Any(), in).Return(auth, nil)
 			},
 			req: &request.RefreshAuthTokenRequest{
 				RefreshToken: "refresh-token",
@@ -227,7 +224,7 @@ func TestRefreshAuthToken(t *testing.T) {
 		{
 			name: "failed to sign in user",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.RefreshUserTokenRequest{
+				in := &user.RefreshUserTokenInput{
 					RefreshToken: "refresh-token",
 				}
 				mocks.user.EXPECT().RefreshUserToken(gomock.Any(), in).Return(nil, errmock)

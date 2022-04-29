@@ -6,7 +6,7 @@ import (
 	"github.com/and-period/marche/api/internal/gateway/user/v1/request"
 	"github.com/and-period/marche/api/internal/gateway/user/v1/response"
 	"github.com/and-period/marche/api/internal/gateway/util"
-	"github.com/and-period/marche/api/proto/user"
+	user "github.com/and-period/marche/api/internal/user/service"
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,19 +26,19 @@ func (h *apiV1Handler) userRoutes(rg *gin.RouterGroup) {
 func (h *apiV1Handler) GetUserMe(ctx *gin.Context) {
 	c := util.SetMetadata(ctx)
 
-	in := &user.GetUserRequest{
-		UserId: getUserID(ctx),
+	in := &user.GetUserInput{
+		UserID: getUserID(ctx),
 	}
-	out, err := h.user.GetUser(c, in)
+	u, err := h.user.GetUser(c, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
 
 	res := &response.UserMeResponse{
-		ID:          out.User.Id,
-		Email:       out.User.Email,
-		PhoneNumber: out.User.PhoneNumber,
+		ID:          u.ID,
+		Email:       u.Email,
+		PhoneNumber: u.PhoneNumber,
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -52,20 +52,20 @@ func (h *apiV1Handler) CreateUser(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.CreateUserRequest{
+	in := &user.CreateUserInput{
 		Email:                req.Email,
 		PhoneNumber:          req.PhoneNumber,
 		Password:             req.Password,
 		PasswordConfirmation: req.PasswordConfirmation,
 	}
-	out, err := h.user.CreateUser(c, in)
+	userID, err := h.user.CreateUser(c, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
 
 	res := &response.CreateUserResponse{
-		ID: out.UserId,
+		ID: userID,
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -79,12 +79,11 @@ func (h *apiV1Handler) VerifyUser(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.VerifyUserRequest{
-		UserId:     req.ID,
+	in := &user.VerifyUserInput{
+		UserID:     req.ID,
 		VerifyCode: req.VerifyCode,
 	}
-	_, err := h.user.VerifyUser(c, in)
-	if err != nil {
+	if err := h.user.VerifyUser(c, in); err != nil {
 		httpError(ctx, err)
 		return
 	}
@@ -101,19 +100,19 @@ func (h *apiV1Handler) CreateUserWithOAuth(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.CreateUserWithOAuthRequest{
+	in := &user.CreateUserWithOAuthInput{
 		AccessToken: token,
 	}
-	out, err := h.user.CreateUserWithOAuth(c, in)
+	u, err := h.user.CreateUserWithOAuth(c, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
 
 	res := &response.UserMeResponse{
-		ID:          out.User.Id,
-		Email:       out.User.Email,
-		PhoneNumber: out.User.PhoneNumber,
+		ID:          u.ID,
+		Email:       u.Email,
+		PhoneNumber: u.PhoneNumber,
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -132,12 +131,11 @@ func (h *apiV1Handler) UpdateUserEmail(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.UpdateUserEmailRequest{
+	in := &user.UpdateUserEmailInput{
 		AccessToken: token,
 		Email:       req.Email,
 	}
-	_, err = h.user.UpdateUserEmail(c, in)
-	if err != nil {
+	if err := h.user.UpdateUserEmail(c, in); err != nil {
 		httpError(ctx, err)
 		return
 	}
@@ -159,12 +157,11 @@ func (h *apiV1Handler) VerifyUserEmail(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.VerifyUserEmailRequest{
+	in := &user.VerifyUserEmailInput{
 		AccessToken: token,
 		VerifyCode:  req.VerifyCode,
 	}
-	_, err = h.user.VerifyUserEmail(c, in)
-	if err != nil {
+	if err := h.user.VerifyUserEmail(c, in); err != nil {
 		httpError(ctx, err)
 		return
 	}
@@ -186,14 +183,13 @@ func (h *apiV1Handler) UpdateUserPassword(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.UpdateUserPasswordRequest{
+	in := &user.UpdateUserPasswordInput{
 		AccessToken:          token,
 		OldPassword:          req.OldPassword,
 		NewPassword:          req.NewPassword,
 		PasswordConfirmation: req.PasswordConfirmation,
 	}
-	_, err = h.user.UpdateUserPassword(c, in)
-	if err != nil {
+	if err := h.user.UpdateUserPassword(c, in); err != nil {
 		httpError(ctx, err)
 		return
 	}
@@ -210,11 +206,10 @@ func (h *apiV1Handler) ForgotUserPassword(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.ForgotUserPasswordRequest{
+	in := &user.ForgotUserPasswordInput{
 		Email: req.Email,
 	}
-	_, err := h.user.ForgotUserPassword(c, in)
-	if err != nil {
+	if err := h.user.ForgotUserPassword(c, in); err != nil {
 		httpError(ctx, err)
 		return
 	}
@@ -231,14 +226,13 @@ func (h *apiV1Handler) ResetUserPassword(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.VerifyUserPasswordRequest{
+	in := &user.VerifyUserPasswordInput{
 		Email:                req.Email,
 		VerifyCode:           req.VerifyCode,
 		NewPassword:          req.Password,
 		PasswordConfirmation: req.PasswordConfirmation,
 	}
-	_, err := h.user.VerifyUserPassword(c, in)
-	if err != nil {
+	if err := h.user.VerifyUserPassword(c, in); err != nil {
 		httpError(ctx, err)
 		return
 	}
@@ -249,11 +243,10 @@ func (h *apiV1Handler) ResetUserPassword(ctx *gin.Context) {
 func (h *apiV1Handler) DeleteUser(ctx *gin.Context) {
 	c := util.SetMetadata(ctx)
 
-	in := &user.DeleteUserRequest{
-		UserId: getUserID(ctx),
+	in := &user.DeleteUserInput{
+		UserID: getUserID(ctx),
 	}
-	_, err := h.user.DeleteUser(c, in)
-	if err != nil {
+	if err := h.user.DeleteUser(c, in); err != nil {
 		httpError(ctx, err)
 		return
 	}

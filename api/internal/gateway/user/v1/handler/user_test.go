@@ -6,8 +6,9 @@ import (
 
 	"github.com/and-period/marche/api/internal/gateway/user/v1/request"
 	"github.com/and-period/marche/api/internal/gateway/user/v1/response"
+	uentity "github.com/and-period/marche/api/internal/user/entity"
+	user "github.com/and-period/marche/api/internal/user/service"
 	"github.com/and-period/marche/api/pkg/jst"
-	"github.com/and-period/marche/api/proto/user"
 	"github.com/golang/mock/gomock"
 )
 
@@ -15,14 +16,14 @@ func TestGetUserMe(t *testing.T) {
 	t.Parallel()
 
 	now := jst.Date(2022, 1, 2, 18, 30, 0, 0)
-	u := &user.User{
-		Id:           "user-id",
-		ProviderType: user.ProviderType_PROVIDER_TYPE_EMAIL,
+	u := &uentity.User{
+		ID:           "user-id",
+		ProviderType: uentity.ProviderTypeEmail,
 		Email:        "test@and-period.jp",
 		PhoneNumber:  "+819012345678",
-		CreatedAt:    now.Unix(),
-		UpdatedAt:    now.Unix(),
-		VerifiedAt:   now.Unix(),
+		CreatedAt:    now,
+		UpdatedAt:    now,
+		VerifiedAt:   now,
 	}
 
 	tests := []struct {
@@ -33,9 +34,8 @@ func TestGetUserMe(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.GetUserRequest{UserId: idmock}
-				out := &user.GetUserResponse{User: u}
-				mocks.user.EXPECT().GetUser(gomock.Any(), in).Return(out, nil)
+				in := &user.GetUserInput{UserID: idmock}
+				mocks.user.EXPECT().GetUser(gomock.Any(), in).Return(u, nil)
 			},
 			expect: &testResponse{
 				code: http.StatusOK,
@@ -49,7 +49,7 @@ func TestGetUserMe(t *testing.T) {
 		{
 			name: "failed to get user",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.GetUserRequest{UserId: idmock}
+				in := &user.GetUserInput{UserID: idmock}
 				mocks.user.EXPECT().GetUser(gomock.Any(), in).Return(nil, errmock)
 			},
 			expect: &testResponse{
@@ -81,14 +81,13 @@ func TestCreateUser(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.CreateUserRequest{
+				in := &user.CreateUserInput{
 					Email:                "test-user@and-period.jp",
 					PhoneNumber:          "+819012345678",
 					Password:             "!Qaz2wsx",
 					PasswordConfirmation: "!Qaz2wsx",
 				}
-				out := &user.CreateUserResponse{UserId: "user-id"}
-				mocks.user.EXPECT().CreateUser(gomock.Any(), in).Return(out, nil)
+				mocks.user.EXPECT().CreateUser(gomock.Any(), in).Return("user-id", nil)
 			},
 			req: &request.CreateUserRequest{
 				Email:                "test-user@and-period.jp",
@@ -106,13 +105,13 @@ func TestCreateUser(t *testing.T) {
 		{
 			name: "failed to create user",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.CreateUserRequest{
+				in := &user.CreateUserInput{
 					Email:                "test-user@and-period.jp",
 					PhoneNumber:          "+819012345678",
 					Password:             "!Qaz2wsx",
 					PasswordConfirmation: "!Qaz2wsx",
 				}
-				mocks.user.EXPECT().CreateUser(gomock.Any(), in).Return(nil, errmock)
+				mocks.user.EXPECT().CreateUser(gomock.Any(), in).Return("", errmock)
 			},
 			req: &request.CreateUserRequest{
 				Email:                "test-user@and-period.jp",
@@ -149,12 +148,11 @@ func TestVerifyUser(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.VerifyUserRequest{
-					UserId:     "user-id",
+				in := &user.VerifyUserInput{
+					UserID:     "user-id",
 					VerifyCode: "123456",
 				}
-				out := &user.VerifyUserResponse{}
-				mocks.user.EXPECT().VerifyUser(gomock.Any(), in).Return(out, nil)
+				mocks.user.EXPECT().VerifyUser(gomock.Any(), in).Return(nil)
 			},
 			req: &request.VerifyUserRequest{
 				ID:         "user-id",
@@ -167,11 +165,11 @@ func TestVerifyUser(t *testing.T) {
 		{
 			name: "failed to verify user",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.VerifyUserRequest{
-					UserId:     "user-id",
+				in := &user.VerifyUserInput{
+					UserID:     "user-id",
 					VerifyCode: "123456",
 				}
-				mocks.user.EXPECT().VerifyUser(gomock.Any(), in).Return(nil, errmock)
+				mocks.user.EXPECT().VerifyUser(gomock.Any(), in).Return(errmock)
 			},
 			req: &request.VerifyUserRequest{
 				ID:         "user-id",
@@ -198,14 +196,14 @@ func TestCreateUserWithOAuth(t *testing.T) {
 	t.Parallel()
 
 	now := jst.Date(2022, 1, 2, 18, 30, 0, 0)
-	u := &user.User{
-		Id:           "user-id",
-		ProviderType: user.ProviderType_PROVIDER_TYPE_EMAIL,
+	u := &uentity.User{
+		ID:           "user-id",
+		ProviderType: uentity.ProviderTypeEmail,
 		Email:        "test@and-period.jp",
 		PhoneNumber:  "+819012345678",
-		CreatedAt:    now.Unix(),
-		UpdatedAt:    now.Unix(),
-		VerifiedAt:   now.Unix(),
+		CreatedAt:    now,
+		UpdatedAt:    now,
+		VerifiedAt:   now,
 	}
 
 	tests := []struct {
@@ -216,9 +214,8 @@ func TestCreateUserWithOAuth(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.CreateUserWithOAuthRequest{AccessToken: tokenmock}
-				out := &user.CreateUserWithOAuthResponse{User: u}
-				mocks.user.EXPECT().CreateUserWithOAuth(gomock.Any(), in).Return(out, nil)
+				in := &user.CreateUserWithOAuthInput{AccessToken: tokenmock}
+				mocks.user.EXPECT().CreateUserWithOAuth(gomock.Any(), in).Return(u, nil)
 			},
 			expect: &testResponse{
 				code: http.StatusOK,
@@ -232,7 +229,7 @@ func TestCreateUserWithOAuth(t *testing.T) {
 		{
 			name: "failed to create user",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.CreateUserWithOAuthRequest{AccessToken: tokenmock}
+				in := &user.CreateUserWithOAuthInput{AccessToken: tokenmock}
 				mocks.user.EXPECT().CreateUserWithOAuth(gomock.Any(), in).Return(nil, errmock)
 			},
 			expect: &testResponse{
@@ -264,12 +261,11 @@ func TestUpdateUserEmail(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.UpdateUserEmailRequest{
+				in := &user.UpdateUserEmailInput{
 					AccessToken: tokenmock,
 					Email:       "test-user@and-period.jp",
 				}
-				out := &user.UpdateUserEmailResponse{}
-				mocks.user.EXPECT().UpdateUserEmail(gomock.Any(), in).Return(out, nil)
+				mocks.user.EXPECT().UpdateUserEmail(gomock.Any(), in).Return(nil)
 			},
 			req: &request.UpdateUserEmailRequest{
 				Email: "test-user@and-period.jp",
@@ -281,11 +277,11 @@ func TestUpdateUserEmail(t *testing.T) {
 		{
 			name: "failed to update user email",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.UpdateUserEmailRequest{
+				in := &user.UpdateUserEmailInput{
 					AccessToken: tokenmock,
 					Email:       "test-user@and-period.jp",
 				}
-				mocks.user.EXPECT().UpdateUserEmail(gomock.Any(), in).Return(nil, errmock)
+				mocks.user.EXPECT().UpdateUserEmail(gomock.Any(), in).Return(errmock)
 			},
 			req: &request.UpdateUserEmailRequest{
 				Email: "test-user@and-period.jp",
@@ -319,12 +315,11 @@ func TestVerifyUserEmail(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.VerifyUserEmailRequest{
+				in := &user.VerifyUserEmailInput{
 					AccessToken: tokenmock,
 					VerifyCode:  "123456",
 				}
-				out := &user.VerifyUserEmailResponse{}
-				mocks.user.EXPECT().VerifyUserEmail(gomock.Any(), in).Return(out, nil)
+				mocks.user.EXPECT().VerifyUserEmail(gomock.Any(), in).Return(nil)
 			},
 			req: &request.VerifyUserEmailRequest{
 				VerifyCode: "123456",
@@ -336,11 +331,11 @@ func TestVerifyUserEmail(t *testing.T) {
 		{
 			name: "failed to veirify user email",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.VerifyUserEmailRequest{
+				in := &user.VerifyUserEmailInput{
 					AccessToken: tokenmock,
 					VerifyCode:  "123456",
 				}
-				mocks.user.EXPECT().VerifyUserEmail(gomock.Any(), in).Return(nil, errmock)
+				mocks.user.EXPECT().VerifyUserEmail(gomock.Any(), in).Return(errmock)
 			},
 			req: &request.VerifyUserEmailRequest{
 				VerifyCode: "123456",
@@ -374,14 +369,13 @@ func TestUpdateUserPassword(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.UpdateUserPasswordRequest{
+				in := &user.UpdateUserPasswordInput{
 					AccessToken:          tokenmock,
 					OldPassword:          "!Qaz2wsx",
 					NewPassword:          "!Qaz3edc",
 					PasswordConfirmation: "!Qaz3edc",
 				}
-				out := &user.UpdateUserPasswordResponse{}
-				mocks.user.EXPECT().UpdateUserPassword(gomock.Any(), in).Return(out, nil)
+				mocks.user.EXPECT().UpdateUserPassword(gomock.Any(), in).Return(nil)
 			},
 			req: &request.UpdateUserPasswordRequest{
 				OldPassword:          "!Qaz2wsx",
@@ -395,13 +389,13 @@ func TestUpdateUserPassword(t *testing.T) {
 		{
 			name: "failed to update user password",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.UpdateUserPasswordRequest{
+				in := &user.UpdateUserPasswordInput{
 					AccessToken:          tokenmock,
 					OldPassword:          "!Qaz2wsx",
 					NewPassword:          "!Qaz3edc",
 					PasswordConfirmation: "!Qaz3edc",
 				}
-				mocks.user.EXPECT().UpdateUserPassword(gomock.Any(), in).Return(nil, errmock)
+				mocks.user.EXPECT().UpdateUserPassword(gomock.Any(), in).Return(errmock)
 			},
 			req: &request.UpdateUserPasswordRequest{
 				OldPassword:          "!Qaz2wsx",
@@ -437,9 +431,8 @@ func TestForgotUserPassword(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.ForgotUserPasswordRequest{Email: "test-user@and-period.jp"}
-				out := &user.ForgotUserPasswordResponse{}
-				mocks.user.EXPECT().ForgotUserPassword(gomock.Any(), in).Return(out, nil)
+				in := &user.ForgotUserPasswordInput{Email: "test-user@and-period.jp"}
+				mocks.user.EXPECT().ForgotUserPassword(gomock.Any(), in).Return(nil)
 			},
 			req: &request.ForgotUserPasswordRequest{
 				Email: "test-user@and-period.jp",
@@ -451,8 +444,8 @@ func TestForgotUserPassword(t *testing.T) {
 		{
 			name: "failed to forget user password",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.ForgotUserPasswordRequest{Email: "test-user@and-period.jp"}
-				mocks.user.EXPECT().ForgotUserPassword(gomock.Any(), in).Return(nil, errmock)
+				in := &user.ForgotUserPasswordInput{Email: "test-user@and-period.jp"}
+				mocks.user.EXPECT().ForgotUserPassword(gomock.Any(), in).Return(errmock)
 			},
 			req: &request.ForgotUserPasswordRequest{
 				Email: "test-user@and-period.jp",
@@ -486,14 +479,13 @@ func TestResetUserPassword(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.VerifyUserPasswordRequest{
+				in := &user.VerifyUserPasswordInput{
 					Email:                "test-user@and-period.jp",
 					VerifyCode:           "123456",
 					NewPassword:          "!Qaz2wsx",
 					PasswordConfirmation: "!Qaz2wsx",
 				}
-				out := &user.VerifyUserPasswordResponse{}
-				mocks.user.EXPECT().VerifyUserPassword(gomock.Any(), in).Return(out, nil)
+				mocks.user.EXPECT().VerifyUserPassword(gomock.Any(), in).Return(nil)
 			},
 			req: &request.ResetUserPasswordRequest{
 				Email:                "test-user@and-period.jp",
@@ -508,13 +500,13 @@ func TestResetUserPassword(t *testing.T) {
 		{
 			name: "failed to verify user password",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.VerifyUserPasswordRequest{
+				in := &user.VerifyUserPasswordInput{
 					Email:                "test-user@and-period.jp",
 					VerifyCode:           "123456",
 					NewPassword:          "!Qaz2wsx",
 					PasswordConfirmation: "!Qaz2wsx",
 				}
-				mocks.user.EXPECT().VerifyUserPassword(gomock.Any(), in).Return(nil, errmock)
+				mocks.user.EXPECT().VerifyUserPassword(gomock.Any(), in).Return(errmock)
 			},
 			req: &request.ResetUserPasswordRequest{
 				Email:                "test-user@and-period.jp",
@@ -550,9 +542,8 @@ func TestDeleteUser(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.DeleteUserRequest{UserId: idmock}
-				out := &user.DeleteUserResponse{}
-				mocks.user.EXPECT().DeleteUser(gomock.Any(), in).Return(out, nil)
+				in := &user.DeleteUserInput{UserID: idmock}
+				mocks.user.EXPECT().DeleteUser(gomock.Any(), in).Return(nil)
 			},
 			expect: &testResponse{
 				code: http.StatusNoContent,
@@ -561,8 +552,8 @@ func TestDeleteUser(t *testing.T) {
 		{
 			name: "failed to delete user",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.DeleteUserRequest{UserId: idmock}
-				mocks.user.EXPECT().DeleteUser(gomock.Any(), in).Return(nil, errmock)
+				in := &user.DeleteUserInput{UserID: idmock}
+				mocks.user.EXPECT().DeleteUser(gomock.Any(), in).Return(errmock)
 			},
 			expect: &testResponse{
 				code: http.StatusInternalServerError,

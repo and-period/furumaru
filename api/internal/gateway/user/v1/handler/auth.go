@@ -3,12 +3,11 @@ package handler
 import (
 	"net/http"
 
-	"github.com/and-period/marche/api/internal/gateway/entity"
 	"github.com/and-period/marche/api/internal/gateway/user/v1/request"
 	"github.com/and-period/marche/api/internal/gateway/user/v1/response"
 	"github.com/and-period/marche/api/internal/gateway/user/v1/service"
 	"github.com/and-period/marche/api/internal/gateway/util"
-	"github.com/and-period/marche/api/proto/user"
+	user "github.com/and-period/marche/api/internal/user/service"
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,15 +27,14 @@ func (h *apiV1Handler) GetAuth(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.GetUserAuthRequest{
+	in := &user.GetUserAuthInput{
 		AccessToken: token,
 	}
-	out, err := h.user.GetUserAuth(c, in)
+	auth, err := h.user.GetUserAuth(c, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
-	auth := entity.NewUserAuth(out.Auth)
 
 	res := &response.AuthResponse{
 		Auth: service.NewAuth(auth).Response(),
@@ -53,16 +51,15 @@ func (h *apiV1Handler) SignIn(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.SignInUserRequest{
-		Username: req.Username,
+	in := &user.SignInUserInput{
+		Key:      req.Username,
 		Password: req.Password,
 	}
-	out, err := h.user.SignInUser(c, in)
+	auth, err := h.user.SignInUser(c, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
-	auth := entity.NewUserAuth(out.Auth)
 
 	res := &response.AuthResponse{
 		Auth: service.NewAuth(auth).Response(),
@@ -78,11 +75,10 @@ func (h *apiV1Handler) SignOut(ctx *gin.Context) {
 		unauthorized(ctx, err)
 	}
 
-	in := &user.SignOutUserRequest{
+	in := &user.SignOutUserInput{
 		AccessToken: token,
 	}
-	_, err = h.user.SignOutUser(c, in)
-	if err != nil {
+	if err := h.user.SignOutUser(c, in); err != nil {
 		httpError(ctx, err)
 		return
 	}
@@ -99,15 +95,14 @@ func (h *apiV1Handler) RefreshAuthToken(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.RefreshUserTokenRequest{
+	in := &user.RefreshUserTokenInput{
 		RefreshToken: req.RefreshToken,
 	}
-	out, err := h.user.RefreshUserToken(c, in)
+	auth, err := h.user.RefreshUserToken(c, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
-	auth := entity.NewUserAuth(out.Auth)
 
 	res := &response.AuthResponse{
 		Auth: service.NewAuth(auth).Response(),

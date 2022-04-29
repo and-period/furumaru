@@ -31,7 +31,7 @@ func Exec() error {
 		return err
 	}
 
-	app, err := newApp(conf)
+	app, err := newApp(ctx, conf)
 	if err != nil {
 		return err
 	}
@@ -77,7 +77,7 @@ func Exec() error {
 	return eg.Wait()
 }
 
-func newApp(conf *config) (*app, error) {
+func newApp(ctx context.Context, conf *config) (*app, error) {
 	// Loggerの設定
 	logger, err := log.NewLogger(log.WithLogLevel(conf.LogLevel), log.WithOutput(conf.LogPath))
 	if err != nil {
@@ -85,7 +85,7 @@ func newApp(conf *config) (*app, error) {
 	}
 
 	// 依存関係の解決
-	reg, err := newRegistry(conf, withLogger(logger))
+	reg, err := newRegistry(ctx, conf, withLogger(logger))
 	if err != nil {
 		return nil, err
 	}
