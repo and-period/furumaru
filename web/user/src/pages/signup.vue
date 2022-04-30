@@ -40,12 +40,11 @@
 
 <script lang="ts">
 import { defineComponent, useRouter } from '@nuxtjs/composition-api'
-import { I18n } from '~/types/locales'
+
 import { useIsMobile, useI18n } from '~/lib/hooks'
-import TheMarcheLogo from '~/components/atoms/TheMarcheLogo.vue'
+import { I18n } from '~/types/locales'
 
 export default defineComponent({
-  components: { TheMarcheLogo },
   layout: 'auth',
   setup() {
     const { isMobile } = useIsMobile()
