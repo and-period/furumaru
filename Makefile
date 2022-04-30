@@ -56,6 +56,8 @@ start-test:
 
 swagger:
 	docker-compose run --rm swagger_generator yarn generate
+	docker-compose run --rm user_web yarn lintfix
+	docker-compose run --rm admin_web yarn lintfix
 
 migrate:
 	docker-compose up -d mysql_test
