@@ -23,6 +23,7 @@
 
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
+
 import { useIsMobile, useI18n } from '~/lib/hooks'
 import { I18n } from '~/types/locales'
 
