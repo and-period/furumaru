@@ -1,5 +1,5 @@
 <template>
-  <div class="text-center">
+  <div class="text-center px-4">
     <the-marche-logo class="mb-6" />
     <v-row justify="center">
       <v-col cols="12" sm="12" md="6">
@@ -37,8 +37,15 @@
             class="base rounded-xl google-btn"
             :height="isMobile ? 40 : 64"
             :x-large="!isMobile"
+            @click="handleClickGoogleSingInButton"
           >
-            <v-icon left>fa-brands fa-google</v-icon>
+            <img
+              src="/g-normal.png"
+              height="18"
+              width="18"
+              alt="google icon"
+              class="mr-6"
+            />
             Log In with Google
           </v-btn>
           <v-btn
@@ -47,8 +54,9 @@
             class="facebook white--text rounded-xl"
             :height="isMobile ? 40 : 64"
             :x-large="!isMobile"
+            @click="handleClickFacebookSingInButton"
           >
-            <v-icon left>fa-brands fa-facebook</v-icon>
+            <v-icon left class="mr-6">fa-brands fa-facebook</v-icon>
             Log In with Facebook
           </v-btn>
           <v-btn
@@ -57,8 +65,9 @@
             class="line white--text rounded-xl"
             :height="isMobile ? 40 : 64"
             :x-large="!isMobile"
+            @click="handleClickLineSingInButton"
           >
-            <v-icon left>fa-brands fa-line</v-icon>
+            <v-icon left class="mr-6">fa-brands fa-line</v-icon>
             Log In with LINE
           </v-btn>
         </the-stack>
@@ -66,7 +75,7 @@
     </v-row>
     <p>
       {{ t('dontHaveAccount') }}
-      <nuxt-link to="/">{{ t('signUpLink') }}</nuxt-link>
+      <nuxt-link :to="localePath('/signup')">{{ t('signUpLink') }}</nuxt-link>
     </p>
   </div>
 </template>
@@ -88,9 +97,22 @@ export default defineComponent({
       return i18n.t(`auth.signIn.${str}`)
     }
 
+    const handleClickGoogleSingInButton = () => {
+      console.log('NOT IMPLEMENTED')
+    }
+    const handleClickFacebookSingInButton = () => {
+      console.log('NOT IMPLEMENTED')
+    }
+    const handleClickLineSingInButton = () => {
+      console.log('NOT IMPLEMENTED')
+    }
+
     return {
       isMobile,
       t,
+      handleClickGoogleSingInButton,
+      handleClickFacebookSingInButton,
+      handleClickLineSingInButton,
     }
   },
 })
