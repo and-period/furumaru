@@ -1,22 +1,17 @@
-patch:
-  summary: パスワード更新
-  operationId: v1UpdateUserPassword
+get:
+  summary: 管理者情報取得
+  operationId: v1GetAdminMe
   tags:
-  - User
+  - Admin
   security:
   - BearerAuth: []
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          $ref: './../../../../openapi.yaml#/components/schemas/v1UpdateUserPasswordRequest'
   responses:
-    204:
+    200:
       description: A successful response.
       content:
         application/json:
-          schema: {}
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/v1AdminMeResponse'
     default:
       description: An unexpected error response.
       content:

@@ -41,10 +41,10 @@ start-web:
 	docker-compose up user_web shop_web admin_web
 
 start-api: migrate
-	docker-compose up user_gateway mysql_test
+	docker-compose up user_gateway admin_gateway mysql_test
 
 start-swagger:
-	docker-compose up swagger_generator swagger_user
+	docker-compose up swagger_generator swagger_user swagger_admin
 
 start-test:
 	docker-compose up mysql_test
