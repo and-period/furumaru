@@ -81,9 +81,9 @@ func httpError(ctx *gin.Context, err error) {
 	ctx.Abort()
 }
 
-func badRequest(ctx *gin.Context, err error) {
-	httpError(ctx, status.Error(codes.InvalidArgument, err.Error()))
-}
+// func badRequest(ctx *gin.Context, err error) {
+// 	httpError(ctx, status.Error(codes.InvalidArgument, err.Error()))
+// }
 
 func unauthorized(ctx *gin.Context, err error) {
 	httpError(ctx, status.Error(codes.Unauthenticated, err.Error()))
