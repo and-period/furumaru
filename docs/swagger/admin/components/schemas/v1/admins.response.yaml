@@ -1,0 +1,21 @@
+adminMeResponse:
+  type: object
+  properties:
+    id:
+      type: string
+      description: 管理者ID
+    email:
+      type: string
+      description: メールアドレス
+    role:
+      type: integer
+      format: int32
+      description: 権限 (1:管理者, 2:開発者, 3:運用者)
+  required:
+  - id
+  - email
+  - role
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    email: 'test-user@and-period.jp'
+    role: 1

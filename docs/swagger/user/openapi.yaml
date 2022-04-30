@@ -28,6 +28,8 @@ paths:
     $ref: './paths/v1/users/me/email/index.yaml'
   /v1/users/me/email/verified:
     $ref: './paths/v1/users/me/email/verified.yaml'
+  /v1/users/me/password:
+    $ref: './paths/v1/users/me/password.yaml'
   /v1/users/me/forgot-password:
     $ref: './paths/v1/users/me/forgot-password/index.yaml'
   /v1/users/me/forgot-password/me/verified:

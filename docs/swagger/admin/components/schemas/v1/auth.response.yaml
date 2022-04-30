@@ -1,0 +1,31 @@
+authResponse:
+  type: object
+  properties:
+    adminId:
+      type: string
+      description: 管理者ID
+    accessToken:
+      type: string
+      description: アクセストークン
+    refreshToken:
+      type: string
+      description: 更新トークン
+    expiresIn:
+      type: integer
+      format: int32
+      description: 有効期限
+    tokenType:
+      type: string
+      description: トークン種別
+  required:
+  - adminId
+  - accessToken
+  - refreshToken
+  - expiresIn
+  - tokenType
+  example:
+    adminId: 'kSByoE6FetnPs5Byk3a9Zx'
+    accessToken: 'xxxxxxxxxx'
+    refreshToken: 'xxxxxxxxxx'
+    expiresIn: 3600
+    tokenType: 'Bearer'

@@ -6,12 +6,14 @@
   "license": "MIT",
   "scripts": {
     "generate": "make build",
+    "generate:admin": "make build-admin",
     "generate:user": "make build-user",
     "generate:html": "make build-html",
     "generate:yaml": "make build-yaml",
     "generate:typescript": "make build-typescript",
     "lint": "make lint",
     "watch": "npm-run-all --parallel watch:*",
+    "watch:admin": "chokidar 'admin/**/*.yaml' -c 'yarn generate:admin' --initial",
     "watch:user": "chokidar 'user/**/*.yaml' -c 'yarn generate:user' --initial"
   },
   "devDependencies": {

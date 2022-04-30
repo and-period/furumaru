@@ -1,8 +1,8 @@
-patch:
-  summary: パスワード更新
-  operationId: v1UpdateUserPassword
+post:
+  summary: メールアドレス更新 - コード検証
+  operationId: v1VerifyAdminEmail
   tags:
-  - User
+  - Admin
   security:
   - BearerAuth: []
   requestBody:
@@ -10,7 +10,7 @@ patch:
     content:
       application/json:
         schema:
-          $ref: './../../../../openapi.yaml#/components/schemas/v1UpdateUserPasswordRequest'
+          $ref: './../../../../../openapi.yaml#/components/schemas/v1VerifyAdminEmailRequest'
   responses:
     204:
       description: A successful response.
@@ -22,4 +22,4 @@ patch:
       content:
         application/json:
           schema:
-            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
