@@ -3,7 +3,7 @@ createUserResponse:
   properties:
     id:
       type: string
-      description: ユーザーID
+      description: 購入者ID
   required:
   - id
   example:
@@ -13,7 +13,7 @@ userMeResponse:
   properties:
     id:
       type: string
-      description: ユーザーID
+      description: 購入者ID
     email:
       type: string
       description: メールアドレス

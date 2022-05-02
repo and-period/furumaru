@@ -100,8 +100,8 @@ func testHTTP(
 	newRoutes(h, r)
 	setup(t, mocks, ctrl)
 
-	// auth := &uentity.AdminAuth{UserID: idmock}
-	// mocks.user.EXPECT().GetAdminAuth(gomock.Any(), gomock.Any()).Return(auth, nil).MaxTimes(1)
+	// auth := &uentity.ShopAuth{ShopID: idmock}
+	// mocks.user.EXPECT().GetShopAuth(gomock.Any(), gomock.Any()).Return(auth, nil).MaxTimes(1)
 
 	// test
 	r.ServeHTTP(w, req)
@@ -138,7 +138,7 @@ func newHTTPRequest(t *testing.T, method, path string, body interface{}) *http.R
 
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", tokenmock))
-	req.Header.Add("adminId", idmock)
+	req.Header.Add("shopId", idmock)
 	return req
 }
 
@@ -171,7 +171,7 @@ func newMultipartRequest(t *testing.T, method, path, field string) *http.Request
 
 	req.Header.Add("Content-Type", writer.FormDataContentType())
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", tokenmock))
-	req.Header.Add("adminId", idmock)
+	req.Header.Add("shopId", idmock)
 	return req
 }
 
@@ -200,6 +200,6 @@ func TestSetAuth(t *testing.T) {
 	w := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(w)
 	ctx.Request = &http.Request{Header: http.Header{}}
-	setAuth(ctx, "admin-id")
-	assert.Equal(t, "admin-id", getAdminID(ctx))
+	setAuth(ctx, "shop-id")
+	assert.Equal(t, "shop-id", getShopID(ctx))
 }
