@@ -91,12 +91,21 @@ func newUserService(ctx context.Context, conf *config, opts *options) (user.User
 	if err != nil {
 		return nil, err
 	}
+	adminAuthParams := &cognito.Params{
+		UserPoolID:      conf.CognitoAdminPoolID,
+		AppClientID:     conf.CognitoAdminClientID,
+		AppClientSecret: conf.CognitoAdminClientSecret,
+	}
+	shopAuthParams := &cognito.Params{
+		UserPoolID:      conf.CognitoShopPoolID,
+		AppClientID:     conf.CognitoShopClientID,
+		AppClientSecret: conf.CognitoShopClientSecret,
+	}
 	userAuthParams := &cognito.Params{
 		UserPoolID:      conf.CognitoUserPoolID,
-		AppClientID:     conf.CognitoClientID,
-		AppClientSecret: conf.CognitoClientSecret,
+		AppClientID:     conf.CognitoUserClientID,
+		AppClientSecret: conf.CognitoUserClientSecret,
 	}
-	userAuth := cognito.NewClient(awscfg, userAuthParams)
 
 	// Databaseの設定
 	dbParams := &userdb.Params{
@@ -105,8 +114,10 @@ func newUserService(ctx context.Context, conf *config, opts *options) (user.User
 
 	// User Serviceの設定
 	params := &user.Params{
-		Database: userdb.NewDatabase(dbParams),
-		UserAuth: userAuth,
+		Database:  userdb.NewDatabase(dbParams),
+		AdminAuth: cognito.NewClient(awscfg, adminAuthParams),
+		ShopAuth:  cognito.NewClient(awscfg, shopAuthParams),
+		UserAuth:  cognito.NewClient(awscfg, userAuthParams),
 	}
 	return user.NewUserService(
 		params,
