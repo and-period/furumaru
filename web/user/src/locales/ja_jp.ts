@@ -1,6 +1,15 @@
 import { I18n } from '../types/locales'
 
 const lang: I18n = {
+  default: {
+    header: {
+      becomeShopOwner: '出品する',
+      cartEmptyMessage: 'カートは空です',
+      cartNotEmptyMessage: 'レジに進む',
+      signIn: 'ログイン',
+      localeText: '言語設定',
+    },
+  },
   auth: {
     signIn: {
       email: 'メールアドレス',

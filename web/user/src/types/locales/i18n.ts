@@ -1,4 +1,13 @@
 export interface I18n {
+  default: {
+    header: {
+      becomeShopOwner: string
+      cartEmptyMessage: string
+      cartNotEmptyMessage: string
+      signIn: string
+      localeText: string
+    }
+  }
   auth: {
     signIn: {
       email: string
