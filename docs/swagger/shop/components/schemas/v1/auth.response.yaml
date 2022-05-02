@@ -1,9 +1,9 @@
 authResponse:
   type: object
   properties:
-    userId:
+    shopId:
       type: string
-      description: 購入者ID
+      description: 管理者ID
     accessToken:
       type: string
       description: アクセストークン
@@ -18,13 +18,13 @@ authResponse:
       type: string
       description: トークン種別
   required:
-  - userId
+  - shopId
   - accessToken
   - refreshToken
   - expiresIn
   - tokenType
   example:
-    userId: 'kSByoE6FetnPs5Byk3a9Zx'
+    shopId: 'kSByoE6FetnPs5Byk3a9Zx'
     accessToken: 'xxxxxxxxxx'
     refreshToken: 'xxxxxxxxxx'
     expiresIn: 3600

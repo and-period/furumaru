@@ -1,0 +1,20 @@
+get:
+  summary: 販売者情報取得
+  operationId: v1GetShopMe
+  tags:
+  - Shop
+  security:
+  - BearerAuth: []
+  responses:
+    200:
+      description: A successful response.
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/v1ShopMeResponse'
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'

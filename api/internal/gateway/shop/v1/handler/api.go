@@ -102,18 +102,18 @@ func (h *apiV1Handler) authentication() gin.HandlerFunc {
 			return
 		}
 
-		// TODO: 管理者情報取得処理の追加
+		// TODO: 販売者情報取得処理の追加
 
 		ctx.Next()
 	}
 }
 
-func setAuth(ctx *gin.Context, adminID string) {
-	if adminID != "" {
-		ctx.Request.Header.Set("adminId", adminID)
+func setAuth(ctx *gin.Context, shopID string) {
+	if shopID != "" {
+		ctx.Request.Header.Set("shopId", shopID)
 	}
 }
 
-func getAdminID(ctx *gin.Context) string {
-	return ctx.GetHeader("adminId")
+func getShopID(ctx *gin.Context) string {
+	return ctx.GetHeader("shopId")
 }
