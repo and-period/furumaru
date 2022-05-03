@@ -21,7 +21,9 @@ func NewEnforcer(modelPath, policyPath string) (Enforcer, error) {
 	if err != nil {
 		return nil, fmt.Errorf("casbin: failed to new enforcer: %w", err)
 	}
+	if err := enforcer.InitWithFile(modelPath, policyPath); err != nil {
+		return nil, fmt.Errorf("casbin: failed to init enforcer: %w", err)
+	}
 	enforcer.EnableLog(false)
-	enforcer.InitWithFile(modelPath, policyPath)
 	return enforcer, nil
 }

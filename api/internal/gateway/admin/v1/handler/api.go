@@ -155,7 +155,7 @@ func getAdminID(ctx *gin.Context) string {
 	return ctx.GetHeader("adminId")
 }
 
-func getRole(ctx *gin.Context) service.AdminRole {
-	role, _ := strconv.ParseInt(ctx.GetHeader("role"), 10, 64)
-	return service.AdminRole(role)
-}
+// func getRole(ctx *gin.Context) service.AdminRole {
+// 	role, _ := strconv.ParseInt(ctx.GetHeader("role"), 10, 64)
+// 	return service.AdminRole(role)
+// }
