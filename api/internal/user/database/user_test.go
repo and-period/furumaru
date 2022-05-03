@@ -554,6 +554,7 @@ func testUser(id, email, phoneNumber string, now time.Time) *entity.User {
 		ProviderType: entity.ProviderTypeEmail,
 		Email:        email,
 		PhoneNumber:  phoneNumber,
+		ThumbnailURL: "https://and-period.jp/thumbnail.png",
 		CreatedAt:    now,
 		UpdatedAt:    now,
 	}
