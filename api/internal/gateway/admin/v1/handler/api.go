@@ -1,12 +1,17 @@
 package handler
 
 import (
+	"errors"
+	"strconv"
 	"sync"
 	"time"
 
+	"github.com/and-period/marche/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/marche/api/internal/gateway/util"
+	uentity "github.com/and-period/marche/api/internal/user/entity"
 	user "github.com/and-period/marche/api/internal/user/service"
 	"github.com/and-period/marche/api/pkg/jst"
+	"github.com/and-period/marche/api/pkg/rbac"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"golang.org/x/sync/singleflight"
@@ -25,6 +30,7 @@ type APIV1Handler interface {
 
 type Params struct {
 	WaitGroup   *sync.WaitGroup
+	Enforcer    rbac.Enforcer
 	UserService user.UserService
 }
 
@@ -33,6 +39,7 @@ type apiV1Handler struct {
 	logger      *zap.Logger
 	sharedGroup *singleflight.Group
 	waitGroup   *sync.WaitGroup
+	enforcer    rbac.Enforcer
 	user        user.UserService
 }
 
@@ -59,6 +66,7 @@ func NewAPIV1Handler(params *Params, opts ...Option) APIV1Handler {
 		now:       jst.Now,
 		logger:    dopts.logger,
 		waitGroup: params.WaitGroup,
+		enforcer:  params.Enforcer,
 		user:      params.UserService,
 	}
 }
@@ -68,7 +76,10 @@ func NewAPIV1Handler(params *Params, opts ...Option) APIV1Handler {
  * routes
  * ###############################################
  */
-func (h *apiV1Handler) Routes(rg *gin.RouterGroup) {}
+func (h *apiV1Handler) Routes(rg *gin.RouterGroup) {
+	v1 := rg.Group("/v1")
+	h.storeRoutes(v1.Group("/stores"))
+}
 
 /**
  * ###############################################
@@ -89,6 +100,10 @@ func unauthorized(ctx *gin.Context, err error) {
 	httpError(ctx, status.Error(codes.Unauthenticated, err.Error()))
 }
 
+func forbidden(ctx *gin.Context, err error) {
+	httpError(ctx, status.Error(codes.PermissionDenied, err.Error()))
+}
+
 /**
  * ###############################################
  * other
@@ -96,6 +111,7 @@ func unauthorized(ctx *gin.Context, err error) {
  */
 func (h *apiV1Handler) authentication() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		// 認証情報の検証
 		_, err := util.GetAuthToken(ctx)
 		if err != nil {
 			unauthorized(ctx, err)
@@ -103,17 +119,43 @@ func (h *apiV1Handler) authentication() gin.HandlerFunc {
 		}
 
 		// TODO: 管理者情報取得処理の追加
+		auth := &uentity.AdminAuth{Role: uentity.AdminRoleAdministrator}
+		role := service.NewAdminRole(auth.Role)
+
+		setAuth(ctx, auth.AdminID, role)
+
+		// 認可情報の検証
+		if h.enforcer == nil {
+			ctx.Next()
+			return
+		}
+
+		enforce, err := h.enforcer.Enforce(role.String(), ctx.Request.URL.Path, ctx.Request.Method)
+		if err != nil {
+			httpError(ctx, status.Error(codes.Internal, err.Error()))
+			return
+		}
+		if !enforce {
+			forbidden(ctx, errors.New("handler: you don't have the correct permissions"))
+			return
+		}
 
 		ctx.Next()
 	}
 }
 
-func setAuth(ctx *gin.Context, adminID string) {
+func setAuth(ctx *gin.Context, adminID string, role service.AdminRole) {
 	if adminID != "" {
 		ctx.Request.Header.Set("adminId", adminID)
+		ctx.Request.Header.Set("role", strconv.FormatInt(int64(role), 10))
 	}
 }
 
 func getAdminID(ctx *gin.Context) string {
 	return ctx.GetHeader("adminId")
+}
+
+func getRole(ctx *gin.Context) service.AdminRole {
+	role, _ := strconv.ParseInt(ctx.GetHeader("role"), 10, 64)
+	return service.AdminRole(role)
 }

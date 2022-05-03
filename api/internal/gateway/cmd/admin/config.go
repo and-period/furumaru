@@ -19,6 +19,8 @@ type config struct {
 	DBPassword               string `envconfig:"DB_PASSWORD" default:""`
 	DBTimeZone               string `envconfig:"DB_TIMEZONE" default:""`
 	DBEnabledTLS             bool   `envconfig:"DB_ENABLED_TLS" default:"false"`
+	RBACPolicyPath           string `envconfig:"RBAC_POLICY_PATH" default:""`
+	RBACModelPath            string `envconfig:"RBAC_MODEL_PATH" default:""`
 	AWSRegion                string `envconfig:"AWS_REGION" default:"ap-northeast-1"`
 	AWSAccessKey             string `envconfig:"AWS_ACCESS_KEY" default:""`
 	AWSSecretKey             string `envconfig:"AWS_SECRET_KEY" default:""`
