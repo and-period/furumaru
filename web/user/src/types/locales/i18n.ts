@@ -1,5 +1,5 @@
 export interface I18n {
-  default: {
+  layout: {
     header: {
       becomeShopOwner: string
       cartEmptyMessage: string

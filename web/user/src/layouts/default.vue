@@ -31,11 +31,9 @@ export default defineComponent({
   setup() {
     const { i18n } = useI18n()
 
-    const t = (str: keyof I18n['default']['header']) => {
-      return i18n.t(`default.header.${str}`)
+    const t = (str: keyof I18n['layout']['header']) => {
+      return i18n.t(`layout.header.${str}`)
     }
-
-    console.log('aaaa', t('becomeShopOwner'), i18n.t('auth.signUp.tel'))
 
     const handleCartClick = (): void => {
       console.log('NOT IMPLEMENTED')

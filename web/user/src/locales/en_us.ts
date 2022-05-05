@@ -1,7 +1,7 @@
 import { I18n } from '../types/locales'
 
 const lang: I18n = {
-  default: {
+  layout: {
     header: {
       becomeShopOwner: 'Become a Shop Owner',
       cartEmptyMessage: 'Cart is empty',
