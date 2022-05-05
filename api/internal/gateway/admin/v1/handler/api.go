@@ -8,6 +8,7 @@ import (
 
 	"github.com/and-period/marche/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/marche/api/internal/gateway/util"
+	store "github.com/and-period/marche/api/internal/store/service"
 	uentity "github.com/and-period/marche/api/internal/user/entity"
 	user "github.com/and-period/marche/api/internal/user/service"
 	"github.com/and-period/marche/api/pkg/jst"
@@ -29,9 +30,10 @@ type APIV1Handler interface {
 }
 
 type Params struct {
-	WaitGroup   *sync.WaitGroup
-	Enforcer    rbac.Enforcer
-	UserService user.UserService
+	WaitGroup    *sync.WaitGroup
+	Enforcer     rbac.Enforcer
+	UserService  user.UserService
+	StoreService store.StoreService
 }
 
 type apiV1Handler struct {
@@ -41,6 +43,7 @@ type apiV1Handler struct {
 	waitGroup   *sync.WaitGroup
 	enforcer    rbac.Enforcer
 	user        user.UserService
+	store       store.StoreService
 }
 
 type options struct {
@@ -68,6 +71,7 @@ func NewAPIV1Handler(params *Params, opts ...Option) APIV1Handler {
 		waitGroup: params.WaitGroup,
 		enforcer:  params.Enforcer,
 		user:      params.UserService,
+		store:     params.StoreService,
 	}
 }
 
