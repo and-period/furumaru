@@ -36,9 +36,10 @@ func (h *apiV1Handler) GetUserMe(ctx *gin.Context) {
 	}
 
 	res := &response.UserMeResponse{
-		ID:          u.ID,
-		Email:       u.Email,
-		PhoneNumber: u.PhoneNumber,
+		ID:           u.ID,
+		Email:        u.Email,
+		PhoneNumber:  u.PhoneNumber,
+		ThumbnailURL: u.ThumbnailURL,
 	}
 	ctx.JSON(http.StatusOK, res)
 }

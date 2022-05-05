@@ -14,7 +14,7 @@ const userTable = "users"
 
 var userFields = []string{
 	"id", "account_id", "cognito_id", "provider_type",
-	"username", "email", "phone_number",
+	"username", "email", "phone_number", "thumbnail_url",
 	"created_at", "updated_at", "verified_at", "deleted_at",
 }
 

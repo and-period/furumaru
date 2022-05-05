@@ -22,6 +22,7 @@ type User struct {
 	Username     string         `gorm:""`
 	Email        string         `gorm:"default:null"`
 	PhoneNumber  string         `gorm:"default:null"`
+	ThumbnailURL string         `gorm:""`
 	CreatedAt    time.Time      `gorm:"<-:create"`
 	UpdatedAt    time.Time      `gorm:""`
 	VerifiedAt   time.Time      `gorm:"default:null"`

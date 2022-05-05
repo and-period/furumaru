@@ -284,6 +284,12 @@ export interface UserMeResponse {
      * @memberof UserMeResponse
      */
     'phoneNumber': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof UserMeResponse
+     */
+    'thumbnailUrl': string;
 }
 /**
  * 

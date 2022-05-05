@@ -21,6 +21,7 @@ func TestGetUserMe(t *testing.T) {
 		ProviderType: uentity.ProviderTypeEmail,
 		Email:        "test@and-period.jp",
 		PhoneNumber:  "+819012345678",
+		ThumbnailURL: "https://and-period.jp/thumbnail.png",
 		CreatedAt:    now,
 		UpdatedAt:    now,
 		VerifiedAt:   now,
@@ -40,9 +41,10 @@ func TestGetUserMe(t *testing.T) {
 			expect: &testResponse{
 				code: http.StatusOK,
 				body: &response.UserMeResponse{
-					ID:          "user-id",
-					Email:       "test@and-period.jp",
-					PhoneNumber: "+819012345678",
+					ID:           "user-id",
+					Email:        "test@and-period.jp",
+					PhoneNumber:  "+819012345678",
+					ThumbnailURL: "https://and-period.jp/thumbnail.png",
 				},
 			},
 		},
