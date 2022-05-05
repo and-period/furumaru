@@ -24,8 +24,12 @@
         <the-header-menu-button :img-src="profileImgUrl" v-on="on" />
       </template>
       <v-list>
-        <v-list-item v-for="n in 3" :key="n">
-          <v-list-item-title>{{ n }}</v-list-item-title>
+        <v-list-item
+          v-for="(menuItem, i) in menuList"
+          :key="i"
+          @click="menuItem.onClick"
+        >
+          <v-list-item-title>{{ menuItem.name }}</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -38,7 +42,10 @@ import {
   ComputedRef,
   defineComponent,
   SetupContext,
+  PropType,
 } from '@nuxtjs/composition-api'
+
+import { HeaderMenuItem } from '~/types/props'
 
 export default defineComponent({
   props: {
@@ -59,6 +66,12 @@ export default defineComponent({
     cartNotEmptyMessage: {
       type: String,
       required: true,
+    },
+    menuList: {
+      type: Array as PropType<HeaderMenuItem[]>,
+      default: () => {
+        return []
+      },
     },
   },
 

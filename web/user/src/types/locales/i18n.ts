@@ -4,8 +4,9 @@ export interface I18n {
       becomeShopOwner: string
       cartEmptyMessage: string
       cartNotEmptyMessage: string
+      signUp: string
       signIn: string
-      localeText: string
+      changeLocaleText: string
     }
   }
   auth: {
