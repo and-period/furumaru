@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// AdminRole - 管理者権限
 type AdminRole int32
 
 const (
@@ -15,6 +16,7 @@ const (
 	AdminRoleOperator      AdminRole = 3 // 運用者
 )
 
+// Admin - 管理者情報
 type Admin struct {
 	ID        string         `gorm:"primaryKey;<-:create"`
 	CognitoID string         `gorm:""`

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 
+	store "github.com/and-period/marche/api/internal/store/service"
 	user "github.com/and-period/marche/api/internal/user/service"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -51,19 +52,19 @@ func internalError(err error) (int, bool) {
 
 	var s int
 	switch {
-	case errors.Is(err, user.ErrInvalidArgument):
+	case errors.Is(err, user.ErrInvalidArgument), errors.Is(err, store.ErrInvalidArgument):
 		s = http.StatusBadRequest
-	case errors.Is(err, user.ErrUnauthenticated):
+	case errors.Is(err, user.ErrUnauthenticated), errors.Is(err, store.ErrUnauthenticated):
 		s = http.StatusUnauthorized
-	case errors.Is(err, user.ErrNotFound):
+	case errors.Is(err, user.ErrNotFound), errors.Is(err, store.ErrNotFound):
 		s = http.StatusNotFound
-	case errors.Is(err, user.ErrAlreadyExists):
+	case errors.Is(err, user.ErrAlreadyExists), errors.Is(err, store.ErrAlreadyExists):
 		s = http.StatusConflict
-	case errors.Is(err, user.ErrFailedPrecondition):
+	case errors.Is(err, user.ErrFailedPrecondition), errors.Is(err, store.ErrFailedPrecondition):
 		s = http.StatusPreconditionFailed
-	case errors.Is(err, user.ErrNotImplemented):
+	case errors.Is(err, user.ErrNotImplemented), errors.Is(err, store.ErrNotImplemented):
 		s = http.StatusNotImplemented
-	case errors.Is(err, user.ErrInternal):
+	case errors.Is(err, user.ErrInternal), errors.Is(err, store.ErrInternal):
 		s = http.StatusInternalServerError
 	default:
 		return 0, false
