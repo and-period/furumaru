@@ -32,6 +32,44 @@ func newValidator() *validator.Validate {
 	return v
 }
 
+type SignInAdminInput struct {
+	Key      string `validate:"required"`
+	Password string `validate:"required"`
+}
+
+type SignOutAdminInput struct {
+	AccessToken string `validate:"required"`
+}
+
+type GetAdminAuthInput struct {
+	AccessToken string `validate:"required"`
+}
+
+type RefreshAdminTokenInput struct {
+	RefreshToken string `validate:"required"`
+}
+
+type GetAdminInput struct {
+	AdminID string `validate:"required"`
+}
+
+type UpdateAdminEmailInput struct {
+	AccessToken string `validate:"required"`
+	Email       string `validate:"required,max=256,email"`
+}
+
+type VerifyAdminEmailInput struct {
+	AccessToken string `validate:"required"`
+	VerifyCode  string `validate:"required"`
+}
+
+type UpdateAdminPasswordInput struct {
+	AccessToken          string `validate:"required"`
+	OldPassword          string `validate:"required"`
+	NewPassword          string `validate:"min=8,max=32,password"`
+	PasswordConfirmation string `validate:"required,eqfield=NewPassword"`
+}
+
 type SignInUserInput struct {
 	Key      string `validate:"required"`
 	Password string `validate:"required"`

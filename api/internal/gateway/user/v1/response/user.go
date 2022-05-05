@@ -5,7 +5,8 @@ type CreateUserResponse struct {
 }
 
 type UserMeResponse struct {
-	ID          string `json:"id"`          // ユーザーID
-	Email       string `json:"email"`       // メールアドレス
-	PhoneNumber string `json:"phoneNumber"` // 電話番号
+	ID           string `json:"id"`           // ユーザーID
+	Email        string `json:"email"`        // メールアドレス
+	PhoneNumber  string `json:"phoneNumber"`  // 電話番号
+	ThumbnailURL string `json:"thumbnailUrl"` // サムネイルURL
 }

@@ -1,0 +1,53 @@
+openapi: 3.0.3
+info:
+  title: Marche Online
+  description: マルシェ販売者用API
+  version: 0.1.0
+servers:
+- url: http://localhost:18010
+  description: 開発環境
+tags:
+- name: Auth
+  description: 認証関連
+- name: Shop
+  description: 販売者関連
+paths:
+  # Auth
+  /v1/auth:
+    $ref: './paths/v1/auth/index.yaml'
+  /v1/auth/refresh-token:
+    $ref: './paths/v1/auth/refresh-token.yaml'
+  # Shop
+  /v1/shops/me:
+    $ref: './paths/v1/shops/me/index.yaml'
+  /v1/shops/me/email:
+    $ref: './paths/v1/shops/me/email/index.yaml'
+  /v1/shops/me/email/verified:
+    $ref: './paths/v1/shops/me/email/verified.yaml'
+  /v1/shops/me/password:
+    $ref: './paths/v1/shops/me/password.yaml'
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    # Common
+    errorResponse:
+      $ref: './components/schemas/common.yaml#/errorResponse'
+    # Request
+    v1SignInRequest:
+      $ref: './components/schemas/v1/auth.request.yaml#/signInRequest'
+    v1RefreshAuthTokenRequest:
+      $ref: './components/schemas/v1/auth.request.yaml#/refreshAuthTokenRequest'
+    v1UpdateShopEmailRequest:
+      $ref: './components/schemas/v1/shops.request.yaml#/updateShopEmailRequest'
+    v1VerifyShopEmailRequest:
+      $ref: './components/schemas/v1/shops.request.yaml#/verifyShopEmailRequest'
+    v1UpdateShopPasswordRequest:
+      $ref: './components/schemas/v1/shops.request.yaml#/updateShopPasswordRequest'
+    # Response
+    v1AuthResponse:
+      $ref: './components/schemas/v1/auth.response.yaml#/authResponse'
+    v1ShopMeResponse:
+      $ref: './components/schemas/v1/shops.response.yaml#/shopMeResponse'

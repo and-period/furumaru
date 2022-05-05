@@ -5,6 +5,8 @@ import (
 	"sync"
 
 	v1 "github.com/and-period/marche/api/internal/gateway/user/v1/handler"
+	storedb "github.com/and-period/marche/api/internal/store/database"
+	store "github.com/and-period/marche/api/internal/store/service"
 	userdb "github.com/and-period/marche/api/internal/user/database"
 	user "github.com/and-period/marche/api/internal/user/service"
 	"github.com/and-period/marche/api/pkg/cognito"
@@ -44,11 +46,16 @@ func newRegistry(ctx context.Context, conf *config, opts ...option) (*registry, 
 	if err != nil {
 		return nil, err
 	}
+	storeService, err := newStoreService(ctx, conf, dopts)
+	if err != nil {
+		return nil, err
+	}
 
 	// Handlerの設定
 	v1Params := &v1.Params{
-		WaitGroup:   &sync.WaitGroup{},
-		UserService: userService,
+		WaitGroup:    &sync.WaitGroup{},
+		UserService:  userService,
+		StoreService: storeService,
 	}
 
 	return &registry{
@@ -93,10 +100,9 @@ func newUserService(ctx context.Context, conf *config, opts *options) (user.User
 	}
 	userAuthParams := &cognito.Params{
 		UserPoolID:      conf.CognitoUserPoolID,
-		AppClientID:     conf.CognitoClientID,
-		AppClientSecret: conf.CognitoClientSecret,
+		AppClientID:     conf.CognitoUserClientID,
+		AppClientSecret: conf.CognitoUserClientSecret,
 	}
-	userAuth := cognito.NewClient(awscfg, userAuthParams)
 
 	// Databaseの設定
 	dbParams := &userdb.Params{
@@ -105,11 +111,35 @@ func newUserService(ctx context.Context, conf *config, opts *options) (user.User
 
 	// User Serviceの設定
 	params := &user.Params{
-		Database: userdb.NewDatabase(dbParams),
-		UserAuth: userAuth,
+		Database:  userdb.NewDatabase(dbParams),
+		AdminAuth: cognito.NewClient(awscfg, &cognito.Params{}),
+		ShopAuth:  cognito.NewClient(awscfg, &cognito.Params{}),
+		UserAuth:  cognito.NewClient(awscfg, userAuthParams),
 	}
 	return user.NewUserService(
 		params,
 		user.WithLogger(opts.logger),
+	), nil
+}
+
+func newStoreService(ctx context.Context, conf *config, opts *options) (store.StoreService, error) {
+	// MySQLの設定
+	mysql, err := newDatabase("stores", conf, opts)
+	if err != nil {
+		return nil, err
+	}
+
+	// Databaseの設定
+	dbParams := storedb.Params{
+		Database: mysql,
+	}
+
+	// Store Serviceの設定
+	params := &store.Params{
+		Database: storedb.NewDatabase(&dbParams),
+	}
+	return store.NewStoreService(
+		params,
+		store.WithLogger(opts.logger),
 	), nil
 }

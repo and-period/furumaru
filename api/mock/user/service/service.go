@@ -94,6 +94,36 @@ func (mr *MockUserServiceMockRecorder) ForgotUserPassword(ctx, in interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ForgotUserPassword", reflect.TypeOf((*MockUserService)(nil).ForgotUserPassword), ctx, in)
 }
 
+// GetAdmin mocks base method.
+func (m *MockUserService) GetAdmin(ctx context.Context, in *service.GetAdminInput) (*entity.Admin, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAdmin", ctx, in)
+	ret0, _ := ret[0].(*entity.Admin)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAdmin indicates an expected call of GetAdmin.
+func (mr *MockUserServiceMockRecorder) GetAdmin(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAdmin", reflect.TypeOf((*MockUserService)(nil).GetAdmin), ctx, in)
+}
+
+// GetAdminAuth mocks base method.
+func (m *MockUserService) GetAdminAuth(ctx context.Context, in *service.GetAdminAuthInput) (*entity.AdminAuth, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAdminAuth", ctx, in)
+	ret0, _ := ret[0].(*entity.AdminAuth)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAdminAuth indicates an expected call of GetAdminAuth.
+func (mr *MockUserServiceMockRecorder) GetAdminAuth(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAdminAuth", reflect.TypeOf((*MockUserService)(nil).GetAdminAuth), ctx, in)
+}
+
 // GetUser mocks base method.
 func (m *MockUserService) GetUser(ctx context.Context, in *service.GetUserInput) (*entity.User, error) {
 	m.ctrl.T.Helper()
@@ -138,6 +168,21 @@ func (mr *MockUserServiceMockRecorder) InitializeUser(ctx, in interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InitializeUser", reflect.TypeOf((*MockUserService)(nil).InitializeUser), ctx, in)
 }
 
+// RefreshAdminToken mocks base method.
+func (m *MockUserService) RefreshAdminToken(ctx context.Context, in *service.RefreshAdminTokenInput) (*entity.AdminAuth, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RefreshAdminToken", ctx, in)
+	ret0, _ := ret[0].(*entity.AdminAuth)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RefreshAdminToken indicates an expected call of RefreshAdminToken.
+func (mr *MockUserServiceMockRecorder) RefreshAdminToken(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RefreshAdminToken", reflect.TypeOf((*MockUserService)(nil).RefreshAdminToken), ctx, in)
+}
+
 // RefreshUserToken mocks base method.
 func (m *MockUserService) RefreshUserToken(ctx context.Context, in *service.RefreshUserTokenInput) (*entity.UserAuth, error) {
 	m.ctrl.T.Helper()
@@ -151,6 +196,21 @@ func (m *MockUserService) RefreshUserToken(ctx context.Context, in *service.Refr
 func (mr *MockUserServiceMockRecorder) RefreshUserToken(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RefreshUserToken", reflect.TypeOf((*MockUserService)(nil).RefreshUserToken), ctx, in)
+}
+
+// SignInAdmin mocks base method.
+func (m *MockUserService) SignInAdmin(ctx context.Context, in *service.SignInAdminInput) (*entity.AdminAuth, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SignInAdmin", ctx, in)
+	ret0, _ := ret[0].(*entity.AdminAuth)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SignInAdmin indicates an expected call of SignInAdmin.
+func (mr *MockUserServiceMockRecorder) SignInAdmin(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SignInAdmin", reflect.TypeOf((*MockUserService)(nil).SignInAdmin), ctx, in)
 }
 
 // SignInUser mocks base method.
@@ -168,6 +228,20 @@ func (mr *MockUserServiceMockRecorder) SignInUser(ctx, in interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SignInUser", reflect.TypeOf((*MockUserService)(nil).SignInUser), ctx, in)
 }
 
+// SignOutAdmin mocks base method.
+func (m *MockUserService) SignOutAdmin(ctx context.Context, in *service.SignOutAdminInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SignOutAdmin", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SignOutAdmin indicates an expected call of SignOutAdmin.
+func (mr *MockUserServiceMockRecorder) SignOutAdmin(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SignOutAdmin", reflect.TypeOf((*MockUserService)(nil).SignOutAdmin), ctx, in)
+}
+
 // SignOutUser mocks base method.
 func (m *MockUserService) SignOutUser(ctx context.Context, in *service.SignOutUserInput) error {
 	m.ctrl.T.Helper()
@@ -180,6 +254,34 @@ func (m *MockUserService) SignOutUser(ctx context.Context, in *service.SignOutUs
 func (mr *MockUserServiceMockRecorder) SignOutUser(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SignOutUser", reflect.TypeOf((*MockUserService)(nil).SignOutUser), ctx, in)
+}
+
+// UpdateAdminEmail mocks base method.
+func (m *MockUserService) UpdateAdminEmail(ctx context.Context, in *service.UpdateAdminEmailInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateAdminEmail", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateAdminEmail indicates an expected call of UpdateAdminEmail.
+func (mr *MockUserServiceMockRecorder) UpdateAdminEmail(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAdminEmail", reflect.TypeOf((*MockUserService)(nil).UpdateAdminEmail), ctx, in)
+}
+
+// UpdateAdminPassword mocks base method.
+func (m *MockUserService) UpdateAdminPassword(ctx context.Context, in *service.UpdateAdminPasswordInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateAdminPassword", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateAdminPassword indicates an expected call of UpdateAdminPassword.
+func (mr *MockUserServiceMockRecorder) UpdateAdminPassword(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAdminPassword", reflect.TypeOf((*MockUserService)(nil).UpdateAdminPassword), ctx, in)
 }
 
 // UpdateUserEmail mocks base method.
@@ -208,6 +310,20 @@ func (m *MockUserService) UpdateUserPassword(ctx context.Context, in *service.Up
 func (mr *MockUserServiceMockRecorder) UpdateUserPassword(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUserPassword", reflect.TypeOf((*MockUserService)(nil).UpdateUserPassword), ctx, in)
+}
+
+// VerifyAdminEmail mocks base method.
+func (m *MockUserService) VerifyAdminEmail(ctx context.Context, in *service.VerifyAdminEmailInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VerifyAdminEmail", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// VerifyAdminEmail indicates an expected call of VerifyAdminEmail.
+func (mr *MockUserServiceMockRecorder) VerifyAdminEmail(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyAdminEmail", reflect.TypeOf((*MockUserService)(nil).VerifyAdminEmail), ctx, in)
 }
 
 // VerifyUser mocks base method.

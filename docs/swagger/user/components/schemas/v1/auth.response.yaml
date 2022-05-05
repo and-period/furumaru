@@ -3,7 +3,7 @@ authResponse:
   properties:
     userId:
       type: string
-      description: ユーザーID
+      description: 購入者ID
     accessToken:
       type: string
       description: アクセストークン

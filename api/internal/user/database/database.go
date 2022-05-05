@@ -28,18 +28,26 @@ type Params struct {
 }
 
 type Database struct {
-	User User
+	Admin Admin
+	User  User
 }
 
 func NewDatabase(params *Params) *Database {
 	return &Database{
-		User: NewUser(params.Database),
+		Admin: NewAdmin(params.Database),
+		User:  NewUser(params.Database),
 	}
 }
 
 /**
  * interface
  */
+type Admin interface {
+	Get(ctx context.Context, adminID string, fields ...string) (*entity.Admin, error)
+	GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.Admin, error)
+	UpdateEmail(ctx context.Context, adminID, email string) error
+}
+
 type User interface {
 	Get(ctx context.Context, userID string, fields ...string) (*entity.User, error)
 	GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.User, error)

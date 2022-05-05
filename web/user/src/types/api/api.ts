@@ -28,7 +28,7 @@ import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } fr
  */
 export interface AuthResponse {
     /**
-     * ユーザーID
+     * 購入者ID
      * @type {string}
      * @memberof AuthResponse
      */
@@ -96,7 +96,7 @@ export interface CreateUserRequest {
  */
 export interface CreateUserResponse {
     /**
-     * ユーザーID
+     * 購入者ID
      * @type {string}
      * @memberof CreateUserResponse
      */
@@ -267,7 +267,7 @@ export interface UpdateUserPasswordRequest {
  */
 export interface UserMeResponse {
     /**
-     * ユーザーID
+     * 購入者ID
      * @type {string}
      * @memberof UserMeResponse
      */
@@ -284,6 +284,12 @@ export interface UserMeResponse {
      * @memberof UserMeResponse
      */
     'phoneNumber': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof UserMeResponse
+     */
+    'thumbnailUrl': string;
 }
 /**
  * 
@@ -292,7 +298,7 @@ export interface UserMeResponse {
  */
 export interface V1CreateUserResponse {
     /**
-     * ユーザーID
+     * 購入者ID
      * @type {string}
      * @memberof V1CreateUserResponse
      */

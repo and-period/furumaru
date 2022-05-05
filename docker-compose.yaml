@@ -63,11 +63,45 @@ services:
       - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
       - AWS_SECRET_KEY=${AWS_SECRET_KEY}
       - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
-      - COGNITO_CLIENT_ID=${COGNITO_USER_CLIENT_ID}
+      - COGNITO_USER_CLIENT_ID=${COGNITO_USER_CLIENT_ID}
     ports:
       - 18000:9000
       - 18001:9001
     command: make dev SERVICE=gateway/user
+
+  shop_gateway:
+    container_name: shop_gateway
+    build:
+      context: .
+      dockerfile: ./infra/docker/api/Dockerfile.development
+    working_dir: /go/src/github.com/and-period/marche/api
+    volumes:
+      - ./api:/go/src/github.com/and-period/marche/api:cached
+      - ./tmp/data/go/pkg/mod:/go/pkg/mod:delegated
+      - ./tmp/logs/api/gateway/shop:/var/log/api:delegated
+    environment:
+      - PORT=9000
+      - METRICS_PORT=9001
+      - SHUTDOWN_DELAY_SEC=0
+      - LOG_LEVEL=debug
+      - LOG_PATH=/var/log/api
+      - DB_HOST=${MYSQL_HOST}
+      - DB_PORT=${MYSQL_PORT}
+      - DB_USERNAME=${MYSQL_USERNAME}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - DB_TIMEZONE=${MYSQL_TIMEZONE}
+      - DB_ENABLED_TLS=${MYSQL_ENABLED_TLS}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
+      - COGNITO_SHOP_POOL_ID=${COGNITO_SHOP_POOL_ID}
+      - COGNITO_SHOP_CLIENT_ID=${COGNITO_SHOP_CLIENT_ID}
+      - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
+      - COGNITO_USER_CLIENT_ID=${COGNITO_USER_CLIENT_ID}
+    ports:
+      - 18010:9000
+      - 18011:9001
+    command: make dev SERVICE=gateway/shop
 
   admin_gateway:
     container_name: admin_gateway
@@ -91,11 +125,17 @@ services:
       - DB_PASSWORD=${MYSQL_PASSWORD}
       - DB_TIMEZONE=${MYSQL_TIMEZONE}
       - DB_ENABLED_TLS=${MYSQL_ENABLED_TLS}
+      - RBAC_POLICY_PATH=/go/src/github.com/and-period/marche/api/config/gateway/admin/rbac/policy.csv
+      - RBAC_MODEL_PATH=/go/src/github.com/and-period/marche/api/config/gateway/admin/rbac/model.conf
       - AWS_REGION=${AWS_REGION}
       - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
       - AWS_SECRET_KEY=${AWS_SECRET_KEY}
-      - COGNITO_USER_POOL_ID=${COGNITO_ADMIN_POOL_ID}
-      - COGNITO_CLIENT_ID=${COGNITO_ADMIN_CLIENT_ID}
+      - COGNITO_ADMIN_POOL_ID=${COGNITO_ADMIN_POOL_ID}
+      - COGNITO_ADMIN_CLIENT_ID=${COGNITO_ADMIN_CLIENT_ID}
+      - COGNITO_SHOP_POOL_ID=${COGNITO_SHOP_POOL_ID}
+      - COGNITO_SHOP_CLIENT_ID=${COGNITO_SHOP_CLIENT_ID}
+      - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
+      - COGNITO_USER_CLIENT_ID=${COGNITO_USER_CLIENT_ID}
     ports:
       - 18020:9000
       - 18021:9001
@@ -145,7 +185,7 @@ services:
   swagger_user:
     container_name: swagger_user
     build:
-      context: ./infra/docker/docs/swagger/user
+      context: ./infra/docker/docs/swagger/viewer
       dockerfile: Dockerfile
     volumes:
       - ./tmp/data/swagger/user/docs/openapi:/var/swagger:cached
@@ -156,10 +196,24 @@ services:
     depends_on:
       - swagger_generator
 
+  swagger_shop:
+    container_name: swagger_shop
+    build:
+      context: ./infra/docker/docs/swagger/viewer
+      dockerfile: Dockerfile
+    volumes:
+      - ./tmp/data/swagger/user/docs/openapi:/var/swagger:cached
+    ports:
+      - 9010:8080
+    environment:
+      SWAGGER_JSON: /var/swagger/openapi.yaml
+    depends_on:
+      - swagger_generator
+
   swagger_admin:
     container_name: swagger_admin
     build:
-      context: ./infra/docker/docs/swagger/admin
+      context: ./infra/docker/docs/swagger/viewer
       dockerfile: Dockerfile
     volumes:
       - ./tmp/data/swagger/admin/docs/openapi:/var/swagger:cached

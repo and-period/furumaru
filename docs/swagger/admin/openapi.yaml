@@ -11,6 +11,8 @@ tags:
   description: 認証関連
 - name: Admin
   description: 管理者関連
+- name: Store
+  description: 店舗関連
 paths:
   # Auth
   /v1/auth:
@@ -26,6 +28,10 @@ paths:
     $ref: './paths/v1/admins/me/email/verified.yaml'
   /v1/admins/me/password:
     $ref: './paths/v1/admins/me/password.yaml'
+  /v1/stores:
+    $ref: './paths/v1/stores/index.yaml'
+  /v1/stores/{storeId}:
+    $ref: './paths/v1/stores/_storeId/index.yaml'
 components:
   securitySchemes:
     BearerAuth:
@@ -51,3 +57,7 @@ components:
       $ref: './components/schemas/v1/auth.response.yaml#/authResponse'
     v1AdminMeResponse:
       $ref: './components/schemas/v1/admins.response.yaml#/adminMeResponse'
+    v1StoreResponse:
+      $ref: './components/schemas/v1/stores.response.yaml#/storeResponse'
+    v1StoresResponse:
+      $ref: './components/schemas/v1/stores.response.yaml#/storesResponse'

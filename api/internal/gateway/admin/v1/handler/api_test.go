@@ -17,7 +17,8 @@ import (
 	"testing"
 	"time"
 
-	uentity "github.com/and-period/marche/api/internal/user/entity"
+	"github.com/and-period/marche/api/internal/gateway/admin/v1/service"
+	mock_store "github.com/and-period/marche/api/mock/store/service"
 	mock_user "github.com/and-period/marche/api/mock/user/service"
 	"github.com/and-period/marche/api/pkg/jst"
 	"github.com/gin-gonic/gin"
@@ -35,7 +36,8 @@ var (
 )
 
 type mocks struct {
-	user *mock_user.MockUserService
+	user  *mock_user.MockUserService
+	store *mock_store.MockStoreService
 }
 
 type testResponse struct {
@@ -59,7 +61,8 @@ func withNow(now time.Time) testOption {
 
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
-		user: mock_user.NewMockUserService(ctrl),
+		user:  mock_user.NewMockUserService(ctrl),
+		store: mock_store.NewMockStoreService(ctrl),
 	}
 }
 
@@ -70,6 +73,7 @@ func newAPIV1Handler(mocks *mocks, opts *testOptions) APIV1Handler {
 		sharedGroup: &singleflight.Group{},
 		waitGroup:   &sync.WaitGroup{},
 		user:        mocks.user,
+		store:       mocks.store,
 	}
 }
 
@@ -101,8 +105,8 @@ func testHTTP(
 	newRoutes(h, r)
 	setup(t, mocks, ctrl)
 
-	auth := &uentity.UserAuth{UserID: idmock}
-	mocks.user.EXPECT().GetUserAuth(gomock.Any(), gomock.Any()).Return(auth, nil).MaxTimes(1)
+	// auth := &uentity.AdminAuth{AdminID: idmock, Role: uentity.AdminRoleAdministrator}
+	// mocks.user.EXPECT().GetAdminAuth(gomock.Any(), gomock.Any()).Return(auth, nil).MaxTimes(1)
 
 	// test
 	r.ServeHTTP(w, req)
@@ -139,7 +143,7 @@ func newHTTPRequest(t *testing.T, method, path string, body interface{}) *http.R
 
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", tokenmock))
-	req.Header.Add("userId", idmock)
+	req.Header.Add("adminId", idmock)
 	return req
 }
 
@@ -172,7 +176,7 @@ func newMultipartRequest(t *testing.T, method, path, field string) *http.Request
 
 	req.Header.Add("Content-Type", writer.FormDataContentType())
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", tokenmock))
-	req.Header.Add("userId", idmock)
+	req.Header.Add("adminId", idmock)
 	return req
 }
 
@@ -201,6 +205,6 @@ func TestSetAuth(t *testing.T) {
 	w := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(w)
 	ctx.Request = &http.Request{Header: http.Header{}}
-	setAuth(ctx, "user-id")
-	assert.Equal(t, "user-id", getUserID(ctx))
+	setAuth(ctx, "admin-id", service.AdminRoleDeveloper)
+	assert.Equal(t, "admin-id", getAdminID(ctx))
 }

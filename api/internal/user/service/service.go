@@ -28,6 +28,15 @@ var (
 )
 
 type UserService interface {
+	SignInAdmin(ctx context.Context, in *SignInAdminInput) (*entity.AdminAuth, error)
+	SignOutAdmin(ctx context.Context, in *SignOutAdminInput) error
+	GetAdminAuth(ctx context.Context, in *GetAdminAuthInput) (*entity.AdminAuth, error)
+	RefreshAdminToken(ctx context.Context, in *RefreshAdminTokenInput) (*entity.AdminAuth, error)
+	GetAdmin(ctx context.Context, in *GetAdminInput) (*entity.Admin, error)
+	UpdateAdminEmail(ctx context.Context, in *UpdateAdminEmailInput) error
+	VerifyAdminEmail(ctx context.Context, in *VerifyAdminEmailInput) error
+	UpdateAdminPassword(ctx context.Context, in *UpdateAdminPasswordInput) error
+
 	SignInUser(ctx context.Context, in *SignInUserInput) (*entity.UserAuth, error)
 	SignOutUser(ctx context.Context, in *SignOutUserInput) error
 	GetUserAuth(ctx context.Context, in *GetUserAuthInput) (*entity.UserAuth, error)
@@ -46,8 +55,10 @@ type UserService interface {
 }
 
 type Params struct {
-	Database *database.Database
-	UserAuth cognito.Client
+	Database  *database.Database
+	AdminAuth cognito.Client
+	ShopAuth  cognito.Client
+	UserAuth  cognito.Client
 }
 
 type userService struct {
@@ -56,6 +67,8 @@ type userService struct {
 	sharedGroup *singleflight.Group
 	validator   *validator.Validate
 	db          *database.Database
+	adminAuth   cognito.Client
+	shopAuth    cognito.Client
 	userAuth    cognito.Client
 }
 
@@ -84,6 +97,8 @@ func NewUserService(params *Params, opts ...Option) UserService {
 		sharedGroup: &singleflight.Group{},
 		validator:   newValidator(),
 		db:          params.Database,
+		adminAuth:   params.AdminAuth,
+		shopAuth:    params.ShopAuth,
 		userAuth:    params.UserAuth,
 	}
 }

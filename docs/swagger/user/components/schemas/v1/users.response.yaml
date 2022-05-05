@@ -3,7 +3,7 @@ createUserResponse:
   properties:
     id:
       type: string
-      description: ユーザーID
+      description: 購入者ID
   required:
   - id
   example:
@@ -13,18 +13,23 @@ userMeResponse:
   properties:
     id:
       type: string
-      description: ユーザーID
+      description: 購入者ID
     email:
       type: string
       description: メールアドレス
     phoneNumber:
       type: string
       description: 電話番号
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
   required:
   - id
   - email
   - phoneNumber
+  - thumbnailUrl
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     email: 'test-user@and-period.jp'
     phoneNumber: '+819012345678'
+    thumbnailUrl: 'https://and-period.jp/thumbnail.png'
