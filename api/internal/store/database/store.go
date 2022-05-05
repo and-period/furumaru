@@ -43,7 +43,7 @@ func (s *store) List(ctx context.Context, params *ListStoresParams, fields ...st
 	}
 
 	err := stmt.Find(&stores).Error
-	return nil, dbError(err)
+	return stores, dbError(err)
 }
 
 func (s *store) Get(ctx context.Context, storeID int64, fields ...string) (*entity.Store, error) {

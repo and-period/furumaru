@@ -29,13 +29,15 @@ func TestStaff_ListByStoreID(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, storeTable)
+	_ = m.dbDelete(ctx, staffTable, storeTable)
 	s := testStore(1, "&.農園", now())
 	err = m.db.DB.Create(&s).Error
 	require.NoError(t, err)
 	staffs := make(entity.Staffs, 2)
 	staffs[0] = testStaff(1, "user-id01", now())
 	staffs[1] = testStaff(1, "user-id02", now())
+	err = m.db.DB.Create(&staffs).Error
+	require.NoError(t, err)
 
 	type args struct {
 		storeID int64
@@ -79,9 +81,7 @@ func TestStaff_ListByStoreID(t *testing.T) {
 				return
 			}
 			assert.NoError(t, err)
-			for i := range actual {
-				fillIgnoreStaffField(actual[i], now())
-			}
+			fillIgnoreStaffsField(actual, now())
 			assert.ElementsMatch(t, tt.want.staffs, actual)
 		})
 	}
@@ -103,4 +103,10 @@ func fillIgnoreStaffField(s *entity.Staff, now time.Time) {
 	}
 	s.CreatedAt = now
 	s.UpdatedAt = now
+}
+
+func fillIgnoreStaffsField(ss entity.Staffs, now time.Time) {
+	for i := range ss {
+		fillIgnoreStaffField(ss[i], now)
+	}
 }

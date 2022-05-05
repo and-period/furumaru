@@ -81,9 +81,7 @@ func TestStore_List(t *testing.T) {
 				return
 			}
 			assert.NoError(t, err)
-			for i := range actual {
-				fillIgnoreStoreField(actual[i], now())
-			}
+			fillIgnoreStoresField(actual, now())
 			assert.ElementsMatch(t, tt.want.stores, actual)
 		})
 	}
@@ -182,4 +180,10 @@ func fillIgnoreStoreField(s *entity.Store, now time.Time) {
 	}
 	s.CreatedAt = now
 	s.UpdatedAt = now
+}
+
+func fillIgnoreStoresField(ss entity.Stores, now time.Time) {
+	for i := range ss {
+		fillIgnoreStoreField(ss[i], now)
+	}
 }

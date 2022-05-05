@@ -38,8 +38,6 @@ func (s *staff) ListByStoreID(ctx context.Context, storeID int64, fields ...stri
 		Table(staffTable).Select(fields).
 		Where("store_id = ?", storeID)
 
-	if err := stmt.Find(&staffs).Error; err != nil {
-		return nil, dbError(err)
-	}
-	return staffs, nil
+	err := stmt.Find(&staffs).Error
+	return staffs, dbError(err)
 }
