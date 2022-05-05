@@ -17,6 +17,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/and-period/marche/api/internal/gateway/admin/v1/service"
 	mock_user "github.com/and-period/marche/api/mock/user/service"
 	"github.com/and-period/marche/api/pkg/jst"
 	"github.com/gin-gonic/gin"
@@ -100,7 +101,7 @@ func testHTTP(
 	newRoutes(h, r)
 	setup(t, mocks, ctrl)
 
-	// auth := &uentity.AdminAuth{UserID: idmock}
+	// auth := &uentity.AdminAuth{AdminID: idmock, Role: uentity.AdminRoleAdministrator}
 	// mocks.user.EXPECT().GetAdminAuth(gomock.Any(), gomock.Any()).Return(auth, nil).MaxTimes(1)
 
 	// test
@@ -200,6 +201,6 @@ func TestSetAuth(t *testing.T) {
 	w := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(w)
 	ctx.Request = &http.Request{Header: http.Header{}}
-	setAuth(ctx, "admin-id")
+	setAuth(ctx, "admin-id", service.AdminRoleDeveloper)
 	assert.Equal(t, "admin-id", getAdminID(ctx))
 }

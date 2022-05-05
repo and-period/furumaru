@@ -163,6 +163,130 @@ export interface SignInRequest {
 /**
  *
  * @export
+ * @interface StoreResponse
+ */
+export interface StoreResponse {
+  /**
+   * 店舗ID
+   * @type {number}
+   * @memberof StoreResponse
+   */
+  id: number
+  /**
+   * 店舗名
+   * @type {string}
+   * @memberof StoreResponse
+   */
+  name: string
+  /**
+   * サムネイルURL
+   * @type {string}
+   * @memberof StoreResponse
+   */
+  thumbnailUrl: string
+  /**
+   * 店舗スタッフ一覧
+   * @type {Array<StoreResponseStaffs>}
+   * @memberof StoreResponse
+   */
+  staffs: Array<StoreResponseStaffs>
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof StoreResponse
+   */
+  createdAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof StoreResponse
+   */
+  updatedAt: number
+}
+/**
+ *
+ * @export
+ * @interface StoreResponseStaffs
+ */
+export interface StoreResponseStaffs {
+  /**
+   * 販売者ID
+   * @type {string}
+   * @memberof StoreResponseStaffs
+   */
+  id?: string
+  /**
+   * 販売者名
+   * @type {string}
+   * @memberof StoreResponseStaffs
+   */
+  name?: string
+  /**
+   * メールアドレス
+   * @type {string}
+   * @memberof StoreResponseStaffs
+   */
+  email?: string
+  /**
+   * 権限 (1:管理者, 2:編集者, 3:閲覧者)
+   * @type {number}
+   * @memberof StoreResponseStaffs
+   */
+  role?: number
+}
+/**
+ *
+ * @export
+ * @interface StoresResponse
+ */
+export interface StoresResponse {
+  /**
+   * 店舗一覧
+   * @type {Array<StoresResponseStores>}
+   * @memberof StoresResponse
+   */
+  stores: Array<StoresResponseStores>
+}
+/**
+ *
+ * @export
+ * @interface StoresResponseStores
+ */
+export interface StoresResponseStores {
+  /**
+   * 店舗ID
+   * @type {number}
+   * @memberof StoresResponseStores
+   */
+  id?: number
+  /**
+   * 店舗名
+   * @type {string}
+   * @memberof StoresResponseStores
+   */
+  name?: string
+  /**
+   * サムネイルURL
+   * @type {string}
+   * @memberof StoresResponseStores
+   */
+  thumbnailUrl?: string
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof StoresResponseStores
+   */
+  createdAt?: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof StoresResponseStores
+   */
+  updatedAt?: number
+}
+/**
+ *
+ * @export
  * @interface UpdateAdminEmailRequest
  */
 export interface UpdateAdminEmailRequest {
@@ -1097,6 +1221,267 @@ export class AuthApi extends BaseAPI {
   public v1SignOut(options?: AxiosRequestConfig) {
     return AuthApiFp(this.configuration)
       .v1SignOut(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * StoreApi - axios parameter creator
+ * @export
+ */
+export const StoreApiAxiosParamCreator = function (
+  configuration?: Configuration
+) {
+  return {
+    /**
+     *
+     * @summary 店舗詳細取得
+     * @param {number} storeId 店舗ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1GetStore: async (
+      storeId: number,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'storeId' is not null or undefined
+      assertParamExists('v1GetStore', 'storeId', storeId)
+      const localVarPath = `/v1/stores/{storeId}`.replace(
+        `{${'storeId'}}`,
+        encodeURIComponent(String(storeId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary 店舗一覧取得
+     * @param {number} [limit] 取得上限数
+     * @param {number} [offset] 取得開始位置
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1ListStores: async (
+      limit?: number,
+      offset?: number,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/v1/stores`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (limit !== undefined) {
+        localVarQueryParameter['limit'] = limit
+      }
+
+      if (offset !== undefined) {
+        localVarQueryParameter['offset'] = offset
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * StoreApi - functional programming interface
+ * @export
+ */
+export const StoreApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = StoreApiAxiosParamCreator(configuration)
+  return {
+    /**
+     *
+     * @summary 店舗詳細取得
+     * @param {number} storeId 店舗ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1GetStore(
+      storeId: number,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<StoreResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetStore(
+        storeId,
+        options
+      )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary 店舗一覧取得
+     * @param {number} [limit] 取得上限数
+     * @param {number} [offset] 取得開始位置
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1ListStores(
+      limit?: number,
+      offset?: number,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<StoresResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListStores(
+        limit,
+        offset,
+        options
+      )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+  }
+}
+
+/**
+ * StoreApi - factory interface
+ * @export
+ */
+export const StoreApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance
+) {
+  const localVarFp = StoreApiFp(configuration)
+  return {
+    /**
+     *
+     * @summary 店舗詳細取得
+     * @param {number} storeId 店舗ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1GetStore(storeId: number, options?: any): AxiosPromise<StoreResponse> {
+      return localVarFp
+        .v1GetStore(storeId, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary 店舗一覧取得
+     * @param {number} [limit] 取得上限数
+     * @param {number} [offset] 取得開始位置
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1ListStores(
+      limit?: number,
+      offset?: number,
+      options?: any
+    ): AxiosPromise<StoresResponse> {
+      return localVarFp
+        .v1ListStores(limit, offset, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * StoreApi - object-oriented interface
+ * @export
+ * @class StoreApi
+ * @extends {BaseAPI}
+ */
+export class StoreApi extends BaseAPI {
+  /**
+   *
+   * @summary 店舗詳細取得
+   * @param {number} storeId 店舗ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof StoreApi
+   */
+  public v1GetStore(storeId: number, options?: AxiosRequestConfig) {
+    return StoreApiFp(this.configuration)
+      .v1GetStore(storeId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary 店舗一覧取得
+   * @param {number} [limit] 取得上限数
+   * @param {number} [offset] 取得開始位置
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof StoreApi
+   */
+  public v1ListStores(
+    limit?: number,
+    offset?: number,
+    options?: AxiosRequestConfig
+  ) {
+    return StoreApiFp(this.configuration)
+      .v1ListStores(limit, offset, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

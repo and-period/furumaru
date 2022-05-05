@@ -9,6 +9,7 @@ import (
 	user "github.com/and-period/marche/api/internal/user/service"
 	"github.com/and-period/marche/api/pkg/cognito"
 	"github.com/and-period/marche/api/pkg/database"
+	"github.com/and-period/marche/api/pkg/rbac"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	awscredentials "github.com/aws/aws-sdk-go-v2/credentials"
@@ -40,6 +41,13 @@ func newRegistry(ctx context.Context, conf *config, opts ...option) (*registry, 
 		opts[i](dopts)
 	}
 
+	// Casbinの設定
+	enforcer, err := rbac.NewEnforcer(conf.RBACModelPath, conf.RBACPolicyPath)
+	if err != nil {
+		return nil, err
+	}
+
+	// Serviceの設定
 	userService, err := newUserService(ctx, conf, dopts)
 	if err != nil {
 		return nil, err
@@ -48,6 +56,7 @@ func newRegistry(ctx context.Context, conf *config, opts ...option) (*registry, 
 	// Handlerの設定
 	v1Params := &v1.Params{
 		WaitGroup:   &sync.WaitGroup{},
+		Enforcer:    enforcer,
 		UserService: userService,
 	}
 

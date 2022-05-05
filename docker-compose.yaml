@@ -125,6 +125,8 @@ services:
       - DB_PASSWORD=${MYSQL_PASSWORD}
       - DB_TIMEZONE=${MYSQL_TIMEZONE}
       - DB_ENABLED_TLS=${MYSQL_ENABLED_TLS}
+      - RBAC_POLICY_PATH=/go/src/github.com/and-period/marche/api/config/gateway/admin/rbac/policy.csv
+      - RBAC_MODEL_PATH=/go/src/github.com/and-period/marche/api/config/gateway/admin/rbac/model.conf
       - AWS_REGION=${AWS_REGION}
       - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
       - AWS_SECRET_KEY=${AWS_SECRET_KEY}
