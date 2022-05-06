@@ -25,8 +25,8 @@
 <script lang="ts">
 import {
   computed,
+  ComputedRef,
   defineComponent,
-  reactive,
   useRouter,
 } from '@nuxtjs/composition-api'
 
@@ -47,11 +47,11 @@ export default defineComponent({
       console.log('NOT IMPLEMENTED')
     }
 
-    const localeRef = computed(() => {
+    const localeRef: ComputedRef<string> = computed(() => {
       return i18n.locale === i18n.defaultLocale ? '' : i18n.locale
     })
 
-    const headerMenuList: HeaderMenuItem[] = reactive<HeaderMenuItem[]>([
+    const headerMenuList: ComputedRef<HeaderMenuItem[]> = computed(() => [
       {
         name: t('signUp'),
         onClick: () => {
