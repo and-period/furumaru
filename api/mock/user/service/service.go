@@ -168,6 +168,21 @@ func (mr *MockUserServiceMockRecorder) InitializeUser(ctx, in interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InitializeUser", reflect.TypeOf((*MockUserService)(nil).InitializeUser), ctx, in)
 }
 
+// MultiGetShops mocks base method.
+func (m *MockUserService) MultiGetShops(ctx context.Context, in *service.MultiGetShopsInput) (entity.Shops, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MultiGetShops", ctx, in)
+	ret0, _ := ret[0].(entity.Shops)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGetShops indicates an expected call of MultiGetShops.
+func (mr *MockUserServiceMockRecorder) MultiGetShops(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetShops", reflect.TypeOf((*MockUserService)(nil).MultiGetShops), ctx, in)
+}
+
 // RefreshAdminToken mocks base method.
 func (m *MockUserService) RefreshAdminToken(ctx context.Context, in *service.RefreshAdminTokenInput) (*entity.AdminAuth, error) {
 	m.ctrl.T.Helper()

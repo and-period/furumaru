@@ -70,6 +70,10 @@ type UpdateAdminPasswordInput struct {
 	PasswordConfirmation string `validate:"required,eqfield=NewPassword"`
 }
 
+type MultiGetShopsInput struct {
+	ShopIDs []string `validate:"min=1,dive,required"`
+}
+
 type SignInUserInput struct {
 	Key      string `validate:"required"`
 	Password string `validate:"required"`
