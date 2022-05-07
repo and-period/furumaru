@@ -12,13 +12,20 @@ type config struct {
 	ShutdownDelaySec        int64  `envconfig:"SHUTDOWN_DELAY_SEC" default:"20"`
 	LogPath                 string `envconfig:"LOG_PATH" default:""`
 	LogLevel                string `envconfig:"LOG_LEVEL" default:"info"`
-	DBSocket                string `envconfig:"DB_SOCKET" default:"tcp"`
-	DBHost                  string `envconfig:"DB_HOST" default:"127.0.0.1"`
-	DBPort                  string `envconfig:"DB_PORT" default:"3306"`
-	DBUsername              string `envconfig:"DB_USERNAME" default:"root"`
-	DBPassword              string `envconfig:"DB_PASSWORD" default:""`
-	DBTimeZone              string `envconfig:"DB_TIMEZONE" default:""`
-	DBEnabledTLS            bool   `envconfig:"DB_ENABLED_TLS" default:"false"`
+	DBStoreSocket           string `envconfig:"DB_STORE_SOCKET" default:"tcp"`
+	DBStoreHost             string `envconfig:"DB_STORE_HOST" default:"127.0.0.1"`
+	DBStorePort             string `envconfig:"DB_STORE_PORT" default:"3306"`
+	DBStoreUsername         string `envconfig:"DB_STORE_USERNAME" default:"root"`
+	DBStorePassword         string `envconfig:"DB_STORE_PASSWORD" default:""`
+	DBStoreTimeZone         string `envconfig:"DB_STORE_TIMEZONE" default:""`
+	DBStoreEnabledTLS       bool   `envconfig:"DB_STORE_ENABLED_TLS" default:"false"`
+	DBUserSocket            string `envconfig:"DB_USER_SOCKET" default:"tcp"`
+	DBUserHost              string `envconfig:"DB_USER_HOST" default:"127.0.0.1"`
+	DBUserPort              string `envconfig:"DB_USER_PORT" default:"3306"`
+	DBUserUsername          string `envconfig:"DB_USER_USERNAME" default:"root"`
+	DBUserPassword          string `envconfig:"DB_USER_PASSWORD" default:""`
+	DBUserTimeZone          string `envconfig:"DB_USER_TIMEZONE" default:""`
+	DBUserEnabledTLS        bool   `envconfig:"DB_USER_ENABLED_TLS" default:"false"`
 	AWSRegion               string `envconfig:"AWS_REGION" default:"ap-northeast-1"`
 	AWSAccessKey            string `envconfig:"AWS_ACCESS_KEY" default:""`
 	AWSSecretKey            string `envconfig:"AWS_SECRET_KEY" default:""`

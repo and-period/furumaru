@@ -2,9 +2,17 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/and-period/marche/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/marche/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/marche/api/internal/gateway/util"
+	sentity "github.com/and-period/marche/api/internal/store/entity"
+	store "github.com/and-period/marche/api/internal/store/service"
+	uentity "github.com/and-period/marche/api/internal/user/entity"
+	user "github.com/and-period/marche/api/internal/user/service"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/sync/errgroup"
 )
 
 func (h *apiV1Handler) storeRoutes(rg *gin.RouterGroup) {
@@ -14,52 +22,80 @@ func (h *apiV1Handler) storeRoutes(rg *gin.RouterGroup) {
 }
 
 func (h *apiV1Handler) ListStores(ctx *gin.Context) {
-	// mock
+	c := util.SetMetadata(ctx)
+
+	const (
+		defaultLimit  = "20"
+		defaultOffset = "0"
+	)
+
+	limit, err := strconv.ParseInt(ctx.DefaultQuery("limit", defaultLimit), 10, 64)
+	if err != nil {
+		badRequest(ctx, err)
+		return
+	}
+	offset, err := strconv.ParseInt(ctx.DefaultQuery("offset", defaultOffset), 10, 64)
+	if err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	in := &store.ListStoresInput{
+		Limit:  limit,
+		Offset: offset,
+	}
+	stores, err := h.store.ListStores(c, in)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+
 	res := &response.StoresResponse{
-		Stores: []*response.Store{
-			{
-				ID:           1,
-				Name:         "&.農園",
-				ThumbnailURL: "https://and-period.jp",
-				CreatedAt:    1640962800,
-				UpdatedAt:    1640962800,
-			},
-			{
-				ID:           2,
-				Name:         "&.水産",
-				ThumbnailURL: "https://and-period.jp",
-				CreatedAt:    1640962800,
-				UpdatedAt:    1640962800,
-			},
-		},
+		Stores: service.NewStores(stores).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
 
 func (h *apiV1Handler) GetStore(ctx *gin.Context) {
-	// mock
+	c := util.SetMetadata(ctx)
+
+	storeID, err := strconv.ParseInt(ctx.Param("storeId"), 10, 64)
+	if err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	var (
+		sstore  *sentity.Store
+		sstaffs sentity.Staffs
+		ushops  uentity.Shops
+	)
+
+	eg, ectx := errgroup.WithContext(c)
+	eg.Go(func() (err error) {
+		in := &store.GetStoreInput{StoreID: storeID}
+		sstore, err = h.store.GetStore(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		staffsIn := &store.ListStaffsByStoreIDInput{StoreID: storeID}
+		sstaffs, err = h.store.ListStaffsByStoreID(ectx, staffsIn)
+		if err != nil || len(sstaffs) == 0 {
+			return
+		}
+		shopsIn := &user.MultiGetShopsInput{ShopIDs: sstaffs.UserIDs()}
+		ushops, err = h.user.MultiGetShops(ectx, shopsIn)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	staffs := service.NewStaffs(sstaffs, ushops.Map())
+
 	res := &response.StoreResponse{
-		Store: &response.Store{
-			ID:           1,
-			Name:         "&.農園",
-			ThumbnailURL: "https://and-period.jp",
-			Staffs: []*response.Staff{
-				{
-					ID:    "kSByoE6FetnPs5Byk3a9Zx",
-					Name:  "&.スタッフ1",
-					Email: "test-user01@and-period.jp",
-					Role:  1,
-				},
-				{
-					ID:    "kSByoE6FetnPs5Byk3a9Za",
-					Name:  "&.スタッフ2",
-					Email: "test-user02@and-period.jp",
-					Role:  2,
-				},
-			},
-			CreatedAt: 1640962800,
-			UpdatedAt: 1640962800,
-		},
+		Store: service.NewStore(sstore, staffs).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

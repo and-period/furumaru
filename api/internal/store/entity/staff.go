@@ -22,3 +22,11 @@ type Staff struct {
 }
 
 type Staffs []*Staff
+
+func (ss Staffs) UserIDs() []string {
+	res := make([]string, len(ss))
+	for i := range ss {
+		res[i] = ss[i].UserID
+	}
+	return res
+}

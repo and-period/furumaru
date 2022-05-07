@@ -72,26 +72,26 @@ func newRegistry(ctx context.Context, conf *config, opts ...option) (*registry, 
 	}, nil
 }
 
-func newDatabase(db string, conf *config, opts *options) (*database.Client, error) {
-	params := &database.Params{
-		Socket:   conf.DBSocket,
-		Host:     conf.DBHost,
-		Port:     conf.DBPort,
-		Database: db,
-		Username: conf.DBUsername,
-		Password: conf.DBPassword,
-	}
+func newDatabase(params *database.Params, tls bool, timezone string, opts *options) (*database.Client, error) {
 	return database.NewClient(
 		params,
 		database.WithLogger(opts.logger),
-		database.WithTLS(conf.DBEnabledTLS),
-		database.WithTimeZone(conf.DBTimeZone),
+		database.WithTLS(tls),
+		database.WithTimeZone(timezone),
 	)
 }
 
 func newUserService(ctx context.Context, conf *config, opts *options) (user.UserService, error) {
 	// MySQLの設定
-	mysql, err := newDatabase("users", conf, opts)
+	mysqlParams := &database.Params{
+		Socket:   conf.DBUserSocket,
+		Host:     conf.DBUserHost,
+		Port:     conf.DBUserPort,
+		Database: "users",
+		Username: conf.DBUserUsername,
+		Password: conf.DBUserPassword,
+	}
+	mysql, err := newDatabase(mysqlParams, conf.DBUserEnabledTLS, conf.DBUserTimeZone, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -143,7 +143,15 @@ func newUserService(ctx context.Context, conf *config, opts *options) (user.User
 
 func newStoreService(ctx context.Context, conf *config, opts *options) (store.StoreService, error) {
 	// MySQLの設定
-	mysql, err := newDatabase("stores", conf, opts)
+	mysqlParams := &database.Params{
+		Socket:   conf.DBStoreSocket,
+		Host:     conf.DBStoreHost,
+		Port:     conf.DBStorePort,
+		Database: "stores",
+		Username: conf.DBStoreUsername,
+		Password: conf.DBStorePassword,
+	}
+	mysql, err := newDatabase(mysqlParams, conf.DBStoreEnabledTLS, conf.DBStoreTimeZone, opts)
 	if err != nil {
 		return nil, err
 	}
