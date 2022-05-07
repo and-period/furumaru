@@ -124,6 +124,21 @@ func (mr *MockUserServiceMockRecorder) GetAdminAuth(ctx, in interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAdminAuth", reflect.TypeOf((*MockUserService)(nil).GetAdminAuth), ctx, in)
 }
 
+// GetShop mocks base method.
+func (m *MockUserService) GetShop(ctx context.Context, in *service.GetShopInput) (*entity.Shop, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetShop", ctx, in)
+	ret0, _ := ret[0].(*entity.Shop)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetShop indicates an expected call of GetShop.
+func (mr *MockUserServiceMockRecorder) GetShop(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetShop", reflect.TypeOf((*MockUserService)(nil).GetShop), ctx, in)
+}
+
 // GetUser mocks base method.
 func (m *MockUserService) GetUser(ctx context.Context, in *service.GetUserInput) (*entity.User, error) {
 	m.ctrl.T.Helper()

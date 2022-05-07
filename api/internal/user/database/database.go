@@ -29,12 +29,14 @@ type Params struct {
 
 type Database struct {
 	Admin Admin
+	Shop  Shop
 	User  User
 }
 
 func NewDatabase(params *Params) *Database {
 	return &Database{
 		Admin: NewAdmin(params.Database),
+		Shop:  NewShop(params.Database),
 		User:  NewUser(params.Database),
 	}
 }
@@ -46,6 +48,11 @@ type Admin interface {
 	Get(ctx context.Context, adminID string, fields ...string) (*entity.Admin, error)
 	GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.Admin, error)
 	UpdateEmail(ctx context.Context, adminID, email string) error
+}
+
+type Shop interface {
+	MultiGet(ctx context.Context, shopIDs []string, fields ...string) (entity.Shops, error)
+	Get(ctx context.Context, shopID string, fields ...string) (*entity.Shop, error)
 }
 
 type User interface {
