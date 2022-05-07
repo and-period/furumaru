@@ -6,8 +6,9 @@ const lang: I18n = {
       becomeShopOwner: 'Become a Shop Owner',
       cartEmptyMessage: 'Cart is empty',
       cartNotEmptyMessage: 'Place your order',
+      signUp: 'Sign Up',
       signIn: 'Sign In',
-      localeText: 'Language Setting',
+      changeLocaleText: 'Change Language to Japanese',
     },
   },
   auth: {

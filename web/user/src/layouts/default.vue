@@ -4,6 +4,7 @@
       :cart-item-count="0"
       :cart-empty-message="t('cartEmptyMessage')"
       :cart-not-empty-message="t('cartNotEmptyMessage')"
+      :menu-list="headerMenuList"
       @click:cart="handleCartClick"
     >
       <nuxt-link to="/" class="mr-4 header-link">
@@ -22,13 +23,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import {
+  computed,
+  ComputedRef,
+  defineComponent,
+  useRouter,
+} from '@nuxtjs/composition-api'
 
 import { useI18n } from '~/lib/hooks'
 import { I18n } from '~/types/locales'
+import { HeaderMenuItem } from '~/types/props'
 
 export default defineComponent({
   setup() {
+    const router = useRouter()
     const { i18n } = useI18n()
 
     const t = (str: keyof I18n['layout']['header']) => {
@@ -39,9 +47,38 @@ export default defineComponent({
       console.log('NOT IMPLEMENTED')
     }
 
+    const localeRef: ComputedRef<string> = computed(() => {
+      return i18n.locale === i18n.defaultLocale ? '' : i18n.locale
+    })
+
+    const headerMenuList: ComputedRef<HeaderMenuItem[]> = computed(() => [
+      {
+        name: t('signUp'),
+        onClick: () => {
+          router.push(`${localeRef.value}/signup`)
+        },
+      },
+      {
+        name: t('signIn'),
+        onClick: () => {
+          router.push(`${localeRef.value}/signin`)
+        },
+      },
+      {
+        name: t('changeLocaleText'),
+        onClick: () => {
+          const targetLocale = i18n.localeCodes.find(
+            (code) => code !== i18n.locale
+          )
+          targetLocale && i18n.setLocale(targetLocale)
+        },
+      },
+    ])
+
     return {
       handleCartClick,
       t,
+      headerMenuList,
     }
   },
 })
