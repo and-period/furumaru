@@ -11,6 +11,7 @@ import (
 	mock_cognito "github.com/and-period/marche/api/mock/pkg/cognito"
 	mock_storage "github.com/and-period/marche/api/mock/pkg/storage"
 	mock_database "github.com/and-period/marche/api/mock/user/database"
+	"github.com/and-period/marche/api/pkg/cognito"
 	"github.com/and-period/marche/api/pkg/jst"
 	"github.com/and-period/marche/api/pkg/validator"
 	gvalidator "github.com/go-playground/validator/v10"
@@ -151,6 +152,11 @@ func TestUserError(t *testing.T) {
 			name:   "already exists",
 			err:    fmt.Errorf("%w: %s", database.ErrAlreadyExists, errmock),
 			expect: ErrAlreadyExists,
+		},
+		{
+			name:   "resource exhausted",
+			err:    fmt.Errorf("%w: %s", cognito.ErrResourceExhausted, errmock),
+			expect: ErrResourceExhausted,
 		},
 		{
 			name:   "unimplemented",

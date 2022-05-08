@@ -43,6 +43,24 @@ func newRegistry(ctx context.Context, conf *config, opts ...option) (*registry, 
 		opts[i](dopts)
 	}
 
+	// AWS SDKの設定
+	awscreds := aws.NewCredentialsCache(
+		awscredentials.NewStaticCredentialsProvider(conf.AWSAccessKey, conf.AWSSecretKey, ""),
+	)
+	awscfg, err := awsconfig.LoadDefaultConfig(ctx,
+		awsconfig.WithRegion(conf.AWSRegion),
+		awsconfig.WithCredentialsProvider(awscreds),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	// Amazon S3の設定
+	storageParams := &storage.Params{
+		Bucket: conf.S3BucketName,
+	}
+
+	// Serviceの設定
 	userService, err := newUserService(ctx, conf, dopts)
 	if err != nil {
 		return nil, err
@@ -55,6 +73,7 @@ func newRegistry(ctx context.Context, conf *config, opts ...option) (*registry, 
 	// Handlerの設定
 	v1Params := &v1.Params{
 		WaitGroup:    &sync.WaitGroup{},
+		Storage:      storage.NewBucket(awscfg, storageParams),
 		UserService:  userService,
 		StoreService: storeService,
 	}
@@ -105,11 +124,6 @@ func newUserService(ctx context.Context, conf *config, opts *options) (user.User
 		return nil, err
 	}
 
-	// Amazon S3の設定
-	storageParams := &storage.Params{
-		Bucket: conf.S3UserBucket,
-	}
-
 	// Amazon Cognitoの設定
 	shopAuthParams := &cognito.Params{
 		UserPoolID:      conf.CognitoShopPoolID,
@@ -124,7 +138,6 @@ func newUserService(ctx context.Context, conf *config, opts *options) (user.User
 
 	// User Serviceの設定
 	params := &user.Params{
-		Storage:   storage.NewBucket(awscfg, storageParams),
 		Database:  userdb.NewDatabase(dbParams),
 		AdminAuth: cognito.NewClient(awscfg, &cognito.Params{}),
 		ShopAuth:  cognito.NewClient(awscfg, shopAuthParams),
@@ -156,26 +169,8 @@ func newStoreService(ctx context.Context, conf *config, opts *options) (store.St
 		Database: mysql,
 	}
 
-	// AWS SDKの設定
-	awscreds := aws.NewCredentialsCache(
-		awscredentials.NewStaticCredentialsProvider(conf.AWSAccessKey, conf.AWSSecretKey, ""),
-	)
-	awscfg, err := awsconfig.LoadDefaultConfig(ctx,
-		awsconfig.WithRegion(conf.AWSRegion),
-		awsconfig.WithCredentialsProvider(awscreds),
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	// Amazon S3の設定
-	storageParams := &storage.Params{
-		Bucket: conf.S3StoreBucket,
-	}
-
 	// Store Serviceの設定
 	params := &store.Params{
-		Storage:  storage.NewBucket(awscfg, storageParams),
 		Database: storedb.NewDatabase(&dbParams),
 	}
 	return store.NewStoreService(

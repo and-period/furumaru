@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/and-period/marche/api/internal/store/database"
-	mock_storage "github.com/and-period/marche/api/mock/pkg/storage"
 	mock_database "github.com/and-period/marche/api/mock/store/database"
 	"github.com/and-period/marche/api/pkg/jst"
 	"github.com/and-period/marche/api/pkg/validator"
@@ -22,8 +21,7 @@ import (
 var errmock = errors.New("some error")
 
 type mocks struct {
-	storage *mock_storage.MockBucket
-	db      *dbMocks
+	db *dbMocks
 }
 
 type dbMocks struct {
@@ -49,8 +47,7 @@ type testCaller func(ctx context.Context, t *testing.T, service *storeService)
 
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
-		storage: mock_storage.NewMockBucket(ctrl),
-		db:      newDBMocks(ctrl),
+		db: newDBMocks(ctrl),
 	}
 }
 
@@ -73,7 +70,6 @@ func newUserService(mocks *mocks, opts ...testOption) *storeService {
 		logger:      zap.NewNop(),
 		sharedGroup: &singleflight.Group{},
 		validator:   validator.NewValidator(),
-		storage:     mocks.storage,
 		db: &database.Database{
 			Staff: mocks.db.Staff,
 			Store: mocks.db.Store,

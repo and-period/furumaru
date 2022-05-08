@@ -19,11 +19,6 @@ type UpdateStoreInput struct {
 	ThumbnailURL string `validate:"omitempty,url"`
 }
 
-type UploadStoreThumbnailInput struct {
-	StoreID int64  `validate:"required"`
-	Image   []byte `validate:"required"`
-}
-
 type ListStaffsByStoreIDInput struct {
 	StoreID int64 `validate:"required"`
 }

@@ -6,6 +6,7 @@ import (
 
 	store "github.com/and-period/marche/api/internal/store/service"
 	user "github.com/and-period/marche/api/internal/user/service"
+	"github.com/and-period/marche/api/pkg/storage"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -52,19 +53,30 @@ func internalError(err error) (int, bool) {
 
 	var s int
 	switch {
-	case errors.Is(err, user.ErrInvalidArgument), errors.Is(err, store.ErrInvalidArgument):
+	case errors.Is(err, user.ErrInvalidArgument),
+		errors.Is(err, store.ErrInvalidArgument),
+		errors.Is(err, storage.ErrInvalidURL):
 		s = http.StatusBadRequest
-	case errors.Is(err, user.ErrUnauthenticated), errors.Is(err, store.ErrUnauthenticated):
+	case errors.Is(err, user.ErrUnauthenticated),
+		errors.Is(err, store.ErrUnauthenticated):
 		s = http.StatusUnauthorized
-	case errors.Is(err, user.ErrNotFound), errors.Is(err, store.ErrNotFound):
+	case errors.Is(err, user.ErrNotFound),
+		errors.Is(err, store.ErrNotFound),
+		errors.Is(err, storage.ErrNotFound):
 		s = http.StatusNotFound
-	case errors.Is(err, user.ErrAlreadyExists), errors.Is(err, store.ErrAlreadyExists):
+	case errors.Is(err, user.ErrAlreadyExists),
+		errors.Is(err, store.ErrAlreadyExists):
 		s = http.StatusConflict
-	case errors.Is(err, user.ErrFailedPrecondition), errors.Is(err, store.ErrFailedPrecondition):
+	case errors.Is(err, user.ErrFailedPrecondition),
+		errors.Is(err, store.ErrFailedPrecondition):
 		s = http.StatusPreconditionFailed
-	case errors.Is(err, user.ErrNotImplemented), errors.Is(err, store.ErrNotImplemented):
+	case errors.Is(err, user.ErrResourceExhausted):
+		s = http.StatusTooManyRequests
+	case errors.Is(err, user.ErrNotImplemented),
+		errors.Is(err, store.ErrNotImplemented):
 		s = http.StatusNotImplemented
-	case errors.Is(err, user.ErrInternal), errors.Is(err, store.ErrInternal):
+	case errors.Is(err, user.ErrInternal),
+		errors.Is(err, store.ErrInternal):
 		s = http.StatusInternalServerError
 	default:
 		return 0, false
@@ -84,7 +96,7 @@ func grpcError(err error) (int, bool) {
 		s = 499 // client closed request
 	case codes.Internal, codes.DataLoss:
 		s = http.StatusInternalServerError
-	case codes.InvalidArgument, codes.ResourceExhausted, codes.OutOfRange:
+	case codes.InvalidArgument, codes.OutOfRange:
 		s = http.StatusBadRequest
 	case codes.DeadlineExceeded:
 		s = http.StatusGatewayTimeout
@@ -98,6 +110,8 @@ func grpcError(err error) (int, bool) {
 		s = http.StatusPreconditionFailed
 	case codes.Aborted:
 		s = http.StatusConflict
+	case codes.ResourceExhausted:
+		s = http.StatusTooManyRequests
 	case codes.Unimplemented:
 		s = http.StatusNotImplemented
 	case codes.Unavailable:

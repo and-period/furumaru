@@ -25,6 +25,7 @@ var (
 	ErrNotFound           = errors.New("service: not found")
 	ErrAlreadyExists      = errors.New("service: already exists")
 	ErrFailedPrecondition = errors.New("service: failed precondition")
+	ErrResourceExhausted  = errors.New("service: resource exhausted")
 	ErrNotImplemented     = errors.New("service: not implemented")
 	ErrInternal           = errors.New("service: internal error")
 )
@@ -121,12 +122,16 @@ func userError(err error) error {
 	}
 
 	switch {
-	case errors.Is(err, database.ErrInvalidArgument):
+	case errors.Is(err, database.ErrInvalidArgument), errors.Is(err, cognito.ErrInvalidArgument):
 		return fmt.Errorf("%w: %s", ErrInvalidArgument, err.Error())
-	case errors.Is(err, database.ErrNotFound):
+	case errors.Is(err, cognito.ErrUnauthenticated):
+		return fmt.Errorf("%w: %s", ErrUnauthenticated, err.Error())
+	case errors.Is(err, database.ErrNotFound), errors.Is(err, cognito.ErrNotFound):
 		return fmt.Errorf("%w: %s", ErrNotFound, err.Error())
-	case errors.Is(err, database.ErrAlreadyExists):
+	case errors.Is(err, database.ErrAlreadyExists), errors.Is(err, cognito.ErrUnauthenticated):
 		return fmt.Errorf("%w: %s", ErrAlreadyExists, err.Error())
+	case errors.Is(err, cognito.ErrResourceExhausted):
+		return fmt.Errorf("%w: %s", ErrResourceExhausted, err.Error())
 	case errors.Is(err, database.ErrNotImplemented):
 		return fmt.Errorf("%w: %s", ErrNotImplemented, err.Error())
 	default:

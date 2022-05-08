@@ -11,7 +11,6 @@ import (
 	"github.com/and-period/marche/api/internal/store/database"
 	"github.com/and-period/marche/api/internal/store/entity"
 	"github.com/and-period/marche/api/pkg/jst"
-	"github.com/and-period/marche/api/pkg/storage"
 	"github.com/and-period/marche/api/pkg/validator"
 	gvalidator "github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
@@ -34,11 +33,9 @@ type StoreService interface {
 	GetStore(ctx context.Context, in *GetStoreInput) (*entity.Store, error)
 	CreateStore(ctx context.Context, in *CreateStoreInput) (*entity.Store, error)
 	UpdateStore(ctx context.Context, in *UpdateStoreInput) error
-	UploadStoreThumbnail(ctx context.Context, in *UploadStoreThumbnailInput) (string, error)
 }
 
 type Params struct {
-	Storage  storage.Bucket
 	Database *database.Database
 }
 
@@ -47,7 +44,6 @@ type storeService struct {
 	logger      *zap.Logger
 	sharedGroup *singleflight.Group
 	validator   validator.Validator
-	storage     storage.Bucket
 	db          *database.Database
 }
 
@@ -75,7 +71,6 @@ func NewStoreService(params *Params, opts ...Option) StoreService {
 		logger:      dopts.logger,
 		sharedGroup: &singleflight.Group{},
 		validator:   validator.NewValidator(),
-		storage:     params.Storage,
 		db:          params.Database,
 	}
 }

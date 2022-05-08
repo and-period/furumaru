@@ -25,3 +25,7 @@ type StoreResponse struct {
 type StoresResponse struct {
 	Stores []*Store `json:"stores"` // 店舗一覧
 }
+
+type StoreThumbnailURLResponse struct {
+	ThumbnailURL string `json:"thumbnailUrl"` // サムネイルURL
+}

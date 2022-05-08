@@ -3,11 +3,14 @@ package cognito
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/retry"
 	cognito "github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
+	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
 	"go.uber.org/zap"
 )
 
@@ -53,6 +56,17 @@ var (
 	emailRequestedField      = aws.String("custom:requested_email")
 	phoneNumberField         = aws.String("phone_number")
 	phoneNumberVerifiedField = aws.String("phone_number_verified")
+)
+
+var (
+	ErrInvalidArgument   = errors.New("cognito: invalid argument")
+	ErrUnauthenticated   = errors.New("cognito: unauthenticated")
+	ErrNotFound          = errors.New("cognito: not found")
+	ErrAlreadyExists     = errors.New("cognito: already exists")
+	ErrInternal          = errors.New("cognito: internal")
+	ErrResourceExhausted = errors.New("cognito: resource exhausted")
+	ErrUnknown           = errors.New("cognito: unknown")
+	errNotFoundEmail     = errors.New("cognito: not found requested email")
 )
 
 type Params struct {
@@ -117,4 +131,43 @@ func NewClient(cfg aws.Config, params *Params, opts ...Option) Client {
 		appClientSecret: aws.String(params.AppClientSecret),
 		logger:          dopts.logger,
 	}
+}
+
+func authError(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	var (
+		aee *types.AliasExistsException
+		cfe *types.CodeDeliveryFailureException
+		cme *types.CodeMismatchException
+		ece *types.ExpiredCodeException
+		iee *types.InternalErrorException
+		ipe *types.InvalidParameterException
+		lee *types.LimitExceededException
+		nae *types.NotAuthorizedException
+		pre *types.PasswordResetRequiredException
+		rne *types.ResourceNotFoundException
+		tfe *types.TooManyFailedAttemptsException
+		tre *types.TooManyRequestsException
+		uce *types.UserNotConfirmedException
+		uee *types.UsernameExistsException
+		une *types.UserNotFoundException
+	)
+
+	if errors.As(err, &cme) || errors.As(err, &ipe) {
+		return fmt.Errorf("%w: %s", ErrInvalidArgument, err)
+	} else if errors.As(err, &ece) || errors.As(err, &nae) || errors.As(err, &pre) || errors.As(err, &uce) {
+		return fmt.Errorf("%w: %s", ErrUnauthenticated, err)
+	} else if errors.As(err, &rne) || errors.As(err, &une) {
+		return fmt.Errorf("%w: %s", ErrNotFound, err)
+	} else if errors.As(err, &aee) || errors.As(err, &uee) {
+		return fmt.Errorf("%w: %s", ErrAlreadyExists, err)
+	} else if errors.As(err, &lee) || errors.As(err, &tfe) || errors.As(err, &tre) {
+		return fmt.Errorf("%w: %s", ErrResourceExhausted, err)
+	} else if errors.As(err, &cfe) || errors.As(err, &iee) {
+		return fmt.Errorf("%w: %s", ErrInternal, err)
+	}
+	return fmt.Errorf("%w: %s", ErrUnknown, err)
 }

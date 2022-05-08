@@ -17,6 +17,7 @@ import (
 	"testing"
 	"time"
 
+	mock_storage "github.com/and-period/marche/api/mock/pkg/storage"
 	mock_store "github.com/and-period/marche/api/mock/store/service"
 	mock_user "github.com/and-period/marche/api/mock/user/service"
 	"github.com/and-period/marche/api/pkg/jst"
@@ -35,8 +36,9 @@ var (
 )
 
 type mocks struct {
-	user  *mock_user.MockUserService
-	store *mock_store.MockStoreService
+	storage *mock_storage.MockBucket
+	user    *mock_user.MockUserService
+	store   *mock_store.MockStoreService
 }
 
 type testResponse struct {
@@ -60,8 +62,9 @@ func withNow(now time.Time) testOption {
 
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
-		user:  mock_user.NewMockUserService(ctrl),
-		store: mock_store.NewMockStoreService(ctrl),
+		storage: mock_storage.NewMockBucket(ctrl),
+		user:    mock_user.NewMockUserService(ctrl),
+		store:   mock_store.NewMockStoreService(ctrl),
 	}
 }
 
@@ -71,6 +74,7 @@ func newAPIV1Handler(mocks *mocks, opts *testOptions) APIV1Handler {
 		logger:      zap.NewNop(),
 		sharedGroup: &singleflight.Group{},
 		waitGroup:   &sync.WaitGroup{},
+		storage:     mocks.storage,
 		user:        mocks.user,
 		store:       mocks.store,
 	}
