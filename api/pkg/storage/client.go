@@ -118,8 +118,7 @@ func (b *bucket) DownloadAndReadAll(ctx context.Context, url string) ([]byte, er
 	if err != nil {
 		return nil, err
 	}
-	buf, err := io.ReadAll(reader)
-	return buf, nil
+	return io.ReadAll(reader)
 }
 
 func (b *bucket) Upload(ctx context.Context, path string, body io.Reader) (string, error) {
