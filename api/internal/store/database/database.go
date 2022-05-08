@@ -49,6 +49,8 @@ type Staff interface {
 type Store interface {
 	List(ctx context.Context, params *ListStoresParams, fields ...string) (entity.Stores, error)
 	Get(ctx context.Context, storeID int64, fields ...string) (*entity.Store, error)
+	Create(ctx context.Context, store *entity.Store) error
+	Update(ctx context.Context, storeID int64, name, thumbnailURL string) error
 }
 
 /**

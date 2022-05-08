@@ -12,7 +12,9 @@ import (
 	"github.com/and-period/marche/api/internal/user/entity"
 	"github.com/and-period/marche/api/pkg/cognito"
 	"github.com/and-period/marche/api/pkg/jst"
-	validator "github.com/go-playground/validator/v10"
+	"github.com/and-period/marche/api/pkg/storage"
+	"github.com/and-period/marche/api/pkg/validator"
+	gvalidator "github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 	"golang.org/x/sync/singleflight"
 )
@@ -55,6 +57,7 @@ type UserService interface {
 }
 
 type Params struct {
+	Storage   storage.Bucket
 	Database  *database.Database
 	AdminAuth cognito.Client
 	ShopAuth  cognito.Client
@@ -65,7 +68,8 @@ type userService struct {
 	now         func() time.Time
 	logger      *zap.Logger
 	sharedGroup *singleflight.Group
-	validator   *validator.Validate
+	validator   validator.Validator
+	storage     storage.Bucket
 	db          *database.Database
 	adminAuth   cognito.Client
 	shopAuth    cognito.Client
@@ -95,7 +99,8 @@ func NewUserService(params *Params, opts ...Option) UserService {
 		now:         jst.Now,
 		logger:      dopts.logger,
 		sharedGroup: &singleflight.Group{},
-		validator:   newValidator(),
+		validator:   validator.NewValidator(),
+		storage:     params.Storage,
 		db:          params.Database,
 		adminAuth:   params.AdminAuth,
 		shopAuth:    params.ShopAuth,
@@ -110,7 +115,7 @@ func userError(err error) error {
 
 	//nolint:gocritic
 	switch v := err.(type) {
-	case validator.ValidationErrors:
+	case gvalidator.ValidationErrors:
 		return fmt.Errorf("%w: %s", ErrInvalidArgument, v.Error())
 	}
 

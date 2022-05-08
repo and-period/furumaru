@@ -7,6 +7,7 @@ import (
 	"github.com/and-period/marche/api/internal/store/entity"
 	"github.com/and-period/marche/api/pkg/database"
 	"github.com/and-period/marche/api/pkg/jst"
+	"gorm.io/gorm"
 )
 
 const storeTable = "stores"
@@ -60,4 +61,41 @@ func (s *store) Get(ctx context.Context, storeID int64, fields ...string) (*enti
 		return nil, dbError(err)
 	}
 	return store, nil
+}
+
+func (s *store) Create(ctx context.Context, store *entity.Store) error {
+	_, err := s.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+		now := s.now()
+		store.CreatedAt, store.UpdatedAt = now, now
+
+		err := tx.WithContext(ctx).Table(storeTable).Create(&store).Error
+		return nil, err
+	})
+	return dbError(err)
+}
+
+func (s *store) Update(ctx context.Context, storeID int64, name, thumbnailURL string) error {
+	_, err := s.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+		var current *entity.Store
+		err := tx.WithContext(ctx).
+			Table(storeTable).Select("id").
+			Where("id = ?", storeID).
+			First(&current).Error
+		if err != nil {
+			return nil, err
+		}
+
+		params := map[string]interface{}{
+			"id":            current.ID,
+			"name":          name,
+			"thumbnail_url": thumbnailURL,
+			"updated_at":    s.now(),
+		}
+		err = tx.WithContext(ctx).
+			Table(storeTable).
+			Where("id = ?", current.ID).
+			Updates(params).Error
+		return nil, err
+	})
+	return dbError(err)
 }

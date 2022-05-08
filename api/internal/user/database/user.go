@@ -97,7 +97,7 @@ func (u *user) UpdateVerified(ctx context.Context, userID string) error {
 			Table(userTable).Select("id", "verified_at").
 			Where("id = ?", userID).
 			First(&current).Error
-		if err != nil || current.ID == "" {
+		if err != nil {
 			return nil, err
 		}
 		if !current.VerifiedAt.IsZero() {
@@ -106,12 +106,13 @@ func (u *user) UpdateVerified(ctx context.Context, userID string) error {
 
 		now := u.now()
 		params := map[string]interface{}{
+			"id":          current.ID,
 			"verified_at": now,
 			"updated_at":  now,
 		}
 		err = tx.WithContext(ctx).
 			Table(userTable).
-			Where("id = ?", userID).
+			Where("id = ?", current.ID).
 			Updates(params).Error
 		return nil, err
 	})
@@ -125,7 +126,7 @@ func (u *user) UpdateEmail(ctx context.Context, userID, email string) error {
 			Table(userTable).Select("id", "provider_type").
 			Where("id = ?", userID).
 			First(&current).Error
-		if err != nil || current.ID == "" {
+		if err != nil {
 			return nil, err
 		}
 		if current.ProviderType != entity.ProviderTypeEmail {
@@ -133,6 +134,7 @@ func (u *user) UpdateEmail(ctx context.Context, userID, email string) error {
 		}
 
 		params := map[string]interface{}{
+			"id":         current.ID,
 			"email":      email,
 			"updated_at": u.now(),
 		}
@@ -152,19 +154,19 @@ func (u *user) Delete(ctx context.Context, userID string) error {
 			Table(userTable).Select("id").
 			Where("id = ?", userID).
 			First(&current).Error
-		if err != nil || current.ID == "" {
+		if err != nil {
 			return nil, err
 		}
 
 		now := u.now()
 		params := map[string]interface{}{
+			"id":         current.ID,
 			"updated_at": now,
 			"deleted_at": now,
 		}
-		err = tx.
-			WithContext(ctx).
+		err = tx.WithContext(ctx).
 			Table(userTable).
-			Where("id = ?", userID).
+			Where("id = ?", current.ID).
 			Updates(params).Error
 		return nil, err
 	})

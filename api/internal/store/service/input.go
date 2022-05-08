@@ -1,12 +1,5 @@
 package service
 
-import validator "github.com/go-playground/validator/v10"
-
-//nolint:errcheck
-func newValidator() *validator.Validate {
-	return validator.New()
-}
-
 type ListStoresInput struct {
 	Limit  int64 `validate:"required,max=200"`
 	Offset int64 `validate:"min=0"`
@@ -14,6 +7,20 @@ type ListStoresInput struct {
 
 type GetStoreInput struct {
 	StoreID int64 `validate:"required"`
+}
+
+type CreateStoreInput struct {
+	Name string `validate:"required,max=64"`
+}
+
+type UpdateStoreInput struct {
+	Name         string `validate:"required,max=64"`
+	ThumbnailURL string `validate:"omitempty,url"`
+}
+
+type UploadStoreThumbnailInput struct {
+	StoreID int64  `validate:"required"`
+	Image   []byte `validate:"required"`
 }
 
 type ListStaffsByStoreIDInput struct {
