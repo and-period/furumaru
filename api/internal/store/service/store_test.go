@@ -7,6 +7,7 @@ import (
 	"github.com/and-period/marche/api/internal/store/database"
 	"github.com/and-period/marche/api/internal/store/entity"
 	"github.com/and-period/marche/api/pkg/jst"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -77,7 +78,7 @@ func TestListStores(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, service *storeService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *storeService) {
 			actual, err := service.ListStores(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
@@ -137,8 +138,166 @@ func TestGetStore(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, service *storeService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *storeService) {
 			actual, err := service.GetStore(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
+func TestCreateStore(t *testing.T) {
+	t.Parallel()
+
+	store := &entity.Store{
+		Name: "&.農園",
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *CreateStoreInput
+		expect    *entity.Store
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Store.EXPECT().Create(ctx, store).Return(nil)
+			},
+			input: &CreateStoreInput{
+				Name: "&.農園",
+			},
+			expect:    store,
+			expectErr: nil,
+		},
+		{
+			name:      "invlid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &CreateStoreInput{},
+			expect:    nil,
+			expectErr: ErrInvalidArgument,
+		},
+		{
+			name: "failed to get store",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Store.EXPECT().Create(ctx, store).Return(errmock)
+			},
+			input: &CreateStoreInput{
+				Name: "&.農園",
+			},
+			expect:    nil,
+			expectErr: ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *storeService) {
+			actual, err := service.CreateStore(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
+func TestUpdateStore(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *UpdateStoreInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Store.EXPECT().Update(ctx, int64(1), "&.農園", "https://and-period.jp/thumbnail.png").Return(nil)
+			},
+			input: &UpdateStoreInput{
+				StoreID:      1,
+				Name:         "&.農園",
+				ThumbnailURL: "https://and-period.jp/thumbnail.png",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invlid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &UpdateStoreInput{},
+			expectErr: ErrInvalidArgument,
+		},
+		{
+			name: "failed to get store",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Store.EXPECT().Update(ctx, int64(1), "&.農園", "https://and-period.jp/thumbnail.png").Return(errmock)
+			},
+			input: &UpdateStoreInput{
+				StoreID:      1,
+				Name:         "&.農園",
+				ThumbnailURL: "https://and-period.jp/thumbnail.png",
+			},
+			expectErr: ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *storeService) {
+			err := service.UpdateStore(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestUploadStoreThumbnail(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *UploadStoreThumbnailInput
+		expect    string
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.storage.EXPECT().Upload(ctx, gomock.Any(), gomock.Any()).Return("https://and-period.jp/thumbnail.png", nil)
+			},
+			input: &UploadStoreThumbnailInput{
+				StoreID: 1,
+				Image:   []byte{'1', '2'},
+			},
+			expect:    "https://and-period.jp/thumbnail.png",
+			expectErr: nil,
+		},
+		{
+			name:      "invlid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &UploadStoreThumbnailInput{},
+			expect:    "",
+			expectErr: ErrInvalidArgument,
+		},
+		{
+			name: "failed to upload thumbnail",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.storage.EXPECT().Upload(ctx, gomock.Any(), gomock.Any()).Return("", errmock)
+			},
+			input: &UploadStoreThumbnailInput{
+				StoreID: 1,
+				Image:   []byte{'1', '2'},
+			},
+			expect:    "",
+			expectErr: ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *storeService) {
+			actual, err := service.UploadStoreThumbnail(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
 		}))

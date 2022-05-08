@@ -107,7 +107,7 @@ func newUserService(ctx context.Context, conf *config, opts *options) (user.User
 
 	// Amazon S3の設定
 	storageParams := &storage.Params{
-		Bucket: conf.S3BucketName,
+		Bucket: conf.S3UserBucket,
 	}
 
 	// Amazon Cognitoの設定
@@ -163,14 +163,9 @@ func newStoreService(ctx context.Context, conf *config, opts *options) (store.St
 		return nil, err
 	}
 
-	// Amazon S3の設定
-	storageParams := &storage.Params{
-		Bucket: conf.S3BucketName,
-	}
-
 	// Store Serviceの設定
 	params := &store.Params{
-		Storage:  storage.NewBucket(awscfg, storageParams),
+		Storage:  storage.NewBucket(awscfg, &storage.Params{}),
 		Database: storedb.NewDatabase(&dbParams),
 	}
 	return store.NewStoreService(

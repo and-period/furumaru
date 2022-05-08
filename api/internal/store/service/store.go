@@ -1,10 +1,14 @@
 package service
 
 import (
+	"bytes"
 	"context"
+	"fmt"
+	"strconv"
 
 	"github.com/and-period/marche/api/internal/store/database"
 	"github.com/and-period/marche/api/internal/store/entity"
+	"github.com/and-period/marche/api/pkg/uuid"
 )
 
 func (s *storeService) ListStores(ctx context.Context, in *ListStoresInput) (entity.Stores, error) {
@@ -31,19 +35,34 @@ func (s *storeService) CreateStore(ctx context.Context, in *CreateStoreInput) (*
 	if err := s.validator.Struct(in); err != nil {
 		return nil, storeError(err)
 	}
-	return nil, ErrNotImplemented
+	store := entity.NewStore(in.Name)
+	if err := s.db.Store.Create(ctx, store); err != nil {
+		return nil, storeError(err)
+	}
+	return store, nil
 }
 
 func (s *storeService) UpdateStore(ctx context.Context, in *UpdateStoreInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return storeError(err)
 	}
-	return ErrNotImplemented
+	err := s.db.Store.Update(ctx, in.StoreID, in.Name, in.ThumbnailURL)
+	return storeError(err)
 }
 
 func (s *storeService) UploadStoreThumbnail(ctx context.Context, in *UploadStoreThumbnailInput) (string, error) {
+	const format = "stores/%s/thumbnails/%s"
 	if err := s.validator.Struct(in); err != nil {
 		return "", storeError(err)
 	}
-	return "", ErrNotImplemented
+	var b bytes.Buffer
+	if _, err := b.Write(in.Image); err != nil {
+		return "", storeError(err)
+	}
+	path := fmt.Sprintf(format, strconv.FormatInt(in.StoreID, 10), uuid.Base58Encode(uuid.New()))
+	thumbnailURL, err := s.storage.Upload(ctx, path, &b)
+	if err != nil {
+		return "", storeError(err)
+	}
+	return thumbnailURL, nil
 }
