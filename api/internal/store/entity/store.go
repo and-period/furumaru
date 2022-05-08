@@ -17,3 +17,9 @@ type Store struct {
 }
 
 type Stores []*Store
+
+func NewStore(name string) *Store {
+	return &Store{
+		Name: name,
+	}
+}

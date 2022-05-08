@@ -14,6 +14,7 @@ type CreateStoreInput struct {
 }
 
 type UpdateStoreInput struct {
+	StoreID      int64  `validate:"required"`
 	Name         string `validate:"required,max=64"`
 	ThumbnailURL string `validate:"omitempty,url"`
 }

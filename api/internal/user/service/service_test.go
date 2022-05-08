@@ -9,6 +9,7 @@ import (
 
 	"github.com/and-period/marche/api/internal/user/database"
 	mock_cognito "github.com/and-period/marche/api/mock/pkg/cognito"
+	mock_storage "github.com/and-period/marche/api/mock/pkg/storage"
 	mock_database "github.com/and-period/marche/api/mock/user/database"
 	"github.com/and-period/marche/api/pkg/jst"
 	"github.com/and-period/marche/api/pkg/validator"
@@ -22,8 +23,11 @@ import (
 var errmock = errors.New("some error")
 
 type mocks struct {
-	db       *dbMocks
-	userAuth *mock_cognito.MockClient
+	storage   *mock_storage.MockBucket
+	db        *dbMocks
+	adminAuth *mock_cognito.MockClient
+	shopAuth  *mock_cognito.MockClient
+	userAuth  *mock_cognito.MockClient
 }
 
 type dbMocks struct {
@@ -46,12 +50,15 @@ func withNow(now time.Time) testOption {
 	}
 }
 
-type testCaller func(ctx context.Context, service *userService)
+type testCaller func(ctx context.Context, t *testing.T, service *userService)
 
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
-		db:       newDBMocks(ctrl),
-		userAuth: mock_cognito.NewMockClient(ctrl),
+		storage:   mock_storage.NewMockBucket(ctrl),
+		db:        newDBMocks(ctrl),
+		adminAuth: mock_cognito.NewMockClient(ctrl),
+		shopAuth:  mock_cognito.NewMockClient(ctrl),
+		userAuth:  mock_cognito.NewMockClient(ctrl),
 	}
 }
 
@@ -75,12 +82,15 @@ func newUserService(mocks *mocks, opts ...testOption) *userService {
 		logger:      zap.NewNop(),
 		sharedGroup: &singleflight.Group{},
 		validator:   validator.NewValidator(),
+		storage:     mocks.storage,
 		db: &database.Database{
 			Admin: mocks.db.Admin,
 			Shop:  mocks.db.Shop,
 			User:  mocks.db.User,
 		},
-		userAuth: mocks.userAuth,
+		adminAuth: mocks.adminAuth,
+		shopAuth:  mocks.shopAuth,
+		userAuth:  mocks.userAuth,
 	}
 }
 
@@ -100,7 +110,7 @@ func testService(
 		srv := newUserService(mocks)
 		setup(ctx, mocks)
 
-		testFunc(ctx, srv)
+		testFunc(ctx, t, srv)
 	}
 }
 
