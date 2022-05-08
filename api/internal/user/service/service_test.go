@@ -27,7 +27,9 @@ type mocks struct {
 }
 
 type dbMocks struct {
-	User *mock_database.MockUser
+	Admin *mock_database.MockAdmin
+	Shop  *mock_database.MockShop
+	User  *mock_database.MockUser
 }
 
 type testOptions struct {
@@ -55,7 +57,9 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
-		User: mock_database.NewMockUser(ctrl),
+		Admin: mock_database.NewMockAdmin(ctrl),
+		Shop:  mock_database.NewMockShop(ctrl),
+		User:  mock_database.NewMockUser(ctrl),
 	}
 }
 
@@ -72,7 +76,9 @@ func newUserService(mocks *mocks, opts ...testOption) *userService {
 		sharedGroup: &singleflight.Group{},
 		validator:   validator.NewValidator(),
 		db: &database.Database{
-			User: mocks.db.User,
+			Admin: mocks.db.Admin,
+			Shop:  mocks.db.Shop,
+			User:  mocks.db.User,
 		},
 		userAuth: mocks.userAuth,
 	}

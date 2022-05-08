@@ -16,7 +16,7 @@ func NewStaff(staff *sentity.Staff, user *uentity.Shop) *Staff {
 	return &Staff{
 		Staff: &response.Staff{
 			ID:    user.ID,
-			Name:  user.Name,
+			Name:  user.Name(),
 			Email: user.Email,
 			Role:  int32(staff.Role),
 		},

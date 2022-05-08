@@ -147,14 +147,16 @@ func TestGetStore(t *testing.T) {
 	}
 	shops := uentity.Shops{
 		{
-			ID:    "kSByoE6FetnPs5Byk3a9Zx",
-			Name:  "&.スタッフ1",
-			Email: "test-user01@and-period.jp",
+			ID:        "kSByoE6FetnPs5Byk3a9Zx",
+			Lastname:  "&.",
+			Firstname: "スタッフ1",
+			Email:     "test-user01@and-period.jp",
 		},
 		{
-			ID:    "kSByoE6FetnPs5Byk3a9Za",
-			Name:  "&.スタッフ2",
-			Email: "test-user02@and-period.jp",
+			ID:        "kSByoE6FetnPs5Byk3a9Za",
+			Lastname:  "&.",
+			Firstname: "スタッフ2",
+			Email:     "test-user02@and-period.jp",
 		},
 	}
 
@@ -182,13 +184,13 @@ func TestGetStore(t *testing.T) {
 						Staffs: []*response.Staff{
 							{
 								ID:    "kSByoE6FetnPs5Byk3a9Zx",
-								Name:  "&.スタッフ1",
+								Name:  "&. スタッフ1",
 								Email: "test-user01@and-period.jp",
 								Role:  1,
 							},
 							{
 								ID:    "kSByoE6FetnPs5Byk3a9Za",
-								Name:  "&.スタッフ2",
+								Name:  "&. スタッフ2",
 								Email: "test-user02@and-period.jp",
 								Role:  2,
 							},

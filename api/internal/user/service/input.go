@@ -42,6 +42,10 @@ type MultiGetShopsInput struct {
 	ShopIDs []string `validate:"min=1,dive,required"`
 }
 
+type GetShopInput struct {
+	ShopID string `validate:"required"`
+}
+
 type SignInUserInput struct {
 	Key      string `validate:"required"`
 	Password string `validate:"required"`

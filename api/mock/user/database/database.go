@@ -89,6 +89,69 @@ func (mr *MockAdminMockRecorder) UpdateEmail(ctx, adminID, email interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateEmail", reflect.TypeOf((*MockAdmin)(nil).UpdateEmail), ctx, adminID, email)
 }
 
+// MockShop is a mock of Shop interface.
+type MockShop struct {
+	ctrl     *gomock.Controller
+	recorder *MockShopMockRecorder
+}
+
+// MockShopMockRecorder is the mock recorder for MockShop.
+type MockShopMockRecorder struct {
+	mock *MockShop
+}
+
+// NewMockShop creates a new mock instance.
+func NewMockShop(ctrl *gomock.Controller) *MockShop {
+	mock := &MockShop{ctrl: ctrl}
+	mock.recorder = &MockShopMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockShop) EXPECT() *MockShopMockRecorder {
+	return m.recorder
+}
+
+// Get mocks base method.
+func (m *MockShop) Get(ctx context.Context, shopID string, fields ...string) (*entity.Shop, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, shopID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.Shop)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockShopMockRecorder) Get(ctx, shopID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, shopID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockShop)(nil).Get), varargs...)
+}
+
+// MultiGet mocks base method.
+func (m *MockShop) MultiGet(ctx context.Context, shopIDs []string, fields ...string) (entity.Shops, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, shopIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGet", varargs...)
+	ret0, _ := ret[0].(entity.Shops)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGet indicates an expected call of MultiGet.
+func (mr *MockShopMockRecorder) MultiGet(ctx, shopIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, shopIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockShop)(nil).MultiGet), varargs...)
+}
+
 // MockUser is a mock of User interface.
 type MockUser struct {
 	ctrl     *gomock.Controller
