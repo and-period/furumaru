@@ -13,11 +13,17 @@ import (
 	user "github.com/and-period/marche/api/internal/user/service"
 	"github.com/and-period/marche/api/pkg/jst"
 	"github.com/and-period/marche/api/pkg/rbac"
+	"github.com/and-period/marche/api/pkg/storage"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"golang.org/x/sync/singleflight"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+)
+
+var (
+	errInvalidFileFormat = errors.New("handler: invalid file format")
+	errTooLargeFileSize  = errors.New("handler: file size too large")
 )
 
 /**
@@ -32,6 +38,7 @@ type APIV1Handler interface {
 type Params struct {
 	WaitGroup    *sync.WaitGroup
 	Enforcer     rbac.Enforcer
+	Storage      storage.Bucket
 	UserService  user.UserService
 	StoreService store.StoreService
 }
@@ -41,6 +48,7 @@ type apiV1Handler struct {
 	logger      *zap.Logger
 	sharedGroup *singleflight.Group
 	waitGroup   *sync.WaitGroup
+	storage     storage.Bucket
 	enforcer    rbac.Enforcer
 	user        user.UserService
 	store       store.StoreService
@@ -69,6 +77,7 @@ func NewAPIV1Handler(params *Params, opts ...Option) APIV1Handler {
 		now:       jst.Now,
 		logger:    dopts.logger,
 		waitGroup: params.WaitGroup,
+		storage:   params.Storage,
 		enforcer:  params.Enforcer,
 		user:      params.UserService,
 		store:     params.StoreService,
@@ -83,6 +92,7 @@ func NewAPIV1Handler(params *Params, opts ...Option) APIV1Handler {
 func (h *apiV1Handler) Routes(rg *gin.RouterGroup) {
 	v1 := rg.Group("/v1")
 	h.storeRoutes(v1.Group("/stores"))
+	h.uploadRoutes(v1.Group("/upload"))
 }
 
 /**

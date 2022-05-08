@@ -133,6 +133,16 @@ func TestErrorResponse_InternalError(t *testing.T) {
 			expectStatus: http.StatusPreconditionFailed,
 		},
 		{
+			name: "too many requests",
+			err:  user.ErrResourceExhausted,
+			expect: &ErrorResponse{
+				Status:  http.StatusTooManyRequests,
+				Message: "Too Many Requests",
+				Detail:  user.ErrResourceExhausted.Error(),
+			},
+			expectStatus: http.StatusTooManyRequests,
+		},
+		{
 			name: "not implemented",
 			err:  user.ErrNotImplemented,
 			expect: &ErrorResponse{
@@ -274,6 +284,16 @@ func TestErrorResponse_GRPCError(t *testing.T) {
 				Detail:  status.Error(codes.Aborted, msg).Error(),
 			},
 			expectStatus: http.StatusConflict,
+		},
+		{
+			name: "resource exhausted",
+			err:  status.Error(codes.ResourceExhausted, msg),
+			expect: &ErrorResponse{
+				Status:  http.StatusTooManyRequests,
+				Message: "Too Many Requests",
+				Detail:  status.Error(codes.ResourceExhausted, msg).Error(),
+			},
+			expectStatus: http.StatusTooManyRequests,
 		},
 		{
 			name: "unimplemented",

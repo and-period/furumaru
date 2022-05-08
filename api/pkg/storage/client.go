@@ -12,10 +12,14 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/retry"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"go.uber.org/zap"
 )
 
-var ErrInvalidURL = errors.New("s3: invalid s3 object url")
+var (
+	ErrInvalidURL = errors.New("s3: invalid s3 object url")
+	ErrNotFound   = errors.New("s3: not found object")
+)
 
 const domain = "%s.s3.amazonaws.com"
 
@@ -107,6 +111,10 @@ func (b *bucket) Download(ctx context.Context, url string) (io.Reader, error) {
 		Key:    aws.String(path),
 	}
 	out, err := b.s3.GetObject(ctx, in)
+	var bne *types.NotFound
+	if errors.As(err, &bne) {
+		return nil, ErrNotFound
+	}
 	if err != nil {
 		return nil, err
 	}

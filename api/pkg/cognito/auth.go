@@ -32,7 +32,7 @@ func (c *client) SignIn(ctx context.Context, username, password string) (*AuthRe
 	}
 	out, err := c.cognito.InitiateAuth(ctx, in)
 	if err != nil {
-		return nil, err
+		return nil, authError(err)
 	}
 	auth := &AuthResult{
 		IDToken:      aws.ToString(out.AuthenticationResult.IdToken),
@@ -48,7 +48,7 @@ func (c *client) SignOut(ctx context.Context, accessToken string) error {
 		AccessToken: aws.String(accessToken),
 	}
 	_, err := c.cognito.GlobalSignOut(ctx, in)
-	return err
+	return authError(err)
 }
 
 func (c *client) GetUser(ctx context.Context, accessToken string) (*AuthUser, error) {
@@ -57,7 +57,7 @@ func (c *client) GetUser(ctx context.Context, accessToken string) (*AuthUser, er
 	}
 	out, err := c.cognito.GetUser(ctx, in)
 	if err != nil {
-		return nil, err
+		return nil, authError(err)
 	}
 	var email, phoneNumber string
 	for i := range out.UserAttributes {
@@ -83,7 +83,7 @@ func (c *client) GetUsername(ctx context.Context, accessToken string) (string, e
 	}
 	out, err := c.cognito.GetUser(ctx, in)
 	if err != nil {
-		return "", err
+		return "", authError(err)
 	}
 	return aws.ToString(out.Username), nil
 }
@@ -98,7 +98,7 @@ func (c *client) RefreshToken(ctx context.Context, refreshToken string) (*AuthRe
 	}
 	out, err := c.cognito.InitiateAuth(ctx, in)
 	if err != nil {
-		return nil, err
+		return nil, authError(err)
 	}
 	auth := &AuthResult{
 		IDToken:      aws.ToString(out.AuthenticationResult.IdToken),

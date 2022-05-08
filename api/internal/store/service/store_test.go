@@ -7,7 +7,6 @@ import (
 	"github.com/and-period/marche/api/internal/store/database"
 	"github.com/and-period/marche/api/internal/store/entity"
 	"github.com/and-period/marche/api/pkg/jst"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -247,59 +246,6 @@ func TestUpdateStore(t *testing.T) {
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *storeService) {
 			err := service.UpdateStore(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
-		}))
-	}
-}
-
-func TestUploadStoreThumbnail(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *UploadStoreThumbnailInput
-		expect    string
-		expectErr error
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Upload(ctx, gomock.Any(), gomock.Any()).Return("https://and-period.jp/thumbnail.png", nil)
-			},
-			input: &UploadStoreThumbnailInput{
-				StoreID: 1,
-				Image:   []byte{'1', '2'},
-			},
-			expect:    "https://and-period.jp/thumbnail.png",
-			expectErr: nil,
-		},
-		{
-			name:      "invlid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &UploadStoreThumbnailInput{},
-			expect:    "",
-			expectErr: ErrInvalidArgument,
-		},
-		{
-			name: "failed to upload thumbnail",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Upload(ctx, gomock.Any(), gomock.Any()).Return("", errmock)
-			},
-			input: &UploadStoreThumbnailInput{
-				StoreID: 1,
-				Image:   []byte{'1', '2'},
-			},
-			expect:    "",
-			expectErr: ErrInternal,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *storeService) {
-			actual, err := service.UploadStoreThumbnail(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
 		}))
 	}
 }

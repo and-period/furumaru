@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/and-period/marche/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/marche/api/internal/gateway/admin/v1/response"
 	sentity "github.com/and-period/marche/api/internal/store/entity"
 	store "github.com/and-period/marche/api/internal/store/service"
@@ -223,6 +224,14 @@ func TestGetStore(t *testing.T) {
 			},
 		},
 		{
+			name:    "invalid store id",
+			setup:   func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			storeID: "a",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
 			name: "failed to get store",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().GetStore(gomock.Any(), storeIn).Return(nil, errmock)
@@ -266,6 +275,143 @@ func TestGetStore(t *testing.T) {
 			const prefix = "/v1/stores"
 			path := fmt.Sprintf("%s/%s", prefix, tt.storeID)
 			req := newHTTPRequest(t, http.MethodGet, path, nil)
+			testHTTP(t, tt.setup, tt.expect, req)
+		})
+	}
+}
+
+func TestCreateStore(t *testing.T) {
+	t.Parallel()
+
+	in := &store.CreateStoreInput{
+		Name: "&.農園",
+	}
+	store := &sentity.Store{
+		ID:           1,
+		Name:         "&.農園",
+		ThumbnailURL: "https://and-period.jp/thumbnail.png",
+		CreatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		UpdatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+	}
+
+	tests := []struct {
+		name   string
+		setup  func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		req    *request.CreateStoreRequest
+		expect *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().CreateStore(gomock.Any(), in).Return(store, nil)
+			},
+			req: &request.CreateStoreRequest{
+				Name: "&.農園",
+			},
+			expect: &testResponse{
+				code: http.StatusOK,
+				body: &response.StoreResponse{
+					Store: &response.Store{
+						ID:           1,
+						Name:         "&.農園",
+						ThumbnailURL: "https://and-period.jp/thumbnail.png",
+						Staffs:       []*response.Staff{},
+						CreatedAt:    1640962800,
+						UpdatedAt:    1640962800,
+					},
+				},
+			},
+		},
+		{
+			name: "failed to create store",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().CreateStore(gomock.Any(), in).Return(nil, errmock)
+			},
+			req: &request.CreateStoreRequest{
+				Name: "&.農園",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			const path = "/v1/stores"
+			req := newHTTPRequest(t, http.MethodPost, path, tt.req)
+			testHTTP(t, tt.setup, tt.expect, req)
+		})
+	}
+}
+
+func TestUpdateStore(t *testing.T) {
+	t.Parallel()
+
+	in := &store.UpdateStoreInput{
+		StoreID:      1,
+		Name:         "&.農園",
+		ThumbnailURL: "https://and-period.jp/thumbnail.png",
+	}
+
+	tests := []struct {
+		name    string
+		setup   func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		storeID string
+		req     *request.UpdateStoreRequest
+		expect  *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().UpdateStore(gomock.Any(), in).Return(nil)
+			},
+			storeID: "1",
+			req: &request.UpdateStoreRequest{
+				Name:         "&.農園",
+				ThumbnailURL: "https://and-period.jp/thumbnail.png",
+			},
+			expect: &testResponse{
+				code: http.StatusNoContent,
+			},
+		},
+		{
+			name:    "invalid store id",
+			setup:   func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			storeID: "a",
+			req: &request.UpdateStoreRequest{
+				Name:         "&.農園",
+				ThumbnailURL: "https://and-period.jp/thumbnail.png",
+			},
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name: "failed to update store",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().UpdateStore(gomock.Any(), in).Return(errmock)
+			},
+			storeID: "1",
+			req: &request.UpdateStoreRequest{
+				Name:         "&.農園",
+				ThumbnailURL: "https://and-period.jp/thumbnail.png",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			const prefix = "/v1/stores"
+			path := fmt.Sprintf("%s/%s", prefix, tt.storeID)
+			req := newHTTPRequest(t, http.MethodPatch, path, tt.req)
 			testHTTP(t, tt.setup, tt.expect, req)
 		})
 	}

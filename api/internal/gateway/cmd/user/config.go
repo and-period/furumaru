@@ -29,7 +29,7 @@ type config struct {
 	AWSRegion               string `envconfig:"AWS_REGION" default:"ap-northeast-1"`
 	AWSAccessKey            string `envconfig:"AWS_ACCESS_KEY" default:""`
 	AWSSecretKey            string `envconfig:"AWS_SECRET_KEY" default:""`
-	S3UserBucket            string `envconfig:"S3_USER_BUCKET" default:""`
+	S3BucketName            string `envconfig:"S3_BUCKET_NAME" default:""`
 	CognitoUserPoolID       string `envconfig:"COGNITO_USER_POOL_ID" default:""`
 	CognitoUserClientID     string `envconfig:"COGNITO_USER_CLIENT_ID" default:""`
 	CognitoUserClientSecret string `envconfig:"COGNITO_USER_CLIENT_SECRET" default:""`

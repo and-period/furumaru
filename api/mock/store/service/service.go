@@ -109,18 +109,3 @@ func (mr *MockStoreServiceMockRecorder) UpdateStore(ctx, in interface{}) *gomock
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateStore", reflect.TypeOf((*MockStoreService)(nil).UpdateStore), ctx, in)
 }
-
-// UploadStoreThumbnail mocks base method.
-func (m *MockStoreService) UploadStoreThumbnail(ctx context.Context, in *service.UploadStoreThumbnailInput) (string, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UploadStoreThumbnail", ctx, in)
-	ret0, _ := ret[0].(string)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// UploadStoreThumbnail indicates an expected call of UploadStoreThumbnail.
-func (mr *MockStoreServiceMockRecorder) UploadStoreThumbnail(ctx, in interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadStoreThumbnail", reflect.TypeOf((*MockStoreService)(nil).UploadStoreThumbnail), ctx, in)
-}
