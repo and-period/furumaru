@@ -3,9 +3,12 @@ package cognito
 
 import (
 	"context"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/aws/retry"
 	cognito "github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
+	"go.uber.org/zap"
 )
 
 type Client interface {
@@ -60,16 +63,58 @@ type Params struct {
 
 type client struct {
 	cognito         *cognito.Client
+	logger          *zap.Logger
 	userPoolID      *string
 	appClientID     *string
 	appClientSecret *string
 }
 
-func NewClient(cfg aws.Config, params *Params) Client {
+type options struct {
+	maxRetries int
+	interval   time.Duration
+	logger     *zap.Logger
+}
+
+type Option func(*options)
+
+func WithMaxRetries(maxRetries int) Option {
+	return func(opts *options) {
+		opts.maxRetries = maxRetries
+	}
+}
+
+func WithInterval(interval time.Duration) Option {
+	return func(opts *options) {
+		opts.interval = interval
+	}
+}
+
+func WithLogger(logger *zap.Logger) Option {
+	return func(opts *options) {
+		opts.logger = logger
+	}
+}
+
+func NewClient(cfg aws.Config, params *Params, opts ...Option) Client {
+	dopts := &options{
+		maxRetries: retry.DefaultMaxAttempts,
+		interval:   retry.DefaultMaxBackoff,
+		logger:     zap.NewNop(),
+	}
+	for i := range opts {
+		opts[i](dopts)
+	}
+	cli := cognito.NewFromConfig(cfg, func(o *cognito.Options) {
+		o.Retryer = retry.NewStandard(func(o *retry.StandardOptions) {
+			o.MaxAttempts = dopts.maxRetries
+			o.MaxBackoff = dopts.interval
+		})
+	})
 	return &client{
-		cognito:         cognito.NewFromConfig(cfg),
+		cognito:         cli,
 		userPoolID:      aws.String(params.UserPoolID),
 		appClientID:     aws.String(params.AppClientID),
 		appClientSecret: aws.String(params.AppClientSecret),
+		logger:          dopts.logger,
 	}
 }

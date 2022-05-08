@@ -68,17 +68,18 @@ func (a *admin) UpdateEmail(ctx context.Context, adminID, email string) error {
 			Table(adminTable).Select("id").
 			Where("id = ?", adminID).
 			First(&current).Error
-		if err != nil || current.ID == "" {
+		if err != nil {
 			return nil, err
 		}
 
 		params := map[string]interface{}{
+			"id":         current.ID,
 			"email":      email,
 			"updated_at": a.now(),
 		}
 		err = tx.WithContext(ctx).
 			Table(adminTable).
-			Where("id = ?", adminID).
+			Where("id = ?", current.ID).
 			Updates(params).Error
 		return nil, err
 	})

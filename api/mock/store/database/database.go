@@ -79,6 +79,20 @@ func (m *MockStore) EXPECT() *MockStoreMockRecorder {
 	return m.recorder
 }
 
+// Create mocks base method.
+func (m *MockStore) Create(ctx context.Context, store *entity.Store) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, store)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockStoreMockRecorder) Create(ctx, store interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockStore)(nil).Create), ctx, store)
+}
+
 // Get mocks base method.
 func (m *MockStore) Get(ctx context.Context, storeID int64, fields ...string) (*entity.Store, error) {
 	m.ctrl.T.Helper()
@@ -117,4 +131,18 @@ func (mr *MockStoreMockRecorder) List(ctx, params interface{}, fields ...interfa
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, params}, fields...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockStore)(nil).List), varargs...)
+}
+
+// Update mocks base method.
+func (m *MockStore) Update(ctx context.Context, storeID int64, name, thumbnailURL string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", ctx, storeID, name, thumbnailURL)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockStoreMockRecorder) Update(ctx, storeID, name, thumbnailURL interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockStore)(nil).Update), ctx, storeID, name, thumbnailURL)
 }

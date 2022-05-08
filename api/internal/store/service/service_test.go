@@ -10,7 +10,8 @@ import (
 	"github.com/and-period/marche/api/internal/store/database"
 	mock_database "github.com/and-period/marche/api/mock/store/database"
 	"github.com/and-period/marche/api/pkg/jst"
-	"github.com/go-playground/validator/v10"
+	"github.com/and-period/marche/api/pkg/validator"
+	gvalidator "github.com/go-playground/validator/v10"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
@@ -68,7 +69,7 @@ func newUserService(mocks *mocks, opts ...testOption) *storeService {
 		now:         dopts.now,
 		logger:      zap.NewNop(),
 		sharedGroup: &singleflight.Group{},
-		validator:   newValidator(),
+		validator:   validator.NewValidator(),
 		db: &database.Database{
 			Staff: mocks.db.Staff,
 			Store: mocks.db.Store,
@@ -116,7 +117,7 @@ func TestStoreError(t *testing.T) {
 		},
 		{
 			name:   "validation error",
-			err:    validator.ValidationErrors{},
+			err:    gvalidator.ValidationErrors{},
 			expect: ErrInvalidArgument,
 		},
 		{

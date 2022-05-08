@@ -1,4 +1,4 @@
-package cognito
+package storage
 
 import (
 	"context"
@@ -11,14 +11,14 @@ import (
 	"go.uber.org/zap"
 )
 
-func TestClient(t *testing.T) {
+func TestBucket(t *testing.T) {
 	t.Parallel()
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	require.NoError(t, err)
-	auth := NewClient(cfg, &Params{},
+	bucket := NewBucket(cfg, &Params{},
 		WithMaxRetries(1),
 		WithInterval(time.Millisecond),
 		WithLogger(zap.NewNop()),
 	)
-	assert.NotNil(t, auth)
+	assert.NotNil(t, bucket)
 }

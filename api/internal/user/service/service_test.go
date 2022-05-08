@@ -11,7 +11,8 @@ import (
 	mock_cognito "github.com/and-period/marche/api/mock/pkg/cognito"
 	mock_database "github.com/and-period/marche/api/mock/user/database"
 	"github.com/and-period/marche/api/pkg/jst"
-	"github.com/go-playground/validator/v10"
+	"github.com/and-period/marche/api/pkg/validator"
+	gvalidator "github.com/go-playground/validator/v10"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
@@ -69,7 +70,7 @@ func newUserService(mocks *mocks, opts ...testOption) *userService {
 		now:         dopts.now,
 		logger:      zap.NewNop(),
 		sharedGroup: &singleflight.Group{},
-		validator:   newValidator(),
+		validator:   validator.NewValidator(),
 		db: &database.Database{
 			User: mocks.db.User,
 		},
@@ -117,7 +118,7 @@ func TestUserError(t *testing.T) {
 		},
 		{
 			name:   "validation error",
-			err:    validator.ValidationErrors{},
+			err:    gvalidator.ValidationErrors{},
 			expect: ErrInvalidArgument,
 		},
 		{

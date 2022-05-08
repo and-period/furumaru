@@ -11,6 +11,7 @@ import (
 	user "github.com/and-period/marche/api/internal/user/service"
 	"github.com/and-period/marche/api/pkg/cognito"
 	"github.com/and-period/marche/api/pkg/database"
+	"github.com/and-period/marche/api/pkg/storage"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	awscredentials "github.com/aws/aws-sdk-go-v2/credentials"
@@ -87,7 +88,12 @@ func newUserService(ctx context.Context, conf *config, opts *options) (user.User
 		return nil, err
 	}
 
-	// Amazon Cognitoの設定
+	// Databaseの設定
+	dbParams := &userdb.Params{
+		Database: mysql,
+	}
+
+	// AWS SDKの設定
 	awscreds := aws.NewCredentialsCache(
 		awscredentials.NewStaticCredentialsProvider(conf.AWSAccessKey, conf.AWSSecretKey, ""),
 	)
@@ -98,19 +104,22 @@ func newUserService(ctx context.Context, conf *config, opts *options) (user.User
 	if err != nil {
 		return nil, err
 	}
+
+	// Amazon S3の設定
+	storageParams := &storage.Params{
+		Bucket: conf.S3BucketName,
+	}
+
+	// Amazon Cognitoの設定
 	userAuthParams := &cognito.Params{
 		UserPoolID:      conf.CognitoUserPoolID,
 		AppClientID:     conf.CognitoUserClientID,
 		AppClientSecret: conf.CognitoUserClientSecret,
 	}
 
-	// Databaseの設定
-	dbParams := &userdb.Params{
-		Database: mysql,
-	}
-
 	// User Serviceの設定
 	params := &user.Params{
+		Storage:   storage.NewBucket(awscfg, storageParams),
 		Database:  userdb.NewDatabase(dbParams),
 		AdminAuth: cognito.NewClient(awscfg, &cognito.Params{}),
 		ShopAuth:  cognito.NewClient(awscfg, &cognito.Params{}),
@@ -142,8 +151,26 @@ func newStoreService(ctx context.Context, conf *config, opts *options) (store.St
 		Database: mysql,
 	}
 
+	// AWS SDKの設定
+	awscreds := aws.NewCredentialsCache(
+		awscredentials.NewStaticCredentialsProvider(conf.AWSAccessKey, conf.AWSSecretKey, ""),
+	)
+	awscfg, err := awsconfig.LoadDefaultConfig(ctx,
+		awsconfig.WithRegion(conf.AWSRegion),
+		awsconfig.WithCredentialsProvider(awscreds),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	// Amazon S3の設定
+	storageParams := &storage.Params{
+		Bucket: conf.S3BucketName,
+	}
+
 	// Store Serviceの設定
 	params := &store.Params{
+		Storage:  storage.NewBucket(awscfg, storageParams),
 		Database: storedb.NewDatabase(&dbParams),
 	}
 	return store.NewStoreService(
