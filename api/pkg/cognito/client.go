@@ -156,18 +156,20 @@ func authError(err error) error {
 		une *types.UserNotFoundException
 	)
 
-	if errors.As(err, &cme) || errors.As(err, &ipe) {
+	switch {
+	case errors.As(err, &cme), errors.As(err, &ipe):
 		return fmt.Errorf("%w: %s", ErrInvalidArgument, err)
-	} else if errors.As(err, &ece) || errors.As(err, &nae) || errors.As(err, &pre) || errors.As(err, &uce) {
+	case errors.As(err, &ece), errors.As(err, &nae), errors.As(err, &pre), errors.As(err, &uce):
 		return fmt.Errorf("%w: %s", ErrUnauthenticated, err)
-	} else if errors.As(err, &rne) || errors.As(err, &une) {
+	case errors.As(err, &rne), errors.As(err, &une):
 		return fmt.Errorf("%w: %s", ErrNotFound, err)
-	} else if errors.As(err, &aee) || errors.As(err, &uee) {
+	case errors.As(err, &aee), errors.As(err, &uee):
 		return fmt.Errorf("%w: %s", ErrAlreadyExists, err)
-	} else if errors.As(err, &lee) || errors.As(err, &tfe) || errors.As(err, &tre) {
+	case errors.As(err, &lee), errors.As(err, &tfe), errors.As(err, &tre):
 		return fmt.Errorf("%w: %s", ErrResourceExhausted, err)
-	} else if errors.As(err, &cfe) || errors.As(err, &iee) {
+	case errors.As(err, &cfe), errors.As(err, &iee):
 		return fmt.Errorf("%w: %s", ErrInternal, err)
+	default:
+		return fmt.Errorf("%w: %s", ErrUnknown, err)
 	}
-	return fmt.Errorf("%w: %s", ErrUnknown, err)
 }

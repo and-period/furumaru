@@ -128,7 +128,7 @@ func userError(err error) error {
 		return fmt.Errorf("%w: %s", ErrUnauthenticated, err.Error())
 	case errors.Is(err, database.ErrNotFound), errors.Is(err, cognito.ErrNotFound):
 		return fmt.Errorf("%w: %s", ErrNotFound, err.Error())
-	case errors.Is(err, database.ErrAlreadyExists), errors.Is(err, cognito.ErrUnauthenticated):
+	case errors.Is(err, database.ErrAlreadyExists), errors.Is(err, cognito.ErrAlreadyExists):
 		return fmt.Errorf("%w: %s", ErrAlreadyExists, err.Error())
 	case errors.Is(err, cognito.ErrResourceExhausted):
 		return fmt.Errorf("%w: %s", ErrResourceExhausted, err.Error())
