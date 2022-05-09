@@ -49,7 +49,17 @@ export default defineComponent({
       {
         to: '/',
         icon: 'mdi-home',
-        title: 'Home',
+        title: 'ホーム',
+      },
+      {
+        to: '/products',
+        icon: 'mdi-tag',
+        title: '商品管理',
+      },
+      {
+        to: '/livestreaming',
+        icon: 'mdi-antenna',
+        title: 'ライブ配信',
       },
     ])
 
