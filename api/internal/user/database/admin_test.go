@@ -170,6 +170,72 @@ func TestAdmin_GetByCognitoID(t *testing.T) {
 	}
 }
 
+func TestAdmin_Create(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	type args struct {
+		admin *entity.Admin
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				admin: testAdmin("admin-id", "test-admin@and-period.jp", now()),
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name: "failed to duplicate entry",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				admin := testAdmin("admin-id", "test-admin@and-period.jp", now())
+				err = m.db.DB.Create(&admin).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				admin: testAdmin("admin-id", "test-admin@and-period.jp", now()),
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := m.dbDelete(ctx, adminTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, m)
+
+			db := &admin{db: m.db, now: now}
+			err = db.Create(ctx, tt.args.admin)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
 func TestAdmin_UpdateEmail(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
