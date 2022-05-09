@@ -21,6 +21,18 @@ type Shop struct {
 	DeletedAt     gorm.DeletedAt `gorm:"default:null"`
 }
 
+func NewShop(id, cognitoID, lastname, firstname, lastnameKana, firstnameKana, email string) *Shop {
+	return &Shop{
+		ID:            id,
+		CognitoID:     cognitoID,
+		Lastname:      lastname,
+		Firstname:     firstname,
+		LastnameKana:  lastnameKana,
+		FirstnameKana: firstnameKana,
+		Email:         email,
+	}
+}
+
 func (s *Shop) Name() string {
 	return fmt.Sprintf("%s %s", s.Lastname, s.Firstname)
 }

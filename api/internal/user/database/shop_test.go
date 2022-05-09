@@ -16,6 +16,77 @@ func TestShop(t *testing.T) {
 	assert.NotNil(t, NewShop(nil))
 }
 
+func TestShop_List(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, shopTable)
+	shops := make(entity.Shops, 2)
+	shops[0] = testShop("shop-id01", "test-shop01@and-period.jp", now())
+	shops[1] = testShop("shop-id02", "test-shop02@and-period.jp", now())
+	err = m.db.DB.Create(&shops).Error
+	require.NoError(t, err)
+
+	type args struct {
+		params *ListShopsParams
+	}
+	type want struct {
+		shops  entity.Shops
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListShopsParams{
+					Limit:  1,
+					Offset: 1,
+				},
+			},
+			want: want{
+				shops:  shops[1:],
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &shop{db: m.db, now: now}
+			actual, err := db.List(ctx, tt.args.params)
+			if tt.want.hasErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			fillIgnoreShopsField(actual, now())
+			assert.ElementsMatch(t, tt.want.shops, actual)
+		})
+	}
+}
+
 func TestShop_MultiGet(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -157,6 +228,72 @@ func TestShop_Get(t *testing.T) {
 			assert.NoError(t, err)
 			fillIgnoreShopField(actual, now())
 			assert.Equal(t, tt.want.shop, actual)
+		})
+	}
+}
+
+func TestShop_Create(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	type args struct {
+		shop *entity.Shop
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				shop: testShop("shop-id", "test-shop@and-period.jp", now()),
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name: "failed to duplicate entry",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				shop := testShop("shop-id", "test-shop@and-period.jp", now())
+				err = m.db.DB.Create(&shop).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				shop: testShop("shop-id", "test-shop@and-period.jp", now()),
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := m.dbDelete(ctx, shopTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, m)
+
+			db := &shop{db: m.db, now: now}
+			err = db.Create(ctx, tt.args.shop)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}
 }

@@ -39,8 +39,10 @@ type UserService interface {
 	UpdateAdminEmail(ctx context.Context, in *UpdateAdminEmailInput) error
 	VerifyAdminEmail(ctx context.Context, in *VerifyAdminEmailInput) error
 	UpdateAdminPassword(ctx context.Context, in *UpdateAdminPasswordInput) error
+	ListShops(ctx context.Context, in *ListShopsInput) (entity.Shops, error)
 	MultiGetShops(ctx context.Context, in *MultiGetShopsInput) (entity.Shops, error)
 	GetShop(ctx context.Context, in *GetShopInput) (*entity.Shop, error)
+	CreateShop(ctx context.Context, in *CreateShopInput) (*entity.Shop, error)
 	SignInUser(ctx context.Context, in *SignInUserInput) (*entity.UserAuth, error)
 	SignOutUser(ctx context.Context, in *SignOutUserInput) error
 	GetUserAuth(ctx context.Context, in *GetUserAuthInput) (*entity.UserAuth, error)

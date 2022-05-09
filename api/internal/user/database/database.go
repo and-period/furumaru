@@ -51,8 +51,10 @@ type Admin interface {
 }
 
 type Shop interface {
+	List(ctx context.Context, params *ListShopsParams, fields ...string) (entity.Shops, error)
 	MultiGet(ctx context.Context, shopIDs []string, fields ...string) (entity.Shops, error)
 	Get(ctx context.Context, shopID string, fields ...string) (*entity.Shop, error)
+	Create(ctx context.Context, shop *entity.Shop) error
 }
 
 type User interface {
@@ -68,6 +70,10 @@ type User interface {
 /**
  * params
  */
+type ListShopsParams struct {
+	Limit  int
+	Offset int
+}
 
 /**
  * private methods

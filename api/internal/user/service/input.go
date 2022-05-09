@@ -38,12 +38,25 @@ type UpdateAdminPasswordInput struct {
 	PasswordConfirmation string `validate:"required,eqfield=NewPassword"`
 }
 
+type ListShopsInput struct {
+	Limit  int64 `validate:"required,max=200"`
+	Offset int64 `validate:"min=0"`
+}
+
 type MultiGetShopsInput struct {
 	ShopIDs []string `validate:"min=1,dive,required"`
 }
 
 type GetShopInput struct {
 	ShopID string `validate:"required"`
+}
+
+type CreateShopInput struct {
+	Email         string `validate:"required,max=256,email"`
+	Lastname      string `validate:"required,max=16"`
+	Firstname     string `validate:"required,max=16"`
+	LastnameKana  string `validate:"required,max=32,hiragana"`
+	FirstnameKana string `validate:"required,max=32,hiragana"`
 }
 
 type SignInUserInput struct {

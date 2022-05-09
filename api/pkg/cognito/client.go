@@ -48,6 +48,11 @@ type Client interface {
 	ChangePassword(ctx context.Context, params *ChangePasswordParams) error
 	// ユーザー削除
 	DeleteUser(ctx context.Context, username string) error
+
+	// #############################################
+	// ユーザー関連 (管理者)
+	// #############################################
+	AdminCreateUser(ctx context.Context, params *AdminCreateUserParams) error
 }
 
 var (

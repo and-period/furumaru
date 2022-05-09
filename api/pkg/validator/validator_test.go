@@ -11,6 +11,7 @@ func TestValidator(t *testing.T) {
 
 	type input struct {
 		Name        string `validate:"omitempty,max=4"`
+		Hiragana    string `validate:"omitempty,hiragana"`
 		Password    string `validate:"omitempty,password"`
 		PhoneNumber string `validate:"omitempty,phone_number"`
 	}
@@ -32,6 +33,13 @@ func TestValidator(t *testing.T) {
 			hasErr: false,
 		},
 		{
+			name: "valid hiragana",
+			input: &input{
+				Hiragana: "あいうえお",
+			},
+			hasErr: false,
+		},
+		{
 			name: "valid password",
 			input: &input{
 				Password: "abcxyzABCXYZ012789_!@#$_%^&*.?()-=+",
@@ -49,6 +57,13 @@ func TestValidator(t *testing.T) {
 			name: "invalid name",
 			input: &input{
 				Name: "12345",
+			},
+			hasErr: true,
+		},
+		{
+			name: "invalid hiragana",
+			input: &input{
+				Hiragana: "アイウエオ",
 			},
 			hasErr: true,
 		},
