@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/and-period/marche/api/internal/user/entity"
 	"github.com/and-period/marche/api/pkg/cognito"
@@ -14,7 +13,7 @@ func (s *userService) SignInUser(ctx context.Context, in *SignInUserInput) (*ent
 	}
 	rs, err := s.userAuth.SignIn(ctx, in.Key, in.Password)
 	if err != nil {
-		return nil, fmt.Errorf("%w: %s", ErrUnauthenticated, err.Error())
+		return nil, userError(err)
 	}
 	auth, err := s.getUserAuth(ctx, rs)
 	return auth, userError(err)
@@ -24,10 +23,8 @@ func (s *userService) SignOutUser(ctx context.Context, in *SignOutUserInput) err
 	if err := s.validator.Struct(in); err != nil {
 		return userError(err)
 	}
-	if err := s.userAuth.SignOut(ctx, in.AccessToken); err != nil {
-		return fmt.Errorf("%w: %s", ErrUnauthenticated, err.Error())
-	}
-	return nil
+	err := s.userAuth.SignOut(ctx, in.AccessToken)
+	return userError(err)
 }
 
 func (s *userService) GetUserAuth(ctx context.Context, in *GetUserAuthInput) (*entity.UserAuth, error) {
@@ -36,10 +33,7 @@ func (s *userService) GetUserAuth(ctx context.Context, in *GetUserAuthInput) (*e
 	}
 	rs := &cognito.AuthResult{AccessToken: in.AccessToken}
 	auth, err := s.getUserAuth(ctx, rs)
-	if err != nil {
-		return nil, fmt.Errorf("%w: %s", ErrUnauthenticated, err.Error())
-	}
-	return auth, nil
+	return auth, userError(err)
 }
 
 func (s *userService) RefreshUserToken(ctx context.Context, in *RefreshUserTokenInput) (*entity.UserAuth, error) {
@@ -48,7 +42,7 @@ func (s *userService) RefreshUserToken(ctx context.Context, in *RefreshUserToken
 	}
 	rs, err := s.userAuth.RefreshToken(ctx, in.RefreshToken)
 	if err != nil {
-		return nil, fmt.Errorf("%w: %s", ErrUnauthenticated, err.Error())
+		return nil, userError(err)
 	}
 	auth, err := s.getUserAuth(ctx, rs)
 	return auth, userError(err)
