@@ -36,6 +36,21 @@ func (m *MockUserService) EXPECT() *MockUserServiceMockRecorder {
 	return m.recorder
 }
 
+// CreateShop mocks base method.
+func (m *MockUserService) CreateShop(ctx context.Context, in *service.CreateShopInput) (*entity.Shop, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateShop", ctx, in)
+	ret0, _ := ret[0].(*entity.Shop)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateShop indicates an expected call of CreateShop.
+func (mr *MockUserServiceMockRecorder) CreateShop(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateShop", reflect.TypeOf((*MockUserService)(nil).CreateShop), ctx, in)
+}
+
 // CreateUser mocks base method.
 func (m *MockUserService) CreateUser(ctx context.Context, in *service.CreateUserInput) (string, error) {
 	m.ctrl.T.Helper()
@@ -181,6 +196,21 @@ func (m *MockUserService) InitializeUser(ctx context.Context, in *service.Initia
 func (mr *MockUserServiceMockRecorder) InitializeUser(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InitializeUser", reflect.TypeOf((*MockUserService)(nil).InitializeUser), ctx, in)
+}
+
+// ListShops mocks base method.
+func (m *MockUserService) ListShops(ctx context.Context, in *service.ListShopsInput) (entity.Shops, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListShops", ctx, in)
+	ret0, _ := ret[0].(entity.Shops)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListShops indicates an expected call of ListShops.
+func (mr *MockUserServiceMockRecorder) ListShops(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListShops", reflect.TypeOf((*MockUserService)(nil).ListShops), ctx, in)
 }
 
 // MultiGetShops mocks base method.
