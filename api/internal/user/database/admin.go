@@ -61,6 +61,17 @@ func (a *admin) GetByCognitoID(ctx context.Context, cognitoID string, fields ...
 	return admin, nil
 }
 
+func (a *admin) Create(ctx context.Context, admin *entity.Admin) error {
+	_, err := a.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+		now := a.now()
+		admin.CreatedAt, admin.UpdatedAt = now, now
+
+		err := tx.WithContext(ctx).Table(adminTable).Create(&admin).Error
+		return nil, err
+	})
+	return dbError(err)
+}
+
 func (a *admin) UpdateEmail(ctx context.Context, adminID, email string) error {
 	_, err := a.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		var current *entity.Admin

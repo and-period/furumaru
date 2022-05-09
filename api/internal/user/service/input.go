@@ -1,5 +1,7 @@
 package service
 
+import "github.com/and-period/marche/api/internal/user/entity"
+
 type SignInAdminInput struct {
 	Key      string `validate:"required"`
 	Password string `validate:"required"`
@@ -19,6 +21,11 @@ type RefreshAdminTokenInput struct {
 
 type GetAdminInput struct {
 	AdminID string `validate:"required"`
+}
+
+type CreateAdminInput struct {
+	Email string           `validate:"required,max=256,email"`
+	Role  entity.AdminRole `validate:""`
 }
 
 type UpdateAdminEmailInput struct {

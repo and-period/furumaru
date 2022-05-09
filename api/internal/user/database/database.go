@@ -47,6 +47,7 @@ func NewDatabase(params *Params) *Database {
 type Admin interface {
 	Get(ctx context.Context, adminID string, fields ...string) (*entity.Admin, error)
 	GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.Admin, error)
+	Create(ctx context.Context, admin *entity.Admin) error
 	UpdateEmail(ctx context.Context, adminID, email string) error
 }
 
