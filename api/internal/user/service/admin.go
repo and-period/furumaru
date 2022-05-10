@@ -6,6 +6,7 @@ import (
 
 	"github.com/and-period/marche/api/internal/user/entity"
 	"github.com/and-period/marche/api/pkg/cognito"
+	"github.com/and-period/marche/api/pkg/random"
 	"github.com/and-period/marche/api/pkg/uuid"
 )
 
@@ -18,6 +19,7 @@ func (s *userService) GetAdmin(ctx context.Context, in *GetAdminInput) (*entity.
 }
 
 func (s *userService) CreateAdmin(ctx context.Context, in *CreateAdminInput) (*entity.Admin, error) {
+	const size = 8
 	if err := s.validator.Struct(in); err != nil {
 		return nil, userError(err)
 	}
@@ -29,13 +31,16 @@ func (s *userService) CreateAdmin(ctx context.Context, in *CreateAdminInput) (*e
 	if err := s.db.Admin.Create(ctx, admin); err != nil {
 		return nil, userError(err)
 	}
+	password := random.NewStrings(size)
 	params := &cognito.AdminCreateUserParams{
 		Username: admin.CognitoID,
 		Email:    admin.Email,
+		Password: password,
 	}
 	if err := s.adminAuth.AdminCreateUser(ctx, params); err != nil {
 		return nil, userError(err)
 	}
+	// TODO: 管理者登録通知を送信
 	return admin, nil
 }
 

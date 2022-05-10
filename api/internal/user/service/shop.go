@@ -6,6 +6,7 @@ import (
 	"github.com/and-period/marche/api/internal/user/database"
 	"github.com/and-period/marche/api/internal/user/entity"
 	"github.com/and-period/marche/api/pkg/cognito"
+	"github.com/and-period/marche/api/pkg/random"
 	"github.com/and-period/marche/api/pkg/uuid"
 )
 
@@ -38,6 +39,7 @@ func (s *userService) GetShop(ctx context.Context, in *GetShopInput) (*entity.Sh
 }
 
 func (s *userService) CreateShop(ctx context.Context, in *CreateShopInput) (*entity.Shop, error) {
+	const size = 8
 	if err := s.validator.Struct(in); err != nil {
 		return nil, userError(err)
 	}
@@ -46,12 +48,15 @@ func (s *userService) CreateShop(ctx context.Context, in *CreateShopInput) (*ent
 	if err := s.db.Shop.Create(ctx, shop); err != nil {
 		return nil, userError(err)
 	}
+	password := random.NewStrings(size)
 	params := &cognito.AdminCreateUserParams{
 		Username: shop.CognitoID,
 		Email:    shop.Email,
+		Password: password,
 	}
 	if err := s.shopAuth.AdminCreateUser(ctx, params); err != nil {
 		return nil, userError(err)
 	}
+	// TODO: 販売者登録通知を送信
 	return shop, nil
 }

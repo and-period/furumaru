@@ -36,6 +36,7 @@ type UserService interface {
 	GetAdminAuth(ctx context.Context, in *GetAdminAuthInput) (*entity.AdminAuth, error)
 	RefreshAdminToken(ctx context.Context, in *RefreshAdminTokenInput) (*entity.AdminAuth, error)
 	GetAdmin(ctx context.Context, in *GetAdminInput) (*entity.Admin, error)
+	CreateAdmin(ctx context.Context, in *CreateAdminInput) (*entity.Admin, error)
 	UpdateAdminEmail(ctx context.Context, in *UpdateAdminEmailInput) error
 	VerifyAdminEmail(ctx context.Context, in *VerifyAdminEmailInput) error
 	UpdateAdminPassword(ctx context.Context, in *UpdateAdminPasswordInput) error
