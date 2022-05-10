@@ -30,13 +30,13 @@ func NewAdmin(db *database.Client) Admin {
 	}
 }
 
-func (s *admin) List(ctx context.Context, params *ListAdminsParams, fields ...string) (entity.Admins, error) {
+func (a *admin) List(ctx context.Context, params *ListAdminsParams, fields ...string) (entity.Admins, error) {
 	var admins entity.Admins
 	if len(fields) == 0 {
 		fields = adminFields
 	}
 
-	stmt := s.db.DB.WithContext(ctx).Table(adminTable).Select(fields)
+	stmt := a.db.DB.WithContext(ctx).Table(adminTable).Select(fields)
 	if len(params.Roles) > 0 {
 		stmt = stmt.Where("role IN (?)", params.Roles)
 	}
@@ -51,13 +51,13 @@ func (s *admin) List(ctx context.Context, params *ListAdminsParams, fields ...st
 	return admins, dbError(err)
 }
 
-func (s *admin) MultiGet(ctx context.Context, adminIDs []string, fields ...string) (entity.Admins, error) {
+func (a *admin) MultiGet(ctx context.Context, adminIDs []string, fields ...string) (entity.Admins, error) {
 	var admins entity.Admins
 	if len(fields) == 0 {
 		fields = adminFields
 	}
 
-	stmt := s.db.DB.WithContext(ctx).
+	stmt := a.db.DB.WithContext(ctx).
 		Table(adminTable).Select(fields).
 		Where("id IN (?)", adminIDs)
 
