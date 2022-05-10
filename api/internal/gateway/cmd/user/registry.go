@@ -135,7 +135,6 @@ func newUserService(ctx context.Context, conf *config, opts *options) (user.User
 	params := &user.Params{
 		Database:  userdb.NewDatabase(dbParams),
 		AdminAuth: cognito.NewClient(awscfg, &cognito.Params{}),
-		ShopAuth:  cognito.NewClient(awscfg, &cognito.Params{}),
 		UserAuth:  cognito.NewClient(awscfg, userAuthParams),
 	}
 	return user.NewUserService(

@@ -3,8 +3,6 @@
 ##################################################
 frontend (admin):
 - web/admin/**/*
-frontend (shop):
-- web/shop/**/*
 frontend (user):
 - web/user/**/*
 
@@ -17,8 +15,8 @@ backend (media):
 - api/**/media/**/*
 backend (messenger):
 - api/**/messenger/**/*
-backend (shop):
-- api/**/shop/**/*
+backend (store):
+- api/**/store/**/*
 backend (user):
 - api/**/user/**/*
 

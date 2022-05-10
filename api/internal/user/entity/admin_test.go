@@ -20,13 +20,8 @@ func TestAdminRole_Validate(t *testing.T) {
 			expect: nil,
 		},
 		{
-			name:   "developer",
-			role:   AdminRoleDeveloper,
-			expect: nil,
-		},
-		{
-			name:   "operator",
-			role:   AdminRoleOperator,
+			name:   "producer",
+			role:   AdminRoleProducer,
 			expect: nil,
 		},
 		{
@@ -50,24 +45,36 @@ func TestAdmin(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name      string
-		adminID   string
-		cognitoID string
-		email     string
-		role      AdminRole
-		expect    *Admin
+		name          string
+		adminID       string
+		cognitoID     string
+		lastname      string
+		firstname     string
+		lastnameKana  string
+		firstnameKana string
+		email         string
+		role          AdminRole
+		expect        *Admin
 	}{
 		{
-			name:      "success",
-			adminID:   "admin-id",
-			cognitoID: "cognito-id",
-			email:     "test-admin@and-period.jp",
-			role:      AdminRoleAdministrator,
+			name:          "success",
+			adminID:       "admin-id",
+			cognitoID:     "cognito-id",
+			lastname:      "&.",
+			firstname:     "スタッフ",
+			lastnameKana:  "あんどどっと",
+			firstnameKana: "すたっふ",
+			email:         "test-admin@and-period.jp",
+			role:          AdminRoleAdministrator,
 			expect: &Admin{
-				ID:        "admin-id",
-				CognitoID: "cognito-id",
-				Email:     "test-admin@and-period.jp",
-				Role:      AdminRoleAdministrator,
+				ID:            "admin-id",
+				CognitoID:     "cognito-id",
+				Lastname:      "&.",
+				Firstname:     "スタッフ",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "すたっふ",
+				Email:         "test-admin@and-period.jp",
+				Role:          AdminRoleAdministrator,
 			},
 		},
 	}
@@ -76,7 +83,11 @@ func TestAdmin(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewAdmin(tt.adminID, tt.cognitoID, tt.email, tt.role)
+			actual := NewAdmin(
+				tt.adminID, tt.cognitoID,
+				tt.lastname, tt.firstname, tt.lastnameKana, tt.firstnameKana,
+				tt.email, tt.role,
+			)
 			assert.Equal(t, tt.expect, actual)
 		})
 	}

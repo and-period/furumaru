@@ -71,7 +71,7 @@ func (h *apiV1Handler) GetStore(ctx *gin.Context) {
 	var (
 		sstore  *sentity.Store
 		sstaffs sentity.Staffs
-		ushops  uentity.Shops
+		uadmins uentity.Admins
 	)
 
 	eg, ectx := errgroup.WithContext(c)
@@ -86,8 +86,8 @@ func (h *apiV1Handler) GetStore(ctx *gin.Context) {
 		if err != nil || len(sstaffs) == 0 {
 			return
 		}
-		shopsIn := &user.MultiGetShopsInput{ShopIDs: sstaffs.UserIDs()}
-		ushops, err = h.user.MultiGetShops(ectx, shopsIn)
+		adminsIn := &user.MultiGetAdminsInput{AdminIDs: sstaffs.UserIDs()}
+		uadmins, err = h.user.MultiGetAdmins(ectx, adminsIn)
 		return
 	})
 	if err := eg.Wait(); err != nil {
@@ -95,7 +95,7 @@ func (h *apiV1Handler) GetStore(ctx *gin.Context) {
 		return
 	}
 
-	staffs := service.NewStaffs(sstaffs, ushops.Map())
+	staffs := service.NewStaffs(sstaffs, uadmins.Map())
 
 	res := &response.StoreResponse{
 		Store: service.NewStore(sstore, staffs).Response(),

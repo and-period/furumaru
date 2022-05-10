@@ -20,7 +20,7 @@ func TestAdminAuth(t *testing.T) {
 		{
 			name:    "success",
 			adminID: "admin-id",
-			role:    AdminRoleDeveloper,
+			role:    AdminRoleAdministrator,
 			result: &cognito.AuthResult{
 				IDToken:      "id-token",
 				AccessToken:  "access-token",
@@ -29,7 +29,7 @@ func TestAdminAuth(t *testing.T) {
 			},
 			expect: &AdminAuth{
 				AdminID:      "admin-id",
-				Role:         AdminRoleDeveloper,
+				Role:         AdminRoleAdministrator,
 				AccessToken:  "access-token",
 				RefreshToken: "refresh-token",
 				ExpiresIn:    3600,

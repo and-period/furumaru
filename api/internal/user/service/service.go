@@ -35,15 +35,13 @@ type UserService interface {
 	SignOutAdmin(ctx context.Context, in *SignOutAdminInput) error
 	GetAdminAuth(ctx context.Context, in *GetAdminAuthInput) (*entity.AdminAuth, error)
 	RefreshAdminToken(ctx context.Context, in *RefreshAdminTokenInput) (*entity.AdminAuth, error)
+	ListAdmins(ctx context.Context, in *ListAdminsInput) (entity.Admins, error)
+	MultiGetAdmins(ctx context.Context, in *MultiGetAdminsInput) (entity.Admins, error)
 	GetAdmin(ctx context.Context, in *GetAdminInput) (*entity.Admin, error)
 	CreateAdmin(ctx context.Context, in *CreateAdminInput) (*entity.Admin, error)
 	UpdateAdminEmail(ctx context.Context, in *UpdateAdminEmailInput) error
 	VerifyAdminEmail(ctx context.Context, in *VerifyAdminEmailInput) error
 	UpdateAdminPassword(ctx context.Context, in *UpdateAdminPasswordInput) error
-	ListShops(ctx context.Context, in *ListShopsInput) (entity.Shops, error)
-	MultiGetShops(ctx context.Context, in *MultiGetShopsInput) (entity.Shops, error)
-	GetShop(ctx context.Context, in *GetShopInput) (*entity.Shop, error)
-	CreateShop(ctx context.Context, in *CreateShopInput) (*entity.Shop, error)
 	SignInUser(ctx context.Context, in *SignInUserInput) (*entity.UserAuth, error)
 	SignOutUser(ctx context.Context, in *SignOutUserInput) error
 	GetUserAuth(ctx context.Context, in *GetUserAuthInput) (*entity.UserAuth, error)
@@ -65,7 +63,6 @@ type Params struct {
 	Storage   storage.Bucket
 	Database  *database.Database
 	AdminAuth cognito.Client
-	ShopAuth  cognito.Client
 	UserAuth  cognito.Client
 }
 
@@ -77,7 +74,6 @@ type userService struct {
 	storage     storage.Bucket
 	db          *database.Database
 	adminAuth   cognito.Client
-	shopAuth    cognito.Client
 	userAuth    cognito.Client
 }
 
@@ -108,7 +104,6 @@ func NewUserService(params *Params, opts ...Option) UserService {
 		storage:     params.Storage,
 		db:          params.Database,
 		adminAuth:   params.AdminAuth,
-		shopAuth:    params.ShopAuth,
 		userAuth:    params.UserAuth,
 	}
 }

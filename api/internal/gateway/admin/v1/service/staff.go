@@ -12,12 +12,12 @@ type Staff struct {
 
 type Staffs []*Staff
 
-func NewStaff(staff *sentity.Staff, user *uentity.Shop) *Staff {
+func NewStaff(staff *sentity.Staff, admin *uentity.Admin) *Staff {
 	return &Staff{
 		Staff: &response.Staff{
-			ID:    user.ID,
-			Name:  user.Name(),
-			Email: user.Email,
+			ID:    admin.ID,
+			Name:  admin.Name(),
+			Email: admin.Email,
 			Role:  int32(staff.Role),
 		},
 	}
@@ -27,14 +27,14 @@ func (s *Staff) Response() *response.Staff {
 	return s.Staff
 }
 
-func NewStaffs(staffs sentity.Staffs, users map[string]*uentity.Shop) Staffs {
+func NewStaffs(staffs sentity.Staffs, admins map[string]*uentity.Admin) Staffs {
 	res := make(Staffs, len(staffs))
 	for i, staff := range staffs {
-		user, ok := users[staff.UserID]
+		admin, ok := admins[staff.UserID]
 		if !ok {
 			continue
 		}
-		res[i] = NewStaff(staff, user)
+		res[i] = NewStaff(staff, admin)
 	}
 	return res
 }

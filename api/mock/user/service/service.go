@@ -51,21 +51,6 @@ func (mr *MockUserServiceMockRecorder) CreateAdmin(ctx, in interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAdmin", reflect.TypeOf((*MockUserService)(nil).CreateAdmin), ctx, in)
 }
 
-// CreateShop mocks base method.
-func (m *MockUserService) CreateShop(ctx context.Context, in *service.CreateShopInput) (*entity.Shop, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateShop", ctx, in)
-	ret0, _ := ret[0].(*entity.Shop)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// CreateShop indicates an expected call of CreateShop.
-func (mr *MockUserServiceMockRecorder) CreateShop(ctx, in interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateShop", reflect.TypeOf((*MockUserService)(nil).CreateShop), ctx, in)
-}
-
 // CreateUser mocks base method.
 func (m *MockUserService) CreateUser(ctx context.Context, in *service.CreateUserInput) (string, error) {
 	m.ctrl.T.Helper()
@@ -154,21 +139,6 @@ func (mr *MockUserServiceMockRecorder) GetAdminAuth(ctx, in interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAdminAuth", reflect.TypeOf((*MockUserService)(nil).GetAdminAuth), ctx, in)
 }
 
-// GetShop mocks base method.
-func (m *MockUserService) GetShop(ctx context.Context, in *service.GetShopInput) (*entity.Shop, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetShop", ctx, in)
-	ret0, _ := ret[0].(*entity.Shop)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetShop indicates an expected call of GetShop.
-func (mr *MockUserServiceMockRecorder) GetShop(ctx, in interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetShop", reflect.TypeOf((*MockUserService)(nil).GetShop), ctx, in)
-}
-
 // GetUser mocks base method.
 func (m *MockUserService) GetUser(ctx context.Context, in *service.GetUserInput) (*entity.User, error) {
 	m.ctrl.T.Helper()
@@ -213,34 +183,34 @@ func (mr *MockUserServiceMockRecorder) InitializeUser(ctx, in interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InitializeUser", reflect.TypeOf((*MockUserService)(nil).InitializeUser), ctx, in)
 }
 
-// ListShops mocks base method.
-func (m *MockUserService) ListShops(ctx context.Context, in *service.ListShopsInput) (entity.Shops, error) {
+// ListAdmins mocks base method.
+func (m *MockUserService) ListAdmins(ctx context.Context, in *service.ListAdminsInput) (entity.Admins, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListShops", ctx, in)
-	ret0, _ := ret[0].(entity.Shops)
+	ret := m.ctrl.Call(m, "ListAdmins", ctx, in)
+	ret0, _ := ret[0].(entity.Admins)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// ListShops indicates an expected call of ListShops.
-func (mr *MockUserServiceMockRecorder) ListShops(ctx, in interface{}) *gomock.Call {
+// ListAdmins indicates an expected call of ListAdmins.
+func (mr *MockUserServiceMockRecorder) ListAdmins(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListShops", reflect.TypeOf((*MockUserService)(nil).ListShops), ctx, in)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAdmins", reflect.TypeOf((*MockUserService)(nil).ListAdmins), ctx, in)
 }
 
-// MultiGetShops mocks base method.
-func (m *MockUserService) MultiGetShops(ctx context.Context, in *service.MultiGetShopsInput) (entity.Shops, error) {
+// MultiGetAdmins mocks base method.
+func (m *MockUserService) MultiGetAdmins(ctx context.Context, in *service.MultiGetAdminsInput) (entity.Admins, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "MultiGetShops", ctx, in)
-	ret0, _ := ret[0].(entity.Shops)
+	ret := m.ctrl.Call(m, "MultiGetAdmins", ctx, in)
+	ret0, _ := ret[0].(entity.Admins)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// MultiGetShops indicates an expected call of MultiGetShops.
-func (mr *MockUserServiceMockRecorder) MultiGetShops(ctx, in interface{}) *gomock.Call {
+// MultiGetAdmins indicates an expected call of MultiGetAdmins.
+func (mr *MockUserServiceMockRecorder) MultiGetAdmins(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetShops", reflect.TypeOf((*MockUserService)(nil).MultiGetShops), ctx, in)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetAdmins", reflect.TypeOf((*MockUserService)(nil).MultiGetAdmins), ctx, in)
 }
 
 // RefreshAdminToken mocks base method.

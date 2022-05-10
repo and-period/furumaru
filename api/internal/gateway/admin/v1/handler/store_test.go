@@ -124,8 +124,8 @@ func TestGetStore(t *testing.T) {
 	staffsIn := &store.ListStaffsByStoreIDInput{
 		StoreID: 1,
 	}
-	shopsIn := &user.MultiGetShopsInput{
-		ShopIDs: []string{"kSByoE6FetnPs5Byk3a9Zx", "kSByoE6FetnPs5Byk3a9Za"},
+	adminsIn := &user.MultiGetAdminsInput{
+		AdminIDs: []string{"kSByoE6FetnPs5Byk3a9Zx", "kSByoE6FetnPs5Byk3a9Za"},
 	}
 	s := &sentity.Store{
 		ID:           1,
@@ -146,7 +146,7 @@ func TestGetStore(t *testing.T) {
 			Role:    sentity.StoreRoleEditor,
 		},
 	}
-	shops := uentity.Shops{
+	admins := uentity.Admins{
 		{
 			ID:        "kSByoE6FetnPs5Byk3a9Zx",
 			Lastname:  "&.",
@@ -172,7 +172,7 @@ func TestGetStore(t *testing.T) {
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().GetStore(gomock.Any(), storeIn).Return(s, nil)
 				mocks.store.EXPECT().ListStaffsByStoreID(gomock.Any(), staffsIn).Return(staffs, nil)
-				mocks.user.EXPECT().MultiGetShops(gomock.Any(), shopsIn).Return(shops, nil)
+				mocks.user.EXPECT().MultiGetAdmins(gomock.Any(), adminsIn).Return(admins, nil)
 			},
 			storeID: "1",
 			expect: &testResponse{
@@ -236,7 +236,7 @@ func TestGetStore(t *testing.T) {
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().GetStore(gomock.Any(), storeIn).Return(nil, errmock)
 				mocks.store.EXPECT().ListStaffsByStoreID(gomock.Any(), staffsIn).Return(staffs, nil)
-				mocks.user.EXPECT().MultiGetShops(gomock.Any(), shopsIn).Return(shops, nil)
+				mocks.user.EXPECT().MultiGetAdmins(gomock.Any(), adminsIn).Return(admins, nil)
 			},
 			storeID: "1",
 			expect: &testResponse{
@@ -255,11 +255,11 @@ func TestGetStore(t *testing.T) {
 			},
 		},
 		{
-			name: "failed to get shops",
+			name: "failed to get admins",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().GetStore(gomock.Any(), storeIn).Return(s, nil)
 				mocks.store.EXPECT().ListStaffsByStoreID(gomock.Any(), staffsIn).Return(staffs, nil)
-				mocks.user.EXPECT().MultiGetShops(gomock.Any(), shopsIn).Return(nil, errmock)
+				mocks.user.EXPECT().MultiGetAdmins(gomock.Any(), adminsIn).Return(nil, errmock)
 			},
 			storeID: "1",
 			expect: &testResponse{

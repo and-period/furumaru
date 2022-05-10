@@ -307,12 +307,17 @@ func TestAdmin_UpdateEmail(t *testing.T) {
 
 func testAdmin(id, email string, now time.Time) *entity.Admin {
 	return &entity.Admin{
-		ID:        id,
-		CognitoID: id,
-		Email:     email,
-		Role:      entity.AdminRoleDeveloper,
-		CreatedAt: now,
-		UpdatedAt: now,
+		ID:            id,
+		CognitoID:     id,
+		Email:         email,
+		Lastname:      "&.",
+		Firstname:     "スタッフ",
+		LastnameKana:  "あんどどっと",
+		FirstnameKana: "すたっふ",
+		ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+		Role:          entity.AdminRoleAdministrator,
+		CreatedAt:     now,
+		UpdatedAt:     now,
 	}
 }
 
