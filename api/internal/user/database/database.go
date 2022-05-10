@@ -43,6 +43,8 @@ func NewDatabase(params *Params) *Database {
  * interface
  */
 type Admin interface {
+	List(ctx context.Context, params *ListAdminsParams, fields ...string) (entity.Admins, error)
+	MultiGet(ctx context.Context, adminIDs []string, fields ...string) (entity.Admins, error)
 	Get(ctx context.Context, adminID string, fields ...string) (*entity.Admin, error)
 	GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.Admin, error)
 	Create(ctx context.Context, admin *entity.Admin) error
@@ -62,6 +64,11 @@ type User interface {
 /**
  * params
  */
+type ListAdminsParams struct {
+	Roles  []entity.AdminRole
+	Limit  int
+	Offset int
+}
 
 /**
  * private methods

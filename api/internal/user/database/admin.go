@@ -30,6 +30,41 @@ func NewAdmin(db *database.Client) Admin {
 	}
 }
 
+func (s *admin) List(ctx context.Context, params *ListAdminsParams, fields ...string) (entity.Admins, error) {
+	var admins entity.Admins
+	if len(fields) == 0 {
+		fields = adminFields
+	}
+
+	stmt := s.db.DB.WithContext(ctx).Table(adminTable).Select(fields)
+	if len(params.Roles) > 0 {
+		stmt = stmt.Where("role IN (?)", params.Roles)
+	}
+	if params.Limit > 0 {
+		stmt = stmt.Limit(params.Limit)
+	}
+	if params.Offset > 0 {
+		stmt = stmt.Offset(params.Offset)
+	}
+
+	err := stmt.Find(&admins).Error
+	return admins, dbError(err)
+}
+
+func (s *admin) MultiGet(ctx context.Context, adminIDs []string, fields ...string) (entity.Admins, error) {
+	var admins entity.Admins
+	if len(fields) == 0 {
+		fields = adminFields
+	}
+
+	stmt := s.db.DB.WithContext(ctx).
+		Table(adminTable).Select(fields).
+		Where("id IN (?)", adminIDs)
+
+	err := stmt.Find(&admins).Error
+	return admins, dbError(err)
+}
+
 func (a *admin) Get(ctx context.Context, adminID string, fields ...string) (*entity.Admin, error) {
 	var admin *entity.Admin
 	if len(fields) == 0 {

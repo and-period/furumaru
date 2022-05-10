@@ -16,6 +16,149 @@ func TestAdmin(t *testing.T) {
 	assert.NotNil(t, NewAdmin(nil))
 }
 
+func TestAdmin_List(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, adminTable)
+	admins := make(entity.Admins, 2)
+	admins[0] = testAdmin("admin-id01", "test-admin01@and-period.jp", now())
+	admins[1] = testAdmin("admin-id02", "test-admin02@and-period.jp", now())
+	err = m.db.DB.Create(&admins).Error
+	require.NoError(t, err)
+
+	type args struct {
+		params *ListAdminsParams
+	}
+	type want struct {
+		admins entity.Admins
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListAdminsParams{
+					Roles: []entity.AdminRole{
+						entity.AdminRoleAdministrator,
+						entity.AdminRoleProducer,
+					},
+					Limit:  1,
+					Offset: 1,
+				},
+			},
+			want: want{
+				admins: admins[1:],
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &admin{db: m.db, now: now}
+			actual, err := db.List(ctx, tt.args.params)
+			if tt.want.hasErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			fillIgnoreAdminsField(actual, now())
+			assert.ElementsMatch(t, tt.want.admins, actual)
+		})
+	}
+}
+
+func TestAdmin_MultiGet(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, adminTable)
+	admins := make(entity.Admins, 2)
+	admins[0] = testAdmin("admin-id01", "test-admin01@and-period.jp", now())
+	admins[1] = testAdmin("admin-id02", "test-admin02@and-period.jp", now())
+	err = m.db.DB.Create(&admins).Error
+	require.NoError(t, err)
+
+	type args struct {
+		adminIDs []string
+	}
+	type want struct {
+		admins entity.Admins
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				adminIDs: []string{"admin-id01", "admin-id02"},
+			},
+			want: want{
+				admins: admins,
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &admin{db: m.db, now: now}
+			actual, err := db.MultiGet(ctx, tt.args.adminIDs)
+			if tt.want.hasErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			fillIgnoreAdminsField(actual, now())
+			assert.ElementsMatch(t, tt.want.admins, actual)
+		})
+	}
+}
+
 func TestAdmin_Get(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -327,4 +470,10 @@ func fillIgnoreAdminField(a *entity.Admin, now time.Time) {
 	}
 	a.CreatedAt = now
 	a.UpdatedAt = now
+}
+
+func fillIgnoreAdminsField(as entity.Admins, now time.Time) {
+	for i := range as {
+		fillIgnoreAdminField(as[i], now)
+	}
 }
