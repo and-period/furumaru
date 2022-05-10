@@ -108,9 +108,6 @@ jobs:
     - name: Build user gateway
       run: make build SERVICE=gateway/user
 
-    - name: Build shop gateway
-      run: make build SERVICE=gateway/shop
-
     - name: Build admin gateway
       run: make build SERVICE=gateway/admin
 

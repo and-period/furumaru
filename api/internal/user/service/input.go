@@ -19,13 +19,27 @@ type RefreshAdminTokenInput struct {
 	RefreshToken string `validate:"required"`
 }
 
+type ListAdminsInput struct {
+	Roles  []entity.AdminRole `validate:""`
+	Limit  int64              `validate:"required,max=200"`
+	Offset int64              `validate:"min=0"`
+}
+
+type MultiGetAdminsInput struct {
+	AdminIDs []string `validate:"min=1,dive,required"`
+}
+
 type GetAdminInput struct {
 	AdminID string `validate:"required"`
 }
 
 type CreateAdminInput struct {
-	Email string           `validate:"required,max=256,email"`
-	Role  entity.AdminRole `validate:""`
+	Lastname      string           `validate:"required,max=16"`
+	Firstname     string           `validate:"required,max=16"`
+	LastnameKana  string           `validate:"required,max=32,hiragana"`
+	FirstnameKana string           `validate:"required,max=32,hiragana"`
+	Email         string           `validate:"required,max=256,email"`
+	Role          entity.AdminRole `validate:""`
 }
 
 type UpdateAdminEmailInput struct {
@@ -43,27 +57,6 @@ type UpdateAdminPasswordInput struct {
 	OldPassword          string `validate:"required"`
 	NewPassword          string `validate:"min=8,max=32,password"`
 	PasswordConfirmation string `validate:"required,eqfield=NewPassword"`
-}
-
-type ListShopsInput struct {
-	Limit  int64 `validate:"required,max=200"`
-	Offset int64 `validate:"min=0"`
-}
-
-type MultiGetShopsInput struct {
-	ShopIDs []string `validate:"min=1,dive,required"`
-}
-
-type GetShopInput struct {
-	ShopID string `validate:"required"`
-}
-
-type CreateShopInput struct {
-	Email         string `validate:"required,max=256,email"`
-	Lastname      string `validate:"required,max=16"`
-	Firstname     string `validate:"required,max=16"`
-	LastnameKana  string `validate:"required,max=32,hiragana"`
-	FirstnameKana string `validate:"required,max=32,hiragana"`
 }
 
 type SignInUserInput struct {

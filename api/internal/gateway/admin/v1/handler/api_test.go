@@ -209,6 +209,7 @@ func TestSetAuth(t *testing.T) {
 	w := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(w)
 	ctx.Request = &http.Request{Header: http.Header{}}
-	setAuth(ctx, "admin-id", service.AdminRoleDeveloper)
+	setAuth(ctx, "admin-id", service.AdminRoleAdministrator)
 	assert.Equal(t, "admin-id", getAdminID(ctx))
+	assert.Equal(t, service.AdminRoleAdministrator, getRole(ctx))
 }

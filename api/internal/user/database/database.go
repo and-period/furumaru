@@ -29,14 +29,12 @@ type Params struct {
 
 type Database struct {
 	Admin Admin
-	Shop  Shop
 	User  User
 }
 
 func NewDatabase(params *Params) *Database {
 	return &Database{
 		Admin: NewAdmin(params.Database),
-		Shop:  NewShop(params.Database),
 		User:  NewUser(params.Database),
 	}
 }
@@ -49,13 +47,6 @@ type Admin interface {
 	GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.Admin, error)
 	Create(ctx context.Context, admin *entity.Admin) error
 	UpdateEmail(ctx context.Context, adminID, email string) error
-}
-
-type Shop interface {
-	List(ctx context.Context, params *ListShopsParams, fields ...string) (entity.Shops, error)
-	MultiGet(ctx context.Context, shopIDs []string, fields ...string) (entity.Shops, error)
-	Get(ctx context.Context, shopID string, fields ...string) (*entity.Shop, error)
-	Create(ctx context.Context, shop *entity.Shop) error
 }
 
 type User interface {
@@ -71,10 +62,6 @@ type User interface {
 /**
  * params
  */
-type ListShopsParams struct {
-	Limit  int
-	Offset int
-}
 
 /**
  * private methods

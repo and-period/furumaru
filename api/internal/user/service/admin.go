@@ -10,6 +10,20 @@ import (
 	"github.com/and-period/marche/api/pkg/uuid"
 )
 
+func (s *userService) ListAdmins(ctx context.Context, in *ListAdminsInput) (entity.Admins, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, userError(err)
+	}
+	return nil, ErrNotImplemented
+}
+
+func (s *userService) MultiGetAdmins(ctx context.Context, in *MultiGetAdminsInput) (entity.Admins, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, userError(err)
+	}
+	return nil, ErrNotImplemented
+}
+
 func (s *userService) GetAdmin(ctx context.Context, in *GetAdminInput) (*entity.Admin, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, userError(err)
@@ -27,7 +41,12 @@ func (s *userService) CreateAdmin(ctx context.Context, in *CreateAdminInput) (*e
 		return nil, fmt.Errorf("%w: %s", ErrInvalidArgument, err.Error())
 	}
 	adminID := uuid.Base58Encode(uuid.New())
-	admin := entity.NewAdmin(adminID, adminID, in.Email, in.Role)
+	admin := entity.NewAdmin(
+		adminID, adminID,
+		in.Lastname, in.Firstname,
+		in.LastnameKana, in.FirstnameKana,
+		in.Email, in.Role,
+	)
 	if err := s.db.Admin.Create(ctx, admin); err != nil {
 		return nil, userError(err)
 	}

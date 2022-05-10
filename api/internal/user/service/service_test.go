@@ -27,13 +27,11 @@ type mocks struct {
 	storage   *mock_storage.MockBucket
 	db        *dbMocks
 	adminAuth *mock_cognito.MockClient
-	shopAuth  *mock_cognito.MockClient
 	userAuth  *mock_cognito.MockClient
 }
 
 type dbMocks struct {
 	Admin *mock_database.MockAdmin
-	Shop  *mock_database.MockShop
 	User  *mock_database.MockUser
 }
 
@@ -58,7 +56,6 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 		storage:   mock_storage.NewMockBucket(ctrl),
 		db:        newDBMocks(ctrl),
 		adminAuth: mock_cognito.NewMockClient(ctrl),
-		shopAuth:  mock_cognito.NewMockClient(ctrl),
 		userAuth:  mock_cognito.NewMockClient(ctrl),
 	}
 }
@@ -66,7 +63,6 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
 		Admin: mock_database.NewMockAdmin(ctrl),
-		Shop:  mock_database.NewMockShop(ctrl),
 		User:  mock_database.NewMockUser(ctrl),
 	}
 }
@@ -86,11 +82,9 @@ func newUserService(mocks *mocks, opts ...testOption) *userService {
 		storage:     mocks.storage,
 		db: &database.Database{
 			Admin: mocks.db.Admin,
-			Shop:  mocks.db.Shop,
 			User:  mocks.db.User,
 		},
 		adminAuth: mocks.adminAuth,
-		shopAuth:  mocks.shopAuth,
 		userAuth:  mocks.userAuth,
 	}
 }

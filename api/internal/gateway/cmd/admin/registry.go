@@ -138,11 +138,6 @@ func newUserService(ctx context.Context, conf *config, opts *options) (user.User
 		AppClientID:     conf.CognitoAdminClientID,
 		AppClientSecret: conf.CognitoAdminClientSecret,
 	}
-	shopAuthParams := &cognito.Params{
-		UserPoolID:      conf.CognitoShopPoolID,
-		AppClientID:     conf.CognitoShopClientID,
-		AppClientSecret: conf.CognitoShopClientSecret,
-	}
 	userAuthParams := &cognito.Params{
 		UserPoolID:      conf.CognitoUserPoolID,
 		AppClientID:     conf.CognitoUserClientID,
@@ -153,7 +148,6 @@ func newUserService(ctx context.Context, conf *config, opts *options) (user.User
 	params := &user.Params{
 		Database:  userdb.NewDatabase(dbParams),
 		AdminAuth: cognito.NewClient(awscfg, adminAuthParams),
-		ShopAuth:  cognito.NewClient(awscfg, shopAuthParams),
 		UserAuth:  cognito.NewClient(awscfg, userAuthParams),
 	}
 	return user.NewUserService(

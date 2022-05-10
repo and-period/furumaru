@@ -10,7 +10,7 @@ adminMeResponse:
     role:
       type: integer
       format: int32
-      description: 権限 (1:管理者, 2:開発者, 3:運用者)
+      description: 権限 (1:管理者, 2:生産者)
   required:
   - id
   - email

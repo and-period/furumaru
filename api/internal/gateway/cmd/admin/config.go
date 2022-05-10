@@ -33,9 +33,6 @@ type config struct {
 	CognitoAdminPoolID       string `envconfig:"COGNITO_Admin_POOL_ID" default:""`
 	CognitoAdminClientID     string `envconfig:"COGNITO_Admin_CLIENT_ID" default:""`
 	CognitoAdminClientSecret string `envconfig:"COGNITO_Admin_CLIENT_SECRET" default:""`
-	CognitoShopPoolID        string `envconfig:"COGNITO_SHOP_POOL_ID" default:""`
-	CognitoShopClientID      string `envconfig:"COGNITO_SHOP_CLIENT_ID" default:""`
-	CognitoShopClientSecret  string `envconfig:"COGNITO_SHOP_CLIENT_SECRET" default:""`
 	CognitoUserPoolID        string `envconfig:"COGNITO_USER_POOL_ID" default:""`
 	CognitoUserClientID      string `envconfig:"COGNITO_USER_CLIENT_ID" default:""`
 	CognitoUserClientSecret  string `envconfig:"COGNITO_USER_CLIENT_SECRET" default:""`
