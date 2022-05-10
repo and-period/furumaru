@@ -52,7 +52,10 @@ type Client interface {
 	// #############################################
 	// ユーザー関連 (管理者)
 	// #############################################
+	// ユーザー登録
 	AdminCreateUser(ctx context.Context, params *AdminCreateUserParams) error
+	// パスワード更新
+	AdminChangePassword(ctx context.Context, params *AdminChangePasswordParams) error
 }
 
 var (

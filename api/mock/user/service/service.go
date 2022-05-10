@@ -36,6 +36,21 @@ func (m *MockUserService) EXPECT() *MockUserServiceMockRecorder {
 	return m.recorder
 }
 
+// CreateAdmin mocks base method.
+func (m *MockUserService) CreateAdmin(ctx context.Context, in *service.CreateAdminInput) (*entity.Admin, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateAdmin", ctx, in)
+	ret0, _ := ret[0].(*entity.Admin)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateAdmin indicates an expected call of CreateAdmin.
+func (mr *MockUserServiceMockRecorder) CreateAdmin(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAdmin", reflect.TypeOf((*MockUserService)(nil).CreateAdmin), ctx, in)
+}
+
 // CreateShop mocks base method.
 func (m *MockUserService) CreateShop(ctx context.Context, in *service.CreateShopInput) (*entity.Shop, error) {
 	m.ctrl.T.Helper()
