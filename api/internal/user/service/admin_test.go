@@ -4,12 +4,156 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/marche/api/internal/user/database"
 	"github.com/and-period/marche/api/internal/user/entity"
 	"github.com/and-period/marche/api/pkg/cognito"
 	"github.com/and-period/marche/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
+
+func TestListAdmins(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
+	admins := entity.Admins{
+		{
+			ID:            "admin-id",
+			CognitoID:     "cognito-id",
+			Lastname:      "&.",
+			Firstname:     "スタッフ",
+			LastnameKana:  "あんどどっと",
+			FirstnameKana: "すたっふ",
+			Email:         "test-admin@and-period.jp",
+			Role:          entity.AdminRoleAdministrator,
+			CreatedAt:     now,
+			UpdatedAt:     now,
+		},
+	}
+	params := &database.ListAdminsParams{
+		Roles:  []entity.AdminRole{entity.AdminRoleAdministrator},
+		Limit:  30,
+		Offset: 0,
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *ListAdminsInput
+		expect    entity.Admins
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Admin.EXPECT().List(ctx, params).Return(admins, nil)
+			},
+			input: &ListAdminsInput{
+				Roles:  []entity.AdminRole{entity.AdminRoleAdministrator},
+				Limit:  30,
+				Offset: 0,
+			},
+			expect:    admins,
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &ListAdminsInput{},
+			expect:    nil,
+			expectErr: ErrInvalidArgument,
+		},
+		{
+			name: "failed to get admins",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Admin.EXPECT().List(ctx, params).Return(nil, errmock)
+			},
+			input: &ListAdminsInput{
+				Roles:  []entity.AdminRole{entity.AdminRoleAdministrator},
+				Limit:  30,
+				Offset: 0,
+			},
+			expect:    nil,
+			expectErr: ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+			actual, err := service.ListAdmins(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.ElementsMatch(t, tt.expect, actual)
+		}))
+	}
+}
+
+func TestMultiGetAdmins(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
+	admins := entity.Admins{
+		{
+			ID:            "admin-id",
+			CognitoID:     "cognito-id",
+			Lastname:      "&.",
+			Firstname:     "スタッフ",
+			LastnameKana:  "あんどどっと",
+			FirstnameKana: "すたっふ",
+			Email:         "test-admin@and-period.jp",
+			Role:          entity.AdminRoleAdministrator,
+			CreatedAt:     now,
+			UpdatedAt:     now,
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *MultiGetAdminsInput
+		expect    entity.Admins
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Admin.EXPECT().MultiGet(ctx, []string{"admin-id"}).Return(admins, nil)
+			},
+			input: &MultiGetAdminsInput{
+				AdminIDs: []string{"admin-id"},
+			},
+			expect:    admins,
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &MultiGetAdminsInput{},
+			expect:    nil,
+			expectErr: ErrInvalidArgument,
+		},
+		{
+			name: "failed to get admins",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Admin.EXPECT().MultiGet(ctx, []string{"admin-id"}).Return(nil, errmock)
+			},
+			input: &MultiGetAdminsInput{
+				AdminIDs: []string{"admin-id"},
+			},
+			expect:    nil,
+			expectErr: ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+			actual, err := service.MultiGetAdmins(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.ElementsMatch(t, tt.expect, actual)
+		}))
+	}
+}
 
 func TestGetAdmin(t *testing.T) {
 	t.Parallel()

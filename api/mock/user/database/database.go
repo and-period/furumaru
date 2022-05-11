@@ -8,6 +8,7 @@ import (
 	context "context"
 	reflect "reflect"
 
+	database "github.com/and-period/marche/api/internal/user/database"
 	entity "github.com/and-period/marche/api/internal/user/entity"
 	gomock "github.com/golang/mock/gomock"
 )
@@ -87,6 +88,46 @@ func (mr *MockAdminMockRecorder) GetByCognitoID(ctx, cognitoID interface{}, fiel
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, cognitoID}, fields...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByCognitoID", reflect.TypeOf((*MockAdmin)(nil).GetByCognitoID), varargs...)
+}
+
+// List mocks base method.
+func (m *MockAdmin) List(ctx context.Context, params *database.ListAdminsParams, fields ...string) (entity.Admins, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, params}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "List", varargs...)
+	ret0, _ := ret[0].(entity.Admins)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockAdminMockRecorder) List(ctx, params interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, params}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockAdmin)(nil).List), varargs...)
+}
+
+// MultiGet mocks base method.
+func (m *MockAdmin) MultiGet(ctx context.Context, adminIDs []string, fields ...string) (entity.Admins, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, adminIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGet", varargs...)
+	ret0, _ := ret[0].(entity.Admins)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGet indicates an expected call of MultiGet.
+func (mr *MockAdminMockRecorder) MultiGet(ctx, adminIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, adminIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockAdmin)(nil).MultiGet), varargs...)
 }
 
 // UpdateEmail mocks base method.

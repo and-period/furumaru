@@ -18,10 +18,12 @@ import (
 	"time"
 
 	"github.com/and-period/marche/api/internal/gateway/admin/v1/service"
+	uentity "github.com/and-period/marche/api/internal/user/entity"
 	mock_storage "github.com/and-period/marche/api/mock/pkg/storage"
 	mock_store "github.com/and-period/marche/api/mock/store/service"
 	mock_user "github.com/and-period/marche/api/mock/user/service"
 	"github.com/and-period/marche/api/pkg/jst"
+	"github.com/and-period/marche/api/pkg/rbac"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -70,12 +72,18 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 }
 
 func newAPIV1Handler(mocks *mocks, opts *testOptions) APIV1Handler {
+	dir := getRBACDirectory()
+	model := filepath.Join(dir, "model.conf")
+	policy := filepath.Join(dir, "policy.csv")
+	enforcer, _ := rbac.NewEnforcer(model, policy)
+
 	return &apiV1Handler{
 		now:         opts.now,
 		logger:      zap.NewNop(),
 		sharedGroup: &singleflight.Group{},
 		waitGroup:   &sync.WaitGroup{},
 		storage:     mocks.storage,
+		enforcer:    enforcer,
 		user:        mocks.user,
 		store:       mocks.store,
 	}
@@ -83,6 +91,15 @@ func newAPIV1Handler(mocks *mocks, opts *testOptions) APIV1Handler {
 
 func newRoutes(h APIV1Handler, r *gin.Engine) {
 	h.Routes(r.Group(""))
+}
+
+func getRBACDirectory() string {
+	dir, _ := os.Getwd()
+	strs := strings.Split(dir, "api/internal")
+	if len(strs) == 0 {
+		return ""
+	}
+	return filepath.Join(strs[0], "/api/config/gateway/admin/rbac")
 }
 
 func testHTTP(
@@ -109,8 +126,8 @@ func testHTTP(
 	newRoutes(h, r)
 	setup(t, mocks, ctrl)
 
-	// auth := &uentity.AdminAuth{AdminID: idmock, Role: uentity.AdminRoleAdministrator}
-	// mocks.user.EXPECT().GetAdminAuth(gomock.Any(), gomock.Any()).Return(auth, nil).MaxTimes(1)
+	auth := &uentity.AdminAuth{AdminID: idmock, Role: uentity.AdminRoleAdministrator}
+	mocks.user.EXPECT().GetAdminAuth(gomock.Any(), gomock.Any()).Return(auth, nil).MaxTimes(1)
 
 	// test
 	r.ServeHTTP(w, req)

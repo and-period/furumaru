@@ -60,7 +60,7 @@ func NewAdmin(id, cognitoID, lastname, firstname, lastnameKana, firstnameKana, e
 }
 
 func (a *Admin) Name() string {
-	return strings.Join([]string{a.Lastname, a.Firstname}, " ")
+	return strings.TrimSpace(strings.Join([]string{a.Lastname, a.Firstname}, " "))
 }
 
 func (as Admins) Map() map[string]*Admin {

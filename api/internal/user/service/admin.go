@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/and-period/marche/api/internal/user/database"
 	"github.com/and-period/marche/api/internal/user/entity"
 	"github.com/and-period/marche/api/pkg/cognito"
 	"github.com/and-period/marche/api/pkg/random"
@@ -14,14 +15,21 @@ func (s *userService) ListAdmins(ctx context.Context, in *ListAdminsInput) (enti
 	if err := s.validator.Struct(in); err != nil {
 		return nil, userError(err)
 	}
-	return nil, ErrNotImplemented
+	params := &database.ListAdminsParams{
+		Roles:  in.Roles,
+		Limit:  int(in.Limit),
+		Offset: int(in.Offset),
+	}
+	admins, err := s.db.Admin.List(ctx, params)
+	return admins, userError(err)
 }
 
 func (s *userService) MultiGetAdmins(ctx context.Context, in *MultiGetAdminsInput) (entity.Admins, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, userError(err)
 	}
-	return nil, ErrNotImplemented
+	admins, err := s.db.Admin.MultiGet(ctx, in.AdminIDs)
+	return admins, userError(err)
 }
 
 func (s *userService) GetAdmin(ctx context.Context, in *GetAdminInput) (*entity.Admin, error) {

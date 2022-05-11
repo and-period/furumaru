@@ -7,3 +7,5 @@ p, upload, /v1/upload/*, POST, allow
 g, admin, store_write
 g, admin, store_read
 g, admin, upload
+g, producer, store_read
+g, producer, upload
