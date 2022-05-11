@@ -66,15 +66,7 @@ func (s *userService) CreateUserWithOAuth(ctx context.Context, in *CreateUserWit
 }
 
 func (s *userService) InitializeUser(ctx context.Context, in *InitializeUserInput) error {
-	if err := s.validator.Struct(in); err != nil {
-		return userError(err)
-	}
-	u, err := s.db.User.Get(ctx, in.UserID)
-	if err != nil {
-		return userError(err)
-	}
-	err = s.db.User.InitializeUser(ctx, u.ID, in.AccountID, in.Username)
-	return userError(err)
+	return ErrNotImplemented
 }
 
 func (s *userService) UpdateUserEmail(ctx context.Context, in *UpdateUserEmailInput) error {

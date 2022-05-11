@@ -255,20 +255,6 @@ func (mr *MockUserMockRecorder) GetByEmail(ctx, email interface{}, fields ...int
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByEmail", reflect.TypeOf((*MockUser)(nil).GetByEmail), varargs...)
 }
 
-// InitializeUser mocks base method.
-func (m *MockUser) InitializeUser(ctx context.Context, userID, accountID, username string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "InitializeUser", ctx, userID, accountID, username)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// InitializeUser indicates an expected call of InitializeUser.
-func (mr *MockUserMockRecorder) InitializeUser(ctx, userID, accountID, username interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InitializeUser", reflect.TypeOf((*MockUser)(nil).InitializeUser), ctx, userID, accountID, username)
-}
-
 // UpdateEmail mocks base method.
 func (m *MockUser) UpdateEmail(ctx context.Context, userID, email string) error {
 	m.ctrl.T.Helper()

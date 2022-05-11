@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/and-period/marche/api/internal/user/entity"
@@ -114,43 +113,6 @@ func (u *user) UpdateVerified(ctx context.Context, userID string) error {
 		err = tx.WithContext(ctx).
 			Table(userTable).
 			Where("id = ?", current.ID).
-			Updates(params).Error
-		return nil, err
-	})
-	return dbError(err)
-}
-
-func (u *user) InitializeUser(ctx context.Context, userID, accountID, userName string) error {
-	_, err := u.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
-		var current *entity.User
-		err := tx.WithContext(ctx).
-			Table(userTable).Select("id").
-			Where("id != ?", userID).
-			Where("account_id = ?", accountID).
-			First(&current).Error
-		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, err
-		}
-		if current.ID != "" {
-			return nil, ErrAlreadyExists
-		}
-
-		err = tx.WithContext(ctx).
-			Table(userTable).Select("id").
-			Where("id = ?", userID).
-			First(&current).Error
-		if err != nil {
-			return nil, ErrNotFound
-		}
-
-		params := map[string]interface{}{
-			"account_id": accountID,
-			"username":   userName,
-			"updated_at": u.now(),
-		}
-		err = tx.WithContext(ctx).
-			Table(userTable).
-			Where("id = ?", userID).
 			Updates(params).Error
 		return nil, err
 	})
