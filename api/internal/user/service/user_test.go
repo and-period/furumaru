@@ -537,7 +537,7 @@ func TestInitializeUser(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
-				mocks.db.User.EXPECT().InitializeUser(ctx, "user-id", "account-id", "username").Return(nil)
+				mocks.db.User.EXPECT().UpdateAccountInfo(ctx, "user-id", "account-id", "username").Return(nil)
 			},
 			input: &InitializeUserInput{
 				UserID:    "user-id",
@@ -556,7 +556,7 @@ func TestInitializeUser(t *testing.T) {
 			name: "failed to initilaze user",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
-				mocks.db.User.EXPECT().InitializeUser(ctx, "user-id", "account-id", "username").Return(errmock)
+				mocks.db.User.EXPECT().UpdateAccountInfo(ctx, "user-id", "account-id", "username").Return(errmock)
 			},
 			input: &InitializeUserInput{
 				UserID:    "user-id",
