@@ -461,7 +461,7 @@ func TestUser_Initialize(t *testing.T) {
 			tt.setup(ctx, t, m)
 
 			db := &user{db: m.db, now: now}
-			err = db.InitializeUser(ctx, tt.args.userID, tt.args.accountID, tt.args.userName)
+			err = db.UpdateAccountInfo(ctx, tt.args.userID, tt.args.accountID, tt.args.userName)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}

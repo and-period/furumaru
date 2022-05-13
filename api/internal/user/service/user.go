@@ -69,11 +69,8 @@ func (s *userService) InitializeUser(ctx context.Context, in *InitializeUserInpu
 	if err := s.validator.Struct(in); err != nil {
 		return userError(err)
 	}
-	u, err := s.db.User.Get(ctx, in.UserID)
-	if err != nil {
-		return userError(err)
-	}
-	err = s.db.User.InitializeUser(ctx, u.ID, in.AccountID, in.Username)
+
+	err := s.db.User.UpdateAccountInfo(ctx, in.UserID, in.AccountID, in.Username)
 	return userError(err)
 }
 
