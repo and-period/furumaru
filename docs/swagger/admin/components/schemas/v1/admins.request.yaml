@@ -1,3 +1,40 @@
+createAdminRequest:
+  type: object
+  properties:
+    email:
+      type: string
+      format: email
+      description: メールアドレス
+    role:
+      type: integer
+      format: int32
+      description: 権限 (1:管理者, 2:生産者)
+    lastname:
+      type: string
+      description: 姓
+    firstname:
+      type: string
+      description: 名
+    lastnameKana:
+      type: string
+      description: 姓(かな)
+    firstnameKana:
+      type: string
+      description: 名(かな)
+  required:
+  - email
+  - role
+  - lastname
+  - firstname
+  - lastnameKana
+  - firstnameKana
+  example:
+    email: 'test-user@and-period.jp'
+    role: 1
+    lastname: '&.'
+    firstname: '管理者'
+    lastnameKana: 'あんどどっと'
+    firstnameKana: 'かんりしゃ'
 updateAdminEmailRequest:
   type: object
   properties:
