@@ -51,7 +51,9 @@ func (s *userService) VerifyUser(ctx context.Context, in *user.VerifyUserInput) 
 	return exception.InternalError(err)
 }
 
-func (s *userService) CreateUserWithOAuth(ctx context.Context, in *user.CreateUserWithOAuthInput) (*entity.User, error) {
+func (s *userService) CreateUserWithOAuth(
+	ctx context.Context, in *user.CreateUserWithOAuthInput,
+) (*entity.User, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
