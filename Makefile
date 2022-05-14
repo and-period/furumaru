@@ -11,7 +11,6 @@ setup: build install swagger
 install: migrate
 	docker-compose run --rm swagger_generator yarn
 	docker-compose run --rm user_web yarn
-	docker-compose run --rm shop_web yarn
 	docker-compose run --rm admin_web yarn
 
 build:
@@ -38,7 +37,7 @@ logs:
 .PHONY: start-web start-api start-swagger start-test
 
 start-web:
-	docker-compose up user_web shop_web admin_web
+	docker-compose up user_web admin_web
 
 start-api: migrate
 	docker-compose up user_gateway shop_gateway admin_gateway mysql_test
@@ -57,7 +56,6 @@ start-test:
 swagger:
 	docker-compose run --rm swagger_generator yarn generate
 	docker-compose run --rm user_web yarn lintfix
-	docker-compose run --rm shop_web yarn lintfix
 	docker-compose run --rm admin_web yarn lintfix
 
 migrate:
