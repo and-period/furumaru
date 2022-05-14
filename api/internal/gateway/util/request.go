@@ -1,14 +1,11 @@
 package util
 
 import (
-	"errors"
 	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 )
-
-var errNotFoundQuery = errors.New("this query is not found")
 
 func GetParam(ctx *gin.Context, param string) string {
 	return ctx.Param(param)
