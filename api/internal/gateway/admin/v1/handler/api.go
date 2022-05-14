@@ -91,6 +91,8 @@ func NewAPIV1Handler(params *Params, opts ...Option) APIV1Handler {
  */
 func (h *apiV1Handler) Routes(rg *gin.RouterGroup) {
 	v1 := rg.Group("/v1")
+	h.authRoutes(v1.Group("/auth"))
+	h.adminRoutes(v1.Group("/admins"))
 	h.storeRoutes(v1.Group("/stores"))
 	h.uploadRoutes(v1.Group("/upload"))
 }
