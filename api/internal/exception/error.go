@@ -72,6 +72,7 @@ func validationError(err error) error {
 func dbError(err error) error {
 	const prefix = "database"
 
+	//nolint:gocritic
 	switch err := err.(type) {
 	case *mysql.MySQLError:
 		if err.Number == 1062 {

@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/marche/api/internal/store/entity"
 )
 
+//nolint:revive
 type StoreService interface {
 	ListStaffsByStoreID(ctx context.Context, in *ListStaffsByStoreIDInput) (entity.Staffs, error)
 	ListStores(ctx context.Context, in *ListStoresInput) (entity.Stores, error)
