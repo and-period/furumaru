@@ -8,10 +8,10 @@ import (
 	"github.com/and-period/marche/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/marche/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/marche/api/internal/gateway/util"
+	"github.com/and-period/marche/api/internal/store"
 	sentity "github.com/and-period/marche/api/internal/store/entity"
-	store "github.com/and-period/marche/api/internal/store/service"
+	"github.com/and-period/marche/api/internal/user"
 	uentity "github.com/and-period/marche/api/internal/user/entity"
-	user "github.com/and-period/marche/api/internal/user/service"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )

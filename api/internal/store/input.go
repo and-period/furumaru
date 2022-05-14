@@ -1,4 +1,4 @@
-package service
+package store
 
 type ListStoresInput struct {
 	Limit  int64 `validate:"required,max=200"`

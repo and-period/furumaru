@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 
@@ -17,9 +18,10 @@ import (
 )
 
 type app struct {
-	logger  *zap.Logger
-	server  http.Server
-	metrics http.Server
+	logger    *zap.Logger
+	server    http.Server
+	metrics   http.Server
+	waigGroup *sync.WaitGroup
 }
 
 func Exec() error {
@@ -74,6 +76,7 @@ func Exec() error {
 	if err = app.metrics.Stop(ectx); err != nil {
 		return err
 	}
+	app.waigGroup.Wait()
 	return eg.Wait()
 }
 
@@ -109,8 +112,9 @@ func newApp(ctx context.Context, conf *config) (*app, error) {
 	ms := http.NewMetricsServer(conf.MetricsPort)
 
 	return &app{
-		logger:  logger,
-		server:  hs,
-		metrics: ms,
+		logger:    logger,
+		server:    hs,
+		metrics:   ms,
+		waigGroup: reg.waitGroup,
 	}, nil
 }

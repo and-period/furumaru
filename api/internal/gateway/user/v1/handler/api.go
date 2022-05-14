@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/and-period/marche/api/internal/gateway/util"
-	store "github.com/and-period/marche/api/internal/store/service"
-	user "github.com/and-period/marche/api/internal/user/service"
+	"github.com/and-period/marche/api/internal/store"
+	"github.com/and-period/marche/api/internal/user"
 	"github.com/and-period/marche/api/pkg/jst"
 	"github.com/and-period/marche/api/pkg/storage"
 	"github.com/gin-gonic/gin"

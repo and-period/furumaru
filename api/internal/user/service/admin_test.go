@@ -4,6 +4,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/marche/api/internal/exception"
+	"github.com/and-period/marche/api/internal/user"
 	"github.com/and-period/marche/api/internal/user/database"
 	"github.com/and-period/marche/api/internal/user/entity"
 	"github.com/and-period/marche/api/pkg/cognito"
@@ -39,7 +41,7 @@ func TestListAdmins(t *testing.T) {
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *ListAdminsInput
+		input     *user.ListAdminsInput
 		expect    entity.Admins
 		expectErr error
 	}{
@@ -48,7 +50,7 @@ func TestListAdmins(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Admin.EXPECT().List(ctx, params).Return(admins, nil)
 			},
-			input: &ListAdminsInput{
+			input: &user.ListAdminsInput{
 				Roles:  []entity.AdminRole{entity.AdminRoleAdministrator},
 				Limit:  30,
 				Offset: 0,
@@ -59,22 +61,22 @@ func TestListAdmins(t *testing.T) {
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &ListAdminsInput{},
+			input:     &user.ListAdminsInput{},
 			expect:    nil,
-			expectErr: ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get admins",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Admin.EXPECT().List(ctx, params).Return(nil, errmock)
 			},
-			input: &ListAdminsInput{
+			input: &user.ListAdminsInput{
 				Roles:  []entity.AdminRole{entity.AdminRoleAdministrator},
 				Limit:  30,
 				Offset: 0,
 			},
 			expect:    nil,
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 
@@ -110,7 +112,7 @@ func TestMultiGetAdmins(t *testing.T) {
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *MultiGetAdminsInput
+		input     *user.MultiGetAdminsInput
 		expect    entity.Admins
 		expectErr error
 	}{
@@ -119,7 +121,7 @@ func TestMultiGetAdmins(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Admin.EXPECT().MultiGet(ctx, []string{"admin-id"}).Return(admins, nil)
 			},
-			input: &MultiGetAdminsInput{
+			input: &user.MultiGetAdminsInput{
 				AdminIDs: []string{"admin-id"},
 			},
 			expect:    admins,
@@ -128,20 +130,20 @@ func TestMultiGetAdmins(t *testing.T) {
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &MultiGetAdminsInput{},
+			input:     &user.MultiGetAdminsInput{},
 			expect:    nil,
-			expectErr: ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get admins",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Admin.EXPECT().MultiGet(ctx, []string{"admin-id"}).Return(nil, errmock)
 			},
-			input: &MultiGetAdminsInput{
+			input: &user.MultiGetAdminsInput{
 				AdminIDs: []string{"admin-id"},
 			},
 			expect:    nil,
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 
@@ -170,7 +172,7 @@ func TestGetAdmin(t *testing.T) {
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *GetAdminInput
+		input     *user.GetAdminInput
 		expect    *entity.Admin
 		expectErr error
 	}{
@@ -179,7 +181,7 @@ func TestGetAdmin(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(admin, nil)
 			},
-			input: &GetAdminInput{
+			input: &user.GetAdminInput{
 				AdminID: "admin-id",
 			},
 			expect:    admin,
@@ -188,20 +190,20 @@ func TestGetAdmin(t *testing.T) {
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &GetAdminInput{},
+			input:     &user.GetAdminInput{},
 			expect:    nil,
-			expectErr: ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get admin",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(nil, errmock)
 			},
-			input: &GetAdminInput{
+			input: &user.GetAdminInput{
 				AdminID: "admin-id",
 			},
 			expect:    nil,
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 
@@ -221,7 +223,7 @@ func TestCreateAdmin(t *testing.T) {
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *CreateAdminInput
+		input     *user.CreateAdminInput
 		expectErr error
 	}{
 		{
@@ -229,8 +231,26 @@ func TestCreateAdmin(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Admin.EXPECT().Create(ctx, gomock.Any()).Return(nil)
 				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(nil)
+				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(nil)
 			},
-			input: &CreateAdminInput{
+			input: &user.CreateAdminInput{
+				Lastname:      "&.",
+				Firstname:     "スタッフ",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "すたっふ",
+				Email:         "test-admin@and-period.jp",
+				Role:          entity.AdminRoleAdministrator,
+			},
+			expectErr: nil,
+		},
+		{
+			name: "success without notify register admin",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Admin.EXPECT().Create(ctx, gomock.Any()).Return(nil)
+				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(nil)
+				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(errmock)
+			},
+			input: &user.CreateAdminInput{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどどっと",
@@ -243,13 +263,13 @@ func TestCreateAdmin(t *testing.T) {
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &CreateAdminInput{},
-			expectErr: ErrInvalidArgument,
+			input:     &user.CreateAdminInput{},
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name:  "invalid role",
 			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &CreateAdminInput{
+			input: &user.CreateAdminInput{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどどっと",
@@ -257,14 +277,14 @@ func TestCreateAdmin(t *testing.T) {
 				Email:         "test-admin@and-preiod.jp",
 				Role:          entity.AdminRole(-1),
 			},
-			expectErr: ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to create admin",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Admin.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
 			},
-			input: &CreateAdminInput{
+			input: &user.CreateAdminInput{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどどっと",
@@ -272,7 +292,7 @@ func TestCreateAdmin(t *testing.T) {
 				Email:         "test-admin@and-period.jp",
 				Role:          entity.AdminRoleAdministrator,
 			},
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 		{
 			name: "failed to create auth admin",
@@ -280,7 +300,7 @@ func TestCreateAdmin(t *testing.T) {
 				mocks.db.Admin.EXPECT().Create(ctx, gomock.Any()).Return(nil)
 				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(errmock)
 			},
-			input: &CreateAdminInput{
+			input: &user.CreateAdminInput{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどどっと",
@@ -288,7 +308,7 @@ func TestCreateAdmin(t *testing.T) {
 				Email:         "test-admin@and-period.jp",
 				Role:          entity.AdminRoleAdministrator,
 			},
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 
@@ -312,7 +332,7 @@ func TestUpdateAdminEmail(t *testing.T) {
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *UpdateAdminEmailInput
+		input     *user.UpdateAdminEmailInput
 		expectErr error
 	}{
 		{
@@ -328,7 +348,7 @@ func TestUpdateAdminEmail(t *testing.T) {
 				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "cognito-id", "id", "email").Return(admin, nil)
 				mocks.adminAuth.EXPECT().ChangeEmail(ctx, params).Return(nil)
 			},
-			input: &UpdateAdminEmailInput{
+			input: &user.UpdateAdminEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				Email:       "test-other@and-period.jp",
 			},
@@ -337,19 +357,19 @@ func TestUpdateAdminEmail(t *testing.T) {
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &UpdateAdminEmailInput{},
-			expectErr: ErrInvalidArgument,
+			input:     &user.UpdateAdminEmailInput{},
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get username",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("", errmock)
 			},
-			input: &UpdateAdminEmailInput{
+			input: &user.UpdateAdminEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				Email:       "test-other@and-period.jp",
 			},
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -357,11 +377,11 @@ func TestUpdateAdminEmail(t *testing.T) {
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
 				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "cognito-id", "id", "email").Return(nil, errmock)
 			},
-			input: &UpdateAdminEmailInput{
+			input: &user.UpdateAdminEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				Email:       "test-other@and-period.jp",
 			},
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 		{
 			name: "failed to change email",
@@ -376,11 +396,11 @@ func TestUpdateAdminEmail(t *testing.T) {
 				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "cognito-id", "id", "email").Return(admin, nil)
 				mocks.adminAuth.EXPECT().ChangeEmail(ctx, params).Return(errmock)
 			},
-			input: &UpdateAdminEmailInput{
+			input: &user.UpdateAdminEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				Email:       "test-other@and-period.jp",
 			},
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 
@@ -403,7 +423,7 @@ func TestVerifyAdminEmail(t *testing.T) {
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *VerifyAdminEmailInput
+		input     *user.VerifyAdminEmailInput
 		expectErr error
 	}{
 		{
@@ -419,7 +439,7 @@ func TestVerifyAdminEmail(t *testing.T) {
 				mocks.adminAuth.EXPECT().ConfirmChangeEmail(ctx, params).Return("test-user@and-period.jp", nil)
 				mocks.db.Admin.EXPECT().UpdateEmail(ctx, "admin-id", "test-user@and-period.jp").Return(nil)
 			},
-			input: &VerifyAdminEmailInput{
+			input: &user.VerifyAdminEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				VerifyCode:  "123456",
 			},
@@ -428,19 +448,19 @@ func TestVerifyAdminEmail(t *testing.T) {
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &VerifyAdminEmailInput{},
-			expectErr: ErrInvalidArgument,
+			input:     &user.VerifyAdminEmailInput{},
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get username",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("", errmock)
 			},
-			input: &VerifyAdminEmailInput{
+			input: &user.VerifyAdminEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				VerifyCode:  "123456",
 			},
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -448,11 +468,11 @@ func TestVerifyAdminEmail(t *testing.T) {
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
 				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "cognito-id", "id").Return(nil, errmock)
 			},
-			input: &VerifyAdminEmailInput{
+			input: &user.VerifyAdminEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				VerifyCode:  "123456",
 			},
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 		{
 			name: "failed to confirm change email",
@@ -466,11 +486,11 @@ func TestVerifyAdminEmail(t *testing.T) {
 				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "cognito-id", "id").Return(admin, nil)
 				mocks.adminAuth.EXPECT().ConfirmChangeEmail(ctx, params).Return("", errmock)
 			},
-			input: &VerifyAdminEmailInput{
+			input: &user.VerifyAdminEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				VerifyCode:  "123456",
 			},
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 		{
 			name: "failed to update email",
@@ -485,11 +505,11 @@ func TestVerifyAdminEmail(t *testing.T) {
 				mocks.adminAuth.EXPECT().ConfirmChangeEmail(ctx, params).Return("test-user@and-period.jp", nil)
 				mocks.db.Admin.EXPECT().UpdateEmail(ctx, "admin-id", "test-user@and-period.jp").Return(errmock)
 			},
-			input: &VerifyAdminEmailInput{
+			input: &user.VerifyAdminEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				VerifyCode:  "123456",
 			},
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 
@@ -508,7 +528,7 @@ func TestUpdateAdminPassword(t *testing.T) {
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *UpdateAdminPasswordInput
+		input     *user.UpdateAdminPasswordInput
 		expectErr error
 	}{
 		{
@@ -521,7 +541,7 @@ func TestUpdateAdminPassword(t *testing.T) {
 				}
 				mocks.adminAuth.EXPECT().ChangePassword(ctx, params).Return(nil)
 			},
-			input: &UpdateAdminPasswordInput{
+			input: &user.UpdateAdminPasswordInput{
 				AccessToken:          "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				OldPassword:          "12345678",
 				NewPassword:          "12345678",
@@ -532,19 +552,19 @@ func TestUpdateAdminPassword(t *testing.T) {
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &UpdateAdminPasswordInput{},
-			expectErr: ErrInvalidArgument,
+			input:     &user.UpdateAdminPasswordInput{},
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name:  "invalid argument for password unmatch",
 			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &UpdateAdminPasswordInput{
+			input: &user.UpdateAdminPasswordInput{
 				AccessToken:          "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				OldPassword:          "12345678",
 				NewPassword:          "12345678",
 				PasswordConfirmation: "123456789",
 			},
-			expectErr: ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to change password",
@@ -556,13 +576,13 @@ func TestUpdateAdminPassword(t *testing.T) {
 				}
 				mocks.adminAuth.EXPECT().ChangePassword(ctx, params).Return(errmock)
 			},
-			input: &UpdateAdminPasswordInput{
+			input: &user.UpdateAdminPasswordInput{
 				AccessToken:          "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				OldPassword:          "12345678",
 				NewPassword:          "12345678",
 				PasswordConfirmation: "12345678",
 			},
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 

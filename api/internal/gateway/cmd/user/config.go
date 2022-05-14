@@ -30,6 +30,11 @@ type config struct {
 	AWSAccessKey            string `envconfig:"AWS_ACCESS_KEY" default:""`
 	AWSSecretKey            string `envconfig:"AWS_SECRET_KEY" default:""`
 	S3BucketName            string `envconfig:"S3_BUCKET_NAME" default:""`
+	SendGridAPIKey          string `envconfig:"SENDGRID_API_KEY" default:""`
+	SendGridTemplatePath    string `envconfig:"SENDGRID_TEMPLATE_PATH" default:""`
+	MailFromName            string `envconfig:"MAIL_FROM_NAME" default:""`
+	MailFromAddress         string `envconfig:"MAIL_FROM_ADDRESS" default:""`
+	UserWebURL              string `envconfig:"USER_WEB_URL" default:""`
 	CognitoUserPoolID       string `envconfig:"COGNITO_USER_POOL_ID" default:""`
 	CognitoUserClientID     string `envconfig:"COGNITO_USER_CLIENT_ID" default:""`
 	CognitoUserClientSecret string `envconfig:"COGNITO_USER_CLIENT_SECRET" default:""`

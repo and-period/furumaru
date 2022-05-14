@@ -35,7 +35,7 @@ func (c *client) AdminCreateUser(ctx context.Context, params *AdminCreateUserPar
 	if params.Password == "" {
 		// 一時的なパスワードを付与し、メール通知 (初回ログイン時にパスワード変更要求)
 		_, err := c.cognito.AdminCreateUser(ctx, in)
-		return authError(err)
+		return c.authError(err)
 	}
 	// 恒久的なパスワードを付与 (未通知、かつ初回ログイン時のパスワード変更要求も不要)
 	attr := types.AttributeType{
@@ -46,7 +46,7 @@ func (c *client) AdminCreateUser(ctx context.Context, params *AdminCreateUserPar
 	in.MessageAction = types.MessageActionTypeSuppress
 	in.UserAttributes = append(in.UserAttributes, attr)
 	if _, err := c.cognito.AdminCreateUser(ctx, in); err != nil {
-		return authError(err)
+		return c.authError(err)
 	}
 	passIn := &AdminChangePasswordParams{
 		Username:  params.Username,
@@ -64,5 +64,5 @@ func (c *client) AdminChangePassword(ctx context.Context, params *AdminChangePas
 		Permanent:  *aws.Bool(params.Permanent),
 	}
 	_, err := c.cognito.AdminSetUserPassword(ctx, in)
-	return authError(err)
+	return c.authError(err)
 }

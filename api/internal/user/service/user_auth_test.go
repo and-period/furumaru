@@ -4,6 +4,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/marche/api/internal/exception"
+	"github.com/and-period/marche/api/internal/user"
 	"github.com/and-period/marche/api/internal/user/entity"
 	"github.com/and-period/marche/api/pkg/cognito"
 	"github.com/stretchr/testify/assert"
@@ -23,7 +25,7 @@ func TestSignInUser(t *testing.T) {
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *SignInUserInput
+		input     *user.SignInUserInput
 		expect    *entity.UserAuth
 		expectErr error
 	}{
@@ -34,7 +36,7 @@ func TestSignInUser(t *testing.T) {
 				mocks.userAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.User.EXPECT().GetByCognitoID(ctx, "username", "id").Return(u, nil)
 			},
-			input: &SignInUserInput{
+			input: &user.SignInUserInput{
 				Key:      "username",
 				Password: "password",
 			},
@@ -49,21 +51,21 @@ func TestSignInUser(t *testing.T) {
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &SignInUserInput{},
+			input:     &user.SignInUserInput{},
 			expect:    nil,
-			expectErr: ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to sign in",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().SignIn(ctx, "username", "password").Return(nil, errmock)
 			},
-			input: &SignInUserInput{
+			input: &user.SignInUserInput{
 				Key:      "username",
 				Password: "password",
 			},
 			expect:    nil,
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 		{
 			name: "failed to get username",
@@ -71,12 +73,12 @@ func TestSignInUser(t *testing.T) {
 				mocks.userAuth.EXPECT().SignIn(ctx, "username", "password").Return(result, nil)
 				mocks.userAuth.EXPECT().GetUsername(ctx, "access-token").Return("", errmock)
 			},
-			input: &SignInUserInput{
+			input: &user.SignInUserInput{
 				Key:      "username",
 				Password: "password",
 			},
 			expect:    nil,
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -85,12 +87,12 @@ func TestSignInUser(t *testing.T) {
 				mocks.userAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.User.EXPECT().GetByCognitoID(ctx, "username", "id").Return(nil, errmock)
 			},
-			input: &SignInUserInput{
+			input: &user.SignInUserInput{
 				Key:      "username",
 				Password: "password",
 			},
 			expect:    nil,
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 
@@ -110,7 +112,7 @@ func TestSignOutUser(t *testing.T) {
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *SignOutUserInput
+		input     *user.SignOutUserInput
 		expectErr error
 	}{
 		{
@@ -118,7 +120,7 @@ func TestSignOutUser(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().SignOut(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(nil)
 			},
-			input: &SignOutUserInput{
+			input: &user.SignOutUserInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expectErr: nil,
@@ -126,20 +128,20 @@ func TestSignOutUser(t *testing.T) {
 		{
 			name:  "invalid argument",
 			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &SignOutUserInput{
+			input: &user.SignOutUserInput{
 				AccessToken: "",
 			},
-			expectErr: ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to sign out",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().SignOut(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(errmock)
 			},
-			input: &SignOutUserInput{
+			input: &user.SignOutUserInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 
@@ -160,7 +162,7 @@ func TestGetUserAuth(t *testing.T) {
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *GetUserAuthInput
+		input     *user.GetUserAuthInput
 		expect    *entity.UserAuth
 		expectErr error
 	}{
@@ -170,7 +172,7 @@ func TestGetUserAuth(t *testing.T) {
 				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("username", nil)
 				mocks.db.User.EXPECT().GetByCognitoID(ctx, "username", "id").Return(u, nil)
 			},
-			input: &GetUserAuthInput{
+			input: &user.GetUserAuthInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect: &entity.UserAuth{
@@ -184,22 +186,22 @@ func TestGetUserAuth(t *testing.T) {
 		{
 			name:  "invalid argument",
 			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &GetUserAuthInput{
+			input: &user.GetUserAuthInput{
 				AccessToken: "",
 			},
 			expect:    nil,
-			expectErr: ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get username",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("", errmock)
 			},
-			input: &GetUserAuthInput{
+			input: &user.GetUserAuthInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect:    nil,
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -207,11 +209,11 @@ func TestGetUserAuth(t *testing.T) {
 				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("username", nil)
 				mocks.db.User.EXPECT().GetByCognitoID(ctx, "username", "id").Return(u, errmock)
 			},
-			input: &GetUserAuthInput{
+			input: &user.GetUserAuthInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect:    nil,
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 
@@ -239,7 +241,7 @@ func TestRefreshUserToken(t *testing.T) {
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *RefreshUserTokenInput
+		input     *user.RefreshUserTokenInput
 		expect    *entity.UserAuth
 		expectErr error
 	}{
@@ -250,7 +252,7 @@ func TestRefreshUserToken(t *testing.T) {
 				mocks.userAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.User.EXPECT().GetByCognitoID(ctx, "username", "id").Return(u, nil)
 			},
-			input: &RefreshUserTokenInput{
+			input: &user.RefreshUserTokenInput{
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect: &entity.UserAuth{
@@ -264,22 +266,22 @@ func TestRefreshUserToken(t *testing.T) {
 		{
 			name:  "invalid argument",
 			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &RefreshUserTokenInput{
+			input: &user.RefreshUserTokenInput{
 				RefreshToken: "",
 			},
 			expect:    nil,
-			expectErr: ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to sign in",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(nil, errmock)
 			},
-			input: &RefreshUserTokenInput{
+			input: &user.RefreshUserTokenInput{
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect:    nil,
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 		{
 			name: "failed to get username",
@@ -287,11 +289,11 @@ func TestRefreshUserToken(t *testing.T) {
 				mocks.userAuth.EXPECT().RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(result, nil)
 				mocks.userAuth.EXPECT().GetUsername(ctx, "access-token").Return("", errmock)
 			},
-			input: &RefreshUserTokenInput{
+			input: &user.RefreshUserTokenInput{
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect:    nil,
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -300,11 +302,11 @@ func TestRefreshUserToken(t *testing.T) {
 				mocks.userAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.User.EXPECT().GetByCognitoID(ctx, "username", "id").Return(nil, errmock)
 			},
-			input: &RefreshUserTokenInput{
+			input: &user.RefreshUserTokenInput{
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect:    nil,
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 

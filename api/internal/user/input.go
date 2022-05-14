@@ -1,4 +1,4 @@
-package service
+package user
 
 import "github.com/and-period/marche/api/internal/user/entity"
 
