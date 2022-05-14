@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"testing"
 
-	user "github.com/and-period/marche/api/internal/user/service"
+	"github.com/and-period/marche/api/internal/exception"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -22,11 +22,11 @@ func TestErrorResponse(t *testing.T) {
 	}{
 		{
 			name: "internal error",
-			err:  user.ErrInternal,
+			err:  exception.ErrInternal,
 			expect: &ErrorResponse{
 				Status:  http.StatusInternalServerError,
 				Message: "Internal Server Error",
-				Detail:  user.ErrInternal.Error(),
+				Detail:  exception.ErrInternal.Error(),
 			},
 			expectStatus: http.StatusInternalServerError,
 		},
@@ -84,81 +84,81 @@ func TestErrorResponse_InternalError(t *testing.T) {
 	}{
 		{
 			name: "invalid argument",
-			err:  user.ErrInvalidArgument,
+			err:  exception.ErrInvalidArgument,
 			expect: &ErrorResponse{
 				Status:  http.StatusBadRequest,
 				Message: "Bad Request",
-				Detail:  user.ErrInvalidArgument.Error(),
+				Detail:  exception.ErrInvalidArgument.Error(),
 			},
 			expectStatus: http.StatusBadRequest,
 		},
 		{
 			name: "unauthenticated",
-			err:  user.ErrUnauthenticated,
+			err:  exception.ErrUnauthenticated,
 			expect: &ErrorResponse{
 				Status:  http.StatusUnauthorized,
 				Message: "Unauthorized",
-				Detail:  user.ErrUnauthenticated.Error(),
+				Detail:  exception.ErrUnauthenticated.Error(),
 			},
 			expectStatus: http.StatusUnauthorized,
 		},
 		{
 			name: "not found",
-			err:  user.ErrNotFound,
+			err:  exception.ErrNotFound,
 			expect: &ErrorResponse{
 				Status:  http.StatusNotFound,
 				Message: "Not Found",
-				Detail:  user.ErrNotFound.Error(),
+				Detail:  exception.ErrNotFound.Error(),
 			},
 			expectStatus: http.StatusNotFound,
 		},
 		{
 			name: "already exists",
-			err:  user.ErrAlreadyExists,
+			err:  exception.ErrAlreadyExists,
 			expect: &ErrorResponse{
 				Status:  http.StatusConflict,
 				Message: "Conflict",
-				Detail:  user.ErrAlreadyExists.Error(),
+				Detail:  exception.ErrAlreadyExists.Error(),
 			},
 			expectStatus: http.StatusConflict,
 		},
 		{
 			name: "failed precondition",
-			err:  user.ErrFailedPrecondition,
+			err:  exception.ErrFailedPrecondition,
 			expect: &ErrorResponse{
 				Status:  http.StatusPreconditionFailed,
 				Message: "Precondition Failed",
-				Detail:  user.ErrFailedPrecondition.Error(),
+				Detail:  exception.ErrFailedPrecondition.Error(),
 			},
 			expectStatus: http.StatusPreconditionFailed,
 		},
 		{
 			name: "too many requests",
-			err:  user.ErrResourceExhausted,
+			err:  exception.ErrResourceExhausted,
 			expect: &ErrorResponse{
 				Status:  http.StatusTooManyRequests,
 				Message: "Too Many Requests",
-				Detail:  user.ErrResourceExhausted.Error(),
+				Detail:  exception.ErrResourceExhausted.Error(),
 			},
 			expectStatus: http.StatusTooManyRequests,
 		},
 		{
 			name: "not implemented",
-			err:  user.ErrNotImplemented,
+			err:  exception.ErrNotImplemented,
 			expect: &ErrorResponse{
 				Status:  http.StatusNotImplemented,
 				Message: "Not Implemented",
-				Detail:  user.ErrNotImplemented.Error(),
+				Detail:  exception.ErrNotImplemented.Error(),
 			},
 			expectStatus: http.StatusNotImplemented,
 		},
 		{
 			name: "internal",
-			err:  user.ErrInternal,
+			err:  exception.ErrInternal,
 			expect: &ErrorResponse{
 				Status:  http.StatusInternalServerError,
 				Message: "Internal Server Error",
-				Detail:  user.ErrInternal.Error(),
+				Detail:  exception.ErrInternal.Error(),
 			},
 			expectStatus: http.StatusInternalServerError,
 		},

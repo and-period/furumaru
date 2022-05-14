@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/and-period/marche/api/internal/exception"
 	"github.com/and-period/marche/api/internal/user/entity"
 	"github.com/and-period/marche/api/pkg/database"
 	"github.com/and-period/marche/api/pkg/jst"
@@ -41,7 +42,7 @@ func (u *user) Get(ctx context.Context, userID string, fields ...string) (*entit
 		Where("id = ?", userID)
 
 	if err := stmt.First(&user).Error; err != nil {
-		return nil, dbError(err)
+		return nil, exception.InternalError(err)
 	}
 	return user, nil
 }
@@ -57,7 +58,7 @@ func (u *user) GetByCognitoID(ctx context.Context, cognitoID string, fields ...s
 		Where("cognito_id = ?", cognitoID)
 
 	if err := stmt.First(&user).Error; err != nil {
-		return nil, dbError(err)
+		return nil, exception.InternalError(err)
 	}
 	return user, nil
 }
@@ -74,7 +75,7 @@ func (u *user) GetByEmail(ctx context.Context, email string, fields ...string) (
 		Where("provider_type = ?", entity.ProviderTypeEmail)
 
 	if err := stmt.First(&user).Error; err != nil {
-		return nil, dbError(err)
+		return nil, exception.InternalError(err)
 	}
 	return user, nil
 }
@@ -87,7 +88,7 @@ func (u *user) Create(ctx context.Context, user *entity.User) error {
 		err := tx.WithContext(ctx).Table(userTable).Create(&user).Error
 		return nil, err
 	})
-	return dbError(err)
+	return exception.InternalError(err)
 }
 
 func (u *user) UpdateVerified(ctx context.Context, userID string) error {
@@ -101,7 +102,7 @@ func (u *user) UpdateVerified(ctx context.Context, userID string) error {
 			return nil, err
 		}
 		if !current.VerifiedAt.IsZero() {
-			return nil, ErrFailedPrecondition
+			return nil, exception.ErrFailedPrecondition
 		}
 
 		now := u.now()
@@ -116,7 +117,7 @@ func (u *user) UpdateVerified(ctx context.Context, userID string) error {
 			Updates(params).Error
 		return nil, err
 	})
-	return dbError(err)
+	return exception.InternalError(err)
 }
 
 func (u *user) UpdateEmail(ctx context.Context, userID, email string) error {
@@ -130,7 +131,7 @@ func (u *user) UpdateEmail(ctx context.Context, userID, email string) error {
 			return nil, err
 		}
 		if current.ProviderType != entity.ProviderTypeEmail {
-			return nil, ErrFailedPrecondition
+			return nil, exception.ErrFailedPrecondition
 		}
 
 		params := map[string]interface{}{
@@ -144,7 +145,7 @@ func (u *user) UpdateEmail(ctx context.Context, userID, email string) error {
 			Updates(params).Error
 		return nil, err
 	})
-	return dbError(err)
+	return exception.InternalError(err)
 }
 
 func (u *user) Delete(ctx context.Context, userID string) error {
@@ -170,5 +171,5 @@ func (u *user) Delete(ctx context.Context, userID string) error {
 			Updates(params).Error
 		return nil, err
 	})
-	return dbError(err)
+	return exception.InternalError(err)
 }

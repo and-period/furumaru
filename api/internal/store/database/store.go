@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/and-period/marche/api/internal/exception"
 	"github.com/and-period/marche/api/internal/store/entity"
 	"github.com/and-period/marche/api/pkg/database"
 	"github.com/and-period/marche/api/pkg/jst"
@@ -44,7 +45,7 @@ func (s *store) List(ctx context.Context, params *ListStoresParams, fields ...st
 	}
 
 	err := stmt.Find(&stores).Error
-	return stores, dbError(err)
+	return stores, exception.InternalError(err)
 }
 
 func (s *store) Get(ctx context.Context, storeID int64, fields ...string) (*entity.Store, error) {
@@ -58,7 +59,7 @@ func (s *store) Get(ctx context.Context, storeID int64, fields ...string) (*enti
 		Where("id = ?", storeID)
 
 	if err := stmt.First(&store).Error; err != nil {
-		return nil, dbError(err)
+		return nil, exception.InternalError(err)
 	}
 	return store, nil
 }
@@ -71,7 +72,7 @@ func (s *store) Create(ctx context.Context, store *entity.Store) error {
 		err := tx.WithContext(ctx).Table(storeTable).Create(&store).Error
 		return nil, err
 	})
-	return dbError(err)
+	return exception.InternalError(err)
 }
 
 func (s *store) Update(ctx context.Context, storeID int64, name, thumbnailURL string) error {
@@ -97,5 +98,5 @@ func (s *store) Update(ctx context.Context, storeID int64, name, thumbnailURL st
 			Updates(params).Error
 		return nil, err
 	})
-	return dbError(err)
+	return exception.InternalError(err)
 }

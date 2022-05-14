@@ -4,6 +4,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/marche/api/internal/exception"
+	"github.com/and-period/marche/api/internal/store"
 	"github.com/and-period/marche/api/internal/store/database"
 	"github.com/and-period/marche/api/internal/store/entity"
 	"github.com/and-period/marche/api/pkg/jst"
@@ -38,7 +40,7 @@ func TestListStores(t *testing.T) {
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *ListStoresInput
+		input     *store.ListStoresInput
 		expect    entity.Stores
 		expectErr error
 	}{
@@ -47,7 +49,7 @@ func TestListStores(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Store.EXPECT().List(ctx, params).Return(stores, nil)
 			},
-			input: &ListStoresInput{
+			input: &store.ListStoresInput{
 				Limit:  20,
 				Offset: 0,
 			},
@@ -57,21 +59,21 @@ func TestListStores(t *testing.T) {
 		{
 			name:      "invlid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &ListStoresInput{},
+			input:     &store.ListStoresInput{},
 			expect:    nil,
-			expectErr: ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get stores",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Store.EXPECT().List(ctx, params).Return(nil, errmock)
 			},
-			input: &ListStoresInput{
+			input: &store.ListStoresInput{
 				Limit:  20,
 				Offset: 0,
 			},
 			expect:    nil,
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 
@@ -89,7 +91,7 @@ func TestGetStore(t *testing.T) {
 	t.Parallel()
 
 	now := jst.Now()
-	store := &entity.Store{
+	s := &entity.Store{
 		ID:           1,
 		Name:         "&.農園",
 		ThumbnailURL: "https://and-period.jp/thumbnail.png",
@@ -100,38 +102,38 @@ func TestGetStore(t *testing.T) {
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *GetStoreInput
+		input     *store.GetStoreInput
 		expect    *entity.Store
 		expectErr error
 	}{
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Store.EXPECT().Get(ctx, int64(1)).Return(store, nil)
+				mocks.db.Store.EXPECT().Get(ctx, int64(1)).Return(s, nil)
 			},
-			input: &GetStoreInput{
+			input: &store.GetStoreInput{
 				StoreID: 1,
 			},
-			expect:    store,
+			expect:    s,
 			expectErr: nil,
 		},
 		{
 			name:      "invlid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &GetStoreInput{},
+			input:     &store.GetStoreInput{},
 			expect:    nil,
-			expectErr: ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get store",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Store.EXPECT().Get(ctx, int64(1)).Return(nil, errmock)
 			},
-			input: &GetStoreInput{
+			input: &store.GetStoreInput{
 				StoreID: 1,
 			},
 			expect:    nil,
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 
@@ -148,45 +150,45 @@ func TestGetStore(t *testing.T) {
 func TestCreateStore(t *testing.T) {
 	t.Parallel()
 
-	store := &entity.Store{
+	s := &entity.Store{
 		Name: "&.農園",
 	}
 
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *CreateStoreInput
+		input     *store.CreateStoreInput
 		expect    *entity.Store
 		expectErr error
 	}{
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Store.EXPECT().Create(ctx, store).Return(nil)
+				mocks.db.Store.EXPECT().Create(ctx, s).Return(nil)
 			},
-			input: &CreateStoreInput{
+			input: &store.CreateStoreInput{
 				Name: "&.農園",
 			},
-			expect:    store,
+			expect:    s,
 			expectErr: nil,
 		},
 		{
 			name:      "invlid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &CreateStoreInput{},
+			input:     &store.CreateStoreInput{},
 			expect:    nil,
-			expectErr: ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get store",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Store.EXPECT().Create(ctx, store).Return(errmock)
+				mocks.db.Store.EXPECT().Create(ctx, s).Return(errmock)
 			},
-			input: &CreateStoreInput{
+			input: &store.CreateStoreInput{
 				Name: "&.農園",
 			},
 			expect:    nil,
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 
@@ -206,7 +208,7 @@ func TestUpdateStore(t *testing.T) {
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *UpdateStoreInput
+		input     *store.UpdateStoreInput
 		expectErr error
 	}{
 		{
@@ -214,7 +216,7 @@ func TestUpdateStore(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Store.EXPECT().Update(ctx, int64(1), "&.農園", "https://and-period.jp/thumbnail.png").Return(nil)
 			},
-			input: &UpdateStoreInput{
+			input: &store.UpdateStoreInput{
 				StoreID:      1,
 				Name:         "&.農園",
 				ThumbnailURL: "https://and-period.jp/thumbnail.png",
@@ -224,20 +226,20 @@ func TestUpdateStore(t *testing.T) {
 		{
 			name:      "invlid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &UpdateStoreInput{},
-			expectErr: ErrInvalidArgument,
+			input:     &store.UpdateStoreInput{},
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get store",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Store.EXPECT().Update(ctx, int64(1), "&.農園", "https://and-period.jp/thumbnail.png").Return(errmock)
 			},
-			input: &UpdateStoreInput{
+			input: &store.UpdateStoreInput{
 				StoreID:      1,
 				Name:         "&.農園",
 				ThumbnailURL: "https://and-period.jp/thumbnail.png",
 			},
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 

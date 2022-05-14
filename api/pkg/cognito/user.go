@@ -58,7 +58,7 @@ func (c *client) SignUp(ctx context.Context, params *SignUpParams) error {
 		},
 	}
 	_, err := c.cognito.SignUp(ctx, in)
-	return authError(err)
+	return c.authError(err)
 }
 
 func (c *client) ConfirmSignUp(ctx context.Context, username, verifyCode string) error {
@@ -69,7 +69,7 @@ func (c *client) ConfirmSignUp(ctx context.Context, username, verifyCode string)
 	}
 	_, err := c.cognito.ConfirmSignUp(ctx, confirmIn)
 	if err != nil {
-		return authError(err)
+		return c.authError(err)
 	}
 	updateIn := &cognito.AdminUpdateUserAttributesInput{
 		UserPoolId: c.userPoolID,
@@ -86,7 +86,7 @@ func (c *client) ConfirmSignUp(ctx context.Context, username, verifyCode string)
 		},
 	}
 	_, err = c.cognito.AdminUpdateUserAttributes(ctx, updateIn)
-	return authError(err)
+	return c.authError(err)
 }
 
 func (c *client) ForgotPassword(ctx context.Context, username string) error {
@@ -95,7 +95,7 @@ func (c *client) ForgotPassword(ctx context.Context, username string) error {
 		Username: aws.String(username),
 	}
 	_, err := c.cognito.ForgotPassword(ctx, in)
-	return authError(err)
+	return c.authError(err)
 }
 
 func (c *client) ConfirmForgotPassword(ctx context.Context, params *ConfirmForgotPasswordParams) error {
@@ -106,7 +106,7 @@ func (c *client) ConfirmForgotPassword(ctx context.Context, params *ConfirmForgo
 		Password:         aws.String(params.NewPassword),
 	}
 	_, err := c.cognito.ConfirmForgotPassword(ctx, in)
-	return authError(err)
+	return c.authError(err)
 }
 
 func (c *client) ChangeEmail(ctx context.Context, params *ChangeEmailParams) error {
@@ -126,7 +126,7 @@ func (c *client) ChangeEmail(ctx context.Context, params *ChangeEmailParams) err
 	}
 	_, err := c.cognito.UpdateUserAttributes(ctx, changeEmailIn)
 	if err != nil {
-		return authError(err)
+		return c.authError(err)
 	}
 	// 検証コードを確認するまでの間、今までのメールアドレスが使えなくなってしまうための対応
 	acceptingEmailIn := &cognito.AdminUpdateUserAttributesInput{
@@ -144,7 +144,7 @@ func (c *client) ChangeEmail(ctx context.Context, params *ChangeEmailParams) err
 		},
 	}
 	_, err = c.cognito.AdminUpdateUserAttributes(ctx, acceptingEmailIn)
-	return authError(err)
+	return c.authError(err)
 }
 
 func (c *client) ConfirmChangeEmail(ctx context.Context, params *ConfirmChangeEmailParams) (string, error) {
@@ -156,7 +156,7 @@ func (c *client) ConfirmChangeEmail(ctx context.Context, params *ConfirmChangeEm
 	}
 	out, err := c.cognito.AdminGetUser(ctx, userIn)
 	if err != nil {
-		return "", authError(err)
+		return "", c.authError(err)
 	}
 	var email string
 	for i := range out.UserAttributes {
@@ -176,7 +176,7 @@ func (c *client) ConfirmChangeEmail(ctx context.Context, params *ConfirmChangeEm
 	}
 	_, err = c.cognito.VerifyUserAttribute(ctx, verifyIn)
 	if err != nil {
-		return "", authError(err)
+		return "", c.authError(err)
 	}
 	// メールアドレス情報の更新
 	updateIn := &cognito.AdminUpdateUserAttributesInput{
@@ -198,7 +198,7 @@ func (c *client) ConfirmChangeEmail(ctx context.Context, params *ConfirmChangeEm
 		},
 	}
 	_, err = c.cognito.AdminUpdateUserAttributes(ctx, updateIn)
-	return email, authError(err)
+	return email, c.authError(err)
 }
 
 func (c *client) ChangePassword(ctx context.Context, params *ChangePasswordParams) error {
@@ -208,7 +208,7 @@ func (c *client) ChangePassword(ctx context.Context, params *ChangePasswordParam
 		ProposedPassword: aws.String(params.NewPassword),
 	}
 	_, err := c.cognito.ChangePassword(ctx, in)
-	return authError(err)
+	return c.authError(err)
 }
 
 func (c *client) DeleteUser(ctx context.Context, username string) error {
@@ -217,5 +217,5 @@ func (c *client) DeleteUser(ctx context.Context, username string) error {
 		Username:   aws.String(username),
 	}
 	_, err := c.cognito.AdminDeleteUser(ctx, in)
-	return authError(err)
+	return c.authError(err)
 }

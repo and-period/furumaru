@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/and-period/marche/api/internal/exception"
 	"github.com/and-period/marche/api/internal/user/entity"
 	"github.com/and-period/marche/api/pkg/database"
 	"github.com/and-period/marche/api/pkg/jst"
@@ -48,7 +49,7 @@ func (a *admin) List(ctx context.Context, params *ListAdminsParams, fields ...st
 	}
 
 	err := stmt.Find(&admins).Error
-	return admins, dbError(err)
+	return admins, exception.InternalError(err)
 }
 
 func (a *admin) MultiGet(ctx context.Context, adminIDs []string, fields ...string) (entity.Admins, error) {
@@ -62,7 +63,7 @@ func (a *admin) MultiGet(ctx context.Context, adminIDs []string, fields ...strin
 		Where("id IN (?)", adminIDs)
 
 	err := stmt.Find(&admins).Error
-	return admins, dbError(err)
+	return admins, exception.InternalError(err)
 }
 
 func (a *admin) Get(ctx context.Context, adminID string, fields ...string) (*entity.Admin, error) {
@@ -76,7 +77,7 @@ func (a *admin) Get(ctx context.Context, adminID string, fields ...string) (*ent
 		Where("id = ?", adminID)
 
 	if err := stmt.First(&admin).Error; err != nil {
-		return nil, dbError(err)
+		return nil, exception.InternalError(err)
 	}
 	return admin, nil
 }
@@ -92,7 +93,7 @@ func (a *admin) GetByCognitoID(ctx context.Context, cognitoID string, fields ...
 		Where("cognito_id = ?", cognitoID)
 
 	if err := stmt.First(&admin).Error; err != nil {
-		return nil, dbError(err)
+		return nil, exception.InternalError(err)
 	}
 	return admin, nil
 }
@@ -105,7 +106,7 @@ func (a *admin) Create(ctx context.Context, admin *entity.Admin) error {
 		err := tx.WithContext(ctx).Table(adminTable).Create(&admin).Error
 		return nil, err
 	})
-	return dbError(err)
+	return exception.InternalError(err)
 }
 
 func (a *admin) UpdateEmail(ctx context.Context, adminID, email string) error {
@@ -130,5 +131,5 @@ func (a *admin) UpdateEmail(ctx context.Context, adminID, email string) error {
 			Updates(params).Error
 		return nil, err
 	})
-	return dbError(err)
+	return exception.InternalError(err)
 }

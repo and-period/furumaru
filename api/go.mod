@@ -24,12 +24,14 @@ require (
 	github.com/rs/cors v1.8.2
 	github.com/rs/cors/wrapper/gin v0.0.0-20220223021805-a4a5ce87d5a2
 	github.com/satori/go.uuid v1.2.0
+	github.com/sendgrid/sendgrid-go v3.11.1+incompatible
 	github.com/stretchr/testify v1.7.0
 	go.uber.org/zap v1.21.0
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	google.golang.org/genproto v0.0.0-20220222213610-43724f9ea8cf
 	google.golang.org/grpc v1.44.0
 	google.golang.org/protobuf v1.27.1
+	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	gorm.io/driver/mysql v1.3.2
 	gorm.io/gorm v1.23.1
 	moul.io/zapgorm2 v1.1.3
@@ -69,6 +71,7 @@ require (
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.32.1 // indirect
 	github.com/prometheus/procfs v0.7.3 // indirect
+	github.com/sendgrid/rest v2.6.9+incompatible // indirect
 	github.com/ugorji/go/codec v1.2.6 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
@@ -77,5 +80,4 @@ require (
 	golang.org/x/sys v0.0.0-20220114195835-da31bd327af9 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
