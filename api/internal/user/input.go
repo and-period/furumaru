@@ -1,7 +1,5 @@
 package user
 
-import "github.com/and-period/marche/api/internal/user/entity"
-
 type SignInAdminInput struct {
 	Key      string `validate:"required"`
 	Password string `validate:"required"`
@@ -20,9 +18,9 @@ type RefreshAdminTokenInput struct {
 }
 
 type ListAdminsInput struct {
-	Roles  []entity.AdminRole `validate:""`
-	Limit  int64              `validate:"required,max=200"`
-	Offset int64              `validate:"min=0"`
+	Roles  []int32 `validate:""`
+	Limit  int64   `validate:"required,max=200"`
+	Offset int64   `validate:"min=0"`
 }
 
 type MultiGetAdminsInput struct {
@@ -34,12 +32,12 @@ type GetAdminInput struct {
 }
 
 type CreateAdminInput struct {
-	Lastname      string           `validate:"required,max=16"`
-	Firstname     string           `validate:"required,max=16"`
-	LastnameKana  string           `validate:"required,max=32,hiragana"`
-	FirstnameKana string           `validate:"required,max=32,hiragana"`
-	Email         string           `validate:"required,max=256,email"`
-	Role          entity.AdminRole `validate:""`
+	Lastname      string `validate:"required,max=16"`
+	Firstname     string `validate:"required,max=16"`
+	LastnameKana  string `validate:"required,max=32,hiragana"`
+	FirstnameKana string `validate:"required,max=32,hiragana"`
+	Email         string `validate:"required,max=256,email"`
+	Role          int32  `validate:""`
 }
 
 type UpdateAdminEmailInput struct {

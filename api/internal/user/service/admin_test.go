@@ -51,7 +51,7 @@ func TestListAdmins(t *testing.T) {
 				mocks.db.Admin.EXPECT().List(ctx, params).Return(admins, nil)
 			},
 			input: &user.ListAdminsInput{
-				Roles:  []entity.AdminRole{entity.AdminRoleAdministrator},
+				Roles:  []int32{int32(entity.AdminRoleAdministrator)},
 				Limit:  30,
 				Offset: 0,
 			},
@@ -66,12 +66,23 @@ func TestListAdmins(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name:  "invalid role",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &user.ListAdminsInput{
+				Roles:  []int32{int32(entity.AdminRoleUnknown)},
+				Limit:  30,
+				Offset: 0,
+			},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
 			name: "failed to get admins",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Admin.EXPECT().List(ctx, params).Return(nil, errmock)
 			},
 			input: &user.ListAdminsInput{
-				Roles:  []entity.AdminRole{entity.AdminRoleAdministrator},
+				Roles:  []int32{int32(entity.AdminRoleAdministrator)},
 				Limit:  30,
 				Offset: 0,
 			},
@@ -239,7 +250,7 @@ func TestCreateAdmin(t *testing.T) {
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "すたっふ",
 				Email:         "test-admin@and-period.jp",
-				Role:          entity.AdminRoleAdministrator,
+				Role:          int32(entity.AdminRoleAdministrator),
 			},
 			expectErr: nil,
 		},
@@ -256,7 +267,7 @@ func TestCreateAdmin(t *testing.T) {
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "すたっふ",
 				Email:         "test-admin@and-period.jp",
-				Role:          entity.AdminRoleAdministrator,
+				Role:          int32(entity.AdminRoleAdministrator),
 			},
 			expectErr: nil,
 		},
@@ -275,7 +286,7 @@ func TestCreateAdmin(t *testing.T) {
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "すたっふ",
 				Email:         "test-admin@and-preiod.jp",
-				Role:          entity.AdminRole(-1),
+				Role:          int32(entity.AdminRoleUnknown),
 			},
 			expectErr: exception.ErrInvalidArgument,
 		},
@@ -290,7 +301,7 @@ func TestCreateAdmin(t *testing.T) {
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "すたっふ",
 				Email:         "test-admin@and-period.jp",
-				Role:          entity.AdminRoleAdministrator,
+				Role:          int32(entity.AdminRoleAdministrator),
 			},
 			expectErr: exception.ErrUnknown,
 		},
@@ -306,7 +317,7 @@ func TestCreateAdmin(t *testing.T) {
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "すたっふ",
 				Email:         "test-admin@and-period.jp",
-				Role:          entity.AdminRoleAdministrator,
+				Role:          int32(entity.AdminRoleAdministrator),
 			},
 			expectErr: exception.ErrUnknown,
 		},

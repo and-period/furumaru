@@ -1,11 +1,22 @@
-p, store_write, /v1/stores, POST, allow
-p, store_write, /v1/stores/*, PATCH, allow
+p, auth_read, /v1/admins/me, GET, allow
+p, auth_write, /v1/admins/me/*, (POST)|(PATCH), allow
+p, admin_read, /v1/admins, GET, allow
+p, admin_read, /v1/admins/*, GET, allow
+p, admin_write, /v1/admins, POST, allow
 p, store_read, /v1/stores, GET, allow
 p, store_read, /v1/stores/*, GET, allow
+p, store_write, /v1/stores, POST, allow
+p, store_write, /v1/stores/*, PATCH, allow
 p, upload, /v1/upload/*, POST, allow
 
-g, admin, store_write
+g, admin, auth_read
+g, admin, auth_write
+g, admin, admin_read
+g, admin, admin_write
 g, admin, store_read
+g, admin, store_write
 g, admin, upload
+g, producer, auth_read
+g, producer, auth_write
 g, producer, store_read
 g, producer, upload

@@ -122,7 +122,7 @@ func run() error {
 
 	in := &user.CreateAdminInput{
 		Email:         email,
-		Role:          entity.AdminRoleAdministrator,
+		Role:          int32(entity.AdminRoleAdministrator),
 		Lastname:      "&.",
 		Firstname:     "管理者",
 		LastnameKana:  "あんどどっと",

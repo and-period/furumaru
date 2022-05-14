@@ -2,7 +2,6 @@ package handler
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/and-period/marche/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/marche/api/internal/gateway/admin/v1/response"
@@ -28,16 +27,16 @@ func (h *apiV1Handler) ListStores(ctx *gin.Context) {
 	c := util.SetMetadata(ctx)
 
 	const (
-		defaultLimit  = "20"
-		defaultOffset = "0"
+		defaultLimit  = 20
+		defaultOffset = 0
 	)
 
-	limit, err := strconv.ParseInt(ctx.DefaultQuery("limit", defaultLimit), 10, 64)
+	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
 	if err != nil {
 		badRequest(ctx, err)
 		return
 	}
-	offset, err := strconv.ParseInt(ctx.DefaultQuery("offset", defaultOffset), 10, 64)
+	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
 	if err != nil {
 		badRequest(ctx, err)
 		return
@@ -62,7 +61,7 @@ func (h *apiV1Handler) ListStores(ctx *gin.Context) {
 func (h *apiV1Handler) GetStore(ctx *gin.Context) {
 	c := util.SetMetadata(ctx)
 
-	storeID, err := strconv.ParseInt(ctx.Param("storeId"), 10, 64)
+	storeID, err := util.GetParamInt64(ctx, "storeId")
 	if err != nil {
 		badRequest(ctx, err)
 		return
@@ -130,7 +129,7 @@ func (h *apiV1Handler) CreateStore(ctx *gin.Context) {
 func (h *apiV1Handler) UpdateStore(ctx *gin.Context) {
 	c := util.SetMetadata(ctx)
 
-	storeID, err := strconv.ParseInt(ctx.Param("storeId"), 10, 64)
+	storeID, err := util.GetParamInt64(ctx, "storeId")
 	if err != nil {
 		badRequest(ctx, err)
 		return

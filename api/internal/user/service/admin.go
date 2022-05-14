@@ -19,8 +19,12 @@ func (s *userService) ListAdmins(ctx context.Context, in *user.ListAdminsInput) 
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
+	roles, err := entity.NewAdminRoles(in.Roles)
+	if err != nil {
+		return nil, fmt.Errorf("%w: %s", exception.ErrInvalidArgument, err.Error())
+	}
 	params := &database.ListAdminsParams{
-		Roles:  in.Roles,
+		Roles:  roles,
 		Limit:  int(in.Limit),
 		Offset: int(in.Offset),
 	}
@@ -49,7 +53,8 @@ func (s *userService) CreateAdmin(ctx context.Context, in *user.CreateAdminInput
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
-	if err := in.Role.Validate(); err != nil {
+	role, err := entity.NewAdminRole(in.Role)
+	if err != nil {
 		return nil, fmt.Errorf("%w: %s", exception.ErrInvalidArgument, err.Error())
 	}
 	adminID := uuid.Base58Encode(uuid.New())
@@ -57,7 +62,7 @@ func (s *userService) CreateAdmin(ctx context.Context, in *user.CreateAdminInput
 		adminID, adminID,
 		in.Lastname, in.Firstname,
 		in.LastnameKana, in.FirstnameKana,
-		in.Email, in.Role,
+		in.Email, role,
 	)
 	if err := s.db.Admin.Create(ctx, admin); err != nil {
 		return nil, exception.InternalError(err)
