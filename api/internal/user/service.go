@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/marche/api/internal/user/entity"
 )
 
+//nolint:revive
 type UserService interface {
 	SignInAdmin(ctx context.Context, in *SignInAdminInput) (*entity.AdminAuth, error)
 	SignOutAdmin(ctx context.Context, in *SignOutAdminInput) error
