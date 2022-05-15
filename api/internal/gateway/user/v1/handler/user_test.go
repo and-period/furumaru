@@ -251,6 +251,66 @@ func TestCreateUserWithOAuth(t *testing.T) {
 	}
 }
 
+func TestInitializeUser(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		setup  func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		req    *request.InitializeUserRequest
+		expect *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := &user.InitializeUserInput{
+					UserID:    "user-id",
+					AccountID: "account-id",
+					Username:  "username",
+				}
+				mocks.user.EXPECT().InitializeUser(gomock.Any(), in).Return(nil)
+			},
+			req: &request.InitializeUserRequest{
+				ID:        "user-id",
+				AccountID: "account-id",
+				Username:  "username",
+			},
+			expect: &testResponse{
+				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to initialize user",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := &user.InitializeUserInput{
+					UserID:    "user-id",
+					AccountID: "account-id",
+					Username:  "username",
+				}
+				mocks.user.EXPECT().InitializeUser(gomock.Any(), in).Return(errmock)
+			},
+			req: &request.InitializeUserRequest{
+				ID:        "user-id",
+				AccountID: "account-id",
+				Username:  "username",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			const path = "/v1/users/me/initialized"
+			req := newHTTPRequest(t, http.MethodPost, path, tt.req)
+			testHTTP(t, tt.setup, tt.expect, req)
+		})
+	}
+}
+
 func TestUpdateUserEmail(t *testing.T) {
 	t.Parallel()
 

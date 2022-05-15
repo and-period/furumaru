@@ -170,6 +170,29 @@ func (h *apiV1Handler) VerifyUserEmail(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
+func (h *apiV1Handler) InitializeUser(ctx *gin.Context) {
+	c := util.SetMetadata(ctx)
+
+	req := &request.InitializeUserRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	in := &user.InitializeUserInput{
+		UserID:    req.ID,
+		AccountID: req.AccountID,
+		Username:  req.Username,
+	}
+
+	if err := h.user.InitializeUser(c, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
 func (h *apiV1Handler) UpdateUserPassword(ctx *gin.Context) {
 	c := util.SetMetadata(ctx)
 
