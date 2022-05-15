@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/and-period/marche/api/internal/exception"
 	"github.com/and-period/marche/api/internal/store/entity"
 	"github.com/and-period/marche/api/pkg/database"
 	"github.com/and-period/marche/api/pkg/jst"
@@ -39,5 +40,5 @@ func (s *staff) ListByStoreID(ctx context.Context, storeID int64, fields ...stri
 		Where("store_id = ?", storeID)
 
 	err := stmt.Find(&staffs).Error
-	return staffs, dbError(err)
+	return staffs, exception.InternalError(err)
 }

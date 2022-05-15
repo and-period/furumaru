@@ -19,8 +19,8 @@ import (
 
 	uentity "github.com/and-period/marche/api/internal/user/entity"
 	mock_storage "github.com/and-period/marche/api/mock/pkg/storage"
-	mock_store "github.com/and-period/marche/api/mock/store/service"
-	mock_user "github.com/and-period/marche/api/mock/user/service"
+	mock_store "github.com/and-period/marche/api/mock/store"
+	mock_user "github.com/and-period/marche/api/mock/user"
 	"github.com/and-period/marche/api/pkg/jst"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"

@@ -28,10 +28,16 @@ paths:
     $ref: './paths/v1/admins/me/email/verified.yaml'
   /v1/admins/me/password:
     $ref: './paths/v1/admins/me/password.yaml'
+  /v1/admins:
+    $ref: './paths/v1/admins/index.yaml'
+  /v1/admins/{adminId}:
+    $ref: './paths/v1/admins/_adminId/index.yaml'
   /v1/stores:
     $ref: './paths/v1/stores/index.yaml'
   /v1/stores/{storeId}:
     $ref: './paths/v1/stores/_storeId/index.yaml'
+  /v1/upload/stores/thumbnail:
+    $ref: './paths/v1/upload/stores/thumbnail.yaml'
 components:
   securitySchemes:
     BearerAuth:
@@ -46,18 +52,32 @@ components:
       $ref: './components/schemas/v1/auth.request.yaml#/signInRequest'
     v1RefreshAuthTokenRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/refreshAuthTokenRequest'
+    v1CreateAdminRequest:
+      $ref: './components/schemas/v1/admins.request.yaml#/createAdminRequest'
     v1UpdateAdminEmailRequest:
       $ref: './components/schemas/v1/admins.request.yaml#/updateAdminEmailRequest'
     v1VerifyAdminEmailRequest:
       $ref: './components/schemas/v1/admins.request.yaml#/verifyAdminEmailRequest'
     v1UpdateAdminPasswordRequest:
       $ref: './components/schemas/v1/admins.request.yaml#/updateAdminPasswordRequest'
+    v1CreateStoreRequest:
+      $ref: './components/schemas/v1/stores.request.yaml#/createStoreRequest'
+    v1UpdateStoreRequest:
+      $ref: './components/schemas/v1/stores.request.yaml#/updateStoreRequest'
+    v1UploadStoreThumbnailRequest:
+      $ref: './components/schemas/v1/upload.request.yaml#/uploadStoreThumbnailRequest'
     # Response
     v1AuthResponse:
       $ref: './components/schemas/v1/auth.response.yaml#/authResponse'
+    v1AdminResponse:
+      $ref: './components/schemas/v1/admins.response.yaml#/adminResponse'
+    v1AdminsResponse:
+      $ref: './components/schemas/v1/admins.response.yaml#/adminsResponse'
     v1AdminMeResponse:
       $ref: './components/schemas/v1/admins.response.yaml#/adminMeResponse'
     v1StoreResponse:
       $ref: './components/schemas/v1/stores.response.yaml#/storeResponse'
     v1StoresResponse:
       $ref: './components/schemas/v1/stores.response.yaml#/storesResponse'
+    v1UploadResponse:
+      $ref: './components/schemas/v1/upload.response.yaml#/uploadResponse'

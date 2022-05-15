@@ -3,18 +3,17 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
+	"sync"
 	"testing"
 	"time"
 
 	"github.com/and-period/marche/api/internal/user/database"
+	mock_messenger "github.com/and-period/marche/api/mock/messenger"
 	mock_cognito "github.com/and-period/marche/api/mock/pkg/cognito"
 	mock_storage "github.com/and-period/marche/api/mock/pkg/storage"
 	mock_database "github.com/and-period/marche/api/mock/user/database"
-	"github.com/and-period/marche/api/pkg/cognito"
 	"github.com/and-period/marche/api/pkg/jst"
 	"github.com/and-period/marche/api/pkg/validator"
-	gvalidator "github.com/go-playground/validator/v10"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
@@ -28,6 +27,7 @@ type mocks struct {
 	db        *dbMocks
 	adminAuth *mock_cognito.MockClient
 	userAuth  *mock_cognito.MockClient
+	messenger *mock_messenger.MockMessengerService
 }
 
 type dbMocks struct {
@@ -57,6 +57,7 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 		db:        newDBMocks(ctrl),
 		adminAuth: mock_cognito.NewMockClient(ctrl),
 		userAuth:  mock_cognito.NewMockClient(ctrl),
+		messenger: mock_messenger.NewMockMessengerService(ctrl),
 	}
 }
 
@@ -78,6 +79,7 @@ func newUserService(mocks *mocks, opts ...testOption) *userService {
 		now:         dopts.now,
 		logger:      zap.NewNop(),
 		sharedGroup: &singleflight.Group{},
+		waitGroup:   &sync.WaitGroup{},
 		validator:   validator.NewValidator(),
 		storage:     mocks.storage,
 		db: &database.Database{
@@ -86,6 +88,7 @@ func newUserService(mocks *mocks, opts ...testOption) *userService {
 		},
 		adminAuth: mocks.adminAuth,
 		userAuth:  mocks.userAuth,
+		messenger: mocks.messenger,
 	}
 }
 
@@ -106,6 +109,7 @@ func testService(
 		setup(ctx, mocks)
 
 		testFunc(ctx, t, srv)
+		srv.waitGroup.Wait()
 	}
 }
 
@@ -113,63 +117,4 @@ func TestUserService(t *testing.T) {
 	t.Parallel()
 	srv := NewUserService(&Params{}, WithLogger(zap.NewNop()))
 	assert.NotNil(t, srv)
-}
-
-func TestUserError(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name   string
-		err    error
-		expect error
-	}{
-		{
-			name:   "error is nil",
-			err:    nil,
-			expect: nil,
-		},
-		{
-			name:   "validation error",
-			err:    gvalidator.ValidationErrors{},
-			expect: ErrInvalidArgument,
-		},
-		{
-			name:   "invalid argument",
-			err:    fmt.Errorf("%w: %s", database.ErrInvalidArgument, errmock),
-			expect: ErrInvalidArgument,
-		},
-		{
-			name:   "not found",
-			err:    fmt.Errorf("%w: %s", database.ErrNotFound, errmock),
-			expect: ErrNotFound,
-		},
-		{
-			name:   "already exists",
-			err:    fmt.Errorf("%w: %s", database.ErrAlreadyExists, errmock),
-			expect: ErrAlreadyExists,
-		},
-		{
-			name:   "resource exhausted",
-			err:    fmt.Errorf("%w: %s", cognito.ErrResourceExhausted, errmock),
-			expect: ErrResourceExhausted,
-		},
-		{
-			name:   "unimplemented",
-			err:    fmt.Errorf("%w: %s", database.ErrNotImplemented, errmock),
-			expect: ErrNotImplemented,
-		},
-		{
-			name:   "other error",
-			err:    errmock,
-			expect: ErrInternal,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			err := userError(tt.err)
-			assert.ErrorIs(t, err, tt.expect)
-		})
-	}
 }

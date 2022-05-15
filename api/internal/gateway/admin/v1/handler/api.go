@@ -8,9 +8,8 @@ import (
 
 	"github.com/and-period/marche/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/marche/api/internal/gateway/util"
-	store "github.com/and-period/marche/api/internal/store/service"
-	uentity "github.com/and-period/marche/api/internal/user/entity"
-	user "github.com/and-period/marche/api/internal/user/service"
+	"github.com/and-period/marche/api/internal/store"
+	"github.com/and-period/marche/api/internal/user"
 	"github.com/and-period/marche/api/pkg/jst"
 	"github.com/and-period/marche/api/pkg/rbac"
 	"github.com/and-period/marche/api/pkg/storage"
@@ -91,6 +90,8 @@ func NewAPIV1Handler(params *Params, opts ...Option) APIV1Handler {
  */
 func (h *apiV1Handler) Routes(rg *gin.RouterGroup) {
 	v1 := rg.Group("/v1")
+	h.authRoutes(v1.Group("/auth"))
+	h.adminRoutes(v1.Group("/admins"))
 	h.storeRoutes(v1.Group("/stores"))
 	h.uploadRoutes(v1.Group("/upload"))
 }
@@ -126,14 +127,18 @@ func forbidden(ctx *gin.Context, err error) {
 func (h *apiV1Handler) authentication() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// 認証情報の検証
-		_, err := util.GetAuthToken(ctx)
+		token, err := util.GetAuthToken(ctx)
 		if err != nil {
 			unauthorized(ctx, err)
 			return
 		}
 
-		// TODO: 管理者情報取得処理の追加
-		auth := &uentity.AdminAuth{Role: uentity.AdminRoleAdministrator}
+		in := &user.GetAdminAuthInput{AccessToken: token}
+		auth, err := h.user.GetAdminAuth(ctx, in)
+		if err != nil || auth.AdminID == "" {
+			unauthorized(ctx, err)
+			return
+		}
 		role := service.NewAdminRole(auth.Role)
 
 		setAuth(ctx, auth.AdminID, role)

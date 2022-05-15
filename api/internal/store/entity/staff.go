@@ -14,11 +14,11 @@ const (
 
 // Staff - 店舗スタッフ情報
 type Staff struct {
-	StoreID   int64     `gorm:"primaryKey;<-:create"`
-	UserID    string    `gorm:"primaryKey;<-:create"`
-	Role      StoreRole `gorm:""`
-	CreatedAt time.Time `gorm:"<-:create"`
-	UpdatedAt time.Time `gorm:""`
+	StoreID   int64     `gorm:"primaryKey;<-:create"` // 店舗ID
+	UserID    string    `gorm:"primaryKey;<-:create"` // スタッフID
+	Role      StoreRole `gorm:""`                     // 権限
+	CreatedAt time.Time `gorm:"<-:create"`            // 登録日時
+	UpdatedAt time.Time `gorm:""`                     // 更新日時
 }
 
 type Staffs []*Staff

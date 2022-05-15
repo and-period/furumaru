@@ -19,6 +19,32 @@ const (
 	AdminRoleProducer      AdminRole = 2 // 生産者
 )
 
+// Admin - 管理者情報
+type Admin struct {
+	ID            string         `gorm:"primaryKey;<-:create"` // 管理者ID
+	CognitoID     string         `gorm:""`                     // 管理者ID (Cognito用)
+	Lastname      string         `gorm:""`                     // 姓
+	Firstname     string         `gorm:""`                     // 名
+	LastnameKana  string         `gorm:""`                     // 姓(かな)
+	FirstnameKana string         `gorm:""`                     // 名(かな)
+	Email         string         `gorm:"default:null"`         // メールアドレス
+	ThumbnailURL  string         `gorm:""`                     // サムネイルURL
+	Role          AdminRole      `gorm:""`                     // 権限
+	CreatedAt     time.Time      `gorm:"<-:create"`            // 登録日時
+	UpdatedAt     time.Time      `gorm:""`                     // 更新日時
+	DeletedAt     gorm.DeletedAt `gorm:"default:null"`         // 削除日時
+}
+
+type Admins []*Admin
+
+func NewAdminRole(role int32) (AdminRole, error) {
+	res := AdminRole(role)
+	if err := res.Validate(); err != nil {
+		return AdminRoleUnknown, err
+	}
+	return res, nil
+}
+
 func (r AdminRole) Validate() error {
 	switch r {
 	case AdminRoleAdministrator, AdminRoleProducer:
@@ -28,23 +54,17 @@ func (r AdminRole) Validate() error {
 	}
 }
 
-// Admin - 管理者情報
-type Admin struct {
-	ID            string         `gorm:"primaryKey;<-:create"`
-	CognitoID     string         `gorm:""`
-	Lastname      string         `gorm:""`
-	Firstname     string         `gorm:""`
-	LastnameKana  string         `gorm:""`
-	FirstnameKana string         `gorm:""`
-	Email         string         `gorm:"default:null"`
-	ThumbnailURL  string         `gorm:""`
-	Role          AdminRole      `gorm:""`
-	CreatedAt     time.Time      `gorm:"<-:create"`
-	UpdatedAt     time.Time      `gorm:""`
-	DeletedAt     gorm.DeletedAt `gorm:"default:null"`
+func NewAdminRoles(roles []int32) ([]AdminRole, error) {
+	res := make([]AdminRole, len(roles))
+	for i := range roles {
+		role, err := NewAdminRole(roles[i])
+		if err != nil {
+			return nil, err
+		}
+		res[i] = role
+	}
+	return res, nil
 }
-
-type Admins []*Admin
 
 func NewAdmin(id, cognitoID, lastname, firstname, lastnameKana, firstnameKana, email string, role AdminRole) *Admin {
 	return &Admin{

@@ -69,6 +69,11 @@ services:
       - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
       - AWS_SECRET_KEY=${AWS_SECRET_KEY}
       - S3_USER_BUCKET=${S3_USER_BUCKET}
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
+      - SENDGRID_TEMPLATE_PATH=/go/src/github.com/and-period/marche/api/config/messenger/mailer/dev.yaml
+      - MAIL_FROM_NAME=${MAIL_FROM_NAME}
+      - MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
+      - USER_WEB_URL=http://127.0.0.1:3000
       - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
       - COGNITO_USER_CLIENT_ID=${COGNITO_USER_CLIENT_ID}
     ports:
@@ -113,6 +118,12 @@ services:
       - COGNITO_ADMIN_CLIENT_ID=${COGNITO_ADMIN_CLIENT_ID}
       - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
       - COGNITO_USER_CLIENT_ID=${COGNITO_USER_CLIENT_ID}
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
+      - SENDGRID_TEMPLATE_PATH=/go/src/github.com/and-period/marche/api/config/messenger/mailer/dev.yaml
+      - MAIL_FROM_NAME=${MAIL_FROM_NAME}
+      - MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
+      - ADMIN_WEB_URL=http://127.0.0.1:3010
+      - USER_WEB_URL=http://127.0.0.1:3000
       - RBAC_POLICY_PATH=/go/src/github.com/and-period/marche/api/config/gateway/admin/rbac/policy.csv
       - RBAC_MODEL_PATH=/go/src/github.com/and-period/marche/api/config/gateway/admin/rbac/model.conf
     ports:

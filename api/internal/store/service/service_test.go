@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
+	"sync"
 	"testing"
 	"time"
 
@@ -11,7 +11,6 @@ import (
 	mock_database "github.com/and-period/marche/api/mock/store/database"
 	"github.com/and-period/marche/api/pkg/jst"
 	"github.com/and-period/marche/api/pkg/validator"
-	gvalidator "github.com/go-playground/validator/v10"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
@@ -69,6 +68,7 @@ func newUserService(mocks *mocks, opts ...testOption) *storeService {
 		now:         dopts.now,
 		logger:      zap.NewNop(),
 		sharedGroup: &singleflight.Group{},
+		waitGroup:   &sync.WaitGroup{},
 		validator:   validator.NewValidator(),
 		db: &database.Database{
 			Staff: mocks.db.Staff,
@@ -94,6 +94,7 @@ func testService(
 		setup(ctx, mocks)
 
 		testFunc(ctx, t, srv)
+		srv.waitGroup.Wait()
 	}
 }
 
@@ -101,58 +102,4 @@ func TestStoreService(t *testing.T) {
 	t.Parallel()
 	srv := NewStoreService(&Params{}, WithLogger(zap.NewNop()))
 	assert.NotNil(t, srv)
-}
-
-func TestStoreError(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name   string
-		err    error
-		expect error
-	}{
-		{
-			name:   "error is nil",
-			err:    nil,
-			expect: nil,
-		},
-		{
-			name:   "validation error",
-			err:    gvalidator.ValidationErrors{},
-			expect: ErrInvalidArgument,
-		},
-		{
-			name:   "invalid argument",
-			err:    fmt.Errorf("%w: %s", database.ErrInvalidArgument, errmock),
-			expect: ErrInvalidArgument,
-		},
-		{
-			name:   "not found",
-			err:    fmt.Errorf("%w: %s", database.ErrNotFound, errmock),
-			expect: ErrNotFound,
-		},
-		{
-			name:   "already exists",
-			err:    fmt.Errorf("%w: %s", database.ErrAlreadyExists, errmock),
-			expect: ErrAlreadyExists,
-		},
-		{
-			name:   "unimplemented",
-			err:    fmt.Errorf("%w: %s", database.ErrNotImplemented, errmock),
-			expect: ErrNotImplemented,
-		},
-		{
-			name:   "other error",
-			err:    errmock,
-			expect: ErrInternal,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			err := storeError(tt.err)
-			assert.ErrorIs(t, err, tt.expect)
-		})
-	}
 }

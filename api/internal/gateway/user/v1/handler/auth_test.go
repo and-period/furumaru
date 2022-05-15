@@ -6,8 +6,8 @@ import (
 
 	"github.com/and-period/marche/api/internal/gateway/user/v1/request"
 	"github.com/and-period/marche/api/internal/gateway/user/v1/response"
+	"github.com/and-period/marche/api/internal/user"
 	uentity "github.com/and-period/marche/api/internal/user/entity"
-	user "github.com/and-period/marche/api/internal/user/service"
 	"github.com/golang/mock/gomock"
 )
 

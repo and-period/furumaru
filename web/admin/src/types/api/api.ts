@@ -54,17 +54,194 @@ export interface AdminMeResponse {
    */
   id: string
   /**
+   * 姓
+   * @type {string}
+   * @memberof AdminMeResponse
+   */
+  lastname: string
+  /**
+   * 名
+   * @type {string}
+   * @memberof AdminMeResponse
+   */
+  firstname: string
+  /**
+   * 姓(かな)
+   * @type {string}
+   * @memberof AdminMeResponse
+   */
+  lastnameKana: string
+  /**
+   * 名(かな)
+   * @type {string}
+   * @memberof AdminMeResponse
+   */
+  firstnameKana: string
+  /**
    * メールアドレス
    * @type {string}
    * @memberof AdminMeResponse
    */
   email: string
   /**
-   * 権限 (1:管理者, 2:開発者, 3:運用者)
+   * 権限 (1:管理者, 2:生産者)
    * @type {number}
    * @memberof AdminMeResponse
    */
   role: number
+  /**
+   * サムネイルURL
+   * @type {string}
+   * @memberof AdminMeResponse
+   */
+  thumbnailUrl: string
+}
+/**
+ *
+ * @export
+ * @interface AdminResponse
+ */
+export interface AdminResponse {
+  /**
+   * 管理者ID
+   * @type {string}
+   * @memberof AdminResponse
+   */
+  id: string
+  /**
+   * 姓
+   * @type {string}
+   * @memberof AdminResponse
+   */
+  lastname: string
+  /**
+   * 名
+   * @type {string}
+   * @memberof AdminResponse
+   */
+  firstname: string
+  /**
+   * 姓(かな)
+   * @type {string}
+   * @memberof AdminResponse
+   */
+  lastnameKana: string
+  /**
+   * 名(かな)
+   * @type {string}
+   * @memberof AdminResponse
+   */
+  firstnameKana: string
+  /**
+   * メールアドレス
+   * @type {string}
+   * @memberof AdminResponse
+   */
+  email: string
+  /**
+   * 権限 (1:管理者, 2:生産者)
+   * @type {number}
+   * @memberof AdminResponse
+   */
+  role: number
+  /**
+   * サムネイルURL
+   * @type {string}
+   * @memberof AdminResponse
+   */
+  thumbnailUrl: string
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof AdminResponse
+   */
+  createdAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof AdminResponse
+   */
+  updatedAt: number
+}
+/**
+ *
+ * @export
+ * @interface AdminsResponse
+ */
+export interface AdminsResponse {
+  /**
+   * 管理者一覧
+   * @type {Array<AdminsResponseAdmins>}
+   * @memberof AdminsResponse
+   */
+  admins: Array<AdminsResponseAdmins>
+}
+/**
+ *
+ * @export
+ * @interface AdminsResponseAdmins
+ */
+export interface AdminsResponseAdmins {
+  /**
+   * 管理者ID
+   * @type {string}
+   * @memberof AdminsResponseAdmins
+   */
+  id?: string
+  /**
+   * 姓
+   * @type {string}
+   * @memberof AdminsResponseAdmins
+   */
+  lastname?: string
+  /**
+   * 名
+   * @type {string}
+   * @memberof AdminsResponseAdmins
+   */
+  firstname?: string
+  /**
+   * 姓(かな)
+   * @type {string}
+   * @memberof AdminsResponseAdmins
+   */
+  lastnameKana?: string
+  /**
+   * 名(かな)
+   * @type {string}
+   * @memberof AdminsResponseAdmins
+   */
+  firstnameKana?: string
+  /**
+   * メールアドレス
+   * @type {string}
+   * @memberof AdminsResponseAdmins
+   */
+  email?: string
+  /**
+   * 権限 (1:管理者, 2:生産者)
+   * @type {number}
+   * @memberof AdminsResponseAdmins
+   */
+  role?: number
+  /**
+   * サムネイルURL
+   * @type {string}
+   * @memberof AdminsResponseAdmins
+   */
+  thumbnailUrl?: string
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof AdminsResponseAdmins
+   */
+  createdAt?: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof AdminsResponseAdmins
+   */
+  updatedAt?: number
 }
 /**
  *
@@ -102,6 +279,62 @@ export interface AuthResponse {
    * @memberof AuthResponse
    */
   tokenType: string
+}
+/**
+ *
+ * @export
+ * @interface CreateAdminRequest
+ */
+export interface CreateAdminRequest {
+  /**
+   * メールアドレス
+   * @type {string}
+   * @memberof CreateAdminRequest
+   */
+  email: string
+  /**
+   * 権限 (1:管理者, 2:生産者)
+   * @type {number}
+   * @memberof CreateAdminRequest
+   */
+  role: number
+  /**
+   * 姓
+   * @type {string}
+   * @memberof CreateAdminRequest
+   */
+  lastname: string
+  /**
+   * 名
+   * @type {string}
+   * @memberof CreateAdminRequest
+   */
+  firstname: string
+  /**
+   * 姓(かな)
+   * @type {string}
+   * @memberof CreateAdminRequest
+   */
+  lastnameKana: string
+  /**
+   * 名(かな)
+   * @type {string}
+   * @memberof CreateAdminRequest
+   */
+  firstnameKana: string
+}
+/**
+ *
+ * @export
+ * @interface CreateStoreRequest
+ */
+export interface CreateStoreRequest {
+  /**
+   * 店舗名
+   * @type {string}
+   * @memberof CreateStoreRequest
+   */
+  name: string
 }
 /**
  *
@@ -325,6 +558,38 @@ export interface UpdateAdminPasswordRequest {
 /**
  *
  * @export
+ * @interface UpdateStoreRequest
+ */
+export interface UpdateStoreRequest {
+  /**
+   * 店舗名
+   * @type {string}
+   * @memberof UpdateStoreRequest
+   */
+  name: string
+  /**
+   * サムネイルURL
+   * @type {string}
+   * @memberof UpdateStoreRequest
+   */
+  thumbnailUrl: string
+}
+/**
+ *
+ * @export
+ * @interface UploadResponse
+ */
+export interface UploadResponse {
+  /**
+   *
+   * @type {string}
+   * @memberof UploadResponse
+   */
+  url?: string
+}
+/**
+ *
+ * @export
  * @interface VerifyAdminEmailRequest
  */
 export interface VerifyAdminEmailRequest {
@@ -344,6 +609,110 @@ export const AdminApiAxiosParamCreator = function (
   configuration?: Configuration
 ) {
   return {
+    /**
+     *
+     * @summary 管理者登録
+     * @param {CreateAdminRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1CreateAdmin: async (
+      body: CreateAdminRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1CreateAdmin', 'body', body)
+      const localVarPath = `/v1/admins`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'POST',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary 管理者詳細取得
+     * @param {string} adminId 管理者ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1GetAdmin: async (
+      adminId: string,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'adminId' is not null or undefined
+      assertParamExists('v1GetAdmin', 'adminId', adminId)
+      const localVarPath = `/v1/admins/{adminId}`.replace(
+        `{${'adminId'}}`,
+        encodeURIComponent(String(adminId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
     /**
      *
      * @summary 管理者情報取得
@@ -372,6 +741,69 @@ export const AdminApiAxiosParamCreator = function (
       // authentication BearerAuth required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary 管理者一覧取得
+     * @param {Array<number>} roles 取得対象権限
+     * @param {number} [limit] 取得上限数
+     * @param {number} [offset] 取得開始位置
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1ListAdmins: async (
+      roles: Array<number>,
+      limit?: number,
+      offset?: number,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'roles' is not null or undefined
+      assertParamExists('v1ListAdmins', 'roles', roles)
+      const localVarPath = `/v1/admins`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (limit !== undefined) {
+        localVarQueryParameter['limit'] = limit
+      }
+
+      if (offset !== undefined) {
+        localVarQueryParameter['offset'] = offset
+      }
+
+      if (roles) {
+        localVarQueryParameter['roles'] = roles.join(COLLECTION_FORMATS.csv)
+      }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions =
@@ -561,6 +993,54 @@ export const AdminApiFp = function (configuration?: Configuration) {
   return {
     /**
      *
+     * @summary 管理者登録
+     * @param {CreateAdminRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1CreateAdmin(
+      body: CreateAdminRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<AdminResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateAdmin(
+        body,
+        options
+      )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary 管理者詳細取得
+     * @param {string} adminId 管理者ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1GetAdmin(
+      adminId: string,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<AdminResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetAdmin(
+        adminId,
+        options
+      )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
      * @summary 管理者情報取得
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -574,6 +1054,36 @@ export const AdminApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<AdminMeResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetAdminMe(
+        options
+      )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary 管理者一覧取得
+     * @param {Array<number>} roles 取得対象権限
+     * @param {number} [limit] 取得上限数
+     * @param {number} [offset] 取得開始位置
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1ListAdmins(
+      roles: Array<number>,
+      limit?: number,
+      offset?: number,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<AdminsResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListAdmins(
+        roles,
+        limit,
+        offset,
         options
       )
       return createRequestFunction(
@@ -665,6 +1175,33 @@ export const AdminApiFactory = function (
   return {
     /**
      *
+     * @summary 管理者登録
+     * @param {CreateAdminRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1CreateAdmin(
+      body: CreateAdminRequest,
+      options?: any
+    ): AxiosPromise<AdminResponse> {
+      return localVarFp
+        .v1CreateAdmin(body, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary 管理者詳細取得
+     * @param {string} adminId 管理者ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1GetAdmin(adminId: string, options?: any): AxiosPromise<AdminResponse> {
+      return localVarFp
+        .v1GetAdmin(adminId, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
      * @summary 管理者情報取得
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -672,6 +1209,25 @@ export const AdminApiFactory = function (
     v1GetAdminMe(options?: any): AxiosPromise<AdminMeResponse> {
       return localVarFp
         .v1GetAdminMe(options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary 管理者一覧取得
+     * @param {Array<number>} roles 取得対象権限
+     * @param {number} [limit] 取得上限数
+     * @param {number} [offset] 取得開始位置
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1ListAdmins(
+      roles: Array<number>,
+      limit?: number,
+      offset?: number,
+      options?: any
+    ): AxiosPromise<AdminsResponse> {
+      return localVarFp
+        .v1ListAdmins(roles, limit, offset, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -731,6 +1287,34 @@ export const AdminApiFactory = function (
 export class AdminApi extends BaseAPI {
   /**
    *
+   * @summary 管理者登録
+   * @param {CreateAdminRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public v1CreateAdmin(body: CreateAdminRequest, options?: AxiosRequestConfig) {
+    return AdminApiFp(this.configuration)
+      .v1CreateAdmin(body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary 管理者詳細取得
+   * @param {string} adminId 管理者ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public v1GetAdmin(adminId: string, options?: AxiosRequestConfig) {
+    return AdminApiFp(this.configuration)
+      .v1GetAdmin(adminId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
    * @summary 管理者情報取得
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -739,6 +1323,27 @@ export class AdminApi extends BaseAPI {
   public v1GetAdminMe(options?: AxiosRequestConfig) {
     return AdminApiFp(this.configuration)
       .v1GetAdminMe(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary 管理者一覧取得
+   * @param {Array<number>} roles 取得対象権限
+   * @param {number} [limit] 取得上限数
+   * @param {number} [offset] 取得開始位置
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public v1ListAdmins(
+    roles: Array<number>,
+    limit?: number,
+    offset?: number,
+    options?: AxiosRequestConfig
+  ) {
+    return AdminApiFp(this.configuration)
+      .v1ListAdmins(roles, limit, offset, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -1235,6 +1840,60 @@ export const StoreApiAxiosParamCreator = function (
   return {
     /**
      *
+     * @summary 店舗登録
+     * @param {CreateStoreRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1CreateStore: async (
+      body: CreateStoreRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1CreateStore', 'body', body)
+      const localVarPath = `/v1/stores`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'POST',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
      * @summary 店舗詳細取得
      * @param {number} storeId 店舗ID
      * @param {*} [options] Override http request option.
@@ -1338,6 +1997,115 @@ export const StoreApiAxiosParamCreator = function (
         options: localVarRequestOptions,
       }
     },
+    /**
+     *
+     * @summary 店舗更新
+     * @param {UpdateStoreRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateStore: async (
+      body: UpdateStoreRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1UpdateStore', 'body', body)
+      const localVarPath = `/v1/stores/{storeId}`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary 店舗サムネイルアップロード
+     * @param {any} [thumbnail]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UploadStoreThumbnail: async (
+      thumbnail?: any,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/v1/upload/stores/thumbnail`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'POST',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+      const localVarFormParams = new ((configuration &&
+        configuration.formDataCtor) ||
+        FormData)()
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (thumbnail !== undefined) {
+        localVarFormParams.append('thumbnail', thumbnail as any)
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'multipart/form-data'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = localVarFormParams
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
   }
 }
 
@@ -1348,6 +2116,30 @@ export const StoreApiAxiosParamCreator = function (
 export const StoreApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = StoreApiAxiosParamCreator(configuration)
   return {
+    /**
+     *
+     * @summary 店舗登録
+     * @param {CreateStoreRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1CreateStore(
+      body: CreateStoreRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<StoreResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateStore(
+        body,
+        options
+      )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
     /**
      *
      * @summary 店舗詳細取得
@@ -1399,6 +2191,55 @@ export const StoreApiFp = function (configuration?: Configuration) {
         configuration
       )
     },
+    /**
+     *
+     * @summary 店舗更新
+     * @param {UpdateStoreRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UpdateStore(
+      body: UpdateStoreRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateStore(
+        body,
+        options
+      )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary 店舗サムネイルアップロード
+     * @param {any} [thumbnail]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UploadStoreThumbnail(
+      thumbnail?: any,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadResponse>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1UploadStoreThumbnail(
+          thumbnail,
+          options
+        )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
   }
 }
 
@@ -1413,6 +2254,21 @@ export const StoreApiFactory = function (
 ) {
   const localVarFp = StoreApiFp(configuration)
   return {
+    /**
+     *
+     * @summary 店舗登録
+     * @param {CreateStoreRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1CreateStore(
+      body: CreateStoreRequest,
+      options?: any
+    ): AxiosPromise<StoreResponse> {
+      return localVarFp
+        .v1CreateStore(body, options)
+        .then((request) => request(axios, basePath))
+    },
     /**
      *
      * @summary 店舗詳細取得
@@ -1442,6 +2298,36 @@ export const StoreApiFactory = function (
         .v1ListStores(limit, offset, options)
         .then((request) => request(axios, basePath))
     },
+    /**
+     *
+     * @summary 店舗更新
+     * @param {UpdateStoreRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateStore(
+      body: UpdateStoreRequest,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1UpdateStore(body, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary 店舗サムネイルアップロード
+     * @param {any} [thumbnail]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UploadStoreThumbnail(
+      thumbnail?: any,
+      options?: any
+    ): AxiosPromise<UploadResponse> {
+      return localVarFp
+        .v1UploadStoreThumbnail(thumbnail, options)
+        .then((request) => request(axios, basePath))
+    },
   }
 }
 
@@ -1452,6 +2338,20 @@ export const StoreApiFactory = function (
  * @extends {BaseAPI}
  */
 export class StoreApi extends BaseAPI {
+  /**
+   *
+   * @summary 店舗登録
+   * @param {CreateStoreRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof StoreApi
+   */
+  public v1CreateStore(body: CreateStoreRequest, options?: AxiosRequestConfig) {
+    return StoreApiFp(this.configuration)
+      .v1CreateStore(body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
   /**
    *
    * @summary 店舗詳細取得
@@ -1482,6 +2382,34 @@ export class StoreApi extends BaseAPI {
   ) {
     return StoreApiFp(this.configuration)
       .v1ListStores(limit, offset, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary 店舗更新
+   * @param {UpdateStoreRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof StoreApi
+   */
+  public v1UpdateStore(body: UpdateStoreRequest, options?: AxiosRequestConfig) {
+    return StoreApiFp(this.configuration)
+      .v1UpdateStore(body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary 店舗サムネイルアップロード
+   * @param {any} [thumbnail]
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof StoreApi
+   */
+  public v1UploadStoreThumbnail(thumbnail?: any, options?: AxiosRequestConfig) {
+    return StoreApiFp(this.configuration)
+      .v1UploadStoreThumbnail(thumbnail, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

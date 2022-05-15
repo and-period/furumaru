@@ -17,18 +17,18 @@ const (
 
 // User - 購入者情報
 type User struct {
-	ID           string         `gorm:"primaryKey;<-:create"`
-	AccountID    string         `gorm:""`
-	CognitoID    string         `gorm:""`
-	ProviderType ProviderType   `gorm:""`
-	Username     string         `gorm:""`
-	Email        string         `gorm:"default:null"`
-	PhoneNumber  string         `gorm:"default:null"`
-	ThumbnailURL string         `gorm:""`
-	CreatedAt    time.Time      `gorm:"<-:create"`
-	UpdatedAt    time.Time      `gorm:""`
-	VerifiedAt   time.Time      `gorm:"default:null"`
-	DeletedAt    gorm.DeletedAt `gorm:"default:null"`
+	ID           string         `gorm:"primaryKey;<-:create"` // ユーザーID
+	AccountID    string         `gorm:""`                     // ユーザーID (検索用)
+	CognitoID    string         `gorm:""`                     // ユーザーID (Cognito用)
+	ProviderType ProviderType   `gorm:""`                     // 認証方法
+	Username     string         `gorm:""`                     // ユーザー名 (表示用)
+	Email        string         `gorm:"default:null"`         // メールアドレス
+	PhoneNumber  string         `gorm:"default:null"`         // 電話番号
+	ThumbnailURL string         `gorm:""`                     // サムネイルURL
+	CreatedAt    time.Time      `gorm:"<-:create"`            // 登録日時
+	UpdatedAt    time.Time      `gorm:""`                     // 更新日時
+	VerifiedAt   time.Time      `gorm:"default:null"`         // 確認日時
+	DeletedAt    gorm.DeletedAt `gorm:"default:null"`         // 削除日時
 }
 
 func NewUser(id, cognitoID string, provider ProviderType, email, phoneNumber string) *User {

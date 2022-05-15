@@ -1,9 +1,21 @@
-adminMeResponse:
+adminResponse:
   type: object
   properties:
     id:
       type: string
       description: 管理者ID
+    lastname:
+      type: string
+      description: 姓
+    firstname:
+      type: string
+      description: 名
+    lastnameKana:
+      type: string
+      description: 姓(かな)
+    firstnameKana:
+      type: string
+      description: 名(かな)
     email:
       type: string
       description: メールアドレス
@@ -11,11 +23,148 @@ adminMeResponse:
       type: integer
       format: int32
       description: 権限 (1:管理者, 2:生産者)
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+    createdAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
+    updatedAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
   required:
   - id
+  - lastname
+  - firstname
+  - lastnameKana
+  - firstnameKana
   - email
   - role
+  - thumbnailUrl
+  - createdAt
+  - updatedAt
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
+    lastname: '&.'
+    firstname: '管理者'
+    lastnameKana: 'あんどどっと'
+    firstnameKana: 'かんりしゃ'
     email: 'test-user@and-period.jp'
     role: 1
+    thumbnailUrl: 'https://and-period.jp/thumbnail'
+    createdAt: 1640962800
+    updatedAt: 1640962800
+adminsResponse:
+  type: object
+  properties:
+    admins:
+      type: array
+      description: 管理者一覧
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            description: 管理者ID
+          lastname:
+            type: string
+            description: 姓
+          firstname:
+            type: string
+            description: 名
+          lastnameKana:
+            type: string
+            description: 姓(かな)
+          firstnameKana:
+            type: string
+            description: 名(かな)
+          email:
+            type: string
+            description: メールアドレス
+          role:
+            type: integer
+            format: int32
+            description: 権限 (1:管理者, 2:生産者)
+          thumbnailUrl:
+            type: string
+            description: サムネイルURL
+          createdAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+          updatedAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+  required:
+  - admins
+  example:
+    admins:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      lastname: '&.'
+      firstname: '管理者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'かんりしゃ'
+      email: 'test-user@and-period.jp'
+      role: 1
+      thumbnailUrl: 'https://and-period.jp/thumbnail'
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      lastname: '&.'
+      firstname: 'スタッフ'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'すたっふ'
+      email: 'test-user@and-period.jp'
+      role: 2
+      thumbnailUrl: 'https://and-period.jp/thumbnail'
+      createdAt: 1640962800
+      updatedAt: 1640962800
+adminMeResponse:
+  type: object
+  properties:
+    id:
+      type: string
+      description: 管理者ID
+    lastname:
+      type: string
+      description: 姓
+    firstname:
+      type: string
+      description: 名
+    lastnameKana:
+      type: string
+      description: 姓(かな)
+    firstnameKana:
+      type: string
+      description: 名(かな)
+    email:
+      type: string
+      description: メールアドレス
+    role:
+      type: integer
+      format: int32
+      description: 権限 (1:管理者, 2:生産者)
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+  required:
+  - id
+  - lastname
+  - firstname
+  - lastnameKana
+  - firstnameKana
+  - email
+  - role
+  - thumbnailUrl
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    lastname: '&.'
+    firstname: '管理者'
+    lastnameKana: 'あんどどっと'
+    firstnameKana: 'かんりしゃ'
+    email: 'test-user@and-period.jp'
+    role: 1
+    thumbnailUrl: 'https://and-period.jp/thumbnail'
