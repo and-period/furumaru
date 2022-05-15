@@ -394,7 +394,7 @@ func TestUser_UpdateVerified(t *testing.T) {
 	}
 }
 
-func TestUser_Initialize(t *testing.T) {
+func TestUser_UpdateAccount(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -461,7 +461,7 @@ func TestUser_Initialize(t *testing.T) {
 			tt.setup(ctx, t, m)
 
 			db := &user{db: m.db, now: now}
-			err = db.UpdateAccountInfo(ctx, tt.args.userID, tt.args.accountID, tt.args.userName)
+			err = db.UpdateAccount(ctx, tt.args.userID, tt.args.accountID, tt.args.userName)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}

@@ -70,7 +70,7 @@ func (s *userService) InitializeUser(ctx context.Context, in *InitializeUserInpu
 		return userError(err)
 	}
 
-	err := s.db.User.UpdateAccountInfo(ctx, in.UserID, in.AccountID, in.Username)
+	err := s.db.User.UpdateAccount(ctx, in.UserID, in.AccountID, in.Username)
 	return userError(err)
 }
 

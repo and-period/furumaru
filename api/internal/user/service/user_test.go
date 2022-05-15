@@ -515,18 +515,6 @@ func TestVerifyUserEmail(t *testing.T) {
 func TestInitializeUser(t *testing.T) {
 	t.Parallel()
 
-	now := jst.Now()
-	u := &entity.User{
-		ID:           "user-id",
-		CognitoID:    "cognito-id",
-		ProviderType: entity.ProviderTypeEmail,
-		Email:        "test-user@and-period.jp",
-		PhoneNumber:  "+810000000000",
-		CreatedAt:    now,
-		UpdatedAt:    now,
-		VerifiedAt:   now,
-	}
-
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -536,8 +524,7 @@ func TestInitializeUser(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
-				mocks.db.User.EXPECT().UpdateAccountInfo(ctx, "user-id", "account-id", "username").Return(nil)
+				mocks.db.User.EXPECT().UpdateAccount(ctx, "user-id", "account-id", "username").Return(nil)
 			},
 			input: &InitializeUserInput{
 				UserID:    "user-id",
@@ -555,8 +542,7 @@ func TestInitializeUser(t *testing.T) {
 		{
 			name: "failed to initilaze user",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
-				mocks.db.User.EXPECT().UpdateAccountInfo(ctx, "user-id", "account-id", "username").Return(errmock)
+				mocks.db.User.EXPECT().UpdateAccount(ctx, "user-id", "account-id", "username").Return(errmock)
 			},
 			input: &InitializeUserInput{
 				UserID:    "user-id",

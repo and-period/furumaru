@@ -120,7 +120,7 @@ func (u *user) UpdateVerified(ctx context.Context, userID string) error {
 	return dbError(err)
 }
 
-func (u *user) UpdateAccountInfo(ctx context.Context, userID, accountID, userName string) error {
+func (u *user) UpdateAccount(ctx context.Context, userID, accountID, userName string) error {
 	_, err := u.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		var current *entity.User
 		err := tx.WithContext(ctx).
