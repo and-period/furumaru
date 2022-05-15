@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Marche Online
- * マルシェ販売者用API
+ * マルシェ管理者用API
  *
  * The version of the OpenAPI document: 0.1.0
  *

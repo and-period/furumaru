@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Marche Online
- * マルシェ販売者用API
+ * マルシェ管理者用API
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -254,7 +254,7 @@ export interface AuthResponse {
    * @type {string}
    * @memberof AuthResponse
    */
-  shopId: string
+  adminId: string
   /**
    * アクセストークン
    * @type {string}
@@ -364,25 +364,6 @@ export interface RefreshAuthTokenRequest {
 /**
  *
  * @export
- * @interface ShopMeResponse
- */
-export interface ShopMeResponse {
-  /**
-   * 販売者ID
-   * @type {string}
-   * @memberof ShopMeResponse
-   */
-  id: string
-  /**
-   * メールアドレス
-   * @type {string}
-   * @memberof ShopMeResponse
-   */
-  email: string
-}
-/**
- *
- * @export
  * @interface SignInRequest
  */
 export interface SignInRequest {
@@ -402,60 +383,184 @@ export interface SignInRequest {
 /**
  *
  * @export
- * @interface UpdateShopEmailRequest
+ * @interface StoreResponse
  */
-export interface UpdateShopEmailRequest {
+export interface StoreResponse {
+  /**
+   * 店舗ID
+   * @type {number}
+   * @memberof StoreResponse
+   */
+  id: number
+  /**
+   * 店舗名
+   * @type {string}
+   * @memberof StoreResponse
+   */
+  name: string
+  /**
+   * サムネイルURL
+   * @type {string}
+   * @memberof StoreResponse
+   */
+  thumbnailUrl: string
+  /**
+   * 店舗スタッフ一覧
+   * @type {Array<StoreResponseStaffs>}
+   * @memberof StoreResponse
+   */
+  staffs: Array<StoreResponseStaffs>
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof StoreResponse
+   */
+  createdAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof StoreResponse
+   */
+  updatedAt: number
+}
+/**
+ *
+ * @export
+ * @interface StoreResponseStaffs
+ */
+export interface StoreResponseStaffs {
+  /**
+   * 販売者ID
+   * @type {string}
+   * @memberof StoreResponseStaffs
+   */
+  id?: string
+  /**
+   * 販売者名
+   * @type {string}
+   * @memberof StoreResponseStaffs
+   */
+  name?: string
   /**
    * メールアドレス
    * @type {string}
-   * @memberof UpdateShopEmailRequest
+   * @memberof StoreResponseStaffs
+   */
+  email?: string
+  /**
+   * 権限 (1:管理者, 2:編集者, 3:閲覧者)
+   * @type {number}
+   * @memberof StoreResponseStaffs
+   */
+  role?: number
+}
+/**
+ *
+ * @export
+ * @interface StoresResponse
+ */
+export interface StoresResponse {
+  /**
+   * 店舗一覧
+   * @type {Array<StoresResponseStores>}
+   * @memberof StoresResponse
+   */
+  stores: Array<StoresResponseStores>
+}
+/**
+ *
+ * @export
+ * @interface StoresResponseStores
+ */
+export interface StoresResponseStores {
+  /**
+   * 店舗ID
+   * @type {number}
+   * @memberof StoresResponseStores
+   */
+  id?: number
+  /**
+   * 店舗名
+   * @type {string}
+   * @memberof StoresResponseStores
+   */
+  name?: string
+  /**
+   * サムネイルURL
+   * @type {string}
+   * @memberof StoresResponseStores
+   */
+  thumbnailUrl?: string
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof StoresResponseStores
+   */
+  createdAt?: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof StoresResponseStores
+   */
+  updatedAt?: number
+}
+/**
+ *
+ * @export
+ * @interface UpdateAdminEmailRequest
+ */
+export interface UpdateAdminEmailRequest {
+  /**
+   * メールアドレス
+   * @type {string}
+   * @memberof UpdateAdminEmailRequest
    */
   email: string
 }
 /**
  *
  * @export
- * @interface UpdateShopPasswordRequest
+ * @interface UpdateAdminPasswordRequest
  */
-export interface UpdateShopPasswordRequest {
+export interface UpdateAdminPasswordRequest {
   /**
    * 現在のパスワード
    * @type {string}
-   * @memberof UpdateShopPasswordRequest
+   * @memberof UpdateAdminPasswordRequest
    */
   oldPassword: string
   /**
    * 新しいパスワード (8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
    * @type {string}
-   * @memberof UpdateShopPasswordRequest
+   * @memberof UpdateAdminPasswordRequest
    */
   newPassword: string
   /**
    * パスワード (確認用)
    * @type {string}
-   * @memberof UpdateShopPasswordRequest
+   * @memberof UpdateAdminPasswordRequest
    */
   passwordConfirmation: string
 }
 /**
  *
  * @export
- * @interface VerifyShopEmailRequest
+ * @interface VerifyAdminEmailRequest
  */
-export interface VerifyShopEmailRequest {
+export interface VerifyAdminEmailRequest {
   /**
    * 認証コード
    * @type {string}
-   * @memberof VerifyShopEmailRequest
+   * @memberof VerifyAdminEmailRequest
    */
   verifyCode: string
 }
 
 /**
- * AuthApi - axios parameter creator
+ * AdminApi - axios parameter creator
  * @export
  */
-export const AuthApiAxiosParamCreator = function (
+export const AdminApiAxiosParamCreator = function (
   configuration?: Configuration
 ) {
   return {
@@ -569,10 +674,10 @@ export const AuthApiAxiosParamCreator = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    v1GetAuth: async (
+    v1GetAdminMe: async (
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
-      const localVarPath = `/v1/auth`
+      const localVarPath = `/v1/admins/me`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -673,6 +778,637 @@ export const AuthApiAxiosParamCreator = function (
      *
      * @summary メールアドレス更新
      * @param {UpdateAdminEmailRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateAdminEmail: async (
+      body: UpdateAdminEmailRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1UpdateAdminEmail', 'body', body)
+      const localVarPath = `/v1/admins/me/email`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary パスワード更新
+     * @param {UpdateAdminPasswordRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateAdminPassword: async (
+      body: UpdateAdminPasswordRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1UpdateAdminPassword', 'body', body)
+      const localVarPath = `/v1/admins/me/password`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary メールアドレス更新 - コード検証
+     * @param {VerifyAdminEmailRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1VerifyAdminEmail: async (
+      body: VerifyAdminEmailRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1VerifyAdminEmail', 'body', body)
+      const localVarPath = `/v1/admins/me/email/verified`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'POST',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * AdminApi - functional programming interface
+ * @export
+ */
+export const AdminApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = AdminApiAxiosParamCreator(configuration)
+  return {
+    /**
+     *
+     * @summary 管理者登録
+     * @param {CreateAdminRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1CreateAdmin(
+      body: CreateAdminRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<AdminResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateAdmin(
+        body,
+        options
+      )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary 管理者詳細取得
+     * @param {string} adminId 管理者ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1GetAdmin(
+      adminId: string,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<AdminResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetAdmin(
+        adminId,
+        options
+      )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary 管理者情報取得
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1GetAdminMe(
+      options?: AxiosRequestConfig
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<AdminMeResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetAdminMe(
+        options
+      )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary 管理者一覧取得
+     * @param {Array<number>} roles 取得対象権限
+     * @param {number} [limit] 取得上限数
+     * @param {number} [offset] 取得開始位置
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1ListAdmins(
+      roles: Array<number>,
+      limit?: number,
+      offset?: number,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<AdminsResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListAdmins(
+        roles,
+        limit,
+        offset,
+        options
+      )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary メールアドレス更新
+     * @param {UpdateAdminEmailRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UpdateAdminEmail(
+      body: UpdateAdminEmailRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1UpdateAdminEmail(body, options)
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary パスワード更新
+     * @param {UpdateAdminPasswordRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UpdateAdminPassword(
+      body: UpdateAdminPasswordRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1UpdateAdminPassword(body, options)
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary メールアドレス更新 - コード検証
+     * @param {VerifyAdminEmailRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1VerifyAdminEmail(
+      body: VerifyAdminEmailRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1VerifyAdminEmail(body, options)
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+  }
+}
+
+/**
+ * AdminApi - factory interface
+ * @export
+ */
+export const AdminApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance
+) {
+  const localVarFp = AdminApiFp(configuration)
+  return {
+    /**
+     *
+     * @summary 管理者登録
+     * @param {CreateAdminRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1CreateAdmin(
+      body: CreateAdminRequest,
+      options?: any
+    ): AxiosPromise<AdminResponse> {
+      return localVarFp
+        .v1CreateAdmin(body, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary 管理者詳細取得
+     * @param {string} adminId 管理者ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1GetAdmin(adminId: string, options?: any): AxiosPromise<AdminResponse> {
+      return localVarFp
+        .v1GetAdmin(adminId, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary 管理者情報取得
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1GetAdminMe(options?: any): AxiosPromise<AdminMeResponse> {
+      return localVarFp
+        .v1GetAdminMe(options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary 管理者一覧取得
+     * @param {Array<number>} roles 取得対象権限
+     * @param {number} [limit] 取得上限数
+     * @param {number} [offset] 取得開始位置
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1ListAdmins(
+      roles: Array<number>,
+      limit?: number,
+      offset?: number,
+      options?: any
+    ): AxiosPromise<AdminsResponse> {
+      return localVarFp
+        .v1ListAdmins(roles, limit, offset, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary メールアドレス更新
+     * @param {UpdateAdminEmailRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateAdminEmail(
+      body: UpdateAdminEmailRequest,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1UpdateAdminEmail(body, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary パスワード更新
+     * @param {UpdateAdminPasswordRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateAdminPassword(
+      body: UpdateAdminPasswordRequest,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1UpdateAdminPassword(body, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary メールアドレス更新 - コード検証
+     * @param {VerifyAdminEmailRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1VerifyAdminEmail(
+      body: VerifyAdminEmailRequest,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1VerifyAdminEmail(body, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * AdminApi - object-oriented interface
+ * @export
+ * @class AdminApi
+ * @extends {BaseAPI}
+ */
+export class AdminApi extends BaseAPI {
+  /**
+   *
+   * @summary 管理者登録
+   * @param {CreateAdminRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public v1CreateAdmin(body: CreateAdminRequest, options?: AxiosRequestConfig) {
+    return AdminApiFp(this.configuration)
+      .v1CreateAdmin(body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary 管理者詳細取得
+   * @param {string} adminId 管理者ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public v1GetAdmin(adminId: string, options?: AxiosRequestConfig) {
+    return AdminApiFp(this.configuration)
+      .v1GetAdmin(adminId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary 管理者情報取得
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public v1GetAdminMe(options?: AxiosRequestConfig) {
+    return AdminApiFp(this.configuration)
+      .v1GetAdminMe(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary 管理者一覧取得
+   * @param {Array<number>} roles 取得対象権限
+   * @param {number} [limit] 取得上限数
+   * @param {number} [offset] 取得開始位置
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public v1ListAdmins(
+    roles: Array<number>,
+    limit?: number,
+    offset?: number,
+    options?: AxiosRequestConfig
+  ) {
+    return AdminApiFp(this.configuration)
+      .v1ListAdmins(roles, limit, offset, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary メールアドレス更新
+   * @param {UpdateAdminEmailRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public v1UpdateAdminEmail(
+    body: UpdateAdminEmailRequest,
+    options?: AxiosRequestConfig
+  ) {
+    return AdminApiFp(this.configuration)
+      .v1UpdateAdminEmail(body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary パスワード更新
+   * @param {UpdateAdminPasswordRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public v1UpdateAdminPassword(
+    body: UpdateAdminPasswordRequest,
+    options?: AxiosRequestConfig
+  ) {
+    return AdminApiFp(this.configuration)
+      .v1UpdateAdminPassword(body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary メールアドレス更新 - コード検証
+   * @param {VerifyAdminEmailRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public v1VerifyAdminEmail(
+    body: VerifyAdminEmailRequest,
+    options?: AxiosRequestConfig
+  ) {
+    return AdminApiFp(this.configuration)
+      .v1VerifyAdminEmail(body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * AuthApi - axios parameter creator
+ * @export
+ */
+export const AuthApiAxiosParamCreator = function (
+  configuration?: Configuration
+) {
+  return {
+    /**
+     *
+     * @summary トークン検証
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1GetAuth: async (
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/v1/auth`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary トークン更新
+     * @param {RefreshAuthTokenRequest} body
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -832,55 +1568,7 @@ export const AuthApiFp = function (configuration?: Configuration) {
   return {
     /**
      *
-     * @summary 管理者登録
-     * @param {CreateAdminRequest} body
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async v1CreateAdmin(
-      body: CreateAdminRequest,
-      options?: AxiosRequestConfig
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<AdminResponse>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateAdmin(
-        body,
-        options
-      )
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration
-      )
-    },
-    /**
-     *
-     * @summary 管理者詳細取得
-     * @param {string} adminId 管理者ID
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async v1GetAdmin(
-      adminId: string,
-      options?: AxiosRequestConfig
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<AdminResponse>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetAdmin(
-        adminId,
-        options
-      )
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration
-      )
-    },
-    /**
-     *
-     * @summary 管理者情報取得
+     * @summary トークン検証
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -901,38 +1589,8 @@ export const AuthApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @summary 管理者一覧取得
-     * @param {Array<number>} roles 取得対象権限
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async v1ListAdmins(
-      roles: Array<number>,
-      limit?: number,
-      offset?: number,
-      options?: AxiosRequestConfig
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<AdminsResponse>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListAdmins(
-        roles,
-        limit,
-        offset,
-        options
-      )
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration
-      )
-    },
-    /**
-     *
-     * @summary メールアドレス更新
-     * @param {UpdateAdminEmailRequest} body
+     * @summary トークン更新
+     * @param {RefreshAuthTokenRequest} body
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1012,34 +1670,7 @@ export const AuthApiFactory = function (
   return {
     /**
      *
-     * @summary 管理者登録
-     * @param {CreateAdminRequest} body
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    v1CreateAdmin(
-      body: CreateAdminRequest,
-      options?: any
-    ): AxiosPromise<AdminResponse> {
-      return localVarFp
-        .v1CreateAdmin(body, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     *
-     * @summary 管理者詳細取得
-     * @param {string} adminId 管理者ID
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    v1GetAdmin(adminId: string, options?: any): AxiosPromise<AdminResponse> {
-      return localVarFp
-        .v1GetAdmin(adminId, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     *
-     * @summary 管理者情報取得
+     * @summary トークン検証
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1050,27 +1681,8 @@ export const AuthApiFactory = function (
     },
     /**
      *
-     * @summary 管理者一覧取得
-     * @param {Array<number>} roles 取得対象権限
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    v1ListAdmins(
-      roles: Array<number>,
-      limit?: number,
-      offset?: number,
-      options?: any
-    ): AxiosPromise<AdminsResponse> {
-      return localVarFp
-        .v1ListAdmins(roles, limit, offset, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     *
-     * @summary メールアドレス更新
-     * @param {UpdateAdminEmailRequest} body
+     * @summary トークン更新
+     * @param {RefreshAuthTokenRequest} body
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1117,35 +1729,7 @@ export const AuthApiFactory = function (
 export class AuthApi extends BaseAPI {
   /**
    *
-   * @summary 管理者登録
-   * @param {CreateAdminRequest} body
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof AdminApi
-   */
-  public v1CreateAdmin(body: CreateAdminRequest, options?: AxiosRequestConfig) {
-    return AdminApiFp(this.configuration)
-      .v1CreateAdmin(body, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   *
-   * @summary 管理者詳細取得
-   * @param {string} adminId 管理者ID
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof AdminApi
-   */
-  public v1GetAdmin(adminId: string, options?: AxiosRequestConfig) {
-    return AdminApiFp(this.configuration)
-      .v1GetAdmin(adminId, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   *
-   * @summary 管理者情報取得
+   * @summary トークン検証
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AuthApi
@@ -1158,29 +1742,8 @@ export class AuthApi extends BaseAPI {
 
   /**
    *
-   * @summary 管理者一覧取得
-   * @param {Array<number>} roles 取得対象権限
-   * @param {number} [limit] 取得上限数
-   * @param {number} [offset] 取得開始位置
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof AdminApi
-   */
-  public v1ListAdmins(
-    roles: Array<number>,
-    limit?: number,
-    offset?: number,
-    options?: AxiosRequestConfig
-  ) {
-    return AdminApiFp(this.configuration)
-      .v1ListAdmins(roles, limit, offset, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   *
-   * @summary メールアドレス更新
-   * @param {UpdateAdminEmailRequest} body
+   * @summary トークン更新
+   * @param {RefreshAuthTokenRequest} body
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AuthApi
@@ -1223,23 +1786,30 @@ export class AuthApi extends BaseAPI {
 }
 
 /**
- * ShopApi - axios parameter creator
+ * StoreApi - axios parameter creator
  * @export
  */
-export const ShopApiAxiosParamCreator = function (
+export const StoreApiAxiosParamCreator = function (
   configuration?: Configuration
 ) {
   return {
     /**
      *
-     * @summary 販売者情報取得
+     * @summary 店舗詳細取得
+     * @param {number} storeId 店舗ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    v1GetShopMe: async (
+    v1GetStore: async (
+      storeId: number,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
-      const localVarPath = `/v1/shops/me`
+      // verify required parameter 'storeId' is not null or undefined
+      assertParamExists('v1GetStore', 'storeId', storeId)
+      const localVarPath = `/v1/stores/{storeId}`.replace(
+        `{${'storeId'}}`,
+        encodeURIComponent(String(storeId))
+      )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -1275,18 +1845,18 @@ export const ShopApiAxiosParamCreator = function (
     },
     /**
      *
-     * @summary メールアドレス更新
-     * @param {UpdateShopEmailRequest} body
+     * @summary 店舗一覧取得
+     * @param {number} [limit] 取得上限数
+     * @param {number} [offset] 取得開始位置
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    v1UpdateShopEmail: async (
-      body: UpdateShopEmailRequest,
+    v1ListStores: async (
+      limit?: number,
+      offset?: number,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
-      // verify required parameter 'body' is not null or undefined
-      assertParamExists('v1UpdateShopEmail', 'body', body)
-      const localVarPath = `/v1/shops/me/email`
+      const localVarPath = `/v1/stores`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -1295,7 +1865,7 @@ export const ShopApiAxiosParamCreator = function (
       }
 
       const localVarRequestOptions = {
-        method: 'PATCH',
+        method: 'GET',
         ...baseOptions,
         ...options,
       }
@@ -1306,7 +1876,13 @@ export const ShopApiAxiosParamCreator = function (
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-      localVarHeaderParameter['Content-Type'] = 'application/json'
+      if (limit !== undefined) {
+        localVarQueryParameter['limit'] = limit
+      }
+
+      if (offset !== undefined) {
+        localVarQueryParameter['offset'] = offset
+      }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions =
@@ -1316,119 +1892,6 @@ export const ShopApiAxiosParamCreator = function (
         ...headersFromBaseOptions,
         ...options.headers,
       }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        body,
-        localVarRequestOptions,
-        configuration
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     *
-     * @summary パスワード更新
-     * @param {UpdateShopPasswordRequest} body
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    v1UpdateShopPassword: async (
-      body: UpdateShopPasswordRequest,
-      options: AxiosRequestConfig = {}
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'body' is not null or undefined
-      assertParamExists('v1UpdateShopPassword', 'body', body)
-      const localVarPath = `/v1/shops/me/password`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = {
-        method: 'PATCH',
-        ...baseOptions,
-        ...options,
-      }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication BearerAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        body,
-        localVarRequestOptions,
-        configuration
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     *
-     * @summary メールアドレス更新 - コード検証
-     * @param {VerifyShopEmailRequest} body
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    v1VerifyShopEmail: async (
-      body: VerifyShopEmailRequest,
-      options: AxiosRequestConfig = {}
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'body' is not null or undefined
-      assertParamExists('v1VerifyShopEmail', 'body', body)
-      const localVarPath = `/v1/shops/me/email/verified`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = {
-        method: 'POST',
-        ...baseOptions,
-        ...options,
-      }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication BearerAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        body,
-        localVarRequestOptions,
-        configuration
-      )
 
       return {
         url: toPathString(localVarUrlObj),
@@ -1439,24 +1902,27 @@ export const ShopApiAxiosParamCreator = function (
 }
 
 /**
- * ShopApi - functional programming interface
+ * StoreApi - functional programming interface
  * @export
  */
-export const ShopApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator = ShopApiAxiosParamCreator(configuration)
+export const StoreApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = StoreApiAxiosParamCreator(configuration)
   return {
     /**
      *
-     * @summary 販売者情報取得
+     * @summary 店舗詳細取得
+     * @param {number} storeId 店舗ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async v1GetShopMe(
+    async v1GetStore(
+      storeId: number,
       options?: AxiosRequestConfig
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ShopMeResponse>
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<StoreResponse>
     > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetShopMe(
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetStore(
+        storeId,
         options
       )
       return createRequestFunction(
@@ -1468,63 +1934,24 @@ export const ShopApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @summary メールアドレス更新
-     * @param {UpdateShopEmailRequest} body
+     * @summary 店舗一覧取得
+     * @param {number} [limit] 取得上限数
+     * @param {number} [offset] 取得開始位置
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async v1UpdateShopEmail(
-      body: UpdateShopEmailRequest,
+    async v1ListStores(
+      limit?: number,
+      offset?: number,
       options?: AxiosRequestConfig
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<StoresResponse>
     > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.v1UpdateShopEmail(body, options)
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListStores(
+        limit,
+        offset,
+        options
       )
-    },
-    /**
-     *
-     * @summary パスワード更新
-     * @param {UpdateShopPasswordRequest} body
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async v1UpdateShopPassword(
-      body: UpdateShopPasswordRequest,
-      options?: AxiosRequestConfig
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.v1UpdateShopPassword(body, options)
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration
-      )
-    },
-    /**
-     *
-     * @summary メールアドレス更新 - コード検証
-     * @param {VerifyShopEmailRequest} body
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async v1VerifyShopEmail(
-      body: VerifyShopEmailRequest,
-      options?: AxiosRequestConfig
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.v1VerifyShopEmail(body, options)
       return createRequestFunction(
         localVarAxiosArgs,
         globalAxios,
@@ -1536,143 +1963,85 @@ export const ShopApiFp = function (configuration?: Configuration) {
 }
 
 /**
- * ShopApi - factory interface
+ * StoreApi - factory interface
  * @export
  */
-export const ShopApiFactory = function (
+export const StoreApiFactory = function (
   configuration?: Configuration,
   basePath?: string,
   axios?: AxiosInstance
 ) {
-  const localVarFp = ShopApiFp(configuration)
+  const localVarFp = StoreApiFp(configuration)
   return {
     /**
      *
-     * @summary 販売者情報取得
+     * @summary 店舗詳細取得
+     * @param {number} storeId 店舗ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    v1GetShopMe(options?: any): AxiosPromise<ShopMeResponse> {
+    v1GetStore(storeId: number, options?: any): AxiosPromise<StoreResponse> {
       return localVarFp
-        .v1GetShopMe(options)
+        .v1GetStore(storeId, options)
         .then((request) => request(axios, basePath))
     },
     /**
      *
-     * @summary メールアドレス更新
-     * @param {UpdateShopEmailRequest} body
+     * @summary 店舗一覧取得
+     * @param {number} [limit] 取得上限数
+     * @param {number} [offset] 取得開始位置
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    v1UpdateShopEmail(
-      body: UpdateShopEmailRequest,
+    v1ListStores(
+      limit?: number,
+      offset?: number,
       options?: any
-    ): AxiosPromise<object> {
+    ): AxiosPromise<StoresResponse> {
       return localVarFp
-        .v1UpdateShopEmail(body, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     *
-     * @summary パスワード更新
-     * @param {UpdateShopPasswordRequest} body
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    v1UpdateShopPassword(
-      body: UpdateShopPasswordRequest,
-      options?: any
-    ): AxiosPromise<object> {
-      return localVarFp
-        .v1UpdateShopPassword(body, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     *
-     * @summary メールアドレス更新 - コード検証
-     * @param {VerifyShopEmailRequest} body
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    v1VerifyShopEmail(
-      body: VerifyShopEmailRequest,
-      options?: any
-    ): AxiosPromise<object> {
-      return localVarFp
-        .v1VerifyShopEmail(body, options)
+        .v1ListStores(limit, offset, options)
         .then((request) => request(axios, basePath))
     },
   }
 }
 
 /**
- * ShopApi - object-oriented interface
+ * StoreApi - object-oriented interface
  * @export
- * @class ShopApi
+ * @class StoreApi
  * @extends {BaseAPI}
  */
-export class ShopApi extends BaseAPI {
+export class StoreApi extends BaseAPI {
   /**
    *
-   * @summary 販売者情報取得
+   * @summary 店舗詳細取得
+   * @param {number} storeId 店舗ID
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ShopApi
+   * @memberof StoreApi
    */
-  public v1GetShopMe(options?: AxiosRequestConfig) {
-    return ShopApiFp(this.configuration)
-      .v1GetShopMe(options)
+  public v1GetStore(storeId: number, options?: AxiosRequestConfig) {
+    return StoreApiFp(this.configuration)
+      .v1GetStore(storeId, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
    *
-   * @summary メールアドレス更新
-   * @param {UpdateShopEmailRequest} body
+   * @summary 店舗一覧取得
+   * @param {number} [limit] 取得上限数
+   * @param {number} [offset] 取得開始位置
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ShopApi
+   * @memberof StoreApi
    */
-  public v1UpdateShopEmail(
-    body: UpdateShopEmailRequest,
+  public v1ListStores(
+    limit?: number,
+    offset?: number,
     options?: AxiosRequestConfig
   ) {
-    return ShopApiFp(this.configuration)
-      .v1UpdateShopEmail(body, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   *
-   * @summary パスワード更新
-   * @param {UpdateShopPasswordRequest} body
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof ShopApi
-   */
-  public v1UpdateShopPassword(
-    body: UpdateShopPasswordRequest,
-    options?: AxiosRequestConfig
-  ) {
-    return ShopApiFp(this.configuration)
-      .v1UpdateShopPassword(body, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   *
-   * @summary メールアドレス更新 - コード検証
-   * @param {VerifyShopEmailRequest} body
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof ShopApi
-   */
-  public v1VerifyShopEmail(
-    body: VerifyShopEmailRequest,
-    options?: AxiosRequestConfig
-  ) {
-    return ShopApiFp(this.configuration)
-      .v1VerifyShopEmail(body, options)
+    return StoreApiFp(this.configuration)
+      .v1ListStores(limit, offset, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
