@@ -133,7 +133,7 @@ func (u *user) UpdateAccount(ctx context.Context, userID, accountID, userName st
 			return nil, err
 		}
 		if current.ID != "" {
-			return nil, ErrAlreadyExists
+			return nil, exception.ErrAlreadyExists
 		}
 
 		err = tx.WithContext(ctx).
@@ -141,7 +141,7 @@ func (u *user) UpdateAccount(ctx context.Context, userID, accountID, userName st
 			Where("id = ?", userID).
 			First(&current).Error
 		if err != nil {
-			return nil, ErrNotFound
+			return nil, exception.ErrNotFound
 		}
 
 		params := map[string]interface{}{
@@ -155,7 +155,7 @@ func (u *user) UpdateAccount(ctx context.Context, userID, accountID, userName st
 			Updates(params).Error
 		return nil, err
 	})
-	return dbError(err)
+	return exception.InternalError(err)
 }
 
 func (u *user) UpdateEmail(ctx context.Context, userID, email string) error {
