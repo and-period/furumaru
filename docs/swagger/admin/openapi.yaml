@@ -28,6 +28,10 @@ paths:
     $ref: './paths/v1/admins/me/email/verified.yaml'
   /v1/admins/me/password:
     $ref: './paths/v1/admins/me/password.yaml'
+  /v1/admins:
+    $ref: './paths/v1/admins/index.yaml'
+  /v1/admins/{adminId}:
+    $ref: './paths/v1/admins/_adminId/index.yaml'
   /v1/stores:
     $ref: './paths/v1/stores/index.yaml'
   /v1/stores/{storeId}:
@@ -46,6 +50,8 @@ components:
       $ref: './components/schemas/v1/auth.request.yaml#/signInRequest'
     v1RefreshAuthTokenRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/refreshAuthTokenRequest'
+    v1CreateAdminRequest:
+      $ref: './components/schemas/v1/admins.request.yaml#/createAdminRequest'
     v1UpdateAdminEmailRequest:
       $ref: './components/schemas/v1/admins.request.yaml#/updateAdminEmailRequest'
     v1VerifyAdminEmailRequest:
@@ -55,6 +61,10 @@ components:
     # Response
     v1AuthResponse:
       $ref: './components/schemas/v1/auth.response.yaml#/authResponse'
+    v1AdminResponse:
+      $ref: './components/schemas/v1/admins.response.yaml#/adminResponse'
+    v1AdminsResponse:
+      $ref: './components/schemas/v1/admins.response.yaml#/adminsResponse'
     v1AdminMeResponse:
       $ref: './components/schemas/v1/admins.response.yaml#/adminMeResponse'
     v1StoreResponse:

@@ -4,6 +4,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/marche/api/internal/exception"
+	"github.com/and-period/marche/api/internal/store"
 	"github.com/and-period/marche/api/internal/store/entity"
 	"github.com/and-period/marche/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -33,7 +35,7 @@ func TestListStaffsByStoreID(t *testing.T) {
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *ListStaffsByStoreIDInput
+		input     *store.ListStaffsByStoreIDInput
 		expect    entity.Staffs
 		expectErr error
 	}{
@@ -42,7 +44,7 @@ func TestListStaffsByStoreID(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Staff.EXPECT().ListByStoreID(ctx, int64(1)).Return(staffs, nil)
 			},
-			input: &ListStaffsByStoreIDInput{
+			input: &store.ListStaffsByStoreIDInput{
 				StoreID: 1,
 			},
 			expect:    staffs,
@@ -51,20 +53,20 @@ func TestListStaffsByStoreID(t *testing.T) {
 		{
 			name:      "invlid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &ListStaffsByStoreIDInput{},
+			input:     &store.ListStaffsByStoreIDInput{},
 			expect:    nil,
-			expectErr: ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get stores",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Staff.EXPECT().ListByStoreID(ctx, int64(1)).Return(nil, errmock)
 			},
-			input: &ListStaffsByStoreIDInput{
+			input: &store.ListStaffsByStoreIDInput{
 				StoreID: 1,
 			},
 			expect:    nil,
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 

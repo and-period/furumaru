@@ -6,7 +6,7 @@ import (
 	"github.com/and-period/marche/api/internal/gateway/user/v1/request"
 	"github.com/and-period/marche/api/internal/gateway/user/v1/response"
 	"github.com/and-period/marche/api/internal/gateway/util"
-	user "github.com/and-period/marche/api/internal/user/service"
+	"github.com/and-period/marche/api/internal/user"
 	"github.com/gin-gonic/gin"
 )
 

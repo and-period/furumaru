@@ -78,7 +78,8 @@ func TestAuthError(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			err := authError(tt.err)
+			cli := &client{logger: zap.NewNop()}
+			err := cli.authError(tt.err)
 			assert.ErrorIs(t, err, tt.expect)
 		})
 	}

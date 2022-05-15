@@ -19,15 +19,6 @@ const (
 	AdminRoleProducer      AdminRole = 2 // 生産者
 )
 
-func (r AdminRole) Validate() error {
-	switch r {
-	case AdminRoleAdministrator, AdminRoleProducer:
-		return nil
-	default:
-		return errInvalidAdminRole
-	}
-}
-
 // Admin - 管理者情報
 type Admin struct {
 	ID            string         `gorm:"primaryKey;<-:create"`
@@ -45,6 +36,35 @@ type Admin struct {
 }
 
 type Admins []*Admin
+
+func NewAdminRole(role int32) (AdminRole, error) {
+	res := AdminRole(role)
+	if err := res.Validate(); err != nil {
+		return AdminRoleUnknown, err
+	}
+	return res, nil
+}
+
+func (r AdminRole) Validate() error {
+	switch r {
+	case AdminRoleAdministrator, AdminRoleProducer:
+		return nil
+	default:
+		return errInvalidAdminRole
+	}
+}
+
+func NewAdminRoles(roles []int32) ([]AdminRole, error) {
+	res := make([]AdminRole, len(roles))
+	for i := range roles {
+		role, err := NewAdminRole(roles[i])
+		if err != nil {
+			return nil, err
+		}
+		res[i] = role
+	}
+	return res, nil
+}
 
 func NewAdmin(id, cognitoID, lastname, firstname, lastnameKana, firstnameKana, email string, role AdminRole) *Admin {
 	return &Admin{

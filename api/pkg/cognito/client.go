@@ -141,10 +141,11 @@ func NewClient(cfg aws.Config, params *Params, opts ...Option) Client {
 	}
 }
 
-func authError(err error) error {
+func (c *client) authError(err error) error {
 	if err == nil {
 		return nil
 	}
+	c.logger.Debug("Failed to cognito api", zap.Error(err))
 
 	var (
 		aee *types.AliasExistsException
