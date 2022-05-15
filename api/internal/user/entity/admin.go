@@ -21,18 +21,18 @@ const (
 
 // Admin - 管理者情報
 type Admin struct {
-	ID            string         `gorm:"primaryKey;<-:create"`
-	CognitoID     string         `gorm:""`
-	Lastname      string         `gorm:""`
-	Firstname     string         `gorm:""`
-	LastnameKana  string         `gorm:""`
-	FirstnameKana string         `gorm:""`
-	Email         string         `gorm:"default:null"`
-	ThumbnailURL  string         `gorm:""`
-	Role          AdminRole      `gorm:""`
-	CreatedAt     time.Time      `gorm:"<-:create"`
-	UpdatedAt     time.Time      `gorm:""`
-	DeletedAt     gorm.DeletedAt `gorm:"default:null"`
+	ID            string         `gorm:"primaryKey;<-:create"` // 管理者ID
+	CognitoID     string         `gorm:""`                     // 管理者ID (Cognito用)
+	Lastname      string         `gorm:""`                     // 姓
+	Firstname     string         `gorm:""`                     // 名
+	LastnameKana  string         `gorm:""`                     // 姓(かな)
+	FirstnameKana string         `gorm:""`                     // 名(かな)
+	Email         string         `gorm:"default:null"`         // メールアドレス
+	ThumbnailURL  string         `gorm:""`                     // サムネイルURL
+	Role          AdminRole      `gorm:""`                     // 権限
+	CreatedAt     time.Time      `gorm:"<-:create"`            // 登録日時
+	UpdatedAt     time.Time      `gorm:""`                     // 更新日時
+	DeletedAt     gorm.DeletedAt `gorm:"default:null"`         // 削除日時
 }
 
 type Admins []*Admin
