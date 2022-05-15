@@ -1,0 +1,6 @@
+uploadStoreThumbnailRequest:
+  type: object
+  properties:
+    thumbnail:
+      type: string
+      format: binary

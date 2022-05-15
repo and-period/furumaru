@@ -10,7 +10,6 @@ import (
 	"github.com/and-period/marche/api/internal/gateway/util"
 	"github.com/and-period/marche/api/internal/store"
 	"github.com/and-period/marche/api/internal/user"
-	uentity "github.com/and-period/marche/api/internal/user/entity"
 	"github.com/and-period/marche/api/pkg/jst"
 	"github.com/and-period/marche/api/pkg/rbac"
 	"github.com/and-period/marche/api/pkg/storage"
@@ -128,14 +127,18 @@ func forbidden(ctx *gin.Context, err error) {
 func (h *apiV1Handler) authentication() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// 認証情報の検証
-		_, err := util.GetAuthToken(ctx)
+		token, err := util.GetAuthToken(ctx)
 		if err != nil {
 			unauthorized(ctx, err)
 			return
 		}
 
-		// TODO: 管理者情報取得処理の追加
-		auth := &uentity.AdminAuth{Role: uentity.AdminRoleAdministrator}
+		in := &user.GetAdminAuthInput{AccessToken: token}
+		auth, err := h.user.GetAdminAuth(ctx, in)
+		if err != nil || auth.AdminID == "" {
+			unauthorized(ctx, err)
+			return
+		}
 		role := service.NewAdminRole(auth.Role)
 
 		setAuth(ctx, auth.AdminID, role)
