@@ -4,10 +4,10 @@ import "github.com/and-period/marche/api/pkg/cognito"
 
 // UserAuth - 購入者認証情報
 type UserAuth struct {
-	UserID       string
-	AccessToken  string
-	RefreshToken string
-	ExpiresIn    int32
+	UserID       string // ユーザーID
+	AccessToken  string // アクセストークン
+	RefreshToken string // 更新トークン
+	ExpiresIn    int32  // 有効期限
 }
 
 func NewUserAuth(userID string, rs *cognito.AuthResult) *UserAuth {

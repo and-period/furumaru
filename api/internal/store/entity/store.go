@@ -8,12 +8,12 @@ import (
 
 // Store - 店舗情報
 type Store struct {
-	ID           int64          `gorm:"primaryKey;<-:create"`
-	Name         string         `gorm:""`
-	ThumbnailURL string         `gorm:""`
-	CreatedAt    time.Time      `gorm:"<-:create"`
-	UpdatedAt    time.Time      `gorm:""`
-	DeletedAt    gorm.DeletedAt `gorm:"default:null"`
+	ID           int64          `gorm:"primaryKey;<-:create"` // 店舗ID
+	Name         string         `gorm:""`                     // 店舗名
+	ThumbnailURL string         `gorm:""`                     // サムネイルURL
+	CreatedAt    time.Time      `gorm:"<-:create"`            // 登録日時
+	UpdatedAt    time.Time      `gorm:""`                     // 更新日時
+	DeletedAt    gorm.DeletedAt `gorm:"default:null"`         // 削除日時
 }
 
 type Stores []*Store

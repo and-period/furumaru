@@ -1,0 +1,25 @@
+createStoreRequest:
+  type: object
+  properties:
+    name:
+      type: string
+      description: 店舗名
+  required:
+  - name
+  example:
+    name: '&.農園'
+updateStoreRequest:
+  type: object
+  properties:
+    name:
+      type: string
+      description: 店舗名
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+  required:
+  - name
+  - thumbnailUrl
+  example:
+    name: '&.農園'
+    thumbnailUrl: 'https://and-period.jp/thumbnail.png'
