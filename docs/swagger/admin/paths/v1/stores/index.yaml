@@ -35,3 +35,29 @@ get:
         application/json:
           schema:
             $ref: './../../../openapi.yaml#/components/schemas/errorResponse'
+post:
+  summary: 店舗登録
+  operationId: v1CreateStore
+  tags:
+  - Store
+  security:
+  - BearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../openapi.yaml#/components/schemas/v1CreateStoreRequest'
+  responses:
+    200:
+      description: A successful response.
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/v1StoreResponse'
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/errorResponse'
