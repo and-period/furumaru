@@ -305,7 +305,7 @@ func TestInitializeUser(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			const path = "/v1/users/me/initialized"
-			req := newHTTPRequest(t, http.MethodPost, path, tt.req)
+			req := newHTTPRequest(t, http.MethodPatch, path, tt.req)
 			testHTTP(t, tt.setup, tt.expect, req)
 		})
 	}

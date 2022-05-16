@@ -14,6 +14,7 @@ func (h *apiV1Handler) userRoutes(rg *gin.RouterGroup) {
 	rg.POST("", h.CreateUser)
 	rg.POST("/oauth", h.CreateUserWithOAuth)
 	rg.POST("/verified", h.VerifyUser)
+	rg.PATCH("/me/initialized", h.InitializeUser)
 	rg.GET("/me", h.authentication(), h.GetUserMe)
 	rg.DELETE("/me", h.authentication(), h.DeleteUser)
 	rg.PATCH("/me/email", h.authentication(), h.UpdateUserEmail)
