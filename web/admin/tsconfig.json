@@ -9,13 +9,23 @@
     "sourceMap": true,
     "strict": true,
     "noEmit": true,
+    "resolveJsonModule": true,
     "experimentalDecorators": true,
     "baseUrl": "./src",
     "paths": {
       "~/*": ["./*"],
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "~~/*": ["./../*"],
+      "@@/*": ["./../*"]
     },
-    "types": ["@nuxt/types", "@nuxtjs/axios", "@types/jest", "@types/node"]
+    "types": [
+      "@nuxt/types",
+      "@nuxtjs/axios",
+      "@nuxtjs/vuetify",
+      "@nuxtjs/i18n",
+      "@types/jest",
+      "@types/node"
+    ]
   },
   "exclude": ["node_modules", ".nuxt", "dist"]
 }

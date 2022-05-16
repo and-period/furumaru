@@ -1,6 +1,6 @@
 <template>
-  <v-app dark>
-    <v-navigation-drawer permanent app clipped>
+  <v-app>
+    <v-navigation-drawer v-model="drawer" app clipped>
       <v-list>
         <v-list-item
           v-for="(item, i) in navigationDrawerList"
@@ -8,6 +8,7 @@
           :to="item.to"
           router
           exact
+          color="primary"
         >
           <v-list-item-icon>
             <v-icon>{{ item.icon }}</v-icon>
@@ -20,6 +21,7 @@
     </v-navigation-drawer>
 
     <v-app-bar flat app clipped-left>
+      <v-app-bar-nav-icon @click="handleClickNavIcon"></v-app-bar-nav-icon>
       <v-toolbar-title>Online Marche</v-toolbar-title>
       <v-spacer />
     </v-app-bar>
@@ -35,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@nuxtjs/composition-api'
+import { defineComponent, ref } from '@vue/composition-api'
 
 interface NavigationDrawerItem {
   to: string
@@ -45,6 +47,8 @@ interface NavigationDrawerItem {
 
 export default defineComponent({
   setup() {
+    const drawer = ref<boolean>(false)
+
     const navigationDrawerList = ref<NavigationDrawerItem[]>([
       {
         to: '/',
@@ -63,8 +67,14 @@ export default defineComponent({
       },
     ])
 
+    const handleClickNavIcon = () => {
+      drawer.value = !drawer.value
+    }
+
     return {
+      drawer,
       navigationDrawerList,
+      handleClickNavIcon,
     }
   },
 })
