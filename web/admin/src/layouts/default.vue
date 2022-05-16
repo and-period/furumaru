@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-navigation-drawer v-model="drawer" app clipped>
-      <v-list>
+      <v-list shaped>
         <v-list-item
           v-for="(item, i) in navigationDrawerList"
           :key="i"
@@ -20,12 +20,15 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar flat app clipped-left>
+    <v-app-bar flat app clipped-left color="primary" dark>
       <v-app-bar-nav-icon @click="handleClickNavIcon"></v-app-bar-nav-icon>
       <v-toolbar-title>Online Marche</v-toolbar-title>
       <v-spacer />
+      <v-btn icon>
+        <v-icon>mdi-bell</v-icon>
+      </v-btn>
     </v-app-bar>
-    <v-main>
+    <v-main class="bg-color">
       <v-container>
         <Nuxt />
       </v-container>
@@ -79,3 +82,9 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.bg-color {
+  background-color: #eef5f9;
+}
+</style>

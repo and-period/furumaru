@@ -73,7 +73,7 @@ const config: NuxtConfig = {
           success: colors.green.accent3,
         },
         light: {
-          primary: colors.green,
+          primary: colors.lightGreen.darken2,
         },
       },
     },
