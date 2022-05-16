@@ -295,32 +295,6 @@ func TestCreateUserWithOAuth(t *testing.T) {
 	}
 }
 
-func TestInitializeUser(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *user.InitializeUserInput
-		expectErr error
-	}{
-		{
-			name:      "failed to create user",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &user.InitializeUserInput{},
-			expectErr: exception.ErrNotImplemented,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
-			err := service.InitializeUser(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
-	}
-}
-
 func TestUpdateUserEmail(t *testing.T) {
 	t.Parallel()
 
@@ -546,7 +520,7 @@ func TestInitializeUser(t *testing.T) {
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *InitializeUserInput
+		input     *user.InitializeUserInput
 		expectErr error
 	}{
 		{
@@ -554,7 +528,7 @@ func TestInitializeUser(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().UpdateAccount(ctx, "user-id", "account-id", "username").Return(nil)
 			},
-			input: &InitializeUserInput{
+			input: &user.InitializeUserInput{
 				UserID:    "user-id",
 				AccountID: "account-id",
 				Username:  "username",
@@ -564,20 +538,20 @@ func TestInitializeUser(t *testing.T) {
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &InitializeUserInput{},
-			expectErr: ErrInvalidArgument,
+			input:     &user.InitializeUserInput{},
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to initilaze user",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().UpdateAccount(ctx, "user-id", "account-id", "username").Return(errmock)
 			},
-			input: &InitializeUserInput{
+			input: &user.InitializeUserInput{
 				UserID:    "user-id",
 				AccountID: "account-id",
 				Username:  "username",
 			},
-			expectErr: ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 
