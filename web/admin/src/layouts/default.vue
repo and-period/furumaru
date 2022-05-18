@@ -1,13 +1,52 @@
 <template>
-  <v-app dark>
-    <v-navigation-drawer permanent app clipped>
-      <v-list>
+  <v-app>
+    <v-navigation-drawer v-model="drawer" app clipped>
+      <v-list shaped>
+        <v-list-item
+          :to="navigationDrawerHomeItem.to"
+          router
+          exact
+          color="primary"
+        >
+          <v-list-item-icon>
+            <v-icon>{{ navigationDrawerHomeItem.icon }}</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>{{
+              navigationDrawerHomeItem.title
+            }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+
+      <v-divider />
+      <v-list shaped>
         <v-list-item
           v-for="(item, i) in navigationDrawerList"
           :key="i"
           :to="item.to"
           router
           exact
+          color="primary"
+        >
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+      <v-divider />
+
+      <v-list shaped>
+        <v-list-item
+          v-for="(item, i) in navigationDrawerSettingsList"
+          :key="i"
+          :to="item.to"
+          router
+          exact
+          color="primary"
         >
           <v-list-item-icon>
             <v-icon>{{ item.icon }}</v-icon>
@@ -19,11 +58,15 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar flat app clipped-left>
+    <v-app-bar flat app clipped-left color="primary" dark>
+      <v-app-bar-nav-icon @click="handleClickNavIcon"></v-app-bar-nav-icon>
       <v-toolbar-title>Online Marche</v-toolbar-title>
       <v-spacer />
+      <v-btn icon>
+        <v-icon>mdi-bell</v-icon>
+      </v-btn>
     </v-app-bar>
-    <v-main>
+    <v-main class="bg-color">
       <v-container>
         <Nuxt />
       </v-container>
@@ -35,7 +78,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@nuxtjs/composition-api'
+import { defineComponent, ref } from '@vue/composition-api'
 
 interface NavigationDrawerItem {
   to: string
@@ -45,15 +88,23 @@ interface NavigationDrawerItem {
 
 export default defineComponent({
   setup() {
-    const navigationDrawerList = ref<NavigationDrawerItem[]>([
+    const drawer = ref<boolean>(true)
+
+    const navigationDrawerHomeItem: NavigationDrawerItem = {
+      to: '/',
+      icon: 'mdi-home',
+      title: 'ホーム',
+    }
+
+    const navigationDrawerList: NavigationDrawerItem[] = [
       {
-        to: '/',
-        icon: 'mdi-home',
-        title: 'ホーム',
+        to: '/orders',
+        icon: 'mdi-order-bool-ascending-variant',
+        title: '注文',
       },
       {
         to: '/products',
-        icon: 'mdi-tag',
+        icon: 'mdi-cart',
         title: '商品管理',
       },
       {
@@ -61,11 +112,63 @@ export default defineComponent({
         icon: 'mdi-antenna',
         title: 'ライブ配信',
       },
-    ])
+      {
+        to: '/analytics',
+        icon: 'mdi-poll',
+        title: '分析',
+      },
+      {
+        to: '/customers',
+        icon: 'mdi-account-details',
+        title: '顧客管理',
+      },
+      {
+        to: '/contact',
+        icon: 'mdi-forum',
+        title: 'お問い合わせ管理',
+      },
+      {
+        to: '/notifications',
+        icon: 'mdi-bell-ring',
+        title: 'お知らせ管理',
+      },
+      {
+        to: '/sales',
+        icon: 'mdi-cash-100',
+        title: 'セール情報管理',
+      },
+    ]
+
+    const navigationDrawerSettingsList: NavigationDrawerItem[] = [
+      {
+        to: '/users',
+        icon: 'mdi-account',
+        title: '利用者管理',
+      },
+      {
+        to: '/settings',
+        icon: 'mdi-cog',
+        title: 'システム設定',
+      },
+    ]
+
+    const handleClickNavIcon = () => {
+      drawer.value = !drawer.value
+    }
 
     return {
+      drawer,
+      navigationDrawerHomeItem,
       navigationDrawerList,
+      navigationDrawerSettingsList,
+      handleClickNavIcon,
     }
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.bg-color {
+  background-color: #eef5f9;
+}
+</style>
