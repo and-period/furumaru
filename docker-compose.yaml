@@ -22,7 +22,7 @@ services:
     volumes:
       - ./web/admin:/var/web:cached
     ports:
-      - 3020:3000
+      - 3010:3000
     command: yarn dev -H 0.0.0.0 -p 3000
 
   user_gateway:
