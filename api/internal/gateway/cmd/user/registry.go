@@ -9,9 +9,6 @@ import (
 	v1 "github.com/and-period/furumaru/api/internal/gateway/user/v1/handler"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
-	"github.com/and-period/furumaru/api/internal/store"
-	storedb "github.com/and-period/furumaru/api/internal/store/database"
-	storesrv "github.com/and-period/furumaru/api/internal/store/service"
 	"github.com/and-period/furumaru/api/internal/user"
 	userdb "github.com/and-period/furumaru/api/internal/user/database"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
@@ -96,17 +93,12 @@ func newRegistry(ctx context.Context, conf *config, opts ...option) (*registry, 
 	if err != nil {
 		return nil, err
 	}
-	storeService, err := newStoreService(ctx, srvParams)
-	if err != nil {
-		return nil, err
-	}
 
 	// Handlerの設定
 	v1Params := &v1.Params{
-		WaitGroup:    &sync.WaitGroup{},
-		Storage:      storage.NewBucket(awscfg, storageParams),
-		UserService:  userService,
-		StoreService: storeService,
+		WaitGroup:   &sync.WaitGroup{},
+		Storage:     storage.NewBucket(awscfg, storageParams),
+		UserService: userService,
 	}
 
 	return &registry{
@@ -160,37 +152,6 @@ func newUserService(ctx context.Context, p *serviceParams) (user.UserService, er
 	return usersrv.NewUserService(
 		params,
 		usersrv.WithLogger(p.options.logger),
-	), nil
-}
-
-func newStoreService(ctx context.Context, p *serviceParams) (store.StoreService, error) {
-	// MySQLの設定
-	mysqlParams := &database.Params{
-		Socket:   p.config.DBStoreSocket,
-		Host:     p.config.DBStoreHost,
-		Port:     p.config.DBStorePort,
-		Database: "stores",
-		Username: p.config.DBStoreUsername,
-		Password: p.config.DBStorePassword,
-	}
-	mysql, err := newDatabase(mysqlParams, p.config.DBStoreEnabledTLS, p.config.DBStoreTimeZone, p.options)
-	if err != nil {
-		return nil, err
-	}
-
-	// Databaseの設定
-	dbParams := storedb.Params{
-		Database: mysql,
-	}
-
-	// Store Serviceの設定
-	params := &storesrv.Params{
-		Database:  storedb.NewDatabase(&dbParams),
-		WaitGroup: p.waitGroup,
-	}
-	return storesrv.NewStoreService(
-		params,
-		storesrv.WithLogger(p.options.logger),
 	), nil
 }
 
