@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/and-period/marche/api/internal/gateway/admin/v1/response"
-	"github.com/and-period/marche/api/pkg/uuid"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/pkg/uuid"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

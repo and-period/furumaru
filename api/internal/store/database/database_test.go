@@ -7,7 +7,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/and-period/marche/api/pkg/database"
+	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 )

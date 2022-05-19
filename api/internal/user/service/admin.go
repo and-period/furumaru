@@ -4,14 +4,14 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/and-period/marche/api/internal/exception"
-	"github.com/and-period/marche/api/internal/messenger"
-	"github.com/and-period/marche/api/internal/user"
-	"github.com/and-period/marche/api/internal/user/database"
-	"github.com/and-period/marche/api/internal/user/entity"
-	"github.com/and-period/marche/api/pkg/cognito"
-	"github.com/and-period/marche/api/pkg/random"
-	"github.com/and-period/marche/api/pkg/uuid"
+	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/messenger"
+	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/internal/user/database"
+	"github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/cognito"
+	"github.com/and-period/furumaru/api/pkg/random"
+	"github.com/and-period/furumaru/api/pkg/uuid"
 	"go.uber.org/zap"
 )
 

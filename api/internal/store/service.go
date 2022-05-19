@@ -5,7 +5,7 @@ package store
 import (
 	"context"
 
-	"github.com/and-period/marche/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
 //nolint:revive

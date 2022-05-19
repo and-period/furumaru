@@ -4,7 +4,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/and-period/marche/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/exception"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

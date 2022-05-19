@@ -1,4 +1,4 @@
-module github.com/and-period/marche/api
+module github.com/and-period/furumaru/api
 
 go 1.18
 

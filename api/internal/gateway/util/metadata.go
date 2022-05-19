@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/and-period/marche/api/pkg/metadata"
+	"github.com/and-period/furumaru/api/pkg/metadata"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	gmd "google.golang.org/grpc/metadata"

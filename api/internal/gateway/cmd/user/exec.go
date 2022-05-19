@@ -8,9 +8,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/and-period/marche/api/pkg/cors"
-	"github.com/and-period/marche/api/pkg/http"
-	"github.com/and-period/marche/api/pkg/log"
+	"github.com/and-period/furumaru/api/pkg/cors"
+	"github.com/and-period/furumaru/api/pkg/http"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"

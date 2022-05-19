@@ -1,6 +1,6 @@
 package entity
 
-import "github.com/and-period/marche/api/pkg/cognito"
+import "github.com/and-period/furumaru/api/pkg/cognito"
 
 // UserAuth - 購入者認証情報
 type UserAuth struct {

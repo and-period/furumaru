@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/marche/api/internal/store/entity"
-	"github.com/and-period/marche/api/pkg/jst"
+	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/and-period/marche/api/internal/gateway/admin/v1/response"
-	"github.com/and-period/marche/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
 type Store struct {

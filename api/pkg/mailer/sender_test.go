@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/marche/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 	"github.com/stretchr/testify/assert"
 )

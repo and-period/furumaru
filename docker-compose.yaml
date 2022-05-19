@@ -22,7 +22,7 @@ services:
     volumes:
       - ./web/admin:/var/web:cached
     ports:
-      - 3020:3000
+      - 3010:3000
     command: yarn dev -H 0.0.0.0 -p 3000
 
   user_gateway:
@@ -30,9 +30,9 @@ services:
     build:
       context: .
       dockerfile: ./infra/docker/api/Dockerfile.development
-    working_dir: /go/src/github.com/and-period/marche/api
+    working_dir: /go/src/github.com/and-period/furumaru/api
     volumes:
-      - ./api:/go/src/github.com/and-period/marche/api:cached
+      - ./api:/go/src/github.com/and-period/furumaru/api:cached
       - ./tmp/data/go/pkg/mod:/go/pkg/mod:delegated
       - ./tmp/logs/api/gateway/user:/var/log/api:delegated
     environment:
@@ -58,7 +58,7 @@ services:
       - AWS_SECRET_KEY=${AWS_SECRET_KEY}
       - S3_USER_BUCKET=${S3_USER_BUCKET}
       - SENDGRID_API_KEY=${SENDGRID_API_KEY}
-      - SENDGRID_TEMPLATE_PATH=/go/src/github.com/and-period/marche/api/config/messenger/mailer/dev.yaml
+      - SENDGRID_TEMPLATE_PATH=/go/src/github.com/and-period/furumaru/api/config/messenger/mailer/dev.yaml
       - MAIL_FROM_NAME=${MAIL_FROM_NAME}
       - MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
       - USER_WEB_URL=http://127.0.0.1:3000
@@ -74,9 +74,9 @@ services:
     build:
       context: .
       dockerfile: ./infra/docker/api/Dockerfile.development
-    working_dir: /go/src/github.com/and-period/marche/api
+    working_dir: /go/src/github.com/and-period/furumaru/api
     volumes:
-      - ./api:/go/src/github.com/and-period/marche/api:cached
+      - ./api:/go/src/github.com/and-period/furumaru/api:cached
       - ./tmp/data/go/pkg/mod:/go/pkg/mod:delegated
       - ./tmp/logs/api/gateway/admin:/var/log/api:delegated
     environment:
@@ -107,13 +107,13 @@ services:
       - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
       - COGNITO_USER_CLIENT_ID=${COGNITO_USER_CLIENT_ID}
       - SENDGRID_API_KEY=${SENDGRID_API_KEY}
-      - SENDGRID_TEMPLATE_PATH=/go/src/github.com/and-period/marche/api/config/messenger/mailer/dev.yaml
+      - SENDGRID_TEMPLATE_PATH=/go/src/github.com/and-period/furumaru/api/config/messenger/mailer/dev.yaml
       - MAIL_FROM_NAME=${MAIL_FROM_NAME}
       - MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
       - ADMIN_WEB_URL=http://127.0.0.1:3010
       - USER_WEB_URL=http://127.0.0.1:3000
-      - RBAC_POLICY_PATH=/go/src/github.com/and-period/marche/api/config/gateway/admin/rbac/policy.csv
-      - RBAC_MODEL_PATH=/go/src/github.com/and-period/marche/api/config/gateway/admin/rbac/model.conf
+      - RBAC_POLICY_PATH=/go/src/github.com/and-period/furumaru/api/config/gateway/admin/rbac/policy.csv
+      - RBAC_MODEL_PATH=/go/src/github.com/and-period/furumaru/api/config/gateway/admin/rbac/model.conf
     ports:
       - 18010:9000
       - 18011:9001
@@ -140,10 +140,10 @@ services:
     build:
       context: .
       dockerfile: ./infra/docker/api/hack/Dockerfile
-    working_dir: /go/src/github.com/and-period/marche/api
+    working_dir: /go/src/github.com/and-period/furumaru/api
     volumes:
-      - ./api:/go/src/github.com/and-period/marche/api:cached
-      - ./infra:/go/src/github.com/and-period/marche/infra:cached
+      - ./api:/go/src/github.com/and-period/furumaru/api:cached
+      - ./infra:/go/src/github.com/and-period/furumaru/infra:cached
     environment:
       - DB_USERNAME=root
       - DB_PASSWORD=12345678

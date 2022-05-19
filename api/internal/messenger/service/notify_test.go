@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/and-period/marche/api/internal/messenger/entity"
-	"github.com/and-period/marche/api/pkg/mailer"
+	"github.com/and-period/furumaru/api/internal/messenger/entity"
+	"github.com/and-period/furumaru/api/pkg/mailer"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )

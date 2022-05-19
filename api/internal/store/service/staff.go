@@ -3,9 +3,9 @@ package service
 import (
 	"context"
 
-	"github.com/and-period/marche/api/internal/exception"
-	"github.com/and-period/marche/api/internal/store"
-	"github.com/and-period/marche/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
 func (s *storeService) ListStaffsByStoreID(
