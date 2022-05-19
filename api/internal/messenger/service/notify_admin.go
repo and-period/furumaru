@@ -3,10 +3,10 @@ package service
 import (
 	"context"
 
-	"github.com/and-period/marche/api/internal/exception"
-	"github.com/and-period/marche/api/internal/messenger"
-	"github.com/and-period/marche/api/internal/messenger/entity"
-	"github.com/and-period/marche/api/pkg/mailer"
+	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/messenger"
+	"github.com/and-period/furumaru/api/internal/messenger/entity"
+	"github.com/and-period/furumaru/api/pkg/mailer"
 )
 
 func (s *messengerService) NotifyRegisterAdmin(ctx context.Context, in *messenger.NotifyRegisterAdminInput) error {

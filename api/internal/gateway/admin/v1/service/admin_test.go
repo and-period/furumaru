@@ -3,9 +3,9 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/marche/api/internal/gateway/admin/v1/response"
-	"github.com/and-period/marche/api/internal/user/entity"
-	"github.com/and-period/marche/api/pkg/jst"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
 )
 

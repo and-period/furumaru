@@ -4,10 +4,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/and-period/marche/api/internal/store"
-	"github.com/and-period/marche/api/internal/store/database"
-	"github.com/and-period/marche/api/pkg/jst"
-	"github.com/and-period/marche/api/pkg/validator"
+	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/database"
+	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/validator"
 	"go.uber.org/zap"
 	"golang.org/x/sync/singleflight"
 )

@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/and-period/marche/api/internal/exception"
-	"github.com/and-period/marche/api/internal/user"
-	"github.com/and-period/marche/api/internal/user/entity"
-	"github.com/and-period/marche/api/pkg/cognito"
-	"github.com/and-period/marche/api/pkg/uuid"
+	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/cognito"
+	"github.com/and-period/furumaru/api/pkg/uuid"
 )
 
 func (s *userService) GetUser(ctx context.Context, in *user.GetUserInput) (*entity.User, error) {

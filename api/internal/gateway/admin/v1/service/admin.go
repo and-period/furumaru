@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/and-period/marche/api/internal/gateway/admin/v1/response"
-	"github.com/and-period/marche/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
 type AdminRole int32

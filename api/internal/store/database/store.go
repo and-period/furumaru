@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/and-period/marche/api/internal/exception"
-	"github.com/and-period/marche/api/internal/store/entity"
-	"github.com/and-period/marche/api/pkg/database"
-	"github.com/and-period/marche/api/pkg/jst"
+	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/database"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"gorm.io/gorm"
 )
 

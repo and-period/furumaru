@@ -8,8 +8,8 @@ import (
 	context "context"
 	reflect "reflect"
 
-	store "github.com/and-period/marche/api/internal/store"
-	entity "github.com/and-period/marche/api/internal/store/entity"
+	store "github.com/and-period/furumaru/api/internal/store"
+	entity "github.com/and-period/furumaru/api/internal/store/entity"
 	gomock "github.com/golang/mock/gomock"
 )
 

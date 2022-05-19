@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/and-period/marche/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/golang/mock/gomock"
 )
 

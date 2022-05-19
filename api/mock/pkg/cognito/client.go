@@ -8,7 +8,7 @@ import (
 	context "context"
 	reflect "reflect"
 
-	cognito "github.com/and-period/marche/api/pkg/cognito"
+	cognito "github.com/and-period/furumaru/api/pkg/cognito"
 	gomock "github.com/golang/mock/gomock"
 )
 

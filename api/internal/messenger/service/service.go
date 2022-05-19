@@ -5,10 +5,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/and-period/marche/api/internal/messenger"
-	"github.com/and-period/marche/api/pkg/jst"
-	"github.com/and-period/marche/api/pkg/mailer"
-	"github.com/and-period/marche/api/pkg/validator"
+	"github.com/and-period/furumaru/api/internal/messenger"
+	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/mailer"
+	"github.com/and-period/furumaru/api/pkg/validator"
 	"go.uber.org/zap"
 )
 

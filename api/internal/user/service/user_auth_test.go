@@ -4,10 +4,10 @@ import (
 	"context"
 	"testing"
 
-	"github.com/and-period/marche/api/internal/exception"
-	"github.com/and-period/marche/api/internal/user"
-	"github.com/and-period/marche/api/internal/user/entity"
-	"github.com/and-period/marche/api/pkg/cognito"
+	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/stretchr/testify/assert"
 )
 

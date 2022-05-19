@@ -1,6 +1,6 @@
 package entity
 
-import "github.com/and-period/marche/api/pkg/cognito"
+import "github.com/and-period/furumaru/api/pkg/cognito"
 
 // AdminAuth - 管理者認証情報
 type AdminAuth struct {
