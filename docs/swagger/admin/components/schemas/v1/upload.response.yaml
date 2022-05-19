@@ -1,5 +1,0 @@
-uploadResponse:
-  type: object
-  properties:
-    url:
-      type: string
