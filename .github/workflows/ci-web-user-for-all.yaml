@@ -30,7 +30,6 @@ jobs:
       with:
         node-version: ${{ matrix.node }}
         cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
 
     - name: Install
       run: yarn --check-files --frozen-lockfile --non-interactive
@@ -56,7 +55,6 @@ jobs:
       with:
         node-version: ${{ matrix.node }}
         cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
 
     - name: Lint
       run: yarn lint
@@ -82,7 +80,6 @@ jobs:
       with:
         node-version: ${{ matrix.node }}
         cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
 
     - name: Build
       run: yarn build
@@ -108,7 +105,6 @@ jobs:
       with:
         node-version: ${{ matrix.node }}
         cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
 
     - name: Test
       run: yarn test
