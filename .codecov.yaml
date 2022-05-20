@@ -4,7 +4,8 @@ coverage:
     project:
       frontend:
         flags:
-        - web
+        - admin-web
+        - user-web
       backend:
         flags:
         - api
@@ -26,7 +27,11 @@ flags:
     paths:
     - api/
     carryforward: true
-  teacher-web:
+  admin-web:
     paths:
-    - web/
+    - web/admin/
+    carryforward: true
+  user-web:
+    paths:
+    - web/user/
     carryforward: true
