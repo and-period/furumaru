@@ -45,6 +45,7 @@ jobs:
         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
     - name: Install
+      if: steps.yarn-cache.outputs.cache-hit != 'true'
       run: yarn --check-files --frozen-lockfile --non-interactive
 
   lint:
@@ -74,6 +75,10 @@ jobs:
           **/node_modules
           ${{ steps.yarn-cache-dir-path.outputs.dir }}
         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+
+    - name: Install
+      if: steps.yarn-cache.outputs.cache-hit != 'true'
+      run: yarn --check-files --frozen-lockfile --non-interactive
 
     - name: Lint
       run: yarn lint
@@ -106,6 +111,10 @@ jobs:
           ${{ steps.yarn-cache-dir-path.outputs.dir }}
         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
+    - name: Install
+      if: steps.yarn-cache.outputs.cache-hit != 'true'
+      run: yarn --check-files --frozen-lockfile --non-interactive
+
     - name: Build
       run: yarn build
 
@@ -132,6 +141,10 @@ jobs:
           **/node_modules
           ${{ steps.yarn-cache-dir-path.outputs.dir }}
         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+
+    - name: Install
+      if: steps.yarn-cache.outputs.cache-hit != 'true'
+      run: yarn --check-files --frozen-lockfile --non-interactive
 
     - name: Test
       run: yarn test
