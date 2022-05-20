@@ -18,7 +18,6 @@
         <v-text-field label="連絡先（Email）" />
         <v-text-field label="連絡先（電話番号）" />
         <v-text-field label="郵便番号" />
-        <v-text-field label="国/地域" />
         <v-text-field label="都道府県" />
         <v-text-field label="市区町村" />
         <v-text-field label="番地" />
