@@ -8,11 +8,11 @@
           <the-file-upload-filed text="生産者画像" />
         </div>
         <div class="d-flex">
-          <v-text-field class="mr-4" label="生産者名:性" />
+          <v-text-field class="mr-4" label="生産者名:姓" />
           <v-text-field label="生産者名:名" />
         </div>
         <div class="d-flex">
-          <v-text-field class="mr-4" label="生産者名:性（ふりがな）" />
+          <v-text-field class="mr-4" label="生産者名:姓（ふりがな）" />
           <v-text-field label="生産者名:名（ふりがな）" />
         </div>
         <v-text-field label="連絡先（Email）" />

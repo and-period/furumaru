@@ -8,11 +8,11 @@
           <the-file-upload-filed text="コーディネーター画像" />
         </div>
         <div class="d-flex">
-          <v-text-field class="mr-4" label="コーディネーター:性" />
+          <v-text-field class="mr-4" label="コーディネーター:姓" />
           <v-text-field label="コーディネーター:名" />
         </div>
         <div class="d-flex">
-          <v-text-field class="mr-4" label="コーディネーター:性（ふりがな）" />
+          <v-text-field class="mr-4" label="コーディネーター:姓（ふりがな）" />
           <v-text-field label="コーディネーター:名（ふりがな）" />
         </div>
         <v-text-field label="連絡先（Email）" />
