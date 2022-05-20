@@ -35,9 +35,6 @@ jobs:
       with:
         go-version: ${{ matrix.golang }}
 
-    - name: Make cache directory
-      run: mkdir -p ~/go/pkg/mod
-
     - name: Setup
       run: make setup
 
