@@ -99,9 +99,9 @@ jobs:
           ~/go/pkg/mod
         key: ${{ env.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
-    - name: Setup
+    - name: Download modules
       if: steps.modules-cache.outputs.cache-hit != 'true'
-      run: make setup
+      run: go mod download
 
     - name: Build user gateway
       run: make build SERVICE=gateway/user
@@ -154,9 +154,9 @@ jobs:
           ~/go/pkg/mod
         key: ${{ env.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
-    - name: Setup
+    - name: Download modules
       if: steps.modules-cache.outputs.cache-hit != 'true'
-      run: make setup
+      run: go mod download
 
     - name: Test
       run: make test
