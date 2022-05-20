@@ -43,10 +43,6 @@ jobs:
           ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
-    - name: Setup
-      if: steps.modules-cache.outputs.cache-hit != 'true'
-      run: make setup
-
     - name: Download modules
       if: steps.modules-cache.outputs.cache-hit != 'true'
       run: go mod download
