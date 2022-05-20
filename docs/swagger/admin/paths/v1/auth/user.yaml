@@ -1,8 +1,8 @@
 get:
-  summary: 管理者情報取得
-  operationId: v1GetAdminMe
+  summary: 認証済みユーザー情報取得
+  operationId: v1GetAuthUser
   tags:
-  - Admin
+  - Auth
   security:
   - BearerAuth: []
   responses:
@@ -11,10 +11,10 @@ get:
       content:
         application/json:
           schema:
-            $ref: './../../../../openapi.yaml#/components/schemas/v1AdminMeResponse'
+            $ref: './../../../openapi.yaml#/components/schemas/v1AuthUserResponse'
     default:
       description: An unexpected error response.
       content:
         application/json:
           schema:
-            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+            $ref: './../../../openapi.yaml#/components/schemas/errorResponse'

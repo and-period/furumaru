@@ -1,0 +1,18 @@
+uploadCoordinatorThumbnailRequest:
+  type: object
+  properties:
+    thumbnail:
+      type: string
+      format: binary
+      description: 仲介者サムネイル
+  required:
+  - thumbnail
+uploadProducerThumbnailRequest:
+  type: object
+  properties:
+    thumbnail:
+      type: string
+      format: binary
+      description: 生産者サムネイル
+  required:
+  - thumbnail
