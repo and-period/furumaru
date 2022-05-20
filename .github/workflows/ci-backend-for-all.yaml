@@ -8,6 +8,7 @@ on:
     - 'infra/kubernetes/**'
 
 env:
+  SERVICE: api
   TZ: 'Asia/Tokyo'
   DB_HOST: 127.0.0.1
   DB_PORT: 3306
@@ -41,7 +42,7 @@ jobs:
         path: |
           ~/.cache/go-build
           ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        key: ${{ env.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
     - name: Download modules
       if: steps.modules-cache.outputs.cache-hit != 'true'
@@ -96,7 +97,7 @@ jobs:
         path: |
           ~/.cache/go-build
           ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        key: ${{ env.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
     - name: Setup
       if: steps.modules-cache.outputs.cache-hit != 'true'
@@ -151,7 +152,7 @@ jobs:
         path: |
           ~/.cache/go-build
           ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        key: ${{ env.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
     - name: Setup
       if: steps.modules-cache.outputs.cache-hit != 'true'

@@ -7,6 +7,7 @@ on:
     - 'infra/docker/web/user/**'
 
 env:
+  SERVICE: user-web
   TZ: 'Asia/Tokyo'
 
 jobs:
@@ -42,7 +43,7 @@ jobs:
         path: |
           **/node_modules
           ${{ steps.yarn-cache-dir-path.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ env.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
     - name: Install
       # if: steps.yarn-cache.outputs.cache-hit != 'true'
@@ -74,7 +75,7 @@ jobs:
         path: |
           **/node_modules
           ${{ steps.yarn-cache-dir-path.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ env.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
     - name: Install
       if: steps.yarn-cache.outputs.cache-hit != 'true'
@@ -109,7 +110,7 @@ jobs:
         path: |
           **/node_modules
           ${{ steps.yarn-cache-dir-path.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ env.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
     - name: Install
       if: steps.yarn-cache.outputs.cache-hit != 'true'
@@ -140,7 +141,7 @@ jobs:
         path: |
           **/node_modules
           ${{ steps.yarn-cache-dir-path.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ env.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
     - name: Install
       if: steps.yarn-cache.outputs.cache-hit != 'true'
