@@ -23,3 +23,44 @@ refreshAuthTokenRequest:
   - refreshToken
   example:
     refreshToken: 'xxxxxxxxxx'
+updateAuthEmailRequest:
+  type: object
+  properties:
+    email:
+      type: string
+      format: email
+      description: メールアドレス
+  required:
+  - email
+  example:
+    email: 'test-user@and-period.jp'
+verifyAuthEmailRequest:
+  type: object
+  properties:
+    verifyCode:
+      type: string
+      description: 認証コード
+  required:
+  - verifyCode
+  example:
+    verifyCode: '123456'
+updateAuthPasswordRequest:
+  type: object
+  properties:
+    oldPassword:
+      type: string
+      description: 現在のパスワード
+    newPassword:
+      type: string
+      description: 新しいパスワード (8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
+    passwordConfirmation:
+      type: string
+      description: パスワード (確認用)
+  required:
+  - oldPassword
+  - newPassword
+  - passwordConfirmation
+  example:
+    oldPassword: '12345678'
+    newPassword: '12345678'
+    passwordConfirmation: '12345678'
