@@ -36,19 +36,19 @@ func (m *MockUserService) EXPECT() *MockUserServiceMockRecorder {
 	return m.recorder
 }
 
-// CreateAdmin mocks base method.
-func (m *MockUserService) CreateAdmin(ctx context.Context, in *user.CreateAdminInput) (*entity.Admin, error) {
+// CreateAdministrator mocks base method.
+func (m *MockUserService) CreateAdministrator(ctx context.Context, in *user.CreateAdministratorInput) (*entity.Admin, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateAdmin", ctx, in)
+	ret := m.ctrl.Call(m, "CreateAdministrator", ctx, in)
 	ret0, _ := ret[0].(*entity.Admin)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// CreateAdmin indicates an expected call of CreateAdmin.
-func (mr *MockUserServiceMockRecorder) CreateAdmin(ctx, in interface{}) *gomock.Call {
+// CreateAdministrator indicates an expected call of CreateAdministrator.
+func (mr *MockUserServiceMockRecorder) CreateAdministrator(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAdmin", reflect.TypeOf((*MockUserService)(nil).CreateAdmin), ctx, in)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAdministrator", reflect.TypeOf((*MockUserService)(nil).CreateAdministrator), ctx, in)
 }
 
 // CreateUser mocks base method.

@@ -16,7 +16,8 @@ type AdminRole int32
 const (
 	AdminRoleUnknown       AdminRole = 0
 	AdminRoleAdministrator AdminRole = 1 // 管理者
-	AdminRoleProducer      AdminRole = 2 // 生産者
+	AdminRoleCoordinator   AdminRole = 2 // 仲介者
+	AdminRoleProducer      AdminRole = 3 // 生産者
 )
 
 // Admin - 管理者情報
@@ -27,15 +28,33 @@ type Admin struct {
 	Firstname     string         `gorm:""`                     // 名
 	LastnameKana  string         `gorm:""`                     // 姓(かな)
 	FirstnameKana string         `gorm:""`                     // 名(かな)
-	Email         string         `gorm:"default:null"`         // メールアドレス
+	StoreName     string         `gorm:""`                     // 店舗名
 	ThumbnailURL  string         `gorm:""`                     // サムネイルURL
+	Email         string         `gorm:""`                     // メールアドレス
+	PhoneNumber   string         `gorm:""`                     // 電話番号
+	PostalCode    string         `gorm:""`                     // 郵便番号
+	Prefecture    string         `gorm:""`                     // 都道府県
+	City          string         `gorm:""`                     // 市区町村
+	AddressLine1  string         `gorm:""`                     // 町名・番地
+	AddressLine2  string         `gorm:""`                     // ビル名・号室など
 	Role          AdminRole      `gorm:""`                     // 権限
 	CreatedAt     time.Time      `gorm:"<-:create"`            // 登録日時
 	UpdatedAt     time.Time      `gorm:""`                     // 更新日時
-	DeletedAt     gorm.DeletedAt `gorm:"default:null"`         // 削除日時
+	DeletedAt     gorm.DeletedAt `gorm:"default:null"`         // 退会日時
 }
 
 type Admins []*Admin
+
+type NewAdministratorParams struct {
+	ID            string
+	CognitoID     string
+	Lastname      string
+	Firstname     string
+	LastnameKana  string
+	FirstnameKana string
+	Email         string
+	PhoneNumber   string
+}
 
 func NewAdminRole(role int32) (AdminRole, error) {
 	res := AdminRole(role)
@@ -66,16 +85,17 @@ func NewAdminRoles(roles []int32) ([]AdminRole, error) {
 	return res, nil
 }
 
-func NewAdmin(id, cognitoID, lastname, firstname, lastnameKana, firstnameKana, email string, role AdminRole) *Admin {
+func NewAdministrator(params *NewAdministratorParams) *Admin {
 	return &Admin{
-		ID:            id,
-		CognitoID:     cognitoID,
-		Lastname:      lastname,
-		Firstname:     firstname,
-		LastnameKana:  lastnameKana,
-		FirstnameKana: firstnameKana,
-		Email:         email,
-		Role:          role,
+		ID:            params.ID,
+		CognitoID:     params.CognitoID,
+		Lastname:      params.Lastname,
+		Firstname:     params.Firstname,
+		LastnameKana:  params.LastnameKana,
+		FirstnameKana: params.FirstnameKana,
+		Email:         params.Email,
+		PhoneNumber:   params.PhoneNumber,
+		Role:          AdminRoleAdministrator,
 	}
 }
 

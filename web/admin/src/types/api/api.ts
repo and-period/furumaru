@@ -24,135 +24,135 @@ import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } fr
 /**
  * 
  * @export
- * @interface AdminResponse
+ * @interface AdministratorResponse
  */
-export interface AdminResponse {
+export interface AdministratorResponse {
     /**
-     * 管理者ID
+     * システム管理者ID
      * @type {string}
-     * @memberof AdminResponse
+     * @memberof AdministratorResponse
      */
     'id': string;
     /**
      * 姓
      * @type {string}
-     * @memberof AdminResponse
+     * @memberof AdministratorResponse
      */
     'lastname': string;
     /**
      * 名
      * @type {string}
-     * @memberof AdminResponse
+     * @memberof AdministratorResponse
      */
     'firstname': string;
     /**
      * 姓(かな)
      * @type {string}
-     * @memberof AdminResponse
+     * @memberof AdministratorResponse
      */
     'lastnameKana': string;
     /**
      * 名(かな)
      * @type {string}
-     * @memberof AdminResponse
+     * @memberof AdministratorResponse
      */
     'firstnameKana': string;
     /**
      * メールアドレス
      * @type {string}
-     * @memberof AdminResponse
+     * @memberof AdministratorResponse
      */
     'email': string;
     /**
      * 電話番号
      * @type {string}
-     * @memberof AdminResponse
+     * @memberof AdministratorResponse
      */
     'phoneNumber': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
-     * @memberof AdminResponse
+     * @memberof AdministratorResponse
      */
     'createdAt': number;
     /**
      * 登録日時 (unixtime)
      * @type {number}
-     * @memberof AdminResponse
+     * @memberof AdministratorResponse
      */
     'updatedAt': number;
 }
 /**
  * 
  * @export
- * @interface AdminsResponse
+ * @interface AdministratorsResponse
  */
-export interface AdminsResponse {
+export interface AdministratorsResponse {
     /**
-     * 管理者一覧
-     * @type {Array<AdminsResponseAdmins>}
-     * @memberof AdminsResponse
+     * システム管理者一覧
+     * @type {Array<AdministratorsResponseAdministrators>}
+     * @memberof AdministratorsResponse
      */
-    'admins': Array<AdminsResponseAdmins>;
+    'administrators': Array<AdministratorsResponseAdministrators>;
 }
 /**
  * 
  * @export
- * @interface AdminsResponseAdmins
+ * @interface AdministratorsResponseAdministrators
  */
-export interface AdminsResponseAdmins {
+export interface AdministratorsResponseAdministrators {
     /**
-     * 管理者ID
+     * システム管理者ID
      * @type {string}
-     * @memberof AdminsResponseAdmins
+     * @memberof AdministratorsResponseAdministrators
      */
     'id'?: string;
     /**
      * 姓
      * @type {string}
-     * @memberof AdminsResponseAdmins
+     * @memberof AdministratorsResponseAdministrators
      */
     'lastname'?: string;
     /**
      * 名
      * @type {string}
-     * @memberof AdminsResponseAdmins
+     * @memberof AdministratorsResponseAdministrators
      */
     'firstname'?: string;
     /**
      * 姓(かな)
      * @type {string}
-     * @memberof AdminsResponseAdmins
+     * @memberof AdministratorsResponseAdministrators
      */
     'lastnameKana'?: string;
     /**
      * 名(かな)
      * @type {string}
-     * @memberof AdminsResponseAdmins
+     * @memberof AdministratorsResponseAdministrators
      */
     'firstnameKana'?: string;
     /**
      * メールアドレス
      * @type {string}
-     * @memberof AdminsResponseAdmins
+     * @memberof AdministratorsResponseAdministrators
      */
     'email'?: string;
     /**
      * 電話番号
      * @type {string}
-     * @memberof AdminsResponseAdmins
+     * @memberof AdministratorsResponseAdministrators
      */
     'phoneNumber'?: string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
-     * @memberof AdminsResponseAdmins
+     * @memberof AdministratorsResponseAdministrators
      */
     'createdAt'?: number;
     /**
      * 登録日時 (unixtime)
      * @type {number}
-     * @memberof AdminsResponseAdmins
+     * @memberof AdministratorsResponseAdministrators
      */
     'updatedAt'?: number;
 }
@@ -251,43 +251,43 @@ export interface AuthUserResponse {
 /**
  * 
  * @export
- * @interface CreateAdminRequest
+ * @interface CreateAdministratorRequest
  */
-export interface CreateAdminRequest {
+export interface CreateAdministratorRequest {
     /**
      * 姓
      * @type {string}
-     * @memberof CreateAdminRequest
+     * @memberof CreateAdministratorRequest
      */
     'lastname': string;
     /**
      * 名
      * @type {string}
-     * @memberof CreateAdminRequest
+     * @memberof CreateAdministratorRequest
      */
     'firstname': string;
     /**
      * 姓(かな)
      * @type {string}
-     * @memberof CreateAdminRequest
+     * @memberof CreateAdministratorRequest
      */
     'lastnameKana': string;
     /**
      * 名(かな)
      * @type {string}
-     * @memberof CreateAdminRequest
+     * @memberof CreateAdministratorRequest
      */
     'firstnameKana': string;
     /**
      * メールアドレス
      * @type {string}
-     * @memberof CreateAdminRequest
+     * @memberof CreateAdministratorRequest
      */
     'email': string;
     /**
      * 電話番号
      * @type {string}
-     * @memberof CreateAdminRequest
+     * @memberof CreateAdministratorRequest
      */
     'phoneNumber': string;
 }
@@ -414,22 +414,22 @@ export interface VerifyAuthEmailRequest {
 }
 
 /**
- * AdminApi - axios parameter creator
+ * AdministratorApi - axios parameter creator
  * @export
  */
-export const AdminApiAxiosParamCreator = function (configuration?: Configuration) {
+export const AdministratorApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary 管理者登録
-         * @param {CreateAdminRequest} body 
+         * @summary システム管理者登録
+         * @param {CreateAdministratorRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreateAdmin: async (body: CreateAdminRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1CreateAdministrator: async (body: CreateAdministratorRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'body' is not null or undefined
-            assertParamExists('v1CreateAdmin', 'body', body)
-            const localVarPath = `/v1/admins`;
+            assertParamExists('v1CreateAdministrator', 'body', body)
+            const localVarPath = `/v1/administrators`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -461,15 +461,15 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @summary 管理者詳細取得
+         * @summary システム管理者取得
          * @param {string} adminId 管理者ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetAdmin: async (adminId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1GetAdministrator: async (adminId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'adminId' is not null or undefined
-            assertParamExists('v1GetAdmin', 'adminId', adminId)
-            const localVarPath = `/v1/admins/{adminId}`
+            assertParamExists('v1GetAdministrator', 'adminId', adminId)
+            const localVarPath = `/v1/administrators/{adminId}`
                 .replace(`{${"adminId"}}`, encodeURIComponent(String(adminId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -499,17 +499,14 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @summary 管理者一覧取得
-         * @param {Array<number>} roles 取得対象権限
+         * @summary システム管理者一覧取得
          * @param {number} [limit] 取得上限数
          * @param {number} [offset] 取得開始位置
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListAdmins: async (roles: Array<number>, limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'roles' is not null or undefined
-            assertParamExists('v1ListAdmins', 'roles', roles)
-            const localVarPath = `/v1/admins`;
+        v1ListAdministrators: async (limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/administrators`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -533,10 +530,6 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
                 localVarQueryParameter['offset'] = offset;
             }
 
-            if (roles) {
-                localVarQueryParameter['roles'] = roles.join(COLLECTION_FORMATS.csv);
-            }
-
 
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -552,135 +545,132 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
 };
 
 /**
- * AdminApi - functional programming interface
+ * AdministratorApi - functional programming interface
  * @export
  */
-export const AdminApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = AdminApiAxiosParamCreator(configuration)
+export const AdministratorApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = AdministratorApiAxiosParamCreator(configuration)
     return {
         /**
          * 
-         * @summary 管理者登録
-         * @param {CreateAdminRequest} body 
+         * @summary システム管理者登録
+         * @param {CreateAdministratorRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1CreateAdmin(body: CreateAdminRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AdminResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateAdmin(body, options);
+        async v1CreateAdministrator(body: CreateAdministratorRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AdministratorResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateAdministrator(body, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
-         * @summary 管理者詳細取得
+         * @summary システム管理者取得
          * @param {string} adminId 管理者ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1GetAdmin(adminId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AdminResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetAdmin(adminId, options);
+        async v1GetAdministrator(adminId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AdministratorResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetAdministrator(adminId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
-         * @summary 管理者一覧取得
-         * @param {Array<number>} roles 取得対象権限
+         * @summary システム管理者一覧取得
          * @param {number} [limit] 取得上限数
          * @param {number} [offset] 取得開始位置
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ListAdmins(roles: Array<number>, limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AdminsResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListAdmins(roles, limit, offset, options);
+        async v1ListAdministrators(limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AdministratorsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListAdministrators(limit, offset, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
 };
 
 /**
- * AdminApi - factory interface
+ * AdministratorApi - factory interface
  * @export
  */
-export const AdminApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = AdminApiFp(configuration)
+export const AdministratorApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = AdministratorApiFp(configuration)
     return {
         /**
          * 
-         * @summary 管理者登録
-         * @param {CreateAdminRequest} body 
+         * @summary システム管理者登録
+         * @param {CreateAdministratorRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreateAdmin(body: CreateAdminRequest, options?: any): AxiosPromise<AdminResponse> {
-            return localVarFp.v1CreateAdmin(body, options).then((request) => request(axios, basePath));
+        v1CreateAdministrator(body: CreateAdministratorRequest, options?: any): AxiosPromise<AdministratorResponse> {
+            return localVarFp.v1CreateAdministrator(body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @summary 管理者詳細取得
+         * @summary システム管理者取得
          * @param {string} adminId 管理者ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetAdmin(adminId: string, options?: any): AxiosPromise<AdminResponse> {
-            return localVarFp.v1GetAdmin(adminId, options).then((request) => request(axios, basePath));
+        v1GetAdministrator(adminId: string, options?: any): AxiosPromise<AdministratorResponse> {
+            return localVarFp.v1GetAdministrator(adminId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @summary 管理者一覧取得
-         * @param {Array<number>} roles 取得対象権限
+         * @summary システム管理者一覧取得
          * @param {number} [limit] 取得上限数
          * @param {number} [offset] 取得開始位置
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListAdmins(roles: Array<number>, limit?: number, offset?: number, options?: any): AxiosPromise<AdminsResponse> {
-            return localVarFp.v1ListAdmins(roles, limit, offset, options).then((request) => request(axios, basePath));
+        v1ListAdministrators(limit?: number, offset?: number, options?: any): AxiosPromise<AdministratorsResponse> {
+            return localVarFp.v1ListAdministrators(limit, offset, options).then((request) => request(axios, basePath));
         },
     };
 };
 
 /**
- * AdminApi - object-oriented interface
+ * AdministratorApi - object-oriented interface
  * @export
- * @class AdminApi
+ * @class AdministratorApi
  * @extends {BaseAPI}
  */
-export class AdminApi extends BaseAPI {
+export class AdministratorApi extends BaseAPI {
     /**
      * 
-     * @summary 管理者登録
-     * @param {CreateAdminRequest} body 
+     * @summary システム管理者登録
+     * @param {CreateAdministratorRequest} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof AdminApi
+     * @memberof AdministratorApi
      */
-    public v1CreateAdmin(body: CreateAdminRequest, options?: AxiosRequestConfig) {
-        return AdminApiFp(this.configuration).v1CreateAdmin(body, options).then((request) => request(this.axios, this.basePath));
+    public v1CreateAdministrator(body: CreateAdministratorRequest, options?: AxiosRequestConfig) {
+        return AdministratorApiFp(this.configuration).v1CreateAdministrator(body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @summary 管理者詳細取得
+     * @summary システム管理者取得
      * @param {string} adminId 管理者ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof AdminApi
+     * @memberof AdministratorApi
      */
-    public v1GetAdmin(adminId: string, options?: AxiosRequestConfig) {
-        return AdminApiFp(this.configuration).v1GetAdmin(adminId, options).then((request) => request(this.axios, this.basePath));
+    public v1GetAdministrator(adminId: string, options?: AxiosRequestConfig) {
+        return AdministratorApiFp(this.configuration).v1GetAdministrator(adminId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @summary 管理者一覧取得
-     * @param {Array<number>} roles 取得対象権限
+     * @summary システム管理者一覧取得
      * @param {number} [limit] 取得上限数
      * @param {number} [offset] 取得開始位置
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof AdminApi
+     * @memberof AdministratorApi
      */
-    public v1ListAdmins(roles: Array<number>, limit?: number, offset?: number, options?: AxiosRequestConfig) {
-        return AdminApiFp(this.configuration).v1ListAdmins(roles, limit, offset, options).then((request) => request(this.axios, this.basePath));
+    public v1ListAdministrators(limit?: number, offset?: number, options?: AxiosRequestConfig) {
+        return AdministratorApiFp(this.configuration).v1ListAdministrators(limit, offset, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

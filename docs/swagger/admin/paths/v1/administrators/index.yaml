@@ -1,8 +1,8 @@
 get:
-  summary: 管理者一覧取得
-  operationId: v1ListAdmins
+  summary: システム管理者一覧取得
+  operationId: v1ListAdministrators
   tags:
-  - Admin
+  - Administrator
   security:
   - BearerAuth: []
   parameters:
@@ -22,24 +22,13 @@ get:
     description: 取得開始位置
     required: false
     example: 0
-  - in: query
-    name: roles
-    schema:
-      type: array
-      items:
-        type: integer
-        format: int32
-        description: 権限(1:管理者, 2:生産者)
-    description: 取得対象権限
-    required: true
-    example: [1,2]
   responses:
     200:
       description: A successful response.
       content:
         application/json:
           schema:
-            $ref: './../../../openapi.yaml#/components/schemas/v1AdminsResponse'
+            $ref: './../../../openapi.yaml#/components/schemas/v1AdministratorsResponse'
     default:
       description: An unexpected error response.
       content:
@@ -47,10 +36,10 @@ get:
           schema:
             $ref: './../../../openapi.yaml#/components/schemas/errorResponse'
 post:
-  summary: 管理者登録
-  operationId: v1CreateAdmin
+  summary: システム管理者登録
+  operationId: v1CreateAdministrator
   tags:
-  - Admin
+  - Administrator
   security:
   - BearerAuth: []
   requestBody:
@@ -58,14 +47,14 @@ post:
     content:
       application/json:
         schema:
-          $ref: './../../../openapi.yaml#/components/schemas/v1CreateAdminRequest'
+          $ref: './../../../openapi.yaml#/components/schemas/v1CreateAdministratorRequest'
   responses:
     200:
       description: A successful response.
       content:
         application/json:
           schema:
-            $ref: './../../../openapi.yaml#/components/schemas/v1AdminResponse'
+            $ref: './../../../openapi.yaml#/components/schemas/v1AdministratorResponse'
     default:
       description: An unexpected error response.
       content:

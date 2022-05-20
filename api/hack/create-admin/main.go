@@ -19,7 +19,6 @@ import (
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
-	"github.com/and-period/furumaru/api/internal/user/entity"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	db "github.com/and-period/furumaru/api/pkg/database"
@@ -120,15 +119,15 @@ func run() error {
 	app.messenger = app.newMessengerService()
 	app.user = app.newUserService()
 
-	in := &user.CreateAdminInput{
-		Email:         email,
-		Role:          int32(entity.AdminRoleAdministrator),
+	in := &user.CreateAdministratorInput{
 		Lastname:      "&.",
 		Firstname:     "管理者",
 		LastnameKana:  "あんどどっと",
 		FirstnameKana: "かんりしゃ",
+		Email:         email,
+		PhoneNumber:   "+819012345678",
 	}
-	_, err = app.user.CreateAdmin(ctx, in)
+	_, err = app.user.CreateAdministrator(ctx, in)
 	app.waitGroup.Wait()
 	return err
 }

@@ -1,22 +1,25 @@
-p, auth_read, /v1/admins/me, GET, allow
-p, auth_write, /v1/admins/me/*, (POST)|(PATCH), allow
-p, admin_read, /v1/admins, GET, allow
-p, admin_read, /v1/admins/*, GET, allow
-p, admin_write, /v1/admins, POST, allow
-p, store_read, /v1/stores, GET, allow
-p, store_read, /v1/stores/*, GET, allow
-p, store_write, /v1/stores, POST, allow
-p, store_write, /v1/stores/*, PATCH, allow
-p, upload, /v1/upload/*, POST, allow
+p, auth_read, /v1/auth, GET, allow
+p, auth_read, /v1/auth/*, GET, allow
+p, auth_write, /v1/auth, (POST)|(PATCH)|(DELETE), allow
+p, auth_write, /v1/auth/*, (POST)|(PATCH)|(DELETE), allow
+p, administrator_read, /v1/administrators, GET, allow
+p, administrator_read, /v1/administrators/*, GET, allow
+p, administrator_write, /v1/administrators, POST, allow
+p, coordinator_write, /v1/upload/coordinators/*, POST, allow
+p, producer_write, /v1/upload/producers/*, POST, allow
 
-g, admin, auth_read
-g, admin, auth_write
-g, admin, admin_read
-g, admin, admin_write
-g, admin, store_read
-g, admin, store_write
-g, admin, upload
+g, administrator, auth_read
+g, administrator, auth_write
+g, administrator, administrator_read
+g, administrator, administrator_write
+g, administrator, coordinator_write
+g, administrator, producer_write
+
+g, coordinator, auth_read
+g, coordinator, auth_write
+g, coordinator, coordinator_write
+g, coordinator, producer_write
+
 g, producer, auth_read
 g, producer, auth_write
-g, producer, store_read
-g, producer, upload
+g, producer, producer_write

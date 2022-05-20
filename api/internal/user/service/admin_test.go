@@ -228,13 +228,13 @@ func TestGetAdmin(t *testing.T) {
 	}
 }
 
-func TestCreateAdmin(t *testing.T) {
+func TestCreateAdministrator(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *user.CreateAdminInput
+		input     *user.CreateAdministratorInput
 		expectErr error
 	}{
 		{
@@ -244,13 +244,13 @@ func TestCreateAdmin(t *testing.T) {
 				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(nil)
 				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(nil)
 			},
-			input: &user.CreateAdminInput{
+			input: &user.CreateAdministratorInput{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "すたっふ",
 				Email:         "test-admin@and-period.jp",
-				Role:          int32(entity.AdminRoleAdministrator),
+				PhoneNumber:   "+819012345678",
 			},
 			expectErr: nil,
 		},
@@ -261,33 +261,20 @@ func TestCreateAdmin(t *testing.T) {
 				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(nil)
 				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(errmock)
 			},
-			input: &user.CreateAdminInput{
+			input: &user.CreateAdministratorInput{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "すたっふ",
 				Email:         "test-admin@and-period.jp",
-				Role:          int32(entity.AdminRoleAdministrator),
+				PhoneNumber:   "+819012345678",
 			},
 			expectErr: nil,
 		},
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &user.CreateAdminInput{},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "invalid role",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &user.CreateAdminInput{
-				Lastname:      "&.",
-				Firstname:     "スタッフ",
-				LastnameKana:  "あんどどっと",
-				FirstnameKana: "すたっふ",
-				Email:         "test-admin@and-preiod.jp",
-				Role:          int32(entity.AdminRoleUnknown),
-			},
+			input:     &user.CreateAdministratorInput{},
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
@@ -295,13 +282,13 @@ func TestCreateAdmin(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Admin.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
 			},
-			input: &user.CreateAdminInput{
+			input: &user.CreateAdministratorInput{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "すたっふ",
 				Email:         "test-admin@and-period.jp",
-				Role:          int32(entity.AdminRoleAdministrator),
+				PhoneNumber:   "+819012345678",
 			},
 			expectErr: exception.ErrUnknown,
 		},
@@ -311,13 +298,13 @@ func TestCreateAdmin(t *testing.T) {
 				mocks.db.Admin.EXPECT().Create(ctx, gomock.Any()).Return(nil)
 				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(errmock)
 			},
-			input: &user.CreateAdminInput{
+			input: &user.CreateAdministratorInput{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "すたっふ",
 				Email:         "test-admin@and-period.jp",
-				Role:          int32(entity.AdminRoleAdministrator),
+				PhoneNumber:   "+819012345678",
 			},
 			expectErr: exception.ErrUnknown,
 		},
@@ -326,7 +313,7 @@ func TestCreateAdmin(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
-			_, err := service.CreateAdmin(ctx, tt.input)
+			_, err := service.CreateAdministrator(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
