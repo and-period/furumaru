@@ -15,8 +15,8 @@ env:
   DB_PASSWORD: 12345678
 
 jobs:
-  build_and_test:
-    name: Build and Test
+  setup:
+    name: setup
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -26,8 +26,6 @@ jobs:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
         golang: ['^1.18.1']
-        protobuf: ['3.x']
-
     steps:
     - name: Check out code
       uses: actions/checkout@v2
@@ -37,15 +35,88 @@ jobs:
       with:
         go-version: ${{ matrix.golang }}
 
-    # https://github.com/marketplace/actions/setup-protoc
-    - name: Use Protobuf ${{ matrix.protobuf }}
-      uses: arduino/setup-protoc@v1
-      with:
-        version: ${{ matrix.protobuf }}
+    - name: Make cache directory
+      run: mkdir -p ~/go/pkg/mod
 
-    ############################################
-    # Setup container
-    ############################################
+    - name: Setup
+      run: make setup
+
+    - name: Restore cache
+      uses: actions/cache@v2
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+
+    - name: Download modules
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: go mod download
+
+  lint:
+    name: lint
+    needs: setup
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./api
+    strategy:
+      matrix:
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        golang: ['^1.18.1']
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Fmt
+      run: make fmt
+
+    - name: Vet
+      run: make vet
+
+    - name: Lint
+      run: make lint
+
+  build:
+    name: build
+    needs: setup
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./api
+    strategy:
+      matrix:
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        golang: ['^1.18.1']
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Build user gateway
+      run: make build SERVICE=gateway/user
+
+    - name: Build admin gateway
+      run: make build SERVICE=gateway/admin
+
+  test:
+    name: test
+    needs: setup
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./api
+    strategy:
+      matrix:
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        golang: ['^1.18.1']
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
     - name: Start MySQL container
       working-directory: .
       run: docker-compose -f docker-compose.ci.yaml up --build --detach mysql
@@ -66,54 +137,9 @@ jobs:
         done
         echo 'mysql is up - executing command'
 
-    ############################################
-    # Setup project
-    ############################################
-    - name: Make cache directory
-      run: mkdir -p ~/go/pkg/mod
-
-    - name: Setup
-      run: make setup
-
-    - name: Restore cache
-      uses: actions/cache@v2
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
-
-    - name: Download modules
-      if: steps.cache.outputs.cache-hit != 'true'
-      run: go mod download
-
-    ############################################
-    # Test and syntax check
-    ############################################
-    - name: Fmt
-      run: make fmt
-
-    - name: Vet
-      run: make vet
-
-    - name: Lint
-      run: make lint
-
     - name: Test
       run: make test
 
-    ############################################
-    # Build check
-    ############################################
-    - name: Build user gateway
-      run: make build SERVICE=gateway/user
-
-    - name: Build admin gateway
-      run: make build SERVICE=gateway/admin
-
-    ############################################
-    # Notifications, etc.
-    ############################################
     - uses: codecov/codecov-action@v2
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
