@@ -3,7 +3,7 @@ package entity
 import (
 	"testing"
 
-	"github.com/and-period/marche/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
 )
 

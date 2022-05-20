@@ -10,34 +10,35 @@ tags:
 - name: Auth
   description: 認証関連
 - name: Admin
-  description: 管理者関連
-- name: Store
-  description: 店舗関連
+  description: システム管理者関連
+- name: Coordinator
+  description: 仲介者関連
+- name: Producer
+  description: 生産者関連
 paths:
   # Auth
   /v1/auth:
     $ref: './paths/v1/auth/index.yaml'
   /v1/auth/refresh-token:
     $ref: './paths/v1/auth/refresh-token.yaml'
+  /v1/auth/email:
+    $ref: './paths/v1/auth/email/index.yaml'
+  /v1/auth/email/verified:
+    $ref: './paths/v1/auth/email/verified.yaml'
+  /v1/auth/password:
+    $ref: './paths/v1/auth/password.yaml'
+  /v1/auth/user:
+    $ref: './paths/v1/auth/user.yaml'
   # Admin
-  /v1/admins/me:
-    $ref: './paths/v1/admins/me/index.yaml'
-  /v1/admins/me/email:
-    $ref: './paths/v1/admins/me/email/index.yaml'
-  /v1/admins/me/email/verified:
-    $ref: './paths/v1/admins/me/email/verified.yaml'
-  /v1/admins/me/password:
-    $ref: './paths/v1/admins/me/password.yaml'
   /v1/admins:
     $ref: './paths/v1/admins/index.yaml'
   /v1/admins/{adminId}:
     $ref: './paths/v1/admins/_adminId/index.yaml'
-  /v1/stores:
-    $ref: './paths/v1/stores/index.yaml'
-  /v1/stores/{storeId}:
-    $ref: './paths/v1/stores/_storeId/index.yaml'
-  /v1/upload/stores/thumbnail:
-    $ref: './paths/v1/upload/stores/thumbnail.yaml'
+  # Upload
+  /v1/upload/coordinators/thumbnail:
+    $ref: './paths/v1/upload/coordinators/thumbnail.yaml'
+  /v1/upload/producers/thumbnail:
+    $ref: './paths/v1/upload/producers/thumbnail.yaml'
 components:
   securitySchemes:
     BearerAuth:
@@ -52,32 +53,26 @@ components:
       $ref: './components/schemas/v1/auth.request.yaml#/signInRequest'
     v1RefreshAuthTokenRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/refreshAuthTokenRequest'
+    v1UpdateAuthEmailRequest:
+      $ref: './components/schemas/v1/auth.request.yaml#/updateAuthEmailRequest'
+    v1VerifyAuthEmailRequest:
+      $ref: './components/schemas/v1/auth.request.yaml#/verifyAuthEmailRequest'
+    v1UpdateAuthPasswordRequest:
+      $ref: './components/schemas/v1/auth.request.yaml#/updateAuthPasswordRequest'
     v1CreateAdminRequest:
       $ref: './components/schemas/v1/admins.request.yaml#/createAdminRequest'
-    v1UpdateAdminEmailRequest:
-      $ref: './components/schemas/v1/admins.request.yaml#/updateAdminEmailRequest'
-    v1VerifyAdminEmailRequest:
-      $ref: './components/schemas/v1/admins.request.yaml#/verifyAdminEmailRequest'
-    v1UpdateAdminPasswordRequest:
-      $ref: './components/schemas/v1/admins.request.yaml#/updateAdminPasswordRequest'
-    v1CreateStoreRequest:
-      $ref: './components/schemas/v1/stores.request.yaml#/createStoreRequest'
-    v1UpdateStoreRequest:
-      $ref: './components/schemas/v1/stores.request.yaml#/updateStoreRequest'
-    v1UploadStoreThumbnailRequest:
-      $ref: './components/schemas/v1/upload.request.yaml#/uploadStoreThumbnailRequest'
+    v1UploadCoordinatorThumbnailRequest:
+      $ref: './components/schemas/v1/upload.request.yaml#/uploadCoordinatorThumbnailRequest'
+    v1UploadProducerThumbnailRequest:
+      $ref: './components/schemas/v1/upload.request.yaml#/uploadProducerThumbnailRequest'
     # Response
     v1AuthResponse:
       $ref: './components/schemas/v1/auth.response.yaml#/authResponse'
+    v1AuthUserResponse:
+      $ref: './components/schemas/v1/auth.response.yaml#/authUserResponse'
     v1AdminResponse:
       $ref: './components/schemas/v1/admins.response.yaml#/adminResponse'
     v1AdminsResponse:
       $ref: './components/schemas/v1/admins.response.yaml#/adminsResponse'
-    v1AdminMeResponse:
-      $ref: './components/schemas/v1/admins.response.yaml#/adminMeResponse'
-    v1StoreResponse:
-      $ref: './components/schemas/v1/stores.response.yaml#/storeResponse'
-    v1StoresResponse:
-      $ref: './components/schemas/v1/stores.response.yaml#/storesResponse'
-    v1UploadResponse:
-      $ref: './components/schemas/v1/upload.response.yaml#/uploadResponse'
+    v1UploadImageResponse:
+      $ref: './components/schemas/v1/upload.response.yaml#/uploadImageResponse'

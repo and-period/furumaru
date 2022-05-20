@@ -19,13 +19,9 @@ adminResponse:
     email:
       type: string
       description: メールアドレス
-    role:
-      type: integer
-      format: int32
-      description: 権限 (1:管理者, 2:生産者)
-    thumbnailUrl:
+    phoneNumber:
       type: string
-      description: サムネイルURL
+      description: 電話番号
     createdAt:
       type: integer
       format: int64
@@ -41,8 +37,7 @@ adminResponse:
   - lastnameKana
   - firstnameKana
   - email
-  - role
-  - thumbnailUrl
+  - phoneNumber
   - createdAt
   - updatedAt
   example:
@@ -52,8 +47,7 @@ adminResponse:
     lastnameKana: 'あんどどっと'
     firstnameKana: 'かんりしゃ'
     email: 'test-user@and-period.jp'
-    role: 1
-    thumbnailUrl: 'https://and-period.jp/thumbnail'
+    phoneNumber: '+819012345678'
     createdAt: 1640962800
     updatedAt: 1640962800
 adminsResponse:
@@ -83,13 +77,9 @@ adminsResponse:
           email:
             type: string
             description: メールアドレス
-          role:
-            type: integer
-            format: int32
-            description: 権限 (1:管理者, 2:生産者)
-          thumbnailUrl:
+          phoneNumber:
             type: string
-            description: サムネイルURL
+            description: 電話番号
           createdAt:
             type: integer
             format: int64
@@ -108,8 +98,7 @@ adminsResponse:
       lastnameKana: 'あんどどっと'
       firstnameKana: 'かんりしゃ'
       email: 'test-user@and-period.jp'
-      role: 1
-      thumbnailUrl: 'https://and-period.jp/thumbnail'
+      phoneNumber: '+819012345678'
       createdAt: 1640962800
       updatedAt: 1640962800
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -118,53 +107,6 @@ adminsResponse:
       lastnameKana: 'あんどどっと'
       firstnameKana: 'すたっふ'
       email: 'test-user@and-period.jp'
-      role: 2
-      thumbnailUrl: 'https://and-period.jp/thumbnail'
+      phoneNumber: '+819012345678'
       createdAt: 1640962800
       updatedAt: 1640962800
-adminMeResponse:
-  type: object
-  properties:
-    id:
-      type: string
-      description: 管理者ID
-    lastname:
-      type: string
-      description: 姓
-    firstname:
-      type: string
-      description: 名
-    lastnameKana:
-      type: string
-      description: 姓(かな)
-    firstnameKana:
-      type: string
-      description: 名(かな)
-    email:
-      type: string
-      description: メールアドレス
-    role:
-      type: integer
-      format: int32
-      description: 権限 (1:管理者, 2:生産者)
-    thumbnailUrl:
-      type: string
-      description: サムネイルURL
-  required:
-  - id
-  - lastname
-  - firstname
-  - lastnameKana
-  - firstnameKana
-  - email
-  - role
-  - thumbnailUrl
-  example:
-    id: 'kSByoE6FetnPs5Byk3a9Zx'
-    lastname: '&.'
-    firstname: '管理者'
-    lastnameKana: 'あんどどっと'
-    firstnameKana: 'かんりしゃ'
-    email: 'test-user@and-period.jp'
-    role: 1
-    thumbnailUrl: 'https://and-period.jp/thumbnail'

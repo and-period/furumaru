@@ -5,12 +5,12 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/and-period/marche/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/marche/api/internal/gateway/admin/v1/response"
-	"github.com/and-period/marche/api/internal/gateway/admin/v1/service"
-	"github.com/and-period/marche/api/internal/user"
-	uentity "github.com/and-period/marche/api/internal/user/entity"
-	"github.com/and-period/marche/api/pkg/jst"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/user"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 )
 

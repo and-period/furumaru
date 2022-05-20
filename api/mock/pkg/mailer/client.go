@@ -8,7 +8,7 @@ import (
 	context "context"
 	reflect "reflect"
 
-	mailer "github.com/and-period/marche/api/pkg/mailer"
+	mailer "github.com/and-period/furumaru/api/pkg/mailer"
 	gomock "github.com/golang/mock/gomock"
 )
 

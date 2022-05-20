@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	mock_mailer "github.com/and-period/marche/api/mock/pkg/mailer"
-	"github.com/and-period/marche/api/pkg/jst"
-	"github.com/and-period/marche/api/pkg/validator"
+	mock_mailer "github.com/and-period/furumaru/api/mock/pkg/mailer"
+	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/validator"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"

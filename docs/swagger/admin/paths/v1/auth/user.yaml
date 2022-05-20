@@ -1,0 +1,20 @@
+get:
+  summary: 認証済みユーザー情報取得
+  operationId: v1GetAuthUser
+  tags:
+  - Auth
+  security:
+  - BearerAuth: []
+  responses:
+    200:
+      description: A successful response.
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/v1AuthUserResponse'
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/errorResponse'

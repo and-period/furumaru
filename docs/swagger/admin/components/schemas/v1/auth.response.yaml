@@ -29,3 +29,49 @@ authResponse:
     refreshToken: 'xxxxxxxxxx'
     expiresIn: 3600
     tokenType: 'Bearer'
+authUserResponse:
+  type: object
+  properties:
+    id:
+      type: string
+      description: 管理者ID
+    lastname:
+      type: string
+      description: 姓
+    firstname:
+      type: string
+      description: 名
+    lastnameKana:
+      type: string
+      description: 姓(かな)
+    firstnameKana:
+      type: string
+      description: 名(かな)
+    storeName:
+      type: string
+      description: 店舗名
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+    role:
+      type: integer
+      format: int32
+      description: 権限 (1:管理者, 2:仲介者, 3:生産者)
+  required:
+  - id
+  - lastname
+  - firstname
+  - lastnameKana
+  - firstnameKana
+  - storeName
+  - thumbnailUrl
+  - role
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    lastname: '&.'
+    firstname: '管理者'
+    lastnameKana: 'あんどどっと'
+    firstnameKana: 'かんりしゃ'
+    storeName: '&.農園'
+    thumbnailUrl: 'https://and-period.jp/thumbnail'
+    role: 1

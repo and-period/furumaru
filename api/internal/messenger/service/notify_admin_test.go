@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/and-period/marche/api/internal/exception"
-	"github.com/and-period/marche/api/internal/messenger"
-	"github.com/and-period/marche/api/pkg/mailer"
+	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/messenger"
+	"github.com/and-period/furumaru/api/pkg/mailer"
 	"github.com/stretchr/testify/assert"
 )
 

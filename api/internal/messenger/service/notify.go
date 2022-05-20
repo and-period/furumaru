@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 
-	"github.com/and-period/marche/api/internal/messenger/entity"
-	"github.com/and-period/marche/api/pkg/backoff"
-	"github.com/and-period/marche/api/pkg/mailer"
+	"github.com/and-period/furumaru/api/internal/messenger/entity"
+	"github.com/and-period/furumaru/api/pkg/backoff"
+	"github.com/and-period/furumaru/api/pkg/mailer"
 )
 
 func (s *messengerService) sendInfoMail(

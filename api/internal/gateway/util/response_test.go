@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/and-period/marche/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
