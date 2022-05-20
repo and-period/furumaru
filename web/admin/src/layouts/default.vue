@@ -26,7 +26,6 @@
           :key="i"
           :to="item.to"
           router
-          exact
           color="primary"
         >
           <v-list-item-icon>
@@ -123,7 +122,7 @@ export default defineComponent({
         title: '顧客管理',
       },
       {
-        to: '/contact',
+        to: '/contacts',
         icon: 'mdi-forum',
         title: 'お問い合わせ管理',
       },
@@ -133,18 +132,18 @@ export default defineComponent({
         title: 'お知らせ管理',
       },
       {
-        to: '/sales',
+        to: '/events',
         icon: 'mdi-cash-100',
         title: 'セール情報管理',
+      },
+      {
+        to: '/producers',
+        icon: 'mdi-account',
+        title: '生産者管理',
       },
     ]
 
     const navigationDrawerSettingsList: NavigationDrawerItem[] = [
-      {
-        to: '/users',
-        icon: 'mdi-account',
-        title: '利用者管理',
-      },
       {
         to: '/settings',
         icon: 'mdi-cog',

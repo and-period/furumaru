@@ -1,7 +1,24 @@
 <template>
   <div>
-    <p>商品一覧</p>
-    <v-btn block outlined class="mb-4" @click="handleClickAddBtn">追加</v-btn>
+    <div class="d-flex align-center mb-4">
+      <p class="text-h6 ma-0">商品管理</p>
+      <v-spacer />
+      <v-text-field
+        v-model="searchWord"
+        append-icon="mdi-magnify"
+        label="商品名"
+        hide-details
+        single-line
+      />
+    </div>
+    <div class="d-flex">
+      <v-spacer />
+      <v-btn outlined class="mb-4" @click="handleClickAddBtn">
+        <v-icon left>mdi-plus</v-icon>
+        商品登録
+      </v-btn>
+    </div>
+
     <v-data-table
       v-model="selectedProducts"
       :headers="headers"
@@ -12,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api'
+import { defineComponent, ref, useRouter } from '@nuxtjs/composition-api'
 
 interface IProduct {
   id: string
@@ -31,8 +48,12 @@ interface DataTableHeader {
 
 export default defineComponent({
   setup() {
+    const router = useRouter()
+
+    const searchWord = ref<string>('')
+
     const handleClickAddBtn = () => {
-      console.log('NOT IMPLEMENTED')
+      router.push('/products/add')
     }
 
     const headers: DataTableHeader[] = [
@@ -73,6 +94,7 @@ export default defineComponent({
 
     return {
       headers,
+      searchWord,
       handleClickAddBtn,
       products,
       selectedProducts,
