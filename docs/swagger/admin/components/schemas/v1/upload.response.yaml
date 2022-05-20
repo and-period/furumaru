@@ -7,4 +7,4 @@ uploadImageResponse:
   required:
   - url
   example:
-  - 'https://and-period.jp/image.png'
+    url: 'https://and-period.jp/image.png'

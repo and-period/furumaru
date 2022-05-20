@@ -31,13 +31,13 @@ type GetAdminInput struct {
 	AdminID string `validate:"required"`
 }
 
-type CreateAdminInput struct {
+type CreateAdministratorInput struct {
 	Lastname      string `validate:"required,max=16"`
 	Firstname     string `validate:"required,max=16"`
 	LastnameKana  string `validate:"required,max=32,hiragana"`
 	FirstnameKana string `validate:"required,max=32,hiragana"`
 	Email         string `validate:"required,max=256,email"`
-	Role          int32  `validate:""`
+	PhoneNumber   string `validate:"min=12,max=18,phone_number"`
 }
 
 type UpdateAdminEmailInput struct {

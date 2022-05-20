@@ -1,9 +1,9 @@
-adminResponse:
+administratorResponse:
   type: object
   properties:
     id:
       type: string
-      description: 管理者ID
+      description: システム管理者ID
     lastname:
       type: string
       description: 姓
@@ -50,18 +50,18 @@ adminResponse:
     phoneNumber: '+819012345678'
     createdAt: 1640962800
     updatedAt: 1640962800
-adminsResponse:
+administratorsResponse:
   type: object
   properties:
-    admins:
+    administrators:
       type: array
-      description: 管理者一覧
+      description: システム管理者一覧
       items:
         type: object
         properties:
           id:
             type: string
-            description: 管理者ID
+            description: システム管理者ID
           lastname:
             type: string
             description: 姓
@@ -89,9 +89,9 @@ adminsResponse:
             format: int64
             description: 登録日時 (unixtime)
   required:
-  - admins
+  - administrators
   example:
-    admins:
+    administrators:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       lastname: '&.'
       firstname: '管理者'

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"sync"
 	"time"
@@ -22,6 +23,7 @@ import (
 var (
 	errInvalidFileFormat = errors.New("handler: invalid file format")
 	errTooLargeFileSize  = errors.New("handler: file size too large")
+	errNotFoundAdmin     = errors.New("handler: not found admin")
 )
 
 /**
@@ -87,7 +89,8 @@ func NewAPIV1Handler(params *Params, opts ...Option) APIV1Handler {
 func (h *apiV1Handler) Routes(rg *gin.RouterGroup) {
 	v1 := rg.Group("/v1")
 	h.authRoutes(v1.Group("/auth"))
-	h.adminRoutes(v1.Group("/admins"))
+	h.administratorRoutes(v1.Group("/administrators"))
+	h.uploadRoutes(v1.Group("/upload"))
 }
 
 /**
@@ -111,6 +114,10 @@ func unauthorized(ctx *gin.Context, err error) {
 
 func forbidden(ctx *gin.Context, err error) {
 	httpError(ctx, status.Error(codes.PermissionDenied, err.Error()))
+}
+
+func notFound(ctx *gin.Context, err error) {
+	httpError(ctx, status.Error(codes.NotFound, err.Error()))
 }
 
 /**
@@ -145,6 +152,7 @@ func (h *apiV1Handler) authentication() gin.HandlerFunc {
 
 		enforce, err := h.enforcer.Enforce(role.String(), ctx.Request.URL.Path, ctx.Request.Method)
 		if err != nil {
+			fmt.Println("debug", err)
 			httpError(ctx, status.Error(codes.Internal, err.Error()))
 			return
 		}

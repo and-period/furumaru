@@ -1,8 +1,8 @@
 get:
-  summary: 管理者詳細取得
-  operationId: v1GetAdmin
+  summary: システム管理者取得
+  operationId: v1GetAdministrator
   tags:
-  - Admin
+  - Administrator
   security:
   - BearerAuth: []
   parameters:
@@ -19,7 +19,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: './../../../../openapi.yaml#/components/schemas/v1AdminResponse'
+            $ref: './../../../../openapi.yaml#/components/schemas/v1AdministratorResponse'
     default:
       description: An unexpected error response.
       content:

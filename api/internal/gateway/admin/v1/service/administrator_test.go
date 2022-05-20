@@ -9,55 +9,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestAdminRole(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name           string
-		role           entity.AdminRole
-		expect         AdminRole
-		expectString   string
-		expectResponse int32
-	}{
-		{
-			name:           "administrator",
-			role:           entity.AdminRoleAdministrator,
-			expect:         AdminRoleAdministrator,
-			expectString:   "admin",
-			expectResponse: 1,
-		},
-		{
-			name:           "producer",
-			role:           entity.AdminRoleProducer,
-			expect:         AdminRoleProducer,
-			expectString:   "producer",
-			expectResponse: 2,
-		},
-		{
-			name:           "unknown",
-			role:           entity.AdminRoleUnknown,
-			expect:         AdminRoleUnknown,
-			expectString:   "unknown",
-			expectResponse: 0,
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			actual := NewAdminRole(tt.role)
-			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, tt.expectString, actual.String())
-			assert.Equal(t, tt.expectResponse, actual.Response())
-		})
-	}
-}
-
-func TestAdmin(t *testing.T) {
+func TestAdministrator(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name   string
 		admin  *entity.Admin
-		expect *Admin
+		expect *Administrator
 	}{
 		{
 			name: "success",
@@ -68,21 +25,20 @@ func TestAdmin(t *testing.T) {
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "かんりしゃ",
 				Email:         "test-admin01@and-period.jp",
+				PhoneNumber:   "+819012345678",
 				Role:          entity.AdminRoleAdministrator,
-				ThumbnailURL:  "https://and-period.jp",
 				CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
-			expect: &Admin{
-				Admin: &response.Admin{
+			expect: &Administrator{
+				Administrator: &response.Administrator{
 					ID:            "admin-id",
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",
 					FirstnameKana: "かんりしゃ",
 					Email:         "test-admin01@and-period.jp",
-					Role:          int32(AdminRoleAdministrator),
-					ThumbnailURL:  "https://and-period.jp",
+					PhoneNumber:   "+819012345678",
 					CreatedAt:     1640962800,
 					UpdatedAt:     1640962800,
 				},
@@ -93,43 +49,41 @@ func TestAdmin(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewAdmin(tt.admin))
+			assert.Equal(t, tt.expect, NewAdministrator(tt.admin))
 		})
 	}
 }
 
-func TestAdmin_Response(t *testing.T) {
+func TestAdministrator_Response(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name   string
-		admin  *Admin
-		expect *response.Admin
+		admin  *Administrator
+		expect *response.Administrator
 	}{
 		{
 			name: "success",
-			admin: &Admin{
-				Admin: &response.Admin{
+			admin: &Administrator{
+				Administrator: &response.Administrator{
 					ID:            "admin-id",
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",
 					FirstnameKana: "かんりしゃ",
 					Email:         "test-admin01@and-period.jp",
-					Role:          int32(AdminRoleAdministrator),
-					ThumbnailURL:  "https://and-period.jp",
+					PhoneNumber:   "+819012345678",
 					CreatedAt:     1640962800,
 					UpdatedAt:     1640962800,
 				},
 			},
-			expect: &response.Admin{
+			expect: &response.Administrator{
 				ID:            "admin-id",
 				Lastname:      "&.",
 				Firstname:     "管理者",
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "かんりしゃ",
 				Email:         "test-admin01@and-period.jp",
-				Role:          int32(AdminRoleAdministrator),
-				ThumbnailURL:  "https://and-period.jp",
+				PhoneNumber:   "+819012345678",
 				CreatedAt:     1640962800,
 				UpdatedAt:     1640962800,
 			},
@@ -144,12 +98,12 @@ func TestAdmin_Response(t *testing.T) {
 	}
 }
 
-func TestAdmins(t *testing.T) {
+func TestAdministrators(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name   string
 		admins entity.Admins
-		expect Admins
+		expect Administrators
 	}{
 		{
 			name: "success",
@@ -161,49 +115,47 @@ func TestAdmins(t *testing.T) {
 					LastnameKana:  "あんどどっと",
 					FirstnameKana: "かんりしゃ",
 					Email:         "test-admin01@and-period.jp",
+					PhoneNumber:   "+819012345678",
 					Role:          entity.AdminRoleAdministrator,
-					ThumbnailURL:  "https://and-period.jp",
 					CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 				{
 					ID:            "admin-id02",
 					Lastname:      "&.",
-					Firstname:     "スタッフ",
+					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",
-					FirstnameKana: "すたっふ",
-					Email:         "test-admin02@and-period.jp",
-					Role:          entity.AdminRoleProducer,
-					ThumbnailURL:  "https://and-period.jp",
+					FirstnameKana: "かんりしゃ",
+					Email:         "test-admin01@and-period.jp",
+					PhoneNumber:   "+819012345678",
+					Role:          entity.AdminRoleAdministrator,
 					CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 			},
-			expect: Admins{
+			expect: Administrators{
 				{
-					Admin: &response.Admin{
+					Administrator: &response.Administrator{
 						ID:            "admin-id01",
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
 						FirstnameKana: "かんりしゃ",
 						Email:         "test-admin01@and-period.jp",
-						Role:          int32(AdminRoleAdministrator),
-						ThumbnailURL:  "https://and-period.jp",
+						PhoneNumber:   "+819012345678",
 						CreatedAt:     1640962800,
 						UpdatedAt:     1640962800,
 					},
 				},
 				{
-					Admin: &response.Admin{
+					Administrator: &response.Administrator{
 						ID:            "admin-id02",
 						Lastname:      "&.",
-						Firstname:     "スタッフ",
+						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
-						FirstnameKana: "すたっふ",
-						Email:         "test-admin02@and-period.jp",
-						Role:          int32(AdminRoleProducer),
-						ThumbnailURL:  "https://and-period.jp",
+						FirstnameKana: "かんりしゃ",
+						Email:         "test-admin01@and-period.jp",
+						PhoneNumber:   "+819012345678",
 						CreatedAt:     1640962800,
 						UpdatedAt:     1640962800,
 					},
@@ -215,51 +167,49 @@ func TestAdmins(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewAdmins(tt.admins))
+			assert.Equal(t, tt.expect, NewAdministrators(tt.admins))
 		})
 	}
 }
 
-func TestAdmins_Response(t *testing.T) {
+func TestAdministrators_Response(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name   string
-		admins Admins
-		expect []*response.Admin
+		admins Administrators
+		expect []*response.Administrator
 	}{
 		{
 			name: "success",
-			admins: Admins{
+			admins: Administrators{
 				{
-					Admin: &response.Admin{
+					Administrator: &response.Administrator{
 						ID:            "admin-id01",
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
 						FirstnameKana: "かんりしゃ",
 						Email:         "test-admin01@and-period.jp",
-						Role:          int32(AdminRoleAdministrator),
-						ThumbnailURL:  "https://and-period.jp",
+						PhoneNumber:   "+819012345678",
 						CreatedAt:     1640962800,
 						UpdatedAt:     1640962800,
 					},
 				},
 				{
-					Admin: &response.Admin{
+					Administrator: &response.Administrator{
 						ID:            "admin-id02",
 						Lastname:      "&.",
-						Firstname:     "スタッフ",
+						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
-						FirstnameKana: "すたっふ",
-						Email:         "test-admin02@and-period.jp",
-						Role:          int32(AdminRoleProducer),
-						ThumbnailURL:  "https://and-period.jp",
+						FirstnameKana: "かんりしゃ",
+						Email:         "test-admin01@and-period.jp",
+						PhoneNumber:   "+819012345678",
 						CreatedAt:     1640962800,
 						UpdatedAt:     1640962800,
 					},
 				},
 			},
-			expect: []*response.Admin{
+			expect: []*response.Administrator{
 				{
 					ID:            "admin-id01",
 					Lastname:      "&.",
@@ -267,20 +217,18 @@ func TestAdmins_Response(t *testing.T) {
 					LastnameKana:  "あんどどっと",
 					FirstnameKana: "かんりしゃ",
 					Email:         "test-admin01@and-period.jp",
-					Role:          int32(AdminRoleAdministrator),
-					ThumbnailURL:  "https://and-period.jp",
+					PhoneNumber:   "+819012345678",
 					CreatedAt:     1640962800,
 					UpdatedAt:     1640962800,
 				},
 				{
 					ID:            "admin-id02",
 					Lastname:      "&.",
-					Firstname:     "スタッフ",
+					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",
-					FirstnameKana: "すたっふ",
-					Email:         "test-admin02@and-period.jp",
-					Role:          int32(AdminRoleProducer),
-					ThumbnailURL:  "https://and-period.jp",
+					FirstnameKana: "かんりしゃ",
+					Email:         "test-admin01@and-period.jp",
+					PhoneNumber:   "+819012345678",
 					CreatedAt:     1640962800,
 					UpdatedAt:     1640962800,
 				},
