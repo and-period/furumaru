@@ -70,7 +70,15 @@ func (s *userService) CreateUserWithOAuth(
 }
 
 func (s *userService) InitializeUser(ctx context.Context, in *user.InitializeUserInput) error {
-	return exception.ErrNotImplemented
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	u, err := s.db.User.Get(ctx, in.UserID)
+	if err != nil {
+		return exception.InternalError(err)
+	}
+	err = s.db.User.InitializeUser(ctx, u.ID, in.AccountID, in.Username)
+	return exception.InternalError(err)
 }
 
 func (s *userService) UpdateUserEmail(ctx context.Context, in *user.UpdateUserEmailInput) error {
