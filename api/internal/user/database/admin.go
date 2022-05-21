@@ -14,8 +14,9 @@ import (
 const adminTable = "admins"
 
 var adminFields = []string{
-	"id", "cognito_id", "email", "role", "thumbnail_url",
-	"lastname", "firstname", "lastname_kana", "firstname_kana",
+	"id", "cognito_id", "thumbnail_url", "email", "phone_number", "role",
+	"lastname", "firstname", "lastname_kana", "firstname_kana", "store_name",
+	"postal_code", "prefecture", "city", "address_line1", "address_line2",
 	"created_at", "updated_at", "deleted_at",
 }
 

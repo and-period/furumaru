@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	cmd "github.com/and-period/marche/api/internal/gateway/cmd/user"
+	cmd "github.com/and-period/furumaru/api/internal/gateway/cmd/user"
 )
 
 func main() {

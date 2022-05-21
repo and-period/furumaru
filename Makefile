@@ -11,7 +11,6 @@ setup: build install swagger
 install: migrate
 	docker-compose run --rm swagger_generator yarn
 	docker-compose run --rm user_web yarn
-	docker-compose run --rm shop_web yarn
 	docker-compose run --rm admin_web yarn
 
 build:
@@ -27,7 +26,9 @@ down:
 	docker-compose down
 
 remove:
+	docker-compose run mysql_test bash -c "echo 'DROP DATABASE migrations;' | mysql -u root -p12345678 "
 	docker-compose down --rmi all --volumes --remove-orphans
+	rm -r ./tmp/** && touch ./tmp/.keep
 
 logs:
 	docker-compose logs
@@ -38,13 +39,13 @@ logs:
 .PHONY: start-web start-api start-swagger start-test
 
 start-web:
-	docker-compose up user_web shop_web admin_web
+	docker-compose up user_web admin_web
 
 start-api: migrate
-	docker-compose up user_gateway shop_gateway admin_gateway mysql_test
+	docker-compose up user_gateway admin_gateway mysql_test
 
 start-swagger:
-	docker-compose up swagger_generator swagger_user swagger_shop swagger_admin
+	docker-compose up swagger_generator swagger_user swagger_admin
 
 start-test:
 	docker-compose up mysql_test
@@ -57,7 +58,6 @@ start-test:
 swagger:
 	docker-compose run --rm swagger_generator yarn generate
 	docker-compose run --rm user_web yarn lintfix
-	docker-compose run --rm shop_web yarn lintfix
 	docker-compose run --rm admin_web yarn lintfix
 
 migrate:

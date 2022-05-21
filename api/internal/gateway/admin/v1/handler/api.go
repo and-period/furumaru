@@ -2,17 +2,17 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"sync"
 	"time"
 
-	"github.com/and-period/marche/api/internal/gateway/admin/v1/service"
-	"github.com/and-period/marche/api/internal/gateway/util"
-	"github.com/and-period/marche/api/internal/store"
-	"github.com/and-period/marche/api/internal/user"
-	"github.com/and-period/marche/api/pkg/jst"
-	"github.com/and-period/marche/api/pkg/rbac"
-	"github.com/and-period/marche/api/pkg/storage"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/util"
+	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/rbac"
+	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"golang.org/x/sync/singleflight"
@@ -23,6 +23,7 @@ import (
 var (
 	errInvalidFileFormat = errors.New("handler: invalid file format")
 	errTooLargeFileSize  = errors.New("handler: file size too large")
+	errNotFoundAdmin     = errors.New("handler: not found admin")
 )
 
 /**
@@ -35,11 +36,10 @@ type APIV1Handler interface {
 }
 
 type Params struct {
-	WaitGroup    *sync.WaitGroup
-	Enforcer     rbac.Enforcer
-	Storage      storage.Bucket
-	UserService  user.UserService
-	StoreService store.StoreService
+	WaitGroup   *sync.WaitGroup
+	Enforcer    rbac.Enforcer
+	Storage     storage.Bucket
+	UserService user.UserService
 }
 
 type apiV1Handler struct {
@@ -50,7 +50,6 @@ type apiV1Handler struct {
 	storage     storage.Bucket
 	enforcer    rbac.Enforcer
 	user        user.UserService
-	store       store.StoreService
 }
 
 type options struct {
@@ -79,7 +78,6 @@ func NewAPIV1Handler(params *Params, opts ...Option) APIV1Handler {
 		storage:   params.Storage,
 		enforcer:  params.Enforcer,
 		user:      params.UserService,
-		store:     params.StoreService,
 	}
 }
 
@@ -91,8 +89,7 @@ func NewAPIV1Handler(params *Params, opts ...Option) APIV1Handler {
 func (h *apiV1Handler) Routes(rg *gin.RouterGroup) {
 	v1 := rg.Group("/v1")
 	h.authRoutes(v1.Group("/auth"))
-	h.adminRoutes(v1.Group("/admins"))
-	h.storeRoutes(v1.Group("/stores"))
+	h.administratorRoutes(v1.Group("/administrators"))
 	h.uploadRoutes(v1.Group("/upload"))
 }
 
@@ -117,6 +114,10 @@ func unauthorized(ctx *gin.Context, err error) {
 
 func forbidden(ctx *gin.Context, err error) {
 	httpError(ctx, status.Error(codes.PermissionDenied, err.Error()))
+}
+
+func notFound(ctx *gin.Context, err error) {
+	httpError(ctx, status.Error(codes.NotFound, err.Error()))
 }
 
 /**
@@ -151,6 +152,7 @@ func (h *apiV1Handler) authentication() gin.HandlerFunc {
 
 		enforce, err := h.enforcer.Enforce(role.String(), ctx.Request.URL.Path, ctx.Request.Method)
 		if err != nil {
+			fmt.Println("debug", err)
 			httpError(ctx, status.Error(codes.Internal, err.Error()))
 			return
 		}

@@ -15,16 +15,15 @@ import (
 	"sync"
 	"time"
 
-	"github.com/and-period/marche/api/internal/messenger"
-	messengersrv "github.com/and-period/marche/api/internal/messenger/service"
-	"github.com/and-period/marche/api/internal/user"
-	"github.com/and-period/marche/api/internal/user/database"
-	"github.com/and-period/marche/api/internal/user/entity"
-	usersrv "github.com/and-period/marche/api/internal/user/service"
-	"github.com/and-period/marche/api/pkg/cognito"
-	db "github.com/and-period/marche/api/pkg/database"
-	"github.com/and-period/marche/api/pkg/log"
-	"github.com/and-period/marche/api/pkg/mailer"
+	"github.com/and-period/furumaru/api/internal/messenger"
+	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
+	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/internal/user/database"
+	usersrv "github.com/and-period/furumaru/api/internal/user/service"
+	"github.com/and-period/furumaru/api/pkg/cognito"
+	db "github.com/and-period/furumaru/api/pkg/database"
+	"github.com/and-period/furumaru/api/pkg/log"
+	"github.com/and-period/furumaru/api/pkg/mailer"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	awscredentials "github.com/aws/aws-sdk-go-v2/credentials"
@@ -120,15 +119,15 @@ func run() error {
 	app.messenger = app.newMessengerService()
 	app.user = app.newUserService()
 
-	in := &user.CreateAdminInput{
-		Email:         email,
-		Role:          int32(entity.AdminRoleAdministrator),
+	in := &user.CreateAdministratorInput{
 		Lastname:      "&.",
 		Firstname:     "管理者",
 		LastnameKana:  "あんどどっと",
 		FirstnameKana: "かんりしゃ",
+		Email:         email,
+		PhoneNumber:   "+819012345678",
 	}
-	_, err = app.user.CreateAdmin(ctx, in)
+	_, err = app.user.CreateAdministrator(ctx, in)
 	app.waitGroup.Wait()
 	return err
 }

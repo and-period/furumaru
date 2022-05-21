@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/and-period/marche/api/internal/gateway/admin/v1/response"
-	"github.com/and-period/marche/api/pkg/uuid"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/pkg/uuid"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -23,12 +23,23 @@ type uploadRegulation struct {
 
 func (h *apiV1Handler) uploadRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication())
-	arg.POST("/stores/thumbnail", h.uploadStoreThumbnail)
+	arg.POST("/coordinators/thumbnail", h.uploadCoordinatorThumbnail)
+	arg.POST("/producers/thumbnail", h.uploadProducerThumbnail)
 }
 
-func (h *apiV1Handler) uploadStoreThumbnail(ctx *gin.Context) {
+func (h *apiV1Handler) uploadCoordinatorThumbnail(ctx *gin.Context) {
 	reg := &uploadRegulation{
-		dir:      "stores/thumbnail",
+		dir:      "coordinators/thumbnail",
+		filename: "thumbnail",
+		maxSize:  10 << 20, // 10MB
+		formats:  []string{"image/png", "image/jpeg"},
+	}
+	h.upload(ctx, reg)
+}
+
+func (h *apiV1Handler) uploadProducerThumbnail(ctx *gin.Context) {
+	reg := &uploadRegulation{
+		dir:      "producers/thumbnail",
 		filename: "thumbnail",
 		maxSize:  10 << 20, // 10MB
 		formats:  []string{"image/png", "image/jpeg"},
@@ -48,7 +59,7 @@ func (h *apiV1Handler) upload(ctx *gin.Context, reg *uploadRegulation) {
 		httpError(ctx, err)
 		return
 	}
-	res := &response.UploaderResponse{
+	res := &response.UploadImageResponse{
 		URL: url,
 	}
 	ctx.JSON(http.StatusOK, res)

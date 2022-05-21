@@ -1,0 +1,36 @@
+createAdministratorRequest:
+  type: object
+  properties:
+    lastname:
+      type: string
+      description: 姓
+    firstname:
+      type: string
+      description: 名
+    lastnameKana:
+      type: string
+      description: 姓(かな)
+    firstnameKana:
+      type: string
+      description: 名(かな)
+    email:
+      type: string
+      format: email
+      description: メールアドレス
+    phoneNumber:
+      type: string
+      description: 電話番号
+  required:
+  - lastname
+  - firstname
+  - lastnameKana
+  - firstnameKana
+  - email
+  - phoneNumber
+  example:
+    lastname: '&.'
+    firstname: '管理者'
+    lastnameKana: 'あんどどっと'
+    firstnameKana: 'かんりしゃ'
+    email: 'test-user@and-period.jp'
+    phoneNumber: '+819012345678'

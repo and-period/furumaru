@@ -1,5 +1,5 @@
 package response
 
-type UploaderResponse struct {
-	URL string `json:"url"` // アップロード先URL
+type UploadImageResponse struct {
+	URL string `json:"url"` // 画像アップロード先URL
 }

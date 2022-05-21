@@ -1,0 +1,29 @@
+post:
+  summary: 仲介者サムネイルアップロード
+  operationId: v1UploadCoordinatorThumbnail
+  tags:
+  - Coordinator
+  security:
+  - BearerAuth: []
+  requestBody:
+    required: true
+    content:
+      multipart/form-data:
+        schema:
+          $ref: '../../../../openapi.yaml#/components/schemas/v1UploadCoordinatorThumbnailRequest'
+        encoding:
+          thumbnail:
+            contentType: image/png, image/jpeg
+  responses:
+    200:
+      description: A successful response.
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../openapi.yaml#/components/schemas/v1UploadImageResponse'
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../openapi.yaml#/components/schemas/errorResponse'

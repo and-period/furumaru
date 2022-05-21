@@ -1,5 +1,10 @@
-uploadResponse:
+uploadImageResponse:
   type: object
   properties:
     url:
       type: string
+      description: 画像アップロード先URL
+  required:
+  - url
+  example:
+    url: 'https://and-period.jp/image.png'

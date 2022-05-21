@@ -4,7 +4,7 @@ replicaCount: 1
 revisionHistoryLimit: 5
 
 image:
-  repository: marche/user-gateway
+  repository: furumaru/user-gateway
   pullPolicy: Always
   tag: ""
 

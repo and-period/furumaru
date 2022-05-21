@@ -12,13 +12,6 @@ type config struct {
 	ShutdownDelaySec         int64  `envconfig:"SHUTDOWN_DELAY_SEC" default:"20"`
 	LogPath                  string `envconfig:"LOG_PATH" default:""`
 	LogLevel                 string `envconfig:"LOG_LEVEL" default:"info"`
-	DBStoreSocket            string `envconfig:"DB_STORE_SOCKET" default:"tcp"`
-	DBStoreHost              string `envconfig:"DB_STORE_HOST" default:"127.0.0.1"`
-	DBStorePort              string `envconfig:"DB_STORE_PORT" default:"3306"`
-	DBStoreUsername          string `envconfig:"DB_STORE_USERNAME" default:"root"`
-	DBStorePassword          string `envconfig:"DB_STORE_PASSWORD" default:""`
-	DBStoreTimeZone          string `envconfig:"DB_STORE_TIMEZONE" default:""`
-	DBStoreEnabledTLS        bool   `envconfig:"DB_STORE_ENABLED_TLS" default:"false"`
 	DBUserSocket             string `envconfig:"DB_USER_SOCKET" default:"tcp"`
 	DBUserHost               string `envconfig:"DB_USER_HOST" default:"127.0.0.1"`
 	DBUserPort               string `envconfig:"DB_USER_PORT" default:"3306"`

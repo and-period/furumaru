@@ -48,22 +48,25 @@ func (s *userService) GetAdmin(ctx context.Context, in *user.GetAdminInput) (*en
 	return a, exception.InternalError(err)
 }
 
-func (s *userService) CreateAdmin(ctx context.Context, in *user.CreateAdminInput) (*entity.Admin, error) {
+func (s *userService) CreateAdministrator(
+	ctx context.Context, in *user.CreateAdministratorInput,
+) (*entity.Admin, error) {
 	const size = 8
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
-	role, err := entity.NewAdminRole(in.Role)
-	if err != nil {
-		return nil, fmt.Errorf("%w: %s", exception.ErrInvalidArgument, err.Error())
-	}
 	adminID := uuid.Base58Encode(uuid.New())
-	admin := entity.NewAdmin(
-		adminID, adminID,
-		in.Lastname, in.Firstname,
-		in.LastnameKana, in.FirstnameKana,
-		in.Email, role,
-	)
+	newParams := &entity.NewAdministratorParams{
+		ID:            adminID,
+		CognitoID:     adminID,
+		Lastname:      in.Lastname,
+		Firstname:     in.Firstname,
+		LastnameKana:  in.Lastname,
+		FirstnameKana: in.Firstname,
+		Email:         in.Email,
+		PhoneNumber:   in.PhoneNumber,
+	}
+	admin := entity.NewAdministrator(newParams)
 	if err := s.db.Admin.Create(ctx, admin); err != nil {
 		return nil, exception.InternalError(err)
 	}

@@ -41,31 +41,26 @@ func TestAdminRole_Validate(t *testing.T) {
 	}
 }
 
-func TestAdmin(t *testing.T) {
+func TestAdministrator(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name          string
-		adminID       string
-		cognitoID     string
-		lastname      string
-		firstname     string
-		lastnameKana  string
-		firstnameKana string
-		email         string
-		role          AdminRole
-		expect        *Admin
+		name   string
+		params *NewAdministratorParams
+		expect *Admin
 	}{
 		{
-			name:          "success",
-			adminID:       "admin-id",
-			cognitoID:     "cognito-id",
-			lastname:      "&.",
-			firstname:     "スタッフ",
-			lastnameKana:  "あんどどっと",
-			firstnameKana: "すたっふ",
-			email:         "test-admin@and-period.jp",
-			role:          AdminRoleAdministrator,
+			name: "success",
+			params: &NewAdministratorParams{
+				ID:            "admin-id",
+				CognitoID:     "cognito-id",
+				Lastname:      "&.",
+				Firstname:     "スタッフ",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "すたっふ",
+				Email:         "test-admin@and-period.jp",
+				PhoneNumber:   "+819012345678",
+			},
 			expect: &Admin{
 				ID:            "admin-id",
 				CognitoID:     "cognito-id",
@@ -74,6 +69,7 @@ func TestAdmin(t *testing.T) {
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "すたっふ",
 				Email:         "test-admin@and-period.jp",
+				PhoneNumber:   "+819012345678",
 				Role:          AdminRoleAdministrator,
 			},
 		},
@@ -83,11 +79,7 @@ func TestAdmin(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewAdmin(
-				tt.adminID, tt.cognitoID,
-				tt.lastname, tt.firstname, tt.lastnameKana, tt.firstnameKana,
-				tt.email, tt.role,
-			)
+			actual := NewAdministrator(tt.params)
 			assert.Equal(t, tt.expect, actual)
 		})
 	}

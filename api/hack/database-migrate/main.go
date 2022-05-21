@@ -12,8 +12,8 @@ import (
 
 	"database/sql"
 
-	"github.com/and-period/marche/api/pkg/jst"
-	"github.com/and-period/marche/api/pkg/set"
+	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/set"
 	_ "github.com/go-sql-driver/mysql"
 )
 

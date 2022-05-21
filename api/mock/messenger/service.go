@@ -8,7 +8,7 @@ import (
 	context "context"
 	reflect "reflect"
 
-	messenger "github.com/and-period/marche/api/internal/messenger"
+	messenger "github.com/and-period/furumaru/api/internal/messenger"
 	gomock "github.com/golang/mock/gomock"
 )
 
