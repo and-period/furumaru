@@ -295,6 +295,32 @@ func TestCreateUserWithOAuth(t *testing.T) {
 	}
 }
 
+func TestInitializeUser(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *InitializeUserInput
+		expectErr error
+	}{
+		{
+			name:      "failed to create user",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &InitializeUserInput{},
+			expectErr: ErrNotImplemented,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+			err := service.InitializeUser(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
 func TestUpdateUserEmail(t *testing.T) {
 	t.Parallel()
 
