@@ -3,8 +3,8 @@ package exception
 import (
 	"testing"
 
-	"github.com/and-period/marche/api/pkg/cognito"
-	"github.com/and-period/marche/api/pkg/storage"
+	"github.com/and-period/furumaru/api/pkg/cognito"
+	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/go-playground/validator/v10"
 	"github.com/go-sql-driver/mysql"
 	"github.com/stretchr/testify/assert"

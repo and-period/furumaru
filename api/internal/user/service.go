@@ -5,7 +5,7 @@ package user
 import (
 	"context"
 
-	"github.com/and-period/marche/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
 //nolint:revive

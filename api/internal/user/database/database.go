@@ -5,8 +5,8 @@ package database
 import (
 	"context"
 
-	"github.com/and-period/marche/api/internal/user/entity"
-	"github.com/and-period/marche/api/pkg/database"
+	"github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/database"
 )
 
 type Params struct {
