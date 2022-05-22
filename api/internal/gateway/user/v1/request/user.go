@@ -13,6 +13,7 @@ type VerifyUserRequest struct {
 }
 
 type InitializeUserRequest struct {
+	ID        string `json:"id,omitempty"`        // ユーザーID(PK)
 	Username  string `json:"username,omitempty"`  // ユーザー名
 	AccountID string `json:"accountId,omitempty"` // ユーザーID(表示名)
 }

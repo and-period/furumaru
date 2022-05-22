@@ -394,6 +394,79 @@ func TestUser_UpdateVerified(t *testing.T) {
 	}
 }
 
+func TestUser_UpdateAccount(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	type args struct {
+		userID    string
+		accountID string
+		userName  string
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
+				u.AccountID = ""
+				err = m.db.DB.Create(&u).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				userID:    "user-id",
+				accountID: "account-id",
+				userName:  "username",
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name:  "failed to not found",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				userID:    "user-id",
+				accountID: "account-id",
+				userName:  "username",
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := m.dbDelete(ctx, userTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, m)
+
+			db := &user{db: m.db, now: now}
+			err = db.UpdateAccount(ctx, tt.args.userID, tt.args.accountID, tt.args.userName)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
 func TestUser_UpdateEmail(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
