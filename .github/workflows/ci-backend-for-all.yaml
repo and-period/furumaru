@@ -8,6 +8,7 @@ on:
     - 'infra/kubernetes/**'
 
 env:
+  SERVICE: api
   TZ: 'Asia/Tokyo'
   DB_HOST: 127.0.0.1
   DB_PORT: 3306
@@ -28,34 +29,27 @@ jobs:
         golang: ['^1.18.1']
     steps:
     - name: Check out code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Use Golang ${{ matrix.golang }}
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v3
       with:
         go-version: ${{ matrix.golang }}
 
-    - name: Make cache directory
-      run: mkdir -p ~/go/pkg/mod
-
-    - name: Setup
-      run: make setup
-
-    - name: Restore cache
-      uses: actions/cache@v2
+    - uses: actions/cache@v3
+      id: modules-cache
       with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ env.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
     - name: Download modules
-      if: steps.cache.outputs.cache-hit != 'true'
+      if: steps.modules-cache.outputs.cache-hit != 'true'
       run: go mod download
 
   lint:
     name: lint
-    needs: setup
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -67,7 +61,7 @@ jobs:
         golang: ['^1.18.1']
     steps:
     - name: Check out code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Setup
       run: make setup
@@ -95,7 +89,19 @@ jobs:
         golang: ['^1.18.1']
     steps:
     - name: Check out code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
+
+    - uses: actions/cache@v3
+      id: modules-cache
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ env.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+
+    - name: Download modules
+      if: steps.modules-cache.outputs.cache-hit != 'true'
+      run: go mod download
 
     - name: Build user gateway
       run: make build SERVICE=gateway/user
@@ -118,7 +124,7 @@ jobs:
 
     steps:
     - name: Check out code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Start MySQL container
       working-directory: .
@@ -139,6 +145,18 @@ jobs:
           count=$(expr $count + 1)
         done
         echo 'mysql is up - executing command'
+
+    - uses: actions/cache@v3
+      id: modules-cache
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ env.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+
+    - name: Download modules
+      if: steps.modules-cache.outputs.cache-hit != 'true'
+      run: go mod download
 
     - name: Test
       run: make test
