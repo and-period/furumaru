@@ -1,25 +1,30 @@
-p, auth_read, /v1/auth, GET, allow
-p, auth_read, /v1/auth/*, GET, allow
-p, auth_write, /v1/auth, (POST)|(PATCH)|(DELETE), allow
-p, auth_write, /v1/auth/*, (POST)|(PATCH)|(DELETE), allow
-p, administrator_read, /v1/administrators, GET, allow
-p, administrator_read, /v1/administrators/*, GET, allow
-p, administrator_write, /v1/administrators, POST, allow
-p, coordinator_write, /v1/upload/coordinators/*, POST, allow
-p, producer_write, /v1/upload/producers/*, POST, allow
+p, auth, /v1/auth, (GET)|(POST)|(DELETE), allow
+p, auth, /v1/auth/*, (GET)|(POST)|(PATCH), allow
+p, administrator_list, /v1/administrators, GET, allow
+p, administrator_get, /v1/administrators/*, GET, allow
+p, administrator_create, /v1/administrators, POST, allow
+p, coordinator_uploader, /v1/upload/coordinators/*, POST, allow
+p, producer_list, /v1/producers, GET, allow
+p, producer_get, /v1/producers/*, GET, allow
+p, producer_create, /v1/producers, POST, allow
+p, producer_uploader, /v1/upload/producers/*, POST, allow
 
-g, administrator, auth_read
-g, administrator, auth_write
-g, administrator, administrator_read
-g, administrator, administrator_write
-g, administrator, coordinator_write
-g, administrator, producer_write
+g, administrator, auth
+g, administrator, administrator_list
+g, administrator, administrator_get
+g, administrator, administrator_create
+g, administrator, coordinator_uploader
+g, administrator, producer_list
+g, administrator, producer_get
+g, administrator, producer_create
+g, administrator, producer_uploader
 
-g, coordinator, auth_read
-g, coordinator, auth_write
-g, coordinator, coordinator_write
-g, coordinator, producer_write
+g, coordinator, auth
+g, coordinator, coordinator_uploader
+g, coordinator, producer_list
+g, coordinator, producer_get
+g, coordinator, producer_create
+g, coordinator, producer_uploader
 
-g, producer, auth_read
-g, producer, auth_write
-g, producer, producer_write
+g, producer, auth
+g, producer, producer_uploader

@@ -1,0 +1,71 @@
+createProducerRequest:
+  type: object
+  properties:
+    lastname:
+      type: string
+      description: 姓
+    firstname:
+      type: string
+      description: 名
+    lastnameKana:
+      type: string
+      description: 姓(かな)
+    firstnameKana:
+      type: string
+      description: 名(かな)
+    storeName:
+      type: string
+      description: 店舗名
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+    email:
+      type: string
+      format: email
+      description: メールアドレス
+    phoneNumber:
+      type: string
+      description: 電話番号
+    postalCode:
+      type: string
+      description: 郵便番号
+    prefecture:
+      type: string
+      description: 都道府県
+    city:
+      type: string
+      description: 市区町村
+    addressLine1:
+      type: string
+      description: 町名・番地
+    addressLine2:
+      type: string
+      description: ビル名・号室など
+  required:
+  - lastname
+  - firstname
+  - lastnameKana
+  - firstnameKana
+  - storeName
+  - thumbnailUrl
+  - email
+  - phoneNumber
+  - postalCode
+  - prefecture
+  - city
+  - addressLine1
+  - addressLine2
+  example:
+    lastname: '&.'
+    firstname: '管理者'
+    lastnameKana: 'あんどどっと'
+    firstnameKana: 'かんりしゃ'
+    storeName: '&.農園'
+    thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+    email: 'test-user@and-period.jp'
+    phoneNumber: '+819012345678'
+    postalCode: '1000014'
+    prefecture: '東京都'
+    city: '千代田区'
+    addressLine1: '永田町1-7-1'
+    addressLine2: ''
