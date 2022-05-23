@@ -40,6 +40,22 @@ type CreateAdministratorInput struct {
 	PhoneNumber   string `validate:"min=12,max=18,phone_number"`
 }
 
+type CreateProducerInput struct {
+	Lastname      string `validate:"required,max=16"`
+	Firstname     string `validate:"required,max=16"`
+	LastnameKana  string `validate:"required,max=32,hiragana"`
+	FirstnameKana string `validate:"required,max=32,hiragana"`
+	StoreName     string `validate:"required,max=64"`
+	ThumbnailURL  string `validate:""`
+	Email         string `validate:"required,max=256,email"`
+	PhoneNumber   string `validate:"min=12,max=18,phone_number"`
+	PostalCode    string `validate:"required,max=16,numeric"`
+	Prefecture    string `validate:"required,max=32"`
+	City          string `validate:"required,max=32"`
+	AddressLine1  string `validate:"required,max=64"`
+	AddressLine2  string `validate:"max=64"`
+}
+
 type UpdateAdminEmailInput struct {
 	AccessToken string `validate:"required"`
 	Email       string `validate:"required,max=256,email"`

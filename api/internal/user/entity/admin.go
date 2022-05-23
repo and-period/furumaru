@@ -56,6 +56,24 @@ type NewAdministratorParams struct {
 	PhoneNumber   string
 }
 
+type NewProducerParams struct {
+	ID            string
+	CognitoID     string
+	Lastname      string
+	Firstname     string
+	LastnameKana  string
+	FirstnameKana string
+	StoreName     string
+	ThumbnailURL  string
+	Email         string
+	PhoneNumber   string
+	PostalCode    string
+	Prefecture    string
+	City          string
+	AddressLine1  string
+	AddressLine2  string
+}
+
 func NewAdminRole(role int32) (AdminRole, error) {
 	res := AdminRole(role)
 	if err := res.Validate(); err != nil {
@@ -66,7 +84,7 @@ func NewAdminRole(role int32) (AdminRole, error) {
 
 func (r AdminRole) Validate() error {
 	switch r {
-	case AdminRoleAdministrator, AdminRoleProducer:
+	case AdminRoleAdministrator, AdminRoleCoordinator, AdminRoleProducer:
 		return nil
 	default:
 		return errInvalidAdminRole
@@ -96,6 +114,27 @@ func NewAdministrator(params *NewAdministratorParams) *Admin {
 		Email:         params.Email,
 		PhoneNumber:   params.PhoneNumber,
 		Role:          AdminRoleAdministrator,
+	}
+}
+
+func NewProducer(params *NewProducerParams) *Admin {
+	return &Admin{
+		ID:            params.ID,
+		CognitoID:     params.CognitoID,
+		Lastname:      params.Lastname,
+		Firstname:     params.Firstname,
+		LastnameKana:  params.LastnameKana,
+		FirstnameKana: params.FirstnameKana,
+		StoreName:     params.StoreName,
+		ThumbnailURL:  params.ThumbnailURL,
+		Email:         params.Email,
+		PhoneNumber:   params.PhoneNumber,
+		PostalCode:    params.PostalCode,
+		Prefecture:    params.Prefecture,
+		City:          params.City,
+		AddressLine1:  params.AddressLine1,
+		AddressLine2:  params.AddressLine2,
+		Role:          AdminRoleProducer,
 	}
 }
 
