@@ -10,7 +10,9 @@
         class="mb-4"
       >
         <v-card-text>
-          <the-file-upload-filed />
+          <div class="mb-2">
+            <the-file-upload-filed text="商品画像" />
+          </div>
           <v-text-field label="商品名" />
           <v-text-field label="商品概要" />
           <v-text-field label="重さ" />
@@ -24,7 +26,7 @@
             <v-text-field class="mr-4" label="原産地（都道府県）" />
             <v-text-field label="原産地（市町村）" />
           </div>
-          <v-text-field label="生産者" />
+          <v-text-field label="店舗" />
         </v-card-text>
       </v-card>
     </div>

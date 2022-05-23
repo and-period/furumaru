@@ -26,6 +26,8 @@ type UserService interface {
 	GetAdmin(ctx context.Context, in *GetAdminInput) (*entity.Admin, error)
 	// 管理者登録 (システム管理者)
 	CreateAdministrator(ctx context.Context, in *CreateAdministratorInput) (*entity.Admin, error)
+	// 管理者登録 (生産者)
+	CreateProducer(ctx context.Context, in *CreateProducerInput) (*entity.Admin, error)
 	// 管理者メールアドレス更新
 	UpdateAdminEmail(ctx context.Context, in *UpdateAdminEmailInput) error
 	// 管理者メールアドレス更新後の確認

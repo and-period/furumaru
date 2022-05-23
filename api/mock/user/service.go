@@ -51,6 +51,21 @@ func (mr *MockUserServiceMockRecorder) CreateAdministrator(ctx, in interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAdministrator", reflect.TypeOf((*MockUserService)(nil).CreateAdministrator), ctx, in)
 }
 
+// CreateProducer mocks base method.
+func (m *MockUserService) CreateProducer(ctx context.Context, in *user.CreateProducerInput) (*entity.Admin, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateProducer", ctx, in)
+	ret0, _ := ret[0].(*entity.Admin)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateProducer indicates an expected call of CreateProducer.
+func (mr *MockUserServiceMockRecorder) CreateProducer(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateProducer", reflect.TypeOf((*MockUserService)(nil).CreateProducer), ctx, in)
+}
+
 // CreateUser mocks base method.
 func (m *MockUserService) CreateUser(ctx context.Context, in *user.CreateUserInput) (string, error) {
 	m.ctrl.T.Helper()

@@ -319,6 +319,125 @@ func TestCreateAdministrator(t *testing.T) {
 	}
 }
 
+func TestCreateProducer(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.CreateProducerInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Admin.EXPECT().Create(ctx, gomock.Any()).Return(nil)
+				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(nil)
+				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(nil)
+			},
+			input: &user.CreateProducerInput{
+				Lastname:      "&.",
+				Firstname:     "スタッフ",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "すたっふ",
+				StoreName:     "&.農園",
+				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+				Email:         "test-admin@and-period.jp",
+				PhoneNumber:   "+819012345678",
+				PostalCode:    "1000014",
+				Prefecture:    "東京都",
+				City:          "千代田区",
+				AddressLine1:  "永田町1-7-1",
+				AddressLine2:  "",
+			},
+			expectErr: nil,
+		},
+		{
+			name: "success without notify register admin",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Admin.EXPECT().Create(ctx, gomock.Any()).Return(nil)
+				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(nil)
+				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(errmock)
+			},
+			input: &user.CreateProducerInput{
+				Lastname:      "&.",
+				Firstname:     "スタッフ",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "すたっふ",
+				StoreName:     "&.農園",
+				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+				Email:         "test-admin@and-period.jp",
+				PhoneNumber:   "+819012345678",
+				PostalCode:    "1000014",
+				Prefecture:    "東京都",
+				City:          "千代田区",
+				AddressLine1:  "永田町1-7-1",
+				AddressLine2:  "",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.CreateProducerInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to create admin",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Admin.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
+			},
+			input: &user.CreateProducerInput{
+				Lastname:      "&.",
+				Firstname:     "スタッフ",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "すたっふ",
+				StoreName:     "&.農園",
+				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+				Email:         "test-admin@and-period.jp",
+				PhoneNumber:   "+819012345678",
+				PostalCode:    "1000014",
+				Prefecture:    "東京都",
+				City:          "千代田区",
+				AddressLine1:  "永田町1-7-1",
+				AddressLine2:  "",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "failed to create auth admin",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Admin.EXPECT().Create(ctx, gomock.Any()).Return(nil)
+				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(errmock)
+			},
+			input: &user.CreateProducerInput{
+				Lastname:      "&.",
+				Firstname:     "スタッフ",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "すたっふ",
+				StoreName:     "&.農園",
+				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+				Email:         "test-admin@and-period.jp",
+				PhoneNumber:   "+819012345678",
+				PostalCode:    "1000014",
+				Prefecture:    "東京都",
+				City:          "千代田区",
+				AddressLine1:  "永田町1-7-1",
+				AddressLine2:  "",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+			_, err := service.CreateProducer(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
 func TestUpdateAdminEmail(t *testing.T) {
 	t.Parallel()
 

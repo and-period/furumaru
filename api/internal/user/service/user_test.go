@@ -295,32 +295,6 @@ func TestCreateUserWithOAuth(t *testing.T) {
 	}
 }
 
-func TestInitializeUser(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *InitializeUserInput
-		expectErr error
-	}{
-		{
-			name:      "failed to create user",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &InitializeUserInput{},
-			expectErr: ErrNotImplemented,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
-			err := service.InitializeUser(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
-	}
-}
-
 func TestUpdateUserEmail(t *testing.T) {
 	t.Parallel()
 
@@ -542,19 +516,6 @@ func TestVerifyUserEmail(t *testing.T) {
 
 func TestInitializeUser(t *testing.T) {
 	t.Parallel()
-
-	now := jst.Now()
-	u := &entity.User{
-		ID:           "user-id",
-		CognitoID:    "cognito-id",
-		ProviderType: entity.ProviderTypeEmail,
-		Email:        "test-user@and-period.jp",
-		PhoneNumber:  "+810000000000",
-		CreatedAt:    now,
-		UpdatedAt:    now,
-		VerifiedAt:   now,
-	}
-
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -564,8 +525,7 @@ func TestInitializeUser(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
-				mocks.db.User.EXPECT().InitializeUser(ctx, "user-id", "account-id", "username").Return(nil)
+				mocks.db.User.EXPECT().UpdateAccount(ctx, "user-id", "account-id", "username").Return(nil)
 			},
 			input: &user.InitializeUserInput{
 				UserID:    "user-id",
@@ -583,15 +543,14 @@ func TestInitializeUser(t *testing.T) {
 		{
 			name: "failed to initilaze user",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
-				mocks.db.User.EXPECT().InitializeUser(ctx, "user-id", "account-id", "username").Return(errmock)
+				mocks.db.User.EXPECT().UpdateAccount(ctx, "user-id", "account-id", "username").Return(errmock)
 			},
 			input: &user.InitializeUserInput{
 				UserID:    "user-id",
 				AccountID: "account-id",
 				Username:  "username",
 			},
-			expectErr: exception.ErrInternal,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 

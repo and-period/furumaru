@@ -14,6 +14,7 @@ func (h *apiV1Handler) userRoutes(rg *gin.RouterGroup) {
 	rg.POST("", h.CreateUser)
 	rg.POST("/oauth", h.CreateUserWithOAuth)
 	rg.POST("/verified", h.VerifyUser)
+	rg.PATCH("/me/initialized", h.InitializeUser)
 	rg.GET("/me", h.authentication(), h.GetUserMe)
 	rg.DELETE("/me", h.authentication(), h.DeleteUser)
 	rg.PATCH("/me/email", h.authentication(), h.UpdateUserEmail)
@@ -163,6 +164,29 @@ func (h *apiV1Handler) VerifyUserEmail(ctx *gin.Context) {
 		VerifyCode:  req.VerifyCode,
 	}
 	if err := h.user.VerifyUserEmail(c, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *apiV1Handler) InitializeUser(ctx *gin.Context) {
+	c := util.SetMetadata(ctx)
+
+	req := &request.InitializeUserRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	in := &user.InitializeUserInput{
+		UserID:    req.ID,
+		AccountID: req.AccountID,
+		Username:  req.Username,
+	}
+
+	if err := h.user.InitializeUser(c, in); err != nil {
 		httpError(ctx, err)
 		return
 	}

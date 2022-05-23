@@ -466,6 +466,7 @@ func TestUser_UpdateAccount(t *testing.T) {
 		})
 	}
 }
+
 func TestUser_UpdateEmail(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()

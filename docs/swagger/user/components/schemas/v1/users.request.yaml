@@ -27,6 +27,9 @@ createUserRequest:
 initializeUserRequest:
   type: object
   properties:
+    id:
+    type: string
+    description: ユーザーID
     username:
       type: string
       description: ユーザー名(表示用)
@@ -34,9 +37,11 @@ initializeUserRequest:
       type: string
       description: ユーザーID(検索用)
   required:
+  - id
   - username
   - accountId
   example:
+    id:       'kSByoE6FetnPs5Byk3a9Zx'
     username: 'あんどぴりおど'
     accountId: '12345678'
 verifyUserRequest:
