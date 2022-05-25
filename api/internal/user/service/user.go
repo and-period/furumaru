@@ -73,6 +73,7 @@ func (s *userService) InitializeUser(ctx context.Context, in *user.InitializeUse
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
+
 	err := s.db.User.UpdateAccount(ctx, in.UserID, in.AccountID, in.Username)
 	return exception.InternalError(err)
 }

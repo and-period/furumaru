@@ -516,6 +516,7 @@ func TestVerifyUserEmail(t *testing.T) {
 
 func TestInitializeUser(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
