@@ -26,7 +26,7 @@ CREATE TABLE `stores`.`product_tags` (
   `name`       VARCHAR(32) NOT NULL, -- タグ名
   `created_at` DATETIME    NOT NULL, -- 登録日時
   `updated_at` DATETIME    NOT NULL, -- 更新日時
-  PRIMARY KEY(`shop_id`, `product_id`, `name`),
+  PRIMARY KEY(`product_id`, `name`),
   CONSTRAINT `fk_product_tags_product_id`
     FOREIGN KEY (`product_id`) REFERENCES `stores`.`products` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE
