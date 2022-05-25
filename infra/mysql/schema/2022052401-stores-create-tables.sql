@@ -2,21 +2,24 @@ CREATE SCHEMA IF NOT EXISTS `stores` DEFAULT CHARACTER SET utf8mb4;
 
 -- 商品情報テーブル
 CREATE TABLE `stores`.`products` (
-  `id`           VARCHAR(22)  NOT NULL,          -- 商品ID
-  `name`         VARCHAR(128) NOT NULL,          -- 商品名
-  `description`  TEXT         NOT NULL,          -- 説明
-  `public`       TINYINT      NOT NULL,          -- 公開フラグ (0:下書き, 1:公開)
-  `type`         VARCHAR(64)  NOT NULL,          -- 商品タイプ (検索用)
-  `media`        JSON,                           -- メディア一覧(URL)
-  `price`        BIGINT       NOT NULL,          -- 販売価格
-  `discount`     BIGINT       NOT NULL,          -- 割引価格
-  `tax_included` TINYINT      NOT NULL,          -- 税込み
-  `unit_cost`    BIGINT       NOT NULL,          -- 仕入れ価格
-  `sku`          VARCHAR(40),                    -- 在庫SKU
-  `barcode`      VARCHAR(16),                    -- 在庫バーコード (ISBN、UPC、GTINなど)
-  `created_at`   DATETIME     NOT NULL,          -- 登録日時
-  `updated_at`   DATETIME     NOT NULL,          -- 更新日時
-  `deleted_at`   DATETIME     NULL DEFAULT NULL, -- 削除日時
+  `id`                VARCHAR(22)  NOT NULL,          -- 商品ID
+  `name`              VARCHAR(128) NOT NULL,          -- 商品名
+  `description`       TEXT         NOT NULL,          -- 説明
+  `weight`            BIGINT       NOT NULL,          -- 重量
+  `public`            TINYINT      NOT NULL,          -- 公開フラグ (0:下書き, 1:公開)
+  `type`              VARCHAR(64)  NOT NULL,          -- 商品タイプ (検索用)
+  `media`             JSON,                           -- メディア一覧(URL)
+  `price`             BIGINT       NOT NULL,          -- 販売価格
+  `discount`          BIGINT       NOT NULL,          -- 割引価格
+  `tax_included`      TINYINT      NOT NULL,          -- 税込み
+  `unit_cost`         BIGINT       NOT NULL,          -- 仕入れ価格
+  `sku`               VARCHAR(40),                    -- 在庫SKU
+  `barcode`           VARCHAR(16),                    -- 在庫バーコード (ISBN、UPC、GTINなど)
+  `origin_prefecture` VARCHAR(10)  NOT NULL,          -- 原産地(都道府県)
+  `origin_city`       VARCHAR(30)  NOT NULL,          -- 原産地(市区町村)
+  `created_at`        DATETIME     NOT NULL,          -- 登録日時
+  `updated_at`        DATETIME     NOT NULL,          -- 更新日時
+  `deleted_at`        DATETIME     NULL DEFAULT NULL, -- 削除日時
   PRIMARY KEY(`id`)
 ) ENGINE = InnoDB;
 
