@@ -32,39 +32,19 @@ type registry struct {
 
 type serviceParams struct {
 	waitGroup *sync.WaitGroup
+	logger    *zap.Logger
 	config    *config
-	options   *options
 	aws       aws.Config
 	messenger messenger.MessengerService
 }
 
-type options struct {
-	logger *zap.Logger
-}
-
-type option func(opts *options)
-
-func withLogger(logger *zap.Logger) option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
-
-func newRegistry(ctx context.Context, conf *config, opts ...option) (*registry, error) {
+func newRegistry(ctx context.Context, conf *config) (*registry, error) {
 	wg := &sync.WaitGroup{}
 
 	// Loggerの設定
 	logger, err := log.NewLogger(log.WithLogLevel(conf.LogLevel), log.WithOutput(conf.LogPath))
 	if err != nil {
 		return nil, err
-	}
-
-	// オプション設定の取得
-	dopts := &options{
-		logger: logger,
-	}
-	for i := range opts {
-		opts[i](dopts)
 	}
 
 	// AWS SDKの設定
@@ -87,8 +67,8 @@ func newRegistry(ctx context.Context, conf *config, opts ...option) (*registry, 
 	// Serviceの設定
 	srvParams := &serviceParams{
 		waitGroup: wg,
+		logger:    logger,
 		config:    conf,
-		options:   dopts,
 		aws:       awscfg,
 	}
 	messengerService, err := newMessengerService(ctx, srvParams)
@@ -110,16 +90,16 @@ func newRegistry(ctx context.Context, conf *config, opts ...option) (*registry, 
 	}
 
 	return &registry{
-		v1:        v1.NewAPIV1Handler(v1Params, v1.WithLogger(dopts.logger)),
-		logger:    dopts.logger,
+		v1:        v1.NewAPIV1Handler(v1Params, v1.WithLogger(logger)),
+		logger:    logger,
 		waitGroup: wg,
 	}, nil
 }
 
-func newDatabase(params *database.Params, tls bool, timezone string, opts *options) (*database.Client, error) {
+func newDatabase(params *database.Params, tls bool, timezone string, logger *zap.Logger) (*database.Client, error) {
 	return database.NewClient(
 		params,
-		database.WithLogger(opts.logger),
+		database.WithLogger(logger),
 		database.WithTLS(tls),
 		database.WithTimeZone(timezone),
 	)
@@ -135,7 +115,7 @@ func newUserService(ctx context.Context, p *serviceParams) (user.UserService, er
 		Username: p.config.DBUserUsername,
 		Password: p.config.DBUserPassword,
 	}
-	mysql, err := newDatabase(mysqlParams, p.config.DBUserEnabledTLS, p.config.DBUserTimeZone, p.options)
+	mysql, err := newDatabase(mysqlParams, p.config.DBUserEnabledTLS, p.config.DBUserTimeZone, p.logger)
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +141,7 @@ func newUserService(ctx context.Context, p *serviceParams) (user.UserService, er
 	}
 	return usersrv.NewUserService(
 		params,
-		usersrv.WithLogger(p.options.logger),
+		usersrv.WithLogger(p.logger),
 	), nil
 }
 
@@ -193,13 +173,13 @@ func newMessengerService(ctx context.Context, p *serviceParams) (messenger.Messe
 
 	// Messenger Serviceの設定
 	params := &messengersrv.Params{
-		Mailer:      mailer.NewClient(mailParams, mailer.WithLogger(p.options.logger)),
+		Mailer:      mailer.NewClient(mailParams, mailer.WithLogger(p.logger)),
 		WaitGroup:   p.waitGroup,
 		AdminWebURL: &url.URL{},
 		UserWebURL:  userWebURL,
 	}
 	return messengersrv.NewMessengerService(
 		params,
-		messengersrv.WithLogger(p.options.logger),
+		messengersrv.WithLogger(p.logger),
 	), nil
 }
