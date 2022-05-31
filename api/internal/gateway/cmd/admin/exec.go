@@ -8,11 +8,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/and-period/furumaru/api/pkg/cors"
 	"github.com/and-period/furumaru/api/pkg/http"
 	"github.com/and-period/furumaru/api/pkg/log"
-	"github.com/gin-contrib/gzip"
-	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
@@ -81,38 +78,26 @@ func Exec() error {
 }
 
 func newApp(ctx context.Context, conf *config) (*app, error) {
-	// Loggerの設定
-	logger, err := log.NewLogger(log.WithLogLevel(conf.LogLevel), log.WithOutput(conf.LogPath))
-	if err != nil {
-		return nil, err
-	}
-
 	// 依存関係の解決
-	reg, err := newRegistry(ctx, conf, withLogger(logger))
+	reg, err := newRegistry(ctx, conf)
 	if err != nil {
 		return nil, err
 	}
 
 	// HTTP Serverの設定
-	httpOpts := []gin.HandlerFunc{gin.Recovery(), gzip.Gzip(gzip.DefaultCompression)}
-
-	cm := cors.NewGinMiddleware()
-	httpOpts = append(httpOpts, cm)
-
 	lm, err := log.NewGinMiddleware(log.WithLogLevel(conf.LogLevel), log.WithOutput(conf.LogPath))
 	if err != nil {
 		return nil, err
 	}
-	httpOpts = append(httpOpts, lm)
 
-	rt := newRouter(reg, httpOpts...)
+	rt := newRouter(reg, lm)
 	hs := http.NewHTTPServer(rt, conf.Port)
 
 	// Metrics Serverの設定
 	ms := http.NewMetricsServer(conf.MetricsPort)
 
 	return &app{
-		logger:    logger,
+		logger:    reg.logger,
 		server:    hs,
 		metrics:   ms,
 		waitGroup: reg.waitGroup,

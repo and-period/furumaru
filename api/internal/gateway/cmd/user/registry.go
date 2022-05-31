@@ -14,6 +14,7 @@ import (
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/database"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/mailer"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -25,6 +26,7 @@ import (
 
 type registry struct {
 	v1        v1.APIV1Handler
+	logger    *zap.Logger
 	waitGroup *sync.WaitGroup
 }
 
@@ -51,9 +53,15 @@ func withLogger(logger *zap.Logger) option {
 func newRegistry(ctx context.Context, conf *config, opts ...option) (*registry, error) {
 	wg := &sync.WaitGroup{}
 
+	// Loggerの設定
+	logger, err := log.NewLogger(log.WithLogLevel(conf.LogLevel), log.WithOutput(conf.LogPath))
+	if err != nil {
+		return nil, err
+	}
+
 	// オプション設定の取得
 	dopts := &options{
-		logger: zap.NewNop(),
+		logger: logger,
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -102,7 +110,9 @@ func newRegistry(ctx context.Context, conf *config, opts ...option) (*registry, 
 	}
 
 	return &registry{
-		v1: v1.NewAPIV1Handler(v1Params, v1.WithLogger(dopts.logger)),
+		v1:        v1.NewAPIV1Handler(v1Params, v1.WithLogger(dopts.logger)),
+		logger:    dopts.logger,
+		waitGroup: wg,
 	}, nil
 }
 
