@@ -70,7 +70,9 @@ func (h *apiV1Handler) parseFile(ctx *gin.Context, reg *uploadRegulation) (multi
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	strings.HasPrefix(media, "multipart/")
+	if !strings.HasPrefix(media, "multipart/") {
+		return nil, status.Error(codes.InvalidArgument, errInvalidFileFormat.Error())
+	}
 
 	file, header, err := ctx.Request.FormFile(reg.filename)
 	if err != nil {

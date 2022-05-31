@@ -51,7 +51,6 @@ func (s *userService) GetAdmin(ctx context.Context, in *user.GetAdminInput) (*en
 func (s *userService) CreateAdministrator(
 	ctx context.Context, in *user.CreateAdministratorInput,
 ) (*entity.Admin, error) {
-	const size = 8
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
@@ -74,7 +73,6 @@ func (s *userService) CreateAdministrator(
 }
 
 func (s *userService) CreateProducer(ctx context.Context, in *user.CreateProducerInput) (*entity.Admin, error) {
-	const size = 8
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
