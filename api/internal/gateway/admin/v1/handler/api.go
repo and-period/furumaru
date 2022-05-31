@@ -90,6 +90,7 @@ func (h *apiV1Handler) Routes(rg *gin.RouterGroup) {
 	v1 := rg.Group("/v1")
 	h.authRoutes(v1.Group("/auth"))
 	h.administratorRoutes(v1.Group("/administrators"))
+	h.producerRoutes(v1.Group("/producers"))
 	h.uploadRoutes(v1.Group("/upload"))
 }
 

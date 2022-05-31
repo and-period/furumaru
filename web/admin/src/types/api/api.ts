@@ -294,6 +294,91 @@ export interface CreateAdministratorRequest {
 /**
  * 
  * @export
+ * @interface CreateProducerRequest
+ */
+export interface CreateProducerRequest {
+    /**
+     * 姓
+     * @type {string}
+     * @memberof CreateProducerRequest
+     */
+    'lastname': string;
+    /**
+     * 名
+     * @type {string}
+     * @memberof CreateProducerRequest
+     */
+    'firstname': string;
+    /**
+     * 姓(かな)
+     * @type {string}
+     * @memberof CreateProducerRequest
+     */
+    'lastnameKana': string;
+    /**
+     * 名(かな)
+     * @type {string}
+     * @memberof CreateProducerRequest
+     */
+    'firstnameKana': string;
+    /**
+     * 店舗名
+     * @type {string}
+     * @memberof CreateProducerRequest
+     */
+    'storeName': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof CreateProducerRequest
+     */
+    'thumbnailUrl': string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof CreateProducerRequest
+     */
+    'email': string;
+    /**
+     * 電話番号
+     * @type {string}
+     * @memberof CreateProducerRequest
+     */
+    'phoneNumber': string;
+    /**
+     * 郵便番号
+     * @type {string}
+     * @memberof CreateProducerRequest
+     */
+    'postalCode': string;
+    /**
+     * 都道府県
+     * @type {string}
+     * @memberof CreateProducerRequest
+     */
+    'prefecture': string;
+    /**
+     * 市区町村
+     * @type {string}
+     * @memberof CreateProducerRequest
+     */
+    'city': string;
+    /**
+     * 町名・番地
+     * @type {string}
+     * @memberof CreateProducerRequest
+     */
+    'addressLine1': string;
+    /**
+     * ビル名・号室など
+     * @type {string}
+     * @memberof CreateProducerRequest
+     */
+    'addressLine2': string;
+}
+/**
+ * 
+ * @export
  * @interface ErrorResponse
  */
 export interface ErrorResponse {
@@ -315,6 +400,225 @@ export interface ErrorResponse {
      * @memberof ErrorResponse
      */
     'details': string;
+}
+/**
+ * 
+ * @export
+ * @interface ProducerResponse
+ */
+export interface ProducerResponse {
+    /**
+     * システム管理者ID
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'id': string;
+    /**
+     * 姓
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'lastname': string;
+    /**
+     * 名
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'firstname': string;
+    /**
+     * 姓(かな)
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'lastnameKana': string;
+    /**
+     * 名(かな)
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'firstnameKana': string;
+    /**
+     * 店舗名
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'storeName': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'thumbnailUrl': string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'email': string;
+    /**
+     * 電話番号
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'phoneNumber': string;
+    /**
+     * 郵便番号
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'postalCode': string;
+    /**
+     * 都道府県
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'prefecture': string;
+    /**
+     * 市区町村
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'city': string;
+    /**
+     * 町名・番地
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'addressLine1': string;
+    /**
+     * ビル名・号室など
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'addressLine2': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ProducerResponse
+     */
+    'createdAt': number;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ProducerResponse
+     */
+    'updatedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface ProducersResponse
+ */
+export interface ProducersResponse {
+    /**
+     * 生産者一覧
+     * @type {Array<ProducersResponseProducers>}
+     * @memberof ProducersResponse
+     */
+    'producers': Array<ProducersResponseProducers>;
+}
+/**
+ * 
+ * @export
+ * @interface ProducersResponseProducers
+ */
+export interface ProducersResponseProducers {
+    /**
+     * システム管理者ID
+     * @type {string}
+     * @memberof ProducersResponseProducers
+     */
+    'id'?: string;
+    /**
+     * 姓
+     * @type {string}
+     * @memberof ProducersResponseProducers
+     */
+    'lastname'?: string;
+    /**
+     * 名
+     * @type {string}
+     * @memberof ProducersResponseProducers
+     */
+    'firstname'?: string;
+    /**
+     * 姓(かな)
+     * @type {string}
+     * @memberof ProducersResponseProducers
+     */
+    'lastnameKana'?: string;
+    /**
+     * 名(かな)
+     * @type {string}
+     * @memberof ProducersResponseProducers
+     */
+    'firstnameKana'?: string;
+    /**
+     * 店舗名
+     * @type {string}
+     * @memberof ProducersResponseProducers
+     */
+    'storeName'?: string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof ProducersResponseProducers
+     */
+    'thumbnailUrl'?: string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof ProducersResponseProducers
+     */
+    'email'?: string;
+    /**
+     * 電話番号
+     * @type {string}
+     * @memberof ProducersResponseProducers
+     */
+    'phoneNumber'?: string;
+    /**
+     * 郵便番号
+     * @type {string}
+     * @memberof ProducersResponseProducers
+     */
+    'postalCode'?: string;
+    /**
+     * 都道府県
+     * @type {string}
+     * @memberof ProducersResponseProducers
+     */
+    'prefecture'?: string;
+    /**
+     * 市区町村
+     * @type {string}
+     * @memberof ProducersResponseProducers
+     */
+    'city'?: string;
+    /**
+     * 町名・番地
+     * @type {string}
+     * @memberof ProducersResponseProducers
+     */
+    'addressLine1'?: string;
+    /**
+     * ビル名・号室など
+     * @type {string}
+     * @memberof ProducersResponseProducers
+     */
+    'addressLine2'?: string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ProducersResponseProducers
+     */
+    'createdAt'?: number;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ProducersResponseProducers
+     */
+    'updatedAt'?: number;
 }
 /**
  * 
@@ -1392,6 +1696,128 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
     return {
         /**
          * 
+         * @summary 生産者登録
+         * @param {CreateProducerRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateProducer: async (body: CreateProducerRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1CreateProducer', 'body', body)
+            const localVarPath = `/v1/producers`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 仲介者取得
+         * @param {string} producerId 生産者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProducer: async (producerId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'producerId' is not null or undefined
+            assertParamExists('v1GetProducer', 'producerId', producerId)
+            const localVarPath = `/v1/producers/{adminId}`
+                .replace(`{${"producerId"}}`, encodeURIComponent(String(producerId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 生産者一覧取得
+         * @param {number} [limit] 取得上限数
+         * @param {number} [offset] 取得開始位置
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListProducers: async (limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/producers`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 生産者サムネイルアップロード
          * @param {any} [thumbnail] 生産者サムネイル
          * @param {*} [options] Override http request option.
@@ -1445,6 +1871,40 @@ export const ProducerApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary 生産者登録
+         * @param {CreateProducerRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1CreateProducer(body: CreateProducerRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProducerResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateProducer(body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 仲介者取得
+         * @param {string} producerId 生産者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetProducer(producerId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProducerResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetProducer(producerId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 生産者一覧取得
+         * @param {number} [limit] 取得上限数
+         * @param {number} [offset] 取得開始位置
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ListProducers(limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProducersResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListProducers(limit, offset, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary 生産者サムネイルアップロード
          * @param {any} [thumbnail] 生産者サムネイル
          * @param {*} [options] Override http request option.
@@ -1466,6 +1926,37 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
     return {
         /**
          * 
+         * @summary 生産者登録
+         * @param {CreateProducerRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateProducer(body: CreateProducerRequest, options?: any): AxiosPromise<ProducerResponse> {
+            return localVarFp.v1CreateProducer(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 仲介者取得
+         * @param {string} producerId 生産者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProducer(producerId: string, options?: any): AxiosPromise<ProducerResponse> {
+            return localVarFp.v1GetProducer(producerId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 生産者一覧取得
+         * @param {number} [limit] 取得上限数
+         * @param {number} [offset] 取得開始位置
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListProducers(limit?: number, offset?: number, options?: any): AxiosPromise<ProducersResponse> {
+            return localVarFp.v1ListProducers(limit, offset, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary 生産者サムネイルアップロード
          * @param {any} [thumbnail] 生産者サムネイル
          * @param {*} [options] Override http request option.
@@ -1484,6 +1975,43 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
  * @extends {BaseAPI}
  */
 export class ProducerApi extends BaseAPI {
+    /**
+     * 
+     * @summary 生産者登録
+     * @param {CreateProducerRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProducerApi
+     */
+    public v1CreateProducer(body: CreateProducerRequest, options?: AxiosRequestConfig) {
+        return ProducerApiFp(this.configuration).v1CreateProducer(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 仲介者取得
+     * @param {string} producerId 生産者ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProducerApi
+     */
+    public v1GetProducer(producerId: string, options?: AxiosRequestConfig) {
+        return ProducerApiFp(this.configuration).v1GetProducer(producerId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 生産者一覧取得
+     * @param {number} [limit] 取得上限数
+     * @param {number} [offset] 取得開始位置
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProducerApi
+     */
+    public v1ListProducers(limit?: number, offset?: number, options?: AxiosRequestConfig) {
+        return ProducerApiFp(this.configuration).v1ListProducers(limit, offset, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary 生産者サムネイルアップロード
