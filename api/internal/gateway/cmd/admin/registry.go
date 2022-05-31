@@ -39,10 +39,6 @@ type serviceParams struct {
 	messenger messenger.MessengerService
 }
 
-type options struct {
-	logger *zap.Logger
-}
-
 func newRegistry(ctx context.Context, conf *config) (*registry, error) {
 	wg := &sync.WaitGroup{}
 
