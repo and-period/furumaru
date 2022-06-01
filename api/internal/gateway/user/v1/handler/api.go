@@ -75,7 +75,6 @@ func NewAPIV1Handler(params *Params, opts ...Option) APIV1Handler {
 func (h *apiV1Handler) Routes(rg *gin.RouterGroup) {
 	v1 := rg.Group("/v1")
 	h.authRoutes(v1.Group("/auth"))
-	h.userRoutes(v1.Group("/users"))
 }
 
 /**
