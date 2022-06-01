@@ -35,12 +35,9 @@ authUserResponse:
     id:
       type: string
       description: 購入者ID
-    email:
+    username:
       type: string
-      description: メールアドレス
-    phoneNumber:
-      type: string
-      description: 電話番号
+      description: 表示名
     thumbnailUrl:
       type: string
       description: サムネイルURL

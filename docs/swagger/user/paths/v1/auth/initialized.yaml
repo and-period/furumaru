@@ -3,6 +3,8 @@ patch:
   operationId: v1InitializeAuth
   tags:
   - Auth
+  security:
+  - BearerAuth: []
   requestBody:
     required: true
     content:
