@@ -9,35 +9,30 @@ servers:
 tags:
 - name: Auth
   description: 認証関連
-- name: User
-  description: 購入者関連
 paths:
   # Auth
   /v1/auth:
     $ref: './paths/v1/auth/index.yaml'
   /v1/auth/refresh-token:
     $ref: './paths/v1/auth/refresh-token.yaml'
-  # User
-  /v1/users:
-    $ref: './paths/v1/users/index.yaml'
-  /v1/users/me:
-    $ref: './paths/v1/users/me/index.yaml'
-  /v1/users/me/initialized:
-    $ref: './paths/v1/users/me/initialized.yaml'
-  /v1/users/me/email:
-    $ref: './paths/v1/users/me/email/index.yaml'
-  /v1/users/me/email/verified:
-    $ref: './paths/v1/users/me/email/verified.yaml'
-  /v1/users/me/password:
-    $ref: './paths/v1/users/me/password.yaml'
-  /v1/users/me/forgot-password:
-    $ref: './paths/v1/users/me/forgot-password/index.yaml'
-  /v1/users/me/forgot-password/me/verified:
-    $ref: './paths/v1/users/me/forgot-password/verified.yaml'
-  /v1/users/oauth:
-    $ref: './paths/v1/users/oauth.yaml'
-  /v1/users/verified:
-    $ref: './paths/v1/users/verified.yaml'
+  /v1/auth/initialized:
+    $ref: './paths/v1/auth/initialized.yaml'
+  /v1/auth/email:
+    $ref: './paths/v1/auth/email/index.yaml'
+  /v1/auth/email/verified:
+    $ref: './paths/v1/auth/email/verified.yaml'
+  /v1/auth/password:
+    $ref: './paths/v1/auth/password.yaml'
+  /v1/auth/forgot-password:
+    $ref: './paths/v1/auth/forgot-password/index.yaml'
+  /v1/auth/forgot-password/verified:
+    $ref: './paths/v1/auth/forgot-password/verified.yaml'
+  /v1/auth/user:
+    $ref: './paths/v1/auth/user/index.yaml'
+  /v1/auth/user/oauth:
+    $ref: './paths/v1/auth/user/oauth.yaml'
+  /v1/auth/user/verified:
+    $ref: './paths/v1/auth/user/verified.yaml'
 components:
   securitySchemes:
     BearerAuth:
@@ -52,26 +47,26 @@ components:
       $ref: './components/schemas/v1/auth.request.yaml#/signInRequest'
     v1RefreshAuthTokenRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/refreshAuthTokenRequest'
-    v1CreateUserRequest:
-      $ref: './components/schemas/v1/users.request.yaml#/createUserRequest'
-    v1InitializeUserRequest:
-      $ref: './components/schemas/v1/users.request.yaml#/initializeUserRequest'
-    v1VerifyUserRequest:
-      $ref: './components/schemas/v1/users.request.yaml#/verifyUserRequest'
-    v1UpdateUserEmailRequest:
-      $ref: './components/schemas/v1/users.request.yaml#/updateUserEmailRequest'
-    v1VerifyUserEmailRequest:
-      $ref: './components/schemas/v1/users.request.yaml#/verifyUserEmailRequest'
-    v1UpdateUserPasswordRequest:
-      $ref: './components/schemas/v1/users.request.yaml#/updateUserPasswordRequest'
-    v1ForgotUserPasswordRequest:
-      $ref: './components/schemas/v1/users.request.yaml#/forgotUserPasswordRequest'
-    v1ResetUserPasswordRequest:
-      $ref: './components/schemas/v1/users.request.yaml#/resetUserPasswordRequest'
+    v1CreateAuthRequest:
+      $ref: './components/schemas/v1/auth.request.yaml#/createAuthRequest'
+    v1InitializeAuthRequest:
+      $ref: './components/schemas/v1/auth.request.yaml#/initializeAuthRequest'
+    v1VerifyAuthRequest:
+      $ref: './components/schemas/v1/auth.request.yaml#/verifyAuthRequest'
+    v1UpdateAuthEmailRequest:
+      $ref: './components/schemas/v1/auth.request.yaml#/updateAuthEmailRequest'
+    v1VerifyAuthEmailRequest:
+      $ref: './components/schemas/v1/auth.request.yaml#/verifyAuthEmailRequest'
+    v1UpdateAuthPasswordRequest:
+      $ref: './components/schemas/v1/auth.request.yaml#/updateAuthPasswordRequest'
+    v1ForgotAuthPasswordRequest:
+      $ref: './components/schemas/v1/auth.request.yaml#/forgotAuthPasswordRequest'
+    v1ResetAuthPasswordRequest:
+      $ref: './components/schemas/v1/auth.request.yaml#/resetAuthPasswordRequest'
     # Response
     v1AuthResponse:
       $ref: './components/schemas/v1/auth.response.yaml#/authResponse'
-    v1CreateUserResponse:
-      $ref: './components/schemas/v1/users.response.yaml#/createUserResponse'
-    v1UserMeResponse:
-      $ref: './components/schemas/v1/users.response.yaml#/userMeResponse'
+    v1AuthUserResponse:
+      $ref: './components/schemas/v1/auth.response.yaml#/authUserResponse'
+    v1CreateAuthResponse:
+      $ref: './components/schemas/v1/auth.response.yaml#/createAuthResponse'
