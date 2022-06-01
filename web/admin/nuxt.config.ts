@@ -82,6 +82,7 @@ const config: NuxtConfig = {
           primary: colors.lightGreen.darken2,
         },
       },
+      options: { customProperties: true },
     },
   },
 

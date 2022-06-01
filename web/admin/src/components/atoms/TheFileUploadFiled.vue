@@ -1,17 +1,34 @@
 <template>
-  <label>
-    <div class="d-flex justify-center align-center rounded-lg file_upload_area">
+  <div>
+    <div
+      class="d-flex justify-center align-center rounded-lg file_upload_area"
+      role="button"
+      :class="{ active: active }"
+      @click="handleClick"
+      @dragenter="handleDragenter"
+      @dragleave="handleDragleave"
+      @drop.prevent="handleDrop"
+      @dragover.prevent="handleDragover"
+    >
       <p class="mb-0">
         <v-icon left>mdi-plus</v-icon>
         {{ text }}
-        <input type="file" class="d-none" />
+        <input
+          ref="inputRef"
+          type="file"
+          class="d-none"
+          @change="handleInputFileChange"
+        />
       </p>
     </div>
-  </label>
+    <div v-if="files">
+      <p v-for="(file, i) in files" :key="i">ファイル名: {{ file.name }}</p>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
+import { defineComponent, ref, computed, PropType } from '@vue/composition-api'
 
 export default defineComponent({
   props: {
@@ -19,14 +36,76 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    value: {
+      type: Object as PropType<any>,
+      default: null,
+    },
+  },
+
+  setup(props, { emit }) {
+    const formData = computed({
+      get: (): any => props.value,
+      set: (val: any) => emit('update:value', val),
+    })
+
+    const inputRef = ref<HTMLInputElement | null>(null)
+    const active = ref<boolean>(false)
+    const files = ref<FileList | null>(null)
+
+    const handleInputFileChange = () => {
+      if (inputRef.value && inputRef.value.files) {
+        files.value = inputRef.value?.files
+      }
+    }
+
+    const handleClick = () => {
+      if (inputRef.value) {
+        inputRef.value.click()
+      }
+    }
+
+    const handleDragenter = () => {
+      active.value = true
+    }
+
+    const handleDragover = () => {
+      active.value = true
+    }
+
+    const handleDragleave = () => {
+      active.value = false
+    }
+
+    const handleDrop = (e: DragEvent) => {
+      if (e.dataTransfer && inputRef.value) {
+        files.value = e.dataTransfer.files
+      }
+      active.value = false
+    }
+
+    return {
+      files,
+      formData,
+      inputRef,
+      active,
+      handleInputFileChange,
+      handleClick,
+      handleDragenter,
+      handleDragleave,
+      handleDrop,
+      handleDragover,
+    }
   },
 })
 </script>
 
 <style lang="scss" scoped>
 .file_upload_area {
-  cursor: pointer;
-  border: dashed rgba(0, 0, 0, 0.87);
+  border: dashed var(--v-secondary-lighten4);
   height: 100px;
+}
+
+.active {
+  border: dashed var(--v-primary-darken3);
 }
 </style>
