@@ -1,14 +1,14 @@
-patch:
-  summary: 初回登録(表示名, 検索名)
-  operationId: v1InitializeUser
+post:
+  summary: パスワードリセット
+  operationId: v1ForgotAuthPassword
   tags:
-  - User
+  - Auth
   requestBody:
     required: true
     content:
       application/json:
         schema:
-          $ref: './../../../../openapi.yaml#/components/schemas/v1InitializeUserRequest'
+          $ref: './../../../../openapi.yaml#/components/schemas/v1ForgotAuthPasswordRequest'
   responses:
     204:
       description: A successful response.
