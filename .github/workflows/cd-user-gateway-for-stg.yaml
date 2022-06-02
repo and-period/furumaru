@@ -12,6 +12,8 @@ on:
 env:
   SERVICE: api
   TZ: 'Asia/Tokyo'
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
   ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
   ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_USER_GATEWAY }}
   ECR_IMAGE_TAG: ${{ github.sha }}
@@ -91,18 +93,21 @@ jobs:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
         golang: ['^1.18.1']
+    permissions:
+      id-token: write
+      contents: read
     steps:
     - name: Check out code
       uses: actions/checkout@v3
 
-    - name: Configure AWS Credentials
+    - name: Configure AWS credentials from IAM Role
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-region: ${{ secrets.AWS_REGION }}
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        role-to-assume: ${{ env.AWS_ROLE_ARN }}
+        aws-region: ${{ env.AWS_REGION }}
 
     - name: Login to Amazon ECR
+      id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
     - name: Set ECR_REPOSITORY_URL
@@ -118,6 +123,6 @@ jobs:
         docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:latest
         docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}
 
-    - name: Push Artifact Registry in Elactic Container Registry
+    - name: Push Elactic Container Registry
       run: |
-        docker push ${ECR_REPOSITORY_URL}
+        docker push ${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}
