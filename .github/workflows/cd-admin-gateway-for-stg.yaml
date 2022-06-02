@@ -82,7 +82,7 @@ jobs:
 
   deploy:
     name: deploy
-    needs: setup
+    needs: build
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -94,6 +94,13 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v3
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-region: ${{ secrets.AWS_REGION }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     - name: Set ECR_REPOSITORY_URL
       run: |
