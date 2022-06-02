@@ -1,0 +1,113 @@
+name: '[Backend] Deploy Admin Gateway for Staging'
+on:
+  push:
+    branches:
+    - 'main'
+    paths:
+    - '.github/workflows/cd-admin-gateway-for-stg.yaml'
+    - 'api/**'
+    - 'infra/docker/api/**'
+    - 'infra/kubernetes/**'
+
+env:
+  SERVICE: api
+  TZ: 'Asia/Tokyo'
+  ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_ADMIN_GATEWAY }}
+  ECR_IMAGE_TAG: ${{ github.sha }}
+
+jobs:
+  setup:
+    name: setup
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./api
+    strategy:
+      matrix:
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        golang: ['^1.18.1']
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+
+    - name: Use Golang ${{ matrix.golang }}
+      uses: actions/setup-go@v3
+      with:
+        go-version: ${{ matrix.golang }}
+
+    - uses: actions/cache@v3
+      id: modules-cache
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ env.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+
+    - name: Download modules
+      if: steps.modules-cache.outputs.cache-hit != 'true'
+      run: go mod download
+
+  build:
+    name: build
+    needs: setup
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./api
+    strategy:
+      matrix:
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        golang: ['^1.18.1']
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+
+    - uses: actions/cache@v3
+      id: modules-cache
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ env.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+
+    - name: Download modules
+      if: steps.modules-cache.outputs.cache-hit != 'true'
+      run: go mod download
+
+    - name: Build admin gateway
+      run: make build SERVICE=gateway/admin
+
+  deploy:
+    name: deploy
+    needs: setup
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      matrix:
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        golang: ['^1.18.1']
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+
+    - name: Set ECR_REPOSITORY_URL
+      run: |
+        echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
+
+    - name: Docker Build
+      run: |
+        docker build -f ./infra/docker/api/gateway/admin/Dockerfile -t ${ECR_REPOSITORY_URL} .
+
+    - name: Attached Tag
+      run: |
+        docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:latest
+        docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}
+
+    - name: Push Artifact Registry in Elactic Container Registry
+      run: |
+        docker push ${ECR_REPOSITORY_URL}
