@@ -108,7 +108,7 @@ jobs:
 
     - name: Set ECR_REPOSITORY_URL
       run: |
-        echo "ECR_REPOSITORY_URL=${{ ECR_REGISTRY }}/${{ ECR_REPOSITORY }}" >> $GITHUB_ENV
+        echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
 
     - name: Docker Build
       run: |
