@@ -1,6 +1,8 @@
 name: '[Backend] Deploy Admin Gateway for Staging'
 on:
   push:
+    branches:
+    - 'main'
     paths:
     - '.github/workflows/cd-admin-gateway-for-stg.yaml'
     - 'api/**'
@@ -85,7 +87,6 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./api
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
@@ -93,18 +94,6 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v3
-
-    - uses: actions/cache@v3
-      id: modules-cache
-      with:
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        key: ${{ env.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-
-    - name: Download modules
-      if: steps.modules-cache.outputs.cache-hit != 'true'
-      run: go mod download
 
     - name: Set ECR_REPOSITORY_URL
       run: |
