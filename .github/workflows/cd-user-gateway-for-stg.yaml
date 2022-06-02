@@ -129,4 +129,4 @@ jobs:
 
     - name: Push Elactic Container Registry
       run: |
-        docker push ${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}
+        docker push ${ECR_REPOSITORY_URL}:latest
