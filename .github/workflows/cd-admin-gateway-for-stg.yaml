@@ -114,6 +114,10 @@ jobs:
       run: |
         echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
 
+    - name: Docker Login
+      run: |
+        aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${ECR_REGISTRY}
+
     - name: Docker Build
       run: |
         docker build -f ./infra/docker/api/gateway/admin/Dockerfile -t ${ECR_REPOSITORY_URL} .
