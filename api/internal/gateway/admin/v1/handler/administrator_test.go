@@ -22,7 +22,7 @@ func TestListAdministrators(t *testing.T) {
 		Offset: 0,
 		Roles:  []int32{int32(uentity.AdminRoleAdministrator)},
 	}
-	Admins := uentity.Admins{
+	admins := uentity.Admins{
 		{
 			ID:            "admin-id01",
 			Lastname:      "&.",
@@ -58,7 +58,7 @@ func TestListAdministrators(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().ListAdmins(gomock.Any(), in).Return(Admins, nil)
+				mocks.user.EXPECT().ListAdmins(gomock.Any(), in).Return(admins, nil)
 			},
 			query: "",
 			expect: &testResponse{
