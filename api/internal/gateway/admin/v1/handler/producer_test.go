@@ -7,11 +7,57 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/internal/user/entity"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 )
 
 func TestListProducer(t *testing.T) {
 	t.Parallel()
+
+	in := &user.ListAdminsInput{
+		Limit:  20,
+		Offset: 0,
+		Roles:  []int32{int32(uentity.AdminRoleProducer)},
+	}
+	admins := uentity.Admins{
+		{
+			ID:            "admin-id01",
+			Lastname:      "&.",
+			Firstname:     "管理者",
+			LastnameKana:  "あんどどっと",
+			FirstnameKana: "かんりしゃ",
+			StoreName:     "&.農園",
+			ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+			Email:         "test-admin@and-period.jp",
+			PhoneNumber:   "+819012345678",
+			PostalCode:    "1000014",
+			Prefecture:    "東京都",
+			City:          "千代田区",
+			Role:          entity.AdminRoleProducer,
+			CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		},
+		{
+			ID:            "admin-id02",
+			Lastname:      "&.",
+			Firstname:     "管理者",
+			LastnameKana:  "あんどどっと",
+			FirstnameKana: "かんりしゃ",
+			StoreName:     "&.農園",
+			ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+			Email:         "test-admin@and-period.jp",
+			PhoneNumber:   "+819012345678",
+			PostalCode:    "1000014",
+			Prefecture:    "東京都",
+			City:          "千代田区",
+			Role:          entity.AdminRoleProducer,
+			CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		},
+	}
 
 	tests := []struct {
 		name   string
@@ -20,14 +66,77 @@ func TestListProducer(t *testing.T) {
 		expect *testResponse
 	}{
 		{
-			name:  "success",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().ListAdmins(gomock.Any(), in).Return(admins, nil)
+			},
 			query: "",
 			expect: &testResponse{
 				code: http.StatusOK,
 				body: &response.ProducersResponse{
-					Producers: []*response.Producer{},
+					Producers: []*response.Producer{
+						{
+							ID:            "admin-id01",
+							Lastname:      "&.",
+							Firstname:     "管理者",
+							LastnameKana:  "あんどどっと",
+							FirstnameKana: "かんりしゃ",
+							StoreName:     "&.農園",
+							ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+							Email:         "test-admin@and-period.jp",
+							PhoneNumber:   "+819012345678",
+							PostalCode:    "1000014",
+							Prefecture:    "東京都",
+							City:          "千代田区",
+							CreatedAt:     1640962800,
+							UpdatedAt:     1640962800,
+						},
+						{
+							ID:            "admin-id02",
+							Lastname:      "&.",
+							Firstname:     "管理者",
+							LastnameKana:  "あんどどっと",
+							FirstnameKana: "かんりしゃ",
+							StoreName:     "&.農園",
+							ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+							Email:         "test-admin@and-period.jp",
+							PhoneNumber:   "+819012345678",
+							PostalCode:    "1000014",
+							Prefecture:    "東京都",
+							City:          "千代田区",
+							CreatedAt:     1640962800,
+							UpdatedAt:     1640962800,
+						},
+					},
 				},
+			},
+		},
+		{
+			name: "invalid limit",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+			},
+			query: "?limit=a",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name: "invalid offset",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+			},
+			query: "?offset=a",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name: "failed to get admins",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().ListAdmins(gomock.Any(), in).Return(nil, errmock)
+			},
+			query: "",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
 			},
 		},
 	}
@@ -47,6 +156,27 @@ func TestListProducer(t *testing.T) {
 func TestGetProducer(t *testing.T) {
 	t.Parallel()
 
+	in := &user.GetAdminInput{
+		AdminID: "admin-id",
+	}
+	admin := &uentity.Admin{
+		ID:            "admin-id",
+		Lastname:      "&.",
+		Firstname:     "管理者",
+		LastnameKana:  "あんどどっと",
+		FirstnameKana: "かんりしゃ",
+		StoreName:     "&.農園",
+		ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+		Email:         "test-admin@and-period.jp",
+		PhoneNumber:   "+819012345678",
+		PostalCode:    "1000014",
+		Prefecture:    "東京都",
+		City:          "千代田区",
+		Role:          entity.AdminRoleProducer,
+		CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+	}
+
 	tests := []struct {
 		name       string
 		setup      func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
@@ -54,12 +184,52 @@ func TestGetProducer(t *testing.T) {
 		expect     *testResponse
 	}{
 		{
-			name:       "success",
-			setup:      func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
-			producerID: "producer-id",
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().GetAdmin(gomock.Any(), in).Return(admin, nil)
+			},
+			producerID: "admin-id",
 			expect: &testResponse{
 				code: http.StatusOK,
-				body: &response.ProducerResponse{},
+				body: &response.ProducerResponse{
+					Producer: &response.Producer{
+						ID:            "admin-id",
+						Lastname:      "&.",
+						Firstname:     "管理者",
+						LastnameKana:  "あんどどっと",
+						FirstnameKana: "かんりしゃ",
+						StoreName:     "&.農園",
+						ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+						Email:         "test-admin@and-period.jp",
+						PhoneNumber:   "+819012345678",
+						PostalCode:    "1000014",
+						Prefecture:    "東京都",
+						City:          "千代田区",
+						CreatedAt:     1640962800,
+						UpdatedAt:     1640962800,
+					},
+				},
+			},
+		},
+		{
+			name: "failed to get admin",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().GetAdmin(gomock.Any(), in).Return(nil, errmock)
+			},
+			producerID: "admin-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "not administartor role",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				admin := &entity.Admin{Role: entity.AdminRoleCoordinator}
+				mocks.user.EXPECT().GetAdmin(gomock.Any(), in).Return(admin, nil)
+			},
+			producerID: "admin-id",
+			expect: &testResponse{
+				code: http.StatusNotFound,
 			},
 		},
 	}
@@ -79,6 +249,41 @@ func TestGetProducer(t *testing.T) {
 func TestCreateProducer(t *testing.T) {
 	t.Parallel()
 
+	in := &user.CreateProducerInput{
+		Lastname:      "&.",
+		Firstname:     "生産者",
+		LastnameKana:  "あんどどっと",
+		FirstnameKana: "せいさんしゃ",
+		StoreName:     "&.農園",
+		ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+		Email:         "test-admin@and-period.jp",
+		PhoneNumber:   "+819012345678",
+		PostalCode:    "1000014",
+		Prefecture:    "東京都",
+		City:          "千代田区",
+		AddressLine1:  "永田町1-7-1",
+		AddressLine2:  "",
+	}
+	admin := &uentity.Admin{
+		ID:            "admin-id",
+		Lastname:      "&.",
+		Firstname:     "管理者",
+		LastnameKana:  "あんどどっと",
+		FirstnameKana: "かんりしゃ",
+		StoreName:     "&.農園",
+		ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+		Email:         "test-admin@and-period.jp",
+		PhoneNumber:   "+819012345678",
+		PostalCode:    "1000014",
+		Prefecture:    "東京都",
+		City:          "千代田区",
+		AddressLine1:  "永田町1-7-1",
+		AddressLine2:  "",
+		Role:          entity.AdminRoleProducer,
+		CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+	}
+
 	tests := []struct {
 		name   string
 		setup  func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
@@ -86,8 +291,10 @@ func TestCreateProducer(t *testing.T) {
 		expect *testResponse
 	}{
 		{
-			name:  "success",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().CreateProducer(gomock.Any(), in).Return(admin, nil)
+			},
 			req: &request.CreateProducerRequest{
 				Lastname:      "&.",
 				Firstname:     "生産者",
@@ -95,7 +302,7 @@ func TestCreateProducer(t *testing.T) {
 				FirstnameKana: "せいさんしゃ",
 				StoreName:     "&.農園",
 				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-				Email:         "test-admin01@and-period.jp",
+				Email:         "test-admin@and-period.jp",
 				PhoneNumber:   "+819012345678",
 				PostalCode:    "1000014",
 				Prefecture:    "東京都",
@@ -105,7 +312,50 @@ func TestCreateProducer(t *testing.T) {
 			},
 			expect: &testResponse{
 				code: http.StatusOK,
-				body: &response.ProducerResponse{},
+				body: &response.ProducerResponse{
+					Producer: &response.Producer{
+						ID:            "admin-id",
+						Lastname:      "&.",
+						Firstname:     "管理者",
+						LastnameKana:  "あんどどっと",
+						FirstnameKana: "かんりしゃ",
+						StoreName:     "&.農園",
+						ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+						Email:         "test-admin@and-period.jp",
+						PhoneNumber:   "+819012345678",
+						PostalCode:    "1000014",
+						Prefecture:    "東京都",
+						City:          "千代田区",
+						AddressLine1:  "永田町1-7-1",
+						AddressLine2:  "",
+						CreatedAt:     1640962800,
+						UpdatedAt:     1640962800,
+					},
+				},
+			},
+		},
+		{
+			name: "failed to create producer",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().CreateProducer(gomock.Any(), in).Return(nil, errmock)
+			},
+			req: &request.CreateProducerRequest{
+				Lastname:      "&.",
+				Firstname:     "生産者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "せいさんしゃ",
+				StoreName:     "&.農園",
+				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+				Email:         "test-admin@and-period.jp",
+				PhoneNumber:   "+819012345678",
+				PostalCode:    "1000014",
+				Prefecture:    "東京都",
+				City:          "千代田区",
+				AddressLine1:  "永田町1-7-1",
+				AddressLine2:  "",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
 			},
 		},
 	}
