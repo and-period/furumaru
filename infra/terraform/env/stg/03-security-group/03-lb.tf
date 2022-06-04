@@ -1,4 +1,4 @@
-module "sg_app" {
+module "sg_lb" {
   source = "./../../../modules/security-group"
 
   #####################################################################
@@ -10,8 +10,8 @@ module "sg_app" {
   #####################################################################
   # [必須] Security Group
   #####################################################################
-  name        = "furumaru-stg-sg-app"
-  description = "for database"
+  name        = "furumaru-stg-sg-lb"
+  description = "for elb"
 
   ingress_rules = [
     {
@@ -24,19 +24,19 @@ module "sg_app" {
       security_group_names = []
     },
     {
-      description          = "gateway from external"
+      description          = "http from external"
       protocol             = "tcp"
-      from_port            = 9000
-      to_port              = 9000
+      from_port            = 80
+      to_port              = 80
       cidr_blocks          = ["0.0.0.0/0"]
       prefix_list_ids      = []
       security_group_names = []
     },
     {
-      description          = "metrics from external"
+      description          = "https from external"
       protocol             = "tcp"
-      from_port            = 9001
-      to_port              = 9001
+      from_port            = 443
+      to_port              = 443
       cidr_blocks          = ["0.0.0.0/0"]
       prefix_list_ids      = []
       security_group_names = []
