@@ -15,6 +15,7 @@ func NewGinMiddleware(opts ...Option) (gin.HandlerFunc, error) {
 	return ginzap.GinzapWithConfig(logger, &ginzap.Config{
 		TimeFormat: time.RFC3339,
 		UTC:        false,
-		SkipPaths:  []string{"/health"},
+		SkipPaths:  []string{}, // ヘルスチェックのデバッグのため、一時的にすべて出力
+		// SkipPaths:  []string{"/health"},
 	}), nil
 }

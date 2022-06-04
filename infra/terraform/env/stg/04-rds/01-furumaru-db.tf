@@ -65,6 +65,7 @@ module "furumaru_db" {
   db_availability_zone = "ap-northeast-1a"
 
   ### ネットワーク設定 ####################################
+  security_group_names = ["furumaru-stg-sg-db"]
   db_port = 3306
 
   ### データベース設定 ####################################

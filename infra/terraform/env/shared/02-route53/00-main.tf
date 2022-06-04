@@ -18,7 +18,7 @@ terraform {
   backend "s3" {
     region                  = "ap-northeast-1"
     bucket                  = "furumaru-terraform"
-    key                     = "shared/ecr.tfstate"
+    key                     = "shared/route53.tfstate"
     profile                 = "default"
     shared_credentials_file = "~/.aws/credentials"
   }

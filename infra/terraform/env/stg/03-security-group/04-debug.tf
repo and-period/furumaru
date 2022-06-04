@@ -1,4 +1,4 @@
-module "sg_app" {
+module "sg_debug" {
   source = "./../../../modules/security-group"
 
   #####################################################################
@@ -10,8 +10,8 @@ module "sg_app" {
   #####################################################################
   # Security Group
   #####################################################################
-  name        = "furumaru-stg-sg-app"
-  description = "for database"
+  name        = "furumaru-stg-sg-debug"
+  description = "for debug instance"
 
   ingress_rules = [
     {
@@ -24,19 +24,10 @@ module "sg_app" {
       security_group_names = []
     },
     {
-      description          = "gateway from external"
+      description          = "ssh from external"
       protocol             = "tcp"
-      from_port            = 9000
-      to_port              = 9000
-      cidr_blocks          = ["0.0.0.0/0"]
-      prefix_list_ids      = []
-      security_group_names = []
-    },
-    {
-      description          = "metrics from external"
-      protocol             = "tcp"
-      from_port            = 9001
-      to_port              = 9001
+      from_port            = 22
+      to_port              = 22
       cidr_blocks          = ["0.0.0.0/0"]
       prefix_list_ids      = []
       security_group_names = []
