@@ -7,7 +7,7 @@ const config: NuxtConfig = {
   srcDir: 'src',
 
   // Target: https://go.nuxtjs.dev/config-target
-  target: 'static',
+  target: 'server',
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
