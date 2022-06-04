@@ -47,7 +47,7 @@ func Exec() error {
 	eg.Go(func() (err error) {
 		err = app.server.Serve()
 		if err != nil {
-			app.logger.Error("Failed to run gRPC server", zap.Error(err))
+			app.logger.Error("Failed to run http server", zap.Error(err))
 		}
 		return
 	})
