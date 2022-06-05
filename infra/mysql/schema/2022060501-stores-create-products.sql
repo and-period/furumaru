@@ -43,6 +43,7 @@ CREATE TABLE `stores`.`products` (
   `item_description`  VARCHAR(64)  NOT NULL,          -- 数量単位(説明)
   `media`             JSON         NULL DEFAULT NULL, -- メディア一覧(URL)
   `price`             BIGINT       NOT NULL,          -- 販売価格
+  `delivery_type`     INT          NOT NULL,          -- 配送方法 (1:通常便,2:冷蔵便,3:冷凍便)
   `box60_rate`        BIGINT       NOT NULL,          -- 箱の占有率(サイズ:60)
   `box80_rate`        BIGINT       NOT NULL,          -- 箱の占有率(サイズ:80)
   `box100_rate`       BIGINT       NOT NULL,          -- 箱の占有率(サイズ:100)

@@ -17,6 +17,16 @@ const (
 	WeightUnitKilogram WeightUnit = 2 // kg(キログラム)
 )
 
+// DeliveryType - 配送方法
+type DeliveryType int32
+
+const (
+	DeliveryTypeUnknown      DeliveryType = 0
+	DeliveryTypeNormal       DeliveryType = 1 // 通常便
+	DeliveryTypeRefrigerated DeliveryType = 2 // 冷蔵便
+	DeliveryTypeFrozen       DeliveryType = 3 // 冷凍便
+)
+
 // Product - 商品情報
 type Product struct {
 	ID               string            `gorm:"primaryKey;<-:create"`                // 商品ID
@@ -35,6 +45,7 @@ type Product struct {
 	Media            MultiProductMedia `gorm:"-"`                                   // メディア一覧
 	MediaJSON        datatypes.JSON    `gorm:"default:null;column:media"`           // メディア一覧(JSON)
 	Price            int64             `gorm:""`                                    // 販売価格
+	DeliveryType     DeliveryType      `gorm:""`                                    // 配送方法
 	Box60Rate        int64             `gorm:""`                                    // 箱の占有率(サイズ:60)
 	Box80Rate        int64             `gorm:""`                                    // 箱の占有率(サイズ:80)
 	Box100Rate       int64             `gorm:""`                                    // 箱の占有率(サイズ:100)
