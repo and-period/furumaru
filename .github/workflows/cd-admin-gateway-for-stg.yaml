@@ -17,6 +17,8 @@ env:
   ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
   ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_ADMIN_GATEWAY }}
   ECR_IMAGE_TAG: ${{ github.sha }}
+  ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
+  ECS_SERVICE: ${{ secrets.ECS_SERVICE_ADMIN_GATEWAY }}
 
 jobs:
   setup:
@@ -92,7 +94,6 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        golang: ['^1.18.1']
     permissions:
       id-token: write
       contents: read
@@ -130,3 +131,32 @@ jobs:
     - name: Push Elactic Container Registry
       run: |
         docker push ${ECR_REPOSITORY_URL}:latest
+
+  update:
+    name: update
+    needs: deploy
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      matrix:
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        golang: ['^1.18.1']
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+
+    - name: Configure AWS credentials from IAM Role
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: ${{ env.AWS_ROLE_ARN }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Force Update Service for ECS
+      run: |
+        ECS_TASK=$(aws ecs list-tasks --cluster ${ECS_CLUSTER} --query 'taskArns[0]' --output text)
+        aws ecs update-service --cluster ${ECS_CLUSTER} --service ${ECS_SERVICE} --task-definition ${ECS_TASK} --force-new-deployment
