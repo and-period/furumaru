@@ -170,7 +170,7 @@ services:
     volumes:
       - ./tmp/data/swagger/admin/docs/openapi:/var/swagger:cached
     ports:
-      - 9020:8080
+      - 9010:8080
     environment:
       SWAGGER_JSON: /var/swagger/openapi.yaml
     depends_on:
