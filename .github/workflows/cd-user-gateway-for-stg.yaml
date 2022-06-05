@@ -10,86 +10,21 @@ on:
     - 'infra/kubernetes/**'
 
 env:
-  SERVICE: api
   TZ: 'Asia/Tokyo'
   AWS_REGION: ${{ secrets.AWS_REGION }}
   AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
   ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
   ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_USER_GATEWAY }}
   ECR_IMAGE_TAG: ${{ github.sha }}
-  ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
-  ECS_SERVICE: ${{ secrets.ECS_SERVICE_USER_GATEWAY }}
-  ECS_TASK_DEFINITION: ${{ secrets.ECS_TASK_DEFINITION_USER_GATEWAY }}
+  ECS_CLUSTER: ${{ secrets.STG_ECS_CLUSTER }}
+  ECS_SERVICE: ${{ secrets.STG_ECS_SERVICE_USER_GATEWAY }}
+  ECS_TASK_DEFINITION: ${{ secrets.STG_ECS_TASK_DEFINITION_USER_GATEWAY }}
   ECS_CONTAINER: user-gateway
   IMAGE_PATH: ./infra/docker/api/gateway/user/Dockerfile
 
 jobs:
-  setup:
-    name: setup
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./api
-    strategy:
-      matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        golang: ['^1.18.1']
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v3
-
-    - name: Use Golang ${{ matrix.golang }}
-      uses: actions/setup-go@v3
-      with:
-        go-version: ${{ matrix.golang }}
-
-    - uses: actions/cache@v3
-      id: modules-cache
-      with:
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        key: ${{ env.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-
-    - name: Download modules
-      if: steps.modules-cache.outputs.cache-hit != 'true'
-      run: go mod download
-
-  build:
-    name: build
-    needs: setup
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./api
-    strategy:
-      matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        golang: ['^1.18.1']
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v3
-
-    - uses: actions/cache@v3
-      id: modules-cache
-      with:
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        key: ${{ env.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-
-    - name: Download modules
-      if: steps.modules-cache.outputs.cache-hit != 'true'
-      run: go mod download
-
-    - name: Build user gateway
-      run: make build SERVICE=gateway/user
-
-  deploy:
-    name: deploy
-    needs: build
+  build_and-deploy:
+    name: deploy and deploy
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -97,7 +32,6 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        golang: ['^1.18.1']
     permissions:
       id-token: write
       contents: read
