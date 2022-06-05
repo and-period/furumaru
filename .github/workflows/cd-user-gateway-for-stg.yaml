@@ -107,7 +107,7 @@ jobs:
 
     - name: Generate task-definition.json
       run: |
-        echo -n ${ECR_TASK_DEFINITION} > ./task-definition.json
+        echo -n ${ECS_TASK_DEFINITION} > ./task-definition.json
 
     - name: Configure AWS credentials from IAM Role
       uses: aws-actions/configure-aws-credentials@v1
