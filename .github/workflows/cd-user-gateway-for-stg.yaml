@@ -21,6 +21,7 @@ env:
   ECS_SERVICE: ${{ secrets.ECS_SERVICE_USER_GATEWAY }}
   ECS_TASK_DEFINITION: ${{ secrets.ECS_TASK_DEFINITION_USER_GATEWAY }}
   ECS_CONTAINER_NAME: user-gateway
+  IMAGE_PATH: ./infra/docker/api/gateway/user/Dockerfile
 
 jobs:
   setup:
@@ -116,17 +117,13 @@ jobs:
 
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
-      env:
-        ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
-        ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-        IMAGE_TAG: ${{ github.sha }}
       run: |
         ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}
         aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${ECR_REGISTRY}
-        docker build -f ./infra/docker/api/gateway/user/Dockerfile -t ${ECR_REPOSITORY_URL} .
+        docker build -f ${IMAGE_PATH} -t ${ECR_REPOSITORY_URL} .
         docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}
-        docker push ${ECR_REPOSITORY_URL}:${IMAGE_TAG}
-        echo "::set-output name=image::${ECR_REPOSITORY_URL}:${IMAGE_TAG}"
+        docker push ${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}
+        echo "::set-output name=image::${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}"
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
