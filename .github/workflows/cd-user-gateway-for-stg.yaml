@@ -19,7 +19,8 @@ env:
   ECR_IMAGE_TAG: ${{ github.sha }}
   ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
   ECS_SERVICE: ${{ secrets.ECS_SERVICE_USER_GATEWAY }}
-  ECS_TASKNAME: ${{ secrets.ECS_TASKNAME_USER_GATEWAY }}
+  ECS_TASK_DEFINITION: ${{ secrets.ECS_TASK_DEFINITION_USER_GATEWAY }}
+  ECS_CONTAINER_NAME: user-gateway
 
 jobs:
   setup:
@@ -113,51 +114,32 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Set ECR_REPOSITORY_URL
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+        ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+        IMAGE_TAG: ${{ github.sha }}
       run: |
-        echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
-
-    - name: Docker Login
-      run: |
+        ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}
         aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${ECR_REGISTRY}
-
-    - name: Docker Build
-      run: |
         docker build -f ./infra/docker/api/gateway/user/Dockerfile -t ${ECR_REPOSITORY_URL} .
-
-    - name: Attached Tag
-      run: |
-        docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:latest
         docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}
+        docker push ${ECR_REPOSITORY_URL}:${IMAGE_TAG}
+        echo "::set-output name=image::${ECR_REPOSITORY_URL}:${IMAGE_TAG}"
 
-    - name: Push Elactic Container Registry
-      run: |
-        docker push ${ECR_REPOSITORY_URL}:latest
-
-  update:
-    name: update
-    needs: deploy
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
-    strategy:
-      matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        golang: ['^1.18.1']
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v3
-
-    - name: Configure AWS credentials from IAM Role
-      uses: aws-actions/configure-aws-credentials@v1
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        role-to-assume: ${{ env.AWS_ROLE_ARN }}
-        aws-region: ${{ env.AWS_REGION }}
+        task-definition: ${{ env.ECS_TASK_DEFINITION }}
+        container-name: ${{ env.ECS_CONTAINER_NAME }}
+        image: ${{ steps.build-image.outputs.image }}
 
-    - name: Force Update Service for ECS
-      run: |
-        aws ecs update-service --cluster ${ECS_CLUSTER} --service ${ECS_SERVICE} --task-definition ${ECS_TASKNAME} --force-new-deployment
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        cluster: ${{ env.ECS_CLUSTER }}
+        service: ${{ env.ECS_SERVICE }}
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        wait-for-service-stability: true
