@@ -105,6 +105,10 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v3
 
+    - name: Generate task-definition.json
+      run: |
+        echo -n ${ECR_TASK_DEFINITION} > ./task-definition.json
+
     - name: Configure AWS credentials from IAM Role
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -129,7 +133,7 @@ jobs:
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: ${{ env.ECS_TASK_DEFINITION }}
+        task-definition: ./task-definition.json
         container-name: ${{ env.ECS_CONTAINER_NAME }}
         image: ${{ steps.build-image.outputs.image }}
 
