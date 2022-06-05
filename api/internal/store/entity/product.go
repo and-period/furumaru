@@ -35,7 +35,7 @@ type Product struct {
 	TypeID           string            `gorm:"default:null;column:product_type_id"` // 品目ID
 	Name             string            `gorm:""`                                    // 商品名
 	Description      string            `gorm:""`                                    // 商品説明
-	Public           bool              `gorm:""`                                    // 公開フラグ(true:公開, false:下書き)
+	Public           bool              `gorm:""`                                    // 公開フラグ
 	Inventory        int64             `gorm:""`                                    // 在庫数
 	Weight           int64             `gorm:""`                                    // 重量
 	WeightUnit       WeightUnit        `gorm:""`                                    // 重量単位

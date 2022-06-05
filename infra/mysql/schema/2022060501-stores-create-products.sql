@@ -34,16 +34,16 @@ CREATE TABLE `stores`.`products` (
   `product_type_id`   VARCHAR(22)  NULL DEFAULT NULL, -- 品目ID
   `name`              VARCHAR(128) NOT NULL,          -- 商品名
   `description`       TEXT         NOT NULL,          -- 商品説明
-  `public`            TINYINT      NOT NULL,          -- 公開フラグ(0:下書き, 1:公開)
+  `public`            TINYINT      NOT NULL,          -- 公開フラグ
   `inventory`         BIGINT       NOT NULL,          -- 在庫数
   `weight`            BIGINT       NOT NULL,          -- 重量(数値)
-  `weight_unit`       INT          NOT NULL,          -- 重量単位
+  `weight_unit`       INT          NOT NULL,          -- 重量単位(1:g,2:kg)
   `item`              BIGINT       NOT NULL,          -- 数量(数値)
   `item_unit`         VARCHAR(16)  NOT NULL,          -- 数量単位
   `item_description`  VARCHAR(64)  NOT NULL,          -- 数量単位(説明)
   `media`             JSON         NULL DEFAULT NULL, -- メディア一覧(URL)
   `price`             BIGINT       NOT NULL,          -- 販売価格
-  `delivery_type`     INT          NOT NULL,          -- 配送方法 (1:通常便,2:冷蔵便,3:冷凍便)
+  `delivery_type`     INT          NOT NULL,          -- 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
   `box60_rate`        BIGINT       NOT NULL,          -- 箱の占有率(サイズ:60)
   `box80_rate`        BIGINT       NOT NULL,          -- 箱の占有率(サイズ:80)
   `box100_rate`       BIGINT       NOT NULL,          -- 箱の占有率(サイズ:100)
