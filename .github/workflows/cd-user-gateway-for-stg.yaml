@@ -19,6 +19,7 @@ env:
   ECR_IMAGE_TAG: ${{ github.sha }}
   ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
   ECS_SERVICE: ${{ secrets.ECS_SERVICE_USER_GATEWAY }}
+  ECS_TASKNAME: ${{ secrets.ECS_TASKNAME_USER_GATEWAY }}
 
 jobs:
   setup:
@@ -159,5 +160,4 @@ jobs:
 
     - name: Force Update Service for ECS
       run: |
-        ECS_TASK=$(aws ecs list-tasks --cluster ${ECS_CLUSTER} --query 'taskArns[0]' --output text)
         aws ecs update-service --cluster ${ECS_CLUSTER} --service ${ECS_SERVICE} --task-definition ${ECS_TASK} --force-new-deployment
