@@ -160,4 +160,4 @@ jobs:
 
     - name: Force Update Service for ECS
       run: |
-        aws ecs update-service --cluster ${ECS_CLUSTER} --service ${ECS_SERVICE} --task-definition ${ECS_TASK} --force-new-deployment
+        aws ecs update-service --cluster ${ECS_CLUSTER} --service ${ECS_SERVICE} --task-definition ${ECS_TASKNAME} --force-new-deployment
