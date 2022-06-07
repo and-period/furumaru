@@ -37,10 +37,10 @@ func (m *MockUserService) EXPECT() *MockUserServiceMockRecorder {
 }
 
 // CreateAdministrator mocks base method.
-func (m *MockUserService) CreateAdministrator(ctx context.Context, in *user.CreateAdministratorInput) (*entity.Admin, error) {
+func (m *MockUserService) CreateAdministrator(ctx context.Context, in *user.CreateAdministratorInput) (*entity.Administrator, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateAdministrator", ctx, in)
-	ret0, _ := ret[0].(*entity.Admin)
+	ret0, _ := ret[0].(*entity.Administrator)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -51,11 +51,26 @@ func (mr *MockUserServiceMockRecorder) CreateAdministrator(ctx, in interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAdministrator", reflect.TypeOf((*MockUserService)(nil).CreateAdministrator), ctx, in)
 }
 
+// CreateCoordinator mocks base method.
+func (m *MockUserService) CreateCoordinator(ctx context.Context, in *user.CreateCoordinatorInput) (*entity.Coordinator, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateCoordinator", ctx, in)
+	ret0, _ := ret[0].(*entity.Coordinator)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateCoordinator indicates an expected call of CreateCoordinator.
+func (mr *MockUserServiceMockRecorder) CreateCoordinator(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCoordinator", reflect.TypeOf((*MockUserService)(nil).CreateCoordinator), ctx, in)
+}
+
 // CreateProducer mocks base method.
-func (m *MockUserService) CreateProducer(ctx context.Context, in *user.CreateProducerInput) (*entity.Admin, error) {
+func (m *MockUserService) CreateProducer(ctx context.Context, in *user.CreateProducerInput) (*entity.Producer, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateProducer", ctx, in)
-	ret0, _ := ret[0].(*entity.Admin)
+	ret0, _ := ret[0].(*entity.Producer)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -124,21 +139,6 @@ func (mr *MockUserServiceMockRecorder) ForgotUserPassword(ctx, in interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ForgotUserPassword", reflect.TypeOf((*MockUserService)(nil).ForgotUserPassword), ctx, in)
 }
 
-// GetAdmin mocks base method.
-func (m *MockUserService) GetAdmin(ctx context.Context, in *user.GetAdminInput) (*entity.Admin, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAdmin", ctx, in)
-	ret0, _ := ret[0].(*entity.Admin)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetAdmin indicates an expected call of GetAdmin.
-func (mr *MockUserServiceMockRecorder) GetAdmin(ctx, in interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAdmin", reflect.TypeOf((*MockUserService)(nil).GetAdmin), ctx, in)
-}
-
 // GetAdminAuth mocks base method.
 func (m *MockUserService) GetAdminAuth(ctx context.Context, in *user.GetAdminAuthInput) (*entity.AdminAuth, error) {
 	m.ctrl.T.Helper()
@@ -152,6 +152,51 @@ func (m *MockUserService) GetAdminAuth(ctx context.Context, in *user.GetAdminAut
 func (mr *MockUserServiceMockRecorder) GetAdminAuth(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAdminAuth", reflect.TypeOf((*MockUserService)(nil).GetAdminAuth), ctx, in)
+}
+
+// GetAdministrator mocks base method.
+func (m *MockUserService) GetAdministrator(ctx context.Context, in *user.GetAdministratorInput) (*entity.Administrator, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAdministrator", ctx, in)
+	ret0, _ := ret[0].(*entity.Administrator)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAdministrator indicates an expected call of GetAdministrator.
+func (mr *MockUserServiceMockRecorder) GetAdministrator(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAdministrator", reflect.TypeOf((*MockUserService)(nil).GetAdministrator), ctx, in)
+}
+
+// GetCoordinator mocks base method.
+func (m *MockUserService) GetCoordinator(ctx context.Context, in *user.GetCoordinatorInput) (*entity.Coordinator, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCoordinator", ctx, in)
+	ret0, _ := ret[0].(*entity.Coordinator)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetCoordinator indicates an expected call of GetCoordinator.
+func (mr *MockUserServiceMockRecorder) GetCoordinator(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCoordinator", reflect.TypeOf((*MockUserService)(nil).GetCoordinator), ctx, in)
+}
+
+// GetProducer mocks base method.
+func (m *MockUserService) GetProducer(ctx context.Context, in *user.GetProducerInput) (*entity.Producer, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetProducer", ctx, in)
+	ret0, _ := ret[0].(*entity.Producer)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetProducer indicates an expected call of GetProducer.
+func (mr *MockUserServiceMockRecorder) GetProducer(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProducer", reflect.TypeOf((*MockUserService)(nil).GetProducer), ctx, in)
 }
 
 // GetUser mocks base method.
@@ -198,34 +243,49 @@ func (mr *MockUserServiceMockRecorder) InitializeUser(ctx, in interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InitializeUser", reflect.TypeOf((*MockUserService)(nil).InitializeUser), ctx, in)
 }
 
-// ListAdmins mocks base method.
-func (m *MockUserService) ListAdmins(ctx context.Context, in *user.ListAdminsInput) (entity.Admins, error) {
+// ListAdministrators mocks base method.
+func (m *MockUserService) ListAdministrators(ctx context.Context, in *user.ListAdministratorsInput) (entity.Administrators, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListAdmins", ctx, in)
-	ret0, _ := ret[0].(entity.Admins)
+	ret := m.ctrl.Call(m, "ListAdministrators", ctx, in)
+	ret0, _ := ret[0].(entity.Administrators)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// ListAdmins indicates an expected call of ListAdmins.
-func (mr *MockUserServiceMockRecorder) ListAdmins(ctx, in interface{}) *gomock.Call {
+// ListAdministrators indicates an expected call of ListAdministrators.
+func (mr *MockUserServiceMockRecorder) ListAdministrators(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAdmins", reflect.TypeOf((*MockUserService)(nil).ListAdmins), ctx, in)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAdministrators", reflect.TypeOf((*MockUserService)(nil).ListAdministrators), ctx, in)
 }
 
-// MultiGetAdmins mocks base method.
-func (m *MockUserService) MultiGetAdmins(ctx context.Context, in *user.MultiGetAdminsInput) (entity.Admins, error) {
+// ListCoordinators mocks base method.
+func (m *MockUserService) ListCoordinators(ctx context.Context, in *user.ListCoordinatorsInput) (entity.Coordinators, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "MultiGetAdmins", ctx, in)
-	ret0, _ := ret[0].(entity.Admins)
+	ret := m.ctrl.Call(m, "ListCoordinators", ctx, in)
+	ret0, _ := ret[0].(entity.Coordinators)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// MultiGetAdmins indicates an expected call of MultiGetAdmins.
-func (mr *MockUserServiceMockRecorder) MultiGetAdmins(ctx, in interface{}) *gomock.Call {
+// ListCoordinators indicates an expected call of ListCoordinators.
+func (mr *MockUserServiceMockRecorder) ListCoordinators(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetAdmins", reflect.TypeOf((*MockUserService)(nil).MultiGetAdmins), ctx, in)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCoordinators", reflect.TypeOf((*MockUserService)(nil).ListCoordinators), ctx, in)
+}
+
+// ListProducers mocks base method.
+func (m *MockUserService) ListProducers(ctx context.Context, in *user.ListProducersInput) (entity.Producers, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListProducers", ctx, in)
+	ret0, _ := ret[0].(entity.Producers)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListProducers indicates an expected call of ListProducers.
+func (mr *MockUserServiceMockRecorder) ListProducers(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListProducers", reflect.TypeOf((*MockUserService)(nil).ListProducers), ctx, in)
 }
 
 // RefreshAdminToken mocks base method.

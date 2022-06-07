@@ -8,7 +8,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/user"
-	"github.com/and-period/furumaru/api/internal/user/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
@@ -17,12 +16,11 @@ import (
 func TestListAdministrators(t *testing.T) {
 	t.Parallel()
 
-	in := &user.ListAdminsInput{
+	in := &user.ListAdministratorsInput{
 		Limit:  20,
 		Offset: 0,
-		Roles:  []int32{int32(uentity.AdminRoleAdministrator)},
 	}
-	admins := uentity.Admins{
+	admins := uentity.Administrators{
 		{
 			ID:            "admin-id01",
 			Lastname:      "&.",
@@ -31,7 +29,6 @@ func TestListAdministrators(t *testing.T) {
 			FirstnameKana: "かんりしゃ",
 			Email:         "test-admin01@and-period.jp",
 			PhoneNumber:   "+819012345678",
-			Role:          uentity.AdminRoleAdministrator,
 			CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
@@ -43,7 +40,6 @@ func TestListAdministrators(t *testing.T) {
 			FirstnameKana: "すたっふ",
 			Email:         "test-admin02@and-period.jp",
 			PhoneNumber:   "+819012345678",
-			Role:          uentity.AdminRoleAdministrator,
 			CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
@@ -58,7 +54,7 @@ func TestListAdministrators(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().ListAdmins(gomock.Any(), in).Return(admins, nil)
+				mocks.user.EXPECT().ListAdministrators(gomock.Any(), in).Return(admins, nil)
 			},
 			query: "",
 			expect: &testResponse{
@@ -110,9 +106,9 @@ func TestListAdministrators(t *testing.T) {
 			},
 		},
 		{
-			name: "failed to get admins",
+			name: "failed to get administrators",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().ListAdmins(gomock.Any(), in).Return(nil, errmock)
+				mocks.user.EXPECT().ListAdministrators(gomock.Any(), in).Return(nil, errmock)
 			},
 			query: "",
 			expect: &testResponse{
@@ -136,10 +132,10 @@ func TestListAdministrators(t *testing.T) {
 func TestGetAdministrator(t *testing.T) {
 	t.Parallel()
 
-	in := &user.GetAdminInput{
-		AdminID: "admin-id",
+	in := &user.GetAdministratorInput{
+		AdministratorID: "admin-id",
 	}
-	admin := &uentity.Admin{
+	admin := &uentity.Administrator{
 		ID:            "admin-id",
 		Lastname:      "&.",
 		Firstname:     "管理者",
@@ -147,7 +143,6 @@ func TestGetAdministrator(t *testing.T) {
 		FirstnameKana: "かんりしゃ",
 		Email:         "test-admin01@and-period.jp",
 		PhoneNumber:   "+819012345678",
-		Role:          uentity.AdminRoleAdministrator,
 		CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 	}
@@ -161,7 +156,7 @@ func TestGetAdministrator(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().GetAdmin(gomock.Any(), in).Return(admin, nil)
+				mocks.user.EXPECT().GetAdministrator(gomock.Any(), in).Return(admin, nil)
 			},
 			adminID: "admin-id",
 			expect: &testResponse{
@@ -184,22 +179,11 @@ func TestGetAdministrator(t *testing.T) {
 		{
 			name: "failed to get admin",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().GetAdmin(gomock.Any(), in).Return(nil, errmock)
+				mocks.user.EXPECT().GetAdministrator(gomock.Any(), in).Return(nil, errmock)
 			},
 			adminID: "admin-id",
 			expect: &testResponse{
 				code: http.StatusInternalServerError,
-			},
-		},
-		{
-			name: "not administartor role",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				admin := &entity.Admin{Role: entity.AdminRoleCoordinator}
-				mocks.user.EXPECT().GetAdmin(gomock.Any(), in).Return(admin, nil)
-			},
-			adminID: "admin-id",
-			expect: &testResponse{
-				code: http.StatusNotFound,
 			},
 		},
 	}
@@ -227,7 +211,7 @@ func TestCreateAdministrator(t *testing.T) {
 		Email:         "test-admin01@and-period.jp",
 		PhoneNumber:   "+819012345678",
 	}
-	admin := &uentity.Admin{
+	admin := &uentity.Administrator{
 		ID:            "admin-id",
 		Lastname:      "&.",
 		Firstname:     "管理者",
@@ -235,7 +219,6 @@ func TestCreateAdministrator(t *testing.T) {
 		FirstnameKana: "かんりしゃ",
 		Email:         "test-admin01@and-period.jp",
 		PhoneNumber:   "+819012345678",
-		Role:          uentity.AdminRoleAdministrator,
 		CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 	}

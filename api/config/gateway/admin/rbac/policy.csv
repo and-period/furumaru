@@ -27,4 +27,5 @@ g, coordinator, producer_create
 g, coordinator, producer_uploader
 
 g, producer, auth
+g, producer, producer_get
 g, producer, producer_uploader

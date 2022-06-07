@@ -65,26 +65,3 @@ func NewAuth(auth *entity.AdminAuth) *Auth {
 func (a *Auth) Response() *response.Auth {
 	return a.Auth
 }
-
-type AuthUser struct {
-	*response.AuthUser
-}
-
-func NewAuthUser(admin *entity.Admin) *AuthUser {
-	return &AuthUser{
-		AuthUser: &response.AuthUser{
-			ID:            admin.ID,
-			Lastname:      admin.Lastname,
-			Firstname:     admin.Firstname,
-			LastnameKana:  admin.LastnameKana,
-			FirstnameKana: admin.FirstnameKana,
-			StoreName:     admin.StoreName,
-			ThumbnailURL:  admin.ThumbnailURL,
-			Role:          NewAdminRole(admin.Role).Response(),
-		},
-	}
-}
-
-func (u *AuthUser) Response() *response.AuthUser {
-	return u.AuthUser
-}

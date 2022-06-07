@@ -9,6 +9,7 @@ type Producer struct {
 	FirstnameKana string `json:"firstnameKana"` // 名(かな)
 	StoreName     string `json:"storeName"`     // 店舗名
 	ThumbnailURL  string `json:"thumbnailUrl"`  // サムネイルURL
+	HeaderURL     string `json:"headerUrl"`     // ヘッダー画像URL
 	Email         string `json:"email"`         // メールアドレス
 	PhoneNumber   string `json:"phoneNumber"`   // 電話番号
 	PostalCode    string `json:"postalCode"`    // 郵便番号

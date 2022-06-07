@@ -12,39 +12,40 @@ import (
 func TestProducer(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name   string
-		admin  *entity.Admin
-		expect *Producer
+		name     string
+		producer *entity.Producer
+		expect   *Producer
 	}{
 		{
 			name: "success",
-			admin: &entity.Admin{
-				ID:            "admin-id",
+			producer: &entity.Producer{
+				ID:            "producer-id",
 				Lastname:      "&.",
 				Firstname:     "管理者",
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "かんりしゃ",
 				StoreName:     "&.農園",
 				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-				Email:         "test-admin@and-period.jp",
+				HeaderURL:     "https://and-period.jp/header.png",
+				Email:         "test-producer@and-period.jp",
 				PhoneNumber:   "+819012345678",
 				PostalCode:    "1000014",
 				Prefecture:    "東京都",
 				City:          "千代田区",
-				Role:          entity.AdminRoleProducer,
 				CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &Producer{
 				Producer: &response.Producer{
-					ID:            "admin-id",
+					ID:            "producer-id",
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",
 					FirstnameKana: "かんりしゃ",
 					StoreName:     "&.農園",
 					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-					Email:         "test-admin@and-period.jp",
+					HeaderURL:     "https://and-period.jp/header.png",
+					Email:         "test-producer@and-period.jp",
 					PhoneNumber:   "+819012345678",
 					PostalCode:    "1000014",
 					Prefecture:    "東京都",
@@ -59,7 +60,7 @@ func TestProducer(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewProducer(tt.admin))
+			assert.Equal(t, tt.expect, NewProducer(tt.producer))
 		})
 	}
 }
@@ -75,14 +76,15 @@ func TestProducer_Response(t *testing.T) {
 			name: "success",
 			producer: &Producer{
 				Producer: &response.Producer{
-					ID:            "admin-id",
+					ID:            "producer-id",
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",
 					FirstnameKana: "かんりしゃ",
 					StoreName:     "&.農園",
 					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-					Email:         "test-admin@and-period.jp",
+					HeaderURL:     "https://and-period.jp/header.png",
+					Email:         "test-producer@and-period.jp",
 					PhoneNumber:   "+819012345678",
 					PostalCode:    "1000014",
 					Prefecture:    "東京都",
@@ -92,14 +94,15 @@ func TestProducer_Response(t *testing.T) {
 				},
 			},
 			expect: &response.Producer{
-				ID:            "admin-id",
+				ID:            "producer-id",
 				Lastname:      "&.",
 				Firstname:     "管理者",
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "かんりしゃ",
 				StoreName:     "&.農園",
 				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-				Email:         "test-admin@and-period.jp",
+				HeaderURL:     "https://and-period.jp/header.png",
+				Email:         "test-producer@and-period.jp",
 				PhoneNumber:   "+819012345678",
 				PostalCode:    "1000014",
 				Prefecture:    "東京都",
@@ -121,44 +124,44 @@ func TestProducer_Response(t *testing.T) {
 func TestProducers(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name   string
-		admins entity.Admins
-		expect Producers
+		name      string
+		producers entity.Producers
+		expect    Producers
 	}{
 		{
 			name: "success",
-			admins: entity.Admins{
+			producers: entity.Producers{
 				{
-					ID:            "admin-id01",
+					ID:            "producer-id01",
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",
 					FirstnameKana: "かんりしゃ",
 					StoreName:     "&.農園",
 					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-					Email:         "test-admin@and-period.jp",
+					HeaderURL:     "https://and-period.jp/header.png",
+					Email:         "test-producer@and-period.jp",
 					PhoneNumber:   "+819012345678",
 					PostalCode:    "1000014",
 					Prefecture:    "東京都",
 					City:          "千代田区",
-					Role:          entity.AdminRoleProducer,
 					CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 				{
-					ID:            "admin-id02",
+					ID:            "producer-id02",
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",
 					FirstnameKana: "かんりしゃ",
 					StoreName:     "&.農園",
 					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-					Email:         "test-admin@and-period.jp",
+					HeaderURL:     "https://and-period.jp/header.png",
+					Email:         "test-producer@and-period.jp",
 					PhoneNumber:   "+819012345678",
 					PostalCode:    "1000014",
 					Prefecture:    "東京都",
 					City:          "千代田区",
-					Role:          entity.AdminRoleProducer,
 					CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
@@ -166,14 +169,15 @@ func TestProducers(t *testing.T) {
 			expect: Producers{
 				{
 					Producer: &response.Producer{
-						ID:            "admin-id01",
+						ID:            "producer-id01",
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
 						FirstnameKana: "かんりしゃ",
 						StoreName:     "&.農園",
 						ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-						Email:         "test-admin@and-period.jp",
+						HeaderURL:     "https://and-period.jp/header.png",
+						Email:         "test-producer@and-period.jp",
 						PhoneNumber:   "+819012345678",
 						PostalCode:    "1000014",
 						Prefecture:    "東京都",
@@ -184,14 +188,15 @@ func TestProducers(t *testing.T) {
 				},
 				{
 					Producer: &response.Producer{
-						ID:            "admin-id02",
+						ID:            "producer-id02",
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
 						FirstnameKana: "かんりしゃ",
 						StoreName:     "&.農園",
 						ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-						Email:         "test-admin@and-period.jp",
+						HeaderURL:     "https://and-period.jp/header.png",
+						Email:         "test-producer@and-period.jp",
 						PhoneNumber:   "+819012345678",
 						PostalCode:    "1000014",
 						Prefecture:    "東京都",
@@ -207,7 +212,7 @@ func TestProducers(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewProducers(tt.admins))
+			assert.Equal(t, tt.expect, NewProducers(tt.producers))
 		})
 	}
 }
@@ -224,14 +229,15 @@ func TestProducers_Response(t *testing.T) {
 			producers: Producers{
 				{
 					Producer: &response.Producer{
-						ID:            "admin-id01",
+						ID:            "producer-id01",
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
 						FirstnameKana: "かんりしゃ",
 						StoreName:     "&.農園",
 						ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-						Email:         "test-admin@and-period.jp",
+						HeaderURL:     "https://and-period.jp/header.png",
+						Email:         "test-producer@and-period.jp",
 						PhoneNumber:   "+819012345678",
 						PostalCode:    "1000014",
 						Prefecture:    "東京都",
@@ -242,14 +248,15 @@ func TestProducers_Response(t *testing.T) {
 				},
 				{
 					Producer: &response.Producer{
-						ID:            "admin-id02",
+						ID:            "producer-id02",
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
 						FirstnameKana: "かんりしゃ",
 						StoreName:     "&.農園",
 						ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-						Email:         "test-admin@and-period.jp",
+						HeaderURL:     "https://and-period.jp/header.png",
+						Email:         "test-producer@and-period.jp",
 						PhoneNumber:   "+819012345678",
 						PostalCode:    "1000014",
 						Prefecture:    "東京都",
@@ -261,14 +268,15 @@ func TestProducers_Response(t *testing.T) {
 			},
 			expect: []*response.Producer{
 				{
-					ID:            "admin-id01",
+					ID:            "producer-id01",
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",
 					FirstnameKana: "かんりしゃ",
 					StoreName:     "&.農園",
 					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-					Email:         "test-admin@and-period.jp",
+					HeaderURL:     "https://and-period.jp/header.png",
+					Email:         "test-producer@and-period.jp",
 					PhoneNumber:   "+819012345678",
 					PostalCode:    "1000014",
 					Prefecture:    "東京都",
@@ -277,14 +285,15 @@ func TestProducers_Response(t *testing.T) {
 					UpdatedAt:     1640962800,
 				},
 				{
-					ID:            "admin-id02",
+					ID:            "producer-id02",
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",
 					FirstnameKana: "かんりしゃ",
 					StoreName:     "&.農園",
 					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-					Email:         "test-admin@and-period.jp",
+					HeaderURL:     "https://and-period.jp/header.png",
+					Email:         "test-producer@and-period.jp",
 					PhoneNumber:   "+819012345678",
 					PostalCode:    "1000014",
 					Prefecture:    "東京都",

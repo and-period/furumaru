@@ -13,12 +13,12 @@ func TestAdministrator(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name   string
-		admin  *entity.Admin
+		admin  *entity.Administrator
 		expect *Administrator
 	}{
 		{
 			name: "success",
-			admin: &entity.Admin{
+			admin: &entity.Administrator{
 				ID:            "admin-id",
 				Lastname:      "&.",
 				Firstname:     "管理者",
@@ -26,7 +26,6 @@ func TestAdministrator(t *testing.T) {
 				FirstnameKana: "かんりしゃ",
 				Email:         "test-admin01@and-period.jp",
 				PhoneNumber:   "+819012345678",
-				Role:          entity.AdminRoleAdministrator,
 				CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
@@ -102,12 +101,12 @@ func TestAdministrators(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name   string
-		admins entity.Admins
+		admins entity.Administrators
 		expect Administrators
 	}{
 		{
 			name: "success",
-			admins: entity.Admins{
+			admins: entity.Administrators{
 				{
 					ID:            "admin-id01",
 					Lastname:      "&.",
@@ -116,7 +115,6 @@ func TestAdministrators(t *testing.T) {
 					FirstnameKana: "かんりしゃ",
 					Email:         "test-admin01@and-period.jp",
 					PhoneNumber:   "+819012345678",
-					Role:          entity.AdminRoleAdministrator,
 					CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
@@ -128,7 +126,6 @@ func TestAdministrators(t *testing.T) {
 					FirstnameKana: "かんりしゃ",
 					Email:         "test-admin01@and-period.jp",
 					PhoneNumber:   "+819012345678",
-					Role:          entity.AdminRoleAdministrator,
 					CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},

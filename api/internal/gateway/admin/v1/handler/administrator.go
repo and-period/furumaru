@@ -8,7 +8,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/user"
-	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/gin-gonic/gin"
 )
 
@@ -38,12 +37,11 @@ func (h *apiV1Handler) ListAdministrators(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.ListAdminsInput{
-		Roles:  []int32{int32(uentity.AdminRoleAdministrator)},
+	in := &user.ListAdministratorsInput{
 		Limit:  limit,
 		Offset: offset,
 	}
-	admins, err := h.user.ListAdmins(c, in)
+	admins, err := h.user.ListAdministrators(c, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
@@ -58,16 +56,12 @@ func (h *apiV1Handler) ListAdministrators(ctx *gin.Context) {
 func (h *apiV1Handler) GetAdministrator(ctx *gin.Context) {
 	c := util.SetMetadata(ctx)
 
-	in := &user.GetAdminInput{
-		AdminID: util.GetParam(ctx, "adminId"),
+	in := &user.GetAdministratorInput{
+		AdministratorID: util.GetParam(ctx, "adminId"),
 	}
-	admin, err := h.user.GetAdmin(c, in)
+	admin, err := h.user.GetAdministrator(c, in)
 	if err != nil {
 		httpError(ctx, err)
-		return
-	}
-	if service.NewAdminRole(admin.Role) != service.AdminRoleAdministrator {
-		notFound(ctx, errNotFoundAdmin)
 		return
 	}
 

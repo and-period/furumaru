@@ -8,7 +8,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/user"
-	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/gin-gonic/gin"
 )
 
@@ -38,19 +37,18 @@ func (h *apiV1Handler) ListProducers(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.ListAdminsInput{
-		Roles:  []int32{int32(uentity.AdminRoleProducer)},
+	in := &user.ListProducersInput{
 		Limit:  limit,
 		Offset: offset,
 	}
-	admins, err := h.user.ListAdmins(c, in)
+	producers, err := h.user.ListProducers(c, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
 
 	res := &response.ProducersResponse{
-		Producers: service.NewProducers(admins).Response(),
+		Producers: service.NewProducers(producers).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -58,21 +56,17 @@ func (h *apiV1Handler) ListProducers(ctx *gin.Context) {
 func (h *apiV1Handler) GetProducer(ctx *gin.Context) {
 	c := util.SetMetadata(ctx)
 
-	in := &user.GetAdminInput{
-		AdminID: util.GetParam(ctx, "producerId"),
+	in := &user.GetProducerInput{
+		ProducerID: util.GetParam(ctx, "producerId"),
 	}
-	admin, err := h.user.GetAdmin(c, in)
+	producer, err := h.user.GetProducer(c, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
-	if service.NewAdminRole(admin.Role) != service.AdminRoleProducer {
-		notFound(ctx, errNotFoundAdmin)
-		return
-	}
 
 	res := &response.ProducerResponse{
-		Producer: service.NewProducer(admin).Response(),
+		Producer: service.NewProducer(producer).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -93,6 +87,7 @@ func (h *apiV1Handler) CreateProducer(ctx *gin.Context) {
 		FirstnameKana: req.FirstnameKana,
 		StoreName:     req.StoreName,
 		ThumbnailURL:  req.ThumbnailURL,
+		HeaderURL:     req.HeaderURL,
 		Email:         req.Email,
 		PhoneNumber:   req.PhoneNumber,
 		PostalCode:    req.PostalCode,
@@ -101,14 +96,14 @@ func (h *apiV1Handler) CreateProducer(ctx *gin.Context) {
 		AddressLine1:  req.AddressLine1,
 		AddressLine2:  req.AddressLine2,
 	}
-	admin, err := h.user.CreateProducer(c, in)
+	producer, err := h.user.CreateProducer(c, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
 
 	res := &response.ProducerResponse{
-		Producer: service.NewProducer(admin).Response(),
+		Producer: service.NewProducer(producer).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

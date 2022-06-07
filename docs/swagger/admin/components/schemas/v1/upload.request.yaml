@@ -5,6 +5,13 @@ uploadCoordinatorThumbnailRequest:
       type: string
       format: binary
       description: 仲介者サムネイル
+uploadCoordinatorHeaderRequest:
+  type: object
+  properties:
+    image:
+      type: string
+      format: binary
+      description: 仲介者ヘッダー画像
 uploadProducerThumbnailRequest:
   type: object
   properties:
@@ -12,3 +19,10 @@ uploadProducerThumbnailRequest:
       type: string
       format: binary
       description: 生産者サムネイル
+uploadProducerHeaderRequest:
+  type: object
+  properties:
+    image:
+      type: string
+      format: binary
+      description: 生産者ヘッダー画像

@@ -59,7 +59,7 @@ func (s *userService) CreateUserWithOAuth(
 	}
 	auth, err := s.userAuth.GetUser(ctx, in.AccessToken)
 	if err != nil {
-		return nil, fmt.Errorf("%w: %s", exception.ErrUnauthenticated, err.Error())
+		return nil, exception.InternalError(err)
 	}
 	userID := uuid.Base58Encode(uuid.New())
 	u := entity.NewUser(userID, auth.Username, entity.ProviderTypeOAuth, auth.Email, auth.PhoneNumber)
@@ -73,7 +73,6 @@ func (s *userService) InitializeUser(ctx context.Context, in *user.InitializeUse
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-
 	err := s.db.User.UpdateAccount(ctx, in.UserID, in.AccountID, in.Username)
 	return exception.InternalError(err)
 }
@@ -84,7 +83,7 @@ func (s *userService) UpdateUserEmail(ctx context.Context, in *user.UpdateUserEm
 	}
 	username, err := s.userAuth.GetUsername(ctx, in.AccessToken)
 	if err != nil {
-		return fmt.Errorf("%w: %s", exception.ErrUnauthenticated, err.Error())
+		return exception.InternalError(err)
 	}
 	u, err := s.db.User.GetByCognitoID(ctx, username, "id", "provider_type", "email")
 	if err != nil {
@@ -109,7 +108,7 @@ func (s *userService) VerifyUserEmail(ctx context.Context, in *user.VerifyUserEm
 	}
 	username, err := s.userAuth.GetUsername(ctx, in.AccessToken)
 	if err != nil {
-		return fmt.Errorf("%w: %s", exception.ErrUnauthenticated, err.Error())
+		return exception.InternalError(err)
 	}
 	u, err := s.db.User.GetByCognitoID(ctx, username, "id")
 	if err != nil {
