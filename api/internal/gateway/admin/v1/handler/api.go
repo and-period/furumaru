@@ -23,7 +23,6 @@ import (
 var (
 	errInvalidFileFormat = errors.New("handler: invalid file format")
 	errTooLargeFileSize  = errors.New("handler: file size too large")
-	errNotFoundAdmin     = errors.New("handler: not found admin")
 )
 
 /**
@@ -115,10 +114,6 @@ func unauthorized(ctx *gin.Context, err error) {
 
 func forbidden(ctx *gin.Context, err error) {
 	httpError(ctx, status.Error(codes.PermissionDenied, err.Error()))
-}
-
-func notFound(ctx *gin.Context, err error) {
-	httpError(ctx, status.Error(codes.NotFound, err.Error()))
 }
 
 /**
