@@ -8,17 +8,23 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
-func (s *userService) ListCoordinators(ctx context.Context, in *user.ListCoordinatorsInput) (entity.Coordinators, error) {
+func (s *userService) ListCoordinators(
+	ctx context.Context, in *user.ListCoordinatorsInput,
+) (entity.Coordinators, error) {
 	// TODO: 詳細の実装
 	return nil, exception.ErrNotImplemented
 }
 
-func (s *userService) GetCoordinator(ctx context.Context, in *user.GetCoordinatorInput) (*entity.Coordinator, error) {
+func (s *userService) GetCoordinator(
+	ctx context.Context, in *user.GetCoordinatorInput,
+) (*entity.Coordinator, error) {
 	// TODO: 詳細の実装
 	return nil, exception.ErrNotImplemented
 }
 
-func (s *userService) CreateCoordinator(ctx context.Context, in *user.CreateCoordinatorInput) (*entity.Coordinator, error) {
+func (s *userService) CreateCoordinator(
+	ctx context.Context, in *user.CreateCoordinatorInput,
+) (*entity.Coordinator, error) {
 	// TODO: 詳細の実装
 	return nil, exception.ErrNotImplemented
 }
