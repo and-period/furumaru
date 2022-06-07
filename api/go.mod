@@ -33,6 +33,7 @@ require (
 	google.golang.org/protobuf v1.28.0
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
+	gorm.io/datatypes v1.0.6
 	gorm.io/driver/mysql v1.3.4
 	gorm.io/gorm v1.23.5
 	moul.io/zapgorm2 v1.1.3
