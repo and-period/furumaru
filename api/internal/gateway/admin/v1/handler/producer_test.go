@@ -8,7 +8,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/user"
-	"github.com/and-period/furumaru/api/internal/user/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
@@ -17,43 +16,42 @@ import (
 func TestListProducer(t *testing.T) {
 	t.Parallel()
 
-	in := &user.ListAdminsInput{
+	in := &user.ListProducersInput{
 		Limit:  20,
 		Offset: 0,
-		Roles:  []int32{int32(uentity.AdminRoleProducer)},
 	}
-	admins := uentity.Admins{
+	producers := uentity.Producers{
 		{
-			ID:            "admin-id01",
+			ID:            "producer-id01",
 			Lastname:      "&.",
 			Firstname:     "管理者",
 			LastnameKana:  "あんどどっと",
 			FirstnameKana: "かんりしゃ",
 			StoreName:     "&.農園",
 			ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-			Email:         "test-admin@and-period.jp",
+			HeaderURL:     "https://and-period.jp/header.png",
+			Email:         "test-producer@and-period.jp",
 			PhoneNumber:   "+819012345678",
 			PostalCode:    "1000014",
 			Prefecture:    "東京都",
 			City:          "千代田区",
-			Role:          entity.AdminRoleProducer,
 			CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
 		{
-			ID:            "admin-id02",
+			ID:            "producer-id02",
 			Lastname:      "&.",
 			Firstname:     "管理者",
 			LastnameKana:  "あんどどっと",
 			FirstnameKana: "かんりしゃ",
 			StoreName:     "&.農園",
 			ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-			Email:         "test-admin@and-period.jp",
+			HeaderURL:     "https://and-period.jp/header.png",
+			Email:         "test-producer@and-period.jp",
 			PhoneNumber:   "+819012345678",
 			PostalCode:    "1000014",
 			Prefecture:    "東京都",
 			City:          "千代田区",
-			Role:          entity.AdminRoleProducer,
 			CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
@@ -68,7 +66,7 @@ func TestListProducer(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().ListAdmins(gomock.Any(), in).Return(admins, nil)
+				mocks.user.EXPECT().ListProducers(gomock.Any(), in).Return(producers, nil)
 			},
 			query: "",
 			expect: &testResponse{
@@ -76,14 +74,15 @@ func TestListProducer(t *testing.T) {
 				body: &response.ProducersResponse{
 					Producers: []*response.Producer{
 						{
-							ID:            "admin-id01",
+							ID:            "producer-id01",
 							Lastname:      "&.",
 							Firstname:     "管理者",
 							LastnameKana:  "あんどどっと",
 							FirstnameKana: "かんりしゃ",
 							StoreName:     "&.農園",
 							ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-							Email:         "test-admin@and-period.jp",
+							HeaderURL:     "https://and-period.jp/header.png",
+							Email:         "test-producer@and-period.jp",
 							PhoneNumber:   "+819012345678",
 							PostalCode:    "1000014",
 							Prefecture:    "東京都",
@@ -92,14 +91,15 @@ func TestListProducer(t *testing.T) {
 							UpdatedAt:     1640962800,
 						},
 						{
-							ID:            "admin-id02",
+							ID:            "producer-id02",
 							Lastname:      "&.",
 							Firstname:     "管理者",
 							LastnameKana:  "あんどどっと",
 							FirstnameKana: "かんりしゃ",
 							StoreName:     "&.農園",
 							ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-							Email:         "test-admin@and-period.jp",
+							HeaderURL:     "https://and-period.jp/header.png",
+							Email:         "test-producer@and-period.jp",
 							PhoneNumber:   "+819012345678",
 							PostalCode:    "1000014",
 							Prefecture:    "東京都",
@@ -130,9 +130,9 @@ func TestListProducer(t *testing.T) {
 			},
 		},
 		{
-			name: "failed to get admins",
+			name: "failed to get producers",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().ListAdmins(gomock.Any(), in).Return(nil, errmock)
+				mocks.user.EXPECT().ListProducers(gomock.Any(), in).Return(nil, errmock)
 			},
 			query: "",
 			expect: &testResponse{
@@ -156,23 +156,23 @@ func TestListProducer(t *testing.T) {
 func TestGetProducer(t *testing.T) {
 	t.Parallel()
 
-	in := &user.GetAdminInput{
-		AdminID: "admin-id",
+	in := &user.GetProducerInput{
+		ProducerID: "producer-id",
 	}
-	admin := &uentity.Admin{
-		ID:            "admin-id",
+	producer := &uentity.Producer{
+		ID:            "producer-id",
 		Lastname:      "&.",
 		Firstname:     "管理者",
 		LastnameKana:  "あんどどっと",
 		FirstnameKana: "かんりしゃ",
 		StoreName:     "&.農園",
 		ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-		Email:         "test-admin@and-period.jp",
+		HeaderURL:     "https://and-period.jp/header.png",
+		Email:         "test-producer@and-period.jp",
 		PhoneNumber:   "+819012345678",
 		PostalCode:    "1000014",
 		Prefecture:    "東京都",
 		City:          "千代田区",
-		Role:          entity.AdminRoleProducer,
 		CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 	}
@@ -186,21 +186,22 @@ func TestGetProducer(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().GetAdmin(gomock.Any(), in).Return(admin, nil)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), in).Return(producer, nil)
 			},
-			producerID: "admin-id",
+			producerID: "producer-id",
 			expect: &testResponse{
 				code: http.StatusOK,
 				body: &response.ProducerResponse{
 					Producer: &response.Producer{
-						ID:            "admin-id",
+						ID:            "producer-id",
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
 						FirstnameKana: "かんりしゃ",
 						StoreName:     "&.農園",
 						ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-						Email:         "test-admin@and-period.jp",
+						HeaderURL:     "https://and-period.jp/header.png",
+						Email:         "test-producer@and-period.jp",
 						PhoneNumber:   "+819012345678",
 						PostalCode:    "1000014",
 						Prefecture:    "東京都",
@@ -212,24 +213,13 @@ func TestGetProducer(t *testing.T) {
 			},
 		},
 		{
-			name: "failed to get admin",
+			name: "failed to get producer",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().GetAdmin(gomock.Any(), in).Return(nil, errmock)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), in).Return(nil, errmock)
 			},
-			producerID: "admin-id",
+			producerID: "producer-id",
 			expect: &testResponse{
 				code: http.StatusInternalServerError,
-			},
-		},
-		{
-			name: "not administartor role",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				admin := &entity.Admin{Role: entity.AdminRoleCoordinator}
-				mocks.user.EXPECT().GetAdmin(gomock.Any(), in).Return(admin, nil)
-			},
-			producerID: "admin-id",
-			expect: &testResponse{
-				code: http.StatusNotFound,
 			},
 		},
 	}
@@ -256,7 +246,8 @@ func TestCreateProducer(t *testing.T) {
 		FirstnameKana: "せいさんしゃ",
 		StoreName:     "&.農園",
 		ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-		Email:         "test-admin@and-period.jp",
+		HeaderURL:     "https://and-period.jp/header.png",
+		Email:         "test-producer@and-period.jp",
 		PhoneNumber:   "+819012345678",
 		PostalCode:    "1000014",
 		Prefecture:    "東京都",
@@ -264,22 +255,22 @@ func TestCreateProducer(t *testing.T) {
 		AddressLine1:  "永田町1-7-1",
 		AddressLine2:  "",
 	}
-	admin := &uentity.Admin{
-		ID:            "admin-id",
+	producer := &uentity.Producer{
+		ID:            "producer-id",
 		Lastname:      "&.",
 		Firstname:     "管理者",
 		LastnameKana:  "あんどどっと",
 		FirstnameKana: "かんりしゃ",
 		StoreName:     "&.農園",
 		ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-		Email:         "test-admin@and-period.jp",
+		HeaderURL:     "https://and-period.jp/header.png",
+		Email:         "test-producer@and-period.jp",
 		PhoneNumber:   "+819012345678",
 		PostalCode:    "1000014",
 		Prefecture:    "東京都",
 		City:          "千代田区",
 		AddressLine1:  "永田町1-7-1",
 		AddressLine2:  "",
-		Role:          entity.AdminRoleProducer,
 		CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 	}
@@ -293,7 +284,7 @@ func TestCreateProducer(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().CreateProducer(gomock.Any(), in).Return(admin, nil)
+				mocks.user.EXPECT().CreateProducer(gomock.Any(), in).Return(producer, nil)
 			},
 			req: &request.CreateProducerRequest{
 				Lastname:      "&.",
@@ -302,7 +293,8 @@ func TestCreateProducer(t *testing.T) {
 				FirstnameKana: "せいさんしゃ",
 				StoreName:     "&.農園",
 				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-				Email:         "test-admin@and-period.jp",
+				HeaderURL:     "https://and-period.jp/header.png",
+				Email:         "test-producer@and-period.jp",
 				PhoneNumber:   "+819012345678",
 				PostalCode:    "1000014",
 				Prefecture:    "東京都",
@@ -314,14 +306,15 @@ func TestCreateProducer(t *testing.T) {
 				code: http.StatusOK,
 				body: &response.ProducerResponse{
 					Producer: &response.Producer{
-						ID:            "admin-id",
+						ID:            "producer-id",
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
 						FirstnameKana: "かんりしゃ",
 						StoreName:     "&.農園",
 						ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-						Email:         "test-admin@and-period.jp",
+						HeaderURL:     "https://and-period.jp/header.png",
+						Email:         "test-producer@and-period.jp",
 						PhoneNumber:   "+819012345678",
 						PostalCode:    "1000014",
 						Prefecture:    "東京都",
@@ -346,7 +339,8 @@ func TestCreateProducer(t *testing.T) {
 				FirstnameKana: "せいさんしゃ",
 				StoreName:     "&.農園",
 				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-				Email:         "test-admin@and-period.jp",
+				HeaderURL:     "https://and-period.jp/header.png",
+				Email:         "test-producer@and-period.jp",
 				PhoneNumber:   "+819012345678",
 				PostalCode:    "1000014",
 				Prefecture:    "東京都",

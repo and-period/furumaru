@@ -11,25 +11,26 @@ type Producer struct {
 
 type Producers []*Producer
 
-func NewProducer(admin *entity.Admin) *Producer {
+func NewProducer(producer *entity.Producer) *Producer {
 	return &Producer{
 		Producer: &response.Producer{
-			ID:            admin.ID,
-			Lastname:      admin.Lastname,
-			Firstname:     admin.Firstname,
-			LastnameKana:  admin.LastnameKana,
-			FirstnameKana: admin.FirstnameKana,
-			StoreName:     admin.StoreName,
-			ThumbnailURL:  admin.ThumbnailURL,
-			Email:         admin.Email,
-			PhoneNumber:   admin.PhoneNumber,
-			PostalCode:    admin.PostalCode,
-			Prefecture:    admin.Prefecture,
-			City:          admin.City,
-			AddressLine1:  admin.AddressLine1,
-			AddressLine2:  admin.AddressLine2,
-			CreatedAt:     admin.CreatedAt.Unix(),
-			UpdatedAt:     admin.CreatedAt.Unix(),
+			ID:            producer.ID,
+			Lastname:      producer.Lastname,
+			Firstname:     producer.Firstname,
+			LastnameKana:  producer.LastnameKana,
+			FirstnameKana: producer.FirstnameKana,
+			StoreName:     producer.StoreName,
+			ThumbnailURL:  producer.ThumbnailURL,
+			HeaderURL:     producer.HeaderURL,
+			Email:         producer.Email,
+			PhoneNumber:   producer.PhoneNumber,
+			PostalCode:    producer.PostalCode,
+			Prefecture:    producer.Prefecture,
+			City:          producer.City,
+			AddressLine1:  producer.AddressLine1,
+			AddressLine2:  producer.AddressLine2,
+			CreatedAt:     producer.CreatedAt.Unix(),
+			UpdatedAt:     producer.CreatedAt.Unix(),
 		},
 	}
 }
@@ -38,10 +39,10 @@ func (p *Producer) Response() *response.Producer {
 	return p.Producer
 }
 
-func NewProducers(admins entity.Admins) Producers {
-	res := make(Producers, len(admins))
-	for i := range admins {
-		res[i] = NewProducer(admins[i])
+func NewProducers(producers entity.Producers) Producers {
+	res := make(Producers, len(producers))
+	for i := range producers {
+		res[i] = NewProducer(producers[i])
 	}
 	return res
 }

@@ -169,6 +169,12 @@ export interface AuthResponse {
      */
     'adminId': string;
     /**
+     * 権限(1:システム管理者,2:仲介者,3:生産者)
+     * @type {number}
+     * @memberof AuthResponse
+     */
+    'role': number;
+    /**
      * アクセストークン
      * @type {string}
      * @memberof AuthResponse
@@ -192,61 +198,6 @@ export interface AuthResponse {
      * @memberof AuthResponse
      */
     'tokenType': string;
-}
-/**
- * 
- * @export
- * @interface AuthUserResponse
- */
-export interface AuthUserResponse {
-    /**
-     * 管理者ID
-     * @type {string}
-     * @memberof AuthUserResponse
-     */
-    'id': string;
-    /**
-     * 姓
-     * @type {string}
-     * @memberof AuthUserResponse
-     */
-    'lastname': string;
-    /**
-     * 名
-     * @type {string}
-     * @memberof AuthUserResponse
-     */
-    'firstname': string;
-    /**
-     * 姓(かな)
-     * @type {string}
-     * @memberof AuthUserResponse
-     */
-    'lastnameKana': string;
-    /**
-     * 名(かな)
-     * @type {string}
-     * @memberof AuthUserResponse
-     */
-    'firstnameKana': string;
-    /**
-     * 店舗名
-     * @type {string}
-     * @memberof AuthUserResponse
-     */
-    'storeName': string;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof AuthUserResponse
-     */
-    'thumbnailUrl': string;
-    /**
-     * 権限 (1:管理者, 2:仲介者, 3:生産者)
-     * @type {number}
-     * @memberof AuthUserResponse
-     */
-    'role': number;
 }
 /**
  * 
@@ -333,6 +284,12 @@ export interface CreateProducerRequest {
      * @memberof CreateProducerRequest
      */
     'thumbnailUrl': string;
+    /**
+     * ヘッダー画像URL
+     * @type {string}
+     * @memberof CreateProducerRequest
+     */
+    'headerUrl': string;
     /**
      * メールアドレス
      * @type {string}
@@ -450,6 +407,12 @@ export interface ProducerResponse {
      */
     'thumbnailUrl': string;
     /**
+     * ヘッダー画像URL
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'headerUrl': string;
+    /**
      * メールアドレス
      * @type {string}
      * @memberof ProducerResponse
@@ -559,6 +522,12 @@ export interface ProducersResponseProducers {
      * @memberof ProducersResponseProducers
      */
     'storeName'?: string;
+    /**
+     * ヘッダー画像URL
+     * @type {string}
+     * @memberof ProducersResponseProducers
+     */
+    'headerUrl'?: string;
     /**
      * サムネイルURL
      * @type {string}
@@ -693,6 +662,19 @@ export interface UpdateAuthPasswordRequest {
 /**
  * 
  * @export
+ * @interface UploadCoordinatorHeaderRequest
+ */
+export interface UploadCoordinatorHeaderRequest {
+    /**
+     * 仲介者ヘッダー画像
+     * @type {any}
+     * @memberof UploadCoordinatorHeaderRequest
+     */
+    'image'?: any;
+}
+/**
+ * 
+ * @export
  * @interface UploadImageResponse
  */
 export interface UploadImageResponse {
@@ -702,6 +684,45 @@ export interface UploadImageResponse {
      * @memberof UploadImageResponse
      */
     'url': string;
+}
+/**
+ * 
+ * @export
+ * @interface UploadProducerHeaderRequest
+ */
+export interface UploadProducerHeaderRequest {
+    /**
+     * 生産者ヘッダー画像
+     * @type {any}
+     * @memberof UploadProducerHeaderRequest
+     */
+    'image'?: any;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadCoordinatorHeaderRequest
+ */
+export interface V1UploadCoordinatorHeaderRequest {
+    /**
+     * 仲介者ヘッダー画像
+     * @type {any}
+     * @memberof V1UploadCoordinatorHeaderRequest
+     */
+    'image'?: any;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadProducerHeaderRequest
+ */
+export interface V1UploadProducerHeaderRequest {
+    /**
+     * 生産者ヘッダー画像
+     * @type {any}
+     * @memberof V1UploadProducerHeaderRequest
+     */
+    'image'?: any;
 }
 /**
  * 
@@ -1021,40 +1042,6 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
-         * @summary 認証済みユーザー情報取得
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1GetAuthUser: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/auth/user`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
          * @summary トークン更新
          * @param {RefreshAuthTokenRequest} body 
          * @param {*} [options] Override http request option.
@@ -1309,16 +1296,6 @@ export const AuthApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 認証済みユーザー情報取得
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1GetAuthUser(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthUserResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetAuthUser(options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
          * @summary トークン更新
          * @param {RefreshAuthTokenRequest} body 
          * @param {*} [options] Override http request option.
@@ -1403,15 +1380,6 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
-         * @summary 認証済みユーザー情報取得
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1GetAuthUser(options?: any): AxiosPromise<AuthUserResponse> {
-            return localVarFp.v1GetAuthUser(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @summary トークン更新
          * @param {RefreshAuthTokenRequest} body 
          * @param {*} [options] Override http request option.
@@ -1488,17 +1456,6 @@ export class AuthApi extends BaseAPI {
      */
     public v1GetAuth(options?: AxiosRequestConfig) {
         return AuthApiFp(this.configuration).v1GetAuth(options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 認証済みユーザー情報取得
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AuthApi
-     */
-    public v1GetAuthUser(options?: AxiosRequestConfig) {
-        return AuthApiFp(this.configuration).v1GetAuthUser(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

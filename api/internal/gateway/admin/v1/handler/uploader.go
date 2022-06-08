@@ -24,7 +24,9 @@ type uploadRegulation struct {
 func (h *apiV1Handler) uploadRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication())
 	arg.POST("/coordinators/thumbnail", h.uploadCoordinatorThumbnail)
+	arg.POST("/coordinators/header", h.uploadCoordinatorHeader)
 	arg.POST("/producers/thumbnail", h.uploadProducerThumbnail)
+	arg.POST("/producers/header", h.uploadProducerHeader)
 }
 
 func (h *apiV1Handler) uploadCoordinatorThumbnail(ctx *gin.Context) {
@@ -37,10 +39,30 @@ func (h *apiV1Handler) uploadCoordinatorThumbnail(ctx *gin.Context) {
 	h.upload(ctx, reg)
 }
 
+func (h *apiV1Handler) uploadCoordinatorHeader(ctx *gin.Context) {
+	reg := &uploadRegulation{
+		dir:      "coordinators/header",
+		filename: "image",
+		maxSize:  10 << 20, // 10MB
+		formats:  []string{"image/png", "image/jpeg"},
+	}
+	h.upload(ctx, reg)
+}
+
 func (h *apiV1Handler) uploadProducerThumbnail(ctx *gin.Context) {
 	reg := &uploadRegulation{
 		dir:      "producers/thumbnail",
 		filename: "thumbnail",
+		maxSize:  10 << 20, // 10MB
+		formats:  []string{"image/png", "image/jpeg"},
+	}
+	h.upload(ctx, reg)
+}
+
+func (h *apiV1Handler) uploadProducerHeader(ctx *gin.Context) {
+	reg := &uploadRegulation{
+		dir:      "producers/header",
+		filename: "image",
 		maxSize:  10 << 20, // 10MB
 		formats:  []string{"image/png", "image/jpeg"},
 	}

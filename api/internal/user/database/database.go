@@ -14,27 +14,44 @@ type Params struct {
 }
 
 type Database struct {
-	Admin Admin
-	User  User
+	AdminAuth     AdminAuth
+	Administrator Administrator
+	Coordinator   Coordinator
+	Producer      Producer
+	User          User
 }
 
 func NewDatabase(params *Params) *Database {
 	return &Database{
-		Admin: NewAdmin(params.Database),
-		User:  NewUser(params.Database),
+		AdminAuth:     NewAdminAuth(params.Database),
+		Administrator: NewAdministrator(params.Database),
+		Coordinator:   NewCoordinator(params.Database),
+		Producer:      NewProducer(params.Database),
+		User:          NewUser(params.Database),
 	}
 }
 
 /**
  * interface
  */
-type Admin interface {
-	List(ctx context.Context, params *ListAdminsParams, fields ...string) (entity.Admins, error)
-	MultiGet(ctx context.Context, adminIDs []string, fields ...string) (entity.Admins, error)
-	Get(ctx context.Context, adminID string, fields ...string) (*entity.Admin, error)
-	GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.Admin, error)
-	Create(ctx context.Context, admin *entity.Admin) error
-	UpdateEmail(ctx context.Context, adminID, email string) error
+type AdminAuth interface {
+	GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.AdminAuth, error)
+}
+
+type Administrator interface {
+	List(ctx context.Context, params *ListAdministratorsParams, fields ...string) (entity.Administrators, error)
+	Get(ctx context.Context, administratorID string, fields ...string) (*entity.Administrator, error)
+	Create(ctx context.Context, auth *entity.AdminAuth, administrator *entity.Administrator) error
+	UpdateEmail(ctx context.Context, administratorID, email string) error
+}
+
+type Coordinator interface{}
+
+type Producer interface {
+	List(ctx context.Context, params *ListProducersParams, fields ...string) (entity.Producers, error)
+	Get(ctx context.Context, producerID string, fields ...string) (*entity.Producer, error)
+	Create(ctx context.Context, auth *entity.AdminAuth, producer *entity.Producer) error
+	UpdateEmail(ctx context.Context, producerID, email string) error
 }
 
 type User interface {
@@ -51,8 +68,12 @@ type User interface {
 /**
  * params
  */
-type ListAdminsParams struct {
-	Roles  []entity.AdminRole
+type ListAdministratorsParams struct {
+	Limit  int
+	Offset int
+}
+
+type ListProducersParams struct {
 	Limit  int
 	Offset int
 }

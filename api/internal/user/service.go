@@ -18,22 +18,30 @@ type UserService interface {
 	GetAdminAuth(ctx context.Context, in *GetAdminAuthInput) (*entity.AdminAuth, error)
 	// 管理者アクセストークンの更新
 	RefreshAdminToken(ctx context.Context, in *RefreshAdminTokenInput) (*entity.AdminAuth, error)
-	// 管理者一覧取得
-	ListAdmins(ctx context.Context, in *ListAdminsInput) (entity.Admins, error)
-	// 管理者一覧取得 (ID指定)
-	MultiGetAdmins(ctx context.Context, in *MultiGetAdminsInput) (entity.Admins, error)
-	// 管理者取得
-	GetAdmin(ctx context.Context, in *GetAdminInput) (*entity.Admin, error)
-	// 管理者登録 (システム管理者)
-	CreateAdministrator(ctx context.Context, in *CreateAdministratorInput) (*entity.Admin, error)
-	// 管理者登録 (生産者)
-	CreateProducer(ctx context.Context, in *CreateProducerInput) (*entity.Admin, error)
 	// 管理者メールアドレス更新
 	UpdateAdminEmail(ctx context.Context, in *UpdateAdminEmailInput) error
 	// 管理者メールアドレス更新後の確認
 	VerifyAdminEmail(ctx context.Context, in *VerifyAdminEmailInput) error
 	// 管理者パスワード更新
 	UpdateAdminPassword(ctx context.Context, in *UpdateAdminPasswordInput) error
+	// システム管理者一覧取得
+	ListAdministrators(ctx context.Context, in *ListAdministratorsInput) (entity.Administrators, error)
+	// システム管理者取得
+	GetAdministrator(ctx context.Context, in *GetAdministratorInput) (*entity.Administrator, error)
+	// システム管理者登録
+	CreateAdministrator(ctx context.Context, in *CreateAdministratorInput) (*entity.Administrator, error)
+	// 仲介者一覧取得
+	ListCoordinators(ctx context.Context, in *ListCoordinatorsInput) (entity.Coordinators, error)
+	// 仲介者取得
+	GetCoordinator(ctx context.Context, in *GetCoordinatorInput) (*entity.Coordinator, error)
+	// 仲介者登録
+	CreateCoordinator(ctx context.Context, in *CreateCoordinatorInput) (*entity.Coordinator, error)
+	// 生産者一覧取得
+	ListProducers(ctx context.Context, in *ListProducersInput) (entity.Producers, error)
+	// 生産者取得
+	GetProducer(ctx context.Context, in *GetProducerInput) (*entity.Producer, error)
+	// 生産者登録
+	CreateProducer(ctx context.Context, in *CreateProducerInput) (*entity.Producer, error)
 	// 購入者サインイン
 	SignInUser(ctx context.Context, in *SignInUserInput) (*entity.UserAuth, error)
 	// 購入者サインアウト

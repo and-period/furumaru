@@ -11,7 +11,7 @@ type Administrator struct {
 
 type Administrators []*Administrator
 
-func NewAdministrator(admin *entity.Admin) *Administrator {
+func NewAdministrator(admin *entity.Administrator) *Administrator {
 	return &Administrator{
 		Administrator: &response.Administrator{
 			ID:            admin.ID,
@@ -31,7 +31,7 @@ func (a *Administrator) Response() *response.Administrator {
 	return a.Administrator
 }
 
-func NewAdministrators(admins entity.Admins) Administrators {
+func NewAdministrators(admins entity.Administrators) Administrators {
 	res := make(Administrators, len(admins))
 	for i := range admins {
 		res[i] = NewAdministrator(admins[i])
