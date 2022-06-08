@@ -11,7 +11,6 @@ func TestUser(t *testing.T) {
 
 	tests := []struct {
 		name         string
-		userID       string
 		cognitoID    string
 		providerType ProviderType
 		email        string
@@ -20,13 +19,11 @@ func TestUser(t *testing.T) {
 	}{
 		{
 			name:         "success",
-			userID:       "user-id",
 			cognitoID:    "cognito-id",
 			providerType: ProviderTypeEmail,
 			email:        "test-user@and-period.jp",
 			phoneNumber:  "+810000000000",
 			expect: &User{
-				ID:           "user-id",
 				CognitoID:    "cognito-id",
 				ProviderType: ProviderTypeEmail,
 				Email:        "test-user@and-period.jp",
@@ -39,7 +36,8 @@ func TestUser(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewUser(tt.userID, tt.cognitoID, tt.providerType, tt.email, tt.phoneNumber)
+			actual := NewUser(tt.cognitoID, tt.providerType, tt.email, tt.phoneNumber)
+			actual.ID = "" // ignore
 			assert.Equal(t, tt.expect, actual)
 		})
 	}

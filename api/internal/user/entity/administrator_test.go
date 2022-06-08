@@ -17,7 +17,6 @@ func TestAdministrator(t *testing.T) {
 		{
 			name: "success",
 			params: &NewAdministratorParams{
-				ID:            "admin-id",
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどどっと",
@@ -26,7 +25,6 @@ func TestAdministrator(t *testing.T) {
 				PhoneNumber:   "+819012345678",
 			},
 			expect: &Administrator{
-				ID:            "admin-id",
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどどっと",
@@ -42,6 +40,7 @@ func TestAdministrator(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewAdministrator(tt.params)
+			actual.ID = "" // ignore
 			assert.Equal(t, tt.expect, actual)
 		})
 	}

@@ -17,7 +17,6 @@ func TestProducer(t *testing.T) {
 		{
 			name: "success",
 			params: &NewProducerParams{
-				ID:            "admin-id",
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどどっと",
@@ -34,7 +33,6 @@ func TestProducer(t *testing.T) {
 				AddressLine2:  "",
 			},
 			expect: &Producer{
-				ID:            "admin-id",
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどどっと",
@@ -58,6 +56,7 @@ func TestProducer(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewProducer(tt.params)
+			actual.ID = "" // ignore
 			assert.Equal(t, tt.expect, actual)
 		})
 	}

@@ -177,8 +177,35 @@ func TestCreateProducer(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				expectAuth := &entity.AdminAuth{
+					Role: entity.AdminRoleProducer,
+				}
+				expectProducer := &entity.Producer{
+					Lastname:      "&.",
+					Firstname:     "スタッフ",
+					LastnameKana:  "あんどどっと",
+					FirstnameKana: "すたっふ",
+					StoreName:     "&.農園",
+					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+					HeaderURL:     "https://and-period.jp/header.png",
+					Email:         "test-admin@and-period.jp",
+					PhoneNumber:   "+819012345678",
+					PostalCode:    "1000014",
+					Prefecture:    "東京都",
+					City:          "千代田区",
+					AddressLine1:  "永田町1-7-1",
+					AddressLine2:  "",
+				}
 				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(nil)
-				mocks.db.Producer.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(nil)
+				mocks.db.Producer.EXPECT().
+					Create(ctx, gomock.Any(), gomock.Any()).
+					DoAndReturn(func(ctx context.Context, auth *entity.AdminAuth, producer *entity.Producer) error {
+						expectAuth.AdminID, expectAuth.CognitoID = auth.AdminID, auth.CognitoID
+						assert.Equal(t, expectAuth, auth)
+						expectProducer.ID = producer.ID
+						assert.Equal(t, expectProducer, producer)
+						return nil
+					})
 				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(nil)
 			},
 			input: &user.CreateProducerInput{

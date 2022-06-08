@@ -42,13 +42,11 @@ func (s *userService) CreateProducer(ctx context.Context, in *user.CreateProduce
 	if err := s.createCognitoAdmin(ctx, cognitoID, in.Email, password); err != nil {
 		return nil, exception.InternalError(err)
 	}
-	producerID := uuid.Base58Encode(uuid.New())
 	params := &entity.NewProducerParams{
-		ID:            producerID,
 		Lastname:      in.Lastname,
 		Firstname:     in.Firstname,
-		LastnameKana:  in.Lastname,
-		FirstnameKana: in.Firstname,
+		LastnameKana:  in.LastnameKana,
+		FirstnameKana: in.FirstnameKana,
 		StoreName:     in.StoreName,
 		ThumbnailURL:  in.ThumbnailURL,
 		HeaderURL:     in.HeaderURL,
@@ -60,18 +58,18 @@ func (s *userService) CreateProducer(ctx context.Context, in *user.CreateProduce
 		AddressLine1:  in.AddressLine1,
 		AddressLine2:  in.AddressLine2,
 	}
-	auth := entity.NewAdminAuth(producerID, cognitoID, entity.AdminRoleProducer)
 	producer := entity.NewProducer(params)
+	auth := entity.NewAdminAuth(producer.ID, cognitoID, entity.AdminRoleProducer)
 	if err := s.db.Producer.Create(ctx, auth, producer); err != nil {
 		return nil, exception.InternalError(err)
 	}
-	s.logger.Debug("Create producer", zap.String("producerId", producerID), zap.String("password", password))
+	s.logger.Debug("Create producer", zap.String("producerId", producer.ID), zap.String("password", password))
 	s.waitGroup.Add(1)
 	go func() {
 		defer s.waitGroup.Done()
 		err := s.notifyRegisterAdmin(context.Background(), producer.Name(), producer.Email, password)
 		if err != nil {
-			s.logger.Warn("Failed to notify register admin", zap.String("producerId", producerID), zap.Error(err))
+			s.logger.Warn("Failed to notify register admin", zap.String("producerId", producer.ID), zap.Error(err))
 		}
 	}()
 	return producer, nil
