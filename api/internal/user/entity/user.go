@@ -3,6 +3,7 @@ package entity
 import (
 	"time"
 
+	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/gorm"
 )
 
@@ -31,9 +32,9 @@ type User struct {
 	DeletedAt    gorm.DeletedAt `gorm:"default:null"`         // 削除日時
 }
 
-func NewUser(id, cognitoID string, provider ProviderType, email, phoneNumber string) *User {
+func NewUser(cognitoID string, provider ProviderType, email, phoneNumber string) *User {
 	return &User{
-		ID:           id,
+		ID:           uuid.Base58Encode(uuid.New()),
 		CognitoID:    cognitoID,
 		ProviderType: provider,
 		Email:        email,

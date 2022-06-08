@@ -4,6 +4,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/gorm"
 )
 
@@ -32,7 +33,6 @@ type Producer struct {
 type Producers []*Producer
 
 type NewProducerParams struct {
-	ID            string
 	Lastname      string
 	Firstname     string
 	LastnameKana  string
@@ -51,7 +51,7 @@ type NewProducerParams struct {
 
 func NewProducer(params *NewProducerParams) *Producer {
 	return &Producer{
-		ID:            params.ID,
+		ID:            uuid.Base58Encode(uuid.New()),
 		Lastname:      params.Lastname,
 		Firstname:     params.Firstname,
 		LastnameKana:  params.LastnameKana,

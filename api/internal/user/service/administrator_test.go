@@ -161,8 +161,27 @@ func TestCreateAdministrator(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				expectAuth := &entity.AdminAuth{
+					Role: entity.AdminRoleAdministrator,
+				}
+				expectAdmin := &entity.Administrator{
+					Lastname:      "&.",
+					Firstname:     "スタッフ",
+					LastnameKana:  "あんどどっと",
+					FirstnameKana: "すたっふ",
+					Email:         "test-admin@and-period.jp",
+					PhoneNumber:   "+819012345678",
+				}
 				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(nil)
-				mocks.db.Administrator.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(nil)
+				mocks.db.Administrator.EXPECT().
+					Create(ctx, gomock.Any(), gomock.Any()).
+					DoAndReturn(func(ctx context.Context, auth *entity.AdminAuth, admin *entity.Administrator) error {
+						expectAuth.AdminID, expectAuth.CognitoID = auth.AdminID, auth.CognitoID
+						assert.Equal(t, expectAuth, auth)
+						expectAdmin.ID = admin.ID
+						assert.Equal(t, expectAdmin, admin)
+						return nil
+					})
 				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(nil)
 			},
 			input: &user.CreateAdministratorInput{

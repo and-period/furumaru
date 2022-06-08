@@ -103,7 +103,18 @@ func TestCreateUser(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.User.EXPECT().Create(ctx, gomock.Any()).Return(nil)
+				expectUser := &entity.User{
+					Email:        "test@and-period.jp",
+					PhoneNumber:  "+819012345678",
+					ProviderType: entity.ProviderTypeEmail,
+				}
+				mocks.db.User.EXPECT().
+					Create(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, u *entity.User) error {
+						expectUser.ID, expectUser.CognitoID = u.ID, u.CognitoID
+						assert.Equal(t, expectUser, u)
+						return nil
+					})
 				mocks.userAuth.EXPECT().SignUp(ctx, gomock.Any()).Return(nil)
 			},
 			input: &user.CreateUserInput{
@@ -249,8 +260,19 @@ func TestCreateUserWithOAuth(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				expectUser := &entity.User{
+					Email:        "test-user@and-period.jp",
+					PhoneNumber:  "+810000000000",
+					ProviderType: entity.ProviderTypeOAuth,
+				}
 				mocks.userAuth.EXPECT().GetUser(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(auth, nil)
-				mocks.db.User.EXPECT().Create(ctx, gomock.Any()).Return(nil)
+				mocks.db.User.EXPECT().
+					Create(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, u *entity.User) error {
+						expectUser.ID, expectUser.CognitoID = u.ID, u.CognitoID
+						assert.Equal(t, expectUser, u)
+						return nil
+					})
 			},
 			input: &user.CreateUserWithOAuthInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",

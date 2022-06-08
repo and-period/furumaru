@@ -4,6 +4,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/gorm"
 )
 
@@ -24,7 +25,6 @@ type Administrator struct {
 type Administrators []*Administrator
 
 type NewAdministratorParams struct {
-	ID            string
 	Lastname      string
 	Firstname     string
 	LastnameKana  string
@@ -35,7 +35,7 @@ type NewAdministratorParams struct {
 
 func NewAdministrator(params *NewAdministratorParams) *Administrator {
 	return &Administrator{
-		ID:            params.ID,
+		ID:            uuid.Base58Encode(uuid.New()),
 		Lastname:      params.Lastname,
 		Firstname:     params.Firstname,
 		LastnameKana:  params.LastnameKana,
