@@ -48,19 +48,6 @@ func (r AdminRole) Validate() error {
 	}
 }
 
-// TODO: remove
-func NewAdminRoles(roles []int32) ([]AdminRole, error) {
-	res := make([]AdminRole, len(roles))
-	for i := range roles {
-		role, err := NewAdminRole(roles[i])
-		if err != nil {
-			return nil, err
-		}
-		res[i] = role
-	}
-	return res, nil
-}
-
 func NewAdminAuth(adminID, cognitoID string, role AdminRole) *AdminAuth {
 	return &AdminAuth{
 		AdminID:   adminID,

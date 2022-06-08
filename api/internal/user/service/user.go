@@ -23,8 +23,8 @@ func (s *userService) CreateUser(ctx context.Context, in *user.CreateUserInput) 
 	if err := s.validator.Struct(in); err != nil {
 		return "", exception.InternalError(err)
 	}
-	userID := uuid.Base58Encode(uuid.New())
-	u := entity.NewUser(userID, userID, entity.ProviderTypeEmail, in.Email, in.PhoneNumber)
+	cognitoID := uuid.Base58Encode(uuid.New())
+	u := entity.NewUser(cognitoID, entity.ProviderTypeEmail, in.Email, in.PhoneNumber)
 	if err := s.db.User.Create(ctx, u); err != nil {
 		return "", exception.InternalError(err)
 	}
@@ -37,7 +37,7 @@ func (s *userService) CreateUser(ctx context.Context, in *user.CreateUserInput) 
 	if err := s.userAuth.SignUp(ctx, params); err != nil {
 		return "", exception.InternalError(err)
 	}
-	return userID, nil
+	return u.ID, nil
 }
 
 func (s *userService) VerifyUser(ctx context.Context, in *user.VerifyUserInput) error {
@@ -61,8 +61,7 @@ func (s *userService) CreateUserWithOAuth(
 	if err != nil {
 		return nil, exception.InternalError(err)
 	}
-	userID := uuid.Base58Encode(uuid.New())
-	u := entity.NewUser(userID, auth.Username, entity.ProviderTypeOAuth, auth.Email, auth.PhoneNumber)
+	u := entity.NewUser(auth.Username, entity.ProviderTypeOAuth, auth.Email, auth.PhoneNumber)
 	if err := s.db.User.Create(ctx, u); err != nil {
 		return nil, exception.InternalError(err)
 	}

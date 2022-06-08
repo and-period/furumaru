@@ -50,29 +50,27 @@ func (s *userService) CreateAdministrator(
 	if err := s.createCognitoAdmin(ctx, cognitoID, in.Email, password); err != nil {
 		return nil, exception.InternalError(err)
 	}
-	administratorID := uuid.Base58Encode(uuid.New())
 	params := &entity.NewAdministratorParams{
-		ID:            administratorID,
 		Lastname:      in.Lastname,
 		Firstname:     in.Firstname,
-		LastnameKana:  in.Lastname,
-		FirstnameKana: in.Firstname,
+		LastnameKana:  in.LastnameKana,
+		FirstnameKana: in.FirstnameKana,
 		Email:         in.Email,
 		PhoneNumber:   in.PhoneNumber,
 	}
-	auth := entity.NewAdminAuth(administratorID, cognitoID, entity.AdminRoleAdministrator)
 	administrator := entity.NewAdministrator(params)
+	auth := entity.NewAdminAuth(administrator.ID, cognitoID, entity.AdminRoleAdministrator)
 	if err := s.db.Administrator.Create(ctx, auth, administrator); err != nil {
 		return nil, exception.InternalError(err)
 	}
 	s.logger.Debug("Create administrator",
-		zap.String("administratorId", administratorID), zap.String("password", password))
+		zap.String("administratorId", administrator.ID), zap.String("password", password))
 	s.waitGroup.Add(1)
 	go func() {
 		defer s.waitGroup.Done()
 		err := s.notifyRegisterAdmin(context.Background(), administrator.Name(), administrator.Email, password)
 		if err != nil {
-			s.logger.Warn("Failed to notify register admin", zap.String("administratorId", administratorID), zap.Error(err))
+			s.logger.Warn("Failed to notify register admin", zap.String("administratorId", administrator.ID), zap.Error(err))
 		}
 	}()
 	return administrator, nil
