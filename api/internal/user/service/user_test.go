@@ -271,7 +271,7 @@ func TestCreateUserWithOAuth(t *testing.T) {
 			input: &user.CreateUserWithOAuthInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
-			expectErr: exception.ErrUnauthenticated,
+			expectErr: exception.ErrUnknown,
 		},
 		{
 			name: "failed to create user",
@@ -344,7 +344,7 @@ func TestUpdateUserEmail(t *testing.T) {
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				Email:       "test-other@and-period.jp",
 			},
-			expectErr: exception.ErrUnauthenticated,
+			expectErr: exception.ErrUnknown,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -452,7 +452,7 @@ func TestVerifyUserEmail(t *testing.T) {
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				VerifyCode:  "123456",
 			},
-			expectErr: exception.ErrUnauthenticated,
+			expectErr: exception.ErrUnknown,
 		},
 		{
 			name: "failed to get by cognito id",

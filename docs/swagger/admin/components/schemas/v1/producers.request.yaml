@@ -19,6 +19,9 @@ createProducerRequest:
     thumbnailUrl:
       type: string
       description: サムネイルURL
+    headerUrl:
+      type: string
+      description: ヘッダー画像URL
     email:
       type: string
       format: email
@@ -48,6 +51,7 @@ createProducerRequest:
   - firstnameKana
   - storeName
   - thumbnailUrl
+  - headerUrl
   - email
   - phoneNumber
   - postalCode
@@ -62,6 +66,7 @@ createProducerRequest:
     firstnameKana: 'かんりしゃ'
     storeName: '&.農園'
     thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+    headerUrl: 'https://and-period.jp/header.png'
     email: 'test-user@and-period.jp'
     phoneNumber: '+819012345678'
     postalCode: '1000014'

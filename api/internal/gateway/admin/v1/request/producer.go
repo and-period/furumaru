@@ -7,6 +7,7 @@ type CreateProducerRequest struct {
 	FirstnameKana string `json:"firstnameKana,omitempty"` // 名(かな)
 	StoreName     string `json:"storeName,omitempty"`     // 店舗名
 	ThumbnailURL  string `json:"thumbnailUrl,omitempty"`  // サムネイルURL
+	HeaderURL     string `json:"headerUrl,omitempty"`     // ヘッダー画像URL
 	Email         string `json:"email,omitempty"`         // メールアドレス
 	PhoneNumber   string `json:"phoneNumber,omitempty"`   // 電話番号
 	PostalCode    string `json:"postalCode,omitempty"`    // 郵便番号

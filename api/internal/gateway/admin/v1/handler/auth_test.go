@@ -6,10 +6,8 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
-	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 )
 
@@ -246,74 +244,6 @@ func TestRefreshAuthToken(t *testing.T) {
 			t.Parallel()
 			const path = "/v1/auth/refresh-token"
 			req := newHTTPRequest(t, http.MethodPost, path, tt.req)
-			testHTTP(t, tt.setup, tt.expect, req)
-		})
-	}
-}
-
-func TestGetAuthUser(t *testing.T) {
-	t.Parallel()
-
-	admin := &uentity.Admin{
-		ID:            "admin-id",
-		Lastname:      "&.",
-		Firstname:     "管理者",
-		LastnameKana:  "あんどどっと",
-		FirstnameKana: "かんりしゃ",
-		StoreName:     "&.農園",
-		Email:         "test-admin01@and-period.jp",
-		PhoneNumber:   "+819012345678",
-		Role:          uentity.AdminRoleAdministrator,
-		ThumbnailURL:  "https://and-period.jp",
-		CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
-		UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
-	}
-
-	tests := []struct {
-		name   string
-		setup  func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
-		expect *testResponse
-	}{
-		{
-			name: "success",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.GetAdminInput{AdminID: idmock}
-				mocks.user.EXPECT().GetAdmin(gomock.Any(), in).Return(admin, nil)
-			},
-			expect: &testResponse{
-				code: http.StatusOK,
-				body: &response.AuthUserResponse{
-					AuthUser: &response.AuthUser{
-						ID:            "admin-id",
-						Lastname:      "&.",
-						Firstname:     "管理者",
-						LastnameKana:  "あんどどっと",
-						FirstnameKana: "かんりしゃ",
-						StoreName:     "&.農園",
-						ThumbnailURL:  "https://and-period.jp",
-						Role:          int32(service.AdminRoleAdministrator),
-					},
-				},
-			},
-		},
-		{
-			name: "failed to get admin",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				in := &user.GetAdminInput{AdminID: idmock}
-				mocks.user.EXPECT().GetAdmin(gomock.Any(), in).Return(nil, errmock)
-			},
-			expect: &testResponse{
-				code: http.StatusInternalServerError,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			const path = "/v1/auth/user"
-			req := newHTTPRequest(t, http.MethodGet, path, nil)
 			testHTTP(t, tt.setup, tt.expect, req)
 		})
 	}

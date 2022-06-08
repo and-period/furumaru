@@ -17,45 +17,6 @@ type RefreshAdminTokenInput struct {
 	RefreshToken string `validate:"required"`
 }
 
-type ListAdminsInput struct {
-	Roles  []int32 `validate:""`
-	Limit  int64   `validate:"required,max=200"`
-	Offset int64   `validate:"min=0"`
-}
-
-type MultiGetAdminsInput struct {
-	AdminIDs []string `validate:"min=1,dive,required"`
-}
-
-type GetAdminInput struct {
-	AdminID string `validate:"required"`
-}
-
-type CreateAdministratorInput struct {
-	Lastname      string `validate:"required,max=16"`
-	Firstname     string `validate:"required,max=16"`
-	LastnameKana  string `validate:"required,max=32,hiragana"`
-	FirstnameKana string `validate:"required,max=32,hiragana"`
-	Email         string `validate:"required,max=256,email"`
-	PhoneNumber   string `validate:"min=12,max=18,phone_number"`
-}
-
-type CreateProducerInput struct {
-	Lastname      string `validate:"required,max=16"`
-	Firstname     string `validate:"required,max=16"`
-	LastnameKana  string `validate:"required,max=32,hiragana"`
-	FirstnameKana string `validate:"required,max=32,hiragana"`
-	StoreName     string `validate:"required,max=64"`
-	ThumbnailURL  string `validate:""`
-	Email         string `validate:"required,max=256,email"`
-	PhoneNumber   string `validate:"min=12,max=18,phone_number"`
-	PostalCode    string `validate:"required,max=16,numeric"`
-	Prefecture    string `validate:"required,max=32"`
-	City          string `validate:"required,max=32"`
-	AddressLine1  string `validate:"required,max=64"`
-	AddressLine2  string `validate:"max=64"`
-}
-
 type UpdateAdminEmailInput struct {
 	AccessToken string `validate:"required"`
 	Email       string `validate:"required,max=256,email"`
@@ -71,6 +32,56 @@ type UpdateAdminPasswordInput struct {
 	OldPassword          string `validate:"required"`
 	NewPassword          string `validate:"min=8,max=32,password"`
 	PasswordConfirmation string `validate:"required,eqfield=NewPassword"`
+}
+
+type ListAdministratorsInput struct {
+	Limit  int64 `validate:"required,max=200"`
+	Offset int64 `validate:"min=0"`
+}
+
+type GetAdministratorInput struct {
+	AdministratorID string `validate:"required"`
+}
+
+type CreateAdministratorInput struct {
+	Lastname      string `validate:"required,max=16"`
+	Firstname     string `validate:"required,max=16"`
+	LastnameKana  string `validate:"required,max=32,hiragana"`
+	FirstnameKana string `validate:"required,max=32,hiragana"`
+	Email         string `validate:"required,max=256,email"`
+	PhoneNumber   string `validate:"min=12,max=18,phone_number"`
+}
+
+type ListCoordinatorsInput struct{}
+
+type GetCoordinatorInput struct{}
+
+type CreateCoordinatorInput struct{}
+
+type ListProducersInput struct {
+	Limit  int64 `validate:"required,max=200"`
+	Offset int64 `validate:"min=0"`
+}
+
+type GetProducerInput struct {
+	ProducerID string `validate:"required"`
+}
+
+type CreateProducerInput struct {
+	Lastname      string `validate:"required,max=16"`
+	Firstname     string `validate:"required,max=16"`
+	LastnameKana  string `validate:"required,max=32,hiragana"`
+	FirstnameKana string `validate:"required,max=32,hiragana"`
+	StoreName     string `validate:"required,max=64"`
+	ThumbnailURL  string `validate:""`
+	HeaderURL     string `validate:""`
+	Email         string `validate:"required,max=256,email"`
+	PhoneNumber   string `validate:"min=12,max=18,phone_number"`
+	PostalCode    string `validate:"required,max=16,numeric"`
+	Prefecture    string `validate:"required,max=32"`
+	City          string `validate:"required,max=32"`
+	AddressLine1  string `validate:"required,max=64"`
+	AddressLine2  string `validate:"max=64"`
 }
 
 type SignInUserInput struct {

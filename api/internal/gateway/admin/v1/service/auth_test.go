@@ -5,7 +5,6 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/user/entity"
-	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -130,94 +129,6 @@ func TestAuth_Response(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.auth.Response())
-		})
-	}
-}
-
-func TestAuthUser(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name   string
-		admin  *entity.Admin
-		expect *AuthUser
-	}{
-		{
-			name: "success",
-			admin: &entity.Admin{
-				ID:            "admin-id",
-				Lastname:      "&.",
-				Firstname:     "管理者",
-				LastnameKana:  "あんどどっと",
-				FirstnameKana: "かんりしゃ",
-				StoreName:     "&.農園",
-				Email:         "test-admin01@and-period.jp",
-				PhoneNumber:   "+819012345678",
-				Role:          entity.AdminRoleAdministrator,
-				ThumbnailURL:  "https://and-period.jp",
-				CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
-			},
-			expect: &AuthUser{
-				AuthUser: &response.AuthUser{
-					ID:            "admin-id",
-					Lastname:      "&.",
-					Firstname:     "管理者",
-					LastnameKana:  "あんどどっと",
-					FirstnameKana: "かんりしゃ",
-					StoreName:     "&.農園",
-					ThumbnailURL:  "https://and-period.jp",
-					Role:          int32(AdminRoleAdministrator),
-				},
-			},
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tt.expect, NewAuthUser(tt.admin))
-		})
-	}
-}
-
-func TestAuthUser_Response(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name   string
-		user   *AuthUser
-		expect *response.AuthUser
-	}{
-		{
-			name: "success",
-			user: &AuthUser{
-				AuthUser: &response.AuthUser{
-					ID:            "admin-id",
-					Lastname:      "&.",
-					Firstname:     "管理者",
-					LastnameKana:  "あんどどっと",
-					FirstnameKana: "かんりしゃ",
-					StoreName:     "&.農園",
-					ThumbnailURL:  "https://and-period.jp",
-					Role:          int32(AdminRoleAdministrator),
-				},
-			},
-			expect: &response.AuthUser{
-				ID:            "admin-id",
-				Lastname:      "&.",
-				Firstname:     "管理者",
-				LastnameKana:  "あんどどっと",
-				FirstnameKana: "かんりしゃ",
-				StoreName:     "&.農園",
-				ThumbnailURL:  "https://and-period.jp",
-				Role:          int32(AdminRoleAdministrator),
-			},
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tt.expect, tt.user.Response())
 		})
 	}
 }

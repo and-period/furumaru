@@ -16,7 +16,6 @@ func (h *apiV1Handler) authRoutes(rg *gin.RouterGroup) {
 	rg.POST("", h.SignIn)
 	rg.DELETE("", h.SignOut)
 	rg.POST("/refresh-token", h.RefreshAuthToken)
-	rg.GET("/user", h.authentication(), h.GetAuthUser)
 	rg.PATCH("/email", h.authentication(), h.UpdateAuthEmail)
 	rg.POST("/email/verified", h.VerifyAuthEmail)
 	rg.PATCH("/password", h.authentication(), h.UpdateAuthPassword)
@@ -110,24 +109,6 @@ func (h *apiV1Handler) RefreshAuthToken(ctx *gin.Context) {
 
 	res := &response.AuthResponse{
 		Auth: service.NewAuth(auth).Response(),
-	}
-	ctx.JSON(http.StatusOK, res)
-}
-
-func (h *apiV1Handler) GetAuthUser(ctx *gin.Context) {
-	c := util.SetMetadata(ctx)
-
-	in := &user.GetAdminInput{
-		AdminID: getAdminID(ctx),
-	}
-	admin, err := h.user.GetAdmin(c, in)
-	if err != nil {
-		httpError(ctx, err)
-		return
-	}
-
-	res := &response.AuthUserResponse{
-		AuthUser: service.NewAuthUser(admin).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
