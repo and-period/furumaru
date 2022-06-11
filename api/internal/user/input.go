@@ -73,15 +73,15 @@ type CreateProducerInput struct {
 	LastnameKana  string `validate:"required,max=32,hiragana"`
 	FirstnameKana string `validate:"required,max=32,hiragana"`
 	StoreName     string `validate:"required,max=64"`
-	ThumbnailURL  string `validate:""`
-	HeaderURL     string `validate:""`
+	ThumbnailURL  string `validate:"omitempty,url"`
+	HeaderURL     string `validate:"omitempty,url"`
 	Email         string `validate:"required,max=256,email"`
 	PhoneNumber   string `validate:"min=12,max=18,phone_number"`
-	PostalCode    string `validate:"required,max=16,numeric"`
-	Prefecture    string `validate:"required,max=32"`
-	City          string `validate:"required,max=32"`
-	AddressLine1  string `validate:"required,max=64"`
-	AddressLine2  string `validate:"max=64"`
+	PostalCode    string `validate:"omitempty,max=16,numeric"`
+	Prefecture    string `validate:"omitempty,max=32"`
+	City          string `validate:"omitempty,max=32"`
+	AddressLine1  string `validate:"omitempty,max=64"`
+	AddressLine2  string `validate:"omitempty,max=64"`
 }
 
 type SignInUserInput struct {
