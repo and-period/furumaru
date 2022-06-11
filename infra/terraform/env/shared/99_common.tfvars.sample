@@ -9,5 +9,5 @@ db_master_password = ""
 
 tags = {
   app = "furumaru"
-  env = "stg"
+  env = "shared"
 }
