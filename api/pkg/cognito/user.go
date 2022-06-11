@@ -115,11 +115,11 @@ func (c *client) ChangeEmail(ctx context.Context, params *ChangeEmailParams) err
 		AccessToken: aws.String(params.AccessToken),
 		UserAttributes: []types.AttributeType{
 			{
-				Name:  emailField,
+				Name:  emailRequestedField,
 				Value: aws.String(params.NewEmail),
 			},
 			{
-				Name:  emailRequestedField,
+				Name:  emailField,
 				Value: aws.String(params.OldEmail),
 			},
 		},
