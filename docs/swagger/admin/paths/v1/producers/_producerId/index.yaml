@@ -1,5 +1,5 @@
 get:
-  summary: 仲介者取得
+  summary: 生産者取得
   operationId: v1GetProducer
   tags:
   - Producer
