@@ -1,10 +1,10 @@
-name: '[Backend] Deploy User Gateway for Staging'
+name: '[Backend] Deploy Admin Gateway for main'
 on:
   push:
     branches:
     - 'main'
     paths:
-    - '.github/workflows/cd-user-gateway-for-stg.yaml'
+    - '.github/workflows/cd-admin-gateway-for-main.yaml'
     - 'api/**'
     - 'infra/docker/api/**'
     - 'infra/kubernetes/**'
@@ -14,16 +14,16 @@ env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
   AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
   ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
-  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_USER_GATEWAY }}
+  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_ADMIN_GATEWAY }}
   ECR_IMAGE_TAG: ${{ github.sha }}
   ECS_CLUSTER: ${{ secrets.STG_ECS_CLUSTER }}
-  ECS_SERVICE: ${{ secrets.STG_ECS_SERVICE_USER_GATEWAY }}
-  ECS_TASK_DEFINITION: ${{ secrets.STG_ECS_TASK_DEFINITION_USER_GATEWAY }}
-  ECS_CONTAINER: user-gateway
-  IMAGE_PATH: ./infra/docker/api/gateway/user/Dockerfile
+  ECS_SERVICE: ${{ secrets.STG_ECS_SERVICE_ADMIN_GATEWAY }}
+  ECS_TASK_DEFINITION: ${{ secrets.STG_ECS_TASK_DEFINITION_ADMIN_GATEWAY }}
+  ECS_CONTAINER: admin-gateway
+  IMAGE_PATH: ./infra/docker/api/gateway/admin/Dockerfile
 
 jobs:
-  build_and-deploy:
+  build_and_deploy:
     name: deploy and deploy
     runs-on: ${{ matrix.os }}
     defaults:
@@ -64,7 +64,7 @@ jobs:
         docker build -f ${IMAGE_PATH} -t ${ECR_REPOSITORY_URL} .
         docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}
         docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:latest
-        docker push ${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}
+        docker push ${ECR_REPOSITORY_URL}
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
