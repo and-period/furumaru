@@ -61,7 +61,6 @@ jobs:
       id: build-image
       run: |
         ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}
-        aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${ECR_REGISTRY}
         docker build -f ${IMAGE_PATH} -t ${ECR_REPOSITORY_URL} .
         docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}
         docker push ${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}
