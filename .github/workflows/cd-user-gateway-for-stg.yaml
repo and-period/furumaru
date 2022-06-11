@@ -63,6 +63,7 @@ jobs:
         ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}
         docker build -f ${IMAGE_PATH} -t ${ECR_REPOSITORY_URL} .
         docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}
+        docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:latest
         docker push ${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}
 
     - name: Fill in the new image ID in the Amazon ECS task definition
