@@ -67,6 +67,7 @@ func NewAPIV1Handler(params *Params, opts ...Option) APIV1Handler {
 		waitGroup: params.WaitGroup,
 		storage:   params.Storage,
 		user:      params.UserService,
+		store:     params.StoreService,
 	}
 }
 
