@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/gateway/util"
+	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/storage"
@@ -25,9 +26,10 @@ type APIV1Handler interface {
 }
 
 type Params struct {
-	WaitGroup   *sync.WaitGroup
-	Storage     storage.Bucket
-	UserService user.UserService
+	WaitGroup    *sync.WaitGroup
+	Storage      storage.Bucket
+	UserService  user.UserService
+	StoreService store.StoreService
 }
 
 type apiV1Handler struct {
@@ -37,6 +39,7 @@ type apiV1Handler struct {
 	waitGroup   *sync.WaitGroup
 	storage     storage.Bucket
 	user        user.UserService
+	store       store.StoreService
 }
 
 type options struct {

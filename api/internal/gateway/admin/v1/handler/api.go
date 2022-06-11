@@ -9,6 +9,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
+	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/rbac"
@@ -35,10 +36,11 @@ type APIV1Handler interface {
 }
 
 type Params struct {
-	WaitGroup   *sync.WaitGroup
-	Enforcer    rbac.Enforcer
-	Storage     storage.Bucket
-	UserService user.UserService
+	WaitGroup    *sync.WaitGroup
+	Enforcer     rbac.Enforcer
+	Storage      storage.Bucket
+	UserService  user.UserService
+	StoreService store.StoreService
 }
 
 type apiV1Handler struct {
@@ -49,6 +51,7 @@ type apiV1Handler struct {
 	storage     storage.Bucket
 	enforcer    rbac.Enforcer
 	user        user.UserService
+	store       store.StoreService
 }
 
 type options struct {
@@ -77,6 +80,7 @@ func NewAPIV1Handler(params *Params, opts ...Option) APIV1Handler {
 		storage:   params.Storage,
 		enforcer:  params.Enforcer,
 		user:      params.UserService,
+		store:     params.StoreService,
 	}
 }
 

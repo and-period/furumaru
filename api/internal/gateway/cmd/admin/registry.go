@@ -9,6 +9,9 @@ import (
 	v1 "github.com/and-period/furumaru/api/internal/gateway/admin/v1/handler"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
+	"github.com/and-period/furumaru/api/internal/store"
+	storedb "github.com/and-period/furumaru/api/internal/store/database"
+	storesrv "github.com/and-period/furumaru/api/internal/store/service"
 	"github.com/and-period/furumaru/api/internal/user"
 	userdb "github.com/and-period/furumaru/api/internal/user/database"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
@@ -20,7 +23,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
-	awscredentials "github.com/aws/aws-sdk-go-v2/credentials"
 	"go.uber.org/zap"
 	"gopkg.in/yaml.v3"
 )
@@ -36,6 +38,7 @@ type serviceParams struct {
 	logger    *zap.Logger
 	config    *config
 	aws       aws.Config
+	user      user.UserService
 	messenger messenger.MessengerService
 }
 
@@ -55,20 +58,14 @@ func newRegistry(ctx context.Context, conf *config) (*registry, error) {
 	}
 
 	// AWS SDKの設定
-	awscreds := aws.NewCredentialsCache(
-		awscredentials.NewStaticCredentialsProvider(conf.AWSAccessKey, conf.AWSSecretKey, ""),
-	)
-	awscfg, err := awsconfig.LoadDefaultConfig(ctx,
-		awsconfig.WithRegion(conf.AWSRegion),
-		awsconfig.WithCredentialsProvider(awscreds),
-	)
+	awscfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(conf.AWSRegion))
 	if err != nil {
 		return nil, err
 	}
 
 	// Amazon S3の設定
 	storageParams := &storage.Params{
-		Bucket: conf.S3BucketName,
+		Bucket: conf.S3Bucket,
 	}
 
 	// Serviceの設定
@@ -88,13 +85,20 @@ func newRegistry(ctx context.Context, conf *config) (*registry, error) {
 	if err != nil {
 		return nil, err
 	}
+	srvParams.user = userService
+
+	storeService, err := newStoreService(ctx, srvParams)
+	if err != nil {
+		return nil, err
+	}
 
 	// Handlerの設定
 	v1Params := &v1.Params{
-		WaitGroup:   wg,
-		Enforcer:    enforcer,
-		Storage:     storage.NewBucket(awscfg, storageParams),
-		UserService: userService,
+		WaitGroup:    wg,
+		Enforcer:     enforcer,
+		Storage:      storage.NewBucket(awscfg, storageParams),
+		UserService:  userService,
+		StoreService: storeService,
 	}
 
 	return &registry{
@@ -104,59 +108,21 @@ func newRegistry(ctx context.Context, conf *config) (*registry, error) {
 	}, nil
 }
 
-func newDatabase(params *database.Params, tls bool, timezone string, logger *zap.Logger) (*database.Client, error) {
+func newDatabase(dbname string, conf *config, logger *zap.Logger) (*database.Client, error) {
+	params := &database.Params{
+		Socket:   conf.DBSocket,
+		Host:     conf.DBHost,
+		Port:     conf.DBPort,
+		Database: dbname,
+		Username: conf.DBUsername,
+		Password: conf.DBPassword,
+	}
 	return database.NewClient(
 		params,
 		database.WithLogger(logger),
-		database.WithTLS(tls),
-		database.WithTimeZone(timezone),
+		database.WithTLS(conf.DBEnabledTLS),
+		database.WithTimeZone(conf.DBTimeZone),
 	)
-}
-
-func newUserService(ctx context.Context, p *serviceParams) (user.UserService, error) {
-	// MySQLの設定
-	mysqlParams := &database.Params{
-		Socket:   p.config.DBUserSocket,
-		Host:     p.config.DBUserHost,
-		Port:     p.config.DBUserPort,
-		Database: "users",
-		Username: p.config.DBUserUsername,
-		Password: p.config.DBUserPassword,
-	}
-	mysql, err := newDatabase(mysqlParams, p.config.DBUserEnabledTLS, p.config.DBUserTimeZone, p.logger)
-	if err != nil {
-		return nil, err
-	}
-
-	// Databaseの設定
-	dbParams := &userdb.Params{
-		Database: mysql,
-	}
-
-	// Amazon Cognitoの設定
-	adminAuthParams := &cognito.Params{
-		UserPoolID:      p.config.CognitoAdminPoolID,
-		AppClientID:     p.config.CognitoAdminClientID,
-		AppClientSecret: p.config.CognitoAdminClientSecret,
-	}
-	userAuthParams := &cognito.Params{
-		UserPoolID:      p.config.CognitoUserPoolID,
-		AppClientID:     p.config.CognitoUserClientID,
-		AppClientSecret: p.config.CognitoUserClientSecret,
-	}
-
-	// User Serviceの設定
-	params := &usersrv.Params{
-		Database:         userdb.NewDatabase(dbParams),
-		AdminAuth:        cognito.NewClient(p.aws, adminAuthParams),
-		UserAuth:         cognito.NewClient(p.aws, userAuthParams),
-		MessengerService: p.messenger,
-		WaitGroup:        p.waitGroup,
-	}
-	return usersrv.NewUserService(
-		params,
-		usersrv.WithLogger(p.logger),
-	), nil
 }
 
 func newMessengerService(ctx context.Context, p *serviceParams) (messenger.MessengerService, error) {
@@ -199,5 +165,66 @@ func newMessengerService(ctx context.Context, p *serviceParams) (messenger.Messe
 	return messengersrv.NewMessengerService(
 		params,
 		messengersrv.WithLogger(p.logger),
+	), nil
+}
+
+func newUserService(ctx context.Context, p *serviceParams) (user.UserService, error) {
+	// MySQLの設定
+	mysql, err := newDatabase("users", p.config, p.logger)
+	if err != nil {
+		return nil, err
+	}
+
+	// Databaseの設定
+	dbParams := &userdb.Params{
+		Database: mysql,
+	}
+
+	// Amazon Cognitoの設定
+	adminAuthParams := &cognito.Params{
+		UserPoolID:  p.config.CognitoAdminPoolID,
+		AppClientID: p.config.CognitoAdminClientID,
+	}
+	userAuthParams := &cognito.Params{
+		UserPoolID:  p.config.CognitoUserPoolID,
+		AppClientID: p.config.CognitoUserClientID,
+	}
+
+	// User Serviceの設定
+	params := &usersrv.Params{
+		Database:         userdb.NewDatabase(dbParams),
+		AdminAuth:        cognito.NewClient(p.aws, adminAuthParams),
+		UserAuth:         cognito.NewClient(p.aws, userAuthParams),
+		MessengerService: p.messenger,
+		WaitGroup:        p.waitGroup,
+	}
+	return usersrv.NewUserService(
+		params,
+		usersrv.WithLogger(p.logger),
+	), nil
+}
+
+func newStoreService(ctx context.Context, p *serviceParams) (store.StoreService, error) {
+	// MySQLの設定
+	mysql, err := newDatabase("stores", p.config, p.logger)
+	if err != nil {
+		return nil, err
+	}
+
+	// Databaseの設定
+	dbParams := &storedb.Params{
+		Database: mysql,
+	}
+
+	// User Serviceの設定
+	params := &storesrv.Params{
+		Database:         storedb.NewDatabase(dbParams),
+		UserService:      p.user,
+		MessengerService: p.messenger,
+		WaitGroup:        p.waitGroup,
+	}
+	return storesrv.NewStoreService(
+		params,
+		storesrv.WithLogger(p.logger),
 	), nil
 }
