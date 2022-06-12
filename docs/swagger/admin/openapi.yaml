@@ -35,7 +35,7 @@ paths:
   # Producer
   /v1/producers:
     $ref: './paths/v1/producers/index.yaml'
-  /v1/producers/{adminId}:
+  /v1/producers/{producerId}:
     $ref: './paths/v1/producers/_producerId/index.yaml'
   # Upload
   /v1/upload/coordinators/thumbnail:
