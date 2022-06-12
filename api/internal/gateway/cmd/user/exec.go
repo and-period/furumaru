@@ -34,6 +34,7 @@ func Exec() error {
 	if err != nil {
 		return err
 	}
+	//nolint:errcheck
 	defer app.logger.Sync()
 
 	// Serverの起動
