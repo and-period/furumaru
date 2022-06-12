@@ -61,44 +61,69 @@ export interface AuthResponse {
 /**
  * 
  * @export
- * @interface CreateUserRequest
+ * @interface AuthUserResponse
  */
-export interface CreateUserRequest {
+export interface AuthUserResponse {
+    /**
+     * 購入者ID
+     * @type {string}
+     * @memberof AuthUserResponse
+     */
+    'id': string;
+    /**
+     * 表示名
+     * @type {string}
+     * @memberof AuthUserResponse
+     */
+    'username'?: string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof AuthUserResponse
+     */
+    'thumbnailUrl': string;
+}
+/**
+ * 
+ * @export
+ * @interface CreateAuthRequest
+ */
+export interface CreateAuthRequest {
     /**
      * メールアドレス
      * @type {string}
-     * @memberof CreateUserRequest
+     * @memberof CreateAuthRequest
      */
     'email': string;
     /**
      * 電話番号 (国際番号 + 電話番号)
      * @type {string}
-     * @memberof CreateUserRequest
+     * @memberof CreateAuthRequest
      */
     'phoneNumber': string;
     /**
      * パスワード (8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
      * @type {string}
-     * @memberof CreateUserRequest
+     * @memberof CreateAuthRequest
      */
     'password': string;
     /**
      * パスワード (確認用)
      * @type {string}
-     * @memberof CreateUserRequest
+     * @memberof CreateAuthRequest
      */
     'passwordConfirmation': string;
 }
 /**
  * 
  * @export
- * @interface CreateUserResponse
+ * @interface CreateAuthResponse
  */
-export interface CreateUserResponse {
+export interface CreateAuthResponse {
     /**
      * 購入者ID
      * @type {string}
-     * @memberof CreateUserResponse
+     * @memberof CreateAuthResponse
      */
     'id': string;
 }
@@ -130,32 +155,32 @@ export interface ErrorResponse {
 /**
  * 
  * @export
- * @interface ForgotUserPasswordRequest
+ * @interface ForgotAuthPasswordRequest
  */
-export interface ForgotUserPasswordRequest {
+export interface ForgotAuthPasswordRequest {
     /**
      * メールアドレス
      * @type {string}
-     * @memberof ForgotUserPasswordRequest
+     * @memberof ForgotAuthPasswordRequest
      */
     'email': string;
 }
 /**
  * 
  * @export
- * @interface InitializeUserRequest
+ * @interface InitializeAuthRequest
  */
-export interface InitializeUserRequest {
+export interface InitializeAuthRequest {
     /**
      * ユーザー名(表示用)
      * @type {string}
-     * @memberof InitializeUserRequest
+     * @memberof InitializeAuthRequest
      */
     'username': string;
     /**
      * ユーザーID(検索用)
      * @type {string}
-     * @memberof InitializeUserRequest
+     * @memberof InitializeAuthRequest
      */
     'accountId': string;
 }
@@ -175,31 +200,31 @@ export interface RefreshAuthTokenRequest {
 /**
  * 
  * @export
- * @interface ResetUserPasswordRequest
+ * @interface ResetAuthPasswordRequest
  */
-export interface ResetUserPasswordRequest {
+export interface ResetAuthPasswordRequest {
     /**
      * メールアドレス
      * @type {string}
-     * @memberof ResetUserPasswordRequest
+     * @memberof ResetAuthPasswordRequest
      */
     'email': string;
     /**
      * 検証コード
      * @type {string}
-     * @memberof ResetUserPasswordRequest
+     * @memberof ResetAuthPasswordRequest
      */
     'verifyCode': string;
     /**
      * パスワード (8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
      * @type {string}
-     * @memberof ResetUserPasswordRequest
+     * @memberof ResetAuthPasswordRequest
      */
     'password': string;
     /**
      * パスワード (確認用)
      * @type {string}
-     * @memberof ResetUserPasswordRequest
+     * @memberof ResetAuthPasswordRequest
      */
     'passwordConfirmation': string;
 }
@@ -225,114 +250,83 @@ export interface SignInRequest {
 /**
  * 
  * @export
- * @interface UpdateUserEmailRequest
+ * @interface UpdateAuthEmailRequest
  */
-export interface UpdateUserEmailRequest {
+export interface UpdateAuthEmailRequest {
     /**
      * メールアドレス
      * @type {string}
-     * @memberof UpdateUserEmailRequest
+     * @memberof UpdateAuthEmailRequest
      */
     'email': string;
 }
 /**
  * 
  * @export
- * @interface UpdateUserPasswordRequest
+ * @interface UpdateAuthPasswordRequest
  */
-export interface UpdateUserPasswordRequest {
+export interface UpdateAuthPasswordRequest {
     /**
      * 現在のパスワード
      * @type {string}
-     * @memberof UpdateUserPasswordRequest
+     * @memberof UpdateAuthPasswordRequest
      */
     'oldPassword': string;
     /**
      * 新しいパスワード (8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
      * @type {string}
-     * @memberof UpdateUserPasswordRequest
+     * @memberof UpdateAuthPasswordRequest
      */
     'newPassword': string;
     /**
      * パスワード (確認用)
      * @type {string}
-     * @memberof UpdateUserPasswordRequest
+     * @memberof UpdateAuthPasswordRequest
      */
     'passwordConfirmation': string;
 }
 /**
  * 
  * @export
- * @interface UserMeResponse
+ * @interface V1CreateAuthResponse
  */
-export interface UserMeResponse {
+export interface V1CreateAuthResponse {
     /**
      * 購入者ID
      * @type {string}
-     * @memberof UserMeResponse
-     */
-    'id': string;
-    /**
-     * メールアドレス
-     * @type {string}
-     * @memberof UserMeResponse
-     */
-    'email': string;
-    /**
-     * 電話番号
-     * @type {string}
-     * @memberof UserMeResponse
-     */
-    'phoneNumber': string;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof UserMeResponse
-     */
-    'thumbnailUrl': string;
-}
-/**
- * 
- * @export
- * @interface V1CreateUserResponse
- */
-export interface V1CreateUserResponse {
-    /**
-     * 購入者ID
-     * @type {string}
-     * @memberof V1CreateUserResponse
+     * @memberof V1CreateAuthResponse
      */
     'id': string;
 }
 /**
  * 
  * @export
- * @interface VerifyUserEmailRequest
+ * @interface VerifyAuthEmailRequest
  */
-export interface VerifyUserEmailRequest {
+export interface VerifyAuthEmailRequest {
     /**
      * 認証コード
      * @type {string}
-     * @memberof VerifyUserEmailRequest
+     * @memberof VerifyAuthEmailRequest
      */
     'verifyCode': string;
 }
 /**
  * 
  * @export
- * @interface VerifyUserRequest
+ * @interface VerifyAuthRequest
  */
-export interface VerifyUserRequest {
+export interface VerifyAuthRequest {
     /**
      * ユーザーID
      * @type {string}
-     * @memberof VerifyUserRequest
+     * @memberof VerifyAuthRequest
      */
     'id': string;
     /**
      * 認証コード
      * @type {string}
-     * @memberof VerifyUserRequest
+     * @memberof VerifyAuthRequest
      */
     'verifyCode': string;
 }
@@ -343,6 +337,152 @@ export interface VerifyUserRequest {
  */
 export const AuthApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
+        /**
+         * 
+         * @summary 購入者登録 (メール/SMS認証)
+         * @param {CreateAuthRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateAuth: async (body: CreateAuthRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1CreateAuth', 'body', body)
+            const localVarPath = `/v1/auth/user`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 購入者登録 (SNS認証)
+         * @param {object} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateAuthWithOAuth: async (body: object, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1CreateAuthWithOAuth', 'body', body)
+            const localVarPath = `/v1/auth/user/oauth`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 購入者退会
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteAuth: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/auth/user`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary パスワードリセット
+         * @param {ForgotAuthPasswordRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ForgotAuthPassword: async (body: ForgotAuthPasswordRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1ForgotAuthPassword', 'body', body)
+            const localVarPath = `/v1/auth/forgot-password`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
         /**
          * 
          * @summary トークン検証
@@ -379,6 +519,80 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @summary 購入者情報取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetAuthUser: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/auth/user`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 初回登録(表示名, 検索名)
+         * @param {InitializeAuthRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1InitializeAuth: async (body: InitializeAuthRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1InitializeAuth', 'body', body)
+            const localVarPath = `/v1/auth/initialized`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary トークン更新
          * @param {RefreshAuthTokenRequest} body 
          * @param {*} [options] Override http request option.
@@ -402,6 +616,42 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             // authentication BearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary パスワードリセット - コード検証
+         * @param {ResetAuthPasswordRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ResetAuthPassword: async (body: ResetAuthPasswordRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1ResetAuthPassword', 'body', body)
+            const localVarPath = `/v1/auth/forgot-password/verified`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
 
     
@@ -491,6 +741,162 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary メールアドレス更新
+         * @param {UpdateAuthEmailRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateAuthEmail: async (body: UpdateAuthEmailRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpdateAuthEmail', 'body', body)
+            const localVarPath = `/v1/auth/email`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary パスワード更新
+         * @param {UpdateAuthPasswordRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateUserPassword: async (body: UpdateAuthPasswordRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpdateUserPassword', 'body', body)
+            const localVarPath = `/v1/auth/password`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 購入者登録 - コード検証 (メール/SMS認証)
+         * @param {VerifyAuthRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1VerifyAuth: async (body: VerifyAuthRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1VerifyAuth', 'body', body)
+            const localVarPath = `/v1/auth/user/verified`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary メールアドレス更新 - コード検証
+         * @param {VerifyAuthEmailRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1VerifyAuthEmail: async (body: VerifyAuthEmailRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1VerifyAuthEmail', 'body', body)
+            const localVarPath = `/v1/auth/email/verified`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -503,12 +909,76 @@ export const AuthApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary 購入者登録 (メール/SMS認証)
+         * @param {CreateAuthRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1CreateAuth(body: CreateAuthRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthUserResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateAuth(body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 購入者登録 (SNS認証)
+         * @param {object} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1CreateAuthWithOAuth(body: object, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthUserResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateAuthWithOAuth(body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 購入者退会
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1DeleteAuth(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteAuth(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary パスワードリセット
+         * @param {ForgotAuthPasswordRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ForgotAuthPassword(body: ForgotAuthPasswordRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ForgotAuthPassword(body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary トークン検証
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         async v1GetAuth(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetAuth(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 購入者情報取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetAuthUser(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthUserResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetAuthUser(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 初回登録(表示名, 検索名)
+         * @param {InitializeAuthRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1InitializeAuth(body: InitializeAuthRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1InitializeAuth(body, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -520,6 +990,17 @@ export const AuthApiFp = function(configuration?: Configuration) {
          */
         async v1RefreshAuthToken(body: RefreshAuthTokenRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1RefreshAuthToken(body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary パスワードリセット - コード検証
+         * @param {ResetAuthPasswordRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ResetAuthPassword(body: ResetAuthPasswordRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ResetAuthPassword(body, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -543,6 +1024,50 @@ export const AuthApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1SignOut(options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
+        /**
+         * 
+         * @summary メールアドレス更新
+         * @param {UpdateAuthEmailRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UpdateAuthEmail(body: UpdateAuthEmailRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateAuthEmail(body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary パスワード更新
+         * @param {UpdateAuthPasswordRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UpdateUserPassword(body: UpdateAuthPasswordRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateUserPassword(body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 購入者登録 - コード検証 (メール/SMS認証)
+         * @param {VerifyAuthRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1VerifyAuth(body: VerifyAuthRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1VerifyAuth(body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary メールアドレス更新 - コード検証
+         * @param {VerifyAuthEmailRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1VerifyAuthEmail(body: VerifyAuthEmailRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1VerifyAuthEmail(body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
     }
 };
 
@@ -555,12 +1080,70 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
     return {
         /**
          * 
+         * @summary 購入者登録 (メール/SMS認証)
+         * @param {CreateAuthRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateAuth(body: CreateAuthRequest, options?: any): AxiosPromise<AuthUserResponse> {
+            return localVarFp.v1CreateAuth(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 購入者登録 (SNS認証)
+         * @param {object} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateAuthWithOAuth(body: object, options?: any): AxiosPromise<AuthUserResponse> {
+            return localVarFp.v1CreateAuthWithOAuth(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 購入者退会
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteAuth(options?: any): AxiosPromise<object> {
+            return localVarFp.v1DeleteAuth(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary パスワードリセット
+         * @param {ForgotAuthPasswordRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ForgotAuthPassword(body: ForgotAuthPasswordRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1ForgotAuthPassword(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary トークン検証
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         v1GetAuth(options?: any): AxiosPromise<AuthResponse> {
             return localVarFp.v1GetAuth(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 購入者情報取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetAuthUser(options?: any): AxiosPromise<AuthUserResponse> {
+            return localVarFp.v1GetAuthUser(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 初回登録(表示名, 検索名)
+         * @param {InitializeAuthRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1InitializeAuth(body: InitializeAuthRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1InitializeAuth(body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -571,6 +1154,16 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          */
         v1RefreshAuthToken(body: RefreshAuthTokenRequest, options?: any): AxiosPromise<AuthResponse> {
             return localVarFp.v1RefreshAuthToken(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary パスワードリセット - コード検証
+         * @param {ResetAuthPasswordRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ResetAuthPassword(body: ResetAuthPasswordRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1ResetAuthPassword(body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -591,6 +1184,46 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
         v1SignOut(options?: any): AxiosPromise<object> {
             return localVarFp.v1SignOut(options).then((request) => request(axios, basePath));
         },
+        /**
+         * 
+         * @summary メールアドレス更新
+         * @param {UpdateAuthEmailRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateAuthEmail(body: UpdateAuthEmailRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1UpdateAuthEmail(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary パスワード更新
+         * @param {UpdateAuthPasswordRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateUserPassword(body: UpdateAuthPasswordRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1UpdateUserPassword(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 購入者登録 - コード検証 (メール/SMS認証)
+         * @param {VerifyAuthRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1VerifyAuth(body: VerifyAuthRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1VerifyAuth(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary メールアドレス更新 - コード検証
+         * @param {VerifyAuthEmailRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1VerifyAuthEmail(body: VerifyAuthEmailRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1VerifyAuthEmail(body, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -601,6 +1234,53 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
  * @extends {BaseAPI}
  */
 export class AuthApi extends BaseAPI {
+    /**
+     * 
+     * @summary 購入者登録 (メール/SMS認証)
+     * @param {CreateAuthRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public v1CreateAuth(body: CreateAuthRequest, options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1CreateAuth(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 購入者登録 (SNS認証)
+     * @param {object} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public v1CreateAuthWithOAuth(body: object, options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1CreateAuthWithOAuth(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 購入者退会
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public v1DeleteAuth(options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1DeleteAuth(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary パスワードリセット
+     * @param {ForgotAuthPasswordRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public v1ForgotAuthPassword(body: ForgotAuthPasswordRequest, options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1ForgotAuthPassword(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary トークン検証
@@ -614,6 +1294,29 @@ export class AuthApi extends BaseAPI {
 
     /**
      * 
+     * @summary 購入者情報取得
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public v1GetAuthUser(options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1GetAuthUser(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 初回登録(表示名, 検索名)
+     * @param {InitializeAuthRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public v1InitializeAuth(body: InitializeAuthRequest, options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1InitializeAuth(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary トークン更新
      * @param {RefreshAuthTokenRequest} body 
      * @param {*} [options] Override http request option.
@@ -622,6 +1325,18 @@ export class AuthApi extends BaseAPI {
      */
     public v1RefreshAuthToken(body: RefreshAuthTokenRequest, options?: AxiosRequestConfig) {
         return AuthApiFp(this.configuration).v1RefreshAuthToken(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary パスワードリセット - コード検証
+     * @param {ResetAuthPasswordRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public v1ResetAuthPassword(body: ResetAuthPasswordRequest, options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1ResetAuthPassword(body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -646,808 +1361,53 @@ export class AuthApi extends BaseAPI {
     public v1SignOut(options?: AxiosRequestConfig) {
         return AuthApiFp(this.configuration).v1SignOut(options).then((request) => request(this.axios, this.basePath));
     }
-}
-
-
-/**
- * UserApi - axios parameter creator
- * @export
- */
-export const UserApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @summary 購入者登録 (メール/SMS認証)
-         * @param {CreateUserRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1CreateUser: async (body: CreateUserRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'body' is not null or undefined
-            assertParamExists('v1CreateUser', 'body', body)
-            const localVarPath = `/v1/users`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 購入者登録 (SNS認証)
-         * @param {object} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1CreateUserWithOAuth: async (body: object, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'body' is not null or undefined
-            assertParamExists('v1CreateUserWithOAuth', 'body', body)
-            const localVarPath = `/v1/users/oauth`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 購入者退会
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1DeleteUser: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/users/me`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary パスワードリセット
-         * @param {ForgotUserPasswordRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1ForgotUserPassword: async (body: ForgotUserPasswordRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'body' is not null or undefined
-            assertParamExists('v1ForgotUserPassword', 'body', body)
-            const localVarPath = `/v1/users/me/forgot-password`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 購入者情報取得
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1GetUserMe: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/users/me`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 初回登録(表示名, 検索名)
-         * @param {InitializeUserRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1InitializeUser: async (body: InitializeUserRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'body' is not null or undefined
-            assertParamExists('v1InitializeUser', 'body', body)
-            const localVarPath = `/v1/users/me/initialized`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary パスワードリセット - コード検証
-         * @param {ResetUserPasswordRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1ResetUserPassword: async (body: ResetUserPasswordRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'body' is not null or undefined
-            assertParamExists('v1ResetUserPassword', 'body', body)
-            const localVarPath = `/v1/users/me/forgot-password/me/verified`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary メールアドレス更新
-         * @param {UpdateUserEmailRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UpdateUserEmail: async (body: UpdateUserEmailRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'body' is not null or undefined
-            assertParamExists('v1UpdateUserEmail', 'body', body)
-            const localVarPath = `/v1/users/me/email`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary パスワード更新
-         * @param {UpdateUserPasswordRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UpdateUserPassword: async (body: UpdateUserPasswordRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'body' is not null or undefined
-            assertParamExists('v1UpdateUserPassword', 'body', body)
-            const localVarPath = `/v1/users/me/password`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 購入者登録 - コード検証 (メール/SMS認証)
-         * @param {VerifyUserRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1VerifyUser: async (body: VerifyUserRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'body' is not null or undefined
-            assertParamExists('v1VerifyUser', 'body', body)
-            const localVarPath = `/v1/users/verified`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary メールアドレス更新 - コード検証
-         * @param {VerifyUserEmailRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1VerifyUserEmail: async (body: VerifyUserEmailRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'body' is not null or undefined
-            assertParamExists('v1VerifyUserEmail', 'body', body)
-            const localVarPath = `/v1/users/me/email/verified`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * UserApi - functional programming interface
- * @export
- */
-export const UserApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = UserApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @summary 購入者登録 (メール/SMS認証)
-         * @param {CreateUserRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1CreateUser(body: CreateUserRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserMeResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateUser(body, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @summary 購入者登録 (SNS認証)
-         * @param {object} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1CreateUserWithOAuth(body: object, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserMeResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateUserWithOAuth(body, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @summary 購入者退会
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1DeleteUser(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteUser(options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @summary パスワードリセット
-         * @param {ForgotUserPasswordRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1ForgotUserPassword(body: ForgotUserPasswordRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ForgotUserPassword(body, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @summary 購入者情報取得
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1GetUserMe(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserMeResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetUserMe(options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @summary 初回登録(表示名, 検索名)
-         * @param {InitializeUserRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1InitializeUser(body: InitializeUserRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1InitializeUser(body, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @summary パスワードリセット - コード検証
-         * @param {ResetUserPasswordRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1ResetUserPassword(body: ResetUserPasswordRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ResetUserPassword(body, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @summary メールアドレス更新
-         * @param {UpdateUserEmailRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UpdateUserEmail(body: UpdateUserEmailRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateUserEmail(body, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @summary パスワード更新
-         * @param {UpdateUserPasswordRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UpdateUserPassword(body: UpdateUserPasswordRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateUserPassword(body, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @summary 購入者登録 - コード検証 (メール/SMS認証)
-         * @param {VerifyUserRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1VerifyUser(body: VerifyUserRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1VerifyUser(body, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @summary メールアドレス更新 - コード検証
-         * @param {VerifyUserEmailRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1VerifyUserEmail(body: VerifyUserEmailRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1VerifyUserEmail(body, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-    }
-};
-
-/**
- * UserApi - factory interface
- * @export
- */
-export const UserApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = UserApiFp(configuration)
-    return {
-        /**
-         * 
-         * @summary 購入者登録 (メール/SMS認証)
-         * @param {CreateUserRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1CreateUser(body: CreateUserRequest, options?: any): AxiosPromise<UserMeResponse> {
-            return localVarFp.v1CreateUser(body, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 購入者登録 (SNS認証)
-         * @param {object} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1CreateUserWithOAuth(body: object, options?: any): AxiosPromise<UserMeResponse> {
-            return localVarFp.v1CreateUserWithOAuth(body, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 購入者退会
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1DeleteUser(options?: any): AxiosPromise<object> {
-            return localVarFp.v1DeleteUser(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary パスワードリセット
-         * @param {ForgotUserPasswordRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1ForgotUserPassword(body: ForgotUserPasswordRequest, options?: any): AxiosPromise<object> {
-            return localVarFp.v1ForgotUserPassword(body, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 購入者情報取得
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1GetUserMe(options?: any): AxiosPromise<UserMeResponse> {
-            return localVarFp.v1GetUserMe(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 初回登録(表示名, 検索名)
-         * @param {InitializeUserRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1InitializeUser(body: InitializeUserRequest, options?: any): AxiosPromise<object> {
-            return localVarFp.v1InitializeUser(body, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary パスワードリセット - コード検証
-         * @param {ResetUserPasswordRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1ResetUserPassword(body: ResetUserPasswordRequest, options?: any): AxiosPromise<object> {
-            return localVarFp.v1ResetUserPassword(body, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary メールアドレス更新
-         * @param {UpdateUserEmailRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UpdateUserEmail(body: UpdateUserEmailRequest, options?: any): AxiosPromise<object> {
-            return localVarFp.v1UpdateUserEmail(body, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary パスワード更新
-         * @param {UpdateUserPasswordRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UpdateUserPassword(body: UpdateUserPasswordRequest, options?: any): AxiosPromise<object> {
-            return localVarFp.v1UpdateUserPassword(body, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 購入者登録 - コード検証 (メール/SMS認証)
-         * @param {VerifyUserRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1VerifyUser(body: VerifyUserRequest, options?: any): AxiosPromise<object> {
-            return localVarFp.v1VerifyUser(body, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary メールアドレス更新 - コード検証
-         * @param {VerifyUserEmailRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1VerifyUserEmail(body: VerifyUserEmailRequest, options?: any): AxiosPromise<object> {
-            return localVarFp.v1VerifyUserEmail(body, options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * UserApi - object-oriented interface
- * @export
- * @class UserApi
- * @extends {BaseAPI}
- */
-export class UserApi extends BaseAPI {
-    /**
-     * 
-     * @summary 購入者登録 (メール/SMS認証)
-     * @param {CreateUserRequest} body 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof UserApi
-     */
-    public v1CreateUser(body: CreateUserRequest, options?: AxiosRequestConfig) {
-        return UserApiFp(this.configuration).v1CreateUser(body, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 購入者登録 (SNS認証)
-     * @param {object} body 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof UserApi
-     */
-    public v1CreateUserWithOAuth(body: object, options?: AxiosRequestConfig) {
-        return UserApiFp(this.configuration).v1CreateUserWithOAuth(body, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 購入者退会
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof UserApi
-     */
-    public v1DeleteUser(options?: AxiosRequestConfig) {
-        return UserApiFp(this.configuration).v1DeleteUser(options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary パスワードリセット
-     * @param {ForgotUserPasswordRequest} body 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof UserApi
-     */
-    public v1ForgotUserPassword(body: ForgotUserPasswordRequest, options?: AxiosRequestConfig) {
-        return UserApiFp(this.configuration).v1ForgotUserPassword(body, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 購入者情報取得
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof UserApi
-     */
-    public v1GetUserMe(options?: AxiosRequestConfig) {
-        return UserApiFp(this.configuration).v1GetUserMe(options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 初回登録(表示名, 検索名)
-     * @param {InitializeUserRequest} body 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof UserApi
-     */
-    public v1InitializeUser(body: InitializeUserRequest, options?: AxiosRequestConfig) {
-        return UserApiFp(this.configuration).v1InitializeUser(body, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary パスワードリセット - コード検証
-     * @param {ResetUserPasswordRequest} body 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof UserApi
-     */
-    public v1ResetUserPassword(body: ResetUserPasswordRequest, options?: AxiosRequestConfig) {
-        return UserApiFp(this.configuration).v1ResetUserPassword(body, options).then((request) => request(this.axios, this.basePath));
-    }
 
     /**
      * 
      * @summary メールアドレス更新
-     * @param {UpdateUserEmailRequest} body 
+     * @param {UpdateAuthEmailRequest} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof UserApi
+     * @memberof AuthApi
      */
-    public v1UpdateUserEmail(body: UpdateUserEmailRequest, options?: AxiosRequestConfig) {
-        return UserApiFp(this.configuration).v1UpdateUserEmail(body, options).then((request) => request(this.axios, this.basePath));
+    public v1UpdateAuthEmail(body: UpdateAuthEmailRequest, options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1UpdateAuthEmail(body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @summary パスワード更新
-     * @param {UpdateUserPasswordRequest} body 
+     * @param {UpdateAuthPasswordRequest} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof UserApi
+     * @memberof AuthApi
      */
-    public v1UpdateUserPassword(body: UpdateUserPasswordRequest, options?: AxiosRequestConfig) {
-        return UserApiFp(this.configuration).v1UpdateUserPassword(body, options).then((request) => request(this.axios, this.basePath));
+    public v1UpdateUserPassword(body: UpdateAuthPasswordRequest, options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1UpdateUserPassword(body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @summary 購入者登録 - コード検証 (メール/SMS認証)
-     * @param {VerifyUserRequest} body 
+     * @param {VerifyAuthRequest} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof UserApi
+     * @memberof AuthApi
      */
-    public v1VerifyUser(body: VerifyUserRequest, options?: AxiosRequestConfig) {
-        return UserApiFp(this.configuration).v1VerifyUser(body, options).then((request) => request(this.axios, this.basePath));
+    public v1VerifyAuth(body: VerifyAuthRequest, options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1VerifyAuth(body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @summary メールアドレス更新 - コード検証
-     * @param {VerifyUserEmailRequest} body 
+     * @param {VerifyAuthEmailRequest} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof UserApi
+     * @memberof AuthApi
      */
-    public v1VerifyUserEmail(body: VerifyUserEmailRequest, options?: AxiosRequestConfig) {
-        return UserApiFp(this.configuration).v1VerifyUserEmail(body, options).then((request) => request(this.axios, this.basePath));
+    public v1VerifyAuthEmail(body: VerifyAuthEmailRequest, options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1VerifyAuthEmail(body, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

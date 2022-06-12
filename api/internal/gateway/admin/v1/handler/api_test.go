@@ -134,7 +134,7 @@ func testHTTP(
 
 	body, err := json.Marshal(expect.body)
 	require.NoError(t, err, err)
-	require.Equal(t, string(body), w.Body.String())
+	require.JSONEq(t, string(body), w.Body.String())
 }
 
 func isError(res *httptest.ResponseRecorder) bool {

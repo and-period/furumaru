@@ -1,0 +1,13 @@
+region     = "ap-northeast-1"
+access_key = ""
+secret_key = ""
+
+vpc_name = "furumaru-stg-vpc"
+
+db_master_username = "admin"
+db_master_password = ""
+
+tags = {
+  app = "furumaru"
+  env = "stg"
+}

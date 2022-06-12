@@ -53,6 +53,51 @@ func TestUploadCoordinatorThumbnail(t *testing.T) {
 	}
 }
 
+func TestUploadCoordinatorHeader(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		setup  func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		field  string
+		expect *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.storage.EXPECT().
+					Upload(gomock.Any(), gomock.Any(), gomock.Any()).
+					Return("https://and-period.jp/header.png", nil)
+			},
+			field: "image",
+			expect: &testResponse{
+				code: http.StatusOK,
+				body: &response.UploadImageResponse{
+					URL: "https://and-period.jp/header.png",
+				},
+			},
+		},
+		{
+			name:  "invalid field",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			field: "",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			const path = "/v1/upload/coordinators/header"
+			req := newMultipartRequest(t, http.MethodPost, path, tt.field)
+			testHTTP(t, tt.setup, tt.expect, req)
+		})
+	}
+}
+
 func TestUploadProducerThumbnail(t *testing.T) {
 	t.Parallel()
 
@@ -92,6 +137,51 @@ func TestUploadProducerThumbnail(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			const path = "/v1/upload/producers/thumbnail"
+			req := newMultipartRequest(t, http.MethodPost, path, tt.field)
+			testHTTP(t, tt.setup, tt.expect, req)
+		})
+	}
+}
+
+func TestUploadProducerHeader(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		setup  func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		field  string
+		expect *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.storage.EXPECT().
+					Upload(gomock.Any(), gomock.Any(), gomock.Any()).
+					Return("https://and-period.jp/header.png", nil)
+			},
+			field: "image",
+			expect: &testResponse{
+				code: http.StatusOK,
+				body: &response.UploadImageResponse{
+					URL: "https://and-period.jp/header.png",
+				},
+			},
+		},
+		{
+			name:  "invalid field",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			field: "",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			const path = "/v1/upload/producers/header"
 			req := newMultipartRequest(t, http.MethodPost, path, tt.field)
 			testHTTP(t, tt.setup, tt.expect, req)
 		})

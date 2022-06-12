@@ -2,8 +2,11 @@ import { NuxtConfig } from '@nuxt/types'
 import colors from 'vuetify/es5/util/colors'
 
 const config: NuxtConfig = {
+  dev: false,
+  telemetry: false,
+
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
-  ssr: true,
+  ssr: false,
   srcDir: 'src',
 
   // Target: https://go.nuxtjs.dev/config-target
@@ -82,6 +85,7 @@ const config: NuxtConfig = {
           primary: colors.lightGreen.darken2,
         },
       },
+      options: { customProperties: true },
     },
   },
 

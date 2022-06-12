@@ -25,3 +25,21 @@ func NewAuth(auth *entity.UserAuth) *Auth {
 func (a *Auth) Response() *response.Auth {
 	return a.Auth
 }
+
+type AuthUser struct {
+	*response.AuthUser
+}
+
+func NewAuthUser(user *entity.User) *AuthUser {
+	return &AuthUser{
+		AuthUser: &response.AuthUser{
+			ID:           user.ID,
+			Username:     user.Username,
+			ThumbnailURL: user.ThumbnailURL,
+		},
+	}
+}
+
+func (u *AuthUser) Response() *response.AuthUser {
+	return u.AuthUser
+}

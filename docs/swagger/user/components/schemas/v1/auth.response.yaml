@@ -29,3 +29,35 @@ authResponse:
     refreshToken: 'xxxxxxxxxx'
     expiresIn: 3600
     tokenType: 'Bearer'
+authUserResponse:
+  type: object
+  properties:
+    id:
+      type: string
+      description: 購入者ID
+    username:
+      type: string
+      description: 表示名
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+  required:
+  - id
+  - email
+  - phoneNumber
+  - thumbnailUrl
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    email: 'test-user@and-period.jp'
+    phoneNumber: '+819012345678'
+    thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+createAuthResponse:
+  type: object
+  properties:
+    id:
+      type: string
+      description: 購入者ID
+  required:
+  - id
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'

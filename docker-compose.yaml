@@ -41,27 +41,27 @@ services:
       - SHUTDOWN_DELAY_SEC=0
       - LOG_LEVEL=debug
       - LOG_PATH=/var/log/api
-      - DB_USER_HOST=${MYSQL_USER_HOST}
-      - DB_USER_PORT=${MYSQL_USER_PORT}
-      - DB_USER_USERNAME=${MYSQL_USER_USERNAME}
-      - DB_USER_PASSWORD=${MYSQL_USER_PASSWORD}
-      - DB_USER_TIMEZONE=${MYSQL_USER_TIMEZONE}
-      - DB_USER_ENABLED_TLS=${MYSQL_USER_ENABLED_TLS}
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=12345678
       - AWS_REGION=${AWS_REGION}
-      - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
-      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
-      - S3_USER_BUCKET=${S3_USER_BUCKET}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - S3_BUCKET=${S3_BUCKET}
+      - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
+      - COGNITO_USER_CLIENT_ID=${COGNITO_USER_CLIENT_ID}
       - SENDGRID_API_KEY=${SENDGRID_API_KEY}
       - SENDGRID_TEMPLATE_PATH=/go/src/github.com/and-period/furumaru/api/config/messenger/mailer/dev.yaml
       - MAIL_FROM_NAME=${MAIL_FROM_NAME}
       - MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
       - USER_WEB_URL=http://127.0.0.1:3000
-      - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
-      - COGNITO_USER_CLIENT_ID=${COGNITO_USER_CLIENT_ID}
     ports:
       - 18000:9000
       - 18001:9001
-    command: make dev SERVICE=gateway/user
+    depends_on:
+      - mysql
+    command: make start-dev SERVICE=gateway/user
 
   admin_gateway:
     container_name: admin_gateway
@@ -79,17 +79,14 @@ services:
       - SHUTDOWN_DELAY_SEC=0
       - LOG_LEVEL=debug
       - LOG_PATH=/var/log/api
-      - DB_USER_HOST=${MYSQL_USER_HOST}
-      - DB_USER_PORT=${MYSQL_USER_PORT}
-      - DB_USER_USERNAME=${MYSQL_USER_USERNAME}
-      - DB_USER_PASSWORD=${MYSQL_USER_PASSWORD}
-      - DB_USER_TIMEZONE=${MYSQL_USER_TIMEZONE}
-      - DB_USER_ENABLED_TLS=${MYSQL_USER_ENABLED_TLS}
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=12345678
       - AWS_REGION=${AWS_REGION}
-      - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
-      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
-      - S3_STORE_BUCKET=${S3_STORE_BUCKET}
-      - S3_USER_BUCKET=${S3_USER_BUCKET}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - S3_BUCKET=${S3_BUCKET}
       - COGNITO_ADMIN_POOL_ID=${COGNITO_ADMIN_POOL_ID}
       - COGNITO_ADMIN_CLIENT_ID=${COGNITO_ADMIN_CLIENT_ID}
       - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
@@ -105,7 +102,25 @@ services:
     ports:
       - 18010:9000
       - 18011:9001
-    command: make dev SERVICE=gateway/admin
+    depends_on:
+      - mysql
+    command: make start-dev SERVICE=gateway/admin
+
+  mysql:
+    container_name: mysql
+    platform: linux/x86_64
+    build:
+      context: ./infra/docker/infra/mysql
+      dockerfile: Dockerfile
+    volumes:
+      - ./infra/mysql/dev.cnf:/etc/mysql/conf.d/my.cnf
+      - ./infra/mysql/schema:/docker-entrypoint-initdb.d
+      - ./tmp/logs/mysql:/var/log/mysql:delegated
+      - ./tmp/data/mysql:/var/lib/mysql:delegated
+    environment:
+      - MYSQL_ROOT_PASSWORD=12345678
+    ports:
+      - 3316:3306
 
   mysql_test:
     container_name: mysql_test
@@ -170,7 +185,7 @@ services:
     volumes:
       - ./tmp/data/swagger/admin/docs/openapi:/var/swagger:cached
     ports:
-      - 9020:8080
+      - 9010:8080
     environment:
       SWAGGER_JSON: /var/swagger/openapi.yaml
     depends_on:
