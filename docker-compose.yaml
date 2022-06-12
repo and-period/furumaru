@@ -59,7 +59,9 @@ services:
     ports:
       - 18000:9000
       - 18001:9001
-    command: make dev SERVICE=gateway/user
+    depends_on:
+      - mysql
+    command: make start-dev SERVICE=gateway/user
 
   admin_gateway:
     container_name: admin_gateway
@@ -100,7 +102,9 @@ services:
     ports:
       - 18010:9000
       - 18011:9001
-    command: make dev SERVICE=gateway/admin
+    depends_on:
+      - mysql
+    command: make start-dev SERVICE=gateway/admin
 
   mysql:
     container_name: mysql

@@ -3,8 +3,12 @@ FROM golang:1.18.1-alpine
 ENV LANG C.UTF-8
 ENV TZ Asia/Tokyo
 
+ENV AIR_VERSION 1.40.1
+
 WORKDIR /go/src/github.com/and-period/furumaru/api
 
 RUN apk add --update \
       git \
       make
+
+RUN go install github.com/cosmtrek/air@v${AIR_VERSION}
