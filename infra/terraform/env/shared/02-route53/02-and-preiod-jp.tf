@@ -12,11 +12,5 @@ module "dns_and_period_jp" {
   domain  = "and-period.jp"
   comment = "&. 本番用"
 
-  subdomains = [
-    {
-      domain  = "www.and-period.jp"
-      comment = "&. ホームページ用"
-      ttl     = 60
-    },
-  ]
+  subdomains = []
 }
