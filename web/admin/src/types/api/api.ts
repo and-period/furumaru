@@ -1693,7 +1693,7 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
-         * @summary 仲介者取得
+         * @summary 生産者取得
          * @param {string} producerId 生産者ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1701,7 +1701,7 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
         v1GetProducer: async (producerId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'producerId' is not null or undefined
             assertParamExists('v1GetProducer', 'producerId', producerId)
-            const localVarPath = `/v1/producers/{adminId}`
+            const localVarPath = `/v1/producers/{producerId}`
                 .replace(`{${"producerId"}}`, encodeURIComponent(String(producerId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1839,7 +1839,7 @@ export const ProducerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 仲介者取得
+         * @summary 生産者取得
          * @param {string} producerId 生産者ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1893,7 +1893,7 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
-         * @summary 仲介者取得
+         * @summary 生産者取得
          * @param {string} producerId 生産者ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1946,7 +1946,7 @@ export class ProducerApi extends BaseAPI {
 
     /**
      * 
-     * @summary 仲介者取得
+     * @summary 生産者取得
      * @param {string} producerId 生産者ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
