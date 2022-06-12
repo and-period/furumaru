@@ -118,10 +118,6 @@ func (c *client) ChangeEmail(ctx context.Context, params *ChangeEmailParams) err
 				Name:  emailField,
 				Value: aws.String(params.NewEmail),
 			},
-			{
-				Name:  emailRequestedField,
-				Value: aws.String(params.OldEmail),
-			},
 		},
 	}
 	_, err := c.cognito.UpdateUserAttributes(ctx, changeEmailIn)
@@ -136,6 +132,10 @@ func (c *client) ChangeEmail(ctx context.Context, params *ChangeEmailParams) err
 			{
 				Name:  emailField,
 				Value: aws.String(params.OldEmail),
+			},
+			{
+				Name:  emailRequestedField,
+				Value: aws.String(params.NewEmail),
 			},
 			{
 				Name:  emailVerifiedField,
