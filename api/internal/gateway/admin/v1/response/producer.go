@@ -13,7 +13,7 @@ type Producer struct {
 	Email         string `json:"email"`         // メールアドレス
 	PhoneNumber   string `json:"phoneNumber"`   // 電話番号
 	PostalCode    string `json:"postalCode"`    // 郵便番号
-	Prefecture    string `json:"prefecuture"`   // 都道府県
+	Prefecture    string `json:"prefecture"`    // 都道府県
 	City          string `json:"city"`          // 市区町村
 	AddressLine1  string `json:"addressLine1"`  // 町名・番地
 	AddressLine2  string `json:"addressLine2"`  // ビル名・号室など

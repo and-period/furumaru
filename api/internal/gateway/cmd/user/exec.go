@@ -34,6 +34,7 @@ func Exec() error {
 	if err != nil {
 		return err
 	}
+	defer app.logger.Sync()
 
 	// Serverの起動
 	eg, ectx := errgroup.WithContext(ctx)
