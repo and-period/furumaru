@@ -11,25 +11,25 @@ func TestCoordinator(t *testing.T) {
 
 	tests := []struct {
 		name   string
-		params *NewAdministratorParams
-		expect *Administrator
+		params *NewCoordinatorParams
+		expect *Coordinator
 	}{
 		{
 			name: "success",
-			params: &NewAdministratorParams{
+			params: &NewCoordinatorParams{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "すたっふ",
-				Email:         "test-admin@and-period.jp",
+				Email:         "test-coordinator@and-period.jp",
 				PhoneNumber:   "+819012345678",
 			},
-			expect: &Administrator{
+			expect: &Coordinator{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "すたっふ",
-				Email:         "test-admin@and-period.jp",
+				Email:         "test-coordinator@and-period.jp",
 				PhoneNumber:   "+819012345678",
 			},
 		},
@@ -39,7 +39,7 @@ func TestCoordinator(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewAdministrator(tt.params)
+			actual := NewCoordinator(tt.params)
 			actual.ID = "" // ignore
 			assert.Equal(t, tt.expect, actual)
 		})
@@ -51,22 +51,22 @@ func TestCoordinator_Name(t *testing.T) {
 
 	tests := []struct {
 		name          string
-		administrator *Administrator
+		coordinator *Coordinator
 		expect        string
 	}{
 		{
 			name:          "success",
-			administrator: &Administrator{Lastname: "&.", Firstname: "スタッフ"},
+			coordinator: &Coordinator{Lastname: "&.", Firstname: "スタッフ"},
 			expect:        "&. スタッフ",
 		},
 		{
 			name:          "success only lastname",
-			administrator: &Administrator{Lastname: "&.", Firstname: ""},
+			coordinator: &Coordinator{Lastname: "&.", Firstname: ""},
 			expect:        "&.",
 		},
 		{
 			name:          "success only firstname",
-			administrator: &Administrator{Lastname: "", Firstname: "スタッフ"},
+			coordinator: &Coordinator{Lastname: "", Firstname: "スタッフ"},
 			expect:        "スタッフ",
 		},
 	}
@@ -75,7 +75,7 @@ func TestCoordinator_Name(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, tt.administrator.Name())
+			assert.Equal(t, tt.expect, tt.coordinator.Name())
 		})
 	}
 }
