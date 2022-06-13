@@ -9,7 +9,9 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
-func (s *storeService) ListProductTypes(ctx context.Context, in *store.ListProductTypesInput) (entity.ProductTypes, error) {
+func (s *storeService) ListProductTypes(
+	ctx context.Context, in *store.ListProductTypesInput,
+) (entity.ProductTypes, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
@@ -23,7 +25,9 @@ func (s *storeService) ListProductTypes(ctx context.Context, in *store.ListProdu
 	return productTypes, exception.InternalError(err)
 }
 
-func (s *storeService) CreateProductType(ctx context.Context, in *store.CreateProductTypeInput) (*entity.ProductType, error) {
+func (s *storeService) CreateProductType(
+	ctx context.Context, in *store.CreateProductTypeInput,
+) (*entity.ProductType, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
