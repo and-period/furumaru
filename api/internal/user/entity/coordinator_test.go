@@ -50,24 +50,24 @@ func TestCoordinator_Name(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name          string
+		name        string
 		coordinator *Coordinator
-		expect        string
+		expect      string
 	}{
 		{
-			name:          "success",
+			name:        "success",
 			coordinator: &Coordinator{Lastname: "&.", Firstname: "スタッフ"},
-			expect:        "&. スタッフ",
+			expect:      "&. スタッフ",
 		},
 		{
-			name:          "success only lastname",
+			name:        "success only lastname",
 			coordinator: &Coordinator{Lastname: "&.", Firstname: ""},
-			expect:        "&.",
+			expect:      "&.",
 		},
 		{
-			name:          "success only firstname",
+			name:        "success only firstname",
 			coordinator: &Coordinator{Lastname: "", Firstname: "スタッフ"},
-			expect:        "スタッフ",
+			expect:      "スタッフ",
 		},
 	}
 
