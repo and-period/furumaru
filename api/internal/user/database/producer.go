@@ -93,25 +93,34 @@ func (p *producer) Create(
 
 func (p *producer) UpdateEmail(ctx context.Context, producerID, email string) error {
 	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
-		var current *entity.Producer
-		err := tx.WithContext(ctx).
-			Table(producerTable).Select("id").
-			Where("id = ?", producerID).
-			First(&current).Error
-		if err != nil {
+		if _, err := p.get(ctx, tx, producerID); err != nil {
 			return nil, err
 		}
 
 		params := map[string]interface{}{
-			"id":         current.ID,
 			"email":      email,
 			"updated_at": p.now(),
 		}
-		err = tx.WithContext(ctx).
+		err := tx.WithContext(ctx).
 			Table(producerTable).
 			Where("id = ?", producerID).
 			Updates(params).Error
 		return nil, err
 	})
 	return exception.InternalError(err)
+}
+
+func (p *producer) get(
+	ctx context.Context, tx *gorm.DB, producerID string, fields ...string,
+) (*entity.Producer, error) {
+	var producer *entity.Producer
+	if len(fields) == 0 {
+		fields = producerFields
+	}
+
+	err := tx.WithContext(ctx).
+		Table(producerTable).Select(fields).
+		Where("id = ?", producerID).
+		First(&producer).Error
+	return producer, err
 }

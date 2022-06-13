@@ -94,11 +94,7 @@ func (u *user) Create(ctx context.Context, user *entity.User) error {
 
 func (u *user) UpdateVerified(ctx context.Context, userID string) error {
 	_, err := u.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
-		var current *entity.User
-		err := tx.WithContext(ctx).
-			Table(userTable).Select("id", "verified_at").
-			Where("id = ?", userID).
-			First(&current).Error
+		current, err := u.get(ctx, tx, userID, "id", "verified_at")
 		if err != nil {
 			return nil, err
 		}
@@ -108,7 +104,6 @@ func (u *user) UpdateVerified(ctx context.Context, userID string) error {
 
 		now := u.now()
 		params := map[string]interface{}{
-			"id":          current.ID,
 			"verified_at": now,
 			"updated_at":  now,
 		}
@@ -121,32 +116,28 @@ func (u *user) UpdateVerified(ctx context.Context, userID string) error {
 	return exception.InternalError(err)
 }
 
-func (u *user) UpdateAccount(ctx context.Context, userID, accountID, userName string) error {
+func (u *user) UpdateAccount(ctx context.Context, userID, accountID, username string) error {
 	_, err := u.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
-		var current *entity.User
+		if _, err := u.get(ctx, tx, userID); err != nil {
+			return nil, err
+		}
+
+		var user *entity.User
 		err := tx.WithContext(ctx).
 			Table(userTable).Select("id").
 			Where("id != ?", userID).
 			Where("account_id = ?", accountID).
-			First(&current).Error
+			First(&user).Error
 		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, err
 		}
-		if current.ID != "" {
+		if user.ID != "" {
 			return nil, exception.ErrAlreadyExists
-		}
-
-		err = tx.WithContext(ctx).
-			Table(userTable).Select("id").
-			Where("id = ?", userID).
-			First(&current).Error
-		if err != nil {
-			return nil, exception.ErrNotFound
 		}
 
 		params := map[string]interface{}{
 			"account_id": accountID,
-			"username":   userName,
+			"username":   username,
 			"updated_at": u.now(),
 		}
 		err = tx.WithContext(ctx).
@@ -160,11 +151,7 @@ func (u *user) UpdateAccount(ctx context.Context, userID, accountID, userName st
 
 func (u *user) UpdateEmail(ctx context.Context, userID, email string) error {
 	_, err := u.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
-		var current *entity.User
-		err := tx.WithContext(ctx).
-			Table(userTable).Select("id", "provider_type").
-			Where("id = ?", userID).
-			First(&current).Error
+		current, err := u.get(ctx, tx, userID, "id", "provider_type")
 		if err != nil {
 			return nil, err
 		}
@@ -173,7 +160,6 @@ func (u *user) UpdateEmail(ctx context.Context, userID, email string) error {
 		}
 
 		params := map[string]interface{}{
-			"id":         current.ID,
 			"email":      email,
 			"updated_at": u.now(),
 		}
@@ -188,26 +174,33 @@ func (u *user) UpdateEmail(ctx context.Context, userID, email string) error {
 
 func (u *user) Delete(ctx context.Context, userID string) error {
 	_, err := u.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
-		var current *entity.User
-		err := tx.WithContext(ctx).
-			Table(userTable).Select("id").
-			Where("id = ?", userID).
-			First(&current).Error
-		if err != nil {
+		if _, err := u.get(ctx, tx, userID, "id"); err != nil {
 			return nil, err
 		}
 
 		now := u.now()
 		params := map[string]interface{}{
-			"id":         current.ID,
 			"updated_at": now,
 			"deleted_at": now,
 		}
-		err = tx.WithContext(ctx).
+		err := tx.WithContext(ctx).
 			Table(userTable).
-			Where("id = ?", current.ID).
+			Where("id = ?", userID).
 			Updates(params).Error
 		return nil, err
 	})
 	return exception.InternalError(err)
+}
+
+func (u *user) get(ctx context.Context, tx *gorm.DB, userID string, fields ...string) (*entity.User, error) {
+	var user *entity.User
+	if len(fields) == 0 {
+		fields = userFields
+	}
+
+	err := tx.WithContext(ctx).
+		Table(userTable).Select(fields).
+		Where("id = ?", userID).
+		First(&user).Error
+	return user, err
 }
