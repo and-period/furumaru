@@ -28,7 +28,8 @@ type mocks struct {
 }
 
 type dbMocks struct {
-	Category *mock_database.MockCategory
+	Category    *mock_database.MockCategory
+	ProductType *mock_database.MockProductType
 }
 
 type testOptions struct {
@@ -57,7 +58,8 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
-		Category: mock_database.NewMockCategory(ctrl),
+		Category:    mock_database.NewMockCategory(ctrl),
+		ProductType: mock_database.NewMockProductType(ctrl),
 	}
 }
 
@@ -75,7 +77,8 @@ func newStoreService(mocks *mocks, opts ...testOption) *storeService {
 		waitGroup:   &sync.WaitGroup{},
 		validator:   validator.NewValidator(),
 		db: &database.Database{
-			Category: mocks.db.Category,
+			Category:    mocks.db.Category,
+			ProductType: mocks.db.ProductType,
 		},
 		user:      mocks.user,
 		messenger: mocks.messenger,
