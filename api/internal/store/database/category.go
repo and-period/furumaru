@@ -53,6 +53,19 @@ func (c *category) List(
 	return categories, exception.InternalError(err)
 }
 
+func (c *category) MultiGet(ctx context.Context, categoryIDs []string, fields ...string) (entity.Categories, error) {
+	var categories entity.Categories
+	if len(fields) == 0 {
+		fields = categoryFields
+	}
+
+	err := c.db.DB.WithContext(ctx).
+		Table(categoryTable).Select(fields).
+		Where("id IN (?)", categoryIDs).
+		Find(&categories).Error
+	return categories, exception.InternalError(err)
+}
+
 func (c *category) Create(ctx context.Context, category *entity.Category) error {
 	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		now := c.now()

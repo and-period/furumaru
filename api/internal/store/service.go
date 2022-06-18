@@ -12,6 +12,8 @@ import (
 type StoreService interface {
 	// カテゴリ一覧取得
 	ListCategories(ctx context.Context, in *ListCategoriesInput) (entity.Categories, error)
+	// カテゴリ一覧取得(ID指定)
+	MultiGetCategories(ctx context.Context, in *MultiGetCategoriesInput) (entity.Categories, error)
 	// カテゴリ登録
 	CreateCategory(ctx context.Context, in *CreateCategoryInput) (*entity.Category, error)
 	// カテゴリ更新

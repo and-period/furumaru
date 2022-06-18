@@ -1799,50 +1799,6 @@ export const CategoryApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
-         * @summary 品目登録
-         * @param {string} categoryId 商品種別ID
-         * @param {CreateProductTypeRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1CreateProductType: async (categoryId: string, body: CreateProductTypeRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'categoryId' is not null or undefined
-            assertParamExists('v1CreateProductType', 'categoryId', categoryId)
-            // verify required parameter 'body' is not null or undefined
-            assertParamExists('v1CreateProductType', 'body', body)
-            const localVarPath = `/v1/categories/{categoryId}/product-types`
-                .replace(`{${"categoryId"}}`, encodeURIComponent(String(categoryId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
          * @summary 商品種別削除
          * @param {string} categoryId 商品種別ID
          * @param {*} [options] Override http request option.
@@ -1853,48 +1809,6 @@ export const CategoryApiAxiosParamCreator = function (configuration?: Configurat
             assertParamExists('v1DeleteCategory', 'categoryId', categoryId)
             const localVarPath = `/v1/categories/{categoryId}`
                 .replace(`{${"categoryId"}}`, encodeURIComponent(String(categoryId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 品目削除
-         * @param {string} categoryId 商品種別ID
-         * @param {string} productTypeId 品目ID
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1DeleteProductType: async (categoryId: string, productTypeId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'categoryId' is not null or undefined
-            assertParamExists('v1DeleteProductType', 'categoryId', categoryId)
-            // verify required parameter 'productTypeId' is not null or undefined
-            assertParamExists('v1DeleteProductType', 'productTypeId', productTypeId)
-            const localVarPath = `/v1/categories/{categoryId}/product-types/{productTypeId}`
-                .replace(`{${"categoryId"}}`, encodeURIComponent(String(categoryId)))
-                .replace(`{${"productTypeId"}}`, encodeURIComponent(String(productTypeId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -2014,54 +1928,6 @@ export const CategoryApiAxiosParamCreator = function (configuration?: Configurat
                 options: localVarRequestOptions,
             };
         },
-        /**
-         * 
-         * @summary 品目更新
-         * @param {string} categoryId 商品種別ID
-         * @param {string} productTypeId 品目ID
-         * @param {UpdateProductTypeRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UpdateProductType: async (categoryId: string, productTypeId: string, body: UpdateProductTypeRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'categoryId' is not null or undefined
-            assertParamExists('v1UpdateProductType', 'categoryId', categoryId)
-            // verify required parameter 'productTypeId' is not null or undefined
-            assertParamExists('v1UpdateProductType', 'productTypeId', productTypeId)
-            // verify required parameter 'body' is not null or undefined
-            assertParamExists('v1UpdateProductType', 'body', body)
-            const localVarPath = `/v1/categories/{categoryId}/product-types/{productTypeId}`
-                .replace(`{${"categoryId"}}`, encodeURIComponent(String(categoryId)))
-                .replace(`{${"productTypeId"}}`, encodeURIComponent(String(productTypeId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
     }
 };
 
@@ -2085,18 +1951,6 @@ export const CategoryApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 品目登録
-         * @param {string} categoryId 商品種別ID
-         * @param {CreateProductTypeRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1CreateProductType(categoryId: string, body: CreateProductTypeRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductTypeResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateProductType(categoryId, body, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
          * @summary 商品種別削除
          * @param {string} categoryId 商品種別ID
          * @param {*} [options] Override http request option.
@@ -2104,18 +1958,6 @@ export const CategoryApiFp = function(configuration?: Configuration) {
          */
         async v1DeleteCategory(categoryId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteCategory(categoryId, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @summary 品目削除
-         * @param {string} categoryId 商品種別ID
-         * @param {string} productTypeId 品目ID
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1DeleteProductType(categoryId: string, productTypeId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteProductType(categoryId, productTypeId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -2143,19 +1985,6 @@ export const CategoryApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateCategory(categoryId, body, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
-        /**
-         * 
-         * @summary 品目更新
-         * @param {string} categoryId 商品種別ID
-         * @param {string} productTypeId 品目ID
-         * @param {UpdateProductTypeRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UpdateProductType(categoryId: string, productTypeId: string, body: UpdateProductTypeRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateProductType(categoryId, productTypeId, body, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
     }
 };
 
@@ -2178,17 +2007,6 @@ export const CategoryApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
-         * @summary 品目登録
-         * @param {string} categoryId 商品種別ID
-         * @param {CreateProductTypeRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1CreateProductType(categoryId: string, body: CreateProductTypeRequest, options?: any): AxiosPromise<ProductTypeResponse> {
-            return localVarFp.v1CreateProductType(categoryId, body, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @summary 商品種別削除
          * @param {string} categoryId 商品種別ID
          * @param {*} [options] Override http request option.
@@ -2196,17 +2014,6 @@ export const CategoryApiFactory = function (configuration?: Configuration, baseP
          */
         v1DeleteCategory(categoryId: string, options?: any): AxiosPromise<object> {
             return localVarFp.v1DeleteCategory(categoryId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 品目削除
-         * @param {string} categoryId 商品種別ID
-         * @param {string} productTypeId 品目ID
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1DeleteProductType(categoryId: string, productTypeId: string, options?: any): AxiosPromise<object> {
-            return localVarFp.v1DeleteProductType(categoryId, productTypeId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -2230,18 +2037,6 @@ export const CategoryApiFactory = function (configuration?: Configuration, baseP
          */
         v1UpdateCategory(categoryId: string, body: UpdateCategoryRequest, options?: any): AxiosPromise<object> {
             return localVarFp.v1UpdateCategory(categoryId, body, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 品目更新
-         * @param {string} categoryId 商品種別ID
-         * @param {string} productTypeId 品目ID
-         * @param {UpdateProductTypeRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UpdateProductType(categoryId: string, productTypeId: string, body: UpdateProductTypeRequest, options?: any): AxiosPromise<object> {
-            return localVarFp.v1UpdateProductType(categoryId, productTypeId, body, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -2267,19 +2062,6 @@ export class CategoryApi extends BaseAPI {
 
     /**
      * 
-     * @summary 品目登録
-     * @param {string} categoryId 商品種別ID
-     * @param {CreateProductTypeRequest} body 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof CategoryApi
-     */
-    public v1CreateProductType(categoryId: string, body: CreateProductTypeRequest, options?: AxiosRequestConfig) {
-        return CategoryApiFp(this.configuration).v1CreateProductType(categoryId, body, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
      * @summary 商品種別削除
      * @param {string} categoryId 商品種別ID
      * @param {*} [options] Override http request option.
@@ -2288,19 +2070,6 @@ export class CategoryApi extends BaseAPI {
      */
     public v1DeleteCategory(categoryId: string, options?: AxiosRequestConfig) {
         return CategoryApiFp(this.configuration).v1DeleteCategory(categoryId, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 品目削除
-     * @param {string} categoryId 商品種別ID
-     * @param {string} productTypeId 品目ID
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof CategoryApi
-     */
-    public v1DeleteProductType(categoryId: string, productTypeId: string, options?: AxiosRequestConfig) {
-        return CategoryApiFp(this.configuration).v1DeleteProductType(categoryId, productTypeId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2328,20 +2097,6 @@ export class CategoryApi extends BaseAPI {
      */
     public v1UpdateCategory(categoryId: string, body: UpdateCategoryRequest, options?: AxiosRequestConfig) {
         return CategoryApiFp(this.configuration).v1UpdateCategory(categoryId, body, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 品目更新
-     * @param {string} categoryId 商品種別ID
-     * @param {string} productTypeId 品目ID
-     * @param {UpdateProductTypeRequest} body 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof CategoryApi
-     */
-    public v1UpdateProductType(categoryId: string, productTypeId: string, body: UpdateProductTypeRequest, options?: AxiosRequestConfig) {
-        return CategoryApiFp(this.configuration).v1UpdateProductType(categoryId, productTypeId, body, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -2806,6 +2561,92 @@ export const ProductTypeApiAxiosParamCreator = function (configuration?: Configu
     return {
         /**
          * 
+         * @summary 品目登録
+         * @param {string} categoryId 商品種別ID
+         * @param {CreateProductTypeRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateProductType: async (categoryId: string, body: CreateProductTypeRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'categoryId' is not null or undefined
+            assertParamExists('v1CreateProductType', 'categoryId', categoryId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1CreateProductType', 'body', body)
+            const localVarPath = `/v1/categories/{categoryId}/product-types`
+                .replace(`{${"categoryId"}}`, encodeURIComponent(String(categoryId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 品目削除
+         * @param {string} categoryId 商品種別ID
+         * @param {string} productTypeId 品目ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteProductType: async (categoryId: string, productTypeId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'categoryId' is not null or undefined
+            assertParamExists('v1DeleteProductType', 'categoryId', categoryId)
+            // verify required parameter 'productTypeId' is not null or undefined
+            assertParamExists('v1DeleteProductType', 'productTypeId', productTypeId)
+            const localVarPath = `/v1/categories/{categoryId}/product-types/{productTypeId}`
+                .replace(`{${"categoryId"}}`, encodeURIComponent(String(categoryId)))
+                .replace(`{${"productTypeId"}}`, encodeURIComponent(String(productTypeId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 品目一覧取得(商品種別指定なし)
          * @param {number} [limit] 取得上限数
          * @param {number} [offset] 取得開始位置
@@ -2906,6 +2747,54 @@ export const ProductTypeApiAxiosParamCreator = function (configuration?: Configu
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary 品目更新
+         * @param {string} categoryId 商品種別ID
+         * @param {string} productTypeId 品目ID
+         * @param {UpdateProductTypeRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateProductType: async (categoryId: string, productTypeId: string, body: UpdateProductTypeRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'categoryId' is not null or undefined
+            assertParamExists('v1UpdateProductType', 'categoryId', categoryId)
+            // verify required parameter 'productTypeId' is not null or undefined
+            assertParamExists('v1UpdateProductType', 'productTypeId', productTypeId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpdateProductType', 'body', body)
+            const localVarPath = `/v1/categories/{categoryId}/product-types/{productTypeId}`
+                .replace(`{${"categoryId"}}`, encodeURIComponent(String(categoryId)))
+                .replace(`{${"productTypeId"}}`, encodeURIComponent(String(productTypeId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -2916,6 +2805,30 @@ export const ProductTypeApiAxiosParamCreator = function (configuration?: Configu
 export const ProductTypeApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = ProductTypeApiAxiosParamCreator(configuration)
     return {
+        /**
+         * 
+         * @summary 品目登録
+         * @param {string} categoryId 商品種別ID
+         * @param {CreateProductTypeRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1CreateProductType(categoryId: string, body: CreateProductTypeRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductTypeResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateProductType(categoryId, body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 品目削除
+         * @param {string} categoryId 商品種別ID
+         * @param {string} productTypeId 品目ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1DeleteProductType(categoryId: string, productTypeId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteProductType(categoryId, productTypeId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
         /**
          * 
          * @summary 品目一覧取得(商品種別指定なし)
@@ -2943,6 +2856,19 @@ export const ProductTypeApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListProductTypes(categoryId, limit, offset, name, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
+        /**
+         * 
+         * @summary 品目更新
+         * @param {string} categoryId 商品種別ID
+         * @param {string} productTypeId 品目ID
+         * @param {UpdateProductTypeRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UpdateProductType(categoryId: string, productTypeId: string, body: UpdateProductTypeRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateProductType(categoryId, productTypeId, body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
     }
 };
 
@@ -2953,6 +2879,28 @@ export const ProductTypeApiFp = function(configuration?: Configuration) {
 export const ProductTypeApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
     const localVarFp = ProductTypeApiFp(configuration)
     return {
+        /**
+         * 
+         * @summary 品目登録
+         * @param {string} categoryId 商品種別ID
+         * @param {CreateProductTypeRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateProductType(categoryId: string, body: CreateProductTypeRequest, options?: any): AxiosPromise<ProductTypeResponse> {
+            return localVarFp.v1CreateProductType(categoryId, body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 品目削除
+         * @param {string} categoryId 商品種別ID
+         * @param {string} productTypeId 品目ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteProductType(categoryId: string, productTypeId: string, options?: any): AxiosPromise<object> {
+            return localVarFp.v1DeleteProductType(categoryId, productTypeId, options).then((request) => request(axios, basePath));
+        },
         /**
          * 
          * @summary 品目一覧取得(商品種別指定なし)
@@ -2978,6 +2926,18 @@ export const ProductTypeApiFactory = function (configuration?: Configuration, ba
         v1ListProductTypes(categoryId: string, limit?: number, offset?: number, name?: string, options?: any): AxiosPromise<ProductTypesResponse> {
             return localVarFp.v1ListProductTypes(categoryId, limit, offset, name, options).then((request) => request(axios, basePath));
         },
+        /**
+         * 
+         * @summary 品目更新
+         * @param {string} categoryId 商品種別ID
+         * @param {string} productTypeId 品目ID
+         * @param {UpdateProductTypeRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateProductType(categoryId: string, productTypeId: string, body: UpdateProductTypeRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1UpdateProductType(categoryId, productTypeId, body, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -2988,6 +2948,32 @@ export const ProductTypeApiFactory = function (configuration?: Configuration, ba
  * @extends {BaseAPI}
  */
 export class ProductTypeApi extends BaseAPI {
+    /**
+     * 
+     * @summary 品目登録
+     * @param {string} categoryId 商品種別ID
+     * @param {CreateProductTypeRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProductTypeApi
+     */
+    public v1CreateProductType(categoryId: string, body: CreateProductTypeRequest, options?: AxiosRequestConfig) {
+        return ProductTypeApiFp(this.configuration).v1CreateProductType(categoryId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 品目削除
+     * @param {string} categoryId 商品種別ID
+     * @param {string} productTypeId 品目ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProductTypeApi
+     */
+    public v1DeleteProductType(categoryId: string, productTypeId: string, options?: AxiosRequestConfig) {
+        return ProductTypeApiFp(this.configuration).v1DeleteProductType(categoryId, productTypeId, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary 品目一覧取得(商品種別指定なし)
@@ -3015,6 +3001,20 @@ export class ProductTypeApi extends BaseAPI {
      */
     public v1ListProductTypes(categoryId: string, limit?: number, offset?: number, name?: string, options?: AxiosRequestConfig) {
         return ProductTypeApiFp(this.configuration).v1ListProductTypes(categoryId, limit, offset, name, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 品目更新
+     * @param {string} categoryId 商品種別ID
+     * @param {string} productTypeId 品目ID
+     * @param {UpdateProductTypeRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProductTypeApi
+     */
+    public v1UpdateProductType(categoryId: string, productTypeId: string, body: UpdateProductTypeRequest, options?: AxiosRequestConfig) {
+        return ProductTypeApiFp(this.configuration).v1UpdateProductType(categoryId, productTypeId, body, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

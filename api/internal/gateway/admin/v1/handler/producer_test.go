@@ -144,11 +144,9 @@ func TestListProducer(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			const prefix = "/v1/producers"
 			path := fmt.Sprintf("%s%s", prefix, tt.query)
-			req := newHTTPRequest(t, http.MethodGet, path, nil)
-			testHTTP(t, tt.setup, tt.expect, req)
+			testGet(t, tt.setup, tt.expect, path)
 		})
 	}
 }
@@ -227,11 +225,9 @@ func TestGetProducer(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			const prefix = "/v1/producers"
 			path := fmt.Sprintf("%s/%s", prefix, tt.producerID)
-			req := newHTTPRequest(t, http.MethodGet, path, nil)
-			testHTTP(t, tt.setup, tt.expect, req)
+			testGet(t, tt.setup, tt.expect, path)
 		})
 	}
 }
@@ -357,10 +353,8 @@ func TestCreateProducer(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			const path = "/v1/producers"
-			req := newHTTPRequest(t, http.MethodPost, path, tt.req)
-			testHTTP(t, tt.setup, tt.expect, req)
+			testPost(t, tt.setup, tt.expect, path, tt.req)
 		})
 	}
 }

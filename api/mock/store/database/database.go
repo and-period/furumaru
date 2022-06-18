@@ -84,6 +84,26 @@ func (mr *MockCategoryMockRecorder) List(ctx, params interface{}, fields ...inte
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockCategory)(nil).List), varargs...)
 }
 
+// MultiGet mocks base method.
+func (m *MockCategory) MultiGet(ctx context.Context, categoryIDs []string, fields ...string) (entity.Categories, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, categoryIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGet", varargs...)
+	ret0, _ := ret[0].(entity.Categories)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGet indicates an expected call of MultiGet.
+func (mr *MockCategoryMockRecorder) MultiGet(ctx, categoryIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, categoryIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockCategory)(nil).MultiGet), varargs...)
+}
+
 // Update mocks base method.
 func (m *MockCategory) Update(ctx context.Context, categoryID, name string) error {
 	m.ctrl.T.Helper()

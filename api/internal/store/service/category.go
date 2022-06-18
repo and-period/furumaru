@@ -22,6 +22,16 @@ func (s *storeService) ListCategories(ctx context.Context, in *store.ListCategor
 	return categories, exception.InternalError(err)
 }
 
+func (s *storeService) MultiGetCategories(
+	ctx context.Context, in *store.MultiGetCategoriesInput,
+) (entity.Categories, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	categories, err := s.db.Category.MultiGet(ctx, in.CategoryIDs)
+	return categories, exception.InternalError(err)
+}
+
 func (s *storeService) CreateCategory(ctx context.Context, in *store.CreateCategoryInput) (*entity.Category, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
