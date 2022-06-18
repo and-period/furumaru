@@ -1,0 +1,85 @@
+get:
+  summary: 品目一覧取得
+  operationId: v1ListProductTypes
+  tags:
+  - ProductType
+  security:
+  - BearerAuth: []
+  parameters:
+  - in: query
+    name: limit
+    schema:
+      type: integer
+      format: int64
+    description: 取得上限数
+    required: false
+    example: 20
+  - in: query
+    name: offset
+    schema:
+      type: integer
+      format: int64
+    description: 取得開始位置
+    required: false
+    example: 0
+  - in: query
+    name: name
+    schema:
+      type: string
+    description: 品目名(あいまい検索)
+    required: false
+    example: 'じゃがいも'
+  - in: path
+    name: categoryId
+    schema:
+      type: string
+    description: 商品種別ID
+    required: true
+    example: '野菜'
+  responses:
+    200:
+      description: A successful response.
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/v1ProductTypesResponse'
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
+post:
+  summary: 品目登録
+  operationId: v1CreateProductType
+  tags:
+  - ProductType
+  security:
+  - BearerAuth: []
+  parameters:
+  - in: path
+    name: categoryId
+    schema:
+      type: string
+    description: 商品種別ID
+    required: true
+    example: '野菜'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../../../openapi.yaml#/components/schemas/v1CreateProductTypeRequest'
+  responses:
+    200:
+      description: A successful response.
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/v1ProductTypeResponse'
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'

@@ -1,0 +1,74 @@
+patch:
+  summary: 品目更新
+  operationId: v1UpdateProductType
+  tags:
+  - ProductType
+  security:
+  - BearerAuth: []
+  parameters:
+  - in: path
+    name: categoryId
+    schema:
+      type: string
+    description: 商品種別ID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  - in: path
+    name: productTypeId
+    schema:
+      type: string
+    description: 品目ID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../../../../openapi.yaml#/components/schemas/v1UpdateProductTypeRequest'
+  responses:
+    204:
+      description: A successful response.
+      content:
+        application/json:
+          schema: {}
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
+delete:
+  summary: 品目削除
+  operationId: v1DeleteProductType
+  tags:
+  - ProductType
+  security:
+  - BearerAuth: []
+  parameters:
+  - in: path
+    name: categoryId
+    schema:
+      type: string
+    description: 商品種別ID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  - in: path
+    name: productTypeId
+    schema:
+      type: string
+    description: 品目ID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  responses:
+    204:
+      description: A successful response.
+      content:
+        application/json:
+          schema: {}
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
