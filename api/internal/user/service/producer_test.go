@@ -26,7 +26,7 @@ func TestListProducers(t *testing.T) {
 			ID:            "admin-id",
 			Lastname:      "&.",
 			Firstname:     "スタッフ",
-			LastnameKana:  "あんどどっと",
+			LastnameKana:  "あんどぴりおど",
 			FirstnameKana: "すたっふ",
 			StoreName:     "&.農園",
 			ThumbnailURL:  "https://and-period.jp/thumbnail.png",
@@ -101,7 +101,7 @@ func TestGetProducer(t *testing.T) {
 		ID:            "admin-id",
 		Lastname:      "&.",
 		Firstname:     "スタッフ",
-		LastnameKana:  "あんどどっと",
+		LastnameKana:  "あんどぴりおど",
 		FirstnameKana: "すたっふ",
 		StoreName:     "&.農園",
 		ThumbnailURL:  "https://and-period.jp/thumbnail.png",
@@ -183,7 +183,7 @@ func TestCreateProducer(t *testing.T) {
 				expectProducer := &entity.Producer{
 					Lastname:      "&.",
 					Firstname:     "スタッフ",
-					LastnameKana:  "あんどどっと",
+					LastnameKana:  "あんどぴりおど",
 					FirstnameKana: "すたっふ",
 					StoreName:     "&.農園",
 					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
@@ -211,7 +211,7 @@ func TestCreateProducer(t *testing.T) {
 			input: &user.CreateProducerInput{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
-				LastnameKana:  "あんどどっと",
+				LastnameKana:  "あんどぴりおど",
 				FirstnameKana: "すたっふ",
 				StoreName:     "&.農園",
 				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
@@ -236,7 +236,7 @@ func TestCreateProducer(t *testing.T) {
 			input: &user.CreateProducerInput{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
-				LastnameKana:  "あんどどっと",
+				LastnameKana:  "あんどぴりおど",
 				FirstnameKana: "すたっふ",
 				StoreName:     "&.農園",
 				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
@@ -265,7 +265,7 @@ func TestCreateProducer(t *testing.T) {
 			input: &user.CreateProducerInput{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
-				LastnameKana:  "あんどどっと",
+				LastnameKana:  "あんどぴりおど",
 				FirstnameKana: "すたっふ",
 				StoreName:     "&.農園",
 				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
@@ -289,7 +289,7 @@ func TestCreateProducer(t *testing.T) {
 			input: &user.CreateProducerInput{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
-				LastnameKana:  "あんどどっと",
+				LastnameKana:  "あんどぴりおど",
 				FirstnameKana: "すたっふ",
 				StoreName:     "&.農園",
 				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
