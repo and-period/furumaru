@@ -1,0 +1,62 @@
+categoryResponse:
+  type: object
+  properties:
+    id:
+      type: string
+      description: 商品種別ID
+    name:
+      type: string
+      description: カテゴリ名
+    createdAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
+    updatedAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
+  required:
+  - id
+  - name
+  - createdAt
+  - updatedAt
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    name: '野菜'
+    createdAt: 1640962800
+    updatedAt: 1640962800
+categoriesResponse:
+  type: object
+  properties:
+    categories:
+      type: array
+      description: 商品種別一覧
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            description: 商品種別ID
+          name:
+            type: string
+            description: カテゴリ名
+          createdAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+          updatedAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+  required:
+  - categories
+  example:
+    categories:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: '野菜'
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: '果物'
+      createdAt: 1640962800
+      updatedAt: 1640962800

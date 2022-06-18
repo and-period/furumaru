@@ -1,0 +1,21 @@
+createProductTypeRequest:
+  type: object
+  properties:
+    name:
+      type: string
+      description: 品目名
+  required:
+  - name
+  example:
+    name: 'じゃがいも'
+    categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
+updateProductTypeRequest:
+  type: object
+  properties:
+    name:
+      type: string
+      description: 品目名
+  required:
+  - name
+  example:
+    name: 'じゃがいも'
