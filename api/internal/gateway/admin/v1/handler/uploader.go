@@ -1,10 +1,12 @@
 package handler
 
 import (
+	"bytes"
 	"io"
 	"mime"
 	"mime/multipart"
 	"net/http"
+	"path/filepath"
 	"strings"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
@@ -70,12 +72,12 @@ func (h *apiV1Handler) uploadProducerHeader(ctx *gin.Context) {
 }
 
 func (h *apiV1Handler) upload(ctx *gin.Context, reg *uploadRegulation) {
-	file, err := h.parseFile(ctx, reg)
+	file, header, err := h.parseFile(ctx, reg)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
-	path := h.generateFilePath(reg)
+	path := h.generateFilePath(reg, header)
 	url, err := h.storage.Upload(ctx, path, file)
 	if err != nil {
 		httpError(ctx, err)
@@ -87,33 +89,36 @@ func (h *apiV1Handler) upload(ctx *gin.Context, reg *uploadRegulation) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *apiV1Handler) parseFile(ctx *gin.Context, reg *uploadRegulation) (multipart.File, error) {
+func (h *apiV1Handler) parseFile(ctx *gin.Context, reg *uploadRegulation) (io.Reader, *multipart.FileHeader, error) {
 	media, _, err := mime.ParseMediaType(ctx.GetHeader("Content-Type"))
 	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
+		return nil, nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 	if !strings.HasPrefix(media, "multipart/") {
-		return nil, status.Error(codes.InvalidArgument, errInvalidFileFormat.Error())
+		return nil, nil, status.Error(codes.InvalidArgument, errInvalidFileFormat.Error())
 	}
 
 	file, header, err := ctx.Request.FormFile(reg.filename)
 	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
+		return nil, nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 	if header.Size > reg.maxSize {
-		return nil, status.Error(codes.InvalidArgument, errTooLargeFileSize.Error())
+		return nil, nil, status.Error(codes.InvalidArgument, errTooLargeFileSize.Error())
 	}
-	ok, err := h.validateFormat(file, reg)
+
+	var buf bytes.Buffer
+	teeReader := io.TeeReader(file, &buf)
+	ok, err := h.validateFormat(reg, teeReader)
 	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
+		return nil, nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 	if !ok {
-		return nil, status.Error(codes.InvalidArgument, errInvalidFileFormat.Error())
+		return nil, nil, status.Error(codes.InvalidArgument, errInvalidFileFormat.Error())
 	}
-	return file, nil
+	return &buf, header, nil
 }
 
-func (h *apiV1Handler) validateFormat(file io.Reader, reg *uploadRegulation) (bool, error) {
+func (h *apiV1Handler) validateFormat(reg *uploadRegulation, file io.Reader) (bool, error) {
 	if len(reg.formats) == 0 {
 		return true, nil
 	}
@@ -130,7 +135,9 @@ func (h *apiV1Handler) validateFormat(file io.Reader, reg *uploadRegulation) (bo
 	return false, nil
 }
 
-func (h *apiV1Handler) generateFilePath(reg *uploadRegulation) string {
+func (h *apiV1Handler) generateFilePath(reg *uploadRegulation, header *multipart.FileHeader) string {
 	key := uuid.Base58Encode(uuid.New())
-	return strings.Join([]string{reg.dir, key}, "/")
+	extension := filepath.Ext(header.Filename)
+	filename := strings.Join([]string{key, extension}, "")
+	return strings.Join([]string{reg.dir, filename}, "/")
 }

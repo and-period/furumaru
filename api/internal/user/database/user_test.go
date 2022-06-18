@@ -408,7 +408,7 @@ func TestUser_UpdateAccount(t *testing.T) {
 	type args struct {
 		userID    string
 		accountID string
-		userName  string
+		username  string
 	}
 	type want struct {
 		hasErr bool
@@ -422,15 +422,14 @@ func TestUser_UpdateAccount(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
-				u.AccountID = ""
-				err = m.db.DB.Create(&u).Error
+				user := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
+				err := m.db.DB.Create(&user).Error
 				require.NoError(t, err)
 			},
 			args: args{
 				userID:    "user-id",
 				accountID: "account-id",
-				userName:  "username",
+				username:  "username",
 			},
 			want: want{
 				hasErr: false,
@@ -442,7 +441,28 @@ func TestUser_UpdateAccount(t *testing.T) {
 			args: args{
 				userID:    "user-id",
 				accountID: "account-id",
-				userName:  "username",
+				username:  "username",
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+		{
+			name: "failed to duplicate account id",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				user := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
+				user.AccountID = ""
+				err := m.db.DB.Create(&user).Error
+				require.NoError(t, err)
+				other := testUser("other-id", "test-other@and-period.jp", "+81111111111", now())
+				other.AccountID = "account-id"
+				err = m.db.DB.Create(&other).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				userID:    "user-id",
+				accountID: "account-id",
+				username:  "username",
 			},
 			want: want{
 				hasErr: true,
@@ -461,7 +481,7 @@ func TestUser_UpdateAccount(t *testing.T) {
 			tt.setup(ctx, t, m)
 
 			db := &user{db: m.db, now: now}
-			err = db.UpdateAccount(ctx, tt.args.userID, tt.args.accountID, tt.args.userName)
+			err = db.UpdateAccount(ctx, tt.args.userID, tt.args.accountID, tt.args.username)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}

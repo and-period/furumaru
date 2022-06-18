@@ -1,8 +1,10 @@
 package entity
 
 import (
+	"strings"
 	"time"
 
+	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/gorm"
 )
 
@@ -33,3 +35,52 @@ type Coordinator struct {
 }
 
 type Coordinators []*Coordinator
+
+type NewCoordinatorParams struct {
+	Lastname         string
+	Firstname        string
+	LastnameKana     string
+	FirstnameKana    string
+	CompanyName      string
+	StoreName        string
+	ThumbnailURL     string
+	HeaderURL        string
+	TwitterAccount   string
+	InstagramAccount string
+	FacebookAccount  string
+	Email            string
+	PhoneNumber      string
+	PostalCode       string
+	Prefecture       string
+	City             string
+	AddressLine1     string
+	AddressLine2     string
+}
+
+func NewCoordinator(params *NewCoordinatorParams) *Coordinator {
+	return &Coordinator{
+		ID:               uuid.Base58Encode(uuid.New()),
+		Lastname:         params.Lastname,
+		Firstname:        params.Firstname,
+		LastnameKana:     params.LastnameKana,
+		FirstnameKana:    params.FirstnameKana,
+		CompanyName:      params.CompanyName,
+		StoreName:        params.StoreName,
+		ThumbnailURL:     params.ThumbnailURL,
+		HeaderURL:        params.HeaderURL,
+		TwitterAccount:   params.TwitterAccount,
+		InstagramAccount: params.InstagramAccount,
+		FacebookAccount:  params.FacebookAccount,
+		Email:            params.Email,
+		PhoneNumber:      params.PhoneNumber,
+		PostalCode:       params.PostalCode,
+		Prefecture:       params.Prefecture,
+		City:             params.City,
+		AddressLine1:     params.AddressLine1,
+		AddressLine2:     params.AddressLine2,
+	}
+}
+
+func (p *Coordinator) Name() string {
+	return strings.TrimSpace(strings.Join([]string{p.Lastname, p.Firstname}, " "))
+}

@@ -52,7 +52,9 @@ type Product struct {
 	OriginPrefecture string            `gorm:""`                                    // 原産地(都道府県)
 	OriginCity       string            `gorm:""`                                    // 原産地(市区町村)
 	CreatedAt        time.Time         `gorm:"<-:create"`                           // 登録日時
+	CreatedBy        string            `gorm:"<-:create"`                           // 登録者ID
 	UpdatedAt        time.Time         `gorm:""`                                    // 更新日時
+	UpdatedBy        string            `gorm:""`                                    // 更新者ID
 	DeletedAt        gorm.DeletedAt    `gorm:"default:null"`                        // 退会日時
 }
 

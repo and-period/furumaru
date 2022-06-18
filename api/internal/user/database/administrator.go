@@ -91,25 +91,34 @@ func (a *administrator) Create(
 
 func (a *administrator) UpdateEmail(ctx context.Context, administratorID, email string) error {
 	_, err := a.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
-		var current *entity.Administrator
-		err := tx.WithContext(ctx).
-			Table(administratorTable).Select("id").
-			Where("id = ?", administratorID).
-			First(&current).Error
-		if err != nil {
+		if _, err := a.get(ctx, tx, administratorID); err != nil {
 			return nil, err
 		}
 
 		params := map[string]interface{}{
-			"id":         current.ID,
 			"email":      email,
 			"updated_at": a.now(),
 		}
-		err = tx.WithContext(ctx).
+		err := tx.WithContext(ctx).
 			Table(administratorTable).
 			Where("id = ?", administratorID).
 			Updates(params).Error
 		return nil, err
 	})
 	return exception.InternalError(err)
+}
+
+func (a *administrator) get(
+	ctx context.Context, tx *gorm.DB, administratorID string, fields ...string,
+) (*entity.Administrator, error) {
+	var administrator *entity.Administrator
+	if len(fields) == 0 {
+		fields = administratorFields
+	}
+
+	err := tx.WithContext(ctx).
+		Table(administratorTable).Select(fields).
+		Where("id = ?", administratorID).
+		First(&administrator).Error
+	return administrator, err
 }

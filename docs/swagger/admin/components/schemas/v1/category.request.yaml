@@ -1,0 +1,20 @@
+createCategoryRequest:
+  type: object
+  properties:
+    name:
+      type: string
+      description: カテゴリ名
+  required:
+  - name
+  example:
+    name: '野菜'
+updateCategoryRequest:
+  type: object
+  properties:
+    name:
+      type: string
+      description: カテゴリ名
+  required:
+  - name
+  example:
+    name: '野菜'
