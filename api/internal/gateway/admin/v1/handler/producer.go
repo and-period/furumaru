@@ -19,8 +19,6 @@ func (h *apiV1Handler) producerRoutes(rg *gin.RouterGroup) {
 }
 
 func (h *apiV1Handler) ListProducers(ctx *gin.Context) {
-	c := util.SetMetadata(ctx)
-
 	const (
 		defaultLimit  = 20
 		defaultOffset = 0
@@ -41,7 +39,7 @@ func (h *apiV1Handler) ListProducers(ctx *gin.Context) {
 		Limit:  limit,
 		Offset: offset,
 	}
-	producers, err := h.user.ListProducers(c, in)
+	producers, err := h.user.ListProducers(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
@@ -54,12 +52,10 @@ func (h *apiV1Handler) ListProducers(ctx *gin.Context) {
 }
 
 func (h *apiV1Handler) GetProducer(ctx *gin.Context) {
-	c := util.SetMetadata(ctx)
-
 	in := &user.GetProducerInput{
 		ProducerID: util.GetParam(ctx, "producerId"),
 	}
-	producer, err := h.user.GetProducer(c, in)
+	producer, err := h.user.GetProducer(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
@@ -72,8 +68,6 @@ func (h *apiV1Handler) GetProducer(ctx *gin.Context) {
 }
 
 func (h *apiV1Handler) CreateProducer(ctx *gin.Context) {
-	c := util.SetMetadata(ctx)
-
 	req := &request.CreateProducerRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
@@ -96,7 +90,7 @@ func (h *apiV1Handler) CreateProducer(ctx *gin.Context) {
 		AddressLine1:  req.AddressLine1,
 		AddressLine2:  req.AddressLine2,
 	}
-	producer, err := h.user.CreateProducer(c, in)
+	producer, err := h.user.CreateProducer(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
