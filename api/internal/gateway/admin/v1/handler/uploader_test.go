@@ -45,7 +45,6 @@ func TestUploadCoordinatorThumbnail(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			const path = "/v1/upload/coordinators/thumbnail"
 			req := newMultipartRequest(t, http.MethodPost, path, tt.field)
 			testHTTP(t, tt.setup, tt.expect, req)
@@ -90,7 +89,6 @@ func TestUploadCoordinatorHeader(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			const path = "/v1/upload/coordinators/header"
 			req := newMultipartRequest(t, http.MethodPost, path, tt.field)
 			testHTTP(t, tt.setup, tt.expect, req)
@@ -135,7 +133,6 @@ func TestUploadProducerThumbnail(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			const path = "/v1/upload/producers/thumbnail"
 			req := newMultipartRequest(t, http.MethodPost, path, tt.field)
 			testHTTP(t, tt.setup, tt.expect, req)
@@ -180,7 +177,6 @@ func TestUploadProducerHeader(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			const path = "/v1/upload/producers/header"
 			req := newMultipartRequest(t, http.MethodPost, path, tt.field)
 			testHTTP(t, tt.setup, tt.expect, req)

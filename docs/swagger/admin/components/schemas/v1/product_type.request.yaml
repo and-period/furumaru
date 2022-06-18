@@ -8,7 +8,6 @@ createProductTypeRequest:
   - name
   example:
     name: 'じゃがいも'
-    categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
 updateProductTypeRequest:
   type: object
   properties:

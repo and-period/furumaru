@@ -6,6 +6,10 @@ type ListCategoriesInput struct {
 	Offset int64  `validate:"min=0"`
 }
 
+type MultiGetCategoriesInput struct {
+	CategoryIDs []string `validate:"omitempty,dive,required"`
+}
+
 type CreateCategoryInput struct {
 	Name string `validate:"required,max=32"`
 }

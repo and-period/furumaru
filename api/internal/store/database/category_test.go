@@ -89,6 +89,75 @@ func TestCategory_List(t *testing.T) {
 	}
 }
 
+func TestCategory_MultiGet(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, categoryTable)
+	categories := make(entity.Categories, 3)
+	categories[0] = testCategory("category-id01", "野菜", now())
+	categories[1] = testCategory("category-id02", "果物", now())
+	categories[2] = testCategory("category-id03", "水産物", now())
+	err = m.db.DB.Create(&categories).Error
+	require.NoError(t, err)
+
+	type args struct {
+		categoryIDs []string
+	}
+	type want struct {
+		categories entity.Categories
+		hasErr     bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				categoryIDs: []string{"category-id01", "category-id02"},
+			},
+			want: want{
+				categories: categories[:2],
+				hasErr:     false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &category{db: m.db, now: now}
+			actual, err := db.MultiGet(ctx, tt.args.categoryIDs)
+			if tt.want.hasErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			fillIgnoreCategoriesField(actual, now())
+			assert.Equal(t, tt.want.categories, actual)
+		})
+	}
+}
+
 func TestCategory_Create(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

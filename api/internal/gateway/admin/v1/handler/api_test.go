@@ -20,6 +20,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	mock_storage "github.com/and-period/furumaru/api/mock/pkg/storage"
+	mock_store "github.com/and-period/furumaru/api/mock/store"
 	mock_user "github.com/and-period/furumaru/api/mock/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/rbac"
@@ -40,6 +41,7 @@ var (
 type mocks struct {
 	storage *mock_storage.MockBucket
 	user    *mock_user.MockUserService
+	store   *mock_store.MockStoreService
 }
 
 type testResponse struct {
@@ -65,6 +67,7 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
 		storage: mock_storage.NewMockBucket(ctrl),
 		user:    mock_user.NewMockUserService(ctrl),
+		store:   mock_store.NewMockStoreService(ctrl),
 	}
 }
 
@@ -82,6 +85,7 @@ func newAPIV1Handler(mocks *mocks, opts *testOptions) APIV1Handler {
 		storage:     mocks.storage,
 		enforcer:    enforcer,
 		user:        mocks.user,
+		store:       mocks.store,
 	}
 }
 
@@ -98,6 +102,51 @@ func getRBACDirectory() string {
 	return filepath.Join(strs[0], "/api/config/gateway/admin/rbac")
 }
 
+func testGet(
+	t *testing.T,
+	setup func(*testing.T, *mocks, *gomock.Controller),
+	expect *testResponse,
+	path string,
+	opts ...testOption,
+) {
+	testHTTP(t, setup, expect, newHTTPRequest(t, http.MethodGet, path, nil), opts...)
+}
+
+func testPost(
+	t *testing.T,
+	setup func(*testing.T, *mocks, *gomock.Controller),
+	expect *testResponse,
+	path string,
+	body interface{},
+	opts ...testOption,
+) {
+	testHTTP(t, setup, expect, newHTTPRequest(t, http.MethodPost, path, body), opts...)
+}
+
+func testPatch(
+	t *testing.T,
+	setup func(*testing.T, *mocks, *gomock.Controller),
+	expect *testResponse,
+	path string,
+	body interface{},
+	opts ...testOption,
+) {
+	testHTTP(t, setup, expect, newHTTPRequest(t, http.MethodPatch, path, body), opts...)
+}
+
+func testDelete(
+	t *testing.T,
+	setup func(*testing.T, *mocks, *gomock.Controller),
+	expect *testResponse,
+	path string,
+	opts ...testOption,
+) {
+	testHTTP(t, setup, expect, newHTTPRequest(t, http.MethodDelete, path, nil), opts...)
+}
+
+/**
+ * testHTTP - HTTPハンドラのテストを実行
+ */
 func testHTTP(
 	t *testing.T,
 	setup func(*testing.T, *mocks, *gomock.Controller),
@@ -105,6 +154,8 @@ func testHTTP(
 	req *http.Request,
 	opts ...testOption,
 ) {
+	t.Parallel()
+
 	// setup
 	gin.SetMode(gin.TestMode)
 	ctrl := gomock.NewController(t)

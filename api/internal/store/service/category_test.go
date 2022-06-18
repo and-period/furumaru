@@ -83,6 +83,69 @@ func TestListCategories(t *testing.T) {
 	}
 }
 
+func TestMultiGetCategories(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
+	categories := entity.Categories{
+		{
+			ID:        "category-id",
+			Name:      "野菜",
+			CreatedAt: now,
+			UpdatedAt: now,
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.MultiGetCategoriesInput
+		expect    entity.Categories
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Category.EXPECT().MultiGet(ctx, []string{"category-id"}).Return(categories, nil)
+			},
+			input: &store.MultiGetCategoriesInput{
+				CategoryIDs: []string{"category-id"},
+			},
+			expect:    categories,
+			expectErr: nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.MultiGetCategoriesInput{
+				CategoryIDs: []string{""},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to list",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Category.EXPECT().MultiGet(ctx, []string{"category-id"}).Return(nil, errmock)
+			},
+			input: &store.MultiGetCategoriesInput{
+				CategoryIDs: []string{"category-id"},
+			},
+			expect:    nil,
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *storeService) {
+			actual, err := service.MultiGetCategories(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.ElementsMatch(t, tt.expect, actual)
+		}))
+	}
+}
+
 func TestCreateCategory(t *testing.T) {
 	t.Parallel()
 
