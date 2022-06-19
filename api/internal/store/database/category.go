@@ -53,6 +53,19 @@ func (c *category) List(
 	return categories, exception.InternalError(err)
 }
 
+func (c *category) MultiGet(ctx context.Context, categoryIDs []string, fields ...string) (entity.Categories, error) {
+	var categories entity.Categories
+	if len(fields) == 0 {
+		fields = categoryFields
+	}
+
+	err := c.db.DB.WithContext(ctx).
+		Table(categoryTable).Select(fields).
+		Where("id IN (?)", categoryIDs).
+		Find(&categories).Error
+	return categories, exception.InternalError(err)
+}
+
 func (c *category) Create(ctx context.Context, category *entity.Category) error {
 	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		now := c.now()
@@ -66,21 +79,15 @@ func (c *category) Create(ctx context.Context, category *entity.Category) error 
 
 func (c *category) Update(ctx context.Context, categoryID, name string) error {
 	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
-		var current *entity.Category
-		err := tx.WithContext(ctx).
-			Table(categoryTable).Select("id").
-			Where("id = ?", categoryID).
-			First(&current).Error
-		if err != nil {
+		if _, err := c.get(ctx, tx, categoryID); err != nil {
 			return nil, err
 		}
 
 		params := map[string]interface{}{
-			"id":         current.ID,
 			"name":       name,
 			"updated_at": c.now(),
 		}
-		err = tx.WithContext(ctx).
+		err := tx.WithContext(ctx).
 			Table(categoryTable).
 			Where("id = ?", categoryID).
 			Updates(params).Error
@@ -91,20 +98,30 @@ func (c *category) Update(ctx context.Context, categoryID, name string) error {
 
 func (c *category) Delete(ctx context.Context, categoryID string) error {
 	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
-		var current *entity.Category
-		err := tx.WithContext(ctx).
-			Table(categoryTable).Select("id").
-			Where("id = ?", categoryID).
-			First(&current).Error
-		if err != nil {
+		if _, err := c.get(ctx, tx, categoryID); err != nil {
 			return nil, err
 		}
 
-		err = tx.WithContext(ctx).
+		err := tx.WithContext(ctx).
 			Table(categoryTable).
 			Where("id = ?", categoryID).
 			Delete(&entity.Category{}).Error
 		return nil, err
 	})
 	return exception.InternalError(err)
+}
+
+func (c *category) get(
+	ctx context.Context, tx *gorm.DB, categoryID string, fields ...string,
+) (*entity.Category, error) {
+	var category *entity.Category
+	if len(fields) == 0 {
+		fields = categoryFields
+	}
+
+	err := tx.WithContext(ctx).
+		Table(categoryTable).Select(fields).
+		Where("id = ?", categoryID).
+		First(&category).Error
+	return category, err
 }

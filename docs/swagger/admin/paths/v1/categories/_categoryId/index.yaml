@@ -1,0 +1,60 @@
+patch:
+  summary: 商品種別更新
+  operationId: v1UpdateCategory
+  tags:
+  - Category
+  security:
+  - BearerAuth: []
+  parameters:
+  - in: path
+    name: categoryId
+    schema:
+      type: string
+    description: 商品種別ID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../../openapi.yaml#/components/schemas/v1UpdateCategoryRequest'
+  responses:
+    204:
+      description: A successful response.
+      content:
+        application/json:
+          schema: {}
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+delete:
+  summary: 商品種別削除
+  operationId: v1DeleteCategory
+  tags:
+  - Category
+  security:
+  - BearerAuth: []
+  parameters:
+  - in: path
+    name: categoryId
+    schema:
+      type: string
+    description: 商品種別ID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  responses:
+    204:
+      description: A successful response.
+      content:
+        application/json:
+          schema: {}
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'

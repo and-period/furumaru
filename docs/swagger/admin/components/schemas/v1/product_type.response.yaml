@@ -1,0 +1,102 @@
+productTypeResponse:
+  type: object
+  properties:
+    id:
+      type: string
+      description: 品目ID
+    name:
+      type: string
+      description: 品目名
+    categoryId:
+      type: string
+      description: 商品種別ID
+    createdAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
+    updatedAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
+  required:
+  - id
+  - name
+  - categoryId
+  - createdAt
+  - updatedAt
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    name: '野菜'
+    categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
+    createdAt: 1640962800
+    updatedAt: 1640962800
+productTypesResponse:
+  type: object
+  properties:
+    productTypes:
+      type: array
+      description: 品目一覧
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            description: 品目ID
+          name:
+            type: string
+            description: 品目名
+          categoryId:
+            type: string
+            description: 商品種別ID
+          createdAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+          updatedAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+    categories:
+      type: array
+      description: 商品種別一覧
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            description: 商品種別ID
+          name:
+            type: string
+            description: カテゴリ名
+          createdAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+          updatedAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+  required:
+  - productTypes
+  - categories
+  example:
+    productTypes:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: 'じゃがいも'
+      categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: 'りんご'
+      categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    categories:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: '野菜'
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: '果物'
+      createdAt: 1640962800
+      updatedAt: 1640962800

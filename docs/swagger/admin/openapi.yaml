@@ -15,6 +15,10 @@ tags:
   description: 仲介者関連
 - name: Producer
   description: 生産者関連
+- name: Category
+  description: 商品種別関連
+- name: ProductType
+  description: 品目関連
 paths:
   # Auth
   /v1/auth:
@@ -37,6 +41,18 @@ paths:
     $ref: './paths/v1/producers/index.yaml'
   /v1/producers/{producerId}:
     $ref: './paths/v1/producers/_producerId/index.yaml'
+  # Category
+  /v1/categories:
+    $ref: './paths/v1/categories/index.yaml'
+  /v1/categories/{categoryId}:
+    $ref: './paths/v1/categories/_categoryId/index.yaml'
+  # ProductType
+  /v1/categories/-/product-types:
+    $ref: './paths/v1/categories/-/product-types/index.yaml'
+  /v1/categories/{categoryId}/product-types:
+    $ref: './paths/v1/categories/_categoryId/product-types/index.yaml'
+  /v1/categories/{categoryId}/product-types/{productTypeId}:
+    $ref: './paths/v1/categories/_categoryId/product-types/_productTypeId/index.yaml'
   # Upload
   /v1/upload/coordinators/thumbnail:
     $ref: './paths/v1/upload/coordinators/thumbnail.yaml'
@@ -63,9 +79,17 @@ components:
     v1UpdateAuthPasswordRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/updateAuthPasswordRequest'
     v1CreateAdministratorRequest:
-      $ref: './components/schemas/v1/administrators.request.yaml#/createAdministratorRequest'
+      $ref: './components/schemas/v1/administrator.request.yaml#/createAdministratorRequest'
     v1CreateProducerRequest:
-      $ref: './components/schemas/v1/producers.request.yaml#/createProducerRequest'
+      $ref: './components/schemas/v1/producer.request.yaml#/createProducerRequest'
+    v1CreateCategoryRequest:
+      $ref: './components/schemas/v1/category.request.yaml#/createCategoryRequest'
+    v1UpdateCategoryRequest:
+      $ref: './components/schemas/v1/category.request.yaml#/updateCategoryRequest'
+    v1CreateProductTypeRequest:
+      $ref: './components/schemas/v1/product_type.request.yaml#/createProductTypeRequest'
+    v1UpdateProductTypeRequest:
+      $ref: './components/schemas/v1/product_type.request.yaml#/updateProductTypeRequest'
     v1UploadCoordinatorThumbnailRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadCoordinatorThumbnailRequest'
     v1UploadCoordinatorHeaderRequest:
@@ -78,12 +102,20 @@ components:
     v1AuthResponse:
       $ref: './components/schemas/v1/auth.response.yaml#/authResponse'
     v1AdministratorResponse:
-      $ref: './components/schemas/v1/administrators.response.yaml#/administratorResponse'
+      $ref: './components/schemas/v1/administrator.response.yaml#/administratorResponse'
     v1AdministratorsResponse:
-      $ref: './components/schemas/v1/administrators.response.yaml#/administratorsResponse'
+      $ref: './components/schemas/v1/administrator.response.yaml#/administratorsResponse'
     v1ProducerResponse:
-      $ref: './components/schemas/v1/producers.response.yaml#/producerResponse'
+      $ref: './components/schemas/v1/producer.response.yaml#/producerResponse'
     v1ProducersResponse:
-      $ref: './components/schemas/v1/producers.response.yaml#/producersResponse'
+      $ref: './components/schemas/v1/producer.response.yaml#/producersResponse'
+    v1CategoryResponse:
+      $ref: './components/schemas/v1/category.response.yaml#/categoryResponse'
+    v1CategoriesResponse:
+      $ref: './components/schemas/v1/category.response.yaml#/categoriesResponse'
+    v1ProductTypeResponse:
+      $ref: './components/schemas/v1/product_type.response.yaml#/productTypeResponse'
+    v1ProductTypesResponse:
+      $ref: './components/schemas/v1/product_type.response.yaml#/productTypesResponse'
     v1UploadImageResponse:
       $ref: './components/schemas/v1/upload.response.yaml#/uploadImageResponse'

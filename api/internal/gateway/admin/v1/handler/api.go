@@ -94,6 +94,9 @@ func (h *apiV1Handler) Routes(rg *gin.RouterGroup) {
 	h.authRoutes(v1.Group("/auth"))
 	h.administratorRoutes(v1.Group("/administrators"))
 	h.producerRoutes(v1.Group("/producers"))
+	h.categoryRoutes(v1.Group("/categories"))
+	h.productTypeRoutes(v1.Group("/categories/:categoryId/product-types"))
+	v1.GET("/categories/-/product-types", h.authentication(), h.ListProductTypes)
 	h.uploadRoutes(v1.Group("/upload"))
 }
 

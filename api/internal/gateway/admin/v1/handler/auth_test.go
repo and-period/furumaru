@@ -60,10 +60,8 @@ func TestGetAuth(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			const path = "/v1/auth"
-			req := newHTTPRequest(t, http.MethodGet, path, nil)
-			testHTTP(t, tt.setup, tt.expect, req)
+			testGet(t, tt.setup, tt.expect, path)
 		})
 	}
 }
@@ -132,10 +130,8 @@ func TestSignIn(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			const path = "/v1/auth"
-			req := newHTTPRequest(t, http.MethodPost, path, tt.req)
-			testHTTP(t, tt.setup, tt.expect, req)
+			testPost(t, tt.setup, tt.expect, path, tt.req)
 		})
 	}
 }
@@ -173,10 +169,8 @@ func TestSignOut(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			const path = "/v1/auth"
-			req := newHTTPRequest(t, http.MethodDelete, path, nil)
-			testHTTP(t, tt.setup, tt.expect, req)
+			testDelete(t, tt.setup, tt.expect, path)
 		})
 	}
 }
@@ -241,10 +235,8 @@ func TestRefreshAuthToken(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			const path = "/v1/auth/refresh-token"
-			req := newHTTPRequest(t, http.MethodPost, path, tt.req)
-			testHTTP(t, tt.setup, tt.expect, req)
+			testPost(t, tt.setup, tt.expect, path, tt.req)
 		})
 	}
 }
@@ -295,10 +287,8 @@ func TestUpdateAuthEmail(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			const path = "/v1/auth/email"
-			req := newHTTPRequest(t, http.MethodPatch, path, tt.req)
-			testHTTP(t, tt.setup, tt.expect, req)
+			testPatch(t, tt.setup, tt.expect, path, tt.req)
 		})
 	}
 }
@@ -349,10 +339,8 @@ func TestVerifyAuthEmail(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			const path = "/v1/auth/email/verified"
-			req := newHTTPRequest(t, http.MethodPost, path, tt.req)
-			testHTTP(t, tt.setup, tt.expect, req)
+			testPost(t, tt.setup, tt.expect, path, tt.req)
 		})
 	}
 }
@@ -411,10 +399,8 @@ func TestUpdateAdminPassword(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			const path = "/v1/auth/password"
-			req := newHTTPRequest(t, http.MethodPatch, path, tt.req)
-			testHTTP(t, tt.setup, tt.expect, req)
+			testPatch(t, tt.setup, tt.expect, path, tt.req)
 		})
 	}
 }

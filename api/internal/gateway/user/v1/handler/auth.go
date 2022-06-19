@@ -30,8 +30,6 @@ func (h *apiV1Handler) authRoutes(rg *gin.RouterGroup) {
 }
 
 func (h *apiV1Handler) GetAuth(ctx *gin.Context) {
-	c := util.SetMetadata(ctx)
-
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
 		unauthorized(ctx, err)
@@ -41,7 +39,7 @@ func (h *apiV1Handler) GetAuth(ctx *gin.Context) {
 	in := &user.GetUserAuthInput{
 		AccessToken: token,
 	}
-	auth, err := h.user.GetUserAuth(c, in)
+	auth, err := h.user.GetUserAuth(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
@@ -54,8 +52,6 @@ func (h *apiV1Handler) GetAuth(ctx *gin.Context) {
 }
 
 func (h *apiV1Handler) SignIn(ctx *gin.Context) {
-	c := util.SetMetadata(ctx)
-
 	req := &request.SignInRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
@@ -66,7 +62,7 @@ func (h *apiV1Handler) SignIn(ctx *gin.Context) {
 		Key:      req.Username,
 		Password: req.Password,
 	}
-	auth, err := h.user.SignInUser(c, in)
+	auth, err := h.user.SignInUser(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
@@ -79,8 +75,6 @@ func (h *apiV1Handler) SignIn(ctx *gin.Context) {
 }
 
 func (h *apiV1Handler) SignOut(ctx *gin.Context) {
-	c := util.SetMetadata(ctx)
-
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
 		unauthorized(ctx, err)
@@ -89,7 +83,7 @@ func (h *apiV1Handler) SignOut(ctx *gin.Context) {
 	in := &user.SignOutUserInput{
 		AccessToken: token,
 	}
-	if err := h.user.SignOutUser(c, in); err != nil {
+	if err := h.user.SignOutUser(ctx, in); err != nil {
 		httpError(ctx, err)
 		return
 	}
@@ -98,8 +92,6 @@ func (h *apiV1Handler) SignOut(ctx *gin.Context) {
 }
 
 func (h *apiV1Handler) RefreshAuthToken(ctx *gin.Context) {
-	c := util.SetMetadata(ctx)
-
 	req := &request.RefreshAuthTokenRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
@@ -109,7 +101,7 @@ func (h *apiV1Handler) RefreshAuthToken(ctx *gin.Context) {
 	in := &user.RefreshUserTokenInput{
 		RefreshToken: req.RefreshToken,
 	}
-	auth, err := h.user.RefreshUserToken(c, in)
+	auth, err := h.user.RefreshUserToken(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
@@ -122,8 +114,6 @@ func (h *apiV1Handler) RefreshAuthToken(ctx *gin.Context) {
 }
 
 func (h *apiV1Handler) InitializeAuth(ctx *gin.Context) {
-	c := util.SetMetadata(ctx)
-
 	req := &request.InitializeAuthRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
@@ -136,7 +126,7 @@ func (h *apiV1Handler) InitializeAuth(ctx *gin.Context) {
 		Username:  req.Username,
 	}
 
-	if err := h.user.InitializeUser(c, in); err != nil {
+	if err := h.user.InitializeUser(ctx, in); err != nil {
 		httpError(ctx, err)
 		return
 	}
@@ -145,8 +135,6 @@ func (h *apiV1Handler) InitializeAuth(ctx *gin.Context) {
 }
 
 func (h *apiV1Handler) UpdateAuthEmail(ctx *gin.Context) {
-	c := util.SetMetadata(ctx)
-
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
 		unauthorized(ctx, err)
@@ -162,7 +150,7 @@ func (h *apiV1Handler) UpdateAuthEmail(ctx *gin.Context) {
 		AccessToken: token,
 		Email:       req.Email,
 	}
-	if err := h.user.UpdateUserEmail(c, in); err != nil {
+	if err := h.user.UpdateUserEmail(ctx, in); err != nil {
 		httpError(ctx, err)
 		return
 	}
@@ -171,8 +159,6 @@ func (h *apiV1Handler) UpdateAuthEmail(ctx *gin.Context) {
 }
 
 func (h *apiV1Handler) VerifyAuthEmail(ctx *gin.Context) {
-	c := util.SetMetadata(ctx)
-
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
 		unauthorized(ctx, err)
@@ -188,7 +174,7 @@ func (h *apiV1Handler) VerifyAuthEmail(ctx *gin.Context) {
 		AccessToken: token,
 		VerifyCode:  req.VerifyCode,
 	}
-	if err := h.user.VerifyUserEmail(c, in); err != nil {
+	if err := h.user.VerifyUserEmail(ctx, in); err != nil {
 		httpError(ctx, err)
 		return
 	}
@@ -197,8 +183,6 @@ func (h *apiV1Handler) VerifyAuthEmail(ctx *gin.Context) {
 }
 
 func (h *apiV1Handler) UpdateAuthPassword(ctx *gin.Context) {
-	c := util.SetMetadata(ctx)
-
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
 		unauthorized(ctx, err)
@@ -216,7 +200,7 @@ func (h *apiV1Handler) UpdateAuthPassword(ctx *gin.Context) {
 		NewPassword:          req.NewPassword,
 		PasswordConfirmation: req.PasswordConfirmation,
 	}
-	if err := h.user.UpdateUserPassword(c, in); err != nil {
+	if err := h.user.UpdateUserPassword(ctx, in); err != nil {
 		httpError(ctx, err)
 		return
 	}
@@ -225,8 +209,6 @@ func (h *apiV1Handler) UpdateAuthPassword(ctx *gin.Context) {
 }
 
 func (h *apiV1Handler) ForgotAuthPassword(ctx *gin.Context) {
-	c := util.SetMetadata(ctx)
-
 	req := &request.ForgotAuthPasswordRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
@@ -236,7 +218,7 @@ func (h *apiV1Handler) ForgotAuthPassword(ctx *gin.Context) {
 	in := &user.ForgotUserPasswordInput{
 		Email: req.Email,
 	}
-	if err := h.user.ForgotUserPassword(c, in); err != nil {
+	if err := h.user.ForgotUserPassword(ctx, in); err != nil {
 		httpError(ctx, err)
 		return
 	}
@@ -245,8 +227,6 @@ func (h *apiV1Handler) ForgotAuthPassword(ctx *gin.Context) {
 }
 
 func (h *apiV1Handler) ResetAuthPassword(ctx *gin.Context) {
-	c := util.SetMetadata(ctx)
-
 	req := &request.ResetAuthPasswordRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
@@ -259,7 +239,7 @@ func (h *apiV1Handler) ResetAuthPassword(ctx *gin.Context) {
 		NewPassword:          req.Password,
 		PasswordConfirmation: req.PasswordConfirmation,
 	}
-	if err := h.user.VerifyUserPassword(c, in); err != nil {
+	if err := h.user.VerifyUserPassword(ctx, in); err != nil {
 		httpError(ctx, err)
 		return
 	}
@@ -268,12 +248,10 @@ func (h *apiV1Handler) ResetAuthPassword(ctx *gin.Context) {
 }
 
 func (h *apiV1Handler) GetAuthUser(ctx *gin.Context) {
-	c := util.SetMetadata(ctx)
-
 	in := &user.GetUserInput{
 		UserID: getUserID(ctx),
 	}
-	u, err := h.user.GetUser(c, in)
+	u, err := h.user.GetUser(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
@@ -286,8 +264,6 @@ func (h *apiV1Handler) GetAuthUser(ctx *gin.Context) {
 }
 
 func (h *apiV1Handler) CreateAuth(ctx *gin.Context) {
-	c := util.SetMetadata(ctx)
-
 	req := &request.CreateAuthRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
@@ -300,7 +276,7 @@ func (h *apiV1Handler) CreateAuth(ctx *gin.Context) {
 		Password:             req.Password,
 		PasswordConfirmation: req.PasswordConfirmation,
 	}
-	userID, err := h.user.CreateUser(c, in)
+	userID, err := h.user.CreateUser(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
@@ -313,12 +289,10 @@ func (h *apiV1Handler) CreateAuth(ctx *gin.Context) {
 }
 
 func (h *apiV1Handler) DeleteAuth(ctx *gin.Context) {
-	c := util.SetMetadata(ctx)
-
 	in := &user.DeleteUserInput{
 		UserID: getUserID(ctx),
 	}
-	if err := h.user.DeleteUser(c, in); err != nil {
+	if err := h.user.DeleteUser(ctx, in); err != nil {
 		httpError(ctx, err)
 		return
 	}
@@ -327,8 +301,6 @@ func (h *apiV1Handler) DeleteAuth(ctx *gin.Context) {
 }
 
 func (h *apiV1Handler) CreateAuthWithOAuth(ctx *gin.Context) {
-	c := util.SetMetadata(ctx)
-
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
 		unauthorized(ctx, err)
@@ -338,7 +310,7 @@ func (h *apiV1Handler) CreateAuthWithOAuth(ctx *gin.Context) {
 	in := &user.CreateUserWithOAuthInput{
 		AccessToken: token,
 	}
-	u, err := h.user.CreateUserWithOAuth(c, in)
+	u, err := h.user.CreateUserWithOAuth(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
@@ -351,8 +323,6 @@ func (h *apiV1Handler) CreateAuthWithOAuth(ctx *gin.Context) {
 }
 
 func (h *apiV1Handler) VerifyAuth(ctx *gin.Context) {
-	c := util.SetMetadata(ctx)
-
 	req := &request.VerifyAuthRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
@@ -363,7 +333,7 @@ func (h *apiV1Handler) VerifyAuth(ctx *gin.Context) {
 		UserID:     req.ID,
 		VerifyCode: req.VerifyCode,
 	}
-	if err := h.user.VerifyUser(c, in); err != nil {
+	if err := h.user.VerifyUser(ctx, in); err != nil {
 		httpError(ctx, err)
 		return
 	}

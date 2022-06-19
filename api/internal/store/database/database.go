@@ -14,12 +14,14 @@ type Params struct {
 }
 
 type Database struct {
-	Category Category
+	Category    Category
+	ProductType ProductType
 }
 
 func NewDatabase(params *Params) *Database {
 	return &Database{
-		Category: NewCategory(params.Database),
+		Category:    NewCategory(params.Database),
+		ProductType: NewProductType(params.Database),
 	}
 }
 
@@ -28,9 +30,17 @@ func NewDatabase(params *Params) *Database {
  */
 type Category interface {
 	List(ctx context.Context, params *ListCategoriesParams, fields ...string) (entity.Categories, error)
+	MultiGet(ctx context.Context, categoryIDs []string, fields ...string) (entity.Categories, error)
 	Create(ctx context.Context, category *entity.Category) error
 	Update(ctx context.Context, categoryID, name string) error
 	Delete(ctx context.Context, categoryID string) error
+}
+
+type ProductType interface {
+	List(ctx context.Context, params *ListProductTypesParams, fields ...string) (entity.ProductTypes, error)
+	Create(ctx context.Context, productType *entity.ProductType) error
+	Update(ctx context.Context, productTypeID, name string) error
+	Delete(ctx context.Context, productTypeID string) error
 }
 
 /**
@@ -40,4 +50,11 @@ type ListCategoriesParams struct {
 	Name   string
 	Limit  int
 	Offset int
+}
+
+type ListProductTypesParams struct {
+	Name       string
+	CategoryID string
+	Limit      int
+	Offset     int
 }
