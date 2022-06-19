@@ -45,7 +45,12 @@ type Administrator interface {
 	UpdateEmail(ctx context.Context, administratorID, email string) error
 }
 
-type Coordinator interface{}
+type Coordinator interface {
+	List(ctx context.Context, params *ListCoordinatorsParams, fields ...string) (entity.Coordinators, error)
+	Get(ctx context.Context, coordinatorID string, fields ...string) (*entity.Coordinator, error)
+	Create(ctx context.Context, auth *entity.AdminAuth, coordinator *entity.Coordinator) error
+	UpdateEmail(ctx context.Context, coordinatorID, email string) error
+}
 
 type Producer interface {
 	List(ctx context.Context, params *ListProducersParams, fields ...string) (entity.Producers, error)
@@ -74,6 +79,11 @@ type ListAdministratorsParams struct {
 }
 
 type ListProducersParams struct {
+	Limit  int
+	Offset int
+}
+
+type ListCoordinatorsParams struct {
 	Limit  int
 	Offset int
 }

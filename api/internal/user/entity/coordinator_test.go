@@ -19,7 +19,7 @@ func TestCoordinator(t *testing.T) {
 			params: &NewCoordinatorParams{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
-				LastnameKana:  "あんどどっと",
+				LastnameKana:  "あんどぴりおど",
 				FirstnameKana: "すたっふ",
 				Email:         "test-coordinator@and-period.jp",
 				PhoneNumber:   "+819012345678",
@@ -27,7 +27,7 @@ func TestCoordinator(t *testing.T) {
 			expect: &Coordinator{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
-				LastnameKana:  "あんどどっと",
+				LastnameKana:  "あんどぴりおど",
 				FirstnameKana: "すたっふ",
 				Email:         "test-coordinator@and-period.jp",
 				PhoneNumber:   "+819012345678",

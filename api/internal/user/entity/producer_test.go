@@ -19,7 +19,7 @@ func TestProducer(t *testing.T) {
 			params: &NewProducerParams{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
-				LastnameKana:  "あんどどっと",
+				LastnameKana:  "あんどぴりおど",
 				FirstnameKana: "すたっふ",
 				StoreName:     "&.農園",
 				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
@@ -35,7 +35,7 @@ func TestProducer(t *testing.T) {
 			expect: &Producer{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
-				LastnameKana:  "あんどどっと",
+				LastnameKana:  "あんどぴりおど",
 				FirstnameKana: "すたっふ",
 				StoreName:     "&.農園",
 				ThumbnailURL:  "https://and-period.jp/thumbnail.png",

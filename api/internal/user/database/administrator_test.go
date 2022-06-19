@@ -322,7 +322,7 @@ func testAdministrator(id, email string, now time.Time) *entity.Administrator {
 		ID:            id,
 		Lastname:      "&.",
 		Firstname:     "スタッフ",
-		LastnameKana:  "あんどどっと",
+		LastnameKana:  "あんどぴりおど",
 		FirstnameKana: "すたっふ",
 		Email:         email,
 		PhoneNumber:   "+819012345678",
