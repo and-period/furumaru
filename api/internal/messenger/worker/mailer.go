@@ -10,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/and-period/furumaru/api/pkg/mailer"
+	"go.uber.org/zap"
 )
 
 func (w *worker) sendInfoMail(ctx context.Context, payload *messenger.WorkerPayload) error {
@@ -33,9 +34,11 @@ func (w *worker) sendInfoMail(ctx context.Context, payload *messenger.WorkerPayl
 		return err
 	}
 	if len(ps) == 0 {
+		w.logger.Debug("Personalizations is empty", zap.String("payload", payload.Email.EmailID))
 		return nil
 	}
 	sendFn := func() error {
+		w.logger.Debug("Send email", zap.String("emailId", payload.Email.EmailID), zap.Any("personalizations", ps))
 		return w.mailer.MultiSendFromInfo(ctx, payload.Email.EmailID, ps)
 	}
 	retry := backoff.NewExponentialBackoff(w.maxRetries)
