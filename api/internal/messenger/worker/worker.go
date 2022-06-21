@@ -95,7 +95,8 @@ func (w *worker) Lambda(ctx context.Context, event events.SQSEvent) error {
 			defer sm.Release(1)
 			payload := &messenger.WorkerPayload{}
 			if err := json.Unmarshal([]byte(record.Body), payload); err != nil {
-				return err
+				w.logger.Error("Failed to unmarshall sqs event", zap.Any("event", event), zap.Error(err))
+				return nil // リトライ不要なためnilで返す
 			}
 			return w.dispatch(ectx, record.MessageId, payload)
 		})
@@ -104,8 +105,12 @@ func (w *worker) Lambda(ctx context.Context, event events.SQSEvent) error {
 }
 
 func (w *worker) dispatch(ctx context.Context, messageID string, payload *messenger.WorkerPayload) error {
+	w.logger.Debug("Dispatch", zap.String("messageId", messageID), zap.Any(payload))
 	if payload.Email != nil {
-		return w.sendInfoMail(ctx, payload)
+		if err := w.sendInfoMail(ctx, payload); err != nil {
+			w.logger.Error("Failed to send email", zap.Error(err))
+			return err
+		}
 	}
 	// TODO: プッシュ通知
 	return nil
