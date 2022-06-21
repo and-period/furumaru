@@ -32,6 +32,19 @@ func NewUser(db *database.Client) User {
 	}
 }
 
+func (u *user) MultiGet(ctx context.Context, userIDs []string, fields ...string) (entity.Users, error) {
+	var users entity.Users
+	if len(fields) == 0 {
+		fields = userFields
+	}
+
+	err := u.db.DB.WithContext(ctx).
+		Table(userTable).Select(fields).
+		Where("id IN (?)", userIDs).
+		Find(&users).Error
+	return users, exception.InternalError(err)
+}
+
 func (u *user) Get(ctx context.Context, userID string, fields ...string) (*entity.User, error) {
 	var user *entity.User
 	if len(fields) == 0 {

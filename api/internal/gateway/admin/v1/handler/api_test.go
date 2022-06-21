@@ -80,8 +80,8 @@ func newAPIV1Handler(mocks *mocks, opts *testOptions) APIV1Handler {
 	return &apiV1Handler{
 		now:         opts.now,
 		logger:      zap.NewNop(),
-		sharedGroup: &singleflight.Group{},
 		waitGroup:   &sync.WaitGroup{},
+		sharedGroup: &singleflight.Group{},
 		storage:     mocks.storage,
 		enforcer:    enforcer,
 		user:        mocks.user,

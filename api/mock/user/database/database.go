@@ -440,6 +440,26 @@ func (mr *MockUserMockRecorder) GetByEmail(ctx, email interface{}, fields ...int
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByEmail", reflect.TypeOf((*MockUser)(nil).GetByEmail), varargs...)
 }
 
+// MultiGet mocks base method.
+func (m *MockUser) MultiGet(ctx context.Context, userIDs []string, fields ...string) (entity.Users, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, userIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGet", varargs...)
+	ret0, _ := ret[0].(entity.Users)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGet indicates an expected call of MultiGet.
+func (mr *MockUserMockRecorder) MultiGet(ctx, userIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, userIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockUser)(nil).MultiGet), varargs...)
+}
+
 // UpdateAccount mocks base method.
 func (m *MockUser) UpdateAccount(ctx context.Context, userID, accountID, username string) error {
 	m.ctrl.T.Helper()

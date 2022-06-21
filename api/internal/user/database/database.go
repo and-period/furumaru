@@ -60,6 +60,7 @@ type Producer interface {
 }
 
 type User interface {
+	MultiGet(ctx context.Context, userIDs []string, fields ...string) (entity.Users, error)
 	Get(ctx context.Context, userID string, fields ...string) (*entity.User, error)
 	GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.User, error)
 	GetByEmail(ctx context.Context, email string, fields ...string) (*entity.User, error)

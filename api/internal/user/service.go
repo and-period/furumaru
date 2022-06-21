@@ -50,6 +50,8 @@ type UserService interface {
 	GetUserAuth(ctx context.Context, in *GetUserAuthInput) (*entity.UserAuth, error)
 	// 購入者アクセストークン更新
 	RefreshUserToken(ctx context.Context, in *RefreshUserTokenInput) (*entity.UserAuth, error)
+	// 購入者一覧取得(ID指定)
+	MultiGetUsers(ctx context.Context, in *MultiGetUsersInput) (entity.Users, error)
 	// 購入者取得
 	GetUser(ctx context.Context, in *GetUserInput) (*entity.User, error)
 	// 購入者登録 (メールアドレス/SMS認証)
