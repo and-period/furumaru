@@ -25,15 +25,17 @@
       </p>
     </div>
     <v-list v-if="files">
-      <div
-        v-for="(file, i) in files"
-        :key="i"
-        class="d-flex flex-row align-center"
-      >
-        <v-checkbox />
-        <img :src="createPreviewURL(file)" width="200" class="mx-4" />
-        <p class="mb-0">{{ file.name }}</p>
-      </div>
+      <v-radio-group>
+        <div
+          v-for="(file, i) in files"
+          :key="i"
+          class="d-flex flex-row align-center"
+        >
+          <v-radio :value="i" />
+          <img :src="createPreviewURL(file)" width="200" class="mx-4" />
+          <p class="mb-0">{{ file.name }}</p>
+        </div>
+      </v-radio-group>
     </v-list>
   </div>
 </template>
