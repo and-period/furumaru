@@ -11,6 +11,14 @@ import (
 	"github.com/and-period/furumaru/api/pkg/uuid"
 )
 
+func (s *userService) MultiGetUsers(ctx context.Context, in *user.MultiGetUsersInput) (entity.Users, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	users, err := s.db.User.MultiGet(ctx, in.UserIDs)
+	return users, exception.InternalError(err)
+}
+
 func (s *userService) GetUser(ctx context.Context, in *user.GetUserInput) (*entity.User, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)

@@ -13,6 +13,90 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestMultiGetUsers(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Now()
+	users := entity.Users{
+		{
+			ID:           "user-id",
+			AccountID:    "",
+			CognitoID:    "cognito-id",
+			Username:     "",
+			ProviderType: entity.ProviderTypeEmail,
+			Email:        "test-user@and-period.jp",
+			PhoneNumber:  "+810000000000",
+			ThumbnailURL: "https://and-period.jp/thumbnail.png",
+			CreatedAt:    now,
+			UpdatedAt:    now,
+			VerifiedAt:   now,
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.MultiGetUsersInput
+		expect    entity.Users
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.User.EXPECT().MultiGet(ctx, []string{"user-id"}).Return(users, nil)
+			},
+			input: &user.MultiGetUsersInput{
+				UserIDs: []string{"user-id"},
+			},
+			expect: entity.Users{
+				{
+					ID:           "user-id",
+					AccountID:    "",
+					CognitoID:    "cognito-id",
+					Username:     "",
+					ProviderType: entity.ProviderTypeEmail,
+					Email:        "test-user@and-period.jp",
+					PhoneNumber:  "+810000000000",
+					ThumbnailURL: "https://and-period.jp/thumbnail.png",
+					CreatedAt:    now,
+					UpdatedAt:    now,
+					VerifiedAt:   now,
+				},
+			},
+			expectErr: nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &user.MultiGetUsersInput{
+				UserIDs: []string{""},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get user",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.User.EXPECT().MultiGet(ctx, []string{"user-id"}).Return(nil, errmock)
+			},
+			input: &user.MultiGetUsersInput{
+				UserIDs: []string{"user-id"},
+			},
+			expect:    nil,
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+			actual, err := service.MultiGetUsers(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.ElementsMatch(t, tt.expect, actual)
+		}))
+	}
+}
+
 func TestGetUser(t *testing.T) {
 	t.Parallel()
 

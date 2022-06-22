@@ -322,7 +322,7 @@ func testProducer(id, storeName, email string, now time.Time) *entity.Producer {
 		ID:            id,
 		Lastname:      "&.",
 		Firstname:     "スタッフ",
-		LastnameKana:  "あんどどっと",
+		LastnameKana:  "あんどぴりおど",
 		FirstnameKana: "すたっふ",
 		StoreName:     storeName,
 		ThumbnailURL:  "https://and-period.jp/thumbnail.png",

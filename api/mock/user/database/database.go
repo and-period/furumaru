@@ -170,6 +170,74 @@ func (m *MockCoordinator) EXPECT() *MockCoordinatorMockRecorder {
 	return m.recorder
 }
 
+// Create mocks base method.
+func (m *MockCoordinator) Create(ctx context.Context, auth *entity.AdminAuth, coordinator *entity.Coordinator) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, auth, coordinator)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockCoordinatorMockRecorder) Create(ctx, auth, coordinator interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockCoordinator)(nil).Create), ctx, auth, coordinator)
+}
+
+// Get mocks base method.
+func (m *MockCoordinator) Get(ctx context.Context, coordinatorID string, fields ...string) (*entity.Coordinator, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, coordinatorID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.Coordinator)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockCoordinatorMockRecorder) Get(ctx, coordinatorID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, coordinatorID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockCoordinator)(nil).Get), varargs...)
+}
+
+// List mocks base method.
+func (m *MockCoordinator) List(ctx context.Context, params *database.ListCoordinatorsParams, fields ...string) (entity.Coordinators, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, params}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "List", varargs...)
+	ret0, _ := ret[0].(entity.Coordinators)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockCoordinatorMockRecorder) List(ctx, params interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, params}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockCoordinator)(nil).List), varargs...)
+}
+
+// UpdateEmail mocks base method.
+func (m *MockCoordinator) UpdateEmail(ctx context.Context, coordinatorID, email string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateEmail", ctx, coordinatorID, email)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateEmail indicates an expected call of UpdateEmail.
+func (mr *MockCoordinatorMockRecorder) UpdateEmail(ctx, coordinatorID, email interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateEmail", reflect.TypeOf((*MockCoordinator)(nil).UpdateEmail), ctx, coordinatorID, email)
+}
+
 // MockProducer is a mock of Producer interface.
 type MockProducer struct {
 	ctrl     *gomock.Controller
@@ -370,6 +438,26 @@ func (mr *MockUserMockRecorder) GetByEmail(ctx, email interface{}, fields ...int
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, email}, fields...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByEmail", reflect.TypeOf((*MockUser)(nil).GetByEmail), varargs...)
+}
+
+// MultiGet mocks base method.
+func (m *MockUser) MultiGet(ctx context.Context, userIDs []string, fields ...string) (entity.Users, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, userIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGet", varargs...)
+	ret0, _ := ret[0].(entity.Users)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGet indicates an expected call of MultiGet.
+func (mr *MockUserMockRecorder) MultiGet(ctx, userIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, userIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockUser)(nil).MultiGet), varargs...)
 }
 
 // UpdateAccount mocks base method.

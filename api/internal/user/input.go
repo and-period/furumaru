@@ -101,6 +101,10 @@ type RefreshUserTokenInput struct {
 	RefreshToken string `validate:"required"`
 }
 
+type MultiGetUsersInput struct {
+	UserIDs []string `validate:"omitempty,dive,required"`
+}
+
 type GetUserInput struct {
 	UserID string `validate:"required"`
 }

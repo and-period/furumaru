@@ -46,8 +46,8 @@ type Params struct {
 type apiV1Handler struct {
 	now         func() time.Time
 	logger      *zap.Logger
-	sharedGroup *singleflight.Group
 	waitGroup   *sync.WaitGroup
+	sharedGroup *singleflight.Group
 	storage     storage.Bucket
 	enforcer    rbac.Enforcer
 	user        user.UserService
@@ -74,13 +74,14 @@ func NewAPIV1Handler(params *Params, opts ...Option) APIV1Handler {
 		opts[i](dopts)
 	}
 	return &apiV1Handler{
-		now:       jst.Now,
-		logger:    dopts.logger,
-		waitGroup: params.WaitGroup,
-		storage:   params.Storage,
-		enforcer:  params.Enforcer,
-		user:      params.UserService,
-		store:     params.StoreService,
+		now:         jst.Now,
+		logger:      dopts.logger,
+		waitGroup:   params.WaitGroup,
+		sharedGroup: &singleflight.Group{},
+		storage:     params.Storage,
+		enforcer:    params.Enforcer,
+		user:        params.UserService,
+		store:       params.StoreService,
 	}
 }
 
@@ -94,6 +95,9 @@ func (h *apiV1Handler) Routes(rg *gin.RouterGroup) {
 	h.authRoutes(v1.Group("/auth"))
 	h.administratorRoutes(v1.Group("/administrators"))
 	h.producerRoutes(v1.Group("/producers"))
+	h.categoryRoutes(v1.Group("/categories"))
+	h.productTypeRoutes(v1.Group("/categories/:categoryId/product-types"))
+	v1.GET("/categories/-/product-types", h.authentication(), h.ListProductTypes)
 	h.uploadRoutes(v1.Group("/upload"))
 }
 

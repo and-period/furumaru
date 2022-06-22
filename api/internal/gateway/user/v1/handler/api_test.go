@@ -70,8 +70,8 @@ func newAPIV1Handler(mocks *mocks, opts *testOptions) APIV1Handler {
 	return &apiV1Handler{
 		now:         opts.now,
 		logger:      zap.NewNop(),
-		sharedGroup: &singleflight.Group{},
 		waitGroup:   &sync.WaitGroup{},
+		sharedGroup: &singleflight.Group{},
 		storage:     mocks.storage,
 		user:        mocks.user,
 	}
@@ -81,6 +81,51 @@ func newRoutes(h APIV1Handler, r *gin.Engine) {
 	h.Routes(r.Group(""))
 }
 
+func testGet(
+	t *testing.T,
+	setup func(*testing.T, *mocks, *gomock.Controller),
+	expect *testResponse,
+	path string,
+	opts ...testOption,
+) {
+	testHTTP(t, setup, expect, newHTTPRequest(t, http.MethodGet, path, nil), opts...)
+}
+
+func testPost(
+	t *testing.T,
+	setup func(*testing.T, *mocks, *gomock.Controller),
+	expect *testResponse,
+	path string,
+	body interface{},
+	opts ...testOption,
+) {
+	testHTTP(t, setup, expect, newHTTPRequest(t, http.MethodPost, path, body), opts...)
+}
+
+func testPatch(
+	t *testing.T,
+	setup func(*testing.T, *mocks, *gomock.Controller),
+	expect *testResponse,
+	path string,
+	body interface{},
+	opts ...testOption,
+) {
+	testHTTP(t, setup, expect, newHTTPRequest(t, http.MethodPatch, path, body), opts...)
+}
+
+func testDelete(
+	t *testing.T,
+	setup func(*testing.T, *mocks, *gomock.Controller),
+	expect *testResponse,
+	path string,
+	opts ...testOption,
+) {
+	testHTTP(t, setup, expect, newHTTPRequest(t, http.MethodDelete, path, nil), opts...)
+}
+
+/**
+ * testHTTP - HTTPハンドラのテストを実行
+ */
 func testHTTP(
 	t *testing.T,
 	setup func(*testing.T, *mocks, *gomock.Controller),
@@ -88,6 +133,8 @@ func testHTTP(
 	req *http.Request,
 	opts ...testOption,
 ) {
+	t.Parallel()
+
 	// setup
 	gin.SetMode(gin.TestMode)
 	ctrl := gomock.NewController(t)

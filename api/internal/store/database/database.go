@@ -30,6 +30,7 @@ func NewDatabase(params *Params) *Database {
  */
 type Category interface {
 	List(ctx context.Context, params *ListCategoriesParams, fields ...string) (entity.Categories, error)
+	MultiGet(ctx context.Context, categoryIDs []string, fields ...string) (entity.Categories, error)
 	Create(ctx context.Context, category *entity.Category) error
 	Update(ctx context.Context, categoryID, name string) error
 	Delete(ctx context.Context, categoryID string) error

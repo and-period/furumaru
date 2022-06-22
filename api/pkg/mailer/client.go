@@ -14,15 +14,15 @@ import (
 )
 
 var (
-	ErrInvalidArgument  = errors.New("mail: invalid argument")
-	ErrUnauthenticated  = errors.New("mail: unauthenticated")
-	ErrPermissionDenied = errors.New("mail: permission denied")
-	ErrPayloadTooLong   = errors.New("mail: payload too long")
-	ErrNotFound         = errors.New("mail: not found")
-	ErrInternal         = errors.New("mail: internal")
-	ErrUnavailable      = errors.New("mail: unavailable")
-	ErrTimeout          = errors.New("mail: timeout")
-	ErrUnknown          = errors.New("mail: unknown")
+	ErrInvalidArgument  = errors.New("mailer: invalid argument")
+	ErrUnauthenticated  = errors.New("mailer: unauthenticated")
+	ErrPermissionDenied = errors.New("mailer: permission denied")
+	ErrPayloadTooLong   = errors.New("mailer: payload too long")
+	ErrNotFound         = errors.New("mailer: not found")
+	ErrInternal         = errors.New("mailer: internal")
+	ErrUnavailable      = errors.New("mailer: unavailable")
+	ErrTimeout          = errors.New("mailer: timeout")
+	ErrUnknown          = errors.New("mailer: unknown")
 )
 
 type Client interface {
@@ -87,7 +87,7 @@ func (c *client) mailError(e error) error {
 	if e == nil {
 		return nil
 	}
-	c.logger.Debug("Failed to send mail", zap.Error(e))
+	c.logger.Error("Failed to send mail", zap.Error(e))
 
 	switch {
 	case errors.Is(e, context.Canceled):

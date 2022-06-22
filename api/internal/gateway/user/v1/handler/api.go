@@ -35,8 +35,8 @@ type Params struct {
 type apiV1Handler struct {
 	now         func() time.Time
 	logger      *zap.Logger
-	sharedGroup *singleflight.Group
 	waitGroup   *sync.WaitGroup
+	sharedGroup *singleflight.Group
 	storage     storage.Bucket
 	user        user.UserService
 	store       store.StoreService
@@ -62,12 +62,13 @@ func NewAPIV1Handler(params *Params, opts ...Option) APIV1Handler {
 		opts[i](dopts)
 	}
 	return &apiV1Handler{
-		now:       jst.Now,
-		logger:    dopts.logger,
-		waitGroup: params.WaitGroup,
-		storage:   params.Storage,
-		user:      params.UserService,
-		store:     params.StoreService,
+		now:         jst.Now,
+		logger:      dopts.logger,
+		waitGroup:   params.WaitGroup,
+		sharedGroup: &singleflight.Group{},
+		storage:     params.Storage,
+		user:        params.UserService,
+		store:       params.StoreService,
 	}
 }
 

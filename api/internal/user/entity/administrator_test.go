@@ -19,7 +19,7 @@ func TestAdministrator(t *testing.T) {
 			params: &NewAdministratorParams{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
-				LastnameKana:  "あんどどっと",
+				LastnameKana:  "あんどぴりおど",
 				FirstnameKana: "すたっふ",
 				Email:         "test-admin@and-period.jp",
 				PhoneNumber:   "+819012345678",
@@ -27,7 +27,7 @@ func TestAdministrator(t *testing.T) {
 			expect: &Administrator{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
-				LastnameKana:  "あんどどっと",
+				LastnameKana:  "あんどぴりおど",
 				FirstnameKana: "すたっふ",
 				Email:         "test-admin@and-period.jp",
 				PhoneNumber:   "+819012345678",

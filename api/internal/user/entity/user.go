@@ -32,6 +32,8 @@ type User struct {
 	DeletedAt    gorm.DeletedAt `gorm:"default:null"`         // 削除日時
 }
 
+type Users []*User
+
 func NewUser(cognitoID string, provider ProviderType, email, phoneNumber string) *User {
 	return &User{
 		ID:           uuid.Base58Encode(uuid.New()),

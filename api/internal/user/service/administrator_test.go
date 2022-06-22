@@ -26,7 +26,7 @@ func TestListAdministrators(t *testing.T) {
 			ID:            "admin-id",
 			Lastname:      "&.",
 			Firstname:     "スタッフ",
-			LastnameKana:  "あんどどっと",
+			LastnameKana:  "あんどぴりおど",
 			FirstnameKana: "すたっふ",
 			Email:         "test-admin@and-period.jp",
 			PhoneNumber:   "+819012345678",
@@ -93,7 +93,7 @@ func TestGetAdministrator(t *testing.T) {
 		ID:            "admin-id",
 		Lastname:      "&.",
 		Firstname:     "スタッフ",
-		LastnameKana:  "あんどどっと",
+		LastnameKana:  "あんどぴりおど",
 		FirstnameKana: "すたっふ",
 		Email:         "test-admin@and-period.jp",
 		PhoneNumber:   "+819012345678",
@@ -167,7 +167,7 @@ func TestCreateAdministrator(t *testing.T) {
 				expectAdmin := &entity.Administrator{
 					Lastname:      "&.",
 					Firstname:     "スタッフ",
-					LastnameKana:  "あんどどっと",
+					LastnameKana:  "あんどぴりおど",
 					FirstnameKana: "すたっふ",
 					Email:         "test-admin@and-period.jp",
 					PhoneNumber:   "+819012345678",
@@ -187,7 +187,7 @@ func TestCreateAdministrator(t *testing.T) {
 			input: &user.CreateAdministratorInput{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
-				LastnameKana:  "あんどどっと",
+				LastnameKana:  "あんどぴりおど",
 				FirstnameKana: "すたっふ",
 				Email:         "test-admin@and-period.jp",
 				PhoneNumber:   "+819012345678",
@@ -204,7 +204,7 @@ func TestCreateAdministrator(t *testing.T) {
 			input: &user.CreateAdministratorInput{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
-				LastnameKana:  "あんどどっと",
+				LastnameKana:  "あんどぴりおど",
 				FirstnameKana: "すたっふ",
 				Email:         "test-admin@and-period.jp",
 				PhoneNumber:   "+819012345678",
@@ -225,7 +225,7 @@ func TestCreateAdministrator(t *testing.T) {
 			input: &user.CreateAdministratorInput{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
-				LastnameKana:  "あんどどっと",
+				LastnameKana:  "あんどぴりおど",
 				FirstnameKana: "すたっふ",
 				Email:         "test-admin@and-period.jp",
 				PhoneNumber:   "+819012345678",
@@ -241,7 +241,7 @@ func TestCreateAdministrator(t *testing.T) {
 			input: &user.CreateAdministratorInput{
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
-				LastnameKana:  "あんどどっと",
+				LastnameKana:  "あんどぴりおど",
 				FirstnameKana: "すたっふ",
 				Email:         "test-admin@and-period.jp",
 				PhoneNumber:   "+819012345678",

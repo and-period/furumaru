@@ -17,7 +17,7 @@ type SendGridError struct {
 }
 
 func (e SendGridError) Error() string {
-	return fmt.Sprintf("mail: failed to SendGrid. code=%d, %s=%s", e.Code, e.Field, e.Message)
+	return fmt.Sprintf("mailer: failed to SendGrid. code=%d, %s=%s", e.Code, e.Field, e.Message)
 }
 
 func (c *client) SendFromInfo(
