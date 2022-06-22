@@ -32,19 +32,15 @@
             <v-spacer />
           </div>
 
-          <v-list>
-            <v-list-item>
-              <v-list-item-action>
-                <p class="mb-0 mx-6 text-h6">1</p>
-              </v-list-item-action>
-              <v-select label="単位" />
-              <v-spacer />
-            </v-list-item>
-          </v-list>
+          <div class="d-flex">
+            <v-select label="単位" />
+            <v-spacer />
+          </div>
 
           <div class="d-flex align-center">
             <v-text-field label="単位説明" />
-            <p class="mx-16 mb-0">ex) 1kg → 5個入り</p>
+            <p class="ml-12 mb-0">ex) 1kg → 5個入り</p>
+            <v-spacer />
           </div>
         </v-card-text>
       </v-card>
