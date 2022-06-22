@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"encoding/json"
 	"time"
 
 	"gorm.io/datatypes"
@@ -23,7 +24,7 @@ type PostTarget struct {
 type PostTargetList []*PostTarget
 
 // Notification - お知らせ情報
-type Notifocation struct {
+type Notification struct {
 	ID          string         `gorm:"primaryKey;<-:create"`        // お知らせID
 	CreatedBy   string         `gorm:""`                            // 登録者ID
 	CreatorName string         `gorm:""`                            // 登録者名
@@ -33,4 +34,22 @@ type Notifocation struct {
 	PublishedAt time.Time      `gorm:""`                            // 掲載開始日時
 	Targets     PostTargetList `gorm:"-"`                           // 掲載対象一覧
 	TargetsJSON datatypes.JSON `gorm:"default:null;column:targets"` // 掲載対象一覧(JSON)
+}
+
+func (n *Notification) Fill() error {
+	var targets PostTargetList
+	if err := json.Unmarshal(n.TargetsJSON, &targets); err != nil {
+		return err
+	}
+	n.Targets = targets
+	return nil
+}
+
+func (n *Notification) FillJSON() error {
+	v, err := json.Marshal(n.Targets)
+	if err != nil {
+		return err
+	}
+	n.TargetsJSON = datatypes.JSON(v)
+	return nil
 }
