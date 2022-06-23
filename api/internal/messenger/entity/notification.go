@@ -11,10 +11,10 @@ import (
 type TargetType int32
 
 const (
-	PostTargetAll          TargetType = 0
-	PostTargetUsers        TargetType = 1
-	PostTargetProducers    TargetType = 2
-	PostTargetCoordinators TargetType = 3
+	PostTargetAll          TargetType = 0 // 全員対象
+	PostTargetUsers        TargetType = 1 // ユーザー対象
+	PostTargetProducers    TargetType = 2 // 生産者対象
+	PostTargetCoordinators TargetType = 3 // コーディネーター対象
 )
 
 type PostTarget struct {
@@ -27,11 +27,11 @@ type PostTargetList []*PostTarget
 type Notification struct {
 	ID          string         `gorm:"primaryKey;<-:create"`        // お知らせID
 	CreatedBy   string         `gorm:"<-:create"`                   // 登録者ID
-	CreatorName string         `gorm:""`                            // 登録者名
+	CreatorName string         `gorm:"<-:create"`                   // 登録者名
 	UpdatedBy   string         `gorm:""`                            // 更新者ID
 	Title       string         `gorm:""`                            // タイトル
 	Body        string         `gorm:""`                            // 本文
-	Targets     PostTargetList `gorm:"-"`                           // 掲載対象一覧
+	Targets     []PostTarget   `gorm:"-"`                           // 掲載対象一覧
 	TargetsJSON datatypes.JSON `gorm:"default:null;column:targets"` // 掲載対象一覧(JSON)
 	PublishedAt time.Time      `gorm:""`                            // 掲載開始日時
 	Public      bool           `gorm:""`                            // 公開フラグ
@@ -40,7 +40,7 @@ type Notification struct {
 }
 
 func (n *Notification) Fill() error {
-	var targets PostTargetList
+	var targets []PostTarget
 	if err := json.Unmarshal(n.TargetsJSON, &targets); err != nil {
 		return err
 	}

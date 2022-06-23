@@ -28,7 +28,7 @@ func TestNotification_Fill(t *testing.T) {
 				ID:    "notification-id",
 				Title: "title",
 				Body:  "<html>本文<html>",
-				Targets: PostTargetList{
+				Targets: []PostTarget{
 					{
 						PostTarget: 1,
 					},
@@ -68,7 +68,7 @@ func TestNotification_FillJSON(t *testing.T) {
 				ID:    "notification-id",
 				Title: "title",
 				Body:  "<html>本文<html>",
-				Targets: PostTargetList{
+				Targets: []PostTarget{
 					{
 						PostTarget: 1,
 					},
@@ -81,7 +81,7 @@ func TestNotification_FillJSON(t *testing.T) {
 				ID:    "notification-id",
 				Title: "title",
 				Body:  "<html>本文<html>",
-				Targets: PostTargetList{
+				Targets: []PostTarget{
 					{
 						PostTarget: 1,
 					},
