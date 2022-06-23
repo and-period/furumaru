@@ -8,8 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
-//nolint:revive
-type UserService interface {
+type Service interface {
 	// 管理者サインイン
 	SignInAdmin(ctx context.Context, in *SignInAdminInput) (*entity.AdminAuth, error)
 	// 管理者サインアウト

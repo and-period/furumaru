@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestMessengerService_SendInfoMail(t *testing.T) {
+func TestService_SendInfoMail(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name             string
@@ -67,7 +67,7 @@ func TestMessengerService_SendInfoMail(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 			mocks := newMocks(ctrl)
-			srv := &messengerService{mailer: mocks.mailer, maxRetries: 1}
+			srv := &service{mailer: mocks.mailer, maxRetries: 1}
 			tt.setup(ctx, t, mocks)
 			err := srv.sendInfoMail(ctx, tt.message, tt.personalizations...)
 			assert.Equal(t, tt.expect, err != nil, err)

@@ -11,14 +11,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *apiV1Handler) producerRoutes(rg *gin.RouterGroup) {
+func (h *handler) producerRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication())
 	arg.GET("", h.ListProducers)
 	arg.POST("", h.CreateProducer)
 	arg.GET("/:producerId", h.GetProducer)
 }
 
-func (h *apiV1Handler) ListProducers(ctx *gin.Context) {
+func (h *handler) ListProducers(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
 		defaultOffset = 0
@@ -51,7 +51,7 @@ func (h *apiV1Handler) ListProducers(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *apiV1Handler) GetProducer(ctx *gin.Context) {
+func (h *handler) GetProducer(ctx *gin.Context) {
 	in := &user.GetProducerInput{
 		ProducerID: util.GetParam(ctx, "producerId"),
 	}
@@ -67,7 +67,7 @@ func (h *apiV1Handler) GetProducer(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *apiV1Handler) CreateProducer(ctx *gin.Context) {
+func (h *handler) CreateProducer(ctx *gin.Context) {
 	req := &request.CreateProducerRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)

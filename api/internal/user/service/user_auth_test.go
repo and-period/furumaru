@@ -98,7 +98,7 @@ func TestSignInUser(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.SignInUser(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
@@ -147,7 +147,7 @@ func TestSignOutUser(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.SignOutUser(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
@@ -219,7 +219,7 @@ func TestGetUserAuth(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetUserAuth(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
@@ -312,7 +312,7 @@ func TestRefreshUserToken(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.RefreshUserToken(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)

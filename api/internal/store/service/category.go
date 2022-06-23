@@ -9,7 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
-func (s *storeService) ListCategories(ctx context.Context, in *store.ListCategoriesInput) (entity.Categories, error) {
+func (s *service) ListCategories(ctx context.Context, in *store.ListCategoriesInput) (entity.Categories, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
@@ -22,7 +22,7 @@ func (s *storeService) ListCategories(ctx context.Context, in *store.ListCategor
 	return categories, exception.InternalError(err)
 }
 
-func (s *storeService) MultiGetCategories(
+func (s *service) MultiGetCategories(
 	ctx context.Context, in *store.MultiGetCategoriesInput,
 ) (entity.Categories, error) {
 	if err := s.validator.Struct(in); err != nil {
@@ -32,7 +32,7 @@ func (s *storeService) MultiGetCategories(
 	return categories, exception.InternalError(err)
 }
 
-func (s *storeService) CreateCategory(ctx context.Context, in *store.CreateCategoryInput) (*entity.Category, error) {
+func (s *service) CreateCategory(ctx context.Context, in *store.CreateCategoryInput) (*entity.Category, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
@@ -43,7 +43,7 @@ func (s *storeService) CreateCategory(ctx context.Context, in *store.CreateCateg
 	return category, nil
 }
 
-func (s *storeService) UpdateCategory(ctx context.Context, in *store.UpdateCategoryInput) error {
+func (s *service) UpdateCategory(ctx context.Context, in *store.UpdateCategoryInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
@@ -51,7 +51,7 @@ func (s *storeService) UpdateCategory(ctx context.Context, in *store.UpdateCateg
 	return exception.InternalError(err)
 }
 
-func (s *storeService) DeleteCategory(ctx context.Context, in *store.DeleteCategoryInput) error {
+func (s *service) DeleteCategory(ctx context.Context, in *store.DeleteCategoryInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}

@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *apiV1Handler) authRoutes(rg *gin.RouterGroup) {
+func (h *handler) authRoutes(rg *gin.RouterGroup) {
 	rg.GET("", h.GetAuth)
 	rg.POST("", h.SignIn)
 	rg.DELETE("", h.SignOut)
@@ -21,7 +21,7 @@ func (h *apiV1Handler) authRoutes(rg *gin.RouterGroup) {
 	rg.PATCH("/password", h.authentication(), h.UpdateAuthPassword)
 }
 
-func (h *apiV1Handler) GetAuth(ctx *gin.Context) {
+func (h *handler) GetAuth(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
 		unauthorized(ctx, err)
@@ -43,7 +43,7 @@ func (h *apiV1Handler) GetAuth(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *apiV1Handler) SignIn(ctx *gin.Context) {
+func (h *handler) SignIn(ctx *gin.Context) {
 	req := &request.SignInRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
@@ -66,7 +66,7 @@ func (h *apiV1Handler) SignIn(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *apiV1Handler) SignOut(ctx *gin.Context) {
+func (h *handler) SignOut(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
 		unauthorized(ctx, err)
@@ -83,7 +83,7 @@ func (h *apiV1Handler) SignOut(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
-func (h *apiV1Handler) RefreshAuthToken(ctx *gin.Context) {
+func (h *handler) RefreshAuthToken(ctx *gin.Context) {
 	req := &request.RefreshAuthTokenRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
@@ -105,7 +105,7 @@ func (h *apiV1Handler) RefreshAuthToken(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *apiV1Handler) UpdateAuthEmail(ctx *gin.Context) {
+func (h *handler) UpdateAuthEmail(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
 		unauthorized(ctx, err)
@@ -129,7 +129,7 @@ func (h *apiV1Handler) UpdateAuthEmail(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
-func (h *apiV1Handler) VerifyAuthEmail(ctx *gin.Context) {
+func (h *handler) VerifyAuthEmail(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
 		unauthorized(ctx, err)
@@ -153,7 +153,7 @@ func (h *apiV1Handler) VerifyAuthEmail(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
-func (h *apiV1Handler) UpdateAuthPassword(ctx *gin.Context) {
+func (h *handler) UpdateAuthPassword(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
 		unauthorized(ctx, err)

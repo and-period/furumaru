@@ -22,19 +22,19 @@ type Worker interface {
 }
 
 type Params struct {
-	WaitGroup   *sync.WaitGroup
-	Mailer      mailer.Client
-	UserService user.UserService
+	WaitGroup *sync.WaitGroup
+	Mailer    mailer.Client
+	User      user.Service
 }
 
 type worker struct {
 	now         func() time.Time
 	logger      *zap.Logger
 	waitGroup   *sync.WaitGroup
+	mailer      mailer.Client
+	user        user.Service
 	concurrency int64
 	maxRetries  int64
-	mailer      mailer.Client
-	user        user.UserService
 }
 
 type options struct {
@@ -66,7 +66,7 @@ func WithMaxRetries(maxRetries int64) Option {
 func NewWorker(params *Params, opts ...Option) Worker {
 	dopts := &options{
 		logger:      zap.NewNop(),
-		concurrency: 2,
+		concurrency: 1,
 		maxRetries:  3,
 	}
 	for i := range opts {
@@ -77,9 +77,9 @@ func NewWorker(params *Params, opts ...Option) Worker {
 		logger:      dopts.logger,
 		waitGroup:   params.WaitGroup,
 		mailer:      params.Mailer,
+		user:        params.User,
 		concurrency: dopts.concurrency,
 		maxRetries:  dopts.maxRetries,
-		user:        params.UserService,
 	}
 }
 
@@ -112,8 +112,8 @@ func (w *worker) Lambda(ctx context.Context, event events.SQSEvent) error {
 	return eg.Wait()
 }
 
-func (w *worker) dispatch(ctx context.Context, messageID string, payload *messenger.WorkerPayload) error {
-	w.logger.Debug("Dispatch", zap.String("messageId", messageID), zap.Any("payload", payload))
+func (w *worker) dispatch(ctx context.Context, queueID string, payload *messenger.WorkerPayload) error {
+	w.logger.Debug("Dispatch", zap.String("queueId", queueID), zap.Any("payload", payload))
 	if payload.Email != nil {
 		if err := w.sendInfoMail(ctx, payload); err != nil {
 			w.logger.Error("Failed to send email", zap.Error(err))

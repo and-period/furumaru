@@ -9,7 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/mailer"
 )
 
-func (s *messengerService) sendInfoMail(
+func (s *service) sendInfoMail(
 	ctx context.Context, msg *entity.MailConfig, ps ...*mailer.Personalization,
 ) error {
 	sendFn := func() error {
@@ -19,7 +19,7 @@ func (s *messengerService) sendInfoMail(
 	return backoff.Retry(ctx, retry, sendFn, backoff.WithRetryablel(s.retryableSendMail))
 }
 
-func (s *messengerService) retryableSendMail(err error) bool {
+func (s *service) retryableSendMail(err error) bool {
 	return errors.Is(err, mailer.ErrTimeout) ||
 		errors.Is(err, mailer.ErrUnavailable) ||
 		errors.Is(err, mailer.ErrInternal)

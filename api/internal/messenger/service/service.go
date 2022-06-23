@@ -13,13 +13,13 @@ import (
 )
 
 type Params struct {
+	WaitGroup   *sync.WaitGroup
 	Mailer      mailer.Client
 	AdminWebURL *url.URL
 	UserWebURL  *url.URL
-	WaitGroup   *sync.WaitGroup
 }
 
-type messengerService struct {
+type service struct {
 	now         func() time.Time
 	logger      *zap.Logger
 	waitGroup   *sync.WaitGroup
@@ -49,7 +49,7 @@ func WithMaxRetries(maxRetries int64) Option {
 	}
 }
 
-func NewMessengerService(params *Params, opts ...Option) messenger.MessengerService {
+func NewService(params *Params, opts ...Option) messenger.Service {
 	dopts := &options{
 		logger:     zap.NewNop(),
 		maxRetries: 3,
@@ -57,20 +57,22 @@ func NewMessengerService(params *Params, opts ...Option) messenger.MessengerServ
 	for i := range opts {
 		opts[i](dopts)
 	}
-	return &messengerService{
-		now:       jst.Now,
-		logger:    dopts.logger,
-		validator: validator.NewValidator(),
-		waitGroup: params.WaitGroup,
-		mailer:    params.Mailer,
-		adminWebURL: func() *url.URL {
-			url := *params.AdminWebURL // copy
-			return &url
-		},
-		userWebURL: func() *url.URL {
-			url := *params.UserWebURL // copy
-			return &url
-		},
-		maxRetries: dopts.maxRetries,
+	adminWebURL := func() *url.URL {
+		url := *params.AdminWebURL // copy
+		return &url
+	}
+	userWebURL := func() *url.URL {
+		url := *params.UserWebURL // copy
+		return &url
+	}
+	return &service{
+		now:         jst.Now,
+		logger:      dopts.logger,
+		waitGroup:   params.WaitGroup,
+		validator:   validator.NewValidator(),
+		mailer:      params.Mailer,
+		adminWebURL: adminWebURL,
+		userWebURL:  userWebURL,
+		maxRetries:  dopts.maxRetries,
 	}
 }

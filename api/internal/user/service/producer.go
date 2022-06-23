@@ -12,7 +12,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (s *userService) ListProducers(ctx context.Context, in *user.ListProducersInput) (entity.Producers, error) {
+func (s *service) ListProducers(ctx context.Context, in *user.ListProducersInput) (entity.Producers, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
@@ -24,7 +24,7 @@ func (s *userService) ListProducers(ctx context.Context, in *user.ListProducersI
 	return producers, exception.InternalError(err)
 }
 
-func (s *userService) GetProducer(ctx context.Context, in *user.GetProducerInput) (*entity.Producer, error) {
+func (s *service) GetProducer(ctx context.Context, in *user.GetProducerInput) (*entity.Producer, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
@@ -32,7 +32,7 @@ func (s *userService) GetProducer(ctx context.Context, in *user.GetProducerInput
 	return producer, exception.InternalError(err)
 }
 
-func (s *userService) CreateProducer(ctx context.Context, in *user.CreateProducerInput) (*entity.Producer, error) {
+func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInput) (*entity.Producer, error) {
 	const size = 8
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)

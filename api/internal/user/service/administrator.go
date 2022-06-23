@@ -14,7 +14,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (s *userService) ListAdministrators(
+func (s *service) ListAdministrators(
 	ctx context.Context, in *user.ListAdministratorsInput,
 ) (entity.Administrators, error) {
 	if err := s.validator.Struct(in); err != nil {
@@ -28,7 +28,7 @@ func (s *userService) ListAdministrators(
 	return administrators, exception.InternalError(err)
 }
 
-func (s *userService) GetAdministrator(
+func (s *service) GetAdministrator(
 	ctx context.Context, in *user.GetAdministratorInput,
 ) (*entity.Administrator, error) {
 	if err := s.validator.Struct(in); err != nil {
@@ -38,7 +38,7 @@ func (s *userService) GetAdministrator(
 	return administrator, exception.InternalError(err)
 }
 
-func (s *userService) CreateAdministrator(
+func (s *service) CreateAdministrator(
 	ctx context.Context, in *user.CreateAdministratorInput,
 ) (*entity.Administrator, error) {
 	const size = 8
@@ -76,7 +76,7 @@ func (s *userService) CreateAdministrator(
 	return administrator, nil
 }
 
-func (s *userService) createCognitoAdmin(ctx context.Context, cognitoID, email, password string) error {
+func (s *service) createCognitoAdmin(ctx context.Context, cognitoID, email, password string) error {
 	params := &cognito.AdminCreateUserParams{
 		Username: cognitoID,
 		Email:    email,
@@ -85,7 +85,7 @@ func (s *userService) createCognitoAdmin(ctx context.Context, cognitoID, email, 
 	return s.adminAuth.AdminCreateUser(ctx, params)
 }
 
-func (s *userService) notifyRegisterAdmin(ctx context.Context, name, email, password string) error {
+func (s *service) notifyRegisterAdmin(ctx context.Context, name, email, password string) error {
 	in := &messenger.NotifyRegisterAdminInput{
 		Name:     name,
 		Email:    email,

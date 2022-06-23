@@ -40,7 +40,7 @@ func withNow(now time.Time) testOption {
 	}
 }
 
-type testCaller func(ctx context.Context, t *testing.T, service *messengerService)
+type testCaller func(ctx context.Context, t *testing.T, service *service)
 
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
@@ -48,28 +48,30 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 	}
 }
 
-func newMessengerService(mocks *mocks, opts ...testOption) *messengerService {
+func newService(mocks *mocks, opts ...testOption) *service {
 	dopts := &testOptions{
 		now: jst.Now,
 	}
 	for i := range opts {
 		opts[i](dopts)
 	}
-	return &messengerService{
-		now:       dopts.now,
-		logger:    zap.NewNop(),
-		waitGroup: &sync.WaitGroup{},
-		validator: validator.NewValidator(),
-		mailer:    mocks.mailer,
-		adminWebURL: func() *url.URL {
-			url := *adminWebURL
-			return &url
-		},
-		userWebURL: func() *url.URL {
-			url := *userWebURL
-			return &url
-		},
-		maxRetries: 3,
+	adminWebURL := func() *url.URL {
+		url := *adminWebURL // copy
+		return &url
+	}
+	userWebURL := func() *url.URL {
+		url := *userWebURL // copy
+		return &url
+	}
+	return &service{
+		now:         dopts.now,
+		logger:      zap.NewNop(),
+		waitGroup:   &sync.WaitGroup{},
+		validator:   validator.NewValidator(),
+		mailer:      mocks.mailer,
+		adminWebURL: adminWebURL,
+		userWebURL:  userWebURL,
+		maxRetries:  3,
 	}
 }
 
@@ -86,7 +88,7 @@ func testService(
 		defer ctrl.Finish()
 		mocks := newMocks(ctrl)
 
-		srv := newMessengerService(mocks)
+		srv := newService(mocks)
 		setup(ctx, mocks)
 
 		testFunc(ctx, t, srv)
@@ -94,8 +96,8 @@ func testService(
 	}
 }
 
-func TestMessengerService(t *testing.T) {
+func TestService(t *testing.T) {
 	t.Parallel()
-	srv := NewMessengerService(&Params{}, WithLogger(zap.NewNop()), WithMaxRetries(3))
+	srv := NewService(&Params{}, WithLogger(zap.NewNop()), WithMaxRetries(3))
 	assert.NotNil(t, srv)
 }

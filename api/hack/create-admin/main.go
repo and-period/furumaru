@@ -46,8 +46,8 @@ type app struct {
 	db        *db.Client
 	auth      cognito.Client
 	mailer    mailer.Client
-	user      user.UserService
-	messenger messenger.MessengerService
+	user      user.Service
+	messenger messenger.Service
 	waitGroup *sync.WaitGroup
 	logger    *zap.Logger
 }
@@ -133,24 +133,24 @@ func run() error {
 	return err
 }
 
-func (a *app) newUserService() user.UserService {
+func (a *app) newUserService() user.Service {
 	params := &usersrv.Params{
-		Database:         database.NewDatabase(&database.Params{Database: a.db}),
-		AdminAuth:        a.auth,
-		MessengerService: a.messenger,
-		WaitGroup:        a.waitGroup,
+		Database:  database.NewDatabase(&database.Params{Database: a.db}),
+		AdminAuth: a.auth,
+		Messenger: a.messenger,
+		WaitGroup: a.waitGroup,
 	}
-	return usersrv.NewUserService(params, usersrv.WithLogger(a.logger))
+	return usersrv.NewService(params, usersrv.WithLogger(a.logger))
 }
 
-func (a *app) newMessengerService() messenger.MessengerService {
+func (a *app) newMessengerService() messenger.Service {
 	url, _ := url.Parse("http://localhost:3010")
 	params := &messengersrv.Params{
 		Mailer:      a.mailer,
 		AdminWebURL: url,
 		WaitGroup:   a.waitGroup,
 	}
-	return messengersrv.NewMessengerService(params, messengersrv.WithLogger(a.logger))
+	return messengersrv.NewService(params, messengersrv.WithLogger(a.logger))
 }
 
 func (a *app) setupDB(host, port, username, password string, tls bool) (*db.Client, error) {

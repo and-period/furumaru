@@ -2,6 +2,14 @@ package messenger
 
 import "github.com/and-period/furumaru/api/internal/messenger/entity"
 
+// EventType - Worker実行種別
+type EventType string
+
+const (
+	EventTypeRegisterAdmin EventType = "register-admin" // 管理者登録通知
+)
+
+// UserType - 通知先ユーザー種別
 type UserType int32
 
 const (
@@ -13,7 +21,8 @@ const (
 )
 
 type WorkerPayload struct {
-	UserType UserType           `json:"userType,omitempty"` // 送信先ユーザー種別
-	UserIDs  []string           `json:"userIds,omitempty"`  // 送信先ユーザー一覧
-	Email    *entity.MailConfig `json:"email,omitempty"`    // メール送信設定
+	EventType EventType          `json:"eventType,omitempty"` // Worker実行種別
+	UserType  UserType           `json:"userType,omitempty"`  // 送信先ユーザー種別
+	UserIDs   []string           `json:"userIds,omitempty"`   // 送信先ユーザー一覧
+	Email     *entity.MailConfig `json:"email,omitempty"`     // メール送信設定
 }

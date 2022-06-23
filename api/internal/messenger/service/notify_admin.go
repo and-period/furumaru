@@ -9,7 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/mailer"
 )
 
-func (s *messengerService) NotifyRegisterAdmin(ctx context.Context, in *messenger.NotifyRegisterAdminInput) error {
+func (s *service) NotifyRegisterAdmin(ctx context.Context, in *messenger.NotifyRegisterAdminInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}

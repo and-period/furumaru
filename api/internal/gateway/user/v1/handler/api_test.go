@@ -37,7 +37,7 @@ var (
 
 type mocks struct {
 	storage *mock_storage.MockBucket
-	user    *mock_user.MockUserService
+	user    *mock_user.MockService
 }
 
 type testResponse struct {
@@ -62,12 +62,12 @@ func withNow(now time.Time) testOption {
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
 		storage: mock_storage.NewMockBucket(ctrl),
-		user:    mock_user.NewMockUserService(ctrl),
+		user:    mock_user.NewMockService(ctrl),
 	}
 }
 
-func newAPIV1Handler(mocks *mocks, opts *testOptions) APIV1Handler {
-	return &apiV1Handler{
+func newHandler(mocks *mocks, opts *testOptions) Handler {
+	return &handler{
 		now:         opts.now,
 		logger:      zap.NewNop(),
 		waitGroup:   &sync.WaitGroup{},
@@ -77,7 +77,7 @@ func newAPIV1Handler(mocks *mocks, opts *testOptions) APIV1Handler {
 	}
 }
 
-func newRoutes(h APIV1Handler, r *gin.Engine) {
+func newRoutes(h Handler, r *gin.Engine) {
 	h.Routes(r.Group(""))
 }
 
@@ -146,7 +146,7 @@ func testHTTP(
 	for i := range opts {
 		opts[i](dopts)
 	}
-	h := newAPIV1Handler(mocks, dopts)
+	h := newHandler(mocks, dopts)
 	w := httptest.NewRecorder()
 	_, r := gin.CreateTestContext(w)
 	newRoutes(h, r)
@@ -240,9 +240,9 @@ func getFilepath(t *testing.T) string {
 	return filepath.Join(strs[0], "/api/tmp", filename)
 }
 
-func TestAPIV1Handler(t *testing.T) {
+func TestHandler(t *testing.T) {
 	t.Parallel()
-	h := NewAPIV1Handler(&Params{}, WithLogger(zap.NewNop()))
+	h := NewHandler(&Params{}, WithLogger(zap.NewNop()))
 	assert.NotNil(t, h)
 }
 

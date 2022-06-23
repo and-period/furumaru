@@ -79,7 +79,7 @@ func TestListProductTypes(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *storeService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.ListProductTypes(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.ElementsMatch(t, tt.expect, actual)
@@ -138,7 +138,7 @@ func TestCreateProductType(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *storeService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateProductType(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
@@ -186,7 +186,7 @@ func TestUpdateProductType(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *storeService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateProductType(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
@@ -232,7 +232,7 @@ func TestDeleteProductType(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *storeService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.DeleteProductType(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
