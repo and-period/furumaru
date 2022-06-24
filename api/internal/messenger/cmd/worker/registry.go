@@ -25,7 +25,6 @@ type params struct {
 	logger    *zap.Logger
 	waitGroup *sync.WaitGroup
 	mailer    mailer.Client
-	user      user.Service
 }
 
 func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*registry, error) {
