@@ -62,6 +62,52 @@ func TestInternalError(t *testing.T) {
 	}
 }
 
+func TestRetryable(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		err    error
+		expect bool
+	}{
+		{
+			name:   "err nil",
+			err:    nil,
+			expect: false,
+		},
+		{
+			name:   "internl",
+			err:    ErrInternal,
+			expect: false,
+		},
+		{
+			name:   "canceled",
+			err:    ErrCanceled,
+			expect: true,
+		},
+		{
+			name:   "unablailable",
+			err:    ErrUnavailable,
+			expect: true,
+		},
+		{
+			name:   "deadline exceeded",
+			err:    ErrDeadlineExceeded,
+			expect: true,
+		},
+		{
+			name:   "out of range",
+			err:    ErrOutOfRange,
+			expect: true,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.expect, Retryable(tt.err))
+		})
+	}
+}
+
 func TestValidationError(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

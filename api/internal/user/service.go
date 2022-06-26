@@ -23,6 +23,8 @@ type Service interface {
 	VerifyAdminEmail(ctx context.Context, in *VerifyAdminEmailInput) error
 	// 管理者パスワード更新
 	UpdateAdminPassword(ctx context.Context, in *UpdateAdminPasswordInput) error
+	// 管理者取得
+	GetAdmin(ctx context.Context, in *GetAdminInput) (*entity.Admin, error)
 	// システム管理者一覧取得
 	ListAdministrators(ctx context.Context, in *ListAdministratorsInput) (entity.Administrators, error)
 	// システム管理者取得

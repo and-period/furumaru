@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -65,14 +64,14 @@ func (s *service) UpdateAdminEmail(ctx context.Context, in *user.UpdateAdminEmai
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	email, err := s.getAdminEmail(ctx, auth)
+	admin, err := s.getAdmin(ctx, auth.AdminID, auth.Role)
 	if err != nil {
 		return exception.InternalError(err)
 	}
 	params := &cognito.ChangeEmailParams{
 		AccessToken: in.AccessToken,
 		Username:    username,
-		OldEmail:    email,
+		OldEmail:    admin.Email,
 		NewEmail:    in.Email,
 	}
 	err = s.adminAuth.ChangeEmail(ctx, params)
@@ -136,26 +135,4 @@ func (s *service) getAdminAuth(ctx context.Context, rs *cognito.AuthResult) (*en
 	}
 	auth.Fill(rs)
 	return auth, nil
-}
-
-func (s *service) getAdminEmail(ctx context.Context, auth *entity.AdminAuth) (string, error) {
-	switch auth.Role {
-	case entity.AdminRoleAdministrator:
-		administrator, err := s.db.Administrator.Get(ctx, auth.AdminID, "email")
-		if err != nil {
-			return "", err
-		}
-		return administrator.Email, err
-	case entity.AdminRoleCoordinator:
-		// TODO: 詳細の実装
-		return "", exception.ErrNotImplemented
-	case entity.AdminRoleProducer:
-		producer, err := s.db.Producer.Get(ctx, auth.AdminID, "email")
-		if err != nil {
-			return "", err
-		}
-		return producer.Email, err
-	default:
-		return "", fmt.Errorf("api: unknown admin role: %w", exception.ErrInternal)
-	}
 }
