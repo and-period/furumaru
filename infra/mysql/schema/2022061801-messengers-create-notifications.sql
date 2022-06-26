@@ -1,5 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS `messengers` DEFAULT CHARACTER SET utf8mb4;
 
+DROP TABLE IF EXISTS `messengers`.`notifications`;
+
 CREATE TABLE `messengers`.`notifications` (
   `id`           VARCHAR(22)  NOT NULL,          -- お知らせID (Primary Key用)
   `created_by`   VARCHAR(22)  NOT NULL,          -- 登録者ID
