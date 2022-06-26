@@ -22,21 +22,18 @@ func TestNotification_Fill(t *testing.T) {
 				ID:          "notification-id",
 				Title:       "title",
 				Body:        "<html>本文<html>",
-				TargetsJSON: datatypes.JSON([]byte(`[{"postTarget":1}, {"postTarget":2}]`)),
+				TargetsJSON: datatypes.JSON([]byte(`[1,2,3]`)),
 			},
 			expect: &Notification{
 				ID:    "notification-id",
 				Title: "title",
 				Body:  "<html>本文<html>",
-				Targets: []PostTarget{
-					{
-						PostTarget: 1,
-					},
-					{
-						PostTarget: 2,
-					},
+				Targets: []TargetType{
+					PostTargetUsers,
+					PostTargetProducers,
+					PostTargetCoordinators,
 				},
-				TargetsJSON: datatypes.JSON([]byte(`[{"postTarget":1}, {"postTarget":2}]`)),
+				TargetsJSON: datatypes.JSON([]byte(`[1,2,3]`)),
 			},
 			hasErr: false,
 		},
@@ -68,28 +65,22 @@ func TestNotification_FillJSON(t *testing.T) {
 				ID:    "notification-id",
 				Title: "title",
 				Body:  "<html>本文<html>",
-				Targets: []PostTarget{
-					{
-						PostTarget: 1,
-					},
-					{
-						PostTarget: 2,
-					},
+				Targets: []TargetType{
+					PostTargetUsers,
+					PostTargetProducers,
+					PostTargetCoordinators,
 				},
 			},
 			expect: &Notification{
 				ID:    "notification-id",
 				Title: "title",
 				Body:  "<html>本文<html>",
-				Targets: []PostTarget{
-					{
-						PostTarget: 1,
-					},
-					{
-						PostTarget: 2,
-					},
+				Targets: []TargetType{
+					PostTargetUsers,
+					PostTargetProducers,
+					PostTargetCoordinators,
 				},
-				TargetsJSON: datatypes.JSON([]byte(`[{"postTarget":1},{"postTarget":2}]`)),
+				TargetsJSON: datatypes.JSON([]byte(`[1,2,3]`)),
 			},
 			hasErr: false,
 		},
