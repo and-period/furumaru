@@ -15,6 +15,7 @@ type Params struct {
 
 type Database struct {
 	Category    Category
+	Product     Product
 	ProductType ProductType
 }
 
@@ -36,6 +37,14 @@ type Category interface {
 	Delete(ctx context.Context, categoryID string) error
 }
 
+type Product interface {
+	List(ctx context.Context, params *ListProductsParams, fields ...string) (entity.Products, error)
+	Get(ctx context.Context, productID string, fields ...string) (*entity.Product, error)
+	Create(ctx context.Context, product *entity.Product) error
+	Update(ctx context.Context, product *entity.Product) error
+	Delete(ctx context.Context, productID string) error
+}
+
 type ProductType interface {
 	List(ctx context.Context, params *ListProductTypesParams, fields ...string) (entity.ProductTypes, error)
 	Create(ctx context.Context, productType *entity.ProductType) error
@@ -50,6 +59,14 @@ type ListCategoriesParams struct {
 	Name   string
 	Limit  int
 	Offset int
+}
+
+type ListProductsParams struct {
+	Name       string
+	ProducerID string
+	CreatedBy  string
+	Limit      int
+	Offset     int
 }
 
 type ListProductTypesParams struct {
