@@ -2,8 +2,6 @@ package cmd
 
 import (
 	"context"
-	"net/url"
-	"os"
 	"sync"
 
 	v1 "github.com/and-period/furumaru/api/internal/gateway/user/v1/handler"
@@ -17,12 +15,11 @@ import (
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/database"
-	"github.com/and-period/furumaru/api/pkg/mailer"
+	"github.com/and-period/furumaru/api/pkg/sqs"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"go.uber.org/zap"
-	"gopkg.in/yaml.v2"
 )
 
 type registry struct {
@@ -31,14 +28,13 @@ type registry struct {
 }
 
 type params struct {
-	config     *config
-	logger     *zap.Logger
-	waitGroup  *sync.WaitGroup
-	aws        aws.Config
-	storage    storage.Bucket
-	userAuth   cognito.Client
-	mailer     mailer.Client
-	userWebURL *url.URL
+	config    *config
+	logger    *zap.Logger
+	waitGroup *sync.WaitGroup
+	aws       aws.Config
+	storage   storage.Bucket
+	userAuth  cognito.Client
+	producer  sqs.Producer
 }
 
 func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*registry, error) {
@@ -68,33 +64,11 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}
 	params.userAuth = cognito.NewClient(awscfg, userAuthParams)
 
-	// メールテンプレートの設定
-	f, err := os.Open(conf.SendGridTemplatePath)
-	if err != nil {
-		return nil, err
+	// Amazon SQSの設定
+	sqsParams := &sqs.Params{
+		QueueURL: conf.SQSQueueURL,
 	}
-	defer f.Close()
-	var templateMap map[string]string
-	d := yaml.NewDecoder(f)
-	if err := d.Decode(&templateMap); err != nil {
-		return nil, err
-	}
-
-	// Mailerの設定
-	mailParams := &mailer.Params{
-		APIKey:      conf.SendGridAPIKey,
-		FromName:    conf.MailFromName,
-		FromAddress: conf.MailFromAddress,
-		TemplateMap: templateMap,
-	}
-	params.mailer = mailer.NewClient(mailParams, mailer.WithLogger(logger))
-
-	// WebURLの設定
-	userWebURL, err := url.Parse(conf.UserWebURL)
-	if err != nil {
-		return nil, err
-	}
-	params.userWebURL = userWebURL
+	params.producer = sqs.NewProducer(awscfg, sqsParams, sqs.WithDryRun(conf.SQSMockEnabled))
 
 	// Serviceの設定
 	messengerService := newMessengerService(ctx, params)
@@ -139,10 +113,8 @@ func newDatabase(dbname string, conf *config, logger *zap.Logger) (*database.Cli
 
 func newMessengerService(ctx context.Context, p *params) messenger.Service {
 	params := &messengersrv.Params{
-		WaitGroup:   p.waitGroup,
-		Mailer:      p.mailer,
-		UserWebURL:  p.userWebURL,
-		AdminWebURL: &url.URL{},
+		WaitGroup: p.waitGroup,
+		Producer:  p.producer,
 	}
 	return messengersrv.NewService(params, messengersrv.WithLogger(p.logger))
 }
