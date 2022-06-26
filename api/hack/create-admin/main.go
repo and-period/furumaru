@@ -31,11 +31,6 @@ import (
 const (
 	dbName    = "users"
 	awsRegion = "ap-northeast-1"
-
-	fromName    = "&. コマンド実行"
-	fromAddress = "info@and-period.jp"
-
-	defaultTemplatePath = "./../../config/messenger/mailer/dev.yaml"
 )
 
 type app struct {
