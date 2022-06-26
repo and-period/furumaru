@@ -3,6 +3,7 @@
     <v-alert v-model="isShow" :type="alertType" v-text="alertText" />
     <v-card>
       <form @submit.prevent="handleSubmit">
+        <v-card-title>ログイン</v-card-title>
         <v-card-text>
           <v-text-field
             v-model="formData.username"
