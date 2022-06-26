@@ -3,10 +3,11 @@ package messenger
 import "github.com/and-period/furumaru/api/internal/messenger/entity"
 
 // EventType - Worker実行種別
-type EventType string
+type EventType int32
 
 const (
-	EventTypeRegisterAdmin EventType = "register-admin" // 管理者登録通知
+	EventTypeUnknown       EventType = 0
+	EventTypeRegisterAdmin EventType = 1 // 管理者登録通知
 )
 
 // UserType - 通知先ユーザー種別
@@ -15,9 +16,10 @@ type UserType int32
 const (
 	UserTypeNone          UserType = 0
 	UserTypeUser          UserType = 1 // 購入者
-	UserTypeAdministrator UserType = 2 // システム管理者
-	UserTypeCoordinator   UserType = 3 // 仲介者
-	UserTypeProducer      UserType = 4 // 生産者
+	UserTypeAdmin         UserType = 2 // 管理者(システム管理者,仲介者,生産者)
+	UserTypeAdministrator UserType = 3 // システム管理者
+	UserTypeCoordinator   UserType = 4 // 仲介者
+	UserTypeProducer      UserType = 5 // 生産者
 )
 
 type WorkerPayload struct {

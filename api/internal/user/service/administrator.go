@@ -68,7 +68,7 @@ func (s *service) CreateAdministrator(
 	s.waitGroup.Add(1)
 	go func() {
 		defer s.waitGroup.Done()
-		err := s.notifyRegisterAdmin(context.Background(), administrator.Name(), administrator.Email, password)
+		err := s.notifyRegisterAdmin(context.Background(), administrator.ID, password)
 		if err != nil {
 			s.logger.Warn("Failed to notify register admin", zap.String("administratorId", administrator.ID), zap.Error(err))
 		}
@@ -85,10 +85,9 @@ func (s *service) createCognitoAdmin(ctx context.Context, cognitoID, email, pass
 	return s.adminAuth.AdminCreateUser(ctx, params)
 }
 
-func (s *service) notifyRegisterAdmin(ctx context.Context, name, email, password string) error {
+func (s *service) notifyRegisterAdmin(ctx context.Context, adminID, password string) error {
 	in := &messenger.NotifyRegisterAdminInput{
-		Name:     name,
-		Email:    email,
+		AdminID:  adminID,
 		Password: password,
 	}
 	return s.messenger.NotifyRegisterAdmin(ctx, in)

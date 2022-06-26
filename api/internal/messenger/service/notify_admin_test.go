@@ -2,29 +2,19 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
-	"github.com/and-period/furumaru/api/pkg/mailer"
+	"github.com/and-period/furumaru/api/internal/messenger/entity"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNotifyRegisterAdmin(t *testing.T) {
 	t.Parallel()
-
-	personalizations := []*mailer.Personalization{
-		{
-			Name:    "&. 農園",
-			Address: "test-admin@and-period.jp",
-			Type:    mailer.AddressTypeTo,
-			Substitutions: map[string]interface{}{
-				"氏名":     "&. 農園",
-				"パスワード":  "!Qaz2wsx",
-				"サイトURL": "https://admin.and-period.jp/signin",
-			},
-		},
-	}
 
 	tests := []struct {
 		name      string
@@ -35,11 +25,27 @@ func TestNotifyRegisterAdmin(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.mailer.EXPECT().MultiSendFromInfo(ctx, "register-admin", personalizations).Return(nil)
+				mocks.producer.EXPECT().
+					SendMessage(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, b []byte) (string, error) {
+						payload := &messenger.WorkerPayload{}
+						err := json.Unmarshal(b, payload)
+						require.NoError(t, err)
+						expect := &messenger.WorkerPayload{
+							EventType: messenger.EventTypeRegisterAdmin,
+							UserType:  messenger.UserTypeAdmin,
+							UserIDs:   []string{"admin-id"},
+							Email: &entity.MailConfig{
+								EmailID:       entity.EmailIDRegisterAdmin,
+								Substitutions: map[string]string{"パスワード": "!Qaz2wsx"},
+							},
+						}
+						assert.Equal(t, expect, payload)
+						return "message-id", nil
+					})
 			},
 			input: &messenger.NotifyRegisterAdminInput{
-				Name:     "&. 農園",
-				Email:    "test-admin@and-period.jp",
+				AdminID:  "admin-id",
 				Password: "!Qaz2wsx",
 			},
 			expectErr: nil,
@@ -53,11 +59,10 @@ func TestNotifyRegisterAdmin(t *testing.T) {
 		{
 			name: "failed to send info mail",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.mailer.EXPECT().MultiSendFromInfo(ctx, "register-admin", personalizations).Return(errmock)
+				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", errmock)
 			},
 			input: &messenger.NotifyRegisterAdminInput{
-				Name:     "&. 農園",
-				Email:    "test-admin@and-period.jp",
+				AdminID:  "admin-id",
 				Password: "!Qaz2wsx",
 			},
 			expectErr: exception.ErrUnknown,
