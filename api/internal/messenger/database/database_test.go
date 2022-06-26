@@ -25,7 +25,7 @@ func newMocks(ctrl *gomock.Controller) (*mocks, error) {
 		Socket:   "tcp",
 		Host:     os.Getenv("DB_HOST"),
 		Port:     os.Getenv("DB_PORT"),
-		Database: "users",
+		Database: "messengers",
 		Username: os.Getenv("DB_USERNAME"),
 		Password: os.Getenv("DB_PASSWORD"),
 	}
