@@ -12,31 +12,31 @@ import (
 	gomock "github.com/golang/mock/gomock"
 )
 
-// MockMessengerService is a mock of MessengerService interface.
-type MockMessengerService struct {
+// MockService is a mock of Service interface.
+type MockService struct {
 	ctrl     *gomock.Controller
-	recorder *MockMessengerServiceMockRecorder
+	recorder *MockServiceMockRecorder
 }
 
-// MockMessengerServiceMockRecorder is the mock recorder for MockMessengerService.
-type MockMessengerServiceMockRecorder struct {
-	mock *MockMessengerService
+// MockServiceMockRecorder is the mock recorder for MockService.
+type MockServiceMockRecorder struct {
+	mock *MockService
 }
 
-// NewMockMessengerService creates a new mock instance.
-func NewMockMessengerService(ctrl *gomock.Controller) *MockMessengerService {
-	mock := &MockMessengerService{ctrl: ctrl}
-	mock.recorder = &MockMessengerServiceMockRecorder{mock}
+// NewMockService creates a new mock instance.
+func NewMockService(ctrl *gomock.Controller) *MockService {
+	mock := &MockService{ctrl: ctrl}
+	mock.recorder = &MockServiceMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockMessengerService) EXPECT() *MockMessengerServiceMockRecorder {
+func (m *MockService) EXPECT() *MockServiceMockRecorder {
 	return m.recorder
 }
 
 // NotifyRegisterAdmin mocks base method.
-func (m *MockMessengerService) NotifyRegisterAdmin(ctx context.Context, in *messenger.NotifyRegisterAdminInput) error {
+func (m *MockService) NotifyRegisterAdmin(ctx context.Context, in *messenger.NotifyRegisterAdminInput) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "NotifyRegisterAdmin", ctx, in)
 	ret0, _ := ret[0].(error)
@@ -44,7 +44,7 @@ func (m *MockMessengerService) NotifyRegisterAdmin(ctx context.Context, in *mess
 }
 
 // NotifyRegisterAdmin indicates an expected call of NotifyRegisterAdmin.
-func (mr *MockMessengerServiceMockRecorder) NotifyRegisterAdmin(ctx, in interface{}) *gomock.Call {
+func (mr *MockServiceMockRecorder) NotifyRegisterAdmin(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotifyRegisterAdmin", reflect.TypeOf((*MockMessengerService)(nil).NotifyRegisterAdmin), ctx, in)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotifyRegisterAdmin", reflect.TypeOf((*MockService)(nil).NotifyRegisterAdmin), ctx, in)
 }

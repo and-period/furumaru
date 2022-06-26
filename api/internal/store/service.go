@@ -8,8 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
-//nolint:revive
-type StoreService interface {
+type Service interface {
 	// カテゴリ一覧取得
 	ListCategories(ctx context.Context, in *ListCategoriesInput) (entity.Categories, error)
 	// カテゴリ一覧取得(ID指定)

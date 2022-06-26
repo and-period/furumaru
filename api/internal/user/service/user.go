@@ -11,7 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/uuid"
 )
 
-func (s *userService) MultiGetUsers(ctx context.Context, in *user.MultiGetUsersInput) (entity.Users, error) {
+func (s *service) MultiGetUsers(ctx context.Context, in *user.MultiGetUsersInput) (entity.Users, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
@@ -19,7 +19,7 @@ func (s *userService) MultiGetUsers(ctx context.Context, in *user.MultiGetUsersI
 	return users, exception.InternalError(err)
 }
 
-func (s *userService) GetUser(ctx context.Context, in *user.GetUserInput) (*entity.User, error) {
+func (s *service) GetUser(ctx context.Context, in *user.GetUserInput) (*entity.User, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
@@ -27,7 +27,7 @@ func (s *userService) GetUser(ctx context.Context, in *user.GetUserInput) (*enti
 	return u, exception.InternalError(err)
 }
 
-func (s *userService) CreateUser(ctx context.Context, in *user.CreateUserInput) (string, error) {
+func (s *service) CreateUser(ctx context.Context, in *user.CreateUserInput) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", exception.InternalError(err)
 	}
@@ -48,7 +48,7 @@ func (s *userService) CreateUser(ctx context.Context, in *user.CreateUserInput) 
 	return u.ID, nil
 }
 
-func (s *userService) VerifyUser(ctx context.Context, in *user.VerifyUserInput) error {
+func (s *service) VerifyUser(ctx context.Context, in *user.VerifyUserInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
@@ -59,7 +59,7 @@ func (s *userService) VerifyUser(ctx context.Context, in *user.VerifyUserInput) 
 	return exception.InternalError(err)
 }
 
-func (s *userService) CreateUserWithOAuth(
+func (s *service) CreateUserWithOAuth(
 	ctx context.Context, in *user.CreateUserWithOAuthInput,
 ) (*entity.User, error) {
 	if err := s.validator.Struct(in); err != nil {
@@ -76,7 +76,7 @@ func (s *userService) CreateUserWithOAuth(
 	return u, nil
 }
 
-func (s *userService) InitializeUser(ctx context.Context, in *user.InitializeUserInput) error {
+func (s *service) InitializeUser(ctx context.Context, in *user.InitializeUserInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
@@ -84,7 +84,7 @@ func (s *userService) InitializeUser(ctx context.Context, in *user.InitializeUse
 	return exception.InternalError(err)
 }
 
-func (s *userService) UpdateUserEmail(ctx context.Context, in *user.UpdateUserEmailInput) error {
+func (s *service) UpdateUserEmail(ctx context.Context, in *user.UpdateUserEmailInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
@@ -109,7 +109,7 @@ func (s *userService) UpdateUserEmail(ctx context.Context, in *user.UpdateUserEm
 	return exception.InternalError(err)
 }
 
-func (s *userService) VerifyUserEmail(ctx context.Context, in *user.VerifyUserEmailInput) error {
+func (s *service) VerifyUserEmail(ctx context.Context, in *user.VerifyUserEmailInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
@@ -134,7 +134,7 @@ func (s *userService) VerifyUserEmail(ctx context.Context, in *user.VerifyUserEm
 	return exception.InternalError(err)
 }
 
-func (s *userService) UpdateUserPassword(ctx context.Context, in *user.UpdateUserPasswordInput) error {
+func (s *service) UpdateUserPassword(ctx context.Context, in *user.UpdateUserPasswordInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
@@ -147,7 +147,7 @@ func (s *userService) UpdateUserPassword(ctx context.Context, in *user.UpdateUse
 	return exception.InternalError(err)
 }
 
-func (s *userService) ForgotUserPassword(ctx context.Context, in *user.ForgotUserPasswordInput) error {
+func (s *service) ForgotUserPassword(ctx context.Context, in *user.ForgotUserPasswordInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
@@ -161,7 +161,7 @@ func (s *userService) ForgotUserPassword(ctx context.Context, in *user.ForgotUse
 	return nil
 }
 
-func (s *userService) VerifyUserPassword(ctx context.Context, in *user.VerifyUserPasswordInput) error {
+func (s *service) VerifyUserPassword(ctx context.Context, in *user.VerifyUserPasswordInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
@@ -178,7 +178,7 @@ func (s *userService) VerifyUserPassword(ctx context.Context, in *user.VerifyUse
 	return exception.InternalError(err)
 }
 
-func (s *userService) DeleteUser(ctx context.Context, in *user.DeleteUserInput) error {
+func (s *service) DeleteUser(ctx context.Context, in *user.DeleteUserInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}

@@ -25,12 +25,8 @@ type config struct {
 	CognitoAdminClientID string `envconfig:"COGNITO_Admin_CLIENT_ID" default:""`
 	CognitoUserPoolID    string `envconfig:"COGNITO_USER_POOL_ID" default:""`
 	CognitoUserClientID  string `envconfig:"COGNITO_USER_CLIENT_ID" default:""`
-	SendGridAPIKey       string `envconfig:"SENDGRID_API_KEY" default:""`
-	SendGridTemplatePath string `envconfig:"SENDGRID_TEMPLATE_PATH" default:""`
-	MailFromName         string `envconfig:"MAIL_FROM_NAME" default:""`
-	MailFromAddress      string `envconfig:"MAIL_FROM_ADDRESS" default:""`
-	AminWebURL           string `envconfig:"ADMIN_WEB_URL" default:""`
-	UserWebURL           string `envconfig:"USER_WEB_URL" default:""`
+	SQSQueueURL          string `envconfig:"SQS_QUEUE_URL" default:""`
+	SQSMockEnabled       bool   `envconfig:"SQS_MOCK_ENABLED" default:"false"`
 	RBACPolicyPath       string `envconfig:"RBAC_POLICY_PATH" default:""`
 	RBACModelPath        string `envconfig:"RBAC_MODEL_PATH" default:""`
 }

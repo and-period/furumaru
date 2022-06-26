@@ -77,7 +77,7 @@ func TestListAdministrators(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.ListAdministrators(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.ElementsMatch(t, tt.expect, actual)
@@ -141,7 +141,7 @@ func TestGetAdministrator(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetAdministrator(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
@@ -252,7 +252,7 @@ func TestCreateAdministrator(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateAdministrator(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))

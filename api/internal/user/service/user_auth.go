@@ -9,7 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/cognito"
 )
 
-func (s *userService) SignInUser(ctx context.Context, in *user.SignInUserInput) (*entity.UserAuth, error) {
+func (s *service) SignInUser(ctx context.Context, in *user.SignInUserInput) (*entity.UserAuth, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
@@ -21,7 +21,7 @@ func (s *userService) SignInUser(ctx context.Context, in *user.SignInUserInput) 
 	return auth, exception.InternalError(err)
 }
 
-func (s *userService) SignOutUser(ctx context.Context, in *user.SignOutUserInput) error {
+func (s *service) SignOutUser(ctx context.Context, in *user.SignOutUserInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
@@ -29,7 +29,7 @@ func (s *userService) SignOutUser(ctx context.Context, in *user.SignOutUserInput
 	return exception.InternalError(err)
 }
 
-func (s *userService) GetUserAuth(ctx context.Context, in *user.GetUserAuthInput) (*entity.UserAuth, error) {
+func (s *service) GetUserAuth(ctx context.Context, in *user.GetUserAuthInput) (*entity.UserAuth, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
@@ -38,7 +38,7 @@ func (s *userService) GetUserAuth(ctx context.Context, in *user.GetUserAuthInput
 	return auth, exception.InternalError(err)
 }
 
-func (s *userService) RefreshUserToken(ctx context.Context, in *user.RefreshUserTokenInput) (*entity.UserAuth, error) {
+func (s *service) RefreshUserToken(ctx context.Context, in *user.RefreshUserTokenInput) (*entity.UserAuth, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
@@ -50,7 +50,7 @@ func (s *userService) RefreshUserToken(ctx context.Context, in *user.RefreshUser
 	return auth, exception.InternalError(err)
 }
 
-func (s *userService) getUserAuth(ctx context.Context, rs *cognito.AuthResult) (*entity.UserAuth, error) {
+func (s *service) getUserAuth(ctx context.Context, rs *cognito.AuthResult) (*entity.UserAuth, error) {
 	username, err := s.userAuth.GetUsername(ctx, rs.AccessToken)
 	if err != nil {
 		return nil, err

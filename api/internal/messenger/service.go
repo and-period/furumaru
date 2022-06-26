@@ -6,8 +6,7 @@ import (
 	"context"
 )
 
-//nolint:revive
-type MessengerService interface {
+type Service interface {
 	// 管理者登録通知
 	NotifyRegisterAdmin(ctx context.Context, in *NotifyRegisterAdminInput) error
 }

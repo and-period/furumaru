@@ -15,21 +15,21 @@ import (
 )
 
 type Params struct {
-	Database         *database.Database
-	UserService      user.UserService
-	MessengerService messenger.MessengerService
-	WaitGroup        *sync.WaitGroup
+	WaitGroup *sync.WaitGroup
+	Database  *database.Database
+	User      user.Service
+	Messenger messenger.Service
 }
 
-type storeService struct {
+type service struct {
 	now         func() time.Time
 	logger      *zap.Logger
-	sharedGroup *singleflight.Group
 	waitGroup   *sync.WaitGroup
+	sharedGroup *singleflight.Group
 	validator   validator.Validator
 	db          *database.Database
-	user        user.UserService
-	messenger   messenger.MessengerService
+	user        user.Service
+	messenger   messenger.Service
 }
 
 type options struct {
@@ -44,21 +44,21 @@ func WithLogger(logger *zap.Logger) Option {
 	}
 }
 
-func NewStoreService(params *Params, opts ...Option) store.StoreService {
+func NewService(params *Params, opts ...Option) store.Service {
 	dopts := &options{
 		logger: zap.NewNop(),
 	}
 	for i := range opts {
 		opts[i](dopts)
 	}
-	return &storeService{
+	return &service{
 		now:         jst.Now,
 		logger:      dopts.logger,
+		waitGroup:   params.WaitGroup,
 		sharedGroup: &singleflight.Group{},
 		validator:   validator.NewValidator(),
-		waitGroup:   params.WaitGroup,
 		db:          params.Database,
-		user:        params.UserService,
-		messenger:   params.MessengerService,
+		user:        params.User,
+		messenger:   params.Messenger,
 	}
 }

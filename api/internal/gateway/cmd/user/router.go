@@ -3,27 +3,21 @@ package cmd
 import (
 	"bytes"
 	"net/http"
+	"time"
 
 	"github.com/and-period/furumaru/api/pkg/cors"
 	"github.com/gin-contrib/gzip"
+	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
 
-type wrapResponseWriter struct {
-	gin.ResponseWriter
-	body *bytes.Buffer
-}
-
-func (w *wrapResponseWriter) Write(b []byte) (int, error) {
-	w.body.Write(b)
-	return w.ResponseWriter.Write(b)
-}
-
-func newRouter(reg *registry, opts ...gin.HandlerFunc) *gin.Engine {
+func newRouter(reg *registry, logger *zap.Logger) *gin.Engine {
+	opts := make([]gin.HandlerFunc, 0)
+	opts = append(opts, accessLogger(logger))
 	opts = append(opts, cors.NewGinMiddleware())
 	opts = append(opts, gzip.Gzip(gzip.DefaultCompression))
-	opts = append(opts, notifyError(reg.logger))
+	opts = append(opts, notifyError(logger))
 	opts = append(opts, recoveryWithWriter())
 
 	rt := gin.New()
@@ -42,11 +36,29 @@ func newRouter(reg *registry, opts ...gin.HandlerFunc) *gin.Engine {
 	return rt
 }
 
+type wrapResponseWriter struct {
+	gin.ResponseWriter
+	body *bytes.Buffer
+}
+
+func (w *wrapResponseWriter) Write(b []byte) (int, error) {
+	w.body.Write(b)
+	return w.ResponseWriter.Write(b)
+}
+
 func recoveryWithWriter() gin.HandlerFunc {
 	recovery := func(ctx *gin.Context, err interface{}) {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
 	}
 	return gin.CustomRecovery(recovery)
+}
+
+func accessLogger(logger *zap.Logger) gin.HandlerFunc {
+	return ginzap.GinzapWithConfig(logger, &ginzap.Config{
+		TimeFormat: time.RFC3339,
+		UTC:        false,
+		SkipPaths:  []string{"/health"},
+	})
 }
 
 func notifyError(logger *zap.Logger) gin.HandlerFunc {

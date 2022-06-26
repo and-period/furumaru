@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -10,7 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/cognito"
 )
 
-func (s *userService) SignInAdmin(ctx context.Context, in *user.SignInAdminInput) (*entity.AdminAuth, error) {
+func (s *service) SignInAdmin(ctx context.Context, in *user.SignInAdminInput) (*entity.AdminAuth, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
@@ -22,7 +21,7 @@ func (s *userService) SignInAdmin(ctx context.Context, in *user.SignInAdminInput
 	return auth, exception.InternalError(err)
 }
 
-func (s *userService) SignOutAdmin(ctx context.Context, in *user.SignOutAdminInput) error {
+func (s *service) SignOutAdmin(ctx context.Context, in *user.SignOutAdminInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
@@ -30,7 +29,7 @@ func (s *userService) SignOutAdmin(ctx context.Context, in *user.SignOutAdminInp
 	return exception.InternalError(err)
 }
 
-func (s *userService) GetAdminAuth(ctx context.Context, in *user.GetAdminAuthInput) (*entity.AdminAuth, error) {
+func (s *service) GetAdminAuth(ctx context.Context, in *user.GetAdminAuthInput) (*entity.AdminAuth, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
@@ -39,7 +38,7 @@ func (s *userService) GetAdminAuth(ctx context.Context, in *user.GetAdminAuthInp
 	return auth, exception.InternalError(err)
 }
 
-func (s *userService) RefreshAdminToken(
+func (s *service) RefreshAdminToken(
 	ctx context.Context, in *user.RefreshAdminTokenInput,
 ) (*entity.AdminAuth, error) {
 	if err := s.validator.Struct(in); err != nil {
@@ -53,7 +52,7 @@ func (s *userService) RefreshAdminToken(
 	return auth, exception.InternalError(err)
 }
 
-func (s *userService) UpdateAdminEmail(ctx context.Context, in *user.UpdateAdminEmailInput) error {
+func (s *service) UpdateAdminEmail(ctx context.Context, in *user.UpdateAdminEmailInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
@@ -65,21 +64,21 @@ func (s *userService) UpdateAdminEmail(ctx context.Context, in *user.UpdateAdmin
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	email, err := s.getAdminEmail(ctx, auth)
+	admin, err := s.getAdmin(ctx, auth.AdminID, auth.Role)
 	if err != nil {
 		return exception.InternalError(err)
 	}
 	params := &cognito.ChangeEmailParams{
 		AccessToken: in.AccessToken,
 		Username:    username,
-		OldEmail:    email,
+		OldEmail:    admin.Email,
 		NewEmail:    in.Email,
 	}
 	err = s.adminAuth.ChangeEmail(ctx, params)
 	return exception.InternalError(err)
 }
 
-func (s *userService) VerifyAdminEmail(ctx context.Context, in *user.VerifyAdminEmailInput) error {
+func (s *service) VerifyAdminEmail(ctx context.Context, in *user.VerifyAdminEmailInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
@@ -112,7 +111,7 @@ func (s *userService) VerifyAdminEmail(ctx context.Context, in *user.VerifyAdmin
 	return exception.InternalError(err)
 }
 
-func (s *userService) UpdateAdminPassword(ctx context.Context, in *user.UpdateAdminPasswordInput) error {
+func (s *service) UpdateAdminPassword(ctx context.Context, in *user.UpdateAdminPasswordInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
@@ -125,7 +124,7 @@ func (s *userService) UpdateAdminPassword(ctx context.Context, in *user.UpdateAd
 	return exception.InternalError(err)
 }
 
-func (s *userService) getAdminAuth(ctx context.Context, rs *cognito.AuthResult) (*entity.AdminAuth, error) {
+func (s *service) getAdminAuth(ctx context.Context, rs *cognito.AuthResult) (*entity.AdminAuth, error) {
 	username, err := s.adminAuth.GetUsername(ctx, rs.AccessToken)
 	if err != nil {
 		return nil, err
@@ -136,26 +135,4 @@ func (s *userService) getAdminAuth(ctx context.Context, rs *cognito.AuthResult) 
 	}
 	auth.Fill(rs)
 	return auth, nil
-}
-
-func (s *userService) getAdminEmail(ctx context.Context, auth *entity.AdminAuth) (string, error) {
-	switch auth.Role {
-	case entity.AdminRoleAdministrator:
-		administrator, err := s.db.Administrator.Get(ctx, auth.AdminID, "email")
-		if err != nil {
-			return "", err
-		}
-		return administrator.Email, err
-	case entity.AdminRoleCoordinator:
-		// TODO: 詳細の実装
-		return "", exception.ErrNotImplemented
-	case entity.AdminRoleProducer:
-		producer, err := s.db.Producer.Get(ctx, auth.AdminID, "email")
-		if err != nil {
-			return "", err
-		}
-		return producer.Email, err
-	default:
-		return "", fmt.Errorf("api: unknown admin role: %w", exception.ErrInternal)
-	}
 }

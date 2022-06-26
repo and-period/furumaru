@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"net/url"
 	"os"
 	"sync"
 
@@ -10,78 +11,82 @@ import (
 	userdb "github.com/and-period/furumaru/api/internal/user/database"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/database"
-	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/mailer"
 	"go.uber.org/zap"
 	"gopkg.in/yaml.v2"
 )
 
 type registry struct {
+	waitGroup *sync.WaitGroup
 	worker    worker.Worker
-	logger    *zap.Logger
-	waitGroup *sync.WaitGroup
 }
 
-type serviceParams struct {
-	waitGroup *sync.WaitGroup
-	logger    *zap.Logger
-	config    *config
-	user      user.UserService
+type params struct {
+	config      *config
+	logger      *zap.Logger
+	waitGroup   *sync.WaitGroup
+	mailer      mailer.Client
+	adminWebURL *url.URL
+	userWebURL  *url.URL
 }
 
-func newRegistry(ctx context.Context, conf *config) (*registry, error) {
-	wg := &sync.WaitGroup{}
-
-	// Loggerの設定
-	logger, err := log.NewLogger(log.WithLogLevel(conf.LogLevel), log.WithOutput(conf.LogPath))
-	if err != nil {
-		return nil, err
+func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*registry, error) {
+	params := &params{
+		config:    conf,
+		logger:    logger,
+		waitGroup: &sync.WaitGroup{},
 	}
 
-	// Mailerの設定
+	// メールテンプレートの設定
 	f, err := os.Open(conf.SendGridTemplatePath)
 	if err != nil {
 		return nil, err
 	}
 	defer f.Close()
-
 	var templateMap map[string]string
 	d := yaml.NewDecoder(f)
 	if err := d.Decode(&templateMap); err != nil {
 		return nil, err
 	}
 
+	// Mailerの設定
 	mailParams := &mailer.Params{
 		APIKey:      conf.SendGridAPIKey,
 		FromName:    conf.MailFromName,
 		FromAddress: conf.MailFromAddress,
 		TemplateMap: templateMap,
 	}
+	params.mailer = mailer.NewClient(mailParams, mailer.WithLogger(logger))
 
-	// Serviceの設定
-	srvParams := &serviceParams{
-		waitGroup: wg,
-		logger:    logger,
-		config:    conf,
-	}
-
-	userService, err := newUserService(ctx, srvParams)
+	// WebURLの設定
+	adminWebURL, err := url.Parse(conf.AminWebURL)
 	if err != nil {
 		return nil, err
 	}
-	srvParams.user = userService
+	params.adminWebURL = adminWebURL
+	userWebURL, err := url.Parse(conf.UserWebURL)
+	if err != nil {
+		return nil, err
+	}
+	params.userWebURL = userWebURL
+
+	// Serviceの設定
+	userService, err := newUserService(ctx, params)
+	if err != nil {
+		return nil, err
+	}
 
 	// Workerの設定
 	workerParams := &worker.Params{
-		WaitGroup:   wg,
-		Mailer:      mailer.NewClient(mailParams, mailer.WithLogger(logger)),
-		UserService: userService,
+		WaitGroup:   params.waitGroup,
+		Mailer:      params.mailer,
+		AdminWebURL: params.adminWebURL,
+		UserWebURL:  params.userWebURL,
+		User:        userService,
 	}
-
 	return &registry{
+		waitGroup: params.waitGroup,
 		worker:    worker.NewWorker(workerParams, worker.WithLogger(logger)),
-		logger:    logger,
-		waitGroup: wg,
 	}, nil
 }
 
@@ -102,25 +107,17 @@ func newDatabase(dbname string, conf *config, logger *zap.Logger) (*database.Cli
 	)
 }
 
-func newUserService(ctx context.Context, p *serviceParams) (user.UserService, error) {
-	// MySQLの設定
+func newUserService(ctx context.Context, p *params) (user.Service, error) {
 	mysql, err := newDatabase("users", p.config, p.logger)
 	if err != nil {
 		return nil, err
 	}
-
-	// Databaseの設定
 	dbParams := &userdb.Params{
 		Database: mysql,
 	}
-
-	// User Serviceの設定
 	params := &usersrv.Params{
-		Database:  userdb.NewDatabase(dbParams),
 		WaitGroup: p.waitGroup,
+		Database:  userdb.NewDatabase(dbParams),
 	}
-	return usersrv.NewUserService(
-		params,
-		usersrv.WithLogger(p.logger),
-	), nil
+	return usersrv.NewService(params, usersrv.WithLogger(p.logger)), nil
 }

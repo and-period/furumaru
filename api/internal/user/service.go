@@ -8,8 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
-//nolint:revive
-type UserService interface {
+type Service interface {
 	// 管理者サインイン
 	SignInAdmin(ctx context.Context, in *SignInAdminInput) (*entity.AdminAuth, error)
 	// 管理者サインアウト
@@ -24,6 +23,8 @@ type UserService interface {
 	VerifyAdminEmail(ctx context.Context, in *VerifyAdminEmailInput) error
 	// 管理者パスワード更新
 	UpdateAdminPassword(ctx context.Context, in *UpdateAdminPasswordInput) error
+	// 管理者取得
+	GetAdmin(ctx context.Context, in *GetAdminInput) (*entity.Admin, error)
 	// システム管理者一覧取得
 	ListAdministrators(ctx context.Context, in *ListAdministratorsInput) (entity.Administrators, error)
 	// システム管理者取得

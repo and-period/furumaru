@@ -89,7 +89,7 @@ func TestMultiGetUsers(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.MultiGetUsers(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.ElementsMatch(t, tt.expect, actual)
@@ -167,7 +167,7 @@ func TestGetUser(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetUser(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
@@ -257,7 +257,7 @@ func TestCreateUser(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateUser(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
@@ -318,7 +318,7 @@ func TestVerifyUser(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.VerifyUser(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
@@ -394,7 +394,7 @@ func TestCreateUserWithOAuth(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateUserWithOAuth(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
@@ -504,7 +504,7 @@ func TestUpdateUserEmail(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateUserEmail(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
@@ -613,7 +613,7 @@ func TestVerifyUserEmail(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.VerifyUserEmail(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
@@ -662,7 +662,7 @@ func TestInitializeUser(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.InitializeUser(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
@@ -735,7 +735,7 @@ func TestUpdateUserPassword(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateUserPassword(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
@@ -795,7 +795,7 @@ func TestForgotUserPassword(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.ForgotUserPassword(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
@@ -885,7 +885,7 @@ func TestVerifyUserPassword(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.VerifyUserPassword(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
@@ -968,7 +968,7 @@ func TestDeleteUser(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.DeleteUser(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
