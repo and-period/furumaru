@@ -67,7 +67,7 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 	s.waitGroup.Add(1)
 	go func() {
 		defer s.waitGroup.Done()
-		err := s.notifyRegisterAdmin(context.Background(), producer.Name(), producer.Email, password)
+		err := s.notifyRegisterAdmin(context.Background(), producer.ID, password)
 		if err != nil {
 			s.logger.Warn("Failed to notify register admin", zap.String("producerId", producer.ID), zap.Error(err))
 		}

@@ -4,9 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"net/url"
 	"sync"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -17,14 +19,21 @@ import (
 	"golang.org/x/sync/semaphore"
 )
 
+var (
+	errInvalidPayloadFormat = errors.New("worker: invalid paylaod format")
+	errUnknownEventType     = errors.New("worker: unknown worker event type")
+)
+
 type Worker interface {
 	Lambda(ctx context.Context, event events.SQSEvent) error
 }
 
 type Params struct {
-	WaitGroup *sync.WaitGroup
-	Mailer    mailer.Client
-	User      user.Service
+	WaitGroup   *sync.WaitGroup
+	Mailer      mailer.Client
+	AdminWebURL *url.URL
+	UserWebURL  *url.URL
+	User        user.Service
 }
 
 type worker struct {
@@ -32,6 +41,8 @@ type worker struct {
 	logger      *zap.Logger
 	waitGroup   *sync.WaitGroup
 	mailer      mailer.Client
+	adminWebURL func() *url.URL
+	userWebURL  func() *url.URL
 	user        user.Service
 	concurrency int64
 	maxRetries  int64
@@ -72,11 +83,21 @@ func NewWorker(params *Params, opts ...Option) Worker {
 	for i := range opts {
 		opts[i](dopts)
 	}
+	adminWebURL := func() *url.URL {
+		url := *params.AdminWebURL // copy
+		return &url
+	}
+	userWebURL := func() *url.URL {
+		url := *params.UserWebURL // copy
+		return &url
+	}
 	return &worker{
 		now:         jst.Now,
 		logger:      dopts.logger,
 		waitGroup:   params.WaitGroup,
 		mailer:      params.Mailer,
+		adminWebURL: adminWebURL,
+		userWebURL:  userWebURL,
 		user:        params.User,
 		concurrency: dopts.concurrency,
 		maxRetries:  dopts.maxRetries,
@@ -103,7 +124,7 @@ func (w *worker) Lambda(ctx context.Context, event events.SQSEvent) error {
 				return nil
 			}
 			w.logger.Error("Failed to dispatch", zap.Error(err))
-			if w.retryable(err) {
+			if exception.Retryable(err) {
 				return err
 			}
 			return nil
@@ -114,18 +135,10 @@ func (w *worker) Lambda(ctx context.Context, event events.SQSEvent) error {
 
 func (w *worker) dispatch(ctx context.Context, queueID string, payload *messenger.WorkerPayload) error {
 	w.logger.Debug("Dispatch", zap.String("queueId", queueID), zap.Any("payload", payload))
-	if payload.Email != nil {
-		if err := w.sendInfoMail(ctx, payload); err != nil {
-			w.logger.Error("Failed to send email", zap.Error(err))
-			return err
-		}
+	switch payload.EventType {
+	case messenger.EventTypeRegisterAdmin:
+		return w.registerAdmin(ctx, payload)
+	default:
+		return errUnknownEventType
 	}
-	// TODO: プッシュ通知
-	return nil
-}
-
-func (w *worker) retryable(err error) bool {
-	return errors.Is(err, mailer.ErrTimeout) ||
-		errors.Is(err, mailer.ErrUnavailable) ||
-		errors.Is(err, mailer.ErrInternal)
 }

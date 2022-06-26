@@ -139,6 +139,21 @@ func (mr *MockServiceMockRecorder) ForgotUserPassword(ctx, in interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ForgotUserPassword", reflect.TypeOf((*MockService)(nil).ForgotUserPassword), ctx, in)
 }
 
+// GetAdmin mocks base method.
+func (m *MockService) GetAdmin(ctx context.Context, in *user.GetAdminInput) (*entity.Admin, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAdmin", ctx, in)
+	ret0, _ := ret[0].(*entity.Admin)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAdmin indicates an expected call of GetAdmin.
+func (mr *MockServiceMockRecorder) GetAdmin(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAdmin", reflect.TypeOf((*MockService)(nil).GetAdmin), ctx, in)
+}
+
 // GetAdminAuth mocks base method.
 func (m *MockService) GetAdminAuth(ctx context.Context, in *user.GetAdminAuthInput) (*entity.AdminAuth, error) {
 	m.ctrl.T.Helper()

@@ -2,35 +2,33 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
-	"github.com/and-period/furumaru/api/pkg/mailer"
 )
 
 func (s *service) NotifyRegisterAdmin(ctx context.Context, in *messenger.NotifyRegisterAdminInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-
-	maker := entity.NewAdminURLMaker(s.adminWebURL())
-	builder := entity.NewTemplateDataBuilder().
-		Name(in.Name).
-		Password(in.Password).
-		WebURL(maker.SignIn())
-
+	builder := entity.NewTemplateDataBuilder().Password(in.Password)
 	msg := &entity.MailConfig{
 		EmailID:       entity.EmailIDRegisterAdmin,
 		Substitutions: builder.Build(),
 	}
-
-	personalization := &mailer.Personalization{
-		Name:          in.Name,
-		Address:       in.Email,
-		Type:          mailer.AddressTypeTo,
-		Substitutions: mailer.NewSubstitutions(msg.Substitutions),
+	payload := &messenger.WorkerPayload{
+		EventType: messenger.EventTypeRegisterAdmin,
+		UserType:  messenger.UserTypeAdmin,
+		UserIDs:   []string{in.AdminID},
+		Email:     msg,
 	}
-	err := s.sendInfoMail(ctx, msg, personalization)
+	buf, err := json.Marshal(payload)
+	if err != nil {
+		return exception.InternalError(err)
+	}
+	// TODO: messageIdの重複排除の実装
+	_, err = s.producer.SendMessage(ctx, buf)
 	return exception.InternalError(err)
 }

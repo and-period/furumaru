@@ -369,7 +369,7 @@ func TestUpdateAdminEmail(t *testing.T) {
 				administrator := &entity.Administrator{Email: "test-admin@and-period.jp"}
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.AdminAuth.EXPECT().GetByCognitoID(ctx, "username", "admin_id", "role").Return(auth, nil)
-				mocks.db.Administrator.EXPECT().Get(ctx, "admin-id", "email").Return(administrator, nil)
+				mocks.db.Administrator.EXPECT().Get(ctx, "admin-id").Return(administrator, nil)
 				mocks.adminAuth.EXPECT().ChangeEmail(ctx, params).Return(nil)
 			},
 			input: &user.UpdateAdminEmailInput{
@@ -379,17 +379,20 @@ func TestUpdateAdminEmail(t *testing.T) {
 			expectErr: nil,
 		},
 		{
-			name: "not implemented to coordinator",
+			name: "success to coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
 				auth := &entity.AdminAuth{AdminID: "admin-id", Role: entity.AdminRoleCoordinator}
+				coordinator := &entity.Coordinator{Email: "test-admin@and-period.jp"}
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.AdminAuth.EXPECT().GetByCognitoID(ctx, "username", "admin_id", "role").Return(auth, nil)
+				mocks.db.Coordinator.EXPECT().Get(ctx, "admin-id").Return(coordinator, nil)
+				mocks.adminAuth.EXPECT().ChangeEmail(ctx, params).Return(nil)
 			},
 			input: &user.UpdateAdminEmailInput{
 				AccessToken: "access-token",
 				Email:       "test-other@and-period.jp",
 			},
-			expectErr: exception.ErrNotImplemented,
+			expectErr: nil,
 		},
 		{
 			name: "success to producer",
@@ -398,7 +401,7 @@ func TestUpdateAdminEmail(t *testing.T) {
 				producer := &entity.Producer{Email: "test-admin@and-period.jp"}
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.AdminAuth.EXPECT().GetByCognitoID(ctx, "username", "admin_id", "role").Return(auth, nil)
-				mocks.db.Producer.EXPECT().Get(ctx, "admin-id", "email").Return(producer, nil)
+				mocks.db.Producer.EXPECT().Get(ctx, "admin-id").Return(producer, nil)
 				mocks.adminAuth.EXPECT().ChangeEmail(ctx, params).Return(nil)
 			},
 			input: &user.UpdateAdminEmailInput{
@@ -437,12 +440,12 @@ func TestUpdateAdminEmail(t *testing.T) {
 			expectErr: exception.ErrUnknown,
 		},
 		{
-			name: "failed to get email to administrator",
+			name: "failed to get administrator",
 			setup: func(ctx context.Context, mocks *mocks) {
 				auth := &entity.AdminAuth{AdminID: "admin-id", Role: entity.AdminRoleAdministrator}
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.AdminAuth.EXPECT().GetByCognitoID(ctx, "username", "admin_id", "role").Return(auth, nil)
-				mocks.db.Administrator.EXPECT().Get(ctx, "admin-id", "email").Return(nil, errmock)
+				mocks.db.Administrator.EXPECT().Get(ctx, "admin-id").Return(nil, errmock)
 			},
 			input: &user.UpdateAdminEmailInput{
 				AccessToken: "access-token",
@@ -451,12 +454,26 @@ func TestUpdateAdminEmail(t *testing.T) {
 			expectErr: exception.ErrUnknown,
 		},
 		{
-			name: "failed to get email to producer",
+			name: "failed to get coordinator",
+			setup: func(ctx context.Context, mocks *mocks) {
+				auth := &entity.AdminAuth{AdminID: "admin-id", Role: entity.AdminRoleCoordinator}
+				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
+				mocks.db.AdminAuth.EXPECT().GetByCognitoID(ctx, "username", "admin_id", "role").Return(auth, nil)
+				mocks.db.Coordinator.EXPECT().Get(ctx, "admin-id").Return(nil, errmock)
+			},
+			input: &user.UpdateAdminEmailInput{
+				AccessToken: "access-token",
+				Email:       "test-other@and-period.jp",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "failed to get producer",
 			setup: func(ctx context.Context, mocks *mocks) {
 				auth := &entity.AdminAuth{AdminID: "admin-id", Role: entity.AdminRoleProducer}
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.AdminAuth.EXPECT().GetByCognitoID(ctx, "username", "admin_id", "role").Return(auth, nil)
-				mocks.db.Producer.EXPECT().Get(ctx, "admin-id", "email").Return(nil, errmock)
+				mocks.db.Producer.EXPECT().Get(ctx, "admin-id").Return(nil, errmock)
 			},
 			input: &user.UpdateAdminEmailInput{
 				AccessToken: "access-token",
@@ -465,7 +482,7 @@ func TestUpdateAdminEmail(t *testing.T) {
 			expectErr: exception.ErrUnknown,
 		},
 		{
-			name: "failed to get email to unknown role",
+			name: "failed to unknown role",
 			setup: func(ctx context.Context, mocks *mocks) {
 				auth := &entity.AdminAuth{AdminID: "admin-id", Role: entity.AdminRoleUnknown}
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
@@ -475,14 +492,14 @@ func TestUpdateAdminEmail(t *testing.T) {
 				AccessToken: "access-token",
 				Email:       "test-other@and-period.jp",
 			},
-			expectErr: exception.ErrInternal,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to change email",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.AdminAuth.EXPECT().GetByCognitoID(ctx, "username", "admin_id", "role").Return(auth, nil)
-				mocks.db.Administrator.EXPECT().Get(ctx, "admin-id", "email").Return(administrator, nil)
+				mocks.db.Administrator.EXPECT().Get(ctx, "admin-id").Return(administrator, nil)
 				mocks.adminAuth.EXPECT().ChangeEmail(ctx, params).Return(errmock)
 			},
 			input: &user.UpdateAdminEmailInput{

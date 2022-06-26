@@ -36,6 +36,26 @@ func (m *MockAdminAuth) EXPECT() *MockAdminAuthMockRecorder {
 	return m.recorder
 }
 
+// GetByAdminID mocks base method.
+func (m *MockAdminAuth) GetByAdminID(ctx context.Context, adminID string, fields ...string) (*entity.AdminAuth, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, adminID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetByAdminID", varargs...)
+	ret0, _ := ret[0].(*entity.AdminAuth)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByAdminID indicates an expected call of GetByAdminID.
+func (mr *MockAdminAuthMockRecorder) GetByAdminID(ctx, adminID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, adminID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByAdminID", reflect.TypeOf((*MockAdminAuth)(nil).GetByAdminID), varargs...)
+}
+
 // GetByCognitoID mocks base method.
 func (m *MockAdminAuth) GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.AdminAuth, error) {
 	m.ctrl.T.Helper()

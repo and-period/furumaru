@@ -34,6 +34,10 @@ type UpdateAdminPasswordInput struct {
 	PasswordConfirmation string `validate:"required,eqfield=NewPassword"`
 }
 
+type GetAdminInput struct {
+	AdminID string `validate:"required"`
+}
+
 type ListAdministratorsInput struct {
 	Limit  int64 `validate:"required,max=200"`
 	Offset int64 `validate:"min=0"`

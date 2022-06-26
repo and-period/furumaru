@@ -3,7 +3,6 @@
 //          -db-host=127.0.0.1 -db-port=3316 -db-password=12345678 \
 //          -aws-access-key=xxx -aws-secret-key=xxx \
 //          -cognito-client-id=xxx -cognito-pool-id=xxx \
-//          -send-grid-api-key=xxx \
 //          -email=test-admin@and-period.jp
 package main
 
@@ -11,8 +10,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"net/url"
-	"os"
 	"sync"
 	"time"
 
@@ -24,28 +21,22 @@ import (
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	db "github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/log"
-	"github.com/and-period/furumaru/api/pkg/mailer"
+	"github.com/and-period/furumaru/api/pkg/sqs"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	awscredentials "github.com/aws/aws-sdk-go-v2/credentials"
 	"go.uber.org/zap"
-	"gopkg.in/yaml.v2"
 )
 
 const (
 	dbName    = "users"
 	awsRegion = "ap-northeast-1"
-
-	fromName    = "&. コマンド実行"
-	fromAddress = "info@and-period.jp"
-
-	defaultTemplatePath = "./../../config/messenger/mailer/dev.yaml"
 )
 
 type app struct {
 	db        *db.Client
+	config    aws.Config
 	auth      cognito.Client
-	mailer    mailer.Client
 	user      user.Service
 	messenger messenger.Service
 	waitGroup *sync.WaitGroup
@@ -63,14 +54,13 @@ func main() {
 
 func run() error {
 	var (
-		dbHost, dbPort                       string
-		dbUsername, dbPassword               string
-		dbEnabledTLS                         bool
-		awsAccessKey, awsSecretKey           string
-		authClientID, authPoolID             string
-		sendGridAPIKey, sendGridTemplatePath string
-		email                                string
-		err                                  error
+		dbHost, dbPort             string
+		dbUsername, dbPassword     string
+		dbEnabledTLS               bool
+		awsAccessKey, awsSecretKey string
+		authClientID, authPoolID   string
+		email                      string
+		err                        error
 	)
 
 	app := app{waitGroup: &sync.WaitGroup{}}
@@ -83,25 +73,11 @@ func run() error {
 	flag.StringVar(&awsSecretKey, "aws-secret-key", "", "aws secret key for cognito")
 	flag.StringVar(&authClientID, "cognito-client-id", "", "target cognito client id")
 	flag.StringVar(&authPoolID, "cognito-pool-id", "", "target cognito user pool id")
-	flag.StringVar(&sendGridAPIKey, "send-grid-api-key", "", "target send grid api key")
-	flag.StringVar(&sendGridTemplatePath, "send-grid-template-path", defaultTemplatePath, "target send grid api key")
 	flag.StringVar(&email, "email", "", "target email for created admin")
 	flag.Parse()
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-
-	f, err := os.Open(sendGridTemplatePath)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	var templateMap map[string]string
-	d := yaml.NewDecoder(f)
-	if err := d.Decode(&templateMap); err != nil {
-		return err
-	}
 
 	app.logger, err = log.NewLogger(log.WithLogLevel("debug"))
 	if err != nil {
@@ -111,13 +87,16 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	app.auth, err = app.setupAuth(ctx, awsAccessKey, awsSecretKey, authClientID, authPoolID)
+	app.config, err = app.setupAWSConfig(ctx, awsAccessKey, awsSecretKey)
 	if err != nil {
 		return err
 	}
-	app.mailer = app.setupMailer(sendGridAPIKey, fromName, fromAddress, templateMap)
+	app.auth, err = app.setupAuth(ctx, authClientID, authPoolID)
+	if err != nil {
+		return err
+	}
 
-	app.messenger = app.newMessengerService()
+	app.messenger = app.newMessengerService(ctx)
 	app.user = app.newUserService()
 
 	in := &user.CreateAdministratorInput{
@@ -143,12 +122,10 @@ func (a *app) newUserService() user.Service {
 	return usersrv.NewService(params, usersrv.WithLogger(a.logger))
 }
 
-func (a *app) newMessengerService() messenger.Service {
-	url, _ := url.Parse("http://localhost:3010")
+func (a *app) newMessengerService(ctx context.Context) messenger.Service {
 	params := &messengersrv.Params{
-		Mailer:      a.mailer,
-		AdminWebURL: url,
-		WaitGroup:   a.waitGroup,
+		WaitGroup: a.waitGroup,
+		Producer:  sqs.NewProducer(a.config, &sqs.Params{}, sqs.WithDryRun(true)),
 	}
 	return messengersrv.NewService(params, messengersrv.WithLogger(a.logger))
 }
@@ -165,30 +142,20 @@ func (a *app) setupDB(host, port, username, password string, tls bool) (*db.Clie
 	return db.NewClient(params, db.WithTLS(tls), db.WithLogger(a.logger))
 }
 
-func (a *app) setupMailer(apiKey, fromName, fromAddress string, templateMap map[string]string) mailer.Client {
-	params := &mailer.Params{
-		APIKey:      apiKey,
-		FromName:    fromName,
-		FromAddress: fromAddress,
-		TemplateMap: templateMap,
-	}
-	return mailer.NewClient(params, mailer.WithLogger(a.logger))
-}
-
-func (a *app) setupAuth(ctx context.Context, accessKey, secretKey, clientID, poolID string) (cognito.Client, error) {
+func (a *app) setupAWSConfig(ctx context.Context, accessKey, secretKey string) (aws.Config, error) {
 	awscreds := aws.NewCredentialsCache(
 		awscredentials.NewStaticCredentialsProvider(accessKey, secretKey, ""),
 	)
-	awscfg, err := awsconfig.LoadDefaultConfig(ctx,
+	return awsconfig.LoadDefaultConfig(ctx,
 		awsconfig.WithRegion(awsRegion),
 		awsconfig.WithCredentialsProvider(awscreds),
 	)
-	if err != nil {
-		return nil, err
-	}
+}
+
+func (a *app) setupAuth(ctx context.Context, clientID, poolID string) (cognito.Client, error) {
 	params := &cognito.Params{
 		UserPoolID:  poolID,
 		AppClientID: clientID,
 	}
-	return cognito.NewClient(awscfg, params, cognito.WithLogger(a.logger)), nil
+	return cognito.NewClient(a.config, params, cognito.WithLogger(a.logger)), nil
 }

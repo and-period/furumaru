@@ -22,6 +22,8 @@ type config struct {
 	SendGridTemplatePath string `envconfig:"SENDGRID_TEMPLATE_PATH" default:""`
 	MailFromName         string `envconfig:"MAIL_FROM_NAME" default:""`
 	MailFromAddress      string `envconfig:"MAIL_FROM_ADDRESS" default:""`
+	AminWebURL           string `envconfig:"ADMIN_WEB_URL" default:""`
+	UserWebURL           string `envconfig:"USER_WEB_URL" default:""`
 }
 
 func newConfig() (*config, error) {
