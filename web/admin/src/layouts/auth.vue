@@ -3,7 +3,7 @@
     <v-app-bar flat app color="primary" dark>
       <v-toolbar-title>Online Marche</v-toolbar-title>
     </v-app-bar>
-    <v-main class="bg-color">
+    <v-main class="d-flex justify-center align-center bg-color">
       <v-container>
         <Nuxt />
       </v-container>

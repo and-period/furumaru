@@ -74,7 +74,10 @@
 </template>
 
 <script lang="ts">
+import { useRouter } from '@nuxtjs/composition-api'
 import { defineComponent, ref } from '@vue/composition-api'
+
+import { useAuthStore } from '~/store/auth'
 
 interface NavigationDrawerItem {
   to: string
@@ -84,6 +87,13 @@ interface NavigationDrawerItem {
 
 export default defineComponent({
   setup() {
+    // TODO: 雑に未ログイン時を検証する
+    const router = useRouter()
+    const { isAuthenticated } = useAuthStore()
+    if (!isAuthenticated) {
+      router.push('/signin')
+    }
+
     const drawer = ref<boolean>(true)
 
     const navigationDrawerHomeItem: NavigationDrawerItem = {
