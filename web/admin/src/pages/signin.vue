@@ -13,13 +13,15 @@
           <v-text-field
             v-model="formData.password"
             label="パスワード"
-            type="password"
+            :append-icon="passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
+            :type="passwordShow ? 'text' : 'password'"
+            @click:append="passwordShow = !passwordShow"
           />
         </v-card-text>
         <v-card-actions>
-          <v-btn elevation="0" block color="primary" type="submit"
-            >ログイン</v-btn
-          >
+          <v-btn elevation="0" block color="primary" type="submit" outlined>
+            ログイン
+          </v-btn>
         </v-card-actions>
       </form>
     </v-card>
@@ -27,24 +29,37 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from '@nuxtjs/composition-api'
+import {
+  defineComponent,
+  reactive,
+  ref,
+  useRouter,
+} from '@nuxtjs/composition-api'
 
 import { useAlert } from '~/lib/hooks'
+import { useAuthStore } from '~/store/auth'
 import { SignInRequest } from '~/types/api'
 
 export default defineComponent({
   layout: 'auth',
   setup() {
+    const router = useRouter()
     const formData = reactive<SignInRequest>({
       username: '',
       password: '',
     })
-
+    const passwordShow = ref<Boolean>(false)
     const { alertType, isShow, alertText, show } = useAlert('error')
+    const authStore = useAuthStore()
 
-    const handleSubmit = () => {
-      console.log('未実装', formData)
-      show('ユーザーIDまたはパスワードが違います。')
+    const handleSubmit = async () => {
+      try {
+        await authStore.signIn(formData)
+        router.push('/')
+      } catch (error) {
+        console.log(error)
+        show('ユーザーIDまたはパスワードが違います。')
+      }
     }
 
     return {
@@ -53,6 +68,7 @@ export default defineComponent({
       alertText,
       formData,
       handleSubmit,
+      passwordShow,
     }
   },
 })
