@@ -85,3 +85,12 @@ func (p *Product) FillJSON() error {
 	p.MediaJSON = datatypes.JSON(v)
 	return nil
 }
+
+func (ps Products) Fill() error {
+	for i := range ps {
+		if err := ps[i].Fill(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
