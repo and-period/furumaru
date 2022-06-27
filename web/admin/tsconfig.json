@@ -24,7 +24,8 @@
       "@nuxtjs/vuetify",
       "@nuxtjs/i18n",
       "@types/jest",
-      "@types/node"
+      "@types/node",
+      "@pinia/nuxt"
     ]
   },
   "exclude": ["node_modules", ".nuxt", "dist"]
