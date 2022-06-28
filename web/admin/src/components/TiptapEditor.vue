@@ -61,11 +61,10 @@
 
 <script lang="ts">
 import StarterKit from '@tiptap/starter-kit'
-import { Editor, EditorContent } from '@tiptap/vue-2'
+import { EditorContent, Editor } from '@tiptap/vue-2'
 import {
   defineComponent,
-  onMounted,
-  ref,
+  reactive,
   onBeforeUnmount,
   computed,
 } from '@vue/composition-api'
@@ -85,7 +84,15 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const editor = ref<Editor | null>(null)
+    const editor = reactive<Editor>(
+      new Editor({
+        content: props.value,
+        extensions: [StarterKit],
+        onUpdate: (p) => {
+          emit('update:value', p.editor.getHTML())
+        },
+      })
+    )
 
     const fontSize = [
       { text: 'Paragraph', value: 0 },
@@ -101,81 +108,71 @@ export default defineComponent({
       {
         label: 'bold',
         icon: 'mdi-format-bold',
-        onClick: () => editor.value?.chain().focus().toggleBold().run(),
+        onClick: () => editor.chain().focus().toggleBold().run(),
       },
       {
         label: 'italic',
         icon: 'mdi-format-italic',
-        onClick: () => editor.value?.chain().focus().toggleItalic().run(),
+        onClick: () => editor.chain().focus().toggleItalic().run(),
       },
       {
         label: 'strike',
         icon: 'mdi-format-strikethrough',
-        onClick: () => editor.value?.chain().focus().toggleStrike().run(),
+        onClick: () => editor.chain().focus().toggleStrike().run(),
       },
       {
         label: 'code',
         icon: 'mdi-code-tags',
-        onClick: () => editor.value?.chain().focus().toggleCode().run(),
+        onClick: () => editor.chain().focus().toggleCode().run(),
       },
       {
         label: 'codeBlock',
         icon: 'mdi-code-not-equal-variant',
-        onClick: () => editor.value?.chain().focus().toggleCodeBlock().run(),
+        onClick: () => editor.chain().focus().toggleCodeBlock().run(),
       },
     ]
 
     const activeMenus = computed<number[]>(() => {
       return menus
-        .map((menu, i) => (editor.value?.isActive(menu.label) ? i : -1))
+        .map((menu, i) => (editor.isActive(menu.label) ? i : -1))
         .filter((item) => item !== -1)
     })
 
     const activeStyle = computed(() => {
-      if (!editor.value) {
+      if (!editor) {
         return 0
       }
-      if (editor.value.isActive('heading', { level: 1 })) {
+      if (editor.isActive('heading', { level: 1 })) {
         return 1
-      } else if (editor.value.isActive('heading', { level: 2 })) {
+      } else if (editor.isActive('heading', { level: 2 })) {
         return 2
-      } else if (editor.value.isActive('heading', { level: 3 })) {
+      } else if (editor.isActive('heading', { level: 3 })) {
         return 3
-      } else if (editor.value.isActive('heading', { level: 4 })) {
+      } else if (editor.isActive('heading', { level: 4 })) {
         return 4
-      } else if (editor.value.isActive('heading', { level: 5 })) {
+      } else if (editor.isActive('heading', { level: 5 })) {
         return 5
-      } else if (editor.value.isActive('heading', { level: 6 })) {
+      } else if (editor.isActive('heading', { level: 6 })) {
         return 6
       }
       return 0
     })
 
-    onMounted(() => {
-      editor.value = new Editor({
-        content: props.value,
-        extensions: [StarterKit],
-        onUpdate: (p) => {
-          emit('update:value', p.editor.getHTML())
-        },
-      })
-    })
-
     onBeforeUnmount(() => {
-      editor.value?.destroy()
+      editor.destroy()
     })
 
     const handleChangeTextStyle = (level: number): void => {
-      if (!editor.value) {
+      if (!editor) {
         return
       }
 
       if (level === 0) {
-        editor.value.chain().focus().setParagraph().run()
+        editor.chain().focus().setParagraph().run()
         return
       }
       // @ts-ignore
-      editor.value.chain().focus().toggleHeading({ level }).run()
+      editor.chain().focus().toggleHeading({ level }).run()
     }
 
     return {
