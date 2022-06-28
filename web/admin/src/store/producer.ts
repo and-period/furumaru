@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 
-import { Configuration, ProducerApi, ProducersResponse } from '~/types/api'
 import { useAuthStore } from './auth'
+
+import { Configuration, ProducerApi, ProducersResponse } from '~/types/api'
 
 export const useProducerStore = defineStore('Producer', {
   state: () => ({
