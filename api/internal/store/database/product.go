@@ -74,6 +74,10 @@ func (p *product) Get(ctx context.Context, productID string, fields ...string) (
 
 func (p *product) Create(ctx context.Context, product *entity.Product) error {
 	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+		if err := product.FillJSON(); err != nil {
+			return nil, err
+		}
+
 		now := p.now()
 		product.CreatedAt, product.UpdatedAt = now, now
 
@@ -86,6 +90,9 @@ func (p *product) Create(ctx context.Context, product *entity.Product) error {
 func (p *product) Update(ctx context.Context, product *entity.Product) error {
 	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		if _, err := p.get(ctx, tx, product.ID); err != nil {
+			return nil, err
+		}
+		if err := product.FillJSON(); err != nil {
 			return nil, err
 		}
 
@@ -150,5 +157,11 @@ func (p *product) get(ctx context.Context, tx *gorm.DB, productID string, fields
 		Table(productTable).Select(fields).
 		Where("id = ?", productID).
 		First(&product).Error
-	return product, err
+	if err != nil {
+		return nil, err
+	}
+	if err := product.Fill(); err != nil {
+		return nil, err
+	}
+	return product, nil
 }

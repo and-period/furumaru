@@ -5,7 +5,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
@@ -112,10 +111,60 @@ func TestProduct_Get(t *testing.T) {
 		return current
 	}
 
-	db := &product{db: m.db, now: now}
-	actual, err := db.Get(ctx, "product-id")
-	assert.Nil(t, actual)
-	assert.ErrorIs(t, err, exception.ErrNotImplemented)
+	_ = m.dbDelete(ctx, productTable, productTypeTable, categoryTable)
+	category := testCategory("category-id", "野菜", now())
+	err = m.db.DB.Create(&category).Error
+	require.NoError(t, err)
+	productType := testProductType("type-id", "category-id", "野菜", now())
+	err = m.db.DB.Create(&productType).Error
+	require.NoError(t, err)
+	p := testProduct("product-id", "type-id", "category-id", "producer-id", "coordinator-id", now())
+	err = m.db.DB.Create(&p).Error
+	require.NoError(t, err)
+
+	type args struct {
+		productID string
+	}
+	type want struct {
+		product *entity.Product
+		hasErr  bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				productID: "product-id",
+			},
+			want: want{
+				product: p,
+				hasErr:  false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &product{db: m.db, now: now}
+			actual, err := db.Get(ctx, tt.args.productID)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			fillIgnoreProductField(actual, now())
+			assert.Equal(t, tt.want.product, actual)
+		})
+	}
 }
 
 func TestProduct_Create(t *testing.T) {
@@ -131,9 +180,67 @@ func TestProduct_Create(t *testing.T) {
 		return current
 	}
 
-	db := &product{db: m.db, now: now}
-	err = db.Create(ctx, &entity.Product{})
-	assert.ErrorIs(t, err, exception.ErrNotImplemented)
+	_ = m.dbDelete(ctx, productTable, productTypeTable, categoryTable)
+	category := testCategory("category-id", "野菜", now())
+	err = m.db.DB.Create(&category).Error
+	require.NoError(t, err)
+	productType := testProductType("type-id", "category-id", "野菜", now())
+	err = m.db.DB.Create(&productType).Error
+	require.NoError(t, err)
+
+	type args struct {
+		product *entity.Product
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				product: testProduct("product-id", "type-id", "category-id", "producer-id", "coordinator-id", now()),
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name: "failed to duplicate entry",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				product := testProduct("product-id", "type-id", "category-id", "producer-id", "coordinator-id", now())
+				err = m.db.DB.Create(&product).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				product: testProduct("product-id", "type-id", "category-id", "producer-id", "coordinator-id", now()),
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := m.dbDelete(ctx, productTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, m)
+
+			db := &product{db: m.db, now: now}
+			err = db.Create(ctx, tt.args.product)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
 }
 
 func TestProduct_Update(t *testing.T) {
@@ -149,9 +256,67 @@ func TestProduct_Update(t *testing.T) {
 		return current
 	}
 
-	db := &product{db: m.db, now: now}
-	err = db.Update(ctx, &entity.Product{})
-	assert.ErrorIs(t, err, exception.ErrNotImplemented)
+	_ = m.dbDelete(ctx, productTable, productTypeTable, categoryTable)
+	category := testCategory("category-id", "野菜", now())
+	err = m.db.DB.Create(&category).Error
+	require.NoError(t, err)
+	productType := testProductType("type-id", "category-id", "野菜", now())
+	err = m.db.DB.Create(&productType).Error
+	require.NoError(t, err)
+
+	type args struct {
+		product *entity.Product
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				product := testProduct("product-id", "type-id", "category-id", "producer-id", "coordinator-id", now())
+				err = m.db.DB.Create(&product).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				product: testProduct("product-id", "type-id", "category-id", "producer-id", "coordinator-id", now()),
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				product: testProduct("product-id", "type-id", "category-id", "producer-id", "coordinator-id", now()),
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := m.dbDelete(ctx, productTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, m)
+
+			db := &product{db: m.db, now: now}
+			err = db.Update(ctx, tt.args.product)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
 }
 
 func TestProduct_Delete(t *testing.T) {
@@ -167,9 +332,67 @@ func TestProduct_Delete(t *testing.T) {
 		return current
 	}
 
-	db := &product{db: m.db, now: now}
-	err = db.Delete(ctx, "product-id")
-	assert.ErrorIs(t, err, exception.ErrNotImplemented)
+	_ = m.dbDelete(ctx, productTable, productTypeTable, categoryTable)
+	category := testCategory("category-id", "野菜", now())
+	err = m.db.DB.Create(&category).Error
+	require.NoError(t, err)
+	productType := testProductType("type-id", "category-id", "野菜", now())
+	err = m.db.DB.Create(&productType).Error
+	require.NoError(t, err)
+
+	type args struct {
+		productID string
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				product := testProduct("product-id", "type-id", "category-id", "producer-id", "coordinator-id", now())
+				err = m.db.DB.Create(&product).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				productID: "product-id",
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				productID: "product-id",
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := m.dbDelete(ctx, productTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, m)
+
+			db := &product{db: m.db, now: now}
+			err = db.Delete(ctx, tt.args.productID)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
 }
 
 func testProduct(id, typeID, categoryID, producerID, coordinatorID string, now time.Time) *entity.Product {
