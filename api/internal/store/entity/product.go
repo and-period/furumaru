@@ -2,12 +2,15 @@ package entity
 
 import (
 	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
+
+var errOnlyOneThumbnail = errors.New("entity: only one thumbnail is available")
 
 // WeightUnit - 重量単位
 type WeightUnit int32
@@ -131,7 +134,7 @@ func (p *Product) Fill() error {
 }
 
 func (p *Product) FillJSON() error {
-	v, err := json.Marshal(p.Media)
+	v, err := p.Media.Marshal()
 	if err != nil {
 		return err
 	}
@@ -153,4 +156,25 @@ func NewProductMedia(url string, isThumbnail bool) *ProductMedia {
 		URL:         url,
 		IsThumbnail: isThumbnail,
 	}
+}
+
+func (m MultiProductMedia) Validate() error {
+	var exists bool
+	for _, media := range m {
+		if !media.IsThumbnail {
+			continue
+		}
+		if exists {
+			return errOnlyOneThumbnail
+		}
+		exists = true
+	}
+	return nil
+}
+
+func (m MultiProductMedia) Marshal() ([]byte, error) {
+	if len(m) == 0 {
+		return []byte{}, nil
+	}
+	return json.Marshal(m)
 }

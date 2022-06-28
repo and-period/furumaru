@@ -87,43 +87,46 @@ func (p *product) Create(ctx context.Context, product *entity.Product) error {
 	return exception.InternalError(err)
 }
 
-func (p *product) Update(ctx context.Context, product *entity.Product) error {
+func (p *product) Update(ctx context.Context, productID string, params *UpdateProductParams) error {
 	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
-		if _, err := p.get(ctx, tx, product.ID); err != nil {
-			return nil, err
-		}
-		if err := product.FillJSON(); err != nil {
+		if _, err := p.get(ctx, tx, productID); err != nil {
 			return nil, err
 		}
 
-		params := map[string]interface{}{
-			"producer_id":       product.ProducerID,
-			"category_id":       product.CategoryID,
-			"product_type_id":   product.TypeID,
-			"name":              product.Name,
-			"description":       product.Description,
-			"public":            product.Public,
-			"inventory":         product.Inventory,
-			"weight":            product.Weight,
-			"weight_unit":       product.WeightUnit,
-			"item":              product.Item,
-			"item_unit":         product.ItemUnit,
-			"item_description":  product.ItemDescription,
-			"media":             product.MediaJSON,
-			"price":             product.Price,
-			"delivery_type":     product.DeliveryType,
-			"box60_rate":        product.Box60Rate,
-			"box80_rate":        product.Box80Rate,
-			"box100_rate":       product.Box100Rate,
-			"origin_prefecture": product.OriginPrefecture,
-			"origin_city":       product.OriginCity,
+		updates := map[string]interface{}{
+			"producer_id":       params.ProducerID,
+			"category_id":       params.CategoryID,
+			"product_type_id":   params.TypeID,
+			"name":              params.Name,
+			"description":       params.Description,
+			"public":            params.Public,
+			"inventory":         params.Inventory,
+			"weight":            params.Weight,
+			"weight_unit":       params.WeightUnit,
+			"item":              params.Item,
+			"item_unit":         params.ItemUnit,
+			"item_description":  params.ItemDescription,
+			"price":             params.Price,
+			"delivery_type":     params.DeliveryType,
+			"box60_rate":        params.Box60Rate,
+			"box80_rate":        params.Box80Rate,
+			"box100_rate":       params.Box100Rate,
+			"origin_prefecture": params.OriginPrefecture,
+			"origin_city":       params.OriginCity,
+			"updated_by":        params.UpdatedBy,
 			"updated_at":        p.now(),
-			"updated_by":        product.UpdatedBy,
+		}
+		if len(params.Media) > 0 {
+			media, err := params.Media.Marshal()
+			if err != nil {
+				return nil, fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
+			}
+			updates["media"] = media
 		}
 		err := tx.WithContext(ctx).
 			Table(productTable).
-			Where("id = ?", product.ID).
-			Updates(params).Error
+			Where("id = ?", productID).
+			Updates(updates).Error
 		return nil, err
 	})
 	return exception.InternalError(err)

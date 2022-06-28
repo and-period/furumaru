@@ -265,7 +265,8 @@ func TestProduct_Update(t *testing.T) {
 	require.NoError(t, err)
 
 	type args struct {
-		product *entity.Product
+		productID string
+		params    *UpdateProductParams
 	}
 	type want struct {
 		hasErr bool
@@ -284,7 +285,33 @@ func TestProduct_Update(t *testing.T) {
 				require.NoError(t, err)
 			},
 			args: args{
-				product: testProduct("product-id", "type-id", "category-id", "producer-id", "coordinator-id", now()),
+				productID: "product-id",
+				params: &UpdateProductParams{
+					ProducerID:      "producer-id",
+					CategoryID:      "category-id",
+					TypeID:          "type-id",
+					Name:            "新鮮なじゃがいも",
+					Description:     "新鮮なじゃがいもをお届けします。",
+					Public:          true,
+					Inventory:       100,
+					Weight:          100,
+					WeightUnit:      entity.WeightUnitGram,
+					Item:            1,
+					ItemUnit:        "袋",
+					ItemDescription: "1袋あたり100gのじゃがいも",
+					Media: entity.MultiProductMedia{
+						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+					},
+					Price:            400,
+					DeliveryType:     entity.DeliveryTypeNormal,
+					Box60Rate:        50,
+					Box80Rate:        40,
+					Box100Rate:       30,
+					OriginPrefecture: "滋賀県",
+					OriginCity:       "彦根市",
+					UpdatedBy:        "coordinator-id",
+				},
 			},
 			want: want{
 				hasErr: false,
@@ -294,7 +321,8 @@ func TestProduct_Update(t *testing.T) {
 			name:  "not found",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
-				product: testProduct("product-id", "type-id", "category-id", "producer-id", "coordinator-id", now()),
+				productID: "product-id",
+				params:    &UpdateProductParams{},
 			},
 			want: want{
 				hasErr: true,
@@ -313,7 +341,7 @@ func TestProduct_Update(t *testing.T) {
 			tt.setup(ctx, t, m)
 
 			db := &product{db: m.db, now: now}
-			err = db.Update(ctx, tt.args.product)
+			err = db.Update(ctx, tt.args.productID, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}
