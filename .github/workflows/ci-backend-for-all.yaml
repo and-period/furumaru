@@ -128,7 +128,7 @@ jobs:
 
     - name: Start MySQL container
       working-directory: .
-      run: docker compose -f docker-compose.ci.yaml up --build --detach mysql
+      run: docker compose --file=docker-compose.ci.yaml up --build --detach mysql
 
     - name: Wait start MySQL
       run: |
