@@ -91,6 +91,7 @@ type CreateProductMedia struct {
 type UpdateProductInput struct {
 	ProductID        string                `validate:"required"`
 	CoordinatorID    string                `validate:"required"`
+	ProducerID       string                `validate:"required"`
 	CategoryID       string                `validate:"required"`
 	TypeID           string                `validate:"required"`
 	Name             string                `validate:"required,max=128"`

@@ -6,12 +6,56 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestListProducts(t *testing.T) {
 	t.Parallel()
+
+	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
+	params := &database.ListProductsParams{
+		Name:       "みかん",
+		CreatedBy:  "",
+		ProducerID: "",
+		Limit:      30,
+		Offset:     0,
+	}
+	products := entity.Products{
+		{
+			ID:              "product-id",
+			TypeID:          "type-id",
+			CategoryID:      "category-id",
+			ProducerID:      "producer-id",
+			Name:            "新鮮なじゃがいも",
+			Description:     "新鮮なじゃがいもをお届けします。",
+			Public:          true,
+			Inventory:       100,
+			Weight:          100,
+			WeightUnit:      entity.WeightUnitGram,
+			Item:            1,
+			ItemUnit:        "袋",
+			ItemDescription: "1袋あたり100gのじゃがいも",
+			Media: entity.MultiProductMedia{
+				{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+				{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+			},
+			Price:            400,
+			DeliveryType:     entity.DeliveryTypeNormal,
+			Box60Rate:        50,
+			Box80Rate:        40,
+			Box100Rate:       30,
+			OriginPrefecture: "滋賀県",
+			OriginCity:       "彦根市",
+			CreatedAt:        now,
+			UpdatedAt:        now,
+			CreatedBy:        "coordinator-id",
+			UpdatedBy:        "coordinator-id",
+		},
+	}
 
 	tests := []struct {
 		name      string
@@ -21,8 +65,32 @@ func TestListProducts(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name:  "not implemented",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Product.EXPECT().List(ctx, params).Return(products, nil)
+			},
+			input: &store.ListProductsInput{
+				Name:          "みかん",
+				CoordinatorID: "",
+				ProducerID:    "",
+				Limit:         30,
+				Offset:        0,
+			},
+			expect:    products,
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &store.ListProductsInput{},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to list products",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Product.EXPECT().List(ctx, params).Return(nil, errmock)
+			},
 			input: &store.ListProductsInput{
 				Name:          "みかん",
 				CoordinatorID: "",
@@ -31,14 +99,7 @@ func TestListProducts(t *testing.T) {
 				Offset:        0,
 			},
 			expect:    nil,
-			expectErr: exception.ErrNotImplemented,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &store.ListProductsInput{},
-			expect:    nil,
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 
@@ -55,6 +116,38 @@ func TestListProducts(t *testing.T) {
 func TestGetProduct(t *testing.T) {
 	t.Parallel()
 
+	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
+	product := &entity.Product{
+		ID:              "product-id",
+		TypeID:          "type-id",
+		CategoryID:      "category-id",
+		ProducerID:      "producer-id",
+		Name:            "新鮮なじゃがいも",
+		Description:     "新鮮なじゃがいもをお届けします。",
+		Public:          true,
+		Inventory:       100,
+		Weight:          100,
+		WeightUnit:      entity.WeightUnitGram,
+		Item:            1,
+		ItemUnit:        "袋",
+		ItemDescription: "1袋あたり100gのじゃがいも",
+		Media: entity.MultiProductMedia{
+			{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+			{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+		},
+		Price:            400,
+		DeliveryType:     entity.DeliveryTypeNormal,
+		Box60Rate:        50,
+		Box80Rate:        40,
+		Box100Rate:       30,
+		OriginPrefecture: "滋賀県",
+		OriginCity:       "彦根市",
+		CreatedAt:        now,
+		UpdatedAt:        now,
+		CreatedBy:        "coordinator-id",
+		UpdatedBy:        "coordinator-id",
+	}
+
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -63,13 +156,15 @@ func TestGetProduct(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name:  "not implemented",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Product.EXPECT().Get(ctx, "product-id").Return(product, nil)
+			},
 			input: &store.GetProductInput{
 				ProductID: "product-id",
 			},
-			expect:    nil,
-			expectErr: exception.ErrNotImplemented,
+			expect:    product,
+			expectErr: nil,
 		},
 		{
 			name:      "invalid argument",
@@ -77,6 +172,17 @@ func TestGetProduct(t *testing.T) {
 			input:     &store.GetProductInput{},
 			expect:    nil,
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get product",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Product.EXPECT().Get(ctx, "product-id").Return(nil, errmock)
+			},
+			input: &store.GetProductInput{
+				ProductID: "product-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 
@@ -97,77 +203,49 @@ func TestCreateProduct(t *testing.T) {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
 		input     *store.CreateProductInput
-		expect    *entity.Product
 		expectErr error
 	}{
 		{
-			name:  "not implemented",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &store.CreateProductInput{
-				CoordinatorID: "coordinator-id",
-				ProducerID:    "producer-id",
-				CategoryID:    "category-id",
-				TypeID:        "product-type-id",
-				Name:          "新鮮なじゃがいも", Description: "新鮮なじゃがいもをお届けします。",
-				Public:          true,
-				Inventory:       100,
-				Weight:          100,
-				WeightUnit:      entity.WeightUnitGram,
-				Item:            1,
-				ItemUnit:        "袋",
-				ItemDescription: "1袋あたり100gのじゃがいも",
-				Media: []*store.CreateProductMedia{
-					{
-						URL:         "https://and-period.jp/thumbnail.png",
-						IsThumbnail: true,
-					},
-				},
-				Price:            400,
-				DeliveryType:     entity.DeliveryTypeNormal,
-				Box60Rate:        50,
-				Box80Rate:        40,
-				Box100Rate:       30,
-				OriginPrefecture: "滋賀県",
-				OriginCity:       "彦根市",
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Product.EXPECT().
+					Create(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, product *entity.Product) error {
+						expect := &entity.Product{
+							ID:              product.ID, // ignore
+							TypeID:          "product-type-id",
+							CategoryID:      "category-id",
+							ProducerID:      "producer-id",
+							Name:            "新鮮なじゃがいも",
+							Description:     "新鮮なじゃがいもをお届けします。",
+							Public:          true,
+							Inventory:       100,
+							Weight:          100,
+							WeightUnit:      entity.WeightUnitGram,
+							Item:            1,
+							ItemUnit:        "袋",
+							ItemDescription: "1袋あたり100gのじゃがいも",
+							Media: entity.MultiProductMedia{
+								{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+								{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+							},
+							Price:            400,
+							DeliveryType:     entity.DeliveryTypeNormal,
+							Box60Rate:        50,
+							Box80Rate:        40,
+							Box100Rate:       30,
+							OriginPrefecture: "滋賀県",
+							OriginCity:       "彦根市",
+							CreatedBy:        "coordinator-id",
+							UpdatedBy:        "coordinator-id",
+						}
+						assert.Equal(t, expect, product)
+						return nil
+					})
 			},
-			expect:    nil,
-			expectErr: exception.ErrNotImplemented,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &store.CreateProductInput{},
-			expect:    nil,
-			expectErr: exception.ErrInvalidArgument,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.CreateProduct(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
-	}
-}
-
-func TestUpdateProduct(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *store.UpdateProductInput
-		expect    entity.Products
-		expectErr error
-	}{
-		{
-			name:  "not implemented",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &store.UpdateProductInput{
-				ProductID:       "product-id",
+			input: &store.CreateProductInput{
 				CoordinatorID:   "coordinator-id",
+				ProducerID:      "producer-id",
 				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
 				Name:            "新鮮なじゃがいも",
@@ -180,10 +258,8 @@ func TestUpdateProduct(t *testing.T) {
 				ItemUnit:        "袋",
 				ItemDescription: "1袋あたり100gのじゃがいも",
 				Media: []*store.CreateProductMedia{
-					{
-						URL:         "https://and-period.jp/thumbnail.png",
-						IsThumbnail: true,
-					},
+					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 				},
 				Price:            400,
 				DeliveryType:     entity.DeliveryTypeNormal,
@@ -193,15 +269,234 @@ func TestUpdateProduct(t *testing.T) {
 				OriginPrefecture: "滋賀県",
 				OriginCity:       "彦根市",
 			},
-			expect:    nil,
-			expectErr: exception.ErrNotImplemented,
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &store.CreateProductInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name:  "invalid media format",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.CreateProductInput{
+				CoordinatorID:   "coordinator-id",
+				ProducerID:      "producer-id",
+				CategoryID:      "category-id",
+				TypeID:          "product-type-id",
+				Name:            "新鮮なじゃがいも",
+				Description:     "新鮮なじゃがいもをお届けします。",
+				Public:          true,
+				Inventory:       100,
+				Weight:          100,
+				WeightUnit:      entity.WeightUnitGram,
+				Item:            1,
+				ItemUnit:        "袋",
+				ItemDescription: "1袋あたり100gのじゃがいも",
+				Media: []*store.CreateProductMedia{
+					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: true},
+				},
+				Price:            400,
+				DeliveryType:     entity.DeliveryTypeNormal,
+				Box60Rate:        50,
+				Box80Rate:        40,
+				Box100Rate:       30,
+				OriginPrefecture: "滋賀県",
+				OriginCity:       "彦根市",
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to create product",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Product.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
+			},
+			input: &store.CreateProductInput{
+				CoordinatorID:   "coordinator-id",
+				ProducerID:      "producer-id",
+				CategoryID:      "category-id",
+				TypeID:          "product-type-id",
+				Name:            "新鮮なじゃがいも",
+				Description:     "新鮮なじゃがいもをお届けします。",
+				Public:          true,
+				Inventory:       100,
+				Weight:          100,
+				WeightUnit:      entity.WeightUnitGram,
+				Item:            1,
+				ItemUnit:        "袋",
+				ItemDescription: "1袋あたり100gのじゃがいも",
+				Media: []*store.CreateProductMedia{
+					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+				},
+				Price:            400,
+				DeliveryType:     entity.DeliveryTypeNormal,
+				Box60Rate:        50,
+				Box80Rate:        40,
+				Box100Rate:       30,
+				OriginPrefecture: "滋賀県",
+				OriginCity:       "彦根市",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.CreateProduct(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestUpdateProduct(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.UpdateProductInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Product.EXPECT().
+					Update(ctx, "product-id", gomock.Any()).
+					DoAndReturn(func(ctx context.Context, productID string, params *database.UpdateProductParams) error {
+						expect := &database.UpdateProductParams{
+							ProducerID:      "producer-id",
+							CategoryID:      "category-id",
+							TypeID:          "product-type-id",
+							Name:            "新鮮なじゃがいも",
+							Description:     "新鮮なじゃがいもをお届けします。",
+							Public:          true,
+							Inventory:       100,
+							Weight:          100,
+							WeightUnit:      entity.WeightUnitGram,
+							Item:            1,
+							ItemUnit:        "袋",
+							ItemDescription: "1袋あたり100gのじゃがいも",
+							Media: entity.MultiProductMedia{
+								{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+								{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+							},
+							Price:            400,
+							DeliveryType:     entity.DeliveryTypeNormal,
+							Box60Rate:        50,
+							Box80Rate:        40,
+							Box100Rate:       30,
+							OriginPrefecture: "滋賀県",
+							OriginCity:       "彦根市",
+							UpdatedBy:        "coordinator-id",
+						}
+						assert.Equal(t, expect, params)
+						return nil
+					})
+			},
+			input: &store.UpdateProductInput{
+				ProductID:       "product-id",
+				CoordinatorID:   "coordinator-id",
+				ProducerID:      "producer-id",
+				CategoryID:      "category-id",
+				TypeID:          "product-type-id",
+				Name:            "新鮮なじゃがいも",
+				Description:     "新鮮なじゃがいもをお届けします。",
+				Public:          true,
+				Inventory:       100,
+				Weight:          100,
+				WeightUnit:      entity.WeightUnitGram,
+				Item:            1,
+				ItemUnit:        "袋",
+				ItemDescription: "1袋あたり100gのじゃがいも",
+				Media: []*store.CreateProductMedia{
+					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+				},
+				Price:            400,
+				DeliveryType:     entity.DeliveryTypeNormal,
+				Box60Rate:        50,
+				Box80Rate:        40,
+				Box100Rate:       30,
+				OriginPrefecture: "滋賀県",
+				OriginCity:       "彦根市",
+			},
+			expectErr: nil,
 		},
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.UpdateProductInput{},
-			expect:    nil,
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name:  "invalid media format",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.UpdateProductInput{
+				ProductID:       "product-id",
+				CoordinatorID:   "coordinator-id",
+				ProducerID:      "producer-id",
+				CategoryID:      "category-id",
+				TypeID:          "product-type-id",
+				Name:            "新鮮なじゃがいも",
+				Description:     "新鮮なじゃがいもをお届けします。",
+				Public:          true,
+				Inventory:       100,
+				Weight:          100,
+				WeightUnit:      entity.WeightUnitGram,
+				Item:            1,
+				ItemUnit:        "袋",
+				ItemDescription: "1袋あたり100gのじゃがいも",
+				Media: []*store.CreateProductMedia{
+					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: true},
+				},
+				Price:            400,
+				DeliveryType:     entity.DeliveryTypeNormal,
+				Box60Rate:        50,
+				Box80Rate:        40,
+				Box100Rate:       30,
+				OriginPrefecture: "滋賀県",
+				OriginCity:       "彦根市",
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to update product",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Product.EXPECT().Update(ctx, "product-id", gomock.Any()).Return(errmock)
+			},
+			input: &store.UpdateProductInput{
+				ProductID:       "product-id",
+				CoordinatorID:   "coordinator-id",
+				ProducerID:      "producer-id",
+				CategoryID:      "category-id",
+				TypeID:          "product-type-id",
+				Name:            "新鮮なじゃがいも",
+				Description:     "新鮮なじゃがいもをお届けします。",
+				Public:          true,
+				Inventory:       100,
+				Weight:          100,
+				WeightUnit:      entity.WeightUnitGram,
+				Item:            1,
+				ItemUnit:        "袋",
+				ItemDescription: "1袋あたり100gのじゃがいも",
+				Media: []*store.CreateProductMedia{
+					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+				},
+				Price:            400,
+				DeliveryType:     entity.DeliveryTypeNormal,
+				Box60Rate:        50,
+				Box80Rate:        40,
+				Box100Rate:       30,
+				OriginPrefecture: "滋賀県",
+				OriginCity:       "彦根市",
+			},
+			expectErr: exception.ErrUnknown,
 		},
 	}
 
@@ -221,24 +516,33 @@ func TestDeleteProduct(t *testing.T) {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
 		input     *store.DeleteProductInput
-		expect    entity.Products
 		expectErr error
 	}{
 		{
-			name:  "not implemented",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Product.EXPECT().Delete(ctx, "product-id").Return(nil)
+			},
 			input: &store.DeleteProductInput{
 				ProductID: "product-id",
 			},
-			expect:    nil,
-			expectErr: exception.ErrNotImplemented,
+			expectErr: nil,
 		},
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.DeleteProductInput{},
-			expect:    nil,
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to delete product",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Product.EXPECT().Delete(ctx, "product-id").Return(errmock)
+			},
+			input: &store.DeleteProductInput{
+				ProductID: "product-id",
+			},
+			expectErr: exception.ErrUnknown,
 		},
 	}
 

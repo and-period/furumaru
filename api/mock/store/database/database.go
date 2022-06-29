@@ -210,17 +210,17 @@ func (mr *MockProductMockRecorder) List(ctx, params interface{}, fields ...inter
 }
 
 // Update mocks base method.
-func (m *MockProduct) Update(ctx context.Context, product *entity.Product) error {
+func (m *MockProduct) Update(ctx context.Context, productID string, params *database.UpdateProductParams) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", ctx, product)
+	ret := m.ctrl.Call(m, "Update", ctx, productID, params)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Update indicates an expected call of Update.
-func (mr *MockProductMockRecorder) Update(ctx, product interface{}) *gomock.Call {
+func (mr *MockProductMockRecorder) Update(ctx, productID, params interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockProduct)(nil).Update), ctx, product)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockProduct)(nil).Update), ctx, productID, params)
 }
 
 // MockProductType is a mock of ProductType interface.
