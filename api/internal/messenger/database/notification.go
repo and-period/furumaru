@@ -34,6 +34,7 @@ func (n *notification) Create(ctx context.Context, notification *entity.Notifica
 	_, err := n.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		now := n.now()
 		notification.CreatedAt, notification.UpdatedAt = now, now
+		notification.FillJSON()
 
 		err := tx.WithContext(ctx).Table(notificationTable).Create(&notification).Error
 		return nil, err

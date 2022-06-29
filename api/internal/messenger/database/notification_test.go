@@ -10,7 +10,6 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"gorm.io/datatypes"
 )
 
 func TestNotification(t *testing.T) {
@@ -44,7 +43,7 @@ func TestNotification_Create(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
-				notification: testNotification("notification-id", "creator", "title", datatypes.JSON([]byte(`[1,2,3]`)), true, now()),
+				notification: testNotification("notification-id", "creator", "title", []entity.TargetType{1, 2, 3}, true, now()),
 			},
 			want: want{
 				hasErr: false,
@@ -53,12 +52,12 @@ func TestNotification_Create(t *testing.T) {
 		{
 			name: "failed to duplicate entry",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				n := testNotification("notification-id", "creator", "title", datatypes.JSON([]byte(`[1,2,3]`)), true, now())
+				n := testNotification("notification-id", "creator", "title", []entity.TargetType{1, 2, 3}, true, now())
 				err = m.db.DB.Create(&n).Error
 				require.NoError(t, err)
 			},
 			args: args{
-				notification: testNotification("notification-id", "creator", "title", datatypes.JSON([]byte(`[1,2,3]`)), true, now()),
+				notification: testNotification("notification-id", "creator", "title", []entity.TargetType{1, 2, 3}, true, now()),
 			},
 			want: want{
 				hasErr: true,
@@ -83,18 +82,21 @@ func TestNotification_Create(t *testing.T) {
 	}
 }
 
-func testNotification(id, creatorName, title string, targets datatypes.JSON, public bool, now time.Time) *entity.Notification {
-	return &entity.Notification{
+func testNotification(id, creatorName, title string, targets []entity.TargetType, public bool, now time.Time) *entity.Notification {
+	notification := &entity.Notification{
 		ID:          id,
 		CreatedBy:   id,
 		CreatorName: creatorName,
 		UpdatedBy:   id,
 		Title:       title,
 		Body:        title,
-		TargetsJSON: targets,
+		Targets:     targets,
 		PublishedAt: now,
 		Public:      public,
 		CreatedAt:   now,
 		UpdatedAt:   now,
 	}
+
+	notification.FillJSON()
+	return notification
 }
