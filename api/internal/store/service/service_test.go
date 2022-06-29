@@ -29,6 +29,7 @@ type mocks struct {
 
 type dbMocks struct {
 	Category    *mock_database.MockCategory
+	Product     *mock_database.MockProduct
 	ProductType *mock_database.MockProductType
 }
 
@@ -59,6 +60,7 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
 		Category:    mock_database.NewMockCategory(ctrl),
+		Product:     mock_database.NewMockProduct(ctrl),
 		ProductType: mock_database.NewMockProductType(ctrl),
 	}
 }
@@ -78,6 +80,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		validator:   validator.NewValidator(),
 		db: &database.Database{
 			Category:    mocks.db.Category,
+			Product:     mocks.db.Product,
 			ProductType: mocks.db.ProductType,
 		},
 		user:      mocks.user,

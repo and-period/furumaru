@@ -2,11 +2,15 @@ package entity
 
 import (
 	"encoding/json"
+	"errors"
 	"time"
 
+	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
+
+var errOnlyOneThumbnail = errors.New("entity: only one thumbnail is available")
 
 // WeightUnit - 重量単位
 type WeightUnit int32
@@ -68,6 +72,58 @@ type ProductMedia struct {
 
 type MultiProductMedia []*ProductMedia
 
+type NewProductParams struct {
+	CoordinatorID    string
+	ProducerID       string
+	CategoryID       string
+	TypeID           string
+	Name             string
+	Description      string
+	Public           bool
+	Inventory        int64
+	Weight           int64
+	WeightUnit       WeightUnit
+	Item             int64
+	ItemUnit         string
+	ItemDescription  string
+	Media            MultiProductMedia
+	Price            int64
+	DeliveryType     DeliveryType
+	Box60Rate        int64
+	Box80Rate        int64
+	Box100Rate       int64
+	OriginPrefecture string
+	OriginCity       string
+}
+
+func NewProduct(params *NewProductParams) *Product {
+	return &Product{
+		ID:               uuid.Base58Encode(uuid.New()),
+		ProducerID:       params.ProducerID,
+		CategoryID:       params.CategoryID,
+		TypeID:           params.TypeID,
+		Name:             params.Name,
+		Description:      params.Description,
+		Public:           params.Public,
+		Inventory:        params.Inventory,
+		Weight:           params.Weight,
+		WeightUnit:       params.WeightUnit,
+		Item:             params.Item,
+		ItemUnit:         params.ItemUnit,
+		ItemDescription:  params.ItemDescription,
+		Media:            params.Media,
+		Price:            params.Price,
+		DeliveryType:     params.DeliveryType,
+		Box60Rate:        params.Box60Rate,
+		Box80Rate:        params.Box80Rate,
+		Box100Rate:       params.Box100Rate,
+		OriginPrefecture: params.OriginPrefecture,
+		OriginCity:       params.OriginCity,
+		CreatedBy:        params.CoordinatorID,
+		UpdatedBy:        params.CoordinatorID,
+	}
+}
+
 func (p *Product) Fill() error {
 	var media MultiProductMedia
 	if err := json.Unmarshal(p.MediaJSON, &media); err != nil {
@@ -78,10 +134,47 @@ func (p *Product) Fill() error {
 }
 
 func (p *Product) FillJSON() error {
-	v, err := json.Marshal(p.Media)
+	v, err := p.Media.Marshal()
 	if err != nil {
 		return err
 	}
 	p.MediaJSON = datatypes.JSON(v)
 	return nil
+}
+
+func (ps Products) Fill() error {
+	for i := range ps {
+		if err := ps[i].Fill(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func NewProductMedia(url string, isThumbnail bool) *ProductMedia {
+	return &ProductMedia{
+		URL:         url,
+		IsThumbnail: isThumbnail,
+	}
+}
+
+func (m MultiProductMedia) Validate() error {
+	var exists bool
+	for _, media := range m {
+		if !media.IsThumbnail {
+			continue
+		}
+		if exists {
+			return errOnlyOneThumbnail
+		}
+		exists = true
+	}
+	return nil
+}
+
+func (m MultiProductMedia) Marshal() ([]byte, error) {
+	if len(m) == 0 {
+		return []byte{}, nil
+	}
+	return json.Marshal(m)
 }
