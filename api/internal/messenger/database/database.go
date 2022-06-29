@@ -30,11 +30,3 @@ func NewDatabase(params *Params) *Database {
 type Notification interface {
 	Create(ctx context.Context, notification *entity.Notification) error
 }
-
-/**
-* params
- */
-type ListNotificationsParams struct {
-	Limit  int
-	Offset int
-}
