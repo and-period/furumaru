@@ -15,6 +15,7 @@ import (
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/database"
+	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/sqs"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -28,13 +29,16 @@ type registry struct {
 }
 
 type params struct {
-	config    *config
-	logger    *zap.Logger
-	waitGroup *sync.WaitGroup
-	aws       aws.Config
-	storage   storage.Bucket
-	userAuth  cognito.Client
-	producer  sqs.Producer
+	config     *config
+	logger     *zap.Logger
+	waitGroup  *sync.WaitGroup
+	aws        aws.Config
+	secret     secret.Client
+	storage    storage.Bucket
+	userAuth   cognito.Client
+	producer   sqs.Producer
+	dbUsername string
+	dbPassword string
 }
 
 func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*registry, error) {
@@ -50,6 +54,12 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		return nil, err
 	}
 	params.aws = awscfg
+
+	// AWS Secrets Managerの設定
+	params.secret = secret.NewClient(awscfg)
+	if err := getSecret(ctx, params); err != nil {
+		return nil, err
+	}
 
 	// Amazon S3の設定
 	storageParams := &storage.Params{
@@ -94,20 +104,36 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}, nil
 }
 
-func newDatabase(dbname string, conf *config, logger *zap.Logger) (*database.Client, error) {
+func getSecret(ctx context.Context, p *params) error {
+	// データベース認証情報の取得
+	if p.config.DBSecretName == "" {
+		p.dbUsername = p.config.DBUsername
+		p.dbPassword = p.config.DBPassword
+	} else {
+		secrets, err := p.secret.Get(ctx, p.config.DBSecretName)
+		if err != nil {
+			return err
+		}
+		p.dbUsername = secrets["username"]
+		p.dbPassword = secrets["password"]
+	}
+	return nil
+}
+
+func newDatabase(dbname string, p *params) (*database.Client, error) {
 	params := &database.Params{
-		Socket:   conf.DBSocket,
-		Host:     conf.DBHost,
-		Port:     conf.DBPort,
+		Socket:   p.config.DBSocket,
+		Host:     p.config.DBHost,
+		Port:     p.config.DBPort,
 		Database: dbname,
-		Username: conf.DBUsername,
-		Password: conf.DBPassword,
+		Username: p.dbUsername,
+		Password: p.dbPassword,
 	}
 	return database.NewClient(
 		params,
-		database.WithLogger(logger),
-		database.WithTLS(conf.DBEnabledTLS),
-		database.WithTimeZone(conf.DBTimeZone),
+		database.WithLogger(p.logger),
+		database.WithTLS(p.config.DBEnabledTLS),
+		database.WithTimeZone(p.config.DBTimeZone),
 	)
 }
 
@@ -120,7 +146,7 @@ func newMessengerService(ctx context.Context, p *params) messenger.Service {
 }
 
 func newUserService(ctx context.Context, p *params, messenger messenger.Service) (user.Service, error) {
-	mysql, err := newDatabase("users", p.config, p.logger)
+	mysql, err := newDatabase("users", p)
 	if err != nil {
 		return nil, err
 	}
@@ -139,7 +165,7 @@ func newUserService(ctx context.Context, p *params, messenger messenger.Service)
 func newStoreService(
 	ctx context.Context, p *params, user user.Service, messenger messenger.Service,
 ) (store.Service, error) {
-	mysql, err := newDatabase("stores", p.config, p.logger)
+	mysql, err := newDatabase("stores", p)
 	if err != nil {
 		return nil, err
 	}
