@@ -40,6 +40,8 @@ type params struct {
 	adminAuth  cognito.Client
 	userAuth   cognito.Client
 	producer   sqs.Producer
+	dbHost     string
+	dbPort     string
 	dbUsername string
 	dbPassword string
 }
@@ -123,6 +125,8 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 func getSecret(ctx context.Context, p *params) error {
 	// データベース認証情報の取得
 	if p.config.DBSecretName == "" {
+		p.dbHost = p.config.DBHost
+		p.dbPort = p.config.DBPort
 		p.dbUsername = p.config.DBUsername
 		p.dbPassword = p.config.DBPassword
 	} else {
@@ -130,6 +134,8 @@ func getSecret(ctx context.Context, p *params) error {
 		if err != nil {
 			return err
 		}
+		p.dbHost = secrets["host"]
+		p.dbPort = secrets["port"]
 		p.dbUsername = secrets["username"]
 		p.dbPassword = secrets["password"]
 	}
@@ -139,8 +145,8 @@ func getSecret(ctx context.Context, p *params) error {
 func newDatabase(dbname string, p *params) (*database.Client, error) {
 	params := &database.Params{
 		Socket:   p.config.DBSocket,
-		Host:     p.config.DBHost,
-		Port:     p.config.DBPort,
+		Host:     p.dbHost,
+		Port:     p.dbPort,
 		Database: dbname,
 		Username: p.dbUsername,
 		Password: p.dbPassword,
