@@ -15,6 +15,10 @@ const (
 	AdminRoleProducer      AdminRole = 3 // 生産者
 )
 
+type Auth struct {
+	response.Auth
+}
+
 func NewAdminRole(role entity.AdminRole) AdminRole {
 	switch role {
 	case entity.AdminRoleAdministrator:
@@ -45,13 +49,9 @@ func (r AdminRole) Response() int32 {
 	return int32(r)
 }
 
-type Auth struct {
-	*response.Auth
-}
-
 func NewAuth(auth *entity.AdminAuth) *Auth {
 	return &Auth{
-		Auth: &response.Auth{
+		Auth: response.Auth{
 			AdminID:      auth.AdminID,
 			Role:         NewAdminRole(auth.Role).Response(),
 			AccessToken:  auth.AccessToken,
@@ -63,5 +63,5 @@ func NewAuth(auth *entity.AdminAuth) *Auth {
 }
 
 func (a *Auth) Response() *response.Auth {
-	return a.Auth
+	return &a.Auth
 }

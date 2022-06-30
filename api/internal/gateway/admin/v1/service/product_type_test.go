@@ -26,7 +26,7 @@ func TestProductType(t *testing.T) {
 				UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &ProductType{
-				ProductType: &response.ProductType{
+				ProductType: response.ProductType{
 					ID:         "product-type-id",
 					CategoryID: "category-id",
 					Name:       "じゃがいも",
@@ -55,7 +55,7 @@ func TestProductType_Response(t *testing.T) {
 		{
 			name: "success",
 			productType: &ProductType{
-				ProductType: &response.ProductType{
+				ProductType: response.ProductType{
 					ID:         "product-type-id",
 					CategoryID: "category-id",
 					Name:       "じゃがいも",
@@ -101,7 +101,7 @@ func TestProductTypes(t *testing.T) {
 			},
 			expect: ProductTypes{
 				{
-					ProductType: &response.ProductType{
+					ProductType: response.ProductType{
 						ID:         "product-type-id",
 						CategoryID: "category-id",
 						Name:       "じゃがいも",
@@ -132,7 +132,7 @@ func TestProductTypes_Response(t *testing.T) {
 			name: "success",
 			productTypes: ProductTypes{
 				{
-					ProductType: &response.ProductType{
+					ProductType: response.ProductType{
 						ID:         "product-type-id",
 						CategoryID: "category-id",
 						Name:       "じゃがいも",

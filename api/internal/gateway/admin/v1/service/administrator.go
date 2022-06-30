@@ -6,14 +6,14 @@ import (
 )
 
 type Administrator struct {
-	*response.Administrator
+	response.Administrator
 }
 
 type Administrators []*Administrator
 
 func NewAdministrator(admin *entity.Administrator) *Administrator {
 	return &Administrator{
-		Administrator: &response.Administrator{
+		Administrator: response.Administrator{
 			ID:            admin.ID,
 			Lastname:      admin.Lastname,
 			Firstname:     admin.Firstname,
@@ -28,7 +28,7 @@ func NewAdministrator(admin *entity.Administrator) *Administrator {
 }
 
 func (a *Administrator) Response() *response.Administrator {
-	return a.Administrator
+	return &a.Administrator
 }
 
 func NewAdministrators(admins entity.Administrators) Administrators {
