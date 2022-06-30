@@ -149,8 +149,8 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 		Host:     p.dbHost,
 		Port:     p.dbPort,
 		Database: dbname,
-		Username: p.config.DBUsername,
-		Password: p.config.DBPassword,
+		Username: p.dbUsername,
+		Password: p.dbPassword,
 	}
 	return database.NewClient(
 		params,
