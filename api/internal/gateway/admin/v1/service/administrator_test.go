@@ -30,7 +30,7 @@ func TestAdministrator(t *testing.T) {
 				UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &Administrator{
-				Administrator: &response.Administrator{
+				Administrator: response.Administrator{
 					ID:            "admin-id",
 					Lastname:      "&.",
 					Firstname:     "管理者",
@@ -63,7 +63,7 @@ func TestAdministrator_Response(t *testing.T) {
 		{
 			name: "success",
 			admin: &Administrator{
-				Administrator: &response.Administrator{
+				Administrator: response.Administrator{
 					ID:            "admin-id",
 					Lastname:      "&.",
 					Firstname:     "管理者",
@@ -132,7 +132,7 @@ func TestAdministrators(t *testing.T) {
 			},
 			expect: Administrators{
 				{
-					Administrator: &response.Administrator{
+					Administrator: response.Administrator{
 						ID:            "admin-id01",
 						Lastname:      "&.",
 						Firstname:     "管理者",
@@ -145,7 +145,7 @@ func TestAdministrators(t *testing.T) {
 					},
 				},
 				{
-					Administrator: &response.Administrator{
+					Administrator: response.Administrator{
 						ID:            "admin-id02",
 						Lastname:      "&.",
 						Firstname:     "管理者",
@@ -180,7 +180,7 @@ func TestAdministrators_Response(t *testing.T) {
 			name: "success",
 			admins: Administrators{
 				{
-					Administrator: &response.Administrator{
+					Administrator: response.Administrator{
 						ID:            "admin-id01",
 						Lastname:      "&.",
 						Firstname:     "管理者",
@@ -193,7 +193,7 @@ func TestAdministrators_Response(t *testing.T) {
 					},
 				},
 				{
-					Administrator: &response.Administrator{
+					Administrator: response.Administrator{
 						ID:            "admin-id02",
 						Lastname:      "&.",
 						Firstname:     "管理者",

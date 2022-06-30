@@ -7,14 +7,14 @@ import (
 )
 
 type ProductType struct {
-	*response.ProductType
+	response.ProductType
 }
 
 type ProductTypes []*ProductType
 
 func NewProductType(productType *entity.ProductType) *ProductType {
 	return &ProductType{
-		ProductType: &response.ProductType{
+		ProductType: response.ProductType{
 			ID:         productType.ID,
 			CategoryID: productType.CategoryID,
 			Name:       productType.Name,
@@ -25,7 +25,7 @@ func NewProductType(productType *entity.ProductType) *ProductType {
 }
 
 func (t *ProductType) Response() *response.ProductType {
-	return t.ProductType
+	return &t.ProductType
 }
 
 func NewProductTypes(productTypes entity.ProductTypes) ProductTypes {
