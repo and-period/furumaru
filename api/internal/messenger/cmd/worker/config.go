@@ -18,8 +18,11 @@ type config struct {
 	DBPassword           string `envconfig:"DB_PASSWORD" default:""`
 	DBTimeZone           string `envconfig:"DB_TIMEZONE" default:""`
 	DBEnabledTLS         bool   `envconfig:"DB_ENABLED_TLS" default:"false"`
+	DBSecretName         string `envconfig:"DB_SECRET_NAME" default:""`
+	AWSRegion            string `envconfig:"AWS_REGION" default:"ap-northeast-1"`
 	SendGridAPIKey       string `envconfig:"SENDGRID_API_KEY" default:""`
 	SendGridTemplatePath string `envconfig:"SENDGRID_TEMPLATE_PATH" default:""`
+	SendGridSecretName   string `envconfig:"SENDGRID_SECRET_NAME" default:""`
 	MailFromName         string `envconfig:"MAIL_FROM_NAME" default:""`
 	MailFromAddress      string `envconfig:"MAIL_FROM_ADDRESS" default:""`
 	AminWebURL           string `envconfig:"ADMIN_WEB_URL" default:""`
