@@ -13,11 +13,6 @@ import (
 
 const notificationTable = "notifications"
 
-var notificationFields = []string{
-	"id", "created_by", "creator_name", "updated_by", "title", "bpdy",
-	"published_at", "targets", "public", "created_at", "updated_at",
-}
-
 type notification struct {
 	db  *database.Client
 	now func() time.Time
