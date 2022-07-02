@@ -10,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
@@ -57,6 +58,28 @@ func TestListProducts(t *testing.T) {
 			UpdatedBy:        "coordinator-id",
 		},
 	}
+	producersIn := &user.MultiGetProducersInput{
+		ProducerIDs: []string{"producer-id"},
+	}
+	producres := uentity.Producers{
+		{
+			ID:            "producer-id",
+			Lastname:      "&.",
+			Firstname:     "管理者",
+			LastnameKana:  "あんどどっと",
+			FirstnameKana: "かんりしゃ",
+			StoreName:     "&.農園",
+			ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+			HeaderURL:     "https://and-period.jp/header.png",
+			Email:         "test-producer@and-period.jp",
+			PhoneNumber:   "+819012345678",
+			PostalCode:    "1000014",
+			Prefecture:    "東京都",
+			City:          "千代田区",
+			CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		},
+	}
 	categoriesIn := &store.MultiGetCategoriesInput{
 		CategoryIDs: []string{"category-id"},
 	}
@@ -66,6 +89,18 @@ func TestListProducts(t *testing.T) {
 			Name:      "野菜",
 			CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		},
+	}
+	productTypesIn := &store.MultiGetProductTypesInput{
+		ProductTypeIDs: []string{"product-type-id"},
+	}
+	productTypes := sentity.ProductTypes{
+		{
+			ID:         "product-type-id",
+			Name:       "じゃがいも",
+			CategoryID: "category-id",
+			CreatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
 	}
 
@@ -79,7 +114,9 @@ func TestListProducts(t *testing.T) {
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().ListProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producres, nil)
 				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
+				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(productTypes, nil)
 			},
 			query: "?name=じゃがいも&coordinatorId=coordinator-id&producerId=producer-id",
 			expect: &testResponse{
@@ -123,8 +160,34 @@ func TestListProducts(t *testing.T) {
 							UpdatedAt: 1640962800,
 						},
 					},
-					ProductTypes: []*response.ProductType{},
-					Producers:    []*response.Producer{},
+					ProductTypes: []*response.ProductType{
+						{
+							ID:         "product-type-id",
+							Name:       "じゃがいも",
+							CategoryID: "category-id",
+							CreatedAt:  1640962800,
+							UpdatedAt:  1640962800,
+						},
+					},
+					Producers: []*response.Producer{
+						{
+							ID:            "producer-id",
+							Lastname:      "&.",
+							Firstname:     "管理者",
+							LastnameKana:  "あんどどっと",
+							FirstnameKana: "かんりしゃ",
+							StoreName:     "&.農園",
+							ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+							HeaderURL:     "https://and-period.jp/header.png",
+							Email:         "test-producer@and-period.jp",
+							PhoneNumber:   "+819012345678",
+							PostalCode:    "1000014",
+							Prefecture:    "東京都",
+							City:          "千代田区",
+							CreatedAt:     1640962800,
+							UpdatedAt:     1640962800,
+						},
+					},
 				},
 			},
 		},
@@ -155,10 +218,38 @@ func TestListProducts(t *testing.T) {
 			},
 		},
 		{
+			name: "failed to multi get producers",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().ListProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(nil, errmock)
+				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
+				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(productTypes, nil)
+			},
+			query: "?name=じゃがいも&coordinatorId=coordinator-id&producerId=producer-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
 			name: "failed to multi get categories",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().ListProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producres, nil)
 				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(nil, errmock)
+				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(productTypes, nil)
+			},
+			query: "?name=じゃがいも&coordinatorId=coordinator-id&producerId=producer-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to multi get product types",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().ListProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producres, nil)
+				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
+				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(nil, errmock)
 			},
 			query: "?name=じゃがいも&coordinatorId=coordinator-id&producerId=producer-id",
 			expect: &testResponse{
