@@ -7,12 +7,12 @@ import (
 )
 
 type Auth struct {
-	*response.Auth
+	response.Auth
 }
 
 func NewAuth(auth *entity.UserAuth) *Auth {
 	return &Auth{
-		Auth: &response.Auth{
+		Auth: response.Auth{
 			UserID:       auth.UserID,
 			AccessToken:  auth.AccessToken,
 			RefreshToken: auth.RefreshToken,
@@ -23,16 +23,16 @@ func NewAuth(auth *entity.UserAuth) *Auth {
 }
 
 func (a *Auth) Response() *response.Auth {
-	return a.Auth
+	return &a.Auth
 }
 
 type AuthUser struct {
-	*response.AuthUser
+	response.AuthUser
 }
 
 func NewAuthUser(user *entity.User) *AuthUser {
 	return &AuthUser{
-		AuthUser: &response.AuthUser{
+		AuthUser: response.AuthUser{
 			ID:           user.ID,
 			Username:     user.Username,
 			ThumbnailURL: user.ThumbnailURL,
@@ -41,5 +41,5 @@ func NewAuthUser(user *entity.User) *AuthUser {
 }
 
 func (u *AuthUser) Response() *response.AuthUser {
-	return u.AuthUser
+	return &u.AuthUser
 }

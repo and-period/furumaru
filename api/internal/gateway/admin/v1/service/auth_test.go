@@ -75,7 +75,7 @@ func TestAuth(t *testing.T) {
 				ExpiresIn:    3600,
 			},
 			expect: &Auth{
-				Auth: &response.Auth{
+				Auth: response.Auth{
 					AdminID:      "admin-id",
 					Role:         int32(AdminRoleAdministrator),
 					AccessToken:  "access-token",
@@ -105,7 +105,7 @@ func TestAuth_Response(t *testing.T) {
 		{
 			name: "success",
 			auth: &Auth{
-				Auth: &response.Auth{
+				Auth: response.Auth{
 					AdminID:      "admin-id",
 					Role:         int32(AdminRoleAdministrator),
 					AccessToken:  "access-token",

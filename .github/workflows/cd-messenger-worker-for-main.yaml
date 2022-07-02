@@ -16,6 +16,7 @@ env:
   ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
   ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_MESSENGER_WORKER }}
   ECR_IMAGE_TAG: ${{ github.sha }}
+  LAMBDA_FUNCTION: ${{ secrets.STG_LAMBDA_FUNCTION_MESSENGER_WORKER }}
   IMAGE_PATH: ./infra/docker/api/messenger/worker/Dockerfile
 
 jobs:
@@ -61,3 +62,10 @@ jobs:
         docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}
         docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:latest
         docker push -a ${ECR_REPOSITORY_URL}
+
+    - name: Deploy AWS Lambda function
+      run: |
+        aws lambda update-function-code \
+          --function-name="${LAMBDA_FUNCTION}" \
+          --image-uri="${ECR_REPOSITORY_URL}:latest" \
+        | jq '. | del(.Environment)'

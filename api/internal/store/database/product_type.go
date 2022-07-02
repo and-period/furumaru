@@ -56,6 +56,21 @@ func (t *productType) List(
 	return productTypes, exception.InternalError(err)
 }
 
+func (t *productType) MultiGet(
+	ctx context.Context, productTypeIDs []string, fields ...string,
+) (entity.ProductTypes, error) {
+	var productTypes entity.ProductTypes
+	if len(fields) == 0 {
+		fields = productTypeFields
+	}
+
+	err := t.db.DB.WithContext(ctx).
+		Table(productTypeTable).Select(fields).
+		Where("id IN (?)", productTypeIDs).
+		Find(&productTypes).Error
+	return productTypes, exception.InternalError(err)
+}
+
 func (t *productType) Create(ctx context.Context, productType *entity.ProductType) error {
 	_, err := t.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		err := tx.WithContext(ctx).

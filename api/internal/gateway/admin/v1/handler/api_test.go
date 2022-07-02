@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	mock_storage "github.com/and-period/furumaru/api/mock/pkg/storage"
 	mock_store "github.com/and-period/furumaru/api/mock/store"
@@ -50,7 +51,8 @@ type testResponse struct {
 }
 
 type testOptions struct {
-	now func() time.Time
+	now  func() time.Time
+	role entity.AdminRole
 }
 
 type testOption func(opt *testOptions)
@@ -60,6 +62,12 @@ func withNow(now time.Time) testOption {
 		opts.now = func() time.Time {
 			return now
 		}
+	}
+}
+
+func withRole(role entity.AdminRole) testOption {
+	return func(opts *testOptions) {
+		opts.role = role
 	}
 }
 
@@ -162,7 +170,8 @@ func testHTTP(
 	defer ctrl.Finish()
 	mocks := newMocks(ctrl)
 	dopts := &testOptions{
-		now: jst.Now,
+		now:  jst.Now,
+		role: entity.AdminRoleAdministrator,
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -173,7 +182,7 @@ func testHTTP(
 	newRoutes(h, r)
 	setup(t, mocks, ctrl)
 
-	auth := &uentity.AdminAuth{AdminID: idmock, Role: uentity.AdminRoleAdministrator}
+	auth := &uentity.AdminAuth{AdminID: idmock, Role: dopts.role}
 	mocks.user.EXPECT().GetAdminAuth(gomock.Any(), gomock.Any()).Return(auth, nil).MaxTimes(1)
 
 	// test

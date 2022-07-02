@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
 
+import { ApiClientFactory } from '.'
+
 import { AuthApi, AuthResponse, SignInRequest } from '~/types/api'
 
 export const useAuthStore = defineStore('auth', {
@@ -15,7 +17,8 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async signIn(payload: SignInRequest): Promise<void> {
       try {
-        const authApiClient = new AuthApi()
+        const factory = new ApiClientFactory()
+        const authApiClient = factory.create(AuthApi)
         const res = await authApiClient.v1SignIn(payload)
         this.isAuthenticated = true
         this.user = res.data

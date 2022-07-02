@@ -58,13 +58,19 @@ type CreateAdministratorInput struct {
 
 type ListCoordinatorsInput struct{}
 
-type GetCoordinatorInput struct{}
+type GetCoordinatorInput struct {
+	CoordinatorID string `validate:"required"`
+}
 
 type CreateCoordinatorInput struct{}
 
 type ListProducersInput struct {
 	Limit  int64 `validate:"required,max=200"`
 	Offset int64 `validate:"min=0"`
+}
+
+type MultiGetProducersInput struct {
+	ProducerIDs []string `validate:"omitempty,dive,required"`
 }
 
 type GetProducerInput struct {

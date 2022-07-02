@@ -24,6 +24,14 @@ func (s *service) ListProducers(ctx context.Context, in *user.ListProducersInput
 	return producers, exception.InternalError(err)
 }
 
+func (s *service) MultiGetProducers(ctx context.Context, in *user.MultiGetProducersInput) (entity.Producers, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	producers, err := s.db.Producer.MultiGet(ctx, in.ProducerIDs)
+	return producers, exception.InternalError(err)
+}
+
 func (s *service) GetProducer(ctx context.Context, in *user.GetProducerInput) (*entity.Producer, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)

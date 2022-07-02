@@ -424,6 +424,121 @@ export interface CreateProducerRequest {
 /**
  * 
  * @export
+ * @interface CreateProductRequest
+ */
+export interface CreateProductRequest {
+    /**
+     * 商品名
+     * @type {string}
+     * @memberof CreateProductRequest
+     */
+    'name': string;
+    /**
+     * 商品説明
+     * @type {string}
+     * @memberof CreateProductRequest
+     */
+    'description': string;
+    /**
+     * 生産者ID
+     * @type {string}
+     * @memberof CreateProductRequest
+     */
+    'producerId': string;
+    /**
+     * 商品種別ID
+     * @type {string}
+     * @memberof CreateProductRequest
+     */
+    'categoryId': string;
+    /**
+     * 品目ID
+     * @type {string}
+     * @memberof CreateProductRequest
+     */
+    'productTypeId': string;
+    /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof CreateProductRequest
+     */
+    'public': boolean;
+    /**
+     * 在庫数
+     * @type {number}
+     * @memberof CreateProductRequest
+     */
+    'inventory': number;
+    /**
+     * 重量(kg:少数第1位まで)
+     * @type {number}
+     * @memberof CreateProductRequest
+     */
+    'weight': number;
+    /**
+     * 数量単位
+     * @type {string}
+     * @memberof CreateProductRequest
+     */
+    'itemUnit': string;
+    /**
+     * 数量単位説明
+     * @type {string}
+     * @memberof CreateProductRequest
+     */
+    'itemDescription': string;
+    /**
+     * 
+     * @type {Array<ProductsResponseMedia>}
+     * @memberof CreateProductRequest
+     */
+    'media': Array<ProductsResponseMedia>;
+    /**
+     * 販売価格
+     * @type {number}
+     * @memberof CreateProductRequest
+     */
+    'price': number;
+    /**
+     * 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
+     * @type {number}
+     * @memberof CreateProductRequest
+     */
+    'deliveryType': number;
+    /**
+     * 箱の占有率(サイズ:60)
+     * @type {number}
+     * @memberof CreateProductRequest
+     */
+    'box60Rate': number;
+    /**
+     * 箱の占有率(サイズ:80)
+     * @type {number}
+     * @memberof CreateProductRequest
+     */
+    'box80Rate': number;
+    /**
+     * 箱の占有率(サイズ:100)
+     * @type {number}
+     * @memberof CreateProductRequest
+     */
+    'box100Rate': number;
+    /**
+     * 原産地(都道府県)
+     * @type {string}
+     * @memberof CreateProductRequest
+     */
+    'originPrefecture': string;
+    /**
+     * 原産地(市区町村)
+     * @type {string}
+     * @memberof CreateProductRequest
+     */
+    'originCity': string;
+}
+/**
+ * 
+ * @export
  * @interface CreateProductTypeRequest
  */
 export interface CreateProductTypeRequest {
@@ -693,6 +808,151 @@ export interface ProducersResponseProducers {
 /**
  * 
  * @export
+ * @interface ProductResponse
+ */
+export interface ProductResponse {
+    /**
+     * 商品ID
+     * @type {string}
+     * @memberof ProductResponse
+     */
+    'id': string;
+    /**
+     * 商品名
+     * @type {string}
+     * @memberof ProductResponse
+     */
+    'name': string;
+    /**
+     * 商品説明
+     * @type {string}
+     * @memberof ProductResponse
+     */
+    'description': string;
+    /**
+     * 生産者ID
+     * @type {string}
+     * @memberof ProductResponse
+     */
+    'producerId': string;
+    /**
+     * 商品種別ID
+     * @type {string}
+     * @memberof ProductResponse
+     */
+    'categoryId': string;
+    /**
+     * 品目ID
+     * @type {string}
+     * @memberof ProductResponse
+     */
+    'productTypeId': string;
+    /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof ProductResponse
+     */
+    'public': boolean;
+    /**
+     * 在庫数
+     * @type {number}
+     * @memberof ProductResponse
+     */
+    'inventory': number;
+    /**
+     * 重量(kg:少数第1位まで)
+     * @type {number}
+     * @memberof ProductResponse
+     */
+    'weight': number;
+    /**
+     * 数量単位
+     * @type {string}
+     * @memberof ProductResponse
+     */
+    'itemUnit': string;
+    /**
+     * 数量単位説明
+     * @type {string}
+     * @memberof ProductResponse
+     */
+    'itemDescription': string;
+    /**
+     * 
+     * @type {Array<ProductsResponseMedia>}
+     * @memberof ProductResponse
+     */
+    'media': Array<ProductsResponseMedia>;
+    /**
+     * 販売価格
+     * @type {number}
+     * @memberof ProductResponse
+     */
+    'price': number;
+    /**
+     * 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
+     * @type {number}
+     * @memberof ProductResponse
+     */
+    'deliveryType': number;
+    /**
+     * 箱の占有率(サイズ:60)
+     * @type {number}
+     * @memberof ProductResponse
+     */
+    'box60Rate': number;
+    /**
+     * 箱の占有率(サイズ:80)
+     * @type {number}
+     * @memberof ProductResponse
+     */
+    'box80Rate': number;
+    /**
+     * 箱の占有率(サイズ:100)
+     * @type {number}
+     * @memberof ProductResponse
+     */
+    'box100Rate': number;
+    /**
+     * 原産地(都道府県)
+     * @type {string}
+     * @memberof ProductResponse
+     */
+    'originPrefecture': string;
+    /**
+     * 原産地(市区町村)
+     * @type {string}
+     * @memberof ProductResponse
+     */
+    'originCity': string;
+    /**
+     * 登録者ID
+     * @type {string}
+     * @memberof ProductResponse
+     */
+    'createdBy': string;
+    /**
+     * 登録者ID
+     * @type {string}
+     * @memberof ProductResponse
+     */
+    'updatedBy': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ProductResponse
+     */
+    'createdAt': number;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ProductResponse
+     */
+    'updatedAt': number;
+}
+/**
+ * 
+ * @export
  * @interface ProductTypeResponse
  */
 export interface ProductTypeResponse {
@@ -786,6 +1046,378 @@ export interface ProductTypesResponseProductTypes {
 /**
  * 
  * @export
+ * @interface ProductsResponse
+ */
+export interface ProductsResponse {
+    /**
+     * 商品一覧
+     * @type {Array<ProductsResponseProducts>}
+     * @memberof ProductsResponse
+     */
+    'products': Array<ProductsResponseProducts>;
+    /**
+     * 商品種別一覧
+     * @type {Array<ProductsResponseCategories>}
+     * @memberof ProductsResponse
+     */
+    'categories': Array<ProductsResponseCategories>;
+    /**
+     * 品目一覧
+     * @type {Array<ProductsResponseProductTypes>}
+     * @memberof ProductsResponse
+     */
+    'productTypes': Array<ProductsResponseProductTypes>;
+    /**
+     * 生産者一覧
+     * @type {Array<ProductsResponseProducers>}
+     * @memberof ProductsResponse
+     */
+    'producers'?: Array<ProductsResponseProducers>;
+}
+/**
+ * 
+ * @export
+ * @interface ProductsResponseCategories
+ */
+export interface ProductsResponseCategories {
+    /**
+     * 商品種別ID
+     * @type {string}
+     * @memberof ProductsResponseCategories
+     */
+    'id': string;
+    /**
+     * カテゴリ名
+     * @type {string}
+     * @memberof ProductsResponseCategories
+     */
+    'name': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ProductsResponseCategories
+     */
+    'createdAt': number;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ProductsResponseCategories
+     */
+    'updatedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface ProductsResponseMedia
+ */
+export interface ProductsResponseMedia {
+    /**
+     * メディアURL
+     * @type {string}
+     * @memberof ProductsResponseMedia
+     */
+    'url': string;
+    /**
+     * サムネイルとして使用(1つまで)
+     * @type {boolean}
+     * @memberof ProductsResponseMedia
+     */
+    'isThumbnail': boolean;
+}
+/**
+ * 
+ * @export
+ * @interface ProductsResponseProducers
+ */
+export interface ProductsResponseProducers {
+    /**
+     * システム管理者ID
+     * @type {string}
+     * @memberof ProductsResponseProducers
+     */
+    'id': string;
+    /**
+     * 姓
+     * @type {string}
+     * @memberof ProductsResponseProducers
+     */
+    'lastname': string;
+    /**
+     * 名
+     * @type {string}
+     * @memberof ProductsResponseProducers
+     */
+    'firstname': string;
+    /**
+     * 姓(かな)
+     * @type {string}
+     * @memberof ProductsResponseProducers
+     */
+    'lastnameKana': string;
+    /**
+     * 名(かな)
+     * @type {string}
+     * @memberof ProductsResponseProducers
+     */
+    'firstnameKana': string;
+    /**
+     * 店舗名
+     * @type {string}
+     * @memberof ProductsResponseProducers
+     */
+    'storeName': string;
+    /**
+     * ヘッダー画像URL
+     * @type {string}
+     * @memberof ProductsResponseProducers
+     */
+    'headerUrl': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof ProductsResponseProducers
+     */
+    'thumbnailUrl': string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof ProductsResponseProducers
+     */
+    'email': string;
+    /**
+     * 電話番号
+     * @type {string}
+     * @memberof ProductsResponseProducers
+     */
+    'phoneNumber': string;
+    /**
+     * 郵便番号
+     * @type {string}
+     * @memberof ProductsResponseProducers
+     */
+    'postalCode': string;
+    /**
+     * 都道府県
+     * @type {string}
+     * @memberof ProductsResponseProducers
+     */
+    'prefecture': string;
+    /**
+     * 市区町村
+     * @type {string}
+     * @memberof ProductsResponseProducers
+     */
+    'city': string;
+    /**
+     * 町名・番地
+     * @type {string}
+     * @memberof ProductsResponseProducers
+     */
+    'addressLine1': string;
+    /**
+     * ビル名・号室など
+     * @type {string}
+     * @memberof ProductsResponseProducers
+     */
+    'addressLine2': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ProductsResponseProducers
+     */
+    'createdAt': number;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ProductsResponseProducers
+     */
+    'updatedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface ProductsResponseProductTypes
+ */
+export interface ProductsResponseProductTypes {
+    /**
+     * 品目ID
+     * @type {string}
+     * @memberof ProductsResponseProductTypes
+     */
+    'id': string;
+    /**
+     * 品目名
+     * @type {string}
+     * @memberof ProductsResponseProductTypes
+     */
+    'name': string;
+    /**
+     * 商品種別ID
+     * @type {string}
+     * @memberof ProductsResponseProductTypes
+     */
+    'categoryId': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ProductsResponseProductTypes
+     */
+    'createdAt': number;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ProductsResponseProductTypes
+     */
+    'updatedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface ProductsResponseProducts
+ */
+export interface ProductsResponseProducts {
+    /**
+     * 商品ID
+     * @type {string}
+     * @memberof ProductsResponseProducts
+     */
+    'id': string;
+    /**
+     * 商品名
+     * @type {string}
+     * @memberof ProductsResponseProducts
+     */
+    'name': string;
+    /**
+     * 商品説明
+     * @type {string}
+     * @memberof ProductsResponseProducts
+     */
+    'description': string;
+    /**
+     * 生産者ID
+     * @type {string}
+     * @memberof ProductsResponseProducts
+     */
+    'producerId': string;
+    /**
+     * 商品種別ID
+     * @type {string}
+     * @memberof ProductsResponseProducts
+     */
+    'categoryId': string;
+    /**
+     * 品目ID
+     * @type {string}
+     * @memberof ProductsResponseProducts
+     */
+    'productTypeId': string;
+    /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof ProductsResponseProducts
+     */
+    'public': boolean;
+    /**
+     * 在庫数
+     * @type {number}
+     * @memberof ProductsResponseProducts
+     */
+    'inventory': number;
+    /**
+     * 重量(kg:少数第1位まで)
+     * @type {number}
+     * @memberof ProductsResponseProducts
+     */
+    'weight': number;
+    /**
+     * 数量単位
+     * @type {string}
+     * @memberof ProductsResponseProducts
+     */
+    'itemUnit': string;
+    /**
+     * 数量単位説明
+     * @type {string}
+     * @memberof ProductsResponseProducts
+     */
+    'itemDescription': string;
+    /**
+     * 
+     * @type {Array<ProductsResponseMedia>}
+     * @memberof ProductsResponseProducts
+     */
+    'media': Array<ProductsResponseMedia>;
+    /**
+     * 販売価格
+     * @type {number}
+     * @memberof ProductsResponseProducts
+     */
+    'price': number;
+    /**
+     * 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
+     * @type {number}
+     * @memberof ProductsResponseProducts
+     */
+    'deliveryType': number;
+    /**
+     * 箱の占有率(サイズ:60)
+     * @type {number}
+     * @memberof ProductsResponseProducts
+     */
+    'box60Rate': number;
+    /**
+     * 箱の占有率(サイズ:80)
+     * @type {number}
+     * @memberof ProductsResponseProducts
+     */
+    'box80Rate': number;
+    /**
+     * 箱の占有率(サイズ:100)
+     * @type {number}
+     * @memberof ProductsResponseProducts
+     */
+    'box100Rate': number;
+    /**
+     * 原産地(都道府県)
+     * @type {string}
+     * @memberof ProductsResponseProducts
+     */
+    'originPrefecture': string;
+    /**
+     * 原産地(市区町村)
+     * @type {string}
+     * @memberof ProductsResponseProducts
+     */
+    'originCity': string;
+    /**
+     * 登録者ID
+     * @type {string}
+     * @memberof ProductsResponseProducts
+     */
+    'createdBy': string;
+    /**
+     * 登録者ID
+     * @type {string}
+     * @memberof ProductsResponseProducts
+     */
+    'updatedBy': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ProductsResponseProducts
+     */
+    'createdAt': number;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ProductsResponseProducts
+     */
+    'updatedAt': number;
+}
+/**
+ * 
+ * @export
  * @interface RefreshAuthTokenRequest
  */
 export interface RefreshAuthTokenRequest {
@@ -865,6 +1497,121 @@ export interface UpdateCategoryRequest {
      * @memberof UpdateCategoryRequest
      */
     'name': string;
+}
+/**
+ * 
+ * @export
+ * @interface UpdateProductRequest
+ */
+export interface UpdateProductRequest {
+    /**
+     * 商品名
+     * @type {string}
+     * @memberof UpdateProductRequest
+     */
+    'name': string;
+    /**
+     * 商品説明
+     * @type {string}
+     * @memberof UpdateProductRequest
+     */
+    'description': string;
+    /**
+     * 生産者ID
+     * @type {string}
+     * @memberof UpdateProductRequest
+     */
+    'producerId': string;
+    /**
+     * 商品種別ID
+     * @type {string}
+     * @memberof UpdateProductRequest
+     */
+    'categoryId': string;
+    /**
+     * 品目ID
+     * @type {string}
+     * @memberof UpdateProductRequest
+     */
+    'productTypeId': string;
+    /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof UpdateProductRequest
+     */
+    'public': boolean;
+    /**
+     * 在庫数
+     * @type {number}
+     * @memberof UpdateProductRequest
+     */
+    'inventory': number;
+    /**
+     * 重量(kg:少数第1位まで)
+     * @type {number}
+     * @memberof UpdateProductRequest
+     */
+    'weight': number;
+    /**
+     * 数量単位
+     * @type {string}
+     * @memberof UpdateProductRequest
+     */
+    'itemUnit': string;
+    /**
+     * 数量単位説明
+     * @type {string}
+     * @memberof UpdateProductRequest
+     */
+    'itemDescription': string;
+    /**
+     * 
+     * @type {Array<ProductsResponseMedia>}
+     * @memberof UpdateProductRequest
+     */
+    'media': Array<ProductsResponseMedia>;
+    /**
+     * 販売価格
+     * @type {number}
+     * @memberof UpdateProductRequest
+     */
+    'price': number;
+    /**
+     * 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
+     * @type {number}
+     * @memberof UpdateProductRequest
+     */
+    'deliveryType': number;
+    /**
+     * 箱の占有率(サイズ:60)
+     * @type {number}
+     * @memberof UpdateProductRequest
+     */
+    'box60Rate': number;
+    /**
+     * 箱の占有率(サイズ:80)
+     * @type {number}
+     * @memberof UpdateProductRequest
+     */
+    'box80Rate': number;
+    /**
+     * 箱の占有率(サイズ:100)
+     * @type {number}
+     * @memberof UpdateProductRequest
+     */
+    'box100Rate': number;
+    /**
+     * 原産地(都道府県)
+     * @type {string}
+     * @memberof UpdateProductRequest
+     */
+    'originPrefecture': string;
+    /**
+     * 原産地(市区町村)
+     * @type {string}
+     * @memberof UpdateProductRequest
+     */
+    'originCity': string;
 }
 /**
  * 
@@ -2549,6 +3296,364 @@ export class ProducerApi extends BaseAPI {
      */
     public v1UploadProducerThumbnail(thumbnail?: any, options?: AxiosRequestConfig) {
         return ProducerApiFp(this.configuration).v1UploadProducerThumbnail(thumbnail, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * ProductApi - axios parameter creator
+ * @export
+ */
+export const ProductApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary 商品登録
+         * @param {CreateProductRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateProduct: async (body: CreateProductRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1CreateProduct', 'body', body)
+            const localVarPath = `/v1/products`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 商品取得
+         * @param {string} productId 商品ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProduct: async (productId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'productId' is not null or undefined
+            assertParamExists('v1GetProduct', 'productId', productId)
+            const localVarPath = `/v1/products/{productId}`
+                .replace(`{${"productId"}}`, encodeURIComponent(String(productId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 商品一覧取得
+         * @param {number} [limit] 取得上限数
+         * @param {number} [offset] 取得開始位置
+         * @param {string} [coordinatorId] 仲介者ID
+         * @param {string} [producerId] 生産者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListProducts: async (limit?: number, offset?: number, coordinatorId?: string, producerId?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/products`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+            if (coordinatorId !== undefined) {
+                localVarQueryParameter['coordinatorId'] = coordinatorId;
+            }
+
+            if (producerId !== undefined) {
+                localVarQueryParameter['producerId'] = producerId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 商品更新
+         * @param {string} productId 商品ID
+         * @param {UpdateProductRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateProduct: async (productId: string, body: UpdateProductRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'productId' is not null or undefined
+            assertParamExists('v1UpdateProduct', 'productId', productId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpdateProduct', 'body', body)
+            const localVarPath = `/v1/products/{productId}`
+                .replace(`{${"productId"}}`, encodeURIComponent(String(productId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ProductApi - functional programming interface
+ * @export
+ */
+export const ProductApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ProductApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary 商品登録
+         * @param {CreateProductRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1CreateProduct(body: CreateProductRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateProduct(body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 商品取得
+         * @param {string} productId 商品ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetProduct(productId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetProduct(productId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 商品一覧取得
+         * @param {number} [limit] 取得上限数
+         * @param {number} [offset] 取得開始位置
+         * @param {string} [coordinatorId] 仲介者ID
+         * @param {string} [producerId] 生産者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ListProducts(limit?: number, offset?: number, coordinatorId?: string, producerId?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListProducts(limit, offset, coordinatorId, producerId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 商品更新
+         * @param {string} productId 商品ID
+         * @param {UpdateProductRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UpdateProduct(productId: string, body: UpdateProductRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateProduct(productId, body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * ProductApi - factory interface
+ * @export
+ */
+export const ProductApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ProductApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary 商品登録
+         * @param {CreateProductRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateProduct(body: CreateProductRequest, options?: any): AxiosPromise<ProductResponse> {
+            return localVarFp.v1CreateProduct(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 商品取得
+         * @param {string} productId 商品ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProduct(productId: string, options?: any): AxiosPromise<ProductResponse> {
+            return localVarFp.v1GetProduct(productId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 商品一覧取得
+         * @param {number} [limit] 取得上限数
+         * @param {number} [offset] 取得開始位置
+         * @param {string} [coordinatorId] 仲介者ID
+         * @param {string} [producerId] 生産者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListProducts(limit?: number, offset?: number, coordinatorId?: string, producerId?: string, options?: any): AxiosPromise<ProductsResponse> {
+            return localVarFp.v1ListProducts(limit, offset, coordinatorId, producerId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 商品更新
+         * @param {string} productId 商品ID
+         * @param {UpdateProductRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateProduct(productId: string, body: UpdateProductRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1UpdateProduct(productId, body, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ProductApi - object-oriented interface
+ * @export
+ * @class ProductApi
+ * @extends {BaseAPI}
+ */
+export class ProductApi extends BaseAPI {
+    /**
+     * 
+     * @summary 商品登録
+     * @param {CreateProductRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProductApi
+     */
+    public v1CreateProduct(body: CreateProductRequest, options?: AxiosRequestConfig) {
+        return ProductApiFp(this.configuration).v1CreateProduct(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 商品取得
+     * @param {string} productId 商品ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProductApi
+     */
+    public v1GetProduct(productId: string, options?: AxiosRequestConfig) {
+        return ProductApiFp(this.configuration).v1GetProduct(productId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 商品一覧取得
+     * @param {number} [limit] 取得上限数
+     * @param {number} [offset] 取得開始位置
+     * @param {string} [coordinatorId] 仲介者ID
+     * @param {string} [producerId] 生産者ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProductApi
+     */
+    public v1ListProducts(limit?: number, offset?: number, coordinatorId?: string, producerId?: string, options?: AxiosRequestConfig) {
+        return ProductApiFp(this.configuration).v1ListProducts(limit, offset, coordinatorId, producerId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 商品更新
+     * @param {string} productId 商品ID
+     * @param {UpdateProductRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProductApi
+     */
+    public v1UpdateProduct(productId: string, body: UpdateProductRequest, options?: AxiosRequestConfig) {
+        return ProductApiFp(this.configuration).v1UpdateProduct(productId, body, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

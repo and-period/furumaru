@@ -87,6 +87,70 @@ func TestListProductTypes(t *testing.T) {
 	}
 }
 
+func TestMultiGetProductTypes(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
+	productTypes := entity.ProductTypes{
+		{
+			ID:         "product-type-id",
+			Name:       "じゃがいも",
+			CategoryID: "category-id",
+			CreatedAt:  now,
+			UpdatedAt:  now,
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.MultiGetProductTypesInput
+		expect    entity.ProductTypes
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ProductType.EXPECT().MultiGet(ctx, []string{"product-type-id"}).Return(productTypes, nil)
+			},
+			input: &store.MultiGetProductTypesInput{
+				ProductTypeIDs: []string{"product-type-id"},
+			},
+			expect:    productTypes,
+			expectErr: nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.MultiGetProductTypesInput{
+				ProductTypeIDs: []string{""},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to list",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ProductType.EXPECT().MultiGet(ctx, []string{"product-type-id"}).Return(nil, errmock)
+			},
+			input: &store.MultiGetProductTypesInput{
+				ProductTypeIDs: []string{"product-type-id"},
+			},
+			expect:    nil,
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.MultiGetProductTypes(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.ElementsMatch(t, tt.expect, actual)
+		}))
+	}
+}
+
 func TestCreateProductType(t *testing.T) {
 	t.Parallel()
 

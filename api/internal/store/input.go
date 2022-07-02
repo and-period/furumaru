@@ -32,6 +32,10 @@ type ListProductTypesInput struct {
 	Offset     int64  `validate:"min=0"`
 }
 
+type MultiGetProductTypesInput struct {
+	ProductTypeIDs []string `validate:"omitempty,dive,required"`
+}
+
 type CreateProductTypeInput struct {
 	Name       string `validate:"required,max=32"`
 	CategoryID string `validate:"required"`
@@ -103,7 +107,7 @@ type UpdateProductInput struct {
 	Item             int64                 `validate:"min=1"`
 	ItemUnit         string                `validate:"required,max=16"`
 	ItemDescription  string                `validate:"required,max=64"`
-	Media            []*CreateProductMedia `validate:"max=8,unique=URL"`
+	Media            []*UpdateProductMedia `validate:"max=8,unique=URL"`
 	Price            int64                 `validate:"min=0"`
 	DeliveryType     entity.DeliveryType   `validate:"required,oneof=1 2 3"`
 	Box60Rate        int64                 `validate:"min=0,max=100"`

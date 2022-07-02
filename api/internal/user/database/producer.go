@@ -55,6 +55,21 @@ func (p *producer) List(
 	return producers, nil
 }
 
+func (p *producer) MultiGet(
+	ctx context.Context, producerIDs []string, fields ...string,
+) (entity.Producers, error) {
+	var producers entity.Producers
+	if len(fields) == 0 {
+		fields = producerFields
+	}
+
+	err := p.db.DB.WithContext(ctx).
+		Table(producerTable).Select(fields).
+		Where("id IN (?)", producerIDs).
+		Find(&producers).Error
+	return producers, exception.InternalError(err)
+}
+
 func (p *producer) Get(
 	ctx context.Context, producerID string, fields ...string,
 ) (*entity.Producer, error) {

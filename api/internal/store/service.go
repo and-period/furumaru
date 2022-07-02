@@ -21,6 +21,8 @@ type Service interface {
 	DeleteCategory(ctx context.Context, in *DeleteCategoryInput) error
 	// 品目一覧取得
 	ListProductTypes(ctx context.Context, in *ListProductTypesInput) (entity.ProductTypes, error)
+	// 品目一覧取得(ID指定)
+	MultiGetProductTypes(ctx context.Context, in *MultiGetProductTypesInput) (entity.ProductTypes, error)
 	// 品目登録
 	CreateProductType(ctx context.Context, in *CreateProductTypeInput) (*entity.ProductType, error)
 	// 品目更新

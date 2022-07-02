@@ -303,6 +303,21 @@ func (mr *MockServiceMockRecorder) ListProducers(ctx, in interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListProducers", reflect.TypeOf((*MockService)(nil).ListProducers), ctx, in)
 }
 
+// MultiGetProducers mocks base method.
+func (m *MockService) MultiGetProducers(ctx context.Context, in *user.MultiGetProducersInput) (entity.Producers, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MultiGetProducers", ctx, in)
+	ret0, _ := ret[0].(entity.Producers)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGetProducers indicates an expected call of MultiGetProducers.
+func (mr *MockServiceMockRecorder) MultiGetProducers(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetProducers", reflect.TypeOf((*MockService)(nil).MultiGetProducers), ctx, in)
+}
+
 // MultiGetUsers mocks base method.
 func (m *MockService) MultiGetUsers(ctx context.Context, in *user.MultiGetUsersInput) (entity.Users, error) {
 	m.ctrl.T.Helper()
