@@ -58,7 +58,9 @@ type CreateAdministratorInput struct {
 
 type ListCoordinatorsInput struct{}
 
-type GetCoordinatorInput struct{}
+type GetCoordinatorInput struct {
+	CoordinatorID string `validate:"required"`
+}
 
 type CreateCoordinatorInput struct{}
 
