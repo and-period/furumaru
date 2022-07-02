@@ -2,7 +2,9 @@ import { defineStore } from 'pinia'
 
 import { useAuthStore } from './auth'
 
-import { Configuration, ProducerApi, ProducersResponse } from '~/types/api'
+import { ApiClientFactory } from '.'
+
+import { ProducerApi, ProducersResponse } from '~/types/api'
 
 export const useProducerStore = defineStore('Producer', {
   state: () => ({
@@ -15,8 +17,8 @@ export const useProducerStore = defineStore('Producer', {
         const accessToken = authStore.accessToken
         if (!accessToken) throw new Error('認証エラー')
 
-        const config = new Configuration({ accessToken })
-        const producersApiClient = new ProducerApi(config)
+        const factory = new ApiClientFactory()
+        const producersApiClient = factory.create(ProducerApi, accessToken)
         const res = await producersApiClient.v1ListProducers()
         this.producers = res.data.producers
       } catch (error) {

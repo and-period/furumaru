@@ -1,5 +1,9 @@
 import { defineStore } from 'pinia'
 
+import { useAuthStore } from './auth'
+
+import { ApiClientFactory } from '.'
+
 import { AdministratorApi, AdministratorsResponse } from '~/types/api'
 
 export const useAdministratorStore = defineStore('administrator', {
@@ -9,7 +13,15 @@ export const useAdministratorStore = defineStore('administrator', {
   actions: {
     async fetchAdministrators(): Promise<void> {
       try {
-        const administratorApiClient = new AdministratorApi()
+        const authStore = useAuthStore()
+        const accessToken = authStore.accessToken
+        if (!accessToken) throw new Error('認証エラー')
+
+        const factory = new ApiClientFactory()
+        const administratorApiClient = factory.create(
+          AdministratorApi,
+          accessToken
+        )
         const res = await administratorApiClient.v1ListAdministrators()
         this.administrators = res.data.administrators
       } catch (error) {
