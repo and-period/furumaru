@@ -6,14 +6,14 @@ import (
 )
 
 type Producer struct {
-	*response.Producer
+	response.Producer
 }
 
 type Producers []*Producer
 
 func NewProducer(producer *entity.Producer) *Producer {
 	return &Producer{
-		Producer: &response.Producer{
+		Producer: response.Producer{
 			ID:            producer.ID,
 			Lastname:      producer.Lastname,
 			Firstname:     producer.Firstname,
@@ -36,7 +36,7 @@ func NewProducer(producer *entity.Producer) *Producer {
 }
 
 func (p *Producer) Response() *response.Producer {
-	return p.Producer
+	return &p.Producer
 }
 
 func NewProducers(producers entity.Producers) Producers {

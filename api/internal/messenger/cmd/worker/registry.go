@@ -12,6 +12,9 @@ import (
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/mailer"
+	"github.com/and-period/furumaru/api/pkg/secret"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"go.uber.org/zap"
 	"gopkg.in/yaml.v2"
 )
@@ -22,12 +25,19 @@ type registry struct {
 }
 
 type params struct {
-	config      *config
-	logger      *zap.Logger
-	waitGroup   *sync.WaitGroup
-	mailer      mailer.Client
-	adminWebURL *url.URL
-	userWebURL  *url.URL
+	config         *config
+	logger         *zap.Logger
+	waitGroup      *sync.WaitGroup
+	mailer         mailer.Client
+	aws            aws.Config
+	secret         secret.Client
+	adminWebURL    *url.URL
+	userWebURL     *url.URL
+	dbHost         string
+	dbPort         string
+	dbUsername     string
+	dbPassword     string
+	sendGridAPIKey string
 }
 
 func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*registry, error) {
@@ -35,6 +45,19 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		config:    conf,
 		logger:    logger,
 		waitGroup: &sync.WaitGroup{},
+	}
+
+	// AWS SDKの設定
+	awscfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(conf.AWSRegion))
+	if err != nil {
+		return nil, err
+	}
+	params.aws = awscfg
+
+	// AWS Secrets Managerの設定
+	params.secret = secret.NewClient(awscfg)
+	if err := getSecret(ctx, params); err != nil {
+		return nil, err
 	}
 
 	// メールテンプレートの設定
@@ -51,7 +74,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 
 	// Mailerの設定
 	mailParams := &mailer.Params{
-		APIKey:      conf.SendGridAPIKey,
+		APIKey:      params.sendGridAPIKey,
 		FromName:    conf.MailFromName,
 		FromAddress: conf.MailFromAddress,
 		TemplateMap: templateMap,
@@ -90,25 +113,55 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}, nil
 }
 
-func newDatabase(dbname string, conf *config, logger *zap.Logger) (*database.Client, error) {
+func getSecret(ctx context.Context, p *params) error {
+	// データベース認証情報の取得
+	if p.config.DBSecretName == "" {
+		p.dbHost = p.config.DBHost
+		p.dbPort = p.config.DBPort
+		p.dbUsername = p.config.DBUsername
+		p.dbPassword = p.config.DBPassword
+	} else {
+		secrets, err := p.secret.Get(ctx, p.config.DBSecretName)
+		if err != nil {
+			return err
+		}
+		p.dbHost = secrets["host"]
+		p.dbPort = secrets["port"]
+		p.dbUsername = secrets["username"]
+		p.dbPassword = secrets["password"]
+	}
+	// SendGrid認証情報の取得
+	if p.config.SendGridSecretName == "" {
+		p.sendGridAPIKey = p.config.SendGridAPIKey
+	} else {
+		secrets, err := p.secret.Get(ctx, p.config.SendGridSecretName)
+		if err != nil {
+			return err
+		}
+		p.sendGridAPIKey = secrets["api_key"]
+	}
+	return nil
+}
+
+func newDatabase(dbname string, p *params) (*database.Client, error) {
 	params := &database.Params{
-		Socket:   conf.DBSocket,
-		Host:     conf.DBHost,
-		Port:     conf.DBPort,
+		Socket:   p.config.DBSocket,
+		Host:     p.dbHost,
+		Port:     p.dbPort,
 		Database: dbname,
-		Username: conf.DBUsername,
-		Password: conf.DBPassword,
+		Username: p.dbUsername,
+		Password: p.dbPassword,
 	}
 	return database.NewClient(
 		params,
-		database.WithLogger(logger),
-		database.WithTLS(conf.DBEnabledTLS),
-		database.WithTimeZone(conf.DBTimeZone),
+		database.WithLogger(p.logger),
+		database.WithTLS(p.config.DBEnabledTLS),
+		database.WithTimeZone(p.config.DBTimeZone),
 	)
 }
 
 func newUserService(ctx context.Context, p *params) (user.Service, error) {
-	mysql, err := newDatabase("users", p.config, p.logger)
+	mysql, err := newDatabase("users", p)
 	if err != nil {
 		return nil, err
 	}

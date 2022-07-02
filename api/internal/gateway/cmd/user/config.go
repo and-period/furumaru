@@ -19,6 +19,7 @@ type config struct {
 	DBPassword          string `envconfig:"DB_PASSWORD" default:""`
 	DBTimeZone          string `envconfig:"DB_TIMEZONE" default:""`
 	DBEnabledTLS        bool   `envconfig:"DB_ENABLED_TLS" default:"false"`
+	DBSecretName        string `envconfig:"DB_SECRET_NAME" default:""`
 	AWSRegion           string `envconfig:"AWS_REGION" default:"ap-northeast-1"`
 	S3Bucket            string `envconfig:"S3_BUCKET" default:""`
 	CognitoUserPoolID   string `envconfig:"COGNITO_USER_POOL_ID" default:""`

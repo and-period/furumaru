@@ -1,0 +1,75 @@
+<template>
+  <div>
+    <v-alert v-model="isShow" :type="alertType" v-text="alertText" />
+    <v-card>
+      <form @submit.prevent="handleSubmit">
+        <v-card-title>ログイン</v-card-title>
+        <v-card-text>
+          <v-text-field
+            v-model="formData.username"
+            label="ユーザーID（メールアドレス)"
+            type="email"
+          />
+          <v-text-field
+            v-model="formData.password"
+            label="パスワード"
+            :append-icon="passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
+            :type="passwordShow ? 'text' : 'password'"
+            @click:append="passwordShow = !passwordShow"
+          />
+        </v-card-text>
+        <v-card-actions>
+          <v-btn elevation="0" block color="primary" type="submit" outlined>
+            ログイン
+          </v-btn>
+        </v-card-actions>
+      </form>
+    </v-card>
+  </div>
+</template>
+
+<script lang="ts">
+import {
+  defineComponent,
+  reactive,
+  ref,
+  useRouter,
+} from '@nuxtjs/composition-api'
+
+import { useAlert } from '~/lib/hooks'
+import { useAuthStore } from '~/store/auth'
+import { SignInRequest } from '~/types/api'
+
+export default defineComponent({
+  layout: 'auth',
+  setup() {
+    const router = useRouter()
+    const formData = reactive<SignInRequest>({
+      username: '',
+      password: '',
+    })
+    const passwordShow = ref<Boolean>(false)
+    const { alertType, isShow, alertText, show } = useAlert('error')
+    const authStore = useAuthStore()
+
+    const handleSubmit = async () => {
+      try {
+        await authStore.signIn(formData)
+        router.push('/')
+      } catch (error) {
+        console.log(error)
+        show('ユーザーIDまたはパスワードが違います。')
+      }
+    }
+
+    return {
+      alertType,
+      isShow,
+      alertText,
+      formData,
+      handleSubmit,
+      passwordShow,
+    }
+  },
+})
+</script>

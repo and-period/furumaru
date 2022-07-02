@@ -26,7 +26,7 @@ func TestAuth(t *testing.T) {
 				ExpiresIn:    3600,
 			},
 			expect: &Auth{
-				Auth: &response.Auth{
+				Auth: response.Auth{
 					UserID:       "user-id",
 					AccessToken:  "access-token",
 					RefreshToken: "refresh-token",
@@ -57,7 +57,7 @@ func TestAuth_Response(t *testing.T) {
 		{
 			name: "success",
 			auth: &Auth{
-				Auth: &response.Auth{
+				Auth: response.Auth{
 					UserID:       "user-id",
 					AccessToken:  "access-token",
 					RefreshToken: "refresh-token",
@@ -106,7 +106,7 @@ func TestAuthUser(t *testing.T) {
 				VerifiedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &AuthUser{
-				AuthUser: &response.AuthUser{
+				AuthUser: response.AuthUser{
 					ID:           "user-id",
 					Username:     "username",
 					ThumbnailURL: "https://and-period.jp/thumbnail.png",
@@ -135,7 +135,7 @@ func TestAuthUser_Response(t *testing.T) {
 		{
 			name: "success",
 			auth: &AuthUser{
-				AuthUser: &response.AuthUser{
+				AuthUser: response.AuthUser{
 					ID:           "user-id",
 					Username:     "username",
 					ThumbnailURL: "https://and-period.jp/thumbnail.png",

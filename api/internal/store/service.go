@@ -27,4 +27,14 @@ type Service interface {
 	UpdateProductType(ctx context.Context, in *UpdateProductTypeInput) error
 	// 品目削除
 	DeleteProductType(ctx context.Context, in *DeleteProductTypeInput) error
+	// 商品一覧取得
+	ListProducts(ctx context.Context, in *ListProductsInput) (entity.Products, error)
+	// 商品取得
+	GetProduct(ctx context.Context, in *GetProductInput) (*entity.Product, error)
+	// 商品登録
+	CreateProduct(ctx context.Context, in *CreateProductInput) (*entity.Product, error)
+	// 商品更新
+	UpdateProduct(ctx context.Context, in *UpdateProductInput) error
+	// 商品削除
+	DeleteProduct(ctx context.Context, in *DeleteProductInput) error
 }
