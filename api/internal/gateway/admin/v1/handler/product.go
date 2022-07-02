@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
@@ -57,7 +58,10 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
-		// 生産者取得メソッドの実装
+		in := &user.MultiGetProducersInput{
+			ProducerIDs: products.ProducerIDs(),
+		}
+		producers, err = h.user.MultiGetProducers(ectx, in)
 		return
 	})
 	eg.Go(func() (err error) {
@@ -68,7 +72,10 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		return
 	})
 	eg.Go(func() (err error) {
-		// 品目取得メソッドの実装
+		in := &store.MultiGetProductTypesInput{
+			ProductTypeIDs: products.ProductTypeIDs(),
+		}
+		types, err = h.store.MultiGetProductTypes(ectx, in)
 		return
 	})
 	if err := eg.Wait(); err != nil {
