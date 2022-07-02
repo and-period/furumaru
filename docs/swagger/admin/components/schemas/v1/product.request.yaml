@@ -1,0 +1,234 @@
+createProductRequest:
+  type: object
+  properties:
+    name:
+      type: string
+      description: 商品名
+    description:
+      type: string
+      description: 商品説明
+    producerId:
+      type: string
+      description: 生産者ID
+    categoryId:
+      type: string
+      description: 商品種別ID
+    productTypeId:
+      type: string
+      description: 品目ID
+    public:
+      type: boolean
+      description: 公開フラグ
+    inventory:
+      type: integer
+      format: int64
+      description: 在庫数
+    weight:
+      type: number
+      format: double
+      description: 重量(kg:少数第1位まで)
+    itemUnit:
+      type: string
+      description: 数量単位
+    itemDescription:
+      type: string
+      description: 数量単位説明
+    media:
+      type: array
+      items:
+        type: object
+        properties:
+          url:
+            type: string
+            description: メディアURL
+          isThumbnail:
+            type: boolean
+            description: サムネイルとして使用(1つまで)
+        required:
+        - url
+        - isThumbnail
+    price:
+      type: integer
+      format: int64
+      description: 販売価格
+    deliveryType:
+      type: integer
+      format: int32
+      description: 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
+    box60Rate:
+      type: integer
+      format: int64
+      description: 箱の占有率(サイズ:60)
+    box80Rate:
+      type: integer
+      format: int64
+      description: 箱の占有率(サイズ:80)
+    box100Rate:
+      type: integer
+      format: int64
+      description: 箱の占有率(サイズ:100)
+    originPrefecture:
+      type: string
+      description: 原産地(都道府県)
+    originCity:
+      type: string
+      description: 原産地(市区町村)
+  required:
+  - name
+  - description
+  - producerId
+  - categoryId
+  - productTypeId
+  - public
+  - inventory
+  - weight
+  - itemUnit
+  - itemDescription
+  - media
+  - price
+  - deliveryType
+  - box60Rate
+  - box80Rate
+  - box100Rate
+  - originPrefecture
+  - originCity
+  example:
+    name: '新鮮なじゃがいも'
+    description: '新鮮なじゃがいもをお届けします。'
+    producerId: 'kSByoE6FetnPs5Byk3a9Zx'
+    categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
+    productTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
+    public: true
+    inventory: 30
+    weight: 2.5
+    itemUnit: '袋'
+    itemDescription: '1袋あたり2.5kgのじゃがいも'
+    media:
+    - url: 'https://and-period.jp/thumbnail01.png'
+      isThumbnail: true
+    - url: 'https://and-period.jp/thumbnail02.png'
+      isThumbnail: false
+    price: 2500
+    deliveryType: 1
+    box60Rate: 80
+    box80Rate: 50
+    box100Rate: 40
+    originPrefecture: '滋賀県'
+    originCity: '彦根市'
+updateProductRequest:
+  type: object
+  properties:
+    name:
+      type: string
+      description: 商品名
+    description:
+      type: string
+      description: 商品説明
+    producerId:
+      type: string
+      description: 生産者ID
+    categoryId:
+      type: string
+      description: 商品種別ID
+    productTypeId:
+      type: string
+      description: 品目ID
+    public:
+      type: boolean
+      description: 公開フラグ
+    inventory:
+      type: integer
+      format: int64
+      description: 在庫数
+    weight:
+      type: number
+      format: double
+      description: 重量(kg:少数第1位まで)
+    itemUnit:
+      type: string
+      description: 数量単位
+    itemDescription:
+      type: string
+      description: 数量単位説明
+    media:
+      type: array
+      items:
+        type: object
+        properties:
+          url:
+            type: string
+            description: メディアURL
+          isThumbnail:
+            type: boolean
+            description: サムネイルとして使用(1つまで)
+        required:
+        - url
+        - isThumbnail
+    price:
+      type: integer
+      format: int64
+      description: 販売価格
+    deliveryType:
+      type: integer
+      format: int32
+      description: 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
+    box60Rate:
+      type: integer
+      format: int64
+      description: 箱の占有率(サイズ:60)
+    box80Rate:
+      type: integer
+      format: int64
+      description: 箱の占有率(サイズ:80)
+    box100Rate:
+      type: integer
+      format: int64
+      description: 箱の占有率(サイズ:100)
+    originPrefecture:
+      type: string
+      description: 原産地(都道府県)
+    originCity:
+      type: string
+      description: 原産地(市区町村)
+  required:
+  - name
+  - description
+  - producerId
+  - categoryId
+  - productTypeId
+  - public
+  - inventory
+  - weight
+  - itemUnit
+  - itemDescription
+  - media
+  - price
+  - deliveryType
+  - box60Rate
+  - box80Rate
+  - box100Rate
+  - originPrefecture
+  - originCity
+  example:
+    name: '新鮮なじゃがいも'
+    description: '新鮮なじゃがいもをお届けします。'
+    producerId: 'kSByoE6FetnPs5Byk3a9Zx'
+    categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
+    productTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
+    public: true
+    inventory: 30
+    weight: 2.5
+    itemUnit: '袋'
+    itemDescription: '1袋あたり2.5kgのじゃがいも'
+    media:
+    - url: 'https://and-period.jp/thumbnail01.png'
+      isThumbnail: true
+    - url: 'https://and-period.jp/thumbnail02.png'
+      isThumbnail: false
+    price: 2500
+    deliveryType: 1
+    box60Rate: 80
+    box80Rate: 50
+    box100Rate: 40
+    originPrefecture: '滋賀県'
+    originCity: '彦根市'
