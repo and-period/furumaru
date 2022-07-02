@@ -32,6 +32,10 @@ type ListProductTypesInput struct {
 	Offset     int64  `validate:"min=0"`
 }
 
+type MultiGetProductTypesInput struct {
+	ProductTypeIDs []string `validate:"omitempty,dive,required"`
+}
+
 type CreateProductTypeInput struct {
 	Name       string `validate:"required,max=32"`
 	CategoryID string `validate:"required"`

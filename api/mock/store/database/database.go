@@ -294,6 +294,26 @@ func (mr *MockProductTypeMockRecorder) List(ctx, params interface{}, fields ...i
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockProductType)(nil).List), varargs...)
 }
 
+// MultiGet mocks base method.
+func (m *MockProductType) MultiGet(ctx context.Context, productTypeIDs []string, fields ...string) (entity.ProductTypes, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, productTypeIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGet", varargs...)
+	ret0, _ := ret[0].(entity.ProductTypes)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGet indicates an expected call of MultiGet.
+func (mr *MockProductTypeMockRecorder) MultiGet(ctx, productTypeIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, productTypeIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockProductType)(nil).MultiGet), varargs...)
+}
+
 // Update mocks base method.
 func (m *MockProductType) Update(ctx context.Context, productTypeID, name string) error {
 	m.ctrl.T.Helper()
