@@ -28,6 +28,7 @@ require (
 	github.com/rs/cors/wrapper/gin v0.0.0-20220223021805-a4a5ce87d5a2
 	github.com/satori/go.uuid v1.2.0
 	github.com/sendgrid/sendgrid-go v3.11.1+incompatible
+	github.com/shopspring/decimal v1.2.0
 	github.com/stretchr/testify v1.7.1
 	go.uber.org/zap v1.21.0
 	golang.org/x/sync v0.0.0-20220513210516-0976fa681c29
