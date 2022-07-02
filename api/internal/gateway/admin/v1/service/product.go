@@ -42,6 +42,19 @@ func NewDeliveryType(typ entity.DeliveryType) DeliveryType {
 	}
 }
 
+func (t DeliveryType) StoreEntity() entity.DeliveryType {
+	switch t {
+	case DeliveryTypeNormal:
+		return entity.DeliveryTypeNormal
+	case DeliveryTypeFrozen:
+		return entity.DeliveryTypeFrozen
+	case DeliveryTypeRefrigerated:
+		return entity.DeliveryTypeRefrigerated
+	default:
+		return entity.DeliveryTypeUnknown
+	}
+}
+
 func (t DeliveryType) Response() int32 {
 	return int32(t)
 }
@@ -57,7 +70,7 @@ func NewProduct(product *entity.Product) *Product {
 			Description:      product.Description,
 			Public:           product.Public,
 			Inventory:        product.Inventory,
-			Weight:           NewProductWeightFromEntity(product.Weight, product.WeightUnit),
+			Weight:           NewProductWeight(product.Weight, product.WeightUnit),
 			ItemUnit:         product.ItemUnit,
 			ItemDescription:  product.ItemDescription,
 			Media:            NewMultiProductMedia(product.Media).Response(),
@@ -76,7 +89,7 @@ func NewProduct(product *entity.Product) *Product {
 	}
 }
 
-func NewProductWeightFromEntity(weight int64, unit entity.WeightUnit) float64 {
+func NewProductWeight(weight int64, unit entity.WeightUnit) float64 {
 	const precision = 1
 	var exp int32
 	switch unit {
@@ -87,10 +100,21 @@ func NewProductWeightFromEntity(weight int64, unit entity.WeightUnit) float64 {
 	default:
 		return 0
 	}
-	gweight := decimal.New(weight, exp)
-	kgweight := gweight.DivRound(decimal.NewFromInt(1000), precision)
+	gweight := decimal.New(weight, exp)                               // g単位に揃える
+	kgweight := gweight.DivRound(decimal.NewFromInt(1000), precision) // 少数第一位までを取得
 	fweight, _ := kgweight.Float64()
 	return fweight
+}
+
+func NewProductWeightFromRequest(weight float64) (int64, entity.WeightUnit) {
+	dweight := decimal.NewFromFloat(weight).Truncate(1) // 少数第一位までを取得
+	if dweight.IsInteger() {
+		// kg単位のままで表すことが可能なため(request値はkg前提)
+		return dweight.IntPart(), entity.WeightUnitKilogram
+	}
+	// 少数点が含まれている場合、そのままintに変換できないためg単位に変換
+	dweight = dweight.Mul(decimal.NewFromInt(1000))
+	return dweight.IntPart(), entity.WeightUnitGram
 }
 
 func (p *Product) Response() *response.Product {

@@ -18,6 +18,8 @@ p, product_type_update, /v1/categories/*/product-types/*, PATCH, allow
 p, product_type_delete, /v1/categories/*/product-types/*, DELETE, allow
 p, product_list, /v1/products, GET, allow
 p, product_get, /v1/products/*, GET, allow
+p, product_create, /v1/products, POST, allow
+p, product_update, /v1/products/*, PATCH, allow
 
 g, administrator, auth
 g, administrator, administrator_list
@@ -49,6 +51,8 @@ g, coordinator, category_list
 g, coordinator, product_type_list
 g, coordinator, product_list
 g, coordinator, product_get
+g, coordinator, product_create
+g, coordinator, product_update
 
 g, producer, auth
 g, producer, producer_get
