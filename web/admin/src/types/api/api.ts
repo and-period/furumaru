@@ -1057,53 +1057,22 @@ export interface ProductsResponse {
     'products': Array<ProductsResponseProducts>;
     /**
      * 商品種別一覧
-     * @type {Array<ProductsResponseCategories>}
+     * @type {Array<CategoriesResponseCategories>}
      * @memberof ProductsResponse
      */
-    'categories': Array<ProductsResponseCategories>;
+    'categories': Array<CategoriesResponseCategories>;
     /**
      * 品目一覧
-     * @type {Array<ProductsResponseProductTypes>}
+     * @type {Array<ProductTypesResponseProductTypes>}
      * @memberof ProductsResponse
      */
-    'productTypes': Array<ProductsResponseProductTypes>;
+    'productTypes': Array<ProductTypesResponseProductTypes>;
     /**
      * 生産者一覧
      * @type {Array<ProductsResponseProducers>}
      * @memberof ProductsResponse
      */
     'producers'?: Array<ProductsResponseProducers>;
-}
-/**
- * 
- * @export
- * @interface ProductsResponseCategories
- */
-export interface ProductsResponseCategories {
-    /**
-     * 商品種別ID
-     * @type {string}
-     * @memberof ProductsResponseCategories
-     */
-    'id': string;
-    /**
-     * カテゴリ名
-     * @type {string}
-     * @memberof ProductsResponseCategories
-     */
-    'name': string;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ProductsResponseCategories
-     */
-    'createdAt': number;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ProductsResponseCategories
-     */
-    'updatedAt': number;
 }
 /**
  * 
@@ -1230,43 +1199,6 @@ export interface ProductsResponseProducers {
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof ProductsResponseProducers
-     */
-    'updatedAt': number;
-}
-/**
- * 
- * @export
- * @interface ProductsResponseProductTypes
- */
-export interface ProductsResponseProductTypes {
-    /**
-     * 品目ID
-     * @type {string}
-     * @memberof ProductsResponseProductTypes
-     */
-    'id': string;
-    /**
-     * 品目名
-     * @type {string}
-     * @memberof ProductsResponseProductTypes
-     */
-    'name': string;
-    /**
-     * 商品種別ID
-     * @type {string}
-     * @memberof ProductsResponseProductTypes
-     */
-    'categoryId': string;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ProductsResponseProductTypes
-     */
-    'createdAt': number;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ProductsResponseProductTypes
      */
     'updatedAt': number;
 }
