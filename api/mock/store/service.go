@@ -198,6 +198,21 @@ func (mr *MockServiceMockRecorder) MultiGetCategories(ctx, in interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetCategories", reflect.TypeOf((*MockService)(nil).MultiGetCategories), ctx, in)
 }
 
+// MultiGetProductTypes mocks base method.
+func (m *MockService) MultiGetProductTypes(ctx context.Context, in *store.MultiGetProductTypesInput) (entity.ProductTypes, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MultiGetProductTypes", ctx, in)
+	ret0, _ := ret[0].(entity.ProductTypes)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGetProductTypes indicates an expected call of MultiGetProductTypes.
+func (mr *MockServiceMockRecorder) MultiGetProductTypes(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetProductTypes", reflect.TypeOf((*MockService)(nil).MultiGetProductTypes), ctx, in)
+}
+
 // UpdateCategory mocks base method.
 func (m *MockService) UpdateCategory(ctx context.Context, in *store.UpdateCategoryInput) error {
 	m.ctrl.T.Helper()
