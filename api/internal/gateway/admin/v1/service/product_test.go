@@ -1,0 +1,749 @@
+package service
+
+import (
+	"testing"
+
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/stretchr/testify/assert"
+)
+
+func TestDeliveryType(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name         string
+		deliveryType entity.DeliveryType
+		expect       DeliveryType
+	}{
+		{
+			name:         "success to normal",
+			deliveryType: entity.DeliveryTypeNormal,
+			expect:       DeliveryTypeNormal,
+		},
+		{
+			name:         "success to frozen",
+			deliveryType: entity.DeliveryTypeFrozen,
+			expect:       DeliveryTypeFrozen,
+		},
+		{
+			name:         "success to refrigerated",
+			deliveryType: entity.DeliveryTypeRefrigerated,
+			expect:       DeliveryTypeRefrigerated,
+		},
+		{
+			name:         "success to unknown",
+			deliveryType: entity.DeliveryTypeUnknown,
+			expect:       DeliveryTypeUnknown,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, NewDeliveryType(tt.deliveryType))
+		})
+	}
+}
+
+func TestDeliveryType_Response(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name         string
+		deliveryType DeliveryType
+		expect       int32
+	}{
+		{
+			name:         "success",
+			deliveryType: DeliveryTypeNormal,
+			expect:       1,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.deliveryType.Response())
+		})
+	}
+}
+
+func TestProduct(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		product *entity.Product
+		expect  *Product
+	}{
+		{
+			name: "success",
+			product: &entity.Product{
+				ID:              "product-id",
+				TypeID:          "product-type-id",
+				CategoryID:      "category-id",
+				ProducerID:      "producer-id",
+				Name:            "新鮮なじゃがいも",
+				Description:     "新鮮なじゃがいもをお届けします。",
+				Public:          true,
+				Inventory:       100,
+				Weight:          1300,
+				WeightUnit:      entity.WeightUnitGram,
+				Item:            1,
+				ItemUnit:        "袋",
+				ItemDescription: "1袋あたり100gのじゃがいも",
+				Media: entity.MultiProductMedia{
+					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+				},
+				Price:            400,
+				DeliveryType:     entity.DeliveryTypeNormal,
+				Box60Rate:        50,
+				Box80Rate:        40,
+				Box100Rate:       30,
+				OriginPrefecture: "滋賀県",
+				OriginCity:       "彦根市",
+				CreatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				CreatedBy:        "coordinator-id",
+				UpdatedBy:        "coordinator-id",
+			},
+			expect: &Product{
+				Product: response.Product{
+					ID:              "product-id",
+					TypeID:          "product-type-id",
+					CategoryID:      "category-id",
+					ProducerID:      "producer-id",
+					Name:            "新鮮なじゃがいも",
+					Description:     "新鮮なじゃがいもをお届けします。",
+					Public:          true,
+					Inventory:       100,
+					Weight:          1.3,
+					ItemUnit:        "袋",
+					ItemDescription: "1袋あたり100gのじゃがいも",
+					Media: []*response.ProductMedia{
+						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+					},
+					Price:            400,
+					DeliveryType:     int32(DeliveryTypeNormal),
+					Box60Rate:        50,
+					Box80Rate:        40,
+					Box100Rate:       30,
+					OriginPrefecture: "滋賀県",
+					OriginCity:       "彦根市",
+					CreatedAt:        1640962800,
+					UpdatedAt:        1640962800,
+					CreatedBy:        "coordinator-id",
+					UpdatedBy:        "coordinator-id",
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, NewProduct(tt.product))
+		})
+	}
+}
+
+func TestProductWeightFromEntity(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name       string
+		weight     int64
+		weightUnit entity.WeightUnit
+		expect     float64
+	}{
+		{
+			name:       "from 130g to 0.1kg",
+			weight:     130,
+			weightUnit: entity.WeightUnitGram,
+			expect:     0.1,
+		},
+		{
+			name:       "from 1300g to 1.3kg",
+			weight:     1300,
+			weightUnit: entity.WeightUnitGram,
+			expect:     1.3,
+		},
+		{
+			name:       "from 13500g to 13.5kg",
+			weight:     13500,
+			weightUnit: entity.WeightUnitGram,
+			expect:     13.5,
+		},
+		{
+			name:       "from 15kg to 15.0kg",
+			weight:     15,
+			weightUnit: entity.WeightUnitKilogram,
+			expect:     15.0,
+		},
+		{
+			name:       "unknown weight unit",
+			weight:     1500,
+			weightUnit: entity.WeightUnitUnknown,
+			expect:     0,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewProductWeightFromEntity(tt.weight, tt.weightUnit)
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestProduct_Response(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		product *Product
+		expect  *response.Product
+	}{
+		{
+			name: "success",
+			product: &Product{
+				Product: response.Product{
+					ID:              "product-id",
+					TypeID:          "product-type-id",
+					CategoryID:      "category-id",
+					ProducerID:      "producer-id",
+					Name:            "新鮮なじゃがいも",
+					Description:     "新鮮なじゃがいもをお届けします。",
+					Public:          true,
+					Inventory:       100,
+					Weight:          1.3,
+					ItemUnit:        "袋",
+					ItemDescription: "1袋あたり100gのじゃがいも",
+					Media: []*response.ProductMedia{
+						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+					},
+					Price:            400,
+					DeliveryType:     int32(DeliveryTypeNormal),
+					Box60Rate:        50,
+					Box80Rate:        40,
+					Box100Rate:       30,
+					OriginPrefecture: "滋賀県",
+					OriginCity:       "彦根市",
+					CreatedAt:        1640962800,
+					UpdatedAt:        1640962800,
+					CreatedBy:        "coordinator-id",
+					UpdatedBy:        "coordinator-id",
+				},
+			},
+			expect: &response.Product{
+				ID:              "product-id",
+				TypeID:          "product-type-id",
+				CategoryID:      "category-id",
+				ProducerID:      "producer-id",
+				Name:            "新鮮なじゃがいも",
+				Description:     "新鮮なじゃがいもをお届けします。",
+				Public:          true,
+				Inventory:       100,
+				Weight:          1.3,
+				ItemUnit:        "袋",
+				ItemDescription: "1袋あたり100gのじゃがいも",
+				Media: []*response.ProductMedia{
+					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+				},
+				Price:            400,
+				DeliveryType:     int32(DeliveryTypeNormal),
+				Box60Rate:        50,
+				Box80Rate:        40,
+				Box100Rate:       30,
+				OriginPrefecture: "滋賀県",
+				OriginCity:       "彦根市",
+				CreatedAt:        1640962800,
+				UpdatedAt:        1640962800,
+				CreatedBy:        "coordinator-id",
+				UpdatedBy:        "coordinator-id",
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.product.Response())
+		})
+	}
+}
+
+func TestProducts(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		products entity.Products
+		expect   Products
+	}{
+		{
+			name: "success",
+			products: entity.Products{
+				{
+					ID:              "product-id",
+					TypeID:          "product-type-id",
+					CategoryID:      "category-id",
+					ProducerID:      "producer-id",
+					Name:            "新鮮なじゃがいも",
+					Description:     "新鮮なじゃがいもをお届けします。",
+					Public:          true,
+					Inventory:       100,
+					Weight:          1300,
+					WeightUnit:      entity.WeightUnitGram,
+					Item:            1,
+					ItemUnit:        "袋",
+					ItemDescription: "1袋あたり100gのじゃがいも",
+					Media: entity.MultiProductMedia{
+						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+					},
+					Price:            400,
+					DeliveryType:     entity.DeliveryTypeNormal,
+					Box60Rate:        50,
+					Box80Rate:        40,
+					Box100Rate:       30,
+					OriginPrefecture: "滋賀県",
+					OriginCity:       "彦根市",
+					CreatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					CreatedBy:        "coordinator-id",
+					UpdatedBy:        "coordinator-id",
+				},
+			},
+			expect: Products{
+				{
+					Product: response.Product{
+						ID:              "product-id",
+						TypeID:          "product-type-id",
+						CategoryID:      "category-id",
+						ProducerID:      "producer-id",
+						Name:            "新鮮なじゃがいも",
+						Description:     "新鮮なじゃがいもをお届けします。",
+						Public:          true,
+						Inventory:       100,
+						Weight:          1.3,
+						ItemUnit:        "袋",
+						ItemDescription: "1袋あたり100gのじゃがいも",
+						Media: []*response.ProductMedia{
+							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+						},
+						Price:            400,
+						DeliveryType:     int32(DeliveryTypeNormal),
+						Box60Rate:        50,
+						Box80Rate:        40,
+						Box100Rate:       30,
+						OriginPrefecture: "滋賀県",
+						OriginCity:       "彦根市",
+						CreatedAt:        1640962800,
+						UpdatedAt:        1640962800,
+						CreatedBy:        "coordinator-id",
+						UpdatedBy:        "coordinator-id",
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, NewProducts(tt.products))
+		})
+	}
+}
+
+func TestProducts_ProducerIDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		products Products
+		expect   []string
+	}{
+		{
+			name: "success",
+			products: Products{
+				{
+					Product: response.Product{
+						ID:              "product-id",
+						TypeID:          "product-type-id",
+						CategoryID:      "category-id",
+						ProducerID:      "producer-id",
+						Name:            "新鮮なじゃがいも",
+						Description:     "新鮮なじゃがいもをお届けします。",
+						Public:          true,
+						Inventory:       100,
+						Weight:          1.3,
+						ItemUnit:        "袋",
+						ItemDescription: "1袋あたり100gのじゃがいも",
+						Media: []*response.ProductMedia{
+							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+						},
+						Price:            400,
+						DeliveryType:     int32(DeliveryTypeNormal),
+						Box60Rate:        50,
+						Box80Rate:        40,
+						Box100Rate:       30,
+						OriginPrefecture: "滋賀県",
+						OriginCity:       "彦根市",
+						CreatedAt:        1640962800,
+						UpdatedAt:        1640962800,
+						CreatedBy:        "coordinator-id",
+						UpdatedBy:        "coordinator-id",
+					},
+				},
+			},
+			expect: []string{"producer-id"},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.ElementsMatch(t, tt.expect, tt.products.ProducerIDs())
+		})
+	}
+}
+
+func TestProducts_CategoryIDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		products Products
+		expect   []string
+	}{
+		{
+			name: "success",
+			products: Products{
+				{
+					Product: response.Product{
+						ID:              "product-id",
+						TypeID:          "product-type-id",
+						CategoryID:      "category-id",
+						ProducerID:      "producer-id",
+						Name:            "新鮮なじゃがいも",
+						Description:     "新鮮なじゃがいもをお届けします。",
+						Public:          true,
+						Inventory:       100,
+						Weight:          1.3,
+						ItemUnit:        "袋",
+						ItemDescription: "1袋あたり100gのじゃがいも",
+						Media: []*response.ProductMedia{
+							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+						},
+						Price:            400,
+						DeliveryType:     int32(DeliveryTypeNormal),
+						Box60Rate:        50,
+						Box80Rate:        40,
+						Box100Rate:       30,
+						OriginPrefecture: "滋賀県",
+						OriginCity:       "彦根市",
+						CreatedAt:        1640962800,
+						UpdatedAt:        1640962800,
+						CreatedBy:        "coordinator-id",
+						UpdatedBy:        "coordinator-id",
+					},
+				},
+			},
+			expect: []string{"category-id"},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.ElementsMatch(t, tt.expect, tt.products.CategoryIDs())
+		})
+	}
+}
+
+func TestProducts_ProductTypeIDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		products Products
+		expect   []string
+	}{
+		{
+			name: "success",
+			products: Products{
+				{
+					Product: response.Product{
+						ID:              "product-id",
+						TypeID:          "product-type-id",
+						CategoryID:      "category-id",
+						ProducerID:      "producer-id",
+						Name:            "新鮮なじゃがいも",
+						Description:     "新鮮なじゃがいもをお届けします。",
+						Public:          true,
+						Inventory:       100,
+						Weight:          1.3,
+						ItemUnit:        "袋",
+						ItemDescription: "1袋あたり100gのじゃがいも",
+						Media: []*response.ProductMedia{
+							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+						},
+						Price:            400,
+						DeliveryType:     int32(DeliveryTypeNormal),
+						Box60Rate:        50,
+						Box80Rate:        40,
+						Box100Rate:       30,
+						OriginPrefecture: "滋賀県",
+						OriginCity:       "彦根市",
+						CreatedAt:        1640962800,
+						UpdatedAt:        1640962800,
+						CreatedBy:        "coordinator-id",
+						UpdatedBy:        "coordinator-id",
+					},
+				},
+			},
+			expect: []string{"product-type-id"},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.ElementsMatch(t, tt.expect, tt.products.ProductTypeIDs())
+		})
+	}
+}
+
+func TestProducts_Response(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		products Products
+		expect   []*response.Product
+	}{
+		{
+			name: "success",
+			products: Products{
+				{
+					Product: response.Product{
+						ID:              "product-id",
+						TypeID:          "product-type-id",
+						CategoryID:      "category-id",
+						ProducerID:      "producer-id",
+						Name:            "新鮮なじゃがいも",
+						Description:     "新鮮なじゃがいもをお届けします。",
+						Public:          true,
+						Inventory:       100,
+						Weight:          1.3,
+						ItemUnit:        "袋",
+						ItemDescription: "1袋あたり100gのじゃがいも",
+						Media: []*response.ProductMedia{
+							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+						},
+						Price:            400,
+						DeliveryType:     int32(DeliveryTypeNormal),
+						Box60Rate:        50,
+						Box80Rate:        40,
+						Box100Rate:       30,
+						OriginPrefecture: "滋賀県",
+						OriginCity:       "彦根市",
+						CreatedAt:        1640962800,
+						UpdatedAt:        1640962800,
+						CreatedBy:        "coordinator-id",
+						UpdatedBy:        "coordinator-id",
+					},
+				},
+			},
+			expect: []*response.Product{
+				{
+					ID:              "product-id",
+					TypeID:          "product-type-id",
+					CategoryID:      "category-id",
+					ProducerID:      "producer-id",
+					Name:            "新鮮なじゃがいも",
+					Description:     "新鮮なじゃがいもをお届けします。",
+					Public:          true,
+					Inventory:       100,
+					Weight:          1.3,
+					ItemUnit:        "袋",
+					ItemDescription: "1袋あたり100gのじゃがいも",
+					Media: []*response.ProductMedia{
+						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+					},
+					Price:            400,
+					DeliveryType:     int32(DeliveryTypeNormal),
+					Box60Rate:        50,
+					Box80Rate:        40,
+					Box100Rate:       30,
+					OriginPrefecture: "滋賀県",
+					OriginCity:       "彦根市",
+					CreatedAt:        1640962800,
+					UpdatedAt:        1640962800,
+					CreatedBy:        "coordinator-id",
+					UpdatedBy:        "coordinator-id",
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.products.Response())
+		})
+	}
+}
+
+func TestProductMedia(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		media  *entity.ProductMedia
+		expect *ProductMedia
+	}{
+		{
+			name: "success",
+			media: &entity.ProductMedia{
+				URL:         "https://and-period.jp/thumbnail01.png",
+				IsThumbnail: true,
+			},
+			expect: &ProductMedia{
+				ProductMedia: response.ProductMedia{
+					URL:         "https://and-period.jp/thumbnail01.png",
+					IsThumbnail: true,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, NewProductMedia(tt.media))
+		})
+	}
+}
+
+func TestProductMedia_Response(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		media  *ProductMedia
+		expect *response.ProductMedia
+	}{
+		{
+			name: "success",
+			media: &ProductMedia{
+				ProductMedia: response.ProductMedia{
+					URL:         "https://and-period.jp/thumbnail01.png",
+					IsThumbnail: true,
+				},
+			},
+			expect: &response.ProductMedia{
+				URL:         "https://and-period.jp/thumbnail01.png",
+				IsThumbnail: true,
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.media.Response())
+		})
+	}
+}
+
+func TestMultiProductMedia(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		media  entity.MultiProductMedia
+		expect MultiProductMedia
+	}{
+		{
+			name: "success",
+			media: entity.MultiProductMedia{
+				{
+					URL:         "https://and-period.jp/thumbnail01.png",
+					IsThumbnail: true,
+				},
+				{
+					URL:         "https://and-period.jp/thumbnail02.png",
+					IsThumbnail: false,
+				},
+			},
+			expect: MultiProductMedia{
+				{
+					ProductMedia: response.ProductMedia{
+						URL:         "https://and-period.jp/thumbnail01.png",
+						IsThumbnail: true,
+					},
+				},
+				{
+					ProductMedia: response.ProductMedia{
+						URL:         "https://and-period.jp/thumbnail02.png",
+						IsThumbnail: false,
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, NewMultiProductMedia(tt.media))
+		})
+	}
+}
+
+func TestMultiProductMedia_Response(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		media  MultiProductMedia
+		expect []*response.ProductMedia
+	}{
+		{
+			name: "success",
+			media: MultiProductMedia{
+				{
+					ProductMedia: response.ProductMedia{
+						URL:         "https://and-period.jp/thumbnail01.png",
+						IsThumbnail: true,
+					},
+				},
+				{
+					ProductMedia: response.ProductMedia{
+						URL:         "https://and-period.jp/thumbnail02.png",
+						IsThumbnail: false,
+					},
+				},
+			},
+			expect: []*response.ProductMedia{
+				{
+					URL:         "https://and-period.jp/thumbnail01.png",
+					IsThumbnail: true,
+				},
+				{
+					URL:         "https://and-period.jp/thumbnail02.png",
+					IsThumbnail: false,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.media.Response())
+		})
+	}
+}

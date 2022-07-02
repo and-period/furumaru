@@ -121,6 +121,38 @@ func TestProductTypes(t *testing.T) {
 	}
 }
 
+func TestProductTypes_CategoryIDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name         string
+		productTypes ProductTypes
+		expect       []string
+	}{
+		{
+			name: "success",
+			productTypes: ProductTypes{
+				{
+					ProductType: response.ProductType{
+						ID:         "product-type-id",
+						CategoryID: "category-id",
+						Name:       "じゃがいも",
+						CreatedAt:  1640962800,
+						UpdatedAt:  1640962800,
+					},
+				},
+			},
+			expect: []string{"category-id"},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.productTypes.CategoryIDs())
+		})
+	}
+}
+
 func TestProductTypes_Response(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

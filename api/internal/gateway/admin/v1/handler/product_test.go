@@ -1,0 +1,281 @@
+package handler
+
+import (
+	"fmt"
+	"net/http"
+	"testing"
+
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/entity"
+	sentity "github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/golang/mock/gomock"
+)
+
+func TestListProducts(t *testing.T) {
+	t.Parallel()
+
+	productsIn := &store.ListProductsInput{
+		Name:          "じゃがいも",
+		ProducerID:    "producer-id",
+		CoordinatorID: "coordinator-id",
+		Limit:         20,
+		Offset:        0,
+	}
+	products := sentity.Products{
+		{
+			ID:              "product-id",
+			TypeID:          "product-type-id",
+			CategoryID:      "category-id",
+			ProducerID:      "producer-id",
+			Name:            "新鮮なじゃがいも",
+			Description:     "新鮮なじゃがいもをお届けします。",
+			Public:          true,
+			Inventory:       100,
+			Weight:          1300,
+			WeightUnit:      entity.WeightUnitGram,
+			Item:            1,
+			ItemUnit:        "袋",
+			ItemDescription: "1袋あたり100gのじゃがいも",
+			Media: entity.MultiProductMedia{
+				{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+				{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+			},
+			Price:            400,
+			DeliveryType:     entity.DeliveryTypeNormal,
+			Box60Rate:        50,
+			Box80Rate:        40,
+			Box100Rate:       30,
+			OriginPrefecture: "滋賀県",
+			OriginCity:       "彦根市",
+			CreatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			CreatedBy:        "coordinator-id",
+			UpdatedBy:        "coordinator-id",
+		},
+	}
+	categoriesIn := &store.MultiGetCategoriesInput{
+		CategoryIDs: []string{"category-id"},
+	}
+	categories := sentity.Categories{
+		{
+			ID:        "category-id",
+			Name:      "野菜",
+			CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		},
+	}
+
+	tests := []struct {
+		name   string
+		setup  func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		query  string
+		expect *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().ListProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
+			},
+			query: "?name=じゃがいも&coordinatorId=coordinator-id&producerId=producer-id",
+			expect: &testResponse{
+				code: http.StatusOK,
+				body: &response.ProductsResponse{
+					Products: []*response.Product{
+						{
+							ID:              "product-id",
+							TypeID:          "product-type-id",
+							CategoryID:      "category-id",
+							ProducerID:      "producer-id",
+							Name:            "新鮮なじゃがいも",
+							Description:     "新鮮なじゃがいもをお届けします。",
+							Public:          true,
+							Inventory:       100,
+							Weight:          1.3,
+							ItemUnit:        "袋",
+							ItemDescription: "1袋あたり100gのじゃがいも",
+							Media: []*response.ProductMedia{
+								{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+								{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+							},
+							Price:            400,
+							DeliveryType:     1,
+							Box60Rate:        50,
+							Box80Rate:        40,
+							Box100Rate:       30,
+							OriginPrefecture: "滋賀県",
+							OriginCity:       "彦根市",
+							CreatedAt:        1640962800,
+							UpdatedAt:        1640962800,
+							CreatedBy:        "coordinator-id",
+							UpdatedBy:        "coordinator-id",
+						},
+					},
+					Categories: []*response.Category{
+						{
+							ID:        "category-id",
+							Name:      "野菜",
+							CreatedAt: 1640962800,
+							UpdatedAt: 1640962800,
+						},
+					},
+					ProductTypes: []*response.ProductType{},
+					Producers:    []*response.Producer{},
+				},
+			},
+		},
+		{
+			name:  "invalid limit",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			query: "?limit=a",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name:  "invalid offset",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			query: "?offset=a",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name: "failed to list products",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().ListProducts(gomock.Any(), productsIn).Return(nil, errmock)
+			},
+			query: "?name=じゃがいも&coordinatorId=coordinator-id&producerId=producer-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to multi get categories",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().ListProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(nil, errmock)
+			},
+			query: "?name=じゃがいも&coordinatorId=coordinator-id&producerId=producer-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const prefix = "/v1/products"
+			path := fmt.Sprintf("%s%s", prefix, tt.query)
+			testGet(t, tt.setup, tt.expect, path)
+		})
+	}
+}
+
+func TestGetProduct(t *testing.T) {
+	t.Parallel()
+
+	in := &store.GetProductInput{
+		ProductID: "product-id",
+	}
+	product := &sentity.Product{
+		ID:              "product-id",
+		TypeID:          "product-type-id",
+		CategoryID:      "category-id",
+		ProducerID:      "producer-id",
+		Name:            "新鮮なじゃがいも",
+		Description:     "新鮮なじゃがいもをお届けします。",
+		Public:          true,
+		Inventory:       100,
+		Weight:          1300,
+		WeightUnit:      entity.WeightUnitGram,
+		Item:            1,
+		ItemUnit:        "袋",
+		ItemDescription: "1袋あたり100gのじゃがいも",
+		Media: entity.MultiProductMedia{
+			{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+			{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+		},
+		Price:            400,
+		DeliveryType:     entity.DeliveryTypeNormal,
+		Box60Rate:        50,
+		Box80Rate:        40,
+		Box100Rate:       30,
+		OriginPrefecture: "滋賀県",
+		OriginCity:       "彦根市",
+		CreatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		UpdatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		CreatedBy:        "coordinator-id",
+		UpdatedBy:        "coordinator-id",
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		productID string
+		expect    *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().GetProduct(gomock.Any(), in).Return(product, nil)
+			},
+			productID: "product-id",
+			expect: &testResponse{
+				code: http.StatusOK,
+				body: &response.ProductResponse{
+					Product: &response.Product{
+						ID:              "product-id",
+						TypeID:          "product-type-id",
+						CategoryID:      "category-id",
+						ProducerID:      "producer-id",
+						Name:            "新鮮なじゃがいも",
+						Description:     "新鮮なじゃがいもをお届けします。",
+						Public:          true,
+						Inventory:       100,
+						Weight:          1.3,
+						ItemUnit:        "袋",
+						ItemDescription: "1袋あたり100gのじゃがいも",
+						Media: []*response.ProductMedia{
+							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+						},
+						Price:            400,
+						DeliveryType:     1,
+						Box60Rate:        50,
+						Box80Rate:        40,
+						Box100Rate:       30,
+						OriginPrefecture: "滋賀県",
+						OriginCity:       "彦根市",
+						CreatedAt:        1640962800,
+						UpdatedAt:        1640962800,
+						CreatedBy:        "coordinator-id",
+						UpdatedBy:        "coordinator-id",
+					},
+				},
+			},
+		},
+		{
+			name: "failed to get product",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().GetProduct(gomock.Any(), in).Return(nil, errmock)
+			},
+			productID: "product-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const prefix = "/v1/products"
+			path := fmt.Sprintf("%s/%s", prefix, tt.productID)
+			testGet(t, tt.setup, tt.expect, path)
+		})
+	}
+}
