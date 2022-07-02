@@ -67,6 +67,10 @@ type ListProducersInput struct {
 	Offset int64 `validate:"min=0"`
 }
 
+type MultiGetProducersInput struct {
+	ProducerIDs []string `validate:"omitempty,dive,required"`
+}
+
 type GetProducerInput struct {
 	ProducerID string `validate:"required"`
 }

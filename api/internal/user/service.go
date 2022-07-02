@@ -39,6 +39,8 @@ type Service interface {
 	CreateCoordinator(ctx context.Context, in *CreateCoordinatorInput) (*entity.Coordinator, error)
 	// 生産者一覧取得
 	ListProducers(ctx context.Context, in *ListProducersInput) (entity.Producers, error)
+	// 生産者一覧取得(ID指定)
+	MultiGetProducers(ctx context.Context, in *MultiGetProducersInput) (entity.Producers, error)
 	// 生産者取得
 	GetProducer(ctx context.Context, in *GetProducerInput) (*entity.Producer, error)
 	// 生産者登録

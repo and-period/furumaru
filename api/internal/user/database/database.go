@@ -55,6 +55,7 @@ type Coordinator interface {
 
 type Producer interface {
 	List(ctx context.Context, params *ListProducersParams, fields ...string) (entity.Producers, error)
+	MultiGet(ctx context.Context, producerIDs []string, fields ...string) (entity.Producers, error)
 	Get(ctx context.Context, producerID string, fields ...string) (*entity.Producer, error)
 	Create(ctx context.Context, auth *entity.AdminAuth, producer *entity.Producer) error
 	UpdateEmail(ctx context.Context, producerID, email string) error
