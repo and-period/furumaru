@@ -10,23 +10,98 @@
 
     <v-tabs-items v-model="selector">
       <v-tab-item value="tab-categories">
-        <div class="d-flex pt-3 pr-3">
-          <v-spacer />
-          <v-btn outlined @click="handleClickAddButton">
-            <v-icon left>mdi-plus</v-icon>
-            追加
-          </v-btn>
-        </div>
+        <v-dialog
+          v-model="dialog"
+          width="500"
+        >
+          <template #activator="{ on, attrs }">
+            <div class="d-flex pt-3 pr-3">
+              <v-spacer />
+              <v-btn
+                outlined
+                v-bind="attrs"
+                v-on="on">
+                <v-icon left>mdi-plus</v-icon>
+                追加
+              </v-btn>
+            </div>
+          </template>
+          <v-card>
+            <v-card-title class="text-h6 primary_light">
+              カテゴリー登録
+            </v-card-title>
+            <v-text-field class="mx-4" label="カテゴリー" />
+            <v-divider></v-divider>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="accent_darken"
+                text
+                @click="dialog = false"
+              >
+                キャンセル
+              </v-btn>
+              <v-btn
+                color="primary"
+                outlined
+                @click="dialog = false"
+              >
+                登録
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
         <p> Category list will be displayed </p>
       </v-tab-item>
+
       <v-tab-item value="tab-categoryItems">
-        <div class="d-flex pt-3 pr-3">
-          <v-spacer />
-          <v-btn outlined @click="handleClickAddButton">
-            <v-icon left>mdi-plus</v-icon>
-            追加
-          </v-btn>
-        </div>
+        <v-dialog
+          v-model="dialog"
+          width="500"
+        >
+          <template #activator="{ on, attrs }">
+            <div class="d-flex pt-3 pr-3">
+              <v-spacer />
+              <v-btn
+                outlined
+                v-bind="attrs"
+                v-on="on">
+                <v-icon left>mdi-plus</v-icon>
+                追加
+              </v-btn>
+            </div>
+          </template>
+          <v-card>
+            <v-card-title class="text-h6 primary_light">
+              品目登録
+            </v-card-title>
+            <div>
+              <v-select class="mx-4" label="カテゴリー" />
+              <v-spacer />
+            </div>
+            <v-text-field class="mx-4" label="品目" />
+            <v-divider></v-divider>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="accent_darken"
+                text
+                @click="dialog = false"
+              >
+                キャンセル
+              </v-btn>
+              <v-btn
+                color="primary"
+                outlined
+                @click="dialog = false"
+              >
+                登録
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
         <p> Category Item list will be displayed </p>
       </v-tab-item>
     </v-tabs-items>
@@ -54,6 +129,7 @@ export default defineComponent({
     return {
       items,
       selector,
+      dialog: false,
       handleClickAddButton,
     }
   },
