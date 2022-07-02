@@ -46,6 +46,43 @@ func TestDeliveryType(t *testing.T) {
 	}
 }
 
+func TestDeliveryType_StoreEntity(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name         string
+		deliveryType DeliveryType
+		expect       entity.DeliveryType
+	}{
+		{
+			name:         "success to normal",
+			deliveryType: DeliveryTypeNormal,
+			expect:       entity.DeliveryTypeNormal,
+		},
+		{
+			name:         "success to frozen",
+			deliveryType: DeliveryTypeFrozen,
+			expect:       entity.DeliveryTypeFrozen,
+		},
+		{
+			name:         "success to refrigerated",
+			deliveryType: DeliveryTypeRefrigerated,
+			expect:       entity.DeliveryTypeRefrigerated,
+		},
+		{
+			name:         "success to unknown",
+			deliveryType: DeliveryTypeUnknown,
+			expect:       entity.DeliveryTypeUnknown,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.deliveryType.StoreEntity())
+		})
+	}
+}
+
 func TestDeliveryType_Response(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -148,7 +185,7 @@ func TestProduct(t *testing.T) {
 	}
 }
 
-func TestProductWeightFromEntity(t *testing.T) {
+func TestProductWeight(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name       string
@@ -191,8 +228,40 @@ func TestProductWeightFromEntity(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewProductWeightFromEntity(tt.weight, tt.weightUnit)
+			actual := NewProductWeight(tt.weight, tt.weightUnit)
 			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestProductWeightFromRequest(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name             string
+		weight           float64
+		expectWeight     int64
+		expectWeightUnit entity.WeightUnit
+	}{
+		{
+			name:             "success kilogram",
+			weight:           1.0,
+			expectWeight:     1,
+			expectWeightUnit: entity.WeightUnitKilogram,
+		},
+		{
+			name:             "success gram",
+			weight:           1.2,
+			expectWeight:     1200,
+			expectWeightUnit: entity.WeightUnitGram,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			weight, weightUnit := NewProductWeightFromRequest(tt.weight)
+			assert.Equal(t, tt.expectWeight, weight)
+			assert.Equal(t, tt.expectWeightUnit, weightUnit)
 		})
 	}
 }

@@ -2,12 +2,15 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/user"
+	"golang.org/x/sync/errgroup"
 )
 
 func (s *service) ListProducts(ctx context.Context, in *store.ListProductsInput) (entity.Products, error) {
@@ -42,7 +45,29 @@ func (s *service) CreateProduct(ctx context.Context, in *store.CreateProductInpu
 		media[i] = entity.NewProductMedia(in.Media[i].URL, in.Media[i].IsThumbnail)
 	}
 	if err := media.Validate(); err != nil {
-		return nil, fmt.Errorf("api: invalid media format: %w", exception.ErrInvalidArgument)
+		return nil, fmt.Errorf("api: invalid media format: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		in := &user.GetCoordinatorInput{
+			CoordinatorID: in.CoordinatorID,
+		}
+		_, err = s.user.GetCoordinator(ectx, in)
+		return err
+	})
+	eg.Go(func() (err error) {
+		in := &user.GetProducerInput{
+			ProducerID: in.ProducerID,
+		}
+		_, err = s.user.GetProducer(ectx, in)
+		return err
+	})
+	err := eg.Wait()
+	if errors.Is(err, exception.ErrNotFound) {
+		return nil, fmt.Errorf("api: invalid admin id: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	if err != nil {
+		return nil, exception.InternalError(err)
 	}
 	params := &entity.NewProductParams{
 		CoordinatorID:    in.CoordinatorID,
@@ -83,7 +108,29 @@ func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInpu
 		media[i] = entity.NewProductMedia(in.Media[i].URL, in.Media[i].IsThumbnail)
 	}
 	if err := media.Validate(); err != nil {
-		return fmt.Errorf("api: invalid media format: %w", exception.ErrInvalidArgument)
+		return fmt.Errorf("api: invalid media format: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		in := &user.GetCoordinatorInput{
+			CoordinatorID: in.CoordinatorID,
+		}
+		_, err = s.user.GetCoordinator(ectx, in)
+		return err
+	})
+	eg.Go(func() (err error) {
+		in := &user.GetProducerInput{
+			ProducerID: in.ProducerID,
+		}
+		_, err = s.user.GetProducer(ectx, in)
+		return err
+	})
+	err := eg.Wait()
+	if errors.Is(err, exception.ErrNotFound) {
+		return fmt.Errorf("api: invalid admin id: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	if err != nil {
+		return exception.InternalError(err)
 	}
 	params := &database.UpdateProductParams{
 		ProducerID:       in.ProducerID,
@@ -108,7 +155,7 @@ func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInpu
 		OriginCity:       in.OriginCity,
 		UpdatedBy:        in.CoordinatorID,
 	}
-	err := s.db.Product.Update(ctx, in.ProductID, params)
+	err = s.db.Product.Update(ctx, in.ProductID, params)
 	return exception.InternalError(err)
 }
 
