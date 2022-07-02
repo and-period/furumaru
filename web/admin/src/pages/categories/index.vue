@@ -57,9 +57,7 @@
             </div>
           </template>
           <v-card>
-            <v-card-title class="text-h6 primaryLight">
-              品目登録
-            </v-card-title>
+            <v-card-title class="text-h6 primaryLight"> 品目登録 </v-card-title>
             <div>
               <v-select class="mx-4" label="カテゴリー" />
               <v-spacer />
