@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
@@ -16,7 +17,9 @@ import (
 func (h *handler) productRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication())
 	arg.GET("", h.ListProducts)
+	arg.POST("", h.CreateProduct)
 	arg.GET("/:productId", h.GetProduct)
+	arg.PATCH("/:productId", h.UpdateProduct)
 }
 
 func (h *handler) ListProducts(ctx *gin.Context) {
@@ -99,4 +102,103 @@ func (h *handler) GetProduct(ctx *gin.Context) {
 		Product: service.NewProduct(product).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) CreateProduct(ctx *gin.Context) {
+	req := &request.CreateProductRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	media := make([]*store.CreateProductMedia, len(req.Media))
+	for i := range req.Media {
+		media[i] = &store.CreateProductMedia{
+			URL:         req.Media[i].URL,
+			IsThumbnail: req.Media[i].IsThumbnail,
+		}
+	}
+	weight, weightUnit := service.NewProductWeightFromRequest(req.Weight)
+
+	in := &store.CreateProductInput{
+		CoordinatorID:    getAdminID(ctx),
+		ProducerID:       req.ProducerID,
+		CategoryID:       req.CategoryID,
+		TypeID:           req.TypeID,
+		Name:             req.Name,
+		Description:      req.Description,
+		Public:           req.Public,
+		Inventory:        req.Inventory,
+		Weight:           weight,
+		WeightUnit:       weightUnit,
+		Item:             1, // 1固定
+		ItemUnit:         req.ItemUnit,
+		ItemDescription:  req.ItemDescription,
+		Media:            media,
+		Price:            req.Price,
+		DeliveryType:     service.DeliveryType(req.DeliveryType).StoreEntity(),
+		Box60Rate:        req.Box60Rate,
+		Box80Rate:        req.Box80Rate,
+		Box100Rate:       req.Box100Rate,
+		OriginPrefecture: req.OriginPrefecture,
+		OriginCity:       req.OriginCity,
+	}
+	product, err := h.store.CreateProduct(ctx, in)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	res := &response.ProductResponse{
+		Product: service.NewProduct(product).Response(),
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) UpdateProduct(ctx *gin.Context) {
+	req := &request.UpdateProductRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	media := make([]*store.UpdateProductMedia, len(req.Media))
+	for i := range req.Media {
+		media[i] = &store.UpdateProductMedia{
+			URL:         req.Media[i].URL,
+			IsThumbnail: req.Media[i].IsThumbnail,
+		}
+	}
+	weight, weightUnit := service.NewProductWeightFromRequest(req.Weight)
+
+	in := &store.UpdateProductInput{
+		ProductID:        util.GetParam(ctx, "productId"),
+		CoordinatorID:    getAdminID(ctx),
+		ProducerID:       req.ProducerID,
+		CategoryID:       req.CategoryID,
+		TypeID:           req.TypeID,
+		Name:             req.Name,
+		Description:      req.Description,
+		Public:           req.Public,
+		Inventory:        req.Inventory,
+		Weight:           weight,
+		WeightUnit:       weightUnit,
+		Item:             1, // 1固定
+		ItemUnit:         req.ItemUnit,
+		ItemDescription:  req.ItemDescription,
+		Media:            media,
+		Price:            req.Price,
+		DeliveryType:     service.DeliveryType(req.DeliveryType).StoreEntity(),
+		Box60Rate:        req.Box60Rate,
+		Box80Rate:        req.Box80Rate,
+		Box100Rate:       req.Box100Rate,
+		OriginPrefecture: req.OriginPrefecture,
+		OriginCity:       req.OriginCity,
+	}
+	if err := h.store.UpdateProduct(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
 }
