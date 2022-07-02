@@ -48,6 +48,11 @@ categoriesResponse:
             type: integer
             format: int64
             description: 登録日時 (unixtime)
+        required:
+        - id
+        - name
+        - createdAt
+        - updatedAt
   required:
   - categories
   example:

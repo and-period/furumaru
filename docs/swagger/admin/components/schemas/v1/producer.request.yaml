@@ -28,7 +28,7 @@ createProducerRequest:
       description: メールアドレス
     phoneNumber:
       type: string
-      description: 電話番号
+      description: 電話番号 (国際番号 + 電話番号)
     postalCode:
       type: string
       description: 郵便番号

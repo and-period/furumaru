@@ -21,7 +21,7 @@ administratorResponse:
       description: メールアドレス
     phoneNumber:
       type: string
-      description: 電話番号
+      description: 電話番号 (国際番号 + 電話番号)
     createdAt:
       type: integer
       format: int64
@@ -79,7 +79,7 @@ administratorsResponse:
             description: メールアドレス
           phoneNumber:
             type: string
-            description: 電話番号
+            description: 電話番号 (国際番号 + 電話番号)
           createdAt:
             type: integer
             format: int64
@@ -88,6 +88,16 @@ administratorsResponse:
             type: integer
             format: int64
             description: 登録日時 (unixtime)
+        required:
+        - id
+        - lastname
+        - firstname
+        - lastnameKana
+        - firstnameKana
+        - email
+        - phoneNumber
+        - createdAt
+        - updatedAt
   required:
   - administrators
   example:
