@@ -13,10 +13,10 @@ import (
 
 const notificationTable = "notifications"
 
-var notificationFields = []string{
-	"id", "created_by", "creator_name", "updated_by", "title", "bpdy",
-	"published_at", "targets", "public", "created_at", "updated_at",
-}
+// var notificationFields = []string{
+// 	"id", "created_by", "creator_name", "updated_by", "title", "bpdy",
+// 	"published_at", "targets", "public", "created_at", "updated_at",
+// }
 
 type notification struct {
 	db  *database.Client
@@ -34,9 +34,11 @@ func (n *notification) Create(ctx context.Context, notification *entity.Notifica
 	_, err := n.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		now := n.now()
 		notification.CreatedAt, notification.UpdatedAt = now, now
-		notification.FillJSON()
-
-		err := tx.WithContext(ctx).Table(notificationTable).Create(&notification).Error
+		err := notification.FillJSON()
+		if err != nil {
+			return nil, err
+		}
+		err = tx.WithContext(ctx).Table(notificationTable).Create(&notification).Error
 		return nil, err
 	})
 	return exception.InternalError(err)
