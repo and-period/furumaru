@@ -335,6 +335,26 @@ func (mr *MockProducerMockRecorder) List(ctx, params interface{}, fields ...inte
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockProducer)(nil).List), varargs...)
 }
 
+// MultiGet mocks base method.
+func (m *MockProducer) MultiGet(ctx context.Context, producerIDs []string, fields ...string) (entity.Producers, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, producerIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGet", varargs...)
+	ret0, _ := ret[0].(entity.Producers)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGet indicates an expected call of MultiGet.
+func (mr *MockProducerMockRecorder) MultiGet(ctx, producerIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, producerIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockProducer)(nil).MultiGet), varargs...)
+}
+
 // UpdateEmail mocks base method.
 func (m *MockProducer) UpdateEmail(ctx context.Context, producerID, email string) error {
 	m.ctrl.T.Helper()

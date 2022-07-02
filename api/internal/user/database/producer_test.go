@@ -82,7 +82,75 @@ func TestProducer_List(t *testing.T) {
 			}
 			assert.NoError(t, err)
 			fillIgnoreProducersField(actual, now())
-			assert.Equal(t, tt.want.producers, actual)
+			assert.ElementsMatch(t, tt.want.producers, actual)
+		})
+	}
+}
+
+func TestProducer_MultiGet(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, producerTable)
+	producers := make(entity.Producers, 2)
+	producers[0] = testProducer("admin-id01", "&.農園", "test-admin01@and-period.jp", now())
+	producers[1] = testProducer("admin-id02", "&.水産", "test-admin02@and-period.jp", now())
+	err = m.db.DB.Create(&producers).Error
+	require.NoError(t, err)
+
+	type args struct {
+		producerIDs []string
+	}
+	type want struct {
+		producers entity.Producers
+		hasErr    bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				producerIDs: []string{"admin-id01", "admin-id02"},
+			},
+			want: want{
+				producers: producers,
+				hasErr:    false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &producer{db: m.db, now: now}
+			actual, err := db.MultiGet(ctx, tt.args.producerIDs)
+			if tt.want.hasErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			fillIgnoreProducersField(actual, now())
+			assert.ElementsMatch(t, tt.want.producers, actual)
 		})
 	}
 }
