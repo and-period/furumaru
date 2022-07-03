@@ -38,13 +38,13 @@ export default defineComponent({
         {
           text: 'メールアドレス変更',
           onClick: () => {
-            router.push('/categories')
+            router.push('/accounts/email')
           },
         },
         {
           text: 'パスワード変更',
           onClick: () => {
-            console.log('NOT IMPLEMENTED')
+            router.push('/accounts/password')
           },
         },
         {
