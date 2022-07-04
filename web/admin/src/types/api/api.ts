@@ -64,7 +64,7 @@ export interface AdministratorResponse {
      */
     'email': string;
     /**
-     * 電話番号
+     * 電話番号 (国際番号 + 電話番号)
      * @type {string}
      * @memberof AdministratorResponse
      */
@@ -106,55 +106,55 @@ export interface AdministratorsResponseAdministrators {
      * @type {string}
      * @memberof AdministratorsResponseAdministrators
      */
-    'id'?: string;
+    'id': string;
     /**
      * 姓
      * @type {string}
      * @memberof AdministratorsResponseAdministrators
      */
-    'lastname'?: string;
+    'lastname': string;
     /**
      * 名
      * @type {string}
      * @memberof AdministratorsResponseAdministrators
      */
-    'firstname'?: string;
+    'firstname': string;
     /**
      * 姓(かな)
      * @type {string}
      * @memberof AdministratorsResponseAdministrators
      */
-    'lastnameKana'?: string;
+    'lastnameKana': string;
     /**
      * 名(かな)
      * @type {string}
      * @memberof AdministratorsResponseAdministrators
      */
-    'firstnameKana'?: string;
+    'firstnameKana': string;
     /**
      * メールアドレス
      * @type {string}
      * @memberof AdministratorsResponseAdministrators
      */
-    'email'?: string;
+    'email': string;
     /**
-     * 電話番号
+     * 電話番号 (国際番号 + 電話番号)
      * @type {string}
      * @memberof AdministratorsResponseAdministrators
      */
-    'phoneNumber'?: string;
+    'phoneNumber': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof AdministratorsResponseAdministrators
      */
-    'createdAt'?: number;
+    'createdAt': number;
     /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof AdministratorsResponseAdministrators
      */
-    'updatedAt'?: number;
+    'updatedAt': number;
 }
 /**
  * 
@@ -223,25 +223,25 @@ export interface CategoriesResponseCategories {
      * @type {string}
      * @memberof CategoriesResponseCategories
      */
-    'id'?: string;
+    'id': string;
     /**
      * カテゴリ名
      * @type {string}
      * @memberof CategoriesResponseCategories
      */
-    'name'?: string;
+    'name': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof CategoriesResponseCategories
      */
-    'createdAt'?: number;
+    'createdAt': number;
     /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof CategoriesResponseCategories
      */
-    'updatedAt'?: number;
+    'updatedAt': number;
 }
 /**
  * 
@@ -311,7 +311,7 @@ export interface CreateAdministratorRequest {
      */
     'email': string;
     /**
-     * 電話番号
+     * 電話番号 (国際番号 + 電話番号)
      * @type {string}
      * @memberof CreateAdministratorRequest
      */
@@ -385,7 +385,7 @@ export interface CreateProducerRequest {
      */
     'email': string;
     /**
-     * 電話番号
+     * 電話番号 (国際番号 + 電話番号)
      * @type {string}
      * @memberof CreateProducerRequest
      */
@@ -635,7 +635,7 @@ export interface ProducerResponse {
      */
     'email': string;
     /**
-     * 電話番号
+     * 電話番号 (国際番号 + 電話番号)
      * @type {string}
      * @memberof ProducerResponse
      */
@@ -707,103 +707,103 @@ export interface ProducersResponseProducers {
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'id'?: string;
+    'id': string;
     /**
      * 姓
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'lastname'?: string;
+    'lastname': string;
     /**
      * 名
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'firstname'?: string;
+    'firstname': string;
     /**
      * 姓(かな)
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'lastnameKana'?: string;
+    'lastnameKana': string;
     /**
      * 名(かな)
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'firstnameKana'?: string;
+    'firstnameKana': string;
     /**
      * 店舗名
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'storeName'?: string;
+    'storeName': string;
     /**
      * ヘッダー画像URL
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'headerUrl'?: string;
+    'headerUrl': string;
     /**
      * サムネイルURL
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'thumbnailUrl'?: string;
+    'thumbnailUrl': string;
     /**
      * メールアドレス
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'email'?: string;
+    'email': string;
     /**
-     * 電話番号
+     * 電話番号 (国際番号 + 電話番号)
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'phoneNumber'?: string;
+    'phoneNumber': string;
     /**
      * 郵便番号
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'postalCode'?: string;
+    'postalCode': string;
     /**
      * 都道府県
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'prefecture'?: string;
+    'prefecture': string;
     /**
      * 市区町村
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'city'?: string;
+    'city': string;
     /**
      * 町名・番地
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'addressLine1'?: string;
+    'addressLine1': string;
     /**
      * ビル名・号室など
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'addressLine2'?: string;
+    'addressLine2': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof ProducersResponseProducers
      */
-    'createdAt'?: number;
+    'createdAt': number;
     /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof ProducersResponseProducers
      */
-    'updatedAt'?: number;
+    'updatedAt': number;
 }
 /**
  * 
@@ -1017,31 +1017,31 @@ export interface ProductTypesResponseProductTypes {
      * @type {string}
      * @memberof ProductTypesResponseProductTypes
      */
-    'id'?: string;
+    'id': string;
     /**
      * 品目名
      * @type {string}
      * @memberof ProductTypesResponseProductTypes
      */
-    'name'?: string;
+    'name': string;
     /**
      * 商品種別ID
      * @type {string}
      * @memberof ProductTypesResponseProductTypes
      */
-    'categoryId'?: string;
+    'categoryId': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof ProductTypesResponseProductTypes
      */
-    'createdAt'?: number;
+    'createdAt': number;
     /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof ProductTypesResponseProductTypes
      */
-    'updatedAt'?: number;
+    'updatedAt': number;
 }
 /**
  * 
@@ -1057,53 +1057,22 @@ export interface ProductsResponse {
     'products': Array<ProductsResponseProducts>;
     /**
      * 商品種別一覧
-     * @type {Array<ProductsResponseCategories>}
+     * @type {Array<CategoriesResponseCategories>}
      * @memberof ProductsResponse
      */
-    'categories': Array<ProductsResponseCategories>;
+    'categories': Array<CategoriesResponseCategories>;
     /**
      * 品目一覧
-     * @type {Array<ProductsResponseProductTypes>}
+     * @type {Array<ProductTypesResponseProductTypes>}
      * @memberof ProductsResponse
      */
-    'productTypes': Array<ProductsResponseProductTypes>;
+    'productTypes': Array<ProductTypesResponseProductTypes>;
     /**
      * 生産者一覧
      * @type {Array<ProductsResponseProducers>}
      * @memberof ProductsResponse
      */
     'producers'?: Array<ProductsResponseProducers>;
-}
-/**
- * 
- * @export
- * @interface ProductsResponseCategories
- */
-export interface ProductsResponseCategories {
-    /**
-     * 商品種別ID
-     * @type {string}
-     * @memberof ProductsResponseCategories
-     */
-    'id': string;
-    /**
-     * カテゴリ名
-     * @type {string}
-     * @memberof ProductsResponseCategories
-     */
-    'name': string;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ProductsResponseCategories
-     */
-    'createdAt': number;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ProductsResponseCategories
-     */
-    'updatedAt': number;
 }
 /**
  * 
@@ -1230,43 +1199,6 @@ export interface ProductsResponseProducers {
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof ProductsResponseProducers
-     */
-    'updatedAt': number;
-}
-/**
- * 
- * @export
- * @interface ProductsResponseProductTypes
- */
-export interface ProductsResponseProductTypes {
-    /**
-     * 品目ID
-     * @type {string}
-     * @memberof ProductsResponseProductTypes
-     */
-    'id': string;
-    /**
-     * 品目名
-     * @type {string}
-     * @memberof ProductsResponseProductTypes
-     */
-    'name': string;
-    /**
-     * 商品種別ID
-     * @type {string}
-     * @memberof ProductsResponseProductTypes
-     */
-    'categoryId': string;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ProductsResponseProductTypes
-     */
-    'createdAt': number;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ProductsResponseProductTypes
      */
     'updatedAt': number;
 }
