@@ -9,4 +9,6 @@ import (
 type Service interface {
 	// 管理者登録通知
 	NotifyRegisterAdmin(ctx context.Context, in *NotifyRegisterAdminInput) error
+	// お知らせ作成
+	CreateNotification(ctx context.Context, in *CreateNotificationInput) error
 }
