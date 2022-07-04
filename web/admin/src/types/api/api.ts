@@ -281,25 +281,25 @@ export interface CategoryResponse {
  */
 export interface CreateAdministratorRequest {
     /**
-     * 姓
+     * 姓(16文字まで)
      * @type {string}
      * @memberof CreateAdministratorRequest
      */
     'lastname': string;
     /**
-     * 名
+     * 名(16文字まで)
      * @type {string}
      * @memberof CreateAdministratorRequest
      */
     'firstname': string;
     /**
-     * 姓(かな)
+     * 姓(かな)(ひらがな,32文字まで)
      * @type {string}
      * @memberof CreateAdministratorRequest
      */
     'lastnameKana': string;
     /**
-     * 名(かな)
+     * 名(かな)(ひらがな,32文字まで)
      * @type {string}
      * @memberof CreateAdministratorRequest
      */
@@ -311,7 +311,7 @@ export interface CreateAdministratorRequest {
      */
     'email': string;
     /**
-     * 電話番号 (国際番号 + 電話番号)
+     * 電話番号(国際番号 + 電話番号)
      * @type {string}
      * @memberof CreateAdministratorRequest
      */
@@ -324,7 +324,7 @@ export interface CreateAdministratorRequest {
  */
 export interface CreateCategoryRequest {
     /**
-     * カテゴリ名
+     * カテゴリ名(32文字まで)
      * @type {string}
      * @memberof CreateCategoryRequest
      */
@@ -337,31 +337,31 @@ export interface CreateCategoryRequest {
  */
 export interface CreateProducerRequest {
     /**
-     * 姓
+     * 姓(16文字まで)
      * @type {string}
      * @memberof CreateProducerRequest
      */
     'lastname': string;
     /**
-     * 名
+     * 名(16文字まで)
      * @type {string}
      * @memberof CreateProducerRequest
      */
     'firstname': string;
     /**
-     * 姓(かな)
+     * 姓(かな)(ひらがな,32文字まで)
      * @type {string}
      * @memberof CreateProducerRequest
      */
     'lastnameKana': string;
     /**
-     * 名(かな)
+     * 名(かな)(ひらがな,32文字まで)
      * @type {string}
      * @memberof CreateProducerRequest
      */
     'firstnameKana': string;
     /**
-     * 店舗名
+     * 店舗名(64文字まで)
      * @type {string}
      * @memberof CreateProducerRequest
      */
@@ -371,13 +371,13 @@ export interface CreateProducerRequest {
      * @type {string}
      * @memberof CreateProducerRequest
      */
-    'thumbnailUrl': string;
+    'thumbnailUrl'?: string;
     /**
      * ヘッダー画像URL
      * @type {string}
      * @memberof CreateProducerRequest
      */
-    'headerUrl': string;
+    'headerUrl'?: string;
     /**
      * メールアドレス
      * @type {string}
@@ -391,31 +391,31 @@ export interface CreateProducerRequest {
      */
     'phoneNumber': string;
     /**
-     * 郵便番号
+     * 郵便番号(ハイフンなし)
      * @type {string}
      * @memberof CreateProducerRequest
      */
     'postalCode': string;
     /**
-     * 都道府県
+     * 都道府県(32文字まで)
      * @type {string}
      * @memberof CreateProducerRequest
      */
     'prefecture': string;
     /**
-     * 市区町村
+     * 市区町村(32文字まで)
      * @type {string}
      * @memberof CreateProducerRequest
      */
     'city': string;
     /**
-     * 町名・番地
+     * 町名・番地(64文字まで)
      * @type {string}
      * @memberof CreateProducerRequest
      */
     'addressLine1': string;
     /**
-     * ビル名・号室など
+     * ビル名・号室など(64文字まで)
      * @type {string}
      * @memberof CreateProducerRequest
      */
@@ -428,13 +428,13 @@ export interface CreateProducerRequest {
  */
 export interface CreateProductRequest {
     /**
-     * 商品名
+     * 商品名(128文字まで)
      * @type {string}
      * @memberof CreateProductRequest
      */
     'name': string;
     /**
-     * 商品説明
+     * 商品説明(2000文字まで)
      * @type {string}
      * @memberof CreateProductRequest
      */
@@ -464,37 +464,37 @@ export interface CreateProductRequest {
      */
     'public': boolean;
     /**
-     * 在庫数
+     * 在庫数(0以上)
      * @type {number}
      * @memberof CreateProductRequest
      */
     'inventory': number;
     /**
-     * 重量(kg:少数第1位まで)
+     * 重量(0以上,kg単位:少数第1位まで)
      * @type {number}
      * @memberof CreateProductRequest
      */
     'weight': number;
     /**
-     * 数量単位
+     * 数量単位(16文字まで)
      * @type {string}
      * @memberof CreateProductRequest
      */
     'itemUnit': string;
     /**
-     * 数量単位説明
+     * 数量単位説明(64文字まで)
      * @type {string}
      * @memberof CreateProductRequest
      */
     'itemDescription': string;
     /**
-     * 
+     * メディア一覧(8つまで)
      * @type {Array<ProductsResponseMedia>}
      * @memberof CreateProductRequest
      */
     'media': Array<ProductsResponseMedia>;
     /**
-     * 販売価格
+     * 販売価格(0以上)
      * @type {number}
      * @memberof CreateProductRequest
      */
@@ -506,31 +506,31 @@ export interface CreateProductRequest {
      */
     'deliveryType': number;
     /**
-     * 箱の占有率(サイズ:60)
+     * 箱の占有率(サイズ:60)(0以上,100以下)
      * @type {number}
      * @memberof CreateProductRequest
      */
     'box60Rate': number;
     /**
-     * 箱の占有率(サイズ:80)
+     * 箱の占有率(サイズ:80)(0以上,100以下)
      * @type {number}
      * @memberof CreateProductRequest
      */
     'box80Rate': number;
     /**
-     * 箱の占有率(サイズ:100)
+     * 箱の占有率(サイズ:100)(0以上,100以下)
      * @type {number}
      * @memberof CreateProductRequest
      */
     'box100Rate': number;
     /**
-     * 原産地(都道府県)
+     * 原産地(都道府県)(32文字まで)
      * @type {string}
      * @memberof CreateProductRequest
      */
     'originPrefecture': string;
     /**
-     * 原産地(市区町村)
+     * 原産地(市区町村)(32文字まで)
      * @type {string}
      * @memberof CreateProductRequest
      */
@@ -543,7 +543,7 @@ export interface CreateProductRequest {
  */
 export interface CreateProductTypeRequest {
     /**
-     * 品目名
+     * 品目名(32文字まで)
      * @type {string}
      * @memberof CreateProductTypeRequest
      */
@@ -1367,7 +1367,7 @@ export interface RefreshAuthTokenRequest {
  */
 export interface SignInRequest {
     /**
-     * ユーザー名 (メールアドレス)
+     * ユーザー名(メールアドレス)
      * @type {string}
      * @memberof SignInRequest
      */
@@ -1405,13 +1405,13 @@ export interface UpdateAuthPasswordRequest {
      */
     'oldPassword': string;
     /**
-     * 新しいパスワード (8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
+     * 新しいパスワード(8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
      * @type {string}
      * @memberof UpdateAuthPasswordRequest
      */
     'newPassword': string;
     /**
-     * パスワード (確認用)
+     * パスワード(確認用)
      * @type {string}
      * @memberof UpdateAuthPasswordRequest
      */
@@ -1424,7 +1424,7 @@ export interface UpdateAuthPasswordRequest {
  */
 export interface UpdateCategoryRequest {
     /**
-     * カテゴリ名
+     * カテゴリ名(32文字まで)
      * @type {string}
      * @memberof UpdateCategoryRequest
      */
@@ -1437,13 +1437,13 @@ export interface UpdateCategoryRequest {
  */
 export interface UpdateProductRequest {
     /**
-     * 商品名
+     * 商品名(128文字まで)
      * @type {string}
      * @memberof UpdateProductRequest
      */
     'name': string;
     /**
-     * 商品説明
+     * 商品説明(2000文字まで)
      * @type {string}
      * @memberof UpdateProductRequest
      */
@@ -1473,37 +1473,37 @@ export interface UpdateProductRequest {
      */
     'public': boolean;
     /**
-     * 在庫数
+     * 在庫数(0以上)
      * @type {number}
      * @memberof UpdateProductRequest
      */
     'inventory': number;
     /**
-     * 重量(kg:少数第1位まで)
+     * 重量(0以上,kg単位:少数第1位まで)
      * @type {number}
      * @memberof UpdateProductRequest
      */
     'weight': number;
     /**
-     * 数量単位
+     * 数量単位(16文字まで)
      * @type {string}
      * @memberof UpdateProductRequest
      */
     'itemUnit': string;
     /**
-     * 数量単位説明
+     * 数量単位説明(64文字まで)
      * @type {string}
      * @memberof UpdateProductRequest
      */
     'itemDescription': string;
     /**
-     * 
+     * メディア一覧(8つまで)
      * @type {Array<ProductsResponseMedia>}
      * @memberof UpdateProductRequest
      */
     'media': Array<ProductsResponseMedia>;
     /**
-     * 販売価格
+     * 販売価格(0以上)
      * @type {number}
      * @memberof UpdateProductRequest
      */
@@ -1515,31 +1515,31 @@ export interface UpdateProductRequest {
      */
     'deliveryType': number;
     /**
-     * 箱の占有率(サイズ:60)
+     * 箱の占有率(サイズ:60)(0以上,100以下)
      * @type {number}
      * @memberof UpdateProductRequest
      */
     'box60Rate': number;
     /**
-     * 箱の占有率(サイズ:80)
+     * 箱の占有率(サイズ:80)(0以上,100以下)
      * @type {number}
      * @memberof UpdateProductRequest
      */
     'box80Rate': number;
     /**
-     * 箱の占有率(サイズ:100)
+     * 箱の占有率(サイズ:100)(0以上,100以下)
      * @type {number}
      * @memberof UpdateProductRequest
      */
     'box100Rate': number;
     /**
-     * 原産地(都道府県)
+     * 原産地(都道府県)(32文字まで)
      * @type {string}
      * @memberof UpdateProductRequest
      */
     'originPrefecture': string;
     /**
-     * 原産地(市区町村)
+     * 原産地(市区町村)(32文字まで)
      * @type {string}
      * @memberof UpdateProductRequest
      */
@@ -1552,7 +1552,7 @@ export interface UpdateProductRequest {
  */
 export interface UpdateProductTypeRequest {
     /**
-     * 品目名
+     * 品目名(32文字まで)
      * @type {string}
      * @memberof UpdateProductTypeRequest
      */
@@ -1565,7 +1565,7 @@ export interface UpdateProductTypeRequest {
  */
 export interface UploadCoordinatorHeaderRequest {
     /**
-     * 仲介者ヘッダー画像
+     * 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
      * @type {any}
      * @memberof UploadCoordinatorHeaderRequest
      */
@@ -1591,7 +1591,7 @@ export interface UploadImageResponse {
  */
 export interface UploadProducerHeaderRequest {
     /**
-     * 生産者ヘッダー画像
+     * 生産者ヘッダー画像(png,jpeg形式,10MBまで)
      * @type {any}
      * @memberof UploadProducerHeaderRequest
      */
@@ -1604,7 +1604,7 @@ export interface UploadProducerHeaderRequest {
  */
 export interface V1UploadCoordinatorHeaderRequest {
     /**
-     * 仲介者ヘッダー画像
+     * 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
      * @type {any}
      * @memberof V1UploadCoordinatorHeaderRequest
      */
@@ -1617,7 +1617,7 @@ export interface V1UploadCoordinatorHeaderRequest {
  */
 export interface V1UploadProducerHeaderRequest {
     /**
-     * 生産者ヘッダー画像
+     * 生産者ヘッダー画像(png,jpeg形式,10MBまで)
      * @type {any}
      * @memberof V1UploadProducerHeaderRequest
      */
@@ -2789,7 +2789,7 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         /**
          * 
          * @summary 仲介者サムネイルアップロード
-         * @param {any} [thumbnail] 仲介者サムネイル
+         * @param {any} [thumbnail] 仲介者サムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2842,7 +2842,7 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary 仲介者サムネイルアップロード
-         * @param {any} [thumbnail] 仲介者サムネイル
+         * @param {any} [thumbnail] 仲介者サムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2863,7 +2863,7 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
         /**
          * 
          * @summary 仲介者サムネイルアップロード
-         * @param {any} [thumbnail] 仲介者サムネイル
+         * @param {any} [thumbnail] 仲介者サムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2883,7 +2883,7 @@ export class CoordinatorApi extends BaseAPI {
     /**
      * 
      * @summary 仲介者サムネイルアップロード
-     * @param {any} [thumbnail] 仲介者サムネイル
+     * @param {any} [thumbnail] 仲介者サムネイル(png,jpeg形式,10MBまで)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CoordinatorApi
@@ -3025,7 +3025,7 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
         /**
          * 
          * @summary 生産者サムネイルアップロード
-         * @param {any} [thumbnail] 生産者サムネイル
+         * @param {any} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -3112,7 +3112,7 @@ export const ProducerApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary 生産者サムネイルアップロード
-         * @param {any} [thumbnail] 生産者サムネイル
+         * @param {any} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -3164,7 +3164,7 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
         /**
          * 
          * @summary 生産者サムネイルアップロード
-         * @param {any} [thumbnail] 生産者サムネイル
+         * @param {any} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -3221,7 +3221,7 @@ export class ProducerApi extends BaseAPI {
     /**
      * 
      * @summary 生産者サムネイルアップロード
-     * @param {any} [thumbnail] 生産者サムネイル
+     * @param {any} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProducerApi
