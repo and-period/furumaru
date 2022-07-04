@@ -36,15 +36,15 @@ func (s *Set) Contains(values ...interface{}) bool {
 
 // FindOrAdd - 指定された値のいずれかが存在するかの判定 && 存在しないものは代入
 func (s *Set) FindOrAdd(values ...interface{}) bool {
-	isFind := false
+	var isExists bool
 	for i := range values {
 		if _, ok := s.values[values[i]]; ok {
+			isExists = true
 			continue
 		}
 		s.Add(values[i])
-		isFind = true
 	}
-	return isFind
+	return isExists
 }
 
 // Add - 指定された値を代入
