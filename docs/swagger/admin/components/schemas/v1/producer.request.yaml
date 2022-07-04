@@ -3,19 +3,19 @@ createProducerRequest:
   properties:
     lastname:
       type: string
-      description: 姓
+      description: 姓(16文字まで)
     firstname:
       type: string
-      description: 名
+      description: 名(16文字まで)
     lastnameKana:
       type: string
-      description: 姓(かな)
+      description: 姓(かな)(ひらがな,32文字まで)
     firstnameKana:
       type: string
-      description: 名(かな)
+      description: 名(かな)(ひらがな,32文字まで)
     storeName:
       type: string
-      description: 店舗名
+      description: 店舗名(64文字まで)
     thumbnailUrl:
       type: string
       description: サムネイルURL
@@ -31,27 +31,25 @@ createProducerRequest:
       description: 電話番号 (国際番号 + 電話番号)
     postalCode:
       type: string
-      description: 郵便番号
+      description: 郵便番号(ハイフンなし)
     prefecture:
       type: string
-      description: 都道府県
+      description: 都道府県(32文字まで)
     city:
       type: string
-      description: 市区町村
+      description: 市区町村(32文字まで)
     addressLine1:
       type: string
-      description: 町名・番地
+      description: 町名・番地(64文字まで)
     addressLine2:
       type: string
-      description: ビル名・号室など
+      description: ビル名・号室など(64文字まで)
   required:
   - lastname
   - firstname
   - lastnameKana
   - firstnameKana
   - storeName
-  - thumbnailUrl
-  - headerUrl
   - email
   - phoneNumber
   - postalCode

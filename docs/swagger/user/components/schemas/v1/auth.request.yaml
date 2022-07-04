@@ -3,7 +3,7 @@ signInRequest:
   properties:
     username:
       type: string
-      description: ユーザー名 (メールアドレス,電話番号)
+      description: ユーザー名(メールアドレス,電話番号)
     password:
       type: string
       description: パスワード
@@ -32,13 +32,13 @@ createAuthRequest:
       description: メールアドレス
     phoneNumber:
       type: string
-      description: 電話番号 (国際番号 + 電話番号)
+      description: 電話番号(国際番号 + 電話番号)
     password:
       type: string
-      description: パスワード (8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
+      description: パスワード(8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
     passwordConfirmation:
       type: string
-      description: パスワード (確認用)
+      description: パスワード(確認用)
   required:
   - email
   - phoneNumber
@@ -54,10 +54,10 @@ initializeAuthRequest:
   properties:
     username:
       type: string
-      description: ユーザー名(表示用)
+      description: ユーザー名(表示用)(32文字まで)
     accountId:
       type: string
-      description: ユーザーID(検索用)
+      description: ユーザーID(検索用)(32文字まで)
   required:
   - username
   - accountId
@@ -108,10 +108,10 @@ updateAuthPasswordRequest:
       description: 現在のパスワード
     newPassword:
       type: string
-      description: 新しいパスワード (8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
+      description: 新しいパスワード(8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
     passwordConfirmation:
       type: string
-      description: パスワード (確認用)
+      description: パスワード(確認用)
   required:
   - oldPassword
   - newPassword
@@ -143,10 +143,10 @@ resetAuthPasswordRequest:
       description: 検証コード
     password:
       type: string
-      description: パスワード (8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
+      description: パスワード(8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
     passwordConfirmation:
       type: string
-      description: パスワード (確認用)
+      description: パスワード(確認用)
   required:
   - email
   - verifyCode

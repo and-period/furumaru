@@ -3,10 +3,10 @@ createProductRequest:
   properties:
     name:
       type: string
-      description: 商品名
+      description: 商品名(128文字まで)
     description:
       type: string
-      description: 商品説明
+      description: 商品説明(2000文字まで)
     producerId:
       type: string
       description: 生産者ID
@@ -22,19 +22,20 @@ createProductRequest:
     inventory:
       type: integer
       format: int64
-      description: 在庫数
+      description: 在庫数(0以上)
     weight:
       type: number
       format: double
-      description: 重量(kg:少数第1位まで)
+      description: 重量(0以上,kg単位:少数第1位まで)
     itemUnit:
       type: string
-      description: 数量単位
+      description: 数量単位(16文字まで)
     itemDescription:
       type: string
-      description: 数量単位説明
+      description: 数量単位説明(64文字まで)
     media:
       type: array
+      description: メディア一覧(8つまで)
       items:
         type: object
         properties:
@@ -50,7 +51,7 @@ createProductRequest:
     price:
       type: integer
       format: int64
-      description: 販売価格
+      description: 販売価格(0以上)
     deliveryType:
       type: integer
       format: int32
@@ -58,21 +59,21 @@ createProductRequest:
     box60Rate:
       type: integer
       format: int64
-      description: 箱の占有率(サイズ:60)
+      description: 箱の占有率(サイズ:60)(0以上,100以下)
     box80Rate:
       type: integer
       format: int64
-      description: 箱の占有率(サイズ:80)
+      description: 箱の占有率(サイズ:80)(0以上,100以下)
     box100Rate:
       type: integer
       format: int64
-      description: 箱の占有率(サイズ:100)
+      description: 箱の占有率(サイズ:100)(0以上,100以下)
     originPrefecture:
       type: string
-      description: 原産地(都道府県)
+      description: 原産地(都道府県)(32文字まで)
     originCity:
       type: string
-      description: 原産地(市区町村)
+      description: 原産地(市区町村)(32文字まで)
   required:
   - name
   - description
@@ -120,10 +121,10 @@ updateProductRequest:
   properties:
     name:
       type: string
-      description: 商品名
+      description: 商品名(128文字まで)
     description:
       type: string
-      description: 商品説明
+      description: 商品説明(2000文字まで)
     producerId:
       type: string
       description: 生産者ID
@@ -139,19 +140,20 @@ updateProductRequest:
     inventory:
       type: integer
       format: int64
-      description: 在庫数
+      description: 在庫数(0以上)
     weight:
       type: number
       format: double
-      description: 重量(kg:少数第1位まで)
+      description: 重量(0以上,kg単位:少数第1位まで)
     itemUnit:
       type: string
-      description: 数量単位
+      description: 数量単位(16文字まで)
     itemDescription:
       type: string
-      description: 数量単位説明
+      description: 数量単位説明(64文字まで)
     media:
       type: array
+      description: メディア一覧(8つまで)
       items:
         type: object
         properties:
@@ -167,7 +169,7 @@ updateProductRequest:
     price:
       type: integer
       format: int64
-      description: 販売価格
+      description: 販売価格(0以上)
     deliveryType:
       type: integer
       format: int32
@@ -175,21 +177,21 @@ updateProductRequest:
     box60Rate:
       type: integer
       format: int64
-      description: 箱の占有率(サイズ:60)
+      description: 箱の占有率(サイズ:60)(0以上,100以下)
     box80Rate:
       type: integer
       format: int64
-      description: 箱の占有率(サイズ:80)
+      description: 箱の占有率(サイズ:80)(0以上,100以下)
     box100Rate:
       type: integer
       format: int64
-      description: 箱の占有率(サイズ:100)
+      description: 箱の占有率(サイズ:100)(0以上,100以下)
     originPrefecture:
       type: string
-      description: 原産地(都道府県)
+      description: 原産地(都道府県)(32文字まで)
     originCity:
       type: string
-      description: 原産地(市区町村)
+      description: 原産地(市区町村)(32文字まで)
   required:
   - name
   - description

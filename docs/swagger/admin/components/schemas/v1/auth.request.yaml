@@ -3,7 +3,7 @@ signInRequest:
   properties:
     username:
       type: string
-      description: ユーザー名 (メールアドレス)
+      description: ユーザー名(メールアドレス)
     password:
       type: string
       description: パスワード
@@ -52,10 +52,10 @@ updateAuthPasswordRequest:
       description: 現在のパスワード
     newPassword:
       type: string
-      description: 新しいパスワード (8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
+      description: 新しいパスワード(8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
     passwordConfirmation:
       type: string
-      description: パスワード (確認用)
+      description: パスワード(確認用)
   required:
   - oldPassword
   - newPassword

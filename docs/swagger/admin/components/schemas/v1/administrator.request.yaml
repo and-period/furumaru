@@ -3,23 +3,23 @@ createAdministratorRequest:
   properties:
     lastname:
       type: string
-      description: 姓
+      description: 姓(16文字まで)
     firstname:
       type: string
-      description: 名
+      description: 名(16文字まで)
     lastnameKana:
       type: string
-      description: 姓(かな)
+      description: 姓(かな)(ひらがな,32文字まで)
     firstnameKana:
       type: string
-      description: 名(かな)
+      description: 名(かな)(ひらがな,32文字まで)
     email:
       type: string
       format: email
       description: メールアドレス
     phoneNumber:
       type: string
-      description: 電話番号 (国際番号 + 電話番号)
+      description: 電話番号(国際番号 + 電話番号)
   required:
   - lastname
   - firstname
