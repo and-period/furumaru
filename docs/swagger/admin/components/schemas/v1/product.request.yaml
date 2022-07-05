@@ -6,7 +6,7 @@ createProductRequest:
       description: 商品名(128文字まで)
     description:
       type: string
-      description: 商品説明(2000文字まで)
+      description: 商品説明(20000文字まで)
     producerId:
       type: string
       description: 生産者ID
@@ -124,7 +124,7 @@ updateProductRequest:
       description: 商品名(128文字まで)
     description:
       type: string
-      description: 商品説明(2000文字まで)
+      description: 商品説明(20000文字まで)
     producerId:
       type: string
       description: 生産者ID
