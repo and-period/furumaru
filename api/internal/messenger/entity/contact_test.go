@@ -27,7 +27,7 @@ func TestContact(t *testing.T) {
 				content:     "お問い合わせ内容",
 				username:    "お問い合わせ氏名",
 				email:       "test-user@and-period.jp",
-				phoneNumber: "090-1234-5678",
+				phoneNumber: "+819012345678",
 			},
 			expect: &Contact{
 				Title:       "お問い合わせ件名",

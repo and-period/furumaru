@@ -42,6 +42,8 @@ type Contact struct {
 	UpdatedAt   time.Time       `gorm:""`                     // 更新日時
 }
 
+type Contacts []*Contact
+
 func NewContact(title, content, username, email, phoneNumber string) *Contact {
 	return &Contact{
 		ID:          uuid.Base58Encode(uuid.New()),
