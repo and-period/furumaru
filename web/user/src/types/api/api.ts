@@ -96,19 +96,19 @@ export interface CreateAuthRequest {
      */
     'email': string;
     /**
-     * 電話番号 (国際番号 + 電話番号)
+     * 電話番号(国際番号 + 電話番号)
      * @type {string}
      * @memberof CreateAuthRequest
      */
     'phoneNumber': string;
     /**
-     * パスワード (8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
+     * パスワード(8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
      * @type {string}
      * @memberof CreateAuthRequest
      */
     'password': string;
     /**
-     * パスワード (確認用)
+     * パスワード(確認用)
      * @type {string}
      * @memberof CreateAuthRequest
      */
@@ -172,13 +172,13 @@ export interface ForgotAuthPasswordRequest {
  */
 export interface InitializeAuthRequest {
     /**
-     * ユーザー名(表示用)
+     * ユーザー名(表示用)(32文字まで)
      * @type {string}
      * @memberof InitializeAuthRequest
      */
     'username': string;
     /**
-     * ユーザーID(検索用)
+     * ユーザーID(検索用)(32文字まで)
      * @type {string}
      * @memberof InitializeAuthRequest
      */
@@ -216,13 +216,13 @@ export interface ResetAuthPasswordRequest {
      */
     'verifyCode': string;
     /**
-     * パスワード (8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
+     * パスワード(8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
      * @type {string}
      * @memberof ResetAuthPasswordRequest
      */
     'password': string;
     /**
-     * パスワード (確認用)
+     * パスワード(確認用)
      * @type {string}
      * @memberof ResetAuthPasswordRequest
      */
@@ -235,7 +235,7 @@ export interface ResetAuthPasswordRequest {
  */
 export interface SignInRequest {
     /**
-     * ユーザー名 (メールアドレス,電話番号)
+     * ユーザー名(メールアドレス,電話番号)
      * @type {string}
      * @memberof SignInRequest
      */
@@ -273,13 +273,13 @@ export interface UpdateAuthPasswordRequest {
      */
     'oldPassword': string;
     /**
-     * 新しいパスワード (8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
+     * 新しいパスワード(8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
      * @type {string}
      * @memberof UpdateAuthPasswordRequest
      */
     'newPassword': string;
     /**
-     * パスワード (確認用)
+     * パスワード(確認用)
      * @type {string}
      * @memberof UpdateAuthPasswordRequest
      */
