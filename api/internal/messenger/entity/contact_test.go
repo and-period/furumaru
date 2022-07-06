@@ -34,7 +34,7 @@ func TestContact(t *testing.T) {
 				Content:     "お問い合わせ内容",
 				Username:    "お問い合わせ氏名",
 				Email:       "test-user@and-period.jp",
-				PhoneNumber: "090-1234-5678",
+				PhoneNumber: "+819012345678",
 				Status:      ContactStatusUnknown,
 				Priority:    ContactPriorityUnknown,
 				Note:        "",
