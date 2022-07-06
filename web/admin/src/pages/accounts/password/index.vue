@@ -31,16 +31,21 @@
           @click:append="passwordConfirmationShow = !passwordConfirmationShow"
         />
         <div class="d-flex justify-end mr-4">
-        <v-btn outlined color="primary" @click="handleSubmit"> 変更 </v-btn>
-      </div>
+          <v-btn outlined color="primary" @click="handleSubmit"> 変更 </v-btn>
+        </div>
       </v-container>
-        <v-alert v-model="isShow" :type="alertType" v-text="alertText" />
+      <v-alert v-model="isShow" :type="alertType" v-text="alertText" />
     </v-card>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, useRouter } from '@nuxtjs/composition-api'
+import {
+  defineComponent,
+  reactive,
+  ref,
+  useRouter,
+} from '@nuxtjs/composition-api'
 
 import { useAlert } from '~/lib/hooks'
 import { useAuthStore } from '~/store/auth'

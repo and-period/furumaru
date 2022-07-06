@@ -1,5 +1,10 @@
 <template>
-  <validation-provider v-slot="{ errors, valid }" :name="label" :vid="name" :rules="rules">
+  <validation-provider
+    v-slot="{ errors, valid }"
+    :name="label"
+    :vid="name"
+    :rules="rules"
+  >
     <v-text-field
       v-model="formData"
       :type="type"
@@ -16,7 +21,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, SetupContext } from '@nuxtjs/composition-api'
+import {
+  defineComponent,
+  computed,
+  SetupContext,
+} from '@nuxtjs/composition-api'
 
 export default defineComponent({
   props: {
