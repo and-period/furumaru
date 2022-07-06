@@ -36,10 +36,8 @@ export const useAuthStore = defineStore('auth', {
     async passwordUpdate(payload: UpdateAuthPasswordRequest): Promise<void> {
       try {
         const factory = new ApiClientFactory()
-        console.log(this.user?.accessToken)
         const authApiClient = factory.create(AuthApi, this.user?.accessToken)
         await authApiClient.v1UpdateAuthPassword(payload)
-        this.isAuthenticated = true
       } catch (err) {
         // TODO: エラーハンドリング
         console.log(err)
