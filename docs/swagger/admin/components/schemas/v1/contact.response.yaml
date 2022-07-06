@@ -1,0 +1,138 @@
+contactResponse:
+  type: object
+  properties:
+    id:
+      type: string
+      description: お問い合わせID
+    title:
+      type: string
+      description: 件名
+    content:
+      type: string
+      description: 内容
+    username:
+      type: string
+      description: 氏名
+    email:
+      type: string
+      format: email
+      description: メールアドレス
+    phoneNumber:
+      type: string
+      description: 電話番号(国際番号 + 電話番号)
+    status:
+      type: inbeger
+      format: int32
+      description: 対応状況(0:不明,1:ToDo,2:進行中,3:完了,4:対応不要)
+    priority:
+      type: integer
+      format: int32
+      description: 優先度(0:不明1:低,2:中,3:高)
+    note:
+      type: string
+      description: 対応時メモ
+    createdAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
+    updatedAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
+  required:
+  - id
+  - title
+  - content
+  - username
+  - email
+  - phoneNumber
+  - status
+  - priority
+  - note
+  - createdAt
+  - updatedAt
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    title: 'お問い合わせ件名'
+    content: 'お問い合わせ内容です。'
+    username: '問合 太郎'
+    email: 'test-user@and-period.jp'
+    phoneNumber: '+819012345678'
+    status: 1
+    priority: 1
+    note: '対応者のメモです。'
+    createdAt: 1640962800
+    updatedAt: 1640962800
+contactsResponse:
+  type: object
+  properties:
+    contacts:
+      type: array
+      description: お問い合わせ一覧
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            description: お問い合わせID
+          title:
+            type: string
+            description: 件名
+          content:
+            type: string
+            description: 内容
+          username:
+            type: string
+            description: 氏名
+          email:
+            type: string
+            format: email
+            description: メールアドレス
+          phoneNumber:
+            type: string
+            description: 電話番号(国際番号 + 電話番号)
+          status:
+            type: inbeger
+            format: int32
+            description: 対応状況(0:不明,1:ToDo,2:進行中,3:完了,4:対応不要)
+          priority:
+            type: integer
+            format: int32
+            description: 優先度(0:不明1:低,2:中,3:高)
+          note:
+            type: string
+            description: 対応時メモ
+          createdAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+          updatedAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+        required:
+        - id
+        - title
+        - content
+        - username
+        - email
+        - phoneNumber
+        - status
+        - priority
+        - note
+        - createdAt
+        - updatedAt
+  required:
+  - contacts
+  example:
+  - id: 'kSByoE6FetnPs5Byk3a9Zx'
+    title: 'お問い合わせ件名'
+    content: 'お問い合わせ内容です。'
+    username: '問合 太郎'
+    email: 'test-user@and-period.jp'
+    phoneNumber: '+819012345678'
+    status: 1
+    priority: 1
+    note: '対応者のメモです。'
+    createdAt: 1640962800
+    updatedAt: 1640962800

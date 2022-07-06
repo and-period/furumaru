@@ -1,0 +1,61 @@
+get:
+  summary: お問い合わせ取得
+  operationId: v1GetContact
+  tags:
+  - Contact
+  security:
+  - BearerAuth: []
+  parameters:
+  - in: path
+    name: contactId
+    schema:
+      type: string
+    description: お問い合わせID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  responses:
+    200:
+      description: A successful response.
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/v1ContactResponse'
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+patch:
+  summary: お問い合わせ更新
+  operationId: v1UpdateContact
+  tags:
+  - Contact
+  security:
+  - BearerAuth: []
+  parameters:
+  - in: path
+    name: contactId
+    schema:
+      type: string
+    description: お問い合わせID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../../openapi.yaml#/components/schemas/v1UpdateContactRequest'
+  responses:
+    204:
+      description: A successful response.
+      content:
+        application/json:
+          schema: {}
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'

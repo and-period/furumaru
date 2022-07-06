@@ -277,6 +277,165 @@ export interface CategoryResponse {
 /**
  * 
  * @export
+ * @interface ContactResponse
+ */
+export interface ContactResponse {
+    /**
+     * お問い合わせID
+     * @type {string}
+     * @memberof ContactResponse
+     */
+    'id': string;
+    /**
+     * 件名
+     * @type {string}
+     * @memberof ContactResponse
+     */
+    'title': string;
+    /**
+     * 内容
+     * @type {string}
+     * @memberof ContactResponse
+     */
+    'content': string;
+    /**
+     * 氏名
+     * @type {string}
+     * @memberof ContactResponse
+     */
+    'username': string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof ContactResponse
+     */
+    'email': string;
+    /**
+     * 電話番号(国際番号 + 電話番号)
+     * @type {string}
+     * @memberof ContactResponse
+     */
+    'phoneNumber': string;
+    /**
+     * 対応状況(0:不明,1:ToDo,2:進行中,3:完了,4:対応不要)
+     * @type {Inbeger}
+     * @memberof ContactResponse
+     */
+    'status': Inbeger;
+    /**
+     * 優先度(0:不明1:低,2:中,3:高)
+     * @type {number}
+     * @memberof ContactResponse
+     */
+    'priority': number;
+    /**
+     * 対応時メモ
+     * @type {string}
+     * @memberof ContactResponse
+     */
+    'note': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ContactResponse
+     */
+    'createdAt': number;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ContactResponse
+     */
+    'updatedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface ContactsResponse
+ */
+export interface ContactsResponse {
+    /**
+     * お問い合わせ一覧
+     * @type {Array<ContactsResponseContacts>}
+     * @memberof ContactsResponse
+     */
+    'contacts': Array<ContactsResponseContacts>;
+}
+/**
+ * 
+ * @export
+ * @interface ContactsResponseContacts
+ */
+export interface ContactsResponseContacts {
+    /**
+     * お問い合わせID
+     * @type {string}
+     * @memberof ContactsResponseContacts
+     */
+    'id': string;
+    /**
+     * 件名
+     * @type {string}
+     * @memberof ContactsResponseContacts
+     */
+    'title': string;
+    /**
+     * 内容
+     * @type {string}
+     * @memberof ContactsResponseContacts
+     */
+    'content': string;
+    /**
+     * 氏名
+     * @type {string}
+     * @memberof ContactsResponseContacts
+     */
+    'username': string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof ContactsResponseContacts
+     */
+    'email': string;
+    /**
+     * 電話番号(国際番号 + 電話番号)
+     * @type {string}
+     * @memberof ContactsResponseContacts
+     */
+    'phoneNumber': string;
+    /**
+     * 対応状況(0:不明,1:ToDo,2:進行中,3:完了,4:対応不要)
+     * @type {Inbeger}
+     * @memberof ContactsResponseContacts
+     */
+    'status': Inbeger;
+    /**
+     * 優先度(0:不明1:低,2:中,3:高)
+     * @type {number}
+     * @memberof ContactsResponseContacts
+     */
+    'priority': number;
+    /**
+     * 対応時メモ
+     * @type {string}
+     * @memberof ContactsResponseContacts
+     */
+    'note': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ContactsResponseContacts
+     */
+    'createdAt': number;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ContactsResponseContacts
+     */
+    'updatedAt': number;
+}
+/**
+ * 
+ * @export
  * @interface CreateAdministratorRequest
  */
 export interface CreateAdministratorRequest {
@@ -434,7 +593,7 @@ export interface CreateProductRequest {
      */
     'name': string;
     /**
-     * 商品説明(2000文字まで)
+     * 商品説明(20000文字まで)
      * @type {string}
      * @memberof CreateProductRequest
      */
@@ -1433,6 +1592,31 @@ export interface UpdateCategoryRequest {
 /**
  * 
  * @export
+ * @interface UpdateContactRequest
+ */
+export interface UpdateContactRequest {
+    /**
+     * 対応状況(1:ToDo,2:進行中,3:完了,4:対応不要)
+     * @type {Inbeger}
+     * @memberof UpdateContactRequest
+     */
+    'status': Inbeger;
+    /**
+     * 優先度(1:低,2:中,3:高)
+     * @type {number}
+     * @memberof UpdateContactRequest
+     */
+    'priority': number;
+    /**
+     * 対応メモ(2000文字まで)
+     * @type {string}
+     * @memberof UpdateContactRequest
+     */
+    'note': string;
+}
+/**
+ * 
+ * @export
  * @interface UpdateProductRequest
  */
 export interface UpdateProductRequest {
@@ -1443,7 +1627,7 @@ export interface UpdateProductRequest {
      */
     'name': string;
     /**
-     * 商品説明(2000文字まで)
+     * 商品説明(20000文字まで)
      * @type {string}
      * @memberof UpdateProductRequest
      */
@@ -1561,19 +1745,6 @@ export interface UpdateProductTypeRequest {
 /**
  * 
  * @export
- * @interface UploadCoordinatorHeaderRequest
- */
-export interface UploadCoordinatorHeaderRequest {
-    /**
-     * 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
-     * @type {any}
-     * @memberof UploadCoordinatorHeaderRequest
-     */
-    'image'?: any;
-}
-/**
- * 
- * @export
  * @interface UploadImageResponse
  */
 export interface UploadImageResponse {
@@ -1583,45 +1754,6 @@ export interface UploadImageResponse {
      * @memberof UploadImageResponse
      */
     'url': string;
-}
-/**
- * 
- * @export
- * @interface UploadProducerHeaderRequest
- */
-export interface UploadProducerHeaderRequest {
-    /**
-     * 生産者ヘッダー画像(png,jpeg形式,10MBまで)
-     * @type {any}
-     * @memberof UploadProducerHeaderRequest
-     */
-    'image'?: any;
-}
-/**
- * 
- * @export
- * @interface V1UploadCoordinatorHeaderRequest
- */
-export interface V1UploadCoordinatorHeaderRequest {
-    /**
-     * 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
-     * @type {any}
-     * @memberof V1UploadCoordinatorHeaderRequest
-     */
-    'image'?: any;
-}
-/**
- * 
- * @export
- * @interface V1UploadProducerHeaderRequest
- */
-export interface V1UploadProducerHeaderRequest {
-    /**
-     * 生産者ヘッダー画像(png,jpeg形式,10MBまで)
-     * @type {any}
-     * @memberof V1UploadProducerHeaderRequest
-     */
-    'image'?: any;
 }
 /**
  * 
@@ -2781,11 +2913,323 @@ export class CategoryApi extends BaseAPI {
 
 
 /**
+ * ContactApi - axios parameter creator
+ * @export
+ */
+export const ContactApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary お問い合わせ取得
+         * @param {string} contactId お問い合わせID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetContact: async (contactId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'contactId' is not null or undefined
+            assertParamExists('v1GetContact', 'contactId', contactId)
+            const localVarPath = `/v1/contacts/{contactId}`
+                .replace(`{${"contactId"}}`, encodeURIComponent(String(contactId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary お問い合わせ一覧取得
+         * @param {number} [limit] 取得上限数
+         * @param {number} [offset] 取得開始位置
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListContacts: async (limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/contacts`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary お問い合わせ更新
+         * @param {string} contactId お問い合わせID
+         * @param {UpdateContactRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateContact: async (contactId: string, body: UpdateContactRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'contactId' is not null or undefined
+            assertParamExists('v1UpdateContact', 'contactId', contactId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpdateContact', 'body', body)
+            const localVarPath = `/v1/contacts/{contactId}`
+                .replace(`{${"contactId"}}`, encodeURIComponent(String(contactId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ContactApi - functional programming interface
+ * @export
+ */
+export const ContactApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ContactApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary お問い合わせ取得
+         * @param {string} contactId お問い合わせID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetContact(contactId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ContactResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetContact(contactId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary お問い合わせ一覧取得
+         * @param {number} [limit] 取得上限数
+         * @param {number} [offset] 取得開始位置
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ListContacts(limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ContactsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListContacts(limit, offset, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary お問い合わせ更新
+         * @param {string} contactId お問い合わせID
+         * @param {UpdateContactRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UpdateContact(contactId: string, body: UpdateContactRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateContact(contactId, body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * ContactApi - factory interface
+ * @export
+ */
+export const ContactApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ContactApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary お問い合わせ取得
+         * @param {string} contactId お問い合わせID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetContact(contactId: string, options?: any): AxiosPromise<ContactResponse> {
+            return localVarFp.v1GetContact(contactId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary お問い合わせ一覧取得
+         * @param {number} [limit] 取得上限数
+         * @param {number} [offset] 取得開始位置
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListContacts(limit?: number, offset?: number, options?: any): AxiosPromise<ContactsResponse> {
+            return localVarFp.v1ListContacts(limit, offset, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary お問い合わせ更新
+         * @param {string} contactId お問い合わせID
+         * @param {UpdateContactRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateContact(contactId: string, body: UpdateContactRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1UpdateContact(contactId, body, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ContactApi - object-oriented interface
+ * @export
+ * @class ContactApi
+ * @extends {BaseAPI}
+ */
+export class ContactApi extends BaseAPI {
+    /**
+     * 
+     * @summary お問い合わせ取得
+     * @param {string} contactId お問い合わせID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContactApi
+     */
+    public v1GetContact(contactId: string, options?: AxiosRequestConfig) {
+        return ContactApiFp(this.configuration).v1GetContact(contactId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary お問い合わせ一覧取得
+     * @param {number} [limit] 取得上限数
+     * @param {number} [offset] 取得開始位置
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContactApi
+     */
+    public v1ListContacts(limit?: number, offset?: number, options?: AxiosRequestConfig) {
+        return ContactApiFp(this.configuration).v1ListContacts(limit, offset, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary お問い合わせ更新
+     * @param {string} contactId お問い合わせID
+     * @param {UpdateContactRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContactApi
+     */
+    public v1UpdateContact(contactId: string, body: UpdateContactRequest, options?: AxiosRequestConfig) {
+        return ContactApiFp(this.configuration).v1UpdateContact(contactId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
  * CoordinatorApi - axios parameter creator
  * @export
  */
 export const CoordinatorApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
+        /**
+         * 
+         * @summary 仲介者ヘッダー画像アップロード
+         * @param {any} [image] 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UploadCoordinatorHeader: async (image?: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/upload/coordinators/header`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            if (image !== undefined) { 
+                localVarFormParams.append('image', image as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
         /**
          * 
          * @summary 仲介者サムネイルアップロード
@@ -2841,6 +3285,17 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary 仲介者ヘッダー画像アップロード
+         * @param {any} [image] 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UploadCoordinatorHeader(image?: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorHeader(image, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary 仲介者サムネイルアップロード
          * @param {any} [thumbnail] 仲介者サムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
@@ -2862,6 +3317,16 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
     return {
         /**
          * 
+         * @summary 仲介者ヘッダー画像アップロード
+         * @param {any} [image] 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UploadCoordinatorHeader(image?: any, options?: any): AxiosPromise<UploadImageResponse> {
+            return localVarFp.v1UploadCoordinatorHeader(image, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary 仲介者サムネイルアップロード
          * @param {any} [thumbnail] 仲介者サムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
@@ -2880,6 +3345,18 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
  * @extends {BaseAPI}
  */
 export class CoordinatorApi extends BaseAPI {
+    /**
+     * 
+     * @summary 仲介者ヘッダー画像アップロード
+     * @param {any} [image] 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CoordinatorApi
+     */
+    public v1UploadCoordinatorHeader(image?: any, options?: AxiosRequestConfig) {
+        return CoordinatorApiFp(this.configuration).v1UploadCoordinatorHeader(image, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary 仲介者サムネイルアップロード
@@ -3024,6 +3501,49 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
+         * @summary 生産者ヘッダー画像アップロード
+         * @param {any} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UploadProducerHeader: async (image?: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/upload/producers/header`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            if (image !== undefined) { 
+                localVarFormParams.append('image', image as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 生産者サムネイルアップロード
          * @param {any} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
@@ -3111,6 +3631,17 @@ export const ProducerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary 生産者ヘッダー画像アップロード
+         * @param {any} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UploadProducerHeader(image?: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProducerHeader(image, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary 生産者サムネイルアップロード
          * @param {any} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
@@ -3160,6 +3691,16 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
          */
         v1ListProducers(limit?: number, offset?: number, options?: any): AxiosPromise<ProducersResponse> {
             return localVarFp.v1ListProducers(limit, offset, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 生産者ヘッダー画像アップロード
+         * @param {any} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UploadProducerHeader(image?: any, options?: any): AxiosPromise<UploadImageResponse> {
+            return localVarFp.v1UploadProducerHeader(image, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -3216,6 +3757,18 @@ export class ProducerApi extends BaseAPI {
      */
     public v1ListProducers(limit?: number, offset?: number, options?: AxiosRequestConfig) {
         return ProducerApiFp(this.configuration).v1ListProducers(limit, offset, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 生産者ヘッダー画像アップロード
+     * @param {any} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProducerApi
+     */
+    public v1UploadProducerHeader(image?: any, options?: AxiosRequestConfig) {
+        return ProducerApiFp(this.configuration).v1UploadProducerHeader(image, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
