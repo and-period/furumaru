@@ -16,7 +16,7 @@ import (
 func TestCreateNotification(t *testing.T) {
 	t.Parallel()
 
-	adminId := &user.GetAdminInput{
+	adminID := &user.GetAdminInput{
 		AdminID: "admin-id",
 	}
 	admin := &uentity.Admin{
@@ -34,7 +34,7 @@ func TestCreateNotification(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminId).Return(admin, nil)
+				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminID).Return(admin, nil)
 				mocks.db.Notification.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, notification *entity.Notification) error {
@@ -82,7 +82,7 @@ func TestCreateNotification(t *testing.T) {
 		{
 			name: "failed to get admin",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminId).Return(nil, exception.ErrNotFound)
+				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminID).Return(nil, exception.ErrNotFound)
 			},
 			input: &messenger.CreateNotificationInput{
 				CreatedBy: "admin-id",
@@ -96,7 +96,7 @@ func TestCreateNotification(t *testing.T) {
 		{
 			name: "failed to create notification",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminId).Return(admin, nil)
+				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminID).Return(admin, nil)
 				mocks.db.Notification.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
 			},
 			input: &messenger.CreateNotificationInput{

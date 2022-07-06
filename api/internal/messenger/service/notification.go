@@ -15,10 +15,10 @@ func (s *service) CreateNotification(ctx context.Context, in *messenger.CreateNo
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
-	adminId := &user.GetAdminInput{
+	adminID := &user.GetAdminInput{
 		AdminID: in.CreatedBy,
 	}
-	admin, err := s.user.GetAdmin(ctx, adminId)
+	admin, err := s.user.GetAdmin(ctx, adminID)
 	if errors.Is(err, exception.ErrNotFound) {
 		return nil, fmt.Errorf("api: invalid admin id format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
