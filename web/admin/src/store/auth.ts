@@ -4,9 +4,7 @@ import Cookies from 'universal-cookie'
 
 import { ApiClientFactory } from '.'
 
-
 import { AuthApi, AuthResponse, SignInRequest } from '~/types/api'
-
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
