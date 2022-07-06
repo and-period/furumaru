@@ -30,6 +30,9 @@
           :type="passwordConfirmationShow ? 'text' : 'password'"
           @click:append="passwordConfirmationShow = !passwordConfirmationShow"
         />
+        <div class="d-flex justify-end mr-4">
+        <v-btn outlined color="primary" @click="handleSubmit"> 変更 </v-btn>
+      </div>
       </v-container>
     </v-card>
   </div>
@@ -41,17 +44,23 @@ import { defineComponent, reactive, ref } from '@nuxtjs/composition-api'
 import { UpdateAuthPasswordRequest } from '~/types/api'
 
 export default defineComponent({
+  /*
+  TODO: validation追加
+  */
+
   setup() {
     const formData = reactive<UpdateAuthPasswordRequest>({
       oldPassword: '',
       newPassword: '',
       passwordConfirmation: '',
     })
+
     const oldPasswordShow = ref<Boolean>(false)
     const newPasswordShow = ref<Boolean>(false)
     const passwordConfirmationShow = ref<Boolean>(false)
 
-    const handleSubmit = async () => {}
+    const handleSubmit = async (): Promise<void> => {
+    }
 
     return {
       formData,
