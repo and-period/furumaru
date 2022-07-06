@@ -72,6 +72,10 @@ const config: NuxtConfig = {
     API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:18010',
   },
 
+  router: {
+    middleware: 'auth',
+  },
+
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
