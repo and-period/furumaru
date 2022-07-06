@@ -11,7 +11,8 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 )
 
-func (s *service) CreateNotification(ctx context.Context, in *messenger.CreateNotificationInput) (*entity.Notification, error) {
+func (s *service) CreateNotification(
+	ctx context.Context, in *messenger.CreateNotificationInput) (*entity.Notification, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
