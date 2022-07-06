@@ -10,11 +10,9 @@ type NotifyRegisterAdminInput struct {
 }
 
 type CreateNotificationInput struct {
-	CreatedBy   string              `validate:"required"`
-	CreatorName string              `validate:"required"`
-	UpdatedBy   string              `validate:""`
-	Title       string              `validate:"required,max=128"`
-	Body        string              `validate:"required",max=2000`
-	Targets     []entity.TargetType `validate:"min=1,max=2,dive,min=0,max=3"`
-	Public      bool                `validate:""`
+	CreatedBy string              `validate:"required"`
+	Title     string              `validate:"required,max=128"`
+	Body      string              `validate:"required,max=2000"`
+	Targets   []entity.TargetType `validate:"min=1,max=2,dive,min=0,max=3"`
+	Public    bool                `validate:""`
 }

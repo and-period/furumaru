@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/datatypes"
 )
 
@@ -33,6 +34,29 @@ type Notification struct {
 	UpdatedAt   time.Time      `gorm:""`                            // 更新日時
 }
 
+type NewNotificationParams struct {
+	CreatedBy   string
+	CreatorName string
+	UpdatedBy   string
+	Title       string
+	Body        string
+	Targets     []TargetType
+	Public      bool
+}
+
+func NewNotification(params *NewNotificationParams) *Notification {
+	return &Notification{
+		ID:          uuid.Base58Encode(uuid.New()),
+		CreatedBy:   params.CreatedBy,
+		CreatorName: params.CreatorName,
+		UpdatedBy:   params.UpdatedBy,
+		Title:       params.Title,
+		Body:        params.Body,
+		Targets:     params.Targets,
+		Public:      params.Public,
+	}
+}
+
 func (n *Notification) Fill() error {
 	var targets []TargetType
 	if err := json.Unmarshal(n.TargetsJSON, &targets); err != nil {
@@ -50,3 +74,5 @@ func (n *Notification) FillJSON() error {
 	n.TargetsJSON = datatypes.JSON(v)
 	return nil
 }
+
+// TODO: Validate Targets用

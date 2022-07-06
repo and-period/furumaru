@@ -9,6 +9,7 @@ import (
 	reflect "reflect"
 
 	messenger "github.com/and-period/furumaru/api/internal/messenger"
+	entity "github.com/and-period/furumaru/api/internal/messenger/entity"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -36,11 +37,12 @@ func (m *MockService) EXPECT() *MockServiceMockRecorder {
 }
 
 // CreateNotification mocks base method.
-func (m *MockService) CreateNotification(ctx context.Context, in *messenger.CreateNotificationInput) error {
+func (m *MockService) CreateNotification(ctx context.Context, in *messenger.CreateNotificationInput) (*entity.Notification, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateNotification", ctx, in)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(*entity.Notification)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // CreateNotification indicates an expected call of CreateNotification.
