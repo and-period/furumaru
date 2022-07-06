@@ -1,12 +1,12 @@
+import axios from 'axios'
 import { defineStore } from 'pinia'
+import Cookies from 'universal-cookie'
 
 import { ApiClientFactory } from '.'
 
-import Cookies from 'universal-cookie'
 
 import { AuthApi, AuthResponse, SignInRequest } from '~/types/api'
 
-import axios from 'axios'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
