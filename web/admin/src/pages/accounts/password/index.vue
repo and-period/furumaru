@@ -34,21 +34,26 @@
         <v-btn outlined color="primary" @click="handleSubmit"> 変更 </v-btn>
       </div>
       </v-container>
+        <v-alert v-model="isShow" :type="alertType" v-text="alertText" />
     </v-card>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from '@nuxtjs/composition-api'
+import { defineComponent, reactive, ref, useRouter } from '@nuxtjs/composition-api'
 
+import { useAlert } from '~/lib/hooks'
+import { useAuthStore } from '~/store/auth'
 import { UpdateAuthPasswordRequest } from '~/types/api'
 
 export default defineComponent({
   /*
   TODO: validation追加
+  newPassowrd passwordConfirmationの一致、入力文字数の制限、必須文字のcheck
   */
 
   setup() {
+    const router = useRouter()
     const formData = reactive<UpdateAuthPasswordRequest>({
       oldPassword: '',
       newPassword: '',
@@ -58,11 +63,23 @@ export default defineComponent({
     const oldPasswordShow = ref<Boolean>(false)
     const newPasswordShow = ref<Boolean>(false)
     const passwordConfirmationShow = ref<Boolean>(false)
+    const { alertType, isShow, alertText, show } = useAlert('error')
+    const authStore = useAuthStore()
 
     const handleSubmit = async (): Promise<void> => {
+      try {
+        await authStore.passwordUpdate(formData)
+        router.push('/')
+      } catch (error) {
+        console.log(error)
+        show('パスワードの更新に失敗しました。')
+      }
     }
 
     return {
+      alertType,
+      isShow,
+      alertText,
       formData,
       oldPasswordShow,
       newPasswordShow,
