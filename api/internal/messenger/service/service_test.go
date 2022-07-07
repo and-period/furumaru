@@ -7,6 +7,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/messenger/database"
+	mock_database "github.com/and-period/furumaru/api/mock/messenger/database"
 	mock_sqs "github.com/and-period/furumaru/api/mock/pkg/sqs"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/validator"
@@ -18,7 +20,12 @@ import (
 var errmock = errors.New("some error")
 
 type mocks struct {
+	db       *dbMocks
 	producer *mock_sqs.MockProducer
+}
+
+type dbMocks struct {
+	Contact *mock_database.MockContact
 }
 
 type testOptions struct {
@@ -40,6 +47,13 @@ type testCaller func(ctx context.Context, t *testing.T, service *service)
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
 		producer: mock_sqs.NewMockProducer(ctrl),
+		db:       newDBMocks(ctrl),
+	}
+}
+
+func newDBMocks(ctrl *gomock.Controller) *dbMocks {
+	return &dbMocks{
+		Contact: mock_database.NewMockContact(ctrl),
 	}
 }
 
@@ -56,6 +70,9 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		waitGroup: &sync.WaitGroup{},
 		validator: validator.NewValidator(),
 		producer:  mocks.producer,
+		db: &database.Database{
+			Contact: mocks.db.Contact,
+		},
 	}
 }
 
