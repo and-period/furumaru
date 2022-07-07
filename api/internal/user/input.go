@@ -72,7 +72,7 @@ type CreateCoordinatorInput struct {
 	HeaderURL        string `validate:"omitempty,url"`
 	TwitterAccount   string `validate:"omitempty,max=16"`
 	InstagramAccount string `validate:"omitempty,max=32"`
-	FacebookAccount  string `validate:"omitempty,max=16"`
+	FacebookAccount  string `validate:"omitempty,max=64"`
 	Email            string `validate:"required,max=256,email"`
 	PhoneNumber      string `validate:"min=12,max=18,phone_number"`
 	PostalCode       string `validate:"omitempty,max=16,numeric"`

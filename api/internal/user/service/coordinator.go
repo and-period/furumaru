@@ -85,3 +85,4 @@ func (s *userService) CreateCoordinator(
 	}()
 	return coordinator, nil
 }
+
