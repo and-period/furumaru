@@ -86,3 +86,22 @@ func (s *userService) CreateCoordinator(
 	return coordinator, nil
 }
 
+/* ここ書き換えお願いします
+func (s *userService) createCognitoAdmin(ctx context.Context, cognitoID, email, password string) error {
+	params := &cognito.AdminCreateUserParams{
+		Username: cognitoID,
+		Email:    email,
+		Password: password,
+	}
+	return s.adminAuth.AdminCreateUser(ctx, params)
+}
+
+func (s *userService) notifyRegisterAdmin(ctx context.Context, name, email, password string) error {
+	in := &messenger.NotifyRegisterAdminInput{
+		Name:     name,
+		Email:    email,
+		Password: password,
+	}
+	return s.messenger.NotifyRegisterAdmin(ctx, in)
+}
+*/
