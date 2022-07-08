@@ -42,6 +42,7 @@ type NewNotificationParams struct {
 	Body        string
 	Targets     []TargetType
 	Public      bool
+	PublishedAt time.Time
 }
 
 func NewNotification(params *NewNotificationParams) *Notification {
@@ -54,6 +55,7 @@ func NewNotification(params *NewNotificationParams) *Notification {
 		Body:        params.Body,
 		Targets:     params.Targets,
 		Public:      params.Public,
+		PublishedAt: params.PublishedAt,
 	}
 }
 

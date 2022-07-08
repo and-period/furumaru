@@ -36,6 +36,7 @@ func (s *service) CreateNotification(
 		Body:        in.Body,
 		Targets:     in.Targets,
 		Public:      in.Public,
+		PublishedAt: in.PublishedAt,
 	}
 	notification := entity.NewNotification(params)
 	if err := s.db.Notification.Create(ctx, notification); err != nil {

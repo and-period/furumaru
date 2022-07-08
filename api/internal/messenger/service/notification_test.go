@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
@@ -24,6 +25,7 @@ func TestCreateNotification(t *testing.T) {
 		Firstname: "あんど",
 		Lastname:  "ぴりおど",
 	}
+	now := jst.Now()
 
 	tests := []struct {
 		name      string
@@ -47,17 +49,19 @@ func TestCreateNotification(t *testing.T) {
 							Body:        "旬のキャベツを売り出します",
 							Targets:     []entity.TargetType{1, 2},
 							Public:      true,
+							PublishedAt: now,
 						}
 						assert.Equal(t, expect, notification)
 						return nil
 					})
 			},
 			input: &messenger.CreateNotificationInput{
-				CreatedBy: "admin-id",
-				Title:     "キャベツ祭り開催",
-				Body:      "旬のキャベツを売り出します",
-				Targets:   []entity.TargetType{1, 2},
-				Public:    true,
+				CreatedBy:   "admin-id",
+				Title:       "キャベツ祭り開催",
+				Body:        "旬のキャベツを売り出します",
+				Targets:     []entity.TargetType{1, 2},
+				Public:      true,
+				PublishedAt: now,
 			},
 			expectErr: nil,
 		},
@@ -71,11 +75,12 @@ func TestCreateNotification(t *testing.T) {
 			name:  "invalid targets format",
 			setup: func(ctx context.Context, mocks *mocks) {},
 			input: &messenger.CreateNotificationInput{
-				CreatedBy: "admin-id",
-				Title:     "キャベツ祭り開催",
-				Body:      "旬のキャベツを売り出します",
-				Targets:   []entity.TargetType{4},
-				Public:    true,
+				CreatedBy:   "admin-id",
+				Title:       "キャベツ祭り開催",
+				Body:        "旬のキャベツを売り出します",
+				Targets:     []entity.TargetType{4},
+				Public:      true,
+				PublishedAt: now,
 			},
 			expectErr: exception.ErrInvalidArgument,
 		},
@@ -85,11 +90,12 @@ func TestCreateNotification(t *testing.T) {
 				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminID).Return(nil, exception.ErrNotFound)
 			},
 			input: &messenger.CreateNotificationInput{
-				CreatedBy: "admin-id",
-				Title:     "キャベツ祭り開催",
-				Body:      "旬のキャベツを売り出します",
-				Targets:   []entity.TargetType{1, 2},
-				Public:    true,
+				CreatedBy:   "admin-id",
+				Title:       "キャベツ祭り開催",
+				Body:        "旬のキャベツを売り出します",
+				Targets:     []entity.TargetType{1, 2},
+				Public:      true,
+				PublishedAt: now,
 			},
 			expectErr: exception.ErrInvalidArgument,
 		},
@@ -100,11 +106,12 @@ func TestCreateNotification(t *testing.T) {
 				mocks.db.Notification.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
 			},
 			input: &messenger.CreateNotificationInput{
-				CreatedBy: "admin-id",
-				Title:     "キャベツ祭り開催",
-				Body:      "旬のキャベツを売り出します",
-				Targets:   []entity.TargetType{1, 2},
-				Public:    true,
+				CreatedBy:   "admin-id",
+				Title:       "キャベツ祭り開催",
+				Body:        "旬のキャベツを売り出します",
+				Targets:     []entity.TargetType{1, 2},
+				Public:      true,
+				PublishedAt: now,
 			},
 			expectErr: exception.ErrUnknown,
 		},
