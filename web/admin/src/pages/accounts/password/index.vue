@@ -1,38 +1,40 @@
 <template>
   <div>
-    <p class="text-h6">パスワード変更</p>
+    <v-card-title class="text-h6">パスワード変更</v-card-title>
     <v-card>
       <v-container>
-        <v-text-field
-          v-model="formData.oldPassword"
-          class="mx-4"
-          maxlength="32"
-          label="現在のパスワード"
-          :append-icon="oldPasswordShow ? 'mdi-eye' : 'mdi-eye-off'"
-          :type="oldPasswordShow ? 'text' : 'password'"
-          @click:append="oldPasswordShow = !oldPasswordShow"
-        />
-        <v-text-field
-          v-model="formData.newPassword"
-          class="mx-4"
-          maxlength="32"
-          label="新しいパスワード"
-          :append-icon="newPasswordShow ? 'mdi-eye' : 'mdi-eye-off'"
-          :type="newPasswordShow ? 'text' : 'password'"
-          @click:append="newPasswordShow = !newPasswordShow"
-        />
-        <v-text-field
-          v-model="formData.passwordConfirmation"
-          class="mx-4"
-          maxlength="32"
-          label="新しいパスワード(確認用)"
-          :append-icon="passwordConfirmationShow ? 'mdi-eye' : 'mdi-eye-off'"
-          :type="passwordConfirmationShow ? 'text' : 'password'"
-          @click:append="passwordConfirmationShow = !passwordConfirmationShow"
-        />
-        <div class="d-flex justify-end mr-4">
-          <v-btn outlined color="primary" @click="handleSubmit"> 変更 </v-btn>
-        </div>
+        <v-form>
+          <v-text-field
+            v-model="formData.oldPassword"
+            class="mx-4"
+            maxlength="32"
+            label="現在のパスワード"
+            :append-icon="oldPasswordShow ? 'mdi-eye' : 'mdi-eye-off'"
+            :type="oldPasswordShow ? 'text' : 'password'"
+            @click:append="oldPasswordShow = !oldPasswordShow"
+          />
+          <v-text-field
+            v-model="formData.newPassword"
+            class="mx-4"
+            maxlength="32"
+            label="新しいパスワード"
+            :append-icon="newPasswordShow ? 'mdi-eye' : 'mdi-eye-off'"
+            :type="newPasswordShow ? 'text' : 'password'"
+            @click:append="newPasswordShow = !newPasswordShow"
+          />
+          <v-text-field
+            v-model="formData.passwordConfirmation"
+            class="mx-4"
+            maxlength="32"
+            label="新しいパスワード(確認用)"
+            :append-icon="passwordConfirmationShow ? 'mdi-eye' : 'mdi-eye-off'"
+            :type="passwordConfirmationShow ? 'text' : 'password'"
+            @click:append="passwordConfirmationShow = !passwordConfirmationShow"
+          />
+          <div class="d-flex justify-end mr-4">
+            <v-btn outlined color="primary" @click="handleSubmit"> 変更 </v-btn>
+          </div>
+        </v-form>
       </v-container>
       <v-alert v-model="isShow" :type="alertType" v-text="alertText" />
     </v-card>
@@ -40,12 +42,8 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  reactive,
-  ref,
-  useRouter,
-} from '@nuxtjs/composition-api'
+import { useRouter } from '@nuxtjs/composition-api'
+import { defineComponent, reactive, ref } from '@vue/composition-api'
 
 import { useAlert } from '~/lib/hooks'
 import { useAuthStore } from '~/store/auth'
