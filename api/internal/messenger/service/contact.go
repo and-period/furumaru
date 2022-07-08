@@ -37,7 +37,7 @@ func (s *service) CreateContact(ctx context.Context, in *messenger.CreateContact
 	if err := s.db.Contact.Create(ctx, contact); err != nil {
 		return nil, exception.InternalError(err)
 	}
-	// TODO: お知らせが作成されたことを管理者へ通知
+	// TODO: お問合せが作成されたことを管理者へ通知
 	return contact, nil
 }
 
