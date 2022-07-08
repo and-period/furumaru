@@ -76,5 +76,3 @@ func (n *Notification) FillJSON() error {
 	n.TargetsJSON = datatypes.JSON(v)
 	return nil
 }
-
-// TODO: Validate Targets用
