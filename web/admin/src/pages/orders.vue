@@ -1,5 +1,5 @@
 <template>
   <div>
-    <p>注文</p>
+    <v-card-title>注文</v-card-title>
   </div>
 </template>

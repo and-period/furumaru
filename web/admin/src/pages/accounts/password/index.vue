@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card-title class="text-h6">パスワード変更</v-card-title>
+    <v-card-title>パスワード変更</v-card-title>
     <v-card>
       <v-container>
         <v-form>

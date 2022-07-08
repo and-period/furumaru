@@ -1,5 +1,5 @@
 <template>
   <div>
-    <p class="text-h6">メールアドレス変更</p>
+    <v-card-title>メールアドレス変更</v-card-title>
   </div>
 </template>

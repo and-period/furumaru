@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p class="text-h6">システム設定</p>
+    <v-card-title>システム設定</v-card-title>
     <v-list>
       <div v-for="(item, i) in menuList" :key="i">
         <v-list-item :class="item.class" @click="item.onClick">
