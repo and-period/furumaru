@@ -1,5 +1,5 @@
 <template>
   <div>
-    <p>分析</p>
+    <v-card-title>分析</v-card-title>
   </div>
 </template>

@@ -1,5 +1,5 @@
 <template>
   <div>
-    <p>お知らせ管理</p>
+    <v-card-title>お知らせ管理</v-card-title>
   </div>
 </template>

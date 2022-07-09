@@ -1,5 +1,5 @@
 <template>
   <div>
-    <p>お問い合わせ</p>
+    <v-card-title>お問い合わせ</v-card-title>
   </div>
 </template>

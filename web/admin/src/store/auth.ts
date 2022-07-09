@@ -4,7 +4,12 @@ import Cookies from 'universal-cookie'
 
 import { ApiClientFactory } from '.'
 
-import { AuthApi, AuthResponse, SignInRequest } from '~/types/api'
+import {
+  AuthApi,
+  AuthResponse,
+  SignInRequest,
+  UpdateAuthPasswordRequest,
+} from '~/types/api'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -29,6 +34,18 @@ export const useAuthStore = defineStore('auth', {
         cookies.set('refreshToken', this.user.refreshToken)
       } catch (err) {
         // TODO: エラーハンドリング
+        console.log(err)
+        throw new Error('Internal Server Error')
+      }
+    },
+    async passwordUpdate(payload: UpdateAuthPasswordRequest): Promise<void> {
+      try {
+        const factory = new ApiClientFactory()
+        const authApiClient = factory.create(AuthApi, this.user?.accessToken)
+        await authApiClient.v1UpdateAuthPassword(payload)
+      } catch (err) {
+        // TODO: エラーハンドリング
+        console.log(err)
         throw new Error('Internal Server Error')
       }
     },
