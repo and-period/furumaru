@@ -318,10 +318,10 @@ export interface ContactResponse {
     'phoneNumber': string;
     /**
      * 対応状況(0:不明,1:ToDo,2:進行中,3:完了,4:対応不要)
-     * @type {Inbeger}
+     * @type {number}
      * @memberof ContactResponse
      */
-    'status': Inbeger;
+    'status': number;
     /**
      * 優先度(0:不明1:低,2:中,3:高)
      * @type {number}
@@ -1597,10 +1597,10 @@ export interface UpdateCategoryRequest {
 export interface UpdateContactRequest {
     /**
      * 対応状況(1:ToDo,2:進行中,3:完了,4:対応不要)
-     * @type {Inbeger}
+     * @type {number}
      * @memberof UpdateContactRequest
      */
-    'status': Inbeger;
+    'status': number;
     /**
      * 優先度(1:低,2:中,3:高)
      * @type {number}

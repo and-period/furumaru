@@ -21,7 +21,7 @@ contactResponse:
       type: string
       description: 電話番号(国際番号 + 電話番号)
     status:
-      type: inbeger
+      type: integer
       format: int32
       description: 対応状況(0:不明,1:ToDo,2:進行中,3:完了,4:対応不要)
     priority:
