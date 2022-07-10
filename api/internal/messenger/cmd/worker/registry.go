@@ -6,6 +6,7 @@ import (
 	"os"
 	"sync"
 
+	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/worker"
 	"github.com/and-period/furumaru/api/internal/user"
 	userdb "github.com/and-period/furumaru/api/internal/user/database"
@@ -60,6 +61,15 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		return nil, err
 	}
 
+	// Databaseの設定
+	mysql, err := newDatabase("messengers", params)
+	if err != nil {
+		return nil, err
+	}
+	dbParams := &messengerdb.Params{
+		Database: mysql,
+	}
+
 	// メールテンプレートの設定
 	f, err := os.Open(conf.SendGridTemplatePath)
 	if err != nil {
@@ -81,18 +91,6 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}
 	params.mailer = mailer.NewClient(mailParams, mailer.WithLogger(logger))
 
-	// WebURLの設定
-	adminWebURL, err := url.Parse(conf.AminWebURL)
-	if err != nil {
-		return nil, err
-	}
-	params.adminWebURL = adminWebURL
-	userWebURL, err := url.Parse(conf.UserWebURL)
-	if err != nil {
-		return nil, err
-	}
-	params.userWebURL = userWebURL
-
 	// Serviceの設定
 	userService, err := newUserService(ctx, params)
 	if err != nil {
@@ -101,11 +99,10 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 
 	// Workerの設定
 	workerParams := &worker.Params{
-		WaitGroup:   params.waitGroup,
-		Mailer:      params.mailer,
-		AdminWebURL: params.adminWebURL,
-		UserWebURL:  params.userWebURL,
-		User:        userService,
+		WaitGroup: params.waitGroup,
+		DB:        messengerdb.NewDatabase(dbParams),
+		Mailer:    params.mailer,
+		User:      userService,
 	}
 	return &registry{
 		waitGroup: params.waitGroup,

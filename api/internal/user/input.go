@@ -34,6 +34,10 @@ type UpdateAdminPasswordInput struct {
 	PasswordConfirmation string `validate:"required,eqfield=NewPassword"`
 }
 
+type MultiGetAdminsInput struct {
+	AdminIDs []string `validate:"omitempty,dive,required"`
+}
+
 type GetAdminInput struct {
 	AdminID string `validate:"required"`
 }

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"net/url"
 	"sync"
 	"time"
 
@@ -14,20 +15,24 @@ import (
 )
 
 type Params struct {
-	WaitGroup *sync.WaitGroup
-	Database  *database.Database
-	Producer  sqs.Producer
-	User      user.Service
+	WaitGroup   *sync.WaitGroup
+	AdminWebURL *url.URL
+	UserWebURL  *url.URL
+	Database    *database.Database
+	Producer    sqs.Producer
+	User        user.Service
 }
 
 type service struct {
-	now       func() time.Time
-	logger    *zap.Logger
-	waitGroup *sync.WaitGroup
-	validator validator.Validator
-	db        *database.Database
-	producer  sqs.Producer
-	user      user.Service
+	now         func() time.Time
+	logger      *zap.Logger
+	waitGroup   *sync.WaitGroup
+	validator   validator.Validator
+	adminWebURL func() *url.URL
+	userWebURL  func() *url.URL
+	db          *database.Database
+	producer    sqs.Producer
+	user        user.Service
 }
 
 type options struct {
@@ -49,13 +54,23 @@ func NewService(params *Params, opts ...Option) messenger.Service {
 	for i := range opts {
 		opts[i](dopts)
 	}
+	adminWebURL := func() *url.URL {
+		url := *params.AdminWebURL // copy
+		return &url
+	}
+	userWebURL := func() *url.URL {
+		url := *params.UserWebURL // copy
+		return &url
+	}
 	return &service{
-		now:       jst.Now,
-		logger:    dopts.logger,
-		waitGroup: params.WaitGroup,
-		validator: validator.NewValidator(),
-		db:        params.Database,
-		producer:  params.Producer,
-		user:      params.User,
+		now:         jst.Now,
+		logger:      dopts.logger,
+		waitGroup:   params.WaitGroup,
+		validator:   validator.NewValidator(),
+		producer:    params.Producer,
+		adminWebURL: adminWebURL,
+		userWebURL:  userWebURL,
+		db:          params.Database,
+		user:        params.User,
 	}
 }

@@ -14,8 +14,9 @@ type Params struct {
 }
 
 type Database struct {
-	Contact      Contact
-	Notification Notification
+	Contact       Contact
+	Notification  Notification
+	ReceivedQueue ReceivedQueue
 }
 
 func NewDatabase(params *Params) *Database {
@@ -37,6 +38,12 @@ type Contact interface {
 
 type Notification interface {
 	Create(ctx context.Context, notification *entity.Notification) error
+}
+
+type ReceivedQueue interface {
+	Get(ctx context.Context, queueID string, fields ...string) (*entity.ReceivedQueue, error)
+	Create(ctx context.Context, queue *entity.ReceivedQueue) error
+	UpdateDone(ctx context.Context, queueID string, done bool) error
 }
 
 /**

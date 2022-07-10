@@ -11,6 +11,46 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestMultiGetAdmins(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.MultiGetAdminsInput
+		expect    entity.Admins
+		expectErr error
+	}{
+		{
+			name:  "not implemented",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &user.MultiGetAdminsInput{
+				AdminIDs: []string{"admin-id"},
+			},
+			expect:    nil,
+			expectErr: exception.ErrNotImplemented,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &user.MultiGetAdminsInput{
+				AdminIDs: []string{""},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.MultiGetAdmins(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
 func TestGetAdmin(t *testing.T) {
 	t.Parallel()
 

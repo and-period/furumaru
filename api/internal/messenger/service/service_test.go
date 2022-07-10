@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"net/url"
 	"sync"
 	"testing"
 	"time"
@@ -18,7 +19,11 @@ import (
 	"go.uber.org/zap"
 )
 
-var errmock = errors.New("some error")
+var (
+	errmock        = errors.New("some error")
+	adminWebURL, _ = url.Parse("htts://admin.and-period.jp")
+	userWebURL, _  = url.Parse("htts://user.and-period.jp")
+)
 
 type mocks struct {
 	db       *dbMocks
@@ -27,8 +32,13 @@ type mocks struct {
 }
 
 type dbMocks struct {
+<<<<<<< HEAD
 	Notification *mock_database.MockNotification
 	Contact      *mock_database.MockContact
+=======
+	Contact       *mock_database.MockContact
+	ReceivedQueue *mock_database.MockReceivedQueue
+>>>>>>> 6ac07df (feat(messenger): changing messenger worker logic)
 }
 
 type testOptions struct {
@@ -42,15 +52,23 @@ type testCaller func(ctx context.Context, t *testing.T, service *service)
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
 		db:       newDBMocks(ctrl),
+<<<<<<< HEAD
 		producer: mock_sqs.NewMockProducer(ctrl),
+=======
+>>>>>>> 6ac07df (feat(messenger): changing messenger worker logic)
 		user:     mock_user.NewMockService(ctrl),
 	}
 }
 
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
+<<<<<<< HEAD
 		Notification: mock_database.NewMockNotification(ctrl),
 		Contact:      mock_database.NewMockContact(ctrl),
+=======
+		Contact:       mock_database.NewMockContact(ctrl),
+		ReceivedQueue: mock_database.NewMockReceivedQueue(ctrl),
+>>>>>>> 6ac07df (feat(messenger): changing messenger worker logic)
 	}
 }
 
@@ -61,7 +79,16 @@ func newService(mocks *mocks, opts ...testOption) *service {
 	for i := range opts {
 		opts[i](dopts)
 	}
+	adminWebURL := func() *url.URL {
+		url := *adminWebURL // copy
+		return &url
+	}
+	userWebURL := func() *url.URL {
+		url := *userWebURL // copy
+		return &url
+	}
 	return &service{
+<<<<<<< HEAD
 		now:       dopts.now,
 		logger:    zap.NewNop(),
 		waitGroup: &sync.WaitGroup{},
@@ -72,6 +99,20 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		},
 		producer: mocks.producer,
 		user:     mocks.user,
+=======
+		now:         dopts.now,
+		logger:      zap.NewNop(),
+		waitGroup:   &sync.WaitGroup{},
+		validator:   validator.NewValidator(),
+		producer:    mocks.producer,
+		adminWebURL: adminWebURL,
+		userWebURL:  userWebURL,
+		db: &database.Database{
+			Contact:       mocks.db.Contact,
+			ReceivedQueue: mocks.db.ReceivedQueue,
+		},
+		user: mocks.user,
+>>>>>>> 6ac07df (feat(messenger): changing messenger worker logic)
 	}
 }
 

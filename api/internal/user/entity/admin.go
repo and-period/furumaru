@@ -18,6 +18,8 @@ type Admin struct {
 	UpdatedAt     time.Time // 更新日時
 }
 
+type Admins []*Admin
+
 func NewAdminFromAdministrator(administrator *Administrator) *Admin {
 	return &Admin{
 		ID:            administrator.ID,

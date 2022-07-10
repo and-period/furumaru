@@ -9,6 +9,14 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
+func (s *service) MultiGetAdmins(ctx context.Context, in *user.MultiGetAdminsInput) (entity.Admins, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	// TODO: 詳細の実装
+	return nil, exception.ErrNotImplemented
+}
+
 func (s *service) GetAdmin(ctx context.Context, in *user.GetAdminInput) (*entity.Admin, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
