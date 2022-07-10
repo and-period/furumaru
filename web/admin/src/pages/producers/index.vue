@@ -40,7 +40,7 @@
           </template>
           <template #[`item.actions`]="{ item }">
             <v-btn outlined color="primary" small @click="handleEdit(item)">
-              <v-icon>mdi-plus</v-icon>
+              <v-icon small>mdi-pencil</v-icon>
               編集
             </v-btn>
           </template>
