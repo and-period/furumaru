@@ -28,11 +28,8 @@ type mocks struct {
 
 type dbMocks struct {
 	Notification *mock_database.MockNotification
-}
-
-type dbMocks struct {
 	Contact *mock_database.MockContact
-}
+}	
 
 type testOptions struct {
 	now func() time.Time
