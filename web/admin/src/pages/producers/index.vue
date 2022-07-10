@@ -25,7 +25,7 @@
           :search="query"
           :no-results-text="noResultsText"
         >
-          <template #item.thumbnail="{ item }">
+          <template #[`item.thumbnail`]="{ item }">
             <v-avatar>
               <img
                 v-if="item.thumbnailUrl !== ''"
@@ -35,10 +35,10 @@
               <v-icon v-else>mdi-account</v-icon>
             </v-avatar>
           </template>
-          <template #item.name="{ item }">
+          <template #[`item.name`]="{ item }">
             {{ `${item.lastname} ${item.firstname}` }}
           </template>
-          <template #item.actions="{ item }">
+          <template #[`item.actions`]="{ item }">
             <v-btn outlined color="primary" small @click="handleEdit(item)">
               <v-icon>mdi-plus</v-icon>
               編集
