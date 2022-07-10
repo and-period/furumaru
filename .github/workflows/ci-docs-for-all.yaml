@@ -117,3 +117,43 @@ jobs:
 
     - name: Build
       run: yarn generate
+
+  diff:
+    name: diff
+    needs: build
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./docs/swagger
+    strategy:
+      matrix:
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        node: ['18.0.0']
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+
+    - name: Get yarn cache directory path
+      id: yarn-cache-dir-path
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+
+    - uses: actions/cache@v3
+      id: yarn-cache
+      with:
+        path: |
+          **/node_modules
+          ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: ${{ env.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+
+    - name: Install
+      if: steps.yarn-cache.outputs.cache-hit != 'true'
+      run: yarn --check-files --frozen-lockfile --non-interactive
+
+    - name: Build
+      run: yarn generate
+
+    - name: Diff
+      run: |
+        git add -A
+        if [ $(git diff HEAD | wc -l) != '0' ]; then exit 1; fi
