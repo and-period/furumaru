@@ -6,6 +6,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/database"
+	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/sqs"
 	"github.com/and-period/furumaru/api/pkg/validator"
@@ -14,8 +15,9 @@ import (
 
 type Params struct {
 	WaitGroup *sync.WaitGroup
-	Producer  sqs.Producer
 	Database  *database.Database
+	Producer  sqs.Producer
+	User      user.Service
 }
 
 type service struct {
@@ -23,8 +25,9 @@ type service struct {
 	logger    *zap.Logger
 	waitGroup *sync.WaitGroup
 	validator validator.Validator
-	producer  sqs.Producer
 	db        *database.Database
+	producer  sqs.Producer
+	user      user.Service
 }
 
 type options struct {
@@ -51,7 +54,8 @@ func NewService(params *Params, opts ...Option) messenger.Service {
 		logger:    dopts.logger,
 		waitGroup: params.WaitGroup,
 		validator: validator.NewValidator(),
-		producer:  params.Producer,
 		db:        params.Database,
+		producer:  params.Producer,
+		user:      params.User,
 	}
 }
