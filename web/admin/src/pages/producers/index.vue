@@ -38,10 +38,23 @@
           <template #[`item.name`]="{ item }">
             {{ `${item.lastname} ${item.firstname}` }}
           </template>
+          <template #[`item.phoneNumber`]="{ item }">
+            {{ `${item.phoneNumber}`.replace('+81', '0') }}
+          </template>
           <template #[`item.actions`]="{ item }">
             <v-btn outlined color="primary" small @click="handleEdit(item)">
               <v-icon small>mdi-pencil</v-icon>
               編集
+            </v-btn>
+            <v-btn outlined color="primary" small @click="handleDelete(item)">
+              <v-icon small>mdi-delete</v-icon>
+              削除
+            </v-btn>
+          </template>
+          <template #[`item.video`]="{ item }">
+            <v-btn outlined color="primary" small @click="handleAddVideo(item)">
+              <v-icon small>mdi-plus</v-icon>
+              追加
             </v-btn>
           </template>
         </v-data-table>
@@ -111,6 +124,11 @@ export default defineComponent({
         value: 'actions',
         sortable: false,
       },
+      {
+        text: '動画',
+        value: 'video',
+        sortable: false,
+      },
     ]
 
     const handleClickAddButton = () => {
@@ -122,6 +140,14 @@ export default defineComponent({
     }
 
     const handleEdit = (item: ProducersResponseProducers) => {
+      console.log(item)
+    }
+
+    const handleDelete = (item: ProducersResponseProducers) => {
+      console.log(item)
+    }
+
+    const handleAddVideo = (item: ProducersResponseProducers) => {
       console.log(item)
     }
 
@@ -143,6 +169,8 @@ export default defineComponent({
       fetchState,
       handleSearch,
       handleEdit,
+      handleDelete,
+      handleAddVideo,
     }
   },
 })
