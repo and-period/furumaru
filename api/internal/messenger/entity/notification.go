@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/datatypes"
 )
 
@@ -31,6 +32,31 @@ type Notification struct {
 	Public      bool           `gorm:""`                            // 公開フラグ
 	CreatedAt   time.Time      `gorm:"<-:create"`                   // 作成日時
 	UpdatedAt   time.Time      `gorm:""`                            // 更新日時
+}
+
+type NewNotificationParams struct {
+	CreatedBy   string
+	CreatorName string
+	UpdatedBy   string
+	Title       string
+	Body        string
+	Targets     []TargetType
+	Public      bool
+	PublishedAt time.Time
+}
+
+func NewNotification(params *NewNotificationParams) *Notification {
+	return &Notification{
+		ID:          uuid.Base58Encode(uuid.New()),
+		CreatedBy:   params.CreatedBy,
+		CreatorName: params.CreatorName,
+		UpdatedBy:   params.UpdatedBy,
+		Title:       params.Title,
+		Body:        params.Body,
+		Targets:     params.Targets,
+		Public:      params.Public,
+		PublishedAt: params.PublishedAt,
+	}
 }
 
 func (n *Notification) Fill() error {

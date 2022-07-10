@@ -19,4 +19,6 @@ type Service interface {
 	UpdateContact(ctx context.Context, in *UpdateContactInput) error
 	// 管理者登録通知
 	NotifyRegisterAdmin(ctx context.Context, in *NotifyRegisterAdminInput) error
+	// お知らせ作成
+	CreateNotification(ctx context.Context, in *CreateNotificationInput) (*entity.Notification, error)
 }
