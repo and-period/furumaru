@@ -26,6 +26,7 @@ type config struct {
 	CognitoUserClientID string `envconfig:"COGNITO_USER_CLIENT_ID" default:""`
 	SQSQueueURL         string `envconfig:"SQS_QUEUE_URL" default:""`
 	SQSMockEnabled      bool   `envconfig:"SQS_MOCK_ENABLED" default:"false"`
+	UserWebURL          string `envconfig:"USER_WEB_URL" default:""`
 }
 
 func newConfig() (*config, error) {

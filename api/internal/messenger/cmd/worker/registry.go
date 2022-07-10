@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	"net/url"
 	"os"
 	"sync"
 
@@ -32,8 +31,6 @@ type params struct {
 	mailer         mailer.Client
 	aws            aws.Config
 	secret         secret.Client
-	adminWebURL    *url.URL
-	userWebURL     *url.URL
 	dbHost         string
 	dbPort         string
 	dbUsername     string

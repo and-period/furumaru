@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"net/url"
 	"sync"
 
 	v1 "github.com/and-period/furumaru/api/internal/gateway/user/v1/handler"
@@ -38,6 +39,7 @@ type params struct {
 	storage    storage.Bucket
 	userAuth   cognito.Client
 	producer   sqs.Producer
+	userWebURL *url.URL
 	dbHost     string
 	dbPort     string
 	dbUsername string
@@ -82,6 +84,13 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		QueueURL: conf.SQSQueueURL,
 	}
 	params.producer = sqs.NewProducer(awscfg, sqsParams, sqs.WithDryRun(conf.SQSMockEnabled))
+
+	// WebURLの設定
+	userWebURL, err := url.Parse(conf.UserWebURL)
+	if err != nil {
+		return nil, err
+	}
+	params.userWebURL = userWebURL
 
 	// Serviceの設定
 	messengerService, err := newMessengerService(ctx, params)
@@ -160,10 +169,11 @@ func newMessengerService(ctx context.Context, p *params) (messenger.Service, err
 		return nil, err
 	}
 	params := &messengersrv.Params{
-		WaitGroup: p.waitGroup,
-		Producer:  p.producer,
-		Database:  messengerdb.NewDatabase(dbParams),
-		User:      user,
+		WaitGroup:  p.waitGroup,
+		Producer:   p.producer,
+		UserWebURL: p.userWebURL,
+		Database:   messengerdb.NewDatabase(dbParams),
+		User:       user,
 	}
 	return messengersrv.NewService(params, messengersrv.WithLogger(p.logger)), nil
 }

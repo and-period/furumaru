@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"net/url"
 	"sync"
 
 	v1 "github.com/and-period/furumaru/api/internal/gateway/admin/v1/handler"
@@ -31,20 +32,22 @@ type registry struct {
 }
 
 type params struct {
-	config     *config
-	logger     *zap.Logger
-	waitGroup  *sync.WaitGroup
-	enforcer   rbac.Enforcer
-	aws        aws.Config
-	secret     secret.Client
-	storage    storage.Bucket
-	adminAuth  cognito.Client
-	userAuth   cognito.Client
-	producer   sqs.Producer
-	dbHost     string
-	dbPort     string
-	dbUsername string
-	dbPassword string
+	config      *config
+	logger      *zap.Logger
+	waitGroup   *sync.WaitGroup
+	enforcer    rbac.Enforcer
+	aws         aws.Config
+	secret      secret.Client
+	storage     storage.Bucket
+	adminAuth   cognito.Client
+	userAuth    cognito.Client
+	producer    sqs.Producer
+	adminWebURL *url.URL
+	userWebURL  *url.URL
+	dbHost      string
+	dbPort      string
+	dbUsername  string
+	dbPassword  string
 }
 
 func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*registry, error) {
@@ -97,6 +100,18 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		QueueURL: conf.SQSQueueURL,
 	}
 	params.producer = sqs.NewProducer(awscfg, sqsParams, sqs.WithDryRun(conf.SQSMockEnabled))
+
+	// WebURLの設定
+	adminWebURL, err := url.Parse(conf.AminWebURL)
+	if err != nil {
+		return nil, err
+	}
+	params.adminWebURL = adminWebURL
+	userWebURL, err := url.Parse(conf.UserWebURL)
+	if err != nil {
+		return nil, err
+	}
+	params.userWebURL = userWebURL
 
 	// Serviceの設定
 	messengerService, err := newMessengerService(ctx, params)
@@ -176,10 +191,12 @@ func newMessengerService(ctx context.Context, p *params) (messenger.Service, err
 		return nil, err
 	}
 	params := &messengersrv.Params{
-		WaitGroup: p.waitGroup,
-		Producer:  p.producer,
-		Database:  messengerdb.NewDatabase(dbParams),
-		User:      user,
+		WaitGroup:   p.waitGroup,
+		Producer:    p.producer,
+		AdminWebURL: p.adminWebURL,
+		UserWebURL:  p.userWebURL,
+		Database:    messengerdb.NewDatabase(dbParams),
+		User:        user,
 	}
 	return messengersrv.NewService(params, messengersrv.WithLogger(p.logger)), nil
 }
