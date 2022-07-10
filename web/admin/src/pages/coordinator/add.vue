@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p class="text-h6">コーディネーター登録</p>
+    <v-card-title>コーディネーター登録</v-card-title>
     <v-card elevation="0">
       <v-card-text>
         <v-text-field label="店舗名" />

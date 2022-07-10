@@ -69,7 +69,7 @@ type CreateProductInput struct {
 	CategoryID       string                `validate:"required"`
 	TypeID           string                `validate:"required"`
 	Name             string                `validate:"required,max=128"`
-	Description      string                `validate:"required,max=2000"`
+	Description      string                `validate:"required,max=20000"`
 	Public           bool                  `validate:""`
 	Inventory        int64                 `validate:"min=0"`
 	Weight           int64                 `validate:"min=0"`
@@ -99,7 +99,7 @@ type UpdateProductInput struct {
 	CategoryID       string                `validate:"required"`
 	TypeID           string                `validate:"required"`
 	Name             string                `validate:"required,max=128"`
-	Description      string                `validate:"required,max=2000"`
+	Description      string                `validate:"required,max=20000"`
 	Public           bool                  `validate:""`
 	Inventory        int64                 `validate:"min=0"`
 	Weight           int64                 `validate:"min=0"`

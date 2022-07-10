@@ -35,10 +35,10 @@ func TestSet_Contains(t *testing.T) {
 func TestSet_FindOrAdd(t *testing.T) {
 	t.Parallel()
 	s := New(10)
-	assert.True(t, s.FindOrAdd(1))
-	assert.True(t, s.FindOrAdd("test"))
 	assert.False(t, s.FindOrAdd(1))
 	assert.False(t, s.FindOrAdd("test"))
+	assert.True(t, s.FindOrAdd(1))
+	assert.True(t, s.FindOrAdd("test"))
 }
 
 func TestSet_Remove(t *testing.T) {

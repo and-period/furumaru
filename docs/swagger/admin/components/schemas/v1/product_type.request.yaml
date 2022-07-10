@@ -3,7 +3,7 @@ createProductTypeRequest:
   properties:
     name:
       type: string
-      description: 品目名
+      description: 品目名(32文字まで)
   required:
   - name
   example:
@@ -13,7 +13,7 @@ updateProductTypeRequest:
   properties:
     name:
       type: string
-      description: 品目名
+      description: 品目名(32文字まで)
   required:
   - name
   example:

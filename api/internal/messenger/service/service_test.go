@@ -30,6 +30,10 @@ type dbMocks struct {
 	Notification *mock_database.MockNotification
 }
 
+type dbMocks struct {
+	Contact *mock_database.MockContact
+}
+
 type testOptions struct {
 	now func() time.Time
 }
@@ -49,6 +53,7 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
 		Notification: mock_database.NewMockNotification(ctrl),
+		Contact: mock_database.NewMockContact(ctrl),
 	}
 }
 
@@ -66,6 +71,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		validator: validator.NewValidator(),
 		db: &database.Database{
 			Notification: mocks.db.Notification,
+      Contact: mocks.db.Contact,
 		},
 		producer: mocks.producer,
 		user:     mocks.user,

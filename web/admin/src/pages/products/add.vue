@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p class="text-h6">商品登録</p>
+    <v-card-title>商品登録</v-card-title>
     <v-breadcrumbs :items="breadcrumbsItem" large class="pa-0 mb-6" />
     <div class="mb-4">
       <v-card elevation="0" class="mb-4">

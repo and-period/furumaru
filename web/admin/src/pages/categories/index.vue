@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p class="text-h6">カテゴリー・品目設定</p>
+    <v-card-title>カテゴリー・品目設定</v-card-title>
     <v-tabs v-model="selector" grow color="dark">
       <v-tabs-slider color="accent"></v-tabs-slider>
       <v-tab

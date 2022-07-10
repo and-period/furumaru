@@ -64,7 +64,7 @@ export interface AdministratorResponse {
      */
     'email': string;
     /**
-     * 電話番号
+     * 電話番号 (国際番号 + 電話番号)
      * @type {string}
      * @memberof AdministratorResponse
      */
@@ -106,55 +106,55 @@ export interface AdministratorsResponseAdministrators {
      * @type {string}
      * @memberof AdministratorsResponseAdministrators
      */
-    'id'?: string;
+    'id': string;
     /**
      * 姓
      * @type {string}
      * @memberof AdministratorsResponseAdministrators
      */
-    'lastname'?: string;
+    'lastname': string;
     /**
      * 名
      * @type {string}
      * @memberof AdministratorsResponseAdministrators
      */
-    'firstname'?: string;
+    'firstname': string;
     /**
      * 姓(かな)
      * @type {string}
      * @memberof AdministratorsResponseAdministrators
      */
-    'lastnameKana'?: string;
+    'lastnameKana': string;
     /**
      * 名(かな)
      * @type {string}
      * @memberof AdministratorsResponseAdministrators
      */
-    'firstnameKana'?: string;
+    'firstnameKana': string;
     /**
      * メールアドレス
      * @type {string}
      * @memberof AdministratorsResponseAdministrators
      */
-    'email'?: string;
+    'email': string;
     /**
-     * 電話番号
+     * 電話番号 (国際番号 + 電話番号)
      * @type {string}
      * @memberof AdministratorsResponseAdministrators
      */
-    'phoneNumber'?: string;
+    'phoneNumber': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof AdministratorsResponseAdministrators
      */
-    'createdAt'?: number;
+    'createdAt': number;
     /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof AdministratorsResponseAdministrators
      */
-    'updatedAt'?: number;
+    'updatedAt': number;
 }
 /**
  * 
@@ -223,25 +223,25 @@ export interface CategoriesResponseCategories {
      * @type {string}
      * @memberof CategoriesResponseCategories
      */
-    'id'?: string;
+    'id': string;
     /**
      * カテゴリ名
      * @type {string}
      * @memberof CategoriesResponseCategories
      */
-    'name'?: string;
+    'name': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof CategoriesResponseCategories
      */
-    'createdAt'?: number;
+    'createdAt': number;
     /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof CategoriesResponseCategories
      */
-    'updatedAt'?: number;
+    'updatedAt': number;
 }
 /**
  * 
@@ -277,29 +277,188 @@ export interface CategoryResponse {
 /**
  * 
  * @export
+ * @interface ContactResponse
+ */
+export interface ContactResponse {
+    /**
+     * お問い合わせID
+     * @type {string}
+     * @memberof ContactResponse
+     */
+    'id': string;
+    /**
+     * 件名
+     * @type {string}
+     * @memberof ContactResponse
+     */
+    'title': string;
+    /**
+     * 内容
+     * @type {string}
+     * @memberof ContactResponse
+     */
+    'content': string;
+    /**
+     * 氏名
+     * @type {string}
+     * @memberof ContactResponse
+     */
+    'username': string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof ContactResponse
+     */
+    'email': string;
+    /**
+     * 電話番号(国際番号 + 電話番号)
+     * @type {string}
+     * @memberof ContactResponse
+     */
+    'phoneNumber': string;
+    /**
+     * 対応状況(0:不明,1:ToDo,2:進行中,3:完了,4:対応不要)
+     * @type {number}
+     * @memberof ContactResponse
+     */
+    'status': number;
+    /**
+     * 優先度(0:不明1:低,2:中,3:高)
+     * @type {number}
+     * @memberof ContactResponse
+     */
+    'priority': number;
+    /**
+     * 対応時メモ
+     * @type {string}
+     * @memberof ContactResponse
+     */
+    'note': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ContactResponse
+     */
+    'createdAt': number;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ContactResponse
+     */
+    'updatedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface ContactsResponse
+ */
+export interface ContactsResponse {
+    /**
+     * お問い合わせ一覧
+     * @type {Array<ContactsResponseContacts>}
+     * @memberof ContactsResponse
+     */
+    'contacts': Array<ContactsResponseContacts>;
+}
+/**
+ * 
+ * @export
+ * @interface ContactsResponseContacts
+ */
+export interface ContactsResponseContacts {
+    /**
+     * お問い合わせID
+     * @type {string}
+     * @memberof ContactsResponseContacts
+     */
+    'id': string;
+    /**
+     * 件名
+     * @type {string}
+     * @memberof ContactsResponseContacts
+     */
+    'title': string;
+    /**
+     * 内容
+     * @type {string}
+     * @memberof ContactsResponseContacts
+     */
+    'content': string;
+    /**
+     * 氏名
+     * @type {string}
+     * @memberof ContactsResponseContacts
+     */
+    'username': string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof ContactsResponseContacts
+     */
+    'email': string;
+    /**
+     * 電話番号(国際番号 + 電話番号)
+     * @type {string}
+     * @memberof ContactsResponseContacts
+     */
+    'phoneNumber': string;
+    /**
+     * 対応状況(0:不明,1:ToDo,2:進行中,3:完了,4:対応不要)
+     * @type {number}
+     * @memberof ContactsResponseContacts
+     */
+    'status': number;
+    /**
+     * 優先度(0:不明1:低,2:中,3:高)
+     * @type {number}
+     * @memberof ContactsResponseContacts
+     */
+    'priority': number;
+    /**
+     * 対応時メモ
+     * @type {string}
+     * @memberof ContactsResponseContacts
+     */
+    'note': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ContactsResponseContacts
+     */
+    'createdAt': number;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ContactsResponseContacts
+     */
+    'updatedAt': number;
+}
+/**
+ * 
+ * @export
  * @interface CreateAdministratorRequest
  */
 export interface CreateAdministratorRequest {
     /**
-     * 姓
+     * 姓(16文字まで)
      * @type {string}
      * @memberof CreateAdministratorRequest
      */
     'lastname': string;
     /**
-     * 名
+     * 名(16文字まで)
      * @type {string}
      * @memberof CreateAdministratorRequest
      */
     'firstname': string;
     /**
-     * 姓(かな)
+     * 姓(かな)(ひらがな,32文字まで)
      * @type {string}
      * @memberof CreateAdministratorRequest
      */
     'lastnameKana': string;
     /**
-     * 名(かな)
+     * 名(かな)(ひらがな,32文字まで)
      * @type {string}
      * @memberof CreateAdministratorRequest
      */
@@ -311,7 +470,7 @@ export interface CreateAdministratorRequest {
      */
     'email': string;
     /**
-     * 電話番号
+     * 電話番号(国際番号 + 電話番号)
      * @type {string}
      * @memberof CreateAdministratorRequest
      */
@@ -324,7 +483,7 @@ export interface CreateAdministratorRequest {
  */
 export interface CreateCategoryRequest {
     /**
-     * カテゴリ名
+     * カテゴリ名(32文字まで)
      * @type {string}
      * @memberof CreateCategoryRequest
      */
@@ -337,31 +496,31 @@ export interface CreateCategoryRequest {
  */
 export interface CreateProducerRequest {
     /**
-     * 姓
+     * 姓(16文字まで)
      * @type {string}
      * @memberof CreateProducerRequest
      */
     'lastname': string;
     /**
-     * 名
+     * 名(16文字まで)
      * @type {string}
      * @memberof CreateProducerRequest
      */
     'firstname': string;
     /**
-     * 姓(かな)
+     * 姓(かな)(ひらがな,32文字まで)
      * @type {string}
      * @memberof CreateProducerRequest
      */
     'lastnameKana': string;
     /**
-     * 名(かな)
+     * 名(かな)(ひらがな,32文字まで)
      * @type {string}
      * @memberof CreateProducerRequest
      */
     'firstnameKana': string;
     /**
-     * 店舗名
+     * 店舗名(64文字まで)
      * @type {string}
      * @memberof CreateProducerRequest
      */
@@ -371,13 +530,13 @@ export interface CreateProducerRequest {
      * @type {string}
      * @memberof CreateProducerRequest
      */
-    'thumbnailUrl': string;
+    'thumbnailUrl'?: string;
     /**
      * ヘッダー画像URL
      * @type {string}
      * @memberof CreateProducerRequest
      */
-    'headerUrl': string;
+    'headerUrl'?: string;
     /**
      * メールアドレス
      * @type {string}
@@ -385,37 +544,37 @@ export interface CreateProducerRequest {
      */
     'email': string;
     /**
-     * 電話番号
+     * 電話番号 (国際番号 + 電話番号)
      * @type {string}
      * @memberof CreateProducerRequest
      */
     'phoneNumber': string;
     /**
-     * 郵便番号
+     * 郵便番号(ハイフンなし)
      * @type {string}
      * @memberof CreateProducerRequest
      */
     'postalCode': string;
     /**
-     * 都道府県
+     * 都道府県(32文字まで)
      * @type {string}
      * @memberof CreateProducerRequest
      */
     'prefecture': string;
     /**
-     * 市区町村
+     * 市区町村(32文字まで)
      * @type {string}
      * @memberof CreateProducerRequest
      */
     'city': string;
     /**
-     * 町名・番地
+     * 町名・番地(64文字まで)
      * @type {string}
      * @memberof CreateProducerRequest
      */
     'addressLine1': string;
     /**
-     * ビル名・号室など
+     * ビル名・号室など(64文字まで)
      * @type {string}
      * @memberof CreateProducerRequest
      */
@@ -428,13 +587,13 @@ export interface CreateProducerRequest {
  */
 export interface CreateProductRequest {
     /**
-     * 商品名
+     * 商品名(128文字まで)
      * @type {string}
      * @memberof CreateProductRequest
      */
     'name': string;
     /**
-     * 商品説明
+     * 商品説明(20000文字まで)
      * @type {string}
      * @memberof CreateProductRequest
      */
@@ -464,37 +623,37 @@ export interface CreateProductRequest {
      */
     'public': boolean;
     /**
-     * 在庫数
+     * 在庫数(0以上)
      * @type {number}
      * @memberof CreateProductRequest
      */
     'inventory': number;
     /**
-     * 重量(kg:少数第1位まで)
+     * 重量(0以上,kg単位:少数第1位まで)
      * @type {number}
      * @memberof CreateProductRequest
      */
     'weight': number;
     /**
-     * 数量単位
+     * 数量単位(16文字まで)
      * @type {string}
      * @memberof CreateProductRequest
      */
     'itemUnit': string;
     /**
-     * 数量単位説明
+     * 数量単位説明(64文字まで)
      * @type {string}
      * @memberof CreateProductRequest
      */
     'itemDescription': string;
     /**
-     * 
+     * メディア一覧(8つまで)
      * @type {Array<ProductsResponseMedia>}
      * @memberof CreateProductRequest
      */
     'media': Array<ProductsResponseMedia>;
     /**
-     * 販売価格
+     * 販売価格(0以上)
      * @type {number}
      * @memberof CreateProductRequest
      */
@@ -506,31 +665,31 @@ export interface CreateProductRequest {
      */
     'deliveryType': number;
     /**
-     * 箱の占有率(サイズ:60)
+     * 箱の占有率(サイズ:60)(0以上,100以下)
      * @type {number}
      * @memberof CreateProductRequest
      */
     'box60Rate': number;
     /**
-     * 箱の占有率(サイズ:80)
+     * 箱の占有率(サイズ:80)(0以上,100以下)
      * @type {number}
      * @memberof CreateProductRequest
      */
     'box80Rate': number;
     /**
-     * 箱の占有率(サイズ:100)
+     * 箱の占有率(サイズ:100)(0以上,100以下)
      * @type {number}
      * @memberof CreateProductRequest
      */
     'box100Rate': number;
     /**
-     * 原産地(都道府県)
+     * 原産地(都道府県)(32文字まで)
      * @type {string}
      * @memberof CreateProductRequest
      */
     'originPrefecture': string;
     /**
-     * 原産地(市区町村)
+     * 原産地(市区町村)(32文字まで)
      * @type {string}
      * @memberof CreateProductRequest
      */
@@ -543,7 +702,7 @@ export interface CreateProductRequest {
  */
 export interface CreateProductTypeRequest {
     /**
-     * 品目名
+     * 品目名(32文字まで)
      * @type {string}
      * @memberof CreateProductTypeRequest
      */
@@ -635,7 +794,7 @@ export interface ProducerResponse {
      */
     'email': string;
     /**
-     * 電話番号
+     * 電話番号 (国際番号 + 電話番号)
      * @type {string}
      * @memberof ProducerResponse
      */
@@ -707,103 +866,103 @@ export interface ProducersResponseProducers {
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'id'?: string;
+    'id': string;
     /**
      * 姓
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'lastname'?: string;
+    'lastname': string;
     /**
      * 名
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'firstname'?: string;
+    'firstname': string;
     /**
      * 姓(かな)
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'lastnameKana'?: string;
+    'lastnameKana': string;
     /**
      * 名(かな)
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'firstnameKana'?: string;
+    'firstnameKana': string;
     /**
      * 店舗名
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'storeName'?: string;
+    'storeName': string;
     /**
      * ヘッダー画像URL
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'headerUrl'?: string;
+    'headerUrl': string;
     /**
      * サムネイルURL
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'thumbnailUrl'?: string;
+    'thumbnailUrl': string;
     /**
      * メールアドレス
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'email'?: string;
+    'email': string;
     /**
-     * 電話番号
+     * 電話番号 (国際番号 + 電話番号)
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'phoneNumber'?: string;
+    'phoneNumber': string;
     /**
      * 郵便番号
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'postalCode'?: string;
+    'postalCode': string;
     /**
      * 都道府県
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'prefecture'?: string;
+    'prefecture': string;
     /**
      * 市区町村
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'city'?: string;
+    'city': string;
     /**
      * 町名・番地
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'addressLine1'?: string;
+    'addressLine1': string;
     /**
      * ビル名・号室など
      * @type {string}
      * @memberof ProducersResponseProducers
      */
-    'addressLine2'?: string;
+    'addressLine2': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof ProducersResponseProducers
      */
-    'createdAt'?: number;
+    'createdAt': number;
     /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof ProducersResponseProducers
      */
-    'updatedAt'?: number;
+    'updatedAt': number;
 }
 /**
  * 
@@ -1017,31 +1176,31 @@ export interface ProductTypesResponseProductTypes {
      * @type {string}
      * @memberof ProductTypesResponseProductTypes
      */
-    'id'?: string;
+    'id': string;
     /**
      * 品目名
      * @type {string}
      * @memberof ProductTypesResponseProductTypes
      */
-    'name'?: string;
+    'name': string;
     /**
      * 商品種別ID
      * @type {string}
      * @memberof ProductTypesResponseProductTypes
      */
-    'categoryId'?: string;
+    'categoryId': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof ProductTypesResponseProductTypes
      */
-    'createdAt'?: number;
+    'createdAt': number;
     /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof ProductTypesResponseProductTypes
      */
-    'updatedAt'?: number;
+    'updatedAt': number;
 }
 /**
  * 
@@ -1057,53 +1216,22 @@ export interface ProductsResponse {
     'products': Array<ProductsResponseProducts>;
     /**
      * 商品種別一覧
-     * @type {Array<ProductsResponseCategories>}
+     * @type {Array<CategoriesResponseCategories>}
      * @memberof ProductsResponse
      */
-    'categories': Array<ProductsResponseCategories>;
+    'categories': Array<CategoriesResponseCategories>;
     /**
      * 品目一覧
-     * @type {Array<ProductsResponseProductTypes>}
+     * @type {Array<ProductTypesResponseProductTypes>}
      * @memberof ProductsResponse
      */
-    'productTypes': Array<ProductsResponseProductTypes>;
+    'productTypes': Array<ProductTypesResponseProductTypes>;
     /**
      * 生産者一覧
      * @type {Array<ProductsResponseProducers>}
      * @memberof ProductsResponse
      */
     'producers'?: Array<ProductsResponseProducers>;
-}
-/**
- * 
- * @export
- * @interface ProductsResponseCategories
- */
-export interface ProductsResponseCategories {
-    /**
-     * 商品種別ID
-     * @type {string}
-     * @memberof ProductsResponseCategories
-     */
-    'id': string;
-    /**
-     * カテゴリ名
-     * @type {string}
-     * @memberof ProductsResponseCategories
-     */
-    'name': string;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ProductsResponseCategories
-     */
-    'createdAt': number;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ProductsResponseCategories
-     */
-    'updatedAt': number;
 }
 /**
  * 
@@ -1230,43 +1358,6 @@ export interface ProductsResponseProducers {
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof ProductsResponseProducers
-     */
-    'updatedAt': number;
-}
-/**
- * 
- * @export
- * @interface ProductsResponseProductTypes
- */
-export interface ProductsResponseProductTypes {
-    /**
-     * 品目ID
-     * @type {string}
-     * @memberof ProductsResponseProductTypes
-     */
-    'id': string;
-    /**
-     * 品目名
-     * @type {string}
-     * @memberof ProductsResponseProductTypes
-     */
-    'name': string;
-    /**
-     * 商品種別ID
-     * @type {string}
-     * @memberof ProductsResponseProductTypes
-     */
-    'categoryId': string;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ProductsResponseProductTypes
-     */
-    'createdAt': number;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ProductsResponseProductTypes
      */
     'updatedAt': number;
 }
@@ -1435,7 +1526,7 @@ export interface RefreshAuthTokenRequest {
  */
 export interface SignInRequest {
     /**
-     * ユーザー名 (メールアドレス)
+     * ユーザー名(メールアドレス)
      * @type {string}
      * @memberof SignInRequest
      */
@@ -1473,13 +1564,13 @@ export interface UpdateAuthPasswordRequest {
      */
     'oldPassword': string;
     /**
-     * 新しいパスワード (8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
+     * 新しいパスワード(8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
      * @type {string}
      * @memberof UpdateAuthPasswordRequest
      */
     'newPassword': string;
     /**
-     * パスワード (確認用)
+     * パスワード(確認用)
      * @type {string}
      * @memberof UpdateAuthPasswordRequest
      */
@@ -1492,7 +1583,7 @@ export interface UpdateAuthPasswordRequest {
  */
 export interface UpdateCategoryRequest {
     /**
-     * カテゴリ名
+     * カテゴリ名(32文字まで)
      * @type {string}
      * @memberof UpdateCategoryRequest
      */
@@ -1501,17 +1592,42 @@ export interface UpdateCategoryRequest {
 /**
  * 
  * @export
+ * @interface UpdateContactRequest
+ */
+export interface UpdateContactRequest {
+    /**
+     * 対応状況(1:ToDo,2:進行中,3:完了,4:対応不要)
+     * @type {number}
+     * @memberof UpdateContactRequest
+     */
+    'status': number;
+    /**
+     * 優先度(1:低,2:中,3:高)
+     * @type {number}
+     * @memberof UpdateContactRequest
+     */
+    'priority': number;
+    /**
+     * 対応メモ(2000文字まで)
+     * @type {string}
+     * @memberof UpdateContactRequest
+     */
+    'note': string;
+}
+/**
+ * 
+ * @export
  * @interface UpdateProductRequest
  */
 export interface UpdateProductRequest {
     /**
-     * 商品名
+     * 商品名(128文字まで)
      * @type {string}
      * @memberof UpdateProductRequest
      */
     'name': string;
     /**
-     * 商品説明
+     * 商品説明(20000文字まで)
      * @type {string}
      * @memberof UpdateProductRequest
      */
@@ -1541,37 +1657,37 @@ export interface UpdateProductRequest {
      */
     'public': boolean;
     /**
-     * 在庫数
+     * 在庫数(0以上)
      * @type {number}
      * @memberof UpdateProductRequest
      */
     'inventory': number;
     /**
-     * 重量(kg:少数第1位まで)
+     * 重量(0以上,kg単位:少数第1位まで)
      * @type {number}
      * @memberof UpdateProductRequest
      */
     'weight': number;
     /**
-     * 数量単位
+     * 数量単位(16文字まで)
      * @type {string}
      * @memberof UpdateProductRequest
      */
     'itemUnit': string;
     /**
-     * 数量単位説明
+     * 数量単位説明(64文字まで)
      * @type {string}
      * @memberof UpdateProductRequest
      */
     'itemDescription': string;
     /**
-     * 
+     * メディア一覧(8つまで)
      * @type {Array<ProductsResponseMedia>}
      * @memberof UpdateProductRequest
      */
     'media': Array<ProductsResponseMedia>;
     /**
-     * 販売価格
+     * 販売価格(0以上)
      * @type {number}
      * @memberof UpdateProductRequest
      */
@@ -1583,31 +1699,31 @@ export interface UpdateProductRequest {
      */
     'deliveryType': number;
     /**
-     * 箱の占有率(サイズ:60)
+     * 箱の占有率(サイズ:60)(0以上,100以下)
      * @type {number}
      * @memberof UpdateProductRequest
      */
     'box60Rate': number;
     /**
-     * 箱の占有率(サイズ:80)
+     * 箱の占有率(サイズ:80)(0以上,100以下)
      * @type {number}
      * @memberof UpdateProductRequest
      */
     'box80Rate': number;
     /**
-     * 箱の占有率(サイズ:100)
+     * 箱の占有率(サイズ:100)(0以上,100以下)
      * @type {number}
      * @memberof UpdateProductRequest
      */
     'box100Rate': number;
     /**
-     * 原産地(都道府県)
+     * 原産地(都道府県)(32文字まで)
      * @type {string}
      * @memberof UpdateProductRequest
      */
     'originPrefecture': string;
     /**
-     * 原産地(市区町村)
+     * 原産地(市区町村)(32文字まで)
      * @type {string}
      * @memberof UpdateProductRequest
      */
@@ -1620,24 +1736,11 @@ export interface UpdateProductRequest {
  */
 export interface UpdateProductTypeRequest {
     /**
-     * 品目名
+     * 品目名(32文字まで)
      * @type {string}
      * @memberof UpdateProductTypeRequest
      */
     'name': string;
-}
-/**
- * 
- * @export
- * @interface UploadCoordinatorHeaderRequest
- */
-export interface UploadCoordinatorHeaderRequest {
-    /**
-     * 仲介者ヘッダー画像
-     * @type {any}
-     * @memberof UploadCoordinatorHeaderRequest
-     */
-    'image'?: any;
 }
 /**
  * 
@@ -1651,45 +1754,6 @@ export interface UploadImageResponse {
      * @memberof UploadImageResponse
      */
     'url': string;
-}
-/**
- * 
- * @export
- * @interface UploadProducerHeaderRequest
- */
-export interface UploadProducerHeaderRequest {
-    /**
-     * 生産者ヘッダー画像
-     * @type {any}
-     * @memberof UploadProducerHeaderRequest
-     */
-    'image'?: any;
-}
-/**
- * 
- * @export
- * @interface V1UploadCoordinatorHeaderRequest
- */
-export interface V1UploadCoordinatorHeaderRequest {
-    /**
-     * 仲介者ヘッダー画像
-     * @type {any}
-     * @memberof V1UploadCoordinatorHeaderRequest
-     */
-    'image'?: any;
-}
-/**
- * 
- * @export
- * @interface V1UploadProducerHeaderRequest
- */
-export interface V1UploadProducerHeaderRequest {
-    /**
-     * 生産者ヘッダー画像
-     * @type {any}
-     * @memberof V1UploadProducerHeaderRequest
-     */
-    'image'?: any;
 }
 /**
  * 
@@ -2849,6 +2913,275 @@ export class CategoryApi extends BaseAPI {
 
 
 /**
+ * ContactApi - axios parameter creator
+ * @export
+ */
+export const ContactApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary お問い合わせ取得
+         * @param {string} contactId お問い合わせID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetContact: async (contactId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'contactId' is not null or undefined
+            assertParamExists('v1GetContact', 'contactId', contactId)
+            const localVarPath = `/v1/contacts/{contactId}`
+                .replace(`{${"contactId"}}`, encodeURIComponent(String(contactId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary お問い合わせ一覧取得
+         * @param {number} [limit] 取得上限数
+         * @param {number} [offset] 取得開始位置
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListContacts: async (limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/contacts`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary お問い合わせ更新
+         * @param {string} contactId お問い合わせID
+         * @param {UpdateContactRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateContact: async (contactId: string, body: UpdateContactRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'contactId' is not null or undefined
+            assertParamExists('v1UpdateContact', 'contactId', contactId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpdateContact', 'body', body)
+            const localVarPath = `/v1/contacts/{contactId}`
+                .replace(`{${"contactId"}}`, encodeURIComponent(String(contactId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ContactApi - functional programming interface
+ * @export
+ */
+export const ContactApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ContactApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary お問い合わせ取得
+         * @param {string} contactId お問い合わせID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetContact(contactId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ContactResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetContact(contactId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary お問い合わせ一覧取得
+         * @param {number} [limit] 取得上限数
+         * @param {number} [offset] 取得開始位置
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ListContacts(limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ContactsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListContacts(limit, offset, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary お問い合わせ更新
+         * @param {string} contactId お問い合わせID
+         * @param {UpdateContactRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UpdateContact(contactId: string, body: UpdateContactRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateContact(contactId, body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * ContactApi - factory interface
+ * @export
+ */
+export const ContactApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ContactApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary お問い合わせ取得
+         * @param {string} contactId お問い合わせID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetContact(contactId: string, options?: any): AxiosPromise<ContactResponse> {
+            return localVarFp.v1GetContact(contactId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary お問い合わせ一覧取得
+         * @param {number} [limit] 取得上限数
+         * @param {number} [offset] 取得開始位置
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListContacts(limit?: number, offset?: number, options?: any): AxiosPromise<ContactsResponse> {
+            return localVarFp.v1ListContacts(limit, offset, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary お問い合わせ更新
+         * @param {string} contactId お問い合わせID
+         * @param {UpdateContactRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateContact(contactId: string, body: UpdateContactRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1UpdateContact(contactId, body, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ContactApi - object-oriented interface
+ * @export
+ * @class ContactApi
+ * @extends {BaseAPI}
+ */
+export class ContactApi extends BaseAPI {
+    /**
+     * 
+     * @summary お問い合わせ取得
+     * @param {string} contactId お問い合わせID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContactApi
+     */
+    public v1GetContact(contactId: string, options?: AxiosRequestConfig) {
+        return ContactApiFp(this.configuration).v1GetContact(contactId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary お問い合わせ一覧取得
+     * @param {number} [limit] 取得上限数
+     * @param {number} [offset] 取得開始位置
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContactApi
+     */
+    public v1ListContacts(limit?: number, offset?: number, options?: AxiosRequestConfig) {
+        return ContactApiFp(this.configuration).v1ListContacts(limit, offset, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary お問い合わせ更新
+     * @param {string} contactId お問い合わせID
+     * @param {UpdateContactRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContactApi
+     */
+    public v1UpdateContact(contactId: string, body: UpdateContactRequest, options?: AxiosRequestConfig) {
+        return ContactApiFp(this.configuration).v1UpdateContact(contactId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
  * CoordinatorApi - axios parameter creator
  * @export
  */
@@ -2856,8 +3189,51 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
     return {
         /**
          * 
+         * @summary 仲介者ヘッダー画像アップロード
+         * @param {any} [image] 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UploadCoordinatorHeader: async (image?: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/upload/coordinators/header`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            if (image !== undefined) { 
+                localVarFormParams.append('image', image as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 仲介者サムネイルアップロード
-         * @param {any} [thumbnail] 仲介者サムネイル
+         * @param {any} [thumbnail] 仲介者サムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2909,8 +3285,19 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary 仲介者ヘッダー画像アップロード
+         * @param {any} [image] 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UploadCoordinatorHeader(image?: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorHeader(image, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary 仲介者サムネイルアップロード
-         * @param {any} [thumbnail] 仲介者サムネイル
+         * @param {any} [thumbnail] 仲介者サムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2930,8 +3317,18 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
     return {
         /**
          * 
+         * @summary 仲介者ヘッダー画像アップロード
+         * @param {any} [image] 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UploadCoordinatorHeader(image?: any, options?: any): AxiosPromise<UploadImageResponse> {
+            return localVarFp.v1UploadCoordinatorHeader(image, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary 仲介者サムネイルアップロード
-         * @param {any} [thumbnail] 仲介者サムネイル
+         * @param {any} [thumbnail] 仲介者サムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2950,8 +3347,20 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
 export class CoordinatorApi extends BaseAPI {
     /**
      * 
+     * @summary 仲介者ヘッダー画像アップロード
+     * @param {any} [image] 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CoordinatorApi
+     */
+    public v1UploadCoordinatorHeader(image?: any, options?: AxiosRequestConfig) {
+        return CoordinatorApiFp(this.configuration).v1UploadCoordinatorHeader(image, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary 仲介者サムネイルアップロード
-     * @param {any} [thumbnail] 仲介者サムネイル
+     * @param {any} [thumbnail] 仲介者サムネイル(png,jpeg形式,10MBまで)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CoordinatorApi
@@ -3092,8 +3501,51 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
+         * @summary 生産者ヘッダー画像アップロード
+         * @param {any} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UploadProducerHeader: async (image?: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/upload/producers/header`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            if (image !== undefined) { 
+                localVarFormParams.append('image', image as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 生産者サムネイルアップロード
-         * @param {any} [thumbnail] 生産者サムネイル
+         * @param {any} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -3179,8 +3631,19 @@ export const ProducerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary 生産者ヘッダー画像アップロード
+         * @param {any} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UploadProducerHeader(image?: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProducerHeader(image, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary 生産者サムネイルアップロード
-         * @param {any} [thumbnail] 生産者サムネイル
+         * @param {any} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -3231,8 +3694,18 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
+         * @summary 生産者ヘッダー画像アップロード
+         * @param {any} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UploadProducerHeader(image?: any, options?: any): AxiosPromise<UploadImageResponse> {
+            return localVarFp.v1UploadProducerHeader(image, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary 生産者サムネイルアップロード
-         * @param {any} [thumbnail] 生産者サムネイル
+         * @param {any} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -3288,8 +3761,20 @@ export class ProducerApi extends BaseAPI {
 
     /**
      * 
+     * @summary 生産者ヘッダー画像アップロード
+     * @param {any} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProducerApi
+     */
+    public v1UploadProducerHeader(image?: any, options?: AxiosRequestConfig) {
+        return ProducerApiFp(this.configuration).v1UploadProducerHeader(image, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary 生産者サムネイルアップロード
-     * @param {any} [thumbnail] 生産者サムネイル
+     * @param {any} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProducerApi

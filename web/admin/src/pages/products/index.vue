@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="d-flex align-center mb-4">
-      <p class="text-h6 ma-0">商品管理</p>
+      <v-card-title>商品管理</v-card-title>
       <v-spacer />
       <v-text-field
         v-model="searchWord"

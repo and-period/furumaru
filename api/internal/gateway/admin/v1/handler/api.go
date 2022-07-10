@@ -9,6 +9,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
+	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -41,6 +42,7 @@ type Params struct {
 	Storage   storage.Bucket
 	User      user.Service
 	Store     store.Service
+	Messenger messenger.Service
 }
 
 type handler struct {
@@ -52,6 +54,7 @@ type handler struct {
 	enforcer    rbac.Enforcer
 	user        user.Service
 	store       store.Service
+	messenger   messenger.Service
 }
 
 type options struct {
@@ -82,6 +85,7 @@ func NewHandler(params *Params, opts ...Option) Handler {
 		enforcer:    params.Enforcer,
 		user:        params.User,
 		store:       params.Store,
+		messenger:   params.Messenger,
 	}
 }
 
@@ -98,6 +102,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.categoryRoutes(v1.Group("/categories"))
 	h.productTypeRoutes(v1.Group("/categories/:categoryId/product-types"))
 	h.productRoutes(v1.Group("/products"))
+	h.contactRoutes(v1.Group("/contacts"))
 	v1.GET("/categories/-/product-types", h.authentication(), h.ListProductTypes)
 	h.uploadRoutes(v1.Group("/upload"))
 }

@@ -1,5 +1,5 @@
 <template>
   <div>
-    <p>ライブ配信</p>
+    <v-card-title>ライブ配信</v-card-title>
   </div>
 </template>

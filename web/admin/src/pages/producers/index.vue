@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p class="text-h6">生産者管理</p>
+    <v-card-title>生産者管理</v-card-title>
     <div class="d-flex">
       <v-spacer />
       <v-btn outlined @click="handleClickAddButton">
