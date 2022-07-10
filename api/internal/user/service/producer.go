@@ -12,7 +12,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (s *userService) ListProducers(ctx context.Context, in *user.ListProducersInput) (entity.Producers, error) {
+func (s *service) ListProducers(ctx context.Context, in *user.ListProducersInput) (entity.Producers, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
@@ -24,7 +24,15 @@ func (s *userService) ListProducers(ctx context.Context, in *user.ListProducersI
 	return producers, exception.InternalError(err)
 }
 
-func (s *userService) GetProducer(ctx context.Context, in *user.GetProducerInput) (*entity.Producer, error) {
+func (s *service) MultiGetProducers(ctx context.Context, in *user.MultiGetProducersInput) (entity.Producers, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	producers, err := s.db.Producer.MultiGet(ctx, in.ProducerIDs)
+	return producers, exception.InternalError(err)
+}
+
+func (s *service) GetProducer(ctx context.Context, in *user.GetProducerInput) (*entity.Producer, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
@@ -32,7 +40,7 @@ func (s *userService) GetProducer(ctx context.Context, in *user.GetProducerInput
 	return producer, exception.InternalError(err)
 }
 
-func (s *userService) CreateProducer(ctx context.Context, in *user.CreateProducerInput) (*entity.Producer, error) {
+func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInput) (*entity.Producer, error) {
 	const size = 8
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
@@ -67,7 +75,7 @@ func (s *userService) CreateProducer(ctx context.Context, in *user.CreateProduce
 	s.waitGroup.Add(1)
 	go func() {
 		defer s.waitGroup.Done()
-		err := s.notifyRegisterAdmin(context.Background(), producer.Name(), producer.Email, password)
+		err := s.notifyRegisterAdmin(context.Background(), producer.ID, password)
 		if err != nil {
 			s.logger.Warn("Failed to notify register admin", zap.String("producerId", producer.ID), zap.Error(err))
 		}

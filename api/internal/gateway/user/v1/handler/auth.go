@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *apiV1Handler) authRoutes(rg *gin.RouterGroup) {
+func (h *handler) authRoutes(rg *gin.RouterGroup) {
 	rg.GET("", h.GetAuth)
 	rg.POST("", h.SignIn)
 	rg.DELETE("", h.SignOut)
@@ -29,7 +29,7 @@ func (h *apiV1Handler) authRoutes(rg *gin.RouterGroup) {
 	rg.POST("/user/verified", h.VerifyAuth)
 }
 
-func (h *apiV1Handler) GetAuth(ctx *gin.Context) {
+func (h *handler) GetAuth(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
 		unauthorized(ctx, err)
@@ -51,7 +51,7 @@ func (h *apiV1Handler) GetAuth(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *apiV1Handler) SignIn(ctx *gin.Context) {
+func (h *handler) SignIn(ctx *gin.Context) {
 	req := &request.SignInRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
@@ -74,7 +74,7 @@ func (h *apiV1Handler) SignIn(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *apiV1Handler) SignOut(ctx *gin.Context) {
+func (h *handler) SignOut(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
 		unauthorized(ctx, err)
@@ -91,7 +91,7 @@ func (h *apiV1Handler) SignOut(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
-func (h *apiV1Handler) RefreshAuthToken(ctx *gin.Context) {
+func (h *handler) RefreshAuthToken(ctx *gin.Context) {
 	req := &request.RefreshAuthTokenRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
@@ -113,7 +113,7 @@ func (h *apiV1Handler) RefreshAuthToken(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *apiV1Handler) InitializeAuth(ctx *gin.Context) {
+func (h *handler) InitializeAuth(ctx *gin.Context) {
 	req := &request.InitializeAuthRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
@@ -134,7 +134,7 @@ func (h *apiV1Handler) InitializeAuth(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
-func (h *apiV1Handler) UpdateAuthEmail(ctx *gin.Context) {
+func (h *handler) UpdateAuthEmail(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
 		unauthorized(ctx, err)
@@ -158,7 +158,7 @@ func (h *apiV1Handler) UpdateAuthEmail(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
-func (h *apiV1Handler) VerifyAuthEmail(ctx *gin.Context) {
+func (h *handler) VerifyAuthEmail(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
 		unauthorized(ctx, err)
@@ -182,7 +182,7 @@ func (h *apiV1Handler) VerifyAuthEmail(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
-func (h *apiV1Handler) UpdateAuthPassword(ctx *gin.Context) {
+func (h *handler) UpdateAuthPassword(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
 		unauthorized(ctx, err)
@@ -208,7 +208,7 @@ func (h *apiV1Handler) UpdateAuthPassword(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
-func (h *apiV1Handler) ForgotAuthPassword(ctx *gin.Context) {
+func (h *handler) ForgotAuthPassword(ctx *gin.Context) {
 	req := &request.ForgotAuthPasswordRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
@@ -226,7 +226,7 @@ func (h *apiV1Handler) ForgotAuthPassword(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
-func (h *apiV1Handler) ResetAuthPassword(ctx *gin.Context) {
+func (h *handler) ResetAuthPassword(ctx *gin.Context) {
 	req := &request.ResetAuthPasswordRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
@@ -247,7 +247,7 @@ func (h *apiV1Handler) ResetAuthPassword(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
-func (h *apiV1Handler) GetAuthUser(ctx *gin.Context) {
+func (h *handler) GetAuthUser(ctx *gin.Context) {
 	in := &user.GetUserInput{
 		UserID: getUserID(ctx),
 	}
@@ -263,7 +263,7 @@ func (h *apiV1Handler) GetAuthUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *apiV1Handler) CreateAuth(ctx *gin.Context) {
+func (h *handler) CreateAuth(ctx *gin.Context) {
 	req := &request.CreateAuthRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
@@ -288,7 +288,7 @@ func (h *apiV1Handler) CreateAuth(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *apiV1Handler) DeleteAuth(ctx *gin.Context) {
+func (h *handler) DeleteAuth(ctx *gin.Context) {
 	in := &user.DeleteUserInput{
 		UserID: getUserID(ctx),
 	}
@@ -300,7 +300,7 @@ func (h *apiV1Handler) DeleteAuth(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
-func (h *apiV1Handler) CreateAuthWithOAuth(ctx *gin.Context) {
+func (h *handler) CreateAuthWithOAuth(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
 		unauthorized(ctx, err)
@@ -322,7 +322,7 @@ func (h *apiV1Handler) CreateAuthWithOAuth(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *apiV1Handler) VerifyAuth(ctx *gin.Context) {
+func (h *handler) VerifyAuth(ctx *gin.Context) {
 	req := &request.VerifyAuthRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)

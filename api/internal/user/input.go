@@ -34,6 +34,10 @@ type UpdateAdminPasswordInput struct {
 	PasswordConfirmation string `validate:"required,eqfield=NewPassword"`
 }
 
+type GetAdminInput struct {
+	AdminID string `validate:"required"`
+}
+
 type ListAdministratorsInput struct {
 	Limit  int64 `validate:"required,max=200"`
 	Offset int64 `validate:"min=0"`
@@ -55,7 +59,6 @@ type CreateAdministratorInput struct {
 type ListCoordinatorsInput struct {
 	Limit  int64 `validate:"required,max=200"`
 	Offset int64 `validate:"min=0"`
-}
 
 type GetCoordinatorInput struct {
 	CoordinatorID string `validate:"required"`
@@ -85,6 +88,10 @@ type CreateCoordinatorInput struct {
 type ListProducersInput struct {
 	Limit  int64 `validate:"required,max=200"`
 	Offset int64 `validate:"min=0"`
+}
+
+type MultiGetProducersInput struct {
+	ProducerIDs []string `validate:"omitempty,dive,required"`
 }
 
 type GetProducerInput struct {
@@ -123,6 +130,10 @@ type GetUserAuthInput struct {
 
 type RefreshUserTokenInput struct {
 	RefreshToken string `validate:"required"`
+}
+
+type MultiGetUsersInput struct {
+	UserIDs []string `validate:"omitempty,dive,required"`
 }
 
 type GetUserInput struct {

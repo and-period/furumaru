@@ -8,8 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
-//nolint:revive
-type UserService interface {
+type Service interface {
 	// 管理者サインイン
 	SignInAdmin(ctx context.Context, in *SignInAdminInput) (*entity.AdminAuth, error)
 	// 管理者サインアウト
@@ -24,6 +23,8 @@ type UserService interface {
 	VerifyAdminEmail(ctx context.Context, in *VerifyAdminEmailInput) error
 	// 管理者パスワード更新
 	UpdateAdminPassword(ctx context.Context, in *UpdateAdminPasswordInput) error
+	// 管理者取得
+	GetAdmin(ctx context.Context, in *GetAdminInput) (*entity.Admin, error)
 	// システム管理者一覧取得
 	ListAdministrators(ctx context.Context, in *ListAdministratorsInput) (entity.Administrators, error)
 	// システム管理者取得
@@ -38,6 +39,8 @@ type UserService interface {
 	CreateCoordinator(ctx context.Context, in *CreateCoordinatorInput) (*entity.Coordinator, error)
 	// 生産者一覧取得
 	ListProducers(ctx context.Context, in *ListProducersInput) (entity.Producers, error)
+	// 生産者一覧取得(ID指定)
+	MultiGetProducers(ctx context.Context, in *MultiGetProducersInput) (entity.Producers, error)
 	// 生産者取得
 	GetProducer(ctx context.Context, in *GetProducerInput) (*entity.Producer, error)
 	// 生産者登録
@@ -50,6 +53,8 @@ type UserService interface {
 	GetUserAuth(ctx context.Context, in *GetUserAuthInput) (*entity.UserAuth, error)
 	// 購入者アクセストークン更新
 	RefreshUserToken(ctx context.Context, in *RefreshUserTokenInput) (*entity.UserAuth, error)
+	// 購入者一覧取得(ID指定)
+	MultiGetUsers(ctx context.Context, in *MultiGetUsersInput) (entity.Users, error)
 	// 購入者取得
 	GetUser(ctx context.Context, in *GetUserInput) (*entity.User, error)
 	// 購入者登録 (メールアドレス/SMS認証)

@@ -12,7 +12,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (s *userService) ListCoordinators(
+func (s *service) ListCoordinators(
 	ctx context.Context, in *user.ListCoordinatorsInput,
 ) (entity.Coordinators, error) {
 	if err := s.validator.Struct(in); err != nil {
@@ -26,7 +26,7 @@ func (s *userService) ListCoordinators(
 	return coordinators, exception.InternalError(err)
 }
 
-func (s *userService) GetCoordinator(
+func (s *service) GetCoordinator(
 	ctx context.Context, in *user.GetCoordinatorInput,
 ) (*entity.Coordinator, error) {
 	if err := s.validator.Struct(in); err != nil {
@@ -36,7 +36,7 @@ func (s *userService) GetCoordinator(
 	return coordinator, exception.InternalError(err)
 }
 
-func (s *userService) CreateCoordinator(
+func (s *service) CreateCoordinator(
 	ctx context.Context, in *user.CreateCoordinatorInput,
 ) (*entity.Coordinator, error) {
 	const size = 8

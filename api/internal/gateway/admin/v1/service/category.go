@@ -6,14 +6,14 @@ import (
 )
 
 type Category struct {
-	*response.Category
+	response.Category
 }
 
 type Categories []*Category
 
 func NewCategory(category *entity.Category) *Category {
 	return &Category{
-		Category: &response.Category{
+		Category: response.Category{
 			ID:        category.ID,
 			Name:      category.Name,
 			CreatedAt: category.CreatedAt.Unix(),
@@ -23,7 +23,7 @@ func NewCategory(category *entity.Category) *Category {
 }
 
 func (c *Category) Response() *response.Category {
-	return c.Category
+	return &c.Category
 }
 
 func NewCategories(categories entity.Categories) Categories {

@@ -25,7 +25,7 @@ func TestCategory(t *testing.T) {
 				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &Category{
-				Category: &response.Category{
+				Category: response.Category{
 					ID:        "category-id",
 					Name:      "野菜",
 					CreatedAt: 1640962800,
@@ -53,7 +53,7 @@ func TestCategory_Response(t *testing.T) {
 		{
 			name: "success",
 			category: &Category{
-				Category: &response.Category{
+				Category: response.Category{
 					ID:        "category-id",
 					Name:      "野菜",
 					CreatedAt: 1640962800,
@@ -96,7 +96,7 @@ func TestCategories(t *testing.T) {
 			},
 			expect: Categories{
 				{
-					Category: &response.Category{
+					Category: response.Category{
 						ID:        "category-id",
 						Name:      "野菜",
 						CreatedAt: 1640962800,
@@ -126,7 +126,7 @@ func TestCategories_Response(t *testing.T) {
 			name: "success",
 			categories: Categories{
 				{
-					Category: &response.Category{
+					Category: response.Category{
 						ID:        "category-id",
 						Name:      "野菜",
 						CreatedAt: 1640962800,

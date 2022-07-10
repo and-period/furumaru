@@ -19,6 +19,10 @@ tags:
   description: 商品種別関連
 - name: ProductType
   description: 品目関連
+- name: Product
+  description: 商品関連
+- name: Contact
+  description: お問い合わせ関連
 paths:
   # Auth
   /v1/auth:
@@ -53,9 +57,22 @@ paths:
     $ref: './paths/v1/categories/_categoryId/product-types/index.yaml'
   /v1/categories/{categoryId}/product-types/{productTypeId}:
     $ref: './paths/v1/categories/_categoryId/product-types/_productTypeId/index.yaml'
+  /v1/products:
+    $ref: './paths/v1/products/index.yaml'
+  /v1/products/{productId}:
+    $ref: './paths/v1/products/_productId/index.yaml'
+  # Contact
+  /v1/contacts:
+    $ref: './paths/v1/contacts/index.yaml'
+  /v1/contacts/{contactId}:
+    $ref: './paths/v1/contacts/_contactId/index.yaml'
   # Upload
+  /v1/upload/coordinators/header:
+    $ref: './paths/v1/upload/coordinators/header.yaml'
   /v1/upload/coordinators/thumbnail:
     $ref: './paths/v1/upload/coordinators/thumbnail.yaml'
+  /v1/upload/producers/header:
+    $ref: './paths/v1/upload/producers/header.yaml'
   /v1/upload/producers/thumbnail:
     $ref: './paths/v1/upload/producers/thumbnail.yaml'
 components:
@@ -90,6 +107,12 @@ components:
       $ref: './components/schemas/v1/product_type.request.yaml#/createProductTypeRequest'
     v1UpdateProductTypeRequest:
       $ref: './components/schemas/v1/product_type.request.yaml#/updateProductTypeRequest'
+    v1CreateProductRequest:
+      $ref: './components/schemas/v1/product.request.yaml#/createProductRequest'
+    v1UpdateProductRequest:
+      $ref: './components/schemas/v1/product.request.yaml#/updateProductRequest'
+    v1UpdateContactRequest:
+      $ref: './components/schemas/v1/contact.request.yaml#/updateContactRequest'
     v1UploadCoordinatorThumbnailRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadCoordinatorThumbnailRequest'
     v1UploadCoordinatorHeaderRequest:
@@ -117,5 +140,13 @@ components:
       $ref: './components/schemas/v1/product_type.response.yaml#/productTypeResponse'
     v1ProductTypesResponse:
       $ref: './components/schemas/v1/product_type.response.yaml#/productTypesResponse'
+    v1ProductResponse:
+      $ref: './components/schemas/v1/product.response.yaml#/productResponse'
+    v1ProductsResponse:
+      $ref: './components/schemas/v1/product.response.yaml#/productsResponse'
+    v1ContactResponse:
+      $ref: './components/schemas/v1/contact.response.yaml#/contactResponse'
+    v1ContactsResponse:
+      $ref: './components/schemas/v1/contact.response.yaml#/contactsResponse'
     v1UploadImageResponse:
       $ref: './components/schemas/v1/upload.response.yaml#/uploadImageResponse'

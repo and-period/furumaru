@@ -18,7 +18,9 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
+	mock_messenger "github.com/and-period/furumaru/api/mock/messenger"
 	mock_storage "github.com/and-period/furumaru/api/mock/pkg/storage"
 	mock_store "github.com/and-period/furumaru/api/mock/store"
 	mock_user "github.com/and-period/furumaru/api/mock/user"
@@ -39,9 +41,10 @@ var (
 )
 
 type mocks struct {
-	storage *mock_storage.MockBucket
-	user    *mock_user.MockUserService
-	store   *mock_store.MockStoreService
+	storage   *mock_storage.MockBucket
+	user      *mock_user.MockService
+	store     *mock_store.MockService
+	messenger *mock_messenger.MockService
 }
 
 type testResponse struct {
@@ -50,7 +53,8 @@ type testResponse struct {
 }
 
 type testOptions struct {
-	now func() time.Time
+	now  func() time.Time
+	role entity.AdminRole
 }
 
 type testOption func(opt *testOptions)
@@ -63,33 +67,41 @@ func withNow(now time.Time) testOption {
 	}
 }
 
-func newMocks(ctrl *gomock.Controller) *mocks {
-	return &mocks{
-		storage: mock_storage.NewMockBucket(ctrl),
-		user:    mock_user.NewMockUserService(ctrl),
-		store:   mock_store.NewMockStoreService(ctrl),
+func withRole(role entity.AdminRole) testOption {
+	return func(opts *testOptions) {
+		opts.role = role
 	}
 }
 
-func newAPIV1Handler(mocks *mocks, opts *testOptions) APIV1Handler {
+func newMocks(ctrl *gomock.Controller) *mocks {
+	return &mocks{
+		storage:   mock_storage.NewMockBucket(ctrl),
+		user:      mock_user.NewMockService(ctrl),
+		store:     mock_store.NewMockService(ctrl),
+		messenger: mock_messenger.NewMockService(ctrl),
+	}
+}
+
+func newHandler(mocks *mocks, opts *testOptions) Handler {
 	dir := getRBACDirectory()
 	model := filepath.Join(dir, "model.conf")
 	policy := filepath.Join(dir, "policy.csv")
 	enforcer, _ := rbac.NewEnforcer(model, policy)
 
-	return &apiV1Handler{
+	return &handler{
 		now:         opts.now,
 		logger:      zap.NewNop(),
-		sharedGroup: &singleflight.Group{},
 		waitGroup:   &sync.WaitGroup{},
+		sharedGroup: &singleflight.Group{},
 		storage:     mocks.storage,
 		enforcer:    enforcer,
 		user:        mocks.user,
 		store:       mocks.store,
+		messenger:   mocks.messenger,
 	}
 }
 
-func newRoutes(h APIV1Handler, r *gin.Engine) {
+func newRoutes(h Handler, r *gin.Engine) {
 	h.Routes(r.Group(""))
 }
 
@@ -162,18 +174,19 @@ func testHTTP(
 	defer ctrl.Finish()
 	mocks := newMocks(ctrl)
 	dopts := &testOptions{
-		now: jst.Now,
+		now:  jst.Now,
+		role: entity.AdminRoleAdministrator,
 	}
 	for i := range opts {
 		opts[i](dopts)
 	}
-	h := newAPIV1Handler(mocks, dopts)
+	h := newHandler(mocks, dopts)
 	w := httptest.NewRecorder()
 	_, r := gin.CreateTestContext(w)
 	newRoutes(h, r)
 	setup(t, mocks, ctrl)
 
-	auth := &uentity.AdminAuth{AdminID: idmock, Role: uentity.AdminRoleAdministrator}
+	auth := &uentity.AdminAuth{AdminID: idmock, Role: dopts.role}
 	mocks.user.EXPECT().GetAdminAuth(gomock.Any(), gomock.Any()).Return(auth, nil).MaxTimes(1)
 
 	// test
@@ -261,9 +274,9 @@ func getFilepath(t *testing.T) string {
 	return filepath.Join(strs[0], "/api/tmp", filename)
 }
 
-func TestAPIV1Handler(t *testing.T) {
+func TestHandler(t *testing.T) {
 	t.Parallel()
-	h := NewAPIV1Handler(&Params{}, WithLogger(zap.NewNop()))
+	h := NewHandler(&Params{}, WithLogger(zap.NewNop()))
 	assert.NotNil(t, h)
 }
 

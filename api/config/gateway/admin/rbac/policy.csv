@@ -16,6 +16,13 @@ p, product_type_list, /v1/categories/*/product-types, GET, allow
 p, product_type_create, /v1/categories/*/product-types, POST, allow
 p, product_type_update, /v1/categories/*/product-types/*, PATCH, allow
 p, product_type_delete, /v1/categories/*/product-types/*, DELETE, allow
+p, product_list, /v1/products, GET, allow
+p, product_get, /v1/products/*, GET, allow
+p, product_create, /v1/products, POST, allow
+p, product_update, /v1/products/*, PATCH, allow
+p, contact_list, /v1/contacts, GET, allow
+p, contact_get, /v1/contacts/*, GET, allow
+p, contact_update, /v1/contacts/*, PATCH, allow
 
 g, administrator, auth
 g, administrator, administrator_list
@@ -34,6 +41,11 @@ g, administrator, product_type_list
 g, administrator, product_type_create
 g, administrator, product_type_update
 g, administrator, product_type_delete
+g, administrator, product_list
+g, administrator, product_get
+g, administrator, contact_list
+g, administrator, contact_get
+g, administrator, contact_update
 
 g, coordinator, auth
 g, coordinator, coordinator_uploader
@@ -43,9 +55,19 @@ g, coordinator, producer_create
 g, coordinator, producer_uploader
 g, coordinator, category_list
 g, coordinator, product_type_list
+g, coordinator, product_list
+g, coordinator, product_get
+g, coordinator, product_create
+g, coordinator, product_update
+g, coordinator, contact_list
+g, coordinator, contact_get
 
 g, producer, auth
 g, producer, producer_get
 g, producer, producer_uploader
 g, producer, category_list
 g, producer, product_type_list
+g, producer, product_list
+g, producer, product_get
+g, producer, contact_list
+g, producer, contact_get

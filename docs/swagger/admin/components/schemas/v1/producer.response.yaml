@@ -30,7 +30,7 @@ producerResponse:
       description: メールアドレス
     phoneNumber:
       type: string
-      description: 電話番号
+      description: 電話番号 (国際番号 + 電話番号)
     postalCode:
       type: string
       description: 郵便番号
@@ -128,7 +128,7 @@ producersResponse:
             description: メールアドレス
           phoneNumber:
             type: string
-            description: 電話番号
+            description: 電話番号 (国際番号 + 電話番号)
           postalCode:
             type: string
             description: 郵便番号
@@ -152,6 +152,24 @@ producersResponse:
             type: integer
             format: int64
             description: 登録日時 (unixtime)
+        required:
+        - id
+        - lastname
+        - firstname
+        - lastnameKana
+        - firstnameKana
+        - storeName
+        - thumbnailUrl
+        - headerUrl
+        - email
+        - phoneNumber
+        - postalCode
+        - prefecture
+        - city
+        - addressLine1
+        - addressLine2
+        - createdAt
+        - updatedAt
   required:
   - producers
   example:

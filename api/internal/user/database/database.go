@@ -35,6 +35,7 @@ func NewDatabase(params *Params) *Database {
  * interface
  */
 type AdminAuth interface {
+	GetByAdminID(ctx context.Context, adminID string, fields ...string) (*entity.AdminAuth, error)
 	GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.AdminAuth, error)
 }
 
@@ -54,12 +55,14 @@ type Coordinator interface {
 
 type Producer interface {
 	List(ctx context.Context, params *ListProducersParams, fields ...string) (entity.Producers, error)
+	MultiGet(ctx context.Context, producerIDs []string, fields ...string) (entity.Producers, error)
 	Get(ctx context.Context, producerID string, fields ...string) (*entity.Producer, error)
 	Create(ctx context.Context, auth *entity.AdminAuth, producer *entity.Producer) error
 	UpdateEmail(ctx context.Context, producerID, email string) error
 }
 
 type User interface {
+	MultiGet(ctx context.Context, userIDs []string, fields ...string) (entity.Users, error)
 	Get(ctx context.Context, userID string, fields ...string) (*entity.User, error)
 	GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.User, error)
 	GetByEmail(ctx context.Context, email string, fields ...string) (*entity.User, error)

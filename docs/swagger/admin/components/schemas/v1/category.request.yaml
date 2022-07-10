@@ -3,7 +3,7 @@ createCategoryRequest:
   properties:
     name:
       type: string
-      description: カテゴリ名
+      description: カテゴリ名(32文字まで)
   required:
   - name
   example:
@@ -13,7 +13,7 @@ updateCategoryRequest:
   properties:
     name:
       type: string
-      description: カテゴリ名
+      description: カテゴリ名(32文字まで)
   required:
   - name
   example:

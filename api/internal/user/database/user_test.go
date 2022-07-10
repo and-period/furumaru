@@ -16,6 +16,74 @@ func TestUser(t *testing.T) {
 	assert.NotNil(t, NewUser(nil))
 }
 
+func TestUser_MultiGet(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, userTable)
+	users := make(entity.Users, 2)
+	users[0] = testUser("user-id01", "test-user01@and-period.jp", "+810000000001", now())
+	users[1] = testUser("user-id02", "test-user02@and-period.jp", "+810000000002", now())
+	err = m.db.DB.Create(&users).Error
+	require.NoError(t, err)
+
+	type args struct {
+		userIDs []string
+	}
+	type want struct {
+		users  entity.Users
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				userIDs: []string{"user-id01", "user-id02"},
+			},
+			want: want{
+				users:  users,
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &user{db: m.db, now: now}
+			actual, err := db.MultiGet(ctx, tt.args.userIDs)
+			if tt.want.hasErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			fillIgnoreUsersField(actual, now())
+			assert.ElementsMatch(t, tt.want.users, actual)
+		})
+	}
+}
+
 func TestUser_Get(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -660,4 +728,10 @@ func fillIgnoreUserField(u *entity.User, now time.Time) {
 	u.CreatedAt = now
 	u.UpdatedAt = now
 	u.VerifiedAt = time.Time{}
+}
+
+func fillIgnoreUsersField(us entity.Users, now time.Time) {
+	for i := range us {
+		fillIgnoreUserField(us[i], now)
+	}
 }

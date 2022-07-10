@@ -9,6 +9,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
+	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -31,27 +32,29 @@ var (
  * handler
  * ###############################################
  */
-type APIV1Handler interface {
+type Handler interface {
 	Routes(rg *gin.RouterGroup) // エンドポイント一覧の定義
 }
 
 type Params struct {
-	WaitGroup    *sync.WaitGroup
-	Enforcer     rbac.Enforcer
-	Storage      storage.Bucket
-	UserService  user.UserService
-	StoreService store.StoreService
+	WaitGroup *sync.WaitGroup
+	Enforcer  rbac.Enforcer
+	Storage   storage.Bucket
+	User      user.Service
+	Store     store.Service
+	Messenger messenger.Service
 }
 
-type apiV1Handler struct {
+type handler struct {
 	now         func() time.Time
 	logger      *zap.Logger
-	sharedGroup *singleflight.Group
 	waitGroup   *sync.WaitGroup
+	sharedGroup *singleflight.Group
 	storage     storage.Bucket
 	enforcer    rbac.Enforcer
-	user        user.UserService
-	store       store.StoreService
+	user        user.Service
+	store       store.Service
+	messenger   messenger.Service
 }
 
 type options struct {
@@ -66,21 +69,23 @@ func WithLogger(logger *zap.Logger) Option {
 	}
 }
 
-func NewAPIV1Handler(params *Params, opts ...Option) APIV1Handler {
+func NewHandler(params *Params, opts ...Option) Handler {
 	dopts := &options{
 		logger: zap.NewNop(),
 	}
 	for i := range opts {
 		opts[i](dopts)
 	}
-	return &apiV1Handler{
-		now:       jst.Now,
-		logger:    dopts.logger,
-		waitGroup: params.WaitGroup,
-		storage:   params.Storage,
-		enforcer:  params.Enforcer,
-		user:      params.UserService,
-		store:     params.StoreService,
+	return &handler{
+		now:         jst.Now,
+		logger:      dopts.logger,
+		waitGroup:   params.WaitGroup,
+		sharedGroup: &singleflight.Group{},
+		storage:     params.Storage,
+		enforcer:    params.Enforcer,
+		user:        params.User,
+		store:       params.Store,
+		messenger:   params.Messenger,
 	}
 }
 
@@ -89,13 +94,15 @@ func NewAPIV1Handler(params *Params, opts ...Option) APIV1Handler {
  * routes
  * ###############################################
  */
-func (h *apiV1Handler) Routes(rg *gin.RouterGroup) {
+func (h *handler) Routes(rg *gin.RouterGroup) {
 	v1 := rg.Group("/v1")
 	h.authRoutes(v1.Group("/auth"))
 	h.administratorRoutes(v1.Group("/administrators"))
 	h.producerRoutes(v1.Group("/producers"))
 	h.categoryRoutes(v1.Group("/categories"))
 	h.productTypeRoutes(v1.Group("/categories/:categoryId/product-types"))
+	h.productRoutes(v1.Group("/products"))
+	h.contactRoutes(v1.Group("/contacts"))
 	v1.GET("/categories/-/product-types", h.authentication(), h.ListProductTypes)
 	h.uploadRoutes(v1.Group("/upload"))
 }
@@ -128,7 +135,7 @@ func forbidden(ctx *gin.Context, err error) {
  * other
  * ###############################################
  */
-func (h *apiV1Handler) authentication() gin.HandlerFunc {
+func (h *handler) authentication() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// 認証情報の検証
 		token, err := util.GetAuthToken(ctx)

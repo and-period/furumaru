@@ -56,6 +56,12 @@ productTypesResponse:
             type: integer
             format: int64
             description: 登録日時 (unixtime)
+        required:
+        - id
+        - name
+        - categoryId
+        - createdAt
+        - updatedAt
     categories:
       type: array
       description: 商品種別一覧
@@ -76,6 +82,11 @@ productTypesResponse:
             type: integer
             format: int64
             description: 登録日時 (unixtime)
+        required:
+        - id
+        - name
+        - createdAt
+        - updatedAt
   required:
   - productTypes
   - categories

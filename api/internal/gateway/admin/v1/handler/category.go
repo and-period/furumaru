@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *apiV1Handler) categoryRoutes(rg *gin.RouterGroup) {
+func (h *handler) categoryRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication())
 	arg.GET("", h.ListCategories)
 	arg.POST("", h.CreateCategory)
@@ -19,7 +19,7 @@ func (h *apiV1Handler) categoryRoutes(rg *gin.RouterGroup) {
 	arg.DELETE("/:categoryId", h.DeleteCategory)
 }
 
-func (h *apiV1Handler) ListCategories(ctx *gin.Context) {
+func (h *handler) ListCategories(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
 		defaultOffset = 0
@@ -53,7 +53,7 @@ func (h *apiV1Handler) ListCategories(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *apiV1Handler) CreateCategory(ctx *gin.Context) {
+func (h *handler) CreateCategory(ctx *gin.Context) {
 	req := &request.CreateCategoryRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
@@ -75,7 +75,7 @@ func (h *apiV1Handler) CreateCategory(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *apiV1Handler) UpdateCategory(ctx *gin.Context) {
+func (h *handler) UpdateCategory(ctx *gin.Context) {
 	req := &request.UpdateCategoryRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
@@ -94,7 +94,7 @@ func (h *apiV1Handler) UpdateCategory(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
-func (h *apiV1Handler) DeleteCategory(ctx *gin.Context) {
+func (h *handler) DeleteCategory(ctx *gin.Context) {
 	in := &store.DeleteCategoryInput{
 		CategoryID: util.GetParam(ctx, "categoryId"),
 	}

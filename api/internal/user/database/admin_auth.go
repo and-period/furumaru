@@ -28,6 +28,24 @@ func NewAdminAuth(db *database.Client) AdminAuth {
 	}
 }
 
+func (a *adminAuth) GetByAdminID(
+	ctx context.Context, adminID string, fields ...string,
+) (*entity.AdminAuth, error) {
+	var auth *entity.AdminAuth
+	if len(fields) == 0 {
+		fields = adminAuthFields
+	}
+
+	stmt := a.db.DB.WithContext(ctx).
+		Table(adminAuthTable).Select(fields).
+		Where("admin_id = ?", adminID)
+
+	if err := stmt.First(&auth).Error; err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return auth, nil
+}
+
 func (a *adminAuth) GetByCognitoID(
 	ctx context.Context, cognitoID string, fields ...string,
 ) (*entity.AdminAuth, error) {

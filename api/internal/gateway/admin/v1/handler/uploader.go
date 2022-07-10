@@ -23,7 +23,7 @@ type uploadRegulation struct {
 	formats  []string
 }
 
-func (h *apiV1Handler) uploadRoutes(rg *gin.RouterGroup) {
+func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication())
 	arg.POST("/coordinators/thumbnail", h.uploadCoordinatorThumbnail)
 	arg.POST("/coordinators/header", h.uploadCoordinatorHeader)
@@ -31,7 +31,7 @@ func (h *apiV1Handler) uploadRoutes(rg *gin.RouterGroup) {
 	arg.POST("/producers/header", h.uploadProducerHeader)
 }
 
-func (h *apiV1Handler) uploadCoordinatorThumbnail(ctx *gin.Context) {
+func (h *handler) uploadCoordinatorThumbnail(ctx *gin.Context) {
 	reg := &uploadRegulation{
 		dir:      "coordinators/thumbnail",
 		filename: "thumbnail",
@@ -41,7 +41,7 @@ func (h *apiV1Handler) uploadCoordinatorThumbnail(ctx *gin.Context) {
 	h.upload(ctx, reg)
 }
 
-func (h *apiV1Handler) uploadCoordinatorHeader(ctx *gin.Context) {
+func (h *handler) uploadCoordinatorHeader(ctx *gin.Context) {
 	reg := &uploadRegulation{
 		dir:      "coordinators/header",
 		filename: "image",
@@ -51,7 +51,7 @@ func (h *apiV1Handler) uploadCoordinatorHeader(ctx *gin.Context) {
 	h.upload(ctx, reg)
 }
 
-func (h *apiV1Handler) uploadProducerThumbnail(ctx *gin.Context) {
+func (h *handler) uploadProducerThumbnail(ctx *gin.Context) {
 	reg := &uploadRegulation{
 		dir:      "producers/thumbnail",
 		filename: "thumbnail",
@@ -61,7 +61,7 @@ func (h *apiV1Handler) uploadProducerThumbnail(ctx *gin.Context) {
 	h.upload(ctx, reg)
 }
 
-func (h *apiV1Handler) uploadProducerHeader(ctx *gin.Context) {
+func (h *handler) uploadProducerHeader(ctx *gin.Context) {
 	reg := &uploadRegulation{
 		dir:      "producers/header",
 		filename: "image",
@@ -71,7 +71,7 @@ func (h *apiV1Handler) uploadProducerHeader(ctx *gin.Context) {
 	h.upload(ctx, reg)
 }
 
-func (h *apiV1Handler) upload(ctx *gin.Context, reg *uploadRegulation) {
+func (h *handler) upload(ctx *gin.Context, reg *uploadRegulation) {
 	file, header, err := h.parseFile(ctx, reg)
 	if err != nil {
 		httpError(ctx, err)
@@ -89,7 +89,7 @@ func (h *apiV1Handler) upload(ctx *gin.Context, reg *uploadRegulation) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *apiV1Handler) parseFile(ctx *gin.Context, reg *uploadRegulation) (io.Reader, *multipart.FileHeader, error) {
+func (h *handler) parseFile(ctx *gin.Context, reg *uploadRegulation) (io.Reader, *multipart.FileHeader, error) {
 	media, _, err := mime.ParseMediaType(ctx.GetHeader("Content-Type"))
 	if err != nil {
 		return nil, nil, status.Error(codes.InvalidArgument, err.Error())
@@ -118,7 +118,7 @@ func (h *apiV1Handler) parseFile(ctx *gin.Context, reg *uploadRegulation) (io.Re
 	return &buf, header, nil
 }
 
-func (h *apiV1Handler) validateFormat(reg *uploadRegulation, file io.Reader) (bool, error) {
+func (h *handler) validateFormat(reg *uploadRegulation, file io.Reader) (bool, error) {
 	if len(reg.formats) == 0 {
 		return true, nil
 	}
@@ -135,7 +135,7 @@ func (h *apiV1Handler) validateFormat(reg *uploadRegulation, file io.Reader) (bo
 	return false, nil
 }
 
-func (h *apiV1Handler) generateFilePath(reg *uploadRegulation, header *multipart.FileHeader) string {
+func (h *handler) generateFilePath(reg *uploadRegulation, header *multipart.FileHeader) string {
 	key := uuid.Base58Encode(uuid.New())
 	extension := filepath.Ext(header.Filename)
 	filename := strings.Join([]string{key, extension}, "")

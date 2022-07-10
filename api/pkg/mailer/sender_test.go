@@ -18,7 +18,7 @@ func TestSendGridError_Error(t *testing.T) {
 		Field:   "field",
 		Help:    "help message",
 	}
-	assert.Equal(t, "mail: failed to SendGrid. code=400, field=test error", err.Error())
+	assert.Equal(t, "mailer: failed to SendGrid. code=400, field=test error", err.Error())
 }
 
 func TestMessage(t *testing.T) {

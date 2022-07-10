@@ -10,20 +10,33 @@
       @drop.prevent="handleDrop"
       @dragover.prevent="handleDragover"
     >
-      <p class="mb-0">
+      <p class="mb-0 text-center">
+        クリックまたはドラッグ&amp;ドロップでファイルを追加
+        <br />
         <v-icon left>mdi-plus</v-icon>
         {{ text }}
         <input
           ref="inputRef"
           type="file"
           class="d-none"
+          multiple
           @change="handleInputFileChange"
         />
       </p>
     </div>
-    <div v-if="files">
-      <p v-for="(file, i) in files" :key="i">ファイル名: {{ file.name }}</p>
-    </div>
+    <v-list v-if="files">
+      <v-radio-group>
+        <div
+          v-for="(file, i) in files"
+          :key="i"
+          class="d-flex flex-row align-center"
+        >
+          <v-radio :value="i" />
+          <img :src="createPreviewURL(file)" width="200" class="mx-4" />
+          <p class="mb-0">{{ file.name }}</p>
+        </div>
+      </v-radio-group>
+    </v-list>
   </div>
 </template>
 
@@ -83,6 +96,10 @@ export default defineComponent({
       active.value = false
     }
 
+    const createPreviewURL = (file: File) => {
+      return URL.createObjectURL(file)
+    }
+
     return {
       files,
       formData,
@@ -94,6 +111,7 @@ export default defineComponent({
       handleDragleave,
       handleDrop,
       handleDragover,
+      createPreviewURL,
     }
   },
 })

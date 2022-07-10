@@ -3,12 +3,14 @@ package service
 import (
 	"context"
 	"errors"
-	"net/url"
 	"sync"
 	"testing"
 	"time"
 
-	mock_mailer "github.com/and-period/furumaru/api/mock/pkg/mailer"
+	"github.com/and-period/furumaru/api/internal/messenger/database"
+	mock_database "github.com/and-period/furumaru/api/mock/messenger/database"
+	mock_sqs "github.com/and-period/furumaru/api/mock/pkg/sqs"
+	mock_user "github.com/and-period/furumaru/api/mock/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/validator"
 	"github.com/golang/mock/gomock"
@@ -16,14 +18,17 @@ import (
 	"go.uber.org/zap"
 )
 
-var (
-	errmock        = errors.New("some error")
-	adminWebURL, _ = url.Parse("https://admin.and-period.jp")
-	userWebURL, _  = url.Parse("https://user.and-period.jp")
-)
+var errmock = errors.New("some error")
 
 type mocks struct {
-	mailer *mock_mailer.MockClient
+	db       *dbMocks
+	producer *mock_sqs.MockProducer
+	user     *mock_user.MockService
+}
+
+type dbMocks struct {
+	Notification *mock_database.MockNotification
+	Contact      *mock_database.MockContact
 }
 
 type testOptions struct {
@@ -32,44 +37,41 @@ type testOptions struct {
 
 type testOption func(opts *testOptions)
 
-func withNow(now time.Time) testOption {
-	return func(opts *testOptions) {
-		opts.now = func() time.Time {
-			return now
-		}
-	}
-}
-
-type testCaller func(ctx context.Context, t *testing.T, service *messengerService)
+type testCaller func(ctx context.Context, t *testing.T, service *service)
 
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
-		mailer: mock_mailer.NewMockClient(ctrl),
+		db:       newDBMocks(ctrl),
+		producer: mock_sqs.NewMockProducer(ctrl),
+		user:     mock_user.NewMockService(ctrl),
 	}
 }
 
-func newMessengerService(mocks *mocks, opts ...testOption) *messengerService {
+func newDBMocks(ctrl *gomock.Controller) *dbMocks {
+	return &dbMocks{
+		Notification: mock_database.NewMockNotification(ctrl),
+		Contact:      mock_database.NewMockContact(ctrl),
+	}
+}
+
+func newService(mocks *mocks, opts ...testOption) *service {
 	dopts := &testOptions{
 		now: jst.Now,
 	}
 	for i := range opts {
 		opts[i](dopts)
 	}
-	return &messengerService{
+	return &service{
 		now:       dopts.now,
 		logger:    zap.NewNop(),
 		waitGroup: &sync.WaitGroup{},
 		validator: validator.NewValidator(),
-		mailer:    mocks.mailer,
-		adminWebURL: func() *url.URL {
-			url := *adminWebURL
-			return &url
+		db: &database.Database{
+			Notification: mocks.db.Notification,
+			Contact:      mocks.db.Contact,
 		},
-		userWebURL: func() *url.URL {
-			url := *userWebURL
-			return &url
-		},
-		maxRetries: 3,
+		producer: mocks.producer,
+		user:     mocks.user,
 	}
 }
 
@@ -86,7 +88,7 @@ func testService(
 		defer ctrl.Finish()
 		mocks := newMocks(ctrl)
 
-		srv := newMessengerService(mocks)
+		srv := newService(mocks)
 		setup(ctx, mocks)
 
 		testFunc(ctx, t, srv)
@@ -94,8 +96,8 @@ func testService(
 	}
 }
 
-func TestMessengerService(t *testing.T) {
+func TestService(t *testing.T) {
 	t.Parallel()
-	srv := NewMessengerService(&Params{}, WithLogger(zap.NewNop()), WithMaxRetries(3))
+	srv := NewService(&Params{}, WithLogger(zap.NewNop()))
 	assert.NotNil(t, srv)
 }

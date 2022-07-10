@@ -85,8 +85,84 @@ func TestListProducers(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.ListProducers(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.ElementsMatch(t, tt.expect, actual)
+		}))
+	}
+}
+
+func TestMultiGetProducers(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
+	producers := entity.Producers{
+		{
+			ID:            "admin-id",
+			Lastname:      "&.",
+			Firstname:     "スタッフ",
+			LastnameKana:  "あんどぴりおど",
+			FirstnameKana: "すたっふ",
+			StoreName:     "&.農園",
+			ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+			HeaderURL:     "https://and-period.jp/header.png",
+			Email:         "test-admin@and-period.jp",
+			PhoneNumber:   "+819012345678",
+			PostalCode:    "1000014",
+			Prefecture:    "東京都",
+			City:          "千代田区",
+			AddressLine1:  "永田町1-7-1",
+			AddressLine2:  "",
+			CreatedAt:     now,
+			UpdatedAt:     now,
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.MultiGetProducersInput
+		expect    entity.Producers
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Producer.EXPECT().MultiGet(ctx, []string{"admin-id"}).Return(producers, nil)
+			},
+			input: &user.MultiGetProducersInput{
+				ProducerIDs: []string{"admin-id"},
+			},
+			expect:    producers,
+			expectErr: nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &user.MultiGetProducersInput{
+				ProducerIDs: []string{""},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to multi get producers",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Producer.EXPECT().MultiGet(ctx, []string{"admin-id"}).Return(nil, errmock)
+			},
+			input: &user.MultiGetProducersInput{
+				ProducerIDs: []string{"admin-id"},
+			},
+			expect:    nil,
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.MultiGetProducers(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.ElementsMatch(t, tt.expect, actual)
 		}))
@@ -157,7 +233,7 @@ func TestGetProducer(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetProducer(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
@@ -308,7 +384,7 @@ func TestCreateProducer(t *testing.T) {
 
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *userService) {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateProducer(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))

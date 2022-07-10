@@ -21,25 +21,25 @@ import (
  * handler
  * ###############################################
  */
-type APIV1Handler interface {
+type Handler interface {
 	Routes(rg *gin.RouterGroup) // エンドポイント一覧の定義
 }
 
 type Params struct {
-	WaitGroup    *sync.WaitGroup
-	Storage      storage.Bucket
-	UserService  user.UserService
-	StoreService store.StoreService
+	WaitGroup *sync.WaitGroup
+	Storage   storage.Bucket
+	User      user.Service
+	Store     store.Service
 }
 
-type apiV1Handler struct {
+type handler struct {
 	now         func() time.Time
 	logger      *zap.Logger
-	sharedGroup *singleflight.Group
 	waitGroup   *sync.WaitGroup
+	sharedGroup *singleflight.Group
 	storage     storage.Bucket
-	user        user.UserService
-	store       store.StoreService
+	user        user.Service
+	store       store.Service
 }
 
 type options struct {
@@ -54,20 +54,21 @@ func WithLogger(logger *zap.Logger) Option {
 	}
 }
 
-func NewAPIV1Handler(params *Params, opts ...Option) APIV1Handler {
+func NewHandler(params *Params, opts ...Option) Handler {
 	dopts := &options{
 		logger: zap.NewNop(),
 	}
 	for i := range opts {
 		opts[i](dopts)
 	}
-	return &apiV1Handler{
-		now:       jst.Now,
-		logger:    dopts.logger,
-		waitGroup: params.WaitGroup,
-		storage:   params.Storage,
-		user:      params.UserService,
-		store:     params.StoreService,
+	return &handler{
+		now:         jst.Now,
+		logger:      dopts.logger,
+		waitGroup:   params.WaitGroup,
+		sharedGroup: &singleflight.Group{},
+		storage:     params.Storage,
+		user:        params.User,
+		store:       params.Store,
 	}
 }
 
@@ -76,7 +77,7 @@ func NewAPIV1Handler(params *Params, opts ...Option) APIV1Handler {
  * routes
  * ###############################################
  */
-func (h *apiV1Handler) Routes(rg *gin.RouterGroup) {
+func (h *handler) Routes(rg *gin.RouterGroup) {
 	v1 := rg.Group("/v1")
 	h.authRoutes(v1.Group("/auth"))
 }
@@ -105,7 +106,7 @@ func unauthorized(ctx *gin.Context, err error) {
  * other
  * ###############################################
  */
-func (h *apiV1Handler) authentication() gin.HandlerFunc {
+func (h *handler) authentication() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		token, err := util.GetAuthToken(ctx)
 		if err != nil {

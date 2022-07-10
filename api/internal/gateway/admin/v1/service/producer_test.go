@@ -36,7 +36,7 @@ func TestProducer(t *testing.T) {
 				UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &Producer{
-				Producer: &response.Producer{
+				Producer: response.Producer{
 					ID:            "producer-id",
 					Lastname:      "&.",
 					Firstname:     "管理者",
@@ -75,7 +75,7 @@ func TestProducer_Response(t *testing.T) {
 		{
 			name: "success",
 			producer: &Producer{
-				Producer: &response.Producer{
+				Producer: response.Producer{
 					ID:            "producer-id",
 					Lastname:      "&.",
 					Firstname:     "管理者",
@@ -168,7 +168,7 @@ func TestProducers(t *testing.T) {
 			},
 			expect: Producers{
 				{
-					Producer: &response.Producer{
+					Producer: response.Producer{
 						ID:            "producer-id01",
 						Lastname:      "&.",
 						Firstname:     "管理者",
@@ -187,7 +187,7 @@ func TestProducers(t *testing.T) {
 					},
 				},
 				{
-					Producer: &response.Producer{
+					Producer: response.Producer{
 						ID:            "producer-id02",
 						Lastname:      "&.",
 						Firstname:     "管理者",
@@ -228,7 +228,7 @@ func TestProducers_Response(t *testing.T) {
 			name: "success",
 			producers: Producers{
 				{
-					Producer: &response.Producer{
+					Producer: response.Producer{
 						ID:            "producer-id01",
 						Lastname:      "&.",
 						Firstname:     "管理者",
@@ -247,7 +247,7 @@ func TestProducers_Response(t *testing.T) {
 					},
 				},
 				{
-					Producer: &response.Producer{
+					Producer: response.Producer{
 						ID:            "producer-id02",
 						Lastname:      "&.",
 						Firstname:     "管理者",

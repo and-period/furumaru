@@ -1,0 +1,22 @@
+updateContactRequest:
+  type: object
+  properties:
+    status:
+      type: integer
+      format: int32
+      description: 対応状況(1:ToDo,2:進行中,3:完了,4:対応不要)
+    priority:
+      type: integer
+      format: int32
+      description: 優先度(1:低,2:中,3:高)
+    note:
+      type: string
+      description: 対応メモ(2000文字まで)
+  required:
+  - status
+  - priority
+  - note
+  example:
+    status: 1
+    priority: 1
+    note: '対応メモ'

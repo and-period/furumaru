@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/and-period/furumaru/api/pkg/cognito"
+	"github.com/and-period/furumaru/api/pkg/mailer"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/go-playground/validator/v10"
 	"github.com/go-sql-driver/mysql"
@@ -14,12 +15,17 @@ import (
 var (
 	ErrInvalidArgument    = errors.New("invalid argument")
 	ErrUnauthenticated    = errors.New("unauthenticated")
+	ErrForbidden          = errors.New("forbidden")
 	ErrNotFound           = errors.New("not found")
 	ErrAlreadyExists      = errors.New("already exists")
 	ErrFailedPrecondition = errors.New("failed precondition")
 	ErrResourceExhausted  = errors.New("resource exhausted")
 	ErrNotImplemented     = errors.New("not implemented")
 	ErrInternal           = errors.New("internal error")
+	ErrCanceled           = errors.New("canceled")
+	ErrUnavailable        = errors.New("unavailable")
+	ErrDeadlineExceeded   = errors.New("deadline exceeded")
+	ErrOutOfRange         = errors.New("out of range")
 	ErrUnknown            = errors.New("unknown")
 )
 
@@ -43,7 +49,17 @@ func InternalError(err error) error {
 	if err := storageError(err); err != nil {
 		return err
 	}
+	if err := mailerError(err); err != nil {
+		return err
+	}
 	return wrapError("internal", ErrUnknown, err)
+}
+
+func Retryable(err error) bool {
+	return errors.Is(err, ErrCanceled) ||
+		errors.Is(err, ErrUnavailable) ||
+		errors.Is(err, ErrDeadlineExceeded) ||
+		errors.Is(err, ErrOutOfRange)
 }
 
 func wrapError(prefix string, code, err error) error {
@@ -132,6 +148,30 @@ func storageError(err error) error {
 		return wrapError(prefix, ErrInvalidArgument, err)
 	case errors.Is(err, storage.ErrNotFound):
 		return wrapError(prefix, ErrNotFound, err)
+	default:
+		return nil
+	}
+}
+
+func mailerError(err error) error {
+	const prefix = "mailer"
+	switch {
+	case errors.Is(err, mailer.ErrInvalidArgument):
+		return wrapError(prefix, ErrInvalidArgument, err)
+	case errors.Is(err, mailer.ErrUnauthenticated):
+		return wrapError(prefix, ErrUnauthenticated, err)
+	case errors.Is(err, mailer.ErrPermissionDenied):
+		return wrapError(prefix, ErrForbidden, err)
+	case errors.Is(err, mailer.ErrPayloadTooLong):
+		return wrapError(prefix, ErrResourceExhausted, err)
+	case errors.Is(err, mailer.ErrNotFound):
+		return wrapError(prefix, ErrNotFound, err)
+	case errors.Is(err, mailer.ErrInternal):
+		return wrapError(prefix, ErrInternal, err)
+	case errors.Is(err, mailer.ErrUnavailable):
+		return wrapError(prefix, ErrUnavailable, err)
+	case errors.Is(err, mailer.ErrTimeout):
+		return wrapError(prefix, ErrDeadlineExceeded, err)
 	default:
 		return nil
 	}

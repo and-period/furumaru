@@ -52,6 +52,7 @@ const config: NuxtConfig = {
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
     '@nuxtjs/composition-api/module',
+    '@pinia/nuxt',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -64,6 +65,15 @@ const config: NuxtConfig = {
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
     baseURL: '/',
+  },
+
+  // env
+  env: {
+    API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:18010',
+  },
+
+  router: {
+    middleware: 'auth',
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
@@ -83,6 +93,9 @@ const config: NuxtConfig = {
         },
         light: {
           primary: colors.lightGreen.darken2,
+          primaryLight: colors.lightGreen.lighten2,
+          accent: colors.amber.darken1,
+          accentDarken: colors.orange.darken4,
         },
       },
       options: { customProperties: true },

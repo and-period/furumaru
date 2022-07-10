@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *apiV1Handler) productTypeRoutes(rg *gin.RouterGroup) {
+func (h *handler) productTypeRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication())
 	arg.GET("", h.ListProductTypes)
 	arg.POST("", h.CreateProductType)
@@ -19,7 +19,7 @@ func (h *apiV1Handler) productTypeRoutes(rg *gin.RouterGroup) {
 	arg.DELETE("/:productTypeId", h.DeleteProductType)
 }
 
-func (h *apiV1Handler) ListProductTypes(ctx *gin.Context) {
+func (h *handler) ListProductTypes(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
 		defaultOffset = 0
@@ -65,7 +65,7 @@ func (h *apiV1Handler) ListProductTypes(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *apiV1Handler) CreateProductType(ctx *gin.Context) {
+func (h *handler) CreateProductType(ctx *gin.Context) {
 	req := &request.CreateProductTypeRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
@@ -88,7 +88,7 @@ func (h *apiV1Handler) CreateProductType(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *apiV1Handler) UpdateProductType(ctx *gin.Context) {
+func (h *handler) UpdateProductType(ctx *gin.Context) {
 	req := &request.UpdateProductTypeRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
@@ -107,7 +107,7 @@ func (h *apiV1Handler) UpdateProductType(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
-func (h *apiV1Handler) DeleteProductType(ctx *gin.Context) {
+func (h *handler) DeleteProductType(ctx *gin.Context) {
 	in := &store.DeleteProductTypeInput{
 		ProductTypeID: util.GetParam(ctx, "productTypeId"),
 	}

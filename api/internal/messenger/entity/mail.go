@@ -12,8 +12,8 @@ const (
 
 // MailConfig - メール送信設定
 type MailConfig struct {
-	EmailID       string            // メールテンプレートID
-	Substitutions map[string]string // メール動的内容
+	EmailID       string            `json:"emailId"`       // メールテンプレートID
+	Substitutions map[string]string `json:"substitutions"` // メール動的内容
 }
 
 type TemplateDataBuilder struct {

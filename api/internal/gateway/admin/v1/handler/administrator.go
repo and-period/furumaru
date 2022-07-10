@@ -11,14 +11,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *apiV1Handler) administratorRoutes(rg *gin.RouterGroup) {
+func (h *handler) administratorRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication())
 	arg.GET("", h.ListAdministrators)
 	arg.POST("", h.CreateAdministrator)
 	arg.GET("/:adminId", h.GetAdministrator)
 }
 
-func (h *apiV1Handler) ListAdministrators(ctx *gin.Context) {
+func (h *handler) ListAdministrators(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
 		defaultOffset = 0
@@ -51,7 +51,7 @@ func (h *apiV1Handler) ListAdministrators(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *apiV1Handler) GetAdministrator(ctx *gin.Context) {
+func (h *handler) GetAdministrator(ctx *gin.Context) {
 	in := &user.GetAdministratorInput{
 		AdministratorID: util.GetParam(ctx, "adminId"),
 	}
@@ -67,7 +67,7 @@ func (h *apiV1Handler) GetAdministrator(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *apiV1Handler) CreateAdministrator(ctx *gin.Context) {
+func (h *handler) CreateAdministrator(ctx *gin.Context) {
 	req := &request.CreateAdministratorRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)

@@ -23,12 +23,13 @@ var errmock = errors.New("some error")
 
 type mocks struct {
 	db        *dbMocks
-	user      *mock_user.MockUserService
-	messenger *mock_messenger.MockMessengerService
+	user      *mock_user.MockService
+	messenger *mock_messenger.MockService
 }
 
 type dbMocks struct {
 	Category    *mock_database.MockCategory
+	Product     *mock_database.MockProduct
 	ProductType *mock_database.MockProductType
 }
 
@@ -46,31 +47,32 @@ func withNow(now time.Time) testOption {
 	}
 }
 
-type testCaller func(ctx context.Context, t *testing.T, service *storeService)
+type testCaller func(ctx context.Context, t *testing.T, service *service)
 
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
 		db:        newDBMocks(ctrl),
-		user:      mock_user.NewMockUserService(ctrl),
-		messenger: mock_messenger.NewMockMessengerService(ctrl),
+		user:      mock_user.NewMockService(ctrl),
+		messenger: mock_messenger.NewMockService(ctrl),
 	}
 }
 
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
 		Category:    mock_database.NewMockCategory(ctrl),
+		Product:     mock_database.NewMockProduct(ctrl),
 		ProductType: mock_database.NewMockProductType(ctrl),
 	}
 }
 
-func newStoreService(mocks *mocks, opts ...testOption) *storeService {
+func newService(mocks *mocks, opts ...testOption) *service {
 	dopts := &testOptions{
 		now: jst.Now,
 	}
 	for i := range opts {
 		opts[i](dopts)
 	}
-	return &storeService{
+	return &service{
 		now:         dopts.now,
 		logger:      zap.NewNop(),
 		sharedGroup: &singleflight.Group{},
@@ -78,6 +80,7 @@ func newStoreService(mocks *mocks, opts ...testOption) *storeService {
 		validator:   validator.NewValidator(),
 		db: &database.Database{
 			Category:    mocks.db.Category,
+			Product:     mocks.db.Product,
 			ProductType: mocks.db.ProductType,
 		},
 		user:      mocks.user,
@@ -98,7 +101,7 @@ func testService(
 		defer ctrl.Finish()
 		mocks := newMocks(ctrl)
 
-		srv := newStoreService(mocks)
+		srv := newService(mocks)
 		setup(ctx, mocks)
 
 		testFunc(ctx, t, srv)
@@ -106,8 +109,8 @@ func testService(
 	}
 }
 
-func TestStoreService(t *testing.T) {
+func TestService(t *testing.T) {
 	t.Parallel()
-	srv := NewStoreService(&Params{}, WithLogger(zap.NewNop()))
+	srv := NewService(&Params{}, WithLogger(zap.NewNop()))
 	assert.NotNil(t, srv)
 }

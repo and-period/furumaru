@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p class="text-h6">システム設定</p>
+    <v-card-title>システム設定</v-card-title>
     <v-list>
       <div v-for="(item, i) in menuList" :key="i">
         <v-list-item :class="item.class" @click="item.onClick">
@@ -38,13 +38,13 @@ export default defineComponent({
         {
           text: 'メールアドレス変更',
           onClick: () => {
-            router.push('/categories')
+            router.push('/accounts/email')
           },
         },
         {
           text: 'パスワード変更',
           onClick: () => {
-            console.log('NOT IMPLEMENTED')
+            router.push('/accounts/password')
           },
         },
         {
