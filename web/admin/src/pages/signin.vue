@@ -9,12 +9,14 @@
             v-model="formData.username"
             label="ユーザーID（メールアドレス)"
             type="email"
+            required
           />
           <v-text-field
             v-model="formData.password"
             label="パスワード"
             :append-icon="passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
             :type="passwordShow ? 'text' : 'password'"
+            required
             @click:append="passwordShow = !passwordShow"
           />
         </v-card-text>
