@@ -27,8 +27,8 @@ type mocks struct {
 }
 
 type dbMocks struct {
-	Notification *mock_database.MockNotification
-	Contact *mock_database.MockContact
+	Notification *mock_database.MockNotification,
+	Contact *mock_database.MockContact,
 }	
 
 type testOptions struct {
