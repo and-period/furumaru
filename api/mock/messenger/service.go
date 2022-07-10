@@ -36,17 +36,6 @@ func (m *MockService) EXPECT() *MockServiceMockRecorder {
 	return m.recorder
 }
 
-// CreateNotification mocks base method.
-func (m *MockService) CreateNotification(ctx context.Context, in *messenger.CreateNotificationInput) (*entity.Notification, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateNotification", ctx, in)
-	ret0, _ := ret[0].(*entity.Notification)
-  
-// CreateNotification indicates an expected call of CreateNotification.
-func (mr *MockServiceMockRecorder) CreateNotification(ctx, in interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateNotification", reflect.TypeOf((*MockService)(nil).CreateNotification), ctx, in)
-
 // CreateContact mocks base method.
 func (m *MockService) CreateContact(ctx context.Context, in *messenger.CreateContactInput) (*entity.Contact, error) {
 	m.ctrl.T.Helper()
@@ -60,6 +49,21 @@ func (m *MockService) CreateContact(ctx context.Context, in *messenger.CreateCon
 func (mr *MockServiceMockRecorder) CreateContact(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateContact", reflect.TypeOf((*MockService)(nil).CreateContact), ctx, in)
+}
+
+// CreateNotification mocks base method.
+func (m *MockService) CreateNotification(ctx context.Context, in *messenger.CreateNotificationInput) (*entity.Notification, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateNotification", ctx, in)
+	ret0, _ := ret[0].(*entity.Notification)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateNotification indicates an expected call of CreateNotification.
+func (mr *MockServiceMockRecorder) CreateNotification(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateNotification", reflect.TypeOf((*MockService)(nil).CreateNotification), ctx, in)
 }
 
 // GetContact mocks base method.
@@ -90,7 +94,6 @@ func (m *MockService) ListContacts(ctx context.Context, in *messenger.ListContac
 func (mr *MockServiceMockRecorder) ListContacts(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListContacts", reflect.TypeOf((*MockService)(nil).ListContacts), ctx, in)
-
 }
 
 // NotifyRegisterAdmin mocks base method.
