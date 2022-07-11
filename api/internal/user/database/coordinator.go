@@ -56,22 +56,26 @@ func (a *coordinator) List(
 	return coordinators, nil
 }
 
-func (a *coordinator) Get(
-	ctx context.Context, coordinatorID string, fields ...string,
-) (*entity.Coordinator, error) {
-	var coordinator *entity.Coordinator
+func (a *coordinator) MultiGet(
+	ctx context.Context, coordinatorIDs []string, fields ...string,
+) (entity.Coordinators, error) {
+	var coordinators entity.Coordinators
 	if len(fields) == 0 {
 		fields = coordinatorFields
 	}
 
-	stmt := a.db.DB.WithContext(ctx).
+	err := a.db.DB.WithContext(ctx).
 		Table(coordinatorTable).Select(fields).
-		Where("id = ?", coordinatorID)
+		Where("id IN (?)", coordinatorIDs).
+		Find(&coordinators).Error
+	return coordinators, exception.InternalError(err)
+}
 
-	if err := stmt.First(&coordinator).Error; err != nil {
-		return nil, exception.InternalError(err)
-	}
-	return coordinator, nil
+func (a *coordinator) Get(
+	ctx context.Context, coordinatorID string, fields ...string,
+) (*entity.Coordinator, error) {
+	coordinator, err := a.get(ctx, a.db.DB, coordinatorID, fields...)
+	return coordinator, exception.InternalError(err)
 }
 
 func (a *coordinator) Create(
@@ -94,25 +98,34 @@ func (a *coordinator) Create(
 
 func (a *coordinator) UpdateEmail(ctx context.Context, coordinatorID, email string) error {
 	_, err := a.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
-		var current *entity.Coordinator
-		err := tx.WithContext(ctx).
-			Table(coordinatorTable).Select("id").
-			Where("id = ?", coordinatorID).
-			First(&current).Error
-		if err != nil {
+		if _, err := a.get(ctx, tx, coordinatorID); err != nil {
 			return nil, err
 		}
 
 		params := map[string]interface{}{
-			"id":         current.ID,
 			"email":      email,
 			"updated_at": a.now(),
 		}
-		err = tx.WithContext(ctx).
+		err := tx.WithContext(ctx).
 			Table(coordinatorTable).
 			Where("id = ?", coordinatorID).
 			Updates(params).Error
 		return nil, err
 	})
 	return exception.InternalError(err)
+}
+
+func (a *coordinator) get(
+	ctx context.Context, tx *gorm.DB, coordinatorID string, fields ...string,
+) (*entity.Coordinator, error) {
+	var coordinator *entity.Coordinator
+	if len(fields) == 0 {
+		fields = coordinatorFields
+	}
+
+	err := a.db.DB.WithContext(ctx).
+		Table(coordinatorTable).Select(fields).
+		Where("id = ?", coordinatorID).
+		First(&coordinator).Error
+	return coordinator, err
 }

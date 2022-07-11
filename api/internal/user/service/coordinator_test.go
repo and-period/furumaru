@@ -39,6 +39,35 @@ func TestListCoordinators(t *testing.T) {
 	}
 }
 
+func TestMultiGetCoordinators(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.MultiGetCoordinatorsInput
+		expect    entity.Coordinators
+		expectErr error
+	}{
+		{
+			name:      "not implemented",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.MultiGetCoordinatorsInput{},
+			expect:    nil,
+			expectErr: exception.ErrNotImplemented,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.MultiGetCoordinators(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.ElementsMatch(t, tt.expect, actual)
+		}))
+	}
+}
+
 func TestGetCoordinator(t *testing.T) {
 	t.Parallel()
 

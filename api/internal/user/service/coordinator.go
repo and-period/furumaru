@@ -26,6 +26,13 @@ func (s *service) ListCoordinators(
 	return coordinators, exception.InternalError(err)
 }
 
+func (s *service) MultiGetCoordinators(
+	ctx context.Context, in *user.MultiGetCoordinatorsInput,
+) (entity.Coordinators, error) {
+	// TODO: 詳細の実装
+	return nil, exception.ErrNotImplemented
+}
+
 func (s *service) GetCoordinator(
 	ctx context.Context, in *user.GetCoordinatorInput,
 ) (*entity.Coordinator, error) {

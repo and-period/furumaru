@@ -64,6 +64,10 @@ type ListCoordinatorsInput struct {
 	Limit  int64 `validate:"required,max=200"`
 	Offset int64 `validate:"min=0"`
 
+type MultiGetCoordinatorsInput struct {
+	CoordinatorIDs []string `validate:"omitempty,dive,required"`
+}
+
 type GetCoordinatorInput struct {
 	CoordinatorID string `validate:"required"`
 }

@@ -35,6 +35,8 @@ type Service interface {
 	CreateAdministrator(ctx context.Context, in *CreateAdministratorInput) (*entity.Administrator, error)
 	// 仲介者一覧取得
 	ListCoordinators(ctx context.Context, in *ListCoordinatorsInput) (entity.Coordinators, error)
+	// 仲介者一覧取得(ID指定)
+	MultiGetCoordinators(ctx context.Context, in *MultiGetCoordinatorsInput) (entity.Coordinators, error)
 	// 仲介者取得
 	GetCoordinator(ctx context.Context, in *GetCoordinatorInput) (*entity.Coordinator, error)
 	// 仲介者登録

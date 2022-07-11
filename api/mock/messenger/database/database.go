@@ -179,17 +179,17 @@ func (m *MockReceivedQueue) EXPECT() *MockReceivedQueueMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockReceivedQueue) Create(ctx context.Context, quque *entity.ReceivedQueue) error {
+func (m *MockReceivedQueue) Create(ctx context.Context, queue *entity.ReceivedQueue) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", ctx, quque)
+	ret := m.ctrl.Call(m, "Create", ctx, queue)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockReceivedQueueMockRecorder) Create(ctx, quque interface{}) *gomock.Call {
+func (mr *MockReceivedQueueMockRecorder) Create(ctx, queue interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockReceivedQueue)(nil).Create), ctx, quque)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockReceivedQueue)(nil).Create), ctx, queue)
 }
 
 // Get mocks base method.

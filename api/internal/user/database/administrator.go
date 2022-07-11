@@ -53,22 +53,26 @@ func (a *administrator) List(
 	return administrators, nil
 }
 
-func (a *administrator) Get(
-	ctx context.Context, administratorID string, fields ...string,
-) (*entity.Administrator, error) {
-	var administrator *entity.Administrator
+func (a *administrator) MultiGet(
+	ctx context.Context, administratorIDs []string, fields ...string,
+) (entity.Administrators, error) {
+	var administrators entity.Administrators
 	if len(fields) == 0 {
 		fields = administratorFields
 	}
 
-	stmt := a.db.DB.WithContext(ctx).
+	err := a.db.DB.WithContext(ctx).
 		Table(administratorTable).Select(fields).
-		Where("id = ?", administratorID)
+		Where("id IN (?)", administratorIDs).
+		Find(&administrators).Error
+	return administrators, exception.InternalError(err)
+}
 
-	if err := stmt.First(&administrator).Error; err != nil {
-		return nil, exception.InternalError(err)
-	}
-	return administrator, nil
+func (a *administrator) Get(
+	ctx context.Context, administratorID string, fields ...string,
+) (*entity.Administrator, error) {
+	administrator, err := a.get(ctx, a.db.DB, administratorID, fields...)
+	return administrator, exception.InternalError(err)
 }
 
 func (a *administrator) Create(

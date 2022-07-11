@@ -31,6 +31,8 @@ type AdminAuth struct {
 	UpdatedAt    time.Time `gorm:""`                     // 更新日時
 }
 
+type AdminAuths []*AdminAuth
+
 func NewAdminRole(role int32) (AdminRole, error) {
 	res := AdminRole(role)
 	if err := res.Validate(); err != nil {
