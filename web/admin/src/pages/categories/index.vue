@@ -28,7 +28,12 @@
             <v-card-title class="text-h6 primaryLight">
               カテゴリー登録
             </v-card-title>
-            <v-text-field v-model="categoryFormData.name" class="mx-4" maxlength="32" label="カテゴリー" />
+            <v-text-field
+              v-model="categoryFormData.name"
+              class="mx-4"
+              maxlength="32"
+              label="カテゴリー"
+            />
             <v-divider></v-divider>
 
             <v-card-actions>
@@ -62,7 +67,12 @@
               <v-select class="mx-4" label="カテゴリー" />
               <v-spacer />
             </div>
-            <v-text-field v-model="itemFormData.name" class="mx-4" maxlength="32" label="品目" />
+            <v-text-field
+              v-model="itemFormData.name"
+              class="mx-4"
+              maxlength="32"
+              label="品目"
+            />
             <v-divider></v-divider>
 
             <v-card-actions>
