@@ -6,13 +6,45 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestListCoordinators(t *testing.T) {
 	t.Parallel()
+
+	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
+	params := &database.ListCoordinatorsParams{
+		Limit:  30,
+		Offset: 0,
+	}
+	coordinators := entity.Coordinators{
+		{
+			ID:               "admin-id",
+			Lastname:         "&.",
+			Firstname:        "スタッフ",
+			LastnameKana:     "あんどぴりおど",
+			FirstnameKana:    "すたっふ",
+			StoreName:        "&.農園",
+			ThumbnailURL:     "https://and-period.jp/thumbnail.png",
+			HeaderURL:        "https://and-period.jp/header.png",
+			TwitterAccount:   "twitter-account",
+			InstagramAccount: "instagram-account",
+			FacebookAccount:  "facebook-account",
+			Email:            "test-admin@and-period.jp",
+			PhoneNumber:      "+819012345678",
+			PostalCode:       "1000014",
+			Prefecture:       "東京都",
+			City:             "千代田区",
+			AddressLine1:     "永田町1-7-1",
+			AddressLine2:     "",
+			CreatedAt:        now,
+			UpdatedAt:        now,
+		},
+	}
 
 	tests := []struct {
 		name      string
@@ -22,11 +54,35 @@ func TestListCoordinators(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name:      "not implemented",
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Coordinator.EXPECT().List(ctx, params).Return(coordinators, nil)
+			},
+			input: &user.ListCoordinatorsInput{
+				Limit:  30,
+				Offset: 0,
+			},
+			expect:    coordinators,
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.ListCoordinatorsInput{},
 			expect:    nil,
-			expectErr: exception.ErrNotImplemented,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to list coordinators",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Coordinator.EXPECT().List(ctx, params).Return(nil, errmock)
+			},
+			input: &user.ListCoordinatorsInput{
+				Limit:  30,
+				Offset: 0,
+			},
+			expect:    nil,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 
@@ -122,6 +178,30 @@ func TestMultiGetCoordinators(t *testing.T) {
 func TestGetCoordinator(t *testing.T) {
 	t.Parallel()
 
+	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
+	coordinator := &entity.Coordinator{
+		ID:               "admin-id",
+		Lastname:         "&.",
+		Firstname:        "スタッフ",
+		LastnameKana:     "あんどぴりおど",
+		FirstnameKana:    "すたっふ",
+		StoreName:        "&.農園",
+		ThumbnailURL:     "https://and-period.jp/thumbnail.png",
+		HeaderURL:        "https://and-period.jp/header.png",
+		TwitterAccount:   "twitter-account",
+		InstagramAccount: "instagram-account",
+		FacebookAccount:  "facebook-account",
+		Email:            "test-admin@and-period.jp",
+		PhoneNumber:      "+819012345678",
+		PostalCode:       "1000014",
+		Prefecture:       "東京都",
+		City:             "千代田区",
+		AddressLine1:     "永田町1-7-1",
+		AddressLine2:     "",
+		CreatedAt:        now,
+		UpdatedAt:        now,
+	}
+
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -130,11 +210,33 @@ func TestGetCoordinator(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name:      "not implemented",
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Coordinator.EXPECT().Get(ctx, "admin-id").Return(coordinator, nil)
+			},
+			input: &user.GetCoordinatorInput{
+				CoordinatorID: "admin-id",
+			},
+			expect:    coordinator,
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.GetCoordinatorInput{},
 			expect:    nil,
-			expectErr: exception.ErrNotImplemented,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get coordinator",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Coordinator.EXPECT().Get(ctx, "admin-id").Return(nil, errmock)
+			},
+			input: &user.GetCoordinatorInput{
+				CoordinatorID: "admin-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 
@@ -155,24 +257,165 @@ func TestCreateCoordinator(t *testing.T) {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
 		input     *user.CreateCoordinatorInput
-		expect    *entity.Coordinator
 		expectErr error
 	}{
 		{
-			name:      "not implemented",
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				expectAuth := &entity.AdminAuth{
+					Role: entity.AdminRoleCoordinator,
+				}
+				expectCoordinator := &entity.Coordinator{
+					Lastname:         "&.",
+					Firstname:        "スタッフ",
+					LastnameKana:     "あんどぴりおど",
+					FirstnameKana:    "すたっふ",
+					CompanyName:      "&.",
+					StoreName:        "&.農園",
+					ThumbnailURL:     "https://and-period.jp/thumbnail.png",
+					HeaderURL:        "https://and-period.jp/header.png",
+					TwitterAccount:   "twitter-id",
+					InstagramAccount: "instgram-id",
+					FacebookAccount:  "facebook-id",
+					Email:            "test-admin@and-period.jp",
+					PhoneNumber:      "+819012345678",
+					PostalCode:       "1000014",
+					Prefecture:       "東京都",
+					City:             "千代田区",
+					AddressLine1:     "永田町1-7-1",
+					AddressLine2:     "",
+				}
+				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(nil)
+				mocks.db.Coordinator.EXPECT().
+					Create(ctx, gomock.Any(), gomock.Any()).
+					DoAndReturn(func(ctx context.Context, auth *entity.AdminAuth, coordinator *entity.Coordinator) error {
+						expectAuth.AdminID, expectAuth.CognitoID = auth.AdminID, auth.CognitoID
+						assert.Equal(t, expectAuth, auth)
+						expectCoordinator.ID = coordinator.ID
+						assert.Equal(t, expectCoordinator, coordinator)
+						return nil
+					})
+				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(errmock)
+			},
+			input: &user.CreateCoordinatorInput{
+				Lastname:         "&.",
+				Firstname:        "スタッフ",
+				LastnameKana:     "あんどぴりおど",
+				FirstnameKana:    "すたっふ",
+				CompanyName:      "&.",
+				StoreName:        "&.農園",
+				ThumbnailURL:     "https://and-period.jp/thumbnail.png",
+				HeaderURL:        "https://and-period.jp/header.png",
+				TwitterAccount:   "twitter-id",
+				InstagramAccount: "instgram-id",
+				FacebookAccount:  "facebook-id",
+				Email:            "test-admin@and-period.jp",
+				PhoneNumber:      "+819012345678",
+				PostalCode:       "1000014",
+				Prefecture:       "東京都",
+				City:             "千代田区",
+				AddressLine1:     "永田町1-7-1",
+				AddressLine2:     "",
+			},
+			expectErr: nil,
+		},
+		{
+			name: "success without notify register admin",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(nil)
+				mocks.db.Coordinator.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(nil)
+				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(errmock)
+			},
+			input: &user.CreateCoordinatorInput{
+				Lastname:         "&.",
+				Firstname:        "スタッフ",
+				LastnameKana:     "あんどぴりおど",
+				FirstnameKana:    "すたっふ",
+				CompanyName:      "&.",
+				StoreName:        "&.農園",
+				ThumbnailURL:     "https://and-period.jp/thumbnail.png",
+				HeaderURL:        "https://and-period.jp/header.png",
+				TwitterAccount:   "twitter-id",
+				InstagramAccount: "instgram-id",
+				FacebookAccount:  "facebook-id",
+				Email:            "test-admin@and-period.jp",
+				PhoneNumber:      "+819012345678",
+				PostalCode:       "1000014",
+				Prefecture:       "東京都",
+				City:             "千代田区",
+				AddressLine1:     "永田町1-7-1",
+				AddressLine2:     "",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.CreateCoordinatorInput{},
-			expect:    nil,
-			expectErr: exception.ErrNotImplemented,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to create admin auth",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(errmock)
+			},
+			input: &user.CreateCoordinatorInput{
+				Lastname:         "&.",
+				Firstname:        "スタッフ",
+				LastnameKana:     "あんどぴりおど",
+				FirstnameKana:    "すたっふ",
+				CompanyName:      "&.",
+				StoreName:        "&.農園",
+				ThumbnailURL:     "https://and-period.jp/thumbnail.png",
+				HeaderURL:        "https://and-period.jp/header.png",
+				TwitterAccount:   "twitter-id",
+				InstagramAccount: "instgram-id",
+				FacebookAccount:  "facebook-id",
+				Email:            "test-admin@and-period.jp",
+				PhoneNumber:      "+819012345678",
+				PostalCode:       "1000014",
+				Prefecture:       "東京都",
+				City:             "千代田区",
+				AddressLine1:     "永田町1-7-1",
+				AddressLine2:     "",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "failed to create admin",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(nil)
+				mocks.db.Coordinator.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(errmock)
+			},
+			input: &user.CreateCoordinatorInput{
+				Lastname:         "&.",
+				Firstname:        "スタッフ",
+				LastnameKana:     "あんどぴりおど",
+				FirstnameKana:    "すたっふ",
+				CompanyName:      "&.",
+				StoreName:        "&.農園",
+				ThumbnailURL:     "https://and-period.jp/thumbnail.png",
+				HeaderURL:        "https://and-period.jp/header.png",
+				TwitterAccount:   "twitter-id",
+				InstagramAccount: "instgram-id",
+				FacebookAccount:  "facebook-id",
+				Email:            "test-admin@and-period.jp",
+				PhoneNumber:      "+819012345678",
+				PostalCode:       "1000014",
+				Prefecture:       "東京都",
+				City:             "千代田区",
+				AddressLine1:     "永田町1-7-1",
+				AddressLine2:     "",
+			},
+			expectErr: exception.ErrUnknown,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.CreateCoordinator(ctx, tt.input)
+			_, err := service.CreateCoordinator(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
 		}))
 	}
 }

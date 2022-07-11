@@ -334,7 +334,7 @@ func TestCreateProducer(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to create admin aith",
+			name: "failed to create admin auth",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(errmock)
 			},

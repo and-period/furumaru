@@ -83,35 +83,14 @@ func (s *service) CreateCoordinator(
 	if err := s.db.Coordinator.Create(ctx, auth, coordinator); err != nil {
 		return nil, exception.InternalError(err)
 	}
-	s.logger.Debug("Create coordinator",
-		zap.String("coordinatorId", coordinator.ID), zap.String("password", password))
+	s.logger.Debug("Create coordinator", zap.String("coordinatorId", coordinator.ID), zap.String("password", password))
 	s.waitGroup.Add(1)
 	go func() {
 		defer s.waitGroup.Done()
-		err := s.notifyRegisterAdmin(context.Background(), coordinator.Name(), coordinator.Email, password)
+		err := s.notifyRegisterAdmin(context.Background(), coordinator.ID, password)
 		if err != nil {
 			s.logger.Warn("Failed to notify register admin", zap.String("coordinatorId", coordinator.ID), zap.Error(err))
 		}
 	}()
 	return coordinator, nil
 }
-
-/* ここ書き換えお願いします
-func (s *userService) createCognitoAdmin(ctx context.Context, cognitoID, email, password string) error {
-	params := &cognito.AdminCreateUserParams{
-		Username: cognitoID,
-		Email:    email,
-		Password: password,
-	}
-	return s.adminAuth.AdminCreateUser(ctx, params)
-}
-
-func (s *userService) notifyRegisterAdmin(ctx context.Context, name, email, password string) error {
-	in := &messenger.NotifyRegisterAdminInput{
-		Name:     name,
-		Email:    email,
-		Password: password,
-	}
-	return s.messenger.NotifyRegisterAdmin(ctx, in)
-}
-*/

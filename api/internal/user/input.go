@@ -67,6 +67,7 @@ type CreateAdministratorInput struct {
 type ListCoordinatorsInput struct {
 	Limit  int64 `validate:"required,max=200"`
 	Offset int64 `validate:"min=0"`
+}
 
 type MultiGetCoordinatorsInput struct {
 	CoordinatorIDs []string `validate:"omitempty,dive,required"`
@@ -85,9 +86,9 @@ type CreateCoordinatorInput struct {
 	StoreName        string `validate:"required,max=64"`
 	ThumbnailURL     string `validate:"omitempty,url"`
 	HeaderURL        string `validate:"omitempty,url"`
-	TwitterAccount   string `validate:"omitempty,max=16"`
-	InstagramAccount string `validate:"omitempty,max=32"`
-	FacebookAccount  string `validate:"omitempty,max=64"`
+	TwitterAccount   string `validate:"omitempty,max=15"`
+	InstagramAccount string `validate:"omitempty,max=30"`
+	FacebookAccount  string `validate:"omitempty,max=50"`
 	Email            string `validate:"required,max=256,email"`
 	PhoneNumber      string `validate:"min=12,max=18,phone_number"`
 	PostalCode       string `validate:"omitempty,max=16,numeric"`
