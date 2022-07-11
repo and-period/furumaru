@@ -49,10 +49,8 @@ func (p *producer) List(
 		stmt = stmt.Offset(params.Offset)
 	}
 
-	if err := stmt.Find(&producers).Error; err != nil {
-		return nil, exception.InternalError(err)
-	}
-	return producers, nil
+	err := stmt.Find(&producers).Error
+	return producers, exception.InternalError(err)
 }
 
 func (p *producer) MultiGet(
@@ -73,19 +71,8 @@ func (p *producer) MultiGet(
 func (p *producer) Get(
 	ctx context.Context, producerID string, fields ...string,
 ) (*entity.Producer, error) {
-	var producer *entity.Producer
-	if len(fields) == 0 {
-		fields = producerFields
-	}
-
-	stmt := p.db.DB.WithContext(ctx).
-		Table(producerTable).Select(fields).
-		Where("id = ?", producerID)
-
-	if err := stmt.First(&producer).Error; err != nil {
-		return nil, exception.InternalError(err)
-	}
-	return producer, nil
+	producer, err := p.get(ctx, p.db.DB, producerID, fields...)
+	return producer, exception.InternalError(err)
 }
 
 func (p *producer) Create(

@@ -1,6 +1,4 @@
-package messenger
-
-import "github.com/and-period/furumaru/api/internal/messenger/entity"
+package entity
 
 // EventType - Worker実行種別
 type EventType int32
@@ -23,8 +21,9 @@ const (
 )
 
 type WorkerPayload struct {
-	EventType EventType          `json:"eventType,omitempty"` // Worker実行種別
-	UserType  UserType           `json:"userType,omitempty"`  // 送信先ユーザー種別
-	UserIDs   []string           `json:"userIds,omitempty"`   // 送信先ユーザー一覧
-	Email     *entity.MailConfig `json:"email,omitempty"`     // メール送信設定
+	QueueID   string      `json:"queueId"`         // メッセージキューID(重複実行抑止用)
+	EventType EventType   `json:"eventType"`       // Worker実行種別
+	UserType  UserType    `json:"userType"`        // 送信先ユーザー種別
+	UserIDs   []string    `json:"userIds"`         // 送信先ユーザー一覧
+	Email     *MailConfig `json:"email,omitempty"` // メール送信設定
 }

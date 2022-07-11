@@ -34,6 +34,10 @@ type UpdateAdminPasswordInput struct {
 	PasswordConfirmation string `validate:"required,eqfield=NewPassword"`
 }
 
+type MultiGetAdminsInput struct {
+	AdminIDs []string `validate:"omitempty,dive,required"`
+}
+
 type GetAdminInput struct {
 	AdminID string `validate:"required"`
 }
@@ -41,6 +45,10 @@ type GetAdminInput struct {
 type ListAdministratorsInput struct {
 	Limit  int64 `validate:"required,max=200"`
 	Offset int64 `validate:"min=0"`
+}
+
+type MultiGetAdministratorsInput struct {
+	AdministratorIDs []string `validate:"omitempty,dive,required"`
 }
 
 type GetAdministratorInput struct {
@@ -56,13 +64,39 @@ type CreateAdministratorInput struct {
 	PhoneNumber   string `validate:"min=12,max=18,phone_number"`
 }
 
-type ListCoordinatorsInput struct{}
+type ListCoordinatorsInput struct {
+	Limit  int64 `validate:"required,max=200"`
+	Offset int64 `validate:"min=0"`
+}
+
+type MultiGetCoordinatorsInput struct {
+	CoordinatorIDs []string `validate:"omitempty,dive,required"`
+}
 
 type GetCoordinatorInput struct {
 	CoordinatorID string `validate:"required"`
 }
 
-type CreateCoordinatorInput struct{}
+type CreateCoordinatorInput struct {
+	Lastname         string `validate:"required,max=16"`
+	Firstname        string `validate:"required,max=16"`
+	LastnameKana     string `validate:"required,max=32,hiragana"`
+	FirstnameKana    string `validate:"required,max=32,hiragana"`
+	CompanyName      string `validate:"required,max=64"`
+	StoreName        string `validate:"required,max=64"`
+	ThumbnailURL     string `validate:"omitempty,url"`
+	HeaderURL        string `validate:"omitempty,url"`
+	TwitterAccount   string `validate:"omitempty,max=15"`
+	InstagramAccount string `validate:"omitempty,max=30"`
+	FacebookAccount  string `validate:"omitempty,max=50"`
+	Email            string `validate:"required,max=256,email"`
+	PhoneNumber      string `validate:"min=12,max=18,phone_number"`
+	PostalCode       string `validate:"omitempty,max=16,numeric"`
+	Prefecture       string `validate:"omitempty,max=32"`
+	City             string `validate:"omitempty,max=32"`
+	AddressLine1     string `validate:"omitempty,max=64"`
+	AddressLine2     string `validate:"omitempty,max=64"`
+}
 
 type ListProducersInput struct {
 	Limit  int64 `validate:"required,max=200"`

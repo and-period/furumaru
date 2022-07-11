@@ -87,6 +87,74 @@ func TestCoordinator_List(t *testing.T) {
 	}
 }
 
+func TestCoordinator_MultiGet(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, coordinatorTable)
+	admins := make(entity.Coordinators, 2)
+	admins[0] = testCoordinator("admin-id01", "test-admin01@and-period.jp", now())
+	admins[1] = testCoordinator("admin-id02", "test-admin02@and-period.jp", now())
+	err = m.db.DB.Create(&admins).Error
+	require.NoError(t, err)
+
+	type args struct {
+		adminIDs []string
+	}
+	type want struct {
+		admins entity.Coordinators
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				adminIDs: []string{"admin-id01", "admin-id02"},
+			},
+			want: want{
+				admins: admins,
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &coordinator{db: m.db, now: now}
+			actual, err := db.MultiGet(ctx, tt.args.adminIDs)
+			if tt.want.hasErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			fillIgnoreCoordinatorsField(actual, now())
+			assert.Equal(t, tt.want.admins, actual)
+		})
+	}
+}
+
 func TestCoordinator_Get(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

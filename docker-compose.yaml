@@ -52,6 +52,7 @@ services:
       - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
       - COGNITO_USER_CLIENT_ID=${COGNITO_USER_CLIENT_ID}
       - SQS_MOCK_ENABLED=true
+      - USER_WEB_URL=http://127.0.0.1:3000
     ports:
       - 18000:9000
       - 18001:9001
@@ -88,6 +89,8 @@ services:
       - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
       - COGNITO_USER_CLIENT_ID=${COGNITO_USER_CLIENT_ID}
       - SQS_MOCK_ENABLED=true
+      - ADMIN_WEB_URL=http://127.0.0.1:3010
+      - USER_WEB_URL=http://127.0.0.1:3000
       - RBAC_POLICY_PATH=/go/src/github.com/and-period/furumaru/api/config/gateway/admin/rbac/policy.csv
       - RBAC_MODEL_PATH=/go/src/github.com/and-period/furumaru/api/config/gateway/admin/rbac/model.conf
     ports:

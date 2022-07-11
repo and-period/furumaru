@@ -5,18 +5,18 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func TestAdminAuth(t *testing.T) {
-	assert.NotNil(t, NewAdminAuth(nil))
+func TestReceivedQueue(t *testing.T) {
+	assert.NotNil(t, NewReceivedQueue(nil))
 }
 
-func TestAdminAuth_MultiGet(t *testing.T) {
+func TestReceivedQueue_Get(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	ctrl := gomock.NewController(t)
@@ -29,18 +29,16 @@ func TestAdminAuth_MultiGet(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, adminAuthTable)
-	auths := make(entity.AdminAuths, 2)
-	auths[0] = testAdminAuth("admin-id01", "cognito-id01", now())
-	auths[1] = testAdminAuth("admin-id02", "cognito-id02", now())
-	err = m.db.DB.Create(&auths).Error
+	_ = m.dbDelete(ctx, receivedQueueTable)
+	q := testReceivedQueue("queue-id", now())
+	err = m.db.DB.Create(&q).Error
 	require.NoError(t, err)
 
 	type args struct {
-		adminIDs []string
+		queueID string
 	}
 	type want struct {
-		auths  entity.AdminAuths
+		queue  *entity.ReceivedQueue
 		hasErr bool
 	}
 	tests := []struct {
@@ -53,76 +51,10 @@ func TestAdminAuth_MultiGet(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
-				adminIDs: []string{"admin-id01", "admin-id02"},
+				queueID: "queue-id",
 			},
 			want: want{
-				auths:  auths,
-				hasErr: false,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			ctx, cancel := context.WithCancel(context.Background())
-			defer cancel()
-
-			tt.setup(ctx, t, m)
-
-			db := &adminAuth{db: m.db, now: now}
-			actual, err := db.MultiGet(ctx, tt.args.adminIDs)
-			if tt.want.hasErr {
-				assert.Error(t, err)
-				return
-			}
-			assert.NoError(t, err)
-			fillIgnoreAdminAuthsField(actual, now())
-			assert.Equal(t, tt.want.auths, actual)
-		})
-	}
-}
-
-func TestAdminAuth_GetByAdminID(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
-	now := func() time.Time {
-		return current
-	}
-
-	_ = m.dbDelete(ctx, adminAuthTable)
-	a := testAdminAuth("admin-id", "cognito-id", now())
-	err = m.db.DB.Create(&a).Error
-	require.NoError(t, err)
-
-	type args struct {
-		adminID string
-	}
-	type want struct {
-		auth   *entity.AdminAuth
-		hasErr bool
-	}
-	tests := []struct {
-		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
-		args  args
-		want  want
-	}{
-		{
-			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
-			args: args{
-				adminID: "admin-id",
-			},
-			want: want{
-				auth:   a,
+				queue:  q,
 				hasErr: false,
 			},
 		},
@@ -130,38 +62,34 @@ func TestAdminAuth_GetByAdminID(t *testing.T) {
 			name:  "not found",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
-				adminID: "",
+				queueID: "other-id",
 			},
 			want: want{
-				auth:   nil,
+				queue:  nil,
 				hasErr: true,
 			},
 		},
 	}
-
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
 			tt.setup(ctx, t, m)
 
-			db := &adminAuth{db: m.db, now: now}
-			actual, err := db.GetByAdminID(ctx, tt.args.adminID)
-			if tt.want.hasErr {
-				assert.Error(t, err)
-				return
-			}
-			assert.NoError(t, err)
-			fillIgnoreAdminAuthField(actual, now())
-			assert.Equal(t, tt.want.auth, actual)
+			db := &receivedQueue{db: m.db, now: now}
+			actual, err := db.Get(ctx, tt.args.queueID)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			fillIgnoreReceivedQueueField(actual, now())
+			assert.Equal(t, tt.want.queue, actual)
 		})
 	}
 }
 
-func TestAdminAuth_GetByCognitoID(t *testing.T) {
+func TestReceivedQueue_Create(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	ctrl := gomock.NewController(t)
@@ -174,16 +102,13 @@ func TestAdminAuth_GetByCognitoID(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, adminAuthTable)
-	a := testAdminAuth("admin-id", "cognito-id", now())
-	err = m.db.DB.Create(&a).Error
-	require.NoError(t, err)
+	_ = m.dbDelete(ctx, receivedQueueTable)
+	q := testReceivedQueue("queue-id", now())
 
 	type args struct {
-		cognitoID string
+		queue *entity.ReceivedQueue
 	}
 	type want struct {
-		auth   *entity.AdminAuth
 		hasErr bool
 	}
 	tests := []struct {
@@ -196,10 +121,83 @@ func TestAdminAuth_GetByCognitoID(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
-				cognitoID: "cognito-id",
+				queue: q,
 			},
 			want: want{
-				auth:   a,
+				hasErr: false,
+			},
+		},
+		{
+			name: "failed to duplicate entry",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				err = m.db.DB.Create(&q).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				queue: q,
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := m.dbDelete(ctx, receivedQueueTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, m)
+
+			db := &receivedQueue{db: m.db, now: now}
+			err = db.Create(ctx, tt.args.queue)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
+func TestReceivedQueue_Update(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, receivedQueueTable)
+	q := testReceivedQueue("queue-id", now())
+
+	type args struct {
+		queueID string
+		done    bool
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				err = m.db.DB.Create(&q).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				queueID: "queue-id",
+				done:    true,
+			},
+			want: want{
 				hasErr: false,
 			},
 		},
@@ -207,57 +205,50 @@ func TestAdminAuth_GetByCognitoID(t *testing.T) {
 			name:  "not found",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
-				cognitoID: "",
+				queueID: "queue-id",
+				done:    true,
 			},
 			want: want{
-				auth:   nil,
 				hasErr: true,
 			},
 		},
 	}
-
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
+			err := m.dbDelete(ctx, receivedQueueTable)
+			require.NoError(t, err)
 			tt.setup(ctx, t, m)
 
-			db := &adminAuth{db: m.db, now: now}
-			actual, err := db.GetByCognitoID(ctx, tt.args.cognitoID)
-			if tt.want.hasErr {
-				assert.Error(t, err)
-				return
-			}
-			assert.NoError(t, err)
-			fillIgnoreAdminAuthField(actual, now())
-			assert.Equal(t, tt.want.auth, actual)
+			db := &receivedQueue{db: m.db, now: now}
+			err = db.UpdateDone(ctx, tt.args.queueID, tt.args.done)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}
 }
 
-func testAdminAuth(adminID, cognitoID string, now time.Time) *entity.AdminAuth {
-	return &entity.AdminAuth{
-		AdminID:   adminID,
-		CognitoID: cognitoID,
-		Role:      entity.AdminRoleAdministrator,
+func testReceivedQueue(id string, now time.Time) *entity.ReceivedQueue {
+	q := &entity.ReceivedQueue{
+		ID:        id,
+		EventType: entity.EventTypeUnknown,
+		UserType:  entity.UserTypeUser,
+		UserIDs:   []string{"user-id"},
+		Done:      false,
 		CreatedAt: now,
 		UpdatedAt: now,
 	}
+	_ = q.FillJSON()
+	return q
 }
 
-func fillIgnoreAdminAuthField(a *entity.AdminAuth, now time.Time) {
-	if a == nil {
+func fillIgnoreReceivedQueueField(q *entity.ReceivedQueue, now time.Time) {
+	if q == nil {
 		return
 	}
-	a.CreatedAt = now
-	a.UpdatedAt = now
-}
-
-func fillIgnoreAdminAuthsField(as entity.AdminAuths, now time.Time) {
-	for i := range as {
-		fillIgnoreAdminAuthField(as[i], now)
-	}
+	_ = q.FillJSON()
+	q.CreatedAt = now
+	q.UpdatedAt = now
 }

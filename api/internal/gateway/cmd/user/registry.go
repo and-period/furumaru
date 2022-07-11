@@ -2,10 +2,12 @@ package cmd
 
 import (
 	"context"
+	"net/url"
 	"sync"
 
 	v1 "github.com/and-period/furumaru/api/internal/gateway/user/v1/handler"
 	"github.com/and-period/furumaru/api/internal/messenger"
+	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database"
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
 	"github.com/and-period/furumaru/api/internal/store"
 	storedb "github.com/and-period/furumaru/api/internal/store/database"
@@ -37,6 +39,7 @@ type params struct {
 	storage    storage.Bucket
 	userAuth   cognito.Client
 	producer   sqs.Producer
+	userWebURL *url.URL
 	dbHost     string
 	dbPort     string
 	dbUsername string
@@ -82,8 +85,18 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}
 	params.producer = sqs.NewProducer(awscfg, sqsParams, sqs.WithDryRun(conf.SQSMockEnabled))
 
+	// WebURLの設定
+	userWebURL, err := url.Parse(conf.UserWebURL)
+	if err != nil {
+		return nil, err
+	}
+	params.userWebURL = userWebURL
+
 	// Serviceの設定
-	messengerService := newMessengerService(ctx, params)
+	messengerService, err := newMessengerService(ctx, params)
+	if err != nil {
+		return nil, err
+	}
 	userService, err := newUserService(ctx, params, messengerService)
 	if err != nil {
 		return nil, err
@@ -143,12 +156,26 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 	)
 }
 
-func newMessengerService(ctx context.Context, p *params) messenger.Service {
-	params := &messengersrv.Params{
-		WaitGroup: p.waitGroup,
-		Producer:  p.producer,
+func newMessengerService(ctx context.Context, p *params) (messenger.Service, error) {
+	mysql, err := newDatabase("messengers", p)
+	if err != nil {
+		return nil, err
 	}
-	return messengersrv.NewService(params, messengersrv.WithLogger(p.logger))
+	dbParams := &messengerdb.Params{
+		Database: mysql,
+	}
+	user, err := newUserService(ctx, p, nil)
+	if err != nil {
+		return nil, err
+	}
+	params := &messengersrv.Params{
+		WaitGroup:  p.waitGroup,
+		Producer:   p.producer,
+		UserWebURL: p.userWebURL,
+		Database:   messengerdb.NewDatabase(dbParams),
+		User:       user,
+	}
+	return messengersrv.NewService(params, messengersrv.WithLogger(p.logger)), nil
 }
 
 func newUserService(ctx context.Context, p *params, messenger messenger.Service) (user.Service, error) {
