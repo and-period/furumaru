@@ -515,10 +515,10 @@ export interface CreateNotificationRequest {
     'body': string;
     /**
      * 掲載対象一覧(3つまで)
-     * @type {Array<Int32>}
+     * @type {Array<number>}
      * @memberof CreateNotificationRequest
      */
-    'targets'?: Array<Int32>;
+    'targets'?: Array<number>;
     /**
      * 公開フラグ
      * @type {boolean}
