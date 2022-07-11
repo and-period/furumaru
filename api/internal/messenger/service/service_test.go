@@ -32,13 +32,9 @@ type mocks struct {
 }
 
 type dbMocks struct {
-<<<<<<< HEAD
-	Notification *mock_database.MockNotification
-	Contact      *mock_database.MockContact
-=======
 	Contact       *mock_database.MockContact
+	Notification  *mock_database.MockNotification
 	ReceivedQueue *mock_database.MockReceivedQueue
->>>>>>> 6ac07df (feat(messenger): changing messenger worker logic)
 }
 
 type testOptions struct {
@@ -52,23 +48,16 @@ type testCaller func(ctx context.Context, t *testing.T, service *service)
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
 		db:       newDBMocks(ctrl),
-<<<<<<< HEAD
 		producer: mock_sqs.NewMockProducer(ctrl),
-=======
->>>>>>> 6ac07df (feat(messenger): changing messenger worker logic)
 		user:     mock_user.NewMockService(ctrl),
 	}
 }
 
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
-<<<<<<< HEAD
-		Notification: mock_database.NewMockNotification(ctrl),
-		Contact:      mock_database.NewMockContact(ctrl),
-=======
 		Contact:       mock_database.NewMockContact(ctrl),
+		Notification:  mock_database.NewMockNotification(ctrl),
 		ReceivedQueue: mock_database.NewMockReceivedQueue(ctrl),
->>>>>>> 6ac07df (feat(messenger): changing messenger worker logic)
 	}
 }
 
@@ -88,18 +77,6 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		return &url
 	}
 	return &service{
-<<<<<<< HEAD
-		now:       dopts.now,
-		logger:    zap.NewNop(),
-		waitGroup: &sync.WaitGroup{},
-		validator: validator.NewValidator(),
-		db: &database.Database{
-			Notification: mocks.db.Notification,
-			Contact:      mocks.db.Contact,
-		},
-		producer: mocks.producer,
-		user:     mocks.user,
-=======
 		now:         dopts.now,
 		logger:      zap.NewNop(),
 		waitGroup:   &sync.WaitGroup{},
@@ -109,10 +86,10 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		userWebURL:  userWebURL,
 		db: &database.Database{
 			Contact:       mocks.db.Contact,
+			Notification:  mocks.db.Notification,
 			ReceivedQueue: mocks.db.ReceivedQueue,
 		},
 		user: mocks.user,
->>>>>>> 6ac07df (feat(messenger): changing messenger worker logic)
 	}
 }
 

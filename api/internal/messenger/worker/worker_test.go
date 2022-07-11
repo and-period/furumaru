@@ -190,6 +190,7 @@ func TestWorker_Dispatch(t *testing.T) {
 			name: "success empty payload",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
+				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", true).Return(nil)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
