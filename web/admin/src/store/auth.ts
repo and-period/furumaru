@@ -58,9 +58,7 @@ export const useAuthStore = defineStore('auth', {
         })
         this.isAuthenticated = true
         this.user = res.data
-
-        const cookies = new Cookies()
-        cookies.set('refreshToken', this.user.refreshToken)
+        this.user.refreshToken = refreshToken
       } catch (error) {
         const cookies = new Cookies()
         cookies.remove('refreshToken')
