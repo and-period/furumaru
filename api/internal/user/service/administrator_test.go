@@ -85,6 +85,74 @@ func TestListAdministrators(t *testing.T) {
 	}
 }
 
+func TestMultiGetAdministrators(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
+	administrators := entity.Administrators{
+		{
+			ID:            "admin-id",
+			Lastname:      "&.",
+			Firstname:     "スタッフ",
+			LastnameKana:  "あんどぴりおど",
+			FirstnameKana: "すたっふ",
+			Email:         "test-admin@and-period.jp",
+			PhoneNumber:   "+819012345678",
+			CreatedAt:     now,
+			UpdatedAt:     now,
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.MultiGetAdministratorsInput
+		expect    entity.Administrators
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Administrator.EXPECT().MultiGet(ctx, []string{"admin-id"}).Return(administrators, nil)
+			},
+			input: &user.MultiGetAdministratorsInput{
+				AdministratorIDs: []string{"admin-id"},
+			},
+			expect:    administrators,
+			expectErr: nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &user.MultiGetAdministratorsInput{
+				AdministratorIDs: []string{""},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to multi get administrators",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Administrator.EXPECT().MultiGet(ctx, []string{"admin-id"}).Return(nil, errmock)
+			},
+			input: &user.MultiGetAdministratorsInput{
+				AdministratorIDs: []string{"admin-id"},
+			},
+			expect:    nil,
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.MultiGetAdministrators(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.ElementsMatch(t, tt.expect, actual)
+		}))
+	}
+}
+
 func TestGetAdministrator(t *testing.T) {
 	t.Parallel()
 

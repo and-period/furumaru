@@ -161,3 +161,71 @@ func TestAdminAuth_Fill(t *testing.T) {
 		})
 	}
 }
+
+func TestAdminAuths_GroupByRole(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		auths  AdminAuths
+		expect map[AdminRole]AdminAuths
+	}{
+		{
+			name: "success",
+			auths: AdminAuths{
+				{
+					AdminID:   "admin-id",
+					CognitoID: "cognito-id",
+					Role:      AdminRoleAdministrator,
+				},
+			},
+			expect: map[AdminRole]AdminAuths{
+				AdminRoleAdministrator: {
+					{
+						AdminID:   "admin-id",
+						CognitoID: "cognito-id",
+						Role:      AdminRoleAdministrator,
+					},
+				},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.auths.GroupByRole())
+		})
+	}
+}
+
+func TestAdminAuths_AdminIDs(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		auths  AdminAuths
+		expect []string
+	}{
+		{
+			name: "success",
+			auths: AdminAuths{
+				{
+					AdminID:   "admin-id",
+					CognitoID: "cognito-id",
+					Role:      AdminRoleAdministrator,
+				},
+			},
+			expect: []string{"admin-id"},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.auths.AdminIDs())
+		})
+	}
+}

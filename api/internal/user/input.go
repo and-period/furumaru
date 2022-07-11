@@ -47,6 +47,10 @@ type ListAdministratorsInput struct {
 	Offset int64 `validate:"min=0"`
 }
 
+type MultiGetAdministratorsInput struct {
+	AdministratorIDs []string `validate:"omitempty,dive,required"`
+}
+
 type GetAdministratorInput struct {
 	AdministratorID string `validate:"required"`
 }

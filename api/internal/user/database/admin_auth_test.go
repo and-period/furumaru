@@ -30,16 +30,17 @@ func TestAdminAuth_MultiGet(t *testing.T) {
 	}
 
 	_ = m.dbDelete(ctx, adminAuthTable)
-	auth := make(entity.AdminAuths, 1)
-	a := testAdminAuth("admin-id", "cognito-id", now())
-	err = m.db.DB.Create(&a).Error
+	auths := make(entity.AdminAuths, 2)
+	auths[0] = testAdminAuth("admin-id01", "cognito-id01", now())
+	auths[1] = testAdminAuth("admin-id02", "cognito-id02", now())
+	err = m.db.DB.Create(&auths).Error
 	require.NoError(t, err)
 
 	type args struct {
-		adminID string
+		adminIDs []string
 	}
 	type want struct {
-		auth   *entity.AdminAuth
+		auths  entity.AdminAuths
 		hasErr bool
 	}
 	tests := []struct {
@@ -52,22 +53,11 @@ func TestAdminAuth_MultiGet(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
-				adminID: "admin-id",
+				adminIDs: []string{"admin-id01", "admin-id02"},
 			},
 			want: want{
-				auth:   a,
+				auths:  auths,
 				hasErr: false,
-			},
-		},
-		{
-			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
-			args: args{
-				adminID: "",
-			},
-			want: want{
-				auth:   nil,
-				hasErr: true,
 			},
 		},
 	}
@@ -82,14 +72,14 @@ func TestAdminAuth_MultiGet(t *testing.T) {
 			tt.setup(ctx, t, m)
 
 			db := &adminAuth{db: m.db, now: now}
-			actual, err := db.GetByAdminID(ctx, tt.args.adminID)
+			actual, err := db.MultiGet(ctx, tt.args.adminIDs)
 			if tt.want.hasErr {
 				assert.Error(t, err)
 				return
 			}
 			assert.NoError(t, err)
-			fillIgnoreAdminAuthField(actual, now())
-			assert.Equal(t, tt.want.auth, actual)
+			fillIgnoreAdminAuthsField(actual, now())
+			assert.Equal(t, tt.want.auths, actual)
 		})
 	}
 }
@@ -264,4 +254,10 @@ func fillIgnoreAdminAuthField(a *entity.AdminAuth, now time.Time) {
 	}
 	a.CreatedAt = now
 	a.UpdatedAt = now
+}
+
+func fillIgnoreAdminAuthsField(as entity.AdminAuths, now time.Time) {
+	for i := range as {
+		fillIgnoreAdminAuthField(as[i], now)
+	}
 }

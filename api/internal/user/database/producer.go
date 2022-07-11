@@ -49,10 +49,8 @@ func (p *producer) List(
 		stmt = stmt.Offset(params.Offset)
 	}
 
-	if err := stmt.Find(&producers).Error; err != nil {
-		return nil, exception.InternalError(err)
-	}
-	return producers, nil
+	err := stmt.Find(&producers).Error
+	return producers, exception.InternalError(err)
 }
 
 func (p *producer) MultiGet(

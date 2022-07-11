@@ -50,10 +50,8 @@ func (a *coordinator) List(
 		stmt = stmt.Offset(params.Offset)
 	}
 
-	if err := stmt.Find(&coordinators).Error; err != nil {
-		return nil, exception.InternalError(err)
-	}
-	return coordinators, nil
+	err := stmt.Find(&coordinators).Error
+	return coordinators, exception.InternalError(err)
 }
 
 func (a *coordinator) MultiGet(

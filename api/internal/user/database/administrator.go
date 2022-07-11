@@ -47,10 +47,8 @@ func (a *administrator) List(
 		stmt = stmt.Offset(params.Offset)
 	}
 
-	if err := stmt.Find(&administrators).Error; err != nil {
-		return nil, exception.InternalError(err)
-	}
-	return administrators, nil
+	err := stmt.Find(&administrators).Error
+	return administrators, exception.InternalError(err)
 }
 
 func (a *administrator) MultiGet(

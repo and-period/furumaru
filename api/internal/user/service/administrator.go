@@ -28,6 +28,16 @@ func (s *service) ListAdministrators(
 	return administrators, exception.InternalError(err)
 }
 
+func (s *service) MultiGetAdministrators(
+	ctx context.Context, in *user.MultiGetAdministratorsInput,
+) (entity.Administrators, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	administrators, err := s.db.Administrator.MultiGet(ctx, in.AdministratorIDs)
+	return administrators, exception.InternalError(err)
+}
+
 func (s *service) GetAdministrator(
 	ctx context.Context, in *user.GetAdministratorInput,
 ) (*entity.Administrator, error) {

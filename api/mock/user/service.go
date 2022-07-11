@@ -303,6 +303,21 @@ func (mr *MockServiceMockRecorder) ListProducers(ctx, in interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListProducers", reflect.TypeOf((*MockService)(nil).ListProducers), ctx, in)
 }
 
+// MultiGetAdministrators mocks base method.
+func (m *MockService) MultiGetAdministrators(ctx context.Context, in *user.MultiGetAdministratorsInput) (entity.Administrators, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MultiGetAdministrators", ctx, in)
+	ret0, _ := ret[0].(entity.Administrators)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGetAdministrators indicates an expected call of MultiGetAdministrators.
+func (mr *MockServiceMockRecorder) MultiGetAdministrators(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetAdministrators", reflect.TypeOf((*MockService)(nil).MultiGetAdministrators), ctx, in)
+}
+
 // MultiGetAdmins mocks base method.
 func (m *MockService) MultiGetAdmins(ctx context.Context, in *user.MultiGetAdminsInput) (entity.Admins, error) {
 	m.ctrl.T.Helper()

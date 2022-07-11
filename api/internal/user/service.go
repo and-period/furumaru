@@ -29,6 +29,8 @@ type Service interface {
 	GetAdmin(ctx context.Context, in *GetAdminInput) (*entity.Admin, error)
 	// システム管理者一覧取得
 	ListAdministrators(ctx context.Context, in *ListAdministratorsInput) (entity.Administrators, error)
+	// システム管理者一覧取得(ID指定)
+	MultiGetAdministrators(ctx context.Context, in *MultiGetAdministratorsInput) (entity.Administrators, error)
 	// システム管理者取得
 	GetAdministrator(ctx context.Context, in *GetAdministratorInput) (*entity.Administrator, error)
 	// システム管理者登録

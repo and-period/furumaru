@@ -29,8 +29,11 @@ func (s *service) ListCoordinators(
 func (s *service) MultiGetCoordinators(
 	ctx context.Context, in *user.MultiGetCoordinatorsInput,
 ) (entity.Coordinators, error) {
-	// TODO: 詳細の実装
-	return nil, exception.ErrNotImplemented
+	if err := s.validator.Struct(in); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	coordinators, err := s.db.Coordinator.MultiGet(ctx, in.CoordinatorIDs)
+	return coordinators, exception.InternalError(err)
 }
 
 func (s *service) GetCoordinator(

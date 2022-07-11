@@ -202,8 +202,16 @@ func TestPersonalizations(t *testing.T) {
 			expectErr: nil,
 		},
 		{
-			name:  "not implemented administrators",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success administrators",
+			setup: func(ctx context.Context, mocks *mocks) {
+				in := &user.MultiGetAdministratorsInput{AdministratorIDs: []string{"admin-id"}}
+				administrators := uentity.Administrators{{
+					Lastname:  "&.",
+					Firstname: "スタッフ",
+					Email:     "test-user@and-period.jp",
+				}}
+				mocks.user.EXPECT().MultiGetAdministrators(ctx, in).Return(administrators, nil)
+			},
 			payload: &entity.WorkerPayload{
 				EventType: entity.EventTypeRegisterAdmin,
 				UserType:  entity.UserTypeAdministrator,
@@ -213,12 +221,30 @@ func TestPersonalizations(t *testing.T) {
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
-			expect:    nil,
-			expectErr: exception.ErrNotImplemented,
+			expect: []*mailer.Personalization{
+				{
+					Name:    "&. スタッフ",
+					Address: "test-user@and-period.jp",
+					Type:    mailer.AddressTypeTo,
+					Substitutions: map[string]interface{}{
+						"key": "value",
+						"氏名":  "&. スタッフ",
+					},
+				},
+			},
+			expectErr: nil,
 		},
 		{
-			name:  "not implemented coordinators",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success coordinators",
+			setup: func(ctx context.Context, mocks *mocks) {
+				in := &user.MultiGetCoordinatorsInput{CoordinatorIDs: []string{"admin-id"}}
+				coordinators := uentity.Coordinators{{
+					Lastname:  "&.",
+					Firstname: "スタッフ",
+					Email:     "test-user@and-period.jp",
+				}}
+				mocks.user.EXPECT().MultiGetCoordinators(ctx, in).Return(coordinators, nil)
+			},
 			payload: &entity.WorkerPayload{
 				EventType: entity.EventTypeRegisterAdmin,
 				UserType:  entity.UserTypeCoordinator,
@@ -228,8 +254,18 @@ func TestPersonalizations(t *testing.T) {
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
-			expect:    nil,
-			expectErr: exception.ErrNotImplemented,
+			expect: []*mailer.Personalization{
+				{
+					Name:    "&. スタッフ",
+					Address: "test-user@and-period.jp",
+					Type:    mailer.AddressTypeTo,
+					Substitutions: map[string]interface{}{
+						"key": "value",
+						"氏名":  "&. スタッフ",
+					},
+				},
+			},
+			expectErr: nil,
 		},
 		{
 			name: "success producers",
@@ -387,6 +423,23 @@ func TestFetchAdmins(t *testing.T) {
 func TestFetchAdministrators(t *testing.T) {
 	t.Parallel()
 
+	in := &user.MultiGetAdministratorsInput{
+		AdministratorIDs: []string{"admin-id"},
+	}
+	administrators := uentity.Administrators{
+		{
+			ID:            "administrator-id",
+			Lastname:      "&.",
+			Firstname:     "スタッフ",
+			LastnameKana:  "あんどぴりおど",
+			FirstnameKana: "すたっふ",
+			Email:         "test-admin@and-period.jp",
+			PhoneNumber:   "+819012345678",
+			CreatedAt:     jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			UpdatedAt:     jst.Date(2022, 7, 10, 18, 30, 0, 0),
+		},
+	}
+
 	tests := []struct {
 		name             string
 		setup            func(ctx context.Context, mocks *mocks)
@@ -395,13 +448,30 @@ func TestFetchAdministrators(t *testing.T) {
 		expectErr        error
 	}{
 		{
-			name:             "not implemented",
-			setup:            func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().MultiGetAdministrators(ctx, in).Return(administrators, nil)
+			},
+			administratorIDs: []string{"admin-id"},
+			execute: func(t *testing.T) func(name, email string) {
+				execute := func(name, email string) {
+					assert.Equal(t, "&. スタッフ", name)
+					assert.Equal(t, "test-admin@and-period.jp", email)
+				}
+				return execute
+			},
+			expectErr: nil,
+		},
+		{
+			name: "failed to get administrators",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().MultiGetAdministrators(ctx, in).Return(nil, errmock)
+			},
 			administratorIDs: []string{"admin-id"},
 			execute: func(t *testing.T) func(name, email string) {
 				return nil
 			},
-			expectErr: exception.ErrNotImplemented,
+			expectErr: errmock,
 		},
 	}
 	for _, tt := range tests {
@@ -416,6 +486,34 @@ func TestFetchAdministrators(t *testing.T) {
 func TestFetchCoordinators(t *testing.T) {
 	t.Parallel()
 
+	in := &user.MultiGetCoordinatorsInput{
+		CoordinatorIDs: []string{"admin-id"},
+	}
+	coordinators := uentity.Coordinators{
+		{
+			ID:               "coordinator-id",
+			Lastname:         "&.",
+			Firstname:        "スタッフ",
+			LastnameKana:     "あんどぴりおど",
+			FirstnameKana:    "すたっふ",
+			StoreName:        "&.農園",
+			ThumbnailURL:     "https://and-period.jp/thumbnail.png",
+			HeaderURL:        "https://and-period.jp/header.png",
+			TwitterAccount:   "twitter-account",
+			InstagramAccount: "instagram-account",
+			FacebookAccount:  "facebook-account",
+			Email:            "test-admin@and-period.jp",
+			PhoneNumber:      "+819012345678",
+			PostalCode:       "1000014",
+			Prefecture:       "東京都",
+			City:             "千代田区",
+			AddressLine1:     "永田町1-7-1",
+			AddressLine2:     "",
+			CreatedAt:        jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			UpdatedAt:        jst.Date(2022, 7, 10, 18, 30, 0, 0),
+		},
+	}
+
 	tests := []struct {
 		name           string
 		setup          func(ctx context.Context, mocks *mocks)
@@ -424,13 +522,30 @@ func TestFetchCoordinators(t *testing.T) {
 		expectErr      error
 	}{
 		{
-			name:           "not implemented",
-			setup:          func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().MultiGetCoordinators(ctx, in).Return(coordinators, nil)
+			},
+			coordinatorIDs: []string{"admin-id"},
+			execute: func(t *testing.T) func(name, email string) {
+				execute := func(name, email string) {
+					assert.Equal(t, "&. スタッフ", name)
+					assert.Equal(t, "test-admin@and-period.jp", email)
+				}
+				return execute
+			},
+			expectErr: nil,
+		},
+		{
+			name: "failed to get coordinators",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().MultiGetCoordinators(ctx, in).Return(nil, errmock)
+			},
 			coordinatorIDs: []string{"admin-id"},
 			execute: func(t *testing.T) func(name, email string) {
 				return nil
 			},
-			expectErr: exception.ErrNotImplemented,
+			expectErr: errmock,
 		},
 	}
 	for _, tt := range tests {

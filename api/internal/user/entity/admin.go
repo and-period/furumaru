@@ -65,3 +65,27 @@ func NewAdminFromProducer(producer *Producer) *Admin {
 func (a *Admin) Name() string {
 	return strings.TrimSpace(strings.Join([]string{a.Lastname, a.Firstname}, " "))
 }
+
+func NewAdminsFromAdministrators(administrators Administrators) Admins {
+	res := make(Admins, len(administrators))
+	for i := range administrators {
+		res[i] = NewAdminFromAdministrator(administrators[i])
+	}
+	return res
+}
+
+func NewAdminsFromCoordinators(coordinators Coordinators) Admins {
+	res := make(Admins, len(coordinators))
+	for i := range coordinators {
+		res[i] = NewAdminFromCoordinator(coordinators[i])
+	}
+	return res
+}
+
+func NewAdminsFromProducers(producers Producers) Admins {
+	res := make(Admins, len(producers))
+	for i := range producers {
+		res[i] = NewAdminFromProducer(producers[i])
+	}
+	return res
+}

@@ -76,6 +76,26 @@ func (mr *MockAdminAuthMockRecorder) GetByCognitoID(ctx, cognitoID interface{}, 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByCognitoID", reflect.TypeOf((*MockAdminAuth)(nil).GetByCognitoID), varargs...)
 }
 
+// MultiGet mocks base method.
+func (m *MockAdminAuth) MultiGet(ctx context.Context, adminIDs []string, fields ...string) (entity.AdminAuths, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, adminIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGet", varargs...)
+	ret0, _ := ret[0].(entity.AdminAuths)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGet indicates an expected call of MultiGet.
+func (mr *MockAdminAuthMockRecorder) MultiGet(ctx, adminIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, adminIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockAdminAuth)(nil).MultiGet), varargs...)
+}
+
 // MockAdministrator is a mock of Administrator interface.
 type MockAdministrator struct {
 	ctrl     *gomock.Controller
@@ -151,6 +171,26 @@ func (mr *MockAdministratorMockRecorder) List(ctx, params interface{}, fields ..
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, params}, fields...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockAdministrator)(nil).List), varargs...)
+}
+
+// MultiGet mocks base method.
+func (m *MockAdministrator) MultiGet(ctx context.Context, administratorIDs []string, fields ...string) (entity.Administrators, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, administratorIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGet", varargs...)
+	ret0, _ := ret[0].(entity.Administrators)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGet indicates an expected call of MultiGet.
+func (mr *MockAdministratorMockRecorder) MultiGet(ctx, administratorIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, administratorIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockAdministrator)(nil).MultiGet), varargs...)
 }
 
 // UpdateEmail mocks base method.
@@ -242,6 +282,26 @@ func (mr *MockCoordinatorMockRecorder) List(ctx, params interface{}, fields ...i
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, params}, fields...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockCoordinator)(nil).List), varargs...)
+}
+
+// MultiGet mocks base method.
+func (m *MockCoordinator) MultiGet(ctx context.Context, coordinatorIDs []string, fields ...string) (entity.Coordinators, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, coordinatorIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGet", varargs...)
+	ret0, _ := ret[0].(entity.Coordinators)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGet indicates an expected call of MultiGet.
+func (mr *MockCoordinatorMockRecorder) MultiGet(ctx, coordinatorIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, coordinatorIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockCoordinator)(nil).MultiGet), varargs...)
 }
 
 // UpdateEmail mocks base method.

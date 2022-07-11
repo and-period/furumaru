@@ -93,14 +93,33 @@ func (w *worker) fetchAdmins(ctx context.Context, adminIDs []string, execute fun
 func (w *worker) fetchAdministrators(
 	ctx context.Context, administratorIDs []string, execute func(name, email string),
 ) error {
-	// TODO: 後から
-	return exception.ErrNotImplemented
+	in := &user.MultiGetAdministratorsInput{
+		AdministratorIDs: administratorIDs,
+	}
+	administrators, err := w.user.MultiGetAdministrators(ctx, in)
+	if err != nil {
+		return err
+	}
+	for i := range administrators {
+		execute(administrators[i].Name(), administrators[i].Email)
+	}
+	return nil
 }
 
 func (w *worker) fetchCoordinators(
 	ctx context.Context, coordinatorIDs []string, execute func(name, email string),
 ) error {
-	return exception.ErrNotImplemented
+	in := &user.MultiGetCoordinatorsInput{
+		CoordinatorIDs: coordinatorIDs,
+	}
+	coordinators, err := w.user.MultiGetCoordinators(ctx, in)
+	if err != nil {
+		return err
+	}
+	for i := range coordinators {
+		execute(coordinators[i].Name(), coordinators[i].Email)
+	}
+	return nil
 }
 
 func (w *worker) fetchProducers(ctx context.Context, producerIDs []string, execute func(name, email string)) error {
