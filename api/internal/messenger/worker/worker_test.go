@@ -154,7 +154,7 @@ func TestWorker_Dispatch(t *testing.T) {
 				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
 				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", true).Return(nil)
 				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), in).Return(users, nil)
-				mocks.mailer.EXPECT().MultiSendFromInfo(gomock.Any(), entity.EmailIDRegisterAdmin, personalizations).Return(nil)
+				mocks.mailer.EXPECT().MultiSendFromInfo(gomock.Any(), entity.EmailIDAdminRegister, personalizations).Return(nil)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -162,7 +162,7 @@ func TestWorker_Dispatch(t *testing.T) {
 				UserType:  entity.UserTypeUser,
 				UserIDs:   []string{"user-id"},
 				Email: &entity.MailConfig{
-					EmailID:       entity.EmailIDRegisterAdmin,
+					EmailID:       entity.EmailIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
@@ -180,7 +180,7 @@ func TestWorker_Dispatch(t *testing.T) {
 				UserType:  entity.UserTypeUser,
 				UserIDs:   []string{"user-id"},
 				Email: &entity.MailConfig{
-					EmailID:       entity.EmailIDRegisterAdmin,
+					EmailID:       entity.EmailIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
@@ -212,7 +212,7 @@ func TestWorker_Dispatch(t *testing.T) {
 				UserType:  entity.UserTypeUser,
 				UserIDs:   []string{"user-id"},
 				Email: &entity.MailConfig{
-					EmailID:       entity.EmailIDRegisterAdmin,
+					EmailID:       entity.EmailIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
@@ -230,7 +230,7 @@ func TestWorker_Dispatch(t *testing.T) {
 				UserType:  entity.UserTypeUser,
 				UserIDs:   []string{"user-id"},
 				Email: &entity.MailConfig{
-					EmailID:       entity.EmailIDRegisterAdmin,
+					EmailID:       entity.EmailIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
@@ -242,7 +242,7 @@ func TestWorker_Dispatch(t *testing.T) {
 				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
 				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", true).Return(errmock)
 				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), in).Return(users, nil)
-				mocks.mailer.EXPECT().MultiSendFromInfo(gomock.Any(), entity.EmailIDRegisterAdmin, personalizations).Return(nil)
+				mocks.mailer.EXPECT().MultiSendFromInfo(gomock.Any(), entity.EmailIDAdminRegister, personalizations).Return(nil)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -250,7 +250,7 @@ func TestWorker_Dispatch(t *testing.T) {
 				UserType:  entity.UserTypeUser,
 				UserIDs:   []string{"user-id"},
 				Email: &entity.MailConfig{
-					EmailID:       entity.EmailIDRegisterAdmin,
+					EmailID:       entity.EmailIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},

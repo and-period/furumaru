@@ -67,6 +67,8 @@ func (w *worker) newPersonalizations(
 		err = w.fetchProducers(ctx, payload.UserIDs, execute)
 	case entity.UserTypeUser:
 		err = w.fetchUsers(ctx, payload.UserIDs, execute)
+	case entity.UserTypeGuest:
+		err = w.fetchGuest(ctx, payload.Guest, execute)
 	default:
 		err = fmt.Errorf("worker: failed to multi send mail: %w", errUnknownUserType)
 	}
@@ -147,5 +149,13 @@ func (w *worker) fetchUsers(ctx context.Context, userIDs []string, execute func(
 	for i := range users {
 		execute(users[i].Name(), users[i].Email)
 	}
+	return nil
+}
+
+func (w *worker) fetchGuest(ctx context.Context, guest *entity.Guest, execute func(name, email string)) error {
+	if guest == nil {
+		return errGuestRequired
+	}
+	execute(guest.Name, guest.Email)
 	return nil
 }

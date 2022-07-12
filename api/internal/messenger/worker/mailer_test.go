@@ -48,14 +48,14 @@ func TestMultiSendMail(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().MultiGetAdmins(ctx, in).Return(admins, nil)
-				mocks.mailer.EXPECT().MultiSendFromInfo(ctx, entity.EmailIDRegisterAdmin, personalizations).Return(nil)
+				mocks.mailer.EXPECT().MultiSendFromInfo(ctx, entity.EmailIDAdminRegister, personalizations).Return(nil)
 			},
 			payload: &entity.WorkerPayload{
 				EventType: entity.EventTypeRegisterAdmin,
 				UserType:  entity.UserTypeAdmin,
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
-					EmailID:       entity.EmailIDRegisterAdmin,
+					EmailID:       entity.EmailIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
@@ -71,7 +71,7 @@ func TestMultiSendMail(t *testing.T) {
 				UserType:  entity.UserTypeAdmin,
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
-					EmailID:       entity.EmailIDRegisterAdmin,
+					EmailID:       entity.EmailIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
@@ -184,7 +184,7 @@ func TestPersonalizations(t *testing.T) {
 				UserType:  entity.UserTypeAdmin,
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
-					EmailID:       entity.EmailIDRegisterAdmin,
+					EmailID:       entity.EmailIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
@@ -217,7 +217,7 @@ func TestPersonalizations(t *testing.T) {
 				UserType:  entity.UserTypeAdministrator,
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
-					EmailID:       entity.EmailIDRegisterAdmin,
+					EmailID:       entity.EmailIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
@@ -250,7 +250,7 @@ func TestPersonalizations(t *testing.T) {
 				UserType:  entity.UserTypeCoordinator,
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
-					EmailID:       entity.EmailIDRegisterAdmin,
+					EmailID:       entity.EmailIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
@@ -283,7 +283,7 @@ func TestPersonalizations(t *testing.T) {
 				UserType:  entity.UserTypeProducer,
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
-					EmailID:       entity.EmailIDRegisterAdmin,
+					EmailID:       entity.EmailIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
@@ -315,7 +315,36 @@ func TestPersonalizations(t *testing.T) {
 				UserType:  entity.UserTypeUser,
 				UserIDs:   []string{"user-id"},
 				Email: &entity.MailConfig{
-					EmailID:       entity.EmailIDRegisterAdmin,
+					EmailID:       entity.EmailIDAdminRegister,
+					Substitutions: map[string]string{"key": "value"},
+				},
+			},
+			expect: []*mailer.Personalization{
+				{
+					Name:    "&. スタッフ",
+					Address: "test-user@and-period.jp",
+					Type:    mailer.AddressTypeTo,
+					Substitutions: map[string]interface{}{
+						"key": "value",
+						"氏名":  "&. スタッフ",
+					},
+				},
+			},
+			expectErr: nil,
+		},
+		{
+			name:  "success guest",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			payload: &entity.WorkerPayload{
+				EventType: entity.EventTypeRegisterAdmin,
+				UserType:  entity.UserTypeGuest,
+				UserIDs:   []string{},
+				Guest: &entity.Guest{
+					Name:  "&. スタッフ",
+					Email: "test-user@and-period.jp",
+				},
+				Email: &entity.MailConfig{
+					EmailID:       entity.EmailIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
@@ -340,7 +369,7 @@ func TestPersonalizations(t *testing.T) {
 				UserType:  entity.UserTypeNone,
 				UserIDs:   []string{"user-id"},
 				Email: &entity.MailConfig{
-					EmailID:       entity.EmailIDRegisterAdmin,
+					EmailID:       entity.EmailIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
@@ -688,6 +717,51 @@ func TestFetchUsers(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
 			err := worker.fetchUsers(ctx, tt.userIDs, tt.execute(t))
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestFetchGuest(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		guest     *entity.Guest
+		execute   func(t *testing.T) func(name, email string)
+		expectErr error
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			guest: &entity.Guest{
+				Name:  "テストユーザー",
+				Email: "test-user@and-period.jp",
+			},
+			execute: func(t *testing.T) func(name, email string) {
+				execute := func(name, email string) {
+					assert.Equal(t, "テストユーザー", name)
+					assert.Equal(t, "test-user@and-period.jp", email)
+				}
+				return execute
+			},
+			expectErr: nil,
+		},
+		{
+			name:  "guest is empty",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			guest: nil,
+			execute: func(t *testing.T) func(name, email string) {
+				return nil
+			},
+			expectErr: errGuestRequired,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
+			err := worker.fetchGuest(ctx, tt.guest, tt.execute(t))
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
