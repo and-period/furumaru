@@ -43,12 +43,6 @@ get:
         application/json:
           schema:
             $ref: './../../../openapi.yaml#/components/schemas/v1ProductsResponse'
-    default:
-      description: An unexpected error response.
-      content:
-        application/json:
-          schema:
-            $ref: './../../../openapi.yaml#/components/schemas/errorResponse'
 post:
   summary: 商品登録
   operationId: v1CreateProduct
@@ -69,8 +63,14 @@ post:
         application/json:
           schema:
             $ref: './../../../openapi.yaml#/components/schemas/v1ProductResponse'
-    default:
-      description: An unexpected error response.
+    400:
+      description: bad request error
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/errorResponse'
+    409:
+      description: conflict error
       content:
         application/json:
           schema:
