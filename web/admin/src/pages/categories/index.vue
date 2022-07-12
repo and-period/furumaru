@@ -24,7 +24,7 @@
               </v-btn>
             </div>
           </template>
-          <v-card>
+          <v-card flat :loading="fetchState.pending">
             <v-card-title class="text-h6 primaryLight">
               カテゴリー登録
             </v-card-title>
@@ -47,7 +47,14 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <p>Category list will be displayed</p>
+        <v-data-table
+          :headers="categoryHeaders"
+          :items="categories"
+        >
+          <template #[`item.category`]="{ item }">
+            {{ `${item.name}` }}
+          </template>
+        </v-data-table>
       </v-tab-item>
 
       <v-tab-item value="tab-categoryItems">
@@ -93,7 +100,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from '@nuxtjs/composition-api'
+import { computed, defineComponent, reactive, ref, useFetch } from '@nuxtjs/composition-api'
+import { DataTableHeader } from 'vuetify'
 
 import { useCategoryStore } from '~/store/category'
 import { CreateCategoryRequest, CreateProductTypeRequest } from '~/types/api'
@@ -101,7 +109,10 @@ import { Category } from '~/types/props/category'
 
 export default defineComponent({
   setup() {
-    const { createCategory } = useCategoryStore()
+    const categoryStore = useCategoryStore()
+    const categories = computed(() => {
+      return categoryStore.categories
+    })
 
     const selector = ref<string>('categories')
     const categoryDialog = ref<boolean>(false)
@@ -109,6 +120,18 @@ export default defineComponent({
     const items: Category[] = [
       { name: 'カテゴリー', value: 'categories' },
       { name: '品目', value: 'categoryItems' },
+    ]
+
+    const categoryHeaders: DataTableHeader[] = [
+      {
+        text: 'カテゴリー',
+        value: 'category',
+      },
+      {
+        text: 'Actions',
+        value: 'actions',
+        sortable: false,
+      },
     ]
 
     const categoryFormData = reactive<CreateCategoryRequest>({
@@ -129,7 +152,7 @@ export default defineComponent({
 
     const categoryRegister = async (): Promise<void> => {
       try {
-        await createCategory(categoryFormData)
+        await categoryStore.createCategory(categoryFormData)
       } catch (error) {
         console.log(error)
       }
@@ -139,13 +162,24 @@ export default defineComponent({
       // TODO: categoryが実装できた後に実装する
     }
 
+    const { fetchState } = useFetch(async () => {
+      try {
+        await categoryStore.fetchCategories()
+      } catch (err) {
+        console.log(err)
+      }
+    })
+
     return {
+      categoryHeaders,
+      categories,
       items,
       selector,
       categoryDialog,
       categoryFormData,
       itemFormData,
       itemDialog,
+      fetchState,
       categoryCancel,
       itemCancel,
       categoryRegister,
