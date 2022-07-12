@@ -153,6 +153,18 @@ func TestGetContact(t *testing.T) {
 
 func TestCreateContact(t *testing.T) {
 	t.Parallel()
+	contact := &entity.Contact{
+		ID:          "contact-id",
+		Title:       "お問い合わせ件名",
+		Content:     "お問い合わせ内容",
+		Username:    "お問い合わせ氏名",
+		Email:       "test-user@and-period.jp",
+		PhoneNumber: "+819012345678",
+		Status:      entity.ContactStatusUnknown,
+		Priority:    entity.ContactPriorityUnknown,
+		CreatedAt:   jst.Date(2022, 7, 13, 18, 30, 0, 0),
+		UpdatedAt:   jst.Date(2022, 7, 13, 18, 30, 0, 0),
+	}
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -178,6 +190,24 @@ func TestCreateContact(t *testing.T) {
 						assert.Equal(t, expect, contact)
 						return nil
 					})
+				mocks.db.Contact.EXPECT().Get(gomock.Any(), gomock.Any()).Return(contact, nil)
+				mocks.db.ReceivedQueue.EXPECT().Create(gomock.Any(), gomock.Any()).Return(nil)
+				mocks.producer.EXPECT().SendMessage(gomock.Any(), gomock.Any()).Return("", nil)
+			},
+			input: &messenger.CreateContactInput{
+				Title:       "お問い合わせ件名",
+				Content:     "お問い合わせ内容",
+				Username:    "お問い合わせ氏名",
+				Email:       "test-user@and-period.jp",
+				PhoneNumber: "+819012345678",
+			},
+			expectErr: nil,
+		},
+		{
+			name: "success without notify",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Contact.EXPECT().Create(ctx, gomock.Any()).Return(nil)
+				mocks.db.Contact.EXPECT().Get(gomock.Any(), gomock.Any()).Return(nil, errmock)
 			},
 			input: &messenger.CreateContactInput{
 				Title:       "お問い合わせ件名",

@@ -24,12 +24,45 @@ func (s *service) NotifyRegisterAdmin(ctx context.Context, in *messenger.NotifyR
 	}
 	payload := &entity.WorkerPayload{
 		QueueID:   uuid.Base58Encode(uuid.New()),
-		EventType: entity.EventTypeRegisterAdmin,
+		EventType: entity.EventTypeAdminRegister,
 		UserType:  entity.UserTypeAdmin,
 		UserIDs:   []string{in.AdminID},
 		Email:     mail,
 	}
 	err := s.sendMessage(ctx, payload)
+	return exception.InternalError(err)
+}
+
+func (s *service) NotifyReceivedContact(ctx context.Context, in *messenger.NotifyReceivedContactInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	contact, err := s.db.Contact.Get(ctx, in.ContactID)
+	if err != nil {
+		return exception.InternalError(err)
+	}
+	maker := entity.NewAdminURLMaker(s.adminWebURL())
+	builder := entity.NewTemplateDataBuilder().
+		WebURL(maker.Contact(contact.ID)).
+		Name(in.Username).
+		Email(in.Email).
+		Contact(contact.Title, contact.Content)
+	guest := &entity.Guest{
+		Name:  in.Username,
+		Email: in.Email,
+	}
+	mail := &entity.MailConfig{
+		EmailID:       entity.EmailIDUserReceivedContact,
+		Substitutions: builder.Build(),
+	}
+	payload := &entity.WorkerPayload{
+		QueueID:   uuid.Base58Encode(uuid.New()),
+		EventType: entity.EventTypeUserReceivedContact,
+		UserType:  entity.UserTypeGuest,
+		Guest:     guest,
+		Email:     mail,
+	}
+	err = s.sendMessage(ctx, payload)
 	return exception.InternalError(err)
 }
 
