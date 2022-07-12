@@ -134,7 +134,10 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Install
-      run: make install
+      run: |
+        docker compose run --rm swagger_generator yarn
+        docker compose run --rm user_web yarn
+        docker compose run --rm admin_web yarn
 
     - name: Build
       run: make swagger
