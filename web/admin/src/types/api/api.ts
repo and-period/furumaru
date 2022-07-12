@@ -436,6 +436,285 @@ export interface ContactsResponseContacts {
 /**
  * 
  * @export
+ * @interface CoordinatorResponse
+ */
+export interface CoordinatorResponse {
+    /**
+     * 仲介者ID
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'id': string;
+    /**
+     * 姓
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'lastname': string;
+    /**
+     * 名
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'firstname': string;
+    /**
+     * 姓(かな)
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'lastnameKana': string;
+    /**
+     * 名(かな)
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'firstnameKana': string;
+    /**
+     * 会社名
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'companyName': string;
+    /**
+     * 店舗名
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'storeName': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'thumbnailUrl': string;
+    /**
+     * ヘッダー画像URL
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'headerUrl': string;
+    /**
+     * Twitterアカウント
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'twitterAccount': string;
+    /**
+     * Instagramアカウント
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'instagramAccount': string;
+    /**
+     * Facebookアカウント
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'facebookAccount': string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'email': string;
+    /**
+     * 電話番号 (国際番号 + 電話番号)
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'phoneNumber': string;
+    /**
+     * 郵便番号
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'postalCode': string;
+    /**
+     * 都道府県
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'prefecture': string;
+    /**
+     * 市区町村
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'city': string;
+    /**
+     * 町名・番地
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'addressLine1': string;
+    /**
+     * ビル名・号室など
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'addressLine2': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof CoordinatorResponse
+     */
+    'createdAt': number;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof CoordinatorResponse
+     */
+    'updatedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface CoordinatorsResponse
+ */
+export interface CoordinatorsResponse {
+    /**
+     * 仲介者一覧
+     * @type {Array<CoordinatorsResponseCoordinators>}
+     * @memberof CoordinatorsResponse
+     */
+    'coordinators': Array<CoordinatorsResponseCoordinators>;
+}
+/**
+ * 
+ * @export
+ * @interface CoordinatorsResponseCoordinators
+ */
+export interface CoordinatorsResponseCoordinators {
+    /**
+     * 仲介者ID
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinators
+     */
+    'id': string;
+    /**
+     * 姓
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinators
+     */
+    'lastname': string;
+    /**
+     * 名
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinators
+     */
+    'firstname': string;
+    /**
+     * 姓(かな)
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinators
+     */
+    'lastnameKana': string;
+    /**
+     * 名(かな)
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinators
+     */
+    'firstnameKana': string;
+    /**
+     * 会社名
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinators
+     */
+    'companyName': string;
+    /**
+     * 店舗名
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinators
+     */
+    'storeName': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinators
+     */
+    'thumbnailUrl': string;
+    /**
+     * ヘッダー画像URL
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinators
+     */
+    'headerUrl': string;
+    /**
+     * Twitterアカウント
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinators
+     */
+    'twitterAccount': string;
+    /**
+     * Instagramアカウント
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinators
+     */
+    'instagramAccount': string;
+    /**
+     * Facebookアカウント
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinators
+     */
+    'facebookAccount': string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinators
+     */
+    'email': string;
+    /**
+     * 電話番号 (国際番号 + 電話番号)
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinators
+     */
+    'phoneNumber': string;
+    /**
+     * 郵便番号
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinators
+     */
+    'postalCode': string;
+    /**
+     * 都道府県
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinators
+     */
+    'prefecture': string;
+    /**
+     * 市区町村
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinators
+     */
+    'city': string;
+    /**
+     * 町名・番地
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinators
+     */
+    'addressLine1': string;
+    /**
+     * ビル名・号室など
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinators
+     */
+    'addressLine2': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof CoordinatorsResponseCoordinators
+     */
+    'createdAt': number;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof CoordinatorsResponseCoordinators
+     */
+    'updatedAt': number;
+}
+/**
+ * 
+ * @export
  * @interface CreateAdministratorRequest
  */
 export interface CreateAdministratorRequest {
@@ -488,6 +767,121 @@ export interface CreateCategoryRequest {
      * @memberof CreateCategoryRequest
      */
     'name': string;
+}
+/**
+ * 
+ * @export
+ * @interface CreateCoordinatorRequest
+ */
+export interface CreateCoordinatorRequest {
+    /**
+     * 姓(16文字まで)
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'lastname': string;
+    /**
+     * 名(16文字まで)
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'firstname': string;
+    /**
+     * 姓(かな)(ひらがな,32文字まで)
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'lastnameKana': string;
+    /**
+     * 名(かな)(ひらがな,32文字まで)
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'firstnameKana': string;
+    /**
+     * 会社名(64文字まで)
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'companyName': string;
+    /**
+     * 店舗名(64文字まで)
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'storeName': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'thumbnailUrl'?: string;
+    /**
+     * ヘッダー画像URL
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'headerUrl'?: string;
+    /**
+     * Twitterアカウント(15文字まで)
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'twitterAccount'?: string;
+    /**
+     * Instagramアカウント(30文字まで)
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'instagramAccount'?: string;
+    /**
+     * Facebookアカウント(50文字まで)
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'facebookAccount'?: string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'email': string;
+    /**
+     * 電話番号 (国際番号 + 電話番号)
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'phoneNumber': string;
+    /**
+     * 郵便番号(ハイフンなし)
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'postalCode': string;
+    /**
+     * 都道府県(32文字まで)
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'prefecture': string;
+    /**
+     * 市区町村(32文字まで)
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'city': string;
+    /**
+     * 町名・番地(64文字まで)
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'addressLine1': string;
+    /**
+     * ビル名・号室など(64文字まで)
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'addressLine2': string;
 }
 /**
  * 
@@ -740,7 +1134,7 @@ export interface ErrorResponse {
  */
 export interface ProducerResponse {
     /**
-     * システム管理者ID
+     * 生産者ID
      * @type {string}
      * @memberof ProducerResponse
      */
@@ -3189,6 +3583,128 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
     return {
         /**
          * 
+         * @summary 仲介者登録
+         * @param {CreateCoordinatorRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateCoordinator: async (body: CreateCoordinatorRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1CreateCoordinator', 'body', body)
+            const localVarPath = `/v1/coordinators`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 仲介者取得
+         * @param {string} coordinatorId 仲介者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetCoordinator: async (coordinatorId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'coordinatorId' is not null or undefined
+            assertParamExists('v1GetCoordinator', 'coordinatorId', coordinatorId)
+            const localVarPath = `/v1/coordinators/{coordinatorId}`
+                .replace(`{${"coordinatorId"}}`, encodeURIComponent(String(coordinatorId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 仲介者一覧取得
+         * @param {number} [limit] 取得上限数
+         * @param {number} [offset] 取得開始位置
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListCoordinators: async (limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/coordinators`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 仲介者ヘッダー画像アップロード
          * @param {any} [image] 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
@@ -3285,6 +3801,40 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary 仲介者登録
+         * @param {CreateCoordinatorRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1CreateCoordinator(body: CreateCoordinatorRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CoordinatorResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateCoordinator(body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 仲介者取得
+         * @param {string} coordinatorId 仲介者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetCoordinator(coordinatorId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CoordinatorResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetCoordinator(coordinatorId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 仲介者一覧取得
+         * @param {number} [limit] 取得上限数
+         * @param {number} [offset] 取得開始位置
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ListCoordinators(limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CoordinatorsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListCoordinators(limit, offset, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary 仲介者ヘッダー画像アップロード
          * @param {any} [image] 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
@@ -3317,6 +3867,37 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
     return {
         /**
          * 
+         * @summary 仲介者登録
+         * @param {CreateCoordinatorRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateCoordinator(body: CreateCoordinatorRequest, options?: any): AxiosPromise<CoordinatorResponse> {
+            return localVarFp.v1CreateCoordinator(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 仲介者取得
+         * @param {string} coordinatorId 仲介者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetCoordinator(coordinatorId: string, options?: any): AxiosPromise<CoordinatorResponse> {
+            return localVarFp.v1GetCoordinator(coordinatorId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 仲介者一覧取得
+         * @param {number} [limit] 取得上限数
+         * @param {number} [offset] 取得開始位置
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListCoordinators(limit?: number, offset?: number, options?: any): AxiosPromise<CoordinatorsResponse> {
+            return localVarFp.v1ListCoordinators(limit, offset, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary 仲介者ヘッダー画像アップロード
          * @param {any} [image] 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
@@ -3345,6 +3926,43 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
  * @extends {BaseAPI}
  */
 export class CoordinatorApi extends BaseAPI {
+    /**
+     * 
+     * @summary 仲介者登録
+     * @param {CreateCoordinatorRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CoordinatorApi
+     */
+    public v1CreateCoordinator(body: CreateCoordinatorRequest, options?: AxiosRequestConfig) {
+        return CoordinatorApiFp(this.configuration).v1CreateCoordinator(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 仲介者取得
+     * @param {string} coordinatorId 仲介者ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CoordinatorApi
+     */
+    public v1GetCoordinator(coordinatorId: string, options?: AxiosRequestConfig) {
+        return CoordinatorApiFp(this.configuration).v1GetCoordinator(coordinatorId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 仲介者一覧取得
+     * @param {number} [limit] 取得上限数
+     * @param {number} [offset] 取得開始位置
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CoordinatorApi
+     */
+    public v1ListCoordinators(limit?: number, offset?: number, options?: AxiosRequestConfig) {
+        return CoordinatorApiFp(this.configuration).v1ListCoordinators(limit, offset, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary 仲介者ヘッダー画像アップロード

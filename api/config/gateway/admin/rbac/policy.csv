@@ -3,6 +3,9 @@ p, auth, /v1/auth/*, (GET)|(POST)|(PATCH), allow
 p, administrator_list, /v1/administrators, GET, allow
 p, administrator_get, /v1/administrators/*, GET, allow
 p, administrator_create, /v1/administrators, POST, allow
+p, coordinator_list, /v1/coordinators, GET, allow
+p, coordinator_get, /v1/coordinators/*, GET, allow
+p, coordinator_create, /v1/coordinators, POST, allow
 p, coordinator_uploader, /v1/upload/coordinators/*, POST, allow
 p, producer_list, /v1/producers, GET, allow
 p, producer_get, /v1/producers/*, GET, allow
@@ -28,6 +31,9 @@ g, administrator, auth
 g, administrator, administrator_list
 g, administrator, administrator_get
 g, administrator, administrator_create
+g, administrator, coordinator_list
+g, administrator, coordinator_get
+g, administrator, coordinator_create
 g, administrator, coordinator_uploader
 g, administrator, producer_list
 g, administrator, producer_get
@@ -48,6 +54,7 @@ g, administrator, contact_get
 g, administrator, contact_update
 
 g, coordinator, auth
+g, coordinator, coordinator_get
 g, coordinator, coordinator_uploader
 g, coordinator, producer_list
 g, coordinator, producer_get
