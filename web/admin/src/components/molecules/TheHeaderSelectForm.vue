@@ -10,7 +10,9 @@
       @click="handleClick"
     >
       <v-card-text>
-        <v-icon>mdi-plus</v-icon>
+        <v-avatar size="96">
+          <v-icon x-large>mdi-plus</v-icon>
+        </v-avatar>
         <input
           ref="inputRef"
           type="file"
