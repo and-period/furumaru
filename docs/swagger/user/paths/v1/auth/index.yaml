@@ -12,8 +12,8 @@ get:
         application/json:
           schema:
             $ref: './../../../openapi.yaml#/components/schemas/v1AuthResponse'
-    default:
-      description: An unexpected error response.
+    401:
+      description: unauthorized error
       content:
         application/json:
           schema:
@@ -38,8 +38,8 @@ post:
         application/json:
           schema:
             $ref: './../../../openapi.yaml#/components/schemas/v1AuthResponse'
-    default:
-      description: An unexpected error response.
+    401:
+      description: unauthorized error
       content:
         application/json:
           schema:
@@ -57,8 +57,8 @@ delete:
       content:
         application/json:
           schema: {}
-    default:
-      description: An unexpected error response.
+    401:
+      description: unauthorized error
       content:
         application/json:
           schema:
