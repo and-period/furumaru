@@ -27,6 +27,15 @@ func (m *AdminURLMaker) SignIn() string {
 	return webURL.String()
 }
 
+// Contact - お問い合わせ詳細
+func (m *AdminURLMaker) Contact(contactID string) string {
+	// e.g.) /contacts/contact-id
+	paths := []string{"contacts", contactID}
+	webURL := *m.url // copy
+	webURL.Path = strings.Join(paths, "/")
+	return webURL.String()
+}
+
 /**
  * --------------------------
  * 購入者関連URL生成用

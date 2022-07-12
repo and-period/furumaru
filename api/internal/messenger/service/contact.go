@@ -7,6 +7,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
+	"go.uber.org/zap"
 )
 
 func (s *service) ListContacts(ctx context.Context, in *messenger.ListContactsInput) (entity.Contacts, error) {
@@ -37,7 +38,18 @@ func (s *service) CreateContact(ctx context.Context, in *messenger.CreateContact
 	if err := s.db.Contact.Create(ctx, contact); err != nil {
 		return nil, exception.InternalError(err)
 	}
-	// TODO: お問合せが作成されたことを管理者へ通知
+	s.waitGroup.Add(1)
+	go func(contactID, name, email string) {
+		defer s.waitGroup.Done()
+		in := &messenger.NotifyReceivedContactInput{
+			ContactID: contactID,
+			Username:  name,
+			Email:     email,
+		}
+		if err := s.NotifyReceivedContact(context.Background(), in); err != nil {
+			s.logger.Error("Failed to notify received contact", zap.String("contactId", contactID), zap.Error(err))
+		}
+	}(contact.ID, in.Username, in.Email)
 	return contact, nil
 }
 

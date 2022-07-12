@@ -4,8 +4,9 @@ package entity
 type EventType int32
 
 const (
-	EventTypeUnknown       EventType = 0
-	EventTypeRegisterAdmin EventType = 1 // 管理者登録通知
+	EventTypeUnknown             EventType = 0
+	EventTypeAdminRegister       EventType = 1 // 管理者登録通知
+	EventTypeUserReceivedContact EventType = 1 // お問い合わせ受領通知
 )
 
 // UserType - 通知先ユーザー種別
