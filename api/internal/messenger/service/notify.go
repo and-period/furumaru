@@ -19,7 +19,7 @@ func (s *service) NotifyRegisterAdmin(ctx context.Context, in *messenger.NotifyR
 		WebURL(maker.SignIn()).
 		Password(in.Password)
 	mail := &entity.MailConfig{
-		EmailID:       entity.EmailIDRegisterAdmin,
+		EmailID:       entity.EmailIDAdminRegister,
 		Substitutions: builder.Build(),
 	}
 	payload := &entity.WorkerPayload{

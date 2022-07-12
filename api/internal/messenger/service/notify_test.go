@@ -50,7 +50,7 @@ func TestNotifyRegisterAdmin(t *testing.T) {
 							UserType:  entity.UserTypeAdmin,
 							UserIDs:   []string{"admin-id"},
 							Email: &entity.MailConfig{
-								EmailID: entity.EmailIDRegisterAdmin,
+								EmailID: entity.EmailIDAdminRegister,
 								Substitutions: map[string]string{
 									"サイトURL": "htts://admin.and-period.jp/signin",
 									"パスワード":  "!Qaz2wsx",

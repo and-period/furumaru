@@ -18,6 +18,7 @@ const (
 	UserTypeAdministrator UserType = 3 // システム管理者
 	UserTypeCoordinator   UserType = 4 // 仲介者
 	UserTypeProducer      UserType = 5 // 生産者
+	UserTypeGuest         UserType = 6 // 未登録ユーザー
 )
 
 type WorkerPayload struct {
@@ -25,5 +26,11 @@ type WorkerPayload struct {
 	EventType EventType   `json:"eventType"`       // Worker実行種別
 	UserType  UserType    `json:"userType"`        // 送信先ユーザー種別
 	UserIDs   []string    `json:"userIds"`         // 送信先ユーザー一覧
+	Guest     *Guest      `json:"guest,omitempty"` // 未登録ユーザー情報
 	Email     *MailConfig `json:"email,omitempty"` // メール送信設定
+}
+
+type Guest struct {
+	Name  string `json:"name"`  // 氏名
+	Email string `json:"email"` // メールアドレス
 }

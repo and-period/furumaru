@@ -125,33 +125,22 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./docs/swagger
+        working-directory: .
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        node: ['18.0.0']
     steps:
     - name: Check out code
       uses: actions/checkout@v3
 
-    - name: Get yarn cache directory path
-      id: yarn-cache-dir-path
-      run: echo "::set-output name=dir::$(yarn cache dir)"
-
-    - uses: actions/cache@v3
-      id: yarn-cache
-      with:
-        path: |
-          **/node_modules
-          ${{ steps.yarn-cache-dir-path.outputs.dir }}
-        key: ${{ env.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-
     - name: Install
-      if: steps.yarn-cache.outputs.cache-hit != 'true'
-      run: yarn --check-files --frozen-lockfile --non-interactive
+      run: |
+        docker compose run --rm swagger_generator yarn
+        docker compose run --rm user_web yarn
+        docker compose run --rm admin_web yarn
 
     - name: Build
-      run: yarn generate
+      run: make swagger
 
     - name: Diff
       run: |

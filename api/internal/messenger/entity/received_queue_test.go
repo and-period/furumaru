@@ -23,7 +23,7 @@ func TestReceivedQueue(t *testing.T) {
 				UserType:  UserTypeAdmin,
 				UserIDs:   []string{"admin-id"},
 				Email: &MailConfig{
-					EmailID:       EmailIDRegisterAdmin,
+					EmailID:       EmailIDAdminRegister,
 					Substitutions: map[string]string{"パスワード": "!Qaz2wsx"},
 				},
 			},
