@@ -19,7 +19,10 @@ import (
 	"golang.org/x/sync/semaphore"
 )
 
-var errUnknownUserType = errors.New("worker: unknown user type")
+var (
+	errUnknownUserType = errors.New("worker: unknown user type")
+	errGuestRequired   = errors.New("worker: guest is required")
+)
 
 type Worker interface {
 	Lambda(ctx context.Context, event events.SQSEvent) error

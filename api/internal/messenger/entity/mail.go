@@ -7,7 +7,8 @@ import (
 )
 
 const (
-	EmailIDRegisterAdmin = "register-admin"
+	EmailIDAdminRegister       = "admin-register"        // 管理者登録
+	EmailIDUserReceivedContact = "user-received-contact" // お問い合わせ受領
 )
 
 // MailConfig - メール送信設定
@@ -47,6 +48,11 @@ func (b *TemplateDataBuilder) Name(name string) *TemplateDataBuilder {
 	return b
 }
 
+func (b *TemplateDataBuilder) Email(email string) *TemplateDataBuilder {
+	b.data["メールアドレス"] = email
+	return b
+}
+
 func (b *TemplateDataBuilder) Password(password string) *TemplateDataBuilder {
 	b.data["パスワード"] = password
 	return b
@@ -54,5 +60,11 @@ func (b *TemplateDataBuilder) Password(password string) *TemplateDataBuilder {
 
 func (b *TemplateDataBuilder) WebURL(url string) *TemplateDataBuilder {
 	b.data["サイトURL"] = url
+	return b
+}
+
+func (b *TemplateDataBuilder) Contact(title, body string) *TemplateDataBuilder {
+	b.data["件名"] = title
+	b.data["本文"] = body
 	return b
 }
