@@ -65,6 +65,26 @@
         <v-icon>mdi-bell</v-icon>
       </v-btn>
     </v-app-bar>
+
+    <v-snackbar
+      v-for="(snackbar, i) in snackbars"
+      :key="i"
+      v-model="snackbar.isOpen"
+      :color="snackbar.color"
+      top
+      app
+      elevation="1"
+      :timeout="snackbar.timeout"
+      :style="calcStyle(i)"
+    >
+      {{ snackbar.message }}
+      <template #action="{ attrs }">
+        <v-btn text v-bind="attrs" @click="commonStore.hideSnackbar(i)"
+          >閉じる</v-btn
+        >
+      </template>
+    </v-snackbar>
+
     <v-main class="bg-color">
       <v-container>
         <Nuxt />
@@ -74,7 +94,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api'
+import { computed, defineComponent, ref } from '@vue/composition-api'
+
+import { useCommonStore } from '~/store/common'
 
 interface NavigationDrawerItem {
   to: string
@@ -85,6 +107,12 @@ interface NavigationDrawerItem {
 export default defineComponent({
   setup() {
     const drawer = ref<boolean>(true)
+
+    const commonStore = useCommonStore()
+
+    const snackbars = computed(() => {
+      return commonStore.snackbars.filter((item) => item.isOpen)
+    })
 
     const navigationDrawerHomeItem: NavigationDrawerItem = {
       to: '/',
@@ -152,12 +180,21 @@ export default defineComponent({
       drawer.value = !drawer.value
     }
 
+    const calcStyle = (i: number) => {
+      if (i > 0) {
+        return `top: ${60 * i}px;`
+      }
+    }
+
     return {
       drawer,
       navigationDrawerHomeItem,
       navigationDrawerList,
       navigationDrawerSettingsList,
       handleClickNavIcon,
+      snackbars,
+      commonStore,
+      calcStyle,
     }
   },
 })
