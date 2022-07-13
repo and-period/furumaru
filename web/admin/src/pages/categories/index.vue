@@ -24,7 +24,7 @@
               </v-btn>
             </div>
           </template>
-          <v-card flat :loading="fetchState.pending">
+          <v-card>
             <v-card-title class="text-h6 primaryLight">
               カテゴリー登録
             </v-card-title>
@@ -47,14 +47,7 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <v-data-table
-          :headers="categoryHeaders"
-          :items="categories"
-        >
-          <template #[`item.category`]="{ item }">
-            {{ `${item.name}` }}
-          </template>
-        </v-data-table>
+        <the-category-list />
       </v-tab-item>
 
       <v-tab-item value="tab-categoryItems">
@@ -100,14 +93,23 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, ref, useFetch } from '@nuxtjs/composition-api'
-import { DataTableHeader } from 'vuetify'
+import {
+  computed,
+  defineComponent,
+  reactive,
+  ref,
+} from '@nuxtjs/composition-api'
 
+import TheCategoryList from '~/components/organisms/TheCategoryList.vue'
 import { useCategoryStore } from '~/store/category'
 import { CreateCategoryRequest, CreateProductTypeRequest } from '~/types/api'
 import { Category } from '~/types/props/category'
 
 export default defineComponent({
+  components: {
+    TheCategoryList,
+  },
+
   setup() {
     const categoryStore = useCategoryStore()
     const categories = computed(() => {
@@ -120,18 +122,6 @@ export default defineComponent({
     const items: Category[] = [
       { name: 'カテゴリー', value: 'categories' },
       { name: '品目', value: 'categoryItems' },
-    ]
-
-    const categoryHeaders: DataTableHeader[] = [
-      {
-        text: 'カテゴリー',
-        value: 'category',
-      },
-      {
-        text: 'Actions',
-        value: 'actions',
-        sortable: false,
-      },
     ]
 
     const categoryFormData = reactive<CreateCategoryRequest>({
@@ -162,16 +152,7 @@ export default defineComponent({
       // TODO: categoryが実装できた後に実装する
     }
 
-    const { fetchState } = useFetch(async () => {
-      try {
-        await categoryStore.fetchCategories()
-      } catch (err) {
-        console.log(err)
-      }
-    })
-
     return {
-      categoryHeaders,
       categories,
       items,
       selector,
@@ -179,7 +160,6 @@ export default defineComponent({
       categoryFormData,
       itemFormData,
       itemDialog,
-      fetchState,
       categoryCancel,
       itemCancel,
       categoryRegister,
