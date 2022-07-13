@@ -134,6 +134,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		Storage:   storage.NewBucket(awscfg, storageParams),
 		User:      userService,
 		Store:     storeService,
+		Messenger: messengerService,
 	}
 	return &registry{
 		waitGroup: params.waitGroup,
