@@ -53,12 +53,20 @@ func (s *service) NotifyReceivedContact(ctx context.Context, in *messenger.Notif
 		EmailID:       entity.EmailIDUserReceivedContact,
 		Substitutions: builder.Build(),
 	}
+	maker := entity.NewAdminURLMaker(s.adminWebURL())
+	report := &entity.Report{
+		ReportID:   entity.ReportIDReceivedContact,
+		Overview:   contact.Title,
+		Link:       maker.Contact(contact.ID),
+		ReceivedAt: contact.CreatedAt,
+	}
 	payload := &entity.WorkerPayload{
 		QueueID:   uuid.Base58Encode(uuid.New()),
 		EventType: entity.EventTypeUserReceivedContact,
 		UserType:  entity.UserTypeGuest,
 		Guest:     guest,
 		Email:     mail,
+		Report:    report,
 	}
 	err = s.sendMessage(ctx, payload)
 	return exception.InternalError(err)

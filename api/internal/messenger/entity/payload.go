@@ -23,12 +23,13 @@ const (
 )
 
 type WorkerPayload struct {
-	QueueID   string      `json:"queueId"`         // メッセージキューID(重複実行抑止用)
-	EventType EventType   `json:"eventType"`       // Worker実行種別
-	UserType  UserType    `json:"userType"`        // 送信先ユーザー種別
-	UserIDs   []string    `json:"userIds"`         // 送信先ユーザー一覧
-	Guest     *Guest      `json:"guest,omitempty"` // 未登録ユーザー情報
-	Email     *MailConfig `json:"email,omitempty"` // メール送信設定
+	QueueID   string      `json:"queueId"`          // メッセージキューID(重複実行抑止用)
+	EventType EventType   `json:"eventType"`        // Worker実行種別
+	UserType  UserType    `json:"userType"`         // 送信先ユーザー種別
+	UserIDs   []string    `json:"userIds"`          // 送信先ユーザー一覧
+	Guest     *Guest      `json:"guest,omitempty"`  // 未登録ユーザー情報
+	Email     *MailConfig `json:"email,omitempty"`  // メール送信設定
+	Report    *Report     `json:"report,omitempty"` // システムレポート設定
 }
 
 type Guest struct {

@@ -14,16 +14,18 @@ type Params struct {
 }
 
 type Database struct {
-	Contact       Contact
-	Notification  Notification
-	ReceivedQueue ReceivedQueue
+	Contact        Contact
+	Notification   Notification
+	ReceivedQueue  ReceivedQueue
+	ReportTemplate ReportTemplate
 }
 
 func NewDatabase(params *Params) *Database {
 	return &Database{
-		Contact:       NewContact(params.Database),
-		Notification:  NewNotification(params.Database),
-		ReceivedQueue: NewReceivedQueue(params.Database),
+		Contact:        NewContact(params.Database),
+		Notification:   NewNotification(params.Database),
+		ReceivedQueue:  NewReceivedQueue(params.Database),
+		ReportTemplate: NewReportTemplate(params.Database),
 	}
 }
 
@@ -46,6 +48,10 @@ type ReceivedQueue interface {
 	Get(ctx context.Context, queueID string, fields ...string) (*entity.ReceivedQueue, error)
 	Create(ctx context.Context, queue *entity.ReceivedQueue) error
 	UpdateDone(ctx context.Context, queueID string, done bool) error
+}
+
+type ReportTemplate interface {
+	Get(ctx context.Context, reportID string, fields ...string) (*entity.ReportTemplate, error)
 }
 
 /**
