@@ -21,7 +21,9 @@ type Database struct {
 
 func NewDatabase(params *Params) *Database {
 	return &Database{
-		Notification: NewNotification(params.Database),
+		Contact:       NewContact(params.Database),
+		Notification:  NewNotification(params.Database),
+		ReceivedQueue: NewReceivedQueue(params.Database),
 	}
 }
 
