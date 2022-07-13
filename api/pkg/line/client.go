@@ -72,6 +72,7 @@ func NewClient(params *Params, opts ...Option) (Client, error) {
 		now:    jst.Now,
 		client: bot,
 		logger: dopts.logger,
+		roomID: params.RoomID,
 	}, nil
 }
 
