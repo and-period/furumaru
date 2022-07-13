@@ -24,7 +24,7 @@ export const useCommonStore = defineStore('common', {
       this.snackbars.push({
         isOpen: true,
         ...snackbar,
-        timeout: -1,
+        timeout: snackbar.color === 'error' ? -1 : 5000,
       })
     },
 
