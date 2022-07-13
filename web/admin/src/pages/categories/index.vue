@@ -47,7 +47,7 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <p>Category list will be displayed</p>
+        <the-category-list />
       </v-tab-item>
 
       <v-tab-item value="tab-categoryItems">
@@ -93,15 +93,28 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from '@nuxtjs/composition-api'
+import {
+  computed,
+  defineComponent,
+  reactive,
+  ref,
+} from '@nuxtjs/composition-api'
 
+import TheCategoryList from '~/components/organisms/TheCategoryList.vue'
 import { useCategoryStore } from '~/store/category'
 import { CreateCategoryRequest, CreateProductTypeRequest } from '~/types/api'
 import { Category } from '~/types/props/category'
 
 export default defineComponent({
+  components: {
+    TheCategoryList,
+  },
+
   setup() {
-    const { createCategory } = useCategoryStore()
+    const categoryStore = useCategoryStore()
+    const categories = computed(() => {
+      return categoryStore.categories
+    })
 
     const selector = ref<string>('categories')
     const categoryDialog = ref<boolean>(false)
@@ -129,7 +142,7 @@ export default defineComponent({
 
     const categoryRegister = async (): Promise<void> => {
       try {
-        await createCategory(categoryFormData)
+        await categoryStore.createCategory(categoryFormData)
       } catch (error) {
         console.log(error)
       }
@@ -140,6 +153,7 @@ export default defineComponent({
     }
 
     return {
+      categories,
       items,
       selector,
       categoryDialog,
