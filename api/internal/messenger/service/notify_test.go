@@ -99,7 +99,7 @@ func TestNotifyRegisterAdmin(t *testing.T) {
 
 func TestNotifyReceivedContact(t *testing.T) {
 	t.Parallel()
-	now := jst.Date(20222, 7, 7, 18, 30, 0, 0)
+	now := jst.Date(2022, 7, 7, 18, 30, 0, 0)
 	contact := &entity.Contact{
 		ID:          "contact-id",
 		Title:       "お問い合わせ件名",
@@ -142,6 +142,7 @@ func TestNotifyReceivedContact(t *testing.T) {
 						payload := &entity.WorkerPayload{}
 						err := json.Unmarshal(b, payload)
 						require.NoError(t, err)
+						assert.Equal(t, now.Unix(), payload.Report.ReceivedAt.Unix())
 						expect := &entity.WorkerPayload{
 							QueueID:   payload.QueueID, // ignore
 							EventType: entity.EventTypeUserReceivedContact,
@@ -159,6 +160,12 @@ func TestNotifyReceivedContact(t *testing.T) {
 									"件名":      "お問い合わせ件名",
 									"本文":      "お問い合わせ内容です。",
 								},
+							},
+							Report: &entity.Report{
+								ReportID:   entity.ReportIDReceivedContact,
+								Overview:   "お問い合わせ件名",
+								Link:       "htts://admin.and-period.jp/contacts/contact-id",
+								ReceivedAt: payload.Report.ReceivedAt,
 							},
 						}
 						assert.Equal(t, expect, payload)

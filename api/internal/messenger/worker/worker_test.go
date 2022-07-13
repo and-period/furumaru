@@ -30,7 +30,10 @@ type mocks struct {
 }
 
 type dbMocks struct {
-	ReceivedQueue *mock_database.MockReceivedQueue
+	Contact        *mock_database.MockContact
+	Notification   *mock_database.MockNotification
+	ReceivedQueue  *mock_database.MockReceivedQueue
+	ReportTemplate *mock_database.MockReportTemplate
 }
 
 type testOptions struct {
@@ -59,7 +62,10 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
-		ReceivedQueue: mock_database.NewMockReceivedQueue(ctrl),
+		Contact:        mock_database.NewMockContact(ctrl),
+		Notification:   mock_database.NewMockNotification(ctrl),
+		ReceivedQueue:  mock_database.NewMockReceivedQueue(ctrl),
+		ReportTemplate: mock_database.NewMockReportTemplate(ctrl),
 	}
 }
 
@@ -76,7 +82,10 @@ func newWorker(mocks *mocks, opts ...testOption) *worker {
 		waitGroup: &sync.WaitGroup{},
 		mailer:    mocks.mailer,
 		db: &database.Database{
-			ReceivedQueue: mocks.db.ReceivedQueue,
+			Contact:        mocks.db.Contact,
+			Notification:   mocks.db.Notification,
+			ReceivedQueue:  mocks.db.ReceivedQueue,
+			ReportTemplate: mocks.db.ReportTemplate,
 		},
 		user:        mocks.user,
 		concurrency: 1,

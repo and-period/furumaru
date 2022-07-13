@@ -32,9 +32,10 @@ type mocks struct {
 }
 
 type dbMocks struct {
-	Contact       *mock_database.MockContact
-	Notification  *mock_database.MockNotification
-	ReceivedQueue *mock_database.MockReceivedQueue
+	Contact        *mock_database.MockContact
+	Notification   *mock_database.MockNotification
+	ReceivedQueue  *mock_database.MockReceivedQueue
+	ReportTemplate *mock_database.MockReportTemplate
 }
 
 type testOptions struct {
@@ -55,9 +56,10 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
-		Contact:       mock_database.NewMockContact(ctrl),
-		Notification:  mock_database.NewMockNotification(ctrl),
-		ReceivedQueue: mock_database.NewMockReceivedQueue(ctrl),
+		Contact:        mock_database.NewMockContact(ctrl),
+		Notification:   mock_database.NewMockNotification(ctrl),
+		ReceivedQueue:  mock_database.NewMockReceivedQueue(ctrl),
+		ReportTemplate: mock_database.NewMockReportTemplate(ctrl),
 	}
 }
 
@@ -85,9 +87,10 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		adminWebURL: adminWebURL,
 		userWebURL:  userWebURL,
 		db: &database.Database{
-			Contact:       mocks.db.Contact,
-			Notification:  mocks.db.Notification,
-			ReceivedQueue: mocks.db.ReceivedQueue,
+			Contact:        mocks.db.Contact,
+			Notification:   mocks.db.Notification,
+			ReceivedQueue:  mocks.db.ReceivedQueue,
+			ReportTemplate: mocks.db.ReportTemplate,
 		},
 		user: mocks.user,
 	}
