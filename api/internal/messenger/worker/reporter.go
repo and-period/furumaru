@@ -7,6 +7,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/line/line-bot-sdk-go/v7/linebot"
+	"go.uber.org/zap"
 )
 
 func (w *worker) reporter(ctx context.Context, payload *entity.WorkerPayload) error {
@@ -19,6 +20,8 @@ func (w *worker) reporter(ctx context.Context, payload *entity.WorkerPayload) er
 		return err
 	}
 	sendFn := func() error {
+		w.logger.Debug("Send report",
+			zap.String("reportId", payload.Report.ReportID), zap.String("message", msg))
 		return w.line.PushMessage(ctx, linebot.NewTextMessage(msg))
 	}
 	retry := backoff.NewExponentialBackoff(w.maxRetries)
