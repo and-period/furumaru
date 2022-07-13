@@ -41,6 +41,7 @@ type params struct {
 	sendGridAPIKey string
 	lineToken      string
 	lineSecret     string
+	lineRoomID     string
 }
 
 func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*registry, error) {
@@ -97,7 +98,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	lineParams := &line.Params{
 		Token:  params.lineToken,
 		Secret: params.lineSecret,
-		RoomID: conf.LINERoomID,
+		RoomID: params.lineRoomID,
 	}
 	linebot, err := line.NewClient(lineParams, line.WithLogger(logger))
 	if err != nil {
@@ -164,6 +165,7 @@ func getSecret(ctx context.Context, p *params) error {
 		if p.config.LINESecretName == "" {
 			p.lineToken = p.config.LINEChannelToken
 			p.lineSecret = p.config.LINEChannelSecret
+			p.lineRoomID = p.config.LINERoomID
 			return nil
 		}
 		secrets, err := p.secret.Get(ectx, p.config.LINESecretName)
@@ -172,6 +174,7 @@ func getSecret(ctx context.Context, p *params) error {
 		}
 		p.lineToken = secrets["token"]
 		p.lineSecret = secrets["secret"]
+		p.lineRoomID = secrets["roomId"]
 		return nil
 	})
 	return eg.Wait()
