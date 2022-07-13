@@ -19,7 +19,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useFetch } from '@nuxtjs/composition-api'
+import { useFetch } from '@nuxtjs/composition-api'
+import { computed, defineComponent } from '@vue/composition-api'
 import { DataTableHeader } from 'vuetify'
 
 import { useCategoryStore } from '~/store/category'
@@ -38,6 +39,8 @@ export default defineComponent({
       {
         text: 'Actions',
         value: 'actions',
+        width: 200,
+        align: 'end',
         sortable: false,
       },
     ]
