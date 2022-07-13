@@ -142,6 +142,7 @@ func TestNotifyReceivedContact(t *testing.T) {
 						payload := &entity.WorkerPayload{}
 						err := json.Unmarshal(b, payload)
 						require.NoError(t, err)
+						assert.Equal(t, now.Unix(), payload.Report.ReceivedAt.Unix())
 						expect := &entity.WorkerPayload{
 							QueueID:   payload.QueueID, // ignore
 							EventType: entity.EventTypeUserReceivedContact,
@@ -164,7 +165,7 @@ func TestNotifyReceivedContact(t *testing.T) {
 								ReportID:   entity.ReportIDReceivedContact,
 								Overview:   "お問い合わせ件名",
 								Link:       "htts://admin.and-period.jp/contacts/contact-id",
-								ReceivedAt: jst.Date(2022, 7, 7, 18, 30, 0, 0),
+								ReceivedAt: payload.Report.ReceivedAt,
 							},
 						}
 						assert.Equal(t, expect, payload)
