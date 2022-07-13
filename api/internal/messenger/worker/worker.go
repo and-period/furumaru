@@ -12,6 +12,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/line"
 	"github.com/and-period/furumaru/api/pkg/mailer"
 	"github.com/aws/aws-lambda-go/events"
 	"go.uber.org/zap"
@@ -31,6 +32,7 @@ type Worker interface {
 type Params struct {
 	WaitGroup *sync.WaitGroup
 	Mailer    mailer.Client
+	Line      line.Client
 	DB        *database.Database
 	User      user.Service
 }
@@ -40,6 +42,7 @@ type worker struct {
 	logger      *zap.Logger
 	waitGroup   *sync.WaitGroup
 	mailer      mailer.Client
+	line        line.Client
 	db          *database.Database
 	user        user.Service
 	concurrency int64
@@ -86,6 +89,7 @@ func NewWorker(params *Params, opts ...Option) Worker {
 		logger:      dopts.logger,
 		waitGroup:   params.WaitGroup,
 		mailer:      params.Mailer,
+		line:        params.Line,
 		db:          params.DB,
 		user:        params.User,
 		concurrency: dopts.concurrency,
@@ -134,10 +138,18 @@ func (w *worker) dispatch(ctx context.Context, payload *entity.WorkerPayload) er
 	}
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
+		// メール通知
 		if payload.Email == nil {
 			return nil
 		}
 		return w.multiSendMail(ectx, payload)
+	})
+	eg.Go(func() error {
+		// システムレポート
+		if payload.Report == nil {
+			return nil
+		}
+		return w.reporter(ectx, payload)
 	})
 	if err := eg.Wait(); err != nil {
 		return err

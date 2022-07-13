@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/and-period/furumaru/api/pkg/cognito"
+	"github.com/and-period/furumaru/api/pkg/line"
 	"github.com/and-period/furumaru/api/pkg/mailer"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/go-playground/validator/v10"
@@ -50,6 +51,9 @@ func InternalError(err error) error {
 		return err
 	}
 	if err := mailerError(err); err != nil {
+		return err
+	}
+	if err := notifierError(err); err != nil {
 		return err
 	}
 	return wrapError("internal", ErrUnknown, err)
@@ -171,6 +175,34 @@ func mailerError(err error) error {
 	case errors.Is(err, mailer.ErrUnavailable):
 		return wrapError(prefix, ErrUnavailable, err)
 	case errors.Is(err, mailer.ErrTimeout):
+		return wrapError(prefix, ErrDeadlineExceeded, err)
+	default:
+		return nil
+	}
+}
+
+func notifierError(err error) error {
+	const prefix = "notifier"
+	switch {
+	case errors.Is(err, line.ErrInvalidArgument):
+		return wrapError(prefix, ErrInvalidArgument, err)
+	case errors.Is(err, line.ErrUnauthenticated):
+		return wrapError(prefix, ErrUnauthenticated, err)
+	case errors.Is(err, line.ErrPermissionDenied):
+		return wrapError(prefix, ErrForbidden, err)
+	case errors.Is(err, line.ErrPayloadTooLong):
+		return wrapError(prefix, ErrResourceExhausted, err)
+	case errors.Is(err, line.ErrNotFound):
+		return wrapError(prefix, ErrNotFound, err)
+	case errors.Is(err, line.ErrAlreadyExists):
+		return wrapError(prefix, ErrAlreadyExists, err)
+	case errors.Is(err, line.ErrInternal):
+		return wrapError(prefix, ErrInternal, err)
+	case errors.Is(err, line.ErrUnavailable):
+		return wrapError(prefix, ErrUnavailable, err)
+	case errors.Is(err, line.ErrResourceExhausted):
+		return wrapError(prefix, ErrResourceExhausted, err)
+	case errors.Is(err, line.ErrTimeout):
 		return wrapError(prefix, ErrDeadlineExceeded, err)
 	default:
 		return nil
