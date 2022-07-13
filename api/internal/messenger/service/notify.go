@@ -41,9 +41,7 @@ func (s *service) NotifyReceivedContact(ctx context.Context, in *messenger.Notif
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	maker := entity.NewAdminURLMaker(s.adminWebURL())
 	builder := entity.NewTemplateDataBuilder().
-		WebURL(maker.Contact(contact.ID)).
 		Name(in.Username).
 		Email(in.Email).
 		Contact(contact.Title, contact.Content)

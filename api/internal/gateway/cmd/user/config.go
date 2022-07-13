@@ -26,6 +26,7 @@ type config struct {
 	CognitoUserClientID string `envconfig:"COGNITO_USER_CLIENT_ID" default:""`
 	SQSQueueURL         string `envconfig:"SQS_QUEUE_URL" default:""`
 	SQSMockEnabled      bool   `envconfig:"SQS_MOCK_ENABLED" default:"false"`
+	AminWebURL          string `envconfig:"ADMIN_WEB_URL" default:""`
 	UserWebURL          string `envconfig:"USER_WEB_URL" default:""`
 }
 
