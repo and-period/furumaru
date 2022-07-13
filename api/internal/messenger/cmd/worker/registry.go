@@ -11,11 +11,13 @@ import (
 	userdb "github.com/and-period/furumaru/api/internal/user/database"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/database"
+	"github.com/and-period/furumaru/api/pkg/line"
 	"github.com/and-period/furumaru/api/pkg/mailer"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"go.uber.org/zap"
+	"golang.org/x/sync/errgroup"
 	"gopkg.in/yaml.v2"
 )
 
@@ -29,6 +31,7 @@ type params struct {
 	logger         *zap.Logger
 	waitGroup      *sync.WaitGroup
 	mailer         mailer.Client
+	line           line.Client
 	aws            aws.Config
 	secret         secret.Client
 	dbHost         string
@@ -36,6 +39,9 @@ type params struct {
 	dbUsername     string
 	dbPassword     string
 	sendGridAPIKey string
+	lineToken      string
+	lineSecret     string
+	lineRoomID     string
 }
 
 func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*registry, error) {
@@ -88,6 +94,18 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}
 	params.mailer = mailer.NewClient(mailParams, mailer.WithLogger(logger))
 
+	// LINEの設定
+	lineParams := &line.Params{
+		Token:  params.lineToken,
+		Secret: params.lineSecret,
+		RoomID: params.lineRoomID,
+	}
+	linebot, err := line.NewClient(lineParams, line.WithLogger(logger))
+	if err != nil {
+		return nil, err
+	}
+	params.line = linebot
+
 	// Serviceの設定
 	userService, err := newUserService(ctx, params)
 	if err != nil {
@@ -99,6 +117,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		WaitGroup: params.waitGroup,
 		DB:        messengerdb.NewDatabase(dbParams),
 		Mailer:    params.mailer,
+		Line:      params.line,
 		User:      userService,
 	}
 	return &registry{
@@ -108,14 +127,17 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 }
 
 func getSecret(ctx context.Context, p *params) error {
-	// データベース認証情報の取得
-	if p.config.DBSecretName == "" {
-		p.dbHost = p.config.DBHost
-		p.dbPort = p.config.DBPort
-		p.dbUsername = p.config.DBUsername
-		p.dbPassword = p.config.DBPassword
-	} else {
-		secrets, err := p.secret.Get(ctx, p.config.DBSecretName)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		// データベース認証情報の取得
+		if p.config.DBSecretName == "" {
+			p.dbHost = p.config.DBHost
+			p.dbPort = p.config.DBPort
+			p.dbUsername = p.config.DBUsername
+			p.dbPassword = p.config.DBPassword
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, p.config.DBSecretName)
 		if err != nil {
 			return err
 		}
@@ -123,18 +145,39 @@ func getSecret(ctx context.Context, p *params) error {
 		p.dbPort = secrets["port"]
 		p.dbUsername = secrets["username"]
 		p.dbPassword = secrets["password"]
-	}
-	// SendGrid認証情報の取得
-	if p.config.SendGridSecretName == "" {
-		p.sendGridAPIKey = p.config.SendGridAPIKey
-	} else {
-		secrets, err := p.secret.Get(ctx, p.config.SendGridSecretName)
+		return nil
+	})
+	eg.Go(func() error {
+		// SendGrid認証情報の取得
+		if p.config.SendGridSecretName == "" {
+			p.sendGridAPIKey = p.config.SendGridAPIKey
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, p.config.SendGridSecretName)
 		if err != nil {
 			return err
 		}
 		p.sendGridAPIKey = secrets["api_key"]
-	}
-	return nil
+		return nil
+	})
+	eg.Go(func() error {
+		// LINE認証情報の取得
+		if p.config.LINESecretName == "" {
+			p.lineToken = p.config.LINEChannelToken
+			p.lineSecret = p.config.LINEChannelSecret
+			p.lineRoomID = p.config.LINERoomID
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, p.config.LINESecretName)
+		if err != nil {
+			return err
+		}
+		p.lineToken = secrets["token"]
+		p.lineSecret = secrets["secret"]
+		p.lineRoomID = secrets["roomId"]
+		return nil
+	})
+	return eg.Wait()
 }
 
 func newDatabase(dbname string, p *params) (*database.Client, error) {

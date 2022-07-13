@@ -12,6 +12,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	mock_database "github.com/and-period/furumaru/api/mock/messenger/database"
+	mock_line "github.com/and-period/furumaru/api/mock/pkg/line"
 	mock_mailer "github.com/and-period/furumaru/api/mock/pkg/mailer"
 	mock_user "github.com/and-period/furumaru/api/mock/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -26,6 +27,7 @@ var errmock = errors.New("some error")
 type mocks struct {
 	db     *dbMocks
 	mailer *mock_mailer.MockClient
+	line   *mock_line.MockClient
 	user   *mock_user.MockService
 }
 
@@ -56,6 +58,7 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
 		db:     newDBMocks(ctrl),
 		mailer: mock_mailer.NewMockClient(ctrl),
+		line:   mock_line.NewMockClient(ctrl),
 		user:   mock_user.NewMockService(ctrl),
 	}
 }
@@ -81,6 +84,7 @@ func newWorker(mocks *mocks, opts ...testOption) *worker {
 		logger:    zap.NewNop(),
 		waitGroup: &sync.WaitGroup{},
 		mailer:    mocks.mailer,
+		line:      mocks.line,
 		db: &database.Database{
 			Contact:        mocks.db.Contact,
 			Notification:   mocks.db.Notification,
@@ -141,6 +145,12 @@ func TestWorker_Dispatch(t *testing.T) {
 			},
 		},
 	}
+	template := &entity.ReportTemplate{
+		TemplateID: entity.ReportIDReceivedContact,
+		Template:   "レポート概要: {{.Overview}}",
+		CreatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
+		UpdatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
+	}
 	queue := &entity.ReceivedQueue{
 		ID:        "queue-id",
 		EventType: entity.EventTypeUnknown,
@@ -158,7 +168,7 @@ func TestWorker_Dispatch(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name: "success",
+			name: "success to send mail",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
 				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", true).Return(nil)
@@ -173,6 +183,25 @@ func TestWorker_Dispatch(t *testing.T) {
 				Email: &entity.MailConfig{
 					EmailID:       entity.EmailIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
+				},
+			},
+			expectErr: nil,
+		},
+		{
+			name: "success to report",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
+				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", true).Return(nil)
+				mocks.db.ReportTemplate.EXPECT().Get(gomock.Any(), entity.ReportIDReceivedContact).Return(template, nil)
+				mocks.line.EXPECT().PushMessage(gomock.Any(), gomock.Any()).Return(nil)
+			},
+			payload: &entity.WorkerPayload{
+				QueueID:   "queue-id",
+				EventType: entity.EventTypeUserReceivedContact,
+				Report: &entity.Report{
+					ReportID: entity.ReportIDReceivedContact,
+					Overview: "お問い合わせ件名",
+					Link:     "htts://admin.and-period.jp/contacts/contact-id",
 				},
 			},
 			expectErr: nil,
@@ -228,7 +257,7 @@ func TestWorker_Dispatch(t *testing.T) {
 			expectErr: errmock,
 		},
 		{
-			name: "failed to multi send mail",
+			name: "failed to send mail",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
 				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), in).Return(nil, errmock)
@@ -241,6 +270,23 @@ func TestWorker_Dispatch(t *testing.T) {
 				Email: &entity.MailConfig{
 					EmailID:       entity.EmailIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
+				},
+			},
+			expectErr: errmock,
+		},
+		{
+			name: "failed to report",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
+				mocks.db.ReportTemplate.EXPECT().Get(gomock.Any(), entity.ReportIDReceivedContact).Return(nil, errmock)
+			},
+			payload: &entity.WorkerPayload{
+				QueueID:   "queue-id",
+				EventType: entity.EventTypeUserReceivedContact,
+				Report: &entity.Report{
+					ReportID: entity.ReportIDReceivedContact,
+					Overview: "お問い合わせ件名",
+					Link:     "htts://admin.and-period.jp/contacts/contact-id",
 				},
 			},
 			expectErr: errmock,
