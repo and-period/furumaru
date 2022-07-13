@@ -154,7 +154,6 @@ func TestNotifyReceivedContact(t *testing.T) {
 							Email: &entity.MailConfig{
 								EmailID: entity.EmailIDUserReceivedContact,
 								Substitutions: map[string]string{
-									"サイトURL":  "htts://admin.and-period.jp/contacts/contact-id",
 									"氏名":      "&. スタッフ",
 									"メールアドレス": "test-user@and-period.jp",
 									"件名":      "お問い合わせ件名",
