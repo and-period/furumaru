@@ -36,6 +36,21 @@ func (m *MockContact) EXPECT() *MockContactMockRecorder {
 	return m.recorder
 }
 
+// Count mocks base method.
+func (m *MockContact) Count(ctx context.Context, params *database.ListContactsParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockContactMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockContact)(nil).Count), ctx, params)
+}
+
 // Create mocks base method.
 func (m *MockContact) Create(ctx context.Context, contact *entity.Contact) error {
 	m.ctrl.T.Helper()

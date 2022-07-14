@@ -10,7 +10,7 @@ import (
 
 type Service interface {
 	// お問い合わせ一覧取得
-	ListContacts(ctx context.Context, in *ListContactsInput) (entity.Contacts, error)
+	ListContacts(ctx context.Context, in *ListContactsInput) (entity.Contacts, int64, error)
 	// お問い合わせ取得
 	GetContact(ctx context.Context, in *GetContactInput) (*entity.Contact, error)
 	// お問い合わせ登録

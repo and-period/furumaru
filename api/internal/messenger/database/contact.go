@@ -44,10 +44,17 @@ func (c *contact) List(ctx context.Context, params *ListContactsParams, fields .
 		stmt = stmt.Offset(params.Offset)
 	}
 
-	if err := stmt.Find(&contacts).Error; err != nil {
-		return nil, exception.InternalError(err)
-	}
-	return contacts, nil
+	err := stmt.Find(&contacts).Error
+	return contacts, exception.InternalError(err)
+}
+
+func (c *contact) Count(ctx context.Context, params *ListContactsParams) (int64, error) {
+	var total int64
+
+	stmt := c.db.DB.WithContext(ctx).Table(contactTable).Select("COUNT(*)")
+
+	err := stmt.Find(&total).Error
+	return total, exception.InternalError(err)
 }
 
 func (c *contact) Get(ctx context.Context, contactID string, fields ...string) (*entity.Contact, error) {

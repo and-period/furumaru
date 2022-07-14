@@ -8,18 +8,34 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"go.uber.org/zap"
+	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListContacts(ctx context.Context, in *messenger.ListContactsInput) (entity.Contacts, error) {
+func (s *service) ListContacts(ctx context.Context, in *messenger.ListContactsInput) (entity.Contacts, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, 0, exception.InternalError(err)
 	}
 	params := &database.ListContactsParams{
 		Limit:  int(in.Limit),
 		Offset: int(in.Offset),
 	}
-	contacts, err := s.db.Contact.List(ctx, params)
-	return contacts, exception.InternalError(err)
+	var (
+		contacts entity.Contacts
+		total    int64
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		contacts, err = s.db.Contact.List(ectx, params)
+		return
+	})
+	eg.Go(func() (err error) {
+		total, err = s.db.Contact.Count(ectx, params)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		return nil, 0, exception.InternalError(err)
+	}
+	return contacts, total, nil
 }
 
 func (s *service) GetContact(ctx context.Context, in *messenger.GetContactInput) (*entity.Contact, error) {

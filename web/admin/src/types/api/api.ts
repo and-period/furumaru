@@ -385,6 +385,12 @@ export interface ContactsResponse {
    * @memberof ContactsResponse
    */
   contacts: Array<ContactsResponseContacts>
+  /**
+   * 合計数
+   * @type {number}
+   * @memberof ContactsResponse
+   */
+  total: number
 }
 /**
  *

@@ -34,6 +34,7 @@ func NewDatabase(params *Params) *Database {
  */
 type Contact interface {
 	List(ctx context.Context, params *ListContactsParams, fields ...string) (entity.Contacts, error)
+	Count(ctx context.Context, params *ListContactsParams) (int64, error)
 	Get(ctx context.Context, contactID string, fields ...string) (*entity.Contact, error)
 	Create(ctx context.Context, contact *entity.Contact) error
 	Update(ctx context.Context, contactID string, params *UpdateContactParams) error

@@ -122,17 +122,24 @@ contactsResponse:
         - note
         - createdAt
         - updatedAt
+    total:
+      type: integer
+      format: int64
+      description: 合計数
   required:
   - contacts
+  - total
   example:
-  - id: 'kSByoE6FetnPs5Byk3a9Zx'
-    title: 'お問い合わせ件名'
-    content: 'お問い合わせ内容です。'
-    username: '問合 太郎'
-    email: 'test-user@and-period.jp'
-    phoneNumber: '+819012345678'
-    status: 1
-    priority: 1
-    note: '対応者のメモです。'
-    createdAt: 1640962800
-    updatedAt: 1640962800
+    contacts:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      title: 'お問い合わせ件名'
+      content: 'お問い合わせ内容です。'
+      username: '問合 太郎'
+      email: 'test-user@and-period.jp'
+      phoneNumber: '+819012345678'
+      status: 1
+      priority: 1
+      note: '対応者のメモです。'
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    total: 2
