@@ -7,19 +7,37 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListCategories(ctx context.Context, in *store.ListCategoriesInput) (entity.Categories, error) {
+func (s *service) ListCategories(
+	ctx context.Context, in *store.ListCategoriesInput,
+) (entity.Categories, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, 0, exception.InternalError(err)
 	}
 	params := &database.ListCategoriesParams{
 		Name:   in.Name,
 		Limit:  int(in.Limit),
 		Offset: int(in.Offset),
 	}
-	categories, err := s.db.Category.List(ctx, params)
-	return categories, exception.InternalError(err)
+	var (
+		categories entity.Categories
+		total      int64
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		categories, err = s.db.Category.List(ectx, params)
+		return
+	})
+	eg.Go(func() (err error) {
+		total, err = s.db.Category.Count(ectx, params)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		return nil, 0, exception.InternalError(err)
+	}
+	return categories, total, nil
 }
 
 func (s *service) MultiGetCategories(

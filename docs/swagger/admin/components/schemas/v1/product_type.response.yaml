@@ -87,9 +87,14 @@ productTypesResponse:
         - name
         - createdAt
         - updatedAt
+    total:
+      type: integer
+      format: int64
+      description: 合計数
   required:
   - productTypes
   - categories
+  - total
   example:
     productTypes:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -111,3 +116,4 @@ productTypesResponse:
       name: '果物'
       createdAt: 1640962800
       updatedAt: 1640962800
+    total: 2

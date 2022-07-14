@@ -4,9 +4,11 @@ package database
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
+	"gorm.io/gorm"
 )
 
 type Params struct {
@@ -31,6 +33,7 @@ func NewDatabase(params *Params) *Database {
  */
 type Category interface {
 	List(ctx context.Context, params *ListCategoriesParams, fields ...string) (entity.Categories, error)
+	Count(ctx context.Context, params *ListCategoriesParams) (int64, error)
 	MultiGet(ctx context.Context, categoryIDs []string, fields ...string) (entity.Categories, error)
 	Create(ctx context.Context, category *entity.Category) error
 	Update(ctx context.Context, categoryID, name string) error
@@ -39,6 +42,7 @@ type Category interface {
 
 type Product interface {
 	List(ctx context.Context, params *ListProductsParams, fields ...string) (entity.Products, error)
+	Count(ctx context.Context, params *ListProductsParams) (int64, error)
 	Get(ctx context.Context, productID string, fields ...string) (*entity.Product, error)
 	Create(ctx context.Context, product *entity.Product) error
 	Update(ctx context.Context, productID string, params *UpdateProductParams) error
@@ -47,6 +51,7 @@ type Product interface {
 
 type ProductType interface {
 	List(ctx context.Context, params *ListProductTypesParams, fields ...string) (entity.ProductTypes, error)
+	Count(ctx context.Context, params *ListProductTypesParams) (int64, error)
 	MultiGet(ctx context.Context, productTypeIDs []string, fields ...string) (entity.ProductTypes, error)
 	Create(ctx context.Context, productType *entity.ProductType) error
 	Update(ctx context.Context, productTypeID, name string) error
@@ -62,12 +67,32 @@ type ListCategoriesParams struct {
 	Offset int
 }
 
+func (p *ListCategoriesParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.Name != "" {
+		stmt = stmt.Where("name LIKE ?", fmt.Sprintf("%%%s%%", p.Name))
+	}
+	return stmt
+}
+
 type ListProductsParams struct {
 	Name       string
 	ProducerID string
 	CreatedBy  string
 	Limit      int
 	Offset     int
+}
+
+func (p *ListProductsParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.Name != "" {
+		stmt = stmt.Where("name LIKE ?", fmt.Sprintf("%%%s%%", p.Name))
+	}
+	if p.ProducerID != "" {
+		stmt = stmt.Where("producer_id = ?", p.ProducerID)
+	}
+	if p.CreatedBy != "" {
+		stmt = stmt.Where("created_by = ?", p.CreatedBy)
+	}
+	return stmt
 }
 
 type UpdateProductParams struct {
@@ -99,4 +124,14 @@ type ListProductTypesParams struct {
 	CategoryID string
 	Limit      int
 	Offset     int
+}
+
+func (p *ListProductTypesParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.Name != "" {
+		stmt = stmt.Where("name LIKE ?", fmt.Sprintf("%%%s%%", p.Name))
+	}
+	if p.CategoryID != "" {
+		stmt = stmt.Where("category_id = ?", p.CategoryID)
+	}
+	return stmt
 }

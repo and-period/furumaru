@@ -53,8 +53,13 @@ categoriesResponse:
         - name
         - createdAt
         - updatedAt
+    total:
+      type: integer
+      format: int64
+      description: 合計数
   required:
   - categories
+  - total
   example:
     categories:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -65,3 +70,4 @@ categoriesResponse:
       name: '果物'
       createdAt: 1640962800
       updatedAt: 1640962800
+    total: 2

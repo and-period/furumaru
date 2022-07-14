@@ -13,9 +13,9 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListProducts(ctx context.Context, in *store.ListProductsInput) (entity.Products, error) {
+func (s *service) ListProducts(ctx context.Context, in *store.ListProductsInput) (entity.Products, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, 0, exception.InternalError(err)
 	}
 	params := &database.ListProductsParams{
 		Name:       in.Name,
@@ -24,8 +24,23 @@ func (s *service) ListProducts(ctx context.Context, in *store.ListProductsInput)
 		Limit:      int(in.Limit),
 		Offset:     int(in.Offset),
 	}
-	products, err := s.db.Product.List(ctx, params)
-	return products, exception.InternalError(err)
+	var (
+		products entity.Products
+		total    int64
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		products, err = s.db.Product.List(ectx, params)
+		return
+	})
+	eg.Go(func() (err error) {
+		total, err = s.db.Product.Count(ectx, params)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		return nil, 0, exception.InternalError(err)
+	}
+	return products, total, nil
 }
 
 func (s *service) GetProduct(ctx context.Context, in *store.GetProductInput) (*entity.Product, error) {

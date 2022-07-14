@@ -231,6 +231,12 @@ export interface CategoriesResponse {
    * @memberof CategoriesResponse
    */
   categories: Array<CategoriesResponseCategories>
+  /**
+   * 合計数
+   * @type {number}
+   * @memberof CategoriesResponse
+   */
+  total: number
 }
 /**
  *
@@ -1578,6 +1584,12 @@ export interface ProductTypesResponse {
    * @memberof ProductTypesResponse
    */
   categories: Array<CategoriesResponseCategories>
+  /**
+   * 合計数
+   * @type {number}
+   * @memberof ProductTypesResponse
+   */
+  total: number
 }
 /**
  *
@@ -1646,6 +1658,12 @@ export interface ProductsResponse {
    * @memberof ProductsResponse
    */
   producers?: Array<ProductsResponseProducers>
+  /**
+   * 合計数
+   * @type {number}
+   * @memberof ProductsResponse
+   */
+  total: number
 }
 /**
  *

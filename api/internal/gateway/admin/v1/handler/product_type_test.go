@@ -60,7 +60,7 @@ func TestListProductTypes(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().ListProductTypes(gomock.Any(), typesIn).Return(productTypes, nil)
+				mocks.store.EXPECT().ListProductTypes(gomock.Any(), typesIn).Return(productTypes, int64(2), nil)
 				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
 			},
 			categoryID: "category-id",
@@ -92,6 +92,7 @@ func TestListProductTypes(t *testing.T) {
 							UpdatedAt: 1640962800,
 						},
 					},
+					Total: 2,
 				},
 			},
 		},
@@ -103,7 +104,7 @@ func TestListProductTypes(t *testing.T) {
 					Limit:  20,
 					Offset: 0,
 				}
-				mocks.store.EXPECT().ListProductTypes(gomock.Any(), typesIn).Return(productTypes, nil)
+				mocks.store.EXPECT().ListProductTypes(gomock.Any(), typesIn).Return(productTypes, int64(2), nil)
 				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
 			},
 			categoryID: "-",
@@ -135,6 +136,7 @@ func TestListProductTypes(t *testing.T) {
 							UpdatedAt: 1640962800,
 						},
 					},
+					Total: 2,
 				},
 			},
 		},
@@ -159,7 +161,7 @@ func TestListProductTypes(t *testing.T) {
 		{
 			name: "failed to get product types",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().ListProductTypes(gomock.Any(), typesIn).Return(nil, errmock)
+				mocks.store.EXPECT().ListProductTypes(gomock.Any(), typesIn).Return(nil, int64(0), errmock)
 			},
 			categoryID: "category-id",
 			query:      "?name=いも",
@@ -170,7 +172,7 @@ func TestListProductTypes(t *testing.T) {
 		{
 			name: "failed to get categories",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().ListProductTypes(gomock.Any(), typesIn).Return(productTypes, nil)
+				mocks.store.EXPECT().ListProductTypes(gomock.Any(), typesIn).Return(productTypes, int64(0), nil)
 				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(nil, errmock)
 			},
 			categoryID: "category-id",

@@ -10,7 +10,7 @@ import (
 
 type Service interface {
 	// カテゴリ一覧取得
-	ListCategories(ctx context.Context, in *ListCategoriesInput) (entity.Categories, error)
+	ListCategories(ctx context.Context, in *ListCategoriesInput) (entity.Categories, int64, error)
 	// カテゴリ一覧取得(ID指定)
 	MultiGetCategories(ctx context.Context, in *MultiGetCategoriesInput) (entity.Categories, error)
 	// カテゴリ登録
@@ -20,7 +20,7 @@ type Service interface {
 	// カテゴリ削除
 	DeleteCategory(ctx context.Context, in *DeleteCategoryInput) error
 	// 品目一覧取得
-	ListProductTypes(ctx context.Context, in *ListProductTypesInput) (entity.ProductTypes, error)
+	ListProductTypes(ctx context.Context, in *ListProductTypesInput) (entity.ProductTypes, int64, error)
 	// 品目一覧取得(ID指定)
 	MultiGetProductTypes(ctx context.Context, in *MultiGetProductTypesInput) (entity.ProductTypes, error)
 	// 品目登録
@@ -30,7 +30,7 @@ type Service interface {
 	// 品目削除
 	DeleteProductType(ctx context.Context, in *DeleteProductTypeInput) error
 	// 商品一覧取得
-	ListProducts(ctx context.Context, in *ListProductsInput) (entity.Products, error)
+	ListProducts(ctx context.Context, in *ListProductsInput) (entity.Products, int64, error)
 	// 商品取得
 	GetProduct(ctx context.Context, in *GetProductInput) (*entity.Product, error)
 	// 商品登録

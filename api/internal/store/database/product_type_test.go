@@ -95,6 +95,82 @@ func TestProductType_List(t *testing.T) {
 	}
 }
 
+func TestProductType_Count(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, productTypeTable, categoryTable)
+	categories := make(entity.Categories, 2)
+	categories[0] = testCategory("category-id01", "野菜", now())
+	categories[1] = testCategory("category-id02", "果物", now())
+	err = m.db.DB.Create(&categories).Error
+	require.NoError(t, err)
+	productTypes := make(entity.ProductTypes, 3)
+	productTypes[0] = testProductType("category-id01", "category-id01", "野菜", now())
+	productTypes[1] = testProductType("category-id02", "category-id02", "果物", now())
+	productTypes[2] = testProductType("category-id03", "category-id02", "水産物", now())
+	err = m.db.DB.Create(&productTypes).Error
+	require.NoError(t, err)
+
+	type args struct {
+		params *ListProductTypesParams
+	}
+	type want struct {
+		total  int64
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListProductTypesParams{
+					Name:       "物",
+					CategoryID: "category-id02",
+				},
+			},
+			want: want{
+				total:  2,
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &productType{db: m.db, now: now}
+			actual, err := db.Count(ctx, tt.args.params)
+			if tt.want.hasErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			assert.Equal(t, tt.want.total, actual)
+		})
+	}
+}
+
 func TestProductType_MultiGet(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

@@ -34,16 +34,18 @@ func TestListProductTypes(t *testing.T) {
 	}
 
 	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *store.ListProductTypesInput
-		expect    entity.ProductTypes
-		expectErr error
+		name        string
+		setup       func(ctx context.Context, mocks *mocks)
+		input       *store.ListProductTypesInput
+		expect      entity.ProductTypes
+		expectTotal int64
+		expectErr   error
 	}{
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().List(ctx, params).Return(productTypes, nil)
+				mocks.db.ProductType.EXPECT().List(gomock.Any(), params).Return(productTypes, nil)
+				mocks.db.ProductType.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListProductTypesInput{
 				Name:       "じゃがいも",
@@ -51,20 +53,23 @@ func TestListProductTypes(t *testing.T) {
 				Limit:      30,
 				Offset:     0,
 			},
-			expect:    productTypes,
-			expectErr: nil,
+			expect:      productTypes,
+			expectTotal: 1,
+			expectErr:   nil,
 		},
 		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &store.ListProductTypesInput{},
-			expect:    nil,
-			expectErr: exception.ErrInvalidArgument,
+			name:        "invalid argument",
+			setup:       func(ctx context.Context, mocks *mocks) {},
+			input:       &store.ListProductTypesInput{},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to list",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().List(ctx, params).Return(nil, errmock)
+				mocks.db.ProductType.EXPECT().List(gomock.Any(), params).Return(nil, errmock)
+				mocks.db.ProductType.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListProductTypesInput{
 				Name:       "じゃがいも",
@@ -72,17 +77,35 @@ func TestListProductTypes(t *testing.T) {
 				Limit:      30,
 				Offset:     0,
 			},
-			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrUnknown,
+		},
+		{
+			name: "failed to count",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ProductType.EXPECT().List(gomock.Any(), params).Return(productTypes, nil)
+				mocks.db.ProductType.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
+			},
+			input: &store.ListProductTypesInput{
+				Name:       "じゃがいも",
+				CategoryID: "category-id",
+				Limit:      30,
+				Offset:     0,
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrUnknown,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.ListProductTypes(ctx, tt.input)
+			actual, total, err := service.ListProductTypes(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.ElementsMatch(t, tt.expect, actual)
+			assert.Equal(t, tt.expectTotal, total)
 		}))
 	}
 }

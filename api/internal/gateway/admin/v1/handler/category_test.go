@@ -45,7 +45,7 @@ func TestListCategories(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().ListCategories(gomock.Any(), in).Return(categories, nil)
+				mocks.store.EXPECT().ListCategories(gomock.Any(), in).Return(categories, int64(2), nil)
 			},
 			query: "?name=野菜",
 			expect: &testResponse{
@@ -65,6 +65,7 @@ func TestListCategories(t *testing.T) {
 							UpdatedAt: 1640962800,
 						},
 					},
+					Total: 2,
 				},
 			},
 		},
@@ -87,7 +88,7 @@ func TestListCategories(t *testing.T) {
 		{
 			name: "failed to get categories",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().ListCategories(gomock.Any(), in).Return(nil, errmock)
+				mocks.store.EXPECT().ListCategories(gomock.Any(), in).Return(nil, int64(0), errmock)
 			},
 			query: "?name=野菜",
 			expect: &testResponse{

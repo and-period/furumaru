@@ -42,4 +42,5 @@ type ProductsResponse struct {
 	ProductTypes []*ProductType `json:"productTypes"` // 品目一覧
 	Categories   []*Category    `json:"categories"`   // 商品種別一覧
 	Producers    []*Producer    `json:"producers"`    // 生産者一覧
+	Total        int64          `json:"total"`        // 商品合計数
 }
