@@ -496,12 +496,6 @@ export interface CreateCategoryRequest {
  */
 export interface CreateNotificationRequest {
     /**
-     * 登録者ID
-     * @type {string}
-     * @memberof CreateNotificationRequest
-     */
-    'createdBy': string;
-    /**
      * タイトル(128字まで)
      * @type {string}
      * @memberof CreateNotificationRequest
@@ -518,7 +512,7 @@ export interface CreateNotificationRequest {
      * @type {Array<number>}
      * @memberof CreateNotificationRequest
      */
-    'targets'?: Array<number>;
+    'targets': Array<number>;
     /**
      * 公開フラグ
      * @type {boolean}

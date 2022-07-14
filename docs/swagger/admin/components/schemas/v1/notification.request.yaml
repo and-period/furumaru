@@ -1,9 +1,6 @@
 createNotificationRequest:
   type: object
   properties:
-    createdBy:
-      type: string
-      description: 登録者ID
     title:
       type: string
       description: タイトル(128字まで)
@@ -25,12 +22,12 @@ createNotificationRequest:
       format: int64
       description: 掲載開始日時
   required:
-  - createdBy
   - title
   - body
+  - targets
   - publishedAt
   example:
-    createdBy: 'admin-id'
     title: 'キャベツ祭り開催'
     body: '旬のキャベツが買い放題'
+    targets: [1]
     publishedAt: 1640962800
