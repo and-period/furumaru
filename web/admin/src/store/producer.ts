@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 
 import { useAuthStore } from './auth'
+import { useCommonStore } from './common'
 
 import { ApiClientFactory } from '.'
 
@@ -44,6 +45,11 @@ export const useProducerStore = defineStore('Producer', {
         const factory = new ApiClientFactory()
         const producersApiClient = factory.create(ProducerApi, accessToken)
         await producersApiClient.v1CreateProducer(payload)
+        const commonStore = useCommonStore()
+        commonStore.addSnackbar({
+          message: `${payload.storeName}を作成しました。`,
+          color: 'success',
+        })
       } catch (error) {
         // TODO: エラーハンドリング
         console.log(error)
