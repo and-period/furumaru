@@ -39,7 +39,7 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 		Limit:  limit,
 		Offset: offset,
 	}
-	producers, err := h.user.ListProducers(ctx, in)
+	producers, total, err := h.user.ListProducers(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
@@ -47,6 +47,7 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 
 	res := &response.ProducersResponse{
 		Producers: service.NewProducers(producers).Response(),
+		Total:     total,
 	}
 	ctx.JSON(http.StatusOK, res)
 }

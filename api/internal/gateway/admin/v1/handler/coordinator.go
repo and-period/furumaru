@@ -39,7 +39,7 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 		Limit:  limit,
 		Offset: offset,
 	}
-	coordinators, err := h.user.ListCoordinators(ctx, in)
+	coordinators, total, err := h.user.ListCoordinators(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
@@ -47,6 +47,7 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 
 	res := &response.CoordinatorsResponse{
 		Coordinators: service.NewCoordinators(coordinators).Response(),
+		Total:        total,
 	}
 	ctx.JSON(http.StatusOK, res)
 }

@@ -51,6 +51,15 @@ func (a *administrator) List(
 	return administrators, exception.InternalError(err)
 }
 
+func (a *administrator) Count(ctx context.Context, params *ListAdministratorsParams) (int64, error) {
+	var total int64
+
+	stmt := a.db.DB.WithContext(ctx).Table(administratorTable).Select("COUNT(*)")
+
+	err := stmt.Count(&total).Error
+	return total, exception.InternalError(err)
+}
+
 func (a *administrator) MultiGet(
 	ctx context.Context, administratorIDs []string, fields ...string,
 ) (entity.Administrators, error) {

@@ -170,8 +170,13 @@ producersResponse:
         - addressLine2
         - createdAt
         - updatedAt
+    total:
+      type: integer
+      format: int64
+      description: 合計数
   required:
   - producers
+  - total
   example:
     producers:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -208,3 +213,4 @@ producersResponse:
       addressLine2: ''
       createdAt: 1640962800
       updatedAt: 1640962800
+    total: 2

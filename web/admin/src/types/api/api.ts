@@ -114,6 +114,12 @@ export interface AdministratorsResponse {
    * @memberof AdministratorsResponse
    */
   administrators: Array<AdministratorsResponseAdministrators>
+  /**
+   * 合計数
+   * @type {number}
+   * @memberof AdministratorsResponse
+   */
+  total: number
 }
 /**
  *
@@ -610,6 +616,12 @@ export interface CoordinatorsResponse {
    * @memberof CoordinatorsResponse
    */
   coordinators: Array<CoordinatorsResponseCoordinators>
+  /**
+   * 合計数
+   * @type {number}
+   * @memberof CoordinatorsResponse
+   */
+  total: number
 }
 /**
  *
@@ -1280,6 +1292,12 @@ export interface ProducersResponse {
    * @memberof ProducersResponse
    */
   producers: Array<ProducersResponseProducers>
+  /**
+   * 合計数
+   * @type {number}
+   * @memberof ProducersResponse
+   */
+  total: number
 }
 /**
  *

@@ -27,4 +27,5 @@ type ProducerResponse struct {
 
 type ProducersResponse struct {
 	Producers []*Producer `json:"producers"` // 生産者一覧
+	Total     int64       `json:"total"`     // 合計数
 }

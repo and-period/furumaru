@@ -259,12 +259,13 @@ func (mr *MockServiceMockRecorder) InitializeUser(ctx, in interface{}) *gomock.C
 }
 
 // ListAdministrators mocks base method.
-func (m *MockService) ListAdministrators(ctx context.Context, in *user.ListAdministratorsInput) (entity.Administrators, error) {
+func (m *MockService) ListAdministrators(ctx context.Context, in *user.ListAdministratorsInput) (entity.Administrators, int64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListAdministrators", ctx, in)
 	ret0, _ := ret[0].(entity.Administrators)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
 }
 
 // ListAdministrators indicates an expected call of ListAdministrators.
@@ -274,12 +275,13 @@ func (mr *MockServiceMockRecorder) ListAdministrators(ctx, in interface{}) *gomo
 }
 
 // ListCoordinators mocks base method.
-func (m *MockService) ListCoordinators(ctx context.Context, in *user.ListCoordinatorsInput) (entity.Coordinators, error) {
+func (m *MockService) ListCoordinators(ctx context.Context, in *user.ListCoordinatorsInput) (entity.Coordinators, int64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListCoordinators", ctx, in)
 	ret0, _ := ret[0].(entity.Coordinators)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
 }
 
 // ListCoordinators indicates an expected call of ListCoordinators.
@@ -289,12 +291,13 @@ func (mr *MockServiceMockRecorder) ListCoordinators(ctx, in interface{}) *gomock
 }
 
 // ListProducers mocks base method.
-func (m *MockService) ListProducers(ctx context.Context, in *user.ListProducersInput) (entity.Producers, error) {
+func (m *MockService) ListProducers(ctx context.Context, in *user.ListProducersInput) (entity.Producers, int64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListProducers", ctx, in)
 	ret0, _ := ret[0].(entity.Producers)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
 }
 
 // ListProducers indicates an expected call of ListProducers.

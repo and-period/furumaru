@@ -54,6 +54,15 @@ func (a *coordinator) List(
 	return coordinators, exception.InternalError(err)
 }
 
+func (a *coordinator) Count(ctx context.Context, params *ListCoordinatorsParams) (int64, error) {
+	var total int64
+
+	stmt := a.db.DB.WithContext(ctx).Table(coordinatorTable).Select("COUNT(*)")
+
+	err := stmt.Count(&total).Error
+	return total, exception.InternalError(err)
+}
+
 func (a *coordinator) MultiGet(
 	ctx context.Context, coordinatorIDs []string, fields ...string,
 ) (entity.Coordinators, error) {

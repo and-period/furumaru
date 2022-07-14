@@ -53,6 +53,15 @@ func (p *producer) List(
 	return producers, exception.InternalError(err)
 }
 
+func (p *producer) Count(ctx context.Context, params *ListProducersParams) (int64, error) {
+	var total int64
+
+	stmt := p.db.DB.WithContext(ctx).Table(producerTable).Select("COUNT(*)")
+
+	err := stmt.Count(&total).Error
+	return total, exception.InternalError(err)
+}
+
 func (p *producer) MultiGet(
 	ctx context.Context, producerIDs []string, fields ...string,
 ) (entity.Producers, error) {

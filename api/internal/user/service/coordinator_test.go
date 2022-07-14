@@ -47,16 +47,18 @@ func TestListCoordinators(t *testing.T) {
 	}
 
 	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *user.ListCoordinatorsInput
-		expect    entity.Coordinators
-		expectErr error
+		name        string
+		setup       func(ctx context.Context, mocks *mocks)
+		input       *user.ListCoordinatorsInput
+		expect      entity.Coordinators
+		expectTotal int64
+		expectErr   error
 	}{
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().List(ctx, params).Return(coordinators, nil)
+				mocks.db.Coordinator.EXPECT().List(gomock.Any(), params).Return(coordinators, nil)
+				mocks.db.Coordinator.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &user.ListCoordinatorsInput{
 				Limit:  30,
@@ -66,32 +68,50 @@ func TestListCoordinators(t *testing.T) {
 			expectErr: nil,
 		},
 		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &user.ListCoordinatorsInput{},
-			expect:    nil,
-			expectErr: exception.ErrInvalidArgument,
+			name:        "invalid argument",
+			setup:       func(ctx context.Context, mocks *mocks) {},
+			input:       &user.ListCoordinatorsInput{},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to list coordinators",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().List(ctx, params).Return(nil, errmock)
+				mocks.db.Coordinator.EXPECT().List(gomock.Any(), params).Return(nil, errmock)
+				mocks.db.Coordinator.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &user.ListCoordinatorsInput{
 				Limit:  30,
 				Offset: 0,
 			},
-			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrUnknown,
+		},
+		{
+			name: "failed to count coordinators",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Coordinator.EXPECT().List(gomock.Any(), params).Return(coordinators, nil)
+				mocks.db.Coordinator.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
+			},
+			input: &user.ListCoordinatorsInput{
+				Limit:  30,
+				Offset: 0,
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrUnknown,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.ListCoordinators(ctx, tt.input)
+			actual, total, err := service.ListCoordinators(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.ElementsMatch(t, tt.expect, actual)
+			assert.Equal(t, tt.expectTotal, total)
 		}))
 	}
 }
