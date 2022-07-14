@@ -36,6 +36,21 @@ func (m *MockCategory) EXPECT() *MockCategoryMockRecorder {
 	return m.recorder
 }
 
+// Count mocks base method.
+func (m *MockCategory) Count(ctx context.Context, params *database.ListCategoriesParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockCategoryMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockCategory)(nil).Count), ctx, params)
+}
+
 // Create mocks base method.
 func (m *MockCategory) Create(ctx context.Context, category *entity.Category) error {
 	m.ctrl.T.Helper()
@@ -141,6 +156,21 @@ func (m *MockProduct) EXPECT() *MockProductMockRecorder {
 	return m.recorder
 }
 
+// Count mocks base method.
+func (m *MockProduct) Count(ctx context.Context, params *database.ListProductsParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockProductMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockProduct)(nil).Count), ctx, params)
+}
+
 // Create mocks base method.
 func (m *MockProduct) Create(ctx context.Context, product *entity.Product) error {
 	m.ctrl.T.Helper()
@@ -244,6 +274,21 @@ func NewMockProductType(ctrl *gomock.Controller) *MockProductType {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockProductType) EXPECT() *MockProductTypeMockRecorder {
 	return m.recorder
+}
+
+// Count mocks base method.
+func (m *MockProductType) Count(ctx context.Context, params *database.ListProductTypesParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockProductTypeMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockProductType)(nil).Count), ctx, params)
 }
 
 // Create mocks base method.

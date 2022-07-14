@@ -32,53 +32,75 @@ func TestListCategories(t *testing.T) {
 	}
 
 	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *store.ListCategoriesInput
-		expect    entity.Categories
-		expectErr error
+		name        string
+		setup       func(ctx context.Context, mocks *mocks)
+		input       *store.ListCategoriesInput
+		expect      entity.Categories
+		expectTotal int64
+		expectErr   error
 	}{
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Category.EXPECT().List(ctx, params).Return(categories, nil)
+				mocks.db.Category.EXPECT().List(gomock.Any(), params).Return(categories, nil)
+				mocks.db.Category.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListCategoriesInput{
 				Name:   "野菜",
 				Limit:  30,
 				Offset: 0,
 			},
-			expect:    categories,
-			expectErr: nil,
+			expect:      categories,
+			expectTotal: 1,
+			expectErr:   nil,
 		},
 		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &store.ListCategoriesInput{},
-			expect:    nil,
-			expectErr: exception.ErrInvalidArgument,
+			name:        "invalid argument",
+			setup:       func(ctx context.Context, mocks *mocks) {},
+			input:       &store.ListCategoriesInput{},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to list",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Category.EXPECT().List(ctx, params).Return(nil, errmock)
+				mocks.db.Category.EXPECT().List(gomock.Any(), params).Return(nil, errmock)
+				mocks.db.Category.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListCategoriesInput{
 				Name:   "野菜",
 				Limit:  30,
 				Offset: 0,
 			},
-			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrUnknown,
+		},
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Category.EXPECT().List(gomock.Any(), params).Return(categories, nil)
+				mocks.db.Category.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
+			},
+			input: &store.ListCategoriesInput{
+				Name:   "野菜",
+				Limit:  30,
+				Offset: 0,
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrUnknown,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.ListCategories(ctx, tt.input)
+			actual, total, err := service.ListCategories(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.ElementsMatch(t, tt.expect, actual)
+			assert.Equal(t, tt.expectTotal, total)
 		}))
 	}
 }

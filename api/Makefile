@@ -16,7 +16,6 @@ install:
 	go install github.com/cosmtrek/air@v${AIR_VERSION}
 
 mockgen:
-	rm -rf ./mock
 	go generate ./...
 
 fmt:

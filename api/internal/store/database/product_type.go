@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -39,12 +38,7 @@ func (t *productType) List(
 	}
 
 	stmt := t.db.DB.WithContext(ctx).Table(productTypeTable).Select(fields)
-	if params.Name != "" {
-		stmt = stmt.Where("name LIKE ?", fmt.Sprintf("%%%s%%", params.Name))
-	}
-	if params.CategoryID != "" {
-		stmt = stmt.Where("category_id = ?", params.CategoryID)
-	}
+	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
 	}
@@ -54,6 +48,16 @@ func (t *productType) List(
 
 	err := stmt.Find(&productTypes).Error
 	return productTypes, exception.InternalError(err)
+}
+
+func (t *productType) Count(ctx context.Context, params *ListProductTypesParams) (int64, error) {
+	var total int64
+
+	stmt := t.db.DB.WithContext(ctx).Table(productTypeTable).Select("COUNT(*)")
+	stmt = params.stmt(stmt)
+
+	err := stmt.Count(&total).Error
+	return total, exception.InternalError(err)
 }
 
 func (t *productType) MultiGet(

@@ -42,15 +42,7 @@ func (p *product) List(ctx context.Context, params *ListProductsParams, fields .
 	}
 
 	stmt := p.db.DB.WithContext(ctx).Table(productTable).Select(fields)
-	if params.Name != "" {
-		stmt = stmt.Where("name LIKE ?", fmt.Sprintf("%%%s%%", params.Name))
-	}
-	if params.ProducerID != "" {
-		stmt = stmt.Where("producer_id = ?", params.ProducerID)
-	}
-	if params.CreatedBy != "" {
-		stmt = stmt.Where("created_by = ?", params.CreatedBy)
-	}
+	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
 	}
@@ -65,6 +57,16 @@ func (p *product) List(ctx context.Context, params *ListProductsParams, fields .
 		return nil, exception.InternalError(err)
 	}
 	return products, nil
+}
+
+func (p *product) Count(ctx context.Context, params *ListProductsParams) (int64, error) {
+	var total int64
+
+	stmt := p.db.DB.WithContext(ctx).Table(productTable).Select("COUNT(*)")
+	stmt = params.stmt(stmt)
+
+	err := stmt.Count(&total).Error
+	return total, exception.InternalError(err)
 }
 
 func (p *product) Get(ctx context.Context, productID string, fields ...string) (*entity.Product, error) {

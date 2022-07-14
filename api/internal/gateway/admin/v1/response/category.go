@@ -14,4 +14,5 @@ type CategoryResponse struct {
 
 type CategoriesResponse struct {
 	Categories []*Category `json:"categories"` // 商品種別一覧
+	Total      int64       `json:"total"`      // 商品種別合計数
 }
