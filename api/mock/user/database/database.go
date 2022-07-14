@@ -119,6 +119,21 @@ func (m *MockAdministrator) EXPECT() *MockAdministratorMockRecorder {
 	return m.recorder
 }
 
+// Count mocks base method.
+func (m *MockAdministrator) Count(ctx context.Context, params *database.ListAdministratorsParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockAdministratorMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockAdministrator)(nil).Count), ctx, params)
+}
+
 // Create mocks base method.
 func (m *MockAdministrator) Create(ctx context.Context, auth *entity.AdminAuth, administrator *entity.Administrator) error {
 	m.ctrl.T.Helper()
@@ -230,6 +245,21 @@ func (m *MockCoordinator) EXPECT() *MockCoordinatorMockRecorder {
 	return m.recorder
 }
 
+// Count mocks base method.
+func (m *MockCoordinator) Count(ctx context.Context, params *database.ListCoordinatorsParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockCoordinatorMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockCoordinator)(nil).Count), ctx, params)
+}
+
 // Create mocks base method.
 func (m *MockCoordinator) Create(ctx context.Context, auth *entity.AdminAuth, coordinator *entity.Coordinator) error {
 	m.ctrl.T.Helper()
@@ -339,6 +369,21 @@ func NewMockProducer(ctrl *gomock.Controller) *MockProducer {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockProducer) EXPECT() *MockProducerMockRecorder {
 	return m.recorder
+}
+
+// Count mocks base method.
+func (m *MockProducer) Count(ctx context.Context, params *database.ListProducersParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockProducerMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockProducer)(nil).Count), ctx, params)
 }
 
 // Create mocks base method.

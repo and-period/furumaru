@@ -39,7 +39,7 @@ func (h *handler) ListAdministrators(ctx *gin.Context) {
 		Limit:  limit,
 		Offset: offset,
 	}
-	admins, err := h.user.ListAdministrators(ctx, in)
+	admins, total, err := h.user.ListAdministrators(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
@@ -47,6 +47,7 @@ func (h *handler) ListAdministrators(ctx *gin.Context) {
 
 	res := &response.AdministratorsResponse{
 		Administrators: service.NewAdministrators(admins).Response(),
+		Total:          total,
 	}
 	ctx.JSON(http.StatusOK, res)
 }

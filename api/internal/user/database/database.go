@@ -42,6 +42,7 @@ type AdminAuth interface {
 
 type Administrator interface {
 	List(ctx context.Context, params *ListAdministratorsParams, fields ...string) (entity.Administrators, error)
+	Count(ctx context.Context, params *ListAdministratorsParams) (int64, error)
 	MultiGet(ctx context.Context, administratorIDs []string, fields ...string) (entity.Administrators, error)
 	Get(ctx context.Context, administratorID string, fields ...string) (*entity.Administrator, error)
 	Create(ctx context.Context, auth *entity.AdminAuth, administrator *entity.Administrator) error
@@ -50,6 +51,7 @@ type Administrator interface {
 
 type Coordinator interface {
 	List(ctx context.Context, params *ListCoordinatorsParams, fields ...string) (entity.Coordinators, error)
+	Count(ctx context.Context, params *ListCoordinatorsParams) (int64, error)
 	MultiGet(ctx context.Context, coordinatorIDs []string, fields ...string) (entity.Coordinators, error)
 	Get(ctx context.Context, coordinatorID string, fields ...string) (*entity.Coordinator, error)
 	Create(ctx context.Context, auth *entity.AdminAuth, coordinator *entity.Coordinator) error
@@ -58,6 +60,7 @@ type Coordinator interface {
 
 type Producer interface {
 	List(ctx context.Context, params *ListProducersParams, fields ...string) (entity.Producers, error)
+	Count(ctx context.Context, params *ListProducersParams) (int64, error)
 	MultiGet(ctx context.Context, producerIDs []string, fields ...string) (entity.Producers, error)
 	Get(ctx context.Context, producerID string, fields ...string) (*entity.Producer, error)
 	Create(ctx context.Context, auth *entity.AdminAuth, producer *entity.Producer) error

@@ -10,18 +10,34 @@ import (
 	"github.com/and-period/furumaru/api/pkg/random"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"go.uber.org/zap"
+	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListProducers(ctx context.Context, in *user.ListProducersInput) (entity.Producers, error) {
+func (s *service) ListProducers(ctx context.Context, in *user.ListProducersInput) (entity.Producers, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, 0, exception.InternalError(err)
 	}
 	params := &database.ListProducersParams{
 		Limit:  int(in.Limit),
 		Offset: int(in.Offset),
 	}
-	producers, err := s.db.Producer.List(ctx, params)
-	return producers, exception.InternalError(err)
+	var (
+		producers entity.Producers
+		total     int64
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		producers, err = s.db.Producer.List(ectx, params)
+		return
+	})
+	eg.Go(func() (err error) {
+		total, err = s.db.Producer.Count(ectx, params)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		return nil, 0, exception.InternalError(err)
+	}
+	return producers, total, nil
 }
 
 func (s *service) MultiGetProducers(ctx context.Context, in *user.MultiGetProducersInput) (entity.Producers, error) {

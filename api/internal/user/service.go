@@ -28,7 +28,7 @@ type Service interface {
 	// 管理者取得
 	GetAdmin(ctx context.Context, in *GetAdminInput) (*entity.Admin, error)
 	// システム管理者一覧取得
-	ListAdministrators(ctx context.Context, in *ListAdministratorsInput) (entity.Administrators, error)
+	ListAdministrators(ctx context.Context, in *ListAdministratorsInput) (entity.Administrators, int64, error)
 	// システム管理者一覧取得(ID指定)
 	MultiGetAdministrators(ctx context.Context, in *MultiGetAdministratorsInput) (entity.Administrators, error)
 	// システム管理者取得
@@ -36,7 +36,7 @@ type Service interface {
 	// システム管理者登録
 	CreateAdministrator(ctx context.Context, in *CreateAdministratorInput) (*entity.Administrator, error)
 	// 仲介者一覧取得
-	ListCoordinators(ctx context.Context, in *ListCoordinatorsInput) (entity.Coordinators, error)
+	ListCoordinators(ctx context.Context, in *ListCoordinatorsInput) (entity.Coordinators, int64, error)
 	// 仲介者一覧取得(ID指定)
 	MultiGetCoordinators(ctx context.Context, in *MultiGetCoordinatorsInput) (entity.Coordinators, error)
 	// 仲介者取得
@@ -44,7 +44,7 @@ type Service interface {
 	// 仲介者登録
 	CreateCoordinator(ctx context.Context, in *CreateCoordinatorInput) (*entity.Coordinator, error)
 	// 生産者一覧取得
-	ListProducers(ctx context.Context, in *ListProducersInput) (entity.Producers, error)
+	ListProducers(ctx context.Context, in *ListProducersInput) (entity.Producers, int64, error)
 	// 生産者一覧取得(ID指定)
 	MultiGetProducers(ctx context.Context, in *MultiGetProducersInput) (entity.Producers, error)
 	// 生産者取得

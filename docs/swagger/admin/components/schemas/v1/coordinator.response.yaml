@@ -205,8 +205,13 @@ coordinatorsResponse:
         - addressLine2
         - createdAt
         - updatedAt
+    total:
+      type: integer
+      format: int64
+      description: 合計数
   required:
   - coordinators
+  - total
   example:
     coordinators:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -249,3 +254,4 @@ coordinatorsResponse:
       addressLine2: ''
       createdAt: 1640962800
       updatedAt: 1640962800
+    total: 2

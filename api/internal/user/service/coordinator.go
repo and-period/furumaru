@@ -10,20 +10,36 @@ import (
 	"github.com/and-period/furumaru/api/pkg/random"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"go.uber.org/zap"
+	"golang.org/x/sync/errgroup"
 )
 
 func (s *service) ListCoordinators(
 	ctx context.Context, in *user.ListCoordinatorsInput,
-) (entity.Coordinators, error) {
+) (entity.Coordinators, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, 0, exception.InternalError(err)
 	}
 	params := &database.ListCoordinatorsParams{
 		Limit:  int(in.Limit),
 		Offset: int(in.Offset),
 	}
-	coordinators, err := s.db.Coordinator.List(ctx, params)
-	return coordinators, exception.InternalError(err)
+	var (
+		coordinators entity.Coordinators
+		total        int64
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		coordinators, err = s.db.Coordinator.List(ectx, params)
+		return
+	})
+	eg.Go(func() (err error) {
+		total, err = s.db.Coordinator.Count(ectx, params)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		return nil, 0, exception.InternalError(err)
+	}
+	return coordinators, total, nil
 }
 
 func (s *service) MultiGetCoordinators(

@@ -36,51 +36,72 @@ func TestListAdministrators(t *testing.T) {
 	}
 
 	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *user.ListAdministratorsInput
-		expect    entity.Administrators
-		expectErr error
+		name        string
+		setup       func(ctx context.Context, mocks *mocks)
+		input       *user.ListAdministratorsInput
+		expect      entity.Administrators
+		expectTotal int64
+		expectErr   error
 	}{
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Administrator.EXPECT().List(ctx, params).Return(administrators, nil)
+				mocks.db.Administrator.EXPECT().List(gomock.Any(), params).Return(administrators, nil)
+				mocks.db.Administrator.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &user.ListAdministratorsInput{
 				Limit:  30,
 				Offset: 0,
 			},
-			expect:    administrators,
-			expectErr: nil,
+			expect:      administrators,
+			expectTotal: 1,
+			expectErr:   nil,
 		},
 		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &user.ListAdministratorsInput{},
-			expect:    nil,
-			expectErr: exception.ErrInvalidArgument,
+			name:        "invalid argument",
+			setup:       func(ctx context.Context, mocks *mocks) {},
+			input:       &user.ListAdministratorsInput{},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to get administrator",
+			name: "failed to list administrators",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Administrator.EXPECT().List(ctx, params).Return(nil, errmock)
+				mocks.db.Administrator.EXPECT().List(gomock.Any(), params).Return(nil, errmock)
+				mocks.db.Administrator.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &user.ListAdministratorsInput{
 				Limit:  30,
 				Offset: 0,
 			},
-			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrUnknown,
+		},
+		{
+			name: "failed to count administrators",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Administrator.EXPECT().List(gomock.Any(), params).Return(administrators, nil)
+				mocks.db.Administrator.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
+			},
+			input: &user.ListAdministratorsInput{
+				Limit:  30,
+				Offset: 0,
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrUnknown,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.ListAdministrators(ctx, tt.input)
+			actual, total, err := service.ListAdministrators(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.ElementsMatch(t, tt.expect, actual)
+			assert.Equal(t, tt.expectTotal, total)
 		}))
 	}
 }

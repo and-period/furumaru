@@ -19,4 +19,5 @@ type AdministratorResponse struct {
 
 type AdministratorsResponse struct {
 	Administrators []*Administrator `json:"administrators"` // システム管理者一覧
+	Total          int64            `json:"total"`          // 合計数
 }

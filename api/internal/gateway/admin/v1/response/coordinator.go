@@ -31,4 +31,5 @@ type CoordinatorResponse struct {
 
 type CoordinatorsResponse struct {
 	Coordinators []*Coordinator `json:"coordinators"` // 生産者一覧
+	Total        int64          `json:"total"`        // 合計数
 }
