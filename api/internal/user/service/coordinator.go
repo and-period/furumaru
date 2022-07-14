@@ -33,7 +33,7 @@ func (s *service) ListCoordinators(
 		return
 	})
 	eg.Go(func() (err error) {
-		coordinators, err = s.db.Coordinator.List(ectx, params)
+		total, err = s.db.Coordinator.Count(ectx, params)
 		return
 	})
 	if err := eg.Wait(); err != nil {

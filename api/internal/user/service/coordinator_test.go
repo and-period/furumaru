@@ -64,8 +64,9 @@ func TestListCoordinators(t *testing.T) {
 				Limit:  30,
 				Offset: 0,
 			},
-			expect:    coordinators,
-			expectErr: nil,
+			expect:      coordinators,
+			expectTotal: 1,
+			expectErr:   nil,
 		},
 		{
 			name:        "invalid argument",
