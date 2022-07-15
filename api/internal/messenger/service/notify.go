@@ -57,6 +57,7 @@ func (s *service) NotifyReceivedContact(ctx context.Context, in *messenger.Notif
 	report := &entity.Report{
 		ReportID:   entity.ReportIDReceivedContact,
 		Overview:   contact.Title,
+		Detail:     contact.Content,
 		Link:       maker.Contact(contact.ID),
 		ReceivedAt: contact.CreatedAt,
 	}

@@ -15,14 +15,13 @@ func (w *worker) reporter(ctx context.Context, payload *entity.WorkerPayload) er
 	if err != nil {
 		return err
 	}
-	msg, err := template.Build(payload.Report.Fields())
+	container, err := template.Build(payload.Report.Fields())
 	if err != nil {
 		return err
 	}
+	w.logger.Debug("Send report", zap.String("reportId", payload.Report.ReportID), zap.Any("message", container))
 	sendFn := func() error {
-		w.logger.Debug("Send report",
-			zap.String("reportId", payload.Report.ReportID), zap.String("message", msg))
-		return w.line.PushMessage(ctx, linebot.NewTextMessage(msg))
+		return w.line.PushMessage(ctx, linebot.NewFlexMessage("alt text", container))
 	}
 	retry := backoff.NewExponentialBackoff(w.maxRetries)
 	return backoff.Retry(ctx, retry, sendFn, backoff.WithRetryablel(exception.Retryable))

@@ -147,7 +147,7 @@ func TestWorker_Dispatch(t *testing.T) {
 	}
 	template := &entity.ReportTemplate{
 		TemplateID: entity.ReportIDReceivedContact,
-		Template:   "レポート概要: {{.Overview}}",
+		Template:   `{"type":"bubble","body":{"type":"box","contents":[{"type":"text","text":"{{.Overview}}"}]}}`,
 		CreatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
 		UpdatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
 	}

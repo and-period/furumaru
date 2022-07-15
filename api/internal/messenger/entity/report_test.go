@@ -19,11 +19,13 @@ func TestReport_Fields(t *testing.T) {
 			report: &Report{
 				ReportID:   ReportIDReceivedContact,
 				Overview:   "レポートの概要です。",
+				Detail:     "レポートの詳細です。",
 				Link:       "https://and-period.jp",
 				ReceivedAt: jst.Date(2022, 7, 14, 18, 30, 0, 0),
 			},
 			expect: map[string]string{
 				"Overview":   "レポートの概要です。",
+				"Detail":     "レポートの詳細です。",
 				"Link":       "https://and-period.jp",
 				"ReceivedAt": "2022-07-14 18:30:00",
 			},
