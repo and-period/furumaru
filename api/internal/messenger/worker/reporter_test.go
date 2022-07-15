@@ -17,9 +17,21 @@ func TestReporter(t *testing.T) {
 
 	template := &entity.ReportTemplate{
 		TemplateID: entity.ReportIDReceivedContact,
-		Template:   "レポート概要: {{.Overview}}",
+		Template:   `{"type":"bubble","body":{"type":"box","contents":[{"type":"text","text":"{{.Overview}}"}]}}`,
 		CreatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
 		UpdatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
+	}
+	container := &linebot.BubbleContainer{
+		Type: linebot.FlexContainerTypeBubble,
+		Body: &linebot.BoxComponent{
+			Type: linebot.FlexComponentTypeBox,
+			Contents: []linebot.FlexComponent{
+				&linebot.TextComponent{
+					Type: linebot.FlexComponentTypeText,
+					Text: "お問い合わせ件名",
+				},
+			},
+		},
 	}
 
 	tests := []struct {
@@ -35,10 +47,10 @@ func TestReporter(t *testing.T) {
 				mocks.line.EXPECT().PushMessage(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, messages ...linebot.SendingMessage) error {
 						require.Len(t, messages, 1)
-						msg, ok := messages[0].(*linebot.TextMessage)
+						msg, ok := messages[0].(*linebot.FlexMessage)
 						require.True(t, ok)
-						expect := linebot.NewTextMessage("レポート概要: お問い合わせ件名")
-						assert.Equal(t, expect, msg)
+						assert.Equal(t, "alt text", msg.AltText)
+						assert.Equal(t, container, msg.Contents)
 						return nil
 					})
 			},

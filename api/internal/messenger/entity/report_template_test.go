@@ -4,11 +4,9 @@ import (
 	"testing"
 
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/line/line-bot-sdk-go/v7/linebot"
 	"github.com/stretchr/testify/assert"
 )
-
-var tmpl = `レポート概要: {{.Overview}}
-レポートリンク: {{.Link}}`
 
 func TestReportTemplate_Build(t *testing.T) {
 	t.Parallel()
@@ -16,7 +14,7 @@ func TestReportTemplate_Build(t *testing.T) {
 		name     string
 		template *ReportTemplate
 		fields   map[string]string
-		expect   string
+		expect   linebot.FlexContainer
 		hasErr   bool
 	}{
 		{
@@ -29,9 +27,29 @@ func TestReportTemplate_Build(t *testing.T) {
 			},
 			fields: map[string]string{
 				"Overview": "レポートの概要です。",
+				"Detail":   "レポートの詳細です。",
 				"Link":     "https://and-period.jp",
 			},
-			expect: "レポート概要: レポートの概要です。\nレポートリンク: https://and-period.jp",
+			expect: &linebot.BubbleContainer{
+				Type: linebot.FlexContainerTypeBubble,
+				Body: &linebot.BoxComponent{
+					Type: linebot.FlexComponentTypeBox,
+					Contents: []linebot.FlexComponent{
+						&linebot.TextComponent{
+							Type: linebot.FlexComponentTypeText,
+							Text: "レポートの概要です。",
+						},
+						&linebot.TextComponent{
+							Type: linebot.FlexComponentTypeText,
+							Text: "レポートの詳細です。",
+						},
+						&linebot.TextComponent{
+							Type: linebot.FlexComponentTypeText,
+							Text: "https://and-period.jp",
+						},
+					},
+				},
+			},
 			hasErr: false,
 		},
 	}
@@ -45,3 +63,15 @@ func TestReportTemplate_Build(t *testing.T) {
 		})
 	}
 }
+
+var tmpl = `{
+  "type": "bubble",
+  "body": {
+    "type": "box",
+    "contents": [
+      {"type": "text", "text": "{{.Overview}}"},
+      {"type": "text", "text": "{{.Detail}}"},
+      {"type": "text", "text": "{{.Link}}"}
+    ]
+  }
+}`
