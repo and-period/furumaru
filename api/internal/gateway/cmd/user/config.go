@@ -7,6 +7,7 @@ import (
 )
 
 type config struct {
+	Environment         string `envconfig:"ENV" default:"none"`
 	Port                int64  `envconfig:"PORT" default:"8080"`
 	MetricsPort         int64  `envconfig:"METRICS_PORT" default:"9090"`
 	ShutdownDelaySec    int64  `envconfig:"SHUTDOWN_DELAY_SEC" default:"20"`
@@ -26,6 +27,10 @@ type config struct {
 	CognitoUserClientID string `envconfig:"COGNITO_USER_CLIENT_ID" default:""`
 	SQSQueueURL         string `envconfig:"SQS_QUEUE_URL" default:""`
 	SQSMockEnabled      bool   `envconfig:"SQS_MOCK_ENABLED" default:"false"`
+	LINEChannelToken    string `envconfig:"LINE_CHANNEL_TOKEN" default:""`
+	LINEChannelSecret   string `envconfig:"LINE_CHANNEL_SECRET" default:""`
+	LINERoomID          string `envconfig:"LINE_ROOM_ID" default:""`
+	LINESecretName      string `envconfig:"LINE_SECRET_NAME" default:""`
 	AminWebURL          string `envconfig:"ADMIN_WEB_URL" default:""`
 	UserWebURL          string `envconfig:"USER_WEB_URL" default:""`
 }
