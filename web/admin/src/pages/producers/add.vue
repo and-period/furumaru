@@ -66,13 +66,16 @@
           label="連絡先（電話番号）"
           required
         />
-        <v-text-field v-model="formData.postalCode" label="郵便番号" />
-        <v-text-field v-model="formData.prefecture" label="都道府県" />
-        <v-text-field v-model="formData.city" label="市区町村" />
-        <v-text-field v-model="formData.addressLine1" label="番地" />
-        <v-text-field
-          v-model="formData.addressLine2"
-          label="アパート名・部屋番号（任意）"
+
+        <the-address-form
+          :postal-code.sync="formData.postalCode"
+          :prefecture.sync="formData.prefecture"
+          :city.sync="formData.city"
+          :address-line1.sync="formData.addressLine1"
+          :address-line2.sync="formData.addressLine2"
+          :loading="searchLoading"
+          :error-message="searchErrorMessage"
+          @click:search="searchAddress"
         />
       </v-card-text>
       <v-card-actions>
@@ -83,9 +86,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, useRouter } from '@nuxtjs/composition-api'
+import {
+  defineComponent,
+  reactive,
+  ref,
+  useRouter,
+} from '@nuxtjs/composition-api'
 
 import TheProfileSelectForm from '~/components/molecules/TheProfileSelectForm.vue'
+import { searchAddressByPostalCode } from '~/lib/externals'
 import { useProducerStore } from '~/store/producer'
 import { CreateProducerRequest } from '~/types/api'
 
@@ -128,6 +137,9 @@ export default defineComponent({
       message: '',
     })
 
+    const searchLoading = ref<boolean>(false)
+    const searchErrorMessage = ref<string>('')
+
     const handleSubmit = async () => {
       try {
         await createProducer({
@@ -166,6 +178,21 @@ export default defineComponent({
       }
     }
 
+    const searchAddress = async () => {
+      searchLoading.value = true
+      searchErrorMessage.value = ''
+      try {
+        const res = await searchAddressByPostalCode(Number(formData.postalCode))
+        formData.prefecture = res.prefecture
+        formData.city = res.city
+        formData.addressLine1 = res.addressLine1
+      } catch (e) {
+        searchErrorMessage.value = e.message
+      } finally {
+        searchLoading.value = false
+      }
+    }
+
     return {
       formData,
       handleSubmit,
@@ -173,6 +200,9 @@ export default defineComponent({
       handleUpdateHeader,
       thumbnailUploadStatus,
       headerUploadStatus,
+      searchAddress,
+      searchLoading,
+      searchErrorMessage,
     }
   },
 })
