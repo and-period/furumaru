@@ -17,16 +17,20 @@ import (
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/database"
+	"github.com/and-period/furumaru/api/pkg/line"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/sqs"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"go.uber.org/zap"
+	"golang.org/x/sync/errgroup"
 )
 
 type registry struct {
+	env       string
 	waitGroup *sync.WaitGroup
+	line      line.Client
 	v1        v1.Handler
 }
 
@@ -39,12 +43,16 @@ type params struct {
 	storage     storage.Bucket
 	userAuth    cognito.Client
 	producer    sqs.Producer
+	line        line.Client
 	adminWebURL *url.URL
 	userWebURL  *url.URL
 	dbHost      string
 	dbPort      string
 	dbUsername  string
 	dbPassword  string
+	lineToken   string
+	lineSecret  string
+	lineRoomID  string
 }
 
 func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*registry, error) {
@@ -86,6 +94,18 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}
 	params.producer = sqs.NewProducer(awscfg, sqsParams, sqs.WithDryRun(conf.SQSMockEnabled))
 
+	// LINEの設定
+	lineParams := &line.Params{
+		Token:  params.lineToken,
+		Secret: params.lineSecret,
+		RoomID: params.lineRoomID,
+	}
+	linebot, err := line.NewClient(lineParams, line.WithLogger(logger))
+	if err != nil {
+		return nil, err
+	}
+	params.line = linebot
+
 	// WebURLの設定
 	adminWebURL, err := url.Parse(conf.AminWebURL)
 	if err != nil {
@@ -121,20 +141,25 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		Messenger: messengerService,
 	}
 	return &registry{
+		env:       conf.Environment,
 		waitGroup: params.waitGroup,
+		line:      params.line,
 		v1:        v1.NewHandler(v1Params, v1.WithLogger(logger)),
 	}, nil
 }
 
 func getSecret(ctx context.Context, p *params) error {
-	// データベース認証情報の取得
-	if p.config.DBSecretName == "" {
-		p.dbHost = p.config.DBHost
-		p.dbPort = p.config.DBPort
-		p.dbUsername = p.config.DBUsername
-		p.dbPassword = p.config.DBPassword
-	} else {
-		secrets, err := p.secret.Get(ctx, p.config.DBSecretName)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		// データベース認証情報の取得
+		if p.config.DBSecretName == "" {
+			p.dbHost = p.config.DBHost
+			p.dbPort = p.config.DBPort
+			p.dbUsername = p.config.DBUsername
+			p.dbPassword = p.config.DBPassword
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, p.config.DBSecretName)
 		if err != nil {
 			return err
 		}
@@ -142,8 +167,26 @@ func getSecret(ctx context.Context, p *params) error {
 		p.dbPort = secrets["port"]
 		p.dbUsername = secrets["username"]
 		p.dbPassword = secrets["password"]
-	}
-	return nil
+		return nil
+	})
+	eg.Go(func() error {
+		// LINE認証情報の取得
+		if p.config.LINESecretName == "" {
+			p.lineToken = p.config.LINEChannelToken
+			p.lineSecret = p.config.LINEChannelSecret
+			p.lineRoomID = p.config.LINERoomID
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, p.config.LINESecretName)
+		if err != nil {
+			return err
+		}
+		p.lineToken = secrets["token"]
+		p.lineSecret = secrets["secret"]
+		p.lineRoomID = secrets["roomId"]
+		return nil
+	})
+	return eg.Wait()
 }
 
 func newDatabase(dbname string, p *params) (*database.Client, error) {
