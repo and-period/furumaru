@@ -92,7 +92,7 @@ func notifyError(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 			return
 		}
 		components := []linebot.FlexComponent{
-			newAlertContent("service", "admin-gateway"),
+			newAlertContent("service", "user-gateway"),
 			newAlertContent("env", reg.env),
 			newAlertContent("status", strconv.FormatInt(int64(status), 10)),
 			newAlertContent("method", method),
