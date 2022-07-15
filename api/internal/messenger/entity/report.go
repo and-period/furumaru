@@ -22,6 +22,7 @@ type Report struct {
 func (r *Report) Fields() map[string]string {
 	return map[string]string{
 		"Overview":   r.Overview,
+		"Detail":     r.Detail,
 		"Link":       r.Link,
 		"ReceivedAt": jst.Format(r.ReceivedAt, "2006-01-02 15:04:05"),
 	}
