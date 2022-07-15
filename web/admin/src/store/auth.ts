@@ -2,6 +2,8 @@ import axios from 'axios'
 import { defineStore } from 'pinia'
 import Cookies from 'universal-cookie'
 
+import { useCommonStore } from './common'
+
 import { ApiClientFactory } from '.'
 
 import {
@@ -43,6 +45,11 @@ export const useAuthStore = defineStore('auth', {
         const factory = new ApiClientFactory()
         const authApiClient = factory.create(AuthApi, this.user?.accessToken)
         await authApiClient.v1UpdateAuthPassword(payload)
+        const commonStore = useCommonStore()
+        commonStore.addSnackbar({
+          message: `パスワードを更新しました。`,
+          color: 'info',
+        })
       } catch (err) {
         // TODO: エラーハンドリング
         console.log(err)

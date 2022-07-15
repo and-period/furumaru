@@ -3,10 +3,11 @@
     <v-card-title>パスワード変更</v-card-title>
     <v-card>
       <v-container>
-        <v-form>
+        <form @submit.prevent="handleSubmit">
           <v-text-field
             v-model="formData.oldPassword"
             class="mx-4"
+            minlength="8"
             maxlength="32"
             label="現在のパスワード"
             :append-icon="oldPasswordShow ? 'mdi-eye' : 'mdi-eye-off'"
@@ -16,6 +17,7 @@
           <v-text-field
             v-model="formData.newPassword"
             class="mx-4"
+            minlength="8"
             maxlength="32"
             label="新しいパスワード"
             :append-icon="newPasswordShow ? 'mdi-eye' : 'mdi-eye-off'"
@@ -25,16 +27,18 @@
           <v-text-field
             v-model="formData.passwordConfirmation"
             class="mx-4"
+            min-length="8"
             maxlength="32"
             label="新しいパスワード(確認用)"
             :append-icon="passwordConfirmationShow ? 'mdi-eye' : 'mdi-eye-off'"
             :type="passwordConfirmationShow ? 'text' : 'password'"
+            :error-messages="isMatch ? '' : 'パスワードが一致しません'"
             @click:append="passwordConfirmationShow = !passwordConfirmationShow"
           />
           <div class="d-flex justify-end mr-4">
-            <v-btn outlined color="primary" @click="handleSubmit"> 変更 </v-btn>
+            <v-btn outlined color="primary" type="submit"> 変更 </v-btn>
           </div>
-        </v-form>
+        </form>
       </v-container>
       <v-alert v-model="isShow" :type="alertType" v-text="alertText" />
     </v-card>
@@ -42,7 +46,7 @@
 </template>
 
 <script lang="ts">
-import { useRouter } from '@nuxtjs/composition-api'
+import { computed, useRouter } from '@nuxtjs/composition-api'
 import { defineComponent, reactive, ref } from '@vue/composition-api'
 
 import { useAlert } from '~/lib/hooks'
@@ -61,6 +65,10 @@ export default defineComponent({
       oldPassword: '',
       newPassword: '',
       passwordConfirmation: '',
+    })
+
+    const isMatch = computed(() => {
+      return formData.newPassword === formData.passwordConfirmation
     })
 
     const oldPasswordShow = ref<Boolean>(false)
@@ -87,6 +95,7 @@ export default defineComponent({
       oldPasswordShow,
       newPasswordShow,
       passwordConfirmationShow,
+      isMatch,
       handleSubmit,
     }
   },

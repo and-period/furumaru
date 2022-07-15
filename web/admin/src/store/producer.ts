@@ -48,7 +48,7 @@ export const useProducerStore = defineStore('Producer', {
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: `${payload.storeName}を作成しました。`,
-          color: 'success',
+          color: 'info',
         })
       } catch (error) {
         // TODO: エラーハンドリング
