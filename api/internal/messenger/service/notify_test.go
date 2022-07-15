@@ -164,6 +164,7 @@ func TestNotifyReceivedContact(t *testing.T) {
 							Report: &entity.Report{
 								ReportID:   entity.ReportIDReceivedContact,
 								Overview:   "お問い合わせ件名",
+								Detail:     "お問い合わせ内容です。",
 								Link:       "htts://admin.and-period.jp/contacts/contact-id",
 								ReceivedAt: payload.Report.ReceivedAt,
 							},
