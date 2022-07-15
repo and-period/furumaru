@@ -2,6 +2,7 @@ package worker
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
@@ -15,13 +16,14 @@ func (w *worker) reporter(ctx context.Context, payload *entity.WorkerPayload) er
 	if err != nil {
 		return err
 	}
+	altText := fmt.Sprintf("[ふるマル] %s", payload.Report.ReportID)
 	container, err := template.Build(payload.Report.Fields())
 	if err != nil {
 		return err
 	}
 	w.logger.Debug("Send report", zap.String("reportId", payload.Report.ReportID), zap.Any("message", container))
 	sendFn := func() error {
-		return w.line.PushMessage(ctx, linebot.NewFlexMessage("alt text", container))
+		return w.line.PushMessage(ctx, linebot.NewFlexMessage(altText, container))
 	}
 	retry := backoff.NewExponentialBackoff(w.maxRetries)
 	return backoff.Retry(ctx, retry, sendFn, backoff.WithRetryablel(exception.Retryable))

@@ -49,7 +49,7 @@ func TestReporter(t *testing.T) {
 						require.Len(t, messages, 1)
 						msg, ok := messages[0].(*linebot.FlexMessage)
 						require.True(t, ok)
-						assert.Equal(t, "alt text", msg.AltText)
+						assert.Equal(t, "[ふるマル] received-contact", msg.AltText)
 						assert.Equal(t, container, msg.Contents)
 						return nil
 					})

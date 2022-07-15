@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -91,19 +92,21 @@ func notifyError(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 		if reg.line == nil {
 			return
 		}
+		const service = "user-gateway"
+		altText := fmt.Sprintf("[ふるマルアラート] %s", service)
 		components := []linebot.FlexComponent{
-			newAlertContent("service", "user-gateway"),
+			newAlertContent("service", service),
 			newAlertContent("env", reg.env),
 			newAlertContent("status", strconv.FormatInt(int64(status), 10)),
 			newAlertContent("method", method),
 			newAlertContent("path", path),
 			newAlertContent("detail", res),
 		}
-		_ = reg.line.PushMessage(ctx, newAlertMessage(components))
+		_ = reg.line.PushMessage(ctx, newAlertMessage(altText, components))
 	}
 }
 
-func newAlertMessage(components []linebot.FlexComponent) *linebot.FlexMessage {
+func newAlertMessage(altText string, components []linebot.FlexComponent) *linebot.FlexMessage {
 	container := &linebot.BubbleContainer{
 		Type:      linebot.FlexContainerTypeBubble,
 		Direction: linebot.FlexBubbleDirectionTypeLTR,
@@ -132,7 +135,7 @@ func newAlertMessage(components []linebot.FlexComponent) *linebot.FlexMessage {
 			},
 		},
 	}
-	return linebot.NewFlexMessage("alt text", container)
+	return linebot.NewFlexMessage(altText, container)
 }
 
 func newAlertContent(field, value string) *linebot.BoxComponent {
