@@ -39,6 +39,8 @@ type Shipping struct {
 	UpdatedAt          time.Time      `gorm:""`                                 // 更新日時
 }
 
+type Shippings []*Shipping
+
 // ShippingRate - 配送料金情報
 type ShippingRate struct {
 	Number      int64   `json:"number"`      // No.

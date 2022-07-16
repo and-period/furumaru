@@ -23,6 +23,8 @@ tags:
   description: 商品関連
 - name: Contact
   description: お問い合わせ関連
+- name: Shipping
+  description: 配送設定関連
 paths:
   # Auth
   /v1/auth:
@@ -71,6 +73,11 @@ paths:
     $ref: './paths/v1/contacts/index.yaml'
   /v1/contacts/{contactId}:
     $ref: './paths/v1/contacts/_contactId/index.yaml'
+  # Shipping
+  /v1/shippings:
+    $ref: './paths/v1/shippings/index.yaml'
+  /v1/shippings/{shippingId}:
+    $ref: './paths/v1/shippings/_shippingId/index.yaml'
   # Upload
   /v1/upload/coordinators/header:
     $ref: './paths/v1/upload/coordinators/header.yaml'
@@ -87,6 +94,8 @@ components:
       scheme: bearer
   schemas:
     # Common
+    prefecture:
+      $ref: './components/schemas/codes.yaml#/prefecture'
     errorResponse:
       $ref: './components/schemas/common.yaml#/errorResponse'
     # Request
@@ -120,6 +129,10 @@ components:
       $ref: './components/schemas/v1/product.request.yaml#/updateProductRequest'
     v1UpdateContactRequest:
       $ref: './components/schemas/v1/contact.request.yaml#/updateContactRequest'
+    v1CreateShippingRequest:
+      $ref: './components/schemas/v1/shipping.request.yaml#/createShippingRequest'
+    v1UpdateShippingRequest:
+      $ref: './components/schemas/v1/shipping.request.yaml#/updateShippingRequest'
     v1UploadCoordinatorThumbnailRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadCoordinatorThumbnailRequest'
     v1UploadCoordinatorHeaderRequest:
@@ -159,5 +172,9 @@ components:
       $ref: './components/schemas/v1/contact.response.yaml#/contactResponse'
     v1ContactsResponse:
       $ref: './components/schemas/v1/contact.response.yaml#/contactsResponse'
+    v1ShippingResponse:
+      $ref: './components/schemas/v1/shipping.response.yaml#/shippingResponse'
+    v1ShippingsResponse:
+      $ref: './components/schemas/v1/shipping.response.yaml#/shippingsResponse'
     v1UploadImageResponse:
       $ref: './components/schemas/v1/upload.response.yaml#/uploadImageResponse'
