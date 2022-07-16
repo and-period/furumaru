@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 func (h *handler) productTypeRoutes(rg *gin.RouterGroup) {
@@ -58,9 +59,11 @@ func (h *handler) ListProductTypes(ctx *gin.Context) {
 		return
 	}
 
+	// TODO: 後から実装
+	h.logger.Debug("TODO", zap.Any("categories", categories))
+
 	res := &response.ProductTypesResponse{
 		ProductTypes: productTypes.Response(),
-		Categories:   service.NewCategories(categories).Response(),
 		Total:        total,
 	}
 	ctx.JSON(http.StatusOK, res)
