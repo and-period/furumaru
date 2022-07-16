@@ -70,6 +70,56 @@ createShippingRequest:
       type: integer
       format: int64
       description: 送料無料になる金額(100万未満)
+  required:
+  - name
+  - box60Rates
+  - box60Refrigerated
+  - box60Frozen
+  - box80Rates
+  - box80Refrigerated
+  - box80Frozen
+  - box100Rates
+  - box100Refrigerated
+  - box100Frozen
+  - hasFreeShipping
+  - freeShippingRates
+  example:
+    name: 'デフォルト配送設定'
+    box60Rates:
+    - number: 1
+      name: '離島'
+      price: 2000
+      prefectures: ['hokkaido', 'okinawa']
+    - number: 2
+      name: 'その他'
+      price: 1200
+      prefectures: ['aomori', 'iwate', 'akita', '...']
+    box60Refrigerated: 300
+    box60Frozen: 500
+    box80Rates:
+    - number: 1
+      name: '離島'
+      price: 2000
+      prefectures: ['hokkaido', 'okinawa']
+    - number: 2
+      name: 'その他'
+      price: 1200
+      prefectures: ['aomori', 'iwate', 'akita', '...']
+    box80Refrigerated: 300
+    box80Frozen: 500
+    box100Rates:
+    - number: 1
+      name: '離島'
+      price: 2000
+      prefectures: ['hokkaido', 'okinawa']
+    - number: 2
+      name: 'その他'
+      price: 1200
+      prefectures: ['aomori', 'iwate', 'akita', '...']
+    box100Refrigerated: 300
+    box100Frozen: 500
+    hasFreeShipping: true
+    freeShippingRates: 3000
 updateShippingRate:
   type: object
   properties:
@@ -142,3 +192,53 @@ updateShippingRequest:
       type: integer
       format: int64
       description: 送料無料になる金額(100万未満)
+  required:
+  - name
+  - box60Rates
+  - box60Refrigerated
+  - box60Frozen
+  - box80Rates
+  - box80Refrigerated
+  - box80Frozen
+  - box100Rates
+  - box100Refrigerated
+  - box100Frozen
+  - hasFreeShipping
+  - freeShippingRates
+  example:
+    name: 'デフォルト配送設定'
+    box60Rates:
+    - number: 1
+      name: '離島'
+      price: 2000
+      prefectures: ['hokkaido', 'okinawa']
+    - number: 2
+      name: 'その他'
+      price: 1200
+      prefectures: ['aomori', 'iwate', 'akita', '...']
+    box60Refrigerated: 300
+    box60Frozen: 500
+    box80Rates:
+    - number: 1
+      name: '離島'
+      price: 2000
+      prefectures: ['hokkaido', 'okinawa']
+    - number: 2
+      name: 'その他'
+      price: 1200
+      prefectures: ['aomori', 'iwate', 'akita', '...']
+    box80Refrigerated: 300
+    box80Frozen: 500
+    box100Rates:
+    - number: 1
+      name: '離島'
+      price: 2000
+      prefectures: ['hokkaido', 'okinawa']
+    - number: 2
+      name: 'その他'
+      price: 1200
+      prefectures: ['aomori', 'iwate', 'akita', '...']
+    box100Refrigerated: 300
+    box100Frozen: 500
+    hasFreeShipping: true
+    freeShippingRates: 3000

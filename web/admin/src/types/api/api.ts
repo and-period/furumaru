@@ -1182,73 +1182,73 @@ export interface CreateShippingRequest {
    * @type {string}
    * @memberof CreateShippingRequest
    */
-  name?: string
+  name: string
   /**
    * 箱サイズ60の通常配送料一覧(すべての都道府県の設定が必須)
    * @type {Array<CreateShippingRate>}
    * @memberof CreateShippingRequest
    */
-  box60Rates?: Array<CreateShippingRate>
+  box60Rates: Array<CreateShippingRate>
   /**
    * 箱サイズ60の冷蔵便追加配送料(100万未満)
    * @type {number}
    * @memberof CreateShippingRequest
    */
-  box60Refrigerated?: number
+  box60Refrigerated: number
   /**
    * 箱サイズ60の冷凍便追加配送料(100万未満)
    * @type {number}
    * @memberof CreateShippingRequest
    */
-  box60Frozen?: number
+  box60Frozen: number
   /**
    * 箱サイズ80の通常配送料一覧(すべての都道府県の設定が必須)
    * @type {Array<CreateShippingRate>}
    * @memberof CreateShippingRequest
    */
-  box80Rates?: Array<CreateShippingRate>
+  box80Rates: Array<CreateShippingRate>
   /**
    * 箱サイズ80の冷蔵便追加配送料(100万未満)
    * @type {number}
    * @memberof CreateShippingRequest
    */
-  box80Refrigerated?: number
+  box80Refrigerated: number
   /**
    * 箱サイズ80の冷凍便追加配送料(100万未満)
    * @type {number}
    * @memberof CreateShippingRequest
    */
-  box80Frozen?: number
+  box80Frozen: number
   /**
    * 箱サイズ100の通常配送料一覧(すべての都道府県の設定が必須)
    * @type {Array<CreateShippingRate>}
    * @memberof CreateShippingRequest
    */
-  box100Rates?: Array<CreateShippingRate>
+  box100Rates: Array<CreateShippingRate>
   /**
    * 箱サイズ100の冷蔵便追加配送料(100万未満)
    * @type {number}
    * @memberof CreateShippingRequest
    */
-  box100Refrigerated?: number
+  box100Refrigerated: number
   /**
    * 箱サイズ100の冷凍便追加配送料(100万未満)
    * @type {number}
    * @memberof CreateShippingRequest
    */
-  box100Frozen?: number
+  box100Frozen: number
   /**
    * 送料無料オプションの有無
    * @type {boolean}
    * @memberof CreateShippingRequest
    */
-  hasFreeShipping?: boolean
+  hasFreeShipping: boolean
   /**
    * 送料無料になる金額(100万未満)
    * @type {number}
    * @memberof CreateShippingRequest
    */
-  freeShippingRates?: number
+  freeShippingRates: number
 }
 /**
  *
@@ -2615,73 +2615,73 @@ export interface UpdateShippingRequest {
    * @type {string}
    * @memberof UpdateShippingRequest
    */
-  name?: string
+  name: string
   /**
    * 箱サイズ60の通常配送料一覧(すべての都道府県の設定が必須)
    * @type {Array<CreateShippingRate>}
    * @memberof UpdateShippingRequest
    */
-  box60Rates?: Array<CreateShippingRate>
+  box60Rates: Array<CreateShippingRate>
   /**
    * 箱サイズ60の冷蔵便追加配送料(100万未満)
    * @type {number}
    * @memberof UpdateShippingRequest
    */
-  box60Refrigerated?: number
+  box60Refrigerated: number
   /**
    * 箱サイズ60の冷凍便追加配送料(100万未満)
    * @type {number}
    * @memberof UpdateShippingRequest
    */
-  box60Frozen?: number
+  box60Frozen: number
   /**
    * 箱サイズ80の通常配送料一覧(すべての都道府県の設定が必須)
    * @type {Array<CreateShippingRate>}
    * @memberof UpdateShippingRequest
    */
-  box80Rates?: Array<CreateShippingRate>
+  box80Rates: Array<CreateShippingRate>
   /**
    * 箱サイズ80の冷蔵便追加配送料(100万未満)
    * @type {number}
    * @memberof UpdateShippingRequest
    */
-  box80Refrigerated?: number
+  box80Refrigerated: number
   /**
    * 箱サイズ80の冷凍便追加配送料(100万未満)
    * @type {number}
    * @memberof UpdateShippingRequest
    */
-  box80Frozen?: number
+  box80Frozen: number
   /**
    * 箱サイズ100の通常配送料一覧(すべての都道府県の設定が必須)
    * @type {Array<CreateShippingRate>}
    * @memberof UpdateShippingRequest
    */
-  box100Rates?: Array<CreateShippingRate>
+  box100Rates: Array<CreateShippingRate>
   /**
    * 箱サイズ100の冷蔵便追加配送料(100万未満)
    * @type {number}
    * @memberof UpdateShippingRequest
    */
-  box100Refrigerated?: number
+  box100Refrigerated: number
   /**
    * 箱サイズ100の冷凍便追加配送料(100万未満)
    * @type {number}
    * @memberof UpdateShippingRequest
    */
-  box100Frozen?: number
+  box100Frozen: number
   /**
    * 送料無料オプションの有無
    * @type {boolean}
    * @memberof UpdateShippingRequest
    */
-  hasFreeShipping?: boolean
+  hasFreeShipping: boolean
   /**
    * 送料無料になる金額(100万未満)
    * @type {number}
    * @memberof UpdateShippingRequest
    */
-  freeShippingRates?: number
+  freeShippingRates: number
 }
 /**
  *
