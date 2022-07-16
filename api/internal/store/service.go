@@ -29,6 +29,16 @@ type Service interface {
 	UpdateProductType(ctx context.Context, in *UpdateProductTypeInput) error
 	// 品目削除
 	DeleteProductType(ctx context.Context, in *DeleteProductTypeInput) error
+	// 配送設定一覧取得
+	ListShippings(ctx context.Context, in *ListShippingsInput) (entity.Shippings, int64, error)
+	// 配送設定取得
+	GetShipping(ctx context.Context, in *GetShippingInput) (*entity.Shipping, error)
+	// 配送設定登録
+	CreateShipping(ctx context.Context, in *CreateShippingInput) (*entity.Shipping, error)
+	// 配送設定更新
+	UpdateShipping(ctx context.Context, in *UpdateShippingInput) error
+	// 配送設定削除
+	DeleteShipping(ctx context.Context, in *DeleteShippingInput) error
 	// 商品一覧取得
 	ListProducts(ctx context.Context, in *ListProductsInput) (entity.Products, int64, error)
 	// 商品取得
