@@ -933,39 +933,39 @@ export interface CreateCoordinatorRequest {
  * @interface CreateNotificationRequest
  */
 export interface CreateNotificationRequest {
-    /**
-     * タイトル(128字まで)
-     * @type {string}
-     * @memberof CreateNotificationRequest
-     */
-    'title': string;
-    /**
-     * 本文(2000字まで)
-     * @type {string}
-     * @memberof CreateNotificationRequest
-     */
-    'body': string;
-    /**
-     * 掲載対象一覧(3つまで)
-     * @type {Array<number>}
-     * @memberof CreateNotificationRequest
-     */
-    'targets': Array<number>;
-    /**
-     * 公開フラグ
-     * @type {boolean}
-     * @memberof CreateNotificationRequest
-     */
-    'public'?: boolean;
-    /**
-     * 掲載開始日時
-     * @type {number}
-     * @memberof CreateNotificationRequest
-     */
-    'publishedAt': number;
+  /**
+   * タイトル(128字まで)
+   * @type {string}
+   * @memberof CreateNotificationRequest
+   */
+  title: string
+  /**
+   * 本文(2000字まで)
+   * @type {string}
+   * @memberof CreateNotificationRequest
+   */
+  body: string
+  /**
+   * 掲載対象一覧(3つまで)
+   * @type {Array<number>}
+   * @memberof CreateNotificationRequest
+   */
+  targets: Array<number>
+  /**
+   * 公開フラグ
+   * @type {boolean}
+   * @memberof CreateNotificationRequest
+   */
+  public?: boolean
+  /**
+   * 掲載開始日時
+   * @type {number}
+   * @memberof CreateNotificationRequest
+   */
+  publishedAt: number
 }
 /**
- * 
+ *
  * @export
  * @interface CreateProducerRequest
  */
@@ -1313,6 +1313,79 @@ export interface ErrorResponse {
   details: string
 }
 /**
+ *
+ * @export
+ * @interface NotificationResponse
+ */
+export interface NotificationResponse {
+  /**
+   * お知らせID
+   * @type {string}
+   * @memberof NotificationResponse
+   */
+  id: string
+  /**
+   * 登録者ID
+   * @type {string}
+   * @memberof NotificationResponse
+   */
+  createdBy: string
+  /**
+   * 登録者名
+   * @type {string}
+   * @memberof NotificationResponse
+   */
+  creatorName: string
+  /**
+   * 更新者ID
+   * @type {string}
+   * @memberof NotificationResponse
+   */
+  updatedBy: string
+  /**
+   * タイトル(128字まで)
+   * @type {string}
+   * @memberof NotificationResponse
+   */
+  title: string
+  /**
+   * 本文(2000字まで)
+   * @type {string}
+   * @memberof NotificationResponse
+   */
+  body: string
+  /**
+   * 掲載対象一覧(3つまで)
+   * @type {Array<number>}
+   * @memberof NotificationResponse
+   */
+  targets: Array<number>
+  /**
+   * 公開フラグ
+   * @type {boolean}
+   * @memberof NotificationResponse
+   */
+  public: boolean
+  /**
+   * 掲載開始日時 (unixtime)
+   * @type {number}
+   * @memberof NotificationResponse
+   */
+  publishedAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof NotificationResponse
+   */
+  createdAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof NotificationResponse
+   */
+  updatedAt: number
+}
+/**
  * 都道府県コード
  * @export
  * @enum {string}
@@ -1372,79 +1445,6 @@ export type Prefecture = typeof Prefecture[keyof typeof Prefecture]
 
 /**
  *
- * @export
- * @interface NotificationResponse
- */
-export interface NotificationResponse {
-    /**
-     * お知らせID
-     * @type {string}
-     * @memberof NotificationResponse
-     */
-    'id': string;
-    /**
-     * 登録者ID
-     * @type {string}
-     * @memberof NotificationResponse
-     */
-    'createdBy': string;
-    /**
-     * 登録者名
-     * @type {string}
-     * @memberof NotificationResponse
-     */
-    'creatorName': string;
-    /**
-     * 更新者ID
-     * @type {string}
-     * @memberof NotificationResponse
-     */
-    'updatedBy': string;
-    /**
-     * タイトル(128字まで)
-     * @type {string}
-     * @memberof NotificationResponse
-     */
-    'title': string;
-    /**
-     * 本文(2000字まで)
-     * @type {string}
-     * @memberof NotificationResponse
-     */
-    'body': string;
-    /**
-     * 掲載対象一覧(3つまで)
-     * @type {Array<number>}
-     * @memberof NotificationResponse
-     */
-    'targets': Array<number>;
-    /**
-     * 公開フラグ
-     * @type {boolean}
-     * @memberof NotificationResponse
-     */
-    'public': boolean;
-    /**
-     * 掲載開始日時 (unixtime)
-     * @type {number}
-     * @memberof NotificationResponse
-     */
-    'publishedAt': number;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof NotificationResponse
-     */
-    'createdAt': number;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof NotificationResponse
-     */
-    'updatedAt': number;
-}
-/**
- * 
  * @export
  * @interface ProducerResponse
  */
@@ -5471,6 +5471,161 @@ export class CoordinatorApi extends BaseAPI {
 }
 
 /**
+ * NotificationApi - axios parameter creator
+ * @export
+ */
+export const NotificationApiAxiosParamCreator = function (
+  configuration?: Configuration
+) {
+  return {
+    /**
+     *
+     * @summary お知らせ登録
+     * @param {CreateNotificationRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1CreateNotification: async (
+      body: CreateNotificationRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1CreateNotification', 'body', body)
+      const localVarPath = `/v1/notifications`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'POST',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * NotificationApi - functional programming interface
+ * @export
+ */
+export const NotificationApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator =
+    NotificationApiAxiosParamCreator(configuration)
+  return {
+    /**
+     *
+     * @summary お知らせ登録
+     * @param {CreateNotificationRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1CreateNotification(
+      body: CreateNotificationRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<NotificationResponse>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1CreateNotification(body, options)
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+  }
+}
+
+/**
+ * NotificationApi - factory interface
+ * @export
+ */
+export const NotificationApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance
+) {
+  const localVarFp = NotificationApiFp(configuration)
+  return {
+    /**
+     *
+     * @summary お知らせ登録
+     * @param {CreateNotificationRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1CreateNotification(
+      body: CreateNotificationRequest,
+      options?: any
+    ): AxiosPromise<NotificationResponse> {
+      return localVarFp
+        .v1CreateNotification(body, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * NotificationApi - object-oriented interface
+ * @export
+ * @class NotificationApi
+ * @extends {BaseAPI}
+ */
+export class NotificationApi extends BaseAPI {
+  /**
+   *
+   * @summary お知らせ登録
+   * @param {CreateNotificationRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NotificationApi
+   */
+  public v1CreateNotification(
+    body: CreateNotificationRequest,
+    options?: AxiosRequestConfig
+  ) {
+    return NotificationApiFp(this.configuration)
+      .v1CreateNotification(body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
  * ProducerApi - axios parameter creator
  * @export
  */
@@ -6933,461 +7088,6 @@ export const ProductTypeApiAxiosParamCreator = function (
     },
   }
 }
-
-/**
- * NotificationApi - axios parameter creator
- * @export
- */
-export const NotificationApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @summary お知らせ登録
-         * @param {CreateNotificationRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1CreateNotification: async (body: CreateNotificationRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'body' is not null or undefined
-            assertParamExists('v1CreateNotification', 'body', body)
-            const localVarPath = `/v1/notifications`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * NotificationApi - functional programming interface
- * @export
- */
-export const NotificationApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = NotificationApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @summary お知らせ登録
-         * @param {CreateNotificationRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1CreateNotification(body: CreateNotificationRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<NotificationResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateNotification(body, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-    }
-};
-
-/**
- * NotificationApi - factory interface
- * @export
- */
-export const NotificationApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = NotificationApiFp(configuration)
-    return {
-        /**
-         * 
-         * @summary お知らせ登録
-         * @param {CreateNotificationRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1CreateNotification(body: CreateNotificationRequest, options?: any): AxiosPromise<NotificationResponse> {
-            return localVarFp.v1CreateNotification(body, options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * NotificationApi - object-oriented interface
- * @export
- * @class NotificationApi
- * @extends {BaseAPI}
- */
-export class NotificationApi extends BaseAPI {
-    /**
-     * 
-     * @summary お知らせ登録
-     * @param {CreateNotificationRequest} body 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof NotificationApi
-     */
-    public v1CreateNotification(body: CreateNotificationRequest, options?: AxiosRequestConfig) {
-        return NotificationApiFp(this.configuration).v1CreateNotification(body, options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
-/**
- * ProducerApi - axios parameter creator
- * @export
- */
-export const ProducerApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @summary 生産者登録
-         * @param {CreateProducerRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1CreateProducer: async (body: CreateProducerRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'body' is not null or undefined
-            assertParamExists('v1CreateProducer', 'body', body)
-            const localVarPath = `/v1/producers`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 生産者取得
-         * @param {string} producerId 生産者ID
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1GetProducer: async (producerId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'producerId' is not null or undefined
-            assertParamExists('v1GetProducer', 'producerId', producerId)
-            const localVarPath = `/v1/producers/{producerId}`
-                .replace(`{${"producerId"}}`, encodeURIComponent(String(producerId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 生産者一覧取得
-         * @param {number} [limit] 取得上限数
-         * @param {number} [offset] 取得開始位置
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1ListProducers: async (limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/producers`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-            if (limit !== undefined) {
-                localVarQueryParameter['limit'] = limit;
-            }
-
-            if (offset !== undefined) {
-                localVarQueryParameter['offset'] = offset;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 生産者ヘッダー画像アップロード
-         * @param {any} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProducerHeader: async (image?: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/upload/producers/header`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (image !== undefined) { 
-                localVarFormParams.append('image', image as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 生産者サムネイルアップロード
-         * @param {any} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProducerThumbnail: async (thumbnail?: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/upload/producers/thumbnail`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (thumbnail !== undefined) { 
-                localVarFormParams.append('thumbnail', thumbnail as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * ProducerApi - functional programming interface
- * @export
- */
-export const ProducerApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = ProducerApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @summary 生産者登録
-         * @param {CreateProducerRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1CreateProducer(body: CreateProducerRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProducerResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateProducer(body, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @summary 生産者取得
-         * @param {string} producerId 生産者ID
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1GetProducer(producerId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProducerResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetProducer(producerId, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @summary 生産者一覧取得
-         * @param {number} [limit] 取得上限数
-         * @param {number} [offset] 取得開始位置
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1ListProducers(limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProducersResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListProducers(limit, offset, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @summary 生産者ヘッダー画像アップロード
-         * @param {any} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UploadProducerHeader(image?: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProducerHeader(image, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @summary 生産者サムネイルアップロード
-         * @param {any} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UploadProducerThumbnail(thumbnail?: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProducerThumbnail(thumbnail, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-    }
-};
-
-/**
- * ProducerApi - factory interface
- * @export
- */
-export const ProducerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = ProducerApiFp(configuration)
-    return {
-        /**
-         * 
-         * @summary 生産者登録
-         * @param {CreateProducerRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1CreateProducer(body: CreateProducerRequest, options?: any): AxiosPromise<ProducerResponse> {
-            return localVarFp.v1CreateProducer(body, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 生産者取得
-         * @param {string} producerId 生産者ID
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1GetProducer(producerId: string, options?: any): AxiosPromise<ProducerResponse> {
-            return localVarFp.v1GetProducer(producerId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 生産者一覧取得
-         * @param {number} [limit] 取得上限数
-         * @param {number} [offset] 取得開始位置
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1ListProducers(limit?: number, offset?: number, options?: any): AxiosPromise<ProducersResponse> {
-            return localVarFp.v1ListProducers(limit, offset, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 生産者ヘッダー画像アップロード
-         * @param {any} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProducerHeader(image?: any, options?: any): AxiosPromise<UploadImageResponse> {
-            return localVarFp.v1UploadProducerHeader(image, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 生産者サムネイルアップロード
-         * @param {any} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProducerThumbnail(thumbnail?: any, options?: any): AxiosPromise<UploadImageResponse> {
-            return localVarFp.v1UploadProducerThumbnail(thumbnail, options).then((request) => request(axios, basePath));
-        },
-    };
-};
 
 /**
  * ProductTypeApi - functional programming interface
