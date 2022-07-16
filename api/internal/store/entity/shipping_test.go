@@ -32,12 +32,12 @@ func TestShipping(t *testing.T) {
 	}
 	tests := []struct {
 		name   string
-		params *NewShoppingParams
+		params *NewShippingParams
 		expect *Shipping
 	}{
 		{
 			name: "success",
-			params: &NewShoppingParams{
+			params: &NewShippingParams{
 				Name:               "デフォルト配送設定",
 				Box60Rates:         rates,
 				Box60Refrigerated:  500,

@@ -81,6 +81,7 @@ type CreateShippingRate struct {
 }
 
 type UpdateShippingInput struct {
+	ShippingID         string                `validate:"required"`
 	Name               string                `validate:"required,max=64"`
 	Box60Rates         []*UpdateShippingRate `validate:"required,dive,required"`
 	Box60Refrigerated  int64                 `validate:"min=0,lt=10000000000"`
