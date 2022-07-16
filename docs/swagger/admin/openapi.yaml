@@ -23,8 +23,11 @@ tags:
   description: 商品関連
 - name: Contact
   description: お問い合わせ関連
+- name: Notification
+  description: お知らせ関連
 - name: Shipping
   description: 配送設定関連
+
 paths:
   # Auth
   /v1/auth:
@@ -73,6 +76,9 @@ paths:
     $ref: './paths/v1/contacts/index.yaml'
   /v1/contacts/{contactId}:
     $ref: './paths/v1/contacts/_contactId/index.yaml'
+  # Notification
+  /v1/notifications:
+    $ref: './paths/v1/notifications/index.yaml'
   # Shipping
   /v1/shippings:
     $ref: './paths/v1/shippings/index.yaml'
@@ -129,6 +135,8 @@ components:
       $ref: './components/schemas/v1/product.request.yaml#/updateProductRequest'
     v1UpdateContactRequest:
       $ref: './components/schemas/v1/contact.request.yaml#/updateContactRequest'
+    v1CreateNotificationRequest:
+      $ref: './components/schemas/v1/notification.request.yaml#/createNotificationRequest'
     v1CreateShippingRequest:
       $ref: './components/schemas/v1/shipping.request.yaml#/createShippingRequest'
     v1UpdateShippingRequest:
@@ -172,6 +180,8 @@ components:
       $ref: './components/schemas/v1/contact.response.yaml#/contactResponse'
     v1ContactsResponse:
       $ref: './components/schemas/v1/contact.response.yaml#/contactsResponse'
+    v1NotificationResponse:
+      $ref: './components/schemas/v1/notification.response.yaml#/notificationResponse'
     v1ShippingResponse:
       $ref: './components/schemas/v1/shipping.response.yaml#/shippingResponse'
     v1ShippingsResponse:

@@ -930,6 +930,43 @@ export interface CreateCoordinatorRequest {
 /**
  *
  * @export
+ * @interface CreateNotificationRequest
+ */
+export interface CreateNotificationRequest {
+  /**
+   * タイトル(128字まで)
+   * @type {string}
+   * @memberof CreateNotificationRequest
+   */
+  title: string
+  /**
+   * 本文(2000字まで)
+   * @type {string}
+   * @memberof CreateNotificationRequest
+   */
+  body: string
+  /**
+   * 掲載対象一覧(3つまで)
+   * @type {Array<number>}
+   * @memberof CreateNotificationRequest
+   */
+  targets: Array<number>
+  /**
+   * 公開フラグ
+   * @type {boolean}
+   * @memberof CreateNotificationRequest
+   */
+  public: boolean
+  /**
+   * 掲載開始日時
+   * @type {number}
+   * @memberof CreateNotificationRequest
+   */
+  publishedAt: number
+}
+/**
+ *
+ * @export
  * @interface CreateProducerRequest
  */
 export interface CreateProducerRequest {
@@ -1274,6 +1311,79 @@ export interface ErrorResponse {
    * @memberof ErrorResponse
    */
   details: string
+}
+/**
+ *
+ * @export
+ * @interface NotificationResponse
+ */
+export interface NotificationResponse {
+  /**
+   * お知らせID
+   * @type {string}
+   * @memberof NotificationResponse
+   */
+  id: string
+  /**
+   * 登録者ID
+   * @type {string}
+   * @memberof NotificationResponse
+   */
+  createdBy: string
+  /**
+   * 登録者名
+   * @type {string}
+   * @memberof NotificationResponse
+   */
+  creatorName: string
+  /**
+   * 更新者ID
+   * @type {string}
+   * @memberof NotificationResponse
+   */
+  updatedBy: string
+  /**
+   * タイトル(128字まで)
+   * @type {string}
+   * @memberof NotificationResponse
+   */
+  title: string
+  /**
+   * 本文(2000字まで)
+   * @type {string}
+   * @memberof NotificationResponse
+   */
+  body: string
+  /**
+   * 掲載対象一覧(3つまで)
+   * @type {Array<number>}
+   * @memberof NotificationResponse
+   */
+  targets: Array<number>
+  /**
+   * 公開フラグ
+   * @type {boolean}
+   * @memberof NotificationResponse
+   */
+  public: boolean
+  /**
+   * 掲載開始日時 (unixtime)
+   * @type {number}
+   * @memberof NotificationResponse
+   */
+  publishedAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof NotificationResponse
+   */
+  createdAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof NotificationResponse
+   */
+  updatedAt: number
 }
 /**
  * 都道府県コード
@@ -5356,6 +5466,161 @@ export class CoordinatorApi extends BaseAPI {
   ) {
     return CoordinatorApiFp(this.configuration)
       .v1UploadCoordinatorThumbnail(thumbnail, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * NotificationApi - axios parameter creator
+ * @export
+ */
+export const NotificationApiAxiosParamCreator = function (
+  configuration?: Configuration
+) {
+  return {
+    /**
+     *
+     * @summary お知らせ登録
+     * @param {CreateNotificationRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1CreateNotification: async (
+      body: CreateNotificationRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1CreateNotification', 'body', body)
+      const localVarPath = `/v1/notifications`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'POST',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * NotificationApi - functional programming interface
+ * @export
+ */
+export const NotificationApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator =
+    NotificationApiAxiosParamCreator(configuration)
+  return {
+    /**
+     *
+     * @summary お知らせ登録
+     * @param {CreateNotificationRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1CreateNotification(
+      body: CreateNotificationRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<NotificationResponse>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1CreateNotification(body, options)
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+  }
+}
+
+/**
+ * NotificationApi - factory interface
+ * @export
+ */
+export const NotificationApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance
+) {
+  const localVarFp = NotificationApiFp(configuration)
+  return {
+    /**
+     *
+     * @summary お知らせ登録
+     * @param {CreateNotificationRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1CreateNotification(
+      body: CreateNotificationRequest,
+      options?: any
+    ): AxiosPromise<NotificationResponse> {
+      return localVarFp
+        .v1CreateNotification(body, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * NotificationApi - object-oriented interface
+ * @export
+ * @class NotificationApi
+ * @extends {BaseAPI}
+ */
+export class NotificationApi extends BaseAPI {
+  /**
+   *
+   * @summary お知らせ登録
+   * @param {CreateNotificationRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NotificationApi
+   */
+  public v1CreateNotification(
+    body: CreateNotificationRequest,
+    options?: AxiosRequestConfig
+  ) {
+    return NotificationApiFp(this.configuration)
+      .v1CreateNotification(body, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
