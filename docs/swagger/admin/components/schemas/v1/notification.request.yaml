@@ -26,6 +26,7 @@ createNotificationRequest:
   - body
   - targets
   - publishedAt
+  - public
   example:
     title: 'キャベツ祭り開催'
     body: '旬のキャベツが買い放題'
