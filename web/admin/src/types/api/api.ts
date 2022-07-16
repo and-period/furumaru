@@ -956,7 +956,7 @@ export interface CreateNotificationRequest {
    * @type {boolean}
    * @memberof CreateNotificationRequest
    */
-  public?: boolean
+  public: boolean
   /**
    * 掲載開始日時
    * @type {number}
