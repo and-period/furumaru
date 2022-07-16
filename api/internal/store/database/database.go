@@ -19,12 +19,15 @@ type Database struct {
 	Category    Category
 	Product     Product
 	ProductType ProductType
+	Shipping    Shipping
 }
 
 func NewDatabase(params *Params) *Database {
 	return &Database{
 		Category:    NewCategory(params.Database),
+		Product:     NewProduct(params.Database),
 		ProductType: NewProductType(params.Database),
+		Shipping:    NewShipping(params.Database),
 	}
 }
 
@@ -58,6 +61,15 @@ type ProductType interface {
 	Delete(ctx context.Context, productTypeID string) error
 }
 
+type Shipping interface {
+	List(ctx context.Context, params *ListShippingsParams, fields ...string) (entity.Shippings, error)
+	Count(ctx context.Context, params *ListShippingsParams) (int64, error)
+	Get(ctx context.Context, shoppingID string, fields ...string) (*entity.Shipping, error)
+	Create(ctx context.Context, shipping *entity.Shipping) error
+	Update(ctx context.Context, shippingID string, params *UpdateShippingParams) error
+	Delete(ctx context.Context, shippingID string) error
+}
+
 /**
  * params
  */
@@ -72,6 +84,26 @@ func (p *ListCategoriesParams) stmt(stmt *gorm.DB) *gorm.DB {
 		stmt = stmt.Where("name LIKE ?", fmt.Sprintf("%%%s%%", p.Name))
 	}
 	return stmt
+}
+
+type ListShippingsParams struct {
+	Limit  int
+	Offset int
+}
+
+type UpdateShippingParams struct {
+	Name               string
+	Box60Rates         entity.ShippingRates
+	Box60Refrigerated  int64
+	Box60Frozen        int64
+	Box80Rates         entity.ShippingRates
+	Box80Refrigerated  int64
+	Box80Frozen        int64
+	Box100Rates        entity.ShippingRates
+	Box100Refrigerated int64
+	Box100Frozen       int64
+	HasFreeShipping    bool
+	FreeShippingRates  int64
 }
 
 type ListProductsParams struct {
