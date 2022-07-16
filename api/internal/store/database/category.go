@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -39,9 +38,7 @@ func (c *category) List(
 	}
 
 	stmt := c.db.DB.WithContext(ctx).Table(categoryTable).Select(fields)
-	if params.Name != "" {
-		stmt = stmt.Where("name LIKE ?", fmt.Sprintf("%%%s%%", params.Name))
-	}
+	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
 	}
@@ -51,6 +48,16 @@ func (c *category) List(
 
 	err := stmt.Find(&categories).Error
 	return categories, exception.InternalError(err)
+}
+
+func (c *category) Count(ctx context.Context, params *ListCategoriesParams) (int64, error) {
+	var total int64
+
+	stmt := c.db.DB.WithContext(ctx).Table(categoryTable).Select("COUNT(*)")
+	stmt = params.stmt(stmt)
+
+	err := stmt.Count(&total).Error
+	return total, exception.InternalError(err)
 }
 
 func (c *category) MultiGet(ctx context.Context, categoryIDs []string, fields ...string) (entity.Categories, error) {

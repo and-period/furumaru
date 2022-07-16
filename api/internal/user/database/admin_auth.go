@@ -28,6 +28,21 @@ func NewAdminAuth(db *database.Client) AdminAuth {
 	}
 }
 
+func (a *adminAuth) MultiGet(
+	ctx context.Context, adminIDs []string, fields ...string,
+) (entity.AdminAuths, error) {
+	var auth entity.AdminAuths
+	if len(fields) == 0 {
+		fields = adminAuthFields
+	}
+
+	err := a.db.DB.WithContext(ctx).
+		Table(adminAuthTable).Select(fields).
+		Where("admin_id IN (?)", adminIDs).
+		Find(&auth).Error
+	return auth, exception.InternalError(err)
+}
+
 func (a *adminAuth) GetByAdminID(
 	ctx context.Context, adminID string, fields ...string,
 ) (*entity.AdminAuth, error) {

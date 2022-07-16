@@ -20,8 +20,8 @@ get:
         application/json:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/v1ContactResponse'
-    default:
-      description: An unexpected error response.
+    404:
+      description: not found error
       content:
         application/json:
           schema:
@@ -53,8 +53,14 @@ patch:
       content:
         application/json:
           schema: {}
-    default:
-      description: An unexpected error response.
+    400:
+      description: bad request error
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+    404:
+      description: not found error
       content:
         application/json:
           schema:

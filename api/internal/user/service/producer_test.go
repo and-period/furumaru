@@ -44,51 +44,72 @@ func TestListProducers(t *testing.T) {
 	}
 
 	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *user.ListProducersInput
-		expect    entity.Producers
-		expectErr error
+		name        string
+		setup       func(ctx context.Context, mocks *mocks)
+		input       *user.ListProducersInput
+		expect      entity.Producers
+		expectTotal int64
+		expectErr   error
 	}{
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().List(ctx, params).Return(producers, nil)
+				mocks.db.Producer.EXPECT().List(gomock.Any(), params).Return(producers, nil)
+				mocks.db.Producer.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &user.ListProducersInput{
 				Limit:  30,
 				Offset: 0,
 			},
-			expect:    producers,
-			expectErr: nil,
+			expect:      producers,
+			expectTotal: 1,
+			expectErr:   nil,
 		},
 		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &user.ListProducersInput{},
-			expect:    nil,
-			expectErr: exception.ErrInvalidArgument,
+			name:        "invalid argument",
+			setup:       func(ctx context.Context, mocks *mocks) {},
+			input:       &user.ListProducersInput{},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to get producer",
+			name: "failed to list producers",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().List(ctx, params).Return(nil, errmock)
+				mocks.db.Producer.EXPECT().List(gomock.Any(), params).Return(nil, errmock)
+				mocks.db.Producer.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &user.ListProducersInput{
 				Limit:  30,
 				Offset: 0,
 			},
-			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrUnknown,
+		},
+		{
+			name: "failed to count producers",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Producer.EXPECT().List(gomock.Any(), params).Return(producers, nil)
+				mocks.db.Producer.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
+			},
+			input: &user.ListProducersInput{
+				Limit:  30,
+				Offset: 0,
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrUnknown,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.ListProducers(ctx, tt.input)
+			actual, total, err := service.ListProducers(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.ElementsMatch(t, tt.expect, actual)
+			assert.Equal(t, tt.expectTotal, total)
 		}))
 	}
 }
@@ -334,7 +355,7 @@ func TestCreateProducer(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to create admin aith",
+			name: "failed to create admin auth",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(errmock)
 			},

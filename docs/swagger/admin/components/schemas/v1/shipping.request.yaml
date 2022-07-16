@@ -1,0 +1,244 @@
+createShippingRate:
+  type: object
+  properties:
+    name:
+      type: string
+      description: 配送料金設定名
+    price:
+      type: integer
+      format: int64
+      description: 配送料金(100万未満)
+    prefectures:
+      type: array
+      description: 対象都道府県コード一覧
+      items:
+        type: string
+        description: 都道府県コード
+  required:
+  - name
+  - price
+  - prefectures
+createShippingRequest:
+  type: object
+  properties:
+    name:
+      type: string
+      description: 配送設定名(64文字まで)
+    box60Rates:
+      type: array
+      description: 箱サイズ60の通常配送料一覧(すべての都道府県の設定が必須)
+      items:
+        $ref: '#/createShippingRate'
+    box60Refrigerated:
+      type: integer
+      format: int64
+      description: 箱サイズ60の冷蔵便追加配送料(100万未満)
+    box60Frozen:
+      type: integer
+      format: int64
+      description: 箱サイズ60の冷凍便追加配送料(100万未満)
+    box80Rates:
+      type: array
+      description: 箱サイズ80の通常配送料一覧(すべての都道府県の設定が必須)
+      items:
+        $ref: '#/createShippingRate'
+    box80Refrigerated:
+      type: integer
+      format: int64
+      description: 箱サイズ80の冷蔵便追加配送料(100万未満)
+    box80Frozen:
+      type: integer
+      format: int64
+      description: 箱サイズ80の冷凍便追加配送料(100万未満)
+    box100Rates:
+      type: array
+      description: 箱サイズ100の通常配送料一覧(すべての都道府県の設定が必須)
+      items:
+        $ref: '#/createShippingRate'
+    box100Refrigerated:
+      type: integer
+      format: int64
+      description: 箱サイズ100の冷蔵便追加配送料(100万未満)
+    box100Frozen:
+      type: integer
+      format: int64
+      description: 箱サイズ100の冷凍便追加配送料(100万未満)
+    hasFreeShipping:
+      type: boolean
+      description: 送料無料オプションの有無
+    freeShippingRates:
+      type: integer
+      format: int64
+      description: 送料無料になる金額(100万未満)
+  required:
+  - name
+  - box60Rates
+  - box60Refrigerated
+  - box60Frozen
+  - box80Rates
+  - box80Refrigerated
+  - box80Frozen
+  - box100Rates
+  - box100Refrigerated
+  - box100Frozen
+  - hasFreeShipping
+  - freeShippingRates
+  example:
+    name: 'デフォルト配送設定'
+    box60Rates:
+    - number: 1
+      name: '離島'
+      price: 2000
+      prefectures: ['hokkaido', 'okinawa']
+    - number: 2
+      name: 'その他'
+      price: 1200
+      prefectures: ['aomori', 'iwate', 'akita', '...']
+    box60Refrigerated: 300
+    box60Frozen: 500
+    box80Rates:
+    - number: 1
+      name: '離島'
+      price: 2000
+      prefectures: ['hokkaido', 'okinawa']
+    - number: 2
+      name: 'その他'
+      price: 1200
+      prefectures: ['aomori', 'iwate', 'akita', '...']
+    box80Refrigerated: 300
+    box80Frozen: 500
+    box100Rates:
+    - number: 1
+      name: '離島'
+      price: 2000
+      prefectures: ['hokkaido', 'okinawa']
+    - number: 2
+      name: 'その他'
+      price: 1200
+      prefectures: ['aomori', 'iwate', 'akita', '...']
+    box100Refrigerated: 300
+    box100Frozen: 500
+    hasFreeShipping: true
+    freeShippingRates: 3000
+updateShippingRate:
+  type: object
+  properties:
+    name:
+      type: string
+      description: 配送料金設定名
+    price:
+      type: integer
+      format: int64
+      description: 配送料金(100万未満)
+    prefectures:
+      type: array
+      description: 対象都道府県コード一覧
+      items:
+        type: string
+        description: 都道府県コード
+  required:
+  - name
+  - price
+  - prefectures
+updateShippingRequest:
+  type: object
+  properties:
+    name:
+      type: string
+      description: 配送設定名(64文字まで)
+    box60Rates:
+      type: array
+      description: 箱サイズ60の通常配送料一覧(すべての都道府県の設定が必須)
+      items:
+        $ref: '#/createShippingRate'
+    box60Refrigerated:
+      type: integer
+      format: int64
+      description: 箱サイズ60の冷蔵便追加配送料(100万未満)
+    box60Frozen:
+      type: integer
+      format: int64
+      description: 箱サイズ60の冷凍便追加配送料(100万未満)
+    box80Rates:
+      type: array
+      description: 箱サイズ80の通常配送料一覧(すべての都道府県の設定が必須)
+      items:
+        $ref: '#/createShippingRate'
+    box80Refrigerated:
+      type: integer
+      format: int64
+      description: 箱サイズ80の冷蔵便追加配送料(100万未満)
+    box80Frozen:
+      type: integer
+      format: int64
+      description: 箱サイズ80の冷凍便追加配送料(100万未満)
+    box100Rates:
+      type: array
+      description: 箱サイズ100の通常配送料一覧(すべての都道府県の設定が必須)
+      items:
+        $ref: '#/createShippingRate'
+    box100Refrigerated:
+      type: integer
+      format: int64
+      description: 箱サイズ100の冷蔵便追加配送料(100万未満)
+    box100Frozen:
+      type: integer
+      format: int64
+      description: 箱サイズ100の冷凍便追加配送料(100万未満)
+    hasFreeShipping:
+      type: boolean
+      description: 送料無料オプションの有無
+    freeShippingRates:
+      type: integer
+      format: int64
+      description: 送料無料になる金額(100万未満)
+  required:
+  - name
+  - box60Rates
+  - box60Refrigerated
+  - box60Frozen
+  - box80Rates
+  - box80Refrigerated
+  - box80Frozen
+  - box100Rates
+  - box100Refrigerated
+  - box100Frozen
+  - hasFreeShipping
+  - freeShippingRates
+  example:
+    name: 'デフォルト配送設定'
+    box60Rates:
+    - number: 1
+      name: '離島'
+      price: 2000
+      prefectures: ['hokkaido', 'okinawa']
+    - number: 2
+      name: 'その他'
+      price: 1200
+      prefectures: ['aomori', 'iwate', 'akita', '...']
+    box60Refrigerated: 300
+    box60Frozen: 500
+    box80Rates:
+    - number: 1
+      name: '離島'
+      price: 2000
+      prefectures: ['hokkaido', 'okinawa']
+    - number: 2
+      name: 'その他'
+      price: 1200
+      prefectures: ['aomori', 'iwate', 'akita', '...']
+    box80Refrigerated: 300
+    box80Frozen: 500
+    box100Rates:
+    - number: 1
+      name: '離島'
+      price: 2000
+      prefectures: ['hokkaido', 'okinawa']
+    - number: 2
+      name: 'その他'
+      price: 1200
+      prefectures: ['aomori', 'iwate', 'akita', '...']
+    box100Refrigerated: 300
+    box100Frozen: 500
+    hasFreeShipping: true
+    freeShippingRates: 3000

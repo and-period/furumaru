@@ -36,6 +36,21 @@ func (m *MockCategory) EXPECT() *MockCategoryMockRecorder {
 	return m.recorder
 }
 
+// Count mocks base method.
+func (m *MockCategory) Count(ctx context.Context, params *database.ListCategoriesParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockCategoryMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockCategory)(nil).Count), ctx, params)
+}
+
 // Create mocks base method.
 func (m *MockCategory) Create(ctx context.Context, category *entity.Category) error {
 	m.ctrl.T.Helper()
@@ -139,6 +154,21 @@ func NewMockProduct(ctrl *gomock.Controller) *MockProduct {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockProduct) EXPECT() *MockProductMockRecorder {
 	return m.recorder
+}
+
+// Count mocks base method.
+func (m *MockProduct) Count(ctx context.Context, params *database.ListProductsParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockProductMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockProduct)(nil).Count), ctx, params)
 }
 
 // Create mocks base method.
@@ -246,6 +276,21 @@ func (m *MockProductType) EXPECT() *MockProductTypeMockRecorder {
 	return m.recorder
 }
 
+// Count mocks base method.
+func (m *MockProductType) Count(ctx context.Context, params *database.ListProductTypesParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockProductTypeMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockProductType)(nil).Count), ctx, params)
+}
+
 // Create mocks base method.
 func (m *MockProductType) Create(ctx context.Context, productType *entity.ProductType) error {
 	m.ctrl.T.Helper()
@@ -326,4 +371,124 @@ func (m *MockProductType) Update(ctx context.Context, productTypeID, name string
 func (mr *MockProductTypeMockRecorder) Update(ctx, productTypeID, name interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockProductType)(nil).Update), ctx, productTypeID, name)
+}
+
+// MockShipping is a mock of Shipping interface.
+type MockShipping struct {
+	ctrl     *gomock.Controller
+	recorder *MockShippingMockRecorder
+}
+
+// MockShippingMockRecorder is the mock recorder for MockShipping.
+type MockShippingMockRecorder struct {
+	mock *MockShipping
+}
+
+// NewMockShipping creates a new mock instance.
+func NewMockShipping(ctrl *gomock.Controller) *MockShipping {
+	mock := &MockShipping{ctrl: ctrl}
+	mock.recorder = &MockShippingMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockShipping) EXPECT() *MockShippingMockRecorder {
+	return m.recorder
+}
+
+// Count mocks base method.
+func (m *MockShipping) Count(ctx context.Context, params *database.ListShippingsParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockShippingMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockShipping)(nil).Count), ctx, params)
+}
+
+// Create mocks base method.
+func (m *MockShipping) Create(ctx context.Context, shipping *entity.Shipping) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, shipping)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockShippingMockRecorder) Create(ctx, shipping interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockShipping)(nil).Create), ctx, shipping)
+}
+
+// Delete mocks base method.
+func (m *MockShipping) Delete(ctx context.Context, shippingID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", ctx, shippingID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockShippingMockRecorder) Delete(ctx, shippingID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockShipping)(nil).Delete), ctx, shippingID)
+}
+
+// Get mocks base method.
+func (m *MockShipping) Get(ctx context.Context, shoppingID string, fields ...string) (*entity.Shipping, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, shoppingID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.Shipping)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockShippingMockRecorder) Get(ctx, shoppingID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, shoppingID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockShipping)(nil).Get), varargs...)
+}
+
+// List mocks base method.
+func (m *MockShipping) List(ctx context.Context, params *database.ListShippingsParams, fields ...string) (entity.Shippings, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, params}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "List", varargs...)
+	ret0, _ := ret[0].(entity.Shippings)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockShippingMockRecorder) List(ctx, params interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, params}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockShipping)(nil).List), varargs...)
+}
+
+// Update mocks base method.
+func (m *MockShipping) Update(ctx context.Context, shippingID string, params *database.UpdateShippingParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", ctx, shippingID, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockShippingMockRecorder) Update(ctx, shippingID, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockShipping)(nil).Update), ctx, shippingID, params)
 }

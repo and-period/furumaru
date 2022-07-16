@@ -3,6 +3,9 @@ p, auth, /v1/auth/*, (GET)|(POST)|(PATCH), allow
 p, administrator_list, /v1/administrators, GET, allow
 p, administrator_get, /v1/administrators/*, GET, allow
 p, administrator_create, /v1/administrators, POST, allow
+p, coordinator_list, /v1/coordinators, GET, allow
+p, coordinator_get, /v1/coordinators/*, GET, allow
+p, coordinator_create, /v1/coordinators, POST, allow
 p, coordinator_uploader, /v1/upload/coordinators/*, POST, allow
 p, producer_list, /v1/producers, GET, allow
 p, producer_get, /v1/producers/*, GET, allow
@@ -16,6 +19,11 @@ p, product_type_list, /v1/categories/*/product-types, GET, allow
 p, product_type_create, /v1/categories/*/product-types, POST, allow
 p, product_type_update, /v1/categories/*/product-types/*, PATCH, allow
 p, product_type_delete, /v1/categories/*/product-types/*, DELETE, allow
+p, shipping_list, /v1/shippings, GET, allow
+p, shipping_get, /v1/shippings/*, GET, allow
+p, shipping_create, /v1/shippings, POST, allow
+p, shipping_update, /v1/shippings/*, PATCH, allow
+p, shipping_delete, /v1/shippings/*, DELETE, allow
 p, product_list, /v1/products, GET, allow
 p, product_get, /v1/products/*, GET, allow
 p, product_create, /v1/products, POST, allow
@@ -28,6 +36,9 @@ g, administrator, auth
 g, administrator, administrator_list
 g, administrator, administrator_get
 g, administrator, administrator_create
+g, administrator, coordinator_list
+g, administrator, coordinator_get
+g, administrator, coordinator_create
 g, administrator, coordinator_uploader
 g, administrator, producer_list
 g, administrator, producer_get
@@ -41,6 +52,11 @@ g, administrator, product_type_list
 g, administrator, product_type_create
 g, administrator, product_type_update
 g, administrator, product_type_delete
+g, administrator, shipping_list
+g, administrator, shipping_get
+g, administrator, shipping_create
+g, administrator, shipping_update
+g, administrator, shipping_delete
 g, administrator, product_list
 g, administrator, product_get
 g, administrator, contact_list
@@ -48,6 +64,7 @@ g, administrator, contact_get
 g, administrator, contact_update
 
 g, coordinator, auth
+g, coordinator, coordinator_get
 g, coordinator, coordinator_uploader
 g, coordinator, producer_list
 g, coordinator, producer_get
@@ -55,6 +72,8 @@ g, coordinator, producer_create
 g, coordinator, producer_uploader
 g, coordinator, category_list
 g, coordinator, product_type_list
+g, coordinator, shipping_list
+g, coordinator, shipping_get
 g, coordinator, product_list
 g, coordinator, product_get
 g, coordinator, product_create
@@ -67,6 +86,8 @@ g, producer, producer_get
 g, producer, producer_uploader
 g, producer, category_list
 g, producer, product_type_list
+g, producer, shipping_list
+g, producer, shipping_get
 g, producer, product_list
 g, producer, product_get
 g, producer, contact_list

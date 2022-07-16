@@ -25,6 +25,9 @@ tags:
   description: お問い合わせ関連
 - name: Notification
   description: お知らせ関連
+- name: Shipping
+  description: 配送設定関連
+
 paths:
   # Auth
   /v1/auth:
@@ -42,6 +45,11 @@ paths:
     $ref: './paths/v1/administrators/index.yaml'
   /v1/administrators/{adminId}:
     $ref: './paths/v1/administrators/_adminId/index.yaml'
+  # Coordinator
+  /v1/coordinators:
+    $ref: './paths/v1/coordinators/index.yaml'
+  /v1/coordinators/{coordinatorId}:
+    $ref: './paths/v1/coordinators/_coordinatorId/index.yaml'
   # Producer
   /v1/producers:
     $ref: './paths/v1/producers/index.yaml'
@@ -71,6 +79,11 @@ paths:
   # Notification
   /v1/notifications:
     $ref: './paths/v1/notifications/index.yaml'
+  # Shipping
+  /v1/shippings:
+    $ref: './paths/v1/shippings/index.yaml'
+  /v1/shippings/{shippingId}:
+    $ref: './paths/v1/shippings/_shippingId/index.yaml'
   # Upload
   /v1/upload/coordinators/header:
     $ref: './paths/v1/upload/coordinators/header.yaml'
@@ -87,6 +100,8 @@ components:
       scheme: bearer
   schemas:
     # Common
+    prefecture:
+      $ref: './components/schemas/codes.yaml#/prefecture'
     errorResponse:
       $ref: './components/schemas/common.yaml#/errorResponse'
     # Request
@@ -102,6 +117,8 @@ components:
       $ref: './components/schemas/v1/auth.request.yaml#/updateAuthPasswordRequest'
     v1CreateAdministratorRequest:
       $ref: './components/schemas/v1/administrator.request.yaml#/createAdministratorRequest'
+    v1CreateCoordinatorRequest:
+      $ref: './components/schemas/v1/coordinator.request.yaml#/createCoordinatorRequest'
     v1CreateProducerRequest:
       $ref: './components/schemas/v1/producer.request.yaml#/createProducerRequest'
     v1CreateCategoryRequest:
@@ -120,6 +137,10 @@ components:
       $ref: './components/schemas/v1/contact.request.yaml#/updateContactRequest'
     v1CreateNotificationRequest:
       $ref: './components/schemas/v1/notification.request.yaml#/createNotificationRequest'
+    v1CreateShippingRequest:
+      $ref: './components/schemas/v1/shipping.request.yaml#/createShippingRequest'
+    v1UpdateShippingRequest:
+      $ref: './components/schemas/v1/shipping.request.yaml#/updateShippingRequest'
     v1UploadCoordinatorThumbnailRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadCoordinatorThumbnailRequest'
     v1UploadCoordinatorHeaderRequest:
@@ -135,6 +156,10 @@ components:
       $ref: './components/schemas/v1/administrator.response.yaml#/administratorResponse'
     v1AdministratorsResponse:
       $ref: './components/schemas/v1/administrator.response.yaml#/administratorsResponse'
+    v1CoordinatorResponse:
+      $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorResponse'
+    v1CoordinatorsResponse:
+      $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorsResponse'
     v1ProducerResponse:
       $ref: './components/schemas/v1/producer.response.yaml#/producerResponse'
     v1ProducersResponse:
@@ -157,5 +182,9 @@ components:
       $ref: './components/schemas/v1/contact.response.yaml#/contactsResponse'
     v1NotificationResponse:
       $ref: './components/schemas/v1/notification.response.yaml#/notificationResponse'
+    v1ShippingResponse:
+      $ref: './components/schemas/v1/shipping.response.yaml#/shippingResponse'
+    v1ShippingsResponse:
+      $ref: './components/schemas/v1/shipping.response.yaml#/shippingsResponse'
     v1UploadImageResponse:
       $ref: './components/schemas/v1/upload.response.yaml#/uploadImageResponse'

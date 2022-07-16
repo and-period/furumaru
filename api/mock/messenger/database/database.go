@@ -36,6 +36,21 @@ func (m *MockContact) EXPECT() *MockContactMockRecorder {
 	return m.recorder
 }
 
+// Count mocks base method.
+func (m *MockContact) Count(ctx context.Context, params *database.ListContactsParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockContactMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockContact)(nil).Count), ctx, params)
+}
+
 // Create mocks base method.
 func (m *MockContact) Create(ctx context.Context, contact *entity.Contact) error {
 	m.ctrl.T.Helper()
@@ -153,4 +168,118 @@ func (m *MockNotification) Create(ctx context.Context, notification *entity.Noti
 func (mr *MockNotificationMockRecorder) Create(ctx, notification interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockNotification)(nil).Create), ctx, notification)
+}
+
+// MockReceivedQueue is a mock of ReceivedQueue interface.
+type MockReceivedQueue struct {
+	ctrl     *gomock.Controller
+	recorder *MockReceivedQueueMockRecorder
+}
+
+// MockReceivedQueueMockRecorder is the mock recorder for MockReceivedQueue.
+type MockReceivedQueueMockRecorder struct {
+	mock *MockReceivedQueue
+}
+
+// NewMockReceivedQueue creates a new mock instance.
+func NewMockReceivedQueue(ctrl *gomock.Controller) *MockReceivedQueue {
+	mock := &MockReceivedQueue{ctrl: ctrl}
+	mock.recorder = &MockReceivedQueueMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockReceivedQueue) EXPECT() *MockReceivedQueueMockRecorder {
+	return m.recorder
+}
+
+// Create mocks base method.
+func (m *MockReceivedQueue) Create(ctx context.Context, queue *entity.ReceivedQueue) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, queue)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockReceivedQueueMockRecorder) Create(ctx, queue interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockReceivedQueue)(nil).Create), ctx, queue)
+}
+
+// Get mocks base method.
+func (m *MockReceivedQueue) Get(ctx context.Context, queueID string, fields ...string) (*entity.ReceivedQueue, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, queueID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.ReceivedQueue)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockReceivedQueueMockRecorder) Get(ctx, queueID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, queueID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockReceivedQueue)(nil).Get), varargs...)
+}
+
+// UpdateDone mocks base method.
+func (m *MockReceivedQueue) UpdateDone(ctx context.Context, queueID string, done bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateDone", ctx, queueID, done)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateDone indicates an expected call of UpdateDone.
+func (mr *MockReceivedQueueMockRecorder) UpdateDone(ctx, queueID, done interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateDone", reflect.TypeOf((*MockReceivedQueue)(nil).UpdateDone), ctx, queueID, done)
+}
+
+// MockReportTemplate is a mock of ReportTemplate interface.
+type MockReportTemplate struct {
+	ctrl     *gomock.Controller
+	recorder *MockReportTemplateMockRecorder
+}
+
+// MockReportTemplateMockRecorder is the mock recorder for MockReportTemplate.
+type MockReportTemplateMockRecorder struct {
+	mock *MockReportTemplate
+}
+
+// NewMockReportTemplate creates a new mock instance.
+func NewMockReportTemplate(ctrl *gomock.Controller) *MockReportTemplate {
+	mock := &MockReportTemplate{ctrl: ctrl}
+	mock.recorder = &MockReportTemplateMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockReportTemplate) EXPECT() *MockReportTemplateMockRecorder {
+	return m.recorder
+}
+
+// Get mocks base method.
+func (m *MockReportTemplate) Get(ctx context.Context, reportID string, fields ...string) (*entity.ReportTemplate, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, reportID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.ReportTemplate)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockReportTemplateMockRecorder) Get(ctx, reportID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, reportID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockReportTemplate)(nil).Get), varargs...)
 }

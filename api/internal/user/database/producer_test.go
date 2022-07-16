@@ -87,6 +87,69 @@ func TestProducer_List(t *testing.T) {
 	}
 }
 
+func TestProducer_Count(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, producerTable)
+	producers := make(entity.Producers, 2)
+	producers[0] = testProducer("admin-id01", "&.農園", "test-admin01@and-period.jp", now())
+	producers[1] = testProducer("admin-id02", "&.水産", "test-admin02@and-period.jp", now())
+	err = m.db.DB.Create(&producers).Error
+	require.NoError(t, err)
+
+	type args struct {
+		params *ListProducersParams
+	}
+	type want struct {
+		total  int64
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListProducersParams{},
+			},
+			want: want{
+				total:  2,
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &producer{db: m.db, now: now}
+			actual, err := db.Count(ctx, tt.args.params)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.total, actual)
+		})
+	}
+}
+
 func TestProducer_MultiGet(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

@@ -76,6 +76,26 @@ func (mr *MockAdminAuthMockRecorder) GetByCognitoID(ctx, cognitoID interface{}, 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByCognitoID", reflect.TypeOf((*MockAdminAuth)(nil).GetByCognitoID), varargs...)
 }
 
+// MultiGet mocks base method.
+func (m *MockAdminAuth) MultiGet(ctx context.Context, adminIDs []string, fields ...string) (entity.AdminAuths, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, adminIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGet", varargs...)
+	ret0, _ := ret[0].(entity.AdminAuths)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGet indicates an expected call of MultiGet.
+func (mr *MockAdminAuthMockRecorder) MultiGet(ctx, adminIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, adminIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockAdminAuth)(nil).MultiGet), varargs...)
+}
+
 // MockAdministrator is a mock of Administrator interface.
 type MockAdministrator struct {
 	ctrl     *gomock.Controller
@@ -97,6 +117,21 @@ func NewMockAdministrator(ctrl *gomock.Controller) *MockAdministrator {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockAdministrator) EXPECT() *MockAdministratorMockRecorder {
 	return m.recorder
+}
+
+// Count mocks base method.
+func (m *MockAdministrator) Count(ctx context.Context, params *database.ListAdministratorsParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockAdministratorMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockAdministrator)(nil).Count), ctx, params)
 }
 
 // Create mocks base method.
@@ -153,6 +188,26 @@ func (mr *MockAdministratorMockRecorder) List(ctx, params interface{}, fields ..
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockAdministrator)(nil).List), varargs...)
 }
 
+// MultiGet mocks base method.
+func (m *MockAdministrator) MultiGet(ctx context.Context, administratorIDs []string, fields ...string) (entity.Administrators, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, administratorIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGet", varargs...)
+	ret0, _ := ret[0].(entity.Administrators)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGet indicates an expected call of MultiGet.
+func (mr *MockAdministratorMockRecorder) MultiGet(ctx, administratorIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, administratorIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockAdministrator)(nil).MultiGet), varargs...)
+}
+
 // UpdateEmail mocks base method.
 func (m *MockAdministrator) UpdateEmail(ctx context.Context, administratorID, email string) error {
 	m.ctrl.T.Helper()
@@ -188,6 +243,21 @@ func NewMockCoordinator(ctrl *gomock.Controller) *MockCoordinator {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockCoordinator) EXPECT() *MockCoordinatorMockRecorder {
 	return m.recorder
+}
+
+// Count mocks base method.
+func (m *MockCoordinator) Count(ctx context.Context, params *database.ListCoordinatorsParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockCoordinatorMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockCoordinator)(nil).Count), ctx, params)
 }
 
 // Create mocks base method.
@@ -244,6 +314,26 @@ func (mr *MockCoordinatorMockRecorder) List(ctx, params interface{}, fields ...i
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockCoordinator)(nil).List), varargs...)
 }
 
+// MultiGet mocks base method.
+func (m *MockCoordinator) MultiGet(ctx context.Context, coordinatorIDs []string, fields ...string) (entity.Coordinators, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, coordinatorIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGet", varargs...)
+	ret0, _ := ret[0].(entity.Coordinators)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGet indicates an expected call of MultiGet.
+func (mr *MockCoordinatorMockRecorder) MultiGet(ctx, coordinatorIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, coordinatorIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockCoordinator)(nil).MultiGet), varargs...)
+}
+
 // UpdateEmail mocks base method.
 func (m *MockCoordinator) UpdateEmail(ctx context.Context, coordinatorID, email string) error {
 	m.ctrl.T.Helper()
@@ -279,6 +369,21 @@ func NewMockProducer(ctrl *gomock.Controller) *MockProducer {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockProducer) EXPECT() *MockProducerMockRecorder {
 	return m.recorder
+}
+
+// Count mocks base method.
+func (m *MockProducer) Count(ctx context.Context, params *database.ListProducersParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockProducerMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockProducer)(nil).Count), ctx, params)
 }
 
 // Create mocks base method.

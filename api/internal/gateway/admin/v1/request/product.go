@@ -22,8 +22,8 @@ type CreateProductRequest struct {
 }
 
 type CreateProductMedia struct {
-	URL         string `json:"url"`         // メディアURL
-	IsThumbnail bool   `json:"isThumbnail"` // サムネイルとして使用
+	URL         string `json:"url,omitempty"`         // メディアURL
+	IsThumbnail bool   `json:"isThumbnail,omitempty"` // サムネイルとして使用
 }
 
 type UpdateProductRequest struct {
@@ -48,6 +48,6 @@ type UpdateProductRequest struct {
 }
 
 type UpdateProductMedia struct {
-	URL         string `json:"url"`         // メディアURL
-	IsThumbnail bool   `json:"isThumbnail"` // サムネイルとして使用
+	URL         string `json:"url,omitempty"`         // メディアURL
+	IsThumbnail bool   `json:"isThumbnail,omitempty"` // サムネイルとして使用
 }

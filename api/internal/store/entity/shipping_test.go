@@ -12,10 +12,10 @@ import (
 func TestShipping(t *testing.T) {
 	t.Parallel()
 	shikoku := []int64{
-		codes.PrefectureValues["徳島県"],
-		codes.PrefectureValues["香川県"],
-		codes.PrefectureValues["愛媛県"],
-		codes.PrefectureValues["高知県"],
+		codes.PrefectureValues["tokushima"],
+		codes.PrefectureValues["kagawa"],
+		codes.PrefectureValues["ehime"],
+		codes.PrefectureValues["kochi"],
 	}
 	set := set.New(len(shikoku))
 	set.AddInt64s(shikoku...)
@@ -27,17 +27,17 @@ func TestShipping(t *testing.T) {
 		others = append(others, val)
 	}
 	rates := ShippingRates{
-		{Number: 1, Name: "四国(東部)", Price: 250, Prefectures: shikoku},
-		{Number: 2, Name: "四国(西部)", Price: 500, Prefectures: others},
+		{Number: 1, Name: "四国", Price: 250, Prefectures: shikoku},
+		{Number: 2, Name: "その他", Price: 500, Prefectures: others},
 	}
 	tests := []struct {
 		name   string
-		params *NewShoppingParams
+		params *NewShippingParams
 		expect *Shipping
 	}{
 		{
 			name: "success",
-			params: &NewShoppingParams{
+			params: &NewShippingParams{
 				Name:               "デフォルト配送設定",
 				Box60Rates:         rates,
 				Box60Refrigerated:  500,
@@ -81,12 +81,12 @@ func TestShipping(t *testing.T) {
 func TestShipping_Fill(t *testing.T) {
 	t.Parallel()
 	pref1 := []int64{
-		codes.PrefectureValues["徳島県"],
-		codes.PrefectureValues["香川県"],
+		codes.PrefectureValues["tokushima"],
+		codes.PrefectureValues["kagawa"],
 	}
 	pref2 := []int64{
-		codes.PrefectureValues["愛媛県"],
-		codes.PrefectureValues["高知県"],
+		codes.PrefectureValues["ehime"],
+		codes.PrefectureValues["kochi"],
 	}
 	rates := ShippingRates{
 		{Number: 1, Name: "四国(東部)", Price: 250, Prefectures: pref1},
@@ -269,12 +269,12 @@ func TestShipping_Fill(t *testing.T) {
 func TestShipping_FillJSON(t *testing.T) {
 	t.Parallel()
 	pref1 := []int64{
-		codes.PrefectureValues["徳島県"],
-		codes.PrefectureValues["香川県"],
+		codes.PrefectureValues["tokushima"],
+		codes.PrefectureValues["kagawa"],
 	}
 	pref2 := []int64{
-		codes.PrefectureValues["愛媛県"],
-		codes.PrefectureValues["高知県"],
+		codes.PrefectureValues["ehime"],
+		codes.PrefectureValues["kochi"],
 	}
 	rates := ShippingRates{
 		{Number: 1, Name: "四国(東部)", Price: 250, Prefectures: pref1},
@@ -360,10 +360,10 @@ func TestShippingRate(t *testing.T) {
 				name:  "四国",
 				price: 2000,
 				prefs: []int64{
-					codes.PrefectureValues["徳島県"],
-					codes.PrefectureValues["香川県"],
-					codes.PrefectureValues["愛媛県"],
-					codes.PrefectureValues["高知県"],
+					codes.PrefectureValues["tokushima"],
+					codes.PrefectureValues["kagawa"],
+					codes.PrefectureValues["ehime"],
+					codes.PrefectureValues["kochi"],
 				},
 			},
 			expect: &ShippingRate{
@@ -371,10 +371,10 @@ func TestShippingRate(t *testing.T) {
 				Name:   "四国",
 				Price:  2000,
 				Prefectures: []int64{
-					codes.PrefectureValues["徳島県"],
-					codes.PrefectureValues["香川県"],
-					codes.PrefectureValues["愛媛県"],
-					codes.PrefectureValues["高知県"],
+					codes.PrefectureValues["tokushima"],
+					codes.PrefectureValues["kagawa"],
+					codes.PrefectureValues["ehime"],
+					codes.PrefectureValues["kochi"],
 				},
 			},
 		},
@@ -392,10 +392,10 @@ func TestShippingRate(t *testing.T) {
 func TestShippingRates(t *testing.T) {
 	t.Parallel()
 	shikoku := []int64{
-		codes.PrefectureValues["徳島県"],
-		codes.PrefectureValues["香川県"],
-		codes.PrefectureValues["愛媛県"],
-		codes.PrefectureValues["高知県"],
+		codes.PrefectureValues["tokushima"],
+		codes.PrefectureValues["kagawa"],
+		codes.PrefectureValues["ehime"],
+		codes.PrefectureValues["kochi"],
 	}
 	set := set.New(len(shikoku))
 	set.AddInt64s(shikoku...)
@@ -472,12 +472,12 @@ func TestShippingRates(t *testing.T) {
 func TestShippingRates_Marshal(t *testing.T) {
 	t.Parallel()
 	pref1 := []int64{
-		codes.PrefectureValues["徳島県"],
-		codes.PrefectureValues["香川県"],
+		codes.PrefectureValues["tokushima"],
+		codes.PrefectureValues["kagawa"],
 	}
 	pref2 := []int64{
-		codes.PrefectureValues["愛媛県"],
-		codes.PrefectureValues["高知県"],
+		codes.PrefectureValues["ehime"],
+		codes.PrefectureValues["kochi"],
 	}
 	tests := []struct {
 		name   string

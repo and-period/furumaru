@@ -1,0 +1,257 @@
+coordinatorResponse:
+  type: object
+  properties:
+    id:
+      type: string
+      description: 仲介者ID
+    lastname:
+      type: string
+      description: 姓
+    firstname:
+      type: string
+      description: 名
+    lastnameKana:
+      type: string
+      description: 姓(かな)
+    firstnameKana:
+      type: string
+      description: 名(かな)
+    companyName:
+      type: string
+      description: 会社名
+    storeName:
+      type: string
+      description: 店舗名
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+    headerUrl:
+      type: string
+      description: ヘッダー画像URL
+    twitterAccount:
+      type: string
+      description: Twitterアカウント
+    instagramAccount:
+      type: string
+      description: Instagramアカウント
+    facebookAccount:
+      type: string
+      description: Facebookアカウント
+    email:
+      type: string
+      description: メールアドレス
+    phoneNumber:
+      type: string
+      description: 電話番号 (国際番号 + 電話番号)
+    postalCode:
+      type: string
+      description: 郵便番号
+    prefecture:
+      type: string
+      description: 都道府県
+    city:
+      type: string
+      description: 市区町村
+    addressLine1:
+      type: string
+      description: 町名・番地
+    addressLine2:
+      type: string
+      description: ビル名・号室など
+    createdAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
+    updatedAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
+  required:
+  - id
+  - lastname
+  - firstname
+  - lastnameKana
+  - firstnameKana
+  - companyName
+  - storeName
+  - thumbnailUrl
+  - headerUrl
+  - twitterAccount
+  - instagramAccount
+  - facebookAccount
+  - email
+  - phoneNumber
+  - postalCode
+  - prefecture
+  - city
+  - addressLine1
+  - addressLine2
+  - createdAt
+  - updatedAt
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    lastname: '&.'
+    firstname: '管理者'
+    lastnameKana: 'あんどどっと'
+    firstnameKana: 'かんりしゃ'
+    storeName: '&.農園'
+    thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+    headerUrl: 'https://and-period.jp/header.png'
+    twitterAccount: 'twitter-id'
+    instagramAccount: 'instagram-id'
+    facebookAccount: 'facebook-id'
+    email: 'test-user@and-period.jp'
+    phoneNumber: '+819012345678'
+    postalCode: '1000014'
+    prefecture: '東京都'
+    city: '千代田区'
+    addressLine1: '永田町1-7-1'
+    addressLine2: ''
+    createdAt: 1640962800
+    updatedAt: 1640962800
+coordinatorsResponse:
+  type: object
+  properties:
+    coordinators:
+      type: array
+      description: 仲介者一覧
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            description: 仲介者ID
+          lastname:
+            type: string
+            description: 姓
+          firstname:
+            type: string
+            description: 名
+          lastnameKana:
+            type: string
+            description: 姓(かな)
+          firstnameKana:
+            type: string
+            description: 名(かな)
+          companyName:
+            type: string
+            description: 会社名
+          storeName:
+            type: string
+            description: 店舗名
+          thumbnailUrl:
+            type: string
+            description: サムネイルURL
+          headerUrl:
+            type: string
+            description: ヘッダー画像URL
+          twitterAccount:
+            type: string
+            description: Twitterアカウント
+          instagramAccount:
+            type: string
+            description: Instagramアカウント
+          facebookAccount:
+            type: string
+            description: Facebookアカウント
+          email:
+            type: string
+            description: メールアドレス
+          phoneNumber:
+            type: string
+            description: 電話番号 (国際番号 + 電話番号)
+          postalCode:
+            type: string
+            description: 郵便番号
+          prefecture:
+            type: string
+            description: 都道府県
+          city:
+            type: string
+            description: 市区町村
+          addressLine1:
+            type: string
+            description: 町名・番地
+          addressLine2:
+            type: string
+            description: ビル名・号室など
+          createdAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+          updatedAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+        required:
+        - id
+        - lastname
+        - firstname
+        - lastnameKana
+        - firstnameKana
+        - companyName
+        - storeName
+        - thumbnailUrl
+        - headerUrl
+        - twitterAccount
+        - instagramAccount
+        - facebookAccount
+        - email
+        - phoneNumber
+        - postalCode
+        - prefecture
+        - city
+        - addressLine1
+        - addressLine2
+        - createdAt
+        - updatedAt
+    total:
+      type: integer
+      format: int64
+      description: 合計数
+  required:
+  - coordinators
+  - total
+  example:
+    coordinators:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      lastname: '&.'
+      firstname: '管理者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'かんりしゃ'
+      storeName: '&.農園'
+      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+      headerUrl: 'https://and-period.jp/header.png'
+      twitterAccount: 'twitter-id'
+      instagramAccount: 'instagram-id'
+      facebookAccount: 'facebook-id'
+      email: 'test-user@and-period.jp'
+      phoneNumber: '+819012345678'
+      postalCode: '1000014'
+      prefecture: '東京都'
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      lastname: '&.'
+      firstname: '管理者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'かんりしゃ'
+      storeName: '&.農園'
+      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+      headerUrl: 'https://and-period.jp/header.png'
+      twitterAccount: 'twitter-id'
+      instagramAccount: 'instagram-id'
+      facebookAccount: 'facebook-id'
+      email: 'test-user@and-period.jp'
+      phoneNumber: '+819012345678'
+      postalCode: '1000014'
+      prefecture: '東京都'
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    total: 2

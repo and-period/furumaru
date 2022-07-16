@@ -18,6 +18,7 @@ import (
 	"time"
 
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
+	mock_messenger "github.com/and-period/furumaru/api/mock/messenger"
 	mock_storage "github.com/and-period/furumaru/api/mock/pkg/storage"
 	mock_user "github.com/and-period/furumaru/api/mock/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -36,8 +37,9 @@ var (
 )
 
 type mocks struct {
-	storage *mock_storage.MockBucket
-	user    *mock_user.MockService
+	storage   *mock_storage.MockBucket
+	user      *mock_user.MockService
+	messenger *mock_messenger.MockService
 }
 
 type testResponse struct {
@@ -61,8 +63,9 @@ func withNow(now time.Time) testOption {
 
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
-		storage: mock_storage.NewMockBucket(ctrl),
-		user:    mock_user.NewMockService(ctrl),
+		storage:   mock_storage.NewMockBucket(ctrl),
+		user:      mock_user.NewMockService(ctrl),
+		messenger: mock_messenger.NewMockService(ctrl),
 	}
 }
 
@@ -74,6 +77,7 @@ func newHandler(mocks *mocks, opts *testOptions) Handler {
 		sharedGroup: &singleflight.Group{},
 		storage:     mocks.storage,
 		user:        mocks.user,
+		messenger:   mocks.messenger,
 	}
 }
 

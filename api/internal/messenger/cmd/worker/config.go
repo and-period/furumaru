@@ -25,8 +25,10 @@ type config struct {
 	SendGridSecretName   string `envconfig:"SENDGRID_SECRET_NAME" default:""`
 	MailFromName         string `envconfig:"MAIL_FROM_NAME" default:""`
 	MailFromAddress      string `envconfig:"MAIL_FROM_ADDRESS" default:""`
-	AminWebURL           string `envconfig:"ADMIN_WEB_URL" default:""`
-	UserWebURL           string `envconfig:"USER_WEB_URL" default:""`
+	LINEChannelToken     string `envconfig:"LINE_CHANNEL_TOKEN" default:""`
+	LINEChannelSecret    string `envconfig:"LINE_CHANNEL_SECRET" default:""`
+	LINERoomID           string `envconfig:"LINE_ROOM_ID" default:""`
+	LINESecretName       string `envconfig:"LINE_SECRET_NAME" default:""`
 }
 
 func newConfig() (*config, error) {

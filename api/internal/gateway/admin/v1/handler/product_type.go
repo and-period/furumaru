@@ -42,7 +42,7 @@ func (h *handler) ListProductTypes(ctx *gin.Context) {
 		Limit:      limit,
 		Offset:     offset,
 	}
-	stypes, err := h.store.ListProductTypes(ctx, typesIn)
+	stypes, total, err := h.store.ListProductTypes(ctx, typesIn)
 	if err != nil {
 		httpError(ctx, err)
 		return
@@ -61,6 +61,7 @@ func (h *handler) ListProductTypes(ctx *gin.Context) {
 	res := &response.ProductTypesResponse{
 		ProductTypes: productTypes.Response(),
 		Categories:   service.NewCategories(categories).Response(),
+		Total:        total,
 	}
 	ctx.JSON(http.StatusOK, res)
 }

@@ -98,8 +98,13 @@ administratorsResponse:
         - phoneNumber
         - createdAt
         - updatedAt
+    total:
+      type: integer
+      format: int64
+      description: 合計数
   required:
   - administrators
+  - total
   example:
     administrators:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -120,3 +125,4 @@ administratorsResponse:
       phoneNumber: '+819012345678'
       createdAt: 1640962800
       updatedAt: 1640962800
+    total: 2

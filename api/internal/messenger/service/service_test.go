@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"net/url"
 	"sync"
 	"testing"
 	"time"
@@ -18,7 +19,11 @@ import (
 	"go.uber.org/zap"
 )
 
-var errmock = errors.New("some error")
+var (
+	errmock        = errors.New("some error")
+	adminWebURL, _ = url.Parse("htts://admin.and-period.jp")
+	userWebURL, _  = url.Parse("htts://user.and-period.jp")
+)
 
 type mocks struct {
 	db       *dbMocks
@@ -27,8 +32,10 @@ type mocks struct {
 }
 
 type dbMocks struct {
-	Notification *mock_database.MockNotification
-	Contact      *mock_database.MockContact
+	Contact        *mock_database.MockContact
+	Notification   *mock_database.MockNotification
+	ReceivedQueue  *mock_database.MockReceivedQueue
+	ReportTemplate *mock_database.MockReportTemplate
 }
 
 type testOptions struct {
@@ -49,8 +56,10 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
-		Notification: mock_database.NewMockNotification(ctrl),
-		Contact:      mock_database.NewMockContact(ctrl),
+		Contact:        mock_database.NewMockContact(ctrl),
+		Notification:   mock_database.NewMockNotification(ctrl),
+		ReceivedQueue:  mock_database.NewMockReceivedQueue(ctrl),
+		ReportTemplate: mock_database.NewMockReportTemplate(ctrl),
 	}
 }
 
@@ -61,17 +70,29 @@ func newService(mocks *mocks, opts ...testOption) *service {
 	for i := range opts {
 		opts[i](dopts)
 	}
+	adminWebURL := func() *url.URL {
+		url := *adminWebURL // copy
+		return &url
+	}
+	userWebURL := func() *url.URL {
+		url := *userWebURL // copy
+		return &url
+	}
 	return &service{
-		now:       dopts.now,
-		logger:    zap.NewNop(),
-		waitGroup: &sync.WaitGroup{},
-		validator: validator.NewValidator(),
+		now:         dopts.now,
+		logger:      zap.NewNop(),
+		waitGroup:   &sync.WaitGroup{},
+		validator:   validator.NewValidator(),
+		producer:    mocks.producer,
+		adminWebURL: adminWebURL,
+		userWebURL:  userWebURL,
 		db: &database.Database{
-			Notification: mocks.db.Notification,
-			Contact:      mocks.db.Contact,
+			Contact:        mocks.db.Contact,
+			Notification:   mocks.db.Notification,
+			ReceivedQueue:  mocks.db.ReceivedQueue,
+			ReportTemplate: mocks.db.ReportTemplate,
 		},
-		producer: mocks.producer,
-		user:     mocks.user,
+		user: mocks.user,
 	}
 }
 

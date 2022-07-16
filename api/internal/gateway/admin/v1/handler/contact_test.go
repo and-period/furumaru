@@ -45,7 +45,7 @@ func TestListContacts(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.messenger.EXPECT().ListContacts(gomock.Any(), contactsIn).Return(contacts, nil)
+				mocks.messenger.EXPECT().ListContacts(gomock.Any(), contactsIn).Return(contacts, int64(1), nil)
 			},
 			query: "",
 			expect: &testResponse{
@@ -66,6 +66,7 @@ func TestListContacts(t *testing.T) {
 							UpdatedAt:   1640962800,
 						},
 					},
+					Total: 1,
 				},
 			},
 		},
@@ -88,7 +89,7 @@ func TestListContacts(t *testing.T) {
 		{
 			name: "failed to list contacts",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.messenger.EXPECT().ListContacts(gomock.Any(), contactsIn).Return(nil, errmock)
+				mocks.messenger.EXPECT().ListContacts(gomock.Any(), contactsIn).Return(nil, int64(0), errmock)
 			},
 			query: "",
 			expect: &testResponse{

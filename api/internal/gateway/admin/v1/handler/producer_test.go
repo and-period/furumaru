@@ -66,7 +66,7 @@ func TestListProducer(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().ListProducers(gomock.Any(), in).Return(producers, nil)
+				mocks.user.EXPECT().ListProducers(gomock.Any(), in).Return(producers, int64(2), nil)
 			},
 			query: "",
 			expect: &testResponse{
@@ -108,6 +108,7 @@ func TestListProducer(t *testing.T) {
 							UpdatedAt:     1640962800,
 						},
 					},
+					Total: 2,
 				},
 			},
 		},
@@ -132,7 +133,7 @@ func TestListProducer(t *testing.T) {
 		{
 			name: "failed to get producers",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().ListProducers(gomock.Any(), in).Return(nil, errmock)
+				mocks.user.EXPECT().ListProducers(gomock.Any(), in).Return(nil, int64(0), errmock)
 			},
 			query: "",
 			expect: &testResponse{

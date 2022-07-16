@@ -38,23 +38,26 @@ func TestListContacts(t *testing.T) {
 	}
 
 	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *messenger.ListContactsInput
-		expect    entity.Contacts
-		expectErr error
+		name        string
+		setup       func(ctx context.Context, mocks *mocks)
+		input       *messenger.ListContactsInput
+		expect      entity.Contacts
+		expectTotal int64
+		expectErr   error
 	}{
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Contact.EXPECT().List(ctx, params).Return(contacts, nil)
+				mocks.db.Contact.EXPECT().List(gomock.Any(), params).Return(contacts, nil)
+				mocks.db.Contact.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &messenger.ListContactsInput{
 				Limit:  20,
 				Offset: 0,
 			},
-			expect:    contacts,
-			expectErr: nil,
+			expect:      contacts,
+			expectTotal: 1,
+			expectErr:   nil,
 		},
 		{
 			name:      "invalid argument",
@@ -66,22 +69,39 @@ func TestListContacts(t *testing.T) {
 		{
 			name: "failed to list contacts",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Contact.EXPECT().List(ctx, params).Return(nil, errmock)
+				mocks.db.Contact.EXPECT().List(gomock.Any(), params).Return(nil, errmock)
+				mocks.db.Contact.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &messenger.ListContactsInput{
 				Limit:  20,
 				Offset: 0,
 			},
-			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrUnknown,
+		},
+		{
+			name: "failed to count contacts",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Contact.EXPECT().List(gomock.Any(), params).Return(contacts, nil)
+				mocks.db.Contact.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
+			},
+			input: &messenger.ListContactsInput{
+				Limit:  20,
+				Offset: 0,
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrUnknown,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.ListContacts(ctx, tt.input)
+			actual, total, err := service.ListContacts(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.ElementsMatch(t, tt.expect, actual)
+			assert.Equal(t, tt.expectTotal, total)
 		}))
 	}
 }
@@ -153,6 +173,18 @@ func TestGetContact(t *testing.T) {
 
 func TestCreateContact(t *testing.T) {
 	t.Parallel()
+	contact := &entity.Contact{
+		ID:          "contact-id",
+		Title:       "お問い合わせ件名",
+		Content:     "お問い合わせ内容",
+		Username:    "お問い合わせ氏名",
+		Email:       "test-user@and-period.jp",
+		PhoneNumber: "+819012345678",
+		Status:      entity.ContactStatusUnknown,
+		Priority:    entity.ContactPriorityUnknown,
+		CreatedAt:   jst.Date(2022, 7, 13, 18, 30, 0, 0),
+		UpdatedAt:   jst.Date(2022, 7, 13, 18, 30, 0, 0),
+	}
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -178,6 +210,24 @@ func TestCreateContact(t *testing.T) {
 						assert.Equal(t, expect, contact)
 						return nil
 					})
+				mocks.db.Contact.EXPECT().Get(gomock.Any(), gomock.Any()).Return(contact, nil)
+				mocks.db.ReceivedQueue.EXPECT().Create(gomock.Any(), gomock.Any()).Return(nil)
+				mocks.producer.EXPECT().SendMessage(gomock.Any(), gomock.Any()).Return("", nil)
+			},
+			input: &messenger.CreateContactInput{
+				Title:       "お問い合わせ件名",
+				Content:     "お問い合わせ内容",
+				Username:    "お問い合わせ氏名",
+				Email:       "test-user@and-period.jp",
+				PhoneNumber: "+819012345678",
+			},
+			expectErr: nil,
+		},
+		{
+			name: "success without notify",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Contact.EXPECT().Create(ctx, gomock.Any()).Return(nil)
+				mocks.db.Contact.EXPECT().Get(gomock.Any(), gomock.Any()).Return(nil, errmock)
 			},
 			input: &messenger.CreateContactInput{
 				Title:       "お問い合わせ件名",

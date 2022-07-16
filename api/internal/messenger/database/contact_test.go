@@ -84,6 +84,70 @@ func TestContact_List(t *testing.T) {
 	}
 }
 
+func TestContact_Count(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, contactTable)
+	contacts := make(entity.Contacts, 3)
+	contacts[0] = testContact("contact-id01", now())
+	contacts[1] = testContact("contact-id02", now())
+	contacts[2] = testContact("contact-id03", now())
+	err = m.db.DB.Create(&contacts).Error
+	require.NoError(t, err)
+
+	type args struct {
+		params *ListContactsParams
+	}
+	type want struct {
+		total  int64
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListContactsParams{},
+			},
+			want: want{
+				total:  3,
+				hasErr: false,
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &contact{db: m.db, now: now}
+			actual, err := db.Count(ctx, tt.args.params)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.total, actual)
+		})
+	}
+}
+
 func TestContact_Get(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

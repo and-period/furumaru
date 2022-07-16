@@ -4,14 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"net/url"
 	"sync"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/messenger"
+	"github.com/and-period/furumaru/api/internal/messenger/database"
+	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/line"
 	"github.com/and-period/furumaru/api/pkg/mailer"
 	"github.com/aws/aws-lambda-go/events"
 	"go.uber.org/zap"
@@ -20,8 +21,8 @@ import (
 )
 
 var (
-	errInvalidPayloadFormat = errors.New("worker: invalid paylaod format")
-	errUnknownEventType     = errors.New("worker: unknown worker event type")
+	errUnknownUserType = errors.New("worker: unknown user type")
+	errGuestRequired   = errors.New("worker: guest is required")
 )
 
 type Worker interface {
@@ -29,11 +30,11 @@ type Worker interface {
 }
 
 type Params struct {
-	WaitGroup   *sync.WaitGroup
-	Mailer      mailer.Client
-	AdminWebURL *url.URL
-	UserWebURL  *url.URL
-	User        user.Service
+	WaitGroup *sync.WaitGroup
+	Mailer    mailer.Client
+	Line      line.Client
+	DB        *database.Database
+	User      user.Service
 }
 
 type worker struct {
@@ -41,8 +42,8 @@ type worker struct {
 	logger      *zap.Logger
 	waitGroup   *sync.WaitGroup
 	mailer      mailer.Client
-	adminWebURL func() *url.URL
-	userWebURL  func() *url.URL
+	line        line.Client
+	db          *database.Database
 	user        user.Service
 	concurrency int64
 	maxRetries  int64
@@ -83,21 +84,13 @@ func NewWorker(params *Params, opts ...Option) Worker {
 	for i := range opts {
 		opts[i](dopts)
 	}
-	adminWebURL := func() *url.URL {
-		url := *params.AdminWebURL // copy
-		return &url
-	}
-	userWebURL := func() *url.URL {
-		url := *params.UserWebURL // copy
-		return &url
-	}
 	return &worker{
 		now:         jst.Now,
 		logger:      dopts.logger,
 		waitGroup:   params.WaitGroup,
 		mailer:      params.Mailer,
-		adminWebURL: adminWebURL,
-		userWebURL:  userWebURL,
+		line:        params.Line,
+		db:          params.DB,
 		user:        params.User,
 		concurrency: dopts.concurrency,
 		maxRetries:  dopts.maxRetries,
@@ -114,12 +107,12 @@ func (w *worker) Lambda(ctx context.Context, event events.SQSEvent) error {
 		record := record
 		eg.Go(func() error {
 			defer sm.Release(1)
-			payload := &messenger.WorkerPayload{}
+			payload := &entity.WorkerPayload{}
 			if err := json.Unmarshal([]byte(record.Body), payload); err != nil {
 				w.logger.Error("Failed to unmarshall sqs event", zap.Any("event", event), zap.Error(err))
 				return nil // リトライ不要なためnilで返す
 			}
-			err := w.dispatch(ectx, record.MessageId, payload)
+			err := w.dispatch(ectx, payload)
 			if err == nil {
 				return nil
 			}
@@ -133,12 +126,33 @@ func (w *worker) Lambda(ctx context.Context, event events.SQSEvent) error {
 	return eg.Wait()
 }
 
-func (w *worker) dispatch(ctx context.Context, queueID string, payload *messenger.WorkerPayload) error {
-	w.logger.Debug("Dispatch", zap.String("queueId", queueID), zap.Any("payload", payload))
-	switch payload.EventType {
-	case messenger.EventTypeRegisterAdmin:
-		return w.registerAdmin(ctx, payload)
-	default:
-		return errUnknownEventType
+func (w *worker) dispatch(ctx context.Context, payload *entity.WorkerPayload) error {
+	w.logger.Debug("Dispatch", zap.String("queueId", payload.QueueID), zap.Any("payload", payload))
+	queue, err := w.db.ReceivedQueue.Get(ctx, payload.QueueID)
+	if err != nil {
+		return err
 	}
+	if queue.Done {
+		w.logger.Info("This queue is already done", zap.String("queueId", payload.QueueID))
+		return nil
+	}
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		// メール通知
+		if payload.Email == nil {
+			return nil
+		}
+		return w.multiSendMail(ectx, payload)
+	})
+	eg.Go(func() error {
+		// システムレポート
+		if payload.Report == nil {
+			return nil
+		}
+		return w.reporter(ectx, payload)
+	})
+	if err := eg.Wait(); err != nil {
+		return err
+	}
+	return w.db.ReceivedQueue.UpdateDone(ctx, payload.QueueID, true)
 }

@@ -43,3 +43,7 @@ func NewUser(cognitoID string, provider ProviderType, email, phoneNumber string)
 		PhoneNumber:  phoneNumber,
 	}
 }
+
+func (u *User) Name() string {
+	return u.Username
+}

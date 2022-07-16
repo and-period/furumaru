@@ -39,7 +39,7 @@ func (h *handler) ListContacts(ctx *gin.Context) {
 		Limit:  limit,
 		Offset: offset,
 	}
-	contacts, err := h.messenger.ListContacts(ctx, in)
+	contacts, total, err := h.messenger.ListContacts(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
@@ -47,6 +47,7 @@ func (h *handler) ListContacts(ctx *gin.Context) {
 
 	res := &response.ContactsResponse{
 		Contacts: service.NewContacts(contacts).Response(),
+		Total:    total,
 	}
 	ctx.JSON(http.StatusOK, res)
 }

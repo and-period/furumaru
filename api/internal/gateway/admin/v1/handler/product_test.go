@@ -113,7 +113,7 @@ func TestListProducts(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().ListProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().ListProducts(gomock.Any(), productsIn).Return(products, int64(1), nil)
 				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producres, nil)
 				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
 				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(productTypes, nil)
@@ -188,6 +188,7 @@ func TestListProducts(t *testing.T) {
 							UpdatedAt:     1640962800,
 						},
 					},
+					Total: 1,
 				},
 			},
 		},
@@ -210,7 +211,7 @@ func TestListProducts(t *testing.T) {
 		{
 			name: "failed to list products",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().ListProducts(gomock.Any(), productsIn).Return(nil, errmock)
+				mocks.store.EXPECT().ListProducts(gomock.Any(), productsIn).Return(nil, int64(0), errmock)
 			},
 			query: "?name=じゃがいも&coordinatorId=coordinator-id&producerId=producer-id",
 			expect: &testResponse{
@@ -220,7 +221,7 @@ func TestListProducts(t *testing.T) {
 		{
 			name: "failed to multi get producers",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().ListProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().ListProducts(gomock.Any(), productsIn).Return(products, int64(1), nil)
 				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(nil, errmock)
 				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
 				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(productTypes, nil)
@@ -233,7 +234,7 @@ func TestListProducts(t *testing.T) {
 		{
 			name: "failed to multi get categories",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().ListProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().ListProducts(gomock.Any(), productsIn).Return(products, int64(1), nil)
 				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producres, nil)
 				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(nil, errmock)
 				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(productTypes, nil)
@@ -246,7 +247,7 @@ func TestListProducts(t *testing.T) {
 		{
 			name: "failed to multi get product types",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().ListProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().ListProducts(gomock.Any(), productsIn).Return(products, int64(1), nil)
 				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producres, nil)
 				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
 				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(nil, errmock)

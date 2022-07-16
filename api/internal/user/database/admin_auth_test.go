@@ -16,6 +16,74 @@ func TestAdminAuth(t *testing.T) {
 	assert.NotNil(t, NewAdminAuth(nil))
 }
 
+func TestAdminAuth_MultiGet(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, adminAuthTable)
+	auths := make(entity.AdminAuths, 2)
+	auths[0] = testAdminAuth("admin-id01", "cognito-id01", now())
+	auths[1] = testAdminAuth("admin-id02", "cognito-id02", now())
+	err = m.db.DB.Create(&auths).Error
+	require.NoError(t, err)
+
+	type args struct {
+		adminIDs []string
+	}
+	type want struct {
+		auths  entity.AdminAuths
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				adminIDs: []string{"admin-id01", "admin-id02"},
+			},
+			want: want{
+				auths:  auths,
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &adminAuth{db: m.db, now: now}
+			actual, err := db.MultiGet(ctx, tt.args.adminIDs)
+			if tt.want.hasErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			fillIgnoreAdminAuthsField(actual, now())
+			assert.Equal(t, tt.want.auths, actual)
+		})
+	}
+}
+
 func TestAdminAuth_GetByAdminID(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -186,4 +254,10 @@ func fillIgnoreAdminAuthField(a *entity.AdminAuth, now time.Time) {
 	}
 	a.CreatedAt = now
 	a.UpdatedAt = now
+}
+
+func fillIgnoreAdminAuthsField(as entity.AdminAuths, now time.Time) {
+	for i := range as {
+		fillIgnoreAdminAuthField(as[i], now)
+	}
 }

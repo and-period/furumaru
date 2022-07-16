@@ -31,6 +31,8 @@ type AdminAuth struct {
 	UpdatedAt    time.Time `gorm:""`                     // 更新日時
 }
 
+type AdminAuths []*AdminAuth
+
 func NewAdminRole(role int32) (AdminRole, error) {
 	res := AdminRole(role)
 	if err := res.Validate(); err != nil {
@@ -60,4 +62,24 @@ func (a *AdminAuth) Fill(rs *cognito.AuthResult) {
 	a.AccessToken = rs.AccessToken
 	a.RefreshToken = rs.RefreshToken
 	a.ExpiresIn = rs.ExpiresIn
+}
+
+func (as AdminAuths) GroupByRole() map[AdminRole]AdminAuths {
+	const maxRoles = 4
+	res := make(map[AdminRole]AdminAuths, maxRoles)
+	for _, a := range as {
+		if _, ok := res[a.Role]; !ok {
+			res[a.Role] = make(AdminAuths, 0, len(as))
+		}
+		res[a.Role] = append(res[a.Role], a)
+	}
+	return res
+}
+
+func (as AdminAuths) AdminIDs() []string {
+	res := make([]string, len(as))
+	for i := range as {
+		res[i] = as[i].AdminID
+	}
+	return res
 }

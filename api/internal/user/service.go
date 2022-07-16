@@ -23,22 +23,28 @@ type Service interface {
 	VerifyAdminEmail(ctx context.Context, in *VerifyAdminEmailInput) error
 	// 管理者パスワード更新
 	UpdateAdminPassword(ctx context.Context, in *UpdateAdminPasswordInput) error
+	// 管理者一覧取得(ID指定)
+	MultiGetAdmins(ctx context.Context, in *MultiGetAdminsInput) (entity.Admins, error)
 	// 管理者取得
 	GetAdmin(ctx context.Context, in *GetAdminInput) (*entity.Admin, error)
 	// システム管理者一覧取得
-	ListAdministrators(ctx context.Context, in *ListAdministratorsInput) (entity.Administrators, error)
+	ListAdministrators(ctx context.Context, in *ListAdministratorsInput) (entity.Administrators, int64, error)
+	// システム管理者一覧取得(ID指定)
+	MultiGetAdministrators(ctx context.Context, in *MultiGetAdministratorsInput) (entity.Administrators, error)
 	// システム管理者取得
 	GetAdministrator(ctx context.Context, in *GetAdministratorInput) (*entity.Administrator, error)
 	// システム管理者登録
 	CreateAdministrator(ctx context.Context, in *CreateAdministratorInput) (*entity.Administrator, error)
 	// 仲介者一覧取得
-	ListCoordinators(ctx context.Context, in *ListCoordinatorsInput) (entity.Coordinators, error)
+	ListCoordinators(ctx context.Context, in *ListCoordinatorsInput) (entity.Coordinators, int64, error)
+	// 仲介者一覧取得(ID指定)
+	MultiGetCoordinators(ctx context.Context, in *MultiGetCoordinatorsInput) (entity.Coordinators, error)
 	// 仲介者取得
 	GetCoordinator(ctx context.Context, in *GetCoordinatorInput) (*entity.Coordinator, error)
 	// 仲介者登録
 	CreateCoordinator(ctx context.Context, in *CreateCoordinatorInput) (*entity.Coordinator, error)
 	// 生産者一覧取得
-	ListProducers(ctx context.Context, in *ListProducersInput) (entity.Producers, error)
+	ListProducers(ctx context.Context, in *ListProducersInput) (entity.Producers, int64, error)
 	// 生産者一覧取得(ID指定)
 	MultiGetProducers(ctx context.Context, in *MultiGetProducersInput) (entity.Producers, error)
 	// 生産者取得

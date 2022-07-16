@@ -39,6 +39,8 @@ type Shipping struct {
 	UpdatedAt          time.Time      `gorm:""`                                 // 更新日時
 }
 
+type Shippings []*Shipping
+
 // ShippingRate - 配送料金情報
 type ShippingRate struct {
 	Number      int64   `json:"number"`      // No.
@@ -49,7 +51,7 @@ type ShippingRate struct {
 
 type ShippingRates []*ShippingRate
 
-type NewShoppingParams struct {
+type NewShippingParams struct {
 	Name               string
 	Box60Rates         ShippingRates
 	Box60Refrigerated  int64
@@ -64,7 +66,7 @@ type NewShoppingParams struct {
 	FreeShippingRates  int64
 }
 
-func NewShipping(params *NewShoppingParams) *Shipping {
+func NewShipping(params *NewShippingParams) *Shipping {
 	return &Shipping{
 		ID:                 uuid.Base58Encode(uuid.New()),
 		Name:               params.Name,
@@ -115,6 +117,15 @@ func (s *Shipping) FillJSON() error {
 	s.Box60RatesJSON = datatypes.JSON(box60Rates)
 	s.Box80RatesJSON = datatypes.JSON(box80Rates)
 	s.Box100RatesJSON = datatypes.JSON(box100Rates)
+	return nil
+}
+
+func (ss Shippings) Fill() error {
+	for i := range ss {
+		if err := ss[i].Fill(); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 

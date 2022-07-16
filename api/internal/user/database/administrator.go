@@ -47,28 +47,39 @@ func (a *administrator) List(
 		stmt = stmt.Offset(params.Offset)
 	}
 
-	if err := stmt.Find(&administrators).Error; err != nil {
-		return nil, exception.InternalError(err)
+	err := stmt.Find(&administrators).Error
+	return administrators, exception.InternalError(err)
+}
+
+func (a *administrator) Count(ctx context.Context, params *ListAdministratorsParams) (int64, error) {
+	var total int64
+
+	stmt := a.db.DB.WithContext(ctx).Table(administratorTable).Select("COUNT(*)")
+
+	err := stmt.Count(&total).Error
+	return total, exception.InternalError(err)
+}
+
+func (a *administrator) MultiGet(
+	ctx context.Context, administratorIDs []string, fields ...string,
+) (entity.Administrators, error) {
+	var administrators entity.Administrators
+	if len(fields) == 0 {
+		fields = administratorFields
 	}
-	return administrators, nil
+
+	err := a.db.DB.WithContext(ctx).
+		Table(administratorTable).Select(fields).
+		Where("id IN (?)", administratorIDs).
+		Find(&administrators).Error
+	return administrators, exception.InternalError(err)
 }
 
 func (a *administrator) Get(
 	ctx context.Context, administratorID string, fields ...string,
 ) (*entity.Administrator, error) {
-	var administrator *entity.Administrator
-	if len(fields) == 0 {
-		fields = administratorFields
-	}
-
-	stmt := a.db.DB.WithContext(ctx).
-		Table(administratorTable).Select(fields).
-		Where("id = ?", administratorID)
-
-	if err := stmt.First(&administrator).Error; err != nil {
-		return nil, exception.InternalError(err)
-	}
-	return administrator, nil
+	administrator, err := a.get(ctx, a.db.DB, administratorID, fields...)
+	return administrator, exception.InternalError(err)
 }
 
 func (a *administrator) Create(

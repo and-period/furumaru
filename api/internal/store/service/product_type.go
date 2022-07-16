@@ -7,13 +7,14 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"golang.org/x/sync/errgroup"
 )
 
 func (s *service) ListProductTypes(
 	ctx context.Context, in *store.ListProductTypesInput,
-) (entity.ProductTypes, error) {
+) (entity.ProductTypes, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, 0, exception.InternalError(err)
 	}
 	params := &database.ListProductTypesParams{
 		Name:       in.Name,
@@ -21,8 +22,23 @@ func (s *service) ListProductTypes(
 		Limit:      int(in.Limit),
 		Offset:     int(in.Offset),
 	}
-	productTypes, err := s.db.ProductType.List(ctx, params)
-	return productTypes, exception.InternalError(err)
+	var (
+		productTypes entity.ProductTypes
+		total        int64
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		productTypes, err = s.db.ProductType.List(ectx, params)
+		return
+	})
+	eg.Go(func() (err error) {
+		total, err = s.db.ProductType.Count(ectx, params)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		return nil, 0, exception.InternalError(err)
+	}
+	return productTypes, total, nil
 }
 
 func (s *service) MultiGetProductTypes(

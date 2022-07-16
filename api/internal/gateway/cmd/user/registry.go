@@ -2,10 +2,12 @@ package cmd
 
 import (
 	"context"
+	"net/url"
 	"sync"
 
 	v1 "github.com/and-period/furumaru/api/internal/gateway/user/v1/handler"
 	"github.com/and-period/furumaru/api/internal/messenger"
+	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database"
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
 	"github.com/and-period/furumaru/api/internal/store"
 	storedb "github.com/and-period/furumaru/api/internal/store/database"
@@ -15,32 +17,42 @@ import (
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/database"
+	"github.com/and-period/furumaru/api/pkg/line"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/sqs"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"go.uber.org/zap"
+	"golang.org/x/sync/errgroup"
 )
 
 type registry struct {
+	env       string
 	waitGroup *sync.WaitGroup
+	line      line.Client
 	v1        v1.Handler
 }
 
 type params struct {
-	config     *config
-	logger     *zap.Logger
-	waitGroup  *sync.WaitGroup
-	aws        aws.Config
-	secret     secret.Client
-	storage    storage.Bucket
-	userAuth   cognito.Client
-	producer   sqs.Producer
-	dbHost     string
-	dbPort     string
-	dbUsername string
-	dbPassword string
+	config      *config
+	logger      *zap.Logger
+	waitGroup   *sync.WaitGroup
+	aws         aws.Config
+	secret      secret.Client
+	storage     storage.Bucket
+	userAuth    cognito.Client
+	producer    sqs.Producer
+	line        line.Client
+	adminWebURL *url.URL
+	userWebURL  *url.URL
+	dbHost      string
+	dbPort      string
+	dbUsername  string
+	dbPassword  string
+	lineToken   string
+	lineSecret  string
+	lineRoomID  string
 }
 
 func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*registry, error) {
@@ -82,8 +94,35 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}
 	params.producer = sqs.NewProducer(awscfg, sqsParams, sqs.WithDryRun(conf.SQSMockEnabled))
 
+	// LINEの設定
+	lineParams := &line.Params{
+		Token:  params.lineToken,
+		Secret: params.lineSecret,
+		RoomID: params.lineRoomID,
+	}
+	linebot, err := line.NewClient(lineParams, line.WithLogger(logger))
+	if err != nil {
+		return nil, err
+	}
+	params.line = linebot
+
+	// WebURLの設定
+	adminWebURL, err := url.Parse(conf.AminWebURL)
+	if err != nil {
+		return nil, err
+	}
+	params.adminWebURL = adminWebURL
+	userWebURL, err := url.Parse(conf.UserWebURL)
+	if err != nil {
+		return nil, err
+	}
+	params.userWebURL = userWebURL
+
 	// Serviceの設定
-	messengerService := newMessengerService(ctx, params)
+	messengerService, err := newMessengerService(ctx, params)
+	if err != nil {
+		return nil, err
+	}
 	userService, err := newUserService(ctx, params, messengerService)
 	if err != nil {
 		return nil, err
@@ -99,22 +138,28 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		Storage:   params.storage,
 		User:      userService,
 		Store:     storeService,
+		Messenger: messengerService,
 	}
 	return &registry{
+		env:       conf.Environment,
 		waitGroup: params.waitGroup,
+		line:      params.line,
 		v1:        v1.NewHandler(v1Params, v1.WithLogger(logger)),
 	}, nil
 }
 
 func getSecret(ctx context.Context, p *params) error {
-	// データベース認証情報の取得
-	if p.config.DBSecretName == "" {
-		p.dbHost = p.config.DBHost
-		p.dbPort = p.config.DBPort
-		p.dbUsername = p.config.DBUsername
-		p.dbPassword = p.config.DBPassword
-	} else {
-		secrets, err := p.secret.Get(ctx, p.config.DBSecretName)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		// データベース認証情報の取得
+		if p.config.DBSecretName == "" {
+			p.dbHost = p.config.DBHost
+			p.dbPort = p.config.DBPort
+			p.dbUsername = p.config.DBUsername
+			p.dbPassword = p.config.DBPassword
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, p.config.DBSecretName)
 		if err != nil {
 			return err
 		}
@@ -122,8 +167,26 @@ func getSecret(ctx context.Context, p *params) error {
 		p.dbPort = secrets["port"]
 		p.dbUsername = secrets["username"]
 		p.dbPassword = secrets["password"]
-	}
-	return nil
+		return nil
+	})
+	eg.Go(func() error {
+		// LINE認証情報の取得
+		if p.config.LINESecretName == "" {
+			p.lineToken = p.config.LINEChannelToken
+			p.lineSecret = p.config.LINEChannelSecret
+			p.lineRoomID = p.config.LINERoomID
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, p.config.LINESecretName)
+		if err != nil {
+			return err
+		}
+		p.lineToken = secrets["token"]
+		p.lineSecret = secrets["secret"]
+		p.lineRoomID = secrets["roomId"]
+		return nil
+	})
+	return eg.Wait()
 }
 
 func newDatabase(dbname string, p *params) (*database.Client, error) {
@@ -143,12 +206,27 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 	)
 }
 
-func newMessengerService(ctx context.Context, p *params) messenger.Service {
-	params := &messengersrv.Params{
-		WaitGroup: p.waitGroup,
-		Producer:  p.producer,
+func newMessengerService(ctx context.Context, p *params) (messenger.Service, error) {
+	mysql, err := newDatabase("messengers", p)
+	if err != nil {
+		return nil, err
 	}
-	return messengersrv.NewService(params, messengersrv.WithLogger(p.logger))
+	dbParams := &messengerdb.Params{
+		Database: mysql,
+	}
+	user, err := newUserService(ctx, p, nil)
+	if err != nil {
+		return nil, err
+	}
+	params := &messengersrv.Params{
+		WaitGroup:   p.waitGroup,
+		Producer:    p.producer,
+		AdminWebURL: p.adminWebURL,
+		UserWebURL:  p.userWebURL,
+		Database:    messengerdb.NewDatabase(dbParams),
+		User:        user,
+	}
+	return messengersrv.NewService(params, messengersrv.WithLogger(p.logger)), nil
 }
 
 func newUserService(ctx context.Context, p *params, messenger messenger.Service) (user.Service, error) {

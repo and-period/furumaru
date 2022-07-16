@@ -30,11 +30,6 @@ type UpdateContactInput struct {
 	Note      string                 `validate:"max=2000"`
 }
 
-type NotifyRegisterAdminInput struct {
-	AdminID  string `validate:"required"`
-	Password string `validate:"required"`
-}
-
 type CreateNotificationInput struct {
 	CreatedBy   string              `validate:"required"`
 	Title       string              `validate:"required,max=128"`
@@ -42,4 +37,15 @@ type CreateNotificationInput struct {
 	Targets     []entity.TargetType `validate:"min=1,max=3,dive,min=1,max=3"`
 	Public      bool                `validate:""`
 	PublishedAt time.Time           `validate:"required"`
+}
+
+type NotifyRegisterAdminInput struct {
+	AdminID  string `validate:"required"`
+	Password string `validate:"required"`
+}
+
+type NotifyReceivedContactInput struct {
+	ContactID string `validate:"required"`
+	Username  string `validate:"required"`
+	Email     string `validate:"required"`
 }

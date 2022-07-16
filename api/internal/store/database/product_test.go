@@ -98,6 +98,85 @@ func TestProduct_List(t *testing.T) {
 	}
 }
 
+func TestProduct_Count(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, productTable, productTypeTable, categoryTable)
+	categories := make(entity.Categories, 2)
+	categories[0] = testCategory("category-id01", "野菜", now())
+	categories[1] = testCategory("category-id02", "果物", now())
+	err = m.db.DB.Create(&categories).Error
+	require.NoError(t, err)
+	productTypes := make(entity.ProductTypes, 2)
+	productTypes[0] = testProductType("type-id01", "category-id01", "野菜", now())
+	productTypes[1] = testProductType("type-id02", "category-id02", "果物", now())
+	err = m.db.DB.Create(&productTypes).Error
+	require.NoError(t, err)
+	products := make(entity.Products, 3)
+	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", "coordinator-id", now())
+	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", "coordinator-id", now())
+	products[2] = testProduct("product-id03", "type-id02", "category-id02", "producer-id", "coordinator-id", now())
+	err = m.db.DB.Create(&products).Error
+	require.NoError(t, err)
+
+	type args struct {
+		params *ListProductsParams
+	}
+	type want struct {
+		total  int64
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListProductsParams{
+					Name:       "いも",
+					ProducerID: "producer-id",
+					CreatedBy:  "coordinator-id",
+				},
+			},
+			want: want{
+				total:  3,
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &product{db: m.db, now: now}
+			actual, err := db.Count(ctx, tt.args.params)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.total, actual)
+		})
+	}
+}
+
 func TestProduct_Get(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
