@@ -1,6 +1,10 @@
 package codes
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/and-period/furumaru/api/pkg/set"
+)
 
 var ErrUnknownPrefecture = errors.New("entity: unknown prefecture")
 
@@ -102,6 +106,46 @@ var PrefectureValues = map[string]int64{
 	"miyazaki":  45,
 	"kagoshima": 46,
 	"okinawa":   47,
+}
+
+func ToPrefectureName(value int64) (string, error) {
+	name, ok := PrefectureNames[value]
+	if !ok {
+		return "", ErrUnknownPrefecture
+	}
+	return name, nil
+}
+
+func ToPrefectureNames(values ...int64) ([]string, error) {
+	set := set.New(len(values))
+	for _, value := range values {
+		name, err := ToPrefectureName(value)
+		if err != nil {
+			return nil, err
+		}
+		set.AddStrings(name)
+	}
+	return set.Strings(), nil
+}
+
+func ToPrefectureValue(name string) (int64, error) {
+	value, ok := PrefectureValues[name]
+	if !ok {
+		return 0, ErrUnknownPrefecture
+	}
+	return value, nil
+}
+
+func ToPrefectureValues(names ...string) ([]int64, error) {
+	set := set.New(len(names))
+	for _, name := range names {
+		value, err := ToPrefectureValue(name)
+		if err != nil {
+			return nil, err
+		}
+		set.AddInt64s(value)
+	}
+	return set.SortInt64s(), nil
 }
 
 func ValidatePrefectureNames(names ...string) error {

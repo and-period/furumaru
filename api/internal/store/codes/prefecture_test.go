@@ -132,6 +132,70 @@ func TestPrefectureValues(t *testing.T) {
 	}
 }
 
+func TestToPrefectureNames(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		values    []int64
+		expect    []string
+		expectErr error
+	}{
+		{
+			name:      "success",
+			values:    []int64{1, 2, 3},
+			expect:    []string{"hokkaido", "aomori", "iwate"},
+			expectErr: nil,
+		},
+		{
+			name:      "failed to convert",
+			values:    []int64{0},
+			expect:    nil,
+			expectErr: ErrUnknownPrefecture,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual, err := ToPrefectureNames(tt.values...)
+			assert.ErrorIs(t, tt.expectErr, err)
+			assert.ElementsMatch(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestToPrefectureValues(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		values    []string
+		expect    []int64
+		expectErr error
+	}{
+		{
+			name:      "success",
+			values:    []string{"hokkaido", "aomori", "iwate"},
+			expect:    []int64{1, 2, 3},
+			expectErr: nil,
+		},
+		{
+			name:      "failed to convert",
+			values:    []string{""},
+			expect:    nil,
+			expectErr: ErrUnknownPrefecture,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual, err := ToPrefectureValues(tt.values...)
+			assert.ErrorIs(t, tt.expectErr, err)
+			assert.ElementsMatch(t, tt.expect, actual)
+		})
+	}
+}
+
 func TestValidatePrefectureNames(t *testing.T) {
 	t.Parallel()
 	tests := map[string]error{
