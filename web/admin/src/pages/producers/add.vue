@@ -1,110 +1,28 @@
 <template>
-  <form @submit.prevent="handleSubmit">
-    <p class="text-h6">生産者登録</p>
-    <v-card elevation="0">
-      <v-card-text>
-        <v-text-field
-          v-model="formData.storeName"
-          label="店舗名"
-          required
-          maxlength="64"
-        />
-        <div class="mb-2 d-flex">
-          <the-profile-select-form
-            class="mr-4 flex-grow-1 flex-shrink-1"
-            :img-url="formData.thumbnailUrl"
-            :error="thumbnailUploadStatus.error"
-            :message="thumbnailUploadStatus.message"
-            @update:file="handleUpdateThumbnail"
-          />
-          <the-header-select-form
-            class="flex-grow-1 flex-shrink-1"
-            :img-url="formData.headerUrl"
-            :error="headerUploadStatus.error"
-            :message="headerUploadStatus.message"
-            @update:file="handleUpdateHeader"
-          />
-        </div>
-        <div class="d-flex">
-          <v-text-field
-            v-model="formData.lastname"
-            class="mr-4"
-            label="生産者名:姓"
-            maxlength="16"
-            required
-          />
-          <v-text-field
-            v-model="formData.firstname"
-            label="生産者名:名"
-            maxlength="16"
-            required
-          />
-        </div>
-        <div class="d-flex">
-          <v-text-field
-            v-model="formData.lastnameKana"
-            class="mr-4"
-            label="生産者名:姓（ふりがな）"
-            maxlength="32"
-            required
-          />
-          <v-text-field
-            v-model="formData.firstnameKana"
-            label="生産者名:名（ふりがな）"
-            maxlength="32"
-            required
-          />
-        </div>
-        <v-text-field
-          v-model="formData.email"
-          label="連絡先（Email）"
-          type="email"
-          required
-        />
-        <v-text-field
-          v-model="formData.phoneNumber"
-          label="連絡先（電話番号）"
-          required
-        />
-
-        <the-address-form
-          :postal-code.sync="formData.postalCode"
-          :prefecture.sync="formData.prefecture"
-          :city.sync="formData.city"
-          :address-line1.sync="formData.addressLine1"
-          :address-line2.sync="formData.addressLine2"
-          :loading="searchLoading"
-          :error-message="searchErrorMessage"
-          @click:search="searchAddress"
-        />
-      </v-card-text>
-      <v-card-actions>
-        <v-btn block outlined color="primary" type="submit">登録</v-btn>
-      </v-card-actions>
-    </v-card>
-  </form>
+  <the-producer-create-form
+    :form-data="formData"
+    :thumbnail-upload-status="thumbnailUploadStatus"
+    :header-upload-status="headerUploadStatus"
+    :search-loading="searchLoading"
+    :search-error-message="searchErrorMessage"
+    @update:thumbnailFile="handleUpdateThumbnail"
+    @update:headerFile="handleUpdateHeader"
+    @submit="handleSubmit"
+    @click:search="searchAddress"
+  />
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  reactive,
-  ref,
-  useRouter,
-} from '@nuxtjs/composition-api'
+import { defineComponent, reactive, useRouter } from '@nuxtjs/composition-api'
 
-import TheProfileSelectForm from '~/components/molecules/TheProfileSelectForm.vue'
-import { searchAddressByPostalCode } from '~/lib/externals'
+import TheProducerCreateForm from '~/components/organisms/TheProducerCreateForm.vue'
+import { useSearchAddress } from '~/lib/hooks'
 import { useProducerStore } from '~/store/producer'
 import { CreateProducerRequest } from '~/types/api'
-
-interface ImageUploadStatus {
-  error: boolean
-  message: string
-}
+import { ImageUploadStatus } from '~/types/props'
 
 export default defineComponent({
-  components: { TheProfileSelectForm },
+  components: { TheProducerCreateForm },
   setup() {
     const router = useRouter()
     const { createProducer, uploadProducerThumbnail, uploadProducerHeader } =
@@ -136,9 +54,6 @@ export default defineComponent({
       error: false,
       message: '',
     })
-
-    const searchLoading = ref<boolean>(false)
-    const searchErrorMessage = ref<string>('')
 
     const handleSubmit = async () => {
       try {
@@ -178,18 +93,20 @@ export default defineComponent({
       }
     }
 
+    const {
+      loading: searchLoading,
+      errorMessage: searchErrorMessage,
+      searchAddressByPostalCode,
+    } = useSearchAddress()
+
     const searchAddress = async () => {
       searchLoading.value = true
       searchErrorMessage.value = ''
-      try {
-        const res = await searchAddressByPostalCode(Number(formData.postalCode))
+      const res = await searchAddressByPostalCode(Number(formData.postalCode))
+      if (res) {
         formData.prefecture = res.prefecture
         formData.city = res.city
         formData.addressLine1 = res.addressLine1
-      } catch (e) {
-        searchErrorMessage.value = e.message
-      } finally {
-        searchLoading.value = false
       }
     }
 
