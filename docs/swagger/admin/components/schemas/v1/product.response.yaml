@@ -13,12 +13,21 @@ productResponse:
     producerId:
       type: string
       description: 生産者ID
+    storeName:
+      type: string
+      description: 農家名
     categoryId:
       type: string
       description: 商品種別ID
+    categoryName:
+      type: string
+      description: 商品種別名
     productTypeId:
       type: string
       description: 品目ID
+    productTypeName:
+      type: string
+      description: 品目名
     public:
       type: boolean
       description: 公開フラグ
@@ -81,7 +90,7 @@ productResponse:
       description: 登録者ID
     updatedBy:
       type: string
-      description: 登録者ID
+      description: 更新者ID
     createdAt:
       type: integer
       format: int64
@@ -95,8 +104,11 @@ productResponse:
   - name
   - description
   - producerId
+  - storeName
   - categoryId
+  - categoryName
   - productTypeId
+  - productTypeName
   - public
   - inventory
   - weight
@@ -119,8 +131,11 @@ productResponse:
     name: '新鮮なじゃがいも'
     description: '新鮮なじゃがいもをお届けします。'
     producerId: 'kSByoE6FetnPs5Byk3a9Zx'
+    storeName: '&.農園'
     categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
+    categoryName: '野菜'
     productTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
+    productTypeName: 'じゃがいも'
     public: true
     inventory: 30
     weight: 2.5
@@ -163,12 +178,21 @@ productsResponse:
           producerId:
             type: string
             description: 生産者ID
+          storeName:
+            type: string
+            description: 農家名
           categoryId:
             type: string
             description: 商品種別ID
+          cateogryName:
+            type: string
+            description: 商品種別名
           productTypeId:
             type: string
             description: 品目ID
+          productTypeName:
+            type: string
+            description: 品目名
           public:
             type: boolean
             description: 公開フラグ
@@ -231,7 +255,7 @@ productsResponse:
             description: 登録者ID
           updatedBy:
             type: string
-            description: 登録者ID
+            description: 更新者ID
           createdAt:
             type: integer
             format: int64
@@ -245,8 +269,11 @@ productsResponse:
         - name
         - description
         - producerId
+        - storeName
         - categoryId
+        - categoryName
         - productTypeId
+        - productTypeName
         - public
         - inventory
         - weight
@@ -264,145 +291,12 @@ productsResponse:
         - updatedBy
         - createdAt
         - updatedAt
-    categories:
-      type: array
-      description: 商品種別一覧
-      items:
-        type: object
-        properties:
-          id:
-            type: string
-            description: 商品種別ID
-          name:
-            type: string
-            description: カテゴリ名
-          createdAt:
-            type: integer
-            format: int64
-            description: 登録日時 (unixtime)
-          updatedAt:
-            type: integer
-            format: int64
-            description: 登録日時 (unixtime)
-        required:
-        - id
-        - name
-        - createdAt
-        - updatedAt
-    productTypes:
-      type: array
-      description: 品目一覧
-      items:
-        type: object
-        properties:
-          id:
-            type: string
-            description: 品目ID
-          name:
-            type: string
-            description: 品目名
-          categoryId:
-            type: string
-            description: 商品種別ID
-          createdAt:
-            type: integer
-            format: int64
-            description: 登録日時 (unixtime)
-          updatedAt:
-            type: integer
-            format: int64
-            description: 登録日時 (unixtime)
-        required:
-        - id
-        - name
-        - categoryId
-        - createdAt
-        - updatedAt
-    producers:
-      type: array
-      description: 生産者一覧
-      items:
-        type: object
-        properties:
-          id:
-            type: string
-            description: システム管理者ID
-          lastname:
-            type: string
-            description: 姓
-          firstname:
-            type: string
-            description: 名
-          lastnameKana:
-            type: string
-            description: 姓(かな)
-          firstnameKana:
-            type: string
-            description: 名(かな)
-          storeName:
-            type: string
-            description: 店舗名
-          headerUrl:
-            type: string
-            description: ヘッダー画像URL
-          thumbnailUrl:
-            type: string
-            description: サムネイルURL
-          email:
-            type: string
-            description: メールアドレス
-          phoneNumber:
-            type: string
-            description: 電話番号
-          postalCode:
-            type: string
-            description: 郵便番号
-          prefecture:
-            type: string
-            description: 都道府県
-          city:
-            type: string
-            description: 市区町村
-          addressLine1:
-            type: string
-            description: 町名・番地
-          addressLine2:
-            type: string
-            description: ビル名・号室など
-          createdAt:
-            type: integer
-            format: int64
-            description: 登録日時 (unixtime)
-          updatedAt:
-            type: integer
-            format: int64
-            description: 登録日時 (unixtime)
-        required:
-        - id
-        - lastname
-        - firstname
-        - lastnameKana
-        - firstnameKana
-        - storeName
-        - headerUrl
-        - thumbnailUrl
-        - email
-        - phoneNumber
-        - postalCode
-        - prefecture
-        - city
-        - addressLine1
-        - addressLine2
-        - createdAt
-        - updatedAt
     total:
       type: integer
       format: int64
       description: 合計数
   required:
   - products
-  - categories
-  - productTypes
   - total
   example:
     products:
@@ -410,8 +304,11 @@ productsResponse:
       name: '新鮮なじゃがいも'
       description: '新鮮なじゃがいもをお届けします。'
       producerId: 'kSByoE6FetnPs5Byk3a9Zx'
+      storeName: '&.農園'
       categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
+      categoryName: '野菜'
       productTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
+      productTypeName: 'じゃがいも'
       public: true
       inventory: 30
       weight: 2.5
@@ -437,8 +334,11 @@ productsResponse:
       name: '新鮮なじゃがいも'
       description: '新鮮なじゃがいもをお届けします。'
       producerId: 'kSByoE6FetnPs5Byk3a9Zx'
+      storeName: '&.農園'
       categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
+      categoryName: '野菜'
       productTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
+      productTypeName: 'じゃがいも'
       public: true
       inventory: 30
       weight: 2.5
@@ -458,61 +358,6 @@ productsResponse:
       originCity: '彦根市'
       createdBy: 'kSByoE6FetnPs5Byk3a9Zx'
       updatedBy: 'kSByoE6FetnPs5Byk3a9Zx'
-      createdAt: 1640962800
-      updatedAt: 1640962800
-    categories:
-    - id: 'kSByoE6FetnPs5Byk3a9Zx'
-      name: '野菜'
-      createdAt: 1640962800
-      updatedAt: 1640962800
-    - id: 'kSByoE6FetnPs5Byk3a9Zx'
-      name: '果物'
-      createdAt: 1640962800
-      updatedAt: 1640962800
-    productTypes:
-    - id: 'kSByoE6FetnPs5Byk3a9Zx'
-      name: 'じゃがいも'
-      categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
-      createdAt: 1640962800
-      updatedAt: 1640962800
-    - id: 'kSByoE6FetnPs5Byk3a9Zx'
-      name: 'りんご'
-      categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
-      createdAt: 1640962800
-      updatedAt: 1640962800
-    producers:
-    - id: 'kSByoE6FetnPs5Byk3a9Zx'
-      lastname: '&.'
-      firstname: '管理者'
-      lastnameKana: 'あんどどっと'
-      firstnameKana: 'かんりしゃ'
-      storeName: '&.農園'
-      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
-      headerUrl: 'https://and-period.jp/header.png'
-      email: 'test-user@and-period.jp'
-      phoneNumber: '+819012345678'
-      postalCode: '1000014'
-      prefecture: '東京都'
-      city: '千代田区'
-      addressLine1: '永田町1-7-1'
-      addressLine2: ''
-      createdAt: 1640962800
-      updatedAt: 1640962800
-    - id: 'kSByoE6FetnPs5Byk3a9Zx'
-      lastname: '&.'
-      firstname: '管理者'
-      lastnameKana: 'あんどどっと'
-      firstnameKana: 'かんりしゃ'
-      storeName: '&.農園'
-      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
-      headerUrl: 'https://and-period.jp/header.png'
-      email: 'test-user@and-period.jp'
-      phoneNumber: '+819012345678'
-      postalCode: '1000014'
-      prefecture: '東京都'
-      city: '千代田区'
-      addressLine1: '永田町1-7-1'
-      addressLine2: ''
       createdAt: 1640962800
       updatedAt: 1640962800
     total: 2

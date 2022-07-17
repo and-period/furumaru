@@ -1711,17 +1711,35 @@ export interface ProductResponse {
    */
   producerId: string
   /**
+   * 農家名
+   * @type {string}
+   * @memberof ProductResponse
+   */
+  storeName: string
+  /**
    * 商品種別ID
    * @type {string}
    * @memberof ProductResponse
    */
   categoryId: string
   /**
+   * 商品種別名
+   * @type {string}
+   * @memberof ProductResponse
+   */
+  categoryName: string
+  /**
    * 品目ID
    * @type {string}
    * @memberof ProductResponse
    */
   productTypeId: string
+  /**
+   * 品目名
+   * @type {string}
+   * @memberof ProductResponse
+   */
+  productTypeName: string
   /**
    * 公開フラグ
    * @type {boolean}
@@ -1807,7 +1825,7 @@ export interface ProductResponse {
    */
   createdBy: string
   /**
-   * 登録者ID
+   * 更新者ID
    * @type {string}
    * @memberof ProductResponse
    */
@@ -1850,6 +1868,12 @@ export interface ProductTypeResponse {
    */
   categoryId: string
   /**
+   * 商品種別名
+   * @type {string}
+   * @memberof ProductTypeResponse
+   */
+  categoryName: string
+  /**
    * 登録日時 (unixtime)
    * @type {number}
    * @memberof ProductTypeResponse
@@ -1874,12 +1898,6 @@ export interface ProductTypesResponse {
    * @memberof ProductTypesResponse
    */
   productTypes: Array<ProductTypesResponseProductTypes>
-  /**
-   * 商品種別一覧
-   * @type {Array<CategoriesResponseCategories>}
-   * @memberof ProductTypesResponse
-   */
-  categories: Array<CategoriesResponseCategories>
   /**
    * 合計数
    * @type {number}
@@ -1912,6 +1930,12 @@ export interface ProductTypesResponseProductTypes {
    */
   categoryId: string
   /**
+   * 商品種別名
+   * @type {string}
+   * @memberof ProductTypesResponseProductTypes
+   */
+  categoryName: string
+  /**
    * 登録日時 (unixtime)
    * @type {number}
    * @memberof ProductTypesResponseProductTypes
@@ -1937,24 +1961,6 @@ export interface ProductsResponse {
    */
   products: Array<ProductsResponseProducts>
   /**
-   * 商品種別一覧
-   * @type {Array<CategoriesResponseCategories>}
-   * @memberof ProductsResponse
-   */
-  categories: Array<CategoriesResponseCategories>
-  /**
-   * 品目一覧
-   * @type {Array<ProductTypesResponseProductTypes>}
-   * @memberof ProductsResponse
-   */
-  productTypes: Array<ProductTypesResponseProductTypes>
-  /**
-   * 生産者一覧
-   * @type {Array<ProductsResponseProducers>}
-   * @memberof ProductsResponse
-   */
-  producers?: Array<ProductsResponseProducers>
-  /**
    * 合計数
    * @type {number}
    * @memberof ProductsResponse
@@ -1979,115 +1985,6 @@ export interface ProductsResponseMedia {
    * @memberof ProductsResponseMedia
    */
   isThumbnail: boolean
-}
-/**
- *
- * @export
- * @interface ProductsResponseProducers
- */
-export interface ProductsResponseProducers {
-  /**
-   * システム管理者ID
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  id: string
-  /**
-   * 姓
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  lastname: string
-  /**
-   * 名
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  firstname: string
-  /**
-   * 姓(かな)
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  lastnameKana: string
-  /**
-   * 名(かな)
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  firstnameKana: string
-  /**
-   * 店舗名
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  storeName: string
-  /**
-   * ヘッダー画像URL
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  headerUrl: string
-  /**
-   * サムネイルURL
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  thumbnailUrl: string
-  /**
-   * メールアドレス
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  email: string
-  /**
-   * 電話番号
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  phoneNumber: string
-  /**
-   * 郵便番号
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  postalCode: string
-  /**
-   * 都道府県
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  prefecture: string
-  /**
-   * 市区町村
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  city: string
-  /**
-   * 町名・番地
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  addressLine1: string
-  /**
-   * ビル名・号室など
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  addressLine2: string
-  /**
-   * 登録日時 (unixtime)
-   * @type {number}
-   * @memberof ProductsResponseProducers
-   */
-  createdAt: number
-  /**
-   * 登録日時 (unixtime)
-   * @type {number}
-   * @memberof ProductsResponseProducers
-   */
-  updatedAt: number
 }
 /**
  *
@@ -2120,17 +2017,35 @@ export interface ProductsResponseProducts {
    */
   producerId: string
   /**
+   * 農家名
+   * @type {string}
+   * @memberof ProductsResponseProducts
+   */
+  storeName: string
+  /**
    * 商品種別ID
    * @type {string}
    * @memberof ProductsResponseProducts
    */
   categoryId: string
   /**
+   * 商品種別名
+   * @type {string}
+   * @memberof ProductsResponseProducts
+   */
+  cateogryName?: string
+  /**
    * 品目ID
    * @type {string}
    * @memberof ProductsResponseProducts
    */
   productTypeId: string
+  /**
+   * 品目名
+   * @type {string}
+   * @memberof ProductsResponseProducts
+   */
+  productTypeName: string
   /**
    * 公開フラグ
    * @type {boolean}
@@ -2216,7 +2131,7 @@ export interface ProductsResponseProducts {
    */
   createdBy: string
   /**
-   * 登録者ID
+   * 更新者ID
    * @type {string}
    * @memberof ProductsResponseProducts
    */
