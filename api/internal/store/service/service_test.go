@@ -104,7 +104,7 @@ func testService(
 		defer ctrl.Finish()
 		mocks := newMocks(ctrl)
 
-		srv := newService(mocks)
+		srv := newService(mocks, opts...)
 		setup(ctx, mocks)
 
 		testFunc(ctx, t, srv)

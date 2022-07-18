@@ -23,4 +23,6 @@ type Service interface {
 	NotifyRegisterAdmin(ctx context.Context, in *NotifyRegisterAdminInput) error
 	// お問い合わせ受領通知
 	NotifyReceivedContact(ctx context.Context, in *NotifyReceivedContactInput) error
+	// お知らせ通知
+	NotifyNotification(ctx context.Context, in *NotifyNotificationInput) error
 }

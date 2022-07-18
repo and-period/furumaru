@@ -34,6 +34,8 @@ type Notification struct {
 	UpdatedAt   time.Time      `gorm:""`                            // 更新日時
 }
 
+type Notifications []*Notification
+
 type NewNotificationParams struct {
 	CreatedBy   string
 	CreatorName string
@@ -74,5 +76,14 @@ func (n *Notification) FillJSON() error {
 		return err
 	}
 	n.TargetsJSON = datatypes.JSON(v)
+	return nil
+}
+
+func (ns Notifications) Fill() error {
+	for i := range ns {
+		if err := ns[i].Fill(); err != nil {
+			return err
+		}
+	}
 	return nil
 }

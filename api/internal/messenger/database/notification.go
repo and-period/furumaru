@@ -13,10 +13,10 @@ import (
 
 const notificationTable = "notifications"
 
-// var notificationFields = []string{
-// 	"id", "created_by", "creator_name", "updated_by", "title", "bpdy",
-// 	"published_at", "targets", "public", "created_at", "updated_at",
-// }
+var notificationFields = []string{
+	"id", "created_by", "creator_name", "updated_by", "title", "body",
+	"published_at", "targets", "public", "created_at", "updated_at",
+}
 
 type notification struct {
 	db  *database.Client
@@ -28,6 +28,32 @@ func NewNotification(db *database.Client) Notification {
 		db:  db,
 		now: jst.Now,
 	}
+}
+
+func (n *notification) List(
+	ctx context.Context, params *ListNotificationsParams, fields ...string,
+) (entity.Notifications, error) {
+	var notifications entity.Notifications
+	if len(fields) == 0 {
+		fields = notificationFields
+	}
+
+	stmt := n.db.DB.WithContext(ctx).Table(notificationTable).Select(fields)
+	stmt = params.stmt(stmt)
+	if params.Limit > 0 {
+		stmt = stmt.Limit(params.Limit)
+	}
+	if params.Offset > 0 {
+		stmt = stmt.Offset(params.Offset)
+	}
+
+	if err := stmt.Find(&notifications).Error; err != nil {
+		return nil, exception.InternalError(err)
+	}
+	if err := notifications.Fill(); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return notifications, nil
 }
 
 func (n *notification) Create(ctx context.Context, notification *entity.Notification) error {

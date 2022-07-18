@@ -96,3 +96,50 @@ func TestNotification_FillJSON(t *testing.T) {
 		})
 	}
 }
+
+func TestNotifications_Fill(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name          string
+		notifications Notifications
+		expect        Notifications
+		hasErr        bool
+	}{
+		{
+			name: "success",
+			notifications: Notifications{
+				{
+					ID:          "notification-id",
+					Title:       "title",
+					Body:        "<html>本文<html>",
+					TargetsJSON: datatypes.JSON([]byte(`[1,2,3]`)),
+				},
+			},
+			expect: Notifications{
+				{
+					ID:    "notification-id",
+					Title: "title",
+					Body:  "<html>本文<html>",
+					Targets: []TargetType{
+						PostTargetUsers,
+						PostTargetProducers,
+						PostTargetCoordinators,
+					},
+					TargetsJSON: datatypes.JSON([]byte(`[1,2,3]`)),
+				},
+			},
+			hasErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			err := tt.notifications.Fill()
+			assert.Equal(t, tt.hasErr, err != nil, err)
+			assert.Equal(t, tt.expect, tt.notifications)
+		})
+	}
+}

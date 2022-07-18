@@ -1,34 +1,28 @@
-package service
+package scheduler
 
 import (
 	"context"
 	"errors"
-	"net/url"
 	"sync"
 	"testing"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/messenger/database"
+	"github.com/and-period/furumaru/api/internal/messenger/entity"
+	mock_messenger "github.com/and-period/furumaru/api/mock/messenger"
 	mock_database "github.com/and-period/furumaru/api/mock/messenger/database"
-	mock_sqs "github.com/and-period/furumaru/api/mock/pkg/sqs"
-	mock_user "github.com/and-period/furumaru/api/mock/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/and-period/furumaru/api/pkg/validator"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
+	"golang.org/x/sync/semaphore"
 )
 
-var (
-	errmock        = errors.New("some error")
-	adminWebURL, _ = url.Parse("htts://admin.and-period.jp")
-	userWebURL, _  = url.Parse("htts://user.and-period.jp")
-)
+var errmock = errors.New("some error")
 
 type mocks struct {
-	db       *dbMocks
-	producer *mock_sqs.MockProducer
-	user     *mock_user.MockService
+	db        *dbMocks
+	messenger *mock_messenger.MockService
 }
 
 type dbMocks struct {
@@ -45,13 +39,20 @@ type testOptions struct {
 
 type testOption func(opts *testOptions)
 
-type testCaller func(ctx context.Context, t *testing.T, service *service)
+func withNow(now time.Time) testOption {
+	return func(opts *testOptions) {
+		opts.now = func() time.Time {
+			return now
+		}
+	}
+}
+
+type testCaller func(ctx context.Context, t *testing.T, scheduler *scheduler)
 
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
-		db:       newDBMocks(ctrl),
-		producer: mock_sqs.NewMockProducer(ctrl),
-		user:     mock_user.NewMockService(ctrl),
+		db:        newDBMocks(ctrl),
+		messenger: mock_messenger.NewMockService(ctrl),
 	}
 }
 
@@ -65,29 +66,18 @@ func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	}
 }
 
-func newService(mocks *mocks, opts ...testOption) *service {
+func newScheduler(mocks *mocks, opts ...testOption) *scheduler {
 	dopts := &testOptions{
 		now: jst.Now,
 	}
 	for i := range opts {
 		opts[i](dopts)
 	}
-	adminWebURL := func() *url.URL {
-		url := *adminWebURL // copy
-		return &url
-	}
-	userWebURL := func() *url.URL {
-		url := *userWebURL // copy
-		return &url
-	}
-	return &service{
-		now:         dopts.now,
-		logger:      zap.NewNop(),
-		waitGroup:   &sync.WaitGroup{},
-		validator:   validator.NewValidator(),
-		producer:    mocks.producer,
-		adminWebURL: adminWebURL,
-		userWebURL:  userWebURL,
+	return &scheduler{
+		now:       dopts.now,
+		logger:    zap.NewNop(),
+		waitGroup: &sync.WaitGroup{},
+		semaphore: semaphore.NewWeighted(1),
 		db: &database.Database{
 			Contact:        mocks.db.Contact,
 			Notification:   mocks.db.Notification,
@@ -95,11 +85,11 @@ func newService(mocks *mocks, opts ...testOption) *service {
 			ReportTemplate: mocks.db.ReportTemplate,
 			Schedule:       mocks.db.Schedule,
 		},
-		user: mocks.user,
+		messenger: mocks.messenger,
 	}
 }
 
-func testService(
+func testScheduler(
 	setup func(ctx context.Context, mocks *mocks),
 	testFunc testCaller,
 	opts ...testOption,
@@ -112,16 +102,47 @@ func testService(
 		defer ctrl.Finish()
 		mocks := newMocks(ctrl)
 
-		srv := newService(mocks, opts...)
+		w := newScheduler(mocks, opts...)
 		setup(ctx, mocks)
 
-		testFunc(ctx, t, srv)
-		srv.waitGroup.Wait()
+		testFunc(ctx, t, w)
+		w.waitGroup.Wait()
 	}
 }
 
-func TestService(t *testing.T) {
+func TestScheduler(t *testing.T) {
 	t.Parallel()
-	srv := NewService(&Params{}, WithLogger(zap.NewNop()))
-	assert.NotNil(t, srv)
+	s := NewScheduler(&Params{}, WithLogger(zap.NewNop()), WithConcurrency(1))
+	assert.NotNil(t, s)
+}
+
+func TestScheduler_Run(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		target    time.Time
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().List(gomock.Any(), gomock.Any()).Return(entity.Schedules{}, nil)
+				mocks.db.Notification.EXPECT().List(gomock.Any(), gomock.Any()).Return(entity.Notifications{}, nil)
+			},
+			target:    now,
+			expectErr: nil,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testScheduler(tt.setup, func(ctx context.Context, t *testing.T, scheduler *scheduler) {
+			err := scheduler.Run(ctx, tt.target)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}, withNow(now)))
+	}
 }
