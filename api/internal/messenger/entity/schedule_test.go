@@ -155,7 +155,7 @@ func TestSchedule_ShouldCancel(t *testing.T) {
 				Count:     1,
 				UpdatedAt: now.Add(-15 * time.Minute),
 			},
-			expect: true,
+			expect: false,
 		},
 		{
 			name: "processing to re-executed",
@@ -164,7 +164,7 @@ func TestSchedule_ShouldCancel(t *testing.T) {
 				Count:     2,
 				UpdatedAt: now.Add(-15 * time.Minute),
 			},
-			expect: false,
+			expect: true,
 		},
 		{
 			name: "done",
@@ -189,7 +189,7 @@ func TestSchedule_ShouldCancel(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, tt.schedule.Executable(now))
+			assert.Equal(t, tt.expect, tt.schedule.ShouldCancel(now))
 		})
 	}
 }
