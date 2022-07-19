@@ -36,6 +36,7 @@ type dbMocks struct {
 	Notification   *mock_database.MockNotification
 	ReceivedQueue  *mock_database.MockReceivedQueue
 	ReportTemplate *mock_database.MockReportTemplate
+	Schedule       *mock_database.MockSchedule
 }
 
 type testOptions struct {
@@ -69,6 +70,7 @@ func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 		Notification:   mock_database.NewMockNotification(ctrl),
 		ReceivedQueue:  mock_database.NewMockReceivedQueue(ctrl),
 		ReportTemplate: mock_database.NewMockReportTemplate(ctrl),
+		Schedule:       mock_database.NewMockSchedule(ctrl),
 	}
 }
 
@@ -90,6 +92,7 @@ func newWorker(mocks *mocks, opts ...testOption) *worker {
 			Notification:   mocks.db.Notification,
 			ReceivedQueue:  mocks.db.ReceivedQueue,
 			ReportTemplate: mocks.db.ReportTemplate,
+			Schedule:       mocks.db.Schedule,
 		},
 		user:        mocks.user,
 		concurrency: 1,
@@ -110,7 +113,7 @@ func testWorker(
 		defer ctrl.Finish()
 		mocks := newMocks(ctrl)
 
-		w := newWorker(mocks)
+		w := newWorker(mocks, opts...)
 		setup(ctx, mocks)
 
 		testFunc(ctx, t, w)

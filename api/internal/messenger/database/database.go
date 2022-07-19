@@ -4,9 +4,11 @@ package database
 
 import (
 	"context"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
+	"gorm.io/gorm"
 )
 
 type Params struct {
@@ -18,6 +20,7 @@ type Database struct {
 	Notification   Notification
 	ReceivedQueue  ReceivedQueue
 	ReportTemplate ReportTemplate
+	Schedule       Schedule
 }
 
 func NewDatabase(params *Params) *Database {
@@ -26,6 +29,7 @@ func NewDatabase(params *Params) *Database {
 		Notification:   NewNotification(params.Database),
 		ReceivedQueue:  NewReceivedQueue(params.Database),
 		ReportTemplate: NewReportTemplate(params.Database),
+		Schedule:       NewSchedule(params.Database),
 	}
 }
 
@@ -42,6 +46,7 @@ type Contact interface {
 }
 
 type Notification interface {
+	List(ctx context.Context, params *ListNotificationsParams, fields ...string) (entity.Notifications, error)
 	Create(ctx context.Context, notification *entity.Notification) error
 }
 
@@ -53,6 +58,13 @@ type ReceivedQueue interface {
 
 type ReportTemplate interface {
 	Get(ctx context.Context, reportID string, fields ...string) (*entity.ReportTemplate, error)
+}
+
+type Schedule interface {
+	List(ctx context.Context, params *ListSchedulesParams, fields ...string) (entity.Schedules, error)
+	UpsertProcessing(ctx context.Context, schedule *entity.Schedule) error
+	UpdateDone(ctx context.Context, messageType entity.ScheduleType, messageID string) error
+	UpdateCancel(ctx context.Context, messageType entity.ScheduleType, messageID string) error
 }
 
 /**
@@ -67,4 +79,48 @@ type UpdateContactParams struct {
 	Status   entity.ContactStatus
 	Priority entity.ContactPriority
 	Note     string
+}
+
+type ListNotificationsParams struct {
+	Limit         int
+	Offset        int
+	Since         time.Time
+	Until         time.Time
+	OnlyPublished bool
+}
+
+func (p *ListNotificationsParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if !p.Since.IsZero() {
+		stmt = stmt.Where("published_at >= ?", p.Since)
+	}
+	if !p.Until.IsZero() {
+		stmt = stmt.Where("published_at <= ?", p.Until)
+	}
+	if p.OnlyPublished {
+		stmt = stmt.Where("public = ?", true)
+	}
+	return stmt
+}
+
+type ListSchedulesParams struct {
+	Types    []entity.ScheduleType
+	Statuses []entity.ScheduleStatus
+	Since    time.Time
+	Until    time.Time
+}
+
+func (p *ListSchedulesParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if len(p.Types) > 0 {
+		stmt = stmt.Where("message_type IN (?)", p.Types)
+	}
+	if len(p.Statuses) > 0 {
+		stmt = stmt.Where("status IN (?)", p.Statuses)
+	}
+	if !p.Since.IsZero() {
+		stmt = stmt.Where("sent_at >= ?", p.Since)
+	}
+	if !p.Until.IsZero() {
+		stmt = stmt.Where("sent_at <= ?", p.Until)
+	}
+	return stmt
 }
