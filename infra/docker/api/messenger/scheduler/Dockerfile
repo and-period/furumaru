@@ -11,7 +11,7 @@ RUN apk add --update --no-cache \
       make
 
 ADD ./api ./
-RUN make build SERVICE=messenger/worker
+RUN make build SERVICE=messenger/scheduler
 
 # 実行用コンテナ
 FROM alpine
