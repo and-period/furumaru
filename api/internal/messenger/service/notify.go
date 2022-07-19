@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/uuid"
+	"go.uber.org/zap"
 )
 
 func (s *service) NotifyRegisterAdmin(ctx context.Context, in *messenger.NotifyRegisterAdminInput) error {
@@ -71,6 +72,15 @@ func (s *service) NotifyReceivedContact(ctx context.Context, in *messenger.Notif
 	}
 	err = s.sendMessage(ctx, payload)
 	return exception.InternalError(err)
+}
+
+func (s *service) NotifyNotification(ctx context.Context, in *messenger.NotifyNotificationInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	// TODO: 詳細の実装
+	s.logger.Debug("Notify Notification", zap.String("notificationId", in.NotificationID), zap.Time("now", s.now()))
+	return nil
 }
 
 func (s *service) sendMessage(ctx context.Context, payload *entity.WorkerPayload) error {

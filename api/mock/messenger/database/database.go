@@ -170,6 +170,26 @@ func (mr *MockNotificationMockRecorder) Create(ctx, notification interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockNotification)(nil).Create), ctx, notification)
 }
 
+// List mocks base method.
+func (m *MockNotification) List(ctx context.Context, params *database.ListNotificationsParams, fields ...string) (entity.Notifications, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, params}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "List", varargs...)
+	ret0, _ := ret[0].(entity.Notifications)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockNotificationMockRecorder) List(ctx, params interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, params}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockNotification)(nil).List), varargs...)
+}
+
 // MockReceivedQueue is a mock of ReceivedQueue interface.
 type MockReceivedQueue struct {
 	ctrl     *gomock.Controller
@@ -282,4 +302,89 @@ func (mr *MockReportTemplateMockRecorder) Get(ctx, reportID interface{}, fields 
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, reportID}, fields...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockReportTemplate)(nil).Get), varargs...)
+}
+
+// MockSchedule is a mock of Schedule interface.
+type MockSchedule struct {
+	ctrl     *gomock.Controller
+	recorder *MockScheduleMockRecorder
+}
+
+// MockScheduleMockRecorder is the mock recorder for MockSchedule.
+type MockScheduleMockRecorder struct {
+	mock *MockSchedule
+}
+
+// NewMockSchedule creates a new mock instance.
+func NewMockSchedule(ctrl *gomock.Controller) *MockSchedule {
+	mock := &MockSchedule{ctrl: ctrl}
+	mock.recorder = &MockScheduleMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockSchedule) EXPECT() *MockScheduleMockRecorder {
+	return m.recorder
+}
+
+// List mocks base method.
+func (m *MockSchedule) List(ctx context.Context, params *database.ListSchedulesParams, fields ...string) (entity.Schedules, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, params}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "List", varargs...)
+	ret0, _ := ret[0].(entity.Schedules)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockScheduleMockRecorder) List(ctx, params interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, params}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockSchedule)(nil).List), varargs...)
+}
+
+// UpdateCancel mocks base method.
+func (m *MockSchedule) UpdateCancel(ctx context.Context, messageType entity.ScheduleType, messageID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateCancel", ctx, messageType, messageID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateCancel indicates an expected call of UpdateCancel.
+func (mr *MockScheduleMockRecorder) UpdateCancel(ctx, messageType, messageID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCancel", reflect.TypeOf((*MockSchedule)(nil).UpdateCancel), ctx, messageType, messageID)
+}
+
+// UpdateDone mocks base method.
+func (m *MockSchedule) UpdateDone(ctx context.Context, messageType entity.ScheduleType, messageID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateDone", ctx, messageType, messageID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateDone indicates an expected call of UpdateDone.
+func (mr *MockScheduleMockRecorder) UpdateDone(ctx, messageType, messageID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateDone", reflect.TypeOf((*MockSchedule)(nil).UpdateDone), ctx, messageType, messageID)
+}
+
+// UpsertProcessing mocks base method.
+func (m *MockSchedule) UpsertProcessing(ctx context.Context, schedule *entity.Schedule) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpsertProcessing", ctx, schedule)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpsertProcessing indicates an expected call of UpsertProcessing.
+func (mr *MockScheduleMockRecorder) UpsertProcessing(ctx, schedule interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertProcessing", reflect.TypeOf((*MockSchedule)(nil).UpsertProcessing), ctx, schedule)
 }

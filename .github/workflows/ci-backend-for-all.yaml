@@ -109,6 +109,12 @@ jobs:
     - name: Build admin gateway
       run: make build SERVICE=gateway/admin
 
+    - name: Build messenger worker
+      run: make build SERVICE=messenger/worker
+
+    - name: Build messenger scheduler
+      run: make build SERVICE=messenger/scheduler
+
   test:
     name: test
     needs: setup

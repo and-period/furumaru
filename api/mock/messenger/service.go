@@ -97,6 +97,20 @@ func (mr *MockServiceMockRecorder) ListContacts(ctx, in interface{}) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListContacts", reflect.TypeOf((*MockService)(nil).ListContacts), ctx, in)
 }
 
+// NotifyNotification mocks base method.
+func (m *MockService) NotifyNotification(ctx context.Context, in *messenger.NotifyNotificationInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "NotifyNotification", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// NotifyNotification indicates an expected call of NotifyNotification.
+func (mr *MockServiceMockRecorder) NotifyNotification(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotifyNotification", reflect.TypeOf((*MockService)(nil).NotifyNotification), ctx, in)
+}
+
 // NotifyReceivedContact mocks base method.
 func (m *MockService) NotifyReceivedContact(ctx context.Context, in *messenger.NotifyReceivedContactInput) error {
 	m.ctrl.T.Helper()
