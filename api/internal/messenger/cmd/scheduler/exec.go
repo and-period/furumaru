@@ -56,5 +56,5 @@ func Exec() error {
 
 	defer logger.Info("Finished...")
 	reg.waitGroup.Wait()
-	return nil
+	return err
 }
