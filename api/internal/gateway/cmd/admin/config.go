@@ -7,6 +7,7 @@ import (
 )
 
 type config struct {
+	AppName              string `envconfig:"APP_NAME" default:"admin-gateway"`
 	Environment          string `envconfig:"ENV" default:"none"`
 	Port                 int64  `envconfig:"PORT" default:"8080"`
 	MetricsPort          int64  `envconfig:"METRICS_PORT" default:"9090"`
@@ -21,6 +22,8 @@ type config struct {
 	DBTimeZone           string `envconfig:"DB_TIMEZONE" default:""`
 	DBEnabledTLS         bool   `envconfig:"DB_ENABLED_TLS" default:"false"`
 	DBSecretName         string `envconfig:"DB_SECRET_NAME" default:""`
+	NewRelicLicense      string `envconvif:"NEW_RELIC_LICENSE" default:""`
+	NewRelicSecretName   string `envconvif:"NEW_RELIC_SECRET_NAME" default:""`
 	AWSRegion            string `envconfig:"AWS_REGION" default:"ap-northeast-1"`
 	S3Bucket             string `envconfig:"S3_BUCKET" default:""`
 	CognitoAdminPoolID   string `envconfig:"COGNITO_Admin_POOL_ID" default:""`
