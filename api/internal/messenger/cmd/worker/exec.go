@@ -40,7 +40,7 @@ func Exec() error {
 	switch conf.RunMethod {
 	case "lambda":
 		logger.Info("Started Lambda function")
-		lambda.Start(reg.worker.Lambda)
+		lambda.StartWithOptions(reg.worker.Lambda, lambda.WithContext(ctx))
 	default:
 		logger.Warn("Not runnning...", zap.String("method", conf.RunMethod))
 		return nil
