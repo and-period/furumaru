@@ -74,12 +74,14 @@ services:
       - PORT=9000
       - METRICS_PORT=9001
       - SHUTDOWN_DELAY_SEC=0
+      - ENV=development
       - LOG_LEVEL=debug
       - LOG_PATH=/var/log/api
       - DB_HOST=mysql
       - DB_PORT=3306
       - DB_USERNAME=root
       - DB_PASSWORD=12345678
+      - NEW_RELIC_LICENSE=${NEW_RELIC_LICENSE}
       - AWS_REGION=${AWS_REGION}
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
