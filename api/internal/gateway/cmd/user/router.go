@@ -12,11 +12,13 @@ import (
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	"github.com/line/line-bot-sdk-go/v7/linebot"
+	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 	"go.uber.org/zap"
 )
 
 func newRouter(reg *registry, logger *zap.Logger) *gin.Engine {
 	opts := make([]gin.HandlerFunc, 0)
+	opts = append(opts, nrgin.Middleware(reg.newRelic))
 	opts = append(opts, accessLogger(logger))
 	opts = append(opts, cors.NewGinMiddleware())
 	opts = append(opts, gzip.Gzip(gzip.DefaultCompression))
@@ -92,10 +94,9 @@ func notifyError(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 		if reg.line == nil {
 			return
 		}
-		const service = "user-gateway"
-		altText := fmt.Sprintf("[ふるマルアラート] %s", service)
+		altText := fmt.Sprintf("[ふるマルアラート] %s", reg.appName)
 		components := []linebot.FlexComponent{
-			newAlertContent("service", service),
+			newAlertContent("service", reg.appName),
 			newAlertContent("env", reg.env),
 			newAlertContent("status", strconv.FormatInt(int64(status), 10)),
 			newAlertContent("method", method),
