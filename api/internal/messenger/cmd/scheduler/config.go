@@ -7,7 +7,7 @@ import (
 )
 
 type config struct {
-	AppName            string `envconfig:"APP_NAME" default:"admin-gateway"`
+	AppName            string `envconfig:"APP_NAME" default:"messenger-scheduler"`
 	Environment        string `envconfig:"ENV" default:"none"`
 	RunMethod          string `envconfig:"RUN_METHOD" default:"lambda"`
 	LogPath            string `envconfig:"LOG_PATH" default:""`
