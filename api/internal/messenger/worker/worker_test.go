@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -17,6 +18,7 @@ import (
 	mock_user "github.com/and-period/furumaru/api/mock/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mailer"
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
@@ -127,7 +129,64 @@ func TestWorker(t *testing.T) {
 	assert.NotNil(t, w)
 }
 
-func TestWorker_Dispatch(t *testing.T) {
+func TestWorkre_Dispatch(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		record    events.SQSMessage
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				queue := &entity.ReceivedQueue{Done: true}
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, gomock.Any()).Return(queue, nil)
+			},
+			record: events.SQSMessage{
+				Body: `{"queueId":"", "eventType":0, "userType":0, "userIds":[]}`,
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "failed to unmarshall sqs event",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			record:    events.SQSMessage{},
+			expectErr: nil,
+		},
+		{
+			name: "failed to run with retry",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, gomock.Any()).Return(nil, exception.ErrUnavailable)
+			},
+			record: events.SQSMessage{
+				Body: `{"queueId":"", "eventType":0, "userType":0, "userIds":[]}`,
+			},
+			expectErr: exception.ErrUnavailable,
+		},
+		{
+			name: "failed to run without retry",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, gomock.Any()).Return(nil, errmock)
+			},
+			record: events.SQSMessage{
+				Body: `{"queueId":"", "eventType":0, "userType":0, "userIds":[]}`,
+			},
+			expectErr: nil,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
+			err := worker.dispatch(ctx, tt.record)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestWorker_Run(t *testing.T) {
 	t.Parallel()
 
 	in := &user.MultiGetUsersInput{
@@ -318,7 +377,7 @@ func TestWorker_Dispatch(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
-			err := worker.dispatch(ctx, tt.payload)
+			err := worker.run(ctx, tt.payload)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}

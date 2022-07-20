@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"errors"
 
 	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -39,15 +40,13 @@ func Exec() error {
 	logger.Info("Started")
 	switch conf.RunMethod {
 	case "lambda":
-		logger.Info("Started Lambda function")
 		lambda.StartWithOptions(reg.worker.Lambda, lambda.WithContext(ctx))
 	default:
-		logger.Warn("Not runnning...", zap.String("method", conf.RunMethod))
-		return nil
+		err = errors.New("not implemented")
 	}
 
 	// Workerの停止
 	logger.Info("Shutdown...")
 	reg.waitGroup.Wait()
-	return nil
+	return err
 }

@@ -48,10 +48,8 @@ func Exec() error {
 	logger.Info("Started")
 	switch conf.RunMethod {
 	case "lambda":
-		logger.Info("Started Lambda function")
 		lambda.StartWithOptions(reg.job.Lambda, lambda.WithContext(ctx))
 	default:
-		logger.Info("Started manual function")
 		err = reg.job.Run(ctx, target)
 	}
 

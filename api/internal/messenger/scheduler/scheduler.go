@@ -71,7 +71,12 @@ func NewScheduler(params *Params, opts ...Option) Scheduler {
 	}
 }
 
-func (s *scheduler) Lambda(ctx context.Context) error {
+func (s *scheduler) Lambda(ctx context.Context) (err error) {
+	s.logger.Debug("Started Lambda function", zap.Time("now", s.now()))
+	defer func() {
+		s.logger.Debug("Finished Lambda function", zap.Time("now", s.now()), zap.Error(err))
+	}()
+
 	return s.run(ctx, s.now())
 }
 
