@@ -2850,8 +2850,8 @@ export const AdministratorApiAxiosParamCreator = function (
     /**
      *
      * @summary システム管理者一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -2966,8 +2966,8 @@ export const AdministratorApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary システム管理者一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -3041,8 +3041,8 @@ export const AdministratorApiFactory = function (
     /**
      *
      * @summary システム管理者一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -3099,8 +3099,8 @@ export class AdministratorApi extends BaseAPI {
   /**
    *
    * @summary システム管理者一覧取得
-   * @param {number} [limit] 取得上限数
-   * @param {number} [offset] 取得開始位置
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdministratorApi
@@ -3986,9 +3986,9 @@ export const CategoryApiAxiosParamCreator = function (
     /**
      *
      * @summary 商品種別一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
-     * @param {string} [name] 商品種別名(あいまい検索)
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [name] 商品種別名(あいまい検索)(32文字以内)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4165,9 +4165,9 @@ export const CategoryApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary 商品種別一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
-     * @param {string} [name] 商品種別名(あいまい検索)
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [name] 商品種別名(あいまい検索)(32文字以内)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4268,9 +4268,9 @@ export const CategoryApiFactory = function (
     /**
      *
      * @summary 商品種別一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
-     * @param {string} [name] 商品種別名(あいまい検索)
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [name] 商品種別名(あいまい検索)(32文字以内)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4345,9 +4345,9 @@ export class CategoryApi extends BaseAPI {
   /**
    *
    * @summary 商品種別一覧取得
-   * @param {number} [limit] 取得上限数
-   * @param {number} [offset] 取得開始位置
-   * @param {string} [name] 商品種別名(あいまい検索)
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
+   * @param {string} [name] 商品種別名(あいまい検索)(32文字以内)
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof CategoryApi
@@ -4444,8 +4444,8 @@ export const ContactApiAxiosParamCreator = function (
     /**
      *
      * @summary お問い合わせ一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4597,8 +4597,8 @@ export const ContactApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary お問い合わせ一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4683,8 +4683,8 @@ export const ContactApiFactory = function (
     /**
      *
      * @summary お問い合わせ一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4741,8 +4741,8 @@ export class ContactApi extends BaseAPI {
   /**
    *
    * @summary お問い合わせ一覧取得
-   * @param {number} [limit] 取得上限数
-   * @param {number} [offset] 取得開始位置
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ContactApi
@@ -4892,8 +4892,8 @@ export const CoordinatorApiAxiosParamCreator = function (
     /**
      *
      * @summary 仲介者一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -5118,8 +5118,8 @@ export const CoordinatorApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary 仲介者一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -5249,8 +5249,8 @@ export const CoordinatorApiFactory = function (
     /**
      *
      * @summary 仲介者一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -5337,8 +5337,8 @@ export class CoordinatorApi extends BaseAPI {
   /**
    *
    * @summary 仲介者一覧取得
-   * @param {number} [limit] 取得上限数
-   * @param {number} [offset] 取得開始位置
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof CoordinatorApi
@@ -5655,8 +5655,8 @@ export const ProducerApiAxiosParamCreator = function (
     /**
      *
      * @summary 生産者一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -5882,8 +5882,8 @@ export const ProducerApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary 生産者一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -6009,8 +6009,8 @@ export const ProducerApiFactory = function (
     /**
      *
      * @summary 生産者一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -6097,8 +6097,8 @@ export class ProducerApi extends BaseAPI {
   /**
    *
    * @summary 生産者一覧取得
-   * @param {number} [limit] 取得上限数
-   * @param {number} [offset] 取得開始位置
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ProducerApi
@@ -6260,8 +6260,8 @@ export const ProductApiAxiosParamCreator = function (
     /**
      *
      * @summary 商品一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [coordinatorId] 仲介者ID
      * @param {string} [producerId] 生産者ID
      * @param {*} [options] Override http request option.
@@ -6452,8 +6452,8 @@ export const ProductApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary 商品一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [coordinatorId] 仲介者ID
      * @param {string} [producerId] 生産者ID
      * @param {*} [options] Override http request option.
@@ -6559,8 +6559,8 @@ export const ProductApiFactory = function (
     /**
      *
      * @summary 商品一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [coordinatorId] 仲介者ID
      * @param {string} [producerId] 生産者ID
      * @param {*} [options] Override http request option.
@@ -6638,8 +6638,8 @@ export class ProductApi extends BaseAPI {
   /**
    *
    * @summary 商品一覧取得
-   * @param {number} [limit] 取得上限数
-   * @param {number} [offset] 取得開始位置
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
    * @param {string} [coordinatorId] 仲介者ID
    * @param {string} [producerId] 生産者ID
    * @param {*} [options] Override http request option.
@@ -6807,8 +6807,8 @@ export const ProductTypeApiAxiosParamCreator = function (
     /**
      *
      * @summary 品目一覧取得(商品種別指定なし)
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 品目名(あいまい検索)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6869,9 +6869,9 @@ export const ProductTypeApiAxiosParamCreator = function (
      *
      * @summary 品目一覧取得
      * @param {string} categoryId 商品種別ID
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
-     * @param {string} [name] 品目名(あいまい検索)
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [name] 品目名(あいまい検索)(32文字以内)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7074,8 +7074,8 @@ export const ProductTypeApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary 品目一覧取得(商品種別指定なし)
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 品目名(あいまい検索)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -7109,9 +7109,9 @@ export const ProductTypeApiFp = function (configuration?: Configuration) {
      *
      * @summary 品目一覧取得
      * @param {string} categoryId 商品種別ID
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
-     * @param {string} [name] 品目名(あいまい検索)
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [name] 品目名(あいまい検索)(32文字以内)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7224,8 +7224,8 @@ export const ProductTypeApiFactory = function (
     /**
      *
      * @summary 品目一覧取得(商品種別指定なし)
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 品目名(あいまい検索)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -7244,9 +7244,9 @@ export const ProductTypeApiFactory = function (
      *
      * @summary 品目一覧取得
      * @param {string} categoryId 商品種別ID
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
-     * @param {string} [name] 品目名(あいまい検索)
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [name] 品目名(あいまい検索)(32文字以内)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7331,8 +7331,8 @@ export class ProductTypeApi extends BaseAPI {
   /**
    *
    * @summary 品目一覧取得(商品種別指定なし)
-   * @param {number} [limit] 取得上限数
-   * @param {number} [offset] 取得開始位置
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
    * @param {string} [name] 品目名(あいまい検索)
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -7353,9 +7353,9 @@ export class ProductTypeApi extends BaseAPI {
    *
    * @summary 品目一覧取得
    * @param {string} categoryId 商品種別ID
-   * @param {number} [limit] 取得上限数
-   * @param {number} [offset] 取得開始位置
-   * @param {string} [name] 品目名(あいまい検索)
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
+   * @param {string} [name] 品目名(あいまい検索)(32文字以内)
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ProductTypeApi
@@ -7790,8 +7790,8 @@ export const ShippingsApiAxiosParamCreator = function (
     /**
      *
      * @summary 配送設定一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7855,8 +7855,8 @@ export const ShippingsApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary 配送設定一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7899,8 +7899,8 @@ export const ShippingsApiFactory = function (
     /**
      *
      * @summary 配送設定一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7926,8 +7926,8 @@ export class ShippingsApi extends BaseAPI {
   /**
    *
    * @summary 配送設定一覧取得
-   * @param {number} [limit] 取得上限数
-   * @param {number} [offset] 取得開始位置
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ShippingsApi
