@@ -26,6 +26,7 @@ import (
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/newrelic/go-agent/v3/integrations/nrzap"
 	"github.com/newrelic/go-agent/v3/newrelic"
+	"github.com/rafaelhl/gorm-newrelic-telemetry-plugin/telemetry"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
@@ -252,12 +253,19 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 		Username: p.dbUsername,
 		Password: p.dbPassword,
 	}
-	return database.NewClient(
+	cli, err := database.NewClient(
 		params,
 		database.WithLogger(p.logger),
 		database.WithTLS(p.config.DBEnabledTLS),
 		database.WithTimeZone(p.config.DBTimeZone),
 	)
+	if err != nil {
+		return nil, err
+	}
+	if err := cli.DB.Use(telemetry.NewNrTracer(dbname, p.dbHost, string(newrelic.DatastoreMySQL))); err != nil {
+		return nil, err
+	}
+	return cli, nil
 }
 
 func newMessengerService(ctx context.Context, p *params) (messenger.Service, error) {
