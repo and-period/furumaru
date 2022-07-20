@@ -213,6 +213,7 @@ func getSecret(ctx context.Context, p *params) error {
 		// New Relic認証情報の取得
 		if p.config.NewRelicSecretName == "" {
 			p.newRelicLicense = p.config.NewRelicLicense
+			return nil
 		}
 		secrets, err := p.secret.Get(ectx, p.config.NewRelicSecretName)
 		if err != nil {
