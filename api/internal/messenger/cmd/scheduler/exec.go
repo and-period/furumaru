@@ -5,6 +5,7 @@ import (
 
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/log"
+	"github.com/aws/aws-lambda-go/lambda"
 	"go.uber.org/zap"
 )
 
@@ -44,6 +45,16 @@ func Exec() error {
 
 	// Jobの起動
 	logger.Info("Started")
+	switch conf.RunMethod {
+	case "lambda":
+		logger.Info("Started Lambda function")
+		lambda.Start(reg.job.Lambda)
+	default:
+		logger.Info("Started manual function")
+		err = reg.job.Run(ctx, target)
+	}
+
 	defer logger.Info("Finished...")
-	return reg.job.Run(ctx, target)
+	reg.waitGroup.Wait()
+	return nil
 }

@@ -7,6 +7,7 @@ import (
 )
 
 type config struct {
+	RunMethod      string `envconfig:"RUN_METHOD" default:"lambda"`
 	LogPath        string `envconfig:"LOG_PATH" default:""`
 	LogLevel       string `envconfig:"LOG_LEVEL" default:"info"`
 	DBSocket       string `envconfig:"DB_SOCKET" default:"tcp"`

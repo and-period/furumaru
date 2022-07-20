@@ -16,6 +16,7 @@ import (
 
 type Scheduler interface {
 	Run(ctx context.Context, target time.Time) error
+	Lambda(ctx context.Context) error
 }
 
 type Params struct {
@@ -70,7 +71,15 @@ func NewScheduler(params *Params, opts ...Option) Scheduler {
 	}
 }
 
+func (s *scheduler) Lambda(ctx context.Context) error {
+	return s.run(ctx, s.now())
+}
+
 func (s *scheduler) Run(ctx context.Context, target time.Time) error {
+	return s.run(ctx, target)
+}
+
+func (s *scheduler) run(ctx context.Context, target time.Time) error {
 	eg, ectx := errgroup.WithContext(ctx)
 	for _, scheduleType := range entity.ScheduleTypes {
 		scheduleType := scheduleType
