@@ -63,9 +63,9 @@ jobs:
         docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:latest
         docker push -a ${ECR_REPOSITORY_URL}
 
-    # - name: Deploy AWS Lambda function
-    #   run: |
-    #     aws lambda update-function-code \
-    #       --function-name="${LAMBDA_FUNCTION}" \
-    #       --image-uri="${ECR_REPOSITORY_URL}:latest" \
-    #     | jq '. | del(.Environment)'
+    - name: Deploy AWS Lambda function
+      run: |
+        aws lambda update-function-code \
+          --function-name="${LAMBDA_FUNCTION}" \
+          --image-uri="${ECR_REPOSITORY_URL}:latest" \
+        | jq '. | del(.Environment)'
