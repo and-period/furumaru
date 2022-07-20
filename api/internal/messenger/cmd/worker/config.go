@@ -7,6 +7,8 @@ import (
 )
 
 type config struct {
+	AppName              string `envconfig:"APP_NAME" default:"admin-gateway"`
+	Environment          string `envconfig:"ENV" default:"none"`
 	RunMethod            string `envconfig:"RUN_METHOD" default:"lambda"`
 	ShutdownDelaySec     int64  `envconfig:"SHUTDOWN_DELAY_SEC" default:"20"`
 	LogPath              string `envconfig:"LOG_PATH" default:""`
@@ -19,6 +21,8 @@ type config struct {
 	DBTimeZone           string `envconfig:"DB_TIMEZONE" default:""`
 	DBEnabledTLS         bool   `envconfig:"DB_ENABLED_TLS" default:"false"`
 	DBSecretName         string `envconfig:"DB_SECRET_NAME" default:""`
+	NewRelicLicense      string `envconfig:"NEW_RELIC_LICENSE" default:""`
+	NewRelicSecretName   string `envconfig:"NEW_RELIC_SECRET_NAME" default:""`
 	AWSRegion            string `envconfig:"AWS_REGION" default:"ap-northeast-1"`
 	SendGridAPIKey       string `envconfig:"SENDGRID_API_KEY" default:""`
 	SendGridTemplatePath string `envconfig:"SENDGRID_TEMPLATE_PATH" default:""`

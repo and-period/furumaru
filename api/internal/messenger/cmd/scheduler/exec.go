@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"time"
 
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/log"
@@ -34,14 +35,14 @@ func Exec() error {
 	}
 
 	// Job実行に必要な引数の生成
-	target := jst.Now()
-	if conf.TargetDatetime != "" {
-		target, err = jst.Parse("2006-01-02 15:04:05", conf.TargetDatetime)
-		if err != nil {
-			logger.Error("Failed to parse target datetime", zap.Error(err), zap.String("target", conf.TargetDatetime))
-			return err
-		}
+	target, err := getTarget(conf)
+	if err != nil {
+		logger.Error("Failed to parse target datetime", zap.Error(err), zap.String("target", conf.TargetDatetime))
+		return err
 	}
+
+	txn := reg.newRelic.StartTransaction(reg.appName)
+	defer txn.End()
 
 	// Jobの起動
 	logger.Info("Started")
@@ -57,4 +58,11 @@ func Exec() error {
 	defer logger.Info("Finished...")
 	reg.waitGroup.Wait()
 	return err
+}
+
+func getTarget(conf *config) (time.Time, error) {
+	if conf.TargetDatetime == "" {
+		return jst.Now(), nil
+	}
+	return jst.Parse("2006-01-02 15:04:05", conf.TargetDatetime)
 }

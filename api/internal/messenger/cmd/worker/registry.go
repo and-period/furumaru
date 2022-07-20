@@ -16,32 +16,39 @@ import (
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
+	"github.com/newrelic/go-agent/v3/newrelic"
+	"github.com/rafaelhl/gorm-newrelic-telemetry-plugin/telemetry"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 	"gopkg.in/yaml.v2"
 )
 
 type registry struct {
+	appName   string
+	env       string
 	waitGroup *sync.WaitGroup
+	newRelic  *newrelic.Application
 	worker    worker.Worker
 }
 
 type params struct {
-	config         *config
-	logger         *zap.Logger
-	waitGroup      *sync.WaitGroup
-	mailer         mailer.Client
-	line           line.Client
-	aws            aws.Config
-	secret         secret.Client
-	dbHost         string
-	dbPort         string
-	dbUsername     string
-	dbPassword     string
-	sendGridAPIKey string
-	lineToken      string
-	lineSecret     string
-	lineRoomID     string
+	config          *config
+	logger          *zap.Logger
+	waitGroup       *sync.WaitGroup
+	mailer          mailer.Client
+	line            line.Client
+	newRelic        *newrelic.Application
+	aws             aws.Config
+	secret          secret.Client
+	dbHost          string
+	dbPort          string
+	dbUsername      string
+	dbPassword      string
+	sendGridAPIKey  string
+	lineToken       string
+	lineSecret      string
+	lineRoomID      string
+	newRelicLicense string
 }
 
 func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*registry, error) {
@@ -64,13 +71,23 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		return nil, err
 	}
 
+	// New Relicの設定
+	if params.newRelicLicense != "" {
+		newrelicApp, err := newrelic.NewApplication(
+			newrelic.ConfigAppName(conf.AppName),
+			newrelic.ConfigLicense(params.newRelicLicense),
+			newrelic.ConfigAppLogForwardingEnabled(true),
+		)
+		if err != nil {
+			return nil, err
+		}
+		params.newRelic = newrelicApp
+	}
+
 	// Databaseの設定
-	mysql, err := newDatabase("messengers", params)
+	dbClient, err := newDatabase("messengers", params)
 	if err != nil {
 		return nil, err
-	}
-	dbParams := &messengerdb.Params{
-		Database: mysql,
 	}
 
 	// メールテンプレートの設定
@@ -113,6 +130,9 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}
 
 	// Workerの設定
+	dbParams := &messengerdb.Params{
+		Database: dbClient,
+	}
 	workerParams := &worker.Params{
 		WaitGroup: params.waitGroup,
 		DB:        messengerdb.NewDatabase(dbParams),
@@ -121,7 +141,10 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		User:      userService,
 	}
 	return &registry{
+		appName:   conf.AppName,
+		env:       conf.Environment,
 		waitGroup: params.waitGroup,
+		newRelic:  params.newRelic,
 		worker:    worker.NewWorker(workerParams, worker.WithLogger(logger)),
 	}, nil
 }
@@ -177,6 +200,19 @@ func getSecret(ctx context.Context, p *params) error {
 		p.lineRoomID = secrets["roomId"]
 		return nil
 	})
+	eg.Go(func() error {
+		// New Relic認証情報の取得
+		if p.config.NewRelicSecretName == "" {
+			p.newRelicLicense = p.config.NewRelicLicense
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, p.config.NewRelicSecretName)
+		if err != nil {
+			return err
+		}
+		p.newRelicLicense = secrets["license"]
+		return nil
+	})
 	return eg.Wait()
 }
 
@@ -189,12 +225,19 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 		Username: p.dbUsername,
 		Password: p.dbPassword,
 	}
-	return database.NewClient(
+	cli, err := database.NewClient(
 		params,
 		database.WithLogger(p.logger),
 		database.WithTLS(p.config.DBEnabledTLS),
 		database.WithTimeZone(p.config.DBTimeZone),
 	)
+	if err != nil {
+		return nil, err
+	}
+	if err := cli.DB.Use(telemetry.NewNrTracer(dbname, p.dbHost, string(newrelic.DatastoreMySQL))); err != nil {
+		return nil, err
+	}
+	return cli, nil
 }
 
 func newUserService(ctx context.Context, p *params) (user.Service, error) {

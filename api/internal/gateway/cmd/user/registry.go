@@ -23,7 +23,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
-	"github.com/newrelic/go-agent/v3/integrations/nrzap"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/rafaelhl/gorm-newrelic-telemetry-plugin/telemetry"
 	"go.uber.org/zap"
@@ -108,7 +107,6 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 			newrelic.ConfigAppName(conf.AppName),
 			newrelic.ConfigLicense(params.newRelicLicense),
 			newrelic.ConfigAppLogForwardingEnabled(true),
-			newrelic.ConfigLogger(nrzap.Transform(logger)),
 		)
 		if err != nil {
 			return nil, err
