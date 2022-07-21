@@ -121,7 +121,6 @@ func (s *service) notifyAdminNotification(ctx context.Context, notification *ent
 		ReceivedAt:  s.now(),
 	}
 	payload := &entity.WorkerPayload{
-		QueueID:   uuid.Base58Encode(uuid.New()),
 		EventType: entity.EventTypeAdminNotification,
 		Message:   message,
 	}
@@ -174,6 +173,7 @@ func (s *service) sendAllCoordinators(ctx context.Context, payload *entity.Worke
 		}
 
 		payload := *payload // copy
+		payload.QueueID = uuid.Base58Encode(uuid.New())
 		payload.UserType = entity.UserTypeCoordinator
 		payload.UserIDs = coordinators.IDs()
 		if err := s.sendMessage(ctx, &payload); err != nil {
@@ -205,6 +205,7 @@ func (s *service) sendAllProducers(ctx context.Context, payload *entity.WorkerPa
 		}
 
 		payload := *payload // copy
+		payload.QueueID = uuid.Base58Encode(uuid.New())
 		payload.UserType = entity.UserTypeProducer
 		payload.UserIDs = producers.IDs()
 		if err := s.sendMessage(ctx, &payload); err != nil {
