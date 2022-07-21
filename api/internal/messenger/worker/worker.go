@@ -154,6 +154,13 @@ func (w *worker) run(ctx context.Context, payload *entity.WorkerPayload) error {
 		return w.multiSendMail(ectx, payload)
 	})
 	eg.Go(func() error {
+		// メッセージ作成
+		if payload.Message == nil {
+			return nil
+		}
+		return w.messenger(ectx, payload)
+	})
+	eg.Go(func() error {
 		// システムレポート
 		if payload.Report == nil {
 			return nil

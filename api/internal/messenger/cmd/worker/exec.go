@@ -33,9 +33,6 @@ func Exec() error {
 		return err
 	}
 
-	txn := reg.newRelic.StartTransaction(reg.appName)
-	defer txn.End()
-
 	// Workerの起動
 	logger.Info("Started")
 	switch conf.RunMethod {

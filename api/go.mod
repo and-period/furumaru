@@ -26,7 +26,6 @@ require (
 	github.com/line/line-bot-sdk-go/v7 v7.16.0
 	github.com/newrelic/go-agent/v3 v3.17.0
 	github.com/newrelic/go-agent/v3/integrations/nrgin v1.1.2
-	github.com/newrelic/go-agent/v3/integrations/nrzap v1.0.1
 	github.com/prometheus/client_golang v1.12.2
 	github.com/rafaelhl/gorm-newrelic-telemetry-plugin v1.0.0
 	github.com/rs/cors v1.8.2

@@ -4,6 +4,7 @@ import (
 	"time"
 )
 
+// ScheduleType - 通知スケジュール種別
 type ScheduleType int32
 
 const (
@@ -15,6 +16,7 @@ var ScheduleTypes = []ScheduleType{
 	ScheduleTypeNotification,
 }
 
+// ScheduleStatus - 通知スケジュール実行状態
 type ScheduleStatus int32
 
 const (

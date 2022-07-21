@@ -56,6 +56,13 @@ func (n *notification) List(
 	return notifications, nil
 }
 
+func (n *notification) Get(
+	ctx context.Context, notificationID string, fields ...string,
+) (*entity.Notification, error) {
+	notification, err := n.get(ctx, n.db.DB, notificationID, fields...)
+	return notification, exception.InternalError(err)
+}
+
 func (n *notification) Create(ctx context.Context, notification *entity.Notification) error {
 	_, err := n.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		now := n.now()
@@ -68,4 +75,25 @@ func (n *notification) Create(ctx context.Context, notification *entity.Notifica
 		return nil, err
 	})
 	return exception.InternalError(err)
+}
+
+func (n *notification) get(
+	ctx context.Context, tx *gorm.DB, notificationID string, fields ...string,
+) (*entity.Notification, error) {
+	var notification *entity.Notification
+	if len(fields) == 0 {
+		fields = notificationFields
+	}
+
+	err := n.db.DB.WithContext(ctx).
+		Table(notificationTable).Select(fields).
+		Where("id = ?", notificationID).
+		First(&notification).Error
+	if err != nil {
+		return nil, err
+	}
+	if err := notification.Fill(); err != nil {
+		return nil, err
+	}
+	return notification, nil
 }

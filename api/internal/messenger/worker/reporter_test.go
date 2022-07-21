@@ -57,7 +57,7 @@ func TestReporter(t *testing.T) {
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
 				EventType: entity.EventTypeUserReceivedContact,
-				Report: &entity.Report{
+				Report: &entity.ReportConfig{
 					ReportID: entity.ReportIDReceivedContact,
 					Overview: "お問い合わせ件名",
 					Link:     "htts://admin.and-period.jp/contacts/contact-id",
@@ -73,7 +73,7 @@ func TestReporter(t *testing.T) {
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
 				EventType: entity.EventTypeUserReceivedContact,
-				Report: &entity.Report{
+				Report: &entity.ReportConfig{
 					ReportID: entity.ReportIDReceivedContact,
 					Overview: "お問い合わせ件名",
 					Link:     "htts://admin.and-period.jp/contacts/contact-id",
@@ -90,7 +90,7 @@ func TestReporter(t *testing.T) {
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
 				EventType: entity.EventTypeUserReceivedContact,
-				Report: &entity.Report{
+				Report: &entity.ReportConfig{
 					ReportID: entity.ReportIDReceivedContact,
 					Overview: "お問い合わせ件名",
 					Link:     "htts://admin.and-period.jp/contacts/contact-id",

@@ -95,3 +95,31 @@ func TestProducer_Name(t *testing.T) {
 		})
 	}
 }
+
+func TestProducers_IDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		producers Producers
+		expect    []string
+	}{
+		{
+			name: "success",
+			producers: Producers{
+				{ID: "producer-id01"},
+				{ID: "producer-id02"},
+			},
+			expect: []string{
+				"producer-id01",
+				"producer-id02",
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.producers.IDs())
+		})
+	}
+}

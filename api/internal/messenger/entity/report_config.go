@@ -10,8 +10,8 @@ const (
 	ReportIDReceivedContact = "received-contact" // お問い合わせ受領
 )
 
-// Report - システムレポート情報
-type Report struct {
+// ReportConfig - システムレポート送信設定
+type ReportConfig struct {
 	ReportID   string    `json:"reportId"`   // レポートID
 	Overview   string    `json:"overview"`   // レポート概要
 	Detail     string    `json:"detail"`     // レポート詳細
@@ -19,7 +19,7 @@ type Report struct {
 	ReceivedAt time.Time `json:"receivedAt"` // 受信日時
 }
 
-func (r *Report) Fields() map[string]string {
+func (r *ReportConfig) Fields() map[string]string {
 	return map[string]string{
 		"Overview":   r.Overview,
 		"Detail":     r.Detail,

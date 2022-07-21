@@ -32,11 +32,13 @@ type mocks struct {
 }
 
 type dbMocks struct {
-	Contact        *mock_database.MockContact
-	Notification   *mock_database.MockNotification
-	ReceivedQueue  *mock_database.MockReceivedQueue
-	ReportTemplate *mock_database.MockReportTemplate
-	Schedule       *mock_database.MockSchedule
+	Contact         *mock_database.MockContact
+	Message         *mock_database.MockMessage
+	MessageTemplate *mock_database.MockMessageTemplate
+	Notification    *mock_database.MockNotification
+	ReceivedQueue   *mock_database.MockReceivedQueue
+	ReportTemplate  *mock_database.MockReportTemplate
+	Schedule        *mock_database.MockSchedule
 }
 
 type testOptions struct {
@@ -44,6 +46,14 @@ type testOptions struct {
 }
 
 type testOption func(opts *testOptions)
+
+func withNow(now time.Time) testOption {
+	return func(opts *testOptions) {
+		opts.now = func() time.Time {
+			return now
+		}
+	}
+}
 
 type testCaller func(ctx context.Context, t *testing.T, service *service)
 
@@ -57,11 +67,13 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
-		Contact:        mock_database.NewMockContact(ctrl),
-		Notification:   mock_database.NewMockNotification(ctrl),
-		ReceivedQueue:  mock_database.NewMockReceivedQueue(ctrl),
-		ReportTemplate: mock_database.NewMockReportTemplate(ctrl),
-		Schedule:       mock_database.NewMockSchedule(ctrl),
+		Contact:         mock_database.NewMockContact(ctrl),
+		Message:         mock_database.NewMockMessage(ctrl),
+		MessageTemplate: mock_database.NewMockMessageTemplate(ctrl),
+		Notification:    mock_database.NewMockNotification(ctrl),
+		ReceivedQueue:   mock_database.NewMockReceivedQueue(ctrl),
+		ReportTemplate:  mock_database.NewMockReportTemplate(ctrl),
+		Schedule:        mock_database.NewMockSchedule(ctrl),
 	}
 }
 
@@ -89,11 +101,13 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		adminWebURL: adminWebURL,
 		userWebURL:  userWebURL,
 		db: &database.Database{
-			Contact:        mocks.db.Contact,
-			Notification:   mocks.db.Notification,
-			ReceivedQueue:  mocks.db.ReceivedQueue,
-			ReportTemplate: mocks.db.ReportTemplate,
-			Schedule:       mocks.db.Schedule,
+			Contact:         mocks.db.Contact,
+			Message:         mocks.db.Message,
+			MessageTemplate: mocks.db.MessageTemplate,
+			Notification:    mocks.db.Notification,
+			ReceivedQueue:   mocks.db.ReceivedQueue,
+			ReportTemplate:  mocks.db.ReportTemplate,
+			Schedule:        mocks.db.Schedule,
 		},
 		user: mocks.user,
 	}
