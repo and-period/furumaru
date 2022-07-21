@@ -17,6 +17,8 @@ func TestMessage(t *testing.T) {
 }
 
 func TestMessage_MultiCreate(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -26,6 +28,8 @@ func TestMessage_MultiCreate(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
+
+	_ = m.dbDelete(ctx, messageTable)
 
 	type args struct {
 		messages entity.Messages
@@ -75,7 +79,7 @@ func TestMessage_MultiCreate(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, notificationTable)
+			err := m.dbDelete(ctx, messageTable)
 			require.NoError(t, err)
 			tt.setup(ctx, t, m)
 
