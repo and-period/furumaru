@@ -178,7 +178,7 @@ export default defineComponent({
         )
         productTypeDialog.value = false
         commonStore.addSnackbar({
-          message: `品物を追加しました。`,
+          message: `品目を追加しました。`,
           color: 'info',
         })
       } catch (error) {
