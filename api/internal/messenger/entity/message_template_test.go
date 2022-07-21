@@ -26,7 +26,7 @@ func TestMessageTemplate_Build(t *testing.T) {
 				UpdatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
 			},
 			fields: map[string]string{},
-			expect: "メッセージの内容です。メッセージの内容です。t re",
+			expect: "メッセージの内容です。",
 			hasErr: false,
 		},
 	}
