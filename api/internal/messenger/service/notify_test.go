@@ -326,7 +326,8 @@ func TestNotifyNotification(t *testing.T) {
 			name: "failed to notify admin notification",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
-				mocks.user.EXPECT().ListCoordinators(gomock.Any(), gomock.Any()).Return(nil, int64(1), errmock)
+				mocks.user.EXPECT().ListCoordinators(gomock.Any(), gomock.Any()).Return(nil, int64(0), errmock)
+				mocks.user.EXPECT().ListProducers(gomock.Any(), gomock.Any()).Return(nil, int64(0), errmock)
 			},
 			input: &messenger.NotifyNotificationInput{
 				NotificationID: "notification-id",
