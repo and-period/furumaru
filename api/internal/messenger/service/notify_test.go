@@ -237,6 +237,7 @@ func TestNotifyNotification(t *testing.T) {
 			entity.PostTargetCoordinators,
 			entity.PostTargetProducers,
 		},
+		CreatorName: "&.スタッフ",
 	}
 	coordinators := uentity.Coordinators{{ID: "admin-id"}}
 	producers := uentity.Producers{}
@@ -282,6 +283,7 @@ func TestNotifyNotification(t *testing.T) {
 								MessageID:   entity.MessageIDNotification,
 								MessageType: entity.MessageTypeNotification,
 								Title:       "お知らせ件名",
+								Prepared:    "&.スタッフ",
 								Link:        "htts://admin.and-period.jp/notifications/notification-id",
 								ReceivedAt:  payload.Message.ReceivedAt, // ignore
 							},
@@ -424,12 +426,6 @@ func TestSendAllCoordinators(t *testing.T) {
 		{ID: "admin-id01"},
 		{ID: "admin-id02"},
 	}
-	queue := &entity.ReceivedQueue{
-		ID:        "queue-id",
-		EventType: entity.EventTypeUnknown,
-		UserType:  entity.UserTypeCoordinator,
-		UserIDs:   []string{"admin-id01", "admin-id02"},
-	}
 
 	tests := []struct {
 		name    string
@@ -441,8 +437,19 @@ func TestSendAllCoordinators(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().ListCoordinators(ctx, in).Return(coordinators, int64(2), nil)
-				mocks.db.ReceivedQueue.EXPECT().Create(ctx, queue).Return(nil)
 				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", nil)
+				mocks.db.ReceivedQueue.EXPECT().
+					Create(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, queue *entity.ReceivedQueue) error {
+						expect := &entity.ReceivedQueue{
+							ID:        queue.ID, // ignore
+							EventType: entity.EventTypeUnknown,
+							UserType:  entity.UserTypeCoordinator,
+							UserIDs:   []string{"admin-id01", "admin-id02"},
+						}
+						assert.Equal(t, expect, queue)
+						return nil
+					})
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -480,7 +487,7 @@ func TestSendAllCoordinators(t *testing.T) {
 			name: "failed to create received queue",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().ListCoordinators(ctx, in).Return(coordinators, int64(2), nil)
-				mocks.db.ReceivedQueue.EXPECT().Create(ctx, queue).Return(errmock)
+				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -493,7 +500,7 @@ func TestSendAllCoordinators(t *testing.T) {
 			name: "failed to send message",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().ListCoordinators(ctx, in).Return(coordinators, int64(2), nil)
-				mocks.db.ReceivedQueue.EXPECT().Create(ctx, queue).Return(nil)
+				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(nil)
 				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", errmock)
 			},
 			payload: &entity.WorkerPayload{
@@ -524,12 +531,6 @@ func TestSendAllProducers(t *testing.T) {
 		{ID: "admin-id01"},
 		{ID: "admin-id02"},
 	}
-	queue := &entity.ReceivedQueue{
-		ID:        "queue-id",
-		EventType: entity.EventTypeUnknown,
-		UserType:  entity.UserTypeProducer,
-		UserIDs:   []string{"admin-id01", "admin-id02"},
-	}
 
 	tests := []struct {
 		name    string
@@ -541,8 +542,19 @@ func TestSendAllProducers(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().ListProducers(ctx, in).Return(producers, int64(2), nil)
-				mocks.db.ReceivedQueue.EXPECT().Create(ctx, queue).Return(nil)
 				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", nil)
+				mocks.db.ReceivedQueue.EXPECT().
+					Create(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, queue *entity.ReceivedQueue) error {
+						expect := &entity.ReceivedQueue{
+							ID:        queue.ID, // ignore
+							EventType: entity.EventTypeUnknown,
+							UserType:  entity.UserTypeProducer,
+							UserIDs:   []string{"admin-id01", "admin-id02"},
+						}
+						assert.Equal(t, expect, queue)
+						return nil
+					})
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -580,7 +592,7 @@ func TestSendAllProducers(t *testing.T) {
 			name: "failed to create received queue",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().ListProducers(ctx, in).Return(producers, int64(2), nil)
-				mocks.db.ReceivedQueue.EXPECT().Create(ctx, queue).Return(errmock)
+				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -593,7 +605,7 @@ func TestSendAllProducers(t *testing.T) {
 			name: "failed to send message",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().ListProducers(ctx, in).Return(producers, int64(2), nil)
-				mocks.db.ReceivedQueue.EXPECT().Create(ctx, queue).Return(nil)
+				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(nil)
 				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", errmock)
 			},
 			payload: &entity.WorkerPayload{

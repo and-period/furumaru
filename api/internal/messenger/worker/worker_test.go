@@ -214,10 +214,11 @@ func TestWorker_Run(t *testing.T) {
 		},
 	}
 	mtemplate := &entity.MessageTemplate{
-		TemplateID: entity.MessageIDNotification,
-		Template:   `テンプレートです。`,
-		CreatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
-		UpdatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
+		TemplateID:    entity.MessageIDNotification,
+		TitleTemplate: "件名: {{.Title}}",
+		BodyTemplate:  `テンプレートです。`,
+		CreatedAt:     jst.Date(2022, 7, 14, 18, 30, 0, 0),
+		UpdatedAt:     jst.Date(2022, 7, 14, 18, 30, 0, 0),
 	}
 	rtemplate := &entity.ReportTemplate{
 		TemplateID: entity.ReportIDReceivedContact,
