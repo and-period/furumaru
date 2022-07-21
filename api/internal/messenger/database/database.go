@@ -16,20 +16,24 @@ type Params struct {
 }
 
 type Database struct {
-	Contact        Contact
-	Notification   Notification
-	ReceivedQueue  ReceivedQueue
-	ReportTemplate ReportTemplate
-	Schedule       Schedule
+	Contact         Contact
+	Message         Message
+	MessageTemplate MessageTemplate
+	Notification    Notification
+	ReceivedQueue   ReceivedQueue
+	ReportTemplate  ReportTemplate
+	Schedule        Schedule
 }
 
 func NewDatabase(params *Params) *Database {
 	return &Database{
-		Contact:        NewContact(params.Database),
-		Notification:   NewNotification(params.Database),
-		ReceivedQueue:  NewReceivedQueue(params.Database),
-		ReportTemplate: NewReportTemplate(params.Database),
-		Schedule:       NewSchedule(params.Database),
+		Contact:         NewContact(params.Database),
+		Message:         NewMessage(params.Database),
+		MessageTemplate: NewMessageTemplate(params.Database),
+		Notification:    NewNotification(params.Database),
+		ReceivedQueue:   NewReceivedQueue(params.Database),
+		ReportTemplate:  NewReportTemplate(params.Database),
+		Schedule:        NewSchedule(params.Database),
 	}
 }
 
@@ -45,8 +49,17 @@ type Contact interface {
 	Delete(ctx context.Context, contactID string) error
 }
 
+type Message interface {
+	MultiCreate(ctx context.Context, messages entity.Messages) error
+}
+
+type MessageTemplate interface {
+	Get(ctx context.Context, messageID string, fields ...string) (*entity.MessageTemplate, error)
+}
+
 type Notification interface {
 	List(ctx context.Context, params *ListNotificationsParams, fields ...string) (entity.Notifications, error)
+	Get(ctx context.Context, notificationID string, fields ...string) (*entity.Notification, error)
 	Create(ctx context.Context, notification *entity.Notification) error
 }
 

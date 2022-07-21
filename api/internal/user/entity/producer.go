@@ -72,3 +72,11 @@ func NewProducer(params *NewProducerParams) *Producer {
 func (p *Producer) Name() string {
 	return strings.TrimSpace(strings.Join([]string{p.Lastname, p.Firstname}, " "))
 }
+
+func (ps Producers) IDs() []string {
+	res := make([]string, len(ps))
+	for i := range ps {
+		res[i] = ps[i].ID
+	}
+	return res
+}

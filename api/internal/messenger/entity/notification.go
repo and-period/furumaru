@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/datatypes"
 )
@@ -12,11 +13,20 @@ import (
 type TargetType int32
 
 const (
-	PostTargetAll          TargetType = 0 // 全員対象
+	PostTargetUnknown      TargetType = 0
 	PostTargetUsers        TargetType = 1 // ユーザー対象
 	PostTargetProducers    TargetType = 2 // 生産者対象
 	PostTargetCoordinators TargetType = 3 // コーディネーター対象
 )
+
+var targetUsers = []int32{
+	int32(PostTargetUsers),
+}
+
+var targetAdmins = []int32{
+	int32(PostTargetCoordinators),
+	int32(PostTargetProducers),
+}
 
 // Notification - お知らせ情報
 type Notification struct {
@@ -59,6 +69,46 @@ func NewNotification(params *NewNotificationParams) *Notification {
 		Public:      params.Public,
 		PublishedAt: params.PublishedAt,
 	}
+}
+
+func (n *Notification) HasUserTarget() bool {
+	set := set.New(len(targetUsers))
+	set.AddInt32s(targetUsers...)
+	for i := range n.Targets {
+		if set.Contains(int32(n.Targets[i])) {
+			return true
+		}
+	}
+	return false
+}
+
+func (n *Notification) HasAdminTarget() bool {
+	set := set.New(len(targetAdmins))
+	set.AddInt32s(targetAdmins...)
+	for i := range n.Targets {
+		if set.Contains(int32(n.Targets[i])) {
+			return true
+		}
+	}
+	return false
+}
+
+func (n *Notification) HasCoordinatorTarget() bool {
+	for i := range n.Targets {
+		if n.Targets[i] == PostTargetCoordinators {
+			return true
+		}
+	}
+	return false
+}
+
+func (n *Notification) HasProducerTarget() bool {
+	for i := range n.Targets {
+		if n.Targets[i] == PostTargetProducers {
+			return true
+		}
+	}
+	return false
 }
 
 func (n *Notification) Fill() error {

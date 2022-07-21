@@ -133,6 +133,86 @@ func (mr *MockContactMockRecorder) Update(ctx, contactID, params interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockContact)(nil).Update), ctx, contactID, params)
 }
 
+// MockMessage is a mock of Message interface.
+type MockMessage struct {
+	ctrl     *gomock.Controller
+	recorder *MockMessageMockRecorder
+}
+
+// MockMessageMockRecorder is the mock recorder for MockMessage.
+type MockMessageMockRecorder struct {
+	mock *MockMessage
+}
+
+// NewMockMessage creates a new mock instance.
+func NewMockMessage(ctrl *gomock.Controller) *MockMessage {
+	mock := &MockMessage{ctrl: ctrl}
+	mock.recorder = &MockMessageMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockMessage) EXPECT() *MockMessageMockRecorder {
+	return m.recorder
+}
+
+// MultiCreate mocks base method.
+func (m *MockMessage) MultiCreate(ctx context.Context, messages entity.Messages) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MultiCreate", ctx, messages)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// MultiCreate indicates an expected call of MultiCreate.
+func (mr *MockMessageMockRecorder) MultiCreate(ctx, messages interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiCreate", reflect.TypeOf((*MockMessage)(nil).MultiCreate), ctx, messages)
+}
+
+// MockMessageTemplate is a mock of MessageTemplate interface.
+type MockMessageTemplate struct {
+	ctrl     *gomock.Controller
+	recorder *MockMessageTemplateMockRecorder
+}
+
+// MockMessageTemplateMockRecorder is the mock recorder for MockMessageTemplate.
+type MockMessageTemplateMockRecorder struct {
+	mock *MockMessageTemplate
+}
+
+// NewMockMessageTemplate creates a new mock instance.
+func NewMockMessageTemplate(ctrl *gomock.Controller) *MockMessageTemplate {
+	mock := &MockMessageTemplate{ctrl: ctrl}
+	mock.recorder = &MockMessageTemplateMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockMessageTemplate) EXPECT() *MockMessageTemplateMockRecorder {
+	return m.recorder
+}
+
+// Get mocks base method.
+func (m *MockMessageTemplate) Get(ctx context.Context, messageID string, fields ...string) (*entity.MessageTemplate, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, messageID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.MessageTemplate)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockMessageTemplateMockRecorder) Get(ctx, messageID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, messageID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockMessageTemplate)(nil).Get), varargs...)
+}
+
 // MockNotification is a mock of Notification interface.
 type MockNotification struct {
 	ctrl     *gomock.Controller
@@ -168,6 +248,26 @@ func (m *MockNotification) Create(ctx context.Context, notification *entity.Noti
 func (mr *MockNotificationMockRecorder) Create(ctx, notification interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockNotification)(nil).Create), ctx, notification)
+}
+
+// Get mocks base method.
+func (m *MockNotification) Get(ctx context.Context, notificationID string, fields ...string) (*entity.Notification, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, notificationID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.Notification)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockNotificationMockRecorder) Get(ctx, notificationID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, notificationID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockNotification)(nil).Get), varargs...)
 }
 
 // List mocks base method.

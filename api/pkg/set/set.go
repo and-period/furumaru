@@ -61,7 +61,14 @@ func (s *Set) AddStrings(values ...string) {
 	}
 }
 
-// AddStrings - 指定された数字(int64)を代入
+// AddInt32s - 指定された数字(int32)を代入
+func (s *Set) AddInt32s(values ...int32) {
+	for _, v := range values {
+		s.Add(v)
+	}
+}
+
+// AddInt64s - 指定された数字(int64)を代入
 func (s *Set) AddInt64s(values ...int64) {
 	for _, v := range values {
 		s.Add(v)
@@ -93,6 +100,24 @@ func (s *Set) Strings() []string {
 func (s *Set) SortStrings() []string {
 	res := s.Strings()
 	sort.Strings(res)
+	return res
+}
+
+// Int32s - int32型の配列として返す
+func (s *Set) Int32s() []int32 {
+	res := make([]int32, 0, s.Len())
+	for v := range s.values {
+		res = append(res, v.(int32))
+	}
+	return res
+}
+
+// SortInt32s - int32型の配列 (昇順でソートされた状態) として返す
+func (s *Set) SortInt32s() []int32 {
+	res := s.Int32s()
+	sort.Slice(res, func(i, j int) bool {
+		return res[i] < res[j]
+	})
 	return res
 }
 

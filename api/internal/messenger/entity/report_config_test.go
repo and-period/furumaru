@@ -7,16 +7,16 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestReport_Fields(t *testing.T) {
+func TestReportConfig_Fields(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name   string
-		report *Report
+		report *ReportConfig
 		expect map[string]string
 	}{
 		{
 			name: "success",
-			report: &Report{
+			report: &ReportConfig{
 				ReportID:   ReportIDReceivedContact,
 				Overview:   "レポートの概要です。",
 				Detail:     "レポートの詳細です。",

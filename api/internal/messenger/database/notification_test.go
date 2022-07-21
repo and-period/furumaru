@@ -87,6 +87,79 @@ func TestNotification_List(t *testing.T) {
 	}
 }
 
+func TestNotification_Get(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, notificationTable)
+	n := testNotification("notification-id", false, now())
+	err = m.db.DB.Create(&n).Error
+	require.NoError(t, err)
+
+	type args struct {
+		notificationID string
+	}
+	type want struct {
+		notification *entity.Notification
+		hasErr       bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				notificationID: "notification-id",
+			},
+			want: want{
+				notification: n,
+				hasErr:       false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				notificationID: "other-id",
+			},
+			want: want{
+				notification: nil,
+				hasErr:       true,
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &notification{db: m.db, now: now}
+			actual, err := db.Get(ctx, tt.args.notificationID)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			fillIgnoreNotificationField(actual, now())
+			assert.Equal(t, tt.want.notification, actual)
+		})
+	}
+}
+
 func TestNotification_Create(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -158,7 +231,7 @@ func testNotification(id string, public bool, now time.Time) *entity.Notificatio
 		ID:          id,
 		Title:       "お知らせタイトル",
 		Body:        "お知らせの内容です。",
-		Targets:     []entity.TargetType{entity.PostTargetAll},
+		Targets:     []entity.TargetType{entity.PostTargetProducers},
 		Public:      public,
 		CreatorName: "&. スタッフ",
 		CreatedBy:   "coordinator-id",

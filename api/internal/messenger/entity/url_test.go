@@ -15,6 +15,10 @@ func TestAdminURLMaker(t *testing.T) {
 	maker := NewAdminURLMaker(webURL)
 	res := maker.SignIn()
 	assert.Equal(t, "http://example.com/signin", res)
+	res = maker.Contact("contact-id")
+	assert.Equal(t, "http://example.com/contacts/contact-id", res)
+	res = maker.Notification("notification-id")
+	assert.Equal(t, "http://example.com/notifications/notification-id", res)
 }
 
 func TestUserURLMaker(t *testing.T) {

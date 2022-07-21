@@ -34,11 +34,13 @@ type mocks struct {
 }
 
 type dbMocks struct {
-	Contact        *mock_database.MockContact
-	Notification   *mock_database.MockNotification
-	ReceivedQueue  *mock_database.MockReceivedQueue
-	ReportTemplate *mock_database.MockReportTemplate
-	Schedule       *mock_database.MockSchedule
+	Contact         *mock_database.MockContact
+	Message         *mock_database.MockMessage
+	MessageTemplate *mock_database.MockMessageTemplate
+	Notification    *mock_database.MockNotification
+	ReceivedQueue   *mock_database.MockReceivedQueue
+	ReportTemplate  *mock_database.MockReportTemplate
+	Schedule        *mock_database.MockSchedule
 }
 
 type testOptions struct {
@@ -68,11 +70,13 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
-		Contact:        mock_database.NewMockContact(ctrl),
-		Notification:   mock_database.NewMockNotification(ctrl),
-		ReceivedQueue:  mock_database.NewMockReceivedQueue(ctrl),
-		ReportTemplate: mock_database.NewMockReportTemplate(ctrl),
-		Schedule:       mock_database.NewMockSchedule(ctrl),
+		Contact:         mock_database.NewMockContact(ctrl),
+		Message:         mock_database.NewMockMessage(ctrl),
+		MessageTemplate: mock_database.NewMockMessageTemplate(ctrl),
+		Notification:    mock_database.NewMockNotification(ctrl),
+		ReceivedQueue:   mock_database.NewMockReceivedQueue(ctrl),
+		ReportTemplate:  mock_database.NewMockReportTemplate(ctrl),
+		Schedule:        mock_database.NewMockSchedule(ctrl),
 	}
 }
 
@@ -90,11 +94,13 @@ func newWorker(mocks *mocks, opts ...testOption) *worker {
 		mailer:    mocks.mailer,
 		line:      mocks.line,
 		db: &database.Database{
-			Contact:        mocks.db.Contact,
-			Notification:   mocks.db.Notification,
-			ReceivedQueue:  mocks.db.ReceivedQueue,
-			ReportTemplate: mocks.db.ReportTemplate,
-			Schedule:       mocks.db.Schedule,
+			Contact:         mocks.db.Contact,
+			Message:         mocks.db.Message,
+			MessageTemplate: mocks.db.MessageTemplate,
+			Notification:    mocks.db.Notification,
+			ReceivedQueue:   mocks.db.ReceivedQueue,
+			ReportTemplate:  mocks.db.ReportTemplate,
+			Schedule:        mocks.db.Schedule,
 		},
 		user:        mocks.user,
 		concurrency: 1,
@@ -129,7 +135,7 @@ func TestWorker(t *testing.T) {
 	assert.NotNil(t, w)
 }
 
-func TestWorkre_Dispatch(t *testing.T) {
+func TestWorker_Dispatch(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -207,7 +213,13 @@ func TestWorker_Run(t *testing.T) {
 			},
 		},
 	}
-	template := &entity.ReportTemplate{
+	mtemplate := &entity.MessageTemplate{
+		TemplateID: entity.MessageIDNotification,
+		Template:   `テンプレートです。`,
+		CreatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
+		UpdatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
+	}
+	rtemplate := &entity.ReportTemplate{
 		TemplateID: entity.ReportIDReceivedContact,
 		Template:   `{"type":"bubble","body":{"type":"box","contents":[{"type":"text","text":"{{.Overview}}"}]}}`,
 		CreatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
@@ -250,17 +262,40 @@ func TestWorker_Run(t *testing.T) {
 			expectErr: nil,
 		},
 		{
+			name: "success to message",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
+				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", true).Return(nil)
+				mocks.db.MessageTemplate.EXPECT().Get(gomock.Any(), entity.MessageIDNotification).Return(mtemplate, nil)
+				mocks.db.Message.EXPECT().MultiCreate(gomock.Any(), gomock.Any()).Return(nil)
+			},
+			payload: &entity.WorkerPayload{
+				QueueID:   "queue-id",
+				EventType: entity.EventTypeUserNotification,
+				UserType:  entity.UserTypeUser,
+				UserIDs:   []string{"user-id"},
+				Message: &entity.MessageConfig{
+					MessageID:   entity.MessageIDNotification,
+					MessageType: entity.MessageTypeNotification,
+					Title:       "メッセージタイトル",
+					Link:        "https://and-period.jp",
+					ReceivedAt:  time.Now(),
+				},
+			},
+			expectErr: nil,
+		},
+		{
 			name: "success to report",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
 				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", true).Return(nil)
-				mocks.db.ReportTemplate.EXPECT().Get(gomock.Any(), entity.ReportIDReceivedContact).Return(template, nil)
+				mocks.db.ReportTemplate.EXPECT().Get(gomock.Any(), entity.ReportIDReceivedContact).Return(rtemplate, nil)
 				mocks.line.EXPECT().PushMessage(gomock.Any(), gomock.Any()).Return(nil)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
 				EventType: entity.EventTypeUserReceivedContact,
-				Report: &entity.Report{
+				Report: &entity.ReportConfig{
 					ReportID: entity.ReportIDReceivedContact,
 					Overview: "お問い合わせ件名",
 					Link:     "htts://admin.and-period.jp/contacts/contact-id",
@@ -337,6 +372,27 @@ func TestWorker_Run(t *testing.T) {
 			expectErr: errmock,
 		},
 		{
+			name: "failed to create message",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
+				mocks.db.MessageTemplate.EXPECT().Get(gomock.Any(), entity.MessageIDNotification).Return(nil, errmock)
+			},
+			payload: &entity.WorkerPayload{
+				QueueID:   "queue-id",
+				EventType: entity.EventTypeUserNotification,
+				UserType:  entity.UserTypeUser,
+				UserIDs:   []string{"user-id"},
+				Message: &entity.MessageConfig{
+					MessageID:   entity.MessageIDNotification,
+					MessageType: entity.MessageTypeNotification,
+					Title:       "メッセージタイトル",
+					Link:        "https://and-period.jp",
+					ReceivedAt:  time.Now(),
+				},
+			},
+			expectErr: errmock,
+		},
+		{
 			name: "failed to report",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
@@ -345,7 +401,7 @@ func TestWorker_Run(t *testing.T) {
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
 				EventType: entity.EventTypeUserReceivedContact,
-				Report: &entity.Report{
+				Report: &entity.ReportConfig{
 					ReportID: entity.ReportIDReceivedContact,
 					Overview: "お問い合わせ件名",
 					Link:     "htts://admin.and-period.jp/contacts/contact-id",
