@@ -16,10 +16,11 @@ func TestMessenger(t *testing.T) {
 
 	now := jst.Date(2022, 7, 21, 18, 30, 0, 0)
 	template := &entity.MessageTemplate{
-		TemplateID: entity.MessageIDNotification,
-		Template:   `テンプレートです。`,
-		CreatedAt:  jst.Date(2022, 7, 21, 18, 30, 0, 0),
-		UpdatedAt:  jst.Date(2022, 7, 21, 18, 30, 0, 0),
+		TemplateID:    entity.MessageIDNotification,
+		TitleTemplate: "件名: {{.Title}}",
+		BodyTemplate:  "テンプレートです。",
+		CreatedAt:     jst.Date(2022, 7, 21, 18, 30, 0, 0),
+		UpdatedAt:     jst.Date(2022, 7, 21, 18, 30, 0, 0),
 	}
 
 	tests := []struct {
@@ -42,7 +43,7 @@ func TestMessenger(t *testing.T) {
 								UserType:   entity.UserTypeUser,
 								UserID:     "user-id",
 								Type:       entity.MessageTypeNotification,
-								Title:      "メッセージタイトル",
+								Title:      "件名: メッセージタイトル",
 								Body:       "テンプレートです。",
 								Link:       "https://and-period.jp",
 								ReceivedAt: now,

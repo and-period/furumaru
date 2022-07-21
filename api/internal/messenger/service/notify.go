@@ -117,6 +117,7 @@ func (s *service) notifyAdminNotification(ctx context.Context, notification *ent
 		MessageID:   entity.MessageIDNotification,
 		MessageType: entity.MessageTypeNotification,
 		Title:       notification.Title,
+		Prepared:    notification.CreatorName,
 		Link:        maker.Notification(notification.ID),
 		ReceivedAt:  s.now(),
 	}
