@@ -238,6 +238,7 @@ func TestNotifyNotification(t *testing.T) {
 			entity.PostTargetProducers,
 		},
 		CreatorName: "&.スタッフ",
+		PublishedAt: now,
 	}
 	coordinators := uentity.Coordinators{{ID: "admin-id"}}
 	producers := uentity.Producers{}
@@ -259,7 +260,7 @@ func TestNotifyNotification(t *testing.T) {
 					DoAndReturn(func(ctx context.Context, queue *entity.ReceivedQueue) error {
 						expect := &entity.ReceivedQueue{
 							ID:        queue.ID, // ignore
-							EventType: entity.EventTypeAdminNotification,
+							EventType: entity.EventTypeNotification,
 							UserType:  entity.UserTypeCoordinator,
 							UserIDs:   []string{"admin-id"},
 							Done:      false,
@@ -276,16 +277,53 @@ func TestNotifyNotification(t *testing.T) {
 						require.True(t, now.Equal(payload.Message.ReceivedAt))
 						expect := &entity.WorkerPayload{
 							QueueID:   payload.QueueID, // ignore
-							EventType: entity.EventTypeAdminNotification,
+							EventType: entity.EventTypeNotification,
 							UserType:  entity.UserTypeCoordinator,
 							UserIDs:   []string{"admin-id"},
 							Message: &entity.MessageConfig{
 								MessageID:   entity.MessageIDNotification,
 								MessageType: entity.MessageTypeNotification,
 								Title:       "お知らせ件名",
-								Prepared:    "&.スタッフ",
+								Author:      "&.スタッフ",
 								Link:        "htts://admin.and-period.jp/notifications/notification-id",
 								ReceivedAt:  payload.Message.ReceivedAt, // ignore
+							},
+						}
+						assert.Equal(t, expect, payload)
+						return "message-id", nil
+					})
+				mocks.db.ReceivedQueue.EXPECT().
+					Create(gomock.Any(), gomock.Any()).
+					DoAndReturn(func(ctx context.Context, queue *entity.ReceivedQueue) error {
+						expect := &entity.ReceivedQueue{
+							ID:        queue.ID, // ignore
+							EventType: entity.EventTypeNotification,
+							UserType:  entity.UserTypeNone,
+							UserIDs:   nil,
+							Done:      false,
+						}
+						assert.Equal(t, expect, queue)
+						return nil
+					})
+				mocks.producer.EXPECT().
+					SendMessage(gomock.Any(), gomock.Any()).
+					DoAndReturn(func(ctx context.Context, b []byte) (string, error) {
+						payload := &entity.WorkerPayload{}
+						err := json.Unmarshal(b, payload)
+						require.NoError(t, err)
+						require.True(t, now.Equal(payload.Report.PublishedAt))
+						expect := &entity.WorkerPayload{
+							QueueID:   payload.QueueID, // ignore
+							EventType: entity.EventTypeNotification,
+							UserType:  entity.UserTypeNone,
+							UserIDs:   nil,
+							Report: &entity.ReportConfig{
+								ReportID:    entity.ReportIDNotification,
+								Overview:    "お知らせ件名",
+								Detail:      "お知らせ内容",
+								Author:      "&.スタッフ",
+								Link:        "htts://admin.and-period.jp/notifications/notification-id",
+								PublishedAt: payload.Report.PublishedAt, // ignore
 							},
 						}
 						assert.Equal(t, expect, payload)
@@ -302,6 +340,8 @@ func TestNotifyNotification(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				notification := &entity.Notification{Targets: []entity.TargetType{}}
 				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
+				mocks.db.ReceivedQueue.EXPECT().Create(gomock.Any(), gomock.Any()).Return(nil)
+				mocks.producer.EXPECT().SendMessage(gomock.Any(), gomock.Any()).Return("", nil)
 			},
 			input: &messenger.NotifyNotificationInput{
 				NotificationID: "notification-id",

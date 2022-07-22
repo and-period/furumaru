@@ -272,7 +272,7 @@ func TestWorker_Run(t *testing.T) {
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
-				EventType: entity.EventTypeUserNotification,
+				EventType: entity.EventTypeNotification,
 				UserType:  entity.UserTypeUser,
 				UserIDs:   []string{"user-id"},
 				Message: &entity.MessageConfig{
@@ -380,7 +380,7 @@ func TestWorker_Run(t *testing.T) {
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
-				EventType: entity.EventTypeUserNotification,
+				EventType: entity.EventTypeNotification,
 				UserType:  entity.UserTypeUser,
 				UserIDs:   []string{"user-id"},
 				Message: &entity.MessageConfig{

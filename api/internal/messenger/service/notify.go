@@ -96,14 +96,24 @@ func (s *service) NotifyNotification(ctx context.Context, in *messenger.NotifyNo
 		}
 		return s.notifyAdminNotification(ectx, notification)
 	})
-	eg.Go(func() (err error) {
-		// TODO: システムレポート周りの実装
-		return
-	})
 	if err := eg.Wait(); err != nil {
 		return exception.InternalError(err)
 	}
-	return nil
+	maker := entity.NewAdminURLMaker(s.adminWebURL())
+	report := &entity.ReportConfig{
+		ReportID:    entity.ReportIDNotification,
+		Overview:    notification.Title,
+		Detail:      notification.Body,
+		Author:      notification.CreatorName,
+		Link:        maker.Notification(notification.ID),
+		PublishedAt: notification.PublishedAt,
+	}
+	payload := &entity.WorkerPayload{
+		QueueID:   uuid.Base58Encode(uuid.New()),
+		EventType: entity.EventTypeNotification,
+		Report:    report,
+	}
+	return s.sendMessage(ctx, payload)
 }
 
 func (s *service) notifyUserNotification(ctx context.Context, notification *entity.Notification) error {
@@ -117,12 +127,12 @@ func (s *service) notifyAdminNotification(ctx context.Context, notification *ent
 		MessageID:   entity.MessageIDNotification,
 		MessageType: entity.MessageTypeNotification,
 		Title:       notification.Title,
-		Prepared:    notification.CreatorName,
+		Author:      notification.CreatorName,
 		Link:        maker.Notification(notification.ID),
 		ReceivedAt:  s.now(),
 	}
 	payload := &entity.WorkerPayload{
-		EventType: entity.EventTypeAdminNotification,
+		EventType: entity.EventTypeNotification,
 		Message:   message,
 	}
 	eg, ectx := errgroup.WithContext(ctx)
