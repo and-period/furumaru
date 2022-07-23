@@ -12,7 +12,8 @@ import (
 )
 
 func (s *service) CreateNotification(
-	ctx context.Context, in *messenger.CreateNotificationInput) (*entity.Notification, error) {
+	ctx context.Context, in *messenger.CreateNotificationInput,
+) (*entity.Notification, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
