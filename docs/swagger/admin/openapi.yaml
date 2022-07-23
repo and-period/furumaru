@@ -25,9 +25,10 @@ tags:
   description: お問い合わせ関連
 - name: Notification
   description: お知らせ関連
+- name: Message
+  description: メッセージ関連
 - name: Shipping
   description: 配送設定関連
-
 paths:
   # Auth
   /v1/auth:
@@ -79,6 +80,11 @@ paths:
   # Notification
   /v1/notifications:
     $ref: './paths/v1/notifications/index.yaml'
+  # Message
+  /v1/messages:
+    $ref: './paths/v1/messages/index.yaml'
+  /v1/messages/{messageId}:
+    $ref: './paths/v1/messages/_messageId/index.yaml'
   # Shipping
   /v1/shippings:
     $ref: './paths/v1/shippings/index.yaml'
@@ -182,6 +188,10 @@ components:
       $ref: './components/schemas/v1/contact.response.yaml#/contactsResponse'
     v1NotificationResponse:
       $ref: './components/schemas/v1/notification.response.yaml#/notificationResponse'
+    v1MessageResponse:
+      $ref: './components/schemas/v1/message.response.yaml#/messageResponse'
+    v1MessagesResponse:
+      $ref: './components/schemas/v1/message.response.yaml#/messagesResponse'
     v1ShippingResponse:
       $ref: './components/schemas/v1/shipping.response.yaml#/shippingResponse'
     v1ShippingsResponse:
