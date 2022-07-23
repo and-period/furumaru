@@ -91,7 +91,7 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <p>Category Item list will be displayed</p>
+        <the-product-type-list />
       </v-tab-item>
     </v-tabs-items>
   </div>
@@ -107,6 +107,7 @@ import {
 } from '@nuxtjs/composition-api'
 
 import TheCategoryList from '~/components/organisms/TheCategoryList.vue'
+import TheProductTypeList from '~/components/organisms/TheProductTypeList.vue'
 import { useCategoryStore } from '~/store/category'
 import { useCommonStore } from '~/store/common'
 import { useProductTypeStore } from '~/store/product-type'
@@ -116,6 +117,7 @@ import { Category } from '~/types/props/category'
 export default defineComponent({
   components: {
     TheCategoryList,
+    TheProductTypeList,
   },
 
   setup() {
