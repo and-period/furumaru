@@ -65,6 +65,10 @@ func NewMessage(params *NewMessageParams) *Message {
 	}
 }
 
+func (m *Message) IsMine(userType UserType, userID string) bool {
+	return m.UserType == userType && m.UserID == userID
+}
+
 type NewMessagesParams struct {
 	UserType   UserType
 	UserIDs    []string
