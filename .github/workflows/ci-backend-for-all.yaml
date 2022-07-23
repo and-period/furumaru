@@ -26,7 +26,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        golang: ['^1.18.1']
+        golang: ['^1.18.3']
     steps:
     - name: Check out code
       uses: actions/checkout@v3
@@ -58,7 +58,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        golang: ['^1.18.1']
+        golang: ['^1.18.3']
     steps:
     - name: Check out code
       uses: actions/checkout@v3
@@ -86,7 +86,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        golang: ['^1.18.1']
+        golang: ['^1.18.3']
     steps:
     - name: Check out code
       uses: actions/checkout@v3
@@ -109,6 +109,12 @@ jobs:
     - name: Build admin gateway
       run: make build SERVICE=gateway/admin
 
+    - name: Build messenger worker
+      run: make build SERVICE=messenger/worker
+
+    - name: Build messenger scheduler
+      run: make build SERVICE=messenger/scheduler
+
   test:
     name: test
     needs: setup
@@ -120,7 +126,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        golang: ['^1.18.1']
+        golang: ['^1.18.3']
 
     steps:
     - name: Check out code

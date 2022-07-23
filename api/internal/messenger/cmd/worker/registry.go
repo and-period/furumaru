@@ -22,6 +22,8 @@ import (
 )
 
 type registry struct {
+	appName   string
+	env       string
 	waitGroup *sync.WaitGroup
 	worker    worker.Worker
 }
@@ -65,12 +67,9 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}
 
 	// Databaseの設定
-	mysql, err := newDatabase("messengers", params)
+	dbClient, err := newDatabase("messengers", params)
 	if err != nil {
 		return nil, err
-	}
-	dbParams := &messengerdb.Params{
-		Database: mysql,
 	}
 
 	// メールテンプレートの設定
@@ -113,6 +112,9 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}
 
 	// Workerの設定
+	dbParams := &messengerdb.Params{
+		Database: dbClient,
+	}
 	workerParams := &worker.Params{
 		WaitGroup: params.waitGroup,
 		DB:        messengerdb.NewDatabase(dbParams),
@@ -121,6 +123,8 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		User:      userService,
 	}
 	return &registry{
+		appName:   conf.AppName,
+		env:       conf.Environment,
 		waitGroup: params.waitGroup,
 		worker:    worker.NewWorker(workerParams, worker.WithLogger(logger)),
 	}, nil

@@ -12,6 +12,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -86,12 +87,12 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		return
 	}
 
+	// TODO: 後から実装
+	h.logger.Debug("TODO", zap.Any("producers", producers), zap.Any("categories", categories), zap.Any("types", types))
+
 	res := &response.ProductsResponse{
-		Products:     products.Response(),
-		ProductTypes: service.NewProductTypes(types).Response(),
-		Categories:   service.NewCategories(categories).Response(),
-		Producers:    service.NewProducers(producers).Response(),
-		Total:        total,
+		Products: products.Response(),
+		Total:    total,
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -106,6 +107,7 @@ func (h *handler) GetProduct(ctx *gin.Context) {
 		return
 	}
 
+	// TODO: 実装の追加
 	res := &response.ProductResponse{
 		Product: service.NewProduct(product).Response(),
 	}

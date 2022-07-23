@@ -31,7 +31,6 @@ export const useProductTypeStore = defineStore('ProductType', {
         throw new Error('Internal Server Error')
       }
     },
-
     async createProductType(
       categoryId: string,
       payload: CreateProductTypeRequest

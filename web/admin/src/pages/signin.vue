@@ -56,11 +56,12 @@ export default defineComponent({
 
     const handleSubmit = async () => {
       try {
-        await authStore.signIn(formData)
-        router.push('/')
+        const path = await authStore.signIn(formData)
+        router.push(path)
       } catch (error) {
-        console.log(error)
-        show('ユーザーIDまたはパスワードが違います。')
+        if (error instanceof Error) {
+          show(error.message)
+        }
       }
     }
 

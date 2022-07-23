@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -11,11 +12,13 @@ import (
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	"github.com/line/line-bot-sdk-go/v7/linebot"
+	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 	"go.uber.org/zap"
 )
 
 func newRouter(reg *registry, logger *zap.Logger) *gin.Engine {
 	opts := make([]gin.HandlerFunc, 0)
+	opts = append(opts, nrgin.Middleware(reg.newRelic))
 	opts = append(opts, accessLogger(logger))
 	opts = append(opts, cors.NewGinMiddleware())
 	opts = append(opts, gzip.Gzip(gzip.DefaultCompression))
@@ -91,19 +94,20 @@ func notifyError(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 		if reg.line == nil {
 			return
 		}
+		altText := fmt.Sprintf("[ふるマルアラート] %s", reg.appName)
 		components := []linebot.FlexComponent{
-			newAlertContent("service", "admin-gateway"),
+			newAlertContent("service", reg.appName),
 			newAlertContent("env", reg.env),
 			newAlertContent("status", strconv.FormatInt(int64(status), 10)),
 			newAlertContent("method", method),
 			newAlertContent("path", path),
 			newAlertContent("detail", res),
 		}
-		_ = reg.line.PushMessage(ctx, newAlertMessage(components))
+		_ = reg.line.PushMessage(ctx, newAlertMessage(altText, components))
 	}
 }
 
-func newAlertMessage(components []linebot.FlexComponent) *linebot.FlexMessage {
+func newAlertMessage(altText string, components []linebot.FlexComponent) *linebot.FlexMessage {
 	container := &linebot.BubbleContainer{
 		Type:      linebot.FlexContainerTypeBubble,
 		Direction: linebot.FlexBubbleDirectionTypeLTR,
@@ -132,7 +136,7 @@ func newAlertMessage(components []linebot.FlexComponent) *linebot.FlexMessage {
 			},
 		},
 	}
-	return linebot.NewFlexMessage("alt text", container)
+	return linebot.NewFlexMessage(altText, container)
 }
 
 func newAlertContent(field, value string) *linebot.BoxComponent {

@@ -15,11 +15,12 @@ type ProductTypes []*ProductType
 func NewProductType(productType *entity.ProductType) *ProductType {
 	return &ProductType{
 		ProductType: response.ProductType{
-			ID:         productType.ID,
-			CategoryID: productType.CategoryID,
-			Name:       productType.Name,
-			CreatedAt:  productType.CreatedAt.Unix(),
-			UpdatedAt:  productType.UpdatedAt.Unix(),
+			ID:           productType.ID,
+			CategoryID:   productType.CategoryID,
+			CategoryName: "dummy", // TODO: 詳細の実装
+			Name:         productType.Name,
+			CreatedAt:    productType.CreatedAt.Unix(),
+			UpdatedAt:    productType.UpdatedAt.Unix(),
 		},
 	}
 }

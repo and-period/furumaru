@@ -930,6 +930,43 @@ export interface CreateCoordinatorRequest {
 /**
  *
  * @export
+ * @interface CreateNotificationRequest
+ */
+export interface CreateNotificationRequest {
+  /**
+   * タイトル(128字まで)
+   * @type {string}
+   * @memberof CreateNotificationRequest
+   */
+  title: string
+  /**
+   * 本文(2000字まで)
+   * @type {string}
+   * @memberof CreateNotificationRequest
+   */
+  body: string
+  /**
+   * 掲載対象一覧(3つまで)
+   * @type {Array<number>}
+   * @memberof CreateNotificationRequest
+   */
+  targets: Array<number>
+  /**
+   * 公開フラグ
+   * @type {boolean}
+   * @memberof CreateNotificationRequest
+   */
+  public: boolean
+  /**
+   * 掲載開始日時
+   * @type {number}
+   * @memberof CreateNotificationRequest
+   */
+  publishedAt: number
+}
+/**
+ *
+ * @export
  * @interface CreateProducerRequest
  */
 export interface CreateProducerRequest {
@@ -1149,6 +1186,110 @@ export interface CreateProductTypeRequest {
 /**
  *
  * @export
+ * @interface CreateShippingRate
+ */
+export interface CreateShippingRate {
+  /**
+   * 配送料金設定名
+   * @type {string}
+   * @memberof CreateShippingRate
+   */
+  name: string
+  /**
+   * 配送料金(100万未満)
+   * @type {number}
+   * @memberof CreateShippingRate
+   */
+  price: number
+  /**
+   * 対象都道府県コード一覧
+   * @type {Array<string>}
+   * @memberof CreateShippingRate
+   */
+  prefectures: Array<string>
+}
+/**
+ *
+ * @export
+ * @interface CreateShippingRequest
+ */
+export interface CreateShippingRequest {
+  /**
+   * 配送設定名(64文字まで)
+   * @type {string}
+   * @memberof CreateShippingRequest
+   */
+  name: string
+  /**
+   * 箱サイズ60の通常配送料一覧(すべての都道府県の設定が必須)
+   * @type {Array<CreateShippingRate>}
+   * @memberof CreateShippingRequest
+   */
+  box60Rates: Array<CreateShippingRate>
+  /**
+   * 箱サイズ60の冷蔵便追加配送料(100万未満)
+   * @type {number}
+   * @memberof CreateShippingRequest
+   */
+  box60Refrigerated: number
+  /**
+   * 箱サイズ60の冷凍便追加配送料(100万未満)
+   * @type {number}
+   * @memberof CreateShippingRequest
+   */
+  box60Frozen: number
+  /**
+   * 箱サイズ80の通常配送料一覧(すべての都道府県の設定が必須)
+   * @type {Array<CreateShippingRate>}
+   * @memberof CreateShippingRequest
+   */
+  box80Rates: Array<CreateShippingRate>
+  /**
+   * 箱サイズ80の冷蔵便追加配送料(100万未満)
+   * @type {number}
+   * @memberof CreateShippingRequest
+   */
+  box80Refrigerated: number
+  /**
+   * 箱サイズ80の冷凍便追加配送料(100万未満)
+   * @type {number}
+   * @memberof CreateShippingRequest
+   */
+  box80Frozen: number
+  /**
+   * 箱サイズ100の通常配送料一覧(すべての都道府県の設定が必須)
+   * @type {Array<CreateShippingRate>}
+   * @memberof CreateShippingRequest
+   */
+  box100Rates: Array<CreateShippingRate>
+  /**
+   * 箱サイズ100の冷蔵便追加配送料(100万未満)
+   * @type {number}
+   * @memberof CreateShippingRequest
+   */
+  box100Refrigerated: number
+  /**
+   * 箱サイズ100の冷凍便追加配送料(100万未満)
+   * @type {number}
+   * @memberof CreateShippingRequest
+   */
+  box100Frozen: number
+  /**
+   * 送料無料オプションの有無
+   * @type {boolean}
+   * @memberof CreateShippingRequest
+   */
+  hasFreeShipping: boolean
+  /**
+   * 送料無料になる金額(100万未満)
+   * @type {number}
+   * @memberof CreateShippingRequest
+   */
+  freeShippingRates: number
+}
+/**
+ *
+ * @export
  * @interface ErrorResponse
  */
 export interface ErrorResponse {
@@ -1171,6 +1312,137 @@ export interface ErrorResponse {
    */
   details: string
 }
+/**
+ *
+ * @export
+ * @interface NotificationResponse
+ */
+export interface NotificationResponse {
+  /**
+   * お知らせID
+   * @type {string}
+   * @memberof NotificationResponse
+   */
+  id: string
+  /**
+   * 登録者ID
+   * @type {string}
+   * @memberof NotificationResponse
+   */
+  createdBy: string
+  /**
+   * 登録者名
+   * @type {string}
+   * @memberof NotificationResponse
+   */
+  creatorName: string
+  /**
+   * 更新者ID
+   * @type {string}
+   * @memberof NotificationResponse
+   */
+  updatedBy: string
+  /**
+   * タイトル(128字まで)
+   * @type {string}
+   * @memberof NotificationResponse
+   */
+  title: string
+  /**
+   * 本文(2000字まで)
+   * @type {string}
+   * @memberof NotificationResponse
+   */
+  body: string
+  /**
+   * 掲載対象一覧(3つまで)
+   * @type {Array<number>}
+   * @memberof NotificationResponse
+   */
+  targets: Array<number>
+  /**
+   * 公開フラグ
+   * @type {boolean}
+   * @memberof NotificationResponse
+   */
+  public: boolean
+  /**
+   * 掲載開始日時 (unixtime)
+   * @type {number}
+   * @memberof NotificationResponse
+   */
+  publishedAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof NotificationResponse
+   */
+  createdAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof NotificationResponse
+   */
+  updatedAt: number
+}
+/**
+ * 都道府県コード
+ * @export
+ * @enum {string}
+ */
+
+export const Prefecture = {
+  Hokkaido: 'hokkaido',
+  Aomori: 'aomori',
+  Iwate: 'iwate',
+  Miyagi: 'miyagi',
+  Akita: 'akita',
+  Yamagata: 'yamagata',
+  Fukushima: 'fukushima',
+  Ibaraki: 'ibaraki',
+  Tochigi: 'tochigi',
+  Gunma: 'gunma',
+  Saitama: 'saitama',
+  Chiba: 'chiba',
+  Tokyo: 'tokyo',
+  Kanagawa: 'kanagawa',
+  Niigata: 'niigata',
+  Toyama: 'toyama',
+  Ishikawa: 'ishikawa',
+  Fukui: 'fukui',
+  Yamanashi: 'yamanashi',
+  Nagano: 'nagano',
+  Gifu: 'gifu',
+  Shizuoka: 'shizuoka',
+  Aichi: 'aichi',
+  Mie: 'mie',
+  Shiga: 'shiga',
+  Kyoto: 'kyoto',
+  Osaka: 'osaka',
+  Hyogo: 'hyogo',
+  Nara: 'nara',
+  Wakayama: 'wakayama',
+  Tottori: 'tottori',
+  Shimane: 'shimane',
+  Okayama: 'okayama',
+  Hiroshima: 'hiroshima',
+  Yamaguchi: 'yamaguchi',
+  Tokushima: 'tokushima',
+  Kagawa: 'kagawa',
+  Ehime: 'ehime',
+  Kochi: 'kochi',
+  Fukuoka: 'fukuoka',
+  Saga: 'saga',
+  Nagasaki: 'nagasaki',
+  Kumamoto: 'kumamoto',
+  Oita: 'oita',
+  Miyazaki: 'miyazaki',
+  Kagoshima: 'kagoshima',
+  Okinawa: 'okinawa',
+} as const
+
+export type Prefecture = typeof Prefecture[keyof typeof Prefecture]
+
 /**
  *
  * @export
@@ -1439,17 +1711,35 @@ export interface ProductResponse {
    */
   producerId: string
   /**
+   * 農家名
+   * @type {string}
+   * @memberof ProductResponse
+   */
+  storeName: string
+  /**
    * 商品種別ID
    * @type {string}
    * @memberof ProductResponse
    */
   categoryId: string
   /**
+   * 商品種別名
+   * @type {string}
+   * @memberof ProductResponse
+   */
+  categoryName: string
+  /**
    * 品目ID
    * @type {string}
    * @memberof ProductResponse
    */
   productTypeId: string
+  /**
+   * 品目名
+   * @type {string}
+   * @memberof ProductResponse
+   */
+  productTypeName: string
   /**
    * 公開フラグ
    * @type {boolean}
@@ -1535,7 +1825,7 @@ export interface ProductResponse {
    */
   createdBy: string
   /**
-   * 登録者ID
+   * 更新者ID
    * @type {string}
    * @memberof ProductResponse
    */
@@ -1578,6 +1868,12 @@ export interface ProductTypeResponse {
    */
   categoryId: string
   /**
+   * 商品種別名
+   * @type {string}
+   * @memberof ProductTypeResponse
+   */
+  categoryName: string
+  /**
    * 登録日時 (unixtime)
    * @type {number}
    * @memberof ProductTypeResponse
@@ -1602,12 +1898,6 @@ export interface ProductTypesResponse {
    * @memberof ProductTypesResponse
    */
   productTypes: Array<ProductTypesResponseProductTypes>
-  /**
-   * 商品種別一覧
-   * @type {Array<CategoriesResponseCategories>}
-   * @memberof ProductTypesResponse
-   */
-  categories: Array<CategoriesResponseCategories>
   /**
    * 合計数
    * @type {number}
@@ -1640,6 +1930,12 @@ export interface ProductTypesResponseProductTypes {
    */
   categoryId: string
   /**
+   * 商品種別名
+   * @type {string}
+   * @memberof ProductTypesResponseProductTypes
+   */
+  categoryName: string
+  /**
    * 登録日時 (unixtime)
    * @type {number}
    * @memberof ProductTypesResponseProductTypes
@@ -1665,24 +1961,6 @@ export interface ProductsResponse {
    */
   products: Array<ProductsResponseProducts>
   /**
-   * 商品種別一覧
-   * @type {Array<CategoriesResponseCategories>}
-   * @memberof ProductsResponse
-   */
-  categories: Array<CategoriesResponseCategories>
-  /**
-   * 品目一覧
-   * @type {Array<ProductTypesResponseProductTypes>}
-   * @memberof ProductsResponse
-   */
-  productTypes: Array<ProductTypesResponseProductTypes>
-  /**
-   * 生産者一覧
-   * @type {Array<ProductsResponseProducers>}
-   * @memberof ProductsResponse
-   */
-  producers?: Array<ProductsResponseProducers>
-  /**
    * 合計数
    * @type {number}
    * @memberof ProductsResponse
@@ -1707,115 +1985,6 @@ export interface ProductsResponseMedia {
    * @memberof ProductsResponseMedia
    */
   isThumbnail: boolean
-}
-/**
- *
- * @export
- * @interface ProductsResponseProducers
- */
-export interface ProductsResponseProducers {
-  /**
-   * システム管理者ID
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  id: string
-  /**
-   * 姓
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  lastname: string
-  /**
-   * 名
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  firstname: string
-  /**
-   * 姓(かな)
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  lastnameKana: string
-  /**
-   * 名(かな)
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  firstnameKana: string
-  /**
-   * 店舗名
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  storeName: string
-  /**
-   * ヘッダー画像URL
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  headerUrl: string
-  /**
-   * サムネイルURL
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  thumbnailUrl: string
-  /**
-   * メールアドレス
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  email: string
-  /**
-   * 電話番号
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  phoneNumber: string
-  /**
-   * 郵便番号
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  postalCode: string
-  /**
-   * 都道府県
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  prefecture: string
-  /**
-   * 市区町村
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  city: string
-  /**
-   * 町名・番地
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  addressLine1: string
-  /**
-   * ビル名・号室など
-   * @type {string}
-   * @memberof ProductsResponseProducers
-   */
-  addressLine2: string
-  /**
-   * 登録日時 (unixtime)
-   * @type {number}
-   * @memberof ProductsResponseProducers
-   */
-  createdAt: number
-  /**
-   * 登録日時 (unixtime)
-   * @type {number}
-   * @memberof ProductsResponseProducers
-   */
-  updatedAt: number
 }
 /**
  *
@@ -1848,17 +2017,35 @@ export interface ProductsResponseProducts {
    */
   producerId: string
   /**
+   * 農家名
+   * @type {string}
+   * @memberof ProductsResponseProducts
+   */
+  storeName: string
+  /**
    * 商品種別ID
    * @type {string}
    * @memberof ProductsResponseProducts
    */
   categoryId: string
   /**
+   * 商品種別名
+   * @type {string}
+   * @memberof ProductsResponseProducts
+   */
+  cateogryName?: string
+  /**
    * 品目ID
    * @type {string}
    * @memberof ProductsResponseProducts
    */
   productTypeId: string
+  /**
+   * 品目名
+   * @type {string}
+   * @memberof ProductsResponseProducts
+   */
+  productTypeName: string
   /**
    * 公開フラグ
    * @type {boolean}
@@ -1944,7 +2131,7 @@ export interface ProductsResponseProducts {
    */
   createdBy: string
   /**
-   * 登録者ID
+   * 更新者ID
    * @type {string}
    * @memberof ProductsResponseProducts
    */
@@ -1974,6 +2161,250 @@ export interface RefreshAuthTokenRequest {
    * @memberof RefreshAuthTokenRequest
    */
   refreshToken: string
+}
+/**
+ *
+ * @export
+ * @interface ShippingRate
+ */
+export interface ShippingRate {
+  /**
+   * No.
+   * @type {number}
+   * @memberof ShippingRate
+   */
+  number: number
+  /**
+   * 配送料金設定名
+   * @type {string}
+   * @memberof ShippingRate
+   */
+  name: string
+  /**
+   * 配送料金
+   * @type {number}
+   * @memberof ShippingRate
+   */
+  price: number
+  /**
+   * 対象都道府県コード一覧
+   * @type {Array<string>}
+   * @memberof ShippingRate
+   */
+  prefectures: Array<string>
+}
+/**
+ *
+ * @export
+ * @interface ShippingResponse
+ */
+export interface ShippingResponse {
+  /**
+   * 配送設定ID
+   * @type {string}
+   * @memberof ShippingResponse
+   */
+  id: string
+  /**
+   * 配送設定名
+   * @type {string}
+   * @memberof ShippingResponse
+   */
+  name: string
+  /**
+   * 箱サイズ60の通常配送料一覧
+   * @type {Array<ShippingRate>}
+   * @memberof ShippingResponse
+   */
+  box60Rates: Array<ShippingRate>
+  /**
+   * 箱サイズ60の冷蔵便追加配送料
+   * @type {number}
+   * @memberof ShippingResponse
+   */
+  box60Refrigerated: number
+  /**
+   * 箱サイズ60の冷凍便追加配送料
+   * @type {number}
+   * @memberof ShippingResponse
+   */
+  box60Frozen: number
+  /**
+   * 箱サイズ80の通常配送料一覧
+   * @type {Array<ShippingRate>}
+   * @memberof ShippingResponse
+   */
+  box80Rates: Array<ShippingRate>
+  /**
+   * 箱サイズ80の冷蔵便追加配送料
+   * @type {number}
+   * @memberof ShippingResponse
+   */
+  box80Refrigerated: number
+  /**
+   * 箱サイズ80の冷凍便追加配送料
+   * @type {number}
+   * @memberof ShippingResponse
+   */
+  box80Frozen: number
+  /**
+   * 箱サイズ100の通常配送料一覧
+   * @type {Array<ShippingRate>}
+   * @memberof ShippingResponse
+   */
+  box100Rates: Array<ShippingRate>
+  /**
+   * 箱サイズ100の冷蔵便追加配送料
+   * @type {number}
+   * @memberof ShippingResponse
+   */
+  box100Refrigerated: number
+  /**
+   * 箱サイズ100の冷凍便追加配送料
+   * @type {number}
+   * @memberof ShippingResponse
+   */
+  box100Frozen: number
+  /**
+   * 送料無料オプションの有無
+   * @type {boolean}
+   * @memberof ShippingResponse
+   */
+  hasFreeShipping: boolean
+  /**
+   * 送料無料になる金額
+   * @type {number}
+   * @memberof ShippingResponse
+   */
+  freeShippingRates: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof ShippingResponse
+   */
+  createdAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof ShippingResponse
+   */
+  updatedAt: number
+}
+/**
+ *
+ * @export
+ * @interface ShippingsResponse
+ */
+export interface ShippingsResponse {
+  /**
+   * 配送設定一覧
+   * @type {Array<ShippingsResponseShippings>}
+   * @memberof ShippingsResponse
+   */
+  shippings: Array<ShippingsResponseShippings>
+  /**
+   * 合計数
+   * @type {number}
+   * @memberof ShippingsResponse
+   */
+  total: number
+}
+/**
+ *
+ * @export
+ * @interface ShippingsResponseShippings
+ */
+export interface ShippingsResponseShippings {
+  /**
+   * 配送設定ID
+   * @type {string}
+   * @memberof ShippingsResponseShippings
+   */
+  id: string
+  /**
+   * 配送設定名
+   * @type {string}
+   * @memberof ShippingsResponseShippings
+   */
+  name: string
+  /**
+   * 箱サイズ60の通常配送料一覧
+   * @type {Array<ShippingRate>}
+   * @memberof ShippingsResponseShippings
+   */
+  box60Rates: Array<ShippingRate>
+  /**
+   * 箱サイズ60の冷蔵便追加配送料
+   * @type {number}
+   * @memberof ShippingsResponseShippings
+   */
+  box60Refrigerated: number
+  /**
+   * 箱サイズ60の冷凍便追加配送料
+   * @type {number}
+   * @memberof ShippingsResponseShippings
+   */
+  box60Frozen: number
+  /**
+   * 箱サイズ80の通常配送料一覧
+   * @type {Array<ShippingRate>}
+   * @memberof ShippingsResponseShippings
+   */
+  box80Rates: Array<ShippingRate>
+  /**
+   * 箱サイズ80の冷蔵便追加配送料
+   * @type {number}
+   * @memberof ShippingsResponseShippings
+   */
+  box80Refrigerated: number
+  /**
+   * 箱サイズ80の冷凍便追加配送料
+   * @type {number}
+   * @memberof ShippingsResponseShippings
+   */
+  box80Frozen: number
+  /**
+   * 箱サイズ100の通常配送料一覧
+   * @type {Array<ShippingRate>}
+   * @memberof ShippingsResponseShippings
+   */
+  box100Rates: Array<ShippingRate>
+  /**
+   * 箱サイズ100の冷蔵便追加配送料
+   * @type {number}
+   * @memberof ShippingsResponseShippings
+   */
+  box100Refrigerated: number
+  /**
+   * 箱サイズ100の冷凍便追加配送料
+   * @type {number}
+   * @memberof ShippingsResponseShippings
+   */
+  box100Frozen: number
+  /**
+   * 送料無料オプションの有無
+   * @type {boolean}
+   * @memberof ShippingsResponseShippings
+   */
+  hasFreeShipping: boolean
+  /**
+   * 送料無料になる金額
+   * @type {number}
+   * @memberof ShippingsResponseShippings
+   */
+  freeShippingRates: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof ShippingsResponseShippings
+   */
+  createdAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof ShippingsResponseShippings
+   */
+  updatedAt: number
 }
 /**
  *
@@ -2201,6 +2632,85 @@ export interface UpdateProductTypeRequest {
 /**
  *
  * @export
+ * @interface UpdateShippingRequest
+ */
+export interface UpdateShippingRequest {
+  /**
+   * 配送設定名(64文字まで)
+   * @type {string}
+   * @memberof UpdateShippingRequest
+   */
+  name: string
+  /**
+   * 箱サイズ60の通常配送料一覧(すべての都道府県の設定が必須)
+   * @type {Array<CreateShippingRate>}
+   * @memberof UpdateShippingRequest
+   */
+  box60Rates: Array<CreateShippingRate>
+  /**
+   * 箱サイズ60の冷蔵便追加配送料(100万未満)
+   * @type {number}
+   * @memberof UpdateShippingRequest
+   */
+  box60Refrigerated: number
+  /**
+   * 箱サイズ60の冷凍便追加配送料(100万未満)
+   * @type {number}
+   * @memberof UpdateShippingRequest
+   */
+  box60Frozen: number
+  /**
+   * 箱サイズ80の通常配送料一覧(すべての都道府県の設定が必須)
+   * @type {Array<CreateShippingRate>}
+   * @memberof UpdateShippingRequest
+   */
+  box80Rates: Array<CreateShippingRate>
+  /**
+   * 箱サイズ80の冷蔵便追加配送料(100万未満)
+   * @type {number}
+   * @memberof UpdateShippingRequest
+   */
+  box80Refrigerated: number
+  /**
+   * 箱サイズ80の冷凍便追加配送料(100万未満)
+   * @type {number}
+   * @memberof UpdateShippingRequest
+   */
+  box80Frozen: number
+  /**
+   * 箱サイズ100の通常配送料一覧(すべての都道府県の設定が必須)
+   * @type {Array<CreateShippingRate>}
+   * @memberof UpdateShippingRequest
+   */
+  box100Rates: Array<CreateShippingRate>
+  /**
+   * 箱サイズ100の冷蔵便追加配送料(100万未満)
+   * @type {number}
+   * @memberof UpdateShippingRequest
+   */
+  box100Refrigerated: number
+  /**
+   * 箱サイズ100の冷凍便追加配送料(100万未満)
+   * @type {number}
+   * @memberof UpdateShippingRequest
+   */
+  box100Frozen: number
+  /**
+   * 送料無料オプションの有無
+   * @type {boolean}
+   * @memberof UpdateShippingRequest
+   */
+  hasFreeShipping: boolean
+  /**
+   * 送料無料になる金額(100万未満)
+   * @type {number}
+   * @memberof UpdateShippingRequest
+   */
+  freeShippingRates: number
+}
+/**
+ *
+ * @export
  * @interface UploadImageResponse
  */
 export interface UploadImageResponse {
@@ -2340,8 +2850,8 @@ export const AdministratorApiAxiosParamCreator = function (
     /**
      *
      * @summary システム管理者一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -2456,8 +2966,8 @@ export const AdministratorApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary システム管理者一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -2531,8 +3041,8 @@ export const AdministratorApiFactory = function (
     /**
      *
      * @summary システム管理者一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -2589,8 +3099,8 @@ export class AdministratorApi extends BaseAPI {
   /**
    *
    * @summary システム管理者一覧取得
-   * @param {number} [limit] 取得上限数
-   * @param {number} [offset] 取得開始位置
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdministratorApi
@@ -3476,9 +3986,9 @@ export const CategoryApiAxiosParamCreator = function (
     /**
      *
      * @summary 商品種別一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
-     * @param {string} [name] 商品種別名(あいまい検索)
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [name] 商品種別名(あいまい検索)(32文字以内)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -3655,9 +4165,9 @@ export const CategoryApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary 商品種別一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
-     * @param {string} [name] 商品種別名(あいまい検索)
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [name] 商品種別名(あいまい検索)(32文字以内)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -3758,9 +4268,9 @@ export const CategoryApiFactory = function (
     /**
      *
      * @summary 商品種別一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
-     * @param {string} [name] 商品種別名(あいまい検索)
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [name] 商品種別名(あいまい検索)(32文字以内)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -3835,9 +4345,9 @@ export class CategoryApi extends BaseAPI {
   /**
    *
    * @summary 商品種別一覧取得
-   * @param {number} [limit] 取得上限数
-   * @param {number} [offset] 取得開始位置
-   * @param {string} [name] 商品種別名(あいまい検索)
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
+   * @param {string} [name] 商品種別名(あいまい検索)(32文字以内)
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof CategoryApi
@@ -3934,8 +4444,8 @@ export const ContactApiAxiosParamCreator = function (
     /**
      *
      * @summary お問い合わせ一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4087,8 +4597,8 @@ export const ContactApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary お問い合わせ一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4173,8 +4683,8 @@ export const ContactApiFactory = function (
     /**
      *
      * @summary お問い合わせ一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4231,8 +4741,8 @@ export class ContactApi extends BaseAPI {
   /**
    *
    * @summary お問い合わせ一覧取得
-   * @param {number} [limit] 取得上限数
-   * @param {number} [offset] 取得開始位置
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ContactApi
@@ -4382,8 +4892,8 @@ export const CoordinatorApiAxiosParamCreator = function (
     /**
      *
      * @summary 仲介者一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4608,8 +5118,8 @@ export const CoordinatorApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary 仲介者一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4739,8 +5249,8 @@ export const CoordinatorApiFactory = function (
     /**
      *
      * @summary 仲介者一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4827,8 +5337,8 @@ export class CoordinatorApi extends BaseAPI {
   /**
    *
    * @summary 仲介者一覧取得
-   * @param {number} [limit] 取得上限数
-   * @param {number} [offset] 取得開始位置
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof CoordinatorApi
@@ -4871,6 +5381,161 @@ export class CoordinatorApi extends BaseAPI {
   ) {
     return CoordinatorApiFp(this.configuration)
       .v1UploadCoordinatorThumbnail(thumbnail, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * NotificationApi - axios parameter creator
+ * @export
+ */
+export const NotificationApiAxiosParamCreator = function (
+  configuration?: Configuration
+) {
+  return {
+    /**
+     *
+     * @summary お知らせ登録
+     * @param {CreateNotificationRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1CreateNotification: async (
+      body: CreateNotificationRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1CreateNotification', 'body', body)
+      const localVarPath = `/v1/notifications`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'POST',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * NotificationApi - functional programming interface
+ * @export
+ */
+export const NotificationApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator =
+    NotificationApiAxiosParamCreator(configuration)
+  return {
+    /**
+     *
+     * @summary お知らせ登録
+     * @param {CreateNotificationRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1CreateNotification(
+      body: CreateNotificationRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<NotificationResponse>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1CreateNotification(body, options)
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+  }
+}
+
+/**
+ * NotificationApi - factory interface
+ * @export
+ */
+export const NotificationApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance
+) {
+  const localVarFp = NotificationApiFp(configuration)
+  return {
+    /**
+     *
+     * @summary お知らせ登録
+     * @param {CreateNotificationRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1CreateNotification(
+      body: CreateNotificationRequest,
+      options?: any
+    ): AxiosPromise<NotificationResponse> {
+      return localVarFp
+        .v1CreateNotification(body, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * NotificationApi - object-oriented interface
+ * @export
+ * @class NotificationApi
+ * @extends {BaseAPI}
+ */
+export class NotificationApi extends BaseAPI {
+  /**
+   *
+   * @summary お知らせ登録
+   * @param {CreateNotificationRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NotificationApi
+   */
+  public v1CreateNotification(
+    body: CreateNotificationRequest,
+    options?: AxiosRequestConfig
+  ) {
+    return NotificationApiFp(this.configuration)
+      .v1CreateNotification(body, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
@@ -4990,8 +5655,8 @@ export const ProducerApiAxiosParamCreator = function (
     /**
      *
      * @summary 生産者一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -5217,8 +5882,8 @@ export const ProducerApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary 生産者一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -5344,8 +6009,8 @@ export const ProducerApiFactory = function (
     /**
      *
      * @summary 生産者一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -5432,8 +6097,8 @@ export class ProducerApi extends BaseAPI {
   /**
    *
    * @summary 生産者一覧取得
-   * @param {number} [limit] 取得上限数
-   * @param {number} [offset] 取得開始位置
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ProducerApi
@@ -5595,8 +6260,8 @@ export const ProductApiAxiosParamCreator = function (
     /**
      *
      * @summary 商品一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [coordinatorId] 仲介者ID
      * @param {string} [producerId] 生産者ID
      * @param {*} [options] Override http request option.
@@ -5787,8 +6452,8 @@ export const ProductApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary 商品一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [coordinatorId] 仲介者ID
      * @param {string} [producerId] 生産者ID
      * @param {*} [options] Override http request option.
@@ -5894,8 +6559,8 @@ export const ProductApiFactory = function (
     /**
      *
      * @summary 商品一覧取得
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [coordinatorId] 仲介者ID
      * @param {string} [producerId] 生産者ID
      * @param {*} [options] Override http request option.
@@ -5973,8 +6638,8 @@ export class ProductApi extends BaseAPI {
   /**
    *
    * @summary 商品一覧取得
-   * @param {number} [limit] 取得上限数
-   * @param {number} [offset] 取得開始位置
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
    * @param {string} [coordinatorId] 仲介者ID
    * @param {string} [producerId] 生産者ID
    * @param {*} [options] Override http request option.
@@ -6142,8 +6807,8 @@ export const ProductTypeApiAxiosParamCreator = function (
     /**
      *
      * @summary 品目一覧取得(商品種別指定なし)
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 品目名(あいまい検索)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6204,9 +6869,9 @@ export const ProductTypeApiAxiosParamCreator = function (
      *
      * @summary 品目一覧取得
      * @param {string} categoryId 商品種別ID
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
-     * @param {string} [name] 品目名(あいまい検索)
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [name] 品目名(あいまい検索)(32文字以内)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -6409,8 +7074,8 @@ export const ProductTypeApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary 品目一覧取得(商品種別指定なし)
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 品目名(あいまい検索)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6444,9 +7109,9 @@ export const ProductTypeApiFp = function (configuration?: Configuration) {
      *
      * @summary 品目一覧取得
      * @param {string} categoryId 商品種別ID
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
-     * @param {string} [name] 品目名(あいまい検索)
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [name] 品目名(あいまい検索)(32文字以内)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -6559,8 +7224,8 @@ export const ProductTypeApiFactory = function (
     /**
      *
      * @summary 品目一覧取得(商品種別指定なし)
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 品目名(あいまい検索)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6579,9 +7244,9 @@ export const ProductTypeApiFactory = function (
      *
      * @summary 品目一覧取得
      * @param {string} categoryId 商品種別ID
-     * @param {number} [limit] 取得上限数
-     * @param {number} [offset] 取得開始位置
-     * @param {string} [name] 品目名(あいまい検索)
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [name] 品目名(あいまい検索)(32文字以内)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -6666,8 +7331,8 @@ export class ProductTypeApi extends BaseAPI {
   /**
    *
    * @summary 品目一覧取得(商品種別指定なし)
-   * @param {number} [limit] 取得上限数
-   * @param {number} [offset] 取得開始位置
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
    * @param {string} [name] 品目名(あいまい検索)
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -6688,9 +7353,9 @@ export class ProductTypeApi extends BaseAPI {
    *
    * @summary 品目一覧取得
    * @param {string} categoryId 商品種別ID
-   * @param {number} [limit] 取得上限数
-   * @param {number} [offset] 取得開始位置
-   * @param {string} [name] 品目名(あいまい検索)
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
+   * @param {string} [name] 品目名(あいまい検索)(32文字以内)
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ProductTypeApi
@@ -6725,6 +7390,555 @@ export class ProductTypeApi extends BaseAPI {
   ) {
     return ProductTypeApiFp(this.configuration)
       .v1UpdateProductType(categoryId, productTypeId, body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * ShippingApi - axios parameter creator
+ * @export
+ */
+export const ShippingApiAxiosParamCreator = function (
+  configuration?: Configuration
+) {
+  return {
+    /**
+     *
+     * @summary 配送設定登録
+     * @param {CreateShippingRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1CreateShipping: async (
+      body: CreateShippingRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1CreateShipping', 'body', body)
+      const localVarPath = `/v1/shippings`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'POST',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary 配送設定取得
+     * @param {string} shippingId 配送設定ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1GetShipping: async (
+      shippingId: string,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'shippingId' is not null or undefined
+      assertParamExists('v1GetShipping', 'shippingId', shippingId)
+      const localVarPath = `/v1/shippings/{shippingId}`.replace(
+        `{${'shippingId'}}`,
+        encodeURIComponent(String(shippingId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary 配送設定更新
+     * @param {string} shippingId 配送設定ID
+     * @param {UpdateShippingRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateShipping: async (
+      shippingId: string,
+      body: UpdateShippingRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'shippingId' is not null or undefined
+      assertParamExists('v1UpdateShipping', 'shippingId', shippingId)
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1UpdateShipping', 'body', body)
+      const localVarPath = `/v1/shippings/{shippingId}`.replace(
+        `{${'shippingId'}}`,
+        encodeURIComponent(String(shippingId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * ShippingApi - functional programming interface
+ * @export
+ */
+export const ShippingApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = ShippingApiAxiosParamCreator(configuration)
+  return {
+    /**
+     *
+     * @summary 配送設定登録
+     * @param {CreateShippingRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1CreateShipping(
+      body: CreateShippingRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<ShippingResponse>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1CreateShipping(body, options)
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary 配送設定取得
+     * @param {string} shippingId 配送設定ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1GetShipping(
+      shippingId: string,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<ShippingResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetShipping(
+        shippingId,
+        options
+      )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary 配送設定更新
+     * @param {string} shippingId 配送設定ID
+     * @param {UpdateShippingRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UpdateShipping(
+      shippingId: string,
+      body: UpdateShippingRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1UpdateShipping(
+          shippingId,
+          body,
+          options
+        )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+  }
+}
+
+/**
+ * ShippingApi - factory interface
+ * @export
+ */
+export const ShippingApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance
+) {
+  const localVarFp = ShippingApiFp(configuration)
+  return {
+    /**
+     *
+     * @summary 配送設定登録
+     * @param {CreateShippingRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1CreateShipping(
+      body: CreateShippingRequest,
+      options?: any
+    ): AxiosPromise<ShippingResponse> {
+      return localVarFp
+        .v1CreateShipping(body, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary 配送設定取得
+     * @param {string} shippingId 配送設定ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1GetShipping(
+      shippingId: string,
+      options?: any
+    ): AxiosPromise<ShippingResponse> {
+      return localVarFp
+        .v1GetShipping(shippingId, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary 配送設定更新
+     * @param {string} shippingId 配送設定ID
+     * @param {UpdateShippingRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateShipping(
+      shippingId: string,
+      body: UpdateShippingRequest,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1UpdateShipping(shippingId, body, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * ShippingApi - object-oriented interface
+ * @export
+ * @class ShippingApi
+ * @extends {BaseAPI}
+ */
+export class ShippingApi extends BaseAPI {
+  /**
+   *
+   * @summary 配送設定登録
+   * @param {CreateShippingRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ShippingApi
+   */
+  public v1CreateShipping(
+    body: CreateShippingRequest,
+    options?: AxiosRequestConfig
+  ) {
+    return ShippingApiFp(this.configuration)
+      .v1CreateShipping(body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary 配送設定取得
+   * @param {string} shippingId 配送設定ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ShippingApi
+   */
+  public v1GetShipping(shippingId: string, options?: AxiosRequestConfig) {
+    return ShippingApiFp(this.configuration)
+      .v1GetShipping(shippingId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary 配送設定更新
+   * @param {string} shippingId 配送設定ID
+   * @param {UpdateShippingRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ShippingApi
+   */
+  public v1UpdateShipping(
+    shippingId: string,
+    body: UpdateShippingRequest,
+    options?: AxiosRequestConfig
+  ) {
+    return ShippingApiFp(this.configuration)
+      .v1UpdateShipping(shippingId, body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * ShippingsApi - axios parameter creator
+ * @export
+ */
+export const ShippingsApiAxiosParamCreator = function (
+  configuration?: Configuration
+) {
+  return {
+    /**
+     *
+     * @summary 配送設定一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1ListShippings: async (
+      limit?: number,
+      offset?: number,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/v1/shippings`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (limit !== undefined) {
+        localVarQueryParameter['limit'] = limit
+      }
+
+      if (offset !== undefined) {
+        localVarQueryParameter['offset'] = offset
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * ShippingsApi - functional programming interface
+ * @export
+ */
+export const ShippingsApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = ShippingsApiAxiosParamCreator(configuration)
+  return {
+    /**
+     *
+     * @summary 配送設定一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1ListShippings(
+      limit?: number,
+      offset?: number,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<ShippingsResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListShippings(
+        limit,
+        offset,
+        options
+      )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+  }
+}
+
+/**
+ * ShippingsApi - factory interface
+ * @export
+ */
+export const ShippingsApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance
+) {
+  const localVarFp = ShippingsApiFp(configuration)
+  return {
+    /**
+     *
+     * @summary 配送設定一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1ListShippings(
+      limit?: number,
+      offset?: number,
+      options?: any
+    ): AxiosPromise<ShippingsResponse> {
+      return localVarFp
+        .v1ListShippings(limit, offset, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * ShippingsApi - object-oriented interface
+ * @export
+ * @class ShippingsApi
+ * @extends {BaseAPI}
+ */
+export class ShippingsApi extends BaseAPI {
+  /**
+   *
+   * @summary 配送設定一覧取得
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ShippingsApi
+   */
+  public v1ListShippings(
+    limit?: number,
+    offset?: number,
+    options?: AxiosRequestConfig
+  ) {
+    return ShippingsApiFp(this.configuration)
+      .v1ListShippings(limit, offset, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

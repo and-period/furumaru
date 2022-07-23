@@ -64,8 +64,11 @@ func NewProduct(product *entity.Product) *Product {
 		Product: response.Product{
 			ID:               product.ID,
 			ProducerID:       product.ProducerID,
+			StoreName:        "dummy", // TODO: 詳細の実装
 			CategoryID:       product.CategoryID,
+			CategoryName:     "dummy", // TODO: 詳細の実装
 			TypeID:           product.TypeID,
+			TypeName:         "dummy", // TODO: 詳細の実装
 			Name:             product.Name,
 			Description:      product.Description,
 			Public:           product.Public,

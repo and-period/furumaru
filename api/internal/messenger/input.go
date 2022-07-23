@@ -49,3 +49,7 @@ type NotifyReceivedContactInput struct {
 	Username  string `validate:"required"`
 	Email     string `validate:"required"`
 }
+
+type NotifyNotificationInput struct {
+	NotificationID string `validate:"required"`
+}
