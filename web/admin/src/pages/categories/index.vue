@@ -103,6 +103,7 @@ import {
   defineComponent,
   reactive,
   ref,
+  useFetch,
 } from '@nuxtjs/composition-api'
 
 import TheCategoryList from '~/components/organisms/TheCategoryList.vue'
@@ -122,7 +123,7 @@ export default defineComponent({
     const productTypeStore = useProductTypeStore()
 
     const categories = computed(() => {
-      return categoryStore.categories.map((item) => {
+      return categoryStore.productTypeCategories.map((item) => {
         return {
           text: item.name,
           value: item.id,
@@ -185,6 +186,14 @@ export default defineComponent({
         console.log(error)
       }
     }
+
+    useFetch(async () => {
+      try {
+        await categoryStore.fetchCategories(200)
+      } catch (err) {
+        console.log(err)
+      }
+    })
 
     return {
       categories,
