@@ -47,7 +47,8 @@ export const useCategoryStore = defineStore('Category', {
 
         const factory = new ApiClientFactory()
         const categoriesApiClient = factory.create(CategoryApi, accessToken)
-        await categoriesApiClient.v1CreateCategory(payload)
+        const res = await categoriesApiClient.v1CreateCategory(payload)
+        this.categories.unshift(res.data)
       } catch (error) {
         // TODO: エラーハンドリング
         console.log(error)

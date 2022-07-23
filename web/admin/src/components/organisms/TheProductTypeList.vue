@@ -28,7 +28,6 @@ import { DataTableHeader } from 'vuetify'
 
 import { useProductTypeStore } from '~/store/product-type'
 
-
 export default defineComponent({
   setup() {
     const productTypeStore = useProductTypeStore()
@@ -64,7 +63,7 @@ export default defineComponent({
     return {
       productTypeHeaders,
       fetchState,
-      productTypes
+      productTypes,
     }
   },
 })

@@ -47,6 +47,7 @@ export const useProductTypeStore = defineStore('ProductType', {
           categoryId,
           payload
         )
+        this.productTypes.unshift(res.data)
         console.log(res)
       } catch (error) {
         // TODO: エラーハンドリング
