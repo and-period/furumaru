@@ -1350,10 +1350,10 @@ export interface MessageResponse {
   link: string
   /**
    * 既読フラグ
-   * @type {string}
+   * @type {boolean}
    * @memberof MessageResponse
    */
-  read: string
+  read: boolean
   /**
    * 受信日時 (unixtime)
    * @type {number}
