@@ -38,7 +38,7 @@ func (m *message) List(ctx context.Context, params *ListMessagesParams, fields .
 	}
 
 	stmt := m.db.DB.WithContext(ctx).Table(messageTable).Select(fields)
-	stmt = params.stmt(stmt)
+	stmt = params.stmt(stmt).Order("received_at DESC")
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
 	}

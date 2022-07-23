@@ -31,9 +31,9 @@ func TestMessage_List(t *testing.T) {
 
 	_ = m.dbDelete(ctx, messageTable)
 	messages := make(entity.Messages, 3)
-	messages[0] = testMessage("message-id01", now())
+	messages[0] = testMessage("message-id01", now().Add(-time.Hour))
 	messages[1] = testMessage("message-id02", now())
-	messages[2] = testMessage("message-id03", now())
+	messages[2] = testMessage("message-id03", now().Add(time.Hour))
 	err = m.db.DB.Create(&messages).Error
 	require.NoError(t, err)
 
@@ -62,7 +62,7 @@ func TestMessage_List(t *testing.T) {
 				},
 			},
 			want: want{
-				messages: messages[1:],
+				messages: messages[0:2],
 				hasErr:   false,
 			},
 		},
@@ -415,9 +415,9 @@ func fillIgnoreMessageField(m *entity.Message, now time.Time) {
 	if m == nil {
 		return
 	}
-	m.ReceivedAt = now
-	m.CreatedAt = now
-	m.UpdatedAt = now
+	m.ReceivedAt = m.ReceivedAt.In(now.Location())
+	m.CreatedAt = m.ReceivedAt.In(now.Location())
+	m.UpdatedAt = m.ReceivedAt.In(now.Location())
 }
 
 func fillIgnoreMessagesField(ms entity.Messages, now time.Time) {
