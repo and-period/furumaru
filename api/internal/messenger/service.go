@@ -19,6 +19,10 @@ type Service interface {
 	UpdateContact(ctx context.Context, in *UpdateContactInput) error
 	// お知らせ作成
 	CreateNotification(ctx context.Context, in *CreateNotificationInput) (*entity.Notification, error)
+	// メッセージ一覧取得
+	ListMessages(ctx context.Context, in *ListMessagesInput) (entity.Messages, int64, error)
+	// メッセージ取得
+	GetMessage(ctx context.Context, in *GetMessageInput) (*entity.Message, error)
 	// 管理者登録通知
 	NotifyRegisterAdmin(ctx context.Context, in *NotifyRegisterAdminInput) error
 	// お問い合わせ受領通知

@@ -156,6 +156,61 @@ func (m *MockMessage) EXPECT() *MockMessageMockRecorder {
 	return m.recorder
 }
 
+// Count mocks base method.
+func (m *MockMessage) Count(ctx context.Context, params *database.ListMessagesParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockMessageMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockMessage)(nil).Count), ctx, params)
+}
+
+// Get mocks base method.
+func (m *MockMessage) Get(ctx context.Context, messageID string, fields ...string) (*entity.Message, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, messageID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.Message)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockMessageMockRecorder) Get(ctx, messageID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, messageID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockMessage)(nil).Get), varargs...)
+}
+
+// List mocks base method.
+func (m *MockMessage) List(ctx context.Context, params *database.ListMessagesParams, fields ...string) (entity.Messages, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, params}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "List", varargs...)
+	ret0, _ := ret[0].(entity.Messages)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockMessageMockRecorder) List(ctx, params interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, params}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockMessage)(nil).List), varargs...)
+}
+
 // MultiCreate mocks base method.
 func (m *MockMessage) MultiCreate(ctx context.Context, messages entity.Messages) error {
 	m.ctrl.T.Helper()
@@ -168,6 +223,20 @@ func (m *MockMessage) MultiCreate(ctx context.Context, messages entity.Messages)
 func (mr *MockMessageMockRecorder) MultiCreate(ctx, messages interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiCreate", reflect.TypeOf((*MockMessage)(nil).MultiCreate), ctx, messages)
+}
+
+// UpdateRead mocks base method.
+func (m *MockMessage) UpdateRead(ctx context.Context, messageID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateRead", ctx, messageID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateRead indicates an expected call of UpdateRead.
+func (mr *MockMessageMockRecorder) UpdateRead(ctx, messageID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRead", reflect.TypeOf((*MockMessage)(nil).UpdateRead), ctx, messageID)
 }
 
 // MockMessageTemplate is a mock of MessageTemplate interface.
