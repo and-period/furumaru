@@ -7,8 +7,7 @@ const (
 	EventTypeUnknown             EventType = 0
 	EventTypeAdminRegister       EventType = 1 // 管理者登録通知
 	EventTypeUserReceivedContact EventType = 2 // お問い合わせ受領通知
-	EventTypeUserNotification    EventType = 3 // お知らせ通知
-	EventTypeAdminNotification   EventType = 4 // 管理者お知らせ通知
+	EventTypeNotification        EventType = 3 // お知らせ通知
 )
 
 // UserType - 通知先ユーザー種別

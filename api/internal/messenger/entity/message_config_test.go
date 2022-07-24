@@ -20,10 +20,14 @@ func TestMessageConfig_Fields(t *testing.T) {
 				MessageID:   MessageIDNotification,
 				MessageType: MessageTypeNotification,
 				Title:       "メッセージのタイトル",
+				Author:      "&.スタッフ",
 				Link:        "https://and-period.jp",
 				ReceivedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
 			},
-			expect: map[string]string{},
+			expect: map[string]string{
+				"Title":  "メッセージのタイトル",
+				"Author": "&.スタッフ",
+			},
 		},
 	}
 	for _, tt := range tests {

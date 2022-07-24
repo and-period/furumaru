@@ -11,7 +11,7 @@ func (w *worker) messenger(ctx context.Context, payload *entity.WorkerPayload) e
 	if err != nil {
 		return err
 	}
-	body, err := template.Build(payload.Message.Fields())
+	title, body, err := template.Build(payload.Message.Fields())
 	if err != nil {
 		return err
 	}
@@ -19,7 +19,7 @@ func (w *worker) messenger(ctx context.Context, payload *entity.WorkerPayload) e
 		UserType:   payload.UserType,
 		UserIDs:    payload.UserIDs,
 		Type:       payload.Message.MessageType,
-		Title:      payload.Message.Title,
+		Title:      title,
 		Body:       body,
 		Link:       payload.Message.Link,
 		ReceivedAt: payload.Message.ReceivedAt,

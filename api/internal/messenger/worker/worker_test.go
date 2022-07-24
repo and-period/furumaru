@@ -214,10 +214,11 @@ func TestWorker_Run(t *testing.T) {
 		},
 	}
 	mtemplate := &entity.MessageTemplate{
-		TemplateID: entity.MessageIDNotification,
-		Template:   `テンプレートです。`,
-		CreatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
-		UpdatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
+		TemplateID:    entity.MessageIDNotification,
+		TitleTemplate: "件名: {{.Title}}",
+		BodyTemplate:  `テンプレートです。`,
+		CreatedAt:     jst.Date(2022, 7, 14, 18, 30, 0, 0),
+		UpdatedAt:     jst.Date(2022, 7, 14, 18, 30, 0, 0),
 	}
 	rtemplate := &entity.ReportTemplate{
 		TemplateID: entity.ReportIDReceivedContact,
@@ -271,7 +272,7 @@ func TestWorker_Run(t *testing.T) {
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
-				EventType: entity.EventTypeUserNotification,
+				EventType: entity.EventTypeNotification,
 				UserType:  entity.UserTypeUser,
 				UserIDs:   []string{"user-id"},
 				Message: &entity.MessageConfig{
@@ -379,7 +380,7 @@ func TestWorker_Run(t *testing.T) {
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
-				EventType: entity.EventTypeUserNotification,
+				EventType: entity.EventTypeNotification,
 				UserType:  entity.UserTypeUser,
 				UserIDs:   []string{"user-id"},
 				Message: &entity.MessageConfig{

@@ -95,10 +95,11 @@ func TestMessageTemplate_Get(t *testing.T) {
 
 func testMessageTemplate(id string, now time.Time) *entity.MessageTemplate {
 	return &entity.MessageTemplate{
-		TemplateID: id,
-		Template:   "テンプレート: {{.Body}}",
-		CreatedAt:  now,
-		UpdatedAt:  now,
+		TemplateID:    id,
+		TitleTemplate: "件名: {{.Title}}",
+		BodyTemplate:  "内容: {{.Body}}",
+		CreatedAt:     now,
+		UpdatedAt:     now,
 	}
 }
 

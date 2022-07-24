@@ -13,7 +13,7 @@ import (
 const messageTemplateTable = "message_templates"
 
 var messageTemplateFields = []string{
-	"id", "template", "created_at", "updated_at",
+	"id", "title_template", "body_template", "created_at", "updated_at",
 }
 
 type messageTemplate struct {

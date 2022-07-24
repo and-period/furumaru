@@ -81,6 +81,21 @@ func (mr *MockServiceMockRecorder) GetContact(ctx, in interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetContact", reflect.TypeOf((*MockService)(nil).GetContact), ctx, in)
 }
 
+// GetMessage mocks base method.
+func (m *MockService) GetMessage(ctx context.Context, in *messenger.GetMessageInput) (*entity.Message, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetMessage", ctx, in)
+	ret0, _ := ret[0].(*entity.Message)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetMessage indicates an expected call of GetMessage.
+func (mr *MockServiceMockRecorder) GetMessage(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMessage", reflect.TypeOf((*MockService)(nil).GetMessage), ctx, in)
+}
+
 // ListContacts mocks base method.
 func (m *MockService) ListContacts(ctx context.Context, in *messenger.ListContactsInput) (entity.Contacts, int64, error) {
 	m.ctrl.T.Helper()
@@ -95,6 +110,22 @@ func (m *MockService) ListContacts(ctx context.Context, in *messenger.ListContac
 func (mr *MockServiceMockRecorder) ListContacts(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListContacts", reflect.TypeOf((*MockService)(nil).ListContacts), ctx, in)
+}
+
+// ListMessages mocks base method.
+func (m *MockService) ListMessages(ctx context.Context, in *messenger.ListMessagesInput) (entity.Messages, int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListMessages", ctx, in)
+	ret0, _ := ret[0].(entity.Messages)
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ListMessages indicates an expected call of ListMessages.
+func (mr *MockServiceMockRecorder) ListMessages(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListMessages", reflect.TypeOf((*MockService)(nil).ListMessages), ctx, in)
 }
 
 // NotifyNotification mocks base method.

@@ -39,6 +39,19 @@ type CreateNotificationInput struct {
 	PublishedAt time.Time           `validate:"required"`
 }
 
+type ListMessagesInput struct {
+	UserType entity.UserType `validate:"required,oneof=1 2"`
+	UserID   string          `validate:"required"`
+	Limit    int64           `validate:"required,max=200"`
+	Offset   int64           `validate:"min=0"`
+}
+
+type GetMessageInput struct {
+	MessageID string          `validate:"required"`
+	UserType  entity.UserType `validate:"omitempty,oneof=1 2"`
+	UserID    string          `validate:"omitempty"`
+}
+
 type NotifyRegisterAdminInput struct {
 	AdminID  string `validate:"required"`
 	Password string `validate:"required"`
