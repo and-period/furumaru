@@ -1,6 +1,8 @@
+import { ref } from '@nuxtjs/composition-api'
 import { defineStore } from 'pinia'
 
 import { useAuthStore } from './auth'
+import { useCommonStore } from './common'
 
 import { ApiClientFactory } from '.'
 
@@ -26,8 +28,8 @@ export const useProductTypeStore = defineStore('ProductType', {
         const res = await productTypeApiClient.v1ListAllProductTypes()
         console.log(res)
         this.productTypes = res.data.productTypes
-      } catch (error) {
-        // TODO: エラーハンドリング
+      } catch (e) {
+        console.log(e)
         throw new Error('Internal Server Error')
       }
     },
@@ -35,6 +37,8 @@ export const useProductTypeStore = defineStore('ProductType', {
       categoryId: string,
       payload: CreateProductTypeRequest
     ): Promise<void> {
+      const commonStore = useCommonStore()
+      const errorMessage = ref<string>('')
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -47,11 +51,22 @@ export const useProductTypeStore = defineStore('ProductType', {
           payload
         )
         this.productTypes.unshift(res.data)
-        console.log(res)
-      } catch (error) {
-        // TODO: エラーハンドリング
-        throw new Error('Internal Server Error')
+        commonStore.addSnackbar({
+          message: `品目を追加しました。`,
+          color: 'info',
+        })
+      } catch (e) {
+        if (e instanceof Error) {
+          errorMessage.value = e.message
+        } else {
+          errorMessage.value =
+            '不明なエラーが発生しました。お手数ですがご自身で入力してください。'
+        }
       }
+      commonStore.addSnackbar({
+        message: errorMessage.value,
+        color: 'error',
+      })
     },
   },
 })

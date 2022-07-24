@@ -1,6 +1,8 @@
+import { ref } from '@nuxtjs/composition-api'
 import { defineStore } from 'pinia'
 
 import { useAuthStore } from './auth'
+import { useCommonStore } from './common'
 
 import { ApiClientFactory } from '.'
 
@@ -26,20 +28,20 @@ export const useCategoryStore = defineStore('Category', {
         const categoriesApiClient = factory.create(CategoryApi, accessToken)
         if (limit === undefined) {
           const res = await categoriesApiClient.v1ListCategories()
-          console.log(res)
           this.categories = res.data.categories
         } else {
           const res = await categoriesApiClient.v1ListCategories(limit)
-          console.log(res)
           this.productTypeCategories = res.data.categories
         }
-      } catch (error) {
-        // TODO: エラーハンドリング
+      } catch (e) {
+        console.log(e)
         throw new Error('Internal Server Error')
       }
     },
 
     async createCategory(payload: CreateCategoryRequest): Promise<void> {
+      const commonStore = useCommonStore()
+      const errorMessage = ref<string>('')
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -49,11 +51,22 @@ export const useCategoryStore = defineStore('Category', {
         const categoriesApiClient = factory.create(CategoryApi, accessToken)
         const res = await categoriesApiClient.v1CreateCategory(payload)
         this.categories.unshift(res.data)
-      } catch (error) {
-        // TODO: エラーハンドリング
-        console.log(error)
-        throw new Error('Internal Server Error')
+        commonStore.addSnackbar({
+          message: `カテゴリーを追加しました。`,
+          color: 'info',
+        })
+      } catch (e) {
+        if (e instanceof Error) {
+          errorMessage.value = e.message
+        } else {
+          errorMessage.value =
+            '不明なエラーが発生しました。お手数ですがご自身で入力してください。'
+        }
       }
+      commonStore.addSnackbar({
+        message: errorMessage.value,
+        color: 'error',
+      })
     },
   },
 })

@@ -1,3 +1,4 @@
+import { ref } from '@nuxtjs/composition-api'
 import axios from 'axios'
 import { defineStore } from 'pinia'
 import Cookies from 'universal-cookie'
@@ -69,6 +70,8 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async passwordUpdate(payload: UpdateAuthPasswordRequest): Promise<void> {
+      const commonStore = useCommonStore()
+      const errorMessage = ref<string>('')
       try {
         const factory = new ApiClientFactory()
         const authApiClient = factory.create(AuthApi, this.user?.accessToken)
@@ -78,11 +81,18 @@ export const useAuthStore = defineStore('auth', {
           message: `パスワードを更新しました。`,
           color: 'info',
         })
-      } catch (err) {
-        // TODO: エラーハンドリング
-        console.log(err)
-        throw new Error('Internal Server Error')
+      } catch (e) {
+        if (e instanceof Error) {
+          errorMessage.value = e.message
+        } else {
+          errorMessage.value =
+            '不明なエラーが発生しました。お手数ですがご自身で入力してください。'
+        }
       }
+      commonStore.addSnackbar({
+        message: errorMessage.value,
+        color: 'error',
+      })
     },
 
     async getAuthByRefreshToken(refreshToken: string): Promise<void> {
