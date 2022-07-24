@@ -141,7 +141,7 @@ export default defineComponent({
     }
 
     const handleEdit = (item: ProducersResponseProducers) => {
-      console.log(item)
+      router.push(`/producers/edit/${item.id}`)
     }
 
     const handleDelete = (item: ProducersResponseProducers) => {
