@@ -15,13 +15,18 @@ type ProductTypes []*ProductType
 func NewProductType(productType *entity.ProductType) *ProductType {
 	return &ProductType{
 		ProductType: response.ProductType{
-			ID:           productType.ID,
-			CategoryID:   productType.CategoryID,
-			CategoryName: "dummy", // TODO: 詳細の実装
-			Name:         productType.Name,
-			CreatedAt:    productType.CreatedAt.Unix(),
-			UpdatedAt:    productType.UpdatedAt.Unix(),
+			ID:         productType.ID,
+			CategoryID: productType.CategoryID,
+			Name:       productType.Name,
+			CreatedAt:  productType.CreatedAt.Unix(),
+			UpdatedAt:  productType.UpdatedAt.Unix(),
 		},
+	}
+}
+
+func (t *ProductType) Fill(category *Category) {
+	if category != nil {
+		t.CategoryName = category.Name
 	}
 }
 
@@ -43,6 +48,24 @@ func (ts ProductTypes) CategoryIDs() []string {
 		set.AddStrings(ts[i].CategoryID)
 	}
 	return set.Strings()
+}
+
+func (ts ProductTypes) Map() map[string]*ProductType {
+	res := make(map[string]*ProductType, len(ts))
+	for _, t := range ts {
+		res[t.ID] = t
+	}
+	return res
+}
+
+func (ts ProductTypes) Fill(categories map[string]*Category) {
+	for i := range ts {
+		category, ok := categories[ts[i].CategoryID]
+		if !ok {
+			continue
+		}
+		ts[i].Fill(category)
+	}
 }
 
 func (ts ProductTypes) Response() []*response.ProductType {

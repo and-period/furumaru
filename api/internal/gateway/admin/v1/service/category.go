@@ -34,6 +34,14 @@ func NewCategories(categories entity.Categories) Categories {
 	return res
 }
 
+func (cs Categories) Map() map[string]*Category {
+	res := make(map[string]*Category, len(cs))
+	for _, c := range cs {
+		res[c.ID] = c
+	}
+	return res
+}
+
 func (cs Categories) Response() []*response.Category {
 	res := make([]*response.Category, len(cs))
 	for i := range cs {

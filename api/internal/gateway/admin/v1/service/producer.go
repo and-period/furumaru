@@ -47,6 +47,14 @@ func NewProducers(producers entity.Producers) Producers {
 	return res
 }
 
+func (ps Producers) Map() map[string]*Producer {
+	res := make(map[string]*Producer, len(ps))
+	for _, p := range ps {
+		res[p.ID] = p
+	}
+	return res
+}
+
 func (ps Producers) Response() []*response.Producer {
 	res := make([]*response.Producer, len(ps))
 	for i := range ps {

@@ -9,7 +9,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 )
 
 func (h *handler) productTypeRoutes(rg *gin.RouterGroup) {
@@ -43,24 +42,24 @@ func (h *handler) ListProductTypes(ctx *gin.Context) {
 		Limit:      limit,
 		Offset:     offset,
 	}
-	stypes, total, err := h.store.ListProductTypes(ctx, typesIn)
+	sproductTypes, total, err := h.store.ListProductTypes(ctx, typesIn)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
-	productTypes := service.NewProductTypes(stypes)
+	productTypes := service.NewProductTypes(sproductTypes)
 
 	categoriesIn := &store.MultiGetCategoriesInput{
 		CategoryIDs: productTypes.CategoryIDs(),
 	}
-	categories, err := h.store.MultiGetCategories(ctx, categoriesIn)
+	scategories, err := h.store.MultiGetCategories(ctx, categoriesIn)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
+	categories := service.NewCategories(scategories)
 
-	// TODO: 後から実装
-	h.logger.Debug("TODO", zap.Any("categories", categories))
+	productTypes.Fill(categories.Map())
 
 	res := &response.ProductTypesResponse{
 		ProductTypes: productTypes.Response(),
@@ -76,18 +75,24 @@ func (h *handler) CreateProductType(ctx *gin.Context) {
 		return
 	}
 
+	// TODO: Categoryの存在性検証の追加
+	category := &service.Category{}
+
 	in := &store.CreateProductTypeInput{
 		CategoryID: util.GetParam(ctx, "categoryId"),
 		Name:       req.Name,
 	}
-	productType, err := h.store.CreateProductType(ctx, in)
+	sproductType, err := h.store.CreateProductType(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
+	productType := service.NewProductType(sproductType)
+
+	productType.Fill(category)
 
 	res := &response.ProductTypeResponse{
-		ProductType: service.NewProductType(productType).Response(),
+		ProductType: productType.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

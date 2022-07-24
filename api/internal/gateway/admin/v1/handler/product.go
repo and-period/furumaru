@@ -8,11 +8,8 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
-	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
-	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -56,39 +53,50 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 	products := service.NewProducts(sproducts)
 
 	var (
-		producers  uentity.Producers
-		categories sentity.Categories
-		types      sentity.ProductTypes
+		producers  service.Producers
+		categories service.Categories
+		types      service.ProductTypes
 	)
 	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() (err error) {
+	eg.Go(func() error {
 		in := &user.MultiGetProducersInput{
 			ProducerIDs: products.ProducerIDs(),
 		}
-		producers, err = h.user.MultiGetProducers(ectx, in)
-		return
+		uproducers, err := h.user.MultiGetProducers(ectx, in)
+		if err != nil {
+			return err
+		}
+		producers = service.NewProducers(uproducers)
+		return nil
 	})
-	eg.Go(func() (err error) {
+	eg.Go(func() error {
 		in := &store.MultiGetCategoriesInput{
 			CategoryIDs: products.CategoryIDs(),
 		}
-		categories, err = h.store.MultiGetCategories(ectx, in)
-		return
+		scategories, err := h.store.MultiGetCategories(ectx, in)
+		if err != nil {
+			return err
+		}
+		categories = service.NewCategories(scategories)
+		return nil
 	})
-	eg.Go(func() (err error) {
+	eg.Go(func() error {
 		in := &store.MultiGetProductTypesInput{
 			ProductTypeIDs: products.ProductTypeIDs(),
 		}
-		types, err = h.store.MultiGetProductTypes(ectx, in)
-		return
+		stypes, err := h.store.MultiGetProductTypes(ectx, in)
+		if err != nil {
+			return err
+		}
+		types = service.NewProductTypes(stypes)
+		return nil
 	})
 	if err := eg.Wait(); err != nil {
 		httpError(ctx, err)
 		return
 	}
 
-	// TODO: 後から実装
-	h.logger.Debug("TODO", zap.Any("producers", producers), zap.Any("categories", categories), zap.Any("types", types))
+	products.Fill(categories.Map(), types.Map(), producers.Map())
 
 	res := &response.ProductsResponse{
 		Products: products.Response(),
@@ -101,15 +109,47 @@ func (h *handler) GetProduct(ctx *gin.Context) {
 	in := &store.GetProductInput{
 		ProductID: util.GetParam(ctx, "productId"),
 	}
-	product, err := h.store.GetProduct(ctx, in)
+	sproduct, err := h.store.GetProduct(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
+	product := service.NewProduct(sproduct)
 
-	// TODO: 実装の追加
+	var (
+		producer    *service.Producer
+		category    *service.Category
+		productType *service.ProductType
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		in := &user.GetProducerInput{
+			ProducerID: product.ProducerID,
+		}
+		uproducer, err := h.user.GetProducer(ectx, in)
+		if err != nil {
+			return err
+		}
+		producer = service.NewProducer(uproducer)
+		return nil
+	})
+	eg.Go(func() error {
+		// 商品種別の存在性検証
+		return nil
+	})
+	eg.Go(func() error {
+		// 品目の存在性検証
+		return nil
+	})
+	if err := eg.Wait(); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	product.Fill(category, productType, producer)
+
 	res := &response.ProductResponse{
-		Product: service.NewProduct(product).Response(),
+		Product: product.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -118,6 +158,36 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 	req := &request.CreateProductRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
+		return
+	}
+
+	var (
+		producer    *service.Producer
+		category    *service.Category
+		productType *service.ProductType
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		in := &user.GetProducerInput{
+			ProducerID: req.ProducerID,
+		}
+		uproducer, err := h.user.GetProducer(ectx, in)
+		if err != nil {
+			return err
+		}
+		producer = service.NewProducer(uproducer)
+		return nil
+	})
+	eg.Go(func() error {
+		// 商品種別の存在性検証
+		return nil
+	})
+	eg.Go(func() error {
+		// 品目の存在性検証
+		return nil
+	})
+	if err := eg.Wait(); err != nil {
+		httpError(ctx, err)
 		return
 	}
 
@@ -153,14 +223,17 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		OriginPrefecture: req.OriginPrefecture,
 		OriginCity:       req.OriginCity,
 	}
-	product, err := h.store.CreateProduct(ctx, in)
+	sproduct, err := h.store.CreateProduct(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
+	product := service.NewProduct(sproduct)
+
+	product.Fill(category, productType, producer)
 
 	res := &response.ProductResponse{
-		Product: service.NewProduct(product).Response(),
+		Product: product.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
