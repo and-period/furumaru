@@ -47,7 +47,9 @@ type ListMessagesInput struct {
 }
 
 type GetMessageInput struct {
-	MessageID string `validate:"required"`
+	MessageID string          `validate:"required"`
+	UserType  entity.UserType `validate:"omitempty,oneof=1 2"`
+	UserID    string          `validate:"omitempty"`
 }
 
 type NotifyRegisterAdminInput struct {

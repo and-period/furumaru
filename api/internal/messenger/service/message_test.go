@@ -140,18 +140,40 @@ func TestGetMessage(t *testing.T) {
 		expectErr error
 	}{
 		{
+			name: "success from system",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Message.EXPECT().Get(ctx, "message-id").Return(message, nil)
+			},
+			input: &messenger.GetMessageInput{
+				MessageID: "message-id",
+				UserType:  entity.UserTypeNone,
+				UserID:    "",
+			},
+			expect:    message,
+			expectErr: nil,
+		},
+		{
 			name: "success first read",
 			setup: func(ctx context.Context, mocks *mocks) {
-				message := &entity.Message{ID: "message-id", Read: false}
+				message := &entity.Message{
+					ID:       "message-id",
+					UserType: entity.UserTypeUser,
+					UserID:   "user-id",
+					Read:     false,
+				}
 				mocks.db.Message.EXPECT().Get(ctx, "message-id").Return(message, nil)
 				mocks.db.Message.EXPECT().UpdateRead(gomock.Any(), "message-id").Return(nil)
 			},
 			input: &messenger.GetMessageInput{
 				MessageID: "message-id",
+				UserType:  entity.UserTypeUser,
+				UserID:    "user-id",
 			},
 			expect: &entity.Message{
-				ID:   "message-id",
-				Read: true,
+				ID:       "message-id",
+				UserType: entity.UserTypeUser,
+				UserID:   "user-id",
+				Read:     true,
 			},
 			expectErr: nil,
 		},
@@ -162,6 +184,8 @@ func TestGetMessage(t *testing.T) {
 			},
 			input: &messenger.GetMessageInput{
 				MessageID: "message-id",
+				UserType:  entity.UserTypeUser,
+				UserID:    "user-id",
 			},
 			expect:    message,
 			expectErr: nil,
@@ -180,23 +204,47 @@ func TestGetMessage(t *testing.T) {
 			},
 			input: &messenger.GetMessageInput{
 				MessageID: "message-id",
+				UserType:  entity.UserTypeUser,
+				UserID:    "user-id",
 			},
 			expect:    nil,
 			expectErr: exception.ErrUnknown,
 		},
 		{
+			name: "failed to get someone else",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Message.EXPECT().Get(ctx, "message-id").Return(message, nil)
+			},
+			input: &messenger.GetMessageInput{
+				MessageID: "message-id",
+				UserType:  entity.UserTypeUser,
+				UserID:    "other-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrForbidden,
+		},
+		{
 			name: "failed to update read",
 			setup: func(ctx context.Context, mocks *mocks) {
-				message := &entity.Message{ID: "message-id", Read: false}
+				message := &entity.Message{
+					ID:       "message-id",
+					UserType: entity.UserTypeUser,
+					UserID:   "user-id",
+					Read:     false,
+				}
 				mocks.db.Message.EXPECT().Get(ctx, "message-id").Return(message, nil)
 				mocks.db.Message.EXPECT().UpdateRead(gomock.Any(), "message-id").Return(errmock)
 			},
 			input: &messenger.GetMessageInput{
 				MessageID: "message-id",
+				UserType:  entity.UserTypeUser,
+				UserID:    "user-id",
 			},
 			expect: &entity.Message{
-				ID:   "message-id",
-				Read: true,
+				ID:       "message-id",
+				UserType: entity.UserTypeUser,
+				UserID:   "user-id",
+				Read:     true,
 			},
 			expectErr: nil,
 		},

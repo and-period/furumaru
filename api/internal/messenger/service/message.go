@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
@@ -48,6 +49,13 @@ func (s *service) GetMessage(ctx context.Context, in *messenger.GetMessageInput)
 	message, err := s.db.Message.Get(ctx, in.MessageID)
 	if err != nil {
 		return nil, exception.InternalError(err)
+	}
+	if in.UserType == entity.UserTypeNone && in.UserID == "" {
+		// ユーザー指定しない(システム的にメッセージを取得している)場合はその後の検証をスキップする
+		return message, nil
+	}
+	if !message.IsMine(in.UserType, in.UserID) {
+		return nil, fmt.Errorf("service: this message is someone else: %w", exception.ErrForbidden)
 	}
 	if message.Read {
 		return message, nil
