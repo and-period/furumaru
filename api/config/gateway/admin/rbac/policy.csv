@@ -31,6 +31,8 @@ p, product_update, /v1/products/*, PATCH, allow
 p, contact_list, /v1/contacts, GET, allow
 p, contact_get, /v1/contacts/*, GET, allow
 p, contact_update, /v1/contacts/*, PATCH, allow
+p, message_list, /v1/messages, GET, allow
+p, message_get, /v1/messages/*, GET, allow
 
 g, administrator, auth
 g, administrator, administrator_list
@@ -62,6 +64,8 @@ g, administrator, product_get
 g, administrator, contact_list
 g, administrator, contact_get
 g, administrator, contact_update
+g, administrator, message_list
+g, administrator, message_get
 
 g, coordinator, auth
 g, coordinator, coordinator_get
@@ -80,6 +84,8 @@ g, coordinator, product_create
 g, coordinator, product_update
 g, coordinator, contact_list
 g, coordinator, contact_get
+g, coordinator, message_list
+g, coordinator, message_get
 
 g, producer, auth
 g, producer, producer_get
@@ -92,3 +98,5 @@ g, producer, product_list
 g, producer, product_get
 g, producer, contact_list
 g, producer, contact_get
+g, producer, message_list
+g, producer, message_get

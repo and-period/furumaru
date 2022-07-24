@@ -1315,6 +1315,147 @@ export interface ErrorResponse {
 /**
  *
  * @export
+ * @interface MessageResponse
+ */
+export interface MessageResponse {
+  /**
+   * メッセージID
+   * @type {string}
+   * @memberof MessageResponse
+   */
+  id: string
+  /**
+   * メッセージ種別(1:お知らせ)
+   * @type {number}
+   * @memberof MessageResponse
+   */
+  type: number
+  /**
+   * メッセージ件名
+   * @type {string}
+   * @memberof MessageResponse
+   */
+  title: string
+  /**
+   * メッセージ内容
+   * @type {string}
+   * @memberof MessageResponse
+   */
+  body: string
+  /**
+   * 遷移先リンク
+   * @type {string}
+   * @memberof MessageResponse
+   */
+  link: string
+  /**
+   * 既読フラグ
+   * @type {boolean}
+   * @memberof MessageResponse
+   */
+  read: boolean
+  /**
+   * 受信日時 (unixtime)
+   * @type {number}
+   * @memberof MessageResponse
+   */
+  receivedAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof MessageResponse
+   */
+  createdAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof MessageResponse
+   */
+  updatedAt: number
+}
+/**
+ *
+ * @export
+ * @interface MessagesResponse
+ */
+export interface MessagesResponse {
+  /**
+   * メッセージ一覧
+   * @type {Array<MessagesResponseMessages>}
+   * @memberof MessagesResponse
+   */
+  messages: Array<MessagesResponseMessages>
+  /**
+   * 合計数
+   * @type {number}
+   * @memberof MessagesResponse
+   */
+  total: number
+}
+/**
+ *
+ * @export
+ * @interface MessagesResponseMessages
+ */
+export interface MessagesResponseMessages {
+  /**
+   * メッセージID
+   * @type {string}
+   * @memberof MessagesResponseMessages
+   */
+  id: string
+  /**
+   * メッセージ種別(1:お知らせ)
+   * @type {number}
+   * @memberof MessagesResponseMessages
+   */
+  type: number
+  /**
+   * メッセージ件名
+   * @type {string}
+   * @memberof MessagesResponseMessages
+   */
+  title: string
+  /**
+   * メッセージ内容
+   * @type {string}
+   * @memberof MessagesResponseMessages
+   */
+  body: string
+  /**
+   * 遷移先リンク
+   * @type {string}
+   * @memberof MessagesResponseMessages
+   */
+  link: string
+  /**
+   * 既読フラグ
+   * @type {string}
+   * @memberof MessagesResponseMessages
+   */
+  read: string
+  /**
+   * 受信日時 (unixtime)
+   * @type {number}
+   * @memberof MessagesResponseMessages
+   */
+  receivedAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof MessagesResponseMessages
+   */
+  createdAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof MessagesResponseMessages
+   */
+  updatedAt: number
+}
+/**
+ *
+ * @export
  * @interface NotificationResponse
  */
 export interface NotificationResponse {
@@ -5381,6 +5522,276 @@ export class CoordinatorApi extends BaseAPI {
   ) {
     return CoordinatorApiFp(this.configuration)
       .v1UploadCoordinatorThumbnail(thumbnail, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * MessageApi - axios parameter creator
+ * @export
+ */
+export const MessageApiAxiosParamCreator = function (
+  configuration?: Configuration
+) {
+  return {
+    /**
+     *
+     * @summary メッセージ取得
+     * @param {string} messageId メッセージID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1GetMessage: async (
+      messageId: string,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'messageId' is not null or undefined
+      assertParamExists('v1GetMessage', 'messageId', messageId)
+      const localVarPath = `/v1/messages/{messageId}`.replace(
+        `{${'messageId'}}`,
+        encodeURIComponent(String(messageId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary メッセージ一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1ListMessages: async (
+      limit?: number,
+      offset?: number,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/v1/messages`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (limit !== undefined) {
+        localVarQueryParameter['limit'] = limit
+      }
+
+      if (offset !== undefined) {
+        localVarQueryParameter['offset'] = offset
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * MessageApi - functional programming interface
+ * @export
+ */
+export const MessageApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = MessageApiAxiosParamCreator(configuration)
+  return {
+    /**
+     *
+     * @summary メッセージ取得
+     * @param {string} messageId メッセージID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1GetMessage(
+      messageId: string,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<MessageResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetMessage(
+        messageId,
+        options
+      )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary メッセージ一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1ListMessages(
+      limit?: number,
+      offset?: number,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<MessagesResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListMessages(
+        limit,
+        offset,
+        options
+      )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+  }
+}
+
+/**
+ * MessageApi - factory interface
+ * @export
+ */
+export const MessageApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance
+) {
+  const localVarFp = MessageApiFp(configuration)
+  return {
+    /**
+     *
+     * @summary メッセージ取得
+     * @param {string} messageId メッセージID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1GetMessage(
+      messageId: string,
+      options?: any
+    ): AxiosPromise<MessageResponse> {
+      return localVarFp
+        .v1GetMessage(messageId, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary メッセージ一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1ListMessages(
+      limit?: number,
+      offset?: number,
+      options?: any
+    ): AxiosPromise<MessagesResponse> {
+      return localVarFp
+        .v1ListMessages(limit, offset, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * MessageApi - object-oriented interface
+ * @export
+ * @class MessageApi
+ * @extends {BaseAPI}
+ */
+export class MessageApi extends BaseAPI {
+  /**
+   *
+   * @summary メッセージ取得
+   * @param {string} messageId メッセージID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof MessageApi
+   */
+  public v1GetMessage(messageId: string, options?: AxiosRequestConfig) {
+    return MessageApiFp(this.configuration)
+      .v1GetMessage(messageId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary メッセージ一覧取得
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof MessageApi
+   */
+  public v1ListMessages(
+    limit?: number,
+    offset?: number,
+    options?: AxiosRequestConfig
+  ) {
+    return MessageApiFp(this.configuration)
+      .v1ListMessages(limit, offset, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
