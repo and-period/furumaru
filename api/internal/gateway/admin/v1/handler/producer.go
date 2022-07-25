@@ -16,6 +16,8 @@ func (h *handler) producerRoutes(rg *gin.RouterGroup) {
 	arg.GET("", h.ListProducers)
 	arg.POST("", h.CreateProducer)
 	arg.GET("/:producerId", h.GetProducer)
+	arg.PATCH("/:producerId", h.UpdateProducer)
+	arg.PATCH("/:producerId/password", h.UpdateProducerPassword)
 }
 
 func (h *handler) ListProducers(ctx *gin.Context) {
@@ -101,4 +103,22 @@ func (h *handler) CreateProducer(ctx *gin.Context) {
 		Producer: service.NewProducer(producer).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) UpdateProducer(ctx *gin.Context) {
+	req := &request.UpdateProducerRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	// TODO: 詳細の実装
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) UpdateProducerPassword(ctx *gin.Context) {
+	// TODO: 詳細の実装
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
 }

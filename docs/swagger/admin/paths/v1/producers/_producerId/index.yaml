@@ -26,3 +26,49 @@ get:
         application/json:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+patch:
+  summary: 生産者更新
+  operationId: v1UpdateProducer
+  tags:
+  - Producer
+  security:
+  - BearerAuth: []
+  parameters:
+  - in: path
+    name: producerId
+    schema:
+      type: string
+    description: 生産者ID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../openapi.yaml#/components/schemas/v1UpdateProducerRequest'
+  responses:
+    204:
+      description: A successful response.
+      content:
+        application/json:
+          schema: {}
+    400:
+      description: bad request error
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+    404:
+      description: not found error
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+          schema: {}
+    409:
+      description: conflict error
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'

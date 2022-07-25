@@ -10,6 +10,7 @@ p, coordinator_uploader, /v1/upload/coordinators/*, POST, allow
 p, producer_list, /v1/producers, GET, allow
 p, producer_get, /v1/producers/*, GET, allow
 p, producer_create, /v1/producers, POST, allow
+p, producer_update, /v1/producers/*, PATCH, allow
 p, producer_uploader, /v1/upload/producers/*, POST, allow
 p, category_list, /v1/categories, GET, allow
 p, category_create, /v1/categories, POST, allow
@@ -45,6 +46,7 @@ g, administrator, coordinator_uploader
 g, administrator, producer_list
 g, administrator, producer_get
 g, administrator, producer_create
+g, administrator, producer_update
 g, administrator, producer_uploader
 g, administrator, category_list
 g, administrator, category_create
@@ -73,6 +75,7 @@ g, coordinator, coordinator_uploader
 g, coordinator, producer_list
 g, coordinator, producer_get
 g, coordinator, producer_create
+g, coordinator, producer_update
 g, coordinator, producer_uploader
 g, coordinator, category_list
 g, coordinator, product_type_list
