@@ -245,6 +245,12 @@ func TestGetProduct(t *testing.T) {
 	producerIn := &user.GetProducerInput{
 		ProducerID: "producer-id",
 	}
+	categoryIn := &store.GetCategoryInput{
+		CategoryID: "category-id",
+	}
+	productTypeIn := &store.GetProductTypeInput{
+		ProductTypeID: "product-type-id",
+	}
 	product := &sentity.Product{
 		ID:              "product-id",
 		TypeID:          "product-type-id",
@@ -292,6 +298,19 @@ func TestGetProduct(t *testing.T) {
 		CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 	}
+	category := &sentity.Category{
+		ID:        "category-id",
+		Name:      "野菜",
+		CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+	}
+	productType := &sentity.ProductType{
+		ID:         "product-type-id",
+		Name:       "じゃがいも",
+		CategoryID: "category-id",
+		CreatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
+	}
 
 	tests := []struct {
 		name      string
@@ -304,6 +323,8 @@ func TestGetProduct(t *testing.T) {
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().GetProduct(gomock.Any(), productIn).Return(product, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(category, nil)
+				mocks.store.EXPECT().GetProductType(gomock.Any(), productTypeIn).Return(productType, nil)
 			},
 			productID: "product-id",
 			expect: &testResponse{
@@ -312,9 +333,9 @@ func TestGetProduct(t *testing.T) {
 					Product: &response.Product{
 						ID:              "product-id",
 						TypeID:          "product-type-id",
-						TypeName:        "",
+						TypeName:        "じゃがいも",
 						CategoryID:      "category-id",
-						CategoryName:    "",
+						CategoryName:    "野菜",
 						ProducerID:      "producer-id",
 						StoreName:       "&.農園",
 						Name:            "新鮮なじゃがいも",
@@ -358,6 +379,34 @@ func TestGetProduct(t *testing.T) {
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().GetProduct(gomock.Any(), productIn).Return(product, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(nil, errmock)
+				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(category, nil)
+				mocks.store.EXPECT().GetProductType(gomock.Any(), productTypeIn).Return(productType, nil)
+			},
+			productID: "product-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to get category",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().GetProduct(gomock.Any(), productIn).Return(product, nil)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(nil, errmock)
+				mocks.store.EXPECT().GetProductType(gomock.Any(), productTypeIn).Return(productType, nil)
+			},
+			productID: "product-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to get product type",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().GetProduct(gomock.Any(), productIn).Return(product, nil)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(category, nil)
+				mocks.store.EXPECT().GetProductType(gomock.Any(), productTypeIn).Return(nil, errmock)
 			},
 			productID: "product-id",
 			expect: &testResponse{
@@ -381,6 +430,12 @@ func TestCreateProduct(t *testing.T) {
 
 	producerIn := &user.GetProducerInput{
 		ProducerID: "producer-id",
+	}
+	categoryIn := &store.GetCategoryInput{
+		CategoryID: "category-id",
+	}
+	productTypeIn := &store.GetProductTypeInput{
+		ProductTypeID: "product-type-id",
 	}
 	productIn := &store.CreateProductInput{
 		CoordinatorID:   idmock,
@@ -425,6 +480,19 @@ func TestCreateProduct(t *testing.T) {
 		CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 	}
+	category := &sentity.Category{
+		ID:        "category-id",
+		Name:      "野菜",
+		CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+	}
+	productType := &sentity.ProductType{
+		ID:         "product-type-id",
+		Name:       "じゃがいも",
+		CategoryID: "category-id",
+		CreatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
+	}
 	product := &sentity.Product{
 		ID:              "product-id",
 		TypeID:          "product-type-id",
@@ -466,6 +534,8 @@ func TestCreateProduct(t *testing.T) {
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(category, nil)
+				mocks.store.EXPECT().GetProductType(gomock.Any(), productTypeIn).Return(productType, nil)
 				mocks.store.EXPECT().CreateProduct(gomock.Any(), productIn).Return(product, nil)
 			},
 			req: &request.CreateProductRequest{
@@ -497,9 +567,9 @@ func TestCreateProduct(t *testing.T) {
 					Product: &response.Product{
 						ID:              "product-id",
 						TypeID:          "product-type-id",
-						TypeName:        "",
+						TypeName:        "じゃがいも",
 						CategoryID:      "category-id",
-						CategoryName:    "",
+						CategoryName:    "野菜",
 						ProducerID:      "producer-id",
 						StoreName:       "&.農園",
 						Name:            "新鮮なじゃがいも",
@@ -532,6 +602,76 @@ func TestCreateProduct(t *testing.T) {
 			name: "failed to get producer",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(nil, errmock)
+				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(category, nil)
+				mocks.store.EXPECT().GetProductType(gomock.Any(), productTypeIn).Return(productType, nil)
+			},
+			req: &request.CreateProductRequest{
+				Name:            "新鮮なじゃがいも",
+				Description:     "新鮮なじゃがいもをお届けします。",
+				Public:          true,
+				ProducerID:      "producer-id",
+				CategoryID:      "category-id",
+				TypeID:          "product-type-id",
+				Inventory:       100,
+				Weight:          1.3,
+				ItemUnit:        "袋",
+				ItemDescription: "1袋あたり100gのじゃがいも",
+				Media: []*request.CreateProductMedia{
+					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+				},
+				Price:            400,
+				DeliveryType:     1,
+				Box60Rate:        50,
+				Box80Rate:        40,
+				Box100Rate:       30,
+				OriginPrefecture: "滋賀県",
+				OriginCity:       "彦根市",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to get category",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(nil, errmock)
+				mocks.store.EXPECT().GetProductType(gomock.Any(), productTypeIn).Return(productType, nil)
+			},
+			req: &request.CreateProductRequest{
+				Name:            "新鮮なじゃがいも",
+				Description:     "新鮮なじゃがいもをお届けします。",
+				Public:          true,
+				ProducerID:      "producer-id",
+				CategoryID:      "category-id",
+				TypeID:          "product-type-id",
+				Inventory:       100,
+				Weight:          1.3,
+				ItemUnit:        "袋",
+				ItemDescription: "1袋あたり100gのじゃがいも",
+				Media: []*request.CreateProductMedia{
+					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+				},
+				Price:            400,
+				DeliveryType:     1,
+				Box60Rate:        50,
+				Box80Rate:        40,
+				Box100Rate:       30,
+				OriginPrefecture: "滋賀県",
+				OriginCity:       "彦根市",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to get product type",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(category, nil)
+				mocks.store.EXPECT().GetProductType(gomock.Any(), productTypeIn).Return(nil, errmock)
 			},
 			req: &request.CreateProductRequest{
 				Name:            "新鮮なじゃがいも",
@@ -564,6 +704,8 @@ func TestCreateProduct(t *testing.T) {
 			name: "failed to create product",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(category, nil)
+				mocks.store.EXPECT().GetProductType(gomock.Any(), productTypeIn).Return(productType, nil)
 				mocks.store.EXPECT().CreateProduct(gomock.Any(), productIn).Return(nil, errmock)
 			},
 			req: &request.CreateProductRequest{
