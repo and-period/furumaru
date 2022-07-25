@@ -79,6 +79,26 @@ func (mr *MockCategoryMockRecorder) Delete(ctx, categoryID interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockCategory)(nil).Delete), ctx, categoryID)
 }
 
+// Get mocks base method.
+func (m *MockCategory) Get(ctx context.Context, categoryID string, fields ...string) (*entity.Category, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, categoryID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.Category)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockCategoryMockRecorder) Get(ctx, categoryID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, categoryID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockCategory)(nil).Get), varargs...)
+}
+
 // List mocks base method.
 func (m *MockCategory) List(ctx context.Context, params *database.ListCategoriesParams, fields ...string) (entity.Categories, error) {
 	m.ctrl.T.Helper()

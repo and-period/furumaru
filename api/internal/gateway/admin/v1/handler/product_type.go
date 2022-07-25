@@ -75,14 +75,21 @@ func (h *handler) CreateProductType(ctx *gin.Context) {
 		return
 	}
 
-	// TODO: Categoryの存在性検証の追加
-	category := &service.Category{}
-
-	in := &store.CreateProductTypeInput{
+	categoryIn := &store.GetCategoryInput{
 		CategoryID: util.GetParam(ctx, "categoryId"),
+	}
+	scategory, err := h.store.GetCategory(ctx, categoryIn)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+	category := service.NewCategory(scategory)
+
+	typeIn := &store.CreateProductTypeInput{
+		CategoryID: category.ID,
 		Name:       req.Name,
 	}
-	sproductType, err := h.store.CreateProductType(ctx, in)
+	sproductType, err := h.store.CreateProductType(ctx, typeIn)
 	if err != nil {
 		httpError(ctx, err)
 		return

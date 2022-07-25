@@ -12,6 +12,10 @@ type MultiGetCategoriesInput struct {
 	CategoryIDs []string `validate:"omitempty,dive,required"`
 }
 
+type GetCategoryInput struct {
+	CategoryID string `validate:"required"`
+}
+
 type CreateCategoryInput struct {
 	Name string `validate:"required,max=32"`
 }

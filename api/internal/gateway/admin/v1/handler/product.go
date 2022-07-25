@@ -134,7 +134,14 @@ func (h *handler) GetProduct(ctx *gin.Context) {
 		return nil
 	})
 	eg.Go(func() error {
-		// 商品種別の存在性検証
+		in := &store.GetCategoryInput{
+			CategoryID: product.CategoryID,
+		}
+		scategory, err := h.store.GetCategory(ectx, in)
+		if err != nil {
+			return err
+		}
+		category = service.NewCategory(scategory)
 		return nil
 	})
 	eg.Go(func() error {
@@ -179,7 +186,14 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		return nil
 	})
 	eg.Go(func() error {
-		// 商品種別の存在性検証
+		in := &store.GetCategoryInput{
+			CategoryID: req.CategoryID,
+		}
+		scategory, err := h.store.GetCategory(ectx, in)
+		if err != nil {
+			return err
+		}
+		category = service.NewCategory(scategory)
 		return nil
 	})
 	eg.Go(func() error {

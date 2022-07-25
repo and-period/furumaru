@@ -13,6 +13,8 @@ type Service interface {
 	ListCategories(ctx context.Context, in *ListCategoriesInput) (entity.Categories, int64, error)
 	// カテゴリ一覧取得(ID指定)
 	MultiGetCategories(ctx context.Context, in *MultiGetCategoriesInput) (entity.Categories, error)
+	// カテゴリ取得
+	GetCategory(ctx context.Context, in *GetCategoryInput) (*entity.Category, error)
 	// カテゴリ登録
 	CreateCategory(ctx context.Context, in *CreateCategoryInput) (*entity.Category, error)
 	// カテゴリ更新

@@ -184,9 +184,18 @@ func TestListProductTypes(t *testing.T) {
 func TestCreateProductType(t *testing.T) {
 	t.Parallel()
 
-	in := &store.CreateProductTypeInput{
+	categoryIn := &store.GetCategoryInput{
+		CategoryID: "category-id",
+	}
+	typeIn := &store.CreateProductTypeInput{
 		Name:       "じゃがいも",
 		CategoryID: "category-id",
+	}
+	category := &sentity.Category{
+		ID:        "category-id",
+		Name:      "野菜",
+		CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 	}
 	productType := &sentity.ProductType{
 		ID:         "product-type-id",
@@ -206,7 +215,8 @@ func TestCreateProductType(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().CreateProductType(gomock.Any(), in).Return(productType, nil)
+				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(category, nil)
+				mocks.store.EXPECT().CreateProductType(gomock.Any(), typeIn).Return(productType, nil)
 			},
 			categoryID: "category-id",
 			req: &request.CreateProductTypeRequest{
@@ -219,7 +229,7 @@ func TestCreateProductType(t *testing.T) {
 						ID:           "product-type-id",
 						Name:         "じゃがいも",
 						CategoryID:   "category-id",
-						CategoryName: "",
+						CategoryName: "野菜",
 						CreatedAt:    1640962800,
 						UpdatedAt:    1640962800,
 					},
@@ -227,9 +237,23 @@ func TestCreateProductType(t *testing.T) {
 			},
 		},
 		{
+			name: "failed to get category",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(nil, errmock)
+			},
+			categoryID: "category-id",
+			req: &request.CreateProductTypeRequest{
+				Name: "じゃがいも",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
 			name: "failed to create product type",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().CreateProductType(gomock.Any(), in).Return(nil, errmock)
+				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(category, nil)
+				mocks.store.EXPECT().CreateProductType(gomock.Any(), typeIn).Return(nil, errmock)
 			},
 			categoryID: "category-id",
 			req: &request.CreateProductTypeRequest{

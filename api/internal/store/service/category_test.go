@@ -168,6 +168,65 @@ func TestMultiGetCategories(t *testing.T) {
 	}
 }
 
+func TestGetCategory(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
+	category := &entity.Category{
+		ID:        "category-id",
+		Name:      "野菜",
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.GetCategoryInput
+		expect    *entity.Category
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Category.EXPECT().Get(ctx, "category-id").Return(category, nil)
+			},
+			input: &store.GetCategoryInput{
+				CategoryID: "category-id",
+			},
+			expect:    category,
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &store.GetCategoryInput{},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Category.EXPECT().MultiGet(ctx, []string{"category-id"}).Return(nil, errmock)
+			},
+			input: &store.GetCategoryInput{
+				CategoryID: "category-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.GetCategory(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
 func TestCreateCategory(t *testing.T) {
 	t.Parallel()
 
