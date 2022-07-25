@@ -2,6 +2,14 @@
   <the-producer-edit-form-page
     :form-data="formData"
     :form-data-loading="fetchState.pending"
+    :thumbnail-upload-status="thumbnailUploadStatus"
+    :header-upload-status="headerUploadStatus"
+    :search-loading="searchLoading"
+    :search-error-message="searchErrorMessage"
+    @update:thumbnailFile="handleUpdateThumbnail"
+    @update:headerFile="handleUpdateHeader"
+    @submit="handleSubmit"
+    @click:search="searchAddress"
   />
 </template>
 
@@ -13,8 +21,10 @@ import {
   useRoute,
 } from '@nuxtjs/composition-api'
 
+import { useSearchAddress } from '~/lib/hooks'
 import { useProducerStore } from '~/store/producer'
 import { ProducerResponse } from '~/types/api'
+import { ImageUploadStatus } from '~/types/props'
 
 export default defineComponent({
   setup() {
@@ -22,6 +32,18 @@ export default defineComponent({
     const id = route.value.params.id
 
     const { getProducer } = useProducerStore()
+
+    const { uploadProducerThumbnail, uploadProducerHeader } = useProducerStore()
+
+    const thumbnailUploadStatus = reactive<ImageUploadStatus>({
+      error: false,
+      message: '',
+    })
+
+    const headerUploadStatus = reactive<ImageUploadStatus>({
+      error: false,
+      message: '',
+    })
 
     const formData = reactive<ProducerResponse>({
       id,
@@ -63,10 +85,65 @@ export default defineComponent({
       formData.updatedAt = producer.updatedAt
     })
 
+    const handleUpdateThumbnail = (files: FileList) => {
+      if (files.length > 0) {
+        uploadProducerThumbnail(files[0])
+          .then((res) => {
+            formData.thumbnailUrl = res.url
+          })
+          .catch(() => {
+            thumbnailUploadStatus.error = true
+            thumbnailUploadStatus.message = 'アップロードに失敗しました。'
+          })
+      }
+    }
+
+    const handleUpdateHeader = async (files: FileList) => {
+      if (files.length > 0) {
+        await uploadProducerHeader(files[0])
+          .then((res) => {
+            formData.headerUrl = res.url
+          })
+          .catch(() => {
+            headerUploadStatus.error = true
+            headerUploadStatus.message = 'アップロードに失敗しました。'
+          })
+      }
+    }
+
+    const {
+      loading: searchLoading,
+      errorMessage: searchErrorMessage,
+      searchAddressByPostalCode,
+    } = useSearchAddress()
+
+    const searchAddress = async () => {
+      searchLoading.value = true
+      searchErrorMessage.value = ''
+      const res = await searchAddressByPostalCode(Number(formData.postalCode))
+      if (res) {
+        formData.prefecture = res.prefecture
+        formData.city = res.city
+        formData.addressLine1 = res.addressLine1
+      }
+    }
+
+    const handleSubmit = () => {
+      console.log('未実装')
+    }
+
     return {
       id,
       fetchState,
       formData,
+      handleUpdateThumbnail,
+      handleUpdateHeader,
+      thumbnailUploadStatus,
+      headerUploadStatus,
+      searchAddress,
+      searchLoading,
+      searchErrorMessage,
+      handleSubmit,
     }
   },
 })
