@@ -207,7 +207,7 @@ func TestGetCategory(t *testing.T) {
 		{
 			name: "failed to get",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Category.EXPECT().MultiGet(ctx, []string{"category-id"}).Return(nil, errmock)
+				mocks.db.Category.EXPECT().Get(ctx, "category-id").Return(nil, errmock)
 			},
 			input: &store.GetCategoryInput{
 				CategoryID: "category-id",
