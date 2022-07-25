@@ -46,7 +46,7 @@ patch:
     content:
       application/json:
         schema:
-          $ref: './../../../openapi.yaml#/components/schemas/v1UpdateProducerRequest'
+          $ref: './../../../../openapi.yaml#/components/schemas/v1UpdateProducerRequest'
   responses:
     204:
       description: A successful response.

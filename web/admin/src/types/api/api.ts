@@ -2645,6 +2645,97 @@ export interface UpdateContactRequest {
 /**
  *
  * @export
+ * @interface UpdateProducerRequest
+ */
+export interface UpdateProducerRequest {
+  /**
+   * 姓(16文字まで)
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  lastname: string
+  /**
+   * 名(16文字まで)
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  firstname: string
+  /**
+   * 姓(かな)(ひらがな,32文字まで)
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  lastnameKana: string
+  /**
+   * 名(かな)(ひらがな,32文字まで)
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  firstnameKana: string
+  /**
+   * 店舗名(64文字まで)
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  storeName: string
+  /**
+   * サムネイルURL
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  thumbnailUrl?: string
+  /**
+   * ヘッダー画像URL
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  headerUrl?: string
+  /**
+   * メールアドレス
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  email: string
+  /**
+   * 電話番号 (国際番号 + 電話番号)
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  phoneNumber: string
+  /**
+   * 郵便番号(ハイフンなし)
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  postalCode: string
+  /**
+   * 都道府県(32文字まで)
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  prefecture: string
+  /**
+   * 市区町村(32文字まで)
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  city: string
+  /**
+   * 町名・番地(64文字まで)
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  addressLine1: string
+  /**
+   * ビル名・号室など(64文字まで)
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  addressLine2: string
+}
+/**
+ *
+ * @export
  * @interface UpdateProductRequest
  */
 export interface UpdateProductRequest {
@@ -6120,6 +6211,117 @@ export const ProducerApiAxiosParamCreator = function (
     },
     /**
      *
+     * @summary 生産者更新
+     * @param {string} producerId 生産者ID
+     * @param {UpdateProducerRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateProducer: async (
+      producerId: string,
+      body: UpdateProducerRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'producerId' is not null or undefined
+      assertParamExists('v1UpdateProducer', 'producerId', producerId)
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1UpdateProducer', 'body', body)
+      const localVarPath = `/v1/producers/{producerId}`.replace(
+        `{${'producerId'}}`,
+        encodeURIComponent(String(producerId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary パスワード更新(ランダム生成)
+     * @param {string} producerId 生産者ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateProducerPassword: async (
+      producerId: string,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'producerId' is not null or undefined
+      assertParamExists('v1UpdateProducerPassword', 'producerId', producerId)
+      const localVarPath = `/v1/producers/{producerId}/password`.replace(
+        `{${'producerId'}}`,
+        encodeURIComponent(String(producerId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
      * @summary 生産者ヘッダー画像アップロード
      * @param {any} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
      * @param {*} [options] Override http request option.
@@ -6322,6 +6524,59 @@ export const ProducerApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @summary 生産者更新
+     * @param {string} producerId 生産者ID
+     * @param {UpdateProducerRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UpdateProducer(
+      producerId: string,
+      body: UpdateProducerRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1UpdateProducer(
+          producerId,
+          body,
+          options
+        )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary パスワード更新(ランダム生成)
+     * @param {string} producerId 生産者ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UpdateProducerPassword(
+      producerId: string,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1UpdateProducerPassword(
+          producerId,
+          options
+        )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
      * @summary 生産者ヘッダー画像アップロード
      * @param {any} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
      * @param {*} [options] Override http request option.
@@ -6436,6 +6691,38 @@ export const ProducerApiFactory = function (
     },
     /**
      *
+     * @summary 生産者更新
+     * @param {string} producerId 生産者ID
+     * @param {UpdateProducerRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateProducer(
+      producerId: string,
+      body: UpdateProducerRequest,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1UpdateProducer(producerId, body, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary パスワード更新(ランダム生成)
+     * @param {string} producerId 生産者ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateProducerPassword(
+      producerId: string,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1UpdateProducerPassword(producerId, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
      * @summary 生産者ヘッダー画像アップロード
      * @param {any} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
      * @param {*} [options] Override http request option.
@@ -6521,6 +6808,42 @@ export class ProducerApi extends BaseAPI {
   ) {
     return ProducerApiFp(this.configuration)
       .v1ListProducers(limit, offset, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary 生産者更新
+   * @param {string} producerId 生産者ID
+   * @param {UpdateProducerRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ProducerApi
+   */
+  public v1UpdateProducer(
+    producerId: string,
+    body: UpdateProducerRequest,
+    options?: AxiosRequestConfig
+  ) {
+    return ProducerApiFp(this.configuration)
+      .v1UpdateProducer(producerId, body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary パスワード更新(ランダム生成)
+   * @param {string} producerId 生産者ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ProducerApi
+   */
+  public v1UpdateProducerPassword(
+    producerId: string,
+    options?: AxiosRequestConfig
+  ) {
+    return ProducerApiFp(this.configuration)
+      .v1UpdateProducerPassword(producerId, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
