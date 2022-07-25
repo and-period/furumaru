@@ -1,5 +1,5 @@
 <template>
-  <the-producer-create-form
+  <the-producer-create-form-page
     :form-data="formData"
     :thumbnail-upload-status="thumbnailUploadStatus"
     :header-upload-status="headerUploadStatus"
@@ -15,14 +15,12 @@
 <script lang="ts">
 import { defineComponent, reactive, useRouter } from '@nuxtjs/composition-api'
 
-import TheProducerCreateForm from '~/components/organisms/TheProducerCreateForm.vue'
 import { useSearchAddress } from '~/lib/hooks'
 import { useProducerStore } from '~/store/producer'
 import { CreateProducerRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 
 export default defineComponent({
-  components: { TheProducerCreateForm },
   setup() {
     const router = useRouter()
     const { createProducer, uploadProducerThumbnail, uploadProducerHeader } =

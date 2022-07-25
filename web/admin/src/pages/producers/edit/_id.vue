@@ -1,10 +1,8 @@
 <template>
-  <div>
-    <p class="text-h6">生産者編集</p>
-    <div v-if="!fetchState.pending">
-      {{ formData }}
-    </div>
-  </div>
+  <the-producer-edit-form-page
+    :form-data="formData"
+    :form-data-loading="fetchState.pending"
+  />
 </template>
 
 <script lang="ts">
