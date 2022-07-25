@@ -25,6 +25,8 @@ type Service interface {
 	ListProductTypes(ctx context.Context, in *ListProductTypesInput) (entity.ProductTypes, int64, error)
 	// 品目一覧取得(ID指定)
 	MultiGetProductTypes(ctx context.Context, in *MultiGetProductTypesInput) (entity.ProductTypes, error)
+	// 品目取得
+	GetProductType(ctx context.Context, in *GetProductTypeInput) (*entity.ProductType, error)
 	// 品目登録
 	CreateProductType(ctx context.Context, in *CreateProductTypeInput) (*entity.ProductType, error)
 	// 品目更新

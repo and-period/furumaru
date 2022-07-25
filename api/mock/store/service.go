@@ -182,6 +182,21 @@ func (mr *MockServiceMockRecorder) GetProduct(ctx, in interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProduct", reflect.TypeOf((*MockService)(nil).GetProduct), ctx, in)
 }
 
+// GetProductType mocks base method.
+func (m *MockService) GetProductType(ctx context.Context, in *store.GetProductTypeInput) (*entity.ProductType, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetProductType", ctx, in)
+	ret0, _ := ret[0].(*entity.ProductType)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetProductType indicates an expected call of GetProductType.
+func (mr *MockServiceMockRecorder) GetProductType(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProductType", reflect.TypeOf((*MockService)(nil).GetProductType), ctx, in)
+}
+
 // GetShipping mocks base method.
 func (m *MockService) GetShipping(ctx context.Context, in *store.GetShippingInput) (*entity.Shipping, error) {
 	m.ctrl.T.Helper()

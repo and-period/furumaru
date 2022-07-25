@@ -51,6 +51,14 @@ func (s *service) MultiGetProductTypes(
 	return productTypes, exception.InternalError(err)
 }
 
+func (s *service) GetProductType(ctx context.Context, in *store.GetProductTypeInput) (*entity.ProductType, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	productType, err := s.db.ProductType.Get(ctx, in.ProductTypeID)
+	return productType, exception.InternalError(err)
+}
+
 func (s *service) CreateProductType(
 	ctx context.Context, in *store.CreateProductTypeInput,
 ) (*entity.ProductType, error) {

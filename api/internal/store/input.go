@@ -40,6 +40,10 @@ type MultiGetProductTypesInput struct {
 	ProductTypeIDs []string `validate:"omitempty,dive,required"`
 }
 
+type GetProductTypeInput struct {
+	ProductTypeID string `validate:"required"`
+}
+
 type CreateProductTypeInput struct {
 	Name       string `validate:"required,max=32"`
 	CategoryID string `validate:"required"`

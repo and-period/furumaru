@@ -57,6 +57,7 @@ type ProductType interface {
 	List(ctx context.Context, params *ListProductTypesParams, fields ...string) (entity.ProductTypes, error)
 	Count(ctx context.Context, params *ListProductTypesParams) (int64, error)
 	MultiGet(ctx context.Context, productTypeIDs []string, fields ...string) (entity.ProductTypes, error)
+	Get(ctx context.Context, productTypeID string, fields ...string) (*entity.ProductType, error)
 	Create(ctx context.Context, productType *entity.ProductType) error
 	Update(ctx context.Context, productTypeID, name string) error
 	Delete(ctx context.Context, productTypeID string) error
