@@ -359,3 +359,80 @@ func TestCreateProducer(t *testing.T) {
 		})
 	}
 }
+
+func TestUpdateProducer(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name       string
+		setup      func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		producerID string
+		req        *request.UpdateProducerRequest
+		expect     *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+			},
+			producerID: "producer-id",
+			req: &request.UpdateProducerRequest{
+				Lastname:      "&.",
+				Firstname:     "生産者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "せいさんしゃ",
+				StoreName:     "&.農園",
+				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+				HeaderURL:     "https://and-period.jp/header.png",
+				Email:         "test-producer@and-period.jp",
+				PhoneNumber:   "+819012345678",
+				PostalCode:    "1000014",
+				Prefecture:    "東京都",
+				City:          "千代田区",
+				AddressLine1:  "永田町1-7-1",
+				AddressLine2:  "",
+			},
+			expect: &testResponse{
+				code: http.StatusNoContent,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const prefix = "/v1/producers"
+			path := fmt.Sprintf("%s/%s", prefix, tt.producerID)
+			testPatch(t, tt.setup, tt.expect, path, tt.req)
+		})
+	}
+}
+
+func TestUpdateProducerPassword(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name       string
+		setup      func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		producerID string
+		expect     *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+			},
+			producerID: "producer-id",
+			expect: &testResponse{
+				code: http.StatusNoContent,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const prefix = "/v1/producers"
+			path := fmt.Sprintf("%s/%s/password", prefix, tt.producerID)
+			testPatch(t, tt.setup, tt.expect, path, nil)
+		})
+	}
+}
