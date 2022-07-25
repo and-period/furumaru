@@ -59,39 +59,6 @@ func (t DeliveryType) Response() int32 {
 	return int32(t)
 }
 
-func NewProduct(product *entity.Product) *Product {
-	return &Product{
-		Product: response.Product{
-			ID:               product.ID,
-			ProducerID:       product.ProducerID,
-			StoreName:        "dummy", // TODO: 詳細の実装
-			CategoryID:       product.CategoryID,
-			CategoryName:     "dummy", // TODO: 詳細の実装
-			TypeID:           product.TypeID,
-			TypeName:         "dummy", // TODO: 詳細の実装
-			Name:             product.Name,
-			Description:      product.Description,
-			Public:           product.Public,
-			Inventory:        product.Inventory,
-			Weight:           NewProductWeight(product.Weight, product.WeightUnit),
-			ItemUnit:         product.ItemUnit,
-			ItemDescription:  product.ItemDescription,
-			Media:            NewMultiProductMedia(product.Media).Response(),
-			Price:            product.Price,
-			DeliveryType:     NewDeliveryType(product.DeliveryType).Response(),
-			Box60Rate:        product.Box60Rate,
-			Box80Rate:        product.Box80Rate,
-			Box100Rate:       product.Box100Rate,
-			OriginPrefecture: product.OriginPrefecture,
-			OriginCity:       product.OriginCity,
-			CreatedBy:        product.CreatedBy,
-			UpdatedBy:        product.UpdatedBy,
-			CreatedAt:        product.CreatedAt.Unix(),
-			UpdatedAt:        product.CreatedAt.Unix(),
-		},
-	}
-}
-
 func NewProductWeight(weight int64, unit entity.WeightUnit) float64 {
 	const precision = 1
 	var exp int32
@@ -118,6 +85,48 @@ func NewProductWeightFromRequest(weight float64) (int64, entity.WeightUnit) {
 	// 少数点が含まれている場合、そのままintに変換できないためg単位に変換
 	dweight = dweight.Mul(decimal.NewFromInt(1000))
 	return dweight.IntPart(), entity.WeightUnitGram
+}
+
+func NewProduct(product *entity.Product) *Product {
+	return &Product{
+		Product: response.Product{
+			ID:               product.ID,
+			ProducerID:       product.ProducerID,
+			CategoryID:       product.CategoryID,
+			TypeID:           product.TypeID,
+			Name:             product.Name,
+			Description:      product.Description,
+			Public:           product.Public,
+			Inventory:        product.Inventory,
+			Weight:           NewProductWeight(product.Weight, product.WeightUnit),
+			ItemUnit:         product.ItemUnit,
+			ItemDescription:  product.ItemDescription,
+			Media:            NewMultiProductMedia(product.Media).Response(),
+			Price:            product.Price,
+			DeliveryType:     NewDeliveryType(product.DeliveryType).Response(),
+			Box60Rate:        product.Box60Rate,
+			Box80Rate:        product.Box80Rate,
+			Box100Rate:       product.Box100Rate,
+			OriginPrefecture: product.OriginPrefecture,
+			OriginCity:       product.OriginCity,
+			CreatedBy:        product.CreatedBy,
+			UpdatedBy:        product.UpdatedBy,
+			CreatedAt:        product.CreatedAt.Unix(),
+			UpdatedAt:        product.CreatedAt.Unix(),
+		},
+	}
+}
+
+func (p *Product) Fill(category *Category, productType *ProductType, producer *Producer) {
+	if category != nil {
+		p.CategoryName = category.Name
+	}
+	if productType != nil {
+		p.TypeName = productType.Name
+	}
+	if producer != nil {
+		p.StoreName = producer.StoreName
+	}
 }
 
 func (p *Product) Response() *response.Product {
@@ -154,6 +163,16 @@ func (ps Products) ProductTypeIDs() []string {
 		set.AddStrings(ps[i].TypeID)
 	}
 	return set.Strings()
+}
+
+func (ps Products) Fill(
+	categories map[string]*Category,
+	productTypes map[string]*ProductType,
+	producers map[string]*Producer,
+) {
+	for i := range ps {
+		ps[i].Fill(categories[ps[i].CategoryID], productTypes[ps[i].TypeID], producers[ps[i].ProducerID])
+	}
 }
 
 func (ps Products) Response() []*response.Product {
