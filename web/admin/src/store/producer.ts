@@ -8,6 +8,7 @@ import { ApiClientFactory } from '.'
 import {
   CreateProducerRequest,
   ProducerApi,
+  ProducerResponse,
   ProducersResponse,
   UploadImageResponse,
 } from '~/types/api'
@@ -105,6 +106,26 @@ export const useProducerStore = defineStore('Producer', {
         return res.data
       } catch (error) {
         throw new Error('Internal Server Error')
+      }
+    },
+
+    /**
+     * 生産者IDから生産者の情報を取得する非同期関数
+     * @param id 生産者ID
+     * @returns 生産者の情報
+     */
+    async getProducer(id: string): Promise<ProducerResponse> {
+      try {
+        const authStore = useAuthStore()
+        const accessToken = authStore.accessToken
+        if (!accessToken) throw new Error('認証エラー')
+
+        const factory = new ApiClientFactory()
+        const producersApiClient = factory.create(ProducerApi, accessToken)
+        const res = await producersApiClient.v1GetProducer(id)
+        return res.data
+      } catch (error) {
+        return Promise.reject(new Error('不明なエラーが発生しました。'))
       }
     },
   },

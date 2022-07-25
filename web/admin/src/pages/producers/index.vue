@@ -24,6 +24,7 @@
           :items="producers"
           :search="query"
           :no-results-text="noResultsText"
+          no-data-text="登録されている生産者がいません。"
         >
           <template #[`item.thumbnail`]="{ item }">
             <v-avatar>
@@ -140,7 +141,7 @@ export default defineComponent({
     }
 
     const handleEdit = (item: ProducersResponseProducers) => {
-      console.log(item)
+      router.push(`/producers/edit/${item.id}`)
     }
 
     const handleDelete = (item: ProducersResponseProducers) => {

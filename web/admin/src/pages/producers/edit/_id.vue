@@ -1,6 +1,7 @@
 <template>
-  <the-producer-create-form-page
+  <the-producer-edit-form-page
     :form-data="formData"
+    :form-data-loading="fetchState.pending"
     :thumbnail-upload-status="thumbnailUploadStatus"
     :header-upload-status="headerUploadStatus"
     :search-loading="searchLoading"
@@ -13,35 +14,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, useRouter } from '@nuxtjs/composition-api'
+import {
+  defineComponent,
+  reactive,
+  useFetch,
+  useRoute,
+} from '@nuxtjs/composition-api'
 
 import { useSearchAddress } from '~/lib/hooks'
 import { useProducerStore } from '~/store/producer'
-import { CreateProducerRequest } from '~/types/api'
+import { ProducerResponse } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 
 export default defineComponent({
   setup() {
-    const router = useRouter()
-    const { createProducer, uploadProducerThumbnail, uploadProducerHeader } =
-      useProducerStore()
+    const route = useRoute()
+    const id = route.value.params.id
 
-    const formData = reactive<CreateProducerRequest>({
-      lastname: '',
-      lastnameKana: '',
-      firstname: '',
-      firstnameKana: '',
-      storeName: '',
-      thumbnailUrl: '',
-      headerUrl: '',
-      email: '',
-      phoneNumber: '',
-      postalCode: '',
-      prefecture: '',
-      city: '',
-      addressLine1: '',
-      addressLine2: '',
-    })
+    const { getProducer } = useProducerStore()
+
+    const { uploadProducerThumbnail, uploadProducerHeader } = useProducerStore()
 
     const thumbnailUploadStatus = reactive<ImageUploadStatus>({
       error: false,
@@ -53,17 +45,45 @@ export default defineComponent({
       message: '',
     })
 
-    const handleSubmit = async () => {
-      try {
-        await createProducer({
-          ...formData,
-          phoneNumber: formData.phoneNumber.replace('0', '+81'),
-        })
-        router.push('/producers')
-      } catch (error) {
-        console.log(error)
-      }
-    }
+    const formData = reactive<ProducerResponse>({
+      id,
+      lastname: '',
+      lastnameKana: '',
+      firstname: '',
+      firstnameKana: '',
+      addressLine1: '',
+      addressLine2: '',
+      city: '',
+      prefecture: '',
+      phoneNumber: '',
+      postalCode: '',
+      storeName: '',
+      headerUrl: '',
+      createdAt: -1,
+      updatedAt: -1,
+      thumbnailUrl: '',
+      email: '',
+    })
+
+    const { fetchState } = useFetch(async () => {
+      const producer = await getProducer(id)
+      formData.lastname = producer.lastname
+      formData.lastnameKana = producer.lastnameKana
+      formData.firstname = producer.firstname
+      formData.firstnameKana = producer.firstnameKana
+      formData.addressLine1 = producer.addressLine1
+      formData.addressLine2 = producer.addressLine2
+      formData.city = producer.city
+      formData.prefecture = producer.prefecture
+      formData.phoneNumber = producer.phoneNumber
+      formData.postalCode = producer.postalCode
+      formData.storeName = producer.storeName
+      formData.headerUrl = producer.headerUrl
+      formData.thumbnailUrl = producer.thumbnailUrl
+      formData.email = producer.email
+      formData.createdAt = producer.createdAt
+      formData.updatedAt = producer.updatedAt
+    })
 
     const handleUpdateThumbnail = (files: FileList) => {
       if (files.length > 0) {
@@ -108,9 +128,14 @@ export default defineComponent({
       }
     }
 
+    const handleSubmit = () => {
+      console.log('未実装')
+    }
+
     return {
+      id,
+      fetchState,
       formData,
-      handleSubmit,
       handleUpdateThumbnail,
       handleUpdateHeader,
       thumbnailUploadStatus,
@@ -118,6 +143,7 @@ export default defineComponent({
       searchAddress,
       searchLoading,
       searchErrorMessage,
+      handleSubmit,
     }
   },
 })
