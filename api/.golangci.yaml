@@ -2,6 +2,7 @@ run:
   go: '1.18'
   skip-dirs:
   - bin
+  - hack
   - mock
   - proto
   - third_party
