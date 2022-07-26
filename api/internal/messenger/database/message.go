@@ -108,7 +108,7 @@ func (m *message) get(ctx context.Context, tx *gorm.DB, messageID string, fields
 		fields = messageFields
 	}
 
-	err := m.db.DB.WithContext(ctx).
+	err := tx.WithContext(ctx).
 		Table(messageTable).Select(fields).
 		Where("id = ?", messageID).
 		First(&message).Error

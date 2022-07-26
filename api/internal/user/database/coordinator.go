@@ -130,7 +130,7 @@ func (a *coordinator) get(
 		fields = coordinatorFields
 	}
 
-	err := a.db.DB.WithContext(ctx).
+	err := tx.WithContext(ctx).
 		Table(coordinatorTable).Select(fields).
 		Where("id = ?", coordinatorID).
 		First(&coordinator).Error

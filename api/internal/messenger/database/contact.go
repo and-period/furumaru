@@ -58,19 +58,8 @@ func (c *contact) Count(ctx context.Context, params *ListContactsParams) (int64,
 }
 
 func (c *contact) Get(ctx context.Context, contactID string, fields ...string) (*entity.Contact, error) {
-	var contact *entity.Contact
-	if len(fields) == 0 {
-		fields = contactFields
-	}
-
-	stmt := c.db.DB.WithContext(ctx).
-		Table(contactTable).Select(fields).
-		Where("id = ?", contactID)
-
-	if err := stmt.First(&contact).Error; err != nil {
-		return nil, exception.InternalError(err)
-	}
-	return contact, nil
+	contact, err := c.get(ctx, c.db.DB, contactID, fields...)
+	return contact, exception.InternalError(err)
 }
 
 func (c *contact) Create(ctx context.Context, contact *entity.Contact) error {
@@ -132,7 +121,7 @@ func (c *contact) get(
 		fields = contactFields
 	}
 
-	err := c.db.DB.WithContext(ctx).
+	err := tx.WithContext(ctx).
 		Table(contactTable).Select(fields).
 		Where("id = ?", contactID).
 		First(&contact).Error
