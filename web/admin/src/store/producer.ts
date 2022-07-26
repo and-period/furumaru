@@ -17,15 +17,25 @@ export const useProducerStore = defineStore('Producer', {
     producers: [] as ProducersResponse['producers'],
   }),
   actions: {
-    async fetchProducers(): Promise<void> {
+    /**
+     * 登録済みの生産者一覧を取得する非同期関数
+     * @param limit 取得上限数
+     * @param offset 取得開始位置
+     */
+    async fetchProducers(
+      limit: number = 20,
+      offset: number = 0
+    ): Promise<void> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
-        if (!accessToken) throw new Error('認証エラー')
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
+        }
 
         const factory = new ApiClientFactory()
         const producersApiClient = factory.create(ProducerApi, accessToken)
-        const res = await producersApiClient.v1ListProducers()
+        const res = await producersApiClient.v1ListProducers(limit, offset)
         this.producers = res.data.producers
       } catch (error) {
         // TODO: エラーハンドリング
@@ -34,13 +44,16 @@ export const useProducerStore = defineStore('Producer', {
     },
 
     /**
+     * 生産者を新規登録する非同期関数
      * @param payload
      */
     async createProducer(payload: CreateProducerRequest): Promise<void> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
-        if (!accessToken) throw new Error('認証エラー')
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
+        }
 
         const factory = new ApiClientFactory()
         const producersApiClient = factory.create(ProducerApi, accessToken)
@@ -66,7 +79,9 @@ export const useProducerStore = defineStore('Producer', {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
-        if (!accessToken) throw new Error('認証エラー')
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
+        }
 
         const factory = new ApiClientFactory()
         const producersApiClient = factory.create(ProducerApi, accessToken)
@@ -93,7 +108,9 @@ export const useProducerStore = defineStore('Producer', {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
-        if (!accessToken) throw new Error('認証エラー')
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
+        }
 
         const factory = new ApiClientFactory()
         const producersApiClient = factory.create(ProducerApi, accessToken)

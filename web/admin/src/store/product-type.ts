@@ -1,4 +1,3 @@
-import { ref } from '@nuxtjs/composition-api'
 import { defineStore } from 'pinia'
 
 import { useAuthStore } from './auth'
@@ -17,11 +16,16 @@ export const useProductTypeStore = defineStore('ProductType', {
     productTypes: [] as ProductTypesResponse['productTypes'],
   }),
   actions: {
+    /**
+     * 品目を全件取得する非同期関数
+     */
     async fetchProductTypes(): Promise<void> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
-        if (!accessToken) throw new Error('認証エラー')
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
+        }
 
         const factory = new ApiClientFactory()
         const productTypeApiClient = factory.create(ProductTypeApi, accessToken)
@@ -33,16 +37,24 @@ export const useProductTypeStore = defineStore('ProductType', {
         throw new Error('Internal Server Error')
       }
     },
+
+    /**
+     * 品目を新規登録する非同期関数
+     * @param categoryId 品目の親となるカテゴリのID
+     * @param payload
+     * @returns
+     */
     async createProductType(
       categoryId: string,
       payload: CreateProductTypeRequest
     ): Promise<void> {
       const commonStore = useCommonStore()
-      const errorMessage = ref<string>('')
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
-        if (!accessToken) throw new Error('認証エラー')
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
+        }
 
         const factory = new ApiClientFactory()
         const productTypeApiClient = factory.create(ProductTypeApi, accessToken)
@@ -56,17 +68,8 @@ export const useProductTypeStore = defineStore('ProductType', {
           color: 'info',
         })
       } catch (e) {
-        if (e instanceof Error) {
-          errorMessage.value = e.message
-        } else {
-          errorMessage.value =
-            '不明なエラーが発生しました。お手数ですがご自身で入力してください。'
-        }
+        return Promise.reject(new Error('不明なエラーが発生しました。'))
       }
-      commonStore.addSnackbar({
-        message: errorMessage.value,
-        color: 'error',
-      })
     },
   },
 })

@@ -17,12 +17,19 @@ export const useCategoryStore = defineStore('Category', {
     categories: [] as CategoriesResponse['categories'],
     productTypeCategories: [] as CategoriesResponse['categories'],
   }),
+
   actions: {
+    /**
+     * カテゴリを全件取得する非同期関数
+     * @param limit 取得上限数
+     */
     async fetchCategories(limit?: number): Promise<void> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
-        if (!accessToken) throw new Error('認証エラー')
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
+        }
 
         const factory = new ApiClientFactory()
         const categoriesApiClient = factory.create(CategoryApi, accessToken)
@@ -39,13 +46,19 @@ export const useCategoryStore = defineStore('Category', {
       }
     },
 
+    /**
+     * カテゴリを新規登録する非同期関数
+     * @param payload
+     */
     async createCategory(payload: CreateCategoryRequest): Promise<void> {
       const commonStore = useCommonStore()
       const errorMessage = ref<string>('')
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
-        if (!accessToken) throw new Error('認証エラー')
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
+        }
 
         const factory = new ApiClientFactory()
         const categoriesApiClient = factory.create(CategoryApi, accessToken)
