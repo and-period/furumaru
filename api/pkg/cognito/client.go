@@ -72,8 +72,10 @@ var (
 	ErrNotFound          = errors.New("cognito: not found")
 	ErrAlreadyExists     = errors.New("cognito: already exists")
 	ErrInternal          = errors.New("cognito: internal")
+	ErrCanceled          = errors.New("cognito: canceled")
 	ErrResourceExhausted = errors.New("cognito: resource exhausted")
 	ErrUnknown           = errors.New("cognito: unknown")
+	ErrTimeout           = errors.New("cognito: timeout")
 	errNotFoundEmail     = errors.New("cognito: not found requested email")
 )
 
@@ -147,6 +149,13 @@ func (c *client) authError(err error) error {
 	}
 	c.logger.Debug("Failed to cognito api", zap.Error(err))
 
+	switch {
+	case errors.Is(err, context.Canceled):
+		return fmt.Errorf("%w: %s", ErrCanceled, err.Error())
+	case errors.Is(err, context.DeadlineExceeded):
+		return fmt.Errorf("%w: %s", ErrTimeout, err.Error())
+	}
+
 	var (
 		aee *types.AliasExistsException
 		cfe *types.CodeDeliveryFailureException
@@ -167,18 +176,18 @@ func (c *client) authError(err error) error {
 
 	switch {
 	case errors.As(err, &cme), errors.As(err, &ipe):
-		return fmt.Errorf("%w: %s", ErrInvalidArgument, err)
+		return fmt.Errorf("%w: %s", ErrInvalidArgument, err.Error())
 	case errors.As(err, &ece), errors.As(err, &nae), errors.As(err, &pre), errors.As(err, &uce):
-		return fmt.Errorf("%w: %s", ErrUnauthenticated, err)
+		return fmt.Errorf("%w: %s", ErrUnauthenticated, err.Error())
 	case errors.As(err, &rne), errors.As(err, &une):
-		return fmt.Errorf("%w: %s", ErrNotFound, err)
+		return fmt.Errorf("%w: %s", ErrNotFound, err.Error())
 	case errors.As(err, &aee), errors.As(err, &uee):
-		return fmt.Errorf("%w: %s", ErrAlreadyExists, err)
+		return fmt.Errorf("%w: %s", ErrAlreadyExists, err.Error())
 	case errors.As(err, &lee), errors.As(err, &tfe), errors.As(err, &tre):
-		return fmt.Errorf("%w: %s", ErrResourceExhausted, err)
+		return fmt.Errorf("%w: %s", ErrResourceExhausted, err.Error())
 	case errors.As(err, &cfe), errors.As(err, &iee):
-		return fmt.Errorf("%w: %s", ErrInternal, err)
+		return fmt.Errorf("%w: %s", ErrInternal, err.Error())
 	default:
-		return fmt.Errorf("%w: %s", ErrUnknown, err)
+		return fmt.Errorf("%w: %s", ErrUnknown, err.Error())
 	}
 }

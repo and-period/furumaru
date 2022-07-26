@@ -22,6 +22,7 @@ var (
 	ErrAlreadyExists     = errors.New("line: already exists")
 	ErrResourceExhausted = errors.New("line: resource exhausted")
 	ErrInternal          = errors.New("line: internal")
+	ErrCanceled          = errors.New("cognito: canceled")
 	ErrUnavailable       = errors.New("line: unavailable")
 	ErrTimeout           = errors.New("line: timeout")
 	ErrUnknown           = errors.New("line: unknown")
@@ -86,6 +87,13 @@ func (c *client) lineError(e error) error {
 		return nil
 	}
 	c.logger.Error("Failed to send line api", zap.Error(e))
+
+	switch {
+	case errors.Is(e, context.Canceled):
+		return fmt.Errorf("%w: %s", ErrCanceled, e.Error())
+	case errors.Is(e, context.DeadlineExceeded):
+		return fmt.Errorf("%w: %s", ErrTimeout, e.Error())
+	}
 
 	err, ok := e.(*linebot.APIError)
 	if !ok {

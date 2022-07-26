@@ -1,9 +1,12 @@
 package exception
 
 import (
+	"context"
 	"testing"
 
 	"github.com/and-period/furumaru/api/pkg/cognito"
+	"github.com/and-period/furumaru/api/pkg/line"
+	"github.com/and-period/furumaru/api/pkg/mailer"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/go-playground/validator/v10"
 	"github.com/go-sql-driver/mysql"
@@ -29,6 +32,16 @@ func TestInternalError(t *testing.T) {
 			expect: ErrInvalidArgument,
 		},
 		{
+			name:   "context canceled",
+			err:    context.Canceled,
+			expect: ErrCanceled,
+		},
+		{
+			name:   "context deadline exceeded",
+			err:    context.DeadlineExceeded,
+			expect: ErrDeadlineExceeded,
+		},
+		{
 			name:   "validation error",
 			err:    validator.ValidationErrors{},
 			expect: ErrInvalidArgument,
@@ -46,6 +59,16 @@ func TestInternalError(t *testing.T) {
 		{
 			name:   "storage error",
 			err:    storage.ErrInvalidURL,
+			expect: ErrInvalidArgument,
+		},
+		{
+			name:   "mailer error",
+			err:    mailer.ErrInvalidArgument,
+			expect: ErrInvalidArgument,
+		},
+		{
+			name:   "notifier error",
+			err:    line.ErrInvalidArgument,
 			expect: ErrInvalidArgument,
 		},
 		{
@@ -78,6 +101,11 @@ func TestRetryable(t *testing.T) {
 			name:   "internl",
 			err:    ErrInternal,
 			expect: false,
+		},
+		{
+			name:   "resource exhausted",
+			err:    ErrResourceExhausted,
+			expect: true,
 		},
 		{
 			name:   "canceled",
@@ -218,6 +246,16 @@ func TestAuthError(t *testing.T) {
 			expect: ErrResourceExhausted,
 		},
 		{
+			name:   "canceled",
+			err:    cognito.ErrCanceled,
+			expect: ErrCanceled,
+		},
+		{
+			name:   "timeout",
+			err:    cognito.ErrTimeout,
+			expect: ErrDeadlineExceeded,
+		},
+		{
 			name:   "other error",
 			err:    assert.AnError,
 			expect: nil,
@@ -258,6 +296,148 @@ func TestStorageError(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			assert.ErrorIs(t, storageError(tt.err), tt.expect)
+		})
+	}
+}
+
+func TestMailerError(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		err    error
+		expect error
+	}{
+		{
+			name:   "invalid argument",
+			err:    mailer.ErrInvalidArgument,
+			expect: ErrInvalidArgument,
+		},
+		{
+			name:   "unauthenticated",
+			err:    mailer.ErrUnauthenticated,
+			expect: ErrUnauthenticated,
+		},
+		{
+			name:   "permission denied",
+			err:    mailer.ErrPermissionDenied,
+			expect: ErrForbidden,
+		},
+		{
+			name:   "payload too long",
+			err:    mailer.ErrPayloadTooLong,
+			expect: ErrResourceExhausted,
+		},
+		{
+			name:   "not found",
+			err:    mailer.ErrNotFound,
+			expect: ErrNotFound,
+		},
+		{
+			name:   "internal",
+			err:    mailer.ErrInternal,
+			expect: ErrInternal,
+		},
+		{
+			name:   "unavailable",
+			err:    mailer.ErrUnavailable,
+			expect: ErrUnavailable,
+		},
+		{
+			name:   "canceled",
+			err:    mailer.ErrCanceled,
+			expect: ErrCanceled,
+		},
+		{
+			name:   "timeout",
+			err:    mailer.ErrTimeout,
+			expect: ErrDeadlineExceeded,
+		},
+		{
+			name:   "other error",
+			err:    assert.AnError,
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			assert.ErrorIs(t, mailerError(tt.err), tt.expect)
+		})
+	}
+}
+
+func TestNotifierError(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		err    error
+		expect error
+	}{
+		{
+			name:   "invalid argument",
+			err:    line.ErrInvalidArgument,
+			expect: ErrInvalidArgument,
+		},
+		{
+			name:   "unauthenticated",
+			err:    line.ErrUnauthenticated,
+			expect: ErrUnauthenticated,
+		},
+		{
+			name:   "permission denied",
+			err:    line.ErrPermissionDenied,
+			expect: ErrForbidden,
+		},
+		{
+			name:   "payload too long",
+			err:    line.ErrPayloadTooLong,
+			expect: ErrResourceExhausted,
+		},
+		{
+			name:   "not found",
+			err:    line.ErrNotFound,
+			expect: ErrNotFound,
+		},
+		{
+			name:   "already exists",
+			err:    line.ErrAlreadyExists,
+			expect: ErrAlreadyExists,
+		},
+		{
+			name:   "internal",
+			err:    line.ErrInternal,
+			expect: ErrInternal,
+		},
+		{
+			name:   "unavailable",
+			err:    line.ErrUnavailable,
+			expect: ErrUnavailable,
+		},
+		{
+			name:   "resource exhausted",
+			err:    line.ErrResourceExhausted,
+			expect: ErrResourceExhausted,
+		},
+		{
+			name:   "canceled",
+			err:    line.ErrCanceled,
+			expect: ErrCanceled,
+		},
+		{
+			name:   "timeout",
+			err:    line.ErrTimeout,
+			expect: ErrDeadlineExceeded,
+		},
+		{
+			name:   "other error",
+			err:    assert.AnError,
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			assert.ErrorIs(t, notifierError(tt.err), tt.expect)
 		})
 	}
 }
