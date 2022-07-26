@@ -103,7 +103,7 @@ export const useAuthStore = defineStore('auth', {
         if (axios.isAxiosError(error)) {
           throw new Error(error.message)
         }
-        throw new Error('不明なエラーが発生しました。', error)
+        throw new Error('不明なエラーが発生しました。')
       }
     },
 
