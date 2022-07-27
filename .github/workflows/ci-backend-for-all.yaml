@@ -44,9 +44,9 @@ jobs:
           ~/go/pkg/mod
         key: ${{ env.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
-    # - name: Download modules
-    #   if: steps.modules-cache.outputs.cache-hit != 'true'
-    #   run: go mod download
+    - name: Download modules
+      # if: steps.modules-cache.outputs.cache-hit != 'true'
+      run: go mod download all
 
   lint:
     name: lint
@@ -101,7 +101,7 @@ jobs:
 
     - name: Download modules
       if: steps.modules-cache.outputs.cache-hit != 'true'
-      run: go mod download
+      run: go mod download all
 
     - name: Build user gateway
       run: make build SERVICE=gateway/user
@@ -162,7 +162,7 @@ jobs:
 
     - name: Download modules
       if: steps.modules-cache.outputs.cache-hit != 'true'
-      run: go mod download
+      run: go mod download all
 
     - name: Test
       run: make test
