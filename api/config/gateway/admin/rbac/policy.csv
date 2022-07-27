@@ -6,6 +6,7 @@ p, administrator_create, /v1/administrators, POST, allow
 p, coordinator_list, /v1/coordinators, GET, allow
 p, coordinator_get, /v1/coordinators/*, GET, allow
 p, coordinator_create, /v1/coordinators, POST, allow
+p, coordinator_update, /v1/coordinators/*, PATCH, allow
 p, coordinator_uploader, /v1/upload/coordinators/*, POST, allow
 p, producer_list, /v1/producers, GET, allow
 p, producer_get, /v1/producers/*, GET, allow
@@ -42,6 +43,7 @@ g, administrator, administrator_create
 g, administrator, coordinator_list
 g, administrator, coordinator_get
 g, administrator, coordinator_create
+g, administrator, coordinator_update
 g, administrator, coordinator_uploader
 g, administrator, producer_list
 g, administrator, producer_get

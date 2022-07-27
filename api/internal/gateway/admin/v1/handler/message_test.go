@@ -101,8 +101,8 @@ func TestListMessages(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/messages"
-			path := fmt.Sprintf("%s%s", prefix, tt.query)
+			const format = "/v1/messages%s"
+			path := fmt.Sprintf(format, tt.query)
 			testGet(t, tt.setup, tt.expect, path)
 		})
 	}
@@ -174,8 +174,8 @@ func TestGetMessage(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/messages"
-			path := fmt.Sprintf("%s/%s", prefix, tt.messageID)
+			const format = "/v1/messages/%s"
+			path := fmt.Sprintf(format, tt.messageID)
 			testGet(t, tt.setup, tt.expect, path)
 		})
 	}

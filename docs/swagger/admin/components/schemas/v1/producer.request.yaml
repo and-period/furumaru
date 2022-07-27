@@ -96,10 +96,6 @@ updateProducerRequest:
     headerUrl:
       type: string
       description: ヘッダー画像URL
-    email:
-      type: string
-      format: email
-      description: メールアドレス
     phoneNumber:
       type: string
       description: 電話番号 (国際番号 + 電話番号)
@@ -146,3 +142,14 @@ updateProducerRequest:
     city: '千代田区'
     addressLine1: '永田町1-7-1'
     addressLine2: ''
+updateProducerEmailRequest:
+  type: object
+  properties:
+    email:
+      type: string
+      format: email
+      description: メールアドレス
+  required:
+  - email
+  example:
+    email: 'test-user@and-period.jp'

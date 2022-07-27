@@ -229,8 +229,8 @@ func TestListProducts(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/products"
-			path := fmt.Sprintf("%s%s", prefix, tt.query)
+			const format = "/v1/products%s"
+			path := fmt.Sprintf(format, tt.query)
 			testGet(t, tt.setup, tt.expect, path)
 		})
 	}
@@ -418,8 +418,8 @@ func TestGetProduct(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/products"
-			path := fmt.Sprintf("%s/%s", prefix, tt.productID)
+			const format = "/v1/products/%s"
+			path := fmt.Sprintf(format, tt.productID)
 			testGet(t, tt.setup, tt.expect, path)
 		})
 	}
@@ -855,8 +855,8 @@ func TestUpdateProduct(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/products"
-			path := fmt.Sprintf("%s/%s", prefix, tt.productID)
+			const format = "/v1/products/%s"
+			path := fmt.Sprintf(format, tt.productID)
 			testPatch(t, tt.setup, tt.expect, path, tt.req, withRole(uentity.AdminRoleCoordinator))
 		})
 	}

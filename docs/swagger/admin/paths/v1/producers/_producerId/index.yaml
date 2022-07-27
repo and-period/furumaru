@@ -65,10 +65,3 @@ patch:
         application/json:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
-          schema: {}
-    409:
-      description: conflict error
-      content:
-        application/json:
-          schema:
-            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'

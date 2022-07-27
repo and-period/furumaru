@@ -124,8 +124,8 @@ func TestListShippings(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/shippings"
-			path := fmt.Sprintf("%s%s", prefix, tt.query)
+			const format = "/v1/shippings%s"
+			path := fmt.Sprintf(format, tt.query)
 			testGet(t, tt.setup, tt.expect, path)
 		})
 	}
@@ -220,8 +220,8 @@ func TestGetShipping(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/shippings"
-			path := fmt.Sprintf("%s/%s", prefix, tt.shippingID)
+			const format = "/v1/shippings/%s"
+			path := fmt.Sprintf(format, tt.shippingID)
 			testGet(t, tt.setup, tt.expect, path)
 		})
 	}
@@ -540,8 +540,8 @@ func TestUpdateShipping(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/shippings"
-			path := fmt.Sprintf("%s/%s", prefix, tt.shippingID)
+			const format = "/v1/shippings/%s"
+			path := fmt.Sprintf(format, tt.shippingID)
 			testPatch(t, tt.setup, tt.expect, path, tt.req)
 		})
 	}
@@ -585,8 +585,8 @@ func TestDeleteShipping(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/shippings"
-			path := fmt.Sprintf("%s/%s", prefix, tt.shippingID)
+			const format = "/v1/shippings/%s"
+			path := fmt.Sprintf(format, tt.shippingID)
 			testDelete(t, tt.setup, tt.expect, path)
 		})
 	}

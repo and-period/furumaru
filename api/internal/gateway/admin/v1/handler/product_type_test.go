@@ -174,8 +174,8 @@ func TestListProductTypes(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/categories"
-			path := fmt.Sprintf("%s/%s/product-types%s", prefix, tt.categoryID, tt.query)
+			const format = "/v1/categories/%s/product-types%s"
+			path := fmt.Sprintf(format, tt.categoryID, tt.query)
 			testGet(t, tt.setup, tt.expect, path)
 		})
 	}
@@ -268,8 +268,8 @@ func TestCreateProductType(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/categories"
-			path := fmt.Sprintf("%s/%s/product-types", prefix, tt.categoryID)
+			const format = "/v1/categories/%s/product-types"
+			path := fmt.Sprintf(format, tt.categoryID)
 			testPost(t, tt.setup, tt.expect, path, tt.req)
 		})
 	}
@@ -324,8 +324,8 @@ func TestUpdateProductType(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/categories"
-			path := fmt.Sprintf("%s/%s/product-types/%s", prefix, tt.categoryID, tt.productTypeID)
+			const format = "/v1/categories/%s/product-types/%s"
+			path := fmt.Sprintf(format, tt.categoryID, tt.productTypeID)
 			testPatch(t, tt.setup, tt.expect, path, tt.req)
 		})
 	}
@@ -372,8 +372,8 @@ func TestDeleteProductType(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/categories"
-			path := fmt.Sprintf("%s/%s/product-types/%s", prefix, tt.categoryID, tt.productTypeID)
+			const format = "/v1/categories/%s/product-types/%s"
+			path := fmt.Sprintf(format, tt.categoryID, tt.productTypeID)
 			testDelete(t, tt.setup, tt.expect, path)
 		})
 	}

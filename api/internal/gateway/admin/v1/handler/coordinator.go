@@ -16,6 +16,9 @@ func (h *handler) coordinatorRoutes(rg *gin.RouterGroup) {
 	arg.GET("", h.ListCoordinators)
 	arg.POST("", h.CreateCoordinator)
 	arg.GET("/:coordinatorId", h.GetCoordinator)
+	arg.PATCH("/:coordinatorId", h.UpdateCoordinator)
+	arg.PATCH("/:coordinatorId/email", h.UpdateCoordinatorEmail)
+	arg.PATCH("/:coordinatorId/password", h.UpdateCoordinatorPassword)
 }
 
 func (h *handler) ListCoordinators(ctx *gin.Context) {
@@ -105,4 +108,34 @@ func (h *handler) CreateCoordinator(ctx *gin.Context) {
 		Coordinator: service.NewCoordinator(coordinator).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) UpdateCoordinator(ctx *gin.Context) {
+	req := &request.UpdateCoordinatorRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	// TODO: 詳細の実装
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) UpdateCoordinatorEmail(ctx *gin.Context) {
+	req := &request.UpdateCoordinatorEmailRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	// TODO: 詳細の実装
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) UpdateCoordinatorPassword(ctx *gin.Context) {
+	// TODO: 詳細の実装
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
 }

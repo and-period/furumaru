@@ -51,11 +51,17 @@ paths:
     $ref: './paths/v1/coordinators/index.yaml'
   /v1/coordinators/{coordinatorId}:
     $ref: './paths/v1/coordinators/_coordinatorId/index.yaml'
+  /v1/coordinators/{coordinatorId}/email:
+    $ref: './paths/v1/coordinators/_coordinatorId/email.yaml'
+  /v1/coordinators/{coordinatorId}/password:
+    $ref: './paths/v1/coordinators/_coordinatorId/password.yaml'
   # Producer
   /v1/producers:
     $ref: './paths/v1/producers/index.yaml'
   /v1/producers/{producerId}:
     $ref: './paths/v1/producers/_producerId/index.yaml'
+  /v1/producers/{producerId}/email:
+    $ref: './paths/v1/producers/_producerId/email.yaml'
   /v1/producers/{producerId}/password:
     $ref: './paths/v1/producers/_producerId/password.yaml'
   # Category
@@ -127,10 +133,16 @@ components:
       $ref: './components/schemas/v1/administrator.request.yaml#/createAdministratorRequest'
     v1CreateCoordinatorRequest:
       $ref: './components/schemas/v1/coordinator.request.yaml#/createCoordinatorRequest'
+    v1UpdateCoordinatorRequest:
+      $ref: './components/schemas/v1/coordinator.request.yaml#/updateCoordinatorRequest'
+    v1UpdateCoordinatorEmailRequest:
+      $ref: './components/schemas/v1/coordinator.request.yaml#/updateCoordinatorEmailRequest'
     v1CreateProducerRequest:
       $ref: './components/schemas/v1/producer.request.yaml#/createProducerRequest'
     v1UpdateProducerRequest:
       $ref: './components/schemas/v1/producer.request.yaml#/updateProducerRequest'
+    v1UpdateProducerEmailRequest:
+      $ref: './components/schemas/v1/producer.request.yaml#/updateProducerEmailRequest'
     v1CreateCategoryRequest:
       $ref: './components/schemas/v1/category.request.yaml#/createCategoryRequest'
     v1UpdateCategoryRequest:
