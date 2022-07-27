@@ -60,17 +60,23 @@ jobs:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
         golang: ['^1.18.4']
     steps:
-    - name: Setup env
-      shell: bash
-      run: |
-        echo "::set-env name=GOPATH::$(go env GOPATH)"
-        echo "::add-path::$(go env GOPATH)/bin"
+    # - name: Setup env
+    #   shell: bash
+    #   run: |
+    #     echo "::set-env name=GOPATH::$(go env GOPATH)"
+    #     echo "::add-path::$(go env GOPATH)/bin"
 
     - name: Check out code
       uses: actions/checkout@v3
 
     - name: Setup
       run: make setup
+
+    - name: Debug
+      run: |
+        go version
+        go env
+        which gofumpt
 
     - name: Fmt
       run: make fmt
