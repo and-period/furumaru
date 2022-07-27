@@ -26,7 +26,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        golang: ['^1.18.3']
+        golang: ['^1.18.4']
     steps:
     - name: Check out code
       uses: actions/checkout@v3
@@ -46,7 +46,7 @@ jobs:
 
     - name: Download modules
       # if: steps.modules-cache.outputs.cache-hit != 'true'
-      run: go mod download all
+      run: go mod tidy
 
   lint:
     name: lint
@@ -58,7 +58,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        golang: ['^1.18.3']
+        golang: ['^1.18.4']
     steps:
     - name: Check out code
       uses: actions/checkout@v3
@@ -86,7 +86,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        golang: ['^1.18.3']
+        golang: ['^1.18.4']
     steps:
     - name: Check out code
       uses: actions/checkout@v3
@@ -101,7 +101,7 @@ jobs:
 
     - name: Download modules
       if: steps.modules-cache.outputs.cache-hit != 'true'
-      run: go mod download all
+      run: go mod tidy
 
     - name: Build user gateway
       run: make build SERVICE=gateway/user
@@ -126,7 +126,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        golang: ['^1.18.3']
+        golang: ['^1.18.4']
 
     steps:
     - name: Check out code
@@ -162,7 +162,7 @@ jobs:
 
     - name: Download modules
       if: steps.modules-cache.outputs.cache-hit != 'true'
-      run: go mod download all
+      run: go mod tidy
 
     - name: Test
       run: make test
