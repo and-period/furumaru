@@ -35,6 +35,20 @@ func (m *MockClient) EXPECT() *MockClientMockRecorder {
 	return m.recorder
 }
 
+// AdminChangeEmail mocks base method.
+func (m *MockClient) AdminChangeEmail(ctx context.Context, params *cognito.AdminChangeEmailParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AdminChangeEmail", ctx, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AdminChangeEmail indicates an expected call of AdminChangeEmail.
+func (mr *MockClientMockRecorder) AdminChangeEmail(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AdminChangeEmail", reflect.TypeOf((*MockClient)(nil).AdminChangeEmail), ctx, params)
+}
+
 // AdminChangePassword mocks base method.
 func (m *MockClient) AdminChangePassword(ctx context.Context, params *cognito.AdminChangePasswordParams) error {
 	m.ctrl.T.Helper()

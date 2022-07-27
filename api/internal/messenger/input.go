@@ -57,6 +57,11 @@ type NotifyRegisterAdminInput struct {
 	Password string `validate:"required"`
 }
 
+type NotifyResetAdminPasswordInput struct {
+	AdminID  string `validate:"required"`
+	Password string `validate:"required"`
+}
+
 type NotifyReceivedContactInput struct {
 	ContactID string `validate:"required"`
 	Username  string `validate:"required"`

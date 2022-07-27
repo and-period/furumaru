@@ -35,6 +35,29 @@ func (s *service) NotifyRegisterAdmin(ctx context.Context, in *messenger.NotifyR
 	return exception.InternalError(err)
 }
 
+func (s *service) NotifyResetAdminPassword(ctx context.Context, in *messenger.NotifyResetAdminPasswordInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	maker := entity.NewAdminURLMaker(s.adminWebURL())
+	builder := entity.NewTemplateDataBuilder().
+		WebURL(maker.SignIn()).
+		Password(in.Password)
+	mail := &entity.MailConfig{
+		EmailID:       entity.EmailIDAdminResetPassword,
+		Substitutions: builder.Build(),
+	}
+	payload := &entity.WorkerPayload{
+		QueueID:   uuid.Base58Encode(uuid.New()),
+		EventType: entity.EventTypeAdminResetPassword,
+		UserType:  entity.UserTypeAdmin,
+		UserIDs:   []string{in.AdminID},
+		Email:     mail,
+	}
+	err := s.sendMessage(ctx, payload)
+	return exception.InternalError(err)
+}
+
 func (s *service) NotifyReceivedContact(ctx context.Context, in *messenger.NotifyReceivedContactInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)

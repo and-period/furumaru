@@ -25,6 +25,8 @@ type Service interface {
 	GetMessage(ctx context.Context, in *GetMessageInput) (*entity.Message, error)
 	// 管理者登録通知
 	NotifyRegisterAdmin(ctx context.Context, in *NotifyRegisterAdminInput) error
+	// 管理者パスワードリセット通知
+	NotifyResetAdminPassword(ctx context.Context, in *NotifyResetAdminPasswordInput) error
 	// お問い合わせ受領通知
 	NotifyReceivedContact(ctx context.Context, in *NotifyReceivedContactInput) error
 	// お知らせ通知

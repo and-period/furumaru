@@ -64,6 +64,7 @@ type Producer interface {
 	MultiGet(ctx context.Context, producerIDs []string, fields ...string) (entity.Producers, error)
 	Get(ctx context.Context, producerID string, fields ...string) (*entity.Producer, error)
 	Create(ctx context.Context, auth *entity.AdminAuth, producer *entity.Producer) error
+	Update(ctx context.Context, producerID string, params *UpdateProducerParams) error
 	UpdateEmail(ctx context.Context, producerID, email string) error
 }
 
@@ -90,6 +91,22 @@ type ListAdministratorsParams struct {
 type ListProducersParams struct {
 	Limit  int
 	Offset int
+}
+
+type UpdateProducerParams struct {
+	Lastname      string
+	Firstname     string
+	LastnameKana  string
+	FirstnameKana string
+	StoreName     string
+	ThumbnailURL  string
+	HeaderURL     string
+	PhoneNumber   string
+	PostalCode    string
+	Prefecture    string
+	City          string
+	AddressLine1  string
+	AddressLine2  string
 }
 
 type ListCoordinatorsParams struct {
