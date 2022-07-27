@@ -44,9 +44,9 @@ jobs:
           ~/go/pkg/mod
         key: ${{ env.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
-    - name: Download modules
-      if: steps.modules-cache.outputs.cache-hit != 'true'
-      run: go mod download
+    # - name: Download modules
+    #   if: steps.modules-cache.outputs.cache-hit != 'true'
+    #   run: go mod download
 
   lint:
     name: lint
