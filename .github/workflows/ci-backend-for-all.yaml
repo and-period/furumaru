@@ -45,8 +45,8 @@ jobs:
         key: ${{ env.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
     - name: Download modules
-      # if: steps.modules-cache.outputs.cache-hit != 'true'
-      run: go mod tidy
+      if: steps.modules-cache.outputs.cache-hit != 'true'
+      run: go mod download
 
   lint:
     name: lint
@@ -60,6 +60,12 @@ jobs:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
         golang: ['^1.18.4']
     steps:
+    - name: Setup env
+      shell: bash
+      run: |
+        echo "::set-env name=GOPATH::$(go env GOPATH)"
+        echo "::add-path::$(go env GOPATH)/bin"
+
     - name: Check out code
       uses: actions/checkout@v3
 
@@ -101,7 +107,7 @@ jobs:
 
     - name: Download modules
       if: steps.modules-cache.outputs.cache-hit != 'true'
-      run: go mod tidy
+      run: go mod download
 
     - name: Build user gateway
       run: make build SERVICE=gateway/user
@@ -162,7 +168,7 @@ jobs:
 
     - name: Download modules
       if: steps.modules-cache.outputs.cache-hit != 'true'
-      run: go mod tidy
+      run: go mod download
 
     - name: Test
       run: make test
