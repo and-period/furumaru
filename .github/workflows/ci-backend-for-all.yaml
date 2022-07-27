@@ -60,23 +60,16 @@ jobs:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
         golang: ['1.18.4']
     steps:
-    # - name: Setup env
-    #   shell: bash
-    #   run: |
-    #     echo "::set-env name=GOPATH::$(go env GOPATH)"
-    #     echo "::add-path::$(go env GOPATH)/bin"
-
     - name: Check out code
       uses: actions/checkout@v3
 
+    - name: Use Golang ${{ matrix.golang }}
+      uses: actions/setup-go@v3
+      with:
+        go-version: ${{ matrix.golang }}
+
     - name: Setup
       run: make setup
-
-    - name: Debug
-      run: |
-        go version
-        go env
-        which gofumpt
 
     - name: Fmt
       run: make fmt
@@ -102,6 +95,11 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v3
+
+    - name: Use Golang ${{ matrix.golang }}
+      uses: actions/setup-go@v3
+      with:
+        go-version: ${{ matrix.golang }}
 
     - uses: actions/cache@v3
       id: modules-cache
@@ -143,6 +141,11 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v3
+
+    - name: Use Golang ${{ matrix.golang }}
+      uses: actions/setup-go@v3
+      with:
+        go-version: ${{ matrix.golang }}
 
     - name: Start MySQL container
       working-directory: .
