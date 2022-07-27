@@ -118,3 +118,11 @@ func (s *service) notifyRegisterAdmin(ctx context.Context, adminID, password str
 	}
 	return s.messenger.NotifyRegisterAdmin(ctx, in)
 }
+
+func (s *service) notifyResetAdminPassword(ctx context.Context, adminID, password string) error {
+	in := &messenger.NotifyResetAdminPasswordInput{
+		AdminID:  adminID,
+		Password: password,
+	}
+	return s.messenger.NotifyResetAdminPassword(ctx, in)
+}

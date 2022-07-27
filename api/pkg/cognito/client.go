@@ -54,6 +54,8 @@ type Client interface {
 	// #############################################
 	// ユーザー登録
 	AdminCreateUser(ctx context.Context, params *AdminCreateUserParams) error
+	// メールアドレス更新
+	AdminChangeEmail(ctx context.Context, params *AdminChangeEmailParams) error
 	// パスワード更新
 	AdminChangePassword(ctx context.Context, params *AdminChangePasswordParams) error
 }

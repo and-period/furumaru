@@ -170,6 +170,20 @@ func (mr *MockServiceMockRecorder) NotifyRegisterAdmin(ctx, in interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotifyRegisterAdmin", reflect.TypeOf((*MockService)(nil).NotifyRegisterAdmin), ctx, in)
 }
 
+// NotifyResetAdminPassword mocks base method.
+func (m *MockService) NotifyResetAdminPassword(ctx context.Context, in *messenger.NotifyResetAdminPasswordInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "NotifyResetAdminPassword", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// NotifyResetAdminPassword indicates an expected call of NotifyResetAdminPassword.
+func (mr *MockServiceMockRecorder) NotifyResetAdminPassword(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotifyResetAdminPassword", reflect.TypeOf((*MockService)(nil).NotifyResetAdminPassword), ctx, in)
+}
+
 // UpdateContact mocks base method.
 func (m *MockService) UpdateContact(ctx context.Context, in *messenger.UpdateContactInput) error {
 	m.ctrl.T.Helper()

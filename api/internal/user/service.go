@@ -51,6 +51,12 @@ type Service interface {
 	GetProducer(ctx context.Context, in *GetProducerInput) (*entity.Producer, error)
 	// 生産者登録
 	CreateProducer(ctx context.Context, in *CreateProducerInput) (*entity.Producer, error)
+	// 生産者更新
+	UpdateProducer(ctx context.Context, in *UpdateProducerInput) error
+	// 生産者メールアドレス更新
+	UpdateProducerEmail(ctx context.Context, in *UpdateProducerEmailInput) error
+	// 生産者パスワードリセット
+	ResetProducerPassword(ctx context.Context, in *ResetProducerPasswordInput) error
 	// 購入者サインイン
 	SignInUser(ctx context.Context, in *SignInUserInput) (*entity.UserAuth, error)
 	// 購入者サインアウト

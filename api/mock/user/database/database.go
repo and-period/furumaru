@@ -460,6 +460,20 @@ func (mr *MockProducerMockRecorder) MultiGet(ctx, producerIDs interface{}, field
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockProducer)(nil).MultiGet), varargs...)
 }
 
+// Update mocks base method.
+func (m *MockProducer) Update(ctx context.Context, producerID string, params *database.UpdateProducerParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", ctx, producerID, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockProducerMockRecorder) Update(ctx, producerID, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockProducer)(nil).Update), ctx, producerID, params)
+}
+
 // UpdateEmail mocks base method.
 func (m *MockProducer) UpdateEmail(ctx context.Context, producerID, email string) error {
 	m.ctrl.T.Helper()
