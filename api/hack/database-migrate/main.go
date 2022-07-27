@@ -2,6 +2,7 @@
 package main
 
 import (
+	"database/sql"
 	"errors"
 	"flag"
 	"fmt"
@@ -9,8 +10,6 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
-
-	"database/sql"
 
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/set"

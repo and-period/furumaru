@@ -156,15 +156,15 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	params.userWebURL = userWebURL
 
 	// Serviceの設定
-	messengerService, err := newMessengerService(ctx, params)
+	messengerService, err := newMessengerService(params)
 	if err != nil {
 		return nil, err
 	}
-	userService, err := newUserService(ctx, params, messengerService)
+	userService, err := newUserService(params, messengerService)
 	if err != nil {
 		return nil, err
 	}
-	storeService, err := newStoreService(ctx, params, userService, messengerService)
+	storeService, err := newStoreService(params, userService, messengerService)
 	if err != nil {
 		return nil, err
 	}
@@ -266,7 +266,7 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 	return cli, nil
 }
 
-func newMessengerService(ctx context.Context, p *params) (messenger.Service, error) {
+func newMessengerService(p *params) (messenger.Service, error) {
 	mysql, err := newDatabase("messengers", p)
 	if err != nil {
 		return nil, err
@@ -274,7 +274,7 @@ func newMessengerService(ctx context.Context, p *params) (messenger.Service, err
 	dbParams := &messengerdb.Params{
 		Database: mysql,
 	}
-	user, err := newUserService(ctx, p, nil)
+	user, err := newUserService(p, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -289,7 +289,7 @@ func newMessengerService(ctx context.Context, p *params) (messenger.Service, err
 	return messengersrv.NewService(params, messengersrv.WithLogger(p.logger)), nil
 }
 
-func newUserService(ctx context.Context, p *params, messenger messenger.Service) (user.Service, error) {
+func newUserService(p *params, messenger messenger.Service) (user.Service, error) {
 	mysql, err := newDatabase("users", p)
 	if err != nil {
 		return nil, err
@@ -307,9 +307,7 @@ func newUserService(ctx context.Context, p *params, messenger messenger.Service)
 	return usersrv.NewService(params, usersrv.WithLogger(p.logger)), nil
 }
 
-func newStoreService(
-	ctx context.Context, p *params, user user.Service, messenger messenger.Service,
-) (store.Service, error) {
+func newStoreService(p *params, user user.Service, messenger messenger.Service) (store.Service, error) {
 	mysql, err := newDatabase("stores", p)
 	if err != nil {
 		return nil, err

@@ -67,7 +67,7 @@ func NewLogger(opts ...Option) (*zap.Logger, error) {
 
 	// logPath!==""のとき、ファイル出力も追加
 	outputPath := fmt.Sprintf("%s/outputs.log", dopts.outputPath)
-	file, err := os.OpenFile(outputPath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0755)
+	file, err := os.OpenFile(outputPath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0o755)
 	if err != nil {
 		return nil, err
 	}

@@ -77,7 +77,7 @@ func (q *receivedQueue) get(
 		fields = receivedQueueFields
 	}
 
-	err := q.db.DB.WithContext(ctx).
+	err := tx.WithContext(ctx).
 		Table(receivedQueueTable).Select(fields).
 		Where("id = ?", queueID).
 		First(&queue).Error

@@ -87,7 +87,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}
 
 	// Serviceの設定
-	messengerService, err := newMessengerService(ctx, params)
+	messengerService, err := newMessengerService(params)
 	if err != nil {
 		return nil, err
 	}
@@ -146,7 +146,7 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 	)
 }
 
-func newMessengerService(ctx context.Context, p *params) (messenger.Service, error) {
+func newMessengerService(p *params) (messenger.Service, error) {
 	mysql, err := newDatabase("messengers", p)
 	if err != nil {
 		return nil, err
@@ -154,7 +154,7 @@ func newMessengerService(ctx context.Context, p *params) (messenger.Service, err
 	dbParams := &messengerdb.Params{
 		Database: mysql,
 	}
-	user, err := newUserService(ctx, p)
+	user, err := newUserService(p)
 	if err != nil {
 		return nil, err
 	}
@@ -169,7 +169,7 @@ func newMessengerService(ctx context.Context, p *params) (messenger.Service, err
 	return messengersrv.NewService(params, messengersrv.WithLogger(p.logger)), nil
 }
 
-func newUserService(ctx context.Context, p *params) (user.Service, error) {
+func newUserService(p *params) (user.Service, error) {
 	mysql, err := newDatabase("users", p)
 	if err != nil {
 		return nil, err

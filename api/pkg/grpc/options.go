@@ -148,7 +148,7 @@ func shouldLog(fullMethodName string, err error) bool {
 }
 
 func filterParams(pb proto.Message) (map[string]interface{}, error) {
-	var fields = []string{"auth", "password"}
+	fields := []string{"auth", "password"}
 
 	bs, err := protojson.Marshal(pb)
 	if err != nil {
