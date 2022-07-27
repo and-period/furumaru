@@ -121,8 +121,8 @@ func TestListAdministrators(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/administrators"
-			path := fmt.Sprintf("%s%s", prefix, tt.query)
+			const format = "/v1/administrators%s"
+			path := fmt.Sprintf(format, tt.query)
 			testGet(t, tt.setup, tt.expect, path)
 		})
 	}
@@ -190,8 +190,8 @@ func TestGetAdministrator(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/administrators"
-			path := fmt.Sprintf("%s/%s", prefix, tt.adminID)
+			const format = "/v1/administrators/%s"
+			path := fmt.Sprintf(format, tt.adminID)
 			testGet(t, tt.setup, tt.expect, path)
 		})
 	}

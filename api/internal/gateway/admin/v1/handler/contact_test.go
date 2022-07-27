@@ -101,8 +101,8 @@ func TestListContacts(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/contacts"
-			path := fmt.Sprintf("%s%s", prefix, tt.query)
+			const format = "/v1/contacts%s"
+			path := fmt.Sprintf(format, tt.query)
 			testGet(t, tt.setup, tt.expect, path)
 		})
 	}
@@ -173,8 +173,8 @@ func TestGetContact(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/contacts"
-			path := fmt.Sprintf("%s/%s", prefix, tt.contactID)
+			const format = "/v1/contacts/%s"
+			path := fmt.Sprintf(format, tt.contactID)
 			testGet(t, tt.setup, tt.expect, path)
 		})
 	}
@@ -231,8 +231,8 @@ func TestUpdateContact(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/contacts"
-			path := fmt.Sprintf("%s/%s", prefix, tt.contactID)
+			const format = "/v1/contacts/%s"
+			path := fmt.Sprintf(format, tt.contactID)
 			testPatch(t, tt.setup, tt.expect, path, tt.req)
 		})
 	}

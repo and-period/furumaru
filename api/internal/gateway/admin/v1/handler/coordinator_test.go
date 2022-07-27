@@ -161,8 +161,8 @@ func TestListCoordinator(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/coordinators"
-			path := fmt.Sprintf("%s%s", prefix, tt.query)
+			const format = "/v1/coordinators%s"
+			path := fmt.Sprintf(format, tt.query)
 			testGet(t, tt.setup, tt.expect, path)
 		})
 	}
@@ -250,8 +250,8 @@ func TestGetCoordinator(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/coordinators"
-			path := fmt.Sprintf("%s/%s", prefix, tt.coordinatorID)
+			const format = "/v1/coordinators/%s"
+			path := fmt.Sprintf(format, tt.coordinatorID)
 			testGet(t, tt.setup, tt.expect, path)
 		})
 	}
@@ -400,6 +400,116 @@ func TestCreateCoordinator(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			const path = "/v1/coordinators"
 			testPost(t, tt.setup, tt.expect, path, tt.req)
+		})
+	}
+}
+
+func TestUpdateCoordinator(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name          string
+		setup         func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		coordinatorID string
+		req           *request.UpdateCoordinatorRequest
+		expect        *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+			},
+			coordinatorID: "coordinator-id",
+			req: &request.UpdateCoordinatorRequest{
+				Lastname:      "&.",
+				Firstname:     "生産者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "せいさんしゃ",
+				StoreName:     "&.農園",
+				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+				HeaderURL:     "https://and-period.jp/header.png",
+				PhoneNumber:   "+819012345678",
+				PostalCode:    "1000014",
+				Prefecture:    "東京都",
+				City:          "千代田区",
+				AddressLine1:  "永田町1-7-1",
+				AddressLine2:  "",
+			},
+			expect: &testResponse{
+				code: http.StatusNoContent,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const format = "/v1/coordinators/%s"
+			path := fmt.Sprintf(format, tt.coordinatorID)
+			testPatch(t, tt.setup, tt.expect, path, tt.req)
+		})
+	}
+}
+
+func TestUpdateCoordinatorEmail(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name          string
+		setup         func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		coordinatorID string
+		req           *request.UpdateCoordinatorEmailRequest
+		expect        *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+			},
+			coordinatorID: "coordinator-id",
+			req: &request.UpdateCoordinatorEmailRequest{
+				Email: "test-producer@and-period.jp",
+			},
+			expect: &testResponse{
+				code: http.StatusNoContent,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const format = "/v1/coordinators/%s/email"
+			path := fmt.Sprintf(format, tt.coordinatorID)
+			testPatch(t, tt.setup, tt.expect, path, tt.req)
+		})
+	}
+}
+
+func TestUpdateCoordinatorPassword(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name          string
+		setup         func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		coordinatorID string
+		expect        *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+			},
+			coordinatorID: "coordinator-id",
+			expect: &testResponse{
+				code: http.StatusNoContent,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const format = "/v1/coordinators/%s/password"
+			path := fmt.Sprintf(format, tt.coordinatorID)
+			testPatch(t, tt.setup, tt.expect, path, nil)
 		})
 	}
 }

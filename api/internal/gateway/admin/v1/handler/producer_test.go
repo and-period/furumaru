@@ -145,8 +145,8 @@ func TestListProducer(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/producers"
-			path := fmt.Sprintf("%s%s", prefix, tt.query)
+			const format = "/v1/producers%s"
+			path := fmt.Sprintf(format, tt.query)
 			testGet(t, tt.setup, tt.expect, path)
 		})
 	}
@@ -226,8 +226,8 @@ func TestGetProducer(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/producers"
-			path := fmt.Sprintf("%s/%s", prefix, tt.producerID)
+			const format = "/v1/producers/%s"
+			path := fmt.Sprintf(format, tt.producerID)
 			testGet(t, tt.setup, tt.expect, path)
 		})
 	}
@@ -383,7 +383,6 @@ func TestUpdateProducer(t *testing.T) {
 				StoreName:     "&.農園",
 				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
 				HeaderURL:     "https://and-period.jp/header.png",
-				Email:         "test-producer@and-period.jp",
 				PhoneNumber:   "+819012345678",
 				PostalCode:    "1000014",
 				Prefecture:    "東京都",
@@ -400,8 +399,42 @@ func TestUpdateProducer(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/producers"
-			path := fmt.Sprintf("%s/%s", prefix, tt.producerID)
+			const format = "/v1/producers/%s"
+			path := fmt.Sprintf(format, tt.producerID)
+			testPatch(t, tt.setup, tt.expect, path, tt.req)
+		})
+	}
+}
+
+func TestUpdateProducerEmail(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name       string
+		setup      func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		producerID string
+		req        *request.UpdateProducerEmailRequest
+		expect     *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+			},
+			producerID: "producer-id",
+			req: &request.UpdateProducerEmailRequest{
+				Email: "test-producer@and-period.jp",
+			},
+			expect: &testResponse{
+				code: http.StatusNoContent,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const format = "/v1/producers/%s/email"
+			path := fmt.Sprintf(format, tt.producerID)
 			testPatch(t, tt.setup, tt.expect, path, tt.req)
 		})
 	}
@@ -430,8 +463,8 @@ func TestUpdateProducerPassword(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/producers"
-			path := fmt.Sprintf("%s/%s/password", prefix, tt.producerID)
+			const format = "/v1/producers/%s/password"
+			path := fmt.Sprintf(format, tt.producerID)
 			testPatch(t, tt.setup, tt.expect, path, nil)
 		})
 	}

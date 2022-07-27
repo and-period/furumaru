@@ -100,8 +100,8 @@ func TestListCategories(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/categories"
-			path := fmt.Sprintf("%s%s", prefix, tt.query)
+			const format = "/v1/categories%s"
+			path := fmt.Sprintf(format, tt.query)
 			testGet(t, tt.setup, tt.expect, path)
 		})
 	}
@@ -215,8 +215,8 @@ func TestUpdateCategory(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/categories"
-			path := fmt.Sprintf("%s/%s", prefix, tt.categoryID)
+			const format = "/v1/categories/%s"
+			path := fmt.Sprintf(format, tt.categoryID)
 			testPatch(t, tt.setup, tt.expect, path, tt.req)
 		})
 	}
@@ -260,8 +260,8 @@ func TestDeleteCategory(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/categories"
-			path := fmt.Sprintf("%s/%s", prefix, tt.categoryID)
+			const format = "/v1/categories/%s"
+			path := fmt.Sprintf(format, tt.categoryID)
 			testDelete(t, tt.setup, tt.expect, path)
 		})
 	}
