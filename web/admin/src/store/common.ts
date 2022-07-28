@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-interface AddSnackbarPayload {
+export interface AddSnackbarPayload {
   message: string
   color: 'primary' | 'success' | 'info' | 'error'
 }
@@ -33,7 +33,7 @@ export const useCommonStore = defineStore('common', {
      * @param index 削除するスナックバーのindex
      */
     hideSnackbar(index: number): void {
-      this.snackbars = this.snackbars.filter((_, i) => i !== index)
+      this.snackbars.splice(index, 1)
     },
   },
 })
