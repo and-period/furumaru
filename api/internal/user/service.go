@@ -43,6 +43,12 @@ type Service interface {
 	GetCoordinator(ctx context.Context, in *GetCoordinatorInput) (*entity.Coordinator, error)
 	// 仲介者登録
 	CreateCoordinator(ctx context.Context, in *CreateCoordinatorInput) (*entity.Coordinator, error)
+	// 仲介者更新
+	UpdateCoordinator(ctx context.Context, in *UpdateCoordinatorInput) error
+	// 仲介者メールアドレス更新
+	UpdateCoordinatorEmail(ctx context.Context, in *UpdateCoordinatorEmailInput) error
+	// 仲介者パスワードリセット
+	ResetCoordinatorPassword(ctx context.Context, in *ResetCoordinatorPasswordInput) error
 	// 生産者一覧取得
 	ListProducers(ctx context.Context, in *ListProducersInput) (entity.Producers, int64, error)
 	// 生産者一覧取得(ID指定)

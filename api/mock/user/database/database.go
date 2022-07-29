@@ -334,6 +334,20 @@ func (mr *MockCoordinatorMockRecorder) MultiGet(ctx, coordinatorIDs interface{},
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockCoordinator)(nil).MultiGet), varargs...)
 }
 
+// Update mocks base method.
+func (m *MockCoordinator) Update(ctx context.Context, coordinatorID string, params *database.UpdateCoordinatorParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", ctx, coordinatorID, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockCoordinatorMockRecorder) Update(ctx, coordinatorID, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockCoordinator)(nil).Update), ctx, coordinatorID, params)
+}
+
 // UpdateEmail mocks base method.
 func (m *MockCoordinator) UpdateEmail(ctx context.Context, coordinatorID, email string) error {
 	m.ctrl.T.Helper()
