@@ -55,6 +55,7 @@ type Coordinator interface {
 	MultiGet(ctx context.Context, coordinatorIDs []string, fields ...string) (entity.Coordinators, error)
 	Get(ctx context.Context, coordinatorID string, fields ...string) (*entity.Coordinator, error)
 	Create(ctx context.Context, auth *entity.AdminAuth, coordinator *entity.Coordinator) error
+	Update(ctx context.Context, coordinatorID string, params *UpdateCoordinatorParams) error
 	UpdateEmail(ctx context.Context, coordinatorID, email string) error
 }
 
@@ -88,6 +89,31 @@ type ListAdministratorsParams struct {
 	Offset int
 }
 
+type ListCoordinatorsParams struct {
+	Limit  int
+	Offset int
+}
+
+type UpdateCoordinatorParams struct {
+	Lastname         string
+	Firstname        string
+	LastnameKana     string
+	FirstnameKana    string
+	CompanyName      string
+	StoreName        string
+	ThumbnailURL     string
+	HeaderURL        string
+	TwitterAccount   string
+	InstagramAccount string
+	FacebookAccount  string
+	PhoneNumber      string
+	PostalCode       string
+	Prefecture       string
+	City             string
+	AddressLine1     string
+	AddressLine2     string
+}
+
 type ListProducersParams struct {
 	Limit  int
 	Offset int
@@ -107,9 +133,4 @@ type UpdateProducerParams struct {
 	City          string
 	AddressLine1  string
 	AddressLine2  string
-}
-
-type ListCoordinatorsParams struct {
-	Limit  int
-	Offset int
 }

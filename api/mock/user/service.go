@@ -411,6 +411,20 @@ func (mr *MockServiceMockRecorder) RefreshUserToken(ctx, in interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RefreshUserToken", reflect.TypeOf((*MockService)(nil).RefreshUserToken), ctx, in)
 }
 
+// ResetCoordinatorPassword mocks base method.
+func (m *MockService) ResetCoordinatorPassword(ctx context.Context, in *user.ResetCoordinatorPasswordInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ResetCoordinatorPassword", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ResetCoordinatorPassword indicates an expected call of ResetCoordinatorPassword.
+func (mr *MockServiceMockRecorder) ResetCoordinatorPassword(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResetCoordinatorPassword", reflect.TypeOf((*MockService)(nil).ResetCoordinatorPassword), ctx, in)
+}
+
 // ResetProducerPassword mocks base method.
 func (m *MockService) ResetProducerPassword(ctx context.Context, in *user.ResetProducerPasswordInput) error {
 	m.ctrl.T.Helper()
@@ -509,6 +523,34 @@ func (m *MockService) UpdateAdminPassword(ctx context.Context, in *user.UpdateAd
 func (mr *MockServiceMockRecorder) UpdateAdminPassword(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAdminPassword", reflect.TypeOf((*MockService)(nil).UpdateAdminPassword), ctx, in)
+}
+
+// UpdateCoordinator mocks base method.
+func (m *MockService) UpdateCoordinator(ctx context.Context, in *user.UpdateCoordinatorInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateCoordinator", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateCoordinator indicates an expected call of UpdateCoordinator.
+func (mr *MockServiceMockRecorder) UpdateCoordinator(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCoordinator", reflect.TypeOf((*MockService)(nil).UpdateCoordinator), ctx, in)
+}
+
+// UpdateCoordinatorEmail mocks base method.
+func (m *MockService) UpdateCoordinatorEmail(ctx context.Context, in *user.UpdateCoordinatorEmailInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateCoordinatorEmail", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateCoordinatorEmail indicates an expected call of UpdateCoordinatorEmail.
+func (mr *MockServiceMockRecorder) UpdateCoordinatorEmail(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCoordinatorEmail", reflect.TypeOf((*MockService)(nil).UpdateCoordinatorEmail), ctx, in)
 }
 
 // UpdateProducer mocks base method.

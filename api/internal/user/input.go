@@ -98,6 +98,36 @@ type CreateCoordinatorInput struct {
 	AddressLine2     string `validate:"omitempty,max=64"`
 }
 
+type UpdateCoordinatorInput struct {
+	CoordinatorID    string `validate:"required"`
+	Lastname         string `validate:"required,max=16"`
+	Firstname        string `validate:"required,max=16"`
+	LastnameKana     string `validate:"required,max=32,hiragana"`
+	FirstnameKana    string `validate:"required,max=32,hiragana"`
+	CompanyName      string `validate:"required,max=64"`
+	StoreName        string `validate:"required,max=64"`
+	ThumbnailURL     string `validate:"omitempty,url"`
+	HeaderURL        string `validate:"omitempty,url"`
+	TwitterAccount   string `validate:"omitempty,max=15"`
+	InstagramAccount string `validate:"omitempty,max=30"`
+	FacebookAccount  string `validate:"omitempty,max=50"`
+	PhoneNumber      string `validate:"min=12,max=18,phone_number"`
+	PostalCode       string `validate:"omitempty,max=16,numeric"`
+	Prefecture       string `validate:"omitempty,max=32"`
+	City             string `validate:"omitempty,max=32"`
+	AddressLine1     string `validate:"omitempty,max=64"`
+	AddressLine2     string `validate:"omitempty,max=64"`
+}
+
+type UpdateCoordinatorEmailInput struct {
+	CoordinatorID string `validate:"required"`
+	Email         string `validate:"required,max=256,email"`
+}
+
+type ResetCoordinatorPasswordInput struct {
+	CoordinatorID string `validate:"required"`
+}
+
 type ListProducersInput struct {
 	Limit  int64 `validate:"required,max=200"`
 	Offset int64 `validate:"min=0"`
