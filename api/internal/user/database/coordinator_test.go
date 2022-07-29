@@ -457,7 +457,7 @@ func TestCoordinator_Update(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, adminAuthTable, producerTable)
+			err := m.dbDelete(ctx, adminAuthTable, coordinatorTable)
 			require.NoError(t, err)
 			tt.setup(ctx, t, m)
 
