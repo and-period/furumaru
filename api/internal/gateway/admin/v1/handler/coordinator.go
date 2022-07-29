@@ -18,7 +18,7 @@ func (h *handler) coordinatorRoutes(rg *gin.RouterGroup) {
 	arg.GET("/:coordinatorId", h.GetCoordinator)
 	arg.PATCH("/:coordinatorId", h.UpdateCoordinator)
 	arg.PATCH("/:coordinatorId/email", h.UpdateCoordinatorEmail)
-	arg.PATCH("/:coordinatorId/password", h.UpdateCoordinatorPassword)
+	arg.PATCH("/:coordinatorId/password", h.ResetCoordinatorPassword)
 }
 
 func (h *handler) ListCoordinators(ctx *gin.Context) {
@@ -117,7 +117,30 @@ func (h *handler) UpdateCoordinator(ctx *gin.Context) {
 		return
 	}
 
-	// TODO: 詳細の実装
+	in := &user.UpdateCoordinatorInput{
+		CoordinatorID:    util.GetParam(ctx, "coordinatorId"),
+		Lastname:         req.Lastname,
+		Firstname:        req.Firstname,
+		LastnameKana:     req.LastnameKana,
+		FirstnameKana:    req.FirstnameKana,
+		CompanyName:      req.CompanyName,
+		StoreName:        req.StoreName,
+		ThumbnailURL:     req.ThumbnailURL,
+		HeaderURL:        req.HeaderURL,
+		TwitterAccount:   req.TwitterAccount,
+		InstagramAccount: req.InstagramAccount,
+		FacebookAccount:  req.FacebookAccount,
+		PhoneNumber:      req.PhoneNumber,
+		PostalCode:       req.PostalCode,
+		Prefecture:       req.Prefecture,
+		City:             req.City,
+		AddressLine1:     req.AddressLine1,
+		AddressLine2:     req.AddressLine2,
+	}
+	if err := h.user.UpdateCoordinator(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
 
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
@@ -129,13 +152,26 @@ func (h *handler) UpdateCoordinatorEmail(ctx *gin.Context) {
 		return
 	}
 
-	// TODO: 詳細の実装
+	in := &user.UpdateCoordinatorEmailInput{
+		CoordinatorID: util.GetParam(ctx, "coordinatorId"),
+		Email:         req.Email,
+	}
+	if err := h.user.UpdateCoordinatorEmail(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
 
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
-func (h *handler) UpdateCoordinatorPassword(ctx *gin.Context) {
-	// TODO: 詳細の実装
+func (h *handler) ResetCoordinatorPassword(ctx *gin.Context) {
+	in := &user.ResetCoordinatorPasswordInput{
+		CoordinatorID: util.GetParam(ctx, "coordinatorId"),
+	}
+	if err := h.user.ResetCoordinatorPassword(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
 
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }

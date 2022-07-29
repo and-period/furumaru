@@ -18,7 +18,7 @@ func (h *handler) producerRoutes(rg *gin.RouterGroup) {
 	arg.GET("/:producerId", h.GetProducer)
 	arg.PATCH("/:producerId", h.UpdateProducer)
 	arg.PATCH("/:producerId/email", h.UpdateProducerEmail)
-	arg.PATCH("/:producerId/password", h.UpdateProducerPassword)
+	arg.PATCH("/:producerId/password", h.ResetProducerPassword)
 }
 
 func (h *handler) ListProducers(ctx *gin.Context) {
@@ -113,7 +113,26 @@ func (h *handler) UpdateProducer(ctx *gin.Context) {
 		return
 	}
 
-	// TODO: 詳細の実装
+	in := &user.UpdateProducerInput{
+		ProducerID:    util.GetParam(ctx, "producerId"),
+		Lastname:      req.Lastname,
+		Firstname:     req.Firstname,
+		LastnameKana:  req.LastnameKana,
+		FirstnameKana: req.FirstnameKana,
+		StoreName:     req.StoreName,
+		ThumbnailURL:  req.ThumbnailURL,
+		HeaderURL:     req.HeaderURL,
+		PhoneNumber:   req.PhoneNumber,
+		PostalCode:    req.PostalCode,
+		Prefecture:    req.Prefecture,
+		City:          req.City,
+		AddressLine1:  req.AddressLine1,
+		AddressLine2:  req.AddressLine2,
+	}
+	if err := h.user.UpdateProducer(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
 
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
@@ -125,13 +144,26 @@ func (h *handler) UpdateProducerEmail(ctx *gin.Context) {
 		return
 	}
 
-	// TODO: 詳細の実装
+	in := &user.UpdateProducerEmailInput{
+		ProducerID: util.GetParam(ctx, "producerId"),
+		Email:      req.Email,
+	}
+	if err := h.user.UpdateProducerEmail(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
 
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
-func (h *handler) UpdateProducerPassword(ctx *gin.Context) {
-	// TODO: 詳細の実装
+func (h *handler) ResetProducerPassword(ctx *gin.Context) {
+	in := &user.ResetProducerPasswordInput{
+		ProducerID: util.GetParam(ctx, "producerId"),
+	}
+	if err := h.user.ResetProducerPassword(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
 
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
