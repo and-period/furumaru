@@ -506,6 +506,7 @@ func TestUpdateProducerEmail(t *testing.T) {
 
 	auth := &entity.AdminAuth{
 		CognitoID: "cognito-id",
+		Role:      entity.AdminRoleProducer,
 	}
 	params := &cognito.AdminChangeEmailParams{
 		Username: "cognito-id",
@@ -601,6 +602,7 @@ func TestResetProducerPassword(t *testing.T) {
 
 	auth := &entity.AdminAuth{
 		CognitoID: "cognito-id",
+		Role:      entity.AdminRoleProducer,
 	}
 
 	tests := []struct {
