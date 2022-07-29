@@ -4,7 +4,7 @@ import Cookies from 'universal-cookie'
 
 import { useCommonStore } from './common'
 
-import { ApiClientFactory } from '.'
+import ApiClientFactory from '.'
 
 import {
   AuthApi,

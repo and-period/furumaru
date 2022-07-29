@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { useAuthStore } from './auth'
 import { useCommonStore } from './common'
 
-import { ApiClientFactory } from '.'
+import ApiClientFactory from '.'
 
 import {
   CreateProducerRequest,

@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 
 import { useAuthStore } from './auth'
 
-import { ApiClientFactory } from '.'
+import ApiClientFactory from '.'
 
 import {
   CategoriesResponse,
