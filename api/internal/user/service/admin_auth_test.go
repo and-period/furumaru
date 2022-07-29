@@ -495,6 +495,19 @@ func TestUpdateAdminEmail(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name: "does not need to be changed",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
+				mocks.db.AdminAuth.EXPECT().GetByCognitoID(ctx, "username", "admin_id", "role").Return(auth, nil)
+				mocks.db.Administrator.EXPECT().Get(ctx, "admin-id").Return(administrator, nil)
+			},
+			input: &user.UpdateAdminEmailInput{
+				AccessToken: "access-token",
+				Email:       "test-admin@and-period.jp",
+			},
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
 			name: "failed to change email",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)

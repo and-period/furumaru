@@ -29,3 +29,9 @@ patch:
         application/json:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+    412:
+      description: percondition failed error
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
