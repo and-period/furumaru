@@ -24,7 +24,6 @@ func newRouter(reg *registry, logger *zap.Logger) *gin.Engine {
 	opts = append(opts, cors.NewGinMiddleware())
 	opts = append(opts, gzip.Gzip(gzip.DefaultCompression))
 	opts = append(opts, ginzap.RecoveryWithZap(logger, true))
-	opts = append(opts)
 
 	rt := gin.New()
 	rt.Use(opts...)
