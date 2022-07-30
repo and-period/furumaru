@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/set"
+	set "github.com/and-period/furumaru/api/pkg/set/v2"
 	"github.com/shopspring/decimal"
 )
 
@@ -142,27 +142,21 @@ func NewProducts(products entity.Products) Products {
 }
 
 func (ps Products) ProducerIDs() []string {
-	set := set.New(len(ps))
-	for i := range ps {
-		set.AddStrings(ps[i].ProducerID)
-	}
-	return set.Strings()
+	return set.UniqBy(ps, func(p *Product) string {
+		return p.ProducerID
+	})
 }
 
 func (ps Products) CategoryIDs() []string {
-	set := set.New(len(ps))
-	for i := range ps {
-		set.AddStrings(ps[i].CategoryID)
-	}
-	return set.Strings()
+	return set.UniqBy(ps, func(p *Product) string {
+		return p.CategoryID
+	})
 }
 
 func (ps Products) ProductTypeIDs() []string {
-	set := set.New(len(ps))
-	for i := range ps {
-		set.AddStrings(ps[i].TypeID)
-	}
-	return set.Strings()
+	return set.UniqBy(ps, func(p *Product) string {
+		return p.TypeID
+	})
 }
 
 func (ps Products) Fill(

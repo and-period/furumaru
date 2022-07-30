@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/and-period/furumaru/api/pkg/set"
+	set "github.com/and-period/furumaru/api/pkg/set/v2"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -60,8 +60,7 @@ func run() error {
 	srcDir := flag.String("src", "./../../../infra/mysql/schema", "ddl source directory")
 	flag.Parse()
 
-	set := set.New(len(skipDDLs))
-	set.AddStrings(skipDDLs...)
+	set := set.New[string](len(skipDDLs)).Add(skipDDLs...)
 
 	/**
 	 * -------------------------

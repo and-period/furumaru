@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/set"
+	set "github.com/and-period/furumaru/api/pkg/set/v2"
 )
 
 type ProductType struct {
@@ -43,11 +43,9 @@ func NewProductTypes(productTypes entity.ProductTypes) ProductTypes {
 }
 
 func (ts ProductTypes) CategoryIDs() []string {
-	set := set.New(len(ts))
-	for i := range ts {
-		set.AddStrings(ts[i].CategoryID)
-	}
-	return set.Strings()
+	return set.UniqBy(ts, func(t *ProductType) string {
+		return t.CategoryID
+	})
 }
 
 func (ts ProductTypes) Map() map[string]*ProductType {
