@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/and-period/furumaru/api/pkg/cors"
-	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/gin-contrib/gzip"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
@@ -63,7 +63,7 @@ func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 		}
 		ctx.Writer = w
 
-		start := jst.Now()
+		start := time.Now()
 		method := ctx.Request.Method
 		path := ctx.Request.URL.Path
 		ctx.Next()
@@ -72,7 +72,7 @@ func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 			return
 		}
 
-		end := jst.Now()
+		end := time.Now()
 		status := ctx.Writer.Status()
 
 		fields := []zapcore.Field{
@@ -82,7 +82,7 @@ func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 			zap.String("query", ctx.Request.URL.RawQuery),
 			zap.String("ip", ctx.ClientIP()),
 			zap.String("user-agent", ctx.Request.UserAgent()),
-			zap.Duration("latency", end.Sub(start)),
+			zap.Int64("latency", end.Sub(start).Milliseconds()),
 			zap.String("time", end.Format("2006-01-02 15:04:05")),
 			zap.String("userId", ctx.GetHeader("adminId")),
 		}

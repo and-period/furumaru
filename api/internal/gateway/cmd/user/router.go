@@ -82,7 +82,7 @@ func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 			zap.String("query", ctx.Request.URL.RawQuery),
 			zap.String("ip", ctx.ClientIP()),
 			zap.String("user-agent", ctx.Request.UserAgent()),
-			zap.Duration("latency", end.Sub(start)),
+			zap.Int64("latency", end.Sub(start).Milliseconds()),
 			zap.String("time", end.Format("2006-01-02 15:04:05")),
 			zap.String("userId", ctx.GetHeader("adminId")),
 		}
