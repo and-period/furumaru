@@ -2,7 +2,7 @@ get:
   summary: 配送設定一覧取得
   operationId: v1ListShippings
   tags:
-  - Shippings
+  - Shipping
   security:
   - BearerAuth: []
   parameters:

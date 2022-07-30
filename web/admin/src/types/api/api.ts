@@ -8895,6 +8895,61 @@ export const ShippingApiAxiosParamCreator = function (
     },
     /**
      *
+     * @summary 配送設定一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1ListShippings: async (
+      limit?: number,
+      offset?: number,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/v1/shippings`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (limit !== undefined) {
+        localVarQueryParameter['limit'] = limit
+      }
+
+      if (offset !== undefined) {
+        localVarQueryParameter['offset'] = offset
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
      * @summary 配送設定更新
      * @param {string} shippingId 配送設定ID
      * @param {UpdateShippingRequest} body
@@ -9018,6 +9073,36 @@ export const ShippingApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @summary 配送設定一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1ListShippings(
+      limit?: number,
+      offset?: number,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<ShippingsResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListShippings(
+        limit,
+        offset,
+        options
+      )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
      * @summary 配送設定更新
      * @param {string} shippingId 配送設定ID
      * @param {UpdateShippingRequest} body
@@ -9090,6 +9175,23 @@ export const ShippingApiFactory = function (
     },
     /**
      *
+     * @summary 配送設定一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1ListShippings(
+      limit?: number,
+      offset?: number,
+      options?: any
+    ): AxiosPromise<ShippingsResponse> {
+      return localVarFp
+        .v1ListShippings(limit, offset, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
      * @summary 配送設定更新
      * @param {string} shippingId 配送設定ID
      * @param {UpdateShippingRequest} body
@@ -9148,6 +9250,25 @@ export class ShippingApi extends BaseAPI {
 
   /**
    *
+   * @summary 配送設定一覧取得
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ShippingApi
+   */
+  public v1ListShippings(
+    limit?: number,
+    offset?: number,
+    options?: AxiosRequestConfig
+  ) {
+    return ShippingApiFp(this.configuration)
+      .v1ListShippings(limit, offset, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
    * @summary 配送設定更新
    * @param {string} shippingId 配送設定ID
    * @param {UpdateShippingRequest} body
@@ -9162,170 +9283,6 @@ export class ShippingApi extends BaseAPI {
   ) {
     return ShippingApiFp(this.configuration)
       .v1UpdateShipping(shippingId, body, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-}
-
-/**
- * ShippingsApi - axios parameter creator
- * @export
- */
-export const ShippingsApiAxiosParamCreator = function (
-  configuration?: Configuration
-) {
-  return {
-    /**
-     *
-     * @summary 配送設定一覧取得
-     * @param {number} [limit] 取得上限数(max:200)
-     * @param {number} [offset] 取得開始位置(min:0)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    v1ListShippings: async (
-      limit?: number,
-      offset?: number,
-      options: AxiosRequestConfig = {}
-    ): Promise<RequestArgs> => {
-      const localVarPath = `/v1/shippings`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = {
-        method: 'GET',
-        ...baseOptions,
-        ...options,
-      }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication BearerAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      if (limit !== undefined) {
-        localVarQueryParameter['limit'] = limit
-      }
-
-      if (offset !== undefined) {
-        localVarQueryParameter['offset'] = offset
-      }
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-  }
-}
-
-/**
- * ShippingsApi - functional programming interface
- * @export
- */
-export const ShippingsApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator = ShippingsApiAxiosParamCreator(configuration)
-  return {
-    /**
-     *
-     * @summary 配送設定一覧取得
-     * @param {number} [limit] 取得上限数(max:200)
-     * @param {number} [offset] 取得開始位置(min:0)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async v1ListShippings(
-      limit?: number,
-      offset?: number,
-      options?: AxiosRequestConfig
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string
-      ) => AxiosPromise<ShippingsResponse>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListShippings(
-        limit,
-        offset,
-        options
-      )
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration
-      )
-    },
-  }
-}
-
-/**
- * ShippingsApi - factory interface
- * @export
- */
-export const ShippingsApiFactory = function (
-  configuration?: Configuration,
-  basePath?: string,
-  axios?: AxiosInstance
-) {
-  const localVarFp = ShippingsApiFp(configuration)
-  return {
-    /**
-     *
-     * @summary 配送設定一覧取得
-     * @param {number} [limit] 取得上限数(max:200)
-     * @param {number} [offset] 取得開始位置(min:0)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    v1ListShippings(
-      limit?: number,
-      offset?: number,
-      options?: any
-    ): AxiosPromise<ShippingsResponse> {
-      return localVarFp
-        .v1ListShippings(limit, offset, options)
-        .then((request) => request(axios, basePath))
-    },
-  }
-}
-
-/**
- * ShippingsApi - object-oriented interface
- * @export
- * @class ShippingsApi
- * @extends {BaseAPI}
- */
-export class ShippingsApi extends BaseAPI {
-  /**
-   *
-   * @summary 配送設定一覧取得
-   * @param {number} [limit] 取得上限数(max:200)
-   * @param {number} [offset] 取得開始位置(min:0)
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof ShippingsApi
-   */
-  public v1ListShippings(
-    limit?: number,
-    offset?: number,
-    options?: AxiosRequestConfig
-  ) {
-    return ShippingsApiFp(this.configuration)
-      .v1ListShippings(limit, offset, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
