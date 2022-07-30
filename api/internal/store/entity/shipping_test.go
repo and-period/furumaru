@@ -5,7 +5,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/store/codes"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/and-period/furumaru/api/pkg/set"
+	set "github.com/and-period/furumaru/api/pkg/set/v2"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,8 +17,7 @@ func TestShipping(t *testing.T) {
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
-	set := set.New(len(shikoku))
-	set.AddInt64s(shikoku...)
+	set := set.New[int64](len(shikoku)).Add(shikoku...)
 	others := make([]int64, 0, 47-len(shikoku))
 	for _, val := range codes.PrefectureValues {
 		if set.Contains(val) {
@@ -397,8 +396,7 @@ func TestShippingRates(t *testing.T) {
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
-	set := set.New(len(shikoku))
-	set.AddInt64s(shikoku...)
+	set := set.New[int64](len(shikoku)).Add(shikoku...)
 	others := make([]int64, 0, 47-len(shikoku))
 	for _, val := range codes.PrefectureValues {
 		if set.Contains(val) {
