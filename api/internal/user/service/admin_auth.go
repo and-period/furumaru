@@ -107,8 +107,7 @@ func (s *service) VerifyAdminEmail(ctx context.Context, in *user.VerifyAdminEmai
 	case entity.AdminRoleAdministrator:
 		err = s.db.Administrator.UpdateEmail(ctx, auth.AdminID, email)
 	case entity.AdminRoleCoordinator:
-		// TODO: 詳細の実装
-		err = exception.ErrNotImplemented
+		err = s.db.Coordinator.UpdateEmail(ctx, auth.AdminID, email)
 	case entity.AdminRoleProducer:
 		err = s.db.Producer.UpdateEmail(ctx, auth.AdminID, email)
 	}

@@ -568,18 +568,19 @@ func TestVerifyAdminEmail(t *testing.T) {
 			expectErr: nil,
 		},
 		{
-			name: "not implemented to coordinator",
+			name: "success to coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
 				auth := &entity.AdminAuth{AdminID: "admin-id", Role: entity.AdminRoleCoordinator}
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.AdminAuth.EXPECT().GetByCognitoID(ctx, "username", "admin_id", "role").Return(auth, nil)
 				mocks.adminAuth.EXPECT().ConfirmChangeEmail(ctx, params).Return("test-admin@and-period.jp", nil)
+				mocks.db.Administrator.EXPECT().UpdateEmail(ctx, "admin-id", "test-admin@and-period.jp").Return(nil)
 			},
 			input: &user.VerifyAdminEmailInput{
 				AccessToken: "access-token",
 				VerifyCode:  "123456",
 			},
-			expectErr: exception.ErrNotImplemented,
+			expectErr: nil,
 		},
 		{
 			name: "success to producer",
