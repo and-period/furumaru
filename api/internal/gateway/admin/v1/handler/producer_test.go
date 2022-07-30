@@ -363,6 +363,23 @@ func TestCreateProducer(t *testing.T) {
 func TestUpdateProducer(t *testing.T) {
 	t.Parallel()
 
+	in := &user.UpdateProducerInput{
+		ProducerID:    "producer-id",
+		Lastname:      "&.",
+		Firstname:     "生産者",
+		LastnameKana:  "あんどどっと",
+		FirstnameKana: "せいさんしゃ",
+		StoreName:     "&.農園",
+		ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+		HeaderURL:     "https://and-period.jp/header.png",
+		PhoneNumber:   "+819012345678",
+		PostalCode:    "1000014",
+		Prefecture:    "東京都",
+		City:          "千代田区",
+		AddressLine1:  "永田町1-7-1",
+		AddressLine2:  "",
+	}
+
 	tests := []struct {
 		name       string
 		setup      func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
@@ -373,6 +390,7 @@ func TestUpdateProducer(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().UpdateProducer(gomock.Any(), in).Return(nil)
 			},
 			producerID: "producer-id",
 			req: &request.UpdateProducerRequest{
@@ -394,6 +412,31 @@ func TestUpdateProducer(t *testing.T) {
 				code: http.StatusNoContent,
 			},
 		},
+		{
+			name: "failed to update producer",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().UpdateProducer(gomock.Any(), in).Return(errmock)
+			},
+			producerID: "producer-id",
+			req: &request.UpdateProducerRequest{
+				Lastname:      "&.",
+				Firstname:     "生産者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "せいさんしゃ",
+				StoreName:     "&.農園",
+				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+				HeaderURL:     "https://and-period.jp/header.png",
+				PhoneNumber:   "+819012345678",
+				PostalCode:    "1000014",
+				Prefecture:    "東京都",
+				City:          "千代田区",
+				AddressLine1:  "永田町1-7-1",
+				AddressLine2:  "",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -409,6 +452,11 @@ func TestUpdateProducer(t *testing.T) {
 func TestUpdateProducerEmail(t *testing.T) {
 	t.Parallel()
 
+	in := &user.UpdateProducerEmailInput{
+		ProducerID: "producer-id",
+		Email:      "test-producer@and-period.jp",
+	}
+
 	tests := []struct {
 		name       string
 		setup      func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
@@ -419,6 +467,7 @@ func TestUpdateProducerEmail(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().UpdateProducerEmail(gomock.Any(), in).Return(nil)
 			},
 			producerID: "producer-id",
 			req: &request.UpdateProducerEmailRequest{
@@ -426,6 +475,19 @@ func TestUpdateProducerEmail(t *testing.T) {
 			},
 			expect: &testResponse{
 				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to update producer email",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().UpdateProducerEmail(gomock.Any(), in).Return(errmock)
+			},
+			producerID: "producer-id",
+			req: &request.UpdateProducerEmailRequest{
+				Email: "test-producer@and-period.jp",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
 			},
 		},
 	}
@@ -440,8 +502,12 @@ func TestUpdateProducerEmail(t *testing.T) {
 	}
 }
 
-func TestUpdateProducerPassword(t *testing.T) {
+func TestResetProducerPassword(t *testing.T) {
 	t.Parallel()
+
+	in := &user.ResetProducerPasswordInput{
+		ProducerID: "producer-id",
+	}
 
 	tests := []struct {
 		name       string
@@ -452,10 +518,21 @@ func TestUpdateProducerPassword(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().ResetProducerPassword(gomock.Any(), in).Return(nil)
 			},
 			producerID: "producer-id",
 			expect: &testResponse{
 				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to reset producer password",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().ResetProducerPassword(gomock.Any(), in).Return(errmock)
+			},
+			producerID: "producer-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
 			},
 		},
 	}
