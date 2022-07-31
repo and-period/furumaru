@@ -574,7 +574,7 @@ func TestVerifyAdminEmail(t *testing.T) {
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.AdminAuth.EXPECT().GetByCognitoID(ctx, "username", "admin_id", "role").Return(auth, nil)
 				mocks.adminAuth.EXPECT().ConfirmChangeEmail(ctx, params).Return("test-admin@and-period.jp", nil)
-				mocks.db.Administrator.EXPECT().UpdateEmail(ctx, "admin-id", "test-admin@and-period.jp").Return(nil)
+				mocks.db.Coordinator.EXPECT().UpdateEmail(ctx, "admin-id", "test-admin@and-period.jp").Return(nil)
 			},
 			input: &user.VerifyAdminEmailInput{
 				AccessToken: "access-token",

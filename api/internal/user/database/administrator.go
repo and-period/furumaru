@@ -100,6 +100,29 @@ func (a *administrator) Create(
 	return exception.InternalError(err)
 }
 
+func (a *administrator) Update(ctx context.Context, administratorID string, params *UpdateAdministratorParams) error {
+	_, err := a.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+		if _, err := a.get(ctx, tx, administratorID); err != nil {
+			return nil, err
+		}
+
+		updates := map[string]interface{}{
+			"lastname":       params.Lastname,
+			"firstname":      params.Firstname,
+			"lastname_kana":  params.LastnameKana,
+			"firstname_kana": params.FirstnameKana,
+			"phone_number":   params.PhoneNumber,
+			"updated_at":     a.now(),
+		}
+		err := tx.WithContext(ctx).
+			Table(administratorTable).
+			Where("id = ?", administratorID).
+			Updates(updates).Error
+		return nil, err
+	})
+	return exception.InternalError(err)
+}
+
 func (a *administrator) UpdateEmail(ctx context.Context, administratorID, email string) error {
 	_, err := a.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		if _, err := a.get(ctx, tx, administratorID); err != nil {

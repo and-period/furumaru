@@ -46,6 +46,7 @@ type Administrator interface {
 	MultiGet(ctx context.Context, administratorIDs []string, fields ...string) (entity.Administrators, error)
 	Get(ctx context.Context, administratorID string, fields ...string) (*entity.Administrator, error)
 	Create(ctx context.Context, auth *entity.AdminAuth, administrator *entity.Administrator) error
+	Update(ctx context.Context, administratorID string, params *UpdateAdministratorParams) error
 	UpdateEmail(ctx context.Context, administratorID, email string) error
 }
 
@@ -87,6 +88,14 @@ type User interface {
 type ListAdministratorsParams struct {
 	Limit  int
 	Offset int
+}
+
+type UpdateAdministratorParams struct {
+	Lastname      string
+	Firstname     string
+	LastnameKana  string
+	FirstnameKana string
+	PhoneNumber   string
 }
 
 type ListCoordinatorsParams struct {
