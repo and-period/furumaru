@@ -33,6 +33,10 @@ func NewNotification(notification *entity.Notification) *Notification {
 	}
 }
 
+func (n *Notification) Response() *response.Notification {
+	return &n.Notification
+}
+
 func NewNotificationTarget(target *entity.TargetType) *TargetType {
 	return &TargetType{
 		TargetType: response.TargetType(*target),

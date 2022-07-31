@@ -51,7 +51,7 @@ func (h *handler) CreateNotification(ctx *gin.Context) {
 	}
 
 	res := &response.NotificationResponse{
-		Notifiation: service.NewNotification(notification).Response(),
+		Notification: service.NewNotification(notification).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
