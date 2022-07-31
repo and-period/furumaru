@@ -1,7 +1,27 @@
 import { setActivePinia, createPinia } from 'pinia'
 
 import { useAuthStore } from '~/store/auth'
-import { SignInRequest } from '~/types/api/api'
+
+jest.mock('universal-cookie', () => {
+  const mock = {
+    set: jest.fn(),
+  }
+  return jest.fn(() => mock)
+})
+
+jest.mock('~/plugins/factory', () => {
+  return jest.fn().mockImplementation(() => ({
+    create: () => {
+      return {
+        v1SignIn: () => {
+          return {
+            data: [],
+          }
+        },
+      }
+    },
+  }))
+})
 
 describe('Auth Store', () => {
   beforeEach(() => {
@@ -23,23 +43,6 @@ describe('Auth Store', () => {
   })
 
   describe('signIn', () => {
-    beforeAll(() => {
-      jest.mock('universal-cookie', () => {
-        const mock = {
-          set: jest.fn(),
-        }
-        return jest.fn(() => mock)
-      })
-      jest.mock('~/types/api/api', () => {
-        return {
-          // ...jest.requireActual('~/types/api/api'),
-          AuthApi: {
-            v1SignIn: (_: SignInRequest) => jest.fn(),
-          },
-        }
-      })
-    })
-
     it('signIn success', async () => {
       const authStore = useAuthStore()
       const redirectPath = await authStore.signIn({
@@ -47,6 +50,18 @@ describe('Auth Store', () => {
         password: '122345678',
       })
       expect(redirectPath).toBe('/')
+      expect(authStore.isAuthenticated).toBeTruthy()
+    })
+
+    it('signIn failed', async () => {
+      // TODO: 失敗ケースをどう記述するか
+      const authStore = useAuthStore()
+      const redirectPath = await authStore.signIn({
+        username: 'admin@example.com',
+        password: '122345678',
+      })
+      expect(redirectPath).toBe('/')
+      expect(authStore.isAuthenticated).toBeTruthy()
     })
   })
 })
