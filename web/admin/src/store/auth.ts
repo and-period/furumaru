@@ -10,6 +10,7 @@ import {
   AuthApi,
   AuthResponse,
   SignInRequest,
+  UpdateAuthEmailRequest,
   UpdateAuthPasswordRequest,
 } from '~/types/api'
 
@@ -80,6 +81,22 @@ export const useAuthStore = defineStore('auth', {
         })
       } catch (err) {
         // TODO: エラーハンドリング
+        console.log(err)
+        throw new Error('Internal Server Error')
+      }
+    },
+
+    async emailUpdate(payload: UpdateAuthEmailRequest): Promise<void> {
+      try {
+        const factory = new ApiClientFactory()
+        const authApiClient = factory.create(AuthApi, this.user?.accessToken)
+        await authApiClient.v1UpdateAuthEmail(payload)
+        const commonStore = useCommonStore()
+        commonStore.addSnackbar({
+          message: 'メールアドレスを更新しました。',
+          color: 'info',
+        })
+      } catch (err) {
         console.log(err)
         throw new Error('Internal Server Error')
       }
