@@ -2569,6 +2569,56 @@ export interface SignInRequest {
 /**
  *
  * @export
+ * @interface UpdateAdministratorEmailRequest
+ */
+export interface UpdateAdministratorEmailRequest {
+  /**
+   * メールアドレス
+   * @type {string}
+   * @memberof UpdateAdministratorEmailRequest
+   */
+  email: string
+}
+/**
+ *
+ * @export
+ * @interface UpdateAdministratorRequest
+ */
+export interface UpdateAdministratorRequest {
+  /**
+   * 姓(16文字まで)
+   * @type {string}
+   * @memberof UpdateAdministratorRequest
+   */
+  lastname: string
+  /**
+   * 名(16文字まで)
+   * @type {string}
+   * @memberof UpdateAdministratorRequest
+   */
+  firstname: string
+  /**
+   * 姓(かな)(ひらがな,32文字まで)
+   * @type {string}
+   * @memberof UpdateAdministratorRequest
+   */
+  lastnameKana: string
+  /**
+   * 名(かな)(ひらがな,32文字まで)
+   * @type {string}
+   * @memberof UpdateAdministratorRequest
+   */
+  firstnameKana: string
+  /**
+   * 電話番号(国際番号 + 電話番号)
+   * @type {string}
+   * @memberof UpdateAdministratorRequest
+   */
+  phoneNumber: string
+}
+/**
+ *
+ * @export
  * @interface UpdateAuthEmailRequest
  */
 export interface UpdateAuthEmailRequest {
@@ -3263,6 +3313,189 @@ export const AdministratorApiAxiosParamCreator = function (
         options: localVarRequestOptions,
       }
     },
+    /**
+     *
+     * @summary システム管理者更新
+     * @param {string} adminId システム管理者ID
+     * @param {UpdateAdministratorRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateAdministrator: async (
+      adminId: string,
+      body: UpdateAdministratorRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'adminId' is not null or undefined
+      assertParamExists('v1UpdateAdministrator', 'adminId', adminId)
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1UpdateAdministrator', 'body', body)
+      const localVarPath = `/v1/administrators/{adminId}`.replace(
+        `{${'adminId'}}`,
+        encodeURIComponent(String(adminId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary システム管理者メールアドレス更新
+     * @param {string} adminId システム管理者ID
+     * @param {UpdateAdministratorEmailRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateAdministratorEmail: async (
+      adminId: string,
+      body: UpdateAdministratorEmailRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'adminId' is not null or undefined
+      assertParamExists('v1UpdateAdministratorEmail', 'adminId', adminId)
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1UpdateAdministratorEmail', 'body', body)
+      const localVarPath = `/v1/administrators/{adminId}/email`.replace(
+        `{${'adminId'}}`,
+        encodeURIComponent(String(adminId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary システム管理者パスワード更新(ランダム生成)
+     * @param {string} adminId システム管理者ID
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateAdministratorPassword: async (
+      adminId: string,
+      body: object,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'adminId' is not null or undefined
+      assertParamExists('v1UpdateAdministratorPassword', 'adminId', adminId)
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1UpdateAdministratorPassword', 'body', body)
+      const localVarPath = `/v1/administrators/{adminId}/password`.replace(
+        `{${'adminId'}}`,
+        encodeURIComponent(String(adminId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
   }
 }
 
@@ -3355,6 +3588,90 @@ export const AdministratorApiFp = function (configuration?: Configuration) {
         configuration
       )
     },
+    /**
+     *
+     * @summary システム管理者更新
+     * @param {string} adminId システム管理者ID
+     * @param {UpdateAdministratorRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UpdateAdministrator(
+      adminId: string,
+      body: UpdateAdministratorRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1UpdateAdministrator(
+          adminId,
+          body,
+          options
+        )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary システム管理者メールアドレス更新
+     * @param {string} adminId システム管理者ID
+     * @param {UpdateAdministratorEmailRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UpdateAdministratorEmail(
+      adminId: string,
+      body: UpdateAdministratorEmailRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1UpdateAdministratorEmail(
+          adminId,
+          body,
+          options
+        )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary システム管理者パスワード更新(ランダム生成)
+     * @param {string} adminId システム管理者ID
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UpdateAdministratorPassword(
+      adminId: string,
+      body: object,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1UpdateAdministratorPassword(
+          adminId,
+          body,
+          options
+        )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
   }
 }
 
@@ -3416,6 +3733,57 @@ export const AdministratorApiFactory = function (
         .v1ListAdministrators(limit, offset, options)
         .then((request) => request(axios, basePath))
     },
+    /**
+     *
+     * @summary システム管理者更新
+     * @param {string} adminId システム管理者ID
+     * @param {UpdateAdministratorRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateAdministrator(
+      adminId: string,
+      body: UpdateAdministratorRequest,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1UpdateAdministrator(adminId, body, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary システム管理者メールアドレス更新
+     * @param {string} adminId システム管理者ID
+     * @param {UpdateAdministratorEmailRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateAdministratorEmail(
+      adminId: string,
+      body: UpdateAdministratorEmailRequest,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1UpdateAdministratorEmail(adminId, body, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary システム管理者パスワード更新(ランダム生成)
+     * @param {string} adminId システム管理者ID
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateAdministratorPassword(
+      adminId: string,
+      body: object,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1UpdateAdministratorPassword(adminId, body, options)
+        .then((request) => request(axios, basePath))
+    },
   }
 }
 
@@ -3473,6 +3841,63 @@ export class AdministratorApi extends BaseAPI {
   ) {
     return AdministratorApiFp(this.configuration)
       .v1ListAdministrators(limit, offset, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary システム管理者更新
+   * @param {string} adminId システム管理者ID
+   * @param {UpdateAdministratorRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdministratorApi
+   */
+  public v1UpdateAdministrator(
+    adminId: string,
+    body: UpdateAdministratorRequest,
+    options?: AxiosRequestConfig
+  ) {
+    return AdministratorApiFp(this.configuration)
+      .v1UpdateAdministrator(adminId, body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary システム管理者メールアドレス更新
+   * @param {string} adminId システム管理者ID
+   * @param {UpdateAdministratorEmailRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdministratorApi
+   */
+  public v1UpdateAdministratorEmail(
+    adminId: string,
+    body: UpdateAdministratorEmailRequest,
+    options?: AxiosRequestConfig
+  ) {
+    return AdministratorApiFp(this.configuration)
+      .v1UpdateAdministratorEmail(adminId, body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary システム管理者パスワード更新(ランダム生成)
+   * @param {string} adminId システム管理者ID
+   * @param {object} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdministratorApi
+   */
+  public v1UpdateAdministratorPassword(
+    adminId: string,
+    body: object,
+    options?: AxiosRequestConfig
+  ) {
+    return AdministratorApiFp(this.configuration)
+      .v1UpdateAdministratorPassword(adminId, body, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

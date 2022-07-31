@@ -283,3 +283,166 @@ func TestCreateAdministrator(t *testing.T) {
 		})
 	}
 }
+
+func TestUpdateAdministrator(t *testing.T) {
+	t.Parallel()
+
+	in := &user.UpdateAdministratorInput{
+		AdministratorID: "administrator-id",
+		Lastname:        "&.",
+		Firstname:       "管理者",
+		LastnameKana:    "あんどどっと",
+		FirstnameKana:   "かんりしゃ",
+		PhoneNumber:     "+819012345678",
+	}
+
+	tests := []struct {
+		name            string
+		setup           func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		req             *request.UpdateAdministratorRequest
+		administratorID string
+		expect          *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().UpdateAdministrator(gomock.Any(), in).Return(nil)
+			},
+			administratorID: "administrator-id",
+			req: &request.UpdateAdministratorRequest{
+				Lastname:      "&.",
+				Firstname:     "管理者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "かんりしゃ",
+				PhoneNumber:   "+819012345678",
+			},
+			expect: &testResponse{
+				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to update administrator",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().UpdateAdministrator(gomock.Any(), in).Return(errmock)
+			},
+			administratorID: "administrator-id",
+			req: &request.UpdateAdministratorRequest{
+				Lastname:      "&.",
+				Firstname:     "管理者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "かんりしゃ",
+				PhoneNumber:   "+819012345678",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const format = "/v1/administrators/%s"
+			path := fmt.Sprintf(format, tt.administratorID)
+			testPatch(t, tt.setup, tt.expect, path, tt.req)
+		})
+	}
+}
+
+func TestUpdateAdministratorEmail(t *testing.T) {
+	t.Parallel()
+
+	in := &user.UpdateAdministratorEmailInput{
+		AdministratorID: "administrator-id",
+		Email:           "test-admin01@and-period.jp",
+	}
+
+	tests := []struct {
+		name            string
+		setup           func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		req             *request.UpdateAdministratorEmailRequest
+		administratorID string
+		expect          *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().UpdateAdministratorEmail(gomock.Any(), in).Return(nil)
+			},
+			administratorID: "administrator-id",
+			req: &request.UpdateAdministratorEmailRequest{
+				Email: "test-admin01@and-period.jp",
+			},
+			expect: &testResponse{
+				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to update administartor email",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().UpdateAdministratorEmail(gomock.Any(), in).Return(errmock)
+			},
+			administratorID: "administrator-id",
+			req: &request.UpdateAdministratorEmailRequest{
+				Email: "test-admin01@and-period.jp",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const format = "/v1/administrators/%s/email"
+			path := fmt.Sprintf(format, tt.administratorID)
+			testPatch(t, tt.setup, tt.expect, path, tt.req)
+		})
+	}
+}
+
+func TestResetAdministratorPassword(t *testing.T) {
+	t.Parallel()
+
+	in := &user.ResetAdministratorPasswordInput{
+		AdministratorID: "administrator-id",
+	}
+
+	tests := []struct {
+		name            string
+		setup           func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		administratorID string
+		expect          *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().ResetAdministratorPassword(gomock.Any(), in).Return(nil)
+			},
+			administratorID: "administrator-id",
+			expect: &testResponse{
+				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to update reset administrator password",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().ResetAdministratorPassword(gomock.Any(), in).Return(errmock)
+			},
+			administratorID: "administrator-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const format = "/v1/administrators/%s/password"
+			path := fmt.Sprintf(format, tt.administratorID)
+			testPatch(t, tt.setup, tt.expect, path, nil)
+		})
+	}
+}

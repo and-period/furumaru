@@ -46,6 +46,10 @@ paths:
     $ref: './paths/v1/administrators/index.yaml'
   /v1/administrators/{adminId}:
     $ref: './paths/v1/administrators/_adminId/index.yaml'
+  /v1/administrators/{adminId}/email:
+    $ref: './paths/v1/administrators/_adminId/email.yaml'
+  /v1/administrators/{adminId}/password:
+    $ref: './paths/v1/administrators/_adminId/password.yaml'
   # Coordinator
   /v1/coordinators:
     $ref: './paths/v1/coordinators/index.yaml'
@@ -131,6 +135,10 @@ components:
       $ref: './components/schemas/v1/auth.request.yaml#/updateAuthPasswordRequest'
     v1CreateAdministratorRequest:
       $ref: './components/schemas/v1/administrator.request.yaml#/createAdministratorRequest'
+    v1UpdateAdministratorRequest:
+      $ref: './components/schemas/v1/administrator.request.yaml#/updateAdministratorRequest'
+    v1UpdateAdministratorEmailRequest:
+      $ref: './components/schemas/v1/administrator.request.yaml#/updateAdministratorEmailRequest'
     v1CreateCoordinatorRequest:
       $ref: './components/schemas/v1/coordinator.request.yaml#/createCoordinatorRequest'
     v1UpdateCoordinatorRequest:

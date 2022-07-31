@@ -208,6 +208,20 @@ func (mr *MockAdministratorMockRecorder) MultiGet(ctx, administratorIDs interfac
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockAdministrator)(nil).MultiGet), varargs...)
 }
 
+// Update mocks base method.
+func (m *MockAdministrator) Update(ctx context.Context, administratorID string, params *database.UpdateAdministratorParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", ctx, administratorID, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockAdministratorMockRecorder) Update(ctx, administratorID, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockAdministrator)(nil).Update), ctx, administratorID, params)
+}
+
 // UpdateEmail mocks base method.
 func (m *MockAdministrator) UpdateEmail(ctx context.Context, administratorID, email string) error {
 	m.ctrl.T.Helper()
