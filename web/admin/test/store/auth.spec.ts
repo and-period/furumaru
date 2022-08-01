@@ -13,12 +13,28 @@ import {
 
 const axiosMock = new MockAdapter(axios)
 const baseURL = process.env.API_BASE_URL || 'http://localhost:18010'
-axiosMock.onPost(`${baseURL}/v1/auth`).reply(200, {})
+axiosMock.onPost(`${baseURL}/v1/auth`).reply(200, {
+  adminId: 'kSByoE6FetnPs5Byk3a9Zx',
+  role: 1,
+  accessToken: 'xxxxxxxxxx',
+  refreshToken: 'xxxxxxxxxx',
+  expiresIn: 3600,
+  tokenType: 'Bearer',
+})
 axiosMock.onPatch(`${baseURL}/v1/auth/password`).reply(204, {})
+axiosMock.onPost(`${baseURL}/v1/auth/refresh-token`).reply(200, {
+  adminId: 'kSByoE6FetnPs5Byk3a9Zx',
+  role: 1,
+  accessToken: 'xxxxxxxxxx',
+  refreshToken: 'xxxxxxxxxx',
+  expiresIn: 3600,
+  tokenType: 'Bearer',
+})
 
 jest.mock('universal-cookie', () => {
   const mock = {
     set: jest.fn(),
+    remove: jest.fn(),
   }
   return jest.fn(() => mock)
 })
@@ -126,6 +142,21 @@ describe('Auth Store', () => {
       expect(commonStore.snackbars.length).toBe(1)
     })
 
+    it('failed when network error', async () => {
+      axiosMock.onPatch(`${baseURL}/v1/auth/password`).networkError()
+
+      const authStore = useAuthStore()
+      try {
+        await authStore.passwordUpdate({
+          oldPassword: '12345678',
+          newPassword: 'newPass1234',
+          passwordConfirmation: 'newPass1234',
+        })
+      } catch (error) {
+        expect(error instanceof ConnectionError).toBeTruthy()
+      }
+    })
+
     it('failed when return status code is 401', async () => {
       axiosMock.onPatch(`${baseURL}/v1/auth/password`).reply(401)
 
@@ -172,6 +203,52 @@ describe('Auth Store', () => {
           newPassword: 'newPass1234',
           passwordConfirmation: 'newPass1234',
         })
+      } catch (error) {
+        expect(error instanceof InternalServerError).toBeTruthy()
+      }
+    })
+  })
+
+  describe('getAuthByRefreshToken', () => {
+    it('success', async () => {
+      const refreshToken = 'token'
+      const authStore = useAuthStore()
+      await authStore.getAuthByRefreshToken(refreshToken)
+      expect(authStore.isAuthenticated).toBeTruthy()
+      expect(authStore.user?.refreshToken).toBe(refreshToken)
+    })
+
+    it('failed when return network error', async () => {
+      axiosMock.onPost(`${baseURL}/v1/auth/refresh-token`).networkError()
+
+      const refreshToken = 'token'
+      const authStore = useAuthStore()
+      try {
+        await authStore.getAuthByRefreshToken(refreshToken)
+      } catch (error) {
+        expect(error instanceof ConnectionError).toBeTruthy()
+      }
+    })
+
+    it('failed when return status code is 401', async () => {
+      axiosMock.onPost(`${baseURL}/v1/auth/refresh-token`).reply(401)
+
+      const refreshToken = 'token'
+      const authStore = useAuthStore()
+      try {
+        await authStore.getAuthByRefreshToken(refreshToken)
+      } catch (error) {
+        expect(error instanceof AuthError).toBeTruthy()
+      }
+    })
+
+    it('failed when return status code is 500', async () => {
+      axiosMock.onPost(`${baseURL}/v1/auth/refresh-token`).reply(500)
+
+      const refreshToken = 'token'
+      const authStore = useAuthStore()
+      try {
+        await authStore.getAuthByRefreshToken(refreshToken)
       } catch (error) {
         expect(error instanceof InternalServerError).toBeTruthy()
       }

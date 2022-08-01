@@ -118,9 +118,22 @@ export const useAuthStore = defineStore('auth', {
         const cookies = new Cookies()
         cookies.remove('refreshToken')
         if (axios.isAxiosError(error)) {
-          throw new Error(error.message)
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          if (error.response.status === 401) {
+            return Promise.reject(
+              new AuthError(
+                error.response.status,
+                '認証エラー。再度ログインをしてください。',
+                error
+              )
+            )
+          } else {
+            return Promise.reject(new InternalServerError(error))
+          }
         }
-        throw new Error('Internal Server Error')
+        throw new InternalServerError(error)
       }
     },
 
