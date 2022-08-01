@@ -36,6 +36,17 @@ get:
     description: 生産者ID
     required: false
     example: 'kSByoE6FetnPs5Byk3a9Zx'
+  - in: query
+    name: orders
+    schema:
+      type: string
+    description: |
+      ソート
+      ・複数指定時は`,`区切り
+      ・降順の場合はprefixに`-`をつける
+      ・指定可能フィールド:name,public,inventory,price,originPrefecture,originCity,createdAt,updatedAt
+    required: false
+    example: 'name,-inventory'
   responses:
     200:
       description: A successful response.

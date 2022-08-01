@@ -65,6 +65,36 @@ func TestCategory_List(t *testing.T) {
 				hasErr:     false,
 			},
 		},
+		{
+			name:  "success with sort asc",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListCategoriesParams{
+					Orders: []*ListCategoriesOrder{
+						{Key: entity.CategoryOrderByName, OrderByASC: true},
+					},
+				},
+			},
+			want: want{
+				categories: categories,
+				hasErr:     false,
+			},
+		},
+		{
+			name:  "success with sort desc",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListCategoriesParams{
+					Orders: []*ListCategoriesOrder{
+						{Key: entity.CategoryOrderByName, OrderByASC: false},
+					},
+				},
+			},
+			want: want{
+				categories: categories,
+				hasErr:     false,
+			},
+		},
 	}
 
 	for _, tt := range tests {

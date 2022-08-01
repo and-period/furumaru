@@ -24,6 +24,7 @@ func TestListProductTypes(t *testing.T) {
 		CategoryID: "category-id",
 		Limit:      20,
 		Offset:     0,
+		Orders:     []*store.ListProductTypesOrder{},
 	}
 	categories := sentity.Categories{
 		{
@@ -97,6 +98,7 @@ func TestListProductTypes(t *testing.T) {
 					Name:   "いも",
 					Limit:  20,
 					Offset: 0,
+					Orders: []*store.ListProductTypesOrder{},
 				}
 				mocks.store.EXPECT().ListProductTypes(gomock.Any(), typesIn).Return(productTypes, int64(2), nil)
 				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
@@ -142,6 +144,14 @@ func TestListProductTypes(t *testing.T) {
 			setup:      func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
 			categoryID: "category-id",
 			query:      "?offset=a",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name:  "invalid orders",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			query: "?orders=name,other",
 			expect: &testResponse{
 				code: http.StatusBadRequest,
 			},

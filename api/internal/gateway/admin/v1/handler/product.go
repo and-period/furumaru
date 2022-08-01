@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
@@ -8,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
+	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
@@ -37,6 +39,11 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
+	orders, err := h.newProductOrders(ctx)
+	if err != nil {
+		badRequest(ctx, err)
+		return
+	}
 
 	in := &store.ListProductsInput{
 		Name:          util.GetQuery(ctx, "name", ""),
@@ -44,6 +51,7 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		ProducerID:    util.GetQuery(ctx, "producerId", ""),
 		Limit:         limit,
 		Offset:        offset,
+		Orders:        orders,
 	}
 	sproducts, total, err := h.store.ListProducts(ctx, in)
 	if err != nil {
@@ -103,6 +111,32 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		Total:    total,
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) newProductOrders(ctx *gin.Context) ([]*store.ListProductsOrder, error) {
+	products := map[string]sentity.ProductOrderBy{
+		"name":             sentity.ProductOrderByName,
+		"public":           sentity.ProductOrderByPublic,
+		"inventory":        sentity.ProductOrderByInventory,
+		"price":            sentity.ProductOrderByPrice,
+		"originPrefecture": sentity.ProductOrderByOriginPrefecture,
+		"originCity":       sentity.ProductOrderByOriginCity,
+		"createdAt":        sentity.ProductOrderByCreatedAt,
+		"updatedAt":        sentity.ProductOrderByUpdatedAt,
+	}
+	params := util.GetOrders(ctx)
+	res := make([]*store.ListProductsOrder, len(params))
+	for i, p := range params {
+		key, ok := products[p.Key]
+		if !ok {
+			return nil, fmt.Errorf("handler: unknown order key. key=%s: %w", p.Key, errInvalidOrderkey)
+		}
+		res[i] = &store.ListProductsOrder{
+			Key:        key,
+			OrderByASC: p.Direction == util.OrderByASC,
+		}
+	}
+	return res, nil
 }
 
 func (h *handler) GetProduct(ctx *gin.Context) {

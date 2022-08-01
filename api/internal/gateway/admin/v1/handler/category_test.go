@@ -20,6 +20,7 @@ func TestListCategories(t *testing.T) {
 		Name:   "野菜",
 		Limit:  20,
 		Offset: 0,
+		Orders: []*store.ListCategoriesOrder{},
 	}
 	categories := sentity.Categories{
 		{
@@ -81,6 +82,14 @@ func TestListCategories(t *testing.T) {
 			name:  "invalid offset",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
 			query: "?offset=a",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name:  "invalid orders",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			query: "?orders=name,other",
 			expect: &testResponse{
 				code: http.StatusBadRequest,
 			},

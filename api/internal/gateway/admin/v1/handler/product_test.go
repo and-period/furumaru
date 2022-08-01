@@ -25,6 +25,7 @@ func TestListProducts(t *testing.T) {
 		CoordinatorID: "coordinator-id",
 		Limit:         20,
 		Offset:        0,
+		Orders:        []*store.ListProductsOrder{},
 	}
 	products := sentity.Products{
 		{
@@ -171,6 +172,14 @@ func TestListProducts(t *testing.T) {
 			name:  "invalid offset",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
 			query: "?offset=a",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name:  "invalid orders",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			query: "?orders=name,public,inventory,price,originPrefecture,originCity,createdAt,updatedAt,other",
 			expect: &testResponse{
 				code: http.StatusBadRequest,
 			},

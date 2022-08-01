@@ -17,6 +17,15 @@ var (
 	errNotUniqueShippingRateNumber   = errors.New("entity: shipping rate number must be unique")
 )
 
+type ShippingOrderBy string
+
+const (
+	ShippingOrderByName            ShippingOrderBy = "name"
+	ShippingOrderByHasFreeShipping ShippingOrderBy = "has_free_shipping"
+	ShippingOrderByCreatedAt       ShippingOrderBy = "created_at"
+	ShippingOrderByUpdatedAt       ShippingOrderBy = "updated_at"
+)
+
 // Shipping - 配送設定情報
 type Shipping struct {
 	ID                 string         `gorm:"primaryKey;<-:create"`             // 配送設定ID
