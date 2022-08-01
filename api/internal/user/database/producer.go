@@ -42,6 +42,7 @@ func (p *producer) List(
 	}
 
 	stmt := p.db.DB.WithContext(ctx).Table(producerTable).Select(fields)
+	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
 	}

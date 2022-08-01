@@ -1,5 +1,7 @@
 package user
 
+import "github.com/and-period/furumaru/api/internal/user/entity"
+
 type SignInAdminInput struct {
 	Key      string `validate:"required"`
 	Password string `validate:"required"`
@@ -147,8 +149,14 @@ type ResetCoordinatorPasswordInput struct {
 }
 
 type ListProducersInput struct {
-	Limit  int64 `validate:"required,max=200"`
-	Offset int64 `validate:"min=0"`
+	Limit  int64                 `validate:"required,max=200"`
+	Offset int64                 `validate:"min=0"`
+	Orders []*ListProducersOrder `validate:"omitempty,dive,required"`
+}
+
+type ListProducersOrder struct {
+	Key        entity.ProducerOrderBy `validate:"required"`
+	OrderByASC bool                   `validate:""`
 }
 
 type MultiGetProducersInput struct {

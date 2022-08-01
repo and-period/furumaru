@@ -4,9 +4,11 @@ package database
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
+	"gorm.io/gorm"
 )
 
 type Params struct {
@@ -126,6 +128,25 @@ type UpdateCoordinatorParams struct {
 type ListProducersParams struct {
 	Limit  int
 	Offset int
+	Orders []*ListProducersOrder
+}
+
+type ListProducersOrder struct {
+	Key        entity.ProducerOrderBy
+	OrderByASC bool
+}
+
+func (p *ListProducersParams) stmt(stmt *gorm.DB) *gorm.DB {
+	for i := range p.Orders {
+		var value string
+		if p.Orders[i].OrderByASC {
+			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
+		} else {
+			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
+		}
+		stmt = stmt.Order(value)
+	}
+	return stmt
 }
 
 type UpdateProducerParams struct {

@@ -23,6 +23,7 @@ import (
 )
 
 var (
+	errInvalidOrderkey   = errors.New("handler: invalid order key")
 	errInvalidFileFormat = errors.New("handler: invalid file format")
 	errTooLargeFileSize  = errors.New("handler: file size too large")
 )
