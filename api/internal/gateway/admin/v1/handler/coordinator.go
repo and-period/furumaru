@@ -64,29 +64,24 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 }
 
 func (h *handler) newCoordinatorOrders(ctx *gin.Context) ([]*user.ListCoordinatorsOrder, error) {
+	coordinators := map[string]uentity.CoordinatorOrderBy{
+		"lastname":    uentity.CoordinatorOrderByLastname,
+		"firstname":   uentity.CoordinatorOrderByFirstname,
+		"companyName": uentity.CoordinatorOrderByCompanyName,
+		"storeName":   uentity.CoordinatorOrderByStoreName,
+		"email":       uentity.CoordinatorOrderByEmail,
+		"phoneNumber": uentity.CoordinatorOrderByPhoneNumber,
+	}
 	params := util.GetOrders(ctx)
 	res := make([]*user.ListCoordinatorsOrder, len(params))
-	for i := range params {
-		var key uentity.CoordinatorOrderBy
-		switch params[i].Key {
-		case "lastname":
-			key = uentity.CoordinatorOrderByLastname
-		case "firstname":
-			key = uentity.CoordinatorOrderByFirstname
-		case "companyName":
-			key = uentity.CoordinatorOrderByCompanyName
-		case "storeName":
-			key = uentity.CoordinatorOrderByStoreName
-		case "email":
-			key = uentity.CoordinatorOrderByEmail
-		case "phoneNumber":
-			key = uentity.CoordinatorOrderByPhoneNumber
-		default:
-			return nil, fmt.Errorf("handler: unknown order key. key=%s: %w", params[i].Key, errInvalidOrderkey)
+	for i, p := range params {
+		key, ok := coordinators[p.Key]
+		if !ok {
+			return nil, fmt.Errorf("handler: unknown order key. key=%s: %w", p.Key, errInvalidOrderkey)
 		}
 		res[i] = &user.ListCoordinatorsOrder{
 			Key:        key,
-			OrderByASC: params[i].Direction == util.OrderByASC,
+			OrderByASC: p.Direction == util.OrderByASC,
 		}
 	}
 	return res, nil
