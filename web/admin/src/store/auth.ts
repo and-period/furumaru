@@ -74,7 +74,7 @@ export const useAuthStore = defineStore('auth', {
         await authApiClient.v1UpdateAuthPassword(payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
-          message: `パスワードを更新しました。`,
+          message: 'パスワードを更新しました。',
           color: 'info',
         })
       } catch (err) {

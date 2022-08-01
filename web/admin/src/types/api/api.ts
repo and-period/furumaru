@@ -7096,12 +7096,14 @@ export const ProducerApiAxiosParamCreator = function (
      * @summary 生産者一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,storeName,email,phoneNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v1ListProducers: async (
       limit?: number,
       offset?: number,
+      orders?: string,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
       const localVarPath = `/v1/producers`
@@ -7130,6 +7132,10 @@ export const ProducerApiAxiosParamCreator = function (
 
       if (offset !== undefined) {
         localVarQueryParameter['offset'] = offset
+      }
+
+      if (orders !== undefined) {
+        localVarQueryParameter['orders'] = orders
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -7504,12 +7510,14 @@ export const ProducerApiFp = function (configuration?: Configuration) {
      * @summary 生産者一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,storeName,email,phoneNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async v1ListProducers(
       limit?: number,
       offset?: number,
+      orders?: string,
       options?: AxiosRequestConfig
     ): Promise<
       (
@@ -7520,6 +7528,7 @@ export const ProducerApiFp = function (configuration?: Configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListProducers(
         limit,
         offset,
+        orders,
         options
       )
       return createRequestFunction(
@@ -7715,16 +7724,18 @@ export const ProducerApiFactory = function (
      * @summary 生産者一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,storeName,email,phoneNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v1ListProducers(
       limit?: number,
       offset?: number,
+      orders?: string,
       options?: any
     ): AxiosPromise<ProducersResponse> {
       return localVarFp
-        .v1ListProducers(limit, offset, options)
+        .v1ListProducers(limit, offset, orders, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -7854,6 +7865,7 @@ export class ProducerApi extends BaseAPI {
    * @summary 生産者一覧取得
    * @param {number} [limit] 取得上限数(max:200)
    * @param {number} [offset] 取得開始位置(min:0)
+   * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,storeName,email,phoneNumber
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ProducerApi
@@ -7861,10 +7873,11 @@ export class ProducerApi extends BaseAPI {
   public v1ListProducers(
     limit?: number,
     offset?: number,
+    orders?: string,
     options?: AxiosRequestConfig
   ) {
     return ProducerApiFp(this.configuration)
-      .v1ListProducers(limit, offset, options)
+      .v1ListProducers(limit, offset, orders, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
