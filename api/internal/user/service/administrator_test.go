@@ -21,6 +21,9 @@ func TestListAdministrators(t *testing.T) {
 	params := &database.ListAdministratorsParams{
 		Limit:  30,
 		Offset: 0,
+		Orders: []*database.ListAdministratorsOrder{
+			{Key: entity.AdministratorOrderByLastname, OrderByASC: true},
+		},
 	}
 	administrators := entity.Administrators{
 		{
@@ -53,6 +56,9 @@ func TestListAdministrators(t *testing.T) {
 			input: &user.ListAdministratorsInput{
 				Limit:  30,
 				Offset: 0,
+				Orders: []*user.ListAdministratorsOrder{
+					{Key: entity.AdministratorOrderByLastname, OrderByASC: true},
+				},
 			},
 			expect:      administrators,
 			expectTotal: 1,
@@ -75,6 +81,9 @@ func TestListAdministrators(t *testing.T) {
 			input: &user.ListAdministratorsInput{
 				Limit:  30,
 				Offset: 0,
+				Orders: []*user.ListAdministratorsOrder{
+					{Key: entity.AdministratorOrderByLastname, OrderByASC: true},
+				},
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -89,6 +98,9 @@ func TestListAdministrators(t *testing.T) {
 			input: &user.ListAdministratorsInput{
 				Limit:  30,
 				Offset: 0,
+				Orders: []*user.ListAdministratorsOrder{
+					{Key: entity.AdministratorOrderByLastname, OrderByASC: true},
+				},
 			},
 			expect:      nil,
 			expectTotal: 0,

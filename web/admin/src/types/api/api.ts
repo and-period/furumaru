@@ -3263,12 +3263,14 @@ export const AdministratorApiAxiosParamCreator = function (
      * @summary システム管理者一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,email,phoneNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v1ListAdministrators: async (
       limit?: number,
       offset?: number,
+      orders?: string,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
       const localVarPath = `/v1/administrators`
@@ -3297,6 +3299,10 @@ export const AdministratorApiAxiosParamCreator = function (
 
       if (offset !== undefined) {
         localVarQueryParameter['offset'] = offset
+      }
+
+      if (orders !== undefined) {
+        localVarQueryParameter['orders'] = orders
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -3562,12 +3568,14 @@ export const AdministratorApiFp = function (configuration?: Configuration) {
      * @summary システム管理者一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,email,phoneNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async v1ListAdministrators(
       limit?: number,
       offset?: number,
+      orders?: string,
       options?: AxiosRequestConfig
     ): Promise<
       (
@@ -3579,6 +3587,7 @@ export const AdministratorApiFp = function (configuration?: Configuration) {
         await localVarAxiosParamCreator.v1ListAdministrators(
           limit,
           offset,
+          orders,
           options
         )
       return createRequestFunction(
@@ -3721,16 +3730,18 @@ export const AdministratorApiFactory = function (
      * @summary システム管理者一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,email,phoneNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v1ListAdministrators(
       limit?: number,
       offset?: number,
+      orders?: string,
       options?: any
     ): AxiosPromise<AdministratorsResponse> {
       return localVarFp
-        .v1ListAdministrators(limit, offset, options)
+        .v1ListAdministrators(limit, offset, orders, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -3830,6 +3841,7 @@ export class AdministratorApi extends BaseAPI {
    * @summary システム管理者一覧取得
    * @param {number} [limit] 取得上限数(max:200)
    * @param {number} [offset] 取得開始位置(min:0)
+   * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,email,phoneNumber
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdministratorApi
@@ -3837,10 +3849,11 @@ export class AdministratorApi extends BaseAPI {
   public v1ListAdministrators(
     limit?: number,
     offset?: number,
+    orders?: string,
     options?: AxiosRequestConfig
   ) {
     return AdministratorApiFp(this.configuration)
-      .v1ListAdministrators(limit, offset, options)
+      .v1ListAdministrators(limit, offset, orders, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

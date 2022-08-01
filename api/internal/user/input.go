@@ -45,8 +45,14 @@ type GetAdminInput struct {
 }
 
 type ListAdministratorsInput struct {
-	Limit  int64 `validate:"required,max=200"`
-	Offset int64 `validate:"min=0"`
+	Limit  int64                      `validate:"required,max=200"`
+	Offset int64                      `validate:"min=0"`
+	Orders []*ListAdministratorsOrder `validate:"omitempty,dive,required"`
+}
+
+type ListAdministratorsOrder struct {
+	Key        entity.AdministratorOrderBy `validate:"required"`
+	OrderByASC bool                        `validate:""`
 }
 
 type MultiGetAdministratorsInput struct {

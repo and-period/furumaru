@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
@@ -8,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/user"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/gin-gonic/gin"
 )
 
@@ -37,10 +39,16 @@ func (h *handler) ListAdministrators(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
+	orders, err := h.newAdministratorOrders(ctx)
+	if err != nil {
+		badRequest(ctx, err)
+		return
+	}
 
 	in := &user.ListAdministratorsInput{
 		Limit:  limit,
 		Offset: offset,
+		Orders: orders,
 	}
 	admins, total, err := h.user.ListAdministrators(ctx, in)
 	if err != nil {
@@ -53,6 +61,31 @@ func (h *handler) ListAdministrators(ctx *gin.Context) {
 		Total:          total,
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) newAdministratorOrders(ctx *gin.Context) ([]*user.ListAdministratorsOrder, error) {
+	params := util.GetOrders(ctx)
+	res := make([]*user.ListAdministratorsOrder, len(params))
+	for i := range params {
+		var key uentity.AdministratorOrderBy
+		switch params[i].Key {
+		case "lastname":
+			key = uentity.AdministratorOrderByLastname
+		case "firstname":
+			key = uentity.AdministratorOrderByFirstname
+		case "email":
+			key = uentity.AdministratorOrderByEmail
+		case "phoneNumber":
+			key = uentity.AdministratorOrderByPhoneNumber
+		default:
+			return nil, fmt.Errorf("handler: unknown order key. key=%s: %w", params[i].Key, errInvalidOrderkey)
+		}
+		res[i] = &user.ListAdministratorsOrder{
+			Key:        key,
+			OrderByASC: params[i].Direction == util.OrderByASC,
+		}
+	}
+	return res, nil
 }
 
 func (h *handler) GetAdministrator(ctx *gin.Context) {

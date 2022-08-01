@@ -22,9 +22,17 @@ func (s *service) ListAdministrators(
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, exception.InternalError(err)
 	}
+	orders := make([]*database.ListAdministratorsOrder, len(in.Orders))
+	for i := range in.Orders {
+		orders[i] = &database.ListAdministratorsOrder{
+			Key:        in.Orders[i].Key,
+			OrderByASC: in.Orders[i].OrderByASC,
+		}
+	}
 	params := &database.ListAdministratorsParams{
 		Limit:  int(in.Limit),
 		Offset: int(in.Offset),
+		Orders: orders,
 	}
 	var (
 		administrators entity.Administrators
