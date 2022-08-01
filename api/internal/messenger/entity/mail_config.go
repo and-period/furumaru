@@ -8,6 +8,7 @@ import (
 
 const (
 	EmailIDAdminRegister       = "admin-register"        // 管理者登録
+	EmailIDAdminResetPassword  = "admin-reset-password"  // 管理者パスワードリセット
 	EmailIDUserReceivedContact = "user-received-contact" // お問い合わせ受領
 )
 

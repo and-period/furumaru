@@ -1,7 +1,8 @@
 .PHONY: setup install mockgen protoc fmt vet lint test build
 
 AIR_VERSION := 1.40.1
-GOLANGCI_VERSION := 1.46.2
+GOFUMPT_VERSION := 0.3.1
+GOLANGCI_VERSION := 1.47.2
 MOCKGEN_VERSION := 1.6.0
 
 LINT_PACKAGES := $(shell go list $(CURDIR)/... | grep -v -e "mock" -v -e "proto" -v -e "third_party" -v -e "tmp")
@@ -12,6 +13,7 @@ setup: install
 	wget -O - -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v${GOLANGCI_VERSION}
 
 install:
+	go install mvdan.cc/gofumpt@v${GOFUMPT_VERSION}
 	go install github.com/golang/mock/mockgen@v${MOCKGEN_VERSION}
 	go install github.com/cosmtrek/air@v${AIR_VERSION}
 
@@ -20,7 +22,7 @@ mockgen:
 	go generate ./...
 
 fmt:
-	! gofmt -d -s ./cmd ./config ./hack ./internal ./pkg | grep '^'
+	! gofumpt -d ./cmd ./config ./hack ./internal ./pkg | grep '^'
 
 vet:
 	go vet $(LINT_PACKAGES)

@@ -42,6 +42,7 @@ func (p *producer) List(
 	}
 
 	stmt := p.db.DB.WithContext(ctx).Table(producerTable).Select(fields)
+	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
 	}
@@ -97,6 +98,36 @@ func (p *producer) Create(
 			return nil, err
 		}
 		err = tx.WithContext(ctx).Table(producerTable).Create(&producer).Error
+		return nil, err
+	})
+	return exception.InternalError(err)
+}
+
+func (p *producer) Update(ctx context.Context, producerID string, params *UpdateProducerParams) error {
+	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+		if _, err := p.get(ctx, tx, producerID); err != nil {
+			return nil, err
+		}
+
+		updates := map[string]interface{}{
+			"lastname":       params.Lastname,
+			"firstname":      params.Firstname,
+			"lastname_kana":  params.LastnameKana,
+			"firstname_kana": params.FirstnameKana,
+			"store_name":     params.StoreName,
+			"thumbnail_url":  params.ThumbnailURL,
+			"header_url":     params.HeaderURL,
+			"phone_number":   params.PhoneNumber,
+			"postal_code":    params.PostalCode,
+			"city":           params.City,
+			"address_line1":  params.AddressLine1,
+			"address_line2":  params.AddressLine2,
+			"updated_at":     p.now(),
+		}
+		err := tx.WithContext(ctx).
+			Table(producerTable).
+			Where("id = ?", producerID).
+			Updates(updates).Error
 		return nil, err
 	})
 	return exception.InternalError(err)

@@ -91,12 +91,12 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	app.auth, err = app.setupAuth(ctx, authClientID, authPoolID)
+	app.auth, err = app.setupAuth(authClientID, authPoolID)
 	if err != nil {
 		return err
 	}
 
-	app.messenger = app.newMessengerService(ctx)
+	app.messenger = app.newMessengerService()
 	app.user = app.newUserService()
 
 	in := &user.CreateAdministratorInput{
@@ -122,7 +122,7 @@ func (a *app) newUserService() user.Service {
 	return usersrv.NewService(params, usersrv.WithLogger(a.logger))
 }
 
-func (a *app) newMessengerService(ctx context.Context) messenger.Service {
+func (a *app) newMessengerService() messenger.Service {
 	params := &messengersrv.Params{
 		WaitGroup: a.waitGroup,
 		Producer:  sqs.NewProducer(a.config, &sqs.Params{}, sqs.WithDryRun(true)),
@@ -152,7 +152,7 @@ func (a *app) setupAWSConfig(ctx context.Context, accessKey, secretKey string) (
 	)
 }
 
-func (a *app) setupAuth(ctx context.Context, clientID, poolID string) (cognito.Client, error) {
+func (a *app) setupAuth(clientID, poolID string) (cognito.Client, error) {
 	params := &cognito.Params{
 		UserPoolID:  poolID,
 		AppClientID: clientID,

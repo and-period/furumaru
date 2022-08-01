@@ -20,6 +20,7 @@ var (
 	ErrPayloadTooLong   = errors.New("mailer: payload too long")
 	ErrNotFound         = errors.New("mailer: not found")
 	ErrInternal         = errors.New("mailer: internal")
+	ErrCanceled         = errors.New("mailer: canceled")
 	ErrUnavailable      = errors.New("mailer: unavailable")
 	ErrTimeout          = errors.New("mailer: timeout")
 	ErrUnknown          = errors.New("mailer: unknown")
@@ -91,7 +92,7 @@ func (c *client) mailError(e error) error {
 
 	switch {
 	case errors.Is(e, context.Canceled):
-		return fmt.Errorf("%w: %s", ErrTimeout, e.Error())
+		return fmt.Errorf("%w: %s", ErrCanceled, e.Error())
 	case errors.Is(e, context.DeadlineExceeded):
 		return fmt.Errorf("%w: %s", ErrTimeout, e.Error())
 	}

@@ -3,13 +3,16 @@ p, auth, /v1/auth/*, (GET)|(POST)|(PATCH), allow
 p, administrator_list, /v1/administrators, GET, allow
 p, administrator_get, /v1/administrators/*, GET, allow
 p, administrator_create, /v1/administrators, POST, allow
+p, administrator_update, /v1/administrators/*, PATCH, allow
 p, coordinator_list, /v1/coordinators, GET, allow
 p, coordinator_get, /v1/coordinators/*, GET, allow
 p, coordinator_create, /v1/coordinators, POST, allow
+p, coordinator_update, /v1/coordinators/*, PATCH, allow
 p, coordinator_uploader, /v1/upload/coordinators/*, POST, allow
 p, producer_list, /v1/producers, GET, allow
 p, producer_get, /v1/producers/*, GET, allow
 p, producer_create, /v1/producers, POST, allow
+p, producer_update, /v1/producers/*, PATCH, allow
 p, producer_uploader, /v1/upload/producers/*, POST, allow
 p, category_list, /v1/categories, GET, allow
 p, category_create, /v1/categories, POST, allow
@@ -31,18 +34,23 @@ p, product_update, /v1/products/*, PATCH, allow
 p, contact_list, /v1/contacts, GET, allow
 p, contact_get, /v1/contacts/*, GET, allow
 p, contact_update, /v1/contacts/*, PATCH, allow
+p, message_list, /v1/messages, GET, allow
+p, message_get, /v1/messages/*, GET, allow
 
 g, administrator, auth
 g, administrator, administrator_list
 g, administrator, administrator_get
 g, administrator, administrator_create
+g, administrator, administrator_update
 g, administrator, coordinator_list
 g, administrator, coordinator_get
 g, administrator, coordinator_create
+g, administrator, coordinator_update
 g, administrator, coordinator_uploader
 g, administrator, producer_list
 g, administrator, producer_get
 g, administrator, producer_create
+g, administrator, producer_update
 g, administrator, producer_uploader
 g, administrator, category_list
 g, administrator, category_create
@@ -62,6 +70,8 @@ g, administrator, product_get
 g, administrator, contact_list
 g, administrator, contact_get
 g, administrator, contact_update
+g, administrator, message_list
+g, administrator, message_get
 
 g, coordinator, auth
 g, coordinator, coordinator_get
@@ -69,6 +79,7 @@ g, coordinator, coordinator_uploader
 g, coordinator, producer_list
 g, coordinator, producer_get
 g, coordinator, producer_create
+g, coordinator, producer_update
 g, coordinator, producer_uploader
 g, coordinator, category_list
 g, coordinator, product_type_list
@@ -80,6 +91,8 @@ g, coordinator, product_create
 g, coordinator, product_update
 g, coordinator, contact_list
 g, coordinator, contact_get
+g, coordinator, message_list
+g, coordinator, message_get
 
 g, producer, auth
 g, producer, producer_get
@@ -92,3 +105,5 @@ g, producer, product_list
 g, producer, product_get
 g, producer, contact_list
 g, producer, contact_get
+g, producer, message_list
+g, producer, message_get

@@ -3,7 +3,7 @@ package codes
 import (
 	"errors"
 
-	"github.com/and-period/furumaru/api/pkg/set"
+	set "github.com/and-period/furumaru/api/pkg/set/v2"
 )
 
 var ErrUnknownPrefecture = errors.New("entity: unknown prefecture")
@@ -117,15 +117,7 @@ func ToPrefectureName(value int64) (string, error) {
 }
 
 func ToPrefectureNames(values ...int64) ([]string, error) {
-	set := set.New(len(values))
-	for _, value := range values {
-		name, err := ToPrefectureName(value)
-		if err != nil {
-			return nil, err
-		}
-		set.AddStrings(name)
-	}
-	return set.Strings(), nil
+	return set.UniqWithErr(values, ToPrefectureName)
 }
 
 func ToPrefectureValue(name string) (int64, error) {
@@ -137,15 +129,7 @@ func ToPrefectureValue(name string) (int64, error) {
 }
 
 func ToPrefectureValues(names ...string) ([]int64, error) {
-	set := set.New(len(names))
-	for _, name := range names {
-		value, err := ToPrefectureValue(name)
-		if err != nil {
-			return nil, err
-		}
-		set.AddInt64s(value)
-	}
-	return set.SortInt64s(), nil
+	return set.UniqWithErr(names, ToPrefectureValue)
 }
 
 func ValidatePrefectureNames(names ...string) error {

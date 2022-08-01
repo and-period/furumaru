@@ -16,6 +16,9 @@ func (h *handler) administratorRoutes(rg *gin.RouterGroup) {
 	arg.GET("", h.ListAdministrators)
 	arg.POST("", h.CreateAdministrator)
 	arg.GET("/:adminId", h.GetAdministrator)
+	arg.PATCH("/:adminId", h.UpdateAdministrator)
+	arg.PATCH("/:adminId/email", h.UpdateAdministratorEmail)
+	arg.PATCH("/:adminId/password", h.ResetAdministratorPassword)
 }
 
 func (h *handler) ListAdministrators(ctx *gin.Context) {
@@ -93,4 +96,58 @@ func (h *handler) CreateAdministrator(ctx *gin.Context) {
 		Administrator: service.NewAdministrator(admin).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) UpdateAdministrator(ctx *gin.Context) {
+	req := &request.UpdateAdministratorRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	in := &user.UpdateAdministratorInput{
+		AdministratorID: util.GetParam(ctx, "adminId"),
+		Lastname:        req.Lastname,
+		Firstname:       req.Firstname,
+		LastnameKana:    req.LastnameKana,
+		FirstnameKana:   req.FirstnameKana,
+		PhoneNumber:     req.PhoneNumber,
+	}
+	if err := h.user.UpdateAdministrator(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) UpdateAdministratorEmail(ctx *gin.Context) {
+	req := &request.UpdateAdministratorEmailRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	in := &user.UpdateAdministratorEmailInput{
+		AdministratorID: util.GetParam(ctx, "adminId"),
+		Email:           req.Email,
+	}
+	if err := h.user.UpdateAdministratorEmail(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) ResetAdministratorPassword(ctx *gin.Context) {
+	in := &user.ResetAdministratorPasswordInput{
+		AdministratorID: util.GetParam(ctx, "adminId"),
+	}
+	if err := h.user.ResetAdministratorPassword(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
 }

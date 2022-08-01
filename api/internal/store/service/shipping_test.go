@@ -10,7 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/and-period/furumaru/api/pkg/set"
+	set "github.com/and-period/furumaru/api/pkg/set/v2"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
@@ -29,8 +29,7 @@ func TestListShippings(t *testing.T) {
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
-	set := set.New(len(shikoku))
-	set.AddInt64s(shikoku...)
+	set := set.New[int64](len(shikoku)).Add(shikoku...)
 	others := make([]int64, 0, 47-len(shikoku))
 	for _, val := range codes.PrefectureValues {
 		if set.Contains(val) {
@@ -143,8 +142,7 @@ func TestGetShipping(t *testing.T) {
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
-	set := set.New(len(shikoku))
-	set.AddInt64s(shikoku...)
+	set := set.New[int64](len(shikoku)).Add(shikoku...)
 	others := make([]int64, 0, 47-len(shikoku))
 	for _, val := range codes.PrefectureValues {
 		if set.Contains(val) {
@@ -231,8 +229,7 @@ func TestCreateShipping(t *testing.T) {
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
-	set := set.New(len(shikoku))
-	set.AddInt64s(shikoku...)
+	set := set.New[int64](len(shikoku)).Add(shikoku...)
 	others := make([]int64, 0, 47-len(shikoku))
 	for _, val := range codes.PrefectureValues {
 		if set.Contains(val) {
@@ -343,8 +340,7 @@ func TestUpdateShipping(t *testing.T) {
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
-	set := set.New(len(shikoku))
-	set.AddInt64s(shikoku...)
+	set := set.New[int64](len(shikoku)).Add(shikoku...)
 	others := make([]int64, 0, 47-len(shikoku))
 	for _, val := range codes.PrefectureValues {
 		if set.Contains(val) {

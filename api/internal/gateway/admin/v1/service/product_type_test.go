@@ -29,7 +29,7 @@ func TestProductType(t *testing.T) {
 				ProductType: response.ProductType{
 					ID:           "product-type-id",
 					CategoryID:   "category-id",
-					CategoryName: "dummy",
+					CategoryName: "",
 					Name:         "じゃがいも",
 					CreatedAt:    1640962800,
 					UpdatedAt:    1640962800,
@@ -42,6 +42,56 @@ func TestProductType(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewProductType(tt.productType))
+		})
+	}
+}
+
+func TestProductType_Fill(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name        string
+		productType *ProductType
+		category    *Category
+		expect      *ProductType
+	}{
+		{
+			name: "success",
+			productType: &ProductType{
+				ProductType: response.ProductType{
+					ID:           "product-type-id",
+					CategoryID:   "category-id",
+					CategoryName: "",
+					Name:         "じゃがいも",
+					CreatedAt:    1640962800,
+					UpdatedAt:    1640962800,
+				},
+			},
+			category: &Category{
+				Category: response.Category{
+					ID:        "category-id",
+					Name:      "野菜",
+					CreatedAt: 1640962800,
+					UpdatedAt: 1640962800,
+				},
+			},
+			expect: &ProductType{
+				ProductType: response.ProductType{
+					ID:           "product-type-id",
+					CategoryID:   "category-id",
+					CategoryName: "野菜",
+					Name:         "じゃがいも",
+					CreatedAt:    1640962800,
+					UpdatedAt:    1640962800,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.productType.Fill(tt.category)
+			assert.Equal(t, tt.expect, tt.productType)
 		})
 	}
 }
@@ -59,7 +109,7 @@ func TestProductType_Response(t *testing.T) {
 				ProductType: response.ProductType{
 					ID:           "product-type-id",
 					CategoryID:   "category-id",
-					CategoryName: "dummy",
+					CategoryName: "野菜",
 					Name:         "じゃがいも",
 					CreatedAt:    1640962800,
 					UpdatedAt:    1640962800,
@@ -68,7 +118,7 @@ func TestProductType_Response(t *testing.T) {
 			expect: &response.ProductType{
 				ID:           "product-type-id",
 				CategoryID:   "category-id",
-				CategoryName: "dummy",
+				CategoryName: "野菜",
 				Name:         "じゃがいも",
 				CreatedAt:    1640962800,
 				UpdatedAt:    1640962800,
@@ -107,7 +157,7 @@ func TestProductTypes(t *testing.T) {
 					ProductType: response.ProductType{
 						ID:           "product-type-id",
 						CategoryID:   "category-id",
-						CategoryName: "dummy",
+						CategoryName: "",
 						Name:         "じゃがいも",
 						CreatedAt:    1640962800,
 						UpdatedAt:    1640962800,
@@ -139,7 +189,7 @@ func TestProductTypes_CategoryIDs(t *testing.T) {
 					ProductType: response.ProductType{
 						ID:           "product-type-id",
 						CategoryID:   "category-id",
-						CategoryName: "dummy",
+						CategoryName: "野菜",
 						Name:         "じゃがいも",
 						CreatedAt:    1640962800,
 						UpdatedAt:    1640962800,
@@ -158,6 +208,126 @@ func TestProductTypes_CategoryIDs(t *testing.T) {
 	}
 }
 
+func TestProductTypes_Map(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name         string
+		productTypes ProductTypes
+		expect       map[string]*ProductType
+	}{
+		{
+			name: "success",
+			productTypes: ProductTypes{
+				{
+					ProductType: response.ProductType{
+						ID:           "product-type-id",
+						CategoryID:   "category-id",
+						CategoryName: "野菜",
+						Name:         "じゃがいも",
+						CreatedAt:    1640962800,
+						UpdatedAt:    1640962800,
+					},
+				},
+			},
+			expect: map[string]*ProductType{
+				"product-type-id": {
+					ProductType: response.ProductType{
+						ID:           "product-type-id",
+						CategoryID:   "category-id",
+						CategoryName: "野菜",
+						Name:         "じゃがいも",
+						CreatedAt:    1640962800,
+						UpdatedAt:    1640962800,
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.productTypes.Map())
+		})
+	}
+}
+
+func TestProductTypes_Fill(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name         string
+		productTypes ProductTypes
+		categories   map[string]*Category
+		expect       ProductTypes
+	}{
+		{
+			name: "success",
+			productTypes: ProductTypes{
+				{
+					ProductType: response.ProductType{
+						ID:           "product-type-id",
+						CategoryID:   "category-id",
+						CategoryName: "",
+						Name:         "じゃがいも",
+						CreatedAt:    1640962800,
+						UpdatedAt:    1640962800,
+					},
+				},
+				{
+					ProductType: response.ProductType{
+						ID:           "other-id",
+						CategoryID:   "other-id",
+						CategoryName: "",
+						Name:         "ほうれん草",
+						CreatedAt:    1640962800,
+						UpdatedAt:    1640962800,
+					},
+				},
+			},
+			categories: map[string]*Category{
+				"category-id": {
+					Category: response.Category{
+						ID:        "category-id",
+						Name:      "野菜",
+						CreatedAt: 1640962800,
+						UpdatedAt: 1640962800,
+					},
+				},
+			},
+			expect: ProductTypes{
+				{
+					ProductType: response.ProductType{
+						ID:           "product-type-id",
+						CategoryID:   "category-id",
+						CategoryName: "野菜",
+						Name:         "じゃがいも",
+						CreatedAt:    1640962800,
+						UpdatedAt:    1640962800,
+					},
+				},
+				{
+					ProductType: response.ProductType{
+						ID:           "other-id",
+						CategoryID:   "other-id",
+						CategoryName: "",
+						Name:         "ほうれん草",
+						CreatedAt:    1640962800,
+						UpdatedAt:    1640962800,
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.productTypes.Fill(tt.categories)
+			assert.Equal(t, tt.expect, tt.productTypes)
+		})
+	}
+}
+
 func TestProductTypes_Response(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -172,7 +342,7 @@ func TestProductTypes_Response(t *testing.T) {
 					ProductType: response.ProductType{
 						ID:           "product-type-id",
 						CategoryID:   "category-id",
-						CategoryName: "dummy",
+						CategoryName: "野菜",
 						Name:         "じゃがいも",
 						CreatedAt:    1640962800,
 						UpdatedAt:    1640962800,
@@ -183,7 +353,7 @@ func TestProductTypes_Response(t *testing.T) {
 				{
 					ID:           "product-type-id",
 					CategoryID:   "category-id",
-					CategoryName: "dummy",
+					CategoryName: "野菜",
 					Name:         "じゃがいも",
 					CreatedAt:    1640962800,
 					UpdatedAt:    1640962800,

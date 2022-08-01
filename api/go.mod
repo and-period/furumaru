@@ -30,12 +30,13 @@ require (
 	github.com/rafaelhl/gorm-newrelic-telemetry-plugin v1.0.0
 	github.com/rs/cors v1.8.2
 	github.com/rs/cors/wrapper/gin v0.0.0-20220223021805-a4a5ce87d5a2
+	github.com/samber/lo v1.26.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/sendgrid/sendgrid-go v3.11.1+incompatible
 	github.com/shopspring/decimal v1.3.1
 	github.com/stretchr/testify v1.7.1
 	go.uber.org/zap v1.21.0
-	golang.org/x/sync v0.0.0-20220513210516-0976fa681c29
+	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4
 	google.golang.org/genproto v0.0.0-20220531134929-86cf59382f1b
 	google.golang.org/grpc v1.46.2
 	google.golang.org/protobuf v1.28.0
@@ -82,13 +83,15 @@ require (
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.34.0 // indirect
 	github.com/prometheus/procfs v0.7.3 // indirect
+	github.com/rogpeppe/go-internal v1.8.1 // indirect
 	github.com/sendgrid/rest v2.6.9+incompatible // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e // indirect
-	golang.org/x/net v0.0.0-20220526153639-5463443f8c37 // indirect
-	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
+	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 // indirect
+	golang.org/x/net v0.0.0-20220722155237-a158d28d115b // indirect
+	golang.org/x/sys v0.0.0-20220731174439-a90be440212d // indirect
 	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

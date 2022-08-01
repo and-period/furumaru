@@ -124,7 +124,7 @@ func (h *handler) validateFormat(reg *uploadRegulation, file io.Reader) (bool, e
 	}
 	buf, err := io.ReadAll(file)
 	if err != nil {
-		return false, nil
+		return false, err
 	}
 	contentType := http.DetectContentType(buf)
 	for _, format := range reg.formats {

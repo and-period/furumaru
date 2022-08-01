@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
@@ -102,6 +103,80 @@ func (s *service) CreateAdministrator(
 	return administrator, nil
 }
 
+func (s *service) UpdateAdministrator(ctx context.Context, in *user.UpdateAdministratorInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	params := &database.UpdateAdministratorParams{
+		Lastname:      in.Lastname,
+		Firstname:     in.Firstname,
+		LastnameKana:  in.LastnameKana,
+		FirstnameKana: in.FirstnameKana,
+		PhoneNumber:   in.PhoneNumber,
+	}
+	err := s.db.Administrator.Update(ctx, in.AdministratorID, params)
+	return exception.InternalError(err)
+}
+
+func (s *service) UpdateAdministratorEmail(ctx context.Context, in *user.UpdateAdministratorEmailInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	auth, err := s.db.AdminAuth.GetByAdminID(ctx, in.AdministratorID, "cognito_id", "role")
+	if err != nil {
+		return exception.InternalError(err)
+	}
+	if auth.Role != entity.AdminRoleAdministrator {
+		return fmt.Errorf("api: this admin role is not administrator: %w", exception.ErrFailedPrecondition)
+	}
+	params := &cognito.AdminChangeEmailParams{
+		Username: auth.CognitoID,
+		Email:    in.Email,
+	}
+	if err := s.adminAuth.AdminChangeEmail(ctx, params); err != nil {
+		return exception.InternalError(err)
+	}
+	err = s.db.Administrator.UpdateEmail(ctx, in.AdministratorID, in.Email)
+	return exception.InternalError(err)
+}
+
+func (s *service) ResetAdministratorPassword(ctx context.Context, in *user.ResetAdministratorPasswordInput) error {
+	const size = 8
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	auth, err := s.db.AdminAuth.GetByAdminID(ctx, in.AdministratorID, "cognito_id", "role")
+	if err != nil {
+		return exception.InternalError(err)
+	}
+	if auth.Role != entity.AdminRoleAdministrator {
+		return fmt.Errorf("api: this admin role is not administrator: %w", exception.ErrFailedPrecondition)
+	}
+	password := random.NewStrings(size)
+	params := &cognito.AdminChangePasswordParams{
+		Username:  auth.CognitoID,
+		Password:  password,
+		Permanent: true,
+	}
+	if err := s.adminAuth.AdminChangePassword(ctx, params); err != nil {
+		return exception.InternalError(err)
+	}
+	s.logger.Debug("Reset administrator password",
+		zap.String("administrator", in.AdministratorID), zap.String("password", password),
+	)
+	s.waitGroup.Add(1)
+	go func() {
+		defer s.waitGroup.Done()
+		err := s.notifyResetAdminPassword(context.Background(), in.AdministratorID, password)
+		if err != nil {
+			s.logger.Warn("Failed to notify reset admin password",
+				zap.String("administrator", in.AdministratorID), zap.Error(err),
+			)
+		}
+	}()
+	return nil
+}
+
 func (s *service) createCognitoAdmin(ctx context.Context, cognitoID, email, password string) error {
 	params := &cognito.AdminCreateUserParams{
 		Username: cognitoID,
@@ -117,4 +192,12 @@ func (s *service) notifyRegisterAdmin(ctx context.Context, adminID, password str
 		Password: password,
 	}
 	return s.messenger.NotifyRegisterAdmin(ctx, in)
+}
+
+func (s *service) notifyResetAdminPassword(ctx context.Context, adminID, password string) error {
+	in := &messenger.NotifyResetAdminPasswordInput{
+		AdminID:  adminID,
+		Password: password,
+	}
+	return s.messenger.NotifyResetAdminPassword(ctx, in)
 }

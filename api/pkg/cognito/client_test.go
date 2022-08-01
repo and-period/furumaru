@@ -69,6 +69,16 @@ func TestAuthError(t *testing.T) {
 			expect: ErrInternal,
 		},
 		{
+			name:   "canceled",
+			err:    context.Canceled,
+			expect: ErrCanceled,
+		},
+		{
+			name:   "timeout",
+			err:    context.DeadlineExceeded,
+			expect: ErrTimeout,
+		},
+		{
 			name:   "unknown",
 			err:    errors.New("some error"),
 			expect: ErrUnknown,

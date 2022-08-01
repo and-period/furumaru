@@ -41,7 +41,7 @@ func TestCreateNotification(t *testing.T) {
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, notification *entity.Notification) error {
 						expect := &entity.Notification{
-							ID:          notification.ID, //ignore
+							ID:          notification.ID, // ignore
 							CreatedBy:   "admin-id",
 							CreatorName: "ぴりおど あんど",
 							UpdatedBy:   "admin-id",

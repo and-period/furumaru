@@ -85,7 +85,7 @@ func (n *notification) get(
 		fields = notificationFields
 	}
 
-	err := n.db.DB.WithContext(ctx).
+	err := tx.WithContext(ctx).
 		Table(notificationTable).Select(fields).
 		Where("id = ?", notificationID).
 		First(&notification).Error

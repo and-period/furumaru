@@ -4,9 +4,11 @@ package database
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
+	"gorm.io/gorm"
 )
 
 type Params struct {
@@ -46,6 +48,7 @@ type Administrator interface {
 	MultiGet(ctx context.Context, administratorIDs []string, fields ...string) (entity.Administrators, error)
 	Get(ctx context.Context, administratorID string, fields ...string) (*entity.Administrator, error)
 	Create(ctx context.Context, auth *entity.AdminAuth, administrator *entity.Administrator) error
+	Update(ctx context.Context, administratorID string, params *UpdateAdministratorParams) error
 	UpdateEmail(ctx context.Context, administratorID, email string) error
 }
 
@@ -55,6 +58,7 @@ type Coordinator interface {
 	MultiGet(ctx context.Context, coordinatorIDs []string, fields ...string) (entity.Coordinators, error)
 	Get(ctx context.Context, coordinatorID string, fields ...string) (*entity.Coordinator, error)
 	Create(ctx context.Context, auth *entity.AdminAuth, coordinator *entity.Coordinator) error
+	Update(ctx context.Context, coordinatorID string, params *UpdateCoordinatorParams) error
 	UpdateEmail(ctx context.Context, coordinatorID, email string) error
 }
 
@@ -64,6 +68,7 @@ type Producer interface {
 	MultiGet(ctx context.Context, producerIDs []string, fields ...string) (entity.Producers, error)
 	Get(ctx context.Context, producerID string, fields ...string) (*entity.Producer, error)
 	Create(ctx context.Context, auth *entity.AdminAuth, producer *entity.Producer) error
+	Update(ctx context.Context, producerID string, params *UpdateProducerParams) error
 	UpdateEmail(ctx context.Context, producerID, email string) error
 }
 
@@ -87,12 +92,75 @@ type ListAdministratorsParams struct {
 	Offset int
 }
 
-type ListProducersParams struct {
-	Limit  int
-	Offset int
+type UpdateAdministratorParams struct {
+	Lastname      string
+	Firstname     string
+	LastnameKana  string
+	FirstnameKana string
+	PhoneNumber   string
 }
 
 type ListCoordinatorsParams struct {
 	Limit  int
 	Offset int
+}
+
+type UpdateCoordinatorParams struct {
+	Lastname         string
+	Firstname        string
+	LastnameKana     string
+	FirstnameKana    string
+	CompanyName      string
+	StoreName        string
+	ThumbnailURL     string
+	HeaderURL        string
+	TwitterAccount   string
+	InstagramAccount string
+	FacebookAccount  string
+	PhoneNumber      string
+	PostalCode       string
+	Prefecture       string
+	City             string
+	AddressLine1     string
+	AddressLine2     string
+}
+
+type ListProducersParams struct {
+	Limit  int
+	Offset int
+	Orders []*ListProducersOrder
+}
+
+type ListProducersOrder struct {
+	Key        entity.ProducerOrderBy
+	OrderByASC bool
+}
+
+func (p *ListProducersParams) stmt(stmt *gorm.DB) *gorm.DB {
+	for i := range p.Orders {
+		var value string
+		if p.Orders[i].OrderByASC {
+			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
+		} else {
+			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
+		}
+		stmt = stmt.Order(value)
+	}
+	return stmt
+}
+
+type UpdateProducerParams struct {
+	Lastname      string
+	Firstname     string
+	LastnameKana  string
+	FirstnameKana string
+	StoreName     string
+	ThumbnailURL  string
+	HeaderURL     string
+	PhoneNumber   string
+	PostalCode    string
+	Prefecture    string
+	City          string
+	AddressLine1  string
+	AddressLine2  string
 }

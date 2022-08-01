@@ -50,7 +50,11 @@ type Contact interface {
 }
 
 type Message interface {
+	List(ctx context.Context, params *ListMessagesParams, fields ...string) (entity.Messages, error)
+	Count(ctx context.Context, params *ListMessagesParams) (int64, error)
+	Get(ctx context.Context, messageID string, fields ...string) (*entity.Message, error)
 	MultiCreate(ctx context.Context, messages entity.Messages) error
+	UpdateRead(ctx context.Context, messageID string) error
 }
 
 type MessageTemplate interface {
@@ -92,6 +96,23 @@ type UpdateContactParams struct {
 	Status   entity.ContactStatus
 	Priority entity.ContactPriority
 	Note     string
+}
+
+type ListMessagesParams struct {
+	Limit    int
+	Offset   int
+	UserType entity.UserType
+	UserID   string
+}
+
+func (p *ListMessagesParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.UserType != entity.UserTypeNone {
+		stmt = stmt.Where("user_type = ?", p.UserType)
+	}
+	if p.UserID != "" {
+		stmt = stmt.Where("user_id = ?", p.UserID)
+	}
+	return stmt
 }
 
 type ListNotificationsParams struct {

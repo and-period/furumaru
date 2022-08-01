@@ -8,6 +8,16 @@ import (
 	"gorm.io/gorm"
 )
 
+type ProducerOrderBy string
+
+const (
+	ProducerOrderByLastname    ProducerOrderBy = "lastname"
+	ProducerOrderByFirstname   ProducerOrderBy = "firstname"
+	ProducerOrderByStoreName   ProducerOrderBy = "store_name"
+	ProducerOrderByEmail       ProducerOrderBy = "email"
+	ProducerOrderByPhoneNumber ProducerOrderBy = "phone_number"
+)
+
 // Producer - 生産者情報
 type Producer struct {
 	ID            string         `gorm:"primaryKey;<-:create"` // 管理者ID

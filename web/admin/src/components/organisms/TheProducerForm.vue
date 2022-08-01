@@ -1,10 +1,9 @@
 <template>
   <form @submit.prevent="handleSubmit">
-    <p class="text-h6">生産者登録</p>
     <v-card elevation="0">
       <v-card-text>
         <v-text-field
-          v-model="formData.storeName"
+          v-model="formDataValue.storeName"
           label="店舗名"
           required
           maxlength="64"
@@ -27,14 +26,14 @@
         </div>
         <div class="d-flex">
           <v-text-field
-            v-model="formData.lastname"
+            v-model="formDataValue.lastname"
             class="mr-4"
             label="生産者名:姓"
             maxlength="16"
             required
           />
           <v-text-field
-            v-model="formData.firstname"
+            v-model="formDataValue.firstname"
             label="生産者名:名"
             maxlength="16"
             required
@@ -42,7 +41,7 @@
         </div>
         <div class="d-flex">
           <v-text-field
-            v-model="formData.lastnameKana"
+            v-model="formDataValue.lastnameKana"
             class="mr-4"
             label="生産者名:姓（ふりがな）"
             maxlength="32"
@@ -79,7 +78,9 @@
         />
       </v-card-text>
       <v-card-actions>
-        <v-btn block outlined color="primary" type="submit">登録</v-btn>
+        <v-btn block outlined color="primary" type="submit">
+          {{ btnText }}
+        </v-btn>
       </v-card-actions>
     </v-card>
   </form>
@@ -93,6 +94,13 @@ import { ImageUploadStatus } from '~/types/props'
 
 export default defineComponent({
   props: {
+    formType: {
+      type: String,
+      default: 'create',
+      validator: (value: string) => {
+        return ['create', 'edit'].includes(value)
+      },
+    },
     formData: {
       type: Object as PropType<CreateProducerRequest>,
       default: () => {
@@ -148,6 +156,10 @@ export default defineComponent({
       set: (val: CreateProducerRequest) => emit('update:formData', val),
     })
 
+    const btnText = computed(() => {
+      return props.formType === 'create' ? '登録' : '更新'
+    })
+
     const updateThumbnailFileHandler = (files: FileList) => {
       emit('update:thumbnailFile', files)
     }
@@ -166,6 +178,7 @@ export default defineComponent({
 
     return {
       formDataValue,
+      btnText,
       updateThumbnailFileHandler,
       updateHeaderFileHandler,
       handleSubmit,

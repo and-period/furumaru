@@ -63,6 +63,22 @@ func TestProducer_List(t *testing.T) {
 				hasErr:    false,
 			},
 		},
+		{
+			name:  "success with sort",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListProducersParams{
+					Orders: []*ListProducersOrder{
+						{Key: "lastname", OrderByASC: true},
+						{Key: "firstname", OrderByASC: false},
+					},
+				},
+			},
+			want: want{
+				producers: producers,
+				hasErr:    false,
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -374,6 +390,88 @@ func TestProducer_Create(t *testing.T) {
 
 			db := &producer{db: m.db, now: now}
 			err = db.Create(ctx, tt.args.auth, tt.args.producer)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
+func TestProducer_Update(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	type args struct {
+		producerID string
+		params     *UpdateProducerParams
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				producer := testProducer("admin-id", "&.農園", "test-admin@and-period.jp", now())
+				err = m.db.DB.Create(&producer).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				producerID: "admin-id",
+				params: &UpdateProducerParams{
+					Lastname:      "&.",
+					Firstname:     "スタッフ",
+					LastnameKana:  "あんどぴりおど",
+					FirstnameKana: "すたっふ",
+					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+					HeaderURL:     "https://and-period.jp/header.png",
+					PhoneNumber:   "+819012345678",
+					PostalCode:    "1000014",
+					Prefecture:    "東京都",
+					City:          "千代田区",
+					AddressLine1:  "永田町1-7-1",
+					AddressLine2:  "",
+				},
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				producerID: "admin-id",
+				params:     &UpdateProducerParams{},
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := m.dbDelete(ctx, adminAuthTable, producerTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, m)
+
+			db := &producer{db: m.db, now: now}
+			err = db.Update(ctx, tt.args.producerID, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}

@@ -16,6 +16,9 @@ func (h *handler) coordinatorRoutes(rg *gin.RouterGroup) {
 	arg.GET("", h.ListCoordinators)
 	arg.POST("", h.CreateCoordinator)
 	arg.GET("/:coordinatorId", h.GetCoordinator)
+	arg.PATCH("/:coordinatorId", h.UpdateCoordinator)
+	arg.PATCH("/:coordinatorId/email", h.UpdateCoordinatorEmail)
+	arg.PATCH("/:coordinatorId/password", h.ResetCoordinatorPassword)
 }
 
 func (h *handler) ListCoordinators(ctx *gin.Context) {
@@ -105,4 +108,70 @@ func (h *handler) CreateCoordinator(ctx *gin.Context) {
 		Coordinator: service.NewCoordinator(coordinator).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) UpdateCoordinator(ctx *gin.Context) {
+	req := &request.UpdateCoordinatorRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	in := &user.UpdateCoordinatorInput{
+		CoordinatorID:    util.GetParam(ctx, "coordinatorId"),
+		Lastname:         req.Lastname,
+		Firstname:        req.Firstname,
+		LastnameKana:     req.LastnameKana,
+		FirstnameKana:    req.FirstnameKana,
+		CompanyName:      req.CompanyName,
+		StoreName:        req.StoreName,
+		ThumbnailURL:     req.ThumbnailURL,
+		HeaderURL:        req.HeaderURL,
+		TwitterAccount:   req.TwitterAccount,
+		InstagramAccount: req.InstagramAccount,
+		FacebookAccount:  req.FacebookAccount,
+		PhoneNumber:      req.PhoneNumber,
+		PostalCode:       req.PostalCode,
+		Prefecture:       req.Prefecture,
+		City:             req.City,
+		AddressLine1:     req.AddressLine1,
+		AddressLine2:     req.AddressLine2,
+	}
+	if err := h.user.UpdateCoordinator(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) UpdateCoordinatorEmail(ctx *gin.Context) {
+	req := &request.UpdateCoordinatorEmailRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	in := &user.UpdateCoordinatorEmailInput{
+		CoordinatorID: util.GetParam(ctx, "coordinatorId"),
+		Email:         req.Email,
+	}
+	if err := h.user.UpdateCoordinatorEmail(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) ResetCoordinatorPassword(ctx *gin.Context) {
+	in := &user.ResetCoordinatorPasswordInput{
+		CoordinatorID: util.GetParam(ctx, "coordinatorId"),
+	}
+	if err := h.user.ResetCoordinatorPassword(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
 }

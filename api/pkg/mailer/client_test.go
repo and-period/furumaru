@@ -37,7 +37,7 @@ func TestMailError(t *testing.T) {
 		{
 			name:   "context to canceled",
 			err:    context.Canceled,
-			expect: ErrTimeout,
+			expect: ErrCanceled,
 		},
 		{
 			name:   "context to deadline exceeded",

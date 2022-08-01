@@ -214,7 +214,11 @@ func TestContact_Get(t *testing.T) {
 
 			db := &contact{db: m.db, now: now}
 			actual, err := db.Get(ctx, tt.args.contactID)
-			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			if tt.want.hasErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
 			fillIgnoreContactField(actual, now())
 			assert.Equal(t, tt.want.contact, actual)
 		})

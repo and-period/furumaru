@@ -23,6 +23,7 @@ import (
 )
 
 var (
+	errInvalidOrderkey   = errors.New("handler: invalid order key")
 	errInvalidFileFormat = errors.New("handler: invalid file format")
 	errTooLargeFileSize  = errors.New("handler: file size too large")
 )
@@ -105,6 +106,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.shippingRoutes(v1.Group("/shippings"))
 	h.productRoutes(v1.Group("/products"))
 	h.contactRoutes(v1.Group("/contacts"))
+	h.messageRoutes(v1.Group("/messages"))
 	v1.GET("/categories/-/product-types", h.authentication(), h.ListProductTypes)
 	h.uploadRoutes(v1.Group("/upload"))
 }

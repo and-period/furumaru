@@ -50,6 +50,14 @@ func (s *service) MultiGetCategories(
 	return categories, exception.InternalError(err)
 }
 
+func (s *service) GetCategory(ctx context.Context, in *store.GetCategoryInput) (*entity.Category, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	category, err := s.db.Category.Get(ctx, in.CategoryID)
+	return category, exception.InternalError(err)
+}
+
 func (s *service) CreateCategory(ctx context.Context, in *store.CreateCategoryInput) (*entity.Category, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)

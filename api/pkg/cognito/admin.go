@@ -14,6 +14,11 @@ type AdminCreateUserParams struct {
 	Password string
 }
 
+type AdminChangeEmailParams struct {
+	Username string
+	Email    string
+}
+
 type AdminChangePasswordParams struct {
 	Username  string
 	Password  string
@@ -53,7 +58,27 @@ func (c *client) AdminCreateUser(ctx context.Context, params *AdminCreateUserPar
 		Password:  params.Password,
 		Permanent: true,
 	}
-	return c.AdminChangePassword(ctx, passIn)
+	err := c.AdminChangePassword(ctx, passIn)
+	return c.authError(err)
+}
+
+func (c *client) AdminChangeEmail(ctx context.Context, params *AdminChangeEmailParams) error {
+	in := &cognito.AdminUpdateUserAttributesInput{
+		UserPoolId: c.userPoolID,
+		Username:   aws.String(params.Username),
+		UserAttributes: []types.AttributeType{
+			{
+				Name:  emailField,
+				Value: aws.String(params.Email),
+			},
+			{
+				Name:  emailVerifiedField,
+				Value: aws.String("true"),
+			},
+		},
+	}
+	_, err := c.cognito.AdminUpdateUserAttributes(ctx, in)
+	return c.authError(err)
 }
 
 func (c *client) AdminChangePassword(ctx context.Context, params *AdminChangePasswordParams) error {

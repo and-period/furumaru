@@ -110,10 +110,10 @@ export interface AdministratorResponse {
 export interface AdministratorsResponse {
   /**
    * システム管理者一覧
-   * @type {Array<AdministratorsResponseAdministrators>}
+   * @type {Array<AdministratorsResponseAdministratorsInner>}
    * @memberof AdministratorsResponse
    */
-  administrators: Array<AdministratorsResponseAdministrators>
+  administrators: Array<AdministratorsResponseAdministratorsInner>
   /**
    * 合計数
    * @type {number}
@@ -124,61 +124,61 @@ export interface AdministratorsResponse {
 /**
  *
  * @export
- * @interface AdministratorsResponseAdministrators
+ * @interface AdministratorsResponseAdministratorsInner
  */
-export interface AdministratorsResponseAdministrators {
+export interface AdministratorsResponseAdministratorsInner {
   /**
    * システム管理者ID
    * @type {string}
-   * @memberof AdministratorsResponseAdministrators
+   * @memberof AdministratorsResponseAdministratorsInner
    */
   id: string
   /**
    * 姓
    * @type {string}
-   * @memberof AdministratorsResponseAdministrators
+   * @memberof AdministratorsResponseAdministratorsInner
    */
   lastname: string
   /**
    * 名
    * @type {string}
-   * @memberof AdministratorsResponseAdministrators
+   * @memberof AdministratorsResponseAdministratorsInner
    */
   firstname: string
   /**
    * 姓(かな)
    * @type {string}
-   * @memberof AdministratorsResponseAdministrators
+   * @memberof AdministratorsResponseAdministratorsInner
    */
   lastnameKana: string
   /**
    * 名(かな)
    * @type {string}
-   * @memberof AdministratorsResponseAdministrators
+   * @memberof AdministratorsResponseAdministratorsInner
    */
   firstnameKana: string
   /**
    * メールアドレス
    * @type {string}
-   * @memberof AdministratorsResponseAdministrators
+   * @memberof AdministratorsResponseAdministratorsInner
    */
   email: string
   /**
    * 電話番号 (国際番号 + 電話番号)
    * @type {string}
-   * @memberof AdministratorsResponseAdministrators
+   * @memberof AdministratorsResponseAdministratorsInner
    */
   phoneNumber: string
   /**
    * 登録日時 (unixtime)
    * @type {number}
-   * @memberof AdministratorsResponseAdministrators
+   * @memberof AdministratorsResponseAdministratorsInner
    */
   createdAt: number
   /**
    * 登録日時 (unixtime)
    * @type {number}
-   * @memberof AdministratorsResponseAdministrators
+   * @memberof AdministratorsResponseAdministratorsInner
    */
   updatedAt: number
 }
@@ -233,10 +233,10 @@ export interface AuthResponse {
 export interface CategoriesResponse {
   /**
    * 商品種別一覧
-   * @type {Array<CategoriesResponseCategories>}
+   * @type {Array<CategoriesResponseCategoriesInner>}
    * @memberof CategoriesResponse
    */
-  categories: Array<CategoriesResponseCategories>
+  categories: Array<CategoriesResponseCategoriesInner>
   /**
    * 合計数
    * @type {number}
@@ -247,31 +247,31 @@ export interface CategoriesResponse {
 /**
  *
  * @export
- * @interface CategoriesResponseCategories
+ * @interface CategoriesResponseCategoriesInner
  */
-export interface CategoriesResponseCategories {
+export interface CategoriesResponseCategoriesInner {
   /**
    * 商品種別ID
    * @type {string}
-   * @memberof CategoriesResponseCategories
+   * @memberof CategoriesResponseCategoriesInner
    */
   id: string
   /**
    * カテゴリ名
    * @type {string}
-   * @memberof CategoriesResponseCategories
+   * @memberof CategoriesResponseCategoriesInner
    */
   name: string
   /**
    * 登録日時 (unixtime)
    * @type {number}
-   * @memberof CategoriesResponseCategories
+   * @memberof CategoriesResponseCategoriesInner
    */
   createdAt: number
   /**
    * 登録日時 (unixtime)
    * @type {number}
-   * @memberof CategoriesResponseCategories
+   * @memberof CategoriesResponseCategoriesInner
    */
   updatedAt: number
 }
@@ -387,10 +387,10 @@ export interface ContactResponse {
 export interface ContactsResponse {
   /**
    * お問い合わせ一覧
-   * @type {Array<ContactsResponseContacts>}
+   * @type {Array<ContactsResponseContactsInner>}
    * @memberof ContactsResponse
    */
-  contacts: Array<ContactsResponseContacts>
+  contacts: Array<ContactsResponseContactsInner>
   /**
    * 合計数
    * @type {number}
@@ -401,73 +401,73 @@ export interface ContactsResponse {
 /**
  *
  * @export
- * @interface ContactsResponseContacts
+ * @interface ContactsResponseContactsInner
  */
-export interface ContactsResponseContacts {
+export interface ContactsResponseContactsInner {
   /**
    * お問い合わせID
    * @type {string}
-   * @memberof ContactsResponseContacts
+   * @memberof ContactsResponseContactsInner
    */
   id: string
   /**
    * 件名
    * @type {string}
-   * @memberof ContactsResponseContacts
+   * @memberof ContactsResponseContactsInner
    */
   title: string
   /**
    * 内容
    * @type {string}
-   * @memberof ContactsResponseContacts
+   * @memberof ContactsResponseContactsInner
    */
   content: string
   /**
    * 氏名
    * @type {string}
-   * @memberof ContactsResponseContacts
+   * @memberof ContactsResponseContactsInner
    */
   username: string
   /**
    * メールアドレス
    * @type {string}
-   * @memberof ContactsResponseContacts
+   * @memberof ContactsResponseContactsInner
    */
   email: string
   /**
    * 電話番号(国際番号 + 電話番号)
    * @type {string}
-   * @memberof ContactsResponseContacts
+   * @memberof ContactsResponseContactsInner
    */
   phoneNumber: string
   /**
    * 対応状況(0:不明,1:ToDo,2:進行中,3:完了,4:対応不要)
    * @type {number}
-   * @memberof ContactsResponseContacts
+   * @memberof ContactsResponseContactsInner
    */
   status: number
   /**
    * 優先度(0:不明1:低,2:中,3:高)
    * @type {number}
-   * @memberof ContactsResponseContacts
+   * @memberof ContactsResponseContactsInner
    */
   priority: number
   /**
    * 対応時メモ
    * @type {string}
-   * @memberof ContactsResponseContacts
+   * @memberof ContactsResponseContactsInner
    */
   note: string
   /**
    * 登録日時 (unixtime)
    * @type {number}
-   * @memberof ContactsResponseContacts
+   * @memberof ContactsResponseContactsInner
    */
   createdAt: number
   /**
    * 登録日時 (unixtime)
    * @type {number}
-   * @memberof ContactsResponseContacts
+   * @memberof ContactsResponseContactsInner
    */
   updatedAt: number
 }
@@ -612,10 +612,10 @@ export interface CoordinatorResponse {
 export interface CoordinatorsResponse {
   /**
    * 仲介者一覧
-   * @type {Array<CoordinatorsResponseCoordinators>}
+   * @type {Array<CoordinatorsResponseCoordinatorsInner>}
    * @memberof CoordinatorsResponse
    */
-  coordinators: Array<CoordinatorsResponseCoordinators>
+  coordinators: Array<CoordinatorsResponseCoordinatorsInner>
   /**
    * 合計数
    * @type {number}
@@ -626,133 +626,133 @@ export interface CoordinatorsResponse {
 /**
  *
  * @export
- * @interface CoordinatorsResponseCoordinators
+ * @interface CoordinatorsResponseCoordinatorsInner
  */
-export interface CoordinatorsResponseCoordinators {
+export interface CoordinatorsResponseCoordinatorsInner {
   /**
    * 仲介者ID
    * @type {string}
-   * @memberof CoordinatorsResponseCoordinators
+   * @memberof CoordinatorsResponseCoordinatorsInner
    */
   id: string
   /**
    * 姓
    * @type {string}
-   * @memberof CoordinatorsResponseCoordinators
+   * @memberof CoordinatorsResponseCoordinatorsInner
    */
   lastname: string
   /**
    * 名
    * @type {string}
-   * @memberof CoordinatorsResponseCoordinators
+   * @memberof CoordinatorsResponseCoordinatorsInner
    */
   firstname: string
   /**
    * 姓(かな)
    * @type {string}
-   * @memberof CoordinatorsResponseCoordinators
+   * @memberof CoordinatorsResponseCoordinatorsInner
    */
   lastnameKana: string
   /**
    * 名(かな)
    * @type {string}
-   * @memberof CoordinatorsResponseCoordinators
+   * @memberof CoordinatorsResponseCoordinatorsInner
    */
   firstnameKana: string
   /**
    * 会社名
    * @type {string}
-   * @memberof CoordinatorsResponseCoordinators
+   * @memberof CoordinatorsResponseCoordinatorsInner
    */
   companyName: string
   /**
    * 店舗名
    * @type {string}
-   * @memberof CoordinatorsResponseCoordinators
+   * @memberof CoordinatorsResponseCoordinatorsInner
    */
   storeName: string
   /**
    * サムネイルURL
    * @type {string}
-   * @memberof CoordinatorsResponseCoordinators
+   * @memberof CoordinatorsResponseCoordinatorsInner
    */
   thumbnailUrl: string
   /**
    * ヘッダー画像URL
    * @type {string}
-   * @memberof CoordinatorsResponseCoordinators
+   * @memberof CoordinatorsResponseCoordinatorsInner
    */
   headerUrl: string
   /**
    * Twitterアカウント
    * @type {string}
-   * @memberof CoordinatorsResponseCoordinators
+   * @memberof CoordinatorsResponseCoordinatorsInner
    */
   twitterAccount: string
   /**
    * Instagramアカウント
    * @type {string}
-   * @memberof CoordinatorsResponseCoordinators
+   * @memberof CoordinatorsResponseCoordinatorsInner
    */
   instagramAccount: string
   /**
    * Facebookアカウント
    * @type {string}
-   * @memberof CoordinatorsResponseCoordinators
+   * @memberof CoordinatorsResponseCoordinatorsInner
    */
   facebookAccount: string
   /**
    * メールアドレス
    * @type {string}
-   * @memberof CoordinatorsResponseCoordinators
+   * @memberof CoordinatorsResponseCoordinatorsInner
    */
   email: string
   /**
    * 電話番号 (国際番号 + 電話番号)
    * @type {string}
-   * @memberof CoordinatorsResponseCoordinators
+   * @memberof CoordinatorsResponseCoordinatorsInner
    */
   phoneNumber: string
   /**
    * 郵便番号
    * @type {string}
-   * @memberof CoordinatorsResponseCoordinators
+   * @memberof CoordinatorsResponseCoordinatorsInner
    */
   postalCode: string
   /**
    * 都道府県
    * @type {string}
-   * @memberof CoordinatorsResponseCoordinators
+   * @memberof CoordinatorsResponseCoordinatorsInner
    */
   prefecture: string
   /**
    * 市区町村
    * @type {string}
-   * @memberof CoordinatorsResponseCoordinators
+   * @memberof CoordinatorsResponseCoordinatorsInner
    */
   city: string
   /**
    * 町名・番地
    * @type {string}
-   * @memberof CoordinatorsResponseCoordinators
+   * @memberof CoordinatorsResponseCoordinatorsInner
    */
   addressLine1: string
   /**
    * ビル名・号室など
    * @type {string}
-   * @memberof CoordinatorsResponseCoordinators
+   * @memberof CoordinatorsResponseCoordinatorsInner
    */
   addressLine2: string
   /**
    * 登録日時 (unixtime)
    * @type {number}
-   * @memberof CoordinatorsResponseCoordinators
+   * @memberof CoordinatorsResponseCoordinatorsInner
    */
   createdAt: number
   /**
    * 登録日時 (unixtime)
    * @type {number}
-   * @memberof CoordinatorsResponseCoordinators
+   * @memberof CoordinatorsResponseCoordinatorsInner
    */
   updatedAt: number
 }
@@ -1123,10 +1123,10 @@ export interface CreateProductRequest {
   itemDescription: string
   /**
    * メディア一覧(8つまで)
-   * @type {Array<ProductsResponseMedia>}
+   * @type {Array<ProductsResponseProductsInnerMediaInner>}
    * @memberof CreateProductRequest
    */
-  media: Array<ProductsResponseMedia>
+  media: Array<ProductsResponseProductsInnerMediaInner>
   /**
    * 販売価格(0以上)
    * @type {number}
@@ -1311,6 +1311,147 @@ export interface ErrorResponse {
    * @memberof ErrorResponse
    */
   details: string
+}
+/**
+ *
+ * @export
+ * @interface MessageResponse
+ */
+export interface MessageResponse {
+  /**
+   * メッセージID
+   * @type {string}
+   * @memberof MessageResponse
+   */
+  id: string
+  /**
+   * メッセージ種別(1:お知らせ)
+   * @type {number}
+   * @memberof MessageResponse
+   */
+  type: number
+  /**
+   * メッセージ件名
+   * @type {string}
+   * @memberof MessageResponse
+   */
+  title: string
+  /**
+   * メッセージ内容
+   * @type {string}
+   * @memberof MessageResponse
+   */
+  body: string
+  /**
+   * 遷移先リンク
+   * @type {string}
+   * @memberof MessageResponse
+   */
+  link: string
+  /**
+   * 既読フラグ
+   * @type {boolean}
+   * @memberof MessageResponse
+   */
+  read: boolean
+  /**
+   * 受信日時 (unixtime)
+   * @type {number}
+   * @memberof MessageResponse
+   */
+  receivedAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof MessageResponse
+   */
+  createdAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof MessageResponse
+   */
+  updatedAt: number
+}
+/**
+ *
+ * @export
+ * @interface MessagesResponse
+ */
+export interface MessagesResponse {
+  /**
+   * メッセージ一覧
+   * @type {Array<MessagesResponseMessagesInner>}
+   * @memberof MessagesResponse
+   */
+  messages: Array<MessagesResponseMessagesInner>
+  /**
+   * 合計数
+   * @type {number}
+   * @memberof MessagesResponse
+   */
+  total: number
+}
+/**
+ *
+ * @export
+ * @interface MessagesResponseMessagesInner
+ */
+export interface MessagesResponseMessagesInner {
+  /**
+   * メッセージID
+   * @type {string}
+   * @memberof MessagesResponseMessagesInner
+   */
+  id: string
+  /**
+   * メッセージ種別(1:お知らせ)
+   * @type {number}
+   * @memberof MessagesResponseMessagesInner
+   */
+  type: number
+  /**
+   * メッセージ件名
+   * @type {string}
+   * @memberof MessagesResponseMessagesInner
+   */
+  title: string
+  /**
+   * メッセージ内容
+   * @type {string}
+   * @memberof MessagesResponseMessagesInner
+   */
+  body: string
+  /**
+   * 遷移先リンク
+   * @type {string}
+   * @memberof MessagesResponseMessagesInner
+   */
+  link: string
+  /**
+   * 既読フラグ
+   * @type {string}
+   * @memberof MessagesResponseMessagesInner
+   */
+  read: string
+  /**
+   * 受信日時 (unixtime)
+   * @type {number}
+   * @memberof MessagesResponseMessagesInner
+   */
+  receivedAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof MessagesResponseMessagesInner
+   */
+  createdAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof MessagesResponseMessagesInner
+   */
+  updatedAt: number
 }
 /**
  *
@@ -1560,10 +1701,10 @@ export interface ProducerResponse {
 export interface ProducersResponse {
   /**
    * 生産者一覧
-   * @type {Array<ProducersResponseProducers>}
+   * @type {Array<ProducersResponseProducersInner>}
    * @memberof ProducersResponse
    */
-  producers: Array<ProducersResponseProducers>
+  producers: Array<ProducersResponseProducersInner>
   /**
    * 合計数
    * @type {number}
@@ -1574,109 +1715,109 @@ export interface ProducersResponse {
 /**
  *
  * @export
- * @interface ProducersResponseProducers
+ * @interface ProducersResponseProducersInner
  */
-export interface ProducersResponseProducers {
+export interface ProducersResponseProducersInner {
   /**
    * システム管理者ID
    * @type {string}
-   * @memberof ProducersResponseProducers
+   * @memberof ProducersResponseProducersInner
    */
   id: string
   /**
    * 姓
    * @type {string}
-   * @memberof ProducersResponseProducers
+   * @memberof ProducersResponseProducersInner
    */
   lastname: string
   /**
    * 名
    * @type {string}
-   * @memberof ProducersResponseProducers
+   * @memberof ProducersResponseProducersInner
    */
   firstname: string
   /**
    * 姓(かな)
    * @type {string}
-   * @memberof ProducersResponseProducers
+   * @memberof ProducersResponseProducersInner
    */
   lastnameKana: string
   /**
    * 名(かな)
    * @type {string}
-   * @memberof ProducersResponseProducers
+   * @memberof ProducersResponseProducersInner
    */
   firstnameKana: string
   /**
    * 店舗名
    * @type {string}
-   * @memberof ProducersResponseProducers
+   * @memberof ProducersResponseProducersInner
    */
   storeName: string
   /**
    * ヘッダー画像URL
    * @type {string}
-   * @memberof ProducersResponseProducers
+   * @memberof ProducersResponseProducersInner
    */
   headerUrl: string
   /**
    * サムネイルURL
    * @type {string}
-   * @memberof ProducersResponseProducers
+   * @memberof ProducersResponseProducersInner
    */
   thumbnailUrl: string
   /**
    * メールアドレス
    * @type {string}
-   * @memberof ProducersResponseProducers
+   * @memberof ProducersResponseProducersInner
    */
   email: string
   /**
    * 電話番号 (国際番号 + 電話番号)
    * @type {string}
-   * @memberof ProducersResponseProducers
+   * @memberof ProducersResponseProducersInner
    */
   phoneNumber: string
   /**
    * 郵便番号
    * @type {string}
-   * @memberof ProducersResponseProducers
+   * @memberof ProducersResponseProducersInner
    */
   postalCode: string
   /**
    * 都道府県
    * @type {string}
-   * @memberof ProducersResponseProducers
+   * @memberof ProducersResponseProducersInner
    */
   prefecture: string
   /**
    * 市区町村
    * @type {string}
-   * @memberof ProducersResponseProducers
+   * @memberof ProducersResponseProducersInner
    */
   city: string
   /**
    * 町名・番地
    * @type {string}
-   * @memberof ProducersResponseProducers
+   * @memberof ProducersResponseProducersInner
    */
   addressLine1: string
   /**
    * ビル名・号室など
    * @type {string}
-   * @memberof ProducersResponseProducers
+   * @memberof ProducersResponseProducersInner
    */
   addressLine2: string
   /**
    * 登録日時 (unixtime)
    * @type {number}
-   * @memberof ProducersResponseProducers
+   * @memberof ProducersResponseProducersInner
    */
   createdAt: number
   /**
    * 登録日時 (unixtime)
    * @type {number}
-   * @memberof ProducersResponseProducers
+   * @memberof ProducersResponseProducersInner
    */
   updatedAt: number
 }
@@ -1772,10 +1913,10 @@ export interface ProductResponse {
   itemDescription: string
   /**
    *
-   * @type {Array<ProductsResponseMedia>}
+   * @type {Array<ProductsResponseProductsInnerMediaInner>}
    * @memberof ProductResponse
    */
-  media: Array<ProductsResponseMedia>
+  media: Array<ProductsResponseProductsInnerMediaInner>
   /**
    * 販売価格
    * @type {number}
@@ -1894,10 +2035,10 @@ export interface ProductTypeResponse {
 export interface ProductTypesResponse {
   /**
    * 品目一覧
-   * @type {Array<ProductTypesResponseProductTypes>}
+   * @type {Array<ProductTypesResponseProductTypesInner>}
    * @memberof ProductTypesResponse
    */
-  productTypes: Array<ProductTypesResponseProductTypes>
+  productTypes: Array<ProductTypesResponseProductTypesInner>
   /**
    * 合計数
    * @type {number}
@@ -1908,43 +2049,43 @@ export interface ProductTypesResponse {
 /**
  *
  * @export
- * @interface ProductTypesResponseProductTypes
+ * @interface ProductTypesResponseProductTypesInner
  */
-export interface ProductTypesResponseProductTypes {
+export interface ProductTypesResponseProductTypesInner {
   /**
    * 品目ID
    * @type {string}
-   * @memberof ProductTypesResponseProductTypes
+   * @memberof ProductTypesResponseProductTypesInner
    */
   id: string
   /**
    * 品目名
    * @type {string}
-   * @memberof ProductTypesResponseProductTypes
+   * @memberof ProductTypesResponseProductTypesInner
    */
   name: string
   /**
    * 商品種別ID
    * @type {string}
-   * @memberof ProductTypesResponseProductTypes
+   * @memberof ProductTypesResponseProductTypesInner
    */
   categoryId: string
   /**
    * 商品種別名
    * @type {string}
-   * @memberof ProductTypesResponseProductTypes
+   * @memberof ProductTypesResponseProductTypesInner
    */
   categoryName: string
   /**
    * 登録日時 (unixtime)
    * @type {number}
-   * @memberof ProductTypesResponseProductTypes
+   * @memberof ProductTypesResponseProductTypesInner
    */
   createdAt: number
   /**
    * 登録日時 (unixtime)
    * @type {number}
-   * @memberof ProductTypesResponseProductTypes
+   * @memberof ProductTypesResponseProductTypesInner
    */
   updatedAt: number
 }
@@ -1956,10 +2097,10 @@ export interface ProductTypesResponseProductTypes {
 export interface ProductsResponse {
   /**
    * 商品一覧
-   * @type {Array<ProductsResponseProducts>}
+   * @type {Array<ProductsResponseProductsInner>}
    * @memberof ProductsResponse
    */
-  products: Array<ProductsResponseProducts>
+  products: Array<ProductsResponseProductsInner>
   /**
    * 合計数
    * @type {number}
@@ -1970,184 +2111,184 @@ export interface ProductsResponse {
 /**
  *
  * @export
- * @interface ProductsResponseMedia
+ * @interface ProductsResponseProductsInner
  */
-export interface ProductsResponseMedia {
-  /**
-   * メディアURL
-   * @type {string}
-   * @memberof ProductsResponseMedia
-   */
-  url: string
-  /**
-   * サムネイルとして使用(1つまで)
-   * @type {boolean}
-   * @memberof ProductsResponseMedia
-   */
-  isThumbnail: boolean
-}
-/**
- *
- * @export
- * @interface ProductsResponseProducts
- */
-export interface ProductsResponseProducts {
+export interface ProductsResponseProductsInner {
   /**
    * 商品ID
    * @type {string}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   id: string
   /**
    * 商品名
    * @type {string}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   name: string
   /**
    * 商品説明
    * @type {string}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   description: string
   /**
    * 生産者ID
    * @type {string}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   producerId: string
   /**
    * 農家名
    * @type {string}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   storeName: string
   /**
    * 商品種別ID
    * @type {string}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   categoryId: string
   /**
    * 商品種別名
    * @type {string}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   cateogryName?: string
   /**
    * 品目ID
    * @type {string}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   productTypeId: string
   /**
    * 品目名
    * @type {string}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   productTypeName: string
   /**
    * 公開フラグ
    * @type {boolean}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   public: boolean
   /**
    * 在庫数
    * @type {number}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   inventory: number
   /**
    * 重量(kg:少数第1位まで)
    * @type {number}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   weight: number
   /**
    * 数量単位
    * @type {string}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   itemUnit: string
   /**
    * 数量単位説明
    * @type {string}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   itemDescription: string
   /**
    *
-   * @type {Array<ProductsResponseMedia>}
-   * @memberof ProductsResponseProducts
+   * @type {Array<ProductsResponseProductsInnerMediaInner>}
+   * @memberof ProductsResponseProductsInner
    */
-  media: Array<ProductsResponseMedia>
+  media: Array<ProductsResponseProductsInnerMediaInner>
   /**
    * 販売価格
    * @type {number}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   price: number
   /**
    * 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
    * @type {number}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   deliveryType: number
   /**
    * 箱の占有率(サイズ:60)
    * @type {number}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   box60Rate: number
   /**
    * 箱の占有率(サイズ:80)
    * @type {number}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   box80Rate: number
   /**
    * 箱の占有率(サイズ:100)
    * @type {number}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   box100Rate: number
   /**
    * 原産地(都道府県)
    * @type {string}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   originPrefecture: string
   /**
    * 原産地(市区町村)
    * @type {string}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   originCity: string
   /**
    * 登録者ID
    * @type {string}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   createdBy: string
   /**
    * 更新者ID
    * @type {string}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   updatedBy: string
   /**
    * 登録日時 (unixtime)
    * @type {number}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   createdAt: number
   /**
    * 登録日時 (unixtime)
    * @type {number}
-   * @memberof ProductsResponseProducts
+   * @memberof ProductsResponseProductsInner
    */
   updatedAt: number
+}
+/**
+ *
+ * @export
+ * @interface ProductsResponseProductsInnerMediaInner
+ */
+export interface ProductsResponseProductsInnerMediaInner {
+  /**
+   * メディアURL
+   * @type {string}
+   * @memberof ProductsResponseProductsInnerMediaInner
+   */
+  url: string
+  /**
+   * サムネイルとして使用(1つまで)
+   * @type {boolean}
+   * @memberof ProductsResponseProductsInnerMediaInner
+   */
+  isThumbnail: boolean
 }
 /**
  *
@@ -2298,10 +2439,10 @@ export interface ShippingResponse {
 export interface ShippingsResponse {
   /**
    * 配送設定一覧
-   * @type {Array<ShippingsResponseShippings>}
+   * @type {Array<ShippingsResponseShippingsInner>}
    * @memberof ShippingsResponse
    */
-  shippings: Array<ShippingsResponseShippings>
+  shippings: Array<ShippingsResponseShippingsInner>
   /**
    * 合計数
    * @type {number}
@@ -2312,97 +2453,97 @@ export interface ShippingsResponse {
 /**
  *
  * @export
- * @interface ShippingsResponseShippings
+ * @interface ShippingsResponseShippingsInner
  */
-export interface ShippingsResponseShippings {
+export interface ShippingsResponseShippingsInner {
   /**
    * 配送設定ID
    * @type {string}
-   * @memberof ShippingsResponseShippings
+   * @memberof ShippingsResponseShippingsInner
    */
   id: string
   /**
    * 配送設定名
    * @type {string}
-   * @memberof ShippingsResponseShippings
+   * @memberof ShippingsResponseShippingsInner
    */
   name: string
   /**
    * 箱サイズ60の通常配送料一覧
    * @type {Array<ShippingRate>}
-   * @memberof ShippingsResponseShippings
+   * @memberof ShippingsResponseShippingsInner
    */
   box60Rates: Array<ShippingRate>
   /**
    * 箱サイズ60の冷蔵便追加配送料
    * @type {number}
-   * @memberof ShippingsResponseShippings
+   * @memberof ShippingsResponseShippingsInner
    */
   box60Refrigerated: number
   /**
    * 箱サイズ60の冷凍便追加配送料
    * @type {number}
-   * @memberof ShippingsResponseShippings
+   * @memberof ShippingsResponseShippingsInner
    */
   box60Frozen: number
   /**
    * 箱サイズ80の通常配送料一覧
    * @type {Array<ShippingRate>}
-   * @memberof ShippingsResponseShippings
+   * @memberof ShippingsResponseShippingsInner
    */
   box80Rates: Array<ShippingRate>
   /**
    * 箱サイズ80の冷蔵便追加配送料
    * @type {number}
-   * @memberof ShippingsResponseShippings
+   * @memberof ShippingsResponseShippingsInner
    */
   box80Refrigerated: number
   /**
    * 箱サイズ80の冷凍便追加配送料
    * @type {number}
-   * @memberof ShippingsResponseShippings
+   * @memberof ShippingsResponseShippingsInner
    */
   box80Frozen: number
   /**
    * 箱サイズ100の通常配送料一覧
    * @type {Array<ShippingRate>}
-   * @memberof ShippingsResponseShippings
+   * @memberof ShippingsResponseShippingsInner
    */
   box100Rates: Array<ShippingRate>
   /**
    * 箱サイズ100の冷蔵便追加配送料
    * @type {number}
-   * @memberof ShippingsResponseShippings
+   * @memberof ShippingsResponseShippingsInner
    */
   box100Refrigerated: number
   /**
    * 箱サイズ100の冷凍便追加配送料
    * @type {number}
-   * @memberof ShippingsResponseShippings
+   * @memberof ShippingsResponseShippingsInner
    */
   box100Frozen: number
   /**
    * 送料無料オプションの有無
    * @type {boolean}
-   * @memberof ShippingsResponseShippings
+   * @memberof ShippingsResponseShippingsInner
    */
   hasFreeShipping: boolean
   /**
    * 送料無料になる金額
    * @type {number}
-   * @memberof ShippingsResponseShippings
+   * @memberof ShippingsResponseShippingsInner
    */
   freeShippingRates: number
   /**
    * 登録日時 (unixtime)
    * @type {number}
-   * @memberof ShippingsResponseShippings
+   * @memberof ShippingsResponseShippingsInner
    */
   createdAt: number
   /**
    * 登録日時 (unixtime)
    * @type {number}
-   * @memberof ShippingsResponseShippings
+   * @memberof ShippingsResponseShippingsInner
    */
   updatedAt: number
 }
@@ -2424,6 +2565,56 @@ export interface SignInRequest {
    * @memberof SignInRequest
    */
   password: string
+}
+/**
+ *
+ * @export
+ * @interface UpdateAdministratorEmailRequest
+ */
+export interface UpdateAdministratorEmailRequest {
+  /**
+   * メールアドレス
+   * @type {string}
+   * @memberof UpdateAdministratorEmailRequest
+   */
+  email: string
+}
+/**
+ *
+ * @export
+ * @interface UpdateAdministratorRequest
+ */
+export interface UpdateAdministratorRequest {
+  /**
+   * 姓(16文字まで)
+   * @type {string}
+   * @memberof UpdateAdministratorRequest
+   */
+  lastname: string
+  /**
+   * 名(16文字まで)
+   * @type {string}
+   * @memberof UpdateAdministratorRequest
+   */
+  firstname: string
+  /**
+   * 姓(かな)(ひらがな,32文字まで)
+   * @type {string}
+   * @memberof UpdateAdministratorRequest
+   */
+  lastnameKana: string
+  /**
+   * 名(かな)(ひらがな,32文字まで)
+   * @type {string}
+   * @memberof UpdateAdministratorRequest
+   */
+  firstnameKana: string
+  /**
+   * 電話番号(国際番号 + 電話番号)
+   * @type {string}
+   * @memberof UpdateAdministratorRequest
+   */
+  phoneNumber: string
 }
 /**
  *
@@ -2504,6 +2695,226 @@ export interface UpdateContactRequest {
 /**
  *
  * @export
+ * @interface UpdateCoordinatorEmailRequest
+ */
+export interface UpdateCoordinatorEmailRequest {
+  /**
+   * メールアドレス
+   * @type {string}
+   * @memberof UpdateCoordinatorEmailRequest
+   */
+  email: string
+}
+/**
+ *
+ * @export
+ * @interface UpdateCoordinatorRequest
+ */
+export interface UpdateCoordinatorRequest {
+  /**
+   * 姓(16文字まで)
+   * @type {string}
+   * @memberof UpdateCoordinatorRequest
+   */
+  lastname: string
+  /**
+   * 名(16文字まで)
+   * @type {string}
+   * @memberof UpdateCoordinatorRequest
+   */
+  firstname: string
+  /**
+   * 姓(かな)(ひらがな,32文字まで)
+   * @type {string}
+   * @memberof UpdateCoordinatorRequest
+   */
+  lastnameKana: string
+  /**
+   * 名(かな)(ひらがな,32文字まで)
+   * @type {string}
+   * @memberof UpdateCoordinatorRequest
+   */
+  firstnameKana: string
+  /**
+   * 会社名(64文字まで)
+   * @type {string}
+   * @memberof UpdateCoordinatorRequest
+   */
+  companyName: string
+  /**
+   * 店舗名(64文字まで)
+   * @type {string}
+   * @memberof UpdateCoordinatorRequest
+   */
+  storeName: string
+  /**
+   * サムネイルURL
+   * @type {string}
+   * @memberof UpdateCoordinatorRequest
+   */
+  thumbnailUrl?: string
+  /**
+   * ヘッダー画像URL
+   * @type {string}
+   * @memberof UpdateCoordinatorRequest
+   */
+  headerUrl?: string
+  /**
+   * Twitterアカウント(15文字まで)
+   * @type {string}
+   * @memberof UpdateCoordinatorRequest
+   */
+  twitterAccount?: string
+  /**
+   * Instagramアカウント(30文字まで)
+   * @type {string}
+   * @memberof UpdateCoordinatorRequest
+   */
+  instagramAccount?: string
+  /**
+   * Facebookアカウント(50文字まで)
+   * @type {string}
+   * @memberof UpdateCoordinatorRequest
+   */
+  facebookAccount?: string
+  /**
+   * 電話番号 (国際番号 + 電話番号)
+   * @type {string}
+   * @memberof UpdateCoordinatorRequest
+   */
+  phoneNumber: string
+  /**
+   * 郵便番号(ハイフンなし)
+   * @type {string}
+   * @memberof UpdateCoordinatorRequest
+   */
+  postalCode: string
+  /**
+   * 都道府県(32文字まで)
+   * @type {string}
+   * @memberof UpdateCoordinatorRequest
+   */
+  prefecture: string
+  /**
+   * 市区町村(32文字まで)
+   * @type {string}
+   * @memberof UpdateCoordinatorRequest
+   */
+  city: string
+  /**
+   * 町名・番地(64文字まで)
+   * @type {string}
+   * @memberof UpdateCoordinatorRequest
+   */
+  addressLine1: string
+  /**
+   * ビル名・号室など(64文字まで)
+   * @type {string}
+   * @memberof UpdateCoordinatorRequest
+   */
+  addressLine2: string
+}
+/**
+ *
+ * @export
+ * @interface UpdateProducerEmailRequest
+ */
+export interface UpdateProducerEmailRequest {
+  /**
+   * メールアドレス
+   * @type {string}
+   * @memberof UpdateProducerEmailRequest
+   */
+  email: string
+}
+/**
+ *
+ * @export
+ * @interface UpdateProducerRequest
+ */
+export interface UpdateProducerRequest {
+  /**
+   * 姓(16文字まで)
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  lastname: string
+  /**
+   * 名(16文字まで)
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  firstname: string
+  /**
+   * 姓(かな)(ひらがな,32文字まで)
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  lastnameKana: string
+  /**
+   * 名(かな)(ひらがな,32文字まで)
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  firstnameKana: string
+  /**
+   * 店舗名(64文字まで)
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  storeName: string
+  /**
+   * サムネイルURL
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  thumbnailUrl?: string
+  /**
+   * ヘッダー画像URL
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  headerUrl?: string
+  /**
+   * 電話番号 (国際番号 + 電話番号)
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  phoneNumber: string
+  /**
+   * 郵便番号(ハイフンなし)
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  postalCode: string
+  /**
+   * 都道府県(32文字まで)
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  prefecture: string
+  /**
+   * 市区町村(32文字まで)
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  city: string
+  /**
+   * 町名・番地(64文字まで)
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  addressLine1: string
+  /**
+   * ビル名・号室など(64文字まで)
+   * @type {string}
+   * @memberof UpdateProducerRequest
+   */
+  addressLine2: string
+}
+/**
+ *
+ * @export
  * @interface UpdateProductRequest
  */
 export interface UpdateProductRequest {
@@ -2569,10 +2980,10 @@ export interface UpdateProductRequest {
   itemDescription: string
   /**
    * メディア一覧(8つまで)
-   * @type {Array<ProductsResponseMedia>}
+   * @type {Array<ProductsResponseProductsInnerMediaInner>}
    * @memberof UpdateProductRequest
    */
-  media: Array<ProductsResponseMedia>
+  media: Array<ProductsResponseProductsInnerMediaInner>
   /**
    * 販売価格(0以上)
    * @type {number}
@@ -2902,6 +3313,189 @@ export const AdministratorApiAxiosParamCreator = function (
         options: localVarRequestOptions,
       }
     },
+    /**
+     *
+     * @summary システム管理者更新
+     * @param {string} adminId システム管理者ID
+     * @param {UpdateAdministratorRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateAdministrator: async (
+      adminId: string,
+      body: UpdateAdministratorRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'adminId' is not null or undefined
+      assertParamExists('v1UpdateAdministrator', 'adminId', adminId)
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1UpdateAdministrator', 'body', body)
+      const localVarPath = `/v1/administrators/{adminId}`.replace(
+        `{${'adminId'}}`,
+        encodeURIComponent(String(adminId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary システム管理者メールアドレス更新
+     * @param {string} adminId システム管理者ID
+     * @param {UpdateAdministratorEmailRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateAdministratorEmail: async (
+      adminId: string,
+      body: UpdateAdministratorEmailRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'adminId' is not null or undefined
+      assertParamExists('v1UpdateAdministratorEmail', 'adminId', adminId)
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1UpdateAdministratorEmail', 'body', body)
+      const localVarPath = `/v1/administrators/{adminId}/email`.replace(
+        `{${'adminId'}}`,
+        encodeURIComponent(String(adminId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary システム管理者パスワード更新(ランダム生成)
+     * @param {string} adminId システム管理者ID
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateAdministratorPassword: async (
+      adminId: string,
+      body: object,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'adminId' is not null or undefined
+      assertParamExists('v1UpdateAdministratorPassword', 'adminId', adminId)
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1UpdateAdministratorPassword', 'body', body)
+      const localVarPath = `/v1/administrators/{adminId}/password`.replace(
+        `{${'adminId'}}`,
+        encodeURIComponent(String(adminId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
   }
 }
 
@@ -2994,6 +3588,90 @@ export const AdministratorApiFp = function (configuration?: Configuration) {
         configuration
       )
     },
+    /**
+     *
+     * @summary システム管理者更新
+     * @param {string} adminId システム管理者ID
+     * @param {UpdateAdministratorRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UpdateAdministrator(
+      adminId: string,
+      body: UpdateAdministratorRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1UpdateAdministrator(
+          adminId,
+          body,
+          options
+        )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary システム管理者メールアドレス更新
+     * @param {string} adminId システム管理者ID
+     * @param {UpdateAdministratorEmailRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UpdateAdministratorEmail(
+      adminId: string,
+      body: UpdateAdministratorEmailRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1UpdateAdministratorEmail(
+          adminId,
+          body,
+          options
+        )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary システム管理者パスワード更新(ランダム生成)
+     * @param {string} adminId システム管理者ID
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UpdateAdministratorPassword(
+      adminId: string,
+      body: object,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1UpdateAdministratorPassword(
+          adminId,
+          body,
+          options
+        )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
   }
 }
 
@@ -3055,6 +3733,57 @@ export const AdministratorApiFactory = function (
         .v1ListAdministrators(limit, offset, options)
         .then((request) => request(axios, basePath))
     },
+    /**
+     *
+     * @summary システム管理者更新
+     * @param {string} adminId システム管理者ID
+     * @param {UpdateAdministratorRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateAdministrator(
+      adminId: string,
+      body: UpdateAdministratorRequest,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1UpdateAdministrator(adminId, body, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary システム管理者メールアドレス更新
+     * @param {string} adminId システム管理者ID
+     * @param {UpdateAdministratorEmailRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateAdministratorEmail(
+      adminId: string,
+      body: UpdateAdministratorEmailRequest,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1UpdateAdministratorEmail(adminId, body, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary システム管理者パスワード更新(ランダム生成)
+     * @param {string} adminId システム管理者ID
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateAdministratorPassword(
+      adminId: string,
+      body: object,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1UpdateAdministratorPassword(adminId, body, options)
+        .then((request) => request(axios, basePath))
+    },
   }
 }
 
@@ -3112,6 +3841,63 @@ export class AdministratorApi extends BaseAPI {
   ) {
     return AdministratorApiFp(this.configuration)
       .v1ListAdministrators(limit, offset, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary システム管理者更新
+   * @param {string} adminId システム管理者ID
+   * @param {UpdateAdministratorRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdministratorApi
+   */
+  public v1UpdateAdministrator(
+    adminId: string,
+    body: UpdateAdministratorRequest,
+    options?: AxiosRequestConfig
+  ) {
+    return AdministratorApiFp(this.configuration)
+      .v1UpdateAdministrator(adminId, body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary システム管理者メールアドレス更新
+   * @param {string} adminId システム管理者ID
+   * @param {UpdateAdministratorEmailRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdministratorApi
+   */
+  public v1UpdateAdministratorEmail(
+    adminId: string,
+    body: UpdateAdministratorEmailRequest,
+    options?: AxiosRequestConfig
+  ) {
+    return AdministratorApiFp(this.configuration)
+      .v1UpdateAdministratorEmail(adminId, body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary システム管理者パスワード更新(ランダム生成)
+   * @param {string} adminId システム管理者ID
+   * @param {object} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdministratorApi
+   */
+  public v1UpdateAdministratorPassword(
+    adminId: string,
+    body: object,
+    options?: AxiosRequestConfig
+  ) {
+    return AdministratorApiFp(this.configuration)
+      .v1UpdateAdministratorPassword(adminId, body, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
@@ -4946,6 +5732,197 @@ export const CoordinatorApiAxiosParamCreator = function (
     },
     /**
      *
+     * @summary 仲介者更新
+     * @param {string} coordinatorId 仲介者ID
+     * @param {UpdateCoordinatorRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateCoordinator: async (
+      coordinatorId: string,
+      body: UpdateCoordinatorRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'coordinatorId' is not null or undefined
+      assertParamExists('v1UpdateCoordinator', 'coordinatorId', coordinatorId)
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1UpdateCoordinator', 'body', body)
+      const localVarPath = `/v1/coordinators/{coordinatorId}`.replace(
+        `{${'coordinatorId'}}`,
+        encodeURIComponent(String(coordinatorId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary 仲介者メールアドレス更新
+     * @param {string} coordinatorId 仲介者ID
+     * @param {UpdateCoordinatorEmailRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateCoordinatorEmail: async (
+      coordinatorId: string,
+      body: UpdateCoordinatorEmailRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'coordinatorId' is not null or undefined
+      assertParamExists(
+        'v1UpdateCoordinatorEmail',
+        'coordinatorId',
+        coordinatorId
+      )
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1UpdateCoordinatorEmail', 'body', body)
+      const localVarPath = `/v1/coordinators/{coordinatorId}/email`.replace(
+        `{${'coordinatorId'}}`,
+        encodeURIComponent(String(coordinatorId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary 仲介者パスワード更新(ランダム生成)
+     * @param {string} coordinatorId 仲介者ID
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateCoordinatorPassword: async (
+      coordinatorId: string,
+      body: object,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'coordinatorId' is not null or undefined
+      assertParamExists(
+        'v1UpdateCoordinatorPassword',
+        'coordinatorId',
+        coordinatorId
+      )
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1UpdateCoordinatorPassword', 'body', body)
+      const localVarPath = `/v1/coordinators/{coordinatorId}/password`.replace(
+        `{${'coordinatorId'}}`,
+        encodeURIComponent(String(coordinatorId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
      * @summary 仲介者ヘッダー画像アップロード
      * @param {any} [image] 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
      * @param {*} [options] Override http request option.
@@ -5148,6 +6125,90 @@ export const CoordinatorApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @summary 仲介者更新
+     * @param {string} coordinatorId 仲介者ID
+     * @param {UpdateCoordinatorRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UpdateCoordinator(
+      coordinatorId: string,
+      body: UpdateCoordinatorRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1UpdateCoordinator(
+          coordinatorId,
+          body,
+          options
+        )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary 仲介者メールアドレス更新
+     * @param {string} coordinatorId 仲介者ID
+     * @param {UpdateCoordinatorEmailRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UpdateCoordinatorEmail(
+      coordinatorId: string,
+      body: UpdateCoordinatorEmailRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1UpdateCoordinatorEmail(
+          coordinatorId,
+          body,
+          options
+        )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary 仲介者パスワード更新(ランダム生成)
+     * @param {string} coordinatorId 仲介者ID
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UpdateCoordinatorPassword(
+      coordinatorId: string,
+      body: object,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1UpdateCoordinatorPassword(
+          coordinatorId,
+          body,
+          options
+        )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
      * @summary 仲介者ヘッダー画像アップロード
      * @param {any} [image] 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
      * @param {*} [options] Override http request option.
@@ -5265,6 +6326,57 @@ export const CoordinatorApiFactory = function (
     },
     /**
      *
+     * @summary 仲介者更新
+     * @param {string} coordinatorId 仲介者ID
+     * @param {UpdateCoordinatorRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateCoordinator(
+      coordinatorId: string,
+      body: UpdateCoordinatorRequest,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1UpdateCoordinator(coordinatorId, body, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary 仲介者メールアドレス更新
+     * @param {string} coordinatorId 仲介者ID
+     * @param {UpdateCoordinatorEmailRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateCoordinatorEmail(
+      coordinatorId: string,
+      body: UpdateCoordinatorEmailRequest,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1UpdateCoordinatorEmail(coordinatorId, body, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary 仲介者パスワード更新(ランダム生成)
+     * @param {string} coordinatorId 仲介者ID
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateCoordinatorPassword(
+      coordinatorId: string,
+      body: object,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1UpdateCoordinatorPassword(coordinatorId, body, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
      * @summary 仲介者ヘッダー画像アップロード
      * @param {any} [image] 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
      * @param {*} [options] Override http request option.
@@ -5355,6 +6467,63 @@ export class CoordinatorApi extends BaseAPI {
 
   /**
    *
+   * @summary 仲介者更新
+   * @param {string} coordinatorId 仲介者ID
+   * @param {UpdateCoordinatorRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof CoordinatorApi
+   */
+  public v1UpdateCoordinator(
+    coordinatorId: string,
+    body: UpdateCoordinatorRequest,
+    options?: AxiosRequestConfig
+  ) {
+    return CoordinatorApiFp(this.configuration)
+      .v1UpdateCoordinator(coordinatorId, body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary 仲介者メールアドレス更新
+   * @param {string} coordinatorId 仲介者ID
+   * @param {UpdateCoordinatorEmailRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof CoordinatorApi
+   */
+  public v1UpdateCoordinatorEmail(
+    coordinatorId: string,
+    body: UpdateCoordinatorEmailRequest,
+    options?: AxiosRequestConfig
+  ) {
+    return CoordinatorApiFp(this.configuration)
+      .v1UpdateCoordinatorEmail(coordinatorId, body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary 仲介者パスワード更新(ランダム生成)
+   * @param {string} coordinatorId 仲介者ID
+   * @param {object} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof CoordinatorApi
+   */
+  public v1UpdateCoordinatorPassword(
+    coordinatorId: string,
+    body: object,
+    options?: AxiosRequestConfig
+  ) {
+    return CoordinatorApiFp(this.configuration)
+      .v1UpdateCoordinatorPassword(coordinatorId, body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
    * @summary 仲介者ヘッダー画像アップロード
    * @param {any} [image] 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
    * @param {*} [options] Override http request option.
@@ -5381,6 +6550,276 @@ export class CoordinatorApi extends BaseAPI {
   ) {
     return CoordinatorApiFp(this.configuration)
       .v1UploadCoordinatorThumbnail(thumbnail, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * MessageApi - axios parameter creator
+ * @export
+ */
+export const MessageApiAxiosParamCreator = function (
+  configuration?: Configuration
+) {
+  return {
+    /**
+     *
+     * @summary メッセージ取得
+     * @param {string} messageId メッセージID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1GetMessage: async (
+      messageId: string,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'messageId' is not null or undefined
+      assertParamExists('v1GetMessage', 'messageId', messageId)
+      const localVarPath = `/v1/messages/{messageId}`.replace(
+        `{${'messageId'}}`,
+        encodeURIComponent(String(messageId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary メッセージ一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1ListMessages: async (
+      limit?: number,
+      offset?: number,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/v1/messages`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (limit !== undefined) {
+        localVarQueryParameter['limit'] = limit
+      }
+
+      if (offset !== undefined) {
+        localVarQueryParameter['offset'] = offset
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * MessageApi - functional programming interface
+ * @export
+ */
+export const MessageApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = MessageApiAxiosParamCreator(configuration)
+  return {
+    /**
+     *
+     * @summary メッセージ取得
+     * @param {string} messageId メッセージID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1GetMessage(
+      messageId: string,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<MessageResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetMessage(
+        messageId,
+        options
+      )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary メッセージ一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1ListMessages(
+      limit?: number,
+      offset?: number,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<MessagesResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListMessages(
+        limit,
+        offset,
+        options
+      )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+  }
+}
+
+/**
+ * MessageApi - factory interface
+ * @export
+ */
+export const MessageApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance
+) {
+  const localVarFp = MessageApiFp(configuration)
+  return {
+    /**
+     *
+     * @summary メッセージ取得
+     * @param {string} messageId メッセージID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1GetMessage(
+      messageId: string,
+      options?: any
+    ): AxiosPromise<MessageResponse> {
+      return localVarFp
+        .v1GetMessage(messageId, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary メッセージ一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1ListMessages(
+      limit?: number,
+      offset?: number,
+      options?: any
+    ): AxiosPromise<MessagesResponse> {
+      return localVarFp
+        .v1ListMessages(limit, offset, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * MessageApi - object-oriented interface
+ * @export
+ * @class MessageApi
+ * @extends {BaseAPI}
+ */
+export class MessageApi extends BaseAPI {
+  /**
+   *
+   * @summary メッセージ取得
+   * @param {string} messageId メッセージID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof MessageApi
+   */
+  public v1GetMessage(messageId: string, options?: AxiosRequestConfig) {
+    return MessageApiFp(this.configuration)
+      .v1GetMessage(messageId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary メッセージ一覧取得
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof MessageApi
+   */
+  public v1ListMessages(
+    limit?: number,
+    offset?: number,
+    options?: AxiosRequestConfig
+  ) {
+    return MessageApiFp(this.configuration)
+      .v1ListMessages(limit, offset, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
@@ -5657,12 +7096,14 @@ export const ProducerApiAxiosParamCreator = function (
      * @summary 生産者一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,storeName,email,phoneNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v1ListProducers: async (
       limit?: number,
       offset?: number,
+      orders?: string,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
       const localVarPath = `/v1/producers`
@@ -5693,6 +7134,10 @@ export const ProducerApiAxiosParamCreator = function (
         localVarQueryParameter['offset'] = offset
       }
 
+      if (orders !== undefined) {
+        localVarQueryParameter['orders'] = orders
+      }
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -5701,6 +7146,187 @@ export const ProducerApiAxiosParamCreator = function (
         ...headersFromBaseOptions,
         ...options.headers,
       }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary 生産者更新
+     * @param {string} producerId 生産者ID
+     * @param {UpdateProducerRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateProducer: async (
+      producerId: string,
+      body: UpdateProducerRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'producerId' is not null or undefined
+      assertParamExists('v1UpdateProducer', 'producerId', producerId)
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1UpdateProducer', 'body', body)
+      const localVarPath = `/v1/producers/{producerId}`.replace(
+        `{${'producerId'}}`,
+        encodeURIComponent(String(producerId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary 生産者メールアドレス更新
+     * @param {string} producerId 生産者ID
+     * @param {UpdateProducerEmailRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateProducerEmail: async (
+      producerId: string,
+      body: UpdateProducerEmailRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'producerId' is not null or undefined
+      assertParamExists('v1UpdateProducerEmail', 'producerId', producerId)
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1UpdateProducerEmail', 'body', body)
+      const localVarPath = `/v1/producers/{producerId}/email`.replace(
+        `{${'producerId'}}`,
+        encodeURIComponent(String(producerId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary 生産者パスワード更新(ランダム生成)
+     * @param {string} producerId 生産者ID
+     * @param {object} [body]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateProducerPassword: async (
+      producerId: string,
+      body?: object,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'producerId' is not null or undefined
+      assertParamExists('v1UpdateProducerPassword', 'producerId', producerId)
+      const localVarPath = `/v1/producers/{producerId}/password`.replace(
+        `{${'producerId'}}`,
+        encodeURIComponent(String(producerId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
 
       return {
         url: toPathString(localVarUrlObj),
@@ -5884,12 +7510,14 @@ export const ProducerApiFp = function (configuration?: Configuration) {
      * @summary 生産者一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,storeName,email,phoneNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async v1ListProducers(
       limit?: number,
       offset?: number,
+      orders?: string,
       options?: AxiosRequestConfig
     ): Promise<
       (
@@ -5900,8 +7528,93 @@ export const ProducerApiFp = function (configuration?: Configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListProducers(
         limit,
         offset,
+        orders,
         options
       )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary 生産者更新
+     * @param {string} producerId 生産者ID
+     * @param {UpdateProducerRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UpdateProducer(
+      producerId: string,
+      body: UpdateProducerRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1UpdateProducer(
+          producerId,
+          body,
+          options
+        )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary 生産者メールアドレス更新
+     * @param {string} producerId 生産者ID
+     * @param {UpdateProducerEmailRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UpdateProducerEmail(
+      producerId: string,
+      body: UpdateProducerEmailRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1UpdateProducerEmail(
+          producerId,
+          body,
+          options
+        )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary 生産者パスワード更新(ランダム生成)
+     * @param {string} producerId 生産者ID
+     * @param {object} [body]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UpdateProducerPassword(
+      producerId: string,
+      body?: object,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1UpdateProducerPassword(
+          producerId,
+          body,
+          options
+        )
       return createRequestFunction(
         localVarAxiosArgs,
         globalAxios,
@@ -6011,16 +7724,69 @@ export const ProducerApiFactory = function (
      * @summary 生産者一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,storeName,email,phoneNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v1ListProducers(
       limit?: number,
       offset?: number,
+      orders?: string,
       options?: any
     ): AxiosPromise<ProducersResponse> {
       return localVarFp
-        .v1ListProducers(limit, offset, options)
+        .v1ListProducers(limit, offset, orders, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary 生産者更新
+     * @param {string} producerId 生産者ID
+     * @param {UpdateProducerRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateProducer(
+      producerId: string,
+      body: UpdateProducerRequest,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1UpdateProducer(producerId, body, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary 生産者メールアドレス更新
+     * @param {string} producerId 生産者ID
+     * @param {UpdateProducerEmailRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateProducerEmail(
+      producerId: string,
+      body: UpdateProducerEmailRequest,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1UpdateProducerEmail(producerId, body, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary 生産者パスワード更新(ランダム生成)
+     * @param {string} producerId 生産者ID
+     * @param {object} [body]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateProducerPassword(
+      producerId: string,
+      body?: object,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1UpdateProducerPassword(producerId, body, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -6099,6 +7865,7 @@ export class ProducerApi extends BaseAPI {
    * @summary 生産者一覧取得
    * @param {number} [limit] 取得上限数(max:200)
    * @param {number} [offset] 取得開始位置(min:0)
+   * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,storeName,email,phoneNumber
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ProducerApi
@@ -6106,10 +7873,68 @@ export class ProducerApi extends BaseAPI {
   public v1ListProducers(
     limit?: number,
     offset?: number,
+    orders?: string,
     options?: AxiosRequestConfig
   ) {
     return ProducerApiFp(this.configuration)
-      .v1ListProducers(limit, offset, options)
+      .v1ListProducers(limit, offset, orders, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary 生産者更新
+   * @param {string} producerId 生産者ID
+   * @param {UpdateProducerRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ProducerApi
+   */
+  public v1UpdateProducer(
+    producerId: string,
+    body: UpdateProducerRequest,
+    options?: AxiosRequestConfig
+  ) {
+    return ProducerApiFp(this.configuration)
+      .v1UpdateProducer(producerId, body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary 生産者メールアドレス更新
+   * @param {string} producerId 生産者ID
+   * @param {UpdateProducerEmailRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ProducerApi
+   */
+  public v1UpdateProducerEmail(
+    producerId: string,
+    body: UpdateProducerEmailRequest,
+    options?: AxiosRequestConfig
+  ) {
+    return ProducerApiFp(this.configuration)
+      .v1UpdateProducerEmail(producerId, body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary 生産者パスワード更新(ランダム生成)
+   * @param {string} producerId 生産者ID
+   * @param {object} [body]
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ProducerApi
+   */
+  public v1UpdateProducerPassword(
+    producerId: string,
+    body?: object,
+    options?: AxiosRequestConfig
+  ) {
+    return ProducerApiFp(this.configuration)
+      .v1UpdateProducerPassword(producerId, body, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -7508,6 +9333,61 @@ export const ShippingApiAxiosParamCreator = function (
     },
     /**
      *
+     * @summary 配送設定一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1ListShippings: async (
+      limit?: number,
+      offset?: number,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/v1/shippings`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (limit !== undefined) {
+        localVarQueryParameter['limit'] = limit
+      }
+
+      if (offset !== undefined) {
+        localVarQueryParameter['offset'] = offset
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
      * @summary 配送設定更新
      * @param {string} shippingId 配送設定ID
      * @param {UpdateShippingRequest} body
@@ -7631,6 +9511,36 @@ export const ShippingApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @summary 配送設定一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1ListShippings(
+      limit?: number,
+      offset?: number,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<ShippingsResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListShippings(
+        limit,
+        offset,
+        options
+      )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
      * @summary 配送設定更新
      * @param {string} shippingId 配送設定ID
      * @param {UpdateShippingRequest} body
@@ -7703,6 +9613,23 @@ export const ShippingApiFactory = function (
     },
     /**
      *
+     * @summary 配送設定一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1ListShippings(
+      limit?: number,
+      offset?: number,
+      options?: any
+    ): AxiosPromise<ShippingsResponse> {
+      return localVarFp
+        .v1ListShippings(limit, offset, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
      * @summary 配送設定更新
      * @param {string} shippingId 配送設定ID
      * @param {UpdateShippingRequest} body
@@ -7761,6 +9688,25 @@ export class ShippingApi extends BaseAPI {
 
   /**
    *
+   * @summary 配送設定一覧取得
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ShippingApi
+   */
+  public v1ListShippings(
+    limit?: number,
+    offset?: number,
+    options?: AxiosRequestConfig
+  ) {
+    return ShippingApiFp(this.configuration)
+      .v1ListShippings(limit, offset, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
    * @summary 配送設定更新
    * @param {string} shippingId 配送設定ID
    * @param {UpdateShippingRequest} body
@@ -7775,170 +9721,6 @@ export class ShippingApi extends BaseAPI {
   ) {
     return ShippingApiFp(this.configuration)
       .v1UpdateShipping(shippingId, body, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-}
-
-/**
- * ShippingsApi - axios parameter creator
- * @export
- */
-export const ShippingsApiAxiosParamCreator = function (
-  configuration?: Configuration
-) {
-  return {
-    /**
-     *
-     * @summary 配送設定一覧取得
-     * @param {number} [limit] 取得上限数(max:200)
-     * @param {number} [offset] 取得開始位置(min:0)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    v1ListShippings: async (
-      limit?: number,
-      offset?: number,
-      options: AxiosRequestConfig = {}
-    ): Promise<RequestArgs> => {
-      const localVarPath = `/v1/shippings`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = {
-        method: 'GET',
-        ...baseOptions,
-        ...options,
-      }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication BearerAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      if (limit !== undefined) {
-        localVarQueryParameter['limit'] = limit
-      }
-
-      if (offset !== undefined) {
-        localVarQueryParameter['offset'] = offset
-      }
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-  }
-}
-
-/**
- * ShippingsApi - functional programming interface
- * @export
- */
-export const ShippingsApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator = ShippingsApiAxiosParamCreator(configuration)
-  return {
-    /**
-     *
-     * @summary 配送設定一覧取得
-     * @param {number} [limit] 取得上限数(max:200)
-     * @param {number} [offset] 取得開始位置(min:0)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async v1ListShippings(
-      limit?: number,
-      offset?: number,
-      options?: AxiosRequestConfig
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string
-      ) => AxiosPromise<ShippingsResponse>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListShippings(
-        limit,
-        offset,
-        options
-      )
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration
-      )
-    },
-  }
-}
-
-/**
- * ShippingsApi - factory interface
- * @export
- */
-export const ShippingsApiFactory = function (
-  configuration?: Configuration,
-  basePath?: string,
-  axios?: AxiosInstance
-) {
-  const localVarFp = ShippingsApiFp(configuration)
-  return {
-    /**
-     *
-     * @summary 配送設定一覧取得
-     * @param {number} [limit] 取得上限数(max:200)
-     * @param {number} [offset] 取得開始位置(min:0)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    v1ListShippings(
-      limit?: number,
-      offset?: number,
-      options?: any
-    ): AxiosPromise<ShippingsResponse> {
-      return localVarFp
-        .v1ListShippings(limit, offset, options)
-        .then((request) => request(axios, basePath))
-    },
-  }
-}
-
-/**
- * ShippingsApi - object-oriented interface
- * @export
- * @class ShippingsApi
- * @extends {BaseAPI}
- */
-export class ShippingsApi extends BaseAPI {
-  /**
-   *
-   * @summary 配送設定一覧取得
-   * @param {number} [limit] 取得上限数(max:200)
-   * @param {number} [offset] 取得開始位置(min:0)
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof ShippingsApi
-   */
-  public v1ListShippings(
-    limit?: number,
-    offset?: number,
-    options?: AxiosRequestConfig
-  ) {
-    return ShippingsApiFp(this.configuration)
-      .v1ListShippings(limit, offset, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

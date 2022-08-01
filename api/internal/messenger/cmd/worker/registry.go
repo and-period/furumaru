@@ -106,7 +106,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	params.line = linebot
 
 	// Serviceの設定
-	userService, err := newUserService(ctx, params)
+	userService, err := newUserService(params)
 	if err != nil {
 		return nil, err
 	}
@@ -201,7 +201,7 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 	)
 }
 
-func newUserService(ctx context.Context, p *params) (user.Service, error) {
+func newUserService(p *params) (user.Service, error) {
 	mysql, err := newDatabase("users", p)
 	if err != nil {
 		return nil, err

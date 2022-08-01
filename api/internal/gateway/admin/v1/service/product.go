@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/set"
+	set "github.com/and-period/furumaru/api/pkg/set/v2"
 	"github.com/shopspring/decimal"
 )
 
@@ -59,39 +59,6 @@ func (t DeliveryType) Response() int32 {
 	return int32(t)
 }
 
-func NewProduct(product *entity.Product) *Product {
-	return &Product{
-		Product: response.Product{
-			ID:               product.ID,
-			ProducerID:       product.ProducerID,
-			StoreName:        "dummy", // TODO: 詳細の実装
-			CategoryID:       product.CategoryID,
-			CategoryName:     "dummy", // TODO: 詳細の実装
-			TypeID:           product.TypeID,
-			TypeName:         "dummy", // TODO: 詳細の実装
-			Name:             product.Name,
-			Description:      product.Description,
-			Public:           product.Public,
-			Inventory:        product.Inventory,
-			Weight:           NewProductWeight(product.Weight, product.WeightUnit),
-			ItemUnit:         product.ItemUnit,
-			ItemDescription:  product.ItemDescription,
-			Media:            NewMultiProductMedia(product.Media).Response(),
-			Price:            product.Price,
-			DeliveryType:     NewDeliveryType(product.DeliveryType).Response(),
-			Box60Rate:        product.Box60Rate,
-			Box80Rate:        product.Box80Rate,
-			Box100Rate:       product.Box100Rate,
-			OriginPrefecture: product.OriginPrefecture,
-			OriginCity:       product.OriginCity,
-			CreatedBy:        product.CreatedBy,
-			UpdatedBy:        product.UpdatedBy,
-			CreatedAt:        product.CreatedAt.Unix(),
-			UpdatedAt:        product.CreatedAt.Unix(),
-		},
-	}
-}
-
 func NewProductWeight(weight int64, unit entity.WeightUnit) float64 {
 	const precision = 1
 	var exp int32
@@ -120,6 +87,48 @@ func NewProductWeightFromRequest(weight float64) (int64, entity.WeightUnit) {
 	return dweight.IntPart(), entity.WeightUnitGram
 }
 
+func NewProduct(product *entity.Product) *Product {
+	return &Product{
+		Product: response.Product{
+			ID:               product.ID,
+			ProducerID:       product.ProducerID,
+			CategoryID:       product.CategoryID,
+			TypeID:           product.TypeID,
+			Name:             product.Name,
+			Description:      product.Description,
+			Public:           product.Public,
+			Inventory:        product.Inventory,
+			Weight:           NewProductWeight(product.Weight, product.WeightUnit),
+			ItemUnit:         product.ItemUnit,
+			ItemDescription:  product.ItemDescription,
+			Media:            NewMultiProductMedia(product.Media).Response(),
+			Price:            product.Price,
+			DeliveryType:     NewDeliveryType(product.DeliveryType).Response(),
+			Box60Rate:        product.Box60Rate,
+			Box80Rate:        product.Box80Rate,
+			Box100Rate:       product.Box100Rate,
+			OriginPrefecture: product.OriginPrefecture,
+			OriginCity:       product.OriginCity,
+			CreatedBy:        product.CreatedBy,
+			UpdatedBy:        product.UpdatedBy,
+			CreatedAt:        product.CreatedAt.Unix(),
+			UpdatedAt:        product.CreatedAt.Unix(),
+		},
+	}
+}
+
+func (p *Product) Fill(category *Category, productType *ProductType, producer *Producer) {
+	if category != nil {
+		p.CategoryName = category.Name
+	}
+	if productType != nil {
+		p.TypeName = productType.Name
+	}
+	if producer != nil {
+		p.StoreName = producer.StoreName
+	}
+}
+
 func (p *Product) Response() *response.Product {
 	return &p.Product
 }
@@ -133,27 +142,31 @@ func NewProducts(products entity.Products) Products {
 }
 
 func (ps Products) ProducerIDs() []string {
-	set := set.New(len(ps))
-	for i := range ps {
-		set.AddStrings(ps[i].ProducerID)
-	}
-	return set.Strings()
+	return set.UniqBy(ps, func(p *Product) string {
+		return p.ProducerID
+	})
 }
 
 func (ps Products) CategoryIDs() []string {
-	set := set.New(len(ps))
-	for i := range ps {
-		set.AddStrings(ps[i].CategoryID)
-	}
-	return set.Strings()
+	return set.UniqBy(ps, func(p *Product) string {
+		return p.CategoryID
+	})
 }
 
 func (ps Products) ProductTypeIDs() []string {
-	set := set.New(len(ps))
+	return set.UniqBy(ps, func(p *Product) string {
+		return p.TypeID
+	})
+}
+
+func (ps Products) Fill(
+	categories map[string]*Category,
+	productTypes map[string]*ProductType,
+	producers map[string]*Producer,
+) {
 	for i := range ps {
-		set.AddStrings(ps[i].TypeID)
+		ps[i].Fill(categories[ps[i].CategoryID], productTypes[ps[i].TypeID], producers[ps[i].ProducerID])
 	}
-	return set.Strings()
 }
 
 func (ps Products) Response() []*response.Product {

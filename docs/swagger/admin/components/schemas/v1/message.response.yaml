@@ -1,0 +1,123 @@
+messageResponse:
+  type: object
+  properties:
+    id:
+      type: string
+      description: メッセージID
+    type:
+      type: integer
+      format: int32
+      description: メッセージ種別(1:お知らせ)
+    title:
+      type: string
+      description: メッセージ件名
+    body:
+      type: string
+      description: メッセージ内容
+    link:
+      type: string
+      description: 遷移先リンク
+    read:
+      type: boolean
+      description: 既読フラグ
+    receivedAt:
+      type: integer
+      format: int64
+      description: 受信日時 (unixtime)
+    createdAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
+    updatedAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
+  required:
+  - id
+  - type
+  - title
+  - body
+  - link
+  - read
+  - receivedAt
+  - createdAt
+  - updatedAt
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    type: 1
+    title: 'メッセージ件名'
+    body: 'メッセージの内容です。'
+    link: 'https://and-period.jp'
+    read: true
+    receivedAt: 1640962800
+    createdAt: 1640962800
+    updatedAt: 1640962800
+messagesResponse:
+  type: object
+  properties:
+    messages:
+      type: array
+      description: メッセージ一覧
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            description: メッセージID
+          type:
+            type: integer
+            format: int32
+            description: メッセージ種別(1:お知らせ)
+          title:
+            type: string
+            description: メッセージ件名
+          body:
+            type: string
+            description: メッセージ内容
+          link:
+            type: string
+            description: 遷移先リンク
+          read:
+            type: string
+            description: 既読フラグ
+          receivedAt:
+            type: integer
+            format: int64
+            description: 受信日時 (unixtime)
+          createdAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+          updatedAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+        required:
+        - id
+        - type
+        - title
+        - body
+        - link
+        - read
+        - receivedAt
+        - createdAt
+        - updatedAt
+    total:
+      type: integer
+      format: int64
+      description: 合計数
+  required:
+  - messages
+  - total
+  example:
+    messages:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      type: 1
+      title: 'メッセージ件名'
+      body: 'メッセージの内容です。'
+      link: 'https://and-period.jp'
+      read: true
+      receivedAt: 1640962800
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    total: 2
