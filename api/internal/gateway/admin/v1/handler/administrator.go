@@ -64,25 +64,22 @@ func (h *handler) ListAdministrators(ctx *gin.Context) {
 }
 
 func (h *handler) newAdministratorOrders(ctx *gin.Context) ([]*user.ListAdministratorsOrder, error) {
+	administrators := map[string]uentity.AdministratorOrderBy{
+		"lastname":    uentity.AdministratorOrderByLastname,
+		"firstname":   uentity.AdministratorOrderByFirstname,
+		"email":       uentity.AdministratorOrderByEmail,
+		"phoneNumber": uentity.AdministratorOrderByPhoneNumber,
+	}
 	params := util.GetOrders(ctx)
 	res := make([]*user.ListAdministratorsOrder, len(params))
-	for i := range params {
-		var key uentity.AdministratorOrderBy
-		switch params[i].Key {
-		case "lastname":
-			key = uentity.AdministratorOrderByLastname
-		case "firstname":
-			key = uentity.AdministratorOrderByFirstname
-		case "email":
-			key = uentity.AdministratorOrderByEmail
-		case "phoneNumber":
-			key = uentity.AdministratorOrderByPhoneNumber
-		default:
-			return nil, fmt.Errorf("handler: unknown order key. key=%s: %w", params[i].Key, errInvalidOrderkey)
+	for i, p := range params {
+		key, ok := administrators[p.Key]
+		if !ok {
+			return nil, fmt.Errorf("handler: unknown order key. key=%s: %w", p.Key, errInvalidOrderkey)
 		}
 		res[i] = &user.ListAdministratorsOrder{
 			Key:        key,
-			OrderByASC: params[i].Direction == util.OrderByASC,
+			OrderByASC: p.Direction == util.OrderByASC,
 		}
 	}
 	return res, nil
