@@ -14,6 +14,14 @@ const (
 	MessageTypeNotification MessageType = 1 // お知らせ
 )
 
+type MessageOrderBy string
+
+const (
+	MessageOrderByType       MessageOrderBy = "type"
+	MessageOrderByRead       MessageOrderBy = "read"
+	MessageOrderByReceivedAt MessageOrderBy = "received_at"
+)
+
 // Message - メッセージ情報
 type Message struct {
 	ID         string      `gorm:"primaryKey;<-:create"` // メッセージID

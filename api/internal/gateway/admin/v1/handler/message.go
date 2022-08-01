@@ -1,13 +1,14 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/messenger"
-	"github.com/and-period/furumaru/api/internal/messenger/entity"
+	mentity "github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/gin-gonic/gin"
 )
 
@@ -33,12 +34,18 @@ func (h *handler) ListMessages(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
+	orders, err := h.newMessageOrders(ctx)
+	if err != nil {
+		badRequest(ctx, err)
+		return
+	}
 
 	in := &messenger.ListMessagesInput{
 		Limit:    limit,
 		Offset:   offset,
-		UserType: entity.UserTypeAdmin,
+		UserType: mentity.UserTypeAdmin,
 		UserID:   getAdminID(ctx),
+		Orders:   orders,
 	}
 	messages, total, err := h.messenger.ListMessages(ctx, in)
 	if err != nil {
@@ -53,10 +60,31 @@ func (h *handler) ListMessages(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+func (h *handler) newMessageOrders(ctx *gin.Context) ([]*messenger.ListMessagesOrder, error) {
+	messages := map[string]mentity.MessageOrderBy{
+		"type":       mentity.MessageOrderByType,
+		"read":       mentity.MessageOrderByRead,
+		"receivedAt": mentity.MessageOrderByReceivedAt,
+	}
+	params := util.GetOrders(ctx)
+	res := make([]*messenger.ListMessagesOrder, len(params))
+	for i, p := range params {
+		key, ok := messages[p.Key]
+		if !ok {
+			return nil, fmt.Errorf("handler: unknown order key. key=%s: %w", p.Key, errInvalidOrderkey)
+		}
+		res[i] = &messenger.ListMessagesOrder{
+			Key:        key,
+			OrderByASC: p.Direction == util.OrderByASC,
+		}
+	}
+	return res, nil
+}
+
 func (h *handler) GetMessage(ctx *gin.Context) {
 	in := &messenger.GetMessageInput{
 		MessageID: util.GetParam(ctx, "messageId"),
-		UserType:  entity.UserTypeAdmin,
+		UserType:  mentity.UserTypeAdmin,
 		UserID:    getAdminID(ctx),
 	}
 	message, err := h.messenger.GetMessage(ctx, in)
