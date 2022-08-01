@@ -1,11 +1,9 @@
 import { defineStore } from 'pinia'
 
-import { useAuthStore } from './auth'
-import { useCommonStore } from './common'
-
 import ApiClientFactory from '../plugins/factory'
 
 import { useAuthStore } from './auth'
+import { useCommonStore } from './common'
 
 import {
   CreateProductTypeRequest,
