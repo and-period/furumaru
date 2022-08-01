@@ -21,6 +21,9 @@ func TestListCoordinators(t *testing.T) {
 	params := &database.ListCoordinatorsParams{
 		Limit:  30,
 		Offset: 0,
+		Orders: []*database.ListCoordinatorsOrder{
+			{Key: entity.CoordinatorOrderByLastname, OrderByASC: true},
+		},
 	}
 	coordinators := entity.Coordinators{
 		{
@@ -64,6 +67,9 @@ func TestListCoordinators(t *testing.T) {
 			input: &user.ListCoordinatorsInput{
 				Limit:  30,
 				Offset: 0,
+				Orders: []*user.ListCoordinatorsOrder{
+					{Key: entity.CoordinatorOrderByLastname, OrderByASC: true},
+				},
 			},
 			expect:      coordinators,
 			expectTotal: 1,
@@ -86,6 +92,9 @@ func TestListCoordinators(t *testing.T) {
 			input: &user.ListCoordinatorsInput{
 				Limit:  30,
 				Offset: 0,
+				Orders: []*user.ListCoordinatorsOrder{
+					{Key: entity.CoordinatorOrderByLastname, OrderByASC: true},
+				},
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -100,6 +109,9 @@ func TestListCoordinators(t *testing.T) {
 			input: &user.ListCoordinatorsInput{
 				Limit:  30,
 				Offset: 0,
+				Orders: []*user.ListCoordinatorsOrder{
+					{Key: entity.CoordinatorOrderByLastname, OrderByASC: true},
+				},
 			},
 			expect:      nil,
 			expectTotal: 0,

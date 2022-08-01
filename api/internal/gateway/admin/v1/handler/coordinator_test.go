@@ -19,6 +19,7 @@ func TestListCoordinator(t *testing.T) {
 	in := &user.ListCoordinatorsInput{
 		Limit:  20,
 		Offset: 0,
+		Orders: []*user.ListCoordinatorsOrder{},
 	}
 	coordinators := uentity.Coordinators{
 		{
@@ -142,6 +143,14 @@ func TestListCoordinator(t *testing.T) {
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 			},
 			query: "?offset=a",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name:  "invalid orders",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			query: "?orders=lastname,firstname,companyName,storeName,email,phoneNumber,other",
 			expect: &testResponse{
 				code: http.StatusBadRequest,
 			},

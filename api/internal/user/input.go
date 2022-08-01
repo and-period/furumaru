@@ -85,8 +85,14 @@ type ResetAdministratorPasswordInput struct {
 }
 
 type ListCoordinatorsInput struct {
-	Limit  int64 `validate:"required,max=200"`
-	Offset int64 `validate:"min=0"`
+	Limit  int64                    `validate:"required,max=200"`
+	Offset int64                    `validate:"min=0"`
+	Orders []*ListCoordinatorsOrder `validate:"omitempty,dive,required"`
+}
+
+type ListCoordinatorsOrder struct {
+	Key        entity.CoordinatorOrderBy `validate:"required"`
+	OrderByASC bool                      `validate:""`
 }
 
 type MultiGetCoordinatorsInput struct {

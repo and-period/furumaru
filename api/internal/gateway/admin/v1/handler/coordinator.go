@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
@@ -8,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/user"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/gin-gonic/gin"
 )
 
@@ -37,10 +39,16 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
+	orders, err := h.newCoordinatorOrders(ctx)
+	if err != nil {
+		badRequest(ctx, err)
+		return
+	}
 
 	in := &user.ListCoordinatorsInput{
 		Limit:  limit,
 		Offset: offset,
+		Orders: orders,
 	}
 	coordinators, total, err := h.user.ListCoordinators(ctx, in)
 	if err != nil {
@@ -53,6 +61,35 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 		Total:        total,
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) newCoordinatorOrders(ctx *gin.Context) ([]*user.ListCoordinatorsOrder, error) {
+	params := util.GetOrders(ctx)
+	res := make([]*user.ListCoordinatorsOrder, len(params))
+	for i := range params {
+		var key uentity.CoordinatorOrderBy
+		switch params[i].Key {
+		case "lastname":
+			key = uentity.CoordinatorOrderByLastname
+		case "firstname":
+			key = uentity.CoordinatorOrderByFirstname
+		case "companyName":
+			key = uentity.CoordinatorOrderByCompanyName
+		case "storeName":
+			key = uentity.CoordinatorOrderByStoreName
+		case "email":
+			key = uentity.CoordinatorOrderByEmail
+		case "phoneNumber":
+			key = uentity.CoordinatorOrderByPhoneNumber
+		default:
+			return nil, fmt.Errorf("handler: unknown order key. key=%s: %w", params[i].Key, errInvalidOrderkey)
+		}
+		res[i] = &user.ListCoordinatorsOrder{
+			Key:        key,
+			OrderByASC: params[i].Direction == util.OrderByASC,
+		}
+	}
+	return res, nil
 }
 
 func (h *handler) GetCoordinator(ctx *gin.Context) {
