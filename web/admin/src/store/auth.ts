@@ -13,6 +13,7 @@ import {
   UpdateAuthPasswordRequest,
 } from '~/types/api'
 import {
+  AuthError,
   ConnectionError,
   InternalServerError,
   ValidationError,
@@ -44,7 +45,6 @@ export const useAuthStore = defineStore('auth', {
         cookies.set('refreshToken', this.user.refreshToken)
         return this.redirectPath
       } catch (err) {
-        console.log(err)
         if (axios.isAxiosError(err)) {
           if (!err.response) {
             return Promise.reject(new ConnectionError(err))
@@ -78,9 +78,29 @@ export const useAuthStore = defineStore('auth', {
           color: 'info',
         })
       } catch (err) {
-        // TODO: エラーハンドリング
-        console.log(err)
-        throw new Error('Internal Server Error')
+        if (axios.isAxiosError(err)) {
+          if (!err.response) {
+            return Promise.reject(new ConnectionError(err))
+          }
+          const statusCode = err.response.status
+          switch (statusCode) {
+            case 401:
+              return Promise.reject(
+                new AuthError(
+                  statusCode,
+                  '認証エラー。再度ログインをしてください。',
+                  err
+                )
+              )
+            case 400:
+              return Promise.reject(
+                new ValidationError(statusCode, '入力値に誤りがあります。', err)
+              )
+            default:
+              return Promise.reject(new InternalServerError(err))
+          }
+        }
+        throw new InternalServerError(err)
       }
     },
 

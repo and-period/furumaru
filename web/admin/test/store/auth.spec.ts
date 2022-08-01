@@ -3,7 +3,9 @@ import MockAdapter from 'axios-mock-adapter'
 import { setActivePinia, createPinia } from 'pinia'
 
 import { useAuthStore } from '~/store/auth'
+import { useCommonStore } from '~/store/common'
 import {
+  AuthError,
   ConnectionError,
   InternalServerError,
   ValidationError,
@@ -11,7 +13,8 @@ import {
 
 const axiosMock = new MockAdapter(axios)
 const baseURL = process.env.API_BASE_URL || 'http://localhost:18010'
-axiosMock.onPost(`${baseURL}/v1/auth`).reply(201, {})
+axiosMock.onPost(`${baseURL}/v1/auth`).reply(200, {})
+axiosMock.onPatch(`${baseURL}/v1/auth/password`).reply(204, {})
 
 jest.mock('universal-cookie', () => {
   const mock = {
@@ -107,6 +110,70 @@ describe('Auth Store', () => {
       } catch (error) {
         expect(error instanceof InternalServerError).toBeTruthy()
         expect(authStore.isAuthenticated).toBeFalsy()
+      }
+    })
+  })
+
+  describe('passwordUpdate', () => {
+    it('success', async () => {
+      const authStore = useAuthStore()
+      const commonStore = useCommonStore()
+      await authStore.passwordUpdate({
+        oldPassword: '12345678',
+        newPassword: 'newPass1234',
+        passwordConfirmation: 'newPass1234',
+      })
+      expect(commonStore.snackbars.length).toBe(1)
+    })
+
+    it('failed when return status code is 401', async () => {
+      axiosMock.onPatch(`${baseURL}/v1/auth/password`).reply(401)
+
+      const authStore = useAuthStore()
+      try {
+        await authStore.passwordUpdate({
+          oldPassword: '12345678',
+          newPassword: 'newPass1234',
+          passwordConfirmation: 'newPass1234',
+        })
+      } catch (error) {
+        expect(error instanceof AuthError).toBeTruthy()
+        if (error instanceof Error) {
+          expect(error.message).toBe('認証エラー。再度ログインをしてください。')
+        }
+      }
+    })
+
+    it('failed when return status code is 400', async () => {
+      axiosMock.onPatch(`${baseURL}/v1/auth/password`).reply(400)
+
+      const authStore = useAuthStore()
+      try {
+        await authStore.passwordUpdate({
+          oldPassword: '12345678',
+          newPassword: 'newPass1234',
+          passwordConfirmation: 'newPass',
+        })
+      } catch (error) {
+        expect(error instanceof ValidationError).toBeTruthy()
+        if (error instanceof Error) {
+          expect(error.message).toBe('入力値に誤りがあります。')
+        }
+      }
+    })
+
+    it('failed when return status code is 500', async () => {
+      axiosMock.onPatch(`${baseURL}/v1/auth/password`).reply(500)
+
+      const authStore = useAuthStore()
+      try {
+        await authStore.passwordUpdate({
+          oldPassword: '12345678',
+          newPassword: 'newPass1234',
+          passwordConfirmation: 'newPass1234',
+        })
+      } catch (error) {
+        expect(error instanceof InternalServerError).toBeTruthy()
       }
     })
   })
