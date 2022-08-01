@@ -28,6 +28,14 @@ var targetAdmins = []int32{
 	int32(PostTargetProducers),
 }
 
+type NotificationOrderBy string
+
+const (
+	NotificationOrderByTitle       NotificationOrderBy = "title"
+	NotificationOrderByPublic      NotificationOrderBy = "public"
+	NotificationOrderByPublishedAt NotificationOrderBy = "published_at"
+)
+
 // Notification - お知らせ情報
 type Notification struct {
 	ID          string         `gorm:"primaryKey;<-:create"`        // お知らせID

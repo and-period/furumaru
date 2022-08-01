@@ -66,6 +66,21 @@ func TestMessage_List(t *testing.T) {
 				hasErr:   false,
 			},
 		},
+		{
+			name:  "success with sort",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListMessagesParams{
+					Orders: []*ListMessagesOrder{
+						{Key: entity.MessageOrderByReceivedAt, OrderByASC: false},
+					},
+				},
+			},
+			want: want{
+				messages: messages,
+				hasErr:   false,
+			},
+		},
 	}
 
 	for _, tt := range tests {

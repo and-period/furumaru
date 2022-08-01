@@ -5258,12 +5258,14 @@ export const ContactApiAxiosParamCreator = function (
      * @summary お問い合わせ一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:status,priority,createdAt,updatedAt
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v1ListContacts: async (
       limit?: number,
       offset?: number,
+      orders?: string,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
       const localVarPath = `/v1/contacts`
@@ -5292,6 +5294,10 @@ export const ContactApiAxiosParamCreator = function (
 
       if (offset !== undefined) {
         localVarQueryParameter['offset'] = offset
+      }
+
+      if (orders !== undefined) {
+        localVarQueryParameter['orders'] = orders
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -5411,12 +5417,14 @@ export const ContactApiFp = function (configuration?: Configuration) {
      * @summary お問い合わせ一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:status,priority,createdAt,updatedAt
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async v1ListContacts(
       limit?: number,
       offset?: number,
+      orders?: string,
       options?: AxiosRequestConfig
     ): Promise<
       (
@@ -5427,6 +5435,7 @@ export const ContactApiFp = function (configuration?: Configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListContacts(
         limit,
         offset,
+        orders,
         options
       )
       return createRequestFunction(
@@ -5497,16 +5506,18 @@ export const ContactApiFactory = function (
      * @summary お問い合わせ一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:status,priority,createdAt,updatedAt
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v1ListContacts(
       limit?: number,
       offset?: number,
+      orders?: string,
       options?: any
     ): AxiosPromise<ContactsResponse> {
       return localVarFp
-        .v1ListContacts(limit, offset, options)
+        .v1ListContacts(limit, offset, orders, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -5555,6 +5566,7 @@ export class ContactApi extends BaseAPI {
    * @summary お問い合わせ一覧取得
    * @param {number} [limit] 取得上限数(max:200)
    * @param {number} [offset] 取得開始位置(min:0)
+   * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:status,priority,createdAt,updatedAt
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ContactApi
@@ -5562,10 +5574,11 @@ export class ContactApi extends BaseAPI {
   public v1ListContacts(
     limit?: number,
     offset?: number,
+    orders?: string,
     options?: AxiosRequestConfig
   ) {
     return ContactApiFp(this.configuration)
-      .v1ListContacts(limit, offset, options)
+      .v1ListContacts(limit, offset, orders, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -6656,12 +6669,14 @@ export const MessageApiAxiosParamCreator = function (
      * @summary メッセージ一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:type,read,receivedAt
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v1ListMessages: async (
       limit?: number,
       offset?: number,
+      orders?: string,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
       const localVarPath = `/v1/messages`
@@ -6690,6 +6705,10 @@ export const MessageApiAxiosParamCreator = function (
 
       if (offset !== undefined) {
         localVarQueryParameter['offset'] = offset
+      }
+
+      if (orders !== undefined) {
+        localVarQueryParameter['orders'] = orders
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -6748,12 +6767,14 @@ export const MessageApiFp = function (configuration?: Configuration) {
      * @summary メッセージ一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:type,read,receivedAt
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async v1ListMessages(
       limit?: number,
       offset?: number,
+      orders?: string,
       options?: AxiosRequestConfig
     ): Promise<
       (
@@ -6764,6 +6785,7 @@ export const MessageApiFp = function (configuration?: Configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListMessages(
         limit,
         offset,
+        orders,
         options
       )
       return createRequestFunction(
@@ -6807,16 +6829,18 @@ export const MessageApiFactory = function (
      * @summary メッセージ一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:type,read,receivedAt
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v1ListMessages(
       limit?: number,
       offset?: number,
+      orders?: string,
       options?: any
     ): AxiosPromise<MessagesResponse> {
       return localVarFp
-        .v1ListMessages(limit, offset, options)
+        .v1ListMessages(limit, offset, orders, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -6848,6 +6872,7 @@ export class MessageApi extends BaseAPI {
    * @summary メッセージ一覧取得
    * @param {number} [limit] 取得上限数(max:200)
    * @param {number} [offset] 取得開始位置(min:0)
+   * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:type,read,receivedAt
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof MessageApi
@@ -6855,10 +6880,11 @@ export class MessageApi extends BaseAPI {
   public v1ListMessages(
     limit?: number,
     offset?: number,
+    orders?: string,
     options?: AxiosRequestConfig
   ) {
     return MessageApiFp(this.configuration)
-      .v1ListMessages(limit, offset, options)
+      .v1ListMessages(limit, offset, orders, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
