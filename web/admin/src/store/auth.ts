@@ -12,6 +12,11 @@ import {
   SignInRequest,
   UpdateAuthPasswordRequest,
 } from '~/types/api'
+import {
+  ConnectionError,
+  InternalServerError,
+  ValidationError,
+} from '~/types/exception'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -42,29 +47,23 @@ export const useAuthStore = defineStore('auth', {
         console.log(err)
         if (axios.isAxiosError(err)) {
           if (!err.response) {
-            return Promise.reject(
-              new Error(
-                '現在、システムが停止中です。時間をおいてから再度アクセスしてください。'
-              )
-            )
+            return Promise.reject(new ConnectionError(err))
           }
-          switch (err.response?.status) {
+          switch (err.response.status) {
             case 400:
             case 401:
               return Promise.reject(
-                new Error('ユーザー名またはパスワードが違います。')
-              )
-            default:
-              return Promise.reject(
-                new Error(
-                  '現在、システムが停止中です。時間をおいてから再度アクセスしてください。'
+                new ValidationError(
+                  err.response.status,
+                  'ユーザー名またはパスワードが違います。',
+                  err
                 )
               )
+            default:
+              return Promise.reject(new InternalServerError(err))
           }
         }
-        throw new Error(
-          '不明なエラーが発生しました。管理者にお問い合わせください。'
-        )
+        throw new InternalServerError(err)
       }
     },
 
