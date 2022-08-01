@@ -29,6 +29,17 @@ get:
     description: 品目名(あいまい検索)
     required: false
     example: 'じゃがいも'
+  - in: query
+    name: orders
+    schema:
+      type: string
+    description: |
+      ソート
+      ・複数指定時は`,`区切り
+      ・降順の場合はprefixに`-`をつける
+      ・指定可能フィールド:name
+    required: false
+    example: '-name'
   responses:
     200:
       description: A successful response.

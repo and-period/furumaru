@@ -66,6 +66,22 @@ func TestShipping_List(t *testing.T) {
 				hasErr:    false,
 			},
 		},
+		{
+			name:  "success with sort",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListShippingsParams{
+					Orders: []*ListShippingsOrder{
+						{Key: entity.ShippingOrderByCreatedAt, OrderByASC: true},
+						{Key: entity.ShippingOrderByUpdatedAt, OrderByASC: false},
+					},
+				},
+			},
+			want: want{
+				shippings: shippings,
+				hasErr:    false,
+			},
+		},
 	}
 
 	for _, tt := range tests {

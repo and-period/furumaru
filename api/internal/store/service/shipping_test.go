@@ -22,6 +22,9 @@ func TestListShippings(t *testing.T) {
 	params := &database.ListShippingsParams{
 		Limit:  20,
 		Offset: 0,
+		Orders: []*database.ListShippingsOrder{
+			{Key: entity.ShippingOrderByName, OrderByASC: true},
+		},
 	}
 	shikoku := []int64{
 		codes.PrefectureValues["tokushima"],
@@ -78,6 +81,9 @@ func TestListShippings(t *testing.T) {
 			input: &store.ListShippingsInput{
 				Limit:  20,
 				Offset: 0,
+				Orders: []*store.ListShippingsOrder{
+					{Key: entity.ShippingOrderByName, OrderByASC: true},
+				},
 			},
 			expect:      shippings,
 			expectTotal: 1,
@@ -100,6 +106,9 @@ func TestListShippings(t *testing.T) {
 			input: &store.ListShippingsInput{
 				Limit:  20,
 				Offset: 0,
+				Orders: []*store.ListShippingsOrder{
+					{Key: entity.ShippingOrderByName, OrderByASC: true},
+				},
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -114,6 +123,9 @@ func TestListShippings(t *testing.T) {
 			input: &store.ListShippingsInput{
 				Limit:  20,
 				Offset: 0,
+				Orders: []*store.ListShippingsOrder{
+					{Key: entity.ShippingOrderByName, OrderByASC: true},
+				},
 			},
 			expect:      nil,
 			expectTotal: 0,

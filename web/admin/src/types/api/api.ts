@@ -4788,6 +4788,7 @@ export const CategoryApiAxiosParamCreator = function (
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 商品種別名(あいまい検索)(32文字以内)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4795,6 +4796,7 @@ export const CategoryApiAxiosParamCreator = function (
       limit?: number,
       offset?: number,
       name?: string,
+      orders?: string,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
       const localVarPath = `/v1/categories`
@@ -4827,6 +4829,10 @@ export const CategoryApiAxiosParamCreator = function (
 
       if (name !== undefined) {
         localVarQueryParameter['name'] = name
+      }
+
+      if (orders !== undefined) {
+        localVarQueryParameter['orders'] = orders
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -4967,6 +4973,7 @@ export const CategoryApiFp = function (configuration?: Configuration) {
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 商品種別名(あいまい検索)(32文字以内)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4974,6 +4981,7 @@ export const CategoryApiFp = function (configuration?: Configuration) {
       limit?: number,
       offset?: number,
       name?: string,
+      orders?: string,
       options?: AxiosRequestConfig
     ): Promise<
       (
@@ -4986,6 +4994,7 @@ export const CategoryApiFp = function (configuration?: Configuration) {
           limit,
           offset,
           name,
+          orders,
           options
         )
       return createRequestFunction(
@@ -5070,6 +5079,7 @@ export const CategoryApiFactory = function (
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 商品種別名(あいまい検索)(32文字以内)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -5077,10 +5087,11 @@ export const CategoryApiFactory = function (
       limit?: number,
       offset?: number,
       name?: string,
+      orders?: string,
       options?: any
     ): AxiosPromise<CategoriesResponse> {
       return localVarFp
-        .v1ListCategories(limit, offset, name, options)
+        .v1ListCategories(limit, offset, name, orders, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -5147,6 +5158,7 @@ export class CategoryApi extends BaseAPI {
    * @param {number} [limit] 取得上限数(max:200)
    * @param {number} [offset] 取得開始位置(min:0)
    * @param {string} [name] 商品種別名(あいまい検索)(32文字以内)
+   * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof CategoryApi
@@ -5155,10 +5167,11 @@ export class CategoryApi extends BaseAPI {
     limit?: number,
     offset?: number,
     name?: string,
+    orders?: string,
     options?: AxiosRequestConfig
   ) {
     return CategoryApiFp(this.configuration)
-      .v1ListCategories(limit, offset, name, options)
+      .v1ListCategories(limit, offset, name, orders, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -8115,6 +8128,7 @@ export const ProductApiAxiosParamCreator = function (
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [coordinatorId] 仲介者ID
      * @param {string} [producerId] 生産者ID
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,price,originPrefecture,originCity,createdAt,updatedAt
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8123,6 +8137,7 @@ export const ProductApiAxiosParamCreator = function (
       offset?: number,
       coordinatorId?: string,
       producerId?: string,
+      orders?: string,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
       const localVarPath = `/v1/products`
@@ -8159,6 +8174,10 @@ export const ProductApiAxiosParamCreator = function (
 
       if (producerId !== undefined) {
         localVarQueryParameter['producerId'] = producerId
+      }
+
+      if (orders !== undefined) {
+        localVarQueryParameter['orders'] = orders
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -8307,6 +8326,7 @@ export const ProductApiFp = function (configuration?: Configuration) {
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [coordinatorId] 仲介者ID
      * @param {string} [producerId] 生産者ID
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,price,originPrefecture,originCity,createdAt,updatedAt
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8315,6 +8335,7 @@ export const ProductApiFp = function (configuration?: Configuration) {
       offset?: number,
       coordinatorId?: string,
       producerId?: string,
+      orders?: string,
       options?: AxiosRequestConfig
     ): Promise<
       (
@@ -8327,6 +8348,7 @@ export const ProductApiFp = function (configuration?: Configuration) {
         offset,
         coordinatorId,
         producerId,
+        orders,
         options
       )
       return createRequestFunction(
@@ -8414,6 +8436,7 @@ export const ProductApiFactory = function (
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [coordinatorId] 仲介者ID
      * @param {string} [producerId] 生産者ID
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,price,originPrefecture,originCity,createdAt,updatedAt
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8422,10 +8445,18 @@ export const ProductApiFactory = function (
       offset?: number,
       coordinatorId?: string,
       producerId?: string,
+      orders?: string,
       options?: any
     ): AxiosPromise<ProductsResponse> {
       return localVarFp
-        .v1ListProducts(limit, offset, coordinatorId, producerId, options)
+        .v1ListProducts(
+          limit,
+          offset,
+          coordinatorId,
+          producerId,
+          orders,
+          options
+        )
         .then((request) => request(axios, basePath))
     },
     /**
@@ -8493,6 +8524,7 @@ export class ProductApi extends BaseAPI {
    * @param {number} [offset] 取得開始位置(min:0)
    * @param {string} [coordinatorId] 仲介者ID
    * @param {string} [producerId] 生産者ID
+   * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,price,originPrefecture,originCity,createdAt,updatedAt
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ProductApi
@@ -8502,10 +8534,11 @@ export class ProductApi extends BaseAPI {
     offset?: number,
     coordinatorId?: string,
     producerId?: string,
+    orders?: string,
     options?: AxiosRequestConfig
   ) {
     return ProductApiFp(this.configuration)
-      .v1ListProducts(limit, offset, coordinatorId, producerId, options)
+      .v1ListProducts(limit, offset, coordinatorId, producerId, orders, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -8661,6 +8694,7 @@ export const ProductTypeApiAxiosParamCreator = function (
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 品目名(あいまい検索)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8668,6 +8702,7 @@ export const ProductTypeApiAxiosParamCreator = function (
       limit?: number,
       offset?: number,
       name?: string,
+      orders?: string,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
       const localVarPath = `/v1/categories/-/product-types`
@@ -8702,6 +8737,10 @@ export const ProductTypeApiAxiosParamCreator = function (
         localVarQueryParameter['name'] = name
       }
 
+      if (orders !== undefined) {
+        localVarQueryParameter['orders'] = orders
+      }
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -8723,6 +8762,7 @@ export const ProductTypeApiAxiosParamCreator = function (
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 品目名(あいまい検索)(32文字以内)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8731,6 +8771,7 @@ export const ProductTypeApiAxiosParamCreator = function (
       limit?: number,
       offset?: number,
       name?: string,
+      orders?: string,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
       // verify required parameter 'categoryId' is not null or undefined
@@ -8768,6 +8809,10 @@ export const ProductTypeApiAxiosParamCreator = function (
 
       if (name !== undefined) {
         localVarQueryParameter['name'] = name
+      }
+
+      if (orders !== undefined) {
+        localVarQueryParameter['orders'] = orders
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -8928,6 +8973,7 @@ export const ProductTypeApiFp = function (configuration?: Configuration) {
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 品目名(あいまい検索)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8935,6 +8981,7 @@ export const ProductTypeApiFp = function (configuration?: Configuration) {
       limit?: number,
       offset?: number,
       name?: string,
+      orders?: string,
       options?: AxiosRequestConfig
     ): Promise<
       (
@@ -8947,6 +8994,7 @@ export const ProductTypeApiFp = function (configuration?: Configuration) {
           limit,
           offset,
           name,
+          orders,
           options
         )
       return createRequestFunction(
@@ -8963,6 +9011,7 @@ export const ProductTypeApiFp = function (configuration?: Configuration) {
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 品目名(あいまい検索)(32文字以内)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8971,6 +9020,7 @@ export const ProductTypeApiFp = function (configuration?: Configuration) {
       limit?: number,
       offset?: number,
       name?: string,
+      orders?: string,
       options?: AxiosRequestConfig
     ): Promise<
       (
@@ -8984,6 +9034,7 @@ export const ProductTypeApiFp = function (configuration?: Configuration) {
           limit,
           offset,
           name,
+          orders,
           options
         )
       return createRequestFunction(
@@ -9078,6 +9129,7 @@ export const ProductTypeApiFactory = function (
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 品目名(あいまい検索)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -9085,10 +9137,11 @@ export const ProductTypeApiFactory = function (
       limit?: number,
       offset?: number,
       name?: string,
+      orders?: string,
       options?: any
     ): AxiosPromise<ProductTypesResponse> {
       return localVarFp
-        .v1ListAllProductTypes(limit, offset, name, options)
+        .v1ListAllProductTypes(limit, offset, name, orders, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -9098,6 +9151,7 @@ export const ProductTypeApiFactory = function (
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 品目名(あいまい検索)(32文字以内)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -9106,10 +9160,11 @@ export const ProductTypeApiFactory = function (
       limit?: number,
       offset?: number,
       name?: string,
+      orders?: string,
       options?: any
     ): AxiosPromise<ProductTypesResponse> {
       return localVarFp
-        .v1ListProductTypes(categoryId, limit, offset, name, options)
+        .v1ListProductTypes(categoryId, limit, offset, name, orders, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -9185,6 +9240,7 @@ export class ProductTypeApi extends BaseAPI {
    * @param {number} [limit] 取得上限数(max:200)
    * @param {number} [offset] 取得開始位置(min:0)
    * @param {string} [name] 品目名(あいまい検索)
+   * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ProductTypeApi
@@ -9193,10 +9249,11 @@ export class ProductTypeApi extends BaseAPI {
     limit?: number,
     offset?: number,
     name?: string,
+    orders?: string,
     options?: AxiosRequestConfig
   ) {
     return ProductTypeApiFp(this.configuration)
-      .v1ListAllProductTypes(limit, offset, name, options)
+      .v1ListAllProductTypes(limit, offset, name, orders, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -9207,6 +9264,7 @@ export class ProductTypeApi extends BaseAPI {
    * @param {number} [limit] 取得上限数(max:200)
    * @param {number} [offset] 取得開始位置(min:0)
    * @param {string} [name] 品目名(あいまい検索)(32文字以内)
+   * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ProductTypeApi
@@ -9216,10 +9274,11 @@ export class ProductTypeApi extends BaseAPI {
     limit?: number,
     offset?: number,
     name?: string,
+    orders?: string,
     options?: AxiosRequestConfig
   ) {
     return ProductTypeApiFp(this.configuration)
-      .v1ListProductTypes(categoryId, limit, offset, name, options)
+      .v1ListProductTypes(categoryId, limit, offset, name, orders, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -9362,12 +9421,14 @@ export const ShippingApiAxiosParamCreator = function (
      * @summary 配送設定一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,hasFreeShipping,createdAt,updatedAt
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v1ListShippings: async (
       limit?: number,
       offset?: number,
+      orders?: string,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
       const localVarPath = `/v1/shippings`
@@ -9396,6 +9457,10 @@ export const ShippingApiAxiosParamCreator = function (
 
       if (offset !== undefined) {
         localVarQueryParameter['offset'] = offset
+      }
+
+      if (orders !== undefined) {
+        localVarQueryParameter['orders'] = orders
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -9540,12 +9605,14 @@ export const ShippingApiFp = function (configuration?: Configuration) {
      * @summary 配送設定一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,hasFreeShipping,createdAt,updatedAt
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async v1ListShippings(
       limit?: number,
       offset?: number,
+      orders?: string,
       options?: AxiosRequestConfig
     ): Promise<
       (
@@ -9556,6 +9623,7 @@ export const ShippingApiFp = function (configuration?: Configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListShippings(
         limit,
         offset,
+        orders,
         options
       )
       return createRequestFunction(
@@ -9642,16 +9710,18 @@ export const ShippingApiFactory = function (
      * @summary 配送設定一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,hasFreeShipping,createdAt,updatedAt
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v1ListShippings(
       limit?: number,
       offset?: number,
+      orders?: string,
       options?: any
     ): AxiosPromise<ShippingsResponse> {
       return localVarFp
-        .v1ListShippings(limit, offset, options)
+        .v1ListShippings(limit, offset, orders, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -9717,6 +9787,7 @@ export class ShippingApi extends BaseAPI {
    * @summary 配送設定一覧取得
    * @param {number} [limit] 取得上限数(max:200)
    * @param {number} [offset] 取得開始位置(min:0)
+   * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,hasFreeShipping,createdAt,updatedAt
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ShippingApi
@@ -9724,10 +9795,11 @@ export class ShippingApi extends BaseAPI {
   public v1ListShippings(
     limit?: number,
     offset?: number,
+    orders?: string,
     options?: AxiosRequestConfig
   ) {
     return ShippingApiFp(this.configuration)
-      .v1ListShippings(limit, offset, options)
+      .v1ListShippings(limit, offset, orders, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
