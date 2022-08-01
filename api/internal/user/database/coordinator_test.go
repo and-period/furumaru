@@ -30,18 +30,18 @@ func TestCoordinator_List(t *testing.T) {
 	}
 
 	_ = m.dbDelete(ctx, coordinatorTable)
-	admins := make(entity.Coordinators, 2)
-	admins[0] = testCoordinator("admin-id01", "test-admin01@and-period.jp", now())
-	admins[1] = testCoordinator("admin-id02", "test-admin02@and-period.jp", now())
-	err = m.db.DB.Create(&admins).Error
+	coordinators := make(entity.Coordinators, 2)
+	coordinators[0] = testCoordinator("admin-id01", "test-admin01@and-period.jp", now())
+	coordinators[1] = testCoordinator("admin-id02", "test-admin02@and-period.jp", now())
+	err = m.db.DB.Create(&coordinators).Error
 	require.NoError(t, err)
 
 	type args struct {
 		params *ListCoordinatorsParams
 	}
 	type want struct {
-		admins entity.Coordinators
-		hasErr bool
+		coordinators entity.Coordinators
+		hasErr       bool
 	}
 	tests := []struct {
 		name  string
@@ -59,8 +59,24 @@ func TestCoordinator_List(t *testing.T) {
 				},
 			},
 			want: want{
-				admins: admins[1:],
-				hasErr: false,
+				coordinators: coordinators[1:],
+				hasErr:       false,
+			},
+		},
+		{
+			name:  "success with sort",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListCoordinatorsParams{
+					Orders: []*ListCoordinatorsOrder{
+						{Key: "lastname", OrderByASC: true},
+						{Key: "firstname", OrderByASC: false},
+					},
+				},
+			},
+			want: want{
+				coordinators: coordinators,
+				hasErr:       false,
 			},
 		},
 	}
@@ -82,7 +98,7 @@ func TestCoordinator_List(t *testing.T) {
 			}
 			assert.NoError(t, err)
 			fillIgnoreCoordinatorsField(actual, now())
-			assert.Equal(t, tt.want.admins, actual)
+			assert.Equal(t, tt.want.coordinators, actual)
 		})
 	}
 }
