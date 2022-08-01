@@ -19,6 +19,7 @@ func TestListProducer(t *testing.T) {
 	in := &user.ListProducersInput{
 		Limit:  20,
 		Offset: 0,
+		Orders: []*user.ListProducersOrder{},
 	}
 	producers := uentity.Producers{
 		{
@@ -113,19 +114,25 @@ func TestListProducer(t *testing.T) {
 			},
 		},
 		{
-			name: "invalid limit",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-			},
+			name:  "invalid limit",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
 			query: "?limit=a",
 			expect: &testResponse{
 				code: http.StatusBadRequest,
 			},
 		},
 		{
-			name: "invalid offset",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-			},
+			name:  "invalid offset",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
 			query: "?offset=a",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name:  "invalid orders",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			query: "?orders=lastname,firstname,storeName,email,phoneNumber,other",
 			expect: &testResponse{
 				code: http.StatusBadRequest,
 			},

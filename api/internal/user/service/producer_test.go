@@ -21,6 +21,9 @@ func TestListProducers(t *testing.T) {
 	params := &database.ListProducersParams{
 		Limit:  30,
 		Offset: 0,
+		Orders: []*database.ListProducersOrder{
+			{Key: entity.ProducerOrderByLastname, OrderByASC: true},
+		},
 	}
 	producers := entity.Producers{
 		{
@@ -61,6 +64,9 @@ func TestListProducers(t *testing.T) {
 			input: &user.ListProducersInput{
 				Limit:  30,
 				Offset: 0,
+				Orders: []*user.ListProducersOrder{
+					{Key: entity.ProducerOrderByLastname, OrderByASC: true},
+				},
 			},
 			expect:      producers,
 			expectTotal: 1,
@@ -83,6 +89,9 @@ func TestListProducers(t *testing.T) {
 			input: &user.ListProducersInput{
 				Limit:  30,
 				Offset: 0,
+				Orders: []*user.ListProducersOrder{
+					{Key: entity.ProducerOrderByLastname, OrderByASC: true},
+				},
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -97,6 +106,9 @@ func TestListProducers(t *testing.T) {
 			input: &user.ListProducersInput{
 				Limit:  30,
 				Offset: 0,
+				Orders: []*user.ListProducersOrder{
+					{Key: entity.ProducerOrderByLastname, OrderByASC: true},
+				},
 			},
 			expect:      nil,
 			expectTotal: 0,

@@ -63,6 +63,22 @@ func TestProducer_List(t *testing.T) {
 				hasErr:    false,
 			},
 		},
+		{
+			name:  "success with sort",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListProducersParams{
+					Orders: []*ListProducersOrder{
+						{Key: "lastname", OrderByASC: true},
+						{Key: "firstname", OrderByASC: false},
+					},
+				},
+			},
+			want: want{
+				producers: producers,
+				hasErr:    false,
+			},
+		},
 	}
 
 	for _, tt := range tests {
