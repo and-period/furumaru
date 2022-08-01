@@ -1,5 +1,8 @@
 import { defineStore } from 'pinia'
 
+import { useAuthStore } from './auth'
+import { useCommonStore } from './common'
+
 import ApiClientFactory from '../plugins/factory'
 
 import { useAuthStore } from './auth'
@@ -15,30 +18,45 @@ export const useProductTypeStore = defineStore('ProductType', {
     productTypes: [] as ProductTypesResponse['productTypes'],
   }),
   actions: {
+    /**
+     * 品目を全件取得する非同期関数
+     */
     async fetchProductTypes(): Promise<void> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
-        if (!accessToken) throw new Error('認証エラー')
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
+        }
 
         const factory = new ApiClientFactory()
         const productTypeApiClient = factory.create(ProductTypeApi, accessToken)
         const res = await productTypeApiClient.v1ListAllProductTypes()
         console.log(res)
         this.productTypes = res.data.productTypes
-      } catch (error) {
-        // TODO: エラーハンドリング
+      } catch (e) {
+        console.log(e)
         throw new Error('Internal Server Error')
       }
     },
+
+    /**
+     * 品目を新規登録する非同期関数
+     * @param categoryId 品目の親となるカテゴリのID
+     * @param payload
+     * @returns
+     */
     async createProductType(
       categoryId: string,
       payload: CreateProductTypeRequest
     ): Promise<void> {
+      const commonStore = useCommonStore()
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
-        if (!accessToken) throw new Error('認証エラー')
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
+        }
 
         const factory = new ApiClientFactory()
         const productTypeApiClient = factory.create(ProductTypeApi, accessToken)
@@ -47,10 +65,12 @@ export const useProductTypeStore = defineStore('ProductType', {
           payload
         )
         this.productTypes.unshift(res.data)
-        console.log(res)
-      } catch (error) {
-        // TODO: エラーハンドリング
-        throw new Error('Internal Server Error')
+        commonStore.addSnackbar({
+          message: `品目を追加しました。`,
+          color: 'info',
+        })
+      } catch (e) {
+        return Promise.reject(new Error('不明なエラーが発生しました。'))
       }
     },
   },

@@ -75,13 +75,15 @@ export const useAuthStore = defineStore('auth', {
         await authApiClient.v1UpdateAuthPassword(payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
-          message: `パスワードを更新しました。`,
+          message: 'パスワードを更新しました。',
           color: 'info',
         })
-      } catch (err) {
-        // TODO: エラーハンドリング
-        console.log(err)
-        throw new Error('Internal Server Error')
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          return Promise.reject(new Error(error.message))
+        } else {
+          return Promise.reject(new Error('不明なエラーが発生しました。'))
+        }
       }
     },
 
@@ -101,7 +103,7 @@ export const useAuthStore = defineStore('auth', {
         if (axios.isAxiosError(error)) {
           throw new Error(error.message)
         }
-        throw new Error('Internal Server Error')
+        throw new Error('不明なエラーが発生しました。')
       }
     },
 

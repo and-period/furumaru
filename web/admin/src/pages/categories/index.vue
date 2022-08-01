@@ -109,7 +109,6 @@ import {
 import TheCategoryList from '~/components/organisms/TheCategoryList.vue'
 import TheProductTypeList from '~/components/organisms/TheProductTypeList.vue'
 import { useCategoryStore } from '~/store/category'
-import { useCommonStore } from '~/store/common'
 import { useProductTypeStore } from '~/store/product-type'
 import { CreateCategoryRequest, CreateProductTypeRequest } from '~/types/api'
 import { Category } from '~/types/props/category'
@@ -133,7 +132,6 @@ export default defineComponent({
       })
     })
 
-    const commonStore = useCommonStore()
     const selector = ref<string>('categories')
     const categoryDialog = ref<boolean>(false)
     const productTypeDialog = ref<boolean>(false)
@@ -163,10 +161,6 @@ export default defineComponent({
       try {
         await categoryStore.createCategory(categoryFormData)
         categoryDialog.value = false
-        commonStore.addSnackbar({
-          message: `カテゴリーを追加しました。`,
-          color: 'info',
-        })
       } catch (error) {
         console.log(error)
       }
@@ -180,10 +174,6 @@ export default defineComponent({
           productTypeFormData
         )
         productTypeDialog.value = false
-        commonStore.addSnackbar({
-          message: `品目を追加しました。`,
-          color: 'info',
-        })
       } catch (error) {
         console.log(error)
       }
