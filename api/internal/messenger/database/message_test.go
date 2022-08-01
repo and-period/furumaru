@@ -62,7 +62,7 @@ func TestMessage_List(t *testing.T) {
 				},
 			},
 			want: want{
-				messages: messages[0:2],
+				messages: messages[1:],
 				hasErr:   false,
 			},
 		},
