@@ -114,7 +114,7 @@ func TestCategory_List(t *testing.T) {
 			}
 			assert.NoError(t, err)
 			fillIgnoreCategoriesField(actual, now())
-			assert.Equal(t, tt.want.categories, actual)
+			assert.ElementsMatch(t, tt.want.categories, actual)
 		})
 	}
 }
