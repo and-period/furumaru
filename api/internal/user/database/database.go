@@ -90,6 +90,24 @@ type User interface {
 type ListAdministratorsParams struct {
 	Limit  int
 	Offset int
+	Orders []*ListAdministratorsOrder
+}
+type ListAdministratorsOrder struct {
+	Key        entity.AdministratorOrderBy
+	OrderByASC bool
+}
+
+func (p *ListAdministratorsParams) stmt(stmt *gorm.DB) *gorm.DB {
+	for i := range p.Orders {
+		var value string
+		if p.Orders[i].OrderByASC {
+			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
+		} else {
+			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
+		}
+		stmt = stmt.Order(value)
+	}
+	return stmt
 }
 
 type UpdateAdministratorParams struct {
