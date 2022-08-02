@@ -1,4 +1,4 @@
-import { Amplify, Analytics } from 'aws-amplify';
+import { Amplify, Analytics } from 'aws-amplify'
 
 const enabledAnalytics: boolean = process.env.AWS_PINPOINT_APP_ID !== ''
 
@@ -14,9 +14,9 @@ Amplify.configure({
       appId: process.env.AWS_PINPOINT_APP_ID,
       region: process.env.AWS_REGION,
       flushInterval: 5000, // 5s
-      resendLimit: 5
-    }
-  }
+      resendLimit: 5,
+    },
+  },
 })
 
 if (enabledAnalytics) {
