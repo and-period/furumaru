@@ -1,5 +1,6 @@
-import { Amplify, Analytics } from 'aws-amplify'
+import { Amplify, Analytics, Auth } from 'aws-amplify'
 
+const enabledAmplify: boolean = process.env.AWS_COGNITO_IDENTITY_POOL_ID !== ''
 const enabledAnalytics: boolean = process.env.AWS_PINPOINT_APP_ID !== ''
 
 Amplify.configure({
@@ -20,6 +21,11 @@ Amplify.configure({
   },
 })
 
+if (enabledAmplify) {
+  Auth.configure()
+}
+
 if (enabledAnalytics) {
+  Analytics.configure()
   Analytics.record(process.env.APP_NAME || '')
 }
