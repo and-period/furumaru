@@ -41,6 +41,7 @@ func (s *shipping) List(ctx context.Context, params *ListShippingsParams, fields
 	}
 
 	stmt := s.db.DB.WithContext(ctx).Table(shippingTable).Select(fields)
+	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
 	}

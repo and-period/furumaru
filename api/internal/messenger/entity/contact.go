@@ -27,6 +27,15 @@ const (
 	ContactPriorityHigh    ContactPriority = 3 // 優先度・高
 )
 
+type ContactOrderBy string
+
+const (
+	ContactOrderByStatus    ContactOrderBy = "status"
+	ContactOrderByPriority  ContactOrderBy = "priority"
+	ContactOrderByCreatedAt ContactOrderBy = "created_at"
+	ContactOrderByUpdatedAt ContactOrderBy = "updated_at"
+)
+
 // Contact - お問い合わせ情報
 type Contact struct {
 	ID          string          `gorm:"primaryKey;<-:create"` // お問い合わせID

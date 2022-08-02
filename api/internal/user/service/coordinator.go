@@ -21,9 +21,17 @@ func (s *service) ListCoordinators(
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, exception.InternalError(err)
 	}
+	orders := make([]*database.ListCoordinatorsOrder, len(in.Orders))
+	for i := range in.Orders {
+		orders[i] = &database.ListCoordinatorsOrder{
+			Key:        in.Orders[i].Key,
+			OrderByASC: in.Orders[i].OrderByASC,
+		}
+	}
 	params := &database.ListCoordinatorsParams{
 		Limit:  int(in.Limit),
 		Offset: int(in.Offset),
+		Orders: orders,
 	}
 	var (
 		coordinators entity.Coordinators

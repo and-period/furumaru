@@ -64,6 +64,21 @@ func TestContact_List(t *testing.T) {
 				hasErr:   false,
 			},
 		},
+		{
+			name:  "success with sort",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListContactsParams{
+					Orders: []*ListContactsOrder{
+						{Key: entity.ContactOrderByPriority, OrderByASC: true},
+					},
+				},
+			},
+			want: want{
+				contacts: contacts,
+				hasErr:   false,
+			},
+		},
 	}
 	for _, tt := range tests {
 		tt := tt

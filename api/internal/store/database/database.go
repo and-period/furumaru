@@ -79,11 +79,26 @@ type ListCategoriesParams struct {
 	Name   string
 	Limit  int
 	Offset int
+	Orders []*ListCategoriesOrder
+}
+
+type ListCategoriesOrder struct {
+	Key        entity.CategoryOrderBy
+	OrderByASC bool
 }
 
 func (p *ListCategoriesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.Name != "" {
 		stmt = stmt.Where("name LIKE ?", fmt.Sprintf("%%%s%%", p.Name))
+	}
+	for i := range p.Orders {
+		var value string
+		if p.Orders[i].OrderByASC {
+			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
+		} else {
+			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
+		}
+		stmt = stmt.Order(value)
 	}
 	return stmt
 }
@@ -91,6 +106,25 @@ func (p *ListCategoriesParams) stmt(stmt *gorm.DB) *gorm.DB {
 type ListShippingsParams struct {
 	Limit  int
 	Offset int
+	Orders []*ListShippingsOrder
+}
+
+type ListShippingsOrder struct {
+	Key        entity.ShippingOrderBy
+	OrderByASC bool
+}
+
+func (p *ListShippingsParams) stmt(stmt *gorm.DB) *gorm.DB {
+	for i := range p.Orders {
+		var value string
+		if p.Orders[i].OrderByASC {
+			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
+		} else {
+			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
+		}
+		stmt = stmt.Order(value)
+	}
+	return stmt
 }
 
 type UpdateShippingParams struct {
@@ -114,6 +148,12 @@ type ListProductsParams struct {
 	CreatedBy  string
 	Limit      int
 	Offset     int
+	Orders     []*ListProductsOrder
+}
+
+type ListProductsOrder struct {
+	Key        entity.ProductOrderBy
+	OrderByASC bool
 }
 
 func (p *ListProductsParams) stmt(stmt *gorm.DB) *gorm.DB {
@@ -125,6 +165,15 @@ func (p *ListProductsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	}
 	if p.CreatedBy != "" {
 		stmt = stmt.Where("created_by = ?", p.CreatedBy)
+	}
+	for i := range p.Orders {
+		var value string
+		if p.Orders[i].OrderByASC {
+			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
+		} else {
+			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
+		}
+		stmt = stmt.Order(value)
 	}
 	return stmt
 }
@@ -158,6 +207,12 @@ type ListProductTypesParams struct {
 	CategoryID string
 	Limit      int
 	Offset     int
+	Orders     []*ListProductTypesOrder
+}
+
+type ListProductTypesOrder struct {
+	Key        entity.ProductTypeOrderBy
+	OrderByASC bool
 }
 
 func (p *ListProductTypesParams) stmt(stmt *gorm.DB) *gorm.DB {
@@ -166,6 +221,15 @@ func (p *ListProductTypesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	}
 	if p.CategoryID != "" {
 		stmt = stmt.Where("category_id = ?", p.CategoryID)
+	}
+	for i := range p.Orders {
+		var value string
+		if p.Orders[i].OrderByASC {
+			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
+		} else {
+			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
+		}
+		stmt = stmt.Order(value)
 	}
 	return stmt
 }

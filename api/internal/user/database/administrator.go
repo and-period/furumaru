@@ -40,6 +40,7 @@ func (a *administrator) List(
 	}
 
 	stmt := a.db.DB.WithContext(ctx).Table(administratorTable).Select(fields)
+	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
 	}

@@ -21,6 +21,7 @@ func TestListMessages(t *testing.T) {
 		UserID:   idmock,
 		Limit:    20,
 		Offset:   0,
+		Orders:   []*messenger.ListMessagesOrder{},
 	}
 	messages := entity.Messages{
 		{
@@ -82,6 +83,14 @@ func TestListMessages(t *testing.T) {
 			name:  "invalid offset",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
 			query: "?offset=a",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name:  "invalid offset",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			query: "?orders=type,read,receivedAt,other",
 			expect: &testResponse{
 				code: http.StatusBadRequest,
 			},

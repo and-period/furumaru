@@ -17,12 +17,20 @@ func (s *service) ListProducts(ctx context.Context, in *store.ListProductsInput)
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, exception.InternalError(err)
 	}
+	orders := make([]*database.ListProductsOrder, len(in.Orders))
+	for i := range in.Orders {
+		orders[i] = &database.ListProductsOrder{
+			Key:        in.Orders[i].Key,
+			OrderByASC: in.Orders[i].OrderByASC,
+		}
+	}
 	params := &database.ListProductsParams{
 		Name:       in.Name,
 		ProducerID: in.ProducerID,
 		CreatedBy:  in.CoordinatorID,
 		Limit:      int(in.Limit),
 		Offset:     int(in.Offset),
+		Orders:     orders,
 	}
 	var (
 		products entity.Products

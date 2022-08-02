@@ -15,9 +15,17 @@ func (s *service) ListShippings(ctx context.Context, in *store.ListShippingsInpu
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, exception.InternalError(err)
 	}
+	orders := make([]*database.ListShippingsOrder, len(in.Orders))
+	for i := range in.Orders {
+		orders[i] = &database.ListShippingsOrder{
+			Key:        in.Orders[i].Key,
+			OrderByASC: in.Orders[i].OrderByASC,
+		}
+	}
 	params := &database.ListShippingsParams{
 		Limit:  int(in.Limit),
 		Offset: int(in.Offset),
+		Orders: orders,
 	}
 	var (
 		shippings entity.Shippings

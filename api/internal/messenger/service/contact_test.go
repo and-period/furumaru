@@ -20,6 +20,9 @@ func TestListContacts(t *testing.T) {
 	params := &database.ListContactsParams{
 		Limit:  20,
 		Offset: 0,
+		Orders: []*database.ListContactsOrder{
+			{Key: entity.ContactOrderByPriority, OrderByASC: true},
+		},
 	}
 	contacts := entity.Contacts{
 		{
@@ -54,6 +57,9 @@ func TestListContacts(t *testing.T) {
 			input: &messenger.ListContactsInput{
 				Limit:  20,
 				Offset: 0,
+				Orders: []*messenger.ListContactsOrder{
+					{Key: entity.ContactOrderByPriority, OrderByASC: true},
+				},
 			},
 			expect:      contacts,
 			expectTotal: 1,
@@ -75,6 +81,9 @@ func TestListContacts(t *testing.T) {
 			input: &messenger.ListContactsInput{
 				Limit:  20,
 				Offset: 0,
+				Orders: []*messenger.ListContactsOrder{
+					{Key: entity.ContactOrderByPriority, OrderByASC: true},
+				},
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -89,6 +98,9 @@ func TestListContacts(t *testing.T) {
 			input: &messenger.ListContactsInput{
 				Limit:  20,
 				Offset: 0,
+				Orders: []*messenger.ListContactsOrder{
+					{Key: entity.ContactOrderByPriority, OrderByASC: true},
+				},
 			},
 			expect:      nil,
 			expectTotal: 0,

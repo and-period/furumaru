@@ -67,6 +67,21 @@ func TestNotification_List(t *testing.T) {
 				hasErr:        false,
 			},
 		},
+		{
+			name:  "success with sort",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListNotificationsParams{
+					Orders: []*ListNotificationsOrder{
+						{Key: entity.NotificationOrderByPublishedAt, OrderByASC: false},
+					},
+				},
+			},
+			want: want{
+				notifications: notifications,
+				hasErr:        false,
+			},
+		},
 	}
 	for _, tt := range tests {
 		tt := tt

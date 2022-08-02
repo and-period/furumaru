@@ -22,6 +22,9 @@ func TestListMessages(t *testing.T) {
 		Offset:   0,
 		UserType: entity.UserTypeUser,
 		UserID:   "user-id",
+		Orders: []*database.ListMessagesOrder{
+			{Key: entity.MessageOrderByReceivedAt, OrderByASC: false},
+		},
 	}
 	messages := entity.Messages{
 		{
@@ -58,6 +61,9 @@ func TestListMessages(t *testing.T) {
 				Offset:   0,
 				UserType: entity.UserTypeUser,
 				UserID:   "user-id",
+				Orders: []*messenger.ListMessagesOrder{
+					{Key: entity.MessageOrderByReceivedAt, OrderByASC: false},
+				},
 			},
 			expect:      messages,
 			expectTotal: 1,
@@ -81,6 +87,9 @@ func TestListMessages(t *testing.T) {
 				Offset:   0,
 				UserType: entity.UserTypeUser,
 				UserID:   "user-id",
+				Orders: []*messenger.ListMessagesOrder{
+					{Key: entity.MessageOrderByReceivedAt, OrderByASC: false},
+				},
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -97,6 +106,9 @@ func TestListMessages(t *testing.T) {
 				Offset:   0,
 				UserType: entity.UserTypeUser,
 				UserID:   "user-id",
+				Orders: []*messenger.ListMessagesOrder{
+					{Key: entity.MessageOrderByReceivedAt, OrderByASC: false},
+				},
 			},
 			expect:      nil,
 			expectTotal: 0,

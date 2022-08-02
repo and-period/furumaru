@@ -63,6 +63,22 @@ func TestAdministrator_List(t *testing.T) {
 				hasErr: false,
 			},
 		},
+		{
+			name:  "success with sort",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListAdministratorsParams{
+					Orders: []*ListAdministratorsOrder{
+						{Key: "lastname", OrderByASC: true},
+						{Key: "firstname", OrderByASC: false},
+					},
+				},
+			},
+			want: want{
+				admins: admins,
+				hasErr: false,
+			},
+		},
 	}
 
 	for _, tt := range tests {
