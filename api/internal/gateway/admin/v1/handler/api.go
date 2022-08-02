@@ -104,6 +104,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.productTypeRoutes(v1.Group("/categories/:categoryId/product-types"))
 	h.shippingRoutes(v1.Group("/shippings"))
 	h.productRoutes(v1.Group("/products"))
+	h.notificationRoutes(v1.Group("/notifications"))
 	h.contactRoutes(v1.Group("/contacts"))
 	v1.GET("/categories/-/product-types", h.authentication(), h.ListProductTypes)
 	h.uploadRoutes(v1.Group("/upload"))

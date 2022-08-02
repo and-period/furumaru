@@ -31,6 +31,7 @@ p, product_update, /v1/products/*, PATCH, allow
 p, contact_list, /v1/contacts, GET, allow
 p, contact_get, /v1/contacts/*, GET, allow
 p, contact_update, /v1/contacts/*, PATCH, allow
+p, notification_create, /v1/notifications, POST, allow
 
 g, administrator, auth
 g, administrator, administrator_list
@@ -62,6 +63,7 @@ g, administrator, product_get
 g, administrator, contact_list
 g, administrator, contact_get
 g, administrator, contact_update
+g, administrator, notification_create
 
 g, coordinator, auth
 g, coordinator, coordinator_get

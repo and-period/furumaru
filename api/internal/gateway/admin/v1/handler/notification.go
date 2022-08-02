@@ -8,10 +8,11 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/gin-gonic/gin"
 )
 
-func (h *handler) NotificationRoutes(rg *gin.RouterGroup) {
+func (h *handler) notificationRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication())
 	arg.POST("", h.CreateNotification)
 }
@@ -35,13 +36,14 @@ func (h *handler) CreateNotification(ctx *gin.Context) {
 		}
 	}
 
+	publishedAt := jst.ParseFromUnix(req.PublishedAt)
 	in := &messenger.CreateNotificationInput{
 		CreatedBy:   getAdminID(ctx),
 		Title:       req.Title,
 		Body:        req.Body,
 		Targets:     targets,
 		Public:      req.Public,
-		PublishedAt: req.PublishedAt,
+		PublishedAt: publishedAt,
 	}
 
 	notification, err := h.messenger.CreateNotification(ctx, in)
