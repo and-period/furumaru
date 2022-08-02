@@ -13,6 +13,7 @@ Amplify.configure({
     AWSPinpoint: {
       appId: process.env.AWS_PINPOINT_APP_ID,
       region: process.env.AWS_REGION,
+      mandatorySignIn: false,
       flushInterval: 5000, // 5s
       resendLimit: 5,
     },
