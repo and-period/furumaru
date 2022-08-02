@@ -113,7 +113,7 @@ export const useAuthStore = defineStore('auth', {
           message: 'コードが認証できました。',
           color: 'info',
         })
-      } catch(err) {
+      } catch (err) {
         console.log(err)
         throw new Error('Internal Server Error')
       }
