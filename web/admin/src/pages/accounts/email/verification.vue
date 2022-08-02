@@ -11,7 +11,7 @@
       </div>
     </v-card-text>
     <v-card-actions>
-      <v-btn block outlined color="primary" @click="certificationBtn">認証</v-btn>
+      <v-btn block outlined color="primary" @click="verificationBtn">認証</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -19,7 +19,7 @@
 <script lang="ts">
 import { defineComponent, reactive, useRoute, useRouter } from '@nuxtjs/composition-api'
 import { useAuthStore } from '~/store/auth'
-import { UpdateAuthEmailRequest } from '~/types/api'
+import { UpdateAuthEmailRequest, VerifyAuthEmailRequest } from '~/types/api'
 
 export default defineComponent({
   setup() {
@@ -30,12 +30,14 @@ export default defineComponent({
     const route = useRoute()
     const email = route.value.params.email
     const authStore = useAuthStore()
-//    const useAuthApi = UpdateAuthEmailRequest()
+    const verifyCode = route.value.params.verifyCode
+
 
     const handleClickAddBtn = async (): Promise<void> => {
       try {
-        await authStore.emailUpdate(formData)
+        await authStore.emailUpdate(<UpdateAuthEmailRequest><unknown>email)
         router.push({
+          //name: 'accounts-email-verification',
           params: { email: formData.email}
         })
       } catch (error){
@@ -47,26 +49,28 @@ export default defineComponent({
       email,
     }
 
-    // const certificationBtn = async ():Promise<void> => {
-    //   try{
-    //     await useAuthApi
+    const verificationBtn = async ():Promise<void> => {
+      try{
+        await authStore.codeVerify(<VerifyAuthEmailRequest><unknown>verifyCode)
+        router.push({
+          params: {verifyCode: verifyCode}
+        })
 
-    //   } catch (error){
-    //     console.log(error)
-    //   }
-    // }
+      } catch (error){
+        console.log(error)
+      }
+    }
+    return {
+      verificationBtn,
+      verifyCode,
+    }
   },
 })
 </script>
 
 <!--
-37行目でemailを渡すよう言われたと思いますが
-await authStore.emailUpdate(email)
-としてしまうと↓のエラーが出ます。
-Argument of type 'string' is not assignable to parameter of type 'UpdateAuthEmailRequest'.
-
-
-認証ボタンの方は
-api.tsのv1VerifyAuthEmailを使うのかと思ったんですが、どう使えばいいか分かリませんでした
-
+38行目は型変換の仕方がわからず、クイックフィクスに頼った結果<unknown>がつきました。
+53行目では入力された認証コードを渡すのかなと思ってapi.ts(パシリの中身？)で宣言されてそうなの入れました
+認証ボタンにイベントを入れたつもりなんですが、51~が参照されていないのがなぜかわかりません
+40行目でもう一度verification画面に遷移させる必要はあるのでしょうか
 -->

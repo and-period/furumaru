@@ -32,7 +32,7 @@ export default defineComponent({
       try {
         await authStore.emailUpdate(formData)
         router.push({
-          name: 'accounts-email-certification',
+          name: 'accounts-email-verification',
           params: { email: formData.email },
         })
       } catch (error) {
