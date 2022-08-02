@@ -71,8 +71,8 @@ const config: NuxtConfig = {
   env: {
     API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:18010',
     AWS_REGION: process.env.AWS_REGION || 'ap-northeast-1',
-    AWS_COGNITO_IDENTITY_POOL_ID: process.env.AWS_COGNITO_IDENTITY_POOL_ID || '',
-    AWS_PINPOINT_APP_ID: process.env.AWS_PINPOINT_APP_ID || '',
+    AWS_COGNITO_IDENTITY_POOL_ID: process.env.COGNITO_IDENTITY_POOL_ID || '',
+    AWS_PINPOINT_APP_ID: process.env.PINPOINT_APP_ID || '',
   },
 
   router: {
