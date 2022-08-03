@@ -8,7 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/codes"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/and-period/furumaru/api/pkg/set"
+	set "github.com/and-period/furumaru/api/pkg/set/v2"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -63,6 +63,22 @@ func TestShipping_List(t *testing.T) {
 			},
 			want: want{
 				shippings: shippings[1:],
+				hasErr:    false,
+			},
+		},
+		{
+			name:  "success with sort",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListShippingsParams{
+					Orders: []*ListShippingsOrder{
+						{Key: entity.ShippingOrderByCreatedAt, OrderByASC: true},
+						{Key: entity.ShippingOrderByUpdatedAt, OrderByASC: false},
+					},
+				},
+			},
+			want: want{
+				shippings: shippings,
 				hasErr:    false,
 			},
 		},
@@ -462,8 +478,7 @@ func testShipping(id string, now time.Time) *entity.Shipping {
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
-	set := set.New(len(shikoku))
-	set.AddInt64s(shikoku...)
+	set := set.New[int64](len(shikoku)).Add(shikoku...)
 	others := make([]int64, 0, 47-len(shikoku))
 	for _, val := range codes.PrefectureValues {
 		if set.Contains(val) {

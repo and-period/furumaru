@@ -206,6 +206,43 @@ func TestGetQueryInt64(t *testing.T) {
 	}
 }
 
+func TestGetQueryStrings(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx *gin.Context)
+		query  string
+		expect []string
+	}{
+		{
+			name: "success",
+			setup: func(ctx *gin.Context) {
+				ctx.Request.URL, _ = url.Parse("?id=foo,baz,bar")
+			},
+			query:  "id",
+			expect: []string{"foo", "baz", "bar"},
+		},
+		{
+			name:   "empty",
+			setup:  func(ctx *gin.Context) {},
+			query:  "id",
+			expect: []string{},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			gin.SetMode(gin.TestMode)
+			w := httptest.NewRecorder()
+			ctx, _ := gin.CreateTestContext(w)
+			ctx.Request = &http.Request{URL: &url.URL{}}
+			tt.setup(ctx)
+			assert.Equal(t, tt.expect, GetQueryStrings(ctx, tt.query))
+		})
+	}
+}
+
 func TestGetQueryInt32s(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -253,6 +290,45 @@ func TestGetQueryInt32s(t *testing.T) {
 			actual, err := GetQueryInt32s(ctx, tt.query)
 			assert.Equal(t, tt.hasErr, err != nil, err)
 			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestGetOrders(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx *gin.Context)
+		query  string
+		expect []*Order
+	}{
+		{
+			name: "success",
+			setup: func(ctx *gin.Context) {
+				ctx.Request.URL, _ = url.Parse("?orders=foo,-baz,bar")
+			},
+			expect: []*Order{
+				{Key: "foo", Direction: OrderByASC},
+				{Key: "baz", Direction: OrderByDesc},
+				{Key: "bar", Direction: OrderByASC},
+			},
+		},
+		{
+			name:   "empty",
+			setup:  func(ctx *gin.Context) {},
+			expect: []*Order{},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			gin.SetMode(gin.TestMode)
+			w := httptest.NewRecorder()
+			ctx, _ := gin.CreateTestContext(w)
+			ctx.Request = &http.Request{URL: &url.URL{}}
+			tt.setup(ctx)
+			assert.Equal(t, tt.expect, GetOrders(ctx))
 		})
 	}
 }

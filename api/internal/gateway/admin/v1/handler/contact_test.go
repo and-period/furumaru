@@ -19,6 +19,7 @@ func TestListContacts(t *testing.T) {
 	contactsIn := &messenger.ListContactsInput{
 		Limit:  20,
 		Offset: 0,
+		Orders: []*messenger.ListContactsOrder{},
 	}
 	contacts := mentity.Contacts{
 		{
@@ -87,6 +88,14 @@ func TestListContacts(t *testing.T) {
 			},
 		},
 		{
+			name:  "invalid offset",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			query: "?orders=status,priority,createdAt,updatedAt,other",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
 			name: "failed to list contacts",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.messenger.EXPECT().ListContacts(gomock.Any(), contactsIn).Return(nil, int64(0), errmock)
@@ -101,8 +110,8 @@ func TestListContacts(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/contacts"
-			path := fmt.Sprintf("%s%s", prefix, tt.query)
+			const format = "/v1/contacts%s"
+			path := fmt.Sprintf(format, tt.query)
 			testGet(t, tt.setup, tt.expect, path)
 		})
 	}
@@ -173,8 +182,8 @@ func TestGetContact(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/contacts"
-			path := fmt.Sprintf("%s/%s", prefix, tt.contactID)
+			const format = "/v1/contacts/%s"
+			path := fmt.Sprintf(format, tt.contactID)
 			testGet(t, tt.setup, tt.expect, path)
 		})
 	}
@@ -231,8 +240,8 @@ func TestUpdateContact(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/contacts"
-			path := fmt.Sprintf("%s/%s", prefix, tt.contactID)
+			const format = "/v1/contacts/%s"
+			path := fmt.Sprintf(format, tt.contactID)
 			testPatch(t, tt.setup, tt.expect, path, tt.req)
 		})
 	}

@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -20,6 +21,9 @@ func TestListAdministrators(t *testing.T) {
 	params := &database.ListAdministratorsParams{
 		Limit:  30,
 		Offset: 0,
+		Orders: []*database.ListAdministratorsOrder{
+			{Key: entity.AdministratorOrderByLastname, OrderByASC: true},
+		},
 	}
 	administrators := entity.Administrators{
 		{
@@ -52,6 +56,9 @@ func TestListAdministrators(t *testing.T) {
 			input: &user.ListAdministratorsInput{
 				Limit:  30,
 				Offset: 0,
+				Orders: []*user.ListAdministratorsOrder{
+					{Key: entity.AdministratorOrderByLastname, OrderByASC: true},
+				},
 			},
 			expect:      administrators,
 			expectTotal: 1,
@@ -74,6 +81,9 @@ func TestListAdministrators(t *testing.T) {
 			input: &user.ListAdministratorsInput{
 				Limit:  30,
 				Offset: 0,
+				Orders: []*user.ListAdministratorsOrder{
+					{Key: entity.AdministratorOrderByLastname, OrderByASC: true},
+				},
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -88,6 +98,9 @@ func TestListAdministrators(t *testing.T) {
 			input: &user.ListAdministratorsInput{
 				Limit:  30,
 				Offset: 0,
+				Orders: []*user.ListAdministratorsOrder{
+					{Key: entity.AdministratorOrderByLastname, OrderByASC: true},
+				},
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -343,6 +356,263 @@ func TestCreateAdministrator(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateAdministrator(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestUpdateAdministrator(t *testing.T) {
+	t.Parallel()
+
+	params := &database.UpdateAdministratorParams{
+		Lastname:      "&.",
+		Firstname:     "スタッフ",
+		LastnameKana:  "あんどぴりおど",
+		FirstnameKana: "すたっふ",
+		PhoneNumber:   "+819012345678",
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.UpdateAdministratorInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Administrator.EXPECT().Update(ctx, "administrator-id", params).Return(nil)
+			},
+			input: &user.UpdateAdministratorInput{
+				AdministratorID: "administrator-id",
+				Lastname:        "&.",
+				Firstname:       "スタッフ",
+				LastnameKana:    "あんどぴりおど",
+				FirstnameKana:   "すたっふ",
+				PhoneNumber:     "+819012345678",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.UpdateAdministratorInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to update administrator",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Administrator.EXPECT().Update(ctx, "administrator-id", params).Return(errmock)
+			},
+			input: &user.UpdateAdministratorInput{
+				AdministratorID: "administrator-id",
+				Lastname:        "&.",
+				Firstname:       "スタッフ",
+				LastnameKana:    "あんどぴりおど",
+				FirstnameKana:   "すたっふ",
+				PhoneNumber:     "+819012345678",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.UpdateAdministrator(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestUpdateAdministratorEmail(t *testing.T) {
+	t.Parallel()
+
+	auth := &entity.AdminAuth{
+		CognitoID: "cognito-id",
+		Role:      entity.AdminRoleAdministrator,
+	}
+	params := &cognito.AdminChangeEmailParams{
+		Username: "cognito-id",
+		Email:    "test-admin@and-period.jp",
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.UpdateAdministratorEmailInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "administrator-id", "cognito_id", "role").Return(auth, nil)
+				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(nil)
+				mocks.db.Administrator.EXPECT().UpdateEmail(ctx, "administrator-id", "test-admin@and-period.jp").Return(nil)
+			},
+			input: &user.UpdateAdministratorEmailInput{
+				AdministratorID: "administrator-id",
+				Email:           "test-admin@and-period.jp",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.UpdateAdministratorEmailInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get by admin id",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "administrator-id", "cognito_id", "role").Return(nil, errmock)
+			},
+			input: &user.UpdateAdministratorEmailInput{
+				AdministratorID: "administrator-id",
+				Email:           "test-admin@and-period.jp",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "invalid administrator role",
+			setup: func(ctx context.Context, mocks *mocks) {
+				auth := &entity.AdminAuth{CognitoID: "cognito-id", Role: entity.AdminRoleUnknown}
+				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "administrator-id", "cognito_id", "role").Return(auth, nil)
+			},
+			input: &user.UpdateAdministratorEmailInput{
+				AdministratorID: "administrator-id",
+				Email:           "test-admin@and-period.jp",
+			},
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
+			name: "failed to admin change email",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "administrator-id", "cognito_id", "role").Return(auth, nil)
+				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(errmock)
+			},
+			input: &user.UpdateAdministratorEmailInput{
+				AdministratorID: "administrator-id",
+				Email:           "test-admin@and-period.jp",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "failed to update email",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "administrator-id", "cognito_id", "role").Return(auth, nil)
+				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(nil)
+				mocks.db.Administrator.EXPECT().UpdateEmail(ctx, "administrator-id", "test-admin@and-period.jp").Return(errmock)
+			},
+			input: &user.UpdateAdministratorEmailInput{
+				AdministratorID: "administrator-id",
+				Email:           "test-admin@and-period.jp",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.UpdateAdministratorEmail(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestResetAdministratorPassword(t *testing.T) {
+	t.Parallel()
+
+	auth := &entity.AdminAuth{
+		CognitoID: "cognito-id",
+		Role:      entity.AdminRoleAdministrator,
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.ResetAdministratorPasswordInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "administrator-id", "cognito_id", "role").Return(auth, nil)
+				mocks.adminAuth.EXPECT().
+					AdminChangePassword(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, params *cognito.AdminChangePasswordParams) error {
+						expect := &cognito.AdminChangePasswordParams{
+							Username:  "cognito-id",
+							Password:  params.Password, // ignore
+							Permanent: true,
+						}
+						assert.Equal(t, params, expect)
+						return nil
+					})
+				mocks.messenger.EXPECT().NotifyResetAdminPassword(gomock.Any(), gomock.Any()).Return(nil)
+			},
+			input: &user.ResetAdministratorPasswordInput{
+				AdministratorID: "administrator-id",
+			},
+			expectErr: nil,
+		},
+		{
+			name: "success without notify",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "administrator-id", "cognito_id", "role").Return(auth, nil)
+				mocks.adminAuth.EXPECT().AdminChangePassword(ctx, gomock.Any()).Return(nil)
+				mocks.messenger.EXPECT().NotifyResetAdminPassword(gomock.Any(), gomock.Any()).Return(errmock)
+			},
+			input: &user.ResetAdministratorPasswordInput{
+				AdministratorID: "administrator-id",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.ResetAdministratorPasswordInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get by admin id",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "administrator-id", "cognito_id", "role").Return(nil, errmock)
+			},
+			input: &user.ResetAdministratorPasswordInput{
+				AdministratorID: "administrator-id",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "invalid administrator role",
+			setup: func(ctx context.Context, mocks *mocks) {
+				auth := &entity.AdminAuth{CognitoID: "cognito-id", Role: entity.AdminRoleUnknown}
+				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "administrator-id", "cognito_id", "role").Return(auth, nil)
+			},
+			input: &user.ResetAdministratorPasswordInput{
+				AdministratorID: "administrator-id",
+			},
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
+			name: "failed to admin change password",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "administrator-id", "cognito_id", "role").Return(auth, nil)
+				mocks.adminAuth.EXPECT().AdminChangePassword(ctx, gomock.Any()).Return(errmock)
+			},
+			input: &user.ResetAdministratorPasswordInput{
+				AdministratorID: "administrator-id",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.ResetAdministratorPassword(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}

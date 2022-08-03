@@ -16,11 +16,19 @@ func (s *service) ListProductTypes(
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, exception.InternalError(err)
 	}
+	orders := make([]*database.ListProductTypesOrder, len(in.Orders))
+	for i := range in.Orders {
+		orders[i] = &database.ListProductTypesOrder{
+			Key:        in.Orders[i].Key,
+			OrderByASC: in.Orders[i].OrderByASC,
+		}
+	}
 	params := &database.ListProductTypesParams{
 		Name:       in.Name,
 		CategoryID: in.CategoryID,
 		Limit:      int(in.Limit),
 		Offset:     int(in.Offset),
+		Orders:     orders,
 	}
 	var (
 		productTypes entity.ProductTypes
@@ -49,6 +57,14 @@ func (s *service) MultiGetProductTypes(
 	}
 	productTypes, err := s.db.ProductType.MultiGet(ctx, in.ProductTypeIDs)
 	return productTypes, exception.InternalError(err)
+}
+
+func (s *service) GetProductType(ctx context.Context, in *store.GetProductTypeInput) (*entity.ProductType, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	productType, err := s.db.ProductType.Get(ctx, in.ProductTypeID)
+	return productType, exception.InternalError(err)
 }
 
 func (s *service) CreateProductType(

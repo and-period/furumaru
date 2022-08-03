@@ -20,6 +20,7 @@ func TestListCategories(t *testing.T) {
 		Name:   "野菜",
 		Limit:  20,
 		Offset: 0,
+		Orders: []*store.ListCategoriesOrder{},
 	}
 	categories := sentity.Categories{
 		{
@@ -86,6 +87,14 @@ func TestListCategories(t *testing.T) {
 			},
 		},
 		{
+			name:  "invalid orders",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			query: "?orders=name,other",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
 			name: "failed to get categories",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().ListCategories(gomock.Any(), in).Return(nil, int64(0), errmock)
@@ -100,8 +109,8 @@ func TestListCategories(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/categories"
-			path := fmt.Sprintf("%s%s", prefix, tt.query)
+			const format = "/v1/categories%s"
+			path := fmt.Sprintf(format, tt.query)
 			testGet(t, tt.setup, tt.expect, path)
 		})
 	}
@@ -215,8 +224,8 @@ func TestUpdateCategory(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/categories"
-			path := fmt.Sprintf("%s/%s", prefix, tt.categoryID)
+			const format = "/v1/categories/%s"
+			path := fmt.Sprintf(format, tt.categoryID)
 			testPatch(t, tt.setup, tt.expect, path, tt.req)
 		})
 	}
@@ -260,8 +269,8 @@ func TestDeleteCategory(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const prefix = "/v1/categories"
-			path := fmt.Sprintf("%s/%s", prefix, tt.categoryID)
+			const format = "/v1/categories/%s"
+			path := fmt.Sprintf(format, tt.categoryID)
 			testDelete(t, tt.setup, tt.expect, path)
 		})
 	}

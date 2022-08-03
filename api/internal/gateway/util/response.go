@@ -9,6 +9,10 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+const (
+	StatusClientClosedRequest = 499
+)
+
 type ErrorResponse struct {
 	Status  int    `json:"status"`  // ステータスコード
 	Message string `json:"message"` // エラー概要
@@ -19,7 +23,6 @@ func NewErrorResponse(err error) (*ErrorResponse, int) {
 	if status, ok := internalError(err); ok {
 		return newErrorResponse(status, err), status
 	}
-
 	if status, ok := grpcError(err); ok {
 		return newErrorResponse(status, err), status
 	}
@@ -51,10 +54,13 @@ func internalError(err error) (int, bool) {
 
 	var s int
 	switch {
-	case errors.Is(err, exception.ErrInvalidArgument):
+	// 4xx
+	case errors.Is(err, exception.ErrInvalidArgument), errors.Is(err, exception.ErrOutOfRange):
 		s = http.StatusBadRequest
 	case errors.Is(err, exception.ErrUnauthenticated):
 		s = http.StatusUnauthorized
+	case errors.Is(err, exception.ErrForbidden):
+		s = http.StatusForbidden
 	case errors.Is(err, exception.ErrNotFound):
 		s = http.StatusNotFound
 	case errors.Is(err, exception.ErrAlreadyExists):
@@ -63,10 +69,17 @@ func internalError(err error) (int, bool) {
 		s = http.StatusPreconditionFailed
 	case errors.Is(err, exception.ErrResourceExhausted):
 		s = http.StatusTooManyRequests
-	case errors.Is(err, exception.ErrNotImplemented):
-		s = http.StatusNotImplemented
+	case errors.Is(err, exception.ErrCanceled):
+		s = StatusClientClosedRequest
+	// 5xx
 	case errors.Is(err, exception.ErrInternal):
 		s = http.StatusInternalServerError
+	case errors.Is(err, exception.ErrNotImplemented):
+		s = http.StatusNotImplemented
+	case errors.Is(err, exception.ErrUnavailable):
+		s = http.StatusBadGateway
+	case errors.Is(err, exception.ErrDeadlineExceeded):
+		s = http.StatusGatewayTimeout
 	default:
 		return 0, false
 	}
@@ -81,32 +94,32 @@ func grpcError(err error) (int, bool) {
 
 	var s int
 	switch status.Code(err) {
-	case codes.Canceled:
-		s = 499 // client closed request
-	case codes.Internal, codes.DataLoss:
-		s = http.StatusInternalServerError
+	// 4xx
 	case codes.InvalidArgument, codes.OutOfRange:
 		s = http.StatusBadRequest
-	case codes.DeadlineExceeded:
-		s = http.StatusGatewayTimeout
-	case codes.NotFound:
-		s = http.StatusNotFound
-	case codes.AlreadyExists:
-		s = http.StatusConflict
+	case codes.Unauthenticated:
+		s = http.StatusUnauthorized
 	case codes.PermissionDenied:
 		s = http.StatusForbidden
+	case codes.NotFound:
+		s = http.StatusNotFound
+	case codes.AlreadyExists, codes.Aborted:
+		s = http.StatusConflict
 	case codes.FailedPrecondition:
 		s = http.StatusPreconditionFailed
-	case codes.Aborted:
-		s = http.StatusConflict
 	case codes.ResourceExhausted:
 		s = http.StatusTooManyRequests
+	case codes.Canceled:
+		s = StatusClientClosedRequest
+	// 5xx
+	case codes.Internal, codes.DataLoss:
+		s = http.StatusInternalServerError
 	case codes.Unimplemented:
 		s = http.StatusNotImplemented
 	case codes.Unavailable:
 		s = http.StatusBadGateway
-	case codes.Unauthenticated:
-		s = http.StatusUnauthorized
+	case codes.DeadlineExceeded:
+		s = http.StatusGatewayTimeout
 	default:
 		return 0, false
 	}

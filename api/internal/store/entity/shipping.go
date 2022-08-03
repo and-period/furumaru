@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/store/codes"
-	"github.com/and-period/furumaru/api/pkg/set"
+	set "github.com/and-period/furumaru/api/pkg/set/v2"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/datatypes"
 )
@@ -15,6 +15,15 @@ var (
 	errInvalidShippingRateFormat     = errors.New("entity: invalid shipping rate format")
 	errInvalidShippingRatePrefLength = errors.New("entity: unmatch shipping rate prefecture length")
 	errNotUniqueShippingRateNumber   = errors.New("entity: shipping rate number must be unique")
+)
+
+type ShippingOrderBy string
+
+const (
+	ShippingOrderByName            ShippingOrderBy = "name"
+	ShippingOrderByHasFreeShipping ShippingOrderBy = "has_free_shipping"
+	ShippingOrderByCreatedAt       ShippingOrderBy = "created_at"
+	ShippingOrderByUpdatedAt       ShippingOrderBy = "updated_at"
 )
 
 // Shipping - 配送設定情報
@@ -140,7 +149,7 @@ func NewShippingRate(num int64, name string, price int64, prefs []int64) *Shippi
 
 func (rs ShippingRates) Validate() error {
 	var total int
-	set := set.New(len(rs))
+	set := set.New[int64](len(rs))
 	for i := range rs {
 		if rs[i].Number < 1 { // No.の形式チェック
 			return errInvalidShippingRateFormat
@@ -148,7 +157,7 @@ func (rs ShippingRates) Validate() error {
 		if rs[i].Price < 0 { // 配送料金の形式チェック
 			return errInvalidShippingRateFormat
 		}
-		if set.FindOrAdd(rs[i].Number) { // No.の重複チェック
+		if _, exists := set.FindOrAdd(rs[i].Number); exists { // No.の重複チェック
 			return errNotUniqueShippingRateNumber
 		}
 		if err := codes.ValidatePrefectureValues(rs[i].Prefectures...); err != nil { // 都道府県の存在性チェック

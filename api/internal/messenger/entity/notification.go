@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
+	set "github.com/and-period/furumaru/api/pkg/set/v2"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/datatypes"
 )
@@ -12,10 +13,27 @@ import (
 type TargetType int32
 
 const (
-	PostTargetAll          TargetType = 0 // 全員対象
+	PostTargetUnknown      TargetType = 0
 	PostTargetUsers        TargetType = 1 // ユーザー対象
 	PostTargetProducers    TargetType = 2 // 生産者対象
 	PostTargetCoordinators TargetType = 3 // コーディネーター対象
+)
+
+var targetUsers = []int32{
+	int32(PostTargetUsers),
+}
+
+var targetAdmins = []int32{
+	int32(PostTargetCoordinators),
+	int32(PostTargetProducers),
+}
+
+type NotificationOrderBy string
+
+const (
+	NotificationOrderByTitle       NotificationOrderBy = "title"
+	NotificationOrderByPublic      NotificationOrderBy = "public"
+	NotificationOrderByPublishedAt NotificationOrderBy = "published_at"
 )
 
 // Notification - お知らせ情報
@@ -33,6 +51,8 @@ type Notification struct {
 	CreatedAt   time.Time      `gorm:"<-:create"`                   // 作成日時
 	UpdatedAt   time.Time      `gorm:""`                            // 更新日時
 }
+
+type Notifications []*Notification
 
 type NewNotificationParams struct {
 	CreatedBy   string
@@ -59,6 +79,44 @@ func NewNotification(params *NewNotificationParams) *Notification {
 	}
 }
 
+func (n *Notification) HasUserTarget() bool {
+	set := set.New[int32](len(targetUsers)).Add(targetUsers...)
+	for i := range n.Targets {
+		if set.Contains(int32(n.Targets[i])) {
+			return true
+		}
+	}
+	return false
+}
+
+func (n *Notification) HasAdminTarget() bool {
+	set := set.New[int32](len(targetAdmins)).Add(targetAdmins...)
+	for i := range n.Targets {
+		if set.Contains(int32(n.Targets[i])) {
+			return true
+		}
+	}
+	return false
+}
+
+func (n *Notification) HasCoordinatorTarget() bool {
+	for i := range n.Targets {
+		if n.Targets[i] == PostTargetCoordinators {
+			return true
+		}
+	}
+	return false
+}
+
+func (n *Notification) HasProducerTarget() bool {
+	for i := range n.Targets {
+		if n.Targets[i] == PostTargetProducers {
+			return true
+		}
+	}
+	return false
+}
+
 func (n *Notification) Fill() error {
 	var targets []TargetType
 	if err := json.Unmarshal(n.TargetsJSON, &targets); err != nil {
@@ -74,5 +132,14 @@ func (n *Notification) FillJSON() error {
 		return err
 	}
 	n.TargetsJSON = datatypes.JSON(v)
+	return nil
+}
+
+func (ns Notifications) Fill() error {
+	for i := range ns {
+		if err := ns[i].Fill(); err != nil {
+			return err
+		}
+	}
 	return nil
 }

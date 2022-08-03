@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/set"
+	set "github.com/and-period/furumaru/api/pkg/set/v2"
 	"github.com/shopspring/decimal"
 )
 
@@ -59,6 +59,34 @@ func (t DeliveryType) Response() int32 {
 	return int32(t)
 }
 
+func NewProductWeight(weight int64, unit entity.WeightUnit) float64 {
+	const precision = 1
+	var exp int32
+	switch unit {
+	case entity.WeightUnitGram:
+		exp = 0
+	case entity.WeightUnitKilogram:
+		exp = 3 // 1kg = 1,000g
+	default:
+		return 0
+	}
+	gweight := decimal.New(weight, exp)                               // g単位に揃える
+	kgweight := gweight.DivRound(decimal.NewFromInt(1000), precision) // 少数第一位までを取得
+	fweight, _ := kgweight.Float64()
+	return fweight
+}
+
+func NewProductWeightFromRequest(weight float64) (int64, entity.WeightUnit) {
+	dweight := decimal.NewFromFloat(weight).Truncate(1) // 少数第一位までを取得
+	if dweight.IsInteger() {
+		// kg単位のままで表すことが可能なため(request値はkg前提)
+		return dweight.IntPart(), entity.WeightUnitKilogram
+	}
+	// 少数点が含まれている場合、そのままintに変換できないためg単位に変換
+	dweight = dweight.Mul(decimal.NewFromInt(1000))
+	return dweight.IntPart(), entity.WeightUnitGram
+}
+
 func NewProduct(product *entity.Product) *Product {
 	return &Product{
 		Product: response.Product{
@@ -89,32 +117,16 @@ func NewProduct(product *entity.Product) *Product {
 	}
 }
 
-func NewProductWeight(weight int64, unit entity.WeightUnit) float64 {
-	const precision = 1
-	var exp int32
-	switch unit {
-	case entity.WeightUnitGram:
-		exp = 0
-	case entity.WeightUnitKilogram:
-		exp = 3 // 1kg = 1,000g
-	default:
-		return 0
+func (p *Product) Fill(category *Category, productType *ProductType, producer *Producer) {
+	if category != nil {
+		p.CategoryName = category.Name
 	}
-	gweight := decimal.New(weight, exp)                               // g単位に揃える
-	kgweight := gweight.DivRound(decimal.NewFromInt(1000), precision) // 少数第一位までを取得
-	fweight, _ := kgweight.Float64()
-	return fweight
-}
-
-func NewProductWeightFromRequest(weight float64) (int64, entity.WeightUnit) {
-	dweight := decimal.NewFromFloat(weight).Truncate(1) // 少数第一位までを取得
-	if dweight.IsInteger() {
-		// kg単位のままで表すことが可能なため(request値はkg前提)
-		return dweight.IntPart(), entity.WeightUnitKilogram
+	if productType != nil {
+		p.TypeName = productType.Name
 	}
-	// 少数点が含まれている場合、そのままintに変換できないためg単位に変換
-	dweight = dweight.Mul(decimal.NewFromInt(1000))
-	return dweight.IntPart(), entity.WeightUnitGram
+	if producer != nil {
+		p.StoreName = producer.StoreName
+	}
 }
 
 func (p *Product) Response() *response.Product {
@@ -130,27 +142,31 @@ func NewProducts(products entity.Products) Products {
 }
 
 func (ps Products) ProducerIDs() []string {
-	set := set.New(len(ps))
-	for i := range ps {
-		set.AddStrings(ps[i].ProducerID)
-	}
-	return set.Strings()
+	return set.UniqBy(ps, func(p *Product) string {
+		return p.ProducerID
+	})
 }
 
 func (ps Products) CategoryIDs() []string {
-	set := set.New(len(ps))
-	for i := range ps {
-		set.AddStrings(ps[i].CategoryID)
-	}
-	return set.Strings()
+	return set.UniqBy(ps, func(p *Product) string {
+		return p.CategoryID
+	})
 }
 
 func (ps Products) ProductTypeIDs() []string {
-	set := set.New(len(ps))
+	return set.UniqBy(ps, func(p *Product) string {
+		return p.TypeID
+	})
+}
+
+func (ps Products) Fill(
+	categories map[string]*Category,
+	productTypes map[string]*ProductType,
+	producers map[string]*Producer,
+) {
 	for i := range ps {
-		set.AddStrings(ps[i].TypeID)
+		ps[i].Fill(categories[ps[i].CategoryID], productTypes[ps[i].TypeID], producers[ps[i].ProducerID])
 	}
-	return set.Strings()
 }
 
 func (ps Products) Response() []*response.Product {

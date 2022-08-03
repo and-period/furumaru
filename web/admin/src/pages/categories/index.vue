@@ -51,7 +51,7 @@
       </v-tab-item>
 
       <v-tab-item value="tab-categoryItems">
-        <v-dialog v-model="itemDialog" width="500">
+        <v-dialog v-model="productTypeDialog" width="500">
           <template #activator="{ on, attrs }">
             <div class="d-flex pt-3 pr-3">
               <v-spacer />
@@ -64,11 +64,16 @@
           <v-card>
             <v-card-title class="text-h6 primaryLight"> 品目登録 </v-card-title>
             <div>
-              <v-select class="mx-4" label="カテゴリー" />
+              <v-select
+                v-model="selectedCategoryId"
+                class="mx-4"
+                :items="categories"
+                label="カテゴリー"
+              />
               <v-spacer />
             </div>
             <v-text-field
-              v-model="itemFormData.name"
+              v-model="productTypeFormData.name"
               class="mx-4"
               maxlength="32"
               label="品目"
@@ -77,16 +82,16 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="accentDarken" text @click="itemCancel">
+              <v-btn color="accentDarken" text @click="productTypeCancel">
                 キャンセル
               </v-btn>
-              <v-btn color="primary" outlined @click="itemRegister">
+              <v-btn color="primary" outlined @click="productTypeRegister">
                 登録
               </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <p>Category Item list will be displayed</p>
+        <the-product-type-list />
       </v-tab-item>
     </v-tabs-items>
   </div>
@@ -98,27 +103,39 @@ import {
   defineComponent,
   reactive,
   ref,
+  useFetch,
 } from '@nuxtjs/composition-api'
 
 import TheCategoryList from '~/components/organisms/TheCategoryList.vue'
+import TheProductTypeList from '~/components/organisms/TheProductTypeList.vue'
 import { useCategoryStore } from '~/store/category'
+import { useProductTypeStore } from '~/store/product-type'
 import { CreateCategoryRequest, CreateProductTypeRequest } from '~/types/api'
 import { Category } from '~/types/props/category'
 
 export default defineComponent({
   components: {
     TheCategoryList,
+    TheProductTypeList,
   },
 
   setup() {
     const categoryStore = useCategoryStore()
+    const productTypeStore = useProductTypeStore()
+
     const categories = computed(() => {
-      return categoryStore.categories
+      return categoryStore.productTypeCategories.map((item) => {
+        return {
+          text: item.name,
+          value: item.id,
+        }
+      })
     })
 
     const selector = ref<string>('categories')
     const categoryDialog = ref<boolean>(false)
-    const itemDialog = ref<boolean>(false)
+    const productTypeDialog = ref<boolean>(false)
+    const selectedCategoryId = ref<string>('')
     const items: Category[] = [
       { name: 'カテゴリー', value: 'categories' },
       { name: '品目', value: 'categoryItems' },
@@ -128,7 +145,7 @@ export default defineComponent({
       name: '',
     })
 
-    const itemFormData = reactive<CreateProductTypeRequest>({
+    const productTypeFormData = reactive<CreateProductTypeRequest>({
       name: '',
     })
 
@@ -136,21 +153,39 @@ export default defineComponent({
       categoryDialog.value = false
     }
 
-    const itemCancel = (): void => {
-      itemDialog.value = false
+    const productTypeCancel = (): void => {
+      productTypeDialog.value = false
     }
 
     const categoryRegister = async (): Promise<void> => {
       try {
         await categoryStore.createCategory(categoryFormData)
+        categoryDialog.value = false
       } catch (error) {
         console.log(error)
       }
     }
 
-    const itemRegister = async (): Promise<void> => {
-      // TODO: categoryが実装できた後に実装する
+    const productTypeRegister = async (): Promise<void> => {
+      try {
+        console.log(selectedCategoryId)
+        await productTypeStore.createProductType(
+          selectedCategoryId.value,
+          productTypeFormData
+        )
+        productTypeDialog.value = false
+      } catch (error) {
+        console.log(error)
+      }
     }
+
+    useFetch(async () => {
+      try {
+        await categoryStore.fetchCategories(200)
+      } catch (err) {
+        console.log(err)
+      }
+    })
 
     return {
       categories,
@@ -158,12 +193,13 @@ export default defineComponent({
       selector,
       categoryDialog,
       categoryFormData,
-      itemFormData,
-      itemDialog,
+      productTypeFormData,
+      productTypeDialog,
+      selectedCategoryId,
       categoryCancel,
-      itemCancel,
+      productTypeCancel,
       categoryRegister,
-      itemRegister,
+      productTypeRegister,
     }
   },
 })

@@ -3,13 +3,23 @@ package store
 import "github.com/and-period/furumaru/api/internal/store/entity"
 
 type ListCategoriesInput struct {
-	Name   string `validate:"omitempty,max=32"`
-	Limit  int64  `validate:"required,max=200"`
-	Offset int64  `validate:"min=0"`
+	Name   string                 `validate:"omitempty,max=32"`
+	Limit  int64                  `validate:"required,max=200"`
+	Offset int64                  `validate:"min=0"`
+	Orders []*ListCategoriesOrder `validate:"omitempty,dive,required"`
+}
+
+type ListCategoriesOrder struct {
+	Key        entity.CategoryOrderBy `validate:"required"`
+	OrderByASC bool                   `validate:""`
 }
 
 type MultiGetCategoriesInput struct {
 	CategoryIDs []string `validate:"omitempty,dive,required"`
+}
+
+type GetCategoryInput struct {
+	CategoryID string `validate:"required"`
 }
 
 type CreateCategoryInput struct {
@@ -26,14 +36,24 @@ type DeleteCategoryInput struct {
 }
 
 type ListProductTypesInput struct {
-	Name       string `validate:"omitempty,max=32"`
-	CategoryID string `validate:"omitempty"`
-	Limit      int64  `validate:"required,max=200"`
-	Offset     int64  `validate:"min=0"`
+	Name       string                   `validate:"omitempty,max=32"`
+	CategoryID string                   `validate:"omitempty"`
+	Limit      int64                    `validate:"required,max=200"`
+	Offset     int64                    `validate:"min=0"`
+	Orders     []*ListProductTypesOrder `validate:"omitempty,dive,required"`
+}
+
+type ListProductTypesOrder struct {
+	Key        entity.ProductTypeOrderBy `validate:"required"`
+	OrderByASC bool                      `validate:""`
 }
 
 type MultiGetProductTypesInput struct {
 	ProductTypeIDs []string `validate:"omitempty,dive,required"`
+}
+
+type GetProductTypeInput struct {
+	ProductTypeID string `validate:"required"`
 }
 
 type CreateProductTypeInput struct {
@@ -51,8 +71,14 @@ type DeleteProductTypeInput struct {
 }
 
 type ListShippingsInput struct {
-	Limit  int64 `validate:"required,max=200"`
-	Offset int64 `validate:"min=0"`
+	Limit  int64                 `validate:"required,max=200"`
+	Offset int64                 `validate:"min=0"`
+	Orders []*ListShippingsOrder `validate:"omitempty,dive,required"`
+}
+
+type ListShippingsOrder struct {
+	Key        entity.ShippingOrderBy `validate:"required"`
+	OrderByASC bool                   `validate:""`
 }
 
 type GetShippingInput struct {
@@ -106,13 +132,18 @@ type DeleteShippingInput struct {
 	ShippingID string `validate:"required"`
 }
 
-// TODO: ソート周りの対応
 type ListProductsInput struct {
-	Name          string `validate:"omitempty,max=128"`
-	CoordinatorID string `validate:"omitempty"`
-	ProducerID    string `validate:"omitempty"`
-	Limit         int64  `validate:"required,max=200"`
-	Offset        int64  `validate:"min=0"`
+	Name          string               `validate:"omitempty,max=128"`
+	CoordinatorID string               `validate:"omitempty"`
+	ProducerID    string               `validate:"omitempty"`
+	Limit         int64                `validate:"required,max=200"`
+	Offset        int64                `validate:"min=0"`
+	Orders        []*ListProductsOrder `validate:"omitempty,dive,required"`
+}
+
+type ListProductsOrder struct {
+	Key        entity.ProductOrderBy `validate:"required"`
+	OrderByASC bool                  `validate:""`
 }
 
 type GetProductInput struct {

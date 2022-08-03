@@ -65,6 +65,36 @@ func TestCategory_List(t *testing.T) {
 				hasErr:     false,
 			},
 		},
+		{
+			name:  "success with sort asc",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListCategoriesParams{
+					Orders: []*ListCategoriesOrder{
+						{Key: entity.CategoryOrderByName, OrderByASC: true},
+					},
+				},
+			},
+			want: want{
+				categories: categories,
+				hasErr:     false,
+			},
+		},
+		{
+			name:  "success with sort desc",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListCategoriesParams{
+					Orders: []*ListCategoriesOrder{
+						{Key: entity.CategoryOrderByName, OrderByASC: false},
+					},
+				},
+			},
+			want: want{
+				categories: categories,
+				hasErr:     false,
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -84,7 +114,7 @@ func TestCategory_List(t *testing.T) {
 			}
 			assert.NoError(t, err)
 			fillIgnoreCategoriesField(actual, now())
-			assert.Equal(t, tt.want.categories, actual)
+			assert.ElementsMatch(t, tt.want.categories, actual)
 		})
 	}
 }
@@ -224,6 +254,83 @@ func TestCategory_MultiGet(t *testing.T) {
 			assert.NoError(t, err)
 			fillIgnoreCategoriesField(actual, now())
 			assert.Equal(t, tt.want.categories, actual)
+		})
+	}
+}
+
+func TestCategory_Get(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, categoryTable)
+	c := testCategory("category-id", "野菜", now())
+	err = m.db.DB.Create(&c).Error
+	require.NoError(t, err)
+
+	type args struct {
+		categoryID string
+	}
+	type want struct {
+		category *entity.Category
+		hasErr   bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				categoryID: "category-id",
+			},
+			want: want{
+				category: c,
+				hasErr:   false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				categoryID: "other-id",
+			},
+			want: want{
+				category: nil,
+				hasErr:   true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &category{db: m.db, now: now}
+			actual, err := db.Get(ctx, tt.args.categoryID)
+			if tt.want.hasErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			fillIgnoreCategoryField(actual, now())
+			assert.Equal(t, tt.want.category, actual)
 		})
 	}
 }

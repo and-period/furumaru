@@ -8,6 +8,17 @@ import (
 	"gorm.io/gorm"
 )
 
+type CoordinatorOrderBy string
+
+const (
+	CoordinatorOrderByLastname    CoordinatorOrderBy = "lastname"
+	CoordinatorOrderByFirstname   CoordinatorOrderBy = "firstname"
+	CoordinatorOrderByCompanyName CoordinatorOrderBy = "company_name"
+	CoordinatorOrderByStoreName   CoordinatorOrderBy = "store_name"
+	CoordinatorOrderByEmail       CoordinatorOrderBy = "email"
+	CoordinatorOrderByPhoneNumber CoordinatorOrderBy = "phone_number"
+)
+
 // Coordinator - 仲介者情報
 type Coordinator struct {
 	ID               string         `gorm:"primaryKey;<-:create"` // 管理者ID
@@ -81,6 +92,14 @@ func NewCoordinator(params *NewCoordinatorParams) *Coordinator {
 	}
 }
 
-func (p *Coordinator) Name() string {
-	return strings.TrimSpace(strings.Join([]string{p.Lastname, p.Firstname}, " "))
+func (c *Coordinator) Name() string {
+	return strings.TrimSpace(strings.Join([]string{c.Lastname, c.Firstname}, " "))
+}
+
+func (cs Coordinators) IDs() []string {
+	res := make([]string, len(cs))
+	for i := range cs {
+		res[i] = cs[i].ID
+	}
+	return res
 }

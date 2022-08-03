@@ -71,6 +71,36 @@ func TestProductType_List(t *testing.T) {
 				hasErr:       false,
 			},
 		},
+		{
+			name:  "success with asc",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListProductTypesParams{
+					Orders: []*ListProductTypesOrder{
+						{Key: entity.ProductTypeOrderByName, OrderByASC: true},
+					},
+				},
+			},
+			want: want{
+				productTypes: productTypes,
+				hasErr:       false,
+			},
+		},
+		{
+			name:  "success with desc",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListProductTypesParams{
+					Orders: []*ListProductTypesOrder{
+						{Key: entity.ProductTypeOrderByName, OrderByASC: false},
+					},
+				},
+			},
+			want: want{
+				productTypes: productTypes,
+				hasErr:       false,
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -241,6 +271,86 @@ func TestProductType_MultiGet(t *testing.T) {
 			assert.NoError(t, err)
 			fillIgnoreProductTypesField(actual, now())
 			assert.ElementsMatch(t, tt.want.productTypes, actual)
+		})
+	}
+}
+
+func TestProductType_Get(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, productTypeTable, categoryTable)
+	c := testCategory("category-id", "野菜", now())
+	err = m.db.DB.Create(&c).Error
+	require.NoError(t, err)
+	p := testProductType("type-id", "category-id", "野菜", now())
+	err = m.db.DB.Create(&p).Error
+	require.NoError(t, err)
+
+	type args struct {
+		productTypeID string
+	}
+	type want struct {
+		productType *entity.ProductType
+		hasErr      bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				productTypeID: "type-id",
+			},
+			want: want{
+				productType: p,
+				hasErr:      false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				productTypeID: "other-id",
+			},
+			want: want{
+				productType: nil,
+				hasErr:      true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &productType{db: m.db, now: now}
+			actual, err := db.Get(ctx, tt.args.productTypeID)
+			if tt.want.hasErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			fillIgnoreProductTypeField(actual, now())
+			assert.Equal(t, tt.want.productType, actual)
 		})
 	}
 }

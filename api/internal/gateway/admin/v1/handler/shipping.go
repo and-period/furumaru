@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
@@ -9,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/codes"
+	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/gin-gonic/gin"
 )
 
@@ -37,10 +39,16 @@ func (h *handler) ListShippings(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
+	orders, err := h.newShippingOrders(ctx)
+	if err != nil {
+		badRequest(ctx, err)
+		return
+	}
 
 	in := &store.ListShippingsInput{
 		Limit:  limit,
 		Offset: offset,
+		Orders: orders,
 	}
 	sshippings, total, err := h.store.ListShippings(ctx, in)
 	if err != nil {
@@ -58,6 +66,28 @@ func (h *handler) ListShippings(ctx *gin.Context) {
 		Total:     total,
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) newShippingOrders(ctx *gin.Context) ([]*store.ListShippingsOrder, error) {
+	shippings := map[string]sentity.ShippingOrderBy{
+		"name":            sentity.ShippingOrderByName,
+		"hasFreeShipping": sentity.ShippingOrderByHasFreeShipping,
+		"createdAt":       sentity.ShippingOrderByCreatedAt,
+		"updatedAt":       sentity.ShippingOrderByUpdatedAt,
+	}
+	params := util.GetOrders(ctx)
+	res := make([]*store.ListShippingsOrder, len(params))
+	for i, p := range params {
+		key, ok := shippings[p.Key]
+		if !ok {
+			return nil, fmt.Errorf("handler: unknown order key. key=%s: %w", p.Key, errInvalidOrderkey)
+		}
+		res[i] = &store.ListShippingsOrder{
+			Key:        key,
+			OrderByASC: p.Direction == util.OrderByASC,
+		}
+	}
+	return res, nil
 }
 
 func (h *handler) GetShipping(ctx *gin.Context) {

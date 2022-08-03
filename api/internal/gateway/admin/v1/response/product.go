@@ -4,8 +4,11 @@ package response
 type Product struct {
 	ID               string          `json:"id"`               // 商品ID
 	ProducerID       string          `json:"producerId"`       // 生産者ID
+	StoreName        string          `json:"storeName"`        // 農家名
 	CategoryID       string          `json:"categoryId"`       // 商品種別ID
+	CategoryName     string          `json:"categoryName"`     // 商品種別名
 	TypeID           string          `json:"productTypeId"`    // 品目ID
+	TypeName         string          `json:"productTypeName"`  // 品目名
 	Name             string          `json:"name"`             // 商品名
 	Description      string          `json:"description"`      // 商品説明
 	Public           bool            `json:"public"`           // 公開フラグ
@@ -38,9 +41,6 @@ type ProductResponse struct {
 }
 
 type ProductsResponse struct {
-	Products     []*Product     `json:"products"`     // 商品情報一覧
-	ProductTypes []*ProductType `json:"productTypes"` // 品目一覧
-	Categories   []*Category    `json:"categories"`   // 商品種別一覧
-	Producers    []*Producer    `json:"producers"`    // 生産者一覧
-	Total        int64          `json:"total"`        // 商品合計数
+	Products []*Product `json:"products"` // 商品情報一覧
+	Total    int64      `json:"total"`    // 商品合計数
 }

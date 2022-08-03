@@ -16,10 +16,18 @@ func (s *service) ListCategories(
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, exception.InternalError(err)
 	}
+	orders := make([]*database.ListCategoriesOrder, len(in.Orders))
+	for i := range in.Orders {
+		orders[i] = &database.ListCategoriesOrder{
+			Key:        in.Orders[i].Key,
+			OrderByASC: in.Orders[i].OrderByASC,
+		}
+	}
 	params := &database.ListCategoriesParams{
 		Name:   in.Name,
 		Limit:  int(in.Limit),
 		Offset: int(in.Offset),
+		Orders: orders,
 	}
 	var (
 		categories entity.Categories
@@ -48,6 +56,14 @@ func (s *service) MultiGetCategories(
 	}
 	categories, err := s.db.Category.MultiGet(ctx, in.CategoryIDs)
 	return categories, exception.InternalError(err)
+}
+
+func (s *service) GetCategory(ctx context.Context, in *store.GetCategoryInput) (*entity.Category, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	category, err := s.db.Category.Get(ctx, in.CategoryID)
+	return category, exception.InternalError(err)
 }
 
 func (s *service) CreateCategory(ctx context.Context, in *store.CreateCategoryInput) (*entity.Category, error) {

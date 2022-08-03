@@ -97,7 +97,12 @@ func NewWorker(params *Params, opts ...Option) Worker {
 	}
 }
 
-func (w *worker) Lambda(ctx context.Context, event events.SQSEvent) error {
+func (w *worker) Lambda(ctx context.Context, event events.SQSEvent) (err error) {
+	w.logger.Debug("Started Lambda function", zap.Time("now", w.now()))
+	defer func() {
+		w.logger.Debug("Finished Lambda function", zap.Time("now", w.now()), zap.Error(err))
+	}()
+
 	sm := semaphore.NewWeighted(w.concurrency)
 	eg, ectx := errgroup.WithContext(ctx)
 	for _, record := range event.Records {
@@ -107,26 +112,30 @@ func (w *worker) Lambda(ctx context.Context, event events.SQSEvent) error {
 		record := record
 		eg.Go(func() error {
 			defer sm.Release(1)
-			payload := &entity.WorkerPayload{}
-			if err := json.Unmarshal([]byte(record.Body), payload); err != nil {
-				w.logger.Error("Failed to unmarshall sqs event", zap.Any("event", event), zap.Error(err))
-				return nil // リトライ不要なためnilで返す
-			}
-			err := w.dispatch(ectx, payload)
-			if err == nil {
-				return nil
-			}
-			w.logger.Error("Failed to dispatch", zap.Error(err))
-			if exception.Retryable(err) {
-				return err
-			}
-			return nil
+			return w.dispatch(ectx, record)
 		})
 	}
 	return eg.Wait()
 }
 
-func (w *worker) dispatch(ctx context.Context, payload *entity.WorkerPayload) error {
+func (w *worker) dispatch(ctx context.Context, record events.SQSMessage) error {
+	payload := &entity.WorkerPayload{}
+	if err := json.Unmarshal([]byte(record.Body), payload); err != nil {
+		w.logger.Error("Failed to unmarshall sqs event", zap.Any("event", record), zap.Error(err))
+		return nil // リトライ不要なためnilで返す
+	}
+	err := w.run(ctx, payload)
+	if err == nil {
+		return nil
+	}
+	w.logger.Error("Failed to send message", zap.Error(err))
+	if exception.Retryable(err) {
+		return err
+	}
+	return nil
+}
+
+func (w *worker) run(ctx context.Context, payload *entity.WorkerPayload) error {
 	w.logger.Debug("Dispatch", zap.String("queueId", payload.QueueID), zap.Any("payload", payload))
 	queue, err := w.db.ReceivedQueue.Get(ctx, payload.QueueID)
 	if err != nil {
@@ -143,6 +152,13 @@ func (w *worker) dispatch(ctx context.Context, payload *entity.WorkerPayload) er
 			return nil
 		}
 		return w.multiSendMail(ectx, payload)
+	})
+	eg.Go(func() error {
+		// メッセージ作成
+		if payload.Message == nil {
+			return nil
+		}
+		return w.messenger(ectx, payload)
 	})
 	eg.Go(func() error {
 		// システムレポート

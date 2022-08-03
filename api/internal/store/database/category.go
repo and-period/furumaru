@@ -73,6 +73,11 @@ func (c *category) MultiGet(ctx context.Context, categoryIDs []string, fields ..
 	return categories, exception.InternalError(err)
 }
 
+func (c *category) Get(ctx context.Context, categoryID string, fields ...string) (*entity.Category, error) {
+	category, err := c.get(ctx, c.db.DB, categoryID, fields...)
+	return category, exception.InternalError(err)
+}
+
 func (c *category) Create(ctx context.Context, category *entity.Category) error {
 	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		now := c.now()

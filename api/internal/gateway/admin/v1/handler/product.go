@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
@@ -10,7 +11,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
-	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )
@@ -39,6 +39,11 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
+	orders, err := h.newProductOrders(ctx)
+	if err != nil {
+		badRequest(ctx, err)
+		return
+	}
 
 	in := &store.ListProductsInput{
 		Name:          util.GetQuery(ctx, "name", ""),
@@ -46,6 +51,7 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		ProducerID:    util.GetQuery(ctx, "producerId", ""),
 		Limit:         limit,
 		Offset:        offset,
+		Orders:        orders,
 	}
 	sproducts, total, err := h.store.ListProducts(ctx, in)
 	if err != nil {
@@ -55,59 +61,143 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 	products := service.NewProducts(sproducts)
 
 	var (
-		producers  uentity.Producers
-		categories sentity.Categories
-		types      sentity.ProductTypes
+		producers  service.Producers
+		categories service.Categories
+		types      service.ProductTypes
 	)
 	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() (err error) {
+	eg.Go(func() error {
 		in := &user.MultiGetProducersInput{
 			ProducerIDs: products.ProducerIDs(),
 		}
-		producers, err = h.user.MultiGetProducers(ectx, in)
-		return
+		uproducers, err := h.user.MultiGetProducers(ectx, in)
+		if err != nil {
+			return err
+		}
+		producers = service.NewProducers(uproducers)
+		return nil
 	})
-	eg.Go(func() (err error) {
+	eg.Go(func() error {
 		in := &store.MultiGetCategoriesInput{
 			CategoryIDs: products.CategoryIDs(),
 		}
-		categories, err = h.store.MultiGetCategories(ectx, in)
-		return
+		scategories, err := h.store.MultiGetCategories(ectx, in)
+		if err != nil {
+			return err
+		}
+		categories = service.NewCategories(scategories)
+		return nil
 	})
-	eg.Go(func() (err error) {
+	eg.Go(func() error {
 		in := &store.MultiGetProductTypesInput{
 			ProductTypeIDs: products.ProductTypeIDs(),
 		}
-		types, err = h.store.MultiGetProductTypes(ectx, in)
-		return
+		stypes, err := h.store.MultiGetProductTypes(ectx, in)
+		if err != nil {
+			return err
+		}
+		types = service.NewProductTypes(stypes)
+		return nil
 	})
 	if err := eg.Wait(); err != nil {
 		httpError(ctx, err)
 		return
 	}
 
+	products.Fill(categories.Map(), types.Map(), producers.Map())
+
 	res := &response.ProductsResponse{
-		Products:     products.Response(),
-		ProductTypes: service.NewProductTypes(types).Response(),
-		Categories:   service.NewCategories(categories).Response(),
-		Producers:    service.NewProducers(producers).Response(),
-		Total:        total,
+		Products: products.Response(),
+		Total:    total,
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) newProductOrders(ctx *gin.Context) ([]*store.ListProductsOrder, error) {
+	products := map[string]sentity.ProductOrderBy{
+		"name":             sentity.ProductOrderByName,
+		"public":           sentity.ProductOrderByPublic,
+		"inventory":        sentity.ProductOrderByInventory,
+		"price":            sentity.ProductOrderByPrice,
+		"originPrefecture": sentity.ProductOrderByOriginPrefecture,
+		"originCity":       sentity.ProductOrderByOriginCity,
+		"createdAt":        sentity.ProductOrderByCreatedAt,
+		"updatedAt":        sentity.ProductOrderByUpdatedAt,
+	}
+	params := util.GetOrders(ctx)
+	res := make([]*store.ListProductsOrder, len(params))
+	for i, p := range params {
+		key, ok := products[p.Key]
+		if !ok {
+			return nil, fmt.Errorf("handler: unknown order key. key=%s: %w", p.Key, errInvalidOrderkey)
+		}
+		res[i] = &store.ListProductsOrder{
+			Key:        key,
+			OrderByASC: p.Direction == util.OrderByASC,
+		}
+	}
+	return res, nil
 }
 
 func (h *handler) GetProduct(ctx *gin.Context) {
 	in := &store.GetProductInput{
 		ProductID: util.GetParam(ctx, "productId"),
 	}
-	product, err := h.store.GetProduct(ctx, in)
+	sproduct, err := h.store.GetProduct(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
+	product := service.NewProduct(sproduct)
+
+	var (
+		producer    *service.Producer
+		category    *service.Category
+		productType *service.ProductType
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		in := &user.GetProducerInput{
+			ProducerID: product.ProducerID,
+		}
+		uproducer, err := h.user.GetProducer(ectx, in)
+		if err != nil {
+			return err
+		}
+		producer = service.NewProducer(uproducer)
+		return nil
+	})
+	eg.Go(func() error {
+		in := &store.GetCategoryInput{
+			CategoryID: product.CategoryID,
+		}
+		scategory, err := h.store.GetCategory(ectx, in)
+		if err != nil {
+			return err
+		}
+		category = service.NewCategory(scategory)
+		return nil
+	})
+	eg.Go(func() error {
+		in := &store.GetProductTypeInput{
+			ProductTypeID: product.TypeID,
+		}
+		stype, err := h.store.GetProductType(ectx, in)
+		if err != nil {
+			return err
+		}
+		productType = service.NewProductType(stype)
+		return nil
+	})
+	if err := eg.Wait(); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	product.Fill(category, productType, producer)
 
 	res := &response.ProductResponse{
-		Product: service.NewProduct(product).Response(),
+		Product: product.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -116,6 +206,50 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 	req := &request.CreateProductRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
+		return
+	}
+
+	var (
+		producer    *service.Producer
+		category    *service.Category
+		productType *service.ProductType
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		in := &user.GetProducerInput{
+			ProducerID: req.ProducerID,
+		}
+		uproducer, err := h.user.GetProducer(ectx, in)
+		if err != nil {
+			return err
+		}
+		producer = service.NewProducer(uproducer)
+		return nil
+	})
+	eg.Go(func() error {
+		in := &store.GetCategoryInput{
+			CategoryID: req.CategoryID,
+		}
+		scategory, err := h.store.GetCategory(ectx, in)
+		if err != nil {
+			return err
+		}
+		category = service.NewCategory(scategory)
+		return nil
+	})
+	eg.Go(func() error {
+		in := &store.GetProductTypeInput{
+			ProductTypeID: req.TypeID,
+		}
+		stype, err := h.store.GetProductType(ectx, in)
+		if err != nil {
+			return err
+		}
+		productType = service.NewProductType(stype)
+		return nil
+	})
+	if err := eg.Wait(); err != nil {
+		httpError(ctx, err)
 		return
 	}
 
@@ -151,14 +285,17 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		OriginPrefecture: req.OriginPrefecture,
 		OriginCity:       req.OriginCity,
 	}
-	product, err := h.store.CreateProduct(ctx, in)
+	sproduct, err := h.store.CreateProduct(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
+	product := service.NewProduct(sproduct)
+
+	product.Fill(category, productType, producer)
 
 	res := &response.ProductResponse{
-		Product: service.NewProduct(product).Response(),
+		Product: product.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

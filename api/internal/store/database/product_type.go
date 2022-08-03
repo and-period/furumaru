@@ -75,6 +75,11 @@ func (t *productType) MultiGet(
 	return productTypes, exception.InternalError(err)
 }
 
+func (t *productType) Get(ctx context.Context, productTypeID string, fields ...string) (*entity.ProductType, error) {
+	productType, err := t.get(ctx, t.db.DB, productTypeID, fields...)
+	return productType, exception.InternalError(err)
+}
+
 func (t *productType) Create(ctx context.Context, productType *entity.ProductType) error {
 	_, err := t.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		err := tx.WithContext(ctx).

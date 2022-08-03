@@ -26,7 +26,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        golang: ['^1.18.3']
+        golang: ['1.18.4']
     steps:
     - name: Check out code
       uses: actions/checkout@v3
@@ -58,10 +58,15 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        golang: ['^1.18.3']
+        golang: ['1.18.4']
     steps:
     - name: Check out code
       uses: actions/checkout@v3
+
+    - name: Use Golang ${{ matrix.golang }}
+      uses: actions/setup-go@v3
+      with:
+        go-version: ${{ matrix.golang }}
 
     - name: Setup
       run: make setup
@@ -86,10 +91,15 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        golang: ['^1.18.3']
+        golang: ['1.18.4']
     steps:
     - name: Check out code
       uses: actions/checkout@v3
+
+    - name: Use Golang ${{ matrix.golang }}
+      uses: actions/setup-go@v3
+      with:
+        go-version: ${{ matrix.golang }}
 
     - uses: actions/cache@v3
       id: modules-cache
@@ -109,6 +119,12 @@ jobs:
     - name: Build admin gateway
       run: make build SERVICE=gateway/admin
 
+    - name: Build messenger worker
+      run: make build SERVICE=messenger/worker
+
+    - name: Build messenger scheduler
+      run: make build SERVICE=messenger/scheduler
+
   test:
     name: test
     needs: setup
@@ -120,11 +136,16 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        golang: ['^1.18.3']
+        golang: ['1.18.4']
 
     steps:
     - name: Check out code
       uses: actions/checkout@v3
+
+    - name: Use Golang ${{ matrix.golang }}
+      uses: actions/setup-go@v3
+      with:
+        go-version: ${{ matrix.golang }}
 
     - name: Start MySQL container
       working-directory: .

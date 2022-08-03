@@ -63,6 +63,22 @@ func TestAdministrator_List(t *testing.T) {
 				hasErr: false,
 			},
 		},
+		{
+			name:  "success with sort",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListAdministratorsParams{
+					Orders: []*ListAdministratorsOrder{
+						{Key: "lastname", OrderByASC: true},
+						{Key: "firstname", OrderByASC: false},
+					},
+				},
+			},
+			want: want{
+				admins: admins,
+				hasErr: false,
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -374,6 +390,81 @@ func TestAdministrator_Create(t *testing.T) {
 
 			db := &administrator{db: m.db, now: now}
 			err = db.Create(ctx, tt.args.auth, tt.args.admin)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
+func TestAdministrator_Update(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	type args struct {
+		administratorID string
+		params          *UpdateAdministratorParams
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				p := testAdministrator("admin-id", "test-admin@and-period.jp", now())
+				err = m.db.DB.Create(&p).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				administratorID: "admin-id",
+				params: &UpdateAdministratorParams{
+					Lastname:      "&.",
+					Firstname:     "スタッフ",
+					LastnameKana:  "あんどぴりおど",
+					FirstnameKana: "すたっふ",
+					PhoneNumber:   "+819012345678",
+				},
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				administratorID: "admin-id",
+				params:          &UpdateAdministratorParams{},
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := m.dbDelete(ctx, administratorTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, m)
+
+			db := &administrator{db: m.db, now: now}
+			err = db.Update(ctx, tt.args.administratorID, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}

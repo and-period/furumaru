@@ -24,6 +24,7 @@
           :items="producers"
           :search="query"
           :no-results-text="noResultsText"
+          no-data-text="登録されている生産者がいません。"
         >
           <template #[`item.thumbnail`]="{ item }">
             <v-avatar>
@@ -75,7 +76,7 @@ import {
 import { DataTableHeader } from 'vuetify'
 
 import { useProducerStore } from '~/store/producer'
-import { ProducersResponseProducers } from '~/types/api'
+import { ProducersResponseProducersInner } from '~/types/api'
 
 export default defineComponent({
   setup() {
@@ -139,15 +140,15 @@ export default defineComponent({
       query.value = search.value
     }
 
-    const handleEdit = (item: ProducersResponseProducers) => {
+    const handleEdit = (item: ProducersResponseProducersInner) => {
+      router.push(`/producers/edit/${item.id}`)
+    }
+
+    const handleDelete = (item: ProducersResponseProducersInner) => {
       console.log(item)
     }
 
-    const handleDelete = (item: ProducersResponseProducers) => {
-      console.log(item)
-    }
-
-    const handleAddVideo = (item: ProducersResponseProducers) => {
+    const handleAddVideo = (item: ProducersResponseProducersInner) => {
       console.log(item)
     }
 

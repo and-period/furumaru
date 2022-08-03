@@ -761,7 +761,7 @@ func TestFetchGuest(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
-			err := worker.fetchGuest(ctx, tt.guest, tt.execute(t))
+			err := worker.fetchGuest(tt.guest, tt.execute(t))
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}

@@ -10,6 +10,9 @@ productTypeResponse:
     categoryId:
       type: string
       description: 商品種別ID
+    categoryName:
+      type: string
+      description: 商品種別名
     createdAt:
       type: integer
       format: int64
@@ -22,12 +25,14 @@ productTypeResponse:
   - id
   - name
   - categoryId
+  - categoryName
   - createdAt
   - updatedAt
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
-    name: '野菜'
+    name: 'じゃがいも'
     categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
+    categoryName: '野菜'
     createdAt: 1640962800
     updatedAt: 1640962800
 productTypesResponse:
@@ -48,6 +53,9 @@ productTypesResponse:
           categoryId:
             type: string
             description: 商品種別ID
+          categoryName:
+            type: string
+            description: 商品種別名
           createdAt:
             type: integer
             format: int64
@@ -60,31 +68,7 @@ productTypesResponse:
         - id
         - name
         - categoryId
-        - createdAt
-        - updatedAt
-    categories:
-      type: array
-      description: 商品種別一覧
-      items:
-        type: object
-        properties:
-          id:
-            type: string
-            description: 商品種別ID
-          name:
-            type: string
-            description: カテゴリ名
-          createdAt:
-            type: integer
-            format: int64
-            description: 登録日時 (unixtime)
-          updatedAt:
-            type: integer
-            format: int64
-            description: 登録日時 (unixtime)
-        required:
-        - id
-        - name
+        - categoryName
         - createdAt
         - updatedAt
     total:
@@ -93,27 +77,19 @@ productTypesResponse:
       description: 合計数
   required:
   - productTypes
-  - categories
   - total
   example:
     productTypes:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       name: 'じゃがいも'
       categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
+      categoryName: '野菜'
       createdAt: 1640962800
       updatedAt: 1640962800
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       name: 'りんご'
       categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
-      createdAt: 1640962800
-      updatedAt: 1640962800
-    categories:
-    - id: 'kSByoE6FetnPs5Byk3a9Zx'
-      name: '野菜'
-      createdAt: 1640962800
-      updatedAt: 1640962800
-    - id: 'kSByoE6FetnPs5Byk3a9Zx'
-      name: '果物'
+      categoryName: '果物'
       createdAt: 1640962800
       updatedAt: 1640962800
     total: 2

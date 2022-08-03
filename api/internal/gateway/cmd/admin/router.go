@@ -12,16 +12,18 @@ import (
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	"github.com/line/line-bot-sdk-go/v7/linebot"
+	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 func newRouter(reg *registry, logger *zap.Logger) *gin.Engine {
 	opts := make([]gin.HandlerFunc, 0)
-	opts = append(opts, accessLogger(logger))
+	opts = append(opts, nrgin.Middleware(reg.newRelic))
+	opts = append(opts, accessLogger(logger, reg))
 	opts = append(opts, cors.NewGinMiddleware())
 	opts = append(opts, gzip.Gzip(gzip.DefaultCompression))
-	opts = append(opts, notifyError(logger, reg))
-	opts = append(opts, recoveryWithWriter())
+	opts = append(opts, ginzap.RecoveryWithZap(logger, true))
 
 	rt := gin.New()
 	rt.Use(opts...)
@@ -49,53 +51,61 @@ func (w *wrapResponseWriter) Write(b []byte) (int, error) {
 	return w.ResponseWriter.Write(b)
 }
 
-func recoveryWithWriter() gin.HandlerFunc {
-	recovery := func(ctx *gin.Context, err interface{}) {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
+func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
+	skipPaths := map[string]bool{
+		"/health": true,
 	}
-	return gin.CustomRecovery(recovery)
-}
 
-func accessLogger(logger *zap.Logger) gin.HandlerFunc {
-	return ginzap.GinzapWithConfig(logger, &ginzap.Config{
-		TimeFormat: time.RFC3339,
-		UTC:        false,
-		SkipPaths:  []string{"/health"},
-	})
-}
-
-func notifyError(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		w := &wrapResponseWriter{
 			ResponseWriter: ctx.Writer,
 			body:           bytes.NewBufferString(""),
 		}
 		ctx.Writer = w
+
+		start := time.Now()
+		method := ctx.Request.Method
+		path := ctx.Request.URL.Path
 		ctx.Next()
 
-		status := ctx.Writer.Status()
-		if status < 500 {
+		if _, ok := skipPaths[path]; ok {
 			return
 		}
 
-		path := ctx.Request.URL.String()
-		method := ctx.Request.Method
-		res := w.body.String()
+		end := time.Now()
+		status := ctx.Writer.Status()
 
-		logger.Error("Internal Server Error",
+		fields := []zapcore.Field{
 			zap.Int("status", status),
 			zap.String("method", method),
 			zap.String("path", path),
-			zap.String("response", res),
-		)
+			zap.String("query", ctx.Request.URL.RawQuery),
+			zap.String("ip", ctx.ClientIP()),
+			zap.String("user-agent", ctx.Request.UserAgent()),
+			zap.Int64("latency", end.Sub(start).Milliseconds()),
+			zap.String("time", end.Format("2006-01-02 15:04:05")),
+			zap.String("userId", ctx.GetHeader("adminId")),
+		}
+
+		// ~ 499
+		if status < 500 {
+			logger.Info(path, fields...)
+			return
+		}
+
+		// 500 ~
+		res := w.body.String()
+		fields = append(fields, zap.String("response", res))
+		fields = append(fields, zap.Strings("errors", ctx.Errors.Errors()))
+		logger.Error(path, fields...)
 
 		if reg.line == nil {
 			return
 		}
-		const service = "admin-gateway"
-		altText := fmt.Sprintf("[ふるマルアラート] %s", service)
+
+		altText := fmt.Sprintf("[ふるマルアラート] %s", reg.appName)
 		components := []linebot.FlexComponent{
-			newAlertContent("service", service),
+			newAlertContent("service", reg.appName),
 			newAlertContent("env", reg.env),
 			newAlertContent("status", strconv.FormatInt(int64(status), 10)),
 			newAlertContent("method", method),

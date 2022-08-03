@@ -21,6 +21,9 @@ func TestListCategories(t *testing.T) {
 		Name:   "野菜",
 		Limit:  30,
 		Offset: 0,
+		Orders: []*database.ListCategoriesOrder{
+			{Key: entity.CategoryOrderByName, OrderByASC: true},
+		},
 	}
 	categories := entity.Categories{
 		{
@@ -49,6 +52,9 @@ func TestListCategories(t *testing.T) {
 				Name:   "野菜",
 				Limit:  30,
 				Offset: 0,
+				Orders: []*store.ListCategoriesOrder{
+					{Key: entity.CategoryOrderByName, OrderByASC: true},
+				},
 			},
 			expect:      categories,
 			expectTotal: 1,
@@ -72,13 +78,16 @@ func TestListCategories(t *testing.T) {
 				Name:   "野菜",
 				Limit:  30,
 				Offset: 0,
+				Orders: []*store.ListCategoriesOrder{
+					{Key: entity.CategoryOrderByName, OrderByASC: true},
+				},
 			},
 			expect:      nil,
 			expectTotal: 0,
 			expectErr:   exception.ErrUnknown,
 		},
 		{
-			name: "success",
+			name: "failed to count",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Category.EXPECT().List(gomock.Any(), params).Return(categories, nil)
 				mocks.db.Category.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
@@ -87,6 +96,9 @@ func TestListCategories(t *testing.T) {
 				Name:   "野菜",
 				Limit:  30,
 				Offset: 0,
+				Orders: []*store.ListCategoriesOrder{
+					{Key: entity.CategoryOrderByName, OrderByASC: true},
+				},
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -164,6 +176,65 @@ func TestMultiGetCategories(t *testing.T) {
 			actual, err := service.MultiGetCategories(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.ElementsMatch(t, tt.expect, actual)
+		}))
+	}
+}
+
+func TestGetCategory(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
+	category := &entity.Category{
+		ID:        "category-id",
+		Name:      "野菜",
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.GetCategoryInput
+		expect    *entity.Category
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Category.EXPECT().Get(ctx, "category-id").Return(category, nil)
+			},
+			input: &store.GetCategoryInput{
+				CategoryID: "category-id",
+			},
+			expect:    category,
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &store.GetCategoryInput{},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Category.EXPECT().Get(ctx, "category-id").Return(nil, errmock)
+			},
+			input: &store.GetCategoryInput{
+				CategoryID: "category-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.GetCategory(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
 		}))
 	}
 }

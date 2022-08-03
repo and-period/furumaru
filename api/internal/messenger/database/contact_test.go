@@ -64,6 +64,21 @@ func TestContact_List(t *testing.T) {
 				hasErr:   false,
 			},
 		},
+		{
+			name:  "success with sort",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListContactsParams{
+					Orders: []*ListContactsOrder{
+						{Key: entity.ContactOrderByPriority, OrderByASC: true},
+					},
+				},
+			},
+			want: want{
+				contacts: contacts,
+				hasErr:   false,
+			},
+		},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -214,7 +229,11 @@ func TestContact_Get(t *testing.T) {
 
 			db := &contact{db: m.db, now: now}
 			actual, err := db.Get(ctx, tt.args.contactID)
-			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			if tt.want.hasErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
 			fillIgnoreContactField(actual, now())
 			assert.Equal(t, tt.want.contact, actual)
 		})

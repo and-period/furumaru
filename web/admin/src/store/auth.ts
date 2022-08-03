@@ -2,7 +2,9 @@ import axios from 'axios'
 import { defineStore } from 'pinia'
 import Cookies from 'universal-cookie'
 
-import { ApiClientFactory } from '.'
+import ApiClientFactory from '../plugins/factory'
+
+import { useCommonStore } from './common'
 
 import {
   AuthApi,
@@ -10,6 +12,12 @@ import {
   SignInRequest,
   UpdateAuthPasswordRequest,
 } from '~/types/api'
+import {
+  AuthError,
+  ConnectionError,
+  InternalServerError,
+  ValidationError,
+} from '~/types/exception'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -37,32 +45,25 @@ export const useAuthStore = defineStore('auth', {
         cookies.set('refreshToken', this.user.refreshToken)
         return this.redirectPath
       } catch (err) {
-        console.log(err)
         if (axios.isAxiosError(err)) {
           if (!err.response) {
-            return Promise.reject(
-              new Error(
-                '現在、システムが停止中です。時間をおいてから再度アクセスしてください。'
-              )
-            )
+            return Promise.reject(new ConnectionError(err))
           }
-          switch (err.response?.status) {
+          switch (err.response.status) {
             case 400:
             case 401:
               return Promise.reject(
-                new Error('ユーザー名またはパスワードが違います。')
-              )
-            default:
-              return Promise.reject(
-                new Error(
-                  '現在、システムが停止中です。時間をおいてから再度アクセスしてください。'
+                new ValidationError(
+                  err.response.status,
+                  'ユーザー名またはパスワードが違います。',
+                  err
                 )
               )
+            default:
+              return Promise.reject(new InternalServerError(err))
           }
         }
-        throw new Error(
-          '不明なエラーが発生しました。管理者にお問い合わせください。'
-        )
+        throw new InternalServerError(err)
       }
     },
 
@@ -71,10 +72,35 @@ export const useAuthStore = defineStore('auth', {
         const factory = new ApiClientFactory()
         const authApiClient = factory.create(AuthApi, this.user?.accessToken)
         await authApiClient.v1UpdateAuthPassword(payload)
+        const commonStore = useCommonStore()
+        commonStore.addSnackbar({
+          message: 'パスワードを更新しました。',
+          color: 'info',
+        })
       } catch (err) {
-        // TODO: エラーハンドリング
-        console.log(err)
-        throw new Error('Internal Server Error')
+        if (axios.isAxiosError(err)) {
+          if (!err.response) {
+            return Promise.reject(new ConnectionError(err))
+          }
+          const statusCode = err.response.status
+          switch (statusCode) {
+            case 401:
+              return Promise.reject(
+                new AuthError(
+                  statusCode,
+                  '認証エラー。再度ログインをしてください。',
+                  err
+                )
+              )
+            case 400:
+              return Promise.reject(
+                new ValidationError(statusCode, '入力値に誤りがあります。', err)
+              )
+            default:
+              return Promise.reject(new InternalServerError(err))
+          }
+        }
+        throw new InternalServerError(err)
       }
     },
 
@@ -92,9 +118,22 @@ export const useAuthStore = defineStore('auth', {
         const cookies = new Cookies()
         cookies.remove('refreshToken')
         if (axios.isAxiosError(error)) {
-          throw new Error(error.message)
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          if (error.response.status === 401) {
+            return Promise.reject(
+              new AuthError(
+                error.response.status,
+                '認証エラー。再度ログインをしてください。',
+                error
+              )
+            )
+          } else {
+            return Promise.reject(new InternalServerError(error))
+          }
         }
-        throw new Error('Internal Server Error')
+        throw new InternalServerError(error)
       }
     },
 

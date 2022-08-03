@@ -7,8 +7,14 @@ import (
 )
 
 type ListContactsInput struct {
-	Limit  int64 `validate:"required,max=200"`
-	Offset int64 `validate:"min=0"`
+	Limit  int64                `validate:"required,max=200"`
+	Offset int64                `validate:"min=0"`
+	Orders []*ListContactsOrder `validate:"omitempty,dive,required"`
+}
+
+type ListContactsOrder struct {
+	Key        entity.ContactOrderBy `validate:"required"`
+	OrderByASC bool                  `validate:""`
 }
 
 type GetContactInput struct {
@@ -39,7 +45,31 @@ type CreateNotificationInput struct {
 	PublishedAt time.Time           `validate:"required"`
 }
 
+type ListMessagesInput struct {
+	UserType entity.UserType      `validate:"required,oneof=1 2"`
+	UserID   string               `validate:"required"`
+	Limit    int64                `validate:"required,max=200"`
+	Offset   int64                `validate:"min=0"`
+	Orders   []*ListMessagesOrder `validate:"omitempty,dive,required"`
+}
+
+type ListMessagesOrder struct {
+	Key        entity.MessageOrderBy `validate:"required"`
+	OrderByASC bool                  `validate:""`
+}
+
+type GetMessageInput struct {
+	MessageID string          `validate:"required"`
+	UserType  entity.UserType `validate:"omitempty,oneof=1 2"`
+	UserID    string          `validate:"omitempty"`
+}
+
 type NotifyRegisterAdminInput struct {
+	AdminID  string `validate:"required"`
+	Password string `validate:"required"`
+}
+
+type NotifyResetAdminPasswordInput struct {
 	AdminID  string `validate:"required"`
 	Password string `validate:"required"`
 }
@@ -48,4 +78,8 @@ type NotifyReceivedContactInput struct {
 	ContactID string `validate:"required"`
 	Username  string `validate:"required"`
 	Email     string `validate:"required"`
+}
+
+type NotifyNotificationInput struct {
+	NotificationID string `validate:"required"`
 }

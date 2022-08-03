@@ -115,6 +115,46 @@ func TestCategories(t *testing.T) {
 	}
 }
 
+func TestCategories_Map(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name       string
+		categories Categories
+		expect     map[string]*Category
+	}{
+		{
+			name: "success",
+			categories: Categories{
+				{
+					Category: response.Category{
+						ID:        "category-id",
+						Name:      "野菜",
+						CreatedAt: 1640962800,
+						UpdatedAt: 1640962800,
+					},
+				},
+			},
+			expect: map[string]*Category{
+				"category-id": {
+					Category: response.Category{
+						ID:        "category-id",
+						Name:      "野菜",
+						CreatedAt: 1640962800,
+						UpdatedAt: 1640962800,
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.categories.Map())
+		})
+	}
+}
+
 func TestCategories_Response(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

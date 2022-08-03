@@ -1,6 +1,7 @@
 package exception
 
 import (
+	"context"
 	"errors"
 	"fmt"
 
@@ -10,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/go-playground/validator/v10"
 	"github.com/go-sql-driver/mysql"
+	"github.com/samber/lo"
 	"gorm.io/gorm"
 )
 
@@ -38,6 +40,14 @@ func InternalError(err error) error {
 	if isInternal(err) {
 		return err
 	}
+
+	switch {
+	case errors.Is(err, context.Canceled):
+		return wrapError("canceled", ErrCanceled, err)
+	case errors.Is(err, context.DeadlineExceeded):
+		return wrapError("deadline exceeded", ErrDeadlineExceeded, err)
+	}
+
 	if err := validationError(err); err != nil {
 		return err
 	}
@@ -60,7 +70,8 @@ func InternalError(err error) error {
 }
 
 func Retryable(err error) bool {
-	return errors.Is(err, ErrCanceled) ||
+	return errors.Is(err, ErrResourceExhausted) ||
+		errors.Is(err, ErrCanceled) ||
 		errors.Is(err, ErrUnavailable) ||
 		errors.Is(err, ErrDeadlineExceeded) ||
 		errors.Is(err, ErrOutOfRange)
@@ -71,14 +82,25 @@ func wrapError(prefix string, code, err error) error {
 }
 
 func isInternal(err error) bool {
-	return errors.Is(err, ErrInvalidArgument) ||
-		errors.Is(err, ErrUnauthenticated) ||
-		errors.Is(err, ErrNotFound) ||
-		errors.Is(err, ErrAlreadyExists) ||
-		errors.Is(err, ErrFailedPrecondition) ||
-		errors.Is(err, ErrResourceExhausted) ||
-		errors.Is(err, ErrNotImplemented) ||
-		errors.Is(err, ErrInternal)
+	ies := []error{
+		ErrInvalidArgument,
+		ErrUnauthenticated,
+		ErrForbidden,
+		ErrNotFound,
+		ErrAlreadyExists,
+		ErrFailedPrecondition,
+		ErrResourceExhausted,
+		ErrNotImplemented,
+		ErrInternal,
+		ErrCanceled,
+		ErrUnavailable,
+		ErrDeadlineExceeded,
+		ErrOutOfRange,
+	}
+	_, ok := lo.Find(ies, func(ie error) bool {
+		return errors.Is(err, ie)
+	})
+	return ok
 }
 
 func validationError(err error) error {
@@ -140,6 +162,10 @@ func authError(err error) error {
 		return wrapError(prefix, ErrAlreadyExists, err)
 	case errors.Is(err, cognito.ErrResourceExhausted):
 		return wrapError(prefix, ErrResourceExhausted, err)
+	case errors.Is(err, cognito.ErrCanceled):
+		return wrapError(prefix, ErrCanceled, err)
+	case errors.Is(err, cognito.ErrTimeout):
+		return wrapError(prefix, ErrDeadlineExceeded, err)
 	default:
 		return nil
 	}
@@ -174,6 +200,8 @@ func mailerError(err error) error {
 		return wrapError(prefix, ErrInternal, err)
 	case errors.Is(err, mailer.ErrUnavailable):
 		return wrapError(prefix, ErrUnavailable, err)
+	case errors.Is(err, mailer.ErrCanceled):
+		return wrapError(prefix, ErrCanceled, err)
 	case errors.Is(err, mailer.ErrTimeout):
 		return wrapError(prefix, ErrDeadlineExceeded, err)
 	default:
@@ -202,6 +230,8 @@ func notifierError(err error) error {
 		return wrapError(prefix, ErrUnavailable, err)
 	case errors.Is(err, line.ErrResourceExhausted):
 		return wrapError(prefix, ErrResourceExhausted, err)
+	case errors.Is(err, line.ErrCanceled):
+		return wrapError(prefix, ErrCanceled, err)
 	case errors.Is(err, line.ErrTimeout):
 		return wrapError(prefix, ErrDeadlineExceeded, err)
 	default:

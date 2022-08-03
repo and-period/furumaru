@@ -22,6 +22,9 @@ func TestListProductTypes(t *testing.T) {
 		CategoryID: "category-id",
 		Limit:      30,
 		Offset:     0,
+		Orders: []*database.ListProductTypesOrder{
+			{Key: entity.ProductTypeOrderByName, OrderByASC: true},
+		},
 	}
 	productTypes := entity.ProductTypes{
 		{
@@ -52,6 +55,9 @@ func TestListProductTypes(t *testing.T) {
 				CategoryID: "category-id",
 				Limit:      30,
 				Offset:     0,
+				Orders: []*store.ListProductTypesOrder{
+					{Key: entity.ProductTypeOrderByName, OrderByASC: true},
+				},
 			},
 			expect:      productTypes,
 			expectTotal: 1,
@@ -76,6 +82,9 @@ func TestListProductTypes(t *testing.T) {
 				CategoryID: "category-id",
 				Limit:      30,
 				Offset:     0,
+				Orders: []*store.ListProductTypesOrder{
+					{Key: entity.ProductTypeOrderByName, OrderByASC: true},
+				},
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -92,6 +101,9 @@ func TestListProductTypes(t *testing.T) {
 				CategoryID: "category-id",
 				Limit:      30,
 				Offset:     0,
+				Orders: []*store.ListProductTypesOrder{
+					{Key: entity.ProductTypeOrderByName, OrderByASC: true},
+				},
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -170,6 +182,66 @@ func TestMultiGetProductTypes(t *testing.T) {
 			actual, err := service.MultiGetProductTypes(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.ElementsMatch(t, tt.expect, actual)
+		}))
+	}
+}
+
+func TestGetProductType(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
+	productType := &entity.ProductType{
+		ID:         "product-type-id",
+		Name:       "じゃがいも",
+		CategoryID: "category-id",
+		CreatedAt:  now,
+		UpdatedAt:  now,
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.GetProductTypeInput
+		expect    *entity.ProductType
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ProductType.EXPECT().Get(ctx, "product-type-id").Return(productType, nil)
+			},
+			input: &store.GetProductTypeInput{
+				ProductTypeID: "product-type-id",
+			},
+			expect:    productType,
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &store.GetProductTypeInput{},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get product type",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ProductType.EXPECT().Get(ctx, "product-type-id").Return(nil, errmock)
+			},
+			input: &store.GetProductTypeInput{
+				ProductTypeID: "product-type-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.GetProductType(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
 		}))
 	}
 }

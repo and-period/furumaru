@@ -10,7 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/and-period/furumaru/api/pkg/set"
+	set "github.com/and-period/furumaru/api/pkg/set/v2"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
@@ -22,6 +22,9 @@ func TestListShippings(t *testing.T) {
 	params := &database.ListShippingsParams{
 		Limit:  20,
 		Offset: 0,
+		Orders: []*database.ListShippingsOrder{
+			{Key: entity.ShippingOrderByName, OrderByASC: true},
+		},
 	}
 	shikoku := []int64{
 		codes.PrefectureValues["tokushima"],
@@ -29,8 +32,7 @@ func TestListShippings(t *testing.T) {
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
-	set := set.New(len(shikoku))
-	set.AddInt64s(shikoku...)
+	set := set.New[int64](len(shikoku)).Add(shikoku...)
 	others := make([]int64, 0, 47-len(shikoku))
 	for _, val := range codes.PrefectureValues {
 		if set.Contains(val) {
@@ -79,6 +81,9 @@ func TestListShippings(t *testing.T) {
 			input: &store.ListShippingsInput{
 				Limit:  20,
 				Offset: 0,
+				Orders: []*store.ListShippingsOrder{
+					{Key: entity.ShippingOrderByName, OrderByASC: true},
+				},
 			},
 			expect:      shippings,
 			expectTotal: 1,
@@ -101,6 +106,9 @@ func TestListShippings(t *testing.T) {
 			input: &store.ListShippingsInput{
 				Limit:  20,
 				Offset: 0,
+				Orders: []*store.ListShippingsOrder{
+					{Key: entity.ShippingOrderByName, OrderByASC: true},
+				},
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -115,6 +123,9 @@ func TestListShippings(t *testing.T) {
 			input: &store.ListShippingsInput{
 				Limit:  20,
 				Offset: 0,
+				Orders: []*store.ListShippingsOrder{
+					{Key: entity.ShippingOrderByName, OrderByASC: true},
+				},
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -143,8 +154,7 @@ func TestGetShipping(t *testing.T) {
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
-	set := set.New(len(shikoku))
-	set.AddInt64s(shikoku...)
+	set := set.New[int64](len(shikoku)).Add(shikoku...)
 	others := make([]int64, 0, 47-len(shikoku))
 	for _, val := range codes.PrefectureValues {
 		if set.Contains(val) {
@@ -231,8 +241,7 @@ func TestCreateShipping(t *testing.T) {
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
-	set := set.New(len(shikoku))
-	set.AddInt64s(shikoku...)
+	set := set.New[int64](len(shikoku)).Add(shikoku...)
 	others := make([]int64, 0, 47-len(shikoku))
 	for _, val := range codes.PrefectureValues {
 		if set.Contains(val) {
@@ -343,8 +352,7 @@ func TestUpdateShipping(t *testing.T) {
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
-	set := set.New(len(shikoku))
-	set.AddInt64s(shikoku...)
+	set := set.New[int64](len(shikoku)).Add(shikoku...)
 	others := make([]int64, 0, 47-len(shikoku))
 	for _, val := range codes.PrefectureValues {
 		if set.Contains(val) {

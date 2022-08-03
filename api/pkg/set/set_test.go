@@ -71,6 +71,13 @@ func TestSet_Strings(t *testing.T) {
 	assert.Equal(t, []string{"a", "b", "c"}, s.SortStrings())
 }
 
+func TestSet_Int32s(t *testing.T) {
+	t.Parallel()
+	s := New(10)
+	s.AddInt32s([]int32{1, 3, 2}...)
+	assert.Equal(t, []int32{1, 2, 3}, s.SortInt32s())
+}
+
 func TestSet_Int64s(t *testing.T) {
 	t.Parallel()
 	s := New(10)
