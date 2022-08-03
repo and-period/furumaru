@@ -12,6 +12,7 @@ import {
   ProducersResponse,
   UploadImageResponse,
 } from '~/types/api'
+import { AuthError } from '~/types/exception'
 
 export const useProducerStore = defineStore('Producer', {
   state: () => ({
@@ -31,7 +32,9 @@ export const useProducerStore = defineStore('Producer', {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
         if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
+          return Promise.reject(
+            new AuthError(401, '認証エラー。再度ログインをしてください。')
+          )
         }
 
         const factory = new ApiClientFactory()
