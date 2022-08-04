@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -18,9 +19,17 @@ func (s *service) ListProducers(ctx context.Context, in *user.ListProducersInput
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, exception.InternalError(err)
 	}
+	orders := make([]*database.ListProducersOrder, len(in.Orders))
+	for i := range in.Orders {
+		orders[i] = &database.ListProducersOrder{
+			Key:        in.Orders[i].Key,
+			OrderByASC: in.Orders[i].OrderByASC,
+		}
+	}
 	params := &database.ListProducersParams{
 		Limit:  int(in.Limit),
 		Offset: int(in.Offset),
+		Orders: orders,
 	}
 	var (
 		producers entity.Producers
@@ -127,9 +136,12 @@ func (s *service) UpdateProducerEmail(ctx context.Context, in *user.UpdateProduc
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	auth, err := s.db.AdminAuth.GetByAdminID(ctx, in.ProducerID, "cognito_id")
+	auth, err := s.db.AdminAuth.GetByAdminID(ctx, in.ProducerID, "cognito_id", "role")
 	if err != nil {
 		return exception.InternalError(err)
+	}
+	if auth.Role != entity.AdminRoleProducer {
+		return fmt.Errorf("api: this admin role is not producer: %w", exception.ErrFailedPrecondition)
 	}
 	params := &cognito.AdminChangeEmailParams{
 		Username: auth.CognitoID,
@@ -147,9 +159,12 @@ func (s *service) ResetProducerPassword(ctx context.Context, in *user.ResetProdu
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	auth, err := s.db.AdminAuth.GetByAdminID(ctx, in.ProducerID, "cognito_id")
+	auth, err := s.db.AdminAuth.GetByAdminID(ctx, in.ProducerID, "cognito_id", "role")
 	if err != nil {
 		return exception.InternalError(err)
+	}
+	if auth.Role != entity.AdminRoleProducer {
+		return fmt.Errorf("api: this admin role is not producer: %w", exception.ErrFailedPrecondition)
 	}
 	password := random.NewStrings(size)
 	params := &cognito.AdminChangePasswordParams{

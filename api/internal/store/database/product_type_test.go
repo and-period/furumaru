@@ -71,6 +71,36 @@ func TestProductType_List(t *testing.T) {
 				hasErr:       false,
 			},
 		},
+		{
+			name:  "success with asc",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListProductTypesParams{
+					Orders: []*ListProductTypesOrder{
+						{Key: entity.ProductTypeOrderByName, OrderByASC: true},
+					},
+				},
+			},
+			want: want{
+				productTypes: productTypes,
+				hasErr:       false,
+			},
+		},
+		{
+			name:  "success with desc",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListProductTypesParams{
+					Orders: []*ListProductTypesOrder{
+						{Key: entity.ProductTypeOrderByName, OrderByASC: false},
+					},
+				},
+			},
+			want: want{
+				productTypes: productTypes,
+				hasErr:       false,
+			},
+		},
 	}
 
 	for _, tt := range tests {

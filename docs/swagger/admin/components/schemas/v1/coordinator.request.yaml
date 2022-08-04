@@ -150,7 +150,6 @@ updateCoordinatorRequest:
   - firstnameKana
   - companyName
   - storeName
-  - email
   - phoneNumber
   - postalCode
   - prefecture
@@ -169,7 +168,6 @@ updateCoordinatorRequest:
     twitterAccount: 'twitter-id'
     instagramAccount: 'instagram-id'
     facebookAccount: 'facebook-id'
-    email: 'test-user@and-period.jp'
     phoneNumber: '+819012345678'
     postalCode: '1000014'
     prefecture: '東京都'

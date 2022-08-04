@@ -4,6 +4,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
@@ -90,6 +91,25 @@ type Schedule interface {
 type ListContactsParams struct {
 	Limit  int
 	Offset int
+	Orders []*ListContactsOrder
+}
+
+type ListContactsOrder struct {
+	Key        entity.ContactOrderBy
+	OrderByASC bool
+}
+
+func (p *ListContactsParams) stmt(stmt *gorm.DB) *gorm.DB {
+	for i := range p.Orders {
+		var value string
+		if p.Orders[i].OrderByASC {
+			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
+		} else {
+			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
+		}
+		stmt = stmt.Order(value)
+	}
+	return stmt
 }
 
 type UpdateContactParams struct {
@@ -103,6 +123,12 @@ type ListMessagesParams struct {
 	Offset   int
 	UserType entity.UserType
 	UserID   string
+	Orders   []*ListMessagesOrder
+}
+
+type ListMessagesOrder struct {
+	Key        entity.MessageOrderBy
+	OrderByASC bool
 }
 
 func (p *ListMessagesParams) stmt(stmt *gorm.DB) *gorm.DB {
@@ -111,6 +137,15 @@ func (p *ListMessagesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	}
 	if p.UserID != "" {
 		stmt = stmt.Where("user_id = ?", p.UserID)
+	}
+	for i := range p.Orders {
+		var value string
+		if p.Orders[i].OrderByASC {
+			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
+		} else {
+			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
+		}
+		stmt = stmt.Order(value)
 	}
 	return stmt
 }
@@ -121,6 +156,12 @@ type ListNotificationsParams struct {
 	Since         time.Time
 	Until         time.Time
 	OnlyPublished bool
+	Orders        []*ListNotificationsOrder
+}
+
+type ListNotificationsOrder struct {
+	Key        entity.NotificationOrderBy
+	OrderByASC bool
 }
 
 func (p *ListNotificationsParams) stmt(stmt *gorm.DB) *gorm.DB {
@@ -132,6 +173,15 @@ func (p *ListNotificationsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	}
 	if p.OnlyPublished {
 		stmt = stmt.Where("public = ?", true)
+	}
+	for i := range p.Orders {
+		var value string
+		if p.Orders[i].OrderByASC {
+			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
+		} else {
+			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
+		}
+		stmt = stmt.Order(value)
 	}
 	return stmt
 }

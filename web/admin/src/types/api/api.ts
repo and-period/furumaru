@@ -2569,6 +2569,56 @@ export interface SignInRequest {
 /**
  *
  * @export
+ * @interface UpdateAdministratorEmailRequest
+ */
+export interface UpdateAdministratorEmailRequest {
+  /**
+   * メールアドレス
+   * @type {string}
+   * @memberof UpdateAdministratorEmailRequest
+   */
+  email: string
+}
+/**
+ *
+ * @export
+ * @interface UpdateAdministratorRequest
+ */
+export interface UpdateAdministratorRequest {
+  /**
+   * 姓(16文字まで)
+   * @type {string}
+   * @memberof UpdateAdministratorRequest
+   */
+  lastname: string
+  /**
+   * 名(16文字まで)
+   * @type {string}
+   * @memberof UpdateAdministratorRequest
+   */
+  firstname: string
+  /**
+   * 姓(かな)(ひらがな,32文字まで)
+   * @type {string}
+   * @memberof UpdateAdministratorRequest
+   */
+  lastnameKana: string
+  /**
+   * 名(かな)(ひらがな,32文字まで)
+   * @type {string}
+   * @memberof UpdateAdministratorRequest
+   */
+  firstnameKana: string
+  /**
+   * 電話番号(国際番号 + 電話番号)
+   * @type {string}
+   * @memberof UpdateAdministratorRequest
+   */
+  phoneNumber: string
+}
+/**
+ *
+ * @export
  * @interface UpdateAuthEmailRequest
  */
 export interface UpdateAuthEmailRequest {
@@ -3213,12 +3263,14 @@ export const AdministratorApiAxiosParamCreator = function (
      * @summary システム管理者一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,email,phoneNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v1ListAdministrators: async (
       limit?: number,
       offset?: number,
+      orders?: string,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
       const localVarPath = `/v1/administrators`
@@ -3249,6 +3301,10 @@ export const AdministratorApiAxiosParamCreator = function (
         localVarQueryParameter['offset'] = offset
       }
 
+      if (orders !== undefined) {
+        localVarQueryParameter['orders'] = orders
+      }
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -3257,6 +3313,189 @@ export const AdministratorApiAxiosParamCreator = function (
         ...headersFromBaseOptions,
         ...options.headers,
       }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary システム管理者更新
+     * @param {string} adminId システム管理者ID
+     * @param {UpdateAdministratorRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateAdministrator: async (
+      adminId: string,
+      body: UpdateAdministratorRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'adminId' is not null or undefined
+      assertParamExists('v1UpdateAdministrator', 'adminId', adminId)
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1UpdateAdministrator', 'body', body)
+      const localVarPath = `/v1/administrators/{adminId}`.replace(
+        `{${'adminId'}}`,
+        encodeURIComponent(String(adminId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary システム管理者メールアドレス更新
+     * @param {string} adminId システム管理者ID
+     * @param {UpdateAdministratorEmailRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateAdministratorEmail: async (
+      adminId: string,
+      body: UpdateAdministratorEmailRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'adminId' is not null or undefined
+      assertParamExists('v1UpdateAdministratorEmail', 'adminId', adminId)
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1UpdateAdministratorEmail', 'body', body)
+      const localVarPath = `/v1/administrators/{adminId}/email`.replace(
+        `{${'adminId'}}`,
+        encodeURIComponent(String(adminId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary システム管理者パスワード更新(ランダム生成)
+     * @param {string} adminId システム管理者ID
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateAdministratorPassword: async (
+      adminId: string,
+      body: object,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'adminId' is not null or undefined
+      assertParamExists('v1UpdateAdministratorPassword', 'adminId', adminId)
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1UpdateAdministratorPassword', 'body', body)
+      const localVarPath = `/v1/administrators/{adminId}/password`.replace(
+        `{${'adminId'}}`,
+        encodeURIComponent(String(adminId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
 
       return {
         url: toPathString(localVarUrlObj),
@@ -3329,12 +3568,14 @@ export const AdministratorApiFp = function (configuration?: Configuration) {
      * @summary システム管理者一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,email,phoneNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async v1ListAdministrators(
       limit?: number,
       offset?: number,
+      orders?: string,
       options?: AxiosRequestConfig
     ): Promise<
       (
@@ -3346,6 +3587,91 @@ export const AdministratorApiFp = function (configuration?: Configuration) {
         await localVarAxiosParamCreator.v1ListAdministrators(
           limit,
           offset,
+          orders,
+          options
+        )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary システム管理者更新
+     * @param {string} adminId システム管理者ID
+     * @param {UpdateAdministratorRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UpdateAdministrator(
+      adminId: string,
+      body: UpdateAdministratorRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1UpdateAdministrator(
+          adminId,
+          body,
+          options
+        )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary システム管理者メールアドレス更新
+     * @param {string} adminId システム管理者ID
+     * @param {UpdateAdministratorEmailRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UpdateAdministratorEmail(
+      adminId: string,
+      body: UpdateAdministratorEmailRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1UpdateAdministratorEmail(
+          adminId,
+          body,
+          options
+        )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary システム管理者パスワード更新(ランダム生成)
+     * @param {string} adminId システム管理者ID
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UpdateAdministratorPassword(
+      adminId: string,
+      body: object,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1UpdateAdministratorPassword(
+          adminId,
+          body,
           options
         )
       return createRequestFunction(
@@ -3404,16 +3730,69 @@ export const AdministratorApiFactory = function (
      * @summary システム管理者一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,email,phoneNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v1ListAdministrators(
       limit?: number,
       offset?: number,
+      orders?: string,
       options?: any
     ): AxiosPromise<AdministratorsResponse> {
       return localVarFp
-        .v1ListAdministrators(limit, offset, options)
+        .v1ListAdministrators(limit, offset, orders, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary システム管理者更新
+     * @param {string} adminId システム管理者ID
+     * @param {UpdateAdministratorRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateAdministrator(
+      adminId: string,
+      body: UpdateAdministratorRequest,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1UpdateAdministrator(adminId, body, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary システム管理者メールアドレス更新
+     * @param {string} adminId システム管理者ID
+     * @param {UpdateAdministratorEmailRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateAdministratorEmail(
+      adminId: string,
+      body: UpdateAdministratorEmailRequest,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1UpdateAdministratorEmail(adminId, body, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary システム管理者パスワード更新(ランダム生成)
+     * @param {string} adminId システム管理者ID
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateAdministratorPassword(
+      adminId: string,
+      body: object,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1UpdateAdministratorPassword(adminId, body, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -3462,6 +3841,7 @@ export class AdministratorApi extends BaseAPI {
    * @summary システム管理者一覧取得
    * @param {number} [limit] 取得上限数(max:200)
    * @param {number} [offset] 取得開始位置(min:0)
+   * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,email,phoneNumber
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdministratorApi
@@ -3469,10 +3849,68 @@ export class AdministratorApi extends BaseAPI {
   public v1ListAdministrators(
     limit?: number,
     offset?: number,
+    orders?: string,
     options?: AxiosRequestConfig
   ) {
     return AdministratorApiFp(this.configuration)
-      .v1ListAdministrators(limit, offset, options)
+      .v1ListAdministrators(limit, offset, orders, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary システム管理者更新
+   * @param {string} adminId システム管理者ID
+   * @param {UpdateAdministratorRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdministratorApi
+   */
+  public v1UpdateAdministrator(
+    adminId: string,
+    body: UpdateAdministratorRequest,
+    options?: AxiosRequestConfig
+  ) {
+    return AdministratorApiFp(this.configuration)
+      .v1UpdateAdministrator(adminId, body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary システム管理者メールアドレス更新
+   * @param {string} adminId システム管理者ID
+   * @param {UpdateAdministratorEmailRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdministratorApi
+   */
+  public v1UpdateAdministratorEmail(
+    adminId: string,
+    body: UpdateAdministratorEmailRequest,
+    options?: AxiosRequestConfig
+  ) {
+    return AdministratorApiFp(this.configuration)
+      .v1UpdateAdministratorEmail(adminId, body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary システム管理者パスワード更新(ランダム生成)
+   * @param {string} adminId システム管理者ID
+   * @param {object} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdministratorApi
+   */
+  public v1UpdateAdministratorPassword(
+    adminId: string,
+    body: object,
+    options?: AxiosRequestConfig
+  ) {
+    return AdministratorApiFp(this.configuration)
+      .v1UpdateAdministratorPassword(adminId, body, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
@@ -4350,6 +4788,7 @@ export const CategoryApiAxiosParamCreator = function (
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 商品種別名(あいまい検索)(32文字以内)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4357,6 +4796,7 @@ export const CategoryApiAxiosParamCreator = function (
       limit?: number,
       offset?: number,
       name?: string,
+      orders?: string,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
       const localVarPath = `/v1/categories`
@@ -4389,6 +4829,10 @@ export const CategoryApiAxiosParamCreator = function (
 
       if (name !== undefined) {
         localVarQueryParameter['name'] = name
+      }
+
+      if (orders !== undefined) {
+        localVarQueryParameter['orders'] = orders
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -4529,6 +4973,7 @@ export const CategoryApiFp = function (configuration?: Configuration) {
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 商品種別名(あいまい検索)(32文字以内)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4536,6 +4981,7 @@ export const CategoryApiFp = function (configuration?: Configuration) {
       limit?: number,
       offset?: number,
       name?: string,
+      orders?: string,
       options?: AxiosRequestConfig
     ): Promise<
       (
@@ -4548,6 +4994,7 @@ export const CategoryApiFp = function (configuration?: Configuration) {
           limit,
           offset,
           name,
+          orders,
           options
         )
       return createRequestFunction(
@@ -4632,6 +5079,7 @@ export const CategoryApiFactory = function (
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 商品種別名(あいまい検索)(32文字以内)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4639,10 +5087,11 @@ export const CategoryApiFactory = function (
       limit?: number,
       offset?: number,
       name?: string,
+      orders?: string,
       options?: any
     ): AxiosPromise<CategoriesResponse> {
       return localVarFp
-        .v1ListCategories(limit, offset, name, options)
+        .v1ListCategories(limit, offset, name, orders, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -4709,6 +5158,7 @@ export class CategoryApi extends BaseAPI {
    * @param {number} [limit] 取得上限数(max:200)
    * @param {number} [offset] 取得開始位置(min:0)
    * @param {string} [name] 商品種別名(あいまい検索)(32文字以内)
+   * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof CategoryApi
@@ -4717,10 +5167,11 @@ export class CategoryApi extends BaseAPI {
     limit?: number,
     offset?: number,
     name?: string,
+    orders?: string,
     options?: AxiosRequestConfig
   ) {
     return CategoryApiFp(this.configuration)
-      .v1ListCategories(limit, offset, name, options)
+      .v1ListCategories(limit, offset, name, orders, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -4807,12 +5258,14 @@ export const ContactApiAxiosParamCreator = function (
      * @summary お問い合わせ一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:status,priority,createdAt,updatedAt
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v1ListContacts: async (
       limit?: number,
       offset?: number,
+      orders?: string,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
       const localVarPath = `/v1/contacts`
@@ -4841,6 +5294,10 @@ export const ContactApiAxiosParamCreator = function (
 
       if (offset !== undefined) {
         localVarQueryParameter['offset'] = offset
+      }
+
+      if (orders !== undefined) {
+        localVarQueryParameter['orders'] = orders
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -4960,12 +5417,14 @@ export const ContactApiFp = function (configuration?: Configuration) {
      * @summary お問い合わせ一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:status,priority,createdAt,updatedAt
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async v1ListContacts(
       limit?: number,
       offset?: number,
+      orders?: string,
       options?: AxiosRequestConfig
     ): Promise<
       (
@@ -4976,6 +5435,7 @@ export const ContactApiFp = function (configuration?: Configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListContacts(
         limit,
         offset,
+        orders,
         options
       )
       return createRequestFunction(
@@ -5046,16 +5506,18 @@ export const ContactApiFactory = function (
      * @summary お問い合わせ一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:status,priority,createdAt,updatedAt
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v1ListContacts(
       limit?: number,
       offset?: number,
+      orders?: string,
       options?: any
     ): AxiosPromise<ContactsResponse> {
       return localVarFp
-        .v1ListContacts(limit, offset, options)
+        .v1ListContacts(limit, offset, orders, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -5104,6 +5566,7 @@ export class ContactApi extends BaseAPI {
    * @summary お問い合わせ一覧取得
    * @param {number} [limit] 取得上限数(max:200)
    * @param {number} [offset] 取得開始位置(min:0)
+   * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:status,priority,createdAt,updatedAt
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ContactApi
@@ -5111,10 +5574,11 @@ export class ContactApi extends BaseAPI {
   public v1ListContacts(
     limit?: number,
     offset?: number,
+    orders?: string,
     options?: AxiosRequestConfig
   ) {
     return ContactApiFp(this.configuration)
-      .v1ListContacts(limit, offset, options)
+      .v1ListContacts(limit, offset, orders, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -5255,12 +5719,14 @@ export const CoordinatorApiAxiosParamCreator = function (
      * @summary 仲介者一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,companyName,storeName,email,phoneNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v1ListCoordinators: async (
       limit?: number,
       offset?: number,
+      orders?: string,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
       const localVarPath = `/v1/coordinators`
@@ -5289,6 +5755,10 @@ export const CoordinatorApiAxiosParamCreator = function (
 
       if (offset !== undefined) {
         localVarQueryParameter['offset'] = offset
+      }
+
+      if (orders !== undefined) {
+        localVarQueryParameter['orders'] = orders
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -5672,12 +6142,14 @@ export const CoordinatorApiFp = function (configuration?: Configuration) {
      * @summary 仲介者一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,companyName,storeName,email,phoneNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async v1ListCoordinators(
       limit?: number,
       offset?: number,
+      orders?: string,
       options?: AxiosRequestConfig
     ): Promise<
       (
@@ -5689,6 +6161,7 @@ export const CoordinatorApiFp = function (configuration?: Configuration) {
         await localVarAxiosParamCreator.v1ListCoordinators(
           limit,
           offset,
+          orders,
           options
         )
       return createRequestFunction(
@@ -5887,16 +6360,18 @@ export const CoordinatorApiFactory = function (
      * @summary 仲介者一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,companyName,storeName,email,phoneNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v1ListCoordinators(
       limit?: number,
       offset?: number,
+      orders?: string,
       options?: any
     ): AxiosPromise<CoordinatorsResponse> {
       return localVarFp
-        .v1ListCoordinators(limit, offset, options)
+        .v1ListCoordinators(limit, offset, orders, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -6026,6 +6501,7 @@ export class CoordinatorApi extends BaseAPI {
    * @summary 仲介者一覧取得
    * @param {number} [limit] 取得上限数(max:200)
    * @param {number} [offset] 取得開始位置(min:0)
+   * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,companyName,storeName,email,phoneNumber
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof CoordinatorApi
@@ -6033,10 +6509,11 @@ export class CoordinatorApi extends BaseAPI {
   public v1ListCoordinators(
     limit?: number,
     offset?: number,
+    orders?: string,
     options?: AxiosRequestConfig
   ) {
     return CoordinatorApiFp(this.configuration)
-      .v1ListCoordinators(limit, offset, options)
+      .v1ListCoordinators(limit, offset, orders, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -6192,12 +6669,14 @@ export const MessageApiAxiosParamCreator = function (
      * @summary メッセージ一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:type,read,receivedAt
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v1ListMessages: async (
       limit?: number,
       offset?: number,
+      orders?: string,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
       const localVarPath = `/v1/messages`
@@ -6226,6 +6705,10 @@ export const MessageApiAxiosParamCreator = function (
 
       if (offset !== undefined) {
         localVarQueryParameter['offset'] = offset
+      }
+
+      if (orders !== undefined) {
+        localVarQueryParameter['orders'] = orders
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -6284,12 +6767,14 @@ export const MessageApiFp = function (configuration?: Configuration) {
      * @summary メッセージ一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:type,read,receivedAt
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async v1ListMessages(
       limit?: number,
       offset?: number,
+      orders?: string,
       options?: AxiosRequestConfig
     ): Promise<
       (
@@ -6300,6 +6785,7 @@ export const MessageApiFp = function (configuration?: Configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListMessages(
         limit,
         offset,
+        orders,
         options
       )
       return createRequestFunction(
@@ -6343,16 +6829,18 @@ export const MessageApiFactory = function (
      * @summary メッセージ一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:type,read,receivedAt
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v1ListMessages(
       limit?: number,
       offset?: number,
+      orders?: string,
       options?: any
     ): AxiosPromise<MessagesResponse> {
       return localVarFp
-        .v1ListMessages(limit, offset, options)
+        .v1ListMessages(limit, offset, orders, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -6384,6 +6872,7 @@ export class MessageApi extends BaseAPI {
    * @summary メッセージ一覧取得
    * @param {number} [limit] 取得上限数(max:200)
    * @param {number} [offset] 取得開始位置(min:0)
+   * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:type,read,receivedAt
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof MessageApi
@@ -6391,10 +6880,11 @@ export class MessageApi extends BaseAPI {
   public v1ListMessages(
     limit?: number,
     offset?: number,
+    orders?: string,
     options?: AxiosRequestConfig
   ) {
     return MessageApiFp(this.configuration)
-      .v1ListMessages(limit, offset, options)
+      .v1ListMessages(limit, offset, orders, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
@@ -6671,12 +7161,14 @@ export const ProducerApiAxiosParamCreator = function (
      * @summary 生産者一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,storeName,email,phoneNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v1ListProducers: async (
       limit?: number,
       offset?: number,
+      orders?: string,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
       const localVarPath = `/v1/producers`
@@ -6705,6 +7197,10 @@ export const ProducerApiAxiosParamCreator = function (
 
       if (offset !== undefined) {
         localVarQueryParameter['offset'] = offset
+      }
+
+      if (orders !== undefined) {
+        localVarQueryParameter['orders'] = orders
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -7079,12 +7575,14 @@ export const ProducerApiFp = function (configuration?: Configuration) {
      * @summary 生産者一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,storeName,email,phoneNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async v1ListProducers(
       limit?: number,
       offset?: number,
+      orders?: string,
       options?: AxiosRequestConfig
     ): Promise<
       (
@@ -7095,6 +7593,7 @@ export const ProducerApiFp = function (configuration?: Configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListProducers(
         limit,
         offset,
+        orders,
         options
       )
       return createRequestFunction(
@@ -7290,16 +7789,18 @@ export const ProducerApiFactory = function (
      * @summary 生産者一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,storeName,email,phoneNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     v1ListProducers(
       limit?: number,
       offset?: number,
+      orders?: string,
       options?: any
     ): AxiosPromise<ProducersResponse> {
       return localVarFp
-        .v1ListProducers(limit, offset, options)
+        .v1ListProducers(limit, offset, orders, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -7429,6 +7930,7 @@ export class ProducerApi extends BaseAPI {
    * @summary 生産者一覧取得
    * @param {number} [limit] 取得上限数(max:200)
    * @param {number} [offset] 取得開始位置(min:0)
+   * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:lastname,firstname,storeName,email,phoneNumber
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ProducerApi
@@ -7436,10 +7938,11 @@ export class ProducerApi extends BaseAPI {
   public v1ListProducers(
     limit?: number,
     offset?: number,
+    orders?: string,
     options?: AxiosRequestConfig
   ) {
     return ProducerApiFp(this.configuration)
-      .v1ListProducers(limit, offset, options)
+      .v1ListProducers(limit, offset, orders, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -7651,6 +8154,7 @@ export const ProductApiAxiosParamCreator = function (
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [coordinatorId] 仲介者ID
      * @param {string} [producerId] 生産者ID
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,price,originPrefecture,originCity,createdAt,updatedAt
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7659,6 +8163,7 @@ export const ProductApiAxiosParamCreator = function (
       offset?: number,
       coordinatorId?: string,
       producerId?: string,
+      orders?: string,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
       const localVarPath = `/v1/products`
@@ -7695,6 +8200,10 @@ export const ProductApiAxiosParamCreator = function (
 
       if (producerId !== undefined) {
         localVarQueryParameter['producerId'] = producerId
+      }
+
+      if (orders !== undefined) {
+        localVarQueryParameter['orders'] = orders
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -7843,6 +8352,7 @@ export const ProductApiFp = function (configuration?: Configuration) {
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [coordinatorId] 仲介者ID
      * @param {string} [producerId] 生産者ID
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,price,originPrefecture,originCity,createdAt,updatedAt
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7851,6 +8361,7 @@ export const ProductApiFp = function (configuration?: Configuration) {
       offset?: number,
       coordinatorId?: string,
       producerId?: string,
+      orders?: string,
       options?: AxiosRequestConfig
     ): Promise<
       (
@@ -7863,6 +8374,7 @@ export const ProductApiFp = function (configuration?: Configuration) {
         offset,
         coordinatorId,
         producerId,
+        orders,
         options
       )
       return createRequestFunction(
@@ -7950,6 +8462,7 @@ export const ProductApiFactory = function (
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [coordinatorId] 仲介者ID
      * @param {string} [producerId] 生産者ID
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,price,originPrefecture,originCity,createdAt,updatedAt
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7958,10 +8471,18 @@ export const ProductApiFactory = function (
       offset?: number,
       coordinatorId?: string,
       producerId?: string,
+      orders?: string,
       options?: any
     ): AxiosPromise<ProductsResponse> {
       return localVarFp
-        .v1ListProducts(limit, offset, coordinatorId, producerId, options)
+        .v1ListProducts(
+          limit,
+          offset,
+          coordinatorId,
+          producerId,
+          orders,
+          options
+        )
         .then((request) => request(axios, basePath))
     },
     /**
@@ -8029,6 +8550,7 @@ export class ProductApi extends BaseAPI {
    * @param {number} [offset] 取得開始位置(min:0)
    * @param {string} [coordinatorId] 仲介者ID
    * @param {string} [producerId] 生産者ID
+   * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,price,originPrefecture,originCity,createdAt,updatedAt
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ProductApi
@@ -8038,10 +8560,11 @@ export class ProductApi extends BaseAPI {
     offset?: number,
     coordinatorId?: string,
     producerId?: string,
+    orders?: string,
     options?: AxiosRequestConfig
   ) {
     return ProductApiFp(this.configuration)
-      .v1ListProducts(limit, offset, coordinatorId, producerId, options)
+      .v1ListProducts(limit, offset, coordinatorId, producerId, orders, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -8197,6 +8720,7 @@ export const ProductTypeApiAxiosParamCreator = function (
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 品目名(あいまい検索)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8204,6 +8728,7 @@ export const ProductTypeApiAxiosParamCreator = function (
       limit?: number,
       offset?: number,
       name?: string,
+      orders?: string,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
       const localVarPath = `/v1/categories/-/product-types`
@@ -8238,6 +8763,10 @@ export const ProductTypeApiAxiosParamCreator = function (
         localVarQueryParameter['name'] = name
       }
 
+      if (orders !== undefined) {
+        localVarQueryParameter['orders'] = orders
+      }
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -8259,6 +8788,7 @@ export const ProductTypeApiAxiosParamCreator = function (
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 品目名(あいまい検索)(32文字以内)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8267,6 +8797,7 @@ export const ProductTypeApiAxiosParamCreator = function (
       limit?: number,
       offset?: number,
       name?: string,
+      orders?: string,
       options: AxiosRequestConfig = {}
     ): Promise<RequestArgs> => {
       // verify required parameter 'categoryId' is not null or undefined
@@ -8304,6 +8835,10 @@ export const ProductTypeApiAxiosParamCreator = function (
 
       if (name !== undefined) {
         localVarQueryParameter['name'] = name
+      }
+
+      if (orders !== undefined) {
+        localVarQueryParameter['orders'] = orders
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -8464,6 +8999,7 @@ export const ProductTypeApiFp = function (configuration?: Configuration) {
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 品目名(あいまい検索)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8471,6 +9007,7 @@ export const ProductTypeApiFp = function (configuration?: Configuration) {
       limit?: number,
       offset?: number,
       name?: string,
+      orders?: string,
       options?: AxiosRequestConfig
     ): Promise<
       (
@@ -8483,6 +9020,7 @@ export const ProductTypeApiFp = function (configuration?: Configuration) {
           limit,
           offset,
           name,
+          orders,
           options
         )
       return createRequestFunction(
@@ -8499,6 +9037,7 @@ export const ProductTypeApiFp = function (configuration?: Configuration) {
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 品目名(あいまい検索)(32文字以内)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8507,6 +9046,7 @@ export const ProductTypeApiFp = function (configuration?: Configuration) {
       limit?: number,
       offset?: number,
       name?: string,
+      orders?: string,
       options?: AxiosRequestConfig
     ): Promise<
       (
@@ -8520,6 +9060,7 @@ export const ProductTypeApiFp = function (configuration?: Configuration) {
           limit,
           offset,
           name,
+          orders,
           options
         )
       return createRequestFunction(
@@ -8614,6 +9155,7 @@ export const ProductTypeApiFactory = function (
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 品目名(あいまい検索)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8621,10 +9163,11 @@ export const ProductTypeApiFactory = function (
       limit?: number,
       offset?: number,
       name?: string,
+      orders?: string,
       options?: any
     ): AxiosPromise<ProductTypesResponse> {
       return localVarFp
-        .v1ListAllProductTypes(limit, offset, name, options)
+        .v1ListAllProductTypes(limit, offset, name, orders, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -8634,6 +9177,7 @@ export const ProductTypeApiFactory = function (
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [name] 品目名(あいまい検索)(32文字以内)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8642,10 +9186,11 @@ export const ProductTypeApiFactory = function (
       limit?: number,
       offset?: number,
       name?: string,
+      orders?: string,
       options?: any
     ): AxiosPromise<ProductTypesResponse> {
       return localVarFp
-        .v1ListProductTypes(categoryId, limit, offset, name, options)
+        .v1ListProductTypes(categoryId, limit, offset, name, orders, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -8721,6 +9266,7 @@ export class ProductTypeApi extends BaseAPI {
    * @param {number} [limit] 取得上限数(max:200)
    * @param {number} [offset] 取得開始位置(min:0)
    * @param {string} [name] 品目名(あいまい検索)
+   * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ProductTypeApi
@@ -8729,10 +9275,11 @@ export class ProductTypeApi extends BaseAPI {
     limit?: number,
     offset?: number,
     name?: string,
+    orders?: string,
     options?: AxiosRequestConfig
   ) {
     return ProductTypeApiFp(this.configuration)
-      .v1ListAllProductTypes(limit, offset, name, options)
+      .v1ListAllProductTypes(limit, offset, name, orders, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -8743,6 +9290,7 @@ export class ProductTypeApi extends BaseAPI {
    * @param {number} [limit] 取得上限数(max:200)
    * @param {number} [offset] 取得開始位置(min:0)
    * @param {string} [name] 品目名(あいまい検索)(32文字以内)
+   * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ProductTypeApi
@@ -8752,10 +9300,11 @@ export class ProductTypeApi extends BaseAPI {
     limit?: number,
     offset?: number,
     name?: string,
+    orders?: string,
     options?: AxiosRequestConfig
   ) {
     return ProductTypeApiFp(this.configuration)
-      .v1ListProductTypes(categoryId, limit, offset, name, options)
+      .v1ListProductTypes(categoryId, limit, offset, name, orders, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -8878,6 +9427,67 @@ export const ShippingApiAxiosParamCreator = function (
       // authentication BearerAuth required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary 配送設定一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,hasFreeShipping,createdAt,updatedAt
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1ListShippings: async (
+      limit?: number,
+      offset?: number,
+      orders?: string,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/v1/shippings`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (limit !== undefined) {
+        localVarQueryParameter['limit'] = limit
+      }
+
+      if (offset !== undefined) {
+        localVarQueryParameter['offset'] = offset
+      }
+
+      if (orders !== undefined) {
+        localVarQueryParameter['orders'] = orders
+      }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions =
@@ -9018,6 +9628,39 @@ export const ShippingApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @summary 配送設定一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,hasFreeShipping,createdAt,updatedAt
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1ListShippings(
+      limit?: number,
+      offset?: number,
+      orders?: string,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<ShippingsResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListShippings(
+        limit,
+        offset,
+        orders,
+        options
+      )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
      * @summary 配送設定更新
      * @param {string} shippingId 配送設定ID
      * @param {UpdateShippingRequest} body
@@ -9090,6 +9733,25 @@ export const ShippingApiFactory = function (
     },
     /**
      *
+     * @summary 配送設定一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,hasFreeShipping,createdAt,updatedAt
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1ListShippings(
+      limit?: number,
+      offset?: number,
+      orders?: string,
+      options?: any
+    ): AxiosPromise<ShippingsResponse> {
+      return localVarFp
+        .v1ListShippings(limit, offset, orders, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
      * @summary 配送設定更新
      * @param {string} shippingId 配送設定ID
      * @param {UpdateShippingRequest} body
@@ -9148,6 +9810,27 @@ export class ShippingApi extends BaseAPI {
 
   /**
    *
+   * @summary 配送設定一覧取得
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
+   * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,hasFreeShipping,createdAt,updatedAt
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ShippingApi
+   */
+  public v1ListShippings(
+    limit?: number,
+    offset?: number,
+    orders?: string,
+    options?: AxiosRequestConfig
+  ) {
+    return ShippingApiFp(this.configuration)
+      .v1ListShippings(limit, offset, orders, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
    * @summary 配送設定更新
    * @param {string} shippingId 配送設定ID
    * @param {UpdateShippingRequest} body
@@ -9162,170 +9845,6 @@ export class ShippingApi extends BaseAPI {
   ) {
     return ShippingApiFp(this.configuration)
       .v1UpdateShipping(shippingId, body, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-}
-
-/**
- * ShippingsApi - axios parameter creator
- * @export
- */
-export const ShippingsApiAxiosParamCreator = function (
-  configuration?: Configuration
-) {
-  return {
-    /**
-     *
-     * @summary 配送設定一覧取得
-     * @param {number} [limit] 取得上限数(max:200)
-     * @param {number} [offset] 取得開始位置(min:0)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    v1ListShippings: async (
-      limit?: number,
-      offset?: number,
-      options: AxiosRequestConfig = {}
-    ): Promise<RequestArgs> => {
-      const localVarPath = `/v1/shippings`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = {
-        method: 'GET',
-        ...baseOptions,
-        ...options,
-      }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication BearerAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      if (limit !== undefined) {
-        localVarQueryParameter['limit'] = limit
-      }
-
-      if (offset !== undefined) {
-        localVarQueryParameter['offset'] = offset
-      }
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-  }
-}
-
-/**
- * ShippingsApi - functional programming interface
- * @export
- */
-export const ShippingsApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator = ShippingsApiAxiosParamCreator(configuration)
-  return {
-    /**
-     *
-     * @summary 配送設定一覧取得
-     * @param {number} [limit] 取得上限数(max:200)
-     * @param {number} [offset] 取得開始位置(min:0)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async v1ListShippings(
-      limit?: number,
-      offset?: number,
-      options?: AxiosRequestConfig
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string
-      ) => AxiosPromise<ShippingsResponse>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListShippings(
-        limit,
-        offset,
-        options
-      )
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration
-      )
-    },
-  }
-}
-
-/**
- * ShippingsApi - factory interface
- * @export
- */
-export const ShippingsApiFactory = function (
-  configuration?: Configuration,
-  basePath?: string,
-  axios?: AxiosInstance
-) {
-  const localVarFp = ShippingsApiFp(configuration)
-  return {
-    /**
-     *
-     * @summary 配送設定一覧取得
-     * @param {number} [limit] 取得上限数(max:200)
-     * @param {number} [offset] 取得開始位置(min:0)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    v1ListShippings(
-      limit?: number,
-      offset?: number,
-      options?: any
-    ): AxiosPromise<ShippingsResponse> {
-      return localVarFp
-        .v1ListShippings(limit, offset, options)
-        .then((request) => request(axios, basePath))
-    },
-  }
-}
-
-/**
- * ShippingsApi - object-oriented interface
- * @export
- * @class ShippingsApi
- * @extends {BaseAPI}
- */
-export class ShippingsApi extends BaseAPI {
-  /**
-   *
-   * @summary 配送設定一覧取得
-   * @param {number} [limit] 取得上限数(max:200)
-   * @param {number} [offset] 取得開始位置(min:0)
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof ShippingsApi
-   */
-  public v1ListShippings(
-    limit?: number,
-    offset?: number,
-    options?: AxiosRequestConfig
-  ) {
-    return ShippingsApiFp(this.configuration)
-      .v1ListShippings(limit, offset, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

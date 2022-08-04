@@ -19,6 +19,7 @@ func TestListCoordinator(t *testing.T) {
 	in := &user.ListCoordinatorsInput{
 		Limit:  20,
 		Offset: 0,
+		Orders: []*user.ListCoordinatorsOrder{},
 	}
 	coordinators := uentity.Coordinators{
 		{
@@ -142,6 +143,14 @@ func TestListCoordinator(t *testing.T) {
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 			},
 			query: "?offset=a",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name:  "invalid orders",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			query: "?orders=lastname,firstname,companyName,storeName,email,phoneNumber,other",
 			expect: &testResponse{
 				code: http.StatusBadRequest,
 			},
@@ -407,6 +416,23 @@ func TestCreateCoordinator(t *testing.T) {
 func TestUpdateCoordinator(t *testing.T) {
 	t.Parallel()
 
+	in := &user.UpdateCoordinatorInput{
+		CoordinatorID: "coordinator-id",
+		Lastname:      "&.",
+		Firstname:     "生産者",
+		LastnameKana:  "あんどどっと",
+		FirstnameKana: "せいさんしゃ",
+		StoreName:     "&.農園",
+		ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+		HeaderURL:     "https://and-period.jp/header.png",
+		PhoneNumber:   "+819012345678",
+		PostalCode:    "1000014",
+		Prefecture:    "東京都",
+		City:          "千代田区",
+		AddressLine1:  "永田町1-7-1",
+		AddressLine2:  "",
+	}
+
 	tests := []struct {
 		name          string
 		setup         func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
@@ -417,6 +443,7 @@ func TestUpdateCoordinator(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().UpdateCoordinator(gomock.Any(), in).Return(nil)
 			},
 			coordinatorID: "coordinator-id",
 			req: &request.UpdateCoordinatorRequest{
@@ -438,6 +465,31 @@ func TestUpdateCoordinator(t *testing.T) {
 				code: http.StatusNoContent,
 			},
 		},
+		{
+			name: "failed to update coordinator",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().UpdateCoordinator(gomock.Any(), in).Return(errmock)
+			},
+			coordinatorID: "coordinator-id",
+			req: &request.UpdateCoordinatorRequest{
+				Lastname:      "&.",
+				Firstname:     "生産者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "せいさんしゃ",
+				StoreName:     "&.農園",
+				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+				HeaderURL:     "https://and-period.jp/header.png",
+				PhoneNumber:   "+819012345678",
+				PostalCode:    "1000014",
+				Prefecture:    "東京都",
+				City:          "千代田区",
+				AddressLine1:  "永田町1-7-1",
+				AddressLine2:  "",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -453,6 +505,11 @@ func TestUpdateCoordinator(t *testing.T) {
 func TestUpdateCoordinatorEmail(t *testing.T) {
 	t.Parallel()
 
+	in := &user.UpdateCoordinatorEmailInput{
+		CoordinatorID: "coordinator-id",
+		Email:         "test-producer@and-period.jp",
+	}
+
 	tests := []struct {
 		name          string
 		setup         func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
@@ -463,6 +520,7 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().UpdateCoordinatorEmail(gomock.Any(), in).Return(nil)
 			},
 			coordinatorID: "coordinator-id",
 			req: &request.UpdateCoordinatorEmailRequest{
@@ -470,6 +528,19 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 			},
 			expect: &testResponse{
 				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to update coordinator email",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().UpdateCoordinatorEmail(gomock.Any(), in).Return(errmock)
+			},
+			coordinatorID: "coordinator-id",
+			req: &request.UpdateCoordinatorEmailRequest{
+				Email: "test-producer@and-period.jp",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
 			},
 		},
 	}
@@ -484,8 +555,12 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 	}
 }
 
-func TestUpdateCoordinatorPassword(t *testing.T) {
+func TestResetCoordinatorPassword(t *testing.T) {
 	t.Parallel()
+
+	in := &user.ResetCoordinatorPasswordInput{
+		CoordinatorID: "coordinator-id",
+	}
 
 	tests := []struct {
 		name          string
@@ -496,10 +571,21 @@ func TestUpdateCoordinatorPassword(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().ResetCoordinatorPassword(gomock.Any(), in).Return(nil)
 			},
 			coordinatorID: "coordinator-id",
 			expect: &testResponse{
 				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to reset coordinator password",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().ResetCoordinatorPassword(gomock.Any(), in).Return(errmock)
+			},
+			coordinatorID: "coordinator-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
 			},
 		},
 	}

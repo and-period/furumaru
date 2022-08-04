@@ -37,6 +37,7 @@ func (c *contact) List(ctx context.Context, params *ListContactsParams, fields .
 	}
 
 	stmt := c.db.DB.WithContext(ctx).Table(contactTable).Select(fields)
+	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
 	}

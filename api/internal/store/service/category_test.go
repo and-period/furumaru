@@ -21,6 +21,9 @@ func TestListCategories(t *testing.T) {
 		Name:   "野菜",
 		Limit:  30,
 		Offset: 0,
+		Orders: []*database.ListCategoriesOrder{
+			{Key: entity.CategoryOrderByName, OrderByASC: true},
+		},
 	}
 	categories := entity.Categories{
 		{
@@ -49,6 +52,9 @@ func TestListCategories(t *testing.T) {
 				Name:   "野菜",
 				Limit:  30,
 				Offset: 0,
+				Orders: []*store.ListCategoriesOrder{
+					{Key: entity.CategoryOrderByName, OrderByASC: true},
+				},
 			},
 			expect:      categories,
 			expectTotal: 1,
@@ -72,13 +78,16 @@ func TestListCategories(t *testing.T) {
 				Name:   "野菜",
 				Limit:  30,
 				Offset: 0,
+				Orders: []*store.ListCategoriesOrder{
+					{Key: entity.CategoryOrderByName, OrderByASC: true},
+				},
 			},
 			expect:      nil,
 			expectTotal: 0,
 			expectErr:   exception.ErrUnknown,
 		},
 		{
-			name: "success",
+			name: "failed to count",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Category.EXPECT().List(gomock.Any(), params).Return(categories, nil)
 				mocks.db.Category.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
@@ -87,6 +96,9 @@ func TestListCategories(t *testing.T) {
 				Name:   "野菜",
 				Limit:  30,
 				Offset: 0,
+				Orders: []*store.ListCategoriesOrder{
+					{Key: entity.CategoryOrderByName, OrderByASC: true},
+				},
 			},
 			expect:      nil,
 			expectTotal: 0,

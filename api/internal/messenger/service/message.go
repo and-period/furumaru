@@ -17,11 +17,19 @@ func (s *service) ListMessages(ctx context.Context, in *messenger.ListMessagesIn
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, exception.InternalError(err)
 	}
+	orders := make([]*database.ListMessagesOrder, len(in.Orders))
+	for i := range in.Orders {
+		orders[i] = &database.ListMessagesOrder{
+			Key:        in.Orders[i].Key,
+			OrderByASC: in.Orders[i].OrderByASC,
+		}
+	}
 	params := &database.ListMessagesParams{
 		Limit:    int(in.Limit),
 		Offset:   int(in.Offset),
 		UserType: in.UserType,
 		UserID:   in.UserID,
+		Orders:   orders,
 	}
 	var (
 		messages entity.Messages

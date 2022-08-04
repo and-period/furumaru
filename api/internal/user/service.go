@@ -35,6 +35,12 @@ type Service interface {
 	GetAdministrator(ctx context.Context, in *GetAdministratorInput) (*entity.Administrator, error)
 	// システム管理者登録
 	CreateAdministrator(ctx context.Context, in *CreateAdministratorInput) (*entity.Administrator, error)
+	// システム管理者更新
+	UpdateAdministrator(ctx context.Context, in *UpdateAdministratorInput) error
+	// システム管理者メールアドレス更新
+	UpdateAdministratorEmail(ctx context.Context, in *UpdateAdministratorEmailInput) error
+	// システム管理者パスワードリセット
+	ResetAdministratorPassword(ctx context.Context, in *ResetAdministratorPasswordInput) error
 	// 仲介者一覧取得
 	ListCoordinators(ctx context.Context, in *ListCoordinatorsInput) (entity.Coordinators, int64, error)
 	// 仲介者一覧取得(ID指定)
@@ -43,6 +49,12 @@ type Service interface {
 	GetCoordinator(ctx context.Context, in *GetCoordinatorInput) (*entity.Coordinator, error)
 	// 仲介者登録
 	CreateCoordinator(ctx context.Context, in *CreateCoordinatorInput) (*entity.Coordinator, error)
+	// 仲介者更新
+	UpdateCoordinator(ctx context.Context, in *UpdateCoordinatorInput) error
+	// 仲介者メールアドレス更新
+	UpdateCoordinatorEmail(ctx context.Context, in *UpdateCoordinatorEmailInput) error
+	// 仲介者パスワードリセット
+	ResetCoordinatorPassword(ctx context.Context, in *ResetCoordinatorPasswordInput) error
 	// 生産者一覧取得
 	ListProducers(ctx context.Context, in *ListProducersInput) (entity.Producers, int64, error)
 	// 生産者一覧取得(ID指定)

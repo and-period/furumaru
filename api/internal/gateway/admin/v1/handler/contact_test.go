@@ -19,6 +19,7 @@ func TestListContacts(t *testing.T) {
 	contactsIn := &messenger.ListContactsInput{
 		Limit:  20,
 		Offset: 0,
+		Orders: []*messenger.ListContactsOrder{},
 	}
 	contacts := mentity.Contacts{
 		{
@@ -82,6 +83,14 @@ func TestListContacts(t *testing.T) {
 			name:  "invalid offset",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
 			query: "?offset=a",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name:  "invalid offset",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			query: "?orders=status,priority,createdAt,updatedAt,other",
 			expect: &testResponse{
 				code: http.StatusBadRequest,
 			},

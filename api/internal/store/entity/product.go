@@ -31,6 +31,19 @@ const (
 	DeliveryTypeFrozen       DeliveryType = 3 // 冷凍便
 )
 
+type ProductOrderBy string
+
+const (
+	ProductOrderByName             ProductOrderBy = "name"
+	ProductOrderByPublic           ProductOrderBy = "public"
+	ProductOrderByInventory        ProductOrderBy = "inventory"
+	ProductOrderByPrice            ProductOrderBy = "price"
+	ProductOrderByOriginPrefecture ProductOrderBy = "origin_prefecture"
+	ProductOrderByOriginCity       ProductOrderBy = "origin_city"
+	ProductOrderByCreatedAt        ProductOrderBy = "created_at"
+	ProductOrderByUpdatedAt        ProductOrderBy = "updated_at"
+)
+
 // Product - 商品情報
 type Product struct {
 	ID               string            `gorm:"primaryKey;<-:create"`                // 商品ID

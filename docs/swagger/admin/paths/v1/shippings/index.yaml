@@ -2,7 +2,7 @@ get:
   summary: 配送設定一覧取得
   operationId: v1ListShippings
   tags:
-  - Shippings
+  - Shipping
   security:
   - BearerAuth: []
   parameters:
@@ -22,6 +22,17 @@ get:
     description: 取得開始位置(min:0)
     required: false
     example: 0
+  - in: query
+    name: orders
+    schema:
+      type: string
+    description: |
+      ソート
+      ・複数指定時は`,`区切り
+      ・降順の場合はprefixに`-`をつける
+      ・指定可能フィールド:name,hasFreeShipping,createdAt,updatedAt
+    required: false
+    example: 'name,-updatedAt'
   responses:
     200:
       description: A successful response.

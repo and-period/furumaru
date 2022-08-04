@@ -7,6 +7,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type OrderBy int32
+
+const (
+	OrderByNone OrderBy = 0 // ソートなし
+	OrderByASC  OrderBy = 1 // 昇順
+	OrderByDesc OrderBy = 2 // 降順
+)
+
+type Order struct {
+	Key       string
+	Direction OrderBy
+}
+
 func GetParam(ctx *gin.Context, param string) string {
 	return ctx.Param(param)
 }
@@ -22,6 +35,14 @@ func GetQuery(ctx *gin.Context, query string, defaultValue string) string {
 func GetQueryInt64(ctx *gin.Context, query string, defaultValue int64) (int64, error) {
 	str := strconv.FormatInt(defaultValue, 10)
 	return strconv.ParseInt(ctx.DefaultQuery(query, str), 10, 64)
+}
+
+func GetQueryStrings(ctx *gin.Context, query string) []string {
+	str := GetQuery(ctx, query, "")
+	if str == "" {
+		return []string{}
+	}
+	return strings.Split(str, ",")
 }
 
 func GetQueryInt32s(ctx *gin.Context, query string) ([]int32, error) {
@@ -40,4 +61,21 @@ func GetQueryInt32s(ctx *gin.Context, query string) ([]int32, error) {
 		res[i] = int32(num)
 	}
 	return res, nil
+}
+
+func GetOrders(ctx *gin.Context) []*Order {
+	strs := GetQueryStrings(ctx, "orders")
+	orders := make([]*Order, len(strs))
+	for i := range strs {
+		order := &Order{}
+		if strings.HasPrefix(strs[i], "-") {
+			order.Key = strings.TrimPrefix(strs[i], "-")
+			order.Direction = OrderByDesc
+		} else {
+			order.Key = strs[i]
+			order.Direction = OrderByASC
+		}
+		orders[i] = order
+	}
+	return orders
 }

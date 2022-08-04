@@ -19,6 +19,7 @@ func TestListShippings(t *testing.T) {
 	in := &store.ListShippingsInput{
 		Limit:  20,
 		Offset: 0,
+		Orders: []*store.ListShippingsOrder{},
 	}
 	shippings := entity.Shippings{
 		{
@@ -94,6 +95,14 @@ func TestListShippings(t *testing.T) {
 			name:  "invalid offset",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
 			query: "?offset=a",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name:  "invalid orders",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			query: "?orders=name,hasFreeShipping,createdAt,updatedAt,other",
 			expect: &testResponse{
 				code: http.StatusBadRequest,
 			},

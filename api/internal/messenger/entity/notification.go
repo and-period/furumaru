@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/and-period/furumaru/api/pkg/set"
+	set "github.com/and-period/furumaru/api/pkg/set/v2"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/datatypes"
 )
@@ -27,6 +27,14 @@ var targetAdmins = []int32{
 	int32(PostTargetCoordinators),
 	int32(PostTargetProducers),
 }
+
+type NotificationOrderBy string
+
+const (
+	NotificationOrderByTitle       NotificationOrderBy = "title"
+	NotificationOrderByPublic      NotificationOrderBy = "public"
+	NotificationOrderByPublishedAt NotificationOrderBy = "published_at"
+)
 
 // Notification - お知らせ情報
 type Notification struct {
@@ -72,8 +80,7 @@ func NewNotification(params *NewNotificationParams) *Notification {
 }
 
 func (n *Notification) HasUserTarget() bool {
-	set := set.New(len(targetUsers))
-	set.AddInt32s(targetUsers...)
+	set := set.New[int32](len(targetUsers)).Add(targetUsers...)
 	for i := range n.Targets {
 		if set.Contains(int32(n.Targets[i])) {
 			return true
@@ -83,8 +90,7 @@ func (n *Notification) HasUserTarget() bool {
 }
 
 func (n *Notification) HasAdminTarget() bool {
-	set := set.New(len(targetAdmins))
-	set.AddInt32s(targetAdmins...)
+	set := set.New[int32](len(targetAdmins)).Add(targetAdmins...)
 	for i := range n.Targets {
 		if set.Contains(int32(n.Targets[i])) {
 			return true

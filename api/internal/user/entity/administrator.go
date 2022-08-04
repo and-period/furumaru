@@ -8,6 +8,15 @@ import (
 	"gorm.io/gorm"
 )
 
+type AdministratorOrderBy string
+
+const (
+	AdministratorOrderByLastname    AdministratorOrderBy = "lastname"
+	AdministratorOrderByFirstname   AdministratorOrderBy = "firstname"
+	AdministratorOrderByEmail       AdministratorOrderBy = "email"
+	AdministratorOrderByPhoneNumber AdministratorOrderBy = "phone_number"
+)
+
 // Administrator - システム管理者情報
 type Administrator struct {
 	ID            string         `gorm:"primaryKey;<-:create"` // 管理者ID
