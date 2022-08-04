@@ -56,6 +56,7 @@ export default defineComponent({
         console.log(error)
       }
     }
+
     const verificationBtn = async (): Promise<void> => {
       try {
         await authStore.codeVerify(formData)
@@ -64,6 +65,7 @@ export default defineComponent({
         console.log(error)
       }
     }
+
     return {
       verificationBtn,
       handleClickAddBtn,
