@@ -94,7 +94,7 @@ export const useAuthStore = defineStore('auth', {
         await authApiClient.v1UpdateAuthEmail(payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
-          message: 'メールアドレスを更新しました。',
+          message: '認証コードを送信しました。',
           color: 'info',
         })
       } catch (err) {
@@ -110,10 +110,10 @@ export const useAuthStore = defineStore('auth', {
         await authApiClient.v1VerifyAuthEmail(payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
-          message: 'コードが認証できました。',
+          message: 'コードが認証されました。',
           color: 'info',
         })
-      } catch(err) {
+      } catch (err) {
         console.log(err)
         throw new Error('Internal Server Error')
       }
