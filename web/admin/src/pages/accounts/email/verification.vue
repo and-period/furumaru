@@ -31,12 +31,13 @@ import {
   useRoute,
   useRouter,
 } from '@nuxtjs/composition-api'
+
 import { useAuthStore } from '~/store/auth'
 import { UpdateAuthEmailRequest, VerifyAuthEmailRequest } from '~/types/api'
 
 export default defineComponent({
   setup() {
-  const formData = reactive<VerifyAuthEmailRequest>({
+    const formData = reactive<VerifyAuthEmailRequest>({
       verifyCode: '',
     })
     const router = useRouter()

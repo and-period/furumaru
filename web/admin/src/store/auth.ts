@@ -110,7 +110,7 @@ export const useAuthStore = defineStore('auth', {
         await authApiClient.v1VerifyAuthEmail(payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
-          message: 'コードが認証されました。',
+          message: 'メールアドレスが変更されました。',
           color: 'info',
         })
       } catch (err) {
