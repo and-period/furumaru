@@ -19,7 +19,7 @@ type Notification struct {
 type TargetType int32
 
 const (
-	PostTargetAll          TargetType = 0 // 全員対象
+	PostTargetUnknown      TargetType = 0 // 対象不明
 	PostTargetUsers        TargetType = 1 // ユーザー対象
 	PostTargetProducers    TargetType = 2 // 生産者対象
 	PostTargetCoordinators TargetType = 3 // コーディネーター対象
