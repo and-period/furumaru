@@ -46,35 +46,6 @@ func TestCreateNotification(t *testing.T) {
 		CreatedAt:   jst.ParseFromUnix(date),
 		UpdatedAt:   jst.ParseFromUnix(date),
 	}
-	inTargetAll := &messenger.CreateNotificationInput{
-		CreatedBy: idmock,
-		Title:     "キャベツ祭り開催",
-		Body:      "旬のキャベツを大安売り",
-		Targets: []mentity.TargetType{
-			mentity.PostTargetUsers,
-			mentity.PostTargetProducers,
-			mentity.PostTargetCoordinators,
-		},
-		Public:      true,
-		PublishedAt: jst.ParseFromUnix(date),
-	}
-	notificationTargetAll := &mentity.Notification{
-		ID:          "notification-id",
-		CreatedBy:   idmock,
-		CreatorName: "登録者",
-		UpdatedBy:   idmock,
-		Title:       "キャベツ祭り開催",
-		Body:        "旬のキャベツを大安売り",
-		Targets: []mentity.TargetType{
-			mentity.PostTargetUsers,
-			mentity.PostTargetProducers,
-			mentity.PostTargetCoordinators,
-		},
-		Public:      true,
-		PublishedAt: jst.ParseFromUnix(date),
-		CreatedAt:   jst.ParseFromUnix(date),
-		UpdatedAt:   jst.ParseFromUnix(date),
-	}
 
 	tests := []struct {
 		name   string
@@ -93,7 +64,6 @@ func TestCreateNotification(t *testing.T) {
 					})
 			},
 			req: &request.CreateNotificationRequest{
-				// こっちがGot
 				Title: "キャベツ祭り開催",
 				Body:  "旬のキャベツを大安売り",
 				Targets: []request.TargetType{
@@ -116,49 +86,6 @@ func TestCreateNotification(t *testing.T) {
 						Targets: []response.TargetType{
 							response.PostTargetUsers,
 							response.PostTargetProducers,
-						},
-						PublishedAt: 1640962800,
-						Public:      true,
-						CreatedAt:   1640962800,
-						UpdatedAt:   1640962800,
-					},
-				},
-			},
-		},
-		{
-			name: "success_targetAll",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.messenger.EXPECT().
-					CreateNotification(gomock.Any(), gomock.Any()).
-					DoAndReturn(func(ctx context.Context, actual *messenger.CreateNotificationInput) (*mentity.Notification, error) {
-						assert.Equal(t, inTargetAll, actual)
-						return notificationTargetAll, nil
-					})
-			},
-			req: &request.CreateNotificationRequest{
-				// こっちがGot
-				Title: "キャベツ祭り開催",
-				Body:  "旬のキャベツを大安売り",
-				Targets: []request.TargetType{
-					request.PostTargetAll,
-				},
-				PublishedAt: date,
-				Public:      true,
-			},
-			expect: &testResponse{
-				code: http.StatusOK,
-				body: &response.NotificationResponse{
-					Notification: &response.Notification{
-						ID:          "notification-id",
-						CreatedBy:   idmock,
-						CreatorName: "登録者",
-						UpdatedBy:   idmock,
-						Title:       "キャベツ祭り開催",
-						Body:        "旬のキャベツを大安売り",
-						Targets: []response.TargetType{
-							response.PostTargetUsers,
-							response.PostTargetProducers,
-							response.PostTargetCoordinators,
 						},
 						PublishedAt: 1640962800,
 						Public:      true,

@@ -27,14 +27,6 @@ func (h *handler) CreateNotification(ctx *gin.Context) {
 	for i := range req.Targets {
 		targets[i] = entity.TargetType(req.Targets[i])
 	}
-	// targetsに0があれば、1, 2, 3を詰める
-	if isTargetAll(targets) {
-		targets = []entity.TargetType{
-			entity.PostTargetUsers,
-			entity.PostTargetProducers,
-			entity.PostTargetCoordinators,
-		}
-	}
 
 	publishedAt := jst.ParseFromUnix(req.PublishedAt)
 	in := &messenger.CreateNotificationInput{
@@ -56,13 +48,4 @@ func (h *handler) CreateNotification(ctx *gin.Context) {
 		Notification: service.NewNotification(notification).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
-}
-
-func isTargetAll(arr []entity.TargetType) bool {
-	for _, v := range arr {
-		if v == entity.PostTargetAll {
-			return true
-		}
-	}
-	return false
 }
