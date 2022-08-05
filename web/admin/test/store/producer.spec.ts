@@ -9,6 +9,7 @@ import {
   ConnectionError,
   InternalServerError,
   NotFoundError,
+  ValidationError,
 } from '~/types/exception'
 
 describe('Producer Store', () => {
@@ -115,6 +116,42 @@ describe('Producer Store', () => {
         expect(error instanceof AuthError).toBeTruthy()
       }
     })
+
+    it('failed when return status code is 400', async () => {
+      axiosMock.onPost(`${baseURL}/v1/upload/producers/thumbnail`).reply(400)
+      setupAuthStore(true)
+
+      const producerStore = useProducerStore()
+      try {
+        await producerStore.uploadProducerThumbnail(dummyFile)
+      } catch (error) {
+        expect(error instanceof ValidationError).toBeTruthy()
+      }
+    })
+
+    it('failed when return status code is 401', async () => {
+      axiosMock.onPost(`${baseURL}/v1/upload/producers/thumbnail`).reply(401)
+      setupAuthStore(true)
+
+      const producerStore = useProducerStore()
+      try {
+        await producerStore.uploadProducerThumbnail(dummyFile)
+      } catch (error) {
+        expect(error instanceof AuthError).toBeTruthy()
+      }
+    })
+
+    it('failed when return status code is 500', async () => {
+      axiosMock.onPost(`${baseURL}/v1/upload/producers/thumbnail`).reply(500)
+      setupAuthStore(true)
+
+      const producerStore = useProducerStore()
+      try {
+        await producerStore.uploadProducerThumbnail(dummyFile)
+      } catch (error) {
+        expect(error instanceof InternalServerError).toBeTruthy()
+      }
+    })
   })
 
   describe('uploadProducerHeader', () => {
@@ -141,6 +178,42 @@ describe('Producer Store', () => {
         await producerStore.uploadProducerHeader(dummyFile)
       } catch (error) {
         expect(error instanceof AuthError).toBeTruthy()
+      }
+    })
+
+    it('failed when return status code is 400', async () => {
+      axiosMock.onPost(`${baseURL}/v1/upload/producers/header`).reply(400)
+      setupAuthStore(true)
+
+      const producerStore = useProducerStore()
+      try {
+        await producerStore.uploadProducerHeader(dummyFile)
+      } catch (error) {
+        expect(error instanceof ValidationError).toBeTruthy()
+      }
+    })
+
+    it('failed when return status code is 401', async () => {
+      axiosMock.onPost(`${baseURL}/v1/upload/producers/header`).reply(401)
+      setupAuthStore(true)
+
+      const producerStore = useProducerStore()
+      try {
+        await producerStore.uploadProducerHeader(dummyFile)
+      } catch (error) {
+        expect(error instanceof AuthError).toBeTruthy()
+      }
+    })
+
+    it('failed when return status code is 500', async () => {
+      axiosMock.onPost(`${baseURL}/v1/upload/producers/header`).reply(500)
+      setupAuthStore(true)
+
+      const producerStore = useProducerStore()
+      try {
+        await producerStore.uploadProducerHeader(dummyFile)
+      } catch (error) {
+        expect(error instanceof InternalServerError).toBeTruthy()
       }
     })
   })

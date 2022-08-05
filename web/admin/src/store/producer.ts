@@ -18,6 +18,7 @@ import {
   ConnectionError,
   InternalServerError,
   NotFoundError,
+  ValidationError,
 } from '~/types/exception'
 
 export const useProducerStore = defineStore('Producer', {
@@ -124,7 +125,34 @@ export const useProducerStore = defineStore('Producer', {
         )
         return res.data
       } catch (error) {
-        throw new Error('Internal Server Error')
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          const statusCode = error.response.status
+          switch (statusCode) {
+            case 401:
+              return Promise.reject(
+                new AuthError(
+                  statusCode,
+                  '認証エラー。再度ログインをしてください',
+                  error
+                )
+              )
+            case 400:
+              return Promise.reject(
+                new ValidationError(
+                  statusCode,
+                  'このファイルはアップロードできません。',
+                  error
+                )
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+        throw new InternalServerError(error)
       }
     },
 
@@ -152,8 +180,34 @@ export const useProducerStore = defineStore('Producer', {
         })
         return res.data
       } catch (error) {
-        console.log(error)
-        throw new Error('Internal Server Error')
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          const statusCode = error.response.status
+          switch (statusCode) {
+            case 401:
+              return Promise.reject(
+                new AuthError(
+                  statusCode,
+                  '認証エラー。再度ログインをしてください',
+                  error
+                )
+              )
+            case 400:
+              return Promise.reject(
+                new ValidationError(
+                  statusCode,
+                  'このファイルはアップロードできません。',
+                  error
+                )
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+        throw new InternalServerError(error)
       }
     },
 
