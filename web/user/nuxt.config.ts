@@ -32,13 +32,7 @@ const config: NuxtConfig = {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [
-    {
-      src: '~/plugins/pincodeInput',
-      mode: 'client',
-    },
-    { src: 'plugins/icons', ssr: false },
-  ],
+  plugins: ['~/plugins/amplify', '~/plugins/icons', '~/plugins/pincodeInput'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: [
@@ -84,6 +78,14 @@ const config: NuxtConfig = {
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
     baseURL: '/',
+  },
+
+  // env
+  env: {
+    API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:18000',
+    AWS_REGION: process.env.AWS_REGION || 'ap-northeast-1',
+    AWS_COGNITO_IDENTITY_POOL_ID: process.env.COGNITO_IDENTITY_POOL_ID || '',
+    AWS_PINPOINT_APP_ID: process.env.PINPOINT_APP_ID || '',
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
