@@ -13,5 +13,13 @@ func TestClient(t *testing.T) {
 		WithLogger(zap.NewNop()),
 		WithMaxRetries(1),
 	)
-	assert.Nil(t, cli)
+	assert.NotNil(t, cli)
+}
+
+func TestReceiver(t *testing.T) {
+	t.Parallel()
+	cli := NewReceiver(&Params{},
+		WithLogger(zap.NewNop()),
+	)
+	assert.NotNil(t, cli)
 }
