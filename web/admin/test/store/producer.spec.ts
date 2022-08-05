@@ -4,8 +4,10 @@ import { setupAuthStore } from '../helpers/auth-helpter'
 import { axiosMock, baseURL } from '../helpers/axios-helpter'
 
 import { useProducerStore } from '~/store/producer'
+import { CreateProducerRequest } from '~/types/api'
 import {
   AuthError,
+  ConflictError,
   ConnectionError,
   InternalServerError,
   NotFoundError,
@@ -88,7 +90,205 @@ describe('Producer Store', () => {
     })
   })
 
-  describe('createProducer', () => {})
+  describe('createProducer', () => {
+    axiosMock.onPost(`${baseURL}/v1/producers`).reply(200, {
+      id: 'kSByoE6FetnPs5Byk3a9Zx',
+      lastname: '&.',
+      firstname: '管理者',
+      lastnameKana: 'あんどどっと',
+      firstnameKana: 'かんりしゃ',
+      storeName: '&.農園',
+      thumbnailUrl: 'https://and-period.jp/thumbnail.png',
+      headerUrl: 'https://and-period.jp/header.png',
+      email: 'test-user@and-period.jp',
+      phoneNumber: 819012345678,
+      postalCode: '1000014',
+      prefecture: '東京都',
+      city: '千代田区',
+      addressLine1: '永田町1-7-1',
+      addressLine2: '',
+      createdAt: 1640962800,
+      updatedAt: 1640962800,
+    })
+
+    it('success', () => {
+      setupAuthStore(true)
+
+      const validPayload: CreateProducerRequest = {
+        lastname: '&.',
+        firstname: '管理者',
+        lastnameKana: 'あんどどっと',
+        firstnameKana: 'かんりしゃ',
+        storeName: '&.農園',
+        thumbnailUrl: 'https://and-period.jp/thumbnail.png',
+        headerUrl: 'https://and-period.jp/header.png',
+        email: 'test-user@and-period.jp',
+        phoneNumber: '819012345678',
+        postalCode: '1000014',
+        prefecture: '東京都',
+        city: '千代田区',
+        addressLine1: '永田町1-7-1',
+        addressLine2: '',
+      }
+
+      const producerStore = useProducerStore()
+      return expect(producerStore.createProducer(validPayload)).resolves.toBe(
+        undefined
+      )
+    })
+
+    it('failed when not authenticated', async () => {
+      setupAuthStore(false)
+
+      const validPayload: CreateProducerRequest = {
+        lastname: '&.',
+        firstname: '管理者',
+        lastnameKana: 'あんどどっと',
+        firstnameKana: 'かんりしゃ',
+        storeName: '&.農園',
+        thumbnailUrl: 'https://and-period.jp/thumbnail.png',
+        headerUrl: 'https://and-period.jp/header.png',
+        email: 'test-user@and-period.jp',
+        phoneNumber: '819012345678',
+        postalCode: '1000014',
+        prefecture: '東京都',
+        city: '千代田区',
+        addressLine1: '永田町1-7-1',
+        addressLine2: '',
+      }
+
+      const producerStore = useProducerStore()
+      try {
+        await producerStore.createProducer(validPayload)
+      } catch (error) {
+        expect(error instanceof AuthError).toBeTruthy()
+      }
+    })
+
+    it('failed when return status code is 400', async () => {
+      setupAuthStore(true)
+      axiosMock.onPost(`${baseURL}/v1/producers`).reply(400)
+
+      const invalidPayload: CreateProducerRequest = {
+        lastname: '&.',
+        firstname: '管理者',
+        lastnameKana: 'アンドドット',
+        firstnameKana: 'カンリシャ',
+        storeName: '&.農園',
+        thumbnailUrl: 'https://and-period.jp/thumbnail.png',
+        headerUrl: 'https://and-period.jp/header.png',
+        email: 'test-user@and-period.jp',
+        phoneNumber: '819012345678',
+        postalCode: '1000014',
+        prefecture: '東京都',
+        city: '千代田区',
+        addressLine1: '永田町1-7-1',
+        addressLine2: '',
+      }
+
+      const producerStore = useProducerStore()
+      try {
+        await producerStore.createProducer(invalidPayload)
+      } catch (error) {
+        expect(error instanceof ValidationError).toBeTruthy()
+        if (error instanceof ValidationError) {
+          expect(error.message).toBe('入力内容に誤りがあります。')
+        }
+      }
+    })
+
+    it('failed when return status code is 400', async () => {
+      setupAuthStore(true)
+      axiosMock.onPost(`${baseURL}/v1/producers`).reply(409)
+
+      const notUniquePayload: CreateProducerRequest = {
+        lastname: '&.',
+        firstname: '管理者',
+        lastnameKana: 'あんどどっと',
+        firstnameKana: 'かんりしゃ',
+        storeName: '&.農園',
+        thumbnailUrl: 'https://and-period.jp/thumbnail.png',
+        headerUrl: 'https://and-period.jp/header.png',
+        email: 'test-user@and-period.jp',
+        phoneNumber: '819012345678',
+        postalCode: '1000014',
+        prefecture: '東京都',
+        city: '千代田区',
+        addressLine1: '永田町1-7-1',
+        addressLine2: '',
+      }
+
+      const producerStore = useProducerStore()
+      try {
+        await producerStore.createProducer(notUniquePayload)
+      } catch (error) {
+        expect(error instanceof ConflictError).toBeTruthy()
+        if (error instanceof ConflictError) {
+          expect(error.message).toBe(
+            'このメールアドレスはすでに登録されているため、登録できません。'
+          )
+        }
+      }
+    })
+
+    it('failed when return status code is 401', async () => {
+      setupAuthStore(true)
+      axiosMock.onPost(`${baseURL}/v1/producers`).reply(401)
+
+      const validPayload: CreateProducerRequest = {
+        lastname: '&.',
+        firstname: '管理者',
+        lastnameKana: 'あんどどっと',
+        firstnameKana: 'かんりしゃ',
+        storeName: '&.農園',
+        thumbnailUrl: 'https://and-period.jp/thumbnail.png',
+        headerUrl: 'https://and-period.jp/header.png',
+        email: 'test-user@and-period.jp',
+        phoneNumber: '819012345678',
+        postalCode: '1000014',
+        prefecture: '東京都',
+        city: '千代田区',
+        addressLine1: '永田町1-7-1',
+        addressLine2: '',
+      }
+
+      const producerStore = useProducerStore()
+      try {
+        await producerStore.createProducer(validPayload)
+      } catch (error) {
+        expect(error instanceof AuthError).toBeTruthy()
+      }
+    })
+
+    it('failed when return status code is 401', async () => {
+      setupAuthStore(true)
+      axiosMock.onPost(`${baseURL}/v1/producers`).reply(500)
+
+      const validPayload: CreateProducerRequest = {
+        lastname: '&.',
+        firstname: '管理者',
+        lastnameKana: 'あんどどっと',
+        firstnameKana: 'かんりしゃ',
+        storeName: '&.農園',
+        thumbnailUrl: 'https://and-period.jp/thumbnail.png',
+        headerUrl: 'https://and-period.jp/header.png',
+        email: 'test-user@and-period.jp',
+        phoneNumber: '819012345678',
+        postalCode: '1000014',
+        prefecture: '東京都',
+        city: '千代田区',
+        addressLine1: '永田町1-7-1',
+        addressLine2: '',
+      }
+
+      const producerStore = useProducerStore()
+      try {
+        await producerStore.createProducer(validPayload)
+      } catch (error) {
+        expect(error instanceof InternalServerError).toBeTruthy()
+      }
+    })
+  })
 
   describe('uploadProducerThumbnail', () => {
     const dummyFile: File = new File(['dummy'], 'image.png', {

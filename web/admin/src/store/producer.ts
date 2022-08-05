@@ -15,6 +15,7 @@ import {
 } from '~/types/api'
 import {
   AuthError,
+  ConflictError,
   ConnectionError,
   InternalServerError,
   NotFoundError,
@@ -80,7 +81,9 @@ export const useProducerStore = defineStore('Producer', {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
         if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
+          return Promise.reject(
+            new AuthError(401, '認証エラー。再度ログインをしてください。')
+          )
         }
 
         const factory = new ApiClientFactory()
@@ -92,9 +95,43 @@ export const useProducerStore = defineStore('Producer', {
           color: 'info',
         })
       } catch (error) {
-        // TODO: エラーハンドリング
-        console.log(error)
-        throw new Error('Internal Server Error')
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          const statusCode = error.response.status
+          switch (statusCode) {
+            case 400:
+              return Promise.reject(
+                new ValidationError(
+                  statusCode,
+                  '入力内容に誤りがあります。',
+                  error
+                )
+              )
+            case 401:
+              return Promise.reject(
+                new AuthError(
+                  401,
+                  '認証エラー。再度ログインをしてください。',
+                  error
+                )
+              )
+            case 409:
+              return Promise.reject(
+                new ConflictError(
+                  statusCode,
+                  'このメールアドレスはすでに登録されているため、登録できません。',
+                  error
+                )
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+
+        throw new InternalServerError(error)
       }
     },
 
