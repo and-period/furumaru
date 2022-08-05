@@ -10,7 +10,9 @@ import {
   AuthApi,
   AuthResponse,
   SignInRequest,
+  UpdateAuthEmailRequest,
   UpdateAuthPasswordRequest,
+  VerifyAuthEmailRequest,
 } from '~/types/api'
 import {
   AuthError,
@@ -101,6 +103,38 @@ export const useAuthStore = defineStore('auth', {
           }
         }
         throw new InternalServerError(err)
+      }
+    },
+
+    async emailUpdate(payload: UpdateAuthEmailRequest): Promise<void> {
+      try {
+        const factory = new ApiClientFactory()
+        const authApiClient = factory.create(AuthApi, this.user?.accessToken)
+        await authApiClient.v1UpdateAuthEmail(payload)
+        const commonStore = useCommonStore()
+        commonStore.addSnackbar({
+          message: '認証コードを送信しました。',
+          color: 'info',
+        })
+      } catch (err) {
+        console.log(err)
+        throw new Error('Internal Server Error')
+      }
+    },
+
+    async codeVerify(payload: VerifyAuthEmailRequest): Promise<void> {
+      try {
+        const factory = new ApiClientFactory()
+        const authApiClient = factory.create(AuthApi, this.user?.accessToken)
+        await authApiClient.v1VerifyAuthEmail(payload)
+        const commonStore = useCommonStore()
+        commonStore.addSnackbar({
+          message: 'メールアドレスが変更されました。',
+          color: 'info',
+        })
+      } catch (err) {
+        console.log(err)
+        throw new Error('Internal Server Error')
       }
     },
 
