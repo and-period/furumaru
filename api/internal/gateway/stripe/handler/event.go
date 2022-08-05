@@ -13,7 +13,7 @@ import (
 )
 
 func (h *handler) Event(ctx *gin.Context) {
-	event, err := h.request(ctx.Writer, ctx.Request)
+	event, err := h.request(ctx.Request)
 	if err != nil {
 		badRequest(ctx, err)
 		return
@@ -28,7 +28,7 @@ func (h *handler) Event(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
-func (h *handler) request(rw http.ResponseWriter, r *http.Request) (*stripe.Event, error) {
+func (h *handler) request(r *http.Request) (*stripe.Event, error) {
 	payload, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		return nil, err
@@ -36,7 +36,7 @@ func (h *handler) request(rw http.ResponseWriter, r *http.Request) (*stripe.Even
 	return h.receiver.Receive(payload, r.Header.Get("Stripe-Signature"))
 }
 
-func (h *handler) dispatch(ctx context.Context, event *stripe.Event) error {
+func (h *handler) dispatch(_ context.Context, event *stripe.Event) error {
 	if event == nil {
 		return fmt.Errorf("%s: %w", errUnknownEvent.Error(), exception.ErrInvalidArgument)
 	}
