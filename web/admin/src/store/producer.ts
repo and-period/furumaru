@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { defineStore } from 'pinia'
 
 import ApiClientFactory from '../plugins/factory'
@@ -12,7 +13,12 @@ import {
   ProducersResponse,
   UploadImageResponse,
 } from '~/types/api'
-import { AuthError } from '~/types/exception'
+import {
+  AuthError,
+  ConnectionError,
+  InternalServerError,
+  NotFoundError,
+} from '~/types/exception'
 
 export const useProducerStore = defineStore('Producer', {
   state: () => ({
@@ -42,8 +48,25 @@ export const useProducerStore = defineStore('Producer', {
         const res = await producersApiClient.v1ListProducers(limit, offset)
         this.producers = res.data.producers
       } catch (error) {
-        // TODO: エラーハンドリング
-        throw new Error('Internal Server Error')
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          switch (error.response.status) {
+            case 401:
+              return Promise.reject(
+                new AuthError(
+                  error.response.status,
+                  '認証エラー。再度ログインをしてください。',
+                  error
+                )
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+        throw new InternalServerError(error)
       }
     },
 
@@ -84,7 +107,9 @@ export const useProducerStore = defineStore('Producer', {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
         if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
+          return Promise.reject(
+            new AuthError(401, '認証エラー。再度ログインをしてください。')
+          )
         }
 
         const factory = new ApiClientFactory()
@@ -113,7 +138,9 @@ export const useProducerStore = defineStore('Producer', {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
         if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
+          return Promise.reject(
+            new AuthError(401, '認証エラー。再度ログインをしてください。')
+          )
         }
 
         const factory = new ApiClientFactory()
@@ -125,6 +152,7 @@ export const useProducerStore = defineStore('Producer', {
         })
         return res.data
       } catch (error) {
+        console.log(error)
         throw new Error('Internal Server Error')
       }
     },
@@ -138,14 +166,45 @@ export const useProducerStore = defineStore('Producer', {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
-        if (!accessToken) throw new Error('認証エラー')
+        if (!accessToken) {
+          return Promise.reject(
+            new AuthError(401, '認証エラー。再度ログインをしてください')
+          )
+        }
 
         const factory = new ApiClientFactory()
         const producersApiClient = factory.create(ProducerApi, accessToken)
         const res = await producersApiClient.v1GetProducer(id)
         return res.data
       } catch (error) {
-        return Promise.reject(new Error('不明なエラーが発生しました。'))
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          const statusCode = error.response.status
+          switch (statusCode) {
+            case 401:
+              return Promise.reject(
+                new AuthError(
+                  401,
+                  '認証エラー。再度ログインをしてください',
+                  error
+                )
+              )
+            case 404:
+              return Promise.reject(
+                new NotFoundError(
+                  statusCode,
+                  '一致する生産者が見つかりませんでした。',
+                  error
+                )
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+        throw new InternalServerError(error)
       }
     },
   },
