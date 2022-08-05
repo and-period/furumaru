@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	v1 "github.com/and-period/furumaru/api/internal/gateway/admin/v1/handler"
+	shandler "github.com/and-period/furumaru/api/internal/gateway/stripe/handler"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database"
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
@@ -22,6 +23,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/sqs"
 	"github.com/and-period/furumaru/api/pkg/storage"
+	"github.com/and-period/furumaru/api/pkg/stripe"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/newrelic/go-agent/v3/newrelic"
@@ -37,31 +39,35 @@ type registry struct {
 	line      line.Client
 	newRelic  *newrelic.Application
 	v1        v1.Handler
+	stripe    shandler.Handler
 }
 
 type params struct {
-	config          *config
-	logger          *zap.Logger
-	waitGroup       *sync.WaitGroup
-	enforcer        rbac.Enforcer
-	aws             aws.Config
-	secret          secret.Client
-	storage         storage.Bucket
-	adminAuth       cognito.Client
-	userAuth        cognito.Client
-	producer        sqs.Producer
-	line            line.Client
-	newRelic        *newrelic.Application
-	adminWebURL     *url.URL
-	userWebURL      *url.URL
-	dbHost          string
-	dbPort          string
-	dbUsername      string
-	dbPassword      string
-	lineToken       string
-	lineSecret      string
-	lineRoomID      string
-	newRelicLicense string
+	config           *config
+	logger           *zap.Logger
+	waitGroup        *sync.WaitGroup
+	enforcer         rbac.Enforcer
+	aws              aws.Config
+	secret           secret.Client
+	storage          storage.Bucket
+	adminAuth        cognito.Client
+	userAuth         cognito.Client
+	producer         sqs.Producer
+	line             line.Client
+	newRelic         *newrelic.Application
+	receiver         stripe.Receiver
+	adminWebURL      *url.URL
+	userWebURL       *url.URL
+	dbHost           string
+	dbPort           string
+	dbUsername       string
+	dbPassword       string
+	lineToken        string
+	lineSecret       string
+	lineRoomID       string
+	newRelicLicense  string
+	stripeSecretKey  string
+	stripeWebhookKey string
 }
 
 //nolint:funlen
@@ -129,6 +135,13 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		params.newRelic = newrelicApp
 	}
 
+	// Stripeの設定
+	stripeParams := &stripe.Params{
+		SecretKey:  params.stripeSecretKey,
+		WebhookKey: params.stripeWebhookKey,
+	}
+	params.receiver = stripe.NewReceiver(stripeParams, stripe.WithLogger(logger))
+
 	// LINEの設定
 	if params.lineToken != "" {
 		lineParams := &line.Params{
@@ -178,6 +191,10 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		Store:     storeService,
 		Messenger: messengerService,
 	}
+	shandlerParams := &shandler.Params{
+		WaitGroup: params.waitGroup,
+		Receiver:  params.receiver,
+	}
 	return &registry{
 		appName:   conf.AppName,
 		env:       conf.Environment,
@@ -185,6 +202,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		line:      params.line,
 		newRelic:  params.newRelic,
 		v1:        v1.NewHandler(v1Params, v1.WithLogger(logger)),
+		stripe:    shandler.NewHandler(shandlerParams, shandler.WithLogger(logger)),
 	}, nil
 }
 
@@ -237,6 +255,21 @@ func getSecret(ctx context.Context, p *params) error {
 			return err
 		}
 		p.newRelicLicense = secrets["license"]
+		return nil
+	})
+	eg.Go(func() error {
+		// Stripe認証情報の取得
+		if p.config.StripeSecretName == "" {
+			p.stripeSecretKey = p.config.StripeSecretKey
+			p.stripeWebhookKey = p.config.StripeWebhookKey
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, p.config.StripeSecretName)
+		if err != nil {
+			return err
+		}
+		p.stripeSecretKey = secrets["secretKey"]
+		p.stripeWebhookKey = secrets["webhookKey"]
 		return nil
 	})
 	return eg.Wait()
