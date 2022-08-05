@@ -29,6 +29,7 @@ func newRouter(reg *registry, logger *zap.Logger) *gin.Engine {
 	rt.Use(opts...)
 
 	reg.v1.Routes(rt.Group(""))
+	reg.stripe.Routes(rt.Group(""))
 
 	// other routes
 	rt.GET("/health", func(ctx *gin.Context) {
