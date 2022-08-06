@@ -41,7 +41,7 @@ export const useProducerStore = defineStore('Producer', {
         const accessToken = authStore.accessToken
         if (!accessToken) {
           return Promise.reject(
-            new AuthError(401, '認証エラー。再度ログインをしてください。')
+            new AuthError('認証エラー。再度ログインをしてください。')
           )
         }
 
@@ -57,11 +57,7 @@ export const useProducerStore = defineStore('Producer', {
           switch (error.response.status) {
             case 401:
               return Promise.reject(
-                new AuthError(
-                  error.response.status,
-                  '認証エラー。再度ログインをしてください。',
-                  error
-                )
+                new AuthError('認証エラー。再度ログインをしてください。', error)
               )
             case 500:
             default:
@@ -82,7 +78,7 @@ export const useProducerStore = defineStore('Producer', {
         const accessToken = authStore.accessToken
         if (!accessToken) {
           return Promise.reject(
-            new AuthError(401, '認証エラー。再度ログインをしてください。')
+            new AuthError('認証エラー。再度ログインをしてください。')
           )
         }
 
@@ -103,24 +99,15 @@ export const useProducerStore = defineStore('Producer', {
           switch (statusCode) {
             case 400:
               return Promise.reject(
-                new ValidationError(
-                  statusCode,
-                  '入力内容に誤りがあります。',
-                  error
-                )
+                new ValidationError('入力内容に誤りがあります。', error)
               )
             case 401:
               return Promise.reject(
-                new AuthError(
-                  401,
-                  '認証エラー。再度ログインをしてください。',
-                  error
-                )
+                new AuthError('認証エラー。再度ログインをしてください。', error)
               )
             case 409:
               return Promise.reject(
                 new ConflictError(
-                  statusCode,
                   'このメールアドレスはすでに登録されているため、登録できません。',
                   error
                 )
@@ -146,7 +133,7 @@ export const useProducerStore = defineStore('Producer', {
         const accessToken = authStore.accessToken
         if (!accessToken) {
           return Promise.reject(
-            new AuthError(401, '認証エラー。再度ログインをしてください。')
+            new AuthError('認証エラー。再度ログインをしてください。')
           )
         }
 
@@ -170,16 +157,11 @@ export const useProducerStore = defineStore('Producer', {
           switch (statusCode) {
             case 401:
               return Promise.reject(
-                new AuthError(
-                  statusCode,
-                  '認証エラー。再度ログインをしてください',
-                  error
-                )
+                new AuthError('認証エラー。再度ログインをしてください', error)
               )
             case 400:
               return Promise.reject(
                 new ValidationError(
-                  statusCode,
                   'このファイルはアップロードできません。',
                   error
                 )
@@ -204,7 +186,7 @@ export const useProducerStore = defineStore('Producer', {
         const accessToken = authStore.accessToken
         if (!accessToken) {
           return Promise.reject(
-            new AuthError(401, '認証エラー。再度ログインをしてください。')
+            new AuthError('認証エラー。再度ログインをしてください。')
           )
         }
 
@@ -225,16 +207,11 @@ export const useProducerStore = defineStore('Producer', {
           switch (statusCode) {
             case 401:
               return Promise.reject(
-                new AuthError(
-                  statusCode,
-                  '認証エラー。再度ログインをしてください',
-                  error
-                )
+                new AuthError('認証エラー。再度ログインをしてください', error)
               )
             case 400:
               return Promise.reject(
                 new ValidationError(
-                  statusCode,
                   'このファイルはアップロードできません。',
                   error
                 )
@@ -259,7 +236,7 @@ export const useProducerStore = defineStore('Producer', {
         const accessToken = authStore.accessToken
         if (!accessToken) {
           return Promise.reject(
-            new AuthError(401, '認証エラー。再度ログインをしてください')
+            new AuthError('認証エラー。再度ログインをしてください')
           )
         }
 
@@ -276,16 +253,11 @@ export const useProducerStore = defineStore('Producer', {
           switch (statusCode) {
             case 401:
               return Promise.reject(
-                new AuthError(
-                  401,
-                  '認証エラー。再度ログインをしてください',
-                  error
-                )
+                new AuthError('認証エラー。再度ログインをしてください', error)
               )
             case 404:
               return Promise.reject(
                 new NotFoundError(
-                  statusCode,
                   '一致する生産者が見つかりませんでした。',
                   error
                 )

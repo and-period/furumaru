@@ -54,7 +54,6 @@ export const useAuthStore = defineStore('auth', {
             case 401:
               return Promise.reject(
                 new ValidationError(
-                  err.response.status,
                   'ユーザー名またはパスワードが違います。',
                   err
                 )
@@ -77,30 +76,26 @@ export const useAuthStore = defineStore('auth', {
           message: 'パスワードを更新しました。',
           color: 'info',
         })
-      } catch (err) {
-        if (axios.isAxiosError(err)) {
-          if (!err.response) {
-            return Promise.reject(new ConnectionError(err))
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
           }
-          const statusCode = err.response.status
+          const statusCode = error.response.status
           switch (statusCode) {
             case 401:
               return Promise.reject(
-                new AuthError(
-                  statusCode,
-                  '認証エラー。再度ログインをしてください。',
-                  err
-                )
+                new AuthError('認証エラー。再度ログインをしてください。', error)
               )
             case 400:
               return Promise.reject(
-                new ValidationError(statusCode, '入力値に誤りがあります。', err)
+                new ValidationError('入力値に誤りがあります。', error)
               )
             default:
-              return Promise.reject(new InternalServerError(err))
+              return Promise.reject(new InternalServerError(error))
           }
         }
-        throw new InternalServerError(err)
+        throw new InternalServerError(error)
       }
     },
 
@@ -123,11 +118,7 @@ export const useAuthStore = defineStore('auth', {
           }
           if (error.response.status === 401) {
             return Promise.reject(
-              new AuthError(
-                error.response.status,
-                '認証エラー。再度ログインをしてください。',
-                error
-              )
+              new AuthError('認証エラー。再度ログインをしてください。', error)
             )
           } else {
             return Promise.reject(new InternalServerError(error))
