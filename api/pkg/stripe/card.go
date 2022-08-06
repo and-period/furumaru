@@ -71,6 +71,7 @@ func (c *client) OrderCard(ctx context.Context, in *OrderCardParams) (*stripe.Pa
 		PaymentMethod:      stripe.String(in.CardID),
 		PaymentMethodTypes: stripe.StringSlice([]string{string(stripe.PaymentMethodTypeCard)}),
 		CaptureMethod:      stripe.String(string(stripe.PaymentIntentCaptureMethodManual)),
+		UseStripeSDK:       stripe.Bool(true),
 	}
 	var pi *stripe.PaymentIntent
 	orderFn := func() (err error) {
@@ -80,6 +81,32 @@ func (c *client) OrderCard(ctx context.Context, in *OrderCardParams) (*stripe.Pa
 	if err := c.do(ctx, orderFn); err != nil {
 		c.logger.Error("Failed to order card",
 			zap.String("customerId", in.CustomerID), zap.String("cardId", in.CardID), zap.Error(err))
+		return nil, err
+	}
+	return pi, nil
+}
+
+// reference: https://stripe.com/docs/api/payment_intents/create
+func (c *client) GuestOrderCard(ctx context.Context, in *OrderCardParams) (*stripe.PaymentIntent, error) {
+	params := &stripe.PaymentIntentParams{
+		Params: stripe.Params{
+			Context:  ctx,
+			Metadata: in.Metadata,
+		},
+		Description:        nullString(in.Description),
+		Amount:             stripe.Int64(in.Amount),
+		Currency:           stripe.String(string(stripe.CurrencyJPY)),
+		PaymentMethodTypes: stripe.StringSlice([]string{string(stripe.PaymentMethodTypeCard)}),
+		CaptureMethod:      stripe.String(string(stripe.PaymentIntentCaptureMethodManual)),
+		UseStripeSDK:       stripe.Bool(true),
+	}
+	var pi *stripe.PaymentIntent
+	orderFn := func() (err error) {
+		pi, err = paymentintent.New(params)
+		return err
+	}
+	if err := c.do(ctx, orderFn); err != nil {
+		c.logger.Error("Failed to order guest card", zap.Error(err))
 		return nil, err
 	}
 	return pi, nil

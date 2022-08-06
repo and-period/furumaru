@@ -31,7 +31,7 @@ func (c *client) CreateCustomer(ctx context.Context, in *CreateCustomerParams) (
 			Metadata: map[string]string{"userId": in.UserID},
 		},
 		Name:        stripe.String(in.Name),
-		Email:       nullString(in.Email),
+		Email:       stripe.String(in.Email),
 		Phone:       nullString(in.PhoneNumber),
 		Description: nullString(in.Description),
 	}

@@ -43,8 +43,10 @@ type Client interface {
 	GetCard(ctx context.Context, customerID, paymentID string) (*stripe.PaymentMethod, error)
 	// クレジットカード登録用の一時トークンを発行
 	SetupCard(ctx context.Context, customerID string) (*stripe.SetupIntent, error)
-	// クレジットカート決済要求
+	// クレジットカード決済要求
 	OrderCard(ctx context.Context, in *OrderCardParams) (*stripe.PaymentIntent, error)
+	// クレジットカード決済要求(ゲストユーザー)
+	GuestOrderCard(ctx context.Context, in *OrderCardParams) (*stripe.PaymentIntent, error)
 }
 
 type Receiver interface {
