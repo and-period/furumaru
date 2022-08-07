@@ -1,6 +1,6 @@
-import axios from 'axios'
-import MockAdapter from 'axios-mock-adapter'
 import { setActivePinia, createPinia } from 'pinia'
+
+import { axiosMock, baseURL } from '../helpers/axios-helpter'
 
 import { useAuthStore } from '~/store/auth'
 import { useCommonStore } from '~/store/common'
@@ -11,8 +11,6 @@ import {
   ValidationError,
 } from '~/types/exception'
 
-const axiosMock = new MockAdapter(axios)
-const baseURL = process.env.API_BASE_URL || 'http://localhost:18010'
 axiosMock.onPost(`${baseURL}/v1/auth`).reply(200, {
   adminId: 'kSByoE6FetnPs5Byk3a9Zx',
   role: 1,
