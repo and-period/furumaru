@@ -25,7 +25,7 @@ notificationResponse:
       items:
         type: integer
         format: int32
-        description: 掲載対象(0:全員,1:ユーザー,2:生産者,3:コーディネーター)
+        description: 掲載対象(0:不明,1:ユーザー,2:生産者,3:コーディネーター)
     public:
       type: boolean
       description: 公開フラグ
