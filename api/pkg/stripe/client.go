@@ -20,7 +20,18 @@ type Client interface {
 	// 顧客削除
 	DeleteCustomer(ctx context.Context, customerID string) error
 	// #############################################
-	// 決済関連 (共通)
+	// 決済関連
+	// #############################################
+	// 決済要求
+	Order(ctx context.Context, in *OrderParams) (*stripe.PaymentIntent, error)
+	// 決済要求(ゲストユーザー)
+	GuestOrder(ctx context.Context, in *GuestOrderParams) (*stripe.PaymentIntent, error)
+	// 決済確定
+	Capture(ctx context.Context, transactionID string) (*stripe.PaymentIntent, error)
+	// 決済キャンセル
+	Cancel(ctx context.Context, transactionID string, reason stripe.PaymentIntentCancellationReason) (*stripe.PaymentIntent, error)
+	// #############################################
+	// 決済方法 (共通)
 	// #############################################
 	// 顧客と決済手段の関連付け
 	AttachPayment(ctx context.Context, customerID, paymentID string) (*stripe.PaymentMethod, error)
@@ -28,14 +39,8 @@ type Client interface {
 	DetachPayment(ctx context.Context, customerID, paymentID string) error
 	// 顧客のデフォルト決済手段の更新
 	UpdateDefaultPayment(ctx context.Context, customerID, paymentID string) error
-	// 決済確定
-	Capture(ctx context.Context, transactionID string) (*stripe.PaymentIntent, error)
-	// 決済キャンセル
-	Cancel(
-		ctx context.Context, transactionID string, reason stripe.PaymentIntentCancellationReason,
-	) (*stripe.PaymentIntent, error)
 	// #############################################
-	// 決済関連 (クレジットカード)
+	// 決済方法 (クレジットカード)
 	// #############################################
 	// クレジットカード一覧取得
 	ListCards(ctx context.Context, customerID string) ([]*stripe.PaymentMethod, error)
@@ -43,10 +48,6 @@ type Client interface {
 	GetCard(ctx context.Context, customerID, paymentID string) (*stripe.PaymentMethod, error)
 	// クレジットカード登録用の一時トークンを発行
 	SetupCard(ctx context.Context, customerID string) (*stripe.SetupIntent, error)
-	// クレジットカード決済要求
-	OrderCard(ctx context.Context, in *OrderCardParams) (*stripe.PaymentIntent, error)
-	// クレジットカード決済要求(ゲストユーザー)
-	GuestOrderCard(ctx context.Context, in *OrderCardParams) (*stripe.PaymentIntent, error)
 }
 
 type Receiver interface {

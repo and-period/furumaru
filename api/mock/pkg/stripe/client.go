@@ -154,6 +154,21 @@ func (mr *MockClientMockRecorder) GetCustomer(ctx, customerID interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCustomer", reflect.TypeOf((*MockClient)(nil).GetCustomer), ctx, customerID)
 }
 
+// GuestOrder mocks base method.
+func (m *MockClient) GuestOrder(ctx context.Context, in *stripe.GuestOrderParams) (*stripe0.PaymentIntent, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GuestOrder", ctx, in)
+	ret0, _ := ret[0].(*stripe0.PaymentIntent)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GuestOrder indicates an expected call of GuestOrder.
+func (mr *MockClientMockRecorder) GuestOrder(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GuestOrder", reflect.TypeOf((*MockClient)(nil).GuestOrder), ctx, in)
+}
+
 // ListCards mocks base method.
 func (m *MockClient) ListCards(ctx context.Context, customerID string) ([]*stripe0.PaymentMethod, error) {
 	m.ctrl.T.Helper()
@@ -169,19 +184,19 @@ func (mr *MockClientMockRecorder) ListCards(ctx, customerID interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCards", reflect.TypeOf((*MockClient)(nil).ListCards), ctx, customerID)
 }
 
-// OrderCard mocks base method.
-func (m *MockClient) OrderCard(ctx context.Context, in *stripe.OrderCardParams) (*stripe0.PaymentIntent, error) {
+// Order mocks base method.
+func (m *MockClient) Order(ctx context.Context, in *stripe.OrderParams) (*stripe0.PaymentIntent, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "OrderCard", ctx, in)
+	ret := m.ctrl.Call(m, "Order", ctx, in)
 	ret0, _ := ret[0].(*stripe0.PaymentIntent)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// OrderCard indicates an expected call of OrderCard.
-func (mr *MockClientMockRecorder) OrderCard(ctx, in interface{}) *gomock.Call {
+// Order indicates an expected call of Order.
+func (mr *MockClientMockRecorder) Order(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OrderCard", reflect.TypeOf((*MockClient)(nil).OrderCard), ctx, in)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Order", reflect.TypeOf((*MockClient)(nil).Order), ctx, in)
 }
 
 // SetupCard mocks base method.
