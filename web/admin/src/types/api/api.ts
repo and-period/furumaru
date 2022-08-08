@@ -946,7 +946,7 @@ export interface CreateNotificationRequest {
    */
   body: string
   /**
-   * 掲載対象一覧(3つまで)
+   * 掲載対象一覧(3つまで,全部指定の際は1,2,3)
    * @type {Array<number>}
    * @memberof CreateNotificationRequest
    */
