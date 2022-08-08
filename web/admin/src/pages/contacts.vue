@@ -112,7 +112,7 @@ export default defineComponent({
           return ''
       }
     },
-    getPriority(priority: any){
+    getPriority(priority: any) {
       switch (priority) {
         case 1:
           return 'High'
@@ -136,7 +136,7 @@ export default defineComponent({
           return ''
       }
     },
-        getStatus(status: any){
+    getStatus(status: any) {
       switch (status) {
         case 1:
           return '未着手'
