@@ -10,6 +10,7 @@ import {
   ProductTypeApi,
   ProductTypesResponse,
 } from '~/types/api'
+import { ref } from '@nuxtjs/composition-api'
 
 export const useProductTypeStore = defineStore('ProductType', {
   state: () => ({
@@ -71,5 +72,38 @@ export const useProductTypeStore = defineStore('ProductType', {
         return Promise.reject(new Error('不明なエラーが発生しました。'))
       }
     },
+
+    async deleteProductType(categoryId: string, productTypeId: string): Promise<void> {
+      const commonStore = useCommonStore()
+      const errorMessage = ref<string>('')
+      try {
+        const authStore = useAuthStore()
+        const accessToken = authStore.accessToken
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
+        }
+
+        const factory = new ApiClientFactory()
+        const categoriesApiClient = factory.create(ProductTypeApi, accessToken)
+        await categoriesApiClient.v1DeleteProductType(categoryId, productTypeId)
+        commonStore.addSnackbar({
+          message: 'カテゴリー削除が完了しました',
+          color: 'info',
+        })
+      } catch (e) {
+        // TODO: エラーハンドリングは今後見直していく
+        if (e instanceof Error) {
+          errorMessage.value = e.message
+        } else {
+          errorMessage.value =
+            '不明なエラーが発生しました。お手数ですがご自身で入力してください。'
+      }
+    }
+    commonStore.addSnackbar({
+      message: errorMessage.value,
+      color: 'error',
+    })
+    this.fetchProductTypes()
   },
+},
 })

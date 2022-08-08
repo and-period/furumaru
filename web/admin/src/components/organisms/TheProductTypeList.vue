@@ -27,6 +27,7 @@ import { computed, defineComponent } from '@vue/composition-api'
 import { DataTableHeader } from 'vuetify'
 
 import { useProductTypeStore } from '~/store/product-type'
+import { ProductTypesResponseProductTypesInner } from '~/types/api'
 
 export default defineComponent({
   setup() {
@@ -52,6 +53,16 @@ export default defineComponent({
       },
     ]
 
+    const handleDelete = async (
+      item: ProductTypesResponseProductTypesInner
+    ) : Promise<void> => {
+      try {
+        await productTypeStore.deleteProductType(item.categoryId, item.id)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
     const { fetchState } = useFetch(async () => {
       try {
         await productTypeStore.fetchProductTypes()
@@ -64,6 +75,7 @@ export default defineComponent({
       productTypeHeaders,
       fetchState,
       productTypes,
+      handleDelete,
     }
   },
 })
