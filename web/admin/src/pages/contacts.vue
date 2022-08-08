@@ -3,15 +3,15 @@
     <v-card-title>お問い合わせ</v-card-title>
     <v-card>
       <v-card-text>
-        <v-data-table :headers="headers" :items="inquiries" :items-per-page="5">
+        <v-data-table :headers="headers" :items="contacts" :items-per-page="5">
           <template #[`item.priority`]="{ item }">
             <v-chip :color="getPriorityColor(item.priority)" dark>
-              {{ item.priority }}
+              {{ getPriority(item.priority) }}
             </v-chip>
           </template>
           <template #[`item.status`]="{ item }">
             <v-chip :color="getStatusColor(item.status)" dark>
-              {{ item.status }}
+              {{ getStatus(item.status) }}
             </v-chip>
           </template>
           <template #[`item.actions`]="{ item }">
@@ -60,57 +60,93 @@ export default defineComponent({
         sortable: false,
       },
     ]
-    const inquiries = [
+    const contacts = [
       {
         subject: '商品が届かない件について',
         mailAddress: 'and-period@gmail.com',
-        priority: 'High',
-        status: '未着手',
+        priority: 1,
+        status: 1,
         memo: '明日配送します',
         actions: 'あくしょん',
       },
       {
         subject: '商品が届かない件について',
         mailAddress: 'and-period@gmail.com',
-        priority: 'Middle',
-        status: '進行中',
+        priority: 2,
+        status: 2,
         memo: '明日配送します',
         actions: 'あくしょん',
       },
       {
         subject: '商品が届かない件について',
         mailAddress: 'and-period@gmail.com',
-        priority: 'Low',
-        status: '完了',
+        priority: 3,
+        status: 3,
         memo: '明日配送します',
         actions: 'あくしょん',
       },
       {
         subject: '商品が届かない件について',
         mailAddress: 'and-period@gmail.com',
-        priority: 'unknown',
-        status: '不明',
+        priority: 4,
+        status: 4,
         memo: '明日配送します',
         actions: 'あくしょん',
       },
     ]
     return {
       headers,
-      inquiries,
+      contacts,
     }
   },
   methods: {
-    getPriorityColor(priority: string) {
-      if (priority === 'High') return 'red'
-      else if (priority === 'Middle') return 'orange'
-      else if (priority === 'Low') return 'blue'
-      else return ''
+    getPriorityColor(priority: any) {
+      switch (priority) {
+        case 1:
+          return 'red'
+        case 2:
+          return 'orange'
+        case 3:
+          return 'blue'
+        default:
+          return ''
+      }
     },
-    getStatusColor(status: string) {
-      if (status === '未着手') return 'red'
-      else if (status === '進行中') return 'orange'
-      else if (status === '完了') return 'blue'
-      else return ''
+    getPriority(priority: any){
+      switch (priority) {
+        case 1:
+          return 'High'
+        case 2:
+          return 'Middle'
+        case 3:
+          return 'Low'
+        default:
+          return 'Unknown'
+      }
+    },
+    getStatusColor(status: any) {
+      switch (status) {
+        case 1:
+          return 'red'
+        case 2:
+          return 'orange'
+        case 3:
+          return 'blue'
+        default:
+          return ''
+      }
+    },
+        getStatus(status: any){
+      switch (status) {
+        case 1:
+          return '未着手'
+        case 2:
+          return '進行中'
+        case 3:
+          return '完了'
+        default:
+          return '不明'
+      }
     },
   },
 })
