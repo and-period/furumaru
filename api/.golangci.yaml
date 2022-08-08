@@ -50,6 +50,9 @@ linters-settings:
   funlen:
     lines: 100
     statements: 50
+  lll:
+    tabwidth: 2
+    maxlength: 140
 
 issues:
   exclude:
