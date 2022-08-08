@@ -122,7 +122,7 @@ export default defineComponent({
     }
 
     const getStatusColor = (status: any): string => {
-        switch (status) {
+      switch (status) {
         case 1:
           return 'red'
         case 2:
@@ -135,7 +135,7 @@ export default defineComponent({
     }
 
     const getStatus = (status: any): string => {
-        switch (status) {
+      switch (status) {
         case 1:
           return '未着手'
         case 2:
@@ -145,7 +145,7 @@ export default defineComponent({
         default:
           return '不明'
       }
-}
+    }
 
     return {
       headers,
