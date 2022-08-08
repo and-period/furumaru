@@ -52,7 +52,7 @@ linters-settings:
     statements: 50
   lll:
     tabwidth: 2
-    maxlength: 140
+    line-length: 140
 
 issues:
   exclude:
