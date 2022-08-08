@@ -94,13 +94,8 @@ export default defineComponent({
         actions: 'あくしょん',
       },
     ]
-    return {
-      headers,
-      contacts,
-    }
-  },
-  methods: {
-    getPriorityColor(priority: any) {
+
+    const getPriorityColor = (priority: any): string => {
       switch (priority) {
         case 1:
           return 'red'
@@ -111,8 +106,9 @@ export default defineComponent({
         default:
           return ''
       }
-    },
-    getPriority(priority: any) {
+    }
+
+    const getPriority = (priority: any): string => {
       switch (priority) {
         case 1:
           return 'High'
@@ -123,9 +119,10 @@ export default defineComponent({
         default:
           return 'Unknown'
       }
-    },
-    getStatusColor(status: any) {
-      switch (status) {
+    }
+
+    const getStatusColor = (status: any): string => {
+        switch (status) {
         case 1:
           return 'red'
         case 2:
@@ -135,9 +132,10 @@ export default defineComponent({
         default:
           return ''
       }
-    },
-    getStatus(status: any) {
-      switch (status) {
+    }
+
+    const getStatus = (status: any): string => {
+        switch (status) {
         case 1:
           return '未着手'
         case 2:
@@ -147,7 +145,16 @@ export default defineComponent({
         default:
           return '不明'
       }
-    },
+}
+
+    return {
+      headers,
+      contacts,
+      getPriority,
+      getPriorityColor,
+      getStatus,
+      getStatusColor,
+    }
   },
 })
 </script>
