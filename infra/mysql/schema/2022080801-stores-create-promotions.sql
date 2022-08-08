@@ -16,5 +16,4 @@ CREATE TABLE `stores`.`promotions` (
   PRIMARY KEY(`id`)
 ) ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX `ui_promotion_codes_code` ON `stores`.`promotion_codes` (`code` ASC) VISIBLE;
-
+CREATE UNIQUE INDEX `ui_promotions_code` ON `stores`.`promotions` (`code` ASC) VISIBLE;
