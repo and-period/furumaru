@@ -45,6 +45,9 @@ productResponse:
     itemDescription:
       type: string
       description: 数量単位説明
+    iconUrl:
+      type: string
+      description: アイコンURL
     media:
       type: array
       items:
@@ -114,6 +117,7 @@ productResponse:
   - weight
   - itemUnit
   - itemDescription
+  - iconUrl
   - media
   - price
   - deliveryType
@@ -141,6 +145,7 @@ productResponse:
     weight: 2.5
     itemUnit: '袋'
     itemDescription: '1袋あたり2.5kgのじゃがいも'
+    iconUrl: 'https://and-period.jp/icon.png'
     media:
     - url: 'https://and-period.jp/thumbnail01.png'
       isThumbnail: true
@@ -210,6 +215,9 @@ productsResponse:
           itemDescription:
             type: string
             description: 数量単位説明
+          iconUrl:
+            type: string
+            description: アイコンURL
           media:
             type: array
             items:
@@ -279,6 +287,7 @@ productsResponse:
         - weight
         - itemUnit
         - itemDescription
+        - iconUrl
         - media
         - price
         - deliveryType
@@ -314,6 +323,7 @@ productsResponse:
       weight: 2.5
       itemUnit: '袋'
       itemDescription: '1袋あたり2.5kgのじゃがいも'
+      iconUrl: 'https://and-period.jp/icon.png'
       media:
       - url: 'https://and-period.jp/thumbnail01.png'
         isThumbnail: true
@@ -344,6 +354,7 @@ productsResponse:
       weight: 2.5
       itemUnit: '袋'
       itemDescription: '1袋あたり2.5kgのじゃがいも'
+      iconUrl: 'https://and-period.jp/icon.png'
       media:
       - url: 'https://and-period.jp/thumbnail01.png'
         isThumbnail: true

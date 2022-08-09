@@ -7,6 +7,83 @@ import (
 	"gorm.io/datatypes"
 )
 
+func TestProduct(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		params *NewProductParams
+		expect *Product
+	}{
+		{
+			name: "success",
+			params: &NewProductParams{
+				TypeID:          "type-id",
+				CategoryID:      "category-id",
+				CoordinatorID:   "coordinator-id",
+				ProducerID:      "producer-id",
+				Name:            "新鮮なじゃがいも",
+				Description:     "新鮮なじゃがいもをお届けします。",
+				Public:          true,
+				Inventory:       100,
+				Weight:          100,
+				WeightUnit:      WeightUnitGram,
+				Item:            1,
+				ItemUnit:        "袋",
+				ItemDescription: "1袋あたり100gのじゃがいも",
+				IconURL:         "https://and-period.jp/icon.png",
+				Media: MultiProductMedia{
+					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+				},
+				Price:            400,
+				DeliveryType:     DeliveryTypeNormal,
+				Box60Rate:        50,
+				Box80Rate:        40,
+				Box100Rate:       30,
+				OriginPrefecture: "滋賀県",
+				OriginCity:       "彦根市",
+			},
+			expect: &Product{
+				TypeID:          "type-id",
+				CategoryID:      "category-id",
+				ProducerID:      "producer-id",
+				Name:            "新鮮なじゃがいも",
+				Description:     "新鮮なじゃがいもをお届けします。",
+				Public:          true,
+				Inventory:       100,
+				Weight:          100,
+				WeightUnit:      WeightUnitGram,
+				Item:            1,
+				ItemUnit:        "袋",
+				ItemDescription: "1袋あたり100gのじゃがいも",
+				IconURL:         "https://and-period.jp/icon.png",
+				Media: MultiProductMedia{
+					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+				},
+				Price:            400,
+				DeliveryType:     DeliveryTypeNormal,
+				Box60Rate:        50,
+				Box80Rate:        40,
+				Box100Rate:       30,
+				OriginPrefecture: "滋賀県",
+				OriginCity:       "彦根市",
+				CreatedBy:        "coordinator-id",
+				UpdatedBy:        "coordinator-id",
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewProduct(tt.params)
+			actual.ID = "" // ignore
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
 func TestProduct_Fill(t *testing.T) {
 	t.Parallel()
 

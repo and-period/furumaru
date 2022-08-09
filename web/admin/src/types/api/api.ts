@@ -1122,6 +1122,12 @@ export interface CreateProductRequest {
    */
   itemDescription: string
   /**
+   * アイコンURL
+   * @type {string}
+   * @memberof CreateProductRequest
+   */
+  iconUrl: string
+  /**
    * メディア一覧(8つまで)
    * @type {Array<ProductsResponseProductsInnerMediaInner>}
    * @memberof CreateProductRequest
@@ -1912,6 +1918,12 @@ export interface ProductResponse {
    */
   itemDescription: string
   /**
+   * アイコンURL
+   * @type {string}
+   * @memberof ProductResponse
+   */
+  iconUrl: string
+  /**
    *
    * @type {Array<ProductsResponseProductsInnerMediaInner>}
    * @memberof ProductResponse
@@ -2198,6 +2210,12 @@ export interface ProductsResponseProductsInner {
    * @memberof ProductsResponseProductsInner
    */
   itemDescription: string
+  /**
+   * アイコンURL
+   * @type {string}
+   * @memberof ProductsResponseProductsInner
+   */
+  iconUrl: string
   /**
    *
    * @type {Array<ProductsResponseProductsInnerMediaInner>}
@@ -2978,6 +2996,12 @@ export interface UpdateProductRequest {
    * @memberof UpdateProductRequest
    */
   itemDescription: string
+  /**
+   * アイコンURL
+   * @type {string}
+   * @memberof UpdateProductRequest
+   */
+  iconUrl: string
   /**
    * メディア一覧(8つまで)
    * @type {Array<ProductsResponseProductsInnerMediaInner>}
