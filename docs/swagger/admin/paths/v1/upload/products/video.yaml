@@ -1,0 +1,29 @@
+post:
+  summary: 商品動画アップロード
+  operationId: v1UploadProductVideo
+  tags:
+  - Product
+  security:
+  - BearerAuth: []
+  requestBody:
+    required: true
+    content:
+      multipart/form-data:
+        schema:
+          $ref: '../../../../openapi.yaml#/components/schemas/v1UploadProductVideoRequest'
+        encoding:
+          thumbnail:
+            contentType: video/mp4
+  responses:
+    200:
+      description: A successful response.
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../openapi.yaml#/components/schemas/v1UploadVideoResponse'
+    400:
+      description: bad request error
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'

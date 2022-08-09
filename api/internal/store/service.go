@@ -53,4 +53,14 @@ type Service interface {
 	UpdateProduct(ctx context.Context, in *UpdateProductInput) error
 	// 商品削除
 	DeleteProduct(ctx context.Context, in *DeleteProductInput) error
+	// プロモーション一覧取得
+	ListPromotions(ctx context.Context, in *ListPromotionsInput) (entity.Promotions, int64, error)
+	// プロモーション取得
+	GetPromotion(ctx context.Context, in *GetPromotionInput) (*entity.Promotion, error)
+	// プロモーション登録
+	CreatePromotion(ctx context.Context, in *CreatePromotionInput) (*entity.Promotion, error)
+	// プロモーション更新
+	UpdatePromotion(ctx context.Context, in *UpdatePromotionInput) error
+	// プロモーション削除
+	DeletePromotion(ctx context.Context, in *DeletePromotionInput) error
 }

@@ -8,3 +8,13 @@ uploadImageResponse:
   - url
   example:
     url: 'https://and-period.jp/image.png'
+uploadVideoResponse:
+  type: object
+  properties:
+    url:
+      type: string
+      description: 動画アップロード先URL
+  required:
+  - url
+  example:
+    url: 'https://and-period.jp/image.mp4'
