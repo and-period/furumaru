@@ -55,7 +55,7 @@ export default defineComponent({
 
     const handleDelete = async (
       item: ProductTypesResponseProductTypesInner
-    ) : Promise<void> => {
+    ): Promise<void> => {
       try {
         await productTypeStore.deleteProductType(item.categoryId, item.id)
       } catch (error) {

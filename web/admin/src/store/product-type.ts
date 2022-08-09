@@ -1,3 +1,4 @@
+import { ref } from '@nuxtjs/composition-api'
 import { defineStore } from 'pinia'
 
 import ApiClientFactory from '../plugins/factory'
@@ -10,7 +11,6 @@ import {
   ProductTypeApi,
   ProductTypesResponse,
 } from '~/types/api'
-import { ref } from '@nuxtjs/composition-api'
 
 export const useProductTypeStore = defineStore('ProductType', {
   state: () => ({
@@ -73,7 +73,10 @@ export const useProductTypeStore = defineStore('ProductType', {
       }
     },
 
-    async deleteProductType(categoryId: string, productTypeId: string): Promise<void> {
+    async deleteProductType(
+      categoryId: string,
+      productTypeId: string
+    ): Promise<void> {
       const commonStore = useCommonStore()
       const errorMessage = ref<string>('')
       try {
@@ -97,13 +100,13 @@ export const useProductTypeStore = defineStore('ProductType', {
         } else {
           errorMessage.value =
             '不明なエラーが発生しました。お手数ですがご自身で入力してください。'
+        }
       }
-    }
-    commonStore.addSnackbar({
-      message: errorMessage.value,
-      color: 'error',
-    })
-    this.fetchProductTypes()
+      commonStore.addSnackbar({
+        message: errorMessage.value,
+        color: 'error',
+      })
+      this.fetchProductTypes()
+    },
   },
-},
 })
