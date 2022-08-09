@@ -1,6 +1,10 @@
 package store
 
-import "github.com/and-period/furumaru/api/internal/store/entity"
+import (
+	"time"
+
+	"github.com/and-period/furumaru/api/internal/store/entity"
+)
 
 type ListCategoriesInput struct {
 	Name   string                 `validate:"omitempty,max=32"`
@@ -211,4 +215,50 @@ type UpdateProductMedia struct {
 
 type DeleteProductInput struct {
 	ProductID string `validate:"required"`
+}
+
+type ListPromotionsInput struct {
+	Limit  int64                  `validate:"required,max=200"`
+	Offset int64                  `validate:"min=0"`
+	Orders []*ListPromotionsOrder `validate:"omitempty,dive,required"`
+}
+
+type ListPromotionsOrder struct {
+	Key        entity.PromotionOrderBy `validate:"required"`
+	OrderByASC bool                    `validate:""`
+}
+
+type GetPromotionInput struct {
+	PromotionID string `validate:"required"`
+}
+
+type CreatePromotionInput struct {
+	Title        string                   `validate:"required,max=64"`
+	Description  string                   `validate:"required,max=2000"`
+	Public       bool                     `validate:""`
+	PublishedAt  time.Time                `validate:"required"`
+	DiscountType entity.DiscountType      `validate:"required,oneof=1 2 3"`
+	DiscountRate int64                    `validate:"min=0"`
+	Code         string                   `validate:"len=8"`
+	CodeType     entity.PromotionCodeType `validate:"required,oneof=1 2"`
+	StartAt      time.Time                `validate:"required"`
+	EndAt        time.Time                `validate:"required"`
+}
+
+type UpdatePromotionInput struct {
+	PromotionID  string                   `validate:"required"`
+	Title        string                   `validate:"required,max=64"`
+	Description  string                   `validate:"required,max=2000"`
+	Public       bool                     `validate:""`
+	PublishedAt  time.Time                `validate:"required"`
+	DiscountType entity.DiscountType      `validate:"required,oneof=1 2 3"`
+	DiscountRate int64                    `validate:"min=0"`
+	Code         string                   `validate:"len=8"`
+	CodeType     entity.PromotionCodeType `validate:"required,oneof=1 2"`
+	StartAt      time.Time                `validate:"required"`
+	EndAt        time.Time                `validate:"required"`
+}
+
+type DeletePromotionInput struct {
+	PromotionID string `validate:"required"`
 }

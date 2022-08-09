@@ -21,14 +21,16 @@ tags:
   description: 品目関連
 - name: Product
   description: 商品関連
+- name: Shipping
+  description: 配送設定関連
+- name: Promotion
+  description: プロモーション関連
 - name: Contact
   description: お問い合わせ関連
 - name: Notification
   description: お知らせ関連
 - name: Message
   description: メッセージ関連
-- name: Shipping
-  description: 配送設定関連
 paths:
   # Auth
   /v1/auth:
@@ -84,6 +86,16 @@ paths:
     $ref: './paths/v1/products/index.yaml'
   /v1/products/{productId}:
     $ref: './paths/v1/products/_productId/index.yaml'
+  # Shipping
+  /v1/shippings:
+    $ref: './paths/v1/shippings/index.yaml'
+  /v1/shippings/{shippingId}:
+    $ref: './paths/v1/shippings/_shippingId/index.yaml'
+  # Promotion
+  /v1/promotions:
+    $ref: './paths/v1/promotions/index.yaml'
+  /v1/promotions/{promotionId}:
+    $ref: './paths/v1/promotions/_promotionId/index.yaml'
   # Contact
   /v1/contacts:
     $ref: './paths/v1/contacts/index.yaml'
@@ -97,11 +109,6 @@ paths:
     $ref: './paths/v1/messages/index.yaml'
   /v1/messages/{messageId}:
     $ref: './paths/v1/messages/_messageId/index.yaml'
-  # Shipping
-  /v1/shippings:
-    $ref: './paths/v1/shippings/index.yaml'
-  /v1/shippings/{shippingId}:
-    $ref: './paths/v1/shippings/_shippingId/index.yaml'
   # Upload
   /v1/upload/coordinators/header:
     $ref: './paths/v1/upload/coordinators/header.yaml'
@@ -163,14 +170,18 @@ components:
       $ref: './components/schemas/v1/product.request.yaml#/createProductRequest'
     v1UpdateProductRequest:
       $ref: './components/schemas/v1/product.request.yaml#/updateProductRequest'
-    v1UpdateContactRequest:
-      $ref: './components/schemas/v1/contact.request.yaml#/updateContactRequest'
-    v1CreateNotificationRequest:
-      $ref: './components/schemas/v1/notification.request.yaml#/createNotificationRequest'
     v1CreateShippingRequest:
       $ref: './components/schemas/v1/shipping.request.yaml#/createShippingRequest'
     v1UpdateShippingRequest:
       $ref: './components/schemas/v1/shipping.request.yaml#/updateShippingRequest'
+    v1CreatePromotionRequest:
+      $ref: './components/schemas/v1/promotion.request.yaml#/createPromotionRequest'
+    v1UpdatePromotionRequest:
+      $ref: './components/schemas/v1/promotion.request.yaml#/updatePromotionRequest'
+    v1UpdateContactRequest:
+      $ref: './components/schemas/v1/contact.request.yaml#/updateContactRequest'
+    v1CreateNotificationRequest:
+      $ref: './components/schemas/v1/notification.request.yaml#/createNotificationRequest'
     v1UploadCoordinatorThumbnailRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadCoordinatorThumbnailRequest'
     v1UploadCoordinatorHeaderRequest:
@@ -206,6 +217,14 @@ components:
       $ref: './components/schemas/v1/product.response.yaml#/productResponse'
     v1ProductsResponse:
       $ref: './components/schemas/v1/product.response.yaml#/productsResponse'
+    v1ShippingResponse:
+      $ref: './components/schemas/v1/shipping.response.yaml#/shippingResponse'
+    v1ShippingsResponse:
+      $ref: './components/schemas/v1/shipping.response.yaml#/shippingsResponse'
+    v1PromotionResponse:
+      $ref: './components/schemas/v1/promotion.response.yaml#/promotionResponse'
+    v1PromotionsResponse:
+      $ref: './components/schemas/v1/promotion.response.yaml#/promotionsResponse'
     v1ContactResponse:
       $ref: './components/schemas/v1/contact.response.yaml#/contactResponse'
     v1ContactsResponse:
@@ -216,9 +235,5 @@ components:
       $ref: './components/schemas/v1/message.response.yaml#/messageResponse'
     v1MessagesResponse:
       $ref: './components/schemas/v1/message.response.yaml#/messagesResponse'
-    v1ShippingResponse:
-      $ref: './components/schemas/v1/shipping.response.yaml#/shippingResponse'
-    v1ShippingsResponse:
-      $ref: './components/schemas/v1/shipping.response.yaml#/shippingsResponse'
     v1UploadImageResponse:
       $ref: './components/schemas/v1/upload.response.yaml#/uploadImageResponse'

@@ -1186,6 +1186,67 @@ export interface CreateProductTypeRequest {
 /**
  *
  * @export
+ * @interface CreatePromotionRequest
+ */
+export interface CreatePromotionRequest {
+  /**
+   * タイトル(200文字まで)
+   * @type {string}
+   * @memberof CreatePromotionRequest
+   */
+  title: string
+  /**
+   * 説明(2000文字まで)
+   * @type {string}
+   * @memberof CreatePromotionRequest
+   */
+  description: string
+  /**
+   * 公開フラグ
+   * @type {boolean}
+   * @memberof CreatePromotionRequest
+   */
+  public: boolean
+  /**
+   * 公開日時(unixtime)
+   * @type {number}
+   * @memberof CreatePromotionRequest
+   */
+  publishedAt: number
+  /**
+   * 割引方法(1:固定額(円),2:料率計算(%),3:送料無料)
+   * @type {number}
+   * @memberof CreatePromotionRequest
+   */
+  discountType: number
+  /**
+   * 割引額(単位:円/%,0以上)
+   * @type {number}
+   * @memberof CreatePromotionRequest
+   */
+  discountRate: number
+  /**
+   * クーポンコード(8文字,使用可能文字:半角英数字)
+   * @type {string}
+   * @memberof CreatePromotionRequest
+   */
+  code: string
+  /**
+   * クーポン利用可能開始日時(unixtime)
+   * @type {number}
+   * @memberof CreatePromotionRequest
+   */
+  startAt: number
+  /**
+   * クーポン利用可能終了日時(unixtime)
+   * @type {number}
+   * @memberof CreatePromotionRequest
+   */
+  endAt: number
+}
+/**
+ *
+ * @export
  * @interface CreateShippingRate
  */
 export interface CreateShippingRate {
@@ -2293,6 +2354,183 @@ export interface ProductsResponseProductsInnerMediaInner {
 /**
  *
  * @export
+ * @interface PromotionResponse
+ */
+export interface PromotionResponse {
+  /**
+   * プロモーションID
+   * @type {string}
+   * @memberof PromotionResponse
+   */
+  id: string
+  /**
+   * タイトル
+   * @type {string}
+   * @memberof PromotionResponse
+   */
+  title: string
+  /**
+   * 詳細説明
+   * @type {string}
+   * @memberof PromotionResponse
+   */
+  description: string
+  /**
+   * 公開フラグ
+   * @type {boolean}
+   * @memberof PromotionResponse
+   */
+  public: boolean
+  /**
+   * 公開フラグ
+   * @type {number}
+   * @memberof PromotionResponse
+   */
+  publishedAt: number
+  /**
+   * 割引方法(1:固定額(円),2:料率計算(%),3:送料無料)
+   * @type {number}
+   * @memberof PromotionResponse
+   */
+  discountType: number
+  /**
+   * 割引額(単位:円/%)
+   * @type {number}
+   * @memberof PromotionResponse
+   */
+  discountRate: number
+  /**
+   * クーポンコード
+   * @type {string}
+   * @memberof PromotionResponse
+   */
+  code: string
+  /**
+   * クーポン利用可能開始日時(unixtime)
+   * @type {number}
+   * @memberof PromotionResponse
+   */
+  startAt: number
+  /**
+   * クーポン利用可能終了日時(unixtime)
+   * @type {number}
+   * @memberof PromotionResponse
+   */
+  endAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof PromotionResponse
+   */
+  createdAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof PromotionResponse
+   */
+  updatedAt: number
+}
+/**
+ *
+ * @export
+ * @interface PromotionsResponse
+ */
+export interface PromotionsResponse {
+  /**
+   * プロモーション一覧
+   * @type {Array<PromotionsResponsePromotionsInner>}
+   * @memberof PromotionsResponse
+   */
+  promotions: Array<PromotionsResponsePromotionsInner>
+  /**
+   * 合計数
+   * @type {number}
+   * @memberof PromotionsResponse
+   */
+  total: number
+}
+/**
+ *
+ * @export
+ * @interface PromotionsResponsePromotionsInner
+ */
+export interface PromotionsResponsePromotionsInner {
+  /**
+   * プロモーションID
+   * @type {string}
+   * @memberof PromotionsResponsePromotionsInner
+   */
+  id: string
+  /**
+   * タイトル
+   * @type {string}
+   * @memberof PromotionsResponsePromotionsInner
+   */
+  title: string
+  /**
+   * 詳細説明
+   * @type {string}
+   * @memberof PromotionsResponsePromotionsInner
+   */
+  description: string
+  /**
+   * 公開フラグ
+   * @type {boolean}
+   * @memberof PromotionsResponsePromotionsInner
+   */
+  public: boolean
+  /**
+   * 公開フラグ
+   * @type {number}
+   * @memberof PromotionsResponsePromotionsInner
+   */
+  publishedAt: number
+  /**
+   * 割引方法(1:固定額(円),2:料率計算(%),3:送料無料)
+   * @type {number}
+   * @memberof PromotionsResponsePromotionsInner
+   */
+  discountType: number
+  /**
+   * 割引額(単位:円/%)
+   * @type {number}
+   * @memberof PromotionsResponsePromotionsInner
+   */
+  discountRate: number
+  /**
+   * クーポンコード
+   * @type {string}
+   * @memberof PromotionsResponsePromotionsInner
+   */
+  code: string
+  /**
+   * クーポン利用可能開始日時(unixtime)
+   * @type {number}
+   * @memberof PromotionsResponsePromotionsInner
+   */
+  startAt: number
+  /**
+   * クーポン利用可能終了日時(unixtime)
+   * @type {number}
+   * @memberof PromotionsResponsePromotionsInner
+   */
+  endAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof PromotionsResponsePromotionsInner
+   */
+  createdAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof PromotionsResponsePromotionsInner
+   */
+  updatedAt: number
+}
+/**
+ *
+ * @export
  * @interface RefreshAuthTokenRequest
  */
 export interface RefreshAuthTokenRequest {
@@ -3039,6 +3277,67 @@ export interface UpdateProductTypeRequest {
    * @memberof UpdateProductTypeRequest
    */
   name: string
+}
+/**
+ *
+ * @export
+ * @interface UpdatePromotionRequest
+ */
+export interface UpdatePromotionRequest {
+  /**
+   * タイトル(200文字まで)
+   * @type {string}
+   * @memberof UpdatePromotionRequest
+   */
+  title: string
+  /**
+   * 説明(2000文字まで)
+   * @type {string}
+   * @memberof UpdatePromotionRequest
+   */
+  description: string
+  /**
+   * 公開フラグ
+   * @type {boolean}
+   * @memberof UpdatePromotionRequest
+   */
+  public: boolean
+  /**
+   * 公開日時(unixtime)
+   * @type {number}
+   * @memberof UpdatePromotionRequest
+   */
+  publishedAt: number
+  /**
+   * 割引方法(1:固定額(円),2:料率計算(%),3:送料無料)
+   * @type {number}
+   * @memberof UpdatePromotionRequest
+   */
+  discountType: number
+  /**
+   * 割引額(単位:円/%,0以上)
+   * @type {number}
+   * @memberof UpdatePromotionRequest
+   */
+  discountRate: number
+  /**
+   * クーポンコード(8文字,使用可能文字:半角英数字,公開日時より前の場合のみ変更可能)
+   * @type {string}
+   * @memberof UpdatePromotionRequest
+   */
+  code: string
+  /**
+   * クーポン利用可能開始日時(unixtime)
+   * @type {number}
+   * @memberof UpdatePromotionRequest
+   */
+  startAt: number
+  /**
+   * クーポン利用可能終了日時(unixtime)
+   * @type {number}
+   * @memberof UpdatePromotionRequest
+   */
+  endAt: number
 }
 /**
  *
@@ -9326,6 +9625,627 @@ export class ProductTypeApi extends BaseAPI {
   ) {
     return ProductTypeApiFp(this.configuration)
       .v1UpdateProductType(categoryId, productTypeId, body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * PromotionApi - axios parameter creator
+ * @export
+ */
+export const PromotionApiAxiosParamCreator = function (
+  configuration?: Configuration
+) {
+  return {
+    /**
+     *
+     * @summary プロモーション登録
+     * @param {CreatePromotionRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1CreatePromotion: async (
+      body: CreatePromotionRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1CreatePromotion', 'body', body)
+      const localVarPath = `/v1/promotions`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'POST',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary プロモーション削除
+     * @param {string} promotionId 商品ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1DeletePromotion: async (
+      promotionId: string,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'promotionId' is not null or undefined
+      assertParamExists('v1DeletePromotion', 'promotionId', promotionId)
+      const localVarPath = `/v1/promotions/{promotionId}`.replace(
+        `{${'promotionId'}}`,
+        encodeURIComponent(String(promotionId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'DELETE',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary プロモーション取得
+     * @param {string} promotionId プロモーションID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1GetPromotion: async (
+      promotionId: string,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'promotionId' is not null or undefined
+      assertParamExists('v1GetPromotion', 'promotionId', promotionId)
+      const localVarPath = `/v1/promotions/{promotionId}`.replace(
+        `{${'promotionId'}}`,
+        encodeURIComponent(String(promotionId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary プロモーション一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:title,public,publishedAt,startAt,endAt,createdAt,updatedAt
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1ListPromotions: async (
+      limit?: number,
+      offset?: number,
+      orders?: string,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/v1/promotions`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (limit !== undefined) {
+        localVarQueryParameter['limit'] = limit
+      }
+
+      if (offset !== undefined) {
+        localVarQueryParameter['offset'] = offset
+      }
+
+      if (orders !== undefined) {
+        localVarQueryParameter['orders'] = orders
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary プロモーション更新
+     * @param {string} promotionId 商品ID
+     * @param {UpdatePromotionRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdatePromotion: async (
+      promotionId: string,
+      body: UpdatePromotionRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'promotionId' is not null or undefined
+      assertParamExists('v1UpdatePromotion', 'promotionId', promotionId)
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1UpdatePromotion', 'body', body)
+      const localVarPath = `/v1/promotions/{promotionId}`.replace(
+        `{${'promotionId'}}`,
+        encodeURIComponent(String(promotionId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * PromotionApi - functional programming interface
+ * @export
+ */
+export const PromotionApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = PromotionApiAxiosParamCreator(configuration)
+  return {
+    /**
+     *
+     * @summary プロモーション登録
+     * @param {CreatePromotionRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1CreatePromotion(
+      body: CreatePromotionRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<PromotionResponse>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1CreatePromotion(body, options)
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary プロモーション削除
+     * @param {string} promotionId 商品ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1DeletePromotion(
+      promotionId: string,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1DeletePromotion(promotionId, options)
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary プロモーション取得
+     * @param {string} promotionId プロモーションID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1GetPromotion(
+      promotionId: string,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<PromotionResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetPromotion(
+        promotionId,
+        options
+      )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary プロモーション一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:title,public,publishedAt,startAt,endAt,createdAt,updatedAt
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1ListPromotions(
+      limit?: number,
+      offset?: number,
+      orders?: string,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<PromotionsResponse>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1ListPromotions(
+          limit,
+          offset,
+          orders,
+          options
+        )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary プロモーション更新
+     * @param {string} promotionId 商品ID
+     * @param {UpdatePromotionRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UpdatePromotion(
+      promotionId: string,
+      body: UpdatePromotionRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1UpdatePromotion(
+          promotionId,
+          body,
+          options
+        )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+  }
+}
+
+/**
+ * PromotionApi - factory interface
+ * @export
+ */
+export const PromotionApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance
+) {
+  const localVarFp = PromotionApiFp(configuration)
+  return {
+    /**
+     *
+     * @summary プロモーション登録
+     * @param {CreatePromotionRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1CreatePromotion(
+      body: CreatePromotionRequest,
+      options?: any
+    ): AxiosPromise<PromotionResponse> {
+      return localVarFp
+        .v1CreatePromotion(body, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary プロモーション削除
+     * @param {string} promotionId 商品ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1DeletePromotion(
+      promotionId: string,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1DeletePromotion(promotionId, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary プロモーション取得
+     * @param {string} promotionId プロモーションID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1GetPromotion(
+      promotionId: string,
+      options?: any
+    ): AxiosPromise<PromotionResponse> {
+      return localVarFp
+        .v1GetPromotion(promotionId, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary プロモーション一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:title,public,publishedAt,startAt,endAt,createdAt,updatedAt
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1ListPromotions(
+      limit?: number,
+      offset?: number,
+      orders?: string,
+      options?: any
+    ): AxiosPromise<PromotionsResponse> {
+      return localVarFp
+        .v1ListPromotions(limit, offset, orders, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary プロモーション更新
+     * @param {string} promotionId 商品ID
+     * @param {UpdatePromotionRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdatePromotion(
+      promotionId: string,
+      body: UpdatePromotionRequest,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1UpdatePromotion(promotionId, body, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * PromotionApi - object-oriented interface
+ * @export
+ * @class PromotionApi
+ * @extends {BaseAPI}
+ */
+export class PromotionApi extends BaseAPI {
+  /**
+   *
+   * @summary プロモーション登録
+   * @param {CreatePromotionRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof PromotionApi
+   */
+  public v1CreatePromotion(
+    body: CreatePromotionRequest,
+    options?: AxiosRequestConfig
+  ) {
+    return PromotionApiFp(this.configuration)
+      .v1CreatePromotion(body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary プロモーション削除
+   * @param {string} promotionId 商品ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof PromotionApi
+   */
+  public v1DeletePromotion(promotionId: string, options?: AxiosRequestConfig) {
+    return PromotionApiFp(this.configuration)
+      .v1DeletePromotion(promotionId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary プロモーション取得
+   * @param {string} promotionId プロモーションID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof PromotionApi
+   */
+  public v1GetPromotion(promotionId: string, options?: AxiosRequestConfig) {
+    return PromotionApiFp(this.configuration)
+      .v1GetPromotion(promotionId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary プロモーション一覧取得
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
+   * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:title,public,publishedAt,startAt,endAt,createdAt,updatedAt
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof PromotionApi
+   */
+  public v1ListPromotions(
+    limit?: number,
+    offset?: number,
+    orders?: string,
+    options?: AxiosRequestConfig
+  ) {
+    return PromotionApiFp(this.configuration)
+      .v1ListPromotions(limit, offset, orders, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary プロモーション更新
+   * @param {string} promotionId 商品ID
+   * @param {UpdatePromotionRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof PromotionApi
+   */
+  public v1UpdatePromotion(
+    promotionId: string,
+    body: UpdatePromotionRequest,
+    options?: AxiosRequestConfig
+  ) {
+    return PromotionApiFp(this.configuration)
+      .v1UpdatePromotion(promotionId, body, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

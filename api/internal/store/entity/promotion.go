@@ -13,9 +13,10 @@ var errInvalidDiscount = errors.New("entity: invalid discount value")
 type DiscountType int32
 
 const (
-	DiscountTypeUnknown DiscountType = 0
-	DiscountTypeAmount  DiscountType = 1 // 固定額(円)
-	DiscountTypeRate    DiscountType = 2 // 料率計算(%)
+	DiscountTypeUnknown      DiscountType = 0
+	DiscountTypeAmount       DiscountType = 1 // 固定額(円)
+	DiscountTypeRate         DiscountType = 2 // 料率計算(%)
+	DiscountTypeFreeShipping DiscountType = 3 // 送料無料
 )
 
 // PromotionCodeType - プロモーションコード種別
@@ -27,6 +28,18 @@ const (
 	PromotionCodeTypeAlways  PromotionCodeType = 2 // 期間内回数無制限
 )
 
+type PromotionOrderBy string
+
+const (
+	PromotionOrderByTitle       PromotionOrderBy = "title"
+	PromotionOrderByPublic      PromotionOrderBy = "public"
+	PromotionOrderByPublishedAt PromotionOrderBy = "published_at"
+	PromotionOrderByStartAt     PromotionOrderBy = "start_at"
+	PromotionOrderByEndAt       PromotionOrderBy = "end_at"
+	PromotionOrderByCreatedAt   PromotionOrderBy = "created_at"
+	PromotionOrderByUpdatedAt   PromotionOrderBy = "updated_at"
+)
+
 // Promotion - プロモーション情報
 type Promotion struct {
 	ID           string            `gorm:"primaryKey;<-:create"` // プロモーションID
@@ -36,13 +49,15 @@ type Promotion struct {
 	PublishedAt  time.Time         `gorm:""`                     // 公開日時
 	DiscountType DiscountType      `gorm:""`                     // 割引計算方法
 	DiscountRate int64             `gorm:""`                     // 割引額(%/円)
-	Code         string            `gorm:""`                     // クーポンコード
-	CodeType     PromotionCodeType `gorm:""`                     // クーポンコード種別
+	Code         string            `gorm:"<-:create"`            // クーポンコード
+	CodeType     PromotionCodeType `gorm:"<-:create"`            // クーポンコード種別
 	StartAt      time.Time         `gorm:""`                     // クーポン使用可能日時(開始)
 	EndAt        time.Time         `gorm:""`                     // クーポン使用可能日時(終了)
-	CreatedAt    time.Time         `gorm:""`                     // 登録日時
+	CreatedAt    time.Time         `gorm:"<-:create"`            // 登録日時
 	UpdatedAt    time.Time         `gorm:""`                     // 更新日時
 }
+
+type Promotions []*Promotion
 
 type NewPromotionParams struct {
 	Title        string
@@ -83,6 +98,8 @@ func (p *Promotion) Validate() error {
 		if p.DiscountRate <= 0 || p.DiscountRate > 100 {
 			return errInvalidDiscount
 		}
+	case DiscountTypeFreeShipping:
+		p.DiscountRate = 0
 	}
 	return nil
 }

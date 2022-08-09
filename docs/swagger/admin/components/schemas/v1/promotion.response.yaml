@@ -1,0 +1,171 @@
+promotionResponse:
+  type: object
+  properties:
+    id:
+      type: string
+      description: プロモーションID
+    title:
+      type: string
+      description: タイトル
+    description:
+      type: string
+      description: 詳細説明
+    public:
+      type: boolean
+      description: 公開フラグ
+    publishedAt:
+      type: integer
+      format: int64
+      description: 公開フラグ
+    discountType:
+      type: integer
+      format: int32
+      description: 割引方法(1:固定額(円),2:料率計算(%),3:送料無料)
+    discountRate:
+      type: integer
+      format: int64
+      description: 割引額(単位:円/%)
+    code:
+      type: string
+      description: クーポンコード
+    startAt:
+      type: integer
+      format: int64
+      description: クーポン利用可能開始日時(unixtime)
+    endAt:
+      type: integer
+      format: int64
+      description: クーポン利用可能終了日時(unixtime)
+    createdAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
+    updatedAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
+  required:
+  - id
+  - title
+  - description
+  - public
+  - publishedAt
+  - discountType
+  - discountRate
+  - code
+  - startAt
+  - endAt
+  - createdAt
+  - updatedAt
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    title: 'プロモーションタイトル'
+    description: 'セール情報をお届けします。'
+    public: true
+    publishedAt: 1640962800
+    discountType: 1
+    discountRate: 300
+    code: 'code1234'
+    startAt: 1640962800
+    endAt: 1640962800
+    createdAt: 1640962800
+    updatedAt: 1640962800
+promotionsResponse:
+  type: object
+  properties:
+    promotions:
+      type: array
+      description: プロモーション一覧
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            description: プロモーションID
+          title:
+            type: string
+            description: タイトル
+          description:
+            type: string
+            description: 詳細説明
+          public:
+            type: boolean
+            description: 公開フラグ
+          publishedAt:
+            type: integer
+            format: int64
+            description: 公開フラグ
+          discountType:
+            type: integer
+            format: int32
+            description: 割引方法(1:固定額(円),2:料率計算(%),3:送料無料)
+          discountRate:
+            type: integer
+            format: int64
+            description: 割引額(単位:円/%)
+          code:
+            type: string
+            description: クーポンコード
+          startAt:
+            type: integer
+            format: int64
+            description: クーポン利用可能開始日時(unixtime)
+          endAt:
+            type: integer
+            format: int64
+            description: クーポン利用可能終了日時(unixtime)
+          createdAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+          updatedAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+        required:
+        - id
+        - title
+        - description
+        - public
+        - publishedAt
+        - discountType
+        - discountRate
+        - code
+        - startAt
+        - endAt
+        - createdAt
+        - updatedAt
+    total:
+      type: integer
+      format: int64
+      description: 合計数
+  required:
+  - promotions
+  - total
+  example:
+    promotions:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      title: 'プロモーションタイトル'
+      description: 'セール情報をお届けします。'
+      public: true
+      publishedAt: 1640962800
+      discountType: 1
+      discountRate: 300
+      code: 'code1234'
+      startAt: 1640962800
+      endAt: 1640962800
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      title: 'プロモーションタイトル'
+      description: 'セール情報をお届けします。'
+      public: true
+      publishedAt: 1640962800
+      discountType: 1
+      discountRate: 300
+      code: 'code1234'
+      startAt: 1640962800
+      endAt: 1640962800
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    total: 2
