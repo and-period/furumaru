@@ -29,6 +29,9 @@ func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 	arg.POST("/coordinators/header", h.uploadCoordinatorHeader)
 	arg.POST("/producers/thumbnail", h.uploadProducerThumbnail)
 	arg.POST("/producers/header", h.uploadProducerHeader)
+	arg.POST("/products/icon", h.uploadProductIcon)
+	arg.POST("/products/image", h.uploadProductImage)
+	arg.POST("/products/video", h.uploadProductVideo)
 }
 
 func (h *handler) uploadCoordinatorThumbnail(ctx *gin.Context) {
@@ -67,6 +70,36 @@ func (h *handler) uploadProducerHeader(ctx *gin.Context) {
 		filename: "image",
 		maxSize:  10 << 20, // 10MB
 		formats:  []string{"image/png", "image/jpeg"},
+	}
+	h.upload(ctx, reg)
+}
+
+func (h *handler) uploadProductIcon(ctx *gin.Context) {
+	reg := &uploadRegulation{
+		dir:      "products/icon",
+		filename: "icon",
+		maxSize:  10 << 20, // 10MB
+		formats:  []string{"image/png", "image/jpeg"},
+	}
+	h.upload(ctx, reg)
+}
+
+func (h *handler) uploadProductImage(ctx *gin.Context) {
+	reg := &uploadRegulation{
+		dir:      "products/image",
+		filename: "image",
+		maxSize:  10 << 20, // 10MB
+		formats:  []string{"image/png", "image/jpeg"},
+	}
+	h.upload(ctx, reg)
+}
+
+func (h *handler) uploadProductVideo(ctx *gin.Context) {
+	reg := &uploadRegulation{
+		dir:      "products/video",
+		filename: "video",
+		maxSize:  20 << 20, // 20MB
+		formats:  []string{"video/mp4"},
 	}
 	h.upload(ctx, reg)
 }

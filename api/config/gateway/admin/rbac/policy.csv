@@ -31,6 +31,7 @@ p, product_list, /v1/products, GET, allow
 p, product_get, /v1/products/*, GET, allow
 p, product_create, /v1/products, POST, allow
 p, product_update, /v1/products/*, PATCH, allow
+p, product_uploader, /v1/upload/products/*, POST, allow
 p, promotion_list, /v1/promotions, GET, allow
 p, promotion_get, /v1/promotions/*, GET, allow
 p, promotion_create, /v1/promotions, POST, allow
@@ -101,6 +102,7 @@ g, coordinator, product_list
 g, coordinator, product_get
 g, coordinator, product_create
 g, coordinator, product_update
+g, coordinator, product_uploader
 g, coordinator, promotion_list
 g, coordinator, promotion_get
 g, coordinator, promotion_create

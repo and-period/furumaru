@@ -1,0 +1,29 @@
+post:
+  summary: 商品画像アップロード
+  operationId: v1UploadProductImage
+  tags:
+  - Product
+  security:
+  - BearerAuth: []
+  requestBody:
+    required: true
+    content:
+      multipart/form-data:
+        schema:
+          $ref: '../../../../openapi.yaml#/components/schemas/v1UploadProductImageRequest'
+        encoding:
+          thumbnail:
+            contentType: image/png, image/jpeg
+  responses:
+    200:
+      description: A successful response.
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../openapi.yaml#/components/schemas/v1UploadImageResponse'
+    400:
+      description: bad request error
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'

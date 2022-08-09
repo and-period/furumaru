@@ -118,6 +118,12 @@ paths:
     $ref: './paths/v1/upload/producers/header.yaml'
   /v1/upload/producers/thumbnail:
     $ref: './paths/v1/upload/producers/thumbnail.yaml'
+  /v1/upload/products/icon:
+    $ref: './paths/v1/upload/products/icon.yaml'
+  /v1/upload/products/image:
+    $ref: './paths/v1/upload/products/image.yaml'
+  /v1/upload/products/video:
+    $ref: './paths/v1/upload/products/video.yaml'
 components:
   securitySchemes:
     BearerAuth:
@@ -190,6 +196,12 @@ components:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadProducerThumbnailRequest'
     v1UploadProducerHeaderRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadProducerHeaderRequest'
+    v1UploadProductIconRequest:
+      $ref: './components/schemas/v1/upload.request.yaml#/uploadProductIconRequest'
+    v1UploadProductImageRequest:
+      $ref: './components/schemas/v1/upload.request.yaml#/uploadProductImageRequest'
+    v1UploadProductVideoRequest:
+      $ref: './components/schemas/v1/upload.request.yaml#/uploadProductVideoRequest'
     # Response
     v1AuthResponse:
       $ref: './components/schemas/v1/auth.response.yaml#/authResponse'
@@ -237,3 +249,5 @@ components:
       $ref: './components/schemas/v1/message.response.yaml#/messagesResponse'
     v1UploadImageResponse:
       $ref: './components/schemas/v1/upload.response.yaml#/uploadImageResponse'
+    v1UploadVideoResponse:
+      $ref: './components/schemas/v1/upload.response.yaml#/uploadVideoResponse'
