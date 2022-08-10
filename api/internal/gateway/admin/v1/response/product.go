@@ -16,6 +16,7 @@ type Product struct {
 	Weight           float64         `json:"weight"`           // 重量(kg,少数第一位まで)
 	ItemUnit         string          `json:"itemUnit"`         // 数量単位
 	ItemDescription  string          `json:"itemDescription"`  // 数量単位説明
+	IconURL          string          `json:"iconUrl"`          // アイコンURL
 	Media            []*ProductMedia `json:"media"`            // メディア一覧
 	Price            int64           `json:"price"`            // 販売価格
 	DeliveryType     int32           `json:"deliveryType"`     // 配送方法

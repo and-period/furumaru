@@ -394,6 +394,7 @@ func TestProduct_Update(t *testing.T) {
 					Item:            1,
 					ItemUnit:        "袋",
 					ItemDescription: "1袋あたり100gのじゃがいも",
+					IconURL:         "https://and-period.jp/icon.png",
 					Media: entity.MultiProductMedia{
 						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
@@ -533,6 +534,7 @@ func testProduct(id, typeID, categoryID, producerID, coordinatorID string, now t
 		Item:            1,
 		ItemUnit:        "袋",
 		ItemDescription: "1袋あたり100gのじゃがいも",
+		IconURL:         "https://and-period.jp/icon.png",
 		Media: entity.MultiProductMedia{
 			{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 			{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},

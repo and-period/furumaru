@@ -191,6 +191,7 @@ type UpdateProductParams struct {
 	Item             int64
 	ItemUnit         string
 	ItemDescription  string
+	IconURL          string
 	Media            entity.MultiProductMedia
 	Price            int64
 	DeliveryType     entity.DeliveryType

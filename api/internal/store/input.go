@@ -168,6 +168,7 @@ type CreateProductInput struct {
 	Item             int64                 `validate:"min=1"`
 	ItemUnit         string                `validate:"required,max=16"`
 	ItemDescription  string                `validate:"required,max=64"`
+	IconURL          string                `validate:"required"`
 	Media            []*CreateProductMedia `validate:"max=8,unique=URL"`
 	Price            int64                 `validate:"min=0"`
 	DeliveryType     entity.DeliveryType   `validate:"required,oneof=1 2 3"`
@@ -198,6 +199,7 @@ type UpdateProductInput struct {
 	Item             int64                 `validate:"min=1"`
 	ItemUnit         string                `validate:"required,max=16"`
 	ItemDescription  string                `validate:"required,max=64"`
+	IconURL          string                `validate:"required"`
 	Media            []*UpdateProductMedia `validate:"max=8,unique=URL"`
 	Price            int64                 `validate:"min=0"`
 	DeliveryType     entity.DeliveryType   `validate:"required,oneof=1 2 3"`

@@ -33,6 +33,9 @@ createProductRequest:
     itemDescription:
       type: string
       description: 数量単位説明(64文字まで)
+    iconUrl:
+      type: string
+      description: アイコンURL
     media:
       type: array
       description: メディア一覧(8つまで)
@@ -85,6 +88,7 @@ createProductRequest:
   - weight
   - itemUnit
   - itemDescription
+  - iconUrl
   - media
   - price
   - deliveryType
@@ -104,6 +108,7 @@ createProductRequest:
     weight: 2.5
     itemUnit: '袋'
     itemDescription: '1袋あたり2.5kgのじゃがいも'
+    iconUrl: 'https://and-period.jp/icon.png'
     media:
     - url: 'https://and-period.jp/thumbnail01.png'
       isThumbnail: true
@@ -151,6 +156,9 @@ updateProductRequest:
     itemDescription:
       type: string
       description: 数量単位説明(64文字まで)
+    iconUrl:
+      type: string
+      description: アイコンURL
     media:
       type: array
       description: メディア一覧(8つまで)
@@ -203,6 +211,7 @@ updateProductRequest:
   - weight
   - itemUnit
   - itemDescription
+  - iconUrl
   - media
   - price
   - deliveryType
@@ -222,6 +231,7 @@ updateProductRequest:
     weight: 2.5
     itemUnit: '袋'
     itemDescription: '1袋あたり2.5kgのじゃがいも'
+    iconUrl: 'https://and-period.jp/icon.png'
     media:
     - url: 'https://and-period.jp/thumbnail01.png'
       isThumbnail: true
