@@ -381,7 +381,7 @@ func TestRegisterAdminDevice(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.RegisterAdminDevice(ctx, tt.input)
-			assert.ErrorIs(t, tt.expectErr, err)
+			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
 }
