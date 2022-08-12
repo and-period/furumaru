@@ -522,7 +522,7 @@ func fillIgnorePromotionField(p *entity.Promotion, now time.Time) {
 	}
 	p.PublishedAt = now
 	p.StartAt = now
-	p.EndAt = now
+	p.EndAt = now.AddDate(0, 1, 0)
 	p.CreatedAt = now
 	p.UpdatedAt = now
 }
