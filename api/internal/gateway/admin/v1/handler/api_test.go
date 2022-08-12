@@ -31,7 +31,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
-	"golang.org/x/sync/singleflight"
 )
 
 var (
@@ -88,17 +87,17 @@ func newHandler(mocks *mocks, opts *testOptions) Handler {
 	policy := filepath.Join(dir, "policy.csv")
 	enforcer, _ := rbac.NewEnforcer(model, policy)
 
-	return &handler{
-		now:         opts.now,
-		logger:      zap.NewNop(),
-		waitGroup:   &sync.WaitGroup{},
-		sharedGroup: &singleflight.Group{},
-		storage:     mocks.storage,
-		enforcer:    enforcer,
-		user:        mocks.user,
-		store:       mocks.store,
-		messenger:   mocks.messenger,
+	params := &Params{
+		WaitGroup: &sync.WaitGroup{},
+		Enforcer:  enforcer,
+		Storage:   mocks.storage,
+		User:      mocks.user,
+		Store:     mocks.store,
+		Messenger: mocks.messenger,
 	}
+	handler := NewHandler(params).(*handler)
+	handler.now = opts.now
+	return handler
 }
 
 func newRoutes(h Handler, r *gin.Engine) {
