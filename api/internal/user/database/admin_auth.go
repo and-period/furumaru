@@ -14,7 +14,7 @@ import (
 const adminAuthTable = "admin_auths"
 
 var adminAuthFields = []string{
-	"admin_id", "cognito_id", "role", "created_at", "updated_at",
+	"admin_id", "cognito_id", "role", "device", "created_at", "updated_at",
 }
 
 type adminAuth struct {
