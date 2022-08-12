@@ -166,7 +166,7 @@ func TestPromotion_Count(t *testing.T) {
 			tt.setup(ctx, t, m)
 
 			db := &promotion{db: m.db, now: now}
-			actual, err := db.List(ctx, tt.args.params)
+			actual, err := db.Count(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.total, actual)
 		})
