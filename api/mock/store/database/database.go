@@ -413,6 +413,126 @@ func (mr *MockProductTypeMockRecorder) Update(ctx, productTypeID, name interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockProductType)(nil).Update), ctx, productTypeID, name)
 }
 
+// MockPromotion is a mock of Promotion interface.
+type MockPromotion struct {
+	ctrl     *gomock.Controller
+	recorder *MockPromotionMockRecorder
+}
+
+// MockPromotionMockRecorder is the mock recorder for MockPromotion.
+type MockPromotionMockRecorder struct {
+	mock *MockPromotion
+}
+
+// NewMockPromotion creates a new mock instance.
+func NewMockPromotion(ctrl *gomock.Controller) *MockPromotion {
+	mock := &MockPromotion{ctrl: ctrl}
+	mock.recorder = &MockPromotionMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockPromotion) EXPECT() *MockPromotionMockRecorder {
+	return m.recorder
+}
+
+// Count mocks base method.
+func (m *MockPromotion) Count(ctx context.Context, params *database.ListPromotionsParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockPromotionMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockPromotion)(nil).Count), ctx, params)
+}
+
+// Create mocks base method.
+func (m *MockPromotion) Create(ctx context.Context, promotion *entity.Promotion) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, promotion)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockPromotionMockRecorder) Create(ctx, promotion interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockPromotion)(nil).Create), ctx, promotion)
+}
+
+// Delete mocks base method.
+func (m *MockPromotion) Delete(ctx context.Context, promotionID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", ctx, promotionID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockPromotionMockRecorder) Delete(ctx, promotionID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockPromotion)(nil).Delete), ctx, promotionID)
+}
+
+// Get mocks base method.
+func (m *MockPromotion) Get(ctx context.Context, promotionID string, fields ...string) (*entity.Promotion, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, promotionID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.Promotion)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockPromotionMockRecorder) Get(ctx, promotionID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, promotionID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockPromotion)(nil).Get), varargs...)
+}
+
+// List mocks base method.
+func (m *MockPromotion) List(ctx context.Context, params *database.ListPromotionsParams, fields ...string) (entity.Promotions, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, params}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "List", varargs...)
+	ret0, _ := ret[0].(entity.Promotions)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockPromotionMockRecorder) List(ctx, params interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, params}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockPromotion)(nil).List), varargs...)
+}
+
+// Update mocks base method.
+func (m *MockPromotion) Update(ctx context.Context, promotionID string, params *database.UpdatePromotionParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", ctx, promotionID, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockPromotionMockRecorder) Update(ctx, promotionID, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockPromotion)(nil).Update), ctx, promotionID, params)
+}
+
 // MockShipping is a mock of Shipping interface.
 type MockShipping struct {
 	ctrl     *gomock.Controller
