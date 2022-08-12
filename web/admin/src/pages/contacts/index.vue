@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card-title>お問い合わせ</v-card-title>
+    <v-card-title>お問い合わせ管理</v-card-title>
     <v-card>
       <v-card-text>
         <v-data-table :headers="headers" :items="contacts" :items-per-page="5">
@@ -27,12 +27,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent, useRouter } from '@nuxtjs/composition-api'
 import { DataTableHeader } from 'vuetify'
-// import { DataTableItemProps } from 'vuetify'
+
+import { ContactsResponseContactsInner } from '~/types/api'
 
 export default defineComponent({
   setup() {
+    const router = useRouter()
     const headers: DataTableHeader[] = [
       {
         text: '件名',
@@ -147,6 +149,12 @@ export default defineComponent({
       }
     }
 
+    // const handleEdit = (item: ContactsResponseContactsInner) => {
+    const handleEdit = () => {
+      //    router.push(`/contacts/edit/${item.id}`)
+      router.push('/contacts/edit')
+    }
+
     return {
       headers,
       contacts,
@@ -154,6 +162,7 @@ export default defineComponent({
       getPriorityColor,
       getStatus,
       getStatusColor,
+      handleEdit,
     }
   },
 })
