@@ -40,6 +40,7 @@ type AdminAuth interface {
 	MultiGet(ctx context.Context, adminIDs []string, fields ...string) (entity.AdminAuths, error)
 	GetByAdminID(ctx context.Context, adminID string, fields ...string) (*entity.AdminAuth, error)
 	GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.AdminAuth, error)
+	UpdateDevice(ctx context.Context, adminID, device string) error
 }
 
 type Administrator interface {

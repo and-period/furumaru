@@ -411,6 +411,20 @@ func (mr *MockServiceMockRecorder) RefreshUserToken(ctx, in interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RefreshUserToken", reflect.TypeOf((*MockService)(nil).RefreshUserToken), ctx, in)
 }
 
+// RegisterAdminDevice mocks base method.
+func (m *MockService) RegisterAdminDevice(ctx context.Context, in *user.RegisterAdminDeviceInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RegisterAdminDevice", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// RegisterAdminDevice indicates an expected call of RegisterAdminDevice.
+func (mr *MockServiceMockRecorder) RegisterAdminDevice(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterAdminDevice", reflect.TypeOf((*MockService)(nil).RegisterAdminDevice), ctx, in)
+}
+
 // ResetAdministratorPassword mocks base method.
 func (m *MockService) ResetAdministratorPassword(ctx context.Context, in *user.ResetAdministratorPasswordInput) error {
 	m.ctrl.T.Helper()

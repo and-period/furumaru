@@ -241,6 +241,58 @@ func TestRefreshAuthToken(t *testing.T) {
 	}
 }
 
+func TestRegisterDevice(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		setup  func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		req    *request.RegisterAuthDeviceRequest
+		expect *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := &user.RegisterAdminDeviceInput{
+					AdminID: idmock,
+					Device:  "device",
+				}
+				mocks.user.EXPECT().RegisterAdminDevice(gomock.Any(), in).Return(nil)
+			},
+			req: &request.RegisterAuthDeviceRequest{
+				Device: "device",
+			},
+			expect: &testResponse{
+				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to update device",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := &user.RegisterAdminDeviceInput{
+					AdminID: idmock,
+					Device:  "device",
+				}
+				mocks.user.EXPECT().RegisterAdminDevice(gomock.Any(), in).Return(errmock)
+			},
+			req: &request.RegisterAuthDeviceRequest{
+				Device: "device",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const path = "/v1/auth/device"
+			testPost(t, tt.setup, tt.expect, path, tt.req)
+		})
+	}
+}
+
 func TestUpdateAuthEmail(t *testing.T) {
 	t.Parallel()
 

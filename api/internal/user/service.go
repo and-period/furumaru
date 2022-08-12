@@ -17,6 +17,8 @@ type Service interface {
 	GetAdminAuth(ctx context.Context, in *GetAdminAuthInput) (*entity.AdminAuth, error)
 	// 管理者アクセストークンの更新
 	RefreshAdminToken(ctx context.Context, in *RefreshAdminTokenInput) (*entity.AdminAuth, error)
+	// 管理者デバイストークンの更新
+	RegisterAdminDevice(ctx context.Context, in *RegisterAdminDeviceInput) error
 	// 管理者メールアドレス更新
 	UpdateAdminEmail(ctx context.Context, in *UpdateAdminEmailInput) error
 	// 管理者メールアドレス更新後の確認

@@ -238,11 +238,86 @@ func TestAdminAuth_GetByCognitoID(t *testing.T) {
 	}
 }
 
+func TestAdminAuth_UpdateDevice(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, adminAuthTable)
+
+	type args struct {
+		adminID string
+		device  string
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				a := testAdminAuth("admin-id", "cognito-id", now())
+				err = m.db.DB.Create(&a).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				adminID: "admin-id",
+				device:  "device",
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				adminID: "admin-id",
+				device:  "device",
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := m.dbDelete(ctx, adminAuthTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, m)
+
+			db := &adminAuth{db: m.db, now: now}
+			err = db.UpdateDevice(ctx, tt.args.adminID, tt.args.device)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
 func testAdminAuth(adminID, cognitoID string, now time.Time) *entity.AdminAuth {
 	return &entity.AdminAuth{
 		AdminID:   adminID,
 		CognitoID: cognitoID,
 		Role:      entity.AdminRoleAdministrator,
+		Device:    "instance-id",
 		CreatedAt: now,
 		UpdatedAt: now,
 	}

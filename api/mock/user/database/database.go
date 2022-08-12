@@ -96,6 +96,20 @@ func (mr *MockAdminAuthMockRecorder) MultiGet(ctx, adminIDs interface{}, fields 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockAdminAuth)(nil).MultiGet), varargs...)
 }
 
+// UpdateDevice mocks base method.
+func (m *MockAdminAuth) UpdateDevice(ctx context.Context, adminID, device string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateDevice", ctx, adminID, device)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateDevice indicates an expected call of UpdateDevice.
+func (mr *MockAdminAuthMockRecorder) UpdateDevice(ctx, adminID, device interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateDevice", reflect.TypeOf((*MockAdminAuth)(nil).UpdateDevice), ctx, adminID, device)
+}
+
 // MockAdministrator is a mock of Administrator interface.
 type MockAdministrator struct {
 	ctrl     *gomock.Controller

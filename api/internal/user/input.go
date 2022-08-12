@@ -15,6 +15,11 @@ type GetAdminAuthInput struct {
 	AccessToken string `validate:"required"`
 }
 
+type RegisterAdminDeviceInput struct {
+	AdminID string `validate:"required"`
+	Device  string `validate:"required"`
+}
+
 type RefreshAdminTokenInput struct {
 	RefreshToken string `validate:"required"`
 }

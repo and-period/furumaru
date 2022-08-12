@@ -23,6 +23,16 @@ refreshAuthTokenRequest:
   - refreshToken
   example:
     refreshToken: 'xxxxxxxxxx'
+registerAuthDeviceRequest:
+  type: object
+  properties:
+    device:
+      type: string
+      description: デバイストークン(プッシュ通知用:FCMトークン)
+  required:
+  - device
+  example:
+    device: 'instance-id'
 updateAuthEmailRequest:
   type: object
   properties:

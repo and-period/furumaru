@@ -24,6 +24,7 @@ type AdminAuth struct {
 	AdminID      string    `gorm:"primaryKey;<-:create"` // 管理者ID
 	CognitoID    string    `gorm:"<-:create"`            // 管理者ID (Cognito用)
 	Role         AdminRole `gorm:"<-:create"`            // 権限
+	Device       string    `gorm:""`                     // デバイストークン(Push通知用)
 	AccessToken  string    `gorm:"-"`                    // アクセストークン
 	RefreshToken string    `gorm:"-"`                    // 更新トークン
 	ExpiresIn    int32     `gorm:"-"`                    // 有効期限

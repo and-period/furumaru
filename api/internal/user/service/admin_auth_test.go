@@ -338,6 +338,54 @@ func TestRefreshAdminToken(t *testing.T) {
 	}
 }
 
+func TestRegisterAdminDevice(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.RegisterAdminDeviceInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.AdminAuth.EXPECT().UpdateDevice(ctx, "admin-id", "device").Return(nil)
+			},
+			input: &user.RegisterAdminDeviceInput{
+				AdminID: "admin-id",
+				Device:  "device",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.RegisterAdminDeviceInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to update device",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.AdminAuth.EXPECT().UpdateDevice(ctx, "admin-id", "device").Return(errmock)
+			},
+			input: &user.RegisterAdminDeviceInput{
+				AdminID: "admin-id",
+				Device:  "device",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.RegisterAdminDevice(ctx, tt.input)
+			assert.ErrorIs(t, tt.expectErr, err)
+		}))
+	}
+}
+
 func TestUpdateAdminEmail(t *testing.T) {
 	t.Parallel()
 

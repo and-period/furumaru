@@ -2562,6 +2562,19 @@ export interface RefreshAuthTokenRequest {
 /**
  *
  * @export
+ * @interface RegisterAuthDeviceRequest
+ */
+export interface RegisterAuthDeviceRequest {
+  /**
+   * デバイストークン(プッシュ通知用:FCMトークン)
+   * @type {string}
+   * @memberof RegisterAuthDeviceRequest
+   */
+  device: string
+}
+/**
+ *
+ * @export
  * @interface ShippingRate
  */
 export interface ShippingRate {
@@ -4358,6 +4371,60 @@ export const AuthApiAxiosParamCreator = function (
     },
     /**
      *
+     * @summary デバイストークン登録
+     * @param {RegisterAuthDeviceRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1RegisterAuthDevice: async (
+      body: RegisterAuthDeviceRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1RegisterAuthDevice', 'body', body)
+      const localVarPath = `/v1/auth/device`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'POST',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
      * @summary サインイン
      * @param {SignInRequest} body
      * @param {*} [options] Override http request option.
@@ -4670,6 +4737,28 @@ export const AuthApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @summary デバイストークン登録
+     * @param {RegisterAuthDeviceRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1RegisterAuthDevice(
+      body: RegisterAuthDeviceRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1RegisterAuthDevice(body, options)
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
      * @summary サインイン
      * @param {SignInRequest} body
      * @param {*} [options] Override http request option.
@@ -4821,6 +4910,21 @@ export const AuthApiFactory = function (
     },
     /**
      *
+     * @summary デバイストークン登録
+     * @param {RegisterAuthDeviceRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1RegisterAuthDevice(
+      body: RegisterAuthDeviceRequest,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1RegisterAuthDevice(body, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
      * @summary サインイン
      * @param {SignInRequest} body
      * @param {*} [options] Override http request option.
@@ -4924,6 +5028,23 @@ export class AuthApi extends BaseAPI {
   ) {
     return AuthApiFp(this.configuration)
       .v1RefreshAuthToken(body, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary デバイストークン登録
+   * @param {RegisterAuthDeviceRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AuthApi
+   */
+  public v1RegisterAuthDevice(
+    body: RegisterAuthDeviceRequest,
+    options?: AxiosRequestConfig
+  ) {
+    return AuthApiFp(this.configuration)
+      .v1RegisterAuthDevice(body, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
