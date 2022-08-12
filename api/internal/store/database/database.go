@@ -5,6 +5,7 @@ package database
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
@@ -19,6 +20,7 @@ type Database struct {
 	Category    Category
 	Product     Product
 	ProductType ProductType
+	Promotion   Promotion
 	Shipping    Shipping
 }
 
@@ -27,6 +29,7 @@ func NewDatabase(params *Params) *Database {
 		Category:    NewCategory(params.Database),
 		Product:     NewProduct(params.Database),
 		ProductType: NewProductType(params.Database),
+		Promotion:   NewPromotion(params.Database),
 		Shipping:    NewShipping(params.Database),
 	}
 }
@@ -61,6 +64,15 @@ type ProductType interface {
 	Create(ctx context.Context, productType *entity.ProductType) error
 	Update(ctx context.Context, productTypeID, name string) error
 	Delete(ctx context.Context, productTypeID string) error
+}
+
+type Promotion interface {
+	List(ctx context.Context, params *ListPromotionsParams, fields ...string) (entity.Promotions, error)
+	Count(ctx context.Context, params *ListPromotionsParams) (int64, error)
+	Get(ctx context.Context, promotionID string, fields ...string) (*entity.Promotion, error)
+	Create(ctx context.Context, promotion *entity.Promotion) error
+	Update(ctx context.Context, promotionID string, params *UpdatePromotionParams) error
+	Delete(ctx context.Context, promotionID string) error
 }
 
 type Shipping interface {
@@ -233,4 +245,41 @@ func (p *ListProductTypesParams) stmt(stmt *gorm.DB) *gorm.DB {
 		stmt = stmt.Order(value)
 	}
 	return stmt
+}
+
+type ListPromotionsParams struct {
+	Limit  int
+	Offset int
+	Orders []*ListPromotionsOrder
+}
+
+type ListPromotionsOrder struct {
+	Key        entity.PromotionOrderBy
+	OrderByASC bool
+}
+
+func (p *ListPromotionsParams) stmt(stmt *gorm.DB) *gorm.DB {
+	for i := range p.Orders {
+		var value string
+		if p.Orders[i].OrderByASC {
+			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
+		} else {
+			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
+		}
+		stmt = stmt.Order(value)
+	}
+	return stmt
+}
+
+type UpdatePromotionParams struct {
+	Title        string
+	Description  string
+	Public       bool
+	PublishedAt  time.Time
+	DiscountType entity.DiscountType
+	DiscountRate int64
+	Code         string
+	CodeType     entity.PromotionCodeType
+	StartAt      time.Time
+	EndAt        time.Time
 }
