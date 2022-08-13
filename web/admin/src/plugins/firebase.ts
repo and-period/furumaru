@@ -23,7 +23,7 @@ function requestPermission() {
 }
 
 getToken(messaging, {
-  vapidKey: process.env.FIREBASE_VAPI_KEY,
+  vapidKey: process.env.FIREBASE_VAPID_KEY,
 })
   .then((currentToken) => {
     if (currentToken) {

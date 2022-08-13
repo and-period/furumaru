@@ -81,7 +81,7 @@ const config: NuxtConfig = {
       process.env.FIREBASE_MESSAGING_SENDER_ID || '',
     FIREBASE_APP_ID: process.env.FIREBASE_APP_ID || '',
     FIREBASE_MEASUREMENT_ID: process.env.FIREBASE_MEASUREMENT_ID || '',
-    FIREBASE_VAPI_KEY: process.env.FIREBASE_VAPI_KEY || '',
+    FIREBASE_VAPID_KEY: process.env.FIREBASE_VAPID_KEY || '',
   },
 
   router: {
@@ -112,10 +112,6 @@ const config: NuxtConfig = {
       },
       options: { customProperties: true },
     },
-  },
-
-  manifest: {
-    gcm_sender_id: '103953800507',
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
