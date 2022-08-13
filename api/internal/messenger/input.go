@@ -36,6 +36,20 @@ type UpdateContactInput struct {
 	Note      string                 `validate:"max=2000"`
 }
 
+type ListNotificationsInput struct {
+	Limit         int64                     `validate:"required,max=200"`
+	Offset        int64                     `validate:"min=0"`
+	Since         time.Time                 `validate:"required"`
+	Until         time.Time                 `validate:"required"`
+	OnlyPublished bool                      `validate:""`
+	Orders        []*ListNotificationsOrder `validate:"omitempty,dive,required"`
+}
+
+type ListNotificationsOrder struct {
+	Key        entity.NotificationOrderBy `validate:"required"`
+	OrderByASC bool                       `validate:""`
+}
+
 type CreateNotificationInput struct {
 	CreatedBy   string              `validate:"required"`
 	Title       string              `validate:"required,max=128"`
