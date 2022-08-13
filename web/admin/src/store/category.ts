@@ -122,10 +122,11 @@ export const useCategoryStore = defineStore('Category', {
 
     /**
      * カテゴリを編集する非同期関数
+     * @param payload
      * @param categoryId
      */
 
-    async updateCategory(categoryId: string, payload: UpdateCategoryRequest) {
+    async editCategory(categoryId: string, payload: UpdateCategoryRequest) {
       const commonStore = useCommonStore()
       try {
         const authStore = useAuthStore()

@@ -6,7 +6,7 @@
           {{ `${item.name}` }}
         </template>
         <template #[`item.actions`]="{ item }">
-          <v-btn outlined color="primary" small @click="openUpdateDialog(item)">
+          <v-btn outlined color="primary" small @click="openEditDialog(item)">
             <v-icon small>mdi-pencil</v-icon>
             編集
           </v-btn>
@@ -31,7 +31,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="updateDialog" width="500">
+    <v-dialog v-model="editDialog" width="500">
       <v-card>
         <v-card-title class="text-h6 primaryLight">
           カテゴリー編集
@@ -46,10 +46,10 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="accentDarken" text @click="updateCancel">
+          <v-btn color="accentDarken" text @click="editCancel">
             キャンセル
           </v-btn>
-          <v-btn color="primary" outlined @click="handleUpdate"> 編集 </v-btn>
+          <v-btn color="primary" outlined @click="handleEdit"> 編集 </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -71,7 +71,7 @@ export default defineComponent({
   setup() {
     const categoryStore = useCategoryStore()
     const deleteDialog = ref<boolean>(false)
-    const updateDialog = ref<boolean>(false)
+    const editDialog = ref<boolean>(false)
     const selectedItem = ref<string>('')
     const selectedName = ref<string>('')
     const categoryId = ref<string>('')
@@ -100,16 +100,16 @@ export default defineComponent({
       deleteDialog.value = false
     }
 
-    const updateCancel = (): void => {
-      updateDialog.value = false
+    const editCancel = (): void => {
+      editDialog.value = false
     }
 
-    const openUpdateDialog = (
+    const openEditDialog = (
       item: CategoriesResponseCategoriesInner
     ): void => {
       categoryFormData.name = item.name
       categoryId.value = item.id
-      updateDialog.value = true
+      editDialog.value = true
     }
 
     const openDeleteDialog = (
@@ -120,10 +120,10 @@ export default defineComponent({
       deleteDialog.value = true
     }
 
-    const handleUpdate = async (): Promise<void> => {
+    const handleEdit = async (): Promise<void> => {
       try {
-        await categoryStore.updateCategory(categoryId.value, categoryFormData)
-        updateDialog.value = false
+        await categoryStore.editCategory(categoryId.value, categoryFormData)
+        editDialog.value = false
       } catch (error) {
         console.log(error)
       }
@@ -151,14 +151,14 @@ export default defineComponent({
       fetchState,
       categories,
       deleteDialog,
-      updateDialog,
+      editDialog,
       selectedName,
       categoryFormData,
-      openUpdateDialog,
+      openEditDialog,
       openDeleteDialog,
-      updateCancel,
+      editCancel,
       deleteCancel,
-      handleUpdate,
+      handleEdit,
       handleDelete,
     }
   },
