@@ -65,7 +65,7 @@ export const useCategoryStore = defineStore('Category', {
         const res = await categoriesApiClient.v1CreateCategory(payload)
         this.categories.unshift(res.data)
         commonStore.addSnackbar({
-          message: `カテゴリーを追加しました。`,
+          message: 'カテゴリーを追加しました。',
           color: 'info',
         })
       } catch (e) {
@@ -75,11 +75,48 @@ export const useCategoryStore = defineStore('Category', {
           errorMessage.value =
             '不明なエラーが発生しました。お手数ですがご自身で入力してください。'
         }
+        commonStore.addSnackbar({
+          message: errorMessage.value,
+          color: 'error',
+        })
       }
-      commonStore.addSnackbar({
-        message: errorMessage.value,
-        color: 'error',
-      })
+    },
+
+    /**
+     * カテゴリを削除する非同期関数
+     * @param categoryId
+     */
+    async deleteCategory(categoryId: string): Promise<void> {
+      const commonStore = useCommonStore()
+      const errorMessage = ref<string>('')
+      try {
+        const authStore = useAuthStore()
+        const accessToken = authStore.accessToken
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
+        }
+
+        const factory = new ApiClientFactory()
+        const categoriesApiClient = factory.create(CategoryApi, accessToken)
+        await categoriesApiClient.v1DeleteCategory(categoryId)
+        commonStore.addSnackbar({
+          message: 'カテゴリー削除が完了しました',
+          color: 'info',
+        })
+      } catch (e) {
+        // TODO: エラーハンドリングは今後見直していく
+        if (e instanceof Error) {
+          errorMessage.value = e.message
+        } else {
+          errorMessage.value =
+            '不明なエラーが発生しました。お手数ですがご自身で入力してください。'
+        }
+        commonStore.addSnackbar({
+          message: errorMessage.value,
+          color: 'error',
+        })
+      }
+      this.fetchCategories()
     },
   },
 })
