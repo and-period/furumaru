@@ -6,15 +6,41 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestListPromotions(t *testing.T) {
 	t.Parallel()
 
-	promotions := entity.Promotions{}
+	now := jst.Date(2022, 8, 13, 18, 30, 0, 0)
+	params := &database.ListPromotionsParams{
+		Limit:  30,
+		Offset: 0,
+		Orders: []*database.ListPromotionsOrder{
+			{Key: entity.PromotionOrderByPublic, OrderByASC: true},
+		},
+	}
+	promotions := entity.Promotions{
+		{
+			ID:           "promotion-id",
+			Title:        "夏の採れたて野菜マルシェを開催!!",
+			Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
+			Public:       true,
+			PublishedAt:  now,
+			DiscountType: entity.DiscountTypeFreeShipping,
+			DiscountRate: 0,
+			Code:         "code0001",
+			CodeType:     entity.PromotionCodeTypeOnce,
+			StartAt:      now,
+			EndAt:        now.AddDate(0, 1, 0),
+			CreatedAt:    now,
+			UpdatedAt:    now,
+		},
+	}
 
 	tests := []struct {
 		name        string
@@ -25,8 +51,11 @@ func TestListPromotions(t *testing.T) {
 		expectErr   error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Promotion.EXPECT().List(gomock.Any(), params).Return(promotions, nil)
+				mocks.db.Promotion.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
+			},
 			input: &store.ListPromotionsInput{
 				Limit:  30,
 				Offset: 0,
@@ -35,7 +64,7 @@ func TestListPromotions(t *testing.T) {
 				},
 			},
 			expect:      promotions,
-			expectTotal: 0,
+			expectTotal: 1,
 			expectErr:   nil,
 		},
 		{
@@ -45,6 +74,40 @@ func TestListPromotions(t *testing.T) {
 			expect:      nil,
 			expectTotal: 0,
 			expectErr:   exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to list promotions",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Promotion.EXPECT().List(gomock.Any(), params).Return(nil, errmock)
+				mocks.db.Promotion.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
+			},
+			input: &store.ListPromotionsInput{
+				Limit:  30,
+				Offset: 0,
+				Orders: []*store.ListPromotionsOrder{
+					{Key: entity.PromotionOrderByPublic, OrderByASC: true},
+				},
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrUnknown,
+		},
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Promotion.EXPECT().List(gomock.Any(), params).Return(promotions, nil)
+				mocks.db.Promotion.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
+			},
+			input: &store.ListPromotionsInput{
+				Limit:  30,
+				Offset: 0,
+				Orders: []*store.ListPromotionsOrder{
+					{Key: entity.PromotionOrderByPublic, OrderByASC: true},
+				},
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrUnknown,
 		},
 	}
 
