@@ -133,7 +133,25 @@ func (h *handler) UpdatePromotion(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
-	// TODO: 詳細の実装
+
+	in := &store.UpdatePromotionInput{
+		PromotionID:  util.GetParam(ctx, "promotionId"),
+		Title:        req.Title,
+		Description:  req.Description,
+		Public:       req.Public,
+		PublishedAt:  jst.ParseFromUnix(req.PublishedAt),
+		DiscountType: service.DiscountType(req.DiscountType).StoreEntity(),
+		DiscountRate: req.DiscountRate,
+		Code:         req.Code,
+		CodeType:     sentity.PromotionCodeTypeAlways, // 回数無制限固定
+		StartAt:      jst.ParseFromUnix(req.StartAt),
+		EndAt:        jst.ParseFromUnix(req.EndAt),
+	}
+	if err := h.store.UpdatePromotion(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
