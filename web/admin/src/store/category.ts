@@ -156,13 +156,13 @@ export const useCategoryStore = defineStore('Category', {
               return Promise.reject(
                 new AuthError('認証エラー。再度ログインをしてください。', error)
               )
-              case 404:
-                return Promise.reject(
-                  new NotFoundError(
-                    '編集するカテゴリーが見つかりませんでした。',
-                    error
-                  )
+            case 404:
+              return Promise.reject(
+                new NotFoundError(
+                  '編集するカテゴリーが見つかりませんでした。',
+                  error
                 )
+              )
             case 409:
               return Promise.reject(
                 new ConflictError(
