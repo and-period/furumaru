@@ -32,7 +32,11 @@ const config: NuxtConfig = {
   css: ['~/assets/main.scss'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ['~/plugins/amplify', '~/plugins/firebase'],
+  plugins: [
+    '~/plugins/amplify',
+    '~/plugins/firebase',
+    '~/plugins/google-analytics',
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: [
