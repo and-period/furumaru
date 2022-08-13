@@ -84,36 +84,36 @@
 <script lang="ts">
 export default {
   setup() {
-        const getPriorityColor = (priority: any): string => {
-      switch (priority) {
-        case 1:
-          return 'red'
-        case 2:
-          return 'orange'
-        case 3:
-          return 'blue'
-        default:
-          return ''
-      }
-    }
+    // const getPriorityColor = (priority: any): string => {
+    //   switch (priority) {
+    //     case 1:
+    //       return 'red'
+    //     case 2:
+    //       return 'orange'
+    //     case 3:
+    //       return 'blue'
+    //     default:
+    //       return ''
+    //   }
+    // }
 
-    const getStatusColor = (status: any): string => {
-      switch (status) {
-        case 1:
-          return 'red'
-        case 2:
-          return 'orange'
-        case 3:
-          return 'blue'
-        default:
-          return ''
-      }
-    }
+    // const getStatusColor = (status: any): string => {
+    //   switch (status) {
+    //     case 1:
+    //       return 'red'
+    //     case 2:
+    //       return 'orange'
+    //     case 3:
+    //       return 'blue'
+    //     default:
+    //       return ''
+    //   }
+    // }
     return {
       //        selected: ['Trevor Handsen'],
       priority: ['High', 'Middle', 'Low', 'Unknown'],
       status: ['未着手', '進行中', '完了', '不明'],
-      }
+    }
   },
 }
 </script>

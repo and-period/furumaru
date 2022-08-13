@@ -30,7 +30,7 @@
 import { defineComponent, useRouter } from '@nuxtjs/composition-api'
 import { DataTableHeader } from 'vuetify'
 
-import { ContactsResponseContactsInner } from '~/types/api'
+//import { ContactsResponseContactsInner } from '~/types/api'
 
 export default defineComponent({
   setup() {
