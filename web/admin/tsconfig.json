@@ -22,7 +22,7 @@
       "@nuxt/types",
       "@nuxtjs/axios",
       "@nuxtjs/vuetify",
-      "@nuxtjs/i18n",
+      "@types/firebase",
       "@types/jest",
       "@types/node",
       "@pinia/nuxt"

@@ -3,16 +3,17 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "nuxt",
-    "build": "nuxt build",
-    "start": "nuxt start",
-    "generate": "nuxt generate",
+    "dev": "yarn sw:build && nuxt",
+    "build": "yarn sw:build && nuxt build",
+    "start": "yarn sw:build && nuxt start",
+    "generate": "yarn sw:build && nuxt generate",
     "lint:js": "eslint --ext \".js,.ts,.vue\" --ignore-path .gitignore .",
     "lint:style": "stylelint \"**/*.{css,scss,sass,html,vue}\" --ignore-path .gitignore",
     "lint:prettier": "prettier --check .",
     "lint": "yarn lint:js && yarn lint:style && yarn lint:prettier",
     "lintfix": "prettier --write --list-different . && yarn lint:js --fix && yarn lint:style --fix",
-    "test": "jest"
+    "test": "jest",
+    "sw:build": "node src/sw/firebase-messaging-sw.ts"
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.13.6",
@@ -24,6 +25,7 @@
     "aws-amplify": "^4.3.30",
     "babel-plugin-module-resolver": "^4.1.0",
     "core-js": "^3.19.3",
+    "firebase": "^9.9.2",
     "node-gyp": "^9.0.0",
     "nuxt": "^2.15.8",
     "pinia": "^2.0.14",
