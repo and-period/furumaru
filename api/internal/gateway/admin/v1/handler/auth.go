@@ -16,6 +16,7 @@ func (h *handler) authRoutes(rg *gin.RouterGroup) {
 	rg.POST("", h.SignIn)
 	rg.DELETE("", h.SignOut)
 	rg.POST("/refresh-token", h.RefreshAuthToken)
+	rg.POST("/device", h.authentication(), h.RegisterDevice)
 	rg.PATCH("/email", h.authentication(), h.UpdateAuthEmail)
 	rg.POST("/email/verified", h.VerifyAuthEmail)
 	rg.PATCH("/password", h.authentication(), h.UpdateAuthPassword)
@@ -103,6 +104,25 @@ func (h *handler) RefreshAuthToken(ctx *gin.Context) {
 		Auth: service.NewAuth(auth).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) RegisterDevice(ctx *gin.Context) {
+	req := &request.RegisterAuthDeviceRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	in := &user.RegisterAdminDeviceInput{
+		AdminID: getAdminID(ctx),
+		Device:  req.Device,
+	}
+	if err := h.user.RegisterAdminDevice(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
 func (h *handler) UpdateAuthEmail(ctx *gin.Context) {

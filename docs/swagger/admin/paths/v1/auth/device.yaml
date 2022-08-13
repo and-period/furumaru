@@ -1,0 +1,25 @@
+post:
+  summary: デバイストークン登録
+  operationId: v1RegisterAuthDevice
+  tags:
+  - Auth
+  security:
+  - BearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../openapi.yaml#/components/schemas/v1RegisterAuthDeviceRequest'
+  responses:
+    204:
+      description: A successful response.
+      content:
+        application/json:
+          schema: {}
+    400:
+      description: bad request error
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/errorResponse'

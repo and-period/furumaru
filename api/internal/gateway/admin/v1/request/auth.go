@@ -9,6 +9,10 @@ type RefreshAuthTokenRequest struct {
 	RefreshToken string `json:"refreshToken,omitempty"` // 更新トークン
 }
 
+type RegisterAuthDeviceRequest struct {
+	Device string `json:"device,omitempty"` // デバイスID
+}
+
 type UpdateAuthEmailRequest struct {
 	Email string `json:"email,omitempty"` // メールアドレス
 }

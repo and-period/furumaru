@@ -53,6 +53,14 @@ func (s *service) RefreshAdminToken(
 	return auth, exception.InternalError(err)
 }
 
+func (s *service) RegisterAdminDevice(ctx context.Context, in *user.RegisterAdminDeviceInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	err := s.db.AdminAuth.UpdateDevice(ctx, in.AdminID, in.Device)
+	return exception.InternalError(err)
+}
+
 func (s *service) UpdateAdminEmail(ctx context.Context, in *user.UpdateAdminEmailInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
