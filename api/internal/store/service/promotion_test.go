@@ -125,7 +125,22 @@ func TestListPromotions(t *testing.T) {
 func TestGetPromotion(t *testing.T) {
 	t.Parallel()
 
-	promotion := &entity.Promotion{}
+	now := jst.Date(2022, 8, 13, 18, 30, 0, 0)
+	promotion := &entity.Promotion{
+		ID:           "promotion-id",
+		Title:        "夏の採れたて野菜マルシェを開催!!",
+		Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
+		Public:       true,
+		PublishedAt:  now,
+		DiscountType: entity.DiscountTypeFreeShipping,
+		DiscountRate: 0,
+		Code:         "code0001",
+		CodeType:     entity.PromotionCodeTypeOnce,
+		StartAt:      now,
+		EndAt:        now.AddDate(0, 1, 0),
+		CreatedAt:    now,
+		UpdatedAt:    now,
+	}
 
 	tests := []struct {
 		name      string
@@ -149,6 +164,17 @@ func TestGetPromotion(t *testing.T) {
 			input:     &store.GetPromotionInput{},
 			expect:    nil,
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get promotion",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(nil, errmock)
+			},
+			input: &store.GetPromotionInput{
+				PromotionID: "promotion-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 

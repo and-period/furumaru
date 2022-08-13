@@ -88,9 +88,17 @@ func (h *handler) newPromotionOrders(ctx *gin.Context) ([]*store.ListPromotionsO
 }
 
 func (h *handler) GetPromotion(ctx *gin.Context) {
-	// TODO: 詳細の実装
+	in := &store.GetPromotionInput{
+		PromotionID: util.GetParam(ctx, "promotionId"),
+	}
+	promotion, err := h.store.GetPromotion(ctx, in)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+
 	res := &response.PromotionResponse{
-		Promotion: &response.Promotion{},
+		Promotion: service.NewPromotion(promotion).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
