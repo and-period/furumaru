@@ -157,6 +157,34 @@ func TestGetPromotion(t *testing.T) {
 func TestCreatePromotion(t *testing.T) {
 	t.Parallel()
 
+	in := &store.CreatePromotionInput{
+		Title:        "プロモーションタイトル",
+		Description:  "プロモーションの詳細です。",
+		Public:       true,
+		PublishedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		DiscountType: sentity.DiscountTypeRate,
+		DiscountRate: 10,
+		Code:         "excode01",
+		CodeType:     sentity.PromotionCodeTypeAlways,
+		StartAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		EndAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
+	}
+	promotion := &sentity.Promotion{
+		ID:           "promotion-id",
+		Title:        "プロモーションタイトル",
+		Description:  "プロモーションの詳細です。",
+		Public:       true,
+		PublishedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		DiscountType: sentity.DiscountTypeRate,
+		DiscountRate: 10,
+		Code:         "code0001",
+		CodeType:     sentity.PromotionCodeTypeAlways,
+		StartAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		EndAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		CreatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		UpdatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+	}
+
 	tests := []struct {
 		name   string
 		setup  func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
@@ -164,8 +192,10 @@ func TestCreatePromotion(t *testing.T) {
 		expect *testResponse
 	}{
 		{
-			name:  "success",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().CreatePromotion(gomock.Any(), in).Return(promotion, nil)
+			},
 			req: &request.CreatePromotionRequest{
 				Title:        "プロモーションタイトル",
 				Description:  "プロモーションの詳細です。",
@@ -180,8 +210,41 @@ func TestCreatePromotion(t *testing.T) {
 			expect: &testResponse{
 				code: http.StatusOK,
 				body: &response.PromotionResponse{
-					Promotion: &response.Promotion{},
+					Promotion: &response.Promotion{
+						ID:           "promotion-id",
+						Title:        "プロモーションタイトル",
+						Description:  "プロモーションの詳細です。",
+						Public:       true,
+						PublishedAt:  1640962800,
+						DiscountType: int32(service.DiscountTypeRate),
+						DiscountRate: 10,
+						Code:         "code0001",
+						StartAt:      1640962800,
+						EndAt:        1640962800,
+						CreatedAt:    1640962800,
+						UpdatedAt:    1640962800,
+					},
 				},
+			},
+		},
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().CreatePromotion(gomock.Any(), in).Return(nil, errmock)
+			},
+			req: &request.CreatePromotionRequest{
+				Title:        "プロモーションタイトル",
+				Description:  "プロモーションの詳細です。",
+				Public:       true,
+				PublishedAt:  1640962800,
+				DiscountType: 2,
+				DiscountRate: 10,
+				Code:         "excode01",
+				StartAt:      1640962800,
+				EndAt:        1640962800,
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
 			},
 		},
 	}

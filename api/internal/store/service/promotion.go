@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
@@ -60,8 +61,25 @@ func (s *service) CreatePromotion(ctx context.Context, in *store.CreatePromotion
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
-	// TODO: 詳細の実装
-	promotion := &entity.Promotion{}
+	params := &entity.NewPromotionParams{
+		Title:        in.Title,
+		Description:  in.Description,
+		Public:       in.Public,
+		PublishedAt:  in.PublishedAt,
+		DiscountType: in.DiscountType,
+		DiscountRate: in.DiscountRate,
+		Code:         in.Code,
+		CodeType:     in.CodeType,
+		StartAt:      in.StartAt,
+		EndAt:        in.EndAt,
+	}
+	promotion := entity.NewPromotion(params)
+	if err := promotion.Validate(); err != nil {
+		return nil, fmt.Errorf("api: validation error: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	if err := s.db.Promotion.Create(ctx, promotion); err != nil {
+		return nil, exception.InternalError(err)
+	}
 	return promotion, nil
 }
 
