@@ -150,8 +150,10 @@ func TestGetPromotion(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(promotion, nil)
+			},
 			input: &store.GetPromotionInput{
 				PromotionID: "promotion-id",
 			},
