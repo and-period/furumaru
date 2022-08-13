@@ -1,4 +1,4 @@
-import { ref } from '@nuxtjs/composition-api'
+import axios from 'axios'
 import { defineStore } from 'pinia'
 
 import ApiClientFactory from '../plugins/factory'
@@ -11,6 +11,14 @@ import {
   CategoryApi,
   CreateCategoryRequest,
 } from '~/types/api'
+import {
+  AuthError,
+  ConflictError,
+  ConnectionError,
+  InternalServerError,
+  NotFoundError,
+  ValidationError,
+} from '~/types/exception'
 
 export const useCategoryStore = defineStore('Category', {
   state: () => ({
@@ -40,9 +48,22 @@ export const useCategoryStore = defineStore('Category', {
           const res = await categoriesApiClient.v1ListCategories(limit)
           this.productTypeCategories = res.data.categories
         }
-      } catch (e) {
-        console.log(e)
-        throw new Error('Internal Server Error')
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          switch (error.response.status) {
+            case 401:
+              return Promise.reject(
+                new AuthError('認証エラー。再度ログインをしてください。', error)
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+        throw new InternalServerError(error)
       }
     },
 
@@ -52,7 +73,6 @@ export const useCategoryStore = defineStore('Category', {
      */
     async createCategory(payload: CreateCategoryRequest): Promise<void> {
       const commonStore = useCommonStore()
-      const errorMessage = ref<string>('')
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -68,17 +88,34 @@ export const useCategoryStore = defineStore('Category', {
           message: 'カテゴリーを追加しました。',
           color: 'info',
         })
-      } catch (e) {
-        if (e instanceof Error) {
-          errorMessage.value = e.message
-        } else {
-          errorMessage.value =
-            '不明なエラーが発生しました。お手数ですがご自身で入力してください。'
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          const statusCode = error.response.status
+          switch (statusCode) {
+            case 400:
+              return Promise.reject(
+                new ValidationError('入力内容に誤りがあります。', error)
+              )
+            case 401:
+              return Promise.reject(
+                new AuthError('認証エラー。再度ログインをしてください。', error)
+              )
+            case 409:
+              return Promise.reject(
+                new ConflictError(
+                  'このカテゴリーはすでに登録されているため、登録できません。',
+                  error
+                )
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
         }
-        commonStore.addSnackbar({
-          message: errorMessage.value,
-          color: 'error',
-        })
+        throw new InternalServerError(error)
       }
     },
 
@@ -88,7 +125,6 @@ export const useCategoryStore = defineStore('Category', {
      */
     async deleteCategory(categoryId: string): Promise<void> {
       const commonStore = useCommonStore()
-      const errorMessage = ref<string>('')
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -103,18 +139,37 @@ export const useCategoryStore = defineStore('Category', {
           message: 'カテゴリー削除が完了しました',
           color: 'info',
         })
-      } catch (e) {
-        // TODO: エラーハンドリングは今後見直していく
-        if (e instanceof Error) {
-          errorMessage.value = e.message
-        } else {
-          errorMessage.value =
-            '不明なエラーが発生しました。お手数ですがご自身で入力してください。'
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          const statusCode = error.response.status
+          switch (statusCode) {
+            case 400:
+              return Promise.reject(
+                new ValidationError(
+                  '削除できませんでした。管理者にお問い合わせしてください。',
+                  error
+                )
+              )
+            case 401:
+              return Promise.reject(
+                new AuthError('認証エラー。再度ログインをしてください。', error)
+              )
+            case 404:
+              return Promise.reject(
+                new NotFoundError(
+                  '削除するカテゴリーが見つかりませんでした。',
+                  error
+                )
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
         }
-        commonStore.addSnackbar({
-          message: errorMessage.value,
-          color: 'error',
-        })
+        throw new InternalServerError(error)
       }
       this.fetchCategories()
     },
