@@ -165,8 +165,6 @@ func TestGetPromotion(t *testing.T) {
 func TestCreatePromotion(t *testing.T) {
 	t.Parallel()
 
-	promotion := &entity.Promotion{}
-
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -175,13 +173,33 @@ func TestCreatePromotion(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Promotion.EXPECT().
+					Create(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, promotion *entity.Promotion) error {
+						expect := &entity.Promotion{
+							ID:           promotion.ID, // ignore
+							Title:        "プロモーションタイトル",
+							Description:  "プロモーションの詳細です。",
+							Public:       true,
+							PublishedAt:  jst.Date(2022, 7, 30, 18, 30, 0, 0),
+							DiscountType: entity.DiscountTypeRate,
+							DiscountRate: 10,
+							Code:         "excode01",
+							CodeType:     entity.PromotionCodeTypeAlways,
+							StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+							EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+						}
+						assert.Equal(t, expect, promotion)
+						return nil
+					})
+			},
 			input: &store.CreatePromotionInput{
 				Title:        "プロモーションタイトル",
 				Description:  "プロモーションの詳細です。",
 				Public:       true,
-				PublishedAt:  jst.Date(2022, 8, 9, 18, 30, 0, 0),
+				PublishedAt:  jst.Date(2022, 7, 30, 18, 30, 0, 0),
 				DiscountType: entity.DiscountTypeRate,
 				DiscountRate: 10,
 				Code:         "excode01",
@@ -189,24 +207,40 @@ func TestCreatePromotion(t *testing.T) {
 				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
 				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
 			},
-			expect:    promotion,
 			expectErr: nil,
 		},
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.CreatePromotionInput{},
-			expect:    nil,
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to create promotion",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Promotion.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
+			},
+			input: &store.CreatePromotionInput{
+				Title:        "プロモーションタイトル",
+				Description:  "プロモーションの詳細です。",
+				Public:       true,
+				PublishedAt:  jst.Date(2022, 7, 30, 18, 30, 0, 0),
+				DiscountType: entity.DiscountTypeRate,
+				DiscountRate: 10,
+				Code:         "excode01",
+				CodeType:     entity.PromotionCodeTypeAlways,
+				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+			},
+			expectErr: exception.ErrUnknown,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.CreatePromotion(ctx, tt.input)
+			_, err := service.CreatePromotion(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
 		}))
 	}
 }

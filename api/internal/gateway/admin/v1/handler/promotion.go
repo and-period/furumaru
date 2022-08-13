@@ -10,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/gin-gonic/gin"
 )
 
@@ -101,9 +102,27 @@ func (h *handler) CreatePromotion(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
-	// TODO: 詳細の実装
+
+	in := &store.CreatePromotionInput{
+		Title:        req.Title,
+		Description:  req.Description,
+		Public:       req.Public,
+		PublishedAt:  jst.ParseFromUnix(req.PublishedAt),
+		DiscountType: service.DiscountType(req.DiscountType).StoreEntity(),
+		DiscountRate: req.DiscountRate,
+		Code:         req.Code,
+		CodeType:     sentity.PromotionCodeTypeAlways, // 回数無制限固定
+		StartAt:      jst.ParseFromUnix(req.StartAt),
+		EndAt:        jst.ParseFromUnix(req.EndAt),
+	}
+	promotion, err := h.store.CreatePromotion(ctx, in)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+
 	res := &response.PromotionResponse{
-		Promotion: &response.Promotion{},
+		Promotion: service.NewPromotion(promotion).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

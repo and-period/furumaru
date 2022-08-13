@@ -34,6 +34,19 @@ func NewDiscountType(typ entity.DiscountType) DiscountType {
 	}
 }
 
+func (t DiscountType) StoreEntity() entity.DiscountType {
+	switch t {
+	case DiscountTypeAmount:
+		return entity.DiscountTypeAmount
+	case DiscountTypeRate:
+		return entity.DiscountTypeRate
+	case DiscountTypeFreeShipping:
+		return entity.DiscountTypeFreeShipping
+	default:
+		return entity.DiscountTypeUnknown
+	}
+}
+
 func (t DiscountType) Response() int32 {
 	return int32(t)
 }
