@@ -10,6 +10,7 @@ import {
   CategoriesResponse,
   CategoryApi,
   CreateCategoryRequest,
+  UpdateCategoryRequest,
 } from '~/types/api'
 import {
   AuthError,
@@ -106,7 +107,7 @@ export const useCategoryStore = defineStore('Category', {
             case 409:
               return Promise.reject(
                 new ConflictError(
-                  'このカテゴリーはすでに登録されているため、登録できません。',
+                  'このカテゴリー名はすでに登録されています。',
                   error
                 )
               )
@@ -117,6 +118,67 @@ export const useCategoryStore = defineStore('Category', {
         }
         throw new InternalServerError(error)
       }
+    },
+
+    /**
+     * カテゴリを編集する非同期関数
+     * @param payload
+     * @param categoryId
+     */
+
+    async editCategory(categoryId: string, payload: UpdateCategoryRequest) {
+      const commonStore = useCommonStore()
+      try {
+        const authStore = useAuthStore()
+        const accessToken = authStore.accessToken
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
+        }
+
+        const factory = new ApiClientFactory()
+        const categoriesApiClient = factory.create(CategoryApi, accessToken)
+        await categoriesApiClient.v1UpdateCategory(categoryId, payload)
+        commonStore.addSnackbar({
+          message: `変更しました。`,
+          color: 'info',
+        })
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          const statusCode = error.response.status
+          switch (statusCode) {
+            case 400:
+              return Promise.reject(
+                new ValidationError('入力内容に誤りがあります。', error)
+              )
+            case 401:
+              return Promise.reject(
+                new AuthError('認証エラー。再度ログインをしてください。', error)
+              )
+            case 404:
+              return Promise.reject(
+                new NotFoundError(
+                  '編集するカテゴリーが見つかりませんでした。',
+                  error
+                )
+              )
+            case 409:
+              return Promise.reject(
+                new ConflictError(
+                  'このカテゴリー名はすでに登録されています。',
+                  error
+                )
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+        throw new InternalServerError(error)
+      }
+      this.fetchCategories()
     },
 
     /**

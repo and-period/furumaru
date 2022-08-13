@@ -168,7 +168,6 @@ export default defineComponent({
 
     const productTypeRegister = async (): Promise<void> => {
       try {
-        console.log(selectedCategoryId)
         await productTypeStore.createProductType(
           selectedCategoryId.value,
           productTypeFormData
