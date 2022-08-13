@@ -384,6 +384,10 @@ func TestUpdatePromotion(t *testing.T) {
 func TestDeletePromotion(t *testing.T) {
 	t.Parallel()
 
+	in := &store.DeletePromotionInput{
+		PromotionID: "promotion-id",
+	}
+
 	tests := []struct {
 		name        string
 		setup       func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
@@ -391,11 +395,23 @@ func TestDeletePromotion(t *testing.T) {
 		expect      *testResponse
 	}{
 		{
-			name:        "success",
-			setup:       func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().DeletePromotion(gomock.Any(), in).Return(nil)
+			},
 			promotionID: "promotion-id",
 			expect: &testResponse{
 				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to delete promotion",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().DeletePromotion(gomock.Any(), in).Return(errmock)
+			},
+			promotionID: "promotion-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
 			},
 		},
 	}
