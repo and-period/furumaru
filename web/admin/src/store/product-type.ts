@@ -11,7 +11,14 @@ import {
   ProductTypeApi,
   ProductTypesResponse,
 } from '~/types/api'
-import { AuthError, ConflictError, ConnectionError, InternalServerError, NotFoundError, ValidationError } from '~/types/exception'
+import {
+  AuthError,
+  ConflictError,
+  ConnectionError,
+  InternalServerError,
+  NotFoundError,
+  ValidationError,
+} from '~/types/exception'
 
 export const useProductTypeStore = defineStore('ProductType', {
   state: () => ({
@@ -141,7 +148,10 @@ export const useProductTypeStore = defineStore('ProductType', {
           switch (statusCode) {
             case 400:
               return Promise.reject(
-                new ValidationError('削除できませんでした。管理者にお問い合わせしてください。', error)
+                new ValidationError(
+                  '削除できませんでした。管理者にお問い合わせしてください。',
+                  error
+                )
               )
             case 401:
               return Promise.reject(

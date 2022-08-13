@@ -19,7 +19,7 @@ import {
   ConflictError,
   ConnectionError,
   InternalServerError,
-  PerconditionError,
+  PreconditionError,
   ValidationError,
 } from '~/types/exception'
 
@@ -137,7 +137,7 @@ export const useAuthStore = defineStore('auth', {
               )
             case 412:
               return Promise.reject(
-                new PerconditionError(
+                new PreconditionError(
                   '変更前のメールアドレスと同じため、変更できません。',
                   error
                 )

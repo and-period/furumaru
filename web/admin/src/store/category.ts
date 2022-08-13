@@ -11,7 +11,14 @@ import {
   CategoryApi,
   CreateCategoryRequest,
 } from '~/types/api'
-import { AuthError, ConflictError, ConnectionError, InternalServerError, NotFoundError, ValidationError } from '~/types/exception'
+import {
+  AuthError,
+  ConflictError,
+  ConnectionError,
+  InternalServerError,
+  NotFoundError,
+  ValidationError,
+} from '~/types/exception'
 
 export const useCategoryStore = defineStore('Category', {
   state: () => ({
@@ -141,7 +148,10 @@ export const useCategoryStore = defineStore('Category', {
           switch (statusCode) {
             case 400:
               return Promise.reject(
-                new ValidationError('削除できませんでした。管理者にお問い合わせしてください。', error)
+                new ValidationError(
+                  '削除できませんでした。管理者にお問い合わせしてください。',
+                  error
+                )
               )
             case 401:
               return Promise.reject(
@@ -149,7 +159,10 @@ export const useCategoryStore = defineStore('Category', {
               )
             case 404:
               return Promise.reject(
-                new NotFoundError('削除するカテゴリーが見つかりませんでした。', error)
+                new NotFoundError(
+                  '削除するカテゴリーが見つかりませんでした。',
+                  error
+                )
               )
             case 500:
             default:

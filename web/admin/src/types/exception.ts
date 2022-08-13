@@ -49,7 +49,7 @@ export class ConflictError<T> extends ApiBaseError<T> {
   }
 }
 
-export class PerconditionError<T> extends ApiBaseError<T> {
+export class PreconditionError<T> extends ApiBaseError<T> {
   status = 412
   constructor(public message: string, public cause?: T) {
     super(message, cause)
