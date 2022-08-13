@@ -86,8 +86,20 @@ func (s *service) UpdatePromotion(ctx context.Context, in *store.UpdatePromotion
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	// TODO: 詳細の実装
-	return nil
+	params := &database.UpdatePromotionParams{
+		Title:        in.Title,
+		Description:  in.Description,
+		Public:       in.Public,
+		PublishedAt:  in.PublishedAt,
+		DiscountType: in.DiscountType,
+		DiscountRate: in.DiscountRate,
+		Code:         in.Code,
+		CodeType:     in.CodeType,
+		StartAt:      in.StartAt,
+		EndAt:        in.EndAt,
+	}
+	err := s.db.Promotion.Update(ctx, in.PromotionID, params)
+	return exception.InternalError(err)
 }
 
 func (s *service) DeletePromotion(ctx context.Context, in *store.DeletePromotionInput) error {

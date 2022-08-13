@@ -276,6 +276,19 @@ func TestCreatePromotion(t *testing.T) {
 func TestUpdatePromotion(t *testing.T) {
 	t.Parallel()
 
+	params := &database.UpdatePromotionParams{
+		Title:        "プロモーションタイトル",
+		Description:  "プロモーションの詳細です。",
+		Public:       true,
+		PublishedAt:  jst.Date(2022, 8, 9, 18, 30, 0, 0),
+		DiscountType: entity.DiscountTypeRate,
+		DiscountRate: 10,
+		Code:         "excode01",
+		CodeType:     entity.PromotionCodeTypeAlways,
+		StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+		EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+	}
+
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -283,8 +296,10 @@ func TestUpdatePromotion(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Promotion.EXPECT().Update(ctx, "promotion-id", params).Return(nil)
+			},
 			input: &store.UpdatePromotionInput{
 				PromotionID:  "promotion-id",
 				Title:        "プロモーションタイトル",
@@ -305,6 +320,26 @@ func TestUpdatePromotion(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.UpdatePromotionInput{},
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to update promotion",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Promotion.EXPECT().Update(ctx, "promotion-id", params).Return(errmock)
+			},
+			input: &store.UpdatePromotionInput{
+				PromotionID:  "promotion-id",
+				Title:        "プロモーションタイトル",
+				Description:  "プロモーションの詳細です。",
+				Public:       true,
+				PublishedAt:  jst.Date(2022, 8, 9, 18, 30, 0, 0),
+				DiscountType: entity.DiscountTypeRate,
+				DiscountRate: 10,
+				Code:         "excode01",
+				CodeType:     entity.PromotionCodeTypeAlways,
+				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+			},
+			expectErr: exception.ErrUnknown,
 		},
 	}
 

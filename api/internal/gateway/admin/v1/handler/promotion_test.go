@@ -306,6 +306,20 @@ func TestCreatePromotion(t *testing.T) {
 func TestUpdatePromotion(t *testing.T) {
 	t.Parallel()
 
+	in := &store.UpdatePromotionInput{
+		PromotionID:  "promotion-id",
+		Title:        "プロモーションタイトル",
+		Description:  "プロモーションの詳細です。",
+		Public:       true,
+		PublishedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		DiscountType: sentity.DiscountTypeRate,
+		DiscountRate: 10,
+		Code:         "excode01",
+		CodeType:     sentity.PromotionCodeTypeAlways,
+		StartAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		EndAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
+	}
+
 	tests := []struct {
 		name        string
 		setup       func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
@@ -314,8 +328,10 @@ func TestUpdatePromotion(t *testing.T) {
 		expect      *testResponse
 	}{
 		{
-			name:        "success",
-			setup:       func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().UpdatePromotion(gomock.Any(), in).Return(nil)
+			},
 			promotionID: "promotion-id",
 			req: &request.UpdatePromotionRequest{
 				Title:        "プロモーションタイトル",
@@ -330,6 +346,27 @@ func TestUpdatePromotion(t *testing.T) {
 			},
 			expect: &testResponse{
 				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to update promotion",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().UpdatePromotion(gomock.Any(), in).Return(errmock)
+			},
+			promotionID: "promotion-id",
+			req: &request.UpdatePromotionRequest{
+				Title:        "プロモーションタイトル",
+				Description:  "プロモーションの詳細です。",
+				Public:       true,
+				PublishedAt:  1640962800,
+				DiscountType: 2,
+				DiscountRate: 10,
+				Code:         "excode01",
+				StartAt:      1640962800,
+				EndAt:        1640962800,
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
 			},
 		},
 	}
