@@ -52,9 +52,8 @@ func (s *service) GetPromotion(ctx context.Context, in *store.GetPromotionInput)
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
-	// TODO: 詳細の実装
-	promotion := &entity.Promotion{}
-	return promotion, nil
+	promotion, err := s.db.Promotion.Get(ctx, in.PromotionID)
+	return promotion, exception.InternalError(err)
 }
 
 func (s *service) CreatePromotion(ctx context.Context, in *store.CreatePromotionInput) (*entity.Promotion, error) {
