@@ -20,6 +20,7 @@ import (
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	mock_messenger "github.com/and-period/furumaru/api/mock/messenger"
 	mock_storage "github.com/and-period/furumaru/api/mock/pkg/storage"
+	mock_store "github.com/and-period/furumaru/api/mock/store"
 	mock_user "github.com/and-period/furumaru/api/mock/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/gin-gonic/gin"
@@ -27,7 +28,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
-	"golang.org/x/sync/singleflight"
 )
 
 var (
@@ -39,6 +39,7 @@ var (
 type mocks struct {
 	storage   *mock_storage.MockBucket
 	user      *mock_user.MockService
+	store     *mock_store.MockService
 	messenger *mock_messenger.MockService
 }
 
@@ -65,20 +66,22 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
 		storage:   mock_storage.NewMockBucket(ctrl),
 		user:      mock_user.NewMockService(ctrl),
+		store:     mock_store.NewMockService(ctrl),
 		messenger: mock_messenger.NewMockService(ctrl),
 	}
 }
 
 func newHandler(mocks *mocks, opts *testOptions) Handler {
-	return &handler{
-		now:         opts.now,
-		logger:      zap.NewNop(),
-		waitGroup:   &sync.WaitGroup{},
-		sharedGroup: &singleflight.Group{},
-		storage:     mocks.storage,
-		user:        mocks.user,
-		messenger:   mocks.messenger,
+	params := &Params{
+		WaitGroup: &sync.WaitGroup{},
+		Storage:   mocks.storage,
+		User:      mocks.user,
+		Store:     mocks.store,
+		Messenger: mocks.messenger,
 	}
+	handler := NewHandler(params).(*handler)
+	handler.now = opts.now
+	return handler
 }
 
 func newRoutes(h Handler, r *gin.Engine) {

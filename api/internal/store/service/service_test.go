@@ -12,11 +12,9 @@ import (
 	mock_database "github.com/and-period/furumaru/api/mock/store/database"
 	mock_user "github.com/and-period/furumaru/api/mock/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/and-period/furumaru/api/pkg/validator"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
-	"golang.org/x/sync/singleflight"
 )
 
 var errmock = errors.New("some error")
@@ -76,22 +74,23 @@ func newService(mocks *mocks, opts ...testOption) *service {
 	for i := range opts {
 		opts[i](dopts)
 	}
-	return &service{
-		now:         dopts.now,
-		logger:      zap.NewNop(),
-		sharedGroup: &singleflight.Group{},
-		waitGroup:   &sync.WaitGroup{},
-		validator:   validator.NewValidator(),
-		db: &database.Database{
+	params := &Params{
+		WaitGroup: &sync.WaitGroup{},
+		Database: &database.Database{
 			Category:    mocks.db.Category,
 			Product:     mocks.db.Product,
 			ProductType: mocks.db.ProductType,
 			Promotion:   mocks.db.Promotion,
 			Shipping:    mocks.db.Shipping,
 		},
-		user:      mocks.user,
-		messenger: mocks.messenger,
+		User:      mocks.user,
+		Messenger: mocks.messenger,
 	}
+	service := NewService(params).(*service)
+	service.now = func() time.Time {
+		return dopts.now()
+	}
+	return service
 }
 
 func testService(

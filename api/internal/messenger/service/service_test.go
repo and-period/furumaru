@@ -13,7 +13,6 @@ import (
 	mock_sqs "github.com/and-period/furumaru/api/mock/pkg/sqs"
 	mock_user "github.com/and-period/furumaru/api/mock/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/and-period/furumaru/api/pkg/validator"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
@@ -84,23 +83,11 @@ func newService(mocks *mocks, opts ...testOption) *service {
 	for i := range opts {
 		opts[i](dopts)
 	}
-	adminWebURL := func() *url.URL {
-		url := *adminWebURL // copy
-		return &url
-	}
-	userWebURL := func() *url.URL {
-		url := *userWebURL // copy
-		return &url
-	}
-	return &service{
-		now:         dopts.now,
-		logger:      zap.NewNop(),
-		waitGroup:   &sync.WaitGroup{},
-		validator:   validator.NewValidator(),
-		producer:    mocks.producer,
-		adminWebURL: adminWebURL,
-		userWebURL:  userWebURL,
-		db: &database.Database{
+	params := &Params{
+		WaitGroup:   &sync.WaitGroup{},
+		AdminWebURL: adminWebURL,
+		UserWebURL:  userWebURL,
+		Database: &database.Database{
 			Contact:         mocks.db.Contact,
 			Message:         mocks.db.Message,
 			MessageTemplate: mocks.db.MessageTemplate,
@@ -109,8 +96,14 @@ func newService(mocks *mocks, opts ...testOption) *service {
 			ReportTemplate:  mocks.db.ReportTemplate,
 			Schedule:        mocks.db.Schedule,
 		},
-		user: mocks.user,
+		Producer: mocks.producer,
+		User:     mocks.user,
 	}
+	service := NewService(params).(*service)
+	service.now = func() time.Time {
+		return dopts.now()
+	}
+	return service
 }
 
 func testService(

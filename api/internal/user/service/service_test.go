@@ -12,11 +12,9 @@ import (
 	mock_cognito "github.com/and-period/furumaru/api/mock/pkg/cognito"
 	mock_database "github.com/and-period/furumaru/api/mock/user/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/and-period/furumaru/api/pkg/validator"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
-	"golang.org/x/sync/singleflight"
 )
 
 var errmock = errors.New("some error")
@@ -78,23 +76,24 @@ func newService(mocks *mocks, opts ...testOption) *service {
 	for i := range opts {
 		opts[i](dopts)
 	}
-	return &service{
-		now:         dopts.now,
-		logger:      zap.NewNop(),
-		waitGroup:   &sync.WaitGroup{},
-		sharedGroup: &singleflight.Group{},
-		validator:   validator.NewValidator(),
-		db: &database.Database{
+	params := &Params{
+		WaitGroup: &sync.WaitGroup{},
+		Database: &database.Database{
 			AdminAuth:     mocks.db.AdminAuth,
 			Administrator: mocks.db.Administrator,
 			Coordinator:   mocks.db.Coordinator,
 			Producer:      mocks.db.Producer,
 			User:          mocks.db.User,
 		},
-		adminAuth: mocks.adminAuth,
-		userAuth:  mocks.userAuth,
-		messenger: mocks.messenger,
+		AdminAuth: mocks.adminAuth,
+		UserAuth:  mocks.userAuth,
+		Messenger: mocks.messenger,
 	}
+	service := NewService(params).(*service)
+	service.now = func() time.Time {
+		return dopts.now()
+	}
+	return service
 }
 
 func testService(
