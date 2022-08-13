@@ -16,8 +16,10 @@ import {
 } from '~/types/api'
 import {
   AuthError,
+  ConflictError,
   ConnectionError,
   InternalServerError,
+  PerconditionError,
   ValidationError,
 } from '~/types/exception'
 
@@ -111,9 +113,41 @@ export const useAuthStore = defineStore('auth', {
           message: '認証コードを送信しました。',
           color: 'info',
         })
-      } catch (err) {
-        console.log(err)
-        throw new Error('Internal Server Error')
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          const statusCode = error.response.status
+          switch (statusCode) {
+            case 400:
+              return Promise.reject(
+                new ValidationError('入力内容に誤りがあります。', error)
+              )
+            case 401:
+              return Promise.reject(
+                new AuthError('認証エラー。再度ログインをしてください。', error)
+              )
+            case 409:
+              return Promise.reject(
+                new ConflictError(
+                  'このメールアドレスはすでに登録されているため、変更できません。',
+                  error
+                )
+              )
+            case 412:
+              return Promise.reject(
+                new PerconditionError(
+                  '変更前のメールアドレスと同じため、変更できません。',
+                  error
+                )
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+        throw new InternalServerError(error)
       }
     },
 
@@ -127,9 +161,27 @@ export const useAuthStore = defineStore('auth', {
           message: 'メールアドレスが変更されました。',
           color: 'info',
         })
-      } catch (err) {
-        console.log(err)
-        throw new Error('Internal Server Error')
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          const statusCode = error.response.status
+          switch (statusCode) {
+            case 400:
+              return Promise.reject(
+                new ValidationError('入力内容に誤りがあります。', error)
+              )
+            case 401:
+              return Promise.reject(
+                new AuthError('認証エラー。再度ログインをしてください。', error)
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+        throw new InternalServerError(error)
       }
     },
 
