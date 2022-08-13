@@ -101,11 +101,11 @@ export const useProductTypeStore = defineStore('ProductType', {
           errorMessage.value =
             '不明なエラーが発生しました。お手数ですがご自身で入力してください。'
         }
+        commonStore.addSnackbar({
+          message: errorMessage.value,
+          color: 'error',
+        })
       }
-      commonStore.addSnackbar({
-        message: errorMessage.value,
-        color: 'error',
-      })
       this.fetchProductTypes()
     },
   },

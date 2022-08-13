@@ -40,7 +40,7 @@ import { computed, defineComponent } from '@vue/composition-api'
 import { DataTableHeader } from 'vuetify'
 
 import { useCategoryStore } from '~/store/category'
-import { CategoryResponse } from '~/types/api'
+import { CategoriesResponseCategoriesInner } from '~/types/api'
 
 export default defineComponent({
   setup() {
@@ -69,7 +69,7 @@ export default defineComponent({
       deleteDialog.value = false
     }
 
-    const openDialog = (item: CategoryResponse): void => {
+    const openDialog = (item: CategoriesResponseCategoriesInner): void => {
       selectedItem.value = item.id
       selectedName.value = item.name
       deleteDialog.value = true
