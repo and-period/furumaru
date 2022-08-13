@@ -107,7 +107,7 @@ export const useCategoryStore = defineStore('Category', {
             case 409:
               return Promise.reject(
                 new ConflictError(
-                  'このカテゴリーはすでに登録されているため、登録できません。',
+                  'このカテゴリー名はすでに登録されています。',
                   error
                 )
               )
@@ -166,7 +166,7 @@ export const useCategoryStore = defineStore('Category', {
             case 409:
               return Promise.reject(
                 new ConflictError(
-                  'このカテゴリーはすでに登録されているため、変更できません。',
+                  'このカテゴリー名はすでに登録されています。',
                   error
                 )
               )
