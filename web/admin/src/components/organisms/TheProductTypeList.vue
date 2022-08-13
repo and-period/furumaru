@@ -1,25 +1,25 @@
 <template>
-<div>
-  <v-form flat :loading="fetchState.pending">
-    <v-data-table :headers="productTypeHeaders" :items="productTypes">
-      <template #[`item.category`]="{ item }">
-        {{ `${item.categoryName}` }}
-      </template>
-      <template #[`item.productType`]="{ item }">
-        {{ `${item.name}` }}
-      </template>
-      <template #[`item.actions`]="{ item }">
-        <v-btn outlined color="primary" small @click="handleEdit(item)">
-          <v-icon small>mdi-pencil</v-icon>
-          編集
-        </v-btn>
-        <v-btn outlined color="primary" small @click="openDialog(item)">
-          <v-icon small>mdi-delete</v-icon>
-          削除
-        </v-btn>
-      </template>
-    </v-data-table>
-  </v-form>
+  <div>
+    <v-form flat :loading="fetchState.pending">
+      <v-data-table :headers="productTypeHeaders" :items="productTypes">
+        <template #[`item.category`]="{ item }">
+          {{ `${item.categoryName}` }}
+        </template>
+        <template #[`item.productType`]="{ item }">
+          {{ `${item.name}` }}
+        </template>
+        <template #[`item.actions`]="{ item }">
+          <v-btn outlined color="primary" small @click="handleEdit(item)">
+            <v-icon small>mdi-pencil</v-icon>
+            編集
+          </v-btn>
+          <v-btn outlined color="primary" small @click="openDialog(item)">
+            <v-icon small>mdi-delete</v-icon>
+            削除
+          </v-btn>
+        </template>
+      </v-data-table>
+    </v-form>
     <v-dialog v-model="deleteDialog" width="500">
       <v-card>
         <v-card-title class="text-h7">
@@ -34,7 +34,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-</div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -80,10 +80,12 @@ export default defineComponent({
       deleteDialog.value = true
     }
 
-    const handleDelete = async (
-    ): Promise<void> => {
+    const handleDelete = async (): Promise<void> => {
       try {
-        await productTypeStore.deleteProductType(selectedCategoryId.value, selectedItemId.value)
+        await productTypeStore.deleteProductType(
+          selectedCategoryId.value,
+          selectedItemId.value
+        )
       } catch (error) {
         console.log(error)
       }
