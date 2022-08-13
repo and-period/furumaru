@@ -299,8 +299,10 @@ func TestDeletePromotion(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Promotion.EXPECT().Delete(ctx, "promotion-id").Return(nil)
+			},
 			input: &store.DeletePromotionInput{
 				PromotionID: "promotion-id",
 			},
@@ -311,6 +313,16 @@ func TestDeletePromotion(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.DeletePromotionInput{},
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to delete promotion",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Promotion.EXPECT().Delete(ctx, "promotion-id").Return(errmock)
+			},
+			input: &store.DeletePromotionInput{
+				PromotionID: "promotion-id",
+			},
+			expectErr: exception.ErrUnknown,
 		},
 	}
 

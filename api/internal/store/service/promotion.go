@@ -95,6 +95,6 @@ func (s *service) DeletePromotion(ctx context.Context, in *store.DeletePromotion
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	// TODO: 詳細の実装
-	return nil
+	err := s.db.Promotion.Delete(ctx, in.PromotionID)
+	return exception.InternalError(err)
 }

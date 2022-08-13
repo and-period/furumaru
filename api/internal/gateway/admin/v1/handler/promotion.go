@@ -138,6 +138,13 @@ func (h *handler) UpdatePromotion(ctx *gin.Context) {
 }
 
 func (h *handler) DeletePromotion(ctx *gin.Context) {
-	// TODO: 詳細の実装
+	in := &store.DeletePromotionInput{
+		PromotionID: util.GetParam(ctx, "promotionId"),
+	}
+	if err := h.store.DeletePromotion(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
