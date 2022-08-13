@@ -33,3 +33,4 @@ secrets/
 
 # temporary directory
 tmp/
+web/admin/src/static/firebase-messaging-sw.js
