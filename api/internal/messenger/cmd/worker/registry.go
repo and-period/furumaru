@@ -5,12 +5,14 @@ import (
 	"os"
 	"sync"
 
+	firebase "firebase.google.com/go/v4"
 	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/worker"
 	"github.com/and-period/furumaru/api/internal/user"
 	userdb "github.com/and-period/furumaru/api/internal/user/database"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/database"
+	"github.com/and-period/furumaru/api/pkg/firebase/messaging"
 	"github.com/and-period/furumaru/api/pkg/line"
 	"github.com/and-period/furumaru/api/pkg/mailer"
 	"github.com/and-period/furumaru/api/pkg/secret"
@@ -18,6 +20,7 @@ import (
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
+	"google.golang.org/api/option"
 	"gopkg.in/yaml.v2"
 )
 
@@ -29,21 +32,24 @@ type registry struct {
 }
 
 type params struct {
-	config         *config
-	logger         *zap.Logger
-	waitGroup      *sync.WaitGroup
-	mailer         mailer.Client
-	line           line.Client
-	aws            aws.Config
-	secret         secret.Client
-	dbHost         string
-	dbPort         string
-	dbUsername     string
-	dbPassword     string
-	sendGridAPIKey string
-	lineToken      string
-	lineSecret     string
-	lineRoomID     string
+	config            *config
+	logger            *zap.Logger
+	waitGroup         *sync.WaitGroup
+	mailer            mailer.Client
+	line              line.Client
+	messaging         messaging.Client
+	aws               aws.Config
+	firebase          *firebase.App
+	secret            secret.Client
+	dbHost            string
+	dbPort            string
+	dbUsername        string
+	dbPassword        string
+	sendGridAPIKey    string
+	lineToken         string
+	lineSecret        string
+	lineRoomID        string
+	googleCredentials []byte
 }
 
 func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*registry, error) {
@@ -105,6 +111,20 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}
 	params.line = linebot
 
+	// Firebaseの設定
+	fbapp, err := firebase.NewApp(ctx, nil, option.WithCredentialsJSON(params.googleCredentials))
+	if err != nil {
+		return nil, err
+	}
+	params.firebase = fbapp
+
+	// Firebase Cloud Messagingの設定
+	messaging, err := messaging.NewClient(ctx, fbapp, messaging.WithLogger(logger))
+	if err != nil {
+		return nil, err
+	}
+	params.messaging = messaging
+
 	// Serviceの設定
 	userService, err := newUserService(params)
 	if err != nil {
@@ -120,6 +140,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		DB:        messengerdb.NewDatabase(dbParams),
 		Mailer:    params.mailer,
 		Line:      params.line,
+		Messaging: params.messaging,
 		User:      userService,
 	}
 	return &registry{
@@ -179,6 +200,19 @@ func getSecret(ctx context.Context, p *params) error {
 		p.lineToken = secrets["token"]
 		p.lineSecret = secrets["secret"]
 		p.lineRoomID = secrets["roomId"]
+		return nil
+	})
+	eg.Go(func() error {
+		// Google認証情報の取得
+		if p.config.GoogleSecretName == "" {
+			p.googleCredentials = []byte(p.config.GoogleCredentialsJSON)
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, p.config.GoogleSecretName)
+		if err != nil {
+			return err
+		}
+		p.googleCredentials = []byte(secrets["credentials"])
 		return nil
 	})
 	return eg.Wait()

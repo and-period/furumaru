@@ -13,6 +13,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	mock_database "github.com/and-period/furumaru/api/mock/messenger/database"
+	mock_messaging "github.com/and-period/furumaru/api/mock/pkg/firebase/messaging"
 	mock_line "github.com/and-period/furumaru/api/mock/pkg/line"
 	mock_mailer "github.com/and-period/furumaru/api/mock/pkg/mailer"
 	mock_user "github.com/and-period/furumaru/api/mock/user"
@@ -27,10 +28,11 @@ import (
 var errmock = errors.New("some error")
 
 type mocks struct {
-	db     *dbMocks
-	mailer *mock_mailer.MockClient
-	line   *mock_line.MockClient
-	user   *mock_user.MockService
+	db        *dbMocks
+	mailer    *mock_mailer.MockClient
+	line      *mock_line.MockClient
+	messaging *mock_messaging.MockClient
+	user      *mock_user.MockService
 }
 
 type dbMocks struct {
@@ -61,10 +63,11 @@ type testCaller func(ctx context.Context, t *testing.T, worker *worker)
 
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
-		db:     newDBMocks(ctrl),
-		mailer: mock_mailer.NewMockClient(ctrl),
-		line:   mock_line.NewMockClient(ctrl),
-		user:   mock_user.NewMockService(ctrl),
+		db:        newDBMocks(ctrl),
+		mailer:    mock_mailer.NewMockClient(ctrl),
+		line:      mock_line.NewMockClient(ctrl),
+		messaging: mock_messaging.NewMockClient(ctrl),
+		user:      mock_user.NewMockService(ctrl),
 	}
 }
 
@@ -87,13 +90,12 @@ func newWorker(mocks *mocks, opts ...testOption) *worker {
 	for i := range opts {
 		opts[i](dopts)
 	}
-	return &worker{
-		now:       dopts.now,
-		logger:    zap.NewNop(),
-		waitGroup: &sync.WaitGroup{},
-		mailer:    mocks.mailer,
-		line:      mocks.line,
-		db: &database.Database{
+	params := &Params{
+		WaitGroup: &sync.WaitGroup{},
+		Mailer:    mocks.mailer,
+		Line:      mocks.line,
+		Messaging: mocks.messaging,
+		DB: &database.Database{
 			Contact:         mocks.db.Contact,
 			Message:         mocks.db.Message,
 			MessageTemplate: mocks.db.MessageTemplate,
@@ -102,10 +104,15 @@ func newWorker(mocks *mocks, opts ...testOption) *worker {
 			ReportTemplate:  mocks.db.ReportTemplate,
 			Schedule:        mocks.db.Schedule,
 		},
-		user:        mocks.user,
-		concurrency: 1,
-		maxRetries:  1,
+		User: mocks.user,
 	}
+	worker := NewWorker(params).(*worker)
+	worker.concurrency = 1
+	worker.maxRetries = 1
+	worker.now = func() time.Time {
+		return dopts.now()
+	}
+	return worker
 }
 
 func testWorker(
