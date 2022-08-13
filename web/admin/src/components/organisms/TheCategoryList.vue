@@ -104,9 +104,7 @@ export default defineComponent({
       editDialog.value = false
     }
 
-    const openEditDialog = (
-      item: CategoriesResponseCategoriesInner
-    ): void => {
+    const openEditDialog = (item: CategoriesResponseCategoriesInner): void => {
       categoryFormData.name = item.name
       categoryId.value = item.id
       editDialog.value = true
