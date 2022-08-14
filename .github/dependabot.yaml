@@ -9,7 +9,11 @@ updates:
     day: 'wednesday'
     time: '19:00'
     timezone: 'Asia/Tokyo'
-  update-types: ['version-update:semver-minor']
+  allow:
+  - dependency-name: '*'
+  ignore:
+  - dependency-name: '*'
+    update-types: ['version-update:semver-major']
   labels:
   - 'backend'
   - 'dependencies'
@@ -21,7 +25,11 @@ updates:
     day: 'wednesday'
     time: '19:00'
     timezone: 'Asia/Tokyo'
-  update-types: ['version-update:semver-minor']
+  allow:
+  - dependency-name: '*'
+  ignore:
+  - dependency-name: '*'
+    update-types: ['version-update:semver-major']
   labels:
   - 'frontend'
   - 'dependencies'
@@ -32,7 +40,11 @@ updates:
     day: 'wednesday'
     time: '19:00'
     timezone: 'Asia/Tokyo'
-  update-types: ['version-update:semver-minor']
+  allow:
+  - dependency-name: '*'
+  ignore:
+  - dependency-name: '*'
+    update-types: ['version-update:semver-major']
   labels:
   - 'frontend'
   - 'dependencies'
@@ -44,7 +56,8 @@ updates:
     day: 'wednesday'
     time: '19:00'
     timezone: 'Asia/Tokyo'
-  update-types: ['version-update:semver-minor']
+  allow:
+  - dependency-name: '*'
   labels:
   - 'docs'
   - 'dependencies'
@@ -55,7 +68,8 @@ updates:
     day: 'wednesday'
     time: '19:00'
     timezone: 'Asia/Tokyo'
-  update-types: ['version-update:semver-minor']
+  allow:
+  - dependency-name: '*'
   labels:
   - 'infra (terraform)'
   - 'dependencies'
@@ -66,6 +80,8 @@ updates:
     day: 'wednesday'
     time: '19:00'
     timezone: 'Asia/Tokyo'
+  allow:
+  - dependency-name: '*'
   labels:
   - 'workflow'
   - 'dependencies'
