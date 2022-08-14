@@ -11,7 +11,6 @@ type CreateProductRequest struct {
 	Weight           float64               `json:"weight,omitempty"`           // 重量(kg,少数第一位まで)
 	ItemUnit         string                `json:"itemUnit,omitempty"`         // 数量単位
 	ItemDescription  string                `json:"itemDescription,omitempty"`  // 数量単位説明
-	IconURL          string                `json:"iconUrl,omitempty"`          // アイコンURL
 	Media            []*CreateProductMedia `json:"media,omitempty"`            // メディア一覧
 	Price            int64                 `json:"price,omitempty"`            // 販売価格
 	DeliveryType     int32                 `json:"deliveryType,omitempty"`     // 配送方法
@@ -38,7 +37,6 @@ type UpdateProductRequest struct {
 	Weight           float64               `json:"weight,omitempty"`           // 重量(kg,少数第一位まで)
 	ItemUnit         string                `json:"itemUnit,omitempty"`         // 数量単位
 	ItemDescription  string                `json:"itemDescription,omitempty"`  // 数量単位説明
-	IconURL          string                `json:"iconUrl,omitempty"`          // アイコンURL
 	Media            []*UpdateProductMedia `json:"media,omitempty"`            // メディア一覧
 	Price            int64                 `json:"price,omitempty"`            // 販売価格
 	DeliveryType     int32                 `json:"deliveryType,omitempty"`     // 配送方法

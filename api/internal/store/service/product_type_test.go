@@ -30,6 +30,7 @@ func TestListProductTypes(t *testing.T) {
 		{
 			ID:         "product-type-id",
 			Name:       "じゃがいも",
+			IconURL:    "https://and-period.jp/icon.png",
 			CategoryID: "category-id",
 			CreatedAt:  now,
 			UpdatedAt:  now,
@@ -130,6 +131,7 @@ func TestMultiGetProductTypes(t *testing.T) {
 		{
 			ID:         "product-type-id",
 			Name:       "じゃがいも",
+			IconURL:    "https://and-period.jp/icon.png",
 			CategoryID: "category-id",
 			CreatedAt:  now,
 			UpdatedAt:  now,
@@ -193,6 +195,7 @@ func TestGetProductType(t *testing.T) {
 	productType := &entity.ProductType{
 		ID:         "product-type-id",
 		Name:       "じゃがいも",
+		IconURL:    "https://and-period.jp/icon.png",
 		CategoryID: "category-id",
 		CreatedAt:  now,
 		UpdatedAt:  now,
@@ -264,6 +267,7 @@ func TestCreateProductType(t *testing.T) {
 						expect := &entity.ProductType{
 							ID:         productType.ID, // ignore
 							Name:       "じゃがいも",
+							IconURL:    "https://and-period.jp/icon.png",
 							CategoryID: "category-id",
 						}
 						assert.Equal(t, expect, productType)
@@ -272,6 +276,7 @@ func TestCreateProductType(t *testing.T) {
 			},
 			input: &store.CreateProductTypeInput{
 				Name:       "じゃがいも",
+				IconURL:    "https://and-period.jp/icon.png",
 				CategoryID: "category-id",
 			},
 			expectErr: nil,
@@ -289,6 +294,7 @@ func TestCreateProductType(t *testing.T) {
 			},
 			input: &store.CreateProductTypeInput{
 				Name:       "じゃがいも",
+				IconURL:    "https://and-period.jp/icon.png",
 				CategoryID: "category-id",
 			},
 			expectErr: exception.ErrUnknown,
@@ -316,11 +322,12 @@ func TestUpdateProductType(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().Update(ctx, "product-type-id", "さつまいも").Return(nil)
+				mocks.db.ProductType.EXPECT().Update(ctx, "product-type-id", "さつまいも", "https://and-period.jp/icon.png").Return(nil)
 			},
 			input: &store.UpdateProductTypeInput{
 				ProductTypeID: "product-type-id",
 				Name:          "さつまいも",
+				IconURL:       "https://and-period.jp/icon.png",
 			},
 			expectErr: nil,
 		},
@@ -333,11 +340,12 @@ func TestUpdateProductType(t *testing.T) {
 		{
 			name: "failed to update",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().Update(ctx, "product-type-id", "さつまいも").Return(errmock)
+				mocks.db.ProductType.EXPECT().Update(ctx, "product-type-id", "さつまいも", "https://and-period.jp/icon.png").Return(errmock)
 			},
 			input: &store.UpdateProductTypeInput{
 				ProductTypeID: "product-type-id",
 				Name:          "さつまいも",
+				IconURL:       "https://and-period.jp/icon.png",
 			},
 			expectErr: exception.ErrUnknown,
 		},

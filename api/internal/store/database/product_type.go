@@ -14,7 +14,7 @@ import (
 const productTypeTable = "product_types"
 
 var productTypeFields = []string{
-	"id", "name", "category_id", "created_at", "updated_at",
+	"id", "name", "icon_url", "category_id", "created_at", "updated_at",
 }
 
 type productType struct {
@@ -99,7 +99,7 @@ func (t *productType) Create(ctx context.Context, productType *entity.ProductTyp
 	return exception.InternalError(err)
 }
 
-func (t *productType) Update(ctx context.Context, productTypeID, name string) error {
+func (t *productType) Update(ctx context.Context, productTypeID, name, iconURL string) error {
 	_, err := t.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		if _, err := t.get(ctx, tx, productTypeID); err != nil {
 			return nil, err
@@ -107,6 +107,7 @@ func (t *productType) Update(ctx context.Context, productTypeID, name string) er
 
 		params := map[string]interface{}{
 			"name":       name,
+			"icon_url":   iconURL,
 			"updated_at": t.now(),
 		}
 		err := tx.WithContext(ctx).

@@ -7,6 +7,9 @@ productTypeResponse:
     name:
       type: string
       description: 品目名
+    iconUrl:
+      type: string
+      description: アイコンURL
     categoryId:
       type: string
       description: 商品種別ID
@@ -24,6 +27,7 @@ productTypeResponse:
   required:
   - id
   - name
+  - iconUrl
   - categoryId
   - categoryName
   - createdAt
@@ -31,6 +35,7 @@ productTypeResponse:
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     name: 'じゃがいも'
+    iconUrl: 'https://and-period.jp/icon.png'
     categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
     categoryName: '野菜'
     createdAt: 1640962800
@@ -50,6 +55,9 @@ productTypesResponse:
           name:
             type: string
             description: 品目名
+          iconUrl:
+            type: string
+            description: アイコンURL
           categoryId:
             type: string
             description: 商品種別ID
@@ -67,6 +75,7 @@ productTypesResponse:
         required:
         - id
         - name
+        - iconUrl
         - categoryId
         - categoryName
         - createdAt
@@ -82,12 +91,14 @@ productTypesResponse:
     productTypes:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       name: 'じゃがいも'
+      iconUrl: 'https://and-period.jp/icon.png'
       categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
       categoryName: '野菜'
       createdAt: 1640962800
       updatedAt: 1640962800
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       name: 'りんご'
+      iconUrl: 'https://and-period.jp/icon.png'
       categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
       categoryName: '果物'
       createdAt: 1640962800

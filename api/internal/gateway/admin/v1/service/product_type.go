@@ -18,6 +18,7 @@ func NewProductType(productType *entity.ProductType) *ProductType {
 			ID:         productType.ID,
 			CategoryID: productType.CategoryID,
 			Name:       productType.Name,
+			IconURL:    productType.IconURL,
 			CreatedAt:  productType.CreatedAt.Unix(),
 			UpdatedAt:  productType.UpdatedAt.Unix(),
 		},

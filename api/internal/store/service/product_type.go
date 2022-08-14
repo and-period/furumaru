@@ -73,7 +73,7 @@ func (s *service) CreateProductType(
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
-	productType := entity.NewProductType(in.Name, in.CategoryID)
+	productType := entity.NewProductType(in.Name, in.IconURL, in.CategoryID)
 	if err := s.db.ProductType.Create(ctx, productType); err != nil {
 		return nil, exception.InternalError(err)
 	}
@@ -84,7 +84,7 @@ func (s *service) UpdateProductType(ctx context.Context, in *store.UpdateProduct
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	err := s.db.ProductType.Update(ctx, in.ProductTypeID, in.Name)
+	err := s.db.ProductType.Update(ctx, in.ProductTypeID, in.Name, in.IconURL)
 	return exception.InternalError(err)
 }
 

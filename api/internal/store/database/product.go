@@ -17,7 +17,7 @@ const productTable = "products"
 var productFields = []string{
 	"id", "producer_id", "category_id", "product_type_id",
 	"name", "description", "public", "inventory",
-	"weight", "weight_unit", "item", "item_unit", "item_description", "icon_url",
+	"weight", "weight_unit", "item", "item_unit", "item_description",
 	"media", "price", "delivery_type", "box60_rate", "box80_rate", "box100_rate",
 	"origin_prefecture", "origin_city", "created_by", "updated_by",
 	"created_at", "updated_at", "deleted_at",
@@ -108,7 +108,6 @@ func (p *product) Update(ctx context.Context, productID string, params *UpdatePr
 			"item":              params.Item,
 			"item_unit":         params.ItemUnit,
 			"item_description":  params.ItemDescription,
-			"icon_url":          params.IconURL,
 			"price":             params.Price,
 			"delivery_type":     params.DeliveryType,
 			"box60_rate":        params.Box60Rate,

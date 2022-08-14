@@ -276,7 +276,6 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		Item:             1, // 1固定
 		ItemUnit:         req.ItemUnit,
 		ItemDescription:  req.ItemDescription,
-		IconURL:          req.IconURL,
 		Media:            media,
 		Price:            req.Price,
 		DeliveryType:     service.DeliveryType(req.DeliveryType).StoreEntity(),
@@ -332,7 +331,6 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 		Item:             1, // 1固定
 		ItemUnit:         req.ItemUnit,
 		ItemDescription:  req.ItemDescription,
-		IconURL:          req.IconURL,
 		Media:            media,
 		Price:            req.Price,
 		DeliveryType:     service.DeliveryType(req.DeliveryType).StoreEntity(),

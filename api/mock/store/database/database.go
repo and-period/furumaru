@@ -400,17 +400,17 @@ func (mr *MockProductTypeMockRecorder) MultiGet(ctx, productTypeIDs interface{},
 }
 
 // Update mocks base method.
-func (m *MockProductType) Update(ctx context.Context, productTypeID, name string) error {
+func (m *MockProductType) Update(ctx context.Context, productTypeID, name, iconURL string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", ctx, productTypeID, name)
+	ret := m.ctrl.Call(m, "Update", ctx, productTypeID, name, iconURL)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Update indicates an expected call of Update.
-func (mr *MockProductTypeMockRecorder) Update(ctx, productTypeID, name interface{}) *gomock.Call {
+func (mr *MockProductTypeMockRecorder) Update(ctx, productTypeID, name, iconURL interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockProductType)(nil).Update), ctx, productTypeID, name)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockProductType)(nil).Update), ctx, productTypeID, name, iconURL)
 }
 
 // MockPromotion is a mock of Promotion interface.

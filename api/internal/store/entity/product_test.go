@@ -30,7 +30,6 @@ func TestProduct(t *testing.T) {
 				Item:            1,
 				ItemUnit:        "袋",
 				ItemDescription: "1袋あたり100gのじゃがいも",
-				IconURL:         "https://and-period.jp/icon.png",
 				Media: MultiProductMedia{
 					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
@@ -56,7 +55,6 @@ func TestProduct(t *testing.T) {
 				Item:            1,
 				ItemUnit:        "袋",
 				ItemDescription: "1袋あたり100gのじゃがいも",
-				IconURL:         "https://and-period.jp/icon.png",
 				Media: MultiProductMedia{
 					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},

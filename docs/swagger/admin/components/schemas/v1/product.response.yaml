@@ -28,6 +28,9 @@ productResponse:
     productTypeName:
       type: string
       description: 品目名
+    productTypeIconUrl:
+      type: string
+      description: アイコンURL
     public:
       type: boolean
       description: 公開フラグ
@@ -112,6 +115,7 @@ productResponse:
   - categoryName
   - productTypeId
   - productTypeName
+  - productTypeIconUrl
   - public
   - inventory
   - weight
@@ -140,6 +144,7 @@ productResponse:
     categoryName: '野菜'
     productTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
     productTypeName: 'じゃがいも'
+    productTypeIconUrl: 'https://and-period.jp/icon.png'
     public: true
     inventory: 30
     weight: 2.5
@@ -198,6 +203,9 @@ productsResponse:
           productTypeName:
             type: string
             description: 品目名
+          productTypeIconUrl:
+            type: string
+            description: アイコンURL
           public:
             type: boolean
             description: 公開フラグ
@@ -282,6 +290,7 @@ productsResponse:
         - categoryName
         - productTypeId
         - productTypeName
+        - productTypeIconUrl
         - public
         - inventory
         - weight
@@ -318,12 +327,12 @@ productsResponse:
       categoryName: '野菜'
       productTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
       productTypeName: 'じゃがいも'
+      productTypeIconUrl: 'https://and-period.jp/icon.png'
       public: true
       inventory: 30
       weight: 2.5
       itemUnit: '袋'
       itemDescription: '1袋あたり2.5kgのじゃがいも'
-      iconUrl: 'https://and-period.jp/icon.png'
       media:
       - url: 'https://and-period.jp/thumbnail01.png'
         isThumbnail: true
@@ -349,12 +358,12 @@ productsResponse:
       categoryName: '野菜'
       productTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
       productTypeName: 'じゃがいも'
+      productTypeIconUrl: 'https://and-period.jp/icon.png'
       public: true
       inventory: 30
       weight: 2.5
       itemUnit: '袋'
       itemDescription: '1袋あたり2.5kgのじゃがいも'
-      iconUrl: 'https://and-period.jp/icon.png'
       media:
       - url: 'https://and-period.jp/thumbnail01.png'
         isThumbnail: true

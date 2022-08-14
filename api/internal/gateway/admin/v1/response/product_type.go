@@ -4,6 +4,7 @@ package response
 type ProductType struct {
 	ID           string `json:"id"`           // 品目ID
 	Name         string `json:"name"`         // 品目名
+	IconURL      string `json:"iconUrl"`      // アイコンURL
 	CategoryID   string `json:"categoryId"`   // 商品種別ID
 	CategoryName string `json:"categoryName"` // 商品種別名
 	CreatedAt    int64  `json:"createdAt"`    // 登録日時
