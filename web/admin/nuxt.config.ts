@@ -32,11 +32,7 @@ const config: NuxtConfig = {
   css: ['~/assets/main.scss'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [
-    '~/plugins/amplify',
-    '~/plugins/firebase',
-    '~/plugins/google-analytics',
-  ],
+  plugins: ['~/plugins/firebase', '~/plugins/google-analytics'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: [
@@ -74,9 +70,6 @@ const config: NuxtConfig = {
   // env
   env: {
     API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:18010',
-    AWS_REGION: process.env.AWS_REGION || 'ap-northeast-1',
-    AWS_COGNITO_IDENTITY_POOL_ID: process.env.COGNITO_IDENTITY_POOL_ID || '',
-    AWS_PINPOINT_APP_ID: process.env.PINPOINT_APP_ID || '',
     FIREBASE_API_KEY: process.env.FIREBASE_API_KEY || '',
     FIREBASE_AUTH_DOMAIN: process.env.FIREBASE_AUTH_DOMAIN || '',
     FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID || '',
