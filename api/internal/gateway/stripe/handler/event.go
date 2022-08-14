@@ -3,7 +3,7 @@ package handler
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -29,7 +29,7 @@ func (h *handler) Event(ctx *gin.Context) {
 }
 
 func (h *handler) request(r *http.Request) (*stripe.Event, error) {
-	payload, err := ioutil.ReadAll(r.Body)
+	payload, err := io.ReadAll(r.Body)
 	if err != nil {
 		return nil, err
 	}
