@@ -1,0 +1,46 @@
+version: 2
+
+updates:
+# api
+- package-ecosystem: 'gomod'
+  directory: '/api'
+  schedule:
+    interval: 'weekly'
+  update-types: ['version-update:semver-minor']
+  labels:
+  - 'backend'
+  - 'dependencies'
+# docs
+- package-ecosystem: 'yarn'
+  directory: '/docs/swagger'
+  schedule:
+    interval: 'weekly'
+  update-types: ['version-update:semver-minor']
+  labels:
+  - 'docs'
+  - 'dependencies'
+# web
+- package-ecosystem: 'yarn'
+  directory: '/web/admin'
+  schedule:
+    interval: 'weekly'
+  update-types: ['version-update:semver-minor']
+  labels:
+  - 'frontend'
+  - 'dependencies'
+- package-ecosystem: 'yarn'
+  directory: '/web/user'
+  schedule:
+    interval: 'weekly'
+  update-types: ['version-update:semver-minor']
+  labels:
+  - 'frontend'
+  - 'dependencies'
+# other
+- package-ecosystem: 'github-actions'
+  directory: '/'
+  schedule:
+    interval: 'weekly'
+  labels:
+  - 'workflow'
+  - 'dependencies'
