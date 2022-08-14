@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -206,6 +207,7 @@ func TestCreateContact(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				admins := uentity.Administrators{{ID: "admin-id"}}
 				mocks.db.Contact.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, contact *entity.Contact) error {
@@ -223,8 +225,9 @@ func TestCreateContact(t *testing.T) {
 						return nil
 					})
 				mocks.db.Contact.EXPECT().Get(gomock.Any(), gomock.Any()).Return(contact, nil)
-				mocks.db.ReceivedQueue.EXPECT().Create(gomock.Any(), gomock.Any()).Return(nil)
-				mocks.producer.EXPECT().SendMessage(gomock.Any(), gomock.Any()).Return("", nil)
+				mocks.db.ReceivedQueue.EXPECT().Create(gomock.Any(), gomock.Any()).Return(nil).Times(3)
+				mocks.user.EXPECT().ListAdministrators(gomock.Any(), gomock.Any()).Return(admins, int64(1), nil)
+				mocks.producer.EXPECT().SendMessage(gomock.Any(), gomock.Any()).Return("", nil).Times(3)
 			},
 			input: &messenger.CreateContactInput{
 				Title:       "お問い合わせ件名",

@@ -229,10 +229,18 @@ func TestWorker_Run(t *testing.T) {
 		},
 	}
 	message := &messaging.Message{
-		Title:    "",
-		Body:     "",
-		ImageURL: "",
-		Data:     map[string]string{"key": "value"},
+		Title:    "件名: テストお問い合わせ",
+		Body:     "テンプレートです。",
+		ImageURL: "https://and-period.jp/image.png",
+		Data:     map[string]string{"Title": "テストお問い合わせ"},
+	}
+	ptemplate := &entity.PushTemplate{
+		TemplateID:    entity.PushIDContact,
+		TitleTemplate: "件名: {{.Title}}",
+		BodyTemplate:  "テンプレートです。",
+		ImageURL:      "https://and-period.jp/image.png",
+		CreatedAt:     jst.Date(2022, 7, 14, 18, 30, 0, 0),
+		UpdatedAt:     jst.Date(2022, 7, 14, 18, 30, 0, 0),
 	}
 	mtemplate := &entity.MessageTemplate{
 		TemplateID:    entity.MessageIDNotification,
@@ -288,6 +296,7 @@ func TestWorker_Run(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
 				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", true).Return(nil)
+				mocks.db.PushTemplate.EXPECT().Get(gomock.Any(), entity.PushIDContact).Return(ptemplate, nil)
 				mocks.user.EXPECT().MultiGetAdminDevices(gomock.Any(), devicesIn).Return(devices, nil)
 				mocks.messaging.EXPECT().MultiSend(gomock.Any(), message, devices).Return(int64(1), int64(0), nil)
 			},
@@ -298,7 +307,7 @@ func TestWorker_Run(t *testing.T) {
 				UserIDs:   []string{"admin-id"},
 				Push: &entity.PushConfig{
 					PushID: entity.PushIDContact,
-					Data:   map[string]string{"key": "value"},
+					Data:   map[string]string{"Title": "テストお問い合わせ"},
 				},
 			},
 			expectErr: nil,
@@ -426,7 +435,7 @@ func TestWorker_Run(t *testing.T) {
 				UserIDs:   []string{"admin-id"},
 				Push: &entity.PushConfig{
 					PushID: entity.PushIDContact,
-					Data:   map[string]string{"key": "value"},
+					Data:   map[string]string{"Title": "テストお問い合わせ"},
 				},
 			},
 			expectErr: exception.ErrUnknown,

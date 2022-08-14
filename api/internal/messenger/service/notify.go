@@ -215,6 +215,9 @@ func (s *service) notifyAdminNotification(ctx context.Context, notification *ent
 	return eg.Wait()
 }
 
+/*
+ * private
+ */
 func (s *service) sendMessage(ctx context.Context, payload *entity.WorkerPayload) error {
 	buf, err := json.Marshal(payload)
 	if err != nil {

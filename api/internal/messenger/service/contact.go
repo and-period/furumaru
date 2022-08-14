@@ -63,17 +63,15 @@ func (s *service) CreateContact(ctx context.Context, in *messenger.CreateContact
 		return nil, exception.InternalError(err)
 	}
 	s.waitGroup.Add(1)
-	go func(contactID, name, email string) {
+	go func(contactID string) {
 		defer s.waitGroup.Done()
 		in := &messenger.NotifyReceivedContactInput{
 			ContactID: contactID,
-			Username:  name,
-			Email:     email,
 		}
 		if err := s.NotifyReceivedContact(context.Background(), in); err != nil {
 			s.logger.Error("Failed to notify received contact", zap.String("contactId", contactID), zap.Error(err))
 		}
-	}(contact.ID, in.Username, in.Email)
+	}(contact.ID)
 	return contact, nil
 }
 

@@ -307,8 +307,6 @@ func TestNotifyReceivedContact(t *testing.T) {
 			},
 			input: &messenger.NotifyReceivedContactInput{
 				ContactID: "contact-id",
-				Username:  "&. スタッフ",
-				Email:     "test-user@and-period.jp",
 			},
 			expectErr: nil,
 		},
@@ -325,8 +323,6 @@ func TestNotifyReceivedContact(t *testing.T) {
 			},
 			input: &messenger.NotifyReceivedContactInput{
 				ContactID: "contact-id",
-				Username:  "&. スタッフ",
-				Email:     "test-user@and-period.jp",
 			},
 			expectErr: exception.ErrUnknown,
 		},
@@ -341,8 +337,6 @@ func TestNotifyReceivedContact(t *testing.T) {
 			},
 			input: &messenger.NotifyReceivedContactInput{
 				ContactID: "contact-id",
-				Username:  "&. スタッフ",
-				Email:     "test-user@and-period.jp",
 			},
 			expectErr: exception.ErrUnknown,
 		},
