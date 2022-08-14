@@ -21,6 +21,7 @@ type Database struct {
 	Message         Message
 	MessageTemplate MessageTemplate
 	Notification    Notification
+	PushTemplate    PushTemplate
 	ReceivedQueue   ReceivedQueue
 	ReportTemplate  ReportTemplate
 	Schedule        Schedule
@@ -32,6 +33,7 @@ func NewDatabase(params *Params) *Database {
 		Message:         NewMessage(params.Database),
 		MessageTemplate: NewMessageTemplate(params.Database),
 		Notification:    NewNotification(params.Database),
+		PushTemplate:    NewPushTemplate(params.Database),
 		ReceivedQueue:   NewReceivedQueue(params.Database),
 		ReportTemplate:  NewReportTemplate(params.Database),
 		Schedule:        NewSchedule(params.Database),
@@ -66,6 +68,10 @@ type Notification interface {
 	List(ctx context.Context, params *ListNotificationsParams, fields ...string) (entity.Notifications, error)
 	Get(ctx context.Context, notificationID string, fields ...string) (*entity.Notification, error)
 	Create(ctx context.Context, notification *entity.Notification) error
+}
+
+type PushTemplate interface {
+	Get(ctx context.Context, pushID string, fields ...string) (*entity.PushTemplate, error)
 }
 
 type ReceivedQueue interface {

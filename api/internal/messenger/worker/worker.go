@@ -11,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/pkg/firebase/messaging"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/line"
 	"github.com/and-period/furumaru/api/pkg/mailer"
@@ -33,6 +34,7 @@ type Params struct {
 	WaitGroup *sync.WaitGroup
 	Mailer    mailer.Client
 	Line      line.Client
+	Messaging messaging.Client
 	DB        *database.Database
 	User      user.Service
 }
@@ -43,6 +45,7 @@ type worker struct {
 	waitGroup   *sync.WaitGroup
 	mailer      mailer.Client
 	line        line.Client
+	messaging   messaging.Client
 	db          *database.Database
 	user        user.Service
 	concurrency int64
@@ -90,6 +93,7 @@ func NewWorker(params *Params, opts ...Option) Worker {
 		waitGroup:   params.WaitGroup,
 		mailer:      params.Mailer,
 		line:        params.Line,
+		messaging:   params.Messaging,
 		db:          params.DB,
 		user:        params.User,
 		concurrency: dopts.concurrency,
@@ -139,7 +143,7 @@ func (w *worker) run(ctx context.Context, payload *entity.WorkerPayload) error {
 	w.logger.Debug("Dispatch", zap.String("queueId", payload.QueueID), zap.Any("payload", payload))
 	queue, err := w.db.ReceivedQueue.Get(ctx, payload.QueueID)
 	if err != nil {
-		return err
+		return exception.InternalError(err)
 	}
 	if queue.Done {
 		w.logger.Info("This queue is already done", zap.String("queueId", payload.QueueID))
@@ -152,6 +156,13 @@ func (w *worker) run(ctx context.Context, payload *entity.WorkerPayload) error {
 			return nil
 		}
 		return w.multiSendMail(ectx, payload)
+	})
+	eg.Go(func() error {
+		// プッシュ通知
+		if payload.Push == nil {
+			return nil
+		}
+		return w.multiSendPush(ectx, payload)
 	})
 	eg.Go(func() error {
 		// メッセージ作成
@@ -168,7 +179,10 @@ func (w *worker) run(ctx context.Context, payload *entity.WorkerPayload) error {
 		return w.reporter(ectx, payload)
 	})
 	if err := eg.Wait(); err != nil {
-		return err
+		return exception.InternalError(err)
 	}
-	return w.db.ReceivedQueue.UpdateDone(ctx, payload.QueueID, true)
+	if err := w.db.ReceivedQueue.UpdateDone(ctx, payload.QueueID, true); err != nil {
+		return exception.InternalError(err)
+	}
+	return nil
 }

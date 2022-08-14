@@ -227,6 +227,68 @@ func TestMultiGetAdmins(t *testing.T) {
 	}
 }
 
+func TestMultiGetAdminDevices(t *testing.T) {
+	t.Parallel()
+
+	auths := entity.AdminAuths{
+		{
+			AdminID:   "admin-id",
+			CognitoID: "username",
+			Role:      entity.AdminRoleAdministrator,
+			Device:    "instance-id",
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.MultiGetAdminDevicesInput
+		expect    []string
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.AdminAuth.EXPECT().MultiGet(ctx, []string{"admin-id"}, "device").Return(auths, nil)
+			},
+			input: &user.MultiGetAdminDevicesInput{
+				AdminIDs: []string{"admin-id"},
+			},
+			expect:    []string{"instance-id"},
+			expectErr: nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &user.MultiGetAdminDevicesInput{
+				AdminIDs: []string{""},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to multi get admin auths",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.AdminAuth.EXPECT().MultiGet(ctx, []string{"admin-id"}, "device").Return(nil, errmock)
+			},
+			input: &user.MultiGetAdminDevicesInput{
+				AdminIDs: []string{"admin-id"},
+			},
+			expect:    nil,
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.MultiGetAdminDevices(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.ElementsMatch(t, tt.expect, actual)
+		}))
+	}
+}
+
 func TestGetAdmin(t *testing.T) {
 	t.Parallel()
 

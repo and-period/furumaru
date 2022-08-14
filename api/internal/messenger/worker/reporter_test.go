@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
@@ -56,7 +57,7 @@ func TestReporter(t *testing.T) {
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
-				EventType: entity.EventTypeUserReceivedContact,
+				EventType: entity.EventTypeReceivedContact,
 				Report: &entity.ReportConfig{
 					ReportID: entity.ReportIDReceivedContact,
 					Overview: "お問い合わせ件名",
@@ -72,7 +73,7 @@ func TestReporter(t *testing.T) {
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
-				EventType: entity.EventTypeUserReceivedContact,
+				EventType: entity.EventTypeReceivedContact,
 				Report: &entity.ReportConfig{
 					ReportID: entity.ReportIDReceivedContact,
 					Overview: "お問い合わせ件名",
@@ -89,14 +90,14 @@ func TestReporter(t *testing.T) {
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
-				EventType: entity.EventTypeUserReceivedContact,
+				EventType: entity.EventTypeReceivedContact,
 				Report: &entity.ReportConfig{
 					ReportID: entity.ReportIDReceivedContact,
 					Overview: "お問い合わせ件名",
 					Link:     "htts://admin.and-period.jp/contacts/contact-id",
 				},
 			},
-			expectErr: errmock,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 

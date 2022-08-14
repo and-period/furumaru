@@ -23,7 +23,8 @@ func (w *worker) reporter(ctx context.Context, payload *entity.WorkerPayload) er
 	}
 	w.logger.Debug("Send report", zap.String("reportId", payload.Report.ReportID), zap.Any("message", container))
 	sendFn := func() error {
-		return w.line.PushMessage(ctx, linebot.NewFlexMessage(altText, container))
+		err := w.line.PushMessage(ctx, linebot.NewFlexMessage(altText, container))
+		return exception.InternalError(err)
 	}
 	retry := backoff.NewExponentialBackoff(w.maxRetries)
 	return backoff.Retry(ctx, retry, sendFn, backoff.WithRetryablel(exception.Retryable))

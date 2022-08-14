@@ -4,11 +4,11 @@ package entity
 type EventType int32
 
 const (
-	EventTypeUnknown             EventType = 0
-	EventTypeAdminRegister       EventType = 1 // 管理者登録通知
-	EventTypeUserReceivedContact EventType = 2 // お問い合わせ受領通知
-	EventTypeNotification        EventType = 3 // お知らせ通知
-	EventTypeAdminResetPassword  EventType = 4 // 管理者パスワードリセット通知
+	EventTypeUnknown            EventType = 0
+	EventTypeRegisterAdmin      EventType = 1 // 管理者登録通知
+	EventTypeResetAdminPassword EventType = 2 // 管理者パスワードリセット通知
+	EventTypeReceivedContact    EventType = 3 // お問い合わせ受領通知
+	EventTypeNotification       EventType = 4 // お知らせ発行通知
 )
 
 // UserType - 通知先ユーザー種別
@@ -32,6 +32,7 @@ type WorkerPayload struct {
 	UserIDs   []string       `json:"userIds"`           // 送信先ユーザー一覧
 	Guest     *Guest         `json:"guest,omitempty"`   // 未登録ユーザー情報
 	Email     *MailConfig    `json:"email,omitempty"`   // メール送信設定
+	Push      *PushConfig    `json:"push,omitempty"`    // プッシュ通知設定
 	Message   *MessageConfig `json:"message,omitempty"` // メッセージ作成設定
 	Report    *ReportConfig  `json:"report,omitempty"`  // システムレポート送信設定
 }

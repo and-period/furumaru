@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/and-period/furumaru/api/pkg/cognito"
+	"github.com/and-period/furumaru/api/pkg/firebase/messaging"
 	"github.com/and-period/furumaru/api/pkg/line"
 	"github.com/and-period/furumaru/api/pkg/mailer"
 	"github.com/and-period/furumaru/api/pkg/storage"
@@ -61,6 +62,9 @@ func InternalError(err error) error {
 		return err
 	}
 	if err := mailerError(err); err != nil {
+		return err
+	}
+	if err := messagingError(err); err != nil {
 		return err
 	}
 	if err := notifierError(err); err != nil {
@@ -203,6 +207,30 @@ func mailerError(err error) error {
 	case errors.Is(err, mailer.ErrCanceled):
 		return wrapError(prefix, ErrCanceled, err)
 	case errors.Is(err, mailer.ErrTimeout):
+		return wrapError(prefix, ErrDeadlineExceeded, err)
+	default:
+		return nil
+	}
+}
+
+func messagingError(err error) error {
+	const prefix = "messaging"
+	switch {
+	case errors.Is(err, messaging.ErrInvalidArgument):
+		return wrapError(prefix, ErrInvalidArgument, err)
+	case errors.Is(err, messaging.ErrUnauthenticated):
+		return wrapError(prefix, ErrUnauthenticated, err)
+	case errors.Is(err, messaging.ErrNotFound):
+		return wrapError(prefix, ErrNotFound, err)
+	case errors.Is(err, messaging.ErrResourceExhausted):
+		return wrapError(prefix, ErrResourceExhausted, err)
+	case errors.Is(err, messaging.ErrInternal):
+		return wrapError(prefix, ErrInternal, err)
+	case errors.Is(err, messaging.ErrCanceled):
+		return wrapError(prefix, ErrCanceled, err)
+	case errors.Is(err, messaging.ErrUnavailable):
+		return wrapError(prefix, ErrUnavailable, err)
+	case errors.Is(err, messaging.ErrTimeout):
 		return wrapError(prefix, ErrDeadlineExceeded, err)
 	default:
 		return nil

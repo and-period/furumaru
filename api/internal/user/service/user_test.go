@@ -97,6 +97,46 @@ func TestMultiGetUsers(t *testing.T) {
 	}
 }
 
+func TestMultiGetUserDevices(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.MultiGetUserDevicesInput
+		expect    []string
+		expectErr error
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &user.MultiGetUserDevicesInput{
+				UserIDs: []string{"user-id"},
+			},
+			expect:    []string{},
+			expectErr: nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &user.MultiGetUserDevicesInput{
+				UserIDs: []string{""},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.MultiGetUserDevices(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.ElementsMatch(t, tt.expect, actual)
+		}))
+	}
+}
+
 func TestGetUser(t *testing.T) {
 	t.Parallel()
 

@@ -25,12 +25,10 @@ func (w *worker) sendMail(ctx context.Context, emailID string, ps ...*mailer.Per
 		w.logger.Debug("Personalizations is empty", zap.String("emailId", emailID))
 		return nil
 	}
+	w.logger.Debug("Send email", zap.String("emailId", emailID), zap.Any("personalizations", ps))
 	sendFn := func() error {
-		w.logger.Debug("Send email", zap.String("emailId", emailID), zap.Any("personalizations", ps))
-		if err := w.mailer.MultiSendFromInfo(ctx, emailID, ps); err != nil {
-			return exception.InternalError(err)
-		}
-		return nil
+		err := w.mailer.MultiSendFromInfo(ctx, emailID, ps)
+		return exception.InternalError(err)
 	}
 	retry := backoff.NewExponentialBackoff(w.maxRetries)
 	return backoff.Retry(ctx, retry, sendFn, backoff.WithRetryablel(exception.Retryable))

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/cognito"
+	set "github.com/and-period/furumaru/api/pkg/set/v2"
 )
 
 var errInvalidAdminRole = errors.New("entity: invalid admin role")
@@ -83,4 +84,10 @@ func (as AdminAuths) AdminIDs() []string {
 		res[i] = as[i].AdminID
 	}
 	return res
+}
+
+func (as AdminAuths) Devices() []string {
+	return set.UniqBy(as, func(a *AdminAuth) string {
+		return a.Device
+	})
 }

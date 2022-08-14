@@ -35,6 +35,7 @@ type dbMocks struct {
 	Message         *mock_database.MockMessage
 	MessageTemplate *mock_database.MockMessageTemplate
 	Notification    *mock_database.MockNotification
+	PushTemplate    *mock_database.MockPushTemplate
 	ReceivedQueue   *mock_database.MockReceivedQueue
 	ReportTemplate  *mock_database.MockReportTemplate
 	Schedule        *mock_database.MockSchedule
@@ -70,6 +71,7 @@ func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 		Message:         mock_database.NewMockMessage(ctrl),
 		MessageTemplate: mock_database.NewMockMessageTemplate(ctrl),
 		Notification:    mock_database.NewMockNotification(ctrl),
+		PushTemplate:    mock_database.NewMockPushTemplate(ctrl),
 		ReceivedQueue:   mock_database.NewMockReceivedQueue(ctrl),
 		ReportTemplate:  mock_database.NewMockReportTemplate(ctrl),
 		Schedule:        mock_database.NewMockSchedule(ctrl),
@@ -92,6 +94,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 			Message:         mocks.db.Message,
 			MessageTemplate: mocks.db.MessageTemplate,
 			Notification:    mocks.db.Notification,
+			PushTemplate:    mocks.db.PushTemplate,
 			ReceivedQueue:   mocks.db.ReceivedQueue,
 			ReportTemplate:  mocks.db.ReportTemplate,
 			Schedule:        mocks.db.Schedule,

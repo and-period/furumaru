@@ -57,3 +57,11 @@ func NewAdministrator(params *NewAdministratorParams) *Administrator {
 func (a *Administrator) Name() string {
 	return strings.TrimSpace(strings.Join([]string{a.Lastname, a.Firstname}, " "))
 }
+
+func (as Administrators) IDs() []string {
+	res := make([]string, len(as))
+	for i := range as {
+		res[i] = as[i].ID
+	}
+	return res
+}

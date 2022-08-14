@@ -13,9 +13,11 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	mock_database "github.com/and-period/furumaru/api/mock/messenger/database"
+	mock_messaging "github.com/and-period/furumaru/api/mock/pkg/firebase/messaging"
 	mock_line "github.com/and-period/furumaru/api/mock/pkg/line"
 	mock_mailer "github.com/and-period/furumaru/api/mock/pkg/mailer"
 	mock_user "github.com/and-period/furumaru/api/mock/user"
+	"github.com/and-period/furumaru/api/pkg/firebase/messaging"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mailer"
 	"github.com/aws/aws-lambda-go/events"
@@ -27,10 +29,11 @@ import (
 var errmock = errors.New("some error")
 
 type mocks struct {
-	db     *dbMocks
-	mailer *mock_mailer.MockClient
-	line   *mock_line.MockClient
-	user   *mock_user.MockService
+	db        *dbMocks
+	mailer    *mock_mailer.MockClient
+	line      *mock_line.MockClient
+	messaging *mock_messaging.MockClient
+	user      *mock_user.MockService
 }
 
 type dbMocks struct {
@@ -38,6 +41,7 @@ type dbMocks struct {
 	Message         *mock_database.MockMessage
 	MessageTemplate *mock_database.MockMessageTemplate
 	Notification    *mock_database.MockNotification
+	PushTemplate    *mock_database.MockPushTemplate
 	ReceivedQueue   *mock_database.MockReceivedQueue
 	ReportTemplate  *mock_database.MockReportTemplate
 	Schedule        *mock_database.MockSchedule
@@ -61,10 +65,11 @@ type testCaller func(ctx context.Context, t *testing.T, worker *worker)
 
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
-		db:     newDBMocks(ctrl),
-		mailer: mock_mailer.NewMockClient(ctrl),
-		line:   mock_line.NewMockClient(ctrl),
-		user:   mock_user.NewMockService(ctrl),
+		db:        newDBMocks(ctrl),
+		mailer:    mock_mailer.NewMockClient(ctrl),
+		line:      mock_line.NewMockClient(ctrl),
+		messaging: mock_messaging.NewMockClient(ctrl),
+		user:      mock_user.NewMockService(ctrl),
 	}
 }
 
@@ -74,6 +79,7 @@ func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 		Message:         mock_database.NewMockMessage(ctrl),
 		MessageTemplate: mock_database.NewMockMessageTemplate(ctrl),
 		Notification:    mock_database.NewMockNotification(ctrl),
+		PushTemplate:    mock_database.NewMockPushTemplate(ctrl),
 		ReceivedQueue:   mock_database.NewMockReceivedQueue(ctrl),
 		ReportTemplate:  mock_database.NewMockReportTemplate(ctrl),
 		Schedule:        mock_database.NewMockSchedule(ctrl),
@@ -87,25 +93,30 @@ func newWorker(mocks *mocks, opts ...testOption) *worker {
 	for i := range opts {
 		opts[i](dopts)
 	}
-	return &worker{
-		now:       dopts.now,
-		logger:    zap.NewNop(),
-		waitGroup: &sync.WaitGroup{},
-		mailer:    mocks.mailer,
-		line:      mocks.line,
-		db: &database.Database{
+	params := &Params{
+		WaitGroup: &sync.WaitGroup{},
+		Mailer:    mocks.mailer,
+		Line:      mocks.line,
+		Messaging: mocks.messaging,
+		DB: &database.Database{
 			Contact:         mocks.db.Contact,
 			Message:         mocks.db.Message,
 			MessageTemplate: mocks.db.MessageTemplate,
 			Notification:    mocks.db.Notification,
+			PushTemplate:    mocks.db.PushTemplate,
 			ReceivedQueue:   mocks.db.ReceivedQueue,
 			ReportTemplate:  mocks.db.ReportTemplate,
 			Schedule:        mocks.db.Schedule,
 		},
-		user:        mocks.user,
-		concurrency: 1,
-		maxRetries:  1,
+		User: mocks.user,
 	}
+	worker := NewWorker(params).(*worker)
+	worker.concurrency = 1
+	worker.maxRetries = 1
+	worker.now = func() time.Time {
+		return dopts.now()
+	}
+	return worker
 }
 
 func testWorker(
@@ -195,13 +206,17 @@ func TestWorker_Dispatch(t *testing.T) {
 func TestWorker_Run(t *testing.T) {
 	t.Parallel()
 
-	in := &user.MultiGetUsersInput{
+	usersIn := &user.MultiGetUsersInput{
 		UserIDs: []string{"user-id"},
 	}
 	users := uentity.Users{{
 		Username: "&. スタッフ",
 		Email:    "test-user@and-period.jp",
 	}}
+	devicesIn := &user.MultiGetAdminDevicesInput{
+		AdminIDs: []string{"admin-id"},
+	}
+	devices := []string{"instance-id"}
 	personalizations := []*mailer.Personalization{
 		{
 			Name:    "&. スタッフ",
@@ -212,6 +227,20 @@ func TestWorker_Run(t *testing.T) {
 				"氏名":  "&. スタッフ",
 			},
 		},
+	}
+	message := &messaging.Message{
+		Title:    "件名: テストお問い合わせ",
+		Body:     "テンプレートです。",
+		ImageURL: "https://and-period.jp/image.png",
+		Data:     map[string]string{"Title": "テストお問い合わせ"},
+	}
+	ptemplate := &entity.PushTemplate{
+		TemplateID:    entity.PushIDContact,
+		TitleTemplate: "件名: {{.Title}}",
+		BodyTemplate:  "テンプレートです。",
+		ImageURL:      "https://and-period.jp/image.png",
+		CreatedAt:     jst.Date(2022, 7, 14, 18, 30, 0, 0),
+		UpdatedAt:     jst.Date(2022, 7, 14, 18, 30, 0, 0),
 	}
 	mtemplate := &entity.MessageTemplate{
 		TemplateID:    entity.MessageIDNotification,
@@ -247,7 +276,7 @@ func TestWorker_Run(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
 				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", true).Return(nil)
-				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), in).Return(users, nil)
+				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(users, nil)
 				mocks.mailer.EXPECT().MultiSendFromInfo(gomock.Any(), entity.EmailIDAdminRegister, personalizations).Return(nil)
 			},
 			payload: &entity.WorkerPayload{
@@ -258,6 +287,27 @@ func TestWorker_Run(t *testing.T) {
 				Email: &entity.MailConfig{
 					EmailID:       entity.EmailIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
+				},
+			},
+			expectErr: nil,
+		},
+		{
+			name: "success to send push",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
+				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", true).Return(nil)
+				mocks.db.PushTemplate.EXPECT().Get(gomock.Any(), entity.PushIDContact).Return(ptemplate, nil)
+				mocks.user.EXPECT().MultiGetAdminDevices(gomock.Any(), devicesIn).Return(devices, nil)
+				mocks.messaging.EXPECT().MultiSend(gomock.Any(), message, devices).Return(int64(1), int64(0), nil)
+			},
+			payload: &entity.WorkerPayload{
+				QueueID:   "queue-id",
+				EventType: entity.EventTypeReceivedContact,
+				UserType:  entity.UserTypeAdmin,
+				UserIDs:   []string{"admin-id"},
+				Push: &entity.PushConfig{
+					PushID: entity.PushIDContact,
+					Data:   map[string]string{"Title": "テストお問い合わせ"},
 				},
 			},
 			expectErr: nil,
@@ -295,7 +345,7 @@ func TestWorker_Run(t *testing.T) {
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
-				EventType: entity.EventTypeUserReceivedContact,
+				EventType: entity.EventTypeReceivedContact,
 				Report: &entity.ReportConfig{
 					ReportID: entity.ReportIDReceivedContact,
 					Overview: "お問い合わせ件名",
@@ -352,13 +402,13 @@ func TestWorker_Run(t *testing.T) {
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
-			expectErr: errmock,
+			expectErr: exception.ErrUnknown,
 		},
 		{
 			name: "failed to send mail",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
-				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), in).Return(nil, errmock)
+				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(nil, errmock)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -370,7 +420,25 @@ func TestWorker_Run(t *testing.T) {
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
-			expectErr: errmock,
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "failed to send push",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
+				mocks.user.EXPECT().MultiGetAdminDevices(gomock.Any(), devicesIn).Return(nil, errmock)
+			},
+			payload: &entity.WorkerPayload{
+				QueueID:   "queue-id",
+				EventType: entity.EventTypeReceivedContact,
+				UserType:  entity.UserTypeAdmin,
+				UserIDs:   []string{"admin-id"},
+				Push: &entity.PushConfig{
+					PushID: entity.PushIDContact,
+					Data:   map[string]string{"Title": "テストお問い合わせ"},
+				},
+			},
+			expectErr: exception.ErrUnknown,
 		},
 		{
 			name: "failed to create message",
@@ -391,7 +459,7 @@ func TestWorker_Run(t *testing.T) {
 					ReceivedAt:  time.Now(),
 				},
 			},
-			expectErr: errmock,
+			expectErr: exception.ErrUnknown,
 		},
 		{
 			name: "failed to report",
@@ -401,21 +469,21 @@ func TestWorker_Run(t *testing.T) {
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
-				EventType: entity.EventTypeUserReceivedContact,
+				EventType: entity.EventTypeReceivedContact,
 				Report: &entity.ReportConfig{
 					ReportID: entity.ReportIDReceivedContact,
 					Overview: "お問い合わせ件名",
 					Link:     "htts://admin.and-period.jp/contacts/contact-id",
 				},
 			},
-			expectErr: errmock,
+			expectErr: exception.ErrUnknown,
 		},
 		{
 			name: "failed to update received queue",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
 				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", true).Return(errmock)
-				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), in).Return(users, nil)
+				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(users, nil)
 				mocks.mailer.EXPECT().MultiSendFromInfo(gomock.Any(), entity.EmailIDAdminRegister, personalizations).Return(nil)
 			},
 			payload: &entity.WorkerPayload{
@@ -428,7 +496,7 @@ func TestWorker_Run(t *testing.T) {
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
-			expectErr: errmock,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 	for _, tt := range tests {

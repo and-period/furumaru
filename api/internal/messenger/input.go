@@ -76,8 +76,6 @@ type NotifyResetAdminPasswordInput struct {
 
 type NotifyReceivedContactInput struct {
 	ContactID string `validate:"required"`
-	Username  string `validate:"required"`
-	Email     string `validate:"required"`
 }
 
 type NotifyNotificationInput struct {
