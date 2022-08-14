@@ -59,7 +59,6 @@ type Product struct {
 	Item             int64             `gorm:""`                                    // 数量
 	ItemUnit         string            `gorm:""`                                    // 数量単位
 	ItemDescription  string            `gorm:""`                                    // 数量単位説明
-	IconURL          string            `gorm:""`                                    // アイコンURL
 	Media            MultiProductMedia `gorm:"-"`                                   // メディア一覧
 	MediaJSON        datatypes.JSON    `gorm:"default:null;column:media"`           // メディア一覧(JSON)
 	Price            int64             `gorm:""`                                    // 販売価格
@@ -100,7 +99,6 @@ type NewProductParams struct {
 	Item             int64
 	ItemUnit         string
 	ItemDescription  string
-	IconURL          string
 	Media            MultiProductMedia
 	Price            int64
 	DeliveryType     DeliveryType
@@ -126,7 +124,6 @@ func NewProduct(params *NewProductParams) *Product {
 		Item:             params.Item,
 		ItemUnit:         params.ItemUnit,
 		ItemDescription:  params.ItemDescription,
-		IconURL:          params.IconURL,
 		Media:            params.Media,
 		Price:            params.Price,
 		DeliveryType:     params.DeliveryType,

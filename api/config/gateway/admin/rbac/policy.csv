@@ -22,6 +22,7 @@ p, product_type_list, /v1/categories/*/product-types, GET, allow
 p, product_type_create, /v1/categories/*/product-types, POST, allow
 p, product_type_update, /v1/categories/*/product-types/*, PATCH, allow
 p, product_type_delete, /v1/categories/*/product-types/*, DELETE, allow
+p, product_type_uploader, /v1/upload/product-types/*, POST, allow
 p, shipping_list, /v1/shippings, GET, allow
 p, shipping_get, /v1/shippings/*, GET, allow
 p, shipping_create, /v1/shippings, POST, allow
@@ -67,6 +68,7 @@ g, administrator, product_type_list
 g, administrator, product_type_create
 g, administrator, product_type_update
 g, administrator, product_type_delete
+g, administrator, product_type_uploader
 g, administrator, shipping_list
 g, administrator, shipping_get
 g, administrator, shipping_create

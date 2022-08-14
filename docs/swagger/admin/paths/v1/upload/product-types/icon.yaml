@@ -1,8 +1,8 @@
 post:
-  summary: 商品アイコンアップロード
-  operationId: v1UploadProductIcon
+  summary: 品目アイコンアップロード
+  operationId: v1UploadProductTypeIcon
   tags:
-  - Product
+  - ProductType
   security:
   - BearerAuth: []
   requestBody:
@@ -10,7 +10,7 @@ post:
     content:
       multipart/form-data:
         schema:
-          $ref: '../../../../openapi.yaml#/components/schemas/v1UploadProductIconRequest'
+          $ref: '../../../../openapi.yaml#/components/schemas/v1UploadProductTypeIconRequest'
         encoding:
           thumbnail:
             contentType: image/png, image/jpeg

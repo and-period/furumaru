@@ -26,13 +26,6 @@ uploadProducerHeaderRequest:
       type: string
       format: binary
       description: 生産者ヘッダー画像(png,jpeg形式,10MBまで)
-uploadProductIconRequest:
-  type: object
-  properties:
-    icon:
-      type: string
-      format: binary
-      description: 商品アイコン(png,jpeg形式,10MBまで)
 uploadProductImageRequest:
   type: object
   properties:
@@ -46,4 +39,11 @@ uploadProductVideoRequest:
     video:
       type: string
       format: binary
-      description: 商品動画(mp4形式,20MBまで)
+      description: 商品動画(mp4形式,200MBまで)
+uploadProductTypeIconRequest:
+  type: object
+  properties:
+    icon:
+      type: string
+      format: binary
+      description: 商品アイコン(png,jpeg形式,10MBまで)

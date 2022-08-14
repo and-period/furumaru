@@ -147,6 +147,7 @@ export default defineComponent({
 
     const productTypeFormData = reactive<CreateProductTypeRequest>({
       name: '',
+      iconUrl: '',
     })
 
     const categoryCancel = (): void => {

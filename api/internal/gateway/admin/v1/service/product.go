@@ -101,7 +101,6 @@ func NewProduct(product *entity.Product) *Product {
 			Weight:           NewProductWeight(product.Weight, product.WeightUnit),
 			ItemUnit:         product.ItemUnit,
 			ItemDescription:  product.ItemDescription,
-			IconURL:          product.IconURL,
 			Media:            NewMultiProductMedia(product.Media).Response(),
 			Price:            product.Price,
 			DeliveryType:     NewDeliveryType(product.DeliveryType).Response(),
@@ -124,6 +123,7 @@ func (p *Product) Fill(category *Category, productType *ProductType, producer *P
 	}
 	if productType != nil {
 		p.TypeName = productType.Name
+		p.TypeIconURL = productType.IconURL
 	}
 	if producer != nil {
 		p.StoreName = producer.StoreName

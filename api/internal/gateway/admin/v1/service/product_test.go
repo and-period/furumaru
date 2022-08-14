@@ -209,7 +209,6 @@ func TestProduct(t *testing.T) {
 				Item:            1,
 				ItemUnit:        "袋",
 				ItemDescription: "1袋あたり100gのじゃがいも",
-				IconURL:         "https://and-period.jp/icon.png",
 				Media: entity.MultiProductMedia{
 					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
@@ -231,6 +230,7 @@ func TestProduct(t *testing.T) {
 					ID:              "product-id",
 					TypeID:          "product-type-id",
 					TypeName:        "",
+					TypeIconURL:     "",
 					CategoryID:      "category-id",
 					CategoryName:    "",
 					ProducerID:      "producer-id",
@@ -242,7 +242,6 @@ func TestProduct(t *testing.T) {
 					Weight:          1.3,
 					ItemUnit:        "袋",
 					ItemDescription: "1袋あたり100gのじゃがいも",
-					IconURL:         "https://and-period.jp/icon.png",
 					Media: []*response.ProductMedia{
 						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
@@ -296,7 +295,6 @@ func TestProduct_Fill(t *testing.T) {
 					Weight:          1.3,
 					ItemUnit:        "袋",
 					ItemDescription: "1袋あたり100gのじゃがいも",
-					IconURL:         "https://and-period.jp/icon.png",
 					Media: []*response.ProductMedia{
 						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
@@ -326,6 +324,7 @@ func TestProduct_Fill(t *testing.T) {
 				ProductType: response.ProductType{
 					ID:           "product-type-id",
 					Name:         "じゃがいも",
+					IconURL:      "https://and-period.jp/icon.png",
 					CategoryID:   "category-id",
 					CategoryName: "野菜",
 					CreatedAt:    1640962800,
@@ -367,7 +366,7 @@ func TestProduct_Fill(t *testing.T) {
 					Weight:          1.3,
 					ItemUnit:        "袋",
 					ItemDescription: "1袋あたり100gのじゃがいも",
-					IconURL:         "https://and-period.jp/icon.png",
+					TypeIconURL:     "https://and-period.jp/icon.png",
 					Media: []*response.ProductMedia{
 						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
@@ -411,6 +410,7 @@ func TestProduct_Response(t *testing.T) {
 					ID:              "product-id",
 					TypeID:          "product-type-id",
 					TypeName:        "じゃがいも",
+					TypeIconURL:     "https://and-period.jp/icon.png",
 					CategoryID:      "category-id",
 					CategoryName:    "野菜",
 					ProducerID:      "producer-id",
@@ -422,7 +422,6 @@ func TestProduct_Response(t *testing.T) {
 					Weight:          1.3,
 					ItemUnit:        "袋",
 					ItemDescription: "1袋あたり100gのじゃがいも",
-					IconURL:         "https://and-period.jp/icon.png",
 					Media: []*response.ProductMedia{
 						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
@@ -444,6 +443,7 @@ func TestProduct_Response(t *testing.T) {
 				ID:              "product-id",
 				TypeID:          "product-type-id",
 				TypeName:        "じゃがいも",
+				TypeIconURL:     "https://and-period.jp/icon.png",
 				CategoryID:      "category-id",
 				CategoryName:    "野菜",
 				ProducerID:      "producer-id",
@@ -455,7 +455,6 @@ func TestProduct_Response(t *testing.T) {
 				Weight:          1.3,
 				ItemUnit:        "袋",
 				ItemDescription: "1袋あたり100gのじゃがいも",
-				IconURL:         "https://and-period.jp/icon.png",
 				Media: []*response.ProductMedia{
 					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
@@ -507,7 +506,6 @@ func TestProducts(t *testing.T) {
 					Item:            1,
 					ItemUnit:        "袋",
 					ItemDescription: "1袋あたり100gのじゃがいも",
-					IconURL:         "https://and-period.jp/icon.png",
 					Media: entity.MultiProductMedia{
 						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
@@ -531,6 +529,7 @@ func TestProducts(t *testing.T) {
 						ID:              "product-id",
 						TypeID:          "product-type-id",
 						TypeName:        "",
+						TypeIconURL:     "",
 						CategoryID:      "category-id",
 						CategoryName:    "",
 						ProducerID:      "producer-id",
@@ -542,7 +541,6 @@ func TestProducts(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						IconURL:         "https://and-period.jp/icon.png",
 						Media: []*response.ProductMedia{
 							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
@@ -587,6 +585,7 @@ func TestProducts_ProducerIDs(t *testing.T) {
 						ID:              "product-id",
 						TypeID:          "product-type-id",
 						TypeName:        "じゃがいも",
+						TypeIconURL:     "https://and-period.jp/icon.png",
 						CategoryID:      "category-id",
 						CategoryName:    "野菜",
 						ProducerID:      "producer-id",
@@ -598,7 +597,6 @@ func TestProducts_ProducerIDs(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						IconURL:         "https://and-period.jp/icon.png",
 						Media: []*response.ProductMedia{
 							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
@@ -644,6 +642,7 @@ func TestProducts_CategoryIDs(t *testing.T) {
 						ID:              "product-id",
 						TypeID:          "product-type-id",
 						TypeName:        "じゃがいも",
+						TypeIconURL:     "https://and-period.jp/icon.png",
 						CategoryID:      "category-id",
 						CategoryName:    "野菜",
 						ProducerID:      "producer-id",
@@ -655,7 +654,6 @@ func TestProducts_CategoryIDs(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						IconURL:         "https://and-period.jp/icon.png",
 						Media: []*response.ProductMedia{
 							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
@@ -701,6 +699,7 @@ func TestProducts_ProductTypeIDs(t *testing.T) {
 						ID:              "product-id",
 						TypeID:          "product-type-id",
 						TypeName:        "じゃがいも",
+						TypeIconURL:     "https://and-period.jp/icon.png",
 						CategoryID:      "category-id",
 						CategoryName:    "野菜",
 						ProducerID:      "producer-id",
@@ -712,7 +711,6 @@ func TestProducts_ProductTypeIDs(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						IconURL:         "https://and-period.jp/icon.png",
 						Media: []*response.ProductMedia{
 							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
@@ -769,7 +767,6 @@ func TestProducts_Fill(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						IconURL:         "https://and-period.jp/icon.png",
 						Media: []*response.ProductMedia{
 							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
@@ -803,6 +800,7 @@ func TestProducts_Fill(t *testing.T) {
 					ProductType: response.ProductType{
 						ID:           "product-type-id",
 						Name:         "じゃがいも",
+						IconURL:      "https://and-period.jp/icon.png",
 						CategoryID:   "category-id",
 						CategoryName: "野菜",
 						CreatedAt:    1640962800,
@@ -837,6 +835,7 @@ func TestProducts_Fill(t *testing.T) {
 						ID:              "product-id",
 						TypeID:          "product-type-id",
 						TypeName:        "じゃがいも",
+						TypeIconURL:     "https://and-period.jp/icon.png",
 						CategoryID:      "category-id",
 						CategoryName:    "野菜",
 						ProducerID:      "producer-id",
@@ -848,7 +847,6 @@ func TestProducts_Fill(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						IconURL:         "https://and-period.jp/icon.png",
 						Media: []*response.ProductMedia{
 							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
@@ -894,6 +892,7 @@ func TestProducts_Response(t *testing.T) {
 						ID:              "product-id",
 						TypeID:          "product-type-id",
 						TypeName:        "じゃがいも",
+						TypeIconURL:     "https://and-period.jp/icon.png",
 						CategoryID:      "category-id",
 						CategoryName:    "野菜",
 						ProducerID:      "producer-id",
@@ -905,7 +904,6 @@ func TestProducts_Response(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						IconURL:         "https://and-period.jp/icon.png",
 						Media: []*response.ProductMedia{
 							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
@@ -929,6 +927,7 @@ func TestProducts_Response(t *testing.T) {
 					ID:              "product-id",
 					TypeID:          "product-type-id",
 					TypeName:        "じゃがいも",
+					TypeIconURL:     "https://and-period.jp/icon.png",
 					CategoryID:      "category-id",
 					CategoryName:    "野菜",
 					ProducerID:      "producer-id",
@@ -940,7 +939,6 @@ func TestProducts_Response(t *testing.T) {
 					Weight:          1.3,
 					ItemUnit:        "袋",
 					ItemDescription: "1袋あたり100gのじゃがいも",
-					IconURL:         "https://and-period.jp/icon.png",
 					Media: []*response.ProductMedia{
 						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},

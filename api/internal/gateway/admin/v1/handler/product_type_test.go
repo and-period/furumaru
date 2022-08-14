@@ -38,6 +38,7 @@ func TestListProductTypes(t *testing.T) {
 		{
 			ID:         "product-type-id01",
 			Name:       "じゃがいも",
+			IconURL:    "https://and-period.jp/icon.png",
 			CategoryID: "category-id",
 			CreatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
@@ -45,6 +46,7 @@ func TestListProductTypes(t *testing.T) {
 		{
 			ID:         "product-type-id02",
 			Name:       "さつまいも",
+			IconURL:    "https://and-period.jp/icon.png",
 			CategoryID: "category-id",
 			CreatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
@@ -73,6 +75,7 @@ func TestListProductTypes(t *testing.T) {
 						{
 							ID:           "product-type-id01",
 							Name:         "じゃがいも",
+							IconURL:      "https://and-period.jp/icon.png",
 							CategoryID:   "category-id",
 							CategoryName: "野菜",
 							CreatedAt:    1640962800,
@@ -81,6 +84,7 @@ func TestListProductTypes(t *testing.T) {
 						{
 							ID:           "product-type-id02",
 							Name:         "さつまいも",
+							IconURL:      "https://and-period.jp/icon.png",
 							CategoryID:   "category-id",
 							CategoryName: "野菜",
 							CreatedAt:    1640962800,
@@ -112,6 +116,7 @@ func TestListProductTypes(t *testing.T) {
 						{
 							ID:           "product-type-id01",
 							Name:         "じゃがいも",
+							IconURL:      "https://and-period.jp/icon.png",
 							CategoryID:   "category-id",
 							CategoryName: "野菜",
 							CreatedAt:    1640962800,
@@ -120,6 +125,7 @@ func TestListProductTypes(t *testing.T) {
 						{
 							ID:           "product-type-id02",
 							Name:         "さつまいも",
+							IconURL:      "https://and-period.jp/icon.png",
 							CategoryID:   "category-id",
 							CategoryName: "野菜",
 							CreatedAt:    1640962800,
@@ -199,6 +205,7 @@ func TestCreateProductType(t *testing.T) {
 	}
 	typeIn := &store.CreateProductTypeInput{
 		Name:       "じゃがいも",
+		IconURL:    "https://and-period.jp/icon.png",
 		CategoryID: "category-id",
 	}
 	category := &sentity.Category{
@@ -210,6 +217,7 @@ func TestCreateProductType(t *testing.T) {
 	productType := &sentity.ProductType{
 		ID:         "product-type-id",
 		Name:       "じゃがいも",
+		IconURL:    "https://and-period.jp/icon.png",
 		CategoryID: "category-id",
 		CreatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
@@ -230,7 +238,8 @@ func TestCreateProductType(t *testing.T) {
 			},
 			categoryID: "category-id",
 			req: &request.CreateProductTypeRequest{
-				Name: "じゃがいも",
+				Name:    "じゃがいも",
+				IconURL: "https://and-period.jp/icon.png",
 			},
 			expect: &testResponse{
 				code: http.StatusOK,
@@ -238,6 +247,7 @@ func TestCreateProductType(t *testing.T) {
 					ProductType: &response.ProductType{
 						ID:           "product-type-id",
 						Name:         "じゃがいも",
+						IconURL:      "https://and-period.jp/icon.png",
 						CategoryID:   "category-id",
 						CategoryName: "野菜",
 						CreatedAt:    1640962800,
@@ -253,7 +263,8 @@ func TestCreateProductType(t *testing.T) {
 			},
 			categoryID: "category-id",
 			req: &request.CreateProductTypeRequest{
-				Name: "じゃがいも",
+				Name:    "じゃがいも",
+				IconURL: "https://and-period.jp/icon.png",
 			},
 			expect: &testResponse{
 				code: http.StatusInternalServerError,
@@ -267,7 +278,8 @@ func TestCreateProductType(t *testing.T) {
 			},
 			categoryID: "category-id",
 			req: &request.CreateProductTypeRequest{
-				Name: "じゃがいも",
+				Name:    "じゃがいも",
+				IconURL: "https://and-period.jp/icon.png",
 			},
 			expect: &testResponse{
 				code: http.StatusInternalServerError,
@@ -291,6 +303,7 @@ func TestUpdateProductType(t *testing.T) {
 	in := &store.UpdateProductTypeInput{
 		ProductTypeID: "product-type-id",
 		Name:          "じゃがいも",
+		IconURL:       "https://and-period.jp/icon.png",
 	}
 
 	tests := []struct {
@@ -309,7 +322,8 @@ func TestUpdateProductType(t *testing.T) {
 			categoryID:    "category-id",
 			productTypeID: "product-type-id",
 			req: &request.UpdateProductTypeRequest{
-				Name: "じゃがいも",
+				Name:    "じゃがいも",
+				IconURL: "https://and-period.jp/icon.png",
 			},
 			expect: &testResponse{
 				code: http.StatusNoContent,
@@ -323,7 +337,8 @@ func TestUpdateProductType(t *testing.T) {
 			categoryID:    "category-id",
 			productTypeID: "product-type-id",
 			req: &request.UpdateProductTypeRequest{
-				Name: "じゃがいも",
+				Name:    "じゃがいも",
+				IconURL: "https://and-period.jp/icon.png",
 			},
 			expect: &testResponse{
 				code: http.StatusInternalServerError,

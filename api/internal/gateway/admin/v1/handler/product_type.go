@@ -115,6 +115,7 @@ func (h *handler) CreateProductType(ctx *gin.Context) {
 	typeIn := &store.CreateProductTypeInput{
 		CategoryID: category.ID,
 		Name:       req.Name,
+		IconURL:    req.IconURL,
 	}
 	sproductType, err := h.store.CreateProductType(ctx, typeIn)
 	if err != nil {
@@ -141,6 +142,7 @@ func (h *handler) UpdateProductType(ctx *gin.Context) {
 	in := &store.UpdateProductTypeInput{
 		ProductTypeID: util.GetParam(ctx, "productTypeId"),
 		Name:          req.Name,
+		IconURL:       req.IconURL,
 	}
 	if err := h.store.UpdateProductType(ctx, in); err != nil {
 		httpError(ctx, err)

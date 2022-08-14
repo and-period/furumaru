@@ -460,6 +460,7 @@ func TestProductType_Update(t *testing.T) {
 	type args struct {
 		productTypeID string
 		name          string
+		iconURL       string
 	}
 	type want struct {
 		hasErr bool
@@ -483,6 +484,7 @@ func TestProductType_Update(t *testing.T) {
 			args: args{
 				productTypeID: "product-id",
 				name:          "さつまいも",
+				iconURL:       "https://and-period.jp/icon.png",
 			},
 			want: want{
 				hasErr: false,
@@ -494,6 +496,7 @@ func TestProductType_Update(t *testing.T) {
 			args: args{
 				productTypeID: "product-id",
 				name:          "さつまいも",
+				iconURL:       "https://and-period.jp/icon.png",
 			},
 			want: want{
 				hasErr: true,
@@ -512,7 +515,7 @@ func TestProductType_Update(t *testing.T) {
 			tt.setup(ctx, t, m)
 
 			db := &productType{db: m.db, now: now}
-			err = db.Update(ctx, tt.args.productTypeID, tt.args.name)
+			err = db.Update(ctx, tt.args.productTypeID, tt.args.name, tt.args.iconURL)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}
@@ -595,6 +598,7 @@ func testProductType(id, categoryID, name string, now time.Time) *entity.Product
 	return &entity.ProductType{
 		ID:         id,
 		Name:       name,
+		IconURL:    "https://and-period.jp/icon.png",
 		CategoryID: categoryID,
 		CreatedAt:  now,
 		UpdatedAt:  now,
