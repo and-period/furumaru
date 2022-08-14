@@ -19,7 +19,7 @@ func TestReceivedQueue(t *testing.T) {
 			name: "success",
 			payload: &WorkerPayload{
 				QueueID:   "id",
-				EventType: EventTypeAdminRegister,
+				EventType: EventTypeRegisterAdmin,
 				UserType:  UserTypeAdmin,
 				UserIDs:   []string{"admin-id"},
 				Email: &MailConfig{
@@ -29,7 +29,7 @@ func TestReceivedQueue(t *testing.T) {
 			},
 			expect: &ReceivedQueue{
 				ID:        "id",
-				EventType: EventTypeAdminRegister,
+				EventType: EventTypeRegisterAdmin,
 				UserType:  UserTypeAdmin,
 				UserIDs:   []string{"admin-id"},
 				Done:      false,
@@ -58,7 +58,7 @@ func TestReceivedQueue_Fill(t *testing.T) {
 			name: "success",
 			queue: &ReceivedQueue{
 				ID:          "id",
-				EventType:   EventTypeAdminRegister,
+				EventType:   EventTypeRegisterAdmin,
 				UserType:    UserTypeAdmin,
 				UserIDsJSON: datatypes.JSON([]byte(`["admin-id"]`)),
 				Done:        false,
@@ -67,7 +67,7 @@ func TestReceivedQueue_Fill(t *testing.T) {
 			},
 			expect: &ReceivedQueue{
 				ID:          "id",
-				EventType:   EventTypeAdminRegister,
+				EventType:   EventTypeRegisterAdmin,
 				UserType:    UserTypeAdmin,
 				UserIDs:     []string{"admin-id"},
 				UserIDsJSON: datatypes.JSON([]byte(`["admin-id"]`)),
@@ -101,7 +101,7 @@ func TestReceivedQueue_FillJSON(t *testing.T) {
 			name: "success",
 			queue: &ReceivedQueue{
 				ID:        "id",
-				EventType: EventTypeAdminRegister,
+				EventType: EventTypeRegisterAdmin,
 				UserType:  UserTypeAdmin,
 				UserIDs:   []string{"admin-id"},
 				Done:      false,
@@ -110,7 +110,7 @@ func TestReceivedQueue_FillJSON(t *testing.T) {
 			},
 			expect: &ReceivedQueue{
 				ID:          "id",
-				EventType:   EventTypeAdminRegister,
+				EventType:   EventTypeRegisterAdmin,
 				UserType:    UserTypeAdmin,
 				UserIDs:     []string{"admin-id"},
 				UserIDsJSON: datatypes.JSON([]byte(`["admin-id"]`)),

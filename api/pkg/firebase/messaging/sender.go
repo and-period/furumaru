@@ -6,49 +6,40 @@ import (
 	"firebase.google.com/go/v4/messaging"
 )
 
-type Notification struct {
+type Message struct {
 	Title    string
 	Body     string
 	ImageURL string
+	Data     map[string]string
 }
 
-func (c *client) Send(ctx context.Context, n *Notification, token string) error {
+func (c *client) Send(ctx context.Context, msg *Message, token string) error {
 	message := &messaging.Message{
 		Token: token,
+		Data:  msg.Data,
 		Notification: &messaging.Notification{
-			Title:    n.Title,
-			Body:     n.Body,
-			ImageURL: n.ImageURL,
+			Title:    msg.Title,
+			Body:     msg.Body,
+			ImageURL: msg.ImageURL,
 		},
 	}
-	sendFn := func() error {
-		_, err := c.messageing.Send(ctx, message)
-		return err
-	}
-	err := c.do(ctx, sendFn)
+	_, err := c.messageing.Send(ctx, message)
 	return c.sendError(err)
 }
 
-func (c *client) MultiSend(ctx context.Context, n *Notification, tokens ...string) (int64, int64, error) {
+func (c *client) MultiSend(ctx context.Context, msg *Message, tokens ...string) (int64, int64, error) {
 	message := &messaging.MulticastMessage{
 		Tokens: tokens,
+		Data:   msg.Data,
 		Notification: &messaging.Notification{
-			Title:    n.Title,
-			Body:     n.Body,
-			ImageURL: n.ImageURL,
+			Title:    msg.Title,
+			Body:     msg.Body,
+			ImageURL: msg.ImageURL,
 		},
 	}
-	var success, failure int64
-	sendFn := func() error {
-		res, err := c.messageing.SendMulticast(ctx, message)
-		if err != nil {
-			return err
-		}
-		success, failure = int64(res.SuccessCount), int64(res.FailureCount)
-		return nil
-	}
-	if err := c.do(ctx, sendFn); err != nil {
+	res, err := c.messageing.SendMulticast(ctx, message)
+	if err != nil {
 		return 0, 0, c.sendError(err)
 	}
-	return success, failure, nil
+	return int64(res.SuccessCount), int64(res.FailureCount), nil
 }

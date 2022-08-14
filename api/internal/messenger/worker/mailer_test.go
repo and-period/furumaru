@@ -51,7 +51,7 @@ func TestMultiSendMail(t *testing.T) {
 				mocks.mailer.EXPECT().MultiSendFromInfo(ctx, entity.EmailIDAdminRegister, personalizations).Return(nil)
 			},
 			payload: &entity.WorkerPayload{
-				EventType: entity.EventTypeAdminRegister,
+				EventType: entity.EventTypeRegisterAdmin,
 				UserType:  entity.UserTypeAdmin,
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
@@ -67,7 +67,7 @@ func TestMultiSendMail(t *testing.T) {
 				mocks.user.EXPECT().MultiGetAdmins(ctx, in).Return(nil, errmock)
 			},
 			payload: &entity.WorkerPayload{
-				EventType: entity.EventTypeAdminRegister,
+				EventType: entity.EventTypeRegisterAdmin,
 				UserType:  entity.UserTypeAdmin,
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
@@ -180,7 +180,7 @@ func TestPersonalizations(t *testing.T) {
 				mocks.user.EXPECT().MultiGetAdmins(ctx, in).Return(admins, nil)
 			},
 			payload: &entity.WorkerPayload{
-				EventType: entity.EventTypeAdminRegister,
+				EventType: entity.EventTypeRegisterAdmin,
 				UserType:  entity.UserTypeAdmin,
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
@@ -213,7 +213,7 @@ func TestPersonalizations(t *testing.T) {
 				mocks.user.EXPECT().MultiGetAdministrators(ctx, in).Return(administrators, nil)
 			},
 			payload: &entity.WorkerPayload{
-				EventType: entity.EventTypeAdminRegister,
+				EventType: entity.EventTypeRegisterAdmin,
 				UserType:  entity.UserTypeAdministrator,
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
@@ -246,7 +246,7 @@ func TestPersonalizations(t *testing.T) {
 				mocks.user.EXPECT().MultiGetCoordinators(ctx, in).Return(coordinators, nil)
 			},
 			payload: &entity.WorkerPayload{
-				EventType: entity.EventTypeAdminRegister,
+				EventType: entity.EventTypeRegisterAdmin,
 				UserType:  entity.UserTypeCoordinator,
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
@@ -279,7 +279,7 @@ func TestPersonalizations(t *testing.T) {
 				mocks.user.EXPECT().MultiGetProducers(ctx, in).Return(producers, nil)
 			},
 			payload: &entity.WorkerPayload{
-				EventType: entity.EventTypeAdminRegister,
+				EventType: entity.EventTypeRegisterAdmin,
 				UserType:  entity.UserTypeProducer,
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
@@ -311,7 +311,7 @@ func TestPersonalizations(t *testing.T) {
 				mocks.user.EXPECT().MultiGetUsers(ctx, in).Return(users, nil)
 			},
 			payload: &entity.WorkerPayload{
-				EventType: entity.EventTypeAdminRegister,
+				EventType: entity.EventTypeRegisterAdmin,
 				UserType:  entity.UserTypeUser,
 				UserIDs:   []string{"user-id"},
 				Email: &entity.MailConfig{
@@ -336,7 +336,7 @@ func TestPersonalizations(t *testing.T) {
 			name:  "success guest",
 			setup: func(ctx context.Context, mocks *mocks) {},
 			payload: &entity.WorkerPayload{
-				EventType: entity.EventTypeAdminRegister,
+				EventType: entity.EventTypeRegisterAdmin,
 				UserType:  entity.UserTypeGuest,
 				UserIDs:   []string{},
 				Guest: &entity.Guest{
@@ -365,7 +365,7 @@ func TestPersonalizations(t *testing.T) {
 			name:  "failed to invalid user type",
 			setup: func(ctx context.Context, mocks *mocks) {},
 			payload: &entity.WorkerPayload{
-				EventType: entity.EventTypeAdminRegister,
+				EventType: entity.EventTypeRegisterAdmin,
 				UserType:  entity.UserTypeNone,
 				UserIDs:   []string{"user-id"},
 				Email: &entity.MailConfig{

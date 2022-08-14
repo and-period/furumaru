@@ -22,13 +22,13 @@ type ReportConfig struct {
 	ReceivedAt  time.Time `json:"receivedAt"`  // 受信日時
 }
 
-func (r *ReportConfig) Fields() map[string]string {
+func (c *ReportConfig) Fields() map[string]string {
 	return map[string]string{
-		"Overview":    r.Overview,
-		"Detail":      r.Detail,
-		"Author":      r.Author,
-		"Link":        r.Link,
-		"PublishedAt": jst.Format(r.PublishedAt, "2006-01-02 15:04:05"),
-		"ReceivedAt":  jst.Format(r.ReceivedAt, "2006-01-02 15:04:05"),
+		"Overview":    c.Overview,
+		"Detail":      c.Detail,
+		"Author":      c.Author,
+		"Link":        c.Link,
+		"PublishedAt": jst.Format(c.PublishedAt, "2006-01-02 15:04:05"),
+		"ReceivedAt":  jst.Format(c.ReceivedAt, "2006-01-02 15:04:05"),
 	}
 }

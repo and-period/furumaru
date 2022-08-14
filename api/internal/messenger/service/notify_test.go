@@ -33,7 +33,7 @@ func TestNotifyRegisterAdmin(t *testing.T) {
 					DoAndReturn(func(ctx context.Context, queue *entity.ReceivedQueue) error {
 						expect := &entity.ReceivedQueue{
 							ID:        queue.ID, // ignore
-							EventType: entity.EventTypeAdminRegister,
+							EventType: entity.EventTypeRegisterAdmin,
 							UserType:  entity.UserTypeAdmin,
 							UserIDs:   []string{"admin-id"},
 							Done:      false,
@@ -49,7 +49,7 @@ func TestNotifyRegisterAdmin(t *testing.T) {
 						require.NoError(t, err)
 						expect := &entity.WorkerPayload{
 							QueueID:   payload.QueueID, // ignore
-							EventType: entity.EventTypeAdminRegister,
+							EventType: entity.EventTypeRegisterAdmin,
 							UserType:  entity.UserTypeAdmin,
 							UserIDs:   []string{"admin-id"},
 							Email: &entity.MailConfig{
@@ -116,7 +116,7 @@ func TestNotifyResetAdminPassword(t *testing.T) {
 					DoAndReturn(func(ctx context.Context, queue *entity.ReceivedQueue) error {
 						expect := &entity.ReceivedQueue{
 							ID:        queue.ID, // ignore
-							EventType: entity.EventTypeAdminResetPassword,
+							EventType: entity.EventTypeResetAdminPassword,
 							UserType:  entity.UserTypeAdmin,
 							UserIDs:   []string{"admin-id"},
 							Done:      false,
@@ -132,7 +132,7 @@ func TestNotifyResetAdminPassword(t *testing.T) {
 						require.NoError(t, err)
 						expect := &entity.WorkerPayload{
 							QueueID:   payload.QueueID, // ignore
-							EventType: entity.EventTypeAdminResetPassword,
+							EventType: entity.EventTypeResetAdminPassword,
 							UserType:  entity.UserTypeAdmin,
 							UserIDs:   []string{"admin-id"},
 							Email: &entity.MailConfig{
@@ -198,6 +198,9 @@ func TestNotifyReceivedContact(t *testing.T) {
 		CreatedAt:   now,
 		UpdatedAt:   now,
 	}
+	admins := uentity.Administrators{
+		{ID: "admin-id"},
+	}
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -209,54 +212,98 @@ func TestNotifyReceivedContact(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Contact.EXPECT().Get(ctx, "contact-id").Return(contact, nil)
 				mocks.db.ReceivedQueue.EXPECT().
-					Create(ctx, gomock.Any()).
+					Create(gomock.Any(), gomock.Any()).
 					DoAndReturn(func(ctx context.Context, queue *entity.ReceivedQueue) error {
-						expect := &entity.ReceivedQueue{
-							ID:        queue.ID, // ignore
-							EventType: entity.EventTypeUserReceivedContact,
-							UserType:  entity.UserTypeGuest,
-							UserIDs:   nil,
-							Done:      false,
+						var expect *entity.ReceivedQueue
+						switch queue.UserType {
+						case entity.UserTypeGuest:
+							expect = &entity.ReceivedQueue{
+								ID:        queue.ID, // ignore
+								EventType: entity.EventTypeReceivedContact,
+								UserType:  entity.UserTypeGuest,
+								UserIDs:   nil,
+								Done:      false,
+							}
+						case entity.UserTypeAdministrator:
+							expect = &entity.ReceivedQueue{
+								ID:        queue.ID, // ignore
+								EventType: entity.EventTypeReceivedContact,
+								UserType:  entity.UserTypeAdministrator,
+								UserIDs:   []string{"admin-id"},
+								Done:      false,
+							}
+						default:
+							expect = &entity.ReceivedQueue{
+								ID:        queue.ID, // ignore
+								EventType: entity.EventTypeReceivedContact,
+								UserType:  entity.UserTypeNone,
+								UserIDs:   nil,
+								Done:      false,
+							}
 						}
 						assert.Equal(t, expect, queue)
 						return nil
-					})
+					}).Times(3)
+				in := &user.ListAdministratorsInput{Limit: 200, Offset: 0}
+				mocks.user.EXPECT().ListAdministrators(gomock.Any(), in).Return(admins, int64(1), nil)
 				mocks.producer.EXPECT().
-					SendMessage(ctx, gomock.Any()).
+					SendMessage(gomock.Any(), gomock.Any()).
 					DoAndReturn(func(ctx context.Context, b []byte) (string, error) {
 						payload := &entity.WorkerPayload{}
 						err := json.Unmarshal(b, payload)
 						require.NoError(t, err)
-						assert.Equal(t, now.Unix(), payload.Report.ReceivedAt.Unix())
-						expect := &entity.WorkerPayload{
-							QueueID:   payload.QueueID, // ignore
-							EventType: entity.EventTypeUserReceivedContact,
-							UserType:  entity.UserTypeGuest,
-							UserIDs:   nil,
-							Guest: &entity.Guest{
-								Name:  "&. スタッフ",
-								Email: "test-user@and-period.jp",
-							},
-							Email: &entity.MailConfig{
-								EmailID: entity.EmailIDUserReceivedContact,
-								Substitutions: map[string]string{
-									"氏名":      "&. スタッフ",
-									"メールアドレス": "test-user@and-period.jp",
-									"件名":      "お問い合わせ件名",
-									"本文":      "お問い合わせ内容です。",
+						var expect *entity.WorkerPayload
+						switch payload.UserType {
+						case entity.UserTypeGuest:
+							expect = &entity.WorkerPayload{
+								QueueID:   payload.QueueID, // ignore
+								EventType: entity.EventTypeReceivedContact,
+								UserType:  entity.UserTypeGuest,
+								UserIDs:   nil,
+								Guest: &entity.Guest{
+									Name:  "あんど どっと",
+									Email: "test-user@and-period.jp",
 								},
-							},
-							Report: &entity.ReportConfig{
-								ReportID:   entity.ReportIDReceivedContact,
-								Overview:   "お問い合わせ件名",
-								Detail:     "お問い合わせ内容です。",
-								Link:       "htts://admin.and-period.jp/contacts/contact-id",
-								ReceivedAt: payload.Report.ReceivedAt,
-							},
+								Email: &entity.MailConfig{
+									EmailID: entity.EmailIDUserReceivedContact,
+									Substitutions: map[string]string{
+										"氏名":      "あんど どっと",
+										"メールアドレス": "test-user@and-period.jp",
+										"件名":      "お問い合わせ件名",
+										"本文":      "お問い合わせ内容です。",
+									},
+								},
+							}
+						case entity.UserTypeAdministrator:
+							expect = &entity.WorkerPayload{
+								QueueID:   payload.QueueID, // ignore
+								EventType: entity.EventTypeReceivedContact,
+								UserType:  entity.UserTypeAdministrator,
+								UserIDs:   []string{"admin-id"},
+								Push: &entity.PushConfig{
+									PushID: entity.PushIDContact,
+									Data:   map[string]string{},
+								},
+							}
+						default:
+							expect = &entity.WorkerPayload{
+								QueueID:   payload.QueueID, // ignore
+								EventType: entity.EventTypeReceivedContact,
+								UserType:  entity.UserTypeNone,
+								UserIDs:   nil,
+								Report: &entity.ReportConfig{
+									ReportID:   entity.ReportIDReceivedContact,
+									Overview:   "お問い合わせ件名",
+									Detail:     "お問い合わせ内容です。",
+									Link:       "htts://admin.and-period.jp/contacts/contact-id",
+									ReceivedAt: payload.Report.ReceivedAt,
+								},
+							}
+							assert.Equal(t, now.Unix(), payload.Report.ReceivedAt.Unix())
 						}
 						assert.Equal(t, expect, payload)
 						return "message-id", nil
-					})
+					}).Times(3)
 			},
 			input: &messenger.NotifyReceivedContactInput{
 				ContactID: "contact-id",
@@ -287,8 +334,10 @@ func TestNotifyReceivedContact(t *testing.T) {
 			name: "failed to send message",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Contact.EXPECT().Get(ctx, "contact-id").Return(contact, nil)
-				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(nil)
-				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", errmock)
+				mocks.db.ReceivedQueue.EXPECT().Create(gomock.Any(), gomock.Any()).Return(nil).Times(2)
+				mocks.producer.EXPECT().SendMessage(gomock.Any(), gomock.Any()).Return("", errmock).Times(2)
+				in := &user.ListAdministratorsInput{Limit: 200, Offset: 0}
+				mocks.user.EXPECT().ListAdministrators(gomock.Any(), in).Return(nil, int64(0), errmock)
 			},
 			input: &messenger.NotifyReceivedContactInput{
 				ContactID: "contact-id",
@@ -533,6 +582,111 @@ func TestSendMessage(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.sendMessage(ctx, tt.payload)
+			assert.Equal(t, tt.hasErr, err != nil, err)
+		}))
+	}
+}
+
+func TestSendAllAdministrators(t *testing.T) {
+	t.Parallel()
+
+	in := &user.ListAdministratorsInput{
+		Limit:  200,
+		Offset: 0,
+	}
+	administrators := uentity.Administrators{
+		{ID: "admin-id01"},
+		{ID: "admin-id02"},
+	}
+
+	tests := []struct {
+		name    string
+		setup   func(ctx context.Context, mocks *mocks)
+		payload *entity.WorkerPayload
+		hasErr  bool
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().ListAdministrators(ctx, in).Return(administrators, int64(2), nil)
+				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", nil)
+				mocks.db.ReceivedQueue.EXPECT().
+					Create(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, queue *entity.ReceivedQueue) error {
+						expect := &entity.ReceivedQueue{
+							ID:        queue.ID, // ignore
+							EventType: entity.EventTypeUnknown,
+							UserType:  entity.UserTypeAdministrator,
+							UserIDs:   []string{"admin-id01", "admin-id02"},
+						}
+						assert.Equal(t, expect, queue)
+						return nil
+					})
+			},
+			payload: &entity.WorkerPayload{
+				QueueID:   "queue-id",
+				EventType: entity.EventTypeUnknown,
+				Email:     &entity.MailConfig{},
+			},
+			hasErr: false,
+		},
+		{
+			name: "success empty",
+			setup: func(ctx context.Context, mocks *mocks) {
+				administrators := uentity.Administrators{}
+				mocks.user.EXPECT().ListAdministrators(ctx, in).Return(administrators, int64(0), nil)
+			},
+			payload: &entity.WorkerPayload{
+				QueueID:   "queue-id",
+				EventType: entity.EventTypeUnknown,
+				Email:     &entity.MailConfig{},
+			},
+			hasErr: false,
+		},
+		{
+			name: "failed to list administrators",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().ListAdministrators(ctx, in).Return(nil, int64(0), errmock)
+			},
+			payload: &entity.WorkerPayload{
+				QueueID:   "queue-id",
+				EventType: entity.EventTypeUnknown,
+				Email:     &entity.MailConfig{},
+			},
+			hasErr: true,
+		},
+		{
+			name: "failed to create received queue",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().ListAdministrators(ctx, in).Return(administrators, int64(2), nil)
+				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
+			},
+			payload: &entity.WorkerPayload{
+				QueueID:   "queue-id",
+				EventType: entity.EventTypeUnknown,
+				Email:     &entity.MailConfig{},
+			},
+			hasErr: true,
+		},
+		{
+			name: "failed to send message",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().ListAdministrators(ctx, in).Return(administrators, int64(2), nil)
+				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(nil)
+				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", errmock)
+			},
+			payload: &entity.WorkerPayload{
+				QueueID:   "queue-id",
+				EventType: entity.EventTypeUnknown,
+				Email:     &entity.MailConfig{},
+			},
+			hasErr: true,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.sendAllAdministrators(ctx, tt.payload)
 			assert.Equal(t, tt.hasErr, err != nil, err)
 		}))
 	}

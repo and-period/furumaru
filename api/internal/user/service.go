@@ -27,6 +27,8 @@ type Service interface {
 	UpdateAdminPassword(ctx context.Context, in *UpdateAdminPasswordInput) error
 	// 管理者一覧取得(ID指定)
 	MultiGetAdmins(ctx context.Context, in *MultiGetAdminsInput) (entity.Admins, error)
+	// 管理者デバイストークン一覧取得
+	MultiGetAdminDevices(ctx context.Context, in *MultiGetAdminDevicesInput) ([]string, error)
 	// 管理者取得
 	GetAdmin(ctx context.Context, in *GetAdminInput) (*entity.Admin, error)
 	// システム管理者一覧取得
@@ -81,6 +83,8 @@ type Service interface {
 	RefreshUserToken(ctx context.Context, in *RefreshUserTokenInput) (*entity.UserAuth, error)
 	// 購入者一覧取得(ID指定)
 	MultiGetUsers(ctx context.Context, in *MultiGetUsersInput) (entity.Users, error)
+	// 購入者デバイストークン一覧取得
+	MultiGetUserDevices(ctx context.Context, in *MultiGetUserDevicesInput) ([]string, error)
 	// 購入者取得
 	GetUser(ctx context.Context, in *GetUserInput) (*entity.User, error)
 	// 購入者登録 (メールアドレス/SMS認証)

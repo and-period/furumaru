@@ -12,6 +12,7 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// NotifyRegisterAdmin - 管理者登録
 func (s *service) NotifyRegisterAdmin(ctx context.Context, in *messenger.NotifyRegisterAdminInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
@@ -26,7 +27,7 @@ func (s *service) NotifyRegisterAdmin(ctx context.Context, in *messenger.NotifyR
 	}
 	payload := &entity.WorkerPayload{
 		QueueID:   uuid.Base58Encode(uuid.New()),
-		EventType: entity.EventTypeAdminRegister,
+		EventType: entity.EventTypeRegisterAdmin,
 		UserType:  entity.UserTypeAdmin,
 		UserIDs:   []string{in.AdminID},
 		Email:     mail,
@@ -35,6 +36,7 @@ func (s *service) NotifyRegisterAdmin(ctx context.Context, in *messenger.NotifyR
 	return exception.InternalError(err)
 }
 
+// NotifyResetAdminPassword - 管理者パスワードリセット
 func (s *service) NotifyResetAdminPassword(ctx context.Context, in *messenger.NotifyResetAdminPasswordInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
@@ -49,7 +51,7 @@ func (s *service) NotifyResetAdminPassword(ctx context.Context, in *messenger.No
 	}
 	payload := &entity.WorkerPayload{
 		QueueID:   uuid.Base58Encode(uuid.New()),
-		EventType: entity.EventTypeAdminResetPassword,
+		EventType: entity.EventTypeResetAdminPassword,
 		UserType:  entity.UserTypeAdmin,
 		UserIDs:   []string{in.AdminID},
 		Email:     mail,
@@ -58,6 +60,7 @@ func (s *service) NotifyResetAdminPassword(ctx context.Context, in *messenger.No
 	return exception.InternalError(err)
 }
 
+// NotifyReceivedContact - お問い合わせ受領
 func (s *service) NotifyReceivedContact(ctx context.Context, in *messenger.NotifyReceivedContactInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
@@ -66,18 +69,58 @@ func (s *service) NotifyReceivedContact(ctx context.Context, in *messenger.Notif
 	if err != nil {
 		return exception.InternalError(err)
 	}
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		return s.notifyGuestReceivedContact(ectx, contact)
+	})
+	eg.Go(func() error {
+		return s.notifyAdminReceivedContact(ectx, contact)
+	})
+	eg.Go(func() error {
+		return s.notifyReportReceivedContact(ectx, contact)
+	})
+	if err := eg.Wait(); err != nil {
+		return exception.InternalError(err)
+	}
+	return nil
+}
+
+func (s *service) notifyGuestReceivedContact(ctx context.Context, contact *entity.Contact) error {
 	builder := entity.NewTemplateDataBuilder().
-		Name(in.Username).
-		Email(in.Email).
+		Name(contact.Username).
+		Email(contact.Email).
 		Contact(contact.Title, contact.Content)
 	guest := &entity.Guest{
-		Name:  in.Username,
-		Email: in.Email,
+		Name:  contact.Username,
+		Email: contact.Email,
 	}
 	mail := &entity.MailConfig{
 		EmailID:       entity.EmailIDUserReceivedContact,
 		Substitutions: builder.Build(),
 	}
+	payload := &entity.WorkerPayload{
+		QueueID:   uuid.Base58Encode(uuid.New()),
+		EventType: entity.EventTypeReceivedContact,
+		UserType:  entity.UserTypeGuest,
+		Guest:     guest,
+		Email:     mail,
+	}
+	return s.sendMessage(ctx, payload)
+}
+
+func (s *service) notifyAdminReceivedContact(ctx context.Context, _ *entity.Contact) error {
+	push := &entity.PushConfig{
+		PushID: entity.PushIDContact,
+		Data:   map[string]string{},
+	}
+	payload := &entity.WorkerPayload{
+		EventType: entity.EventTypeReceivedContact,
+		Push:      push,
+	}
+	return s.sendAllAdministrators(ctx, payload)
+}
+
+func (s *service) notifyReportReceivedContact(ctx context.Context, contact *entity.Contact) error {
 	maker := entity.NewAdminURLMaker(s.adminWebURL())
 	report := &entity.ReportConfig{
 		ReportID:   entity.ReportIDReceivedContact,
@@ -88,16 +131,14 @@ func (s *service) NotifyReceivedContact(ctx context.Context, in *messenger.Notif
 	}
 	payload := &entity.WorkerPayload{
 		QueueID:   uuid.Base58Encode(uuid.New()),
-		EventType: entity.EventTypeUserReceivedContact,
-		UserType:  entity.UserTypeGuest,
-		Guest:     guest,
-		Email:     mail,
+		EventType: entity.EventTypeReceivedContact,
+		UserType:  entity.UserTypeNone,
 		Report:    report,
 	}
-	err = s.sendMessage(ctx, payload)
-	return exception.InternalError(err)
+	return s.sendMessage(ctx, payload)
 }
 
+// NotifyNotification - お知らせ発行
 func (s *service) NotifyNotification(ctx context.Context, in *messenger.NotifyNotificationInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
@@ -187,6 +228,38 @@ func (s *service) sendMessage(ctx context.Context, payload *entity.WorkerPayload
 		return err
 	}
 	return nil
+}
+
+func (s *service) sendAllAdministrators(ctx context.Context, payload *entity.WorkerPayload) error {
+	const unit = 200
+
+	var next int64
+	for {
+		in := &user.ListAdministratorsInput{
+			Limit:  unit,
+			Offset: next,
+		}
+		administrators, total, err := s.user.ListAdministrators(ctx, in)
+		if err != nil {
+			return err
+		}
+		if len(administrators) == 0 {
+			return nil
+		}
+
+		payload := *payload // copy
+		payload.QueueID = uuid.Base58Encode(uuid.New())
+		payload.UserType = entity.UserTypeAdministrator
+		payload.UserIDs = administrators.IDs()
+		if err := s.sendMessage(ctx, &payload); err != nil {
+			return err
+		}
+
+		next += int64(len(administrators))
+		if next >= total {
+			return nil
+		}
+	}
 }
 
 func (s *service) sendAllCoordinators(ctx context.Context, payload *entity.WorkerPayload) error {

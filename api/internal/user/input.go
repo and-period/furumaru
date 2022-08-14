@@ -45,6 +45,10 @@ type MultiGetAdminsInput struct {
 	AdminIDs []string `validate:"omitempty,dive,required"`
 }
 
+type MultiGetAdminDevicesInput struct {
+	AdminIDs []string `validate:"omitempty,dive,required"`
+}
+
 type GetAdminInput struct {
 	AdminID string `validate:"required"`
 }
@@ -245,6 +249,10 @@ type RefreshUserTokenInput struct {
 }
 
 type MultiGetUsersInput struct {
+	UserIDs []string `validate:"omitempty,dive,required"`
+}
+
+type MultiGetUserDevicesInput struct {
 	UserIDs []string `validate:"omitempty,dive,required"`
 }
 

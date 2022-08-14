@@ -359,6 +359,49 @@ func (mr *MockNotificationMockRecorder) List(ctx, params interface{}, fields ...
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockNotification)(nil).List), varargs...)
 }
 
+// MockPushTemplate is a mock of PushTemplate interface.
+type MockPushTemplate struct {
+	ctrl     *gomock.Controller
+	recorder *MockPushTemplateMockRecorder
+}
+
+// MockPushTemplateMockRecorder is the mock recorder for MockPushTemplate.
+type MockPushTemplateMockRecorder struct {
+	mock *MockPushTemplate
+}
+
+// NewMockPushTemplate creates a new mock instance.
+func NewMockPushTemplate(ctrl *gomock.Controller) *MockPushTemplate {
+	mock := &MockPushTemplate{ctrl: ctrl}
+	mock.recorder = &MockPushTemplateMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockPushTemplate) EXPECT() *MockPushTemplateMockRecorder {
+	return m.recorder
+}
+
+// Get mocks base method.
+func (m *MockPushTemplate) Get(ctx context.Context, pushID string, fields ...string) (*entity.PushTemplate, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, pushID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.PushTemplate)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockPushTemplateMockRecorder) Get(ctx, pushID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, pushID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockPushTemplate)(nil).Get), varargs...)
+}
+
 // MockReceivedQueue is a mock of ReceivedQueue interface.
 type MockReceivedQueue struct {
 	ctrl     *gomock.Controller

@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/and-period/furumaru/api/pkg/cognito"
+	"github.com/and-period/furumaru/api/pkg/firebase/messaging"
 	"github.com/and-period/furumaru/api/pkg/line"
 	"github.com/and-period/furumaru/api/pkg/mailer"
 	"github.com/and-period/furumaru/api/pkg/storage"
@@ -64,6 +65,11 @@ func TestInternalError(t *testing.T) {
 		{
 			name:   "mailer error",
 			err:    mailer.ErrInvalidArgument,
+			expect: ErrInvalidArgument,
+		},
+		{
+			name:   "messaging error",
+			err:    messaging.ErrInvalidArgument,
 			expect: ErrInvalidArgument,
 		},
 		{
@@ -362,6 +368,67 @@ func TestMailerError(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			assert.ErrorIs(t, mailerError(tt.err), tt.expect)
+		})
+	}
+}
+
+func TestMessagingError(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		err    error
+		expect error
+	}{
+		{
+			name:   "invalid argument",
+			err:    messaging.ErrInvalidArgument,
+			expect: ErrInvalidArgument,
+		},
+		{
+			name:   "unauthenticated",
+			err:    messaging.ErrUnauthenticated,
+			expect: ErrUnauthenticated,
+		},
+		{
+			name:   "not found",
+			err:    messaging.ErrNotFound,
+			expect: ErrNotFound,
+		},
+		{
+			name:   "resource exhausted",
+			err:    messaging.ErrResourceExhausted,
+			expect: ErrResourceExhausted,
+		},
+		{
+			name:   "internal",
+			err:    messaging.ErrInternal,
+			expect: ErrInternal,
+		},
+		{
+			name:   "unavailable",
+			err:    messaging.ErrUnavailable,
+			expect: ErrUnavailable,
+		},
+		{
+			name:   "canceled",
+			err:    messaging.ErrCanceled,
+			expect: ErrCanceled,
+		},
+		{
+			name:   "timeout",
+			err:    messaging.ErrTimeout,
+			expect: ErrDeadlineExceeded,
+		},
+		{
+			name:   "other error",
+			err:    assert.AnError,
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			assert.ErrorIs(t, messagingError(tt.err), tt.expect)
 		})
 	}
 }

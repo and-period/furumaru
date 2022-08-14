@@ -306,6 +306,21 @@ func (mr *MockServiceMockRecorder) ListProducers(ctx, in interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListProducers", reflect.TypeOf((*MockService)(nil).ListProducers), ctx, in)
 }
 
+// MultiGetAdminDevices mocks base method.
+func (m *MockService) MultiGetAdminDevices(ctx context.Context, in *user.MultiGetAdminDevicesInput) ([]string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MultiGetAdminDevices", ctx, in)
+	ret0, _ := ret[0].([]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGetAdminDevices indicates an expected call of MultiGetAdminDevices.
+func (mr *MockServiceMockRecorder) MultiGetAdminDevices(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetAdminDevices", reflect.TypeOf((*MockService)(nil).MultiGetAdminDevices), ctx, in)
+}
+
 // MultiGetAdministrators mocks base method.
 func (m *MockService) MultiGetAdministrators(ctx context.Context, in *user.MultiGetAdministratorsInput) (entity.Administrators, error) {
 	m.ctrl.T.Helper()
@@ -364,6 +379,21 @@ func (m *MockService) MultiGetProducers(ctx context.Context, in *user.MultiGetPr
 func (mr *MockServiceMockRecorder) MultiGetProducers(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetProducers", reflect.TypeOf((*MockService)(nil).MultiGetProducers), ctx, in)
+}
+
+// MultiGetUserDevices mocks base method.
+func (m *MockService) MultiGetUserDevices(ctx context.Context, in *user.MultiGetUserDevicesInput) ([]string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MultiGetUserDevices", ctx, in)
+	ret0, _ := ret[0].([]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGetUserDevices indicates an expected call of MultiGetUserDevices.
+func (mr *MockServiceMockRecorder) MultiGetUserDevices(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetUserDevices", reflect.TypeOf((*MockService)(nil).MultiGetUserDevices), ctx, in)
 }
 
 // MultiGetUsers mocks base method.

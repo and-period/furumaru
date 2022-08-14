@@ -36,9 +36,9 @@ func (m *MockClient) EXPECT() *MockClientMockRecorder {
 }
 
 // MultiSend mocks base method.
-func (m *MockClient) MultiSend(ctx context.Context, notification *messaging.Notification, tokens ...string) (int64, int64, error) {
+func (m *MockClient) MultiSend(ctx context.Context, msg *messaging.Message, tokens ...string) (int64, int64, error) {
 	m.ctrl.T.Helper()
-	varargs := []interface{}{ctx, notification}
+	varargs := []interface{}{ctx, msg}
 	for _, a := range tokens {
 		varargs = append(varargs, a)
 	}
@@ -50,22 +50,22 @@ func (m *MockClient) MultiSend(ctx context.Context, notification *messaging.Noti
 }
 
 // MultiSend indicates an expected call of MultiSend.
-func (mr *MockClientMockRecorder) MultiSend(ctx, notification interface{}, tokens ...interface{}) *gomock.Call {
+func (mr *MockClientMockRecorder) MultiSend(ctx, msg interface{}, tokens ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{ctx, notification}, tokens...)
+	varargs := append([]interface{}{ctx, msg}, tokens...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiSend", reflect.TypeOf((*MockClient)(nil).MultiSend), varargs...)
 }
 
 // Send mocks base method.
-func (m *MockClient) Send(ctx context.Context, notification *messaging.Notification, token string) error {
+func (m *MockClient) Send(ctx context.Context, msg *messaging.Message, token string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Send", ctx, notification, token)
+	ret := m.ctrl.Call(m, "Send", ctx, msg, token)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Send indicates an expected call of Send.
-func (mr *MockClientMockRecorder) Send(ctx, notification, token interface{}) *gomock.Call {
+func (mr *MockClientMockRecorder) Send(ctx, msg, token interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Send", reflect.TypeOf((*MockClient)(nil).Send), ctx, notification, token)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Send", reflect.TypeOf((*MockClient)(nil).Send), ctx, msg, token)
 }

@@ -8,7 +8,6 @@ import (
 
 	firebase "firebase.google.com/go/v4"
 	"firebase.google.com/go/v4/messaging"
-	"github.com/and-period/furumaru/api/pkg/backoff"
 	"go.uber.org/zap"
 )
 
@@ -26,20 +25,18 @@ var (
 
 type Client interface {
 	// プッシュ通知 (単一宛先)
-	Send(ctx context.Context, notification *Notification, token string) error
+	Send(ctx context.Context, msg *Message, token string) error
 	// プッシュ通知 (複数宛先)
-	MultiSend(ctx context.Context, notification *Notification, tokens ...string) (int64, int64, error)
+	MultiSend(ctx context.Context, msg *Message, tokens ...string) (int64, int64, error)
 }
 
 type client struct {
 	messageing *messaging.Client
 	logger     *zap.Logger
-	maxRetries int64
 }
 
 type options struct {
-	logger     *zap.Logger
-	maxRetries int64
+	logger *zap.Logger
 }
 
 type Option func(opts *options)
@@ -47,12 +44,6 @@ type Option func(opts *options)
 func WithLogger(logger *zap.Logger) Option {
 	return func(opts *options) {
 		opts.logger = logger
-	}
-}
-
-func WithMaxRetries(maxRetries int64) Option {
-	return func(opts *options) {
-		opts.maxRetries = maxRetries
 	}
 }
 
@@ -71,25 +62,6 @@ func NewClient(ctx context.Context, app *firebase.App, opts ...Option) (Client, 
 		messageing: messaging,
 		logger:     dopts.logger,
 	}, nil
-}
-
-func (c *client) do(ctx context.Context, fn func() error) error {
-	retry := backoff.NewExponentialBackoff(c.maxRetries)
-	return backoff.Retry(ctx, retry, fn, backoff.WithRetryablel(c.isRetryable))
-}
-
-func (c *client) isRetryable(err error) bool {
-	switch {
-	case
-		messaging.IsMessageRateExceeded(err),
-		messaging.IsQuotaExceeded(err),
-		messaging.IsMessageRateExceeded(err),
-		messaging.IsQuotaExceeded(err),
-		messaging.IsUnavailable(err):
-		return true
-	default:
-		return false
-	}
 }
 
 func (c *client) sendError(err error) error {

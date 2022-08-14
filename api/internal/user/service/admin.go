@@ -41,6 +41,17 @@ func (s *service) MultiGetAdmins(ctx context.Context, in *user.MultiGetAdminsInp
 	return res, nil
 }
 
+func (s *service) MultiGetAdminDevices(ctx context.Context, in *user.MultiGetAdminDevicesInput) ([]string, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	auths, err := s.db.AdminAuth.MultiGet(ctx, in.AdminIDs, "device")
+	if err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return auths.Devices(), nil
+}
+
 func (s *service) GetAdmin(ctx context.Context, in *user.GetAdminInput) (*entity.Admin, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
