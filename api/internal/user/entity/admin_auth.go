@@ -87,7 +87,12 @@ func (as AdminAuths) AdminIDs() []string {
 }
 
 func (as AdminAuths) Devices() []string {
-	return set.UniqBy(as, func(a *AdminAuth) string {
-		return a.Device
-	})
+	set := set.New[string](len(as))
+	for i := range as {
+		if as[i].Device == "" {
+			continue
+		}
+		set.Add(as[i].Device)
+	}
+	return set.Slice()
 }

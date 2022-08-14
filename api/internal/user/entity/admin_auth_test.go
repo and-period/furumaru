@@ -247,6 +247,12 @@ func TestAdminAuths_Devices(t *testing.T) {
 					Device:    "instance-id",
 					Role:      AdminRoleAdministrator,
 				},
+				{
+					AdminID:   "admin-id",
+					CognitoID: "cognito-id",
+					Device:    "",
+					Role:      AdminRoleAdministrator,
+				},
 			},
 			expect: []string{"instance-id"},
 		},
