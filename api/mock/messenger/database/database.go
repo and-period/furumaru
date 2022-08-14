@@ -305,6 +305,21 @@ func (m *MockNotification) EXPECT() *MockNotificationMockRecorder {
 	return m.recorder
 }
 
+// Count mocks base method.
+func (m *MockNotification) Count(ctx context.Context, params *database.ListNotificationsParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockNotificationMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockNotification)(nil).Count), ctx, params)
+}
+
 // Create mocks base method.
 func (m *MockNotification) Create(ctx context.Context, notification *entity.Notification) error {
 	m.ctrl.T.Helper()

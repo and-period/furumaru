@@ -64,6 +64,7 @@ type MessageTemplate interface {
 
 type Notification interface {
 	List(ctx context.Context, params *ListNotificationsParams, fields ...string) (entity.Notifications, error)
+	Count(ctx context.Context, params *ListNotificationsParams) (int64, error)
 	Get(ctx context.Context, notificationID string, fields ...string) (*entity.Notification, error)
 	Create(ctx context.Context, notification *entity.Notification) error
 }
