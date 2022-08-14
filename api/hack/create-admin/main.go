@@ -1,9 +1,10 @@
 // 管理者を登録します
-// usage: go run ./main.go \
-//          -db-host=127.0.0.1 -db-port=3316 -db-password=12345678 \
-//          -aws-access-key=xxx -aws-secret-key=xxx \
-//          -cognito-client-id=xxx -cognito-pool-id=xxx \
-//          -email=test-admin@and-period.jp
+//
+//	usage: go run ./main.go \
+//	         -db-host=127.0.0.1 -db-port=3316 -db-password=12345678 \
+//	         -aws-access-key=xxx -aws-secret-key=xxx \
+//	         -cognito-client-id=xxx -cognito-pool-id=xxx \
+//	         -email=test-admin@and-period.jp
 package main
 
 import (
