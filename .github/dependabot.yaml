@@ -6,41 +6,66 @@ updates:
   directory: '/api'
   schedule:
     interval: 'weekly'
+    day: 'wednesday'
+    time: '19:00'
+    timezone: 'Asia/Tokyo'
   update-types: ['version-update:semver-minor']
   labels:
   - 'backend'
   - 'dependencies'
-# docs
-- package-ecosystem: 'yarn'
-  directory: '/docs/swagger'
-  schedule:
-    interval: 'weekly'
-  update-types: ['version-update:semver-minor']
-  labels:
-  - 'docs'
-  - 'dependencies'
 # web
-- package-ecosystem: 'yarn'
+- package-ecosystem: 'npm'
   directory: '/web/admin'
   schedule:
     interval: 'weekly'
+    day: 'wednesday'
+    time: '19:00'
+    timezone: 'Asia/Tokyo'
   update-types: ['version-update:semver-minor']
   labels:
   - 'frontend'
   - 'dependencies'
-- package-ecosystem: 'yarn'
+- package-ecosystem: 'npm'
   directory: '/web/user'
   schedule:
     interval: 'weekly'
+    day: 'wednesday'
+    time: '19:00'
+    timezone: 'Asia/Tokyo'
   update-types: ['version-update:semver-minor']
   labels:
   - 'frontend'
   - 'dependencies'
 # other
+- package-ecosystem: 'npm'
+  directory: '/docs/swagger'
+  schedule:
+    interval: 'weekly'
+    day: 'wednesday'
+    time: '19:00'
+    timezone: 'Asia/Tokyo'
+  update-types: ['version-update:semver-minor']
+  labels:
+  - 'docs'
+  - 'dependencies'
+- package-ecosystem: 'terraform'
+  directory: '/infra/terraform'
+  schedule:
+    interval: 'weekly'
+    day: 'wednesday'
+    time: '19:00'
+    timezone: 'Asia/Tokyo'
+  update-types: ['version-update:semver-minor']
+  labels:
+  - 'infra (terraform)'
+  - 'dependencies'
 - package-ecosystem: 'github-actions'
   directory: '/'
   schedule:
     interval: 'weekly'
+    day: 'wednesday'
+    time: '19:00'
+    timezone: 'Asia/Tokyo'
   labels:
   - 'workflow'
   - 'dependencies'
