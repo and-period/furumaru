@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
@@ -96,7 +97,7 @@ func TestReporter(t *testing.T) {
 					Link:     "htts://admin.and-period.jp/contacts/contact-id",
 				},
 			},
-			expectErr: errmock,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 
