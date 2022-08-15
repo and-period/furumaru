@@ -123,9 +123,9 @@ export default defineComponent({
       client.attachPreview(document.getElementById('preview'))
     }
 
-    onMounted(() => {
-      handlePermissions()
-      getDevices()
+    onMounted(async () => {
+      await handlePermissions()
+      await getDevices()
       attachPreview()
     })
 
