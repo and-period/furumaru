@@ -14,7 +14,7 @@ const config: NuxtConfig = {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - admin',
+    titleTemplate: '%s - ふるマル(admin)',
     title: 'admin',
     htmlAttrs: {
       lang: 'ja',
