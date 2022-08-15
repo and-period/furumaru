@@ -27,8 +27,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useFetch, useRouter } from '@nuxtjs/composition-api'
+import {
+  computed,
+  defineComponent,
+  useFetch,
+  useRouter,
+} from '@nuxtjs/composition-api'
 import { DataTableHeader } from 'vuetify'
+
 import { useContactStore } from '~/store/contact'
 import { ContactsResponseContactsInner } from '~/types/api'
 
@@ -75,7 +81,6 @@ export default defineComponent({
         console.log(err)
       }
     })
-
 
     const getPriorityColor = (priority: number): string => {
       switch (priority) {
@@ -147,18 +152,7 @@ export default defineComponent({
 })
 </script>
 
-function useContactStore() {
-  throw new Error('Function not implemented.')
-}
-
-function useContactStore() {
-  throw new Error('Function not implemented.')
-}
-
-function useContactStore() {
-  throw new Error('Function not implemented.')
-}
-
-function useContactStore() {
-  throw new Error('Function not implemented.')
-}
+function useContactStore() { throw new Error('Function not implemented.') }
+function useContactStore() { throw new Error('Function not implemented.') }
+function useContactStore() { throw new Error('Function not implemented.') }
+function useContactStore() { throw new Error('Function not implemented.') }

@@ -48,7 +48,7 @@
 
         <v-textarea name="memo" label="メモ"></v-textarea>
       </v-card-text>
-            <v-card-actions>
+      <v-card-actions>
         <v-btn block outlined color="primary">登録</v-btn>
       </v-card-actions>
     </v-card>
