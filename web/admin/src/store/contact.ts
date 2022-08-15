@@ -20,8 +20,10 @@ export const useContactStore = defineStore('Contact', {
         const factory = new ApiClientFactory()
         const contactsApiClient = factory.create(ContactApi, accessToken)
         const res = await contactsApiClient.v1ListContacts(limit, offset)
+        console.log(res)
         this.contacts = res.data.contacts
       } catch (error) {
+        console.log(error)
         throw new Error('Internal Server Error')
       }
     },

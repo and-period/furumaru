@@ -151,8 +151,3 @@ export default defineComponent({
   },
 })
 </script>
-
-function useContactStore() { throw new Error('Function not implemented.') }
-function useContactStore() { throw new Error('Function not implemented.') }
-function useContactStore() { throw new Error('Function not implemented.') }
-function useContactStore() { throw new Error('Function not implemented.') }
