@@ -119,14 +119,14 @@ export default defineComponent({
       return { videoDevices: video, audioDevices: audio }
     }
 
-    const attachPreview = () => {
-      client.attachPreview(document.getElementById('preview'))
+    const attachPreview = async () => {
+      await client.attachPreview(document.getElementById('preview'))
     }
 
     onMounted(async () => {
       await handlePermissions()
       await getDevices()
-      attachPreview()
+      await attachPreview()
     })
 
     const recreateClient = async () => {
@@ -145,7 +145,7 @@ export default defineComponent({
 
       await handleSelectVideo(formData.videoDevice)
       await handleSelectAudio(formData.audioDevice)
-      attachPreview()
+      await attachPreview()
     }
 
     const handleSelectChannelConfig = async () => {
