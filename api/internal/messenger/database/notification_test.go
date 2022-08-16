@@ -102,6 +102,75 @@ func TestNotification_List(t *testing.T) {
 	}
 }
 
+func TestNotificaiton_Count(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, notificationTable)
+	require.NoError(t, err)
+	notifications := make(entity.Notifications, 3)
+	notifications[0] = testNotification("notification-id01", true, now())
+	notifications[1] = testNotification("notification-id02", true, now())
+	notifications[2] = testNotification("notification-id03", true, now())
+	err = m.db.DB.Create(&notifications).Error
+	require.NoError(t, err)
+
+	type args struct {
+		params *ListNotificationsParams
+	}
+	type want struct {
+		total  int64
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListNotificationsParams{
+					Since: now(),
+					Until: now(),
+				},
+			},
+			want: want{
+				total:  3,
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &notification{db: m.db, now: now}
+			actual, err := db.Count(ctx, tt.args.params)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.total, actual)
+		})
+	}
+}
+
 func TestNotification_Get(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
