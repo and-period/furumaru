@@ -57,33 +57,34 @@
 
 <script lang="ts">
 import { defineComponent, useFetch, useRoute } from '@nuxtjs/composition-api'
+
 import { useContactStore } from '~/store/contact'
 
-export default defineComponent ({
+export default defineComponent({
   setup() {
     const route = useRoute()
     const id = route.value.params.id
     const { getContact } = useContactStore()
-    var title = ''
-    var content = ''
-    var username = ''
-    var email = ''
-    var phoneNumber = ''
-    var _status = 0
-    var _priority = 0
-    var note = ''
+    let title = ''
+    let content = ''
+    let username = ''
+    let email = ''
+    let phoneNumber = ''
+    let _status = 0
+    let _priority = 0
+    let note = ''
 
-const {fetchState} = useFetch(async () => {
-    const contact = await getContact(id)
-    title = contact.title
-    content = contact.content
-    username = contact.username
-    email = contact.email
-    phoneNumber = contact.phoneNumber
-    _status = contact.status
-    _priority = contact.priority
-    note = contact.note
-})
+    const { fetchState } = useFetch(async () => {
+      const contact = await getContact(id)
+      title = contact.title
+      content = contact.content
+      username = contact.username
+      email = contact.email
+      phoneNumber = contact.phoneNumber
+      _status = contact.status
+      _priority = contact.priority
+      note = contact.note
+    })
 
     return {
       priority: ['High', 'Middle', 'Low', 'Unknown'],

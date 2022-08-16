@@ -28,7 +28,7 @@ export const useContactStore = defineStore('Contact', {
       }
     },
     async getContact(id: string): Promise<ContactResponse> {
-      try{
+      try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
         if (!accessToken) throw new Error('認証エラー')
@@ -40,6 +40,6 @@ export const useContactStore = defineStore('Contact', {
         console.log(error)
         throw new Error('Internal Server Error')
       }
-    }
+    },
   },
 })
