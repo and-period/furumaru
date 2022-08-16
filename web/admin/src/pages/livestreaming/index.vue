@@ -1,18 +1,14 @@
 <template>
   <v-card>
-    <!-- Introduction -->
     <v-card-title>配信テスト用モック</v-card-title>
-    <v-card-subtitle
-      >Ingest Endpoint, Stream
-      KeyはAWSコンソールより取得すること。</v-card-subtitle
-    >
+    <v-card-subtitle>
+      <p>Ingest Endpoint, Stream KeyはAWSコンソールより取得すること。</p>
+    </v-card-subtitle>
 
-    <!-- Compositor preview -->
     <v-container>
       <canvas id="preview"></canvas>
     </v-container>
 
-    <!-- Input -->
     <v-card-text>
       <v-select
         v-model="formData.videoDevice"
@@ -39,16 +35,21 @@
       <v-text-field v-model="formData.streamKey" placeholder="Stream Key" />
     </v-card-text>
 
-    <!-- Broadcast buttons -->
     <v-card-actions>
       <v-btn @click="startBroadcast">Start Broadcast</v-btn>
       <v-btn @click="stopBroadcast">Stop Broadcast</v-btn>
+      <v-btn @click="handleClickViewing">Live Viewing</v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
-import { defineComponent, onMounted, reactive } from '@nuxtjs/composition-api'
+import {
+  defineComponent,
+  onMounted,
+  reactive,
+  useRouter,
+} from '@nuxtjs/composition-api'
 import IVSBroadcastClient, {
   STANDARD_LANDSCAPE,
   STANDARD_PORTRAIT,
@@ -57,6 +58,8 @@ import IVSBroadcastClient, {
 
 export default defineComponent({
   setup() {
+    const router = useRouter()
+
     let client = IVSBroadcastClient.create({
       streamConfig: STANDARD_LANDSCAPE,
       ingestEndpoint: '',
@@ -96,7 +99,6 @@ export default defineComponent({
         permissions = { video: false, audio: false }
         console.error(err.message)
       }
-      // If we still don't have permissions after requesting them display the error message
       if (!permissions.video) {
         console.error('failed to get video permissions.')
       } else if (!permissions.audio) {
@@ -179,6 +181,10 @@ export default defineComponent({
       await client.addAudioInputDevice(microphoneStream, 'microphone')
     }
 
+    const handleClickViewing = () => {
+      router.push('/livestreaming/view')
+    }
+
     const startBroadcast = async () => {
       client.config.ingestEndpoint = formData.ingestEndpoint
       await client
@@ -203,6 +209,7 @@ export default defineComponent({
       handleSelectChannelConfig,
       handleSelectVideo,
       handleSelectAudio,
+      handleClickViewing,
       startBroadcast,
       stopBroadcast,
     }
@@ -211,18 +218,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
-#error {
-  color: red;
-}
-
-table {
-  display: table;
-}
-
 #preview {
   margin-bottom: 1.5rem;
   background: green;
   width: 100%;
-  height: 300;
 }
 </style>
