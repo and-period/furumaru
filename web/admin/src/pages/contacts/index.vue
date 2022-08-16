@@ -36,7 +36,6 @@ import {
 import { DataTableHeader } from 'vuetify'
 
 import { useContactStore } from '~/store/contact'
-import { ContactsResponseContactsInner } from '~/types/api'
 
 export default defineComponent({
   setup() {
@@ -134,8 +133,8 @@ export default defineComponent({
       }
     }
 
-    const handleEdit = (item: ContactsResponseContactsInner) => {
-      router.push(`/contacts/edit/${item.id}`)
+    const handleEdit = () => {
+      router.push(`/contacts/edit/`)
     }
 
     return {

@@ -56,12 +56,49 @@
 </template>
 
 <script lang="ts">
-export default {
+import { defineComponent, useFetch, useRoute } from '@nuxtjs/composition-api'
+import { useContactStore } from '~/store/contact'
+
+export default defineComponent ({
   setup() {
+    const route = useRoute()
+    const id = route.value.params.id
+    const { getContact } = useContactStore()
+    var title = ''
+    var content = ''
+    var username = ''
+    var email = ''
+    var phoneNumber = ''
+    var _status = 0
+    var _priority = 0
+    var note = ''
+
+const {fetchState} = useFetch(async () => {
+    const contact = await getContact(id)
+    title = contact.title
+    content = contact.content
+    username = contact.username
+    email = contact.email
+    phoneNumber = contact.phoneNumber
+    _status = contact.status
+    _priority = contact.priority
+    note = contact.note
+})
+
     return {
       priority: ['High', 'Middle', 'Low', 'Unknown'],
       status: ['未着手', '進行中', '完了', '不明'],
+      id,
+      fetchState,
+      title,
+      content,
+      username,
+      email,
+      phoneNumber,
+      _status,
+      _priority,
+      note,
     }
   },
-}
+})
 </script>
