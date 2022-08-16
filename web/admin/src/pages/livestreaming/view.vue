@@ -10,10 +10,7 @@
     </v-container>
 
     <v-card-text>
-      <v-text-field
-        v-model="formData.playbackUrl"
-        placeholder="Playback URL"
-      />
+      <v-text-field v-model="formData.playbackUrl" placeholder="Playback URL" />
     </v-card-text>
 
     <v-card-actions>

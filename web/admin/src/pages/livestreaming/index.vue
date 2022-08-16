@@ -44,7 +44,12 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, reactive, useRouter } from '@nuxtjs/composition-api'
+import {
+  defineComponent,
+  onMounted,
+  reactive,
+  useRouter,
+} from '@nuxtjs/composition-api'
 import IVSBroadcastClient, {
   STANDARD_LANDSCAPE,
   STANDARD_PORTRAIT,
