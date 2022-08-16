@@ -74,6 +74,54 @@ func TestListNotificaitons(t *testing.T) {
 			expectTotal: 1,
 			expectErr:   nil,
 		},
+		{
+			name:        "invalid argument",
+			setup:       func(ctx context.Context, mocks *mocks) {},
+			input:       &messenger.ListNotificationsInput{},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to list notifications",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Notification.EXPECT().List(gomock.Any(), params).Return(nil, errmock)
+				mocks.db.Notification.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
+			},
+			input: &messenger.ListNotificationsInput{
+				Limit:         30,
+				Offset:        0,
+				Since:         since,
+				Until:         until,
+				OnlyPublished: true,
+				Orders: []*messenger.ListNotificationsOrder{
+					{Key: entity.NotificationOrderByPublishedAt, OrderByASC: true},
+				},
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrUnknown,
+		},
+		{
+			name: "failed to count products",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Notification.EXPECT().List(gomock.Any(), params).Return(notifications, nil)
+				mocks.db.Notification.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
+			},
+			input: &messenger.ListNotificationsInput{
+				Limit:         30,
+				Offset:        0,
+				Since:         since,
+				Until:         until,
+				OnlyPublished: true,
+				Orders: []*messenger.ListNotificationsOrder{
+					{Key: entity.NotificationOrderByPublishedAt, OrderByASC: true},
+				},
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrUnknown,
+		},
 	}
 
 	for _, tt := range tests {
