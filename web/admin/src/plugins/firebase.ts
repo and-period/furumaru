@@ -1,7 +1,7 @@
-import { initializeApp } from 'firebase/app'
-import { getMessaging, getToken, onMessage } from 'firebase/messaging'
+import { FirebaseOptions, initializeApp } from 'firebase/app'
+import { getMessaging } from 'firebase/messaging'
 
-const config = {
+const config: FirebaseOptions = {
   apiKey: process.env.FIREBASE_API_KEY,
   authDomain: process.env.FIREBASE_AUTH_DOMAIN,
   projectId: process.env.FIREBASE_PROJECT_ID,
@@ -13,31 +13,5 @@ const config = {
 
 const app = initializeApp(config)
 const messaging = getMessaging(app)
-
-function requestPermission() {
-  Notification.requestPermission().then((permission) => {
-    if (permission === 'granted') {
-      console.log('Notification permission granted.')
-    }
-  })
-}
-
-getToken(messaging, {
-  vapidKey: process.env.FIREBASE_VAPID_KEY,
-})
-  .then((currentToken) => {
-    if (currentToken) {
-      console.log('token', currentToken)
-    } else {
-      requestPermission()
-    }
-  })
-  .catch((err) => {
-    console.log(err)
-  })
-
-onMessage(messaging, (payload) => {
-  console.log('メッセージ', payload)
-})
 
 export default { app, messaging }
