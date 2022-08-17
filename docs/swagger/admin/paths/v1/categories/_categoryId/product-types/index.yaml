@@ -49,7 +49,7 @@ get:
     example: '-name'
   responses:
     200:
-      description: A successful response.
+      description: 成功
       content:
         application/json:
           schema:
@@ -77,19 +77,19 @@ post:
           $ref: './../../../../../openapi.yaml#/components/schemas/v1CreateProductTypeRequest'
   responses:
     200:
-      description: A successful response.
+      description: 成功
       content:
         application/json:
           schema:
             $ref: './../../../../../openapi.yaml#/components/schemas/v1ProductTypeResponse'
     400:
-      description: bad request error
+      description: バリデーションエラー
       content:
         application/json:
           schema:
             $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
     409:
-      description: conflict error
+      description: すでに存在する品目名
       content:
         application/json:
           schema:

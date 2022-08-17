@@ -701,7 +701,7 @@ export const AuthApiAxiosParamCreator = function (
       }
 
       const localVarRequestOptions = {
-        method: 'PATCH',
+        method: 'POST',
         ...baseOptions,
         ...options,
       }

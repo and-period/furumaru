@@ -11,11 +11,11 @@ post:
           $ref: './../../../openapi.yaml#/components/schemas/v1CreateContactRequest'
   responses:
     204:
-      description: A successful response.
+      description: 成功
       content:
         application/json: {}
-    default:
-      description: An unexpected error response.
+    400:
+      description: バリデーションエラー
       content:
         application/json:
           schema:

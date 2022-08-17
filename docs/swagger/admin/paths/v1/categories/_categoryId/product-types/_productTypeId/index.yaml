@@ -28,24 +28,24 @@ patch:
           $ref: './../../../../../../openapi.yaml#/components/schemas/v1UpdateProductTypeRequest'
   responses:
     204:
-      description: A successful response.
+      description: 成功
       content:
         application/json:
           schema: {}
     400:
-      description: not found error
+      description: バリデーションエラー
       content:
         application/json:
           schema:
             $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
     404:
-      description: not found error
+      description: 商品種別もしくは品目が存在しない
       content:
         application/json:
           schema:
             $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
     409:
-      description: conflict error
+      description: すでに存在する品目名
       content:
         application/json:
           schema:
@@ -74,18 +74,12 @@ delete:
     example: 'kSByoE6FetnPs5Byk3a9Zx'
   responses:
     204:
-      description: A successful response.
+      description: 成功
       content:
         application/json:
           schema: {}
-    400:
-      description: not found error
-      content:
-        application/json:
-          schema:
-            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
     404:
-      description: not found error
+      description: 商品種別もしくは品目が存在しない
       content:
         application/json:
           schema:

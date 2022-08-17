@@ -13,18 +13,30 @@ patch:
           $ref: './../../../../openapi.yaml#/components/schemas/v1UpdateAuthEmailRequest'
   responses:
     204:
-      description: A successful response.
+      description: 成功
       content:
         application/json:
           schema: {}
     400:
-      description: bad request error
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+    401:
+      description: 認証エラー
       content:
         application/json:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
     409:
-      description: conflict error
+      description: すでに存在するメールアドレス
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+    412:
+      description: 変更後のメールアドレスが変更前と同じ
       content:
         application/json:
           schema:
