@@ -39,7 +39,7 @@ require (
 	github.com/stripe/stripe-go/v73 v73.2.0
 	go.uber.org/zap v1.22.0
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4
-	google.golang.org/api v0.92.0
+	google.golang.org/api v0.93.0
 	google.golang.org/genproto v0.0.0-20220812140447-cec7f5303424
 	google.golang.org/grpc v1.48.0
 	google.golang.org/protobuf v1.28.1
