@@ -4,10 +4,10 @@ import { defineStore } from 'pinia'
 import Cookies from 'universal-cookie'
 
 import ApiClientFactory from '../plugins/factory'
+import Firebase from '~/plugins/firebase'
 
 import { useCommonStore } from './common'
 
-import Firebase from '~/plugins/firebase'
 import {
   AuthApi,
   AuthResponse,
