@@ -39,8 +39,8 @@ type UpdateContactInput struct {
 type ListNotificationsInput struct {
 	Limit         int64                     `validate:"required,max=200"`
 	Offset        int64                     `validate:"min=0"`
-	Since         time.Time                 `validate:"required"`
-	Until         time.Time                 `validate:"required"`
+	Since         time.Time                 `validate:""`
+	Until         time.Time                 `validate:""`
 	OnlyPublished bool                      `validate:""`
 	Orders        []*ListNotificationsOrder `validate:"omitempty,dive,required"`
 }
