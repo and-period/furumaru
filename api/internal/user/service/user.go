@@ -88,7 +88,14 @@ func (s *service) InitializeUser(ctx context.Context, in *user.InitializeUserInp
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	err := s.db.User.UpdateAccount(ctx, in.UserID, in.AccountID, in.Username)
+	u, err := s.db.User.Get(ctx, in.UserID, "account_id")
+	if err != nil {
+		return exception.InternalError(err)
+	}
+	if u.AccountID != "" {
+		return fmt.Errorf("%w: %s", exception.ErrFailedPrecondition, "api: already initialized")
+	}
+	err = s.db.User.UpdateAccount(ctx, in.UserID, in.AccountID, in.Username)
 	return exception.InternalError(err)
 }
 

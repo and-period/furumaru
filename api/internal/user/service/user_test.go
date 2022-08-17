@@ -662,6 +662,7 @@ func TestVerifyUserEmail(t *testing.T) {
 
 func TestInitializeUser(t *testing.T) {
 	t.Parallel()
+	u := &entity.User{AccountID: ""}
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -671,6 +672,7 @@ func TestInitializeUser(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.User.EXPECT().Get(ctx, "user-id", "account_id").Return(u, nil)
 				mocks.db.User.EXPECT().UpdateAccount(ctx, "user-id", "account-id", "username").Return(nil)
 			},
 			input: &user.InitializeUserInput{
@@ -687,8 +689,34 @@ func TestInitializeUser(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name: "failed to get user",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.User.EXPECT().Get(ctx, "user-id", "account_id").Return(nil, errmock)
+			},
+			input: &user.InitializeUserInput{
+				UserID:    "user-id",
+				AccountID: "account-id",
+				Username:  "username",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "failed to get user",
+			setup: func(ctx context.Context, mocks *mocks) {
+				u := &entity.User{AccountID: "account-id"}
+				mocks.db.User.EXPECT().Get(ctx, "user-id", "account_id").Return(u, nil)
+			},
+			input: &user.InitializeUserInput{
+				UserID:    "user-id",
+				AccountID: "account-id",
+				Username:  "username",
+			},
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
 			name: "failed to initilaze user",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.User.EXPECT().Get(ctx, "user-id", "account_id").Return(u, nil)
 				mocks.db.User.EXPECT().UpdateAccount(ctx, "user-id", "account-id", "username").Return(errmock)
 			},
 			input: &user.InitializeUserInput{

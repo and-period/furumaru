@@ -16,7 +16,7 @@ func (h *handler) authRoutes(rg *gin.RouterGroup) {
 	rg.POST("", h.SignIn)
 	rg.DELETE("", h.SignOut)
 	rg.POST("/refresh-token", h.RefreshAuthToken)
-	rg.PATCH("/initialized", h.authentication(), h.InitializeAuth)
+	rg.POST("/initialized", h.authentication(), h.InitializeAuth)
 	rg.PATCH("/email", h.authentication(), h.UpdateAuthEmail)
 	rg.POST("/email/verified", h.authentication(), h.VerifyAuthEmail)
 	rg.PATCH("/password", h.authentication(), h.UpdateAuthPassword)
