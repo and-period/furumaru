@@ -293,7 +293,7 @@ func TestInitializeAuth(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			const path = "/v1/auth/initialized"
-			testPatch(t, tt.setup, tt.expect, path, tt.req)
+			testPost(t, tt.setup, tt.expect, path, tt.req)
 		})
 	}
 }
