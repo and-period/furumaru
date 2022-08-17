@@ -1,4 +1,4 @@
-patch:
+post:
   summary: 初回登録(表示名, 検索名)
   operationId: v1InitializeAuth
   tags:
@@ -13,24 +13,30 @@ patch:
           $ref: './../../../openapi.yaml#/components/schemas/v1InitializeAuthRequest'
   responses:
     204:
-      description: A successful response.
+      description: 成功
       content:
         application/json:
           schema: {}
     400:
-      description: bad request error
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/errorResponse'
+    401:
+      description: 認証エラー
       content:
         application/json:
           schema:
             $ref: './../../../openapi.yaml#/components/schemas/errorResponse'
     409:
-      description: conflict error
+      description: すでに存在する検索名
       content:
         application/json:
           schema:
             $ref: './../../../openapi.yaml#/components/schemas/errorResponse'
     412:
-      description: precondition failed error
+      description: すでに実行済み
       content:
         application/json:
           schema:

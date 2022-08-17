@@ -15,13 +15,13 @@ get:
     example: 'kSByoE6FetnPs5Byk3a9Zx'
   responses:
     200:
-      description: A successful response.
+      description: 成功
       content:
         application/json:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/v1AdministratorResponse'
     404:
-      description: not found error
+      description: システム管理者が存在しない
       content:
         application/json:
           schema:
@@ -49,18 +49,18 @@ patch:
           $ref: './../../../../openapi.yaml#/components/schemas/v1UpdateAdministratorRequest'
   responses:
     204:
-      description: A successful response.
+      description: 成功
       content:
         application/json:
           schema: {}
     400:
-      description: bad request error
+      description: バリデーションエラー
       content:
         application/json:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
     404:
-      description: not found error
+      description: システム管理者が存在しない
       content:
         application/json:
           schema:
