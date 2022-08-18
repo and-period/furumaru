@@ -21,15 +21,24 @@
 
     <v-data-table
       v-model="selectedProducts"
+      :loading="fetchState.pending"
       :headers="headers"
       :items="products"
       show-select
+      no-data-text="登録されている商品がありません。"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, useRouter } from '@nuxtjs/composition-api'
+import {
+  defineComponent,
+  ref,
+  useFetch,
+  useRouter,
+} from '@nuxtjs/composition-api'
+
+import { useProductStore } from '~/store/product'
 
 interface IProduct {
   id: string
@@ -49,6 +58,15 @@ interface DataTableHeader {
 export default defineComponent({
   setup() {
     const router = useRouter()
+    const productStore = useProductStore()
+
+    const { fetchState } = useFetch(async () => {
+      try {
+        await productStore.fetchProducts()
+      } catch (error) {
+        console.log(error)
+      }
+    })
 
     const searchWord = ref<string>('')
 
@@ -79,24 +97,14 @@ export default defineComponent({
       },
     ]
 
-    const products = ref<IProduct[]>([
-      {
-        id: '1',
-        name: 'みかん',
-        description: '',
-        public: 1,
-        type: '果物',
-        price: 1000,
-      },
-    ])
-
     const selectedProducts = ref<IProduct[]>([])
 
     return {
+      fetchState,
       headers,
       searchWord,
       handleClickAddBtn,
-      products,
+      products: productStore.products,
       selectedProducts,
     }
   },
