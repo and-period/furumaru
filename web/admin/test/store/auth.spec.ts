@@ -29,10 +29,23 @@ axiosMock.onPost(`${baseURL}/v1/auth/refresh-token`).reply(200, {
   tokenType: 'Bearer',
 })
 
+jest.mock('firebase/messaging', () => {
+  const mock = {
+    getToken: jest.fn(),
+    isSupported: jest.fn(),
+  }
+  return jest.fn(() => mock)
+})
 jest.mock('universal-cookie', () => {
   const mock = {
     set: jest.fn(),
     remove: jest.fn(),
+  }
+  return jest.fn(() => mock)
+})
+jest.mock('~/plugins/firebase', () => {
+  const mock = {
+    messaging: jest.fn(),
   }
   return jest.fn(() => mock)
 })

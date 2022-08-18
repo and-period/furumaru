@@ -14,6 +14,20 @@ import {
   ValidationError,
 } from '~/types/exception'
 
+jest.mock('firebase/messaging', () => {
+  const mock = {
+    getToken: jest.fn(),
+    isSupported: jest.fn(),
+  }
+  return jest.fn(() => mock)
+})
+jest.mock('~/plugins/firebase', () => {
+  const mock = {
+    messaging: jest.fn(),
+  }
+  return jest.fn(() => mock)
+})
+
 describe('Producer Store', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
