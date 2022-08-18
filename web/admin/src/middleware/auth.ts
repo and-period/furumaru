@@ -20,7 +20,7 @@ const routing: Middleware = async ({ route, redirect }: Context) => {
 
   // RefreshTokenの有無検証
   const refreshToken: string = cookies.get('refreshToken')
-  if (refreshToken === '') {
+  if (!refreshToken) {
     redirect('/signin')
     return
   }
