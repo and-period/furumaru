@@ -1,8 +1,8 @@
 get:
-  summary: 商品一覧取得
+  summary: お知らせ一覧取得
   operationId: v1ListNotifications
   tags:
-  - Product
+  - Notification
   security:
   - BearerAuth: []
   parameters:
