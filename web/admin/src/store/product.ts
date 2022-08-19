@@ -26,8 +26,8 @@ export const useProductStore = defineStore('product', {
   actions: {
     /**
      * 商品一覧を取得する非同期関数
-     * @param limit
-     * @param offset
+     * @param limit 取得上限数
+     * @param offset 取得開始位置
      * @returns
      */
     async fetchProducts(limit: number = 20, offset: number = 0): Promise<void> {
