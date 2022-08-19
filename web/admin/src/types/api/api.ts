@@ -1594,6 +1594,98 @@ export interface NotificationResponse {
   updatedAt: number
 }
 /**
+ *
+ * @export
+ * @interface NotificationsResponse
+ */
+export interface NotificationsResponse {
+  /**
+   * お知らせ一覧
+   * @type {Array<NotificationsResponseNotificationsInner>}
+   * @memberof NotificationsResponse
+   */
+  notifications: Array<NotificationsResponseNotificationsInner>
+  /**
+   * 合計数
+   * @type {number}
+   * @memberof NotificationsResponse
+   */
+  total: number
+}
+/**
+ *
+ * @export
+ * @interface NotificationsResponseNotificationsInner
+ */
+export interface NotificationsResponseNotificationsInner {
+  /**
+   * お知らせID
+   * @type {string}
+   * @memberof NotificationsResponseNotificationsInner
+   */
+  id: string
+  /**
+   * 登録者ID
+   * @type {string}
+   * @memberof NotificationsResponseNotificationsInner
+   */
+  createdBy: string
+  /**
+   * 登録者名
+   * @type {string}
+   * @memberof NotificationsResponseNotificationsInner
+   */
+  creatorName: string
+  /**
+   * 更新者ID
+   * @type {string}
+   * @memberof NotificationsResponseNotificationsInner
+   */
+  updatedBy: string
+  /**
+   * タイトル(128字まで)
+   * @type {string}
+   * @memberof NotificationsResponseNotificationsInner
+   */
+  title: string
+  /**
+   * 本文(2000字まで)
+   * @type {string}
+   * @memberof NotificationsResponseNotificationsInner
+   */
+  body: string
+  /**
+   * 掲載対象一覧(3つまで)
+   * @type {Array<number>}
+   * @memberof NotificationsResponseNotificationsInner
+   */
+  targets: Array<number>
+  /**
+   * 公開フラグ
+   * @type {boolean}
+   * @memberof NotificationsResponseNotificationsInner
+   */
+  public: boolean
+  /**
+   * 掲載開始日時 (unixtime)
+   * @type {number}
+   * @memberof NotificationsResponseNotificationsInner
+   */
+  publishedAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof NotificationsResponseNotificationsInner
+   */
+  createdAt: number
+  /**
+   * 登録日時 (unixtime)
+   * @type {number}
+   * @memberof NotificationsResponseNotificationsInner
+   */
+  updatedAt: number
+}
+/**
  * 都道府県コード
  * @export
  * @enum {string}
@@ -8633,6 +8725,79 @@ export const ProductApiAxiosParamCreator = function (
      * @summary 商品一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {number} [since] 取得開始日時(unixtime)
+     * @param {number} [until] 取得終了日時(unixtime)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド: title,public,publishedAt
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1ListNotifications: async (
+      limit?: number,
+      offset?: number,
+      since?: number,
+      until?: number,
+      orders?: string,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/v1/notifications`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (limit !== undefined) {
+        localVarQueryParameter['limit'] = limit
+      }
+
+      if (offset !== undefined) {
+        localVarQueryParameter['offset'] = offset
+      }
+
+      if (since !== undefined) {
+        localVarQueryParameter['since'] = since
+      }
+
+      if (until !== undefined) {
+        localVarQueryParameter['until'] = until
+      }
+
+      if (orders !== undefined) {
+        localVarQueryParameter['orders'] = orders
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary 商品一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [coordinatorId] 仲介者ID
      * @param {string} [producerId] 生産者ID
      * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,price,originPrefecture,originCity,createdAt,updatedAt
@@ -8941,6 +9106,46 @@ export const ProductApiFp = function (configuration?: Configuration) {
      * @summary 商品一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {number} [since] 取得開始日時(unixtime)
+     * @param {number} [until] 取得終了日時(unixtime)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド: title,public,publishedAt
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1ListNotifications(
+      limit?: number,
+      offset?: number,
+      since?: number,
+      until?: number,
+      orders?: string,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<NotificationsResponse>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1ListNotifications(
+          limit,
+          offset,
+          since,
+          until,
+          orders,
+          options
+        )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
+    /**
+     *
+     * @summary 商品一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [coordinatorId] 仲介者ID
      * @param {string} [producerId] 生産者ID
      * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,price,originPrefecture,originCity,createdAt,updatedAt
@@ -9101,6 +9306,29 @@ export const ProductApiFactory = function (
      * @summary 商品一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {number} [since] 取得開始日時(unixtime)
+     * @param {number} [until] 取得終了日時(unixtime)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド: title,public,publishedAt
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1ListNotifications(
+      limit?: number,
+      offset?: number,
+      since?: number,
+      until?: number,
+      orders?: string,
+      options?: any
+    ): AxiosPromise<NotificationsResponse> {
+      return localVarFp
+        .v1ListNotifications(limit, offset, since, until, orders, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary 商品一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [coordinatorId] 仲介者ID
      * @param {string} [producerId] 生産者ID
      * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,price,originPrefecture,originCity,createdAt,updatedAt
@@ -9211,6 +9439,31 @@ export class ProductApi extends BaseAPI {
   public v1GetProduct(productId: string, options?: AxiosRequestConfig) {
     return ProductApiFp(this.configuration)
       .v1GetProduct(productId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary 商品一覧取得
+   * @param {number} [limit] 取得上限数(max:200)
+   * @param {number} [offset] 取得開始位置(min:0)
+   * @param {number} [since] 取得開始日時(unixtime)
+   * @param {number} [until] 取得終了日時(unixtime)
+   * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド: title,public,publishedAt
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ProductApi
+   */
+  public v1ListNotifications(
+    limit?: number,
+    offset?: number,
+    since?: number,
+    until?: number,
+    orders?: string,
+    options?: AxiosRequestConfig
+  ) {
+    return ProductApiFp(this.configuration)
+      .v1ListNotifications(limit, offset, since, until, orders, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
