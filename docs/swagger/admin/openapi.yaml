@@ -247,6 +247,8 @@ components:
       $ref: './components/schemas/v1/contact.response.yaml#/contactsResponse'
     v1NotificationResponse:
       $ref: './components/schemas/v1/notification.response.yaml#/notificationResponse'
+    v1NotificationsResponse:
+      $ref: './components/schemas/v1/notification.response.yaml#/notificationsResponse'
     v1MessageResponse:
       $ref: './components/schemas/v1/message.response.yaml#/messageResponse'
     v1MessagesResponse:

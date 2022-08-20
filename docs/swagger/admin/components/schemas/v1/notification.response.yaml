@@ -65,3 +65,96 @@ notificationResponse:
     publishedAt: 1640962800
     createdAt: 1640962800
     updatedAt: 1640962800
+notificationsResponse:
+  type: object
+  properties:
+    notifications:
+      type: array
+      description: お知らせ一覧
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            description: お知らせID
+          createdBy:
+            type: string
+            description: 登録者ID
+          creatorName:
+            type: string
+            description: 登録者名
+          updatedBy:
+            type: string
+            description: 更新者ID
+          title:
+            type: string
+            description: タイトル(128字まで)
+          body:
+            type: string
+            description: 本文(2000字まで)
+          targets:
+            type: array
+            description: 掲載対象一覧(3つまで)
+            items:
+              type: integer
+              format: int32
+              description: 掲載対象(0:不明,1:ユーザー,2:生産者,3:コーディネーター)
+          public:
+            type: boolean
+            description: 公開フラグ
+          publishedAt:
+            type: integer
+            format: int64
+            description: 掲載開始日時 (unixtime)
+          createdAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+          updatedAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+        required:
+        - id
+        - createdBy
+        - creatorName
+        - updatedBy
+        - title
+        - body
+        - targets
+        - public
+        - publishedAt
+        - createdAt
+        - updatedAt
+    total:
+      type: integer
+      format: int64
+      description: 合計数
+  required:
+  - notifications
+  - total
+  example:
+    notifications:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      createdBy: 'admin-id'
+      creatorName: 'あんどぴりおど'
+      updatedBy: 'admin-id'
+      title: 'キャベツ祭り開催'
+      body: '旬のキャベツが買い放題'
+      targets: 1
+      public: true
+      publishedAt: 1640962800
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      createdBy: 'admin-id'
+      creatorName: 'あんどぴりおど'
+      updatedBy: 'admin-id'
+      title: 'キャベツ祭り開催'
+      body: '旬のキャベツが買い放題'
+      targets: 1
+      public: true
+      publishedAt: 1640962800
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    total: 2
