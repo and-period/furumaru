@@ -52,6 +52,11 @@ func (w *wrapResponseWriter) Write(b []byte) (int, error) {
 	return w.ResponseWriter.Write(b)
 }
 
+func (w *wrapResponseWriter) WriteString(s string) (int, error) {
+	w.body.WriteString(s)
+	return w.ResponseWriter.WriteString(s)
+}
+
 func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 	skipPaths := map[string]bool{
 		"/health": true,
