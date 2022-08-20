@@ -4,9 +4,6 @@ import (
 	"context"
 
 	"github.com/stripe/stripe-go/v73"
-	"github.com/stripe/stripe-go/v73/customer"
-	"github.com/stripe/stripe-go/v73/paymentintent"
-	"github.com/stripe/stripe-go/v73/paymentmethod"
 	"go.uber.org/zap"
 )
 
@@ -35,7 +32,7 @@ func (c *client) AttachPayment(ctx context.Context, customerID, paymentID string
 	}
 	var pm *stripe.PaymentMethod
 	attachFn := func() (err error) {
-		pm, err = paymentmethod.Attach(paymentID, params)
+		pm, err = c.paymentmethod.Attach(paymentID, params)
 		return err
 	}
 	if err := c.do(ctx, attachFn); err != nil {
@@ -50,7 +47,7 @@ func (c *client) DetachPayment(ctx context.Context, customerID, paymentID string
 	params := &stripe.PaymentMethodDetachParams{
 		Params: stripe.Params{Context: ctx},
 	}
-	if _, err := paymentmethod.Detach(paymentID, params); err != nil {
+	if _, err := c.paymentmethod.Detach(paymentID, params); err != nil {
 		c.logger.Error("Failed to detach payment",
 			zap.String("customerId", customerID), zap.String("paymentMethodId", paymentID), zap.Error(err))
 		return err
@@ -66,7 +63,7 @@ func (c *client) UpdateDefaultPayment(ctx context.Context, customerID, paymentID
 			DefaultPaymentMethod: stripe.String(paymentID),
 		},
 	}
-	if _, err := customer.Update(customerID, params); err != nil {
+	if _, err := c.customer.Update(customerID, params); err != nil {
 		c.logger.Error("Failed to update default payment method",
 			zap.String("customerId", customerID), zap.String("paymentMethodId", paymentID), zap.Error(err))
 		return err
@@ -92,7 +89,7 @@ func (c *client) Order(ctx context.Context, in *OrderParams) (*stripe.PaymentInt
 	}
 	var pi *stripe.PaymentIntent
 	orderFn := func() (err error) {
-		pi, err = paymentintent.New(params)
+		pi, err = c.paymentintent.New(params)
 		return err
 	}
 	if err := c.do(ctx, orderFn); err != nil {
@@ -123,7 +120,7 @@ func (c *client) GuestOrder(ctx context.Context, in *GuestOrderParams) (*stripe.
 	}
 	var pi *stripe.PaymentIntent
 	orderFn := func() (err error) {
-		pi, err = paymentintent.New(params)
+		pi, err = c.paymentintent.New(params)
 		return err
 	}
 	if err := c.do(ctx, orderFn); err != nil {
@@ -143,7 +140,7 @@ func (c *client) Capture(ctx context.Context, transactionID string) (*stripe.Pay
 	}
 	var pi *stripe.PaymentIntent
 	captureFn := func() (err error) {
-		pi, err = paymentintent.Capture(transactionID, params)
+		pi, err = c.paymentintent.Capture(transactionID, params)
 		return err
 	}
 	if err := c.do(ctx, captureFn); err != nil {
@@ -163,7 +160,7 @@ func (c *client) Cancel(
 	}
 	var pi *stripe.PaymentIntent
 	cancelFn := func() (err error) {
-		pi, err = paymentintent.Cancel(transactionID, params)
+		pi, err = c.paymentintent.Cancel(transactionID, params)
 		return err
 	}
 	if err := c.do(ctx, cancelFn); err != nil {
