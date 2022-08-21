@@ -6,6 +6,10 @@ import (
 
 	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/stripe/stripe-go/v73"
+	"github.com/stripe/stripe-go/v73/customer"
+	"github.com/stripe/stripe-go/v73/paymentintent"
+	"github.com/stripe/stripe-go/v73/paymentmethod"
+	"github.com/stripe/stripe-go/v73/setupintent"
 	"go.uber.org/zap"
 )
 
@@ -61,8 +65,12 @@ type Params struct {
 }
 
 type client struct {
-	logger     *zap.Logger
-	maxRetries int64
+	logger        *zap.Logger
+	maxRetries    int64
+	customer      customer.Client
+	paymentintent paymentintent.Client
+	paymentmethod paymentmethod.Client
+	setupintent   setupintent.Client
 }
 
 type options struct {
@@ -92,10 +100,25 @@ func NewClient(params *Params, opts ...Option) Client {
 	for i := range opts {
 		opts[i](dopts)
 	}
-	stripe.Key = params.SecretKey
 	return &client{
 		logger:     dopts.logger,
 		maxRetries: dopts.maxRetries,
+		customer: customer.Client{
+			B:   stripe.GetBackend(stripe.APIBackend),
+			Key: params.SecretKey,
+		},
+		paymentintent: paymentintent.Client{
+			B:   stripe.GetBackend(stripe.APIBackend),
+			Key: params.SecretKey,
+		},
+		paymentmethod: paymentmethod.Client{
+			B:   stripe.GetBackend(stripe.APIBackend),
+			Key: params.SecretKey,
+		},
+		setupintent: setupintent.Client{
+			B:   stripe.GetBackend(stripe.APIBackend),
+			Key: params.SecretKey,
+		},
 	}
 }
 

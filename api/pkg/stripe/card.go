@@ -4,8 +4,6 @@ import (
 	"context"
 
 	"github.com/stripe/stripe-go/v73"
-	"github.com/stripe/stripe-go/v73/paymentmethod"
-	"github.com/stripe/stripe-go/v73/setupintent"
 )
 
 // reference: https://stripe.com/docs/api/payment_methods/customer_list
@@ -15,7 +13,7 @@ func (c *client) ListCards(ctx context.Context, customerID string) ([]*stripe.Pa
 		Customer:   stripe.String(customerID),
 		Type:       stripe.String(string(stripe.PaymentMethodTypeCard)),
 	}
-	iter := paymentmethod.List(params)
+	iter := c.paymentmethod.List(params)
 	if err := iter.Err(); err != nil {
 		return nil, err
 	}
@@ -33,7 +31,7 @@ func (c *client) GetCard(ctx context.Context, customerID, cardID string) (*strip
 		Customer: stripe.String(customerID),
 		Type:     stripe.String(string(stripe.PaymentMethodTypeCard)),
 	}
-	return paymentmethod.Get(cardID, params)
+	return c.paymentmethod.Get(cardID, params)
 }
 
 // reference: https://stripe.com/docs/api/setup_intents/create
@@ -44,5 +42,5 @@ func (c *client) SetupCard(ctx context.Context, customerID string) (*stripe.Setu
 		PaymentMethodTypes: stripe.StringSlice([]string{string(stripe.PaymentMethodTypeCard)}),
 		Usage:              stripe.String(string(stripe.PaymentIntentSetupFutureUsageOnSession)),
 	}
-	return setupintent.New(params)
+	return c.setupintent.New(params)
 }
