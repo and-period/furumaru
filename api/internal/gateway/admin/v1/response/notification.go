@@ -28,3 +28,8 @@ const (
 type NotificationResponse struct {
 	*Notification
 }
+
+type NotificationsResponse struct {
+	Notifications []*Notification `json:"notifications"` // お知らせ一覧
+	Total         int64           `json:"total"`         // お知らせ合計数
+}
