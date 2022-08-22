@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"testing"
 
@@ -9,11 +10,142 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	mentity "github.com/and-period/furumaru/api/internal/messenger/entity"
+	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
+
+func TestListNotifications(t *testing.T) {
+	t.Parallel()
+	var date int64 = 1640962800
+
+	notificationsIn := &messenger.ListNotificationsInput{
+		Limit:         20,
+		Offset:        0,
+		Since:         jst.ParseFromUnix(date),
+		Until:         jst.ParseFromUnix(date),
+		OnlyPublished: false,
+		Orders:        []*messenger.ListNotificationsOrder{},
+	}
+	notifications := mentity.Notifications{
+		{
+			ID:          "notification-id",
+			CreatedBy:   "admin-id",
+			CreatorName: "&.管理者",
+			UpdatedBy:   "admin-id",
+			Title:       "キャベツ祭り開催",
+			Body:        "旬のキャベツを大安売り",
+			Targets: []mentity.TargetType{
+				mentity.PostTargetUsers,
+				mentity.PostTargetProducers,
+			},
+			Public:      false,
+			PublishedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			CreatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		},
+	}
+	administratorsIn := &user.MultiGetAdministratorsInput{
+		AdministratorIDs: []string{"admin-id"},
+	}
+	administrators := uentity.Administrators{
+		{
+			ID:            "admin-id",
+			Lastname:      "&.",
+			Firstname:     "管理者",
+			LastnameKana:  "あんどぴりおど",
+			FirstnameKana: "かんりしゃ",
+			Email:         "test-admin@and-period.jp",
+			PhoneNumber:   "+818054855081",
+			CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		},
+	}
+
+	tests := []struct {
+		name   string
+		setup  func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		query  string
+		expect *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.messenger.EXPECT().ListNotifications(gomock.Any(), notificationsIn).Return(notifications, int64(1), nil)
+				mocks.user.EXPECT().MultiGetAdministrators(gomock.Any(), administratorsIn).Return(administrators, nil)
+			},
+			query: "?since=1640962800&until=1640962800",
+			expect: &testResponse{
+				code: http.StatusOK,
+				body: &response.NotificationsResponse{
+					Notifications: []*response.Notification{
+						{
+							ID:          "notification-id",
+							CreatedBy:   "admin-id",
+							CreatorName: "&.管理者",
+							UpdatedBy:   "admin-id",
+							Title:       "キャベツ祭り開催",
+							Body:        "旬のキャベツを大安売り",
+							Targets: []response.TargetType{
+								response.PostTargetUsers,
+								response.PostTargetProducers,
+							},
+							PublishedAt: 1640962800,
+							CreatedAt:   1640962800,
+							UpdatedAt:   1640962800,
+						},
+					},
+					Total: 1,
+				},
+			},
+		},
+		{
+			name:  "invalid limit",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			query: "?limit=a",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name:  "invalid offset",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			query: "?offset=a",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name:  "invalid orders",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			query: "?orders=body",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name: "failed to list notifications",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.messenger.EXPECT().ListNotifications(gomock.Any(), notificationsIn).Return(nil, int64(0), errmock)
+			},
+			query: "?since=1640962800&until=1640962800",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const format = "/v1/notifications%s"
+			path := fmt.Sprintf(format, tt.query)
+			testGet(t, tt.setup, tt.expect, path)
+		})
+	}
+}
 
 func TestCreateNotification(t *testing.T) {
 	t.Parallel()
