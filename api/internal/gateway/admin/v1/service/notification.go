@@ -1,6 +1,8 @@
 package service
 
 import (
+	"strings"
+
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	set "github.com/and-period/furumaru/api/pkg/set/v2"
@@ -39,6 +41,7 @@ func NewNotification(notification *entity.Notification) *Notification {
 func (n *Notification) Fill(administrator *Administrator) {
 	if administrator != nil {
 		n.CreatedBy = administrator.ID
+		n.CreatorName = strings.TrimSpace(strings.Join([]string{administrator.Lastname, administrator.Firstname}, " "))
 		n.UpdatedBy = administrator.ID
 	}
 }
