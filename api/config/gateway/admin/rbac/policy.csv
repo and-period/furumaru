@@ -41,6 +41,7 @@ p, promotion_delete, /v1/promotions/*, DELETE, allow
 p, contact_list, /v1/contacts, GET, allow
 p, contact_get, /v1/contacts/*, GET, allow
 p, contact_update, /v1/contacts/*, PATCH, allow
+p, notification_list, /v1/notifications, GET, allow
 p, notification_create, /v1/notifications, POST, allow
 p, message_list, /v1/messages, GET, allow
 p, message_get, /v1/messages/*, GET, allow
@@ -84,6 +85,7 @@ g, administrator, promotion_delete
 g, administrator, contact_list
 g, administrator, contact_get
 g, administrator, contact_update
+g, administrator, notification_list
 g, administrator, notification_create
 g, administrator, message_list
 g, administrator, message_get
