@@ -19,6 +19,7 @@
           ref="inputRef"
           type="file"
           class="d-none"
+          accept="image/*"
           multiple
           @change="handleInputFileChange"
         />
@@ -41,7 +42,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, PropType } from '@vue/composition-api'
+import {
+  defineComponent,
+  ref,
+  computed,
+  PropType,
+  watch,
+} from '@vue/composition-api'
 
 export default defineComponent({
   props: {
@@ -64,6 +71,10 @@ export default defineComponent({
     const inputRef = ref<HTMLInputElement | null>(null)
     const active = ref<boolean>(false)
     const files = ref<FileList | null>(null)
+
+    watch(files, () => {
+      emit('update:files', files.value)
+    })
 
     const handleInputFileChange = () => {
       if (inputRef.value && inputRef.value.files) {
