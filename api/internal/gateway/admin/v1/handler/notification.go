@@ -53,7 +53,7 @@ func (h *handler) ListNotifications(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
-	onlyPublished, err := strconv.ParseBool(util.GetQuery(ctx, "OnlyPublished", "false"))
+	onlyPublished, err := strconv.ParseBool(util.GetQuery(ctx, "onlyPublished", "false"))
 	if err != nil {
 		badRequest(ctx, err)
 		return
