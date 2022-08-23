@@ -5,6 +5,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
+	"github.com/and-period/furumaru/api/internal/user/service"
 	set "github.com/and-period/furumaru/api/pkg/set/v2"
 )
 
@@ -38,11 +39,11 @@ func NewNotification(notification *entity.Notification) *Notification {
 	}
 }
 
-func (n *Notification) Fill(administrator *Administrator) {
-	if administrator != nil {
-		n.CreatedBy = administrator.ID
-		n.CreatorName = strings.TrimSpace(strings.Join([]string{administrator.Lastname, administrator.Firstname}, " "))
-		n.UpdatedBy = administrator.ID
+func (n *Notification) Fill(admin *service.Admin) {
+	if admin != nil {
+		n.CreatedBy = admin.ID
+		n.CreatorName = strings.TrimSpace(strings.Join([]string{admin.Lastname, admin.Firstname}, " "))
+		n.UpdatedBy = admin.ID
 	}
 }
 
@@ -66,15 +67,15 @@ func (ns Notifications) Response() []*response.Notification {
 	return res
 }
 
-func (ns Notifications) AdministratorIDs() []string {
+func (ns Notifications) AdminIDs() []string {
 	return set.UniqBy(ns, func(n *Notification) string {
 		return n.CreatedBy
 	})
 }
 
-func (ns Notifications) Fill(administrators map[string]*Administrator) {
+func (ns Notifications) Fill(admins map[string]*service.Admin) {
 	for i := range ns {
-		ns[i].Fill(administrators[ns[i].CreatedBy])
+		ns[i].Fill(admins[ns[i].CreatedBy])
 	}
 }
 

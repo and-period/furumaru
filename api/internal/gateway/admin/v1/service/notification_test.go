@@ -5,6 +5,8 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
 )
@@ -68,10 +70,10 @@ func TestNotification(t *testing.T) {
 func TestNotification_Fill(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name          string
-		notification  *Notification
-		administrator *Administrator
-		expect        *Notification
+		name         string
+		notification *Notification
+		admin        *service.Admin
+		expect       *Notification
 	}{
 		{
 			name: "success",
@@ -92,15 +94,15 @@ func TestNotification_Fill(t *testing.T) {
 					UpdatedAt:   1640962800,
 				},
 			},
-			administrator: &Administrator{
-				Administrator: response.Administrator{
+			admin: &service.Admin{
+				Admin: response.Admin{
 					ID:            "admin-id",
+					Role:          uentity.AdminRoleAdministrator,
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどぴりおど",
 					FirstnameKana: "かんりしゃ",
 					Email:         "test-admin@and-period.jp",
-					PhoneNumber:   "+818054855081",
 					CreatedAt:     1640962800,
 					UpdatedAt:     1640962800,
 				},
@@ -129,7 +131,7 @@ func TestNotification_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.notification.Fill(tt.administrator)
+			tt.notification.Fill(tt.admin)
 			assert.Equal(t, tt.expect, tt.notification)
 		})
 	}
@@ -248,7 +250,7 @@ func TestNotifications(t *testing.T) {
 	}
 }
 
-func TestNotifications_AdministratorIDs(t *testing.T) {
+func TestNotifications_AdminIDs(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name          string
@@ -284,7 +286,7 @@ func TestNotifications_AdministratorIDs(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.ElementsMatch(t, tt.expect, tt.notifications.AdministratorIDs())
+			assert.ElementsMatch(t, tt.expect, tt.notifications.AdminIDs())
 		})
 	}
 }
@@ -292,10 +294,10 @@ func TestNotifications_AdministratorIDs(t *testing.T) {
 func TestNotifications_Fill(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name           string
-		notifications  Notifications
-		administrators map[string]*Administrator
-		expect         Notifications
+		name          string
+		notifications Notifications
+		admins        map[string]*service.Admin
+		expect        Notifications
 	}{
 		{
 			name: "success",
@@ -318,16 +320,16 @@ func TestNotifications_Fill(t *testing.T) {
 					},
 				},
 			},
-			administrators: map[string]*Administrator{
+			admins: map[string]*service.Admin{
 				"admin-id": {
-					Administrator: response.Administrator{
+					Admin: response.Admin{
 						ID:            "admin-id",
+						Role:          uentity.AdminRoleAdministrator,
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどぴりおど",
 						FirstnameKana: "かんりしゃ",
 						Email:         "test-admin@and-period.jp",
-						PhoneNumber:   "+818054855081",
 						CreatedAt:     1640962800,
 						UpdatedAt:     1640962800,
 					},
@@ -359,7 +361,7 @@ func TestNotifications_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.notifications.Fill(tt.administrators)
+			tt.notifications.Fill(tt.admins)
 			assert.Equal(t, tt.expect, tt.notifications)
 		})
 	}
