@@ -33,7 +33,7 @@ func TestListNotifications(t *testing.T) {
 		{
 			ID:          "notification-id",
 			CreatedBy:   "admin-id",
-			CreatorName: "&.管理者",
+			CreatorName: "&. 管理者",
 			UpdatedBy:   "admin-id",
 			Title:       "キャベツ祭り開催",
 			Body:        "旬のキャベツを大安売り",
@@ -84,7 +84,7 @@ func TestListNotifications(t *testing.T) {
 						{
 							ID:          "notification-id",
 							CreatedBy:   "admin-id",
-							CreatorName: "&.管理者",
+							CreatorName: "&. 管理者",
 							UpdatedBy:   "admin-id",
 							Title:       "キャベツ祭り開催",
 							Body:        "旬のキャベツを大安売り",
