@@ -12,6 +12,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
+	uservice "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/gin-gonic/gin"
 )
@@ -74,17 +75,17 @@ func (h *handler) ListNotifications(ctx *gin.Context) {
 	}
 	notifications := service.NewNotifications(mnotifications)
 
-	adminIn := &user.MultiGetAdministratorsInput{
-		AdministratorIDs: notifications.AdministratorIDs(),
+	adminIn := &user.MultiGetAdminsInput{
+		AdminIDs: notifications.AdminIDs(),
 	}
-	uadministrators, err := h.user.MultiGetAdministrators(ctx, adminIn)
+	uadmins, err := h.user.MultiGetAdmins(ctx, adminIn)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
-	administrators := service.NewAdministrators(uadministrators)
+	admins := uservice.NewAdmins(uadmins)
 
-	notifications.Fill(administrators.Map())
+	notifications.Fill(admins.Map())
 
 	res := &response.NotificationsResponse{
 		Notifications: notifications.Response(),

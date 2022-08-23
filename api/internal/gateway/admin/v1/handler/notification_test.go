@@ -47,18 +47,18 @@ func TestListNotifications(t *testing.T) {
 			UpdatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
 	}
-	administratorsIn := &user.MultiGetAdministratorsInput{
-		AdministratorIDs: []string{"admin-id"},
+	adminsIn := &user.MultiGetAdminsInput{
+		AdminIDs: []string{"admin-id"},
 	}
-	administrators := uentity.Administrators{
+	admins := uentity.Admins{
 		{
 			ID:            "admin-id",
+			Role:          uentity.AdminRoleAdministrator,
 			Lastname:      "&.",
 			Firstname:     "管理者",
 			LastnameKana:  "あんどぴりおど",
 			FirstnameKana: "かんりしゃ",
 			Email:         "test-admin@and-period.jp",
-			PhoneNumber:   "+818054855081",
 			CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
@@ -74,7 +74,7 @@ func TestListNotifications(t *testing.T) {
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.messenger.EXPECT().ListNotifications(gomock.Any(), notificationsIn).Return(notifications, int64(1), nil)
-				mocks.user.EXPECT().MultiGetAdministrators(gomock.Any(), administratorsIn).Return(administrators, nil)
+				mocks.user.EXPECT().MultiGetAdmins(gomock.Any(), adminsIn).Return(admins, nil)
 			},
 			query: "?since=1640962800&until=1640962800",
 			expect: &testResponse{
@@ -129,6 +129,17 @@ func TestListNotifications(t *testing.T) {
 			name: "failed to list notifications",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.messenger.EXPECT().ListNotifications(gomock.Any(), notificationsIn).Return(nil, int64(0), errmock)
+			},
+			query: "?since=1640962800&until=1640962800",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to multi get admins",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.messenger.EXPECT().ListNotifications(gomock.Any(), notificationsIn).Return(notifications, int64(1), nil)
+				mocks.user.EXPECT().MultiGetAdmins(gomock.Any(), adminsIn).Return(nil, errmock)
 			},
 			query: "?since=1640962800&until=1640962800",
 			expect: &testResponse{
