@@ -126,6 +126,30 @@ func TestListNotifications(t *testing.T) {
 			},
 		},
 		{
+			name:  "invalid since",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			query: "?since=a",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name:  "invalid until",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			query: "?until=a",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name:  "invalid onlyPublished",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			query: "?onlyPublished=a",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
 			name: "failed to list notifications",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.messenger.EXPECT().ListNotifications(gomock.Any(), notificationsIn).Return(nil, int64(0), errmock)
