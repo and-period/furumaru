@@ -4,11 +4,17 @@ import { defineStore } from 'pinia'
 import { useAuthStore } from './auth'
 
 import ApiClientFactory from '~/plugins/factory'
-import { ProductApi, ProductsResponseProductsInner } from '~/types/api'
+import {
+  CreateProductRequest,
+  ProductApi,
+  ProductsResponseProductsInner,
+  UploadImageResponse,
+} from '~/types/api'
 import {
   AuthError,
   ConnectionError,
   InternalServerError,
+  ValidationError,
 } from '~/types/exception'
 
 export const useProductStore = defineStore('product', {
@@ -62,5 +68,51 @@ export const useProductStore = defineStore('product', {
         throw new InternalServerError(error)
       }
     },
+
+    async uploadProductImage(payload: File): Promise<UploadImageResponse> {
+      try {
+        const authStore = useAuthStore()
+        const accessToken = authStore.accessToken
+        if (!accessToken) {
+          return Promise.reject(
+            new AuthError('認証エラー。再度ログインをしてください。')
+          )
+        }
+        const res = await this.apiClient(accessToken).v1UploadProductImage(
+          payload,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        )
+        return res.data
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          switch (error.response.status) {
+            case 401:
+              return Promise.reject(
+                new AuthError('認証エラー。再度ログインをしてください。', error)
+              )
+            case 400:
+              return Promise.reject(
+                new ValidationError(
+                  'このファイルはアップロードできません。',
+                  error
+                )
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+        throw new InternalServerError(error)
+      }
+    },
+
+    async createProduct(_payload: CreateProductRequest): Promise<void> {},
   },
 })
