@@ -1,8 +1,6 @@
 package service
 
 import (
-	"strings"
-
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user/service"
@@ -42,7 +40,7 @@ func NewNotification(notification *entity.Notification) *Notification {
 func (n *Notification) Fill(admin *service.Admin) {
 	if admin != nil {
 		n.CreatedBy = admin.ID
-		n.CreatorName = strings.TrimSpace(strings.Join([]string{admin.Lastname, admin.Firstname}, " "))
+		n.CreatorName = admin.Name()
 		n.UpdatedBy = admin.ID
 	}
 }

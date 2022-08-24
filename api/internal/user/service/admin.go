@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"strings"
 	"sync"
 
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -163,4 +164,8 @@ func (s *service) getAdmin(ctx context.Context, adminID string, role entity.Admi
 	default:
 		return nil, fmt.Errorf("api: invalid role: %w", exception.ErrInvalidArgument)
 	}
+}
+
+func (a *Admin) Name() string {
+	return strings.TrimSpace(strings.Join([]string{a.Lastname, a.Firstname}, " "))
 }
