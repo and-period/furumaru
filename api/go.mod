@@ -10,7 +10,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/credentials v1.12.14
 	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.18.3
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.27.5
-	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.15.17
+	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.15.18
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.19.4
 	github.com/casbin/casbin/v2 v2.52.0
 	github.com/gin-contrib/gzip v0.0.6
