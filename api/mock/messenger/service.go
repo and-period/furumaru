@@ -128,6 +128,22 @@ func (mr *MockServiceMockRecorder) ListMessages(ctx, in interface{}) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListMessages", reflect.TypeOf((*MockService)(nil).ListMessages), ctx, in)
 }
 
+// ListNotifications mocks base method.
+func (m *MockService) ListNotifications(ctx context.Context, in *messenger.ListNotificationsInput) (entity.Notifications, int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListNotifications", ctx, in)
+	ret0, _ := ret[0].(entity.Notifications)
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ListNotifications indicates an expected call of ListNotifications.
+func (mr *MockServiceMockRecorder) ListNotifications(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListNotifications", reflect.TypeOf((*MockService)(nil).ListNotifications), ctx, in)
+}
+
 // NotifyNotification mocks base method.
 func (m *MockService) NotifyNotification(ctx context.Context, in *messenger.NotifyNotificationInput) error {
 	m.ctrl.T.Helper()

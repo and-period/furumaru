@@ -46,3 +46,11 @@ func (as Administrators) Response() []*response.Administrator {
 	}
 	return res
 }
+
+func (as Administrators) Map() map[string]*Administrator {
+	res := make(map[string]*Administrator, len(as))
+	for _, a := range as {
+		res[a.ID] = a
+	}
+	return res
+}

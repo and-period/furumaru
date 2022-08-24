@@ -17,6 +17,8 @@ type Service interface {
 	CreateContact(ctx context.Context, in *CreateContactInput) (*entity.Contact, error)
 	// お問い合わせ更新
 	UpdateContact(ctx context.Context, in *UpdateContactInput) error
+	// お知らせ一覧取得
+	ListNotifications(ctx context.Context, in *ListNotificationsInput) (entity.Notifications, int64, error)
 	// お知らせ作成
 	CreateNotification(ctx context.Context, in *CreateNotificationInput) (*entity.Notification, error)
 	// メッセージ一覧取得

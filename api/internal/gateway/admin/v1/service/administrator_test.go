@@ -240,3 +240,79 @@ func TestAdministrators_Response(t *testing.T) {
 		})
 	}
 }
+
+func TestAdministrator_Map(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name           string
+		administrators Administrators
+		expect         map[string]*Administrator
+	}{
+		{
+			name: "success",
+			administrators: Administrators{
+				{
+					Administrator: response.Administrator{
+						ID:            "admin-id01",
+						Lastname:      "&.",
+						Firstname:     "管理者",
+						LastnameKana:  "あんどどっと",
+						FirstnameKana: "かんりしゃ",
+						Email:         "test-admin01@and-period.jp",
+						PhoneNumber:   "+819012345678",
+						CreatedAt:     1640962800,
+						UpdatedAt:     1640962800,
+					},
+				},
+				{
+					Administrator: response.Administrator{
+						ID:            "admin-id02",
+						Lastname:      "&.",
+						Firstname:     "管理者",
+						LastnameKana:  "あんどどっと",
+						FirstnameKana: "かんりしゃ",
+						Email:         "test-admin02@and-period.jp",
+						PhoneNumber:   "+819012345678",
+						CreatedAt:     1640962800,
+						UpdatedAt:     1640962800,
+					},
+				},
+			},
+			expect: map[string]*Administrator{
+				"admin-id01": {
+					Administrator: response.Administrator{
+						ID:            "admin-id01",
+						Lastname:      "&.",
+						Firstname:     "管理者",
+						LastnameKana:  "あんどどっと",
+						FirstnameKana: "かんりしゃ",
+						Email:         "test-admin01@and-period.jp",
+						PhoneNumber:   "+819012345678",
+						CreatedAt:     1640962800,
+						UpdatedAt:     1640962800,
+					},
+				},
+				"admin-id02": {
+					Administrator: response.Administrator{
+						ID:            "admin-id02",
+						Lastname:      "&.",
+						Firstname:     "管理者",
+						LastnameKana:  "あんどどっと",
+						FirstnameKana: "かんりしゃ",
+						Email:         "test-admin02@and-period.jp",
+						PhoneNumber:   "+819012345678",
+						CreatedAt:     1640962800,
+						UpdatedAt:     1640962800,
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.administrators.Map())
+		})
+	}
+}
