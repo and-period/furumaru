@@ -5,7 +5,6 @@ import (
 )
 
 // Admin - 管理者情報
-
 type Admin struct {
 	ID            string           `json:"id"`            // 管理者ID
 	Role          entity.AdminRole `json:"role"`          // 管理者権限
