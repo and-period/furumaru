@@ -69,6 +69,7 @@ type Notification interface {
 	Count(ctx context.Context, params *ListNotificationsParams) (int64, error)
 	Get(ctx context.Context, notificationID string, fields ...string) (*entity.Notification, error)
 	Create(ctx context.Context, notification *entity.Notification) error
+	Delete(ctx context.Context, notificationID string) error
 }
 
 type PushTemplate interface {
