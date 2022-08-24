@@ -73,7 +73,11 @@ func (ns Notifications) AdminIDs() []string {
 
 func (ns Notifications) Fill(admins map[string]*service.Admin) {
 	for i := range ns {
-		ns[i].Fill(admins[ns[i].CreatedBy])
+		admin, ok := admins[ns[i].CreatedBy]
+		if !ok {
+			continue
+		}
+		ns[i].Fill(admin)
 	}
 }
 
