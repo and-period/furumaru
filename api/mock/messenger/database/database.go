@@ -334,6 +334,20 @@ func (mr *MockNotificationMockRecorder) Create(ctx, notification interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockNotification)(nil).Create), ctx, notification)
 }
 
+// Delete mocks base method.
+func (m *MockNotification) Delete(ctx context.Context, notificationID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", ctx, notificationID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockNotificationMockRecorder) Delete(ctx, notificationID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockNotification)(nil).Delete), ctx, notificationID)
+}
+
 // Get mocks base method.
 func (m *MockNotification) Get(ctx context.Context, notificationID string, fields ...string) (*entity.Notification, error) {
 	m.ctrl.T.Helper()
