@@ -157,7 +157,7 @@ export default defineComponent({
         title: 'お知らせ管理',
       },
       {
-        to: '/events',
+        to: '/promotions',
         icon: 'mdi-cash-100',
         title: 'セール情報管理',
       },
