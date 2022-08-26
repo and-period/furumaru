@@ -99,9 +99,9 @@ export default defineComponent({
     ): string => {
       switch (discountType) {
         case 1:
-          return discountRate + '円'
+          return '-' + discountRate + '円'
         case 2:
-          return discountRate + '%'
+          return '-' + discountRate + '%'
         case 3:
           return '送料無料'
         default:
