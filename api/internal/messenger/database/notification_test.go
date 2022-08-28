@@ -310,6 +310,77 @@ func TestNotification_Create(t *testing.T) {
 	}
 }
 
+func TestNotificaiton_Delete(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, notificationTable)
+	require.NoError(t, err)
+
+	type args struct {
+		notificationID string
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				notification := testNotification("notification-id", true, now())
+				err = m.db.DB.Create(&notification).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				notificationID: "notification-id",
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				notificationID: "notification-id",
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := m.dbDelete(ctx, notificationTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, m)
+
+			db := &notification{db: m.db, now: now}
+			err = db.Delete(ctx, tt.args.notificationID)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
 func testNotification(id string, public bool, now time.Time) *entity.Notification {
 	n := &entity.Notification{
 		ID:          id,

@@ -15,7 +15,7 @@ const notificationTable = "notifications"
 
 var notificationFields = []string{
 	"id", "created_by", "creator_name", "updated_by", "title", "body",
-	"published_at", "targets", "public", "created_at", "updated_at",
+	"published_at", "targets", "public", "created_at", "updated_at", "deleted_at",
 }
 
 type notification struct {
@@ -82,6 +82,24 @@ func (n *notification) Create(ctx context.Context, notification *entity.Notifica
 			return nil, err
 		}
 		err = tx.WithContext(ctx).Table(notificationTable).Create(&notification).Error
+		return nil, err
+	})
+	return exception.InternalError(err)
+}
+
+func (n *notification) Delete(ctx context.Context, notificationID string) error {
+	_, err := n.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+		if _, err := n.get(ctx, tx, notificationID); err != nil {
+			return nil, err
+		}
+
+		params := map[string]interface{}{
+			"deleted_at": n.now(),
+		}
+		err := tx.WithContext(ctx).
+			Table(notificationTable).
+			Where("id = ?", notificationID).
+			Updates(params).Error
 		return nil, err
 	})
 	return exception.InternalError(err)

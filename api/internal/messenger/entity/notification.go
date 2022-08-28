@@ -7,6 +7,7 @@ import (
 	set "github.com/and-period/furumaru/api/pkg/set/v2"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/datatypes"
+	"gorm.io/gorm"
 )
 
 // 掲載対象
@@ -50,6 +51,7 @@ type Notification struct {
 	Public      bool           `gorm:""`                            // 公開フラグ
 	CreatedAt   time.Time      `gorm:"<-:create"`                   // 作成日時
 	UpdatedAt   time.Time      `gorm:""`                            // 更新日時
+	DeletedAt   gorm.DeletedAt `gorm:"default:null"`                // 削除日時
 }
 
 type Notifications []*Notification
