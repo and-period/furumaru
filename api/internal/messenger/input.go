@@ -59,10 +59,6 @@ type CreateNotificationInput struct {
 	PublishedAt time.Time           `validate:"required"`
 }
 
-type DeleteNotificationInput struct {
-	NotificationID string `validate:"required"`
-}
-
 type ListMessagesInput struct {
 	UserType entity.UserType      `validate:"required,oneof=1 2"`
 	UserID   string               `validate:"required"`

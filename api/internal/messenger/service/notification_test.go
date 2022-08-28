@@ -103,7 +103,7 @@ func TestListNotificaitons(t *testing.T) {
 			expectErr:   exception.ErrUnknown,
 		},
 		{
-			name: "failed to count notifications",
+			name: "failed to count products",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Notification.EXPECT().List(gomock.Any(), params).Return(notifications, nil)
 				mocks.db.Notification.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
@@ -242,52 +242,6 @@ func TestCreateNotification(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateNotification(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
-	}
-}
-
-func TestDeleteNotification(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *messenger.DeleteNotificationInput
-		expectErr error
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Notification.EXPECT().Delete(ctx, "notification-id").Return(nil)
-			},
-			input: &messenger.DeleteNotificationInput{
-				NotificationID: "notification-id",
-			},
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &messenger.DeleteNotificationInput{},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to delete notification",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Notification.EXPECT().Delete(ctx, "notification-id").Return(errmock)
-			},
-			input: &messenger.DeleteNotificationInput{
-				NotificationID: "notification-id",
-			},
-			expectErr: exception.ErrUnknown,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.DeleteNotification(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
