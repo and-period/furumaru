@@ -291,3 +291,48 @@ func TestCreateNotification(t *testing.T) {
 		})
 	}
 }
+
+func TestDeleteNotification(t *testing.T) {
+	t.Parallel()
+
+	in := &messenger.DeleteNotificationInput{
+		NotificationID: "notification-id",
+	}
+
+	tests := []struct {
+		name           string
+		setup          func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		notificationID string
+		expect         *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.messenger.EXPECT().DeleteNotification(gomock.Any(), in).Return(nil)
+			},
+			notificationID: "notification-id",
+			expect: &testResponse{
+				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to delete notification",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.messenger.EXPECT().DeleteNotification(gomock.Any(), in).Return(errmock)
+			},
+			notificationID: "notification-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const format = "/v1/notifications/%s"
+			path := fmt.Sprintf(format, tt.notificationID)
+			testDelete(t, tt.setup, tt.expect, path)
+		})
+	}
+}

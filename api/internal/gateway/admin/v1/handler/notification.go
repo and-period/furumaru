@@ -21,6 +21,7 @@ func (h *handler) notificationRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication())
 	arg.GET("", h.ListNotifications)
 	arg.POST("", h.CreateNotification)
+	arg.DELETE("/:notificationId", h.DeleteNotification)
 }
 
 func (h *handler) ListNotifications(ctx *gin.Context) {
@@ -146,4 +147,16 @@ func (h *handler) CreateNotification(ctx *gin.Context) {
 		Notification: service.NewNotification(notification).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) DeleteNotification(ctx *gin.Context) {
+	in := &messenger.DeleteNotificationInput{
+		NotificationID: util.GetParam(ctx, "notificationId"),
+	}
+	if err := h.messenger.DeleteNotification(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
 }
