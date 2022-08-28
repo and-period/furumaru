@@ -136,7 +136,5 @@ g, producer, promotion_get
 g, producer, contact_list
 g, producer, contact_get
 g, producer, notification_list
-g, producer, notification_create
-g, producer, notification_delete
 g, producer, message_list
 g, producer, message_get
