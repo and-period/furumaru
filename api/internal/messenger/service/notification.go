@@ -85,3 +85,11 @@ func (s *service) CreateNotification(
 	}
 	return notification, nil
 }
+
+func (s *service) DeleteNotification(ctx context.Context, in *messenger.DeleteNotificationInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	err := s.db.Notification.Delete(ctx, in.NotificationID)
+	return exception.InternalError(err)
+}
