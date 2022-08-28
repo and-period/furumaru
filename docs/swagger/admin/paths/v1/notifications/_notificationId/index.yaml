@@ -1,0 +1,27 @@
+delete:
+  summary: お知らせ削除
+  operationId: v1DeleteNotification
+  tags:
+  - Notification
+  security:
+  - BearerAuth: []
+  parameters:
+  - in: path
+    name: notificationId
+    schema:
+      type: string
+    description: お知らせID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  responses:
+    204:
+      description: 成功
+      content:
+        application/json:
+          schema: {}
+    404:
+      description: お知らせが存在しない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
