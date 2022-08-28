@@ -66,6 +66,20 @@ func (mr *MockServiceMockRecorder) CreateNotification(ctx, in interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateNotification", reflect.TypeOf((*MockService)(nil).CreateNotification), ctx, in)
 }
 
+// DeleteNotification mocks base method.
+func (m *MockService) DeleteNotification(ctx context.Context, in *messenger.DeleteNotificationInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteNotification", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteNotification indicates an expected call of DeleteNotification.
+func (mr *MockServiceMockRecorder) DeleteNotification(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteNotification", reflect.TypeOf((*MockService)(nil).DeleteNotification), ctx, in)
+}
+
 // GetContact mocks base method.
 func (m *MockService) GetContact(ctx context.Context, in *messenger.GetContactInput) (*entity.Contact, error) {
 	m.ctrl.T.Helper()
