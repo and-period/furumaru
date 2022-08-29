@@ -145,3 +145,10 @@ func (ns Notifications) Fill() error {
 	}
 	return nil
 }
+
+func Marshal(t []TargetType) ([]byte, error) {
+	if len(t) == 0 {
+		return []byte{}, nil
+	}
+	return json.Marshal(t)
+}
