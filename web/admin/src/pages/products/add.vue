@@ -59,6 +59,17 @@
               @update:files="handleImageUpload"
             />
           </div>
+          <v-radio-group>
+            <div
+              v-for="(img, i) in formData.media"
+              :key="i"
+              class="d-flex flex-row align-center"
+            >
+              <v-radio :value="i" />
+              <img :src="img.url" width="200" class="mx-4" />
+              <p class="mb-0">{{ img.url }}</p>
+            </div>
+          </v-radio-group>
           <p>※ check された商品画像がサムネイルになります</p>
         </v-card-text>
       </v-card>
@@ -211,7 +222,7 @@ export default defineComponent({
           )
           formData.media.push({
             ...uploadImage,
-            isThumbnail: index === 1,
+            isThumbnail: index === 0,
           })
         } catch (error) {
           console.log(error)
