@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { computed, useFetch } from '@nuxtjs/composition-api'
+import { computed, useFetch, useRouter } from '@nuxtjs/composition-api'
 import { defineComponent } from '@vue/composition-api'
 import dayjs from 'dayjs'
 import { DataTableHeader } from 'vuetify'
@@ -56,6 +56,7 @@ import { usePromotionStore } from '~/store/promotion'
 
 export default defineComponent({
   setup() {
+    const router = useRouter()
     const promotionStore = usePromotionStore()
     const promotions = computed(() => {
       return promotionStore.promotions
@@ -109,6 +110,10 @@ export default defineComponent({
       }
     }
 
+    const handleClickAddButton = () => {
+      router.push('/promotions/add')
+    }
+
     const getStatus = (status: boolean): string => {
       if (status) {
         return '有効'
@@ -141,6 +146,7 @@ export default defineComponent({
       headers,
       promotions,
       fetchState,
+      handleClickAddButton,
       getDiscount,
       getStatus,
       getStatusColor,
