@@ -3,9 +3,6 @@
     <v-card-title>お問合せ管理</v-card-title>
     <v-card elevation="0">
       <v-card-text>
-
-
-
         <v-text-field
           name="name"
           label="名前"
@@ -27,11 +24,15 @@
           readonly
         ></v-textarea>
 
-        <v-select :items="priority" label="優先度"
+        <v-select
+          :items="priority"
+          label="優先度"
           :value="getPriority(formData.priority)"
         ></v-select>
 
-        <v-select :items="status" label="ステータス"
+        <v-select
+          :items="status"
+          label="ステータス"
           :value="getStatus(formData.status)"
         ></v-select>
 
@@ -59,8 +60,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, useFetch, useRoute, useRouter } from '@nuxtjs/composition-api'
-import { useAuthStore } from '~/store/auth'
+import {
+  computed,
+  defineComponent,
+  reactive,
+  useFetch,
+  useRoute,
+  useRouter,
+} from '@nuxtjs/composition-api'
 
 import { useContactStore } from '~/store/contact'
 import { ContactResponse } from '~/types/api'
@@ -79,34 +86,34 @@ export default defineComponent({
     })
 
     const formData = reactive<ContactResponse>({
-  id,
-  title:'',
-  content:'',
-  username:'',
-  email:'',
-  phoneNumber:'',
-  status:0,
-  priority:0,
-  note:'',
-  createdAt:0,
-  updatedAt:0
-})
-
-    const { fetchState } = useFetch(async () => {
-    const contact = await getContact(id)
-    formData.title = contact.title
-    formData.content = contact.content
-    formData.username = contact.username
-    formData.email = contact.email
-    formData.phoneNumber = contact.phoneNumber
-    formData.status = contact.status
-    formData.priority = contact.priority
-    formData.note = contact.note
-    formData.createdAt = contact.createdAt
-    formData.updatedAt = contact.updatedAt
+      id,
+      title: '',
+      content: '',
+      username: '',
+      email: '',
+      phoneNumber: '',
+      status: 0,
+      priority: 0,
+      note: '',
+      createdAt: 0,
+      updatedAt: 0,
     })
 
-        const getPriorityColor = (priority: string): string => {
+    const { fetchState } = useFetch(async () => {
+      const contact = await getContact(id)
+      formData.title = contact.title
+      formData.content = contact.content
+      formData.username = contact.username
+      formData.email = contact.email
+      formData.phoneNumber = contact.phoneNumber
+      formData.status = contact.status
+      formData.priority = contact.priority
+      formData.note = contact.note
+      formData.createdAt = contact.createdAt
+      formData.updatedAt = contact.updatedAt
+    })
+
+    const getPriorityColor = (priority: string): string => {
       switch (priority) {
         case 'High':
           return 'red'
@@ -160,7 +167,7 @@ export default defineComponent({
 
     const RegisterBtn = async (): Promise<void> => {
       try {
-        await contactStore.contactUpdate(formData,id)
+        await contactStore.contactUpdate(formData, id)
         router.push('/')
       } catch (error) {
         console.log(error)

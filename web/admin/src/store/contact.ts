@@ -1,20 +1,22 @@
 import { defineStore } from 'pinia'
 
 import { useAuthStore } from './auth'
+import { useCommonStore } from './common'
 
 import ApiClientFactory from '~/plugins/factory'
-import { ContactApi, ContactResponse, ContactsResponse, UpdateContactRequest } from '~/types/api'
-import { useCommonStore } from './common'
+import {
+  ContactApi,
+  ContactResponse,
+  ContactsResponse,
+  UpdateContactRequest,
+} from '~/types/api'
 
 export const useContactStore = defineStore('Contact', {
   state: () => ({
     contacts: [] as ContactsResponse['contacts'],
   }),
   actions: {
-    async fetchContacts(
-      limit: number = 20,
-      offset: number = 0
-      ): Promise<void> {
+    async fetchContacts(limit: number = 20, offset: number = 0): Promise<void> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -46,11 +48,17 @@ export const useContactStore = defineStore('Contact', {
       }
     },
 
-    async contactUpdate(payload: UpdateContactRequest,contactId: string): Promise<void> {
+    async contactUpdate(
+      payload: UpdateContactRequest,
+      contactId: string
+    ): Promise<void> {
       try {
         const factory = new ApiClientFactory()
-        const contactsApiClient = factory.create(ContactApi,this.user?.accessToken)
-        await contactsApiClient.v1UpdateContact(contactId,payload)
+        const contactsApiClient = factory.create(
+          ContactApi,
+          this.user?.accessToken
+        )
+        await contactsApiClient.v1UpdateContact(contactId, payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: 'お問い合わせ情報が更新されました。',
@@ -60,6 +68,6 @@ export const useContactStore = defineStore('Contact', {
         console.log(error)
         throw new Error('Internal Server Error')
       }
-    }
+    },
   },
 })
