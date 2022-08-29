@@ -11,7 +11,7 @@
           </template>
           <template #[`item.status`]="{ item }">
             <v-chip :color="getStatusColor(item.status)" dark>
-              {{ getStatus(item.status) }}
+              {{ getStatus(item.id) }}
             </v-chip>
           </template>
           <template #[`item.actions`]="{ item }">
@@ -36,6 +36,7 @@ import {
 import { DataTableHeader } from 'vuetify'
 
 import { useContactStore } from '~/store/contact'
+import { ContactsResponseContactsInner } from '~/types/api'
 
 export default defineComponent({
   setup() {
@@ -48,11 +49,11 @@ export default defineComponent({
     const headers: DataTableHeader[] = [
       {
         text: '件名',
-        value: 'subject',
+        value: 'title',
       },
       {
         text: 'メールアドレス',
-        value: 'mailAddress',
+        value: 'email',
       },
       {
         text: '優先度',
@@ -64,7 +65,7 @@ export default defineComponent({
       },
       {
         text: 'メモ',
-        value: 'memo',
+        value: 'note',
       },
       {
         text: 'Actions',
@@ -133,8 +134,8 @@ export default defineComponent({
       }
     }
 
-    const handleEdit = () => {
-      router.push(`/contacts/edit/`)
+    const handleEdit = (item: ContactsResponseContactsInner) => {
+      router.push(`/contacts/edit/${item.id}`)
     }
 
     return {
