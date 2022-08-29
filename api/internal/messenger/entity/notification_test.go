@@ -206,3 +206,34 @@ func TestNotifications_Fill(t *testing.T) {
 		})
 	}
 }
+
+func TestNotification_Marshal(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name    string
+		targets []TargetType
+		expect  []byte
+		hasErr  bool
+	}{
+		{
+			name: "success",
+			targets: []TargetType{
+				PostTargetProducers,
+				PostTargetCoordinators,
+			},
+			expect: []byte(`[2,3]`),
+			hasErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual, err := Marshal(tt.targets)
+			assert.Equal(t, tt.hasErr, err != nil, err)
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
