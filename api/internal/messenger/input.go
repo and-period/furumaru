@@ -59,6 +59,16 @@ type CreateNotificationInput struct {
 	PublishedAt time.Time           `validate:"required"`
 }
 
+type UpdateNotificationInput struct {
+	NotificationID string              `validate:"required"`
+	Title          string              `validate:"required"`
+	Body           string              `validate:"required"`
+	Targets        []entity.TargetType `validate:"min=1,max=3,dive,min=1,max=3"`
+	Public         bool                `validate:""`
+	PublishedAt    time.Time           `validate:"required"`
+	UpdatedBy      string              `validete:""`
+}
+
 type DeleteNotificationInput struct {
 	NotificationID string `validate:"required"`
 }
