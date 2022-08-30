@@ -86,6 +86,37 @@ func (s *service) CreateNotification(
 	return notification, nil
 }
 
+func (s *service) UpdateNotification(ctx context.Context, in *messenger.UpdateNotificationInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	targets := make([]entity.TargetType, len(in.Targets))
+	n := copy(targets, in.Targets)
+	if n == 0 {
+		return exception.ErrInvalidArgument
+	}
+	adminID := &user.GetAdminInput{
+		AdminID: in.UpdatedBy,
+	}
+	_, err := s.user.GetAdmin(ctx, adminID)
+	if errors.Is(err, exception.ErrNotFound) {
+		return fmt.Errorf("api: invalid admin id format: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	if err != nil {
+		return exception.InternalError(err)
+	}
+	params := &database.UpdateNotificationParams{
+		Title:       in.Title,
+		Body:        in.Body,
+		Targets:     targets,
+		PublishedAt: in.PublishedAt,
+		Public:      in.Public,
+		UpdatedBy:   in.UpdatedBy,
+	}
+	err = s.db.Notification.Update(ctx, in.NotificationID, params)
+	return exception.InternalError(err)
+}
+
 func (s *service) DeleteNotification(ctx context.Context, in *messenger.DeleteNotificationInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)

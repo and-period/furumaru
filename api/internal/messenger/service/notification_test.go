@@ -247,6 +247,114 @@ func TestCreateNotification(t *testing.T) {
 	}
 }
 
+func TestUpdateNotification(t *testing.T) {
+	t.Parallel()
+
+	adminIn := &user.GetAdminInput{
+		AdminID: "admin-id",
+	}
+	admin := &uentity.Admin{
+		ID: "admin-id",
+	}
+	now := jst.Now()
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *messenger.UpdateNotificationInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(admin, nil)
+				mocks.db.Notification.EXPECT().Update(ctx, "notification-id", gomock.Any()).
+					DoAndReturn(func(ctx context.Context, notificationID string, params *database.UpdateNotificationParams) error {
+						expect := &database.UpdateNotificationParams{
+							Title: "キャベツ祭り開催",
+							Body:  "旬のキャベツが大安売り",
+							Targets: []entity.TargetType{
+								entity.PostTargetProducers,
+								entity.PostTargetCoordinators,
+							},
+							PublishedAt: now,
+							Public:      true,
+							UpdatedBy:   "admin-id",
+						}
+						assert.Equal(t, expect, params)
+						return nil
+					})
+			},
+			input: &messenger.UpdateNotificationInput{
+				NotificationID: "notification-id",
+				Title:          "キャベツ祭り開催",
+				Body:           "旬のキャベツが大安売り",
+				Targets: []entity.TargetType{
+					entity.PostTargetProducers,
+					entity.PostTargetCoordinators,
+				},
+				PublishedAt: now,
+				Public:      true,
+				UpdatedBy:   "admin-id",
+			},
+			expectErr: nil,
+		},
+		{
+			name: "failed to get admin",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(nil, exception.ErrNotFound)
+			},
+			input: &messenger.UpdateNotificationInput{
+				NotificationID: "notification-id",
+				Title:          "キャベツ祭り開催",
+				Body:           "旬のキャベツが大安売り",
+				Targets: []entity.TargetType{
+					entity.PostTargetProducers,
+					entity.PostTargetCoordinators,
+				},
+				PublishedAt: now,
+				Public:      true,
+				UpdatedBy:   "admin-id",
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &messenger.UpdateNotificationInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to update notification",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(admin, nil)
+				mocks.db.Notification.EXPECT().Update(ctx, "notification-id", gomock.Any()).Return(errmock)
+			},
+			input: &messenger.UpdateNotificationInput{
+				NotificationID: "notification-id",
+				Title:          "キャベツ祭り開催",
+				Body:           "旬のキャベツが大安売り",
+				Targets: []entity.TargetType{
+					entity.PostTargetProducers,
+					entity.PostTargetCoordinators,
+				},
+				PublishedAt: now,
+				Public:      true,
+				UpdatedBy:   "admin-id",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.UpdateNotification(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
 func TestDeleteNotification(t *testing.T) {
 	t.Parallel()
 

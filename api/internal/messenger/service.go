@@ -21,6 +21,8 @@ type Service interface {
 	ListNotifications(ctx context.Context, in *ListNotificationsInput) (entity.Notifications, int64, error)
 	// お知らせ作成
 	CreateNotification(ctx context.Context, in *CreateNotificationInput) (*entity.Notification, error)
+	// お知らせ編集
+	UpdateNotification(ctx context.Context, in *UpdateNotificationInput) error
 	// お知らせ削除
 	DeleteNotification(ctx context.Context, in *DeleteNotificationInput) error
 	// メッセージ一覧取得

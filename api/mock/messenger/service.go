@@ -227,3 +227,17 @@ func (mr *MockServiceMockRecorder) UpdateContact(ctx, in interface{}) *gomock.Ca
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateContact", reflect.TypeOf((*MockService)(nil).UpdateContact), ctx, in)
 }
+
+// UpdateNotification mocks base method.
+func (m *MockService) UpdateNotification(ctx context.Context, in *messenger.UpdateNotificationInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateNotification", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateNotification indicates an expected call of UpdateNotification.
+func (mr *MockServiceMockRecorder) UpdateNotification(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateNotification", reflect.TypeOf((*MockService)(nil).UpdateNotification), ctx, in)
+}
