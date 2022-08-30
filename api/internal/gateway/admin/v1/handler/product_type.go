@@ -1,9 +1,11 @@
 package handler
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
@@ -106,6 +108,9 @@ func (h *handler) CreateProductType(ctx *gin.Context) {
 		CategoryID: util.GetParam(ctx, "categoryId"),
 	}
 	scategory, err := h.store.GetCategory(ctx, categoryIn)
+	if errors.Is(err, exception.ErrNotFound) {
+		badRequest(ctx, err)
+	}
 	if err != nil {
 		httpError(ctx, err)
 		return

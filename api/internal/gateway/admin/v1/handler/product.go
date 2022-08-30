@@ -1,9 +1,11 @@
 package handler
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
@@ -248,7 +250,12 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		productType = service.NewProductType(stype)
 		return nil
 	})
-	if err := eg.Wait(); err != nil {
+	err := eg.Wait()
+	if errors.Is(err, exception.ErrNotFound) {
+		badRequest(ctx, err)
+		return
+	}
+	if err != nil {
 		httpError(ctx, err)
 		return
 	}
