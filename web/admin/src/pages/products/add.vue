@@ -3,6 +3,8 @@
     <v-card-title>商品登録</v-card-title>
     <v-breadcrumbs :items="breadcrumbsItem" large class="pa-0 mb-6" />
 
+    <v-alert v-model="isShow" :type="alertType" v-text="alertText" />
+
     <div class="mb-4">
       <v-card elevation="0" class="mb-4">
         <v-card-title>商品ステータス</v-card-title>
@@ -33,12 +35,20 @@
         <v-card-title>在庫</v-card-title>
         <v-card-text>
           <div class="d-flex">
-            <v-text-field v-model="formData.inventory" label="在庫数" />
+            <v-text-field
+              v-model="formData.inventory"
+              type="number"
+              label="在庫数"
+            />
             <v-spacer />
           </div>
 
           <div class="d-flex">
-            <v-select v-model="formData.itemUnit" label="単位" />
+            <v-select
+              v-model="formData.itemUnit"
+              label="単位"
+              :items="['個']"
+            />
             <v-spacer />
           </div>
 
@@ -132,8 +142,17 @@
               v-model="formData.categoryId"
               class="mr-4"
               label="カテゴリ"
+              :items="categoriesItem"
+              item-text="name"
+              item-value="id"
             />
-            <v-select v-model="formData.productTypeId" label="品目" />
+            <v-select
+              v-model="formData.productTypeId"
+              label="品目"
+              :items="productTypesItem"
+              item-text="name"
+              item-value="id"
+            />
           </div>
           <div class="d-flex">
             <v-select
@@ -143,7 +162,13 @@
             />
             <v-select v-model="formData.originCity" label="原産地（市町村）" />
           </div>
-          <v-select v-model="formData.producerId" label="店舗名" />
+          <v-select
+            v-model="formData.producerId"
+            label="店舗名"
+            :items="producersItem"
+            item-text="storeName"
+            item-value="id"
+          />
         </v-card-text>
       </v-card>
     </div>
@@ -155,13 +180,32 @@
 </template>
 
 <script lang="ts">
+import { useFetch, useRouter } from '@nuxtjs/composition-api'
 import { defineComponent, reactive, ref } from '@vue/composition-api'
 
+import { useAlert } from '~/lib/hooks'
+import { useCategoryStore } from '~/store/category'
+import { useProducerStore } from '~/store/producer'
 import { useProductStore } from '~/store/product'
+import { useProductTypeStore } from '~/store/product-type'
 import { CreateProductRequest, UploadImageResponse } from '~/types/api'
 
 export default defineComponent({
   setup() {
+    const productTypeStore = useProductTypeStore()
+    const categoryStore = useCategoryStore()
+    const producerStore = useProducerStore()
+
+    useFetch(async () => {
+      await Promise.all([
+        productTypeStore.fetchProductTypes(),
+        categoryStore.fetchCategories(),
+        producerStore.fetchProducers(),
+      ])
+    })
+
+    const router = useRouter()
+
     const { uploadProductImage, createProduct } = useProductStore()
     const breadcrumbsItem = [
       {
@@ -230,16 +274,28 @@ export default defineComponent({
       }
     }
 
+    const { alertType, isShow, alertText, show } = useAlert('error')
+
     const handleFormSubmit = async () => {
-      console.log('submit')
       try {
         await createProduct(formData)
+        router.push('/products')
       } catch (error) {
-        console.log(error)
+        show(error.message)
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth',
+        })
       }
     }
 
     return {
+      alertType,
+      isShow,
+      alertText,
+      productTypesItem: productTypeStore.productTypes,
+      categoriesItem: categoryStore.categories,
+      producersItem: producerStore.producers,
       breadcrumbsItem,
       statusItems,
       deliveryTypeItems,

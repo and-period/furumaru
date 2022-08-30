@@ -69,6 +69,11 @@ export const useProductStore = defineStore('product', {
       }
     },
 
+    /**
+     * 商品画像をアップロードする非同期関数
+     * @param payload
+     * @returns
+     */
     async uploadProductImage(payload: File): Promise<UploadImageResponse> {
       try {
         const authStore = useAuthStore()
@@ -113,6 +118,44 @@ export const useProductStore = defineStore('product', {
       }
     },
 
-    async createProduct(_payload: CreateProductRequest): Promise<void> {},
+    /**
+     * 商品を作成する非同期関数
+     */
+    async createProduct(payload: CreateProductRequest): Promise<void> {
+      try {
+        const authStore = useAuthStore()
+        const user = authStore.user
+        const accessToken = authStore.accessToken
+        if (!user || !accessToken) {
+          return Promise.reject(
+            new AuthError('認証エラー。再度ログインをしてください。')
+          )
+        }
+        await this.apiClient(accessToken).v1CreateProduct({
+          ...payload,
+          inventory: Number(payload.inventory),
+        })
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          switch (error.response.status) {
+            case 401:
+              return Promise.reject(
+                new AuthError('認証エラー。再度ログインをしてください。', error)
+              )
+            case 400:
+              return Promise.reject(
+                new ValidationError('入力項目に誤りがあります。', error)
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+        throw new InternalServerError(error)
+      }
+    },
   },
 })
