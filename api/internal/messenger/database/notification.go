@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -82,6 +83,36 @@ func (n *notification) Create(ctx context.Context, notification *entity.Notifica
 			return nil, err
 		}
 		err = tx.WithContext(ctx).Table(notificationTable).Create(&notification).Error
+		return nil, err
+	})
+	return exception.InternalError(err)
+}
+
+func (n *notification) Update(ctx context.Context, notificationID string, params *UpdateNotificationParams) error {
+	_, err := n.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+		if _, err := n.get(ctx, tx, notificationID); err != nil {
+			return nil, err
+		}
+
+		updates := map[string]interface{}{
+			"title":        params.Title,
+			"body":         params.Body,
+			"published_at": params.PublishedAt,
+			"public":       params.Public,
+			"updated_by":   params.UpdatedBy,
+			"updated_at":   n.now(),
+		}
+		if len(params.Targets) > 0 {
+			target, err := entity.Marshal(params.Targets)
+			if err != nil {
+				return nil, fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
+			}
+			updates["targets"] = target
+		}
+		err := tx.WithContext(ctx).
+			Table(notificationTable).
+			Where("id = ?", notificationID).
+			Updates(updates).Error
 		return nil, err
 	})
 	return exception.InternalError(err)

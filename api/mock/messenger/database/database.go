@@ -388,6 +388,20 @@ func (mr *MockNotificationMockRecorder) List(ctx, params interface{}, fields ...
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockNotification)(nil).List), varargs...)
 }
 
+// Update mocks base method.
+func (m *MockNotification) Update(ctx context.Context, notificationID string, params *database.UpdateNotificationParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", ctx, notificationID, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockNotificationMockRecorder) Update(ctx, notificationID, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockNotification)(nil).Update), ctx, notificationID, params)
+}
+
 // MockPushTemplate is a mock of PushTemplate interface.
 type MockPushTemplate struct {
 	ctrl     *gomock.Controller

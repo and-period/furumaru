@@ -194,6 +194,27 @@ func TestNotifications_Fill(t *testing.T) {
 			},
 			hasErr: false,
 		},
+		{
+			name: "success is empty",
+			notifications: Notifications{
+				{
+					ID:          "notification-id",
+					Title:       "title",
+					Body:        "<html>本文<html>",
+					TargetsJSON: datatypes.JSON(nil),
+				},
+			},
+			expect: Notifications{
+				{
+					ID:          "notification-id",
+					Title:       "title",
+					Body:        "<html>本文<html>",
+					Targets:     []TargetType{},
+					TargetsJSON: datatypes.JSON(nil),
+				},
+			},
+			hasErr: false,
+		},
 	}
 
 	for _, tt := range tests {
@@ -203,6 +224,37 @@ func TestNotifications_Fill(t *testing.T) {
 			err := tt.notifications.Fill()
 			assert.Equal(t, tt.hasErr, err != nil, err)
 			assert.Equal(t, tt.expect, tt.notifications)
+		})
+	}
+}
+
+func TestNotification_Marshal(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name    string
+		targets []TargetType
+		expect  []byte
+		hasErr  bool
+	}{
+		{
+			name: "success",
+			targets: []TargetType{
+				PostTargetProducers,
+				PostTargetCoordinators,
+			},
+			expect: []byte(`[2,3]`),
+			hasErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual, err := Marshal(tt.targets)
+			assert.Equal(t, tt.hasErr, err != nil, err)
+			assert.Equal(t, tt.expect, actual)
 		})
 	}
 }

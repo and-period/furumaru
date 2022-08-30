@@ -119,13 +119,17 @@ func (n *Notification) HasProducerTarget() bool {
 	return false
 }
 
-func (n *Notification) Fill() error {
-	var targets []TargetType
-	if err := json.Unmarshal(n.TargetsJSON, &targets); err != nil {
-		return err
+func (n *Notification) Fill() (err error) {
+	n.Targets, err = n.unmarshalTarget()
+	return
+}
+
+func (n *Notification) unmarshalTarget() ([]TargetType, error) {
+	if n.TargetsJSON == nil {
+		return []TargetType{}, nil
 	}
-	n.Targets = targets
-	return nil
+	var targets []TargetType
+	return targets, json.Unmarshal(n.TargetsJSON, &targets)
 }
 
 func (n *Notification) FillJSON() error {
@@ -144,4 +148,11 @@ func (ns Notifications) Fill() error {
 		}
 	}
 	return nil
+}
+
+func Marshal(t []TargetType) ([]byte, error) {
+	if len(t) == 0 {
+		return []byte{}, nil
+	}
+	return json.Marshal(t)
 }

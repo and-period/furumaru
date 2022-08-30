@@ -69,6 +69,7 @@ type Notification interface {
 	Count(ctx context.Context, params *ListNotificationsParams) (int64, error)
 	Get(ctx context.Context, notificationID string, fields ...string) (*entity.Notification, error)
 	Create(ctx context.Context, notification *entity.Notification) error
+	Update(ctx context.Context, notificationID string, params *UpdateNotificationParams) error
 	Delete(ctx context.Context, notificationID string) error
 }
 
@@ -194,6 +195,14 @@ func (p *ListNotificationsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	return stmt
 }
 
+type UpdateNotificationParams struct {
+	Title       string
+	Body        string
+	Targets     []entity.TargetType
+	PublishedAt time.Time
+	Public      bool
+	UpdatedBy   string
+}
 type ListSchedulesParams struct {
 	Types    []entity.ScheduleType
 	Statuses []entity.ScheduleStatus
