@@ -92,7 +92,7 @@ func (s *service) UpdateNotification(ctx context.Context, in *messenger.UpdateNo
 	}
 	targets := make([]entity.TargetType, len(in.Targets))
 	for i := range in.Targets {
-		targets[i] = entity.TargetType(in.Targets[i])
+		targets[i] = in.Targets[i]
 	}
 	adminID := &user.GetAdminInput{
 		AdminID: in.UpdatedBy,
