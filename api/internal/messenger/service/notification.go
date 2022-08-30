@@ -91,8 +91,9 @@ func (s *service) UpdateNotification(ctx context.Context, in *messenger.UpdateNo
 		return exception.InternalError(err)
 	}
 	targets := make([]entity.TargetType, len(in.Targets))
-	for i := range in.Targets {
-		targets[i] = in.Targets[i]
+	n := copy(targets, in.Targets)
+	if n == 0 {
+		return exception.ErrInvalidArgument
 	}
 	adminID := &user.GetAdminInput{
 		AdminID: in.UpdatedBy,
