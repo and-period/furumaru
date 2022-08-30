@@ -6,7 +6,7 @@ type CreateProductRequest struct {
 	Public           bool                  `json:"public,omitempty"`           // 公開フラグ
 	ProducerID       string                `json:"producerID,omitempty"`       // 生産者ID
 	CategoryID       string                `json:"categoryID,omitempty"`       // 商品種別ID
-	TypeID           string                `json:"typeID,omitempty"`           // 品目ID
+	TypeID           string                `json:"productTypeID,omitempty"`    // 品目ID
 	Inventory        int64                 `json:"inventory,omitempty"`        // 在庫数
 	Weight           float64               `json:"weight,omitempty"`           // 重量(kg,少数第一位まで)
 	ItemUnit         string                `json:"itemUnit,omitempty"`         // 数量単位
@@ -32,7 +32,7 @@ type UpdateProductRequest struct {
 	Public           bool                  `json:"public,omitempty"`           // 公開フラグ
 	ProducerID       string                `json:"producerID,omitempty"`       // 生産者ID
 	CategoryID       string                `json:"categoryID,omitempty"`       // 商品種別ID
-	TypeID           string                `json:"typeID,omitempty"`           // 品目ID
+	TypeID           string                `json:"productTypeID,omitempty"`    // 品目ID
 	Inventory        int64                 `json:"inventory,omitempty"`        // 在庫数
 	Weight           float64               `json:"weight,omitempty"`           // 重量(kg,少数第一位まで)
 	ItemUnit         string                `json:"itemUnit,omitempty"`         // 数量単位
