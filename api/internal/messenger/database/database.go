@@ -196,13 +196,12 @@ func (p *ListNotificationsParams) stmt(stmt *gorm.DB) *gorm.DB {
 }
 
 type UpdateNotificationParams struct {
-	NotificationID string
-	Title          string
-	Body           string
-	Targets        []entity.TargetType
-	PublishedAt    time.Time
-	Public         bool
-	UpdatedBy      string
+	Title       string
+	Body        string
+	Targets     []entity.TargetType
+	PublishedAt time.Time
+	Public      bool
+	UpdatedBy   string
 }
 type ListSchedulesParams struct {
 	Types    []entity.ScheduleType

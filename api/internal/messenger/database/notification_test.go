@@ -348,9 +348,8 @@ func TestNotification_Update(t *testing.T) {
 			args: args{
 				notificationID: "notification-id",
 				params: &UpdateNotificationParams{
-					NotificationID: "notification-id",
-					Title:          "キャベツ祭り開催",
-					Body:           "旬のキャベツが大安売り",
+					Title: "キャベツ祭り開催",
+					Body:  "旬のキャベツが大安売り",
 					Targets: []entity.TargetType{
 						entity.PostTargetProducers,
 						entity.PostTargetCoordinators,
