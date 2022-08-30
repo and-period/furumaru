@@ -66,7 +66,7 @@ type UpdateNotificationInput struct {
 	Targets        []entity.TargetType `validate:"min=1,max=3,dive,min=1,max=3"`
 	Public         bool                `validate:""`
 	PublishedAt    time.Time           `validate:"required"`
-	UpdatedBy      string              `validete:""`
+	UpdatedBy      string              `validete:"required"`
 }
 
 type DeleteNotificationInput struct {
