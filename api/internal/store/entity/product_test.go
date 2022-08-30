@@ -204,6 +204,25 @@ func TestProducts_Fill(t *testing.T) {
 			},
 			hasErr: false,
 		},
+		{
+			name: "success is empty",
+			products: Products{
+				{
+					ID:        "product-id",
+					Name:      "&.農園のみかん",
+					MediaJSON: datatypes.JSON(nil),
+				},
+			},
+			expect: Products{
+				{
+					ID:        "product-id",
+					Name:      "&.農園のみかん",
+					Media:     MultiProductMedia{},
+					MediaJSON: datatypes.JSON(nil),
+				},
+			},
+			hasErr: false,
+		},
 	}
 
 	for _, tt := range tests {

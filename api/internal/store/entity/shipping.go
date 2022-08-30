@@ -93,21 +93,29 @@ func NewShipping(params *NewShippingParams) *Shipping {
 	}
 }
 
-func (s *Shipping) Fill() error {
+func (s *Shipping) Fill() (err error) {
 	var box60Rates, box80Rates, box100Rates ShippingRates
-	if err := json.Unmarshal(s.Box60RatesJSON, &box60Rates); err != nil {
+	if box60Rates, err = s.unmarshalRates(s.Box60RatesJSON); err != nil {
 		return err
 	}
-	if err := json.Unmarshal(s.Box80RatesJSON, &box80Rates); err != nil {
+	if box80Rates, err = s.unmarshalRates(s.Box80RatesJSON); err != nil {
 		return err
 	}
-	if err := json.Unmarshal(s.Box100RatesJSON, &box100Rates); err != nil {
+	if box100Rates, err = s.unmarshalRates(s.Box100RatesJSON); err != nil {
 		return err
 	}
 	s.Box60Rates = box60Rates
 	s.Box80Rates = box80Rates
 	s.Box100Rates = box100Rates
 	return nil
+}
+
+func (s *Shipping) unmarshalRates(b []byte) (ShippingRates, error) {
+	if b == nil {
+		return ShippingRates{}, nil
+	}
+	var rates ShippingRates
+	return rates, json.Unmarshal(b, &rates)
 }
 
 func (s *Shipping) FillJSON() error {

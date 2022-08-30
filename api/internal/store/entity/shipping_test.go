@@ -140,7 +140,7 @@ func TestShipping_Fill(t *testing.T) {
 			hasErr: false,
 		},
 		{
-			name: "failed to fill Box60Rates",
+			name: "success Box60Rates is nil",
 			shipping: &Shipping{
 				ID:                 "shipping-id",
 				Name:               "デフォルト配送設定",
@@ -161,12 +161,15 @@ func TestShipping_Fill(t *testing.T) {
 			expect: &Shipping{
 				ID:                 "shipping-id",
 				Name:               "デフォルト配送設定",
+				Box60Rates:         ShippingRates{},
 				Box60RatesJSON:     nil,
 				Box60Refrigerated:  500,
 				Box60Frozen:        800,
+				Box80Rates:         rates,
 				Box80RatesJSON:     buf,
 				Box80Refrigerated:  500,
 				Box80Frozen:        800,
+				Box100Rates:        rates,
 				Box100RatesJSON:    buf,
 				Box100Refrigerated: 500,
 				Box100Frozen:       800,
@@ -175,10 +178,10 @@ func TestShipping_Fill(t *testing.T) {
 				CreatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
 				UpdatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
 			},
-			hasErr: true,
+			hasErr: false,
 		},
 		{
-			name: "failed to fill Box80Rates",
+			name: "success Box80Rates is nil",
 			shipping: &Shipping{
 				ID:                 "shipping-id",
 				Name:               "デフォルト配送設定",
@@ -199,12 +202,15 @@ func TestShipping_Fill(t *testing.T) {
 			expect: &Shipping{
 				ID:                 "shipping-id",
 				Name:               "デフォルト配送設定",
+				Box60Rates:         rates,
 				Box60RatesJSON:     buf,
 				Box60Refrigerated:  500,
 				Box60Frozen:        800,
+				Box80Rates:         ShippingRates{},
 				Box80RatesJSON:     nil,
 				Box80Refrigerated:  500,
 				Box80Frozen:        800,
+				Box100Rates:        rates,
 				Box100RatesJSON:    buf,
 				Box100Refrigerated: 500,
 				Box100Frozen:       800,
@@ -213,10 +219,10 @@ func TestShipping_Fill(t *testing.T) {
 				CreatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
 				UpdatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
 			},
-			hasErr: true,
+			hasErr: false,
 		},
 		{
-			name: "failed to fill Box100Rates",
+			name: "success Box100Rates is nil",
 			shipping: &Shipping{
 				ID:                 "shipping-id",
 				Name:               "デフォルト配送設定",
@@ -237,12 +243,15 @@ func TestShipping_Fill(t *testing.T) {
 			expect: &Shipping{
 				ID:                 "shipping-id",
 				Name:               "デフォルト配送設定",
+				Box60Rates:         rates,
 				Box60RatesJSON:     buf,
 				Box60Refrigerated:  500,
 				Box60Frozen:        800,
+				Box80Rates:         rates,
 				Box80RatesJSON:     buf,
 				Box80Refrigerated:  500,
 				Box80Frozen:        800,
+				Box100Rates:        ShippingRates{},
 				Box100RatesJSON:    nil,
 				Box100Refrigerated: 500,
 				Box100Frozen:       800,
@@ -251,7 +260,7 @@ func TestShipping_Fill(t *testing.T) {
 				CreatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
 				UpdatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
 			},
-			hasErr: true,
+			hasErr: false,
 		},
 	}
 	for _, tt := range tests {

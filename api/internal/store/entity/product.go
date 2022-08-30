@@ -137,13 +137,17 @@ func NewProduct(params *NewProductParams) *Product {
 	}
 }
 
-func (p *Product) Fill() error {
-	var media MultiProductMedia
-	if err := json.Unmarshal(p.MediaJSON, &media); err != nil {
-		return err
+func (p *Product) Fill() (err error) {
+	p.Media, err = p.unmarshalMedia()
+	return
+}
+
+func (p *Product) unmarshalMedia() (MultiProductMedia, error) {
+	if p.MediaJSON == nil {
+		return MultiProductMedia{}, nil
 	}
-	p.Media = media
-	return nil
+	var media MultiProductMedia
+	return media, json.Unmarshal(p.MediaJSON, &media)
 }
 
 func (p *Product) FillJSON() error {
