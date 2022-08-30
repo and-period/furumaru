@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store"
@@ -255,20 +254,6 @@ func TestCreateProductType(t *testing.T) {
 						UpdatedAt:    1640962800,
 					},
 				},
-			},
-		},
-		{
-			name: "not found category",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(nil, exception.ErrNotFound)
-			},
-			categoryID: "category-id",
-			req: &request.CreateProductTypeRequest{
-				Name:    "じゃがいも",
-				IconURL: "https://and-period.jp/icon.png",
-			},
-			expect: &testResponse{
-				code: http.StatusBadRequest,
 			},
 		},
 		{
