@@ -5132,6 +5132,20 @@
     lodash "^4.17.15"
     pretty "^2.0.0"
 
+"@vuelidate/core@^2.0.0-alpha.44":
+  version "2.0.0-alpha.44"
+  resolved "https://registry.yarnpkg.com/@vuelidate/core/-/core-2.0.0-alpha.44.tgz#2ef61631fef542fb7827a0b0cfd5a4ed9dd5dc6d"
+  integrity sha512-3DlCe3E0RRXbB+OfPacUetKhLmXzmnjeHkzjnbkc03p06mKm6h9pXR5pd6Mv4s4tus4sieuKDb2YWNmKK6rQeA==
+  dependencies:
+    vue-demi "^0.13.4"
+
+"@vuelidate/validators@^2.0.0-alpha.31":
+  version "2.0.0-alpha.31"
+  resolved "https://registry.yarnpkg.com/@vuelidate/validators/-/validators-2.0.0-alpha.31.tgz#04d63307bc0a12db9f7ad94243350b83aacee998"
+  integrity sha512-+MFA9nZ7Y9zCpq383/voPDk/hiAmu6KqiJJhLOYB/FmrUPVoyKnuKnI9Bwiq8ok9GZlVkI8BnIrKPKGj9QpwiQ==
+  dependencies:
+    vue-demi "^0.13.4"
+
 "@webassemblyjs/ast@1.9.0":
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/ast/-/ast-1.9.0.tgz#bd850604b4042459a5a41cd7d338cbed695ed964"
@@ -14719,6 +14733,11 @@ vue-demi@*:
   version "0.13.1"
   resolved "https://registry.yarnpkg.com/vue-demi/-/vue-demi-0.13.1.tgz#7604904c88be338418a10abbc94d5b8caa14cb8c"
   integrity sha512-xmkJ56koG3ptpLnpgmIzk9/4nFf4CqduSJbUM0OdPoU87NwRuZ6x49OLhjSa/fC15fV+5CbEnrxU4oyE022svg==
+
+vue-demi@^0.13.4:
+  version "0.13.11"
+  resolved "https://registry.yarnpkg.com/vue-demi/-/vue-demi-0.13.11.tgz#7d90369bdae8974d87b1973564ad390182410d99"
+  integrity sha512-IR8HoEEGM65YY3ZJYAjMlKygDQn25D5ajNFNoKh9RSDMQtlzCxtfQjdQgv9jjK+m3377SsJXY8ysq8kLCZL25A==
 
 vue-eslint-parser@^8.0.1, vue-eslint-parser@^8.3.0:
   version "8.3.0"
