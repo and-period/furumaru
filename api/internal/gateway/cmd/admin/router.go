@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/cors"
@@ -83,6 +84,11 @@ func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 			body:           bytes.NewBufferString(""),
 		}
 		ctx.Writer = w
+
+		if strings.Contains(ctx.GetHeader("Content-Type"), "application/json") {
+			// アクセスログのレスポンス部分が文字化けしてしまうため
+			ctx.Request.Header.Add("Content-Type", "charset=utf-8")
+		}
 
 		start := time.Now()
 		method := ctx.Request.Method
