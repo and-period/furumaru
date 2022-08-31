@@ -120,7 +120,7 @@ func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 		}
 
 		if reg.debugMode {
-			str := strings.Trim(bytes.NewBuffer(req).String(), "\n")
+			str := strings.ReplaceAll(bytes.NewBuffer(req).String(), "\n", "")
 			fields = append(fields, zap.String("request", str))
 		}
 		res, err := w.errorResponse()
