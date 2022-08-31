@@ -3202,6 +3202,43 @@ export interface UpdateCoordinatorRequest {
 /**
  *
  * @export
+ * @interface UpdateNotificationRequest
+ */
+export interface UpdateNotificationRequest {
+  /**
+   * タイトル(128字まで)
+   * @type {string}
+   * @memberof UpdateNotificationRequest
+   */
+  title: string
+  /**
+   * 本文(2000字まで)
+   * @type {string}
+   * @memberof UpdateNotificationRequest
+   */
+  body: string
+  /**
+   * 掲載対象一覧(3つまで,全部指定の際は1,2,3)
+   * @type {Array<number>}
+   * @memberof UpdateNotificationRequest
+   */
+  targets: Array<number>
+  /**
+   * 公開フラグ
+   * @type {boolean}
+   * @memberof UpdateNotificationRequest
+   */
+  public: boolean
+  /**
+   * 掲載開始日時
+   * @type {number}
+   * @memberof UpdateNotificationRequest
+   */
+  publishedAt: number
+}
+/**
+ *
+ * @export
  * @interface UpdateProducerEmailRequest
  */
 export interface UpdateProducerEmailRequest {
@@ -7651,6 +7688,71 @@ export const NotificationApiAxiosParamCreator = function (
         options: localVarRequestOptions,
       }
     },
+    /**
+     *
+     * @summary お知らせ更新
+     * @param {string} notificationId お知らせID
+     * @param {UpdateNotificationRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateNotification: async (
+      notificationId: string,
+      body: UpdateNotificationRequest,
+      options: AxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'notificationId' is not null or undefined
+      assertParamExists(
+        'v1UpdateNotification',
+        'notificationId',
+        notificationId
+      )
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('v1UpdateNotification', 'body', body)
+      const localVarPath = `/v1/notifications/{notificationId}`.replace(
+        `{${'notificationId'}}`,
+        encodeURIComponent(String(notificationId))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication BearerAuth required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
   }
 }
 
@@ -7752,6 +7854,34 @@ export const NotificationApiFp = function (configuration?: Configuration) {
         configuration
       )
     },
+    /**
+     *
+     * @summary お知らせ更新
+     * @param {string} notificationId お知らせID
+     * @param {UpdateNotificationRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UpdateNotification(
+      notificationId: string,
+      body: UpdateNotificationRequest,
+      options?: AxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.v1UpdateNotification(
+          notificationId,
+          body,
+          options
+        )
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration
+      )
+    },
   }
 }
 
@@ -7817,6 +7947,23 @@ export const NotificationApiFactory = function (
     ): AxiosPromise<NotificationsResponse> {
       return localVarFp
         .v1ListNotifications(limit, offset, since, until, orders, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary お知らせ更新
+     * @param {string} notificationId お知らせID
+     * @param {UpdateNotificationRequest} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UpdateNotification(
+      notificationId: string,
+      body: UpdateNotificationRequest,
+      options?: any
+    ): AxiosPromise<object> {
+      return localVarFp
+        .v1UpdateNotification(notificationId, body, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -7885,6 +8032,25 @@ export class NotificationApi extends BaseAPI {
   ) {
     return NotificationApiFp(this.configuration)
       .v1ListNotifications(limit, offset, since, until, orders, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary お知らせ更新
+   * @param {string} notificationId お知らせID
+   * @param {UpdateNotificationRequest} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NotificationApi
+   */
+  public v1UpdateNotification(
+    notificationId: string,
+    body: UpdateNotificationRequest,
+    options?: AxiosRequestConfig
+  ) {
+    return NotificationApiFp(this.configuration)
+      .v1UpdateNotification(notificationId, body, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
