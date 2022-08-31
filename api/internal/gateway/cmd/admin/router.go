@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/pkg/cors"
 	ginzip "github.com/gin-contrib/gzip"
 	ginzap "github.com/gin-contrib/zap"
@@ -61,12 +62,12 @@ func (w *wrapResponseWriter) WriteString(s string) (int, error) {
 	return w.ResponseWriter.WriteString(s)
 }
 
-func (w *wrapResponseWriter) response() (string, error) {
+func (w *wrapResponseWriter) errorResponse() (*util.ErrorResponse, error) {
 	r, err := gzip.NewReader(w.body)
 	if err != nil {
-		return "", nil
+		return nil, err
 	}
-	var res string
+	var res *util.ErrorResponse
 	return res, json.NewDecoder(r).Decode(&res)
 }
 
@@ -122,7 +123,7 @@ func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 			str := strings.Trim(bytes.NewBuffer(req).String(), "\n")
 			fields = append(fields, zap.String("request", str))
 		}
-		res, err := w.response()
+		res, err := w.errorResponse()
 		if err != nil {
 			logger.Error("Failed to parse http response", zap.Error(err))
 		}
