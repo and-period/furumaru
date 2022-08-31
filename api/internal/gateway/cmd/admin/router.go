@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/pkg/cors"
 	"github.com/gin-contrib/gzip"
 	ginzap "github.com/gin-contrib/zap"
@@ -59,12 +61,13 @@ func (w *wrapResponseWriter) WriteString(s string) (int, error) {
 	return w.ResponseWriter.WriteString(s)
 }
 
-func (w *wrapResponseWriter) response() (string, error) {
-	res, err := io.ReadAll(w.body)
+func (w *wrapResponseWriter) errorResponse() (*util.ErrorResponse, error) {
+	body, err := io.ReadAll(w.body)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return bytes.NewBuffer(res).String(), nil
+	var res *util.ErrorResponse
+	return res, json.Unmarshal(body, &res)
 }
 
 func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
@@ -120,12 +123,12 @@ func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 			return
 		}
 
-		res, err := w.response()
+		res, err := w.errorResponse()
 		if err != nil {
 			logger.Error("Failed to parse http response", zap.Error(err))
 		}
 		fields = append(fields, zap.String("request", bytes.NewBuffer(req).String()))
-		fields = append(fields, zap.String("response", res))
+		fields = append(fields, zap.Any("response", res))
 
 		// 400 ~ 499
 		if status < 500 {
@@ -142,13 +145,14 @@ func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 		}
 
 		altText := fmt.Sprintf("[ふるマルアラート] %s", reg.appName)
+		detail, _ := json.Marshal(res)
 		components := []linebot.FlexComponent{
 			newAlertContent("service", reg.appName),
 			newAlertContent("env", reg.env),
 			newAlertContent("status", strconv.FormatInt(int64(status), 10)),
 			newAlertContent("method", method),
 			newAlertContent("path", path),
-			newAlertContent("detail", res),
+			newAlertContent("detail", string(detail)),
 		}
 		_ = reg.line.PushMessage(ctx, newAlertMessage(altText, components))
 	}
