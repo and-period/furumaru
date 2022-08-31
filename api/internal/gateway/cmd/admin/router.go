@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"compress/gzip"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -10,9 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/pkg/cors"
-	"github.com/gin-contrib/gzip"
+	ginzip "github.com/gin-contrib/gzip"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	"github.com/line/line-bot-sdk-go/v7/linebot"
@@ -26,7 +26,7 @@ func newRouter(reg *registry, logger *zap.Logger) *gin.Engine {
 	opts = append(opts, nrgin.Middleware(reg.newRelic))
 	opts = append(opts, accessLogger(logger, reg))
 	opts = append(opts, cors.NewGinMiddleware())
-	opts = append(opts, gzip.Gzip(gzip.DefaultCompression))
+	opts = append(opts, ginzip.Gzip(ginzip.DefaultCompression))
 	opts = append(opts, ginzap.RecoveryWithZap(logger, true))
 
 	rt := gin.New()
@@ -61,13 +61,13 @@ func (w *wrapResponseWriter) WriteString(s string) (int, error) {
 	return w.ResponseWriter.WriteString(s)
 }
 
-func (w *wrapResponseWriter) errorResponse() (*util.ErrorResponse, error) {
-	body, err := io.ReadAll(w.body)
+func (w *wrapResponseWriter) response() (string, error) {
+	r, err := gzip.NewReader(w.body)
 	if err != nil {
-		return nil, err
+		return "", nil
 	}
-	var res *util.ErrorResponse
-	return res, json.Unmarshal(body, &res)
+	var res string
+	return res, json.NewDecoder(r).Decode(&res)
 }
 
 func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
@@ -87,11 +87,6 @@ func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 			body:           bytes.NewBufferString(""),
 		}
 		ctx.Writer = w
-
-		if strings.Contains(ctx.GetHeader("Content-Type"), "application/json") {
-			// アクセスログのレスポンス部分が文字化けしてしまうため
-			ctx.Request.Header.Set("Content-Type", "application/json; charset=utf-8")
-		}
 
 		start := time.Now()
 		method := ctx.Request.Method
@@ -124,9 +119,10 @@ func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 		}
 
 		if reg.debugMode {
-			fields = append(fields, zap.String("request", bytes.NewBuffer(req).String()))
+			str := strings.Trim(bytes.NewBuffer(req).String(), "\n")
+			fields = append(fields, zap.String("request", str))
 		}
-		res, err := w.errorResponse()
+		res, err := w.response()
 		if err != nil {
 			logger.Error("Failed to parse http response", zap.Error(err))
 		}
