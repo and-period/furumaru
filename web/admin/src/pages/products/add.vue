@@ -20,7 +20,13 @@
       <v-card elevation="0" class="mb-4">
         <v-card-title>基本情報</v-card-title>
         <v-card-text>
-          <v-text-field v-model="formData.name" label="商品名" outlined />
+          <v-text-field
+            v-model="$v.name.$model"
+            label="商品名"
+            outlined
+            :error="$v.name.$error"
+            :error-messages="getErrorMessage('name')"
+          />
           <client-only>
             <tiptap-editor
               label="商品詳細"
@@ -36,7 +42,8 @@
         <v-card-text>
           <div class="d-flex">
             <v-text-field
-              v-model="formData.inventory"
+              v-model="$v.inventory.$model"
+              :error-messages="getErrorMessage('inventory')"
               type="number"
               label="在庫数"
             />
@@ -53,7 +60,11 @@
           </div>
 
           <div class="d-flex align-center">
-            <v-text-field v-model="formData.itemDescription" label="単位説明" />
+            <v-text-field
+              v-model="$v.itemDescription.$model"
+              label="単位説明"
+              :error-messages="getErrorMessage('itemDescription')"
+            />
             <p class="ml-12 mb-0">ex) 1kg → 5個入り</p>
             <v-spacer />
           </div>
@@ -87,7 +98,11 @@
       <v-card elevation="0" class="mb-4">
         <v-card-title>価格</v-card-title>
         <v-card-text>
-          <v-text-field v-model="formData.price" label="販売価格" />
+          <v-text-field
+            v-model="$v.price.$model"
+            label="販売価格"
+            :error-messages="getErrorMessage('price')"
+          />
         </v-card-text>
       </v-card>
 
@@ -95,7 +110,11 @@
         <v-card-title>配送情報</v-card-title>
         <v-card-text>
           <div class="d-flex">
-            <v-text-field v-model="formData.weight" label="重さ">
+            <v-text-field
+              v-model="$v.weight.$model"
+              label="重さ"
+              :error-messages="getErrorMessage('weight')"
+            >
               <template #append>kg</template>
             </v-text-field>
             <v-spacer />
@@ -181,7 +200,15 @@
 
 <script lang="ts">
 import { useFetch, useRouter } from '@nuxtjs/composition-api'
-import { defineComponent, reactive, ref } from '@vue/composition-api'
+import {
+  computed,
+  defineComponent,
+  reactive,
+  Ref,
+  ref,
+} from '@vue/composition-api'
+import useVuelidate from '@vuelidate/core'
+import { required, minValue } from '@vuelidate/validators'
 
 import { useAlert } from '~/lib/hooks'
 import { useCategoryStore } from '~/store/category'
@@ -251,6 +278,17 @@ export default defineComponent({
       originCity: '',
     })
 
+    const rules = computed(() => ({
+      name: { required },
+      inventory: { required, minValue: minValue(0) },
+      price: { required, minValue: minValue(0) },
+      weight: { required, minValue: minValue(0) },
+      itemUnit: { required },
+      itemDescription: { required },
+    }))
+
+    const $v = useVuelidate(rules, formData)
+
     const uploadFiles = ref<FileList | null>(null)
 
     const productRef = ref<string>('')
@@ -277,6 +315,10 @@ export default defineComponent({
     const { alertType, isShow, alertText, show } = useAlert('error')
 
     const handleFormSubmit = async () => {
+      const result = await $v.value.$validate()
+      if (!result) {
+        return
+      }
       try {
         await createProduct(formData)
         router.push('/products')
@@ -287,6 +329,13 @@ export default defineComponent({
           behavior: 'smooth',
         })
       }
+    }
+
+    const getErrorMessage = (key: string): string | Ref<string> => {
+      const error = $v.value.$errors.find((e) => {
+        return e.$property === key
+      })
+      return error ? error.$message : ''
     }
 
     return {
@@ -300,11 +349,13 @@ export default defineComponent({
       statusItems,
       deliveryTypeItems,
       formData,
+      $v,
       uploadFiles,
       productRef,
       handleUpdateFormDataDescription,
       handleImageUpload,
       handleFormSubmit,
+      getErrorMessage,
     }
   },
 })
