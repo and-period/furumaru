@@ -90,7 +90,7 @@ func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 
 		if strings.Contains(ctx.GetHeader("Content-Type"), "application/json") {
 			// アクセスログのレスポンス部分が文字化けしてしまうため
-			ctx.Request.Header.Add("Content-Type", "charset=utf-8")
+			ctx.Request.Header.Set("Content-Type", "application/json; charset=utf-8")
 		}
 
 		start := time.Now()
@@ -123,11 +123,13 @@ func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 			return
 		}
 
+		if reg.debugMode {
+			fields = append(fields, zap.String("request", bytes.NewBuffer(req).String()))
+		}
 		res, err := w.errorResponse()
 		if err != nil {
 			logger.Error("Failed to parse http response", zap.Error(err))
 		}
-		fields = append(fields, zap.String("request", bytes.NewBuffer(req).String()))
 		fields = append(fields, zap.Any("response", res))
 
 		// 400 ~ 499
