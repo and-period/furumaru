@@ -3,6 +3,7 @@ package cmd
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 
@@ -56,12 +57,26 @@ func (w *wrapResponseWriter) WriteString(s string) (int, error) {
 	return w.ResponseWriter.WriteString(s)
 }
 
+func (w *wrapResponseWriter) response() (string, error) {
+	var buf bytes.Buffer
+	if _, err := buf.ReadFrom(w.body); err != nil {
+		return "", err
+	}
+	return buf.String(), nil
+}
+
 func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 	skipPaths := map[string]bool{
 		"/health": true,
 	}
 
 	return func(ctx *gin.Context) {
+		var req []byte
+		if reg.debugMode {
+			req, _ := io.ReadAll(ctx.Request.Body)
+			ctx.Request.Body = io.NopCloser(bytes.NewBuffer(req))
+		}
+
 		w := &wrapResponseWriter{
 			ResponseWriter: ctx.Writer,
 			body:           bytes.NewBufferString(""),
@@ -86,21 +101,32 @@ func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 			zap.String("path", path),
 			zap.String("query", ctx.Request.URL.RawQuery),
 			zap.String("ip", ctx.ClientIP()),
-			zap.String("user-agent", ctx.Request.UserAgent()),
+			zap.String("userAgent", ctx.Request.UserAgent()),
 			zap.Int64("latency", end.Sub(start).Milliseconds()),
 			zap.String("time", end.Format("2006-01-02 15:04:05")),
 			zap.String("userId", ctx.GetHeader("adminId")),
 		}
 
-		// ~ 499
-		if status < 500 {
+		// ~ 399
+		if status < 400 {
 			logger.Info(path, fields...)
 			return
 		}
 
-		// 500 ~
-		res := w.body.String()
+		res, err := w.response()
+		if err != nil {
+			logger.Error("Failed to parse http response", zap.Error(err))
+		}
+		fields = append(fields, zap.String("request", bytes.NewBuffer(req).String()))
 		fields = append(fields, zap.String("response", res))
+
+		// 400 ~ 499
+		if status < 500 {
+			logger.Warn(path, fields...)
+			return
+		}
+
+		// 500 ~
 		fields = append(fields, zap.Strings("errors", ctx.Errors.Errors()))
 		logger.Error(path, fields...)
 

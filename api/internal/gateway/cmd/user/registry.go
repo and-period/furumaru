@@ -32,6 +32,7 @@ import (
 type registry struct {
 	appName   string
 	env       string
+	debugMode bool
 	waitGroup *sync.WaitGroup
 	line      line.Client
 	newRelic  *newrelic.Application
@@ -165,6 +166,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	return &registry{
 		appName:   conf.AppName,
 		env:       conf.Environment,
+		debugMode: conf.LogLevel == "debug",
 		waitGroup: params.waitGroup,
 		line:      params.line,
 		newRelic:  params.newRelic,
