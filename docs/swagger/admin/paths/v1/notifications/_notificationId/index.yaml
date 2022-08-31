@@ -32,7 +32,7 @@ patch:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
     404:
-      description: 商品が存在しない
+      description: お知らせが存在しない
       content:
         application/json:
           schema:
