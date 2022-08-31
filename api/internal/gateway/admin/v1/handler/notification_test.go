@@ -292,6 +292,82 @@ func TestCreateNotification(t *testing.T) {
 	}
 }
 
+func TestUpdateNotification(t *testing.T) {
+	t.Parallel()
+	var date int64 = 1640962800
+
+	in := &messenger.UpdateNotificationInput{
+		NotificationID: "notification-id",
+		Title:          "キャベツ祭り開催",
+		Body:           "旬のキャベツを大安売り",
+		Targets: []mentity.TargetType{
+			mentity.PostTargetUsers,
+			mentity.PostTargetProducers,
+		},
+		Public:      true,
+		PublishedAt: jst.ParseFromUnix(date),
+		UpdatedBy:   idmock,
+	}
+
+	tests := []struct {
+		name           string
+		setup          func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		notificationID string
+		req            *request.UpdateNotificationRequest
+		expect         *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.messenger.EXPECT().UpdateNotification(gomock.Any(), in).Return(nil)
+			},
+			notificationID: "notification-id",
+			req: &request.UpdateNotificationRequest{
+				Title: "キャベツ祭り開催",
+				Body:  "旬のキャベツを大安売り",
+				Targets: []request.TargetType{
+					request.PostTargetUsers,
+					request.PostTargetProducers,
+				},
+				Public:      true,
+				PublishedAt: date,
+			},
+			expect: &testResponse{
+				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to update notification",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.messenger.EXPECT().UpdateNotification(gomock.Any(), in).Return(errmock)
+			},
+			notificationID: "notification-id",
+			req: &request.UpdateNotificationRequest{
+				Title: "キャベツ祭り開催",
+				Body:  "旬のキャベツを大安売り",
+				Targets: []request.TargetType{
+					request.PostTargetUsers,
+					request.PostTargetProducers,
+				},
+				Public:      true,
+				PublishedAt: date,
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const format = "/v1/notifications/%s"
+			path := fmt.Sprintf(format, tt.notificationID)
+			testPatch(t, tt.setup, tt.expect, path, tt.req, withRole(uentity.AdminRoleCoordinator))
+		})
+	}
+}
+
 func TestDeleteNotification(t *testing.T) {
 	t.Parallel()
 

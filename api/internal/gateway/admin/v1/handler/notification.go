@@ -21,6 +21,7 @@ func (h *handler) notificationRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication())
 	arg.GET("", h.ListNotifications)
 	arg.POST("", h.CreateNotification)
+	arg.PATCH("/:notificationId", h.UpdateNotifcation)
 	arg.DELETE("/:notificationId", h.DeleteNotification)
 }
 
@@ -147,6 +148,35 @@ func (h *handler) CreateNotification(ctx *gin.Context) {
 		Notification: service.NewNotification(notification).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) UpdateNotifcation(ctx *gin.Context) {
+	req := &request.UpdateNotificationRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	targets := make([]entity.TargetType, len(req.Targets))
+	for i := range req.Targets {
+		targets[i] = entity.TargetType(req.Targets[i])
+	}
+	publishedAt := jst.ParseFromUnix(req.PublishedAt)
+	in := &messenger.UpdateNotificationInput{
+		NotificationID: util.GetParam(ctx, "notificationId"),
+		Title:          req.Title,
+		Body:           req.Body,
+		Targets:        targets,
+		Public:         req.Public,
+		PublishedAt:    publishedAt,
+		UpdatedBy:      getAdminID(ctx),
+	}
+	if err := h.messenger.UpdateNotification(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
 func (h *handler) DeleteNotification(ctx *gin.Context) {
