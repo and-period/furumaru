@@ -21,10 +21,10 @@
         <v-card-title>基本情報</v-card-title>
         <v-card-text>
           <v-text-field
-            v-model="$v.name.$model"
+            v-model="v$.name.$model"
             label="商品名"
             outlined
-            :error="$v.name.$error"
+            :error="v$.name.$error"
             :error-messages="getErrorMessage('name')"
           />
           <client-only>
@@ -42,7 +42,7 @@
         <v-card-text>
           <div class="d-flex">
             <v-text-field
-              v-model="$v.inventory.$model"
+              v-model="v$.inventory.$model"
               :error-messages="getErrorMessage('inventory')"
               type="number"
               label="在庫数"
@@ -61,7 +61,7 @@
 
           <div class="d-flex align-center">
             <v-text-field
-              v-model="$v.itemDescription.$model"
+              v-model="v$.itemDescription.$model"
               label="単位説明"
               :error-messages="getErrorMessage('itemDescription')"
             />
@@ -99,7 +99,7 @@
         <v-card-title>価格</v-card-title>
         <v-card-text>
           <v-text-field
-            v-model="$v.price.$model"
+            v-model="v$.price.$model"
             label="販売価格"
             :error-messages="getErrorMessage('price')"
           />
@@ -111,7 +111,7 @@
         <v-card-text>
           <div class="d-flex">
             <v-text-field
-              v-model="$v.weight.$model"
+              v-model="v$.weight.$model"
               label="重さ"
               :error-messages="getErrorMessage('weight')"
             >
@@ -287,7 +287,7 @@ export default defineComponent({
       itemDescription: { required },
     }))
 
-    const $v = useVuelidate(rules, formData)
+    const v$ = useVuelidate(rules, formData)
 
     const uploadFiles = ref<FileList | null>(null)
 
@@ -315,7 +315,7 @@ export default defineComponent({
     const { alertType, isShow, alertText, show } = useAlert('error')
 
     const handleFormSubmit = async () => {
-      const result = await $v.value.$validate()
+      const result = await v$.value.v$alidate()
       if (!result) {
         return
       }
@@ -332,7 +332,7 @@ export default defineComponent({
     }
 
     const getErrorMessage = (key: string): string | Ref<string> => {
-      const error = $v.value.$errors.find((e) => {
+      const error = v$.value.$errors.find((e) => {
         return e.$property === key
       })
       return error ? error.$message : ''
@@ -349,7 +349,7 @@ export default defineComponent({
       statusItems,
       deliveryTypeItems,
       formData,
-      $v,
+      v$,
       uploadFiles,
       productRef,
       handleUpdateFormDataDescription,
