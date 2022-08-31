@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -60,15 +59,11 @@ func (w *wrapResponseWriter) WriteString(s string) (int, error) {
 }
 
 func (w *wrapResponseWriter) response() (string, error) {
-	body, err := io.ReadAll(w.body)
+	res, err := io.ReadAll(w.body)
 	if err != nil {
 		return "", err
 	}
-	var res interface{}
-	if err := json.Unmarshal(body, &res); err != nil {
-		return "", nil
-	}
-	return res.(string), nil
+	return bytes.NewBuffer(res).String(), nil
 }
 
 func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
