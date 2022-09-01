@@ -28,8 +28,9 @@
           <v-select class="mr-4" :items="discountMethod" label="割引方法" />
           <v-text-field v-model="formData.Type" label="割引値" />
         </div>
+
         <p class="text-h6">投稿期間</p>
-        <div class="d-flex align-center">
+        <div class="d-flex align-center justify-center">
           <v-menu
             v-model="postMenu"
             :close-on-content-click="false"
@@ -41,6 +42,7 @@
             <template #activator="{ on, attrs }">
               <v-text-field
                 v-model="postDate"
+                class="mr-2"
                 label="投稿開始日"
                 readonly
                 outlined
@@ -55,13 +57,15 @@
             >
               <v-spacer></v-spacer>
               <v-btn text color="primary" @click="postMenu = false">
-                Cancel
+                閉じる
               </v-btn>
             </v-date-picker>
           </v-menu>
-          <input class="postTime" type="time" required />
-          <p class="text-h6 ml-4">〜</p>
+          <v-text-field class="postTime" type="time" required outlined />
+          <p class="text-h6 mb-6 ml-4">〜</p>
+          <v-spacer />
         </div>
+
         <p class="text-h6">使用期間</p>
         <div class="d-flex align-center">
           <v-menu
@@ -79,6 +83,7 @@
                 readonly
                 outlined
                 v-bind="attrs"
+                class="mr-2"
                 v-on="on"
               />
             </template>
@@ -89,12 +94,12 @@
             >
               <v-spacer></v-spacer>
               <v-btn text color="primary" @click="useStartMenu = false">
-                Cancel
+                閉じる
               </v-btn>
             </v-date-picker>
           </v-menu>
-          <input class="startUseTime" type="time" required />
-          <p class="text-h6 ml-4">〜</p>
+          <v-text-field type="time" required outlined />
+          <p class="text-h6 mx-4 mb-6">〜</p>
           <v-menu
             v-model="useEndMenu"
             :close-on-content-click="false"
@@ -110,6 +115,7 @@
                 readonly
                 outlined
                 v-bind="attrs"
+                class="mr-2"
                 v-on="on"
               />
             </template>
@@ -120,11 +126,11 @@
             >
               <v-spacer></v-spacer>
               <v-btn text color="primary" @click="endEndMenu = false">
-                Cancel
+                閉じる
               </v-btn>
             </v-date-picker>
           </v-menu>
-          <input class="endUseTime" type="time" required />
+          <v-text-field type="time" required outlined />
         </div>
       </v-card-text>
     </v-card>
@@ -205,14 +211,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style scoped lang="scss">
-.postTime {
-}
-
-.startUseTime {
-}
-
-.endUseTime {
-}
-</style>
