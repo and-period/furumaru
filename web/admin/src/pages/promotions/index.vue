@@ -12,7 +12,6 @@
       <v-data-table
         :headers="headers"
         :items="promotions"
-        :no-results-text="noResultsText"
         no-data-text="登録されているセール情報がありません。"
       >
         <template #[`item.title`]="{ item }">
