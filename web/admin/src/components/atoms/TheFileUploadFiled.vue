@@ -19,29 +19,23 @@
           ref="inputRef"
           type="file"
           class="d-none"
+          accept="image/*"
           multiple
           @change="handleInputFileChange"
         />
       </p>
     </div>
-    <v-list v-if="files">
-      <v-radio-group>
-        <div
-          v-for="(file, i) in files"
-          :key="i"
-          class="d-flex flex-row align-center"
-        >
-          <v-radio :value="i" />
-          <img :src="createPreviewURL(file)" width="200" class="mx-4" />
-          <p class="mb-0">{{ file.name }}</p>
-        </div>
-      </v-radio-group>
-    </v-list>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, PropType } from '@vue/composition-api'
+import {
+  defineComponent,
+  ref,
+  computed,
+  PropType,
+  watch,
+} from '@vue/composition-api'
 
 export default defineComponent({
   props: {
@@ -64,6 +58,10 @@ export default defineComponent({
     const inputRef = ref<HTMLInputElement | null>(null)
     const active = ref<boolean>(false)
     const files = ref<FileList | null>(null)
+
+    watch(files, () => {
+      emit('update:files', files.value)
+    })
 
     const handleInputFileChange = () => {
       if (inputRef.value && inputRef.value.files) {
