@@ -53,11 +53,13 @@ export const useContactStore = defineStore('Contact', {
       contactId: string
     ): Promise<void> {
       try {
+        const authStore = useAuthStore()
+        const accessToken = authStore.accessToken
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
+        }
         const factory = new ApiClientFactory()
-        const contactsApiClient = factory.create(
-          ContactApi,
-          this.user?.accessToken
-        )
+        const contactsApiClient = factory.create(ContactApi, accessToken)
         await contactsApiClient.v1UpdateContact(contactId, payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({

@@ -11,7 +11,7 @@
         ></v-text-field>
 
         <v-text-field
-          name="subject"
+          name="title"
           label="件名"
           :value="formData.title"
           readonly
@@ -25,15 +25,17 @@
         ></v-textarea>
 
         <v-select
+          v-model="formPriority"
           :items="priority"
           label="優先度"
           :value="getPriority(formData.priority)"
         ></v-select>
 
         <v-select
+          v-model="formStatus"
           :items="status"
           label="ステータス"
-          :value="getStatus(formData.status)"
+          :item-value="getStatus(formData.status)"
         ></v-select>
 
         <v-text-field
@@ -44,13 +46,18 @@
         ></v-text-field>
 
         <v-text-field
-          name="telephoneNumber"
+          name="phoneNumber"
           label="電話番号"
           :value="formData.phoneNumber"
           readonly
         ></v-text-field>
 
-        <v-textarea name="memo" label="メモ"></v-textarea>
+        <v-textarea
+          v-model="formNote"
+          name="note"
+          label="メモ"
+          :value="formData.note"
+        ></v-textarea>
       </v-card-text>
       <v-card-actions>
         <v-btn block outlined color="primary" @click="RegisterBtn">登録</v-btn>
@@ -64,19 +71,24 @@ import {
   computed,
   defineComponent,
   reactive,
+  ref,
   useFetch,
   useRoute,
   useRouter,
 } from '@nuxtjs/composition-api'
 
 import { useContactStore } from '~/store/contact'
-import { ContactResponse } from '~/types/api'
+import { ContactResponse, UpdateContactRequest } from '~/types/api'
 
 export default defineComponent({
   setup() {
     const route = useRoute()
     const router = useRouter()
     const id = route.value.params.id
+
+    const formNote = ref<string>('')
+    const formPriority = ref<any>()
+    const formStatus = ref<any>()
 
     const { getContact } = useContactStore()
 
@@ -111,20 +123,10 @@ export default defineComponent({
       formData.note = contact.note
       formData.createdAt = contact.createdAt
       formData.updatedAt = contact.updatedAt
+      formPriority.value = getPriority(formData.priority)
+      formStatus.value = getStatus(formData.status)
+      formNote.value = formData.note
     })
-
-    const getPriorityColor = (priority: string): string => {
-      switch (priority) {
-        case 'High':
-          return 'red'
-        case 'Middle':
-          return 'orange'
-        case 'Low':
-          return 'blue'
-        default:
-          return ''
-      }
-    }
 
     const getPriority = (priority: number): string => {
       switch (priority) {
@@ -135,20 +137,7 @@ export default defineComponent({
         case 3:
           return 'Low'
         default:
-          return 'Unknown'
-      }
-    }
-
-    const getStatusColor = (status: number): string => {
-      switch (status) {
-        case 1:
-          return 'red'
-        case 2:
-          return 'orange'
-        case 3:
-          return 'blue'
-        default:
-          return ''
+          return 'Middle'
       }
     }
 
@@ -161,31 +150,67 @@ export default defineComponent({
         case 3:
           return '完了'
         default:
-          return '不明'
+          return '未着手'
       }
     }
 
     const RegisterBtn = async (): Promise<void> => {
       try {
-        await contactStore.contactUpdate(formData, id)
+        const payload = reactive<UpdateContactRequest>({
+          status: getStatusID(formStatus.value),
+          priority: getPriorityID(formPriority.value),
+          note: formNote.value,
+        })
+        console.log(payload)
+
+        await contactStore.contactUpdate(payload, id)
         router.push('/')
       } catch (error) {
         console.log(error)
       }
     }
 
+    const getPriorityID = (priority: string): number => {
+      switch (priority) {
+        case 'High':
+          return 1
+        case 'Middle':
+          return 2
+        case 'Low':
+          return 3
+        default:
+          return 2
+      }
+    }
+
+    const getStatusID = (status: string): number => {
+      switch (status) {
+        case '未着手':
+          return 1
+        case '進行中':
+          return 2
+        case '完了':
+          return 3
+        default:
+          return 1
+      }
+    }
+
     return {
-      priority: ['High', 'Middle', 'Low', 'Unknown'],
-      status: ['未着手', '進行中', '完了', '不明'],
+      priority: ['High', 'Middle', 'Low'],
+      status: ['未着手', '進行中', '完了'],
       id,
       contacts,
       fetchState,
       formData,
       getStatus,
       getPriority,
-      getPriorityColor,
-      getStatusColor,
       RegisterBtn,
+      formNote,
+      formPriority,
+      formStatus,
+      getPriorityID,
+      getStatusID,
     }
   },
 })

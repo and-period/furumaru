@@ -11,7 +11,7 @@
           </template>
           <template #[`item.status`]="{ item }">
             <v-chip :color="getStatusColor(item.status)" dark>
-              {{ getStatus(item.id) }}
+              {{ getStatus(item.status) }}
             </v-chip>
           </template>
           <template #[`item.actions`]="{ item }">
