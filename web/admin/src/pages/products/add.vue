@@ -207,7 +207,7 @@ import {
   Ref,
   ref,
 } from '@vue/composition-api'
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { required, minValue } from '@vuelidate/validators'
 
 import { useAlert } from '~/lib/hooks'
