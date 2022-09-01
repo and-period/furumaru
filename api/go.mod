@@ -5,14 +5,15 @@ go 1.18
 require (
 	firebase.google.com/go/v4 v4.8.0
 	github.com/aws/aws-lambda-go v1.34.1
-	github.com/aws/aws-sdk-go-v2 v1.16.11
-	github.com/aws/aws-sdk-go-v2/config v1.17.1
-	github.com/aws/aws-sdk-go-v2/credentials v1.12.14
-	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.18.3
+	github.com/aws/aws-sdk-go-v2 v1.16.12
+	github.com/aws/aws-sdk-go-v2/config v1.17.3
+	github.com/aws/aws-sdk-go-v2/credentials v1.12.16
+	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.18.5
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.27.5
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.15.18
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.19.4
 	github.com/casbin/casbin/v2 v2.52.2
+	github.com/envoyproxy/protoc-gen-validate v0.1.0
 	github.com/gin-contrib/gzip v0.0.6
 	github.com/gin-contrib/zap v0.0.2
 	github.com/gin-gonic/gin v1.8.1
@@ -25,13 +26,13 @@ require (
 	github.com/jbenet/go-base58 v0.0.0-20150317085156-6237cf65f3a6
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/line/line-bot-sdk-go/v7 v7.16.0
-	github.com/newrelic/go-agent/v3 v3.18.0
+	github.com/newrelic/go-agent/v3 v3.18.1
 	github.com/newrelic/go-agent/v3/integrations/nrgin v1.1.2
 	github.com/prometheus/client_golang v1.13.0
 	github.com/rafaelhl/gorm-newrelic-telemetry-plugin v1.0.0
 	github.com/rs/cors v1.8.2
 	github.com/rs/cors/wrapper/gin v0.0.0-20220619195839-da52b0701de5
-	github.com/samber/lo v1.27.0
+	github.com/samber/lo v1.27.1
 	github.com/satori/go.uuid v1.2.0
 	github.com/sendgrid/sendgrid-go v3.11.1+incompatible
 	github.com/shopspring/decimal v1.3.1
@@ -58,18 +59,19 @@ require (
 	cloud.google.com/go/storage v1.25.0 // indirect
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.4.4 // indirect
-	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.12.12 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.18 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.12 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.19 // indirect
+	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.12.13 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.19 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.13 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.20 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/v4a v1.0.9 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.9.5 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/checksum v1.1.13 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.12 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.13 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.13.12 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sso v1.11.17 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sts v1.16.13 // indirect
-	github.com/aws/smithy-go v1.12.1 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sso v1.11.19 // indirect
+	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.13.1 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sts v1.16.15 // indirect
+	github.com/aws/smithy-go v1.13.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
