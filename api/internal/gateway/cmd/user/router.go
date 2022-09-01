@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"compress/gzip"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -12,7 +13,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/pkg/cors"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/gin-contrib/gzip"
+	ginzip "github.com/gin-contrib/gzip"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	"github.com/line/line-bot-sdk-go/v7/linebot"
@@ -26,7 +27,7 @@ func newRouter(reg *registry, logger *zap.Logger) *gin.Engine {
 	opts = append(opts, nrgin.Middleware(reg.newRelic))
 	opts = append(opts, accessLogger(logger, reg))
 	opts = append(opts, cors.NewGinMiddleware())
-	opts = append(opts, gzip.Gzip(gzip.DefaultCompression))
+	opts = append(opts, ginzip.Gzip(ginzip.DefaultCompression))
 	opts = append(opts, ginzap.RecoveryWithZap(logger, true))
 
 	rt := gin.New()
@@ -142,13 +143,14 @@ func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 		}
 
 		altText := fmt.Sprintf("[ふるマルアラート] %s", reg.appName)
+		detail, _ := json.Marshal(res)
 		components := []linebot.FlexComponent{
 			newAlertContent("service", reg.appName),
 			newAlertContent("env", reg.env),
 			newAlertContent("status", strconv.FormatInt(int64(status), 10)),
 			newAlertContent("method", method),
 			newAlertContent("path", path),
-			newAlertContent("detail", res),
+			newAlertContent("detail", string(detail)),
 		}
 		_ = reg.line.PushMessage(ctx, newAlertMessage(altText, components))
 	}
