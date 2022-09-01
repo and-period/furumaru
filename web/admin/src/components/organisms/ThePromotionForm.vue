@@ -23,112 +23,112 @@
           <v-btn outlined small color="primary"> 自動生成 </v-btn>
           <v-spacer />
         </div>
-      </v-card-text>
-      <v-select class="mx-4" :items="status" label="ステータス" />
-      <div class="d-flex align-center">
-        <v-select class="ml-4 mr-4" :items="discountMethod" label="割引方法" />
-        <v-text-field v-model="formData.Type" class="mr-4" label="割引値" />
-      </div>
-      <p class="text-h6 ml-4">投稿期間</p>
-      <div class="d-flex align-center">
-        <v-menu
-          v-model="postMenu"
-          :close-on-content-click="false"
-          :nudge-right="40"
-          transition="scale-transition"
-          offset-y
-          min-width="auto"
-        >
-          <template #activator="{ on, attrs }">
-            <v-text-field
+        <v-select :items="status" label="ステータス" />
+        <div class="d-flex align-center">
+          <v-select class="mr-4" :items="discountMethod" label="割引方法" />
+          <v-text-field v-model="formData.Type" label="割引値" />
+        </div>
+        <p class="text-h6">投稿期間</p>
+        <div class="d-flex align-center">
+          <v-menu
+            v-model="postMenu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            transition="scale-transition"
+            offset-y
+            min-width="auto"
+          >
+            <template #activator="{ on, attrs }">
+              <v-text-field
+                v-model="postDate"
+                label="投稿開始日"
+                readonly
+                outlined
+                v-bind="attrs"
+                v-on="on"
+              />
+            </template>
+            <v-date-picker
               v-model="postDate"
-              label="投稿開始日"
-              readonly
-              outlined
-              v-bind="attrs"
-              v-on="on"
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            v-model="postDate"
-            scrollable
-            @input="postMenu = false"
+              scrollable
+              @input="postMenu = false"
+            >
+              <v-spacer></v-spacer>
+              <v-btn text color="primary" @click="postMenu = false">
+                Cancel
+              </v-btn>
+            </v-date-picker>
+          </v-menu>
+          <input class="postTime" type="time" required />
+          <p class="text-h6 ml-4">〜</p>
+        </div>
+        <p class="text-h6">使用期間</p>
+        <div class="d-flex align-center">
+          <v-menu
+            v-model="useStartMenu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            transition="scale-transition"
+            offset-y
+            min-width="auto"
           >
-            <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="postMenu = false">
-              Cancel
-            </v-btn>
-          </v-date-picker>
-        </v-menu>
-        <input class="postTime" type="time" required />
-        <p class="text-h6 ml-4">〜</p>
-      </div>
-      <p class="text-h6 ml-4">使用期間</p>
-      <div class="d-flex align-center">
-        <v-menu
-          v-model="useStartMenu"
-          :close-on-content-click="false"
-          :nudge-right="40"
-          transition="scale-transition"
-          offset-y
-          min-width="auto"
-        >
-          <template #activator="{ on, attrs }">
-            <v-text-field
+            <template #activator="{ on, attrs }">
+              <v-text-field
+                v-model="useStartDate"
+                label="使用開始日"
+                readonly
+                outlined
+                v-bind="attrs"
+                v-on="on"
+              />
+            </template>
+            <v-date-picker
               v-model="useStartDate"
-              label="使用開始日"
-              readonly
-              outlined
-              v-bind="attrs"
-              v-on="on"
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            v-model="useStartDate"
-            scrollable
-            @input="useStartMenu = false"
+              scrollable
+              @input="useStartMenu = false"
+            >
+              <v-spacer></v-spacer>
+              <v-btn text color="primary" @click="useStartMenu = false">
+                Cancel
+              </v-btn>
+            </v-date-picker>
+          </v-menu>
+          <input class="startUseTime" type="time" required />
+          <p class="text-h6 ml-4">〜</p>
+          <v-menu
+            v-model="useEndMenu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            transition="scale-transition"
+            offset-y
+            min-width="auto"
           >
-            <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="useStartMenu = false">
-              Cancel
-            </v-btn>
-          </v-date-picker>
-        </v-menu>
-        <input class="startUseTime" type="time" required />
-        <p class="text-h6 ml-4">〜</p>
-        <v-menu
-          v-model="useEndMenu"
-          :close-on-content-click="false"
-          :nudge-right="40"
-          transition="scale-transition"
-          offset-y
-          min-width="auto"
-        >
-          <template #activator="{ on, attrs }">
-            <v-text-field
+            <template #activator="{ on, attrs }">
+              <v-text-field
+                v-model="useEndDate"
+                label="使用終了日"
+                readonly
+                outlined
+                v-bind="attrs"
+                v-on="on"
+              />
+            </template>
+            <v-date-picker
               v-model="useEndDate"
-              label="使用終了日"
-              readonly
-              outlined
-              v-bind="attrs"
-              v-on="on"
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            v-model="useEndDate"
-            scrollable
-            @input="useEndMenu = false"
-          >
-            <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="endEndMenu = false">
-              Cancel
-            </v-btn>
-          </v-date-picker>
-        </v-menu>
-        <input class="endUseTime" type="time" required />
-      </div>
+              scrollable
+              @input="useEndMenu = false"
+            >
+              <v-spacer></v-spacer>
+              <v-btn text color="primary" @click="endEndMenu = false">
+                Cancel
+              </v-btn>
+            </v-date-picker>
+          </v-menu>
+          <input class="endUseTime" type="time" required />
+        </div>
+      </v-card-text>
     </v-card>
-    <v-btn block outlined color="primary" type="submit">
+    <v-btn block outlined color="primary" type="submit" class="mt-4">
       {{ btnText }}
     </v-btn>
   </form>
