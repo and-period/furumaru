@@ -9,7 +9,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/retry"
-	ivs "github.com/aws/aws-sdk-go-v2/service/ivs"
+	"github.com/aws/aws-sdk-go-v2/service/ivs"
 	"github.com/aws/aws-sdk-go-v2/service/ivs/types"
 	"go.uber.org/zap"
 )
@@ -35,12 +35,13 @@ var (
 )
 
 type Params struct {
-	Authorized bool
+	RecordingConfigurationArn *string
 }
 
 type client struct {
-	ivs    *ivs.Client
-	logger *zap.Logger
+	ivs                       *ivs.Client
+	logger                    *zap.Logger
+	recordingConfigurationArn *string
 }
 
 type options struct {
@@ -81,8 +82,9 @@ func NewClient(cfg aws.Config, params *Params, opts ...Option) Client {
 		})
 	})
 	return &client{
-		ivs:    cli,
-		logger: dopts.logger,
+		ivs:                       cli,
+		logger:                    dopts.logger,
+		recordingConfigurationArn: aws.String(*params.RecordingConfigurationArn),
 	}
 }
 
@@ -90,7 +92,7 @@ func (c *client) streamError(err error) error {
 	if err == nil {
 		return nil
 	}
-	c.logger.Debug("Failed to cognito api", zap.Error(err))
+	c.logger.Debug("Failed to ivs api", zap.Error(err))
 
 	switch {
 	case errors.Is(err, context.Canceled):
