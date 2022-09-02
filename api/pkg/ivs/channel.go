@@ -9,19 +9,16 @@ import (
 )
 
 type CreateChannelParams struct {
-	authorized                bool
-	LatencyMode               types.ChannelLatencyMode
-	Name                      string
-	RecordingConfigurationArn string
-	ChannelType               types.ChannelType
+	LatencyMode types.ChannelLatencyMode
+	Name        string
+	ChannelType types.ChannelType
 }
 
 func (c *client) CreateChannel(ctx context.Context, params *CreateChannelParams) (*ivs.CreateChannelOutput, error) {
 	in := &ivs.CreateChannelInput{
-		Authorized:                params.authorized,
 		LatencyMode:               params.LatencyMode,
 		Name:                      aws.String(params.Name),
-		RecordingConfigurationArn: aws.String(params.RecordingConfigurationArn),
+		RecordingConfigurationArn: c.recordingConfigurationArn,
 		Type:                      params.ChannelType,
 	}
 	out, err := c.ivs.CreateChannel(ctx, in)
