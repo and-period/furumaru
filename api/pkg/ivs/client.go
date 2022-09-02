@@ -35,7 +35,7 @@ var (
 )
 
 type Params struct {
-	RecordingConfigurationArn *string
+	RecordingConfigurationArn string
 }
 
 type client struct {
@@ -71,7 +71,11 @@ func WithLogger(logger *zap.Logger) Option {
 }
 
 func NewClient(cfg aws.Config, params *Params, opts ...Option) Client {
-	dopts := &options{}
+	dopts := &options{
+		maxRetries: retry.DefaultMaxAttempts,
+		interval:   retry.DefaultMaxBackoff,
+		logger:     zap.NewNop(),
+	}
 	for i := range opts {
 		opts[i](dopts)
 	}
@@ -84,7 +88,7 @@ func NewClient(cfg aws.Config, params *Params, opts ...Option) Client {
 	return &client{
 		ivs:                       cli,
 		logger:                    dopts.logger,
-		recordingConfigurationArn: aws.String(*params.RecordingConfigurationArn),
+		recordingConfigurationArn: aws.String(params.RecordingConfigurationArn),
 	}
 }
 
