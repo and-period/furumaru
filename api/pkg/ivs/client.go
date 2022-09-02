@@ -96,7 +96,7 @@ func (c *client) streamError(err error) error {
 	if err == nil {
 		return nil
 	}
-	c.logger.Debug("Failed to ivs api", zap.Error(err))
+	c.logger.Debug("Failed to amazon ivs api", zap.Error(err))
 
 	switch {
 	case errors.Is(err, context.Canceled):
