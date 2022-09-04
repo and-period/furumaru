@@ -1,5 +1,6 @@
 import { NuxtConfig } from '@nuxt/types'
 import colors from 'vuetify/es5/util/colors'
+import ja from 'vuetify/src/locale/ja'
 
 const config: NuxtConfig = {
   dev: false,
@@ -88,6 +89,11 @@ const config: NuxtConfig = {
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
+    treeShake: true,
+    lang: {
+      locales: { ja },
+      current: 'ja',
+    },
     theme: {
       dark: false,
       themes: {
