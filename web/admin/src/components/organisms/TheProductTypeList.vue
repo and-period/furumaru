@@ -1,25 +1,32 @@
 <template>
   <div>
-    <v-form flat :loading="fetchState.pending">
-      <v-data-table :headers="productTypeHeaders" :items="productTypes">
-        <template #[`item.category`]="{ item }">
-          {{ `${item.categoryName}` }}
-        </template>
-        <template #[`item.productType`]="{ item }">
-          {{ `${item.name}` }}
-        </template>
-        <template #[`item.actions`]="{ item }">
-          <v-btn outlined color="primary" small @click="handleEdit(item)">
-            <v-icon small>mdi-pencil</v-icon>
-            編集
-          </v-btn>
-          <v-btn outlined color="primary" small @click="openDialog(item)">
-            <v-icon small>mdi-delete</v-icon>
-            削除
-          </v-btn>
-        </template>
-      </v-data-table>
-    </v-form>
+    <v-data-table
+      :headers="productTypeHeaders"
+      :items="productTypes"
+      :loading="loading"
+      :server-items-length="totalItems"
+      :footer-props="tableFooterProps"
+      @update:items-per-page="handleUpdateItemsPerPage"
+      @update:page="handleUpdatePage"
+    >
+      <template #[`item.category`]="{ item }">
+        {{ `${item.categoryName}` }}
+      </template>
+      <template #[`item.productType`]="{ item }">
+        {{ `${item.name}` }}
+      </template>
+      <template #[`item.actions`]="{ item }">
+        <v-btn outlined color="primary" small @click="handleEdit(item)">
+          <v-icon small>mdi-pencil</v-icon>
+          編集
+        </v-btn>
+        <v-btn outlined color="primary" small @click="openDialog(item)">
+          <v-icon small>mdi-delete</v-icon>
+          削除
+        </v-btn>
+      </template>
+    </v-data-table>
+
     <v-dialog v-model="deleteDialog" width="500">
       <v-card>
         <v-card-title class="text-h7">
@@ -38,23 +45,38 @@
 </template>
 
 <script lang="ts">
-import { ref, useFetch } from '@nuxtjs/composition-api'
-import { computed, defineComponent } from '@vue/composition-api'
+import { ref, computed, defineComponent } from '@vue/composition-api'
 import { DataTableHeader } from 'vuetify'
 
 import { useProductTypeStore } from '~/store/product-type'
 import { ProductTypesResponseProductTypesInner } from '~/types/api'
 
 export default defineComponent({
-  setup() {
+  props: {
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    tableFooterProps: {
+      type: Object,
+      default: () => {},
+    },
+  },
+  setup(_, { emit }) {
     const productTypeStore = useProductTypeStore()
     const deleteDialog = ref<boolean>(false)
     const selectedCategoryId = ref<string>('')
     const selectedItemId = ref<string>('')
     const selectedName = ref<string>('')
+
     const productTypes = computed(() => {
       return productTypeStore.productTypes
     })
+
+    const totalItems = computed(() => {
+      return productTypeStore.totalItems
+    })
+
     const productTypeHeaders: DataTableHeader[] = [
       {
         text: 'カテゴリー',
@@ -72,6 +94,14 @@ export default defineComponent({
         sortable: false,
       },
     ]
+
+    const handleUpdateItemsPerPage = (page: number) => {
+      emit('update:items-per-page', page)
+    }
+
+    const handleUpdatePage = (page: number) => {
+      emit('update:page', page)
+    }
 
     const openDialog = (item: ProductTypesResponseProductTypesInner): void => {
       selectedCategoryId.value = item.categoryId
@@ -96,23 +126,17 @@ export default defineComponent({
       deleteDialog.value = false
     }
 
-    const { fetchState } = useFetch(async () => {
-      try {
-        await productTypeStore.fetchProductTypes()
-      } catch (err) {
-        console.log(err)
-      }
-    })
-
     return {
       productTypeHeaders,
-      fetchState,
       productTypes,
       deleteDialog,
       selectedName,
       openDialog,
       handleDelete,
       deleteCancel,
+      totalItems,
+      handleUpdateItemsPerPage,
+      handleUpdatePage,
     }
   },
 })
