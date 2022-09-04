@@ -23,12 +23,18 @@ import {
 export const useProductTypeStore = defineStore('ProductType', {
   state: () => ({
     productTypes: [] as ProductTypesResponse['productTypes'],
+    totalItems: 0,
   }),
   actions: {
     /**
      * 品目を全件取得する非同期関数
+     * @param limit 取得上限数
+     * @param offset 取得開始位置
      */
-    async fetchProductTypes(): Promise<void> {
+    async fetchProductTypes(
+      limit: number = 20,
+      offset: number = 0
+    ): Promise<void> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -38,9 +44,12 @@ export const useProductTypeStore = defineStore('ProductType', {
 
         const factory = new ApiClientFactory()
         const productTypeApiClient = factory.create(ProductTypeApi, accessToken)
-        const res = await productTypeApiClient.v1ListAllProductTypes()
-        console.log(res)
+        const res = await productTypeApiClient.v1ListAllProductTypes(
+          limit,
+          offset
+        )
         this.productTypes = res.data.productTypes
+        this.totalItems = res.data.total
       } catch (error) {
         if (axios.isAxiosError(error)) {
           if (!error.response) {
