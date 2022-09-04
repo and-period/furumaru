@@ -161,7 +161,6 @@ export default defineComponent({
           priority: getPriorityID(formPriority.value),
           note: formNote.value,
         })
-        console.log(payload)
 
         await contactStore.contactUpdate(payload, id)
         router.push('/')
