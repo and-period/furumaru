@@ -87,8 +87,8 @@ export default defineComponent({
     const id = route.value.params.id
 
     const formNote = ref<string>('')
-    const formPriority = ref<any>()
-    const formStatus = ref<any>()
+    const formPriority = ref<string>('')
+    const formStatus = ref<string>('')
 
     const { getContact } = useContactStore()
 
