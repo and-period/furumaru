@@ -21,10 +21,17 @@ import {
 } from '~/types/exception'
 
 export const useProductTypeStore = defineStore('ProductType', {
-  state: () => ({
-    productTypes: [] as ProductTypesResponse['productTypes'],
-    totalItems: 0,
-  }),
+  state: () => {
+    const apiClient = (token: string) => {
+      const factory = new ApiClientFactory()
+      return factory.create(ProductTypeApi, token)
+    }
+    return {
+      productTypes: [] as ProductTypesResponse['productTypes'],
+      totalItems: 0,
+      apiClient,
+    }
+  },
   actions: {
     /**
      * 品目を全件取得する非同期関数
@@ -42,9 +49,7 @@ export const useProductTypeStore = defineStore('ProductType', {
           return Promise.reject(new Error('認証エラー'))
         }
 
-        const factory = new ApiClientFactory()
-        const productTypeApiClient = factory.create(ProductTypeApi, accessToken)
-        const res = await productTypeApiClient.v1ListAllProductTypes(
+        const res = await this.apiClient(accessToken).v1ListAllProductTypes(
           limit,
           offset
         )
@@ -87,9 +92,7 @@ export const useProductTypeStore = defineStore('ProductType', {
           return Promise.reject(new Error('認証エラー'))
         }
 
-        const factory = new ApiClientFactory()
-        const productTypeApiClient = factory.create(ProductTypeApi, accessToken)
-        const res = await productTypeApiClient.v1CreateProductType(
+        const res = await this.apiClient(accessToken).v1CreateProductType(
           categoryId,
           payload
         )
@@ -141,9 +144,10 @@ export const useProductTypeStore = defineStore('ProductType', {
           return Promise.reject(new Error('認証エラー'))
         }
 
-        const factory = new ApiClientFactory()
-        const categoriesApiClient = factory.create(ProductTypeApi, accessToken)
-        await categoriesApiClient.v1DeleteProductType(categoryId, productTypeId)
+        await this.apiClient(accessToken).v1DeleteProductType(
+          categoryId,
+          productTypeId
+        )
         commonStore.addSnackbar({
           message: '品目削除が完了しました',
           color: 'info',
