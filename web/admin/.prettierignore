@@ -5,6 +5,7 @@
 # .gitignore content is duplicated here due to https://github.com/prettier/prettier/issues/8506
 src/types/locales/*.js
 src/locales/*.js
+src/types/api/*.ts
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Node template
