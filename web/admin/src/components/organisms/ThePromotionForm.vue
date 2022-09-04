@@ -17,16 +17,32 @@
           <v-text-field
             v-model="formData.code"
             class="mr-4"
-            label="割引コード"
+            label="割引コード(8文字)"
             required
+            maxlength="8"
+            :error-messages="
+              formData.code.length === 8 ? '' : '割引コードは8文字です'
+            "
           />
-          <v-btn outlined small color="primary"> 自動生成 </v-btn>
+          <v-btn outlined small color="primary" @click="handleGenerate">
+            自動生成
+          </v-btn>
           <v-spacer />
         </div>
         <v-select :items="status" label="ステータス" />
         <div class="d-flex align-center">
-          <v-select class="mr-4" :items="discountMethod" label="割引方法" />
-          <v-text-field v-model="formData.Type" label="割引値" />
+          <v-select
+            v-model="discountTypeString"
+            :items="discountMethod"
+            label="割引方法"
+          />
+          <v-text-field
+            v-if="discountTypeString != '配送料無料'"
+            v-model="formData.discountRate"
+            class="ml-4"
+            label="割引値"
+            :error-messages="getErrorMessage()"
+          />
         </div>
 
         <p class="text-h6">投稿期間</p>
@@ -175,9 +191,15 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
+    const formDataValue = computed({
+      get: (): CreatePromotionRequest => props.formData,
+      set: (val: CreatePromotionRequest) => emit('update:formData', val),
+    })
+
     const selectedDiscountMethod = ref<string>('')
     const postMenu = ref<boolean>(false)
     const useStartMenu = ref<boolean>(false)
+    const discountTypeString = ref<string>('')
     const useEndMenu = ref<boolean>(false)
     const postDate = ref<string>('')
     const useStartDate = ref<string>('')
@@ -189,6 +211,44 @@ export default defineComponent({
 
     const handleSubmit = () => {
       emit('submit')
+    }
+
+    const handleGenerate = () => {
+      const code = generateRandomString()
+      props.formData.code = code
+    }
+
+    const generateRandomString = (): string => {
+      const characters =
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+      let result = ''
+      const charactersLength = characters.length
+      for (let i = 0; i < 8; i++) {
+        result += characters.charAt(
+          Math.floor(Math.random() * charactersLength)
+        )
+      }
+
+      return result
+    }
+
+    const getErrorMessage = () => {
+      if (discountTypeString.value === '%') {
+        if (
+          props.formData.discountRate >= 0 &&
+          props.formData.discountRate <= 100
+        ) {
+          return ''
+        }
+        return '0~100で指定してください'
+      } else if (discountTypeString.value === '円') {
+        if (props.formData.discountRate > 0) {
+          return ''
+        }
+        return '0円以上を指定してください'
+      } else {
+        return ''
+      }
     }
 
     const status = ['有効', '無効']
@@ -206,6 +266,10 @@ export default defineComponent({
       useStartDate,
       useEndDate,
       status,
+      discountTypeString,
+      formDataValue,
+      getErrorMessage,
+      handleGenerate,
       handleSubmit,
     }
   },
