@@ -114,8 +114,10 @@
         <the-product-type-list
           :loading="fetchState.pending"
           :table-footer-props="productTypesOptions"
+          :categories="categoriesItems.categories"
           @update:items-per-page="handleUpdateProductTypesItemsPerPage"
           @update:page="handleUpdateProductTypesPage"
+          @click:more-item="handleMoreCategoryItems"
         />
       </v-tab-item>
     </v-tabs-items>

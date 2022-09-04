@@ -10,6 +10,7 @@ import {
   CreateProductTypeRequest,
   ProductTypeApi,
   ProductTypesResponse,
+  UpdateProductTypeRequest,
 } from '~/types/api'
 import {
   AuthError,
@@ -101,6 +102,54 @@ export const useProductTypeStore = defineStore('ProductType', {
           message: `品目を追加しました。`,
           color: 'info',
         })
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          const statusCode = error.response.status
+          switch (statusCode) {
+            case 400:
+              return Promise.reject(
+                new ValidationError('入力内容に誤りがあります。', error)
+              )
+            case 401:
+              return Promise.reject(
+                new AuthError('認証エラー。再度ログインをしてください。', error)
+              )
+            case 409:
+              return Promise.reject(
+                new ConflictError(
+                  'この品目はすでに登録されているため、登録できません。',
+                  error
+                )
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+        throw new InternalServerError(error)
+      }
+    },
+
+    async editProductType(
+      categoryId: string,
+      productTypeId: string,
+      payload: UpdateProductTypeRequest
+    ) {
+      try {
+        const authStore = useAuthStore()
+        const accessToken = authStore.accessToken
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
+        }
+
+        await this.apiClient(accessToken).v1UpdateProductType(
+          categoryId,
+          productTypeId,
+          payload
+        )
       } catch (error) {
         if (axios.isAxiosError(error)) {
           if (!error.response) {
