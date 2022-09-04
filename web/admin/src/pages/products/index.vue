@@ -26,6 +26,11 @@
       :items="products"
       show-select
       no-data-text="登録されている商品がありません。"
+      :items-per-page.sync="itemsPerPage"
+      :server-items-length="totalItems"
+      :footer-props="options"
+      @update:items-per-page="handleUpdateItemsPerPage"
+      @update:page="handleUpdatePage"
     />
   </div>
 </template>
@@ -36,8 +41,11 @@ import {
   ref,
   useFetch,
   useRouter,
+  computed,
+  watch,
 } from '@nuxtjs/composition-api'
 
+import { usePagination } from '~/lib/hooks/'
 import { useProductStore } from '~/store/product'
 
 interface IProduct {
@@ -59,10 +67,29 @@ export default defineComponent({
   setup() {
     const router = useRouter()
     const productStore = useProductStore()
+    const products = computed(() => productStore.products)
+    const totalItems = computed(() => productStore.totalItems)
+
+    const {
+      updateCurrentPage,
+      itemsPerPage,
+      handleUpdateItemsPerPage,
+      options,
+      offset,
+    } = usePagination()
+
+    watch(itemsPerPage, () => {
+      productStore.fetchProducts(itemsPerPage.value, 0)
+    })
+
+    const handleUpdatePage = async (page: number) => {
+      updateCurrentPage(page)
+      await productStore.fetchProducts(itemsPerPage.value, offset.value)
+    }
 
     const { fetchState } = useFetch(async () => {
       try {
-        await productStore.fetchProducts()
+        await productStore.fetchProducts(itemsPerPage.value, offset.value)
       } catch (error) {
         console.log(error)
       }
@@ -104,7 +131,12 @@ export default defineComponent({
       headers,
       searchWord,
       handleClickAddBtn,
-      products: productStore.products,
+      products,
+      totalItems,
+      itemsPerPage,
+      handleUpdateItemsPerPage,
+      handleUpdatePage,
+      options,
       selectedProducts,
     }
   },
