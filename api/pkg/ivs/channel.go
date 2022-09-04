@@ -18,6 +18,10 @@ type GetChannelParams struct {
 	Arn string
 }
 
+type DeleteChannelParams struct {
+	Arn string
+}
+
 func (c *client) CreateChannel(ctx context.Context, params *CreateChannelParams) (*ivs.CreateChannelOutput, error) {
 	in := &ivs.CreateChannelInput{
 		LatencyMode:               params.LatencyMode,
@@ -42,4 +46,12 @@ func (c *client) GetChannel(ctx context.Context, params *GetChannelParams) (*ivs
 		return nil, c.streamError(err)
 	}
 	return out, nil
+}
+
+func (c *client) DeleteChannel(ctx context.Context, params *DeleteChannelParams) error {
+	in := &ivs.DeleteChannelInput{
+		Arn: aws.String(params.Arn),
+	}
+	_, err := c.ivs.DeleteChannel(ctx, in)
+	return c.streamError(err)
 }
