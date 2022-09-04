@@ -133,6 +133,13 @@ export const useProductTypeStore = defineStore('ProductType', {
       }
     },
 
+    /**
+     * 登録済みの品目を更新する非同期関数
+     * @param categoryId カテゴリID
+     * @param productTypeId 品目ID
+     * @param payload 品目情報
+     * @returns
+     */
     async editProductType(
       categoryId: string,
       productTypeId: string,
@@ -181,6 +188,12 @@ export const useProductTypeStore = defineStore('ProductType', {
       }
     },
 
+    /**
+     * 品目を削除する非同期関数
+     * @param categoryId カテゴリID
+     * @param productTypeId 品目ID
+     * @returns
+     */
     async deleteProductType(
       categoryId: string,
       productTypeId: string
