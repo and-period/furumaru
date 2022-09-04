@@ -1,10 +1,13 @@
 import { computed, reactive, ref } from '@vue/composition-api'
 
+/**
+ * サーバサイドページネーション用のステートを準備するカスタムフック
+ */
 export function usePagination() {
   const currentPage = ref<number>(1)
-  const itemsPerPage = ref<number>(10)
+  const itemsPerPage = ref<number>(20)
   const options = reactive({
-    itemsPerPageOptions: [10, 20, 30, 50],
+    itemsPerPageOptions: [20, 30, 50],
   })
 
   const handleUpdateItemsPerPage = (n: number) => {
