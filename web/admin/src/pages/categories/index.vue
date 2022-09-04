@@ -72,7 +72,7 @@
             <v-card-text class="mt-4">
               <v-autocomplete
                 v-model="selectedCategoryId"
-                :items="categories"
+                :items="categoriesItems.categories"
                 item-text="name"
                 item-value="id"
                 label="カテゴリー"
@@ -134,10 +134,11 @@ import {
 import TheCategoryList from '~/components/organisms/TheCategoryList.vue'
 import TheProductTypeList from '~/components/organisms/TheProductTypeList.vue'
 import { usePagination } from '~/lib/hooks'
+import { useAuthStore } from '~/store/auth'
 import { useCategoryStore } from '~/store/category'
 import { useProductTypeStore } from '~/store/product-type'
 import {
-  CategoriesResponse,
+  CategoriesResponseCategoriesInner,
   CreateCategoryRequest,
   CreateProductTypeRequest,
 } from '~/types/api'
@@ -152,8 +153,12 @@ export default defineComponent({
   setup() {
     const categoryStore = useCategoryStore()
     const productTypeStore = useProductTypeStore()
+    const { accessToken } = useAuthStore()
 
-    const categories = ref<CategoriesResponse['categories']>([])
+    const categoriesItems = reactive<{
+      offset: number
+      categories: CategoriesResponseCategoriesInner[]
+    }>({ offset: 0, categories: [] })
 
     const selector = ref<string>('categories')
     const categoryDialog = ref<boolean>(false)
@@ -236,7 +241,7 @@ export default defineComponent({
           categoryStore.fetchCategories(categoriesItemsPerPage.value),
           productTypeStore.fetchProductTypes(productTypesItemsPerPage.value),
         ])
-        categories.value = categoryStore.categories
+        categoriesItems.categories = categoryStore.categories
       } catch (err) {
         console.log(err)
       }
@@ -254,8 +259,15 @@ export default defineComponent({
       )
     }
 
-    const handleMoreCategoryItems = () => {
-      console.log('さらに読み込む')
+    const handleMoreCategoryItems = async () => {
+      if (accessToken) {
+        const limit = 20
+        categoriesItems.offset = categoriesItems.offset + limit + 1
+        const res = await categoryStore
+          .apiClient(accessToken)
+          .v1ListCategories(limit, categoriesItems.offset)
+        categoriesItems.categories.push(...res.data.categories)
+      }
     }
 
     return {
@@ -266,7 +278,7 @@ export default defineComponent({
       productTypesOptions,
       handleUpdateProductTypesItemsPerPage,
       handleUpdateProductTypesPage,
-      categories,
+      categoriesItems,
       items,
       selector,
       categoryDialog,
