@@ -22,10 +22,17 @@ import {
 } from '~/types/exception'
 
 export const useCategoryStore = defineStore('Category', {
-  state: () => ({
-    categories: [] as CategoriesResponse['categories'],
-    totalCategoryItems: 0,
-  }),
+  state: () => {
+    const apiClient = (token: string) => {
+      const factory = new ApiClientFactory()
+      return factory.create(CategoryApi, token)
+    }
+    return {
+      categories: [] as CategoriesResponse['categories'],
+      totalCategoryItems: 0,
+      apiClient,
+    }
+  },
 
   actions: {
     /**
@@ -44,9 +51,10 @@ export const useCategoryStore = defineStore('Category', {
           return Promise.reject(new Error('認証エラー'))
         }
 
-        const factory = new ApiClientFactory()
-        const categoriesApiClient = factory.create(CategoryApi, accessToken)
-        const res = await categoriesApiClient.v1ListCategories(limit, offset)
+        const res = await this.apiClient(accessToken).v1ListCategories(
+          limit,
+          offset
+        )
         this.categories = res.data.categories
         this.totalCategoryItems = res.data.total
       } catch (error) {
@@ -81,9 +89,7 @@ export const useCategoryStore = defineStore('Category', {
           return Promise.reject(new Error('認証エラー'))
         }
 
-        const factory = new ApiClientFactory()
-        const categoriesApiClient = factory.create(CategoryApi, accessToken)
-        const res = await categoriesApiClient.v1CreateCategory(payload)
+        const res = await this.apiClient(accessToken).v1CreateCategory(payload)
         this.categories.unshift(res.data)
         commonStore.addSnackbar({
           message: 'カテゴリーを追加しました。',
@@ -134,9 +140,7 @@ export const useCategoryStore = defineStore('Category', {
           return Promise.reject(new Error('認証エラー'))
         }
 
-        const factory = new ApiClientFactory()
-        const categoriesApiClient = factory.create(CategoryApi, accessToken)
-        await categoriesApiClient.v1UpdateCategory(categoryId, payload)
+        await this.apiClient(accessToken).v1UpdateCategory(categoryId, payload)
         commonStore.addSnackbar({
           message: `変更しました。`,
           color: 'info',
@@ -193,9 +197,7 @@ export const useCategoryStore = defineStore('Category', {
           return Promise.reject(new Error('認証エラー'))
         }
 
-        const factory = new ApiClientFactory()
-        const categoriesApiClient = factory.create(CategoryApi, accessToken)
-        await categoriesApiClient.v1DeleteCategory(categoryId)
+        await this.apiClient(accessToken).v1DeleteCategory(categoryId)
         commonStore.addSnackbar({
           message: 'カテゴリー削除が完了しました',
           color: 'info',
