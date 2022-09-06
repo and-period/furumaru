@@ -22,17 +22,28 @@ import {
 } from '~/types/exception'
 
 export const useCategoryStore = defineStore('Category', {
-  state: () => ({
-    categories: [] as CategoriesResponse['categories'],
-    productTypeCategories: [] as CategoriesResponse['categories'],
-  }),
+  state: () => {
+    const apiClient = (token: string) => {
+      const factory = new ApiClientFactory()
+      return factory.create(CategoryApi, token)
+    }
+    return {
+      categories: [] as CategoriesResponse['categories'],
+      totalCategoryItems: 0,
+      apiClient,
+    }
+  },
 
   actions: {
     /**
      * カテゴリを全件取得する非同期関数
      * @param limit 取得上限数
+     * @param offset 取得開始位置
      */
-    async fetchCategories(limit?: number): Promise<void> {
+    async fetchCategories(
+      limit: number = 20,
+      offset: number = 0
+    ): Promise<void> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -40,15 +51,12 @@ export const useCategoryStore = defineStore('Category', {
           return Promise.reject(new Error('認証エラー'))
         }
 
-        const factory = new ApiClientFactory()
-        const categoriesApiClient = factory.create(CategoryApi, accessToken)
-        if (limit === undefined) {
-          const res = await categoriesApiClient.v1ListCategories()
-          this.categories = res.data.categories
-        } else {
-          const res = await categoriesApiClient.v1ListCategories(limit)
-          this.productTypeCategories = res.data.categories
-        }
+        const res = await this.apiClient(accessToken).v1ListCategories(
+          limit,
+          offset
+        )
+        this.categories = res.data.categories
+        this.totalCategoryItems = res.data.total
       } catch (error) {
         if (axios.isAxiosError(error)) {
           if (!error.response) {
@@ -81,9 +89,7 @@ export const useCategoryStore = defineStore('Category', {
           return Promise.reject(new Error('認証エラー'))
         }
 
-        const factory = new ApiClientFactory()
-        const categoriesApiClient = factory.create(CategoryApi, accessToken)
-        const res = await categoriesApiClient.v1CreateCategory(payload)
+        const res = await this.apiClient(accessToken).v1CreateCategory(payload)
         this.categories.unshift(res.data)
         commonStore.addSnackbar({
           message: 'カテゴリーを追加しました。',
@@ -125,7 +131,6 @@ export const useCategoryStore = defineStore('Category', {
      * @param payload
      * @param categoryId
      */
-
     async editCategory(categoryId: string, payload: UpdateCategoryRequest) {
       const commonStore = useCommonStore()
       try {
@@ -135,9 +140,7 @@ export const useCategoryStore = defineStore('Category', {
           return Promise.reject(new Error('認証エラー'))
         }
 
-        const factory = new ApiClientFactory()
-        const categoriesApiClient = factory.create(CategoryApi, accessToken)
-        await categoriesApiClient.v1UpdateCategory(categoryId, payload)
+        await this.apiClient(accessToken).v1UpdateCategory(categoryId, payload)
         commonStore.addSnackbar({
           message: `変更しました。`,
           color: 'info',
@@ -194,9 +197,7 @@ export const useCategoryStore = defineStore('Category', {
           return Promise.reject(new Error('認証エラー'))
         }
 
-        const factory = new ApiClientFactory()
-        const categoriesApiClient = factory.create(CategoryApi, accessToken)
-        await categoriesApiClient.v1DeleteCategory(categoryId)
+        await this.apiClient(accessToken).v1DeleteCategory(categoryId)
         commonStore.addSnackbar({
           message: 'カテゴリー削除が完了しました',
           color: 'info',

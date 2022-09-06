@@ -10,6 +10,7 @@ import {
   CreateProductTypeRequest,
   ProductTypeApi,
   ProductTypesResponse,
+  UpdateProductTypeRequest,
 } from '~/types/api'
 import {
   AuthError,
@@ -21,14 +22,27 @@ import {
 } from '~/types/exception'
 
 export const useProductTypeStore = defineStore('ProductType', {
-  state: () => ({
-    productTypes: [] as ProductTypesResponse['productTypes'],
-  }),
+  state: () => {
+    const apiClient = (token: string) => {
+      const factory = new ApiClientFactory()
+      return factory.create(ProductTypeApi, token)
+    }
+    return {
+      productTypes: [] as ProductTypesResponse['productTypes'],
+      totalItems: 0,
+      apiClient,
+    }
+  },
   actions: {
     /**
      * 品目を全件取得する非同期関数
+     * @param limit 取得上限数
+     * @param offset 取得開始位置
      */
-    async fetchProductTypes(): Promise<void> {
+    async fetchProductTypes(
+      limit: number = 20,
+      offset: number = 0
+    ): Promise<void> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -36,11 +50,12 @@ export const useProductTypeStore = defineStore('ProductType', {
           return Promise.reject(new Error('認証エラー'))
         }
 
-        const factory = new ApiClientFactory()
-        const productTypeApiClient = factory.create(ProductTypeApi, accessToken)
-        const res = await productTypeApiClient.v1ListAllProductTypes()
-        console.log(res)
+        const res = await this.apiClient(accessToken).v1ListAllProductTypes(
+          limit,
+          offset
+        )
         this.productTypes = res.data.productTypes
+        this.totalItems = res.data.total
       } catch (error) {
         if (axios.isAxiosError(error)) {
           if (!error.response) {
@@ -78,9 +93,7 @@ export const useProductTypeStore = defineStore('ProductType', {
           return Promise.reject(new Error('認証エラー'))
         }
 
-        const factory = new ApiClientFactory()
-        const productTypeApiClient = factory.create(ProductTypeApi, accessToken)
-        const res = await productTypeApiClient.v1CreateProductType(
+        const res = await this.apiClient(accessToken).v1CreateProductType(
           categoryId,
           payload
         )
@@ -120,6 +133,67 @@ export const useProductTypeStore = defineStore('ProductType', {
       }
     },
 
+    /**
+     * 登録済みの品目を更新する非同期関数
+     * @param categoryId カテゴリID
+     * @param productTypeId 品目ID
+     * @param payload 品目情報
+     * @returns
+     */
+    async editProductType(
+      categoryId: string,
+      productTypeId: string,
+      payload: UpdateProductTypeRequest
+    ) {
+      try {
+        const authStore = useAuthStore()
+        const accessToken = authStore.accessToken
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
+        }
+
+        await this.apiClient(accessToken).v1UpdateProductType(
+          categoryId,
+          productTypeId,
+          payload
+        )
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          const statusCode = error.response.status
+          switch (statusCode) {
+            case 400:
+              return Promise.reject(
+                new ValidationError('入力内容に誤りがあります。', error)
+              )
+            case 401:
+              return Promise.reject(
+                new AuthError('認証エラー。再度ログインをしてください。', error)
+              )
+            case 409:
+              return Promise.reject(
+                new ConflictError(
+                  'この品目はすでに登録されているため、登録できません。',
+                  error
+                )
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+        throw new InternalServerError(error)
+      }
+    },
+
+    /**
+     * 品目を削除する非同期関数
+     * @param categoryId カテゴリID
+     * @param productTypeId 品目ID
+     * @returns
+     */
     async deleteProductType(
       categoryId: string,
       productTypeId: string
@@ -132,9 +206,10 @@ export const useProductTypeStore = defineStore('ProductType', {
           return Promise.reject(new Error('認証エラー'))
         }
 
-        const factory = new ApiClientFactory()
-        const categoriesApiClient = factory.create(ProductTypeApi, accessToken)
-        await categoriesApiClient.v1DeleteProductType(categoryId, productTypeId)
+        await this.apiClient(accessToken).v1DeleteProductType(
+          categoryId,
+          productTypeId
+        )
         commonStore.addSnackbar({
           message: '品目削除が完了しました',
           color: 'info',
