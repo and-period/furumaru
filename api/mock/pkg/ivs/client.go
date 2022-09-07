@@ -51,6 +51,20 @@ func (mr *MockClientMockRecorder) CreateChannel(ctx, params interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateChannel", reflect.TypeOf((*MockClient)(nil).CreateChannel), ctx, params)
 }
 
+// DeleteChannel mocks base method.
+func (m *MockClient) DeleteChannel(ctx context.Context, params *ivs.DeleteChannelParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteChannel", ctx, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteChannel indicates an expected call of DeleteChannel.
+func (mr *MockClientMockRecorder) DeleteChannel(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteChannel", reflect.TypeOf((*MockClient)(nil).DeleteChannel), ctx, params)
+}
+
 // GetChannel mocks base method.
 func (m *MockClient) GetChannel(ctx context.Context, params *ivs.GetChannelParams) (*ivs0.GetChannelOutput, error) {
 	m.ctrl.T.Helper()
