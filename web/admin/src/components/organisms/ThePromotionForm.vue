@@ -240,12 +240,12 @@ export default defineComponent({
         ) {
           return ''
         }
-        return '0~100で指定してください'
+        return '0~100の値を指定してください'
       } else if (discountTypeString.value === '円') {
-        if (props.formData.discountRate > 0) {
+        if (props.formData.discountRate >= 0) {
           return ''
         }
-        return '0円以上を指定してください'
+        return '0以上の値を指定してください'
       } else {
         return ''
       }
