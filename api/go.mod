@@ -13,7 +13,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.15.18
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.19.4
 	github.com/casbin/casbin/v2 v2.52.2
-	github.com/envoyproxy/protoc-gen-validate v0.1.0
 	github.com/gin-contrib/gzip v0.0.6
 	github.com/gin-contrib/zap v0.0.2
 	github.com/gin-gonic/gin v1.8.1
@@ -40,7 +39,7 @@ require (
 	github.com/stripe/stripe-go/v73 v73.4.0
 	go.uber.org/zap v1.22.0
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4
-	google.golang.org/api v0.94.0
+	google.golang.org/api v0.95.0
 	google.golang.org/genproto v0.0.0-20220812140447-cec7f5303424
 	google.golang.org/grpc v1.49.0
 	google.golang.org/protobuf v1.28.1
