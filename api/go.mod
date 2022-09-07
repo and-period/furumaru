@@ -5,7 +5,7 @@ go 1.18
 require (
 	firebase.google.com/go/v4 v4.8.0
 	github.com/aws/aws-lambda-go v1.34.1
-	github.com/aws/aws-sdk-go-v2 v1.16.13
+	github.com/aws/aws-sdk-go-v2 v1.16.14
 	github.com/aws/aws-sdk-go-v2/config v1.17.3
 	github.com/aws/aws-sdk-go-v2/credentials v1.12.16
 	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.18.5
@@ -13,7 +13,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.15.18
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.19.4
 	github.com/casbin/casbin/v2 v2.52.2
-	github.com/envoyproxy/protoc-gen-validate v0.1.0
 	github.com/gin-contrib/gzip v0.0.6
 	github.com/gin-contrib/zap v0.0.2
 	github.com/gin-gonic/gin v1.8.1
@@ -72,7 +71,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sso v1.11.19 // indirect
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.13.1 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.16.15 // indirect
-	github.com/aws/smithy-go v1.13.1 // indirect
+	github.com/aws/smithy-go v1.13.2 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
