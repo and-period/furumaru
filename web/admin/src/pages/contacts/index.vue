@@ -27,20 +27,32 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRouter } from '@nuxtjs/composition-api'
+import {
+  computed,
+  defineComponent,
+  useFetch,
+  useRouter,
+} from '@nuxtjs/composition-api'
 import { DataTableHeader } from 'vuetify'
+
+import { useContactStore } from '~/store/contact'
+import { ContactsResponseContactsInner } from '~/types/api'
 
 export default defineComponent({
   setup() {
     const router = useRouter()
+    const contactStore = useContactStore()
+    const contacts = computed(() => {
+      return contactStore.contacts
+    })
     const headers: DataTableHeader[] = [
       {
         text: '件名',
-        value: 'subject',
+        value: 'title',
       },
       {
         text: 'メールアドレス',
-        value: 'mailAddress',
+        value: 'email',
       },
       {
         text: '優先度',
@@ -52,7 +64,7 @@ export default defineComponent({
       },
       {
         text: 'メモ',
-        value: 'memo',
+        value: 'note',
       },
       {
         text: 'Actions',
@@ -60,40 +72,40 @@ export default defineComponent({
         sortable: false,
       },
     ]
-    const contacts = [
-      {
-        subject: '商品が届かない件について',
-        mailAddress: 'and-period@gmail.com',
-        priority: 1,
-        status: 1,
-        memo: '明日配送します',
-        actions: 'あくしょん',
-      },
-      {
-        subject: '商品が届かない件について',
-        mailAddress: 'and-period@gmail.com',
-        priority: 2,
-        status: 2,
-        memo: '明日配送します',
-        actions: 'あくしょん',
-      },
-      {
-        subject: '商品が届かない件について',
-        mailAddress: 'and-period@gmail.com',
-        priority: 3,
-        status: 3,
-        memo: '明日配送します',
-        actions: 'あくしょん',
-      },
-      {
-        subject: '商品が届かない件について',
-        mailAddress: 'and-period@gmail.com',
-        priority: 4,
-        status: 4,
-        memo: '明日配送します',
-        actions: 'あくしょん',
-      },
-    ]
+    // const contacts = [
+    //   {
+    //     subject: '商品が届かない件について',
+    //     mailAddress: 'and-period@gmail.com',
+    //     priority: 1,
+    //     status: 1,
+    //     memo: '明日配送します',
+    //     actions: 'あくしょん',
+    //   },
+    //   {
+    //     subject: '商品が届かない件について',
+    //     mailAddress: 'and-period@gmail.com',
+    //     priority: 2,
+    //     status: 2,
+    //     memo: '明日配送します',
+    //     actions: 'あくしょん',
+    //   },
+    //   {
+    //     subject: '商品が届かない件について',
+    //     mailAddress: 'and-period@gmail.com',
+    //     priority: 3,
+    //     status: 3,
+    //     memo: '明日配送します',
+    //     actions: 'あくしょん',
+    //   },
+    //   {
+    //     subject: '商品が届かない件について',
+    //     mailAddress: 'and-period@gmail.com',
+    //     priority: 4,
+    //     status: 4,
+    //     memo: '明日配送します',
+    //     actions: 'あくしょん',
+    //   },
+    // ]
 
     const getPriorityColor = (priority: any): string => {
       switch (priority) {
@@ -147,13 +159,22 @@ export default defineComponent({
       }
     }
 
-    const handleEdit = () => {
-      router.push('/contacts/edit')
+    const handleEdit = (item: ContactsResponseContactsInner) => {
+      router.push(`/contacts/edit/${item.id}`)
     }
+
+    const { fetchState } = useFetch(async () => {
+      try {
+        await contactStore.fetchContacts()
+      } catch (err) {
+        console.log(err)
+      }
+    })
 
     return {
       headers,
       contacts,
+      fetchState,
       getPriority,
       getPriorityColor,
       getStatus,
