@@ -1,13 +1,13 @@
 <template>
   <div>
     <v-card-title>パスワード変更</v-card-title>
-    <v-card>
-      <v-container>
-        <form @submit.prevent="handleSubmit">
+    <v-alert v-model="isShow" :type="alertType" v-text="alertText" />
+    <form @submit.prevent="handleSubmit">
+      <v-card>
+        <v-card-text>
           <v-text-field
             v-model="v$.oldPassword.$model"
             :error-messages="getErrorMessage(v$.oldPassword.$errors)"
-            class="mx-4"
             label="現在のパスワード"
             :append-icon="oldPasswordShow ? 'mdi-eye' : 'mdi-eye-off'"
             :type="oldPasswordShow ? 'text' : 'password'"
@@ -16,7 +16,6 @@
           <v-text-field
             v-model="v$.newPassword.$model"
             :error-messages="getErrorMessage(v$.newPassword.$errors)"
-            class="mx-4"
             label="新しいパスワード"
             :append-icon="newPasswordShow ? 'mdi-eye' : 'mdi-eye-off'"
             :type="newPasswordShow ? 'text' : 'password'"
@@ -24,7 +23,6 @@
           />
           <v-text-field
             v-model="v$.passwordConfirmation.$model"
-            class="mx-4"
             label="新しいパスワード(確認用)"
             :append-icon="passwordConfirmationShow ? 'mdi-eye' : 'mdi-eye-off'"
             :type="passwordConfirmationShow ? 'text' : 'password'"
@@ -35,13 +33,12 @@
             "
             @click:append="passwordConfirmationShow = !passwordConfirmationShow"
           />
-          <div class="d-flex justify-end mr-4">
-            <v-btn outlined color="primary" type="submit"> 変更 </v-btn>
-          </div>
-        </form>
-      </v-container>
-      <v-alert v-model="isShow" :type="alertType" v-text="alertText" />
-    </v-card>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn block outlined color="primary" type="submit"> 変更 </v-btn>
+        </v-card-actions>
+      </v-card>
+    </form>
   </div>
 </template>
 
