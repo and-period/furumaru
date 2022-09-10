@@ -281,5 +281,11 @@ export const useAuthStore = defineStore('auth', {
     setRedirectPath(payload: string) {
       this.redirectPath = payload
     },
+
+    logout() {
+      const cookies = new Cookies()
+      cookies.remove('refreshToken')
+      this.$reset()
+    },
   },
 })

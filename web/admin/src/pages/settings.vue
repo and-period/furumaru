@@ -17,9 +17,12 @@
 <script lang="ts">
 import { defineComponent, ref, useRouter } from '@nuxtjs/composition-api'
 
+import { useAuthStore } from '~/store/auth'
+
 export default defineComponent({
   setup() {
     const router = useRouter()
+    const { logout } = useAuthStore()
 
     const menuList = ref<{ text: string; onClick: Function; class?: string }[]>(
       [
@@ -51,7 +54,8 @@ export default defineComponent({
           text: 'サインアウト',
           class: 'red--text ',
           onClick: () => {
-            console.log('NOT IMPLEMENTED')
+            logout()
+            router.push('/')
           },
         },
       ]
