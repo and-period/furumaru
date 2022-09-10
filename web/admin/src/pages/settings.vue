@@ -33,7 +33,7 @@ export default defineComponent({
           },
         },
         {
-          text: 'ジャンル・品目登録',
+          text: 'カテゴリー・品目登録',
           onClick: () => {
             router.push('/categories')
           },
