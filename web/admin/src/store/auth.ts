@@ -283,9 +283,16 @@ export const useAuthStore = defineStore('auth', {
     },
 
     logout() {
-      const cookies = new Cookies()
-      cookies.remove('refreshToken')
-      this.$reset()
+      try {
+        const factory = new ApiClientFactory()
+        const authApiClient = factory.create(AuthApi, this.accessToken)
+        authApiClient.v1SignOut()
+        const cookies = new Cookies()
+        cookies.remove('refreshToken')
+        this.$reset()
+      } catch (error) {
+        console.log('APIでエラーが発生しました。', error)
+      }
     },
   },
 })
