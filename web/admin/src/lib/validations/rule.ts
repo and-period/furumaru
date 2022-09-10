@@ -7,6 +7,7 @@ import {
   minLength as _minLength,
   maxLength as _maxLength,
   minValue as _minValue,
+  sameAs as _sameAs,
 } from '@vuelidate/validators'
 
 /**
@@ -89,6 +90,18 @@ const minValue = (min: string | number | Ref<number> | Ref<string>) =>
     _minValue(min)
   )
 
+/**
+ * 入力値が別のプロパティとの一致しているかのバリデーションルールをラップする関数
+ * @param equalTo
+ * @param otherName
+ * @returns
+ */
+const sameAs = (equalTo: unknown, otherName?: string) =>
+  helpers.withMessage(
+    (_: MessageProps) => '一致しません。',
+    _sameAs(equalTo, otherName)
+  )
+
 export {
   kana,
   tel,
@@ -98,4 +111,5 @@ export {
   minLength,
   maxLength,
   minValue,
+  sameAs,
 }
