@@ -24,7 +24,11 @@
           :items="producers"
           :search="query"
           :no-results-text="noResultsText"
+          :server-items-length="totalItems"
+          :footer-props="options"
           no-data-text="登録されている生産者がいません。"
+          @update:items-per-page="handleUpdateItemsPerPage"
+          @update:page="handleUpdatePage"
         >
           <template #[`item.thumbnail`]="{ item }">
             <v-avatar>
@@ -75,6 +79,7 @@ import {
 } from '@nuxtjs/composition-api'
 import { DataTableHeader } from 'vuetify'
 
+import { usePagination } from '~/lib/hooks'
 import { useProducerStore } from '~/store/producer'
 import { ProducersResponseProducersInner } from '~/types/api'
 
@@ -84,6 +89,10 @@ export default defineComponent({
     const producerStore = useProducerStore()
     const producers = computed(() => {
       return producerStore.producers
+    })
+
+    const totalItems = computed(() => {
+      return producerStore.totalItems
     })
 
     const search = ref<string>('')
@@ -96,6 +105,31 @@ export default defineComponent({
     watch(search, () => {
       if (search.value === '') {
         query.value = ''
+      }
+    })
+
+    const {
+      updateCurrentPage,
+      itemsPerPage,
+      handleUpdateItemsPerPage,
+      options,
+      offset,
+    } = usePagination()
+
+    watch(itemsPerPage, () => {
+      producerStore.fetchProducers(itemsPerPage.value, 0)
+    })
+
+    const handleUpdatePage = async (page: number) => {
+      updateCurrentPage(page)
+      await producerStore.fetchProducers(itemsPerPage.value, offset.value)
+    }
+
+    const { fetchState } = useFetch(async () => {
+      try {
+        await producerStore.fetchProducers(itemsPerPage.value, offset.value)
+      } catch (err) {
+        console.log(err)
       }
     })
 
@@ -152,17 +186,13 @@ export default defineComponent({
       console.log(item)
     }
 
-    const { fetchState } = useFetch(async () => {
-      try {
-        await producerStore.fetchProducers()
-      } catch (err) {
-        console.log(err)
-      }
-    })
-
     return {
       handleClickAddButton,
       headers,
+      options,
+      handleUpdatePage,
+      handleUpdateItemsPerPage,
+      totalItems,
       producers,
       search,
       query,
