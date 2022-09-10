@@ -58,13 +58,13 @@ const email = helpers.withMessage(
 
 /**
  * 文字列の最小の長さのバリデーションルールをラップする関数
- * @param max
+ * @param min
  * @returns
  */
-const minLength = (max: number | Ref<number>) =>
+const minLength = (min: number | Ref<number>) =>
   helpers.withMessage(
-    ({ $params }: MessageProps) => `${$params.max}文字以上入力してください。`,
-    _minLength(max)
+    ({ $params }: MessageProps) => `${$params.min}文字以上入力してください。`,
+    _minLength(min)
   )
 
 /**
