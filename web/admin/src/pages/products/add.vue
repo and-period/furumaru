@@ -208,9 +208,9 @@ import {
   ref,
 } from '@vue/composition-api'
 import { useVuelidate } from '@vuelidate/core'
-import { required, minValue } from '@vuelidate/validators'
 
 import { useAlert } from '~/lib/hooks'
+import { required, minValue } from '~/lib/validations'
 import { useCategoryStore } from '~/store/category'
 import { useProducerStore } from '~/store/producer'
 import { useProductStore } from '~/store/product'

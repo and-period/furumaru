@@ -6,6 +6,7 @@ import {
   email as _email,
   minLength as _minLength,
   maxLength as _maxLength,
+  minValue as _minValue,
 } from '@vuelidate/validators'
 
 /**
@@ -77,4 +78,24 @@ const maxLength = (max: number | Ref<number>) =>
     _maxLength(max)
   )
 
-export { kana, tel, required, email, postalCode, minLength, maxLength }
+/**
+ * 最小値のバリデーションルールをラップする関数
+ * @param min
+ * @returns
+ */
+const minValue = (min: string | number | Ref<number> | Ref<string>) =>
+  helpers.withMessage(
+    ({ $params }: MessageProps) => `${$params.min}以上で入力してください。`,
+    _minValue(min)
+  )
+
+export {
+  kana,
+  tel,
+  required,
+  email,
+  postalCode,
+  minLength,
+  maxLength,
+  minValue,
+}
