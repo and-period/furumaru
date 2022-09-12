@@ -83,6 +83,9 @@ func ParseFromHHMMSS(hhmmss string) (time.Time, error) {
 
 // ParseFromUnix Unixtimeからtime.Timeを生成
 func ParseFromUnix(unix int64) time.Time {
+	if unix == 0 {
+		return time.Time{}.In(jst)
+	}
 	return time.Unix(unix, 0).In(jst)
 }
 
