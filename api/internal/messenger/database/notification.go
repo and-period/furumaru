@@ -48,7 +48,7 @@ func (n *notification) List(
 		stmt = stmt.Offset(params.Offset)
 	}
 
-	if err := stmt.Debug().Find(&notifications).Error; err != nil {
+	if err := stmt.Find(&notifications).Error; err != nil {
 		return nil, exception.InternalError(err)
 	}
 	if err := notifications.Fill(); err != nil {

@@ -211,6 +211,12 @@ func TestParseFromUnix(t *testing.T) {
 			expect:    time.Date(2021, 8, 2, 18, 30, 0, 0, jst),
 			expectErr: false,
 		},
+		{
+			name:      "success to zero time",
+			target:    0,
+			expect:    time.Time{}.In(jst),
+			expectErr: false,
+		},
 	}
 
 	for _, tt := range tests {
