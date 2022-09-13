@@ -104,7 +104,7 @@ productResponse:
     updatedAt:
       type: integer
       format: int64
-      description: 登録日時 (unixtime)
+      description: 更新日時 (unixtime)
   required:
   - id
   - name
@@ -279,7 +279,7 @@ productsResponse:
           updatedAt:
             type: integer
             format: int64
-            description: 登録日時 (unixtime)
+            description: 更新日時 (unixtime)
         required:
         - id
         - name

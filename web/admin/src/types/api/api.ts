@@ -76,7 +76,7 @@ export interface AdministratorResponse {
      */
     'createdAt': number;
     /**
-     * 登録日時 (unixtime)
+     * 更新日時 (unixtime)
      * @type {number}
      * @memberof AdministratorResponse
      */
@@ -156,7 +156,7 @@ export interface AdministratorsResponseAdministratorsInner {
      */
     'createdAt': number;
     /**
-     * 登録日時 (unixtime)
+     * 更新日時 (unixtime)
      * @type {number}
      * @memberof AdministratorsResponseAdministratorsInner
      */
@@ -249,7 +249,7 @@ export interface CategoriesResponseCategoriesInner {
      */
     'createdAt': number;
     /**
-     * 登録日時 (unixtime)
+     * 更新日時 (unixtime)
      * @type {number}
      * @memberof CategoriesResponseCategoriesInner
      */
@@ -280,7 +280,7 @@ export interface CategoryResponse {
      */
     'createdAt': number;
     /**
-     * 登録日時 (unixtime)
+     * 更新日時 (unixtime)
      * @type {number}
      * @memberof CategoryResponse
      */
@@ -353,7 +353,7 @@ export interface ContactResponse {
      */
     'createdAt': number;
     /**
-     * 登録日時 (unixtime)
+     * 更新日時 (unixtime)
      * @type {number}
      * @memberof ContactResponse
      */
@@ -445,7 +445,7 @@ export interface ContactsResponseContactsInner {
      */
     'createdAt': number;
     /**
-     * 登録日時 (unixtime)
+     * 更新日時 (unixtime)
      * @type {number}
      * @memberof ContactsResponseContactsInner
      */
@@ -578,7 +578,7 @@ export interface CoordinatorResponse {
      */
     'createdAt': number;
     /**
-     * 登録日時 (unixtime)
+     * 更新日時 (unixtime)
      * @type {number}
      * @memberof CoordinatorResponse
      */
@@ -730,7 +730,7 @@ export interface CoordinatorsResponseCoordinatorsInner {
      */
     'createdAt': number;
     /**
-     * 登録日時 (unixtime)
+     * 更新日時 (unixtime)
      * @type {number}
      * @memberof CoordinatorsResponseCoordinatorsInner
      */
@@ -1414,7 +1414,7 @@ export interface MessageResponse {
      */
     'createdAt': number;
     /**
-     * 登録日時 (unixtime)
+     * 更新日時 (unixtime)
      * @type {number}
      * @memberof MessageResponse
      */
@@ -1494,7 +1494,7 @@ export interface MessagesResponseMessagesInner {
      */
     'createdAt': number;
     /**
-     * 登録日時 (unixtime)
+     * 更新日時 (unixtime)
      * @type {number}
      * @memberof MessagesResponseMessagesInner
      */
@@ -1567,7 +1567,7 @@ export interface NotificationResponse {
      */
     'createdAt': number;
     /**
-     * 登録日時 (unixtime)
+     * 更新日時 (unixtime)
      * @type {number}
      * @memberof NotificationResponse
      */
@@ -1659,7 +1659,7 @@ export interface NotificationsResponseNotificationsInner {
      */
     'createdAt': number;
     /**
-     * 登録日時 (unixtime)
+     * 更新日時 (unixtime)
      * @type {number}
      * @memberof NotificationsResponseNotificationsInner
      */
@@ -1827,7 +1827,7 @@ export interface ProducerResponse {
      */
     'createdAt': number;
     /**
-     * 登録日時 (unixtime)
+     * 更新日時 (unixtime)
      * @type {number}
      * @memberof ProducerResponse
      */
@@ -1955,7 +1955,7 @@ export interface ProducersResponseProducersInner {
      */
     'createdAt': number;
     /**
-     * 登録日時 (unixtime)
+     * 更新日時 (unixtime)
      * @type {number}
      * @memberof ProducersResponseProducersInner
      */
@@ -2130,7 +2130,7 @@ export interface ProductResponse {
      */
     'createdAt': number;
     /**
-     * 登録日時 (unixtime)
+     * 更新日時 (unixtime)
      * @type {number}
      * @memberof ProductResponse
      */
@@ -2179,7 +2179,7 @@ export interface ProductTypeResponse {
      */
     'createdAt': number;
     /**
-     * 登録日時 (unixtime)
+     * 更新日時 (unixtime)
      * @type {number}
      * @memberof ProductTypeResponse
      */
@@ -2247,7 +2247,7 @@ export interface ProductTypesResponseProductTypesInner {
      */
     'createdAt': number;
     /**
-     * 登録日時 (unixtime)
+     * 更新日時 (unixtime)
      * @type {number}
      * @memberof ProductTypesResponseProductTypesInner
      */
@@ -2441,7 +2441,7 @@ export interface ProductsResponseProductsInner {
      */
     'createdAt': number;
     /**
-     * 登録日時 (unixtime)
+     * 更新日時 (unixtime)
      * @type {number}
      * @memberof ProductsResponseProductsInner
      */
@@ -2539,7 +2539,7 @@ export interface PromotionResponse {
      */
     'createdAt': number;
     /**
-     * 登録日時 (unixtime)
+     * 更新日時 (unixtime)
      * @type {number}
      * @memberof PromotionResponse
      */
@@ -2637,7 +2637,7 @@ export interface PromotionsResponsePromotionsInner {
      */
     'createdAt': number;
     /**
-     * 登録日時 (unixtime)
+     * 更新日時 (unixtime)
      * @type {number}
      * @memberof PromotionsResponsePromotionsInner
      */
@@ -2791,7 +2791,7 @@ export interface ShippingResponse {
      */
     'createdAt': number;
     /**
-     * 登録日時 (unixtime)
+     * 更新日時 (unixtime)
      * @type {number}
      * @memberof ShippingResponse
      */
@@ -2907,7 +2907,7 @@ export interface ShippingsResponseShippingsInner {
      */
     'createdAt': number;
     /**
-     * 登録日時 (unixtime)
+     * 更新日時 (unixtime)
      * @type {number}
      * @memberof ShippingsResponseShippingsInner
      */
