@@ -281,5 +281,18 @@ export const useAuthStore = defineStore('auth', {
     setRedirectPath(payload: string) {
       this.redirectPath = payload
     },
+
+    logout() {
+      try {
+        const factory = new ApiClientFactory()
+        const authApiClient = factory.create(AuthApi, this.accessToken)
+        authApiClient.v1SignOut()
+        const cookies = new Cookies()
+        cookies.remove('refreshToken')
+        this.$reset()
+      } catch (error) {
+        console.log('APIでエラーが発生しました。', error)
+      }
+    },
   },
 })
