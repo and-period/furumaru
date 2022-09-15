@@ -72,40 +72,6 @@ export default defineComponent({
         sortable: false,
       },
     ]
-    // const contacts = [
-    //   {
-    //     subject: '商品が届かない件について',
-    //     mailAddress: 'and-period@gmail.com',
-    //     priority: 1,
-    //     status: 1,
-    //     memo: '明日配送します',
-    //     actions: 'あくしょん',
-    //   },
-    //   {
-    //     subject: '商品が届かない件について',
-    //     mailAddress: 'and-period@gmail.com',
-    //     priority: 2,
-    //     status: 2,
-    //     memo: '明日配送します',
-    //     actions: 'あくしょん',
-    //   },
-    //   {
-    //     subject: '商品が届かない件について',
-    //     mailAddress: 'and-period@gmail.com',
-    //     priority: 3,
-    //     status: 3,
-    //     memo: '明日配送します',
-    //     actions: 'あくしょん',
-    //   },
-    //   {
-    //     subject: '商品が届かない件について',
-    //     mailAddress: 'and-period@gmail.com',
-    //     priority: 4,
-    //     status: 4,
-    //     memo: '明日配送します',
-    //     actions: 'あくしょん',
-    //   },
-    // ]
 
     const getPriorityColor = (priority: any): string => {
       switch (priority) {
