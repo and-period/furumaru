@@ -60,7 +60,7 @@
         ></v-textarea>
       </v-card-text>
       <v-card-actions>
-        <v-btn block outlined color="primary" @click="registerBtn">登録</v-btn>
+        <v-btn block outlined color="primary" @click="RegisterBtn">登録</v-btn>
       </v-card-actions>
     </v-card>
   </div>
@@ -154,7 +154,7 @@ export default defineComponent({
       }
     }
 
-    const registerBtn = async (): Promise<void> => {
+    const RegisterBtn = async (): Promise<void> => {
       try {
         const payload = reactive<UpdateContactRequest>({
           status: getStatusID(formStatus.value),
@@ -204,7 +204,7 @@ export default defineComponent({
       formData,
       getStatus,
       getPriority,
-      registerBtn,
+      RegisterBtn,
       formNote,
       formPriority,
       formStatus,

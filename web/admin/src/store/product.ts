@@ -25,6 +25,7 @@ export const useProductStore = defineStore('product', {
     }
     return {
       products: [] as ProductsResponseProductsInner[],
+      totalItems: 0,
       apiClient,
     }
   },
@@ -50,6 +51,7 @@ export const useProductStore = defineStore('product', {
           offset
         )
         this.products = res.data.products
+        this.totalItems = res.data.total
       } catch (error) {
         if (axios.isAxiosError(error)) {
           if (!error.response) {

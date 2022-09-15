@@ -25,6 +25,7 @@ import {
 export const useProducerStore = defineStore('Producer', {
   state: () => ({
     producers: [] as ProducersResponse['producers'],
+    totalItems: 0,
   }),
   actions: {
     /**
@@ -49,6 +50,7 @@ export const useProducerStore = defineStore('Producer', {
         const producersApiClient = factory.create(ProducerApi, accessToken)
         const res = await producersApiClient.v1ListProducers(limit, offset)
         this.producers = res.data.producers
+        this.totalItems = res.data.total
       } catch (error) {
         if (axios.isAxiosError(error)) {
           if (!error.response) {
