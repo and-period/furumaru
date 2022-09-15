@@ -19,7 +19,7 @@ func TestSchedule(t *testing.T) {
 			params: &NewScheduleParams{
 				Title:       "スケジュールタイトル",
 				Description: "スケジュールの詳細です。",
-				ThumnailUrl: "サムネイルのURLです",
+				ThumnailURL: "サムネイルのURLです",
 				StartAt:     jst.Date(2022, 8, 1, 0, 0, 0, 0),
 				EndAt:       jst.Date(2022, 9, 1, 0, 0, 0, 0),
 				Canceled:    false,
@@ -27,7 +27,7 @@ func TestSchedule(t *testing.T) {
 			expect: &Schedule{
 				Title:       "スケジュールタイトル",
 				Description: "スケジュールの詳細です。",
-				ThumnailUrl: "サムネイルのURLです",
+				ThumnailURL: "サムネイルのURLです",
 				StartAt:     jst.Date(2022, 8, 1, 0, 0, 0, 0),
 				EndAt:       jst.Date(2022, 9, 1, 0, 0, 0, 0),
 				Canceled:    false,

@@ -12,7 +12,7 @@ type Schedule struct {
 	ID          string         `gorm:"primarykey;<-:create"` // テンプレートID
 	Title       string         `gorm:""`                     // タイトル
 	Description string         `gorm:""`                     // 説明
-	ThumnailUrl string         `gorm:""`                     // サムネイルURL
+	ThumnailURL string         `gorm:""`                     // サムネイルURL
 	StartAt     time.Time      `gorm:""`                     // 開催開始日時
 	EndAt       time.Time      `gorm:""`                     // 開催終了日時
 	Canceled    bool           `gorm:""`                     // 開催中止フラグ
@@ -24,7 +24,7 @@ type Schedule struct {
 type NewScheduleParams struct {
 	Title       string
 	Description string
-	ThumnailUrl string
+	ThumnailURL string
 	StartAt     time.Time
 	EndAt       time.Time
 	Canceled    bool
@@ -35,7 +35,7 @@ func NewSchedule(params *NewScheduleParams) *Schedule {
 		ID:          uuid.Base58Encode(uuid.New()),
 		Title:       params.Title,
 		Description: params.Description,
-		ThumnailUrl: params.ThumnailUrl,
+		ThumnailURL: params.ThumnailURL,
 		StartAt:     params.StartAt,
 		EndAt:       params.EndAt,
 		Canceled:    params.Canceled,
