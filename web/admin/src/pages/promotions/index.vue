@@ -79,7 +79,7 @@ export default defineComponent({
         value: 'discount',
       },
       {
-        text: '使用可能',
+        text: '使用開始',
         value: 'startAt',
       },
       {
