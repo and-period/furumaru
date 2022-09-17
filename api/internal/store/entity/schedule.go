@@ -27,7 +27,6 @@ type NewScheduleParams struct {
 	ThumnailURL string
 	StartAt     time.Time
 	EndAt       time.Time
-	Canceled    bool
 }
 
 func NewSchedule(params *NewScheduleParams) *Schedule {
@@ -38,6 +37,5 @@ func NewSchedule(params *NewScheduleParams) *Schedule {
 		ThumnailURL: params.ThumnailURL,
 		StartAt:     params.StartAt,
 		EndAt:       params.EndAt,
-		Canceled:    params.Canceled,
 	}
 }

@@ -22,7 +22,6 @@ func TestSchedule(t *testing.T) {
 				ThumnailURL: "サムネイルのURLです",
 				StartAt:     jst.Date(2022, 8, 1, 0, 0, 0, 0),
 				EndAt:       jst.Date(2022, 9, 1, 0, 0, 0, 0),
-				Canceled:    false,
 			},
 			expect: &Schedule{
 				Title:       "スケジュールタイトル",
@@ -30,7 +29,6 @@ func TestSchedule(t *testing.T) {
 				ThumnailURL: "サムネイルのURLです",
 				StartAt:     jst.Date(2022, 8, 1, 0, 0, 0, 0),
 				EndAt:       jst.Date(2022, 9, 1, 0, 0, 0, 0),
-				Canceled:    false,
 			},
 		},
 	}
