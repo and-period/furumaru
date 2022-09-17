@@ -9,7 +9,7 @@ import (
 
 // Schedule - 開催スケジュール
 type Schedule struct {
-	ID          string         `gorm:"primarykey;<-:create"` // テンプレートID
+	ID          string         `gorm:"primaryKey;<-:create"` // テンプレートID
 	Title       string         `gorm:""`                     // タイトル
 	Description string         `gorm:""`                     // 説明
 	ThumnailURL string         `gorm:""`                     // サムネイルURL
