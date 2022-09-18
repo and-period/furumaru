@@ -19,7 +19,7 @@
         </template>
         <template #[`item.public`]="{ item }">
           <v-chip small :color="getStatusColor(item.public)">
-          {{ getPublic(item.public) }}
+            {{ getPublic(item.public) }}
           </v-chip>
         </template>
         <template #[`item.targets`]="{ item }">
@@ -40,7 +40,6 @@ import dayjs from 'dayjs'
 import { DataTableHeader } from 'vuetify'
 
 import { useNotificationStore } from '~/store/notification'
-
 
 export default defineComponent({
   setup() {
@@ -105,8 +104,7 @@ export default defineComponent({
     }
 
     // TODO
-    const handleClickAddButton = () => {
-    }
+    const handleClickAddButton = () => {}
 
     const { fetchState } = useFetch(async () => {
       try {
@@ -115,8 +113,6 @@ export default defineComponent({
         console.log(err)
       }
     })
-
-
 
     return {
       headers,
