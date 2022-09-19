@@ -14,9 +14,6 @@
         :items="notifications"
         no-data-text="登録されているお知らせ情報がありません"
       >
-        <template #[`item.title`]="{ item }">
-          {{ item.title }}
-        </template>
         <template #[`item.public`]="{ item }">
           <v-chip small :color="getStatusColor(item.public)">
             {{ getPublic(item.public) }}
