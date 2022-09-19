@@ -17,18 +17,18 @@ func TestSchedule(t *testing.T) {
 		{
 			name: "success",
 			params: &NewScheduleParams{
-				Title:       "スケジュールタイトル",
-				Description: "スケジュールの詳細です。",
-				ThumnailURL: "サムネイルのURLです",
-				StartAt:     jst.Date(2022, 8, 1, 0, 0, 0, 0),
-				EndAt:       jst.Date(2022, 9, 1, 0, 0, 0, 0),
+				Title:        "スケジュールタイトル",
+				Description:  "スケジュールの詳細です。",
+				ThumbnailURL: "サムネイルのURLです",
+				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
 			},
 			expect: &Schedule{
-				Title:       "スケジュールタイトル",
-				Description: "スケジュールの詳細です。",
-				ThumnailURL: "サムネイルのURLです",
-				StartAt:     jst.Date(2022, 8, 1, 0, 0, 0, 0),
-				EndAt:       jst.Date(2022, 9, 1, 0, 0, 0, 0),
+				Title:        "スケジュールタイトル",
+				Description:  "スケジュールの詳細です。",
+				ThumbnailURL: "サムネイルのURLです",
+				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
 			},
 		},
 	}
