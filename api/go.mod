@@ -1,6 +1,6 @@
 module github.com/and-period/furumaru/api
 
-go 1.18
+go 1.19
 
 require (
 	firebase.google.com/go/v4 v4.8.0
@@ -51,8 +51,6 @@ require (
 	moul.io/zapgorm2 v1.1.3
 )
 
-require github.com/gorilla/websocket v1.4.2 // indirect
-
 require (
 	cloud.google.com/go v0.103.0 // indirect
 	cloud.google.com/go/compute v1.8.0 // indirect
@@ -87,6 +85,7 @@ require (
 	github.com/google/go-cmp v0.5.8 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.1.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.5.1 // indirect
+	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
