@@ -13,7 +13,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.15.18
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.19.4
 	github.com/casbin/casbin/v2 v2.52.2
-	github.com/envoyproxy/protoc-gen-validate v0.1.0
 	github.com/gin-contrib/gzip v0.0.6
 	github.com/gin-contrib/zap v0.0.2
 	github.com/gin-gonic/gin v1.8.1
@@ -36,6 +35,7 @@ require (
 	github.com/satori/go.uuid v1.2.0
 	github.com/sendgrid/sendgrid-go v3.11.1+incompatible
 	github.com/shopspring/decimal v1.3.1
+	github.com/slack-go/slack v0.11.3
 	github.com/stretchr/testify v1.8.0
 	github.com/stripe/stripe-go/v73 v73.4.0
 	go.uber.org/zap v1.22.0
@@ -50,6 +50,8 @@ require (
 	gorm.io/gorm v1.23.8
 	moul.io/zapgorm2 v1.1.3
 )
+
+require github.com/gorilla/websocket v1.4.2 // indirect
 
 require (
 	cloud.google.com/go v0.103.0 // indirect
