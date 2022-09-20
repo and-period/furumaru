@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { defineStore } from 'pinia'
 
 import { useAuthStore } from './auth'
@@ -10,6 +11,11 @@ import {
   ContactsResponse,
   UpdateContactRequest,
 } from '~/types/api'
+import {
+  ConnectionError,
+  NotFoundError,
+  ValidationError,
+} from '~/types/exception'
 
 export const useContactStore = defineStore('Contact', {
   state: () => ({
@@ -43,7 +49,21 @@ export const useContactStore = defineStore('Contact', {
         const res = await contactsApiClient.v1GetContact(id)
         return res.data
       } catch (error) {
-        console.log(error)
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          const statusCode = error.response.status
+          switch (statusCode) {
+            case 404:
+              return Promise.reject(
+                new NotFoundError(
+                  '編集するお問い合わせが見つかりませんでした。',
+                  error
+                )
+              )
+          }
+        }
         throw new Error('Internal Server Error')
       }
     },
@@ -67,7 +87,25 @@ export const useContactStore = defineStore('Contact', {
           color: 'info',
         })
       } catch (error) {
-        console.log(error)
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          const statusCode = error.response.status
+          switch (statusCode) {
+            case 400:
+              return Promise.reject(
+                new ValidationError('入力された内容では更新できません。', error)
+              )
+            case 404:
+              return Promise.reject(
+                new NotFoundError(
+                  '更新するお問い合わせが見つかりませんでした。',
+                  error
+                )
+              )
+          }
+        }
         throw new Error('Internal Server Error')
       }
     },
