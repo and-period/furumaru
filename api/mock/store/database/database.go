@@ -652,3 +652,40 @@ func (mr *MockShippingMockRecorder) Update(ctx, shippingID, params interface{}) 
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockShipping)(nil).Update), ctx, shippingID, params)
 }
+
+// MockSchedule is a mock of Schedule interface.
+type MockSchedule struct {
+	ctrl     *gomock.Controller
+	recorder *MockScheduleMockRecorder
+}
+
+// MockScheduleMockRecorder is the mock recorder for MockSchedule.
+type MockScheduleMockRecorder struct {
+	mock *MockSchedule
+}
+
+// NewMockSchedule creates a new mock instance.
+func NewMockSchedule(ctrl *gomock.Controller) *MockSchedule {
+	mock := &MockSchedule{ctrl: ctrl}
+	mock.recorder = &MockScheduleMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockSchedule) EXPECT() *MockScheduleMockRecorder {
+	return m.recorder
+}
+
+// Create mocks base method.
+func (m *MockSchedule) Create(ctx context.Context, schedule *entity.Schedule) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, schedule)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockScheduleMockRecorder) Create(ctx, schedule interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockSchedule)(nil).Create), ctx, schedule)
+}
