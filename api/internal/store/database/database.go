@@ -22,6 +22,7 @@ type Database struct {
 	ProductType ProductType
 	Promotion   Promotion
 	Shipping    Shipping
+	Schedule    Schedule
 }
 
 func NewDatabase(params *Params) *Database {
@@ -31,6 +32,7 @@ func NewDatabase(params *Params) *Database {
 		ProductType: NewProductType(params.Database),
 		Promotion:   NewPromotion(params.Database),
 		Shipping:    NewShipping(params.Database),
+		Schedule:    NewSchedule(params.Database),
 	}
 }
 
@@ -82,6 +84,10 @@ type Shipping interface {
 	Create(ctx context.Context, shipping *entity.Shipping) error
 	Update(ctx context.Context, shippingID string, params *UpdateShippingParams) error
 	Delete(ctx context.Context, shippingID string) error
+}
+
+type Schedule interface {
+	Create(ctx context.Context, schedule *entity.Schedule) error
 }
 
 /**
