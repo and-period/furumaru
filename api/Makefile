@@ -2,7 +2,7 @@
 
 AIR_VERSION := 1.40.4
 GOFUMPT_VERSION := 0.3.1
-GOLANGCI_VERSION := 1.48.0
+GOLANGCI_VERSION := 1.49.0
 MOCKGEN_VERSION := 1.6.0
 
 LINT_PACKAGES := $(shell go list $(CURDIR)/... | grep -v -e "mock" -v -e "proto" -v -e "third_party" -v -e "tmp")
