@@ -13,12 +13,6 @@ import (
 
 const scheduleTable = "schedules"
 
-var scheduleFields = []string{
-	"id", "title", "description", "thumbnail_url",
-	"start_at", "end_at", "canceled",
-	"created_at", "updated_at", "deleted_at",
-}
-
 type schedule struct {
 	db  *database.Client
 	now func() time.Time
