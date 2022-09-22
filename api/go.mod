@@ -1,6 +1,6 @@
 module github.com/and-period/furumaru/api
 
-go 1.18
+go 1.19
 
 require (
 	firebase.google.com/go/v4 v4.8.0
@@ -13,7 +13,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.15.18
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.19.4
 	github.com/casbin/casbin/v2 v2.52.2
-	github.com/envoyproxy/protoc-gen-validate v0.1.0
 	github.com/gin-contrib/gzip v0.0.6
 	github.com/gin-contrib/zap v0.0.2
 	github.com/gin-gonic/gin v1.8.1
@@ -36,11 +35,12 @@ require (
 	github.com/satori/go.uuid v1.2.0
 	github.com/sendgrid/sendgrid-go v3.11.1+incompatible
 	github.com/shopspring/decimal v1.3.1
+	github.com/slack-go/slack v0.11.3
 	github.com/stretchr/testify v1.8.0
 	github.com/stripe/stripe-go/v73 v73.4.0
 	go.uber.org/zap v1.22.0
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4
-	google.golang.org/api v0.94.0
+	google.golang.org/api v0.97.0
 	google.golang.org/genproto v0.0.0-20220812140447-cec7f5303424
 	google.golang.org/grpc v1.49.0
 	google.golang.org/protobuf v1.28.1
@@ -85,6 +85,7 @@ require (
 	github.com/google/go-cmp v0.5.8 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.1.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.5.1 // indirect
+	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
@@ -106,7 +107,7 @@ require (
 	go.uber.org/multierr v1.8.0 // indirect
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
 	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e // indirect
-	golang.org/x/net v0.0.0-20220812174116-3211cb980234 // indirect
+	golang.org/x/net v0.0.0-20220909164309-bea034e7d591 // indirect
 	golang.org/x/oauth2 v0.0.0-20220822191816-0ebed06d0094 // indirect
 	golang.org/x/sys v0.0.0-20220811171246-fbc7d0a398ab // indirect
 	golang.org/x/text v0.3.7 // indirect
