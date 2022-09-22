@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -16,8 +15,8 @@ import (
 	ginzip "github.com/gin-contrib/gzip"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
-	"github.com/line/line-bot-sdk-go/v7/linebot"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
+	"github.com/slack-go/slack"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -139,84 +138,49 @@ func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 		fields = append(fields, zap.Strings("errors", ctx.Errors.Errors()))
 		logger.Error(path, fields...)
 
-		if reg.line == nil {
+		if reg.slack == nil {
 			return
 		}
 
-		altText := fmt.Sprintf("[ふるマルアラート] %s", reg.appName)
-		detail, _ := json.Marshal(res)
-		components := []linebot.FlexComponent{
-			newAlertContent("service", reg.appName),
-			newAlertContent("env", reg.env),
-			newAlertContent("status", strconv.FormatInt(int64(status), 10)),
-			newAlertContent("method", method),
-			newAlertContent("path", path),
-			newAlertContent("detail", string(detail)),
+		details, _ := json.Marshal(res)
+		params := &alertMessageParams{
+			title:   "ふるまる APIアラート",
+			appName: reg.appName,
+			env:     reg.env,
+			status:  int64(status),
+			method:  method,
+			path:    path,
+			details: string(details),
 		}
-		_ = reg.line.PushMessage(ctx, newAlertMessage(altText, components))
+		msg := newAlertMessage(params)
+		if err := reg.slack.SendMessage(ctx, msg); err != nil {
+			logger.Error("Failed to alert message", zap.Error(err))
+		}
 	}
 }
 
-func newAlertMessage(altText string, components []linebot.FlexComponent) *linebot.FlexMessage {
-	container := &linebot.BubbleContainer{
-		Type:      linebot.FlexContainerTypeBubble,
-		Direction: linebot.FlexBubbleDirectionTypeLTR,
-		Header: &linebot.BoxComponent{
-			Type:   linebot.FlexComponentTypeBox,
-			Layout: linebot.FlexBoxLayoutTypeVertical,
-			Contents: []linebot.FlexComponent{
-				&linebot.TextComponent{
-					Type:   linebot.FlexComponentTypeText,
-					Text:   "ふるマル APIアラート",
-					Size:   linebot.FlexTextSizeTypeXl,
-					Weight: linebot.FlexTextWeightTypeBold,
-					Color:  "#FFFFFF", // white
-				},
-			},
-		},
-		Body: &linebot.BoxComponent{
-			Type:     linebot.FlexComponentTypeBox,
-			Layout:   linebot.FlexBoxLayoutTypeVertical,
-			Contents: components,
-		},
-		Size: linebot.FlexBubbleSizeTypeGiga,
-		Styles: &linebot.BubbleStyle{
-			Header: &linebot.BlockStyle{
-				BackgroundColor: "#F44336", // red
-			},
-		},
-	}
-	return linebot.NewFlexMessage(altText, container)
+type alertMessageParams struct {
+	title   string
+	appName string
+	env     string
+	status  int64
+	method  string
+	path    string
+	details string
 }
 
-func newAlertContent(field, value string) *linebot.BoxComponent {
-	const (
-		fcolor = "#aaaaaa" // gray
-		vcolor = "#666666" // black
-	)
-	var (
-		fflex = 1
-		vflex = 4
-	)
-	return &linebot.BoxComponent{
-		Type:   linebot.FlexComponentTypeBox,
-		Layout: linebot.FlexBoxLayoutTypeBaseline,
-		Contents: []linebot.FlexComponent{
-			&linebot.TextComponent{
-				Type:  linebot.FlexComponentTypeText,
-				Text:  field,
-				Size:  linebot.FlexTextSizeTypeSm,
-				Color: fcolor,
-				Flex:  &fflex,
-			},
-			&linebot.TextComponent{
-				Type:  linebot.FlexComponentTypeText,
-				Text:  value,
-				Wrap:  true,
-				Size:  linebot.FlexTextSizeTypeSm,
-				Color: vcolor,
-				Flex:  &vflex,
-			},
+func newAlertMessage(params *alertMessageParams) slack.MsgOption {
+	attachment := slack.Attachment{
+		Title: params.title,
+		Color: string(slack.StyleDanger),
+		Fields: []slack.AttachmentField{
+			{Title: "service", Value: params.appName, Short: true},
+			{Title: "environment", Value: params.env, Short: true},
+			{Title: "method", Value: params.method, Short: true},
+			{Title: "path", Value: params.path, Short: true},
+			{Title: "status", Value: strconv.FormatInt(params.status, 10), Short: false},
+			{Title: "details", Value: params.details, Short: false},
 		},
 	}
+	return slack.MsgOptionAttachments(attachment)
 }
