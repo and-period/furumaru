@@ -31,6 +31,7 @@ type dbMocks struct {
 	ProductType *mock_database.MockProductType
 	Promotion   *mock_database.MockPromotion
 	Shipping    *mock_database.MockShipping
+	Schedule    *mock_database.MockSchedule
 }
 
 type testOptions struct {
@@ -64,6 +65,7 @@ func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 		ProductType: mock_database.NewMockProductType(ctrl),
 		Promotion:   mock_database.NewMockPromotion(ctrl),
 		Shipping:    mock_database.NewMockShipping(ctrl),
+		Schedule:    mock_database.NewMockSchedule(ctrl),
 	}
 }
 
@@ -82,6 +84,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 			ProductType: mocks.db.ProductType,
 			Promotion:   mocks.db.Promotion,
 			Shipping:    mocks.db.Shipping,
+			Schedule:    mocks.db.Schedule,
 		},
 		User:      mocks.user,
 		Messenger: mocks.messenger,
