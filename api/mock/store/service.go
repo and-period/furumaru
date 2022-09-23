@@ -96,6 +96,21 @@ func (mr *MockServiceMockRecorder) CreatePromotion(ctx, in interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePromotion", reflect.TypeOf((*MockService)(nil).CreatePromotion), ctx, in)
 }
 
+// CreateSchedule mocks base method.
+func (m *MockService) CreateSchedule(ctx context.Context, in *store.CreateScheduleInput) (*entity.Schedule, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateSchedule", ctx, in)
+	ret0, _ := ret[0].(*entity.Schedule)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateSchedule indicates an expected call of CreateSchedule.
+func (mr *MockServiceMockRecorder) CreateSchedule(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateSchedule", reflect.TypeOf((*MockService)(nil).CreateSchedule), ctx, in)
+}
+
 // CreateShipping mocks base method.
 func (m *MockService) CreateShipping(ctx context.Context, in *store.CreateShippingInput) (*entity.Shipping, error) {
 	m.ctrl.T.Helper()
