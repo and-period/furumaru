@@ -33,6 +33,7 @@ import { defineComponent, useRouter } from '@nuxtjs/composition-api'
 export default defineComponent({
   setup() {
     const router = useRouter()
+    const id = "ThisIsID"
     const headers = [
       {
         text: '名前',
@@ -70,41 +71,27 @@ export default defineComponent({
         address: 'juu',
         quantity: 1,
         price: 1000,
-        account: 0,
+        account: false,
       },
       {
         name: 'namae2',
         address: 'juu2',
         quantity: 2,
         price: 2000,
-        account: 1,
+        account: true,
       },
     ]
 
-    const getAccountColor = (account: any): string => {
-      switch (account) {
-        case 0:
-          return 'red'
-        case 1:
-          return 'primary'
-        default:
-          return ''
-      }
+    const getAccountColor = (account: boolean): string => {
+        return account ? 'primary' : 'red'
     }
 
-    const getAccount = (account: any): string => {
-      switch (account) {
-        case 0:
-          return '無'
-        case 1:
-          return '有'
-        default:
-          return '無'
-      }
+    const getAccount = (account: boolean): string => {
+        return account ? '有' : '無'
     }
 
     const handleEdit = () => {
-      router.push(`/customers/edit/id`)
+      router.push(`/customers/edit/${id}`)
     }
 
     return {
@@ -113,6 +100,7 @@ export default defineComponent({
       getAccountColor,
       getAccount,
       handleEdit,
+      id,
     }
   },
 })
