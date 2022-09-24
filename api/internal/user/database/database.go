@@ -17,6 +17,7 @@ type Database struct {
 	Admin         Admin
 	Administrator Administrator
 	Coordinator   Coordinator
+	Member        Member
 	Producer      Producer
 	User          User
 }
@@ -26,6 +27,7 @@ func NewDatabase(params *Params) *Database {
 		Admin:         NewAdmin(params.Database),
 		Administrator: NewAdministrator(params.Database),
 		Coordinator:   NewCoordinator(params.Database),
+		Member:        NewMember(params.Database),
 		Producer:      NewProducer(params.Database),
 		User:          NewUser(params.Database),
 	}
@@ -60,6 +62,17 @@ type Coordinator interface {
 	Update(ctx context.Context, coordinatorID string, params *UpdateCoordinatorParams) error
 }
 
+type Member interface {
+	Get(ctx context.Context, userID string, fields ...string) (*entity.Member, error)
+	GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.Member, error)
+	GetByEmail(ctx context.Context, email string, fields ...string) (*entity.Member, error)
+	Create(ctx context.Context, user *entity.User, member *entity.Member) error
+	UpdateVerified(ctx context.Context, userID string) error
+	UpdateAccount(ctx context.Context, userID, accountID, username string) error
+	UpdateEmail(ctx context.Context, userID, email string) error
+	Delete(ctx context.Context, userID string) error
+}
+
 type Producer interface {
 	List(ctx context.Context, params *ListProducersParams, fields ...string) (entity.Producers, error)
 	Count(ctx context.Context, params *ListProducersParams) (int64, error)
@@ -72,13 +85,6 @@ type Producer interface {
 type User interface {
 	MultiGet(ctx context.Context, userIDs []string, fields ...string) (entity.Users, error)
 	Get(ctx context.Context, userID string, fields ...string) (*entity.User, error)
-	GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.User, error)
-	GetByEmail(ctx context.Context, email string, fields ...string) (*entity.User, error)
-	Create(ctx context.Context, user *entity.User) error
-	UpdateVerified(ctx context.Context, userID string) error
-	UpdateAccount(ctx context.Context, userID, accountID, username string) error
-	UpdateEmail(ctx context.Context, userID, email string) error
-	Delete(ctx context.Context, userID string) error
 }
 
 /**

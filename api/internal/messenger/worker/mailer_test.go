@@ -311,8 +311,8 @@ func TestPersonalizations(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				in := &user.MultiGetUsersInput{UserIDs: []string{"user-id"}}
 				users := uentity.Users{
-					{Username: "&. スタッフ", Email: "test-user@and-period.jp"},
-					{Username: "&. スタッフ", Email: ""},
+					{Member: uentity.Member{Username: "&. スタッフ", Email: "test-user@and-period.jp"}},
+					{Member: uentity.Member{Username: "&. スタッフ", Email: ""}},
 				}
 				mocks.user.EXPECT().MultiGetUsers(ctx, in).Return(users, nil)
 			},
@@ -680,17 +680,23 @@ func TestFetchUsers(t *testing.T) {
 	}
 	users := uentity.Users{
 		{
-			ID:           "user-id",
-			AccountID:    "account-id",
-			CognitoID:    "cognito-id",
-			Username:     "テストユーザー",
-			ProviderType: uentity.ProviderTypeEmail,
-			Email:        "test-user@and-period.jp",
-			PhoneNumber:  "+810000000000",
-			ThumbnailURL: "https://and-period.jp/thumbnail.png",
-			CreatedAt:    jst.Date(2022, 7, 10, 18, 30, 0, 0),
-			UpdatedAt:    jst.Date(2022, 7, 10, 18, 30, 0, 0),
-			VerifiedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			ID:         "user-id",
+			Registered: true,
+			CreatedAt:  jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			UpdatedAt:  jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			Member: uentity.Member{
+				UserID:       "user-id",
+				AccountID:    "account-id",
+				CognitoID:    "cognito-id",
+				Username:     "テストユーザー",
+				ProviderType: uentity.ProviderTypeEmail,
+				Email:        "test-user@and-period.jp",
+				PhoneNumber:  "+810000000000",
+				ThumbnailURL: "https://and-period.jp/thumbnail.png",
+				CreatedAt:    jst.Date(2022, 7, 10, 18, 30, 0, 0),
+				UpdatedAt:    jst.Date(2022, 7, 10, 18, 30, 0, 0),
+				VerifiedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			},
 		},
 	}
 

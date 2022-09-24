@@ -106,6 +106,7 @@ func (s *service) CreateCoordinator(
 	if err := s.db.Coordinator.Create(ctx, admin, coordinator); err != nil {
 		return nil, exception.InternalError(err)
 	}
+	coordinator.Admin = *admin
 	s.logger.Debug("Create coordinator", zap.String("coordinatorId", coordinator.ID), zap.String("password", password))
 	s.waitGroup.Add(1)
 	go func() {

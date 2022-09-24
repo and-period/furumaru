@@ -95,6 +95,7 @@ func (s *service) CreateAdministrator(
 	if err := s.db.Administrator.Create(ctx, admin, administrator); err != nil {
 		return nil, exception.InternalError(err)
 	}
+	administrator.Admin = *admin
 	s.logger.Debug("Create administrator",
 		zap.String("administratorId", administrator.ID), zap.String("password", password))
 	s.waitGroup.Add(1)

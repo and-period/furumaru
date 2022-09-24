@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -15,9 +14,7 @@ import (
 const userTable = "users"
 
 var userFields = []string{
-	"id", "account_id", "cognito_id", "provider_type",
-	"username", "email", "phone_number", "thumbnail_url",
-	"created_at", "updated_at", "verified_at", "deleted_at",
+	"id", "registered", "created_at", "updated_at",
 }
 
 type user struct {
@@ -38,57 +35,25 @@ func (u *user) MultiGet(ctx context.Context, userIDs []string, fields ...string)
 		fields = userFields
 	}
 
-	err := u.db.DB.WithContext(ctx).
+	stmt := u.db.DB.WithContext(ctx).
 		Table(userTable).Select(fields).
-		Where("id IN (?)", userIDs).
-		Find(&users).Error
-	return users, exception.InternalError(err)
+		Where("id IN (?)", userIDs)
+
+	if err := stmt.Find(&users).Error; err != nil {
+		return nil, exception.InternalError(err)
+	}
+	if err := u.fill(ctx, u.db.DB, users...); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return users, nil
 }
 
 func (u *user) Get(ctx context.Context, userID string, fields ...string) (*entity.User, error) {
-	var user *entity.User
-	if len(fields) == 0 {
-		fields = userFields
-	}
-
-	stmt := u.db.DB.WithContext(ctx).
-		Table(userTable).Select(fields).
-		Where("id = ?", userID)
-
-	if err := stmt.First(&user).Error; err != nil {
+	user, err := u.get(ctx, u.db.DB, userID, fields...)
+	if err != nil {
 		return nil, exception.InternalError(err)
 	}
-	return user, nil
-}
-
-func (u *user) GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.User, error) {
-	var user *entity.User
-	if len(fields) == 0 {
-		fields = userFields
-	}
-
-	stmt := u.db.DB.WithContext(ctx).
-		Table(userTable).Select(fields).
-		Where("cognito_id = ?", cognitoID)
-
-	if err := stmt.First(&user).Error; err != nil {
-		return nil, exception.InternalError(err)
-	}
-	return user, nil
-}
-
-func (u *user) GetByEmail(ctx context.Context, email string, fields ...string) (*entity.User, error) {
-	var user *entity.User
-	if len(fields) == 0 {
-		fields = userFields
-	}
-
-	stmt := u.db.DB.WithContext(ctx).
-		Table(userTable).Select(fields).
-		Where("email = ?", email).
-		Where("provider_type = ?", entity.ProviderTypeEmail)
-
-	if err := stmt.First(&user).Error; err != nil {
+	if err := u.fill(ctx, u.db.DB, user); err != nil {
 		return nil, exception.InternalError(err)
 	}
 	return user, nil
@@ -105,106 +70,6 @@ func (u *user) Create(ctx context.Context, user *entity.User) error {
 	return exception.InternalError(err)
 }
 
-func (u *user) UpdateVerified(ctx context.Context, userID string) error {
-	_, err := u.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
-		current, err := u.get(ctx, tx, userID, "id", "verified_at")
-		if err != nil {
-			return nil, err
-		}
-		if !current.VerifiedAt.IsZero() {
-			return nil, exception.ErrFailedPrecondition
-		}
-
-		now := u.now()
-		params := map[string]interface{}{
-			"verified_at": now,
-			"updated_at":  now,
-		}
-		err = tx.WithContext(ctx).
-			Table(userTable).
-			Where("id = ?", current.ID).
-			Updates(params).Error
-		return nil, err
-	})
-	return exception.InternalError(err)
-}
-
-func (u *user) UpdateAccount(ctx context.Context, userID, accountID, username string) error {
-	_, err := u.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
-		if _, err := u.get(ctx, tx, userID); err != nil {
-			return nil, err
-		}
-
-		var user *entity.User
-		err := tx.WithContext(ctx).
-			Table(userTable).Select("id").
-			Where("id != ?", userID).
-			Where("account_id = ?", accountID).
-			First(&user).Error
-		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, err
-		}
-		if user.ID != "" {
-			return nil, exception.ErrAlreadyExists
-		}
-
-		params := map[string]interface{}{
-			"account_id": accountID,
-			"username":   username,
-			"updated_at": u.now(),
-		}
-		err = tx.WithContext(ctx).
-			Table(userTable).
-			Where("id = ?", userID).
-			Updates(params).Error
-		return nil, err
-	})
-	return exception.InternalError(err)
-}
-
-func (u *user) UpdateEmail(ctx context.Context, userID, email string) error {
-	_, err := u.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
-		current, err := u.get(ctx, tx, userID, "id", "provider_type")
-		if err != nil {
-			return nil, err
-		}
-		if current.ProviderType != entity.ProviderTypeEmail {
-			return nil, exception.ErrFailedPrecondition
-		}
-
-		params := map[string]interface{}{
-			"email":      email,
-			"updated_at": u.now(),
-		}
-		err = tx.WithContext(ctx).
-			Table(userTable).
-			Where("id = ?", userID).
-			Updates(params).Error
-		return nil, err
-	})
-	return exception.InternalError(err)
-}
-
-func (u *user) Delete(ctx context.Context, userID string) error {
-	_, err := u.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
-		if _, err := u.get(ctx, tx, userID, "id"); err != nil {
-			return nil, err
-		}
-
-		now := u.now()
-		params := map[string]interface{}{
-			"updated_at": now,
-			"deleted_at": now,
-		}
-		err := tx.WithContext(ctx).
-			Table(userTable).
-			Where("id = ?", userID).
-			Updates(params).Error
-		return nil, err
-	})
-	return exception.InternalError(err)
-}
-
 func (u *user) get(ctx context.Context, tx *gorm.DB, userID string, fields ...string) (*entity.User, error) {
 	var user *entity.User
 	if len(fields) == 0 {
@@ -216,4 +81,83 @@ func (u *user) get(ctx context.Context, tx *gorm.DB, userID string, fields ...st
 		Where("id = ?", userID).
 		First(&user).Error
 	return user, err
+}
+
+func (u *user) fill(ctx context.Context, tx *gorm.DB, users ...*entity.User) error {
+	ids := entity.Users(users).IDs()
+	if len(ids) == 0 {
+		return nil
+	}
+
+	customers, err := u.fetchCustomers(ctx, tx, ids)
+	if err != nil {
+		return err
+	}
+
+	usersMap := entity.Users(users).GroupByRegistered()
+
+	var (
+		members entity.Members
+		guests  entity.Guests
+	)
+	for registered, us := range usersMap {
+		var err error
+		if registered {
+			members, err = u.fetchMembers(ctx, tx, us.IDs())
+		} else {
+			guests, err = u.fetchGuests(ctx, tx, us.IDs())
+		}
+		if err != nil {
+			return err
+		}
+	}
+
+	customerMap := customers.Map()
+	memberMap := members.Map()
+	guestMap := guests.Map()
+
+	for _, u := range users {
+		customer, ok := customerMap[u.ID]
+		if !ok {
+			customer = &entity.Customer{}
+		}
+		member, ok := memberMap[u.ID]
+		if !ok {
+			member = &entity.Member{}
+		}
+		guest, ok := guestMap[u.ID]
+		if !ok {
+			guest = &entity.Guest{}
+		}
+
+		u.Fill(customer, member, guest)
+	}
+	return nil
+}
+
+func (u *user) fetchCustomers(ctx context.Context, tx *gorm.DB, userIDs []string) (entity.Customers, error) {
+	var customers entity.Customers
+	err := tx.WithContext(ctx).
+		Table(customerTable).Select(customerFields).
+		Where("user_id IN (?)", userIDs).
+		Find(&customers).Error
+	return customers, err
+}
+
+func (u *user) fetchMembers(ctx context.Context, tx *gorm.DB, userIDs []string) (entity.Members, error) {
+	var members entity.Members
+	err := tx.WithContext(ctx).
+		Table(memberTable).Select(memberFields).
+		Where("user_id IN (?)", userIDs).
+		Find(&members).Error
+	return members, err
+}
+
+func (u *user) fetchGuests(ctx context.Context, tx *gorm.DB, userIDs []string) (entity.Guests, error) {
+	var guests entity.Guests
+	err := tx.WithContext(ctx).
+		Table(guestTable).Select(guestFields).
+		Where("user_id IN (?)", userIDs).
+		Find(&guests).Error
+	return guests, err
 }

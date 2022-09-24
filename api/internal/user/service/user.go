@@ -39,18 +39,24 @@ func (s *service) CreateUser(ctx context.Context, in *user.CreateUserInput) (str
 	if err := s.validator.Struct(in); err != nil {
 		return "", exception.InternalError(err)
 	}
-	cognitoID := uuid.Base58Encode(uuid.New())
-	u := entity.NewUser(cognitoID, entity.ProviderTypeEmail, in.Email, in.PhoneNumber)
-	if err := s.db.User.Create(ctx, u); err != nil {
+	params := &entity.NewUserParams{
+		Registered:   true,
+		CognitoID:    uuid.Base58Encode(uuid.New()),
+		ProviderType: entity.ProviderTypeEmail,
+		Email:        in.Email,
+		PhoneNumber:  in.PhoneNumber,
+	}
+	u := entity.NewUser(params)
+	if err := s.db.Member.Create(ctx, u, &u.Member); err != nil {
 		return "", exception.InternalError(err)
 	}
-	params := &cognito.SignUpParams{
+	signUpParams := &cognito.SignUpParams{
 		Username:    u.CognitoID,
-		Email:       u.Email,
-		PhoneNumber: u.PhoneNumber,
+		Email:       u.Member.Email,
+		PhoneNumber: u.Member.PhoneNumber,
 		Password:    in.Password,
 	}
-	if err := s.userAuth.SignUp(ctx, params); err != nil {
+	if err := s.userAuth.SignUp(ctx, signUpParams); err != nil {
 		return "", exception.InternalError(err)
 	}
 	return u.ID, nil
@@ -63,7 +69,7 @@ func (s *service) VerifyUser(ctx context.Context, in *user.VerifyUserInput) erro
 	if err := s.userAuth.ConfirmSignUp(ctx, in.UserID, in.VerifyCode); err != nil {
 		return exception.InternalError(err)
 	}
-	err := s.db.User.UpdateVerified(ctx, in.UserID)
+	err := s.db.Member.UpdateVerified(ctx, in.UserID)
 	return exception.InternalError(err)
 }
 
@@ -77,8 +83,15 @@ func (s *service) CreateUserWithOAuth(
 	if err != nil {
 		return nil, exception.InternalError(err)
 	}
-	u := entity.NewUser(auth.Username, entity.ProviderTypeOAuth, auth.Email, auth.PhoneNumber)
-	if err := s.db.User.Create(ctx, u); err != nil {
+	params := &entity.NewUserParams{
+		Registered:   true,
+		CognitoID:    auth.Username,
+		ProviderType: entity.ProviderTypeOAuth,
+		Email:        auth.Email,
+		PhoneNumber:  auth.PhoneNumber,
+	}
+	u := entity.NewUser(params)
+	if err := s.db.Member.Create(ctx, u, &u.Member); err != nil {
 		return nil, exception.InternalError(err)
 	}
 	return u, nil
@@ -88,14 +101,14 @@ func (s *service) InitializeUser(ctx context.Context, in *user.InitializeUserInp
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	u, err := s.db.User.Get(ctx, in.UserID, "account_id")
+	m, err := s.db.Member.Get(ctx, in.UserID, "account_id")
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	if u.AccountID != "" {
+	if m.AccountID != "" {
 		return fmt.Errorf("%w: %s", exception.ErrFailedPrecondition, "api: already initialized")
 	}
-	err = s.db.User.UpdateAccount(ctx, in.UserID, in.AccountID, in.Username)
+	err = s.db.Member.UpdateAccount(ctx, in.UserID, in.AccountID, in.Username)
 	return exception.InternalError(err)
 }
 
@@ -107,17 +120,17 @@ func (s *service) UpdateUserEmail(ctx context.Context, in *user.UpdateUserEmailI
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	u, err := s.db.User.GetByCognitoID(ctx, username, "id", "provider_type", "email")
+	m, err := s.db.Member.GetByCognitoID(ctx, username, "provider_type", "email")
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	if u.ProviderType != entity.ProviderTypeEmail {
+	if m.ProviderType != entity.ProviderTypeEmail {
 		return fmt.Errorf("%w: %s", exception.ErrFailedPrecondition, "api: not allow provider type to change email")
 	}
 	params := &cognito.ChangeEmailParams{
 		AccessToken: in.AccessToken,
 		Username:    username,
-		OldEmail:    u.Email,
+		OldEmail:    m.Email,
 		NewEmail:    in.Email,
 	}
 	err = s.userAuth.ChangeEmail(ctx, params)
@@ -132,7 +145,7 @@ func (s *service) VerifyUserEmail(ctx context.Context, in *user.VerifyUserEmailI
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	u, err := s.db.User.GetByCognitoID(ctx, username, "id")
+	m, err := s.db.Member.GetByCognitoID(ctx, username, "user_id")
 	if err != nil {
 		return exception.InternalError(err)
 	}
@@ -145,7 +158,7 @@ func (s *service) VerifyUserEmail(ctx context.Context, in *user.VerifyUserEmailI
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	err = s.db.User.UpdateEmail(ctx, u.ID, email)
+	err = s.db.Member.UpdateEmail(ctx, m.UserID, email)
 	return exception.InternalError(err)
 }
 
@@ -166,11 +179,11 @@ func (s *service) ForgotUserPassword(ctx context.Context, in *user.ForgotUserPas
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	u, err := s.db.User.GetByEmail(ctx, in.Email, "cognito_id")
+	m, err := s.db.Member.GetByEmail(ctx, in.Email, "cognito_id")
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	if err := s.userAuth.ForgotPassword(ctx, u.CognitoID); err != nil {
+	if err := s.userAuth.ForgotPassword(ctx, m.CognitoID); err != nil {
 		return fmt.Errorf("%w: %s", exception.ErrNotFound, err.Error())
 	}
 	return nil
@@ -180,12 +193,12 @@ func (s *service) VerifyUserPassword(ctx context.Context, in *user.VerifyUserPas
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	u, err := s.db.User.GetByEmail(ctx, in.Email, "cognito_id")
+	m, err := s.db.Member.GetByEmail(ctx, in.Email, "cognito_id")
 	if err != nil {
 		return exception.InternalError(err)
 	}
 	params := &cognito.ConfirmForgotPasswordParams{
-		Username:    u.CognitoID,
+		Username:    m.CognitoID,
 		VerifyCode:  in.VerifyCode,
 		NewPassword: in.NewPassword,
 	}
@@ -197,13 +210,13 @@ func (s *service) DeleteUser(ctx context.Context, in *user.DeleteUserInput) erro
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	u, err := s.db.User.Get(ctx, in.UserID)
+	m, err := s.db.Member.Get(ctx, in.UserID)
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	if err := s.userAuth.DeleteUser(ctx, u.CognitoID); err != nil {
+	if err := s.userAuth.DeleteUser(ctx, m.CognitoID); err != nil {
 		return exception.InternalError(err)
 	}
-	err = s.db.User.Delete(ctx, u.ID)
+	err = s.db.Member.Delete(ctx, m.UserID)
 	return exception.InternalError(err)
 }

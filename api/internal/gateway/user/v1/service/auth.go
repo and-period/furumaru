@@ -33,9 +33,9 @@ type AuthUser struct {
 func NewAuthUser(user *entity.User) *AuthUser {
 	return &AuthUser{
 		AuthUser: response.AuthUser{
-			ID:           user.ID,
-			Username:     user.Username,
-			ThumbnailURL: user.ThumbnailURL,
+			ID:           user.Member.UserID,
+			Username:     user.Member.Username,
+			ThumbnailURL: user.Member.ThumbnailURL,
 		},
 	}
 }

@@ -197,7 +197,12 @@ func (c *coordinator) fill(ctx context.Context, tx *gorm.DB, coordinators ...*en
 	adminMap := admins.Map()
 
 	for i, c := range coordinators {
-		coordinators[i].Fill(adminMap[c.AdminID])
+		admin, ok := adminMap[c.AdminID]
+		if !ok {
+			admin = &entity.Admin{}
+		}
+
+		coordinators[i].Fill(admin)
 	}
 	return nil
 }
