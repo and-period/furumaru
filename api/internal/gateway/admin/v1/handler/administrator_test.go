@@ -113,14 +113,6 @@ func TestListAdministrators(t *testing.T) {
 			},
 		},
 		{
-			name:  "invalid orders",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
-			query: "?orders=lastname,firstname,email,phoneNumber,other",
-			expect: &testResponse{
-				code: http.StatusBadRequest,
-			},
-		},
-		{
 			name: "failed to get administrators",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.user.EXPECT().ListAdministrators(gomock.Any(), in).Return(nil, int64(0), errmock)

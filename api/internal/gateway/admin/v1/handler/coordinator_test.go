@@ -153,14 +153,6 @@ func TestListCoordinator(t *testing.T) {
 			},
 		},
 		{
-			name:  "invalid orders",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
-			query: "?orders=lastname,firstname,companyName,storeName,email,phoneNumber,other",
-			expect: &testResponse{
-				code: http.StatusBadRequest,
-			},
-		},
-		{
 			name: "failed to get coordinators",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.user.EXPECT().ListCoordinators(gomock.Any(), in).Return(nil, int64(0), errmock)
