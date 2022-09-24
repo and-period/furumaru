@@ -211,8 +211,11 @@ func TestWorker_Run(t *testing.T) {
 	}
 	users := uentity.Users{{
 		Member: uentity.Member{
-			Username: "&. スタッフ",
-			Email:    "test-user@and-period.jp",
+			Email: "test-user@and-period.jp",
+		},
+		Customer: uentity.Customer{
+			Lastname:  "&.",
+			Firstname: "スタッフ",
 		},
 	}}
 	devicesIn := &user.MultiGetAdminDevicesInput{
