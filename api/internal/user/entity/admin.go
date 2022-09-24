@@ -1,24 +1,56 @@
 package entity
 
 import (
+	"errors"
 	"strings"
 	"time"
 )
 
+var errInvalidAdminRole = errors.New("entity: invalid admin role")
+
+// AdminRole - 管理者権限
+type AdminRole int32
+
+const (
+	AdminRoleUnknown       AdminRole = 0
+	AdminRoleAdministrator AdminRole = 1 // 管理者
+	AdminRoleCoordinator   AdminRole = 2 // 仲介者
+	AdminRoleProducer      AdminRole = 3 // 生産者
+)
+
 // Admin - 管理者共通情報
 type Admin struct {
-	ID            string    // 管理者ID
-	Role          AdminRole // 管理者権限
-	Lastname      string    // 姓
-	Firstname     string    // 名
-	LastnameKana  string    // 姓(かな)
-	FirstnameKana string    // 名(かな)
-	Email         string    // メールアドレス
-	CreatedAt     time.Time // 登録日時
-	UpdatedAt     time.Time // 更新日時
+	ID            string    `gorm:"primaryKey;<-:create"` // 管理者ID
+	CognitoID     string    `gorm:"<-:create"`            // 管理者ID (Cognito用)
+	Role          AdminRole `gorm:"<-:create"`            // 管理者権限
+	Lastname      string    `gorm:""`                     // 姓
+	Firstname     string    `gorm:""`                     // 名
+	LastnameKana  string    `gorm:""`                     // 姓(かな)
+	FirstnameKana string    `gorm:""`                     // 名(かな)
+	Email         string    `gorm:""`                     // メールアドレス
+	Device        string    `gorm:""`                     // デバイストークン(Push通知用)
+	CreatedAt     time.Time `gorm:"<-:create"`            // 登録日時
+	UpdatedAt     time.Time `gorm:""`                     // 更新日時
 }
 
 type Admins []*Admin
+
+func NewAdminRole(role int32) (AdminRole, error) {
+	res := AdminRole(role)
+	if err := res.Validate(); err != nil {
+		return AdminRoleUnknown, err
+	}
+	return res, nil
+}
+
+func (r AdminRole) Validate() error {
+	switch r {
+	case AdminRoleAdministrator, AdminRoleCoordinator, AdminRoleProducer:
+		return nil
+	default:
+		return errInvalidAdminRole
+	}
+}
 
 func NewAdminFromAdministrator(administrator *Administrator) *Admin {
 	return &Admin{
