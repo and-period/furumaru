@@ -94,6 +94,7 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 	if err := s.db.Producer.Create(ctx, admin, producer); err != nil {
 		return nil, exception.InternalError(err)
 	}
+	producer.Admin = *admin
 	s.logger.Debug("Create producer", zap.String("producerId", producer.ID), zap.String("password", password))
 	s.waitGroup.Add(1)
 	go func() {

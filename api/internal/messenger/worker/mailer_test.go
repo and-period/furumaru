@@ -311,8 +311,26 @@ func TestPersonalizations(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				in := &user.MultiGetUsersInput{UserIDs: []string{"user-id"}}
 				users := uentity.Users{
-					{Username: "&. スタッフ", Email: "test-user@and-period.jp"},
-					{Username: "&. スタッフ", Email: ""},
+					{
+						Member: uentity.Member{
+							Username: "username",
+							Email:    "test-user@and-period.jp",
+						},
+						Customer: uentity.Customer{
+							Lastname:  "&.",
+							Firstname: "スタッフ",
+						},
+					},
+					{
+						Member: uentity.Member{
+							Username: "username",
+							Email:    "",
+						},
+						Customer: uentity.Customer{
+							Lastname:  "&.",
+							Firstname: "スタッフ",
+						},
+					},
 				}
 				mocks.user.EXPECT().MultiGetUsers(ctx, in).Return(users, nil)
 			},
@@ -680,17 +698,27 @@ func TestFetchUsers(t *testing.T) {
 	}
 	users := uentity.Users{
 		{
-			ID:           "user-id",
-			AccountID:    "account-id",
-			CognitoID:    "cognito-id",
-			Username:     "テストユーザー",
-			ProviderType: uentity.ProviderTypeEmail,
-			Email:        "test-user@and-period.jp",
-			PhoneNumber:  "+810000000000",
-			ThumbnailURL: "https://and-period.jp/thumbnail.png",
-			CreatedAt:    jst.Date(2022, 7, 10, 18, 30, 0, 0),
-			UpdatedAt:    jst.Date(2022, 7, 10, 18, 30, 0, 0),
-			VerifiedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			ID:         "user-id",
+			Registered: true,
+			CreatedAt:  jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			UpdatedAt:  jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			Member: uentity.Member{
+				UserID:       "user-id",
+				AccountID:    "account-id",
+				CognitoID:    "cognito-id",
+				Username:     "テストユーザー",
+				ProviderType: uentity.ProviderTypeEmail,
+				Email:        "test-user@and-period.jp",
+				PhoneNumber:  "+810000000000",
+				ThumbnailURL: "https://and-period.jp/thumbnail.png",
+				CreatedAt:    jst.Date(2022, 7, 10, 18, 30, 0, 0),
+				UpdatedAt:    jst.Date(2022, 7, 10, 18, 30, 0, 0),
+				VerifiedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			},
+			Customer: uentity.Customer{
+				Lastname:  "&.",
+				Firstname: "スタッフ",
+			},
 		},
 	}
 
@@ -709,7 +737,7 @@ func TestFetchUsers(t *testing.T) {
 			userIDs: []string{"user-id"},
 			execute: func(t *testing.T) func(name, email string) {
 				execute := func(name, email string) {
-					assert.Equal(t, "テストユーザー", name)
+					assert.Equal(t, "&. スタッフ", name)
 					assert.Equal(t, "test-user@and-period.jp", email)
 				}
 				return execute

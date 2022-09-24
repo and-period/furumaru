@@ -20,7 +20,7 @@ func TestSignInUser(t *testing.T) {
 		RefreshToken: "refresh-token",
 		ExpiresIn:    3600,
 	}
-	u := &entity.User{ID: "user-id"}
+	m := &entity.Member{UserID: "user-id"}
 
 	tests := []struct {
 		name      string
@@ -34,7 +34,7 @@ func TestSignInUser(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().SignIn(ctx, "username", "password").Return(result, nil)
 				mocks.userAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
-				mocks.db.User.EXPECT().GetByCognitoID(ctx, "username", "id").Return(u, nil)
+				mocks.db.Member.EXPECT().GetByCognitoID(ctx, "username", "user_id").Return(m, nil)
 			},
 			input: &user.SignInUserInput{
 				Key:      "username",
@@ -85,7 +85,7 @@ func TestSignInUser(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().SignIn(ctx, "username", "password").Return(result, nil)
 				mocks.userAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
-				mocks.db.User.EXPECT().GetByCognitoID(ctx, "username", "id").Return(nil, errmock)
+				mocks.db.Member.EXPECT().GetByCognitoID(ctx, "username", "user_id").Return(nil, errmock)
 			},
 			input: &user.SignInUserInput{
 				Key:      "username",
@@ -157,7 +157,7 @@ func TestSignOutUser(t *testing.T) {
 func TestGetUserAuth(t *testing.T) {
 	t.Parallel()
 
-	u := &entity.User{ID: "user-id"}
+	m := &entity.Member{UserID: "user-id"}
 
 	tests := []struct {
 		name      string
@@ -170,7 +170,7 @@ func TestGetUserAuth(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("username", nil)
-				mocks.db.User.EXPECT().GetByCognitoID(ctx, "username", "id").Return(u, nil)
+				mocks.db.Member.EXPECT().GetByCognitoID(ctx, "username", "user_id").Return(m, nil)
 			},
 			input: &user.GetUserAuthInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
@@ -207,7 +207,7 @@ func TestGetUserAuth(t *testing.T) {
 			name: "failed to get by cognito id",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("username", nil)
-				mocks.db.User.EXPECT().GetByCognitoID(ctx, "username", "id").Return(u, errmock)
+				mocks.db.Member.EXPECT().GetByCognitoID(ctx, "username", "user_id").Return(m, errmock)
 			},
 			input: &user.GetUserAuthInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
@@ -236,7 +236,7 @@ func TestRefreshUserToken(t *testing.T) {
 		RefreshToken: "",
 		ExpiresIn:    3600,
 	}
-	u := &entity.User{ID: "user-id"}
+	m := &entity.Member{UserID: "user-id"}
 
 	tests := []struct {
 		name      string
@@ -250,7 +250,7 @@ func TestRefreshUserToken(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(result, nil)
 				mocks.userAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
-				mocks.db.User.EXPECT().GetByCognitoID(ctx, "username", "id").Return(u, nil)
+				mocks.db.Member.EXPECT().GetByCognitoID(ctx, "username", "user_id").Return(m, nil)
 			},
 			input: &user.RefreshUserTokenInput{
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
@@ -300,7 +300,7 @@ func TestRefreshUserToken(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(result, nil)
 				mocks.userAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
-				mocks.db.User.EXPECT().GetByCognitoID(ctx, "username", "id").Return(nil, errmock)
+				mocks.db.Member.EXPECT().GetByCognitoID(ctx, "username", "user_id").Return(nil, errmock)
 			},
 			input: &user.RefreshUserTokenInput{
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",

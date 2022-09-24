@@ -192,7 +192,12 @@ func (p *producer) fill(ctx context.Context, tx *gorm.DB, producers ...*entity.P
 	adminMap := admins.Map()
 
 	for i, p := range producers {
-		producers[i].Fill(adminMap[p.AdminID])
+		admin, ok := adminMap[p.AdminID]
+		if !ok {
+			admin = &entity.Admin{}
+		}
+
+		producers[i].Fill(admin)
 	}
 	return nil
 }
