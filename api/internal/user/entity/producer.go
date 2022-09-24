@@ -20,7 +20,8 @@ const (
 
 // Producer - 生産者情報
 type Producer struct {
-	ID            string         `gorm:"primaryKey;<-:create"` // 管理者ID
+	ID            string         `gorm:"primaryKey;<-:create"` // Deprecated: 管理者ID
+	AdminID       string         `gorm:""`                     // 管理者ID
 	Lastname      string         `gorm:""`                     // 姓
 	Firstname     string         `gorm:""`                     // 名
 	LastnameKana  string         `gorm:""`                     // 姓(かな)
