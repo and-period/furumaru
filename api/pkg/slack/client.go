@@ -43,6 +43,12 @@ type options struct {
 
 type Option func(*options)
 
+func WithLogger(logger *zap.Logger) Option {
+	return func(opts *options) {
+		opts.logger = logger
+	}
+}
+
 func NewClient(params *Params, opts ...Option) Client {
 	dopts := &options{
 		logger: zap.NewNop(),

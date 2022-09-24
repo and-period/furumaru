@@ -37,10 +37,9 @@ type config struct {
 	SQSMockEnabled       bool   `envconfig:"SQS_MOCK_ENABLED" default:"false"`
 	AminWebURL           string `envconfig:"ADMIN_WEB_URL" default:""`
 	UserWebURL           string `envconfig:"USER_WEB_URL" default:""`
-	LINEChannelToken     string `envconfig:"LINE_CHANNEL_TOKEN" default:""`
-	LINEChannelSecret    string `envconfig:"LINE_CHANNEL_SECRET" default:""`
-	LINERoomID           string `envconfig:"LINE_ROOM_ID" default:""`
-	LINESecretName       string `envconfig:"LINE_SECRET_NAME" default:""`
+	SlackAPIToken        string `envconfig:"SLACK_API_TOKEN" default:""`
+	SlackChannelID       string `envconfig:"SLACK_CHANNEL_ID" default:""`
+	SlackSecretName      string `envconfig:"SLACK_SECRET_NAME" default:""`
 	RBACPolicyPath       string `envconfig:"RBAC_POLICY_PATH" default:""`
 	RBACModelPath        string `envconfig:"RBAC_MODEL_PATH" default:""`
 }
