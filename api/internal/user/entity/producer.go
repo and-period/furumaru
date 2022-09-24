@@ -22,15 +22,15 @@ const (
 type Producer struct {
 	ID            string         `gorm:"primaryKey;<-:create"` // Deprecated: 管理者ID
 	AdminID       string         `gorm:""`                     // 管理者ID
-	Lastname      string         `gorm:""`                     // 姓
-	Firstname     string         `gorm:""`                     // 名
-	LastnameKana  string         `gorm:""`                     // 姓(かな)
-	FirstnameKana string         `gorm:""`                     // 名(かな)
+	Lastname      string         `gorm:""`                     // Deprecated: 姓
+	Firstname     string         `gorm:""`                     // Deprecated: 名
+	LastnameKana  string         `gorm:""`                     // Deprecated: 姓(かな)
+	FirstnameKana string         `gorm:""`                     // Deprecated: 名(かな)
+	Email         string         `gorm:""`                     // Deprecated: メールアドレス
+	PhoneNumber   string         `gorm:""`                     // 電話番号
 	StoreName     string         `gorm:""`                     // 店舗名
 	ThumbnailURL  string         `gorm:""`                     // サムネイルURL
 	HeaderURL     string         `gorm:""`                     // ヘッダー画像URL
-	Email         string         `gorm:""`                     // メールアドレス
-	PhoneNumber   string         `gorm:""`                     // 電話番号
 	PostalCode    string         `gorm:""`                     // 郵便番号
 	Prefecture    string         `gorm:""`                     // 都道府県
 	City          string         `gorm:""`                     // 市区町村
@@ -48,11 +48,11 @@ type NewProducerParams struct {
 	Firstname     string
 	LastnameKana  string
 	FirstnameKana string
+	Email         string
+	PhoneNumber   string
 	StoreName     string
 	ThumbnailURL  string
 	HeaderURL     string
-	Email         string
-	PhoneNumber   string
 	PostalCode    string
 	Prefecture    string
 	City          string
@@ -67,11 +67,11 @@ func NewProducer(params *NewProducerParams) *Producer {
 		Firstname:     params.Firstname,
 		LastnameKana:  params.LastnameKana,
 		FirstnameKana: params.FirstnameKana,
+		Email:         params.Email,
+		PhoneNumber:   params.PhoneNumber,
 		StoreName:     params.StoreName,
 		ThumbnailURL:  params.ThumbnailURL,
 		HeaderURL:     params.HeaderURL,
-		Email:         params.Email,
-		PhoneNumber:   params.PhoneNumber,
 		PostalCode:    params.PostalCode,
 		Prefecture:    params.Prefecture,
 		City:          params.City,

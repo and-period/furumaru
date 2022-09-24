@@ -23,10 +23,12 @@ const (
 type Coordinator struct {
 	ID               string         `gorm:"primaryKey;<-:create"` // Deprecated: 管理者ID
 	AdminID          string         `gorm:""`                     // 管理者ID
-	Lastname         string         `gorm:""`                     // 姓
-	Firstname        string         `gorm:""`                     // 名
-	LastnameKana     string         `gorm:""`                     // 姓(かな)
-	FirstnameKana    string         `gorm:""`                     // 名(かな)
+	Lastname         string         `gorm:""`                     // Deprecated: 姓
+	Firstname        string         `gorm:""`                     // Deprecated: 名
+	LastnameKana     string         `gorm:""`                     // Deprecated: 姓(かな)
+	FirstnameKana    string         `gorm:""`                     // Deprecated: 名(かな)
+	Email            string         `gorm:""`                     // Deprecated: メールアドレス
+	PhoneNumber      string         `gorm:""`                     // 電話番号
 	CompanyName      string         `gorm:""`                     // 会社名
 	StoreName        string         `gorm:""`                     // 店舗名
 	ThumbnailURL     string         `gorm:""`                     // サムネイルURL
@@ -34,8 +36,6 @@ type Coordinator struct {
 	TwitterAccount   string         `gorm:""`                     // SNS(Twitter)アカウント名
 	InstagramAccount string         `gorm:""`                     // SNS(Instagram)アカウント名
 	FacebookAccount  string         `gorm:""`                     // SNS(Facebook)アカウント名
-	Email            string         `gorm:""`                     // メールアドレス
-	PhoneNumber      string         `gorm:""`                     // 電話番号
 	PostalCode       string         `gorm:""`                     // 郵便番号
 	Prefecture       string         `gorm:""`                     // 都道府県
 	City             string         `gorm:""`                     // 市区町村
@@ -53,6 +53,8 @@ type NewCoordinatorParams struct {
 	Firstname        string
 	LastnameKana     string
 	FirstnameKana    string
+	Email            string
+	PhoneNumber      string
 	CompanyName      string
 	StoreName        string
 	ThumbnailURL     string
@@ -60,8 +62,6 @@ type NewCoordinatorParams struct {
 	TwitterAccount   string
 	InstagramAccount string
 	FacebookAccount  string
-	Email            string
-	PhoneNumber      string
 	PostalCode       string
 	Prefecture       string
 	City             string
@@ -76,6 +76,8 @@ func NewCoordinator(params *NewCoordinatorParams) *Coordinator {
 		Firstname:        params.Firstname,
 		LastnameKana:     params.LastnameKana,
 		FirstnameKana:    params.FirstnameKana,
+		Email:            params.Email,
+		PhoneNumber:      params.PhoneNumber,
 		CompanyName:      params.CompanyName,
 		StoreName:        params.StoreName,
 		ThumbnailURL:     params.ThumbnailURL,
@@ -83,8 +85,6 @@ func NewCoordinator(params *NewCoordinatorParams) *Coordinator {
 		TwitterAccount:   params.TwitterAccount,
 		InstagramAccount: params.InstagramAccount,
 		FacebookAccount:  params.FacebookAccount,
-		Email:            params.Email,
-		PhoneNumber:      params.PhoneNumber,
 		PostalCode:       params.PostalCode,
 		Prefecture:       params.Prefecture,
 		City:             params.City,
