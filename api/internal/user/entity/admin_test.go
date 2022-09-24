@@ -7,95 +7,107 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestAdminFromAdministrator(t *testing.T) {
+func TestAdminRole(t *testing.T) {
 	t.Parallel()
 
-	now := jst.Date(2022, 6, 25, 18, 30, 0, 0)
 	tests := []struct {
-		name          string
-		administrator *Administrator
-		expect        *Admin
+		name      string
+		role      int32
+		expect    AdminRole
+		expectErr error
+	}{
+		{
+			name:      "success",
+			role:      1,
+			expect:    AdminRoleAdministrator,
+			expectErr: nil,
+		},
+		{
+			name:      "invalid role",
+			role:      0,
+			expect:    AdminRoleUnknown,
+			expectErr: errInvalidAdminRole,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual, err := NewAdminRole(tt.role)
+			assert.ErrorIs(t, tt.expectErr, err)
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestAdminRole_Validate(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		role   AdminRole
+		expect error
+	}{
+		{
+			name:   "administrator",
+			role:   AdminRoleAdministrator,
+			expect: nil,
+		},
+		{
+			name:   "coordinator",
+			role:   AdminRoleCoordinator,
+			expect: nil,
+		},
+		{
+			name:   "producer",
+			role:   AdminRoleProducer,
+			expect: nil,
+		},
+		{
+			name:   "unknown",
+			role:   AdminRoleUnknown,
+			expect: errInvalidAdminRole,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			err := tt.role.Validate()
+			assert.ErrorIs(t, err, tt.expect)
+		})
+	}
+}
+
+func TestAdmin(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		params *NewAdminParams
+		expect *Admin
 	}{
 		{
 			name: "success",
-			administrator: &Administrator{
-				ID:            "admin-id",
-				Lastname:      "&.",
-				Firstname:     "スタッフ",
-				LastnameKana:  "あんどぴりおど",
-				FirstnameKana: "すたっふ",
-				Email:         "test-admin@and-period.jp",
-				PhoneNumber:   "+819012345678",
-				CreatedAt:     now,
-				UpdatedAt:     now,
-			},
-			expect: &Admin{
-				ID:            "admin-id",
+			params: &NewAdminParams{
+				CognitoID:     "cognito-id",
 				Role:          AdminRoleAdministrator,
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどぴりおど",
 				FirstnameKana: "すたっふ",
 				Email:         "test-admin@and-period.jp",
-				CreatedAt:     now,
-				UpdatedAt:     now,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			actual := NewAdminFromAdministrator(tt.administrator)
-			assert.Equal(t, tt.expect, actual)
-		})
-	}
-}
-
-func TestAdminFromCoordinator(t *testing.T) {
-	t.Parallel()
-
-	now := jst.Date(2022, 6, 25, 18, 30, 0, 0)
-	tests := []struct {
-		name        string
-		coordinator *Coordinator
-		expect      *Admin
-	}{
-		{
-			name: "success",
-			coordinator: &Coordinator{
-				ID:               "admin-id",
-				Lastname:         "&.",
-				Firstname:        "スタッフ",
-				LastnameKana:     "あんどぴりおど",
-				FirstnameKana:    "すたっふ",
-				StoreName:        "&.農園",
-				ThumbnailURL:     "https://and-period.jp/thumbnail.png",
-				HeaderURL:        "https://and-period.jp/header.png",
-				TwitterAccount:   "twitter-account",
-				InstagramAccount: "instagram-account",
-				FacebookAccount:  "facebook-account",
-				Email:            "test-admin@and-period.jp",
-				PhoneNumber:      "+819012345678",
-				PostalCode:       "1000014",
-				Prefecture:       "東京都",
-				City:             "千代田区",
-				AddressLine1:     "永田町1-7-1",
-				AddressLine2:     "",
-				CreatedAt:        now,
-				UpdatedAt:        now,
 			},
 			expect: &Admin{
-				ID:            "admin-id",
-				Role:          AdminRoleCoordinator,
+				CognitoID:     "cognito-id",
+				Role:          AdminRoleAdministrator,
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどぴりおど",
 				FirstnameKana: "すたっふ",
 				Email:         "test-admin@and-period.jp",
-				CreatedAt:     now,
-				UpdatedAt:     now,
 			},
 		},
 	}
@@ -104,61 +116,8 @@ func TestAdminFromCoordinator(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewAdminFromCoordinator(tt.coordinator)
-			assert.Equal(t, tt.expect, actual)
-		})
-	}
-}
-
-func TestAdminFromProducer(t *testing.T) {
-	t.Parallel()
-
-	now := jst.Date(2022, 6, 25, 18, 30, 0, 0)
-	tests := []struct {
-		name     string
-		producer *Producer
-		expect   *Admin
-	}{
-		{
-			name: "success",
-			producer: &Producer{
-				ID:            "admin-id",
-				Lastname:      "&.",
-				Firstname:     "スタッフ",
-				LastnameKana:  "あんどぴりおど",
-				FirstnameKana: "すたっふ",
-				StoreName:     "&.農園",
-				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-				HeaderURL:     "https://and-period.jp/header.png",
-				Email:         "test-admin@and-period.jp",
-				PhoneNumber:   "+819012345678",
-				PostalCode:    "1000014",
-				Prefecture:    "東京都",
-				City:          "千代田区",
-				AddressLine1:  "永田町1-7-1",
-				AddressLine2:  "",
-				CreatedAt:     now,
-				UpdatedAt:     now,
-			},
-			expect: &Admin{
-				ID:            "admin-id",
-				Role:          AdminRoleProducer,
-				Lastname:      "&.",
-				Firstname:     "スタッフ",
-				LastnameKana:  "あんどぴりおど",
-				FirstnameKana: "すたっふ",
-				Email:         "test-admin@and-period.jp",
-				CreatedAt:     now,
-				UpdatedAt:     now,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			actual := NewAdminFromProducer(tt.producer)
+			actual := NewAdmin(tt.params)
+			actual.ID = "" // ignore
 			assert.Equal(t, tt.expect, actual)
 		})
 	}
@@ -200,41 +159,28 @@ func TestAdmin_Name(t *testing.T) {
 	}
 }
 
-func TestAdminsFromAdministrators(t *testing.T) {
+func TestAdmins_Map(t *testing.T) {
 	t.Parallel()
 
-	now := jst.Date(2022, 6, 25, 18, 30, 0, 0)
 	tests := []struct {
-		name           string
-		administrators Administrators
-		expect         Admins
+		name   string
+		admins Admins
+		expect map[string]*Admin
 	}{
 		{
 			name: "success",
-			administrators: Administrators{
+			admins: Admins{
 				{
-					ID:            "admin-id",
-					Lastname:      "&.",
-					Firstname:     "スタッフ",
-					LastnameKana:  "あんどぴりおど",
-					FirstnameKana: "すたっふ",
-					Email:         "test-admin@and-period.jp",
-					PhoneNumber:   "+819012345678",
-					CreatedAt:     now,
-					UpdatedAt:     now,
+					ID:        "admin-id",
+					CognitoID: "cognito-id",
+					Role:      AdminRoleAdministrator,
 				},
 			},
-			expect: Admins{
-				{
-					ID:            "admin-id",
-					Role:          AdminRoleAdministrator,
-					Lastname:      "&.",
-					Firstname:     "スタッフ",
-					LastnameKana:  "あんどぴりおど",
-					FirstnameKana: "すたっふ",
-					Email:         "test-admin@and-period.jp",
-					CreatedAt:     now,
-					UpdatedAt:     now,
+			expect: map[string]*Admin{
+				"admin-id": {
+					ID:        "admin-id",
+					CognitoID: "cognito-id",
+					Role:      AdminRoleAdministrator,
 				},
 			},
 		},
@@ -244,58 +190,35 @@ func TestAdminsFromAdministrators(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewAdminsFromAdministrators(tt.administrators)
-			assert.Equal(t, tt.expect, actual)
+			assert.Equal(t, tt.expect, tt.admins.Map())
 		})
 	}
 }
 
-func TestAdminsFromCoordinators(t *testing.T) {
+func TestAdmins_GroupByRole(t *testing.T) {
 	t.Parallel()
 
-	now := jst.Date(2022, 6, 25, 18, 30, 0, 0)
 	tests := []struct {
-		name         string
-		coordinators Coordinators
-		expect       Admins
+		name   string
+		admins Admins
+		expect map[AdminRole]Admins
 	}{
 		{
 			name: "success",
-			coordinators: Coordinators{
+			admins: Admins{
 				{
-					ID:               "admin-id",
-					Lastname:         "&.",
-					Firstname:        "スタッフ",
-					LastnameKana:     "あんどぴりおど",
-					FirstnameKana:    "すたっふ",
-					StoreName:        "&.農園",
-					ThumbnailURL:     "https://and-period.jp/thumbnail.png",
-					HeaderURL:        "https://and-period.jp/header.png",
-					TwitterAccount:   "twitter-account",
-					InstagramAccount: "instagram-account",
-					FacebookAccount:  "facebook-account",
-					Email:            "test-admin@and-period.jp",
-					PhoneNumber:      "+819012345678",
-					PostalCode:       "1000014",
-					Prefecture:       "東京都",
-					City:             "千代田区",
-					AddressLine1:     "永田町1-7-1",
-					AddressLine2:     "",
-					CreatedAt:        now,
-					UpdatedAt:        now,
+					ID:        "admin-id",
+					CognitoID: "cognito-id",
+					Role:      AdminRoleAdministrator,
 				},
 			},
-			expect: Admins{
-				{
-					ID:            "admin-id",
-					Role:          AdminRoleCoordinator,
-					Lastname:      "&.",
-					Firstname:     "スタッフ",
-					LastnameKana:  "あんどぴりおど",
-					FirstnameKana: "すたっふ",
-					Email:         "test-admin@and-period.jp",
-					CreatedAt:     now,
-					UpdatedAt:     now,
+			expect: map[AdminRole]Admins{
+				AdminRoleAdministrator: {
+					{
+						ID:        "admin-id",
+						CognitoID: "cognito-id",
+						Role:      AdminRoleAdministrator,
+					},
 				},
 			},
 		},
@@ -305,57 +228,29 @@ func TestAdminsFromCoordinators(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewAdminsFromCoordinators(tt.coordinators)
-			assert.Equal(t, tt.expect, actual)
+			assert.Equal(t, tt.expect, tt.admins.GroupByRole())
 		})
 	}
 }
 
-func TestAdminsFromProducers(t *testing.T) {
+func TestAdmins_IDs(t *testing.T) {
 	t.Parallel()
 
-	now := jst.Date(2022, 6, 25, 18, 30, 0, 0)
 	tests := []struct {
-		name      string
-		producers Producers
-		expect    Admins
+		name   string
+		s      Admins
+		expect []string
 	}{
 		{
 			name: "success",
-			producers: Producers{
+			s: Admins{
 				{
-					ID:            "admin-id",
-					Lastname:      "&.",
-					Firstname:     "スタッフ",
-					LastnameKana:  "あんどぴりおど",
-					FirstnameKana: "すたっふ",
-					StoreName:     "&.農園",
-					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-					HeaderURL:     "https://and-period.jp/header.png",
-					Email:         "test-admin@and-period.jp",
-					PhoneNumber:   "+819012345678",
-					PostalCode:    "1000014",
-					Prefecture:    "東京都",
-					City:          "千代田区",
-					AddressLine1:  "永田町1-7-1",
-					AddressLine2:  "",
-					CreatedAt:     now,
-					UpdatedAt:     now,
+					ID:        "admin-id",
+					CognitoID: "cognito-id",
+					Role:      AdminRoleAdministrator,
 				},
 			},
-			expect: Admins{
-				{
-					ID:            "admin-id",
-					Role:          AdminRoleProducer,
-					Lastname:      "&.",
-					Firstname:     "スタッフ",
-					LastnameKana:  "あんどぴりおど",
-					FirstnameKana: "すたっふ",
-					Email:         "test-admin@and-period.jp",
-					CreatedAt:     now,
-					UpdatedAt:     now,
-				},
-			},
+			expect: []string{"admin-id"},
 		},
 	}
 
@@ -363,8 +258,44 @@ func TestAdminsFromProducers(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewAdminsFromProducers(tt.producers)
-			assert.Equal(t, tt.expect, actual)
+			assert.Equal(t, tt.expect, tt.s.IDs())
+		})
+	}
+}
+
+func TestAdmins_Devices(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		s      Admins
+		expect []string
+	}{
+		{
+			name: "success",
+			s: Admins{
+				{
+					ID:        "admin-id",
+					CognitoID: "cognito-id",
+					Device:    "instance-id",
+					Role:      AdminRoleAdministrator,
+				},
+				{
+					ID:        "admin-id",
+					CognitoID: "cognito-id",
+					Device:    "",
+					Role:      AdminRoleAdministrator,
+				},
+			},
+			expect: []string{"instance-id"},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.s.Devices())
 		})
 	}
 }

@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
@@ -9,7 +8,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/user"
-	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/gin-gonic/gin"
 )
 
@@ -39,16 +37,10 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
-	orders, err := h.newProducerOrders(ctx)
-	if err != nil {
-		badRequest(ctx, err)
-		return
-	}
 
 	in := &user.ListProducersInput{
 		Limit:  limit,
 		Offset: offset,
-		Orders: orders,
 	}
 	producers, total, err := h.user.ListProducers(ctx, in)
 	if err != nil {
@@ -61,29 +53,6 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 		Total:     total,
 	}
 	ctx.JSON(http.StatusOK, res)
-}
-
-func (h *handler) newProducerOrders(ctx *gin.Context) ([]*user.ListProducersOrder, error) {
-	producers := map[string]uentity.ProducerOrderBy{
-		"lastname":    uentity.ProducerOrderByLastname,
-		"firstname":   uentity.ProducerOrderByFirstname,
-		"storeName":   uentity.ProducerOrderByStoreName,
-		"email":       uentity.ProducerOrderByEmail,
-		"phoneNumber": uentity.ProducerOrderByPhoneNumber,
-	}
-	params := util.GetOrders(ctx)
-	res := make([]*user.ListProducersOrder, len(params))
-	for i, p := range params {
-		key, ok := producers[p.Key]
-		if !ok {
-			return nil, fmt.Errorf("handler: unknown order key. key=%s: %w", p.Key, errInvalidOrderkey)
-		}
-		res[i] = &user.ListProducersOrder{
-			Key:        key,
-			OrderByASC: p.Direction == util.OrderByASC,
-		}
-	}
-	return res, nil
 }
 
 func (h *handler) GetProducer(ctx *gin.Context) {

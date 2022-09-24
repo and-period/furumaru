@@ -6,7 +6,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
-	"github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
 )
@@ -72,7 +71,7 @@ func TestNotification_Fill(t *testing.T) {
 	tests := []struct {
 		name         string
 		notification *Notification
-		admin        *service.Admin
+		admin        *Admin
 		expect       *Notification
 	}{
 		{
@@ -94,7 +93,7 @@ func TestNotification_Fill(t *testing.T) {
 					UpdatedAt:   1640962800,
 				},
 			},
-			admin: &service.Admin{
+			admin: &Admin{
 				Admin: response.Admin{
 					ID:            "admin-id",
 					Role:          uentity.AdminRoleAdministrator,
@@ -296,7 +295,7 @@ func TestNotifications_Fill(t *testing.T) {
 	tests := []struct {
 		name          string
 		notifications Notifications
-		admins        map[string]*service.Admin
+		admins        map[string]*Admin
 		expect        Notifications
 	}{
 		{
@@ -320,7 +319,7 @@ func TestNotifications_Fill(t *testing.T) {
 					},
 				},
 			},
-			admins: map[string]*service.Admin{
+			admins: map[string]*Admin{
 				"admin-id": {
 					Admin: response.Admin{
 						ID:            "admin-id",

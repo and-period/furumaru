@@ -19,15 +19,18 @@ func TestListCoordinator(t *testing.T) {
 	in := &user.ListCoordinatorsInput{
 		Limit:  20,
 		Offset: 0,
-		Orders: []*user.ListCoordinatorsOrder{},
 	}
 	coordinators := uentity.Coordinators{
 		{
-			ID:               "coordinator-id01",
-			Lastname:         "&.",
-			Firstname:        "管理者",
-			LastnameKana:     "あんどどっと",
-			FirstnameKana:    "かんりしゃ",
+			Admin: uentity.Admin{
+				ID:            "coordinator-id01",
+				Lastname:      "&.",
+				Firstname:     "管理者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "かんりしゃ",
+				Email:         "test-coordinator@and-period.jp",
+			},
+			AdminID:          "coordinator-id01",
 			CompanyName:      "&.株式会社",
 			StoreName:        "&.農園",
 			ThumbnailURL:     "https://and-period.jp/thumbnail.png",
@@ -35,7 +38,6 @@ func TestListCoordinator(t *testing.T) {
 			TwitterAccount:   "twitter-id",
 			InstagramAccount: "instagram-id",
 			FacebookAccount:  "facebook-id",
-			Email:            "test-coordinator@and-period.jp",
 			PhoneNumber:      "+819012345678",
 			PostalCode:       "1000014",
 			Prefecture:       "東京都",
@@ -44,11 +46,15 @@ func TestListCoordinator(t *testing.T) {
 			UpdatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
 		{
-			ID:               "coordinator-id02",
-			Lastname:         "&.",
-			Firstname:        "管理者",
-			LastnameKana:     "あんどどっと",
-			FirstnameKana:    "かんりしゃ",
+			Admin: uentity.Admin{
+				ID:            "coordinator-id02",
+				Lastname:      "&.",
+				Firstname:     "管理者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "かんりしゃ",
+				Email:         "test-coordinator@and-period.jp",
+			},
+			AdminID:          "coordinator-id02",
 			CompanyName:      "&.株式会社",
 			StoreName:        "&.農園",
 			ThumbnailURL:     "https://and-period.jp/thumbnail.png",
@@ -56,7 +62,6 @@ func TestListCoordinator(t *testing.T) {
 			TwitterAccount:   "twitter-id",
 			InstagramAccount: "instagram-id",
 			FacebookAccount:  "facebook-id",
-			Email:            "test-coordinator@and-period.jp",
 			PhoneNumber:      "+819012345678",
 			PostalCode:       "1000014",
 			Prefecture:       "東京都",
@@ -148,14 +153,6 @@ func TestListCoordinator(t *testing.T) {
 			},
 		},
 		{
-			name:  "invalid orders",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
-			query: "?orders=lastname,firstname,companyName,storeName,email,phoneNumber,other",
-			expect: &testResponse{
-				code: http.StatusBadRequest,
-			},
-		},
-		{
 			name: "failed to get coordinators",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.user.EXPECT().ListCoordinators(gomock.Any(), in).Return(nil, int64(0), errmock)
@@ -184,11 +181,15 @@ func TestGetCoordinator(t *testing.T) {
 		CoordinatorID: "coordinator-id",
 	}
 	coordinator := &uentity.Coordinator{
-		ID:               "coordinator-id",
-		Lastname:         "&.",
-		Firstname:        "管理者",
-		LastnameKana:     "あんどどっと",
-		FirstnameKana:    "かんりしゃ",
+		Admin: uentity.Admin{
+			ID:            "coordinator-id",
+			Lastname:      "&.",
+			Firstname:     "管理者",
+			LastnameKana:  "あんどどっと",
+			FirstnameKana: "かんりしゃ",
+			Email:         "test-coordinator@and-period.jp",
+		},
+		AdminID:          "coordinator-id",
 		CompanyName:      "&.株式会社",
 		StoreName:        "&.農園",
 		ThumbnailURL:     "https://and-period.jp/thumbnail.png",
@@ -196,7 +197,6 @@ func TestGetCoordinator(t *testing.T) {
 		TwitterAccount:   "twitter-id",
 		InstagramAccount: "instagram-id",
 		FacebookAccount:  "facebook-id",
-		Email:            "test-coordinator@and-period.jp",
 		PhoneNumber:      "+819012345678",
 		PostalCode:       "1000014",
 		Prefecture:       "東京都",
@@ -290,11 +290,15 @@ func TestCreateCoordinator(t *testing.T) {
 		AddressLine2:     "",
 	}
 	coordinator := &uentity.Coordinator{
-		ID:               "coordinator-id",
-		Lastname:         "&.",
-		Firstname:        "管理者",
-		LastnameKana:     "あんどどっと",
-		FirstnameKana:    "かんりしゃ",
+		Admin: uentity.Admin{
+			ID:            "coordinator-id",
+			Lastname:      "&.",
+			Firstname:     "管理者",
+			LastnameKana:  "あんどどっと",
+			FirstnameKana: "かんりしゃ",
+			Email:         "test-coordinator@and-period.jp",
+		},
+		AdminID:          "coordinator-id",
 		CompanyName:      "&.株式会社",
 		StoreName:        "&.農園",
 		ThumbnailURL:     "https://and-period.jp/thumbnail.png",
@@ -302,7 +306,6 @@ func TestCreateCoordinator(t *testing.T) {
 		TwitterAccount:   "twitter-id",
 		InstagramAccount: "instagram-id",
 		FacebookAccount:  "facebook-id",
-		Email:            "test-coordinator@and-period.jp",
 		PhoneNumber:      "+819012345678",
 		PostalCode:       "1000014",
 		Prefecture:       "東京都",

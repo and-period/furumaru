@@ -206,9 +206,11 @@ func TestPersonalizations(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				in := &user.MultiGetAdministratorsInput{AdministratorIDs: []string{"admin-id"}}
 				administrators := uentity.Administrators{{
-					Lastname:  "&.",
-					Firstname: "スタッフ",
-					Email:     "test-user@and-period.jp",
+					Admin: uentity.Admin{
+						Lastname:  "&.",
+						Firstname: "スタッフ",
+						Email:     "test-user@and-period.jp",
+					},
 				}}
 				mocks.user.EXPECT().MultiGetAdministrators(ctx, in).Return(administrators, nil)
 			},
@@ -239,9 +241,11 @@ func TestPersonalizations(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				in := &user.MultiGetCoordinatorsInput{CoordinatorIDs: []string{"admin-id"}}
 				coordinators := uentity.Coordinators{{
-					Lastname:  "&.",
-					Firstname: "スタッフ",
-					Email:     "test-user@and-period.jp",
+					Admin: uentity.Admin{
+						Lastname:  "&.",
+						Firstname: "スタッフ",
+						Email:     "test-user@and-period.jp",
+					},
 				}}
 				mocks.user.EXPECT().MultiGetCoordinators(ctx, in).Return(coordinators, nil)
 			},
@@ -272,9 +276,11 @@ func TestPersonalizations(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				in := &user.MultiGetProducersInput{ProducerIDs: []string{"admin-id"}}
 				producers := uentity.Producers{{
-					Lastname:  "&.",
-					Firstname: "スタッフ",
-					Email:     "test-user@and-period.jp",
+					Admin: uentity.Admin{
+						Lastname:  "&.",
+						Firstname: "スタッフ",
+						Email:     "test-user@and-period.jp",
+					},
 				}}
 				mocks.user.EXPECT().MultiGetProducers(ctx, in).Return(producers, nil)
 			},
@@ -457,15 +463,18 @@ func TestFetchAdministrators(t *testing.T) {
 	}
 	administrators := uentity.Administrators{
 		{
-			ID:            "administrator-id",
-			Lastname:      "&.",
-			Firstname:     "スタッフ",
-			LastnameKana:  "あんどぴりおど",
-			FirstnameKana: "すたっふ",
-			Email:         "test-admin@and-period.jp",
-			PhoneNumber:   "+819012345678",
-			CreatedAt:     jst.Date(2022, 7, 10, 18, 30, 0, 0),
-			UpdatedAt:     jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			Admin: uentity.Admin{
+				ID:            "administrator-id",
+				Lastname:      "&.",
+				Firstname:     "スタッフ",
+				LastnameKana:  "あんどぴりおど",
+				FirstnameKana: "すたっふ",
+				Email:         "test-admin@and-period.jp",
+			},
+			AdminID:     "administrator-id",
+			PhoneNumber: "+819012345678",
+			CreatedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			UpdatedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
 		},
 	}
 
@@ -520,18 +529,21 @@ func TestFetchCoordinators(t *testing.T) {
 	}
 	coordinators := uentity.Coordinators{
 		{
-			ID:               "coordinator-id",
-			Lastname:         "&.",
-			Firstname:        "スタッフ",
-			LastnameKana:     "あんどぴりおど",
-			FirstnameKana:    "すたっふ",
+			Admin: uentity.Admin{
+				ID:            "coordinator-id",
+				Lastname:      "&.",
+				Firstname:     "スタッフ",
+				LastnameKana:  "あんどぴりおど",
+				FirstnameKana: "すたっふ",
+				Email:         "test-admin@and-period.jp",
+			},
+			AdminID:          "coordinator-id",
 			StoreName:        "&.農園",
 			ThumbnailURL:     "https://and-period.jp/thumbnail.png",
 			HeaderURL:        "https://and-period.jp/header.png",
 			TwitterAccount:   "twitter-account",
 			InstagramAccount: "instagram-account",
 			FacebookAccount:  "facebook-account",
-			Email:            "test-admin@and-period.jp",
 			PhoneNumber:      "+819012345678",
 			PostalCode:       "1000014",
 			Prefecture:       "東京都",
@@ -594,23 +606,26 @@ func TestFetchProducers(t *testing.T) {
 	}
 	producers := uentity.Producers{
 		{
-			ID:            "admin-id",
-			Lastname:      "&.",
-			Firstname:     "スタッフ",
-			LastnameKana:  "あんどぴりおど",
-			FirstnameKana: "すたっふ",
-			StoreName:     "&.農園",
-			ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-			HeaderURL:     "https://and-period.jp/header.png",
-			Email:         "test-admin@and-period.jp",
-			PhoneNumber:   "+819012345678",
-			PostalCode:    "1000014",
-			Prefecture:    "東京都",
-			City:          "千代田区",
-			AddressLine1:  "永田町1-7-1",
-			AddressLine2:  "",
-			CreatedAt:     jst.Date(2022, 7, 10, 18, 30, 0, 0),
-			UpdatedAt:     jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			Admin: uentity.Admin{
+				ID:            "admin-id",
+				Lastname:      "&.",
+				Firstname:     "スタッフ",
+				LastnameKana:  "あんどぴりおど",
+				FirstnameKana: "すたっふ",
+				Email:         "test-admin@and-period.jp",
+			},
+			AdminID:      "admin-id",
+			StoreName:    "&.農園",
+			ThumbnailURL: "https://and-period.jp/thumbnail.png",
+			HeaderURL:    "https://and-period.jp/header.png",
+			PhoneNumber:  "+819012345678",
+			PostalCode:   "1000014",
+			Prefecture:   "東京都",
+			City:         "千代田区",
+			AddressLine1: "永田町1-7-1",
+			AddressLine2: "",
+			CreatedAt:    jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			UpdatedAt:    jst.Date(2022, 7, 10, 18, 30, 0, 0),
 		},
 	}
 

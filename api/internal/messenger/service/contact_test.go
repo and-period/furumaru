@@ -207,7 +207,7 @@ func TestCreateContact(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				admins := uentity.Administrators{{ID: "admin-id"}}
+				admins := uentity.Administrators{{AdminID: "admin-id"}}
 				mocks.db.Contact.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, contact *entity.Contact) error {

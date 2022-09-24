@@ -21,17 +21,9 @@ func (s *service) ListCoordinators(
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, exception.InternalError(err)
 	}
-	orders := make([]*database.ListCoordinatorsOrder, len(in.Orders))
-	for i := range in.Orders {
-		orders[i] = &database.ListCoordinatorsOrder{
-			Key:        in.Orders[i].Key,
-			OrderByASC: in.Orders[i].OrderByASC,
-		}
-	}
 	params := &database.ListCoordinatorsParams{
 		Limit:  int(in.Limit),
 		Offset: int(in.Offset),
-		Orders: orders,
 	}
 	var (
 		coordinators entity.Coordinators
@@ -84,11 +76,18 @@ func (s *service) CreateCoordinator(
 	if err := s.createCognitoAdmin(ctx, cognitoID, in.Email, password); err != nil {
 		return nil, exception.InternalError(err)
 	}
+	adminParams := &entity.NewAdminParams{
+		CognitoID:     cognitoID,
+		Role:          entity.AdminRoleCoordinator,
+		Lastname:      in.Lastname,
+		Firstname:     in.Firstname,
+		LastnameKana:  in.LastnameKana,
+		FirstnameKana: in.FirstnameKana,
+		Email:         in.Email,
+	}
+	admin := entity.NewAdmin(adminParams)
 	params := &entity.NewCoordinatorParams{
-		Lastname:         in.Lastname,
-		Firstname:        in.Firstname,
-		LastnameKana:     in.LastnameKana,
-		FirstnameKana:    in.FirstnameKana,
+		Admin:            admin,
 		CompanyName:      in.CompanyName,
 		StoreName:        in.StoreName,
 		ThumbnailURL:     in.ThumbnailURL,
@@ -96,7 +95,6 @@ func (s *service) CreateCoordinator(
 		TwitterAccount:   in.TwitterAccount,
 		InstagramAccount: in.InstagramAccount,
 		FacebookAccount:  in.FacebookAccount,
-		Email:            in.Email,
 		PhoneNumber:      in.PhoneNumber,
 		PostalCode:       in.PostalCode,
 		Prefecture:       in.Prefecture,
@@ -105,8 +103,7 @@ func (s *service) CreateCoordinator(
 		AddressLine2:     in.AddressLine2,
 	}
 	coordinator := entity.NewCoordinator(params)
-	auth := entity.NewAdminAuth(coordinator.ID, cognitoID, entity.AdminRoleCoordinator)
-	if err := s.db.Coordinator.Create(ctx, auth, coordinator); err != nil {
+	if err := s.db.Coordinator.Create(ctx, admin, coordinator); err != nil {
 		return nil, exception.InternalError(err)
 	}
 	s.logger.Debug("Create coordinator", zap.String("coordinatorId", coordinator.ID), zap.String("password", password))
@@ -152,7 +149,7 @@ func (s *service) UpdateCoordinatorEmail(ctx context.Context, in *user.UpdateCoo
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	auth, err := s.db.AdminAuth.GetByAdminID(ctx, in.CoordinatorID, "cognito_id", "role")
+	auth, err := s.db.Admin.Get(ctx, in.CoordinatorID, "cognito_id", "role")
 	if err != nil {
 		return exception.InternalError(err)
 	}
@@ -166,7 +163,7 @@ func (s *service) UpdateCoordinatorEmail(ctx context.Context, in *user.UpdateCoo
 	if err := s.adminAuth.AdminChangeEmail(ctx, params); err != nil {
 		return exception.InternalError(err)
 	}
-	err = s.db.Coordinator.UpdateEmail(ctx, in.CoordinatorID, in.Email)
+	err = s.db.Admin.UpdateEmail(ctx, in.CoordinatorID, in.Email)
 	return exception.InternalError(err)
 }
 
@@ -175,7 +172,7 @@ func (s *service) ResetCoordinatorPassword(ctx context.Context, in *user.ResetCo
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	auth, err := s.db.AdminAuth.GetByAdminID(ctx, in.CoordinatorID, "cognito_id", "role")
+	auth, err := s.db.Admin.Get(ctx, in.CoordinatorID, "cognito_id", "role")
 	if err != nil {
 		return exception.InternalError(err)
 	}

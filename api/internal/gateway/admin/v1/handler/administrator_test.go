@@ -19,30 +19,35 @@ func TestListAdministrators(t *testing.T) {
 	in := &user.ListAdministratorsInput{
 		Limit:  20,
 		Offset: 0,
-		Orders: []*user.ListAdministratorsOrder{},
 	}
 	admins := uentity.Administrators{
 		{
-			ID:            "admin-id01",
-			Lastname:      "&.",
-			Firstname:     "管理者",
-			LastnameKana:  "あんどどっと",
-			FirstnameKana: "かんりしゃ",
-			Email:         "test-admin01@and-period.jp",
-			PhoneNumber:   "+819012345678",
-			CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
-			UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			Admin: uentity.Admin{
+				ID:            "admin-id01",
+				Lastname:      "&.",
+				Firstname:     "管理者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "かんりしゃ",
+				Email:         "test-admin01@and-period.jp",
+			},
+			AdminID:     "admin-id01",
+			PhoneNumber: "+819012345678",
+			CreatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
 		{
-			ID:            "admin-id02",
-			Lastname:      "&.",
-			Firstname:     "スタッフ",
-			LastnameKana:  "あんどどっと",
-			FirstnameKana: "すたっふ",
-			Email:         "test-admin02@and-period.jp",
-			PhoneNumber:   "+819012345678",
-			CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
-			UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			Admin: uentity.Admin{
+				ID:            "admin-id02",
+				Lastname:      "&.",
+				Firstname:     "スタッフ",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "すたっふ",
+				Email:         "test-admin02@and-period.jp",
+			},
+			AdminID:     "admin-id02",
+			PhoneNumber: "+819012345678",
+			CreatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
 	}
 
@@ -108,14 +113,6 @@ func TestListAdministrators(t *testing.T) {
 			},
 		},
 		{
-			name:  "invalid orders",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
-			query: "?orders=lastname,firstname,email,phoneNumber,other",
-			expect: &testResponse{
-				code: http.StatusBadRequest,
-			},
-		},
-		{
 			name: "failed to get administrators",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.user.EXPECT().ListAdministrators(gomock.Any(), in).Return(nil, int64(0), errmock)
@@ -144,15 +141,18 @@ func TestGetAdministrator(t *testing.T) {
 		AdministratorID: "admin-id",
 	}
 	admin := &uentity.Administrator{
-		ID:            "admin-id",
-		Lastname:      "&.",
-		Firstname:     "管理者",
-		LastnameKana:  "あんどどっと",
-		FirstnameKana: "かんりしゃ",
-		Email:         "test-admin01@and-period.jp",
-		PhoneNumber:   "+819012345678",
-		CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
-		UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		Admin: uentity.Admin{
+			ID:            "admin-id",
+			Lastname:      "&.",
+			Firstname:     "管理者",
+			LastnameKana:  "あんどどっと",
+			FirstnameKana: "かんりしゃ",
+			Email:         "test-admin01@and-period.jp",
+		},
+		AdminID:     "admin-id",
+		PhoneNumber: "+819012345678",
+		CreatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		UpdatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
 	}
 
 	tests := []struct {
@@ -218,15 +218,18 @@ func TestCreateAdministrator(t *testing.T) {
 		PhoneNumber:   "+819012345678",
 	}
 	admin := &uentity.Administrator{
-		ID:            "admin-id",
-		Lastname:      "&.",
-		Firstname:     "管理者",
-		LastnameKana:  "あんどどっと",
-		FirstnameKana: "かんりしゃ",
-		Email:         "test-admin01@and-period.jp",
-		PhoneNumber:   "+819012345678",
-		CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
-		UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		Admin: uentity.Admin{
+			ID:            "admin-id",
+			Lastname:      "&.",
+			Firstname:     "管理者",
+			LastnameKana:  "あんどどっと",
+			FirstnameKana: "かんりしゃ",
+			Email:         "test-admin01@and-period.jp",
+		},
+		AdminID:     "admin-id",
+		PhoneNumber: "+819012345678",
+		CreatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		UpdatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
 	}
 
 	tests := []struct {

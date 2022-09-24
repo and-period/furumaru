@@ -1,33 +1,15 @@
 package entity
 
 import (
-	"strings"
 	"time"
 
-	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/gorm"
-)
-
-type CoordinatorOrderBy string
-
-const (
-	CoordinatorOrderByLastname    CoordinatorOrderBy = "lastname"
-	CoordinatorOrderByFirstname   CoordinatorOrderBy = "firstname"
-	CoordinatorOrderByCompanyName CoordinatorOrderBy = "company_name"
-	CoordinatorOrderByStoreName   CoordinatorOrderBy = "store_name"
-	CoordinatorOrderByEmail       CoordinatorOrderBy = "email"
-	CoordinatorOrderByPhoneNumber CoordinatorOrderBy = "phone_number"
 )
 
 // Coordinator - 仲介者情報
 type Coordinator struct {
-	ID               string         `gorm:"primaryKey;<-:create"` // Deprecated: 管理者ID
-	AdminID          string         `gorm:""`                     // 管理者ID
-	Lastname         string         `gorm:""`                     // Deprecated: 姓
-	Firstname        string         `gorm:""`                     // Deprecated: 名
-	LastnameKana     string         `gorm:""`                     // Deprecated: 姓(かな)
-	FirstnameKana    string         `gorm:""`                     // Deprecated: 名(かな)
-	Email            string         `gorm:""`                     // Deprecated: メールアドレス
+	Admin            `gorm:"-"`
+	AdminID          string         `gorm:"primaryKey;<-:create"` // 管理者ID
 	PhoneNumber      string         `gorm:""`                     // 電話番号
 	CompanyName      string         `gorm:""`                     // 会社名
 	StoreName        string         `gorm:""`                     // 店舗名
@@ -49,11 +31,7 @@ type Coordinator struct {
 type Coordinators []*Coordinator
 
 type NewCoordinatorParams struct {
-	Lastname         string
-	Firstname        string
-	LastnameKana     string
-	FirstnameKana    string
-	Email            string
+	Admin            *Admin
 	PhoneNumber      string
 	CompanyName      string
 	StoreName        string
@@ -71,12 +49,7 @@ type NewCoordinatorParams struct {
 
 func NewCoordinator(params *NewCoordinatorParams) *Coordinator {
 	return &Coordinator{
-		ID:               uuid.Base58Encode(uuid.New()),
-		Lastname:         params.Lastname,
-		Firstname:        params.Firstname,
-		LastnameKana:     params.LastnameKana,
-		FirstnameKana:    params.FirstnameKana,
-		Email:            params.Email,
+		AdminID:          params.Admin.ID,
 		PhoneNumber:      params.PhoneNumber,
 		CompanyName:      params.CompanyName,
 		StoreName:        params.StoreName,
@@ -90,17 +63,18 @@ func NewCoordinator(params *NewCoordinatorParams) *Coordinator {
 		City:             params.City,
 		AddressLine1:     params.AddressLine1,
 		AddressLine2:     params.AddressLine2,
+		Admin:            *params.Admin,
 	}
 }
 
-func (c *Coordinator) Name() string {
-	return strings.TrimSpace(strings.Join([]string{c.Lastname, c.Firstname}, " "))
+func (c *Coordinator) Fill(admin *Admin) {
+	c.Admin = *admin
 }
 
 func (cs Coordinators) IDs() []string {
 	res := make([]string, len(cs))
 	for i := range cs {
-		res[i] = cs[i].ID
+		res[i] = cs[i].AdminID
 	}
 	return res
 }
