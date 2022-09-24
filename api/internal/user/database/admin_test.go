@@ -12,11 +12,11 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAdminAuth(t *testing.T) {
-	assert.NotNil(t, NewAdminAuth(nil))
+func TestAdmin(t *testing.T) {
+	assert.NotNil(t, NewAdmin(nil))
 }
 
-func TestAdminAuth_MultiGet(t *testing.T) {
+func TestAdmin_MultiGet(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	ctrl := gomock.NewController(t)
@@ -29,18 +29,18 @@ func TestAdminAuth_MultiGet(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, adminAuthTable)
-	auths := make(entity.AdminAuths, 2)
-	auths[0] = testAdminAuth("admin-id01", "cognito-id01", now())
-	auths[1] = testAdminAuth("admin-id02", "cognito-id02", now())
-	err = m.db.DB.Create(&auths).Error
+	_ = m.dbDelete(ctx, adminTable)
+	s := make(entity.Admins, 2)
+	s[0] = testAdmin("admin-id01", "cognito-id01", "test-admin1@and-period.jp", now())
+	s[1] = testAdmin("admin-id02", "cognito-id02", "test-admin2@and-period.jp", now())
+	err = m.db.DB.Create(&s).Error
 	require.NoError(t, err)
 
 	type args struct {
 		adminIDs []string
 	}
 	type want struct {
-		auths  entity.AdminAuths
+		s      entity.Admins
 		hasErr bool
 	}
 	tests := []struct {
@@ -56,7 +56,7 @@ func TestAdminAuth_MultiGet(t *testing.T) {
 				adminIDs: []string{"admin-id01", "admin-id02"},
 			},
 			want: want{
-				auths:  auths,
+				s:      s,
 				hasErr: false,
 			},
 		},
@@ -71,20 +71,20 @@ func TestAdminAuth_MultiGet(t *testing.T) {
 
 			tt.setup(ctx, t, m)
 
-			db := &adminAuth{db: m.db, now: now}
+			db := &admin{db: m.db, now: now}
 			actual, err := db.MultiGet(ctx, tt.args.adminIDs)
 			if tt.want.hasErr {
 				assert.Error(t, err)
 				return
 			}
 			assert.NoError(t, err)
-			fillIgnoreAdminAuthsField(actual, now())
-			assert.Equal(t, tt.want.auths, actual)
+			fillIgnoreAdminsField(actual, now())
+			assert.Equal(t, tt.want.s, actual)
 		})
 	}
 }
 
-func TestAdminAuth_GetByAdminID(t *testing.T) {
+func TestAdmin_GetByAdminID(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	ctrl := gomock.NewController(t)
@@ -97,8 +97,8 @@ func TestAdminAuth_GetByAdminID(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, adminAuthTable)
-	a := testAdminAuth("admin-id", "cognito-id", now())
+	_ = m.dbDelete(ctx, adminTable)
+	a := testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
 	err = m.db.DB.Create(&a).Error
 	require.NoError(t, err)
 
@@ -106,7 +106,7 @@ func TestAdminAuth_GetByAdminID(t *testing.T) {
 		adminID string
 	}
 	type want struct {
-		auth   *entity.AdminAuth
+		admin  *entity.Admin
 		hasErr bool
 	}
 	tests := []struct {
@@ -122,7 +122,7 @@ func TestAdminAuth_GetByAdminID(t *testing.T) {
 				adminID: "admin-id",
 			},
 			want: want{
-				auth:   a,
+				admin:  a,
 				hasErr: false,
 			},
 		},
@@ -133,7 +133,7 @@ func TestAdminAuth_GetByAdminID(t *testing.T) {
 				adminID: "",
 			},
 			want: want{
-				auth:   nil,
+				admin:  nil,
 				hasErr: true,
 			},
 		},
@@ -148,20 +148,20 @@ func TestAdminAuth_GetByAdminID(t *testing.T) {
 
 			tt.setup(ctx, t, m)
 
-			db := &adminAuth{db: m.db, now: now}
-			actual, err := db.GetByAdminID(ctx, tt.args.adminID)
+			db := &admin{db: m.db, now: now}
+			actual, err := db.Get(ctx, tt.args.adminID)
 			if tt.want.hasErr {
 				assert.Error(t, err)
 				return
 			}
 			assert.NoError(t, err)
-			fillIgnoreAdminAuthField(actual, now())
-			assert.Equal(t, tt.want.auth, actual)
+			fillIgnoreAdminField(actual, now())
+			assert.Equal(t, tt.want.admin, actual)
 		})
 	}
 }
 
-func TestAdminAuth_GetByCognitoID(t *testing.T) {
+func TestAdmin_GetByCognitoID(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	ctrl := gomock.NewController(t)
@@ -174,8 +174,8 @@ func TestAdminAuth_GetByCognitoID(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, adminAuthTable)
-	a := testAdminAuth("admin-id", "cognito-id", now())
+	_ = m.dbDelete(ctx, adminTable)
+	a := testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
 	err = m.db.DB.Create(&a).Error
 	require.NoError(t, err)
 
@@ -183,7 +183,7 @@ func TestAdminAuth_GetByCognitoID(t *testing.T) {
 		cognitoID string
 	}
 	type want struct {
-		auth   *entity.AdminAuth
+		admin  *entity.Admin
 		hasErr bool
 	}
 	tests := []struct {
@@ -199,7 +199,7 @@ func TestAdminAuth_GetByCognitoID(t *testing.T) {
 				cognitoID: "cognito-id",
 			},
 			want: want{
-				auth:   a,
+				admin:  a,
 				hasErr: false,
 			},
 		},
@@ -210,7 +210,7 @@ func TestAdminAuth_GetByCognitoID(t *testing.T) {
 				cognitoID: "",
 			},
 			want: want{
-				auth:   nil,
+				admin:  nil,
 				hasErr: true,
 			},
 		},
@@ -225,20 +225,20 @@ func TestAdminAuth_GetByCognitoID(t *testing.T) {
 
 			tt.setup(ctx, t, m)
 
-			db := &adminAuth{db: m.db, now: now}
+			db := &admin{db: m.db, now: now}
 			actual, err := db.GetByCognitoID(ctx, tt.args.cognitoID)
 			if tt.want.hasErr {
 				assert.Error(t, err)
 				return
 			}
 			assert.NoError(t, err)
-			fillIgnoreAdminAuthField(actual, now())
-			assert.Equal(t, tt.want.auth, actual)
+			fillIgnoreAdminField(actual, now())
+			assert.Equal(t, tt.want.admin, actual)
 		})
 	}
 }
 
-func TestAdminAuth_UpdateDevice(t *testing.T) {
+func TestAdmin_UpdateDevice(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	ctrl := gomock.NewController(t)
@@ -251,7 +251,7 @@ func TestAdminAuth_UpdateDevice(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, adminAuthTable)
+	_ = m.dbDelete(ctx, adminTable)
 
 	type args struct {
 		adminID string
@@ -269,7 +269,7 @@ func TestAdminAuth_UpdateDevice(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				a := testAdminAuth("admin-id", "cognito-id", now())
+				a := testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
 				err = m.db.DB.Create(&a).Error
 				require.NoError(t, err)
 			},
@@ -300,29 +300,34 @@ func TestAdminAuth_UpdateDevice(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, adminAuthTable)
+			err := m.dbDelete(ctx, adminTable)
 			require.NoError(t, err)
 			tt.setup(ctx, t, m)
 
-			db := &adminAuth{db: m.db, now: now}
+			db := &admin{db: m.db, now: now}
 			err = db.UpdateDevice(ctx, tt.args.adminID, tt.args.device)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}
 }
 
-func testAdminAuth(adminID, cognitoID string, now time.Time) *entity.AdminAuth {
-	return &entity.AdminAuth{
-		AdminID:   adminID,
-		CognitoID: cognitoID,
-		Role:      entity.AdminRoleAdministrator,
-		Device:    "instance-id",
-		CreatedAt: now,
-		UpdatedAt: now,
+func testAdmin(adminID, cognitoID, email string, now time.Time) *entity.Admin {
+	return &entity.Admin{
+		ID:            adminID,
+		CognitoID:     cognitoID,
+		Role:          entity.AdminRoleAdministrator,
+		Lastname:      "&.",
+		Firstname:     "スタッフ",
+		LastnameKana:  "あんどぴりおど",
+		FirstnameKana: "すたっふ",
+		Email:         email,
+		Device:        "instance-id",
+		CreatedAt:     now,
+		UpdatedAt:     now,
 	}
 }
 
-func fillIgnoreAdminAuthField(a *entity.AdminAuth, now time.Time) {
+func fillIgnoreAdminField(a *entity.Admin, now time.Time) {
 	if a == nil {
 		return
 	}
@@ -330,8 +335,8 @@ func fillIgnoreAdminAuthField(a *entity.AdminAuth, now time.Time) {
 	a.UpdatedAt = now
 }
 
-func fillIgnoreAdminAuthsField(as entity.AdminAuths, now time.Time) {
+func fillIgnoreAdminsField(as entity.Admins, now time.Time) {
 	for i := range as {
-		fillIgnoreAdminAuthField(as[i], now)
+		fillIgnoreAdminField(as[i], now)
 	}
 }

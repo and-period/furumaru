@@ -3,7 +3,6 @@ package service
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
-	"github.com/and-period/furumaru/api/internal/user/service"
 	set "github.com/and-period/furumaru/api/pkg/set/v2"
 )
 
@@ -37,7 +36,7 @@ func NewNotification(notification *entity.Notification) *Notification {
 	}
 }
 
-func (n *Notification) Fill(admin *service.Admin) {
+func (n *Notification) Fill(admin *Admin) {
 	if admin != nil {
 		n.CreatedBy = admin.ID
 		n.CreatorName = admin.Name()
@@ -71,7 +70,7 @@ func (ns Notifications) AdminIDs() []string {
 	})
 }
 
-func (ns Notifications) Fill(admins map[string]*service.Admin) {
+func (ns Notifications) Fill(admins map[string]*Admin) {
 	for i := range ns {
 		admin, ok := admins[ns[i].CreatedBy]
 		if !ok {

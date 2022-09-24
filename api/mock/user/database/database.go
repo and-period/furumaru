@@ -13,91 +13,91 @@ import (
 	gomock "github.com/golang/mock/gomock"
 )
 
-// MockAdminAuth is a mock of AdminAuth interface.
-type MockAdminAuth struct {
+// MockAdmin is a mock of Admin interface.
+type MockAdmin struct {
 	ctrl     *gomock.Controller
-	recorder *MockAdminAuthMockRecorder
+	recorder *MockAdminMockRecorder
 }
 
-// MockAdminAuthMockRecorder is the mock recorder for MockAdminAuth.
-type MockAdminAuthMockRecorder struct {
-	mock *MockAdminAuth
+// MockAdminMockRecorder is the mock recorder for MockAdmin.
+type MockAdminMockRecorder struct {
+	mock *MockAdmin
 }
 
-// NewMockAdminAuth creates a new mock instance.
-func NewMockAdminAuth(ctrl *gomock.Controller) *MockAdminAuth {
-	mock := &MockAdminAuth{ctrl: ctrl}
-	mock.recorder = &MockAdminAuthMockRecorder{mock}
+// NewMockAdmin creates a new mock instance.
+func NewMockAdmin(ctrl *gomock.Controller) *MockAdmin {
+	mock := &MockAdmin{ctrl: ctrl}
+	mock.recorder = &MockAdminMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockAdminAuth) EXPECT() *MockAdminAuthMockRecorder {
+func (m *MockAdmin) EXPECT() *MockAdminMockRecorder {
 	return m.recorder
 }
 
-// GetByAdminID mocks base method.
-func (m *MockAdminAuth) GetByAdminID(ctx context.Context, adminID string, fields ...string) (*entity.AdminAuth, error) {
+// Get mocks base method.
+func (m *MockAdmin) Get(ctx context.Context, adminID string, fields ...string) (*entity.Admin, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{ctx, adminID}
 	for _, a := range fields {
 		varargs = append(varargs, a)
 	}
-	ret := m.ctrl.Call(m, "GetByAdminID", varargs...)
-	ret0, _ := ret[0].(*entity.AdminAuth)
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.Admin)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetByAdminID indicates an expected call of GetByAdminID.
-func (mr *MockAdminAuthMockRecorder) GetByAdminID(ctx, adminID interface{}, fields ...interface{}) *gomock.Call {
+// Get indicates an expected call of Get.
+func (mr *MockAdminMockRecorder) Get(ctx, adminID interface{}, fields ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, adminID}, fields...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByAdminID", reflect.TypeOf((*MockAdminAuth)(nil).GetByAdminID), varargs...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockAdmin)(nil).Get), varargs...)
 }
 
 // GetByCognitoID mocks base method.
-func (m *MockAdminAuth) GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.AdminAuth, error) {
+func (m *MockAdmin) GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.Admin, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{ctx, cognitoID}
 	for _, a := range fields {
 		varargs = append(varargs, a)
 	}
 	ret := m.ctrl.Call(m, "GetByCognitoID", varargs...)
-	ret0, _ := ret[0].(*entity.AdminAuth)
+	ret0, _ := ret[0].(*entity.Admin)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetByCognitoID indicates an expected call of GetByCognitoID.
-func (mr *MockAdminAuthMockRecorder) GetByCognitoID(ctx, cognitoID interface{}, fields ...interface{}) *gomock.Call {
+func (mr *MockAdminMockRecorder) GetByCognitoID(ctx, cognitoID interface{}, fields ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, cognitoID}, fields...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByCognitoID", reflect.TypeOf((*MockAdminAuth)(nil).GetByCognitoID), varargs...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByCognitoID", reflect.TypeOf((*MockAdmin)(nil).GetByCognitoID), varargs...)
 }
 
 // MultiGet mocks base method.
-func (m *MockAdminAuth) MultiGet(ctx context.Context, adminIDs []string, fields ...string) (entity.AdminAuths, error) {
+func (m *MockAdmin) MultiGet(ctx context.Context, adminIDs []string, fields ...string) (entity.Admins, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{ctx, adminIDs}
 	for _, a := range fields {
 		varargs = append(varargs, a)
 	}
 	ret := m.ctrl.Call(m, "MultiGet", varargs...)
-	ret0, _ := ret[0].(entity.AdminAuths)
+	ret0, _ := ret[0].(entity.Admins)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // MultiGet indicates an expected call of MultiGet.
-func (mr *MockAdminAuthMockRecorder) MultiGet(ctx, adminIDs interface{}, fields ...interface{}) *gomock.Call {
+func (mr *MockAdminMockRecorder) MultiGet(ctx, adminIDs interface{}, fields ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, adminIDs}, fields...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockAdminAuth)(nil).MultiGet), varargs...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockAdmin)(nil).MultiGet), varargs...)
 }
 
 // UpdateDevice mocks base method.
-func (m *MockAdminAuth) UpdateDevice(ctx context.Context, adminID, device string) error {
+func (m *MockAdmin) UpdateDevice(ctx context.Context, adminID, device string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateDevice", ctx, adminID, device)
 	ret0, _ := ret[0].(error)
@@ -105,9 +105,23 @@ func (m *MockAdminAuth) UpdateDevice(ctx context.Context, adminID, device string
 }
 
 // UpdateDevice indicates an expected call of UpdateDevice.
-func (mr *MockAdminAuthMockRecorder) UpdateDevice(ctx, adminID, device interface{}) *gomock.Call {
+func (mr *MockAdminMockRecorder) UpdateDevice(ctx, adminID, device interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateDevice", reflect.TypeOf((*MockAdminAuth)(nil).UpdateDevice), ctx, adminID, device)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateDevice", reflect.TypeOf((*MockAdmin)(nil).UpdateDevice), ctx, adminID, device)
+}
+
+// UpdateEmail mocks base method.
+func (m *MockAdmin) UpdateEmail(ctx context.Context, adminID, email string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateEmail", ctx, adminID, email)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateEmail indicates an expected call of UpdateEmail.
+func (mr *MockAdminMockRecorder) UpdateEmail(ctx, adminID, email interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateEmail", reflect.TypeOf((*MockAdmin)(nil).UpdateEmail), ctx, adminID, email)
 }
 
 // MockAdministrator is a mock of Administrator interface.
@@ -149,17 +163,17 @@ func (mr *MockAdministratorMockRecorder) Count(ctx, params interface{}) *gomock.
 }
 
 // Create mocks base method.
-func (m *MockAdministrator) Create(ctx context.Context, auth *entity.AdminAuth, administrator *entity.Administrator) error {
+func (m *MockAdministrator) Create(ctx context.Context, admin *entity.Admin, administrator *entity.Administrator) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", ctx, auth, administrator)
+	ret := m.ctrl.Call(m, "Create", ctx, admin, administrator)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockAdministratorMockRecorder) Create(ctx, auth, administrator interface{}) *gomock.Call {
+func (mr *MockAdministratorMockRecorder) Create(ctx, admin, administrator interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockAdministrator)(nil).Create), ctx, auth, administrator)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockAdministrator)(nil).Create), ctx, admin, administrator)
 }
 
 // Get mocks base method.
@@ -236,20 +250,6 @@ func (mr *MockAdministratorMockRecorder) Update(ctx, administratorID, params int
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockAdministrator)(nil).Update), ctx, administratorID, params)
 }
 
-// UpdateEmail mocks base method.
-func (m *MockAdministrator) UpdateEmail(ctx context.Context, administratorID, email string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateEmail", ctx, administratorID, email)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// UpdateEmail indicates an expected call of UpdateEmail.
-func (mr *MockAdministratorMockRecorder) UpdateEmail(ctx, administratorID, email interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateEmail", reflect.TypeOf((*MockAdministrator)(nil).UpdateEmail), ctx, administratorID, email)
-}
-
 // MockCoordinator is a mock of Coordinator interface.
 type MockCoordinator struct {
 	ctrl     *gomock.Controller
@@ -289,17 +289,17 @@ func (mr *MockCoordinatorMockRecorder) Count(ctx, params interface{}) *gomock.Ca
 }
 
 // Create mocks base method.
-func (m *MockCoordinator) Create(ctx context.Context, auth *entity.AdminAuth, coordinator *entity.Coordinator) error {
+func (m *MockCoordinator) Create(ctx context.Context, admin *entity.Admin, coordinator *entity.Coordinator) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", ctx, auth, coordinator)
+	ret := m.ctrl.Call(m, "Create", ctx, admin, coordinator)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockCoordinatorMockRecorder) Create(ctx, auth, coordinator interface{}) *gomock.Call {
+func (mr *MockCoordinatorMockRecorder) Create(ctx, admin, coordinator interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockCoordinator)(nil).Create), ctx, auth, coordinator)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockCoordinator)(nil).Create), ctx, admin, coordinator)
 }
 
 // Get mocks base method.
@@ -376,20 +376,6 @@ func (mr *MockCoordinatorMockRecorder) Update(ctx, coordinatorID, params interfa
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockCoordinator)(nil).Update), ctx, coordinatorID, params)
 }
 
-// UpdateEmail mocks base method.
-func (m *MockCoordinator) UpdateEmail(ctx context.Context, coordinatorID, email string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateEmail", ctx, coordinatorID, email)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// UpdateEmail indicates an expected call of UpdateEmail.
-func (mr *MockCoordinatorMockRecorder) UpdateEmail(ctx, coordinatorID, email interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateEmail", reflect.TypeOf((*MockCoordinator)(nil).UpdateEmail), ctx, coordinatorID, email)
-}
-
 // MockProducer is a mock of Producer interface.
 type MockProducer struct {
 	ctrl     *gomock.Controller
@@ -429,17 +415,17 @@ func (mr *MockProducerMockRecorder) Count(ctx, params interface{}) *gomock.Call 
 }
 
 // Create mocks base method.
-func (m *MockProducer) Create(ctx context.Context, auth *entity.AdminAuth, producer *entity.Producer) error {
+func (m *MockProducer) Create(ctx context.Context, admin *entity.Admin, producer *entity.Producer) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", ctx, auth, producer)
+	ret := m.ctrl.Call(m, "Create", ctx, admin, producer)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockProducerMockRecorder) Create(ctx, auth, producer interface{}) *gomock.Call {
+func (mr *MockProducerMockRecorder) Create(ctx, admin, producer interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockProducer)(nil).Create), ctx, auth, producer)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockProducer)(nil).Create), ctx, admin, producer)
 }
 
 // Get mocks base method.
@@ -514,20 +500,6 @@ func (m *MockProducer) Update(ctx context.Context, producerID string, params *da
 func (mr *MockProducerMockRecorder) Update(ctx, producerID, params interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockProducer)(nil).Update), ctx, producerID, params)
-}
-
-// UpdateEmail mocks base method.
-func (m *MockProducer) UpdateEmail(ctx context.Context, producerID, email string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateEmail", ctx, producerID, email)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// UpdateEmail indicates an expected call of UpdateEmail.
-func (mr *MockProducerMockRecorder) UpdateEmail(ctx, producerID, email interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateEmail", reflect.TypeOf((*MockProducer)(nil).UpdateEmail), ctx, producerID, email)
 }
 
 // MockUser is a mock of User interface.

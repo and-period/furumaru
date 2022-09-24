@@ -4,6 +4,9 @@ import (
 	"errors"
 	"strings"
 	"time"
+
+	set "github.com/and-period/furumaru/api/pkg/set/v2"
+	"github.com/and-period/furumaru/api/pkg/uuid"
 )
 
 var errInvalidAdminRole = errors.New("entity: invalid admin role")
@@ -35,6 +38,16 @@ type Admin struct {
 
 type Admins []*Admin
 
+type NewAdminParams struct {
+	CognitoID     string
+	Role          AdminRole
+	Lastname      string
+	Firstname     string
+	LastnameKana  string
+	FirstnameKana string
+	Email         string
+}
+
 func NewAdminRole(role int32) (AdminRole, error) {
 	res := AdminRole(role)
 	if err := res.Validate(); err != nil {
@@ -52,45 +65,16 @@ func (r AdminRole) Validate() error {
 	}
 }
 
-func NewAdminFromAdministrator(administrator *Administrator) *Admin {
+func NewAdmin(params *NewAdminParams) *Admin {
 	return &Admin{
-		ID:            administrator.ID,
-		Role:          AdminRoleAdministrator,
-		Lastname:      administrator.Lastname,
-		Firstname:     administrator.Firstname,
-		LastnameKana:  administrator.LastnameKana,
-		FirstnameKana: administrator.FirstnameKana,
-		Email:         administrator.Email,
-		CreatedAt:     administrator.CreatedAt,
-		UpdatedAt:     administrator.UpdatedAt,
-	}
-}
-
-func NewAdminFromCoordinator(coordinator *Coordinator) *Admin {
-	return &Admin{
-		ID:            coordinator.ID,
-		Role:          AdminRoleCoordinator,
-		Lastname:      coordinator.Lastname,
-		Firstname:     coordinator.Firstname,
-		LastnameKana:  coordinator.LastnameKana,
-		FirstnameKana: coordinator.FirstnameKana,
-		Email:         coordinator.Email,
-		CreatedAt:     coordinator.CreatedAt,
-		UpdatedAt:     coordinator.UpdatedAt,
-	}
-}
-
-func NewAdminFromProducer(producer *Producer) *Admin {
-	return &Admin{
-		ID:            producer.ID,
-		Role:          AdminRoleProducer,
-		Lastname:      producer.Lastname,
-		Firstname:     producer.Firstname,
-		LastnameKana:  producer.LastnameKana,
-		FirstnameKana: producer.FirstnameKana,
-		Email:         producer.Email,
-		CreatedAt:     producer.CreatedAt,
-		UpdatedAt:     producer.UpdatedAt,
+		ID:            uuid.Base58Encode(uuid.New()),
+		CognitoID:     params.CognitoID,
+		Role:          params.Role,
+		Lastname:      params.Lastname,
+		Firstname:     params.Firstname,
+		LastnameKana:  params.LastnameKana,
+		FirstnameKana: params.FirstnameKana,
+		Email:         params.Email,
 	}
 }
 
@@ -98,26 +82,41 @@ func (a *Admin) Name() string {
 	return strings.TrimSpace(strings.Join([]string{a.Lastname, a.Firstname}, " "))
 }
 
-func NewAdminsFromAdministrators(administrators Administrators) Admins {
-	res := make(Admins, len(administrators))
-	for i := range administrators {
-		res[i] = NewAdminFromAdministrator(administrators[i])
+func (as Admins) Map() map[string]*Admin {
+	res := make(map[string]*Admin, len(as))
+	for _, a := range as {
+		res[a.ID] = a
 	}
 	return res
 }
 
-func NewAdminsFromCoordinators(coordinators Coordinators) Admins {
-	res := make(Admins, len(coordinators))
-	for i := range coordinators {
-		res[i] = NewAdminFromCoordinator(coordinators[i])
+func (as Admins) GroupByRole() map[AdminRole]Admins {
+	const maxRoles = 4
+	res := make(map[AdminRole]Admins, maxRoles)
+	for _, a := range as {
+		if _, ok := res[a.Role]; !ok {
+			res[a.Role] = make(Admins, 0, len(as))
+		}
+		res[a.Role] = append(res[a.Role], a)
 	}
 	return res
 }
 
-func NewAdminsFromProducers(producers Producers) Admins {
-	res := make(Admins, len(producers))
-	for i := range producers {
-		res[i] = NewAdminFromProducer(producers[i])
+func (as Admins) IDs() []string {
+	res := make([]string, len(as))
+	for i := range as {
+		res[i] = as[i].ID
 	}
 	return res
+}
+
+func (as Admins) Devices() []string {
+	set := set.New[string](len(as))
+	for i := range as {
+		if as[i].Device == "" {
+			continue
+		}
+		set.Add(as[i].Device)
+	}
+	return set.Slice()
 }

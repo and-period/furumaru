@@ -29,11 +29,17 @@ func TestCoordinator_List(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, coordinatorTable)
+	_ = m.dbDelete(ctx, coordinatorTable, adminTable)
+	admins := make(entity.Admins, 2)
+	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
+	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
+	err = m.db.DB.Debug().Create(&admins).Error
 	coordinators := make(entity.Coordinators, 2)
-	coordinators[0] = testCoordinator("admin-id01", "test-admin01@and-period.jp", now())
-	coordinators[1] = testCoordinator("admin-id02", "test-admin02@and-period.jp", now())
-	err = m.db.DB.Create(&coordinators).Error
+	coordinators[0] = testCoordinator("admin-id01", now())
+	coordinators[0].Admin = *admins[0]
+	coordinators[1] = testCoordinator("admin-id02", now())
+	coordinators[1].Admin = *admins[1]
+	err = m.db.DB.Debug().Create(&coordinators).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -60,22 +66,6 @@ func TestCoordinator_List(t *testing.T) {
 			},
 			want: want{
 				coordinators: coordinators[1:],
-				hasErr:       false,
-			},
-		},
-		{
-			name:  "success with sort",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
-			args: args{
-				params: &ListCoordinatorsParams{
-					Orders: []*ListCoordinatorsOrder{
-						{Key: "lastname", OrderByASC: true},
-						{Key: "firstname", OrderByASC: false},
-					},
-				},
-			},
-			want: want{
-				coordinators: coordinators,
 				hasErr:       false,
 			},
 		},
@@ -116,11 +106,17 @@ func TestCoordinator_Count(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, coordinatorTable)
-	admins := make(entity.Coordinators, 2)
-	admins[0] = testCoordinator("admin-id01", "test-admin01@and-period.jp", now())
-	admins[1] = testCoordinator("admin-id02", "test-admin02@and-period.jp", now())
+	_ = m.dbDelete(ctx, coordinatorTable, adminTable)
+	admins := make(entity.Admins, 2)
+	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
+	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
 	err = m.db.DB.Create(&admins).Error
+	coordinators := make(entity.Coordinators, 2)
+	coordinators[0] = testCoordinator("admin-id01", now())
+	coordinators[0].Admin = *admins[0]
+	coordinators[1] = testCoordinator("admin-id02", now())
+	coordinators[1].Admin = *admins[1]
+	err = m.db.DB.Create(&coordinators).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -182,19 +178,25 @@ func TestCoordinator_MultiGet(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, coordinatorTable)
-	admins := make(entity.Coordinators, 2)
-	admins[0] = testCoordinator("admin-id01", "test-admin01@and-period.jp", now())
-	admins[1] = testCoordinator("admin-id02", "test-admin02@and-period.jp", now())
+	_ = m.dbDelete(ctx, coordinatorTable, adminTable)
+	admins := make(entity.Admins, 2)
+	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
+	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
 	err = m.db.DB.Create(&admins).Error
+	coordinators := make(entity.Coordinators, 2)
+	coordinators[0] = testCoordinator("admin-id01", now())
+	coordinators[0].Admin = *admins[0]
+	coordinators[1] = testCoordinator("admin-id02", now())
+	coordinators[1].Admin = *admins[1]
+	err = m.db.DB.Create(&coordinators).Error
 	require.NoError(t, err)
 
 	type args struct {
 		adminIDs []string
 	}
 	type want struct {
-		admins entity.Coordinators
-		hasErr bool
+		coordinators entity.Coordinators
+		hasErr       bool
 	}
 	tests := []struct {
 		name  string
@@ -209,8 +211,8 @@ func TestCoordinator_MultiGet(t *testing.T) {
 				adminIDs: []string{"admin-id01", "admin-id02"},
 			},
 			want: want{
-				admins: admins,
-				hasErr: false,
+				coordinators: coordinators,
+				hasErr:       false,
 			},
 		},
 	}
@@ -232,7 +234,7 @@ func TestCoordinator_MultiGet(t *testing.T) {
 			}
 			assert.NoError(t, err)
 			fillIgnoreCoordinatorsField(actual, now())
-			assert.Equal(t, tt.want.admins, actual)
+			assert.Equal(t, tt.want.coordinators, actual)
 		})
 	}
 }
@@ -250,17 +252,21 @@ func TestCoordinator_Get(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, coordinatorTable)
-	a := testCoordinator("admin-id", "test-admin@and-period.jp", now())
-	err = m.db.DB.Create(&a).Error
+	_ = m.dbDelete(ctx, coordinatorTable, adminTable)
+	admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
+	err = m.db.DB.Create(&admin).Error
+	require.NoError(t, err)
+	c := testCoordinator("admin-id", now())
+	c.Admin = *admin
+	err = m.db.DB.Create(&c).Error
 	require.NoError(t, err)
 
 	type args struct {
 		adminID string
 	}
 	type want struct {
-		admin  *entity.Coordinator
-		hasErr bool
+		coordinator *entity.Coordinator
+		hasErr      bool
 	}
 	tests := []struct {
 		name  string
@@ -275,8 +281,8 @@ func TestCoordinator_Get(t *testing.T) {
 				adminID: "admin-id",
 			},
 			want: want{
-				admin:  a,
-				hasErr: false,
+				coordinator: c,
+				hasErr:      false,
 			},
 		},
 		{
@@ -286,8 +292,8 @@ func TestCoordinator_Get(t *testing.T) {
 				adminID: "",
 			},
 			want: want{
-				admin:  nil,
-				hasErr: true,
+				coordinator: nil,
+				hasErr:      true,
 			},
 		},
 	}
@@ -309,7 +315,7 @@ func TestCoordinator_Get(t *testing.T) {
 			}
 			assert.NoError(t, err)
 			fillIgnoreCoordinatorField(actual, now())
-			assert.Equal(t, tt.want.admin, actual)
+			assert.Equal(t, tt.want.coordinator, actual)
 		})
 	}
 }
@@ -326,8 +332,8 @@ func TestCoordinator_Create(t *testing.T) {
 	}
 
 	type args struct {
-		auth  *entity.AdminAuth
-		admin *entity.Coordinator
+		admin       *entity.Admin
+		coordinator *entity.Coordinator
 	}
 	type want struct {
 		hasErr bool
@@ -342,8 +348,8 @@ func TestCoordinator_Create(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
-				auth:  testAdminAuth("admin-id", "cognito-id", now()),
-				admin: testCoordinator("admin-id", "test-admin@and-period.jp", now()),
+				admin:       testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now()),
+				coordinator: testCoordinator("admin-id", now()),
 			},
 			want: want{
 				hasErr: false,
@@ -352,28 +358,16 @@ func TestCoordinator_Create(t *testing.T) {
 		{
 			name: "failed to duplicate entry in admin auth",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				auth := testAdminAuth("admin-id", "cognito-id", now())
-				err = m.db.DB.Create(&auth).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				auth:  testAdminAuth("admin-id", "cognito-id", now()),
-				admin: testCoordinator("admin-id", "test-admin@and-period.jp", now()),
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-		{
-			name: "failed to duplicate entry in coordinator",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				admin := testCoordinator("admin-id", "test-admin@and-period.jp", now())
+				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = m.db.DB.Create(&admin).Error
 				require.NoError(t, err)
+				coordinator := testCoordinator("admin-id", now())
+				err = m.db.DB.Create(&coordinator).Error
+				require.NoError(t, err)
 			},
 			args: args{
-				auth:  testAdminAuth("admin-id", "cognito-id", now()),
-				admin: testCoordinator("admin-id", "test-admin@and-period.jp", now()),
+				admin:       testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now()),
+				coordinator: testCoordinator("admin-id", now()),
 			},
 			want: want{
 				hasErr: true,
@@ -387,12 +381,12 @@ func TestCoordinator_Create(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, adminAuthTable, coordinatorTable)
+			err := m.dbDelete(ctx, coordinatorTable, adminTable)
 			require.NoError(t, err)
 			tt.setup(ctx, t, m)
 
 			db := &coordinator{db: m.db, now: now}
-			err = db.Create(ctx, tt.args.auth, tt.args.admin)
+			err = db.Create(ctx, tt.args.admin, tt.args.coordinator)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}
@@ -425,7 +419,11 @@ func TestCoordinator_Update(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				coordinator := testCoordinator("admin-id", "test-admin@and-period.jp", now())
+				_ = m.dbDelete(ctx, coordinatorTable, adminTable)
+				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
+				err = m.db.DB.Create(&admin).Error
+				require.NoError(t, err)
+				coordinator := testCoordinator("admin-id", now())
 				err = m.db.DB.Create(&coordinator).Error
 				require.NoError(t, err)
 			},
@@ -473,7 +471,7 @@ func TestCoordinator_Update(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, adminAuthTable, coordinatorTable)
+			err := m.dbDelete(ctx, coordinatorTable, adminTable)
 			require.NoError(t, err)
 			tt.setup(ctx, t, m)
 
@@ -484,86 +482,24 @@ func TestCoordinator_Update(t *testing.T) {
 	}
 }
 
-func TestCoordinator_UpdateEmail(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
-	now := func() time.Time {
-		return current
-	}
-
-	type args struct {
-		coordinatorID string
-		email         string
-	}
-	type want struct {
-		hasErr bool
-	}
-	tests := []struct {
-		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
-		args  args
-		want  want
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				p := testCoordinator("admin-id", "test-admin@and-period.jp", now())
-				err = m.db.DB.Create(&p).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				coordinatorID: "admin-id",
-				email:         "test-other@and-period.jp",
-			},
-			want: want{
-				hasErr: false,
-			},
-		},
-		{
-			name:  "failed to not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
-			args: args{
-				coordinatorID: "admin-id",
-				email:         "test-other@and-period.jp",
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
-			defer cancel()
-
-			err := m.dbDelete(ctx, coordinatorTable)
-			require.NoError(t, err)
-			tt.setup(ctx, t, m)
-
-			db := &coordinator{db: m.db, now: now}
-			err = db.UpdateEmail(ctx, tt.args.coordinatorID, tt.args.email)
-			assert.Equal(t, tt.want.hasErr, err != nil, err)
-		})
-	}
-}
-
-func testCoordinator(id, email string, now time.Time) *entity.Coordinator {
+func testCoordinator(id string, now time.Time) *entity.Coordinator {
 	return &entity.Coordinator{
-		ID:            id,
-		Lastname:      "&.",
-		Firstname:     "スタッフ",
-		LastnameKana:  "あんどぴりおど",
-		FirstnameKana: "すたっふ",
-		Email:         email,
-		PhoneNumber:   "+819012345678",
-		CreatedAt:     now,
-		UpdatedAt:     now,
+		AdminID:          id,
+		PhoneNumber:      "+819012345678",
+		CompanyName:      "&.株式会社",
+		StoreName:        "&.農園",
+		ThumbnailURL:     "https://and-period.jp/thumbnail.png",
+		HeaderURL:        "https://and-period.jp/header.png",
+		TwitterAccount:   "twitter-id",
+		InstagramAccount: "instagram-id",
+		FacebookAccount:  "facebook-id",
+		PostalCode:       "1000014",
+		Prefecture:       "東京都",
+		City:             "千代田区",
+		AddressLine1:     "永田町1-7-1",
+		AddressLine2:     "",
+		CreatedAt:        now,
+		UpdatedAt:        now,
 	}
 }
 
@@ -573,6 +509,8 @@ func fillIgnoreCoordinatorField(a *entity.Coordinator, now time.Time) {
 	}
 	a.CreatedAt = now
 	a.UpdatedAt = now
+	a.Admin.CreatedAt = now
+	a.Admin.UpdatedAt = now
 }
 
 func fillIgnoreCoordinatorsField(as entity.Coordinators, now time.Time) {

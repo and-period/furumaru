@@ -12,7 +12,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
-	uservice "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/gin-gonic/gin"
 )
@@ -85,7 +84,7 @@ func (h *handler) ListNotifications(ctx *gin.Context) {
 		httpError(ctx, err)
 		return
 	}
-	admins := uservice.NewAdmins(uadmins)
+	admins := service.NewAdmins(uadmins)
 
 	notifications.Fill(admins.Map())
 

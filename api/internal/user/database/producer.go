@@ -14,9 +14,7 @@ import (
 const producerTable = "producers"
 
 var producerFields = []string{
-	"id", "email", "phone_number",
-	"lastname", "firstname", "lastname_kana", "firstname_kana",
-	"store_name", "thumbnail_url", "header_url",
+	"admin_id", "phone_number", "store_name", "thumbnail_url", "header_url",
 	"postal_code", "prefecture", "city", "address_line1", "address_line2",
 	"created_at", "updated_at", "deleted_at",
 }
@@ -42,7 +40,6 @@ func (p *producer) List(
 	}
 
 	stmt := p.db.DB.WithContext(ctx).Table(producerTable).Select(fields)
-	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
 	}
@@ -50,8 +47,13 @@ func (p *producer) List(
 		stmt = stmt.Offset(params.Offset)
 	}
 
-	err := stmt.Find(&producers).Error
-	return producers, exception.InternalError(err)
+	if err := stmt.Find(&producers).Error; err != nil {
+		return nil, exception.InternalError(err)
+	}
+	if err := p.fill(ctx, p.db.DB, producers...); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return producers, nil
 }
 
 func (p *producer) Count(ctx context.Context, params *ListProducersParams) (int64, error) {
@@ -71,29 +73,41 @@ func (p *producer) MultiGet(
 		fields = producerFields
 	}
 
-	err := p.db.DB.WithContext(ctx).
+	stmt := p.db.DB.WithContext(ctx).
 		Table(producerTable).Select(fields).
-		Where("id IN (?)", producerIDs).
-		Find(&producers).Error
-	return producers, exception.InternalError(err)
+		Where("admin_id IN (?)", producerIDs)
+
+	if err := stmt.Find(&producers).Error; err != nil {
+		return nil, exception.InternalError(err)
+	}
+	if err := p.fill(ctx, p.db.DB, producers...); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return producers, nil
 }
 
 func (p *producer) Get(
 	ctx context.Context, producerID string, fields ...string,
 ) (*entity.Producer, error) {
 	producer, err := p.get(ctx, p.db.DB, producerID, fields...)
-	return producer, exception.InternalError(err)
+	if err != nil {
+		return nil, exception.InternalError(err)
+	}
+	if err := p.fill(ctx, p.db.DB, producer); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return producer, nil
 }
 
 func (p *producer) Create(
-	ctx context.Context, auth *entity.AdminAuth, producer *entity.Producer,
+	ctx context.Context, admin *entity.Admin, producer *entity.Producer,
 ) error {
 	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		now := p.now()
-		auth.CreatedAt, auth.UpdatedAt = now, now
+		admin.CreatedAt, admin.UpdatedAt = now, now
 		producer.CreatedAt, producer.UpdatedAt = now, now
 
-		err := tx.WithContext(ctx).Table(adminAuthTable).Create(&auth).Error
+		err := tx.WithContext(ctx).Table(adminTable).Create(&admin).Error
 		if err != nil {
 			return nil, err
 		}
@@ -109,44 +123,37 @@ func (p *producer) Update(ctx context.Context, producerID string, params *Update
 			return nil, err
 		}
 
-		updates := map[string]interface{}{
+		now := p.now()
+		adminParams := map[string]interface{}{
 			"lastname":       params.Lastname,
 			"firstname":      params.Firstname,
 			"lastname_kana":  params.LastnameKana,
 			"firstname_kana": params.FirstnameKana,
-			"store_name":     params.StoreName,
-			"thumbnail_url":  params.ThumbnailURL,
-			"header_url":     params.HeaderURL,
-			"phone_number":   params.PhoneNumber,
-			"postal_code":    params.PostalCode,
-			"city":           params.City,
-			"address_line1":  params.AddressLine1,
-			"address_line2":  params.AddressLine2,
-			"updated_at":     p.now(),
+			"updated_at":     now,
 		}
-		err := tx.WithContext(ctx).
-			Table(producerTable).
-			Where("id = ?", producerID).
-			Updates(updates).Error
-		return nil, err
-	})
-	return exception.InternalError(err)
-}
+		producerParams := map[string]interface{}{
+			"store_name":    params.StoreName,
+			"thumbnail_url": params.ThumbnailURL,
+			"header_url":    params.HeaderURL,
+			"phone_number":  params.PhoneNumber,
+			"postal_code":   params.PostalCode,
+			"city":          params.City,
+			"address_line1": params.AddressLine1,
+			"address_line2": params.AddressLine2,
+			"updated_at":    now,
+		}
 
-func (p *producer) UpdateEmail(ctx context.Context, producerID, email string) error {
-	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
-		if _, err := p.get(ctx, tx, producerID); err != nil {
+		err := tx.WithContext(ctx).
+			Table(adminTable).
+			Where("id = ?", producerID).
+			Updates(adminParams).Error
+		if err != nil {
 			return nil, err
 		}
-
-		params := map[string]interface{}{
-			"email":      email,
-			"updated_at": p.now(),
-		}
-		err := tx.WithContext(ctx).
+		err = tx.WithContext(ctx).
 			Table(producerTable).
-			Where("id = ?", producerID).
-			Updates(params).Error
+			Where("admin_id = ?", producerID).
+			Updates(producerParams).Error
 		return nil, err
 	})
 	return exception.InternalError(err)
@@ -162,7 +169,30 @@ func (p *producer) get(
 
 	err := tx.WithContext(ctx).
 		Table(producerTable).Select(fields).
-		Where("id = ?", producerID).
+		Where("admin_id = ?", producerID).
 		First(&producer).Error
 	return producer, err
+}
+
+func (p *producer) fill(ctx context.Context, tx *gorm.DB, producers ...*entity.Producer) error {
+	var admins entity.Admins
+
+	ids := entity.Producers(producers).IDs()
+	if len(ids) == 0 {
+		return nil
+	}
+
+	stmt := tx.WithContext(ctx).
+		Table(adminTable).Select(adminFields).
+		Where("id IN (?)", ids)
+	if err := stmt.Find(&admins).Error; err != nil {
+		return err
+	}
+
+	adminMap := admins.Map()
+
+	for i, p := range producers {
+		producers[i].Fill(adminMap[p.AdminID])
+	}
+	return nil
 }

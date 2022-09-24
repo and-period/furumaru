@@ -21,29 +21,30 @@ func TestListProducers(t *testing.T) {
 	params := &database.ListProducersParams{
 		Limit:  30,
 		Offset: 0,
-		Orders: []*database.ListProducersOrder{
-			{Key: entity.ProducerOrderByLastname, OrderByASC: true},
-		},
 	}
 	producers := entity.Producers{
 		{
-			ID:            "admin-id",
-			Lastname:      "&.",
-			Firstname:     "スタッフ",
-			LastnameKana:  "あんどぴりおど",
-			FirstnameKana: "すたっふ",
-			StoreName:     "&.農園",
-			ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-			HeaderURL:     "https://and-period.jp/header.png",
-			Email:         "test-admin@and-period.jp",
-			PhoneNumber:   "+819012345678",
-			PostalCode:    "1000014",
-			Prefecture:    "東京都",
-			City:          "千代田区",
-			AddressLine1:  "永田町1-7-1",
-			AddressLine2:  "",
-			CreatedAt:     now,
-			UpdatedAt:     now,
+			Admin: entity.Admin{
+				ID:            "admin-id",
+				Role:          entity.AdminRoleProducer,
+				Lastname:      "&.",
+				Firstname:     "スタッフ",
+				LastnameKana:  "あんどぴりおど",
+				FirstnameKana: "すたっふ",
+				Email:         "test-admin@and-period.jp",
+			},
+			AdminID:      "admin-id",
+			StoreName:    "&.農園",
+			ThumbnailURL: "https://and-period.jp/thumbnail.png",
+			HeaderURL:    "https://and-period.jp/header.png",
+			PhoneNumber:  "+819012345678",
+			PostalCode:   "1000014",
+			Prefecture:   "東京都",
+			City:         "千代田区",
+			AddressLine1: "永田町1-7-1",
+			AddressLine2: "",
+			CreatedAt:    now,
+			UpdatedAt:    now,
 		},
 	}
 
@@ -64,9 +65,6 @@ func TestListProducers(t *testing.T) {
 			input: &user.ListProducersInput{
 				Limit:  30,
 				Offset: 0,
-				Orders: []*user.ListProducersOrder{
-					{Key: entity.ProducerOrderByLastname, OrderByASC: true},
-				},
 			},
 			expect:      producers,
 			expectTotal: 1,
@@ -89,9 +87,6 @@ func TestListProducers(t *testing.T) {
 			input: &user.ListProducersInput{
 				Limit:  30,
 				Offset: 0,
-				Orders: []*user.ListProducersOrder{
-					{Key: entity.ProducerOrderByLastname, OrderByASC: true},
-				},
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -106,9 +101,6 @@ func TestListProducers(t *testing.T) {
 			input: &user.ListProducersInput{
 				Limit:  30,
 				Offset: 0,
-				Orders: []*user.ListProducersOrder{
-					{Key: entity.ProducerOrderByLastname, OrderByASC: true},
-				},
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -133,23 +125,27 @@ func TestMultiGetProducers(t *testing.T) {
 	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
 	producers := entity.Producers{
 		{
-			ID:            "admin-id",
-			Lastname:      "&.",
-			Firstname:     "スタッフ",
-			LastnameKana:  "あんどぴりおど",
-			FirstnameKana: "すたっふ",
-			StoreName:     "&.農園",
-			ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-			HeaderURL:     "https://and-period.jp/header.png",
-			Email:         "test-admin@and-period.jp",
-			PhoneNumber:   "+819012345678",
-			PostalCode:    "1000014",
-			Prefecture:    "東京都",
-			City:          "千代田区",
-			AddressLine1:  "永田町1-7-1",
-			AddressLine2:  "",
-			CreatedAt:     now,
-			UpdatedAt:     now,
+			Admin: entity.Admin{
+				ID:            "admin-id",
+				Role:          entity.AdminRoleProducer,
+				Lastname:      "&.",
+				Firstname:     "スタッフ",
+				LastnameKana:  "あんどぴりおど",
+				FirstnameKana: "すたっふ",
+				Email:         "test-admin@and-period.jp",
+			},
+			AdminID:      "admin-id",
+			StoreName:    "&.農園",
+			ThumbnailURL: "https://and-period.jp/thumbnail.png",
+			HeaderURL:    "https://and-period.jp/header.png",
+			PhoneNumber:  "+819012345678",
+			PostalCode:   "1000014",
+			Prefecture:   "東京都",
+			City:         "千代田区",
+			AddressLine1: "永田町1-7-1",
+			AddressLine2: "",
+			CreatedAt:    now,
+			UpdatedAt:    now,
 		},
 	}
 
@@ -208,23 +204,27 @@ func TestGetProducer(t *testing.T) {
 
 	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
 	producer := &entity.Producer{
-		ID:            "admin-id",
-		Lastname:      "&.",
-		Firstname:     "スタッフ",
-		LastnameKana:  "あんどぴりおど",
-		FirstnameKana: "すたっふ",
-		StoreName:     "&.農園",
-		ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-		HeaderURL:     "https://and-period.jp/header.png",
-		Email:         "test-admin@and-period.jp",
-		PhoneNumber:   "+819012345678",
-		PostalCode:    "1000014",
-		Prefecture:    "東京都",
-		City:          "千代田区",
-		AddressLine1:  "永田町1-7-1",
-		AddressLine2:  "",
-		CreatedAt:     now,
-		UpdatedAt:     now,
+		Admin: entity.Admin{
+			ID:            "admin-id",
+			Role:          entity.AdminRoleProducer,
+			Lastname:      "&.",
+			Firstname:     "スタッフ",
+			LastnameKana:  "あんどぴりおど",
+			FirstnameKana: "すたっふ",
+			Email:         "test-admin@and-period.jp",
+		},
+		AdminID:      "admin-id",
+		StoreName:    "&.農園",
+		ThumbnailURL: "https://and-period.jp/thumbnail.png",
+		HeaderURL:    "https://and-period.jp/header.png",
+		PhoneNumber:  "+819012345678",
+		PostalCode:   "1000014",
+		Prefecture:   "東京都",
+		City:         "千代田区",
+		AddressLine1: "永田町1-7-1",
+		AddressLine2: "",
+		CreatedAt:    now,
+		UpdatedAt:    now,
 	}
 
 	tests := []struct {
@@ -287,32 +287,43 @@ func TestCreateProducer(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				expectAuth := &entity.AdminAuth{
-					Role: entity.AdminRoleProducer,
-				}
-				expectProducer := &entity.Producer{
+				expectAdmin := &entity.Admin{
+					Role:          entity.AdminRoleProducer,
 					Lastname:      "&.",
 					Firstname:     "スタッフ",
 					LastnameKana:  "あんどぴりおど",
 					FirstnameKana: "すたっふ",
-					StoreName:     "&.農園",
-					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-					HeaderURL:     "https://and-period.jp/header.png",
 					Email:         "test-admin@and-period.jp",
-					PhoneNumber:   "+819012345678",
-					PostalCode:    "1000014",
-					Prefecture:    "東京都",
-					City:          "千代田区",
-					AddressLine1:  "永田町1-7-1",
-					AddressLine2:  "",
+				}
+				expectProducer := &entity.Producer{
+					Admin: entity.Admin{
+						Role:          entity.AdminRoleProducer,
+						Lastname:      "&.",
+						Firstname:     "スタッフ",
+						LastnameKana:  "あんどぴりおど",
+						FirstnameKana: "すたっふ",
+						Email:         "test-admin@and-period.jp",
+					},
+					StoreName:    "&.農園",
+					ThumbnailURL: "https://and-period.jp/thumbnail.png",
+					HeaderURL:    "https://and-period.jp/header.png",
+					PhoneNumber:  "+819012345678",
+					PostalCode:   "1000014",
+					Prefecture:   "東京都",
+					City:         "千代田区",
+					AddressLine1: "永田町1-7-1",
+					AddressLine2: "",
 				}
 				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(nil)
 				mocks.db.Producer.EXPECT().
 					Create(ctx, gomock.Any(), gomock.Any()).
-					DoAndReturn(func(ctx context.Context, auth *entity.AdminAuth, producer *entity.Producer) error {
-						expectAuth.AdminID, expectAuth.CognitoID = auth.AdminID, auth.CognitoID
-						assert.Equal(t, expectAuth, auth)
-						expectProducer.ID = producer.ID
+					DoAndReturn(func(ctx context.Context, admin *entity.Admin, producer *entity.Producer) error {
+						expectAdmin.ID = admin.ID
+						expectAdmin.CognitoID = admin.CognitoID
+						assert.Equal(t, expectAdmin, admin)
+						expectProducer.ID = admin.ID
+						expectProducer.AdminID = admin.ID
+						expectProducer.CognitoID = admin.CognitoID
 						assert.Equal(t, expectProducer, producer)
 						return nil
 					})
@@ -516,7 +527,7 @@ func TestUpdateProducer(t *testing.T) {
 func TestUpdateProducerEmail(t *testing.T) {
 	t.Parallel()
 
-	auth := &entity.AdminAuth{
+	auth := &entity.Admin{
 		CognitoID: "cognito-id",
 		Role:      entity.AdminRoleProducer,
 	}
@@ -534,9 +545,9 @@ func TestUpdateProducerEmail(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "producer-id", "cognito_id", "role").Return(auth, nil)
+				mocks.db.Admin.EXPECT().Get(ctx, "producer-id", "cognito_id", "role").Return(auth, nil)
 				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(nil)
-				mocks.db.Producer.EXPECT().UpdateEmail(ctx, "producer-id", "test-admin@and-period.jp").Return(nil)
+				mocks.db.Admin.EXPECT().UpdateEmail(ctx, "producer-id", "test-admin@and-period.jp").Return(nil)
 			},
 			input: &user.UpdateProducerEmailInput{
 				ProducerID: "producer-id",
@@ -553,7 +564,7 @@ func TestUpdateProducerEmail(t *testing.T) {
 		{
 			name: "failed to get by admin id",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "producer-id", "cognito_id", "role").Return(nil, errmock)
+				mocks.db.Admin.EXPECT().Get(ctx, "producer-id", "cognito_id", "role").Return(nil, errmock)
 			},
 			input: &user.UpdateProducerEmailInput{
 				ProducerID: "producer-id",
@@ -564,8 +575,8 @@ func TestUpdateProducerEmail(t *testing.T) {
 		{
 			name: "invalid producer role",
 			setup: func(ctx context.Context, mocks *mocks) {
-				auth := &entity.AdminAuth{CognitoID: "cognito-id", Role: entity.AdminRoleAdministrator}
-				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "producer-id", "cognito_id", "role").Return(auth, nil)
+				auth := &entity.Admin{CognitoID: "cognito-id", Role: entity.AdminRoleAdministrator}
+				mocks.db.Admin.EXPECT().Get(ctx, "producer-id", "cognito_id", "role").Return(auth, nil)
 			},
 			input: &user.UpdateProducerEmailInput{
 				ProducerID: "producer-id",
@@ -576,7 +587,7 @@ func TestUpdateProducerEmail(t *testing.T) {
 		{
 			name: "failed to admin change email",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "producer-id", "cognito_id", "role").Return(auth, nil)
+				mocks.db.Admin.EXPECT().Get(ctx, "producer-id", "cognito_id", "role").Return(auth, nil)
 				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(errmock)
 			},
 			input: &user.UpdateProducerEmailInput{
@@ -588,9 +599,9 @@ func TestUpdateProducerEmail(t *testing.T) {
 		{
 			name: "failed to update email",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "producer-id", "cognito_id", "role").Return(auth, nil)
+				mocks.db.Admin.EXPECT().Get(ctx, "producer-id", "cognito_id", "role").Return(auth, nil)
 				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(nil)
-				mocks.db.Producer.EXPECT().UpdateEmail(ctx, "producer-id", "test-admin@and-period.jp").Return(errmock)
+				mocks.db.Admin.EXPECT().UpdateEmail(ctx, "producer-id", "test-admin@and-period.jp").Return(errmock)
 			},
 			input: &user.UpdateProducerEmailInput{
 				ProducerID: "producer-id",
@@ -612,7 +623,7 @@ func TestUpdateProducerEmail(t *testing.T) {
 func TestResetProducerPassword(t *testing.T) {
 	t.Parallel()
 
-	auth := &entity.AdminAuth{
+	auth := &entity.Admin{
 		CognitoID: "cognito-id",
 		Role:      entity.AdminRoleProducer,
 	}
@@ -626,7 +637,7 @@ func TestResetProducerPassword(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "producer-id", "cognito_id", "role").Return(auth, nil)
+				mocks.db.Admin.EXPECT().Get(ctx, "producer-id", "cognito_id", "role").Return(auth, nil)
 				mocks.adminAuth.EXPECT().
 					AdminChangePassword(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, params *cognito.AdminChangePasswordParams) error {
@@ -648,7 +659,7 @@ func TestResetProducerPassword(t *testing.T) {
 		{
 			name: "success without notify",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "producer-id", "cognito_id", "role").Return(auth, nil)
+				mocks.db.Admin.EXPECT().Get(ctx, "producer-id", "cognito_id", "role").Return(auth, nil)
 				mocks.adminAuth.EXPECT().AdminChangePassword(ctx, gomock.Any()).Return(nil)
 				mocks.messenger.EXPECT().NotifyResetAdminPassword(gomock.Any(), gomock.Any()).Return(errmock)
 			},
@@ -666,7 +677,7 @@ func TestResetProducerPassword(t *testing.T) {
 		{
 			name: "failed to get by admin id",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "producer-id", "cognito_id", "role").Return(nil, errmock)
+				mocks.db.Admin.EXPECT().Get(ctx, "producer-id", "cognito_id", "role").Return(nil, errmock)
 			},
 			input: &user.ResetProducerPasswordInput{
 				ProducerID: "producer-id",
@@ -676,8 +687,8 @@ func TestResetProducerPassword(t *testing.T) {
 		{
 			name: "invalid producer role",
 			setup: func(ctx context.Context, mocks *mocks) {
-				auth := &entity.AdminAuth{CognitoID: "cognito-id", Role: entity.AdminRoleAdministrator}
-				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "producer-id", "cognito_id", "role").Return(auth, nil)
+				auth := &entity.Admin{CognitoID: "cognito-id", Role: entity.AdminRoleAdministrator}
+				mocks.db.Admin.EXPECT().Get(ctx, "producer-id", "cognito_id", "role").Return(auth, nil)
 			},
 			input: &user.ResetProducerPasswordInput{
 				ProducerID: "producer-id",
@@ -687,7 +698,7 @@ func TestResetProducerPassword(t *testing.T) {
 		{
 			name: "failed to admin change password",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "producer-id", "cognito_id", "role").Return(auth, nil)
+				mocks.db.Admin.EXPECT().Get(ctx, "producer-id", "cognito_id", "role").Return(auth, nil)
 				mocks.adminAuth.EXPECT().AdminChangePassword(ctx, gomock.Any()).Return(errmock)
 			},
 			input: &user.ResetProducerPasswordInput{

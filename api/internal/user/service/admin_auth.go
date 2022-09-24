@@ -57,7 +57,7 @@ func (s *service) RegisterAdminDevice(ctx context.Context, in *user.RegisterAdmi
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	err := s.db.AdminAuth.UpdateDevice(ctx, in.AdminID, in.Device)
+	err := s.db.Admin.UpdateDevice(ctx, in.AdminID, in.Device)
 	return exception.InternalError(err)
 }
 
@@ -69,11 +69,7 @@ func (s *service) UpdateAdminEmail(ctx context.Context, in *user.UpdateAdminEmai
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	auth, err := s.db.AdminAuth.GetByCognitoID(ctx, username, "admin_id", "role")
-	if err != nil {
-		return exception.InternalError(err)
-	}
-	admin, err := s.getAdmin(ctx, auth.AdminID, auth.Role)
+	admin, err := s.db.Admin.GetByCognitoID(ctx, username, "email")
 	if err != nil {
 		return exception.InternalError(err)
 	}
@@ -98,7 +94,7 @@ func (s *service) VerifyAdminEmail(ctx context.Context, in *user.VerifyAdminEmai
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	auth, err := s.db.AdminAuth.GetByCognitoID(ctx, username, "admin_id", "role")
+	admin, err := s.db.Admin.GetByCognitoID(ctx, username, "admin_id", "role")
 	if err != nil {
 		return exception.InternalError(err)
 	}
@@ -111,14 +107,7 @@ func (s *service) VerifyAdminEmail(ctx context.Context, in *user.VerifyAdminEmai
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	switch auth.Role {
-	case entity.AdminRoleAdministrator:
-		err = s.db.Administrator.UpdateEmail(ctx, auth.AdminID, email)
-	case entity.AdminRoleCoordinator:
-		err = s.db.Coordinator.UpdateEmail(ctx, auth.AdminID, email)
-	case entity.AdminRoleProducer:
-		err = s.db.Producer.UpdateEmail(ctx, auth.AdminID, email)
-	}
+	err = s.db.Admin.UpdateEmail(ctx, admin.ID, email)
 	return exception.InternalError(err)
 }
 
@@ -140,10 +129,10 @@ func (s *service) getAdminAuth(ctx context.Context, rs *cognito.AuthResult) (*en
 	if err != nil {
 		return nil, err
 	}
-	auth, err := s.db.AdminAuth.GetByCognitoID(ctx, username)
+	admin, err := s.db.Admin.GetByCognitoID(ctx, username)
 	if err != nil {
 		return nil, err
 	}
-	auth.Fill(rs)
+	auth := entity.NewAdminAuth(admin, rs)
 	return auth, nil
 }

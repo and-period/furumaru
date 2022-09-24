@@ -17,36 +17,44 @@ func TestProducer(t *testing.T) {
 		{
 			name: "success",
 			params: &NewProducerParams{
-				Lastname:      "&.",
-				Firstname:     "スタッフ",
-				LastnameKana:  "あんどぴりおど",
-				FirstnameKana: "すたっふ",
-				StoreName:     "&.農園",
-				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-				HeaderURL:     "https://and-period.jp/header.png",
-				Email:         "test-admin@and-period.jp",
-				PhoneNumber:   "+819012345678",
-				PostalCode:    "1000014",
-				Prefecture:    "東京都",
-				City:          "千代田区",
-				AddressLine1:  "永田町1-7-1",
-				AddressLine2:  "",
+				Admin: &Admin{
+					ID:            "admin-id",
+					CognitoID:     "cognito-id",
+					Lastname:      "&.",
+					Firstname:     "スタッフ",
+					LastnameKana:  "あんどぴりおど",
+					FirstnameKana: "すたっふ",
+					Email:         "test-admin@and-period.jp",
+				},
+				StoreName:    "&.農園",
+				ThumbnailURL: "https://and-period.jp/thumbnail.png",
+				HeaderURL:    "https://and-period.jp/header.png",
+				PhoneNumber:  "+819012345678",
+				PostalCode:   "1000014",
+				Prefecture:   "東京都",
+				City:         "千代田区",
+				AddressLine1: "永田町1-7-1",
+				AddressLine2: "",
 			},
 			expect: &Producer{
-				Lastname:      "&.",
-				Firstname:     "スタッフ",
-				LastnameKana:  "あんどぴりおど",
-				FirstnameKana: "すたっふ",
-				StoreName:     "&.農園",
-				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-				HeaderURL:     "https://and-period.jp/header.png",
-				Email:         "test-admin@and-period.jp",
-				PhoneNumber:   "+819012345678",
-				PostalCode:    "1000014",
-				Prefecture:    "東京都",
-				City:          "千代田区",
-				AddressLine1:  "永田町1-7-1",
-				AddressLine2:  "",
+				AdminID:      "admin-id",
+				StoreName:    "&.農園",
+				ThumbnailURL: "https://and-period.jp/thumbnail.png",
+				HeaderURL:    "https://and-period.jp/header.png",
+				PhoneNumber:  "+819012345678",
+				PostalCode:   "1000014",
+				Prefecture:   "東京都",
+				City:         "千代田区",
+				AddressLine1: "永田町1-7-1",
+				AddressLine2: "",
+				Admin: Admin{
+					CognitoID:     "cognito-id",
+					Lastname:      "&.",
+					Firstname:     "スタッフ",
+					LastnameKana:  "あんどぴりおど",
+					FirstnameKana: "すたっふ",
+					Email:         "test-admin@and-period.jp",
+				},
 			},
 		},
 	}
@@ -62,36 +70,38 @@ func TestProducer(t *testing.T) {
 	}
 }
 
-func TestProducer_Name(t *testing.T) {
+func TestProducer_Fill(t *testing.T) {
 	t.Parallel()
-
 	tests := []struct {
 		name     string
 		producer *Producer
-		expect   string
+		admin    *Admin
+		expect   *Producer
 	}{
 		{
-			name:     "success",
-			producer: &Producer{Lastname: "&.", Firstname: "スタッフ"},
-			expect:   "&. スタッフ",
-		},
-		{
-			name:     "success only lastname",
-			producer: &Producer{Lastname: "&.", Firstname: ""},
-			expect:   "&.",
-		},
-		{
-			name:     "success only firstname",
-			producer: &Producer{Lastname: "", Firstname: "スタッフ"},
-			expect:   "スタッフ",
+			name: "success",
+			producer: &Producer{
+				AdminID: "admin-id",
+			},
+			admin: &Admin{
+				ID:        "admin-id",
+				CognitoID: "cognito-id",
+			},
+			expect: &Producer{
+				AdminID: "admin-id",
+				Admin: Admin{
+					ID:        "admin-id",
+					CognitoID: "cognito-id",
+				},
+			},
 		},
 	}
-
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, tt.producer.Name())
+			tt.producer.Fill(tt.admin)
+			assert.Equal(t, tt.expect, tt.producer)
 		})
 	}
 }
@@ -106,8 +116,8 @@ func TestProducers_IDs(t *testing.T) {
 		{
 			name: "success",
 			producers: Producers{
-				{ID: "producer-id01"},
-				{ID: "producer-id02"},
+				{AdminID: "producer-id01"},
+				{AdminID: "producer-id02"},
 			},
 			expect: []string{
 				"producer-id01",

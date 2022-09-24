@@ -22,17 +22,9 @@ func (s *service) ListAdministrators(
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, exception.InternalError(err)
 	}
-	orders := make([]*database.ListAdministratorsOrder, len(in.Orders))
-	for i := range in.Orders {
-		orders[i] = &database.ListAdministratorsOrder{
-			Key:        in.Orders[i].Key,
-			OrderByASC: in.Orders[i].OrderByASC,
-		}
-	}
 	params := &database.ListAdministratorsParams{
 		Limit:  int(in.Limit),
 		Offset: int(in.Offset),
-		Orders: orders,
 	}
 	var (
 		administrators entity.Administrators
@@ -85,17 +77,22 @@ func (s *service) CreateAdministrator(
 	if err := s.createCognitoAdmin(ctx, cognitoID, in.Email, password); err != nil {
 		return nil, exception.InternalError(err)
 	}
-	params := &entity.NewAdministratorParams{
+	adminParams := &entity.NewAdminParams{
+		CognitoID:     cognitoID,
+		Role:          entity.AdminRoleAdministrator,
 		Lastname:      in.Lastname,
 		Firstname:     in.Firstname,
 		LastnameKana:  in.LastnameKana,
 		FirstnameKana: in.FirstnameKana,
 		Email:         in.Email,
-		PhoneNumber:   in.PhoneNumber,
+	}
+	admin := entity.NewAdmin(adminParams)
+	params := &entity.NewAdministratorParams{
+		Admin:       admin,
+		PhoneNumber: in.PhoneNumber,
 	}
 	administrator := entity.NewAdministrator(params)
-	auth := entity.NewAdminAuth(administrator.ID, cognitoID, entity.AdminRoleAdministrator)
-	if err := s.db.Administrator.Create(ctx, auth, administrator); err != nil {
+	if err := s.db.Administrator.Create(ctx, admin, administrator); err != nil {
 		return nil, exception.InternalError(err)
 	}
 	s.logger.Debug("Create administrator",
@@ -130,7 +127,7 @@ func (s *service) UpdateAdministratorEmail(ctx context.Context, in *user.UpdateA
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	auth, err := s.db.AdminAuth.GetByAdminID(ctx, in.AdministratorID, "cognito_id", "role")
+	auth, err := s.db.Admin.Get(ctx, in.AdministratorID, "cognito_id", "role")
 	if err != nil {
 		return exception.InternalError(err)
 	}
@@ -144,7 +141,7 @@ func (s *service) UpdateAdministratorEmail(ctx context.Context, in *user.UpdateA
 	if err := s.adminAuth.AdminChangeEmail(ctx, params); err != nil {
 		return exception.InternalError(err)
 	}
-	err = s.db.Administrator.UpdateEmail(ctx, in.AdministratorID, in.Email)
+	err = s.db.Admin.UpdateEmail(ctx, in.AdministratorID, in.Email)
 	return exception.InternalError(err)
 }
 
@@ -153,7 +150,7 @@ func (s *service) ResetAdministratorPassword(ctx context.Context, in *user.Reset
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	auth, err := s.db.AdminAuth.GetByAdminID(ctx, in.AdministratorID, "cognito_id", "role")
+	auth, err := s.db.Admin.Get(ctx, in.AdministratorID, "cognito_id", "role")
 	if err != nil {
 		return exception.InternalError(err)
 	}
