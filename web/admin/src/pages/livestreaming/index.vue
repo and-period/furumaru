@@ -48,16 +48,19 @@ import {
   defineComponent,
   ref,
   useRouter,
-  SetupContext,
 } from '@nuxtjs/composition-api'
 
 export default defineComponent({
-  setup(_, ctx) {
+  setup() {
     const router = useRouter()
 
     const calendarValue = ref<string>('')
     const type = ref<string>('month')
-    const calendarRef = ref(null)
+    const calendarRef = ref<{
+      title: string
+      prev: () => {}
+      next: () => {}
+    } | null>(null)
     const typeItems = [
       {
         text: '日',
