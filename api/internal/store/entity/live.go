@@ -18,7 +18,7 @@ type Live struct {
 	StartAt        time.Time      `gorm:""`                               // 配信開始日時
 	EndAt          time.Time      `gorm:""`                               // 配信終了日時
 	Canceled       bool           `gorm:""`                               // 配信中止フラグ
-	Recommends     []string       `gorm:"default:null"`                   // おすすめ商品一覧
+	Recommends     []string       `gorm:"-"`                              // おすすめ商品一覧
 	RecommendsJSON datatypes.JSON `gorm:"default:null;column:recommends"` // おすすめ商品一覧(JSON)
 	CreatedAt      time.Time      `gorm:"<-:create"`                      // 登録日時
 	UpdatedAt      time.Time      `gorm:""`                               // 更新日時
