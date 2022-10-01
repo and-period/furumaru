@@ -46,3 +46,31 @@ func TestLive(t *testing.T) {
 		})
 	}
 }
+
+func TestLive_Marshal(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name       string
+		recommends []string
+		expect     []byte
+		hasErr     bool
+	}{
+		{
+			name:       "success",
+			recommends: []string{"product-id1", "product-id2"},
+			expect:     []byte(`["product-id1", "product-id2"]`),
+			hasErr:     false,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual, err := Marshal(tt.recommends)
+			assert.Equal(t, tt.hasErr, err != nil, err)
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
