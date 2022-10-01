@@ -30,6 +30,8 @@ func TestLive_Create(t *testing.T) {
 	}
 
 	_ = m.dbDelete(ctx, liveTable)
+	schedule := testSchedule("schedule-id", now())
+	err = m.db.DB.Create(&schedule).Error
 
 	type args struct {
 		live *entity.Live
