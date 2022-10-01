@@ -103,7 +103,7 @@ func TestLive_Marshal(t *testing.T) {
 		{
 			name:       "success",
 			recommends: []string{"product-id1", "product-id2"},
-			expect:     []byte(`["product-id1", "product-id2"]`),
+			expect:     []byte(`["product-id1","product-id2"]`),
 			hasErr:     false,
 		},
 	}
