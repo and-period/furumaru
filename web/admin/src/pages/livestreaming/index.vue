@@ -2,10 +2,17 @@
   <div>
     <div class="d-flex mb-4">
       <v-spacer />
+      <v-btn
+        color="primary"
+        outlined
+        class="mx-2"
+        @click="handleClickTestButton"
+        >テスト配信</v-btn
+      >
       <v-btn color="primary" outlined @click="handleClickAddButton">
         <v-icon>mdi-plus</v-icon>
-        ライブマルシェ登録</v-btn
-      >
+        ライブマルシェ登録
+      </v-btn>
     </div>
     <v-toolbar flat>
       <v-toolbar-title>
@@ -88,6 +95,10 @@ export default defineComponent({
       router.push('/livestreaming/add')
     }
 
+    const handleClickTestButton = () => {
+      router.push('/livestreaming/tests')
+    }
+
     const handleClickToDayButton = () => {
       calendarValue.value = ''
     }
@@ -111,6 +122,7 @@ export default defineComponent({
       calendarRef,
       calendarTitle,
       handleClickAddButton,
+      handleClickTestButton,
       handleClickToDayButton,
       handleClickPrevButton,
       handleClickNextButton,
