@@ -2,7 +2,7 @@
   <the-notification-create-form-page
     :form-data="formData"
     @submit="handleSubmit"
-    />
+  />
 </template>
 
 <script lang="ts">
@@ -19,10 +19,10 @@ export default defineComponent({
 
     const formData = reactive<CreateNotificationRequest>({
       title: '',
-            body: '',
-            targets: [0],
-            public: false,
-            publishedAt: dayjs().unix(),
+      body: '',
+      targets: [0],
+      public: false,
+      publishedAt: dayjs().unix(),
     })
 
     const handleSubmit = async () => {
@@ -41,5 +41,3 @@ export default defineComponent({
   },
 })
 </script>
-
-

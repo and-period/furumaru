@@ -5,7 +5,11 @@ import { useAuthStore } from './auth'
 import { useCommonStore } from './common'
 
 import ApiClientFactory from '~/plugins/factory'
-import { CreateNotificationRequest, NotificationApi, NotificationsResponse } from '~/types/api'
+import {
+  CreateNotificationRequest,
+  NotificationApi,
+  NotificationsResponse,
+} from '~/types/api'
 import {
   AuthError,
   ConnectionError,
@@ -74,7 +78,9 @@ export const useNotificationStore = defineStore('Notification', {
      * お知らせを登録する非同期関数
      * @param payload
      */
-    async createNotification(payload: CreateNotificationRequest): Promise<void> {
+    async createNotification(
+      payload: CreateNotificationRequest
+    ): Promise<void> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -114,7 +120,6 @@ export const useNotificationStore = defineStore('Notification', {
         throw new InternalServerError(error)
       }
     },
-
 
     /**
      * お知らせを削除する非同期関数
