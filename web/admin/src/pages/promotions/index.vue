@@ -130,7 +130,7 @@ export default defineComponent({
     }
 
     const getDay = (unixTime: number): string => {
-      return dayjs.unix(unixTime).format('YYYY/MM/DD hh:mm')
+      return dayjs.unix(unixTime).format('YYYY/MM/DD hh:mm a')
     }
 
     const { fetchState } = useFetch(async () => {
