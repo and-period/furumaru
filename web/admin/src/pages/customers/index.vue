@@ -33,7 +33,7 @@ import { defineComponent, useRouter } from '@nuxtjs/composition-api'
 export default defineComponent({
   setup() {
     const router = useRouter()
-    const id = "ThisIsID"
+    const id = 'ThisIsID'
     const headers = [
       {
         text: '名前',
@@ -83,11 +83,11 @@ export default defineComponent({
     ]
 
     const getAccountColor = (account: boolean): string => {
-        return account ? 'primary' : 'red'
+      return account ? 'primary' : 'red'
     }
 
     const getAccount = (account: boolean): string => {
-        return account ? '有' : '無'
+      return account ? '有' : '無'
     }
 
     const handleEdit = () => {
