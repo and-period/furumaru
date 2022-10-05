@@ -22,7 +22,7 @@ export default defineComponent({
         return {
           title: '',
           body: '',
-          targets: [0],
+          targets: [],
           public: false,
           publishedAt: dayjs().unix(),
         }

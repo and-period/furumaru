@@ -20,7 +20,7 @@ export default defineComponent({
     const formData = reactive<CreateNotificationRequest>({
       title: '',
       body: '',
-      targets: [0],
+      targets: [],
       public: false,
       publishedAt: dayjs().unix(),
     })

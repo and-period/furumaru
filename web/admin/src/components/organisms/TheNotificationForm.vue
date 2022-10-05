@@ -15,28 +15,24 @@
           required
           maxlength="128"
         />
-        <v-textarea
-          v-model="formData.description"
-          label="本文"
-          maxlength="2000"
-        />
+        <v-textarea v-model="formData.body" label="本文" maxlength="2000" />
       </v-card-text>
       <v-container class="ml-2">
         <p class="text-h6">公開範囲</p>
         <v-checkbox
           v-model="formData.targets"
           label="ユーザー"
-          value="1"
+          :value="Number(1)"
         ></v-checkbox>
         <v-checkbox
           v-model="formData.targets"
           label="生産者"
-          value="2"
+          :value="Number(2)"
         ></v-checkbox>
         <v-checkbox
           v-model="formData.targets"
           label="コーディネーター"
-          value="3"
+          :value="Number(3)"
         ></v-checkbox>
         <p class="text-h6">投稿予約時間</p>
         <div class="d-flex align-center justify-center">
@@ -70,12 +66,15 @@
               </v-btn>
             </v-date-picker>
           </v-menu>
-          <v-text-field class="postTime" type="time" required outlined />
+          <v-text-field v-model="postTime" type="time" required outlined />
           <p class="text-h6 mb-6 ml-4">〜</p>
           <v-spacer />
         </div>
       </v-container>
     </v-card>
+    <v-btn block outlined color="primary" type="submit" class="mt-4">
+      {{ btnText }}
+    </v-btn>
   </form>
 </template>
 
@@ -101,7 +100,7 @@ export default defineComponent({
         return {
           title: '',
           body: '',
-          targets: [0],
+          targets: [],
           public: false,
           publishedAt: dayjs().unix(),
         }
@@ -120,6 +119,7 @@ export default defineComponent({
     })
     const postMenu = ref<boolean>(false)
     const postDate = ref<string>('')
+    const postTime = ref<string>('')
 
     const statusList = [
       { public: '公開', value: true },
@@ -127,6 +127,8 @@ export default defineComponent({
     ]
 
     const handleSubmit = () => {
+      const unixTime = dayjs(postDate.value + ' ' + postTime.value).unix()
+      formDataValue.value.publishedAt = unixTime
       emit('submit')
     }
 
@@ -135,6 +137,7 @@ export default defineComponent({
       btnText,
       statusList,
       postDate,
+      postTime,
       postMenu,
       handleSubmit,
     }
