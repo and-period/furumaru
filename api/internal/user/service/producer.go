@@ -19,17 +19,9 @@ func (s *service) ListProducers(ctx context.Context, in *user.ListProducersInput
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, exception.InternalError(err)
 	}
-	orders := make([]*database.ListProducersOrder, len(in.Orders))
-	for i := range in.Orders {
-		orders[i] = &database.ListProducersOrder{
-			Key:        in.Orders[i].Key,
-			OrderByASC: in.Orders[i].OrderByASC,
-		}
-	}
 	params := &database.ListProducersParams{
 		Limit:  int(in.Limit),
 		Offset: int(in.Offset),
-		Orders: orders,
 	}
 	var (
 		producers entity.Producers
@@ -76,27 +68,33 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 	if err := s.createCognitoAdmin(ctx, cognitoID, in.Email, password); err != nil {
 		return nil, exception.InternalError(err)
 	}
-	params := &entity.NewProducerParams{
+	adminParams := &entity.NewAdminParams{
+		CognitoID:     cognitoID,
+		Role:          entity.AdminRoleProducer,
 		Lastname:      in.Lastname,
 		Firstname:     in.Firstname,
 		LastnameKana:  in.LastnameKana,
 		FirstnameKana: in.FirstnameKana,
-		StoreName:     in.StoreName,
-		ThumbnailURL:  in.ThumbnailURL,
-		HeaderURL:     in.HeaderURL,
 		Email:         in.Email,
-		PhoneNumber:   in.PhoneNumber,
-		PostalCode:    in.PostalCode,
-		Prefecture:    in.Prefecture,
-		City:          in.City,
-		AddressLine1:  in.AddressLine1,
-		AddressLine2:  in.AddressLine2,
+	}
+	admin := entity.NewAdmin(adminParams)
+	params := &entity.NewProducerParams{
+		Admin:        admin,
+		StoreName:    in.StoreName,
+		ThumbnailURL: in.ThumbnailURL,
+		HeaderURL:    in.HeaderURL,
+		PhoneNumber:  in.PhoneNumber,
+		PostalCode:   in.PostalCode,
+		Prefecture:   in.Prefecture,
+		City:         in.City,
+		AddressLine1: in.AddressLine1,
+		AddressLine2: in.AddressLine2,
 	}
 	producer := entity.NewProducer(params)
-	auth := entity.NewAdminAuth(producer.ID, cognitoID, entity.AdminRoleProducer)
-	if err := s.db.Producer.Create(ctx, auth, producer); err != nil {
+	if err := s.db.Producer.Create(ctx, admin, producer); err != nil {
 		return nil, exception.InternalError(err)
 	}
+	producer.Admin = *admin
 	s.logger.Debug("Create producer", zap.String("producerId", producer.ID), zap.String("password", password))
 	s.waitGroup.Add(1)
 	go func() {
@@ -136,7 +134,7 @@ func (s *service) UpdateProducerEmail(ctx context.Context, in *user.UpdateProduc
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	auth, err := s.db.AdminAuth.GetByAdminID(ctx, in.ProducerID, "cognito_id", "role")
+	auth, err := s.db.Admin.Get(ctx, in.ProducerID, "cognito_id", "role")
 	if err != nil {
 		return exception.InternalError(err)
 	}
@@ -150,7 +148,7 @@ func (s *service) UpdateProducerEmail(ctx context.Context, in *user.UpdateProduc
 	if err := s.adminAuth.AdminChangeEmail(ctx, params); err != nil {
 		return exception.InternalError(err)
 	}
-	err = s.db.Producer.UpdateEmail(ctx, in.ProducerID, in.Email)
+	err = s.db.Admin.UpdateEmail(ctx, in.ProducerID, in.Email)
 	return exception.InternalError(err)
 }
 
@@ -159,7 +157,7 @@ func (s *service) ResetProducerPassword(ctx context.Context, in *user.ResetProdu
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	auth, err := s.db.AdminAuth.GetByAdminID(ctx, in.ProducerID, "cognito_id", "role")
+	auth, err := s.db.Admin.Get(ctx, in.ProducerID, "cognito_id", "role")
 	if err != nil {
 		return exception.InternalError(err)
 	}

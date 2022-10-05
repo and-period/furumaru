@@ -17,8 +17,8 @@ import (
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/database"
-	"github.com/and-period/furumaru/api/pkg/line"
 	"github.com/and-period/furumaru/api/pkg/secret"
+	"github.com/and-period/furumaru/api/pkg/slack"
 	"github.com/and-period/furumaru/api/pkg/sqs"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -34,7 +34,7 @@ type registry struct {
 	env       string
 	debugMode bool
 	waitGroup *sync.WaitGroup
-	line      line.Client
+	slack     slack.Client
 	newRelic  *newrelic.Application
 	v1        v1.Handler
 }
@@ -48,7 +48,7 @@ type params struct {
 	storage         storage.Bucket
 	userAuth        cognito.Client
 	producer        sqs.Producer
-	line            line.Client
+	slack           slack.Client
 	newRelic        *newrelic.Application
 	adminWebURL     *url.URL
 	userWebURL      *url.URL
@@ -56,9 +56,8 @@ type params struct {
 	dbPort          string
 	dbUsername      string
 	dbPassword      string
-	lineToken       string
-	lineSecret      string
-	lineRoomID      string
+	slackToken      string
+	slackChannelID  string
 	newRelicLicense string
 }
 
@@ -115,18 +114,13 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		params.newRelic = newrelicApp
 	}
 
-	// LINEの設定
-	if params.lineToken != "" {
-		lineParams := &line.Params{
-			Token:  params.lineToken,
-			Secret: params.lineSecret,
-			RoomID: params.lineRoomID,
+	// Slackの設定
+	if params.slackToken != "" {
+		slackParams := &slack.Params{
+			Token:     params.slackToken,
+			ChannelID: params.slackChannelID,
 		}
-		linebot, err := line.NewClient(lineParams, line.WithLogger(logger))
-		if err != nil {
-			return nil, err
-		}
-		params.line = linebot
+		params.slack = slack.NewClient(slackParams, slack.WithLogger(logger))
 	}
 
 	// WebURLの設定
@@ -168,7 +162,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		env:       conf.Environment,
 		debugMode: conf.LogLevel == "debug",
 		waitGroup: params.waitGroup,
-		line:      params.line,
+		slack:     params.slack,
 		newRelic:  params.newRelic,
 		v1:        v1.NewHandler(v1Params, v1.WithLogger(logger)),
 	}, nil
@@ -196,20 +190,18 @@ func getSecret(ctx context.Context, p *params) error {
 		return nil
 	})
 	eg.Go(func() error {
-		// LINE認証情報の取得
-		if p.config.LINESecretName == "" {
-			p.lineToken = p.config.LINEChannelToken
-			p.lineSecret = p.config.LINEChannelSecret
-			p.lineRoomID = p.config.LINERoomID
+		// Slack認証情報の取得
+		if p.config.SlackSecretName == "" {
+			p.slackToken = p.config.SlackAPIToken
+			p.slackChannelID = p.config.SlackChannelID
 			return nil
 		}
-		secrets, err := p.secret.Get(ectx, p.config.LINESecretName)
+		secrets, err := p.secret.Get(ectx, p.config.SlackSecretName)
 		if err != nil {
 			return err
 		}
-		p.lineToken = secrets["token"]
-		p.lineSecret = secrets["secret"]
-		p.lineRoomID = secrets["roomId"]
+		p.slackToken = secrets["token"]
+		p.slackChannelID = secrets["channelId"]
 		return nil
 	})
 	eg.Go(func() error {

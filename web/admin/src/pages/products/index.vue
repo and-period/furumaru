@@ -13,7 +13,7 @@
     </div>
     <div class="d-flex">
       <v-spacer />
-      <v-btn outlined class="mb-4" @click="handleClickAddBtn">
+      <v-btn outlined class="mb-4" color="primary" @click="handleClickAddBtn">
         <v-icon left>mdi-plus</v-icon>
         商品登録
       </v-btn>

@@ -1,31 +1,16 @@
 package entity
 
 import (
-	"strings"
 	"time"
 
-	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/gorm"
-)
-
-type CoordinatorOrderBy string
-
-const (
-	CoordinatorOrderByLastname    CoordinatorOrderBy = "lastname"
-	CoordinatorOrderByFirstname   CoordinatorOrderBy = "firstname"
-	CoordinatorOrderByCompanyName CoordinatorOrderBy = "company_name"
-	CoordinatorOrderByStoreName   CoordinatorOrderBy = "store_name"
-	CoordinatorOrderByEmail       CoordinatorOrderBy = "email"
-	CoordinatorOrderByPhoneNumber CoordinatorOrderBy = "phone_number"
 )
 
 // Coordinator - 仲介者情報
 type Coordinator struct {
-	ID               string         `gorm:"primaryKey;<-:create"` // 管理者ID
-	Lastname         string         `gorm:""`                     // 姓
-	Firstname        string         `gorm:""`                     // 名
-	LastnameKana     string         `gorm:""`                     // 姓(かな)
-	FirstnameKana    string         `gorm:""`                     // 名(かな)
+	Admin            `gorm:"-"`
+	AdminID          string         `gorm:"primaryKey;<-:create"` // 管理者ID
+	PhoneNumber      string         `gorm:""`                     // 電話番号
 	CompanyName      string         `gorm:""`                     // 会社名
 	StoreName        string         `gorm:""`                     // 店舗名
 	ThumbnailURL     string         `gorm:""`                     // サムネイルURL
@@ -33,8 +18,6 @@ type Coordinator struct {
 	TwitterAccount   string         `gorm:""`                     // SNS(Twitter)アカウント名
 	InstagramAccount string         `gorm:""`                     // SNS(Instagram)アカウント名
 	FacebookAccount  string         `gorm:""`                     // SNS(Facebook)アカウント名
-	Email            string         `gorm:""`                     // メールアドレス
-	PhoneNumber      string         `gorm:""`                     // 電話番号
 	PostalCode       string         `gorm:""`                     // 郵便番号
 	Prefecture       string         `gorm:""`                     // 都道府県
 	City             string         `gorm:""`                     // 市区町村
@@ -48,10 +31,8 @@ type Coordinator struct {
 type Coordinators []*Coordinator
 
 type NewCoordinatorParams struct {
-	Lastname         string
-	Firstname        string
-	LastnameKana     string
-	FirstnameKana    string
+	Admin            *Admin
+	PhoneNumber      string
 	CompanyName      string
 	StoreName        string
 	ThumbnailURL     string
@@ -59,8 +40,6 @@ type NewCoordinatorParams struct {
 	TwitterAccount   string
 	InstagramAccount string
 	FacebookAccount  string
-	Email            string
-	PhoneNumber      string
 	PostalCode       string
 	Prefecture       string
 	City             string
@@ -70,11 +49,8 @@ type NewCoordinatorParams struct {
 
 func NewCoordinator(params *NewCoordinatorParams) *Coordinator {
 	return &Coordinator{
-		ID:               uuid.Base58Encode(uuid.New()),
-		Lastname:         params.Lastname,
-		Firstname:        params.Firstname,
-		LastnameKana:     params.LastnameKana,
-		FirstnameKana:    params.FirstnameKana,
+		AdminID:          params.Admin.ID,
+		PhoneNumber:      params.PhoneNumber,
 		CompanyName:      params.CompanyName,
 		StoreName:        params.StoreName,
 		ThumbnailURL:     params.ThumbnailURL,
@@ -82,24 +58,23 @@ func NewCoordinator(params *NewCoordinatorParams) *Coordinator {
 		TwitterAccount:   params.TwitterAccount,
 		InstagramAccount: params.InstagramAccount,
 		FacebookAccount:  params.FacebookAccount,
-		Email:            params.Email,
-		PhoneNumber:      params.PhoneNumber,
 		PostalCode:       params.PostalCode,
 		Prefecture:       params.Prefecture,
 		City:             params.City,
 		AddressLine1:     params.AddressLine1,
 		AddressLine2:     params.AddressLine2,
+		Admin:            *params.Admin,
 	}
 }
 
-func (c *Coordinator) Name() string {
-	return strings.TrimSpace(strings.Join([]string{c.Lastname, c.Firstname}, " "))
+func (c *Coordinator) Fill(admin *Admin) {
+	c.Admin = *admin
 }
 
 func (cs Coordinators) IDs() []string {
 	res := make([]string, len(cs))
 	for i := range cs {
-		res[i] = cs[i].ID
+		res[i] = cs[i].AdminID
 	}
 	return res
 }

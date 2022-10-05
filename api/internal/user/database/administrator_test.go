@@ -29,11 +29,18 @@ func TestAdministrator_List(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, administratorTable)
-	admins := make(entity.Administrators, 2)
-	admins[0] = testAdministrator("admin-id01", "test-admin01@and-period.jp", now())
-	admins[1] = testAdministrator("admin-id02", "test-admin02@and-period.jp", now())
+	_ = m.dbDelete(ctx, administratorTable, adminTable)
+	admins := make(entity.Admins, 2)
+	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
+	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
 	err = m.db.DB.Create(&admins).Error
+	require.NoError(t, err)
+	administrators := make(entity.Administrators, 2)
+	administrators[0] = testAdministrator("admin-id01", now())
+	administrators[0].Admin = *admins[0]
+	administrators[1] = testAdministrator("admin-id02", now())
+	administrators[1].Admin = *admins[1]
+	err = m.db.DB.Create(&administrators).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -59,23 +66,7 @@ func TestAdministrator_List(t *testing.T) {
 				},
 			},
 			want: want{
-				admins: admins[1:],
-				hasErr: false,
-			},
-		},
-		{
-			name:  "success with sort",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
-			args: args{
-				params: &ListAdministratorsParams{
-					Orders: []*ListAdministratorsOrder{
-						{Key: "lastname", OrderByASC: true},
-						{Key: "firstname", OrderByASC: false},
-					},
-				},
-			},
-			want: want{
-				admins: admins,
+				admins: administrators[1:],
 				hasErr: false,
 			},
 		},
@@ -116,11 +107,18 @@ func TestAdministrator_Count(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, administratorTable)
-	admins := make(entity.Administrators, 2)
-	admins[0] = testAdministrator("admin-id01", "test-admin01@and-period.jp", now())
-	admins[1] = testAdministrator("admin-id02", "test-admin02@and-period.jp", now())
+	_ = m.dbDelete(ctx, administratorTable, adminTable)
+	admins := make(entity.Admins, 2)
+	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
+	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
 	err = m.db.DB.Create(&admins).Error
+	require.NoError(t, err)
+	administrators := make(entity.Administrators, 2)
+	administrators[0] = testAdministrator("admin-id01", now())
+	administrators[0].Admin = *admins[0]
+	administrators[1] = testAdministrator("admin-id02", now())
+	administrators[1].Admin = *admins[1]
+	err = m.db.DB.Create(&administrators).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -179,11 +177,18 @@ func TestAdministrator_MultiGet(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, administratorTable)
-	admins := make(entity.Administrators, 2)
-	admins[0] = testAdministrator("admin-id01", "test-admin01@and-period.jp", now())
-	admins[1] = testAdministrator("admin-id02", "test-admin02@and-period.jp", now())
+	_ = m.dbDelete(ctx, administratorTable, adminTable)
+	admins := make(entity.Admins, 2)
+	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
+	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
 	err = m.db.DB.Create(&admins).Error
+	require.NoError(t, err)
+	administrators := make(entity.Administrators, 2)
+	administrators[0] = testAdministrator("admin-id01", now())
+	administrators[0].Admin = *admins[0]
+	administrators[1] = testAdministrator("admin-id02", now())
+	administrators[1].Admin = *admins[1]
+	err = m.db.DB.Create(&administrators).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -206,7 +211,7 @@ func TestAdministrator_MultiGet(t *testing.T) {
 				adminIDs: []string{"admin-id01", "admin-id02"},
 			},
 			want: want{
-				admins: admins,
+				admins: administrators,
 				hasErr: false,
 			},
 		},
@@ -247,8 +252,12 @@ func TestAdministrator_Get(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, administratorTable)
-	a := testAdministrator("admin-id", "test-admin@and-period.jp", now())
+	_ = m.dbDelete(ctx, administratorTable, adminTable)
+	admin := testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
+	err = m.db.DB.Create(&admin).Error
+	require.NoError(t, err)
+	a := testAdministrator("admin-id", now())
+	a.Admin = *admin
 	err = m.db.DB.Create(&a).Error
 	require.NoError(t, err)
 
@@ -323,8 +332,8 @@ func TestAdministrator_Create(t *testing.T) {
 	}
 
 	type args struct {
-		auth  *entity.AdminAuth
-		admin *entity.Administrator
+		admin         *entity.Admin
+		administrator *entity.Administrator
 	}
 	type want struct {
 		hasErr bool
@@ -339,8 +348,8 @@ func TestAdministrator_Create(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
-				auth:  testAdminAuth("admin-id", "cognito-id", now()),
-				admin: testAdministrator("admin-id", "test-admin@and-period.jp", now()),
+				admin:         testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now()),
+				administrator: testAdministrator("admin-id", now()),
 			},
 			want: want{
 				hasErr: false,
@@ -349,28 +358,13 @@ func TestAdministrator_Create(t *testing.T) {
 		{
 			name: "failed to duplicate entry in admin auth",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				auth := testAdminAuth("admin-id", "cognito-id", now())
+				auth := testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
 				err = m.db.DB.Create(&auth).Error
 				require.NoError(t, err)
 			},
 			args: args{
-				auth:  testAdminAuth("admin-id", "cognito-id", now()),
-				admin: testAdministrator("admin-id", "test-admin@and-period.jp", now()),
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-		{
-			name: "failed to duplicate entry in administrator",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				admin := testAdministrator("admin-id", "test-admin@and-period.jp", now())
-				err = m.db.DB.Create(&admin).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				auth:  testAdminAuth("admin-id", "cognito-id", now()),
-				admin: testAdministrator("admin-id", "test-admin@and-period.jp", now()),
+				admin:         testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now()),
+				administrator: testAdministrator("admin-id", now()),
 			},
 			want: want{
 				hasErr: true,
@@ -384,12 +378,12 @@ func TestAdministrator_Create(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, adminAuthTable, administratorTable)
+			err := m.dbDelete(ctx, administratorTable, adminTable)
 			require.NoError(t, err)
 			tt.setup(ctx, t, m)
 
 			db := &administrator{db: m.db, now: now}
-			err = db.Create(ctx, tt.args.auth, tt.args.admin)
+			err = db.Create(ctx, tt.args.admin, tt.args.administrator)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}
@@ -422,8 +416,11 @@ func TestAdministrator_Update(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				p := testAdministrator("admin-id", "test-admin@and-period.jp", now())
-				err = m.db.DB.Create(&p).Error
+				admin := testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
+				err = m.db.DB.Create(&admin).Error
+				require.NoError(t, err)
+				administrator := testAdministrator("admin-id", now())
+				err = m.db.DB.Create(&administrator).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -459,7 +456,7 @@ func TestAdministrator_Update(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, administratorTable)
+			err := m.dbDelete(ctx, administratorTable, adminTable)
 			require.NoError(t, err)
 			tt.setup(ctx, t, m)
 
@@ -470,86 +467,12 @@ func TestAdministrator_Update(t *testing.T) {
 	}
 }
 
-func TestAdministrator_UpdateEmail(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
-	now := func() time.Time {
-		return current
-	}
-
-	type args struct {
-		administratorID string
-		email           string
-	}
-	type want struct {
-		hasErr bool
-	}
-	tests := []struct {
-		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
-		args  args
-		want  want
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				p := testAdministrator("admin-id", "test-admin@and-period.jp", now())
-				err = m.db.DB.Create(&p).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				administratorID: "admin-id",
-				email:           "test-other@and-period.jp",
-			},
-			want: want{
-				hasErr: false,
-			},
-		},
-		{
-			name:  "failed to not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
-			args: args{
-				administratorID: "admin-id",
-				email:           "test-other@and-period.jp",
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
-			defer cancel()
-
-			err := m.dbDelete(ctx, administratorTable)
-			require.NoError(t, err)
-			tt.setup(ctx, t, m)
-
-			db := &administrator{db: m.db, now: now}
-			err = db.UpdateEmail(ctx, tt.args.administratorID, tt.args.email)
-			assert.Equal(t, tt.want.hasErr, err != nil, err)
-		})
-	}
-}
-
-func testAdministrator(id, email string, now time.Time) *entity.Administrator {
+func testAdministrator(id string, now time.Time) *entity.Administrator {
 	return &entity.Administrator{
-		ID:            id,
-		Lastname:      "&.",
-		Firstname:     "スタッフ",
-		LastnameKana:  "あんどぴりおど",
-		FirstnameKana: "すたっふ",
-		Email:         email,
-		PhoneNumber:   "+819012345678",
-		CreatedAt:     now,
-		UpdatedAt:     now,
+		AdminID:     id,
+		PhoneNumber: "+819012345678",
+		CreatedAt:   now,
+		UpdatedAt:   now,
 	}
 }
 
@@ -559,6 +482,8 @@ func fillIgnoreAdministratorField(a *entity.Administrator, now time.Time) {
 	}
 	a.CreatedAt = now
 	a.UpdatedAt = now
+	a.Admin.CreatedAt = now
+	a.Admin.UpdatedAt = now
 }
 
 func fillIgnoreAdministratorsField(as entity.Administrators, now time.Time) {

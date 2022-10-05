@@ -206,9 +206,11 @@ func TestPersonalizations(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				in := &user.MultiGetAdministratorsInput{AdministratorIDs: []string{"admin-id"}}
 				administrators := uentity.Administrators{{
-					Lastname:  "&.",
-					Firstname: "スタッフ",
-					Email:     "test-user@and-period.jp",
+					Admin: uentity.Admin{
+						Lastname:  "&.",
+						Firstname: "スタッフ",
+						Email:     "test-user@and-period.jp",
+					},
 				}}
 				mocks.user.EXPECT().MultiGetAdministrators(ctx, in).Return(administrators, nil)
 			},
@@ -239,9 +241,11 @@ func TestPersonalizations(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				in := &user.MultiGetCoordinatorsInput{CoordinatorIDs: []string{"admin-id"}}
 				coordinators := uentity.Coordinators{{
-					Lastname:  "&.",
-					Firstname: "スタッフ",
-					Email:     "test-user@and-period.jp",
+					Admin: uentity.Admin{
+						Lastname:  "&.",
+						Firstname: "スタッフ",
+						Email:     "test-user@and-period.jp",
+					},
 				}}
 				mocks.user.EXPECT().MultiGetCoordinators(ctx, in).Return(coordinators, nil)
 			},
@@ -272,9 +276,11 @@ func TestPersonalizations(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				in := &user.MultiGetProducersInput{ProducerIDs: []string{"admin-id"}}
 				producers := uentity.Producers{{
-					Lastname:  "&.",
-					Firstname: "スタッフ",
-					Email:     "test-user@and-period.jp",
+					Admin: uentity.Admin{
+						Lastname:  "&.",
+						Firstname: "スタッフ",
+						Email:     "test-user@and-period.jp",
+					},
 				}}
 				mocks.user.EXPECT().MultiGetProducers(ctx, in).Return(producers, nil)
 			},
@@ -305,8 +311,26 @@ func TestPersonalizations(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				in := &user.MultiGetUsersInput{UserIDs: []string{"user-id"}}
 				users := uentity.Users{
-					{Username: "&. スタッフ", Email: "test-user@and-period.jp"},
-					{Username: "&. スタッフ", Email: ""},
+					{
+						Member: uentity.Member{
+							Username: "username",
+							Email:    "test-user@and-period.jp",
+						},
+						Customer: uentity.Customer{
+							Lastname:  "&.",
+							Firstname: "スタッフ",
+						},
+					},
+					{
+						Member: uentity.Member{
+							Username: "username",
+							Email:    "",
+						},
+						Customer: uentity.Customer{
+							Lastname:  "&.",
+							Firstname: "スタッフ",
+						},
+					},
 				}
 				mocks.user.EXPECT().MultiGetUsers(ctx, in).Return(users, nil)
 			},
@@ -457,15 +481,18 @@ func TestFetchAdministrators(t *testing.T) {
 	}
 	administrators := uentity.Administrators{
 		{
-			ID:            "administrator-id",
-			Lastname:      "&.",
-			Firstname:     "スタッフ",
-			LastnameKana:  "あんどぴりおど",
-			FirstnameKana: "すたっふ",
-			Email:         "test-admin@and-period.jp",
-			PhoneNumber:   "+819012345678",
-			CreatedAt:     jst.Date(2022, 7, 10, 18, 30, 0, 0),
-			UpdatedAt:     jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			Admin: uentity.Admin{
+				ID:            "administrator-id",
+				Lastname:      "&.",
+				Firstname:     "スタッフ",
+				LastnameKana:  "あんどぴりおど",
+				FirstnameKana: "すたっふ",
+				Email:         "test-admin@and-period.jp",
+			},
+			AdminID:     "administrator-id",
+			PhoneNumber: "+819012345678",
+			CreatedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			UpdatedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
 		},
 	}
 
@@ -520,18 +547,21 @@ func TestFetchCoordinators(t *testing.T) {
 	}
 	coordinators := uentity.Coordinators{
 		{
-			ID:               "coordinator-id",
-			Lastname:         "&.",
-			Firstname:        "スタッフ",
-			LastnameKana:     "あんどぴりおど",
-			FirstnameKana:    "すたっふ",
+			Admin: uentity.Admin{
+				ID:            "coordinator-id",
+				Lastname:      "&.",
+				Firstname:     "スタッフ",
+				LastnameKana:  "あんどぴりおど",
+				FirstnameKana: "すたっふ",
+				Email:         "test-admin@and-period.jp",
+			},
+			AdminID:          "coordinator-id",
 			StoreName:        "&.農園",
 			ThumbnailURL:     "https://and-period.jp/thumbnail.png",
 			HeaderURL:        "https://and-period.jp/header.png",
 			TwitterAccount:   "twitter-account",
 			InstagramAccount: "instagram-account",
 			FacebookAccount:  "facebook-account",
-			Email:            "test-admin@and-period.jp",
 			PhoneNumber:      "+819012345678",
 			PostalCode:       "1000014",
 			Prefecture:       "東京都",
@@ -594,23 +624,26 @@ func TestFetchProducers(t *testing.T) {
 	}
 	producers := uentity.Producers{
 		{
-			ID:            "admin-id",
-			Lastname:      "&.",
-			Firstname:     "スタッフ",
-			LastnameKana:  "あんどぴりおど",
-			FirstnameKana: "すたっふ",
-			StoreName:     "&.農園",
-			ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-			HeaderURL:     "https://and-period.jp/header.png",
-			Email:         "test-admin@and-period.jp",
-			PhoneNumber:   "+819012345678",
-			PostalCode:    "1000014",
-			Prefecture:    "東京都",
-			City:          "千代田区",
-			AddressLine1:  "永田町1-7-1",
-			AddressLine2:  "",
-			CreatedAt:     jst.Date(2022, 7, 10, 18, 30, 0, 0),
-			UpdatedAt:     jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			Admin: uentity.Admin{
+				ID:            "admin-id",
+				Lastname:      "&.",
+				Firstname:     "スタッフ",
+				LastnameKana:  "あんどぴりおど",
+				FirstnameKana: "すたっふ",
+				Email:         "test-admin@and-period.jp",
+			},
+			AdminID:      "admin-id",
+			StoreName:    "&.農園",
+			ThumbnailURL: "https://and-period.jp/thumbnail.png",
+			HeaderURL:    "https://and-period.jp/header.png",
+			PhoneNumber:  "+819012345678",
+			PostalCode:   "1000014",
+			Prefecture:   "東京都",
+			City:         "千代田区",
+			AddressLine1: "永田町1-7-1",
+			AddressLine2: "",
+			CreatedAt:    jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			UpdatedAt:    jst.Date(2022, 7, 10, 18, 30, 0, 0),
 		},
 	}
 
@@ -665,17 +698,27 @@ func TestFetchUsers(t *testing.T) {
 	}
 	users := uentity.Users{
 		{
-			ID:           "user-id",
-			AccountID:    "account-id",
-			CognitoID:    "cognito-id",
-			Username:     "テストユーザー",
-			ProviderType: uentity.ProviderTypeEmail,
-			Email:        "test-user@and-period.jp",
-			PhoneNumber:  "+810000000000",
-			ThumbnailURL: "https://and-period.jp/thumbnail.png",
-			CreatedAt:    jst.Date(2022, 7, 10, 18, 30, 0, 0),
-			UpdatedAt:    jst.Date(2022, 7, 10, 18, 30, 0, 0),
-			VerifiedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			ID:         "user-id",
+			Registered: true,
+			CreatedAt:  jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			UpdatedAt:  jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			Member: uentity.Member{
+				UserID:       "user-id",
+				AccountID:    "account-id",
+				CognitoID:    "cognito-id",
+				Username:     "テストユーザー",
+				ProviderType: uentity.ProviderTypeEmail,
+				Email:        "test-user@and-period.jp",
+				PhoneNumber:  "+810000000000",
+				ThumbnailURL: "https://and-period.jp/thumbnail.png",
+				CreatedAt:    jst.Date(2022, 7, 10, 18, 30, 0, 0),
+				UpdatedAt:    jst.Date(2022, 7, 10, 18, 30, 0, 0),
+				VerifiedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			},
+			Customer: uentity.Customer{
+				Lastname:  "&.",
+				Firstname: "スタッフ",
+			},
 		},
 	}
 
@@ -694,7 +737,7 @@ func TestFetchUsers(t *testing.T) {
 			userIDs: []string{"user-id"},
 			execute: func(t *testing.T) func(name, email string) {
 				execute := func(name, email string) {
-					assert.Equal(t, "テストユーザー", name)
+					assert.Equal(t, "&. スタッフ", name)
 					assert.Equal(t, "test-user@and-period.jp", email)
 				}
 				return execute

@@ -29,10 +29,16 @@ func TestProducer_List(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, producerTable)
+	_ = m.dbDelete(ctx, producerTable, adminTable)
+	admins := make(entity.Admins, 2)
+	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
+	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
+	err = m.db.DB.Create(&admins).Error
 	producers := make(entity.Producers, 2)
-	producers[0] = testProducer("admin-id01", "&.農園", "test-admin01@and-period.jp", now())
-	producers[1] = testProducer("admin-id02", "&.水産", "test-admin02@and-period.jp", now())
+	producers[0] = testProducer("admin-id01", "&.農園", now())
+	producers[0].Admin = *admins[0]
+	producers[1] = testProducer("admin-id02", "&.水産", now())
+	producers[1].Admin = *admins[1]
 	err = m.db.DB.Create(&producers).Error
 	require.NoError(t, err)
 
@@ -60,22 +66,6 @@ func TestProducer_List(t *testing.T) {
 			},
 			want: want{
 				producers: producers[1:],
-				hasErr:    false,
-			},
-		},
-		{
-			name:  "success with sort",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
-			args: args{
-				params: &ListProducersParams{
-					Orders: []*ListProducersOrder{
-						{Key: "lastname", OrderByASC: true},
-						{Key: "firstname", OrderByASC: false},
-					},
-				},
-			},
-			want: want{
-				producers: producers,
 				hasErr:    false,
 			},
 		},
@@ -116,10 +106,16 @@ func TestProducer_Count(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, producerTable)
+	_ = m.dbDelete(ctx, producerTable, adminTable)
+	admins := make(entity.Admins, 2)
+	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
+	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
+	err = m.db.DB.Create(&admins).Error
 	producers := make(entity.Producers, 2)
-	producers[0] = testProducer("admin-id01", "&.農園", "test-admin01@and-period.jp", now())
-	producers[1] = testProducer("admin-id02", "&.水産", "test-admin02@and-period.jp", now())
+	producers[0] = testProducer("admin-id01", "&.農園", now())
+	producers[0].Admin = *admins[0]
+	producers[1] = testProducer("admin-id02", "&.水産", now())
+	producers[1].Admin = *admins[1]
 	err = m.db.DB.Create(&producers).Error
 	require.NoError(t, err)
 
@@ -179,10 +175,16 @@ func TestProducer_MultiGet(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, producerTable)
+	_ = m.dbDelete(ctx, producerTable, adminTable)
+	admins := make(entity.Admins, 2)
+	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
+	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
+	err = m.db.DB.Create(&admins).Error
 	producers := make(entity.Producers, 2)
-	producers[0] = testProducer("admin-id01", "&.農園", "test-admin01@and-period.jp", now())
-	producers[1] = testProducer("admin-id02", "&.水産", "test-admin02@and-period.jp", now())
+	producers[0] = testProducer("admin-id01", "&.農園", now())
+	producers[0].Admin = *admins[0]
+	producers[1] = testProducer("admin-id02", "&.水産", now())
+	producers[1].Admin = *admins[1]
 	err = m.db.DB.Create(&producers).Error
 	require.NoError(t, err)
 
@@ -247,8 +249,12 @@ func TestProducer_Get(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, producerTable)
-	p := testProducer("admin-id", "&.農園", "test-admin@and-period.jp", now())
+	_ = m.dbDelete(ctx, producerTable, adminTable)
+	admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
+	err = m.db.DB.Create(&admin).Error
+	require.NoError(t, err)
+	p := testProducer("admin-id", "&.農園", now())
+	p.Admin = *admin
 	err = m.db.DB.Create(&p).Error
 	require.NoError(t, err)
 
@@ -323,7 +329,7 @@ func TestProducer_Create(t *testing.T) {
 	}
 
 	type args struct {
-		auth     *entity.AdminAuth
+		admin    *entity.Admin
 		producer *entity.Producer
 	}
 	type want struct {
@@ -339,8 +345,8 @@ func TestProducer_Create(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
-				auth:     testAdminAuth("admin-id", "cognito-id", now()),
-				producer: testProducer("admin-id", "&.農園", "test-admin@and-period.jp", now()),
+				admin:    testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now()),
+				producer: testProducer("admin-id", "&.農園", now()),
 			},
 			want: want{
 				hasErr: false,
@@ -349,28 +355,16 @@ func TestProducer_Create(t *testing.T) {
 		{
 			name: "failed to duplicate entry in admin auth",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				auth := testAdminAuth("admin-id", "cognito-id", now())
-				err = m.db.DB.Create(&auth).Error
+				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
+				err = m.db.DB.Create(&admin).Error
+				require.NoError(t, err)
+				p := testProducer("admin-id", "&.農園", now())
+				err = m.db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
 			args: args{
-				auth:     testAdminAuth("admin-id", "cognito-id", now()),
-				producer: testProducer("admin-id", "&.農園", "test-admin@and-period.jp", now()),
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-		{
-			name: "failed to duplicate entry in producer",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				producer := testProducer("admin-id", "&.農園", "test-admin@and-period.jp", now())
-				err = m.db.DB.Create(&producer).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				auth:     testAdminAuth("admin-id", "cognito-id", now()),
-				producer: testProducer("admin-id", "&.農園", "test-admin@and-period.jp", now()),
+				admin:    testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now()),
+				producer: testProducer("admin-id", "&.農園", now()),
 			},
 			want: want{
 				hasErr: true,
@@ -384,12 +378,12 @@ func TestProducer_Create(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, adminAuthTable, producerTable)
+			err := m.dbDelete(ctx, producerTable, adminTable)
 			require.NoError(t, err)
 			tt.setup(ctx, t, m)
 
 			db := &producer{db: m.db, now: now}
-			err = db.Create(ctx, tt.args.auth, tt.args.producer)
+			err = db.Create(ctx, tt.args.admin, tt.args.producer)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}
@@ -422,8 +416,11 @@ func TestProducer_Update(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				producer := testProducer("admin-id", "&.農園", "test-admin@and-period.jp", now())
-				err = m.db.DB.Create(&producer).Error
+				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
+				err = m.db.DB.Create(&admin).Error
+				require.NoError(t, err)
+				p := testProducer("admin-id", "&.農園", now())
+				err = m.db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -466,7 +463,7 @@ func TestProducer_Update(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, adminAuthTable, producerTable)
+			err := m.dbDelete(ctx, producerTable, adminTable)
 			require.NoError(t, err)
 			tt.setup(ctx, t, m)
 
@@ -477,94 +474,20 @@ func TestProducer_Update(t *testing.T) {
 	}
 }
 
-func TestProducer_UpdateEmail(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
-	now := func() time.Time {
-		return current
-	}
-
-	type args struct {
-		producerID string
-		email      string
-	}
-	type want struct {
-		hasErr bool
-	}
-	tests := []struct {
-		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
-		args  args
-		want  want
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				p := testProducer("admin-id", "&.農園", "test-admin@and-period.jp", now())
-				err = m.db.DB.Create(&p).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				producerID: "admin-id",
-				email:      "test-other@and-period.jp",
-			},
-			want: want{
-				hasErr: false,
-			},
-		},
-		{
-			name:  "failed to not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
-			args: args{
-				producerID: "admin-id",
-				email:      "test-other@and-period.jp",
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
-			defer cancel()
-
-			err := m.dbDelete(ctx, producerTable)
-			require.NoError(t, err)
-			tt.setup(ctx, t, m)
-
-			db := &producer{db: m.db, now: now}
-			err = db.UpdateEmail(ctx, tt.args.producerID, tt.args.email)
-			assert.Equal(t, tt.want.hasErr, err != nil, err)
-		})
-	}
-}
-
-func testProducer(id, storeName, email string, now time.Time) *entity.Producer {
+func testProducer(id, storeName string, now time.Time) *entity.Producer {
 	return &entity.Producer{
-		ID:            id,
-		Lastname:      "&.",
-		Firstname:     "スタッフ",
-		LastnameKana:  "あんどぴりおど",
-		FirstnameKana: "すたっふ",
-		StoreName:     storeName,
-		ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-		HeaderURL:     "https://and-period.jp/header.png",
-		Email:         email,
-		PhoneNumber:   "+819012345678",
-		PostalCode:    "1000014",
-		Prefecture:    "東京都",
-		City:          "千代田区",
-		AddressLine1:  "永田町1-7-1",
-		AddressLine2:  "",
-		CreatedAt:     now,
-		UpdatedAt:     now,
+		AdminID:      id,
+		StoreName:    storeName,
+		ThumbnailURL: "https://and-period.jp/thumbnail.png",
+		HeaderURL:    "https://and-period.jp/header.png",
+		PhoneNumber:  "+819012345678",
+		PostalCode:   "1000014",
+		Prefecture:   "東京都",
+		City:         "千代田区",
+		AddressLine1: "永田町1-7-1",
+		AddressLine2: "",
+		CreatedAt:    now,
+		UpdatedAt:    now,
 	}
 }
 
@@ -574,6 +497,8 @@ func fillIgnoreProducerField(p *entity.Producer, now time.Time) {
 	}
 	p.CreatedAt = now
 	p.UpdatedAt = now
+	p.Admin.CreatedAt = now
+	p.Admin.UpdatedAt = now
 }
 
 func fillIgnoreProducersField(ps entity.Producers, now time.Time) {

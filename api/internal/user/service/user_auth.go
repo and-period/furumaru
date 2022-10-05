@@ -55,10 +55,10 @@ func (s *service) getUserAuth(ctx context.Context, rs *cognito.AuthResult) (*ent
 	if err != nil {
 		return nil, err
 	}
-	out, err := s.db.User.GetByCognitoID(ctx, username, "id")
+	out, err := s.db.Member.GetByCognitoID(ctx, username, "user_id")
 	if err != nil {
 		return nil, err
 	}
-	auth := entity.NewUserAuth(out.ID, rs)
+	auth := entity.NewUserAuth(out.UserID, rs)
 	return auth, nil
 }
