@@ -689,3 +689,40 @@ func (mr *MockScheduleMockRecorder) Create(ctx, schedule interface{}) *gomock.Ca
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockSchedule)(nil).Create), ctx, schedule)
 }
+
+// MockLive is a mock of Live interface.
+type MockLive struct {
+	ctrl     *gomock.Controller
+	recorder *MockLiveMockRecorder
+}
+
+// MockLiveMockRecorder is the mock recorder for MockLive.
+type MockLiveMockRecorder struct {
+	mock *MockLive
+}
+
+// NewMockLive creates a new mock instance.
+func NewMockLive(ctrl *gomock.Controller) *MockLive {
+	mock := &MockLive{ctrl: ctrl}
+	mock.recorder = &MockLiveMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockLive) EXPECT() *MockLiveMockRecorder {
+	return m.recorder
+}
+
+// Create mocks base method.
+func (m *MockLive) Create(ctx context.Context, live *entity.Live) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, live)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockLiveMockRecorder) Create(ctx, live interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockLive)(nil).Create), ctx, live)
+}

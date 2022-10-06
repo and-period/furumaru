@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/uuid"
@@ -46,4 +47,20 @@ func NewLive(params *NewLiveParams) *Live {
 		EndAt:       params.EndAt,
 		Recommends:  params.Recommends,
 	}
+}
+
+func (l *Live) FillJSON() error {
+	v, err := Marshal(l.Recommends)
+	if err != nil {
+		return err
+	}
+	l.RecommendsJSON = datatypes.JSON(v)
+	return nil
+}
+
+func Marshal(s []string) ([]byte, error) {
+	if len(s) == 0 {
+		return []byte{}, nil
+	}
+	return json.Marshal(s)
 }
