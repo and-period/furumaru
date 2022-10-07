@@ -71,10 +71,12 @@
           <v-spacer />
         </div>
       </v-container>
+      <v-card-actions>
+        <v-btn block outlined color="primary" type="submit" class="mt-4">
+          {{ btnText }}
+        </v-btn>
+      </v-card-actions>
     </v-card>
-    <v-btn block outlined color="primary" type="submit" class="mt-4">
-      {{ btnText }}
-    </v-btn>
   </form>
 </template>
 

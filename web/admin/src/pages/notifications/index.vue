@@ -132,7 +132,7 @@ export default defineComponent({
     }
 
     const getDay = (unixTime: number): string => {
-      return dayjs.unix(unixTime).format('YYYY/MM/DD hh:mm a')
+      return dayjs.unix(unixTime).format('YYYY/MM/DD HH:mm')
     }
 
     const openDeleteDialog = (
