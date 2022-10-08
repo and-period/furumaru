@@ -21,25 +21,26 @@ func TestListCoordinators(t *testing.T) {
 	params := &database.ListCoordinatorsParams{
 		Limit:  30,
 		Offset: 0,
-		Orders: []*database.ListCoordinatorsOrder{
-			{Key: entity.CoordinatorOrderByLastname, OrderByASC: true},
-		},
 	}
 	coordinators := entity.Coordinators{
 		{
-			ID:               "admin-id",
-			Lastname:         "&.",
-			Firstname:        "スタッフ",
-			LastnameKana:     "あんどぴりおど",
-			FirstnameKana:    "すたっふ",
+			Admin: entity.Admin{
+				ID:            "admin-id",
+				Role:          entity.AdminRoleCoordinator,
+				Lastname:      "&.",
+				Firstname:     "スタッフ",
+				LastnameKana:  "あんどぴりおど",
+				FirstnameKana: "すたっふ",
+				Email:         "test-admin@and-period.jp",
+			},
+			AdminID:          "admin-id",
+			PhoneNumber:      "+819012345678",
 			StoreName:        "&.農園",
 			ThumbnailURL:     "https://and-period.jp/thumbnail.png",
 			HeaderURL:        "https://and-period.jp/header.png",
 			TwitterAccount:   "twitter-account",
 			InstagramAccount: "instagram-account",
 			FacebookAccount:  "facebook-account",
-			Email:            "test-admin@and-period.jp",
-			PhoneNumber:      "+819012345678",
 			PostalCode:       "1000014",
 			Prefecture:       "東京都",
 			City:             "千代田区",
@@ -67,9 +68,6 @@ func TestListCoordinators(t *testing.T) {
 			input: &user.ListCoordinatorsInput{
 				Limit:  30,
 				Offset: 0,
-				Orders: []*user.ListCoordinatorsOrder{
-					{Key: entity.CoordinatorOrderByLastname, OrderByASC: true},
-				},
 			},
 			expect:      coordinators,
 			expectTotal: 1,
@@ -92,9 +90,6 @@ func TestListCoordinators(t *testing.T) {
 			input: &user.ListCoordinatorsInput{
 				Limit:  30,
 				Offset: 0,
-				Orders: []*user.ListCoordinatorsOrder{
-					{Key: entity.CoordinatorOrderByLastname, OrderByASC: true},
-				},
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -109,9 +104,6 @@ func TestListCoordinators(t *testing.T) {
 			input: &user.ListCoordinatorsInput{
 				Limit:  30,
 				Offset: 0,
-				Orders: []*user.ListCoordinatorsOrder{
-					{Key: entity.CoordinatorOrderByLastname, OrderByASC: true},
-				},
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -136,19 +128,23 @@ func TestMultiGetCoordinators(t *testing.T) {
 	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
 	coordinators := entity.Coordinators{
 		{
-			ID:               "admin-id",
-			Lastname:         "&.",
-			Firstname:        "スタッフ",
-			LastnameKana:     "あんどぴりおど",
-			FirstnameKana:    "すたっふ",
+			Admin: entity.Admin{
+				ID:            "admin-id",
+				Role:          entity.AdminRoleCoordinator,
+				Lastname:      "&.",
+				Firstname:     "スタッフ",
+				LastnameKana:  "あんどぴりおど",
+				FirstnameKana: "すたっふ",
+				Email:         "test-admin@and-period.jp",
+			},
+			AdminID:          "admin-id",
+			PhoneNumber:      "+819012345678",
 			StoreName:        "&.農園",
 			ThumbnailURL:     "https://and-period.jp/thumbnail.png",
 			HeaderURL:        "https://and-period.jp/header.png",
 			TwitterAccount:   "twitter-account",
 			InstagramAccount: "instagram-account",
 			FacebookAccount:  "facebook-account",
-			Email:            "test-admin@and-period.jp",
-			PhoneNumber:      "+819012345678",
 			PostalCode:       "1000014",
 			Prefecture:       "東京都",
 			City:             "千代田区",
@@ -214,19 +210,23 @@ func TestGetCoordinator(t *testing.T) {
 
 	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
 	coordinator := &entity.Coordinator{
-		ID:               "admin-id",
-		Lastname:         "&.",
-		Firstname:        "スタッフ",
-		LastnameKana:     "あんどぴりおど",
-		FirstnameKana:    "すたっふ",
+		Admin: entity.Admin{
+			ID:            "admin-id",
+			Role:          entity.AdminRoleCoordinator,
+			Lastname:      "&.",
+			Firstname:     "スタッフ",
+			LastnameKana:  "あんどぴりおど",
+			FirstnameKana: "すたっふ",
+			Email:         "test-admin@and-period.jp",
+		},
+		AdminID:          "admin-id",
+		PhoneNumber:      "+819012345678",
 		StoreName:        "&.農園",
 		ThumbnailURL:     "https://and-period.jp/thumbnail.png",
 		HeaderURL:        "https://and-period.jp/header.png",
 		TwitterAccount:   "twitter-account",
 		InstagramAccount: "instagram-account",
 		FacebookAccount:  "facebook-account",
-		Email:            "test-admin@and-period.jp",
-		PhoneNumber:      "+819012345678",
 		PostalCode:       "1000014",
 		Prefecture:       "東京都",
 		City:             "千代田区",
@@ -296,14 +296,23 @@ func TestCreateCoordinator(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				expectAuth := &entity.AdminAuth{
-					Role: entity.AdminRoleCoordinator,
+				expectAdmin := &entity.Admin{
+					Role:          entity.AdminRoleCoordinator,
+					Lastname:      "&.",
+					Firstname:     "スタッフ",
+					LastnameKana:  "あんどぴりおど",
+					FirstnameKana: "すたっふ",
+					Email:         "test-admin@and-period.jp",
 				}
 				expectCoordinator := &entity.Coordinator{
-					Lastname:         "&.",
-					Firstname:        "スタッフ",
-					LastnameKana:     "あんどぴりおど",
-					FirstnameKana:    "すたっふ",
+					Admin: entity.Admin{
+						Role:          entity.AdminRoleCoordinator,
+						Lastname:      "&.",
+						Firstname:     "スタッフ",
+						LastnameKana:  "あんどぴりおど",
+						FirstnameKana: "すたっふ",
+						Email:         "test-admin@and-period.jp",
+					},
 					CompanyName:      "&.",
 					StoreName:        "&.農園",
 					ThumbnailURL:     "https://and-period.jp/thumbnail.png",
@@ -311,7 +320,6 @@ func TestCreateCoordinator(t *testing.T) {
 					TwitterAccount:   "twitter-id",
 					InstagramAccount: "instgram-id",
 					FacebookAccount:  "facebook-id",
-					Email:            "test-admin@and-period.jp",
 					PhoneNumber:      "+819012345678",
 					PostalCode:       "1000014",
 					Prefecture:       "東京都",
@@ -322,10 +330,13 @@ func TestCreateCoordinator(t *testing.T) {
 				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(nil)
 				mocks.db.Coordinator.EXPECT().
 					Create(ctx, gomock.Any(), gomock.Any()).
-					DoAndReturn(func(ctx context.Context, auth *entity.AdminAuth, coordinator *entity.Coordinator) error {
-						expectAuth.AdminID, expectAuth.CognitoID = auth.AdminID, auth.CognitoID
-						assert.Equal(t, expectAuth, auth)
-						expectCoordinator.ID = coordinator.ID
+					DoAndReturn(func(ctx context.Context, admin *entity.Admin, coordinator *entity.Coordinator) error {
+						expectAdmin.ID = admin.ID
+						expectAdmin.CognitoID = admin.CognitoID
+						assert.Equal(t, expectAdmin, admin)
+						expectCoordinator.ID = admin.ID
+						expectCoordinator.AdminID = admin.ID
+						expectCoordinator.CognitoID = admin.CognitoID
 						assert.Equal(t, expectCoordinator, coordinator)
 						return nil
 					})
@@ -557,7 +568,7 @@ func TestUpdateCoordinator(t *testing.T) {
 func TestUpdateCoordinatorEmail(t *testing.T) {
 	t.Parallel()
 
-	auth := &entity.AdminAuth{
+	auth := &entity.Admin{
 		CognitoID: "cognito-id",
 		Role:      entity.AdminRoleCoordinator,
 	}
@@ -575,9 +586,9 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "coordinator-id", "cognito_id", "role").Return(auth, nil)
+				mocks.db.Admin.EXPECT().Get(ctx, "coordinator-id", "cognito_id", "role").Return(auth, nil)
 				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(nil)
-				mocks.db.Coordinator.EXPECT().UpdateEmail(ctx, "coordinator-id", "test-admin@and-period.jp").Return(nil)
+				mocks.db.Admin.EXPECT().UpdateEmail(ctx, "coordinator-id", "test-admin@and-period.jp").Return(nil)
 			},
 			input: &user.UpdateCoordinatorEmailInput{
 				CoordinatorID: "coordinator-id",
@@ -594,7 +605,7 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 		{
 			name: "failed to get by admin id",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "coordinator-id", "cognito_id", "role").Return(nil, errmock)
+				mocks.db.Admin.EXPECT().Get(ctx, "coordinator-id", "cognito_id", "role").Return(nil, errmock)
 			},
 			input: &user.UpdateCoordinatorEmailInput{
 				CoordinatorID: "coordinator-id",
@@ -605,8 +616,8 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 		{
 			name: "invalid coordinator role",
 			setup: func(ctx context.Context, mocks *mocks) {
-				auth := &entity.AdminAuth{CognitoID: "cognito-id", Role: entity.AdminRoleAdministrator}
-				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "coordinator-id", "cognito_id", "role").Return(auth, nil)
+				auth := &entity.Admin{CognitoID: "cognito-id", Role: entity.AdminRoleAdministrator}
+				mocks.db.Admin.EXPECT().Get(ctx, "coordinator-id", "cognito_id", "role").Return(auth, nil)
 			},
 			input: &user.UpdateCoordinatorEmailInput{
 				CoordinatorID: "coordinator-id",
@@ -617,7 +628,7 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 		{
 			name: "failed to admin change email",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "coordinator-id", "cognito_id", "role").Return(auth, nil)
+				mocks.db.Admin.EXPECT().Get(ctx, "coordinator-id", "cognito_id", "role").Return(auth, nil)
 				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(errmock)
 			},
 			input: &user.UpdateCoordinatorEmailInput{
@@ -629,9 +640,9 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 		{
 			name: "failed to update email",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "coordinator-id", "cognito_id", "role").Return(auth, nil)
+				mocks.db.Admin.EXPECT().Get(ctx, "coordinator-id", "cognito_id", "role").Return(auth, nil)
 				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(nil)
-				mocks.db.Coordinator.EXPECT().UpdateEmail(ctx, "coordinator-id", "test-admin@and-period.jp").Return(errmock)
+				mocks.db.Admin.EXPECT().UpdateEmail(ctx, "coordinator-id", "test-admin@and-period.jp").Return(errmock)
 			},
 			input: &user.UpdateCoordinatorEmailInput{
 				CoordinatorID: "coordinator-id",
@@ -653,7 +664,7 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 func TestResetCoordinatorPassword(t *testing.T) {
 	t.Parallel()
 
-	auth := &entity.AdminAuth{
+	auth := &entity.Admin{
 		CognitoID: "cognito-id",
 		Role:      entity.AdminRoleCoordinator,
 	}
@@ -667,7 +678,7 @@ func TestResetCoordinatorPassword(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "coordinator-id", "cognito_id", "role").Return(auth, nil)
+				mocks.db.Admin.EXPECT().Get(ctx, "coordinator-id", "cognito_id", "role").Return(auth, nil)
 				mocks.adminAuth.EXPECT().
 					AdminChangePassword(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, params *cognito.AdminChangePasswordParams) error {
@@ -689,7 +700,7 @@ func TestResetCoordinatorPassword(t *testing.T) {
 		{
 			name: "success without notify",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "coordinator-id", "cognito_id", "role").Return(auth, nil)
+				mocks.db.Admin.EXPECT().Get(ctx, "coordinator-id", "cognito_id", "role").Return(auth, nil)
 				mocks.adminAuth.EXPECT().AdminChangePassword(ctx, gomock.Any()).Return(nil)
 				mocks.messenger.EXPECT().NotifyResetAdminPassword(gomock.Any(), gomock.Any()).Return(errmock)
 			},
@@ -707,7 +718,7 @@ func TestResetCoordinatorPassword(t *testing.T) {
 		{
 			name: "failed to get by admin id",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "coordinator-id", "cognito_id", "role").Return(nil, errmock)
+				mocks.db.Admin.EXPECT().Get(ctx, "coordinator-id", "cognito_id", "role").Return(nil, errmock)
 			},
 			input: &user.ResetCoordinatorPasswordInput{
 				CoordinatorID: "coordinator-id",
@@ -717,8 +728,8 @@ func TestResetCoordinatorPassword(t *testing.T) {
 		{
 			name: "invalid coordinator role",
 			setup: func(ctx context.Context, mocks *mocks) {
-				auth := &entity.AdminAuth{CognitoID: "cognito-id", Role: entity.AdminRoleAdministrator}
-				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "coordinator-id", "cognito_id", "role").Return(auth, nil)
+				auth := &entity.Admin{CognitoID: "cognito-id", Role: entity.AdminRoleAdministrator}
+				mocks.db.Admin.EXPECT().Get(ctx, "coordinator-id", "cognito_id", "role").Return(auth, nil)
 			},
 			input: &user.ResetCoordinatorPasswordInput{
 				CoordinatorID: "coordinator-id",
@@ -728,7 +739,7 @@ func TestResetCoordinatorPassword(t *testing.T) {
 		{
 			name: "failed to admin change password",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.AdminAuth.EXPECT().GetByAdminID(ctx, "coordinator-id", "cognito_id", "role").Return(auth, nil)
+				mocks.db.Admin.EXPECT().Get(ctx, "coordinator-id", "cognito_id", "role").Return(auth, nil)
 				mocks.adminAuth.EXPECT().AdminChangePassword(ctx, gomock.Any()).Return(errmock)
 			},
 			input: &user.ResetCoordinatorPasswordInput{

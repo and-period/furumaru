@@ -199,7 +199,7 @@ func TestNotifyReceivedContact(t *testing.T) {
 		UpdatedAt:   now,
 	}
 	admins := uentity.Administrators{
-		{ID: "admin-id"},
+		{AdminID: "admin-id"},
 	}
 	tests := []struct {
 		name      string
@@ -366,7 +366,7 @@ func TestNotifyNotification(t *testing.T) {
 		CreatorName: "&.スタッフ",
 		PublishedAt: now,
 	}
-	coordinators := uentity.Coordinators{{ID: "admin-id"}}
+	coordinators := uentity.Coordinators{{AdminID: "admin-id"}}
 	producers := uentity.Producers{}
 
 	tests := []struct {
@@ -589,8 +589,8 @@ func TestSendAllAdministrators(t *testing.T) {
 		Offset: 0,
 	}
 	administrators := uentity.Administrators{
-		{ID: "admin-id01"},
-		{ID: "admin-id02"},
+		{AdminID: "admin-id01"},
+		{AdminID: "admin-id02"},
 	}
 
 	tests := []struct {
@@ -694,8 +694,8 @@ func TestSendAllCoordinators(t *testing.T) {
 		Offset: 0,
 	}
 	coordinators := uentity.Coordinators{
-		{ID: "admin-id01"},
-		{ID: "admin-id02"},
+		{AdminID: "admin-id01"},
+		{AdminID: "admin-id02"},
 	}
 
 	tests := []struct {
@@ -799,8 +799,8 @@ func TestSendAllProducers(t *testing.T) {
 		Offset: 0,
 	}
 	producers := uentity.Producers{
-		{ID: "admin-id01"},
-		{ID: "admin-id02"},
+		{AdminID: "admin-id01"},
+		{AdminID: "admin-id02"},
 	}
 
 	tests := []struct {

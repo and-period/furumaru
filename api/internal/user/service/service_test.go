@@ -27,9 +27,10 @@ type mocks struct {
 }
 
 type dbMocks struct {
-	AdminAuth     *mock_database.MockAdminAuth
+	Admin         *mock_database.MockAdmin
 	Administrator *mock_database.MockAdministrator
 	Coordinator   *mock_database.MockCoordinator
+	Member        *mock_database.MockMember
 	Producer      *mock_database.MockProducer
 	User          *mock_database.MockUser
 }
@@ -61,9 +62,10 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
-		AdminAuth:     mock_database.NewMockAdminAuth(ctrl),
+		Admin:         mock_database.NewMockAdmin(ctrl),
 		Administrator: mock_database.NewMockAdministrator(ctrl),
 		Coordinator:   mock_database.NewMockCoordinator(ctrl),
+		Member:        mock_database.NewMockMember(ctrl),
 		Producer:      mock_database.NewMockProducer(ctrl),
 		User:          mock_database.NewMockUser(ctrl),
 	}
@@ -79,9 +81,10 @@ func newService(mocks *mocks, opts ...testOption) *service {
 	params := &Params{
 		WaitGroup: &sync.WaitGroup{},
 		Database: &database.Database{
-			AdminAuth:     mocks.db.AdminAuth,
+			Admin:         mocks.db.Admin,
 			Administrator: mocks.db.Administrator,
 			Coordinator:   mocks.db.Coordinator,
+			Member:        mocks.db.Member,
 			Producer:      mocks.db.Producer,
 			User:          mocks.db.User,
 		},

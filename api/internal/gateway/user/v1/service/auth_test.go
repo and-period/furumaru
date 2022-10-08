@@ -95,15 +95,18 @@ func TestAuthUser(t *testing.T) {
 		{
 			name: "success",
 			user: &entity.User{
-				ID:           "user-id",
-				ProviderType: entity.ProviderTypeEmail,
-				Email:        "test@and-period.jp",
-				PhoneNumber:  "+819012345678",
-				Username:     "username",
-				ThumbnailURL: "https://and-period.jp/thumbnail.png",
-				CreatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				UpdatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				VerifiedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				ID:        "user-id",
+				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				Member: entity.Member{
+					UserID:       "user-id",
+					ProviderType: entity.ProviderTypeEmail,
+					Email:        "test@and-period.jp",
+					PhoneNumber:  "+819012345678",
+					Username:     "username",
+					ThumbnailURL: "https://and-period.jp/thumbnail.png",
+					VerifiedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				},
 			},
 			expect: &AuthUser{
 				AuthUser: response.AuthUser{

@@ -34,6 +34,7 @@ export default defineComponent({
   setup() {
     const router = useRouter()
     const id = 'ThisIsID'
+
     const headers = [
       {
         text: '名前',
@@ -72,6 +73,7 @@ export default defineComponent({
         quantity: 1,
         price: 1000,
         account: false,
+
       },
       {
         name: 'namae2',
@@ -92,6 +94,7 @@ export default defineComponent({
 
     const handleEdit = () => {
       router.push(`/customers/edit/${id}`)
+
     }
 
     return {

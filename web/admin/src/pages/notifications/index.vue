@@ -25,22 +25,51 @@
         <template #[`item.publishedAt`]="{ item }">
           {{ getDay(item.publishedAt) }}
         </template>
+        <template #[`item.actions`]="{ item }">
+          <v-btn outlined color="primary" small @click="handleEdit(item)">
+            <v-icon small>mdi-pencil</v-icon>
+            編集
+          </v-btn>
+          <v-btn outlined color="primary" small @click="openDeleteDialog(item)">
+            <v-icon small>mdi-delete</v-icon>
+            削除
+          </v-btn>
+        </template>
       </v-data-table>
+      <v-dialog v-model="deleteDialog" width="500">
+        <v-card>
+          <v-card-title class="text-h7">
+            {{ selectedName }}を本当に削除しますか？
+          </v-card-title>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="accentDarken" text @click="hideDeleteDialog">
+              キャンセル
+            </v-btn>
+            <v-btn color="primary" outlined @click="handleDelete"> 削除 </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card>
   </div>
 </template>
 
 <script lang="ts">
 import { computed, useFetch } from '@nuxtjs/composition-api'
-import { defineComponent } from '@vue/composition-api'
+import { defineComponent, ref } from '@vue/composition-api'
 import dayjs from 'dayjs'
 import { DataTableHeader } from 'vuetify'
 
 import { useNotificationStore } from '~/store/notification'
+import { NotificationsResponseNotificationsInner } from '~/types/api'
 
 export default defineComponent({
   setup() {
     const notificationStore = useNotificationStore()
+
+    const deleteDialog = ref<boolean>(false)
+    const selectedId = ref<string>('')
+    const selectedName = ref<string>('')
     const notifications = computed(() => {
       return notificationStore.notifications
     })
@@ -61,6 +90,11 @@ export default defineComponent({
       {
         text: '掲載開始時間',
         value: 'publishedAt',
+      },
+      {
+        text: 'Actions',
+        value: 'actions',
+        sortable: false,
       },
     ]
 
@@ -100,8 +134,34 @@ export default defineComponent({
       return dayjs.unix(unixTime).format('YYYY/MM/DD hh:mm')
     }
 
+    const openDeleteDialog = (
+      item: NotificationsResponseNotificationsInner
+    ): void => {
+      selectedId.value = item.id
+      selectedName.value = item.title
+      deleteDialog.value = true
+    }
+
+    const hideDeleteDialog = () => {
+      deleteDialog.value = false
+    }
+
     // TODO
     const handleClickAddButton = () => {}
+
+    // TODO
+    const handleEdit = (item: NotificationsResponseNotificationsInner) => {
+      console.log(item)
+    }
+
+    const handleDelete = async (): Promise<void> => {
+      try {
+        await notificationStore.deleteNotification(selectedId.value)
+      } catch (err) {
+        console.log
+      }
+      deleteDialog.value = false
+    }
 
     const { fetchState } = useFetch(async () => {
       try {
@@ -115,8 +175,14 @@ export default defineComponent({
       headers,
       notifications,
       fetchState,
+      selectedName,
+      deleteDialog,
+      openDeleteDialog,
+      hideDeleteDialog,
       getStatusColor,
       handleClickAddButton,
+      handleEdit,
+      handleDelete,
       getPublic,
       getTarget,
       getDay,

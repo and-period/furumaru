@@ -575,15 +575,18 @@ func TestGetAuthUser(t *testing.T) {
 
 	now := jst.Date(2022, 1, 2, 18, 30, 0, 0)
 	u := &uentity.User{
-		ID:           "user-id",
-		ProviderType: uentity.ProviderTypeEmail,
-		Email:        "test@and-period.jp",
-		PhoneNumber:  "+819012345678",
-		Username:     "username",
-		ThumbnailURL: "https://and-period.jp/thumbnail.png",
-		CreatedAt:    now,
-		UpdatedAt:    now,
-		VerifiedAt:   now,
+		ID:        "user-id",
+		CreatedAt: now,
+		UpdatedAt: now,
+		Member: uentity.Member{
+			UserID:       "user-id",
+			ProviderType: uentity.ProviderTypeEmail,
+			Email:        "test@and-period.jp",
+			PhoneNumber:  "+819012345678",
+			Username:     "username",
+			ThumbnailURL: "https://and-period.jp/thumbnail.png",
+			VerifiedAt:   now,
+		},
 	}
 
 	tests := []struct {
@@ -753,15 +756,18 @@ func TestCreateAuthWithOAuth(t *testing.T) {
 
 	now := jst.Date(2022, 1, 2, 18, 30, 0, 0)
 	u := &uentity.User{
-		ID:           "user-id",
-		ProviderType: uentity.ProviderTypeEmail,
-		Email:        "test@and-period.jp",
-		PhoneNumber:  "+819012345678",
-		Username:     "username",
-		ThumbnailURL: "https://and-period.jp/thumbnail.png",
-		CreatedAt:    now,
-		UpdatedAt:    now,
-		VerifiedAt:   now,
+		ID:        "user-id",
+		CreatedAt: now,
+		UpdatedAt: now,
+		Member: uentity.Member{
+			UserID:       "user-id",
+			ProviderType: uentity.ProviderTypeEmail,
+			Email:        "test@and-period.jp",
+			PhoneNumber:  "+819012345678",
+			Username:     "username",
+			ThumbnailURL: "https://and-period.jp/thumbnail.png",
+			VerifiedAt:   now,
+		},
 	}
 
 	tests := []struct {

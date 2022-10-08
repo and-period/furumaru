@@ -241,13 +241,13 @@ func TestCreateProduct(t *testing.T) {
 		CoordinatorID: "coordinator-id",
 	}
 	coordinator := &uentity.Coordinator{
-		ID: "coordinator-id",
+		AdminID: "coordinator-id",
 	}
 	producerIn := &user.GetProducerInput{
 		ProducerID: "producer-id",
 	}
 	producer := &uentity.Producer{
-		ID: "producer-id",
+		AdminID: "producer-id",
 	}
 
 	tests := []struct {
@@ -482,13 +482,13 @@ func TestUpdateProduct(t *testing.T) {
 		CoordinatorID: "coordinator-id",
 	}
 	coordinator := &uentity.Coordinator{
-		ID: "coordinator-id",
+		AdminID: "coordinator-id",
 	}
 	producerIn := &user.GetProducerInput{
 		ProducerID: "producer-id",
 	}
 	producer := &uentity.Producer{
-		ID: "producer-id",
+		AdminID: "producer-id",
 	}
 
 	tests := []struct {

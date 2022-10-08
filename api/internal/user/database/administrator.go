@@ -14,9 +14,7 @@ import (
 const administratorTable = "administrators"
 
 var administratorFields = []string{
-	"id", "email", "phone_number",
-	"lastname", "firstname", "lastname_kana", "firstname_kana",
-	"created_at", "updated_at", "deleted_at",
+	"admin_id", "phone_number", "created_at", "updated_at", "deleted_at",
 }
 
 type administrator struct {
@@ -40,7 +38,6 @@ func (a *administrator) List(
 	}
 
 	stmt := a.db.DB.WithContext(ctx).Table(administratorTable).Select(fields)
-	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
 	}
@@ -48,8 +45,13 @@ func (a *administrator) List(
 		stmt = stmt.Offset(params.Offset)
 	}
 
-	err := stmt.Find(&administrators).Error
-	return administrators, exception.InternalError(err)
+	if err := stmt.Find(&administrators).Error; err != nil {
+		return nil, exception.InternalError(err)
+	}
+	if err := a.fill(ctx, a.db.DB, administrators...); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return administrators, nil
 }
 
 func (a *administrator) Count(ctx context.Context, params *ListAdministratorsParams) (int64, error) {
@@ -69,29 +71,41 @@ func (a *administrator) MultiGet(
 		fields = administratorFields
 	}
 
-	err := a.db.DB.WithContext(ctx).
+	stmt := a.db.DB.WithContext(ctx).
 		Table(administratorTable).Select(fields).
-		Where("id IN (?)", administratorIDs).
-		Find(&administrators).Error
-	return administrators, exception.InternalError(err)
+		Where("admin_id IN (?)", administratorIDs)
+
+	if err := stmt.Find(&administrators).Error; err != nil {
+		return nil, exception.InternalError(err)
+	}
+	if err := a.fill(ctx, a.db.DB, administrators...); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return administrators, nil
 }
 
 func (a *administrator) Get(
 	ctx context.Context, administratorID string, fields ...string,
 ) (*entity.Administrator, error) {
 	administrator, err := a.get(ctx, a.db.DB, administratorID, fields...)
-	return administrator, exception.InternalError(err)
+	if err != nil {
+		return nil, exception.InternalError(err)
+	}
+	if err := a.fill(ctx, a.db.DB, administrator); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return administrator, nil
 }
 
 func (a *administrator) Create(
-	ctx context.Context, auth *entity.AdminAuth, administrator *entity.Administrator,
+	ctx context.Context, admin *entity.Admin, administrator *entity.Administrator,
 ) error {
 	_, err := a.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		now := a.now()
-		auth.CreatedAt, auth.UpdatedAt = now, now
+		admin.CreatedAt, admin.UpdatedAt = now, now
 		administrator.CreatedAt, administrator.UpdatedAt = now, now
 
-		err := tx.WithContext(ctx).Table(adminAuthTable).Create(&auth).Error
+		err := tx.WithContext(ctx).Table(adminTable).Create(&admin).Error
 		if err != nil {
 			return nil, err
 		}
@@ -107,37 +121,30 @@ func (a *administrator) Update(ctx context.Context, administratorID string, para
 			return nil, err
 		}
 
-		updates := map[string]interface{}{
+		now := a.now()
+		adminParams := map[string]interface{}{
 			"lastname":       params.Lastname,
 			"firstname":      params.Firstname,
 			"lastname_kana":  params.LastnameKana,
 			"firstname_kana": params.FirstnameKana,
-			"phone_number":   params.PhoneNumber,
-			"updated_at":     a.now(),
+			"updated_at":     now,
 		}
-		err := tx.WithContext(ctx).
-			Table(administratorTable).
-			Where("id = ?", administratorID).
-			Updates(updates).Error
-		return nil, err
-	})
-	return exception.InternalError(err)
-}
+		administratorParams := map[string]interface{}{
+			"phone_number": params.PhoneNumber,
+			"updated_at":   now,
+		}
 
-func (a *administrator) UpdateEmail(ctx context.Context, administratorID, email string) error {
-	_, err := a.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
-		if _, err := a.get(ctx, tx, administratorID); err != nil {
+		err := tx.WithContext(ctx).
+			Table(adminTable).
+			Where("id = ?", administratorID).
+			Updates(adminParams).Error
+		if err != nil {
 			return nil, err
 		}
-
-		params := map[string]interface{}{
-			"email":      email,
-			"updated_at": a.now(),
-		}
-		err := tx.WithContext(ctx).
+		err = tx.WithContext(ctx).
 			Table(administratorTable).
-			Where("id = ?", administratorID).
-			Updates(params).Error
+			Where("admin_id = ?", administratorID).
+			Updates(administratorParams).Error
 		return nil, err
 	})
 	return exception.InternalError(err)
@@ -153,7 +160,35 @@ func (a *administrator) get(
 
 	err := tx.WithContext(ctx).
 		Table(administratorTable).Select(fields).
-		Where("id = ?", administratorID).
+		Where("admin_id = ?", administratorID).
 		First(&administrator).Error
 	return administrator, err
+}
+
+func (a *administrator) fill(ctx context.Context, tx *gorm.DB, administrators ...*entity.Administrator) error {
+	var admins entity.Admins
+
+	ids := entity.Administrators(administrators).IDs()
+	if len(ids) == 0 {
+		return nil
+	}
+
+	stmt := tx.WithContext(ctx).
+		Table(adminTable).Select(adminFields).
+		Where("id IN (?)", ids)
+	if err := stmt.Find(&admins).Error; err != nil {
+		return err
+	}
+
+	adminMap := admins.Map()
+
+	for i, a := range administrators {
+		admin, ok := adminMap[a.AdminID]
+		if !ok {
+			admin = &entity.Admin{}
+		}
+
+		administrators[i].Fill(admin)
+	}
+	return nil
 }

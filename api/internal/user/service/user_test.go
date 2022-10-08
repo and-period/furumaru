@@ -19,17 +19,22 @@ func TestMultiGetUsers(t *testing.T) {
 	now := jst.Now()
 	users := entity.Users{
 		{
-			ID:           "user-id",
-			AccountID:    "",
-			CognitoID:    "cognito-id",
-			Username:     "",
-			ProviderType: entity.ProviderTypeEmail,
-			Email:        "test-user@and-period.jp",
-			PhoneNumber:  "+810000000000",
-			ThumbnailURL: "https://and-period.jp/thumbnail.png",
-			CreatedAt:    now,
-			UpdatedAt:    now,
-			VerifiedAt:   now,
+			ID:         "user-id",
+			Registered: true,
+			CreatedAt:  now,
+			UpdatedAt:  now,
+			Member: entity.Member{
+				AccountID:    "",
+				CognitoID:    "cognito-id",
+				Username:     "",
+				ProviderType: entity.ProviderTypeEmail,
+				Email:        "test-user@and-period.jp",
+				PhoneNumber:  "+810000000000",
+				ThumbnailURL: "https://and-period.jp/thumbnail.png",
+				CreatedAt:    now,
+				UpdatedAt:    now,
+				VerifiedAt:   now,
+			},
 		},
 	}
 
@@ -50,17 +55,22 @@ func TestMultiGetUsers(t *testing.T) {
 			},
 			expect: entity.Users{
 				{
-					ID:           "user-id",
-					AccountID:    "",
-					CognitoID:    "cognito-id",
-					Username:     "",
-					ProviderType: entity.ProviderTypeEmail,
-					Email:        "test-user@and-period.jp",
-					PhoneNumber:  "+810000000000",
-					ThumbnailURL: "https://and-period.jp/thumbnail.png",
-					CreatedAt:    now,
-					UpdatedAt:    now,
-					VerifiedAt:   now,
+					ID:         "user-id",
+					Registered: true,
+					CreatedAt:  now,
+					UpdatedAt:  now,
+					Member: entity.Member{
+						AccountID:    "",
+						CognitoID:    "cognito-id",
+						Username:     "",
+						ProviderType: entity.ProviderTypeEmail,
+						Email:        "test-user@and-period.jp",
+						PhoneNumber:  "+810000000000",
+						ThumbnailURL: "https://and-period.jp/thumbnail.png",
+						CreatedAt:    now,
+						UpdatedAt:    now,
+						VerifiedAt:   now,
+					},
 				},
 			},
 			expectErr: nil,
@@ -142,17 +152,22 @@ func TestGetUser(t *testing.T) {
 
 	now := jst.Now()
 	u := &entity.User{
-		ID:           "user-id",
-		AccountID:    "",
-		CognitoID:    "cognito-id",
-		Username:     "",
-		ProviderType: entity.ProviderTypeEmail,
-		Email:        "test-user@and-period.jp",
-		PhoneNumber:  "+810000000000",
-		ThumbnailURL: "https://and-period.jp/thumbnail.png",
-		CreatedAt:    now,
-		UpdatedAt:    now,
-		VerifiedAt:   now,
+		ID:         "user-id",
+		Registered: true,
+		CreatedAt:  now,
+		UpdatedAt:  now,
+		Member: entity.Member{
+			AccountID:    "",
+			CognitoID:    "cognito-id",
+			Username:     "",
+			ProviderType: entity.ProviderTypeEmail,
+			Email:        "test-user@and-period.jp",
+			PhoneNumber:  "+810000000000",
+			ThumbnailURL: "https://and-period.jp/thumbnail.png",
+			CreatedAt:    now,
+			UpdatedAt:    now,
+			VerifiedAt:   now,
+		},
 	}
 
 	tests := []struct {
@@ -171,17 +186,22 @@ func TestGetUser(t *testing.T) {
 				UserID: "user-id",
 			},
 			expect: &entity.User{
-				ID:           "user-id",
-				AccountID:    "",
-				CognitoID:    "cognito-id",
-				Username:     "",
-				ProviderType: entity.ProviderTypeEmail,
-				Email:        "test-user@and-period.jp",
-				PhoneNumber:  "+810000000000",
-				ThumbnailURL: "https://and-period.jp/thumbnail.png",
-				CreatedAt:    now,
-				UpdatedAt:    now,
-				VerifiedAt:   now,
+				ID:         "user-id",
+				Registered: true,
+				CreatedAt:  now,
+				UpdatedAt:  now,
+				Member: entity.Member{
+					AccountID:    "",
+					CognitoID:    "cognito-id",
+					Username:     "",
+					ProviderType: entity.ProviderTypeEmail,
+					Email:        "test-user@and-period.jp",
+					PhoneNumber:  "+810000000000",
+					ThumbnailURL: "https://and-period.jp/thumbnail.png",
+					CreatedAt:    now,
+					UpdatedAt:    now,
+					VerifiedAt:   now,
+				},
 			},
 			expectErr: nil,
 		},
@@ -228,15 +248,20 @@ func TestCreateUser(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				expectUser := &entity.User{
-					Email:        "test@and-period.jp",
-					PhoneNumber:  "+819012345678",
-					ProviderType: entity.ProviderTypeEmail,
+					Registered: true,
+					Member: entity.Member{
+						ProviderType: entity.ProviderTypeEmail,
+						Email:        "test@and-period.jp",
+						PhoneNumber:  "+819012345678",
+					},
 				}
-				mocks.db.User.EXPECT().
-					Create(ctx, gomock.Any()).
-					DoAndReturn(func(ctx context.Context, u *entity.User) error {
-						expectUser.ID, expectUser.CognitoID = u.ID, u.CognitoID
+				mocks.db.Member.EXPECT().
+					Create(ctx, gomock.Any(), gomock.Any()).
+					DoAndReturn(func(ctx context.Context, u *entity.User, m *entity.Member) error {
+						expectUser.ID = u.ID
+						expectUser.Member.UserID, expectUser.Member.CognitoID = m.UserID, m.CognitoID
 						assert.Equal(t, expectUser, u)
+						assert.Equal(t, expectUser.Member, *m)
 						return nil
 					})
 				mocks.userAuth.EXPECT().SignUp(ctx, gomock.Any()).Return(nil)
@@ -269,7 +294,7 @@ func TestCreateUser(t *testing.T) {
 		{
 			name: "failed to create",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.User.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
+				mocks.db.Member.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(errmock)
 			},
 			input: &user.CreateUserInput{
 				Email:                "test@and-period.jp",
@@ -282,7 +307,7 @@ func TestCreateUser(t *testing.T) {
 		{
 			name: "failed to create",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.User.EXPECT().Create(ctx, gomock.Any()).Return(nil)
+				mocks.db.Member.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(nil)
 				mocks.userAuth.EXPECT().SignUp(ctx, gomock.Any()).Return(errmock)
 			},
 			input: &user.CreateUserInput{
@@ -317,7 +342,7 @@ func TestVerifyUser(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().ConfirmSignUp(ctx, "user-id", "123456").Return(nil)
-				mocks.db.User.EXPECT().UpdateVerified(ctx, "user-id").Return(nil)
+				mocks.db.Member.EXPECT().UpdateVerified(ctx, "user-id").Return(nil)
 			},
 			input: &user.VerifyUserInput{
 				UserID:     "user-id",
@@ -346,7 +371,7 @@ func TestVerifyUser(t *testing.T) {
 			name: "failed to update verified",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().ConfirmSignUp(ctx, "user-id", "123456").Return(nil)
-				mocks.db.User.EXPECT().UpdateVerified(ctx, "user-id").Return(errmock)
+				mocks.db.Member.EXPECT().UpdateVerified(ctx, "user-id").Return(errmock)
 			},
 			input: &user.VerifyUserInput{
 				UserID:     "user-id",
@@ -385,16 +410,21 @@ func TestCreateUserWithOAuth(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				expectUser := &entity.User{
-					Email:        "test-user@and-period.jp",
-					PhoneNumber:  "+810000000000",
-					ProviderType: entity.ProviderTypeOAuth,
+					Registered: true,
+					Member: entity.Member{
+						ProviderType: entity.ProviderTypeOAuth,
+						Email:        "test-user@and-period.jp",
+						PhoneNumber:  "+810000000000",
+					},
 				}
 				mocks.userAuth.EXPECT().GetUser(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(auth, nil)
-				mocks.db.User.EXPECT().
-					Create(ctx, gomock.Any()).
-					DoAndReturn(func(ctx context.Context, u *entity.User) error {
-						expectUser.ID, expectUser.CognitoID = u.ID, u.CognitoID
+				mocks.db.Member.EXPECT().
+					Create(ctx, gomock.Any(), gomock.Any()).
+					DoAndReturn(func(ctx context.Context, u *entity.User, m *entity.Member) error {
+						expectUser.ID = u.ID
+						expectUser.Member.UserID, expectUser.CognitoID = m.UserID, m.CognitoID
 						assert.Equal(t, expectUser, u)
+						assert.Equal(t, expectUser.Member, *m)
 						return nil
 					})
 			},
@@ -423,7 +453,7 @@ func TestCreateUserWithOAuth(t *testing.T) {
 			name: "failed to create user",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().GetUser(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(auth, nil)
-				mocks.db.User.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
+				mocks.db.Member.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(errmock)
 			},
 			input: &user.CreateUserWithOAuthInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
@@ -441,11 +471,87 @@ func TestCreateUserWithOAuth(t *testing.T) {
 	}
 }
 
+func TestInitializeUser(t *testing.T) {
+	t.Parallel()
+	m := &entity.Member{AccountID: ""}
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.InitializeUserInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Member.EXPECT().Get(ctx, "user-id", "account_id").Return(m, nil)
+				mocks.db.Member.EXPECT().UpdateAccount(ctx, "user-id", "account-id", "username").Return(nil)
+			},
+			input: &user.InitializeUserInput{
+				UserID:    "user-id",
+				AccountID: "account-id",
+				Username:  "username",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.InitializeUserInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get user",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Member.EXPECT().Get(ctx, "user-id", "account_id").Return(nil, errmock)
+			},
+			input: &user.InitializeUserInput{
+				UserID:    "user-id",
+				AccountID: "account-id",
+				Username:  "username",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "failed to get user",
+			setup: func(ctx context.Context, mocks *mocks) {
+				m := &entity.Member{AccountID: "account-id"}
+				mocks.db.Member.EXPECT().Get(ctx, "user-id", "account_id").Return(m, nil)
+			},
+			input: &user.InitializeUserInput{
+				UserID:    "user-id",
+				AccountID: "account-id",
+				Username:  "username",
+			},
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
+			name: "failed to initilaze user",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Member.EXPECT().Get(ctx, "user-id", "account_id").Return(m, nil)
+				mocks.db.Member.EXPECT().UpdateAccount(ctx, "user-id", "account-id", "username").Return(errmock)
+			},
+			input: &user.InitializeUserInput{
+				UserID:    "user-id",
+				AccountID: "account-id",
+				Username:  "username",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.InitializeUser(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
 func TestUpdateUserEmail(t *testing.T) {
 	t.Parallel()
 
-	u := &entity.User{
-		ID:           "user-id",
+	m := &entity.Member{
 		ProviderType: entity.ProviderTypeEmail,
 		Email:        "test-user@and-period.jp",
 	}
@@ -466,7 +572,7 @@ func TestUpdateUserEmail(t *testing.T) {
 					NewEmail:    "test-other@and-period.jp",
 				}
 				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
-				mocks.db.User.EXPECT().GetByCognitoID(ctx, "cognito-id", "id", "provider_type", "email").Return(u, nil)
+				mocks.db.Member.EXPECT().GetByCognitoID(ctx, "cognito-id", "provider_type", "email").Return(m, nil)
 				mocks.userAuth.EXPECT().ChangeEmail(ctx, params).Return(nil)
 			},
 			input: &user.UpdateUserEmailInput{
@@ -496,7 +602,7 @@ func TestUpdateUserEmail(t *testing.T) {
 			name: "failed to get by cognito id",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
-				mocks.db.User.EXPECT().GetByCognitoID(ctx, "cognito-id", "id", "provider_type", "email").Return(nil, errmock)
+				mocks.db.Member.EXPECT().GetByCognitoID(ctx, "cognito-id", "provider_type", "email").Return(nil, errmock)
 			},
 			input: &user.UpdateUserEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
@@ -507,13 +613,12 @@ func TestUpdateUserEmail(t *testing.T) {
 		{
 			name: "failed to unmatch provider type",
 			setup: func(ctx context.Context, mocks *mocks) {
-				u := &entity.User{
-					ID:           "user-id",
+				m := &entity.Member{
 					ProviderType: entity.ProviderTypeOAuth,
 					Email:        "test-user@and-period.jp",
 				}
 				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
-				mocks.db.User.EXPECT().GetByCognitoID(ctx, "cognito-id", "id", "provider_type", "email").Return(u, nil)
+				mocks.db.Member.EXPECT().GetByCognitoID(ctx, "cognito-id", "provider_type", "email").Return(m, nil)
 			},
 			input: &user.UpdateUserEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
@@ -531,7 +636,7 @@ func TestUpdateUserEmail(t *testing.T) {
 					NewEmail:    "test-other@and-period.jp",
 				}
 				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
-				mocks.db.User.EXPECT().GetByCognitoID(ctx, "cognito-id", "id", "provider_type", "email").Return(u, nil)
+				mocks.db.Member.EXPECT().GetByCognitoID(ctx, "cognito-id", "provider_type", "email").Return(m, nil)
 				mocks.userAuth.EXPECT().ChangeEmail(ctx, params).Return(errmock)
 			},
 			input: &user.UpdateUserEmailInput{
@@ -554,8 +659,8 @@ func TestUpdateUserEmail(t *testing.T) {
 func TestVerifyUserEmail(t *testing.T) {
 	t.Parallel()
 
-	u := &entity.User{
-		ID: "user-id",
+	m := &entity.Member{
+		UserID: "user-id",
 	}
 
 	tests := []struct {
@@ -573,9 +678,9 @@ func TestVerifyUserEmail(t *testing.T) {
 					VerifyCode:  "123456",
 				}
 				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
-				mocks.db.User.EXPECT().GetByCognitoID(ctx, "cognito-id", "id").Return(u, nil)
+				mocks.db.Member.EXPECT().GetByCognitoID(ctx, "cognito-id", "user_id").Return(m, nil)
 				mocks.userAuth.EXPECT().ConfirmChangeEmail(ctx, params).Return("test-user@and-period.jp", nil)
-				mocks.db.User.EXPECT().UpdateEmail(ctx, "user-id", "test-user@and-period.jp").Return(nil)
+				mocks.db.Member.EXPECT().UpdateEmail(ctx, "user-id", "test-user@and-period.jp").Return(nil)
 			},
 			input: &user.VerifyUserEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
@@ -604,7 +709,7 @@ func TestVerifyUserEmail(t *testing.T) {
 			name: "failed to get by cognito id",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
-				mocks.db.User.EXPECT().GetByCognitoID(ctx, "cognito-id", "id").Return(nil, errmock)
+				mocks.db.Member.EXPECT().GetByCognitoID(ctx, "cognito-id", "user_id").Return(nil, errmock)
 			},
 			input: &user.VerifyUserEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
@@ -621,7 +726,7 @@ func TestVerifyUserEmail(t *testing.T) {
 					VerifyCode:  "123456",
 				}
 				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
-				mocks.db.User.EXPECT().GetByCognitoID(ctx, "cognito-id", "id").Return(u, nil)
+				mocks.db.Member.EXPECT().GetByCognitoID(ctx, "cognito-id", "user_id").Return(m, nil)
 				mocks.userAuth.EXPECT().ConfirmChangeEmail(ctx, params).Return("", errmock)
 			},
 			input: &user.VerifyUserEmailInput{
@@ -639,9 +744,9 @@ func TestVerifyUserEmail(t *testing.T) {
 					VerifyCode:  "123456",
 				}
 				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
-				mocks.db.User.EXPECT().GetByCognitoID(ctx, "cognito-id", "id").Return(u, nil)
+				mocks.db.Member.EXPECT().GetByCognitoID(ctx, "cognito-id", "user_id").Return(m, nil)
 				mocks.userAuth.EXPECT().ConfirmChangeEmail(ctx, params).Return("test-user@and-period.jp", nil)
-				mocks.db.User.EXPECT().UpdateEmail(ctx, "user-id", "test-user@and-period.jp").Return(errmock)
+				mocks.db.Member.EXPECT().UpdateEmail(ctx, "user-id", "test-user@and-period.jp").Return(errmock)
 			},
 			input: &user.VerifyUserEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
@@ -655,83 +760,6 @@ func TestVerifyUserEmail(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.VerifyUserEmail(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
-	}
-}
-
-func TestInitializeUser(t *testing.T) {
-	t.Parallel()
-	u := &entity.User{AccountID: ""}
-	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *user.InitializeUserInput
-		expectErr error
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.User.EXPECT().Get(ctx, "user-id", "account_id").Return(u, nil)
-				mocks.db.User.EXPECT().UpdateAccount(ctx, "user-id", "account-id", "username").Return(nil)
-			},
-			input: &user.InitializeUserInput{
-				UserID:    "user-id",
-				AccountID: "account-id",
-				Username:  "username",
-			},
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &user.InitializeUserInput{},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to get user",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.User.EXPECT().Get(ctx, "user-id", "account_id").Return(nil, errmock)
-			},
-			input: &user.InitializeUserInput{
-				UserID:    "user-id",
-				AccountID: "account-id",
-				Username:  "username",
-			},
-			expectErr: exception.ErrUnknown,
-		},
-		{
-			name: "failed to get user",
-			setup: func(ctx context.Context, mocks *mocks) {
-				u := &entity.User{AccountID: "account-id"}
-				mocks.db.User.EXPECT().Get(ctx, "user-id", "account_id").Return(u, nil)
-			},
-			input: &user.InitializeUserInput{
-				UserID:    "user-id",
-				AccountID: "account-id",
-				Username:  "username",
-			},
-			expectErr: exception.ErrFailedPrecondition,
-		},
-		{
-			name: "failed to initilaze user",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.User.EXPECT().Get(ctx, "user-id", "account_id").Return(u, nil)
-				mocks.db.User.EXPECT().UpdateAccount(ctx, "user-id", "account-id", "username").Return(errmock)
-			},
-			input: &user.InitializeUserInput{
-				UserID:    "user-id",
-				AccountID: "account-id",
-				Username:  "username",
-			},
-			expectErr: exception.ErrUnknown,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.InitializeUser(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
@@ -813,7 +841,7 @@ func TestUpdateUserPassword(t *testing.T) {
 func TestForgotUserPassword(t *testing.T) {
 	t.Parallel()
 
-	u := &entity.User{CognitoID: "cognito-id"}
+	m := &entity.Member{CognitoID: "cognito-id"}
 
 	tests := []struct {
 		name      string
@@ -824,7 +852,7 @@ func TestForgotUserPassword(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.User.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(u, nil)
+				mocks.db.Member.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(m, nil)
 				mocks.userAuth.EXPECT().ForgotPassword(ctx, "cognito-id").Return(nil)
 			},
 			input: &user.ForgotUserPasswordInput{
@@ -841,7 +869,7 @@ func TestForgotUserPassword(t *testing.T) {
 		{
 			name: "failed to get by email",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.User.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(nil, errmock)
+				mocks.db.Member.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(nil, errmock)
 			},
 			input: &user.ForgotUserPasswordInput{
 				Email: "test-user@and-period.jp",
@@ -851,7 +879,7 @@ func TestForgotUserPassword(t *testing.T) {
 		{
 			name: "failed to forget password",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.User.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(u, nil)
+				mocks.db.Member.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(m, nil)
 				mocks.userAuth.EXPECT().ForgotPassword(ctx, "cognito-id").Return(errmock)
 			},
 			input: &user.ForgotUserPasswordInput{
@@ -873,7 +901,7 @@ func TestForgotUserPassword(t *testing.T) {
 func TestVerifyUserPassword(t *testing.T) {
 	t.Parallel()
 
-	u := &entity.User{CognitoID: "cognito-id"}
+	m := &entity.Member{CognitoID: "cognito-id"}
 
 	tests := []struct {
 		name      string
@@ -889,7 +917,7 @@ func TestVerifyUserPassword(t *testing.T) {
 					VerifyCode:  "123456",
 					NewPassword: "12345678",
 				}
-				mocks.db.User.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(u, nil)
+				mocks.db.Member.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(m, nil)
 				mocks.userAuth.EXPECT().ConfirmForgotPassword(ctx, params).Return(nil)
 			},
 			input: &user.VerifyUserPasswordInput{
@@ -920,7 +948,7 @@ func TestVerifyUserPassword(t *testing.T) {
 		{
 			name: "failed to get by email",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.User.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(nil, errmock)
+				mocks.db.Member.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(nil, errmock)
 			},
 			input: &user.VerifyUserPasswordInput{
 				Email:                "test-user@and-period.jp",
@@ -938,7 +966,7 @@ func TestVerifyUserPassword(t *testing.T) {
 					VerifyCode:  "123456",
 					NewPassword: "12345678",
 				}
-				mocks.db.User.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(u, nil)
+				mocks.db.Member.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(m, nil)
 				mocks.userAuth.EXPECT().ConfirmForgotPassword(ctx, params).Return(errmock)
 			},
 			input: &user.VerifyUserPasswordInput{
@@ -964,8 +992,8 @@ func TestDeleteUser(t *testing.T) {
 	t.Parallel()
 
 	now := jst.Now()
-	u := &entity.User{
-		ID:           "user-id",
+	m := &entity.Member{
+		UserID:       "user-id",
 		CognitoID:    "cognito-id",
 		ProviderType: entity.ProviderTypeEmail,
 		Email:        "test-user@and-period.jp",
@@ -984,9 +1012,9 @@ func TestDeleteUser(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
+				mocks.db.Member.EXPECT().Get(ctx, "user-id").Return(m, nil)
 				mocks.userAuth.EXPECT().DeleteUser(ctx, "cognito-id").Return(nil)
-				mocks.db.User.EXPECT().Delete(ctx, "user-id").Return(nil)
+				mocks.db.Member.EXPECT().Delete(ctx, "user-id").Return(nil)
 			},
 			input: &user.DeleteUserInput{
 				UserID: "user-id",
@@ -1002,7 +1030,7 @@ func TestDeleteUser(t *testing.T) {
 		{
 			name: "failed to delete cognito user",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, errmock)
+				mocks.db.Member.EXPECT().Get(ctx, "user-id").Return(m, errmock)
 			},
 			input: &user.DeleteUserInput{
 				UserID: "user-id",
@@ -1012,7 +1040,7 @@ func TestDeleteUser(t *testing.T) {
 		{
 			name: "failed to delete cognito user",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
+				mocks.db.Member.EXPECT().Get(ctx, "user-id").Return(m, nil)
 				mocks.userAuth.EXPECT().DeleteUser(ctx, "cognito-id").Return(errmock)
 			},
 			input: &user.DeleteUserInput{
@@ -1023,9 +1051,9 @@ func TestDeleteUser(t *testing.T) {
 		{
 			name: "failed to delete user",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
+				mocks.db.Member.EXPECT().Get(ctx, "user-id").Return(m, nil)
 				mocks.userAuth.EXPECT().DeleteUser(ctx, "cognito-id").Return(nil)
-				mocks.db.User.EXPECT().Delete(ctx, "user-id").Return(errmock)
+				mocks.db.Member.EXPECT().Delete(ctx, "user-id").Return(errmock)
 			},
 			input: &user.DeleteUserInput{
 				UserID: "user-id",

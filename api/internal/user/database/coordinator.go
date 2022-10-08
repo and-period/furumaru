@@ -14,9 +14,7 @@ import (
 const coordinatorTable = "coordinators"
 
 var coordinatorFields = []string{
-	"id", "email", "phone_number",
-	"lastname", "firstname", "lastname_kana", "firstname_kana",
-	"company_name", "store_name", "thumbnail_url", "header_url",
+	"admin_id", "phone_number", "company_name", "store_name", "thumbnail_url", "header_url",
 	"twitter_account", "instagram_account", "facebook_account",
 	"postal_code", "prefecture", "city", "address_line1", "address_line2",
 	"created_at", "updated_at", "deleted_at",
@@ -43,7 +41,6 @@ func (c *coordinator) List(
 	}
 
 	stmt := c.db.DB.WithContext(ctx).Table(coordinatorTable).Select(fields)
-	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
 	}
@@ -51,8 +48,13 @@ func (c *coordinator) List(
 		stmt = stmt.Offset(params.Offset)
 	}
 
-	err := stmt.Find(&coordinators).Error
-	return coordinators, exception.InternalError(err)
+	if err := stmt.Find(&coordinators).Error; err != nil {
+		return nil, exception.InternalError(err)
+	}
+	if err := c.fill(ctx, c.db.DB, coordinators...); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return coordinators, nil
 }
 
 func (c *coordinator) Count(ctx context.Context, params *ListCoordinatorsParams) (int64, error) {
@@ -72,29 +74,41 @@ func (c *coordinator) MultiGet(
 		fields = coordinatorFields
 	}
 
-	err := c.db.DB.WithContext(ctx).
+	stmt := c.db.DB.WithContext(ctx).
 		Table(coordinatorTable).Select(fields).
-		Where("id IN (?)", coordinatorIDs).
-		Find(&coordinators).Error
-	return coordinators, exception.InternalError(err)
+		Where("admin_id IN (?)", coordinatorIDs)
+
+	if err := stmt.Find(&coordinators).Error; err != nil {
+		return nil, exception.InternalError(err)
+	}
+	if err := c.fill(ctx, c.db.DB, coordinators...); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return coordinators, nil
 }
 
 func (c *coordinator) Get(
 	ctx context.Context, coordinatorID string, fields ...string,
 ) (*entity.Coordinator, error) {
 	coordinator, err := c.get(ctx, c.db.DB, coordinatorID, fields...)
-	return coordinator, exception.InternalError(err)
+	if err != nil {
+		return nil, exception.InternalError(err)
+	}
+	if err := c.fill(ctx, c.db.DB, coordinator); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return coordinator, nil
 }
 
 func (c *coordinator) Create(
-	ctx context.Context, auth *entity.AdminAuth, coordinator *entity.Coordinator,
+	ctx context.Context, admin *entity.Admin, coordinator *entity.Coordinator,
 ) error {
 	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		now := c.now()
-		auth.CreatedAt, auth.UpdatedAt = now, now
+		admin.CreatedAt, admin.UpdatedAt = now, now
 		coordinator.CreatedAt, coordinator.UpdatedAt = now, now
 
-		err := tx.WithContext(ctx).Table(adminAuthTable).Create(&auth).Error
+		err := tx.WithContext(ctx).Table(adminTable).Create(&admin).Error
 		if err != nil {
 			return nil, err
 		}
@@ -110,11 +124,15 @@ func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *
 			return nil, err
 		}
 
-		updates := map[string]interface{}{
-			"lastname":          params.Lastname,
-			"firstname":         params.Firstname,
-			"lastname_kana":     params.LastnameKana,
-			"firstname_kana":    params.FirstnameKana,
+		now := c.now()
+		adminParams := map[string]interface{}{
+			"lastname":       params.Lastname,
+			"firstname":      params.Firstname,
+			"lastname_kana":  params.LastnameKana,
+			"firstname_kana": params.FirstnameKana,
+			"updated_at":     now,
+		}
+		coordinatorParams := map[string]interface{}{
 			"company_name":      params.CompanyName,
 			"store_name":        params.StoreName,
 			"thumbnail_url":     params.ThumbnailURL,
@@ -127,31 +145,20 @@ func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *
 			"city":              params.City,
 			"address_line1":     params.AddressLine1,
 			"address_line2":     params.AddressLine2,
-			"updated_at":        c.now(),
+			"updated_at":        now,
 		}
-		err := tx.WithContext(ctx).
-			Table(coordinatorTable).
-			Where("id = ?", coordinatorID).
-			Updates(updates).Error
-		return nil, err
-	})
-	return exception.InternalError(err)
-}
 
-func (c *coordinator) UpdateEmail(ctx context.Context, coordinatorID, email string) error {
-	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
-		if _, err := c.get(ctx, tx, coordinatorID); err != nil {
+		err := tx.WithContext(ctx).
+			Table(adminTable).
+			Where("id = ?", coordinatorID).
+			Updates(adminParams).Error
+		if err != nil {
 			return nil, err
 		}
-
-		params := map[string]interface{}{
-			"email":      email,
-			"updated_at": c.now(),
-		}
-		err := tx.WithContext(ctx).
+		err = tx.WithContext(ctx).
 			Table(coordinatorTable).
-			Where("id = ?", coordinatorID).
-			Updates(params).Error
+			Where("admin_id = ?", coordinatorID).
+			Updates(coordinatorParams).Error
 		return nil, err
 	})
 	return exception.InternalError(err)
@@ -167,7 +174,35 @@ func (c *coordinator) get(
 
 	err := tx.WithContext(ctx).
 		Table(coordinatorTable).Select(fields).
-		Where("id = ?", coordinatorID).
+		Where("admin_id = ?", coordinatorID).
 		First(&coordinator).Error
 	return coordinator, err
+}
+
+func (c *coordinator) fill(ctx context.Context, tx *gorm.DB, coordinators ...*entity.Coordinator) error {
+	var admins entity.Admins
+
+	ids := entity.Coordinators(coordinators).IDs()
+	if len(ids) == 0 {
+		return nil
+	}
+
+	stmt := tx.WithContext(ctx).
+		Table(adminTable).Select(adminFields).
+		Where("id IN (?)", ids)
+	if err := stmt.Find(&admins).Error; err != nil {
+		return err
+	}
+
+	adminMap := admins.Map()
+
+	for i, c := range coordinators {
+		admin, ok := adminMap[c.AdminID]
+		if !ok {
+			admin = &entity.Admin{}
+		}
+
+		coordinators[i].Fill(admin)
+	}
+	return nil
 }
