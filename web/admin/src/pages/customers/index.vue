@@ -73,7 +73,6 @@ export default defineComponent({
         quantity: 1,
         price: 1000,
         account: false,
-
       },
       {
         name: 'namae2',
@@ -94,7 +93,6 @@ export default defineComponent({
 
     const handleEdit = () => {
       router.push(`/customers/edit/${id}`)
-
     }
 
     return {
