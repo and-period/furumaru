@@ -6,7 +6,7 @@
       <v-tab
         v-for="tabItem in tabItems"
         :key="tabItem.value"
-        :href="`${tabItem.value}`"
+        :href="`#${tabItem.value}`"
       >
         {{ tabItem.name }}
       </v-tab>
