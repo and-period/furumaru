@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import { computed, useFetch } from '@nuxtjs/composition-api'
+import { computed, useFetch, useRouter } from '@nuxtjs/composition-api'
 import { defineComponent, ref } from '@vue/composition-api'
 import dayjs from 'dayjs'
 import { DataTableHeader } from 'vuetify'
@@ -65,6 +65,7 @@ import { NotificationsResponseNotificationsInner } from '~/types/api'
 
 export default defineComponent({
   setup() {
+    const router = useRouter()
     const notificationStore = useNotificationStore()
 
     const deleteDialog = ref<boolean>(false)
@@ -131,7 +132,7 @@ export default defineComponent({
     }
 
     const getDay = (unixTime: number): string => {
-      return dayjs.unix(unixTime).format('YYYY/MM/DD hh:mm')
+      return dayjs.unix(unixTime).format('YYYY/MM/DD HH:mm')
     }
 
     const openDeleteDialog = (
@@ -146,8 +147,9 @@ export default defineComponent({
       deleteDialog.value = false
     }
 
-    // TODO
-    const handleClickAddButton = () => {}
+    const handleClickAddButton = () => {
+      router.push('/notifications/add')
+    }
 
     // TODO
     const handleEdit = (item: NotificationsResponseNotificationsInner) => {

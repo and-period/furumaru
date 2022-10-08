@@ -5,7 +5,11 @@ import { useAuthStore } from './auth'
 import { useCommonStore } from './common'
 
 import ApiClientFactory from '~/plugins/factory'
-import { NotificationApi, NotificationsResponse } from '~/types/api'
+import {
+  CreateNotificationRequest,
+  NotificationApi,
+  NotificationsResponse,
+} from '~/types/api'
 import {
   AuthError,
   ConnectionError,
@@ -69,13 +73,58 @@ export const useNotificationStore = defineStore('Notification', {
         throw new InternalServerError(error)
       }
     },
+
+    /**
+     * お知らせを登録する非同期関数
+     * @param payload
+     */
+    async createNotification(
+      payload: CreateNotificationRequest
+    ): Promise<void> {
+      try {
+        const authStore = useAuthStore()
+        const accessToken = authStore.accessToken
+        if (!accessToken) {
+          return Promise.reject(
+            new AuthError('認証エラー。再度ログインをしてください。')
+          )
+        }
+
+        await this.apiClient(accessToken).v1CreateNotification(payload)
+        const commonStore = useCommonStore()
+        commonStore.addSnackbar({
+          message: `${payload.title}を作成しました。`,
+          color: 'info',
+        })
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          const statusCode = error.response.status
+          switch (statusCode) {
+            case 400:
+              return Promise.reject(
+                new ValidationError('入力内容に誤りがあります。', error)
+              )
+            case 401:
+              return Promise.reject(
+                new AuthError('認証エラー。再度ログインをしてください。', error)
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+
+        throw new InternalServerError(error)
+      }
+    },
+
     /**
      * お知らせを削除する非同期関数
-     * @param categoryId カテゴリID
-     * @param productTypeId 品目ID
-     * @returns
+     * @param id お知らせID
      */
-
     async deleteNotification(id: string): Promise<void> {
       const commonStore = useCommonStore()
       try {
