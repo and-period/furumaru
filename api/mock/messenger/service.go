@@ -110,6 +110,21 @@ func (mr *MockServiceMockRecorder) GetMessage(ctx, in interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMessage", reflect.TypeOf((*MockService)(nil).GetMessage), ctx, in)
 }
 
+// GetNotification mocks base method.
+func (m *MockService) GetNotification(ctx context.Context, in *messenger.GetNotificationInput) (*entity.Notification, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetNotification", ctx, in)
+	ret0, _ := ret[0].(*entity.Notification)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetNotification indicates an expected call of GetNotification.
+func (mr *MockServiceMockRecorder) GetNotification(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetNotification", reflect.TypeOf((*MockService)(nil).GetNotification), ctx, in)
+}
+
 // ListContacts mocks base method.
 func (m *MockService) ListContacts(ctx context.Context, in *messenger.ListContactsInput) (entity.Contacts, int64, error) {
 	m.ctrl.T.Helper()
