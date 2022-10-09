@@ -35,3 +35,13 @@ type OrderPayment struct {
 	CreatedAt      time.Time   `gorm:"<-:create"`            // 登録日時
 	UpdatedAt      time.Time   `gorm:""`                     // 更新日時
 }
+
+type OrderPayments []*OrderPayment
+
+func (ps OrderPayments) MapByOrderID() map[string]*OrderPayment {
+	res := make(map[string]*OrderPayment, len(ps))
+	for _, p := range ps {
+		res[p.OrderID] = p
+	}
+	return res
+}

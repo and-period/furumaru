@@ -43,3 +43,13 @@ type OrderFulfillment struct {
 	CreatedAt       time.Time       `gorm:"<-:create"`            // 登録日時
 	UpdatedAt       time.Time       `gorm:""`                     // 更新日時
 }
+
+type OrderFulfillments []*OrderFulfillment
+
+func (fs OrderFulfillments) MapByOrderID() map[string]*OrderFulfillment {
+	res := make(map[string]*OrderFulfillment, len(fs))
+	for _, f := range fs {
+		res[f.OrderID] = f
+	}
+	return res
+}
