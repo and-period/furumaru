@@ -30,6 +30,10 @@ const (
 
 // Order - 注文履歴情報
 type Order struct {
+	OrderItems        `gorm:"-"`
+	OrderPayment      `gorm:"-"`
+	OrderFulfillment  `gorm:"-"`
+	OrderActivities   `gorm:"-"`
 	ID                string            `gorm:"primaryKey;<-:create"` // 注文履歴ID
 	UserID            string            `gorm:""`                     // ユーザーID
 	PaymentStatus     PaymentStatus     `gorm:""`                     // 支払いステータス
@@ -43,4 +47,23 @@ type Order struct {
 	DeliveredAt       time.Time         `gorm:"default:null"`         // 配送日時
 	CreatedAt         time.Time         `gorm:"<-:create"`            // 登録日時
 	UpdatedAt         time.Time         `gorm:""`                     // 更新日時
+}
+
+type Orders []*Order
+
+func (o *Order) Fill(
+	items OrderItems, payment *OrderPayment, fulfillment *OrderFulfillment, activities OrderActivities,
+) {
+	o.OrderItems = items
+	o.OrderPayment = *payment
+	o.OrderFulfillment = *fulfillment
+	o.OrderActivities = activities
+}
+
+func (os Orders) IDs() []string {
+	res := make([]string, len(os))
+	for i := range os {
+		res[i] = os[i].ID
+	}
+	return res
 }

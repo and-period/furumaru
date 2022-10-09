@@ -18,6 +18,7 @@ type Params struct {
 
 type Database struct {
 	Category    Category
+	Order       Order
 	Product     Product
 	ProductType ProductType
 	Promotion   Promotion
@@ -29,6 +30,7 @@ type Database struct {
 func NewDatabase(params *Params) *Database {
 	return &Database{
 		Category:    NewCategory(params.Database),
+		Order:       NewOrder(params.Database),
 		Product:     NewProduct(params.Database),
 		ProductType: NewProductType(params.Database),
 		Promotion:   NewPromotion(params.Database),
@@ -49,6 +51,12 @@ type Category interface {
 	Create(ctx context.Context, category *entity.Category) error
 	Update(ctx context.Context, categoryID, name string) error
 	Delete(ctx context.Context, categoryID string) error
+}
+
+type Order interface {
+	List(ctx context.Context, params *ListOrdersParams, fields ...string) (entity.Orders, error)
+	Count(ctx context.Context, params *ListOrdersParams) (int64, error)
+	Get(ctx context.Context, orderID string, fields ...string) (*entity.Order, error)
 }
 
 type Product interface {
@@ -127,43 +135,9 @@ func (p *ListCategoriesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	return stmt
 }
 
-type ListShippingsParams struct {
+type ListOrdersParams struct {
 	Limit  int
 	Offset int
-	Orders []*ListShippingsOrder
-}
-
-type ListShippingsOrder struct {
-	Key        entity.ShippingOrderBy
-	OrderByASC bool
-}
-
-func (p *ListShippingsParams) stmt(stmt *gorm.DB) *gorm.DB {
-	for i := range p.Orders {
-		var value string
-		if p.Orders[i].OrderByASC {
-			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
-		} else {
-			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
-		}
-		stmt = stmt.Order(value)
-	}
-	return stmt
-}
-
-type UpdateShippingParams struct {
-	Name               string
-	Box60Rates         entity.ShippingRates
-	Box60Refrigerated  int64
-	Box60Frozen        int64
-	Box80Rates         entity.ShippingRates
-	Box80Refrigerated  int64
-	Box80Frozen        int64
-	Box100Rates        entity.ShippingRates
-	Box100Refrigerated int64
-	Box100Frozen       int64
-	HasFreeShipping    bool
-	FreeShippingRates  int64
 }
 
 type ListProductsParams struct {
@@ -293,4 +267,43 @@ type UpdatePromotionParams struct {
 	CodeType     entity.PromotionCodeType
 	StartAt      time.Time
 	EndAt        time.Time
+}
+
+type ListShippingsParams struct {
+	Limit  int
+	Offset int
+	Orders []*ListShippingsOrder
+}
+
+type ListShippingsOrder struct {
+	Key        entity.ShippingOrderBy
+	OrderByASC bool
+}
+
+func (p *ListShippingsParams) stmt(stmt *gorm.DB) *gorm.DB {
+	for i := range p.Orders {
+		var value string
+		if p.Orders[i].OrderByASC {
+			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
+		} else {
+			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
+		}
+		stmt = stmt.Order(value)
+	}
+	return stmt
+}
+
+type UpdateShippingParams struct {
+	Name               string
+	Box60Rates         entity.ShippingRates
+	Box60Refrigerated  int64
+	Box60Frozen        int64
+	Box80Rates         entity.ShippingRates
+	Box80Refrigerated  int64
+	Box80Frozen        int64
+	Box100Rates        entity.ShippingRates
+	Box100Refrigerated int64
+	Box100Frozen       int64
+	HasFreeShipping    bool
+	FreeShippingRates  int64
 }
