@@ -51,6 +51,14 @@ func (s *service) ListNotifications(ctx context.Context, in *messenger.ListNotif
 	return notifications, total, nil
 }
 
+func (s *service) GetNotification(ctx context.Context, in *messenger.GetNotificationInput) (*entity.Notification, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	notification, err := s.db.Notification.Get(ctx, in.NotificationID)
+	return notification, exception.InternalError(err)
+}
+
 func (s *service) CreateNotification(
 	ctx context.Context, in *messenger.CreateNotificationInput,
 ) (*entity.Notification, error) {
