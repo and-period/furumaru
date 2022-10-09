@@ -20,6 +20,7 @@ func (h *handler) notificationRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication())
 	arg.GET("", h.ListNotifications)
 	arg.POST("", h.CreateNotification)
+	arg.GET("/:notificationId", h.GetNotification)
 	arg.PATCH("/:notificationId", h.UpdateNotifcation)
 	arg.DELETE("/:notificationId", h.DeleteNotification)
 }
@@ -91,6 +92,35 @@ func (h *handler) ListNotifications(ctx *gin.Context) {
 	res := &response.NotificationsResponse{
 		Notifications: notifications.Response(),
 		Total:         total,
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) GetNotification(ctx *gin.Context) {
+	in := &messenger.GetNotificationInput{
+		NotificationID: util.GetParam(ctx, "notificationId"),
+	}
+	mnotificaiton, err := h.messenger.GetNotification(ctx, in)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+	notification := service.NewNotification(mnotificaiton)
+
+	adminIn := &user.GetAdminInput{
+		AdminID: notification.CreatedBy,
+	}
+	uadmin, err := h.user.GetAdmin(ctx, adminIn)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+	admin := service.NewAdmin(uadmin)
+
+	notification.Fill(admin)
+
+	res := &response.NotificationResponse{
+		Notification: notification.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
