@@ -32,6 +32,7 @@ createNotificationRequest:
     body: '旬のキャベツが買い放題'
     targets: [1]
     publishedAt: 1640962800
+    public: true
 updateNotificationRequest:
   type: object
   properties:
