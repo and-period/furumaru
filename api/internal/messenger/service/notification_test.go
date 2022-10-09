@@ -135,6 +135,71 @@ func TestListNotificaitons(t *testing.T) {
 	}
 }
 
+func TestGetNotification(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
+	notification := &entity.Notification{
+		ID:          "notification-id",
+		CreatedBy:   "admin-id",
+		CreatorName: "ぴりおど あんど",
+		UpdatedBy:   "admin-id",
+		Title:       "キャベツ祭り開催",
+		Body:        "旬のキャベツを売り出します",
+		Targets:     []entity.TargetType{1, 2},
+		Public:      true,
+		PublishedAt: now,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	}
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *messenger.GetNotificationInput
+		expect    *entity.Notification
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
+			},
+			input: &messenger.GetNotificationInput{
+				NotificationID: "notification-id",
+			},
+			expect:    notification,
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &messenger.GetNotificationInput{},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get notification",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(nil, errmock)
+			},
+			input: &messenger.GetNotificationInput{
+				NotificationID: "notification-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.GetNotification(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
 func TestCreateNotification(t *testing.T) {
 	t.Parallel()
 

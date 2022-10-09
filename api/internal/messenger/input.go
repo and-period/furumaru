@@ -50,6 +50,10 @@ type ListNotificationsOrder struct {
 	OrderByASC bool                       `validate:""`
 }
 
+type GetNotificationInput struct {
+	NotificationID string `validate:"required"`
+}
+
 type CreateNotificationInput struct {
 	CreatedBy   string              `validate:"required"`
 	Title       string              `validate:"required,max=128"`
