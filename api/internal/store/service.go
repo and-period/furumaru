@@ -63,4 +63,8 @@ type Service interface {
 	UpdatePromotion(ctx context.Context, in *UpdatePromotionInput) error
 	// プロモーション削除
 	DeletePromotion(ctx context.Context, in *DeletePromotionInput) error
+	// 注文履歴一覧取得
+	ListOrders(ctx context.Context, in *ListOrdersInput) (entity.Orders, int64, error)
+	// 注文履歴取得
+	GetOrder(ctx context.Context, in *GetOrderInput) (*entity.Order, error)
 }
