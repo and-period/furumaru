@@ -264,3 +264,12 @@ type UpdatePromotionInput struct {
 type DeletePromotionInput struct {
 	PromotionID string `validate:"required"`
 }
+
+type ListOrdersInput struct {
+	Limit  int64 `validate:"required,max=200"`
+	Offset int64 `validate:"min=0"`
+}
+
+type GetOrderInput struct {
+	OrderID string `validate:"required"`
+}
