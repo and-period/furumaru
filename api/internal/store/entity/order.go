@@ -6,19 +6,22 @@ import "time"
 type PaymentStatus int32
 
 const (
-	PaymentStatusFailed     PaymentStatus = 0 // 失敗
-	PaymentStatusProcessing PaymentStatus = 1 // 申請中
-	PaymentStatusConfirmed  PaymentStatus = 2 // 仮売上・オーソリ
-	PaymentStatusCaptured   PaymentStatus = 3 // 実売上・キャプチャ
-	PaymentStatusCanceled   PaymentStatus = 4 // キャンセル
+	PaymentStatusUnknown     PaymentStatus = 0
+	PaymentStatusInitialized PaymentStatus = 1 // 未完了
+	PaymentStatusPending     PaymentStatus = 2 // 保留中
+	PaymentStatusAuthorized  PaymentStatus = 3 // 仮売上・オーソリ
+	PaymentStatusCaptured    PaymentStatus = 4 // 実売上・キャプチャ
+	PaymentStatusCanceled    PaymentStatus = 5 // キャンセル
+	PaymentStatusFailed      PaymentStatus = 6 // 失敗/期限切れ
 )
 
 // 配送ステータス
 type FulfillmentStatus int32
 
 const (
-	FulfillmentStatusUnfulfilled FulfillmentStatus = 0 // 未発送
-	FulfillmentStatusFulfilled   FulfillmentStatus = 1 // 発送済み
+	FulfillmentStatusUnknown     FulfillmentStatus = 0
+	FulfillmentStatusUnfulfilled FulfillmentStatus = 1 // 未発送
+	FulfillmentStatusFulfilled   FulfillmentStatus = 2 // 発送済み
 )
 
 // 注文キャンセル種別
@@ -30,6 +33,10 @@ const (
 
 // Order - 注文履歴情報
 type Order struct {
+	OrderItems        `gorm:"-"`
+	OrderPayment      `gorm:"-"`
+	OrderFulfillment  `gorm:"-"`
+	OrderActivities   `gorm:"-"`
 	ID                string            `gorm:"primaryKey;<-:create"` // 注文履歴ID
 	UserID            string            `gorm:""`                     // ユーザーID
 	PaymentStatus     PaymentStatus     `gorm:""`                     // 支払いステータス
@@ -43,4 +50,23 @@ type Order struct {
 	DeliveredAt       time.Time         `gorm:"default:null"`         // 配送日時
 	CreatedAt         time.Time         `gorm:"<-:create"`            // 登録日時
 	UpdatedAt         time.Time         `gorm:""`                     // 更新日時
+}
+
+type Orders []*Order
+
+func (o *Order) Fill(
+	items OrderItems, payment *OrderPayment, fulfillment *OrderFulfillment, activities OrderActivities,
+) {
+	o.OrderItems = items
+	o.OrderPayment = *payment
+	o.OrderFulfillment = *fulfillment
+	o.OrderActivities = activities
+}
+
+func (os Orders) IDs() []string {
+	res := make([]string, len(os))
+	for i := range os {
+		res[i] = os[i].ID
+	}
+	return res
 }

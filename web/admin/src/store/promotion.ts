@@ -2,13 +2,20 @@ import axios from 'axios'
 import { defineStore } from 'pinia'
 
 import { useAuthStore } from './auth'
+import { useCommonStore } from './common'
 
 import ApiClientFactory from '~/plugins/factory'
-import { PromotionApi, PromotionsResponse } from '~/types/api'
+import {
+  CreatePromotionRequest,
+  PromotionApi,
+  PromotionsResponse,
+} from '~/types/api'
 import {
   AuthError,
+  ConflictError,
   ConnectionError,
   InternalServerError,
+  ValidationError,
 } from '~/types/exception'
 
 export const usePromotionStore = defineStore('Promotion', {
@@ -54,6 +61,60 @@ export const usePromotionStore = defineStore('Promotion', {
               return Promise.reject(new InternalServerError(error))
           }
         }
+        throw new InternalServerError(error)
+      }
+    },
+
+    /**
+     * セール情報を登録する非同期関数
+     * @param payload
+     */
+    async createPromotion(payload: CreatePromotionRequest): Promise<void> {
+      try {
+        const authStore = useAuthStore()
+        const accessToken = authStore.accessToken
+        if (!accessToken) {
+          return Promise.reject(
+            new AuthError('認証エラー。再度ログインをしてください。')
+          )
+        }
+        const factory = new ApiClientFactory()
+        const promotionsApiClient = factory.create(PromotionApi, accessToken)
+
+        await promotionsApiClient.v1CreatePromotion(payload)
+        const commonStore = useCommonStore()
+        commonStore.addSnackbar({
+          message: `${payload.title}を作成しました。`,
+          color: 'info',
+        })
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          const statusCode = error.response.status
+          switch (statusCode) {
+            case 400:
+              return Promise.reject(
+                new ValidationError('入力内容に誤りがあります。', error)
+              )
+            case 401:
+              return Promise.reject(
+                new AuthError('認証エラー。再度ログインをしてください。', error)
+              )
+            case 409:
+              return Promise.reject(
+                new ConflictError(
+                  'このクーポンコードはすでに登録されています。',
+                  error
+                )
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+
         throw new InternalServerError(error)
       }
     },

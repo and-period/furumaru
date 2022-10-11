@@ -3,6 +3,7 @@ package entity
 import (
 	"testing"
 
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -90,6 +91,176 @@ func TestUser_Name(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.user.Name())
+		})
+	}
+}
+
+func TestUser_Email(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		user   *User
+		expect string
+	}{
+		{
+			name: "success member",
+			user: &User{
+				ID:         "user-id",
+				Registered: true,
+				Customer: Customer{
+					UserID:        "user-id",
+					Lastname:      "&.",
+					Firstname:     "スタッフ",
+					LastnameKana:  "あんどどっと",
+					FirstnameKana: "すたっふ",
+					PostalCode:    "1000014",
+					Prefecture:    "東京都",
+					City:          "千代田区",
+					AddressLine1:  "永田町1-7-1",
+					AddressLine2:  "",
+					CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				},
+				Member: Member{
+					UserID:       "user-id",
+					AccountID:    "account-id",
+					CognitoID:    "cognito-id",
+					Username:     "username",
+					ProviderType: ProviderTypeEmail,
+					Email:        "test-user@and-period.jp",
+					PhoneNumber:  "+819012345678",
+					ThumbnailURL: "https://and-period.jp/thumbnail.png",
+					CreatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					VerifiedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				},
+				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			},
+			expect: "test-user@and-period.jp",
+		},
+		{
+			name: "success guest",
+			user: &User{
+				ID:         "user-id",
+				Registered: false,
+				Customer: Customer{
+					UserID:        "user-id",
+					Lastname:      "&.",
+					Firstname:     "スタッフ",
+					LastnameKana:  "あんどどっと",
+					FirstnameKana: "すたっふ",
+					PostalCode:    "1000014",
+					Prefecture:    "東京都",
+					City:          "千代田区",
+					AddressLine1:  "永田町1-7-1",
+					AddressLine2:  "",
+					CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				},
+				Guest: Guest{
+					UserID:      "user-id",
+					Email:       "test-user@and-period.jp",
+					PhoneNumber: "+819012345678",
+					CreatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				},
+				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			},
+			expect: "test-user@and-period.jp",
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.user.Email())
+		})
+	}
+}
+
+func TestUser_PhoneNumber(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		user   *User
+		expect string
+	}{
+		{
+			name: "success member",
+			user: &User{
+				ID:         "user-id",
+				Registered: true,
+				Customer: Customer{
+					UserID:        "user-id",
+					Lastname:      "&.",
+					Firstname:     "スタッフ",
+					LastnameKana:  "あんどどっと",
+					FirstnameKana: "すたっふ",
+					PostalCode:    "1000014",
+					Prefecture:    "東京都",
+					City:          "千代田区",
+					AddressLine1:  "永田町1-7-1",
+					AddressLine2:  "",
+					CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				},
+				Member: Member{
+					UserID:       "user-id",
+					AccountID:    "account-id",
+					CognitoID:    "cognito-id",
+					Username:     "username",
+					ProviderType: ProviderTypeEmail,
+					Email:        "test-user@and-period.jp",
+					PhoneNumber:  "+819012345678",
+					ThumbnailURL: "https://and-period.jp/thumbnail.png",
+					CreatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					VerifiedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				},
+				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			},
+			expect: "+819012345678",
+		},
+		{
+			name: "success guest",
+			user: &User{
+				ID:         "user-id",
+				Registered: false,
+				Customer: Customer{
+					UserID:        "user-id",
+					Lastname:      "&.",
+					Firstname:     "スタッフ",
+					LastnameKana:  "あんどどっと",
+					FirstnameKana: "すたっふ",
+					PostalCode:    "1000014",
+					Prefecture:    "東京都",
+					City:          "千代田区",
+					AddressLine1:  "永田町1-7-1",
+					AddressLine2:  "",
+					CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				},
+				Guest: Guest{
+					UserID:      "user-id",
+					Email:       "test-user@and-period.jp",
+					PhoneNumber: "+819012345678",
+					CreatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				},
+				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			},
+			expect: "+819012345678",
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.user.PhoneNumber())
 		})
 	}
 }
