@@ -63,6 +63,6 @@ type Service interface {
 	UpdatePromotion(ctx context.Context, in *UpdatePromotionInput) error
 	// プロモーション削除
 	DeletePromotion(ctx context.Context, in *DeletePromotionInput) error
-	// 配信開催スケジュール登録
+	// 開催スケジュール登録
 	CreateSchedule(ctx context.Context, in *CreateScheduleInput) (*entity.Schedule, entity.Lives, error)
 }
