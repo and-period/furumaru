@@ -28,9 +28,6 @@ func TestCreateSchedule(t *testing.T) {
 			AdminID: "producer-id02",
 		},
 	}
-	productsIn := &store.MultiGetProductsInput{
-		ProductIDs: []string{"product-id01"},
-	}
 	products := sentity.Products{
 		{
 			ID: "product-id01",
@@ -48,7 +45,7 @@ func TestCreateSchedule(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
-				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), productsIn).Return(products, nil)
+				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id01"}).Return(products, nil)
 				mocks.db.Schedule.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, schedule *sentity.Schedule) error {
@@ -130,6 +127,8 @@ func TestCreateSchedule(t *testing.T) {
 		{
 			name: "failed to create schedule",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
+				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id01"}).Return(products, nil)
 				mocks.db.Schedule.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
 			},
 			input: &store.CreateScheduleInput{
