@@ -286,6 +286,7 @@ type CreateScheduleLive struct {
 	EndAt       time.Time `validate:"required"`
 	Recommends  []string  `validate:"required"`
 }
+
 type ListOrdersInput struct {
 	Limit  int64 `validate:"required,max=200"`
 	Offset int64 `validate:"min=0"`
