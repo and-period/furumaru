@@ -97,12 +97,13 @@ func (mr *MockServiceMockRecorder) CreatePromotion(ctx, in interface{}) *gomock.
 }
 
 // CreateSchedule mocks base method.
-func (m *MockService) CreateSchedule(ctx context.Context, in *store.CreateScheduleInput) (*entity.Schedule, error) {
+func (m *MockService) CreateSchedule(ctx context.Context, in *store.CreateScheduleInput) (*entity.Schedule, entity.Lives, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateSchedule", ctx, in)
 	ret0, _ := ret[0].(*entity.Schedule)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret1, _ := ret[1].(entity.Lives)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
 }
 
 // CreateSchedule indicates an expected call of CreateSchedule.
