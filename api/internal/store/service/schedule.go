@@ -2,8 +2,6 @@ package service
 
 import (
 	"context"
-	"errors"
-	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
@@ -25,22 +23,22 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 		in := &user.MultiGetProducersInput{
 			ProducerIDs: producerIDs,
 		}
-		_, err = s.user.MultiGetProducers(ectx, in)
-		return err
-	})
-	eg.Go(func() (err error) {
-		for i := range in.Lives {
-			in := &store.MultiGetProductsInput{
-				ProductIDs: in.Lives[i].Recommends,
-			}
-			_, err = s.db.Product.MultiGet(ectx, in.ProductIDs)
+		producers, err := s.user.MultiGetProducers(ectx, in)
+		if len(producers) != len(producerIDs) {
+			return exception.ErrInvalidArgument
 		}
 		return err
 	})
+	// eg.Go(func() (err error) {
+	// 	for i := range in.Lives {
+	// 		in := &store.MultiGetProductsInput{
+	// 			ProductIDs: in.Lives[i].Recommends,
+	// 		}
+	// 		_, err = s.db.Product.MultiGet(ectx, in.ProductIDs) // TODO
+	// 	}
+	// 	return err
+	// })
 	err := eg.Wait()
-	if errors.Is(err, exception.ErrNotFound) {
-		return nil, nil, fmt.Errorf("api: invalid id: %s: %w", err.Error(), exception.ErrInvalidArgument)
-	}
 	if err != nil {
 		return nil, nil, exception.InternalError(err)
 	}
@@ -52,9 +50,6 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 		EndAt:        in.EndAt,
 	}
 	schedule := entity.NewSchedule(sparams)
-	if err := s.db.Schedule.Create(ctx, schedule); err != nil {
-		return nil, nil, exception.InternalError(err)
-	}
 	lives := make(entity.Lives, len(in.Lives))
 	for i := range in.Lives {
 		l := in.Lives[i]
@@ -68,9 +63,9 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 			Recommends:  l.Recommends,
 		}
 		lives[i] = entity.NewLive(lparams)
-		if err := s.db.Live.Create(ctx, lives[i]); err != nil {
-			return nil, nil, exception.InternalError(err)
-		}
+	}
+	if err := s.db.Schedule.Create(ctx, schedule, lives); err != nil {
+		return nil, nil, exception.InternalError(err)
 	}
 	return schedule, lives, nil
 }
