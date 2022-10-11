@@ -58,6 +58,20 @@ func (u *User) Name() string {
 	return strings.TrimSpace(strings.Join([]string{u.Lastname, u.Firstname}, " "))
 }
 
+func (u *User) Email() string {
+	if u.Registered {
+		return u.Member.Email
+	}
+	return u.Guest.Email
+}
+
+func (u *User) PhoneNumber() string {
+	if u.Registered {
+		return u.Member.PhoneNumber
+	}
+	return u.Guest.PhoneNumber
+}
+
 func (u *User) Fill(customer *Customer, member *Member, guest *Guest) {
 	u.Customer = *customer
 	u.Member = *member
