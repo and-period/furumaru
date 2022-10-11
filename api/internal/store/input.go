@@ -152,6 +152,10 @@ type ListProductsOrder struct {
 	OrderByASC bool                  `validate:""`
 }
 
+type MultiGetProductsInput struct {
+	ProductIDs []string `validate:"omitempty,dive,required"`
+}
+
 type GetProductInput struct {
 	ProductID string `validate:"required"`
 }
@@ -263,6 +267,24 @@ type UpdatePromotionInput struct {
 
 type DeletePromotionInput struct {
 	PromotionID string `validate:"required"`
+}
+
+type CreateScheduleInput struct {
+	Title        string                `validate:"required,max=64"`
+	Description  string                `validate:"required,max=2000"`
+	ThumbnailURL string                `validate:"required"`
+	StartAt      time.Time             `validate:"required"`
+	EndAt        time.Time             `validate:"required"`
+	Lives        []*CreateScheduleLive `validate:"required"`
+}
+
+type CreateScheduleLive struct {
+	Title       string    `validate:"required,max=64"`
+	Description string    `validate:"required,max=2000"`
+	ProducerID  string    `validate:"required"`
+	StartAt     time.Time `validate:"required"`
+	EndAt       time.Time `validate:"required"`
+	Recommends  []string  `validate:"required"`
 }
 
 type ListOrdersInput struct {

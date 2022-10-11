@@ -62,6 +62,7 @@ type Order interface {
 type Product interface {
 	List(ctx context.Context, params *ListProductsParams, fields ...string) (entity.Products, error)
 	Count(ctx context.Context, params *ListProductsParams) (int64, error)
+	MultiGet(ctx context.Context, productIDs []string, fields ...string) (entity.Products, error)
 	Get(ctx context.Context, productID string, fields ...string) (*entity.Product, error)
 	Create(ctx context.Context, product *entity.Product) error
 	Update(ctx context.Context, productID string, params *UpdateProductParams) error
@@ -97,7 +98,7 @@ type Shipping interface {
 }
 
 type Schedule interface {
-	Create(ctx context.Context, schedule *entity.Schedule) error
+	Create(ctx context.Context, schedule *entity.Schedule, lives entity.Lives) error
 }
 
 type Live interface {

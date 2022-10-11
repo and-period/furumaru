@@ -25,12 +25,23 @@ func NewSchedule(db *database.Client) Schedule {
 	}
 }
 
-func (s *schedule) Create(ctx context.Context, schedule *entity.Schedule) error {
+func (s *schedule) Create(ctx context.Context, schedule *entity.Schedule, lives entity.Lives) error {
 	_, err := s.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		now := s.now()
 		schedule.CreatedAt, schedule.UpdatedAt = now, now
 
 		err := tx.WithContext(ctx).Table(scheduleTable).Create(&schedule).Error
+		if err != nil {
+			return nil, err
+		}
+		for i := range lives {
+			lives[i].ScheduleID = schedule.ID
+			lives[i].CreatedAt, lives[i].UpdatedAt = now, now
+			err = tx.WithContext(ctx).Table(liveTable).Create(&lives[i]).Error
+			if err != nil {
+				return nil, err
+			}
+		}
 		return nil, err
 	})
 	return exception.InternalError(err)

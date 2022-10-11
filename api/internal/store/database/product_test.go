@@ -193,6 +193,86 @@ func TestProduct_Count(t *testing.T) {
 	}
 }
 
+func TestProduct_MultiGet(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, productTable, productTypeTable, categoryTable)
+	categories := make(entity.Categories, 2)
+	categories[0] = testCategory("category-id01", "野菜", now())
+	categories[1] = testCategory("category-id02", "果物", now())
+	err = m.db.DB.Create(&categories).Error
+	require.NoError(t, err)
+	productTypes := make(entity.ProductTypes, 3)
+	productTypes[0] = testProductType("type-id01", "category-id01", "野菜", now())
+	productTypes[1] = testProductType("type-id02", "category-id02", "果物", now())
+	productTypes[2] = testProductType("type-id03", "category-id02", "水産物", now())
+	err = m.db.DB.Create(&productTypes).Error
+	require.NoError(t, err)
+	products := make(entity.Products, 3)
+	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", "coordinator-id", now())
+	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", "coordinator-id", now())
+	products[2] = testProduct("product-id03", "type-id03", "category-id02", "producer-id", "coordinator-id", now())
+	err = m.db.DB.Create(&products).Error
+	require.NoError(t, err)
+
+	type args struct {
+		productIDs []string
+	}
+	type want struct {
+		products entity.Products
+		hasErr   bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				productIDs: []string{"product-id01", "product-id02", "product-id03"},
+			},
+			want: want{
+				products: products[:3],
+				hasErr:   false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &product{db: m.db, now: now}
+			actual, err := db.MultiGet(ctx, tt.args.productIDs)
+			if tt.want.hasErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			fillIgnoreProductsField(actual, now())
+			assert.ElementsMatch(t, tt.want.products, actual)
+		})
+	}
+}
+
 func TestProduct_Get(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
