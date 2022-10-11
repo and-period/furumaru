@@ -12,6 +12,7 @@ import {
 } from '~/types/api'
 import {
   AuthError,
+  ConflictError,
   ConnectionError,
   InternalServerError,
   ValidationError,
@@ -100,6 +101,13 @@ export const usePromotionStore = defineStore('Promotion', {
             case 401:
               return Promise.reject(
                 new AuthError('認証エラー。再度ログインをしてください。', error)
+              )
+            case 409:
+              return Promise.reject(
+                new ConflictError(
+                  'このクーポンコードはすでに登録されています。',
+                  error
+                )
               )
             case 500:
             default:
