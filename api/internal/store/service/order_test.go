@@ -25,7 +25,7 @@ func TestListOrders(t *testing.T) {
 		{
 			ID:                "order-id",
 			UserID:            "user-id",
-			PaymentStatus:     entity.PaymentStatusProcessing,
+			PaymentStatus:     entity.PaymentStatusInitialized,
 			FulfillmentStatus: entity.FulfillmentStatusUnfulfilled,
 			CancelType:        entity.CancelTypeUnknown,
 			CreatedAt:         now,
@@ -180,7 +180,7 @@ func TestGetOrder(t *testing.T) {
 	order := &entity.Order{
 		ID:                "order-id",
 		UserID:            "user-id",
-		PaymentStatus:     entity.PaymentStatusProcessing,
+		PaymentStatus:     entity.PaymentStatusInitialized,
 		FulfillmentStatus: entity.FulfillmentStatusUnfulfilled,
 		CancelType:        entity.CancelTypeUnknown,
 		CreatedAt:         now,
