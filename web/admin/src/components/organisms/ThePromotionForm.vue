@@ -29,17 +29,26 @@
           </v-btn>
           <v-spacer />
         </div>
-        <v-select :items="status" label="ステータス" />
+        <v-select
+          v-model="formData.public"
+          :items="statusList"
+          label="ステータス"
+          item-text="status"
+          item-value="value"
+        />
         <div class="d-flex align-center">
           <v-select
-            v-model="discountTypeString"
-            :items="discountMethod"
+            v-model="formData.discountType"
+            :items="discountMethodList"
+            item-text="method"
+            item-value="value"
             label="割引方法"
           />
           <v-text-field
-            v-if="discountTypeString != '配送料無料'"
-            v-model="formData.discountRate"
+            v-if="formData.discountType != 3"
+            v-model="discountRateStr"
             class="ml-4"
+            type="number"
             label="割引値"
             :error-messages="getErrorMessage()"
           />
@@ -48,7 +57,7 @@
         <p class="text-h6">投稿期間</p>
         <div class="d-flex align-center justify-center">
           <v-menu
-            v-model="postMenu"
+            v-model="publishMenu"
             :close-on-content-click="false"
             :nudge-right="40"
             transition="scale-transition"
@@ -57,7 +66,7 @@
           >
             <template #activator="{ on, attrs }">
               <v-text-field
-                v-model="postDate"
+                v-model="publishDate"
                 class="mr-2"
                 label="投稿開始日"
                 readonly
@@ -67,17 +76,17 @@
               />
             </template>
             <v-date-picker
-              v-model="postDate"
+              v-model="publishDate"
               scrollable
-              @input="postMenu = false"
+              @input="publishMenu = false"
             >
               <v-spacer></v-spacer>
-              <v-btn text color="primary" @click="postMenu = false">
+              <v-btn text color="primary" @click="publishMenu = false">
                 閉じる
               </v-btn>
             </v-date-picker>
           </v-menu>
-          <v-text-field class="postTime" type="time" required outlined />
+          <v-text-field v-model="publishTime" type="time" required outlined />
           <p class="text-h6 mb-6 ml-4">〜</p>
           <v-spacer />
         </div>
@@ -114,7 +123,7 @@
               </v-btn>
             </v-date-picker>
           </v-menu>
-          <v-text-field type="time" required outlined />
+          <v-text-field v-model="useStartTime" type="time" required outlined />
           <p class="text-h6 mx-4 mb-6">〜</p>
           <v-menu
             v-model="useEndMenu"
@@ -146,13 +155,15 @@
               </v-btn>
             </v-date-picker>
           </v-menu>
-          <v-text-field type="time" required outlined />
+          <v-text-field v-model="useEndTime" type="time" required outlined />
         </div>
       </v-card-text>
+      <v-card-actions>
+        <v-btn block outlined color="primary" type="submit" class="mt-4">
+          {{ btnText }}
+        </v-btn>
+      </v-card-actions>
     </v-card>
-    <v-btn block outlined color="primary" type="submit" class="mt-4">
-      {{ btnText }}
-    </v-btn>
   </form>
 </template>
 
@@ -197,19 +208,32 @@ export default defineComponent({
     })
 
     const selectedDiscountMethod = ref<string>('')
-    const postMenu = ref<boolean>(false)
+    const publishMenu = ref<boolean>(false)
     const useStartMenu = ref<boolean>(false)
-    const discountTypeString = ref<string>('')
     const useEndMenu = ref<boolean>(false)
-    const postDate = ref<string>('')
+    const publishDate = ref<string>('')
     const useStartDate = ref<string>('')
     const useEndDate = ref<string>('')
+    const publishTime = ref<string>('')
+    const useStartTime = ref<string>('')
+    const useEndTime = ref<string>('')
+    const discountRateStr = ref<string>('')
 
     const btnText = computed(() => {
       return props.formType === 'create' ? '登録' : '更新'
     })
 
     const handleSubmit = () => {
+      formDataValue.value.publishedAt = dayjs(
+        publishDate.value + ' ' + publishTime.value
+      ).unix()
+      formDataValue.value.startAt = dayjs(
+        useStartDate.value + ' ' + useStartTime.value
+      ).unix()
+      formDataValue.value.endAt = dayjs(
+        useEndDate.value + ' ' + useEndTime.value
+      ).unix()
+      formDataValue.value.discountRate = parseInt(discountRateStr.value)
       emit('submit')
     }
 
@@ -233,41 +257,54 @@ export default defineComponent({
     }
 
     const getErrorMessage = () => {
-      if (discountTypeString.value === '%') {
-        if (
-          props.formData.discountRate >= 0 &&
-          props.formData.discountRate <= 100
-        ) {
+      switch (formDataValue.value.discountType) {
+        case 1:
+          if (formDataValue.value.discountRate >= 0) {
+            return ''
+          } else {
+            return '0以上の値を指定してください'
+          }
+        case 2:
+          if (
+            formDataValue.value.discountRate >= 0 &&
+            formDataValue.value.discountRate <= 100
+          ) {
+            return ''
+          } else {
+            return '0~100の値を指定してください'
+          }
+        default:
           return ''
-        }
-        return '0~100の値を指定してください'
-      } else if (discountTypeString.value === '円') {
-        if (props.formData.discountRate >= 0) {
-          return ''
-        }
-        return '0以上の値を指定してください'
-      } else {
-        return ''
       }
     }
 
-    const status = ['有効', '無効']
+    const statusList = [
+      { status: '有効', value: true },
+      { status: '無効', value: false },
+    ]
 
-    const discountMethod = ['%', '円', '配送料無料']
+    const discountMethodList = [
+      { method: '円', value: 1 },
+      { method: '%', value: 2 },
+      { method: '送料無料', value: 3 },
+    ]
 
     return {
       selectedDiscountMethod,
-      postMenu,
+      publishMenu,
+      publishTime,
       useStartMenu,
       useEndMenu,
-      discountMethod,
+      discountMethodList,
       btnText,
-      postDate,
+      publishDate,
       useStartDate,
+      useStartTime,
       useEndDate,
-      status,
-      discountTypeString,
+      useEndTime,
+      statusList,
       formDataValue,
+      discountRateStr,
       getErrorMessage,
       handleGenerate,
       handleSubmit,
