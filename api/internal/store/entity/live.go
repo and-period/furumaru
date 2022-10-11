@@ -26,6 +26,8 @@ type Live struct {
 	DeletedAt      gorm.DeletedAt `gorm:"default:null"`                   // 削除日時
 }
 
+type Lives []*Live
+
 type NewLiveParams struct {
 	ScheduleID  string
 	Title       string

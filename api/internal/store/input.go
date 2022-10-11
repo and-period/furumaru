@@ -152,6 +152,10 @@ type ListProductsOrder struct {
 	OrderByASC bool                  `validate:""`
 }
 
+type MultiGetProductsInput struct {
+	ProductIDs []string `validate:"omitempty,dive,required"`
+}
+
 type GetProductInput struct {
 	ProductID string `validate:"required"`
 }
