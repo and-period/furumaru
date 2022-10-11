@@ -91,7 +91,7 @@ func (s ShippingSize) Response() int32 {
 func NewOrderFulfillment(fulfillment *entity.OrderFulfillment, status entity.FulfillmentStatus) *OrderFulfillment {
 	var weightTotal float64
 	if fulfillment != nil {
-		var div = decimal.NewFromInt(1000)
+		div := decimal.NewFromInt(1000)
 		weight := decimal.New(fulfillment.WeightTotal, 0).DivRound(div, 1)
 		weightTotal, _ = weight.Float64()
 	}
