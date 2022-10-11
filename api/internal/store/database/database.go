@@ -98,7 +98,7 @@ type Shipping interface {
 }
 
 type Schedule interface {
-	Create(ctx context.Context, schedule *entity.Schedule) error
+	Create(ctx context.Context, schedule *entity.Schedule, lives entity.Lives) error
 }
 
 type Live interface {

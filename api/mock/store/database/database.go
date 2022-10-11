@@ -775,17 +775,17 @@ func (m *MockSchedule) EXPECT() *MockScheduleMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockSchedule) Create(ctx context.Context, schedule *entity.Schedule) error {
+func (m *MockSchedule) Create(ctx context.Context, schedule *entity.Schedule, lives entity.Lives) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", ctx, schedule)
+	ret := m.ctrl.Call(m, "Create", ctx, schedule, lives)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockScheduleMockRecorder) Create(ctx, schedule interface{}) *gomock.Call {
+func (mr *MockScheduleMockRecorder) Create(ctx, schedule, lives interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockSchedule)(nil).Create), ctx, schedule)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockSchedule)(nil).Create), ctx, schedule, lives)
 }
 
 // MockLive is a mock of Live interface.

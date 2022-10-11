@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 
@@ -33,6 +34,7 @@ func TestSchedule_Create(t *testing.T) {
 
 	type args struct {
 		schedule *entity.Schedule
+		lives    entity.Lives
 	}
 	type want struct {
 		hasErr bool
@@ -48,6 +50,7 @@ func TestSchedule_Create(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
 				schedule: testSchedule("schedule-id", now()),
+				lives:    testLives("live-id", "schedule-id", "producer-id", now(), 3),
 			},
 			want: want{
 				hasErr: false,
@@ -62,6 +65,7 @@ func TestSchedule_Create(t *testing.T) {
 			},
 			args: args{
 				schedule: testSchedule("schedule-id", now()),
+				lives:    testLives("live-id", "schedule-id", "producer-id", now(), 3),
 			},
 			want: want{
 				hasErr: true,
@@ -80,7 +84,7 @@ func TestSchedule_Create(t *testing.T) {
 			tt.setup(ctx, t, m)
 
 			db := &schedule{db: m.db, now: now}
-			err = db.Create(ctx, tt.args.schedule)
+			err = db.Create(ctx, tt.args.schedule, tt.args.lives)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}
@@ -97,4 +101,23 @@ func testSchedule(id string, now time.Time) *entity.Schedule {
 		CreatedAt:    now,
 		UpdatedAt:    now,
 	}
+}
+
+func testLives(id, scheduleID, producerID string, now time.Time, length int) entity.Lives {
+	lives := make(entity.Lives, length)
+
+	for i := 0; i < length; i++ {
+		lives[i] = &entity.Live{
+			ID:          fmt.Sprintf("%s-%2d", id, i),
+			ScheduleID:  scheduleID,
+			Title:       "配信のタイトル",
+			Description: "配信の説明",
+			ProducerID:  producerID,
+			StartAt:     now,
+			EndAt:       now,
+			Recommends:  []string{"product-id1", "product-id2"},
+		}
+	}
+
+	return lives
 }
