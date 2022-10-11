@@ -212,6 +212,21 @@ func (mr *MockServiceMockRecorder) GetCategory(ctx, in interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCategory", reflect.TypeOf((*MockService)(nil).GetCategory), ctx, in)
 }
 
+// GetOrder mocks base method.
+func (m *MockService) GetOrder(ctx context.Context, in *store.GetOrderInput) (*entity.Order, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetOrder", ctx, in)
+	ret0, _ := ret[0].(*entity.Order)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetOrder indicates an expected call of GetOrder.
+func (mr *MockServiceMockRecorder) GetOrder(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrder", reflect.TypeOf((*MockService)(nil).GetOrder), ctx, in)
+}
+
 // GetProduct mocks base method.
 func (m *MockService) GetProduct(ctx context.Context, in *store.GetProductInput) (*entity.Product, error) {
 	m.ctrl.T.Helper()
@@ -286,6 +301,22 @@ func (m *MockService) ListCategories(ctx context.Context, in *store.ListCategori
 func (mr *MockServiceMockRecorder) ListCategories(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCategories", reflect.TypeOf((*MockService)(nil).ListCategories), ctx, in)
+}
+
+// ListOrders mocks base method.
+func (m *MockService) ListOrders(ctx context.Context, in *store.ListOrdersInput) (entity.Orders, int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListOrders", ctx, in)
+	ret0, _ := ret[0].(entity.Orders)
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ListOrders indicates an expected call of ListOrders.
+func (mr *MockServiceMockRecorder) ListOrders(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListOrders", reflect.TypeOf((*MockService)(nil).ListOrders), ctx, in)
 }
 
 // ListProductTypes mocks base method.

@@ -269,6 +269,7 @@ type DeletePromotionInput struct {
 	PromotionID string `validate:"required"`
 }
 
+
 type CreateScheduleInput struct {
 	Title        string                `validate:"required,max=64"`
 	Description  string                `validate:"required,max=2000"`
@@ -285,4 +286,12 @@ type CreateScheduleLive struct {
 	StartAt     time.Time `validate:"required"`
 	EndAt       time.Time `validate:"required"`
 	Recommends  []string  `validate:"required"`
+
+type ListOrdersInput struct {
+	Limit  int64 `validate:"required,max=200"`
+	Offset int64 `validate:"min=0"`
+}
+
+type GetOrderInput struct {
+	OrderID string `validate:"required"`
 }

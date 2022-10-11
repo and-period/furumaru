@@ -153,6 +153,84 @@ func (mr *MockCategoryMockRecorder) Update(ctx, categoryID, name interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockCategory)(nil).Update), ctx, categoryID, name)
 }
 
+// MockOrder is a mock of Order interface.
+type MockOrder struct {
+	ctrl     *gomock.Controller
+	recorder *MockOrderMockRecorder
+}
+
+// MockOrderMockRecorder is the mock recorder for MockOrder.
+type MockOrderMockRecorder struct {
+	mock *MockOrder
+}
+
+// NewMockOrder creates a new mock instance.
+func NewMockOrder(ctrl *gomock.Controller) *MockOrder {
+	mock := &MockOrder{ctrl: ctrl}
+	mock.recorder = &MockOrderMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockOrder) EXPECT() *MockOrderMockRecorder {
+	return m.recorder
+}
+
+// Count mocks base method.
+func (m *MockOrder) Count(ctx context.Context, params *database.ListOrdersParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockOrderMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockOrder)(nil).Count), ctx, params)
+}
+
+// Get mocks base method.
+func (m *MockOrder) Get(ctx context.Context, orderID string, fields ...string) (*entity.Order, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, orderID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.Order)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockOrderMockRecorder) Get(ctx, orderID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, orderID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockOrder)(nil).Get), varargs...)
+}
+
+// List mocks base method.
+func (m *MockOrder) List(ctx context.Context, params *database.ListOrdersParams, fields ...string) (entity.Orders, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, params}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "List", varargs...)
+	ret0, _ := ret[0].(entity.Orders)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockOrderMockRecorder) List(ctx, params interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, params}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockOrder)(nil).List), varargs...)
+}
+
 // MockProduct is a mock of Product interface.
 type MockProduct struct {
 	ctrl     *gomock.Controller
