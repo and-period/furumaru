@@ -1,0 +1,50 @@
+createScheduleRequest:
+  type: object
+  properties:
+    title:
+      type: string
+      description: タイトル(128文字まで)
+    description:
+      type: string
+      description: 説明(20000文字まで)
+    thumnailURL:
+      type: string
+      description: サムネイルURL
+    lives:
+      type: array
+      description: ライブ一覧
+      items:
+        type: object
+        properties:
+          title:
+            type: string
+            description: ライブタイトル(128文字まで)
+          description:
+            type: string
+            description: ライブ説明(20000文字まで)
+          producerId:
+            type: string
+            description: 生産者ID
+          startAt:
+            type: integer
+            format: int64
+            description: ライブ開始日時
+          endAt:
+            type: integer
+            format: int64
+            description: ライブ終了日時
+  required:
+  - title
+  - description
+  - thumnailURL
+  - lives
+  example:
+    title: 'スケジュールタイトル'
+    description: 'スケジュールの説明'
+    thumnailURL: 'https://and-period.jp/thumbnail01.png'
+    lives:
+      - title: 'ライブタイトル'
+      - description: 'ライブ説明'
+      - producerId: 'kSByoE6FetnPs5Byk3a9Zx'
+      - startAt: 1640962800
+      - endAt: 1640962800

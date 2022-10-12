@@ -1,0 +1,60 @@
+scheduleResponse:
+  type: object
+  properties:
+    id:
+      type: string
+      description: スケジュールID
+    title:
+      type: string
+      description: タイトル
+    description:
+      type: string
+      description: 説明
+    thumnailURL:
+      type: string
+      description: サムネイルURL
+    startAt:
+      type: integer
+      format: int64
+      description: ライブ開始日時 (unixtime)
+    endAt:
+      type: integer
+      format: int64
+      description: ライブ終了日時 (unixtime)
+    canceled:
+      type: boolean
+      description: キャンセルフラグ
+    status:
+      type: integer
+      format: int32
+      description: 開催ステータス (0:不明, 1:開催前, 2:開催中, 3:開催後)
+    createdAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
+    updatedAt:
+      type: integer
+      format: int64
+      description: 更新日時 (unixtime)
+  required:
+  - id
+  - title
+  - description
+  - thumnailURL
+  - startAt
+  - endAt
+  - canceled
+  - status
+  - createdAt
+  - updatedAt
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    title: 'スケジュールタイトル'
+    description: 'スケジュールの説明'
+    thumnailURL: 'https://and-period.jp/thumbnail01.png'
+    startAt: 1640962800
+    endAt: 1640962800
+    canceled: false
+    status: 1
+    createdAt: 1640962800
+    updatedAt: 1640962800

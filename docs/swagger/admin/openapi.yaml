@@ -31,6 +31,8 @@ tags:
   description: お知らせ関連
 - name: Message
   description: メッセージ関連
+- name: Schedule
+  description: スケジュール関連
 paths:
   # Auth
   /v1/auth:
@@ -113,6 +115,9 @@ paths:
     $ref: './paths/v1/messages/index.yaml'
   /v1/messages/{messageId}:
     $ref: './paths/v1/messages/_messageId/index.yaml'
+  # Schedule
+  /v1/Schedules:
+    $ref: './paths/v1/schedules/index.yaml'
   # Upload
   /v1/upload/coordinators/header:
     $ref: './paths/v1/upload/coordinators/header.yaml'
@@ -196,6 +201,8 @@ components:
       $ref: './components/schemas/v1/notification.request.yaml#/createNotificationRequest'
     v1UpdateNotificationRequest:
       $ref: './components/schemas/v1/notification.request.yaml#/updateNotificationRequest'
+    v1CreateScheduleRequest:
+      $ref: './components/schemas/v1/schedule.request.yaml#/createScheduleRequest'
     v1UploadCoordinatorThumbnailRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadCoordinatorThumbnailRequest'
     v1UploadCoordinatorHeaderRequest:
@@ -257,6 +264,8 @@ components:
       $ref: './components/schemas/v1/message.response.yaml#/messageResponse'
     v1MessagesResponse:
       $ref: './components/schemas/v1/message.response.yaml#/messagesResponse'
+    v1ScheduleResponse:
+      $ref: './components/schemas/v1/schedule.response.yaml#/scheduleResponse'
     v1UploadImageResponse:
       $ref: './components/schemas/v1/upload.response.yaml#/uploadImageResponse'
     v1UploadVideoResponse:
