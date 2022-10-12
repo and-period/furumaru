@@ -47,6 +47,7 @@ export default defineComponent({
 
     const formData = reactive<ProducerResponse>({
       id,
+      coordinatorId,
       lastname: '',
       lastnameKana: '',
       firstname: '',
