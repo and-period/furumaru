@@ -22,6 +22,7 @@ func NewOrder(order *entity.Order) *Order {
 		Order: response.Order{
 			ID:          order.ID,
 			UserID:      order.UserID,
+			ScheduleID:  order.ScheduleID,
 			OrderedAt:   jst.Unix(order.OrderedAt),
 			PaidAt:      jst.Unix(order.ConfirmedAt),
 			DeliveredAt: jst.Unix(order.DeliveredAt),

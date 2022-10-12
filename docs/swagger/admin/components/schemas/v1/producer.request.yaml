@@ -1,6 +1,9 @@
 createProducerRequest:
   type: object
   properties:
+    coordinatorId:
+      type: string
+      description: 担当仲介者ID
     lastname:
       type: string
       description: 姓(16文字まで)
@@ -45,6 +48,7 @@ createProducerRequest:
       type: string
       description: ビル名・号室など(64文字まで)
   required:
+  - coordinatorId
   - lastname
   - firstname
   - lastnameKana
@@ -58,6 +62,7 @@ createProducerRequest:
   - addressLine1
   - addressLine2
   example:
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
     lastname: '&.'
     firstname: '管理者'
     lastnameKana: 'あんどどっと'

@@ -14,7 +14,7 @@ import (
 const producerTable = "producers"
 
 var producerFields = []string{
-	"admin_id", "phone_number", "store_name", "thumbnail_url", "header_url",
+	"admin_id", "coordinator_id", "phone_number", "store_name", "thumbnail_url", "header_url",
 	"postal_code", "prefecture", "city", "address_line1", "address_line2",
 	"created_at", "updated_at", "deleted_at",
 }

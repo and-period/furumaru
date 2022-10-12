@@ -29,15 +29,22 @@ func TestProducer_List(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, producerTable, adminTable)
+	_ = m.dbDelete(ctx, producerTable, coordinatorTable, adminTable)
+	coordinator := testCoordinator("coordinator-id", now())
+	coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+	err = m.db.DB.Create(&coordinator.Admin).Error
+	require.NoError(t, err)
+	err = m.db.DB.Create(&coordinator).Error
+	require.NoError(t, err)
 	admins := make(entity.Admins, 2)
 	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
 	err = m.db.DB.Create(&admins).Error
 	producers := make(entity.Producers, 2)
-	producers[0] = testProducer("admin-id01", "&.農園", now())
+	require.NoError(t, err)
+	producers[0] = testProducer("admin-id01", "coordinator-id", "&.農園", now())
 	producers[0].Admin = *admins[0]
-	producers[1] = testProducer("admin-id02", "&.水産", now())
+	producers[1] = testProducer("admin-id02", "coordinator-id", "&.水産", now())
 	producers[1].Admin = *admins[1]
 	err = m.db.DB.Create(&producers).Error
 	require.NoError(t, err)
@@ -106,15 +113,21 @@ func TestProducer_Count(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, producerTable, adminTable)
+	_ = m.dbDelete(ctx, producerTable, coordinatorTable, adminTable)
+	coordinator := testCoordinator("coordinator-id", now())
+	coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+	err = m.db.DB.Create(&coordinator.Admin).Error
+	require.NoError(t, err)
+	err = m.db.DB.Create(&coordinator).Error
+	require.NoError(t, err)
 	admins := make(entity.Admins, 2)
 	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
 	err = m.db.DB.Create(&admins).Error
 	producers := make(entity.Producers, 2)
-	producers[0] = testProducer("admin-id01", "&.農園", now())
+	producers[0] = testProducer("admin-id01", "coordinator-id", "&.農園", now())
 	producers[0].Admin = *admins[0]
-	producers[1] = testProducer("admin-id02", "&.水産", now())
+	producers[1] = testProducer("admin-id02", "coordinator-id", "&.水産", now())
 	producers[1].Admin = *admins[1]
 	err = m.db.DB.Create(&producers).Error
 	require.NoError(t, err)
@@ -175,15 +188,21 @@ func TestProducer_MultiGet(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, producerTable, adminTable)
+	_ = m.dbDelete(ctx, producerTable, coordinatorTable, adminTable)
+	coordinator := testCoordinator("coordinator-id", now())
+	coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+	err = m.db.DB.Create(&coordinator.Admin).Error
+	require.NoError(t, err)
+	err = m.db.DB.Create(&coordinator).Error
+	require.NoError(t, err)
 	admins := make(entity.Admins, 2)
 	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
 	err = m.db.DB.Create(&admins).Error
 	producers := make(entity.Producers, 2)
-	producers[0] = testProducer("admin-id01", "&.農園", now())
+	producers[0] = testProducer("admin-id01", "coordinator-id", "&.農園", now())
 	producers[0].Admin = *admins[0]
-	producers[1] = testProducer("admin-id02", "&.水産", now())
+	producers[1] = testProducer("admin-id02", "coordinator-id", "&.水産", now())
 	producers[1].Admin = *admins[1]
 	err = m.db.DB.Create(&producers).Error
 	require.NoError(t, err)
@@ -249,11 +268,17 @@ func TestProducer_Get(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, producerTable, adminTable)
+	_ = m.dbDelete(ctx, producerTable, coordinatorTable, adminTable)
+	coordinator := testCoordinator("coordinator-id", now())
+	coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+	err = m.db.DB.Create(&coordinator.Admin).Error
+	require.NoError(t, err)
+	err = m.db.DB.Create(&coordinator).Error
+	require.NoError(t, err)
 	admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 	err = m.db.DB.Create(&admin).Error
 	require.NoError(t, err)
-	p := testProducer("admin-id", "&.農園", now())
+	p := testProducer("admin-id", "coordinator-id", "&.農園", now())
 	p.Admin = *admin
 	err = m.db.DB.Create(&p).Error
 	require.NoError(t, err)
@@ -342,29 +367,53 @@ func TestProducer_Create(t *testing.T) {
 		want  want
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				coordinator := testCoordinator("coordinator-id", now())
+				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+				err = m.db.DB.Create(&coordinator.Admin).Error
+				require.NoError(t, err)
+				err = m.db.DB.Create(&coordinator).Error
+				require.NoError(t, err)
+			},
 			args: args{
 				admin:    testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now()),
-				producer: testProducer("admin-id", "&.農園", now()),
+				producer: testProducer("admin-id", "coordinator-id", "&.農園", now()),
 			},
 			want: want{
 				hasErr: false,
 			},
 		},
 		{
+			name:  "failed to not found coordinator",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				admin:    testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now()),
+				producer: testProducer("admin-id", "coordinator-id", "&.農園", now()),
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+		{
 			name: "failed to duplicate entry in admin auth",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				coordinator := testCoordinator("coordinator-id", now())
+				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+				err = m.db.DB.Create(&coordinator.Admin).Error
+				require.NoError(t, err)
+				err = m.db.DB.Create(&coordinator).Error
+				require.NoError(t, err)
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = m.db.DB.Create(&admin).Error
 				require.NoError(t, err)
-				p := testProducer("admin-id", "&.農園", now())
+				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
 				err = m.db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
 			args: args{
 				admin:    testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now()),
-				producer: testProducer("admin-id", "&.農園", now()),
+				producer: testProducer("admin-id", "coordinator-id", "&.農園", now()),
 			},
 			want: want{
 				hasErr: true,
@@ -378,7 +427,7 @@ func TestProducer_Create(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, producerTable, adminTable)
+			err := m.dbDelete(ctx, producerTable, coordinatorTable, adminTable)
 			require.NoError(t, err)
 			tt.setup(ctx, t, m)
 
@@ -416,10 +465,16 @@ func TestProducer_Update(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				coordinator := testCoordinator("coordinator-id", now())
+				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+				err = m.db.DB.Create(&coordinator.Admin).Error
+				require.NoError(t, err)
+				err = m.db.DB.Create(&coordinator).Error
+				require.NoError(t, err)
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = m.db.DB.Create(&admin).Error
 				require.NoError(t, err)
-				p := testProducer("admin-id", "&.農園", now())
+				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
 				err = m.db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
@@ -463,7 +518,7 @@ func TestProducer_Update(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, producerTable, adminTable)
+			err := m.dbDelete(ctx, producerTable, coordinatorTable, adminTable)
 			require.NoError(t, err)
 			tt.setup(ctx, t, m)
 
@@ -474,20 +529,21 @@ func TestProducer_Update(t *testing.T) {
 	}
 }
 
-func testProducer(id, storeName string, now time.Time) *entity.Producer {
+func testProducer(id, coordinatorID, storeName string, now time.Time) *entity.Producer {
 	return &entity.Producer{
-		AdminID:      id,
-		StoreName:    storeName,
-		ThumbnailURL: "https://and-period.jp/thumbnail.png",
-		HeaderURL:    "https://and-period.jp/header.png",
-		PhoneNumber:  "+819012345678",
-		PostalCode:   "1000014",
-		Prefecture:   "東京都",
-		City:         "千代田区",
-		AddressLine1: "永田町1-7-1",
-		AddressLine2: "",
-		CreatedAt:    now,
-		UpdatedAt:    now,
+		AdminID:       id,
+		CoordinatorID: coordinatorID,
+		StoreName:     storeName,
+		ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+		HeaderURL:     "https://and-period.jp/header.png",
+		PhoneNumber:   "+819012345678",
+		PostalCode:    "1000014",
+		Prefecture:    "東京都",
+		City:          "千代田区",
+		AddressLine1:  "永田町1-7-1",
+		AddressLine2:  "",
+		CreatedAt:     now,
+		UpdatedAt:     now,
 	}
 }
 

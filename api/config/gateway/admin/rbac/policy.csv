@@ -80,6 +80,9 @@ g, administrator, shipping_update
 g, administrator, shipping_delete
 g, administrator, product_list
 g, administrator, product_get
+g, administrator, product_create
+g, administrator, product_update
+g, administrator, product_uploader
 g, administrator, promotion_list
 g, administrator, promotion_get
 g, administrator, promotion_create

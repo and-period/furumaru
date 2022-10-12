@@ -91,12 +91,6 @@ productResponse:
     originCity:
       type: string
       description: 原産地(市区町村)
-    createdBy:
-      type: string
-      description: 登録者ID
-    updatedBy:
-      type: string
-      description: 更新者ID
     createdAt:
       type: integer
       format: int64
@@ -130,8 +124,6 @@ productResponse:
   - box100Rate
   - originPrefecture
   - originCity
-  - createdBy
-  - updatedBy
   - createdAt
   - updatedAt
   example:
@@ -163,8 +155,6 @@ productResponse:
     box100Rate: 40
     originPrefecture: '滋賀県'
     originCity: '彦根市'
-    createdBy: 'kSByoE6FetnPs5Byk3a9Zx'
-    updatedBy: 'kSByoE6FetnPs5Byk3a9Zx'
     createdAt: 1640962800
     updatedAt: 1640962800
 productsResponse:
@@ -266,12 +256,6 @@ productsResponse:
           originCity:
             type: string
             description: 原産地(市区町村)
-          createdBy:
-            type: string
-            description: 登録者ID
-          updatedBy:
-            type: string
-            description: 更新者ID
           createdAt:
             type: integer
             format: int64
@@ -305,8 +289,6 @@ productsResponse:
         - box100Rate
         - originPrefecture
         - originCity
-        - createdBy
-        - updatedBy
         - createdAt
         - updatedAt
     total:
@@ -345,8 +327,6 @@ productsResponse:
       box100Rate: 40
       originPrefecture: '滋賀県'
       originCity: '彦根市'
-      createdBy: 'kSByoE6FetnPs5Byk3a9Zx'
-      updatedBy: 'kSByoE6FetnPs5Byk3a9Zx'
       createdAt: 1640962800
       updatedAt: 1640962800
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -376,8 +356,6 @@ productsResponse:
       box100Rate: 40
       originPrefecture: '滋賀県'
       originCity: '彦根市'
-      createdBy: 'kSByoE6FetnPs5Byk3a9Zx'
-      updatedBy: 'kSByoE6FetnPs5Byk3a9Zx'
       createdAt: 1640962800
       updatedAt: 1640962800
     total: 2

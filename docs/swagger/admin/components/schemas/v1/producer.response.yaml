@@ -4,6 +4,9 @@ producerResponse:
     id:
       type: string
       description: 生産者ID
+    coordinatorId:
+      type: string
+      description: 担当仲介者ID
     lastname:
       type: string
       description: 姓
@@ -56,6 +59,7 @@ producerResponse:
       description: 更新日時 (unixtime)
   required:
   - id
+  - coordinatorId
   - lastname
   - firstname
   - lastnameKana
@@ -74,6 +78,7 @@ producerResponse:
   - updatedAt
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
     lastname: '&.'
     firstname: '管理者'
     lastnameKana: 'あんどどっと'
@@ -102,6 +107,9 @@ producersResponse:
           id:
             type: string
             description: システム管理者ID
+          coordinatorId:
+            type: string
+            description: 担当仲介者ID
           lastname:
             type: string
             description: 姓
@@ -154,6 +162,7 @@ producersResponse:
             description: 更新日時 (unixtime)
         required:
         - id
+        - coordinatorId
         - lastname
         - firstname
         - lastnameKana
@@ -180,6 +189,7 @@ producersResponse:
   example:
     producers:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
       lastname: '&.'
       firstname: '管理者'
       lastnameKana: 'あんどどっと'
@@ -197,6 +207,7 @@ producersResponse:
       createdAt: 1640962800
       updatedAt: 1640962800
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
       lastname: '&.'
       firstname: '管理者'
       lastnameKana: 'あんどどっと'

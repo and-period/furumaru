@@ -39,6 +39,8 @@ type Order struct {
 	OrderActivities   `gorm:"-"`
 	ID                string            `gorm:"primaryKey;<-:create"` // 注文履歴ID
 	UserID            string            `gorm:""`                     // ユーザーID
+	ScheduleID        string            `gorm:""`                     // 購入対象マルシェID
+	CoordinatorID     string            `gorm:""`                     // 購入対象仲介者ID
 	PaymentStatus     PaymentStatus     `gorm:""`                     // 支払いステータス
 	FulfillmentStatus FulfillmentStatus `gorm:""`                     // 配送ステータス
 	CancelType        CancelType        `gorm:""`                     // 注文キャンセル種別

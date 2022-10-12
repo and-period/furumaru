@@ -79,6 +79,7 @@ func (h *handler) CreateProducer(ctx *gin.Context) {
 	}
 
 	in := &user.CreateProducerInput{
+		CoordinatorID: req.CoordinatorID,
 		Lastname:      req.Lastname,
 		Firstname:     req.Firstname,
 		LastnameKana:  req.LastnameKana,

@@ -30,16 +30,17 @@ func TestListProducer(t *testing.T) {
 				FirstnameKana: "かんりしゃ",
 				Email:         "test-producer@and-period.jp",
 			},
-			AdminID:      "producer-id01",
-			StoreName:    "&.農園",
-			ThumbnailURL: "https://and-period.jp/thumbnail.png",
-			HeaderURL:    "https://and-period.jp/header.png",
-			PhoneNumber:  "+819012345678",
-			PostalCode:   "1000014",
-			Prefecture:   "東京都",
-			City:         "千代田区",
-			CreatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
-			UpdatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			AdminID:       "producer-id01",
+			CoordinatorID: "coordinator-id",
+			StoreName:     "&.農園",
+			ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+			HeaderURL:     "https://and-period.jp/header.png",
+			PhoneNumber:   "+819012345678",
+			PostalCode:    "1000014",
+			Prefecture:    "東京都",
+			City:          "千代田区",
+			CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
 		{
 			Admin: uentity.Admin{
@@ -50,16 +51,17 @@ func TestListProducer(t *testing.T) {
 				FirstnameKana: "かんりしゃ",
 				Email:         "test-producer@and-period.jp",
 			},
-			AdminID:      "producer-id02",
-			StoreName:    "&.農園",
-			ThumbnailURL: "https://and-period.jp/thumbnail.png",
-			HeaderURL:    "https://and-period.jp/header.png",
-			PhoneNumber:  "+819012345678",
-			PostalCode:   "1000014",
-			Prefecture:   "東京都",
-			City:         "千代田区",
-			CreatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
-			UpdatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			AdminID:       "producer-id02",
+			CoordinatorID: "coordinator-id",
+			StoreName:     "&.農園",
+			ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+			HeaderURL:     "https://and-period.jp/header.png",
+			PhoneNumber:   "+819012345678",
+			PostalCode:    "1000014",
+			Prefecture:    "東京都",
+			City:          "千代田区",
+			CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
 	}
 
@@ -81,6 +83,7 @@ func TestListProducer(t *testing.T) {
 					Producers: []*response.Producer{
 						{
 							ID:            "producer-id01",
+							CoordinatorID: "coordinator-id",
 							Lastname:      "&.",
 							Firstname:     "管理者",
 							LastnameKana:  "あんどどっと",
@@ -98,6 +101,7 @@ func TestListProducer(t *testing.T) {
 						},
 						{
 							ID:            "producer-id02",
+							CoordinatorID: "coordinator-id",
 							Lastname:      "&.",
 							Firstname:     "管理者",
 							LastnameKana:  "あんどどっと",
@@ -171,16 +175,17 @@ func TestGetProducer(t *testing.T) {
 			FirstnameKana: "かんりしゃ",
 			Email:         "test-producer@and-period.jp",
 		},
-		AdminID:      "producer-id",
-		StoreName:    "&.農園",
-		ThumbnailURL: "https://and-period.jp/thumbnail.png",
-		HeaderURL:    "https://and-period.jp/header.png",
-		PhoneNumber:  "+819012345678",
-		PostalCode:   "1000014",
-		Prefecture:   "東京都",
-		City:         "千代田区",
-		CreatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
-		UpdatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		AdminID:       "producer-id",
+		CoordinatorID: "coordinator-id",
+		StoreName:     "&.農園",
+		ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+		HeaderURL:     "https://and-period.jp/header.png",
+		PhoneNumber:   "+819012345678",
+		PostalCode:    "1000014",
+		Prefecture:    "東京都",
+		City:          "千代田区",
+		CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 	}
 
 	tests := []struct {
@@ -200,6 +205,7 @@ func TestGetProducer(t *testing.T) {
 				body: &response.ProducerResponse{
 					Producer: &response.Producer{
 						ID:            "producer-id",
+						CoordinatorID: "coordinator-id",
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -244,6 +250,7 @@ func TestCreateProducer(t *testing.T) {
 	t.Parallel()
 
 	in := &user.CreateProducerInput{
+		CoordinatorID: "coordinator-id",
 		Lastname:      "&.",
 		Firstname:     "生産者",
 		LastnameKana:  "あんどどっと",
@@ -268,18 +275,19 @@ func TestCreateProducer(t *testing.T) {
 			FirstnameKana: "かんりしゃ",
 			Email:         "test-producer@and-period.jp",
 		},
-		AdminID:      "producer-id",
-		StoreName:    "&.農園",
-		ThumbnailURL: "https://and-period.jp/thumbnail.png",
-		HeaderURL:    "https://and-period.jp/header.png",
-		PhoneNumber:  "+819012345678",
-		PostalCode:   "1000014",
-		Prefecture:   "東京都",
-		City:         "千代田区",
-		AddressLine1: "永田町1-7-1",
-		AddressLine2: "",
-		CreatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
-		UpdatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		AdminID:       "producer-id",
+		CoordinatorID: "coordinator-id",
+		StoreName:     "&.農園",
+		ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+		HeaderURL:     "https://and-period.jp/header.png",
+		PhoneNumber:   "+819012345678",
+		PostalCode:    "1000014",
+		Prefecture:    "東京都",
+		City:          "千代田区",
+		AddressLine1:  "永田町1-7-1",
+		AddressLine2:  "",
+		CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 	}
 
 	tests := []struct {
@@ -294,6 +302,7 @@ func TestCreateProducer(t *testing.T) {
 				mocks.user.EXPECT().CreateProducer(gomock.Any(), in).Return(producer, nil)
 			},
 			req: &request.CreateProducerRequest{
+				CoordinatorID: "coordinator-id",
 				Lastname:      "&.",
 				Firstname:     "生産者",
 				LastnameKana:  "あんどどっと",
@@ -314,6 +323,7 @@ func TestCreateProducer(t *testing.T) {
 				body: &response.ProducerResponse{
 					Producer: &response.Producer{
 						ID:            "producer-id",
+						CoordinatorID: "coordinator-id",
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -340,6 +350,7 @@ func TestCreateProducer(t *testing.T) {
 				mocks.user.EXPECT().CreateProducer(gomock.Any(), in).Return(nil, errmock)
 			},
 			req: &request.CreateProducerRequest{
+				CoordinatorID: "coordinator-id",
 				Lastname:      "&.",
 				Firstname:     "生産者",
 				LastnameKana:  "あんどどっと",

@@ -951,6 +951,12 @@ export interface CreateNotificationRequest {
  */
 export interface CreateProducerRequest {
     /**
+     * 担当仲介者ID
+     * @type {string}
+     * @memberof CreateProducerRequest
+     */
+    'coordinatorId': string;
+    /**
      * 姓(16文字まで)
      * @type {string}
      * @memberof CreateProducerRequest
@@ -1737,6 +1743,12 @@ export interface ProducerResponse {
      */
     'id': string;
     /**
+     * 担当仲介者ID
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'coordinatorId': string;
+    /**
      * 姓
      * @type {string}
      * @memberof ProducerResponse
@@ -1864,6 +1876,12 @@ export interface ProducersResponseProducersInner {
      * @memberof ProducersResponseProducersInner
      */
     'id': string;
+    /**
+     * 担当仲介者ID
+     * @type {string}
+     * @memberof ProducersResponseProducersInner
+     */
+    'coordinatorId': string;
     /**
      * 姓
      * @type {string}
@@ -2111,18 +2129,6 @@ export interface ProductResponse {
      * @memberof ProductResponse
      */
     'originCity': string;
-    /**
-     * 登録者ID
-     * @type {string}
-     * @memberof ProductResponse
-     */
-    'createdBy': string;
-    /**
-     * 更新者ID
-     * @type {string}
-     * @memberof ProductResponse
-     */
-    'updatedBy': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
@@ -2422,18 +2428,6 @@ export interface ProductsResponseProductsInner {
      * @memberof ProductsResponseProductsInner
      */
     'originCity': string;
-    /**
-     * 登録者ID
-     * @type {string}
-     * @memberof ProductsResponseProductsInner
-     */
-    'createdBy': string;
-    /**
-     * 更新者ID
-     * @type {string}
-     * @memberof ProductsResponseProductsInner
-     */
-    'updatedBy': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}

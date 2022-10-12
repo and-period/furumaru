@@ -270,7 +270,6 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 	weight, weightUnit := service.NewProductWeightFromRequest(req.Weight)
 
 	in := &store.CreateProductInput{
-		CoordinatorID:    getAdminID(ctx),
 		ProducerID:       req.ProducerID,
 		CategoryID:       req.CategoryID,
 		TypeID:           req.TypeID,
@@ -325,7 +324,6 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 
 	in := &store.UpdateProductInput{
 		ProductID:        util.GetParam(ctx, "productId"),
-		CoordinatorID:    getAdminID(ctx),
 		ProducerID:       req.ProducerID,
 		CategoryID:       req.CategoryID,
 		TypeID:           req.TypeID,

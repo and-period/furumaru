@@ -25,8 +25,6 @@ type Product struct {
 	Box100Rate       int64           `json:"box100Rate"`         // 箱の占有率(サイズ:100)
 	OriginPrefecture string          `json:"originPrefecture"`   // 原産地(都道府県)
 	OriginCity       string          `json:"originCity"`         // 原産地(市区町村)
-	CreatedBy        string          `json:"createdBy"`          // 登録者ID
-	UpdatedBy        string          `json:"updatedBy"`          // 更新者ID
 	CreatedAt        int64           `json:"createdAt"`          // 登録日時
 	UpdatedAt        int64           `json:"updatedAt"`          // 更新日時
 }

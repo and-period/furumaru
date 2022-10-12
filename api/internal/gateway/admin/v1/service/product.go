@@ -109,8 +109,6 @@ func NewProduct(product *entity.Product) *Product {
 			Box100Rate:       product.Box100Rate,
 			OriginPrefecture: product.OriginPrefecture,
 			OriginCity:       product.OriginCity,
-			CreatedBy:        product.CreatedBy,
-			UpdatedBy:        product.UpdatedBy,
 			CreatedAt:        product.CreatedAt.Unix(),
 			UpdatedAt:        product.CreatedAt.Unix(),
 		},

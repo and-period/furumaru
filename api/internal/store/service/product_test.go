@@ -21,7 +21,6 @@ func TestListProducts(t *testing.T) {
 	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
 	params := &database.ListProductsParams{
 		Name:       "みかん",
-		CreatedBy:  "",
 		ProducerID: "",
 		Limit:      30,
 		Offset:     0,
@@ -57,8 +56,6 @@ func TestListProducts(t *testing.T) {
 			OriginCity:       "彦根市",
 			CreatedAt:        now,
 			UpdatedAt:        now,
-			CreatedBy:        "coordinator-id",
-			UpdatedBy:        "coordinator-id",
 		},
 	}
 
@@ -182,8 +179,6 @@ func TestGetProduct(t *testing.T) {
 		OriginCity:       "彦根市",
 		CreatedAt:        now,
 		UpdatedAt:        now,
-		CreatedBy:        "coordinator-id",
-		UpdatedBy:        "coordinator-id",
 	}
 
 	tests := []struct {
@@ -289,15 +284,12 @@ func TestCreateProduct(t *testing.T) {
 							Box100Rate:       30,
 							OriginPrefecture: "滋賀県",
 							OriginCity:       "彦根市",
-							CreatedBy:        "coordinator-id",
-							UpdatedBy:        "coordinator-id",
 						}
 						assert.Equal(t, expect, product)
 						return nil
 					})
 			},
 			input: &store.CreateProductInput{
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
@@ -334,7 +326,6 @@ func TestCreateProduct(t *testing.T) {
 			name:  "invalid media format",
 			setup: func(ctx context.Context, mocks *mocks) {},
 			input: &store.CreateProductInput{
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
@@ -368,7 +359,6 @@ func TestCreateProduct(t *testing.T) {
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 			},
 			input: &store.CreateProductInput{
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
@@ -402,7 +392,6 @@ func TestCreateProduct(t *testing.T) {
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(nil, errmock)
 			},
 			input: &store.CreateProductInput{
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
@@ -437,7 +426,6 @@ func TestCreateProduct(t *testing.T) {
 				mocks.db.Product.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
 			},
 			input: &store.CreateProductInput{
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
@@ -529,7 +517,6 @@ func TestUpdateProduct(t *testing.T) {
 							Box100Rate:       30,
 							OriginPrefecture: "滋賀県",
 							OriginCity:       "彦根市",
-							UpdatedBy:        "coordinator-id",
 						}
 						assert.Equal(t, expect, params)
 						return nil
@@ -537,7 +524,6 @@ func TestUpdateProduct(t *testing.T) {
 			},
 			input: &store.UpdateProductInput{
 				ProductID:       "product-id",
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
@@ -575,7 +561,6 @@ func TestUpdateProduct(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {},
 			input: &store.UpdateProductInput{
 				ProductID:       "product-id",
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
@@ -610,7 +595,6 @@ func TestUpdateProduct(t *testing.T) {
 			},
 			input: &store.UpdateProductInput{
 				ProductID:       "product-id",
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
@@ -645,7 +629,6 @@ func TestUpdateProduct(t *testing.T) {
 			},
 			input: &store.UpdateProductInput{
 				ProductID:       "product-id",
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
@@ -681,7 +664,6 @@ func TestUpdateProduct(t *testing.T) {
 			},
 			input: &store.UpdateProductInput{
 				ProductID:       "product-id",
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				CategoryID:      "category-id",
 				TypeID:          "product-type-id",

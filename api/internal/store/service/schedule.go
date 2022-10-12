@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
@@ -14,57 +16,69 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 	if err := s.validator.Struct(in); err != nil {
 		return nil, nil, exception.InternalError(err)
 	}
-	producerIDs := make([]string, len(in.Lives))
+	params := &entity.NewScheduleParams{
+		CoordinatorID: in.CoordinatorID,
+		Title:         in.Title,
+		Description:   in.Description,
+		ThumbnailURL:  in.ThumbnailURL,
+		StartAt:       in.StartAt,
+		EndAt:         in.EndAt,
+	}
+	schedule := entity.NewSchedule(params)
+	lives := make(entity.Lives, len(in.Lives))
+	products := make(entity.LiveProducts, 0, len(in.Lives))
 	for i := range in.Lives {
-		producerIDs[i] = in.Lives[i].ProducerID
+		params := &entity.NewLiveParams{
+			ScheduleID:  schedule.ID,
+			ProducerID:  in.Lives[i].ProducerID,
+			Title:       in.Lives[i].Title,
+			Description: in.Lives[i].Description,
+			StartAt:     in.Lives[i].StartAt,
+			EndAt:       in.Lives[i].EndAt,
+		}
+		lives[i] = entity.NewLive(params)
+		products = append(products, entity.NewLiveProducts(lives[i].ID, in.Lives[i].ProductIDs)...)
 	}
 	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() (err error) {
-		in := &user.MultiGetProducersInput{
-			ProducerIDs: producerIDs,
+	eg.Go(func() error {
+		in := &user.GetCoordinatorInput{
+			CoordinatorID: in.CoordinatorID,
 		}
-		producers, err := s.user.MultiGetProducers(ectx, in)
-		if len(producers) != len(producerIDs) {
-			return exception.ErrInvalidArgument
+		_, err := s.user.GetCoordinator(ectx, in)
+		if errors.Is(err, exception.ErrNotFound) {
+			return fmt.Errorf("service: not found coordinator: %w", exception.ErrInvalidArgument)
 		}
 		return err
 	})
-	// eg.Go(func() (err error) {
-	// 	for i := range in.Lives {
-	// 		in := &store.MultiGetProductsInput{
-	// 			ProductIDs: in.Lives[i].Recommends,
-	// 		}
-	// 		_, err = s.db.Product.MultiGet(ectx, in.ProductIDs) // TODO
-	// 	}
-	// 	return err
-	// })
-	err := eg.Wait()
-	if err != nil {
+	eg.Go(func() error {
+		producerIDs := lives.ProducerIDs()
+		in := &user.MultiGetProducersInput{
+			ProducerIDs: producerIDs,
+		}
+		ps, err := s.user.MultiGetProducers(ectx, in)
+		if err != nil {
+			return err
+		}
+		if len(ps) == len(producerIDs) {
+			return nil
+		}
+		return fmt.Errorf("service: unmatch producers length: %w", exception.ErrInvalidArgument)
+	})
+	eg.Go(func() error {
+		productIDs := products.ProductIDs()
+		ps, err := s.db.Product.MultiGet(ectx, productIDs)
+		if err != nil {
+			return err
+		}
+		if len(ps) == len(productIDs) {
+			return nil
+		}
+		return fmt.Errorf("service: unmatch products length: %w", exception.ErrInvalidArgument)
+	})
+	if err := eg.Wait(); err != nil {
 		return nil, nil, exception.InternalError(err)
 	}
-	sparams := &entity.NewScheduleParams{
-		Title:        in.Title,
-		Description:  in.Description,
-		ThumbnailURL: in.ThumbnailURL,
-		StartAt:      in.StartAt,
-		EndAt:        in.EndAt,
-	}
-	schedule := entity.NewSchedule(sparams)
-	lives := make(entity.Lives, len(in.Lives))
-	for i := range in.Lives {
-		l := in.Lives[i]
-		lparams := &entity.NewLiveParams{
-			ScheduleID:  schedule.ID,
-			Title:       l.Title,
-			Description: l.Description,
-			ProducerID:  l.ProducerID,
-			StartAt:     l.StartAt,
-			EndAt:       l.EndAt,
-			Recommends:  l.Recommends,
-		}
-		lives[i] = entity.NewLive(lparams)
-	}
-	if err := s.db.Schedule.Create(ctx, schedule, lives); err != nil {
+	if err := s.db.Schedule.Create(ctx, schedule, lives, products); err != nil {
 		return nil, nil, exception.InternalError(err)
 	}
 	return schedule, lives, nil

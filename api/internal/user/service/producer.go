@@ -79,16 +79,17 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 	}
 	admin := entity.NewAdmin(adminParams)
 	params := &entity.NewProducerParams{
-		Admin:        admin,
-		StoreName:    in.StoreName,
-		ThumbnailURL: in.ThumbnailURL,
-		HeaderURL:    in.HeaderURL,
-		PhoneNumber:  in.PhoneNumber,
-		PostalCode:   in.PostalCode,
-		Prefecture:   in.Prefecture,
-		City:         in.City,
-		AddressLine1: in.AddressLine1,
-		AddressLine2: in.AddressLine2,
+		Admin:         admin,
+		CoordinatorID: in.CoordinatorID,
+		StoreName:     in.StoreName,
+		ThumbnailURL:  in.ThumbnailURL,
+		HeaderURL:     in.HeaderURL,
+		PhoneNumber:   in.PhoneNumber,
+		PostalCode:    in.PostalCode,
+		Prefecture:    in.Prefecture,
+		City:          in.City,
+		AddressLine1:  in.AddressLine1,
+		AddressLine2:  in.AddressLine2,
 	}
 	producer := entity.NewProducer(params)
 	if err := s.db.Producer.Create(ctx, admin, producer); err != nil {

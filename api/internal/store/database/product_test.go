@@ -41,9 +41,9 @@ func TestProduct_List(t *testing.T) {
 	err = m.db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 3)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", "coordinator-id", now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", "coordinator-id", now())
-	products[2] = testProduct("product-id03", "type-id02", "category-id02", "producer-id", "coordinator-id", now())
+	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", now())
+	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", now())
+	products[2] = testProduct("product-id03", "type-id02", "category-id02", "producer-id", now())
 	err = m.db.DB.Create(&products).Error
 	require.NoError(t, err)
 
@@ -67,7 +67,6 @@ func TestProduct_List(t *testing.T) {
 				params: &ListProductsParams{
 					Name:       "いも",
 					ProducerID: "producer-id",
-					CreatedBy:  "coordinator-id",
 					Limit:      2,
 					Offset:     1,
 				},
@@ -139,9 +138,9 @@ func TestProduct_Count(t *testing.T) {
 	err = m.db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 3)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", "coordinator-id", now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", "coordinator-id", now())
-	products[2] = testProduct("product-id03", "type-id02", "category-id02", "producer-id", "coordinator-id", now())
+	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", now())
+	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", now())
+	products[2] = testProduct("product-id03", "type-id02", "category-id02", "producer-id", now())
 	err = m.db.DB.Create(&products).Error
 	require.NoError(t, err)
 
@@ -165,7 +164,6 @@ func TestProduct_Count(t *testing.T) {
 				params: &ListProductsParams{
 					Name:       "いも",
 					ProducerID: "producer-id",
-					CreatedBy:  "coordinator-id",
 				},
 			},
 			want: want{
@@ -219,9 +217,9 @@ func TestProduct_MultiGet(t *testing.T) {
 	err = m.db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 3)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", "coordinator-id", now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", "coordinator-id", now())
-	products[2] = testProduct("product-id03", "type-id03", "category-id02", "producer-id", "coordinator-id", now())
+	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", now())
+	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", now())
+	products[2] = testProduct("product-id03", "type-id03", "category-id02", "producer-id", now())
 	err = m.db.DB.Create(&products).Error
 	require.NoError(t, err)
 
@@ -293,7 +291,7 @@ func TestProduct_Get(t *testing.T) {
 	productType := testProductType("type-id", "category-id", "野菜", now())
 	err = m.db.DB.Create(&productType).Error
 	require.NoError(t, err)
-	p := testProduct("product-id", "type-id", "category-id", "producer-id", "coordinator-id", now())
+	p := testProduct("product-id", "type-id", "category-id", "producer-id", now())
 	err = m.db.DB.Create(&p).Error
 	require.NoError(t, err)
 
@@ -379,7 +377,7 @@ func TestProduct_Create(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
-				product: testProduct("product-id", "type-id", "category-id", "producer-id", "coordinator-id", now()),
+				product: testProduct("product-id", "type-id", "category-id", "producer-id", now()),
 			},
 			want: want{
 				hasErr: false,
@@ -388,12 +386,12 @@ func TestProduct_Create(t *testing.T) {
 		{
 			name: "failed to duplicate entry",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				product := testProduct("product-id", "type-id", "category-id", "producer-id", "coordinator-id", now())
+				product := testProduct("product-id", "type-id", "category-id", "producer-id", now())
 				err = m.db.DB.Create(&product).Error
 				require.NoError(t, err)
 			},
 			args: args{
-				product: testProduct("product-id", "type-id", "category-id", "producer-id", "coordinator-id", now()),
+				product: testProduct("product-id", "type-id", "category-id", "producer-id", now()),
 			},
 			want: want{
 				hasErr: true,
@@ -455,7 +453,7 @@ func TestProduct_Update(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				product := testProduct("product-id", "type-id", "category-id", "producer-id", "coordinator-id", now())
+				product := testProduct("product-id", "type-id", "category-id", "producer-id", now())
 				err = m.db.DB.Create(&product).Error
 				require.NoError(t, err)
 			},
@@ -485,7 +483,6 @@ func TestProduct_Update(t *testing.T) {
 					Box100Rate:       30,
 					OriginPrefecture: "滋賀県",
 					OriginCity:       "彦根市",
-					UpdatedBy:        "coordinator-id",
 				},
 			},
 			want: want{
@@ -558,7 +555,7 @@ func TestProduct_Delete(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				product := testProduct("product-id", "type-id", "category-id", "producer-id", "coordinator-id", now())
+				product := testProduct("product-id", "type-id", "category-id", "producer-id", now())
 				err = m.db.DB.Create(&product).Error
 				require.NoError(t, err)
 			},
@@ -598,7 +595,7 @@ func TestProduct_Delete(t *testing.T) {
 	}
 }
 
-func testProduct(id, typeID, categoryID, producerID, coordinatorID string, now time.Time) *entity.Product {
+func testProduct(id, typeID, categoryID, producerID string, now time.Time) *entity.Product {
 	p := &entity.Product{
 		ID:              id,
 		TypeID:          typeID,
@@ -626,8 +623,6 @@ func testProduct(id, typeID, categoryID, producerID, coordinatorID string, now t
 		OriginCity:       "彦根市",
 		CreatedAt:        now,
 		UpdatedAt:        now,
-		CreatedBy:        coordinatorID,
-		UpdatedBy:        coordinatorID,
 	}
 	_ = p.FillJSON()
 	return p

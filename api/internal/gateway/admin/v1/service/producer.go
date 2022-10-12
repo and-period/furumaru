@@ -15,6 +15,7 @@ func NewProducer(producer *entity.Producer) *Producer {
 	return &Producer{
 		Producer: response.Producer{
 			ID:            producer.ID,
+			CoordinatorID: producer.CoordinatorID,
 			Lastname:      producer.Lastname,
 			Firstname:     producer.Firstname,
 			LastnameKana:  producer.LastnameKana,
