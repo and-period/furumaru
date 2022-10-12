@@ -15,8 +15,8 @@ import (
 const orderTable = "orders"
 
 var orderFields = []string{
-	"id", "user_id", "payment_status", "fulfillment_status",
-	"cancel_type", "cancel_reason", "canceled_at",
+	"id", "user_id", "schedule_id", "coordinator_id",
+	"payment_status", "fulfillment_status", "cancel_type", "cancel_reason", "canceled_at",
 	"ordered_at", "confirmed_at", "captured_at", "delivered_at", "created_at", "updated_at",
 }
 
