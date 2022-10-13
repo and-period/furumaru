@@ -1239,6 +1239,74 @@ export interface CreatePromotionRequest {
 /**
  * 
  * @export
+ * @interface CreateScheduleRequest
+ */
+export interface CreateScheduleRequest {
+    /**
+     * タイトル(128文字まで)
+     * @type {string}
+     * @memberof CreateScheduleRequest
+     */
+    'title': string;
+    /**
+     * 説明(20000文字まで)
+     * @type {string}
+     * @memberof CreateScheduleRequest
+     */
+    'description': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof CreateScheduleRequest
+     */
+    'thumnailURL': string;
+    /**
+     * ライブ一覧
+     * @type {Array<CreateScheduleRequestLivesInner>}
+     * @memberof CreateScheduleRequest
+     */
+    'lives': Array<CreateScheduleRequestLivesInner>;
+}
+/**
+ * 
+ * @export
+ * @interface CreateScheduleRequestLivesInner
+ */
+export interface CreateScheduleRequestLivesInner {
+    /**
+     * ライブタイトル(128文字まで)
+     * @type {string}
+     * @memberof CreateScheduleRequestLivesInner
+     */
+    'title': string;
+    /**
+     * ライブ説明(20000文字まで)
+     * @type {string}
+     * @memberof CreateScheduleRequestLivesInner
+     */
+    'description': string;
+    /**
+     * 生産者ID
+     * @type {string}
+     * @memberof CreateScheduleRequestLivesInner
+     */
+    'producerId': string;
+    /**
+     * ライブ開始日時
+     * @type {number}
+     * @memberof CreateScheduleRequestLivesInner
+     */
+    'startAt': number;
+    /**
+     * ライブ終了日時
+     * @type {number}
+     * @memberof CreateScheduleRequestLivesInner
+     */
+    'endAt': number;
+}
+/**
+ * 
+ * @export
  * @interface CreateShippingRate
  */
 export interface CreateShippingRate {
@@ -2662,6 +2730,73 @@ export interface RegisterAuthDeviceRequest {
      * @memberof RegisterAuthDeviceRequest
      */
     'device': string;
+}
+/**
+ * 
+ * @export
+ * @interface ScheduleResponse
+ */
+export interface ScheduleResponse {
+    /**
+     * スケジュールID
+     * @type {string}
+     * @memberof ScheduleResponse
+     */
+    'id': string;
+    /**
+     * タイトル
+     * @type {string}
+     * @memberof ScheduleResponse
+     */
+    'title': string;
+    /**
+     * 説明
+     * @type {string}
+     * @memberof ScheduleResponse
+     */
+    'description': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof ScheduleResponse
+     */
+    'thumnailURL': string;
+    /**
+     * ライブ開始日時 (unixtime)
+     * @type {number}
+     * @memberof ScheduleResponse
+     */
+    'startAt': number;
+    /**
+     * ライブ終了日時 (unixtime)
+     * @type {number}
+     * @memberof ScheduleResponse
+     */
+    'endAt': number;
+    /**
+     * キャンセルフラグ
+     * @type {boolean}
+     * @memberof ScheduleResponse
+     */
+    'canceled': boolean;
+    /**
+     * 開催ステータス (0:不明, 1:開催前, 2:開催中, 3:開催後)
+     * @type {number}
+     * @memberof ScheduleResponse
+     */
+    'status': number;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ScheduleResponse
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof ScheduleResponse
+     */
+    'updatedAt': number;
 }
 /**
  * 
@@ -8797,6 +8932,117 @@ export class PromotionApi extends BaseAPI {
      */
     public v1UpdatePromotion(promotionId: string, body: UpdatePromotionRequest, options?: AxiosRequestConfig) {
         return PromotionApiFp(this.configuration).v1UpdatePromotion(promotionId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * ScheduleApi - axios parameter creator
+ * @export
+ */
+export const ScheduleApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary スケジュール登録
+         * @param {CreateScheduleRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateSchedule: async (body: CreateScheduleRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1CreateSchedule', 'body', body)
+            const localVarPath = `/v1/Schedules`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ScheduleApi - functional programming interface
+ * @export
+ */
+export const ScheduleApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ScheduleApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary スケジュール登録
+         * @param {CreateScheduleRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1CreateSchedule(body: CreateScheduleRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateSchedule(body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * ScheduleApi - factory interface
+ * @export
+ */
+export const ScheduleApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ScheduleApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary スケジュール登録
+         * @param {CreateScheduleRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateSchedule(body: CreateScheduleRequest, options?: any): AxiosPromise<ScheduleResponse> {
+            return localVarFp.v1CreateSchedule(body, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ScheduleApi - object-oriented interface
+ * @export
+ * @class ScheduleApi
+ * @extends {BaseAPI}
+ */
+export class ScheduleApi extends BaseAPI {
+    /**
+     * 
+     * @summary スケジュール登録
+     * @param {CreateScheduleRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ScheduleApi
+     */
+    public v1CreateSchedule(body: CreateScheduleRequest, options?: AxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1CreateSchedule(body, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
