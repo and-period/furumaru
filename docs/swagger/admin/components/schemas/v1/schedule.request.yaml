@@ -33,6 +33,12 @@ createScheduleRequest:
             type: integer
             format: int64
             description: ライブ終了日時
+        required:
+          - title
+          - description
+          - producerId
+          - startAt
+          - endAt
   required:
   - title
   - description

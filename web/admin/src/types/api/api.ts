@@ -1272,31 +1272,31 @@ export interface CreateScheduleRequestLivesInner {
      * @type {string}
      * @memberof CreateScheduleRequestLivesInner
      */
-    'title'?: string;
+    'title': string;
     /**
      * ライブ説明(20000文字まで)
      * @type {string}
      * @memberof CreateScheduleRequestLivesInner
      */
-    'description'?: string;
+    'description': string;
     /**
      * 生産者ID
      * @type {string}
      * @memberof CreateScheduleRequestLivesInner
      */
-    'producerId'?: string;
+    'producerId': string;
     /**
      * ライブ開始日時
      * @type {number}
      * @memberof CreateScheduleRequestLivesInner
      */
-    'startAt'?: number;
+    'startAt': number;
     /**
      * ライブ終了日時
      * @type {number}
      * @memberof CreateScheduleRequestLivesInner
      */
-    'endAt'?: number;
+    'endAt': number;
 }
 /**
  * 
