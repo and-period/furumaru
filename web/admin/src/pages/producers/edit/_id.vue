@@ -47,7 +47,7 @@ export default defineComponent({
 
     const formData = reactive<ProducerResponse>({
       id,
-      coordinatorId,
+      coordinatorId: '',
       lastname: '',
       lastnameKana: '',
       firstname: '',
@@ -68,6 +68,7 @@ export default defineComponent({
 
     const { fetchState } = useFetch(async () => {
       const producer = await getProducer(id)
+      formData.coordinatorId = producer.coordinatorId
       formData.lastname = producer.lastname
       formData.lastnameKana = producer.lastnameKana
       formData.firstname = producer.firstname
