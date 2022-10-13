@@ -44,7 +44,7 @@ createScheduleRequest:
     thumnailURL: 'https://and-period.jp/thumbnail01.png'
     lives:
       - title: 'ライブタイトル'
-      - description: 'ライブ説明'
-      - producerId: 'kSByoE6FetnPs5Byk3a9Zx'
-      - startAt: 1640962800
-      - endAt: 1640962800
+        description: 'ライブ説明'
+        producerId: 'kSByoE6FetnPs5Byk3a9Zx'
+        startAt: 1640962800
+        endAt: 1640962800
