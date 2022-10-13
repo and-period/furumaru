@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"fmt"
 	"testing"
 	"time"
 
@@ -30,11 +29,31 @@ func TestSchedule_Create(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, scheduleTable)
+	_ = m.dbDelete(ctx, liveProductTable, liveTable, scheduleTable, productTable, productTypeTable, categoryTable)
+	category := testCategory("category-id", "野菜", now())
+	err = m.db.DB.Create(&category).Error
+	require.NoError(t, err)
+	productType := testProductType("type-id", "category-id", "野菜", now())
+	err = m.db.DB.Create(&productType).Error
+	require.NoError(t, err)
+	products := make(entity.Products, 2)
+	products[0] = testProduct("product-id01", "type-id", "category-id", "producer-id", now())
+	products[1] = testProduct("product-id02", "type-id", "category-id", "producer-id", now())
+	err = m.db.DB.Create(&products).Error
+	require.NoError(t, err)
+
+	productIDs := []string{"product-id01", "product-id02"}
+	s := testSchedule("schedule-id", now())
+	lives := testLives("live-id", "schedule-id", "producer-id", productIDs, now(), 3)
+	lproducts := make(entity.LiveProducts, 0)
+	for i := range lives {
+		lproducts = append(lproducts, lives[i].LiveProducts...)
+	}
 
 	type args struct {
 		schedule *entity.Schedule
 		lives    entity.Lives
+		products entity.LiveProducts
 	}
 	type want struct {
 		hasErr bool
@@ -49,8 +68,9 @@ func TestSchedule_Create(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
-				schedule: testSchedule("schedule-id", now()),
-				lives:    testLives("live-id", "schedule-id", "producer-id", now(), 3),
+				schedule: s,
+				lives:    lives,
+				products: lproducts,
 			},
 			want: want{
 				hasErr: false,
@@ -64,8 +84,9 @@ func TestSchedule_Create(t *testing.T) {
 				require.NoError(t, err)
 			},
 			args: args{
-				schedule: testSchedule("schedule-id", now()),
-				lives:    testLives("live-id", "schedule-id", "producer-id", now(), 3),
+				schedule: s,
+				lives:    lives,
+				products: lproducts,
 			},
 			want: want{
 				hasErr: true,
@@ -84,7 +105,7 @@ func TestSchedule_Create(t *testing.T) {
 			tt.setup(ctx, t, m)
 
 			db := &schedule{db: m.db, now: now}
-			err = db.Create(ctx, tt.args.schedule, tt.args.lives)
+			err = db.Create(ctx, tt.args.schedule, tt.args.lives, tt.args.products)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}
@@ -103,21 +124,16 @@ func testSchedule(id string, now time.Time) *entity.Schedule {
 	}
 }
 
-func testLives(id, scheduleID, producerID string, now time.Time, length int) entity.Lives {
-	lives := make(entity.Lives, length)
-
-	for i := 0; i < length; i++ {
-		lives[i] = &entity.Live{
-			ID:          fmt.Sprintf("%s-%2d", id, i),
-			ScheduleID:  scheduleID,
-			Title:       "配信のタイトル",
-			Description: "配信の説明",
-			ProducerID:  producerID,
-			StartAt:     now,
-			EndAt:       now,
-			Recommends:  []string{"product-id1", "product-id2"},
-		}
+func fillIgnoreScheduleField(s *entity.Schedule, now time.Time) {
+	if s == nil {
+		return
 	}
+	s.CreatedAt = now
+	s.UpdatedAt = now
+}
 
-	return lives
+func fillIgnoreSchedulesField(ss entity.Schedules, now time.Time) {
+	for i := range ss {
+		fillIgnoreScheduleField(ss[i], now)
+	}
 }

@@ -31,7 +31,7 @@ func TestOrder_List(t *testing.T) {
 
 	_ = m.dbDelete(ctx,
 		orderItemTable, orderActivityTable, orderPaymentTable, orderFulfillmentTable,
-		orderTable, shippingTable, productTable, productTypeTable, categoryTable,
+		orderTable, scheduleTable, shippingTable, productTable, productTypeTable, categoryTable,
 	)
 	categories := make(entity.Categories, 2)
 	categories[0] = testCategory("category-id01", "野菜", now())
@@ -44,17 +44,20 @@ func TestOrder_List(t *testing.T) {
 	err = m.db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", "coordinator-id", now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", "coordinator-id", now())
+	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", now())
+	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", now())
 	err = m.db.DB.Create(&products).Error
 	require.NoError(t, err)
 	shipping := testShipping("shipping-id", now())
 	err = m.db.DB.Create(&shipping).Error
 	require.NoError(t, err)
+	schedule := testSchedule("schedule-id", now())
+	err = m.db.DB.Create(&schedule).Error
+	require.NoError(t, err)
 
 	orders := make(entity.Orders, 2)
-	orders[0] = testOrder("order-id01", "user-id", now())
-	orders[1] = testOrder("order-id02", "user-id", now())
+	orders[0] = testOrder("order-id01", "user-id", "schedule-id", "coordinator-id", now())
+	orders[1] = testOrder("order-id02", "user-id", "schedule-id", "coordinator-id", now())
 	err = m.db.DB.Create(&orders).Error
 	require.NoError(t, err)
 	payments := make(entity.OrderPayments, 2)
@@ -162,8 +165,8 @@ func TestOrder_Count(t *testing.T) {
 	err = m.db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", "coordinator-id", now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", "coordinator-id", now())
+	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", now())
+	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", now())
 	err = m.db.DB.Create(&products).Error
 	require.NoError(t, err)
 	shipping := testShipping("shipping-id", now())
@@ -171,8 +174,8 @@ func TestOrder_Count(t *testing.T) {
 	require.NoError(t, err)
 
 	orders := make(entity.Orders, 2)
-	orders[0] = testOrder("order-id01", "user-id", now())
-	orders[1] = testOrder("order-id02", "user-id", now())
+	orders[0] = testOrder("order-id01", "user-id", "schedule-id", "coordinator-id", now())
+	orders[1] = testOrder("order-id02", "user-id", "schedule-id", "coordinator-id", now())
 	err = m.db.DB.Create(&orders).Error
 	require.NoError(t, err)
 	payments := make(entity.OrderPayments, 2)
@@ -279,15 +282,15 @@ func TestOrder_Get(t *testing.T) {
 	err = m.db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", "coordinator-id", now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", "coordinator-id", now())
+	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", now())
+	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", now())
 	err = m.db.DB.Create(&products).Error
 	require.NoError(t, err)
 	shipping := testShipping("shipping-id", now())
 	err = m.db.DB.Create(&shipping).Error
 	require.NoError(t, err)
 
-	o := testOrder("order-id", "user-id", now())
+	o := testOrder("order-id", "user-id", "schedule-id", "coordinator-id", now())
 	err = m.db.DB.Create(&o).Error
 	require.NoError(t, err)
 	payment := testOrderPayment("payment-id", "transaction-id", "order-id", "", "payment-id", now())
@@ -367,10 +370,12 @@ func TestOrder_Get(t *testing.T) {
 	}
 }
 
-func testOrder(id, userID string, now time.Time) *entity.Order {
+func testOrder(id, userID, scheduleID, coordinatorID string, now time.Time) *entity.Order {
 	return &entity.Order{
 		ID:                id,
 		UserID:            userID,
+		ScheduleID:        scheduleID,
+		CoordinatorID:     coordinatorID,
 		PaymentStatus:     entity.PaymentStatusCaptured,
 		FulfillmentStatus: entity.FulfillmentStatusFulfilled,
 		CancelType:        entity.CancelTypeUnknown,

@@ -24,7 +24,6 @@ type Database struct {
 	Promotion   Promotion
 	Shipping    Shipping
 	Schedule    Schedule
-	Live        Live
 }
 
 func NewDatabase(params *Params) *Database {
@@ -36,7 +35,6 @@ func NewDatabase(params *Params) *Database {
 		Promotion:   NewPromotion(params.Database),
 		Shipping:    NewShipping(params.Database),
 		Schedule:    NewSchedule(params.Database),
-		Live:        NewLive(params.Database),
 	}
 }
 
@@ -98,11 +96,7 @@ type Shipping interface {
 }
 
 type Schedule interface {
-	Create(ctx context.Context, schedule *entity.Schedule, lives entity.Lives) error
-}
-
-type Live interface {
-	Create(ctx context.Context, live *entity.Live) error
+	Create(ctx context.Context, schedule *entity.Schedule, lives entity.Lives, products entity.LiveProducts) error
 }
 
 /**
@@ -144,7 +138,6 @@ type ListOrdersParams struct {
 type ListProductsParams struct {
 	Name       string
 	ProducerID string
-	CreatedBy  string
 	Limit      int
 	Offset     int
 	Orders     []*ListProductsOrder
@@ -161,9 +154,6 @@ func (p *ListProductsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	}
 	if p.ProducerID != "" {
 		stmt = stmt.Where("producer_id = ?", p.ProducerID)
-	}
-	if p.CreatedBy != "" {
-		stmt = stmt.Where("created_by = ?", p.CreatedBy)
 	}
 	for i := range p.Orders {
 		var value string
@@ -198,7 +188,6 @@ type UpdateProductParams struct {
 	Box100Rate       int64
 	OriginPrefecture string
 	OriginCity       string
-	UpdatedBy        string
 }
 
 type ListProductTypesParams struct {

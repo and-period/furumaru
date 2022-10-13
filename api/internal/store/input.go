@@ -161,7 +161,6 @@ type GetProductInput struct {
 }
 
 type CreateProductInput struct {
-	CoordinatorID    string                `validate:"required"`
 	ProducerID       string                `validate:"required"`
 	CategoryID       string                `validate:"required"`
 	TypeID           string                `validate:"required"`
@@ -191,7 +190,6 @@ type CreateProductMedia struct {
 
 type UpdateProductInput struct {
 	ProductID        string                `validate:"required"`
-	CoordinatorID    string                `validate:"required"`
 	ProducerID       string                `validate:"required"`
 	CategoryID       string                `validate:"required"`
 	TypeID           string                `validate:"required"`
@@ -270,21 +268,22 @@ type DeletePromotionInput struct {
 }
 
 type CreateScheduleInput struct {
-	Title        string                `validate:"required,max=64"`
-	Description  string                `validate:"required,max=2000"`
-	ThumbnailURL string                `validate:"required"`
-	StartAt      time.Time             `validate:"required"`
-	EndAt        time.Time             `validate:"required"`
-	Lives        []*CreateScheduleLive `validate:"required"`
+	CoordinatorID string                `validate:"required"`
+	Title         string                `validate:"required,max=64"`
+	Description   string                `validate:"required,max=2000"`
+	ThumbnailURL  string                `validate:"required"`
+	StartAt       time.Time             `validate:"required"`
+	EndAt         time.Time             `validate:"required"`
+	Lives         []*CreateScheduleLive `validate:"required"`
 }
 
 type CreateScheduleLive struct {
 	Title       string    `validate:"required,max=64"`
 	Description string    `validate:"required,max=2000"`
 	ProducerID  string    `validate:"required"`
+	ProductIDs  []string  `validate:"dive,required,unique"`
 	StartAt     time.Time `validate:"required"`
 	EndAt       time.Time `validate:"required"`
-	Recommends  []string  `validate:"required"`
 }
 
 type ListOrdersInput struct {

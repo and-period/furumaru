@@ -27,20 +27,22 @@ func TestProducer(t *testing.T) {
 					FirstnameKana: "かんりしゃ",
 					Email:         "test-producer@and-period.jp",
 				},
-				AdminID:      "producer-id",
-				StoreName:    "&.農園",
-				ThumbnailURL: "https://and-period.jp/thumbnail.png",
-				HeaderURL:    "https://and-period.jp/header.png",
-				PhoneNumber:  "+819012345678",
-				PostalCode:   "1000014",
-				Prefecture:   "東京都",
-				City:         "千代田区",
-				CreatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				UpdatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				AdminID:       "producer-id",
+				CoordinatorID: "coordinator-id",
+				StoreName:     "&.農園",
+				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+				HeaderURL:     "https://and-period.jp/header.png",
+				PhoneNumber:   "+819012345678",
+				PostalCode:    "1000014",
+				Prefecture:    "東京都",
+				City:          "千代田区",
+				CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &Producer{
 				Producer: response.Producer{
 					ID:            "producer-id",
+					CoordinatorID: "coordinator-id",
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",
@@ -80,6 +82,7 @@ func TestProducer_Response(t *testing.T) {
 			producer: &Producer{
 				Producer: response.Producer{
 					ID:            "producer-id",
+					CoordinatorID: "coordinator-id",
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",
@@ -98,6 +101,7 @@ func TestProducer_Response(t *testing.T) {
 			},
 			expect: &response.Producer{
 				ID:            "producer-id",
+				CoordinatorID: "coordinator-id",
 				Lastname:      "&.",
 				Firstname:     "管理者",
 				LastnameKana:  "あんどどっと",
@@ -143,16 +147,17 @@ func TestProducers(t *testing.T) {
 						FirstnameKana: "かんりしゃ",
 						Email:         "test-producer01@and-period.jp",
 					},
-					AdminID:      "producer-id01",
-					StoreName:    "&.農園",
-					ThumbnailURL: "https://and-period.jp/thumbnail.png",
-					HeaderURL:    "https://and-period.jp/header.png",
-					PhoneNumber:  "+819012345678",
-					PostalCode:   "1000014",
-					Prefecture:   "東京都",
-					City:         "千代田区",
-					CreatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
-					UpdatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					AdminID:       "producer-id01",
+					CoordinatorID: "coordinator-id",
+					StoreName:     "&.農園",
+					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+					HeaderURL:     "https://and-period.jp/header.png",
+					PhoneNumber:   "+819012345678",
+					PostalCode:    "1000014",
+					Prefecture:    "東京都",
+					City:          "千代田区",
+					CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 				{
 					Admin: entity.Admin{
@@ -163,22 +168,24 @@ func TestProducers(t *testing.T) {
 						FirstnameKana: "かんりしゃ",
 						Email:         "test-producer02@and-period.jp",
 					},
-					AdminID:      "producer-id02",
-					StoreName:    "&.農園",
-					ThumbnailURL: "https://and-period.jp/thumbnail.png",
-					HeaderURL:    "https://and-period.jp/header.png",
-					PhoneNumber:  "+819012345678",
-					PostalCode:   "1000014",
-					Prefecture:   "東京都",
-					City:         "千代田区",
-					CreatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
-					UpdatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					AdminID:       "producer-id02",
+					CoordinatorID: "coordinator-id",
+					StoreName:     "&.農園",
+					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+					HeaderURL:     "https://and-period.jp/header.png",
+					PhoneNumber:   "+819012345678",
+					PostalCode:    "1000014",
+					Prefecture:    "東京都",
+					City:          "千代田区",
+					CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 			},
 			expect: Producers{
 				{
 					Producer: response.Producer{
 						ID:            "producer-id01",
+						CoordinatorID: "coordinator-id",
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -198,6 +205,7 @@ func TestProducers(t *testing.T) {
 				{
 					Producer: response.Producer{
 						ID:            "producer-id02",
+						CoordinatorID: "coordinator-id",
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -239,6 +247,7 @@ func TestProducers_Map(t *testing.T) {
 				{
 					Producer: response.Producer{
 						ID:            "producer-id01",
+						CoordinatorID: "coordinator-id",
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -258,6 +267,7 @@ func TestProducers_Map(t *testing.T) {
 				{
 					Producer: response.Producer{
 						ID:            "producer-id02",
+						CoordinatorID: "coordinator-id",
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -279,6 +289,7 @@ func TestProducers_Map(t *testing.T) {
 				"producer-id01": {
 					Producer: response.Producer{
 						ID:            "producer-id01",
+						CoordinatorID: "coordinator-id",
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -298,6 +309,7 @@ func TestProducers_Map(t *testing.T) {
 				"producer-id02": {
 					Producer: response.Producer{
 						ID:            "producer-id02",
+						CoordinatorID: "coordinator-id",
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -339,6 +351,7 @@ func TestProducers_Response(t *testing.T) {
 				{
 					Producer: response.Producer{
 						ID:            "producer-id01",
+						CoordinatorID: "coordinator-id",
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -358,6 +371,7 @@ func TestProducers_Response(t *testing.T) {
 				{
 					Producer: response.Producer{
 						ID:            "producer-id02",
+						CoordinatorID: "coordinator-id",
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -378,6 +392,7 @@ func TestProducers_Response(t *testing.T) {
 			expect: []*response.Producer{
 				{
 					ID:            "producer-id01",
+					CoordinatorID: "coordinator-id",
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",
@@ -395,6 +410,7 @@ func TestProducers_Response(t *testing.T) {
 				},
 				{
 					ID:            "producer-id02",
+					CoordinatorID: "coordinator-id",
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",

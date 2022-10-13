@@ -56,8 +56,6 @@ func TestListProducts(t *testing.T) {
 			OriginCity:       "彦根市",
 			CreatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			UpdatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
-			CreatedBy:        "coordinator-id",
-			UpdatedBy:        "coordinator-id",
 		},
 	}
 	producersIn := &user.MultiGetProducersInput{
@@ -158,8 +156,6 @@ func TestListProducts(t *testing.T) {
 							OriginCity:       "彦根市",
 							CreatedAt:        1640962800,
 							UpdatedAt:        1640962800,
-							CreatedBy:        "coordinator-id",
-							UpdatedBy:        "coordinator-id",
 						},
 					},
 					Total: 1,
@@ -293,8 +289,6 @@ func TestGetProduct(t *testing.T) {
 		OriginCity:       "彦根市",
 		CreatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		UpdatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
-		CreatedBy:        "coordinator-id",
-		UpdatedBy:        "coordinator-id",
 	}
 	producer := &uentity.Producer{
 		Admin: uentity.Admin{
@@ -378,8 +372,6 @@ func TestGetProduct(t *testing.T) {
 						OriginCity:       "彦根市",
 						CreatedAt:        1640962800,
 						UpdatedAt:        1640962800,
-						CreatedBy:        "coordinator-id",
-						UpdatedBy:        "coordinator-id",
 					},
 				},
 			},
@@ -458,7 +450,6 @@ func TestCreateProduct(t *testing.T) {
 		ProductTypeID: "product-type-id",
 	}
 	productIn := &store.CreateProductInput{
-		CoordinatorID:   idmock,
 		ProducerID:      "producer-id",
 		CategoryID:      "category-id",
 		TypeID:          "product-type-id",
@@ -544,8 +535,6 @@ func TestCreateProduct(t *testing.T) {
 		OriginCity:       "彦根市",
 		CreatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		UpdatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
-		CreatedBy:        idmock,
-		UpdatedBy:        idmock,
 	}
 
 	tests := []struct {
@@ -617,8 +606,6 @@ func TestCreateProduct(t *testing.T) {
 						OriginCity:       "彦根市",
 						CreatedAt:        1640962800,
 						UpdatedAt:        1640962800,
-						CreatedBy:        idmock,
-						UpdatedBy:        idmock,
 					},
 				},
 			},
@@ -810,7 +797,6 @@ func TestUpdateProduct(t *testing.T) {
 
 	in := &store.UpdateProductInput{
 		ProductID:       "product-id",
-		CoordinatorID:   idmock,
 		ProducerID:      "producer-id",
 		CategoryID:      "category-id",
 		TypeID:          "product-type-id",

@@ -107,6 +107,7 @@ describe('Producer Store', () => {
   describe('createProducer', () => {
     axiosMock.onPost(`${baseURL}/v1/producers`).reply(200, {
       id: 'kSByoE6FetnPs5Byk3a9Zx',
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx',
       lastname: '&.',
       firstname: '管理者',
       lastnameKana: 'あんどどっと',
@@ -129,6 +130,7 @@ describe('Producer Store', () => {
       setupAuthStore(true)
 
       const validPayload: CreateProducerRequest = {
+        coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx',
         lastname: '&.',
         firstname: '管理者',
         lastnameKana: 'あんどどっと',
@@ -155,6 +157,7 @@ describe('Producer Store', () => {
       setupAuthStore(false)
 
       const validPayload: CreateProducerRequest = {
+        coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx',
         lastname: '&.',
         firstname: '管理者',
         lastnameKana: 'あんどどっと',
@@ -184,6 +187,7 @@ describe('Producer Store', () => {
       axiosMock.onPost(`${baseURL}/v1/producers`).reply(400)
 
       const invalidPayload: CreateProducerRequest = {
+        coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx',
         lastname: '&.',
         firstname: '管理者',
         lastnameKana: 'アンドドット',
@@ -216,6 +220,7 @@ describe('Producer Store', () => {
       axiosMock.onPost(`${baseURL}/v1/producers`).reply(409)
 
       const notUniquePayload: CreateProducerRequest = {
+        coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx',
         lastname: '&.',
         firstname: '管理者',
         lastnameKana: 'あんどどっと',
@@ -250,6 +255,7 @@ describe('Producer Store', () => {
       axiosMock.onPost(`${baseURL}/v1/producers`).reply(401)
 
       const validPayload: CreateProducerRequest = {
+        coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx',
         lastname: '&.',
         firstname: '管理者',
         lastnameKana: 'あんどどっと',
@@ -279,6 +285,7 @@ describe('Producer Store', () => {
       axiosMock.onPost(`${baseURL}/v1/producers`).reply(500)
 
       const validPayload: CreateProducerRequest = {
+        coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx',
         lastname: '&.',
         firstname: '管理者',
         lastnameKana: 'あんどどっと',

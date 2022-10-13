@@ -19,7 +19,6 @@ func TestProduct(t *testing.T) {
 			params: &NewProductParams{
 				TypeID:          "type-id",
 				CategoryID:      "category-id",
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				Name:            "新鮮なじゃがいも",
 				Description:     "新鮮なじゃがいもをお届けします。",
@@ -66,8 +65,6 @@ func TestProduct(t *testing.T) {
 				Box100Rate:       30,
 				OriginPrefecture: "滋賀県",
 				OriginCity:       "彦根市",
-				CreatedBy:        "coordinator-id",
-				UpdatedBy:        "coordinator-id",
 			},
 		},
 	}

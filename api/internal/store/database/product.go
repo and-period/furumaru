@@ -19,8 +19,7 @@ var productFields = []string{
 	"name", "description", "public", "inventory",
 	"weight", "weight_unit", "item", "item_unit", "item_description",
 	"media", "price", "delivery_type", "box60_rate", "box80_rate", "box100_rate",
-	"origin_prefecture", "origin_city", "created_by", "updated_by",
-	"created_at", "updated_at", "deleted_at",
+	"origin_prefecture", "origin_city", "created_at", "updated_at", "deleted_at",
 }
 
 type product struct {
@@ -131,7 +130,6 @@ func (p *product) Update(ctx context.Context, productID string, params *UpdatePr
 			"box100_rate":       params.Box100Rate,
 			"origin_prefecture": params.OriginPrefecture,
 			"origin_city":       params.OriginCity,
-			"updated_by":        params.UpdatedBy,
 			"updated_at":        p.now(),
 		}
 		if len(params.Media) > 0 {

@@ -98,8 +98,6 @@ func TestOrderItem_Fill(t *testing.T) {
 					OriginCity:       "彦根市",
 					CreatedAt:        1640962800,
 					UpdatedAt:        1640962800,
-					CreatedBy:        "coordinator-id",
-					UpdatedBy:        "coordinator-id",
 				},
 			},
 			expect: &OrderItem{
@@ -269,8 +267,6 @@ func TestOrderItems_Fill(t *testing.T) {
 						OriginCity:       "彦根市",
 						CreatedAt:        1640962800,
 						UpdatedAt:        1640962800,
-						CreatedBy:        "coordinator-id",
-						UpdatedBy:        "coordinator-id",
 					},
 				},
 			},

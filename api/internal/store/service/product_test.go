@@ -21,7 +21,6 @@ func TestListProducts(t *testing.T) {
 	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
 	params := &database.ListProductsParams{
 		Name:       "みかん",
-		CreatedBy:  "",
 		ProducerID: "",
 		Limit:      30,
 		Offset:     0,
@@ -57,8 +56,6 @@ func TestListProducts(t *testing.T) {
 			OriginCity:       "彦根市",
 			CreatedAt:        now,
 			UpdatedAt:        now,
-			CreatedBy:        "coordinator-id",
-			UpdatedBy:        "coordinator-id",
 		},
 	}
 
@@ -182,8 +179,6 @@ func TestGetProduct(t *testing.T) {
 		OriginCity:       "彦根市",
 		CreatedAt:        now,
 		UpdatedAt:        now,
-		CreatedBy:        "coordinator-id",
-		UpdatedBy:        "coordinator-id",
 	}
 
 	tests := []struct {
@@ -237,12 +232,6 @@ func TestGetProduct(t *testing.T) {
 func TestCreateProduct(t *testing.T) {
 	t.Parallel()
 
-	coordinatorIn := &user.GetCoordinatorInput{
-		CoordinatorID: "coordinator-id",
-	}
-	coordinator := &uentity.Coordinator{
-		AdminID: "coordinator-id",
-	}
 	producerIn := &user.GetProducerInput{
 		ProducerID: "producer-id",
 	}
@@ -259,7 +248,6 @@ func TestCreateProduct(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.db.Product.EXPECT().
 					Create(ctx, gomock.Any()).
@@ -289,15 +277,12 @@ func TestCreateProduct(t *testing.T) {
 							Box100Rate:       30,
 							OriginPrefecture: "滋賀県",
 							OriginCity:       "彦根市",
-							CreatedBy:        "coordinator-id",
-							UpdatedBy:        "coordinator-id",
 						}
 						assert.Equal(t, expect, product)
 						return nil
 					})
 			},
 			input: &store.CreateProductInput{
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
@@ -334,7 +319,6 @@ func TestCreateProduct(t *testing.T) {
 			name:  "invalid media format",
 			setup: func(ctx context.Context, mocks *mocks) {},
 			input: &store.CreateProductInput{
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
@@ -362,47 +346,11 @@ func TestCreateProduct(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to get coordinator",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, exception.ErrNotFound)
-				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
-			},
-			input: &store.CreateProductInput{
-				CoordinatorID:   "coordinator-id",
-				ProducerID:      "producer-id",
-				CategoryID:      "category-id",
-				TypeID:          "product-type-id",
-				Name:            "新鮮なじゃがいも",
-				Description:     "新鮮なじゃがいもをお届けします。",
-				Public:          true,
-				Inventory:       100,
-				Weight:          100,
-				WeightUnit:      entity.WeightUnitGram,
-				Item:            1,
-				ItemUnit:        "袋",
-				ItemDescription: "1袋あたり100gのじゃがいも",
-				Media: []*store.CreateProductMedia{
-					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
-					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
-				},
-				Price:            400,
-				DeliveryType:     entity.DeliveryTypeNormal,
-				Box60Rate:        50,
-				Box80Rate:        40,
-				Box100Rate:       30,
-				OriginPrefecture: "滋賀県",
-				OriginCity:       "彦根市",
-			},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
 			name: "failed to get producer",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(nil, errmock)
 			},
 			input: &store.CreateProductInput{
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
@@ -432,12 +380,10 @@ func TestCreateProduct(t *testing.T) {
 		{
 			name: "failed to create product",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.db.Product.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
 			},
 			input: &store.CreateProductInput{
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
@@ -478,12 +424,6 @@ func TestCreateProduct(t *testing.T) {
 func TestUpdateProduct(t *testing.T) {
 	t.Parallel()
 
-	coordinatorIn := &user.GetCoordinatorInput{
-		CoordinatorID: "coordinator-id",
-	}
-	coordinator := &uentity.Coordinator{
-		AdminID: "coordinator-id",
-	}
 	producerIn := &user.GetProducerInput{
 		ProducerID: "producer-id",
 	}
@@ -500,7 +440,6 @@ func TestUpdateProduct(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.db.Product.EXPECT().
 					Update(ctx, "product-id", gomock.Any()).
@@ -529,7 +468,6 @@ func TestUpdateProduct(t *testing.T) {
 							Box100Rate:       30,
 							OriginPrefecture: "滋賀県",
 							OriginCity:       "彦根市",
-							UpdatedBy:        "coordinator-id",
 						}
 						assert.Equal(t, expect, params)
 						return nil
@@ -537,7 +475,6 @@ func TestUpdateProduct(t *testing.T) {
 			},
 			input: &store.UpdateProductInput{
 				ProductID:       "product-id",
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
@@ -575,7 +512,6 @@ func TestUpdateProduct(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {},
 			input: &store.UpdateProductInput{
 				ProductID:       "product-id",
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
@@ -603,49 +539,12 @@ func TestUpdateProduct(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to get coordinator",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, exception.ErrNotFound)
-				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
-			},
-			input: &store.UpdateProductInput{
-				ProductID:       "product-id",
-				CoordinatorID:   "coordinator-id",
-				ProducerID:      "producer-id",
-				CategoryID:      "category-id",
-				TypeID:          "product-type-id",
-				Name:            "新鮮なじゃがいも",
-				Description:     "新鮮なじゃがいもをお届けします。",
-				Public:          true,
-				Inventory:       100,
-				Weight:          100,
-				WeightUnit:      entity.WeightUnitGram,
-				Item:            1,
-				ItemUnit:        "袋",
-				ItemDescription: "1袋あたり100gのじゃがいも",
-				Media: []*store.UpdateProductMedia{
-					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
-					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
-				},
-				Price:            400,
-				DeliveryType:     entity.DeliveryTypeNormal,
-				Box60Rate:        50,
-				Box80Rate:        40,
-				Box100Rate:       30,
-				OriginPrefecture: "滋賀県",
-				OriginCity:       "彦根市",
-			},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
 			name: "failed to get producer",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(nil, errmock)
 			},
 			input: &store.UpdateProductInput{
 				ProductID:       "product-id",
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
@@ -675,13 +574,11 @@ func TestUpdateProduct(t *testing.T) {
 		{
 			name: "failed to update product",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.db.Product.EXPECT().Update(ctx, "product-id", gomock.Any()).Return(errmock)
 			},
 			input: &store.UpdateProductInput{
 				ProductID:       "product-id",
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				CategoryID:      "category-id",
 				TypeID:          "product-type-id",

@@ -4,6 +4,7 @@ package response
 type Order struct {
 	ID          string            `json:"id"`          // 注文履歴ID
 	UserID      string            `json:"userId"`      // ユーザーID
+	ScheduleID  string            `json:"scheduleId"`  // 開催スケジュールID
 	UserName    string            `json:"userName"`    // 注文者名
 	Payment     *OrderPayment     `json:"payment"`     // 支払い情報
 	Fulfillment *OrderFulfillment `json:"fulfillment"` // 配送情報

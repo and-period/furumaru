@@ -1,6 +1,7 @@
 package request
 
 type CreateProducerRequest struct {
+	CoordinatorID string `json:"coordinatorId,omitempty"` // 担当仲介者ID
 	Lastname      string `json:"lastname,omitempty"`      // 姓
 	Firstname     string `json:"firstname,omitempty"`     // 名
 	LastnameKana  string `json:"lastnameKana,omitempty"`  // 姓(かな)
