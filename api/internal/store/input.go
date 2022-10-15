@@ -287,8 +287,9 @@ type CreateScheduleLive struct {
 }
 
 type ListOrdersInput struct {
-	Limit  int64 `validate:"required,max=200"`
-	Offset int64 `validate:"min=0"`
+	CoordinatorID string `validate:"omitempty"`
+	Limit         int64  `validate:"required,max=200"`
+	Offset        int64  `validate:"min=0"`
 }
 
 type GetOrderInput struct {

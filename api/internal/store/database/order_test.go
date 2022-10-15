@@ -107,8 +107,9 @@ func TestOrder_List(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
 				params: &ListOrdersParams{
-					Limit:  2,
-					Offset: 1,
+					CoordinatorID: "coordinator-id",
+					Limit:         2,
+					Offset:        1,
 				},
 			},
 			want: want{

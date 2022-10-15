@@ -15,8 +15,9 @@ func (s *service) ListOrders(ctx context.Context, in *store.ListOrdersInput) (en
 		return nil, 0, exception.InternalError(err)
 	}
 	params := &database.ListOrdersParams{
-		Limit:  int(in.Limit),
-		Offset: int(in.Offset),
+		CoordinatorID: in.CoordinatorID,
+		Limit:         int(in.Limit),
+		Offset:        int(in.Offset),
 	}
 	var (
 		orders entity.Orders

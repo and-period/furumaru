@@ -39,6 +39,7 @@ func (o *order) List(ctx context.Context, params *ListOrdersParams, fields ...st
 	}
 
 	stmt := o.db.DB.WithContext(ctx).Table(orderTable).Select(fields)
+	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
 	}
