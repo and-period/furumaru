@@ -7,6 +7,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
+	"gorm.io/gorm"
 )
 
 type Params struct {
@@ -129,8 +130,16 @@ type UpdateCoordinatorParams struct {
 }
 
 type ListProducersParams struct {
-	Limit  int
-	Offset int
+	CoordinatorID string
+	Limit         int
+	Offset        int
+}
+
+func (p *ListProducersParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.CoordinatorID != "" {
+		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
+	}
+	return stmt
 }
 
 type UpdateProducerParams struct {

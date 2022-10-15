@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
@@ -66,17 +67,19 @@ func TestListProducer(t *testing.T) {
 	}
 
 	tests := []struct {
-		name   string
-		setup  func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
-		query  string
-		expect *testResponse
+		name    string
+		setup   func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		options []testOption
+		query   string
+		expect  *testResponse
 	}{
 		{
-			name: "success",
+			name: "success administrator",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.user.EXPECT().ListProducers(gomock.Any(), in).Return(producers, int64(2), nil)
 			},
-			query: "",
+			options: []testOption{withRole(uentity.AdminRoleAdministrator)},
+			query:   "",
 			expect: &testResponse{
 				code: http.StatusOK,
 				body: &response.ProducersResponse{
@@ -123,6 +126,26 @@ func TestListProducer(t *testing.T) {
 			},
 		},
 		{
+			name: "success coordinator",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := &user.ListProducersInput{
+					CoordinatorID: idmock,
+					Limit:         20,
+					Offset:        0,
+				}
+				mocks.user.EXPECT().ListProducers(gomock.Any(), in).Return(entity.Producers{}, int64(0), nil)
+			},
+			options: []testOption{withRole(uentity.AdminRoleCoordinator)},
+			query:   "",
+			expect: &testResponse{
+				code: http.StatusOK,
+				body: &response.ProducersResponse{
+					Producers: []*response.Producer{},
+					Total:     0,
+				},
+			},
+		},
+		{
 			name:  "invalid limit",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
 			query: "?limit=a",
@@ -155,7 +178,7 @@ func TestListProducer(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			const format = "/v1/producers%s"
 			path := fmt.Sprintf(format, tt.query)
-			testGet(t, tt.setup, tt.expect, path)
+			testGet(t, tt.setup, tt.expect, path, tt.options...)
 		})
 	}
 }
@@ -191,14 +214,16 @@ func TestGetProducer(t *testing.T) {
 	tests := []struct {
 		name       string
 		setup      func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		options    []testOption
 		producerID string
 		expect     *testResponse
 	}{
 		{
-			name: "success",
+			name: "success administrator",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.user.EXPECT().GetProducer(gomock.Any(), in).Return(producer, nil)
 			},
+			options:    []testOption{withRole(uentity.AdminRoleAdministrator)},
 			producerID: "producer-id",
 			expect: &testResponse{
 				code: http.StatusOK,
@@ -225,6 +250,59 @@ func TestGetProducer(t *testing.T) {
 			},
 		},
 		{
+			name: "success valid coordinator",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().GetProducer(gomock.Any(), in).Return(producer, nil).Times(2)
+			},
+			options:    []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("coordinator-id")},
+			producerID: "producer-id",
+			expect: &testResponse{
+				code: http.StatusOK,
+				body: &response.ProducerResponse{
+					Producer: &response.Producer{
+						ID:            "producer-id",
+						CoordinatorID: "coordinator-id",
+						Lastname:      "&.",
+						Firstname:     "管理者",
+						LastnameKana:  "あんどどっと",
+						FirstnameKana: "かんりしゃ",
+						StoreName:     "&.農園",
+						ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+						HeaderURL:     "https://and-period.jp/header.png",
+						Email:         "test-producer@and-period.jp",
+						PhoneNumber:   "+819012345678",
+						PostalCode:    "1000014",
+						Prefecture:    "東京都",
+						City:          "千代田区",
+						CreatedAt:     1640962800,
+						UpdatedAt:     1640962800,
+					},
+				},
+			},
+		},
+		{
+			name: "failed to filter access",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().GetProducer(gomock.Any(), in).Return(nil, errmock)
+			},
+			options:    []testOption{withRole(uentity.AdminRoleCoordinator)},
+			producerID: "producer-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to invalid coordinator",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().GetProducer(gomock.Any(), in).Return(producer, nil)
+			},
+			options:    []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("other-id")},
+			producerID: "producer-id",
+			expect: &testResponse{
+				code: http.StatusForbidden,
+			},
+		},
+		{
 			name: "failed to get producer",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.user.EXPECT().GetProducer(gomock.Any(), in).Return(nil, errmock)
@@ -241,7 +319,7 @@ func TestGetProducer(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			const format = "/v1/producers/%s"
 			path := fmt.Sprintf(format, tt.producerID)
-			testGet(t, tt.setup, tt.expect, path)
+			testGet(t, tt.setup, tt.expect, path, tt.options...)
 		})
 	}
 }
@@ -291,16 +369,18 @@ func TestCreateProducer(t *testing.T) {
 	}
 
 	tests := []struct {
-		name   string
-		setup  func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
-		req    *request.CreateProducerRequest
-		expect *testResponse
+		name    string
+		setup   func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		options []testOption
+		req     *request.CreateProducerRequest
+		expect  *testResponse
 	}{
 		{
-			name: "success",
+			name: "success administrator",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.user.EXPECT().CreateProducer(gomock.Any(), in).Return(producer, nil)
 			},
+			options: []testOption{withRole(uentity.AdminRoleAdministrator)},
 			req: &request.CreateProducerRequest{
 				CoordinatorID: "coordinator-id",
 				Lastname:      "&.",
@@ -345,6 +425,80 @@ func TestCreateProducer(t *testing.T) {
 			},
 		},
 		{
+			name: "success valid coordinator",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().CreateProducer(gomock.Any(), in).Return(producer, nil)
+			},
+			options: []testOption{withRole(uentity.AdminRoleAdministrator), withAdminID("coordinator-id")},
+			req: &request.CreateProducerRequest{
+				CoordinatorID: "coordinator-id",
+				Lastname:      "&.",
+				Firstname:     "生産者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "せいさんしゃ",
+				StoreName:     "&.農園",
+				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+				HeaderURL:     "https://and-period.jp/header.png",
+				Email:         "test-producer@and-period.jp",
+				PhoneNumber:   "+819012345678",
+				PostalCode:    "1000014",
+				Prefecture:    "東京都",
+				City:          "千代田区",
+				AddressLine1:  "永田町1-7-1",
+				AddressLine2:  "",
+			},
+			expect: &testResponse{
+				code: http.StatusOK,
+				body: &response.ProducerResponse{
+					Producer: &response.Producer{
+						ID:            "producer-id",
+						CoordinatorID: "coordinator-id",
+						Lastname:      "&.",
+						Firstname:     "管理者",
+						LastnameKana:  "あんどどっと",
+						FirstnameKana: "かんりしゃ",
+						StoreName:     "&.農園",
+						ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+						HeaderURL:     "https://and-period.jp/header.png",
+						Email:         "test-producer@and-period.jp",
+						PhoneNumber:   "+819012345678",
+						PostalCode:    "1000014",
+						Prefecture:    "東京都",
+						City:          "千代田区",
+						AddressLine1:  "永田町1-7-1",
+						AddressLine2:  "",
+						CreatedAt:     1640962800,
+						UpdatedAt:     1640962800,
+					},
+				},
+			},
+		},
+		{
+			name:    "failed to invalid coordinator",
+			setup:   func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			options: []testOption{withRole(uentity.AdminRoleCoordinator)},
+			req: &request.CreateProducerRequest{
+				CoordinatorID: "coordinator-id",
+				Lastname:      "&.",
+				Firstname:     "生産者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "せいさんしゃ",
+				StoreName:     "&.農園",
+				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+				HeaderURL:     "https://and-period.jp/header.png",
+				Email:         "test-producer@and-period.jp",
+				PhoneNumber:   "+819012345678",
+				PostalCode:    "1000014",
+				Prefecture:    "東京都",
+				City:          "千代田区",
+				AddressLine1:  "永田町1-7-1",
+				AddressLine2:  "",
+			},
+			expect: &testResponse{
+				code: http.StatusForbidden,
+			},
+		},
+		{
 			name: "failed to create producer",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.user.EXPECT().CreateProducer(gomock.Any(), in).Return(nil, errmock)
@@ -376,7 +530,7 @@ func TestCreateProducer(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			const path = "/v1/producers"
-			testPost(t, tt.setup, tt.expect, path, tt.req)
+			testPost(t, tt.setup, tt.expect, path, tt.req, tt.options...)
 		})
 	}
 }
