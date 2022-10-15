@@ -157,7 +157,7 @@ type ResetCoordinatorPasswordInput struct {
 
 type ListProducersInput struct {
 	CoordinatorID string `validate:"omitempty"`
-	Limit         int64  `validate:"required,max=200"`
+	Limit         int64  `validate:"required_without=CoordinatorID,max=200"`
 	Offset        int64  `validate:"min=0"`
 }
 
