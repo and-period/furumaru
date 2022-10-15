@@ -25,14 +25,16 @@ tags:
   description: 配送設定関連
 - name: Promotion
   description: プロモーション関連
+- name: Schedule
+  description: スケジュール関連
+- name: Order
+  description: 注文関連
 - name: Contact
   description: お問い合わせ関連
 - name: Notification
   description: お知らせ関連
 - name: Message
   description: メッセージ関連
-- name: Schedule
-  description: スケジュール関連
 paths:
   # Auth
   /v1/auth:
@@ -118,6 +120,11 @@ paths:
   # Schedule
   /v1/Schedules:
     $ref: './paths/v1/schedules/index.yaml'
+  # Order
+  /v1/orders:
+    $ref: './paths/v1/orders/index.yaml'
+  /v1/orders/{orderId}:
+    $ref: './paths/v1/orders/_orderId/index.yaml'
   # Upload
   /v1/upload/coordinators/header:
     $ref: './paths/v1/upload/coordinators/header.yaml'
@@ -266,6 +273,10 @@ components:
       $ref: './components/schemas/v1/message.response.yaml#/messagesResponse'
     v1ScheduleResponse:
       $ref: './components/schemas/v1/schedule.response.yaml#/scheduleResponse'
+    v1OrderResponse:
+      $ref: './components/schemas/v1/order.response.yaml#/orderResponse'
+    v1OrdersResponse:
+      $ref: './components/schemas/v1/order.response.yaml#/ordersResponse'
     v1UploadImageResponse:
       $ref: './components/schemas/v1/upload.response.yaml#/uploadImageResponse'
     v1UploadVideoResponse:

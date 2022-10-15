@@ -38,6 +38,8 @@ p, promotion_get, /v1/promotions/*, GET, allow
 p, promotion_create, /v1/promotions, POST, allow
 p, promotion_update, /v1/promotions/*, PATCH, allow
 p, promotion_delete, /v1/promotions/*, DELETE, allow
+p, order_list, /v1/orders, GET, allow
+p, order_get, /v1/orders/*, GET, allow
 p, contact_list, /v1/contacts, GET, allow
 p, contact_get, /v1/contacts/*, GET, allow
 p, contact_update, /v1/contacts/*, PATCH, allow
@@ -88,6 +90,8 @@ g, administrator, promotion_get
 g, administrator, promotion_create
 g, administrator, promotion_update
 g, administrator, promotion_delete
+g, administrator, order_list
+g, administrator, order_get
 g, administrator, contact_list
 g, administrator, contact_get
 g, administrator, contact_update
@@ -121,6 +125,8 @@ g, coordinator, promotion_get
 g, coordinator, promotion_create
 g, coordinator, promotion_update
 g, coordinator, promotion_delete
+g, coordinator, order_list
+g, coordinator, order_get
 g, coordinator, contact_list
 g, coordinator, contact_get
 g, coordinator, notification_list

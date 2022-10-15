@@ -107,6 +107,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.shippingRoutes(v1.Group("/shippings"))
 	h.productRoutes(v1.Group("/products"))
 	h.promotionRoutes(v1.Group("/promotions"))
+	h.orderRoutes(v1.Group("/orders"))
 	h.notificationRoutes(v1.Group("/notifications"))
 	h.contactRoutes(v1.Group("/contacts"))
 	h.messageRoutes(v1.Group("/messages"))

@@ -1,0 +1,681 @@
+orderResponse:
+  type: object
+  properties:
+    id:
+      type: string
+      description: 注文ID
+    scheduleId:
+      type: string
+      description: 開催スケジュールID
+    userId:
+      type: string
+      description: ユーザーID
+    userName:
+      type: string
+      description: 注文者名
+    payment:
+      type: object
+      description: 支払い情報
+      properties:
+        transactionId:
+          type: string
+          description: 取引ID
+        promotionId:
+          type: string
+          description: プロモーションID
+        paymentId:
+          type: string
+          description: 決済手段ID
+        paymentType:
+          type: integer
+          format: int32
+          description: 決済手段(0:不明,1:代引支払い,2:クレジットカード払い)
+        status:
+          type: integer
+          format: int32
+          description: 支払い状況(0:不明,1:未払い,2:保留中,3:仮売上,4:支払い完了,5:返金済み,6:期限切れ)
+        subtotal:
+          type: integer
+          format: int64
+          description: 購入金額
+        discount:
+          type: integer
+          format: int64
+          description: 割引金額
+        shippingCharge:
+          type: integer
+          format: int64
+          description: 配送料金
+        tax:
+          type: integer
+          format: int64
+          description: 消費税
+        total:
+          type: integer
+          format: int64
+          description: 支払い合計金額
+        lastname:
+          type: string
+          description: 請求先情報 姓
+        firstname:
+          type: string
+          description: 請求先情報 名
+        postalCode:
+          type: string
+          description: 請求先情報 郵便番号
+        prefecture:
+          type: string
+          description: 請求先情報 都道府県
+        city:
+          type: string
+          description: 請求先情報 市区町村
+        addressLine1:
+          type: string
+          description: 請求先情報 町名・番地
+        addressLine2:
+          type: string
+          description: 請求先情報 ビル名・号室など
+        phoneNumber:
+          type: string
+          description: 請求先情報 電話番号
+      required:
+      - transactionId
+      - promotionId
+      - paymentId
+      - paymentType
+      - status
+      - subtotal
+      - discount
+      - shippingCharge
+      - tax
+      - total
+      - lastname
+      - firstname
+      - postalCode
+      - prefecture
+      - city
+      - addressLine1
+      - addressLine2
+      - phoneNumber
+    fulfillment:
+      type: object
+      description: 配送情報
+      properties:
+        trackingNumber:
+          type: string
+          description: 伝票番号
+        status:
+          type: integer
+          format: int32
+          description: 配送状況(0:不明,1:未発送,2:発送済み)
+        shippingCarrier:
+          type: integer
+          format: int32
+          description: 配送会社(0:不明,1:ヤマト運輸,2:佐川急便)
+        shippingMethod:
+          type: integer
+          format: int32
+          description: 配送方法(0:不明,1:通常便,2:冷蔵便,3:冷凍便)
+        boxSize:
+          type: integer
+          format: int32
+          description: 箱の大きさ(0:不明,1:60,2:80,3:100)
+        boxCount:
+          type: integer
+          format: int64
+          description: 箱の個数
+        weightTotal:
+          type: number
+          format: double
+          description: 合計重量(kg,少数第一位まで)
+        lastname:
+          type: string
+          description: 配送先情報 姓
+        firstname:
+          type: string
+          description: 配送先情報 名
+        postalCode:
+          type: string
+          description: 配送先情報 郵便番号
+        prefecture:
+          type: string
+          description: 配送先情報 都道府県
+        city:
+          type: string
+          description: 配送先情報 市区町村
+        addressLine1:
+          type: string
+          description: 配送先情報 町名・番地
+        addressLine2:
+          type: string
+          description: 配送先情報 ビル名・号室など
+        phoneNumber:
+          type: string
+          description: 配送先情報 電話番号
+      required:
+      - trackingNumber
+      - status
+      - shippingCarrier
+      - shippingMethod
+      - boxSize
+      - boxCount
+      - weightTotal
+      - lastname
+      - firstname
+      - postalCode
+      - prefecture
+      - city
+      - addressLine1
+      - addressLine2
+      - phoneNumber
+    refund:
+      type: object
+      description: 注文キャンセル情報
+      properties:
+        canceled:
+          type: boolean
+          description: 注文キャンセルフラグ
+        type:
+          type: integer
+          format: int32
+          description: 注文キャンセル種別(0:不明)
+        reason:
+          type: string
+          description: 注文キャンセル理由詳細
+      required:
+      - canceled
+      - type
+      - reason
+    items:
+      type: array
+      description: 注文商品一覧
+      items:
+        type: object
+        properties:
+          productId:
+            type: string
+            description: 商品ID
+          name:
+            type: string
+            description: 商品名
+          price:
+            type: integer
+            format: int64
+            description: 購入価格
+          quantity:
+            type: integer
+            format: int64
+            description: 購入数量
+          weight:
+            type: number
+            format: double
+            description: 重量(kg,少数第一位まで)
+          media:
+            type: array
+            items:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: メディアURL
+                isThumbnail:
+                  type: boolean
+                  description: サムネイルとして使用(1つまで)
+              required:
+              - url
+              - isThumbnail
+        required:
+        - productId
+        - name
+        - price
+        - quantity
+        - weight
+        - media
+    orderedAt:
+      type: integer
+      format: int64
+      description: 注文日時 (unixtime)
+    paidAt:
+      type: integer
+      format: int64
+      description: 支払日時 (unixtime)
+    deliveredAt:
+      type: integer
+      format: int64
+      description: 配送日時 (unixtime)
+    canceledAt:
+      type: integer
+      format: int64
+      description: 注文キャンセル日時 (unixtime)
+    createdAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
+    updatedAt:
+      type: integer
+      format: int64
+      description: 更新日時 (unixtime)
+  required:
+  - id
+  - scheduleId
+  - userId
+  - userName
+  - payment
+  - fulfillment
+  - refund
+  - items
+  - orderedAt
+  - paidAt
+  - deliveredAt
+  - canceledAt
+  - createdAt
+  - updatedAt
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
+    userId: 'kSByoE6FetnPs5Byk3a9Zx'
+    userName: '&. 購入者'
+    payment:
+      transactionId: 'kSByoE6FetnPs5Byk3a9Zx'
+      promotionId: 'kSByoE6FetnPs5Byk3a9Zx'
+      paymentId: 'kSByoE6FetnPs5Byk3a9Zx'
+      paymentType: 2
+      status: 4
+      subtotal: 1000
+      discount: 200
+      shippingCharge: 500
+      tax: 130
+      total: 1430
+      lastname: '&.'
+      firstname: '購入者'
+      postalCode: '1000014'
+      prefecture: '東京都'
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      phoneNumber: '+819012345678'
+    fulfillment:
+      trackingNumber: 'kSByoE6FetnPs5Byk3a9Zx'
+      status: 1
+      shippingCarrier: 1
+      shippingMethod: 1
+      boxSize: 2
+      boxCount: 1
+      weightTotal: 2.0
+      lastname: '&.'
+      firstname: '購入者'
+      postalCode: '1000014'
+      prefecture: '東京都'
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      phoneNumber: '+819012345678'
+    refund:
+      canceled: false
+      type: 0
+      reason: ''
+    items:
+    - productId: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: '新鮮なじゃがいも'
+      price: 500
+      quantity: 2
+      weight: 1.0
+      media:
+      - url: 'https://and-period.jp/thumbnail01.png'
+        isThumbnail: true
+      - url: 'https://and-period.jp/thumbnail02.png'
+        isThumbnail: false
+    orderedAt: 1640962800
+    paidAt: 1640962800
+    deliveredAt: 0
+    canceledAt: 0
+    createdAt: 1640962800
+    updatedAt: 1640962800
+ordersResponse:
+  type: object
+  properties:
+    orders:
+      type: array
+      description: 注文一覧
+      items:
+        type: object
+        priperties:
+          id:
+            type: string
+            description: 注文ID
+          scheduleId:
+            type: string
+            description: 開催スケジュールID
+          userId:
+            type: string
+            description: ユーザーID
+          userName:
+            type: string
+            description: 注文者名
+          payment:
+            type: object
+            description: 支払い情報
+            properties:
+              transactionId:
+                type: string
+                description: 取引ID
+              promotionId:
+                type: string
+                description: プロモーションID
+              paymentId:
+                type: string
+                description: 決済手段ID
+              paymentType:
+                type: integer
+                format: int32
+                description: 決済手段(0:不明,1:代引支払い,2:クレジットカード払い)
+              status:
+                type: integer
+                format: int32
+                description: 支払い状況(0:不明,1:未払い,2:保留中,3:仮売上,4:支払い完了,5:返金済み,6:期限切れ)
+              subtotal:
+                type: integer
+                format: int64
+                description: 購入金額
+              discount:
+                type: integer
+                format: int64
+                description: 割引金額
+              shippingCharge:
+                type: integer
+                format: int64
+                description: 配送料金
+              tax:
+                type: integer
+                format: int64
+                description: 消費税
+              total:
+                type: integer
+                format: int64
+                description: 支払い合計金額
+              lastname:
+                type: string
+                description: 請求先情報 姓
+              firstname:
+                type: string
+                description: 請求先情報 名
+              postalCode:
+                type: string
+                description: 請求先情報 郵便番号
+              prefecture:
+                type: string
+                description: 請求先情報 都道府県
+              city:
+                type: string
+                description: 請求先情報 市区町村
+              addressLine1:
+                type: string
+                description: 請求先情報 町名・番地
+              addressLine2:
+                type: string
+                description: 請求先情報 ビル名・号室など
+              phoneNumber:
+                type: string
+                description: 請求先情報 電話番号
+            required:
+            - transactionId
+            - promotionId
+            - paymentId
+            - paymentType
+            - status
+            - subtotal
+            - discount
+            - shippingCharge
+            - tax
+            - total
+            - lastname
+            - firstname
+            - postalCode
+            - prefecture
+            - city
+            - addressLine1
+            - addressLine2
+            - phoneNumber
+          fulfillment:
+            type: object
+            description: 配送情報
+            properties:
+              trackingNumber:
+                type: string
+                description: 伝票番号
+              status:
+                type: integer
+                format: int32
+                description: 配送状況(0:不明,1:未発送,2:発送済み)
+              shippingCarrier:
+                type: integer
+                format: int32
+                description: 配送会社(0:不明,1:ヤマト運輸,2:佐川急便)
+              shippingMethod:
+                type: integer
+                format: int32
+                description: 配送方法(0:不明,1:通常便,2:冷蔵便,3:冷凍便)
+              boxSize:
+                type: integer
+                format: int32
+                description: 箱の大きさ(0:不明,1:60,2:80,3:100)
+              boxCount:
+                type: integer
+                format: int64
+                description: 箱の個数
+              weightTotal:
+                type: number
+                format: double
+                description: 合計重量(kg,少数第一位まで)
+              lastname:
+                type: string
+                description: 配送先情報 姓
+              firstname:
+                type: string
+                description: 配送先情報 名
+              postalCode:
+                type: string
+                description: 配送先情報 郵便番号
+              prefecture:
+                type: string
+                description: 配送先情報 都道府県
+              city:
+                type: string
+                description: 配送先情報 市区町村
+              addressLine1:
+                type: string
+                description: 配送先情報 町名・番地
+              addressLine2:
+                type: string
+                description: 配送先情報 ビル名・号室など
+              phoneNumber:
+                type: string
+                description: 配送先情報 電話番号
+            required:
+            - trackingNumber
+            - status
+            - shippingCarrier
+            - shippingMethod
+            - boxSize
+            - boxCount
+            - weightTotal
+            - lastname
+            - firstname
+            - postalCode
+            - prefecture
+            - city
+            - addressLine1
+            - addressLine2
+            - phoneNumber
+          refund:
+            type: object
+            description: 注文キャンセル情報
+            properties:
+              canceled:
+                type: boolean
+                description: 注文キャンセルフラグ
+              type:
+                type: integer
+                format: int32
+                description: 注文キャンセル種別(0:不明)
+              reason:
+                type: string
+                description: 注文キャンセル理由詳細
+            required:
+            - canceled
+            - type
+            - reason
+          items:
+            type: array
+            description: 注文商品一覧
+            items:
+              type: object
+              properties:
+                productId:
+                  type: string
+                  description: 商品ID
+                name:
+                  type: string
+                  description: 商品名
+                price:
+                  type: integer
+                  format: int64
+                  description: 購入価格
+                quantity:
+                  type: integer
+                  format: int64
+                  description: 購入数量
+                weight:
+                  type: number
+                  format: double
+                  description: 重量(kg,少数第一位まで)
+                media:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      url:
+                        type: string
+                        description: メディアURL
+                      isThumbnail:
+                        type: boolean
+                        description: サムネイルとして使用(1つまで)
+                    required:
+                    - url
+                    - isThumbnail
+              required:
+              - productId
+              - name
+              - price
+              - quantity
+              - weight
+              - media
+          orderedAt:
+            type: integer
+            format: int64
+            description: 注文日時 (unixtime)
+          paidAt:
+            type: integer
+            format: int64
+            description: 支払日時 (unixtime)
+          deliveredAt:
+            type: integer
+            format: int64
+            description: 配送日時 (unixtime)
+          canceledAt:
+            type: integer
+            format: int64
+            description: 注文キャンセル日時 (unixtime)
+          createdAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+          updatedAt:
+            type: integer
+            format: int64
+            description: 更新日時 (unixtime)
+        required:
+        - id
+        - scheduleId
+        - userId
+        - userName
+        - payment
+        - fulfillment
+        - refund
+        - items
+        - orderedAt
+        - paidAt
+        - deliveredAt
+        - canceledAt
+        - createdAt
+        - updatedAt
+    total:
+      type: integer
+      format: int64
+      description: 合計数
+  required:
+  - orders
+  - total
+  example:
+    orders:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
+      userId: 'kSByoE6FetnPs5Byk3a9Zx'
+      userName: '&. 購入者'
+      payment:
+        transactionId: 'kSByoE6FetnPs5Byk3a9Zx'
+        promotionId: 'kSByoE6FetnPs5Byk3a9Zx'
+        paymentId: 'kSByoE6FetnPs5Byk3a9Zx'
+        paymentType: 2
+        status: 4
+        subtotal: 1000
+        discount: 200
+        shippingCharge: 500
+        tax: 130
+        total: 1430
+        lastname: '&.'
+        firstname: '購入者'
+        postalCode: '1000014'
+        prefecture: '東京都'
+        city: '千代田区'
+        addressLine1: '永田町1-7-1'
+        addressLine2: ''
+        phoneNumber: '+819012345678'
+      fulfillment:
+        trackingNumber: 'kSByoE6FetnPs5Byk3a9Zx'
+        status: 1
+        shippingCarrier: 1
+        shippingMethod: 1
+        boxSize: 2
+        boxCount: 1
+        weightTotal: 2.0
+        lastname: '&.'
+        firstname: '購入者'
+        postalCode: '1000014'
+        prefecture: '東京都'
+        city: '千代田区'
+        addressLine1: '永田町1-7-1'
+        addressLine2: ''
+        phoneNumber: '+819012345678'
+      refund:
+        canceled: false
+        type: 0
+        reason: ''
+      items:
+      - productId: 'kSByoE6FetnPs5Byk3a9Zx'
+        name: '新鮮なじゃがいも'
+        price: 500
+        quantity: 2
+        weight: 1.0
+        media:
+        - url: 'https://and-period.jp/thumbnail01.png'
+          isThumbnail: true
+        - url: 'https://and-period.jp/thumbnail02.png'
+          isThumbnail: false
+      orderedAt: 1640962800
+      paidAt: 1640962800
+      deliveredAt: 0
+      canceledAt: 0
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    total: 1

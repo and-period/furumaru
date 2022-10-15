@@ -21,6 +21,8 @@ func TestOrder(t *testing.T) {
 			order: &entity.Order{
 				ID:                "order-id",
 				UserID:            "user-id",
+				ScheduleID:        "schedule-id",
+				CoordinatorID:     "coordinator-id",
 				PaymentStatus:     entity.PaymentStatusCaptured,
 				FulfillmentStatus: entity.FulfillmentStatusFulfilled,
 				CancelType:        entity.CancelTypeUnknown,
@@ -98,6 +100,7 @@ func TestOrder(t *testing.T) {
 				Order: response.Order{
 					ID:          "order-id",
 					UserID:      "user-id",
+					ScheduleID:  "schedule-id",
 					OrderedAt:   0,
 					PaidAt:      0,
 					DeliveredAt: 0,
@@ -169,6 +172,7 @@ func TestOrder(t *testing.T) {
 						orderID: "order-id",
 					},
 				},
+				CoordinatorID: "coordinator-id",
 			},
 		},
 	}
@@ -284,6 +288,108 @@ func TestOrder_Fill(t *testing.T) {
 			t.Parallel()
 			tt.order.Fill(tt.user, tt.products)
 			assert.Equal(t, tt.expect, tt.order)
+		})
+	}
+}
+
+func TestOrder_ProductIDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		order  *Order
+		expect []string
+	}{
+		{
+			name: "success",
+			order: &Order{
+				Order: response.Order{
+					ID:          "order-id",
+					UserID:      "user-id",
+					UserName:    "&. スタッフ",
+					OrderedAt:   0,
+					PaidAt:      0,
+					DeliveredAt: 0,
+					CanceledAt:  0,
+					CreatedAt:   1640962800,
+					UpdatedAt:   1640962800,
+				},
+				payment: &OrderPayment{
+					OrderPayment: response.OrderPayment{
+						TransactionID:  "transaction-id",
+						PromotionID:    "promotion-id",
+						PaymentID:      "payment-id",
+						PaymentType:    PaymentTypeCard.Response(),
+						Status:         PaymentStatusPaid.Response(),
+						Subtotal:       100,
+						Discount:       0,
+						ShippingCharge: 500,
+						Tax:            60,
+						Total:          660,
+						Lastname:       "&.",
+						Firstname:      "スタッフ",
+						PostalCode:     "1000014",
+						Prefecture:     "東京都",
+						City:           "千代田区",
+						AddressLine1:   "永田町1-7-1",
+						AddressLine2:   "",
+						PhoneNumber:    "+819012345678",
+					},
+					id:      "payment-id",
+					orderID: "order-id",
+				},
+				fulfillment: &OrderFulfillment{
+					OrderFulfillment: response.OrderFulfillment{
+						TrackingNumber:  "",
+						Status:          FulfillmentStatusFulfilled.Response(),
+						ShippingCarrier: ShippingCarrierUnknown.Response(),
+						ShippingMethod:  DeliveryTypeNormal.Response(),
+						BoxSize:         ShippingSize60.Response(),
+						BoxCount:        1,
+						WeightTotal:     1.0,
+						Lastname:        "&.",
+						Firstname:       "スタッフ",
+						PostalCode:      "1000014",
+						Prefecture:      "東京都",
+						City:            "千代田区",
+						AddressLine1:    "永田町1-7-1",
+						AddressLine2:    "",
+						PhoneNumber:     "+819012345678",
+					},
+					id:         "fulfillment-id",
+					orderID:    "order-id",
+					shippingID: "shipping-id",
+				},
+				refund: &OrderRefund{
+					OrderRefund: response.OrderRefund{
+						Canceled: false,
+						Type:     OrderRefundTypeUnknown.Response(),
+						Reason:   "",
+					},
+				},
+				items: OrderItems{
+					{
+						OrderItem: response.OrderItem{
+							ProductID: "product-id",
+							Name:      "新鮮なじゃがいも",
+							Price:     100,
+							Quantity:  1,
+							Weight:    1.0,
+							Media: []*response.ProductMedia{
+								{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+								{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+							},
+						},
+						orderID: "order-id",
+					},
+				},
+			},
+			expect: []string{"product-id"},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.expect, tt.order.ProductIDs())
 		})
 	}
 }

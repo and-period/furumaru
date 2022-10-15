@@ -1740,6 +1740,396 @@ export interface NotificationsResponseNotificationsInner {
     'updatedAt': number;
 }
 /**
+ * 
+ * @export
+ * @interface OrderResponse
+ */
+export interface OrderResponse {
+    /**
+     * 注文ID
+     * @type {string}
+     * @memberof OrderResponse
+     */
+    'id': string;
+    /**
+     * 開催スケジュールID
+     * @type {string}
+     * @memberof OrderResponse
+     */
+    'scheduleId': string;
+    /**
+     * ユーザーID
+     * @type {string}
+     * @memberof OrderResponse
+     */
+    'userId': string;
+    /**
+     * 注文者名
+     * @type {string}
+     * @memberof OrderResponse
+     */
+    'userName': string;
+    /**
+     * 
+     * @type {OrderResponsePayment}
+     * @memberof OrderResponse
+     */
+    'payment': OrderResponsePayment;
+    /**
+     * 
+     * @type {OrderResponseFulfillment}
+     * @memberof OrderResponse
+     */
+    'fulfillment': OrderResponseFulfillment;
+    /**
+     * 
+     * @type {OrderResponseRefund}
+     * @memberof OrderResponse
+     */
+    'refund': OrderResponseRefund;
+    /**
+     * 注文商品一覧
+     * @type {Array<OrderResponseItemsInner>}
+     * @memberof OrderResponse
+     */
+    'items': Array<OrderResponseItemsInner>;
+    /**
+     * 注文日時 (unixtime)
+     * @type {number}
+     * @memberof OrderResponse
+     */
+    'orderedAt': number;
+    /**
+     * 支払日時 (unixtime)
+     * @type {number}
+     * @memberof OrderResponse
+     */
+    'paidAt': number;
+    /**
+     * 配送日時 (unixtime)
+     * @type {number}
+     * @memberof OrderResponse
+     */
+    'deliveredAt': number;
+    /**
+     * 注文キャンセル日時 (unixtime)
+     * @type {number}
+     * @memberof OrderResponse
+     */
+    'canceledAt': number;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof OrderResponse
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof OrderResponse
+     */
+    'updatedAt': number;
+}
+/**
+ * 配送情報
+ * @export
+ * @interface OrderResponseFulfillment
+ */
+export interface OrderResponseFulfillment {
+    /**
+     * 伝票番号
+     * @type {string}
+     * @memberof OrderResponseFulfillment
+     */
+    'trackingNumber': string;
+    /**
+     * 配送状況(0:不明,1:未発送,2:発送済み)
+     * @type {number}
+     * @memberof OrderResponseFulfillment
+     */
+    'status': number;
+    /**
+     * 配送会社(0:不明,1:ヤマト運輸,2:佐川急便)
+     * @type {number}
+     * @memberof OrderResponseFulfillment
+     */
+    'shippingCarrier': number;
+    /**
+     * 配送方法(0:不明,1:通常便,2:冷蔵便,3:冷凍便)
+     * @type {number}
+     * @memberof OrderResponseFulfillment
+     */
+    'shippingMethod': number;
+    /**
+     * 箱の大きさ(0:不明,1:60,2:80,3:100)
+     * @type {number}
+     * @memberof OrderResponseFulfillment
+     */
+    'boxSize': number;
+    /**
+     * 箱の個数
+     * @type {number}
+     * @memberof OrderResponseFulfillment
+     */
+    'boxCount': number;
+    /**
+     * 合計重量(kg,少数第一位まで)
+     * @type {number}
+     * @memberof OrderResponseFulfillment
+     */
+    'weightTotal': number;
+    /**
+     * 配送先情報 姓
+     * @type {string}
+     * @memberof OrderResponseFulfillment
+     */
+    'lastname': string;
+    /**
+     * 配送先情報 名
+     * @type {string}
+     * @memberof OrderResponseFulfillment
+     */
+    'firstname': string;
+    /**
+     * 配送先情報 郵便番号
+     * @type {string}
+     * @memberof OrderResponseFulfillment
+     */
+    'postalCode': string;
+    /**
+     * 配送先情報 都道府県
+     * @type {string}
+     * @memberof OrderResponseFulfillment
+     */
+    'prefecture': string;
+    /**
+     * 配送先情報 市区町村
+     * @type {string}
+     * @memberof OrderResponseFulfillment
+     */
+    'city': string;
+    /**
+     * 配送先情報 町名・番地
+     * @type {string}
+     * @memberof OrderResponseFulfillment
+     */
+    'addressLine1': string;
+    /**
+     * 配送先情報 ビル名・号室など
+     * @type {string}
+     * @memberof OrderResponseFulfillment
+     */
+    'addressLine2': string;
+    /**
+     * 配送先情報 電話番号
+     * @type {string}
+     * @memberof OrderResponseFulfillment
+     */
+    'phoneNumber': string;
+}
+/**
+ * 
+ * @export
+ * @interface OrderResponseItemsInner
+ */
+export interface OrderResponseItemsInner {
+    /**
+     * 商品ID
+     * @type {string}
+     * @memberof OrderResponseItemsInner
+     */
+    'productId': string;
+    /**
+     * 商品名
+     * @type {string}
+     * @memberof OrderResponseItemsInner
+     */
+    'name': string;
+    /**
+     * 購入価格
+     * @type {number}
+     * @memberof OrderResponseItemsInner
+     */
+    'price': number;
+    /**
+     * 購入数量
+     * @type {number}
+     * @memberof OrderResponseItemsInner
+     */
+    'quantity': number;
+    /**
+     * 重量(kg,少数第一位まで)
+     * @type {number}
+     * @memberof OrderResponseItemsInner
+     */
+    'weight': number;
+    /**
+     * 
+     * @type {Array<ProductsResponseProductsInnerMediaInner>}
+     * @memberof OrderResponseItemsInner
+     */
+    'media': Array<ProductsResponseProductsInnerMediaInner>;
+}
+/**
+ * 支払い情報
+ * @export
+ * @interface OrderResponsePayment
+ */
+export interface OrderResponsePayment {
+    /**
+     * 取引ID
+     * @type {string}
+     * @memberof OrderResponsePayment
+     */
+    'transactionId': string;
+    /**
+     * プロモーションID
+     * @type {string}
+     * @memberof OrderResponsePayment
+     */
+    'promotionId': string;
+    /**
+     * 決済手段ID
+     * @type {string}
+     * @memberof OrderResponsePayment
+     */
+    'paymentId': string;
+    /**
+     * 決済手段(0:不明,1:代引支払い,2:クレジットカード払い)
+     * @type {number}
+     * @memberof OrderResponsePayment
+     */
+    'paymentType': number;
+    /**
+     * 支払い状況(0:不明,1:未払い,2:保留中,3:仮売上,4:支払い完了,5:返金済み,6:期限切れ)
+     * @type {number}
+     * @memberof OrderResponsePayment
+     */
+    'status': number;
+    /**
+     * 購入金額
+     * @type {number}
+     * @memberof OrderResponsePayment
+     */
+    'subtotal': number;
+    /**
+     * 割引金額
+     * @type {number}
+     * @memberof OrderResponsePayment
+     */
+    'discount': number;
+    /**
+     * 配送料金
+     * @type {number}
+     * @memberof OrderResponsePayment
+     */
+    'shippingCharge': number;
+    /**
+     * 消費税
+     * @type {number}
+     * @memberof OrderResponsePayment
+     */
+    'tax': number;
+    /**
+     * 支払い合計金額
+     * @type {number}
+     * @memberof OrderResponsePayment
+     */
+    'total': number;
+    /**
+     * 請求先情報 姓
+     * @type {string}
+     * @memberof OrderResponsePayment
+     */
+    'lastname': string;
+    /**
+     * 請求先情報 名
+     * @type {string}
+     * @memberof OrderResponsePayment
+     */
+    'firstname': string;
+    /**
+     * 請求先情報 郵便番号
+     * @type {string}
+     * @memberof OrderResponsePayment
+     */
+    'postalCode': string;
+    /**
+     * 請求先情報 都道府県
+     * @type {string}
+     * @memberof OrderResponsePayment
+     */
+    'prefecture': string;
+    /**
+     * 請求先情報 市区町村
+     * @type {string}
+     * @memberof OrderResponsePayment
+     */
+    'city': string;
+    /**
+     * 請求先情報 町名・番地
+     * @type {string}
+     * @memberof OrderResponsePayment
+     */
+    'addressLine1': string;
+    /**
+     * 請求先情報 ビル名・号室など
+     * @type {string}
+     * @memberof OrderResponsePayment
+     */
+    'addressLine2': string;
+    /**
+     * 請求先情報 電話番号
+     * @type {string}
+     * @memberof OrderResponsePayment
+     */
+    'phoneNumber': string;
+}
+/**
+ * 注文キャンセル情報
+ * @export
+ * @interface OrderResponseRefund
+ */
+export interface OrderResponseRefund {
+    /**
+     * 注文キャンセルフラグ
+     * @type {boolean}
+     * @memberof OrderResponseRefund
+     */
+    'canceled': boolean;
+    /**
+     * 注文キャンセル種別(0:不明)
+     * @type {number}
+     * @memberof OrderResponseRefund
+     */
+    'type': number;
+    /**
+     * 注文キャンセル理由詳細
+     * @type {string}
+     * @memberof OrderResponseRefund
+     */
+    'reason': string;
+}
+/**
+ * 
+ * @export
+ * @interface OrdersResponse
+ */
+export interface OrdersResponse {
+    /**
+     * 注文一覧
+     * @type {Array<object>}
+     * @memberof OrdersResponse
+     */
+    'orders': Array<object>;
+    /**
+     * 合計数
+     * @type {number}
+     * @memberof OrdersResponse
+     */
+    'total': number;
+}
+/**
  * 都道府県コード
  * @export
  * @enum {string}
@@ -6783,6 +7173,203 @@ export class NotificationApi extends BaseAPI {
      */
     public v1UpdateNotification(notificationId: string, body: UpdateNotificationRequest, options?: AxiosRequestConfig) {
         return NotificationApiFp(this.configuration).v1UpdateNotification(notificationId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * OrderApi - axios parameter creator
+ * @export
+ */
+export const OrderApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary 注文取得
+         * @param {string} orderId 注文ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetOrder: async (orderId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orderId' is not null or undefined
+            assertParamExists('v1GetOrder', 'orderId', orderId)
+            const localVarPath = `/v1/orders/{orderId}`
+                .replace(`{${"orderId"}}`, encodeURIComponent(String(orderId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 注文一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:paymentStatus,fulfillmentStatus,orderedAt,paidAt,deliveredAt,createdAt,updatedAt 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListOrders: async (limit?: number, offset?: number, orders?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/orders`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+            if (orders !== undefined) {
+                localVarQueryParameter['orders'] = orders;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * OrderApi - functional programming interface
+ * @export
+ */
+export const OrderApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = OrderApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary 注文取得
+         * @param {string} orderId 注文ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetOrder(orderId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OrderResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetOrder(orderId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 注文一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:paymentStatus,fulfillmentStatus,orderedAt,paidAt,deliveredAt,createdAt,updatedAt 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ListOrders(limit?: number, offset?: number, orders?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OrdersResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListOrders(limit, offset, orders, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * OrderApi - factory interface
+ * @export
+ */
+export const OrderApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = OrderApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary 注文取得
+         * @param {string} orderId 注文ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetOrder(orderId: string, options?: any): AxiosPromise<OrderResponse> {
+            return localVarFp.v1GetOrder(orderId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 注文一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:paymentStatus,fulfillmentStatus,orderedAt,paidAt,deliveredAt,createdAt,updatedAt 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListOrders(limit?: number, offset?: number, orders?: string, options?: any): AxiosPromise<OrdersResponse> {
+            return localVarFp.v1ListOrders(limit, offset, orders, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * OrderApi - object-oriented interface
+ * @export
+ * @class OrderApi
+ * @extends {BaseAPI}
+ */
+export class OrderApi extends BaseAPI {
+    /**
+     * 
+     * @summary 注文取得
+     * @param {string} orderId 注文ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof OrderApi
+     */
+    public v1GetOrder(orderId: string, options?: AxiosRequestConfig) {
+        return OrderApiFp(this.configuration).v1GetOrder(orderId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 注文一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:paymentStatus,fulfillmentStatus,orderedAt,paidAt,deliveredAt,createdAt,updatedAt 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof OrderApi
+     */
+    public v1ListOrders(limit?: number, offset?: number, orders?: string, options?: AxiosRequestConfig) {
+        return OrderApiFp(this.configuration).v1ListOrders(limit, offset, orders, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
