@@ -9,10 +9,11 @@ import (
 
 type Order struct {
 	response.Order
-	payment     *OrderPayment
-	fulfillment *OrderFulfillment
-	refund      *OrderRefund
-	items       OrderItems
+	payment       *OrderPayment
+	fulfillment   *OrderFulfillment
+	refund        *OrderRefund
+	items         OrderItems
+	CoordinatorID string
 }
 
 type Orders []*Order
@@ -30,10 +31,11 @@ func NewOrder(order *entity.Order) *Order {
 			CreatedAt:   order.CreatedAt.Unix(),
 			UpdatedAt:   order.UpdatedAt.Unix(),
 		},
-		payment:     NewOrderPayment(&order.OrderPayment, order.PaymentStatus),
-		fulfillment: NewOrderFulfillment(&order.OrderFulfillment, order.FulfillmentStatus),
-		refund:      NewOrderRefund(order),
-		items:       NewOrderItems(order.OrderItems),
+		payment:       NewOrderPayment(&order.OrderPayment, order.PaymentStatus),
+		fulfillment:   NewOrderFulfillment(&order.OrderFulfillment, order.FulfillmentStatus),
+		refund:        NewOrderRefund(order),
+		items:         NewOrderItems(order.OrderItems),
+		CoordinatorID: order.CoordinatorID,
 	}
 }
 
@@ -44,6 +46,10 @@ func (o *Order) Fill(user *User, products map[string]*Product) {
 	if o.items != nil {
 		o.items.Fill(products)
 	}
+}
+
+func (o *Order) ProductIDs() []string {
+	return o.items.ProductIDs()
 }
 
 func (o *Order) Response() *response.Order {
@@ -77,7 +83,7 @@ func (os Orders) UserIDs() []string {
 func (os Orders) ProductIDs() []string {
 	res := set.New[string](len(os))
 	for i := range os {
-		res.Add(os[i].items.ProductIDs()...)
+		res.Add(os[i].ProductIDs()...)
 	}
 	return res.Slice()
 }

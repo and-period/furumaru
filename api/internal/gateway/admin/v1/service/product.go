@@ -158,6 +158,14 @@ func (ps Products) ProductTypeIDs() []string {
 	})
 }
 
+func (ps Products) Map() map[string]*Product {
+	res := make(map[string]*Product, len(ps))
+	for _, p := range ps {
+		res[p.ID] = p
+	}
+	return res
+}
+
 func (ps Products) Fill(
 	categories map[string]*Category,
 	productTypes map[string]*ProductType,
