@@ -25,11 +25,12 @@ func (s *service) ListProducts(ctx context.Context, in *store.ListProductsInput)
 		}
 	}
 	params := &database.ListProductsParams{
-		Name:       in.Name,
-		ProducerID: in.ProducerID,
-		Limit:      int(in.Limit),
-		Offset:     int(in.Offset),
-		Orders:     orders,
+		Name:        in.Name,
+		ProducerID:  in.ProducerID,
+		ProducerIDs: in.ProducerIDs,
+		Limit:       int(in.Limit),
+		Offset:      int(in.Offset),
+		Orders:      orders,
 	}
 	var (
 		products entity.Products

@@ -307,7 +307,7 @@ func TestFilterAccess(t *testing.T) {
 	tests := []struct {
 		name   string
 		role   service.AdminRole
-		fn     func(ctx *gin.Context) (string, error)
+		fn     func(ctx *gin.Context) (bool, error)
 		expect error
 	}{
 		{
@@ -319,16 +319,16 @@ func TestFilterAccess(t *testing.T) {
 		{
 			name: "failed coordinator for failed to execute function",
 			role: service.AdminRoleCoordinator,
-			fn: func(ctx *gin.Context) (string, error) {
-				return "", assert.AnError
+			fn: func(ctx *gin.Context) (bool, error) {
+				return false, assert.AnError
 			},
 			expect: assert.AnError,
 		},
 		{
-			name: "failed coordinator for unmatch admin id",
+			name: "failed coordinator for invalid coordinator",
 			role: service.AdminRoleCoordinator,
-			fn: func(ctx *gin.Context) (string, error) {
-				return "other-id", nil
+			fn: func(ctx *gin.Context) (bool, error) {
+				return true, nil
 			},
 			expect: exception.ErrForbidden,
 		},

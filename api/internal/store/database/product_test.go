@@ -65,10 +65,11 @@ func TestProduct_List(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
 				params: &ListProductsParams{
-					Name:       "いも",
-					ProducerID: "producer-id",
-					Limit:      2,
-					Offset:     1,
+					Name:        "いも",
+					ProducerID:  "producer-id",
+					ProducerIDs: []string{"producer-id"},
+					Limit:       2,
+					Offset:      1,
 				},
 			},
 			want: want{

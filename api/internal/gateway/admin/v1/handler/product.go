@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -21,8 +22,27 @@ func (h *handler) productRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication())
 	arg.GET("", h.ListProducts)
 	arg.POST("", h.CreateProduct)
-	arg.GET("/:productId", h.GetProduct)
-	arg.PATCH("/:productId", h.UpdateProduct)
+	arg.GET("/:productId", h.filterAccessProduct, h.GetProduct)
+	arg.PATCH("/:productId", h.filterAccessProduct, h.UpdateProduct)
+}
+
+func (h *handler) filterAccessProduct(ctx *gin.Context) {
+	err := filterAccess(ctx, func(ctx *gin.Context) (bool, error) {
+		producers, err := h.getProducersByCoordinatorID(ctx, getAdminID(ctx))
+		if err != nil {
+			return false, err
+		}
+		product, err := h.getProduct(ctx, util.GetParam(ctx, "productId"))
+		if err != nil {
+			return false, err
+		}
+		return producers.Contains(product.ProducerID), nil
+	})
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+	ctx.Next()
 }
 
 func (h *handler) ListProducts(ctx *gin.Context) {
@@ -48,12 +68,19 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 	}
 
 	in := &store.ListProductsInput{
-		Name:          util.GetQuery(ctx, "name", ""),
-		CoordinatorID: util.GetQuery(ctx, "coordinatorId", ""),
-		ProducerID:    util.GetQuery(ctx, "producerId", ""),
-		Limit:         limit,
-		Offset:        offset,
-		Orders:        orders,
+		Name:       util.GetQuery(ctx, "name", ""),
+		ProducerID: util.GetQuery(ctx, "producerId", ""),
+		Limit:      limit,
+		Offset:     offset,
+		Orders:     orders,
+	}
+	if getRole(ctx) == service.AdminRoleCoordinator {
+		producers, err := h.getProducersByCoordinatorID(ctx, getAdminID(ctx))
+		if err != nil {
+			httpError(ctx, err)
+			return
+		}
+		in.ProducerIDs = producers.IDs()
 	}
 	sproducts, total, err := h.store.ListProducts(ctx, in)
 	if err != nil {
@@ -61,6 +88,13 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		return
 	}
 	products := service.NewProducts(sproducts)
+	if len(products) == 0 {
+		res := &response.ProductsResponse{
+			Products: products.Response(),
+		}
+		ctx.JSON(http.StatusOK, res)
+		return
+	}
 
 	var (
 		producers  service.Producers
@@ -210,6 +244,16 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
+	if getRole(ctx).IsCoordinator() {
+		producers, err := h.getProducersByCoordinatorID(ctx, getAdminID(ctx))
+		if err != nil {
+			httpError(ctx, err)
+		}
+		if !producers.Contains(req.ProducerID) {
+			forbidden(ctx, errors.New("handler: not authorized this coordinator"))
+			return
+		}
+	}
 
 	var (
 		producer    *service.Producer
@@ -351,4 +395,15 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) getProduct(ctx context.Context, productID string) (*service.Product, error) {
+	in := &store.GetProductInput{
+		ProductID: productID,
+	}
+	product, err := h.store.GetProduct(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewProduct(product), nil
 }

@@ -139,12 +139,12 @@ type DeleteShippingInput struct {
 }
 
 type ListProductsInput struct {
-	Name          string               `validate:"omitempty,max=128"`
-	CoordinatorID string               `validate:"omitempty"`
-	ProducerID    string               `validate:"omitempty"`
-	Limit         int64                `validate:"required,max=200"`
-	Offset        int64                `validate:"min=0"`
-	Orders        []*ListProductsOrder `validate:"omitempty,dive,required"`
+	Name        string               `validate:"omitempty,max=128"`
+	ProducerID  string               `validate:"omitempty"`
+	ProducerIDs []string             `validate:"dive,required"`
+	Limit       int64                `validate:"required,max=200"`
+	Offset      int64                `validate:"min=0"`
+	Orders      []*ListProductsOrder `validate:"omitempty,dive,required"`
 }
 
 type ListProductsOrder struct {
