@@ -317,6 +317,14 @@ func TestFilterAccess(t *testing.T) {
 			expect: nil,
 		},
 		{
+			name: "success coordinator",
+			role: service.AdminRoleCoordinator,
+			fn: func(ctx *gin.Context) (bool, error) {
+				return true, nil
+			},
+			expect: nil,
+		},
+		{
 			name: "failed coordinator for failed to execute function",
 			role: service.AdminRoleCoordinator,
 			fn: func(ctx *gin.Context) (bool, error) {
@@ -328,7 +336,7 @@ func TestFilterAccess(t *testing.T) {
 			name: "failed coordinator for invalid coordinator",
 			role: service.AdminRoleCoordinator,
 			fn: func(ctx *gin.Context) (bool, error) {
-				return true, nil
+				return false, nil
 			},
 			expect: exception.ErrForbidden,
 		},

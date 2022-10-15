@@ -31,6 +31,12 @@ patch:
         application/json:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+    403:
+      description: 生産者の更新権限がない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
     404:
       description: 生産者が存在しない
       content:
