@@ -39,6 +39,12 @@ export default defineComponent({
           },
         },
         {
+          text: '配送設定',
+          onClick: () => {
+            router.push('/shippings')
+          },
+        },
+        {
           text: 'メールアドレス変更',
           onClick: () => {
             router.push('/accounts/email')
