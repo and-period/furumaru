@@ -131,8 +131,16 @@ func (p *ListCategoriesParams) stmt(stmt *gorm.DB) *gorm.DB {
 }
 
 type ListOrdersParams struct {
-	Limit  int
-	Offset int
+	CoordinatorID string
+	Limit         int
+	Offset        int
+}
+
+func (p *ListOrdersParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.CoordinatorID != "" {
+		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
+	}
+	return stmt
 }
 
 type ListProductsParams struct {

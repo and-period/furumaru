@@ -18,13 +18,16 @@ func TestListOrders(t *testing.T) {
 
 	now := jst.Date(2022, 10, 10, 18, 30, 0, 0)
 	params := &database.ListOrdersParams{
-		Limit:  30,
-		Offset: 0,
+		CoordinatorID: "coordinator-id",
+		Limit:         30,
+		Offset:        0,
 	}
 	orders := entity.Orders{
 		{
 			ID:                "order-id",
 			UserID:            "user-id",
+			ScheduleID:        "schedule-id",
+			CoordinatorID:     "coordinator-id",
 			PaymentStatus:     entity.PaymentStatusInitialized,
 			FulfillmentStatus: entity.FulfillmentStatusUnfulfilled,
 			CancelType:        entity.CancelTypeUnknown,
@@ -117,8 +120,9 @@ func TestListOrders(t *testing.T) {
 				mocks.db.Order.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListOrdersInput{
-				Limit:  30,
-				Offset: 0,
+				CoordinatorID: "coordinator-id",
+				Limit:         30,
+				Offset:        0,
 			},
 			expect:      orders,
 			expectTotal: 1,
@@ -139,8 +143,9 @@ func TestListOrders(t *testing.T) {
 				mocks.db.Order.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListOrdersInput{
-				Limit:  30,
-				Offset: 0,
+				CoordinatorID: "coordinator-id",
+				Limit:         30,
+				Offset:        0,
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -153,8 +158,9 @@ func TestListOrders(t *testing.T) {
 				mocks.db.Order.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
 			},
 			input: &store.ListOrdersInput{
-				Limit:  30,
-				Offset: 0,
+				CoordinatorID: "coordinator-id",
+				Limit:         30,
+				Offset:        0,
 			},
 			expect:      nil,
 			expectTotal: 0,
