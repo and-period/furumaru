@@ -67,8 +67,9 @@ func TestProducer_List(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
 				params: &ListProducersParams{
-					Limit:  1,
-					Offset: 1,
+					CoordinatorID: "coordinator-id",
+					Limit:         1,
+					Offset:        1,
 				},
 			},
 			want: want{

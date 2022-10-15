@@ -40,6 +40,7 @@ func (p *producer) List(
 	}
 
 	stmt := p.db.DB.WithContext(ctx).Table(producerTable).Select(fields)
+	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
 	}
@@ -60,6 +61,7 @@ func (p *producer) Count(ctx context.Context, params *ListProducersParams) (int6
 	var total int64
 
 	stmt := p.db.DB.WithContext(ctx).Table(producerTable).Select("COUNT(*)")
+	stmt = params.stmt(stmt)
 
 	err := stmt.Count(&total).Error
 	return total, exception.InternalError(err)

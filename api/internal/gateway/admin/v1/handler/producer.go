@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"context"
+	"errors"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
@@ -15,10 +17,25 @@ func (h *handler) producerRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication())
 	arg.GET("", h.ListProducers)
 	arg.POST("", h.CreateProducer)
-	arg.GET("/:producerId", h.GetProducer)
-	arg.PATCH("/:producerId", h.UpdateProducer)
-	arg.PATCH("/:producerId/email", h.UpdateProducerEmail)
-	arg.PATCH("/:producerId/password", h.ResetProducerPassword)
+	arg.GET("/:producerId", h.filterAccessProducer, h.GetProducer)
+	arg.PATCH("/:producerId", h.filterAccessProducer, h.UpdateProducer)
+	arg.PATCH("/:producerId/email", h.filterAccessProducer, h.UpdateProducerEmail)
+	arg.PATCH("/:producerId/password", h.filterAccessProducer, h.ResetProducerPassword)
+}
+
+func (h *handler) filterAccessProducer(ctx *gin.Context) {
+	err := filterAccess(ctx, func(ctx *gin.Context) (string, error) {
+		producer, err := h.getProducer(ctx, util.GetParam(ctx, "producerId"))
+		if err != nil {
+			return "", err
+		}
+		return producer.CoordinatorID, nil
+	})
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+	ctx.Next()
 }
 
 func (h *handler) ListProducers(ctx *gin.Context) {
@@ -42,6 +59,9 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 		Limit:  limit,
 		Offset: offset,
 	}
+	if getRole(ctx) == service.AdminRoleCoordinator {
+		in.CoordinatorID = getAdminID(ctx)
+	}
 	producers, total, err := h.user.ListProducers(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
@@ -56,17 +76,14 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 }
 
 func (h *handler) GetProducer(ctx *gin.Context) {
-	in := &user.GetProducerInput{
-		ProducerID: util.GetParam(ctx, "producerId"),
-	}
-	producer, err := h.user.GetProducer(ctx, in)
+	producer, err := h.getProducer(ctx, util.GetParam(ctx, "producerId"))
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
 
 	res := &response.ProducerResponse{
-		Producer: service.NewProducer(producer).Response(),
+		Producer: producer.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -75,6 +92,10 @@ func (h *handler) CreateProducer(ctx *gin.Context) {
 	req := &request.CreateProducerRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
+		return
+	}
+	if getRole(ctx).IsCoordinator() && !currentAdmin(ctx, req.CoordinatorID) {
+		forbidden(ctx, errors.New("handler: not authorized to get this coordinator"))
 		return
 	}
 
@@ -167,4 +188,15 @@ func (h *handler) ResetProducerPassword(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) getProducer(ctx context.Context, producerID string) (*service.Producer, error) {
+	in := &user.GetProducerInput{
+		ProducerID: producerID,
+	}
+	producer, err := h.user.GetProducer(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewProducer(producer), nil
 }

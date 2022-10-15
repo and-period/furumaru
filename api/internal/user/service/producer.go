@@ -20,8 +20,9 @@ func (s *service) ListProducers(ctx context.Context, in *user.ListProducersInput
 		return nil, 0, exception.InternalError(err)
 	}
 	params := &database.ListProducersParams{
-		Limit:  int(in.Limit),
-		Offset: int(in.Offset),
+		CoordinatorID: in.CoordinatorID,
+		Limit:         int(in.Limit),
+		Offset:        int(in.Offset),
 	}
 	var (
 		producers entity.Producers

@@ -17,6 +17,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
@@ -52,8 +53,9 @@ type testResponse struct {
 }
 
 type testOptions struct {
-	now  func() time.Time
-	role entity.AdminRole
+	now     func() time.Time
+	role    entity.AdminRole
+	adminID string
 }
 
 type testOption func(opt *testOptions)
@@ -69,6 +71,12 @@ func withNow(now time.Time) testOption {
 func withRole(role entity.AdminRole) testOption {
 	return func(opts *testOptions) {
 		opts.role = role
+	}
+}
+
+func withAdminID(adminID string) testOption {
+	return func(opts *testOptions) {
+		opts.adminID = adminID
 	}
 }
 
@@ -173,8 +181,9 @@ func testHTTP(
 	defer ctrl.Finish()
 	mocks := newMocks(ctrl)
 	dopts := &testOptions{
-		now:  jst.Now,
-		role: entity.AdminRoleAdministrator,
+		now:     jst.Now,
+		role:    entity.AdminRoleAdministrator,
+		adminID: idmock,
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -185,7 +194,7 @@ func testHTTP(
 	newRoutes(h, r)
 	setup(t, mocks, ctrl)
 
-	auth := &uentity.AdminAuth{AdminID: idmock, Role: dopts.role}
+	auth := &uentity.AdminAuth{AdminID: dopts.adminID, Role: dopts.role}
 	mocks.user.EXPECT().GetAdminAuth(gomock.Any(), gomock.Any()).Return(auth, nil).MaxTimes(1)
 
 	// test
@@ -288,4 +297,63 @@ func TestSetAuth(t *testing.T) {
 	setAuth(ctx, "admin-id", service.AdminRoleAdministrator)
 	assert.Equal(t, "admin-id", getAdminID(ctx))
 	assert.Equal(t, service.AdminRoleAdministrator, getRole(ctx))
+	assert.True(t, currentAdmin(ctx, "admin-id"))
+	assert.False(t, currentAdmin(ctx, "other-id"))
+}
+
+func TestFilterAccess(t *testing.T) {
+	t.Parallel()
+	gin.SetMode(gin.TestMode)
+	tests := []struct {
+		name   string
+		role   service.AdminRole
+		fn     func(ctx *gin.Context) (string, error)
+		expect error
+	}{
+		{
+			name:   "success administrator",
+			role:   service.AdminRoleAdministrator,
+			fn:     nil,
+			expect: nil,
+		},
+		{
+			name: "failed coordinator for failed to execute function",
+			role: service.AdminRoleCoordinator,
+			fn: func(ctx *gin.Context) (string, error) {
+				return "", assert.AnError
+			},
+			expect: assert.AnError,
+		},
+		{
+			name: "failed coordinator for unmatch admin id",
+			role: service.AdminRoleCoordinator,
+			fn: func(ctx *gin.Context) (string, error) {
+				return "other-id", nil
+			},
+			expect: exception.ErrForbidden,
+		},
+		{
+			name:   "failed producer",
+			role:   service.AdminRoleProducer,
+			fn:     nil,
+			expect: exception.ErrForbidden,
+		},
+		{
+			name:   "failed unknown admin role",
+			role:   service.AdminRoleUnknown,
+			fn:     nil,
+			expect: exception.ErrForbidden,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			w := httptest.NewRecorder()
+			ctx, _ := gin.CreateTestContext(w)
+			ctx.Request = &http.Request{Header: http.Header{}}
+			setAuth(ctx, "admin-id", tt.role)
+			assert.ErrorIs(t, filterAccess(ctx, tt.fn), tt.expect)
+		})
+	}
 }

@@ -45,6 +45,10 @@ func (r AdminRole) String() string {
 	}
 }
 
+func (r AdminRole) IsCoordinator() bool {
+	return r == AdminRoleCoordinator
+}
+
 func (r AdminRole) Response() int32 {
 	return int32(r)
 }

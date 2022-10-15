@@ -11,39 +11,44 @@ import (
 func TestAdminRole(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name           string
-		role           entity.AdminRole
-		expect         AdminRole
-		expectString   string
-		expectResponse int32
+		name                string
+		role                entity.AdminRole
+		expect              AdminRole
+		expectString        string
+		expectIsCoordinator bool
+		expectResponse      int32
 	}{
 		{
-			name:           "administrator",
-			role:           entity.AdminRoleAdministrator,
-			expect:         AdminRoleAdministrator,
-			expectString:   "administrator",
-			expectResponse: 1,
+			name:                "administrator",
+			role:                entity.AdminRoleAdministrator,
+			expect:              AdminRoleAdministrator,
+			expectString:        "administrator",
+			expectIsCoordinator: false,
+			expectResponse:      1,
 		},
 		{
-			name:           "coordinator",
-			role:           entity.AdminRoleCoordinator,
-			expect:         AdminRoleCoordinator,
-			expectString:   "coordinator",
-			expectResponse: 2,
+			name:                "coordinator",
+			role:                entity.AdminRoleCoordinator,
+			expect:              AdminRoleCoordinator,
+			expectString:        "coordinator",
+			expectIsCoordinator: true,
+			expectResponse:      2,
 		},
 		{
-			name:           "producer",
-			role:           entity.AdminRoleProducer,
-			expect:         AdminRoleProducer,
-			expectString:   "producer",
-			expectResponse: 3,
+			name:                "producer",
+			role:                entity.AdminRoleProducer,
+			expect:              AdminRoleProducer,
+			expectString:        "producer",
+			expectIsCoordinator: false,
+			expectResponse:      3,
 		},
 		{
-			name:           "unknown",
-			role:           entity.AdminRoleUnknown,
-			expect:         AdminRoleUnknown,
-			expectString:   "unknown",
-			expectResponse: 0,
+			name:                "unknown",
+			role:                entity.AdminRoleUnknown,
+			expect:              AdminRoleUnknown,
+			expectString:        "unknown",
+			expectIsCoordinator: false,
+			expectResponse:      0,
 		},
 	}
 	for _, tt := range tests {
@@ -53,6 +58,7 @@ func TestAdminRole(t *testing.T) {
 			actual := NewAdminRole(tt.role)
 			assert.Equal(t, tt.expect, actual)
 			assert.Equal(t, tt.expectString, actual.String())
+			assert.Equal(t, tt.expectIsCoordinator, actual.IsCoordinator())
 			assert.Equal(t, tt.expectResponse, actual.Response())
 		})
 	}

@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/messenger"
@@ -195,4 +196,24 @@ func getAdminID(ctx *gin.Context) string {
 func getRole(ctx *gin.Context) service.AdminRole {
 	role, _ := strconv.ParseInt(ctx.GetHeader("role"), 10, 64)
 	return service.AdminRole(role)
+}
+
+func currentAdmin(ctx *gin.Context, adminID string) bool {
+	return getAdminID(ctx) == adminID
+}
+
+func filterAccess(ctx *gin.Context, fn func(ctx *gin.Context) (string, error)) error {
+	switch getRole(ctx) {
+	case service.AdminRoleAdministrator:
+		return nil
+	case service.AdminRoleCoordinator:
+		if adminID, err := fn(ctx); err != nil || currentAdmin(ctx, adminID) {
+			return err
+		}
+		return fmt.Errorf("handler: this coordinator is unauthenticated: %w", exception.ErrForbidden)
+	case service.AdminRoleProducer:
+		return fmt.Errorf("handler: this producer is unauthenticated: %w", exception.ErrForbidden)
+	default:
+		return fmt.Errorf("handler: unknown admin role: %w", exception.ErrForbidden)
+	}
 }
