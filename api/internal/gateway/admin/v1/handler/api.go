@@ -202,12 +202,12 @@ func currentAdmin(ctx *gin.Context, adminID string) bool {
 	return getAdminID(ctx) == adminID
 }
 
-func filterAccess(ctx *gin.Context, fn func(ctx *gin.Context) (string, error)) error {
+func filterAccess(ctx *gin.Context, fn func(ctx *gin.Context) (bool, error)) error {
 	switch getRole(ctx) {
 	case service.AdminRoleAdministrator:
 		return nil
 	case service.AdminRoleCoordinator:
-		if adminID, err := fn(ctx); err != nil || currentAdmin(ctx, adminID) {
+		if ok, err := fn(ctx); err != nil || ok {
 			return err
 		}
 		return fmt.Errorf("handler: this coordinator is unauthenticated: %w", exception.ErrForbidden)

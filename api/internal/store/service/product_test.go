@@ -20,10 +20,11 @@ func TestListProducts(t *testing.T) {
 
 	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
 	params := &database.ListProductsParams{
-		Name:       "みかん",
-		ProducerID: "",
-		Limit:      30,
-		Offset:     0,
+		Name:        "みかん",
+		ProducerID:  "",
+		ProducerIDs: []string{"producer-id"},
+		Limit:       30,
+		Offset:      0,
 		Orders: []*database.ListProductsOrder{
 			{Key: entity.ProductOrderByName, OrderByASC: true},
 		},
@@ -74,11 +75,11 @@ func TestListProducts(t *testing.T) {
 				mocks.db.Product.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListProductsInput{
-				Name:          "みかん",
-				CoordinatorID: "",
-				ProducerID:    "",
-				Limit:         30,
-				Offset:        0,
+				Name:        "みかん",
+				ProducerID:  "",
+				ProducerIDs: []string{"producer-id"},
+				Limit:       30,
+				Offset:      0,
 				Orders: []*store.ListProductsOrder{
 					{Key: entity.ProductOrderByName, OrderByASC: true},
 				},
@@ -102,11 +103,11 @@ func TestListProducts(t *testing.T) {
 				mocks.db.Product.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListProductsInput{
-				Name:          "みかん",
-				CoordinatorID: "",
-				ProducerID:    "",
-				Limit:         30,
-				Offset:        0,
+				Name:        "みかん",
+				ProducerID:  "",
+				ProducerIDs: []string{"producer-id"},
+				Limit:       30,
+				Offset:      0,
 				Orders: []*store.ListProductsOrder{
 					{Key: entity.ProductOrderByName, OrderByASC: true},
 				},
@@ -122,11 +123,11 @@ func TestListProducts(t *testing.T) {
 				mocks.db.Product.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
 			},
 			input: &store.ListProductsInput{
-				Name:          "みかん",
-				CoordinatorID: "",
-				ProducerID:    "",
-				Limit:         30,
-				Offset:        0,
+				Name:        "みかん",
+				ProducerID:  "",
+				ProducerIDs: []string{"producer-id"},
+				Limit:       30,
+				Offset:      0,
 				Orders: []*store.ListProductsOrder{
 					{Key: entity.ProductOrderByName, OrderByASC: true},
 				},

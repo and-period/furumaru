@@ -23,13 +23,6 @@ get:
     required: false
     example: 0
   - in: query
-    name: coordinatorId
-    schema:
-      type: string
-    description: 仲介者ID
-    required: false
-    example: 'kSByoE6FetnPs5Byk3a9Zx'
-  - in: query
     name: producerId
     schema:
       type: string
@@ -76,6 +69,12 @@ post:
             $ref: './../../../openapi.yaml#/components/schemas/v1ProductResponse'
     400:
       description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/errorResponse'
+    403:
+      description: 商品の登録権限がない
       content:
         application/json:
           schema:

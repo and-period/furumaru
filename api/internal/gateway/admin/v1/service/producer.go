@@ -48,12 +48,31 @@ func NewProducers(producers entity.Producers) Producers {
 	return res
 }
 
+func (ps Producers) IDs() []string {
+	res := make([]string, len(ps))
+	for i := range ps {
+		res[i] = ps[i].ID
+	}
+	return res
+}
+
 func (ps Producers) Map() map[string]*Producer {
 	res := make(map[string]*Producer, len(ps))
 	for _, p := range ps {
 		res[p.ID] = p
 	}
 	return res
+}
+
+func (ps Producers) Contains(producerIDs ...string) bool {
+	pm := ps.Map()
+	for _, producerID := range producerIDs {
+		if _, ok := pm[producerID]; ok {
+			continue
+		}
+		return false
+	}
+	return true
 }
 
 func (ps Producers) Response() []*response.Producer {

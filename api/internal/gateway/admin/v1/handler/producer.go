@@ -24,12 +24,12 @@ func (h *handler) producerRoutes(rg *gin.RouterGroup) {
 }
 
 func (h *handler) filterAccessProducer(ctx *gin.Context) {
-	err := filterAccess(ctx, func(ctx *gin.Context) (string, error) {
+	err := filterAccess(ctx, func(ctx *gin.Context) (bool, error) {
 		producer, err := h.getProducer(ctx, util.GetParam(ctx, "producerId"))
 		if err != nil {
-			return "", err
+			return false, err
 		}
-		return producer.CoordinatorID, nil
+		return currentAdmin(ctx, producer.CoordinatorID), nil
 	})
 	if err != nil {
 		httpError(ctx, err)
@@ -95,7 +95,7 @@ func (h *handler) CreateProducer(ctx *gin.Context) {
 		return
 	}
 	if getRole(ctx).IsCoordinator() && !currentAdmin(ctx, req.CoordinatorID) {
-		forbidden(ctx, errors.New("handler: not authorized to get this coordinator"))
+		forbidden(ctx, errors.New("handler: not authorized this coordinator"))
 		return
 	}
 
@@ -199,4 +199,15 @@ func (h *handler) getProducer(ctx context.Context, producerID string) (*service.
 		return nil, err
 	}
 	return service.NewProducer(producer), nil
+}
+
+func (h *handler) getProducersByCoordinatorID(ctx context.Context, coordinatorID string) (service.Producers, error) {
+	in := &user.ListProducersInput{
+		CoordinatorID: coordinatorID,
+	}
+	producers, _, err := h.user.ListProducers(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewProducers(producers), nil
 }

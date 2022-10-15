@@ -20,6 +20,12 @@ get:
         application/json:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/v1ProductResponse'
+    403:
+      description: 商品の閲覧権限がない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
     404:
       description: 商品が存在しない
       content:
@@ -55,6 +61,12 @@ patch:
           schema: {}
     400:
       description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+    403:
+      description: 商品の更新権限がない
       content:
         application/json:
           schema:

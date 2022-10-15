@@ -136,11 +136,12 @@ type ListOrdersParams struct {
 }
 
 type ListProductsParams struct {
-	Name       string
-	ProducerID string
-	Limit      int
-	Offset     int
-	Orders     []*ListProductsOrder
+	Name        string
+	ProducerID  string
+	ProducerIDs []string
+	Limit       int
+	Offset      int
+	Orders      []*ListProductsOrder
 }
 
 type ListProductsOrder struct {
@@ -154,6 +155,9 @@ func (p *ListProductsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	}
 	if p.ProducerID != "" {
 		stmt = stmt.Where("producer_id = ?", p.ProducerID)
+	}
+	if len(p.ProducerIDs) > 0 {
+		stmt = stmt.Where("producer_id IN (?)", p.ProducerIDs)
 	}
 	for i := range p.Orders {
 		var value string
