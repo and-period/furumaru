@@ -77,6 +77,21 @@ func TestProducer_List(t *testing.T) {
 				hasErr:    false,
 			},
 		},
+		{
+			name:  "success only unrelated",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListProducersParams{
+					Limit:         1,
+					Offset:        1,
+					OnlyUnrelated: true,
+				},
+			},
+			want: want{
+				producers: entity.Producers{},
+				hasErr:    false,
+			},
+		},
 	}
 
 	for _, tt := range tests {

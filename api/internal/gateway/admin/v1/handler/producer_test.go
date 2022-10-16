@@ -224,6 +224,26 @@ func TestListProducer(t *testing.T) {
 			},
 		},
 		{
+			name: "success only unrelated producers",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := &user.ListProducersInput{
+					Limit:         20,
+					Offset:        0,
+					OnlyUnrelated: true,
+				}
+				mocks.user.EXPECT().ListProducers(gomock.Any(), in).Return(entity.Producers{}, int64(0), nil)
+			},
+			options: []testOption{withRole(uentity.AdminRoleCoordinator)},
+			query:   "?filters=unrelated",
+			expect: &testResponse{
+				code: http.StatusOK,
+				body: &response.ProducersResponse{
+					Producers: []*response.Producer{},
+					Total:     0,
+				},
+			},
+		},
+		{
 			name:  "invalid limit",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
 			query: "?limit=a",

@@ -7457,10 +7457,11 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
          * @summary 生産者一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
+         * @param {string} [filters] フィルタ ・複数指定時は&#x60;,&#x60;区切り ・指定可能フィールド:unrelated 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListProducers: async (limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1ListProducers: async (limit?: number, offset?: number, filters?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/producers`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -7483,6 +7484,10 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
 
             if (offset !== undefined) {
                 localVarQueryParameter['offset'] = offset;
+            }
+
+            if (filters !== undefined) {
+                localVarQueryParameter['filters'] = filters;
             }
 
 
@@ -7749,11 +7754,12 @@ export const ProducerApiFp = function(configuration?: Configuration) {
          * @summary 生産者一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
+         * @param {string} [filters] フィルタ ・複数指定時は&#x60;,&#x60;区切り ・指定可能フィールド:unrelated 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ListProducers(limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProducersResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListProducers(limit, offset, options);
+        async v1ListProducers(limit?: number, offset?: number, filters?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProducersResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListProducers(limit, offset, filters, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -7849,11 +7855,12 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
          * @summary 生産者一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
+         * @param {string} [filters] フィルタ ・複数指定時は&#x60;,&#x60;区切り ・指定可能フィールド:unrelated 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListProducers(limit?: number, offset?: number, options?: any): AxiosPromise<ProducersResponse> {
-            return localVarFp.v1ListProducers(limit, offset, options).then((request) => request(axios, basePath));
+        v1ListProducers(limit?: number, offset?: number, filters?: string, options?: any): AxiosPromise<ProducersResponse> {
+            return localVarFp.v1ListProducers(limit, offset, filters, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7947,12 +7954,13 @@ export class ProducerApi extends BaseAPI {
      * @summary 生産者一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [filters] フィルタ ・複数指定時は&#x60;,&#x60;区切り ・指定可能フィールド:unrelated 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProducerApi
      */
-    public v1ListProducers(limit?: number, offset?: number, options?: AxiosRequestConfig) {
-        return ProducerApiFp(this.configuration).v1ListProducers(limit, offset, options).then((request) => request(this.axios, this.basePath));
+    public v1ListProducers(limit?: number, offset?: number, filters?: string, options?: AxiosRequestConfig) {
+        return ProducerApiFp(this.configuration).v1ListProducers(limit, offset, filters, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/user"
+	set "github.com/and-period/furumaru/api/pkg/set/v2"
 	"github.com/gin-gonic/gin"
 )
 
@@ -60,9 +61,7 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 		Limit:  limit,
 		Offset: offset,
 	}
-	if getRole(ctx) == service.AdminRoleCoordinator {
-		in.CoordinatorID = getAdminID(ctx)
-	}
+	h.addlistProducerFilters(ctx, in)
 	producers, total, err := h.user.ListProducers(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
@@ -74,6 +73,19 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 		Total:     total,
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) addlistProducerFilters(ctx *gin.Context, in *user.ListProducersInput) {
+	strs := util.GetQueryStrings(ctx, "filters")
+	filters := set.New[string](len(strs))
+	filters.Add(strs...)
+	if filters.Contains("unrelated") { // 未関連状態の生産者のみ取得
+		in.OnlyUnrelated = true
+		return
+	}
+	if getRole(ctx) == service.AdminRoleCoordinator {
+		in.CoordinatorID = getAdminID(ctx)
+	}
 }
 
 func (h *handler) GetProducer(ctx *gin.Context) {
