@@ -141,7 +141,7 @@ export default defineComponent({
       try {
         await promotionStore.deletePromotion(selectedId.value)
       } catch (err) {
-        console.log
+        console.log(err)
       }
       deleteDialog.value = false
     }
