@@ -170,7 +170,6 @@ type GetProducerInput struct {
 }
 
 type CreateProducerInput struct {
-	CoordinatorID string `validate:"required"`
 	Lastname      string `validate:"required,max=16"`
 	Firstname     string `validate:"required,max=16"`
 	LastnameKana  string `validate:"required,max=32,hiragana"`

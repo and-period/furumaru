@@ -951,12 +951,6 @@ export interface CreateNotificationRequest {
  */
 export interface CreateProducerRequest {
     /**
-     * 担当仲介者ID
-     * @type {string}
-     * @memberof CreateProducerRequest
-     */
-    'coordinatorId': string;
-    /**
      * 姓(16文字まで)
      * @type {string}
      * @memberof CreateProducerRequest

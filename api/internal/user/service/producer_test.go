@@ -307,16 +307,15 @@ func TestCreateProducer(t *testing.T) {
 						FirstnameKana: "すたっふ",
 						Email:         "test-admin@and-period.jp",
 					},
-					CoordinatorID: "coordinator-id",
-					StoreName:     "&.農園",
-					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-					HeaderURL:     "https://and-period.jp/header.png",
-					PhoneNumber:   "+819012345678",
-					PostalCode:    "1000014",
-					Prefecture:    "東京都",
-					City:          "千代田区",
-					AddressLine1:  "永田町1-7-1",
-					AddressLine2:  "",
+					StoreName:    "&.農園",
+					ThumbnailURL: "https://and-period.jp/thumbnail.png",
+					HeaderURL:    "https://and-period.jp/header.png",
+					PhoneNumber:  "+819012345678",
+					PostalCode:   "1000014",
+					Prefecture:   "東京都",
+					City:         "千代田区",
+					AddressLine1: "永田町1-7-1",
+					AddressLine2: "",
 				}
 				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(nil)
 				mocks.db.Producer.EXPECT().
@@ -334,7 +333,6 @@ func TestCreateProducer(t *testing.T) {
 				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(nil)
 			},
 			input: &user.CreateProducerInput{
-				CoordinatorID: "coordinator-id",
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどぴりおど",
@@ -360,7 +358,6 @@ func TestCreateProducer(t *testing.T) {
 				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(errmock)
 			},
 			input: &user.CreateProducerInput{
-				CoordinatorID: "coordinator-id",
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどぴりおど",
@@ -390,7 +387,6 @@ func TestCreateProducer(t *testing.T) {
 				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(errmock)
 			},
 			input: &user.CreateProducerInput{
-				CoordinatorID: "coordinator-id",
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどぴりおど",
@@ -415,7 +411,6 @@ func TestCreateProducer(t *testing.T) {
 				mocks.db.Producer.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(errmock)
 			},
 			input: &user.CreateProducerInput{
-				CoordinatorID: "coordinator-id",
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどぴりおど",

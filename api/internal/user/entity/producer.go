@@ -10,7 +10,7 @@ import (
 type Producer struct {
 	Admin         `gorm:"-"`
 	AdminID       string         `gorm:"primaryKey;<-:create"` // 管理者ID
-	CoordinatorID string         `gorm:""`                     // 仲介者ID
+	CoordinatorID string         `gorm:"default:null"`         // 仲介者ID
 	PhoneNumber   string         `gorm:""`                     // 電話番号
 	StoreName     string         `gorm:""`                     // 店舗名
 	ThumbnailURL  string         `gorm:""`                     // サムネイルURL
@@ -28,33 +28,31 @@ type Producer struct {
 type Producers []*Producer
 
 type NewProducerParams struct {
-	Admin         *Admin
-	CoordinatorID string
-	PhoneNumber   string
-	StoreName     string
-	ThumbnailURL  string
-	HeaderURL     string
-	PostalCode    string
-	Prefecture    string
-	City          string
-	AddressLine1  string
-	AddressLine2  string
+	Admin        *Admin
+	PhoneNumber  string
+	StoreName    string
+	ThumbnailURL string
+	HeaderURL    string
+	PostalCode   string
+	Prefecture   string
+	City         string
+	AddressLine1 string
+	AddressLine2 string
 }
 
 func NewProducer(params *NewProducerParams) *Producer {
 	return &Producer{
-		AdminID:       params.Admin.ID,
-		CoordinatorID: params.CoordinatorID,
-		PhoneNumber:   params.PhoneNumber,
-		StoreName:     params.StoreName,
-		ThumbnailURL:  params.ThumbnailURL,
-		HeaderURL:     params.HeaderURL,
-		PostalCode:    params.PostalCode,
-		Prefecture:    params.Prefecture,
-		City:          params.City,
-		AddressLine1:  params.AddressLine1,
-		AddressLine2:  params.AddressLine2,
-		Admin:         *params.Admin,
+		AdminID:      params.Admin.ID,
+		PhoneNumber:  params.PhoneNumber,
+		StoreName:    params.StoreName,
+		ThumbnailURL: params.ThumbnailURL,
+		HeaderURL:    params.HeaderURL,
+		PostalCode:   params.PostalCode,
+		Prefecture:   params.Prefecture,
+		City:         params.City,
+		AddressLine1: params.AddressLine1,
+		AddressLine2: params.AddressLine2,
+		Admin:        *params.Admin,
 	}
 }
 

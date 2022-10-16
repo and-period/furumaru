@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"errors"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
@@ -31,9 +30,6 @@ func (h *handler) filterAccessProducer(ctx *gin.Context) {
 				return false, err
 			}
 			return currentAdmin(ctx, producer.CoordinatorID), nil
-		},
-		producer: func(ctx *gin.Context) (bool, error) {
-			return false, nil
 		},
 	}
 	if err := filterAccess(ctx, params); err != nil {
@@ -99,13 +95,8 @@ func (h *handler) CreateProducer(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
-	if getRole(ctx).IsCoordinator() && !currentAdmin(ctx, req.CoordinatorID) {
-		forbidden(ctx, errors.New("handler: not authorized this coordinator"))
-		return
-	}
 
 	in := &user.CreateProducerInput{
-		CoordinatorID: req.CoordinatorID,
 		Lastname:      req.Lastname,
 		Firstname:     req.Firstname,
 		LastnameKana:  req.LastnameKana,

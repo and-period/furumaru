@@ -27,7 +27,6 @@ export default defineComponent({
       useProducerStore()
 
     const formData = reactive<CreateProducerRequest>({
-      coordinatorId: '',
       lastname: '',
       lastnameKana: '',
       firstname: '',
