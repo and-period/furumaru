@@ -12,7 +12,7 @@ import (
 )
 
 func (h *handler) coordinatorRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication())
+	arg := rg.Use(h.authentication)
 	arg.GET("", h.ListCoordinators)
 	arg.POST("", h.CreateCoordinator)
 	arg.GET("/:coordinatorId", h.GetCoordinator)

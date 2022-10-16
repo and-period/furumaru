@@ -14,20 +14,25 @@ import (
 )
 
 func (h *handler) orderRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication())
+	arg := rg.Use(h.authentication)
 	arg.GET("", h.ListOrders)
 	arg.GET("/:orderId", h.filterAccessOrder, h.GetOrder)
 }
 
 func (h *handler) filterAccessOrder(ctx *gin.Context) {
-	err := filterAccess(ctx, func(ctx *gin.Context) (bool, error) {
-		order, err := h.getOrder(ctx, util.GetParam(ctx, "orderId"))
-		if err != nil {
-			return false, err
-		}
-		return currentAdmin(ctx, order.CoordinatorID), nil
-	})
-	if err != nil {
+	params := &filterAccessParams{
+		coordinator: func(ctx *gin.Context) (bool, error) {
+			order, err := h.getOrder(ctx, util.GetParam(ctx, "orderId"))
+			if err != nil {
+				return false, err
+			}
+			return currentAdmin(ctx, order.CoordinatorID), nil
+		},
+		producer: func(ctx *gin.Context) (bool, error) {
+			return false, nil
+		},
+	}
+	if err := filterAccess(ctx, params); err != nil {
 		httpError(ctx, err)
 		return
 	}

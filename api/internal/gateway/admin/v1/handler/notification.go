@@ -17,7 +17,7 @@ import (
 )
 
 func (h *handler) notificationRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication())
+	arg := rg.Use(h.authentication)
 	arg.GET("", h.ListNotifications)
 	arg.POST("", h.CreateNotification)
 	arg.GET("/:notificationId", h.GetNotification)

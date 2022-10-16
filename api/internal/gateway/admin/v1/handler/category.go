@@ -14,7 +14,7 @@ import (
 )
 
 func (h *handler) categoryRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication())
+	arg := rg.Use(h.authentication)
 	arg.GET("", h.ListCategories)
 	arg.POST("", h.CreateCategory)
 	arg.PATCH("/:categoryId", h.UpdateCategory)

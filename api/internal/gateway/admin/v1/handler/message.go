@@ -13,7 +13,7 @@ import (
 )
 
 func (h *handler) messageRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication())
+	arg := rg.Use(h.authentication)
 	arg.GET("", h.ListMessages)
 	arg.GET("/:messageId", h.GetMessage)
 }

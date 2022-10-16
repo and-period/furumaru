@@ -24,7 +24,7 @@ type uploadRegulation struct {
 }
 
 func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication())
+	arg := rg.Use(h.authentication)
 	arg.POST("/coordinators/thumbnail", h.uploadCoordinatorThumbnail)
 	arg.POST("/coordinators/header", h.uploadCoordinatorHeader)
 	arg.POST("/producers/thumbnail", h.uploadProducerThumbnail)

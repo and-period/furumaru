@@ -14,8 +14,155 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
 )
+
+func TestFilterAccessProduct(t *testing.T) {
+	t.Parallel()
+
+	producersIn := &user.ListProducersInput{
+		CoordinatorID: "coordinator-id",
+	}
+	producers := uentity.Producers{
+		{
+			Admin: uentity.Admin{
+				ID:            "producer-id",
+				Lastname:      "&.",
+				Firstname:     "管理者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "かんりしゃ",
+				Email:         "test-producer@and-period.jp",
+			},
+			AdminID:       "producer-id",
+			CoordinatorID: "coordinator-id",
+			StoreName:     "&.農園",
+			ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+			HeaderURL:     "https://and-period.jp/header.png",
+			PhoneNumber:   "+819012345678",
+			PostalCode:    "1000014",
+			Prefecture:    "東京都",
+			City:          "千代田区",
+			CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		},
+	}
+	productIn := &store.GetProductInput{
+		ProductID: "product-id",
+	}
+	product := &sentity.Product{
+		ID:              "product-id",
+		TypeID:          "product-type-id",
+		CategoryID:      "category-id",
+		ProducerID:      "producer-id",
+		Name:            "新鮮なじゃがいも",
+		Description:     "新鮮なじゃがいもをお届けします。",
+		Public:          true,
+		Inventory:       100,
+		Weight:          1300,
+		WeightUnit:      entity.WeightUnitGram,
+		Item:            1,
+		ItemUnit:        "袋",
+		ItemDescription: "1袋あたり100gのじゃがいも",
+		Media: entity.MultiProductMedia{
+			{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+			{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+		},
+		Price:            400,
+		DeliveryType:     entity.DeliveryTypeNormal,
+		Box60Rate:        50,
+		Box80Rate:        40,
+		Box100Rate:       30,
+		OriginPrefecture: "滋賀県",
+		OriginCity:       "彦根市",
+		CreatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		UpdatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
+	}
+
+	tests := []struct {
+		name    string
+		setup   func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		options []testOption
+		expect  int
+	}{
+		{
+			name:    "administrator success",
+			setup:   func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			options: []testOption{withRole(uentity.AdminRoleAdministrator)},
+			expect:  http.StatusOK,
+		},
+		{
+			name: "coordinator success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().ListProducers(gomock.Any(), producersIn).Return(producers, int64(1), nil)
+				mocks.store.EXPECT().GetProduct(gomock.Any(), productIn).Return(product, nil)
+			},
+			options: []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("coordinator-id")},
+			expect:  http.StatusOK,
+		},
+		{
+			name: "coordinator forbidden",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				producers := uentity.Producers{}
+				mocks.user.EXPECT().ListProducers(gomock.Any(), producersIn).Return(producers, int64(1), nil)
+				mocks.store.EXPECT().GetProduct(gomock.Any(), productIn).Return(product, nil)
+			},
+			options: []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("coordinator-id")},
+			expect:  http.StatusForbidden,
+		},
+		{
+			name: "coordinator failed to get producers",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().ListProducers(gomock.Any(), producersIn).Return(nil, int64(0), errmock)
+			},
+			options: []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("coordinator-id")},
+			expect:  http.StatusInternalServerError,
+		},
+		{
+			name: "coordinator failed to get product",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().ListProducers(gomock.Any(), producersIn).Return(producers, int64(1), nil)
+				mocks.store.EXPECT().GetProduct(gomock.Any(), productIn).Return(nil, errmock)
+			},
+			options: []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("coordinator-id")},
+			expect:  http.StatusInternalServerError,
+		},
+		{
+			name: "producer success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().GetProduct(gomock.Any(), productIn).Return(product, nil)
+			},
+			options: []testOption{withRole(uentity.AdminRoleProducer), withAdminID("producer-id")},
+			expect:  http.StatusOK,
+		},
+		{
+			name: "producer forbidden",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().GetProduct(gomock.Any(), productIn).Return(product, nil)
+			},
+			options: []testOption{withRole(uentity.AdminRoleProducer)},
+			expect:  http.StatusForbidden,
+		},
+		{
+			name: "producer failed to get product",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().GetProduct(gomock.Any(), productIn).Return(nil, errmock)
+			},
+			options: []testOption{withRole(uentity.AdminRoleProducer), withAdminID("coordinator-id")},
+			expect:  http.StatusInternalServerError,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const route, path = "/products/:productId", "/products/product-id"
+			testMiddleware(t, tt.setup, route, path, tt.expect, func(h *handler) gin.HandlerFunc {
+				return h.filterAccessProduct
+			}, tt.options...)
+		})
+	}
+}
 
 func TestListProducts(t *testing.T) {
 	t.Parallel()
@@ -348,10 +495,6 @@ func TestGetProduct(t *testing.T) {
 		CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 	}
-	producersIn := &user.ListProducersInput{
-		CoordinatorID: "coordinator-id",
-	}
-	producers := uentity.Producers{producer}
 	category := &sentity.Category{
 		ID:        "category-id",
 		Name:      "野菜",
@@ -370,19 +513,17 @@ func TestGetProduct(t *testing.T) {
 	tests := []struct {
 		name      string
 		setup     func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
-		options   []testOption
 		productID string
 		expect    *testResponse
 	}{
 		{
-			name: "success administrator",
+			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().GetProduct(gomock.Any(), productIn).Return(product, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(category, nil)
 				mocks.store.EXPECT().GetProductType(gomock.Any(), productTypeIn).Return(productType, nil)
 			},
-			options:   []testOption{withRole(uentity.AdminRoleAdministrator)},
 			productID: "product-id",
 			expect: &testResponse{
 				code: http.StatusOK,
@@ -418,76 +559,6 @@ func TestGetProduct(t *testing.T) {
 						UpdatedAt:        1640962800,
 					},
 				},
-			},
-		},
-		{
-			name: "success coordinator",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().ListProducers(gomock.Any(), producersIn).Return(producers, int64(1), nil)
-				mocks.store.EXPECT().GetProduct(gomock.Any(), productIn).Return(product, nil).Times(2)
-				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
-				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(category, nil)
-				mocks.store.EXPECT().GetProductType(gomock.Any(), productTypeIn).Return(productType, nil)
-			},
-			options:   []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("coordinator-id")},
-			productID: "product-id",
-			expect: &testResponse{
-				code: http.StatusOK,
-				body: &response.ProductResponse{
-					Product: &response.Product{
-						ID:              "product-id",
-						TypeID:          "product-type-id",
-						TypeName:        "じゃがいも",
-						TypeIconURL:     "https://and-period.jp/icon.png",
-						CategoryID:      "category-id",
-						CategoryName:    "野菜",
-						ProducerID:      "producer-id",
-						StoreName:       "&.農園",
-						Name:            "新鮮なじゃがいも",
-						Description:     "新鮮なじゃがいもをお届けします。",
-						Public:          true,
-						Inventory:       100,
-						Weight:          1.3,
-						ItemUnit:        "袋",
-						ItemDescription: "1袋あたり100gのじゃがいも",
-						Media: []*response.ProductMedia{
-							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
-							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
-						},
-						Price:            400,
-						DeliveryType:     1,
-						Box60Rate:        50,
-						Box80Rate:        40,
-						Box100Rate:       30,
-						OriginPrefecture: "滋賀県",
-						OriginCity:       "彦根市",
-						CreatedAt:        1640962800,
-						UpdatedAt:        1640962800,
-					},
-				},
-			},
-		},
-		{
-			name: "failed to list producers in filter access",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().ListProducers(gomock.Any(), producersIn).Return(nil, int64(0), errmock)
-			},
-			options:   []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("coordinator-id")},
-			productID: "product-id",
-			expect: &testResponse{
-				code: http.StatusInternalServerError,
-			},
-		},
-		{
-			name: "failed to get product in filter access",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().ListProducers(gomock.Any(), producersIn).Return(producers, int64(1), nil)
-				mocks.store.EXPECT().GetProduct(gomock.Any(), productIn).Return(nil, errmock)
-			},
-			options:   []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("coordinator-id")},
-			productID: "product-id",
-			expect: &testResponse{
-				code: http.StatusInternalServerError,
 			},
 		},
 		{
@@ -546,7 +617,7 @@ func TestGetProduct(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			const format = "/v1/products/%s"
 			path := fmt.Sprintf(format, tt.productID)
-			testGet(t, tt.setup, tt.expect, path, tt.options...)
+			testGet(t, tt.setup, tt.expect, path)
 		})
 	}
 }

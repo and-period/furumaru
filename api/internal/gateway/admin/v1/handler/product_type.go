@@ -14,7 +14,7 @@ import (
 )
 
 func (h *handler) productTypeRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication())
+	arg := rg.Use(h.authentication)
 	arg.GET("", h.ListProductTypes)
 	arg.POST("", h.CreateProductType)
 	arg.PATCH("/:productTypeId", h.UpdateProductType)

@@ -12,7 +12,7 @@ import (
 )
 
 func (h *handler) administratorRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication())
+	arg := rg.Use(h.authentication)
 	arg.GET("", h.ListAdministrators)
 	arg.POST("", h.CreateAdministrator)
 	arg.GET("/:adminId", h.GetAdministrator)
