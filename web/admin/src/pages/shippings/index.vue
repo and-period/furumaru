@@ -20,7 +20,7 @@
           </template>
 
           <template #[`item.updatedAt`]="{ item }">
-            {{ dateFormatter(item.updatedAt) }}
+            {{ dateTimeFormatter(item.updatedAt) }}
           </template>
 
           <template #expanded-item="{ headers, item }">
@@ -61,7 +61,7 @@
 import { computed, defineComponent, useFetch } from '@nuxtjs/composition-api'
 import { DataTableHeader } from 'vuetify'
 
-import { dateFormatter } from '~/lib/formatter'
+import { dateTimeFormatter } from '~/lib/formatter'
 import { usePagination } from '~/lib/hooks'
 import { useShippingStore } from '~/store/shippings'
 export default defineComponent({
@@ -115,7 +115,7 @@ export default defineComponent({
       headers, // テーブルヘッダー
       shippings, // 配送情報一覧
       // 関数
-      dateFormatter,
+      dateTimeFormatter,
       updateCurrentPage,
       handleUpdateItemsPerPage,
     }

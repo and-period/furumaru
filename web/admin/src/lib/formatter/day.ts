@@ -5,6 +5,6 @@ import dayjs from 'dayjs'
  * @param unixtime
  * @returns
  */
-export function dateFormatter(unixtime: number): string {
+export function dateTimeFormatter(unixtime: number): string {
   return dayjs.unix(unixtime).format('YYYY/MM/DD HH:mm')
 }
