@@ -34,9 +34,7 @@
                   <v-col cols="1">
                     {{ boxRate.name }}
                   </v-col>
-                  <v-col cols="1">
-                    {{ boxRate.price }}
-                  </v-col>
+                  <v-col cols="1"> {{ moneyFormat(boxRate.price) }} 円 </v-col>
                   <v-col cols="9">
                     <v-chip
                       v-for="(prefecture, j) in boxRate.prefectures"
@@ -61,7 +59,7 @@
 import { computed, defineComponent, useFetch } from '@nuxtjs/composition-api'
 import { DataTableHeader } from 'vuetify'
 
-import { dateTimeFormatter } from '~/lib/formatter'
+import { dateTimeFormatter, moneyFormat } from '~/lib/formatter'
 import { usePagination } from '~/lib/hooks'
 import { useShippingStore } from '~/store/shippings'
 export default defineComponent({
@@ -116,6 +114,7 @@ export default defineComponent({
       shippings, // 配送情報一覧
       // 関数
       dateTimeFormatter,
+      moneyFormat,
       updateCurrentPage,
       handleUpdateItemsPerPage,
     }
