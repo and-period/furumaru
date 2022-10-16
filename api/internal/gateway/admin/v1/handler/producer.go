@@ -14,7 +14,7 @@ import (
 )
 
 func (h *handler) producerRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication())
+	arg := rg.Use(h.authentication)
 	arg.GET("", h.ListProducers)
 	arg.POST("", h.CreateProducer)
 	arg.GET("/:producerId", h.filterAccessProducer, h.GetProducer)
@@ -24,14 +24,19 @@ func (h *handler) producerRoutes(rg *gin.RouterGroup) {
 }
 
 func (h *handler) filterAccessProducer(ctx *gin.Context) {
-	err := filterAccess(ctx, func(ctx *gin.Context) (bool, error) {
-		producer, err := h.getProducer(ctx, util.GetParam(ctx, "producerId"))
-		if err != nil {
-			return false, err
-		}
-		return currentAdmin(ctx, producer.CoordinatorID), nil
-	})
-	if err != nil {
+	params := &filterAccessParams{
+		coordinator: func(ctx *gin.Context) (bool, error) {
+			producer, err := h.getProducer(ctx, util.GetParam(ctx, "producerId"))
+			if err != nil {
+				return false, err
+			}
+			return currentAdmin(ctx, producer.CoordinatorID), nil
+		},
+		producer: func(ctx *gin.Context) (bool, error) {
+			return false, nil
+		},
+	}
+	if err := filterAccess(ctx, params); err != nil {
 		httpError(ctx, err)
 		return
 	}

@@ -14,7 +14,7 @@ import (
 )
 
 func (h *handler) contactRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication())
+	arg := rg.Use(h.authentication)
 	arg.GET("", h.ListContacts)
 	arg.GET("/:contactId", h.GetContact)
 	arg.PATCH("/:contactId", h.UpdateContact)

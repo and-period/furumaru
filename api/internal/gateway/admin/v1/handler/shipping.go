@@ -15,7 +15,7 @@ import (
 )
 
 func (h *handler) shippingRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication())
+	arg := rg.Use(h.authentication)
 	arg.GET("", h.ListShippings)
 	arg.POST("", h.CreateShipping)
 	arg.GET("/:shippingId", h.GetShipping)

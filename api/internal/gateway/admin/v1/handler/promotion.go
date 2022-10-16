@@ -15,7 +15,7 @@ import (
 )
 
 func (h *handler) promotionRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication())
+	arg := rg.Use(h.authentication)
 	arg.GET("", h.ListPromotions)
 	arg.POST("", h.CreatePromotion)
 	arg.GET("/:promotionId", h.GetPromotion)

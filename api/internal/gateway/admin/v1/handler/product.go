@@ -19,7 +19,7 @@ import (
 )
 
 func (h *handler) productRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication())
+	arg := rg.Use(h.authentication)
 	arg.GET("", h.ListProducts)
 	arg.POST("", h.CreateProduct)
 	arg.GET("/:productId", h.filterAccessProduct, h.GetProduct)
@@ -27,18 +27,27 @@ func (h *handler) productRoutes(rg *gin.RouterGroup) {
 }
 
 func (h *handler) filterAccessProduct(ctx *gin.Context) {
-	err := filterAccess(ctx, func(ctx *gin.Context) (bool, error) {
-		producers, err := h.getProducersByCoordinatorID(ctx, getAdminID(ctx))
-		if err != nil {
-			return false, err
-		}
-		product, err := h.getProduct(ctx, util.GetParam(ctx, "productId"))
-		if err != nil {
-			return false, err
-		}
-		return producers.Contains(product.ProducerID), nil
-	})
-	if err != nil {
+	params := &filterAccessParams{
+		coordinator: func(ctx *gin.Context) (bool, error) {
+			producers, err := h.getProducersByCoordinatorID(ctx, getAdminID(ctx))
+			if err != nil {
+				return false, err
+			}
+			product, err := h.getProduct(ctx, util.GetParam(ctx, "productId"))
+			if err != nil {
+				return false, err
+			}
+			return producers.Contains(product.ProducerID), nil
+		},
+		producer: func(ctx *gin.Context) (bool, error) {
+			product, err := h.getProduct(ctx, util.GetParam(ctx, "productId"))
+			if err != nil {
+				return false, err
+			}
+			return currentAdmin(ctx, product.ProducerID), nil
+		},
+	}
+	if err := filterAccess(ctx, params); err != nil {
 		httpError(ctx, err)
 		return
 	}

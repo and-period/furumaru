@@ -121,6 +121,31 @@ func getRBACDirectory() string {
 	return filepath.Join(strs[0], "/api/config/gateway/admin/rbac")
 }
 
+func testSetup(
+	t *testing.T,
+	ctrl *gomock.Controller,
+	setup func(*testing.T, *mocks, *gomock.Controller),
+	opts ...testOption,
+) (*handler, *testOptions) {
+	gin.SetMode(gin.TestMode)
+	mocks := newMocks(ctrl)
+	dopts := &testOptions{
+		now:     jst.Now,
+		role:    entity.AdminRoleAdministrator,
+		adminID: idmock,
+	}
+	for i := range opts {
+		opts[i](dopts)
+	}
+	h := newHandler(mocks, dopts)
+	setup(t, mocks, ctrl)
+
+	auth := &uentity.AdminAuth{AdminID: dopts.adminID, Role: dopts.role}
+	mocks.user.EXPECT().GetAdminAuth(gomock.Any(), gomock.Any()).Return(auth, nil).MaxTimes(1)
+
+	return h.(*handler), dopts
+}
+
 func testGet(
 	t *testing.T,
 	setup func(*testing.T, *mocks, *gomock.Controller),
@@ -164,6 +189,41 @@ func testDelete(
 }
 
 /**
+ * testMiddleware - Middlewareのテストを実行
+ */
+func testMiddleware(
+	t *testing.T,
+	setup func(*testing.T, *mocks, *gomock.Controller),
+	route, path string,
+	expect int,
+	fn func(h *handler) gin.HandlerFunc,
+	opts ...testOption,
+) {
+	t.Parallel()
+
+	// setup
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	h, dopts := testSetup(t, ctrl, setup, opts...)
+	w := httptest.NewRecorder()
+	_, r := gin.CreateTestContext(w)
+
+	authFn := func(ctx *gin.Context) {
+		if opts != nil {
+			setAuth(ctx, dopts.adminID, service.AdminRole(dopts.role))
+		}
+		ctx.Next()
+	}
+	r.GET(route, authFn, fn(h), func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{"message": "ok"})
+	})
+
+	// test
+	r.ServeHTTP(w, newHTTPRequest(t, http.MethodGet, path, nil))
+	require.Equal(t, expect, w.Code)
+}
+
+/**
  * testHTTP - HTTPハンドラのテストを実行
  */
 func testHTTP(
@@ -176,26 +236,12 @@ func testHTTP(
 	t.Parallel()
 
 	// setup
-	gin.SetMode(gin.TestMode)
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	mocks := newMocks(ctrl)
-	dopts := &testOptions{
-		now:     jst.Now,
-		role:    entity.AdminRoleAdministrator,
-		adminID: idmock,
-	}
-	for i := range opts {
-		opts[i](dopts)
-	}
-	h := newHandler(mocks, dopts)
+	h, _ := testSetup(t, ctrl, setup, opts...)
 	w := httptest.NewRecorder()
 	_, r := gin.CreateTestContext(w)
 	newRoutes(h, r)
-	setup(t, mocks, ctrl)
-
-	auth := &uentity.AdminAuth{AdminID: dopts.adminID, Role: dopts.role}
-	mocks.user.EXPECT().GetAdminAuth(gomock.Any(), gomock.Any()).Return(auth, nil).MaxTimes(1)
 
 	// test
 	r.ServeHTTP(w, req)
@@ -307,49 +353,91 @@ func TestFilterAccess(t *testing.T) {
 	tests := []struct {
 		name   string
 		role   service.AdminRole
-		fn     func(ctx *gin.Context) (bool, error)
+		params *filterAccessParams
 		expect error
 	}{
 		{
 			name:   "success administrator",
 			role:   service.AdminRoleAdministrator,
-			fn:     nil,
+			params: &filterAccessParams{},
 			expect: nil,
 		},
 		{
 			name: "success coordinator",
 			role: service.AdminRoleCoordinator,
-			fn: func(ctx *gin.Context) (bool, error) {
-				return true, nil
+			params: &filterAccessParams{
+				coordinator: func(ctx *gin.Context) (bool, error) {
+					return true, nil
+				},
 			},
+			expect: nil,
+		},
+		{
+			name:   "success coordinator for no filter",
+			role:   service.AdminRoleCoordinator,
+			params: &filterAccessParams{},
 			expect: nil,
 		},
 		{
 			name: "failed coordinator for failed to execute function",
 			role: service.AdminRoleCoordinator,
-			fn: func(ctx *gin.Context) (bool, error) {
-				return false, assert.AnError
+			params: &filterAccessParams{
+				coordinator: func(ctx *gin.Context) (bool, error) {
+					return false, assert.AnError
+				},
 			},
 			expect: assert.AnError,
 		},
 		{
 			name: "failed coordinator for invalid coordinator",
 			role: service.AdminRoleCoordinator,
-			fn: func(ctx *gin.Context) (bool, error) {
-				return false, nil
+			params: &filterAccessParams{
+				coordinator: func(ctx *gin.Context) (bool, error) {
+					return false, nil
+				},
 			},
 			expect: exception.ErrForbidden,
 		},
 		{
-			name:   "failed producer",
+			name: "success producer",
+			role: service.AdminRoleProducer,
+			params: &filterAccessParams{
+				producer: func(ctx *gin.Context) (bool, error) {
+					return true, nil
+				},
+			},
+			expect: nil,
+		},
+		{
+			name:   "success producer for no filter",
 			role:   service.AdminRoleProducer,
-			fn:     nil,
+			params: &filterAccessParams{},
+			expect: nil,
+		},
+		{
+			name: "failed producer for failed to execute function",
+			role: service.AdminRoleProducer,
+			params: &filterAccessParams{
+				producer: func(ctx *gin.Context) (bool, error) {
+					return false, assert.AnError
+				},
+			},
+			expect: assert.AnError,
+		},
+		{
+			name: "failed producer for invalid producer",
+			role: service.AdminRoleProducer,
+			params: &filterAccessParams{
+				producer: func(ctx *gin.Context) (bool, error) {
+					return false, nil
+				},
+			},
 			expect: exception.ErrForbidden,
 		},
 		{
 			name:   "failed unknown admin role",
 			role:   service.AdminRoleUnknown,
-			fn:     nil,
+			params: &filterAccessParams{},
 			expect: exception.ErrForbidden,
 		},
 	}
@@ -361,7 +449,7 @@ func TestFilterAccess(t *testing.T) {
 			ctx, _ := gin.CreateTestContext(w)
 			ctx.Request = &http.Request{Header: http.Header{}}
 			setAuth(ctx, "admin-id", tt.role)
-			assert.ErrorIs(t, filterAccess(ctx, tt.fn), tt.expect)
+			assert.ErrorIs(t, filterAccess(ctx, tt.params), tt.expect)
 		})
 	}
 }

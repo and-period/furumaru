@@ -111,7 +111,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.notificationRoutes(v1.Group("/notifications"))
 	h.contactRoutes(v1.Group("/contacts"))
 	h.messageRoutes(v1.Group("/messages"))
-	v1.GET("/categories/-/product-types", h.authentication(), h.ListProductTypes)
+	v1.GET("/categories/-/product-types", h.authentication, h.ListProductTypes)
 	h.uploadRoutes(v1.Group("/upload"))
 }
 
@@ -143,44 +143,42 @@ func forbidden(ctx *gin.Context, err error) {
  * other
  * ###############################################
  */
-func (h *handler) authentication() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		// 認証情報の検証
-		token, err := util.GetAuthToken(ctx)
-		if err != nil {
-			unauthorized(ctx, err)
-			return
-		}
-
-		in := &user.GetAdminAuthInput{AccessToken: token}
-		auth, err := h.user.GetAdminAuth(ctx, in)
-		if err != nil || auth.AdminID == "" {
-			unauthorized(ctx, err)
-			return
-		}
-		role := service.NewAdminRole(auth.Role)
-
-		setAuth(ctx, auth.AdminID, role)
-
-		// 認可情報の検証
-		if h.enforcer == nil {
-			ctx.Next()
-			return
-		}
-
-		enforce, err := h.enforcer.Enforce(role.String(), ctx.Request.URL.Path, ctx.Request.Method)
-		if err != nil {
-			fmt.Println("debug", err)
-			httpError(ctx, status.Error(codes.Internal, err.Error()))
-			return
-		}
-		if !enforce {
-			forbidden(ctx, errors.New("handler: you don't have the correct permissions"))
-			return
-		}
-
-		ctx.Next()
+func (h *handler) authentication(ctx *gin.Context) {
+	// 認証情報の検証
+	token, err := util.GetAuthToken(ctx)
+	if err != nil {
+		unauthorized(ctx, err)
+		return
 	}
+
+	in := &user.GetAdminAuthInput{AccessToken: token}
+	auth, err := h.user.GetAdminAuth(ctx, in)
+	if err != nil || auth.AdminID == "" {
+		unauthorized(ctx, err)
+		return
+	}
+	role := service.NewAdminRole(auth.Role)
+
+	setAuth(ctx, auth.AdminID, role)
+
+	// 認可情報の検証
+	if h.enforcer == nil {
+		ctx.Next()
+		return
+	}
+
+	enforce, err := h.enforcer.Enforce(role.String(), ctx.Request.URL.Path, ctx.Request.Method)
+	if err != nil {
+		fmt.Println("debug", err)
+		httpError(ctx, status.Error(codes.Internal, err.Error()))
+		return
+	}
+	if !enforce {
+		forbidden(ctx, errors.New("handler: you don't have the correct permissions"))
+		return
+	}
+
+	ctx.Next()
 }
 
 func setAuth(ctx *gin.Context, adminID string, role service.AdminRole) {
@@ -203,16 +201,30 @@ func currentAdmin(ctx *gin.Context, adminID string) bool {
 	return getAdminID(ctx) == adminID
 }
 
-func filterAccess(ctx *gin.Context, fn func(ctx *gin.Context) (bool, error)) error {
+type filterAccessParams struct {
+	coordinator func(ctx *gin.Context) (bool, error)
+	producer    func(ctx *gin.Context) (bool, error)
+}
+
+func filterAccess(ctx *gin.Context, params *filterAccessParams) error {
 	switch getRole(ctx) {
 	case service.AdminRoleAdministrator:
 		return nil
 	case service.AdminRoleCoordinator:
-		if ok, err := fn(ctx); err != nil || ok {
+		if params == nil || params.coordinator == nil {
+			return nil
+		}
+		if ok, err := params.coordinator(ctx); err != nil || ok {
 			return err
 		}
 		return fmt.Errorf("handler: this coordinator is unauthenticated: %w", exception.ErrForbidden)
 	case service.AdminRoleProducer:
+		if params == nil || params.producer == nil {
+			return nil
+		}
+		if ok, err := params.producer(ctx); err != nil || ok {
+			return err
+		}
 		return fmt.Errorf("handler: this producer is unauthenticated: %w", exception.ErrForbidden)
 	default:
 		return fmt.Errorf("handler: unknown admin role: %w", exception.ErrForbidden)

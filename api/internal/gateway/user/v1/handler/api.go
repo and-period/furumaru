@@ -111,25 +111,23 @@ func unauthorized(ctx *gin.Context, err error) {
  * other
  * ###############################################
  */
-func (h *handler) authentication() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		token, err := util.GetAuthToken(ctx)
-		if err != nil {
-			unauthorized(ctx, err)
-			return
-		}
-
-		in := &user.GetUserAuthInput{AccessToken: token}
-		auth, err := h.user.GetUserAuth(ctx, in)
-		if err != nil || auth.UserID == "" {
-			unauthorized(ctx, err)
-			return
-		}
-
-		setAuth(ctx, auth.UserID)
-
-		ctx.Next()
+func (h *handler) authentication(ctx *gin.Context) {
+	token, err := util.GetAuthToken(ctx)
+	if err != nil {
+		unauthorized(ctx, err)
+		return
 	}
+
+	in := &user.GetUserAuthInput{AccessToken: token}
+	auth, err := h.user.GetUserAuth(ctx, in)
+	if err != nil || auth.UserID == "" {
+		unauthorized(ctx, err)
+		return
+	}
+
+	setAuth(ctx, auth.UserID)
+
+	ctx.Next()
 }
 
 func setAuth(ctx *gin.Context, userID string) {

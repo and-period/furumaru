@@ -16,10 +16,10 @@ func (h *handler) authRoutes(rg *gin.RouterGroup) {
 	rg.POST("", h.SignIn)
 	rg.DELETE("", h.SignOut)
 	rg.POST("/refresh-token", h.RefreshAuthToken)
-	rg.POST("/device", h.authentication(), h.RegisterDevice)
-	rg.PATCH("/email", h.authentication(), h.UpdateAuthEmail)
+	rg.POST("/device", h.authentication, h.RegisterDevice)
+	rg.PATCH("/email", h.authentication, h.UpdateAuthEmail)
 	rg.POST("/email/verified", h.VerifyAuthEmail)
-	rg.PATCH("/password", h.authentication(), h.UpdateAuthPassword)
+	rg.PATCH("/password", h.authentication, h.UpdateAuthPassword)
 }
 
 func (h *handler) GetAuth(ctx *gin.Context) {
