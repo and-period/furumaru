@@ -189,3 +189,19 @@ func (s *service) ResetProducerPassword(ctx context.Context, in *user.ResetProdu
 	}()
 	return nil
 }
+
+func (s *service) RelatedProducer(ctx context.Context, in *user.RelatedProducerInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	err := s.db.Producer.UpdateRelationship(ctx, in.ProducerID, in.CoordinatorID)
+	return exception.InternalError(err)
+}
+
+func (s *service) UnrelatedProducer(ctx context.Context, in *user.UnrelatedProducerInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	err := s.db.Producer.UpdateRelationship(ctx, in.ProducerID, "")
+	return exception.InternalError(err)
+}

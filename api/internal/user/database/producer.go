@@ -161,6 +161,30 @@ func (p *producer) Update(ctx context.Context, producerID string, params *Update
 	return exception.InternalError(err)
 }
 
+func (p *producer) UpdateRelationship(ctx context.Context, producerID, coordinatorID string) error {
+	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+		if _, err := p.get(ctx, tx, producerID); err != nil {
+			return nil, err
+		}
+
+		var id *string
+		if coordinatorID != "" {
+			id = &coordinatorID
+		}
+
+		params := map[string]interface{}{
+			"coordinator_id": id,
+			"updated_at":     p.now(),
+		}
+		err := tx.WithContext(ctx).
+			Table(producerTable).
+			Where("admin_id = ?", producerID).
+			Updates(params).Error
+		return nil, err
+	})
+	return exception.InternalError(err)
+}
+
 func (p *producer) get(
 	ctx context.Context, tx *gorm.DB, producerID string, fields ...string,
 ) (*entity.Producer, error) {

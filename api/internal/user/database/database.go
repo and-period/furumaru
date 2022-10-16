@@ -81,6 +81,7 @@ type Producer interface {
 	Get(ctx context.Context, producerID string, fields ...string) (*entity.Producer, error)
 	Create(ctx context.Context, admin *entity.Admin, producer *entity.Producer) error
 	Update(ctx context.Context, producerID string, params *UpdateProducerParams) error
+	UpdateRelationship(ctx context.Context, producerID, coordinatorID string) error
 }
 
 type User interface {

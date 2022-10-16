@@ -530,6 +530,119 @@ func TestProducer_Update(t *testing.T) {
 	}
 }
 
+func TestProducer_UpdateRelationship(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	type args struct {
+		producerID    string
+		coordinatorID string
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name: "success to relate",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				coordinator := testCoordinator("coordinator-id", now())
+				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+				err = m.db.DB.Create(&coordinator.Admin).Error
+				require.NoError(t, err)
+				err = m.db.DB.Create(&coordinator).Error
+				require.NoError(t, err)
+				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
+				err = m.db.DB.Create(&admin).Error
+				require.NoError(t, err)
+				p := testProducer("admin-id", "", "&.農園", now())
+				err = m.db.DB.Create(&p).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				producerID:    "admin-id",
+				coordinatorID: "coordinator-id",
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name: "success to unrelate",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				coordinator := testCoordinator("coordinator-id", now())
+				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+				err = m.db.DB.Create(&coordinator.Admin).Error
+				require.NoError(t, err)
+				err = m.db.DB.Create(&coordinator).Error
+				require.NoError(t, err)
+				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
+				err = m.db.DB.Create(&admin).Error
+				require.NoError(t, err)
+				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+				err = m.db.DB.Create(&p).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				producerID:    "admin-id",
+				coordinatorID: "",
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name:  "not found producer",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				producerID:    "other-id",
+				coordinatorID: "",
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+		{
+			name:  "not found coordinator",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				producerID:    "admin-id",
+				coordinatorID: "other-id",
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := m.dbDelete(ctx, producerTable, coordinatorTable, adminTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, m)
+
+			db := &producer{db: m.db, now: now}
+			err = db.UpdateRelationship(ctx, tt.args.producerID, tt.args.coordinatorID)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
 func testProducer(id, coordinatorID, storeName string, now time.Time) *entity.Producer {
 	return &entity.Producer{
 		AdminID:       id,
