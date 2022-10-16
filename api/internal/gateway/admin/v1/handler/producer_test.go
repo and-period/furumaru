@@ -79,12 +79,6 @@ func TestFilterAccessProducer(t *testing.T) {
 			options: []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("coordinator-id")},
 			expect:  http.StatusInternalServerError,
 		},
-		{
-			name:    "forbidden producer",
-			setup:   func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
-			options: []testOption{withRole(uentity.AdminRoleProducer)},
-			expect:  http.StatusForbidden,
-		},
 	}
 
 	for _, tt := range tests {
@@ -357,7 +351,6 @@ func TestCreateProducer(t *testing.T) {
 	t.Parallel()
 
 	in := &user.CreateProducerInput{
-		CoordinatorID: "coordinator-id",
 		Lastname:      "&.",
 		Firstname:     "生産者",
 		LastnameKana:  "あんどどっと",
@@ -398,20 +391,17 @@ func TestCreateProducer(t *testing.T) {
 	}
 
 	tests := []struct {
-		name    string
-		setup   func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
-		options []testOption
-		req     *request.CreateProducerRequest
-		expect  *testResponse
+		name   string
+		setup  func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		req    *request.CreateProducerRequest
+		expect *testResponse
 	}{
 		{
-			name: "success administrator",
+			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.user.EXPECT().CreateProducer(gomock.Any(), in).Return(producer, nil)
 			},
-			options: []testOption{withRole(uentity.AdminRoleAdministrator)},
 			req: &request.CreateProducerRequest{
-				CoordinatorID: "coordinator-id",
 				Lastname:      "&.",
 				Firstname:     "生産者",
 				LastnameKana:  "あんどどっと",
@@ -458,9 +448,7 @@ func TestCreateProducer(t *testing.T) {
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.user.EXPECT().CreateProducer(gomock.Any(), in).Return(producer, nil)
 			},
-			options: []testOption{withRole(uentity.AdminRoleAdministrator), withAdminID("coordinator-id")},
 			req: &request.CreateProducerRequest{
-				CoordinatorID: "coordinator-id",
 				Lastname:      "&.",
 				Firstname:     "生産者",
 				LastnameKana:  "あんどどっと",
@@ -503,11 +491,9 @@ func TestCreateProducer(t *testing.T) {
 			},
 		},
 		{
-			name:    "failed to invalid coordinator",
-			setup:   func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
-			options: []testOption{withRole(uentity.AdminRoleCoordinator)},
+			name:  "failed to invalid coordinator",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
 			req: &request.CreateProducerRequest{
-				CoordinatorID: "coordinator-id",
 				Lastname:      "&.",
 				Firstname:     "生産者",
 				LastnameKana:  "あんどどっと",
@@ -533,7 +519,6 @@ func TestCreateProducer(t *testing.T) {
 				mocks.user.EXPECT().CreateProducer(gomock.Any(), in).Return(nil, errmock)
 			},
 			req: &request.CreateProducerRequest{
-				CoordinatorID: "coordinator-id",
 				Lastname:      "&.",
 				Firstname:     "生産者",
 				LastnameKana:  "あんどどっと",
@@ -559,7 +544,7 @@ func TestCreateProducer(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			const path = "/v1/producers"
-			testPost(t, tt.setup, tt.expect, path, tt.req, tt.options...)
+			testPost(t, tt.setup, tt.expect, path, tt.req)
 		})
 	}
 }

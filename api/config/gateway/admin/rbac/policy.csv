@@ -104,7 +104,6 @@ g, administrator, message_list
 g, administrator, message_get
 
 g, coordinator, auth
-g, coordinator, coordinator_get
 g, coordinator, coordinator_uploader
 g, coordinator, producer_list
 g, coordinator, producer_get
@@ -138,7 +137,6 @@ g, coordinator, message_list
 g, coordinator, message_get
 
 g, producer, auth
-g, producer, producer_get
 g, producer, producer_uploader
 g, producer, category_list
 g, producer, product_type_list
