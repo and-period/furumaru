@@ -159,6 +159,7 @@ type ListProducersInput struct {
 	CoordinatorID string `validate:"omitempty"`
 	Limit         int64  `validate:"required_without=CoordinatorID,max=200"`
 	Offset        int64  `validate:"min=0"`
+	OnlyUnrelated bool   `validate:""`
 }
 
 type MultiGetProducersInput struct {

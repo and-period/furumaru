@@ -134,11 +134,15 @@ type ListProducersParams struct {
 	CoordinatorID string
 	Limit         int
 	Offset        int
+	OnlyUnrelated bool
 }
 
 func (p *ListProducersParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.CoordinatorID != "" {
 		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
+	}
+	if p.OnlyUnrelated {
+		stmt = stmt.Where("coordinator_id IS NULL")
 	}
 	return stmt
 }
