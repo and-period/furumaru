@@ -655,6 +655,20 @@ func (mr *MockProducerMockRecorder) Update(ctx, producerID, params interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockProducer)(nil).Update), ctx, producerID, params)
 }
 
+// UpdateRelationship mocks base method.
+func (m *MockProducer) UpdateRelationship(ctx context.Context, producerID, coordinatorID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateRelationship", ctx, producerID, coordinatorID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateRelationship indicates an expected call of UpdateRelationship.
+func (mr *MockProducerMockRecorder) UpdateRelationship(ctx, producerID, coordinatorID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRelationship", reflect.TypeOf((*MockProducer)(nil).UpdateRelationship), ctx, producerID, coordinatorID)
+}
+
 // MockUser is a mock of User interface.
 type MockUser struct {
 	ctrl     *gomock.Controller
