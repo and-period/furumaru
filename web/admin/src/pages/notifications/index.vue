@@ -160,7 +160,7 @@ export default defineComponent({
       try {
         await notificationStore.deleteNotification(selectedId.value)
       } catch (err) {
-        console.log
+        console.log(err)
       }
       deleteDialog.value = false
     }
