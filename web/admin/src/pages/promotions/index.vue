@@ -39,24 +39,48 @@
             <v-icon small>mdi-pencil</v-icon>
             編集
           </v-btn>
+          <v-btn outlined color="primary" small @click="openDeleteDialog(item)">
+            <v-icon small>mdi-delete</v-icon>
+            削除
+          </v-btn>
         </template>
       </v-data-table>
+      <v-dialog v-model="deleteDialog" width="500">
+        <v-card>
+          <v-card-title class="text-h7">
+            {{ selectedName }}を本当に削除しますか？
+          </v-card-title>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="accentDarken" text @click="hideDeleteDialog">
+              キャンセル
+            </v-btn>
+            <v-btn color="primary" outlined @click="handleDelete"> 削除 </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, useFetch, useRouter } from '@nuxtjs/composition-api'
+import { computed, ref, useFetch, useRouter } from '@nuxtjs/composition-api'
 import { defineComponent } from '@vue/composition-api'
 import dayjs from 'dayjs'
 import { DataTableHeader } from 'vuetify'
 
 import { usePromotionStore } from '~/store/promotion'
+import { PromotionsResponsePromotionsInner } from '~/types/api'
 
 export default defineComponent({
   setup() {
     const router = useRouter()
     const promotionStore = usePromotionStore()
+
+    const deleteDialog = ref<boolean>(false)
+    const selectedId = ref<string>('')
+    const selectedName = ref<string>('')
+
     const promotions = computed(() => {
       return promotionStore.promotions
     })
@@ -113,6 +137,27 @@ export default defineComponent({
       router.push('/promotions/add')
     }
 
+    const handleDelete = async (): Promise<void> => {
+      try {
+        await promotionStore.deletePromotion(selectedId.value)
+      } catch (err) {
+        console.log
+      }
+      deleteDialog.value = false
+    }
+
+    const openDeleteDialog = (
+      item: PromotionsResponsePromotionsInner
+    ): void => {
+      selectedId.value = item.id
+      selectedName.value = item.title
+      deleteDialog.value = true
+    }
+
+    const hideDeleteDialog = () => {
+      deleteDialog.value = false
+    }
+
     const getStatus = (status: boolean): string => {
       if (status) {
         return '有効'
@@ -145,6 +190,11 @@ export default defineComponent({
       headers,
       promotions,
       fetchState,
+      selectedName,
+      deleteDialog,
+      openDeleteDialog,
+      hideDeleteDialog,
+      handleDelete,
       handleClickAddButton,
       getDiscount,
       getStatus,
