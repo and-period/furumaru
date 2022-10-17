@@ -8,7 +8,9 @@ import ApiClientFactory from '~/plugins/factory'
 import {
   CreatePromotionRequest,
   PromotionApi,
+  PromotionResponse,
   PromotionsResponse,
+  UpdatePromotionRequest,
 } from '~/types/api'
 import {
   AuthError,
@@ -137,7 +139,7 @@ export const usePromotionStore = defineStore('Promotion', {
 
         await promotionsApiClient.v1DeletePromotion(id)
         commonStore.addSnackbar({
-          message: '品物削除が完了しました',
+          message: 'セール情報の削除が完了しました',
           color: 'info',
         })
       } catch (error) {
@@ -173,6 +175,110 @@ export const usePromotionStore = defineStore('Promotion', {
         throw new InternalServerError(error)
       }
       this.fetchPromotions()
+    },
+
+    /**
+     * セールIDからセール情報情報を取得する非同期関数
+     * @param id セールID
+     * @returns セールの情報
+     */
+    async getPromotion(id: string): Promise<PromotionResponse> {
+      try {
+        const authStore = useAuthStore()
+        const accessToken = authStore.accessToken
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
+        }
+        const factory = new ApiClientFactory()
+        const promotionsApiClient = factory.create(PromotionApi, accessToken)
+        const res = await promotionsApiClient.v1GetPromotion(id)
+        return res.data
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          const statusCode = error.response.status
+          switch (statusCode) {
+            case 401:
+              return Promise.reject(
+                new AuthError('認証エラー。再度ログインをしてください', error)
+              )
+            case 404:
+              return Promise.reject(
+                new NotFoundError(
+                  '一致するセール情報が見つかりませんでした。',
+                  error
+                )
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+        throw new InternalServerError(error)
+      }
+    },
+
+    /**
+     * セール情報を編集する非同期関数
+     * @param id セールID
+     * @param payload
+     */
+    async editPromotion(
+      id: string,
+      payload: UpdatePromotionRequest
+    ): Promise<void> {
+      const commonStore = useCommonStore()
+      try {
+        const authStore = useAuthStore()
+        const accessToken = authStore.accessToken
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
+        }
+        const factory = new ApiClientFactory()
+        const promotionsApiClient = factory.create(PromotionApi, accessToken)
+        await promotionsApiClient.v1UpdatePromotion(id, payload)
+        commonStore.addSnackbar({
+          message: 'セール情報の編集が完了しました',
+          color: 'info',
+        })
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          const statusCode = error.response.status
+          switch (statusCode) {
+            case 400:
+              return Promise.reject(
+                new ValidationError('入力内容に誤りがあります。', error)
+              )
+            case 401:
+              return Promise.reject(
+                new AuthError('認証エラー。再度ログインをしてください', error)
+              )
+            case 404:
+              return Promise.reject(
+                new NotFoundError(
+                  '一致するセール情報が見つかりませんでした。',
+                  error
+                )
+              )
+            case 409:
+              return Promise.reject(
+                new ConflictError(
+                  'このクーポンコードはすでに登録されています。',
+                  error
+                )
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+        throw new InternalServerError(error)
+      }
     },
   },
 })
