@@ -27,7 +27,11 @@
             <td :colspan="headers.length" class="pa-4">
               <div v-for="n in [60, 80, 100]" :key="n">
                 <div class="row my-2">サイズ{{ n }}詳細</div>
-                <v-row v-for="(boxRate, i) in item[`box${n}Rates`]" :key="i">
+                <v-row
+                  v-for="(boxRate, i) in item[`box${n}Rates`]"
+                  :key="i"
+                  class="align-center"
+                >
                   <v-col cols="1">
                     {{ boxRate.number }}
                   </v-col>
@@ -36,14 +40,25 @@
                   </v-col>
                   <v-col cols="1"> {{ moneyFormat(boxRate.price) }} 円 </v-col>
                   <v-col cols="9">
-                    <v-chip
-                      v-for="(prefecture, j) in boxRate.prefectures"
-                      :key="j"
-                      class="mr-1"
-                      small
+                    <v-select
+                      :value="boxRate.prefectures"
+                      :items="prefecturesList"
+                      :label="`${boxRate.prefectures.length}/${prefecturesList.length}`"
+                      multiple
+                      hide-details
                     >
-                      {{ prefecture }}
-                    </v-chip>
+                      <template #selection="{ item, index }">
+                        <v-chip v-if="index < 5" small>
+                          <span>{{ item.text }}</span>
+                        </v-chip>
+                        <span
+                          v-if="index === 5"
+                          class="grey--text text-caption"
+                        >
+                          (+{{ boxRate.prefectures.length - 1 }} others)
+                        </span>
+                      </template>
+                    </v-select>
                   </v-col>
                 </v-row>
               </div>
@@ -59,6 +74,7 @@
 import { computed, defineComponent, useFetch } from '@nuxtjs/composition-api'
 import { DataTableHeader } from 'vuetify'
 
+import { prefecturesList } from '~/constants'
 import { dateTimeFormatter, moneyFormat } from '~/lib/formatter'
 import { usePagination } from '~/lib/hooks'
 import { useShippingStore } from '~/store/shippings'
@@ -112,6 +128,7 @@ export default defineComponent({
       itemsPerPage, // 1ページあたりの表示件数
       headers, // テーブルヘッダー
       shippings, // 配送情報一覧
+      prefecturesList, // 都道府県リスト
       // 関数
       dateTimeFormatter,
       moneyFormat,
