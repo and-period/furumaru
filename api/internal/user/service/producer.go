@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -194,7 +195,21 @@ func (s *service) RelatedProducer(ctx context.Context, in *user.RelatedProducerI
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	err := s.db.Producer.UpdateRelationship(ctx, in.ProducerID, in.CoordinatorID)
+	producer, err := s.db.Producer.Get(ctx, in.ProducerID, "coordinator_id")
+	if err != nil {
+		return exception.InternalError(err)
+	}
+	if producer.CoordinatorID != "" {
+		return fmt.Errorf("api: this producer is related: %w", exception.ErrFailedPrecondition)
+	}
+	_, err = s.db.Coordinator.Get(ctx, in.CoordinatorID)
+	if errors.Is(err, exception.ErrNotFound) {
+		return fmt.Errorf("api: invalid coordinator id: %w", exception.ErrInvalidArgument)
+	}
+	if err != nil {
+		return exception.InternalError(err)
+	}
+	err = s.db.Producer.UpdateRelationship(ctx, in.ProducerID, in.CoordinatorID)
 	return exception.InternalError(err)
 }
 
