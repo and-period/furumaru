@@ -43,7 +43,7 @@ post:
         application/json:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
-    409:
+    412:
       description: 他のコーディネータへ関連付けされている
       content:
         application/json:
