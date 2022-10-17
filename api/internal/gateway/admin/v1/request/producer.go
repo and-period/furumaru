@@ -36,3 +36,7 @@ type UpdateProducerRequest struct {
 type UpdateProducerEmailRequest struct {
 	Email string `json:"email,omitempty"` // メールアドレス
 }
+
+type RelatedProducerRequest struct {
+	CoordinatorID string `json:"coordinatorId,omitempty"` // 仲介者ID
+}
