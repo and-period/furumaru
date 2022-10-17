@@ -151,3 +151,9 @@ updateProducerEmailRequest:
   - email
   example:
     email: 'test-user@and-period.jp'
+relatedProducerRequest:
+  type: object
+  properties:
+    coordinatorId:
+      type: string
+      description: 関連付ける仲介者ID

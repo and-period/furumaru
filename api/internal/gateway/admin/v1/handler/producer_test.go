@@ -685,3 +685,129 @@ func TestResetProducerPassword(t *testing.T) {
 		})
 	}
 }
+
+func TestRelatedProducer(t *testing.T) {
+	t.Parallel()
+
+	in := &user.RelatedProducerInput{
+		ProducerID:    "producer-id",
+		CoordinatorID: "coordinator-id",
+	}
+
+	tests := []struct {
+		name       string
+		setup      func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		options    []testOption
+		producerID string
+		req        *request.RelatedProducerRequest
+		expect     *testResponse
+	}{
+		{
+			name: "success administrator",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().RelatedProducer(gomock.Any(), in).Return(nil)
+			},
+			options:    []testOption{withRole(entity.AdminRoleAdministrator)},
+			producerID: "producer-id",
+			req: &request.RelatedProducerRequest{
+				CoordinatorID: "coordinator-id",
+			},
+			expect: &testResponse{
+				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "success coordinator",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().RelatedProducer(gomock.Any(), in).Return(nil)
+			},
+			options:    []testOption{withRole(entity.AdminRoleCoordinator), withAdminID("coordinator-id")},
+			producerID: "producer-id",
+			req: &request.RelatedProducerRequest{
+				CoordinatorID: "coordinator-id",
+			},
+			expect: &testResponse{
+				code: http.StatusNoContent,
+			},
+		},
+		{
+			name:       "forbidden coordinator",
+			setup:      func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			options:    []testOption{withRole(entity.AdminRoleCoordinator)},
+			producerID: "producer-id",
+			req: &request.RelatedProducerRequest{
+				CoordinatorID: "coordinator-id",
+			},
+			expect: &testResponse{
+				code: http.StatusForbidden,
+			},
+		},
+		{
+			name: "failed to related producer",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().RelatedProducer(gomock.Any(), in).Return(errmock)
+			},
+			producerID: "producer-id",
+			req: &request.RelatedProducerRequest{
+				CoordinatorID: "coordinator-id",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const format = "/v1/producers/%s/relationship"
+			path := fmt.Sprintf(format, tt.producerID)
+			testPost(t, tt.setup, tt.expect, path, tt.req, tt.options...)
+		})
+	}
+}
+
+func TestUnrelatedProducer(t *testing.T) {
+	t.Parallel()
+
+	in := &user.UnrelatedProducerInput{
+		ProducerID: "producer-id",
+	}
+
+	tests := []struct {
+		name       string
+		setup      func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		producerID string
+		expect     *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().UnrelatedProducer(gomock.Any(), in).Return(nil)
+			},
+			producerID: "producer-id",
+			expect: &testResponse{
+				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to unrelated producer",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().UnrelatedProducer(gomock.Any(), in).Return(errmock)
+			},
+			producerID: "producer-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const format = "/v1/producers/%s/relationship"
+			path := fmt.Sprintf(format, tt.producerID)
+			testDelete(t, tt.setup, tt.expect, path)
+		})
+	}
+}

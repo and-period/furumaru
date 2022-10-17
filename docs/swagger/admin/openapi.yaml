@@ -76,6 +76,8 @@ paths:
     $ref: './paths/v1/producers/_producerId/email.yaml'
   /v1/producers/{producerId}/password:
     $ref: './paths/v1/producers/_producerId/password.yaml'
+  /v1/producers/{producerId}/relationship:
+    $ref: './paths/v1/producers/_producerId/relationship.yaml'
   # Category
   /v1/categories:
     $ref: './paths/v1/categories/index.yaml'
@@ -182,6 +184,8 @@ components:
       $ref: './components/schemas/v1/producer.request.yaml#/updateProducerRequest'
     v1UpdateProducerEmailRequest:
       $ref: './components/schemas/v1/producer.request.yaml#/updateProducerEmailRequest'
+    v1RelatedProducerRequest:
+      $ref: './components/schemas/v1/producer.request.yaml#/relatedProducerRequest'
     v1CreateCategoryRequest:
       $ref: './components/schemas/v1/category.request.yaml#/createCategoryRequest'
     v1UpdateCategoryRequest:
