@@ -146,6 +146,10 @@ export default defineComponent({
       deleteDialog.value = false
     }
 
+    const handleEdit = (item: PromotionsResponsePromotionsInner) => {
+      router.push(`/promotions/edit/${item.id}`)
+    }
+
     const openDeleteDialog = (
       item: PromotionsResponsePromotionsInner
     ): void => {
@@ -195,6 +199,7 @@ export default defineComponent({
       openDeleteDialog,
       hideDeleteDialog,
       handleDelete,
+      handleEdit,
       handleClickAddButton,
       getDiscount,
       getStatus,
