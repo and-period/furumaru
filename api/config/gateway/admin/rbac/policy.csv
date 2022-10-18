@@ -124,13 +124,11 @@ g, coordinator, product_update
 g, coordinator, product_uploader
 g, coordinator, promotion_list
 g, coordinator, promotion_get
-g, coordinator, promotion_create
-g, coordinator, promotion_update
-g, coordinator, promotion_delete
 g, coordinator, order_list
 g, coordinator, order_get
 g, coordinator, contact_list
 g, coordinator, contact_get
+g, coordinator, contact_update
 g, coordinator, notification_list
 g, coordinator, notification_get
 g, coordinator, notification_create
@@ -149,8 +147,8 @@ g, producer, product_list
 g, producer, product_get
 g, producer, promotion_list
 g, producer, promotion_get
-g, producer, contact_list
-g, producer, contact_get
+g, producer, order_list
+g, producer, order_get
 g, producer, notification_list
 g, producer, notification_get
 g, producer, message_list
