@@ -2,12 +2,14 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
+	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
@@ -55,11 +57,16 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
-	// TODO: ソート設定
+	os, err := h.newOrderOrders(ctx)
+	if err != nil {
+		badRequest(ctx, err)
+		return
+	}
 
 	in := &store.ListOrdersInput{
 		Limit:  limit,
 		Offset: offset,
+		Orders: os,
 	}
 	if getRole(ctx) == service.AdminRoleCoordinator {
 		in.CoordinatorID = getAdminID(ctx)
@@ -117,6 +124,32 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 		Total:  total,
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) newOrderOrders(ctx *gin.Context) ([]*store.ListOrdersOrder, error) {
+	orders := map[string]sentity.OrderOrderBy{
+		"paymentStatus":     sentity.OrderOrderByPaymentStatus,
+		"fulfillmentStatus": sentity.OrderOrderByFulfillmentStatus,
+		"orderedAt":         sentity.OrderOrderByOrderedAt,
+		"paidAt":            sentity.OrderOrderByConfirmedAt,
+		"deliveredAt":       sentity.OrderOrderByDeliveredAt,
+		"canceledAt":        sentity.OrderOrderByCanceledAt,
+		"createdAt":         sentity.OrderOrderByCreatedAt,
+		"updatedAt":         sentity.OrderOrderByUpdatedAt,
+	}
+	params := util.GetOrders(ctx)
+	res := make([]*store.ListOrdersOrder, len(params))
+	for i, p := range params {
+		key, ok := orders[p.Key]
+		if !ok {
+			return nil, fmt.Errorf("handler: unknown order key. key=%s: %w", p.Key, errInvalidOrderkey)
+		}
+		res[i] = &store.ListOrdersOrder{
+			Key:        key,
+			OrderByASC: p.Direction == util.OrderByASC,
+		}
+	}
+	return res, nil
 }
 
 func (h *handler) GetOrder(ctx *gin.Context) {

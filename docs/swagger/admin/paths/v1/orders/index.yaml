@@ -30,7 +30,7 @@ get:
       ソート
       ・複数指定時は`,`区切り
       ・降順の場合はprefixに`-`をつける
-      ・指定可能フィールド:paymentStatus,fulfillmentStatus,orderedAt,paidAt,deliveredAt,createdAt,updatedAt
+      ・指定可能フィールド:paymentStatus,fulfillmentStatus,orderedAt,paidAt,deliveredAt,canceledAt,createdAt,updatedAt,
     required: false
     example: 'orderedAt,-updatedAt'
   responses:
