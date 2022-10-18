@@ -287,9 +287,15 @@ type CreateScheduleLive struct {
 }
 
 type ListOrdersInput struct {
-	CoordinatorID string `validate:"omitempty"`
-	Limit         int64  `validate:"required,max=200"`
-	Offset        int64  `validate:"min=0"`
+	CoordinatorID string             `validate:"omitempty"`
+	Limit         int64              `validate:"required,max=200"`
+	Offset        int64              `validate:"min=0"`
+	Orders        []*ListOrdersOrder `validate:"omitempty,dive,required"`
+}
+
+type ListOrdersOrder struct {
+	Key        entity.OrderOrderBy `validate:"required"`
+	OrderByASC bool                `validate:""`
 }
 
 type GetOrderInput struct {

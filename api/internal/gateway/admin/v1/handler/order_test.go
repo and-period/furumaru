@@ -161,6 +161,7 @@ func TestListOrders(t *testing.T) {
 	ordersIn := &store.ListOrdersInput{
 		Limit:  20,
 		Offset: 0,
+		Orders: []*store.ListOrdersOrder{},
 	}
 	orders := sentity.Orders{
 		{
@@ -413,6 +414,7 @@ func TestListOrders(t *testing.T) {
 					CoordinatorID: "coordinator-id",
 					Limit:         20,
 					Offset:        0,
+					Orders:        []*store.ListOrdersOrder{},
 				}
 				mocks.store.EXPECT().ListOrders(gomock.Any(), ordersIn).Return(sentity.Orders{}, int64(0), nil)
 			},
@@ -438,6 +440,14 @@ func TestListOrders(t *testing.T) {
 			name:  "invalid offset",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
 			query: "?offset=a",
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name:  "invalid orders",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			query: "?offset=paymentStatus,-fulfilmentStatus,other",
 			expect: &testResponse{
 				code: http.StatusBadRequest,
 			},

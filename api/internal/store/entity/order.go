@@ -31,6 +31,20 @@ const (
 	CancelTypeUnknown CancelType = 0
 )
 
+type OrderOrderBy string
+
+const (
+	OrderOrderByPaymentStatus     OrderOrderBy = "payment_status"
+	OrderOrderByFulfillmentStatus OrderOrderBy = "fulfillment_status"
+	OrderOrderByCanceledAt        OrderOrderBy = "canceled_at"
+	OrderOrderByOrderedAt         OrderOrderBy = "ordered_at"
+	OrderOrderByConfirmedAt       OrderOrderBy = "confirmed_at"
+	OrderOrderByCapturedAt        OrderOrderBy = "captured_at"
+	OrderOrderByDeliveredAt       OrderOrderBy = "delivered_at"
+	OrderOrderByCreatedAt         OrderOrderBy = "created_at"
+	OrderOrderByUpdatedAt         OrderOrderBy = "updated_at"
+)
+
 // Order - 注文履歴情報
 type Order struct {
 	OrderItems        `gorm:"-"`

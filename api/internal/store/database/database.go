@@ -134,11 +134,26 @@ type ListOrdersParams struct {
 	CoordinatorID string
 	Limit         int
 	Offset        int
+	Orders        []*ListOrdersOrder
+}
+
+type ListOrdersOrder struct {
+	Key        entity.OrderOrderBy
+	OrderByASC bool
 }
 
 func (p *ListOrdersParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.CoordinatorID != "" {
 		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
+	}
+	for i := range p.Orders {
+		var value string
+		if p.Orders[i].OrderByASC {
+			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
+		} else {
+			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
+		}
+		stmt = stmt.Order(value)
 	}
 	return stmt
 }

@@ -117,6 +117,22 @@ func TestOrder_List(t *testing.T) {
 				hasErr: false,
 			},
 		},
+		{
+			name:  "success with sort",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListOrdersParams{
+					Orders: []*ListOrdersOrder{
+						{Key: entity.OrderOrderByCreatedAt, OrderByASC: true},
+						{Key: entity.OrderOrderByUpdatedAt, OrderByASC: false},
+					},
+				},
+			},
+			want: want{
+				orders: orders,
+				hasErr: false,
+			},
+		},
 	}
 
 	for _, tt := range tests {

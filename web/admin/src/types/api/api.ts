@@ -7233,7 +7233,7 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
          * @summary 注文一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:paymentStatus,fulfillmentStatus,orderedAt,paidAt,deliveredAt,createdAt,updatedAt 
+         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:paymentStatus,fulfillmentStatus,orderedAt,paidAt,deliveredAt,canceledAt,createdAt,updatedAt, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -7303,7 +7303,7 @@ export const OrderApiFp = function(configuration?: Configuration) {
          * @summary 注文一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:paymentStatus,fulfillmentStatus,orderedAt,paidAt,deliveredAt,createdAt,updatedAt 
+         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:paymentStatus,fulfillmentStatus,orderedAt,paidAt,deliveredAt,canceledAt,createdAt,updatedAt, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -7336,7 +7336,7 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
          * @summary 注文一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:paymentStatus,fulfillmentStatus,orderedAt,paidAt,deliveredAt,createdAt,updatedAt 
+         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:paymentStatus,fulfillmentStatus,orderedAt,paidAt,deliveredAt,canceledAt,createdAt,updatedAt, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -7370,7 +7370,7 @@ export class OrderApi extends BaseAPI {
      * @summary 注文一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
-     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:paymentStatus,fulfillmentStatus,orderedAt,paidAt,deliveredAt,createdAt,updatedAt 
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:paymentStatus,fulfillmentStatus,orderedAt,paidAt,deliveredAt,canceledAt,createdAt,updatedAt, 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof OrderApi
