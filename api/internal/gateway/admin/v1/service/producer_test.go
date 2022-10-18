@@ -128,6 +128,50 @@ func TestProducer_Response(t *testing.T) {
 	}
 }
 
+func TestProducer_Name(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name     string
+		producer *Producer
+		expect   string
+	}{
+		{
+			name: "success",
+			producer: &Producer{
+				Producer: response.Producer{
+					ID:            "producer-id",
+					CoordinatorID: "coordinator-id",
+					Lastname:      "&.",
+					Firstname:     "管理者",
+					LastnameKana:  "あんどどっと",
+					FirstnameKana: "かんりしゃ",
+					StoreName:     "&.農園",
+					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+					HeaderURL:     "https://and-period.jp/header.png",
+					Email:         "test-producer@and-period.jp",
+					PhoneNumber:   "+819012345678",
+					PostalCode:    "1000014",
+					Prefecture:    "東京都",
+					City:          "千代田区",
+					CreatedAt:     1640962800,
+					UpdatedAt:     1640962800,
+				},
+			},
+			expect: "&. 管理者",
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.producer.Name()
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
 func TestProducers(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

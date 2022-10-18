@@ -1,6 +1,8 @@
 package service
 
 import (
+	"strings"
+
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
@@ -38,6 +40,10 @@ func NewProducer(producer *entity.Producer) *Producer {
 
 func (p *Producer) Response() *response.Producer {
 	return &p.Producer
+}
+
+func (p *Producer) Name() string {
+	return strings.TrimSpace(strings.Join([]string{p.Lastname, p.Firstname}, " "))
 }
 
 func NewProducers(producers entity.Producers) Producers {
