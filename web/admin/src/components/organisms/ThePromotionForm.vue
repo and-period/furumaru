@@ -86,7 +86,12 @@
               </v-btn>
             </v-date-picker>
           </v-menu>
-          <v-text-field v-model="timeData.publishedTime" type="time" required outlined />
+          <v-text-field
+            v-model="timeData.publishedTime"
+            type="time"
+            required
+            outlined
+          />
           <p class="text-h6 mb-6 ml-4">〜</p>
           <v-spacer />
         </div>
@@ -123,7 +128,12 @@
               </v-btn>
             </v-date-picker>
           </v-menu>
-          <v-text-field v-model="timeData.startTime" type="time" required outlined />
+          <v-text-field
+            v-model="timeData.startTime"
+            type="time"
+            required
+            outlined
+          />
           <p class="text-h6 mx-4 mb-6">〜</p>
           <v-menu
             v-model="useEndMenu"
@@ -155,7 +165,12 @@
               </v-btn>
             </v-date-picker>
           </v-menu>
-          <v-text-field v-model="timeData.endTime" type="time" required outlined />
+          <v-text-field
+            v-model="timeData.endTime"
+            type="time"
+            required
+            outlined
+          />
         </div>
       </v-card-text>
       <v-card-actions>
@@ -200,7 +215,7 @@ export default defineComponent({
         }
       },
     },
-    timeData:{
+    timeData: {
       type: Object as PropType<PromotionTime>,
       default: () => {
         return {
@@ -211,7 +226,7 @@ export default defineComponent({
           endDate: '',
           endTime: '',
         }
-      }
+      },
     },
   },
 
@@ -223,14 +238,25 @@ export default defineComponent({
 
     const timeDataValue = computed({
       get: (): PromotionTime => props.timeData,
-      set: (val: PromotionTime) => emit('update:timeData', val)
+      set: (val: PromotionTime) => emit('update:timeData', val),
     })
 
     const selectedDiscountMethod = ref<string>('')
     const publishMenu = ref<boolean>(false)
     const useStartMenu = ref<boolean>(false)
     const useEndMenu = ref<boolean>(false)
-    const discountRateStr = props.formData.discountRate
+
+    // TODO
+    const discountRateStr = computed({
+      get: (): string => {
+        return String(props.formData.discountRate)
+      },
+      set: (val: string) =>
+        emit('update:formData', {
+          ...props.formData,
+          discountRate: Number(val),
+        }),
+    })
 
     const btnText = computed(() => {
       return props.formType === 'create' ? '登録' : '更新'
@@ -238,7 +264,9 @@ export default defineComponent({
 
     const handleSubmit = () => {
       formDataValue.value.publishedAt = dayjs(
-        timeDataValue.value.publishedDate + ' ' + timeDataValue.value.publishedTime
+        timeDataValue.value.publishedDate +
+          ' ' +
+          timeDataValue.value.publishedTime
       ).unix()
       formDataValue.value.startAt = dayjs(
         timeDataValue.value.startDate + ' ' + timeDataValue.value.startTime

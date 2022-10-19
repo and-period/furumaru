@@ -107,7 +107,7 @@ export default defineComponent({
       },
       {
         text: '投稿開始',
-        value: 'publishedAt'
+        value: 'publishedAt',
       },
       {
         text: '使用開始',

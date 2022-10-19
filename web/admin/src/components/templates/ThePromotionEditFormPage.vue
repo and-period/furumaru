@@ -36,7 +36,7 @@ export default defineComponent({
         }
       },
     },
-    timeData:{
+    timeData: {
       type: Object as PropType<PromotionTime>,
       default: () => {
         return {
@@ -47,7 +47,7 @@ export default defineComponent({
           endDate: '',
           endTime: '',
         }
-      }
+      },
     },
     formDataLoading: {
       type: Boolean,
@@ -62,7 +62,7 @@ export default defineComponent({
 
     const timeDataValue = computed({
       get: (): PromotionTime => props.timeData,
-      set: (val: PromotionTime) => emit('update:timeData', val)
+      set: (val: PromotionTime) => emit('update:timeData', val),
     })
 
     const handleSubmit = () => {

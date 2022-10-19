@@ -57,7 +57,9 @@ export default defineComponent({
       formData.discountType = promotion.discountType
       formData.discountRate = promotion.discountRate
       formData.code = promotion.code
-      timeData.publishedDate = dayjs.unix(promotion.publishedAt).format('YYYY-MM-DD')
+      timeData.publishedDate = dayjs
+        .unix(promotion.publishedAt)
+        .format('YYYY-MM-DD')
       timeData.publishedTime = dayjs.unix(promotion.publishedAt).format('HH:mm')
       timeData.startDate = dayjs.unix(promotion.startAt).format('YYYY-MM-DD')
       timeData.startTime = dayjs.unix(promotion.startAt).format('HH:mm')
