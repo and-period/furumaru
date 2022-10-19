@@ -55,7 +55,7 @@
                           v-if="index === 5"
                           class="grey--text text-caption"
                         >
-                          (+{{ boxRate.prefectures.length - 1 }} others)
+                          (+{{ boxRate.prefectures.length - 5 }} others)
                         </span>
                       </template>
                     </v-select>
