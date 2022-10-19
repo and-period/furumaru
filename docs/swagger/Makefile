@@ -1,4 +1,4 @@
-.PHONY: build generate lint validate
+.PHONY: help build generate lint validate
 
 ADMIN_INPUT_DIR       := admin
 ADMIN_OUTPUT_DOCS_DIR := ./../../tmp/data/swagger/admin/docs
@@ -10,45 +10,48 @@ USER_OUTPUT_DOCS_DIR := ./../../tmp/data/swagger/user/docs
 USER_OUTPUT_TS_DIR   := ./../../tmp/data/swagger/user/types
 USER_WEB_TYPES_DIR   := ./../../web/user/src/types/api
 
-build: build-admin build-user
+help:
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-build-admin:
+build: build-admin build-user ## API仕様書の生成
+
+build-admin: ## API仕様書の生成(管理者関連)
 	$(MAKE) generate TYPE=html2 INPUT_DIR=${ADMIN_INPUT_DIR} OUTPUT_DIR=${ADMIN_OUTPUT_DOCS_DIR}
 	$(MAKE) generate TYPE=openapi-yaml INPUT_DIR=${ADMIN_INPUT_DIR} OUTPUT_DIR=${ADMIN_OUTPUT_DOCS_DIR}
 	$(MAKE) generate TYPE=typescript-axios INPUT_DIR=${ADMIN_INPUT_DIR} OUTPUT_DIR=${ADMIN_OUTPUT_TS_DIR}
 	mkdir -p ${ADMIN_WEB_TYPES_DIR}; cp ${ADMIN_OUTPUT_TS_DIR}/*.ts ${ADMIN_WEB_TYPES_DIR}
 
-build-user:
+build-user: ## API仕様書の生成(購入者関連)
 	$(MAKE) generate TYPE=html2 INPUT_DIR=${USER_INPUT_DIR} OUTPUT_DIR=${USER_OUTPUT_DOCS_DIR}
 	$(MAKE) generate TYPE=openapi-yaml INPUT_DIR=${USER_INPUT_DIR} OUTPUT_DIR=${USER_OUTPUT_DOCS_DIR}
 	$(MAKE) generate TYPE=typescript-axios INPUT_DIR=${USER_INPUT_DIR} OUTPUT_DIR=${USER_OUTPUT_TS_DIR}
 	mkdir -p ${USER_WEB_TYPES_DIR}; cp ${USER_OUTPUT_TS_DIR}/*.ts ${USER_WEB_TYPES_DIR}
 
-build-html:
+build-html: ## API仕様書の生成(HTML形式)
 	$(MAKE) generate TYPE=html2 INPUT_DIR=${ADMIN_INPUT_DIR} OUTPUT_DIR=${ADMIN_OUTPUT_DOCS_DIR}
 	$(MAKE) generate TYPE=html2 INPUT_DIR=${USER_INPUT_DIR} OUTPUT_DIR=${USER_OUTPUT_DOCS_DIR}
 
-build-yaml:
+build-yaml: ## API仕様書の生成(OpenAPI形式)
 	$(MAKE) generate TYPE=openapi-yaml INPUT_DIR=${ADMIN_INPUT_DIR} OUTPUT_DIR=${ADMIN_OUTPUT_DOCS_DIR}
 	$(MAKE) generate TYPE=openapi-yaml INPUT_DIR=${USER_INPUT_DIR} OUTPUT_DIR=${USER_OUTPUT_DOCS_DIR}
 
-build-typescript:
+build-typescript: ## API仕様書の生成(TypeScript型定義とクライアント生成)
 	$(MAKE) generate TYPE=typescript-axios INPUT_DIR=${ADMIN_INPUT_DIR} OUTPUT_DIR=${ADMIN_OUTPUT_TS_DIR}
 	$(MAKE) generate TYPE=typescript-axios INPUT_DIR=${USER_INPUT_DIR} OUTPUT_DIR=${USER_OUTPUT_TS_DIR}
 	mkdir -p ${ADMIN_WEB_TYPES_DIR}; cp ${ADMIN_OUTPUT_TS_DIR}/*.ts ${ADMIN_WEB_TYPES_DIR}
 	mkdir -p ${USER_WEB_TYPES_DIR}; cp ${USER_OUTPUT_TS_DIR}/*.ts ${USER_WEB_TYPES_DIR}
 
-generate:
+generate: ## API仕様書の生成
 	openapi-generator-cli generate \
 		-g ${TYPE} \
 		-i ${INPUT_DIR}/openapi.yaml \
 		-o ${OUTPUT_DIR}
 
-lint:
+lint: ## OpenAPI形式に則っているかの構文チェック
 	$(MAKE) validate INPUT_DIR=${ADMIN_INPUT_DIR}
 	$(MAKE) validate INPUT_DIR=${USER_INPUT_DIR}
 
-validate:
+validate: ## OpenAPI形式に則っているかの構文チェック
 	openapi-generator-cli validate \
 		-i ${INPUT_DIR}/openapi.yaml \
 		--recommend
