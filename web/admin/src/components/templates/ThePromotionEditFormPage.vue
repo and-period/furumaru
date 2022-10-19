@@ -1,7 +1,13 @@
 <template>
   <div>
     <p class="text-h6">セール情報登録</p>
-    <the-promotion-form form-type="edit" :form-data="formDataValue" :form-data-loading="formDataLoading" @submit="handleSubmit" />
+    <the-promotion-form
+      form-type="edit"
+      :form-data="formDataValue"
+      :time-data="timeDataValue"
+      :form-data-loading="formDataLoading"
+      @submit="handleSubmit"
+    />
   </div>
 </template>
 
@@ -10,6 +16,7 @@ import { computed, defineComponent, PropType } from '@vue/composition-api'
 import dayjs from 'dayjs'
 
 import { CreatePromotionRequest } from '~/types/api'
+import { PromotionTime } from '~/types/props'
 
 export default defineComponent({
   props: {
@@ -29,6 +36,19 @@ export default defineComponent({
         }
       },
     },
+    timeData:{
+      type: Object as PropType<PromotionTime>,
+      default: () => {
+        return {
+          publishedDate: '',
+          publishedTime: '',
+          startDate: '',
+          startTime: '',
+          endDate: '',
+          endTime: '',
+        }
+      }
+    },
     formDataLoading: {
       type: Boolean,
       default: false,
@@ -40,15 +60,20 @@ export default defineComponent({
       set: (val: CreatePromotionRequest) => emit('update:formData', val),
     })
 
+    const timeDataValue = computed({
+      get: (): PromotionTime => props.timeData,
+      set: (val: PromotionTime) => emit('update:timeData', val)
+    })
+
     const handleSubmit = () => {
       emit('submit')
     }
 
     return {
       formDataValue,
+      timeDataValue,
       handleSubmit,
     }
   },
 })
 </script>
-

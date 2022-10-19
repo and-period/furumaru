@@ -28,6 +28,9 @@
         <template #[`item.discount`]="{ item }">
           {{ getDiscount(item.discountType, item.discountRate) }}
         </template>
+        <template #[`item.publishedAt`]="{ item }">
+          {{ getDay(item.publishedAt) }}
+        </template>
         <template #[`item.startAt`]="{ item }">
           {{ getDay(item.startAt) }}
         </template>
@@ -101,6 +104,10 @@ export default defineComponent({
       {
         text: '割引方法',
         value: 'discount',
+      },
+      {
+        text: '投稿開始',
+        value: 'publishedAt'
       },
       {
         text: '使用開始',

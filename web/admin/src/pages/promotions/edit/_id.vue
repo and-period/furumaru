@@ -1,6 +1,7 @@
 <template>
   <the-promotion-edit-form-page
     :form-data="formData"
+    :time-data="timeData"
     :form-data-loading="fetchState.pending"
     @submit="handleSubmit"
   />
@@ -13,6 +14,7 @@ import dayjs from 'dayjs'
 
 import { usePromotionStore } from '~/store/promotion'
 import { PromotionResponse } from '~/types/api'
+import { PromotionTime } from '~/types/props'
 
 export default defineComponent({
   setup() {
@@ -24,18 +26,27 @@ export default defineComponent({
     const { getPromotion } = usePromotionStore()
 
     const formData = reactive<PromotionResponse>({
-          id,
-          title: '',
-          description: '',
-          public: false,
-          publishedAt: dayjs().unix(),
-          discountType: 1,
-          discountRate: 0,
-          code: '',
-          startAt: dayjs().unix(),
-          endAt: dayjs().unix(),
-          createdAt: -1,
-          updatedAt: -1,
+      id,
+      title: '',
+      description: '',
+      public: false,
+      publishedAt: dayjs().unix(),
+      discountType: 1,
+      discountRate: 0,
+      code: '',
+      startAt: dayjs().unix(),
+      endAt: dayjs().unix(),
+      createdAt: -1,
+      updatedAt: -1,
+    })
+
+    const timeData = reactive<PromotionTime>({
+      publishedDate: '',
+      publishedTime: '',
+      startDate: '',
+      startTime: '',
+      endDate: '',
+      endTime: '',
     })
 
     const { fetchState } = useFetch(async () => {
@@ -43,12 +54,15 @@ export default defineComponent({
       formData.title = promotion.title
       formData.description = promotion.description
       formData.public = promotion.public
-      formData.publishedAt = promotion.publishedAt
       formData.discountType = promotion.discountType
       formData.discountRate = promotion.discountRate
       formData.code = promotion.code
-      formData.startAt = promotion.startAt
-      formData.endAt = promotion.endAt
+      timeData.publishedDate = dayjs.unix(promotion.publishedAt).format('YYYY-MM-DD')
+      timeData.publishedTime = dayjs.unix(promotion.publishedAt).format('HH:mm')
+      timeData.startDate = dayjs.unix(promotion.startAt).format('YYYY-MM-DD')
+      timeData.startTime = dayjs.unix(promotion.startAt).format('HH:mm')
+      timeData.endDate = dayjs.unix(promotion.endAt).format('YYYY-MM-DD')
+      timeData.endTime = dayjs.unix(promotion.endAt).format('HH:mm')
     })
 
     const handleSubmit = async () => {
@@ -63,7 +77,8 @@ export default defineComponent({
     return {
       fetchState,
       formData,
-      handleSubmit
+      timeData,
+      handleSubmit,
     }
   },
 })

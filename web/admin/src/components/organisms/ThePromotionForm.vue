@@ -54,7 +54,7 @@
           />
         </div>
 
-        <p class="text-h6">投稿期間</p>
+        <p class="text-h6">投稿開始</p>
         <div class="d-flex align-center justify-center">
           <v-menu
             v-model="publishMenu"
@@ -66,7 +66,7 @@
           >
             <template #activator="{ on, attrs }">
               <v-text-field
-                v-model="publishDate"
+                v-model="timeData.publishedDate"
                 class="mr-2"
                 label="投稿開始日"
                 readonly
@@ -76,17 +76,17 @@
               />
             </template>
             <v-date-picker
-              v-model="publishDate"
+              v-model="timeData.publishedDate"
               scrollable
               @input="publishMenu = false"
             >
               <v-spacer></v-spacer>
-              <v-btn text color="primary" @click="publishMenu = false">
+              <v-btn text color="primary" @click="pubulishMenu = false">
                 閉じる
               </v-btn>
             </v-date-picker>
           </v-menu>
-          <v-text-field v-model="publishTime" type="time" required outlined />
+          <v-text-field v-model="timeData.publishedTime" type="time" required outlined />
           <p class="text-h6 mb-6 ml-4">〜</p>
           <v-spacer />
         </div>
@@ -103,7 +103,7 @@
           >
             <template #activator="{ on, attrs }">
               <v-text-field
-                v-model="useStartDate"
+                v-model="timeData.startDate"
                 label="使用開始日"
                 readonly
                 outlined
@@ -113,7 +113,7 @@
               />
             </template>
             <v-date-picker
-              v-model="useStartDate"
+              v-model="timeData.startDate"
               scrollable
               @input="useStartMenu = false"
             >
@@ -123,7 +123,7 @@
               </v-btn>
             </v-date-picker>
           </v-menu>
-          <v-text-field v-model="useStartTime" type="time" required outlined />
+          <v-text-field v-model="timeData.startTime" type="time" required outlined />
           <p class="text-h6 mx-4 mb-6">〜</p>
           <v-menu
             v-model="useEndMenu"
@@ -135,7 +135,7 @@
           >
             <template #activator="{ on, attrs }">
               <v-text-field
-                v-model="useEndDate"
+                v-model="timeData.endDate"
                 label="使用終了日"
                 readonly
                 outlined
@@ -145,7 +145,7 @@
               />
             </template>
             <v-date-picker
-              v-model="useEndDate"
+              v-model="timeData.endDate"
               scrollable
               @input="useEndMenu = false"
             >
@@ -155,7 +155,7 @@
               </v-btn>
             </v-date-picker>
           </v-menu>
-          <v-text-field v-model="useEndTime" type="time" required outlined />
+          <v-text-field v-model="timeData.endTime" type="time" required outlined />
         </div>
       </v-card-text>
       <v-card-actions>
@@ -173,6 +173,7 @@ import { defineComponent, PropType } from '@vue/composition-api'
 import dayjs from 'dayjs'
 
 import { CreatePromotionRequest } from '~/types/api'
+import { PromotionTime } from '~/types/props'
 
 export default defineComponent({
   props: {
@@ -199,6 +200,19 @@ export default defineComponent({
         }
       },
     },
+    timeData:{
+      type: Object as PropType<PromotionTime>,
+      default: () => {
+        return {
+          publishedDate: '',
+          publishedTime: '',
+          startDate: '',
+          startTime: '',
+          endDate: '',
+          endTime: '',
+        }
+      }
+    },
   },
 
   setup(props, { emit }) {
@@ -207,17 +221,16 @@ export default defineComponent({
       set: (val: CreatePromotionRequest) => emit('update:formData', val),
     })
 
+    const timeDataValue = computed({
+      get: (): PromotionTime => props.timeData,
+      set: (val: PromotionTime) => emit('update:timeData', val)
+    })
+
     const selectedDiscountMethod = ref<string>('')
     const publishMenu = ref<boolean>(false)
     const useStartMenu = ref<boolean>(false)
     const useEndMenu = ref<boolean>(false)
-    const publishDate = ref<string>('')
-    const useStartDate = ref<string>('')
-    const useEndDate = ref<string>('')
-    const publishTime = ref<string>('')
-    const useStartTime = ref<string>('')
-    const useEndTime = ref<string>('')
-    const discountRateStr = ref<string>('')
+    const discountRateStr = props.formData.discountRate
 
     const btnText = computed(() => {
       return props.formType === 'create' ? '登録' : '更新'
@@ -225,15 +238,15 @@ export default defineComponent({
 
     const handleSubmit = () => {
       formDataValue.value.publishedAt = dayjs(
-        publishDate.value + ' ' + publishTime.value
+        timeDataValue.value.publishedDate + ' ' + timeDataValue.value.publishedTime
       ).unix()
       formDataValue.value.startAt = dayjs(
-        useStartDate.value + ' ' + useStartTime.value
+        timeDataValue.value.startDate + ' ' + timeDataValue.value.startTime
       ).unix()
       formDataValue.value.endAt = dayjs(
-        useEndDate.value + ' ' + useEndTime.value
+        timeDataValue.value.endDate + ' ' + timeDataValue.value.endTime
       ).unix()
-      formDataValue.value.discountRate = parseInt(discountRateStr.value)
+
       emit('submit')
     }
 
@@ -292,18 +305,13 @@ export default defineComponent({
     return {
       selectedDiscountMethod,
       publishMenu,
-      publishTime,
       useStartMenu,
       useEndMenu,
       discountMethodList,
       btnText,
-      publishDate,
-      useStartDate,
-      useStartTime,
-      useEndDate,
-      useEndTime,
       statusList,
       formDataValue,
+      timeDataValue,
       discountRateStr,
       getErrorMessage,
       handleGenerate,
