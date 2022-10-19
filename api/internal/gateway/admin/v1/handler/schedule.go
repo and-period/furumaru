@@ -73,7 +73,7 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		return nil
 	})
 	err := eg.Wait()
-	if errors.Is(err, exception.ErrInvalidArgument) {
+	if errors.Is(err, exception.ErrNotFound) {
 		badRequest(ctx, err)
 	}
 	if err != nil {
