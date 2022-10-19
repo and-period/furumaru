@@ -5,7 +5,7 @@ type Schedule struct {
 	CoordinatorID string `json:"coordinatorId"` // コーディネーターID
 	Title         string `json:"title"`         // タイトル
 	Description   string `json:"description"`   // 説明
-	ThumbnailURL  string `json:"thumnailURL"`   // サムネイルURL
+	ThumbnailURL  string `json:"thumnailUrl"`   // サムネイルURL
 	StartAt       int64  `json:"startAt"`       // 配信開始日時
 	EndAt         int64  `json:"endAt"`         // 配信終了日時
 	Canceled      bool   `json:"canceled"`      // 開催中止フラグ
@@ -15,5 +15,5 @@ type Schedule struct {
 
 type ScheduleResponse struct {
 	*Schedule
-	Lives []*Live
+	Lives []*Live `json:"lives"`
 }
