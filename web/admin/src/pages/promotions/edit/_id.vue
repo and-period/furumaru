@@ -69,7 +69,10 @@ export default defineComponent({
 
     const handleSubmit = async () => {
       try {
-        await promotionStore.editPromotion(id, formData)
+        await promotionStore.editPromotion(id, {
+          ...formData,
+          discountRate: Number(formData.discountRate),
+        })
         router.push('/promotions')
       } catch (error) {
         console.log(error)

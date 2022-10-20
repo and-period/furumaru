@@ -46,7 +46,7 @@
           />
           <v-text-field
             v-if="formData.discountType != 3"
-            v-model="discountRateStr"
+            v-model="formData.discountRate"
             class="ml-4"
             type="number"
             label="割引値"
@@ -246,18 +246,6 @@ export default defineComponent({
     const useStartMenu = ref<boolean>(false)
     const useEndMenu = ref<boolean>(false)
 
-    // TODO
-    const discountRateStr = computed({
-      get: (): string => {
-        return String(props.formData.discountRate)
-      },
-      set: (val: string) =>
-        emit('update:formData', {
-          ...props.formData,
-          discountRate: Number(val),
-        }),
-    })
-
     const btnText = computed(() => {
       return props.formType === 'create' ? '登録' : '更新'
     })
@@ -340,7 +328,6 @@ export default defineComponent({
       statusList,
       formDataValue,
       timeDataValue,
-      discountRateStr,
       getErrorMessage,
       handleGenerate,
       handleSubmit,
