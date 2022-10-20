@@ -28,6 +28,9 @@
         <template #[`item.discount`]="{ item }">
           {{ getDiscount(item.discountType, item.discountRate) }}
         </template>
+        <template #[`item.publishedAt`]="{ item }">
+          {{ getDay(item.publishedAt) }}
+        </template>
         <template #[`item.startAt`]="{ item }">
           {{ getDay(item.startAt) }}
         </template>
@@ -103,6 +106,10 @@ export default defineComponent({
         value: 'discount',
       },
       {
+        text: '投稿開始',
+        value: 'publishedAt',
+      },
+      {
         text: '使用開始',
         value: 'startAt',
       },
@@ -144,6 +151,10 @@ export default defineComponent({
         console.log(err)
       }
       deleteDialog.value = false
+    }
+
+    const handleEdit = (item: PromotionsResponsePromotionsInner) => {
+      router.push(`/promotions/edit/${item.id}`)
     }
 
     const openDeleteDialog = (
@@ -195,6 +206,7 @@ export default defineComponent({
       openDeleteDialog,
       hideDeleteDialog,
       handleDelete,
+      handleEdit,
       handleClickAddButton,
       getDiscount,
       getStatus,
