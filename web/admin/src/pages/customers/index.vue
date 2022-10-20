@@ -5,7 +5,7 @@
       <v-card-text>
         <v-data-table :headers="headers" :items="items" :items-per-page="5">
           <template #[`item.account`]="{ item }">
-            <v-chip :color="getAccountColor(item.account)" dark>
+            <v-chip :color="getAccountColor(item.account)" small dark>
               {{ getAccount(item.account) }}
             </v-chip>
           </template>

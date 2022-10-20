@@ -5,12 +5,12 @@
       <v-card-text>
         <v-data-table :headers="headers" :items="contacts" :items-per-page="5">
           <template #[`item.priority`]="{ item }">
-            <v-chip :color="getPriorityColor(item.priority)" dark>
+            <v-chip :color="getPriorityColor(item.priority)" small dark>
               {{ getPriority(item.priority) }}
             </v-chip>
           </template>
           <template #[`item.status`]="{ item }">
-            <v-chip :color="getStatusColor(item.status)" dark>
+            <v-chip :color="getStatusColor(item.status)" small dark>
               {{ getStatus(item.status) }}
             </v-chip>
           </template>

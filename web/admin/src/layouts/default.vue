@@ -166,6 +166,11 @@ export default defineComponent({
         icon: 'mdi-account',
         title: '生産者管理',
       },
+      {
+        to: '/coordinators',
+        icon: 'mdi-account-star-outline',
+        title: 'コーディネータ管理',
+      },
     ]
 
     const navigationDrawerSettingsList: NavigationDrawerItem[] = [
