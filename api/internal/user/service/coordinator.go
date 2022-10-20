@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -150,15 +149,12 @@ func (s *service) UpdateCoordinatorEmail(ctx context.Context, in *user.UpdateCoo
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	auth, err := s.db.Admin.Get(ctx, in.CoordinatorID, "cognito_id", "role")
+	coordinator, err := s.db.Coordinator.Get(ctx, in.CoordinatorID)
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	if auth.Role != entity.AdminRoleCoordinator {
-		return fmt.Errorf("api: this admin role is not coordinator: %w", exception.ErrFailedPrecondition)
-	}
 	params := &cognito.AdminChangeEmailParams{
-		Username: auth.CognitoID,
+		Username: coordinator.CognitoID,
 		Email:    in.Email,
 	}
 	if err := s.adminAuth.AdminChangeEmail(ctx, params); err != nil {
@@ -173,16 +169,13 @@ func (s *service) ResetCoordinatorPassword(ctx context.Context, in *user.ResetCo
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	auth, err := s.db.Admin.Get(ctx, in.CoordinatorID, "cognito_id", "role")
+	coordinator, err := s.db.Coordinator.Get(ctx, in.CoordinatorID)
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	if auth.Role != entity.AdminRoleCoordinator {
-		return fmt.Errorf("api: this admin role is not coordinator: %w", exception.ErrFailedPrecondition)
-	}
 	password := random.NewStrings(size)
 	params := &cognito.AdminChangePasswordParams{
-		Username:  auth.CognitoID,
+		Username:  coordinator.CognitoID,
 		Password:  password,
 		Permanent: true,
 	}

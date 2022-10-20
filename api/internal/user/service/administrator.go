@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
@@ -128,15 +127,12 @@ func (s *service) UpdateAdministratorEmail(ctx context.Context, in *user.UpdateA
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	auth, err := s.db.Admin.Get(ctx, in.AdministratorID, "cognito_id", "role")
+	administrator, err := s.db.Administrator.Get(ctx, in.AdministratorID)
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	if auth.Role != entity.AdminRoleAdministrator {
-		return fmt.Errorf("api: this admin role is not administrator: %w", exception.ErrFailedPrecondition)
-	}
 	params := &cognito.AdminChangeEmailParams{
-		Username: auth.CognitoID,
+		Username: administrator.CognitoID,
 		Email:    in.Email,
 	}
 	if err := s.adminAuth.AdminChangeEmail(ctx, params); err != nil {
@@ -151,16 +147,13 @@ func (s *service) ResetAdministratorPassword(ctx context.Context, in *user.Reset
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	auth, err := s.db.Admin.Get(ctx, in.AdministratorID, "cognito_id", "role")
+	administrator, err := s.db.Administrator.Get(ctx, in.AdministratorID)
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	if auth.Role != entity.AdminRoleAdministrator {
-		return fmt.Errorf("api: this admin role is not administrator: %w", exception.ErrFailedPrecondition)
-	}
 	password := random.NewStrings(size)
 	params := &cognito.AdminChangePasswordParams{
-		Username:  auth.CognitoID,
+		Username:  administrator.CognitoID,
 		Password:  password,
 		Permanent: true,
 	}

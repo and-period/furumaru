@@ -439,9 +439,22 @@ func TestUpdateAdministrator(t *testing.T) {
 func TestUpdateAdministratorEmail(t *testing.T) {
 	t.Parallel()
 
-	auth := &entity.Admin{
-		CognitoID: "cognito-id",
-		Role:      entity.AdminRoleAdministrator,
+	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
+	administrator := &entity.Administrator{
+		Admin: entity.Admin{
+			ID:            "admin-id",
+			CognitoID:     "cognito-id",
+			Role:          entity.AdminRoleAdministrator,
+			Lastname:      "&.",
+			Firstname:     "スタッフ",
+			LastnameKana:  "あんどぴりおど",
+			FirstnameKana: "すたっふ",
+			Email:         "test-admin@and-period.jp",
+		},
+		AdminID:     "admin-id",
+		PhoneNumber: "+819012345678",
+		CreatedAt:   now,
+		UpdatedAt:   now,
 	}
 	params := &cognito.AdminChangeEmailParams{
 		Username: "cognito-id",
@@ -457,7 +470,7 @@ func TestUpdateAdministratorEmail(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Admin.EXPECT().Get(ctx, "administrator-id", "cognito_id", "role").Return(auth, nil)
+				mocks.db.Administrator.EXPECT().Get(ctx, "administrator-id").Return(administrator, nil)
 				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(nil)
 				mocks.db.Admin.EXPECT().UpdateEmail(ctx, "administrator-id", "test-admin@and-period.jp").Return(nil)
 			},
@@ -476,7 +489,7 @@ func TestUpdateAdministratorEmail(t *testing.T) {
 		{
 			name: "failed to get by admin id",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Admin.EXPECT().Get(ctx, "administrator-id", "cognito_id", "role").Return(nil, errmock)
+				mocks.db.Administrator.EXPECT().Get(ctx, "administrator-id").Return(nil, errmock)
 			},
 			input: &user.UpdateAdministratorEmailInput{
 				AdministratorID: "administrator-id",
@@ -485,21 +498,9 @@ func TestUpdateAdministratorEmail(t *testing.T) {
 			expectErr: exception.ErrUnknown,
 		},
 		{
-			name: "invalid administrator role",
-			setup: func(ctx context.Context, mocks *mocks) {
-				auth := &entity.Admin{CognitoID: "cognito-id", Role: entity.AdminRoleUnknown}
-				mocks.db.Admin.EXPECT().Get(ctx, "administrator-id", "cognito_id", "role").Return(auth, nil)
-			},
-			input: &user.UpdateAdministratorEmailInput{
-				AdministratorID: "administrator-id",
-				Email:           "test-admin@and-period.jp",
-			},
-			expectErr: exception.ErrFailedPrecondition,
-		},
-		{
 			name: "failed to admin change email",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Admin.EXPECT().Get(ctx, "administrator-id", "cognito_id", "role").Return(auth, nil)
+				mocks.db.Administrator.EXPECT().Get(ctx, "administrator-id").Return(administrator, nil)
 				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(errmock)
 			},
 			input: &user.UpdateAdministratorEmailInput{
@@ -511,7 +512,7 @@ func TestUpdateAdministratorEmail(t *testing.T) {
 		{
 			name: "failed to update email",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Admin.EXPECT().Get(ctx, "administrator-id", "cognito_id", "role").Return(auth, nil)
+				mocks.db.Administrator.EXPECT().Get(ctx, "administrator-id").Return(administrator, nil)
 				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(nil)
 				mocks.db.Admin.EXPECT().UpdateEmail(ctx, "administrator-id", "test-admin@and-period.jp").Return(errmock)
 			},
@@ -535,9 +536,22 @@ func TestUpdateAdministratorEmail(t *testing.T) {
 func TestResetAdministratorPassword(t *testing.T) {
 	t.Parallel()
 
-	auth := &entity.Admin{
-		CognitoID: "cognito-id",
-		Role:      entity.AdminRoleAdministrator,
+	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
+	administrator := &entity.Administrator{
+		Admin: entity.Admin{
+			ID:            "admin-id",
+			CognitoID:     "cognito-id",
+			Role:          entity.AdminRoleAdministrator,
+			Lastname:      "&.",
+			Firstname:     "スタッフ",
+			LastnameKana:  "あんどぴりおど",
+			FirstnameKana: "すたっふ",
+			Email:         "test-admin@and-period.jp",
+		},
+		AdminID:     "admin-id",
+		PhoneNumber: "+819012345678",
+		CreatedAt:   now,
+		UpdatedAt:   now,
 	}
 
 	tests := []struct {
@@ -549,7 +563,7 @@ func TestResetAdministratorPassword(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Admin.EXPECT().Get(ctx, "administrator-id", "cognito_id", "role").Return(auth, nil)
+				mocks.db.Administrator.EXPECT().Get(ctx, "administrator-id").Return(administrator, nil)
 				mocks.adminAuth.EXPECT().
 					AdminChangePassword(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, params *cognito.AdminChangePasswordParams) error {
@@ -571,7 +585,7 @@ func TestResetAdministratorPassword(t *testing.T) {
 		{
 			name: "success without notify",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Admin.EXPECT().Get(ctx, "administrator-id", "cognito_id", "role").Return(auth, nil)
+				mocks.db.Administrator.EXPECT().Get(ctx, "administrator-id").Return(administrator, nil)
 				mocks.adminAuth.EXPECT().AdminChangePassword(ctx, gomock.Any()).Return(nil)
 				mocks.messenger.EXPECT().NotifyResetAdminPassword(gomock.Any(), gomock.Any()).Return(errmock)
 			},
@@ -589,7 +603,7 @@ func TestResetAdministratorPassword(t *testing.T) {
 		{
 			name: "failed to get by admin id",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Admin.EXPECT().Get(ctx, "administrator-id", "cognito_id", "role").Return(nil, errmock)
+				mocks.db.Administrator.EXPECT().Get(ctx, "administrator-id").Return(nil, errmock)
 			},
 			input: &user.ResetAdministratorPasswordInput{
 				AdministratorID: "administrator-id",
@@ -597,20 +611,9 @@ func TestResetAdministratorPassword(t *testing.T) {
 			expectErr: exception.ErrUnknown,
 		},
 		{
-			name: "invalid administrator role",
-			setup: func(ctx context.Context, mocks *mocks) {
-				auth := &entity.Admin{CognitoID: "cognito-id", Role: entity.AdminRoleUnknown}
-				mocks.db.Admin.EXPECT().Get(ctx, "administrator-id", "cognito_id", "role").Return(auth, nil)
-			},
-			input: &user.ResetAdministratorPasswordInput{
-				AdministratorID: "administrator-id",
-			},
-			expectErr: exception.ErrFailedPrecondition,
-		},
-		{
 			name: "failed to admin change password",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Admin.EXPECT().Get(ctx, "administrator-id", "cognito_id", "role").Return(auth, nil)
+				mocks.db.Administrator.EXPECT().Get(ctx, "administrator-id").Return(administrator, nil)
 				mocks.adminAuth.EXPECT().AdminChangePassword(ctx, gomock.Any()).Return(errmock)
 			},
 			input: &user.ResetAdministratorPasswordInput{
