@@ -71,4 +71,6 @@ type Service interface {
 	ListOrders(ctx context.Context, in *ListOrdersInput) (entity.Orders, int64, error)
 	// 注文履歴取得
 	GetOrder(ctx context.Context, in *GetOrderInput) (*entity.Order, error)
+	// 注文履歴集計結果一覧取得
+	AggregatedOrders(ctx context.Context, in *AggregatedOrdersInput) (entity.AggregatedOrders, error)
 }

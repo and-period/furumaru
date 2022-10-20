@@ -387,6 +387,117 @@ func TestOrder_Get(t *testing.T) {
 	}
 }
 
+func TestOrder_GetTotal(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx,
+		orderItemTable, orderActivityTable, orderPaymentTable, orderFulfillmentTable,
+		orderTable, shippingTable, productTable, productTypeTable, categoryTable,
+	)
+	categories := make(entity.Categories, 2)
+	categories[0] = testCategory("category-id01", "野菜", now())
+	categories[1] = testCategory("category-id02", "果物", now())
+	err = m.db.DB.Create(&categories).Error
+	require.NoError(t, err)
+	productTypes := make(entity.ProductTypes, 2)
+	productTypes[0] = testProductType("type-id01", "category-id01", "野菜", now())
+	productTypes[1] = testProductType("type-id02", "category-id02", "果物", now())
+	err = m.db.DB.Create(&productTypes).Error
+	require.NoError(t, err)
+	products := make(entity.Products, 2)
+	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", now())
+	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", now())
+	err = m.db.DB.Create(&products).Error
+	require.NoError(t, err)
+	shipping := testShipping("shipping-id", now())
+	err = m.db.DB.Create(&shipping).Error
+	require.NoError(t, err)
+
+	o := testOrder("order-id", "user-id", "schedule-id", "coordinator-id", now())
+	err = m.db.DB.Create(&o).Error
+	require.NoError(t, err)
+	payment := testOrderPayment("payment-id", "transaction-id", "order-id", "", "payment-id", now())
+	o.OrderPayment = *payment
+	err = m.db.DB.Create(&payment).Error
+	require.NoError(t, err)
+	fulfillment := testOrderFulfillment("fulfillment-id", "order-id", "shipping-id", now())
+	o.OrderFulfillment = *fulfillment
+	err = m.db.DB.Create(&fulfillment).Error
+	require.NoError(t, err)
+	items := make(entity.OrderItems, 2)
+	items[0] = testOrderItem("item-id01", "order-id", "product-id01", now())
+	items[1] = testOrderItem("item-id02", "order-id", "product-id02", now())
+	o.OrderItems = items
+	err = m.db.DB.Create(&items).Error
+	require.NoError(t, err)
+	activities := make(entity.OrderActivities, 2)
+	activities[0] = testOrderActivity("activity-id01", "order-id", "user-id", now())
+	activities[1] = testOrderActivity("activity-id02", "order-id", "user-id", now())
+	o.OrderActivities = activities
+	err = m.db.DB.Create(&activities).Error
+	require.NoError(t, err)
+
+	type args struct {
+		userIDs []string
+	}
+	type want struct {
+		orders entity.AggregatedOrders
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				userIDs: []string{"user-id", "other-id"},
+			},
+			want: want{
+				orders: entity.AggregatedOrders{
+					{
+						UserID:     "user-id",
+						OrderCount: 1,
+						Subtotal:   100,
+						Discount:   0,
+					},
+				},
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &order{db: m.db, now: now}
+			actual, err := db.Aggregate(ctx, tt.args.userIDs)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.orders, actual)
+		})
+	}
+}
+
 func testOrder(id, userID, scheduleID, coordinatorID string, now time.Time) *entity.Order {
 	return &entity.Order{
 		ID:                id,

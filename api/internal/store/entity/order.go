@@ -70,6 +70,16 @@ type Order struct {
 
 type Orders []*Order
 
+// AggregatedOrder - 注文履歴集計情報
+type AggregatedOrder struct {
+	UserID     string // ユーザーID
+	OrderCount int64  // 注文合計回数
+	Subtotal   int64  // 購入合計金額
+	Discount   int64  // 割引合計金額
+}
+
+type AggregatedOrders []*AggregatedOrder
+
 func (o *Order) Fill(
 	items OrderItems, payment *OrderPayment, fulfillment *OrderFulfillment, activities OrderActivities,
 ) {
