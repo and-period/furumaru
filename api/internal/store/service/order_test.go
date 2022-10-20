@@ -310,7 +310,7 @@ func TestGetOrder(t *testing.T) {
 	}
 }
 
-func TestAggregatedOrders(t *testing.T) {
+func TestAggregateOrders(t *testing.T) {
 	t.Parallel()
 
 	orders := entity.AggregatedOrders{
@@ -325,7 +325,7 @@ func TestAggregatedOrders(t *testing.T) {
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *store.AggregatedOrdersInput
+		input     *store.AggregateOrdersInput
 		expect    entity.AggregatedOrders
 		expectErr error
 	}{
@@ -334,7 +334,7 @@ func TestAggregatedOrders(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Aggregate(ctx, []string{"user-id"}).Return(orders, nil)
 			},
-			input: &store.AggregatedOrdersInput{
+			input: &store.AggregateOrdersInput{
 				UserIDs: []string{"user-id"},
 			},
 			expect:    orders,
@@ -343,7 +343,7 @@ func TestAggregatedOrders(t *testing.T) {
 		{
 			name:  "invalid argument",
 			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &store.AggregatedOrdersInput{
+			input: &store.AggregateOrdersInput{
 				UserIDs: []string{""},
 			},
 			expect:    nil,
@@ -354,7 +354,7 @@ func TestAggregatedOrders(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Aggregate(ctx, []string{"user-id"}).Return(nil, errmock)
 			},
-			input: &store.AggregatedOrdersInput{
+			input: &store.AggregateOrdersInput{
 				UserIDs: []string{"user-id"},
 			},
 			expect:    nil,
@@ -365,7 +365,7 @@ func TestAggregatedOrders(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.AggregatedOrders(ctx, tt.input)
+			actual, err := service.AggregateOrders(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
 		}))
