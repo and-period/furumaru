@@ -1,6 +1,13 @@
 <template>
   <div>
     <v-card-title>配送設定一覧</v-card-title>
+    <div class="d-flex">
+      <v-spacer />
+      <v-btn outlined color="primary">
+        <v-icon left>mdi-plus</v-icon>
+        配送情報登録
+      </v-btn>
+    </div>
     <v-card class="mt-4" flat :loading="fetchState.pending">
       <v-card-text>
         <v-data-table
@@ -23,7 +30,7 @@
             {{ dateTimeFormatter(item.updatedAt) }}
           </template>
 
-          <template #expanded-item="{ headers, item }">
+          <template #expanded-item="{ item }">
             <td :colspan="headers.length" class="pa-4">
               <div v-for="n in [60, 80, 100]" :key="n">
                 <div class="row my-2">サイズ{{ n }}詳細</div>
@@ -47,9 +54,9 @@
                       multiple
                       hide-details
                     >
-                      <template #selection="{ item, index }">
+                      <template #selection="{ item: selectItem, index }">
                         <v-chip v-if="index < 5" small>
-                          <span>{{ item.text }}</span>
+                          <span>{{ selectItem.text }}</span>
                         </v-chip>
                         <span
                           v-if="index === 5"
