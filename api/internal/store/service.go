@@ -72,5 +72,5 @@ type Service interface {
 	// 注文履歴取得
 	GetOrder(ctx context.Context, in *GetOrderInput) (*entity.Order, error)
 	// 注文履歴集計結果一覧取得
-	AggregatedOrders(ctx context.Context, in *AggregatedOrdersInput) (entity.AggregatedOrders, error)
+	AggregateOrders(ctx context.Context, in *AggregateOrdersInput) (entity.AggregatedOrders, error)
 }

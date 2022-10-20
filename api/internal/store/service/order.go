@@ -46,7 +46,7 @@ func (s *service) GetOrder(ctx context.Context, in *store.GetOrderInput) (*entit
 	return order, exception.InternalError(err)
 }
 
-func (s *service) AggregatedOrders(ctx context.Context, in *store.AggregatedOrdersInput) (entity.AggregatedOrders, error) {
+func (s *service) AggregateOrders(ctx context.Context, in *store.AggregateOrdersInput) (entity.AggregatedOrders, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
