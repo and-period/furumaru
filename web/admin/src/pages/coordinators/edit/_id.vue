@@ -33,11 +33,12 @@
           <v-text-field
             v-model="v$.lastnameKana.$model"
             :error-messages="getErrorMessage(v$.lastnameKana.$errors)"
-            class="mr-4"
             label="コーディネーター:姓（ふりがな）"
           />
           <v-text-field
             v-model="v$.firstnameKana.$model"
+            :error-messages="getErrorMessage(v$.firstnameKana.$errors)"
+            class="mr-4"
             label="コーディネーター:名（ふりがな）"
           />
         </div>
@@ -72,7 +73,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive } from '@nuxtjs/composition-api'
+import {
+  computed,
+  defineComponent,
+  reactive,
+  useFetch,
+  useRoute,
+  useRouter,
+} from '@nuxtjs/composition-api'
 import { useVuelidate } from '@vuelidate/core'
 
 import { useSearchAddress } from '~/lib/hooks'
@@ -85,11 +93,20 @@ import {
   maxLength,
 } from '~/lib/validations'
 import { useCoordinatorStore } from '~/store/coordinator'
-import { CreateCoordinatorRequest } from '~/types/api'
+import { CoordinatorResponse } from '~/types/api'
 
 export default defineComponent({
   setup() {
-    const formData = reactive<CreateCoordinatorRequest>({
+    const coordinatorStore = useCoordinatorStore()
+
+    const route = useRoute()
+    const id = route.value.params.id
+    const router = useRouter()
+
+    const { getCoordinator } = useCoordinatorStore()
+
+    const formData = reactive<CoordinatorResponse>({
+      id,
       storeName: '',
       firstname: '',
       lastname: '',
@@ -108,6 +125,32 @@ export default defineComponent({
       city: '',
       addressLine1: '',
       addressLine2: '',
+      createdAt: 0,
+      updatedAt: 0,
+    })
+
+    const { fetchState } = useFetch(async () => {
+      const coordinator = await getCoordinator(id)
+      formData.storeName = coordinator.storeName
+      formData.firstname = coordinator.firstname
+      formData.lastname = coordinator.lastname
+      formData.firstnameKana = coordinator.firstnameKana
+      formData.lastnameKana = coordinator.lastnameKana
+      formData.companyName = coordinator.companyName
+      formData.thumbnailUrl = coordinator.thumbnailUrl
+      formData.headerUrl = coordinator.headerUrl
+      formData.twitterAccount = coordinator.twitterAccount
+      formData.instagramAccount = coordinator.instagramAccount
+      formData.facebookAccount = coordinator.facebookAccount
+      formData.email = coordinator.email
+      formData.phoneNumber = coordinator.phoneNumber.replace('+81', '0')
+      formData.postalCode = coordinator.postalCode
+      formData.prefecture = coordinator.prefecture
+      formData.city = coordinator.city
+      formData.addressLine1 = coordinator.addressLine1
+      formData.addressLine2 = coordinator.addressLine2
+      formData.createdAt = coordinator.createdAt
+      formData.updatedAt = coordinator.updatedAt
     })
 
     const rules = computed(() => ({
@@ -122,7 +165,6 @@ export default defineComponent({
     }))
 
     const v$ = useVuelidate(rules, formData)
-    const { createCoordinator } = useCoordinatorStore()
 
     const {
       loading: searchLoading,
@@ -141,18 +183,28 @@ export default defineComponent({
       }
     }
 
-    const handleSubmit = async () => {
-      const result = await v$.value.$validate()
-      if (!result) {
-        return
+    const handleSubmit = async (): Promise<void> => {
+      try {
+        const result = await v$.value.$validate()
+        if (!result) {
+          return
+        }
+        await coordinatorStore.updateCoordinator(
+          {
+            ...formData,
+            phoneNumber: formData.phoneNumber.replace('0', '+81'),
+          },
+          id
+        )
+        router.push('/')
+      } catch (error) {
+        console.log(error)
       }
-      await createCoordinator({
-        ...formData,
-        phoneNumber: formData.phoneNumber.replace('0', '+81'),
-      })
     }
 
     return {
+      id,
+      fetchState,
       formData,
       v$,
       getErrorMessage,
