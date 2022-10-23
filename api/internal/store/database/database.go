@@ -55,6 +55,7 @@ type Order interface {
 	List(ctx context.Context, params *ListOrdersParams, fields ...string) (entity.Orders, error)
 	Count(ctx context.Context, params *ListOrdersParams) (int64, error)
 	Get(ctx context.Context, orderID string, fields ...string) (*entity.Order, error)
+	Aggregate(ctx context.Context, userIDs []string) (entity.AggregatedOrders, error)
 }
 
 type Product interface {

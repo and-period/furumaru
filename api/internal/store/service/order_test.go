@@ -309,3 +309,65 @@ func TestGetOrder(t *testing.T) {
 		}))
 	}
 }
+
+func TestAggregateOrders(t *testing.T) {
+	t.Parallel()
+
+	orders := entity.AggregatedOrders{
+		{
+			UserID:     "user-id",
+			OrderCount: 2,
+			Subtotal:   6000,
+			Discount:   1000,
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.AggregateOrdersInput
+		expect    entity.AggregatedOrders
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().Aggregate(ctx, []string{"user-id"}).Return(orders, nil)
+			},
+			input: &store.AggregateOrdersInput{
+				UserIDs: []string{"user-id"},
+			},
+			expect:    orders,
+			expectErr: nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.AggregateOrdersInput{
+				UserIDs: []string{""},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to aggregate",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().Aggregate(ctx, []string{"user-id"}).Return(nil, errmock)
+			},
+			input: &store.AggregateOrdersInput{
+				UserIDs: []string{"user-id"},
+			},
+			expect:    nil,
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.AggregateOrders(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}

@@ -45,3 +45,11 @@ func (s *service) GetOrder(ctx context.Context, in *store.GetOrderInput) (*entit
 	order, err := s.db.Order.Get(ctx, in.OrderID)
 	return order, exception.InternalError(err)
 }
+
+func (s *service) AggregateOrders(ctx context.Context, in *store.AggregateOrdersInput) (entity.AggregatedOrders, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	orders, err := s.db.Order.Aggregate(ctx, in.UserIDs)
+	return orders, exception.InternalError(err)
+}

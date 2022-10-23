@@ -301,3 +301,7 @@ type ListOrdersOrder struct {
 type GetOrderInput struct {
 	OrderID string `validate:"required"`
 }
+
+type AggregateOrdersInput struct {
+	UserIDs []string `validate:"omitempty,dive,required"`
+}

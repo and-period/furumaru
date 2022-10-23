@@ -76,6 +76,25 @@ func (o *order) Get(ctx context.Context, orderID string, fields ...string) (*ent
 	return order, nil
 }
 
+func (o *order) Aggregate(ctx context.Context, userIDs []string) (entity.AggregatedOrders, error) {
+	var orders entity.AggregatedOrders
+
+	fields := []string{
+		"orders.user_id AS user_id",
+		"COUNT(DISTINCT(orders.id)) AS order_count",
+		"SUM(order_payments.subtotal) AS subtotal",
+		"SUM(order_payments.discount) AS discount",
+	}
+
+	stmt := o.db.DB.WithContext(ctx).Table(orderTable).Select(fields).
+		Joins("INNER JOIN order_payments ON order_payments.order_id = orders.id").
+		Where("orders.user_id IN (?)", userIDs).
+		Group("orders.user_id")
+
+	err := stmt.Scan(&orders).Error
+	return orders, exception.InternalError(err)
+}
+
 func (o *order) get(ctx context.Context, tx *gorm.DB, orderID string, fields ...string) (*entity.Order, error) {
 	var order *entity.Order
 	if len(fields) == 0 {

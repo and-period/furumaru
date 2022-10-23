@@ -36,6 +36,21 @@ func (m *MockService) EXPECT() *MockServiceMockRecorder {
 	return m.recorder
 }
 
+// AggregateOrders mocks base method.
+func (m *MockService) AggregateOrders(ctx context.Context, in *store.AggregateOrdersInput) (entity.AggregatedOrders, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AggregateOrders", ctx, in)
+	ret0, _ := ret[0].(entity.AggregatedOrders)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AggregateOrders indicates an expected call of AggregateOrders.
+func (mr *MockServiceMockRecorder) AggregateOrders(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AggregateOrders", reflect.TypeOf((*MockService)(nil).AggregateOrders), ctx, in)
+}
+
 // CreateCategory mocks base method.
 func (m *MockService) CreateCategory(ctx context.Context, in *store.CreateCategoryInput) (*entity.Category, error) {
 	m.ctrl.T.Helper()
