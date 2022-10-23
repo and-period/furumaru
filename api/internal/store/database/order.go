@@ -80,10 +80,10 @@ func (o *order) Aggregate(ctx context.Context, userIDs []string) (entity.Aggrega
 	var orders entity.AggregatedOrders
 
 	fields := []string{
-		"orders.user_id",
-		"SUM(DISTINCT(orders.id))",
-		"SUM(order_payments.subtotal)",
-		"SUM(order_payments.discount)",
+		"orders.user_id AS user_id",
+		"COUNT(DISTINCT(orders.id)) AS order_count",
+		"SUM(order_payments.subtotal) AS subtotal",
+		"SUM(order_payments.discount) AS discount",
 	}
 
 	stmt := o.db.DB.WithContext(ctx).Table(orderTable).Select(fields).

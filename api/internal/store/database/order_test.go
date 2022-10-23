@@ -387,7 +387,7 @@ func TestOrder_Get(t *testing.T) {
 	}
 }
 
-func TestOrder_GetTotal(t *testing.T) {
+func TestOrder_Aggregate(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	ctrl := gomock.NewController(t)
