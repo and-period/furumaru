@@ -8,10 +8,13 @@ import ApiClientFactory from '~/plugins/factory'
 import {
   CreateNotificationRequest,
   NotificationApi,
+  NotificationResponse,
   NotificationsResponse,
+  UpdateNotificationRequest,
 } from '~/types/api'
 import {
   AuthError,
+  ConflictError,
   ConnectionError,
   InternalServerError,
   NotFoundError,
@@ -173,5 +176,96 @@ export const useNotificationStore = defineStore('Notification', {
       }
       this.fetchNotifications()
     },
+
+    /**
+     * お知らせIDからお知らせ情報情報を取得する非同期関数
+     * @param id お知らせID
+     * @returns お知らせ情報
+     */
+    async getNotification(id: string): Promise<NotificationResponse> {
+      try {
+        const authStore = useAuthStore()
+        const accessToken = authStore.accessToken
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
+        }
+        const res = await this.apiClient(accessToken).v1GetNotification(id)
+        return res.data
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          const statusCode = error.response.status
+          switch (statusCode) {
+            case 401:
+              return Promise.reject(
+                new AuthError('認証エラー。再度ログインをしてください', error)
+              )
+            case 404:
+              return Promise.reject(
+                new NotFoundError(
+                  '一致するお知らせ情報が見つかりませんでした。',
+                  error
+                )
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+        throw new InternalServerError(error)
+      }
+    },
+
+    /**
+     * お知らせ情報を編集する非同期関数
+     * @param id セールID
+     * @param payload
+     */
+    async editNotification(id: string, payload: UpdateNotificationRequest): Promise<void> {
+      const commonStore = useCommonStore()
+      try {
+        const authStore = useAuthStore()
+        const accessToken = authStore.accessToken
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
+        }
+        await this.apiClient(accessToken).v1UpdateNotification(id, payload)
+        commonStore.addSnackbar({
+          message: 'お知らせ情報の編集が完了しました',
+          color: 'info',
+        })
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          const statusCode = error.response.status
+          switch (statusCode) {
+            case 400:
+              return Promise.reject(
+                new ValidationError('入力内容に誤りがあります。', error)
+              )
+            case 401:
+              return Promise.reject(
+                new AuthError('認証エラー。再度ログインをしてください', error)
+              )
+            case 404:
+              return Promise.reject(
+                new NotFoundError(
+                  '一致するお知らせ情報が見つかりませんでした。',
+                  error
+                )
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+        throw new InternalServerError(error)
+      }
+    }
+
   },
 })
