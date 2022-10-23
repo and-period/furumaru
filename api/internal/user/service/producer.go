@@ -136,15 +136,12 @@ func (s *service) UpdateProducerEmail(ctx context.Context, in *user.UpdateProduc
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	auth, err := s.db.Admin.Get(ctx, in.ProducerID, "cognito_id", "role")
+	producer, err := s.db.Producer.Get(ctx, in.ProducerID)
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	if auth.Role != entity.AdminRoleProducer {
-		return fmt.Errorf("api: this admin role is not producer: %w", exception.ErrFailedPrecondition)
-	}
 	params := &cognito.AdminChangeEmailParams{
-		Username: auth.CognitoID,
+		Username: producer.CognitoID,
 		Email:    in.Email,
 	}
 	if err := s.adminAuth.AdminChangeEmail(ctx, params); err != nil {
@@ -159,16 +156,13 @@ func (s *service) ResetProducerPassword(ctx context.Context, in *user.ResetProdu
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	auth, err := s.db.Admin.Get(ctx, in.ProducerID, "cognito_id", "role")
+	producer, err := s.db.Producer.Get(ctx, in.ProducerID)
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	if auth.Role != entity.AdminRoleProducer {
-		return fmt.Errorf("api: this admin role is not producer: %w", exception.ErrFailedPrecondition)
-	}
 	password := random.NewStrings(size)
 	params := &cognito.AdminChangePasswordParams{
-		Username:  auth.CognitoID,
+		Username:  producer.CognitoID,
 		Password:  password,
 		Permanent: true,
 	}
