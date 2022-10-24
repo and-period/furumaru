@@ -3,7 +3,7 @@
     <v-card-title>配送設定一覧</v-card-title>
     <div class="d-flex">
       <v-spacer />
-      <v-btn outlined color="primary">
+      <v-btn outlined color="primary" @click="handleClickAddButton">
         <v-icon left>mdi-plus</v-icon>
         配送情報登録
       </v-btn>
@@ -78,7 +78,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useFetch } from '@nuxtjs/composition-api'
+import {
+  computed,
+  defineComponent,
+  useFetch,
+  useRouter,
+} from '@nuxtjs/composition-api'
 import { DataTableHeader } from 'vuetify'
 
 import { prefecturesList } from '~/constants'
@@ -88,6 +93,7 @@ import { useShippingStore } from '~/store/shippings'
 export default defineComponent({
   setup() {
     const shippingStore = useShippingStore()
+    const router = useRouter()
 
     const totalItems = computed(() => {
       return shippingStore.totalItems
@@ -128,6 +134,10 @@ export default defineComponent({
       }
     })
 
+    const handleClickAddButton = () => {
+      router.push('/shippings/add')
+    }
+
     return {
       fetchState, // 初回ロード状況
       totalItems, // サーバ上の配送情報の個数
@@ -141,6 +151,7 @@ export default defineComponent({
       moneyFormat,
       updateCurrentPage,
       handleUpdateItemsPerPage,
+      handleClickAddButton,
     }
   },
 })

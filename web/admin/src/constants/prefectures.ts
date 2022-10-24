@@ -1,4 +1,4 @@
-interface PrefecturesListItem {
+export interface PrefecturesListItem {
   id: number
   text: string
   value: string
