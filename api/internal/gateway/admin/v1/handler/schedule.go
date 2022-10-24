@@ -29,6 +29,7 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 
 	var (
 		producers service.Producers
+		shippings service.Shippings
 		products  service.Products
 		err       error
 	)
@@ -42,14 +43,6 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 			return err
 		}
 		return nil
-	})
-	eg.Go(func() error {
-		var productIDs []string
-		for i := range req.Lives {
-			productIDs = append(productIDs, req.Lives[i].ProductIDs...)
-		}
-		products, err = h.multiGetProducts(ectx, productIDs)
-		return err
 	})
 	eg.Go(func() error {
 		var producerIDs []string
@@ -66,6 +59,32 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		producers = service.NewProducers(sproducers)
 		return nil
 	})
+	eg.Go(func() error {
+		var shippingIDs []string
+		for i := range req.Lives {
+			shippingIDs = append(shippingIDs, req.Lives[i].ShippingID)
+		}
+		in := &store.MultiGetShippingsInput{
+			ShippingIDs: shippingIDs,
+		}
+		sshippings, err := h.store.MultiGetShippings(ectx, in)
+		if err != nil {
+			return nil
+		}
+		shippings, err = service.NewShippings(sshippings)
+		if err != nil {
+			return nil
+		}
+		return nil
+	})
+	eg.Go(func() error {
+		var productIDs []string
+		for i := range req.Lives {
+			productIDs = append(productIDs, req.Lives[i].ProductIDs...)
+		}
+		products, err = h.multiGetProducts(ectx, productIDs)
+		return err
+	})
 	gerr := eg.Wait()
 	if errors.Is(err, exception.ErrNotFound) {
 		badRequest(ctx, gerr)
@@ -81,6 +100,7 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 			Title:       req.Lives[i].Title,
 			Description: req.Lives[i].Description,
 			ProducerID:  req.Lives[i].ProducerID,
+			ShippingID:  req.Lives[i].ShippingID,
 			ProductIDs:  req.Lives[i].ProductIDs,
 			StartAt:     jst.ParseFromUnix(req.Lives[i].StartAt),
 			EndAt:       jst.ParseFromUnix(req.Lives[i].EndAt),
@@ -104,7 +124,7 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 	schedule := service.NewSchedule(sschedule)
 	lives := service.NewLives(slives)
 
-	lives.Fill(producers.Map(), products.Map())
+	lives.Fill(producers.Map(), shippings.Map(), products.Map())
 
 	res := &response.ScheduleResponse{
 		Schedule: schedule.Response(),
