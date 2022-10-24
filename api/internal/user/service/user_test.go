@@ -6,12 +6,112 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
+
+func TestListUsers(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Now()
+	params := &database.ListUsersParams{
+		Limit:  20,
+		Offset: 0,
+	}
+	users := entity.Users{
+		{
+			ID:         "user-id",
+			Registered: true,
+			CreatedAt:  now,
+			UpdatedAt:  now,
+			Member: entity.Member{
+				AccountID:    "",
+				CognitoID:    "cognito-id",
+				Username:     "",
+				ProviderType: entity.ProviderTypeEmail,
+				Email:        "test-user@and-period.jp",
+				PhoneNumber:  "+810000000000",
+				ThumbnailURL: "https://and-period.jp/thumbnail.png",
+				CreatedAt:    now,
+				UpdatedAt:    now,
+				VerifiedAt:   now,
+			},
+		},
+	}
+
+	tests := []struct {
+		name        string
+		setup       func(ctx context.Context, mocks *mocks)
+		input       *user.ListUsersInput
+		expect      entity.Users
+		expectTotal int64
+		expectErr   error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.User.EXPECT().List(gomock.Any(), params).Return(users, nil)
+				mocks.db.User.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
+			},
+			input: &user.ListUsersInput{
+				Limit:  20,
+				Offset: 0,
+			},
+			expect:      users,
+			expectTotal: 1,
+			expectErr:   nil,
+		},
+		{
+			name:        "invalid argument",
+			setup:       func(ctx context.Context, mocks *mocks) {},
+			input:       &user.ListUsersInput{},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to list users",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.User.EXPECT().List(gomock.Any(), params).Return(nil, errmock)
+				mocks.db.User.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
+			},
+			input: &user.ListUsersInput{
+				Limit:  20,
+				Offset: 0,
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrUnknown,
+		},
+		{
+			name: "failed to count users",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.User.EXPECT().List(gomock.Any(), params).Return(users, nil)
+				mocks.db.User.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
+			},
+			input: &user.ListUsersInput{
+				Limit:  20,
+				Offset: 0,
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrUnknown,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, total, err := service.ListUsers(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.ElementsMatch(t, tt.expect, actual)
+			assert.Equal(t, tt.expectTotal, total)
+		}))
+	}
+}
 
 func TestMultiGetUsers(t *testing.T) {
 	t.Parallel()

@@ -239,6 +239,11 @@ type RefreshUserTokenInput struct {
 	RefreshToken string `validate:"required"`
 }
 
+type ListUsersInput struct {
+	Limit  int64 `validate:"required,max=200"`
+	Offset int64 `validate:"min=0"`
+}
+
 type MultiGetUsersInput struct {
 	UserIDs []string `validate:"omitempty,dive,required"`
 }
