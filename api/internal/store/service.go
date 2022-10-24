@@ -35,6 +35,8 @@ type Service interface {
 	DeleteProductType(ctx context.Context, in *DeleteProductTypeInput) error
 	// 配送設定一覧取得
 	ListShippings(ctx context.Context, in *ListShippingsInput) (entity.Shippings, int64, error)
+	// 配送設定一覧取得(ID指定)
+	MultiGetShippings(ctx context.Context, in *MultiGetShippingsInput) (entity.Shippings, error)
 	// 配送設定取得
 	GetShipping(ctx context.Context, in *GetShippingInput) (*entity.Shipping, error)
 	// 配送設定登録

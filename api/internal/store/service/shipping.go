@@ -46,6 +46,16 @@ func (s *service) ListShippings(ctx context.Context, in *store.ListShippingsInpu
 	return shippings, total, nil
 }
 
+func (s *service) MultiGetShippings(
+	ctx context.Context, in *store.MultiGetShippingsInput,
+) (entity.Shippings, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	shippings, err := s.db.Shipping.MultiGet(ctx, in.ShippingIDs)
+	return shippings, exception.InternalError(err)
+}
+
 func (s *service) GetShipping(ctx context.Context, in *store.GetShippingInput) (*entity.Shipping, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)

@@ -87,6 +87,10 @@ type ListShippingsOrder struct {
 	OrderByASC bool                   `validate:""`
 }
 
+type MultiGetShippingsInput struct {
+	ShippingIDs []string `validate:"omitempty,dive,required"`
+}
+
 type GetShippingInput struct {
 	ShippingID string `validate:"required"`
 }
