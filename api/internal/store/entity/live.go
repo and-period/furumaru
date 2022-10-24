@@ -90,6 +90,12 @@ func (ls Lives) ProducerIDs() []string {
 	})
 }
 
+func (ls Lives) ShippingIDs() []string {
+	return set.UniqBy(ls, func(l *Live) string {
+		return l.ShippingID
+	})
+}
+
 func (ls Lives) Fill(products map[string]LiveProducts, now time.Time) {
 	for i := range ls {
 		ls[i].Fill(products[ls[i].ID], now)
