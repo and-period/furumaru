@@ -1,4 +1,4 @@
-class ApiBaseError<T> extends Error {
+export class ApiBaseError<T> extends Error {
   constructor(public message: string, public cause?: T) {
     super(message)
     this.cause = cause
