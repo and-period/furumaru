@@ -4,11 +4,16 @@ import { defineStore } from 'pinia'
 import { useAuthStore } from './auth'
 
 import ApiClientFactory from '~/plugins/factory'
-import { ShippingApi, ShippingsResponseShippingsInner } from '~/types/api'
+import {
+  CreateShippingRequest,
+  ShippingApi,
+  ShippingsResponseShippingsInner,
+} from '~/types/api'
 import {
   AuthError,
   ConnectionError,
   InternalServerError,
+  ValidationError,
 } from '~/types/exception'
 
 export const useShippingStore = defineStore('shippings', {
@@ -55,6 +60,39 @@ export const useShippingStore = defineStore('shippings', {
             return Promise.reject(new ConnectionError(error))
           }
           switch (error.response.status) {
+            case 401:
+              return Promise.reject(
+                new AuthError('認証エラー。再度ログインをしてください。', error)
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+        throw new InternalServerError(error)
+      }
+    },
+
+    async createShipping(payload: CreateShippingRequest) {
+      try {
+        const authStore = useAuthStore()
+        const accessToken = authStore.accessToken
+        if (!accessToken) {
+          return Promise.reject(
+            new AuthError('認証エラー。再度ログインをしてください。')
+          )
+        }
+        await this.apiClient(accessToken).v1CreateShipping(payload)
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          switch (error.response.status) {
+            case 400:
+              return Promise.reject(
+                new ValidationError('入力内容に誤りがあります。', error)
+              )
             case 401:
               return Promise.reject(
                 new AuthError('認証エラー。再度ログインをしてください。', error)
