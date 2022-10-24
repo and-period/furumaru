@@ -30,6 +30,7 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 	var (
 		producers service.Producers
 		products  service.Products
+		err       error
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
@@ -47,15 +48,8 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		for i := range req.Lives {
 			productIDs = append(productIDs, req.Lives[i].ProductIDs...)
 		}
-		in := &store.MultiGetProductsInput{
-			ProductIDs: productIDs,
-		}
-		sproducts, err := h.store.MultiGetProducts(ectx, in)
-		if err != nil {
-			return err
-		}
-		products = service.NewProducts(sproducts)
-		return nil
+		products, err = h.multiGetProducts(ectx, productIDs)
+		return err
 	})
 	eg.Go(func() error {
 		var producerIDs []string
@@ -72,12 +66,12 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		producers = service.NewProducers(sproducers)
 		return nil
 	})
-	err := eg.Wait()
+	gerr := eg.Wait()
 	if errors.Is(err, exception.ErrNotFound) {
-		badRequest(ctx, err)
+		badRequest(ctx, gerr)
 	}
-	if err != nil {
-		httpError(ctx, err)
+	if gerr != nil {
+		httpError(ctx, gerr)
 		return
 	}
 
@@ -110,7 +104,7 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 	schedule := service.NewSchedule(sschedule)
 	lives := service.NewLives(slives)
 
-	lives.Fill(producers, products.Map())
+	lives.Fill(producers.Map(), products.Map())
 
 	res := &response.ScheduleResponse{
 		Schedule: schedule.Response(),

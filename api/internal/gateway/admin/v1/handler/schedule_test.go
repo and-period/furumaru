@@ -20,9 +20,6 @@ func TestCreateSchedule(t *testing.T) {
 	coordinatorIn := &user.GetCoordinatorInput{
 		CoordinatorID: "coordinator-id",
 	}
-	producersIn := &user.MultiGetProducersInput{
-		ProducerIDs: []string{"producer-id"},
-	}
 	productsIn := &store.MultiGetProductsInput{
 		ProductIDs: []string{"product-id"},
 	}
@@ -68,27 +65,56 @@ func TestCreateSchedule(t *testing.T) {
 		CreatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		UpdatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
 	}
-	producer := &uentity.Producer{
-		Admin: uentity.Admin{
-			ID:            "producer-id",
-			Lastname:      "&.",
-			Firstname:     "管理者",
-			LastnameKana:  "あんどどっと",
-			FirstnameKana: "かんりしゃ",
-			Email:         "test-producer@and-period.jp",
-		},
-		AdminID:      "producer-id",
-		StoreName:    "&.農園",
-		ThumbnailURL: "https://and-period.jp/thumbnail.png",
-		HeaderURL:    "https://and-period.jp/header.png",
-		PhoneNumber:  "+819012345678",
-		PostalCode:   "1000014",
-		Prefecture:   "東京都",
-		City:         "千代田区",
-		CreatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
-		UpdatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+	producersIn := &user.MultiGetProducersInput{
+		ProducerIDs: []string{"producer-id"},
 	}
-	producers := uentity.Producers{producer}
+	producers := uentity.Producers{
+		{
+			Admin: uentity.Admin{
+				ID:            "producer-id",
+				Lastname:      "&.",
+				Firstname:     "管理者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "かんりしゃ",
+				Email:         "test-producer@and-period.jp",
+			},
+			AdminID:       "producer-id",
+			CoordinatorID: "coordinator-id",
+			StoreName:     "&.農園",
+			ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+			HeaderURL:     "https://and-period.jp/header.png",
+			PhoneNumber:   "+819012345678",
+			PostalCode:    "1000014",
+			Prefecture:    "東京都",
+			City:          "千代田区",
+			CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		},
+	}
+	categoriesIn := &store.MultiGetCategoriesInput{
+		CategoryIDs: []string{"category-id"},
+	}
+	categories := sentity.Categories{
+		{
+			ID:        "category-id",
+			Name:      "野菜",
+			CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		},
+	}
+	productTypesIn := &store.MultiGetProductTypesInput{
+		ProductTypeIDs: []string{"product-type-id"},
+	}
+	productTypes := sentity.ProductTypes{
+		{
+			ID:         "product-type-id",
+			Name:       "じゃがいも",
+			CategoryID: "category-id",
+			IconURL:    "https://and-period.jp/icon.png",
+			CreatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		},
+	}
 	product := &sentity.Product{
 		ID:              "product-id",
 		TypeID:          "product-type-id",
@@ -119,7 +145,7 @@ func TestCreateSchedule(t *testing.T) {
 	}
 	products := sentity.Products{product}
 	schedule := &sentity.Schedule{
-		ID:            "schdule-id",
+		ID:            "schedule-id",
 		CoordinatorID: "coordinator-id",
 		Title:         "スケジュールタイトル",
 		Description:   "スケジュールの説明",
@@ -130,6 +156,14 @@ func TestCreateSchedule(t *testing.T) {
 		UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 	}
 	live := &sentity.Live{
+		LiveProducts: sentity.LiveProducts{
+			{
+				LiveID:    "live-id",
+				ProductID: "product-id",
+				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			},
+		},
 		ID:          "live-id",
 		ScheduleID:  "schedule-id",
 		Title:       "配信タイトル",
@@ -154,7 +188,9 @@ func TestCreateSchedule(t *testing.T) {
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil).Times(2)
+				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
+				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(productTypes, nil)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
 				mocks.store.EXPECT().CreateSchedule(gomock.Any(), scheduleIn).Return(schedule, lives, nil)
 			},
@@ -180,7 +216,7 @@ func TestCreateSchedule(t *testing.T) {
 				code: http.StatusOK,
 				body: &response.ScheduleResponse{
 					Schedule: &response.Schedule{
-						ID:            "schdule-id",
+						ID:            "schedule-id",
 						CoordinatorID: "coordinator-id",
 						Title:         "スケジュールタイトル",
 						Description:   "スケジュールの説明",
