@@ -67,6 +67,22 @@ func (s *shipping) Count(ctx context.Context, params *ListShippingsParams) (int6
 	return total, exception.InternalError(err)
 }
 
+func (s *shipping) MultiGet(ctx context.Context, shippingIDs []string, fields ...string) (entity.Shippings, error) {
+	var shippings entity.Shippings
+	if len(fields) == 0 {
+		fields = shippingFields
+	}
+
+	err := s.db.DB.WithContext(ctx).
+		Table(shippingTable).Select(fields).
+		Where("id IN (?)", shippingIDs).
+		Find(&shippings).Error
+	if err := shippings.Fill(); err != nil {
+		return nil, err
+	}
+	return shippings, exception.InternalError(err)
+}
+
 func (s *shipping) Get(ctx context.Context, shoppingID string, fields ...string) (*entity.Shipping, error) {
 	shopping, err := s.get(ctx, s.db.DB, shoppingID, fields...)
 	return shopping, exception.InternalError(err)
