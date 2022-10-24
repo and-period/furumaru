@@ -31,6 +31,7 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 		params := &entity.NewLiveParams{
 			ScheduleID:  schedule.ID,
 			ProducerID:  in.Lives[i].ProducerID,
+			ShippingID:  in.Lives[i].ShippingID,
 			Title:       in.Lives[i].Title,
 			Description: in.Lives[i].Description,
 			StartAt:     in.Lives[i].StartAt,
@@ -63,6 +64,17 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 			return nil
 		}
 		return fmt.Errorf("service: unmatch producers length: %w", exception.ErrInvalidArgument)
+	})
+	eg.Go(func() error {
+		shippingIDs := lives.ShippingIDs()
+		ss, err := s.db.Shipping.MultiGet(ectx, shippingIDs)
+		if err != nil {
+			return err
+		}
+		if len(ss) == len(shippingIDs) {
+			return nil
+		}
+		return fmt.Errorf("service: unmatch shippings length: %w", exception.ErrInvalidArgument)
 	})
 	eg.Go(func() error {
 		productIDs := products.ProductIDs()

@@ -30,6 +30,9 @@ func TestCreateSchedule(t *testing.T) {
 	producers := uentity.Producers{
 		{AdminID: "producer-id01"},
 	}
+	shippings := entity.Shippings{
+		{ID: "shipping-id"},
+	}
 	products := entity.Products{
 		{ID: "product-id"},
 	}
@@ -45,6 +48,7 @@ func TestCreateSchedule(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
+				mocks.db.Shipping.EXPECT().MultiGet(gomock.Any(), []string{"shipping-id"}).Return(shippings, nil)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
 				mocks.db.Schedule.EXPECT().
 					Create(ctx, gomock.Any(), gomock.Any(), gomock.Any()).
@@ -65,6 +69,7 @@ func TestCreateSchedule(t *testing.T) {
 							ID:          ls[0].ID, // ignore
 							ScheduleID:  s.ID,
 							ProducerID:  "producer-id01",
+							ShippingID:  "shipping-id",
 							Title:       "配信タイトル",
 							Description: "配信の説明",
 							StartAt:     jst.Date(2022, 1, 2, 18, 30, 0, 0),
@@ -93,6 +98,7 @@ func TestCreateSchedule(t *testing.T) {
 						Title:       "配信タイトル",
 						Description: "配信の説明",
 						ProducerID:  "producer-id01",
+						ShippingID:  "shipping-id",
 						ProductIDs:  []string{"product-id"},
 						StartAt:     jst.Date(2022, 1, 2, 18, 30, 0, 0),
 						EndAt:       jst.Date(2022, 1, 3, 18, 30, 0, 0),
@@ -112,6 +118,7 @@ func TestCreateSchedule(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, errmock)
 				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
+				mocks.db.Shipping.EXPECT().MultiGet(gomock.Any(), []string{"shipping-id"}).Return(shippings, nil)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
 			},
 			input: &store.CreateScheduleInput{
@@ -126,6 +133,7 @@ func TestCreateSchedule(t *testing.T) {
 						Title:       "配信タイトル",
 						Description: "配信の説明",
 						ProducerID:  "producer-id01",
+						ShippingID:  "shipping-id",
 						ProductIDs:  []string{"product-id"},
 						StartAt:     jst.Date(2022, 1, 2, 18, 30, 0, 0),
 						EndAt:       jst.Date(2022, 1, 3, 18, 30, 0, 0),
@@ -139,6 +147,7 @@ func TestCreateSchedule(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, exception.ErrNotFound)
 				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
+				mocks.db.Shipping.EXPECT().MultiGet(gomock.Any(), []string{"shipping-id"}).Return(shippings, nil)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
 			},
 			input: &store.CreateScheduleInput{
@@ -153,6 +162,7 @@ func TestCreateSchedule(t *testing.T) {
 						Title:       "配信タイトル",
 						Description: "配信の説明",
 						ProducerID:  "producer-id01",
+						ShippingID:  "shipping-id",
 						ProductIDs:  []string{"product-id"},
 						StartAt:     jst.Date(2022, 1, 2, 18, 30, 0, 0),
 						EndAt:       jst.Date(2022, 1, 3, 18, 30, 0, 0),
@@ -166,6 +176,7 @@ func TestCreateSchedule(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(nil, errmock)
+				mocks.db.Shipping.EXPECT().MultiGet(gomock.Any(), []string{"shipping-id"}).Return(shippings, nil)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
 			},
 			input: &store.CreateScheduleInput{
@@ -180,6 +191,7 @@ func TestCreateSchedule(t *testing.T) {
 						Title:       "配信タイトル",
 						Description: "配信の説明",
 						ProducerID:  "producer-id01",
+						ShippingID:  "shipping-id",
 						ProductIDs:  []string{"product-id"},
 						StartAt:     jst.Date(2022, 1, 2, 18, 30, 0, 0),
 						EndAt:       jst.Date(2022, 1, 3, 18, 30, 0, 0),
@@ -193,6 +205,7 @@ func TestCreateSchedule(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(uentity.Producers{}, nil)
+				mocks.db.Shipping.EXPECT().MultiGet(gomock.Any(), []string{"shipping-id"}).Return(shippings, nil)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
 			},
 			input: &store.CreateScheduleInput{
@@ -207,6 +220,65 @@ func TestCreateSchedule(t *testing.T) {
 						Title:       "配信タイトル",
 						Description: "配信の説明",
 						ProducerID:  "producer-id01",
+						ShippingID:  "shipping-id",
+						ProductIDs:  []string{"product-id"},
+						StartAt:     jst.Date(2022, 1, 2, 18, 30, 0, 0),
+						EndAt:       jst.Date(2022, 1, 3, 18, 30, 0, 0),
+					},
+				},
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get shippings",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
+				mocks.db.Shipping.EXPECT().MultiGet(gomock.Any(), []string{"shipping-id"}).Return(nil, errmock)
+				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
+			},
+			input: &store.CreateScheduleInput{
+				CoordinatorID: "coordinator-id",
+				Title:         "タイトル",
+				Description:   "説明",
+				ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
+				StartAt:       jst.Date(2022, 1, 2, 18, 30, 0, 0),
+				EndAt:         jst.Date(2022, 1, 3, 18, 30, 0, 0),
+				Lives: []*store.CreateScheduleLive{
+					{
+						Title:       "配信タイトル",
+						Description: "配信の説明",
+						ProducerID:  "producer-id01",
+						ShippingID:  "shipping-id",
+						ProductIDs:  []string{"product-id"},
+						StartAt:     jst.Date(2022, 1, 2, 18, 30, 0, 0),
+						EndAt:       jst.Date(2022, 1, 3, 18, 30, 0, 0),
+					},
+				},
+			},
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "failed to unmatch shippings length",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
+				mocks.db.Shipping.EXPECT().MultiGet(gomock.Any(), []string{"shipping-id"}).Return(entity.Shippings{}, nil)
+				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
+			},
+			input: &store.CreateScheduleInput{
+				CoordinatorID: "coordinator-id",
+				Title:         "タイトル",
+				Description:   "説明",
+				ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
+				StartAt:       jst.Date(2022, 1, 2, 18, 30, 0, 0),
+				EndAt:         jst.Date(2022, 1, 3, 18, 30, 0, 0),
+				Lives: []*store.CreateScheduleLive{
+					{
+						Title:       "配信タイトル",
+						Description: "配信の説明",
+						ProducerID:  "producer-id01",
+						ShippingID:  "shipping-id",
 						ProductIDs:  []string{"product-id"},
 						StartAt:     jst.Date(2022, 1, 2, 18, 30, 0, 0),
 						EndAt:       jst.Date(2022, 1, 3, 18, 30, 0, 0),
@@ -220,6 +292,7 @@ func TestCreateSchedule(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
+				mocks.db.Shipping.EXPECT().MultiGet(gomock.Any(), []string{"shipping-id"}).Return(shippings, nil)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(nil, errmock)
 			},
 			input: &store.CreateScheduleInput{
@@ -234,6 +307,7 @@ func TestCreateSchedule(t *testing.T) {
 						Title:       "配信タイトル",
 						Description: "配信の説明",
 						ProducerID:  "producer-id01",
+						ShippingID:  "shipping-id",
 						ProductIDs:  []string{"product-id"},
 						StartAt:     jst.Date(2022, 1, 2, 18, 30, 0, 0),
 						EndAt:       jst.Date(2022, 1, 3, 18, 30, 0, 0),
@@ -247,6 +321,7 @@ func TestCreateSchedule(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
+				mocks.db.Shipping.EXPECT().MultiGet(gomock.Any(), []string{"shipping-id"}).Return(shippings, nil)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(entity.Products{}, nil)
 			},
 			input: &store.CreateScheduleInput{
@@ -261,6 +336,7 @@ func TestCreateSchedule(t *testing.T) {
 						Title:       "配信タイトル",
 						Description: "配信の説明",
 						ProducerID:  "producer-id01",
+						ShippingID:  "shipping-id",
 						ProductIDs:  []string{"product-id"},
 						StartAt:     jst.Date(2022, 1, 2, 18, 30, 0, 0),
 						EndAt:       jst.Date(2022, 1, 3, 18, 30, 0, 0),
@@ -274,6 +350,7 @@ func TestCreateSchedule(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
+				mocks.db.Shipping.EXPECT().MultiGet(gomock.Any(), []string{"shipping-id"}).Return(shippings, nil)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
 				mocks.db.Schedule.EXPECT().Create(ctx, gomock.Any(), gomock.Any(), gomock.Any()).Return(errmock)
 			},
@@ -289,6 +366,7 @@ func TestCreateSchedule(t *testing.T) {
 						Title:       "配信タイトル",
 						Description: "配信の説明",
 						ProducerID:  "producer-id01",
+						ShippingID:  "shipping-id",
 						ProductIDs:  []string{"product-id"},
 						StartAt:     jst.Date(2022, 1, 2, 18, 30, 0, 0),
 						EndAt:       jst.Date(2022, 1, 3, 18, 30, 0, 0),
