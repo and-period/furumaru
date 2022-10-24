@@ -104,52 +104,10 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, res)
 		return
 	}
-
-	var (
-		producers  service.Producers
-		categories service.Categories
-		types      service.ProductTypes
-	)
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() error {
-		in := &user.MultiGetProducersInput{
-			ProducerIDs: products.ProducerIDs(),
-		}
-		uproducers, err := h.user.MultiGetProducers(ectx, in)
-		if err != nil {
-			return err
-		}
-		producers = service.NewProducers(uproducers)
-		return nil
-	})
-	eg.Go(func() error {
-		in := &store.MultiGetCategoriesInput{
-			CategoryIDs: products.CategoryIDs(),
-		}
-		scategories, err := h.store.MultiGetCategories(ectx, in)
-		if err != nil {
-			return err
-		}
-		categories = service.NewCategories(scategories)
-		return nil
-	})
-	eg.Go(func() error {
-		in := &store.MultiGetProductTypesInput{
-			ProductTypeIDs: products.ProductTypeIDs(),
-		}
-		stypes, err := h.store.MultiGetProductTypes(ectx, in)
-		if err != nil {
-			return err
-		}
-		types = service.NewProductTypes(stypes)
-		return nil
-	})
-	if err := eg.Wait(); err != nil {
+	if err := h.getProductsDetails(ctx, products...); err != nil {
 		httpError(ctx, err)
 		return
 	}
-
-	products.Fill(categories.Map(), types.Map(), producers.Map())
 
 	res := &response.ProductsResponse{
 		Products: products.Response(),
@@ -406,6 +364,21 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
+func (h *handler) multiGetProducts(ctx context.Context, productIDs []string) (service.Products, error) {
+	in := &store.MultiGetProductsInput{
+		ProductIDs: productIDs,
+	}
+	sproducts, err := h.store.MultiGetProducts(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	products := service.NewProducts(sproducts)
+	if err := h.getProductsDetails(ctx, products...); err != nil {
+		return nil, err
+	}
+	return products, nil
+}
+
 func (h *handler) getProduct(ctx context.Context, productID string) (*service.Product, error) {
 	in := &store.GetProductInput{
 		ProductID: productID,
@@ -415,4 +388,52 @@ func (h *handler) getProduct(ctx context.Context, productID string) (*service.Pr
 		return nil, err
 	}
 	return service.NewProduct(product), nil
+}
+
+func (h *handler) getProductsDetails(ctx context.Context, products ...*service.Product) error {
+	ps := service.Products(products)
+	var (
+		producers  service.Producers
+		categories service.Categories
+		types      service.ProductTypes
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		in := &user.MultiGetProducersInput{
+			ProducerIDs: ps.ProducerIDs(),
+		}
+		uproducers, err := h.user.MultiGetProducers(ectx, in)
+		if err != nil {
+			return err
+		}
+		producers = service.NewProducers(uproducers)
+		return nil
+	})
+	eg.Go(func() error {
+		in := &store.MultiGetCategoriesInput{
+			CategoryIDs: ps.CategoryIDs(),
+		}
+		scategories, err := h.store.MultiGetCategories(ectx, in)
+		if err != nil {
+			return err
+		}
+		categories = service.NewCategories(scategories)
+		return nil
+	})
+	eg.Go(func() error {
+		in := &store.MultiGetProductTypesInput{
+			ProductTypeIDs: ps.ProductTypeIDs(),
+		}
+		stypes, err := h.store.MultiGetProductTypes(ectx, in)
+		if err != nil {
+			return err
+		}
+		types = service.NewProductTypes(stypes)
+		return nil
+	})
+	if err := eg.Wait(); err != nil {
+		return err
+	}
+	ps.Fill(categories.Map(), types.Map(), producers.Map())
+	return nil
 }
