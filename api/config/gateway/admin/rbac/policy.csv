@@ -49,6 +49,7 @@ p, notification_get, /v1/notifications/*, GET, allow
 p, notification_create, /v1/notifications, POST, allow
 p, notification_update, /v1/notifications/*, PATCH, allow
 p, notification_delete, /v1/notifications/*, DELETE, allow
+p, schedule_create, /v1/schedules, POST, allow
 p, message_list, /v1/messages, GET, allow
 p, message_get, /v1/messages/*, GET, allow
 
@@ -102,6 +103,7 @@ g, administrator, notification_get
 g, administrator, notification_create
 g, administrator, notification_update
 g, administrator, notification_delete
+g, administrator, schedule_create
 g, administrator, message_list
 g, administrator, message_get
 
@@ -134,6 +136,7 @@ g, coordinator, notification_get
 g, coordinator, notification_create
 g, coordinator, notification_update
 g, coordinator, notification_delete
+g, coordinator, schedule_create
 g, coordinator, message_list
 g, coordinator, message_get
 

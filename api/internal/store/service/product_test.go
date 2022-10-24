@@ -152,7 +152,7 @@ func TestListProducts(t *testing.T) {
 func TestMultiGetProducts(t *testing.T) {
 	t.Parallel()
 
-	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
+	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
 	products := entity.Products{
 		{
 			ID:              "product-id",
@@ -201,26 +201,6 @@ func TestMultiGetProducts(t *testing.T) {
 			},
 			expect:    products,
 			expectErr: nil,
-		},
-		{
-			name:  "invalid argument",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &store.MultiGetProductsInput{
-				ProductIDs: []string{""},
-			},
-			expect:    nil,
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to get products",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(nil, errmock)
-			},
-			input: &store.MultiGetProductsInput{
-				ProductIDs: []string{"product-id"},
-			},
-			expect:    nil,
-			expectErr: exception.ErrUnknown,
 		},
 	}
 

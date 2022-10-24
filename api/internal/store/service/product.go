@@ -51,7 +51,9 @@ func (s *service) ListProducts(ctx context.Context, in *store.ListProductsInput)
 	return products, total, nil
 }
 
-func (s *service) MultiGetProducts(ctx context.Context, in *store.MultiGetProductsInput) (entity.Products, error) {
+func (s *service) MultiGetProducts(
+	ctx context.Context, in *store.MultiGetProductsInput,
+) (entity.Products, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
