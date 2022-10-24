@@ -752,6 +752,26 @@ func (mr *MockShippingMockRecorder) List(ctx, params interface{}, fields ...inte
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockShipping)(nil).List), varargs...)
 }
 
+// MultiGet mocks base method.
+func (m *MockShipping) MultiGet(ctx context.Context, shippingIDs []string, fields ...string) (entity.Shippings, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, shippingIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGet", varargs...)
+	ret0, _ := ret[0].(entity.Shippings)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGet indicates an expected call of MultiGet.
+func (mr *MockShippingMockRecorder) MultiGet(ctx, shippingIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, shippingIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockShipping)(nil).MultiGet), varargs...)
+}
+
 // Update mocks base method.
 func (m *MockShipping) Update(ctx context.Context, shippingID string, params *database.UpdateShippingParams) error {
 	m.ctrl.T.Helper()
