@@ -7,11 +7,12 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
-func testLive(id, scheduleID, producerID string, productIDs []string, now time.Time) *entity.Live {
+func testLive(id, scheduleID, producerID, shippingID string, productIDs []string, now time.Time) *entity.Live {
 	l := &entity.Live{
 		ID:          id,
 		ScheduleID:  scheduleID,
 		ProducerID:  producerID,
+		ShippingID:  shippingID,
 		Title:       "配信のタイトル",
 		Description: "配信の説明",
 		Published:   false,
@@ -29,11 +30,11 @@ func testLive(id, scheduleID, producerID string, productIDs []string, now time.T
 	return l
 }
 
-func testLives(id, scheduleID, producerID string, productIDs []string, now time.Time, length int) entity.Lives {
+func testLives(id, scheduleID, producerID, shippingID string, productIDs []string, now time.Time, length int) entity.Lives {
 	lives := make(entity.Lives, length)
 	for i := 0; i < length; i++ {
 		liveID := fmt.Sprintf("%s-%2d", id, i)
-		lives[i] = testLive(liveID, scheduleID, producerID, productIDs, now)
+		lives[i] = testLive(liveID, scheduleID, shippingID, producerID, productIDs, now)
 	}
 	return lives
 }

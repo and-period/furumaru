@@ -29,7 +29,7 @@ func TestSchedule_Create(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, liveProductTable, liveTable, scheduleTable, productTable, productTypeTable, categoryTable)
+	_ = m.dbDelete(ctx, liveProductTable, liveTable, scheduleTable, productTable, productTypeTable, categoryTable, shippingTable)
 	category := testCategory("category-id", "野菜", now())
 	err = m.db.DB.Create(&category).Error
 	require.NoError(t, err)
@@ -41,10 +41,13 @@ func TestSchedule_Create(t *testing.T) {
 	products[1] = testProduct("product-id02", "type-id", "category-id", "producer-id", now())
 	err = m.db.DB.Create(&products).Error
 	require.NoError(t, err)
+	shipping := testShipping("shipping-id", now())
+	err = m.db.DB.Create(&shipping).Error
+	require.NoError(t, err)
 
 	productIDs := []string{"product-id01", "product-id02"}
 	s := testSchedule("schedule-id", now())
-	lives := testLives("live-id", "schedule-id", "producer-id", productIDs, now(), 3)
+	lives := testLives("live-id", "schedule-id", "shipping-id", "producer-id", productIDs, now(), 3)
 	lproducts := make(entity.LiveProducts, 0)
 	for i := range lives {
 		lproducts = append(lproducts, lives[i].LiveProducts...)
