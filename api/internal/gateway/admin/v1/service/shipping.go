@@ -95,6 +95,14 @@ func (r *ShippingRate) Response() *response.ShippingRate {
 	return &r.ShippingRate
 }
 
+func (ss Shippings) Map() map[string]*Shipping {
+	res := make(map[string]*Shipping, len(ss))
+	for _, s := range ss {
+		res[s.ID] = s
+	}
+	return res
+}
+
 func NewShippingRates(rates entity.ShippingRates) (ShippingRates, error) {
 	res := make(ShippingRates, len(rates))
 	for i := range rates {
