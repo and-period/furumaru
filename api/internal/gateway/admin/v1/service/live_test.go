@@ -31,6 +31,7 @@ func TestLive(t *testing.T) {
 				ID:          "live-id",
 				ScheduleID:  "schedule-id",
 				ProducerID:  "producer-id",
+				ShippingID:  "shipping-id",
 				Title:       "配信タイトル",
 				Description: "配信の説明",
 				Status:      1,
@@ -46,6 +47,7 @@ func TestLive(t *testing.T) {
 					ID:          "live-id",
 					ScheduleID:  "schedule-id",
 					ProducerID:  "producer-id",
+					ShippingID:  "shipping-id",
 					Title:       "配信タイトル",
 					Description: "配信の説明",
 					Status:      1,
@@ -77,6 +79,7 @@ func TestLive_Fill(t *testing.T) {
 		name     string
 		live     *Live
 		producer *Producer
+		shipping *Shipping
 		products map[string]*Product
 		expect   *Live
 	}{
@@ -93,6 +96,7 @@ func TestLive_Fill(t *testing.T) {
 					Canceled:     false,
 					ProducerID:   "producer-id",
 					ProducerName: "&. 管理者",
+					ShippingID:   "shipping-id",
 					StartAt:      1640962800,
 					EndAt:        1640962800,
 					CreatedAt:    1640962800,
@@ -117,6 +121,27 @@ func TestLive_Fill(t *testing.T) {
 					City:          "千代田区",
 					CreatedAt:     1640962800,
 					UpdatedAt:     1640962800,
+				},
+			},
+			shipping: &Shipping{
+				Shipping: response.Shipping{
+					ID:   "shipping-id",
+					Name: "デフォルト配送設定",
+					Box60Rates: []*response.ShippingRate{
+						{Number: 1, Name: "東京都", Price: 0, Prefectures: []string{"tokyo"}},
+					},
+					Box60Refrigerated:  500,
+					Box60Frozen:        800,
+					Box80Rates:         []*response.ShippingRate{},
+					Box80Refrigerated:  500,
+					Box80Frozen:        800,
+					Box100Rates:        []*response.ShippingRate{},
+					Box100Refrigerated: 500,
+					Box100Frozen:       800,
+					HasFreeShipping:    true,
+					FreeShippingRates:  3000,
+					CreatedAt:          1640962800,
+					UpdatedAt:          1640962800,
 				},
 			},
 			products: map[string]*Product{
@@ -196,6 +221,8 @@ func TestLive_Fill(t *testing.T) {
 					Canceled:     false,
 					ProducerID:   "producer-id",
 					ProducerName: "&. 管理者",
+					ShippingID:   "shipping-id",
+					ShippingName: "デフォルト配送設定",
 					StartAt:      1640962800,
 					EndAt:        1640962800,
 					CreatedAt:    1640962800,
@@ -210,7 +237,7 @@ func TestLive_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.live.Fill(tt.producer, tt.products)
+			tt.live.Fill(tt.producer, tt.shipping, tt.products)
 			assert.Equal(t, tt.expect, tt.live)
 		})
 	}
