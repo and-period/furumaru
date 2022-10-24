@@ -57,6 +57,7 @@ func NewLive(live *entity.Live) *Live {
 			CreatedAt:   live.CreatedAt.Unix(),
 			UpdatedAt:   live.UpdatedAt.Unix(),
 		},
+		productIDs: live.LiveProducts.ProductIDs(),
 	}
 }
 
@@ -65,10 +66,12 @@ func (l *Live) Fill(producer *Producer, products map[string]*Product) {
 		l.ProducerName = producer.Name()
 	}
 	ps := make(Products, len(l.productIDs))
-	for i := range l.productIDs {
-		if products[l.productIDs[i]] != nil {
-			ps[i] = products[l.productIDs[i]]
+	for i, productID := range l.productIDs {
+		p, ok := products[productID]
+		if !ok {
+			continue
 		}
+		ps[i] = p
 	}
 	l.Products = ps.Response()
 }
@@ -86,11 +89,11 @@ func NewLives(lives entity.Lives) Lives {
 }
 
 func (ls Lives) Fill(
-	producers Producers,
+	producers map[string]*Producer,
 	products map[string]*Product,
 ) {
 	for i := range ls {
-		ls[i].Fill(producers[i], products)
+		ls[i].Fill(producers[ls[i].ProducerID], products)
 	}
 }
 
