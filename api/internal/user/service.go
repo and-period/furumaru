@@ -85,6 +85,8 @@ type Service interface {
 	GetUserAuth(ctx context.Context, in *GetUserAuthInput) (*entity.UserAuth, error)
 	// 購入者アクセストークン更新
 	RefreshUserToken(ctx context.Context, in *RefreshUserTokenInput) (*entity.UserAuth, error)
+	// 購入者一覧取得
+	ListUsers(ctx context.Context, in *ListUsersInput) (entity.Users, int64, error)
 	// 購入者一覧取得(ID指定)
 	MultiGetUsers(ctx context.Context, in *MultiGetUsersInput) (entity.Users, error)
 	// 購入者デバイストークン一覧取得

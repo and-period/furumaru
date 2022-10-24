@@ -16,6 +16,153 @@ func TestUser(t *testing.T) {
 	assert.NotNil(t, NewUser(nil))
 }
 
+func TestUser_List(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	err = m.dbDelete(ctx, customerTable, memberTable, userTable)
+	require.NoError(t, err)
+	users := make(entity.Users, 2)
+	users[0] = testUser("user-id01", "test-user01@and-period.jp", "+810000000001", now())
+	users[1] = testUser("user-id02", "test-user02@and-period.jp", "+810000000002", now())
+	err = m.db.DB.Create(&users).Error
+	for i := range users {
+		err = m.db.DB.Create(&users[i].Member).Error
+		err = m.db.DB.Create(&users[i].Customer).Error
+	}
+	require.NoError(t, err)
+
+	type args struct {
+		params *ListUsersParams
+	}
+	type want struct {
+		users  entity.Users
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListUsersParams{
+					Limit:  1,
+					Offset: 1,
+				},
+			},
+			want: want{
+				users:  users[1:],
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &user{db: m.db, now: now}
+			actual, err := db.List(ctx, tt.args.params)
+			if tt.want.hasErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			fillIgnoreUsersField(actual, now())
+			assert.ElementsMatch(t, tt.want.users, actual)
+		})
+	}
+}
+
+func TestUser_Count(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	err = m.dbDelete(ctx, customerTable, memberTable, userTable)
+	require.NoError(t, err)
+	users := make(entity.Users, 2)
+	users[0] = testUser("user-id01", "test-user01@and-period.jp", "+810000000001", now())
+	users[1] = testUser("user-id02", "test-user02@and-period.jp", "+810000000002", now())
+	err = m.db.DB.Create(&users).Error
+	for i := range users {
+		err = m.db.DB.Create(&users[i].Member).Error
+		err = m.db.DB.Create(&users[i].Customer).Error
+	}
+	require.NoError(t, err)
+
+	type args struct {
+		params *ListUsersParams
+	}
+	type want struct {
+		total  int64
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				params: &ListUsersParams{
+					Limit:  1,
+					Offset: 1,
+				},
+			},
+			want: want{
+				total:  2,
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &user{db: m.db, now: now}
+			actual, err := db.Count(ctx, tt.args.params)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.total, actual)
+		})
+	}
+}
+
 func TestUser_MultiGet(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

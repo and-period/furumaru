@@ -6,10 +6,39 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/uuid"
+	"golang.org/x/sync/errgroup"
 )
+
+func (s *service) ListUsers(ctx context.Context, in *user.ListUsersInput) (entity.Users, int64, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, 0, exception.InternalError(err)
+	}
+	params := &database.ListUsersParams{
+		Limit:  int(in.Limit),
+		Offset: int(in.Offset),
+	}
+	var (
+		users entity.Users
+		total int64
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		users, err = s.db.User.List(ectx, params)
+		return
+	})
+	eg.Go(func() (err error) {
+		total, err = s.db.User.Count(ectx, params)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		return nil, 0, exception.InternalError(err)
+	}
+	return users, total, nil
+}
 
 func (s *service) MultiGetUsers(ctx context.Context, in *user.MultiGetUsersInput) (entity.Users, error) {
 	if err := s.validator.Struct(in); err != nil {

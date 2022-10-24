@@ -85,6 +85,8 @@ type Producer interface {
 }
 
 type User interface {
+	List(ctx context.Context, params *ListUsersParams, fields ...string) (entity.Users, error)
+	Count(ctx context.Context, params *ListUsersParams) (int64, error)
 	MultiGet(ctx context.Context, userIDs []string, fields ...string) (entity.Users, error)
 	Get(ctx context.Context, userID string, fields ...string) (*entity.User, error)
 }
@@ -161,4 +163,9 @@ type UpdateProducerParams struct {
 	City          string
 	AddressLine1  string
 	AddressLine2  string
+}
+
+type ListUsersParams struct {
+	Limit  int
+	Offset int
 }

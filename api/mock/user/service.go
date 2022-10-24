@@ -306,6 +306,22 @@ func (mr *MockServiceMockRecorder) ListProducers(ctx, in interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListProducers", reflect.TypeOf((*MockService)(nil).ListProducers), ctx, in)
 }
 
+// ListUsers mocks base method.
+func (m *MockService) ListUsers(ctx context.Context, in *user.ListUsersInput) (entity.Users, int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListUsers", ctx, in)
+	ret0, _ := ret[0].(entity.Users)
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ListUsers indicates an expected call of ListUsers.
+func (mr *MockServiceMockRecorder) ListUsers(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUsers", reflect.TypeOf((*MockService)(nil).ListUsers), ctx, in)
+}
+
 // MultiGetAdminDevices mocks base method.
 func (m *MockService) MultiGetAdminDevices(ctx context.Context, in *user.MultiGetAdminDevicesInput) ([]string, error) {
 	m.ctrl.T.Helper()

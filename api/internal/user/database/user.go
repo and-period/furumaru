@@ -29,6 +29,38 @@ func NewUser(db *database.Client) User {
 	}
 }
 
+func (u *user) List(ctx context.Context, params *ListUsersParams, fields ...string) (entity.Users, error) {
+	var users entity.Users
+	if len(fields) == 0 {
+		fields = userFields
+	}
+
+	stmt := u.db.DB.WithContext(ctx).Table(userTable).Select(fields)
+	if params.Limit > 0 {
+		stmt = stmt.Limit(params.Limit)
+	}
+	if params.Offset > 0 {
+		stmt = stmt.Offset(params.Offset)
+	}
+
+	if err := stmt.Find(&users).Error; err != nil {
+		return nil, exception.InternalError(err)
+	}
+	if err := u.fill(ctx, u.db.DB, users...); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return users, nil
+}
+
+func (u *user) Count(ctx context.Context, params *ListUsersParams) (int64, error) {
+	var total int64
+
+	stmt := u.db.DB.WithContext(ctx).Table(userTable).Select("COUNT(*)")
+
+	err := stmt.Count(&total).Error
+	return total, exception.InternalError(err)
+}
+
 func (u *user) MultiGet(ctx context.Context, userIDs []string, fields ...string) (entity.Users, error) {
 	var users entity.Users
 	if len(fields) == 0 {
