@@ -24,6 +24,7 @@ type Live struct {
 	ID           string         `gorm:"primaryKey;<-:create"` // ライブ配信ID
 	ScheduleID   string         `gorm:""`                     // 開催スケジュールID
 	ProducerID   string         `gorm:""`                     // 生産者ID
+	ShippingID   string         `gorm:""`                     // 配送設定ID
 	Title        string         `gorm:""`                     // タイトル
 	Description  string         `gorm:""`                     // 説明
 	Status       LiveStatus     `gorm:"-"`                    // 配信ステータス
@@ -41,6 +42,7 @@ type Lives []*Live
 type NewLiveParams struct {
 	ScheduleID  string
 	ProducerID  string
+	ShippingID  string
 	Title       string
 	Description string
 	StartAt     time.Time
@@ -52,6 +54,7 @@ func NewLive(params *NewLiveParams) *Live {
 		ID:          uuid.Base58Encode(uuid.New()),
 		ScheduleID:  params.ScheduleID,
 		ProducerID:  params.ProducerID,
+		ShippingID:  params.ShippingID,
 		Title:       params.Title,
 		Description: params.Description,
 		StartAt:     params.StartAt,
