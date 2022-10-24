@@ -14,7 +14,6 @@ import {
 } from '~/types/api'
 import {
   AuthError,
-  ConflictError,
   ConnectionError,
   InternalServerError,
   NotFoundError,
@@ -223,7 +222,10 @@ export const useNotificationStore = defineStore('Notification', {
      * @param id セールID
      * @param payload
      */
-    async editNotification(id: string, payload: UpdateNotificationRequest): Promise<void> {
+    async editNotification(
+      id: string,
+      payload: UpdateNotificationRequest
+    ): Promise<void> {
       const commonStore = useCommonStore()
       try {
         const authStore = useAuthStore()
@@ -265,7 +267,6 @@ export const useNotificationStore = defineStore('Notification', {
         }
         throw new InternalServerError(error)
       }
-    }
-
+    },
   },
 })

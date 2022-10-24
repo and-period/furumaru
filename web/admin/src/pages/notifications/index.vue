@@ -151,9 +151,8 @@ export default defineComponent({
       router.push('/notifications/add')
     }
 
-    // TODO
     const handleEdit = (item: NotificationsResponseNotificationsInner) => {
-      console.log(item)
+      router.push(`/notifications/edit/${item.id}`)
     }
 
     const handleDelete = async (): Promise<void> => {
