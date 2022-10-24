@@ -4,11 +4,70 @@ import (
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestLive(t *testing.T) {
+	t.Parallel()
 
+	tests := []struct {
+		name   string
+		live   *entity.Live
+		expect *Live
+	}{
+		{
+			name: "success",
+			live: &entity.Live{
+				LiveProducts: entity.LiveProducts{
+					{
+						LiveID:    "live-id",
+						ProductID: "product-id",
+						CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+						UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					},
+				},
+				ID:          "live-id",
+				ScheduleID:  "schedule-id",
+				ProducerID:  "producer-id",
+				Title:       "配信タイトル",
+				Description: "配信の説明",
+				Status:      1,
+				Published:   false,
+				Canceled:    false,
+				StartAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				EndAt:       jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				CreatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			},
+			expect: &Live{
+				Live: response.Live{
+					ID:          "live-id",
+					ScheduleID:  "schedule-id",
+					ProducerID:  "producer-id",
+					Title:       "配信タイトル",
+					Description: "配信の説明",
+					Status:      1,
+					Published:   false,
+					Canceled:    false,
+					StartAt:     1640962800,
+					EndAt:       1640962800,
+					CreatedAt:   1640962800,
+					UpdatedAt:   1640962800,
+				},
+				productIDs: []string{"product-id"},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, NewLive(tt.live))
+		})
+	}
 }
 
 func TestLive_Fill(t *testing.T) {
