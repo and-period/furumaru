@@ -218,6 +218,7 @@ import { prefecturesList } from '~/constants'
 import { useAlert } from '~/lib/hooks'
 import { getSelectablePrefecturesList } from '~/lib/prefectures'
 import { required, getErrorMessage } from '~/lib/validations'
+import { useCommonStore } from '~/store/common'
 import { useShippingStore } from '~/store/shippings'
 import { CreateShippingRequest } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
@@ -343,6 +344,8 @@ export default defineComponent({
 
     const { alertType, isShow, alertText, show } = useAlert('error')
 
+    const { addSnackbar } = useCommonStore()
+
     const handleSubmit = async (): Promise<void> => {
       const result = await v$.value.$validate()
       if (!result) {
@@ -350,6 +353,10 @@ export default defineComponent({
       }
       try {
         await createShipping(formData)
+        addSnackbar({
+          color: 'info',
+          message: `${formData.name}を登録しました。`,
+        })
         router.push('/shippings')
       } catch (error) {
         if (error instanceof ApiBaseError) {
