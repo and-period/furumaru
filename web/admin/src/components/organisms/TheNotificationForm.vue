@@ -46,7 +46,7 @@
           >
             <template #activator="{ on, attrs }">
               <v-text-field
-                v-model="postDate"
+                v-model="timeData.publishedDate"
                 class="mr-2"
                 label="投稿開始日"
                 readonly
@@ -56,7 +56,7 @@
               />
             </template>
             <v-date-picker
-              v-model="postDate"
+              v-model="timeData.publishedDate"
               scrollable
               @input="postMenu = false"
             >
@@ -66,7 +66,12 @@
               </v-btn>
             </v-date-picker>
           </v-menu>
-          <v-text-field v-model="postTime" type="time" required outlined />
+          <v-text-field
+            v-model="timeData.publishedTime"
+            type="time"
+            required
+            outlined
+          />
           <p class="text-h6 mb-6 ml-4">〜</p>
           <v-spacer />
         </div>
@@ -86,6 +91,7 @@ import { defineComponent } from '@vue/composition-api'
 import dayjs from 'dayjs'
 
 import { CreateNotificationRequest } from '~/types/api'
+import { NotificationTime } from '~/types/props'
 
 export default defineComponent({
   props: {
@@ -108,6 +114,15 @@ export default defineComponent({
         }
       },
     },
+    timeData: {
+      type: Object as PropType<NotificationTime>,
+      default: () => {
+        return {
+          publishedDate: '',
+          publishedTime: '',
+        }
+      },
+    },
   },
 
   setup(props, { emit }) {
@@ -116,12 +131,15 @@ export default defineComponent({
       set: (val: CreateNotificationRequest) => emit('update:formData', val),
     })
 
+    const timeDataValue = computed({
+      get: (): NotificationTime => props.timeData,
+      set: (val: NotificationTime) => emit('update:formData', val),
+    })
+
     const btnText = computed(() => {
       return props.formType === 'create' ? '登録' : '更新'
     })
     const postMenu = ref<boolean>(false)
-    const postDate = ref<string>('')
-    const postTime = ref<string>('')
 
     const statusList = [
       { public: '公開', value: true },
@@ -129,17 +147,19 @@ export default defineComponent({
     ]
 
     const handleSubmit = () => {
-      const unixTime = dayjs(postDate.value + ' ' + postTime.value).unix()
-      formDataValue.value.publishedAt = unixTime
+      formDataValue.value.publishedAt = dayjs(
+        timeDataValue.value.publishedDate +
+          ' ' +
+          timeDataValue.value.publishedTime
+      ).unix()
       emit('submit')
     }
 
     return {
       formDataValue,
+      timeDataValue,
       btnText,
       statusList,
-      postDate,
-      postTime,
       postMenu,
       handleSubmit,
     }

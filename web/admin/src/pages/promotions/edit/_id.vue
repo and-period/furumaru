@@ -21,9 +21,8 @@ export default defineComponent({
     const router = useRouter()
     const route = useRoute()
     const id = route.value.params.id
-    const promotionStore = usePromotionStore()
 
-    const { getPromotion } = usePromotionStore()
+    const { getPromotion, editPromotion } = usePromotionStore()
 
     const formData = reactive<PromotionResponse>({
       id,
@@ -69,7 +68,7 @@ export default defineComponent({
 
     const handleSubmit = async () => {
       try {
-        await promotionStore.editPromotion(id, {
+        await editPromotion(id, {
           ...formData,
           discountRate: Number(formData.discountRate),
         })

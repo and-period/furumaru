@@ -1,7 +1,7 @@
 <template>
   <div>
-    <p class="text-h6">セール情報編集</p>
-    <the-promotion-form
+    <p class="text-h6">お知らせ編集</p>
+    <the-notification-form
       form-type="edit"
       :form-data="formDataValue"
       :time-data="timeDataValue"
@@ -15,37 +15,29 @@
 import { computed, defineComponent, PropType } from '@vue/composition-api'
 import dayjs from 'dayjs'
 
-import { CreatePromotionRequest } from '~/types/api'
-import { PromotionTime } from '~/types/props'
+import { CreateNotificationRequest } from '~/types/api'
+import { NotificationTime } from '~/types/props'
 
 export default defineComponent({
   props: {
     formData: {
-      type: Object as PropType<CreatePromotionRequest>,
+      type: Object as PropType<CreateNotificationRequest>,
       default: () => {
         return {
           title: '',
-          description: '',
+          body: '',
+          targets: [],
           public: false,
           publishedAt: dayjs().unix(),
-          discountType: 1,
-          discountRate: 0,
-          code: '',
-          startAt: dayjs().unix(),
-          endAt: dayjs().unix(),
         }
       },
     },
     timeData: {
-      type: Object as PropType<PromotionTime>,
+      type: Object as PropType<NotificationTime>,
       default: () => {
         return {
           publishedDate: '',
           publishedTime: '',
-          startDate: '',
-          startTime: '',
-          endDate: '',
-          endTime: '',
         }
       },
     },
@@ -56,13 +48,13 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const formDataValue = computed({
-      get: (): CreatePromotionRequest => props.formData,
-      set: (val: CreatePromotionRequest) => emit('update:formData', val),
+      get: (): CreateNotificationRequest => props.formData,
+      set: (val: CreateNotificationRequest) => emit('update:formData', val),
     })
 
     const timeDataValue = computed({
-      get: (): PromotionTime => props.timeData,
-      set: (val: PromotionTime) => emit('update:timeData', val),
+      get: (): NotificationTime => props.timeData,
+      set: (val: NotificationTime) => emit('update:timeData', val),
     })
 
     const handleSubmit = () => {
