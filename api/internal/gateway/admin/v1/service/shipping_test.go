@@ -209,6 +209,48 @@ func TestShipping_Response(t *testing.T) {
 	}
 }
 
+func TestShippings_Map(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name      string
+		shippings Shippings
+		expect    map[string]*Shipping
+	}{
+		{
+			name: "success",
+			shippings: Shippings{
+				{
+					Shipping: response.Shipping{
+						ID:        "shipping-id",
+						Name:      "デフォルト配送設定",
+						CreatedAt: 1640962800,
+						UpdatedAt: 1640962800,
+					},
+				},
+			},
+			expect: map[string]*Shipping{
+				"shipping-id": {
+					Shipping: response.Shipping{
+						ID:        "shipping-id",
+						Name:      "デフォルト配送設定",
+						CreatedAt: 1640962800,
+						UpdatedAt: 1640962800,
+					},
+				},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.shippings.Map())
+		})
+	}
+}
+
 func TestShippings(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
