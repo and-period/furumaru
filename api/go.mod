@@ -14,7 +14,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.19.10
 	github.com/casbin/casbin/v2 v2.56.0
 	github.com/gin-contrib/gzip v0.0.6
-	github.com/gin-contrib/zap v0.0.2
+	github.com/gin-contrib/zap v0.1.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-playground/validator/v10 v10.11.1
 	github.com/go-sql-driver/mysql v1.6.0
@@ -38,7 +38,7 @@ require (
 	github.com/slack-go/slack v0.11.3
 	github.com/stretchr/testify v1.8.0
 	github.com/stripe/stripe-go/v73 v73.4.0
-	go.uber.org/zap v1.22.0
+	go.uber.org/zap v1.23.0
 	golang.org/x/sync v0.0.0-20220929204114-8fcdb60fdcc0
 	google.golang.org/api v0.100.0
 	google.golang.org/genproto v0.0.0-20221014213838-99cd37c6964a
@@ -49,6 +49,11 @@ require (
 	gorm.io/driver/mysql v1.3.6
 	gorm.io/gorm v1.23.8
 	moul.io/zapgorm2 v1.1.3
+)
+
+require (
+	go.opentelemetry.io/otel v1.10.0 // indirect
+	go.opentelemetry.io/otel/trace v1.10.0 // indirect
 )
 
 require (
