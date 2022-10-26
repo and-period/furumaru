@@ -369,9 +369,12 @@ func TestProducer_Create(t *testing.T) {
 		return current
 	}
 
+	p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+	p.Admin = *testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
+
 	type args struct {
-		admin    *entity.Admin
 		producer *entity.Producer
+		auth     func(ctx context.Context) error
 	}
 	type want struct {
 		hasErr bool
@@ -393,8 +396,8 @@ func TestProducer_Create(t *testing.T) {
 				require.NoError(t, err)
 			},
 			args: args{
-				admin:    testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now()),
-				producer: testProducer("admin-id", "coordinator-id", "&.農園", now()),
+				producer: p,
+				auth:     func(ctx context.Context) error { return nil },
 			},
 			want: want{
 				hasErr: false,
@@ -404,8 +407,8 @@ func TestProducer_Create(t *testing.T) {
 			name:  "failed to not found coordinator",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
-				admin:    testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now()),
-				producer: testProducer("admin-id", "coordinator-id", "&.農園", now()),
+				producer: p,
+				auth:     func(ctx context.Context) error { return nil },
 			},
 			want: want{
 				hasErr: true,
@@ -428,8 +431,26 @@ func TestProducer_Create(t *testing.T) {
 				require.NoError(t, err)
 			},
 			args: args{
-				admin:    testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now()),
-				producer: testProducer("admin-id", "coordinator-id", "&.農園", now()),
+				producer: p,
+				auth:     func(ctx context.Context) error { return nil },
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+		{
+			name: "failed to execute external service",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				coordinator := testCoordinator("coordinator-id", now())
+				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+				err = m.db.DB.Create(&coordinator.Admin).Error
+				require.NoError(t, err)
+				err = m.db.DB.Create(&coordinator).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				producer: p,
+				auth:     func(ctx context.Context) error { return errmock },
 			},
 			want: want{
 				hasErr: true,
@@ -448,7 +469,7 @@ func TestProducer_Create(t *testing.T) {
 			tt.setup(ctx, t, m)
 
 			db := &producer{db: m.db, now: now}
-			err = db.Create(ctx, tt.args.admin, tt.args.producer)
+			err = db.Create(ctx, tt.args.producer, tt.args.auth)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}

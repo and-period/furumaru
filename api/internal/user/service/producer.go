@@ -67,9 +67,6 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 	}
 	cognitoID := uuid.Base58Encode(uuid.New())
 	password := random.NewStrings(size)
-	if err := s.createCognitoAdmin(ctx, cognitoID, in.Email, password); err != nil {
-		return nil, exception.InternalError(err)
-	}
 	adminParams := &entity.NewAdminParams{
 		CognitoID:     cognitoID,
 		Role:          entity.AdminRoleProducer,
@@ -79,9 +76,8 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 		FirstnameKana: in.FirstnameKana,
 		Email:         in.Email,
 	}
-	admin := entity.NewAdmin(adminParams)
 	params := &entity.NewProducerParams{
-		Admin:        admin,
+		Admin:        entity.NewAdmin(adminParams),
 		StoreName:    in.StoreName,
 		ThumbnailURL: in.ThumbnailURL,
 		HeaderURL:    in.HeaderURL,
@@ -93,10 +89,10 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 		AddressLine2: in.AddressLine2,
 	}
 	producer := entity.NewProducer(params)
-	if err := s.db.Producer.Create(ctx, admin, producer); err != nil {
+	auth := s.createCognitoAdmin(cognitoID, in.Email, password)
+	if err := s.db.Producer.Create(ctx, producer, auth); err != nil {
 		return nil, exception.InternalError(err)
 	}
-	producer.Admin = *admin
 	s.logger.Debug("Create producer", zap.String("producerId", producer.ID), zap.String("password", password))
 	s.waitGroup.Add(1)
 	go func() {

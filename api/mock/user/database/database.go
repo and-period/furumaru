@@ -163,17 +163,17 @@ func (mr *MockAdministratorMockRecorder) Count(ctx, params interface{}) *gomock.
 }
 
 // Create mocks base method.
-func (m *MockAdministrator) Create(ctx context.Context, admin *entity.Admin, administrator *entity.Administrator) error {
+func (m *MockAdministrator) Create(ctx context.Context, administrator *entity.Administrator, auth func(context.Context) error) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", ctx, admin, administrator)
+	ret := m.ctrl.Call(m, "Create", ctx, administrator, auth)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockAdministratorMockRecorder) Create(ctx, admin, administrator interface{}) *gomock.Call {
+func (mr *MockAdministratorMockRecorder) Create(ctx, administrator, auth interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockAdministrator)(nil).Create), ctx, admin, administrator)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockAdministrator)(nil).Create), ctx, administrator, auth)
 }
 
 // Get mocks base method.
@@ -289,17 +289,17 @@ func (mr *MockCoordinatorMockRecorder) Count(ctx, params interface{}) *gomock.Ca
 }
 
 // Create mocks base method.
-func (m *MockCoordinator) Create(ctx context.Context, admin *entity.Admin, coordinator *entity.Coordinator) error {
+func (m *MockCoordinator) Create(ctx context.Context, coordinator *entity.Coordinator, auth func(context.Context) error) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", ctx, admin, coordinator)
+	ret := m.ctrl.Call(m, "Create", ctx, coordinator, auth)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockCoordinatorMockRecorder) Create(ctx, admin, coordinator interface{}) *gomock.Call {
+func (mr *MockCoordinatorMockRecorder) Create(ctx, coordinator, auth interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockCoordinator)(nil).Create), ctx, admin, coordinator)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockCoordinator)(nil).Create), ctx, coordinator, auth)
 }
 
 // Get mocks base method.
@@ -568,17 +568,17 @@ func (mr *MockProducerMockRecorder) Count(ctx, params interface{}) *gomock.Call 
 }
 
 // Create mocks base method.
-func (m *MockProducer) Create(ctx context.Context, admin *entity.Admin, producer *entity.Producer) error {
+func (m *MockProducer) Create(ctx context.Context, producer *entity.Producer, auth func(context.Context) error) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", ctx, admin, producer)
+	ret := m.ctrl.Call(m, "Create", ctx, producer, auth)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockProducerMockRecorder) Create(ctx, admin, producer interface{}) *gomock.Call {
+func (mr *MockProducerMockRecorder) Create(ctx, producer, auth interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockProducer)(nil).Create), ctx, admin, producer)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockProducer)(nil).Create), ctx, producer, auth)
 }
 
 // Get mocks base method.

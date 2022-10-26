@@ -290,14 +290,6 @@ func TestCreateProducer(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				expectAdmin := &entity.Admin{
-					Role:          entity.AdminRoleProducer,
-					Lastname:      "&.",
-					Firstname:     "スタッフ",
-					LastnameKana:  "あんどぴりおど",
-					FirstnameKana: "すたっふ",
-					Email:         "test-admin@and-period.jp",
-				}
 				expectProducer := &entity.Producer{
 					Admin: entity.Admin{
 						Role:          entity.AdminRoleProducer,
@@ -317,16 +309,12 @@ func TestCreateProducer(t *testing.T) {
 					AddressLine1: "永田町1-7-1",
 					AddressLine2: "",
 				}
-				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(nil)
 				mocks.db.Producer.EXPECT().
 					Create(ctx, gomock.Any(), gomock.Any()).
-					DoAndReturn(func(ctx context.Context, admin *entity.Admin, producer *entity.Producer) error {
-						expectAdmin.ID = admin.ID
-						expectAdmin.CognitoID = admin.CognitoID
-						assert.Equal(t, expectAdmin, admin)
-						expectProducer.ID = admin.ID
-						expectProducer.AdminID = admin.ID
-						expectProducer.CognitoID = admin.CognitoID
+					DoAndReturn(func(ctx context.Context, producer *entity.Producer, auth func(ctx context.Context) error) error {
+						expectProducer.ID = producer.ID
+						expectProducer.AdminID = producer.ID
+						expectProducer.CognitoID = producer.CognitoID
 						assert.Equal(t, expectProducer, producer)
 						return nil
 					})
@@ -353,7 +341,6 @@ func TestCreateProducer(t *testing.T) {
 		{
 			name: "success without notify register admin",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(nil)
 				mocks.db.Producer.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(nil)
 				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(errmock)
 			},
@@ -382,32 +369,8 @@ func TestCreateProducer(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to create admin auth",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(errmock)
-			},
-			input: &user.CreateProducerInput{
-				Lastname:      "&.",
-				Firstname:     "スタッフ",
-				LastnameKana:  "あんどぴりおど",
-				FirstnameKana: "すたっふ",
-				StoreName:     "&.農園",
-				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-				HeaderURL:     "https://and-period.jp/header.png",
-				Email:         "test-admin@and-period.jp",
-				PhoneNumber:   "+819012345678",
-				PostalCode:    "1000014",
-				Prefecture:    "東京都",
-				City:          "千代田区",
-				AddressLine1:  "永田町1-7-1",
-				AddressLine2:  "",
-			},
-			expectErr: exception.ErrUnknown,
-		},
-		{
 			name: "failed to create admin",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(nil)
 				mocks.db.Producer.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(errmock)
 			},
 			input: &user.CreateProducerInput{
