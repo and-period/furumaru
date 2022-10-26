@@ -150,6 +150,31 @@ func (a *administrator) Update(ctx context.Context, administratorID string, para
 	return exception.InternalError(err)
 }
 
+func (a *administrator) Delete(
+	ctx context.Context, administratorID string, auth func(ctx context.Context) error,
+) error {
+	_, err := a.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+		if _, err := a.get(ctx, tx, administratorID); err != nil {
+			return nil, err
+		}
+
+		now := a.now()
+		params := map[string]interface{}{
+			"updated_at": now,
+			"deleted_at": now,
+		}
+		err := tx.WithContext(ctx).
+			Table(administratorTable).
+			Where("admin_id = ?", administratorID).
+			Updates(params).Error
+		if err != nil {
+			return nil, err
+		}
+		return nil, auth(ctx)
+	})
+	return exception.InternalError(err)
+}
+
 func (a *administrator) get(
 	ctx context.Context, tx *gorm.DB, administratorID string, fields ...string,
 ) (*entity.Administrator, error) {

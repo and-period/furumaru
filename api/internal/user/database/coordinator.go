@@ -164,6 +164,29 @@ func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *
 	return exception.InternalError(err)
 }
 
+func (c *coordinator) Delete(ctx context.Context, coordinatorID string, auth func(ctx context.Context) error) error {
+	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+		if _, err := c.get(ctx, tx, coordinatorID); err != nil {
+			return nil, err
+		}
+
+		now := c.now()
+		params := map[string]interface{}{
+			"updated_at": now,
+			"deleted_at": now,
+		}
+		err := tx.WithContext(ctx).
+			Table(coordinatorTable).
+			Where("admin_id = ?", coordinatorID).
+			Updates(params).Error
+		if err != nil {
+			return nil, err
+		}
+		return nil, auth(ctx)
+	})
+	return exception.InternalError(err)
+}
+
 func (c *coordinator) get(
 	ctx context.Context, tx *gorm.DB, coordinatorID string, fields ...string,
 ) (*entity.Coordinator, error) {

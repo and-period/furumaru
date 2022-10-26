@@ -210,3 +210,11 @@ func (s *service) UnrelatedProducer(ctx context.Context, in *user.UnrelatedProdu
 	err := s.db.Producer.UpdateRelationship(ctx, in.ProducerID, "")
 	return exception.InternalError(err)
 }
+
+func (s *service) DeleteProducer(ctx context.Context, in *user.DeleteProducerInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	err := s.db.Producer.Delete(ctx, in.ProducerID, s.deleteCognitoAdmin(in.ProducerID))
+	return exception.InternalError(err)
+}

@@ -185,6 +185,29 @@ func (p *producer) UpdateRelationship(ctx context.Context, producerID, coordinat
 	return exception.InternalError(err)
 }
 
+func (p *producer) Delete(ctx context.Context, producerID string, auth func(ctx context.Context) error) error {
+	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+		if _, err := p.get(ctx, tx, producerID); err != nil {
+			return nil, err
+		}
+
+		now := p.now()
+		params := map[string]interface{}{
+			"updated_at": now,
+			"deleted_at": now,
+		}
+		err := tx.WithContext(ctx).
+			Table(producerTable).
+			Where("admin_id = ?", producerID).
+			Updates(params).Error
+		if err != nil {
+			return nil, err
+		}
+		return nil, auth(ctx)
+	})
+	return exception.InternalError(err)
+}
+
 func (p *producer) get(
 	ctx context.Context, tx *gorm.DB, producerID string, fields ...string,
 ) (*entity.Producer, error) {

@@ -854,3 +854,47 @@ func TestUnrelatedProducer(t *testing.T) {
 		}))
 	}
 }
+
+func TestDeleteProducer(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.DeleteProducerInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Producer.EXPECT().Delete(ctx, "producer-id", gomock.Any()).Return(nil)
+			},
+			input: &user.DeleteProducerInput{
+				ProducerID: "producer-id",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.DeleteProducerInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to delete",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Producer.EXPECT().Delete(ctx, "producer-id", gomock.Any()).Return(errmock)
+			},
+			input: &user.DeleteProducerInput{
+				ProducerID: "producer-id",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.DeleteProducer(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
