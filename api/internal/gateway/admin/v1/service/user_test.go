@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -302,6 +303,48 @@ func TestUsers(t *testing.T) {
 	}
 }
 
+func TestUsers_IDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		users  Users
+		expect []string
+	}{
+		{
+			name: "success",
+			users: Users{
+				{
+					User: response.User{
+						ID:            "user-id",
+						Lastname:      "&.",
+						Firstname:     "スタッフ",
+						LastnameKana:  "あんどどっと",
+						FirstnameKana: "すたっふ",
+						Registered:    true,
+						Email:         "test-user@and-period.jp",
+						PhoneNumber:   "+819012345678",
+						PostalCode:    "1000014",
+						Prefecture:    "東京都",
+						City:          "千代田区",
+						AddressLine1:  "永田町1-7-1",
+						AddressLine2:  "",
+						CreatedAt:     1640962800,
+						UpdatedAt:     1640962800,
+					},
+				},
+			},
+			expect: []string{"user-id"},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.users.IDs())
+		})
+	}
+}
+
 func TestUsers_Map(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -411,6 +454,244 @@ func TestUsers_Response(t *testing.T) {
 					AddressLine2:  "",
 					CreatedAt:     1640962800,
 					UpdatedAt:     1640962800,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.users.Response())
+		})
+	}
+}
+
+func TestUserList(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		user   *User
+		order  *sentity.AggregatedOrder
+		expect *UserList
+	}{
+		{
+			name: "success",
+			user: &User{
+				User: response.User{
+					ID:            "user-id",
+					Lastname:      "&.",
+					Firstname:     "スタッフ",
+					LastnameKana:  "あんどどっと",
+					FirstnameKana: "すたっふ",
+					Registered:    true,
+					Email:         "test-user@and-period.jp",
+					PhoneNumber:   "+819012345678",
+					PostalCode:    "1000014",
+					Prefecture:    "東京都",
+					City:          "千代田区",
+					AddressLine1:  "永田町1-7-1",
+					AddressLine2:  "",
+					CreatedAt:     1640962800,
+					UpdatedAt:     1640962800,
+				},
+			},
+			order: &sentity.AggregatedOrder{
+				UserID:     "user-id",
+				OrderCount: 2,
+				Subtotal:   3000,
+				Discount:   0,
+			},
+			expect: &UserList{
+				UserList: response.UserList{
+					ID:          "user-id",
+					Lastname:    "&.",
+					Firstname:   "スタッフ",
+					Registered:  true,
+					Address:     "東京都 千代田区",
+					TotalOrder:  2,
+					TotalAmount: 3000,
+				},
+			},
+		},
+		{
+			name: "success without order",
+			user: &User{
+				User: response.User{
+					ID:            "user-id",
+					Lastname:      "&.",
+					Firstname:     "スタッフ",
+					LastnameKana:  "あんどどっと",
+					FirstnameKana: "すたっふ",
+					Registered:    true,
+					Email:         "test-user@and-period.jp",
+					PhoneNumber:   "+819012345678",
+					PostalCode:    "1000014",
+					Prefecture:    "東京都",
+					City:          "千代田区",
+					AddressLine1:  "永田町1-7-1",
+					AddressLine2:  "",
+					CreatedAt:     1640962800,
+					UpdatedAt:     1640962800,
+				},
+			},
+			order: nil,
+			expect: &UserList{
+				UserList: response.UserList{
+					ID:          "user-id",
+					Lastname:    "&.",
+					Firstname:   "スタッフ",
+					Registered:  true,
+					Address:     "東京都 千代田区",
+					TotalOrder:  0,
+					TotalAmount: 0,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, NewUserList(tt.user, tt.order))
+		})
+	}
+}
+
+func TestUserList_Response(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		user   *UserList
+		expect *response.UserList
+	}{
+		{
+			name: "success",
+			user: &UserList{
+				UserList: response.UserList{
+					ID:          "user-id",
+					Lastname:    "&.",
+					Firstname:   "スタッフ",
+					Registered:  true,
+					Address:     "東京都 千代田区",
+					TotalOrder:  2,
+					TotalAmount: 3000,
+				},
+			},
+			expect: &response.UserList{
+				ID:          "user-id",
+				Lastname:    "&.",
+				Firstname:   "スタッフ",
+				Registered:  true,
+				Address:     "東京都 千代田区",
+				TotalOrder:  2,
+				TotalAmount: 3000,
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.user.Response())
+		})
+	}
+}
+
+func TestUserLists(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		users  Users
+		orders map[string]*sentity.AggregatedOrder
+		expect UserLists
+	}{
+		{
+			name: "success",
+			users: Users{
+				{
+					User: response.User{
+						ID:            "user-id",
+						Lastname:      "&.",
+						Firstname:     "スタッフ",
+						LastnameKana:  "あんどどっと",
+						FirstnameKana: "すたっふ",
+						Registered:    true,
+						Email:         "test-user@and-period.jp",
+						PhoneNumber:   "+819012345678",
+						PostalCode:    "1000014",
+						Prefecture:    "東京都",
+						City:          "千代田区",
+						AddressLine1:  "永田町1-7-1",
+						AddressLine2:  "",
+						CreatedAt:     1640962800,
+						UpdatedAt:     1640962800,
+					},
+				},
+			},
+			orders: map[string]*sentity.AggregatedOrder{
+				"user-id": {
+					UserID:     "user-id",
+					OrderCount: 2,
+					Subtotal:   3000,
+					Discount:   0,
+				},
+			},
+			expect: UserLists{
+				{
+					UserList: response.UserList{
+						ID:          "user-id",
+						Lastname:    "&.",
+						Firstname:   "スタッフ",
+						Registered:  true,
+						Address:     "東京都 千代田区",
+						TotalOrder:  2,
+						TotalAmount: 3000,
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, NewUserLists(tt.users, tt.orders))
+		})
+	}
+}
+
+func TestUserLists_Response(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		users  UserLists
+		expect []*response.UserList
+	}{
+		{
+			name: "success",
+			users: UserLists{
+				{
+					UserList: response.UserList{
+						ID:          "user-id",
+						Lastname:    "&.",
+						Firstname:   "スタッフ",
+						Registered:  true,
+						Address:     "東京都 千代田区",
+						TotalOrder:  2,
+						TotalAmount: 3000,
+					},
+				},
+			},
+			expect: []*response.UserList{
+				{
+					ID:          "user-id",
+					Lastname:    "&.",
+					Firstname:   "スタッフ",
+					Registered:  true,
+					Address:     "東京都 千代田区",
+					TotalOrder:  2,
+					TotalAmount: 3000,
 				},
 			},
 		},

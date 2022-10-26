@@ -4144,6 +4144,74 @@ export interface UploadVideoResponse {
 /**
  * 
  * @export
+ * @interface UsersResponse
+ */
+export interface UsersResponse {
+    /**
+     * 購入者一覧
+     * @type {Array<UsersResponseUsersInner>}
+     * @memberof UsersResponse
+     */
+    'users': Array<UsersResponseUsersInner>;
+    /**
+     * 合計数
+     * @type {number}
+     * @memberof UsersResponse
+     */
+    'total': number;
+}
+/**
+ * 
+ * @export
+ * @interface UsersResponseUsersInner
+ */
+export interface UsersResponseUsersInner {
+    /**
+     * 購入者ID
+     * @type {string}
+     * @memberof UsersResponseUsersInner
+     */
+    'id'?: string;
+    /**
+     * 姓
+     * @type {string}
+     * @memberof UsersResponseUsersInner
+     */
+    'lastname'?: string;
+    /**
+     * 名
+     * @type {string}
+     * @memberof UsersResponseUsersInner
+     */
+    'firstname'?: string;
+    /**
+     * 会員登録フラグ
+     * @type {boolean}
+     * @memberof UsersResponseUsersInner
+     */
+    'registered'?: boolean;
+    /**
+     * 住所
+     * @type {string}
+     * @memberof UsersResponseUsersInner
+     */
+    'address'?: string;
+    /**
+     * 購入回数
+     * @type {number}
+     * @memberof UsersResponseUsersInner
+     */
+    'totalOrder'?: number;
+    /**
+     * 購入金額
+     * @type {number}
+     * @memberof UsersResponseUsersInner
+     */
+    'totalAmount'?: number;
+}
+/**
+ * 
+ * @export
  * @interface VerifyAuthEmailRequest
  */
 export interface VerifyAuthEmailRequest {
@@ -10138,6 +10206,124 @@ export class ShippingApi extends BaseAPI {
      */
     public v1UpdateShipping(shippingId: string, body: UpdateShippingRequest, options?: AxiosRequestConfig) {
         return ShippingApiFp(this.configuration).v1UpdateShipping(shippingId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * UserApi - axios parameter creator
+ * @export
+ */
+export const UserApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary 購入者一覧
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListUsers: async (limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/users`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * UserApi - functional programming interface
+ * @export
+ */
+export const UserApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = UserApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary 購入者一覧
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ListUsers(limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UsersResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListUsers(limit, offset, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * UserApi - factory interface
+ * @export
+ */
+export const UserApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = UserApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary 購入者一覧
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListUsers(limit?: number, offset?: number, options?: any): AxiosPromise<UsersResponse> {
+            return localVarFp.v1ListUsers(limit, offset, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * UserApi - object-oriented interface
+ * @export
+ * @class UserApi
+ * @extends {BaseAPI}
+ */
+export class UserApi extends BaseAPI {
+    /**
+     * 
+     * @summary 購入者一覧
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public v1ListUsers(limit?: number, offset?: number, options?: AxiosRequestConfig) {
+        return UserApiFp(this.configuration).v1ListUsers(limit, offset, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

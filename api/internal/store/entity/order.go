@@ -96,3 +96,11 @@ func (os Orders) IDs() []string {
 	}
 	return res
 }
+
+func (os AggregatedOrders) Map() map[string]*AggregatedOrder {
+	res := make(map[string]*AggregatedOrder, len(os))
+	for _, o := range os {
+		res[o.UserID] = o
+	}
+	return res
+}

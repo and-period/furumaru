@@ -29,6 +29,8 @@ tags:
   description: スケジュール関連
 - name: Order
   description: 注文関連
+- name: User
+  description: 購入者関連
 - name: Contact
   description: お問い合わせ関連
 - name: Notification
@@ -127,6 +129,9 @@ paths:
     $ref: './paths/v1/orders/index.yaml'
   /v1/orders/{orderId}:
     $ref: './paths/v1/orders/_orderId/index.yaml'
+  # User
+  /v1/users:
+    $ref: './paths/v1/users/index.yaml'
   # Upload
   /v1/upload/coordinators/header:
     $ref: './paths/v1/upload/coordinators/header.yaml'
@@ -281,6 +286,8 @@ components:
       $ref: './components/schemas/v1/order.response.yaml#/orderResponse'
     v1OrdersResponse:
       $ref: './components/schemas/v1/order.response.yaml#/ordersResponse'
+    v1UsersResponse:
+      $ref: './components/schemas/v1/user.response.yaml#/usersResponse'
     v1UploadImageResponse:
       $ref: './components/schemas/v1/upload.response.yaml#/uploadImageResponse'
     v1UploadVideoResponse:
