@@ -4,7 +4,8 @@ import (
 	"strings"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
-	"github.com/and-period/furumaru/api/internal/user/entity"
+	sentity "github.com/and-period/furumaru/api/internal/store/entity"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 )
 
 type User struct {
@@ -13,7 +14,13 @@ type User struct {
 
 type Users []*User
 
-func NewUser(user *entity.User) *User {
+type UserList struct {
+	response.UserList
+}
+
+type UserLists []*UserList
+
+func NewUser(user *uentity.User) *User {
 	return &User{
 		User: response.User{
 			ID:            user.ID,
@@ -43,10 +50,18 @@ func (u *User) Response() *response.User {
 	return &u.User
 }
 
-func NewUsers(users entity.Users) Users {
+func NewUsers(users uentity.Users) Users {
 	res := make(Users, len(users))
 	for i := range users {
 		res[i] = NewUser(users[i])
+	}
+	return res
+}
+
+func (us Users) IDs() []string {
+	res := make([]string, len(us))
+	for i := range us {
+		res[i] = us[i].ID
 	}
 	return res
 }
@@ -61,6 +76,43 @@ func (us Users) Map() map[string]*User {
 
 func (us Users) Response() []*response.User {
 	res := make([]*response.User, len(us))
+	for i := range us {
+		res[i] = us[i].Response()
+	}
+	return res
+}
+
+func NewUserList(user *User, order *sentity.AggregatedOrder) *UserList {
+	if order == nil {
+		order = &sentity.AggregatedOrder{}
+	}
+	return &UserList{
+		UserList: response.UserList{
+			ID:          user.ID,
+			Lastname:    user.Lastname,
+			Firstname:   user.Firstname,
+			Registered:  user.Registered,
+			Address:     strings.TrimSpace(strings.Join([]string{user.Prefecture, user.City}, " ")),
+			TotalOrder:  order.OrderCount,
+			TotalAmount: order.Subtotal,
+		},
+	}
+}
+
+func (u *UserList) Response() *response.UserList {
+	return &u.UserList
+}
+
+func NewUserLists(users Users, orders map[string]*sentity.AggregatedOrder) UserLists {
+	res := make(UserLists, len(users))
+	for i := range users {
+		res[i] = NewUserList(users[i], orders[users[i].ID])
+	}
+	return res
+}
+
+func (us UserLists) Response() []*response.UserList {
+	res := make([]*response.UserList, len(us))
 	for i := range us {
 		res[i] = us[i].Response()
 	}

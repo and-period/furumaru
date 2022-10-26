@@ -1,0 +1,50 @@
+usersResponse:
+  type: object
+  properties:
+    users:
+      type: array
+      description: 購入者一覧
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            description: 購入者ID
+          lastname:
+            type: string
+            description: 姓
+          firstname:
+            type: string
+            description: 名
+          registered:
+            type: boolean
+            description: 会員登録フラグ
+          address:
+            type: string
+            description: 住所
+          totalOrder:
+            type: integer
+            format: int64
+            description: 購入回数
+          totalAmount:
+            type: integer
+            format: int64
+            description: 購入金額
+    total:
+      type: integer
+      format: int64
+      description: 合計数
+  required:
+  - users
+  - total
+  example:
+    users:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      lastname: '&.'
+      firstname: '購入者'
+      registered: true
+      address: '神奈川県 横浜市'
+      totalOrder: 2
+      totalAmount: 5000
+    total: 1
+

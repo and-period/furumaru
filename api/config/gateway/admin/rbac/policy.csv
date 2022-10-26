@@ -41,6 +41,7 @@ p, promotion_update, /v1/promotions/*, PATCH, allow
 p, promotion_delete, /v1/promotions/*, DELETE, allow
 p, order_list, /v1/orders, GET, allow
 p, order_get, /v1/orders/*, GET, allow
+p, user_list, /v1/users, GET, allow
 p, contact_list, /v1/contacts, GET, allow
 p, contact_get, /v1/contacts/*, GET, allow
 p, contact_update, /v1/contacts/*, PATCH, allow
@@ -95,6 +96,7 @@ g, administrator, promotion_update
 g, administrator, promotion_delete
 g, administrator, order_list
 g, administrator, order_get
+g, administrator, user_list
 g, administrator, contact_list
 g, administrator, contact_get
 g, administrator, contact_update
