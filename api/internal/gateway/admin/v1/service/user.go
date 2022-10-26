@@ -36,8 +36,8 @@ func NewUser(user *uentity.User) *User {
 			City:          user.Customer.City,
 			AddressLine1:  user.Customer.AddressLine1,
 			AddressLine2:  user.Customer.AddressLine2,
-			CreatedAt:     user.Customer.CreatedAt.Unix(),
-			UpdatedAt:     user.Customer.UpdatedAt.Unix(),
+			CreatedAt:     user.CreatedAt.Unix(),
+			UpdatedAt:     user.UpdatedAt.Unix(),
 		},
 	}
 }
