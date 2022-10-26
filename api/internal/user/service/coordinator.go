@@ -72,9 +72,6 @@ func (s *service) CreateCoordinator(
 	}
 	cognitoID := uuid.Base58Encode(uuid.New())
 	password := random.NewStrings(size)
-	if err := s.createCognitoAdmin(ctx, cognitoID, in.Email, password); err != nil {
-		return nil, exception.InternalError(err)
-	}
 	adminParams := &entity.NewAdminParams{
 		CognitoID:     cognitoID,
 		Role:          entity.AdminRoleCoordinator,
@@ -84,9 +81,8 @@ func (s *service) CreateCoordinator(
 		FirstnameKana: in.FirstnameKana,
 		Email:         in.Email,
 	}
-	admin := entity.NewAdmin(adminParams)
 	params := &entity.NewCoordinatorParams{
-		Admin:            admin,
+		Admin:            entity.NewAdmin(adminParams),
 		CompanyName:      in.CompanyName,
 		StoreName:        in.StoreName,
 		ThumbnailURL:     in.ThumbnailURL,
@@ -102,10 +98,10 @@ func (s *service) CreateCoordinator(
 		AddressLine2:     in.AddressLine2,
 	}
 	coordinator := entity.NewCoordinator(params)
-	if err := s.db.Coordinator.Create(ctx, admin, coordinator); err != nil {
+	auth := s.createCognitoAdmin(cognitoID, in.Email, password)
+	if err := s.db.Coordinator.Create(ctx, coordinator, auth); err != nil {
 		return nil, exception.InternalError(err)
 	}
-	coordinator.Admin = *admin
 	s.logger.Debug("Create coordinator", zap.String("coordinatorId", coordinator.ID), zap.String("password", password))
 	s.waitGroup.Add(1)
 	go func() {

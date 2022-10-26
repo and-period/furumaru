@@ -50,7 +50,7 @@ type Administrator interface {
 	Count(ctx context.Context, params *ListAdministratorsParams) (int64, error)
 	MultiGet(ctx context.Context, administratorIDs []string, fields ...string) (entity.Administrators, error)
 	Get(ctx context.Context, administratorID string, fields ...string) (*entity.Administrator, error)
-	Create(ctx context.Context, admin *entity.Admin, administrator *entity.Administrator) error
+	Create(ctx context.Context, administrator *entity.Administrator, auth func(ctx context.Context) error) error
 	Update(ctx context.Context, administratorID string, params *UpdateAdministratorParams) error
 }
 
@@ -59,7 +59,7 @@ type Coordinator interface {
 	Count(ctx context.Context, params *ListCoordinatorsParams) (int64, error)
 	MultiGet(ctx context.Context, coordinatorIDs []string, fields ...string) (entity.Coordinators, error)
 	Get(ctx context.Context, coordinatorID string, fields ...string) (*entity.Coordinator, error)
-	Create(ctx context.Context, admin *entity.Admin, coordinator *entity.Coordinator) error
+	Create(ctx context.Context, coordinator *entity.Coordinator, auth func(ctx context.Context) error) error
 	Update(ctx context.Context, coordinatorID string, params *UpdateCoordinatorParams) error
 }
 
@@ -79,7 +79,7 @@ type Producer interface {
 	Count(ctx context.Context, params *ListProducersParams) (int64, error)
 	MultiGet(ctx context.Context, producerIDs []string, fields ...string) (entity.Producers, error)
 	Get(ctx context.Context, producerID string, fields ...string) (*entity.Producer, error)
-	Create(ctx context.Context, admin *entity.Admin, producer *entity.Producer) error
+	Create(ctx context.Context, producer *entity.Producer, auth func(ctx context.Context) error) error
 	Update(ctx context.Context, producerID string, params *UpdateProducerParams) error
 	UpdateRelationship(ctx context.Context, producerID, coordinatorID string) error
 }

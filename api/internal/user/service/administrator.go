@@ -73,9 +73,6 @@ func (s *service) CreateAdministrator(
 	}
 	cognitoID := uuid.Base58Encode(uuid.New())
 	password := random.NewStrings(size)
-	if err := s.createCognitoAdmin(ctx, cognitoID, in.Email, password); err != nil {
-		return nil, exception.InternalError(err)
-	}
 	adminParams := &entity.NewAdminParams{
 		CognitoID:     cognitoID,
 		Role:          entity.AdminRoleAdministrator,
@@ -85,16 +82,15 @@ func (s *service) CreateAdministrator(
 		FirstnameKana: in.FirstnameKana,
 		Email:         in.Email,
 	}
-	admin := entity.NewAdmin(adminParams)
 	params := &entity.NewAdministratorParams{
-		Admin:       admin,
+		Admin:       entity.NewAdmin(adminParams),
 		PhoneNumber: in.PhoneNumber,
 	}
 	administrator := entity.NewAdministrator(params)
-	if err := s.db.Administrator.Create(ctx, admin, administrator); err != nil {
+	auth := s.createCognitoAdmin(cognitoID, in.Email, password)
+	if err := s.db.Administrator.Create(ctx, administrator, auth); err != nil {
 		return nil, exception.InternalError(err)
 	}
-	administrator.Admin = *admin
 	s.logger.Debug("Create administrator",
 		zap.String("administratorId", administrator.ID), zap.String("password", password))
 	s.waitGroup.Add(1)
@@ -176,13 +172,15 @@ func (s *service) ResetAdministratorPassword(ctx context.Context, in *user.Reset
 	return nil
 }
 
-func (s *service) createCognitoAdmin(ctx context.Context, cognitoID, email, password string) error {
+func (s *service) createCognitoAdmin(cognitoID, email, password string) func(context.Context) error {
 	params := &cognito.AdminCreateUserParams{
 		Username: cognitoID,
 		Email:    email,
 		Password: password,
 	}
-	return s.adminAuth.AdminCreateUser(ctx, params)
+	return func(ctx context.Context) error {
+		return s.adminAuth.AdminCreateUser(ctx, params)
+	}
 }
 
 func (s *service) notifyRegisterAdmin(ctx context.Context, adminID, password string) error {

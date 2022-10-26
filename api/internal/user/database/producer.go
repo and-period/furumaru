@@ -102,19 +102,19 @@ func (p *producer) Get(
 }
 
 func (p *producer) Create(
-	ctx context.Context, admin *entity.Admin, producer *entity.Producer,
+	ctx context.Context, producer *entity.Producer, auth func(ctx context.Context) error,
 ) error {
 	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		now := p.now()
-		admin.CreatedAt, admin.UpdatedAt = now, now
-		producer.CreatedAt, producer.UpdatedAt = now, now
-
-		err := tx.WithContext(ctx).Table(adminTable).Create(&admin).Error
-		if err != nil {
+		producer.Admin.CreatedAt, producer.Admin.UpdatedAt = now, now
+		if err := tx.WithContext(ctx).Table(adminTable).Create(&producer.Admin).Error; err != nil {
 			return nil, err
 		}
-		err = tx.WithContext(ctx).Table(producerTable).Create(&producer).Error
-		return nil, err
+		producer.CreatedAt, producer.UpdatedAt = now, now
+		if err := tx.WithContext(ctx).Table(producerTable).Create(&producer).Error; err != nil {
+			return nil, err
+		}
+		return nil, auth(ctx)
 	})
 	return exception.InternalError(err)
 }

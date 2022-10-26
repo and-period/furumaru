@@ -98,19 +98,19 @@ func (a *administrator) Get(
 }
 
 func (a *administrator) Create(
-	ctx context.Context, admin *entity.Admin, administrator *entity.Administrator,
+	ctx context.Context, administrator *entity.Administrator, auth func(ctx context.Context) error,
 ) error {
 	_, err := a.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		now := a.now()
-		admin.CreatedAt, admin.UpdatedAt = now, now
-		administrator.CreatedAt, administrator.UpdatedAt = now, now
-
-		err := tx.WithContext(ctx).Table(adminTable).Create(&admin).Error
-		if err != nil {
+		administrator.Admin.CreatedAt, administrator.Admin.UpdatedAt = now, now
+		if err := tx.WithContext(ctx).Table(adminTable).Create(&administrator.Admin).Error; err != nil {
 			return nil, err
 		}
-		err = tx.WithContext(ctx).Table(administratorTable).Create(&administrator).Error
-		return nil, err
+		administrator.CreatedAt, administrator.UpdatedAt = now, now
+		if err := tx.WithContext(ctx).Table(administratorTable).Create(&administrator).Error; err != nil {
+			return nil, err
+		}
+		return nil, auth(ctx)
 	})
 	return exception.InternalError(err)
 }

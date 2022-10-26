@@ -101,19 +101,19 @@ func (c *coordinator) Get(
 }
 
 func (c *coordinator) Create(
-	ctx context.Context, admin *entity.Admin, coordinator *entity.Coordinator,
+	ctx context.Context, coordinator *entity.Coordinator, auth func(ctx context.Context) error,
 ) error {
 	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		now := c.now()
-		admin.CreatedAt, admin.UpdatedAt = now, now
-		coordinator.CreatedAt, coordinator.UpdatedAt = now, now
-
-		err := tx.WithContext(ctx).Table(adminTable).Create(&admin).Error
-		if err != nil {
+		coordinator.Admin.CreatedAt, coordinator.Admin.UpdatedAt = now, now
+		if err := tx.WithContext(ctx).Table(adminTable).Create(&coordinator.Admin).Error; err != nil {
 			return nil, err
 		}
-		err = tx.WithContext(ctx).Table(coordinatorTable).Create(&coordinator).Error
-		return nil, err
+		coordinator.CreatedAt, coordinator.UpdatedAt = now, now
+		if err := tx.WithContext(ctx).Table(coordinatorTable).Create(&coordinator).Error; err != nil {
+			return nil, err
+		}
+		return nil, auth(ctx)
 	})
 	return exception.InternalError(err)
 }

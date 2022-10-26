@@ -331,9 +331,12 @@ func TestAdministrator_Create(t *testing.T) {
 		return current
 	}
 
+	a := testAdministrator("admin-id", now())
+	a.Admin = *testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
+
 	type args struct {
-		admin         *entity.Admin
 		administrator *entity.Administrator
+		auth          func(ctx context.Context) error
 	}
 	type want struct {
 		hasErr bool
@@ -348,8 +351,8 @@ func TestAdministrator_Create(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
-				admin:         testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now()),
-				administrator: testAdministrator("admin-id", now()),
+				administrator: a,
+				auth:          func(ctx context.Context) error { return nil },
 			},
 			want: want{
 				hasErr: false,
@@ -363,8 +366,19 @@ func TestAdministrator_Create(t *testing.T) {
 				require.NoError(t, err)
 			},
 			args: args{
-				admin:         testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now()),
-				administrator: testAdministrator("admin-id", now()),
+				administrator: a,
+				auth:          func(ctx context.Context) error { return nil },
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+		{
+			name:  "failed to execute external service",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				administrator: a,
+				auth:          func(ctx context.Context) error { return errmock },
 			},
 			want: want{
 				hasErr: true,
@@ -383,7 +397,7 @@ func TestAdministrator_Create(t *testing.T) {
 			tt.setup(ctx, t, m)
 
 			db := &administrator{db: m.db, now: now}
-			err = db.Create(ctx, tt.args.admin, tt.args.administrator)
+			err = db.Create(ctx, tt.args.administrator, tt.args.auth)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}

@@ -24,6 +24,8 @@ const (
 var (
 	databases = []string{
 		"users",
+		"stores",
+		"messengers",
 	}
 	skipDDLs = []string{
 		"2022022301-setup.sql",

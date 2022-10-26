@@ -296,14 +296,6 @@ func TestCreateCoordinator(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				expectAdmin := &entity.Admin{
-					Role:          entity.AdminRoleCoordinator,
-					Lastname:      "&.",
-					Firstname:     "スタッフ",
-					LastnameKana:  "あんどぴりおど",
-					FirstnameKana: "すたっふ",
-					Email:         "test-admin@and-period.jp",
-				}
 				expectCoordinator := &entity.Coordinator{
 					Admin: entity.Admin{
 						Role:          entity.AdminRoleCoordinator,
@@ -327,16 +319,12 @@ func TestCreateCoordinator(t *testing.T) {
 					AddressLine1:     "永田町1-7-1",
 					AddressLine2:     "",
 				}
-				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(nil)
 				mocks.db.Coordinator.EXPECT().
 					Create(ctx, gomock.Any(), gomock.Any()).
-					DoAndReturn(func(ctx context.Context, admin *entity.Admin, coordinator *entity.Coordinator) error {
-						expectAdmin.ID = admin.ID
-						expectAdmin.CognitoID = admin.CognitoID
-						assert.Equal(t, expectAdmin, admin)
-						expectCoordinator.ID = admin.ID
-						expectCoordinator.AdminID = admin.ID
-						expectCoordinator.CognitoID = admin.CognitoID
+					DoAndReturn(func(ctx context.Context, coordinator *entity.Coordinator, auth func(ctx context.Context) error) error {
+						expectCoordinator.ID = coordinator.ID
+						expectCoordinator.AdminID = coordinator.ID
+						expectCoordinator.CognitoID = coordinator.CognitoID
 						assert.Equal(t, expectCoordinator, coordinator)
 						return nil
 					})
@@ -367,7 +355,6 @@ func TestCreateCoordinator(t *testing.T) {
 		{
 			name: "success without notify register admin",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(nil)
 				mocks.db.Coordinator.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(nil)
 				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(errmock)
 			},
@@ -400,36 +387,8 @@ func TestCreateCoordinator(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to create admin auth",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(errmock)
-			},
-			input: &user.CreateCoordinatorInput{
-				Lastname:         "&.",
-				Firstname:        "スタッフ",
-				LastnameKana:     "あんどぴりおど",
-				FirstnameKana:    "すたっふ",
-				CompanyName:      "&.",
-				StoreName:        "&.農園",
-				ThumbnailURL:     "https://and-period.jp/thumbnail.png",
-				HeaderURL:        "https://and-period.jp/header.png",
-				TwitterAccount:   "twitter-id",
-				InstagramAccount: "instgram-id",
-				FacebookAccount:  "facebook-id",
-				Email:            "test-admin@and-period.jp",
-				PhoneNumber:      "+819012345678",
-				PostalCode:       "1000014",
-				Prefecture:       "東京都",
-				City:             "千代田区",
-				AddressLine1:     "永田町1-7-1",
-				AddressLine2:     "",
-			},
-			expectErr: exception.ErrUnknown,
-		},
-		{
 			name: "failed to create admin",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.adminAuth.EXPECT().AdminCreateUser(ctx, gomock.Any()).Return(nil)
 				mocks.db.Coordinator.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(errmock)
 			},
 			input: &user.CreateCoordinatorInput{

@@ -331,9 +331,12 @@ func TestCoordinator_Create(t *testing.T) {
 		return current
 	}
 
+	c := testCoordinator("admin-id", now())
+	c.Admin = *testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
+
 	type args struct {
-		admin       *entity.Admin
 		coordinator *entity.Coordinator
+		auth        func(ctx context.Context) error
 	}
 	type want struct {
 		hasErr bool
@@ -348,8 +351,8 @@ func TestCoordinator_Create(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
-				admin:       testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now()),
-				coordinator: testCoordinator("admin-id", now()),
+				coordinator: c,
+				auth:        func(ctx context.Context) error { return nil },
 			},
 			want: want{
 				hasErr: false,
@@ -366,8 +369,19 @@ func TestCoordinator_Create(t *testing.T) {
 				require.NoError(t, err)
 			},
 			args: args{
-				admin:       testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now()),
-				coordinator: testCoordinator("admin-id", now()),
+				coordinator: c,
+				auth:        func(ctx context.Context) error { return nil },
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+		{
+			name:  "failed to execute external service",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				coordinator: c,
+				auth:        func(ctx context.Context) error { return errmock },
 			},
 			want: want{
 				hasErr: true,
@@ -386,7 +400,7 @@ func TestCoordinator_Create(t *testing.T) {
 			tt.setup(ctx, t, m)
 
 			db := &coordinator{db: m.db, now: now}
-			err = db.Create(ctx, tt.args.admin, tt.args.coordinator)
+			err = db.Create(ctx, tt.args.coordinator, tt.args.auth)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}
