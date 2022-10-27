@@ -31,7 +31,6 @@ func TestLive(t *testing.T) {
 				ID:          "live-id",
 				ScheduleID:  "schedule-id",
 				ProducerID:  "producer-id",
-				ShippingID:  "shipping-id",
 				Title:       "配信タイトル",
 				Description: "配信の説明",
 				Status:      1,
@@ -47,7 +46,6 @@ func TestLive(t *testing.T) {
 					ID:          "live-id",
 					ScheduleID:  "schedule-id",
 					ProducerID:  "producer-id",
-					ShippingID:  "shipping-id",
 					Title:       "配信タイトル",
 					Description: "配信の説明",
 					Status:      1,
@@ -96,7 +94,6 @@ func TestLive_Fill(t *testing.T) {
 					Canceled:     false,
 					ProducerID:   "producer-id",
 					ProducerName: "&. 管理者",
-					ShippingID:   "shipping-id",
 					StartAt:      1640962800,
 					EndAt:        1640962800,
 					CreatedAt:    1640962800,
@@ -221,8 +218,6 @@ func TestLive_Fill(t *testing.T) {
 					Canceled:     false,
 					ProducerID:   "producer-id",
 					ProducerName: "&. 管理者",
-					ShippingID:   "shipping-id",
-					ShippingName: "デフォルト配送設定",
 					StartAt:      1640962800,
 					EndAt:        1640962800,
 					CreatedAt:    1640962800,
@@ -237,7 +232,7 @@ func TestLive_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.live.Fill(tt.producer, tt.shipping, tt.products)
+			tt.live.Fill(tt.producer, tt.products)
 			assert.Equal(t, tt.expect, tt.live)
 		})
 	}
