@@ -144,6 +144,98 @@ func TestListShippings(t *testing.T) {
 	}
 }
 
+func TestMutiGetShippings(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2022, 7, 16, 18, 30, 0, 0)
+	shikoku := []int64{
+		codes.PrefectureValues["tokushima"],
+		codes.PrefectureValues["kagawa"],
+		codes.PrefectureValues["ehime"],
+		codes.PrefectureValues["kochi"],
+	}
+	set := set.New[int64](len(shikoku)).Add(shikoku...)
+	others := make([]int64, 0, 47-len(shikoku))
+	for _, val := range codes.PrefectureValues {
+		if set.Contains(val) {
+			continue
+		}
+		others = append(others, val)
+	}
+	rates := entity.ShippingRates{
+		{Number: 1, Name: "四国", Price: 250, Prefectures: shikoku},
+		{Number: 2, Name: "その他", Price: 500, Prefectures: others},
+	}
+	shippings := entity.Shippings{
+		{
+			ID:                 "shipping-id",
+			Name:               "デフォルト配送設定",
+			Box60Rates:         rates,
+			Box60Refrigerated:  500,
+			Box60Frozen:        800,
+			Box80Rates:         rates,
+			Box80Refrigerated:  500,
+			Box80Frozen:        800,
+			Box100Rates:        rates,
+			Box100Refrigerated: 500,
+			Box100Frozen:       800,
+			HasFreeShipping:    true,
+			FreeShippingRates:  3000,
+			CreatedAt:          now,
+			UpdatedAt:          now,
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.MultiGetShippingsInput
+		expect    entity.Shippings
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shipping.EXPECT().MultiGet(ctx, []string{"shipping-id"}).Return(shippings, nil)
+			},
+			input: &store.MultiGetShippingsInput{
+				ShippingIDs: []string{"shipping-id"},
+			},
+			expect:    shippings,
+			expectErr: nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.MultiGetShippingsInput{
+				ShippingIDs: []string{""},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to multiGet",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shipping.EXPECT().MultiGet(ctx, []string{"shipping-id"}).Return(nil, errmock)
+			},
+			input: &store.MultiGetShippingsInput{
+				ShippingIDs: []string{"shipping-id"},
+			},
+			expect:    nil,
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.MultiGetShippings(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.ElementsMatch(t, tt.expect, actual)
+		}))
+	}
+}
+
 func TestGetShipping(t *testing.T) {
 	t.Parallel()
 

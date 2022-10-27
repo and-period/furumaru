@@ -171,6 +171,71 @@ func TestShipping_Count(t *testing.T) {
 	}
 }
 
+func TestShipping_MultiGet(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, shippingTable)
+	shippings := make(entity.Shippings, 2)
+	shippings[0] = testShipping("shipping-id01", now())
+	shippings[1] = testShipping("shipping-id02", now())
+	err = m.db.DB.Create(&shippings).Error
+	require.NoError(t, err)
+
+	type args struct {
+		shippingIDs []string
+	}
+	type want struct {
+		shippings entity.Shippings
+		hasErr    bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				shippingIDs: []string{"shipping-id01", "shipping-id02", "shipping-id03"},
+			},
+			want: want{
+				shippings: shippings[:2],
+				hasErr:    false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &shipping{db: m.db, now: now}
+			actual, err := db.MultiGet(ctx, tt.args.shippingIDs)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			fillIgnoreShippingsField(actual, now())
+			assert.Equal(t, tt.want.shippings, actual)
+		})
+	}
+}
+
 func TestShipping_Get(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

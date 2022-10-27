@@ -170,6 +170,7 @@ func TestOrder_Count(t *testing.T) {
 	_ = m.dbDelete(ctx,
 		orderItemTable, orderActivityTable, orderPaymentTable, orderFulfillmentTable,
 		orderTable, shippingTable, productTable, productTypeTable, categoryTable,
+		scheduleTable,
 	)
 	categories := make(entity.Categories, 2)
 	categories[0] = testCategory("category-id01", "野菜", now())
@@ -188,6 +189,9 @@ func TestOrder_Count(t *testing.T) {
 	require.NoError(t, err)
 	shipping := testShipping("shipping-id", now())
 	err = m.db.DB.Create(&shipping).Error
+	require.NoError(t, err)
+	schedule := testSchedule("schedule-id", now())
+	err = m.db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 
 	orders := make(entity.Orders, 2)
@@ -287,6 +291,7 @@ func TestOrder_Get(t *testing.T) {
 	_ = m.dbDelete(ctx,
 		orderItemTable, orderActivityTable, orderPaymentTable, orderFulfillmentTable,
 		orderTable, shippingTable, productTable, productTypeTable, categoryTable,
+		scheduleTable,
 	)
 	categories := make(entity.Categories, 2)
 	categories[0] = testCategory("category-id01", "野菜", now())
@@ -305,6 +310,9 @@ func TestOrder_Get(t *testing.T) {
 	require.NoError(t, err)
 	shipping := testShipping("shipping-id", now())
 	err = m.db.DB.Create(&shipping).Error
+	require.NoError(t, err)
+	schedule := testSchedule("schedule-id", now())
+	err = m.db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 
 	o := testOrder("order-id", "user-id", "schedule-id", "coordinator-id", now())
@@ -403,6 +411,7 @@ func TestOrder_Aggregate(t *testing.T) {
 	_ = m.dbDelete(ctx,
 		orderItemTable, orderActivityTable, orderPaymentTable, orderFulfillmentTable,
 		orderTable, shippingTable, productTable, productTypeTable, categoryTable,
+		scheduleTable,
 	)
 	categories := make(entity.Categories, 2)
 	categories[0] = testCategory("category-id01", "野菜", now())
@@ -421,6 +430,9 @@ func TestOrder_Aggregate(t *testing.T) {
 	require.NoError(t, err)
 	shipping := testShipping("shipping-id", now())
 	err = m.db.DB.Create(&shipping).Error
+	require.NoError(t, err)
+	schedule := testSchedule("schedule-id", now())
+	err = m.db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 
 	o := testOrder("order-id", "user-id", "schedule-id", "coordinator-id", now())

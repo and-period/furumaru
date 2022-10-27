@@ -91,6 +91,7 @@ type Shipping interface {
 	List(ctx context.Context, params *ListShippingsParams, fields ...string) (entity.Shippings, error)
 	Count(ctx context.Context, params *ListShippingsParams) (int64, error)
 	Get(ctx context.Context, shoppingID string, fields ...string) (*entity.Shipping, error)
+	MultiGet(ctx context.Context, shippingIDs []string, fields ...string) (entity.Shippings, error)
 	Create(ctx context.Context, shipping *entity.Shipping) error
 	Update(ctx context.Context, shippingID string, params *UpdateShippingParams) error
 	Delete(ctx context.Context, shippingID string) error

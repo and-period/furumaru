@@ -18,6 +18,7 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 	}
 	params := &entity.NewScheduleParams{
 		CoordinatorID: in.CoordinatorID,
+		ShippingID:    in.ShippingID,
 		Title:         in.Title,
 		Description:   in.Description,
 		ThumbnailURL:  in.ThumbnailURL,
@@ -63,6 +64,14 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 			return nil
 		}
 		return fmt.Errorf("service: unmatch producers length: %w", exception.ErrInvalidArgument)
+	})
+	eg.Go(func() error {
+		shippingID := schedule.ShippingID
+		_, err := s.db.Shipping.Get(ectx, shippingID)
+		if errors.Is(err, exception.ErrNotFound) {
+			return fmt.Errorf("service: not found shipping: %w", exception.ErrNotFound)
+		}
+		return err
 	})
 	eg.Go(func() error {
 		productIDs := products.ProductIDs()

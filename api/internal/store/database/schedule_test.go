@@ -29,7 +29,7 @@ func TestSchedule_Create(t *testing.T) {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, liveProductTable, liveTable, scheduleTable, productTable, productTypeTable, categoryTable)
+	_ = m.dbDelete(ctx, liveProductTable, liveTable, scheduleTable, productTable, productTypeTable, categoryTable, shippingTable)
 	category := testCategory("category-id", "野菜", now())
 	err = m.db.DB.Create(&category).Error
 	require.NoError(t, err)
@@ -40,6 +40,9 @@ func TestSchedule_Create(t *testing.T) {
 	products[0] = testProduct("product-id01", "type-id", "category-id", "producer-id", now())
 	products[1] = testProduct("product-id02", "type-id", "category-id", "producer-id", now())
 	err = m.db.DB.Create(&products).Error
+	require.NoError(t, err)
+	shipping := testShipping("shipping-id", now())
+	err = m.db.DB.Create(&shipping).Error
 	require.NoError(t, err)
 
 	productIDs := []string{"product-id01", "product-id02"}
@@ -114,6 +117,7 @@ func TestSchedule_Create(t *testing.T) {
 func testSchedule(id string, now time.Time) *entity.Schedule {
 	return &entity.Schedule{
 		ID:           id,
+		ShippingID:   "shipping-id",
 		Title:        "旬の夏野菜配信",
 		Description:  "旬の夏野菜特集",
 		ThumbnailURL: "https://and-period.jp/thumbnail01.png",

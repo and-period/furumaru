@@ -87,6 +87,10 @@ type ListShippingsOrder struct {
 	OrderByASC bool                   `validate:""`
 }
 
+type MultiGetShippingsInput struct {
+	ShippingIDs []string `validate:"omitempty,dive,required"`
+}
+
 type GetShippingInput struct {
 	ShippingID string `validate:"required"`
 }
@@ -269,6 +273,7 @@ type DeletePromotionInput struct {
 
 type CreateScheduleInput struct {
 	CoordinatorID string                `validate:"required"`
+	ShippingID    string                `validate:"required"`
 	Title         string                `validate:"required,max=64"`
 	Description   string                `validate:"required,max=2000"`
 	ThumbnailURL  string                `validate:"required"`

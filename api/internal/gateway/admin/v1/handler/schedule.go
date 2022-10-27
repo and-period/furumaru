@@ -29,6 +29,7 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 
 	var (
 		producers service.Producers
+		shipping  *service.Shipping
 		products  service.Products
 		err       error
 	)
@@ -44,14 +45,6 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		return nil
 	})
 	eg.Go(func() error {
-		var productIDs []string
-		for i := range req.Lives {
-			productIDs = append(productIDs, req.Lives[i].ProductIDs...)
-		}
-		products, err = h.multiGetProducts(ectx, productIDs)
-		return err
-	})
-	eg.Go(func() error {
 		var producerIDs []string
 		for i := range req.Lives {
 			producerIDs = append(producerIDs, req.Lives[i].ProducerID)
@@ -61,9 +54,37 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		}
 		sproducers, err := h.user.MultiGetProducers(ectx, in)
 		if err != nil {
-			return nil
+			return err
 		}
 		producers = service.NewProducers(sproducers)
+		return nil
+	})
+	eg.Go(func() error {
+		in := &store.GetShippingInput{
+			ShippingID: req.ShippingID,
+		}
+		sshipping, err := h.store.GetShipping(ectx, in)
+		if err != nil {
+			return err
+		}
+		shipping, err = service.NewShipping(sshipping)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	eg.Go(func() error {
+		var productIDs []string
+		for i := range req.Lives {
+			productIDs = append(productIDs, req.Lives[i].ProductIDs...)
+		}
+		products, err = h.multiGetProducts(ectx, productIDs)
+		if err != nil {
+			return err
+		}
+		if len(products) != len(productIDs) {
+			return errors.New("error: invalid argument")
+		}
 		return nil
 	})
 	gerr := eg.Wait()
@@ -89,6 +110,7 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 
 	in := &store.CreateScheduleInput{
 		CoordinatorID: req.CoordinatorID,
+		ShippingID:    req.ShippingID,
 		Title:         req.Title,
 		Description:   req.Description,
 		ThumbnailURL:  req.ThumbnailURL,
@@ -104,6 +126,7 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 	schedule := service.NewSchedule(sschedule)
 	lives := service.NewLives(slives)
 
+	schedule.Fill(shipping)
 	lives.Fill(producers.Map(), products.Map())
 
 	res := &response.ScheduleResponse{
