@@ -54,7 +54,7 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		}
 		sproducers, err := h.user.MultiGetProducers(ectx, in)
 		if err != nil {
-			return nil
+			return err
 		}
 		producers = service.NewProducers(sproducers)
 		return nil
@@ -65,11 +65,11 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		}
 		sshipping, err := h.store.GetShipping(ectx, in)
 		if err != nil {
-			return nil
+			return err
 		}
 		shipping, err = service.NewShipping(sshipping)
 		if err != nil {
-			return nil
+			return err
 		}
 		return nil
 	})
