@@ -11,6 +11,7 @@ import (
 type Schedule struct {
 	ID            string         `gorm:"primaryKey;<-:create"` // テンプレートID
 	CoordinatorID string         `gorm:""`                     // 仲介者ID
+	ShippingID    string         `gorm:""`                     // 配送設定ID
 	Title         string         `gorm:""`                     // タイトル
 	Description   string         `gorm:""`                     // 説明
 	ThumbnailURL  string         `gorm:""`                     // サムネイルURL
@@ -26,6 +27,7 @@ type Schedules []*Schedule
 
 type NewScheduleParams struct {
 	CoordinatorID string
+	ShippingID    string
 	Title         string
 	Description   string
 	ThumbnailURL  string
@@ -37,6 +39,7 @@ func NewSchedule(params *NewScheduleParams) *Schedule {
 	return &Schedule{
 		ID:            uuid.Base58Encode(uuid.New()),
 		CoordinatorID: params.CoordinatorID,
+		ShippingID:    params.ShippingID,
 		Title:         params.Title,
 		Description:   params.Description,
 		ThumbnailURL:  params.ThumbnailURL,

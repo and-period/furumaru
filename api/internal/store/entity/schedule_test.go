@@ -18,6 +18,7 @@ func TestSchedule(t *testing.T) {
 			name: "success",
 			params: &NewScheduleParams{
 				CoordinatorID: "coordinator-id",
+				ShippingID:    "shipping-id",
 				Title:         "スケジュールタイトル",
 				Description:   "スケジュールの詳細です。",
 				ThumbnailURL:  "サムネイルのURLです",
@@ -26,6 +27,7 @@ func TestSchedule(t *testing.T) {
 			},
 			expect: &Schedule{
 				CoordinatorID: "coordinator-id",
+				ShippingID:    "shipping-id",
 				Title:         "スケジュールタイトル",
 				Description:   "スケジュールの詳細です。",
 				ThumbnailURL:  "サムネイルのURLです",
