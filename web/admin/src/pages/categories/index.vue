@@ -116,7 +116,7 @@
                   ref="inputRef"
                   type="file"
                   class="d-none"
-                  accept="image/png, image"
+                  accept="image/png, image/jpeg"
                   @change="handleInputFileChange"
                 />
                 <p class="ma-0">アイコン画像を選択</p>
