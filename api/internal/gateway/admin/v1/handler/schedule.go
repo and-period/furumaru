@@ -79,7 +79,13 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 			productIDs = append(productIDs, req.Lives[i].ProductIDs...)
 		}
 		products, err = h.multiGetProducts(ectx, productIDs)
-		return err
+		if err != nil {
+			return err
+		}
+		if len(products) != len(productIDs) {
+			return errors.New("error: invalid argument")
+		}
+		return nil
 	})
 	gerr := eg.Wait()
 	if errors.Is(err, exception.ErrNotFound) {
