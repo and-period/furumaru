@@ -8,8 +8,6 @@ type Live struct {
 	Description  string     `json:"description"`  // 説明
 	ProducerID   string     `json:"producerId"`   // 生産者ID
 	ProducerName string     `json:"producerName"` // 生産者名
-	ShippingID   string     `json:"shippingId"`   // 配送設定ID
-	ShippingName string     `json:"shippingName"` // 配送設定名
 	StartAt      int64      `json:"startAt"`      // 配信開始日時
 	EndAt        int64      `json:"endAt"`        // 配信終了日時
 	Published    bool       `json:"published"`    // 配信公開フラグ

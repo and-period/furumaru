@@ -25,6 +25,7 @@ func TestCreateSchedule(t *testing.T) {
 	}
 	scheduleIn := &store.CreateScheduleInput{
 		CoordinatorID: "coordinator-id",
+		ShippingID:    "shipping-id",
 		Title:         "スケジュールタイトル",
 		Description:   "スケジュールの説明",
 		ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
@@ -35,7 +36,6 @@ func TestCreateSchedule(t *testing.T) {
 				Title:       "配信タイトル",
 				Description: "配信の説明",
 				ProducerID:  "producer-id",
-				ShippingID:  "shipping-id",
 				ProductIDs:  []string{"product-id"},
 				StartAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				EndAt:       jst.Date(2022, 1, 1, 0, 0, 0, 0),
@@ -92,29 +92,27 @@ func TestCreateSchedule(t *testing.T) {
 			UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
 	}
-	shippingsIn := &store.MultiGetShippingsInput{
-		ShippingIDs: []string{"shipping-id"},
+	shippingIn := &store.GetShippingInput{
+		ShippingID: "shipping-id",
 	}
-	shippings := sentity.Shippings{
-		{
-			ID:   "shipping-id",
-			Name: "デフォルト配送設定",
-			Box60Rates: sentity.ShippingRates{
-				{Number: 1, Name: "東京都", Price: 0, Prefectures: []int64{13}},
-			},
-			Box60Refrigerated:  500,
-			Box60Frozen:        800,
-			Box80Rates:         sentity.ShippingRates{},
-			Box80Refrigerated:  500,
-			Box80Frozen:        800,
-			Box100Rates:        sentity.ShippingRates{},
-			Box100Refrigerated: 500,
-			Box100Frozen:       800,
-			HasFreeShipping:    true,
-			FreeShippingRates:  3000,
-			CreatedAt:          jst.Date(2022, 1, 1, 0, 0, 0, 0),
-			UpdatedAt:          jst.Date(2022, 1, 1, 0, 0, 0, 0),
+	shipping := &sentity.Shipping{
+		ID:   "shipping-id",
+		Name: "デフォルト配送設定",
+		Box60Rates: sentity.ShippingRates{
+			{Number: 1, Name: "東京都", Price: 0, Prefectures: []int64{13}},
 		},
+		Box60Refrigerated:  500,
+		Box60Frozen:        800,
+		Box80Rates:         sentity.ShippingRates{},
+		Box80Refrigerated:  500,
+		Box80Frozen:        800,
+		Box100Rates:        sentity.ShippingRates{},
+		Box100Refrigerated: 500,
+		Box100Frozen:       800,
+		HasFreeShipping:    true,
+		FreeShippingRates:  3000,
+		CreatedAt:          jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		UpdatedAt:          jst.Date(2022, 1, 1, 0, 0, 0, 0),
 	}
 	categoriesIn := &store.MultiGetCategoriesInput{
 		CategoryIDs: []string{"category-id"},
@@ -172,6 +170,7 @@ func TestCreateSchedule(t *testing.T) {
 	schedule := &sentity.Schedule{
 		ID:            "schedule-id",
 		CoordinatorID: "coordinator-id",
+		ShippingID:    "shipping-id",
 		Title:         "スケジュールタイトル",
 		Description:   "スケジュールの説明",
 		ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
@@ -197,7 +196,6 @@ func TestCreateSchedule(t *testing.T) {
 		Published:   false,
 		Canceled:    false,
 		ProducerID:  "producer-id",
-		ShippingID:  "shipping-id",
 		StartAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		EndAt:       jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		CreatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
@@ -215,7 +213,7 @@ func TestCreateSchedule(t *testing.T) {
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil).Times(2)
-				mocks.store.EXPECT().MultiGetShippings(gomock.Any(), shippingsIn).Return(shippings, nil)
+				mocks.store.EXPECT().GetShipping(gomock.Any(), shippingIn).Return(shipping, nil)
 				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
 				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(productTypes, nil)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
@@ -223,6 +221,7 @@ func TestCreateSchedule(t *testing.T) {
 			},
 			req: &request.CreateScheduleRequest{
 				CoordinatorID: "coordinator-id",
+				ShippingID:    "shipping-id",
 				Title:         "スケジュールタイトル",
 				Description:   "スケジュールの説明",
 				ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
@@ -233,7 +232,6 @@ func TestCreateSchedule(t *testing.T) {
 						Title:       "配信タイトル",
 						Description: "配信の説明",
 						ProducerID:  "producer-id",
-						ShippingID:  "shipping-id",
 						ProductIDs:  []string{"product-id"},
 						StartAt:     1640962800,
 						EndAt:       1640962800,
@@ -246,6 +244,8 @@ func TestCreateSchedule(t *testing.T) {
 					Schedule: &response.Schedule{
 						ID:            "schedule-id",
 						CoordinatorID: "coordinator-id",
+						ShippingID:    "shipping-id",
+						ShippingName:  "デフォルト配送設定",
 						Title:         "スケジュールタイトル",
 						Description:   "スケジュールの説明",
 						ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
@@ -265,8 +265,6 @@ func TestCreateSchedule(t *testing.T) {
 							Canceled:     false,
 							ProducerID:   "producer-id",
 							ProducerName: "&. 管理者",
-							ShippingID:   "shipping-id",
-							ShippingName: "デフォルト配送設定",
 							Products: []*response.Product{
 								{
 									ID:              "product-id",

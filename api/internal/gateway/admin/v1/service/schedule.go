@@ -14,6 +14,7 @@ func NewSchedule(schedule *entity.Schedule) *Schedule {
 		Schedule: response.Schedule{
 			ID:            schedule.ID,
 			CoordinatorID: schedule.CoordinatorID,
+			ShippingID:    schedule.ShippingID,
 			Title:         schedule.Title,
 			Description:   schedule.Description,
 			ThumbnailURL:  schedule.ThumbnailURL,
@@ -28,4 +29,10 @@ func NewSchedule(schedule *entity.Schedule) *Schedule {
 
 func (s *Schedule) Response() *response.Schedule {
 	return &s.Schedule
+}
+
+func (s *Schedule) Fill(shipping *Shipping) {
+	if shipping != nil {
+		s.ShippingName = shipping.Name
+	}
 }

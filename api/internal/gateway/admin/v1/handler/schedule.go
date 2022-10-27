@@ -29,7 +29,7 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 
 	var (
 		producers service.Producers
-		shippings service.Shippings
+		shipping  *service.Shipping
 		products  service.Products
 		err       error
 	)
@@ -60,18 +60,14 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		return nil
 	})
 	eg.Go(func() error {
-		var shippingIDs []string
-		for i := range req.Lives {
-			shippingIDs = append(shippingIDs, req.Lives[i].ShippingID)
+		in := &store.GetShippingInput{
+			ShippingID: req.ShippingID,
 		}
-		in := &store.MultiGetShippingsInput{
-			ShippingIDs: shippingIDs,
-		}
-		sshippings, err := h.store.MultiGetShippings(ectx, in)
+		sshipping, err := h.store.GetShipping(ectx, in)
 		if err != nil {
 			return nil
 		}
-		shippings, err = service.NewShippings(sshippings)
+		shipping, err = service.NewShipping(sshipping)
 		if err != nil {
 			return nil
 		}
@@ -100,7 +96,6 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 			Title:       req.Lives[i].Title,
 			Description: req.Lives[i].Description,
 			ProducerID:  req.Lives[i].ProducerID,
-			ShippingID:  req.Lives[i].ShippingID,
 			ProductIDs:  req.Lives[i].ProductIDs,
 			StartAt:     jst.ParseFromUnix(req.Lives[i].StartAt),
 			EndAt:       jst.ParseFromUnix(req.Lives[i].EndAt),
@@ -109,6 +104,7 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 
 	in := &store.CreateScheduleInput{
 		CoordinatorID: req.CoordinatorID,
+		ShippingID:    req.ShippingID,
 		Title:         req.Title,
 		Description:   req.Description,
 		ThumbnailURL:  req.ThumbnailURL,
@@ -124,7 +120,8 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 	schedule := service.NewSchedule(sschedule)
 	lives := service.NewLives(slives)
 
-	lives.Fill(producers.Map(), shippings.Map(), products.Map())
+	schedule.Fill(shipping)
+	lives.Fill(producers.Map(), products.Map())
 
 	res := &response.ScheduleResponse{
 		Schedule: schedule.Response(),

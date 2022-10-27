@@ -3,6 +3,8 @@ package response
 type Schedule struct {
 	ID            string `json:"id"`            // スケジュールID
 	CoordinatorID string `json:"coordinatorId"` // コーディネーターID
+	ShippingID    string `json:"shippingId"`    // 配送設定ID
+	ShippingName  string `json:"shippingName"`  // 配送設定名
 	Title         string `json:"title"`         // タイトル
 	Description   string `json:"description"`   // 説明
 	ThumbnailURL  string `json:"thumnailUrl"`   // サムネイルURL
