@@ -24,6 +24,7 @@ func (h *handler) producerRoutes(rg *gin.RouterGroup) {
 	arg.PATCH("/:producerId/password", h.filterAccessProducer, h.ResetProducerPassword)
 	arg.POST("/:producerId/relationship", h.RelatedProducer)
 	arg.DELETE("/:producerId/relationship", h.filterAccessProducer, h.UnrelatedProducer)
+	arg.DELETE("/:producerId", h.filterAccessProducer, h.DeleteProducer)
 }
 
 func (h *handler) filterAccessProducer(ctx *gin.Context) {
@@ -229,6 +230,18 @@ func (h *handler) UnrelatedProducer(ctx *gin.Context) {
 		ProducerID: util.GetParam(ctx, "producerId"),
 	}
 	if err := h.user.UnrelatedProducer(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) DeleteProducer(ctx *gin.Context) {
+	in := &user.DeleteProducerInput{
+		ProducerID: util.GetParam(ctx, "producerId"),
+	}
+	if err := h.user.DeleteProducer(ctx, in); err != nil {
 		httpError(ctx, err)
 		return
 	}
