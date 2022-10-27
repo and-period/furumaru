@@ -191,6 +191,9 @@ func (c *coordinator) Delete(ctx context.Context, coordinatorID string, auth fun
 			Table(adminTable).
 			Where("id = ?", coordinatorID).
 			Updates(adminParams).Error
+		if err != nil {
+			return nil, err
+		}
 		return nil, auth(ctx)
 	})
 	return exception.InternalError(err)

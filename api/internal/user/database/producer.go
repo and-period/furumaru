@@ -212,6 +212,9 @@ func (p *producer) Delete(ctx context.Context, producerID string, auth func(ctx 
 			Table(adminTable).
 			Where("id = ?", producerID).
 			Updates(adminParams).Error
+		if err != nil {
+			return nil, err
+		}
 		return nil, auth(ctx)
 	})
 	return exception.InternalError(err)
