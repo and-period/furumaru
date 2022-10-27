@@ -4,10 +4,12 @@ p, administrator_list, /v1/administrators, GET, allow
 p, administrator_get, /v1/administrators/*, GET, allow
 p, administrator_create, /v1/administrators, POST, allow
 p, administrator_update, /v1/administrators/*, PATCH, allow
+p, administrator_delete, /v1/administrators/*, DELETE, allow
 p, coordinator_list, /v1/coordinators, GET, allow
 p, coordinator_get, /v1/coordinators/*, GET, allow
 p, coordinator_create, /v1/coordinators, POST, allow
 p, coordinator_update, /v1/coordinators/*, PATCH, allow
+p, coordinator_delete, /v1/coordinators/*, DELETE, allow
 p, coordinator_uploader, /v1/upload/coordinators/*, POST, allow
 p, producer_list, /v1/producers, GET, allow
 p, producer_get, /v1/producers/*, GET, allow
@@ -60,10 +62,12 @@ g, administrator, administrator_list
 g, administrator, administrator_get
 g, administrator, administrator_create
 g, administrator, administrator_update
+g, administrator, administrator_delete
 g, administrator, coordinator_list
 g, administrator, coordinator_get
 g, administrator, coordinator_create
 g, administrator, coordinator_update
+g, administrator, coordinator_delete
 g, administrator, coordinator_uploader
 g, administrator, producer_list
 g, administrator, producer_get

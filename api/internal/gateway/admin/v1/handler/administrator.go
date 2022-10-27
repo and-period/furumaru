@@ -19,6 +19,7 @@ func (h *handler) administratorRoutes(rg *gin.RouterGroup) {
 	arg.PATCH("/:adminId", h.UpdateAdministrator)
 	arg.PATCH("/:adminId/email", h.UpdateAdministratorEmail)
 	arg.PATCH("/:adminId/password", h.ResetAdministratorPassword)
+	arg.DELETE("/:adminId", h.DeleteAdministrator)
 }
 
 func (h *handler) ListAdministrators(ctx *gin.Context) {
@@ -145,6 +146,18 @@ func (h *handler) ResetAdministratorPassword(ctx *gin.Context) {
 		AdministratorID: util.GetParam(ctx, "adminId"),
 	}
 	if err := h.user.ResetAdministratorPassword(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) DeleteAdministrator(ctx *gin.Context) {
+	in := &user.DeleteAdministratorInput{
+		AdministratorID: util.GetParam(ctx, "adminId"),
+	}
+	if err := h.user.DeleteAdministrator(ctx, in); err != nil {
 		httpError(ctx, err)
 		return
 	}

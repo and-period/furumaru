@@ -602,3 +602,48 @@ func TestResetCoordinatorPassword(t *testing.T) {
 		})
 	}
 }
+
+func TestDeleteCoordinator(t *testing.T) {
+	t.Parallel()
+
+	in := &user.DeleteCoordinatorInput{
+		CoordinatorID: "coordinator-id",
+	}
+
+	tests := []struct {
+		name          string
+		setup         func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		coordinatorID string
+		expect        *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().DeleteCoordinator(gomock.Any(), in).Return(nil)
+			},
+			coordinatorID: "coordinator-id",
+			expect: &testResponse{
+				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to delete coordinator",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().DeleteCoordinator(gomock.Any(), in).Return(errmock)
+			},
+			coordinatorID: "coordinator-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const format = "/v1/coordinators/%s"
+			path := fmt.Sprintf(format, tt.coordinatorID)
+			testDelete(t, tt.setup, tt.expect, path)
+		})
+	}
+}

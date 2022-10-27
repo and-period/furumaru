@@ -4271,6 +4271,44 @@ export const AdministratorApiAxiosParamCreator = function (configuration?: Confi
         },
         /**
          * 
+         * @summary システム管理者退会
+         * @param {string} adminId システム管理者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteAdministrator: async (adminId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'adminId' is not null or undefined
+            assertParamExists('v1DeleteAdministrator', 'adminId', adminId)
+            const localVarPath = `/v1/administrators/{adminId}`
+                .replace(`{${"adminId"}}`, encodeURIComponent(String(adminId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary システム管理者取得
          * @param {string} adminId 管理者ID
          * @param {*} [options] Override http request option.
@@ -4506,6 +4544,17 @@ export const AdministratorApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary システム管理者退会
+         * @param {string} adminId システム管理者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1DeleteAdministrator(adminId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteAdministrator(adminId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary システム管理者取得
          * @param {string} adminId 管理者ID
          * @param {*} [options] Override http request option.
@@ -4585,6 +4634,16 @@ export const AdministratorApiFactory = function (configuration?: Configuration, 
         },
         /**
          * 
+         * @summary システム管理者退会
+         * @param {string} adminId システム管理者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteAdministrator(adminId: string, options?: any): AxiosPromise<object> {
+            return localVarFp.v1DeleteAdministrator(adminId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary システム管理者取得
          * @param {string} adminId 管理者ID
          * @param {*} [options] Override http request option.
@@ -4657,6 +4716,18 @@ export class AdministratorApi extends BaseAPI {
      */
     public v1CreateAdministrator(body: CreateAdministratorRequest, options?: AxiosRequestConfig) {
         return AdministratorApiFp(this.configuration).v1CreateAdministrator(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary システム管理者退会
+     * @param {string} adminId システム管理者ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdministratorApi
+     */
+    public v1DeleteAdministrator(adminId: string, options?: AxiosRequestConfig) {
+        return AdministratorApiFp(this.configuration).v1DeleteAdministrator(adminId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -6012,6 +6083,44 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
+         * @summary 仲介者退会
+         * @param {string} coordinatorId 仲介者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteCoordinator: async (coordinatorId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'coordinatorId' is not null or undefined
+            assertParamExists('v1DeleteCoordinator', 'coordinatorId', coordinatorId)
+            const localVarPath = `/v1/coordinators/{coordinatorId}`
+                .replace(`{${"coordinatorId"}}`, encodeURIComponent(String(coordinatorId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 仲介者取得
          * @param {string} coordinatorId 仲介者ID
          * @param {*} [options] Override http request option.
@@ -6333,6 +6442,17 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary 仲介者退会
+         * @param {string} coordinatorId 仲介者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1DeleteCoordinator(coordinatorId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteCoordinator(coordinatorId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary 仲介者取得
          * @param {string} coordinatorId 仲介者ID
          * @param {*} [options] Override http request option.
@@ -6434,6 +6554,16 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
+         * @summary 仲介者退会
+         * @param {string} coordinatorId 仲介者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteCoordinator(coordinatorId: string, options?: any): AxiosPromise<object> {
+            return localVarFp.v1DeleteCoordinator(coordinatorId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary 仲介者取得
          * @param {string} coordinatorId 仲介者ID
          * @param {*} [options] Override http request option.
@@ -6526,6 +6656,18 @@ export class CoordinatorApi extends BaseAPI {
      */
     public v1CreateCoordinator(body: CreateCoordinatorRequest, options?: AxiosRequestConfig) {
         return CoordinatorApiFp(this.configuration).v1CreateCoordinator(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 仲介者退会
+     * @param {string} coordinatorId 仲介者ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CoordinatorApi
+     */
+    public v1DeleteCoordinator(coordinatorId: string, options?: AxiosRequestConfig) {
+        return CoordinatorApiFp(this.configuration).v1DeleteCoordinator(coordinatorId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -7497,6 +7639,44 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
+         * @summary 生産者退会
+         * @param {string} producerId 生産者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteProducer: async (producerId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'producerId' is not null or undefined
+            assertParamExists('v1DeleteProducer', 'producerId', producerId)
+            const localVarPath = `/v1/producers/{producerId}`
+                .replace(`{${"producerId"}}`, encodeURIComponent(String(producerId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 生産者取得
          * @param {string} producerId 生産者ID
          * @param {*} [options] Override http request option.
@@ -7903,6 +8083,17 @@ export const ProducerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary 生産者退会
+         * @param {string} producerId 生産者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1DeleteProducer(producerId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteProducer(producerId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary 生産者取得
          * @param {string} producerId 生産者ID
          * @param {*} [options] Override http request option.
@@ -8028,6 +8219,16 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
+         * @summary 生産者退会
+         * @param {string} producerId 生産者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteProducer(producerId: string, options?: any): AxiosPromise<object> {
+            return localVarFp.v1DeleteProducer(producerId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary 生産者取得
          * @param {string} producerId 生産者ID
          * @param {*} [options] Override http request option.
@@ -8142,6 +8343,18 @@ export class ProducerApi extends BaseAPI {
      */
     public v1CreateProducer(body: CreateProducerRequest, options?: AxiosRequestConfig) {
         return ProducerApiFp(this.configuration).v1CreateProducer(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 生産者退会
+     * @param {string} producerId 生産者ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProducerApi
+     */
+    public v1DeleteProducer(producerId: string, options?: AxiosRequestConfig) {
+        return ProducerApiFp(this.configuration).v1DeleteProducer(producerId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

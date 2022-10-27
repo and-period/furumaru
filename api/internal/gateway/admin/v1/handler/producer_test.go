@@ -811,3 +811,48 @@ func TestUnrelatedProducer(t *testing.T) {
 		})
 	}
 }
+
+func TestDeleteProducer(t *testing.T) {
+	t.Parallel()
+
+	in := &user.DeleteProducerInput{
+		ProducerID: "producer-id",
+	}
+
+	tests := []struct {
+		name       string
+		setup      func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		producerID string
+		expect     *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().DeleteProducer(gomock.Any(), in).Return(nil)
+			},
+			producerID: "producer-id",
+			expect: &testResponse{
+				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to delete producer",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().DeleteProducer(gomock.Any(), in).Return(errmock)
+			},
+			producerID: "producer-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const format = "/v1/producers/%s"
+			path := fmt.Sprintf(format, tt.producerID)
+			testDelete(t, tt.setup, tt.expect, path)
+		})
+	}
+}

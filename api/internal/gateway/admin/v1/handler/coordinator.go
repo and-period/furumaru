@@ -19,6 +19,7 @@ func (h *handler) coordinatorRoutes(rg *gin.RouterGroup) {
 	arg.PATCH("/:coordinatorId", h.UpdateCoordinator)
 	arg.PATCH("/:coordinatorId/email", h.UpdateCoordinatorEmail)
 	arg.PATCH("/:coordinatorId/password", h.ResetCoordinatorPassword)
+	arg.DELETE("/:coordinatorId", h.DeleteCoordinator)
 }
 
 func (h *handler) ListCoordinators(ctx *gin.Context) {
@@ -169,6 +170,18 @@ func (h *handler) ResetCoordinatorPassword(ctx *gin.Context) {
 		CoordinatorID: util.GetParam(ctx, "coordinatorId"),
 	}
 	if err := h.user.ResetCoordinatorPassword(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) DeleteCoordinator(ctx *gin.Context) {
+	in := &user.DeleteCoordinatorInput{
+		CoordinatorID: util.GetParam(ctx, "coordinatorId"),
+	}
+	if err := h.user.DeleteCoordinator(ctx, in); err != nil {
 		httpError(ctx, err)
 		return
 	}

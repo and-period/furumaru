@@ -458,3 +458,48 @@ func TestResetAdministratorPassword(t *testing.T) {
 		})
 	}
 }
+
+func TestDeleteAdministrator(t *testing.T) {
+	t.Parallel()
+
+	in := &user.DeleteAdministratorInput{
+		AdministratorID: "administrator-id",
+	}
+
+	tests := []struct {
+		name            string
+		setup           func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		administratorID string
+		expect          *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().DeleteAdministrator(gomock.Any(), in).Return(nil)
+			},
+			administratorID: "administrator-id",
+			expect: &testResponse{
+				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to delete administrator",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().DeleteAdministrator(gomock.Any(), in).Return(errmock)
+			},
+			administratorID: "administrator-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const format = "/v1/administrators/%s"
+			path := fmt.Sprintf(format, tt.administratorID)
+			testDelete(t, tt.setup, tt.expect, path)
+		})
+	}
+}

@@ -65,3 +65,36 @@ patch:
         application/json:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+delete:
+  summary: システム管理者退会
+  operationId: v1DeleteAdministrator
+  tags:
+  - Administrator
+  security:
+  - BearerAuth: []
+  parameters:
+  - in: path
+    name: adminId
+    schema:
+      type: string
+    description: システム管理者ID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  responses:
+    204:
+      description: 成功
+      content:
+        application/json:
+          schema: {}
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+    404:
+      description: システム管理者が存在しない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
