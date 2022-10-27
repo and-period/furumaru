@@ -273,6 +273,7 @@ type DeletePromotionInput struct {
 
 type CreateScheduleInput struct {
 	CoordinatorID string                `validate:"required"`
+	ShippingID    string                `validate:"required"`
 	Title         string                `validate:"required,max=64"`
 	Description   string                `validate:"required,max=2000"`
 	ThumbnailURL  string                `validate:"required"`
@@ -285,7 +286,6 @@ type CreateScheduleLive struct {
 	Title       string    `validate:"required,max=64"`
 	Description string    `validate:"required,max=2000"`
 	ProducerID  string    `validate:"required"`
-	ShippingID  string    `validate:"required"`
 	ProductIDs  []string  `validate:"dive,required,unique"`
 	StartAt     time.Time `validate:"required"`
 	EndAt       time.Time `validate:"required"`

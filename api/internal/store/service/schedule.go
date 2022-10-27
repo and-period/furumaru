@@ -18,6 +18,7 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 	}
 	params := &entity.NewScheduleParams{
 		CoordinatorID: in.CoordinatorID,
+		ShippingID:    in.ShippingID,
 		Title:         in.Title,
 		Description:   in.Description,
 		ThumbnailURL:  in.ThumbnailURL,
@@ -31,7 +32,6 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 		params := &entity.NewLiveParams{
 			ScheduleID:  schedule.ID,
 			ProducerID:  in.Lives[i].ProducerID,
-			ShippingID:  in.Lives[i].ShippingID,
 			Title:       in.Lives[i].Title,
 			Description: in.Lives[i].Description,
 			StartAt:     in.Lives[i].StartAt,
@@ -66,15 +66,18 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 		return fmt.Errorf("service: unmatch producers length: %w", exception.ErrInvalidArgument)
 	})
 	eg.Go(func() error {
-		shippingIDs := lives.ShippingIDs()
-		ss, err := s.db.Shipping.MultiGet(ectx, shippingIDs)
+		shippingID := schedule.ShippingID
+		s, err := s.db.Shipping.Get(ectx, shippingID)
 		if err != nil {
 			return err
 		}
-		if len(ss) == len(shippingIDs) {
+		if s != nil {
 			return nil
 		}
-		return fmt.Errorf("service: unmatch shippings length: %w", exception.ErrInvalidArgument)
+		if errors.Is(err, exception.ErrNotFound) {
+			return fmt.Errorf("service: not found shipping: %w", exception.ErrInvalidArgument)
+		}
+		return err
 	})
 	eg.Go(func() error {
 		productIDs := products.ProductIDs()
