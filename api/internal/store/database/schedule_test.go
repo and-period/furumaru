@@ -47,7 +47,7 @@ func TestSchedule_Create(t *testing.T) {
 
 	productIDs := []string{"product-id01", "product-id02"}
 	s := testSchedule("schedule-id", now())
-	lives := testLives("live-id", "schedule-id", "shipping-id", "producer-id", productIDs, now(), 3)
+	lives := testLives("live-id", "schedule-id", "producer-id", productIDs, now(), 3)
 	lproducts := make(entity.LiveProducts, 0)
 	for i := range lives {
 		lproducts = append(lproducts, lives[i].LiveProducts...)
@@ -117,6 +117,7 @@ func TestSchedule_Create(t *testing.T) {
 func testSchedule(id string, now time.Time) *entity.Schedule {
 	return &entity.Schedule{
 		ID:           id,
+		ShippingID:   "shipping-id",
 		Title:        "旬の夏野菜配信",
 		Description:  "旬の夏野菜特集",
 		ThumbnailURL: "https://and-period.jp/thumbnail01.png",
