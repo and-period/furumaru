@@ -14,6 +14,7 @@ import (
 func (h *handler) userRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication)
 	arg.GET("", h.ListUsers)
+	arg.GET("/:userId", h.GetUser)
 }
 
 func (h *handler) ListUsers(ctx *gin.Context) {
@@ -56,6 +57,22 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 	res := &response.UsersResponse{
 		Users: service.NewUserLists(users, sorders.Map()).Response(),
 		Total: total,
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) GetUser(ctx *gin.Context) {
+	in := &user.GetUserInput{
+		UserID: util.GetParam(ctx, "userId"),
+	}
+	uuser, err := h.user.GetUser(ctx, in)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	res := &response.UserResponse{
+		User: service.NewUser(uuser).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

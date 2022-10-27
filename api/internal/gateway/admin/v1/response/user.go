@@ -30,6 +30,10 @@ type UserList struct {
 	TotalAmount int64  `json:"totalAmount"` // 購入金額
 }
 
+type UserResponse struct {
+	*User
+}
+
 type UsersResponse struct {
 	Users []*UserList `json:"users"`
 	Total int64       `json:"total"`
