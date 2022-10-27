@@ -68,24 +68,25 @@ func (s *service) CreateUser(ctx context.Context, in *user.CreateUserInput) (str
 	if err := s.validator.Struct(in); err != nil {
 		return "", exception.InternalError(err)
 	}
+	cognitoID := uuid.Base58Encode(uuid.New())
 	params := &entity.NewUserParams{
 		Registered:   true,
-		CognitoID:    uuid.Base58Encode(uuid.New()),
+		CognitoID:    cognitoID,
 		ProviderType: entity.ProviderTypeEmail,
 		Email:        in.Email,
 		PhoneNumber:  in.PhoneNumber,
 	}
 	u := entity.NewUser(params)
-	if err := s.db.Member.Create(ctx, u, &u.Member); err != nil {
-		return "", exception.InternalError(err)
+	auth := func(ctx context.Context) error {
+		params := &cognito.SignUpParams{
+			Username:    cognitoID,
+			Email:       in.Email,
+			PhoneNumber: in.PhoneNumber,
+			Password:    in.Password,
+		}
+		return s.userAuth.SignUp(ctx, params)
 	}
-	signUpParams := &cognito.SignUpParams{
-		Username:    u.CognitoID,
-		Email:       u.Member.Email,
-		PhoneNumber: u.Member.PhoneNumber,
-		Password:    in.Password,
-	}
-	if err := s.userAuth.SignUp(ctx, signUpParams); err != nil {
+	if err := s.db.Member.Create(ctx, u, auth); err != nil {
 		return "", exception.InternalError(err)
 	}
 	return u.ID, nil
@@ -108,19 +109,22 @@ func (s *service) CreateUserWithOAuth(
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
-	auth, err := s.userAuth.GetUser(ctx, in.AccessToken)
+	cuser, err := s.userAuth.GetUser(ctx, in.AccessToken)
 	if err != nil {
 		return nil, exception.InternalError(err)
 	}
 	params := &entity.NewUserParams{
 		Registered:   true,
-		CognitoID:    auth.Username,
+		CognitoID:    cuser.Username,
 		ProviderType: entity.ProviderTypeOAuth,
-		Email:        auth.Email,
-		PhoneNumber:  auth.PhoneNumber,
+		Email:        cuser.Email,
+		PhoneNumber:  cuser.PhoneNumber,
 	}
 	u := entity.NewUser(params)
-	if err := s.db.Member.Create(ctx, u, &u.Member); err != nil {
+	auth := func(ctx context.Context) error {
+		return nil // Cognitoへはすでに登録済みのため何もしない
+	}
+	if err := s.db.Member.Create(ctx, u, auth); err != nil {
 		return nil, exception.InternalError(err)
 	}
 	return u, nil
@@ -243,9 +247,9 @@ func (s *service) DeleteUser(ctx context.Context, in *user.DeleteUserInput) erro
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	if err := s.userAuth.DeleteUser(ctx, m.CognitoID); err != nil {
-		return exception.InternalError(err)
+	auth := func(ctx context.Context) error {
+		return s.userAuth.DeleteUser(ctx, m.CognitoID)
 	}
-	err = s.db.Member.Delete(ctx, m.UserID)
+	err = s.db.Member.Delete(ctx, m.UserID, auth)
 	return exception.InternalError(err)
 }

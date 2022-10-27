@@ -5,18 +5,20 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/uuid"
+	"gorm.io/gorm"
 )
 
 // User - 購入者情報
 type User struct {
-	Member     `gorm:"-"` // 会員情報
-	Guest      `gorm:"-"` // ゲスト情報
-	Customer   `gorm:"-"` // 購入者情報
-	ID         string     `gorm:"primaryKey;<-:create"` // ユーザーID
-	Registered bool       `gorm:""`                     // 会員登録フラグ
-	Device     string     `gorm:""`                     // デバイストークン(Push通知用)
-	CreatedAt  time.Time  `gorm:"<-:create"`            // 登録日時
-	UpdatedAt  time.Time  `gorm:""`                     // 更新日時
+	Member     `gorm:"-"`     // 会員情報
+	Guest      `gorm:"-"`     // ゲスト情報
+	Customer   `gorm:"-"`     // 購入者情報
+	ID         string         `gorm:"primaryKey;<-:create"` // ユーザーID
+	Registered bool           `gorm:""`                     // 会員登録フラグ
+	Device     string         `gorm:""`                     // デバイストークン(Push通知用)
+	CreatedAt  time.Time      `gorm:"<-:create"`            // 登録日時
+	UpdatedAt  time.Time      `gorm:""`                     // 更新日時
+	DeletedAt  gorm.DeletedAt `gorm:"default:null"`         // 削除日時
 }
 
 type Users []*User
@@ -51,6 +53,9 @@ func NewUser(params *NewUserParams) *User {
 		Registered: params.Registered,
 		Member:     member,
 		Guest:      guest,
+		Customer: Customer{
+			UserID: userID,
+		},
 	}
 }
 

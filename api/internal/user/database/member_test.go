@@ -263,9 +263,13 @@ func TestMember_Create(t *testing.T) {
 		return current
 	}
 
+	user := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
+	user.Member = *testMember("user-id", "test-user@and-period.jp", "+810000000000", now())
+	user.Customer = entity.Customer{UserID: "user-id"}
+
 	type args struct {
-		user   *entity.User
-		member *entity.Member
+		user *entity.User
+		auth func(ctx context.Context) error
 	}
 	type want struct {
 		hasErr bool
@@ -280,30 +284,30 @@ func TestMember_Create(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
-				user:   testUser("user-id", "test-user@and-period.jp", "+810000000000", now()),
-				member: testMember("user-id", "test-user@and-period.jp", "+810000000000", now()),
+				user: testUser("user-id", "test-user@and-period.jp", "+810000000000", now()),
+				auth: func(ctx context.Context) error { return nil },
 			},
 			want: want{
 				hasErr: false,
 			},
 		},
 		{
-			name: "success when user already created",
+			name: "failed to duplicate user entry",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {
 				u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
 				err = m.db.DB.Create(&u).Error
 				require.NoError(t, err)
 			},
 			args: args{
-				user:   testUser("user-id", "test-user@and-period.jp", "+810000000000", now()),
-				member: testMember("user-id", "test-user@and-period.jp", "+810000000000", now()),
+				user: testUser("user-id", "test-user@and-period.jp", "+810000000000", now()),
+				auth: func(ctx context.Context) error { return nil },
 			},
 			want: want{
-				hasErr: false,
+				hasErr: true,
 			},
 		},
 		{
-			name: "failed to duplicate entry",
+			name: "failed to duplicate member entry",
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {
 				u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
 				err = m.db.DB.Create(&u).Error
@@ -312,8 +316,38 @@ func TestMember_Create(t *testing.T) {
 				require.NoError(t, err)
 			},
 			args: args{
-				user:   testUser("user-id", "test-user@and-period.jp", "+810000000000", now()),
-				member: testMember("user-id", "test-user@and-period.jp", "+810000000000", now()),
+				user: testUser("user-id", "test-user@and-period.jp", "+810000000000", now()),
+				auth: func(ctx context.Context) error { return nil },
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+		{
+			name: "failed to duplicate customer entry",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
+				err = m.db.DB.Create(&u).Error
+				require.NoError(t, err)
+				err = m.db.DB.Create(&u.Member).Error
+				require.NoError(t, err)
+				err = m.db.DB.Create(&u.Customer).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				user: testUser("user-id", "test-user@and-period.jp", "+810000000000", now()),
+				auth: func(ctx context.Context) error { return nil },
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+		{
+			name:  "failed to execute external service",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				user: testUser("user-id", "test-user@and-period.jp", "+810000000000", now()),
+				auth: func(ctx context.Context) error { return assert.AnError },
 			},
 			want: want{
 				hasErr: true,
@@ -332,7 +366,7 @@ func TestMember_Create(t *testing.T) {
 			tt.setup(ctx, t, m)
 
 			db := &member{db: m.db, now: now}
-			err = db.Create(ctx, tt.args.user, tt.args.member)
+			err = db.Create(ctx, tt.args.user, tt.args.auth)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}
@@ -626,6 +660,7 @@ func TestMember_Delete(t *testing.T) {
 
 	type args struct {
 		userID string
+		auth   func(ctx context.Context) error
 	}
 	type want struct {
 		hasErr bool
@@ -647,6 +682,7 @@ func TestMember_Delete(t *testing.T) {
 			},
 			args: args{
 				userID: "user-id",
+				auth:   func(ctx context.Context) error { return nil },
 			},
 			want: want{
 				hasErr: false,
@@ -657,6 +693,18 @@ func TestMember_Delete(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
 				userID: "user-id",
+				auth:   func(ctx context.Context) error { return nil },
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+		{
+			name:  "failed to execute external service",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				userID: "user-id",
+				auth:   func(ctx context.Context) error { return assert.AnError },
 			},
 			want: want{
 				hasErr: true,
@@ -675,7 +723,7 @@ func TestMember_Delete(t *testing.T) {
 			tt.setup(ctx, t, m)
 
 			db := &member{db: m.db, now: now}
-			err = db.Delete(ctx, tt.args.userID)
+			err = db.Delete(ctx, tt.args.userID, tt.args.auth)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}

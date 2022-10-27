@@ -355,16 +355,27 @@ func TestCreateUser(t *testing.T) {
 						PhoneNumber:  "+819012345678",
 					},
 				}
-				mocks.db.Member.EXPECT().
-					Create(ctx, gomock.Any(), gomock.Any()).
-					DoAndReturn(func(ctx context.Context, u *entity.User, m *entity.Member) error {
-						expectUser.ID = u.ID
-						expectUser.Member.UserID, expectUser.Member.CognitoID = m.UserID, m.CognitoID
-						assert.Equal(t, expectUser, u)
-						assert.Equal(t, expectUser.Member, *m)
+				expectSignUp := &cognito.SignUpParams{
+					Email:       "test@and-period.jp",
+					PhoneNumber: "+819012345678",
+					Password:    "12345678",
+				}
+				mocks.userAuth.EXPECT().
+					SignUp(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, params *cognito.SignUpParams) error {
+						expectSignUp.Username = params.Username
+						assert.Equal(t, expectSignUp, params)
 						return nil
 					})
-				mocks.userAuth.EXPECT().SignUp(ctx, gomock.Any()).Return(nil)
+				mocks.db.Member.EXPECT().
+					Create(ctx, gomock.Any(), gomock.Any()).
+					DoAndReturn(func(ctx context.Context, u *entity.User, auth func(ctx context.Context) error) error {
+						expectUser.ID = u.ID
+						expectUser.Member.UserID, expectUser.Member.CognitoID = u.ID, u.CognitoID
+						expectUser.Customer.UserID = u.ID
+						assert.Equal(t, expectUser, u)
+						return auth(ctx)
+					})
 			},
 			input: &user.CreateUserInput{
 				Email:                "test@and-period.jp",
@@ -395,20 +406,6 @@ func TestCreateUser(t *testing.T) {
 			name: "failed to create",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Member.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(errmock)
-			},
-			input: &user.CreateUserInput{
-				Email:                "test@and-period.jp",
-				PhoneNumber:          "+819012345678",
-				Password:             "12345678",
-				PasswordConfirmation: "12345678",
-			},
-			expectErr: exception.ErrUnknown,
-		},
-		{
-			name: "failed to create",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Member.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(nil)
-				mocks.userAuth.EXPECT().SignUp(ctx, gomock.Any()).Return(errmock)
 			},
 			input: &user.CreateUserInput{
 				Email:                "test@and-period.jp",
@@ -520,12 +517,12 @@ func TestCreateUserWithOAuth(t *testing.T) {
 				mocks.userAuth.EXPECT().GetUser(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(auth, nil)
 				mocks.db.Member.EXPECT().
 					Create(ctx, gomock.Any(), gomock.Any()).
-					DoAndReturn(func(ctx context.Context, u *entity.User, m *entity.Member) error {
+					DoAndReturn(func(ctx context.Context, u *entity.User, auth func(ctx context.Context) error) error {
 						expectUser.ID = u.ID
-						expectUser.Member.UserID, expectUser.CognitoID = m.UserID, m.CognitoID
+						expectUser.Member.UserID, expectUser.Member.CognitoID = u.ID, u.CognitoID
+						expectUser.Customer.UserID = u.ID
 						assert.Equal(t, expectUser, u)
-						assert.Equal(t, expectUser.Member, *m)
-						return nil
+						return auth(ctx)
 					})
 			},
 			input: &user.CreateUserWithOAuthInput{
@@ -1114,7 +1111,11 @@ func TestDeleteUser(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Member.EXPECT().Get(ctx, "user-id").Return(m, nil)
 				mocks.userAuth.EXPECT().DeleteUser(ctx, "cognito-id").Return(nil)
-				mocks.db.Member.EXPECT().Delete(ctx, "user-id").Return(nil)
+				mocks.db.Member.EXPECT().
+					Delete(ctx, "user-id", gomock.Any()).
+					DoAndReturn(func(ctx context.Context, userID string, auth func(ctx context.Context) error) error {
+						return auth(ctx)
+					})
 			},
 			input: &user.DeleteUserInput{
 				UserID: "user-id",
@@ -1138,22 +1139,10 @@ func TestDeleteUser(t *testing.T) {
 			expectErr: exception.ErrUnknown,
 		},
 		{
-			name: "failed to delete cognito user",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Member.EXPECT().Get(ctx, "user-id").Return(m, nil)
-				mocks.userAuth.EXPECT().DeleteUser(ctx, "cognito-id").Return(errmock)
-			},
-			input: &user.DeleteUserInput{
-				UserID: "user-id",
-			},
-			expectErr: exception.ErrUnknown,
-		},
-		{
 			name: "failed to delete user",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Member.EXPECT().Get(ctx, "user-id").Return(m, nil)
-				mocks.userAuth.EXPECT().DeleteUser(ctx, "cognito-id").Return(nil)
-				mocks.db.Member.EXPECT().Delete(ctx, "user-id").Return(errmock)
+				mocks.db.Member.EXPECT().Delete(ctx, "user-id", gomock.Any()).Return(errmock)
 			},
 			input: &user.DeleteUserInput{
 				UserID: "user-id",
