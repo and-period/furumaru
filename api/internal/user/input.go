@@ -91,6 +91,10 @@ type ResetAdministratorPasswordInput struct {
 	AdministratorID string `validate:"required"`
 }
 
+type DeleteAdministratorInput struct {
+	AdministratorID string `validate:"required"`
+}
+
 type ListCoordinatorsInput struct {
 	Limit  int64 `validate:"required,max=200"`
 	Offset int64 `validate:"min=0"`
@@ -152,6 +156,10 @@ type UpdateCoordinatorEmailInput struct {
 }
 
 type ResetCoordinatorPasswordInput struct {
+	CoordinatorID string `validate:"required"`
+}
+
+type DeleteCoordinatorInput struct {
 	CoordinatorID string `validate:"required"`
 }
 
@@ -219,6 +227,10 @@ type RelatedProducerInput struct {
 }
 
 type UnrelatedProducerInput struct {
+	ProducerID string `validate:"required"`
+}
+
+type DeleteProducerInput struct {
 	ProducerID string `validate:"required"`
 }
 

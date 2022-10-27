@@ -111,6 +111,48 @@ func (mr *MockServiceMockRecorder) CreateUserWithOAuth(ctx, in interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUserWithOAuth", reflect.TypeOf((*MockService)(nil).CreateUserWithOAuth), ctx, in)
 }
 
+// DeleteAdministrator mocks base method.
+func (m *MockService) DeleteAdministrator(ctx context.Context, in *user.DeleteAdministratorInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteAdministrator", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteAdministrator indicates an expected call of DeleteAdministrator.
+func (mr *MockServiceMockRecorder) DeleteAdministrator(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAdministrator", reflect.TypeOf((*MockService)(nil).DeleteAdministrator), ctx, in)
+}
+
+// DeleteCoordinator mocks base method.
+func (m *MockService) DeleteCoordinator(ctx context.Context, in *user.DeleteCoordinatorInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteCoordinator", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteCoordinator indicates an expected call of DeleteCoordinator.
+func (mr *MockServiceMockRecorder) DeleteCoordinator(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCoordinator", reflect.TypeOf((*MockService)(nil).DeleteCoordinator), ctx, in)
+}
+
+// DeleteProducer mocks base method.
+func (m *MockService) DeleteProducer(ctx context.Context, in *user.DeleteProducerInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteProducer", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteProducer indicates an expected call of DeleteProducer.
+func (mr *MockServiceMockRecorder) DeleteProducer(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteProducer", reflect.TypeOf((*MockService)(nil).DeleteProducer), ctx, in)
+}
+
 // DeleteUser mocks base method.
 func (m *MockService) DeleteUser(ctx context.Context, in *user.DeleteUserInput) error {
 	m.ctrl.T.Helper()

@@ -741,3 +741,47 @@ func TestResetCoordinatorPassword(t *testing.T) {
 		}))
 	}
 }
+
+func TestDeleteCoordinator(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.DeleteCoordinatorInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Coordinator.EXPECT().Delete(ctx, "coordinator-id", gomock.Any()).Return(nil)
+			},
+			input: &user.DeleteCoordinatorInput{
+				CoordinatorID: "coordinator-id",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.DeleteCoordinatorInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to delete",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Coordinator.EXPECT().Delete(ctx, "coordinator-id", gomock.Any()).Return(errmock)
+			},
+			input: &user.DeleteCoordinatorInput{
+				CoordinatorID: "coordinator-id",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.DeleteCoordinator(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}

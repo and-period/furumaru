@@ -172,6 +172,14 @@ func (s *service) ResetAdministratorPassword(ctx context.Context, in *user.Reset
 	return nil
 }
 
+func (s *service) DeleteAdministrator(ctx context.Context, in *user.DeleteAdministratorInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	err := s.db.Administrator.Delete(ctx, in.AdministratorID, s.deleteCognitoAdmin(in.AdministratorID))
+	return exception.InternalError(err)
+}
+
 func (s *service) createCognitoAdmin(cognitoID, email, password string) func(context.Context) error {
 	params := &cognito.AdminCreateUserParams{
 		Username: cognitoID,
@@ -180,6 +188,12 @@ func (s *service) createCognitoAdmin(cognitoID, email, password string) func(con
 	}
 	return func(ctx context.Context) error {
 		return s.adminAuth.AdminCreateUser(ctx, params)
+	}
+}
+
+func (s *service) deleteCognitoAdmin(cognitoID string) func(context.Context) error {
+	return func(ctx context.Context) error {
+		return s.adminAuth.DeleteUser(ctx, cognitoID)
 	}
 }
 

@@ -602,3 +602,47 @@ func TestResetAdministratorPassword(t *testing.T) {
 		}))
 	}
 }
+
+func TestDeleteAdministrator(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.DeleteAdministratorInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Administrator.EXPECT().Delete(ctx, "administrator-id", gomock.Any()).Return(nil)
+			},
+			input: &user.DeleteAdministratorInput{
+				AdministratorID: "administrator-id",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.DeleteAdministratorInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to delete",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Administrator.EXPECT().Delete(ctx, "administrator-id", gomock.Any()).Return(errmock)
+			},
+			input: &user.DeleteAdministratorInput{
+				AdministratorID: "administrator-id",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.DeleteAdministrator(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}

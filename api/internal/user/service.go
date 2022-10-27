@@ -45,6 +45,8 @@ type Service interface {
 	UpdateAdministratorEmail(ctx context.Context, in *UpdateAdministratorEmailInput) error
 	// システム管理者パスワードリセット
 	ResetAdministratorPassword(ctx context.Context, in *ResetAdministratorPasswordInput) error
+	// システム管理者退会
+	DeleteAdministrator(ctx context.Context, in *DeleteAdministratorInput) error
 	// 仲介者一覧取得
 	ListCoordinators(ctx context.Context, in *ListCoordinatorsInput) (entity.Coordinators, int64, error)
 	// 仲介者一覧取得(ID指定)
@@ -59,6 +61,8 @@ type Service interface {
 	UpdateCoordinatorEmail(ctx context.Context, in *UpdateCoordinatorEmailInput) error
 	// 仲介者パスワードリセット
 	ResetCoordinatorPassword(ctx context.Context, in *ResetCoordinatorPasswordInput) error
+	// 仲介者退会
+	DeleteCoordinator(ctx context.Context, in *DeleteCoordinatorInput) error
 	// 生産者一覧取得
 	ListProducers(ctx context.Context, in *ListProducersInput) (entity.Producers, int64, error)
 	// 生産者一覧取得(ID指定)
@@ -77,6 +81,8 @@ type Service interface {
 	RelatedProducer(ctx context.Context, in *RelatedProducerInput) error
 	// 生産者関連付け解除
 	UnrelatedProducer(ctx context.Context, in *UnrelatedProducerInput) error
+	// 生産者退会
+	DeleteProducer(ctx context.Context, in *DeleteProducerInput) error
 	// 購入者サインイン
 	SignInUser(ctx context.Context, in *SignInUserInput) (*entity.UserAuth, error)
 	// 購入者サインアウト

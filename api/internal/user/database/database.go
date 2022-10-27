@@ -52,6 +52,7 @@ type Administrator interface {
 	Get(ctx context.Context, administratorID string, fields ...string) (*entity.Administrator, error)
 	Create(ctx context.Context, administrator *entity.Administrator, auth func(ctx context.Context) error) error
 	Update(ctx context.Context, administratorID string, params *UpdateAdministratorParams) error
+	Delete(ctx context.Context, administratorID string, auth func(ctx context.Context) error) error
 }
 
 type Coordinator interface {
@@ -61,6 +62,7 @@ type Coordinator interface {
 	Get(ctx context.Context, coordinatorID string, fields ...string) (*entity.Coordinator, error)
 	Create(ctx context.Context, coordinator *entity.Coordinator, auth func(ctx context.Context) error) error
 	Update(ctx context.Context, coordinatorID string, params *UpdateCoordinatorParams) error
+	Delete(ctx context.Context, coordinatorID string, auth func(ctx context.Context) error) error
 }
 
 type Member interface {
@@ -82,6 +84,7 @@ type Producer interface {
 	Create(ctx context.Context, producer *entity.Producer, auth func(ctx context.Context) error) error
 	Update(ctx context.Context, producerID string, params *UpdateProducerParams) error
 	UpdateRelationship(ctx context.Context, producerID, coordinatorID string) error
+	Delete(ctx context.Context, producerID string, auth func(ctx context.Context) error) error
 }
 
 type User interface {

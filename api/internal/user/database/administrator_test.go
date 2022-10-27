@@ -481,6 +481,96 @@ func TestAdministrator_Update(t *testing.T) {
 	}
 }
 
+func TestAdministrator_Delete(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	type args struct {
+		administratorID string
+		auth            func(ctx context.Context) error
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				admin := testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
+				err = m.db.DB.Create(&admin).Error
+				require.NoError(t, err)
+				administrator := testAdministrator("admin-id", now())
+				err = m.db.DB.Create(&administrator).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				administratorID: "admin-id",
+				auth:            func(ctx context.Context) error { return nil },
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				administratorID: "admin-id",
+				auth:            func(ctx context.Context) error { return nil },
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+		{
+			name: "failed to execute external service",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				admin := testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
+				err = m.db.DB.Create(&admin).Error
+				require.NoError(t, err)
+				administrator := testAdministrator("admin-id", now())
+				err = m.db.DB.Create(&administrator).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				administratorID: "admin-id",
+				auth:            func(ctx context.Context) error { return errmock },
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := m.dbDelete(ctx, administratorTable, adminTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, m)
+
+			db := &administrator{db: m.db, now: now}
+			err = db.Delete(ctx, tt.args.administratorID, tt.args.auth)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
 func testAdministrator(id string, now time.Time) *entity.Administrator {
 	return &entity.Administrator{
 		AdminID:     id,

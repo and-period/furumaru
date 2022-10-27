@@ -25,7 +25,7 @@ func TestMember_Get(t *testing.T) {
 		return current
 	}
 
-	err = m.dbDelete(ctx, memberTable, userTable)
+	err = m.dbDelete(ctx, memberTable, customerTable, userTable)
 	require.NoError(t, err)
 	u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
 	err = m.db.DB.Create(&u).Error
