@@ -58,9 +58,10 @@ func TestUser(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewUser(tt.params)
-			actual.ID = ""            // ignore
-			actual.Member.UserID = "" // ignore
-			actual.Guest.UserID = ""  // ignore
+			actual.ID = ""              // ignore
+			actual.Member.UserID = ""   // ignore
+			actual.Guest.UserID = ""    // ignore
+			actual.Customer.UserID = "" // ignore
 			assert.Equal(t, tt.expect, actual)
 		})
 	}

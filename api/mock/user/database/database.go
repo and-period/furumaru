@@ -400,31 +400,31 @@ func (m *MockMember) EXPECT() *MockMemberMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockMember) Create(ctx context.Context, user *entity.User, member *entity.Member) error {
+func (m *MockMember) Create(ctx context.Context, user *entity.User, auth func(context.Context) error) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", ctx, user, member)
+	ret := m.ctrl.Call(m, "Create", ctx, user, auth)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockMemberMockRecorder) Create(ctx, user, member interface{}) *gomock.Call {
+func (mr *MockMemberMockRecorder) Create(ctx, user, auth interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockMember)(nil).Create), ctx, user, member)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockMember)(nil).Create), ctx, user, auth)
 }
 
 // Delete mocks base method.
-func (m *MockMember) Delete(ctx context.Context, userID string) error {
+func (m *MockMember) Delete(ctx context.Context, userID string, auth func(context.Context) error) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Delete", ctx, userID)
+	ret := m.ctrl.Call(m, "Delete", ctx, userID, auth)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Delete indicates an expected call of Delete.
-func (mr *MockMemberMockRecorder) Delete(ctx, userID interface{}) *gomock.Call {
+func (mr *MockMemberMockRecorder) Delete(ctx, userID, auth interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockMember)(nil).Delete), ctx, userID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockMember)(nil).Delete), ctx, userID, auth)
 }
 
 // Get mocks base method.

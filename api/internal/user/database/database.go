@@ -67,11 +67,11 @@ type Member interface {
 	Get(ctx context.Context, userID string, fields ...string) (*entity.Member, error)
 	GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.Member, error)
 	GetByEmail(ctx context.Context, email string, fields ...string) (*entity.Member, error)
-	Create(ctx context.Context, user *entity.User, member *entity.Member) error
+	Create(ctx context.Context, user *entity.User, auth func(ctx context.Context) error) error
 	UpdateVerified(ctx context.Context, userID string) error
 	UpdateAccount(ctx context.Context, userID, accountID, username string) error
 	UpdateEmail(ctx context.Context, userID, email string) error
-	Delete(ctx context.Context, userID string) error
+	Delete(ctx context.Context, userID string, auth func(ctx context.Context) error) error
 }
 
 type Producer interface {
