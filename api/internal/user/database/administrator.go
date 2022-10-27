@@ -159,14 +159,26 @@ func (a *administrator) Delete(
 		}
 
 		now := a.now()
-		params := map[string]interface{}{
+		administratorParams := map[string]interface{}{
 			"updated_at": now,
 			"deleted_at": now,
 		}
 		err := tx.WithContext(ctx).
 			Table(administratorTable).
 			Where("admin_id = ?", administratorID).
-			Updates(params).Error
+			Updates(administratorParams).Error
+		if err != nil {
+			return nil, err
+		}
+		adminParams := map[string]interface{}{
+			"exists":     nil,
+			"updated_at": now,
+			"deleted_at": now,
+		}
+		err = tx.WithContext(ctx).
+			Table(adminTable).
+			Where("id = ?", administratorID).
+			Updates(adminParams).Error
 		if err != nil {
 			return nil, err
 		}

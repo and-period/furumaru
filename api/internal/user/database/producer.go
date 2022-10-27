@@ -192,17 +192,26 @@ func (p *producer) Delete(ctx context.Context, producerID string, auth func(ctx 
 		}
 
 		now := p.now()
-		params := map[string]interface{}{
+		producerParams := map[string]interface{}{
 			"updated_at": now,
 			"deleted_at": now,
 		}
 		err := tx.WithContext(ctx).
 			Table(producerTable).
 			Where("admin_id = ?", producerID).
-			Updates(params).Error
+			Updates(producerParams).Error
 		if err != nil {
 			return nil, err
 		}
+		adminParams := map[string]interface{}{
+			"exists":     nil,
+			"updated_at": now,
+			"deleted_at": now,
+		}
+		err = tx.WithContext(ctx).
+			Table(adminTable).
+			Where("id = ?", producerID).
+			Updates(adminParams).Error
 		return nil, auth(ctx)
 	})
 	return exception.InternalError(err)

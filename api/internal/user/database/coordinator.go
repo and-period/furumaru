@@ -171,17 +171,26 @@ func (c *coordinator) Delete(ctx context.Context, coordinatorID string, auth fun
 		}
 
 		now := c.now()
-		params := map[string]interface{}{
+		coordinatorParams := map[string]interface{}{
 			"updated_at": now,
 			"deleted_at": now,
 		}
 		err := tx.WithContext(ctx).
 			Table(coordinatorTable).
 			Where("admin_id = ?", coordinatorID).
-			Updates(params).Error
+			Updates(coordinatorParams).Error
 		if err != nil {
 			return nil, err
 		}
+		adminParams := map[string]interface{}{
+			"exists":     nil,
+			"updated_at": now,
+			"deleted_at": now,
+		}
+		err = tx.WithContext(ctx).
+			Table(adminTable).
+			Where("id = ?", coordinatorID).
+			Updates(adminParams).Error
 		return nil, auth(ctx)
 	})
 	return exception.InternalError(err)

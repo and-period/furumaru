@@ -7,6 +7,7 @@ import (
 
 	set "github.com/and-period/furumaru/api/pkg/set/v2"
 	"github.com/and-period/furumaru/api/pkg/uuid"
+	"gorm.io/gorm"
 )
 
 var errInvalidAdminRole = errors.New("entity: invalid admin role")
@@ -23,17 +24,18 @@ const (
 
 // Admin - 管理者共通情報
 type Admin struct {
-	ID            string    `gorm:"primaryKey;<-:create"` // 管理者ID
-	CognitoID     string    `gorm:"<-:create"`            // 管理者ID (Cognito用)
-	Role          AdminRole `gorm:"<-:create"`            // 管理者権限
-	Lastname      string    `gorm:""`                     // 姓
-	Firstname     string    `gorm:""`                     // 名
-	LastnameKana  string    `gorm:""`                     // 姓(かな)
-	FirstnameKana string    `gorm:""`                     // 名(かな)
-	Email         string    `gorm:""`                     // メールアドレス
-	Device        string    `gorm:""`                     // デバイストークン(Push通知用)
-	CreatedAt     time.Time `gorm:"<-:create"`            // 登録日時
-	UpdatedAt     time.Time `gorm:""`                     // 更新日時
+	ID            string         `gorm:"primaryKey;<-:create"` // 管理者ID
+	CognitoID     string         `gorm:"<-:create"`            // 管理者ID (Cognito用)
+	Role          AdminRole      `gorm:"<-:create"`            // 管理者権限
+	Lastname      string         `gorm:""`                     // 姓
+	Firstname     string         `gorm:""`                     // 名
+	LastnameKana  string         `gorm:""`                     // 姓(かな)
+	FirstnameKana string         `gorm:""`                     // 名(かな)
+	Email         string         `gorm:""`                     // メールアドレス
+	Device        string         `gorm:""`                     // デバイストークン(Push通知用)
+	CreatedAt     time.Time      `gorm:"<-:create"`            // 登録日時
+	UpdatedAt     time.Time      `gorm:""`                     // 更新日時
+	DeletedAt     gorm.DeletedAt `gorm:"default:null"`         // 削除日時
 }
 
 type Admins []*Admin

@@ -16,7 +16,8 @@ const adminTable = "admins"
 var adminFields = []string{
 	"id", "cognito_id", "role", "device", "email",
 	"lastname", "firstname", "lastname_kana", "firstname_kana",
-	"created_at", "updated_at",
+	"created_at", "updated_at", "deleted_at",
+	// "exists"
 }
 
 type admin struct {
