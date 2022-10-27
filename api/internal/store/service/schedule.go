@@ -67,15 +67,9 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 	})
 	eg.Go(func() error {
 		shippingID := schedule.ShippingID
-		s, err := s.db.Shipping.Get(ectx, shippingID)
-		if err != nil {
-			return err
-		}
-		if s != nil {
-			return nil
-		}
+		_, err := s.db.Shipping.Get(ectx, shippingID)
 		if errors.Is(err, exception.ErrNotFound) {
-			return fmt.Errorf("service: not found shipping: %w", exception.ErrInvalidArgument)
+			return fmt.Errorf("service: not found shipping: %w", exception.ErrNotFound)
 		}
 		return err
 	})
