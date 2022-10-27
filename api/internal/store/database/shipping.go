@@ -77,10 +77,13 @@ func (s *shipping) MultiGet(ctx context.Context, shippingIDs []string, fields ..
 		Table(shippingTable).Select(fields).
 		Where("id IN (?)", shippingIDs).
 		Find(&shippings).Error
-	if err := shippings.Fill(); err != nil {
-		return nil, err
+	if err != nil {
+		return nil, exception.InternalError(err)
 	}
-	return shippings, exception.InternalError(err)
+	if err := shippings.Fill(); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return shippings, nil
 }
 
 func (s *shipping) Get(ctx context.Context, shoppingID string, fields ...string) (*entity.Shipping, error) {
