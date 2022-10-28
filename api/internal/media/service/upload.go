@@ -1,0 +1,88 @@
+package service
+
+import (
+	"context"
+	"fmt"
+	"net/url"
+	"strings"
+
+	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/media"
+	"github.com/and-period/furumaru/api/internal/media/entity"
+)
+
+func (s *service) UploadCoordinatorThumbnail(ctx context.Context, in *media.UploadFileInput) (string, error) {
+	return s.uploadFile(ctx, in, entity.CoordinatorThumbnailPath)
+}
+
+func (s *service) UploadCoordinatorHeader(ctx context.Context, in *media.UploadFileInput) (string, error) {
+	return s.uploadFile(ctx, in, entity.CoordinatorHeaderPath)
+}
+
+func (s *service) UploadProducerThumbnail(ctx context.Context, in *media.UploadFileInput) (string, error) {
+	return s.uploadFile(ctx, in, entity.ProducerThumbnailPath)
+}
+
+func (s *service) UploadProducerHeader(ctx context.Context, in *media.UploadFileInput) (string, error) {
+	return s.uploadFile(ctx, in, entity.ProducerHeaderPath)
+}
+
+func (s *service) UploadProductImage(ctx context.Context, in *media.UploadFileInput) (string, error) {
+	return s.uploadFile(ctx, in, entity.ProductImagePath)
+}
+
+func (s *service) UploadProductVideo(ctx context.Context, in *media.UploadFileInput) (string, error) {
+	return s.uploadFile(ctx, in, entity.ProductVideoPath)
+}
+
+func (s *service) UploadProductTypeIcon(ctx context.Context, in *media.UploadFileInput) (string, error) {
+	return s.uploadFile(ctx, in, entity.ProductTypeIconPath)
+}
+
+func (s *service) uploadFile(ctx context.Context, in *media.UploadFileInput, prefix string) (string, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return "", exception.InternalError(err)
+	}
+	u, err := s.parseURL(in, prefix)
+	if err != nil {
+		return "", exception.InternalError(err)
+	}
+	var path string
+	switch u.Host {
+	case s.tempHost:
+		path, err = s.uploadPermanentFile(ctx, u)
+	case s.storageHost:
+		path, err = s.downloadFile(ctx, u)
+	default:
+		err = fmt.Errorf("service: unknown file: %w", exception.ErrInvalidArgument)
+	}
+	return path, exception.InternalError(err)
+}
+
+func (s *service) parseURL(in *media.UploadFileInput, prefix string) (*url.URL, error) {
+	u, err := url.Parse(in.URL)
+	if err != nil {
+		return nil, fmt.Errorf("service: failed to parse url. err=%s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	if !strings.Contains(u.Path, prefix) {
+		return nil, fmt.Errorf("service: invalid url. url=%s: %w", in.URL, exception.ErrInvalidArgument)
+	}
+	return u, nil
+}
+
+func (s *service) uploadPermanentFile(ctx context.Context, u *url.URL) (string, error) {
+	file, err := s.temp.Download(ctx, u.String())
+	if err != nil {
+		return "", err
+	}
+	u.Host = s.storageHost
+	return s.storage.Upload(ctx, u.String(), file)
+}
+
+func (s *service) downloadFile(ctx context.Context, u *url.URL) (string, error) {
+	path := u.String()
+	if _, err := s.storage.Download(ctx, path); err != nil {
+		return "", err
+	}
+	return path, nil
+}

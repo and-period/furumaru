@@ -82,7 +82,7 @@ func NewNotification(params *NewNotificationParams) *Notification {
 }
 
 func (n *Notification) HasUserTarget() bool {
-	set := set.New[int32](len(targetUsers)).Add(targetUsers...)
+	set := set.New(targetUsers...)
 	for i := range n.Targets {
 		if set.Contains(int32(n.Targets[i])) {
 			return true
@@ -92,7 +92,7 @@ func (n *Notification) HasUserTarget() bool {
 }
 
 func (n *Notification) HasAdminTarget() bool {
-	set := set.New[int32](len(targetAdmins)).Add(targetAdmins...)
+	set := set.New(targetAdmins...)
 	for i := range n.Targets {
 		if set.Contains(int32(n.Targets[i])) {
 			return true

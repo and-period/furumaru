@@ -80,7 +80,7 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 
 func (h *handler) addlistProducerFilters(ctx *gin.Context, in *user.ListProducersInput) {
 	strs := util.GetQueryStrings(ctx, "filters")
-	filters := set.New[string](len(strs))
+	filters := set.NewEmpty[string](len(strs))
 	filters.Add(strs...)
 	if filters.Contains("unrelated") { // 未関連状態の生産者のみ取得
 		in.OnlyUnrelated = true

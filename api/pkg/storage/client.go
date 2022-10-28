@@ -26,6 +26,8 @@ const domain = "%s.s3.amazonaws.com"
 type Bucket interface {
 	// オブジェクトURLの生成
 	GenerateObjectURL(path string) string
+	// S3 BucketのFQDNを取得
+	GetFQDN() string
 	// S3 Bucketからオブジェクトを取得
 	Download(ctx context.Context, url string) (io.Reader, error)
 	// S3 Bucketからオブジェクトを取得とByte型へ変換
@@ -95,10 +97,14 @@ func NewBucket(cfg aws.Config, params *Params, opts ...Option) Bucket {
 func (b *bucket) GenerateObjectURL(path string) string {
 	u := &url.URL{
 		Scheme: "https",
-		Host:   fmt.Sprintf(domain, aws.ToString(b.name)),
+		Host:   b.GetFQDN(),
 		Path:   path,
 	}
 	return u.String()
+}
+
+func (b *bucket) GetFQDN() string {
+	return fmt.Sprintf(domain, aws.ToString(b.name))
 }
 
 func (b *bucket) Download(ctx context.Context, url string) (io.Reader, error) {
