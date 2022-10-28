@@ -89,6 +89,8 @@ export default defineComponent({
       return coordinatorStore.totalItems
     })
 
+    // const deleteDialog = ref<boolean>(false)
+    // const selectedId = ref<string>('')
     const search = ref<string>('')
     const query = ref<string>('')
 
@@ -170,9 +172,14 @@ export default defineComponent({
       router.push(`/coordinators/edit/${item.id}`)
     }
 
-    const handleDelete = (item: CoordinatorsResponseCoordinatorsInner) => {
-      console.log(item)
-    }
+    // const handleDelete = async (): Promise<void> => {
+    //   try {
+    //     await coordinatorStore.deleteCoordinator(selectedId.value)
+    //   } catch (err) {
+    //     console.log(err)
+    //   }
+    //   deleteDialog.value = false
+    // }
 
     return {
       handleClickAddButton,
@@ -188,7 +195,7 @@ export default defineComponent({
       fetchState,
       handleSearch,
       handleEdit,
-      handleDelete,
+      // handleDelete,
     }
   },
 })

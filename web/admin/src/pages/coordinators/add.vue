@@ -19,14 +19,14 @@
             :img-url="formData.thumbnailUrl"
             :error="thumbnailUploadStatus.error"
             :message="thumbnailUploadStatus.message"
-            @update:file="updateThumbnailFileHandler"
+            @update:file="handleUpdateThumbnail"
           />
           <the-header-select-form
             class="flex-grow-1 flex-shrink-1"
             :img-url="formData.headerUrl"
             :error="headerUploadStatus.error"
             :message="headerUploadStatus.message"
-            @update:file="updateHeaderFileHandler"
+            @update:file="handleUpdateHeader"
           />
         </div>
 
@@ -104,8 +104,11 @@ import { ImageUploadStatus } from '~/types/props'
 export default defineComponent({
   setup() {
     const router = useRouter()
-    const { createCoordinator, uploadCoordinatorThumbnail } =
-      useCoordinatorStore()
+    const {
+      createCoordinator,
+      uploadCoordinatorThumbnail,
+      uploadCoordinatorHeader,
+    } = useCoordinatorStore()
 
     const formData = reactive<CreateCoordinatorRequest>({
       lastname: '',
@@ -149,6 +152,10 @@ export default defineComponent({
     const v$ = useVuelidate(rules, formData)
 
     const handleSubmit = async () => {
+      const result = await v$.value.$validate()
+      if (!result) {
+        return
+      }
       try {
         await createCoordinator({
           ...formData,
@@ -173,7 +180,18 @@ export default defineComponent({
       }
     }
 
-    const handleUpdateHeader = async (_files: FileList) => {}
+    const handleUpdateHeader = (files: FileList) => {
+      if (files.length > 0) {
+        uploadCoordinatorHeader(files[0])
+          .then((res) => {
+            formData.headerUrl = res.url
+          })
+          .catch(() => {
+            headerUploadStatus.error = true
+            headerUploadStatus.message = 'アップロードに失敗しました。'
+          })
+      }
+    }
 
     const {
       loading: searchLoading,

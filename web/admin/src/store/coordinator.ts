@@ -237,5 +237,106 @@ export const useCoordinatorStore = defineStore('Coordinator', {
         throw new InternalServerError(error)
       }
     },
+
+    async uploadCoordinatorHeader(payload: File): Promise<UploadImageResponse> {
+      try {
+        const authStore = useAuthStore()
+        const accessToken = authStore.accessToken
+        if (!accessToken) {
+          return Promise.reject(
+            new AuthError('認証エラー。再度ログインをしてください。')
+          )
+        }
+
+        const factory = new ApiClientFactory()
+        const coordinatorsApiClient = factory.create(
+          CoordinatorApi,
+          accessToken
+        )
+        const res = await coordinatorsApiClient.v1UploadCoordinatorHeader(
+          payload,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        )
+        return res.data
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          const statusCode = error.response.status
+          switch (statusCode) {
+            case 401:
+              return Promise.reject(
+                new AuthError('認証エラー。再度ログインをしてください', error)
+              )
+            case 400:
+              return Promise.reject(
+                new ValidationError(
+                  'このファイルはアップロードできません。',
+                  error
+                )
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+        throw new InternalServerError(error)
+      }
+    },
+    // async deleteNotification(id: string): Promise<void> {
+    //   const commonStore = useCommonStore()
+    //   try {
+    //     const authStore = useAuthStore()
+    //     const accessToken = authStore.accessToken
+    //     if (!accessToken) {
+    //       return Promise.reject(new Error('認証エラー'))
+    //     }
+
+    //     const factory = new ApiClientFactory()
+    //     const coordinatorApiClient = factory.create(CoordinatorApi,accessToken)
+    //     // await coordinatorApiClient.v1DeleteCoordinator(id)
+    //     commonStore.addSnackbar({
+    //       message: '品物削除が完了しました',
+    //       color: 'info',
+    //     })
+    //   } catch (error) {
+    //     if (axios.isAxiosError(error)) {
+    //       if (!error.response) {
+    //         return Promise.reject(new ConnectionError(error))
+    //       }
+    //       const statusCode = error.response.status
+    //       switch (statusCode) {
+    //         case 400:
+    //           return Promise.reject(
+    //             new ValidationError(
+    //               '削除できませんでした。管理者にお問い合わせしてください。',
+    //               error
+    //             )
+    //           )
+    //         case 401:
+    //           return Promise.reject(
+    //             new AuthError('認証エラー。再度ログインをしてください。', error)
+    //           )
+    //         case 404:
+    //           return Promise.reject(
+    //             new NotFoundError(
+    //               '削除するお知らせが見つかりませんでした。',
+    //               error
+    //             )
+    //           )
+    //         case 500:
+    //         default:
+    //           return Promise.reject(new InternalServerError(error))
+    //       }
+    //     }
+    //     throw new InternalServerError(error)
+    //   }
+    //   this.fetchNotifications()
+    // },
   },
 })

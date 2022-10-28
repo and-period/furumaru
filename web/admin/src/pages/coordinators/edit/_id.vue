@@ -4,18 +4,32 @@
     <v-card elevation="0">
       <v-card-text>
         <v-text-field
-          v-model="v$.storeName.$model"
-          :error-messages="getErrorMessage(v$.storeName.$errors)"
-          label="店舗名"
-        />
-        <div class="mb-2">
-          <the-file-upload-filed text="コーディネーター画像" />
-        </div>
-        <v-text-field
           v-model="v$.companyName.$model"
           :error-messages="getErrorMessage(v$.companyName.$errors)"
           label="会社名"
         />
+        <v-text-field
+          v-model="v$.storeName.$model"
+          :error-messages="getErrorMessage(v$.storeName.$errors)"
+          label="店舗名"
+        />
+        <div class="mb-2 d-flex">
+          <the-profile-select-form
+            class="mr-4 flex-grow-1 flex-shrink-1"
+            :img-url="formData.thumbnailUrl"
+            :error="thumbnailUploadStatus.error"
+            :message="thumbnailUploadStatus.message"
+            @update:file="handleUpdateThumbnail"
+          />
+          <the-header-select-form
+            class="flex-grow-1 flex-shrink-1"
+            :img-url="formData.headerUrl"
+            :error="headerUploadStatus.error"
+            :message="headerUploadStatus.message"
+            @update:file="handleUpdateHeader"
+          />
+        </div>
+        <v-textarea v-model="formNote" name="note" label="メモ"></v-textarea>
         <div class="d-flex">
           <v-text-field
             v-model="v$.lastname.$model"
@@ -94,6 +108,7 @@ import {
 } from '~/lib/validations'
 import { useCoordinatorStore } from '~/store/coordinator'
 import { CoordinatorResponse } from '~/types/api'
+import { ImageUploadStatus } from '~/types/props'
 
 export default defineComponent({
   setup() {
@@ -102,6 +117,9 @@ export default defineComponent({
     const route = useRoute()
     const id = route.value.params.id
     const router = useRouter()
+
+    const { uploadCoordinatorThumbnail, uploadCoordinatorHeader } =
+      useCoordinatorStore()
 
     const { getCoordinator } = useCoordinatorStore()
 
@@ -183,6 +201,42 @@ export default defineComponent({
       }
     }
 
+    const thumbnailUploadStatus = reactive<ImageUploadStatus>({
+      error: false,
+      message: '',
+    })
+
+    const headerUploadStatus = reactive<ImageUploadStatus>({
+      error: false,
+      message: '',
+    })
+
+    const handleUpdateThumbnail = (files: FileList) => {
+      if (files.length > 0) {
+        uploadCoordinatorThumbnail(files[0])
+          .then((res) => {
+            formData.thumbnailUrl = res.url
+          })
+          .catch(() => {
+            thumbnailUploadStatus.error = true
+            thumbnailUploadStatus.message = 'アップロードに失敗しました。'
+          })
+      }
+    }
+
+    const handleUpdateHeader = async (files: FileList) => {
+      if (files.length > 0) {
+        await uploadCoordinatorHeader(files[0])
+          .then((res) => {
+            formData.headerUrl = res.url
+          })
+          .catch(() => {
+            headerUploadStatus.error = true
+            headerUploadStatus.message = 'アップロードに失敗しました。'
+          })
+      }
+    }
+
     const handleSubmit = async (): Promise<void> => {
       try {
         const result = await v$.value.$validate()
@@ -212,6 +266,10 @@ export default defineComponent({
       searchErrorMessage,
       searchAddress,
       handleSubmit,
+      handleUpdateThumbnail,
+      thumbnailUploadStatus,
+      headerUploadStatus,
+      handleUpdateHeader,
     }
   },
 })
