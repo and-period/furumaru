@@ -393,7 +393,6 @@ func testVideoFile(t *testing.T) (io.Reader, *multipart.FileHeader) {
 }
 
 func testFilePath(t *testing.T, filename string) string {
-
 	dir, err := os.Getwd()
 	assert.NoError(t, err)
 
