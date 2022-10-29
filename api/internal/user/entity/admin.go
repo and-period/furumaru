@@ -113,7 +113,7 @@ func (as Admins) IDs() []string {
 }
 
 func (as Admins) Devices() []string {
-	set := set.New[string](len(as))
+	set := set.NewEmpty[string](len(as))
 	for i := range as {
 		if as[i].Device == "" {
 			continue

@@ -17,7 +17,7 @@ func TestShipping(t *testing.T) {
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
-	set := set.New[int64](len(shikoku)).Add(shikoku...)
+	set := set.New(shikoku...)
 	others := make([]int64, 0, 47-len(shikoku))
 	for _, val := range codes.PrefectureValues {
 		if set.Contains(val) {
@@ -405,7 +405,7 @@ func TestShippingRates(t *testing.T) {
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
-	set := set.New[int64](len(shikoku)).Add(shikoku...)
+	set := set.New(shikoku...)
 	others := make([]int64, 0, 47-len(shikoku))
 	for _, val := range codes.PrefectureValues {
 		if set.Contains(val) {

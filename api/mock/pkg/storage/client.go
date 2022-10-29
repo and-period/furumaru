@@ -79,6 +79,20 @@ func (mr *MockBucketMockRecorder) GenerateObjectURL(path interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateObjectURL", reflect.TypeOf((*MockBucket)(nil).GenerateObjectURL), path)
 }
 
+// GetFQDN mocks base method.
+func (m *MockBucket) GetFQDN() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetFQDN")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// GetFQDN indicates an expected call of GetFQDN.
+func (mr *MockBucketMockRecorder) GetFQDN() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFQDN", reflect.TypeOf((*MockBucket)(nil).GetFQDN))
+}
+
 // Upload mocks base method.
 func (m *MockBucket) Upload(ctx context.Context, path string, body io.Reader) (string, error) {
 	m.ctrl.T.Helper()

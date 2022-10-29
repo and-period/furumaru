@@ -157,7 +157,7 @@ func NewShippingRate(num int64, name string, price int64, prefs []int64) *Shippi
 
 func (rs ShippingRates) Validate() error {
 	var total int
-	set := set.New[int64](len(rs))
+	set := set.NewEmpty[int64](len(rs))
 	for i := range rs {
 		if rs[i].Number < 1 { // No.の形式チェック
 			return errInvalidShippingRateFormat

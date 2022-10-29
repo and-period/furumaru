@@ -62,7 +62,7 @@ func run() error {
 	srcDir := flag.String("src", "./../../../infra/mysql/schema", "ddl source directory")
 	flag.Parse()
 
-	set := set.New[string](len(skipDDLs)).Add(skipDDLs...)
+	set := set.New(skipDDLs...)
 
 	/**
 	 * -------------------------
