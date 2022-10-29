@@ -1103,10 +1103,10 @@ export interface CreateProductRequest {
     'itemDescription': string;
     /**
      * メディア一覧(8つまで)
-     * @type {Array<ProductsResponseProductsInnerMediaInner>}
+     * @type {Array<V1LiveResponseProductsInnerMediaInner>}
      * @memberof CreateProductRequest
      */
-    'media': Array<ProductsResponseProductsInnerMediaInner>;
+    'media': Array<V1LiveResponseProductsInnerMediaInner>;
     /**
      * 販売価格(0以上)
      * @type {number}
@@ -1237,6 +1237,18 @@ export interface CreatePromotionRequest {
  */
 export interface CreateScheduleRequest {
     /**
+     * コーディネーターID
+     * @type {string}
+     * @memberof CreateScheduleRequest
+     */
+    'coordinatorId': string;
+    /**
+     * 配送設定ID
+     * @type {string}
+     * @memberof CreateScheduleRequest
+     */
+    'shippingId': string;
+    /**
      * タイトル(128文字まで)
      * @type {string}
      * @memberof CreateScheduleRequest
@@ -1285,6 +1297,12 @@ export interface CreateScheduleRequestLivesInner {
      * @memberof CreateScheduleRequestLivesInner
      */
     'producerId': string;
+    /**
+     * 商品ID一覧
+     * @type {Array<string>}
+     * @memberof CreateScheduleRequestLivesInner
+     */
+    'productIds': Array<string>;
     /**
      * ライブ開始日時
      * @type {number}
@@ -1426,6 +1444,97 @@ export interface ErrorResponse {
      * @memberof ErrorResponse
      */
     'details': string;
+}
+/**
+ * 
+ * @export
+ * @interface LiveResponse
+ */
+export interface LiveResponse {
+    /**
+     * 配信ID
+     * @type {string}
+     * @memberof LiveResponse
+     */
+    'id': string;
+    /**
+     * スケジュールID
+     * @type {string}
+     * @memberof LiveResponse
+     */
+    'scheduleId': string;
+    /**
+     * ライブタイトル(128文字まで)
+     * @type {string}
+     * @memberof LiveResponse
+     */
+    'title': string;
+    /**
+     * ライブ説明(20000文字まで)
+     * @type {string}
+     * @memberof LiveResponse
+     */
+    'description': string;
+    /**
+     * 生産者ID
+     * @type {string}
+     * @memberof LiveResponse
+     */
+    'producerId': string;
+    /**
+     * 生産者名
+     * @type {string}
+     * @memberof LiveResponse
+     */
+    'producerName': string;
+    /**
+     * ライブ開始日時
+     * @type {number}
+     * @memberof LiveResponse
+     */
+    'startAt': number;
+    /**
+     * ライブ終了日時
+     * @type {number}
+     * @memberof LiveResponse
+     */
+    'endAt': number;
+    /**
+     * 配信公開フラグ
+     * @type {boolean}
+     * @memberof LiveResponse
+     */
+    'published': boolean;
+    /**
+     * キャンセルフラグ
+     * @type {boolean}
+     * @memberof LiveResponse
+     */
+    'canceled': boolean;
+    /**
+     * 配信ステータス(0:不明,1:配信前,2:配信中,3:配信終了,4:配信中止)
+     * @type {number}
+     * @memberof LiveResponse
+     */
+    'status': number;
+    /**
+     * 
+     * @type {Array<V1LiveResponseProductsInner>}
+     * @memberof LiveResponse
+     */
+    'products': Array<V1LiveResponseProductsInner>;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof LiveResponse
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof LiveResponse
+     */
+    'updatedAt': number;
 }
 /**
  * 
@@ -1959,10 +2068,10 @@ export interface OrderResponseItemsInner {
     'weight': number;
     /**
      * 
-     * @type {Array<ProductsResponseProductsInnerMediaInner>}
+     * @type {Array<V1LiveResponseProductsInnerMediaInner>}
      * @memberof OrderResponseItemsInner
      */
-    'media': Array<ProductsResponseProductsInnerMediaInner>;
+    'media': Array<V1LiveResponseProductsInnerMediaInner>;
 }
 /**
  * 支払い情報
@@ -2535,10 +2644,10 @@ export interface ProductResponse {
     'iconUrl': string;
     /**
      * 
-     * @type {Array<ProductsResponseProductsInnerMediaInner>}
+     * @type {Array<V1LiveResponseProductsInnerMediaInner>}
      * @memberof ProductResponse
      */
-    'media': Array<ProductsResponseProductsInnerMediaInner>;
+    'media': Array<V1LiveResponseProductsInnerMediaInner>;
     /**
      * 販売価格
      * @type {number}
@@ -2834,10 +2943,10 @@ export interface ProductsResponseProductsInner {
     'iconUrl': string;
     /**
      * 
-     * @type {Array<ProductsResponseProductsInnerMediaInner>}
+     * @type {Array<V1LiveResponseProductsInnerMediaInner>}
      * @memberof ProductsResponseProductsInner
      */
-    'media': Array<ProductsResponseProductsInnerMediaInner>;
+    'media': Array<V1LiveResponseProductsInnerMediaInner>;
     /**
      * 販売価格
      * @type {number}
@@ -2892,25 +3001,6 @@ export interface ProductsResponseProductsInner {
      * @memberof ProductsResponseProductsInner
      */
     'updatedAt': number;
-}
-/**
- * 
- * @export
- * @interface ProductsResponseProductsInnerMediaInner
- */
-export interface ProductsResponseProductsInnerMediaInner {
-    /**
-     * メディアURL
-     * @type {string}
-     * @memberof ProductsResponseProductsInnerMediaInner
-     */
-    'url': string;
-    /**
-     * サムネイルとして使用(1つまで)
-     * @type {boolean}
-     * @memberof ProductsResponseProductsInnerMediaInner
-     */
-    'isThumbnail': boolean;
 }
 /**
  * 
@@ -3141,6 +3231,24 @@ export interface ScheduleResponse {
      */
     'id': string;
     /**
+     * コーディネーターID
+     * @type {string}
+     * @memberof ScheduleResponse
+     */
+    'coordinatorId': string;
+    /**
+     * 配信設定ID
+     * @type {string}
+     * @memberof ScheduleResponse
+     */
+    'shippingId': string;
+    /**
+     * 配信設定名
+     * @type {string}
+     * @memberof ScheduleResponse
+     */
+    'shippingName': string;
+    /**
      * タイトル
      * @type {string}
      * @memberof ScheduleResponse
@@ -3194,6 +3302,103 @@ export interface ScheduleResponse {
      * @memberof ScheduleResponse
      */
     'updatedAt': number;
+    /**
+     * 
+     * @type {Array<ScheduleResponseLivesInner>}
+     * @memberof ScheduleResponse
+     */
+    'lives': Array<ScheduleResponseLivesInner>;
+}
+/**
+ * 
+ * @export
+ * @interface ScheduleResponseLivesInner
+ */
+export interface ScheduleResponseLivesInner {
+    /**
+     * 配信ID
+     * @type {string}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'id'?: string;
+    /**
+     * スケジュールID
+     * @type {string}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'scheduleId'?: string;
+    /**
+     * ライブタイトル(128文字まで)
+     * @type {string}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'title'?: string;
+    /**
+     * ライブ説明(20000文字まで)
+     * @type {string}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'description'?: string;
+    /**
+     * 生産者ID
+     * @type {string}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'producerId'?: string;
+    /**
+     * 生産者名
+     * @type {string}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'producerName'?: string;
+    /**
+     * ライブ開始日時
+     * @type {number}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'startAt'?: number;
+    /**
+     * ライブ終了日時
+     * @type {number}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'endAt'?: number;
+    /**
+     * 配信公開フラグ
+     * @type {boolean}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'published'?: boolean;
+    /**
+     * キャンセルフラグ
+     * @type {boolean}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'canceled'?: boolean;
+    /**
+     * 配信ステータス(0:不明,1:配信前,2:配信中,3:配信終了,4:配信中止)
+     * @type {number}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'status'?: number;
+    /**
+     * 
+     * @type {Array<V1LiveResponseProductsInner>}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'products'?: Array<V1LiveResponseProductsInner>;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'createdAt'?: number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'updatedAt'?: number;
 }
 /**
  * 
@@ -3909,10 +4114,10 @@ export interface UpdateProductRequest {
     'itemDescription': string;
     /**
      * メディア一覧(8つまで)
-     * @type {Array<ProductsResponseProductsInnerMediaInner>}
+     * @type {Array<V1LiveResponseProductsInnerMediaInner>}
      * @memberof UpdateProductRequest
      */
-    'media': Array<ProductsResponseProductsInnerMediaInner>;
+    'media': Array<V1LiveResponseProductsInnerMediaInner>;
     /**
      * 販売価格(0以上)
      * @type {number}
@@ -4208,6 +4413,279 @@ export interface UsersResponseUsersInner {
      * @memberof UsersResponseUsersInner
      */
     'totalAmount'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface V1LiveResponse
+ */
+export interface V1LiveResponse {
+    /**
+     * 配信ID
+     * @type {string}
+     * @memberof V1LiveResponse
+     */
+    'id': string;
+    /**
+     * スケジュールID
+     * @type {string}
+     * @memberof V1LiveResponse
+     */
+    'scheduleId': string;
+    /**
+     * ライブタイトル(128文字まで)
+     * @type {string}
+     * @memberof V1LiveResponse
+     */
+    'title': string;
+    /**
+     * ライブ説明(20000文字まで)
+     * @type {string}
+     * @memberof V1LiveResponse
+     */
+    'description': string;
+    /**
+     * 生産者ID
+     * @type {string}
+     * @memberof V1LiveResponse
+     */
+    'producerId': string;
+    /**
+     * 生産者名
+     * @type {string}
+     * @memberof V1LiveResponse
+     */
+    'producerName': string;
+    /**
+     * ライブ開始日時
+     * @type {number}
+     * @memberof V1LiveResponse
+     */
+    'startAt': number;
+    /**
+     * ライブ終了日時
+     * @type {number}
+     * @memberof V1LiveResponse
+     */
+    'endAt': number;
+    /**
+     * 配信公開フラグ
+     * @type {boolean}
+     * @memberof V1LiveResponse
+     */
+    'published': boolean;
+    /**
+     * キャンセルフラグ
+     * @type {boolean}
+     * @memberof V1LiveResponse
+     */
+    'canceled': boolean;
+    /**
+     * 配信ステータス(0:不明,1:配信前,2:配信中,3:配信終了,4:配信中止)
+     * @type {number}
+     * @memberof V1LiveResponse
+     */
+    'status': number;
+    /**
+     * 
+     * @type {Array<V1LiveResponseProductsInner>}
+     * @memberof V1LiveResponse
+     */
+    'products': Array<V1LiveResponseProductsInner>;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof V1LiveResponse
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof V1LiveResponse
+     */
+    'updatedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface V1LiveResponseProductsInner
+ */
+export interface V1LiveResponseProductsInner {
+    /**
+     * 商品ID
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'id'?: string;
+    /**
+     * 商品名
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'name'?: string;
+    /**
+     * 商品説明
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'description'?: string;
+    /**
+     * 生産者ID
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'producerId'?: string;
+    /**
+     * 農家名
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'storeName'?: string;
+    /**
+     * 商品種別ID
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'categoryId'?: string;
+    /**
+     * 商品種別名
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'categoryName'?: string;
+    /**
+     * 品目ID
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'productTypeId'?: string;
+    /**
+     * 品目名
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'productTypeName'?: string;
+    /**
+     * アイコンURL
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'productTypeIconUrl'?: string;
+    /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'public'?: boolean;
+    /**
+     * 在庫数
+     * @type {number}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'inventory'?: number;
+    /**
+     * 重量(kg:少数第1位まで)
+     * @type {number}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'weight'?: number;
+    /**
+     * 数量単位
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'itemUnit'?: string;
+    /**
+     * 数量単位説明
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'itemDescription'?: string;
+    /**
+     * アイコンURL
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'iconUrl'?: string;
+    /**
+     * 
+     * @type {Array<V1LiveResponseProductsInnerMediaInner>}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'media'?: Array<V1LiveResponseProductsInnerMediaInner>;
+    /**
+     * 販売価格
+     * @type {number}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'price'?: number;
+    /**
+     * 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
+     * @type {number}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'deliveryType'?: number;
+    /**
+     * 箱の占有率(サイズ:60)
+     * @type {number}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'box60Rate'?: number;
+    /**
+     * 箱の占有率(サイズ:80)
+     * @type {number}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'box80Rate'?: number;
+    /**
+     * 箱の占有率(サイズ:100)
+     * @type {number}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'box100Rate'?: number;
+    /**
+     * 原産地(都道府県)
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'originPrefecture'?: string;
+    /**
+     * 原産地(市区町村)
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'originCity'?: string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'createdAt'?: number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'updatedAt'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface V1LiveResponseProductsInnerMediaInner
+ */
+export interface V1LiveResponseProductsInnerMediaInner {
+    /**
+     * メディアURL
+     * @type {string}
+     * @memberof V1LiveResponseProductsInnerMediaInner
+     */
+    'url': string;
+    /**
+     * サムネイルとして使用(1つまで)
+     * @type {boolean}
+     * @memberof V1LiveResponseProductsInnerMediaInner
+     */
+    'isThumbnail': boolean;
 }
 /**
  * 
