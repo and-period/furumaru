@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
@@ -287,6 +288,13 @@ func TestGetCoordinator(t *testing.T) {
 func TestCreateCoordinator(t *testing.T) {
 	t.Parallel()
 
+	thumbnailIn := &media.UploadFileInput{
+		URL: "https://and-period.jp/thumbnail.png",
+	}
+	headerIn := &media.UploadFileInput{
+		URL: "https://and-period.jp/header.png",
+	}
+
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -319,6 +327,8 @@ func TestCreateCoordinator(t *testing.T) {
 					AddressLine1:     "永田町1-7-1",
 					AddressLine2:     "",
 				}
+				mocks.media.EXPECT().UploadCoordinatorThumbnail(gomock.Any(), thumbnailIn).Return("https://and-period.jp/thumbnail.png", nil)
+				mocks.media.EXPECT().UploadCoordinatorHeader(gomock.Any(), headerIn).Return("https://and-period.jp/header.png", nil)
 				mocks.db.Coordinator.EXPECT().
 					Create(ctx, gomock.Any(), gomock.Any()).
 					DoAndReturn(func(ctx context.Context, coordinator *entity.Coordinator, auth func(ctx context.Context) error) error {
@@ -365,8 +375,8 @@ func TestCreateCoordinator(t *testing.T) {
 				FirstnameKana:    "すたっふ",
 				CompanyName:      "&.",
 				StoreName:        "&.農園",
-				ThumbnailURL:     "https://and-period.jp/thumbnail.png",
-				HeaderURL:        "https://and-period.jp/header.png",
+				ThumbnailURL:     "",
+				HeaderURL:        "",
 				TwitterAccount:   "twitter-id",
 				InstagramAccount: "instgram-id",
 				FacebookAccount:  "facebook-id",
@@ -387,6 +397,34 @@ func TestCreateCoordinator(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name: "failed to upload",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.media.EXPECT().UploadCoordinatorThumbnail(gomock.Any(), thumbnailIn).Return("", assert.AnError)
+				mocks.media.EXPECT().UploadCoordinatorHeader(gomock.Any(), headerIn).Return("", assert.AnError)
+			},
+			input: &user.CreateCoordinatorInput{
+				Lastname:         "&.",
+				Firstname:        "スタッフ",
+				LastnameKana:     "あんどぴりおど",
+				FirstnameKana:    "すたっふ",
+				CompanyName:      "&.",
+				StoreName:        "&.農園",
+				ThumbnailURL:     "https://and-period.jp/thumbnail.png",
+				HeaderURL:        "https://and-period.jp/header.png",
+				TwitterAccount:   "twitter-id",
+				InstagramAccount: "instgram-id",
+				FacebookAccount:  "facebook-id",
+				Email:            "test-admin@and-period.jp",
+				PhoneNumber:      "+819012345678",
+				PostalCode:       "1000014",
+				Prefecture:       "東京都",
+				City:             "千代田区",
+				AddressLine1:     "永田町1-7-1",
+				AddressLine2:     "",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+		{
 			name: "failed to create admin",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(errmock)
@@ -398,8 +436,8 @@ func TestCreateCoordinator(t *testing.T) {
 				FirstnameKana:    "すたっふ",
 				CompanyName:      "&.",
 				StoreName:        "&.農園",
-				ThumbnailURL:     "https://and-period.jp/thumbnail.png",
-				HeaderURL:        "https://and-period.jp/header.png",
+				ThumbnailURL:     "",
+				HeaderURL:        "",
 				TwitterAccount:   "twitter-id",
 				InstagramAccount: "instgram-id",
 				FacebookAccount:  "facebook-id",
@@ -427,6 +465,12 @@ func TestCreateCoordinator(t *testing.T) {
 func TestUpdateCoordinator(t *testing.T) {
 	t.Parallel()
 
+	thumbnailIn := &media.UploadFileInput{
+		URL: "https://and-period.jp/thumbnail.png",
+	}
+	headerIn := &media.UploadFileInput{
+		URL: "https://and-period.jp/header.png",
+	}
 	params := &database.UpdateCoordinatorParams{
 		Lastname:         "&.",
 		Firstname:        "スタッフ",
@@ -456,6 +500,8 @@ func TestUpdateCoordinator(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.media.EXPECT().UploadCoordinatorThumbnail(gomock.Any(), thumbnailIn).Return("https://and-period.jp/thumbnail.png", nil)
+				mocks.media.EXPECT().UploadCoordinatorHeader(gomock.Any(), headerIn).Return("https://and-period.jp/header.png", nil)
 				mocks.db.Coordinator.EXPECT().Update(ctx, "coordinator-id", params).Return(nil)
 			},
 			input: &user.UpdateCoordinatorInput{
@@ -487,9 +533,10 @@ func TestUpdateCoordinator(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to update coordinator",
+			name: "failed to upload",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Update(ctx, "coordinator-id", params).Return(errmock)
+				mocks.media.EXPECT().UploadCoordinatorThumbnail(gomock.Any(), thumbnailIn).Return("", assert.AnError)
+				mocks.media.EXPECT().UploadCoordinatorHeader(gomock.Any(), headerIn).Return("", assert.AnError)
 			},
 			input: &user.UpdateCoordinatorInput{
 				CoordinatorID:    "coordinator-id",
@@ -501,6 +548,36 @@ func TestUpdateCoordinator(t *testing.T) {
 				StoreName:        "&.農園",
 				ThumbnailURL:     "https://and-period.jp/thumbnail.png",
 				HeaderURL:        "https://and-period.jp/header.png",
+				TwitterAccount:   "twitter-id",
+				InstagramAccount: "instagram-id",
+				FacebookAccount:  "facebook-id",
+				PhoneNumber:      "+819012345678",
+				PostalCode:       "1000014",
+				Prefecture:       "東京都",
+				City:             "千代田区",
+				AddressLine1:     "永田町1-7-1",
+				AddressLine2:     "",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "failed to update coordinator",
+			setup: func(ctx context.Context, mocks *mocks) {
+				params := *params
+				params.ThumbnailURL = ""
+				params.HeaderURL = ""
+				mocks.db.Coordinator.EXPECT().Update(ctx, "coordinator-id", &params).Return(errmock)
+			},
+			input: &user.UpdateCoordinatorInput{
+				CoordinatorID:    "coordinator-id",
+				Lastname:         "&.",
+				Firstname:        "スタッフ",
+				LastnameKana:     "あんどぴりおど",
+				FirstnameKana:    "すたっふ",
+				CompanyName:      "&.株式会社",
+				StoreName:        "&.農園",
+				ThumbnailURL:     "",
+				HeaderURL:        "",
 				TwitterAccount:   "twitter-id",
 				InstagramAccount: "instagram-id",
 				FacebookAccount:  "facebook-id",

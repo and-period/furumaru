@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
@@ -281,6 +282,13 @@ func TestGetProducer(t *testing.T) {
 func TestCreateProducer(t *testing.T) {
 	t.Parallel()
 
+	thumbnailIn := &media.UploadFileInput{
+		URL: "https://and-period.jp/thumbnail.png",
+	}
+	headerIn := &media.UploadFileInput{
+		URL: "https://and-period.jp/header.png",
+	}
+
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -309,6 +317,8 @@ func TestCreateProducer(t *testing.T) {
 					AddressLine1: "永田町1-7-1",
 					AddressLine2: "",
 				}
+				mocks.media.EXPECT().UploadProducerThumbnail(gomock.Any(), thumbnailIn).Return("https://and-period.jp/thumbnail.png", nil)
+				mocks.media.EXPECT().UploadProducerHeader(gomock.Any(), headerIn).Return("https://and-period.jp/header.png", nil)
 				mocks.db.Producer.EXPECT().
 					Create(ctx, gomock.Any(), gomock.Any()).
 					DoAndReturn(func(ctx context.Context, producer *entity.Producer, auth func(ctx context.Context) error) error {
@@ -350,8 +360,8 @@ func TestCreateProducer(t *testing.T) {
 				LastnameKana:  "あんどぴりおど",
 				FirstnameKana: "すたっふ",
 				StoreName:     "&.農園",
-				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-				HeaderURL:     "https://and-period.jp/header.png",
+				ThumbnailURL:  "",
+				HeaderURL:     "",
 				Email:         "test-admin@and-period.jp",
 				PhoneNumber:   "+819012345678",
 				PostalCode:    "1000014",
@@ -369,9 +379,10 @@ func TestCreateProducer(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to create admin",
+			name: "failed to upload",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(errmock)
+				mocks.media.EXPECT().UploadProducerThumbnail(gomock.Any(), thumbnailIn).Return("", assert.AnError)
+				mocks.media.EXPECT().UploadProducerHeader(gomock.Any(), headerIn).Return("", assert.AnError)
 			},
 			input: &user.CreateProducerInput{
 				Lastname:      "&.",
@@ -381,6 +392,29 @@ func TestCreateProducer(t *testing.T) {
 				StoreName:     "&.農園",
 				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
 				HeaderURL:     "https://and-period.jp/header.png",
+				Email:         "test-admin@and-period.jp",
+				PhoneNumber:   "+819012345678",
+				PostalCode:    "1000014",
+				Prefecture:    "東京都",
+				City:          "千代田区",
+				AddressLine1:  "永田町1-7-1",
+				AddressLine2:  "",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "failed to create producer",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Producer.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(errmock)
+			},
+			input: &user.CreateProducerInput{
+				Lastname:      "&.",
+				Firstname:     "スタッフ",
+				LastnameKana:  "あんどぴりおど",
+				FirstnameKana: "すたっふ",
+				StoreName:     "&.農園",
+				ThumbnailURL:  "",
+				HeaderURL:     "",
 				Email:         "test-admin@and-period.jp",
 				PhoneNumber:   "+819012345678",
 				PostalCode:    "1000014",
@@ -405,6 +439,12 @@ func TestCreateProducer(t *testing.T) {
 func TestUpdateProducer(t *testing.T) {
 	t.Parallel()
 
+	thumbnailIn := &media.UploadFileInput{
+		URL: "https://and-period.jp/thumbnail.png",
+	}
+	headerIn := &media.UploadFileInput{
+		URL: "https://and-period.jp/header.png",
+	}
 	params := &database.UpdateProducerParams{
 		Lastname:      "&.",
 		Firstname:     "スタッフ",
@@ -430,6 +470,8 @@ func TestUpdateProducer(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.media.EXPECT().UploadProducerThumbnail(gomock.Any(), thumbnailIn).Return("https://and-period.jp/thumbnail.png", nil)
+				mocks.media.EXPECT().UploadProducerHeader(gomock.Any(), headerIn).Return("https://and-period.jp/header.png", nil)
 				mocks.db.Producer.EXPECT().Update(ctx, "producer-id", params).Return(nil)
 			},
 			input: &user.UpdateProducerInput{
@@ -457,9 +499,12 @@ func TestUpdateProducer(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to create admin",
+			name: "failed to update producer",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Update(ctx, "producer-id", params).Return(errmock)
+				params := *params
+				params.ThumbnailURL = ""
+				params.HeaderURL = ""
+				mocks.db.Producer.EXPECT().Update(ctx, "producer-id", &params).Return(errmock)
 			},
 			input: &user.UpdateProducerInput{
 				ProducerID:    "producer-id",
@@ -468,8 +513,8 @@ func TestUpdateProducer(t *testing.T) {
 				LastnameKana:  "あんどぴりおど",
 				FirstnameKana: "すたっふ",
 				StoreName:     "&.農園",
-				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-				HeaderURL:     "https://and-period.jp/header.png",
+				ThumbnailURL:  "",
+				HeaderURL:     "",
 				PhoneNumber:   "+819012345678",
 				PostalCode:    "1000014",
 				Prefecture:    "東京都",

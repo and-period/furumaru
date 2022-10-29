@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
@@ -65,6 +66,31 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
+	var thumbnailURL, headerURL string
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		if in.ThumbnailURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: in.ThumbnailURL,
+		}
+		thumbnailURL, err = s.media.UploadProducerThumbnail(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		if in.HeaderURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: in.HeaderURL,
+		}
+		headerURL, err = s.media.UploadProducerHeader(ectx, in)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		return nil, exception.InternalError(err)
+	}
 	cognitoID := uuid.Base58Encode(uuid.New())
 	password := random.NewStrings(size)
 	adminParams := &entity.NewAdminParams{
@@ -79,8 +105,8 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 	params := &entity.NewProducerParams{
 		Admin:        entity.NewAdmin(adminParams),
 		StoreName:    in.StoreName,
-		ThumbnailURL: in.ThumbnailURL,
-		HeaderURL:    in.HeaderURL,
+		ThumbnailURL: thumbnailURL,
+		HeaderURL:    headerURL,
 		PhoneNumber:  in.PhoneNumber,
 		PostalCode:   in.PostalCode,
 		Prefecture:   in.Prefecture,
@@ -109,14 +135,39 @@ func (s *service) UpdateProducer(ctx context.Context, in *user.UpdateProducerInp
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
+	var thumbnailURL, headerURL string
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		if in.ThumbnailURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: in.ThumbnailURL,
+		}
+		thumbnailURL, err = s.media.UploadProducerThumbnail(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		if in.HeaderURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: in.HeaderURL,
+		}
+		headerURL, err = s.media.UploadProducerHeader(ectx, in)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		return exception.InternalError(err)
+	}
 	params := &database.UpdateProducerParams{
 		Lastname:      in.Lastname,
 		Firstname:     in.Firstname,
 		LastnameKana:  in.LastnameKana,
 		FirstnameKana: in.FirstnameKana,
 		StoreName:     in.StoreName,
-		ThumbnailURL:  in.ThumbnailURL,
-		HeaderURL:     in.HeaderURL,
+		ThumbnailURL:  thumbnailURL,
+		HeaderURL:     headerURL,
 		PhoneNumber:   in.PhoneNumber,
 		PostalCode:    in.PostalCode,
 		Prefecture:    in.Prefecture,

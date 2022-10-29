@@ -6,6 +6,8 @@ import (
 	"sync"
 
 	v1 "github.com/and-period/furumaru/api/internal/gateway/user/v1/handler"
+	"github.com/and-period/furumaru/api/internal/media"
+	mediasrv "github.com/and-period/furumaru/api/internal/media/service"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database"
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
@@ -46,6 +48,7 @@ type params struct {
 	aws             aws.Config
 	secret          secret.Client
 	storage         storage.Bucket
+	tmpStorage      storage.Bucket
 	userAuth        cognito.Client
 	producer        sqs.Producer
 	slack           slack.Client
@@ -87,6 +90,10 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		Bucket: conf.S3Bucket,
 	}
 	params.storage = storage.NewBucket(awscfg, storageParams)
+	tmpStorageParams := &storage.Params{
+		Bucket: conf.S3TmpBucket,
+	}
+	params.tmpStorage = storage.NewBucket(awscfg, tmpStorageParams)
 
 	// Amazon Cognitoの設定
 	userAuthParams := &cognito.Params{
@@ -136,11 +143,15 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	params.userWebURL = userWebURL
 
 	// Serviceの設定
+	mediaService, err := newMediaService(params)
+	if err != nil {
+		return nil, err
+	}
 	messengerService, err := newMessengerService(params)
 	if err != nil {
 		return nil, err
 	}
-	userService, err := newUserService(params, messengerService)
+	userService, err := newUserService(params, mediaService, messengerService)
 	if err != nil {
 		return nil, err
 	}
@@ -243,6 +254,15 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 	return cli, nil
 }
 
+func newMediaService(p *params) (media.Service, error) {
+	params := &mediasrv.Params{
+		WaitGroup: p.waitGroup,
+		Storage:   p.storage,
+		Tmp:       p.tmpStorage,
+	}
+	return mediasrv.NewService(params, mediasrv.WithLogger(p.logger))
+}
+
 func newMessengerService(p *params) (messenger.Service, error) {
 	mysql, err := newDatabase("messengers", p)
 	if err != nil {
@@ -251,7 +271,7 @@ func newMessengerService(p *params) (messenger.Service, error) {
 	dbParams := &messengerdb.Params{
 		Database: mysql,
 	}
-	user, err := newUserService(p, nil)
+	user, err := newUserService(p, nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -266,7 +286,7 @@ func newMessengerService(p *params) (messenger.Service, error) {
 	return messengersrv.NewService(params, messengersrv.WithLogger(p.logger)), nil
 }
 
-func newUserService(p *params, messenger messenger.Service) (user.Service, error) {
+func newUserService(p *params, media media.Service, messenger messenger.Service) (user.Service, error) {
 	mysql, err := newDatabase("users", p)
 	if err != nil {
 		return nil, err
@@ -279,6 +299,7 @@ func newUserService(p *params, messenger messenger.Service) (user.Service, error
 		Database:  userdb.NewDatabase(dbParams),
 		UserAuth:  p.userAuth,
 		Messenger: messenger,
+		Media:     media,
 	}
 	return usersrv.NewService(params, usersrv.WithLogger(p.logger)), nil
 }
