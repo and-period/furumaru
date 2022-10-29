@@ -21,14 +21,12 @@ type Service interface {
 	GenerateProducerHeader(ctx context.Context, in *GenerateFileInput) (string, error)
 	// 生産者ヘッダー画像アップロード
 	UploadProducerHeader(ctx context.Context, in *UploadFileInput) (string, error)
-	// 商品画像を生成
-	GenerateProductImage(ctx context.Context, in *GenerateFileInput) (string, error)
-	// 商品画像アップロード
-	UploadProductImage(ctx context.Context, in *UploadFileInput) (string, error)
-	// 商品映像を生成
-	GenerateProductVideo(ctx context.Context, in *GenerateFileInput) (string, error)
-	// 商品映像アップロード
-	UploadProductVideo(ctx context.Context, in *UploadFileInput) (string, error)
+	// 商品メディア(画像)を生成
+	GenerateProductMediaImage(ctx context.Context, in *GenerateFileInput) (string, error)
+	// 商品メディア(映像)を生成
+	GenerateProductMediaVideo(ctx context.Context, in *GenerateFileInput) (string, error)
+	// 商品メディアアップロード
+	UploadProductMedia(ctx context.Context, in *UploadFileInput) (string, error)
 	// 品目アイコン画像を生成
 	GenerateProductTypeIcon(ctx context.Context, in *GenerateFileInput) (string, error)
 	// 品目アイコン画像アップロード

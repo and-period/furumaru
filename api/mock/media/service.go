@@ -95,19 +95,34 @@ func (mr *MockServiceMockRecorder) GenerateProducerThumbnail(ctx, in interface{}
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateProducerThumbnail", reflect.TypeOf((*MockService)(nil).GenerateProducerThumbnail), ctx, in)
 }
 
-// GenerateProductImage mocks base method.
-func (m *MockService) GenerateProductImage(ctx context.Context, in *media.GenerateFileInput) (string, error) {
+// GenerateProductMediaImage mocks base method.
+func (m *MockService) GenerateProductMediaImage(ctx context.Context, in *media.GenerateFileInput) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GenerateProductImage", ctx, in)
+	ret := m.ctrl.Call(m, "GenerateProductMediaImage", ctx, in)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GenerateProductImage indicates an expected call of GenerateProductImage.
-func (mr *MockServiceMockRecorder) GenerateProductImage(ctx, in interface{}) *gomock.Call {
+// GenerateProductMediaImage indicates an expected call of GenerateProductMediaImage.
+func (mr *MockServiceMockRecorder) GenerateProductMediaImage(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateProductImage", reflect.TypeOf((*MockService)(nil).GenerateProductImage), ctx, in)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateProductMediaImage", reflect.TypeOf((*MockService)(nil).GenerateProductMediaImage), ctx, in)
+}
+
+// GenerateProductMediaVideo mocks base method.
+func (m *MockService) GenerateProductMediaVideo(ctx context.Context, in *media.GenerateFileInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GenerateProductMediaVideo", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GenerateProductMediaVideo indicates an expected call of GenerateProductMediaVideo.
+func (mr *MockServiceMockRecorder) GenerateProductMediaVideo(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateProductMediaVideo", reflect.TypeOf((*MockService)(nil).GenerateProductMediaVideo), ctx, in)
 }
 
 // GenerateProductTypeIcon mocks base method.
@@ -123,21 +138,6 @@ func (m *MockService) GenerateProductTypeIcon(ctx context.Context, in *media.Gen
 func (mr *MockServiceMockRecorder) GenerateProductTypeIcon(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateProductTypeIcon", reflect.TypeOf((*MockService)(nil).GenerateProductTypeIcon), ctx, in)
-}
-
-// GenerateProductVideo mocks base method.
-func (m *MockService) GenerateProductVideo(ctx context.Context, in *media.GenerateFileInput) (string, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GenerateProductVideo", ctx, in)
-	ret0, _ := ret[0].(string)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GenerateProductVideo indicates an expected call of GenerateProductVideo.
-func (mr *MockServiceMockRecorder) GenerateProductVideo(ctx, in interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateProductVideo", reflect.TypeOf((*MockService)(nil).GenerateProductVideo), ctx, in)
 }
 
 // UploadCoordinatorHeader mocks base method.
@@ -200,19 +200,19 @@ func (mr *MockServiceMockRecorder) UploadProducerThumbnail(ctx, in interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadProducerThumbnail", reflect.TypeOf((*MockService)(nil).UploadProducerThumbnail), ctx, in)
 }
 
-// UploadProductImage mocks base method.
-func (m *MockService) UploadProductImage(ctx context.Context, in *media.UploadFileInput) (string, error) {
+// UploadProductMedia mocks base method.
+func (m *MockService) UploadProductMedia(ctx context.Context, in *media.UploadFileInput) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UploadProductImage", ctx, in)
+	ret := m.ctrl.Call(m, "UploadProductMedia", ctx, in)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// UploadProductImage indicates an expected call of UploadProductImage.
-func (mr *MockServiceMockRecorder) UploadProductImage(ctx, in interface{}) *gomock.Call {
+// UploadProductMedia indicates an expected call of UploadProductMedia.
+func (mr *MockServiceMockRecorder) UploadProductMedia(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadProductImage", reflect.TypeOf((*MockService)(nil).UploadProductImage), ctx, in)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadProductMedia", reflect.TypeOf((*MockService)(nil).UploadProductMedia), ctx, in)
 }
 
 // UploadProductTypeIcon mocks base method.
@@ -228,19 +228,4 @@ func (m *MockService) UploadProductTypeIcon(ctx context.Context, in *media.Uploa
 func (mr *MockServiceMockRecorder) UploadProductTypeIcon(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadProductTypeIcon", reflect.TypeOf((*MockService)(nil).UploadProductTypeIcon), ctx, in)
-}
-
-// UploadProductVideo mocks base method.
-func (m *MockService) UploadProductVideo(ctx context.Context, in *media.UploadFileInput) (string, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UploadProductVideo", ctx, in)
-	ret0, _ := ret[0].(string)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// UploadProductVideo indicates an expected call of UploadProductVideo.
-func (mr *MockServiceMockRecorder) UploadProductVideo(ctx, in interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadProductVideo", reflect.TypeOf((*MockService)(nil).UploadProductVideo), ctx, in)
 }

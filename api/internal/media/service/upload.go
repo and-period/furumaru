@@ -27,12 +27,8 @@ func (s *service) UploadProducerHeader(ctx context.Context, in *media.UploadFile
 	return s.uploadFile(ctx, in, entity.ProducerHeaderPath)
 }
 
-func (s *service) UploadProductImage(ctx context.Context, in *media.UploadFileInput) (string, error) {
-	return s.uploadFile(ctx, in, entity.ProductImagePath)
-}
-
-func (s *service) UploadProductVideo(ctx context.Context, in *media.UploadFileInput) (string, error) {
-	return s.uploadFile(ctx, in, entity.ProductVideoPath)
+func (s *service) UploadProductMedia(ctx context.Context, in *media.UploadFileInput) (string, error) {
+	return s.uploadFile(ctx, in, entity.ProductMediaPath)
 }
 
 func (s *service) UploadProductTypeIcon(ctx context.Context, in *media.UploadFileInput) (string, error) {
@@ -45,16 +41,16 @@ func (s *service) uploadFile(ctx context.Context, in *media.UploadFileInput, pre
 	}
 	u, err := s.parseURL(in, prefix)
 	if err != nil {
-		return "", exception.InternalError(err)
+		return "", fmt.Errorf("%s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	var path string
 	switch u.Host {
-	case s.tempHost:
+	case s.tmpURL().Host:
 		path, err = s.uploadPermanentFile(ctx, u)
-	case s.storageHost:
+	case s.storageURL().Host:
 		path, err = s.downloadFile(ctx, u)
 	default:
-		err = fmt.Errorf("service: unknown file: %w", exception.ErrInvalidArgument)
+		err = fmt.Errorf("service: unknown storage host: %w", exception.ErrInvalidArgument)
 	}
 	return path, exception.InternalError(err)
 }
@@ -62,27 +58,25 @@ func (s *service) uploadFile(ctx context.Context, in *media.UploadFileInput, pre
 func (s *service) parseURL(in *media.UploadFileInput, prefix string) (*url.URL, error) {
 	u, err := url.Parse(in.URL)
 	if err != nil {
-		return nil, fmt.Errorf("service: failed to parse url. err=%s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, fmt.Errorf("%w: %s", errParseURL, err.Error())
 	}
 	if !strings.Contains(u.Path, prefix) {
-		return nil, fmt.Errorf("service: invalid url. url=%s: %w", in.URL, exception.ErrInvalidArgument)
+		return nil, fmt.Errorf("%w. url=%s", errInvalidURL, in.URL)
 	}
 	return u, nil
 }
 
 func (s *service) uploadPermanentFile(ctx context.Context, u *url.URL) (string, error) {
-	file, err := s.temp.Download(ctx, u.String())
+	file, err := s.tmp.Download(ctx, u.Path)
 	if err != nil {
 		return "", err
 	}
-	u.Host = s.storageHost
-	return s.storage.Upload(ctx, u.String(), file)
+	return s.storage.Upload(ctx, u.Path, file)
 }
 
 func (s *service) downloadFile(ctx context.Context, u *url.URL) (string, error) {
-	path := u.String()
-	if _, err := s.storage.Download(ctx, path); err != nil {
+	if _, err := s.storage.Download(ctx, u.Path); err != nil {
 		return "", err
 	}
-	return path, nil
+	return u.String(), nil
 }

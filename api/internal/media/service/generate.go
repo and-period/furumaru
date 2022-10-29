@@ -27,16 +27,16 @@ func (s *service) GenerateProducerHeader(ctx context.Context, in *media.Generate
 	return s.generateFile(ctx, in, entity.ProducerHeaderRegulation)
 }
 
-func (s *service) GenerateProductImage(ctx context.Context, in *media.GenerateFileInput) (string, error) {
-	return s.generateFile(ctx, in, entity.ProductImageRegulation)
+func (s *service) GenerateProductMediaImage(ctx context.Context, in *media.GenerateFileInput) (string, error) {
+	return s.generateFile(ctx, in, entity.ProductMediaImageRegulation)
 }
 
-func (s *service) GenerateProductVideo(ctx context.Context, in *media.GenerateFileInput) (string, error) {
-	return s.generateFile(ctx, in, entity.ProductVideoRegulation)
+func (s *service) GenerateProductMediaVideo(ctx context.Context, in *media.GenerateFileInput) (string, error) {
+	return s.generateFile(ctx, in, entity.ProductMediaVideoRegulation)
 }
 
 func (s *service) GenerateProductTypeIcon(ctx context.Context, in *media.GenerateFileInput) (string, error) {
-	return s.generateFile(ctx, in, entity.ProductTypeIconPathRegulation)
+	return s.generateFile(ctx, in, entity.ProductTypeIconRegulation)
 }
 
 func (s *service) generateFile(
@@ -51,6 +51,6 @@ func (s *service) generateFile(
 		return "", fmt.Errorf("%w: %s", exception.ErrInvalidArgument, err.Error())
 	}
 	path := reg.GenerateFilePath(in.Header)
-	url, err := s.temp.Upload(ctx, path, in.File)
+	url, err := s.tmp.Upload(ctx, path, in.File)
 	return url, exception.InternalError(err)
 }

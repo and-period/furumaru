@@ -100,7 +100,7 @@ func TestSet_Add(t *testing.T) {
 
 func TestSet_FindOrAdd(t *testing.T) {
 	t.Parallel()
-	set := New[int64](4)
+	set := NewEmpty[int64](4)
 	actual, exists := set.FindOrAdd(1)
 	assert.False(t, exists)
 	assert.ElementsMatch(t, []int64{1}, actual.Slice())

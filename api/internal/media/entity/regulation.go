@@ -23,8 +23,9 @@ const (
 	CoordinatorHeaderPath    = "coordinators/header"    // 仲介者ヘッダー画像
 	ProducerThumbnailPath    = "producers/thumbnail"    // 生産者サムネイル画像
 	ProducerHeaderPath       = "producers/header"       // 生産者ヘッダー画像
-	ProductImagePath         = "products/image"         // 商品画像
-	ProductVideoPath         = "products/video"         // 商品動画
+	ProductMediaPath         = "products/media"         // 商品メディア
+	ProductMediaImagePath    = "products/media/image"   // 商品メディア(画像)
+	ProductMediaVideoPath    = "products/media/video"   // 商品メディア(映像)
 	ProductTypeIconPath      = "product-types/icon"     // 品目アイコン
 )
 
@@ -56,17 +57,17 @@ var (
 		Formats: set.New("image/png", "image/jpeg"),
 		dir:     ProducerHeaderPath,
 	}
-	ProductImageRegulation = &Regulation{
+	ProductMediaImageRegulation = &Regulation{
 		MaxSize: 10 << 20, // 10MB
 		Formats: set.New("image/png", "image/jpeg"),
-		dir:     ProductImagePath,
+		dir:     ProductMediaImagePath,
 	}
-	ProductVideoRegulation = &Regulation{
+	ProductMediaVideoRegulation = &Regulation{
 		MaxSize: 200 << 20, // 200MB
 		Formats: set.New("video/mp4"),
-		dir:     ProductVideoPath,
+		dir:     ProductMediaVideoPath,
 	}
-	ProductTypeIconPathRegulation = &Regulation{
+	ProductTypeIconRegulation = &Regulation{
 		MaxSize: 10 << 20, // 10MB
 		Formats: set.New("image/png", "image/jpeg"),
 		dir:     ProductTypeIconPath,
@@ -74,6 +75,9 @@ var (
 )
 
 func (r *Regulation) Validate(file io.Reader, header *multipart.FileHeader) error {
+	if file == nil || header == nil {
+		return fmt.Errorf("entity: file and header is required: %w", ErrInvalidFileFormat)
+	}
 	if !r.validateSize(header) {
 		return fmt.Errorf("%w: size=%d", ErrTooLargeFileSize, header.Size)
 	}
