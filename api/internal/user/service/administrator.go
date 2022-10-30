@@ -191,9 +191,13 @@ func (s *service) createCognitoAdmin(cognitoID, email, password string) func(con
 	}
 }
 
-func (s *service) deleteCognitoAdmin(cognitoID string) func(context.Context) error {
+func (s *service) deleteCognitoAdmin(adminID string) func(context.Context) error {
 	return func(ctx context.Context) error {
-		return s.adminAuth.DeleteUser(ctx, cognitoID)
+		admin, err := s.db.Admin.Get(ctx, adminID, "cognito_id")
+		if err != nil {
+			return err
+		}
+		return s.adminAuth.DeleteUser(ctx, admin.CognitoID)
 	}
 }
 
