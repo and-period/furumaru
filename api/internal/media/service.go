@@ -5,13 +5,13 @@ package media
 import "context"
 
 type Service interface {
-	// 仲介者サムネイル画像を生成
+	// コーディネータサムネイル画像を生成
 	GenerateCoordinatorThumbnail(ctx context.Context, in *GenerateFileInput) (string, error)
-	// 仲介者サムネイル画像アップロード
+	// コーディネータサムネイル画像アップロード
 	UploadCoordinatorThumbnail(ctx context.Context, in *UploadFileInput) (string, error)
-	// 仲介者ヘッダー画像を生成
+	// コーディネータヘッダー画像を生成
 	GenerateCoordinatorHeader(ctx context.Context, in *GenerateFileInput) (string, error)
-	// 仲介者ヘッダー画像アップロード
+	// コーディネータヘッダー画像アップロード
 	UploadCoordinatorHeader(ctx context.Context, in *UploadFileInput) (string, error)
 	// 生産者サムネイル画像を生成
 	GenerateProducerThumbnail(ctx context.Context, in *GenerateFileInput) (string, error)

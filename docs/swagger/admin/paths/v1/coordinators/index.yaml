@@ -1,5 +1,5 @@
 get:
-  summary: 仲介者一覧取得
+  summary: コーディネータ一覧取得
   operationId: v1ListCoordinators
   tags:
   - Coordinator
@@ -30,7 +30,7 @@ get:
           schema:
             $ref: './../../../openapi.yaml#/components/schemas/v1CoordinatorsResponse'
 post:
-  summary: 仲介者登録
+  summary: コーディネータ登録
   operationId: v1CreateCoordinator
   tags:
   - Coordinator

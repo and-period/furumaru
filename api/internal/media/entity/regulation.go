@@ -19,8 +19,8 @@ var (
 )
 
 const (
-	CoordinatorThumbnailPath = "coordinators/thumbnail" // 仲介者サムネイル画像
-	CoordinatorHeaderPath    = "coordinators/header"    // 仲介者ヘッダー画像
+	CoordinatorThumbnailPath = "coordinators/thumbnail" // コーディネータサムネイル画像
+	CoordinatorHeaderPath    = "coordinators/header"    // コーディネータヘッダー画像
 	ProducerThumbnailPath    = "producers/thumbnail"    // 生産者サムネイル画像
 	ProducerHeaderPath       = "producers/header"       // 生産者ヘッダー画像
 	ProductMediaPath         = "products/media"         // 商品メディア

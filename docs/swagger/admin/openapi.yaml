@@ -12,7 +12,7 @@ tags:
 - name: Administrator
   description: システム管理者関連
 - name: Coordinator
-  description: 仲介者関連
+  description: コーディネータ関連
 - name: Producer
   description: 生産者関連
 - name: Category

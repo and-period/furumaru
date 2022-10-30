@@ -7,7 +7,7 @@ authResponse:
     role:
       type: integer
       format: int32
-      description: 権限(1:システム管理者,2:仲介者,3:生産者)
+      description: 権限(1:システム管理者,2:コーディネータ,3:生産者)
     accessToken:
       type: string
       description: アクセストークン

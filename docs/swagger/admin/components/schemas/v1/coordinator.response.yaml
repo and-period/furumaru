@@ -3,7 +3,7 @@ coordinatorResponse:
   properties:
     id:
       type: string
-      description: 仲介者ID
+      description: コーディネータID
     lastname:
       type: string
       description: 姓
@@ -114,13 +114,13 @@ coordinatorsResponse:
   properties:
     coordinators:
       type: array
-      description: 仲介者一覧
+      description: コーディネータ一覧
       items:
         type: object
         properties:
           id:
             type: string
-            description: 仲介者ID
+            description: コーディネータID
           lastname:
             type: string
             description: 姓
