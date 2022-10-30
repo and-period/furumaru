@@ -51,14 +51,11 @@ func NewService(params *Params, opts ...Option) (media.Service, error) {
 	for i := range opts {
 		opts[i](dopts)
 	}
-	if params.Tmp == nil || params.Storage == nil {
-		return nil, errors.New("tmp and storage is required")
-	}
-	turl, err := url.Parse(params.Tmp.GetFQDN())
+	turl, err := params.Tmp.GetHost()
 	if err != nil {
 		return nil, err
 	}
-	surl, err := url.Parse(params.Storage.GetFQDN())
+	surl, err := params.Storage.GetHost()
 	if err != nil {
 		return nil, err
 	}

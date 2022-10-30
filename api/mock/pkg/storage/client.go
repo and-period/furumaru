@@ -7,6 +7,7 @@ package mock_storage
 import (
 	context "context"
 	io "io"
+	url "net/url"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -66,11 +67,12 @@ func (mr *MockBucketMockRecorder) DownloadAndReadAll(ctx, url interface{}) *gomo
 }
 
 // GenerateObjectURL mocks base method.
-func (m *MockBucket) GenerateObjectURL(path string) string {
+func (m *MockBucket) GenerateObjectURL(path string) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GenerateObjectURL", path)
 	ret0, _ := ret[0].(string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // GenerateObjectURL indicates an expected call of GenerateObjectURL.
@@ -91,6 +93,21 @@ func (m *MockBucket) GetFQDN() string {
 func (mr *MockBucketMockRecorder) GetFQDN() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFQDN", reflect.TypeOf((*MockBucket)(nil).GetFQDN))
+}
+
+// GetHost mocks base method.
+func (m *MockBucket) GetHost() (*url.URL, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetHost")
+	ret0, _ := ret[0].(*url.URL)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetHost indicates an expected call of GetHost.
+func (mr *MockBucketMockRecorder) GetHost() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHost", reflect.TypeOf((*MockBucket)(nil).GetHost))
 }
 
 // Upload mocks base method.
