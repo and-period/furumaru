@@ -1,5 +1,5 @@
 post:
-  summary: 生産者と仲介者を関連付け
+  summary: 生産者とコーディネータを関連付け
   operationId: v1RelatedProducer
   tags:
   - Producer
@@ -50,7 +50,7 @@ post:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
 delete:
-  summary: 生産者と仲介者の関連付けを解除
+  summary: 生産者とコーディネータの関連付けを解除
   operationId: v1UnrelatedProducer
   tags:
   - Producer

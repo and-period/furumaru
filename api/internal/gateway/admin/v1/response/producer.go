@@ -3,7 +3,7 @@ package response
 // Producer - 生産者情報
 type Producer struct {
 	ID            string `json:"id"`            // 生産者ID
-	CoordinatorID string `json:"coordinatorId"` // 担当仲介者ID
+	CoordinatorID string `json:"coordinatorId"` // 担当コーディネータID
 	Lastname      string `json:"lastname"`      // 姓
 	Firstname     string `json:"firstname"`     // 名
 	LastnameKana  string `json:"lastnameKana"`  // 姓(かな)

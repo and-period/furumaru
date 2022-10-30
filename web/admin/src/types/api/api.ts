@@ -175,7 +175,7 @@ export interface AuthResponse {
      */
     'adminId': string;
     /**
-     * 権限(1:システム管理者,2:仲介者,3:生産者)
+     * 権限(1:システム管理者,2:コーディネータ,3:生産者)
      * @type {number}
      * @memberof AuthResponse
      */
@@ -458,7 +458,7 @@ export interface ContactsResponseContactsInner {
  */
 export interface CoordinatorResponse {
     /**
-     * 仲介者ID
+     * コーディネータID
      * @type {string}
      * @memberof CoordinatorResponse
      */
@@ -591,7 +591,7 @@ export interface CoordinatorResponse {
  */
 export interface CoordinatorsResponse {
     /**
-     * 仲介者一覧
+     * コーディネータ一覧
      * @type {Array<CoordinatorsResponseCoordinatorsInner>}
      * @memberof CoordinatorsResponse
      */
@@ -610,7 +610,7 @@ export interface CoordinatorsResponse {
  */
 export interface CoordinatorsResponseCoordinatorsInner {
     /**
-     * 仲介者ID
+     * コーディネータID
      * @type {string}
      * @memberof CoordinatorsResponseCoordinatorsInner
      */
@@ -2195,7 +2195,7 @@ export interface ProducerResponse {
      */
     'id': string;
     /**
-     * 担当仲介者ID
+     * 担当コーディネータID
      * @type {string}
      * @memberof ProducerResponse
      */
@@ -2329,7 +2329,7 @@ export interface ProducersResponseProducersInner {
      */
     'id': string;
     /**
-     * 担当仲介者ID
+     * 担当コーディネータID
      * @type {string}
      * @memberof ProducersResponseProducersInner
      */
@@ -3122,7 +3122,7 @@ export interface RegisterAuthDeviceRequest {
  */
 export interface RelatedProducerRequest {
     /**
-     * 関連付ける仲介者ID
+     * 関連付けるコーディネータID
      * @type {string}
      * @memberof RelatedProducerRequest
      */
@@ -6043,7 +6043,7 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
     return {
         /**
          * 
-         * @summary 仲介者登録
+         * @summary コーディネータ登録
          * @param {CreateCoordinatorRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6083,8 +6083,8 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
-         * @summary 仲介者退会
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータ退会
+         * @param {string} coordinatorId コーディネータID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6121,8 +6121,8 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
-         * @summary 仲介者取得
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータ取得
+         * @param {string} coordinatorId コーディネータID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6159,7 +6159,7 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
-         * @summary 仲介者一覧取得
+         * @summary コーディネータ一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {*} [options] Override http request option.
@@ -6203,8 +6203,8 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
-         * @summary 仲介者更新
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータ更新
+         * @param {string} coordinatorId コーディネータID
          * @param {UpdateCoordinatorRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6247,8 +6247,8 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
-         * @summary 仲介者メールアドレス更新
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータメールアドレス更新
+         * @param {string} coordinatorId コーディネータID
          * @param {UpdateCoordinatorEmailRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6291,8 +6291,8 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
-         * @summary 仲介者パスワード更新(ランダム生成)
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータパスワード更新(ランダム生成)
+         * @param {string} coordinatorId コーディネータID
          * @param {object} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6335,8 +6335,8 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
-         * @summary 仲介者ヘッダー画像アップロード
-         * @param {any} [image] 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
+         * @summary コーディネータヘッダー画像アップロード
+         * @param {any} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6378,8 +6378,8 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
-         * @summary 仲介者サムネイルアップロード
-         * @param {any} [thumbnail] 仲介者サムネイル(png,jpeg形式,10MBまで)
+         * @summary コーディネータサムネイルアップロード
+         * @param {any} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6431,7 +6431,7 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary 仲介者登録
+         * @summary コーディネータ登録
          * @param {CreateCoordinatorRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6442,8 +6442,8 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 仲介者退会
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータ退会
+         * @param {string} coordinatorId コーディネータID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6453,8 +6453,8 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 仲介者取得
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータ取得
+         * @param {string} coordinatorId コーディネータID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6464,7 +6464,7 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 仲介者一覧取得
+         * @summary コーディネータ一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {*} [options] Override http request option.
@@ -6476,8 +6476,8 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 仲介者更新
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータ更新
+         * @param {string} coordinatorId コーディネータID
          * @param {UpdateCoordinatorRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6488,8 +6488,8 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 仲介者メールアドレス更新
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータメールアドレス更新
+         * @param {string} coordinatorId コーディネータID
          * @param {UpdateCoordinatorEmailRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6500,8 +6500,8 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 仲介者パスワード更新(ランダム生成)
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータパスワード更新(ランダム生成)
+         * @param {string} coordinatorId コーディネータID
          * @param {object} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6512,8 +6512,8 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 仲介者ヘッダー画像アップロード
-         * @param {any} [image] 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
+         * @summary コーディネータヘッダー画像アップロード
+         * @param {any} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6523,8 +6523,8 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 仲介者サムネイルアップロード
-         * @param {any} [thumbnail] 仲介者サムネイル(png,jpeg形式,10MBまで)
+         * @summary コーディネータサムネイルアップロード
+         * @param {any} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6544,7 +6544,7 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
     return {
         /**
          * 
-         * @summary 仲介者登録
+         * @summary コーディネータ登録
          * @param {CreateCoordinatorRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6554,8 +6554,8 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
-         * @summary 仲介者退会
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータ退会
+         * @param {string} coordinatorId コーディネータID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6564,8 +6564,8 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
-         * @summary 仲介者取得
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータ取得
+         * @param {string} coordinatorId コーディネータID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6574,7 +6574,7 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
-         * @summary 仲介者一覧取得
+         * @summary コーディネータ一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {*} [options] Override http request option.
@@ -6585,8 +6585,8 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
-         * @summary 仲介者更新
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータ更新
+         * @param {string} coordinatorId コーディネータID
          * @param {UpdateCoordinatorRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6596,8 +6596,8 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
-         * @summary 仲介者メールアドレス更新
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータメールアドレス更新
+         * @param {string} coordinatorId コーディネータID
          * @param {UpdateCoordinatorEmailRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6607,8 +6607,8 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
-         * @summary 仲介者パスワード更新(ランダム生成)
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータパスワード更新(ランダム生成)
+         * @param {string} coordinatorId コーディネータID
          * @param {object} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6618,8 +6618,8 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
-         * @summary 仲介者ヘッダー画像アップロード
-         * @param {any} [image] 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
+         * @summary コーディネータヘッダー画像アップロード
+         * @param {any} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6628,8 +6628,8 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
-         * @summary 仲介者サムネイルアップロード
-         * @param {any} [thumbnail] 仲介者サムネイル(png,jpeg形式,10MBまで)
+         * @summary コーディネータサムネイルアップロード
+         * @param {any} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6648,7 +6648,7 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
 export class CoordinatorApi extends BaseAPI {
     /**
      * 
-     * @summary 仲介者登録
+     * @summary コーディネータ登録
      * @param {CreateCoordinatorRequest} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6660,8 +6660,8 @@ export class CoordinatorApi extends BaseAPI {
 
     /**
      * 
-     * @summary 仲介者退会
-     * @param {string} coordinatorId 仲介者ID
+     * @summary コーディネータ退会
+     * @param {string} coordinatorId コーディネータID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CoordinatorApi
@@ -6672,8 +6672,8 @@ export class CoordinatorApi extends BaseAPI {
 
     /**
      * 
-     * @summary 仲介者取得
-     * @param {string} coordinatorId 仲介者ID
+     * @summary コーディネータ取得
+     * @param {string} coordinatorId コーディネータID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CoordinatorApi
@@ -6684,7 +6684,7 @@ export class CoordinatorApi extends BaseAPI {
 
     /**
      * 
-     * @summary 仲介者一覧取得
+     * @summary コーディネータ一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
@@ -6697,8 +6697,8 @@ export class CoordinatorApi extends BaseAPI {
 
     /**
      * 
-     * @summary 仲介者更新
-     * @param {string} coordinatorId 仲介者ID
+     * @summary コーディネータ更新
+     * @param {string} coordinatorId コーディネータID
      * @param {UpdateCoordinatorRequest} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6710,8 +6710,8 @@ export class CoordinatorApi extends BaseAPI {
 
     /**
      * 
-     * @summary 仲介者メールアドレス更新
-     * @param {string} coordinatorId 仲介者ID
+     * @summary コーディネータメールアドレス更新
+     * @param {string} coordinatorId コーディネータID
      * @param {UpdateCoordinatorEmailRequest} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6723,8 +6723,8 @@ export class CoordinatorApi extends BaseAPI {
 
     /**
      * 
-     * @summary 仲介者パスワード更新(ランダム生成)
-     * @param {string} coordinatorId 仲介者ID
+     * @summary コーディネータパスワード更新(ランダム生成)
+     * @param {string} coordinatorId コーディネータID
      * @param {object} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6736,8 +6736,8 @@ export class CoordinatorApi extends BaseAPI {
 
     /**
      * 
-     * @summary 仲介者ヘッダー画像アップロード
-     * @param {any} [image] 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
+     * @summary コーディネータヘッダー画像アップロード
+     * @param {any} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CoordinatorApi
@@ -6748,8 +6748,8 @@ export class CoordinatorApi extends BaseAPI {
 
     /**
      * 
-     * @summary 仲介者サムネイルアップロード
-     * @param {any} [thumbnail] 仲介者サムネイル(png,jpeg形式,10MBまで)
+     * @summary コーディネータサムネイルアップロード
+     * @param {any} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CoordinatorApi
@@ -7764,7 +7764,7 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
-         * @summary 生産者と仲介者を関連付け
+         * @summary 生産者とコーディネータを関連付け
          * @param {string} producerId 生産者ID
          * @param {RelatedProducerRequest} body 
          * @param {*} [options] Override http request option.
@@ -7808,7 +7808,7 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
-         * @summary 生産者と仲介者の関連付けを解除
+         * @summary 生産者とコーディネータの関連付けを解除
          * @param {string} producerId 生産者ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -8118,7 +8118,7 @@ export const ProducerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 生産者と仲介者を関連付け
+         * @summary 生産者とコーディネータを関連付け
          * @param {string} producerId 生産者ID
          * @param {RelatedProducerRequest} body 
          * @param {*} [options] Override http request option.
@@ -8130,7 +8130,7 @@ export const ProducerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 生産者と仲介者の関連付けを解除
+         * @summary 生産者とコーディネータの関連付けを解除
          * @param {string} producerId 生産者ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -8251,7 +8251,7 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
-         * @summary 生産者と仲介者を関連付け
+         * @summary 生産者とコーディネータを関連付け
          * @param {string} producerId 生産者ID
          * @param {RelatedProducerRequest} body 
          * @param {*} [options] Override http request option.
@@ -8262,7 +8262,7 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
-         * @summary 生産者と仲介者の関連付けを解除
+         * @summary 生産者とコーディネータの関連付けを解除
          * @param {string} producerId 生産者ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -8385,7 +8385,7 @@ export class ProducerApi extends BaseAPI {
 
     /**
      * 
-     * @summary 生産者と仲介者を関連付け
+     * @summary 生産者とコーディネータを関連付け
      * @param {string} producerId 生産者ID
      * @param {RelatedProducerRequest} body 
      * @param {*} [options] Override http request option.
@@ -8398,7 +8398,7 @@ export class ProducerApi extends BaseAPI {
 
     /**
      * 
-     * @summary 生産者と仲介者の関連付けを解除
+     * @summary 生産者とコーディネータの関連付けを解除
      * @param {string} producerId 生産者ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}

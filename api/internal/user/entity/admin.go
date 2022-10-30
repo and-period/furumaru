@@ -18,7 +18,7 @@ type AdminRole int32
 const (
 	AdminRoleUnknown       AdminRole = 0
 	AdminRoleAdministrator AdminRole = 1 // 管理者
-	AdminRoleCoordinator   AdminRole = 2 // 仲介者
+	AdminRoleCoordinator   AdminRole = 2 // コーディネータ
 	AdminRoleProducer      AdminRole = 3 // 生産者
 )
 

@@ -17,7 +17,7 @@ const (
 	PostTargetUnknown      TargetType = 0
 	PostTargetUsers        TargetType = 1 // ユーザー対象
 	PostTargetProducers    TargetType = 2 // 生産者対象
-	PostTargetCoordinators TargetType = 3 // コーディネーター対象
+	PostTargetCoordinators TargetType = 3 // コーディネータ対象
 )
 
 var targetUsers = []int32{

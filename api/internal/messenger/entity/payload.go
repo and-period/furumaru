@@ -17,9 +17,9 @@ type UserType int32
 const (
 	UserTypeNone          UserType = 0
 	UserTypeUser          UserType = 1 // 購入者
-	UserTypeAdmin         UserType = 2 // 管理者(システム管理者,仲介者,生産者)
+	UserTypeAdmin         UserType = 2 // 管理者(システム管理者,コーディネータ,生産者)
 	UserTypeAdministrator UserType = 3 // システム管理者
-	UserTypeCoordinator   UserType = 4 // 仲介者
+	UserTypeCoordinator   UserType = 4 // コーディネータ
 	UserTypeProducer      UserType = 5 // 生産者
 	UserTypeGuest         UserType = 6 // 未登録ユーザー
 )
