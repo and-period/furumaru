@@ -1,16 +1,20 @@
 <template>
-  <the-producer-edit-form-page
-    :form-data="formData"
-    :form-data-loading="fetchState.pending"
-    :thumbnail-upload-status="thumbnailUploadStatus"
-    :header-upload-status="headerUploadStatus"
-    :search-loading="searchLoading"
-    :search-error-message="searchErrorMessage"
-    @update:thumbnailFile="handleUpdateThumbnail"
-    @update:headerFile="handleUpdateHeader"
-    @submit="handleSubmit"
-    @click:search="searchAddress"
-  />
+  <div>
+    <v-alert v-model="isShow" :type="alertType" v-text="alertText" />
+
+    <the-producer-edit-form-page
+      :form-data="formData"
+      :form-data-loading="fetchState.pending"
+      :thumbnail-upload-status="thumbnailUploadStatus"
+      :header-upload-status="headerUploadStatus"
+      :search-loading="searchLoading"
+      :search-error-message="searchErrorMessage"
+      @update:thumbnailFile="handleUpdateThumbnail"
+      @update:headerFile="handleUpdateHeader"
+      @submit="handleSubmit"
+      @click:search="searchAddress"
+    />
+  </div>
 </template>
 
 <script lang="ts">
@@ -19,21 +23,27 @@ import {
   reactive,
   useFetch,
   useRoute,
+  useRouter,
 } from '@nuxtjs/composition-api'
 
-import { useSearchAddress } from '~/lib/hooks'
+import { useAlert, useSearchAddress } from '~/lib/hooks'
+import { useCommonStore } from '~/store/common'
 import { useProducerStore } from '~/store/producer'
 import { ProducerResponse } from '~/types/api'
+import { ApiBaseError } from '~/types/exception'
 import { ImageUploadStatus } from '~/types/props'
 
 export default defineComponent({
   setup() {
     const route = useRoute()
+    const router = useRouter()
     const id = route.value.params.id
 
     const { getProducer } = useProducerStore()
+    const { addSnackbar } = useCommonStore()
 
-    const { uploadProducerThumbnail, uploadProducerHeader } = useProducerStore()
+    const { uploadProducerThumbnail, uploadProducerHeader, updateProducer } =
+      useProducerStore()
 
     const thumbnailUploadStatus = reactive<ImageUploadStatus>({
       error: false,
@@ -44,6 +54,8 @@ export default defineComponent({
       error: false,
       message: '',
     })
+
+    const { alertType, isShow, alertText, show } = useAlert('error')
 
     const formData = reactive<ProducerResponse>({
       id,
@@ -130,21 +142,40 @@ export default defineComponent({
       }
     }
 
-    const handleSubmit = () => {
-      console.log('未実装')
+    const handleSubmit = async () => {
+      try {
+        await updateProducer(id, formData)
+        addSnackbar({
+          color: 'info',
+          message: `${formData.storeName}を更新しました。`,
+        })
+        router.push('/producers')
+      } catch (error) {
+        if (error instanceof ApiBaseError) {
+          show(error.message)
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+          })
+        }
+      }
     }
 
     return {
       id,
       fetchState,
       formData,
-      handleUpdateThumbnail,
-      handleUpdateHeader,
-      thumbnailUploadStatus,
-      headerUploadStatus,
-      searchAddress,
       searchLoading,
       searchErrorMessage,
+      alertType,
+      isShow,
+      alertText,
+      // 関数
+      searchAddress,
+      thumbnailUploadStatus,
+      headerUploadStatus,
+      handleUpdateHeader,
+      handleUpdateThumbnail,
       handleSubmit,
     }
   },
