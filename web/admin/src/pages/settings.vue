@@ -27,12 +27,6 @@ export default defineComponent({
     const menuList = ref<{ text: string; onClick: Function; class?: string }[]>(
       [
         {
-          text: 'コーディネーター登録',
-          onClick: () => {
-            router.push('/coordinator/add')
-          },
-        },
-        {
           text: 'カテゴリー・品目登録',
           onClick: () => {
             router.push('/categories')
