@@ -9,6 +9,16 @@
       @update:items-per-page="handleUpdateItemsPerPage"
       @update:page="handleUpdatePage"
     >
+      <template #[`item.icon`]="{ item }">
+        <v-avatar>
+          <img
+            v-if="item.iconlUrl !== ''"
+            :src="item.iconUrl"
+            :alt="`${item.categoryName}-profile`"
+          />
+          <v-icon v-else>mdi-account</v-icon>
+        </v-avatar>
+      </template>
       <template #[`item.category`]="{ item }">
         {{ `${item.categoryName}` }}
       </template>
@@ -59,6 +69,33 @@
             label="品目"
           />
         </v-card-text>
+        <v-card class="text-center" role="button" flat @click="handleClick">
+          <v-card-text>
+            <v-avatar size="96">
+              <v-icon v-if="editFormData.iconUrl === ''" x-large
+                >mdi-plus</v-icon
+              >
+              <v-img
+                v-else
+                :src="editFormData.iconUrl"
+                aspect-ratio="1"
+                max-height="150"
+                contain
+              />
+            </v-avatar>
+            <input
+              ref="inputRef"
+              type="file"
+              class="d-none"
+              accept="image/png, image/jpeg"
+              @change="handleInputFileChange"
+            />
+            <p class="ma-0">アイコン画像を選択</p>
+          </v-card-text>
+        </v-card>
+        <p v-show="headerUploadStatus.error" class="red--text ma-0">
+          {{ headerUploadStatus.message }}
+        </p>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="accentDarken" text @click="hideEditDialog">
@@ -95,6 +132,7 @@ import {
   ProductTypesResponseProductTypesInner,
   UpdateProductTypeRequest,
 } from '~/types/api'
+import { ImageUploadStatus } from '~/types/props'
 
 export default defineComponent({
   props: {
@@ -113,6 +151,7 @@ export default defineComponent({
   },
   setup(_, { emit }) {
     const productTypeStore = useProductTypeStore()
+    const inputRef = ref<HTMLInputElement | null>(null)
     const deleteDialog = ref<boolean>(false)
     const editDialog = ref<boolean>(false)
     const selectedCategoryId = ref<string>('')
@@ -132,7 +171,16 @@ export default defineComponent({
       return productTypeStore.totalItems
     })
 
+    const headerUploadStatus = reactive<ImageUploadStatus>({
+      error: false,
+      message: '',
+    })
+
     const productTypeHeaders: DataTableHeader[] = [
+      {
+        text: 'アイコン',
+        value: 'icon',
+      },
       {
         text: 'カテゴリー',
         value: 'category',
@@ -212,6 +260,29 @@ export default defineComponent({
       deleteDialog.value = false
     }
 
+    const handleClick = () => {
+      if (inputRef.value !== null) {
+        inputRef.value.click()
+      }
+    }
+
+    const handleInputFileChange = () => {
+      const files = inputRef.value?.files
+      if (inputRef.value && inputRef.value.files) {
+        if (files && files.length > 0) {
+          productTypeStore
+            .uploadProductTypeIcon(files[0])
+            .then((res) => {
+              editFormData.iconUrl = res.url
+            })
+            .catch(() => {
+              headerUploadStatus.error = true
+              headerUploadStatus.message = 'アップロードに失敗しました。'
+            })
+        }
+      }
+    }
+
     return {
       productTypeHeaders,
       productTypes,
@@ -219,14 +290,18 @@ export default defineComponent({
       selectedCategoryId,
       deleteDialog,
       editFormData,
+      inputRef,
       editDialog,
+      headerUploadStatus,
+      totalItems,
+      handleClick,
+      handleInputFileChange,
       openEditDialog,
       hideEditDialog,
       openDeleteDialog,
       hideDeleteDialog,
       handleEdit,
       handleDelete,
-      totalItems,
       handleUpdateItemsPerPage,
       handleUpdatePage,
       handleMoreCategoryItems,
