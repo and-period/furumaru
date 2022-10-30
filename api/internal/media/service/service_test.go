@@ -7,6 +7,7 @@ import (
 	"io"
 	"mime/multipart"
 	"net/textproto"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -46,8 +47,10 @@ func newService(mocks *mocks) *service {
 		Tmp:       mocks.tmp,
 		Storage:   mocks.storage,
 	}
-	mocks.tmp.EXPECT().GetFQDN().Return(tmpURL)
-	mocks.storage.EXPECT().GetFQDN().Return(storageURL)
+	tmpHost, _ := url.Parse(tmpURL)
+	storageHost, _ := url.Parse(storageURL)
+	mocks.tmp.EXPECT().GetHost().Return(tmpHost, nil)
+	mocks.storage.EXPECT().GetHost().Return(storageHost, nil)
 	srv, _ := NewService(params)
 	return srv.(*service)
 }
