@@ -7,8 +7,10 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/sync/errgroup"
 )
 
 func (h *handler) coordinatorRoutes(rg *gin.RouterGroup) {
@@ -79,6 +81,33 @@ func (h *handler) CreateCoordinator(ctx *gin.Context) {
 		return
 	}
 
+	var thumbnailURL, headerURL string
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		if req.ThumbnailURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.ThumbnailURL,
+		}
+		thumbnailURL, err = h.media.UploadCoordinatorThumbnail(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		if req.HeaderURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.HeaderURL,
+		}
+		headerURL, err = h.media.UploadCoordinatorHeader(ectx, in)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
 	in := &user.CreateCoordinatorInput{
 		Lastname:         req.Lastname,
 		Firstname:        req.Firstname,
@@ -86,8 +115,8 @@ func (h *handler) CreateCoordinator(ctx *gin.Context) {
 		FirstnameKana:    req.FirstnameKana,
 		CompanyName:      req.CompanyName,
 		StoreName:        req.StoreName,
-		ThumbnailURL:     req.ThumbnailURL,
-		HeaderURL:        req.HeaderURL,
+		ThumbnailURL:     thumbnailURL,
+		HeaderURL:        headerURL,
 		TwitterAccount:   req.TwitterAccount,
 		InstagramAccount: req.InstagramAccount,
 		FacebookAccount:  req.FacebookAccount,
@@ -118,6 +147,33 @@ func (h *handler) UpdateCoordinator(ctx *gin.Context) {
 		return
 	}
 
+	var thumbnailURL, headerURL string
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		if req.ThumbnailURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.ThumbnailURL,
+		}
+		thumbnailURL, err = h.media.UploadCoordinatorThumbnail(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		if req.HeaderURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.HeaderURL,
+		}
+		headerURL, err = h.media.UploadCoordinatorHeader(ectx, in)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
 	in := &user.UpdateCoordinatorInput{
 		CoordinatorID:    util.GetParam(ctx, "coordinatorId"),
 		Lastname:         req.Lastname,
@@ -126,8 +182,8 @@ func (h *handler) UpdateCoordinator(ctx *gin.Context) {
 		FirstnameKana:    req.FirstnameKana,
 		CompanyName:      req.CompanyName,
 		StoreName:        req.StoreName,
-		ThumbnailURL:     req.ThumbnailURL,
-		HeaderURL:        req.HeaderURL,
+		ThumbnailURL:     thumbnailURL,
+		HeaderURL:        headerURL,
 		TwitterAccount:   req.TwitterAccount,
 		InstagramAccount: req.InstagramAccount,
 		FacebookAccount:  req.FacebookAccount,

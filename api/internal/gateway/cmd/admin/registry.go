@@ -7,6 +7,8 @@ import (
 
 	v1 "github.com/and-period/furumaru/api/internal/gateway/admin/v1/handler"
 	shandler "github.com/and-period/furumaru/api/internal/gateway/stripe/handler"
+	"github.com/and-period/furumaru/api/internal/media"
+	mediasrv "github.com/and-period/furumaru/api/internal/media/service"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database"
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
@@ -51,6 +53,7 @@ type params struct {
 	aws              aws.Config
 	secret           secret.Client
 	storage          storage.Bucket
+	tmpStorage       storage.Bucket
 	adminAuth        cognito.Client
 	userAuth         cognito.Client
 	producer         sqs.Producer
@@ -103,6 +106,10 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		Bucket: conf.S3Bucket,
 	}
 	params.storage = storage.NewBucket(awscfg, storageParams)
+	tmpStorageParams := &storage.Params{
+		Bucket: conf.S3TmpBucket,
+	}
+	params.tmpStorage = storage.NewBucket(awscfg, tmpStorageParams)
 
 	// Amazon Cognitoの設定
 	adminAuthParams := &cognito.Params{
@@ -164,6 +171,10 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	params.userWebURL = userWebURL
 
 	// Serviceの設定
+	mediaService, err := newMediaService(params)
+	if err != nil {
+		return nil, err
+	}
 	messengerService, err := newMessengerService(params)
 	if err != nil {
 		return nil, err
@@ -185,6 +196,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		User:      userService,
 		Store:     storeService,
 		Messenger: messengerService,
+		Media:     mediaService,
 	}
 	shandlerParams := &shandler.Params{
 		WaitGroup: params.waitGroup,
@@ -291,6 +303,15 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 		return nil, err
 	}
 	return cli, nil
+}
+
+func newMediaService(p *params) (media.Service, error) {
+	params := &mediasrv.Params{
+		WaitGroup: p.waitGroup,
+		Storage:   p.storage,
+		Tmp:       p.tmpStorage,
+	}
+	return mediasrv.NewService(params, mediasrv.WithLogger(p.logger))
 }
 
 func newMessengerService(p *params) (messenger.Service, error) {

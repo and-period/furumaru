@@ -21,6 +21,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
+	mock_media "github.com/and-period/furumaru/api/mock/media"
 	mock_messenger "github.com/and-period/furumaru/api/mock/messenger"
 	mock_storage "github.com/and-period/furumaru/api/mock/pkg/storage"
 	mock_store "github.com/and-period/furumaru/api/mock/store"
@@ -45,6 +46,7 @@ type mocks struct {
 	user      *mock_user.MockService
 	store     *mock_store.MockService
 	messenger *mock_messenger.MockService
+	media     *mock_media.MockService
 }
 
 type testResponse struct {
@@ -86,6 +88,7 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 		user:      mock_user.NewMockService(ctrl),
 		store:     mock_store.NewMockService(ctrl),
 		messenger: mock_messenger.NewMockService(ctrl),
+		media:     mock_media.NewMockService(ctrl),
 	}
 }
 
@@ -102,6 +105,7 @@ func newHandler(mocks *mocks, opts *testOptions) Handler {
 		User:      mocks.user,
 		Store:     mocks.store,
 		Messenger: mocks.messenger,
+		Media:     mocks.media,
 	}
 	handler := NewHandler(params).(*handler)
 	handler.now = opts.now

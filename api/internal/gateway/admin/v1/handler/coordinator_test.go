@@ -7,10 +7,12 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestListCoordinator(t *testing.T) {
@@ -269,6 +271,14 @@ func TestGetCoordinator(t *testing.T) {
 func TestCreateCoordinator(t *testing.T) {
 	t.Parallel()
 
+	thumbnailIn := &media.UploadFileInput{
+		URL: "https://tmp.and-period.jp/thumbnail.png",
+	}
+	thumbnailURL := "https://and-period.jp/thumbnail.png"
+	headerIn := &media.UploadFileInput{
+		URL: "https://tmp.and-period.jp/header.png",
+	}
+	headerURL := "https://and-period.jp/header.png"
 	in := &user.CreateCoordinatorInput{
 		Lastname:         "&.",
 		Firstname:        "生産者",
@@ -276,8 +286,8 @@ func TestCreateCoordinator(t *testing.T) {
 		FirstnameKana:    "せいさんしゃ",
 		CompanyName:      "&.株式会社",
 		StoreName:        "&.農園",
-		ThumbnailURL:     "https://and-period.jp/thumbnail.png",
-		HeaderURL:        "https://and-period.jp/header.png",
+		ThumbnailURL:     thumbnailURL,
+		HeaderURL:        headerURL,
 		TwitterAccount:   "twitter-id",
 		InstagramAccount: "instagram-id",
 		FacebookAccount:  "facebook-id",
@@ -301,8 +311,8 @@ func TestCreateCoordinator(t *testing.T) {
 		AdminID:          "coordinator-id",
 		CompanyName:      "&.株式会社",
 		StoreName:        "&.農園",
-		ThumbnailURL:     "https://and-period.jp/thumbnail.png",
-		HeaderURL:        "https://and-period.jp/header.png",
+		ThumbnailURL:     thumbnailURL,
+		HeaderURL:        headerURL,
 		TwitterAccount:   "twitter-id",
 		InstagramAccount: "instagram-id",
 		FacebookAccount:  "facebook-id",
@@ -325,6 +335,8 @@ func TestCreateCoordinator(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.media.EXPECT().UploadCoordinatorThumbnail(gomock.Any(), thumbnailIn).Return(thumbnailURL, nil)
+				mocks.media.EXPECT().UploadCoordinatorHeader(gomock.Any(), headerIn).Return(headerURL, nil)
 				mocks.user.EXPECT().CreateCoordinator(gomock.Any(), in).Return(coordinator, nil)
 			},
 			req: &request.CreateCoordinatorRequest{
@@ -334,8 +346,8 @@ func TestCreateCoordinator(t *testing.T) {
 				FirstnameKana:    "せいさんしゃ",
 				CompanyName:      "&.株式会社",
 				StoreName:        "&.農園",
-				ThumbnailURL:     "https://and-period.jp/thumbnail.png",
-				HeaderURL:        "https://and-period.jp/header.png",
+				ThumbnailURL:     "https://tmp.and-period.jp/thumbnail.png",
+				HeaderURL:        "https://tmp.and-period.jp/header.png",
 				TwitterAccount:   "twitter-id",
 				InstagramAccount: "instagram-id",
 				FacebookAccount:  "facebook-id",
@@ -377,9 +389,10 @@ func TestCreateCoordinator(t *testing.T) {
 			},
 		},
 		{
-			name: "failed to create coordinator",
+			name: "failed to upload coordinator thumbnail",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().CreateCoordinator(gomock.Any(), in).Return(nil, errmock)
+				mocks.media.EXPECT().UploadCoordinatorThumbnail(gomock.Any(), thumbnailIn).Return("", assert.AnError)
+				mocks.media.EXPECT().UploadCoordinatorHeader(gomock.Any(), headerIn).Return(headerURL, nil)
 			},
 			req: &request.CreateCoordinatorRequest{
 				Lastname:         "&.",
@@ -388,8 +401,70 @@ func TestCreateCoordinator(t *testing.T) {
 				FirstnameKana:    "せいさんしゃ",
 				CompanyName:      "&.株式会社",
 				StoreName:        "&.農園",
-				ThumbnailURL:     "https://and-period.jp/thumbnail.png",
-				HeaderURL:        "https://and-period.jp/header.png",
+				ThumbnailURL:     "https://tmp.and-period.jp/thumbnail.png",
+				HeaderURL:        "https://tmp.and-period.jp/header.png",
+				TwitterAccount:   "twitter-id",
+				InstagramAccount: "instagram-id",
+				FacebookAccount:  "facebook-id",
+				Email:            "test-coordinator@and-period.jp",
+				PhoneNumber:      "+819012345678",
+				PostalCode:       "1000014",
+				Prefecture:       "東京都",
+				City:             "千代田区",
+				AddressLine1:     "永田町1-7-1",
+				AddressLine2:     "",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to upload coordinator thumbnail",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.media.EXPECT().UploadCoordinatorThumbnail(gomock.Any(), thumbnailIn).Return(thumbnailURL, nil)
+				mocks.media.EXPECT().UploadCoordinatorHeader(gomock.Any(), headerIn).Return("", assert.AnError)
+			},
+			req: &request.CreateCoordinatorRequest{
+				Lastname:         "&.",
+				Firstname:        "生産者",
+				LastnameKana:     "あんどどっと",
+				FirstnameKana:    "せいさんしゃ",
+				CompanyName:      "&.株式会社",
+				StoreName:        "&.農園",
+				ThumbnailURL:     "https://tmp.and-period.jp/thumbnail.png",
+				HeaderURL:        "https://tmp.and-period.jp/header.png",
+				TwitterAccount:   "twitter-id",
+				InstagramAccount: "instagram-id",
+				FacebookAccount:  "facebook-id",
+				Email:            "test-coordinator@and-period.jp",
+				PhoneNumber:      "+819012345678",
+				PostalCode:       "1000014",
+				Prefecture:       "東京都",
+				City:             "千代田区",
+				AddressLine1:     "永田町1-7-1",
+				AddressLine2:     "",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to create coordinator",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := *in
+				in.ThumbnailURL = ""
+				in.HeaderURL = ""
+				mocks.user.EXPECT().CreateCoordinator(gomock.Any(), &in).Return(nil, errmock)
+			},
+			req: &request.CreateCoordinatorRequest{
+				Lastname:         "&.",
+				Firstname:        "生産者",
+				LastnameKana:     "あんどどっと",
+				FirstnameKana:    "せいさんしゃ",
+				CompanyName:      "&.株式会社",
+				StoreName:        "&.農園",
+				ThumbnailURL:     "",
+				HeaderURL:        "",
 				TwitterAccount:   "twitter-id",
 				InstagramAccount: "instagram-id",
 				FacebookAccount:  "facebook-id",
@@ -419,6 +494,14 @@ func TestCreateCoordinator(t *testing.T) {
 func TestUpdateCoordinator(t *testing.T) {
 	t.Parallel()
 
+	thumbnailIn := &media.UploadFileInput{
+		URL: "https://tmp.and-period.jp/thumbnail.png",
+	}
+	thumbnailURL := "https://and-period.jp/thumbnail.png"
+	headerIn := &media.UploadFileInput{
+		URL: "https://tmp.and-period.jp/header.png",
+	}
+	headerURL := "https://and-period.jp/header.png"
 	in := &user.UpdateCoordinatorInput{
 		CoordinatorID: "coordinator-id",
 		Lastname:      "&.",
@@ -446,6 +529,8 @@ func TestUpdateCoordinator(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.media.EXPECT().UploadCoordinatorThumbnail(gomock.Any(), thumbnailIn).Return(thumbnailURL, nil)
+				mocks.media.EXPECT().UploadCoordinatorHeader(gomock.Any(), headerIn).Return(headerURL, nil)
 				mocks.user.EXPECT().UpdateCoordinator(gomock.Any(), in).Return(nil)
 			},
 			coordinatorID: "coordinator-id",
@@ -455,8 +540,8 @@ func TestUpdateCoordinator(t *testing.T) {
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "せいさんしゃ",
 				StoreName:     "&.農園",
-				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-				HeaderURL:     "https://and-period.jp/header.png",
+				ThumbnailURL:  "https://tmp.and-period.jp/thumbnail.png",
+				HeaderURL:     "https://tmp.and-period.jp/header.png",
 				PhoneNumber:   "+819012345678",
 				PostalCode:    "1000014",
 				Prefecture:    "東京都",
@@ -469,9 +554,10 @@ func TestUpdateCoordinator(t *testing.T) {
 			},
 		},
 		{
-			name: "failed to update coordinator",
+			name: "failed to upload coordinator thumbnail",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().UpdateCoordinator(gomock.Any(), in).Return(errmock)
+				mocks.media.EXPECT().UploadCoordinatorThumbnail(gomock.Any(), thumbnailIn).Return("", assert.AnError)
+				mocks.media.EXPECT().UploadCoordinatorHeader(gomock.Any(), headerIn).Return(headerURL, nil)
 			},
 			coordinatorID: "coordinator-id",
 			req: &request.UpdateCoordinatorRequest{
@@ -480,8 +566,62 @@ func TestUpdateCoordinator(t *testing.T) {
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "せいさんしゃ",
 				StoreName:     "&.農園",
-				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-				HeaderURL:     "https://and-period.jp/header.png",
+				ThumbnailURL:  "https://tmp.and-period.jp/thumbnail.png",
+				HeaderURL:     "https://tmp.and-period.jp/header.png",
+				PhoneNumber:   "+819012345678",
+				PostalCode:    "1000014",
+				Prefecture:    "東京都",
+				City:          "千代田区",
+				AddressLine1:  "永田町1-7-1",
+				AddressLine2:  "",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to upload coordinator header",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.media.EXPECT().UploadCoordinatorThumbnail(gomock.Any(), thumbnailIn).Return(thumbnailURL, nil)
+				mocks.media.EXPECT().UploadCoordinatorHeader(gomock.Any(), headerIn).Return("", assert.AnError)
+			},
+			coordinatorID: "coordinator-id",
+			req: &request.UpdateCoordinatorRequest{
+				Lastname:      "&.",
+				Firstname:     "生産者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "せいさんしゃ",
+				StoreName:     "&.農園",
+				ThumbnailURL:  "https://tmp.and-period.jp/thumbnail.png",
+				HeaderURL:     "https://tmp.and-period.jp/header.png",
+				PhoneNumber:   "+819012345678",
+				PostalCode:    "1000014",
+				Prefecture:    "東京都",
+				City:          "千代田区",
+				AddressLine1:  "永田町1-7-1",
+				AddressLine2:  "",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to update coordinator",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := *in
+				in.ThumbnailURL = ""
+				in.HeaderURL = ""
+				mocks.user.EXPECT().UpdateCoordinator(gomock.Any(), &in).Return(errmock)
+			},
+			coordinatorID: "coordinator-id",
+			req: &request.UpdateCoordinatorRequest{
+				Lastname:      "&.",
+				Firstname:     "生産者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "せいさんしゃ",
+				StoreName:     "&.農園",
+				ThumbnailURL:  "",
+				HeaderURL:     "",
 				PhoneNumber:   "+819012345678",
 				PostalCode:    "1000014",
 				Prefecture:    "東京都",
