@@ -9,10 +9,10 @@ scheduleResponse:
       description: コーディネーターID
     shippingId:
       type: string
-      description: 配信設定ID
+      description: 配送設定ID
     shippingName:
       type: string
-      description: 配信設定名
+      description: 配送設定名
     title:
       type: string
       description: タイトル
