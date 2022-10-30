@@ -7,12 +7,14 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestFilterAccessProducer(t *testing.T) {
@@ -370,6 +372,14 @@ func TestGetProducer(t *testing.T) {
 func TestCreateProducer(t *testing.T) {
 	t.Parallel()
 
+	thumbnailIn := &media.UploadFileInput{
+		URL: "https://tmp.and-period.jp/thumbnail.png",
+	}
+	thumbnailURL := "https://and-period.jp/thumbnail.png"
+	headerIn := &media.UploadFileInput{
+		URL: "https://tmp.and-period.jp/header.png",
+	}
+	headerURL := "https://and-period.jp/header.png"
 	in := &user.CreateProducerInput{
 		Lastname:      "&.",
 		Firstname:     "生産者",
@@ -419,6 +429,8 @@ func TestCreateProducer(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.media.EXPECT().UploadProducerThumbnail(gomock.Any(), thumbnailIn).Return(thumbnailURL, nil)
+				mocks.media.EXPECT().UploadProducerHeader(gomock.Any(), headerIn).Return(headerURL, nil)
 				mocks.user.EXPECT().CreateProducer(gomock.Any(), in).Return(producer, nil)
 			},
 			req: &request.CreateProducerRequest{
@@ -427,8 +439,8 @@ func TestCreateProducer(t *testing.T) {
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "せいさんしゃ",
 				StoreName:     "&.農園",
-				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-				HeaderURL:     "https://and-period.jp/header.png",
+				ThumbnailURL:  "https://tmp.and-period.jp/thumbnail.png",
+				HeaderURL:     "https://tmp.and-period.jp/header.png",
 				Email:         "test-producer@and-period.jp",
 				PhoneNumber:   "+819012345678",
 				PostalCode:    "1000014",
@@ -464,9 +476,10 @@ func TestCreateProducer(t *testing.T) {
 			},
 		},
 		{
-			name: "failed to create producer",
+			name: "failed to upload producer thumbnail",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().CreateProducer(gomock.Any(), in).Return(nil, errmock)
+				mocks.media.EXPECT().UploadProducerThumbnail(gomock.Any(), thumbnailIn).Return("", assert.AnError)
+				mocks.media.EXPECT().UploadProducerHeader(gomock.Any(), headerIn).Return(headerURL, nil)
 			},
 			req: &request.CreateProducerRequest{
 				Lastname:      "&.",
@@ -474,8 +487,62 @@ func TestCreateProducer(t *testing.T) {
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "せいさんしゃ",
 				StoreName:     "&.農園",
-				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-				HeaderURL:     "https://and-period.jp/header.png",
+				ThumbnailURL:  "https://tmp.and-period.jp/thumbnail.png",
+				HeaderURL:     "https://tmp.and-period.jp/header.png",
+				Email:         "test-producer@and-period.jp",
+				PhoneNumber:   "+819012345678",
+				PostalCode:    "1000014",
+				Prefecture:    "東京都",
+				City:          "千代田区",
+				AddressLine1:  "永田町1-7-1",
+				AddressLine2:  "",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to upload producer header",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.media.EXPECT().UploadProducerThumbnail(gomock.Any(), thumbnailIn).Return(thumbnailURL, nil)
+				mocks.media.EXPECT().UploadProducerHeader(gomock.Any(), headerIn).Return("", assert.AnError)
+			},
+			req: &request.CreateProducerRequest{
+				Lastname:      "&.",
+				Firstname:     "生産者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "せいさんしゃ",
+				StoreName:     "&.農園",
+				ThumbnailURL:  "https://tmp.and-period.jp/thumbnail.png",
+				HeaderURL:     "https://tmp.and-period.jp/header.png",
+				Email:         "test-producer@and-period.jp",
+				PhoneNumber:   "+819012345678",
+				PostalCode:    "1000014",
+				Prefecture:    "東京都",
+				City:          "千代田区",
+				AddressLine1:  "永田町1-7-1",
+				AddressLine2:  "",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to create producer",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := *in
+				in.ThumbnailURL = ""
+				in.HeaderURL = ""
+				mocks.user.EXPECT().CreateProducer(gomock.Any(), &in).Return(nil, errmock)
+			},
+			req: &request.CreateProducerRequest{
+				Lastname:      "&.",
+				Firstname:     "生産者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "せいさんしゃ",
+				StoreName:     "&.農園",
+				ThumbnailURL:  "",
+				HeaderURL:     "",
 				Email:         "test-producer@and-period.jp",
 				PhoneNumber:   "+819012345678",
 				PostalCode:    "1000014",
@@ -502,6 +569,14 @@ func TestCreateProducer(t *testing.T) {
 func TestUpdateProducer(t *testing.T) {
 	t.Parallel()
 
+	thumbnailIn := &media.UploadFileInput{
+		URL: "https://tmp.and-period.jp/thumbnail.png",
+	}
+	thumbnailURL := "https://and-period.jp/thumbnail.png"
+	headerIn := &media.UploadFileInput{
+		URL: "https://tmp.and-period.jp/header.png",
+	}
+	headerURL := "https://and-period.jp/header.png"
 	in := &user.UpdateProducerInput{
 		ProducerID:    "producer-id",
 		Lastname:      "&.",
@@ -529,6 +604,8 @@ func TestUpdateProducer(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.media.EXPECT().UploadProducerThumbnail(gomock.Any(), thumbnailIn).Return(thumbnailURL, nil)
+				mocks.media.EXPECT().UploadProducerHeader(gomock.Any(), headerIn).Return(headerURL, nil)
 				mocks.user.EXPECT().UpdateProducer(gomock.Any(), in).Return(nil)
 			},
 			producerID: "producer-id",
@@ -538,8 +615,8 @@ func TestUpdateProducer(t *testing.T) {
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "せいさんしゃ",
 				StoreName:     "&.農園",
-				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-				HeaderURL:     "https://and-period.jp/header.png",
+				ThumbnailURL:  "https://tmp.and-period.jp/thumbnail.png",
+				HeaderURL:     "https://tmp.and-period.jp/header.png",
 				PhoneNumber:   "+819012345678",
 				PostalCode:    "1000014",
 				Prefecture:    "東京都",
@@ -552,9 +629,10 @@ func TestUpdateProducer(t *testing.T) {
 			},
 		},
 		{
-			name: "failed to update producer",
+			name: "failed to upload producer thumbnail",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().UpdateProducer(gomock.Any(), in).Return(errmock)
+				mocks.media.EXPECT().UploadProducerThumbnail(gomock.Any(), thumbnailIn).Return("", assert.AnError)
+				mocks.media.EXPECT().UploadProducerHeader(gomock.Any(), headerIn).Return(headerURL, nil)
 			},
 			producerID: "producer-id",
 			req: &request.UpdateProducerRequest{
@@ -563,8 +641,62 @@ func TestUpdateProducer(t *testing.T) {
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "せいさんしゃ",
 				StoreName:     "&.農園",
-				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-				HeaderURL:     "https://and-period.jp/header.png",
+				ThumbnailURL:  "https://tmp.and-period.jp/thumbnail.png",
+				HeaderURL:     "https://tmp.and-period.jp/header.png",
+				PhoneNumber:   "+819012345678",
+				PostalCode:    "1000014",
+				Prefecture:    "東京都",
+				City:          "千代田区",
+				AddressLine1:  "永田町1-7-1",
+				AddressLine2:  "",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to upload producer header",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.media.EXPECT().UploadProducerThumbnail(gomock.Any(), thumbnailIn).Return(thumbnailURL, nil)
+				mocks.media.EXPECT().UploadProducerHeader(gomock.Any(), headerIn).Return("", assert.AnError)
+			},
+			producerID: "producer-id",
+			req: &request.UpdateProducerRequest{
+				Lastname:      "&.",
+				Firstname:     "生産者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "せいさんしゃ",
+				StoreName:     "&.農園",
+				ThumbnailURL:  "https://tmp.and-period.jp/thumbnail.png",
+				HeaderURL:     "https://tmp.and-period.jp/header.png",
+				PhoneNumber:   "+819012345678",
+				PostalCode:    "1000014",
+				Prefecture:    "東京都",
+				City:          "千代田区",
+				AddressLine1:  "永田町1-7-1",
+				AddressLine2:  "",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to update producer",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				in := *in
+				in.ThumbnailURL = ""
+				in.HeaderURL = ""
+				mocks.user.EXPECT().UpdateProducer(gomock.Any(), &in).Return(errmock)
+			},
+			producerID: "producer-id",
+			req: &request.UpdateProducerRequest{
+				Lastname:      "&.",
+				Firstname:     "生産者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "せいさんしゃ",
+				StoreName:     "&.農園",
+				ThumbnailURL:  "",
+				HeaderURL:     "",
 				PhoneNumber:   "+819012345678",
 				PostalCode:    "1000014",
 				Prefecture:    "東京都",
