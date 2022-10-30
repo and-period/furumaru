@@ -135,8 +135,11 @@ func TestService(t *testing.T) {
 	defer ctrl.Finish()
 	mocks := newMocks(ctrl)
 	params := &Params{Storage: mocks.storage, Tmp: mocks.tmp}
-	mocks.storage.EXPECT().GetFQDN().Return(storageURL)
-	mocks.tmp.EXPECT().GetFQDN().Return(tmpURL)
+	surl, err := url.Parse(storageURL)
+	require.NoError(t, err)
+	turl, err := url.Parse(tmpURL)
+	mocks.storage.EXPECT().GetHost().Return(surl, nil)
+	mocks.tmp.EXPECT().GetHost().Return(turl, nil)
 	srv, err := NewService(params, WithLogger(zap.NewNop()))
 	assert.NoError(t, err)
 	assert.NotNil(t, srv)
