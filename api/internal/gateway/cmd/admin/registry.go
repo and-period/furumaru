@@ -106,6 +106,10 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		Bucket: conf.S3Bucket,
 	}
 	params.storage = storage.NewBucket(awscfg, storageParams)
+	tmpStorageParams := &storage.Params{
+		Bucket: conf.S3TmpBucket,
+	}
+	params.tmpStorage = storage.NewBucket(awscfg, tmpStorageParams)
 
 	// Amazon Cognitoの設定
 	adminAuthParams := &cognito.Params{
