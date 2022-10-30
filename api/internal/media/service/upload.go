@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/entity"
+	"go.uber.org/zap"
 )
 
 func (s *service) UploadCoordinatorThumbnail(ctx context.Context, in *media.UploadFileInput) (string, error) {
@@ -43,6 +44,8 @@ func (s *service) uploadFile(ctx context.Context, in *media.UploadFileInput, pre
 	if err != nil {
 		return "", fmt.Errorf("%s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
+	// TODO: remove
+	s.logger.Debug("upload file", zap.Any("input", in), zap.Any("url", u), zap.Any("storage", s.storageURL()), zap.Any("tmp", s.tmpURL()))
 	var path string
 	switch u.Host {
 	case s.tmpURL().Host:
@@ -50,7 +53,7 @@ func (s *service) uploadFile(ctx context.Context, in *media.UploadFileInput, pre
 	case s.storageURL().Host:
 		path, err = s.downloadFile(ctx, u)
 	default:
-		err = fmt.Errorf("service: unknown storage host: %w", exception.ErrInvalidArgument)
+		err = fmt.Errorf("service: unknown storage host. host=%s: %w", u.Host, exception.ErrInvalidArgument)
 	}
 	return path, exception.InternalError(err)
 }
