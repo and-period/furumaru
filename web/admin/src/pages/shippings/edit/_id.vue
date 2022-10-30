@@ -1,11 +1,12 @@
 <template>
   <div>
-    <v-card-title>配送情報登録</v-card-title>
+    <v-card-title>配送設定編集</v-card-title>
 
     <v-alert v-model="isShow" :type="alertType" v-text="alertText" />
 
     <the-shipping-form
       v-model="formData"
+      :loading="fetchState.pending"
       @click:addBox60RateItem="addBox60RateItem"
       @click:addBox80RateItem="addBox80RateItem"
       @click:addBox100RateItem="addBox100RateItem"
@@ -16,19 +17,30 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, useRouter } from '@nuxtjs/composition-api'
+import {
+  defineComponent,
+  useFetch,
+  useRoute,
+  ref,
+  useRouter,
+} from '@nuxtjs/composition-api'
 
 import { useAlert } from '~/lib/hooks'
 import { useCommonStore } from '~/store/common'
 import { useShippingStore } from '~/store/shippings'
-import { CreateShippingRequest } from '~/types/api'
+import { UpdateShippingRequest } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 
 export default defineComponent({
   setup() {
+    const route = useRoute()
     const router = useRouter()
+    const id = route.value.params.id
+    const { alertType, isShow, alertText, show } = useAlert('error')
 
-    const formData = reactive<CreateShippingRequest>({
+    const { addSnackbar } = useCommonStore()
+
+    const formData = ref<UpdateShippingRequest>({
       name: '',
       box60Rates: [
         {
@@ -61,8 +73,21 @@ export default defineComponent({
       freeShippingRates: 0,
     })
 
+    const { getShipping, updateShipping } = useShippingStore()
+
+    const { fetchState } = useFetch(async () => {
+      try {
+        const shipping = await getShipping(id)
+        formData.value = { ...shipping }
+      } catch (error) {
+        if (error instanceof ApiBaseError) {
+          show(error.message)
+        }
+      }
+    })
+
     const addBox60RateItem = () => {
-      formData.box60Rates.push({
+      formData.value.box60Rates.push({
         name: '',
         price: 0,
         prefectures: [],
@@ -70,7 +95,7 @@ export default defineComponent({
     }
 
     const addBox80RateItem = () => {
-      formData.box80Rates.push({
+      formData.value.box80Rates.push({
         name: '',
         price: 0,
         prefectures: [],
@@ -78,25 +103,36 @@ export default defineComponent({
     }
 
     const addBox100RateItem = () => {
-      formData.box100Rates.push({
+      formData.value.box100Rates.push({
         name: '',
         price: 0,
         prefectures: [],
       })
     }
 
-    const { createShipping } = useShippingStore()
+    const handleClickRemoveItemButton = (
+      rate: '60' | '80' | '100',
+      index: number
+    ) => {
+      switch (rate) {
+        case '60':
+          formData.value.box60Rates.splice(index, 1)
+          break
+        case '80':
+          formData.value.box80Rates.splice(index, 1)
+          break
+        case '100':
+          formData.value.box100Rates.splice(index, 1)
+          break
+      }
+    }
 
-    const { alertType, isShow, alertText, show } = useAlert('error')
-
-    const { addSnackbar } = useCommonStore()
-
-    const handleSubmit = async (): Promise<void> => {
+    const handleSubmit = async () => {
       try {
-        await createShipping(formData)
+        await updateShipping(id, formData.value)
         addSnackbar({
           color: 'info',
-          message: `${formData.name}を登録しました。`,
+          message: `${formData.value.name}を更新しました。`,
         })
         router.push('/shippings')
       } catch (error) {
@@ -110,34 +146,19 @@ export default defineComponent({
       }
     }
 
-    const handleClickCloseButton = (
-      rate: '60' | '80' | '100',
-      index: number
-    ) => {
-      switch (rate) {
-        case '60':
-          formData.box60Rates.splice(index, 1)
-          break
-        case '80':
-          formData.box80Rates.splice(index, 1)
-          break
-        case '100':
-          formData.box100Rates.splice(index, 1)
-          break
-      }
-    }
-
     return {
+      // 変数
+      fetchState,
       formData,
       alertType,
       isShow,
       alertText,
       // 関数
+      handleSubmit,
+      handleClickRemoveItemButton,
       addBox60RateItem,
       addBox80RateItem,
       addBox100RateItem,
-      handleSubmit,
-      handleClickCloseButton,
     }
   },
 })
