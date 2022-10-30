@@ -1,0 +1,211 @@
+liveResponse:
+  type: object
+  properties:
+    id:
+      type: string
+      description: 配信ID
+    scheduleId:
+      type: string
+      description: スケジュールID
+    title:
+      type: string
+      description: ライブタイトル(128文字まで)
+    description:
+      type: string
+      description: ライブ説明(20000文字まで)
+    producerId:
+      type: string
+      description: 生産者ID
+    producerName:
+      type: string
+      description: 生産者名
+    startAt:
+      type: integer
+      format: int64
+      description: ライブ開始日時
+    endAt:
+      type: integer
+      format: int64
+      description: ライブ終了日時
+    published:
+      type: boolean
+      description: 配信公開フラグ
+    canceled:
+      type: boolean
+      description: キャンセルフラグ
+    status:
+      type: integer
+      format: int32
+      description: 配信ステータス(0:不明,1:配信前,2:配信中,3:配信終了,4:配信中止)
+    products:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            description: 商品ID
+          name:
+            type: string
+            description: 商品名
+          description:
+            type: string
+            description: 商品説明
+          producerId:
+            type: string
+            description: 生産者ID
+          storeName:
+            type: string
+            description: 農家名
+          categoryId:
+            type: string
+            description: 商品種別ID
+          categoryName:
+            type: string
+            description: 商品種別名
+          productTypeId:
+            type: string
+            description: 品目ID
+          productTypeName:
+            type: string
+            description: 品目名
+          productTypeIconUrl:
+            type: string
+            description: アイコンURL
+          public:
+            type: boolean
+            description: 公開フラグ
+          inventory:
+            type: integer
+            format: int64
+            description: 在庫数
+          weight:
+            type: number
+            format: double
+            description: 重量(kg:少数第1位まで)
+          itemUnit:
+            type: string
+            description: 数量単位
+          itemDescription:
+            type: string
+            description: 数量単位説明
+          iconUrl:
+            type: string
+            description: アイコンURL
+          media:
+            type: array
+            items:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: メディアURL
+                isThumbnail:
+                  type: boolean
+                  description: サムネイルとして使用(1つまで)
+              required:
+              - url
+              - isThumbnail
+          price:
+            type: integer
+            format: int64
+            description: 販売価格
+          deliveryType:
+            type: integer
+            format: int32
+            description: 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
+          box60Rate:
+            type: integer
+            format: int64
+            description: 箱の占有率(サイズ:60)
+          box80Rate:
+            type: integer
+            format: int64
+            description: 箱の占有率(サイズ:80)
+          box100Rate:
+            type: integer
+            format: int64
+            description: 箱の占有率(サイズ:100)
+          originPrefecture:
+            type: string
+            description: 原産地(都道府県)
+          originCity:
+            type: string
+            description: 原産地(市区町村)
+          createdAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+          updatedAt:
+            type: integer
+            format: int64
+            description: 更新日時 (unixtime)
+    createdAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
+    updatedAt:
+      type: integer
+      format: int64
+      description: 更新日時 (unixtime)
+  required:
+  - id
+  - scheduleId
+  - title
+  - description
+  - producerId
+  - producerName
+  - startAt
+  - endAt
+  - published
+  - canceled
+  - status
+  - products
+  - createdAt
+  - updatedAt
+  example:
+    id: 'live-id'
+    scheduleId: 'schedule-id'
+    title: '配信タイトル'
+    description: '配信説明'
+    producerId: '生産者ID'
+    producerName: '生産者名'
+    startAt: 1640962800
+    endAt: 1640962800
+    published: true
+    canceled: false
+    status: 1
+    products:
+    - id: 'product-id'
+      name: '新鮮なじゃがいも'
+      description: '新鮮なじゃがいもをお届けします。'
+      producerId: 'kSByoE6FetnPs5Byk3a9Zx'
+      storeName: '&.農園'
+      categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
+      categoryName: '野菜'
+      productTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
+      productTypeName: 'じゃがいも'
+      productTypeIconUrl: 'https://and-period.jp/icon.png'
+      public: true
+      inventory: 30
+      weight: 2.5
+      itemUnit: '袋'
+      itemDescription: '1袋あたり2.5kgのじゃがいも'
+      iconUrl: 'https://and-period.jp/icon.png'
+      media:
+      - url: 'https://and-period.jp/thumbnail01.png'
+        isThumbnail: true
+      - url: 'https://and-period.jp/thumbnail02.png'
+        isThumbnail: false
+      price: 2500
+      deliveryType: 1
+      box60Rate: 80
+      box80Rate: 50
+      box100Rate: 40
+      originPrefecture: '滋賀県'
+      originCity: '彦根市'
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    createdAt: 1640962800
+    updatedAt: 1640962800
+
