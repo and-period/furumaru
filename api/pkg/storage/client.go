@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -163,5 +164,5 @@ func (b *bucket) generateKeyFromObjectURL(objectURL string) (string, error) {
 	if err != nil {
 		return "", ErrInvalidURL
 	}
-	return u.Path, nil
+	return strings.TrimPrefix(u.Path, "/"), nil // url.URLから取得したPathは / から始まるため
 }

@@ -52,16 +52,16 @@ func (s *service) uploadFile(ctx context.Context, in *media.UploadFileInput, pre
 		zap.Bool("storageMatch", s.storageURL().Host == u.Host),
 		zap.Bool("tmpMatch", s.tmpURL().Host == u.Host),
 	)
-	var path string
+	var url string
 	switch u.Host {
 	case s.tmpURL().Host:
-		path, err = s.uploadPermanentFile(ctx, u)
+		url, err = s.uploadPermanentFile(ctx, u)
 	case s.storageURL().Host:
-		path, err = s.downloadFile(ctx, u)
+		url, err = s.downloadFile(ctx, u)
 	default:
 		err = fmt.Errorf("service: unknown storage host. host=%s: %w", u.Host, exception.ErrInvalidArgument)
 	}
-	return path, exception.InternalError(err)
+	return url, exception.InternalError(err)
 }
 
 func (s *service) parseURL(in *media.UploadFileInput, prefix string) (*url.URL, error) {
@@ -76,16 +76,18 @@ func (s *service) parseURL(in *media.UploadFileInput, prefix string) (*url.URL, 
 }
 
 func (s *service) uploadPermanentFile(ctx context.Context, u *url.URL) (string, error) {
-	file, err := s.tmp.Download(ctx, u.Path)
+	file, err := s.tmp.Download(ctx, u.String())
 	if err != nil {
 		return "", err
 	}
-	return s.storage.Upload(ctx, u.Path, file)
+	path := strings.TrimPrefix(u.Path, "/") // url.URLから取得したPathは / から始まるため
+	return s.storage.Upload(ctx, path, file)
 }
 
 func (s *service) downloadFile(ctx context.Context, u *url.URL) (string, error) {
-	if _, err := s.storage.Download(ctx, u.Path); err != nil {
+	url := u.String()
+	if _, err := s.storage.Download(ctx, url); err != nil {
 		return "", err
 	}
-	return u.String(), nil
+	return url, nil
 }

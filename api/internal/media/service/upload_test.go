@@ -20,6 +20,7 @@ func TestUploadCoordinatorThumbnail(t *testing.T) {
 	path := strings.Join([]string{entity.CoordinatorThumbnailPath, "calmato.png"}, "/")
 	turl, err := url.Parse(strings.Join([]string{tmpURL, path}, "/"))
 	require.NoError(t, err)
+	tpath := strings.TrimPrefix(turl.Path, "/")
 	surl, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
 	require.NoError(t, err)
 	uurl, err := url.Parse(strings.Join([]string{unknownURL, path}, "/"))
@@ -34,8 +35,8 @@ func TestUploadCoordinatorThumbnail(t *testing.T) {
 		{
 			name: "success to upload permanent file",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.Path).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, turl.Path, gomock.Any()).Return(surl.String(), nil)
+				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
+				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return(surl.String(), nil)
 			},
 			input: &media.UploadFileInput{
 				URL: turl.String(),
@@ -46,7 +47,7 @@ func TestUploadCoordinatorThumbnail(t *testing.T) {
 		{
 			name: "success to download permanent file",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.Path).Return(file, nil)
+				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(file, nil)
 			},
 			input: &media.UploadFileInput{
 				URL: surl.String(),
@@ -82,7 +83,7 @@ func TestUploadCoordinatorThumbnail(t *testing.T) {
 		{
 			name: "failed to download temporary file when upload",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.Path).Return(nil, assert.AnError)
+				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(nil, assert.AnError)
 			},
 			input: &media.UploadFileInput{
 				URL: turl.String(),
@@ -93,8 +94,8 @@ func TestUploadCoordinatorThumbnail(t *testing.T) {
 		{
 			name: "failed to upload permanent file when upload",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.Path).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, turl.Path, gomock.Any()).Return("", assert.AnError)
+				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
+				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return("", assert.AnError)
 			},
 			input: &media.UploadFileInput{
 				URL: turl.String(),
@@ -105,7 +106,7 @@ func TestUploadCoordinatorThumbnail(t *testing.T) {
 		{
 			name: "failed to download permanent file when download",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.Path).Return(nil, assert.AnError)
+				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(nil, assert.AnError)
 			},
 			input: &media.UploadFileInput{
 				URL: surl.String(),
@@ -130,6 +131,7 @@ func TestUploadCoordinatorHeader(t *testing.T) {
 	path := strings.Join([]string{entity.CoordinatorHeaderPath, "calmato.png"}, "/")
 	turl, err := url.Parse(strings.Join([]string{tmpURL, path}, "/"))
 	require.NoError(t, err)
+	tpath := strings.TrimPrefix(turl.Path, "/")
 	surl, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
 	require.NoError(t, err)
 	uurl, err := url.Parse(strings.Join([]string{unknownURL, path}, "/"))
@@ -144,8 +146,8 @@ func TestUploadCoordinatorHeader(t *testing.T) {
 		{
 			name: "success to upload permanent file",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.Path).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, turl.Path, gomock.Any()).Return(surl.String(), nil)
+				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
+				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return(surl.String(), nil)
 			},
 			input: &media.UploadFileInput{
 				URL: turl.String(),
@@ -156,7 +158,7 @@ func TestUploadCoordinatorHeader(t *testing.T) {
 		{
 			name: "success to download permanent file",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.Path).Return(file, nil)
+				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(file, nil)
 			},
 			input: &media.UploadFileInput{
 				URL: surl.String(),
@@ -192,7 +194,7 @@ func TestUploadCoordinatorHeader(t *testing.T) {
 		{
 			name: "failed to download temporary file when upload",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.Path).Return(nil, assert.AnError)
+				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(nil, assert.AnError)
 			},
 			input: &media.UploadFileInput{
 				URL: turl.String(),
@@ -203,8 +205,8 @@ func TestUploadCoordinatorHeader(t *testing.T) {
 		{
 			name: "failed to upload permanent file when upload",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.Path).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, turl.Path, gomock.Any()).Return("", assert.AnError)
+				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
+				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return("", assert.AnError)
 			},
 			input: &media.UploadFileInput{
 				URL: turl.String(),
@@ -215,7 +217,7 @@ func TestUploadCoordinatorHeader(t *testing.T) {
 		{
 			name: "failed to download permanent file when download",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.Path).Return(nil, assert.AnError)
+				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(nil, assert.AnError)
 			},
 			input: &media.UploadFileInput{
 				URL: surl.String(),
@@ -240,6 +242,7 @@ func TestUploadProducerThumbnail(t *testing.T) {
 	path := strings.Join([]string{entity.ProducerThumbnailPath, "calmato.png"}, "/")
 	turl, err := url.Parse(strings.Join([]string{tmpURL, path}, "/"))
 	require.NoError(t, err)
+	tpath := strings.TrimPrefix(turl.Path, "/")
 	surl, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
 	require.NoError(t, err)
 	uurl, err := url.Parse(strings.Join([]string{unknownURL, path}, "/"))
@@ -254,8 +257,8 @@ func TestUploadProducerThumbnail(t *testing.T) {
 		{
 			name: "success to upload permanent file",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.Path).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, turl.Path, gomock.Any()).Return(surl.String(), nil)
+				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
+				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return(surl.String(), nil)
 			},
 			input: &media.UploadFileInput{
 				URL: turl.String(),
@@ -266,7 +269,7 @@ func TestUploadProducerThumbnail(t *testing.T) {
 		{
 			name: "success to download permanent file",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.Path).Return(file, nil)
+				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(file, nil)
 			},
 			input: &media.UploadFileInput{
 				URL: surl.String(),
@@ -302,7 +305,7 @@ func TestUploadProducerThumbnail(t *testing.T) {
 		{
 			name: "failed to download temporary file when upload",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.Path).Return(nil, assert.AnError)
+				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(nil, assert.AnError)
 			},
 			input: &media.UploadFileInput{
 				URL: turl.String(),
@@ -313,8 +316,8 @@ func TestUploadProducerThumbnail(t *testing.T) {
 		{
 			name: "failed to upload permanent file when upload",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.Path).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, turl.Path, gomock.Any()).Return("", assert.AnError)
+				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
+				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return("", assert.AnError)
 			},
 			input: &media.UploadFileInput{
 				URL: turl.String(),
@@ -325,7 +328,7 @@ func TestUploadProducerThumbnail(t *testing.T) {
 		{
 			name: "failed to download permanent file when download",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.Path).Return(nil, assert.AnError)
+				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(nil, assert.AnError)
 			},
 			input: &media.UploadFileInput{
 				URL: surl.String(),
@@ -350,6 +353,7 @@ func TestUploadProducerHeader(t *testing.T) {
 	path := strings.Join([]string{entity.ProducerHeaderPath, "calmato.png"}, "/")
 	turl, err := url.Parse(strings.Join([]string{tmpURL, path}, "/"))
 	require.NoError(t, err)
+	tpath := strings.TrimPrefix(turl.Path, "/")
 	surl, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
 	require.NoError(t, err)
 	uurl, err := url.Parse(strings.Join([]string{unknownURL, path}, "/"))
@@ -364,8 +368,8 @@ func TestUploadProducerHeader(t *testing.T) {
 		{
 			name: "success to upload permanent file",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.Path).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, turl.Path, gomock.Any()).Return(surl.String(), nil)
+				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
+				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return(surl.String(), nil)
 			},
 			input: &media.UploadFileInput{
 				URL: turl.String(),
@@ -376,7 +380,7 @@ func TestUploadProducerHeader(t *testing.T) {
 		{
 			name: "success to download permanent file",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.Path).Return(file, nil)
+				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(file, nil)
 			},
 			input: &media.UploadFileInput{
 				URL: surl.String(),
@@ -412,7 +416,7 @@ func TestUploadProducerHeader(t *testing.T) {
 		{
 			name: "failed to download temporary file when upload",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.Path).Return(nil, assert.AnError)
+				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(nil, assert.AnError)
 			},
 			input: &media.UploadFileInput{
 				URL: turl.String(),
@@ -423,8 +427,8 @@ func TestUploadProducerHeader(t *testing.T) {
 		{
 			name: "failed to upload permanent file when upload",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.Path).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, turl.Path, gomock.Any()).Return("", assert.AnError)
+				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
+				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return("", assert.AnError)
 			},
 			input: &media.UploadFileInput{
 				URL: turl.String(),
@@ -435,7 +439,7 @@ func TestUploadProducerHeader(t *testing.T) {
 		{
 			name: "failed to download permanent file when download",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.Path).Return(nil, assert.AnError)
+				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(nil, assert.AnError)
 			},
 			input: &media.UploadFileInput{
 				URL: surl.String(),
@@ -461,6 +465,7 @@ func TestUploadProductMedia(t *testing.T) {
 	ipath := strings.Join([]string{entity.ProductMediaImagePath, "calmato.png"}, "/")
 	iturl, err := url.Parse(strings.Join([]string{tmpURL, ipath}, "/"))
 	require.NoError(t, err)
+	itpath := strings.TrimPrefix(iturl.Path, "/")
 	isurl, err := url.Parse(strings.Join([]string{storageURL, ipath}, "/"))
 	require.NoError(t, err)
 	// 映像関連
@@ -468,6 +473,7 @@ func TestUploadProductMedia(t *testing.T) {
 	vpath := strings.Join([]string{entity.ProductMediaVideoPath, "calmato.png"}, "/")
 	vturl, err := url.Parse(strings.Join([]string{tmpURL, vpath}, "/"))
 	require.NoError(t, err)
+	vtpath := strings.TrimPrefix(vturl.Path, "/")
 	vsurl, err := url.Parse(strings.Join([]string{storageURL, vpath}, "/"))
 	require.NoError(t, err)
 	// その他
@@ -483,8 +489,8 @@ func TestUploadProductMedia(t *testing.T) {
 		{
 			name: "success to upload permanent image file",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, iturl.Path).Return(image, nil)
-				mocks.storage.EXPECT().Upload(ctx, iturl.Path, gomock.Any()).Return(isurl.String(), nil)
+				mocks.tmp.EXPECT().Download(ctx, iturl.String()).Return(image, nil)
+				mocks.storage.EXPECT().Upload(ctx, itpath, gomock.Any()).Return(isurl.String(), nil)
 			},
 			input: &media.UploadFileInput{
 				URL: iturl.String(),
@@ -495,7 +501,7 @@ func TestUploadProductMedia(t *testing.T) {
 		{
 			name: "success to download permanent image file",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, isurl.Path).Return(image, nil)
+				mocks.storage.EXPECT().Download(ctx, isurl.String()).Return(image, nil)
 			},
 			input: &media.UploadFileInput{
 				URL: isurl.String(),
@@ -506,8 +512,8 @@ func TestUploadProductMedia(t *testing.T) {
 		{
 			name: "success to upload permanent video file",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, vturl.Path).Return(video, nil)
-				mocks.storage.EXPECT().Upload(ctx, vturl.Path, gomock.Any()).Return(vsurl.String(), nil)
+				mocks.tmp.EXPECT().Download(ctx, vturl.String()).Return(video, nil)
+				mocks.storage.EXPECT().Upload(ctx, vtpath, gomock.Any()).Return(vsurl.String(), nil)
 			},
 			input: &media.UploadFileInput{
 				URL: vturl.String(),
@@ -518,7 +524,7 @@ func TestUploadProductMedia(t *testing.T) {
 		{
 			name: "success to download permanent video file",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, vsurl.Path).Return(video, nil)
+				mocks.storage.EXPECT().Download(ctx, vsurl.String()).Return(video, nil)
 			},
 			input: &media.UploadFileInput{
 				URL: vsurl.String(),
@@ -554,7 +560,7 @@ func TestUploadProductMedia(t *testing.T) {
 		{
 			name: "failed to download temporary file when upload",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, iturl.Path).Return(nil, assert.AnError)
+				mocks.tmp.EXPECT().Download(ctx, iturl.String()).Return(nil, assert.AnError)
 			},
 			input: &media.UploadFileInput{
 				URL: iturl.String(),
@@ -565,8 +571,8 @@ func TestUploadProductMedia(t *testing.T) {
 		{
 			name: "failed to upload permanent file when upload",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, iturl.Path).Return(image, nil)
-				mocks.storage.EXPECT().Upload(ctx, iturl.Path, gomock.Any()).Return("", assert.AnError)
+				mocks.tmp.EXPECT().Download(ctx, iturl.String()).Return(image, nil)
+				mocks.storage.EXPECT().Upload(ctx, itpath, gomock.Any()).Return("", assert.AnError)
 			},
 			input: &media.UploadFileInput{
 				URL: iturl.String(),
@@ -577,7 +583,7 @@ func TestUploadProductMedia(t *testing.T) {
 		{
 			name: "failed to download permanent file when download",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, isurl.Path).Return(nil, assert.AnError)
+				mocks.storage.EXPECT().Download(ctx, isurl.String()).Return(nil, assert.AnError)
 			},
 			input: &media.UploadFileInput{
 				URL: isurl.String(),
@@ -602,6 +608,7 @@ func TestUploadProductTypeIcon(t *testing.T) {
 	path := strings.Join([]string{entity.ProductTypeIconPath, "calmato.png"}, "/")
 	turl, err := url.Parse(strings.Join([]string{tmpURL, path}, "/"))
 	require.NoError(t, err)
+	tpath := strings.TrimPrefix(turl.Path, "/")
 	surl, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
 	require.NoError(t, err)
 	uurl, err := url.Parse(strings.Join([]string{unknownURL, path}, "/"))
@@ -616,8 +623,8 @@ func TestUploadProductTypeIcon(t *testing.T) {
 		{
 			name: "success to upload permanent file",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.Path).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, turl.Path, gomock.Any()).Return(surl.String(), nil)
+				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
+				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return(surl.String(), nil)
 			},
 			input: &media.UploadFileInput{
 				URL: turl.String(),
@@ -628,7 +635,7 @@ func TestUploadProductTypeIcon(t *testing.T) {
 		{
 			name: "success to download permanent file",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.Path).Return(file, nil)
+				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(file, nil)
 			},
 			input: &media.UploadFileInput{
 				URL: surl.String(),
@@ -664,7 +671,7 @@ func TestUploadProductTypeIcon(t *testing.T) {
 		{
 			name: "failed to download temporary file when upload",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.Path).Return(nil, assert.AnError)
+				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(nil, assert.AnError)
 			},
 			input: &media.UploadFileInput{
 				URL: turl.String(),
@@ -675,8 +682,8 @@ func TestUploadProductTypeIcon(t *testing.T) {
 		{
 			name: "failed to upload permanent file when upload",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.Path).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, turl.Path, gomock.Any()).Return("", assert.AnError)
+				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
+				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return("", assert.AnError)
 			},
 			input: &media.UploadFileInput{
 				URL: turl.String(),
@@ -687,7 +694,7 @@ func TestUploadProductTypeIcon(t *testing.T) {
 		{
 			name: "failed to download permanent file when download",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.Path).Return(nil, assert.AnError)
+				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(nil, assert.AnError)
 			},
 			input: &media.UploadFileInput{
 				URL: surl.String(),
