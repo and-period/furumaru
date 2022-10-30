@@ -45,7 +45,13 @@ func (s *service) uploadFile(ctx context.Context, in *media.UploadFileInput, pre
 		return "", fmt.Errorf("%s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	// TODO: remove
-	s.logger.Debug("upload file", zap.Any("input", in), zap.Any("url", u), zap.Any("storage", s.storageURL()), zap.Any("tmp", s.tmpURL()))
+	s.logger.Debug("upload file",
+		zap.Any("input", in), zap.Any("url", u),
+		zap.Any("storage", s.storageURL()), zap.String("storageHost", s.storageURL().Host),
+		zap.Any("tmp", s.tmpURL()), zap.String("tmpHost", s.tmpURL().Host),
+		zap.Bool("storageMatch", s.storageURL().Host == u.Host),
+		zap.Bool("tmpMatch", s.tmpURL().Host == u.Host),
+	)
 	var path string
 	switch u.Host {
 	case s.tmpURL().Host:
