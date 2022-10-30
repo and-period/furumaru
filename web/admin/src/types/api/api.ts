@@ -3237,13 +3237,13 @@ export interface ScheduleResponse {
      */
     'coordinatorId': string;
     /**
-     * 配信設定ID
+     * 配送設定ID
      * @type {string}
      * @memberof ScheduleResponse
      */
     'shippingId': string;
     /**
-     * 配信設定名
+     * 配送設定名
      * @type {string}
      * @memberof ScheduleResponse
      */
