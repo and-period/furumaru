@@ -4,10 +4,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/json"
-	"errors"
 	"io"
-	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -65,20 +62,12 @@ func (w *wrapResponseWriter) WriteString(s string) (int, error) {
 }
 
 func (w *wrapResponseWriter) errorResponse() (*util.ErrorResponse, error) {
-	var res *util.ErrorResponse
 	r, err := gzip.NewReader(w.body)
-	if err == nil {
-		return res, json.NewDecoder(r).Decode(&res)
-	}
-	if !errors.Is(err, gzip.ErrHeader) {
-		return nil, err
-	}
-	buf, err := ioutil.ReadAll(w.body)
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("debug log: buf=%s", string(buf))
-	return res, json.Unmarshal(buf, res)
+	var res *util.ErrorResponse
+	return res, json.NewDecoder(r).Decode(&res)
 }
 
 func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
@@ -164,9 +153,15 @@ func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 			details: string(details),
 		}
 		msg := newAlertMessage(params)
-		if err := reg.slack.SendMessage(ctx, msg); err != nil {
-			logger.Error("Failed to alert message", zap.Error(err))
-		}
+
+		reg.waitGroup.Add(1)
+		go func(msg slack.MsgOption) {
+			defer reg.waitGroup.Done()
+			err := reg.slack.SendMessage(ctx, msg)
+			if err != nil {
+				logger.Error("Failed to alert message", zap.Error(err))
+			}
+		}(msg)
 	}
 }
 
