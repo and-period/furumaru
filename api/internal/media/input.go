@@ -13,3 +13,8 @@ type GenerateFileInput struct {
 type UploadFileInput struct {
 	URL string `validate:"required,url"`
 }
+
+type ResizeFileInput struct {
+	TargetID string   `validate:"required"`
+	URLs     []string `validate:"min=1,dive,required,url"`
+}

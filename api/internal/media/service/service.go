@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"github.com/and-period/furumaru/api/internal/media"
+	"github.com/and-period/furumaru/api/pkg/sqs"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/and-period/furumaru/api/pkg/validator"
 	"go.uber.org/zap"
@@ -20,6 +21,7 @@ type Params struct {
 	WaitGroup *sync.WaitGroup
 	Tmp       storage.Bucket
 	Storage   storage.Bucket
+	Producer  sqs.Producer
 }
 
 type service struct {
@@ -30,6 +32,7 @@ type service struct {
 	storage    storage.Bucket
 	tmpURL     func() *url.URL
 	storageURL func() *url.URL
+	producer   sqs.Producer
 }
 
 type options struct {
@@ -75,5 +78,6 @@ func NewService(params *Params, opts ...Option) (media.Service, error) {
 		tmpURL:     tmpURL,
 		storage:    params.Storage,
 		storageURL: storageURL,
+		producer:   params.Producer,
 	}, nil
 }

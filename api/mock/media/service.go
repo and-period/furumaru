@@ -140,6 +140,90 @@ func (mr *MockServiceMockRecorder) GenerateProductTypeIcon(ctx, in interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateProductTypeIcon", reflect.TypeOf((*MockService)(nil).GenerateProductTypeIcon), ctx, in)
 }
 
+// ResizeCoordinatorHeader mocks base method.
+func (m *MockService) ResizeCoordinatorHeader(ctx context.Context, in *media.ResizeFileInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ResizeCoordinatorHeader", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ResizeCoordinatorHeader indicates an expected call of ResizeCoordinatorHeader.
+func (mr *MockServiceMockRecorder) ResizeCoordinatorHeader(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResizeCoordinatorHeader", reflect.TypeOf((*MockService)(nil).ResizeCoordinatorHeader), ctx, in)
+}
+
+// ResizeCoordinatorThumbnail mocks base method.
+func (m *MockService) ResizeCoordinatorThumbnail(ctx context.Context, in *media.ResizeFileInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ResizeCoordinatorThumbnail", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ResizeCoordinatorThumbnail indicates an expected call of ResizeCoordinatorThumbnail.
+func (mr *MockServiceMockRecorder) ResizeCoordinatorThumbnail(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResizeCoordinatorThumbnail", reflect.TypeOf((*MockService)(nil).ResizeCoordinatorThumbnail), ctx, in)
+}
+
+// ResizeProducerHeader mocks base method.
+func (m *MockService) ResizeProducerHeader(ctx context.Context, in *media.ResizeFileInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ResizeProducerHeader", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ResizeProducerHeader indicates an expected call of ResizeProducerHeader.
+func (mr *MockServiceMockRecorder) ResizeProducerHeader(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResizeProducerHeader", reflect.TypeOf((*MockService)(nil).ResizeProducerHeader), ctx, in)
+}
+
+// ResizeProducerThumbnail mocks base method.
+func (m *MockService) ResizeProducerThumbnail(ctx context.Context, in *media.ResizeFileInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ResizeProducerThumbnail", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ResizeProducerThumbnail indicates an expected call of ResizeProducerThumbnail.
+func (mr *MockServiceMockRecorder) ResizeProducerThumbnail(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResizeProducerThumbnail", reflect.TypeOf((*MockService)(nil).ResizeProducerThumbnail), ctx, in)
+}
+
+// ResizeProductMedia mocks base method.
+func (m *MockService) ResizeProductMedia(ctx context.Context, in *media.ResizeFileInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ResizeProductMedia", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ResizeProductMedia indicates an expected call of ResizeProductMedia.
+func (mr *MockServiceMockRecorder) ResizeProductMedia(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResizeProductMedia", reflect.TypeOf((*MockService)(nil).ResizeProductMedia), ctx, in)
+}
+
+// ResizeProductTypeIcon mocks base method.
+func (m *MockService) ResizeProductTypeIcon(ctx context.Context, in *media.ResizeFileInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ResizeProductTypeIcon", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ResizeProductTypeIcon indicates an expected call of ResizeProductTypeIcon.
+func (mr *MockServiceMockRecorder) ResizeProductTypeIcon(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResizeProductTypeIcon", reflect.TypeOf((*MockService)(nil).ResizeProductTypeIcon), ctx, in)
+}
+
 // UploadCoordinatorHeader mocks base method.
 func (m *MockService) UploadCoordinatorHeader(ctx context.Context, in *media.UploadFileInput) (string, error) {
 	m.ctrl.T.Helper()
