@@ -3237,13 +3237,13 @@ export interface ScheduleResponse {
      */
     'coordinatorId': string;
     /**
-     * 配信設定ID
+     * 配送設定ID
      * @type {string}
      * @memberof ScheduleResponse
      */
     'shippingId': string;
     /**
-     * 配信設定名
+     * 配送設定名
      * @type {string}
      * @memberof ScheduleResponse
      */
@@ -4345,6 +4345,103 @@ export interface UploadVideoResponse {
      * @memberof UploadVideoResponse
      */
     'url': string;
+}
+/**
+ * 
+ * @export
+ * @interface UserResponse
+ */
+export interface UserResponse {
+    /**
+     * 購入者ID
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'id': string;
+    /**
+     * 姓
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'lastname': string;
+    /**
+     * 名
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'firstname': string;
+    /**
+     * 姓(かな)
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'lastnameKana': string;
+    /**
+     * 名(かな)
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'firstnameKana': string;
+    /**
+     * 会員登録フラグ
+     * @type {boolean}
+     * @memberof UserResponse
+     */
+    'registered': boolean;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'email': string;
+    /**
+     * 電話番号 (国際番号 + 電話番号)
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'phoneNumber': string;
+    /**
+     * 郵便番号
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'postalCode': string;
+    /**
+     * 都道府県
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'prefecture': string;
+    /**
+     * 市区町村
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'city': string;
+    /**
+     * 町名・番地
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'addressLine1': string;
+    /**
+     * ビル名・号室など
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'addressLine2': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof UserResponse
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof UserResponse
+     */
+    'updatedAt': number;
 }
 /**
  * 
@@ -10910,6 +11007,44 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * 
          * @summary 購入者一覧
+         * @param {string} userId 購入者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetUser: async (userId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('v1GetUser', 'userId', userId)
+            const localVarPath = `/v1/users/{userId}`
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 購入者一覧
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {*} [options] Override http request option.
@@ -10964,6 +11099,17 @@ export const UserApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary 購入者一覧
+         * @param {string} userId 購入者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetUser(userId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetUser(userId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 購入者一覧
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {*} [options] Override http request option.
@@ -10986,6 +11132,16 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
         /**
          * 
          * @summary 購入者一覧
+         * @param {string} userId 購入者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetUser(userId: string, options?: any): AxiosPromise<UserResponse> {
+            return localVarFp.v1GetUser(userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 購入者一覧
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {*} [options] Override http request option.
@@ -11004,6 +11160,18 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
  * @extends {BaseAPI}
  */
 export class UserApi extends BaseAPI {
+    /**
+     * 
+     * @summary 購入者一覧
+     * @param {string} userId 購入者ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public v1GetUser(userId: string, options?: AxiosRequestConfig) {
+        return UserApiFp(this.configuration).v1GetUser(userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary 購入者一覧

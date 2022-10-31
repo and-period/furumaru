@@ -1,10 +1,8 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
@@ -64,20 +62,17 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 }
 
 func (h *handler) GetUser(ctx *gin.Context) {
-	// TODO: remove アラート通知テスト用
-	httpError(ctx, fmt.Errorf("handler: api alert test: %w", exception.ErrInternal))
+	in := &user.GetUserInput{
+		UserID: util.GetParam(ctx, "userId"),
+	}
+	uuser, err := h.user.GetUser(ctx, in)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
 
-	// in := &user.GetUserInput{
-	// 	UserID: util.GetParam(ctx, "userId"),
-	// }
-	// uuser, err := h.user.GetUser(ctx, in)
-	// if err != nil {
-	// 	httpError(ctx, err)
-	// 	return
-	// }
-
-	// res := &response.UserResponse{
-	// 	User: service.NewUser(uuser).Response(),
-	// }
-	// ctx.JSON(http.StatusOK, res)
+	res := &response.UserResponse{
+		User: service.NewUser(uuser).Response(),
+	}
+	ctx.JSON(http.StatusOK, res)
 }

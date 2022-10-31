@@ -114,90 +114,90 @@ func TestListUsers(t *testing.T) {
 	}
 }
 
-// func TestGetUser(t *testing.T) {
-// 	t.Parallel()
+func TestGetUser(t *testing.T) {
+	t.Parallel()
 
-// 	userIn := &user.GetUserInput{
-// 		UserID: "user-id",
-// 	}
-// 	user := &uentity.User{
-// 		ID:         "user-id",
-// 		Registered: true,
-// 		CreatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
-// 		UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
-// 		Member: entity.Member{
-// 			AccountID:    "",
-// 			CognitoID:    "cognito-id",
-// 			Username:     "",
-// 			ProviderType: entity.ProviderTypeEmail,
-// 			Email:        "test-user@and-period.jp",
-// 			PhoneNumber:  "+810000000000",
-// 			ThumbnailURL: "https://and-period.jp/thumbnail.png",
-// 			CreatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
-// 			UpdatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
-// 			VerifiedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
-// 		},
-// 		Customer: entity.Customer{
-// 			Lastname:      "&.",
-// 			Firstname:     "購入者",
-// 			LastnameKana:  "あんどどっと",
-// 			FirstnameKana: "こうにゅうしゃ",
-// 		},
-// 	}
+	userIn := &user.GetUserInput{
+		UserID: "user-id",
+	}
+	user := &uentity.User{
+		ID:         "user-id",
+		Registered: true,
+		CreatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		Member: entity.Member{
+			AccountID:    "",
+			CognitoID:    "cognito-id",
+			Username:     "",
+			ProviderType: entity.ProviderTypeEmail,
+			Email:        "test-user@and-period.jp",
+			PhoneNumber:  "+810000000000",
+			ThumbnailURL: "https://and-period.jp/thumbnail.png",
+			CreatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			VerifiedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		},
+		Customer: entity.Customer{
+			Lastname:      "&.",
+			Firstname:     "購入者",
+			LastnameKana:  "あんどどっと",
+			FirstnameKana: "こうにゅうしゃ",
+		},
+	}
 
-// 	tests := []struct {
-// 		name   string
-// 		setup  func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
-// 		userID string
-// 		expect *testResponse
-// 	}{
-// 		{
-// 			name: "success",
-// 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-// 				mocks.user.EXPECT().GetUser(gomock.Any(), userIn).Return(user, nil)
-// 			},
-// 			userID: "user-id",
-// 			expect: &testResponse{
-// 				code: http.StatusOK,
-// 				body: &response.UserResponse{
-// 					User: &response.User{
-// 						ID:            "user-id",
-// 						Lastname:      "&.",
-// 						Firstname:     "購入者",
-// 						LastnameKana:  "あんどどっと",
-// 						FirstnameKana: "こうにゅうしゃ",
-// 						Registered:    true,
-// 						Email:         "test-user@and-period.jp",
-// 						PhoneNumber:   "+810000000000",
-// 						PostalCode:    "",
-// 						Prefecture:    "",
-// 						City:          "",
-// 						AddressLine1:  "",
-// 						AddressLine2:  "",
-// 						CreatedAt:     1640962800,
-// 						UpdatedAt:     1640962800,
-// 					},
-// 				},
-// 			},
-// 		},
-// 		{
-// 			name: "failed to get user",
-// 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-// 				mocks.user.EXPECT().GetUser(gomock.Any(), userIn).Return(nil, errmock)
-// 			},
-// 			userID: "user-id",
-// 			expect: &testResponse{
-// 				code: http.StatusInternalServerError,
-// 			},
-// 		},
-// 	}
+	tests := []struct {
+		name   string
+		setup  func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		userID string
+		expect *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().GetUser(gomock.Any(), userIn).Return(user, nil)
+			},
+			userID: "user-id",
+			expect: &testResponse{
+				code: http.StatusOK,
+				body: &response.UserResponse{
+					User: &response.User{
+						ID:            "user-id",
+						Lastname:      "&.",
+						Firstname:     "購入者",
+						LastnameKana:  "あんどどっと",
+						FirstnameKana: "こうにゅうしゃ",
+						Registered:    true,
+						Email:         "test-user@and-period.jp",
+						PhoneNumber:   "+810000000000",
+						PostalCode:    "",
+						Prefecture:    "",
+						City:          "",
+						AddressLine1:  "",
+						AddressLine2:  "",
+						CreatedAt:     1640962800,
+						UpdatedAt:     1640962800,
+					},
+				},
+			},
+		},
+		{
+			name: "failed to get user",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().GetUser(gomock.Any(), userIn).Return(nil, errmock)
+			},
+			userID: "user-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+	}
 
-// 	for _, tt := range tests {
-// 		tt := tt
-// 		t.Run(tt.name, func(t *testing.T) {
-// 			const format = "/v1/users/%s"
-// 			path := fmt.Sprintf(format, tt.userID)
-// 			testGet(t, tt.setup, tt.expect, path)
-// 		})
-// 	}
-// }
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const format = "/v1/users/%s"
+			path := fmt.Sprintf(format, tt.userID)
+			testGet(t, tt.setup, tt.expect, path)
+		})
+	}
+}

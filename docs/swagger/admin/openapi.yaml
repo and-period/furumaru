@@ -134,6 +134,8 @@ paths:
   # User
   /v1/users:
     $ref: './paths/v1/users/index.yaml'
+  /v1/users/{userId}:
+    $ref: './paths/v1/users/_userId/index.yaml'
   # Upload
   /v1/upload/coordinators/header:
     $ref: './paths/v1/upload/coordinators/header.yaml'
@@ -290,6 +292,8 @@ components:
       $ref: './components/schemas/v1/order.response.yaml#/orderResponse'
     v1OrdersResponse:
       $ref: './components/schemas/v1/order.response.yaml#/ordersResponse'
+    v1UserResponse:
+      $ref: './components/schemas/v1/user.response.yaml#/userResponse'
     v1UsersResponse:
       $ref: './components/schemas/v1/user.response.yaml#/usersResponse'
     v1UploadImageResponse:
