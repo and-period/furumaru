@@ -329,6 +329,8 @@ func TestCreateCoordinator(t *testing.T) {
 						return nil
 					})
 				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(errmock)
+				mocks.media.EXPECT().ResizeCoordinatorThumbnail(gomock.Any(), gomock.Any()).Return(errmock)
+				mocks.media.EXPECT().ResizeCoordinatorHeader(gomock.Any(), gomock.Any()).Return(errmock)
 			},
 			input: &user.CreateCoordinatorInput{
 				Lastname:         "&.",
@@ -365,8 +367,8 @@ func TestCreateCoordinator(t *testing.T) {
 				FirstnameKana:    "すたっふ",
 				CompanyName:      "&.",
 				StoreName:        "&.農園",
-				ThumbnailURL:     "https://and-period.jp/thumbnail.png",
-				HeaderURL:        "https://and-period.jp/header.png",
+				ThumbnailURL:     "",
+				HeaderURL:        "",
 				TwitterAccount:   "twitter-id",
 				InstagramAccount: "instgram-id",
 				FacebookAccount:  "facebook-id",
@@ -427,6 +429,33 @@ func TestCreateCoordinator(t *testing.T) {
 func TestUpdateCoordinator(t *testing.T) {
 	t.Parallel()
 
+	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
+	coordinator := &entity.Coordinator{
+		Admin: entity.Admin{
+			ID:            "admin-id",
+			Role:          entity.AdminRoleCoordinator,
+			Lastname:      "&.",
+			Firstname:     "スタッフ",
+			LastnameKana:  "あんどぴりおど",
+			FirstnameKana: "すたっふ",
+			Email:         "test-admin@and-period.jp",
+		},
+		AdminID:          "admin-id",
+		PhoneNumber:      "+819012345678",
+		StoreName:        "&.農園",
+		ThumbnailURL:     "https://and-period.jp/thumbnail.png",
+		HeaderURL:        "https://and-period.jp/header.png",
+		TwitterAccount:   "twitter-account",
+		InstagramAccount: "instagram-account",
+		FacebookAccount:  "facebook-account",
+		PostalCode:       "1000014",
+		Prefecture:       "東京都",
+		City:             "千代田区",
+		AddressLine1:     "永田町1-7-1",
+		AddressLine2:     "",
+		CreatedAt:        now,
+		UpdatedAt:        now,
+	}
 	params := &database.UpdateCoordinatorParams{
 		Lastname:         "&.",
 		Firstname:        "スタッフ",
@@ -456,7 +485,46 @@ func TestUpdateCoordinator(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Update(ctx, "coordinator-id", params).Return(nil)
+				params := *params
+				params.ThumbnailURL = "https://tmp.and-period.jp/thumbnail.png"
+				params.HeaderURL = "https://tmp.and-period.jp/header.png"
+				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
+				mocks.db.Coordinator.EXPECT().Update(ctx, "coordinator-id", &params).Return(nil)
+				mocks.media.EXPECT().ResizeCoordinatorThumbnail(gomock.Any(), gomock.Any()).Return(errmock)
+				mocks.media.EXPECT().ResizeCoordinatorHeader(gomock.Any(), gomock.Any()).Return(errmock)
+			},
+			input: &user.UpdateCoordinatorInput{
+				CoordinatorID:    "coordinator-id",
+				Lastname:         "&.",
+				Firstname:        "スタッフ",
+				LastnameKana:     "あんどぴりおど",
+				FirstnameKana:    "すたっふ",
+				CompanyName:      "&.株式会社",
+				StoreName:        "&.農園",
+				ThumbnailURL:     "https://tmp.and-period.jp/thumbnail.png",
+				HeaderURL:        "https://tmp.and-period.jp/header.png",
+				TwitterAccount:   "twitter-id",
+				InstagramAccount: "instagram-id",
+				FacebookAccount:  "facebook-id",
+				PhoneNumber:      "+819012345678",
+				PostalCode:       "1000014",
+				Prefecture:       "東京都",
+				City:             "千代田区",
+				AddressLine1:     "永田町1-7-1",
+				AddressLine2:     "",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.UpdateCoordinatorInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get coordinator",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(nil, errmock)
 			},
 			input: &user.UpdateCoordinatorInput{
 				CoordinatorID:    "coordinator-id",
@@ -478,17 +546,12 @@ func TestUpdateCoordinator(t *testing.T) {
 				AddressLine1:     "永田町1-7-1",
 				AddressLine2:     "",
 			},
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &user.UpdateCoordinatorInput{},
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: exception.ErrUnknown,
 		},
 		{
 			name: "failed to update coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
 				mocks.db.Coordinator.EXPECT().Update(ctx, "coordinator-id", params).Return(errmock)
 			},
 			input: &user.UpdateCoordinatorInput{

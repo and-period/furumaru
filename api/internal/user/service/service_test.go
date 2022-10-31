@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/user/database"
+	mock_media "github.com/and-period/furumaru/api/mock/media"
 	mock_messenger "github.com/and-period/furumaru/api/mock/messenger"
 	mock_cognito "github.com/and-period/furumaru/api/mock/pkg/cognito"
 	mock_database "github.com/and-period/furumaru/api/mock/user/database"
@@ -24,6 +25,7 @@ type mocks struct {
 	adminAuth *mock_cognito.MockClient
 	userAuth  *mock_cognito.MockClient
 	messenger *mock_messenger.MockService
+	media     *mock_media.MockService
 }
 
 type dbMocks struct {
@@ -57,6 +59,7 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 		adminAuth: mock_cognito.NewMockClient(ctrl),
 		userAuth:  mock_cognito.NewMockClient(ctrl),
 		messenger: mock_messenger.NewMockService(ctrl),
+		media:     mock_media.NewMockService(ctrl),
 	}
 }
 
@@ -91,6 +94,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		AdminAuth: mocks.adminAuth,
 		UserAuth:  mocks.userAuth,
 		Messenger: mocks.messenger,
+		Media:     mocks.media,
 	}
 	service := NewService(params).(*service)
 	service.now = func() time.Time {

@@ -184,7 +184,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	if err != nil {
 		return nil, err
 	}
-	userService, err := newUserService(params, messengerService)
+	userService, err := newUserService(params, mediaService, messengerService)
 	if err != nil {
 		return nil, err
 	}
@@ -328,7 +328,7 @@ func newMessengerService(p *params) (messenger.Service, error) {
 	dbParams := &messengerdb.Params{
 		Database: mysql,
 	}
-	user, err := newUserService(p, nil)
+	user, err := newUserService(p, nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -343,7 +343,7 @@ func newMessengerService(p *params) (messenger.Service, error) {
 	return messengersrv.NewService(params, messengersrv.WithLogger(p.logger)), nil
 }
 
-func newUserService(p *params, messenger messenger.Service) (user.Service, error) {
+func newUserService(p *params, media media.Service, messenger messenger.Service) (user.Service, error) {
 	mysql, err := newDatabase("users", p)
 	if err != nil {
 		return nil, err
@@ -357,6 +357,7 @@ func newUserService(p *params, messenger messenger.Service) (user.Service, error
 		AdminAuth: p.adminAuth,
 		UserAuth:  p.userAuth,
 		Messenger: messenger,
+		Media:     media,
 	}
 	return usersrv.NewService(params, usersrv.WithLogger(p.logger)), nil
 }
