@@ -74,10 +74,10 @@ func (w *wrapResponseWriter) errorResponse() (*util.ErrorResponse, error) {
 		return nil, err
 	}
 	buf, err := ioutil.ReadAll(w.body)
-	log.Printf("debug log.\nw.body=%#v\ngzip.Reader=%#v\nbuf=%#v", w.body, r, buf)
 	if err != nil {
 		return nil, err
 	}
+	log.Printf("debug log: buf=%s", string(buf))
 	return res, json.Unmarshal(buf, res)
 }
 
