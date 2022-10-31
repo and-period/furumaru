@@ -14,6 +14,7 @@ import (
 	"sync"
 	"testing"
 
+	mock_sqs "github.com/and-period/furumaru/api/mock/pkg/sqs"
 	mock_storage "github.com/and-period/furumaru/api/mock/pkg/storage"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -28,16 +29,18 @@ var (
 )
 
 type mocks struct {
-	tmp     *mock_storage.MockBucket
-	storage *mock_storage.MockBucket
+	tmp      *mock_storage.MockBucket
+	storage  *mock_storage.MockBucket
+	producer *mock_sqs.MockProducer
 }
 
 type testCaller func(ctx context.Context, t *testing.T, service *service)
 
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
-		tmp:     mock_storage.NewMockBucket(ctrl),
-		storage: mock_storage.NewMockBucket(ctrl),
+		tmp:      mock_storage.NewMockBucket(ctrl),
+		storage:  mock_storage.NewMockBucket(ctrl),
+		producer: mock_sqs.NewMockProducer(ctrl),
 	}
 }
 
@@ -46,6 +49,7 @@ func newService(mocks *mocks) *service {
 		WaitGroup: &sync.WaitGroup{},
 		Tmp:       mocks.tmp,
 		Storage:   mocks.storage,
+		Producer:  mocks.producer,
 	}
 	tmpHost, _ := url.Parse(tmpURL)
 	storageHost, _ := url.Parse(storageURL)

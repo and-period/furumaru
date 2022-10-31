@@ -56,7 +56,8 @@ type params struct {
 	tmpStorage       storage.Bucket
 	adminAuth        cognito.Client
 	userAuth         cognito.Client
-	producer         sqs.Producer
+	messengerQueue   sqs.Producer
+	mediaQueue       sqs.Producer
 	slack            slack.Client
 	newRelic         *newrelic.Application
 	receiver         stripe.Receiver
@@ -124,10 +125,14 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	params.userAuth = cognito.NewClient(awscfg, userAuthParams)
 
 	// Amazon SQSの設定
-	sqsParams := &sqs.Params{
-		QueueURL: conf.SQSQueueURL,
+	messengerSQSParams := &sqs.Params{
+		QueueURL: conf.SQSMessengerQueueURL,
 	}
-	params.producer = sqs.NewProducer(awscfg, sqsParams, sqs.WithDryRun(conf.SQSMockEnabled))
+	params.messengerQueue = sqs.NewProducer(awscfg, messengerSQSParams, sqs.WithDryRun(conf.SQSMockEnabled))
+	mediaSQSParams := &sqs.Params{
+		QueueURL: conf.SQSMediaQueueURL,
+	}
+	params.mediaQueue = sqs.NewProducer(awscfg, mediaSQSParams, sqs.WithDryRun(conf.SQSMockEnabled))
 
 	// New Relicの設定
 	if params.newRelicLicense != "" {
@@ -310,6 +315,7 @@ func newMediaService(p *params) (media.Service, error) {
 		WaitGroup: p.waitGroup,
 		Storage:   p.storage,
 		Tmp:       p.tmpStorage,
+		Producer:  p.mediaQueue,
 	}
 	return mediasrv.NewService(params, mediasrv.WithLogger(p.logger))
 }
@@ -328,7 +334,7 @@ func newMessengerService(p *params) (messenger.Service, error) {
 	}
 	params := &messengersrv.Params{
 		WaitGroup:   p.waitGroup,
-		Producer:    p.producer,
+		Producer:    p.messengerQueue,
 		AdminWebURL: p.adminWebURL,
 		UserWebURL:  p.userWebURL,
 		Database:    messengerdb.NewDatabase(dbParams),
