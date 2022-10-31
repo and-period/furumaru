@@ -2,9 +2,11 @@ package cmd
 
 import (
 	"bytes"
-	"compress/zlib"
+	"compress/gzip"
 	"encoding/json"
+	"errors"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
@@ -62,12 +64,19 @@ func (w *wrapResponseWriter) WriteString(s string) (int, error) {
 }
 
 func (w *wrapResponseWriter) errorResponse() (*util.ErrorResponse, error) {
-	r, err := zlib.NewReader(w.body)
+	var res *util.ErrorResponse
+	r, err := gzip.NewReader(w.body)
+	if err == nil {
+		return res, json.NewDecoder(r).Decode(&res)
+	}
+	if !errors.Is(err, gzip.ErrHeader) {
+		return nil, err
+	}
+	buf, err := ioutil.ReadAll(w.body)
 	if err != nil {
 		return nil, err
 	}
-	var res *util.ErrorResponse
-	return res, json.NewDecoder(r).Decode(&res)
+	return res, json.Unmarshal(buf, res)
 }
 
 func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
