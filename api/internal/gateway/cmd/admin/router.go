@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"bytes"
-	"compress/gzip"
+	"compress/zlib"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -62,7 +62,7 @@ func (w *wrapResponseWriter) WriteString(s string) (int, error) {
 }
 
 func (w *wrapResponseWriter) errorResponse() (*util.ErrorResponse, error) {
-	r, err := gzip.NewReader(w.body)
+	r, err := zlib.NewReader(w.body)
 	if err != nil {
 		return nil, err
 	}
