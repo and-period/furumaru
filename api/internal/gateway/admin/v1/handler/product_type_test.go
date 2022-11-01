@@ -96,6 +96,22 @@ func TestListProductTypes(t *testing.T) {
 			},
 		},
 		{
+			name: "success empty",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				productTypes := sentity.ProductTypes{}
+				mocks.store.EXPECT().ListProductTypes(gomock.Any(), typesIn).Return(productTypes, int64(0), nil)
+			},
+			categoryID: "category-id",
+			query:      "?name=いも",
+			expect: &testResponse{
+				code: http.StatusOK,
+				body: &response.ProductTypesResponse{
+					ProductTypes: []*response.ProductType{},
+					Total:        0,
+				},
+			},
+		},
+		{
 			name: "success without category id",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				typesIn := &store.ListProductTypesInput{

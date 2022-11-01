@@ -102,6 +102,21 @@ func TestListNotifications(t *testing.T) {
 			},
 		},
 		{
+			name: "success empty",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				notifications := mentity.Notifications{}
+				mocks.messenger.EXPECT().ListNotifications(gomock.Any(), notificationsIn).Return(notifications, int64(0), nil)
+			},
+			query: "?since=1640962800&until=1640962800",
+			expect: &testResponse{
+				code: http.StatusOK,
+				body: &response.NotificationsResponse{
+					Notifications: []*response.Notification{},
+					Total:         0,
+				},
+			},
+		},
+		{
 			name:  "invalid limit",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
 			query: "?limit=a",

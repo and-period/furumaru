@@ -56,6 +56,13 @@ func (h *handler) ListProductTypes(ctx *gin.Context) {
 		return
 	}
 	productTypes := service.NewProductTypes(sproductTypes)
+	if len(productTypes) == 0 {
+		res := &response.ProductTypesResponse{
+			ProductTypes: []*response.ProductType{},
+		}
+		ctx.JSON(http.StatusOK, res)
+		return
+	}
 
 	categoriesIn := &store.MultiGetCategoriesInput{
 		CategoryIDs: productTypes.CategoryIDs(),

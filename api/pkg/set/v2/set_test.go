@@ -118,3 +118,9 @@ func TestSet_Remove(t *testing.T) {
 	set.Remove(1)
 	assert.ElementsMatch(t, []int64{2, 3}, set.Slice())
 }
+
+func TestSet_Slice(t *testing.T) {
+	t.Parallel()
+	set := New([]string{"test01", "", "test02"}...)
+	assert.ElementsMatch(t, []string{"test01", "test02"}, set.Slice())
+}

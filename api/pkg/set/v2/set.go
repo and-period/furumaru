@@ -95,8 +95,12 @@ func (s *Set[T]) Remove(v T) *Set[T] {
 
 // Slice - Sliceとして返す
 func (s *Set[T]) Slice() []T {
+	var zero T
 	res := make([]T, 0, s.Len())
 	for v := range s.values {
+		if v == zero {
+			continue
+		}
 		res = append(res, v)
 	}
 	return res
