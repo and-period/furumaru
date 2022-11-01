@@ -3,6 +3,7 @@ package ivs
 import (
 	"context"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ivs"
 )
 
@@ -12,7 +13,7 @@ type GetStreamParams struct {
 
 func (c *client) GetStream(ctx context.Context, params *GetStreamParams) (*ivs.GetStreamOutput, error) {
 	in := &ivs.GetStreamInput{
-		ChannelArn: &params.ChannelArn,
+		ChannelArn: aws.String(params.ChannelArn),
 	}
 	out, err := c.ivs.GetStream(ctx, in)
 	if err != nil {
