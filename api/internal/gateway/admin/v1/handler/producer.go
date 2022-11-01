@@ -259,38 +259,40 @@ func (h *handler) ResetProducerPassword(ctx *gin.Context) {
 }
 
 func (h *handler) RelatedProducer(ctx *gin.Context) {
-	req := &request.RelatedProducerRequest{}
-	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
-		return
-	}
-	if getRole(ctx) == service.AdminRoleCoordinator && !currentAdmin(ctx, req.CoordinatorID) {
-		forbidden(ctx, errors.New("handler: not authorized this coordinator"))
-		return
-	}
+	ctx.JSON(http.StatusNotImplemented, errors.New("deprecated"))
+	// req := &request.RelatedProducerRequest{}
+	// if err := ctx.BindJSON(req); err != nil {
+	// 	badRequest(ctx, err)
+	// 	return
+	// }
+	// if getRole(ctx) == service.AdminRoleCoordinator && !currentAdmin(ctx, req.CoordinatorID) {
+	// 	forbidden(ctx, errors.New("handler: not authorized this coordinator"))
+	// 	return
+	// }
 
-	in := &user.RelatedProducerInput{
-		ProducerID:    util.GetParam(ctx, "producerId"),
-		CoordinatorID: req.CoordinatorID,
-	}
-	if err := h.user.RelatedProducer(ctx, in); err != nil {
-		httpError(ctx, err)
-		return
-	}
+	// in := &user.RelatedProducerInput{
+	// 	ProducerID:    util.GetParam(ctx, "producerId"),
+	// 	CoordinatorID: req.CoordinatorID,
+	// }
+	// if err := h.user.RelatedProducer(ctx, in); err != nil {
+	// 	httpError(ctx, err)
+	// 	return
+	// }
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	// ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
 func (h *handler) UnrelatedProducer(ctx *gin.Context) {
-	in := &user.UnrelatedProducerInput{
-		ProducerID: util.GetParam(ctx, "producerId"),
-	}
-	if err := h.user.UnrelatedProducer(ctx, in); err != nil {
-		httpError(ctx, err)
-		return
-	}
+	ctx.JSON(http.StatusNotImplemented, errors.New("deprecated"))
+	// in := &user.UnrelatedProducerInput{
+	// 	ProducerID: util.GetParam(ctx, "producerId"),
+	// }
+	// if err := h.user.UnrelatedProducer(ctx, in); err != nil {
+	// 	httpError(ctx, err)
+	// 	return
+	// }
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	// ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
 func (h *handler) DeleteProducer(ctx *gin.Context) {

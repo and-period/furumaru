@@ -698,17 +698,22 @@ func (mr *MockProducerMockRecorder) Update(ctx, producerID, params interface{}) 
 }
 
 // UpdateRelationship mocks base method.
-func (m *MockProducer) UpdateRelationship(ctx context.Context, producerID, coordinatorID string) error {
+func (m *MockProducer) UpdateRelationship(ctx context.Context, coordinatorID string, producerIDs ...string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateRelationship", ctx, producerID, coordinatorID)
+	varargs := []interface{}{ctx, coordinatorID}
+	for _, a := range producerIDs {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "UpdateRelationship", varargs...)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // UpdateRelationship indicates an expected call of UpdateRelationship.
-func (mr *MockProducerMockRecorder) UpdateRelationship(ctx, producerID, coordinatorID interface{}) *gomock.Call {
+func (mr *MockProducerMockRecorder) UpdateRelationship(ctx, coordinatorID interface{}, producerIDs ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRelationship", reflect.TypeOf((*MockProducer)(nil).UpdateRelationship), ctx, producerID, coordinatorID)
+	varargs := append([]interface{}{ctx, coordinatorID}, producerIDs...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRelationship", reflect.TypeOf((*MockProducer)(nil).UpdateRelationship), varargs...)
 }
 
 // MockUser is a mock of User interface.

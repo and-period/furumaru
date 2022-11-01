@@ -67,3 +67,25 @@ func (ps Producers) IDs() []string {
 	}
 	return res
 }
+
+func (ps Producers) Related() Producers {
+	res := make(Producers, 0, len(ps))
+	for _, p := range ps {
+		if p.CoordinatorID == "" {
+			continue
+		}
+		res = append(res, p)
+	}
+	return res
+}
+
+func (ps Producers) Unrelated() Producers {
+	res := make(Producers, 0, len(ps))
+	for _, p := range ps {
+		if p.CoordinatorID != "" {
+			continue
+		}
+		res = append(res, p)
+	}
+	return res
+}

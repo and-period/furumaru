@@ -578,8 +578,8 @@ func TestProducer_UpdateRelationship(t *testing.T) {
 	}
 
 	type args struct {
-		producerID    string
 		coordinatorID string
+		producerIDs   []string
 	}
 	type want struct {
 		hasErr bool
@@ -607,8 +607,8 @@ func TestProducer_UpdateRelationship(t *testing.T) {
 				require.NoError(t, err)
 			},
 			args: args{
-				producerID:    "admin-id",
 				coordinatorID: "coordinator-id",
+				producerIDs:   []string{"admin-id"},
 			},
 			want: want{
 				hasErr: false,
@@ -631,33 +631,11 @@ func TestProducer_UpdateRelationship(t *testing.T) {
 				require.NoError(t, err)
 			},
 			args: args{
-				producerID:    "admin-id",
 				coordinatorID: "",
+				producerIDs:   []string{"admin-id"},
 			},
 			want: want{
 				hasErr: false,
-			},
-		},
-		{
-			name:  "not found producer",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
-			args: args{
-				producerID:    "other-id",
-				coordinatorID: "",
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-		{
-			name:  "not found coordinator",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
-			args: args{
-				producerID:    "admin-id",
-				coordinatorID: "other-id",
-			},
-			want: want{
-				hasErr: true,
 			},
 		},
 	}
@@ -673,7 +651,7 @@ func TestProducer_UpdateRelationship(t *testing.T) {
 			tt.setup(ctx, t, m)
 
 			db := &producer{db: m.db, now: now}
-			err = db.UpdateRelationship(ctx, tt.args.producerID, tt.args.coordinatorID)
+			err = db.UpdateRelationship(ctx, tt.args.coordinatorID, tt.args.producerIDs...)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}

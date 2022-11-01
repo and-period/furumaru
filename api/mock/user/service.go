@@ -513,18 +513,18 @@ func (mr *MockServiceMockRecorder) RegisterAdminDevice(ctx, in interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterAdminDevice", reflect.TypeOf((*MockService)(nil).RegisterAdminDevice), ctx, in)
 }
 
-// RelatedProducer mocks base method.
-func (m *MockService) RelatedProducer(ctx context.Context, in *user.RelatedProducerInput) error {
+// RelateProducers mocks base method.
+func (m *MockService) RelateProducers(ctx context.Context, in *user.RelateProducersInput) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RelatedProducer", ctx, in)
+	ret := m.ctrl.Call(m, "RelateProducers", ctx, in)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// RelatedProducer indicates an expected call of RelatedProducer.
-func (mr *MockServiceMockRecorder) RelatedProducer(ctx, in interface{}) *gomock.Call {
+// RelateProducers indicates an expected call of RelateProducers.
+func (mr *MockServiceMockRecorder) RelateProducers(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RelatedProducer", reflect.TypeOf((*MockService)(nil).RelatedProducer), ctx, in)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RelateProducers", reflect.TypeOf((*MockService)(nil).RelateProducers), ctx, in)
 }
 
 // ResetAdministratorPassword mocks base method.
@@ -627,18 +627,18 @@ func (mr *MockServiceMockRecorder) SignOutUser(ctx, in interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SignOutUser", reflect.TypeOf((*MockService)(nil).SignOutUser), ctx, in)
 }
 
-// UnrelatedProducer mocks base method.
-func (m *MockService) UnrelatedProducer(ctx context.Context, in *user.UnrelatedProducerInput) error {
+// UnrelateProducer mocks base method.
+func (m *MockService) UnrelateProducer(ctx context.Context, in *user.UnrelateProducerInput) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UnrelatedProducer", ctx, in)
+	ret := m.ctrl.Call(m, "UnrelateProducer", ctx, in)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// UnrelatedProducer indicates an expected call of UnrelatedProducer.
-func (mr *MockServiceMockRecorder) UnrelatedProducer(ctx, in interface{}) *gomock.Call {
+// UnrelateProducer indicates an expected call of UnrelateProducer.
+func (mr *MockServiceMockRecorder) UnrelateProducer(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UnrelatedProducer", reflect.TypeOf((*MockService)(nil).UnrelatedProducer), ctx, in)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UnrelateProducer", reflect.TypeOf((*MockService)(nil).UnrelateProducer), ctx, in)
 }
 
 // UpdateAdminEmail mocks base method.
