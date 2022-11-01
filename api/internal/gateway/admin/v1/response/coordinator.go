@@ -1,6 +1,6 @@
 package response
 
-// Coordinator - 仲介者情報
+// Coordinator - コーディネータ情報
 type Coordinator struct {
 	ID               string `json:"id"`               // 生産者ID
 	Lastname         string `json:"lastname"`         // 姓

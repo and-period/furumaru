@@ -11,6 +11,7 @@ import {
   ProductTypeApi,
   ProductTypesResponse,
   UpdateProductTypeRequest,
+  UploadImageResponse,
 } from '~/types/api'
 import {
   AuthError,
@@ -244,6 +245,57 @@ export const useProductTypeStore = defineStore('ProductType', {
         throw new InternalServerError(error)
       }
       this.fetchProductTypes()
+    },
+
+    /**
+     * 品目画像をアップロードする関数
+     * @param payload 品目画像のファイルオブジェクト
+     * @returns アップロード後の品目画像のパスを含んだオブジェクト
+     */
+    async uploadProductTypeIcon(payload: File): Promise<UploadImageResponse> {
+      try {
+        const authStore = useAuthStore()
+        const accessToken = authStore.accessToken
+        if (!accessToken) {
+          return Promise.reject(
+            new AuthError('認証エラー。再度ログインをしてください。')
+          )
+        }
+
+        const res = await this.apiClient(accessToken).v1UploadProductTypeIcon(
+          payload,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        )
+        return res.data
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          const statusCode = error.response.status
+          switch (statusCode) {
+            case 401:
+              return Promise.reject(
+                new AuthError('認証エラー。再度ログインをしてください', error)
+              )
+            case 400:
+              return Promise.reject(
+                new ValidationError(
+                  'このファイルはアップロードできません。',
+                  error
+                )
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+        throw new InternalServerError(error)
+      }
     },
   },
 })

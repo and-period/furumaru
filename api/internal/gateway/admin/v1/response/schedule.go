@@ -2,7 +2,7 @@ package response
 
 type Schedule struct {
 	ID            string `json:"id"`            // スケジュールID
-	CoordinatorID string `json:"coordinatorId"` // コーディネーターID
+	CoordinatorID string `json:"coordinatorId"` // コーディネータID
 	ShippingID    string `json:"shippingId"`    // 配送設定ID
 	ShippingName  string `json:"shippingName"`  // 配送設定名
 	Title         string `json:"title"`         // タイトル

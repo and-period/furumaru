@@ -136,11 +136,11 @@ export default defineComponent({
         icon: 'mdi-antenna',
         title: 'ライブ配信',
       },
-      {
-        to: '/analytics',
-        icon: 'mdi-poll',
-        title: '分析',
-      },
+      // {
+      //   to: '/analytics',
+      //   icon: 'mdi-poll',
+      //   title: '分析',
+      // },
       {
         to: '/customers',
         icon: 'mdi-account-details',

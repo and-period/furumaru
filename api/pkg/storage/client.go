@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -21,11 +22,18 @@ var (
 	ErrNotFound   = errors.New("s3: not found object")
 )
 
-const domain = "%s.s3.amazonaws.com"
+const (
+	scheme = "https"
+	domain = "%s.s3.amazonaws.com"
+)
 
 type Bucket interface {
 	// オブジェクトURLの生成
-	GenerateObjectURL(path string) string
+	GenerateObjectURL(path string) (string, error)
+	// S3 Bucketの接続先情報を取得
+	GetHost() (*url.URL, error)
+	// S3 BucketのFQDNを取得
+	GetFQDN() string
 	// S3 Bucketからオブジェクトを取得
 	Download(ctx context.Context, url string) (io.Reader, error)
 	// S3 Bucketからオブジェクトを取得とByte型へ変換
@@ -92,13 +100,22 @@ func NewBucket(cfg aws.Config, params *Params, opts ...Option) Bucket {
 	}
 }
 
-func (b *bucket) GenerateObjectURL(path string) string {
-	u := &url.URL{
-		Scheme: "https",
-		Host:   fmt.Sprintf(domain, aws.ToString(b.name)),
-		Path:   path,
+func (b *bucket) GenerateObjectURL(path string) (string, error) {
+	u, err := b.GetHost()
+	if err != nil {
+		return "", err
 	}
-	return u.String()
+	u.Path = path
+	return u.String(), nil
+}
+
+func (b *bucket) GetHost() (*url.URL, error) {
+	host := fmt.Sprintf("%s://%s", scheme, b.GetFQDN())
+	return url.Parse(host)
+}
+
+func (b *bucket) GetFQDN() string {
+	return fmt.Sprintf(domain, aws.ToString(b.name))
 }
 
 func (b *bucket) Download(ctx context.Context, url string) (io.Reader, error) {
@@ -139,7 +156,7 @@ func (b *bucket) Upload(ctx context.Context, path string, body io.Reader) (strin
 	if err != nil {
 		return "", err
 	}
-	return b.GenerateObjectURL(path), nil
+	return b.GenerateObjectURL(path)
 }
 
 func (b *bucket) generateKeyFromObjectURL(objectURL string) (string, error) {
@@ -147,5 +164,5 @@ func (b *bucket) generateKeyFromObjectURL(objectURL string) (string, error) {
 	if err != nil {
 		return "", ErrInvalidURL
 	}
-	return u.Path, nil
+	return strings.TrimPrefix(u.Path, "/"), nil // url.URLから取得したPathは / から始まるため
 }

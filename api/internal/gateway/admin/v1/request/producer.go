@@ -38,5 +38,5 @@ type UpdateProducerEmailRequest struct {
 }
 
 type RelatedProducerRequest struct {
-	CoordinatorID string `json:"coordinatorId,omitempty"` // 仲介者ID
+	CoordinatorID string `json:"coordinatorId,omitempty"` // コーディネータID
 }

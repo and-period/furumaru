@@ -7,6 +7,8 @@ import (
 
 	v1 "github.com/and-period/furumaru/api/internal/gateway/admin/v1/handler"
 	shandler "github.com/and-period/furumaru/api/internal/gateway/stripe/handler"
+	"github.com/and-period/furumaru/api/internal/media"
+	mediasrv "github.com/and-period/furumaru/api/internal/media/service"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database"
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
@@ -51,9 +53,11 @@ type params struct {
 	aws              aws.Config
 	secret           secret.Client
 	storage          storage.Bucket
+	tmpStorage       storage.Bucket
 	adminAuth        cognito.Client
 	userAuth         cognito.Client
-	producer         sqs.Producer
+	messengerQueue   sqs.Producer
+	mediaQueue       sqs.Producer
 	slack            slack.Client
 	newRelic         *newrelic.Application
 	receiver         stripe.Receiver
@@ -103,6 +107,10 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		Bucket: conf.S3Bucket,
 	}
 	params.storage = storage.NewBucket(awscfg, storageParams)
+	tmpStorageParams := &storage.Params{
+		Bucket: conf.S3TmpBucket,
+	}
+	params.tmpStorage = storage.NewBucket(awscfg, tmpStorageParams)
 
 	// Amazon Cognitoの設定
 	adminAuthParams := &cognito.Params{
@@ -117,10 +125,14 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	params.userAuth = cognito.NewClient(awscfg, userAuthParams)
 
 	// Amazon SQSの設定
-	sqsParams := &sqs.Params{
-		QueueURL: conf.SQSQueueURL,
+	messengerSQSParams := &sqs.Params{
+		QueueURL: conf.SQSMessengerQueueURL,
 	}
-	params.producer = sqs.NewProducer(awscfg, sqsParams, sqs.WithDryRun(conf.SQSMockEnabled))
+	params.messengerQueue = sqs.NewProducer(awscfg, messengerSQSParams, sqs.WithDryRun(conf.SQSMockEnabled))
+	mediaSQSParams := &sqs.Params{
+		QueueURL: conf.SQSMediaQueueURL,
+	}
+	params.mediaQueue = sqs.NewProducer(awscfg, mediaSQSParams, sqs.WithDryRun(conf.SQSMockEnabled))
 
 	// New Relicの設定
 	if params.newRelicLicense != "" {
@@ -164,11 +176,15 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	params.userWebURL = userWebURL
 
 	// Serviceの設定
+	mediaService, err := newMediaService(params)
+	if err != nil {
+		return nil, err
+	}
 	messengerService, err := newMessengerService(params)
 	if err != nil {
 		return nil, err
 	}
-	userService, err := newUserService(params, messengerService)
+	userService, err := newUserService(params, mediaService, messengerService)
 	if err != nil {
 		return nil, err
 	}
@@ -185,6 +201,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		User:      userService,
 		Store:     storeService,
 		Messenger: messengerService,
+		Media:     mediaService,
 	}
 	shandlerParams := &shandler.Params{
 		WaitGroup: params.waitGroup,
@@ -293,6 +310,16 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 	return cli, nil
 }
 
+func newMediaService(p *params) (media.Service, error) {
+	params := &mediasrv.Params{
+		WaitGroup: p.waitGroup,
+		Storage:   p.storage,
+		Tmp:       p.tmpStorage,
+		Producer:  p.mediaQueue,
+	}
+	return mediasrv.NewService(params, mediasrv.WithLogger(p.logger))
+}
+
 func newMessengerService(p *params) (messenger.Service, error) {
 	mysql, err := newDatabase("messengers", p)
 	if err != nil {
@@ -301,13 +328,13 @@ func newMessengerService(p *params) (messenger.Service, error) {
 	dbParams := &messengerdb.Params{
 		Database: mysql,
 	}
-	user, err := newUserService(p, nil)
+	user, err := newUserService(p, nil, nil)
 	if err != nil {
 		return nil, err
 	}
 	params := &messengersrv.Params{
 		WaitGroup:   p.waitGroup,
-		Producer:    p.producer,
+		Producer:    p.messengerQueue,
 		AdminWebURL: p.adminWebURL,
 		UserWebURL:  p.userWebURL,
 		Database:    messengerdb.NewDatabase(dbParams),
@@ -316,7 +343,7 @@ func newMessengerService(p *params) (messenger.Service, error) {
 	return messengersrv.NewService(params, messengersrv.WithLogger(p.logger)), nil
 }
 
-func newUserService(p *params, messenger messenger.Service) (user.Service, error) {
+func newUserService(p *params, media media.Service, messenger messenger.Service) (user.Service, error) {
 	mysql, err := newDatabase("users", p)
 	if err != nil {
 		return nil, err
@@ -330,6 +357,7 @@ func newUserService(p *params, messenger messenger.Service) (user.Service, error
 		AdminAuth: p.adminAuth,
 		UserAuth:  p.userAuth,
 		Messenger: messenger,
+		Media:     media,
 	}
 	return usersrv.NewService(params, usersrv.WithLogger(p.logger)), nil
 }

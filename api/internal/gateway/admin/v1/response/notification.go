@@ -22,7 +22,7 @@ const (
 	PostTargetUnknown      TargetType = 0 // 対象不明
 	PostTargetUsers        TargetType = 1 // ユーザー対象
 	PostTargetProducers    TargetType = 2 // 生産者対象
-	PostTargetCoordinators TargetType = 3 // コーディネーター対象
+	PostTargetCoordinators TargetType = 3 // コーディネータ対象
 )
 
 type NotificationResponse struct {

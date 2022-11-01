@@ -6,7 +6,7 @@ producerResponse:
       description: 生産者ID
     coordinatorId:
       type: string
-      description: 担当仲介者ID
+      description: 担当コーディネータID
     lastname:
       type: string
       description: 姓
@@ -109,7 +109,7 @@ producersResponse:
             description: システム管理者ID
           coordinatorId:
             type: string
-            description: 担当仲介者ID
+            description: 担当コーディネータID
           lastname:
             type: string
             description: 姓

@@ -9,9 +9,11 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/user"
 	set "github.com/and-period/furumaru/api/pkg/set/v2"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/sync/errgroup"
 )
 
 func (h *handler) producerRoutes(rg *gin.RouterGroup) {
@@ -81,7 +83,7 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 
 func (h *handler) addlistProducerFilters(ctx *gin.Context, in *user.ListProducersInput) {
 	strs := util.GetQueryStrings(ctx, "filters")
-	filters := set.New[string](len(strs))
+	filters := set.NewEmpty[string](len(strs))
 	filters.Add(strs...)
 	if filters.Contains("unrelated") { // 未関連状態の生産者のみ取得
 		in.OnlyUnrelated = true
@@ -112,14 +114,41 @@ func (h *handler) CreateProducer(ctx *gin.Context) {
 		return
 	}
 
+	var thumbnailURL, headerURL string
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		if req.ThumbnailURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.ThumbnailURL,
+		}
+		thumbnailURL, err = h.media.UploadProducerThumbnail(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		if req.HeaderURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.HeaderURL,
+		}
+		headerURL, err = h.media.UploadProducerHeader(ectx, in)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
 	in := &user.CreateProducerInput{
 		Lastname:      req.Lastname,
 		Firstname:     req.Firstname,
 		LastnameKana:  req.LastnameKana,
 		FirstnameKana: req.FirstnameKana,
 		StoreName:     req.StoreName,
-		ThumbnailURL:  req.ThumbnailURL,
-		HeaderURL:     req.HeaderURL,
+		ThumbnailURL:  thumbnailURL,
+		HeaderURL:     headerURL,
 		Email:         req.Email,
 		PhoneNumber:   req.PhoneNumber,
 		PostalCode:    req.PostalCode,
@@ -147,6 +176,33 @@ func (h *handler) UpdateProducer(ctx *gin.Context) {
 		return
 	}
 
+	var thumbnailURL, headerURL string
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		if req.ThumbnailURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.ThumbnailURL,
+		}
+		thumbnailURL, err = h.media.UploadProducerThumbnail(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		if req.HeaderURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.HeaderURL,
+		}
+		headerURL, err = h.media.UploadProducerHeader(ectx, in)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
 	in := &user.UpdateProducerInput{
 		ProducerID:    util.GetParam(ctx, "producerId"),
 		Lastname:      req.Lastname,
@@ -154,8 +210,8 @@ func (h *handler) UpdateProducer(ctx *gin.Context) {
 		LastnameKana:  req.LastnameKana,
 		FirstnameKana: req.FirstnameKana,
 		StoreName:     req.StoreName,
-		ThumbnailURL:  req.ThumbnailURL,
-		HeaderURL:     req.HeaderURL,
+		ThumbnailURL:  thumbnailURL,
+		HeaderURL:     headerURL,
 		PhoneNumber:   req.PhoneNumber,
 		PostalCode:    req.PostalCode,
 		Prefecture:    req.Prefecture,

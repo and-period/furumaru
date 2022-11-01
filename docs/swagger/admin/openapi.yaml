@@ -12,7 +12,7 @@ tags:
 - name: Administrator
   description: システム管理者関連
 - name: Coordinator
-  description: 仲介者関連
+  description: コーディネータ関連
 - name: Producer
   description: 生産者関連
 - name: Category
@@ -27,6 +27,8 @@ tags:
   description: プロモーション関連
 - name: Schedule
   description: スケジュール関連
+- name: Live
+  description: 配信関連
 - name: Order
   description: 注文関連
 - name: User
@@ -132,6 +134,8 @@ paths:
   # User
   /v1/users:
     $ref: './paths/v1/users/index.yaml'
+  /v1/users/{userId}:
+    $ref: './paths/v1/users/_userId/index.yaml'
   # Upload
   /v1/upload/coordinators/header:
     $ref: './paths/v1/upload/coordinators/header.yaml'
@@ -282,10 +286,14 @@ components:
       $ref: './components/schemas/v1/message.response.yaml#/messagesResponse'
     v1ScheduleResponse:
       $ref: './components/schemas/v1/schedule.response.yaml#/scheduleResponse'
+    v1LiveResponse:
+      $ref: './components/schemas/v1/live.response.yaml#/liveResponse'
     v1OrderResponse:
       $ref: './components/schemas/v1/order.response.yaml#/orderResponse'
     v1OrdersResponse:
       $ref: './components/schemas/v1/order.response.yaml#/ordersResponse'
+    v1UserResponse:
+      $ref: './components/schemas/v1/user.response.yaml#/userResponse'
     v1UsersResponse:
       $ref: './components/schemas/v1/user.response.yaml#/usersResponse'
     v1UploadImageResponse:

@@ -1,5 +1,5 @@
 post:
-  summary: 仲介者サムネイルアップロード
+  summary: コーディネータサムネイルアップロード
   operationId: v1UploadCoordinatorThumbnail
   tags:
   - Coordinator

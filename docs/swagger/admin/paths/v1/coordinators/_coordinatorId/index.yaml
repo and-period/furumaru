@@ -1,5 +1,5 @@
 get:
-  summary: 仲介者取得
+  summary: コーディネータ取得
   operationId: v1GetCoordinator
   tags:
   - Coordinator
@@ -10,7 +10,7 @@ get:
     name: coordinatorId
     schema:
       type: string
-    description: 仲介者ID
+    description: コーディネータID
     required: true
     example: 'kSByoE6FetnPs5Byk3a9Zx'
   responses:
@@ -21,13 +21,13 @@ get:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/v1CoordinatorResponse'
     404:
-      description: 仲介者が存在しない
+      description: コーディネータが存在しない
       content:
         application/json:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
 patch:
-  summary: 仲介者更新
+  summary: コーディネータ更新
   operationId: v1UpdateCoordinator
   tags:
   - Coordinator
@@ -38,7 +38,7 @@ patch:
     name: coordinatorId
     schema:
       type: string
-    description: 仲介者ID
+    description: コーディネータID
     required: true
     example: 'kSByoE6FetnPs5Byk3a9Zx'
   requestBody:
@@ -60,13 +60,13 @@ patch:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
     404:
-      description: 仲介者が存在しない
+      description: コーディネータが存在しない
       content:
         application/json:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
 delete:
-  summary: 仲介者退会
+  summary: コーディネータ退会
   operationId: v1DeleteCoordinator
   tags:
   - Coordinator
@@ -77,7 +77,7 @@ delete:
     name: coordinatorId
     schema:
       type: string
-    description: 仲介者ID
+    description: コーディネータID
     required: true
     example: 'kSByoE6FetnPs5Byk3a9Zx'
   responses:
@@ -93,7 +93,7 @@ delete:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
     404:
-      description: 仲介者が存在しない
+      description: コーディネータが存在しない
       content:
         application/json:
           schema:

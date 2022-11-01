@@ -1,6 +1,12 @@
 createScheduleRequest:
   type: object
   properties:
+    coordinatorId:
+      type: string
+      description: コーディネーターID
+    shippingId:
+      type: string
+      description: 配送設定ID
     title:
       type: string
       description: タイトル(128文字まで)
@@ -25,6 +31,12 @@ createScheduleRequest:
           producerId:
             type: string
             description: 生産者ID
+          productIds:
+            type: array
+            description: 商品ID一覧
+            items:
+              type: string
+              description: 商品ID
           startAt:
             type: integer
             format: int64
@@ -37,14 +49,19 @@ createScheduleRequest:
           - title
           - description
           - producerId
+          - productIds
           - startAt
           - endAt
   required:
+  - coordinatorId
+  - shippingId
   - title
   - description
   - thumnailURL
   - lives
   example:
+    coordinatorId: 'coordinator-id'
+    shippingId: 'shipping-id'
     title: 'スケジュールタイトル'
     description: 'スケジュールの説明'
     thumnailURL: 'https://and-period.jp/thumbnail01.png'
@@ -52,5 +69,6 @@ createScheduleRequest:
       - title: 'ライブタイトル'
         description: 'ライブ説明'
         producerId: 'kSByoE6FetnPs5Byk3a9Zx'
+        productIds: ['product-id']
         startAt: 1640962800
         endAt: 1640962800

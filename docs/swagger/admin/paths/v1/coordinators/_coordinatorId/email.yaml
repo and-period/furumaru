@@ -1,5 +1,5 @@
 patch:
-  summary: 仲介者メールアドレス更新
+  summary: コーディネータメールアドレス更新
   operationId: v1UpdateCoordinatorEmail
   tags:
   - Coordinator
@@ -10,7 +10,7 @@ patch:
     name: coordinatorId
     schema:
       type: string
-    description: 仲介者ID
+    description: コーディネータID
     required: true
     example: 'kSByoE6FetnPs5Byk3a9Zx'
   requestBody:
@@ -32,7 +32,7 @@ patch:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
     404:
-      description: 仲介者が存在しない
+      description: コーディネータが存在しない
       content:
         application/json:
           schema:

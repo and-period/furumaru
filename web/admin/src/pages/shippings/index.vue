@@ -30,6 +30,18 @@
             {{ dateTimeFormatter(item.updatedAt) }}
           </template>
 
+          <template #[`item.actions`]="{ item }">
+            <v-btn
+              outlined
+              color="primary"
+              small
+              @click="handleClickEditButton(item.id)"
+            >
+              <v-icon>mdi-pencil</v-icon>
+              編集
+            </v-btn>
+          </template>
+
           <template #expanded-item="{ item }">
             <td :colspan="headers.length" class="pa-4">
               <div v-for="n in [60, 80, 100]" :key="n">
@@ -116,6 +128,10 @@ export default defineComponent({
         text: '更新日',
         value: 'updatedAt',
       },
+      {
+        text: '',
+        value: 'actions',
+      },
     ]
 
     const {
@@ -138,6 +154,10 @@ export default defineComponent({
       router.push('/shippings/add')
     }
 
+    const handleClickEditButton = (id: string) => {
+      router.push(`/shippings/edit/${id}`)
+    }
+
     return {
       fetchState, // 初回ロード状況
       totalItems, // サーバ上の配送情報の個数
@@ -152,6 +172,7 @@ export default defineComponent({
       updateCurrentPage,
       handleUpdateItemsPerPage,
       handleClickAddButton,
+      handleClickEditButton,
     }
   },
 })

@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// Coordinator - 仲介者情報
+// Coordinator - コーディネータ情報
 type Coordinator struct {
 	Admin            `gorm:"-"`
 	AdminID          string         `gorm:"primaryKey;<-:create"` // 管理者ID
