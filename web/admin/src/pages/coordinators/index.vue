@@ -8,57 +8,166 @@
         コーディネータ登録
       </v-btn>
     </div>
-    <v-card class="mt-4" flat :loading="fetchState.pending">
-      <v-card-text>
-        <form class="d-flex align-center" @submit.prevent="handleSearch">
-          <v-text-field v-model="search" label="絞り込み" />
-          <v-btn type="submit" class="ml-4" small outlined color="primary">
-            <v-icon>mdi-search</v-icon>
-            検索
-          </v-btn>
-          <v-spacer />
-        </form>
-        <v-data-table
-          show-select
-          :headers="headers"
-          :items="coordinators"
-          :search="query"
-          :no-results-text="noResultsText"
-          :server-items-length="totalItems"
-          :footer-props="options"
-          no-data-text="登録されているコーディネータがいません。"
-          @update:items-per-page="handleUpdateItemsPerPage"
-          @update:page="handleUpdatePage"
-        >
-          <template #[`item.thumbnail`]="{ item }">
-            <v-avatar>
-              <img
-                v-if="item.thumbnailUrl !== ''"
-                :src="item.thumbnailUrl"
-                :alt="`${item.storeName}-profile`"
+
+    <v-tabs v-model="tab" grow color="dark">
+      <v-tabs-slider color="accent"></v-tabs-slider>
+      <v-tab
+        v-for="tabItem in tabItems"
+        :key="tabItem.value"
+        :href="`#${tabItem.value}`"
+      >
+        {{ tabItem.name }}
+      </v-tab>
+    </v-tabs>
+
+    <v-tabs-items v-model="tab">
+      <v-tab-item value="coordinators">
+        <v-card class="mt-4" flat :loading="fetchState.pending">
+          <v-card-text>
+            <form class="d-flex align-center" @submit.prevent="handleSearch">
+              <v-autocomplete
+                v-model="search"
+                item-text="firstname"
+                :items="coordinators"
+                label="絞り込み"
               />
-              <v-icon v-else>mdi-account</v-icon>
-            </v-avatar>
-          </template>
-          <template #[`item.name`]="{ item }">
-            {{ `${item.lastname} ${item.firstname}` }}
-          </template>
-          <template #[`item.phoneNumber`]="{ item }">
-            {{ `${item.phoneNumber}`.replace('+81', '0') }}
-          </template>
-          <template #[`item.actions`]="{ item }">
-            <v-btn outlined color="primary" small @click="handleEdit(item)">
-              <v-icon small>mdi-pencil</v-icon>
-              編集
-            </v-btn>
-            <v-btn outlined color="primary" small @click="handleDelete(item)">
-              <v-icon small>mdi-delete</v-icon>
-              削除
-            </v-btn>
-          </template>
-        </v-data-table>
-      </v-card-text>
-    </v-card>
+              <v-btn type="submit" class="ml-4" small outlined color="primary">
+                <v-icon>mdi-search</v-icon>
+                検索
+              </v-btn>
+              <v-spacer />
+            </form>
+            <v-data-table
+              show-select
+              :headers="headers"
+              :items="coordinators"
+              :search="query"
+              :no-results-text="noResultsText"
+              :server-items-length="totalItems"
+              :footer-props="options"
+              no-data-text="登録されているコーディネータがいません。"
+              @update:items-per-page="handleUpdateItemsPerPage"
+              @update:page="handleUpdatePage"
+            >
+              <template #[`item.thumbnail`]="{ item }">
+                <v-avatar>
+                  <img
+                    v-if="item.thumbnailUrl !== ''"
+                    :src="item.thumbnailUrl"
+                    :alt="`${item.storeName}-profile`"
+                  />
+                  <v-icon v-else>mdi-account</v-icon>
+                </v-avatar>
+              </template>
+              <template #[`item.name`]="{ item }">
+                {{ `${item.lastname} ${item.firstname}` }}
+              </template>
+              <template #[`item.phoneNumber`]="{ item }">
+                {{ `${item.phoneNumber}`.replace('+81', '0') }}
+              </template>
+              <template #[`item.actions`]="{ item }">
+                <v-btn outlined color="primary" small @click="handleEdit(item)">
+                  <v-icon small>mdi-pencil</v-icon>
+                  編集
+                </v-btn>
+                <v-btn
+                  outlined
+                  color="primary"
+                  small
+                  @click="openDeleteDialog(item)"
+                >
+                  <v-icon small>mdi-delete</v-icon>
+                  削除
+                </v-btn>
+              </template>
+            </v-data-table>
+          </v-card-text>
+        </v-card>
+      </v-tab-item>
+
+      <v-tab-item value="customers">
+        <v-card class="mt-4" flat :loading="fetchState.pending">
+          <v-card-text>
+            <form class="d-flex align-center" @submit.prevent="handleSearch">
+              <v-text-field v-model="search" label="絞り込み" />
+              <v-btn type="submit" class="ml-4" small outlined color="primary">
+                <v-icon>mdi-search</v-icon>
+                検索
+              </v-btn>
+              <v-spacer />
+            </form>
+            <v-data-table
+              show-select
+              :headers="headers"
+              :items="producers"
+              :search="query"
+              :no-results-text="noResultsText"
+              :server-items-length="totalItems"
+              :footer-props="options"
+              no-data-text="登録されている生産者がいません。"
+              @update:items-per-page="handleUpdateItemsPerPage"
+              @update:page="handleUpdatePage"
+            >
+              <template #[`item.thumbnail`]="{ item }">
+                <v-avatar>
+                  <img
+                    v-if="item.thumbnailUrl !== ''"
+                    :src="item.thumbnailUrl"
+                    :alt="`${item.storeName}-profile`"
+                  />
+                  <v-icon v-else>mdi-account</v-icon>
+                </v-avatar>
+              </template>
+              <template #[`item.name`]="{ item }">
+                {{ `${item.lastname} ${item.firstname}` }}
+              </template>
+              <template #[`item.phoneNumber`]="{ item }">
+                {{ `${item.phoneNumber}`.replace('+81', '0') }}
+              </template>
+              <template #[`item.actions`]="{ item }">
+                <v-btn outlined color="primary" small @click="handleEdit(item)">
+                  <v-icon small>mdi-pencil</v-icon>
+                  編集
+                </v-btn>
+                <v-btn
+                  outlined
+                  color="primary"
+                  small
+                  @click="handleDelete(item)"
+                >
+                  <v-icon small>mdi-delete</v-icon>
+                  削除
+                </v-btn>
+              </template>
+              <template #[`item.video`]="{ item }">
+                <v-btn
+                  outlined
+                  color="primary"
+                  small
+                  @click="handleAddVideo(item)"
+                >
+                  <v-icon small>mdi-plus</v-icon>
+                  追加
+                </v-btn>
+              </template>
+            </v-data-table>
+          </v-card-text>
+        </v-card>
+      </v-tab-item>
+    </v-tabs-items>
+
+    <v-dialog v-model="deleteDialog" width="500">
+      <v-card>
+        <v-card-title class="text-h7"> aaaを本当に削除しますか？ </v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="accentDarken" text @click="hideDeleteDialog">
+            キャンセル
+          </v-btn>
+          <v-btn color="primary" outlined @click="handleDelete"> 削除 </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -76,9 +185,16 @@ import { DataTableHeader } from 'vuetify'
 import { usePagination } from '~/lib/hooks'
 import { useCoordinatorStore } from '~/store/coordinator'
 import { CoordinatorsResponseCoordinatorsInner } from '~/types/api'
+import { Coordinator } from '~/types/props/coordinator'
 
 export default defineComponent({
   setup() {
+    const tab = ref<string>('coordinators')
+    const tabItems: Coordinator[] = [
+      { name: '基本情報', value: 'coordinators' },
+      { name: '生産者管理', value: 'customers' },
+    ]
+
     const router = useRouter()
     const coordinatorStore = useCoordinatorStore()
     const coordinators = computed(() => {
@@ -89,8 +205,9 @@ export default defineComponent({
       return coordinatorStore.totalItems
     })
 
-    // const deleteDialog = ref<boolean>(false)
-    // const selectedId = ref<string>('')
+    const deleteDialog = ref<boolean>(false)
+    const selectedId = ref<string>('')
+    const selectedName = ref<string>('')
     const search = ref<string>('')
     const query = ref<string>('')
 
@@ -119,6 +236,14 @@ export default defineComponent({
     const handleUpdatePage = async (page: number) => {
       updateCurrentPage(page)
       await coordinatorStore.fetchCoordinators(itemsPerPage.value, offset.value)
+    }
+
+    const openDeleteDialog = (
+      item: CoordinatorsResponseCoordinatorsInner
+    ): void => {
+      selectedId.value = item.id
+      selectedName.value = item.firstname
+      deleteDialog.value = true
     }
 
     const { fetchState } = useFetch(async () => {
@@ -172,14 +297,18 @@ export default defineComponent({
       router.push(`/coordinators/edit/${item.id}`)
     }
 
-    // const handleDelete = async (): Promise<void> => {
-    //   try {
-    //     await coordinatorStore.deleteCoordinator(selectedId.value)
-    //   } catch (err) {
-    //     console.log(err)
-    //   }
-    //   deleteDialog.value = false
-    // }
+    const handleDelete = async (): Promise<void> => {
+      try {
+        await coordinatorStore.deleteCoordinator(selectedId.value)
+      } catch (err) {
+        console.log(err)
+      }
+      deleteDialog.value = false
+    }
+
+    const hideDeleteDialog = (): void => {
+      deleteDialog.value = false
+    }
 
     return {
       handleClickAddButton,
@@ -195,7 +324,12 @@ export default defineComponent({
       fetchState,
       handleSearch,
       handleEdit,
-      // handleDelete,
+      handleDelete,
+      openDeleteDialog,
+      deleteDialog,
+      hideDeleteDialog,
+      tab,
+      tabItems,
     }
   },
 })

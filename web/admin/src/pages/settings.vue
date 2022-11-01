@@ -29,7 +29,7 @@ export default defineComponent({
         {
           text: 'コーディネーター登録',
           onClick: () => {
-            router.push('/coordinator/add')
+            router.push('/coordinators/add')
           },
         },
         {

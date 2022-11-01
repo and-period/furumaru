@@ -29,7 +29,6 @@
             @update:file="handleUpdateHeader"
           />
         </div>
-        <v-textarea v-model="formNote" name="note" label="メモ"></v-textarea>
         <div class="d-flex">
           <v-text-field
             v-model="v$.lastname.$model"
