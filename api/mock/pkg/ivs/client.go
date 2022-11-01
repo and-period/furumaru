@@ -79,3 +79,18 @@ func (mr *MockClientMockRecorder) GetChannel(ctx, params interface{}) *gomock.Ca
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetChannel", reflect.TypeOf((*MockClient)(nil).GetChannel), ctx, params)
 }
+
+// GetStream mocks base method.
+func (m *MockClient) GetStream(ctx context.Context, params *ivs.GetStreamParams) (*ivs0.GetStreamOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetStream", ctx, params)
+	ret0, _ := ret[0].(*ivs0.GetStreamOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetStream indicates an expected call of GetStream.
+func (mr *MockClientMockRecorder) GetStream(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStream", reflect.TypeOf((*MockClient)(nil).GetStream), ctx, params)
+}
