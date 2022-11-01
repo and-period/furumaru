@@ -87,6 +87,21 @@ func TestListUsers(t *testing.T) {
 			},
 		},
 		{
+			name: "success empty",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				users := uentity.Users{}
+				mocks.user.EXPECT().ListUsers(gomock.Any(), usersIn).Return(users, int64(0), nil)
+			},
+			query: "",
+			expect: &testResponse{
+				code: http.StatusOK,
+				body: &response.UsersResponse{
+					Users: []*response.UserList{},
+					Total: 0,
+				},
+			},
+		},
+		{
 			name:  "invalid limit",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
 			query: "?limit=a",
