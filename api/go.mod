@@ -3,7 +3,7 @@ module github.com/and-period/furumaru/api
 go 1.19
 
 require (
-	firebase.google.com/go/v4 v4.8.0
+	firebase.google.com/go/v4 v4.9.0
 	github.com/aws/aws-lambda-go v1.34.1
 	github.com/aws/aws-sdk-go-v2 v1.17.1
 	github.com/aws/aws-sdk-go-v2/config v1.17.3
@@ -57,7 +57,7 @@ require (
 	cloud.google.com/go/compute v1.10.0 // indirect
 	cloud.google.com/go/firestore v1.6.1 // indirect
 	cloud.google.com/go/iam v0.3.0 // indirect
-	cloud.google.com/go/storage v1.25.0 // indirect
+	cloud.google.com/go/storage v1.26.0 // indirect
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.4.8 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.12.17 // indirect
