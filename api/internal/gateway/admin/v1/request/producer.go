@@ -37,6 +37,6 @@ type UpdateProducerEmailRequest struct {
 	Email string `json:"email,omitempty"` // メールアドレス
 }
 
-type RelatedProducerRequest struct {
-	CoordinatorID string `json:"coordinatorId,omitempty"` // コーディネータID
+type RelateProducersRequest struct {
+	ProducerIDs []string `json:"producerIds,omitempty"` // 関連づける生産者ID一覧
 }

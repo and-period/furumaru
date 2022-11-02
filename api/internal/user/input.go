@@ -223,7 +223,7 @@ type ResetProducerPasswordInput struct {
 
 type RelateProducersInput struct {
 	CoordinatorID string   `validate:"required"`
-	ProducerIDs   []string `validate:"min=1,dive,required"`
+	ProducerIDs   []string `validate:"min=1,max=20,dive,required"`
 }
 
 type UnrelateProducerInput struct {

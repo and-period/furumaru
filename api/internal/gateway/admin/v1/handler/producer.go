@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"errors"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
@@ -24,8 +23,6 @@ func (h *handler) producerRoutes(rg *gin.RouterGroup) {
 	arg.PATCH("/:producerId", h.filterAccessProducer, h.UpdateProducer)
 	arg.PATCH("/:producerId/email", h.filterAccessProducer, h.UpdateProducerEmail)
 	arg.PATCH("/:producerId/password", h.filterAccessProducer, h.ResetProducerPassword)
-	arg.POST("/:producerId/relationship", h.RelatedProducer)
-	arg.DELETE("/:producerId/relationship", h.filterAccessProducer, h.UnrelatedProducer)
 	arg.DELETE("/:producerId", h.filterAccessProducer, h.DeleteProducer)
 }
 
@@ -256,43 +253,6 @@ func (h *handler) ResetProducerPassword(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusNoContent, gin.H{})
-}
-
-func (h *handler) RelatedProducer(ctx *gin.Context) {
-	ctx.JSON(http.StatusNotImplemented, errors.New("deprecated"))
-	// req := &request.RelatedProducerRequest{}
-	// if err := ctx.BindJSON(req); err != nil {
-	// 	badRequest(ctx, err)
-	// 	return
-	// }
-	// if getRole(ctx) == service.AdminRoleCoordinator && !currentAdmin(ctx, req.CoordinatorID) {
-	// 	forbidden(ctx, errors.New("handler: not authorized this coordinator"))
-	// 	return
-	// }
-
-	// in := &user.RelatedProducerInput{
-	// 	ProducerID:    util.GetParam(ctx, "producerId"),
-	// 	CoordinatorID: req.CoordinatorID,
-	// }
-	// if err := h.user.RelatedProducer(ctx, in); err != nil {
-	// 	httpError(ctx, err)
-	// 	return
-	// }
-
-	// ctx.JSON(http.StatusNoContent, gin.H{})
-}
-
-func (h *handler) UnrelatedProducer(ctx *gin.Context) {
-	ctx.JSON(http.StatusNotImplemented, errors.New("deprecated"))
-	// in := &user.UnrelatedProducerInput{
-	// 	ProducerID: util.GetParam(ctx, "producerId"),
-	// }
-	// if err := h.user.UnrelatedProducer(ctx, in); err != nil {
-	// 	httpError(ctx, err)
-	// 	return
-	// }
-
-	// ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
 func (h *handler) DeleteProducer(ctx *gin.Context) {
