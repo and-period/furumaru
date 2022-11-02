@@ -33,7 +33,7 @@ require (
 	github.com/rs/cors/wrapper/gin v0.0.0-20220619195839-da52b0701de5
 	github.com/samber/lo v1.27.1
 	github.com/satori/go.uuid v1.2.0
-	github.com/sendgrid/sendgrid-go v3.11.1+incompatible
+	github.com/sendgrid/sendgrid-go v3.12.0+incompatible
 	github.com/shopspring/decimal v1.3.1
 	github.com/slack-go/slack v0.11.3
 	github.com/stretchr/testify v1.8.1
