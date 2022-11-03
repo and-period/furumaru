@@ -24,6 +24,7 @@ func (s *service) ListProducers(ctx context.Context, in *user.ListProducersInput
 		CoordinatorID: in.CoordinatorID,
 		Limit:         int(in.Limit),
 		Offset:        int(in.Offset),
+		OnlyUnrelated: in.OnlyUnrelated,
 	}
 	var (
 		producers entity.Producers
