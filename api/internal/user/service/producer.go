@@ -181,33 +181,34 @@ func (s *service) ResetProducerPassword(ctx context.Context, in *user.ResetProdu
 	return nil
 }
 
-func (s *service) RelatedProducer(ctx context.Context, in *user.RelatedProducerInput) error {
+func (s *service) RelateProducers(ctx context.Context, in *user.RelateProducersInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	producer, err := s.db.Producer.Get(ctx, in.ProducerID, "coordinator_id")
-	if err != nil {
-		return exception.InternalError(err)
-	}
-	if producer.CoordinatorID != "" {
-		return fmt.Errorf("api: this producer is related: %w", exception.ErrFailedPrecondition)
-	}
-	_, err = s.db.Coordinator.Get(ctx, in.CoordinatorID)
+	_, err := s.db.Coordinator.Get(ctx, in.CoordinatorID)
 	if errors.Is(err, exception.ErrNotFound) {
 		return fmt.Errorf("api: invalid coordinator id: %w", exception.ErrInvalidArgument)
 	}
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	err = s.db.Producer.UpdateRelationship(ctx, in.ProducerID, in.CoordinatorID)
+	producers, err := s.db.Producer.MultiGet(ctx, in.ProducerIDs)
+	if err != nil {
+		return exception.InternalError(err)
+	}
+	producers = producers.Unrelated()
+	if len(producers) != len(in.ProducerIDs) {
+		return fmt.Errorf("api: contains invalid producers: %w", exception.ErrFailedPrecondition)
+	}
+	err = s.db.Producer.UpdateRelationship(ctx, in.CoordinatorID, in.ProducerIDs...)
 	return exception.InternalError(err)
 }
 
-func (s *service) UnrelatedProducer(ctx context.Context, in *user.UnrelatedProducerInput) error {
+func (s *service) UnrelateProducer(ctx context.Context, in *user.UnrelateProducerInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	err := s.db.Producer.UpdateRelationship(ctx, in.ProducerID, "")
+	err := s.db.Producer.UpdateRelationship(ctx, "", in.ProducerID)
 	return exception.InternalError(err)
 }
 

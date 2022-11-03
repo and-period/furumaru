@@ -78,9 +78,9 @@ type Service interface {
 	// 生産者パスワードリセット
 	ResetProducerPassword(ctx context.Context, in *ResetProducerPasswordInput) error
 	// 生産者関連付け
-	RelatedProducer(ctx context.Context, in *RelatedProducerInput) error
+	RelateProducers(ctx context.Context, in *RelateProducersInput) error
 	// 生産者関連付け解除
-	UnrelatedProducer(ctx context.Context, in *UnrelatedProducerInput) error
+	UnrelateProducer(ctx context.Context, in *UnrelateProducerInput) error
 	// 生産者退会
 	DeleteProducer(ctx context.Context, in *DeleteProducerInput) error
 	// 購入者サインイン

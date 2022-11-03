@@ -17,6 +17,9 @@ p, producer_create, /v1/producers, POST, allow
 p, producer_update, /v1/producers/*, (POST)|(PATCH), allow
 p, producer_delete, /v1/producers/*, DELETE, allow
 p, producer_uploader, /v1/upload/producers/*, POST, allow
+p, related_producer_list, /v1/coordinators/*/producers, GET, allow
+p, related_producer_create, /v1/coordinators/*/producers, POST, allow
+p, related_producer_delete, /v1/coordinators/*/producers/*, DELETE, allow
 p, category_list, /v1/categories, GET, allow
 p, category_create, /v1/categories, POST, allow
 p, category_update, /v1/categories/*, PATCH, allow
@@ -75,6 +78,9 @@ g, administrator, producer_create
 g, administrator, producer_update
 g, administrator, producer_delete
 g, administrator, producer_uploader
+g, administrator, related_producer_list
+g, administrator, related_producer_create
+g, administrator, related_producer_delete
 g, administrator, category_list
 g, administrator, category_create
 g, administrator, category_update
@@ -123,6 +129,9 @@ g, coordinator, producer_create
 g, coordinator, producer_update
 g, coordinator, producer_delete
 g, coordinator, producer_uploader
+g, coordinator, related_producer_list
+g, coordinator, related_producer_create
+g, coordinator, related_producer_delete
 g, coordinator, category_list
 g, coordinator, product_type_list
 g, coordinator, shipping_list

@@ -704,12 +704,12 @@ func TestResetProducerPassword(t *testing.T) {
 	}
 }
 
-func TestRelatedProducer(t *testing.T) {
+func TestRelateProducers(t *testing.T) {
 	t.Parallel()
 
-	producer := &entity.Producer{
-		CoordinatorID: "coordinator-id",
-	}
+	producers := entity.Producers{{
+		AdminID: "producer-id",
+	}}
 	coordinator := &entity.Coordinator{
 		AdminID: "coordinator-id",
 	}
@@ -717,84 +717,88 @@ func TestRelatedProducer(t *testing.T) {
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *user.RelatedProducerInput
+		input     *user.RelateProducersInput
 		expectErr error
 	}{
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Get(ctx, "producer-id", "coordinator_id").Return(&entity.Producer{}, nil)
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
-				mocks.db.Producer.EXPECT().UpdateRelationship(ctx, "producer-id", "coordinator-id").Return(nil)
+				mocks.db.Producer.EXPECT().MultiGet(ctx, []string{"producer-id"}).Return(producers, nil)
+				mocks.db.Producer.EXPECT().UpdateRelationship(ctx, "coordinator-id", "producer-id").Return(nil)
 			},
-			input: &user.RelatedProducerInput{
-				ProducerID:    "producer-id",
+			input: &user.RelateProducersInput{
 				CoordinatorID: "coordinator-id",
+				ProducerIDs:   []string{"producer-id"},
 			},
 			expectErr: nil,
 		},
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &user.RelatedProducerInput{},
+			input:     &user.RelateProducersInput{},
 			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to already related",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Get(ctx, "producer-id", "coordinator_id").Return(producer, nil)
-			},
-			input: &user.RelatedProducerInput{
-				ProducerID:    "producer-id",
-				CoordinatorID: "coordinator-id",
-			},
-			expectErr: exception.ErrFailedPrecondition,
-		},
-		{
-			name: "failed to get producer",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Get(ctx, "producer-id", "coordinator_id").Return(nil, errmock)
-			},
-			input: &user.RelatedProducerInput{
-				ProducerID:    "producer-id",
-				CoordinatorID: "coordinator-id",
-			},
-			expectErr: exception.ErrUnknown,
 		},
 		{
 			name: "failed to not found coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Get(ctx, "producer-id", "coordinator_id").Return(&entity.Producer{}, nil)
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(nil, exception.ErrNotFound)
 			},
-			input: &user.RelatedProducerInput{
-				ProducerID:    "producer-id",
+			input: &user.RelateProducersInput{
 				CoordinatorID: "coordinator-id",
+				ProducerIDs:   []string{"producer-id"},
 			},
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Get(ctx, "producer-id", "coordinator_id").Return(&entity.Producer{}, nil)
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(nil, errmock)
 			},
-			input: &user.RelatedProducerInput{
-				ProducerID:    "producer-id",
+			input: &user.RelateProducersInput{
 				CoordinatorID: "coordinator-id",
+				ProducerIDs:   []string{"producer-id"},
 			},
 			expectErr: exception.ErrUnknown,
 		},
 		{
+			name: "failed to multi get producers",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
+				mocks.db.Producer.EXPECT().MultiGet(ctx, []string{"producer-id"}).Return(nil, errmock)
+			},
+			input: &user.RelateProducersInput{
+				CoordinatorID: "coordinator-id",
+				ProducerIDs:   []string{"producer-id"},
+			},
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "failed to contain invalid producers",
+			setup: func(ctx context.Context, mocks *mocks) {
+				producers := entity.Producers{{
+					AdminID:       "producer-id",
+					CoordinatorID: "coordinator-id",
+				}}
+				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
+				mocks.db.Producer.EXPECT().MultiGet(ctx, []string{"producer-id"}).Return(producers, nil)
+			},
+			input: &user.RelateProducersInput{
+				CoordinatorID: "coordinator-id",
+				ProducerIDs:   []string{"producer-id"},
+			},
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
 			name: "failed to update relationship",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Get(ctx, "producer-id", "coordinator_id").Return(&entity.Producer{}, nil)
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
-				mocks.db.Producer.EXPECT().UpdateRelationship(ctx, "producer-id", "coordinator-id").Return(errmock)
+				mocks.db.Producer.EXPECT().MultiGet(ctx, []string{"producer-id"}).Return(producers, nil)
+				mocks.db.Producer.EXPECT().UpdateRelationship(ctx, "coordinator-id", "producer-id").Return(errmock)
 			},
-			input: &user.RelatedProducerInput{
-				ProducerID:    "producer-id",
+			input: &user.RelateProducersInput{
 				CoordinatorID: "coordinator-id",
+				ProducerIDs:   []string{"producer-id"},
 			},
 			expectErr: exception.ErrUnknown,
 		},
@@ -803,27 +807,27 @@ func TestRelatedProducer(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.RelatedProducer(ctx, tt.input)
+			err := service.RelateProducers(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
 }
 
-func TestUnrelatedProducer(t *testing.T) {
+func TestUnrelateProducer(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *user.UnrelatedProducerInput
+		input     *user.UnrelateProducerInput
 		expectErr error
 	}{
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().UpdateRelationship(ctx, "producer-id", "").Return(nil)
+				mocks.db.Producer.EXPECT().UpdateRelationship(ctx, "", "producer-id").Return(nil)
 			},
-			input: &user.UnrelatedProducerInput{
+			input: &user.UnrelateProducerInput{
 				ProducerID: "producer-id",
 			},
 			expectErr: nil,
@@ -831,15 +835,15 @@ func TestUnrelatedProducer(t *testing.T) {
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &user.UnrelatedProducerInput{},
+			input:     &user.UnrelateProducerInput{},
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to update relationship",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().UpdateRelationship(ctx, "producer-id", "").Return(errmock)
+				mocks.db.Producer.EXPECT().UpdateRelationship(ctx, "", "producer-id").Return(errmock)
 			},
-			input: &user.UnrelatedProducerInput{
+			input: &user.UnrelateProducerInput{
 				ProducerID: "producer-id",
 			},
 			expectErr: exception.ErrUnknown,
@@ -849,7 +853,7 @@ func TestUnrelatedProducer(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UnrelatedProducer(ctx, tt.input)
+			err := service.UnrelateProducer(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}

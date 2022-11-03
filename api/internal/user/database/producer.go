@@ -70,16 +70,8 @@ func (p *producer) Count(ctx context.Context, params *ListProducersParams) (int6
 func (p *producer) MultiGet(
 	ctx context.Context, producerIDs []string, fields ...string,
 ) (entity.Producers, error) {
-	var producers entity.Producers
-	if len(fields) == 0 {
-		fields = producerFields
-	}
-
-	stmt := p.db.DB.WithContext(ctx).
-		Table(producerTable).Select(fields).
-		Where("admin_id IN (?)", producerIDs)
-
-	if err := stmt.Find(&producers).Error; err != nil {
+	producers, err := p.multiGet(ctx, p.db.DB, producerIDs, fields...)
+	if err != nil {
 		return nil, exception.InternalError(err)
 	}
 	if err := p.fill(ctx, p.db.DB, producers...); err != nil {
@@ -161,12 +153,8 @@ func (p *producer) Update(ctx context.Context, producerID string, params *Update
 	return exception.InternalError(err)
 }
 
-func (p *producer) UpdateRelationship(ctx context.Context, producerID, coordinatorID string) error {
+func (p *producer) UpdateRelationship(ctx context.Context, coordinatorID string, producerIDs ...string) error {
 	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
-		if _, err := p.get(ctx, tx, producerID); err != nil {
-			return nil, err
-		}
-
 		var id *string
 		if coordinatorID != "" {
 			id = &coordinatorID
@@ -178,7 +166,7 @@ func (p *producer) UpdateRelationship(ctx context.Context, producerID, coordinat
 		}
 		err := tx.WithContext(ctx).
 			Table(producerTable).
-			Where("admin_id = ?", producerID).
+			Where("admin_id IN (?)", producerIDs).
 			Updates(params).Error
 		return nil, err
 	})
@@ -218,6 +206,21 @@ func (p *producer) Delete(ctx context.Context, producerID string, auth func(ctx 
 		return nil, auth(ctx)
 	})
 	return exception.InternalError(err)
+}
+
+func (p *producer) multiGet(
+	ctx context.Context, tx *gorm.DB, producerIDs []string, fields ...string,
+) (entity.Producers, error) {
+	var producers entity.Producers
+	if len(fields) == 0 {
+		fields = producerFields
+	}
+
+	err := tx.WithContext(ctx).
+		Table(producerTable).Select(fields).
+		Where("admin_id IN (?)", producerIDs).
+		Find(&producers).Error
+	return producers, err
 }
 
 func (p *producer) get(

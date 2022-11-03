@@ -106,6 +106,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.administratorRoutes(v1.Group("/administrators"))
 	h.coordinatorRoutes(v1.Group("/coordinators"))
 	h.producerRoutes(v1.Group("/producers"))
+	h.relatedProducerRoutes(v1.Group("/coordinators/:coordinatorId/producers"))
 	h.categoryRoutes(v1.Group("/categories"))
 	h.productTypeRoutes(v1.Group("/categories/:categoryId/product-types"))
 	h.shippingRoutes(v1.Group("/shippings"))

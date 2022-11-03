@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
@@ -243,4 +244,15 @@ func (h *handler) DeleteCoordinator(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) getCoordinator(ctx context.Context, coordinatorID string) (*service.Coordinator, error) {
+	in := &user.GetCoordinatorInput{
+		CoordinatorID: coordinatorID,
+	}
+	coordinator, err := h.user.GetCoordinator(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewCoordinator(coordinator), nil
 }
