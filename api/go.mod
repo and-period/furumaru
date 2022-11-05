@@ -36,7 +36,7 @@ require (
 	github.com/sendgrid/sendgrid-go v3.11.1+incompatible
 	github.com/shopspring/decimal v1.3.1
 	github.com/slack-go/slack v0.11.3
-	github.com/stretchr/testify v1.8.0
+	github.com/stretchr/testify v1.8.1
 	github.com/stripe/stripe-go/v73 v73.4.0
 	go.uber.org/zap v1.23.0
 	golang.org/x/image v0.0.0-20190802002840-cff245a6509b
