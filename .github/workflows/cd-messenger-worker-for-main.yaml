@@ -36,10 +36,6 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v3
 
-    - name: Generate task-definition.json
-      run: |
-        echo -n ${ECS_TASK_DEFINITION} > ./task-definition.json
-
     - name: Set ECR_REPOSITORY_URL
       run: |
         echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
