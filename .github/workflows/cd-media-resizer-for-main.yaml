@@ -1,10 +1,10 @@
-name: '[Backend] Deploy Messenger Scheduler for main'
+name: '[Backend] Deploy Media Resizer for main'
 on:
   push:
     branches:
     - 'main'
     paths:
-    - '.github/workflows/cd-messenger-scheduler-for-main.yaml'
+    - '.github/workflows/cd-media-resizer-for-main.yaml'
     - 'api/**'
     - 'infra/docker/api/**'
     - 'infra/kubernetes/**'
@@ -14,10 +14,10 @@ env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
   AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
   ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
-  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_MESSENGER_SCHEDULER }}
+  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_MEDIA_RESIZER }}
   ECR_IMAGE_TAG: ${{ github.sha }}
-  LAMBDA_FUNCTION: ${{ secrets.STG_LAMBDA_FUNCTION_MESSENGER_SCHEDULER }}
-  IMAGE_PATH: ./infra/docker/api/messenger/scheduler/Dockerfile
+  LAMBDA_FUNCTION: ${{ secrets.STG_LAMBDA_FUNCTION_MEDIA_RESIZER }}
+  IMAGE_PATH: ./infra/docker/api/media/resizer/Dockerfile
 
 jobs:
   build_and_deploy:
