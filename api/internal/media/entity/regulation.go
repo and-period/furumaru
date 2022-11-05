@@ -105,7 +105,7 @@ func (r *Regulation) validateFormat(file io.Reader) error {
 
 func (r *Regulation) GenerateFilePath(header *multipart.FileHeader) string {
 	key := uuid.Base58Encode(uuid.New())
-	extension := filepath.Ext(header.Filename)
+	extension := strings.ToLower(filepath.Ext(header.Filename))
 	filename := strings.Join([]string{key, extension}, "")
 	return strings.Join([]string{r.dir, filename}, "/")
 }
