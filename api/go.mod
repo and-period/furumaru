@@ -52,11 +52,10 @@ require (
 	moul.io/zapgorm2 v1.1.3
 )
 
-require cloud.google.com/go/compute/metadata v0.2.1 // indirect
-
 require (
 	cloud.google.com/go v0.104.0 // indirect
 	cloud.google.com/go/compute v1.12.1 // indirect
+	cloud.google.com/go/compute/metadata v0.2.1 // indirect
 	cloud.google.com/go/firestore v1.6.1 // indirect
 	cloud.google.com/go/iam v0.3.0 // indirect
 	cloud.google.com/go/storage v1.26.0 // indirect
