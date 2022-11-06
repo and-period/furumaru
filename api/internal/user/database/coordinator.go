@@ -17,7 +17,8 @@ import (
 const coordinatorTable = "coordinators"
 
 var coordinatorFields = []string{
-	"admin_id", "phone_number", "company_name", "store_name", "thumbnail_url", "header_url",
+	"admin_id", "phone_number", "company_name", "store_name",
+	"thumbnail_url", "thumbnails", "header_url", "headers",
 	"twitter_account", "instagram_account", "facebook_account",
 	"postal_code", "prefecture", "city", "address_line1", "address_line2",
 	"created_at", "updated_at", "deleted_at",
