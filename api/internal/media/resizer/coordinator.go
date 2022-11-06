@@ -3,15 +3,16 @@ package resizer
 import (
 	"context"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media/entity"
-	"go.uber.org/zap"
+	"github.com/and-period/furumaru/api/internal/user"
 )
 
 func (r *resizer) coordinatorThumbnail(ctx context.Context, payload *entity.ResizerPayload) error {
-	url := payload.URLs[0]
-	if url == "" {
+	if len(payload.URLs) == 0 || payload.URLs[0] == "" {
 		return errRequiredMediaURL
 	}
+	url := payload.URLs[0]
 	buf, err := r.storage.Download(ctx, payload.URLs[0])
 	if err != nil {
 		return err
@@ -24,16 +25,22 @@ func (r *resizer) coordinatorThumbnail(ctx context.Context, payload *entity.Resi
 	if err != nil {
 		return err
 	}
-	// データの更新処理
-	r.logger.Info("Success upload", zap.Any("payload", payload), zap.Any("images", images))
-	return nil
+	in := &user.UpdateCoordinatorThumbnailsInput{
+		CoordinatorID: payload.TargetID,
+		Thumbnails:    images,
+	}
+	updateFn := func() error {
+		err := r.user.UpdateCoordinatorThumbnails(ctx, in)
+		return exception.InternalError(err)
+	}
+	return r.notify(ctx, payload, updateFn)
 }
 
 func (r *resizer) coordinatorHeader(ctx context.Context, payload *entity.ResizerPayload) error {
-	url := payload.URLs[0]
-	if url == "" {
+	if len(payload.URLs) == 0 || payload.URLs[0] == "" {
 		return errRequiredMediaURL
 	}
+	url := payload.URLs[0]
 	buf, err := r.storage.Download(ctx, payload.URLs[0])
 	if err != nil {
 		return err
@@ -46,7 +53,13 @@ func (r *resizer) coordinatorHeader(ctx context.Context, payload *entity.Resizer
 	if err != nil {
 		return err
 	}
-	// データの更新処理
-	r.logger.Info("Success upload", zap.Any("payload", payload), zap.Any("images", images))
-	return nil
+	in := &user.UpdateCoordinatorHeadersInput{
+		CoordinatorID: payload.TargetID,
+		Headers:       images,
+	}
+	updateFn := func() error {
+		err := r.user.UpdateCoordinatorHeaders(ctx, in)
+		return exception.InternalError(err)
+	}
+	return r.notify(ctx, payload, updateFn)
 }
