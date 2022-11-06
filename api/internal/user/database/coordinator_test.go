@@ -826,13 +826,15 @@ func TestCoordinator_Delete(t *testing.T) {
 }
 
 func testCoordinator(id string, now time.Time) *entity.Coordinator {
-	return &entity.Coordinator{
+	c := &entity.Coordinator{
 		AdminID:          id,
 		PhoneNumber:      "+819012345678",
 		CompanyName:      "&.株式会社",
 		StoreName:        "&.農園",
 		ThumbnailURL:     "https://and-period.jp/thumbnail.png",
+		Thumbnails:       common.Images{},
 		HeaderURL:        "https://and-period.jp/header.png",
+		Headers:          common.Images{},
 		TwitterAccount:   "twitter-id",
 		InstagramAccount: "instagram-id",
 		FacebookAccount:  "facebook-id",
@@ -844,16 +846,19 @@ func testCoordinator(id string, now time.Time) *entity.Coordinator {
 		CreatedAt:        now,
 		UpdatedAt:        now,
 	}
+	_ = c.FillJSON()
+	return c
 }
 
-func fillIgnoreCoordinatorField(a *entity.Coordinator, now time.Time) {
-	if a == nil {
+func fillIgnoreCoordinatorField(c *entity.Coordinator, now time.Time) {
+	if c == nil {
 		return
 	}
-	a.CreatedAt = now
-	a.UpdatedAt = now
-	a.Admin.CreatedAt = now
-	a.Admin.UpdatedAt = now
+	_ = c.FillJSON()
+	c.CreatedAt = now
+	c.UpdatedAt = now
+	c.Admin.CreatedAt = now
+	c.Admin.UpdatedAt = now
 }
 
 func fillIgnoreCoordinatorsField(as entity.Coordinators, now time.Time) {

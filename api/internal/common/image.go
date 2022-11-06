@@ -26,6 +26,14 @@ type Image struct {
 
 type Images []*Image
 
+func NewImagesFromBytes(b []byte) (Images, error) {
+	if b == nil {
+		return Images{}, nil
+	}
+	var images Images
+	return images, json.Unmarshal(b, &images)
+}
+
 func (is Images) Marshal() ([]byte, error) {
 	if len(is) == 0 {
 		return []byte{}, nil

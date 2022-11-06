@@ -76,10 +76,10 @@ func NewCoordinator(params *NewCoordinatorParams) *Coordinator {
 
 func (c *Coordinator) Fill(admin *Admin) (err error) {
 	var thumbnails, headers common.Images
-	if thumbnails, err = c.unmarshalImages(c.ThumbnailsJSON); err != nil {
+	if thumbnails, err = common.NewImagesFromBytes(c.ThumbnailsJSON); err != nil {
 		return err
 	}
-	if headers, err = c.unmarshalImages(c.HeadersJSON); err != nil {
+	if headers, err = common.NewImagesFromBytes(c.HeadersJSON); err != nil {
 		return err
 	}
 	c.Admin = *admin
@@ -88,12 +88,32 @@ func (c *Coordinator) Fill(admin *Admin) (err error) {
 	return nil
 }
 
-func (c *Coordinator) unmarshalImages(b []byte) (common.Images, error) {
-	if b == nil {
-		return common.Images{}, nil
+func (c *Coordinator) FillJSON() error {
+	thumbnails, err := c.marshalThumbnails()
+	if err != nil {
+		return err
 	}
-	var images common.Images
-	return images, json.Unmarshal(b, &images)
+	headers, err := c.marshalHeaders()
+	if err != nil {
+		return err
+	}
+	c.ThumbnailsJSON = datatypes.JSON(thumbnails)
+	c.HeadersJSON = datatypes.JSON(headers)
+	return nil
+}
+
+func (c *Coordinator) marshalThumbnails() ([]byte, error) {
+	if len(c.Thumbnails) == 0 {
+		return []byte{}, nil
+	}
+	return json.Marshal(c.Thumbnails)
+}
+
+func (c *Coordinator) marshalHeaders() ([]byte, error) {
+	if len(c.Headers) == 0 {
+		return []byte{}, nil
+	}
+	return json.Marshal(c.Headers)
 }
 
 func (cs Coordinators) IDs() []string {
