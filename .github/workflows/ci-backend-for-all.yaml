@@ -14,7 +14,7 @@ env:
   DB_PORT: 3306
   DB_USERNAME: root
   DB_PASSWORD: 12345678
-  GO_VERSION: 1.19.3
+  GO_VERSION: '1.19.3'
 
 jobs:
   setup:
@@ -26,7 +26,7 @@ jobs:
         working-directory: ./api
     strategy:
       matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        os: ['ubuntu-latest'] # exclude: macos-latest, windows-latest
         golang: [${{ env.GO_VERSION }}]
 
     steps:
@@ -59,7 +59,7 @@ jobs:
         working-directory: ./api
     strategy:
       matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        os: ['ubuntu-latest'] # exclude: macos-latest, windows-latest
         golang: [${{ env.GO_VERSION }}]
 
     steps:
@@ -93,7 +93,7 @@ jobs:
         working-directory: ./api
     strategy:
       matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        os: ['ubuntu-latest'] # exclude: macos-latest, windows-latest
         golang: [${{ env.GO_VERSION }}]
 
     steps:
@@ -142,7 +142,7 @@ jobs:
         working-directory: ./api
     strategy:
       matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        os: ['ubuntu-latest'] # exclude: macos-latest, windows-latest
         golang: [${{ env.GO_VERSION }}]
 
     steps:
