@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
@@ -690,6 +691,132 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateCoordinatorEmail(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestUpdateCoordinatorThumbnails(t *testing.T) {
+	t.Parallel()
+
+	thumbnails := common.Images{
+		{
+			Size: common.ImageSizeSmall,
+			URL:  "https://and-period.jp/thumbnail_240.png",
+		},
+		{
+			Size: common.ImageSizeMedium,
+			URL:  "https://and-period.jp/thumbnail_675.png",
+		},
+		{
+			Size: common.ImageSizeLarge,
+			URL:  "https://and-period.jp/thumbnail_900.png",
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.UpdateCoordinatorThumbnailsInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Coordinator.EXPECT().UpdateThumbnails(ctx, "coordinator-id", thumbnails).Return(nil)
+			},
+			input: &user.UpdateCoordinatorThumbnailsInput{
+				CoordinatorID: "coordinator-id",
+				Thumbnails:    thumbnails,
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.UpdateCoordinatorThumbnailsInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to update thumbnails",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Coordinator.EXPECT().UpdateThumbnails(ctx, "coordinator-id", thumbnails).Return(assert.AnError)
+			},
+			input: &user.UpdateCoordinatorThumbnailsInput{
+				CoordinatorID: "coordinator-id",
+				Thumbnails:    thumbnails,
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.UpdateCoordinatorThumbnails(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestUpdateCoordinatorHeaders(t *testing.T) {
+	t.Parallel()
+
+	headers := common.Images{
+		{
+			Size: common.ImageSizeSmall,
+			URL:  "https://and-period.jp/header_240.png",
+		},
+		{
+			Size: common.ImageSizeMedium,
+			URL:  "https://and-period.jp/header_675.png",
+		},
+		{
+			Size: common.ImageSizeLarge,
+			URL:  "https://and-period.jp/header_900.png",
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.UpdateCoordinatorHeadersInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Coordinator.EXPECT().UpdateHeaders(ctx, "coordinator-id", headers).Return(nil)
+			},
+			input: &user.UpdateCoordinatorHeadersInput{
+				CoordinatorID: "coordinator-id",
+				Headers:       headers,
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.UpdateCoordinatorHeadersInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to update headers",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Coordinator.EXPECT().UpdateHeaders(ctx, "coordinator-id", headers).Return(assert.AnError)
+			},
+			input: &user.UpdateCoordinatorHeadersInput{
+				CoordinatorID: "coordinator-id",
+				Headers:       headers,
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.UpdateCoordinatorHeaders(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}

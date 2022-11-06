@@ -2,12 +2,15 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -164,6 +167,62 @@ func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *
 	return exception.InternalError(err)
 }
 
+func (c *coordinator) UpdateThumbnails(ctx context.Context, coordinatorID string, thumbnails common.Images) error {
+	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+		coordinator, err := c.get(ctx, tx, coordinatorID, "thumbnail_url")
+		if err != nil {
+			return nil, err
+		}
+		if coordinator.ThumbnailURL == "" {
+			return nil, fmt.Errorf("database: thumbnail url is empty: %w", exception.ErrFailedPrecondition)
+		}
+
+		buf, err := thumbnails.Marshal()
+		if err != nil {
+			return nil, err
+		}
+		params := map[string]interface{}{
+			"thumbnails": datatypes.JSON(buf),
+			"updated_at": c.now(),
+		}
+
+		err = tx.WithContext(ctx).
+			Table(coordinatorTable).
+			Where("admin_id = ?", coordinatorID).
+			Updates(params).Error
+		return nil, err
+	})
+	return exception.InternalError(err)
+}
+
+func (c *coordinator) UpdateHeaders(ctx context.Context, coordinatorID string, headers common.Images) error {
+	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+		coordinator, err := c.get(ctx, tx, coordinatorID, "header_url")
+		if err != nil {
+			return nil, err
+		}
+		if coordinator.HeaderURL == "" {
+			return nil, fmt.Errorf("database: header url is empty: %w", exception.ErrFailedPrecondition)
+		}
+
+		buf, err := headers.Marshal()
+		if err != nil {
+			return nil, err
+		}
+		params := map[string]interface{}{
+			"headers":    datatypes.JSON(buf),
+			"updated_at": c.now(),
+		}
+
+		err = tx.WithContext(ctx).
+			Table(coordinatorTable).
+			Where("admin_id = ?", coordinatorID).
+			Updates(params).Error
+		return nil, err
+	})
+	return exception.InternalError(err)
+}
+
 func (c *coordinator) Delete(ctx context.Context, coordinatorID string, auth func(ctx context.Context) error) error {
 	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		if _, err := c.get(ctx, tx, coordinatorID); err != nil {
@@ -237,7 +296,9 @@ func (c *coordinator) fill(ctx context.Context, tx *gorm.DB, coordinators ...*en
 			admin = &entity.Admin{}
 		}
 
-		coordinators[i].Fill(admin)
+		if err := coordinators[i].Fill(admin); err != nil {
+			return err
+		}
 	}
 	return nil
 }

@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
@@ -491,6 +492,242 @@ func TestCoordinator_Update(t *testing.T) {
 
 			db := &coordinator{db: m.db, now: now}
 			err = db.Update(ctx, tt.args.coordinatorID, tt.args.params)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
+func TestCoordinator_UpdateThumbnails(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	type args struct {
+		coordinatorID string
+		thumbnails    common.Images
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				_ = m.dbDelete(ctx, coordinatorTable, adminTable)
+				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
+				err = m.db.DB.Create(&admin).Error
+				require.NoError(t, err)
+				coordinator := testCoordinator("admin-id", now())
+				err = m.db.DB.Create(&coordinator).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				coordinatorID: "admin-id",
+				thumbnails: common.Images{
+					{
+						Size: common.ImageSizeSmall,
+						URL:  "https://and-period.jp/thumbnail_240.png",
+					},
+					{
+						Size: common.ImageSizeMedium,
+						URL:  "https://and-period.jp/thumbnail_675.png",
+					},
+					{
+						Size: common.ImageSizeLarge,
+						URL:  "https://and-period.jp/thumbnail_900.png",
+					},
+				},
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				coordinatorID: "admin-id",
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+		{
+			name: "failed precondition for thumbnail url is empty",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				_ = m.dbDelete(ctx, coordinatorTable, adminTable)
+				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
+				err = m.db.DB.Create(&admin).Error
+				require.NoError(t, err)
+				coordinator := testCoordinator("admin-id", now())
+				coordinator.ThumbnailURL = ""
+				err = m.db.DB.Create(&coordinator).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				coordinatorID: "admin-id",
+				thumbnails: common.Images{
+					{
+						Size: common.ImageSizeSmall,
+						URL:  "https://and-period.jp/thumbnail_240.png",
+					},
+					{
+						Size: common.ImageSizeMedium,
+						URL:  "https://and-period.jp/thumbnail_675.png",
+					},
+					{
+						Size: common.ImageSizeLarge,
+						URL:  "https://and-period.jp/thumbnail_900.png",
+					},
+				},
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := m.dbDelete(ctx, coordinatorTable, adminTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, m)
+
+			db := &coordinator{db: m.db, now: now}
+			err = db.UpdateThumbnails(ctx, tt.args.coordinatorID, tt.args.thumbnails)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
+func TestCoordinator_UpdateHeaders(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	type args struct {
+		coordinatorID string
+		headers       common.Images
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				_ = m.dbDelete(ctx, coordinatorTable, adminTable)
+				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
+				err = m.db.DB.Create(&admin).Error
+				require.NoError(t, err)
+				coordinator := testCoordinator("admin-id", now())
+				err = m.db.DB.Create(&coordinator).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				coordinatorID: "admin-id",
+				headers: common.Images{
+					{
+						Size: common.ImageSizeSmall,
+						URL:  "https://and-period.jp/header_240.png",
+					},
+					{
+						Size: common.ImageSizeMedium,
+						URL:  "https://and-period.jp/header_675.png",
+					},
+					{
+						Size: common.ImageSizeLarge,
+						URL:  "https://and-period.jp/header_900.png",
+					},
+				},
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				coordinatorID: "admin-id",
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+		{
+			name: "failed precondition for header url is empty",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				_ = m.dbDelete(ctx, coordinatorTable, adminTable)
+				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
+				err = m.db.DB.Create(&admin).Error
+				require.NoError(t, err)
+				coordinator := testCoordinator("admin-id", now())
+				coordinator.HeaderURL = ""
+				err = m.db.DB.Create(&coordinator).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				coordinatorID: "admin-id",
+				headers: common.Images{
+					{
+						Size: common.ImageSizeSmall,
+						URL:  "https://and-period.jp/header_240.png",
+					},
+					{
+						Size: common.ImageSizeMedium,
+						URL:  "https://and-period.jp/header_675.png",
+					},
+					{
+						Size: common.ImageSizeLarge,
+						URL:  "https://and-period.jp/header_900.png",
+					},
+				},
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := m.dbDelete(ctx, coordinatorTable, adminTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, m)
+
+			db := &coordinator{db: m.db, now: now}
+			err = db.UpdateHeaders(ctx, tt.args.coordinatorID, tt.args.headers)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}

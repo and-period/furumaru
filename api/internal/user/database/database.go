@@ -5,6 +5,7 @@ package database
 import (
 	"context"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
 	"gorm.io/gorm"
@@ -62,6 +63,8 @@ type Coordinator interface {
 	Get(ctx context.Context, coordinatorID string, fields ...string) (*entity.Coordinator, error)
 	Create(ctx context.Context, coordinator *entity.Coordinator, auth func(ctx context.Context) error) error
 	Update(ctx context.Context, coordinatorID string, params *UpdateCoordinatorParams) error
+	UpdateThumbnails(ctx context.Context, coordinatorID string, thumbnails common.Images) error
+	UpdateHeaders(ctx context.Context, coordinatorID string, headers common.Images) error
 	Delete(ctx context.Context, coordinatorID string, auth func(ctx context.Context) error) error
 }
 
