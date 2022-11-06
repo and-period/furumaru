@@ -11,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/aws/aws-lambda-go/events"
@@ -42,11 +43,13 @@ type resizer struct {
 	storage     storage.Bucket
 	user        user.Service
 	concurrency int64
+	maxRetries  int64
 }
 
 type options struct {
 	logger      *zap.Logger
 	concurrency int64
+	maxRetries  int64
 }
 
 type Option func(*options)
@@ -63,10 +66,17 @@ func WithConcurrency(concurrency int64) Option {
 	}
 }
 
+func WithMaxRetires(maxRetries int64) Option {
+	return func(opts *options) {
+		opts.maxRetries = maxRetries
+	}
+}
+
 func NewResizer(params *Params, opts ...Option) Resizer {
 	dopts := &options{
 		logger:      zap.NewNop(),
 		concurrency: 1,
+		maxRetries:  3,
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -132,4 +142,17 @@ func (r *resizer) run(ctx context.Context, payload *entity.ResizerPayload) error
 	default:
 		return fmt.Errorf("resizer: unknown file type. type=%d: %w", payload.FileType, exception.ErrInvalidArgument)
 	}
+}
+
+func (r *resizer) notify(ctx context.Context, payload *entity.ResizerPayload, fn func() error) error {
+	retry := backoff.NewExponentialBackoff(r.maxRetries)
+	err := backoff.Retry(ctx, retry, fn, backoff.WithRetryablel(exception.Retryable))
+	if err != nil {
+		r.logger.Error("Failed to notify resize action",
+			zap.Int32("fileType", int32(payload.FileType)),
+			zap.String("targetId", payload.TargetID),
+			zap.Error(err))
+		return err
+	}
+	return nil
 }

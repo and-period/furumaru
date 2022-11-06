@@ -97,11 +97,11 @@ func testFilePath(t *testing.T, filename string) string {
 
 func TestResizer(t *testing.T) {
 	t.Parallel()
-	w := NewResizer(&Params{}, WithLogger(zap.NewNop()), WithConcurrency(1))
+	w := NewResizer(&Params{}, WithLogger(zap.NewNop()), WithConcurrency(1), WithConcurrency(3))
 	assert.NotNil(t, w)
 }
 
-func TestWorker_Dispatch(t *testing.T) {
+func TestResizer_Dispatch(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -149,13 +149,14 @@ func TestWorker_Dispatch(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testResizer(tt.setup, func(ctx context.Context, t *testing.T, resizer *resizer) {
+			t.Parallel()
 			err := resizer.dispatch(ctx, tt.record)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
 }
 
-func TestWorker_Run(t *testing.T) {
+func TestResizer_Run(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -170,6 +171,7 @@ func TestWorker_Run(t *testing.T) {
 				file := testImageFile(t)
 				mocks.storage.EXPECT().Download(ctx, gomock.Any()).Return(file, nil)
 				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return("", nil).AnyTimes()
+				mocks.user.EXPECT().UpdateCoordinatorThumbnails(ctx, gomock.Any()).Return(nil)
 			},
 			payload: &entity.ResizerPayload{
 				TargetID: "target-id",
@@ -184,6 +186,7 @@ func TestWorker_Run(t *testing.T) {
 				file := testImageFile(t)
 				mocks.storage.EXPECT().Download(ctx, gomock.Any()).Return(file, nil)
 				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return("", nil).AnyTimes()
+				mocks.user.EXPECT().UpdateCoordinatorHeaders(ctx, gomock.Any()).Return(nil)
 			},
 			payload: &entity.ResizerPayload{
 				TargetID: "target-id",
@@ -217,7 +220,52 @@ func TestWorker_Run(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testResizer(tt.setup, func(ctx context.Context, t *testing.T, resizer *resizer) {
+			t.Parallel()
 			err := resizer.run(ctx, tt.payload)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestResizer_Notify(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		payload   *entity.ResizerPayload
+		fn        func() error
+		expectErr error
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			payload: &entity.ResizerPayload{
+				TargetID: "target-id",
+				FileType: entity.FileTypeCoordinatorThumbnail,
+				URLs:     []string{"http://example.com/media/image.png"},
+			},
+			fn:        func() error { return nil },
+			expectErr: nil,
+		},
+		{
+			name:  "failed to function",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			payload: &entity.ResizerPayload{
+				TargetID: "target-id",
+				FileType: entity.FileTypeCoordinatorThumbnail,
+				URLs:     []string{"http://example.com/media/image.png"},
+			},
+			fn:        func() error { return assert.AnError },
+			expectErr: assert.AnError,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testResizer(tt.setup, func(ctx context.Context, t *testing.T, resizer *resizer) {
+			t.Parallel()
+			err := resizer.notify(ctx, tt.payload, tt.fn)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
