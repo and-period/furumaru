@@ -37,7 +37,7 @@ jobs:
     - id: golang
       run: |
         versions=$(echo "[${GO_VERSION}]" | jq -c)
-        echo "value=$version" >> $GITHUB_OUTPUT
+        echo "value=${versions}" >> $GITHUB_OUTPUT
 
   setup:
     name: setup
