@@ -8,6 +8,7 @@ on:
 env:
   SERVICE: docs
   TZ: 'Asia/Tokyo'
+  NODE_VERSION: 18.11.0
 
 jobs:
   setup:
@@ -20,7 +21,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        node: ['18.11.0']
+        node: [${{ env.NODE_VERSION }}]
+
     steps:
     - name: Check out code
       uses: actions/checkout@v3
@@ -59,7 +61,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        node: ['18.11.0']
+        node: [${{ env.NODE_VERSION }}]
+
     steps:
     - name: Check out code
       uses: actions/checkout@v3
@@ -101,7 +104,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        node: ['18.11.0']
+        node: [${{ env.NODE_VERSION }}]
+
     steps:
     - name: Check out code
       uses: actions/checkout@v3
@@ -136,6 +140,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+
     steps:
     - name: Check out code
       uses: actions/checkout@v3
