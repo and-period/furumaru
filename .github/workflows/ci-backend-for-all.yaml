@@ -35,7 +35,7 @@ jobs:
       uses: actions/checkout@v3
 
     - id: golang
-      run: echo "value=[$env.GO_VERSION]" >> $GITHUB_OUTPUT
+      run: echo "value=[$GO_VERSION]" >> $GITHUB_OUTPUT
 
   setup:
     name: setup
