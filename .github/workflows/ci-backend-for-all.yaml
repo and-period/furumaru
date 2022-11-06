@@ -17,8 +17,8 @@ env:
   GO_VERSION: '1.19.3'
 
 jobs:
-  setup:
-    name: setup
+  matrix:
+    name: matrix
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -27,7 +27,28 @@ jobs:
     strategy:
       matrix:
         os: ['ubuntu-latest'] # exclude: macos-latest, windows-latest
-        golang: ${{ fromJson("[${env.GO_VERSION}]") }}
+    outputs:
+      golang: ${{ steps.golang.outputs.value }}
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+
+    - id: golang
+      run: echo "::set-output name=value::[$env.GO_VERSION]"
+
+  setup:
+    name: setup
+    needs: matrix
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./api
+    strategy:
+      matrix:
+        os: ['ubuntu-latest'] # exclude: macos-latest, windows-latest
+        golang: ${{ fromJson(needs.matrix.outputs.golang) }}
 
     steps:
     - name: Check out code
@@ -52,6 +73,7 @@ jobs:
 
   lint:
     name: lint
+    needs: matrix
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -60,7 +82,7 @@ jobs:
     strategy:
       matrix:
         os: ['ubuntu-latest'] # exclude: macos-latest, windows-latest
-        golang: ${{ fromJson("[${env.GO_VERSION}]") }}
+        golang: ${{ fromJson(needs.matrix.outputs.golang) }}
 
     steps:
     - name: Check out code
@@ -94,7 +116,7 @@ jobs:
     strategy:
       matrix:
         os: ['ubuntu-latest'] # exclude: macos-latest, windows-latest
-        golang: ${{ fromJson("[${env.GO_VERSION}]") }}
+        golang: ${{ fromJson(needs.matrix.outputs.golang) }}
 
     steps:
     - name: Check out code
@@ -143,7 +165,7 @@ jobs:
     strategy:
       matrix:
         os: ['ubuntu-latest'] # exclude: macos-latest, windows-latest
-        golang: ${{ fromJson("[${env.GO_VERSION}]") }}
+        golang: ${{ fromJson(needs.matrix.outputs.golang) }}
 
     steps:
     - name: Check out code
