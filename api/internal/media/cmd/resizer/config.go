@@ -7,7 +7,7 @@ import (
 )
 
 type config struct {
-	AppName          string `envconfig:"APP_NAME" default:"messenger-worker"`
+	AppName          string `envconfig:"APP_NAME" default:"media-resizer"`
 	Environment      string `envconfig:"ENV" default:"none"`
 	RunMethod        string `envconfig:"RUN_METHOD" default:"lambda"`
 	ShutdownDelaySec int64  `envconfig:"SHUTDOWN_DELAY_SEC" default:"20"`
