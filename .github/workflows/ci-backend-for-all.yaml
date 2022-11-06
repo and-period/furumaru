@@ -14,12 +14,11 @@ env:
   DB_PORT: 3306
   DB_USERNAME: root
   DB_PASSWORD: 12345678
-  GO_VERSION: '1.19.3'
+  GO_VERSION: 1.19.3
 
 jobs:
   setup:
     name: setup
-    needs: matrix
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -52,7 +51,6 @@ jobs:
 
   lint:
     name: lint
-    needs: matrix
     runs-on: ${{ matrix.os }}
     defaults:
       run:

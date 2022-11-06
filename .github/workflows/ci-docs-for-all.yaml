@@ -21,16 +21,15 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        node: [${{ env.NODE_VERSION }}]
 
     steps:
     - name: Check out code
       uses: actions/checkout@v3
 
-    - name: Use Node.js ${{ matrix.node }}
+    - name: Use Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node }}
+        node-version: ${{ env.NODE_VERSION }}
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
@@ -61,16 +60,15 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        node: [${{ env.NODE_VERSION }}]
 
     steps:
     - name: Check out code
       uses: actions/checkout@v3
 
-    - name: Use Node.js ${{ matrix.node }}
+    - name: Use Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node }}
+        node-version: ${{ env.NODE_VERSION }}
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
@@ -104,11 +102,17 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        node: [${{ env.NODE_VERSION }}]
 
     steps:
     - name: Check out code
       uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
 
     - name: Get yarn cache directory path
       id: yarn-cache-dir-path
@@ -146,10 +150,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Install
-      run: |
-        docker compose run --rm swagger_generator yarn
-        docker compose run --rm user_web yarn
-        docker compose run --rm admin_web yarn
+      run: docker compose run --rm swagger_generator yarn
 
     - name: Build
       run: make swagger
