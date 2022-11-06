@@ -17,28 +17,6 @@ env:
   GO_VERSION: '1.19.3'
 
 jobs:
-  matrix:
-    name: matrix
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./api
-    strategy:
-      matrix:
-        os: ['ubuntu-latest'] # exclude: macos-latest, windows-latest
-    outputs:
-      golang: ${{ steps.golang.outputs.value }}
-
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v3
-
-    - id: golang
-      run: |
-        versions=$(echo "[${GO_VERSION}]" | jq -c)
-        echo "value=${versions}" >> $GITHUB_OUTPUT
-
   setup:
     name: setup
     needs: matrix
@@ -49,17 +27,16 @@ jobs:
         working-directory: ./api
     strategy:
       matrix:
-        os: ['ubuntu-latest'] # exclude: macos-latest, windows-latest
-        golang: ${{ fromJson(needs.matrix.outputs.golang) }}
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
 
     steps:
     - name: Check out code
       uses: actions/checkout@v3
 
-    - name: Use Golang ${{ matrix.golang }}
+    - name: Use Golang ${{ env.GO_VERSION }}
       uses: actions/setup-go@v3
       with:
-        go-version: ${{ matrix.golang }}
+        go-version: ${{ eng.GO_VERSION }}
 
     - uses: actions/cache@v3
       id: modules-cache
@@ -83,17 +60,16 @@ jobs:
         working-directory: ./api
     strategy:
       matrix:
-        os: ['ubuntu-latest'] # exclude: macos-latest, windows-latest
-        golang: ${{ fromJson(needs.matrix.outputs.golang) }}
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
 
     steps:
     - name: Check out code
       uses: actions/checkout@v3
 
-    - name: Use Golang ${{ matrix.golang }}
+    - name: Use Golang ${{ env.GO_VERSION }}
       uses: actions/setup-go@v3
       with:
-        go-version: ${{ matrix.golang }}
+        go-version: ${{ eng.GO_VERSION }}
 
     - name: Setup
       run: make setup
@@ -117,17 +93,16 @@ jobs:
         working-directory: ./api
     strategy:
       matrix:
-        os: ['ubuntu-latest'] # exclude: macos-latest, windows-latest
-        golang: ${{ fromJson(needs.matrix.outputs.golang) }}
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
 
     steps:
     - name: Check out code
       uses: actions/checkout@v3
 
-    - name: Use Golang ${{ matrix.golang }}
+    - name: Use Golang ${{ env.GO_VERSION }}
       uses: actions/setup-go@v3
       with:
-        go-version: ${{ matrix.golang }}
+        go-version: ${{ eng.GO_VERSION }}
 
     - uses: actions/cache@v3
       id: modules-cache
@@ -166,17 +141,16 @@ jobs:
         working-directory: ./api
     strategy:
       matrix:
-        os: ['ubuntu-latest'] # exclude: macos-latest, windows-latest
-        golang: ${{ fromJson(needs.matrix.outputs.golang) }}
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
 
     steps:
     - name: Check out code
       uses: actions/checkout@v3
 
-    - name: Use Golang ${{ matrix.golang }}
+    - name: Use Golang ${{ env.GO_VERSION }}
       uses: actions/setup-go@v3
       with:
-        go-version: ${{ matrix.golang }}
+        go-version: ${{ eng.GO_VERSION }}
 
     - name: Start MySQL container
       working-directory: .
