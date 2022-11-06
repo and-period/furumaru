@@ -8,6 +8,7 @@ import (
 	context "context"
 	reflect "reflect"
 
+	common "github.com/and-period/furumaru/api/internal/common"
 	database "github.com/and-period/furumaru/api/internal/user/database"
 	entity "github.com/and-period/furumaru/api/internal/user/entity"
 	gomock "github.com/golang/mock/gomock"
@@ -402,6 +403,34 @@ func (m *MockCoordinator) Update(ctx context.Context, coordinatorID string, para
 func (mr *MockCoordinatorMockRecorder) Update(ctx, coordinatorID, params interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockCoordinator)(nil).Update), ctx, coordinatorID, params)
+}
+
+// UpdateHeaders mocks base method.
+func (m *MockCoordinator) UpdateHeaders(ctx context.Context, coordinatorID string, headers common.Images) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateHeaders", ctx, coordinatorID, headers)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateHeaders indicates an expected call of UpdateHeaders.
+func (mr *MockCoordinatorMockRecorder) UpdateHeaders(ctx, coordinatorID, headers interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateHeaders", reflect.TypeOf((*MockCoordinator)(nil).UpdateHeaders), ctx, coordinatorID, headers)
+}
+
+// UpdateThumbnails mocks base method.
+func (m *MockCoordinator) UpdateThumbnails(ctx context.Context, coordinatorID string, thumbnails common.Images) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateThumbnails", ctx, coordinatorID, thumbnails)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateThumbnails indicates an expected call of UpdateThumbnails.
+func (mr *MockCoordinatorMockRecorder) UpdateThumbnails(ctx, coordinatorID, thumbnails interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateThumbnails", reflect.TypeOf((*MockCoordinator)(nil).UpdateThumbnails), ctx, coordinatorID, thumbnails)
 }
 
 // MockMember is a mock of Member interface.

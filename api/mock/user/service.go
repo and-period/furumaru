@@ -725,6 +725,34 @@ func (mr *MockServiceMockRecorder) UpdateCoordinatorEmail(ctx, in interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCoordinatorEmail", reflect.TypeOf((*MockService)(nil).UpdateCoordinatorEmail), ctx, in)
 }
 
+// UpdateCoordinatorHeaders mocks base method.
+func (m *MockService) UpdateCoordinatorHeaders(ctx context.Context, in *user.UpdateCoordinatorHeadersInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateCoordinatorHeaders", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateCoordinatorHeaders indicates an expected call of UpdateCoordinatorHeaders.
+func (mr *MockServiceMockRecorder) UpdateCoordinatorHeaders(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCoordinatorHeaders", reflect.TypeOf((*MockService)(nil).UpdateCoordinatorHeaders), ctx, in)
+}
+
+// UpdateCoordinatorThumbnails mocks base method.
+func (m *MockService) UpdateCoordinatorThumbnails(ctx context.Context, in *user.UpdateCoordinatorThumbnailsInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateCoordinatorThumbnails", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateCoordinatorThumbnails indicates an expected call of UpdateCoordinatorThumbnails.
+func (mr *MockServiceMockRecorder) UpdateCoordinatorThumbnails(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCoordinatorThumbnails", reflect.TypeOf((*MockService)(nil).UpdateCoordinatorThumbnails), ctx, in)
+}
+
 // UpdateProducer mocks base method.
 func (m *MockService) UpdateProducer(ctx context.Context, in *user.UpdateProducerInput) error {
 	m.ctrl.T.Helper()
