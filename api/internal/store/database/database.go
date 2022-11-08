@@ -24,6 +24,7 @@ type Database struct {
 	Promotion   Promotion
 	Shipping    Shipping
 	Schedule    Schedule
+	Live        Live
 }
 
 func NewDatabase(params *Params) *Database {
@@ -35,6 +36,7 @@ func NewDatabase(params *Params) *Database {
 		Promotion:   NewPromotion(params.Database),
 		Shipping:    NewShipping(params.Database),
 		Schedule:    NewSchedule(params.Database),
+		Live:        NewLive(params.Database),
 	}
 }
 
@@ -99,6 +101,10 @@ type Shipping interface {
 
 type Schedule interface {
 	Create(ctx context.Context, schedule *entity.Schedule, lives entity.Lives, products entity.LiveProducts) error
+}
+
+type Live interface {
+	Get(ctx context.Context, liveID string, fields ...string) (*entity.Live, error)
 }
 
 /**
