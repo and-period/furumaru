@@ -55,7 +55,7 @@ func (n *notification) Count(ctx context.Context, params *ListNotificationsParam
 	stmt := n.db.Count(ctx, n.db.DB, notificationTable)
 	stmt = params.stmt(stmt)
 
-	err := stmt.Count(&total).Error
+	err := stmt.Find(&total).Error
 	return total, exception.InternalError(err)
 }
 

@@ -50,7 +50,7 @@ func (a *administrator) List(
 func (a *administrator) Count(ctx context.Context, params *ListAdministratorsParams) (int64, error) {
 	var total int64
 
-	err := a.db.Count(ctx, a.db.DB, administratorTable).Count(&total).Error
+	err := a.db.Count(ctx, a.db.DB, administratorTable).Find(&total).Error
 	return total, exception.InternalError(err)
 }
 
