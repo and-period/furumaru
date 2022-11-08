@@ -12,10 +12,6 @@ import (
 
 const messageTemplateTable = "message_templates"
 
-var messageTemplateFields = []string{
-	"id", "title_template", "body_template", "created_at", "updated_at",
-}
-
 type messageTemplate struct {
 	db  *database.Client
 	now func() time.Time
@@ -32,12 +28,8 @@ func (t *messageTemplate) Get(
 	ctx context.Context, messageID string, fields ...string,
 ) (*entity.MessageTemplate, error) {
 	var template *entity.MessageTemplate
-	if len(fields) == 0 {
-		fields = messageTemplateFields
-	}
 
-	err := t.db.DB.WithContext(ctx).
-		Table(messageTemplateTable).Select(fields).
+	err := t.db.Statement(ctx, t.db.DB, messageTemplateTable, fields...).
 		Where("id = ?", messageID).
 		First(&template).Error
 	return template, exception.InternalError(err)
