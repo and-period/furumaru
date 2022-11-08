@@ -15,11 +15,6 @@ import (
 
 const scheduleTable = "schedules"
 
-var scheduleFields = []string{
-	"message_type", "message_id", "status", "count",
-	"sent_at", "created_at", "updated_at",
-}
-
 type schedule struct {
 	db  *database.Client
 	now func() time.Time
@@ -34,11 +29,8 @@ func NewSchedule(db *database.Client) Schedule {
 
 func (s *schedule) List(ctx context.Context, params *ListSchedulesParams, fields ...string) (entity.Schedules, error) {
 	var schedules entity.Schedules
-	if len(fields) == 0 {
-		fields = scheduleFields
-	}
 
-	stmt := s.db.DB.WithContext(ctx).Table(scheduleTable).Select(fields)
+	stmt := s.db.Statement(ctx, s.db.DB, scheduleTable, fields...)
 	stmt = params.stmt(stmt)
 
 	err := stmt.Find(&schedules).Error
@@ -125,12 +117,8 @@ func (s *schedule) get(
 	ctx context.Context, tx *gorm.DB, messageType entity.ScheduleType, messageID string, fields ...string,
 ) (*entity.Schedule, error) {
 	var schedule *entity.Schedule
-	if len(fields) == 0 {
-		fields = scheduleFields
-	}
 
-	err := tx.WithContext(ctx).
-		Table(scheduleTable).Select(fields).
+	err := s.db.Statement(ctx, tx, scheduleTable, fields...).
 		Where("message_type = ?", messageType).
 		Where("message_id = ?", messageID).
 		First(&schedule).Error
