@@ -13,12 +13,6 @@ import (
 
 const producerTable = "producers"
 
-var producerFields = []string{
-	"admin_id", "coordinator_id", "phone_number", "store_name", "thumbnail_url", "header_url",
-	"postal_code", "prefecture", "city", "address_line1", "address_line2",
-	"created_at", "updated_at", "deleted_at",
-}
-
 type producer struct {
 	db  *database.Client
 	now func() time.Time
@@ -35,11 +29,8 @@ func (p *producer) List(
 	ctx context.Context, params *ListProducersParams, fields ...string,
 ) (entity.Producers, error) {
 	var producers entity.Producers
-	if len(fields) == 0 {
-		fields = producerFields
-	}
 
-	stmt := p.db.DB.WithContext(ctx).Table(producerTable).Select(fields)
+	stmt := p.db.Statement(ctx, p.db.DB, producerTable, fields...)
 	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
@@ -60,7 +51,7 @@ func (p *producer) List(
 func (p *producer) Count(ctx context.Context, params *ListProducersParams) (int64, error) {
 	var total int64
 
-	stmt := p.db.DB.WithContext(ctx).Table(producerTable).Select("COUNT(*)")
+	stmt := p.db.Count(ctx, p.db.DB, producerTable)
 	stmt = params.stmt(stmt)
 
 	err := stmt.Count(&total).Error
@@ -212,12 +203,8 @@ func (p *producer) multiGet(
 	ctx context.Context, tx *gorm.DB, producerIDs []string, fields ...string,
 ) (entity.Producers, error) {
 	var producers entity.Producers
-	if len(fields) == 0 {
-		fields = producerFields
-	}
 
-	err := tx.WithContext(ctx).
-		Table(producerTable).Select(fields).
+	err := p.db.Statement(ctx, tx, producerTable, fields...).
 		Where("admin_id IN (?)", producerIDs).
 		Find(&producers).Error
 	return producers, err
@@ -227,12 +214,8 @@ func (p *producer) get(
 	ctx context.Context, tx *gorm.DB, producerID string, fields ...string,
 ) (*entity.Producer, error) {
 	var producer *entity.Producer
-	if len(fields) == 0 {
-		fields = producerFields
-	}
 
-	err := tx.WithContext(ctx).
-		Table(producerTable).Select(fields).
+	err := p.db.Statement(ctx, tx, producerTable, fields...).
 		Where("admin_id = ?", producerID).
 		First(&producer).Error
 	return producer, err
@@ -246,9 +229,7 @@ func (p *producer) fill(ctx context.Context, tx *gorm.DB, producers ...*entity.P
 		return nil
 	}
 
-	stmt := tx.WithContext(ctx).
-		Table(adminTable).Select(adminFields).
-		Where("id IN (?)", ids)
+	stmt := p.db.Statement(ctx, tx, adminTable).Where("id IN (?)", ids)
 	if err := stmt.Find(&admins).Error; err != nil {
 		return err
 	}

@@ -16,14 +16,6 @@ import (
 
 const coordinatorTable = "coordinators"
 
-var coordinatorFields = []string{
-	"admin_id", "phone_number", "company_name", "store_name",
-	"thumbnail_url", "thumbnails", "header_url", "headers",
-	"twitter_account", "instagram_account", "facebook_account",
-	"postal_code", "prefecture", "city", "address_line1", "address_line2",
-	"created_at", "updated_at", "deleted_at",
-}
-
 type coordinator struct {
 	db  *database.Client
 	now func() time.Time
@@ -40,11 +32,8 @@ func (c *coordinator) List(
 	ctx context.Context, params *ListCoordinatorsParams, fields ...string,
 ) (entity.Coordinators, error) {
 	var coordinators entity.Coordinators
-	if len(fields) == 0 {
-		fields = coordinatorFields
-	}
 
-	stmt := c.db.DB.WithContext(ctx).Table(coordinatorTable).Select(fields)
+	stmt := c.db.Statement(ctx, c.db.DB, coordinatorTable, fields...)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
 	}
@@ -64,9 +53,7 @@ func (c *coordinator) List(
 func (c *coordinator) Count(ctx context.Context, params *ListCoordinatorsParams) (int64, error) {
 	var total int64
 
-	stmt := c.db.DB.WithContext(ctx).Table(coordinatorTable).Select("COUNT(*)")
-
-	err := stmt.Count(&total).Error
+	err := c.db.Count(ctx, c.db.DB, coordinatorTable).Count(&total).Error
 	return total, exception.InternalError(err)
 }
 
@@ -74,12 +61,8 @@ func (c *coordinator) MultiGet(
 	ctx context.Context, coordinatorIDs []string, fields ...string,
 ) (entity.Coordinators, error) {
 	var coordinators entity.Coordinators
-	if len(fields) == 0 {
-		fields = coordinatorFields
-	}
 
-	stmt := c.db.DB.WithContext(ctx).
-		Table(coordinatorTable).Select(fields).
+	stmt := c.db.Statement(ctx, c.db.DB, coordinatorTable, fields...).
 		Where("admin_id IN (?)", coordinatorIDs)
 
 	if err := stmt.Find(&coordinators).Error; err != nil {
@@ -263,12 +246,8 @@ func (c *coordinator) get(
 	ctx context.Context, tx *gorm.DB, coordinatorID string, fields ...string,
 ) (*entity.Coordinator, error) {
 	var coordinator *entity.Coordinator
-	if len(fields) == 0 {
-		fields = coordinatorFields
-	}
 
-	err := tx.WithContext(ctx).
-		Table(coordinatorTable).Select(fields).
+	err := c.db.Statement(ctx, tx, coordinatorTable, fields...).
 		Where("admin_id = ?", coordinatorID).
 		First(&coordinator).Error
 	return coordinator, err
@@ -282,8 +261,7 @@ func (c *coordinator) fill(ctx context.Context, tx *gorm.DB, coordinators ...*en
 		return nil
 	}
 
-	stmt := tx.WithContext(ctx).
-		Table(adminTable).Select(adminFields).
+	stmt := c.db.Statement(ctx, tx, adminTable).
 		Where("id IN (?)", ids)
 	if err := stmt.Find(&admins).Error; err != nil {
 		return err
