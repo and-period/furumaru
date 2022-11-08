@@ -13,11 +13,6 @@ import (
 
 const receivedQueueTable = "received_queues"
 
-var receivedQueueFields = []string{
-	"id", "event_type", "user_type", "user_ids",
-	"done", "created_at", "updated_at",
-}
-
 type receivedQueue struct {
 	db  *database.Client
 	now func() time.Time
@@ -73,12 +68,8 @@ func (q *receivedQueue) get(
 	ctx context.Context, tx *gorm.DB, queueID string, fields ...string,
 ) (*entity.ReceivedQueue, error) {
 	var queue *entity.ReceivedQueue
-	if len(fields) == 0 {
-		fields = receivedQueueFields
-	}
 
-	err := tx.WithContext(ctx).
-		Table(receivedQueueTable).Select(fields).
+	err := q.db.Statement(ctx, tx, receivedQueueTable, fields...).
 		Where("id = ?", queueID).
 		First(&queue).Error
 	if err != nil {

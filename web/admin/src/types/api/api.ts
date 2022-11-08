@@ -506,11 +506,23 @@ export interface CoordinatorResponse {
      */
     'thumbnailUrl': string;
     /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
+     * @memberof CoordinatorResponse
+     */
+    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
+    /**
      * ヘッダー画像URL
      * @type {string}
      * @memberof CoordinatorResponse
      */
     'headerUrl': string;
+    /**
+     * リサイズ済みヘッダー画像URL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>}
+     * @memberof CoordinatorResponse
+     */
+    'headers': Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>;
     /**
      * Twitterアカウント
      * @type {string}
@@ -658,11 +670,23 @@ export interface CoordinatorsResponseCoordinatorsInner {
      */
     'thumbnailUrl': string;
     /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
+     * @memberof CoordinatorsResponseCoordinatorsInner
+     */
+    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
+    /**
      * ヘッダー画像URL
      * @type {string}
      * @memberof CoordinatorsResponseCoordinatorsInner
      */
     'headerUrl': string;
+    /**
+     * リサイズ済みヘッダー画像URL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>}
+     * @memberof CoordinatorsResponseCoordinatorsInner
+     */
+    'headers': Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>;
     /**
      * Twitterアカウント
      * @type {string}
@@ -735,6 +759,44 @@ export interface CoordinatorsResponseCoordinatorsInner {
      * @memberof CoordinatorsResponseCoordinatorsInner
      */
     'updatedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface CoordinatorsResponseCoordinatorsInnerHeadersInner
+ */
+export interface CoordinatorsResponseCoordinatorsInnerHeadersInner {
+    /**
+     * リサイズ済みヘッダー画像URL
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinatorsInnerHeadersInner
+     */
+    'url': string;
+    /**
+     * 画像サイズ(1:240px,2:675px,3:900px)
+     * @type {number}
+     * @memberof CoordinatorsResponseCoordinatorsInnerHeadersInner
+     */
+    'size': number;
+}
+/**
+ * 
+ * @export
+ * @interface CoordinatorsResponseCoordinatorsInnerThumbnailsInner
+ */
+export interface CoordinatorsResponseCoordinatorsInnerThumbnailsInner {
+    /**
+     * リサイズ済みサムネイルURL
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinatorsInnerThumbnailsInner
+     */
+    'url': string;
+    /**
+     * 画像サイズ(1:240px,2:675px,3:900px)
+     * @type {number}
+     * @memberof CoordinatorsResponseCoordinatorsInnerThumbnailsInner
+     */
+    'size': number;
 }
 /**
  * 

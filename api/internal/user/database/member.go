@@ -14,13 +14,6 @@ import (
 
 const memberTable = "members"
 
-var memberFields = []string{
-	"user_id", "cognito_id", "account_id", "username",
-	"provider_type", "email", "phone_number", "thumbnail_url",
-	"created_at", "updated_at", "verified_at", "deleted_at",
-	// "exists"
-}
-
 type member struct {
 	db  *database.Client
 	now func() time.Time
@@ -40,12 +33,8 @@ func (m *member) Get(ctx context.Context, userID string, fields ...string) (*ent
 
 func (m *member) GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.Member, error) {
 	var member *entity.Member
-	if len(fields) == 0 {
-		fields = memberFields
-	}
 
-	stmt := m.db.DB.WithContext(ctx).
-		Table(memberTable).Select(fields).
+	stmt := m.db.Statement(ctx, m.db.DB, memberTable, fields...).
 		Where("cognito_id = ?", cognitoID)
 
 	err := stmt.First(&member).Error
@@ -54,12 +43,8 @@ func (m *member) GetByCognitoID(ctx context.Context, cognitoID string, fields ..
 
 func (m *member) GetByEmail(ctx context.Context, email string, fields ...string) (*entity.Member, error) {
 	var member *entity.Member
-	if len(fields) == 0 {
-		fields = memberFields
-	}
 
-	stmt := m.db.DB.WithContext(ctx).
-		Table(memberTable).Select(fields).
+	stmt := m.db.Statement(ctx, m.db.DB, memberTable, fields...).
 		Where("email = ?", email).
 		Where("provider_type = ?", entity.ProviderTypeEmail)
 
@@ -118,8 +103,7 @@ func (m *member) UpdateAccount(ctx context.Context, userID, accountID, username 
 		}
 
 		var current *entity.Member
-		err := tx.WithContext(ctx).
-			Table(memberTable).Select("user_id").
+		err := m.db.Statement(ctx, tx, memberTable, "user_id").
 			Where("user_id != ?", userID).
 			Where("account_id = ?", accountID).
 			First(&current).Error
@@ -206,12 +190,8 @@ func (m *member) Delete(ctx context.Context, userID string, auth func(ctx contex
 
 func (m *member) get(ctx context.Context, tx *gorm.DB, userID string, fields ...string) (*entity.Member, error) {
 	var member *entity.Member
-	if len(fields) == 0 {
-		fields = memberFields
-	}
 
-	err := tx.WithContext(ctx).
-		Table(memberTable).Select(fields).
+	err := m.db.Statement(ctx, tx, memberTable, fields...).
 		Where("user_id = ?", userID).
 		First(&member).Error
 	return member, err

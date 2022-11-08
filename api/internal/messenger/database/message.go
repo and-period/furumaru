@@ -13,12 +13,6 @@ import (
 
 const messageTable = "messages"
 
-var messageFields = []string{
-	"id", "user_type", "user_id",
-	"type", "title", "body", "link", "read",
-	"received_at", "created_at", "updated_at",
-}
-
 type message struct {
 	db  *database.Client
 	now func() time.Time
@@ -33,11 +27,8 @@ func NewMessage(db *database.Client) Message {
 
 func (m *message) List(ctx context.Context, params *ListMessagesParams, fields ...string) (entity.Messages, error) {
 	var messages entity.Messages
-	if len(fields) == 0 {
-		fields = messageFields
-	}
 
-	stmt := m.db.DB.WithContext(ctx).Table(messageTable).Select(fields)
+	stmt := m.db.Statement(ctx, m.db.DB, messageTable, fields...)
 	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
@@ -53,7 +44,7 @@ func (m *message) List(ctx context.Context, params *ListMessagesParams, fields .
 func (m *message) Count(ctx context.Context, params *ListMessagesParams) (int64, error) {
 	var total int64
 
-	stmt := m.db.DB.WithContext(ctx).Table(messageTable).Select("COUNT(*)")
+	stmt := m.db.Count(ctx, m.db.DB, messageTable)
 	stmt = params.stmt(stmt)
 
 	err := stmt.Find(&total).Error
@@ -104,12 +95,8 @@ func (m *message) UpdateRead(ctx context.Context, messageID string) error {
 
 func (m *message) get(ctx context.Context, tx *gorm.DB, messageID string, fields ...string) (*entity.Message, error) {
 	var message *entity.Message
-	if len(fields) == 0 {
-		fields = messageFields
-	}
 
-	err := tx.WithContext(ctx).
-		Table(messageTable).Select(fields).
+	err := m.db.Statement(ctx, tx, messageTable, fields...).
 		Where("id = ?", messageID).
 		First(&message).Error
 	return message, err

@@ -59,6 +59,10 @@ type Service interface {
 	UpdateCoordinator(ctx context.Context, in *UpdateCoordinatorInput) error
 	// コーディネータメールアドレス更新
 	UpdateCoordinatorEmail(ctx context.Context, in *UpdateCoordinatorEmailInput) error
+	// コーディネータサムネイル(リサイズ済み)更新
+	UpdateCoordinatorThumbnails(ctx context.Context, in *UpdateCoordinatorThumbnailsInput) error
+	// コーディネータヘッダー画像(リサイズ済み)更新
+	UpdateCoordinatorHeaders(ctx context.Context, in *UpdateCoordinatorHeadersInput) error
 	// コーディネータパスワードリセット
 	ResetCoordinatorPassword(ctx context.Context, in *ResetCoordinatorPasswordInput) error
 	// コーディネータ退会

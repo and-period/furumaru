@@ -1,5 +1,7 @@
 package user
 
+import "github.com/and-period/furumaru/api/internal/common"
+
 type SignInAdminInput struct {
 	Key      string `validate:"required"`
 	Password string `validate:"required"`
@@ -153,6 +155,16 @@ type UpdateCoordinatorInput struct {
 type UpdateCoordinatorEmailInput struct {
 	CoordinatorID string `validate:"required"`
 	Email         string `validate:"required,max=256,email"`
+}
+
+type UpdateCoordinatorThumbnailsInput struct {
+	CoordinatorID string        `validate:"required"`
+	Thumbnails    common.Images `validate:""`
+}
+
+type UpdateCoordinatorHeadersInput struct {
+	CoordinatorID string        `validate:"required"`
+	Headers       common.Images `validate:""`
 }
 
 type ResetCoordinatorPasswordInput struct {

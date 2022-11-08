@@ -12,10 +12,6 @@ import (
 
 const pushTemplateTable = "push_templates"
 
-var pushTemplateFields = []string{
-	"id", "title_template", "body_template", "image_url", "created_at", "updated_at",
-}
-
 type pushTemplate struct {
 	db  *database.Client
 	now func() time.Time
@@ -30,12 +26,8 @@ func NewPushTemplate(db *database.Client) PushTemplate {
 
 func (t *pushTemplate) Get(ctx context.Context, pushID string, fields ...string) (*entity.PushTemplate, error) {
 	var template *entity.PushTemplate
-	if len(fields) == 0 {
-		fields = pushTemplateFields
-	}
 
-	err := t.db.DB.WithContext(ctx).
-		Table(pushTemplateTable).Select(fields).
+	err := t.db.Statement(ctx, t.db.DB, pushTemplateTable, fields...).
 		Where("id = ?", pushID).
 		First(&template).Error
 	return template, exception.InternalError(err)

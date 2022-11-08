@@ -32,13 +32,10 @@ jobs:
     permissions:
       id-token: write
       contents: read
+
     steps:
     - name: Check out code
       uses: actions/checkout@v3
-
-    - name: Generate task-definition.json
-      run: |
-        echo -n ${ECS_TASK_DEFINITION} > ./task-definition.json
 
     - name: Set ECR_REPOSITORY_URL
       run: |

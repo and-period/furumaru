@@ -2,6 +2,7 @@
 package storage
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -119,6 +120,14 @@ func (b *bucket) GetFQDN() string {
 }
 
 func (b *bucket) Download(ctx context.Context, url string) (io.Reader, error) {
+	buf, err := b.DownloadAndReadAll(ctx, url)
+	if err != nil {
+		return nil, err
+	}
+	return bytes.NewBuffer(buf), nil
+}
+
+func (b *bucket) DownloadAndReadAll(ctx context.Context, url string) ([]byte, error) {
 	path, err := b.generateKeyFromObjectURL(url)
 	if err != nil {
 		return nil, err
@@ -135,15 +144,7 @@ func (b *bucket) Download(ctx context.Context, url string) (io.Reader, error) {
 	if err != nil {
 		return nil, err
 	}
-	return out.Body, nil
-}
-
-func (b *bucket) DownloadAndReadAll(ctx context.Context, url string) ([]byte, error) {
-	reader, err := b.Download(ctx, url)
-	if err != nil {
-		return nil, err
-	}
-	return io.ReadAll(reader)
+	return io.ReadAll(out.Body)
 }
 
 func (b *bucket) Upload(ctx context.Context, path string, body io.Reader) (string, error) {
