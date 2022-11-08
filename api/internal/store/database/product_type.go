@@ -13,10 +13,6 @@ import (
 
 const productTypeTable = "product_types"
 
-var productTypeFields = []string{
-	"id", "name", "icon_url", "category_id", "created_at", "updated_at",
-}
-
 type productType struct {
 	db  *database.Client
 	now func() time.Time
@@ -33,11 +29,8 @@ func (t *productType) List(
 	ctx context.Context, params *ListProductTypesParams, fields ...string,
 ) (entity.ProductTypes, error) {
 	var productTypes entity.ProductTypes
-	if len(fields) == 0 {
-		fields = productTypeFields
-	}
 
-	stmt := t.db.DB.WithContext(ctx).Table(productTypeTable).Select(fields)
+	stmt := t.db.Statement(ctx, t.db.DB, productTypeTable, fields...)
 	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
@@ -53,10 +46,10 @@ func (t *productType) List(
 func (t *productType) Count(ctx context.Context, params *ListProductTypesParams) (int64, error) {
 	var total int64
 
-	stmt := t.db.DB.WithContext(ctx).Table(productTypeTable).Select("COUNT(*)")
+	stmt := t.db.Count(ctx, t.db.DB, productTypeTable)
 	stmt = params.stmt(stmt)
 
-	err := stmt.Count(&total).Error
+	err := stmt.Find(&total).Error
 	return total, exception.InternalError(err)
 }
 
@@ -64,12 +57,8 @@ func (t *productType) MultiGet(
 	ctx context.Context, productTypeIDs []string, fields ...string,
 ) (entity.ProductTypes, error) {
 	var productTypes entity.ProductTypes
-	if len(fields) == 0 {
-		fields = productTypeFields
-	}
 
-	err := t.db.DB.WithContext(ctx).
-		Table(productTypeTable).Select(fields).
+	err := t.db.Statement(ctx, t.db.DB, productTypeTable, fields...).
 		Where("id IN (?)", productTypeIDs).
 		Find(&productTypes).Error
 	return productTypes, exception.InternalError(err)
@@ -138,12 +127,8 @@ func (t *productType) get(
 	ctx context.Context, tx *gorm.DB, productTypeID string, fields ...string,
 ) (*entity.ProductType, error) {
 	var productType *entity.ProductType
-	if len(fields) == 0 {
-		fields = productTypeFields
-	}
 
-	err := tx.WithContext(ctx).
-		Table(productTypeTable).Select(fields).
+	err := t.db.Statement(ctx, tx, productTypeTable, fields...).
 		Where("id = ?", productTypeID).
 		First(&productType).Error
 	return productType, err

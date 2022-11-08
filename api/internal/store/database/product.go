@@ -14,14 +14,6 @@ import (
 
 const productTable = "products"
 
-var productFields = []string{
-	"id", "producer_id", "category_id", "product_type_id",
-	"name", "description", "public", "inventory",
-	"weight", "weight_unit", "item", "item_unit", "item_description",
-	"media", "price", "delivery_type", "box60_rate", "box80_rate", "box100_rate",
-	"origin_prefecture", "origin_city", "created_at", "updated_at", "deleted_at",
-}
-
 type product struct {
 	db  *database.Client
 	now func() time.Time
@@ -36,11 +28,8 @@ func NewProduct(db *database.Client) Product {
 
 func (p *product) List(ctx context.Context, params *ListProductsParams, fields ...string) (entity.Products, error) {
 	var products entity.Products
-	if len(fields) == 0 {
-		fields = productFields
-	}
 
-	stmt := p.db.DB.WithContext(ctx).Table(productTable).Select(fields)
+	stmt := p.db.Statement(ctx, p.db.DB, productTable, fields...)
 	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
@@ -61,21 +50,17 @@ func (p *product) List(ctx context.Context, params *ListProductsParams, fields .
 func (p *product) Count(ctx context.Context, params *ListProductsParams) (int64, error) {
 	var total int64
 
-	stmt := p.db.DB.WithContext(ctx).Table(productTable).Select("COUNT(*)")
+	stmt := p.db.Count(ctx, p.db.DB, productTable)
 	stmt = params.stmt(stmt)
 
-	err := stmt.Count(&total).Error
+	err := stmt.Find(&total).Error
 	return total, exception.InternalError(err)
 }
 
 func (p *product) MultiGet(ctx context.Context, productIDs []string, fields ...string) (entity.Products, error) {
 	var products entity.Products
-	if len(fields) == 0 {
-		fields = productFields
-	}
 
-	err := p.db.DB.WithContext(ctx).
-		Table(productTable).Select(fields).
+	err := p.db.Statement(ctx, p.db.DB, productTable, fields...).
 		Where("id IN (?)", productIDs).
 		Find(&products).Error
 	if err := products.Fill(); err != nil {
@@ -168,12 +153,8 @@ func (p *product) Delete(ctx context.Context, productID string) error {
 
 func (p *product) get(ctx context.Context, tx *gorm.DB, productID string, fields ...string) (*entity.Product, error) {
 	var product *entity.Product
-	if len(fields) == 0 {
-		fields = productFields
-	}
 
-	err := tx.WithContext(ctx).
-		Table(productTable).Select(fields).
+	err := p.db.Statement(ctx, tx, productTable, fields...).
 		Where("id = ?", productID).
 		First(&product).Error
 	if err != nil {
