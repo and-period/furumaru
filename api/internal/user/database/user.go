@@ -13,10 +13,6 @@ import (
 
 const userTable = "users"
 
-var userFields = []string{
-	"id", "registered", "created_at", "updated_at",
-}
-
 type user struct {
 	db  *database.Client
 	now func() time.Time
@@ -31,11 +27,8 @@ func NewUser(db *database.Client) User {
 
 func (u *user) List(ctx context.Context, params *ListUsersParams, fields ...string) (entity.Users, error) {
 	var users entity.Users
-	if len(fields) == 0 {
-		fields = userFields
-	}
 
-	stmt := u.db.DB.WithContext(ctx).Table(userTable).Select(fields)
+	stmt := u.db.Statement(ctx, u.db.DB, userTable, fields...)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
 	}
@@ -55,7 +48,7 @@ func (u *user) List(ctx context.Context, params *ListUsersParams, fields ...stri
 func (u *user) Count(ctx context.Context, params *ListUsersParams) (int64, error) {
 	var total int64
 
-	stmt := u.db.DB.WithContext(ctx).Table(userTable).Select("COUNT(*)")
+	stmt := u.db.Count(ctx, u.db.DB, userTable)
 
 	err := stmt.Count(&total).Error
 	return total, exception.InternalError(err)
@@ -63,11 +56,8 @@ func (u *user) Count(ctx context.Context, params *ListUsersParams) (int64, error
 
 func (u *user) MultiGet(ctx context.Context, userIDs []string, fields ...string) (entity.Users, error) {
 	var users entity.Users
-	if len(fields) == 0 {
-		fields = userFields
-	}
 
-	stmt := u.db.DB.WithContext(ctx).
+	stmt := u.db.Statement(ctx, u.db.DB, userTable, fields...).
 		Table(userTable).Select(fields).
 		Where("id IN (?)", userIDs)
 
@@ -104,12 +94,8 @@ func (u *user) Create(ctx context.Context, user *entity.User) error {
 
 func (u *user) get(ctx context.Context, tx *gorm.DB, userID string, fields ...string) (*entity.User, error) {
 	var user *entity.User
-	if len(fields) == 0 {
-		fields = userFields
-	}
 
-	err := tx.WithContext(ctx).
-		Table(userTable).Select(fields).
+	err := u.db.Statement(ctx, tx, userTable, fields...).
 		Where("id = ?", userID).
 		First(&user).Error
 	return user, err
@@ -169,8 +155,8 @@ func (u *user) fill(ctx context.Context, tx *gorm.DB, users ...*entity.User) err
 
 func (u *user) fetchCustomers(ctx context.Context, tx *gorm.DB, userIDs []string) (entity.Customers, error) {
 	var customers entity.Customers
-	err := tx.WithContext(ctx).
-		Table(customerTable).Select(customerFields).
+
+	err := u.db.Statement(ctx, tx, customerTable).
 		Where("user_id IN (?)", userIDs).
 		Find(&customers).Error
 	return customers, err
@@ -178,8 +164,8 @@ func (u *user) fetchCustomers(ctx context.Context, tx *gorm.DB, userIDs []string
 
 func (u *user) fetchMembers(ctx context.Context, tx *gorm.DB, userIDs []string) (entity.Members, error) {
 	var members entity.Members
-	err := tx.WithContext(ctx).
-		Table(memberTable).Select(memberFields).
+
+	err := u.db.Statement(ctx, tx, memberTable).
 		Where("user_id IN (?)", userIDs).
 		Find(&members).Error
 	return members, err
@@ -187,8 +173,8 @@ func (u *user) fetchMembers(ctx context.Context, tx *gorm.DB, userIDs []string) 
 
 func (u *user) fetchGuests(ctx context.Context, tx *gorm.DB, userIDs []string) (entity.Guests, error) {
 	var guests entity.Guests
-	err := tx.WithContext(ctx).
-		Table(guestTable).Select(guestFields).
+
+	err := u.db.Statement(ctx, tx, guestTable).
 		Where("user_id IN (?)", userIDs).
 		Find(&guests).Error
 	return guests, err
