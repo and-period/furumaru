@@ -154,6 +154,21 @@ func TestCoordinator_FillJSON(t *testing.T) {
 				},
 			},
 		},
+		{
+			name: "success empty",
+			coordinator: &Coordinator{
+				AdminID:    "admin-id",
+				Thumbnails: common.Images{},
+				Headers:    common.Images{},
+			},
+			expect: &Coordinator{
+				AdminID:        "admin-id",
+				ThumbnailsJSON: []byte{},
+				Thumbnails:     common.Images{},
+				HeadersJSON:    []byte{},
+				Headers:        common.Images{},
+			},
+		},
 	}
 	for _, tt := range tests {
 		tt := tt

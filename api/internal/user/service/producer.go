@@ -148,6 +148,22 @@ func (s *service) UpdateProducerEmail(ctx context.Context, in *user.UpdateProduc
 	return exception.InternalError(err)
 }
 
+func (s *service) UpdateProducerThumbnails(ctx context.Context, in *user.UpdateProducerThumbnailsInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	err := s.db.Producer.UpdateThumbnails(ctx, in.ProducerID, in.Thumbnails)
+	return exception.InternalError(err)
+}
+
+func (s *service) UpdateProducerHeaders(ctx context.Context, in *user.UpdateProducerHeadersInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	err := s.db.Producer.UpdateHeaders(ctx, in.ProducerID, in.Headers)
+	return exception.InternalError(err)
+}
+
 func (s *service) ResetProducerPassword(ctx context.Context, in *user.ResetProducerPasswordInput) error {
 	const size = 8
 	if err := s.validator.Struct(in); err != nil {

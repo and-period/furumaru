@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
@@ -566,6 +567,262 @@ func TestProducer_Update(t *testing.T) {
 	}
 }
 
+func TestProducer_UpdateThumbnails(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	type args struct {
+		producerID string
+		thumbnails common.Images
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				coordinator := testCoordinator("coordinator-id", now())
+				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+				err = m.db.DB.Create(&coordinator.Admin).Error
+				require.NoError(t, err)
+				err = m.db.DB.Create(&coordinator).Error
+				require.NoError(t, err)
+				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
+				err = m.db.DB.Create(&admin).Error
+				require.NoError(t, err)
+				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+				err = m.db.DB.Create(&p).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				producerID: "admin-id",
+				thumbnails: common.Images{
+					{
+						Size: common.ImageSizeSmall,
+						URL:  "https://and-period.jp/thumbnail_240.png",
+					},
+					{
+						Size: common.ImageSizeMedium,
+						URL:  "https://and-period.jp/thumbnail_675.png",
+					},
+					{
+						Size: common.ImageSizeLarge,
+						URL:  "https://and-period.jp/thumbnail_900.png",
+					},
+				},
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				producerID: "admin-id",
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+		{
+			name: "failed precondition for thumbnail url is empty",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				coordinator := testCoordinator("coordinator-id", now())
+				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+				err = m.db.DB.Create(&coordinator.Admin).Error
+				require.NoError(t, err)
+				err = m.db.DB.Create(&coordinator).Error
+				require.NoError(t, err)
+				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
+				err = m.db.DB.Create(&admin).Error
+				require.NoError(t, err)
+				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+				p.ThumbnailURL = ""
+				err = m.db.DB.Create(&p).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				producerID: "admin-id",
+				thumbnails: common.Images{
+					{
+						Size: common.ImageSizeSmall,
+						URL:  "https://and-period.jp/thumbnail_240.png",
+					},
+					{
+						Size: common.ImageSizeMedium,
+						URL:  "https://and-period.jp/thumbnail_675.png",
+					},
+					{
+						Size: common.ImageSizeLarge,
+						URL:  "https://and-period.jp/thumbnail_900.png",
+					},
+				},
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := m.dbDelete(ctx, producerTable, adminTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, m)
+
+			db := &producer{db: m.db, now: now}
+			err = db.UpdateThumbnails(ctx, tt.args.producerID, tt.args.thumbnails)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
+func TestProducer_UpdateHeaders(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	type args struct {
+		ProducerID string
+		headers    common.Images
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				coordinator := testCoordinator("coordinator-id", now())
+				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+				err = m.db.DB.Create(&coordinator.Admin).Error
+				require.NoError(t, err)
+				err = m.db.DB.Create(&coordinator).Error
+				require.NoError(t, err)
+				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
+				err = m.db.DB.Create(&admin).Error
+				require.NoError(t, err)
+				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+				err = m.db.DB.Create(&p).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				ProducerID: "admin-id",
+				headers: common.Images{
+					{
+						Size: common.ImageSizeSmall,
+						URL:  "https://and-period.jp/header_240.png",
+					},
+					{
+						Size: common.ImageSizeMedium,
+						URL:  "https://and-period.jp/header_675.png",
+					},
+					{
+						Size: common.ImageSizeLarge,
+						URL:  "https://and-period.jp/header_900.png",
+					},
+				},
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				ProducerID: "admin-id",
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+		{
+			name: "failed precondition for header url is empty",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				coordinator := testCoordinator("coordinator-id", now())
+				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+				err = m.db.DB.Create(&coordinator.Admin).Error
+				require.NoError(t, err)
+				err = m.db.DB.Create(&coordinator).Error
+				require.NoError(t, err)
+				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
+				err = m.db.DB.Create(&admin).Error
+				require.NoError(t, err)
+				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+				p.HeaderURL = ""
+				err = m.db.DB.Create(&p).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				ProducerID: "admin-id",
+				headers: common.Images{
+					{
+						Size: common.ImageSizeSmall,
+						URL:  "https://and-period.jp/header_240.png",
+					},
+					{
+						Size: common.ImageSizeMedium,
+						URL:  "https://and-period.jp/header_675.png",
+					},
+					{
+						Size: common.ImageSizeLarge,
+						URL:  "https://and-period.jp/header_900.png",
+					},
+				},
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := m.dbDelete(ctx, producerTable, adminTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, m)
+
+			db := &producer{db: m.db, now: now}
+			err = db.UpdateHeaders(ctx, tt.args.ProducerID, tt.args.headers)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
 func TestProducer_UpdateRelationship(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -760,12 +1017,14 @@ func TestProducer_Delete(t *testing.T) {
 }
 
 func testProducer(id, coordinatorID, storeName string, now time.Time) *entity.Producer {
-	return &entity.Producer{
+	p := &entity.Producer{
 		AdminID:       id,
 		CoordinatorID: coordinatorID,
 		StoreName:     storeName,
 		ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+		Thumbnails:    common.Images{},
 		HeaderURL:     "https://and-period.jp/header.png",
+		Headers:       common.Images{},
 		PhoneNumber:   "+819012345678",
 		PostalCode:    "1000014",
 		Prefecture:    "東京都",
@@ -775,12 +1034,15 @@ func testProducer(id, coordinatorID, storeName string, now time.Time) *entity.Pr
 		CreatedAt:     now,
 		UpdatedAt:     now,
 	}
+	_ = p.FillJSON()
+	return p
 }
 
 func fillIgnoreProducerField(p *entity.Producer, now time.Time) {
 	if p == nil {
 		return
 	}
+	_ = p.FillJSON()
 	p.CreatedAt = now
 	p.UpdatedAt = now
 	p.Admin.CreatedAt = now

@@ -2,12 +2,15 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -144,6 +147,62 @@ func (p *producer) Update(ctx context.Context, producerID string, params *Update
 	return exception.InternalError(err)
 }
 
+func (p *producer) UpdateThumbnails(ctx context.Context, producerID string, thumbnails common.Images) error {
+	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+		producer, err := p.get(ctx, tx, producerID, "thumbnail_url")
+		if err != nil {
+			return nil, err
+		}
+		if producer.ThumbnailURL == "" {
+			return nil, fmt.Errorf("database: thumbnail url is empty: %w", exception.ErrFailedPrecondition)
+		}
+
+		buf, err := thumbnails.Marshal()
+		if err != nil {
+			return nil, err
+		}
+		params := map[string]interface{}{
+			"thumbnails": datatypes.JSON(buf),
+			"updated_at": p.now(),
+		}
+
+		err = tx.WithContext(ctx).
+			Table(producerTable).
+			Where("admin_id = ?", producerID).
+			Updates(params).Error
+		return nil, err
+	})
+	return exception.InternalError(err)
+}
+
+func (p *producer) UpdateHeaders(ctx context.Context, producerID string, headers common.Images) error {
+	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+		producer, err := p.get(ctx, tx, producerID, "header_url")
+		if err != nil {
+			return nil, err
+		}
+		if producer.HeaderURL == "" {
+			return nil, fmt.Errorf("database: header url is empty: %w", exception.ErrFailedPrecondition)
+		}
+
+		buf, err := headers.Marshal()
+		if err != nil {
+			return nil, err
+		}
+		params := map[string]interface{}{
+			"headers":    datatypes.JSON(buf),
+			"updated_at": p.now(),
+		}
+
+		err = tx.WithContext(ctx).
+			Table(producerTable).
+			Where("admin_id = ?", producerID).
+			Updates(params).Error
+		return nil, err
+	})
+	return exception.InternalError(err)
+}
+
 func (p *producer) UpdateRelationship(ctx context.Context, coordinatorID string, producerIDs ...string) error {
 	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		var id *string
@@ -242,7 +301,9 @@ func (p *producer) fill(ctx context.Context, tx *gorm.DB, producers ...*entity.P
 			admin = &entity.Admin{}
 		}
 
-		producers[i].Fill(admin)
+		if err := producers[i].Fill(admin); err != nil {
+			return err
+		}
 	}
 	return nil
 }

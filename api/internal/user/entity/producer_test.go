@@ -3,6 +3,7 @@ package entity
 import (
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -77,9 +78,38 @@ func TestProducer_Fill(t *testing.T) {
 		producer *Producer
 		admin    *Admin
 		expect   *Producer
+		hasErr   bool
 	}{
 		{
 			name: "success",
+			producer: &Producer{
+				AdminID:        "admin-id",
+				ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+				HeadersJSON:    []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+			},
+			admin: &Admin{
+				ID:        "admin-id",
+				CognitoID: "cognito-id",
+			},
+			expect: &Producer{
+				AdminID:        "admin-id",
+				ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+				Thumbnails: common.Images{
+					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
+				},
+				HeadersJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+				Headers: common.Images{
+					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
+				},
+				Admin: Admin{
+					ID:        "admin-id",
+					CognitoID: "cognito-id",
+				},
+			},
+			hasErr: false,
+		},
+		{
+			name: "success empty",
 			producer: &Producer{
 				AdminID: "admin-id",
 			},
@@ -88,11 +118,71 @@ func TestProducer_Fill(t *testing.T) {
 				CognitoID: "cognito-id",
 			},
 			expect: &Producer{
-				AdminID: "admin-id",
+				AdminID:    "admin-id",
+				Thumbnails: common.Images{},
+				Headers:    common.Images{},
 				Admin: Admin{
 					ID:        "admin-id",
 					CognitoID: "cognito-id",
 				},
+			},
+			hasErr: false,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			err := tt.producer.Fill(tt.admin)
+			assert.Equal(t, tt.hasErr, err != nil, err)
+			assert.Equal(t, tt.expect, tt.producer)
+		})
+	}
+}
+
+func TestProducer_FillJSON(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		producer *Producer
+		expect   *Producer
+	}{
+		{
+			name: "success",
+			producer: &Producer{
+				AdminID: "admin-id",
+				Thumbnails: common.Images{
+					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
+				},
+				Headers: common.Images{
+					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
+				},
+			},
+			expect: &Producer{
+				AdminID:        "admin-id",
+				ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+				Thumbnails: common.Images{
+					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
+				},
+				HeadersJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+				Headers: common.Images{
+					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
+				},
+			},
+		},
+		{
+			name: "success empty",
+			producer: &Producer{
+				AdminID:    "admin-id",
+				Thumbnails: common.Images{},
+				Headers:    common.Images{},
+			},
+			expect: &Producer{
+				AdminID:        "admin-id",
+				ThumbnailsJSON: []byte{},
+				Thumbnails:     common.Images{},
+				HeadersJSON:    []byte{},
+				Headers:        common.Images{},
 			},
 		},
 	}
@@ -100,7 +190,7 @@ func TestProducer_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.producer.Fill(tt.admin)
+			tt.producer.FillJSON()
 			assert.Equal(t, tt.expect, tt.producer)
 		})
 	}

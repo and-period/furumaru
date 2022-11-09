@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
@@ -591,6 +592,132 @@ func TestUpdateProducerEmail(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateProducerEmail(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestUpdateProducerThumbnails(t *testing.T) {
+	t.Parallel()
+
+	thumbnails := common.Images{
+		{
+			Size: common.ImageSizeSmall,
+			URL:  "https://and-period.jp/thumbnail_240.png",
+		},
+		{
+			Size: common.ImageSizeMedium,
+			URL:  "https://and-period.jp/thumbnail_675.png",
+		},
+		{
+			Size: common.ImageSizeLarge,
+			URL:  "https://and-period.jp/thumbnail_900.png",
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.UpdateProducerThumbnailsInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Producer.EXPECT().UpdateThumbnails(ctx, "producer-id", thumbnails).Return(nil)
+			},
+			input: &user.UpdateProducerThumbnailsInput{
+				ProducerID: "producer-id",
+				Thumbnails: thumbnails,
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.UpdateProducerThumbnailsInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to update thumbnails",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Producer.EXPECT().UpdateThumbnails(ctx, "producer-id", thumbnails).Return(assert.AnError)
+			},
+			input: &user.UpdateProducerThumbnailsInput{
+				ProducerID: "producer-id",
+				Thumbnails: thumbnails,
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.UpdateProducerThumbnails(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestUpdateProducerHeaders(t *testing.T) {
+	t.Parallel()
+
+	headers := common.Images{
+		{
+			Size: common.ImageSizeSmall,
+			URL:  "https://and-period.jp/header_240.png",
+		},
+		{
+			Size: common.ImageSizeMedium,
+			URL:  "https://and-period.jp/header_675.png",
+		},
+		{
+			Size: common.ImageSizeLarge,
+			URL:  "https://and-period.jp/header_900.png",
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.UpdateProducerHeadersInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Producer.EXPECT().UpdateHeaders(ctx, "producer-id", headers).Return(nil)
+			},
+			input: &user.UpdateProducerHeadersInput{
+				ProducerID: "producer-id",
+				Headers:    headers,
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.UpdateProducerHeadersInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to update headers",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Producer.EXPECT().UpdateHeaders(ctx, "producer-id", headers).Return(assert.AnError)
+			},
+			input: &user.UpdateProducerHeadersInput{
+				ProducerID: "producer-id",
+				Headers:    headers,
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.UpdateProducerHeaders(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}

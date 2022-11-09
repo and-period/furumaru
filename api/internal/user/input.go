@@ -229,6 +229,16 @@ type UpdateProducerEmailInput struct {
 	Email      string `validate:"required,max=256,email"`
 }
 
+type UpdateProducerThumbnailsInput struct {
+	ProducerID string        `validate:"required"`
+	Thumbnails common.Images `validate:""`
+}
+
+type UpdateProducerHeadersInput struct {
+	ProducerID string        `validate:"required"`
+	Headers    common.Images `validate:""`
+}
+
 type ResetProducerPasswordInput struct {
 	ProducerID string `validate:"required"`
 }
