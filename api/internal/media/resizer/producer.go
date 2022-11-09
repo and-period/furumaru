@@ -8,7 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 )
 
-func (r *resizer) coordinatorThumbnail(ctx context.Context, payload *entity.ResizerPayload) error {
+func (r *resizer) producerThumbnail(ctx context.Context, payload *entity.ResizerPayload) error {
 	if len(payload.URLs) == 0 || payload.URLs[0] == "" {
 		return errRequiredMediaURL
 	}
@@ -25,18 +25,18 @@ func (r *resizer) coordinatorThumbnail(ctx context.Context, payload *entity.Resi
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	in := &user.UpdateCoordinatorThumbnailsInput{
-		CoordinatorID: payload.TargetID,
-		Thumbnails:    images,
+	in := &user.UpdateProducerThumbnailsInput{
+		ProducerID: payload.TargetID,
+		Thumbnails: images,
 	}
 	updateFn := func() error {
-		err := r.user.UpdateCoordinatorThumbnails(ctx, in)
+		err := r.user.UpdateProducerThumbnails(ctx, in)
 		return exception.InternalError(err)
 	}
 	return r.notify(ctx, payload, updateFn)
 }
 
-func (r *resizer) coordinatorHeader(ctx context.Context, payload *entity.ResizerPayload) error {
+func (r *resizer) producerHeader(ctx context.Context, payload *entity.ResizerPayload) error {
 	if len(payload.URLs) == 0 || payload.URLs[0] == "" {
 		return errRequiredMediaURL
 	}
@@ -53,12 +53,12 @@ func (r *resizer) coordinatorHeader(ctx context.Context, payload *entity.Resizer
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	in := &user.UpdateCoordinatorHeadersInput{
-		CoordinatorID: payload.TargetID,
-		Headers:       images,
+	in := &user.UpdateProducerHeadersInput{
+		ProducerID: payload.TargetID,
+		Headers:    images,
 	}
 	updateFn := func() error {
-		err := r.user.UpdateCoordinatorHeaders(ctx, in)
+		err := r.user.UpdateProducerHeaders(ctx, in)
 		return exception.InternalError(err)
 	}
 	return r.notify(ctx, payload, updateFn)

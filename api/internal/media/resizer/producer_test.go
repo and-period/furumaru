@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCoordinatorThumbnail(t *testing.T) {
+func TestProducerThumbnail(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -35,16 +35,16 @@ func TestCoordinatorThumbnail(t *testing.T) {
 				mocks.storage.EXPECT().Download(ctx, "http://example.com/media/image.png").Return(file, nil)
 				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return(url, nil).Times(3)
 				mocks.user.EXPECT().
-					UpdateCoordinatorThumbnails(ctx, gomock.Any()).
-					DoAndReturn(func(ctx context.Context, in *user.UpdateCoordinatorThumbnailsInput) error {
-						assert.Equal(t, "target-id", in.CoordinatorID)
+					UpdateProducerThumbnails(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, in *user.UpdateProducerThumbnailsInput) error {
+						assert.Equal(t, "target-id", in.ProducerID)
 						assert.ElementsMatch(t, thumbnails, in.Thumbnails)
 						return nil
 					})
 			},
 			payload: &entity.ResizerPayload{
 				TargetID: "target-id",
-				FileType: entity.FileTypeCoordinatorThumbnail,
+				FileType: entity.FileTypeProducerThumbnail,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
 			expectErr: nil,
@@ -55,7 +55,7 @@ func TestCoordinatorThumbnail(t *testing.T) {
 			},
 			payload: &entity.ResizerPayload{
 				TargetID: "target-id",
-				FileType: entity.FileTypeCoordinatorThumbnail,
+				FileType: entity.FileTypeProducerThumbnail,
 				URLs:     []string{},
 			},
 			expectErr: errRequiredMediaURL,
@@ -67,7 +67,7 @@ func TestCoordinatorThumbnail(t *testing.T) {
 			},
 			payload: &entity.ResizerPayload{
 				TargetID: "target-id",
-				FileType: entity.FileTypeCoordinatorThumbnail,
+				FileType: entity.FileTypeProducerThumbnail,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
 			expectErr: exception.ErrUnknown,
@@ -80,7 +80,7 @@ func TestCoordinatorThumbnail(t *testing.T) {
 			},
 			payload: &entity.ResizerPayload{
 				TargetID: "target-id",
-				FileType: entity.FileTypeCoordinatorThumbnail,
+				FileType: entity.FileTypeProducerThumbnail,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
 			expectErr: exception.ErrUnknown,
@@ -94,23 +94,23 @@ func TestCoordinatorThumbnail(t *testing.T) {
 			},
 			payload: &entity.ResizerPayload{
 				TargetID: "target-id",
-				FileType: entity.FileTypeCoordinatorThumbnail,
+				FileType: entity.FileTypeProducerThumbnail,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
 			expectErr: exception.ErrUnknown,
 		},
 		{
-			name: "failed to update coordinator thumbnails",
+			name: "failed to update producer thumbnails",
 			setup: func(ctx context.Context, mocks *mocks) {
 				file := testImageFile(t)
 				url := "http://example.com/media/image_xxx.png"
 				mocks.storage.EXPECT().Download(ctx, "http://example.com/media/image.png").Return(file, nil)
 				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return(url, nil).Times(3)
-				mocks.user.EXPECT().UpdateCoordinatorThumbnails(ctx, gomock.Any()).Return(assert.AnError)
+				mocks.user.EXPECT().UpdateProducerThumbnails(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			payload: &entity.ResizerPayload{
 				TargetID: "target-id",
-				FileType: entity.FileTypeCoordinatorThumbnail,
+				FileType: entity.FileTypeProducerThumbnail,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
 			expectErr: exception.ErrUnknown,
@@ -121,13 +121,13 @@ func TestCoordinatorThumbnail(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testResizer(tt.setup, func(ctx context.Context, t *testing.T, resizer *resizer) {
 			t.Parallel()
-			err := resizer.coordinatorThumbnail(ctx, tt.payload)
+			err := resizer.producerThumbnail(ctx, tt.payload)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
 }
 
-func TestCoordinatorHeader(t *testing.T) {
+func TestProducerHeader(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -149,16 +149,16 @@ func TestCoordinatorHeader(t *testing.T) {
 				mocks.storage.EXPECT().Download(ctx, "http://example.com/media/image.png").Return(file, nil)
 				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return(url, nil).Times(3)
 				mocks.user.EXPECT().
-					UpdateCoordinatorHeaders(ctx, gomock.Any()).
-					DoAndReturn(func(ctx context.Context, in *user.UpdateCoordinatorHeadersInput) error {
-						assert.Equal(t, "target-id", in.CoordinatorID)
+					UpdateProducerHeaders(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, in *user.UpdateProducerHeadersInput) error {
+						assert.Equal(t, "target-id", in.ProducerID)
 						assert.ElementsMatch(t, headers, in.Headers)
 						return nil
 					})
 			},
 			payload: &entity.ResizerPayload{
 				TargetID: "target-id",
-				FileType: entity.FileTypeCoordinatorHeader,
+				FileType: entity.FileTypeProducerHeader,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
 			expectErr: nil,
@@ -168,7 +168,7 @@ func TestCoordinatorHeader(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {},
 			payload: &entity.ResizerPayload{
 				TargetID: "target-id",
-				FileType: entity.FileTypeCoordinatorHeader,
+				FileType: entity.FileTypeProducerHeader,
 				URLs:     []string{},
 			},
 			expectErr: errRequiredMediaURL,
@@ -180,7 +180,7 @@ func TestCoordinatorHeader(t *testing.T) {
 			},
 			payload: &entity.ResizerPayload{
 				TargetID: "target-id",
-				FileType: entity.FileTypeCoordinatorHeader,
+				FileType: entity.FileTypeProducerHeader,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
 			expectErr: exception.ErrUnknown,
@@ -193,7 +193,7 @@ func TestCoordinatorHeader(t *testing.T) {
 			},
 			payload: &entity.ResizerPayload{
 				TargetID: "target-id",
-				FileType: entity.FileTypeCoordinatorHeader,
+				FileType: entity.FileTypeProducerHeader,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
 			expectErr: exception.ErrUnknown,
@@ -207,23 +207,23 @@ func TestCoordinatorHeader(t *testing.T) {
 			},
 			payload: &entity.ResizerPayload{
 				TargetID: "target-id",
-				FileType: entity.FileTypeCoordinatorHeader,
+				FileType: entity.FileTypeProducerHeader,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
 			expectErr: exception.ErrUnknown,
 		},
 		{
-			name: "failed to update coordinator headers",
+			name: "failed to update producer headers",
 			setup: func(ctx context.Context, mocks *mocks) {
 				file := testImageFile(t)
 				url := "http://example.com/media/image_xxx.png"
 				mocks.storage.EXPECT().Download(ctx, "http://example.com/media/image.png").Return(file, nil)
 				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return(url, nil).Times(3)
-				mocks.user.EXPECT().UpdateCoordinatorHeaders(ctx, gomock.Any()).Return(assert.AnError)
+				mocks.user.EXPECT().UpdateProducerHeaders(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			payload: &entity.ResizerPayload{
 				TargetID: "target-id",
-				FileType: entity.FileTypeCoordinatorHeader,
+				FileType: entity.FileTypeProducerHeader,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
 			expectErr: exception.ErrUnknown,
@@ -234,7 +234,7 @@ func TestCoordinatorHeader(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testResizer(tt.setup, func(ctx context.Context, t *testing.T, resizer *resizer) {
 			t.Parallel()
-			err := resizer.coordinatorHeader(ctx, tt.payload)
+			err := resizer.producerHeader(ctx, tt.payload)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
