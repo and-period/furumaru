@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
@@ -515,6 +516,119 @@ func TestProduct_Update(t *testing.T) {
 
 			db := &product{db: m.db, now: now}
 			err = db.Update(ctx, tt.args.productID, tt.args.params)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
+func TestProduct_UpdateMedia(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, productTable, productTypeTable, categoryTable)
+	category := testCategory("category-id", "野菜", now())
+	err = m.db.DB.Create(&category).Error
+	require.NoError(t, err)
+	productType := testProductType("type-id", "category-id", "野菜", now())
+	err = m.db.DB.Create(&productType).Error
+	require.NoError(t, err)
+
+	type args struct {
+		productID string
+		originURL string
+		images    common.Images
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				product := testProduct("product-id", "type-id", "category-id", "producer-id", now())
+				err = m.db.DB.Create(&product).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				productID: "product-id",
+				originURL: "https://and-period.jp/thumbnail01.png",
+				images: common.Images{
+					{
+						Size: common.ImageSizeSmall,
+						URL:  "https://and-period.jp/thumbnail01_240.png",
+					},
+				},
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				productID: "product-id",
+				originURL: "https://and-period.jp/thumbnail01.png",
+				images: common.Images{
+					{
+						Size: common.ImageSizeSmall,
+						URL:  "https://and-period.jp/thumbnail01_240.png",
+					},
+				},
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+		{
+			name: "media is non existent",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				product := testProduct("product-id", "type-id", "category-id", "producer-id", now())
+				err = m.db.DB.Create(&product).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				productID: "product-id",
+				originURL: "https://and-period.jp/thumbnail.png",
+				images: common.Images{
+					{
+						Size: common.ImageSizeSmall,
+						URL:  "https://and-period.jp/thumbnail_240.png",
+					},
+				},
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := m.dbDelete(ctx, productTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, m)
+
+			db := &product{db: m.db, now: now}
+			err = db.UpdateMedia(ctx, tt.args.productID, tt.args.originURL, tt.args.images)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}

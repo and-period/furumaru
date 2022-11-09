@@ -5,6 +5,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
@@ -77,8 +78,9 @@ type Products []*Product
 
 // ProductMedia - 商品メディア情報
 type ProductMedia struct {
-	URL         string `json:"url"`         // メディアURL
-	IsThumbnail bool   `json:"isThumbnail"` // サムネイルとして使用
+	URL         string        `json:"url"`         // メディアURL
+	IsThumbnail bool          `json:"isThumbnail"` // サムネイルとして使用
+	Images      common.Images `json:"images"`      // リサイズ済み画像一覧
 }
 
 type MultiProductMedia []*ProductMedia

@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -128,6 +130,42 @@ func (p *product) Update(ctx context.Context, productID string, params *UpdatePr
 			Table(productTable).
 			Where("id = ?", productID).
 			Updates(updates).Error
+		return nil, err
+	})
+	return exception.InternalError(err)
+}
+
+func (p *product) UpdateMedia(ctx context.Context, productID string, originURL string, images common.Images) error {
+	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+		product, err := p.get(ctx, tx, productID, "media")
+		if err != nil {
+			return nil, err
+		}
+		var exists bool
+		for i := range product.Media {
+			if product.Media[i].URL != originURL {
+				continue
+			}
+			exists = true
+			product.Media[i].Images = images
+		}
+		if !exists {
+			return nil, fmt.Errorf("database: media is non-existent: %w", exception.ErrFailedPrecondition)
+		}
+
+		buf, err := product.Media.Marshal()
+		if err != nil {
+			return nil, err
+		}
+		params := map[string]interface{}{
+			"media":      datatypes.JSON(buf),
+			"updated_at": p.now(),
+		}
+
+		err = tx.WithContext(ctx).
+			Table(productTable).
+			Where("id = ?", productID).
+			Updates(params).Error
 		return nil, err
 	})
 	return exception.InternalError(err)

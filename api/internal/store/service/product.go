@@ -166,6 +166,14 @@ func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInpu
 	return exception.InternalError(err)
 }
 
+func (s *service) UpdateProductMedia(ctx context.Context, in *store.UpdateProductMediaInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	err := s.db.Product.UpdateMedia(ctx, in.ProductID, in.OriginURL, in.Images)
+	return exception.InternalError(err)
+}
+
 func (s *service) DeleteProduct(ctx context.Context, in *store.DeleteProductInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)

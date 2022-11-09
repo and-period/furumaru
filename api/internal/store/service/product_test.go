@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
@@ -677,6 +678,67 @@ func TestUpdateProduct(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateProduct(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestUpdateProductMedia(t *testing.T) {
+	t.Parallel()
+
+	images := common.Images{
+		{
+			Size: common.ImageSizeSmall,
+			URL:  "http://example.com/media/image_240.png",
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.UpdateProductMediaInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Product.EXPECT().
+					UpdateMedia(ctx, "product-id", "http://example.com/media/image.png", images).
+					Return(nil)
+			},
+			input: &store.UpdateProductMediaInput{
+				ProductID: "product-id",
+				OriginURL: "http://example.com/media/image.png",
+				Images:    images,
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &store.UpdateProductMediaInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to update media",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Product.EXPECT().
+					UpdateMedia(ctx, "product-id", "http://example.com/media/image.png", images).
+					Return(assert.AnError)
+			},
+			input: &store.UpdateProductMediaInput{
+				ProductID: "product-id",
+				OriginURL: "http://example.com/media/image.png",
+				Images:    images,
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.UpdateProductMedia(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}

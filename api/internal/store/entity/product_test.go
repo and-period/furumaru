@@ -3,6 +3,7 @@ package entity
 import (
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/datatypes"
 )
@@ -93,7 +94,7 @@ func TestProduct_Fill(t *testing.T) {
 			product: &Product{
 				ID:        "product-id",
 				Name:      "&.農園のみかん",
-				MediaJSON: datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true}]`)),
+				MediaJSON: datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":[{"url":"https://and-period.jp/thumbnail_240.png","size":1}]}]`)),
 			},
 			expect: &Product{
 				ID:   "product-id",
@@ -102,9 +103,15 @@ func TestProduct_Fill(t *testing.T) {
 					{
 						URL:         "https://and-period.jp/thumbnail.png",
 						IsThumbnail: true,
+						Images: common.Images{
+							{
+								URL:  "https://and-period.jp/thumbnail_240.png",
+								Size: common.ImageSizeSmall,
+							},
+						},
 					},
 				},
-				MediaJSON: datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true}]`)),
+				MediaJSON: datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":[{"url":"https://and-period.jp/thumbnail_240.png","size":1}]}]`)),
 			},
 			hasErr: false,
 		},
@@ -139,6 +146,12 @@ func TestProduct_FillJSON(t *testing.T) {
 					{
 						URL:         "https://and-period.jp/thumbnail.png",
 						IsThumbnail: true,
+						Images: common.Images{
+							{
+								URL:  "https://and-period.jp/thumbnail_240.png",
+								Size: common.ImageSizeSmall,
+							},
+						},
 					},
 				},
 			},
@@ -149,9 +162,15 @@ func TestProduct_FillJSON(t *testing.T) {
 					{
 						URL:         "https://and-period.jp/thumbnail.png",
 						IsThumbnail: true,
+						Images: common.Images{
+							{
+								URL:  "https://and-period.jp/thumbnail_240.png",
+								Size: common.ImageSizeSmall,
+							},
+						},
 					},
 				},
-				MediaJSON: datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true}]`)),
+				MediaJSON: datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":[{"url":"https://and-period.jp/thumbnail_240.png","size":1}]}]`)),
 			},
 			hasErr: false,
 		},
