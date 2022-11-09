@@ -312,7 +312,7 @@ func TestMultiProductMedia_Marshal(t *testing.T) {
 					IsThumbnail: true,
 				},
 			},
-			expect: []byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true}]`),
+			expect: []byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":null}]`),
 			hasErr: false,
 		},
 		{
