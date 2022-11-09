@@ -3,6 +3,7 @@ package store
 import (
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
@@ -219,6 +220,12 @@ type UpdateProductInput struct {
 type UpdateProductMedia struct {
 	URL         string `validate:"required,url"`
 	IsThumbnail bool   `validate:""`
+}
+
+type UpdateProductMediaInput struct {
+	ProductID string        `validate:"required"`
+	OriginURL string        `validate:"required"`
+	Images    common.Images `validate:""`
 }
 
 type DeleteProductInput struct {

@@ -486,6 +486,20 @@ func (mr *MockServiceMockRecorder) UpdateProduct(ctx, in interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateProduct", reflect.TypeOf((*MockService)(nil).UpdateProduct), ctx, in)
 }
 
+// UpdateProductMedia mocks base method.
+func (m *MockService) UpdateProductMedia(ctx context.Context, in *store.UpdateProductMediaInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateProductMedia", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateProductMedia indicates an expected call of UpdateProductMedia.
+func (mr *MockServiceMockRecorder) UpdateProductMedia(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateProductMedia", reflect.TypeOf((*MockService)(nil).UpdateProductMedia), ctx, in)
+}
+
 // UpdateProductType mocks base method.
 func (m *MockService) UpdateProductType(ctx context.Context, in *store.UpdateProductTypeInput) error {
 	m.ctrl.T.Helper()

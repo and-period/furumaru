@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
 	"gorm.io/gorm"
@@ -30,13 +31,13 @@ type Database struct {
 func NewDatabase(params *Params) *Database {
 	return &Database{
 		Category:    NewCategory(params.Database),
+		Live:        NewLive(params.Database),
 		Order:       NewOrder(params.Database),
 		Product:     NewProduct(params.Database),
 		ProductType: NewProductType(params.Database),
 		Promotion:   NewPromotion(params.Database),
 		Shipping:    NewShipping(params.Database),
 		Schedule:    NewSchedule(params.Database),
-		Live:        NewLive(params.Database),
 	}
 }
 
@@ -53,6 +54,10 @@ type Category interface {
 	Delete(ctx context.Context, categoryID string) error
 }
 
+type Live interface {
+	Get(ctx context.Context, liveID string, fields ...string) (*entity.Live, error)
+}
+
 type Order interface {
 	List(ctx context.Context, params *ListOrdersParams, fields ...string) (entity.Orders, error)
 	Count(ctx context.Context, params *ListOrdersParams) (int64, error)
@@ -67,6 +72,7 @@ type Product interface {
 	Get(ctx context.Context, productID string, fields ...string) (*entity.Product, error)
 	Create(ctx context.Context, product *entity.Product) error
 	Update(ctx context.Context, productID string, params *UpdateProductParams) error
+	UpdateMedia(ctx context.Context, productID string, originURL string, images common.Images) error
 	Delete(ctx context.Context, productID string) error
 }
 
@@ -101,10 +107,6 @@ type Shipping interface {
 
 type Schedule interface {
 	Create(ctx context.Context, schedule *entity.Schedule, lives entity.Lives, products entity.LiveProducts) error
-}
-
-type Live interface {
-	Get(ctx context.Context, liveID string, fields ...string) (*entity.Live, error)
 }
 
 /**

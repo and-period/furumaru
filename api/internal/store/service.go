@@ -55,6 +55,8 @@ type Service interface {
 	CreateProduct(ctx context.Context, in *CreateProductInput) (*entity.Product, error)
 	// 商品更新
 	UpdateProduct(ctx context.Context, in *UpdateProductInput) error
+	// 商品画像(リサイズ済み)更新
+	UpdateProductMedia(ctx context.Context, in *UpdateProductMediaInput) error
 	// 商品削除
 	DeleteProduct(ctx context.Context, in *DeleteProductInput) error
 	// プロモーション一覧取得
