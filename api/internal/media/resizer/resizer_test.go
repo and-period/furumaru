@@ -12,6 +12,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	mock_storage "github.com/and-period/furumaru/api/mock/pkg/storage"
+	mock_store "github.com/and-period/furumaru/api/mock/store"
 	mock_user "github.com/and-period/furumaru/api/mock/user"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/golang/mock/gomock"
@@ -23,6 +24,7 @@ import (
 type mocks struct {
 	storage *mock_storage.MockBucket
 	user    *mock_user.MockService
+	store   *mock_store.MockService
 }
 
 type testCaller func(ctx context.Context, t *testing.T, resizer *resizer)
@@ -31,6 +33,7 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
 		storage: mock_storage.NewMockBucket(ctrl),
 		user:    mock_user.NewMockService(ctrl),
+		store:   mock_store.NewMockService(ctrl),
 	}
 }
 
@@ -39,6 +42,7 @@ func newResizer(mocks *mocks) *resizer {
 		WaitGroup: &sync.WaitGroup{},
 		Storage:   mocks.storage,
 		User:      mocks.user,
+		Store:     mocks.store,
 	}
 	resizer := NewResizer(params).(*resizer)
 	resizer.concurrency = 1
@@ -191,6 +195,51 @@ func TestResizer_Run(t *testing.T) {
 			payload: &entity.ResizerPayload{
 				TargetID: "target-id",
 				FileType: entity.FileTypeCoordinatorHeader,
+				URLs:     []string{"http://example.com/media/image.png"},
+			},
+			expectErr: nil,
+		},
+		{
+			name: "received producer thumbnail event",
+			setup: func(ctx context.Context, mocks *mocks) {
+				file := testImageFile(t)
+				mocks.storage.EXPECT().Download(ctx, gomock.Any()).Return(file, nil)
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return("", nil).AnyTimes()
+				mocks.user.EXPECT().UpdateProducerThumbnails(ctx, gomock.Any()).Return(nil)
+			},
+			payload: &entity.ResizerPayload{
+				TargetID: "target-id",
+				FileType: entity.FileTypeProducerThumbnail,
+				URLs:     []string{"http://example.com/media/image.png"},
+			},
+			expectErr: nil,
+		},
+		{
+			name: "received producer header event",
+			setup: func(ctx context.Context, mocks *mocks) {
+				file := testImageFile(t)
+				mocks.storage.EXPECT().Download(ctx, gomock.Any()).Return(file, nil)
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return("", nil).AnyTimes()
+				mocks.user.EXPECT().UpdateProducerHeaders(ctx, gomock.Any()).Return(nil)
+			},
+			payload: &entity.ResizerPayload{
+				TargetID: "target-id",
+				FileType: entity.FileTypeProducerHeader,
+				URLs:     []string{"http://example.com/media/image.png"},
+			},
+			expectErr: nil,
+		},
+		{
+			name: "received product media event",
+			setup: func(ctx context.Context, mocks *mocks) {
+				file := testImageFile(t)
+				mocks.storage.EXPECT().Download(gomock.Any(), gomock.Any()).Return(file, nil)
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return("", nil).AnyTimes()
+				mocks.store.EXPECT().UpdateProductMedia(ctx, gomock.Any()).Return(nil)
+			},
+			payload: &entity.ResizerPayload{
+				TargetID: "target-id",
+				FileType: entity.FileTypeProductMedia,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
 			expectErr: nil,

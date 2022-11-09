@@ -10,6 +10,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media/entity"
+	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -34,6 +35,7 @@ type Params struct {
 	WaitGroup *sync.WaitGroup
 	Storage   storage.Bucket
 	User      user.Service
+	Store     store.Service
 }
 
 type resizer struct {
@@ -42,6 +44,7 @@ type resizer struct {
 	waitGroup   *sync.WaitGroup
 	storage     storage.Bucket
 	user        user.Service
+	store       store.Service
 	concurrency int64
 	maxRetries  int64
 }
@@ -87,6 +90,7 @@ func NewResizer(params *Params, opts ...Option) Resizer {
 		waitGroup:   params.WaitGroup,
 		storage:     params.Storage,
 		user:        params.User,
+		store:       params.Store,
 		concurrency: dopts.concurrency,
 	}
 }
@@ -139,6 +143,12 @@ func (r *resizer) run(ctx context.Context, payload *entity.ResizerPayload) error
 		return r.coordinatorThumbnail(ctx, payload)
 	case entity.FileTypeCoordinatorHeader:
 		return r.coordinatorHeader(ctx, payload)
+	case entity.FileTypeProducerThumbnail:
+		return r.producerThumbnail(ctx, payload)
+	case entity.FileTypeProducerHeader:
+		return r.producerHeader(ctx, payload)
+	case entity.FileTypeProductMedia:
+		return r.productMedia(ctx, payload)
 	default:
 		return fmt.Errorf("resizer: unknown file type. type=%d: %w", payload.FileType, exception.ErrInvalidArgument)
 	}
