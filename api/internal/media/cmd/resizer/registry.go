@@ -3,12 +3,14 @@ package cmd
 import (
 	"context"
 	"sync"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/media/resizer"
 	"github.com/and-period/furumaru/api/internal/user"
 	userdb "github.com/and-period/furumaru/api/internal/user/database"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/database"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -32,6 +34,7 @@ type params struct {
 	aws        aws.Config
 	storage    storage.Bucket
 	secret     secret.Client
+	now        func() time.Time
 	dbHost     string
 	dbPort     string
 	dbUsername string
@@ -42,6 +45,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	params := &params{
 		config:    conf,
 		logger:    logger,
+		now:       jst.Now,
 		waitGroup: &sync.WaitGroup{},
 	}
 
@@ -116,6 +120,7 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 	cli, err := database.NewClient(
 		params,
 		database.WithLogger(p.logger),
+		database.WithNow(p.now),
 		database.WithTLS(p.config.DBEnabledTLS),
 		database.WithTimeZone(p.config.DBTimeZone),
 	)

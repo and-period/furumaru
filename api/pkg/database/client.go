@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
+	"time"
 
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
@@ -28,6 +29,7 @@ type Params struct {
 
 type options struct {
 	logger     *zap.Logger
+	now        func() time.Time
 	timezone   string
 	enabledTLS bool
 }
@@ -52,10 +54,17 @@ func WithLogger(logger *zap.Logger) Option {
 	}
 }
 
+func WithNow(now func() time.Time) Option {
+	return func(opts *options) {
+		opts.now = now
+	}
+}
+
 // NewClient - DBクライアントの構造体
 func NewClient(params *Params, opts ...Option) (*Client, error) {
 	dopts := &options{
 		logger:     zap.NewNop(),
+		now:        time.Now,
 		timezone:   "",
 		enabledTLS: false,
 	}
@@ -134,7 +143,8 @@ func (c *Client) Count(ctx context.Context, tx *gorm.DB, table string) *gorm.DB 
 
 func newDBClient(params *Params, opts *options) (*gorm.DB, error) {
 	conf := &gorm.Config{
-		Logger: zapgorm2.New(opts.logger),
+		Logger:  zapgorm2.New(opts.logger),
+		NowFunc: opts.now,
 	}
 
 	dsn := newDSN(params, opts)
