@@ -3,7 +3,7 @@ package entity
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/store/codes"
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	set "github.com/and-period/furumaru/api/pkg/set/v2"
 	"github.com/stretchr/testify/assert"
