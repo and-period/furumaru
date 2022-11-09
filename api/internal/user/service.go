@@ -79,6 +79,10 @@ type Service interface {
 	UpdateProducer(ctx context.Context, in *UpdateProducerInput) error
 	// 生産者メールアドレス更新
 	UpdateProducerEmail(ctx context.Context, in *UpdateProducerEmailInput) error
+	// 生産者サムネイル(リサイズ済み)更新
+	UpdateProducerThumbnails(ctx context.Context, in *UpdateProducerThumbnailsInput) error
+	// 生産者ヘッダー画像(リサイズ済み)更新
+	UpdateProducerHeaders(ctx context.Context, in *UpdateProducerHeadersInput) error
 	// 生産者パスワードリセット
 	ResetProducerPassword(ctx context.Context, in *ResetProducerPasswordInput) error
 	// 生産者関連付け

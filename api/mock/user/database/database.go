@@ -726,6 +726,20 @@ func (mr *MockProducerMockRecorder) Update(ctx, producerID, params interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockProducer)(nil).Update), ctx, producerID, params)
 }
 
+// UpdateHeaders mocks base method.
+func (m *MockProducer) UpdateHeaders(ctx context.Context, producerID string, headers common.Images) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateHeaders", ctx, producerID, headers)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateHeaders indicates an expected call of UpdateHeaders.
+func (mr *MockProducerMockRecorder) UpdateHeaders(ctx, producerID, headers interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateHeaders", reflect.TypeOf((*MockProducer)(nil).UpdateHeaders), ctx, producerID, headers)
+}
+
 // UpdateRelationship mocks base method.
 func (m *MockProducer) UpdateRelationship(ctx context.Context, coordinatorID string, producerIDs ...string) error {
 	m.ctrl.T.Helper()
@@ -743,6 +757,20 @@ func (mr *MockProducerMockRecorder) UpdateRelationship(ctx, coordinatorID interf
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, coordinatorID}, producerIDs...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRelationship", reflect.TypeOf((*MockProducer)(nil).UpdateRelationship), varargs...)
+}
+
+// UpdateThumbnails mocks base method.
+func (m *MockProducer) UpdateThumbnails(ctx context.Context, producerID string, thumbnails common.Images) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateThumbnails", ctx, producerID, thumbnails)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateThumbnails indicates an expected call of UpdateThumbnails.
+func (mr *MockProducerMockRecorder) UpdateThumbnails(ctx, producerID, thumbnails interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateThumbnails", reflect.TypeOf((*MockProducer)(nil).UpdateThumbnails), ctx, producerID, thumbnails)
 }
 
 // MockUser is a mock of User interface.

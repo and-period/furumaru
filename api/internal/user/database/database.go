@@ -86,6 +86,8 @@ type Producer interface {
 	Get(ctx context.Context, producerID string, fields ...string) (*entity.Producer, error)
 	Create(ctx context.Context, producer *entity.Producer, auth func(ctx context.Context) error) error
 	Update(ctx context.Context, producerID string, params *UpdateProducerParams) error
+	UpdateThumbnails(ctx context.Context, producerID string, thumbnails common.Images) error
+	UpdateHeaders(ctx context.Context, producerID string, headers common.Images) error
 	UpdateRelationship(ctx context.Context, coordinatorID string, producerIDs ...string) error
 	Delete(ctx context.Context, producerID string, auth func(ctx context.Context) error) error
 }
