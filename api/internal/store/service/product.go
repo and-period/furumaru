@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
@@ -170,7 +171,22 @@ func (s *service) UpdateProductMedia(ctx context.Context, in *store.UpdateProduc
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	err := s.db.Product.UpdateMedia(ctx, in.ProductID, in.OriginURL, in.Images)
+	resized := make(map[string]common.Images, len(in.Images))
+	for _, image := range in.Images {
+		resized[image.OriginURL] = image.Images
+	}
+	setFn := func(media entity.MultiProductMedia) (exists bool) {
+		for i := range media {
+			images, ok := resized[media[i].URL]
+			if !ok {
+				continue
+			}
+			exists = true
+			media[i].Images = images
+		}
+		return
+	}
+	err := s.db.Product.UpdateMedia(ctx, in.ProductID, setFn)
 	return exception.InternalError(err)
 }
 

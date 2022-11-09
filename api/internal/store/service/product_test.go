@@ -703,13 +703,30 @@ func TestUpdateProductMedia(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Product.EXPECT().
-					UpdateMedia(ctx, "product-id", "http://example.com/media/image.png", images).
-					Return(nil)
+					UpdateMedia(ctx, "product-id", gomock.Any()).
+					DoAndReturn(func(ctx context.Context, productID string, set func(media entity.MultiProductMedia) bool) error {
+						media := entity.MultiProductMedia{
+							{URL: "http://example.com/media/image01.png", IsThumbnail: true},
+							{URL: "http://example.com/media/image02.png", IsThumbnail: true},
+						}
+						expect := entity.MultiProductMedia{
+							{URL: "http://example.com/media/image01.png", IsThumbnail: true, Images: images},
+							{URL: "http://example.com/media/image02.png", IsThumbnail: true},
+						}
+						exists := set(media)
+						assert.Equal(t, expect, media)
+						assert.True(t, exists)
+						return nil
+					})
 			},
 			input: &store.UpdateProductMediaInput{
 				ProductID: "product-id",
-				OriginURL: "http://example.com/media/image.png",
-				Images:    images,
+				Images: []*store.UpdateProductMediaImage{
+					{
+						OriginURL: "http://example.com/media/image01.png",
+						Images:    images,
+					},
+				},
 			},
 			expectErr: nil,
 		},
@@ -722,14 +739,16 @@ func TestUpdateProductMedia(t *testing.T) {
 		{
 			name: "failed to update media",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Product.EXPECT().
-					UpdateMedia(ctx, "product-id", "http://example.com/media/image.png", images).
-					Return(assert.AnError)
+				mocks.db.Product.EXPECT().UpdateMedia(ctx, "product-id", gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.UpdateProductMediaInput{
 				ProductID: "product-id",
-				OriginURL: "http://example.com/media/image.png",
-				Images:    images,
+				Images: []*store.UpdateProductMediaImage{
+					{
+						OriginURL: "http://example.com/media/image.png",
+						Images:    images,
+					},
+				},
 			},
 			expectErr: exception.ErrUnknown,
 		},

@@ -544,8 +544,7 @@ func TestProduct_UpdateMedia(t *testing.T) {
 
 	type args struct {
 		productID string
-		originURL string
-		images    common.Images
+		set       func(media entity.MultiProductMedia) bool
 	}
 	type want struct {
 		hasErr bool
@@ -565,12 +564,22 @@ func TestProduct_UpdateMedia(t *testing.T) {
 			},
 			args: args{
 				productID: "product-id",
-				originURL: "https://and-period.jp/thumbnail01.png",
-				images: common.Images{
-					{
-						Size: common.ImageSizeSmall,
-						URL:  "https://and-period.jp/thumbnail01_240.png",
-					},
+				set: func(media entity.MultiProductMedia) (exists bool) {
+					resized := map[string]common.Images{
+						"https://and-period.jp/thumbnail01.png": {{
+							Size: common.ImageSizeSmall,
+							URL:  "https://and-period.jp/thumbnail01_240.png",
+						}},
+					}
+					for i := range media {
+						images, ok := resized[media[i].URL]
+						if !ok {
+							continue
+						}
+						exists = true
+						media[i].Images = images
+					}
+					return
 				},
 			},
 			want: want{
@@ -582,13 +591,7 @@ func TestProduct_UpdateMedia(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
 				productID: "product-id",
-				originURL: "https://and-period.jp/thumbnail01.png",
-				images: common.Images{
-					{
-						Size: common.ImageSizeSmall,
-						URL:  "https://and-period.jp/thumbnail01_240.png",
-					},
-				},
+				set:       func(media entity.MultiProductMedia) bool { return false },
 			},
 			want: want{
 				hasErr: true,
@@ -603,13 +606,7 @@ func TestProduct_UpdateMedia(t *testing.T) {
 			},
 			args: args{
 				productID: "product-id",
-				originURL: "https://and-period.jp/thumbnail.png",
-				images: common.Images{
-					{
-						Size: common.ImageSizeSmall,
-						URL:  "https://and-period.jp/thumbnail_240.png",
-					},
-				},
+				set:       func(media entity.MultiProductMedia) bool { return false },
 			},
 			want: want{
 				hasErr: true,
@@ -628,7 +625,7 @@ func TestProduct_UpdateMedia(t *testing.T) {
 			tt.setup(ctx, t, m)
 
 			db := &product{db: m.db, now: now}
-			err = db.UpdateMedia(ctx, tt.args.productID, tt.args.originURL, tt.args.images)
+			err = db.UpdateMedia(ctx, tt.args.productID, tt.args.set)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}
