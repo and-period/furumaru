@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
-	set "github.com/and-period/furumaru/api/pkg/set/v2"
+	"github.com/and-period/furumaru/api/pkg/set"
 )
 
 type Notification struct {

@@ -5,7 +5,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	set "github.com/and-period/furumaru/api/pkg/set/v2"
+	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/stretchr/testify/assert"
 )
 

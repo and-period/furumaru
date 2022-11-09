@@ -10,7 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/user"
-	set "github.com/and-period/furumaru/api/pkg/set/v2"
+	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )

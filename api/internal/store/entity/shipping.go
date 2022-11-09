@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
-	set "github.com/and-period/furumaru/api/pkg/set/v2"
+	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/datatypes"
 )

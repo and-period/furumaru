@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/jst"
-	set "github.com/and-period/furumaru/api/pkg/set/v2"
+	"github.com/and-period/furumaru/api/pkg/set"
 	_ "github.com/go-sql-driver/mysql"
 )
 

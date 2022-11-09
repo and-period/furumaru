@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	set "github.com/and-period/furumaru/api/pkg/set/v2"
+	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/gorm"
 )
