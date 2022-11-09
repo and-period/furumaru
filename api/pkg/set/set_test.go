@@ -6,81 +6,121 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSet_Reset(t *testing.T) {
+func TestSet_New(t *testing.T) {
 	t.Parallel()
-	s := New(10)
-	s.Add(1)
-	s.Reset(10)
-	assert.False(t, s.Contains(1))
+	assert.NotNil(t, New[int64](1))
+}
+
+func TestSet_NewEmpty(t *testing.T) {
+	t.Parallel()
+	assert.NotNil(t, New[int64](1))
+}
+
+func TestSet_Uniq(t *testing.T) {
+	t.Parallel()
+	values := []int64{1, 2, 2, 3, 3, 3}
+	assert.ElementsMatch(t, []int64{1, 2, 3}, Uniq(values...))
+}
+
+func TestSet_UniqBy(t *testing.T) {
+	t.Parallel()
+	type input struct {
+		key   string
+		value int64
+	}
+	values := []*input{
+		{key: "test01", value: 1},
+		{key: "test02", value: 2},
+		{key: "test03", value: 2},
+		{key: "test04", value: 3},
+	}
+	iter := func(in *input) int64 {
+		return in.value
+	}
+	assert.ElementsMatch(t, []int64{1, 2, 3}, UniqBy(values, iter))
+}
+
+func TestSet_UniqWithErr(t *testing.T) {
+	t.Parallel()
+	type input struct {
+		key   string
+		value int64
+	}
+	values := []*input{
+		{key: "test01", value: 1},
+		{key: "test02", value: 2},
+		{key: "test03", value: 2},
+		{key: "test04", value: 3},
+	}
+	iter := func(in *input) (int64, error) {
+		return in.value, nil
+	}
+	actual, err := UniqWithErr(values, iter)
+	assert.NoError(t, err)
+	assert.ElementsMatch(t, []int64{1, 2, 3}, actual)
+	iter = func(in *input) (int64, error) {
+		return 0, assert.AnError
+	}
+	actual, err = UniqWithErr(values, iter)
+	assert.Error(t, err)
+	assert.Equal(t, []int64(nil), actual)
 }
 
 func TestSet_Len(t *testing.T) {
 	t.Parallel()
-	s := New(10)
-	s.Add(1)
-	assert.Equal(t, 1, s.Len())
+	set := New([]int64{1, 2, 2, 3, 3, 3}...)
+	assert.Equal(t, 3, set.Len())
+}
+
+func TestSet_Reset(t *testing.T) {
+	t.Parallel()
+	set := New([]int64{1, 2, 2, 3, 3, 3}...)
+	set.Reset(0)
+	assert.ElementsMatch(t, []int64{}, set.Slice())
 }
 
 func TestSet_Contains(t *testing.T) {
 	t.Parallel()
-	s := New(10)
-	s.Add(1)
-	s.Add("test")
-	assert.True(t, s.Contains(1))
-	assert.True(t, s.Contains("test"))
-	assert.False(t, s.Contains(2))
-	assert.False(t, s.Contains("debug"))
+	set := New([]int64{1, 2, 2, 3, 3, 3}...)
+	assert.True(t, set.Contains(1))
+	assert.True(t, set.Contains(1, 2, 3))
+	assert.False(t, set.Contains(4))
+}
+
+func TestSet_Add(t *testing.T) {
+	t.Parallel()
+	set := NewEmpty[int64](2)
+	assert.ElementsMatch(t, []int64{}, set.Slice())
+	set.Add(1, 2)
+	assert.ElementsMatch(t, []int64{1, 2}, set.Slice())
 }
 
 func TestSet_FindOrAdd(t *testing.T) {
 	t.Parallel()
-	s := New(10)
-	assert.False(t, s.FindOrAdd(1))
-	assert.False(t, s.FindOrAdd("test"))
-	assert.True(t, s.FindOrAdd(1))
-	assert.True(t, s.FindOrAdd("test"))
+	set := NewEmpty[int64](4)
+	actual, exists := set.FindOrAdd(1)
+	assert.False(t, exists)
+	assert.ElementsMatch(t, []int64{1}, actual.Slice())
+	actual, exists = set.FindOrAdd(1)
+	assert.True(t, exists)
+	assert.ElementsMatch(t, []int64{1}, actual.Slice())
+	actual, exists = set.FindOrAdd(2, 3)
+	assert.False(t, exists)
+	assert.ElementsMatch(t, []int64{1, 2, 3}, actual.Slice())
+	actual, exists = set.FindOrAdd(1, 4)
+	assert.True(t, exists)
+	assert.ElementsMatch(t, []int64{1, 2, 3, 4}, actual.Slice())
 }
 
 func TestSet_Remove(t *testing.T) {
 	t.Parallel()
-	s := New(10)
-	s.Add(1)
-	assert.True(t, s.Contains(1))
-	s.Remove(1)
-	assert.False(t, s.Contains(1))
+	set := New([]int64{1, 2, 3}...)
+	set.Remove(1)
+	assert.ElementsMatch(t, []int64{2, 3}, set.Slice())
 }
 
-func TestSet_Do(t *testing.T) {
+func TestSet_Slice(t *testing.T) {
 	t.Parallel()
-	s := New(10)
-	target := []int64{1, 2, 3, 4}
-	for _, n := range target {
-		s.Add(n)
-	}
-	s.Do(func(v interface{}) {
-		actual, ok := v.(int64)
-		assert.True(t, ok)
-		assert.Contains(t, target, actual)
-	})
-}
-
-func TestSet_Strings(t *testing.T) {
-	t.Parallel()
-	s := New(10)
-	s.AddStrings([]string{"a", "c", "b"}...)
-	assert.Equal(t, []string{"a", "b", "c"}, s.SortStrings())
-}
-
-func TestSet_Int32s(t *testing.T) {
-	t.Parallel()
-	s := New(10)
-	s.AddInt32s([]int32{1, 3, 2}...)
-	assert.Equal(t, []int32{1, 2, 3}, s.SortInt32s())
-}
-
-func TestSet_Int64s(t *testing.T) {
-	t.Parallel()
-	s := New(10)
-	s.AddInt64s([]int64{1, 3, 2}...)
-	assert.Equal(t, []int64{1, 2, 3}, s.SortInt64s())
+	set := New([]string{"test01", "", "test02"}...)
+	assert.ElementsMatch(t, []string{"test01", "test02"}, set.Slice())
 }

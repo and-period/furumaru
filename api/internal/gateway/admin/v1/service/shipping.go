@@ -1,8 +1,8 @@
 package service
 
 import (
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
-	"github.com/and-period/furumaru/api/internal/store/codes"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 

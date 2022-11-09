@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/url"
 	"sync"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/messenger"
 	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database"
@@ -13,6 +14,7 @@ import (
 	userdb "github.com/and-period/furumaru/api/internal/user/database"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/database"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/sqs"
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -36,6 +38,7 @@ type params struct {
 	producer    sqs.Producer
 	adminWebURL *url.URL
 	userWebURL  *url.URL
+	now         func() time.Time
 	dbHost      string
 	dbPort      string
 	dbUsername  string
@@ -46,6 +49,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	params := &params{
 		config:    conf,
 		logger:    logger,
+		now:       jst.Now,
 		waitGroup: &sync.WaitGroup{},
 	}
 
@@ -141,6 +145,7 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 	return database.NewClient(
 		params,
 		database.WithLogger(p.logger),
+		database.WithNow(p.now),
 		database.WithTLS(p.config.DBEnabledTLS),
 		database.WithTimeZone(p.config.DBTimeZone),
 	)

@@ -13,7 +13,7 @@ import (
 	"sync"
 
 	"github.com/and-period/furumaru/api/internal/common"
-	set "github.com/and-period/furumaru/api/pkg/set/v2"
+	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/shopspring/decimal"
 	"golang.org/x/image/draw"
 	"golang.org/x/sync/errgroup"
