@@ -320,6 +320,8 @@ func TestCreateProducer(t *testing.T) {
 						return nil
 					})
 				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(nil)
+				mocks.media.EXPECT().ResizeProducerThumbnail(gomock.Any(), gomock.Any()).Return(errmock)
+				mocks.media.EXPECT().ResizeProducerHeader(gomock.Any(), gomock.Any()).Return(errmock)
 			},
 			input: &user.CreateProducerInput{
 				Lastname:      "&.",
@@ -351,8 +353,8 @@ func TestCreateProducer(t *testing.T) {
 				LastnameKana:  "あんどぴりおど",
 				FirstnameKana: "すたっふ",
 				StoreName:     "&.農園",
-				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-				HeaderURL:     "https://and-period.jp/header.png",
+				ThumbnailURL:  "",
+				HeaderURL:     "",
 				Email:         "test-admin@and-period.jp",
 				PhoneNumber:   "+819012345678",
 				PostalCode:    "1000014",
@@ -406,6 +408,33 @@ func TestCreateProducer(t *testing.T) {
 func TestUpdateProducer(t *testing.T) {
 	t.Parallel()
 
+	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
+	producer := &entity.Producer{
+		Admin: entity.Admin{
+			ID:            "admin-id",
+			Role:          entity.AdminRoleProducer,
+			Lastname:      "&.",
+			Firstname:     "スタッフ",
+			LastnameKana:  "あんどぴりおど",
+			FirstnameKana: "すたっふ",
+			Email:         "test-admin@and-period.jp",
+		},
+		AdminID:       "admin-id",
+		CoordinatorID: "coordinator-id",
+		StoreName:     "&.農園",
+		ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+		Thumbnails:    common.Images{},
+		HeaderURL:     "https://and-period.jp/header.png",
+		Headers:       common.Images{},
+		PhoneNumber:   "+819012345678",
+		PostalCode:    "1000014",
+		Prefecture:    "東京都",
+		City:          "千代田区",
+		AddressLine1:  "永田町1-7-1",
+		AddressLine2:  "",
+		CreatedAt:     now,
+		UpdatedAt:     now,
+	}
 	params := &database.UpdateProducerParams{
 		Lastname:      "&.",
 		Firstname:     "スタッフ",
@@ -431,7 +460,42 @@ func TestUpdateProducer(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Update(ctx, "producer-id", params).Return(nil)
+				params := *params
+				params.ThumbnailURL = "https://tmp.and-period.jp/thumbnail.png"
+				params.HeaderURL = "https://tmp.and-period.jp/header.png"
+				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(producer, nil)
+				mocks.db.Producer.EXPECT().Update(ctx, "producer-id", &params).Return(nil)
+				mocks.media.EXPECT().ResizeProducerThumbnail(gomock.Any(), gomock.Any()).Return(errmock)
+				mocks.media.EXPECT().ResizeProducerHeader(gomock.Any(), gomock.Any()).Return(errmock)
+			},
+			input: &user.UpdateProducerInput{
+				ProducerID:    "producer-id",
+				Lastname:      "&.",
+				Firstname:     "スタッフ",
+				LastnameKana:  "あんどぴりおど",
+				FirstnameKana: "すたっふ",
+				StoreName:     "&.農園",
+				ThumbnailURL:  "https://tmp.and-period.jp/thumbnail.png",
+				HeaderURL:     "https://tmp.and-period.jp/header.png",
+				PhoneNumber:   "+819012345678",
+				PostalCode:    "1000014",
+				Prefecture:    "東京都",
+				City:          "千代田区",
+				AddressLine1:  "永田町1-7-1",
+				AddressLine2:  "",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.UpdateProducerInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get producer",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(nil, assert.AnError)
 			},
 			input: &user.UpdateProducerInput{
 				ProducerID:    "producer-id",
@@ -449,17 +513,12 @@ func TestUpdateProducer(t *testing.T) {
 				AddressLine1:  "永田町1-7-1",
 				AddressLine2:  "",
 			},
-			expectErr: nil,
+			expectErr: exception.ErrUnknown,
 		},
 		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &user.UpdateProducerInput{},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to create admin",
+			name: "failed to update producer",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(producer, nil)
 				mocks.db.Producer.EXPECT().Update(ctx, "producer-id", params).Return(errmock)
 			},
 			input: &user.UpdateProducerInput{
