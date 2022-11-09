@@ -48,9 +48,7 @@ func (u *user) List(ctx context.Context, params *ListUsersParams, fields ...stri
 func (u *user) Count(ctx context.Context, params *ListUsersParams) (int64, error) {
 	var total int64
 
-	stmt := u.db.Count(ctx, u.db.DB, userTable)
-
-	err := stmt.Count(&total).Error
+	err := u.db.Count(ctx, u.db.DB, userTable).Find(&total).Error
 	return total, exception.InternalError(err)
 }
 

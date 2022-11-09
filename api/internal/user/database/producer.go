@@ -54,7 +54,7 @@ func (p *producer) Count(ctx context.Context, params *ListProducersParams) (int6
 	stmt := p.db.Count(ctx, p.db.DB, producerTable)
 	stmt = params.stmt(stmt)
 
-	err := stmt.Count(&total).Error
+	err := stmt.Find(&total).Error
 	return total, exception.InternalError(err)
 }
 

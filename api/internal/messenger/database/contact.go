@@ -44,7 +44,7 @@ func (c *contact) List(ctx context.Context, params *ListContactsParams, fields .
 func (c *contact) Count(ctx context.Context, params *ListContactsParams) (int64, error) {
 	var total int64
 
-	err := c.db.Count(ctx, c.db.DB, contactTable).Count(&total).Error
+	err := c.db.Count(ctx, c.db.DB, contactTable).Find(&total).Error
 	return total, exception.InternalError(err)
 }
 
