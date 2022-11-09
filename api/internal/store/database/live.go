@@ -13,12 +13,6 @@ import (
 
 const liveTable = "lives"
 
-var liveFields = []string{
-	"id", "schedule_id", "producer_id", "title", "description",
-	"published", "canceled", "start_at", "end_at", "channel_arn",
-	"created_at", "updated_at", "deleted_at",
-}
-
 type live struct {
 	db  *database.Client
 	now func() time.Time
@@ -37,25 +31,24 @@ func (l *live) Get(ctx context.Context, liveID string, fields ...string) (*entit
 }
 
 func (l *live) get(ctx context.Context, tx *gorm.DB, liveID string, fields ...string) (*entity.Live, error) {
-	var live *entity.Live
-	var liveProducts entity.LiveProducts
-	if len(fields) == 0 {
-		fields = liveFields
-	}
+	var (
+		live         *entity.Live
+		liveProducts entity.LiveProducts
+	)
 
-	err := tx.WithContext(ctx).
-		Table(liveTable).Select(fields).
+	err := l.db.Statement(ctx, tx, liveTable, fields...).
 		Where("id = ?", liveID).
 		First(&live).Error
 	if err != nil {
 		return nil, err
 	}
-	err = tx.WithContext(ctx).
-		Table(liveProductTable).Select(liveProductFields).
-		Where("live_id IN (?)", liveID).Find(&liveProducts).Error
+	err = l.db.Statement(ctx, tx, liveProductTable).
+		Where("live_id IN (?)", liveID).
+		Find(&liveProducts).Error
 	if err != nil {
 		return nil, err
 	}
+
 	live.Fill(liveProducts, jst.Now())
 	return live, nil
 }
