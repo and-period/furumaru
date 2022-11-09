@@ -41,8 +41,8 @@ require (
 	go.uber.org/zap v1.23.0
 	golang.org/x/image v0.0.0-20190802002840-cff245a6509b
 	golang.org/x/sync v0.1.0
-	google.golang.org/api v0.102.0
-	google.golang.org/genproto v0.0.0-20221024183307-1bc688fe9f3e
+	google.golang.org/api v0.103.0
+	google.golang.org/genproto v0.0.0-20221027153422-115e99e71e1c
 	google.golang.org/grpc v1.50.1
 	google.golang.org/protobuf v1.28.1
 	gopkg.in/yaml.v2 v2.4.0
@@ -53,12 +53,12 @@ require (
 )
 
 require (
-	cloud.google.com/go v0.104.0 // indirect
+	cloud.google.com/go v0.105.0 // indirect
 	cloud.google.com/go/compute v1.12.1 // indirect
 	cloud.google.com/go/compute/metadata v0.2.1 // indirect
 	cloud.google.com/go/firestore v1.6.1 // indirect
-	cloud.google.com/go/iam v0.3.0 // indirect
-	cloud.google.com/go/storage v1.26.0 // indirect
+	cloud.google.com/go/iam v0.6.0 // indirect
+	cloud.google.com/go/storage v1.27.0 // indirect
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.4.9 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.12.17 // indirect
@@ -86,7 +86,7 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.2.0 // indirect
-	github.com/googleapis/gax-go/v2 v2.6.0 // indirect
+	github.com/googleapis/gax-go/v2 v2.7.0 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
@@ -104,7 +104,7 @@ require (
 	github.com/rogpeppe/go-internal v1.8.1 // indirect
 	github.com/sendgrid/rest v2.6.9+incompatible // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
-	go.opencensus.io v0.23.0 // indirect
+	go.opencensus.io v0.24.0 // indirect
 	go.opentelemetry.io/otel v1.10.0 // indirect
 	go.opentelemetry.io/otel/trace v1.10.0 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
