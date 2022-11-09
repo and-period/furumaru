@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
 	"gorm.io/gorm"
@@ -72,7 +71,7 @@ type Product interface {
 	Get(ctx context.Context, productID string, fields ...string) (*entity.Product, error)
 	Create(ctx context.Context, product *entity.Product) error
 	Update(ctx context.Context, productID string, params *UpdateProductParams) error
-	UpdateMedia(ctx context.Context, productID string, originURL string, images common.Images) error
+	UpdateMedia(ctx context.Context, productID string, set func(media entity.MultiProductMedia) bool) error
 	Delete(ctx context.Context, productID string) error
 }
 

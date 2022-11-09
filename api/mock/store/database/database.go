@@ -8,7 +8,6 @@ import (
 	context "context"
 	reflect "reflect"
 
-	common "github.com/and-period/furumaru/api/internal/common"
 	database "github.com/and-period/furumaru/api/internal/store/database"
 	entity "github.com/and-period/furumaru/api/internal/store/entity"
 	gomock "github.com/golang/mock/gomock"
@@ -431,17 +430,17 @@ func (mr *MockProductMockRecorder) Update(ctx, productID, params interface{}) *g
 }
 
 // UpdateMedia mocks base method.
-func (m *MockProduct) UpdateMedia(ctx context.Context, productID, originURL string, images common.Images) error {
+func (m *MockProduct) UpdateMedia(ctx context.Context, productID string, set func(entity.MultiProductMedia) bool) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateMedia", ctx, productID, originURL, images)
+	ret := m.ctrl.Call(m, "UpdateMedia", ctx, productID, set)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // UpdateMedia indicates an expected call of UpdateMedia.
-func (mr *MockProductMockRecorder) UpdateMedia(ctx, productID, originURL, images interface{}) *gomock.Call {
+func (mr *MockProductMockRecorder) UpdateMedia(ctx, productID, set interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateMedia", reflect.TypeOf((*MockProduct)(nil).UpdateMedia), ctx, productID, originURL, images)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateMedia", reflect.TypeOf((*MockProduct)(nil).UpdateMedia), ctx, productID, set)
 }
 
 // MockProductType is a mock of ProductType interface.

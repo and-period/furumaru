@@ -223,7 +223,11 @@ type UpdateProductMedia struct {
 }
 
 type UpdateProductMediaInput struct {
-	ProductID string        `validate:"required"`
+	ProductID string                     `validate:"required"`
+	Images    []*UpdateProductMediaImage `validate:"omitempty,dive,required,unique=URL"`
+}
+
+type UpdateProductMediaImage struct {
 	OriginURL string        `validate:"required"`
 	Images    common.Images `validate:""`
 }
