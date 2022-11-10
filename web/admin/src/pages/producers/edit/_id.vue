@@ -72,9 +72,11 @@ export default defineComponent({
       postalCode: '',
       storeName: '',
       headerUrl: '',
+      headers: [],
       createdAt: -1,
       updatedAt: -1,
       thumbnailUrl: '',
+      thumbnails: [],
       email: '',
     })
 
