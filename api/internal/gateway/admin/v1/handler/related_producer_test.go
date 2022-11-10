@@ -64,7 +64,7 @@ func TestFilterAccessRelateProducers(t *testing.T) {
 	}
 }
 
-func TestListRelateProducerss(t *testing.T) {
+func TestListRelateProducers(t *testing.T) {
 	t.Parallel()
 
 	in := &user.ListProducersInput{
@@ -146,7 +146,9 @@ func TestListRelateProducerss(t *testing.T) {
 							FirstnameKana: "かんりしゃ",
 							StoreName:     "&.農園",
 							ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+							Thumbnails:    []*response.Image{},
 							HeaderURL:     "https://and-period.jp/header.png",
+							Headers:       []*response.Image{},
 							Email:         "test-producer@and-period.jp",
 							PhoneNumber:   "+819012345678",
 							PostalCode:    "1000014",
@@ -164,7 +166,9 @@ func TestListRelateProducerss(t *testing.T) {
 							FirstnameKana: "かんりしゃ",
 							StoreName:     "&.農園",
 							ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+							Thumbnails:    []*response.Image{},
 							HeaderURL:     "https://and-period.jp/header.png",
+							Headers:       []*response.Image{},
 							Email:         "test-producer@and-period.jp",
 							PhoneNumber:   "+819012345678",
 							PostalCode:    "1000014",

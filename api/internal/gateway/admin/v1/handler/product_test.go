@@ -6,9 +6,11 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -193,8 +195,20 @@ func TestListProducts(t *testing.T) {
 			ItemUnit:        "袋",
 			ItemDescription: "1袋あたり100gのじゃがいも",
 			Media: entity.MultiProductMedia{
-				{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
-				{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+				{
+					URL:         "https://and-period.jp/thumbnail01.png",
+					IsThumbnail: true,
+					Images: common.Images{
+						{URL: "https://and-period.jp/thumbnail01_240.png", Size: common.ImageSizeSmall},
+						{URL: "https://and-period.jp/thumbnail01_675.png", Size: common.ImageSizeMedium},
+						{URL: "https://and-period.jp/thumbnail01_900.png", Size: common.ImageSizeLarge},
+					},
+				},
+				{
+					URL:         "https://and-period.jp/thumbnail02.png",
+					IsThumbnail: false,
+					Images:      common.Images{},
+				},
 			},
 			Price:            400,
 			DeliveryType:     entity.DeliveryTypeNormal,
@@ -299,8 +313,20 @@ func TestListProducts(t *testing.T) {
 							ItemUnit:        "袋",
 							ItemDescription: "1袋あたり100gのじゃがいも",
 							Media: []*response.ProductMedia{
-								{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
-								{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+								{
+									URL:         "https://and-period.jp/thumbnail01.png",
+									IsThumbnail: true,
+									Images: []*response.Image{
+										{URL: "https://and-period.jp/thumbnail01_240.png", Size: int32(service.ImageSizeSmall)},
+										{URL: "https://and-period.jp/thumbnail01_675.png", Size: int32(service.ImageSizeMedium)},
+										{URL: "https://and-period.jp/thumbnail01_900.png", Size: int32(service.ImageSizeLarge)},
+									},
+								},
+								{
+									URL:         "https://and-period.jp/thumbnail02.png",
+									IsThumbnail: false,
+									Images:      []*response.Image{},
+								},
 							},
 							Price:            400,
 							DeliveryType:     1,
@@ -464,8 +490,20 @@ func TestGetProduct(t *testing.T) {
 		ItemUnit:        "袋",
 		ItemDescription: "1袋あたり100gのじゃがいも",
 		Media: entity.MultiProductMedia{
-			{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
-			{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+			{
+				URL:         "https://and-period.jp/thumbnail01.png",
+				IsThumbnail: true,
+				Images: common.Images{
+					{URL: "https://and-period.jp/thumbnail01_240.png", Size: common.ImageSizeSmall},
+					{URL: "https://and-period.jp/thumbnail01_675.png", Size: common.ImageSizeMedium},
+					{URL: "https://and-period.jp/thumbnail01_900.png", Size: common.ImageSizeLarge},
+				},
+			},
+			{
+				URL:         "https://and-period.jp/thumbnail02.png",
+				IsThumbnail: false,
+				Images:      common.Images{},
+			},
 		},
 		Price:            400,
 		DeliveryType:     entity.DeliveryTypeNormal,
@@ -548,8 +586,20 @@ func TestGetProduct(t *testing.T) {
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
 						Media: []*response.ProductMedia{
-							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
-							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+							{
+								URL:         "https://and-period.jp/thumbnail01.png",
+								IsThumbnail: true,
+								Images: []*response.Image{
+									{URL: "https://and-period.jp/thumbnail01_240.png", Size: int32(service.ImageSizeSmall)},
+									{URL: "https://and-period.jp/thumbnail01_675.png", Size: int32(service.ImageSizeMedium)},
+									{URL: "https://and-period.jp/thumbnail01_900.png", Size: int32(service.ImageSizeLarge)},
+								},
+							},
+							{
+								URL:         "https://and-period.jp/thumbnail02.png",
+								IsThumbnail: false,
+								Images:      []*response.Image{},
+							},
 						},
 						Price:            400,
 						DeliveryType:     1,
@@ -792,8 +842,16 @@ func TestCreateProduct(t *testing.T) {
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
 						Media: []*response.ProductMedia{
-							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
-							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+							{
+								URL:         "https://and-period.jp/thumbnail01.png",
+								IsThumbnail: true,
+								Images:      []*response.Image{},
+							},
+							{
+								URL:         "https://and-period.jp/thumbnail02.png",
+								IsThumbnail: false,
+								Images:      []*response.Image{},
+							},
 						},
 						Price:            400,
 						DeliveryType:     1,
@@ -865,8 +923,16 @@ func TestCreateProduct(t *testing.T) {
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
 						Media: []*response.ProductMedia{
-							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
-							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+							{
+								URL:         "https://and-period.jp/thumbnail01.png",
+								IsThumbnail: true,
+								Images:      []*response.Image{},
+							},
+							{
+								URL:         "https://and-period.jp/thumbnail02.png",
+								IsThumbnail: false,
+								Images:      []*response.Image{},
+							},
 						},
 						Price:            400,
 						DeliveryType:     1,

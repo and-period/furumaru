@@ -31,8 +31,9 @@ type Product struct {
 
 // ProductMedia - 商品メディア情報
 type ProductMedia struct {
-	URL         string `json:"url"`         // メディアURL
-	IsThumbnail bool   `json:"isThumbnail"` // サムネイルとして使用
+	URL         string   `json:"url"`         // メディアURL
+	IsThumbnail bool     `json:"isThumbnail"` // サムネイルとして使用
+	Images      []*Image `json:"images"`      // リサイズ済み画像一覧
 }
 
 type ProductResponse struct {

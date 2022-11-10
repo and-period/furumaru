@@ -390,8 +390,16 @@ func TestListOrders(t *testing.T) {
 									Quantity:  1,
 									Weight:    1.0,
 									Media: []*response.ProductMedia{
-										{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
-										{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+										{
+											URL:         "https://and-period.jp/thumbnail01.png",
+											IsThumbnail: true,
+											Images:      []*response.Image{},
+										},
+										{
+											URL:         "https://and-period.jp/thumbnail02.png",
+											IsThumbnail: false,
+											Images:      []*response.Image{},
+										},
 									},
 								},
 							},
@@ -724,8 +732,16 @@ func TestGetOrder(t *testing.T) {
 								Quantity:  1,
 								Weight:    1.0,
 								Media: []*response.ProductMedia{
-									{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
-									{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+									{
+										URL:         "https://and-period.jp/thumbnail01.png",
+										IsThumbnail: true,
+										Images:      []*response.Image{},
+									},
+									{
+										URL:         "https://and-period.jp/thumbnail02.png",
+										IsThumbnail: false,
+										Images:      []*response.Image{},
+									},
 								},
 							},
 						},
