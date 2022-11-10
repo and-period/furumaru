@@ -2408,11 +2408,23 @@ export interface ProducerResponse {
      */
     'thumbnailUrl': string;
     /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
+     * @memberof ProducerResponse
+     */
+    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
+    /**
      * ヘッダー画像URL
      * @type {string}
      * @memberof ProducerResponse
      */
     'headerUrl': string;
+    /**
+     * リサイズ済みヘッダー画像URL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>}
+     * @memberof ProducerResponse
+     */
+    'headers': Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>;
     /**
      * メールアドレス
      * @type {string}
@@ -2536,17 +2548,29 @@ export interface ProducersResponseProducersInner {
      */
     'storeName': string;
     /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof ProducersResponseProducersInner
+     */
+    'thumbnailUrl': string;
+    /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
+     * @memberof ProducersResponseProducersInner
+     */
+    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
+    /**
      * ヘッダー画像URL
      * @type {string}
      * @memberof ProducersResponseProducersInner
      */
     'headerUrl': string;
     /**
-     * サムネイルURL
-     * @type {string}
+     * リサイズ済みヘッダー画像URL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>}
      * @memberof ProducersResponseProducersInner
      */
-    'thumbnailUrl': string;
+    'headers': Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>;
     /**
      * メールアドレス
      * @type {string}
@@ -2706,10 +2730,10 @@ export interface ProductResponse {
     'iconUrl': string;
     /**
      * 
-     * @type {Array<V1LiveResponseProductsInnerMediaInner>}
+     * @type {Array<ProductsResponseProductsInnerMediaInner>}
      * @memberof ProductResponse
      */
-    'media': Array<V1LiveResponseProductsInnerMediaInner>;
+    'media': Array<ProductsResponseProductsInnerMediaInner>;
     /**
      * 販売価格
      * @type {number}
@@ -3005,10 +3029,10 @@ export interface ProductsResponseProductsInner {
     'iconUrl': string;
     /**
      * 
-     * @type {Array<V1LiveResponseProductsInnerMediaInner>}
+     * @type {Array<ProductsResponseProductsInnerMediaInner>}
      * @memberof ProductsResponseProductsInner
      */
-    'media': Array<V1LiveResponseProductsInnerMediaInner>;
+    'media': Array<ProductsResponseProductsInnerMediaInner>;
     /**
      * 販売価格
      * @type {number}
@@ -3063,6 +3087,50 @@ export interface ProductsResponseProductsInner {
      * @memberof ProductsResponseProductsInner
      */
     'updatedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface ProductsResponseProductsInnerMediaInner
+ */
+export interface ProductsResponseProductsInnerMediaInner {
+    /**
+     * メディアURL
+     * @type {string}
+     * @memberof ProductsResponseProductsInnerMediaInner
+     */
+    'url': string;
+    /**
+     * サムネイルとして使用(1つまで)
+     * @type {boolean}
+     * @memberof ProductsResponseProductsInnerMediaInner
+     */
+    'isThumbnail': boolean;
+    /**
+     * リサイズ済み画像URL一覧
+     * @type {Array<ProductsResponseProductsInnerMediaInnerImagesInner>}
+     * @memberof ProductsResponseProductsInnerMediaInner
+     */
+    'images': Array<ProductsResponseProductsInnerMediaInnerImagesInner>;
+}
+/**
+ * 
+ * @export
+ * @interface ProductsResponseProductsInnerMediaInnerImagesInner
+ */
+export interface ProductsResponseProductsInnerMediaInnerImagesInner {
+    /**
+     * リサイズ済み画像URL
+     * @type {string}
+     * @memberof ProductsResponseProductsInnerMediaInnerImagesInner
+     */
+    'url': string;
+    /**
+     * 画像サイズ(1:240px,2:675px,3:900px)
+     * @type {number}
+     * @memberof ProductsResponseProductsInnerMediaInnerImagesInner
+     */
+    'size': number;
 }
 /**
  * 
