@@ -51,6 +51,16 @@ func (h *handler) uploadProducerHeader(ctx *gin.Context) {
 	h.uploadFile(ctx, filename, h.media.GenerateProducerHeader)
 }
 
+func (h *handler) uploadProductImage(ctx *gin.Context) {
+	const filename = "image"
+	h.uploadFile(ctx, filename, h.media.GenerateProductMediaImage)
+}
+
+func (h *handler) uploadProductVideo(ctx *gin.Context) {
+	const filename = "video"
+	h.uploadFile(ctx, filename, h.media.GenerateProductMediaVideo)
+}
+
 func (h *handler) uploadFile(
 	ctx *gin.Context,
 	filename string,
@@ -98,26 +108,6 @@ type uploadRegulation struct {
 	filename string
 	maxSize  int64
 	formats  []string
-}
-
-func (h *handler) uploadProductImage(ctx *gin.Context) {
-	reg := &uploadRegulation{
-		dir:      "products/image",
-		filename: "image",
-		maxSize:  10 << 20, // 10MB
-		formats:  []string{"image/png", "image/jpeg"},
-	}
-	h.uploadFileData(ctx, reg)
-}
-
-func (h *handler) uploadProductVideo(ctx *gin.Context) {
-	reg := &uploadRegulation{
-		dir:      "products/video",
-		filename: "video",
-		maxSize:  200 << 20, // 200MB
-		formats:  []string{"video/mp4"},
-	}
-	h.uploadFileData(ctx, reg)
 }
 
 func (h *handler) uploadProductTypeIcon(ctx *gin.Context) {

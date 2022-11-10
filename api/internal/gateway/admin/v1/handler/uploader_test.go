@@ -238,15 +238,15 @@ func TestUploadProductImage(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.storage.EXPECT().
-					Upload(gomock.Any(), gomock.Any(), gomock.Any()).
-					Return("https://and-period.jp/header.png", nil)
+				mocks.media.EXPECT().
+					GenerateProductMediaImage(gomock.Any(), gomock.Any()).
+					Return("https://and-period.jp/image.png", nil)
 			},
 			field: "image",
 			expect: &testResponse{
 				code: http.StatusOK,
 				body: &response.UploadImageResponse{
-					URL: "https://and-period.jp/header.png",
+					URL: "https://and-period.jp/image.png",
 				},
 			},
 		},
