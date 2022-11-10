@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"testing"
@@ -8,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
@@ -16,6 +18,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestFilterAccessProduct(t *testing.T) {
@@ -739,6 +742,10 @@ func TestCreateProduct(t *testing.T) {
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(category, nil)
 				mocks.store.EXPECT().GetProductType(gomock.Any(), productTypeIn).Return(productType, nil)
+				mocks.media.EXPECT().UploadProductMedia(gomock.Any(), gomock.Any()).
+					DoAndReturn(func(ctx context.Context, in *media.UploadFileInput) (string, error) {
+						return in.URL, nil
+					}).Times(2)
 				mocks.store.EXPECT().CreateProduct(gomock.Any(), productIn).Return(product, nil)
 			},
 			options: []testOption{withRole(uentity.AdminRoleAdministrator)},
@@ -808,6 +815,10 @@ func TestCreateProduct(t *testing.T) {
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(category, nil)
 				mocks.store.EXPECT().GetProductType(gomock.Any(), productTypeIn).Return(productType, nil)
+				mocks.media.EXPECT().UploadProductMedia(gomock.Any(), gomock.Any()).
+					DoAndReturn(func(ctx context.Context, in *media.UploadFileInput) (string, error) {
+						return in.URL, nil
+					}).Times(2)
 				mocks.store.EXPECT().CreateProduct(gomock.Any(), productIn).Return(product, nil)
 			},
 			options: []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("coordinator-id")},
@@ -1073,11 +1084,50 @@ func TestCreateProduct(t *testing.T) {
 			},
 		},
 		{
+			name: "failed to upload product media",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(category, nil)
+				mocks.store.EXPECT().GetProductType(gomock.Any(), productTypeIn).Return(productType, nil)
+				mocks.media.EXPECT().UploadProductMedia(gomock.Any(), gomock.Any()).Return("", assert.AnError).AnyTimes()
+			},
+			req: &request.CreateProductRequest{
+				Name:            "新鮮なじゃがいも",
+				Description:     "新鮮なじゃがいもをお届けします。",
+				Public:          true,
+				ProducerID:      "producer-id",
+				CategoryID:      "category-id",
+				TypeID:          "product-type-id",
+				Inventory:       100,
+				Weight:          1.3,
+				ItemUnit:        "袋",
+				ItemDescription: "1袋あたり100gのじゃがいも",
+				Media: []*request.CreateProductMedia{
+					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+				},
+				Price:            400,
+				DeliveryType:     1,
+				Box60Rate:        50,
+				Box80Rate:        40,
+				Box100Rate:       30,
+				OriginPrefecture: "滋賀県",
+				OriginCity:       "彦根市",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
 			name: "failed to create product",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(category, nil)
 				mocks.store.EXPECT().GetProductType(gomock.Any(), productTypeIn).Return(productType, nil)
+				mocks.media.EXPECT().UploadProductMedia(gomock.Any(), gomock.Any()).
+					DoAndReturn(func(ctx context.Context, in *media.UploadFileInput) (string, error) {
+						return in.URL, nil
+					}).Times(2)
 				mocks.store.EXPECT().CreateProduct(gomock.Any(), productIn).Return(nil, errmock)
 			},
 			req: &request.CreateProductRequest{
@@ -1158,6 +1208,10 @@ func TestUpdateProduct(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.media.EXPECT().UploadProductMedia(gomock.Any(), gomock.Any()).
+					DoAndReturn(func(ctx context.Context, in *media.UploadFileInput) (string, error) {
+						return in.URL, nil
+					}).Times(2)
 				mocks.store.EXPECT().UpdateProduct(gomock.Any(), in).Return(nil)
 			},
 			productID: "product-id",
@@ -1191,6 +1245,43 @@ func TestUpdateProduct(t *testing.T) {
 		{
 			name: "failed to update product",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.media.EXPECT().UploadProductMedia(gomock.Any(), gomock.Any()).Return("", assert.AnError).AnyTimes()
+			},
+			productID: "product-id",
+			req: &request.UpdateProductRequest{
+				Name:            "新鮮なじゃがいも",
+				Description:     "新鮮なじゃがいもをお届けします。",
+				Public:          true,
+				ProducerID:      "producer-id",
+				CategoryID:      "category-id",
+				TypeID:          "product-type-id",
+				Inventory:       100,
+				Weight:          1.3,
+				ItemUnit:        "袋",
+				ItemDescription: "1袋あたり100gのじゃがいも",
+				Media: []*request.UpdateProductMedia{
+					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+				},
+				Price:            400,
+				DeliveryType:     1,
+				Box60Rate:        50,
+				Box80Rate:        40,
+				Box100Rate:       30,
+				OriginPrefecture: "滋賀県",
+				OriginCity:       "彦根市",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to update product",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.media.EXPECT().UploadProductMedia(gomock.Any(), gomock.Any()).
+					DoAndReturn(func(ctx context.Context, in *media.UploadFileInput) (string, error) {
+						return in.URL, nil
+					}).Times(2)
 				mocks.store.EXPECT().UpdateProduct(gomock.Any(), in).Return(errmock)
 			},
 			productID: "product-id",

@@ -11,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -271,15 +272,30 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		return
 	}
 
-	media := make([]*store.CreateProductMedia, len(req.Media))
+	productMedia := make([]*store.CreateProductMedia, len(req.Media))
 	for i := range req.Media {
-		media[i] = &store.CreateProductMedia{
-			URL:         req.Media[i].URL,
-			IsThumbnail: req.Media[i].IsThumbnail,
-		}
+		i := i
+		eg.Go(func() error {
+			in := &media.UploadFileInput{
+				URL: req.Media[i].URL,
+			}
+			url, err := h.media.UploadProductMedia(ectx, in)
+			if err != nil {
+				return err
+			}
+			productMedia[i] = &store.CreateProductMedia{
+				URL:         url,
+				IsThumbnail: req.Media[i].IsThumbnail,
+			}
+			return nil
+		})
 	}
-	weight, weightUnit := service.NewProductWeightFromRequest(req.Weight)
+	if err := eg.Wait(); err != nil {
+		httpError(ctx, err)
+		return
+	}
 
+	weight, weightUnit := service.NewProductWeightFromRequest(req.Weight)
 	in := &store.CreateProductInput{
 		ProducerID:       req.ProducerID,
 		CategoryID:       req.CategoryID,
@@ -293,7 +309,7 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		Item:             1, // 1固定
 		ItemUnit:         req.ItemUnit,
 		ItemDescription:  req.ItemDescription,
-		Media:            media,
+		Media:            productMedia,
 		Price:            req.Price,
 		DeliveryType:     service.DeliveryType(req.DeliveryType).StoreEntity(),
 		Box60Rate:        req.Box60Rate,
@@ -324,15 +340,31 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 		return
 	}
 
-	media := make([]*store.UpdateProductMedia, len(req.Media))
+	eg, ectx := errgroup.WithContext(ctx)
+	productMedia := make([]*store.UpdateProductMedia, len(req.Media))
 	for i := range req.Media {
-		media[i] = &store.UpdateProductMedia{
-			URL:         req.Media[i].URL,
-			IsThumbnail: req.Media[i].IsThumbnail,
-		}
+		i := i
+		eg.Go(func() error {
+			in := &media.UploadFileInput{
+				URL: req.Media[i].URL,
+			}
+			url, err := h.media.UploadProductMedia(ectx, in)
+			if err != nil {
+				return err
+			}
+			productMedia[i] = &store.UpdateProductMedia{
+				URL:         url,
+				IsThumbnail: req.Media[i].IsThumbnail,
+			}
+			return nil
+		})
 	}
-	weight, weightUnit := service.NewProductWeightFromRequest(req.Weight)
+	if err := eg.Wait(); err != nil {
+		httpError(ctx, err)
+		return
+	}
 
+	weight, weightUnit := service.NewProductWeightFromRequest(req.Weight)
 	in := &store.UpdateProductInput{
 		ProductID:        util.GetParam(ctx, "productId"),
 		ProducerID:       req.ProducerID,
@@ -347,7 +379,7 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 		Item:             1, // 1固定
 		ItemUnit:         req.ItemUnit,
 		ItemDescription:  req.ItemDescription,
-		Media:            media,
+		Media:            productMedia,
 		Price:            req.Price,
 		DeliveryType:     service.DeliveryType(req.DeliveryType).StoreEntity(),
 		Box60Rate:        req.Box60Rate,
