@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
@@ -95,7 +96,11 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 		return nil, exception.InternalError(err)
 	}
 	s.logger.Debug("Create producer", zap.String("producerId", producer.ID), zap.String("password", password))
-	s.waitGroup.Add(1)
+	s.waitGroup.Add(2)
+	go func() {
+		defer s.waitGroup.Done()
+		s.resizeProducer(context.Background(), producer.ID, in.ThumbnailURL, in.HeaderURL)
+	}()
 	go func() {
 		defer s.waitGroup.Done()
 		err := s.notifyRegisterAdmin(context.Background(), producer.ID, password)
@@ -108,6 +113,10 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 
 func (s *service) UpdateProducer(ctx context.Context, in *user.UpdateProducerInput) error {
 	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	producer, err := s.db.Producer.Get(ctx, in.ProducerID)
+	if err != nil {
 		return exception.InternalError(err)
 	}
 	params := &database.UpdateProducerParams{
@@ -125,8 +134,22 @@ func (s *service) UpdateProducer(ctx context.Context, in *user.UpdateProducerInp
 		AddressLine1:  in.AddressLine1,
 		AddressLine2:  in.AddressLine2,
 	}
-	err := s.db.Producer.Update(ctx, in.ProducerID, params)
-	return exception.InternalError(err)
+	if err := s.db.Producer.Update(ctx, in.ProducerID, params); err != nil {
+		return exception.InternalError(err)
+	}
+	s.waitGroup.Add(1)
+	go func() {
+		defer s.waitGroup.Done()
+		var thumbnailURL, headerURL string
+		if producer.ThumbnailURL != in.ThumbnailURL {
+			thumbnailURL = in.ThumbnailURL
+		}
+		if producer.HeaderURL != in.HeaderURL {
+			headerURL = in.HeaderURL
+		}
+		s.resizeProducer(context.Background(), producer.ID, thumbnailURL, headerURL)
+	}()
+	return nil
 }
 
 func (s *service) UpdateProducerEmail(ctx context.Context, in *user.UpdateProducerEmailInput) error {
@@ -235,4 +258,38 @@ func (s *service) DeleteProducer(ctx context.Context, in *user.DeleteProducerInp
 	}
 	err := s.db.Producer.Delete(ctx, in.ProducerID, s.deleteCognitoAdmin(in.ProducerID))
 	return exception.InternalError(err)
+}
+
+func (s *service) resizeProducer(ctx context.Context, producerID, thumbnailURL, headerURL string) {
+	s.waitGroup.Add(2)
+	go func() {
+		defer s.waitGroup.Done()
+		if thumbnailURL == "" {
+			return
+		}
+		in := &media.ResizeFileInput{
+			TargetID: producerID,
+			URLs:     []string{thumbnailURL},
+		}
+		if err := s.media.ResizeProducerThumbnail(ctx, in); err != nil {
+			s.logger.Error("Failed to resize producer thumbnail",
+				zap.String("producerId", producerID), zap.Error(err),
+			)
+		}
+	}()
+	go func() {
+		defer s.waitGroup.Done()
+		if headerURL == "" {
+			return
+		}
+		in := &media.ResizeFileInput{
+			TargetID: producerID,
+			URLs:     []string{headerURL},
+		}
+		if err := s.media.ResizeProducerHeader(ctx, in); err != nil {
+			s.logger.Error("Failed to resize producer header",
+				zap.String("producerId", producerID), zap.Error(err),
+			)
+		}
+	}()
 }
