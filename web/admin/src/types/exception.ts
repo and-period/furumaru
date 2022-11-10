@@ -55,3 +55,10 @@ export class PreconditionError<T> extends ApiBaseError<T> {
     super(message, cause)
   }
 }
+
+export class TooManyRequestsError<T> extends ApiBaseError<T> {
+  status = 429
+  constructor(public message: string, public cause?: T) {
+    super(message, cause)
+  }
+}

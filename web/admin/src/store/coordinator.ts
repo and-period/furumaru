@@ -22,10 +22,17 @@ import {
 } from '~/types/exception'
 
 export const useCoordinatorStore = defineStore('Coordinator', {
-  state: () => ({
-    coordinators: [] as CoordinatorsResponse['coordinators'],
-    totalItems: 0,
-  }),
+  state: () => {
+    const apiClient = (token: string) => {
+      const factory = new ApiClientFactory()
+      return factory.create(CoordinatorApi, token)
+    }
+    return {
+      coordinators: [] as CoordinatorsResponse['coordinators'],
+      totalItems: 0,
+      apiClient,
+    }
+  },
   actions: {
     async fetchCoordinators(
       limit: number = 20,
@@ -288,55 +295,26 @@ export const useCoordinatorStore = defineStore('Coordinator', {
         throw new InternalServerError(error)
       }
     },
-    // async deleteNotification(id: string): Promise<void> {
-    //   const commonStore = useCommonStore()
-    //   try {
-    //     const authStore = useAuthStore()
-    //     const accessToken = authStore.accessToken
-    //     if (!accessToken) {
-    //       return Promise.reject(new Error('認証エラー'))
-    //     }
 
-    //     const factory = new ApiClientFactory()
-    //     const coordinatorApiClient = factory.create(CoordinatorApi,accessToken)
-    //     // await coordinatorApiClient.v1DeleteCoordinator(id)
-    //     commonStore.addSnackbar({
-    //       message: '品物削除が完了しました',
-    //       color: 'info',
-    //     })
-    //   } catch (error) {
-    //     if (axios.isAxiosError(error)) {
-    //       if (!error.response) {
-    //         return Promise.reject(new ConnectionError(error))
-    //       }
-    //       const statusCode = error.response.status
-    //       switch (statusCode) {
-    //         case 400:
-    //           return Promise.reject(
-    //             new ValidationError(
-    //               '削除できませんでした。管理者にお問い合わせしてください。',
-    //               error
-    //             )
-    //           )
-    //         case 401:
-    //           return Promise.reject(
-    //             new AuthError('認証エラー。再度ログインをしてください。', error)
-    //           )
-    //         case 404:
-    //           return Promise.reject(
-    //             new NotFoundError(
-    //               '削除するお知らせが見つかりませんでした。',
-    //               error
-    //             )
-    //           )
-    //         case 500:
-    //         default:
-    //           return Promise.reject(new InternalServerError(error))
-    //       }
-    //     }
-    //     throw new InternalServerError(error)
-    //   }
-    //   this.fetchNotifications()
-    // },
+    /**
+     * コーディーネーターを削除する非同期関数
+     * @param id
+     * @returns
+     */
+    async deleteCoordinator(id: string) {
+      try {
+        const token = this.$nuxt.$auth.accessToken
+        if (!token) {
+          return Promise.reject(
+            new AuthError('認証エラー。再度ログインをしてください。')
+          )
+        }
+        await this.apiClient(token).v1DeleteCoordinator(id)
+      } catch (error) {
+        return this.errorHandler(error, {
+          404: 'このコーディーネータは存在しません。',
+        })
+      }
+    },
   },
 })
