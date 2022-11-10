@@ -4,6 +4,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
@@ -19,6 +20,7 @@ type Params struct {
 	Database  *database.Database
 	User      user.Service
 	Messenger messenger.Service
+	Media     media.Service
 }
 
 type service struct {
@@ -30,6 +32,7 @@ type service struct {
 	db          *database.Database
 	user        user.Service
 	messenger   messenger.Service
+	media       media.Service
 }
 
 type options struct {
@@ -60,5 +63,6 @@ func NewService(params *Params, opts ...Option) store.Service {
 		db:          params.Database,
 		user:        params.User,
 		messenger:   params.Messenger,
+		media:       params.Media,
 	}
 }
