@@ -5,17 +5,20 @@ import { PiniaPluginContext } from 'pinia'
 
 import {
   AuthError,
+  CancelledError,
   ConflictError,
   InternalServerError,
   NotFoundError,
+  NotImplementedError,
+  PermissionError,
   PreconditionError,
+  ServiceUnavailableError,
   TooManyRequestsError,
   ValidationError,
 } from '~/types/exception'
 
-const STATUS_CODES = [
-  400, 401, 403, 404, 409, 412, 429, 499, 500, 501, 502,
-] as const
+// メッセージを変更できるステータスコードの一覧（500系のエラーはシステム固有のメッセージを利用する）
+const STATUS_CODES = [400, 401, 403, 404, 409, 412, 429, 499] as const
 
 type StatusCode = typeof STATUS_CODES[number]
 
@@ -63,6 +66,13 @@ function apiErrorHandler({ store }: PiniaPluginContext) {
               error
             )
           )
+        case 403:
+          return Promise.reject(
+            new PermissionError(
+              customMessage || 'この操作を実施する権限がありません。',
+              error
+            )
+          )
         case 404:
           return Promise.reject(
             new NotFoundError(
@@ -91,14 +101,23 @@ function apiErrorHandler({ store }: PiniaPluginContext) {
               error
             )
           )
-        case 500:
+        case 499:
+          return Promise.reject(
+            new CancelledError(
+              customMessage || '正常に処理を完了できませんでした。',
+              error
+            )
+          )
         case 501:
+          return Promise.reject(new NotImplementedError(error))
         case 503:
+          return Promise.reject(new ServiceUnavailableError(error))
+        case 500:
         default:
           return Promise.reject(new InternalServerError(error))
       }
     }
-    throw new InternalServerError(error)
+    return Promise.reject(new InternalServerError(error))
   }
 
   store.errorHandler = markRaw(errorHandler)
