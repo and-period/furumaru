@@ -1,87 +1,107 @@
 <template>
   <div>
     <v-card-title>コーディネーター登録</v-card-title>
-    <v-card elevation="0">
-      <v-card-text>
-        <v-text-field
-          v-model="v$.companyName.$model"
-          :error-messages="getErrorMessage(v$.companyName.$errors)"
-          label="会社名"
-        />
-        <v-text-field
-          v-model="v$.storeName.$model"
-          :error-messages="getErrorMessage(v$.storeName.$errors)"
-          label="店舗名"
-        />
-        <div class="mb-2 d-flex">
-          <the-profile-select-form
-            class="mr-4 flex-grow-1 flex-shrink-1"
-            :img-url="formData.thumbnailUrl"
-            :error="thumbnailUploadStatus.error"
-            :message="thumbnailUploadStatus.message"
-            @update:file="handleUpdateThumbnail"
-          />
-          <the-header-select-form
-            class="flex-grow-1 flex-shrink-1"
-            :img-url="formData.headerUrl"
-            :error="headerUploadStatus.error"
-            :message="headerUploadStatus.message"
-            @update:file="handleUpdateHeader"
-          />
-        </div>
-        <div class="d-flex">
-          <v-text-field
-            v-model="v$.lastname.$model"
-            :error-messages="getErrorMessage(v$.lastname.$errors)"
-            class="mr-4"
-            label="コーディネーター:姓"
-          />
-          <v-text-field
-            v-model="v$.firstname.$model"
-            :error-messages="getErrorMessage(v$.firstname.$errors)"
-            label="コーディネーター:名"
-          />
-        </div>
-        <div class="d-flex">
-          <v-text-field
-            v-model="v$.lastnameKana.$model"
-            :error-messages="getErrorMessage(v$.lastnameKana.$errors)"
-            label="コーディネーター:姓（ふりがな）"
-          />
-          <v-text-field
-            v-model="v$.firstnameKana.$model"
-            :error-messages="getErrorMessage(v$.firstnameKana.$errors)"
-            class="mr-4"
-            label="コーディネーター:名（ふりがな）"
-          />
-        </div>
-        <v-text-field
-          v-model="v$.email.$model"
-          label="連絡先（Email）"
-          :error-messages="getErrorMessage(v$.email.$errors)"
-        />
-        <v-text-field
-          v-model="v$.phoneNumber.$model"
-          :error-messages="getErrorMessage(v$.phoneNumber.$errors)"
-          type="tel"
-          label="連絡先（電話番号）"
-        />
 
-        <the-address-form
-          :postal-code.sync="formData.postalCode"
-          :prefecture.sync="formData.prefecture"
-          :city.sync="formData.city"
-          :address-line1.sync="formData.addressLine1"
-          :address-line2.sync="formData.addressLine2"
-          :loading="searchLoading"
-          :error-message="searchErrorMessage"
-          @click:search="searchAddress"
-        />
-      </v-card-text>
-      <v-card-actions>
-        <v-btn block outlined color="primary" @click="handleSubmit">登録</v-btn>
-      </v-card-actions>
-    </v-card>
+    <v-tabs v-model="tab" grow color="dark">
+      <v-tabs-slider color="accent"></v-tabs-slider>
+      <v-tab
+        v-for="tabItem in tabItems"
+        :key="tabItem.value"
+        :href="`#${tabItem.value}`"
+      >
+        {{ tabItem.name }}
+      </v-tab>
+    </v-tabs>
+
+    <v-tabs-items v-model="tab">
+      <v-tab-item value="coordinators">
+        <v-card elevation="0">
+          <v-card-text>
+            <v-text-field
+              v-model="v$.companyName.$model"
+              :error-messages="getErrorMessage(v$.companyName.$errors)"
+              label="会社名"
+            />
+            <v-text-field
+              v-model="v$.storeName.$model"
+              :error-messages="getErrorMessage(v$.storeName.$errors)"
+              label="店舗名"
+            />
+            <div class="mb-2 d-flex">
+              <the-profile-select-form
+                class="mr-4 flex-grow-1 flex-shrink-1"
+                :img-url="formData.thumbnailUrl"
+                :error="thumbnailUploadStatus.error"
+                :message="thumbnailUploadStatus.message"
+                @update:file="handleUpdateThumbnail"
+              />
+              <the-header-select-form
+                class="flex-grow-1 flex-shrink-1"
+                :img-url="formData.headerUrl"
+                :error="headerUploadStatus.error"
+                :message="headerUploadStatus.message"
+                @update:file="handleUpdateHeader"
+              />
+            </div>
+            <div class="d-flex">
+              <v-text-field
+                v-model="v$.lastname.$model"
+                :error-messages="getErrorMessage(v$.lastname.$errors)"
+                class="mr-4"
+                label="コーディネーター:姓"
+              />
+              <v-text-field
+                v-model="v$.firstname.$model"
+                :error-messages="getErrorMessage(v$.firstname.$errors)"
+                label="コーディネーター:名"
+              />
+            </div>
+            <div class="d-flex">
+              <v-text-field
+                v-model="v$.lastnameKana.$model"
+                :error-messages="getErrorMessage(v$.lastnameKana.$errors)"
+                label="コーディネーター:姓（ふりがな）"
+              />
+              <v-text-field
+                v-model="v$.firstnameKana.$model"
+                :error-messages="getErrorMessage(v$.firstnameKana.$errors)"
+                class="mr-4"
+                label="コーディネーター:名（ふりがな）"
+              />
+            </div>
+            <v-text-field
+              v-model="v$.email.$model"
+              label="連絡先（Email）"
+              :error-messages="getErrorMessage(v$.email.$errors)"
+            />
+            <v-text-field
+              v-model="v$.phoneNumber.$model"
+              :error-messages="getErrorMessage(v$.phoneNumber.$errors)"
+              type="tel"
+              label="連絡先（電話番号）"
+            />
+
+            <the-address-form
+              :postal-code.sync="formData.postalCode"
+              :prefecture.sync="formData.prefecture"
+              :city.sync="formData.city"
+              :address-line1.sync="formData.addressLine1"
+              :address-line2.sync="formData.addressLine2"
+              :loading="searchLoading"
+              :error-message="searchErrorMessage"
+              @click:search="searchAddress"
+            />
+          </v-card-text>
+          <v-card-actions>
+            <v-btn block outlined color="primary" @click="handleSubmit"
+              >登録</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-tab-item>
+
+      <v-tab-item value="relationProducers"> </v-tab-item>
+    </v-tabs-items>
   </div>
 </template>
 
@@ -90,6 +110,7 @@ import {
   computed,
   defineComponent,
   reactive,
+  ref,
   useFetch,
   useRoute,
   useRouter,
@@ -108,9 +129,15 @@ import {
 import { useCoordinatorStore } from '~/store/coordinator'
 import { CoordinatorResponse } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
+import { Coordinator } from '~/types/props/coordinator'
 
 export default defineComponent({
   setup() {
+    const tab = ref<string>('customers')
+    const tabItems: Coordinator[] = [
+      { name: '基本情報', value: 'coordinators' },
+      { name: '関連生産者', value: 'relationProducers' },
+    ]
     const coordinatorStore = useCoordinatorStore()
 
     const route = useRoute()
@@ -269,6 +296,8 @@ export default defineComponent({
       thumbnailUploadStatus,
       headerUploadStatus,
       handleUpdateHeader,
+      tabItems,
+      tab,
     }
   },
 })

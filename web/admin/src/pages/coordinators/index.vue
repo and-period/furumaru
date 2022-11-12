@@ -55,34 +55,12 @@
           <template #[`item.actions`]="{ item }">
             <v-btn outlined color="primary" small @click="handleEdit(item)">
               <v-icon small>mdi-pencil</v-icon>
-              編集
-            </v-btn>
-            <v-btn
-              outlined
-              color="primary"
-              small
-              @click="openDeleteDialog(item)"
-            >
-              <v-icon small>mdi-delete</v-icon>
-              削除
+              詳細
             </v-btn>
           </template>
         </v-data-table>
       </v-card-text>
     </v-card>
-
-    <v-dialog v-model="deleteDialog" width="500">
-      <v-card>
-        <v-card-title class="text-h7"> aaaを本当に削除しますか？ </v-card-title>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="accentDarken" text @click="hideDeleteDialog">
-            キャンセル
-          </v-btn>
-          <v-btn color="primary" outlined @click="handleDelete"> 削除 </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
