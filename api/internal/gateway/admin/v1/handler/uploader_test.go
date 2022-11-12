@@ -7,6 +7,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestUploadCoordinatorThumbnail(t *testing.T) {
@@ -21,8 +22,8 @@ func TestUploadCoordinatorThumbnail(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.storage.EXPECT().
-					Upload(gomock.Any(), gomock.Any(), gomock.Any()).
+				mocks.media.EXPECT().
+					GenerateCoordinatorThumbnail(gomock.Any(), gomock.Any()).
 					Return("https://and-period.jp/thumbnail.png", nil)
 			},
 			field: "thumbnail",
@@ -39,6 +40,16 @@ func TestUploadCoordinatorThumbnail(t *testing.T) {
 			field: "",
 			expect: &testResponse{
 				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name: "failed to generate",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.media.EXPECT().GenerateCoordinatorThumbnail(gomock.Any(), gomock.Any()).Return("", assert.AnError)
+			},
+			field: "thumbnail",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
 			},
 		},
 	}
@@ -65,8 +76,8 @@ func TestUploadCoordinatorHeader(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.storage.EXPECT().
-					Upload(gomock.Any(), gomock.Any(), gomock.Any()).
+				mocks.media.EXPECT().
+					GenerateCoordinatorHeader(gomock.Any(), gomock.Any()).
 					Return("https://and-period.jp/header.png", nil)
 			},
 			field: "image",
@@ -83,6 +94,16 @@ func TestUploadCoordinatorHeader(t *testing.T) {
 			field: "",
 			expect: &testResponse{
 				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name: "failed to generate",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.media.EXPECT().GenerateCoordinatorHeader(gomock.Any(), gomock.Any()).Return("", assert.AnError)
+			},
+			field: "image",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
 			},
 		},
 	}
@@ -109,8 +130,8 @@ func TestUploadProducerThumbnail(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.storage.EXPECT().
-					Upload(gomock.Any(), gomock.Any(), gomock.Any()).
+				mocks.media.EXPECT().
+					GenerateProducerThumbnail(gomock.Any(), gomock.Any()).
 					Return("https://and-period.jp/thumbnail.png", nil)
 			},
 			field: "thumbnail",
@@ -127,6 +148,16 @@ func TestUploadProducerThumbnail(t *testing.T) {
 			field: "",
 			expect: &testResponse{
 				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name: "failed to generate",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.media.EXPECT().GenerateProducerThumbnail(gomock.Any(), gomock.Any()).Return("", assert.AnError)
+			},
+			field: "thumbnail",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
 			},
 		},
 	}
@@ -153,8 +184,8 @@ func TestUploadProducerHeader(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.storage.EXPECT().
-					Upload(gomock.Any(), gomock.Any(), gomock.Any()).
+				mocks.media.EXPECT().
+					GenerateProducerHeader(gomock.Any(), gomock.Any()).
 					Return("https://and-period.jp/header.png", nil)
 			},
 			field: "image",
@@ -171,6 +202,16 @@ func TestUploadProducerHeader(t *testing.T) {
 			field: "",
 			expect: &testResponse{
 				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name: "failed to generate",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.media.EXPECT().GenerateProducerHeader(gomock.Any(), gomock.Any()).Return("", assert.AnError)
+			},
+			field: "image",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
 			},
 		},
 	}

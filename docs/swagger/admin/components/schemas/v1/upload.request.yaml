@@ -4,14 +4,14 @@ uploadCoordinatorThumbnailRequest:
     thumbnail:
       type: string
       format: binary
-      description: 仲介者サムネイル(png,jpeg形式,10MBまで)
+      description: コーディネータサムネイル(png,jpeg形式,10MBまで)
 uploadCoordinatorHeaderRequest:
   type: object
   properties:
     image:
       type: string
       format: binary
-      description: 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
+      description: コーディネータヘッダー画像(png,jpeg形式,10MBまで)
 uploadProducerThumbnailRequest:
   type: object
   properties:

@@ -81,7 +81,7 @@ func (os Orders) UserIDs() []string {
 }
 
 func (os Orders) ProductIDs() []string {
-	res := set.New[string](len(os))
+	res := set.NewEmpty[string](len(os))
 	for i := range os {
 		res.Add(os[i].ProductIDs()...)
 	}

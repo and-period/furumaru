@@ -11,6 +11,11 @@ func TestSet_New(t *testing.T) {
 	assert.NotNil(t, New[int64](1))
 }
 
+func TestSet_NewEmpty(t *testing.T) {
+	t.Parallel()
+	assert.NotNil(t, New[int64](1))
+}
+
 func TestSet_Uniq(t *testing.T) {
 	t.Parallel()
 	values := []int64{1, 2, 2, 3, 3, 3}
@@ -63,23 +68,20 @@ func TestSet_UniqWithErr(t *testing.T) {
 
 func TestSet_Len(t *testing.T) {
 	t.Parallel()
-	values := []int64{1, 2, 2, 3, 3, 3}
-	set := New[int64](len(values)).Add(values...)
+	set := New([]int64{1, 2, 2, 3, 3, 3}...)
 	assert.Equal(t, 3, set.Len())
 }
 
 func TestSet_Reset(t *testing.T) {
 	t.Parallel()
-	values := []int64{1, 2, 2, 3, 3, 3}
-	set := New[int64](len(values)).Add(values...)
+	set := New([]int64{1, 2, 2, 3, 3, 3}...)
 	set.Reset(0)
 	assert.ElementsMatch(t, []int64{}, set.Slice())
 }
 
 func TestSet_Contains(t *testing.T) {
 	t.Parallel()
-	values := []int64{1, 2, 2, 3, 3, 3}
-	set := New[int64](len(values)).Add(values...)
+	set := New([]int64{1, 2, 2, 3, 3, 3}...)
 	assert.True(t, set.Contains(1))
 	assert.True(t, set.Contains(1, 2, 3))
 	assert.False(t, set.Contains(4))
@@ -87,7 +89,7 @@ func TestSet_Contains(t *testing.T) {
 
 func TestSet_Add(t *testing.T) {
 	t.Parallel()
-	set := New[int64](2)
+	set := NewEmpty[int64](2)
 	assert.ElementsMatch(t, []int64{}, set.Slice())
 	set.Add(1, 2)
 	assert.ElementsMatch(t, []int64{1, 2}, set.Slice())
@@ -95,7 +97,7 @@ func TestSet_Add(t *testing.T) {
 
 func TestSet_FindOrAdd(t *testing.T) {
 	t.Parallel()
-	set := New[int64](4)
+	set := NewEmpty[int64](4)
 	actual, exists := set.FindOrAdd(1)
 	assert.False(t, exists)
 	assert.ElementsMatch(t, []int64{1}, actual.Slice())
@@ -112,7 +114,7 @@ func TestSet_FindOrAdd(t *testing.T) {
 
 func TestSet_Remove(t *testing.T) {
 	t.Parallel()
-	set := New[int64](3).Add([]int64{1, 2, 3}...)
+	set := New([]int64{1, 2, 3}...)
 	set.Remove(1)
 	assert.ElementsMatch(t, []int64{2, 3}, set.Slice())
 }

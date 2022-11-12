@@ -29,9 +29,9 @@ CREATE TABLE `users`.`administrators` (
 
 CREATE UNIQUE INDEX `ui_administrators_email` ON `users`.`administrators` (`email` ASC) VISIBLE;
 
--- 仲介者情報
+-- コーディネータ情報
 CREATE TABLE `users`.`coordinators` (
-  `id`                VARCHAR(22)  NOT NULL,          -- 仲介者ID
+  `id`                VARCHAR(22)  NOT NULL,          -- コーディネータID
   `lastname`          VARCHAR(16)  NOT NULL,          -- 姓
   `firstname`         VARCHAR(16)  NOT NULL,          -- 名
   `lastname_kana`     VARCHAR(32)  NOT NULL,          -- 姓(かな)

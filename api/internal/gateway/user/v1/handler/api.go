@@ -9,7 +9,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"golang.org/x/sync/singleflight"
@@ -28,7 +27,6 @@ type Handler interface {
 
 type Params struct {
 	WaitGroup *sync.WaitGroup
-	Storage   storage.Bucket
 	User      user.Service
 	Store     store.Service
 	Messenger messenger.Service
@@ -39,7 +37,6 @@ type handler struct {
 	logger      *zap.Logger
 	waitGroup   *sync.WaitGroup
 	sharedGroup *singleflight.Group
-	storage     storage.Bucket
 	user        user.Service
 	store       store.Service
 	messenger   messenger.Service
@@ -69,7 +66,6 @@ func NewHandler(params *Params, opts ...Option) Handler {
 		logger:      dopts.logger,
 		waitGroup:   params.WaitGroup,
 		sharedGroup: &singleflight.Group{},
-		storage:     params.Storage,
 		user:        params.User,
 		store:       params.Store,
 		messenger:   params.Messenger,

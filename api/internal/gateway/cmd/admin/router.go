@@ -153,9 +153,15 @@ func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 			details: string(details),
 		}
 		msg := newAlertMessage(params)
-		if err := reg.slack.SendMessage(ctx, msg); err != nil {
-			logger.Error("Failed to alert message", zap.Error(err))
-		}
+
+		reg.waitGroup.Add(1)
+		go func(msg slack.MsgOption) {
+			defer reg.waitGroup.Done()
+			err := reg.slack.SendMessage(ctx, msg)
+			if err != nil {
+				logger.Error("Failed to alert message", zap.Error(err))
+			}
+		}(msg)
 	}
 }
 

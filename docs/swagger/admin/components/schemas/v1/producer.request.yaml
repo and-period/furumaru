@@ -156,4 +156,4 @@ relatedProducerRequest:
   properties:
     coordinatorId:
       type: string
-      description: 関連付ける仲介者ID
+      description: 関連付けるコーディネータID

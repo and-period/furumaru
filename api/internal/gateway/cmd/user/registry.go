@@ -152,7 +152,6 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	// Handlerの設定
 	v1Params := &v1.Params{
 		WaitGroup: params.waitGroup,
-		Storage:   params.storage,
 		User:      userService,
 		Store:     storeService,
 		Messenger: messengerService,

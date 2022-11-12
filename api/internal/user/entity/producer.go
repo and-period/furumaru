@@ -10,7 +10,7 @@ import (
 type Producer struct {
 	Admin         `gorm:"-"`
 	AdminID       string         `gorm:"primaryKey;<-:create"` // 管理者ID
-	CoordinatorID string         `gorm:"default:null"`         // 仲介者ID
+	CoordinatorID string         `gorm:"default:null"`         // コーディネータID
 	PhoneNumber   string         `gorm:""`                     // 電話番号
 	StoreName     string         `gorm:""`                     // 店舗名
 	ThumbnailURL  string         `gorm:""`                     // サムネイルURL

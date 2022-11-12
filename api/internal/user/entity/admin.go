@@ -18,7 +18,7 @@ type AdminRole int32
 const (
 	AdminRoleUnknown       AdminRole = 0
 	AdminRoleAdministrator AdminRole = 1 // 管理者
-	AdminRoleCoordinator   AdminRole = 2 // 仲介者
+	AdminRoleCoordinator   AdminRole = 2 // コーディネータ
 	AdminRoleProducer      AdminRole = 3 // 生産者
 )
 
@@ -113,7 +113,7 @@ func (as Admins) IDs() []string {
 }
 
 func (as Admins) Devices() []string {
-	set := set.New[string](len(as))
+	set := set.NewEmpty[string](len(as))
 	for i := range as {
 		if as[i].Device == "" {
 			continue

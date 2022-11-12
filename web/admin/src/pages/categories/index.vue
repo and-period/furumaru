@@ -98,6 +98,33 @@
                 label="品目"
               />
             </v-card-text>
+            <v-card class="text-center" role="button" flat @click="handleClick">
+              <v-card-text>
+                <v-avatar size="96">
+                  <v-icon v-if="productTypeFormData.iconUrl === ''" x-large
+                    >mdi-plus</v-icon
+                  >
+                  <v-img
+                    v-else
+                    :src="productTypeFormData.iconUrl"
+                    aspect-ratio="1"
+                    max-height="150"
+                    contain
+                  />
+                </v-avatar>
+                <input
+                  ref="inputRef"
+                  type="file"
+                  class="d-none"
+                  accept="image/png, image/jpeg"
+                  @change="handleInputFileChange"
+                />
+                <p class="ma-0">アイコン画像を選択</p>
+              </v-card-text>
+            </v-card>
+            <p v-show="headerUploadStatus.error" class="red--text ma-0">
+              {{ headerUploadStatus.message }}
+            </p>
             <v-divider />
 
             <v-card-actions>
@@ -144,6 +171,7 @@ import {
   CreateCategoryRequest,
   CreateProductTypeRequest,
 } from '~/types/api'
+import { ImageUploadStatus } from '~/types/props'
 import { Category } from '~/types/props/category'
 
 export default defineComponent({
@@ -162,14 +190,20 @@ export default defineComponent({
       categories: CategoriesResponseCategoriesInner[]
     }>({ offset: 0, categories: [] })
 
+    const inputRef = ref<HTMLInputElement | null>(null)
     const selector = ref<string>('categories')
     const categoryDialog = ref<boolean>(false)
     const productTypeDialog = ref<boolean>(false)
     const selectedCategoryId = ref<string>('')
+    const imgUrl = ref<string>('')
     const items: Category[] = [
       { name: 'カテゴリー', value: 'categories' },
       { name: '品目', value: 'categoryItems' },
     ]
+    const headerUploadStatus = reactive<ImageUploadStatus>({
+      error: false,
+      message: '',
+    })
 
     const categoryFormData = reactive<CreateCategoryRequest>({
       name: '',
@@ -272,14 +306,34 @@ export default defineComponent({
       }
     }
 
+    const handleClick = () => {
+      if (inputRef.value !== null) {
+        inputRef.value.click()
+      }
+    }
+
+    const handleInputFileChange = () => {
+      const files = inputRef.value?.files
+      if (inputRef.value && inputRef.value.files) {
+        if (files && files.length > 0) {
+          productTypeStore
+            .uploadProductTypeIcon(files[0])
+            .then((res) => {
+              productTypeFormData.iconUrl = res.url
+            })
+            .catch(() => {
+              headerUploadStatus.error = true
+              headerUploadStatus.message = 'アップロードに失敗しました。'
+            })
+        }
+      }
+    }
+
     return {
       fetchState,
       categoriesOptions,
-      handleUpdateCategoriesItemsPerPage,
-      handleUpdateCategoriesPage,
+      imgUrl,
       productTypesOptions,
-      handleUpdateProductTypesItemsPerPage,
-      handleUpdateProductTypesPage,
       categoriesItems,
       items,
       selector,
@@ -288,6 +342,14 @@ export default defineComponent({
       productTypeFormData,
       productTypeDialog,
       selectedCategoryId,
+      inputRef,
+      headerUploadStatus,
+      handleClick,
+      handleInputFileChange,
+      handleUpdateCategoriesItemsPerPage,
+      handleUpdateCategoriesPage,
+      handleUpdateProductTypesItemsPerPage,
+      handleUpdateProductTypesPage,
       categoryCancel,
       productTypeCancel,
       categoryRegister,

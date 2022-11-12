@@ -175,7 +175,7 @@ export interface AuthResponse {
      */
     'adminId': string;
     /**
-     * 権限(1:システム管理者,2:仲介者,3:生産者)
+     * 権限(1:システム管理者,2:コーディネータ,3:生産者)
      * @type {number}
      * @memberof AuthResponse
      */
@@ -458,7 +458,7 @@ export interface ContactsResponseContactsInner {
  */
 export interface CoordinatorResponse {
     /**
-     * 仲介者ID
+     * コーディネータID
      * @type {string}
      * @memberof CoordinatorResponse
      */
@@ -591,7 +591,7 @@ export interface CoordinatorResponse {
  */
 export interface CoordinatorsResponse {
     /**
-     * 仲介者一覧
+     * コーディネータ一覧
      * @type {Array<CoordinatorsResponseCoordinatorsInner>}
      * @memberof CoordinatorsResponse
      */
@@ -610,7 +610,7 @@ export interface CoordinatorsResponse {
  */
 export interface CoordinatorsResponseCoordinatorsInner {
     /**
-     * 仲介者ID
+     * コーディネータID
      * @type {string}
      * @memberof CoordinatorsResponseCoordinatorsInner
      */
@@ -1103,10 +1103,10 @@ export interface CreateProductRequest {
     'itemDescription': string;
     /**
      * メディア一覧(8つまで)
-     * @type {Array<ProductsResponseProductsInnerMediaInner>}
+     * @type {Array<V1LiveResponseProductsInnerMediaInner>}
      * @memberof CreateProductRequest
      */
-    'media': Array<ProductsResponseProductsInnerMediaInner>;
+    'media': Array<V1LiveResponseProductsInnerMediaInner>;
     /**
      * 販売価格(0以上)
      * @type {number}
@@ -1237,6 +1237,18 @@ export interface CreatePromotionRequest {
  */
 export interface CreateScheduleRequest {
     /**
+     * コーディネーターID
+     * @type {string}
+     * @memberof CreateScheduleRequest
+     */
+    'coordinatorId': string;
+    /**
+     * 配送設定ID
+     * @type {string}
+     * @memberof CreateScheduleRequest
+     */
+    'shippingId': string;
+    /**
      * タイトル(128文字まで)
      * @type {string}
      * @memberof CreateScheduleRequest
@@ -1285,6 +1297,12 @@ export interface CreateScheduleRequestLivesInner {
      * @memberof CreateScheduleRequestLivesInner
      */
     'producerId': string;
+    /**
+     * 商品ID一覧
+     * @type {Array<string>}
+     * @memberof CreateScheduleRequestLivesInner
+     */
+    'productIds': Array<string>;
     /**
      * ライブ開始日時
      * @type {number}
@@ -1426,6 +1444,97 @@ export interface ErrorResponse {
      * @memberof ErrorResponse
      */
     'details': string;
+}
+/**
+ * 
+ * @export
+ * @interface LiveResponse
+ */
+export interface LiveResponse {
+    /**
+     * 配信ID
+     * @type {string}
+     * @memberof LiveResponse
+     */
+    'id': string;
+    /**
+     * スケジュールID
+     * @type {string}
+     * @memberof LiveResponse
+     */
+    'scheduleId': string;
+    /**
+     * ライブタイトル(128文字まで)
+     * @type {string}
+     * @memberof LiveResponse
+     */
+    'title': string;
+    /**
+     * ライブ説明(20000文字まで)
+     * @type {string}
+     * @memberof LiveResponse
+     */
+    'description': string;
+    /**
+     * 生産者ID
+     * @type {string}
+     * @memberof LiveResponse
+     */
+    'producerId': string;
+    /**
+     * 生産者名
+     * @type {string}
+     * @memberof LiveResponse
+     */
+    'producerName': string;
+    /**
+     * ライブ開始日時
+     * @type {number}
+     * @memberof LiveResponse
+     */
+    'startAt': number;
+    /**
+     * ライブ終了日時
+     * @type {number}
+     * @memberof LiveResponse
+     */
+    'endAt': number;
+    /**
+     * 配信公開フラグ
+     * @type {boolean}
+     * @memberof LiveResponse
+     */
+    'published': boolean;
+    /**
+     * キャンセルフラグ
+     * @type {boolean}
+     * @memberof LiveResponse
+     */
+    'canceled': boolean;
+    /**
+     * 配信ステータス(0:不明,1:配信前,2:配信中,3:配信終了,4:配信中止)
+     * @type {number}
+     * @memberof LiveResponse
+     */
+    'status': number;
+    /**
+     * 
+     * @type {Array<V1LiveResponseProductsInner>}
+     * @memberof LiveResponse
+     */
+    'products': Array<V1LiveResponseProductsInner>;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof LiveResponse
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof LiveResponse
+     */
+    'updatedAt': number;
 }
 /**
  * 
@@ -1959,10 +2068,10 @@ export interface OrderResponseItemsInner {
     'weight': number;
     /**
      * 
-     * @type {Array<ProductsResponseProductsInnerMediaInner>}
+     * @type {Array<V1LiveResponseProductsInnerMediaInner>}
      * @memberof OrderResponseItemsInner
      */
-    'media': Array<ProductsResponseProductsInnerMediaInner>;
+    'media': Array<V1LiveResponseProductsInnerMediaInner>;
 }
 /**
  * 支払い情報
@@ -2195,7 +2304,7 @@ export interface ProducerResponse {
      */
     'id': string;
     /**
-     * 担当仲介者ID
+     * 担当コーディネータID
      * @type {string}
      * @memberof ProducerResponse
      */
@@ -2329,7 +2438,7 @@ export interface ProducersResponseProducersInner {
      */
     'id': string;
     /**
-     * 担当仲介者ID
+     * 担当コーディネータID
      * @type {string}
      * @memberof ProducersResponseProducersInner
      */
@@ -2535,10 +2644,10 @@ export interface ProductResponse {
     'iconUrl': string;
     /**
      * 
-     * @type {Array<ProductsResponseProductsInnerMediaInner>}
+     * @type {Array<V1LiveResponseProductsInnerMediaInner>}
      * @memberof ProductResponse
      */
-    'media': Array<ProductsResponseProductsInnerMediaInner>;
+    'media': Array<V1LiveResponseProductsInnerMediaInner>;
     /**
      * 販売価格
      * @type {number}
@@ -2834,10 +2943,10 @@ export interface ProductsResponseProductsInner {
     'iconUrl': string;
     /**
      * 
-     * @type {Array<ProductsResponseProductsInnerMediaInner>}
+     * @type {Array<V1LiveResponseProductsInnerMediaInner>}
      * @memberof ProductsResponseProductsInner
      */
-    'media': Array<ProductsResponseProductsInnerMediaInner>;
+    'media': Array<V1LiveResponseProductsInnerMediaInner>;
     /**
      * 販売価格
      * @type {number}
@@ -2892,25 +3001,6 @@ export interface ProductsResponseProductsInner {
      * @memberof ProductsResponseProductsInner
      */
     'updatedAt': number;
-}
-/**
- * 
- * @export
- * @interface ProductsResponseProductsInnerMediaInner
- */
-export interface ProductsResponseProductsInnerMediaInner {
-    /**
-     * メディアURL
-     * @type {string}
-     * @memberof ProductsResponseProductsInnerMediaInner
-     */
-    'url': string;
-    /**
-     * サムネイルとして使用(1つまで)
-     * @type {boolean}
-     * @memberof ProductsResponseProductsInnerMediaInner
-     */
-    'isThumbnail': boolean;
 }
 /**
  * 
@@ -3122,7 +3212,7 @@ export interface RegisterAuthDeviceRequest {
  */
 export interface RelatedProducerRequest {
     /**
-     * 関連付ける仲介者ID
+     * 関連付けるコーディネータID
      * @type {string}
      * @memberof RelatedProducerRequest
      */
@@ -3140,6 +3230,24 @@ export interface ScheduleResponse {
      * @memberof ScheduleResponse
      */
     'id': string;
+    /**
+     * コーディネーターID
+     * @type {string}
+     * @memberof ScheduleResponse
+     */
+    'coordinatorId': string;
+    /**
+     * 配送設定ID
+     * @type {string}
+     * @memberof ScheduleResponse
+     */
+    'shippingId': string;
+    /**
+     * 配送設定名
+     * @type {string}
+     * @memberof ScheduleResponse
+     */
+    'shippingName': string;
     /**
      * タイトル
      * @type {string}
@@ -3194,6 +3302,103 @@ export interface ScheduleResponse {
      * @memberof ScheduleResponse
      */
     'updatedAt': number;
+    /**
+     * 
+     * @type {Array<ScheduleResponseLivesInner>}
+     * @memberof ScheduleResponse
+     */
+    'lives': Array<ScheduleResponseLivesInner>;
+}
+/**
+ * 
+ * @export
+ * @interface ScheduleResponseLivesInner
+ */
+export interface ScheduleResponseLivesInner {
+    /**
+     * 配信ID
+     * @type {string}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'id'?: string;
+    /**
+     * スケジュールID
+     * @type {string}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'scheduleId'?: string;
+    /**
+     * ライブタイトル(128文字まで)
+     * @type {string}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'title'?: string;
+    /**
+     * ライブ説明(20000文字まで)
+     * @type {string}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'description'?: string;
+    /**
+     * 生産者ID
+     * @type {string}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'producerId'?: string;
+    /**
+     * 生産者名
+     * @type {string}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'producerName'?: string;
+    /**
+     * ライブ開始日時
+     * @type {number}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'startAt'?: number;
+    /**
+     * ライブ終了日時
+     * @type {number}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'endAt'?: number;
+    /**
+     * 配信公開フラグ
+     * @type {boolean}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'published'?: boolean;
+    /**
+     * キャンセルフラグ
+     * @type {boolean}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'canceled'?: boolean;
+    /**
+     * 配信ステータス(0:不明,1:配信前,2:配信中,3:配信終了,4:配信中止)
+     * @type {number}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'status'?: number;
+    /**
+     * 
+     * @type {Array<V1LiveResponseProductsInner>}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'products'?: Array<V1LiveResponseProductsInner>;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'createdAt'?: number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'updatedAt'?: number;
 }
 /**
  * 
@@ -3909,10 +4114,10 @@ export interface UpdateProductRequest {
     'itemDescription': string;
     /**
      * メディア一覧(8つまで)
-     * @type {Array<ProductsResponseProductsInnerMediaInner>}
+     * @type {Array<V1LiveResponseProductsInnerMediaInner>}
      * @memberof UpdateProductRequest
      */
-    'media': Array<ProductsResponseProductsInnerMediaInner>;
+    'media': Array<V1LiveResponseProductsInnerMediaInner>;
     /**
      * 販売価格(0以上)
      * @type {number}
@@ -4144,6 +4349,103 @@ export interface UploadVideoResponse {
 /**
  * 
  * @export
+ * @interface UserResponse
+ */
+export interface UserResponse {
+    /**
+     * 購入者ID
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'id': string;
+    /**
+     * 姓
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'lastname': string;
+    /**
+     * 名
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'firstname': string;
+    /**
+     * 姓(かな)
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'lastnameKana': string;
+    /**
+     * 名(かな)
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'firstnameKana': string;
+    /**
+     * 会員登録フラグ
+     * @type {boolean}
+     * @memberof UserResponse
+     */
+    'registered': boolean;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'email': string;
+    /**
+     * 電話番号 (国際番号 + 電話番号)
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'phoneNumber': string;
+    /**
+     * 郵便番号
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'postalCode': string;
+    /**
+     * 都道府県
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'prefecture': string;
+    /**
+     * 市区町村
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'city': string;
+    /**
+     * 町名・番地
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'addressLine1': string;
+    /**
+     * ビル名・号室など
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'addressLine2': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof UserResponse
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof UserResponse
+     */
+    'updatedAt': number;
+}
+/**
+ * 
+ * @export
  * @interface UsersResponse
  */
 export interface UsersResponse {
@@ -4208,6 +4510,279 @@ export interface UsersResponseUsersInner {
      * @memberof UsersResponseUsersInner
      */
     'totalAmount'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface V1LiveResponse
+ */
+export interface V1LiveResponse {
+    /**
+     * 配信ID
+     * @type {string}
+     * @memberof V1LiveResponse
+     */
+    'id': string;
+    /**
+     * スケジュールID
+     * @type {string}
+     * @memberof V1LiveResponse
+     */
+    'scheduleId': string;
+    /**
+     * ライブタイトル(128文字まで)
+     * @type {string}
+     * @memberof V1LiveResponse
+     */
+    'title': string;
+    /**
+     * ライブ説明(20000文字まで)
+     * @type {string}
+     * @memberof V1LiveResponse
+     */
+    'description': string;
+    /**
+     * 生産者ID
+     * @type {string}
+     * @memberof V1LiveResponse
+     */
+    'producerId': string;
+    /**
+     * 生産者名
+     * @type {string}
+     * @memberof V1LiveResponse
+     */
+    'producerName': string;
+    /**
+     * ライブ開始日時
+     * @type {number}
+     * @memberof V1LiveResponse
+     */
+    'startAt': number;
+    /**
+     * ライブ終了日時
+     * @type {number}
+     * @memberof V1LiveResponse
+     */
+    'endAt': number;
+    /**
+     * 配信公開フラグ
+     * @type {boolean}
+     * @memberof V1LiveResponse
+     */
+    'published': boolean;
+    /**
+     * キャンセルフラグ
+     * @type {boolean}
+     * @memberof V1LiveResponse
+     */
+    'canceled': boolean;
+    /**
+     * 配信ステータス(0:不明,1:配信前,2:配信中,3:配信終了,4:配信中止)
+     * @type {number}
+     * @memberof V1LiveResponse
+     */
+    'status': number;
+    /**
+     * 
+     * @type {Array<V1LiveResponseProductsInner>}
+     * @memberof V1LiveResponse
+     */
+    'products': Array<V1LiveResponseProductsInner>;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof V1LiveResponse
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof V1LiveResponse
+     */
+    'updatedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface V1LiveResponseProductsInner
+ */
+export interface V1LiveResponseProductsInner {
+    /**
+     * 商品ID
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'id'?: string;
+    /**
+     * 商品名
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'name'?: string;
+    /**
+     * 商品説明
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'description'?: string;
+    /**
+     * 生産者ID
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'producerId'?: string;
+    /**
+     * 農家名
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'storeName'?: string;
+    /**
+     * 商品種別ID
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'categoryId'?: string;
+    /**
+     * 商品種別名
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'categoryName'?: string;
+    /**
+     * 品目ID
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'productTypeId'?: string;
+    /**
+     * 品目名
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'productTypeName'?: string;
+    /**
+     * アイコンURL
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'productTypeIconUrl'?: string;
+    /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'public'?: boolean;
+    /**
+     * 在庫数
+     * @type {number}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'inventory'?: number;
+    /**
+     * 重量(kg:少数第1位まで)
+     * @type {number}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'weight'?: number;
+    /**
+     * 数量単位
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'itemUnit'?: string;
+    /**
+     * 数量単位説明
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'itemDescription'?: string;
+    /**
+     * アイコンURL
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'iconUrl'?: string;
+    /**
+     * 
+     * @type {Array<V1LiveResponseProductsInnerMediaInner>}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'media'?: Array<V1LiveResponseProductsInnerMediaInner>;
+    /**
+     * 販売価格
+     * @type {number}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'price'?: number;
+    /**
+     * 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
+     * @type {number}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'deliveryType'?: number;
+    /**
+     * 箱の占有率(サイズ:60)
+     * @type {number}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'box60Rate'?: number;
+    /**
+     * 箱の占有率(サイズ:80)
+     * @type {number}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'box80Rate'?: number;
+    /**
+     * 箱の占有率(サイズ:100)
+     * @type {number}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'box100Rate'?: number;
+    /**
+     * 原産地(都道府県)
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'originPrefecture'?: string;
+    /**
+     * 原産地(市区町村)
+     * @type {string}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'originCity'?: string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'createdAt'?: number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof V1LiveResponseProductsInner
+     */
+    'updatedAt'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface V1LiveResponseProductsInnerMediaInner
+ */
+export interface V1LiveResponseProductsInnerMediaInner {
+    /**
+     * メディアURL
+     * @type {string}
+     * @memberof V1LiveResponseProductsInnerMediaInner
+     */
+    'url': string;
+    /**
+     * サムネイルとして使用(1つまで)
+     * @type {boolean}
+     * @memberof V1LiveResponseProductsInnerMediaInner
+     */
+    'isThumbnail': boolean;
 }
 /**
  * 
@@ -6043,7 +6618,7 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
     return {
         /**
          * 
-         * @summary 仲介者登録
+         * @summary コーディネータ登録
          * @param {CreateCoordinatorRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6083,8 +6658,8 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
-         * @summary 仲介者退会
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータ退会
+         * @param {string} coordinatorId コーディネータID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6121,8 +6696,8 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
-         * @summary 仲介者取得
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータ取得
+         * @param {string} coordinatorId コーディネータID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6159,7 +6734,7 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
-         * @summary 仲介者一覧取得
+         * @summary コーディネータ一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {*} [options] Override http request option.
@@ -6203,8 +6778,8 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
-         * @summary 仲介者更新
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータ更新
+         * @param {string} coordinatorId コーディネータID
          * @param {UpdateCoordinatorRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6247,8 +6822,8 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
-         * @summary 仲介者メールアドレス更新
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータメールアドレス更新
+         * @param {string} coordinatorId コーディネータID
          * @param {UpdateCoordinatorEmailRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6291,8 +6866,8 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
-         * @summary 仲介者パスワード更新(ランダム生成)
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータパスワード更新(ランダム生成)
+         * @param {string} coordinatorId コーディネータID
          * @param {object} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6335,8 +6910,8 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
-         * @summary 仲介者ヘッダー画像アップロード
-         * @param {any} [image] 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
+         * @summary コーディネータヘッダー画像アップロード
+         * @param {any} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6378,8 +6953,8 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
-         * @summary 仲介者サムネイルアップロード
-         * @param {any} [thumbnail] 仲介者サムネイル(png,jpeg形式,10MBまで)
+         * @summary コーディネータサムネイルアップロード
+         * @param {any} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6431,7 +7006,7 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary 仲介者登録
+         * @summary コーディネータ登録
          * @param {CreateCoordinatorRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6442,8 +7017,8 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 仲介者退会
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータ退会
+         * @param {string} coordinatorId コーディネータID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6453,8 +7028,8 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 仲介者取得
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータ取得
+         * @param {string} coordinatorId コーディネータID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6464,7 +7039,7 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 仲介者一覧取得
+         * @summary コーディネータ一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {*} [options] Override http request option.
@@ -6476,8 +7051,8 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 仲介者更新
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータ更新
+         * @param {string} coordinatorId コーディネータID
          * @param {UpdateCoordinatorRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6488,8 +7063,8 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 仲介者メールアドレス更新
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータメールアドレス更新
+         * @param {string} coordinatorId コーディネータID
          * @param {UpdateCoordinatorEmailRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6500,8 +7075,8 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 仲介者パスワード更新(ランダム生成)
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータパスワード更新(ランダム生成)
+         * @param {string} coordinatorId コーディネータID
          * @param {object} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6512,8 +7087,8 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 仲介者ヘッダー画像アップロード
-         * @param {any} [image] 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
+         * @summary コーディネータヘッダー画像アップロード
+         * @param {any} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6523,8 +7098,8 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 仲介者サムネイルアップロード
-         * @param {any} [thumbnail] 仲介者サムネイル(png,jpeg形式,10MBまで)
+         * @summary コーディネータサムネイルアップロード
+         * @param {any} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6544,7 +7119,7 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
     return {
         /**
          * 
-         * @summary 仲介者登録
+         * @summary コーディネータ登録
          * @param {CreateCoordinatorRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6554,8 +7129,8 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
-         * @summary 仲介者退会
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータ退会
+         * @param {string} coordinatorId コーディネータID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6564,8 +7139,8 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
-         * @summary 仲介者取得
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータ取得
+         * @param {string} coordinatorId コーディネータID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6574,7 +7149,7 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
-         * @summary 仲介者一覧取得
+         * @summary コーディネータ一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {*} [options] Override http request option.
@@ -6585,8 +7160,8 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
-         * @summary 仲介者更新
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータ更新
+         * @param {string} coordinatorId コーディネータID
          * @param {UpdateCoordinatorRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6596,8 +7171,8 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
-         * @summary 仲介者メールアドレス更新
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータメールアドレス更新
+         * @param {string} coordinatorId コーディネータID
          * @param {UpdateCoordinatorEmailRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6607,8 +7182,8 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
-         * @summary 仲介者パスワード更新(ランダム生成)
-         * @param {string} coordinatorId 仲介者ID
+         * @summary コーディネータパスワード更新(ランダム生成)
+         * @param {string} coordinatorId コーディネータID
          * @param {object} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6618,8 +7193,8 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
-         * @summary 仲介者ヘッダー画像アップロード
-         * @param {any} [image] 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
+         * @summary コーディネータヘッダー画像アップロード
+         * @param {any} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6628,8 +7203,8 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
-         * @summary 仲介者サムネイルアップロード
-         * @param {any} [thumbnail] 仲介者サムネイル(png,jpeg形式,10MBまで)
+         * @summary コーディネータサムネイルアップロード
+         * @param {any} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6648,7 +7223,7 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
 export class CoordinatorApi extends BaseAPI {
     /**
      * 
-     * @summary 仲介者登録
+     * @summary コーディネータ登録
      * @param {CreateCoordinatorRequest} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6660,8 +7235,8 @@ export class CoordinatorApi extends BaseAPI {
 
     /**
      * 
-     * @summary 仲介者退会
-     * @param {string} coordinatorId 仲介者ID
+     * @summary コーディネータ退会
+     * @param {string} coordinatorId コーディネータID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CoordinatorApi
@@ -6672,8 +7247,8 @@ export class CoordinatorApi extends BaseAPI {
 
     /**
      * 
-     * @summary 仲介者取得
-     * @param {string} coordinatorId 仲介者ID
+     * @summary コーディネータ取得
+     * @param {string} coordinatorId コーディネータID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CoordinatorApi
@@ -6684,7 +7259,7 @@ export class CoordinatorApi extends BaseAPI {
 
     /**
      * 
-     * @summary 仲介者一覧取得
+     * @summary コーディネータ一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
@@ -6697,8 +7272,8 @@ export class CoordinatorApi extends BaseAPI {
 
     /**
      * 
-     * @summary 仲介者更新
-     * @param {string} coordinatorId 仲介者ID
+     * @summary コーディネータ更新
+     * @param {string} coordinatorId コーディネータID
      * @param {UpdateCoordinatorRequest} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6710,8 +7285,8 @@ export class CoordinatorApi extends BaseAPI {
 
     /**
      * 
-     * @summary 仲介者メールアドレス更新
-     * @param {string} coordinatorId 仲介者ID
+     * @summary コーディネータメールアドレス更新
+     * @param {string} coordinatorId コーディネータID
      * @param {UpdateCoordinatorEmailRequest} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6723,8 +7298,8 @@ export class CoordinatorApi extends BaseAPI {
 
     /**
      * 
-     * @summary 仲介者パスワード更新(ランダム生成)
-     * @param {string} coordinatorId 仲介者ID
+     * @summary コーディネータパスワード更新(ランダム生成)
+     * @param {string} coordinatorId コーディネータID
      * @param {object} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6736,8 +7311,8 @@ export class CoordinatorApi extends BaseAPI {
 
     /**
      * 
-     * @summary 仲介者ヘッダー画像アップロード
-     * @param {any} [image] 仲介者ヘッダー画像(png,jpeg形式,10MBまで)
+     * @summary コーディネータヘッダー画像アップロード
+     * @param {any} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CoordinatorApi
@@ -6748,8 +7323,8 @@ export class CoordinatorApi extends BaseAPI {
 
     /**
      * 
-     * @summary 仲介者サムネイルアップロード
-     * @param {any} [thumbnail] 仲介者サムネイル(png,jpeg形式,10MBまで)
+     * @summary コーディネータサムネイルアップロード
+     * @param {any} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CoordinatorApi
@@ -7764,7 +8339,7 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
-         * @summary 生産者と仲介者を関連付け
+         * @summary 生産者とコーディネータを関連付け
          * @param {string} producerId 生産者ID
          * @param {RelatedProducerRequest} body 
          * @param {*} [options] Override http request option.
@@ -7808,7 +8383,7 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
-         * @summary 生産者と仲介者の関連付けを解除
+         * @summary 生産者とコーディネータの関連付けを解除
          * @param {string} producerId 生産者ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -8118,7 +8693,7 @@ export const ProducerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 生産者と仲介者を関連付け
+         * @summary 生産者とコーディネータを関連付け
          * @param {string} producerId 生産者ID
          * @param {RelatedProducerRequest} body 
          * @param {*} [options] Override http request option.
@@ -8130,7 +8705,7 @@ export const ProducerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 生産者と仲介者の関連付けを解除
+         * @summary 生産者とコーディネータの関連付けを解除
          * @param {string} producerId 生産者ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -8251,7 +8826,7 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
-         * @summary 生産者と仲介者を関連付け
+         * @summary 生産者とコーディネータを関連付け
          * @param {string} producerId 生産者ID
          * @param {RelatedProducerRequest} body 
          * @param {*} [options] Override http request option.
@@ -8262,7 +8837,7 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
-         * @summary 生産者と仲介者の関連付けを解除
+         * @summary 生産者とコーディネータの関連付けを解除
          * @param {string} producerId 生産者ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -8385,7 +8960,7 @@ export class ProducerApi extends BaseAPI {
 
     /**
      * 
-     * @summary 生産者と仲介者を関連付け
+     * @summary 生産者とコーディネータを関連付け
      * @param {string} producerId 生産者ID
      * @param {RelatedProducerRequest} body 
      * @param {*} [options] Override http request option.
@@ -8398,7 +8973,7 @@ export class ProducerApi extends BaseAPI {
 
     /**
      * 
-     * @summary 生産者と仲介者の関連付けを解除
+     * @summary 生産者とコーディネータの関連付けを解除
      * @param {string} producerId 生産者ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -10432,6 +11007,44 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * 
          * @summary 購入者一覧
+         * @param {string} userId 購入者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetUser: async (userId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('v1GetUser', 'userId', userId)
+            const localVarPath = `/v1/users/{userId}`
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 購入者一覧
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {*} [options] Override http request option.
@@ -10486,6 +11099,17 @@ export const UserApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary 購入者一覧
+         * @param {string} userId 購入者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetUser(userId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetUser(userId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 購入者一覧
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {*} [options] Override http request option.
@@ -10508,6 +11132,16 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
         /**
          * 
          * @summary 購入者一覧
+         * @param {string} userId 購入者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetUser(userId: string, options?: any): AxiosPromise<UserResponse> {
+            return localVarFp.v1GetUser(userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 購入者一覧
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {*} [options] Override http request option.
@@ -10526,6 +11160,18 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
  * @extends {BaseAPI}
  */
 export class UserApi extends BaseAPI {
+    /**
+     * 
+     * @summary 購入者一覧
+     * @param {string} userId 購入者ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public v1GetUser(userId: string, options?: AxiosRequestConfig) {
+        return UserApiFp(this.configuration).v1GetUser(userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary 購入者一覧

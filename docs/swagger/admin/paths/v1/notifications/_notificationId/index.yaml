@@ -21,7 +21,7 @@ get:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/v1NotificationResponse'
     404:
-      description:
+      description: お知らせが存在しない
       content:
         application/json:
           schema:

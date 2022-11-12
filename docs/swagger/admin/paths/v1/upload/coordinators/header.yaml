@@ -1,5 +1,5 @@
 post:
-  summary: 仲介者ヘッダー画像アップロード
+  summary: コーディネータヘッダー画像アップロード
   operationId: v1UploadCoordinatorHeader
   tags:
   - Coordinator

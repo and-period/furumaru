@@ -6,7 +6,11 @@ type Set[T comparable] struct {
 }
 
 // New - 構造体の生成(cap指定)
-func New[T comparable](cap int) *Set[T] {
+func New[T comparable](values ...T) *Set[T] {
+	return NewEmpty[T](len(values)).Add(values...)
+}
+
+func NewEmpty[T comparable](cap int) *Set[T] {
 	return &Set[T]{
 		values: make(map[T]struct{}, cap),
 	}
@@ -14,13 +18,12 @@ func New[T comparable](cap int) *Set[T] {
 
 // Uniq - 渡された値の重複を排除して返す
 func Uniq[T comparable](values ...T) []T {
-	set := New[T](len(values))
-	return set.Add(values...).Slice()
+	return New(values...).Slice()
 }
 
 // UniqBy - 渡された操作を実行して重複を排除した値を返す
 func UniqBy[K comparable, V any](values []V, iteratee func(V) K) []K {
-	set := New[K](len(values))
+	set := NewEmpty[K](len(values))
 	for i := range values {
 		key := iteratee(values[i])
 		set.Add(key)
@@ -30,7 +33,7 @@ func UniqBy[K comparable, V any](values []V, iteratee func(V) K) []K {
 
 // UniqWithErr - 渡された操作を実行して重複を排除した値を返す
 func UniqWithErr[K comparable, V any](values []V, iteratee func(V) (K, error)) ([]K, error) {
-	set := New[K](len(values))
+	set := NewEmpty[K](len(values))
 	for i := range values {
 		key, err := iteratee(values[i])
 		if err != nil {

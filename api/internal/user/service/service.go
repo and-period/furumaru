@@ -4,6 +4,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
@@ -20,6 +21,7 @@ type Params struct {
 	AdminAuth cognito.Client
 	UserAuth  cognito.Client
 	Messenger messenger.Service
+	Media     media.Service
 }
 
 type service struct {
@@ -32,6 +34,7 @@ type service struct {
 	adminAuth   cognito.Client
 	userAuth    cognito.Client
 	messenger   messenger.Service
+	media       media.Service
 }
 
 type options struct {
@@ -63,5 +66,6 @@ func NewService(params *Params, opts ...Option) user.Service {
 		adminAuth:   params.AdminAuth,
 		userAuth:    params.UserAuth,
 		messenger:   params.Messenger,
+		media:       params.Media,
 	}
 }
