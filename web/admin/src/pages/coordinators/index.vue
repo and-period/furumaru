@@ -9,152 +9,67 @@
       </v-btn>
     </div>
 
-    <v-tabs v-model="tab" grow color="dark">
-      <v-tabs-slider color="accent"></v-tabs-slider>
-      <v-tab
-        v-for="tabItem in tabItems"
-        :key="tabItem.value"
-        :href="`#${tabItem.value}`"
-      >
-        {{ tabItem.name }}
-      </v-tab>
-    </v-tabs>
-
-    <v-tabs-items v-model="tab">
-      <v-tab-item value="coordinators">
-        <v-card class="mt-4" flat :loading="fetchState.pending">
-          <v-card-text>
-            <form class="d-flex align-center" @submit.prevent="handleSearch">
-              <v-autocomplete
-                v-model="search"
-                item-text="firstname"
-                :items="coordinators"
-                label="絞り込み"
+    <v-card class="mt-4" flat :loading="fetchState.pending">
+      <v-card-text>
+        <form class="d-flex align-center" @submit.prevent="handleSearch">
+          <v-autocomplete
+            v-model="search"
+            item-text="firstname"
+            :items="coordinators"
+            label="絞り込み"
+          />
+          <v-btn type="submit" class="ml-4" small outlined color="primary">
+            <v-icon>mdi-search</v-icon>
+            検索
+          </v-btn>
+          <v-spacer />
+        </form>
+        <v-data-table
+          show-select
+          :headers="headers"
+          :items="coordinators"
+          :search="query"
+          :no-results-text="noResultsText"
+          :server-items-length="totalItems"
+          :footer-props="options"
+          no-data-text="登録されているコーディネータがいません。"
+          @update:items-per-page="handleUpdateItemsPerPage"
+          @update:page="handleUpdatePage"
+        >
+          <template #[`item.thumbnail`]="{ item }">
+            <v-avatar>
+              <img
+                v-if="item.thumbnailUrl !== ''"
+                :src="item.thumbnailUrl"
+                :alt="`${item.storeName}-profile`"
               />
-              <v-btn type="submit" class="ml-4" small outlined color="primary">
-                <v-icon>mdi-search</v-icon>
-                検索
-              </v-btn>
-              <v-spacer />
-            </form>
-            <v-data-table
-              show-select
-              :headers="headers"
-              :items="coordinators"
-              :search="query"
-              :no-results-text="noResultsText"
-              :server-items-length="totalItems"
-              :footer-props="options"
-              no-data-text="登録されているコーディネータがいません。"
-              @update:items-per-page="handleUpdateItemsPerPage"
-              @update:page="handleUpdatePage"
+              <v-icon v-else>mdi-account</v-icon>
+            </v-avatar>
+          </template>
+          <template #[`item.name`]="{ item }">
+            {{ `${item.lastname} ${item.firstname}` }}
+          </template>
+          <template #[`item.phoneNumber`]="{ item }">
+            {{ `${item.phoneNumber}`.replace('+81', '0') }}
+          </template>
+          <template #[`item.actions`]="{ item }">
+            <v-btn outlined color="primary" small @click="handleEdit(item)">
+              <v-icon small>mdi-pencil</v-icon>
+              編集
+            </v-btn>
+            <v-btn
+              outlined
+              color="primary"
+              small
+              @click="openDeleteDialog(item)"
             >
-              <template #[`item.thumbnail`]="{ item }">
-                <v-avatar>
-                  <img
-                    v-if="item.thumbnailUrl !== ''"
-                    :src="item.thumbnailUrl"
-                    :alt="`${item.storeName}-profile`"
-                  />
-                  <v-icon v-else>mdi-account</v-icon>
-                </v-avatar>
-              </template>
-              <template #[`item.name`]="{ item }">
-                {{ `${item.lastname} ${item.firstname}` }}
-              </template>
-              <template #[`item.phoneNumber`]="{ item }">
-                {{ `${item.phoneNumber}`.replace('+81', '0') }}
-              </template>
-              <template #[`item.actions`]="{ item }">
-                <v-btn outlined color="primary" small @click="handleEdit(item)">
-                  <v-icon small>mdi-pencil</v-icon>
-                  編集
-                </v-btn>
-                <v-btn
-                  outlined
-                  color="primary"
-                  small
-                  @click="openDeleteDialog(item)"
-                >
-                  <v-icon small>mdi-delete</v-icon>
-                  削除
-                </v-btn>
-              </template>
-            </v-data-table>
-          </v-card-text>
-        </v-card>
-      </v-tab-item>
-
-      <v-tab-item value="customers">
-        <v-card class="mt-4" flat :loading="fetchState.pending">
-          <v-card-text>
-            <form class="d-flex align-center" @submit.prevent="handleSearch">
-              <v-text-field v-model="search" label="絞り込み" />
-              <v-btn type="submit" class="ml-4" small outlined color="primary">
-                <v-icon>mdi-search</v-icon>
-                検索
-              </v-btn>
-              <v-spacer />
-            </form>
-            <v-data-table
-              show-select
-              :headers="headers"
-              :items="producers"
-              :search="query"
-              :no-results-text="noResultsText"
-              :server-items-length="totalItems"
-              :footer-props="options"
-              no-data-text="登録されている生産者がいません。"
-              @update:items-per-page="handleUpdateItemsPerPage"
-              @update:page="handleUpdatePage"
-            >
-              <template #[`item.thumbnail`]="{ item }">
-                <v-avatar>
-                  <img
-                    v-if="item.thumbnailUrl !== ''"
-                    :src="item.thumbnailUrl"
-                    :alt="`${item.storeName}-profile`"
-                  />
-                  <v-icon v-else>mdi-account</v-icon>
-                </v-avatar>
-              </template>
-              <template #[`item.name`]="{ item }">
-                {{ `${item.lastname} ${item.firstname}` }}
-              </template>
-              <template #[`item.phoneNumber`]="{ item }">
-                {{ `${item.phoneNumber}`.replace('+81', '0') }}
-              </template>
-              <template #[`item.actions`]="{ item }">
-                <v-btn outlined color="primary" small @click="handleEdit(item)">
-                  <v-icon small>mdi-pencil</v-icon>
-                  編集
-                </v-btn>
-                <v-btn
-                  outlined
-                  color="primary"
-                  small
-                  @click="handleDelete(item)"
-                >
-                  <v-icon small>mdi-delete</v-icon>
-                  削除
-                </v-btn>
-              </template>
-              <template #[`item.video`]="{ item }">
-                <v-btn
-                  outlined
-                  color="primary"
-                  small
-                  @click="handleAddVideo(item)"
-                >
-                  <v-icon small>mdi-plus</v-icon>
-                  追加
-                </v-btn>
-              </template>
-            </v-data-table>
-          </v-card-text>
-        </v-card>
-      </v-tab-item>
-    </v-tabs-items>
+              <v-icon small>mdi-delete</v-icon>
+              削除
+            </v-btn>
+          </template>
+        </v-data-table>
+      </v-card-text>
+    </v-card>
 
     <v-dialog v-model="deleteDialog" width="500">
       <v-card>

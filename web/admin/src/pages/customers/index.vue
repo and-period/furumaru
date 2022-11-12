@@ -9,13 +9,11 @@
               {{ getAccount(item.account) }}
             </v-chip>
           </template>
-          <template #[`item.action1`]>
+          <template #[`item.action`]>
             <v-btn outlined color="primary" small @click="handleEdit()">
               <v-icon small>mdi-pencil</v-icon>
               編集
             </v-btn>
-          </template>
-          <template #[`item.action2`]>
             <v-btn outlined color="primary" small>
               <v-icon small>mdi-delete</v-icon>
               削除
@@ -57,12 +55,8 @@ export default defineComponent({
         value: 'account',
       },
       {
-        text: 'Action1',
-        value: 'action1',
-      },
-      {
-        text: 'Action2',
-        value: 'action2',
+        text: 'Action',
+        value: 'action',
       },
     ]
 
