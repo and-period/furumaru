@@ -2295,6 +2295,43 @@ export interface OrdersResponse {
     'total': number;
 }
 /**
+ * 
+ * @export
+ * @interface PostalCodeResponse
+ */
+export interface PostalCodeResponse {
+    /**
+     * 郵便番号
+     * @type {string}
+     * @memberof PostalCodeResponse
+     */
+    'postalCode': string;
+    /**
+     * 都道府県コード
+     * @type {string}
+     * @memberof PostalCodeResponse
+     */
+    'prefectureCode': string;
+    /**
+     * 都道府県名
+     * @type {string}
+     * @memberof PostalCodeResponse
+     */
+    'prefecture': string;
+    /**
+     * 市区町村名
+     * @type {string}
+     * @memberof PostalCodeResponse
+     */
+    'city': string;
+    /**
+     * 町域名
+     * @type {string}
+     * @memberof PostalCodeResponse
+     */
+    'town': string;
+}
+/**
  * 都道府県コード
  * @export
  * @enum {string}
@@ -4927,6 +4964,115 @@ export interface VerifyAuthEmailRequest {
      */
     'verifyCode': string;
 }
+
+/**
+ * AddressApi - axios parameter creator
+ * @export
+ */
+export const AddressApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary 郵便番号情報検索
+         * @param {string} postalCode 郵便番号(ハイフンなし)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1SearchPostalCode: async (postalCode: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'postalCode' is not null or undefined
+            assertParamExists('v1SearchPostalCode', 'postalCode', postalCode)
+            const localVarPath = `/v1/postal-codes/{postalCode}`
+                .replace(`{${"postalCode"}}`, encodeURIComponent(String(postalCode)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * AddressApi - functional programming interface
+ * @export
+ */
+export const AddressApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = AddressApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary 郵便番号情報検索
+         * @param {string} postalCode 郵便番号(ハイフンなし)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1SearchPostalCode(postalCode: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostalCodeResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SearchPostalCode(postalCode, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * AddressApi - factory interface
+ * @export
+ */
+export const AddressApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = AddressApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary 郵便番号情報検索
+         * @param {string} postalCode 郵便番号(ハイフンなし)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1SearchPostalCode(postalCode: string, options?: any): AxiosPromise<PostalCodeResponse> {
+            return localVarFp.v1SearchPostalCode(postalCode, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * AddressApi - object-oriented interface
+ * @export
+ * @class AddressApi
+ * @extends {BaseAPI}
+ */
+export class AddressApi extends BaseAPI {
+    /**
+     * 
+     * @summary 郵便番号情報検索
+     * @param {string} postalCode 郵便番号(ハイフンなし)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AddressApi
+     */
+    public v1SearchPostalCode(postalCode: string, options?: AxiosRequestConfig) {
+        return AddressApiFp(this.configuration).v1SearchPostalCode(postalCode, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
 
 /**
  * AdministratorApi - axios parameter creator

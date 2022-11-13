@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"net/http"
 	"net/url"
 	"sync"
 	"time"
@@ -22,6 +23,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/postalcode"
 	"github.com/and-period/furumaru/api/pkg/rbac"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/slack"
@@ -65,6 +67,7 @@ type params struct {
 	receiver         stripe.Receiver
 	adminWebURL      *url.URL
 	userWebURL       *url.URL
+	postalCode       postalcode.Client
 	now              func() time.Time
 	dbHost           string
 	dbPort           string
@@ -166,6 +169,9 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		}
 		params.slack = slack.NewClient(slackParams, slack.WithLogger(logger))
 	}
+
+	// PostalCodeの設定
+	params.postalCode = postalcode.NewClient(&http.Client{}, postalcode.WithLogger(logger))
 
 	// WebURLの設定
 	adminWebURL, err := url.Parse(conf.AminWebURL)
@@ -378,11 +384,12 @@ func newStoreService(
 		Database: mysql,
 	}
 	params := &storesrv.Params{
-		WaitGroup: p.waitGroup,
-		Database:  storedb.NewDatabase(dbParams),
-		User:      user,
-		Messenger: messenger,
-		Media:     media,
+		WaitGroup:  p.waitGroup,
+		Database:   storedb.NewDatabase(dbParams),
+		User:       user,
+		Messenger:  messenger,
+		Media:      media,
+		PostalCode: p.postalCode,
 	}
 	return storesrv.NewService(params, storesrv.WithLogger(p.logger)), nil
 }

@@ -59,6 +59,7 @@ p, notification_delete, /v1/notifications/*, DELETE, allow
 p, schedule_create, /v1/schedules, POST, allow
 p, message_list, /v1/messages, GET, allow
 p, message_get, /v1/messages/*, GET, allow
+p, postal_code_search, /v1/postal-codes/*, GET, allow
 
 g, administrator, auth
 g, administrator, administrator_list
@@ -120,6 +121,7 @@ g, administrator, notification_delete
 g, administrator, schedule_create
 g, administrator, message_list
 g, administrator, message_get
+g, administrator, postal_code_search
 
 g, coordinator, auth
 g, coordinator, coordinator_uploader
@@ -156,6 +158,7 @@ g, coordinator, notification_delete
 g, coordinator, schedule_create
 g, coordinator, message_list
 g, coordinator, message_get
+g, coordinator, postal_code_search
 
 g, producer, auth
 g, producer, producer_uploader
@@ -173,3 +176,4 @@ g, producer, notification_list
 g, producer, notification_get
 g, producer, message_list
 g, producer, message_get
+g, producer, postal_code_search

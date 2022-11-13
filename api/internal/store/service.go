@@ -77,4 +77,6 @@ type Service interface {
 	GetOrder(ctx context.Context, in *GetOrderInput) (*entity.Order, error)
 	// 注文履歴集計結果一覧取得
 	AggregateOrders(ctx context.Context, in *AggregateOrdersInput) (entity.AggregatedOrders, error)
+	// 郵便番号情報検索
+	SearchPostalCode(ctx context.Context, in *SearchPostalCodeInput) (*entity.PostalCode, error)
 }
