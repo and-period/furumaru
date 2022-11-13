@@ -10,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/database"
 	mock_media "github.com/and-period/furumaru/api/mock/media"
 	mock_messenger "github.com/and-period/furumaru/api/mock/messenger"
+	mock_postalcode "github.com/and-period/furumaru/api/mock/pkg/postalcode"
 	mock_database "github.com/and-period/furumaru/api/mock/store/database"
 	mock_user "github.com/and-period/furumaru/api/mock/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -21,10 +22,11 @@ import (
 var errmock = errors.New("some error")
 
 type mocks struct {
-	db        *dbMocks
-	user      *mock_user.MockService
-	messenger *mock_messenger.MockService
-	media     *mock_media.MockService
+	db         *dbMocks
+	user       *mock_user.MockService
+	messenger  *mock_messenger.MockService
+	media      *mock_media.MockService
+	postalCode *mock_postalcode.MockClient
 }
 
 type dbMocks struct {
@@ -55,10 +57,11 @@ type testCaller func(ctx context.Context, t *testing.T, service *service)
 
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
-		db:        newDBMocks(ctrl),
-		user:      mock_user.NewMockService(ctrl),
-		messenger: mock_messenger.NewMockService(ctrl),
-		media:     mock_media.NewMockService(ctrl),
+		db:         newDBMocks(ctrl),
+		user:       mock_user.NewMockService(ctrl),
+		messenger:  mock_messenger.NewMockService(ctrl),
+		media:      mock_media.NewMockService(ctrl),
+		postalCode: mock_postalcode.NewMockClient(ctrl),
 	}
 }
 
@@ -92,9 +95,10 @@ func newService(mocks *mocks, opts ...testOption) *service {
 			Shipping:    mocks.db.Shipping,
 			Schedule:    mocks.db.Schedule,
 		},
-		User:      mocks.user,
-		Messenger: mocks.messenger,
-		Media:     mocks.media,
+		User:       mocks.user,
+		Messenger:  mocks.messenger,
+		Media:      mocks.media,
+		PostalCode: mocks.postalCode,
 	}
 	service := NewService(params).(*service)
 	service.now = func() time.Time {

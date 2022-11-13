@@ -10,17 +10,19 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/postalcode"
 	"github.com/and-period/furumaru/api/pkg/validator"
 	"go.uber.org/zap"
 	"golang.org/x/sync/singleflight"
 )
 
 type Params struct {
-	WaitGroup *sync.WaitGroup
-	Database  *database.Database
-	User      user.Service
-	Messenger messenger.Service
-	Media     media.Service
+	WaitGroup  *sync.WaitGroup
+	Database   *database.Database
+	User       user.Service
+	Messenger  messenger.Service
+	Media      media.Service
+	PostalCode postalcode.Client
 }
 
 type service struct {
@@ -33,6 +35,7 @@ type service struct {
 	user        user.Service
 	messenger   messenger.Service
 	media       media.Service
+	postalCode  postalcode.Client
 }
 
 type options struct {
@@ -64,5 +67,6 @@ func NewService(params *Params, opts ...Option) store.Service {
 		user:        params.User,
 		messenger:   params.Messenger,
 		media:       params.Media,
+		postalCode:  params.PostalCode,
 	}
 }

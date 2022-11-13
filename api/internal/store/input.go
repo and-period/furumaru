@@ -321,3 +321,7 @@ type GetOrderInput struct {
 type AggregateOrdersInput struct {
 	UserIDs []string `validate:"omitempty,dive,required"`
 }
+
+type SearchPostalCodeInput struct {
+	PostlCode string `validate:"required,numeric,len=7"`
+}

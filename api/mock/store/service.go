@@ -458,6 +458,21 @@ func (mr *MockServiceMockRecorder) MultiGetShippings(ctx, in interface{}) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetShippings", reflect.TypeOf((*MockService)(nil).MultiGetShippings), ctx, in)
 }
 
+// SearchPostalCode mocks base method.
+func (m *MockService) SearchPostalCode(ctx context.Context, in *store.SearchPostalCodeInput) (*entity.PostalCode, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SearchPostalCode", ctx, in)
+	ret0, _ := ret[0].(*entity.PostalCode)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SearchPostalCode indicates an expected call of SearchPostalCode.
+func (mr *MockServiceMockRecorder) SearchPostalCode(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SearchPostalCode", reflect.TypeOf((*MockService)(nil).SearchPostalCode), ctx, in)
+}
+
 // UpdateCategory mocks base method.
 func (m *MockService) UpdateCategory(ctx context.Context, in *store.UpdateCategoryInput) error {
 	m.ctrl.T.Helper()

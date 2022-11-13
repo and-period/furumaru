@@ -33,6 +33,8 @@ tags:
   description: 注文関連
 - name: User
   description: 購入者関連
+- name: Address
+  description: 住所関連
 - name: Contact
   description: お問い合わせ関連
 - name: Notification
@@ -138,6 +140,9 @@ paths:
     $ref: './paths/v1/users/index.yaml'
   /v1/users/{userId}:
     $ref: './paths/v1/users/_userId/index.yaml'
+  # Address
+  /v1/postal-codes/{postalCode}:
+    $ref: './paths/v1/postal-codes/_postalCode.yaml'
   # Upload
   /v1/upload/coordinators/header:
     $ref: './paths/v1/upload/coordinators/header.yaml'
@@ -298,6 +303,8 @@ components:
       $ref: './components/schemas/v1/user.response.yaml#/userResponse'
     v1UsersResponse:
       $ref: './components/schemas/v1/user.response.yaml#/usersResponse'
+    v1PostalCodeResponse:
+      $ref: './components/schemas/v1/postal_code.response.yaml#/postalCodeResponse'
     v1UploadImageResponse:
       $ref: './components/schemas/v1/upload.response.yaml#/uploadImageResponse'
     v1UploadVideoResponse:
