@@ -67,7 +67,7 @@ func (p *product) MultiGet(ctx context.Context, productIDs []string, fields ...s
 	if err := products.Fill(); err != nil {
 		return nil, err
 	}
-	return products, exception.InternalError(err)
+	return products, nil
 }
 
 func (p *product) Get(ctx context.Context, productID string, fields ...string) (*entity.Product, error) {

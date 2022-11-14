@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
@@ -39,8 +40,13 @@ func (t *productType) List(
 		stmt = stmt.Offset(params.Offset)
 	}
 
-	err := stmt.Find(&productTypes).Error
-	return productTypes, exception.InternalError(err)
+	if err := stmt.Find(&productTypes).Error; err != nil {
+		return nil, exception.InternalError(err)
+	}
+	if err := productTypes.Fill(); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return productTypes, nil
 }
 
 func (t *productType) Count(ctx context.Context, params *ListProductTypesParams) (int64, error) {
@@ -58,10 +64,16 @@ func (t *productType) MultiGet(
 ) (entity.ProductTypes, error) {
 	var productTypes entity.ProductTypes
 
-	err := t.db.Statement(ctx, t.db.DB, productTypeTable, fields...).
-		Where("id IN (?)", productTypeIDs).
-		Find(&productTypes).Error
-	return productTypes, exception.InternalError(err)
+	stmt := t.db.Statement(ctx, t.db.DB, productTypeTable, fields...).
+		Where("id IN (?)", productTypeIDs)
+
+	if err := stmt.Find(&productTypes).Error; err != nil {
+		return nil, exception.InternalError(err)
+	}
+	if err := productTypes.Fill(); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return productTypes, nil
 }
 
 func (t *productType) Get(ctx context.Context, productTypeID string, fields ...string) (*entity.ProductType, error) {
@@ -108,6 +120,10 @@ func (t *productType) Update(ctx context.Context, productTypeID, name, iconURL s
 	return exception.InternalError(err)
 }
 
+func (t *productType) UpdateIcons(ctx context.Context, productTypeID string, icons common.Images) error {
+	_
+}
+
 func (t *productType) Delete(ctx context.Context, productTypeID string) error {
 	_, err := t.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		if _, err := t.get(ctx, tx, productTypeID); err != nil {
@@ -128,8 +144,14 @@ func (t *productType) get(
 ) (*entity.ProductType, error) {
 	var productType *entity.ProductType
 
-	err := t.db.Statement(ctx, tx, productTypeTable, fields...).
-		Where("id = ?", productTypeID).
-		First(&productType).Error
-	return productType, err
+	stmt := t.db.Statement(ctx, tx, productTypeTable, fields...).
+		Where("id = ?", productTypeID)
+
+	if err := stmt.First(&productType).Error; err != nil {
+		return nil, err
+	}
+	if err := productType.Fill(); err != nil {
+		return nil, err
+	}
+	return productType, nil
 }
