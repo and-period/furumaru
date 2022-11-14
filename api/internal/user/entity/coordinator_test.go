@@ -124,62 +124,6 @@ func TestCoordinator_Fill(t *testing.T) {
 	}
 }
 
-func TestCoordinator_FillJSON(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name        string
-		coordinator *Coordinator
-		expect      *Coordinator
-	}{
-		{
-			name: "success",
-			coordinator: &Coordinator{
-				AdminID: "admin-id",
-				Thumbnails: common.Images{
-					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
-				},
-				Headers: common.Images{
-					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
-				},
-			},
-			expect: &Coordinator{
-				AdminID:        "admin-id",
-				ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
-				Thumbnails: common.Images{
-					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
-				},
-				HeadersJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
-				Headers: common.Images{
-					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
-				},
-			},
-		},
-		{
-			name: "success empty",
-			coordinator: &Coordinator{
-				AdminID:    "admin-id",
-				Thumbnails: common.Images{},
-				Headers:    common.Images{},
-			},
-			expect: &Coordinator{
-				AdminID:        "admin-id",
-				ThumbnailsJSON: []byte{},
-				Thumbnails:     common.Images{},
-				HeadersJSON:    []byte{},
-				Headers:        common.Images{},
-			},
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			tt.coordinator.FillJSON()
-			assert.Equal(t, tt.expect, tt.coordinator)
-		})
-	}
-}
-
 func TestCoordinators_IDs(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"encoding/json"
 	"testing"
 	"time"
 
@@ -11,6 +12,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"gorm.io/datatypes"
 )
 
 func TestCoordinator(t *testing.T) {
@@ -846,15 +848,22 @@ func testCoordinator(id string, now time.Time) *entity.Coordinator {
 		CreatedAt:        now,
 		UpdatedAt:        now,
 	}
-	_ = c.FillJSON()
+	fillCoordinatorJSON(c)
 	return c
+}
+
+func fillCoordinatorJSON(c *entity.Coordinator) {
+	thumbnails, _ := json.Marshal(c.Thumbnails)
+	headers, _ := json.Marshal(c.Headers)
+	c.ThumbnailsJSON = datatypes.JSON(thumbnails)
+	c.HeadersJSON = datatypes.JSON(headers)
 }
 
 func fillIgnoreCoordinatorField(c *entity.Coordinator, now time.Time) {
 	if c == nil {
 		return
 	}
-	_ = c.FillJSON()
+	fillCoordinatorJSON(c)
 	c.CreatedAt = now
 	c.UpdatedAt = now
 	c.Admin.CreatedAt = now
