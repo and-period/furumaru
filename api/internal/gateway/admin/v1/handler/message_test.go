@@ -11,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestListMessages(t *testing.T) {
@@ -98,7 +99,7 @@ func TestListMessages(t *testing.T) {
 		{
 			name: "failed to list messages",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.messenger.EXPECT().ListMessages(gomock.Any(), in).Return(nil, int64(0), errmock)
+				mocks.messenger.EXPECT().ListMessages(gomock.Any(), in).Return(nil, int64(0), assert.AnError)
 			},
 			query: "",
 			expect: &testResponse{
@@ -171,7 +172,7 @@ func TestGetMessage(t *testing.T) {
 		{
 			name: "failed to get message",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.messenger.EXPECT().GetMessage(gomock.Any(), in).Return(nil, errmock)
+				mocks.messenger.EXPECT().GetMessage(gomock.Any(), in).Return(nil, assert.AnError)
 			},
 			messageID: "message-id",
 			expect: &testResponse{

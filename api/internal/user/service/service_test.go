@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"errors"
 	"sync"
 	"testing"
 	"time"
@@ -17,8 +16,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
 )
-
-var errmock = errors.New("some error")
 
 type mocks struct {
 	db        *dbMocks

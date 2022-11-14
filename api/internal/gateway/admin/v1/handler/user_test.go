@@ -13,6 +13,7 @@ import (
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestListUsers(t *testing.T) {
@@ -198,7 +199,7 @@ func TestGetUser(t *testing.T) {
 		{
 			name: "failed to get user",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().GetUser(gomock.Any(), userIn).Return(nil, errmock)
+				mocks.user.EXPECT().GetUser(gomock.Any(), userIn).Return(nil, assert.AnError)
 			},
 			userID: "user-id",
 			expect: &testResponse{

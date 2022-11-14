@@ -75,7 +75,7 @@ func TestListProductTypes(t *testing.T) {
 		{
 			name: "failed to list",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().List(gomock.Any(), params).Return(nil, errmock)
+				mocks.db.ProductType.EXPECT().List(gomock.Any(), params).Return(nil, assert.AnError)
 				mocks.db.ProductType.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListProductTypesInput{
@@ -95,7 +95,7 @@ func TestListProductTypes(t *testing.T) {
 			name: "failed to count",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ProductType.EXPECT().List(gomock.Any(), params).Return(productTypes, nil)
-				mocks.db.ProductType.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
+				mocks.db.ProductType.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
 			},
 			input: &store.ListProductTypesInput{
 				Name:       "じゃがいも",
@@ -168,7 +168,7 @@ func TestMultiGetProductTypes(t *testing.T) {
 		{
 			name: "failed to list",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().MultiGet(ctx, []string{"product-type-id"}).Return(nil, errmock)
+				mocks.db.ProductType.EXPECT().MultiGet(ctx, []string{"product-type-id"}).Return(nil, assert.AnError)
 			},
 			input: &store.MultiGetProductTypesInput{
 				ProductTypeIDs: []string{"product-type-id"},
@@ -229,7 +229,7 @@ func TestGetProductType(t *testing.T) {
 		{
 			name: "failed to get product type",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().Get(ctx, "product-type-id").Return(nil, errmock)
+				mocks.db.ProductType.EXPECT().Get(ctx, "product-type-id").Return(nil, assert.AnError)
 			},
 			input: &store.GetProductTypeInput{
 				ProductTypeID: "product-type-id",
@@ -290,7 +290,7 @@ func TestCreateProductType(t *testing.T) {
 		{
 			name: "failed to create",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
+				mocks.db.ProductType.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateProductTypeInput{
 				Name:       "じゃがいも",
@@ -340,7 +340,7 @@ func TestUpdateProductType(t *testing.T) {
 		{
 			name: "failed to update",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().Update(ctx, "product-type-id", "さつまいも", "https://and-period.jp/icon.png").Return(errmock)
+				mocks.db.ProductType.EXPECT().Update(ctx, "product-type-id", "さつまいも", "https://and-period.jp/icon.png").Return(assert.AnError)
 			},
 			input: &store.UpdateProductTypeInput{
 				ProductTypeID: "product-type-id",
@@ -388,7 +388,7 @@ func TestDeleteProductType(t *testing.T) {
 		{
 			name: "failed to delete",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().Delete(ctx, "product-type-id").Return(errmock)
+				mocks.db.ProductType.EXPECT().Delete(ctx, "product-type-id").Return(assert.AnError)
 			},
 			input: &store.DeleteProductTypeInput{
 				ProductTypeID: "product-type-id",

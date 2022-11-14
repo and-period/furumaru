@@ -378,7 +378,7 @@ func TestAdministrator_Create(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
 				administrator: a,
-				auth:          func(ctx context.Context) error { return errmock },
+				auth:          func(ctx context.Context) error { return assert.AnError },
 			},
 			want: want{
 				hasErr: true,
@@ -546,7 +546,7 @@ func TestAdministrator_Delete(t *testing.T) {
 			},
 			args: args{
 				administratorID: "admin-id",
-				auth:            func(ctx context.Context) error { return errmock },
+				auth:            func(ctx context.Context) error { return assert.AnError },
 			},
 			want: want{
 				hasErr: true,

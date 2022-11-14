@@ -7,6 +7,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/request"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateContact(t *testing.T) {
@@ -43,7 +44,7 @@ func TestCreateContact(t *testing.T) {
 		{
 			name: "failed to create contact",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.messenger.EXPECT().CreateContact(gomock.Any(), in).Return(nil, errmock)
+				mocks.messenger.EXPECT().CreateContact(gomock.Any(), in).Return(nil, assert.AnError)
 			},
 			req: &request.CreateContactRequest{
 				Title:       "お問い合わせ件名",

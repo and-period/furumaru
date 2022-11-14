@@ -83,7 +83,7 @@ func TestListProducers(t *testing.T) {
 		{
 			name: "failed to list producers",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().List(gomock.Any(), params).Return(nil, errmock)
+				mocks.db.Producer.EXPECT().List(gomock.Any(), params).Return(nil, assert.AnError)
 				mocks.db.Producer.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &user.ListProducersInput{
@@ -98,7 +98,7 @@ func TestListProducers(t *testing.T) {
 			name: "failed to count producers",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Producer.EXPECT().List(gomock.Any(), params).Return(producers, nil)
-				mocks.db.Producer.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
+				mocks.db.Producer.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
 			},
 			input: &user.ListProducersInput{
 				Limit:  30,
@@ -182,7 +182,7 @@ func TestMultiGetProducers(t *testing.T) {
 		{
 			name: "failed to multi get producers",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().MultiGet(ctx, []string{"admin-id"}).Return(nil, errmock)
+				mocks.db.Producer.EXPECT().MultiGet(ctx, []string{"admin-id"}).Return(nil, assert.AnError)
 			},
 			input: &user.MultiGetProducersInput{
 				ProducerIDs: []string{"admin-id"},
@@ -259,7 +259,7 @@ func TestGetProducer(t *testing.T) {
 		{
 			name: "failed to get producer",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Get(ctx, "admin-id").Return(nil, errmock)
+				mocks.db.Producer.EXPECT().Get(ctx, "admin-id").Return(nil, assert.AnError)
 			},
 			input: &user.GetProducerInput{
 				ProducerID: "admin-id",
@@ -320,8 +320,8 @@ func TestCreateProducer(t *testing.T) {
 						return nil
 					})
 				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(nil)
-				mocks.media.EXPECT().ResizeProducerThumbnail(gomock.Any(), gomock.Any()).Return(errmock)
-				mocks.media.EXPECT().ResizeProducerHeader(gomock.Any(), gomock.Any()).Return(errmock)
+				mocks.media.EXPECT().ResizeProducerThumbnail(gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.media.EXPECT().ResizeProducerHeader(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.CreateProducerInput{
 				Lastname:      "&.",
@@ -345,7 +345,7 @@ func TestCreateProducer(t *testing.T) {
 			name: "success without notify register admin",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Producer.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(nil)
-				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(errmock)
+				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.CreateProducerInput{
 				Lastname:      "&.",
@@ -374,7 +374,7 @@ func TestCreateProducer(t *testing.T) {
 		{
 			name: "failed to create admin",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(errmock)
+				mocks.db.Producer.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.CreateProducerInput{
 				Lastname:      "&.",
@@ -465,8 +465,8 @@ func TestUpdateProducer(t *testing.T) {
 				params.HeaderURL = "https://tmp.and-period.jp/header.png"
 				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(producer, nil)
 				mocks.db.Producer.EXPECT().Update(ctx, "producer-id", &params).Return(nil)
-				mocks.media.EXPECT().ResizeProducerThumbnail(gomock.Any(), gomock.Any()).Return(errmock)
-				mocks.media.EXPECT().ResizeProducerHeader(gomock.Any(), gomock.Any()).Return(errmock)
+				mocks.media.EXPECT().ResizeProducerThumbnail(gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.media.EXPECT().ResizeProducerHeader(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.UpdateProducerInput{
 				ProducerID:    "producer-id",
@@ -519,7 +519,7 @@ func TestUpdateProducer(t *testing.T) {
 			name: "failed to update producer",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(producer, nil)
-				mocks.db.Producer.EXPECT().Update(ctx, "producer-id", params).Return(errmock)
+				mocks.db.Producer.EXPECT().Update(ctx, "producer-id", params).Return(assert.AnError)
 			},
 			input: &user.UpdateProducerInput{
 				ProducerID:    "producer-id",
@@ -612,7 +612,7 @@ func TestUpdateProducerEmail(t *testing.T) {
 		{
 			name: "failed to get by admin id",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(nil, errmock)
+				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(nil, assert.AnError)
 			},
 			input: &user.UpdateProducerEmailInput{
 				ProducerID: "producer-id",
@@ -624,7 +624,7 @@ func TestUpdateProducerEmail(t *testing.T) {
 			name: "failed to admin change email",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(producer, nil)
-				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(errmock)
+				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(assert.AnError)
 			},
 			input: &user.UpdateProducerEmailInput{
 				ProducerID: "producer-id",
@@ -637,7 +637,7 @@ func TestUpdateProducerEmail(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(producer, nil)
 				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(nil)
-				mocks.db.Admin.EXPECT().UpdateEmail(ctx, "producer-id", "test-admin@and-period.jp").Return(errmock)
+				mocks.db.Admin.EXPECT().UpdateEmail(ctx, "producer-id", "test-admin@and-period.jp").Return(assert.AnError)
 			},
 			input: &user.UpdateProducerEmailInput{
 				ProducerID: "producer-id",
@@ -845,7 +845,7 @@ func TestResetProducerPassword(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(producer, nil)
 				mocks.adminAuth.EXPECT().AdminChangePassword(ctx, gomock.Any()).Return(nil)
-				mocks.messenger.EXPECT().NotifyResetAdminPassword(gomock.Any(), gomock.Any()).Return(errmock)
+				mocks.messenger.EXPECT().NotifyResetAdminPassword(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.ResetProducerPasswordInput{
 				ProducerID: "producer-id",
@@ -861,7 +861,7 @@ func TestResetProducerPassword(t *testing.T) {
 		{
 			name: "failed to get by admin id",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(nil, errmock)
+				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(nil, assert.AnError)
 			},
 			input: &user.ResetProducerPasswordInput{
 				ProducerID: "producer-id",
@@ -872,7 +872,7 @@ func TestResetProducerPassword(t *testing.T) {
 			name: "failed to admin change password",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(producer, nil)
-				mocks.adminAuth.EXPECT().AdminChangePassword(ctx, gomock.Any()).Return(errmock)
+				mocks.adminAuth.EXPECT().AdminChangePassword(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.ResetProducerPasswordInput{
 				ProducerID: "producer-id",
@@ -939,7 +939,7 @@ func TestRelateProducers(t *testing.T) {
 		{
 			name: "failed to get coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(nil, errmock)
+				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(nil, assert.AnError)
 			},
 			input: &user.RelateProducersInput{
 				CoordinatorID: "coordinator-id",
@@ -951,7 +951,7 @@ func TestRelateProducers(t *testing.T) {
 			name: "failed to multi get producers",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
-				mocks.db.Producer.EXPECT().MultiGet(ctx, []string{"producer-id"}).Return(nil, errmock)
+				mocks.db.Producer.EXPECT().MultiGet(ctx, []string{"producer-id"}).Return(nil, assert.AnError)
 			},
 			input: &user.RelateProducersInput{
 				CoordinatorID: "coordinator-id",
@@ -980,7 +980,7 @@ func TestRelateProducers(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
 				mocks.db.Producer.EXPECT().MultiGet(ctx, []string{"producer-id"}).Return(producers, nil)
-				mocks.db.Producer.EXPECT().UpdateRelationship(ctx, "coordinator-id", "producer-id").Return(errmock)
+				mocks.db.Producer.EXPECT().UpdateRelationship(ctx, "coordinator-id", "producer-id").Return(assert.AnError)
 			},
 			input: &user.RelateProducersInput{
 				CoordinatorID: "coordinator-id",
@@ -1027,7 +1027,7 @@ func TestUnrelateProducer(t *testing.T) {
 		{
 			name: "failed to update relationship",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().UpdateRelationship(ctx, "", "producer-id").Return(errmock)
+				mocks.db.Producer.EXPECT().UpdateRelationship(ctx, "", "producer-id").Return(assert.AnError)
 			},
 			input: &user.UnrelateProducerInput{
 				ProducerID: "producer-id",
@@ -1072,7 +1072,7 @@ func TestDeleteProducer(t *testing.T) {
 		{
 			name: "failed to delete",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Delete(ctx, "producer-id", gomock.Any()).Return(errmock)
+				mocks.db.Producer.EXPECT().Delete(ctx, "producer-id", gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.DeleteProducerInput{
 				ProducerID: "producer-id",

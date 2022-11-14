@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetAuth(t *testing.T) {
@@ -49,7 +50,7 @@ func TestGetAuth(t *testing.T) {
 			name: "failed to get admin auth",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				in := &user.GetAdminAuthInput{AccessToken: tokenmock}
-				mocks.user.EXPECT().GetAdminAuth(gomock.Any(), in).Return(nil, errmock)
+				mocks.user.EXPECT().GetAdminAuth(gomock.Any(), in).Return(nil, assert.AnError)
 			},
 			expect: &testResponse{
 				code: http.StatusInternalServerError,
@@ -115,7 +116,7 @@ func TestSignIn(t *testing.T) {
 					Key:      "username",
 					Password: "password",
 				}
-				mocks.user.EXPECT().SignInAdmin(gomock.Any(), in).Return(nil, errmock)
+				mocks.user.EXPECT().SignInAdmin(gomock.Any(), in).Return(nil, assert.AnError)
 			},
 			req: &request.SignInRequest{
 				Username: "username",
@@ -158,7 +159,7 @@ func TestSignOut(t *testing.T) {
 			name: "failed to sign out admin",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				in := &user.SignOutAdminInput{AccessToken: tokenmock}
-				mocks.user.EXPECT().SignOutAdmin(gomock.Any(), in).Return(errmock)
+				mocks.user.EXPECT().SignOutAdmin(gomock.Any(), in).Return(assert.AnError)
 			},
 			expect: &testResponse{
 				code: http.StatusInternalServerError,
@@ -221,7 +222,7 @@ func TestRefreshAuthToken(t *testing.T) {
 				in := &user.RefreshAdminTokenInput{
 					RefreshToken: "refresh-token",
 				}
-				mocks.user.EXPECT().RefreshAdminToken(gomock.Any(), in).Return(nil, errmock)
+				mocks.user.EXPECT().RefreshAdminToken(gomock.Any(), in).Return(nil, assert.AnError)
 			},
 			req: &request.RefreshAuthTokenRequest{
 				RefreshToken: "refresh-token",
@@ -273,7 +274,7 @@ func TestRegisterDevice(t *testing.T) {
 					AdminID: idmock,
 					Device:  "device",
 				}
-				mocks.user.EXPECT().RegisterAdminDevice(gomock.Any(), in).Return(errmock)
+				mocks.user.EXPECT().RegisterAdminDevice(gomock.Any(), in).Return(assert.AnError)
 			},
 			req: &request.RegisterAuthDeviceRequest{
 				Device: "device",
@@ -325,7 +326,7 @@ func TestUpdateAuthEmail(t *testing.T) {
 					AccessToken: tokenmock,
 					Email:       "test-user@and-period.jp",
 				}
-				mocks.user.EXPECT().UpdateAdminEmail(gomock.Any(), in).Return(errmock)
+				mocks.user.EXPECT().UpdateAdminEmail(gomock.Any(), in).Return(assert.AnError)
 			},
 			req: &request.UpdateAuthEmailRequest{
 				Email: "test-user@and-period.jp",
@@ -377,7 +378,7 @@ func TestVerifyAuthEmail(t *testing.T) {
 					AccessToken: tokenmock,
 					VerifyCode:  "123456",
 				}
-				mocks.user.EXPECT().VerifyAdminEmail(gomock.Any(), in).Return(errmock)
+				mocks.user.EXPECT().VerifyAdminEmail(gomock.Any(), in).Return(assert.AnError)
 			},
 			req: &request.VerifyAuthEmailRequest{
 				VerifyCode: "123456",
@@ -435,7 +436,7 @@ func TestUpdateAdminPassword(t *testing.T) {
 					NewPassword:          "!Qaz3edc",
 					PasswordConfirmation: "!Qaz3edc",
 				}
-				mocks.user.EXPECT().UpdateAdminPassword(gomock.Any(), in).Return(errmock)
+				mocks.user.EXPECT().UpdateAdminPassword(gomock.Any(), in).Return(assert.AnError)
 			},
 			req: &request.UpdateAuthPasswordRequest{
 				OldPassword:          "!Qaz2wsx",

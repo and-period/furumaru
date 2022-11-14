@@ -384,7 +384,7 @@ func TestCoordinator_Create(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
 				coordinator: c,
-				auth:        func(ctx context.Context) error { return errmock },
+				auth:        func(ctx context.Context) error { return assert.AnError },
 			},
 			want: want{
 				hasErr: true,
@@ -802,7 +802,7 @@ func TestCoordinator_Delete(t *testing.T) {
 			},
 			args: args{
 				coordinatorID: "admin-id",
-				auth:          func(ctx context.Context) error { return errmock },
+				auth:          func(ctx context.Context) error { return assert.AnError },
 			},
 			want: want{
 				hasErr: true,

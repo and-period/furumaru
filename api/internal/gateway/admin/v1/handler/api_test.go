@@ -3,7 +3,6 @@ package handler
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -38,7 +37,6 @@ import (
 var (
 	idmock    = "kSByoE6FetnPs5Byk3a9Zx"
 	tokenmock = "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ"
-	errmock   = errors.New("some error")
 )
 
 type mocks struct {

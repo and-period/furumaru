@@ -2,7 +2,6 @@ package scheduler
 
 import (
 	"context"
-	"errors"
 	"sync"
 	"testing"
 	"time"
@@ -17,8 +16,6 @@ import (
 	"go.uber.org/zap"
 	"golang.org/x/sync/semaphore"
 )
-
-var errmock = errors.New("some error")
 
 type mocks struct {
 	db        *dbMocks

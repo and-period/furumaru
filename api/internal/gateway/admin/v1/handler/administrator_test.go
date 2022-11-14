@@ -11,6 +11,7 @@ import (
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestListAdministrators(t *testing.T) {
@@ -115,7 +116,7 @@ func TestListAdministrators(t *testing.T) {
 		{
 			name: "failed to get administrators",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().ListAdministrators(gomock.Any(), in).Return(nil, int64(0), errmock)
+				mocks.user.EXPECT().ListAdministrators(gomock.Any(), in).Return(nil, int64(0), assert.AnError)
 			},
 			query: "",
 			expect: &testResponse{
@@ -187,7 +188,7 @@ func TestGetAdministrator(t *testing.T) {
 		{
 			name: "failed to get admin",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().GetAdministrator(gomock.Any(), in).Return(nil, errmock)
+				mocks.user.EXPECT().GetAdministrator(gomock.Any(), in).Return(nil, assert.AnError)
 			},
 			adminID: "admin-id",
 			expect: &testResponse{
@@ -271,7 +272,7 @@ func TestCreateAdministrator(t *testing.T) {
 		{
 			name: "failed to create admin",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().CreateAdministrator(gomock.Any(), in).Return(nil, errmock)
+				mocks.user.EXPECT().CreateAdministrator(gomock.Any(), in).Return(nil, assert.AnError)
 			},
 			req: &request.CreateAdministratorRequest{
 				Lastname:      "&.",
@@ -335,7 +336,7 @@ func TestUpdateAdministrator(t *testing.T) {
 		{
 			name: "failed to update administrator",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().UpdateAdministrator(gomock.Any(), in).Return(errmock)
+				mocks.user.EXPECT().UpdateAdministrator(gomock.Any(), in).Return(assert.AnError)
 			},
 			administratorID: "administrator-id",
 			req: &request.UpdateAdministratorRequest{
@@ -392,7 +393,7 @@ func TestUpdateAdministratorEmail(t *testing.T) {
 		{
 			name: "failed to update administartor email",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().UpdateAdministratorEmail(gomock.Any(), in).Return(errmock)
+				mocks.user.EXPECT().UpdateAdministratorEmail(gomock.Any(), in).Return(assert.AnError)
 			},
 			administratorID: "administrator-id",
 			req: &request.UpdateAdministratorEmailRequest{
@@ -440,7 +441,7 @@ func TestResetAdministratorPassword(t *testing.T) {
 		{
 			name: "failed to update reset administrator password",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().ResetAdministratorPassword(gomock.Any(), in).Return(errmock)
+				mocks.user.EXPECT().ResetAdministratorPassword(gomock.Any(), in).Return(assert.AnError)
 			},
 			administratorID: "administrator-id",
 			expect: &testResponse{
@@ -485,7 +486,7 @@ func TestDeleteAdministrator(t *testing.T) {
 		{
 			name: "failed to delete administrator",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().DeleteAdministrator(gomock.Any(), in).Return(errmock)
+				mocks.user.EXPECT().DeleteAdministrator(gomock.Any(), in).Return(assert.AnError)
 			},
 			administratorID: "administrator-id",
 			expect: &testResponse{

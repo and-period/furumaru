@@ -118,7 +118,7 @@ func TestFilterAccessProduct(t *testing.T) {
 		{
 			name: "coordinator failed to get producers",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().ListProducers(gomock.Any(), producersIn).Return(nil, int64(0), errmock)
+				mocks.user.EXPECT().ListProducers(gomock.Any(), producersIn).Return(nil, int64(0), assert.AnError)
 			},
 			options: []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("coordinator-id")},
 			expect:  http.StatusInternalServerError,
@@ -127,7 +127,7 @@ func TestFilterAccessProduct(t *testing.T) {
 			name: "coordinator failed to get product",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.user.EXPECT().ListProducers(gomock.Any(), producersIn).Return(producers, int64(1), nil)
-				mocks.store.EXPECT().GetProduct(gomock.Any(), productIn).Return(nil, errmock)
+				mocks.store.EXPECT().GetProduct(gomock.Any(), productIn).Return(nil, assert.AnError)
 			},
 			options: []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("coordinator-id")},
 			expect:  http.StatusInternalServerError,
@@ -151,7 +151,7 @@ func TestFilterAccessProduct(t *testing.T) {
 		{
 			name: "producer failed to get product",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().GetProduct(gomock.Any(), productIn).Return(nil, errmock)
+				mocks.store.EXPECT().GetProduct(gomock.Any(), productIn).Return(nil, assert.AnError)
 			},
 			options: []testOption{withRole(uentity.AdminRoleProducer), withAdminID("coordinator-id")},
 			expect:  http.StatusInternalServerError,
@@ -391,7 +391,7 @@ func TestListProducts(t *testing.T) {
 		{
 			name: "failed to list producers",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().ListProducers(gomock.Any(), psIn).Return(nil, int64(0), errmock)
+				mocks.user.EXPECT().ListProducers(gomock.Any(), psIn).Return(nil, int64(0), assert.AnError)
 			},
 			options: []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("coordinator-id")},
 			query:   "",
@@ -402,7 +402,7 @@ func TestListProducts(t *testing.T) {
 		{
 			name: "failed to list products",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().ListProducts(gomock.Any(), productsIn).Return(nil, int64(0), errmock)
+				mocks.store.EXPECT().ListProducts(gomock.Any(), productsIn).Return(nil, int64(0), assert.AnError)
 			},
 			query: "?name=じゃがいも&coordinatorId=coordinator-id&producerId=producer-id",
 			expect: &testResponse{
@@ -413,7 +413,7 @@ func TestListProducts(t *testing.T) {
 			name: "failed to multi get producers",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().ListProducts(gomock.Any(), productsIn).Return(products, int64(1), nil)
-				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(nil, errmock)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(nil, assert.AnError)
 				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
 				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(productTypes, nil)
 			},
@@ -427,7 +427,7 @@ func TestListProducts(t *testing.T) {
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().ListProducts(gomock.Any(), productsIn).Return(products, int64(1), nil)
 				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
-				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(nil, errmock)
+				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(nil, assert.AnError)
 				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(productTypes, nil)
 			},
 			query: "?name=じゃがいも&coordinatorId=coordinator-id&producerId=producer-id",
@@ -441,7 +441,7 @@ func TestListProducts(t *testing.T) {
 				mocks.store.EXPECT().ListProducts(gomock.Any(), productsIn).Return(products, int64(1), nil)
 				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
 				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
-				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(nil, errmock)
+				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(nil, assert.AnError)
 			},
 			query: "?name=じゃがいも&coordinatorId=coordinator-id&producerId=producer-id",
 			expect: &testResponse{
@@ -617,7 +617,7 @@ func TestGetProduct(t *testing.T) {
 		{
 			name: "failed to get product",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().GetProduct(gomock.Any(), productIn).Return(nil, errmock)
+				mocks.store.EXPECT().GetProduct(gomock.Any(), productIn).Return(nil, assert.AnError)
 			},
 			productID: "product-id",
 			expect: &testResponse{
@@ -628,7 +628,7 @@ func TestGetProduct(t *testing.T) {
 			name: "failed to get producer",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().GetProduct(gomock.Any(), productIn).Return(product, nil)
-				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(nil, errmock)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(nil, assert.AnError)
 				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(category, nil)
 				mocks.store.EXPECT().GetProductType(gomock.Any(), productTypeIn).Return(productType, nil)
 			},
@@ -642,7 +642,7 @@ func TestGetProduct(t *testing.T) {
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().GetProduct(gomock.Any(), productIn).Return(product, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
-				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(nil, errmock)
+				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(nil, assert.AnError)
 				mocks.store.EXPECT().GetProductType(gomock.Any(), productTypeIn).Return(productType, nil)
 			},
 			productID: "product-id",
@@ -656,7 +656,7 @@ func TestGetProduct(t *testing.T) {
 				mocks.store.EXPECT().GetProduct(gomock.Any(), productIn).Return(product, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(category, nil)
-				mocks.store.EXPECT().GetProductType(gomock.Any(), productTypeIn).Return(nil, errmock)
+				mocks.store.EXPECT().GetProductType(gomock.Any(), productTypeIn).Return(nil, assert.AnError)
 			},
 			productID: "product-id",
 			expect: &testResponse{
@@ -950,7 +950,7 @@ func TestCreateProduct(t *testing.T) {
 		{
 			name: "failed to list producers",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().ListProducers(gomock.Any(), producersIn).Return(nil, int64(0), errmock)
+				mocks.user.EXPECT().ListProducers(gomock.Any(), producersIn).Return(nil, int64(0), assert.AnError)
 			},
 			options: []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("coordinator-id")},
 			req: &request.CreateProductRequest{
@@ -1050,7 +1050,7 @@ func TestCreateProduct(t *testing.T) {
 		{
 			name: "failed to get producer",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(nil, errmock)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(nil, assert.AnError)
 				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(category, nil)
 				mocks.store.EXPECT().GetProductType(gomock.Any(), productTypeIn).Return(productType, nil)
 			},
@@ -1085,7 +1085,7 @@ func TestCreateProduct(t *testing.T) {
 			name: "failed to get category",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
-				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(nil, errmock)
+				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(nil, assert.AnError)
 				mocks.store.EXPECT().GetProductType(gomock.Any(), productTypeIn).Return(productType, nil)
 			},
 			req: &request.CreateProductRequest{
@@ -1120,7 +1120,7 @@ func TestCreateProduct(t *testing.T) {
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(category, nil)
-				mocks.store.EXPECT().GetProductType(gomock.Any(), productTypeIn).Return(nil, errmock)
+				mocks.store.EXPECT().GetProductType(gomock.Any(), productTypeIn).Return(nil, assert.AnError)
 			},
 			req: &request.CreateProductRequest{
 				Name:            "新鮮なじゃがいも",
@@ -1194,7 +1194,7 @@ func TestCreateProduct(t *testing.T) {
 					DoAndReturn(func(ctx context.Context, in *media.UploadFileInput) (string, error) {
 						return in.URL, nil
 					}).Times(2)
-				mocks.store.EXPECT().CreateProduct(gomock.Any(), productIn).Return(nil, errmock)
+				mocks.store.EXPECT().CreateProduct(gomock.Any(), productIn).Return(nil, assert.AnError)
 			},
 			req: &request.CreateProductRequest{
 				Name:            "新鮮なじゃがいも",
@@ -1348,7 +1348,7 @@ func TestUpdateProduct(t *testing.T) {
 					DoAndReturn(func(ctx context.Context, in *media.UploadFileInput) (string, error) {
 						return in.URL, nil
 					}).Times(2)
-				mocks.store.EXPECT().UpdateProduct(gomock.Any(), in).Return(errmock)
+				mocks.store.EXPECT().UpdateProduct(gomock.Any(), in).Return(assert.AnError)
 			},
 			productID: "product-id",
 			req: &request.UpdateProductRequest{

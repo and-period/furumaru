@@ -203,7 +203,7 @@ func TestListRelateProducers(t *testing.T) {
 		{
 			name: "failed to get producers",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().ListProducers(gomock.Any(), in).Return(nil, int64(0), errmock)
+				mocks.user.EXPECT().ListProducers(gomock.Any(), in).Return(nil, int64(0), assert.AnError)
 			},
 			coordinatorID: "coordinator-id",
 			query:         "",
@@ -388,7 +388,7 @@ func TestUnrelateProducer(t *testing.T) {
 			name: "failed to unrelated producer",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.user.EXPECT().UnrelateProducer(gomock.Any(), producerIn).Return(errmock)
+				mocks.user.EXPECT().UnrelateProducer(gomock.Any(), producerIn).Return(assert.AnError)
 			},
 			coordinatorID: "coordinator-id",
 			producerID:    "producer-id",

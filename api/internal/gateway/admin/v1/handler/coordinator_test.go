@@ -181,7 +181,7 @@ func TestListCoordinator(t *testing.T) {
 		{
 			name: "failed to get coordinators",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().ListCoordinators(gomock.Any(), in).Return(nil, int64(0), errmock)
+				mocks.user.EXPECT().ListCoordinators(gomock.Any(), in).Return(nil, int64(0), assert.AnError)
 			},
 			query: "",
 			expect: &testResponse{
@@ -293,7 +293,7 @@ func TestGetCoordinator(t *testing.T) {
 		{
 			name: "failed to get coordinator",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), in).Return(nil, errmock)
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), in).Return(nil, assert.AnError)
 			},
 			coordinatorID: "coordinator-id",
 			expect: &testResponse{
@@ -500,7 +500,7 @@ func TestCreateCoordinator(t *testing.T) {
 				in := *in
 				in.ThumbnailURL = ""
 				in.HeaderURL = ""
-				mocks.user.EXPECT().CreateCoordinator(gomock.Any(), &in).Return(nil, errmock)
+				mocks.user.EXPECT().CreateCoordinator(gomock.Any(), &in).Return(nil, assert.AnError)
 			},
 			req: &request.CreateCoordinatorRequest{
 				Lastname:         "&.",
@@ -657,7 +657,7 @@ func TestUpdateCoordinator(t *testing.T) {
 				in := *in
 				in.ThumbnailURL = ""
 				in.HeaderURL = ""
-				mocks.user.EXPECT().UpdateCoordinator(gomock.Any(), &in).Return(errmock)
+				mocks.user.EXPECT().UpdateCoordinator(gomock.Any(), &in).Return(assert.AnError)
 			},
 			coordinatorID: "coordinator-id",
 			req: &request.UpdateCoordinatorRequest{
@@ -722,7 +722,7 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 		{
 			name: "failed to update coordinator email",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().UpdateCoordinatorEmail(gomock.Any(), in).Return(errmock)
+				mocks.user.EXPECT().UpdateCoordinatorEmail(gomock.Any(), in).Return(assert.AnError)
 			},
 			coordinatorID: "coordinator-id",
 			req: &request.UpdateCoordinatorEmailRequest{
@@ -770,7 +770,7 @@ func TestResetCoordinatorPassword(t *testing.T) {
 		{
 			name: "failed to reset coordinator password",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().ResetCoordinatorPassword(gomock.Any(), in).Return(errmock)
+				mocks.user.EXPECT().ResetCoordinatorPassword(gomock.Any(), in).Return(assert.AnError)
 			},
 			coordinatorID: "coordinator-id",
 			expect: &testResponse{
@@ -815,7 +815,7 @@ func TestDeleteCoordinator(t *testing.T) {
 		{
 			name: "failed to delete coordinator",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().DeleteCoordinator(gomock.Any(), in).Return(errmock)
+				mocks.user.EXPECT().DeleteCoordinator(gomock.Any(), in).Return(assert.AnError)
 			},
 			coordinatorID: "coordinator-id",
 			expect: &testResponse{

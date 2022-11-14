@@ -11,6 +11,7 @@ import (
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestListProductTypes(t *testing.T) {
@@ -181,7 +182,7 @@ func TestListProductTypes(t *testing.T) {
 		{
 			name: "failed to get product types",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().ListProductTypes(gomock.Any(), typesIn).Return(nil, int64(0), errmock)
+				mocks.store.EXPECT().ListProductTypes(gomock.Any(), typesIn).Return(nil, int64(0), assert.AnError)
 			},
 			categoryID: "category-id",
 			query:      "?name=いも",
@@ -193,7 +194,7 @@ func TestListProductTypes(t *testing.T) {
 			name: "failed to get categories",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().ListProductTypes(gomock.Any(), typesIn).Return(productTypes, int64(0), nil)
-				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(nil, errmock)
+				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(nil, assert.AnError)
 			},
 			categoryID: "category-id",
 			query:      "?name=いも",
@@ -275,7 +276,7 @@ func TestCreateProductType(t *testing.T) {
 		{
 			name: "failed to get category",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(nil, errmock)
+				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(nil, assert.AnError)
 			},
 			categoryID: "category-id",
 			req: &request.CreateProductTypeRequest{
@@ -290,7 +291,7 @@ func TestCreateProductType(t *testing.T) {
 			name: "failed to create product type",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(category, nil)
-				mocks.store.EXPECT().CreateProductType(gomock.Any(), typeIn).Return(nil, errmock)
+				mocks.store.EXPECT().CreateProductType(gomock.Any(), typeIn).Return(nil, assert.AnError)
 			},
 			categoryID: "category-id",
 			req: &request.CreateProductTypeRequest{
@@ -348,7 +349,7 @@ func TestUpdateProductType(t *testing.T) {
 		{
 			name: "failed to update product type",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().UpdateProductType(gomock.Any(), in).Return(errmock)
+				mocks.store.EXPECT().UpdateProductType(gomock.Any(), in).Return(assert.AnError)
 			},
 			categoryID:    "category-id",
 			productTypeID: "product-type-id",
@@ -400,7 +401,7 @@ func TestDeleteProductType(t *testing.T) {
 		{
 			name: "failed to delete product type",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().DeleteProductType(gomock.Any(), in).Return(errmock)
+				mocks.store.EXPECT().DeleteProductType(gomock.Any(), in).Return(assert.AnError)
 			},
 			categoryID:    "category-id",
 			productTypeID: "product-type-id",

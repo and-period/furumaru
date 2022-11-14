@@ -453,7 +453,7 @@ func TestProducer_Create(t *testing.T) {
 			},
 			args: args{
 				producer: p,
-				auth:     func(ctx context.Context) error { return errmock },
+				auth:     func(ctx context.Context) error { return assert.AnError },
 			},
 			want: want{
 				hasErr: true,
@@ -993,7 +993,7 @@ func TestProducer_Delete(t *testing.T) {
 			},
 			args: args{
 				producerID: "admin-id",
-				auth:       func(ctx context.Context) error { return errmock },
+				auth:       func(ctx context.Context) error { return assert.AnError },
 			},
 			want: want{
 				hasErr: true,

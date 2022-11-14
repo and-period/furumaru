@@ -167,7 +167,7 @@ func TestListNotifications(t *testing.T) {
 		{
 			name: "failed to list notifications",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.messenger.EXPECT().ListNotifications(gomock.Any(), notificationsIn).Return(nil, int64(0), errmock)
+				mocks.messenger.EXPECT().ListNotifications(gomock.Any(), notificationsIn).Return(nil, int64(0), assert.AnError)
 			},
 			query: "?since=1640962800&until=1640962800",
 			expect: &testResponse{
@@ -178,7 +178,7 @@ func TestListNotifications(t *testing.T) {
 			name: "failed to multi get admins",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.messenger.EXPECT().ListNotifications(gomock.Any(), notificationsIn).Return(notifications, int64(1), nil)
-				mocks.user.EXPECT().MultiGetAdmins(gomock.Any(), adminsIn).Return(nil, errmock)
+				mocks.user.EXPECT().MultiGetAdmins(gomock.Any(), adminsIn).Return(nil, assert.AnError)
 			},
 			query: "?since=1640962800&until=1640962800",
 			expect: &testResponse{
@@ -272,7 +272,7 @@ func TestGetNotification(t *testing.T) {
 		{
 			name: "failed to get notification",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.messenger.EXPECT().GetNotification(gomock.Any(), notificationIn).Return(nil, errmock)
+				mocks.messenger.EXPECT().GetNotification(gomock.Any(), notificationIn).Return(nil, assert.AnError)
 			},
 			notificationID: "notification-id",
 			expect: &testResponse{
@@ -283,7 +283,7 @@ func TestGetNotification(t *testing.T) {
 			name: "failed to get admin",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.messenger.EXPECT().GetNotification(gomock.Any(), notificationIn).Return(notification, nil)
-				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(nil, errmock)
+				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(nil, assert.AnError)
 			},
 			notificationID: "notification-id",
 			expect: &testResponse{
@@ -385,7 +385,7 @@ func TestCreateNotification(t *testing.T) {
 		{
 			name: "failed to create notification",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.messenger.EXPECT().CreateNotification(gomock.Any(), in).Return(nil, errmock)
+				mocks.messenger.EXPECT().CreateNotification(gomock.Any(), in).Return(nil, assert.AnError)
 			},
 			req: &request.CreateNotificationRequest{
 				Title: "キャベツ祭り開催",
@@ -459,7 +459,7 @@ func TestUpdateNotification(t *testing.T) {
 		{
 			name: "failed to update notification",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.messenger.EXPECT().UpdateNotification(gomock.Any(), in).Return(errmock)
+				mocks.messenger.EXPECT().UpdateNotification(gomock.Any(), in).Return(assert.AnError)
 			},
 			notificationID: "notification-id",
 			req: &request.UpdateNotificationRequest{
@@ -514,7 +514,7 @@ func TestDeleteNotification(t *testing.T) {
 		{
 			name: "failed to delete notification",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.messenger.EXPECT().DeleteNotification(gomock.Any(), in).Return(errmock)
+				mocks.messenger.EXPECT().DeleteNotification(gomock.Any(), in).Return(assert.AnError)
 			},
 			notificationID: "notification-id",
 			expect: &testResponse{
