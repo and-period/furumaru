@@ -61,13 +61,16 @@ func (p *product) Count(ctx context.Context, params *ListProductsParams) (int64,
 func (p *product) MultiGet(ctx context.Context, productIDs []string, fields ...string) (entity.Products, error) {
 	var products entity.Products
 
-	err := p.db.Statement(ctx, p.db.DB, productTable, fields...).
-		Where("id IN (?)", productIDs).
-		Find(&products).Error
-	if err := products.Fill(); err != nil {
-		return nil, err
+	stmt := p.db.Statement(ctx, p.db.DB, productTable, fields...).
+		Where("id IN (?)", productIDs)
+
+	if err := stmt.Find(&products).Error; err != nil {
+		return nil, exception.InternalError(err)
 	}
-	return products, exception.InternalError(err)
+	if err := products.Fill(); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return products, nil
 }
 
 func (p *product) Get(ctx context.Context, productID string, fields ...string) (*entity.Product, error) {
