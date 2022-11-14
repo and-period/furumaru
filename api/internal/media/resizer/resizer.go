@@ -149,6 +149,8 @@ func (r *resizer) run(ctx context.Context, payload *entity.ResizerPayload) error
 		return r.producerHeader(ctx, payload)
 	case entity.FileTypeProductMedia:
 		return r.productMedia(ctx, payload)
+	case entity.FileTypeProductTypeIcon:
+		return r.productTypeIcon(ctx, payload)
 	default:
 		return fmt.Errorf("resizer: unknown file type. type=%d: %w", payload.FileType, exception.ErrInvalidArgument)
 	}

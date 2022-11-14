@@ -101,7 +101,12 @@ func testFilePath(t *testing.T, filename string) string {
 
 func TestResizer(t *testing.T) {
 	t.Parallel()
-	w := NewResizer(&Params{}, WithLogger(zap.NewNop()), WithConcurrency(1), WithConcurrency(3))
+	w := NewResizer(&Params{},
+		WithLogger(zap.NewNop()),
+		WithConcurrency(1),
+		WithConcurrency(3),
+		WithMaxRetires(3),
+	)
 	assert.NotNil(t, w)
 }
 
@@ -240,6 +245,21 @@ func TestResizer_Run(t *testing.T) {
 			payload: &entity.ResizerPayload{
 				TargetID: "target-id",
 				FileType: entity.FileTypeProductMedia,
+				URLs:     []string{"http://example.com/media/image.png"},
+			},
+			expectErr: nil,
+		},
+		{
+			name: "received product type icon event",
+			setup: func(ctx context.Context, mocks *mocks) {
+				file := testImageFile(t)
+				mocks.storage.EXPECT().Download(ctx, gomock.Any()).Return(file, nil)
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return("", nil).AnyTimes()
+				mocks.store.EXPECT().UpdateProductTypeIcons(ctx, gomock.Any()).Return(nil)
+			},
+			payload: &entity.ResizerPayload{
+				TargetID: "target-id",
+				FileType: entity.FileTypeProductTypeIcon,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
 			expectErr: nil,

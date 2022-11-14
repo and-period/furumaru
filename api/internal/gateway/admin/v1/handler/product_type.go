@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/gin-gonic/gin"
@@ -119,10 +120,19 @@ func (h *handler) CreateProductType(ctx *gin.Context) {
 	}
 	category := service.NewCategory(scategory)
 
+	uploadIn := &media.UploadFileInput{
+		URL: req.IconURL,
+	}
+	iconURL, err := h.media.UploadProductTypeIcon(ctx, uploadIn)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+
 	typeIn := &store.CreateProductTypeInput{
 		CategoryID: category.ID,
 		Name:       req.Name,
-		IconURL:    req.IconURL,
+		IconURL:    iconURL,
 	}
 	sproductType, err := h.store.CreateProductType(ctx, typeIn)
 	if err != nil {
@@ -146,10 +156,19 @@ func (h *handler) UpdateProductType(ctx *gin.Context) {
 		return
 	}
 
+	uploadIn := &media.UploadFileInput{
+		URL: req.IconURL,
+	}
+	iconURL, err := h.media.UploadProductTypeIcon(ctx, uploadIn)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+
 	in := &store.UpdateProductTypeInput{
 		ProductTypeID: util.GetParam(ctx, "productTypeId"),
 		Name:          req.Name,
-		IconURL:       req.IconURL,
+		IconURL:       iconURL,
 	}
 	if err := h.store.UpdateProductType(ctx, in); err != nil {
 		httpError(ctx, err)

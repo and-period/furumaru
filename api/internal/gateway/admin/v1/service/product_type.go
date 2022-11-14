@@ -19,6 +19,7 @@ func NewProductType(productType *entity.ProductType) *ProductType {
 			CategoryID: productType.CategoryID,
 			Name:       productType.Name,
 			IconURL:    productType.IconURL,
+			Icons:      NewImages(productType.Icons).Response(),
 			CreatedAt:  productType.CreatedAt.Unix(),
 			UpdatedAt:  productType.UpdatedAt.Unix(),
 		},

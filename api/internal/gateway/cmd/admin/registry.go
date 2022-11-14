@@ -207,7 +207,6 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	v1Params := &v1.Params{
 		WaitGroup: params.waitGroup,
 		Enforcer:  enforcer,
-		Storage:   storage.NewBucket(awscfg, storageParams),
 		User:      userService,
 		Store:     storeService,
 		Messenger: messengerService,
