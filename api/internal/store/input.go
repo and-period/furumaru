@@ -73,6 +73,11 @@ type UpdateProductTypeInput struct {
 	IconURL       string `validate:"required"`
 }
 
+type UpdateProductTypeIconsInput struct {
+	ProductTypeID string        `validate:"required"`
+	Icons         common.Images `validate:""`
+}
+
 type DeleteProductTypeInput struct {
 	ProductTypeID string `validate:"required"`
 }

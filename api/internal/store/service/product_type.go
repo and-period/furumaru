@@ -88,6 +88,14 @@ func (s *service) UpdateProductType(ctx context.Context, in *store.UpdateProduct
 	return exception.InternalError(err)
 }
 
+func (s *service) UpdateProductTypeIcons(ctx context.Context, in *store.UpdateProductTypeIconsInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	err := s.db.ProductType.UpdateIcons(ctx, in.ProductTypeID, in.Icons)
+	return exception.InternalError(err)
+}
+
 func (s *service) DeleteProductType(ctx context.Context, in *store.DeleteProductTypeInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
