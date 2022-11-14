@@ -71,7 +71,7 @@ func TestMessenger(t *testing.T) {
 		{
 			name: "failed to get message template",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.MessageTemplate.EXPECT().Get(ctx, entity.MessageIDNotification).Return(nil, errmock)
+				mocks.db.MessageTemplate.EXPECT().Get(ctx, entity.MessageIDNotification).Return(nil, assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -86,13 +86,13 @@ func TestMessenger(t *testing.T) {
 					ReceivedAt:  now,
 				},
 			},
-			expectErr: errmock,
+			expectErr: assert.AnError,
 		},
 		{
 			name: "failed to multi create messages",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.MessageTemplate.EXPECT().Get(ctx, entity.MessageIDNotification).Return(template, nil)
-				mocks.db.Message.EXPECT().MultiCreate(ctx, gomock.Any()).Return(errmock)
+				mocks.db.Message.EXPECT().MultiCreate(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -107,7 +107,7 @@ func TestMessenger(t *testing.T) {
 					ReceivedAt:  now,
 				},
 			},
-			expectErr: errmock,
+			expectErr: assert.AnError,
 		},
 	}
 

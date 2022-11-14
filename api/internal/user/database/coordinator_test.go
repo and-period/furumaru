@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"encoding/json"
 	"testing"
 	"time"
 
@@ -11,6 +12,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"gorm.io/datatypes"
 )
 
 func TestCoordinator(t *testing.T) {
@@ -382,7 +384,7 @@ func TestCoordinator_Create(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
 			args: args{
 				coordinator: c,
-				auth:        func(ctx context.Context) error { return errmock },
+				auth:        func(ctx context.Context) error { return assert.AnError },
 			},
 			want: want{
 				hasErr: true,
@@ -800,7 +802,7 @@ func TestCoordinator_Delete(t *testing.T) {
 			},
 			args: args{
 				coordinatorID: "admin-id",
-				auth:          func(ctx context.Context) error { return errmock },
+				auth:          func(ctx context.Context) error { return assert.AnError },
 			},
 			want: want{
 				hasErr: true,
@@ -846,15 +848,22 @@ func testCoordinator(id string, now time.Time) *entity.Coordinator {
 		CreatedAt:        now,
 		UpdatedAt:        now,
 	}
-	_ = c.FillJSON()
+	fillCoordinatorJSON(c)
 	return c
+}
+
+func fillCoordinatorJSON(c *entity.Coordinator) {
+	thumbnails, _ := json.Marshal(c.Thumbnails)
+	headers, _ := json.Marshal(c.Headers)
+	c.ThumbnailsJSON = datatypes.JSON(thumbnails)
+	c.HeadersJSON = datatypes.JSON(headers)
 }
 
 func fillIgnoreCoordinatorField(c *entity.Coordinator, now time.Time) {
 	if c == nil {
 		return
 	}
-	_ = c.FillJSON()
+	fillCoordinatorJSON(c)
 	c.CreatedAt = now
 	c.UpdatedAt = now
 	c.Admin.CreatedAt = now

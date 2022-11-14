@@ -100,7 +100,7 @@ func TestListShippings(t *testing.T) {
 		{
 			name: "failed to list shippings",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shipping.EXPECT().List(gomock.Any(), params).Return(nil, errmock)
+				mocks.db.Shipping.EXPECT().List(gomock.Any(), params).Return(nil, assert.AnError)
 				mocks.db.Shipping.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListShippingsInput{
@@ -118,7 +118,7 @@ func TestListShippings(t *testing.T) {
 			name: "failed to count shippings",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Shipping.EXPECT().List(gomock.Any(), params).Return(shippings, nil)
-				mocks.db.Shipping.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
+				mocks.db.Shipping.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
 			},
 			input: &store.ListShippingsInput{
 				Limit:  20,
@@ -216,7 +216,7 @@ func TestMutiGetShippings(t *testing.T) {
 		{
 			name: "failed to multiGet",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shipping.EXPECT().MultiGet(ctx, []string{"shipping-id"}).Return(nil, errmock)
+				mocks.db.Shipping.EXPECT().MultiGet(ctx, []string{"shipping-id"}).Return(nil, assert.AnError)
 			},
 			input: &store.MultiGetShippingsInput{
 				ShippingIDs: []string{"shipping-id"},
@@ -304,7 +304,7 @@ func TestGetShipping(t *testing.T) {
 		{
 			name: "failed to get shipping",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shipping.EXPECT().Get(ctx, "shipping-id").Return(nil, errmock)
+				mocks.db.Shipping.EXPECT().Get(ctx, "shipping-id").Return(nil, assert.AnError)
 			},
 			input: &store.GetShippingInput{
 				ShippingID: "shipping-id",
@@ -406,7 +406,7 @@ func TestCreateShipping(t *testing.T) {
 		{
 			name: "failed to create shipping",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shipping.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
+				mocks.db.Shipping.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateShippingInput{
 				Name:               "デフォルト配送設定",
@@ -517,7 +517,7 @@ func TestUpdateShipping(t *testing.T) {
 		{
 			name: "failed to update shipping",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shipping.EXPECT().Update(ctx, "shipping-id", params).Return(errmock)
+				mocks.db.Shipping.EXPECT().Update(ctx, "shipping-id", params).Return(assert.AnError)
 			},
 			input: &store.UpdateShippingInput{
 				ShippingID:         "shipping-id",
@@ -575,7 +575,7 @@ func TestDeleteShipping(t *testing.T) {
 		{
 			name: "failed to delete shipping",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shipping.EXPECT().Delete(ctx, "shipping-id").Return(errmock)
+				mocks.db.Shipping.EXPECT().Delete(ctx, "shipping-id").Return(assert.AnError)
 			},
 			input: &store.DeleteShippingInput{
 				ShippingID: "shipping-id",

@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/common"
@@ -86,34 +85,6 @@ func (c *Coordinator) Fill(admin *Admin) (err error) {
 	c.Thumbnails = thumbnails
 	c.Headers = headers
 	return nil
-}
-
-func (c *Coordinator) FillJSON() error {
-	thumbnails, err := c.marshalThumbnails()
-	if err != nil {
-		return err
-	}
-	headers, err := c.marshalHeaders()
-	if err != nil {
-		return err
-	}
-	c.ThumbnailsJSON = datatypes.JSON(thumbnails)
-	c.HeadersJSON = datatypes.JSON(headers)
-	return nil
-}
-
-func (c *Coordinator) marshalThumbnails() ([]byte, error) {
-	if len(c.Thumbnails) == 0 {
-		return []byte{}, nil
-	}
-	return json.Marshal(c.Thumbnails)
-}
-
-func (c *Coordinator) marshalHeaders() ([]byte, error) {
-	if len(c.Headers) == 0 {
-		return []byte{}, nil
-	}
-	return json.Marshal(c.Headers)
 }
 
 func (cs Coordinators) IDs() []string {

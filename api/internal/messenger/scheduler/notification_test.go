@@ -76,20 +76,20 @@ func TestScheduler_dispatchNotication(t *testing.T) {
 		{
 			name: "failed to list schedules",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Schedule.EXPECT().List(gomock.Any(), schedulesParams).Return(nil, errmock)
+				mocks.db.Schedule.EXPECT().List(gomock.Any(), schedulesParams).Return(nil, assert.AnError)
 				mocks.db.Notification.EXPECT().List(gomock.Any(), notificationsParams).Return(notifications, nil)
 			},
 			target:    now,
-			expectErr: errmock,
+			expectErr: assert.AnError,
 		},
 		{
 			name: "failed to list notifications",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Schedule.EXPECT().List(gomock.Any(), schedulesParams).Return(schedules, nil)
-				mocks.db.Notification.EXPECT().List(gomock.Any(), notificationsParams).Return(nil, errmock)
+				mocks.db.Notification.EXPECT().List(gomock.Any(), notificationsParams).Return(nil, assert.AnError)
 			},
 			target:    now,
-			expectErr: errmock,
+			expectErr: assert.AnError,
 		},
 	}
 
@@ -166,29 +166,29 @@ func TestScheduler_executeNotication(t *testing.T) {
 		{
 			name: "failed to upsert processing",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Schedule.EXPECT().UpsertProcessing(ctx, schedule).Return(errmock)
+				mocks.db.Schedule.EXPECT().UpsertProcessing(ctx, schedule).Return(assert.AnError)
 			},
 			schedule:  schedule,
-			expectErr: errmock,
+			expectErr: assert.AnError,
 		},
 		{
 			name: "failed to notify notification",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Schedule.EXPECT().UpsertProcessing(ctx, schedule).Return(nil)
-				mocks.messenger.EXPECT().NotifyNotification(ctx, in).Return(errmock)
+				mocks.messenger.EXPECT().NotifyNotification(ctx, in).Return(assert.AnError)
 			},
 			schedule:  schedule,
-			expectErr: errmock,
+			expectErr: assert.AnError,
 		},
 		{
 			name: "failed to update done",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Schedule.EXPECT().UpsertProcessing(ctx, schedule).Return(nil)
 				mocks.messenger.EXPECT().NotifyNotification(ctx, in).Return(nil)
-				mocks.db.Schedule.EXPECT().UpdateDone(ctx, entity.ScheduleTypeNotification, "notification-id").Return(errmock)
+				mocks.db.Schedule.EXPECT().UpdateDone(ctx, entity.ScheduleTypeNotification, "notification-id").Return(assert.AnError)
 			},
 			schedule:  schedule,
-			expectErr: errmock,
+			expectErr: assert.AnError,
 		},
 	}
 

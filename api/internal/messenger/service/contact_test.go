@@ -76,7 +76,7 @@ func TestListContacts(t *testing.T) {
 		{
 			name: "failed to list contacts",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Contact.EXPECT().List(gomock.Any(), params).Return(nil, errmock)
+				mocks.db.Contact.EXPECT().List(gomock.Any(), params).Return(nil, assert.AnError)
 				mocks.db.Contact.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &messenger.ListContactsInput{
@@ -94,7 +94,7 @@ func TestListContacts(t *testing.T) {
 			name: "failed to count contacts",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Contact.EXPECT().List(gomock.Any(), params).Return(contacts, nil)
-				mocks.db.Contact.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
+				mocks.db.Contact.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
 			},
 			input: &messenger.ListContactsInput{
 				Limit:  20,
@@ -165,7 +165,7 @@ func TestGetContact(t *testing.T) {
 		{
 			name: "failed to get contact",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Contact.EXPECT().Get(ctx, "contact-id").Return(nil, errmock)
+				mocks.db.Contact.EXPECT().Get(ctx, "contact-id").Return(nil, assert.AnError)
 			},
 			input: &messenger.GetContactInput{
 				ContactID: "contact-id",
@@ -242,7 +242,7 @@ func TestCreateContact(t *testing.T) {
 			name: "success without notify",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Contact.EXPECT().Create(ctx, gomock.Any()).Return(nil)
-				mocks.db.Contact.EXPECT().Get(gomock.Any(), gomock.Any()).Return(nil, errmock)
+				mocks.db.Contact.EXPECT().Get(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
 			},
 			input: &messenger.CreateContactInput{
 				Title:       "お問い合わせ件名",
@@ -262,7 +262,7 @@ func TestCreateContact(t *testing.T) {
 		{
 			name: "failed to create contact",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Contact.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
+				mocks.db.Contact.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &messenger.CreateContactInput{
 				Title:       "お問い合わせ件名",
@@ -320,7 +320,7 @@ func TestUpdateContact(t *testing.T) {
 		{
 			name: "failed to update contact",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Contact.EXPECT().Update(ctx, "contact-id", params).Return(errmock)
+				mocks.db.Contact.EXPECT().Update(ctx, "contact-id", params).Return(assert.AnError)
 			},
 			input: &messenger.UpdateContactInput{
 				ContactID: "contact-id",

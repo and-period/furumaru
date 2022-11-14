@@ -78,7 +78,7 @@ func TestFilterAccessProducer(t *testing.T) {
 		{
 			name: "coordinator failed to get producer",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().GetProducer(gomock.Any(), in).Return(nil, errmock)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), in).Return(nil, assert.AnError)
 			},
 			options: []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("coordinator-id")},
 			expect:  http.StatusInternalServerError,
@@ -288,7 +288,7 @@ func TestListProducers(t *testing.T) {
 		{
 			name: "failed to get producers",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().ListProducers(gomock.Any(), in).Return(nil, int64(0), errmock)
+				mocks.user.EXPECT().ListProducers(gomock.Any(), in).Return(nil, int64(0), assert.AnError)
 			},
 			query: "",
 			expect: &testResponse{
@@ -394,7 +394,7 @@ func TestGetProducer(t *testing.T) {
 		{
 			name: "failed to get producer",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().GetProducer(gomock.Any(), in).Return(nil, errmock)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), in).Return(nil, assert.AnError)
 			},
 			producerID: "producer-id",
 			expect: &testResponse{
@@ -579,7 +579,7 @@ func TestCreateProducer(t *testing.T) {
 				in := *in
 				in.ThumbnailURL = ""
 				in.HeaderURL = ""
-				mocks.user.EXPECT().CreateProducer(gomock.Any(), &in).Return(nil, errmock)
+				mocks.user.EXPECT().CreateProducer(gomock.Any(), &in).Return(nil, assert.AnError)
 			},
 			req: &request.CreateProducerRequest{
 				Lastname:      "&.",
@@ -732,7 +732,7 @@ func TestUpdateProducer(t *testing.T) {
 				in := *in
 				in.ThumbnailURL = ""
 				in.HeaderURL = ""
-				mocks.user.EXPECT().UpdateProducer(gomock.Any(), &in).Return(errmock)
+				mocks.user.EXPECT().UpdateProducer(gomock.Any(), &in).Return(assert.AnError)
 			},
 			producerID: "producer-id",
 			req: &request.UpdateProducerRequest{
@@ -797,7 +797,7 @@ func TestUpdateProducerEmail(t *testing.T) {
 		{
 			name: "failed to update producer email",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().UpdateProducerEmail(gomock.Any(), in).Return(errmock)
+				mocks.user.EXPECT().UpdateProducerEmail(gomock.Any(), in).Return(assert.AnError)
 			},
 			producerID: "producer-id",
 			req: &request.UpdateProducerEmailRequest{
@@ -845,7 +845,7 @@ func TestResetProducerPassword(t *testing.T) {
 		{
 			name: "failed to reset producer password",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().ResetProducerPassword(gomock.Any(), in).Return(errmock)
+				mocks.user.EXPECT().ResetProducerPassword(gomock.Any(), in).Return(assert.AnError)
 			},
 			producerID: "producer-id",
 			expect: &testResponse{
@@ -890,7 +890,7 @@ func TestDeleteProducer(t *testing.T) {
 		{
 			name: "failed to delete producer",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().DeleteProducer(gomock.Any(), in).Return(errmock)
+				mocks.user.EXPECT().DeleteProducer(gomock.Any(), in).Return(assert.AnError)
 			},
 			producerID: "producer-id",
 			expect: &testResponse{

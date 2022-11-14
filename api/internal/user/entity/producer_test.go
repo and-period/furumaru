@@ -140,62 +140,6 @@ func TestProducer_Fill(t *testing.T) {
 	}
 }
 
-func TestProducer_FillJSON(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name     string
-		producer *Producer
-		expect   *Producer
-	}{
-		{
-			name: "success",
-			producer: &Producer{
-				AdminID: "admin-id",
-				Thumbnails: common.Images{
-					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
-				},
-				Headers: common.Images{
-					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
-				},
-			},
-			expect: &Producer{
-				AdminID:        "admin-id",
-				ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
-				Thumbnails: common.Images{
-					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
-				},
-				HeadersJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
-				Headers: common.Images{
-					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
-				},
-			},
-		},
-		{
-			name: "success empty",
-			producer: &Producer{
-				AdminID:    "admin-id",
-				Thumbnails: common.Images{},
-				Headers:    common.Images{},
-			},
-			expect: &Producer{
-				AdminID:        "admin-id",
-				ThumbnailsJSON: []byte{},
-				Thumbnails:     common.Images{},
-				HeadersJSON:    []byte{},
-				Headers:        common.Images{},
-			},
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			tt.producer.FillJSON()
-			assert.Equal(t, tt.expect, tt.producer)
-		})
-	}
-}
-
 func TestProducers_IDs(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

@@ -13,6 +13,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestFilterAccessOrder(t *testing.T) {
@@ -131,7 +132,7 @@ func TestFilterAccessOrder(t *testing.T) {
 		{
 			name: "coordinator failed to get order",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().GetOrder(gomock.Any(), in).Return(nil, errmock)
+				mocks.store.EXPECT().GetOrder(gomock.Any(), in).Return(nil, assert.AnError)
 			},
 			options: []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("coordinator-id")},
 			expect:  http.StatusInternalServerError,
@@ -463,7 +464,7 @@ func TestListOrders(t *testing.T) {
 		{
 			name: "failed to list orders",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().ListOrders(gomock.Any(), ordersIn).Return(nil, int64(0), errmock)
+				mocks.store.EXPECT().ListOrders(gomock.Any(), ordersIn).Return(nil, int64(0), assert.AnError)
 			},
 			query: "",
 			expect: &testResponse{
@@ -474,7 +475,7 @@ func TestListOrders(t *testing.T) {
 			name: "failed to multi get users",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().ListOrders(gomock.Any(), ordersIn).Return(orders, int64(1), nil)
-				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(nil, errmock)
+				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(nil, assert.AnError)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
 			},
 			query: "",
@@ -487,7 +488,7 @@ func TestListOrders(t *testing.T) {
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().ListOrders(gomock.Any(), ordersIn).Return(orders, int64(1), nil)
 				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(users, nil)
-				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(nil, errmock)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(nil, assert.AnError)
 			},
 			query: "",
 			expect: &testResponse{
@@ -758,7 +759,7 @@ func TestGetOrder(t *testing.T) {
 		{
 			name: "failed to get order",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().GetOrder(gomock.Any(), orderIn).Return(nil, errmock)
+				mocks.store.EXPECT().GetOrder(gomock.Any(), orderIn).Return(nil, assert.AnError)
 			},
 			orderID: "order-id",
 			expect: &testResponse{
@@ -769,7 +770,7 @@ func TestGetOrder(t *testing.T) {
 			name: "failed to get user",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().GetOrder(gomock.Any(), orderIn).Return(order, nil)
-				mocks.user.EXPECT().GetUser(gomock.Any(), userIn).Return(nil, errmock)
+				mocks.user.EXPECT().GetUser(gomock.Any(), userIn).Return(nil, assert.AnError)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
 			},
 			orderID: "order-id",
@@ -782,7 +783,7 @@ func TestGetOrder(t *testing.T) {
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().GetOrder(gomock.Any(), orderIn).Return(order, nil)
 				mocks.user.EXPECT().GetUser(gomock.Any(), userIn).Return(u, nil)
-				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(nil, errmock)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(nil, assert.AnError)
 			},
 			orderID: "order-id",
 			expect: &testResponse{

@@ -90,7 +90,7 @@ func TestMultiGetAdmins(t *testing.T) {
 		{
 			name: "failed to multi get admin auths",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Admin.EXPECT().MultiGet(ctx, adminIDs).Return(nil, errmock)
+				mocks.db.Admin.EXPECT().MultiGet(ctx, adminIDs).Return(nil, assert.AnError)
 			},
 			input: &user.MultiGetAdminsInput{
 				AdminIDs: adminIDs,
@@ -152,7 +152,7 @@ func TestMultiGetAdminDevices(t *testing.T) {
 		{
 			name: "failed to multi get admin auths",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Admin.EXPECT().MultiGet(ctx, []string{"admin-id"}, "device").Return(nil, errmock)
+				mocks.db.Admin.EXPECT().MultiGet(ctx, []string{"admin-id"}, "device").Return(nil, assert.AnError)
 			},
 			input: &user.MultiGetAdminDevicesInput{
 				AdminIDs: []string{"admin-id"},
@@ -220,7 +220,7 @@ func TestGetAdmin(t *testing.T) {
 		{
 			name: "failed to get producer",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(nil, errmock)
+				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(nil, assert.AnError)
 			},
 			input: &user.GetAdminInput{
 				AdminID: "admin-id",

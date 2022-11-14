@@ -101,7 +101,7 @@ func TestListProducts(t *testing.T) {
 		{
 			name: "failed to list products",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Product.EXPECT().List(gomock.Any(), params).Return(nil, errmock)
+				mocks.db.Product.EXPECT().List(gomock.Any(), params).Return(nil, assert.AnError)
 				mocks.db.Product.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListProductsInput{
@@ -122,7 +122,7 @@ func TestListProducts(t *testing.T) {
 			name: "failed to count products",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Product.EXPECT().List(gomock.Any(), params).Return(products, nil)
-				mocks.db.Product.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
+				mocks.db.Product.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
 			},
 			input: &store.ListProductsInput{
 				Name:        "みかん",
@@ -277,7 +277,7 @@ func TestGetProduct(t *testing.T) {
 		{
 			name: "failed to get product",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Product.EXPECT().Get(ctx, "product-id").Return(nil, errmock)
+				mocks.db.Product.EXPECT().Get(ctx, "product-id").Return(nil, assert.AnError)
 			},
 			input: &store.GetProductInput{
 				ProductID: "product-id",
@@ -429,7 +429,7 @@ func TestCreateProduct(t *testing.T) {
 		{
 			name: "failed to get producer",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(nil, errmock)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(nil, assert.AnError)
 			},
 			input: &store.CreateProductInput{
 				ProducerID:      "producer-id",
@@ -462,7 +462,7 @@ func TestCreateProduct(t *testing.T) {
 			name: "failed to create product",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
-				mocks.db.Product.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
+				mocks.db.Product.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateProductInput{
 				ProducerID:      "producer-id",
@@ -693,7 +693,7 @@ func TestUpdateProduct(t *testing.T) {
 			name: "failed to get producer",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Product.EXPECT().Get(ctx, "product-id").Return(product, nil)
-				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(nil, errmock)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(nil, assert.AnError)
 			},
 			input: &store.UpdateProductInput{
 				ProductID:       "product-id",
@@ -728,7 +728,7 @@ func TestUpdateProduct(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Product.EXPECT().Get(ctx, "product-id").Return(product, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
-				mocks.db.Product.EXPECT().Update(ctx, "product-id", gomock.Any()).Return(errmock)
+				mocks.db.Product.EXPECT().Update(ctx, "product-id", gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.UpdateProductInput{
 				ProductID:       "product-id",
@@ -877,7 +877,7 @@ func TestDeleteProduct(t *testing.T) {
 		{
 			name: "failed to delete product",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Product.EXPECT().Delete(ctx, "product-id").Return(errmock)
+				mocks.db.Product.EXPECT().Delete(ctx, "product-id").Return(assert.AnError)
 			},
 			input: &store.DeleteProductInput{
 				ProductID: "product-id",

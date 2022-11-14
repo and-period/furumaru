@@ -80,7 +80,7 @@ func TestNotifyRegisterAdmin(t *testing.T) {
 			name: "failed to send message",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(nil)
-				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", errmock)
+				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", assert.AnError)
 			},
 			input: &messenger.NotifyRegisterAdminInput{
 				AdminID:  "admin-id",
@@ -163,7 +163,7 @@ func TestNotifyResetAdminPassword(t *testing.T) {
 			name: "failed to send message",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(nil)
-				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", errmock)
+				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", assert.AnError)
 			},
 			input: &messenger.NotifyResetAdminPasswordInput{
 				AdminID:  "admin-id",
@@ -319,7 +319,7 @@ func TestNotifyReceivedContact(t *testing.T) {
 		{
 			name: "failed to get contact",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Contact.EXPECT().Get(ctx, "contact-id").Return(nil, errmock)
+				mocks.db.Contact.EXPECT().Get(ctx, "contact-id").Return(nil, assert.AnError)
 			},
 			input: &messenger.NotifyReceivedContactInput{
 				ContactID: "contact-id",
@@ -331,9 +331,9 @@ func TestNotifyReceivedContact(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Contact.EXPECT().Get(ctx, "contact-id").Return(contact, nil)
 				mocks.db.ReceivedQueue.EXPECT().Create(gomock.Any(), gomock.Any()).Return(nil).Times(2)
-				mocks.producer.EXPECT().SendMessage(gomock.Any(), gomock.Any()).Return("", errmock).Times(2)
+				mocks.producer.EXPECT().SendMessage(gomock.Any(), gomock.Any()).Return("", assert.AnError).Times(2)
 				in := &user.ListAdministratorsInput{Limit: 200, Offset: 0}
-				mocks.user.EXPECT().ListAdministrators(gomock.Any(), in).Return(nil, int64(0), errmock)
+				mocks.user.EXPECT().ListAdministrators(gomock.Any(), in).Return(nil, int64(0), assert.AnError)
 			},
 			input: &messenger.NotifyReceivedContactInput{
 				ContactID: "contact-id",
@@ -483,7 +483,7 @@ func TestNotifyNotification(t *testing.T) {
 		{
 			name: "failed to get notification",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(nil, errmock)
+				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(nil, assert.AnError)
 			},
 			input: &messenger.NotifyNotificationInput{
 				NotificationID: "notification-id",
@@ -494,8 +494,8 @@ func TestNotifyNotification(t *testing.T) {
 			name: "failed to notify admin notification",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
-				mocks.user.EXPECT().ListCoordinators(gomock.Any(), gomock.Any()).Return(nil, int64(0), errmock)
-				mocks.user.EXPECT().ListProducers(gomock.Any(), gomock.Any()).Return(nil, int64(0), errmock)
+				mocks.user.EXPECT().ListCoordinators(gomock.Any(), gomock.Any()).Return(nil, int64(0), assert.AnError)
+				mocks.user.EXPECT().ListProducers(gomock.Any(), gomock.Any()).Return(nil, int64(0), assert.AnError)
 			},
 			input: &messenger.NotifyNotificationInput{
 				NotificationID: "notification-id",
@@ -545,7 +545,7 @@ func TestSendMessage(t *testing.T) {
 		{
 			name: "failed to create received queue",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ReceivedQueue.EXPECT().Create(ctx, queue).Return(errmock)
+				mocks.db.ReceivedQueue.EXPECT().Create(ctx, queue).Return(assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -560,7 +560,7 @@ func TestSendMessage(t *testing.T) {
 			name: "failed to send message",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ReceivedQueue.EXPECT().Create(ctx, queue).Return(nil)
-				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", errmock)
+				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -640,7 +640,7 @@ func TestSendAllAdministrators(t *testing.T) {
 		{
 			name: "failed to list administrators",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().ListAdministrators(ctx, in).Return(nil, int64(0), errmock)
+				mocks.user.EXPECT().ListAdministrators(ctx, in).Return(nil, int64(0), assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -653,7 +653,7 @@ func TestSendAllAdministrators(t *testing.T) {
 			name: "failed to create received queue",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().ListAdministrators(ctx, in).Return(administrators, int64(2), nil)
-				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
+				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -667,7 +667,7 @@ func TestSendAllAdministrators(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().ListAdministrators(ctx, in).Return(administrators, int64(2), nil)
 				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(nil)
-				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", errmock)
+				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -745,7 +745,7 @@ func TestSendAllCoordinators(t *testing.T) {
 		{
 			name: "failed to list coordinators",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().ListCoordinators(ctx, in).Return(nil, int64(0), errmock)
+				mocks.user.EXPECT().ListCoordinators(ctx, in).Return(nil, int64(0), assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -758,7 +758,7 @@ func TestSendAllCoordinators(t *testing.T) {
 			name: "failed to create received queue",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().ListCoordinators(ctx, in).Return(coordinators, int64(2), nil)
-				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
+				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -772,7 +772,7 @@ func TestSendAllCoordinators(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().ListCoordinators(ctx, in).Return(coordinators, int64(2), nil)
 				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(nil)
-				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", errmock)
+				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -850,7 +850,7 @@ func TestSendAllProducers(t *testing.T) {
 		{
 			name: "failed to list producers",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().ListProducers(ctx, in).Return(nil, int64(0), errmock)
+				mocks.user.EXPECT().ListProducers(ctx, in).Return(nil, int64(0), assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -863,7 +863,7 @@ func TestSendAllProducers(t *testing.T) {
 			name: "failed to create received queue",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().ListProducers(ctx, in).Return(producers, int64(2), nil)
-				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
+				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -877,7 +877,7 @@ func TestSendAllProducers(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().ListProducers(ctx, in).Return(producers, int64(2), nil)
 				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(nil)
-				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", errmock)
+				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",

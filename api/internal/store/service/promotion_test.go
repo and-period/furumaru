@@ -78,7 +78,7 @@ func TestListPromotions(t *testing.T) {
 		{
 			name: "failed to list promotions",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Promotion.EXPECT().List(gomock.Any(), params).Return(nil, errmock)
+				mocks.db.Promotion.EXPECT().List(gomock.Any(), params).Return(nil, assert.AnError)
 				mocks.db.Promotion.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListPromotionsInput{
@@ -96,7 +96,7 @@ func TestListPromotions(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Promotion.EXPECT().List(gomock.Any(), params).Return(promotions, nil)
-				mocks.db.Promotion.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
+				mocks.db.Promotion.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
 			},
 			input: &store.ListPromotionsInput{
 				Limit:  30,
@@ -170,7 +170,7 @@ func TestGetPromotion(t *testing.T) {
 		{
 			name: "failed to get promotion",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(nil, errmock)
+				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(nil, assert.AnError)
 			},
 			input: &store.GetPromotionInput{
 				PromotionID: "promotion-id",
@@ -246,7 +246,7 @@ func TestCreatePromotion(t *testing.T) {
 		{
 			name: "failed to create promotion",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Promotion.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
+				mocks.db.Promotion.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreatePromotionInput{
 				Title:        "プロモーションタイトル",
@@ -324,7 +324,7 @@ func TestUpdatePromotion(t *testing.T) {
 		{
 			name: "failed to update promotion",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Promotion.EXPECT().Update(ctx, "promotion-id", params).Return(errmock)
+				mocks.db.Promotion.EXPECT().Update(ctx, "promotion-id", params).Return(assert.AnError)
 			},
 			input: &store.UpdatePromotionInput{
 				PromotionID:  "promotion-id",
@@ -380,7 +380,7 @@ func TestDeletePromotion(t *testing.T) {
 		{
 			name: "failed to delete promotion",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Promotion.EXPECT().Delete(ctx, "promotion-id").Return(errmock)
+				mocks.db.Promotion.EXPECT().Delete(ctx, "promotion-id").Return(assert.AnError)
 			},
 			input: &store.DeletePromotionInput{
 				PromotionID: "promotion-id",

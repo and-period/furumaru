@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"encoding/json"
 	"testing"
 	"time"
 
@@ -11,6 +12,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"gorm.io/datatypes"
 )
 
 func TestProducer(t *testing.T) {
@@ -451,7 +453,7 @@ func TestProducer_Create(t *testing.T) {
 			},
 			args: args{
 				producer: p,
-				auth:     func(ctx context.Context) error { return errmock },
+				auth:     func(ctx context.Context) error { return assert.AnError },
 			},
 			want: want{
 				hasErr: true,
@@ -991,7 +993,7 @@ func TestProducer_Delete(t *testing.T) {
 			},
 			args: args{
 				producerID: "admin-id",
-				auth:       func(ctx context.Context) error { return errmock },
+				auth:       func(ctx context.Context) error { return assert.AnError },
 			},
 			want: want{
 				hasErr: true,
@@ -1034,15 +1036,22 @@ func testProducer(id, coordinatorID, storeName string, now time.Time) *entity.Pr
 		CreatedAt:     now,
 		UpdatedAt:     now,
 	}
-	_ = p.FillJSON()
+	fillProducerJSON(p)
 	return p
+}
+
+func fillProducerJSON(p *entity.Producer) {
+	thumbnails, _ := json.Marshal(p.Thumbnails)
+	headers, _ := json.Marshal(p.Headers)
+	p.ThumbnailsJSON = datatypes.JSON(thumbnails)
+	p.HeadersJSON = datatypes.JSON(headers)
 }
 
 func fillIgnoreProducerField(p *entity.Producer, now time.Time) {
 	if p == nil {
 		return
 	}
-	_ = p.FillJSON()
+	fillProducerJSON(p)
 	p.CreatedAt = now
 	p.UpdatedAt = now
 	p.Admin.CreatedAt = now

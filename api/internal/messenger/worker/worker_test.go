@@ -2,7 +2,6 @@ package worker
 
 import (
 	"context"
-	"errors"
 	"sync"
 	"testing"
 	"time"
@@ -25,8 +24,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
 )
-
-var errmock = errors.New("some error")
 
 type mocks struct {
 	db        *dbMocks
@@ -185,7 +182,7 @@ func TestWorker_Dispatch(t *testing.T) {
 		{
 			name: "failed to run without retry",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ReceivedQueue.EXPECT().Get(ctx, gomock.Any()).Return(nil, errmock)
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, gomock.Any()).Return(nil, assert.AnError)
 			},
 			record: events.SQSMessage{
 				Body: `{"queueId":"", "eventType":0, "userType":0, "userIds":[]}`,
@@ -395,7 +392,7 @@ func TestWorker_Run(t *testing.T) {
 		{
 			name: "failed to get received queue",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(nil, errmock)
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(nil, assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -413,7 +410,7 @@ func TestWorker_Run(t *testing.T) {
 			name: "failed to send mail",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
-				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(nil, errmock)
+				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(nil, assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -431,7 +428,7 @@ func TestWorker_Run(t *testing.T) {
 			name: "failed to send push",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
-				mocks.user.EXPECT().MultiGetAdminDevices(gomock.Any(), devicesIn).Return(nil, errmock)
+				mocks.user.EXPECT().MultiGetAdminDevices(gomock.Any(), devicesIn).Return(nil, assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -449,7 +446,7 @@ func TestWorker_Run(t *testing.T) {
 			name: "failed to create message",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
-				mocks.db.MessageTemplate.EXPECT().Get(gomock.Any(), entity.MessageIDNotification).Return(nil, errmock)
+				mocks.db.MessageTemplate.EXPECT().Get(gomock.Any(), entity.MessageIDNotification).Return(nil, assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -470,7 +467,7 @@ func TestWorker_Run(t *testing.T) {
 			name: "failed to report",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
-				mocks.db.ReportTemplate.EXPECT().Get(gomock.Any(), entity.ReportIDReceivedContact).Return(nil, errmock)
+				mocks.db.ReportTemplate.EXPECT().Get(gomock.Any(), entity.ReportIDReceivedContact).Return(nil, assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -487,7 +484,7 @@ func TestWorker_Run(t *testing.T) {
 			name: "failed to update received queue",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
-				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", true).Return(errmock)
+				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", true).Return(assert.AnError)
 				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(users, nil)
 				mocks.mailer.EXPECT().MultiSendFromInfo(gomock.Any(), entity.EmailIDAdminRegister, personalizations).Return(nil)
 			},

@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"errors"
 	"net/url"
 	"sync"
 	"testing"
@@ -19,7 +18,6 @@ import (
 )
 
 var (
-	errmock        = errors.New("some error")
 	adminWebURL, _ = url.Parse("htts://admin.and-period.jp")
 	userWebURL, _  = url.Parse("htts://user.and-period.jp")
 )

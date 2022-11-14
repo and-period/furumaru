@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/common"
@@ -75,34 +74,6 @@ func (p *Producer) Fill(admin *Admin) (err error) {
 	p.Thumbnails = thumbnails
 	p.Headers = headers
 	return nil
-}
-
-func (p *Producer) FillJSON() error {
-	thumbnails, err := p.marshalThumbnails()
-	if err != nil {
-		return err
-	}
-	headers, err := p.marshalHeaders()
-	if err != nil {
-		return err
-	}
-	p.ThumbnailsJSON = datatypes.JSON(thumbnails)
-	p.HeadersJSON = datatypes.JSON(headers)
-	return nil
-}
-
-func (p *Producer) marshalThumbnails() ([]byte, error) {
-	if len(p.Thumbnails) == 0 {
-		return []byte{}, nil
-	}
-	return json.Marshal(p.Thumbnails)
-}
-
-func (p *Producer) marshalHeaders() ([]byte, error) {
-	if len(p.Headers) == 0 {
-		return []byte{}, nil
-	}
-	return json.Marshal(p.Headers)
 }
 
 func (ps Producers) IDs() []string {

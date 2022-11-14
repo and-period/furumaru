@@ -71,7 +71,7 @@ func TestListCategories(t *testing.T) {
 		{
 			name: "failed to list",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Category.EXPECT().List(gomock.Any(), params).Return(nil, errmock)
+				mocks.db.Category.EXPECT().List(gomock.Any(), params).Return(nil, assert.AnError)
 				mocks.db.Category.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListCategoriesInput{
@@ -90,7 +90,7 @@ func TestListCategories(t *testing.T) {
 			name: "failed to count",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Category.EXPECT().List(gomock.Any(), params).Return(categories, nil)
-				mocks.db.Category.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
+				mocks.db.Category.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
 			},
 			input: &store.ListCategoriesInput{
 				Name:   "野菜",
@@ -160,7 +160,7 @@ func TestMultiGetCategories(t *testing.T) {
 		{
 			name: "failed to list",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Category.EXPECT().MultiGet(ctx, []string{"category-id"}).Return(nil, errmock)
+				mocks.db.Category.EXPECT().MultiGet(ctx, []string{"category-id"}).Return(nil, assert.AnError)
 			},
 			input: &store.MultiGetCategoriesInput{
 				CategoryIDs: []string{"category-id"},
@@ -219,7 +219,7 @@ func TestGetCategory(t *testing.T) {
 		{
 			name: "failed to get",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Category.EXPECT().Get(ctx, "category-id").Return(nil, errmock)
+				mocks.db.Category.EXPECT().Get(ctx, "category-id").Return(nil, assert.AnError)
 			},
 			input: &store.GetCategoryInput{
 				CategoryID: "category-id",
@@ -276,7 +276,7 @@ func TestCreateCategory(t *testing.T) {
 		{
 			name: "failed to create",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Category.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
+				mocks.db.Category.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateCategoryInput{
 				Name: "野菜",
@@ -323,7 +323,7 @@ func TestUpdateCategory(t *testing.T) {
 		{
 			name: "failed to update",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Category.EXPECT().Update(ctx, "category-id", "野菜").Return(errmock)
+				mocks.db.Category.EXPECT().Update(ctx, "category-id", "野菜").Return(assert.AnError)
 			},
 			input: &store.UpdateCategoryInput{
 				CategoryID: "category-id",
@@ -370,7 +370,7 @@ func TestDeleteCategory(t *testing.T) {
 		{
 			name: "failed to delete",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Category.EXPECT().Delete(ctx, "category-id").Return(errmock)
+				mocks.db.Category.EXPECT().Delete(ctx, "category-id").Return(assert.AnError)
 			},
 			input: &store.DeleteCategoryInput{
 				CategoryID: "category-id",

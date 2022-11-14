@@ -85,7 +85,7 @@ func TestListNotificaitons(t *testing.T) {
 		{
 			name: "failed to list notifications",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Notification.EXPECT().List(gomock.Any(), params).Return(nil, errmock)
+				mocks.db.Notification.EXPECT().List(gomock.Any(), params).Return(nil, assert.AnError)
 				mocks.db.Notification.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &messenger.ListNotificationsInput{
@@ -106,7 +106,7 @@ func TestListNotificaitons(t *testing.T) {
 			name: "failed to count notifications",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Notification.EXPECT().List(gomock.Any(), params).Return(notifications, nil)
-				mocks.db.Notification.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
+				mocks.db.Notification.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
 			},
 			input: &messenger.ListNotificationsInput{
 				Limit:         30,
@@ -180,7 +180,7 @@ func TestGetNotification(t *testing.T) {
 		{
 			name: "failed to get notification",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(nil, errmock)
+				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(nil, assert.AnError)
 			},
 			input: &messenger.GetNotificationInput{
 				NotificationID: "notification-id",
@@ -289,7 +289,7 @@ func TestCreateNotification(t *testing.T) {
 			name: "failed to create notification",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminID).Return(admin, nil)
-				mocks.db.Notification.EXPECT().Create(ctx, gomock.Any()).Return(errmock)
+				mocks.db.Notification.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &messenger.CreateNotificationInput{
 				CreatedBy:   "admin-id",
@@ -393,7 +393,7 @@ func TestUpdateNotification(t *testing.T) {
 			name: "failed to update notification",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(admin, nil)
-				mocks.db.Notification.EXPECT().Update(ctx, "notification-id", gomock.Any()).Return(errmock)
+				mocks.db.Notification.EXPECT().Update(ctx, "notification-id", gomock.Any()).Return(assert.AnError)
 			},
 			input: &messenger.UpdateNotificationInput{
 				NotificationID: "notification-id",
@@ -448,7 +448,7 @@ func TestDeleteNotification(t *testing.T) {
 		{
 			name: "failed to delete notification",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Notification.EXPECT().Delete(ctx, "notification-id").Return(errmock)
+				mocks.db.Notification.EXPECT().Delete(ctx, "notification-id").Return(assert.AnError)
 			},
 			input: &messenger.DeleteNotificationInput{
 				NotificationID: "notification-id",
