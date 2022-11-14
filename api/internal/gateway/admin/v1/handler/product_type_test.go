@@ -5,8 +5,11 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -37,9 +40,14 @@ func TestListProductTypes(t *testing.T) {
 	}
 	productTypes := sentity.ProductTypes{
 		{
-			ID:         "product-type-id01",
-			Name:       "じゃがいも",
-			IconURL:    "https://and-period.jp/icon.png",
+			ID:      "product-type-id01",
+			Name:    "じゃがいも",
+			IconURL: "https://and-period.jp/icon.png",
+			Icons: common.Images{
+				{URL: "https://and-period.jp/icon_240.png", Size: common.ImageSizeSmall},
+				{URL: "https://and-period.jp/icon_675.png", Size: common.ImageSizeMedium},
+				{URL: "https://and-period.jp/icon_900.png", Size: common.ImageSizeLarge},
+			},
 			CategoryID: "category-id",
 			CreatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
@@ -74,9 +82,14 @@ func TestListProductTypes(t *testing.T) {
 				body: &response.ProductTypesResponse{
 					ProductTypes: []*response.ProductType{
 						{
-							ID:           "product-type-id01",
-							Name:         "じゃがいも",
-							IconURL:      "https://and-period.jp/icon.png",
+							ID:      "product-type-id01",
+							Name:    "じゃがいも",
+							IconURL: "https://and-period.jp/icon.png",
+							Icons: []*response.Image{
+								{URL: "https://and-period.jp/icon_240.png", Size: int32(service.ImageSizeSmall)},
+								{URL: "https://and-period.jp/icon_675.png", Size: int32(service.ImageSizeMedium)},
+								{URL: "https://and-period.jp/icon_900.png", Size: int32(service.ImageSizeLarge)},
+							},
 							CategoryID:   "category-id",
 							CategoryName: "野菜",
 							CreatedAt:    1640962800,
@@ -86,6 +99,7 @@ func TestListProductTypes(t *testing.T) {
 							ID:           "product-type-id02",
 							Name:         "さつまいも",
 							IconURL:      "https://and-period.jp/icon.png",
+							Icons:        []*response.Image{},
 							CategoryID:   "category-id",
 							CategoryName: "野菜",
 							CreatedAt:    1640962800,
@@ -131,9 +145,14 @@ func TestListProductTypes(t *testing.T) {
 				body: &response.ProductTypesResponse{
 					ProductTypes: []*response.ProductType{
 						{
-							ID:           "product-type-id01",
-							Name:         "じゃがいも",
-							IconURL:      "https://and-period.jp/icon.png",
+							ID:      "product-type-id01",
+							Name:    "じゃがいも",
+							IconURL: "https://and-period.jp/icon.png",
+							Icons: []*response.Image{
+								{URL: "https://and-period.jp/icon_240.png", Size: int32(service.ImageSizeSmall)},
+								{URL: "https://and-period.jp/icon_675.png", Size: int32(service.ImageSizeMedium)},
+								{URL: "https://and-period.jp/icon_900.png", Size: int32(service.ImageSizeLarge)},
+							},
 							CategoryID:   "category-id",
 							CategoryName: "野菜",
 							CreatedAt:    1640962800,
@@ -143,6 +162,7 @@ func TestListProductTypes(t *testing.T) {
 							ID:           "product-type-id02",
 							Name:         "さつまいも",
 							IconURL:      "https://and-period.jp/icon.png",
+							Icons:        []*response.Image{},
 							CategoryID:   "category-id",
 							CategoryName: "野菜",
 							CreatedAt:    1640962800,
@@ -220,11 +240,15 @@ func TestCreateProductType(t *testing.T) {
 	categoryIn := &store.GetCategoryInput{
 		CategoryID: "category-id",
 	}
+	uploadIn := &media.UploadFileInput{
+		URL: "https://tmp.and-period.jp/icon.png",
+	}
 	typeIn := &store.CreateProductTypeInput{
 		Name:       "じゃがいも",
 		IconURL:    "https://and-period.jp/icon.png",
 		CategoryID: "category-id",
 	}
+	iconURL := "https://and-period.jp/icon.png"
 	category := &sentity.Category{
 		ID:        "category-id",
 		Name:      "野菜",
@@ -251,12 +275,13 @@ func TestCreateProductType(t *testing.T) {
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(category, nil)
+				mocks.media.EXPECT().UploadProductTypeIcon(gomock.Any(), uploadIn).Return(iconURL, nil)
 				mocks.store.EXPECT().CreateProductType(gomock.Any(), typeIn).Return(productType, nil)
 			},
 			categoryID: "category-id",
 			req: &request.CreateProductTypeRequest{
 				Name:    "じゃがいも",
-				IconURL: "https://and-period.jp/icon.png",
+				IconURL: "https://tmp.and-period.jp/icon.png",
 			},
 			expect: &testResponse{
 				code: http.StatusOK,
@@ -265,6 +290,7 @@ func TestCreateProductType(t *testing.T) {
 						ID:           "product-type-id",
 						Name:         "じゃがいも",
 						IconURL:      "https://and-period.jp/icon.png",
+						Icons:        []*response.Image{},
 						CategoryID:   "category-id",
 						CategoryName: "野菜",
 						CreatedAt:    1640962800,
@@ -281,7 +307,22 @@ func TestCreateProductType(t *testing.T) {
 			categoryID: "category-id",
 			req: &request.CreateProductTypeRequest{
 				Name:    "じゃがいも",
-				IconURL: "https://and-period.jp/icon.png",
+				IconURL: "https://tmp.and-period.jp/icon.png",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to uplaod product type icon",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(category, nil)
+				mocks.media.EXPECT().UploadProductTypeIcon(gomock.Any(), uploadIn).Return("", assert.AnError)
+			},
+			categoryID: "category-id",
+			req: &request.CreateProductTypeRequest{
+				Name:    "じゃがいも",
+				IconURL: "https://tmp.and-period.jp/icon.png",
 			},
 			expect: &testResponse{
 				code: http.StatusInternalServerError,
@@ -291,12 +332,13 @@ func TestCreateProductType(t *testing.T) {
 			name: "failed to create product type",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().GetCategory(gomock.Any(), categoryIn).Return(category, nil)
+				mocks.media.EXPECT().UploadProductTypeIcon(gomock.Any(), uploadIn).Return(iconURL, nil)
 				mocks.store.EXPECT().CreateProductType(gomock.Any(), typeIn).Return(nil, assert.AnError)
 			},
 			categoryID: "category-id",
 			req: &request.CreateProductTypeRequest{
 				Name:    "じゃがいも",
-				IconURL: "https://and-period.jp/icon.png",
+				IconURL: "https://tmp.and-period.jp/icon.png",
 			},
 			expect: &testResponse{
 				code: http.StatusInternalServerError,
@@ -317,6 +359,10 @@ func TestCreateProductType(t *testing.T) {
 func TestUpdateProductType(t *testing.T) {
 	t.Parallel()
 
+	uploadIn := &media.UploadFileInput{
+		URL: "https://and-period.jp/icon.png",
+	}
+	iconURL := "https://and-period.jp/icon.png"
 	in := &store.UpdateProductTypeInput{
 		ProductTypeID: "product-type-id",
 		Name:          "じゃがいも",
@@ -334,6 +380,7 @@ func TestUpdateProductType(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.media.EXPECT().UploadProductTypeIcon(gomock.Any(), uploadIn).Return(iconURL, nil)
 				mocks.store.EXPECT().UpdateProductType(gomock.Any(), in).Return(nil)
 			},
 			categoryID:    "category-id",
@@ -347,8 +394,24 @@ func TestUpdateProductType(t *testing.T) {
 			},
 		},
 		{
+			name: "failed to upload product type icon",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.media.EXPECT().UploadProductTypeIcon(gomock.Any(), uploadIn).Return("", assert.AnError)
+			},
+			categoryID:    "category-id",
+			productTypeID: "product-type-id",
+			req: &request.UpdateProductTypeRequest{
+				Name:    "じゃがいも",
+				IconURL: "https://and-period.jp/icon.png",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
 			name: "failed to update product type",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.media.EXPECT().UploadProductTypeIcon(gomock.Any(), uploadIn).Return(iconURL, nil)
 				mocks.store.EXPECT().UpdateProductType(gomock.Any(), in).Return(assert.AnError)
 			},
 			categoryID:    "category-id",

@@ -16,7 +16,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/rbac"
-	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"golang.org/x/sync/singleflight"
@@ -27,7 +26,6 @@ import (
 var (
 	errInvalidOrderkey   = errors.New("handler: invalid order key")
 	errInvalidFileFormat = errors.New("handler: invalid file format")
-	errTooLargeFileSize  = errors.New("handler: file size too large")
 )
 
 /**
@@ -42,7 +40,6 @@ type Handler interface {
 type Params struct {
 	WaitGroup *sync.WaitGroup
 	Enforcer  rbac.Enforcer
-	Storage   storage.Bucket
 	User      user.Service
 	Store     store.Service
 	Messenger messenger.Service
@@ -54,7 +51,6 @@ type handler struct {
 	logger      *zap.Logger
 	waitGroup   *sync.WaitGroup
 	sharedGroup *singleflight.Group
-	storage     storage.Bucket
 	enforcer    rbac.Enforcer
 	user        user.Service
 	store       store.Service
@@ -86,7 +82,6 @@ func NewHandler(params *Params, opts ...Option) Handler {
 		logger:      dopts.logger,
 		waitGroup:   params.WaitGroup,
 		sharedGroup: &singleflight.Group{},
-		storage:     params.Storage,
 		enforcer:    params.Enforcer,
 		user:        params.User,
 		store:       params.Store,

@@ -2851,6 +2851,12 @@ export interface ProductTypeResponse {
      */
     'iconUrl': string;
     /**
+     * リサイズ済みアイコンURL一覧
+     * @type {Array<ProductTypesResponseProductTypesInnerIconsInner>}
+     * @memberof ProductTypeResponse
+     */
+    'icons': Array<ProductTypesResponseProductTypesInnerIconsInner>;
+    /**
      * 商品種別ID
      * @type {string}
      * @memberof ProductTypeResponse
@@ -2919,6 +2925,12 @@ export interface ProductTypesResponseProductTypesInner {
      */
     'iconUrl': string;
     /**
+     * リサイズ済みアイコンURL一覧
+     * @type {Array<ProductTypesResponseProductTypesInnerIconsInner>}
+     * @memberof ProductTypesResponseProductTypesInner
+     */
+    'icons': Array<ProductTypesResponseProductTypesInnerIconsInner>;
+    /**
      * 商品種別ID
      * @type {string}
      * @memberof ProductTypesResponseProductTypesInner
@@ -2942,6 +2954,25 @@ export interface ProductTypesResponseProductTypesInner {
      * @memberof ProductTypesResponseProductTypesInner
      */
     'updatedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface ProductTypesResponseProductTypesInnerIconsInner
+ */
+export interface ProductTypesResponseProductTypesInnerIconsInner {
+    /**
+     * リサイズ済みアイコンURL
+     * @type {string}
+     * @memberof ProductTypesResponseProductTypesInnerIconsInner
+     */
+    'url': string;
+    /**
+     * 画像サイズ(1:240px,2:675px,3:900px)
+     * @type {number}
+     * @memberof ProductTypesResponseProductTypesInnerIconsInner
+     */
+    'size': number;
 }
 /**
  * 

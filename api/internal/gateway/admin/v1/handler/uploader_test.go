@@ -282,8 +282,8 @@ func TestUploadProductTypeIcon(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.storage.EXPECT().
-					Upload(gomock.Any(), gomock.Any(), gomock.Any()).
+				mocks.media.EXPECT().
+					GenerateProductTypeIcon(gomock.Any(), gomock.Any()).
 					Return("https://and-period.jp/header.png", nil)
 			},
 			field: "icon",

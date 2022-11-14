@@ -10,6 +10,22 @@ productTypeResponse:
     iconUrl:
       type: string
       description: アイコンURL
+    icons:
+      type: array
+      description: リサイズ済みアイコンURL一覧
+      items:
+        type: object
+        properties:
+          url:
+            type: string
+            description: リサイズ済みアイコンURL
+          size:
+            type: integer
+            format: int32
+            description: 画像サイズ(1:240px,2:675px,3:900px)
+        required:
+        - url
+        - size
     categoryId:
       type: string
       description: 商品種別ID
@@ -28,6 +44,7 @@ productTypeResponse:
   - id
   - name
   - iconUrl
+  - icons
   - categoryId
   - categoryName
   - createdAt
@@ -36,6 +53,13 @@ productTypeResponse:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     name: 'じゃがいも'
     iconUrl: 'https://and-period.jp/icon.png'
+    icons:
+    - url: 'https://and-period.jp/icon_240.png'
+      size: 1
+    - url: 'https://and-period.jp/icon_675.png'
+      size: 2
+    - url: 'https://and-period.jp/icon_900.png'
+      size: 3
     categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
     categoryName: '野菜'
     createdAt: 1640962800
@@ -58,6 +82,22 @@ productTypesResponse:
           iconUrl:
             type: string
             description: アイコンURL
+          icons:
+            type: array
+            description: リサイズ済みアイコンURL一覧
+            items:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: リサイズ済みアイコンURL
+                size:
+                  type: integer
+                  format: int32
+                  description: 画像サイズ(1:240px,2:675px,3:900px)
+              required:
+              - url
+              - size
           categoryId:
             type: string
             description: 商品種別ID
@@ -76,6 +116,7 @@ productTypesResponse:
         - id
         - name
         - iconUrl
+        - icons
         - categoryId
         - categoryName
         - createdAt
@@ -92,6 +133,13 @@ productTypesResponse:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       name: 'じゃがいも'
       iconUrl: 'https://and-period.jp/icon.png'
+      icons:
+      - url: 'https://and-period.jp/icon_240.png'
+        size: 1
+      - url: 'https://and-period.jp/icon_675.png'
+        size: 2
+      - url: 'https://and-period.jp/icon_900.png'
+        size: 3
       categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
       categoryName: '野菜'
       createdAt: 1640962800
@@ -99,6 +147,7 @@ productTypesResponse:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       name: 'りんご'
       iconUrl: 'https://and-period.jp/icon.png'
+      icons: []
       categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
       categoryName: '果物'
       createdAt: 1640962800
