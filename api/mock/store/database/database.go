@@ -8,6 +8,7 @@ import (
 	context "context"
 	reflect "reflect"
 
+	common "github.com/and-period/furumaru/api/internal/common"
 	database "github.com/and-period/furumaru/api/internal/store/database"
 	entity "github.com/and-period/furumaru/api/internal/store/entity"
 	gomock "github.com/golang/mock/gomock"
@@ -581,6 +582,20 @@ func (m *MockProductType) Update(ctx context.Context, productTypeID, name, iconU
 func (mr *MockProductTypeMockRecorder) Update(ctx, productTypeID, name, iconURL interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockProductType)(nil).Update), ctx, productTypeID, name, iconURL)
+}
+
+// UpdateIcons mocks base method.
+func (m *MockProductType) UpdateIcons(ctx context.Context, productTypeID string, icons common.Images) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateIcons", ctx, productTypeID, icons)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateIcons indicates an expected call of UpdateIcons.
+func (mr *MockProductTypeMockRecorder) UpdateIcons(ctx, productTypeID, icons interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateIcons", reflect.TypeOf((*MockProductType)(nil).UpdateIcons), ctx, productTypeID, icons)
 }
 
 // MockPromotion is a mock of Promotion interface.

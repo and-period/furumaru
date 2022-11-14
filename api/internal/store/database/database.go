@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
 	"gorm.io/gorm"
@@ -82,6 +83,7 @@ type ProductType interface {
 	Get(ctx context.Context, productTypeID string, fields ...string) (*entity.ProductType, error)
 	Create(ctx context.Context, productType *entity.ProductType) error
 	Update(ctx context.Context, productTypeID, name, iconURL string) error
+	UpdateIcons(ctx context.Context, productTypeID string, icons common.Images) error
 	Delete(ctx context.Context, productTypeID string) error
 }
 

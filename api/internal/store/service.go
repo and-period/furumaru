@@ -31,6 +31,8 @@ type Service interface {
 	CreateProductType(ctx context.Context, in *CreateProductTypeInput) (*entity.ProductType, error)
 	// 品目更新
 	UpdateProductType(ctx context.Context, in *UpdateProductTypeInput) error
+	// 品目アイコン画像(リサイズ済み)更新
+	UpdateProductTypeIcons(ctx context.Context, in *UpdateProductTypeIconsInput) error
 	// 品目削除
 	DeleteProductType(ctx context.Context, in *DeleteProductTypeInput) error
 	// 配送設定一覧取得
