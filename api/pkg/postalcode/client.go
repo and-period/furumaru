@@ -6,9 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"net/http"
-	"strings"
 
 	"go.uber.org/zap"
 )
@@ -19,15 +17,14 @@ type Client interface {
 }
 
 var (
-	ErrInvalidArgument       = errors.New("postalcode: invalid argument")
-	ErrNotFound              = errors.New("postalcode: not found")
-	ErrInternal              = errors.New("postalcode: internal")
-	ErrCanceled              = errors.New("postalcode: canceled")
-	ErrUnavailable           = errors.New("postalcode: unavailable")
-	ErrDeadlineExceeded      = errors.New("postalcode: deadline exceeded")
-	ErrUnknown               = errors.New("postalcode: unknown")
-	ErrTimeout               = errors.New("postalcode: timeout")
-	errUnexpectedContentType = errors.New("postalcode: unexpected content type")
+	ErrInvalidArgument  = errors.New("postalcode: invalid argument")
+	ErrNotFound         = errors.New("postalcode: not found")
+	ErrInternal         = errors.New("postalcode: internal")
+	ErrCanceled         = errors.New("postalcode: canceled")
+	ErrUnavailable      = errors.New("postalcode: unavailable")
+	ErrDeadlineExceeded = errors.New("postalcode: deadline exceeded")
+	ErrUnknown          = errors.New("postalcode: unknown")
+	ErrTimeout          = errors.New("postalcode: timeout")
 )
 
 type client struct {
@@ -75,6 +72,7 @@ func (c *client) do(req *http.Request, out interface{}) error {
 		res *http.Response
 		err error
 	)
+	req.Header.Set("Content-Type", "application/json")
 	for retries := 0; retries < c.maxRetries; retries++ {
 		res, err = c.client.Do(req) //nolint:bodyclose
 		if err != nil || !c.retryable(res.StatusCode) {
@@ -121,16 +119,6 @@ func (c *client) checkStatus(res *http.Response) error {
 }
 
 func (c *client) bind(out interface{}, res *http.Response) error {
-	content := res.Header.Get("Content-Type")
-	if !strings.HasPrefix(content, "application/json") {
-		txt, _ := io.ReadAll(res.Body)
-		c.logger.Warn("Unexpected content type",
-			zap.Int("status", res.StatusCode),
-			zap.String("content type", content),
-			zap.String("body", string(txt)),
-		)
-		return errUnexpectedContentType
-	}
 	return json.NewDecoder(res.Body).Decode(out)
 }
 

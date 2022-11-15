@@ -32,7 +32,6 @@ func (c *client) Search(ctx context.Context, code string) (*PostalCode, error) {
 	if err != nil {
 		return nil, c.newError(err)
 	}
-	req.Header.Set("Content-Type", "application/json")
 
 	res := &searchResponse{}
 	if err := c.do(req, res); err != nil {
