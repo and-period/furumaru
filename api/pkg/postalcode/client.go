@@ -17,15 +17,14 @@ type Client interface {
 }
 
 var (
-	ErrInvalidArgument       = errors.New("postalcode: invalid argument")
-	ErrNotFound              = errors.New("postalcode: not found")
-	ErrInternal              = errors.New("postalcode: internal")
-	ErrCanceled              = errors.New("postalcode: canceled")
-	ErrUnavailable           = errors.New("postalcode: unavailable")
-	ErrDeadlineExceeded      = errors.New("postalcode: deadline exceeded")
-	ErrUnknown               = errors.New("postalcode: unknown")
-	ErrTimeout               = errors.New("postalcode: timeout")
-	errUnexpectedContentType = errors.New("postalcode: unexpected content type")
+	ErrInvalidArgument  = errors.New("postalcode: invalid argument")
+	ErrNotFound         = errors.New("postalcode: not found")
+	ErrInternal         = errors.New("postalcode: internal")
+	ErrCanceled         = errors.New("postalcode: canceled")
+	ErrUnavailable      = errors.New("postalcode: unavailable")
+	ErrDeadlineExceeded = errors.New("postalcode: deadline exceeded")
+	ErrUnknown          = errors.New("postalcode: unknown")
+	ErrTimeout          = errors.New("postalcode: timeout")
 )
 
 type client struct {
