@@ -85,8 +85,7 @@ func (t *productType) Get(ctx context.Context, productTypeID string, fields ...s
 
 func (t *productType) Create(ctx context.Context, productType *entity.ProductType) error {
 	_, err := t.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
-		err := tx.WithContext(ctx).
-			Table(categoryTable).Select(categoryFields).
+		err := t.db.Statement(ctx, tx, categoryTable).
 			Where("id = ?", productType.CategoryID).
 			First(&entity.Category{}).Error
 		if err != nil {
