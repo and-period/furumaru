@@ -13,10 +13,6 @@ import (
 
 const categoryTable = "categories"
 
-var categoryFields = []string{
-	"id", "name", "created_at", "updated_at",
-}
-
 type category struct {
 	db  *database.Client
 	now func() time.Time
