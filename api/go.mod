@@ -24,7 +24,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.0-rc.2
 	github.com/jbenet/go-base58 v0.0.0-20150317085156-6237cf65f3a6
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/line/line-bot-sdk-go/v7 v7.17.0
+	github.com/line/line-bot-sdk-go/v7 v7.18.0
 	github.com/newrelic/go-agent/v3 v3.18.1
 	github.com/newrelic/go-agent/v3/integrations/nrgin v1.1.2
 	github.com/prometheus/client_golang v1.13.0
