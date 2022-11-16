@@ -20,4 +20,4 @@ CREATE TABLE `stores`.`addresses` (
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX `ui_addresses_hash` (`exists` DESC, `hash` ASC) VISIBLE;
+CREATE UNIQUE INDEX `ui_addresses_hash` ON `stores`.`addresses` (`exists` DESC, `hash` ASC) VISIBLE;
