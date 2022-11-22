@@ -59,6 +59,7 @@ const config: NuxtConfig = {
     '@nuxtjs/vuetify',
     '@nuxtjs/composition-api/module',
     '@pinia/nuxt',
+    '@nuxtjs/google-fonts',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -124,6 +125,16 @@ const config: NuxtConfig = {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
+
+  googleFonts: {
+    download: true,
+    inject: true,
+    overwriting: true,
+    display: 'swap',
+    families: {
+      'BIZ+UDGothic': true,
+    },
+  },
 }
 
 export default config
