@@ -92,16 +92,7 @@ func (h *handler) newShippingOrders(ctx *gin.Context) ([]*store.ListShippingsOrd
 }
 
 func (h *handler) GetShipping(ctx *gin.Context) {
-	in := &store.GetShippingInput{
-		ShippingID: util.GetParam(ctx, "shippingId"),
-	}
-	sshipping, err := h.store.GetShipping(ctx, in)
-	if err != nil {
-		httpError(ctx, err)
-		return
-	}
-
-	shipping, err := service.NewShipping(sshipping)
+	shipping, err := h.getShipping(ctx, util.GetParam(ctx, "shippingId"))
 	if err != nil {
 		httpError(ctx, err)
 		return
