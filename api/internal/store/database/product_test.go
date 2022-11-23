@@ -463,7 +463,6 @@ func TestProduct_Update(t *testing.T) {
 				productID: "product-id",
 				params: &UpdateProductParams{
 					ProducerID:      "producer-id",
-					CategoryID:      "category-id",
 					TypeID:          "type-id",
 					Name:            "新鮮なじゃがいも",
 					Description:     "新鮮なじゃがいもをお届けします。",
@@ -711,7 +710,6 @@ func testProduct(id, typeID, categoryID, producerID string, now time.Time) *enti
 	p := &entity.Product{
 		ID:              id,
 		TypeID:          typeID,
-		CategoryID:      categoryID,
 		ProducerID:      producerID,
 		Name:            "新鮮なじゃがいも",
 		Description:     "新鮮なじゃがいもをお届けします。",

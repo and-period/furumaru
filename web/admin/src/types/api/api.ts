@@ -1122,12 +1122,6 @@ export interface CreateProductRequest {
      */
     'producerId': string;
     /**
-     * 商品種別ID
-     * @type {string}
-     * @memberof CreateProductRequest
-     */
-    'categoryId': string;
-    /**
      * 品目ID
      * @type {string}
      * @memberof CreateProductRequest
@@ -4268,12 +4262,6 @@ export interface UpdateProductRequest {
      * @memberof UpdateProductRequest
      */
     'producerId': string;
-    /**
-     * 商品種別ID
-     * @type {string}
-     * @memberof UpdateProductRequest
-     */
-    'categoryId': string;
     /**
      * 品目ID
      * @type {string}

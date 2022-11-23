@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -65,16 +66,11 @@ func (h *handler) ListProductTypes(ctx *gin.Context) {
 		return
 	}
 
-	categoriesIn := &store.MultiGetCategoriesInput{
-		CategoryIDs: productTypes.CategoryIDs(),
-	}
-	scategories, err := h.store.MultiGetCategories(ctx, categoriesIn)
+	categories, err := h.multiGetCategories(ctx, productTypes.CategoryIDs())
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
-	categories := service.NewCategories(scategories)
-
 	productTypes.Fill(categories.Map())
 
 	res := &response.ProductTypesResponse{
@@ -110,16 +106,11 @@ func (h *handler) CreateProductType(ctx *gin.Context) {
 		return
 	}
 
-	categoryIn := &store.GetCategoryInput{
-		CategoryID: util.GetParam(ctx, "categoryId"),
-	}
-	scategory, err := h.store.GetCategory(ctx, categoryIn)
+	category, err := h.getCategory(ctx, util.GetParam(ctx, "categoryId"))
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
-	category := service.NewCategory(scategory)
-
 	uploadIn := &media.UploadFileInput{
 		URL: req.IconURL,
 	}
@@ -188,4 +179,38 @@ func (h *handler) DeleteProductType(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) multiGetProductTypes(ctx context.Context, productTypeIDs []string) (service.ProductTypes, error) {
+	in := &store.MultiGetProductTypesInput{
+		ProductTypeIDs: productTypeIDs,
+	}
+	sproductTypes, err := h.store.MultiGetProductTypes(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	productTypes := service.NewProductTypes(sproductTypes)
+	categories, err := h.multiGetCategories(ctx, productTypes.CategoryIDs())
+	if err != nil {
+		return nil, err
+	}
+	productTypes.Fill(categories.Map())
+	return productTypes, nil
+}
+
+func (h *handler) getProductType(ctx context.Context, productTypeID string) (*service.ProductType, error) {
+	in := &store.GetProductTypeInput{
+		ProductTypeID: productTypeID,
+	}
+	sproductType, err := h.store.GetProductType(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	productType := service.NewProductType(sproductType)
+	category, err := h.getCategory(ctx, productType.CategoryID)
+	if err != nil {
+		return nil, err
+	}
+	productType.Fill(category)
+	return productType, nil
 }

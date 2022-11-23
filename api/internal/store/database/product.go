@@ -101,7 +101,6 @@ func (p *product) Update(ctx context.Context, productID string, params *UpdatePr
 
 		updates := map[string]interface{}{
 			"producer_id":       params.ProducerID,
-			"category_id":       params.CategoryID,
 			"product_type_id":   params.TypeID,
 			"name":              params.Name,
 			"description":       params.Description,

@@ -172,7 +172,6 @@ type GetProductInput struct {
 
 type CreateProductInput struct {
 	ProducerID       string                `validate:"required"`
-	CategoryID       string                `validate:"required"`
 	TypeID           string                `validate:"required"`
 	Name             string                `validate:"required,max=128"`
 	Description      string                `validate:"required,max=20000"`
@@ -201,7 +200,6 @@ type CreateProductMedia struct {
 type UpdateProductInput struct {
 	ProductID        string                `validate:"required"`
 	ProducerID       string                `validate:"required"`
-	CategoryID       string                `validate:"required"`
 	TypeID           string                `validate:"required"`
 	Name             string                `validate:"required,max=128"`
 	Description      string                `validate:"required,max=20000"`

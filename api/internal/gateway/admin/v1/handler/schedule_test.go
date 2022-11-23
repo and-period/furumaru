@@ -143,7 +143,6 @@ func TestCreateSchedule(t *testing.T) {
 	product := &sentity.Product{
 		ID:              "product-id",
 		TypeID:          "product-type-id",
-		CategoryID:      "category-id",
 		ProducerID:      "producer-id",
 		Name:            "新鮮なじゃがいも",
 		Description:     "新鮮なじゃがいもをお届けします。",

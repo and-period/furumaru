@@ -199,7 +199,6 @@ func TestProduct(t *testing.T) {
 			product: &entity.Product{
 				ID:              "product-id",
 				TypeID:          "product-type-id",
-				CategoryID:      "category-id",
 				ProducerID:      "producer-id",
 				Name:            "新鮮なじゃがいも",
 				Description:     "新鮮なじゃがいもをお届けします。",
@@ -236,7 +235,7 @@ func TestProduct(t *testing.T) {
 					TypeID:          "product-type-id",
 					TypeName:        "",
 					TypeIconURL:     "",
-					CategoryID:      "category-id",
+					CategoryID:      "",
 					CategoryName:    "",
 					ProducerID:      "producer-id",
 					StoreName:       "",
@@ -286,7 +285,6 @@ func TestProduct_Fill(t *testing.T) {
 	tests := []struct {
 		name        string
 		product     *Product
-		category    *Category
 		productType *ProductType
 		producer    *Producer
 		expect      *Product
@@ -297,7 +295,6 @@ func TestProduct_Fill(t *testing.T) {
 				Product: response.Product{
 					ID:              "product-id",
 					TypeID:          "product-type-id",
-					CategoryID:      "category-id",
 					ProducerID:      "producer-id",
 					Name:            "新鮮なじゃがいも",
 					Description:     "新鮮なじゃがいもをお届けします。",
@@ -327,14 +324,6 @@ func TestProduct_Fill(t *testing.T) {
 					OriginCity:       "彦根市",
 					CreatedAt:        1640962800,
 					UpdatedAt:        1640962800,
-				},
-			},
-			category: &Category{
-				Category: response.Category{
-					ID:        "category-id",
-					Name:      "野菜",
-					CreatedAt: 1640962800,
-					UpdatedAt: 1640962800,
 				},
 			},
 			productType: &ProductType{
@@ -413,7 +402,7 @@ func TestProduct_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.product.Fill(tt.category, tt.productType, tt.producer)
+			tt.product.Fill(tt.productType, tt.producer)
 			assert.Equal(t, tt.expect, tt.product)
 		})
 	}
@@ -530,7 +519,6 @@ func TestProducts(t *testing.T) {
 				{
 					ID:              "product-id",
 					TypeID:          "product-type-id",
-					CategoryID:      "category-id",
 					ProducerID:      "producer-id",
 					Name:            "新鮮なじゃがいも",
 					Description:     "新鮮なじゃがいもをお届けします。",
@@ -579,7 +567,7 @@ func TestProducts(t *testing.T) {
 						TypeID:          "product-type-id",
 						TypeName:        "",
 						TypeIconURL:     "",
-						CategoryID:      "category-id",
+						CategoryID:      "",
 						CategoryName:    "",
 						ProducerID:      "producer-id",
 						StoreName:       "",
@@ -891,7 +879,6 @@ func TestProducts_Fill(t *testing.T) {
 	tests := []struct {
 		name         string
 		products     Products
-		categories   map[string]*Category
 		productTypes map[string]*ProductType
 		producers    map[string]*Producer
 		expect       Products
@@ -925,16 +912,6 @@ func TestProducts_Fill(t *testing.T) {
 						OriginCity:       "彦根市",
 						CreatedAt:        1640962800,
 						UpdatedAt:        1640962800,
-					},
-				},
-			},
-			categories: map[string]*Category{
-				"category-id": {
-					Category: response.Category{
-						ID:        "category-id",
-						Name:      "野菜",
-						CreatedAt: 1640962800,
-						UpdatedAt: 1640962800,
 					},
 				},
 			},
@@ -1012,7 +989,7 @@ func TestProducts_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.products.Fill(tt.categories, tt.productTypes, tt.producers)
+			tt.products.Fill(tt.productTypes, tt.producers)
 			assert.Equal(t, tt.expect, tt.products)
 		})
 	}

@@ -35,7 +35,6 @@ func TestListProducts(t *testing.T) {
 		{
 			ID:              "product-id",
 			TypeID:          "type-id",
-			CategoryID:      "category-id",
 			ProducerID:      "producer-id",
 			Name:            "新鮮なじゃがいも",
 			Description:     "新鮮なじゃがいもをお届けします。",
@@ -159,7 +158,6 @@ func TestMultiGetProducts(t *testing.T) {
 		{
 			ID:              "product-id",
 			TypeID:          "type-id",
-			CategoryID:      "category-id",
 			ProducerID:      "producer-id",
 			Name:            "新鮮なじゃがいも",
 			Description:     "新鮮なじゃがいもをお届けします。",
@@ -223,7 +221,6 @@ func TestGetProduct(t *testing.T) {
 	product := &entity.Product{
 		ID:              "product-id",
 		TypeID:          "type-id",
-		CategoryID:      "category-id",
 		ProducerID:      "producer-id",
 		Name:            "新鮮なじゃがいも",
 		Description:     "新鮮なじゃがいもをお届けします。",
@@ -329,7 +326,6 @@ func TestCreateProduct(t *testing.T) {
 						expect := &entity.Product{
 							ID:              product.ID, // ignore
 							TypeID:          "product-type-id",
-							CategoryID:      "category-id",
 							ProducerID:      "producer-id",
 							Name:            "新鮮なじゃがいも",
 							Description:     "新鮮なじゃがいもをお届けします。",
@@ -365,7 +361,6 @@ func TestCreateProduct(t *testing.T) {
 			},
 			input: &store.CreateProductInput{
 				ProducerID:      "producer-id",
-				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
 				Name:            "新鮮なじゃがいも",
 				Description:     "新鮮なじゃがいもをお届けします。",
@@ -401,7 +396,6 @@ func TestCreateProduct(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {},
 			input: &store.CreateProductInput{
 				ProducerID:      "producer-id",
-				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
 				Name:            "新鮮なじゃがいも",
 				Description:     "新鮮なじゃがいもをお届けします。",
@@ -433,7 +427,6 @@ func TestCreateProduct(t *testing.T) {
 			},
 			input: &store.CreateProductInput{
 				ProducerID:      "producer-id",
-				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
 				Name:            "新鮮なじゃがいも",
 				Description:     "新鮮なじゃがいもをお届けします。",
@@ -466,7 +459,6 @@ func TestCreateProduct(t *testing.T) {
 			},
 			input: &store.CreateProductInput{
 				ProducerID:      "producer-id",
-				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
 				Name:            "新鮮なじゃがいも",
 				Description:     "新鮮なじゃがいもをお届けします。",
@@ -509,7 +501,6 @@ func TestUpdateProduct(t *testing.T) {
 	product := &entity.Product{
 		ID:              "product-id",
 		TypeID:          "type-id",
-		CategoryID:      "category-id",
 		ProducerID:      "producer-id",
 		Name:            "新鮮なじゃがいも",
 		Description:     "新鮮なじゃがいもをお届けします。",
@@ -561,7 +552,6 @@ func TestUpdateProduct(t *testing.T) {
 					DoAndReturn(func(ctx context.Context, productID string, params *database.UpdateProductParams) error {
 						expect := &database.UpdateProductParams{
 							ProducerID:      "producer-id",
-							CategoryID:      "category-id",
 							TypeID:          "product-type-id",
 							Name:            "新鮮なじゃがいも",
 							Description:     "新鮮なじゃがいもをお届けします。",
@@ -592,7 +582,6 @@ func TestUpdateProduct(t *testing.T) {
 			input: &store.UpdateProductInput{
 				ProductID:       "product-id",
 				ProducerID:      "producer-id",
-				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
 				Name:            "新鮮なじゃがいも",
 				Description:     "新鮮なじゃがいもをお届けします。",
@@ -631,7 +620,6 @@ func TestUpdateProduct(t *testing.T) {
 			input: &store.UpdateProductInput{
 				ProductID:       "product-id",
 				ProducerID:      "producer-id",
-				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
 				Name:            "新鮮なじゃがいも",
 				Description:     "新鮮なじゃがいもをお届けします。",
@@ -664,7 +652,6 @@ func TestUpdateProduct(t *testing.T) {
 			input: &store.UpdateProductInput{
 				ProductID:       "product-id",
 				ProducerID:      "producer-id",
-				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
 				Name:            "新鮮なじゃがいも",
 				Description:     "新鮮なじゃがいもをお届けします。",
@@ -698,7 +685,6 @@ func TestUpdateProduct(t *testing.T) {
 			input: &store.UpdateProductInput{
 				ProductID:       "product-id",
 				ProducerID:      "producer-id",
-				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
 				Name:            "新鮮なじゃがいも",
 				Description:     "新鮮なじゃがいもをお届けします。",
@@ -733,7 +719,6 @@ func TestUpdateProduct(t *testing.T) {
 			input: &store.UpdateProductInput{
 				ProductID:       "product-id",
 				ProducerID:      "producer-id",
-				CategoryID:      "category-id",
 				TypeID:          "product-type-id",
 				Name:            "新鮮なじゃがいも",
 				Description:     "新鮮なじゃがいもをお届けします。",
