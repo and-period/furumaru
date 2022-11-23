@@ -207,7 +207,6 @@ func (p *ListProductsParams) stmt(stmt *gorm.DB) *gorm.DB {
 
 type UpdateProductParams struct {
 	ProducerID       string
-	CategoryID       string
 	TypeID           string
 	Name             string
 	Description      string

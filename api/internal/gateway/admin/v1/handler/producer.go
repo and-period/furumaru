@@ -267,6 +267,17 @@ func (h *handler) DeleteProducer(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
+func (h *handler) multiGetProducers(ctx context.Context, producerIDs []string) (service.Producers, error) {
+	in := &user.MultiGetProducersInput{
+		ProducerIDs: producerIDs,
+	}
+	producers, err := h.user.MultiGetProducers(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewProducers(producers), nil
+}
+
 func (h *handler) getProducer(ctx context.Context, producerID string) (*service.Producer, error) {
 	in := &user.GetProducerInput{
 		ProducerID: producerID,

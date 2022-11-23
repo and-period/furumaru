@@ -47,31 +47,30 @@ const (
 
 // Product - 商品情報
 type Product struct {
-	ID               string            `gorm:"primaryKey;<-:create"`                // 商品ID
-	ProducerID       string            `gorm:""`                                    // 生産者ID
-	CategoryID       string            `gorm:"default:null"`                        // 商品種別ID
-	TypeID           string            `gorm:"default:null;column:product_type_id"` // 品目ID
-	Name             string            `gorm:""`                                    // 商品名
-	Description      string            `gorm:""`                                    // 商品説明
-	Public           bool              `gorm:""`                                    // 公開フラグ
-	Inventory        int64             `gorm:""`                                    // 在庫数
-	Weight           int64             `gorm:""`                                    // 重量
-	WeightUnit       WeightUnit        `gorm:""`                                    // 重量単位
-	Item             int64             `gorm:""`                                    // 数量
-	ItemUnit         string            `gorm:""`                                    // 数量単位
-	ItemDescription  string            `gorm:""`                                    // 数量単位説明
-	Media            MultiProductMedia `gorm:"-"`                                   // メディア一覧
-	MediaJSON        datatypes.JSON    `gorm:"default:null;column:media"`           // メディア一覧(JSON)
-	Price            int64             `gorm:""`                                    // 販売価格
-	DeliveryType     DeliveryType      `gorm:""`                                    // 配送方法
-	Box60Rate        int64             `gorm:""`                                    // 箱の占有率(サイズ:60)
-	Box80Rate        int64             `gorm:""`                                    // 箱の占有率(サイズ:80)
-	Box100Rate       int64             `gorm:""`                                    // 箱の占有率(サイズ:100)
-	OriginPrefecture string            `gorm:""`                                    // 原産地(都道府県)
-	OriginCity       string            `gorm:""`                                    // 原産地(市区町村)
-	CreatedAt        time.Time         `gorm:"<-:create"`                           // 登録日時
-	UpdatedAt        time.Time         `gorm:""`                                    // 更新日時
-	DeletedAt        gorm.DeletedAt    `gorm:"default:null"`                        // 削除日時
+	ID               string            `gorm:"primaryKey;<-:create"`      // 商品ID
+	ProducerID       string            `gorm:""`                          // 生産者ID
+	TypeID           string            `gorm:"column:product_type_id"`    // 品目ID
+	Name             string            `gorm:""`                          // 商品名
+	Description      string            `gorm:""`                          // 商品説明
+	Public           bool              `gorm:""`                          // 公開フラグ
+	Inventory        int64             `gorm:""`                          // 在庫数
+	Weight           int64             `gorm:""`                          // 重量
+	WeightUnit       WeightUnit        `gorm:""`                          // 重量単位
+	Item             int64             `gorm:""`                          // 数量
+	ItemUnit         string            `gorm:""`                          // 数量単位
+	ItemDescription  string            `gorm:""`                          // 数量単位説明
+	Media            MultiProductMedia `gorm:"-"`                         // メディア一覧
+	MediaJSON        datatypes.JSON    `gorm:"default:null;column:media"` // メディア一覧(JSON)
+	Price            int64             `gorm:""`                          // 販売価格
+	DeliveryType     DeliveryType      `gorm:""`                          // 配送方法
+	Box60Rate        int64             `gorm:""`                          // 箱の占有率(サイズ:60)
+	Box80Rate        int64             `gorm:""`                          // 箱の占有率(サイズ:80)
+	Box100Rate       int64             `gorm:""`                          // 箱の占有率(サイズ:100)
+	OriginPrefecture string            `gorm:""`                          // 原産地(都道府県)
+	OriginCity       string            `gorm:""`                          // 原産地(市区町村)
+	CreatedAt        time.Time         `gorm:"<-:create"`                 // 登録日時
+	UpdatedAt        time.Time         `gorm:""`                          // 更新日時
+	DeletedAt        gorm.DeletedAt    `gorm:"default:null"`              // 削除日時
 }
 
 type Products []*Product
@@ -87,7 +86,6 @@ type MultiProductMedia []*ProductMedia
 
 type NewProductParams struct {
 	ProducerID       string
-	CategoryID       string
 	TypeID           string
 	Name             string
 	Description      string
@@ -112,7 +110,6 @@ func NewProduct(params *NewProductParams) *Product {
 	return &Product{
 		ID:               uuid.Base58Encode(uuid.New()),
 		ProducerID:       params.ProducerID,
-		CategoryID:       params.CategoryID,
 		TypeID:           params.TypeID,
 		Name:             params.Name,
 		Description:      params.Description,

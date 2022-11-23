@@ -10,9 +10,6 @@ createProductRequest:
     producerId:
       type: string
       description: 生産者ID
-    categoryId:
-      type: string
-      description: 商品種別ID
     productTypeId:
       type: string
       description: 品目ID
@@ -78,7 +75,6 @@ createProductRequest:
   - name
   - description
   - producerId
-  - categoryId
   - productTypeId
   - public
   - inventory
@@ -97,7 +93,6 @@ createProductRequest:
     name: '新鮮なじゃがいも'
     description: '新鮮なじゃがいもをお届けします。'
     producerId: 'kSByoE6FetnPs5Byk3a9Zx'
-    categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
     productTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
     public: true
     inventory: 30
@@ -128,9 +123,6 @@ updateProductRequest:
     producerId:
       type: string
       description: 生産者ID
-    categoryId:
-      type: string
-      description: 商品種別ID
     productTypeId:
       type: string
       description: 品目ID
@@ -196,7 +188,6 @@ updateProductRequest:
   - name
   - description
   - producerId
-  - categoryId
   - productTypeId
   - public
   - inventory
@@ -215,7 +206,6 @@ updateProductRequest:
     name: '新鮮なじゃがいも'
     description: '新鮮なじゃがいもをお届けします。'
     producerId: 'kSByoE6FetnPs5Byk3a9Zx'
-    categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
     productTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
     public: true
     inventory: 30

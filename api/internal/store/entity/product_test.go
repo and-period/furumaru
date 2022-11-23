@@ -19,7 +19,6 @@ func TestProduct(t *testing.T) {
 			name: "success",
 			params: &NewProductParams{
 				TypeID:          "type-id",
-				CategoryID:      "category-id",
 				ProducerID:      "producer-id",
 				Name:            "新鮮なじゃがいも",
 				Description:     "新鮮なじゃがいもをお届けします。",
@@ -44,7 +43,6 @@ func TestProduct(t *testing.T) {
 			},
 			expect: &Product{
 				TypeID:          "type-id",
-				CategoryID:      "category-id",
 				ProducerID:      "producer-id",
 				Name:            "新鮮なじゃがいも",
 				Description:     "新鮮なじゃがいもをお届けします。",

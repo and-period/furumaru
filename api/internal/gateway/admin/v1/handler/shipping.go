@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -251,4 +252,15 @@ func (h *handler) DeleteShipping(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) getShipping(ctx context.Context, shippingID string) (*service.Shipping, error) {
+	in := &store.GetShippingInput{
+		ShippingID: shippingID,
+	}
+	shipping, err := h.store.GetShipping(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewShipping(shipping)
 }

@@ -158,14 +158,6 @@
         <v-card-text>
           <div class="d-flex">
             <v-select
-              v-model="formData.categoryId"
-              class="mr-4"
-              label="カテゴリ"
-              :items="categoriesItem"
-              item-text="name"
-              item-value="id"
-            />
-            <v-select
               v-model="formData.productTypeId"
               label="品目"
               :items="productTypesItem"
@@ -261,7 +253,6 @@ export default defineComponent({
       name: '',
       description: '',
       producerId: '',
-      categoryId: '',
       productTypeId: '',
       public: true,
       inventory: 0,

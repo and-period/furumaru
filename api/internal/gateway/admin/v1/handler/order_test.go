@@ -289,7 +289,6 @@ func TestListOrders(t *testing.T) {
 		{
 			ID:              "product-id",
 			TypeID:          "product-type-id",
-			CategoryID:      "category-id",
 			ProducerID:      "producer-id",
 			Name:            "新鮮なじゃがいも",
 			Description:     "新鮮なじゃがいもをお届けします。",
@@ -634,7 +633,6 @@ func TestGetOrder(t *testing.T) {
 		{
 			ID:              "product-id",
 			TypeID:          "product-type-id",
-			CategoryID:      "category-id",
 			ProducerID:      "producer-id",
 			Name:            "新鮮なじゃがいも",
 			Description:     "新鮮なじゃがいもをお届けします。",

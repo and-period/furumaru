@@ -96,7 +96,6 @@ func (s *service) CreateProduct(ctx context.Context, in *store.CreateProductInpu
 	}
 	params := &entity.NewProductParams{
 		ProducerID:       in.ProducerID,
-		CategoryID:       in.CategoryID,
 		TypeID:           in.TypeID,
 		Name:             in.Name,
 		Description:      in.Description,
@@ -155,7 +154,6 @@ func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInpu
 	}
 	params := &database.UpdateProductParams{
 		ProducerID:       in.ProducerID,
-		CategoryID:       in.CategoryID,
 		TypeID:           in.TypeID,
 		Name:             in.Name,
 		Description:      in.Description,
