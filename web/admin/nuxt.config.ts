@@ -38,6 +38,7 @@ const config: NuxtConfig = {
     '~/plugins/google-analytics',
     '~/plugins/auth',
     '~/plugins/api-error-handler',
+    '~/plugins/api-client',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
