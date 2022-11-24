@@ -101,6 +101,50 @@
       </v-tab-item>
 
       <v-tab-item value="relationProducers"> </v-tab-item>
+
+      <v-dialog v-model="dialog" width="500">
+        <template #activator="{ on, attrs }">
+          <div class="d-flex pt-3 pr-3">
+            <v-spacer />
+            <v-btn outlined color="primary" v-bind="attrs" v-on="on">
+              <v-icon left>mdi-plus</v-icon>
+              生産者登録
+            </v-btn>
+          </div>
+        </template>
+
+        <v-card>
+          <v-card-title class="primaryLight"> 生産者を追加 </v-card-title>
+
+          <v-autocomplete
+            chips
+            label="関連生産者"
+            multiple
+            filled
+            :items="people"
+            item-text="name"
+            item-value="name"
+          >
+          </v-autocomplete>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary"> 登録 </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-data-table
+        :headers="headers"
+        :items="coordinators"
+        :no-results-text="noResultsText"
+        :server-items-length="totalItems"
+        :footer-props="options"
+        no-data-text="登録されているコーディネータがいません。"
+        @update:items-per-page="handleUpdateItemsPerPage"
+        @update:page="handleUpdatePage"
+      >
+      </v-data-table>
     </v-tabs-items>
   </div>
 </template>
@@ -138,6 +182,7 @@ export default defineComponent({
       { name: '基本情報', value: 'coordinators' },
       { name: '関連生産者', value: 'relationProducers' },
     ]
+    const people = [{ name: 'Test Taro' }, { name: 'やまだ　花子' }]
     const coordinatorStore = useCoordinatorStore()
 
     const route = useRoute()
@@ -298,6 +343,7 @@ export default defineComponent({
       handleUpdateHeader,
       tabItems,
       tab,
+      people,
     }
   },
 })
