@@ -121,9 +121,9 @@
             label="関連生産者"
             multiple
             filled
-            :items="people"
-            item-text="name"
-            item-value="name"
+            :items="producers"
+            item-text="firstname"
+            item-value="firstname"
           >
           </v-autocomplete>
 
@@ -140,7 +140,7 @@
         :no-results-text="noResultsText"
         :server-items-length="totalItems"
         :footer-props="options"
-        no-data-text="登録されているコーディネータがいません。"
+        no-data-text="関連生産者はいません。"
         @update:items-per-page="handleUpdateItemsPerPage"
         @update:page="handleUpdatePage"
       >
@@ -171,6 +171,7 @@ import {
   maxLength,
 } from '~/lib/validations'
 import { useCoordinatorStore } from '~/store/coordinator'
+import { useProducerStore } from '~/store/producer'
 import { CoordinatorResponse } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 import { Coordinator } from '~/types/props/coordinator'
@@ -182,8 +183,12 @@ export default defineComponent({
       { name: '基本情報', value: 'coordinators' },
       { name: '関連生産者', value: 'relationProducers' },
     ]
-    const people = [{ name: 'Test Taro' }, { name: 'やまだ　花子' }]
     const coordinatorStore = useCoordinatorStore()
+
+    const producerStore = useProducerStore()
+    const producers = computed(() => {
+      return producerStore.producers
+    })
 
     const route = useRoute()
     const id = route.value.params.id
@@ -343,7 +348,7 @@ export default defineComponent({
       handleUpdateHeader,
       tabItems,
       tab,
-      people,
+      producers,
     }
   },
 })
