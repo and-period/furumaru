@@ -51,7 +51,7 @@
               <v-icon small>mdi-pencil</v-icon>
               編集
             </v-btn>
-            <v-btn outlined color="primary" small @click="handleDelete(item)">
+            <v-btn outlined color="primary" small @click="handleDelete">
               <v-icon small>mdi-delete</v-icon>
               削除
             </v-btn>
@@ -172,14 +172,13 @@ export default defineComponent({
       router.push(`/coordinators/edit/${item.id}`)
     }
 
-    // const handleDelete = async (): Promise<void> => {
-    //   try {
-    //     await coordinatorStore.deleteCoordinator(selectedId.value)
-    //   } catch (err) {
-    //     console.log(err)
-    //   }
-    //   deleteDialog.value = false
-    // }
+    const handleDelete = async (): Promise<void> => {
+      try {
+        await coordinatorStore.deleteCoordinator('')
+      } catch (err) {
+        console.log(err)
+      }
+    }
 
     return {
       handleClickAddButton,
@@ -195,7 +194,7 @@ export default defineComponent({
       fetchState,
       handleSearch,
       handleEdit,
-      // handleDelete,
+      handleDelete,
     }
   },
 })
