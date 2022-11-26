@@ -173,7 +173,6 @@ export default defineComponent({
     }
 
     const handleDelete = async (): Promise<void> => {
-      console.log('yobareta')
       try {
         await coordinatorStore.deleteCoordinator('')
       } catch (err) {
