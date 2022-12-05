@@ -14,14 +14,6 @@ import (
 
 const shippingTable = "shippings"
 
-var shippingFields = []string{
-	"id", "name",
-	"box60_rates", "box60_refrigerated", "box60_frozen",
-	"box80_rates", "box80_refrigerated", "box80_frozen",
-	"box100_rates", "box100_refrigerated", "box100_frozen",
-	"has_free_shipping", "free_shipping_rates", "created_at", "updated_at",
-}
-
 type shipping struct {
 	db  *database.Client
 	now func() time.Time
@@ -36,11 +28,8 @@ func NewShipping(db *database.Client) Shipping {
 
 func (s *shipping) List(ctx context.Context, params *ListShippingsParams, fields ...string) (entity.Shippings, error) {
 	var shippings entity.Shippings
-	if len(fields) == 0 {
-		fields = shippingFields
-	}
 
-	stmt := s.db.DB.WithContext(ctx).Table(shippingTable).Select(fields)
+	stmt := s.db.Statement(ctx, s.db.DB, shippingTable, fields...)
 	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
@@ -61,23 +50,16 @@ func (s *shipping) List(ctx context.Context, params *ListShippingsParams, fields
 func (s *shipping) Count(ctx context.Context, params *ListShippingsParams) (int64, error) {
 	var total int64
 
-	stmt := s.db.DB.WithContext(ctx).Table(shippingTable).Select("COUNT(*)")
-
-	err := stmt.Find(&total).Error
+	err := s.db.Count(ctx, s.db.DB, shippingTable).Find(&total).Error
 	return total, exception.InternalError(err)
 }
 
 func (s *shipping) MultiGet(ctx context.Context, shippingIDs []string, fields ...string) (entity.Shippings, error) {
 	var shippings entity.Shippings
-	if len(fields) == 0 {
-		fields = shippingFields
-	}
 
-	err := s.db.DB.WithContext(ctx).
-		Table(shippingTable).Select(fields).
-		Where("id IN (?)", shippingIDs).
-		Find(&shippings).Error
-	if err != nil {
+	stmt := s.db.Statement(ctx, s.db.DB, shippingTable, fields...).
+		Where("id IN (?)", shippingIDs)
+	if err := stmt.Find(&shippings).Error; err != nil {
 		return nil, exception.InternalError(err)
 	}
 	if err := shippings.Fill(); err != nil {
@@ -173,12 +155,8 @@ func (s *shipping) get(
 	ctx context.Context, tx *gorm.DB, shippingID string, fields ...string,
 ) (*entity.Shipping, error) {
 	var shipping *entity.Shipping
-	if len(fields) == 0 {
-		fields = shippingFields
-	}
 
-	err := tx.WithContext(ctx).
-		Table(shippingTable).Select(fields).
+	err := s.db.Statement(ctx, tx, shippingTable, fields...).
 		Where("id = ?", shippingID).
 		First(&shipping).Error
 	if err != nil {

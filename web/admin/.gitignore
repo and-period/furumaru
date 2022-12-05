@@ -1,6 +1,10 @@
 # sw
 /src/static/firebase-messaging-sw.js
 
+# google font
+/src/assets/css/fonts.css
+/src/assets/fonts
+
 # Created by .ignore support plugin (hsz.mobi)
 ### Node template
 # Logs

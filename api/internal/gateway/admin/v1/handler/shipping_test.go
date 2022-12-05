@@ -11,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestListShippings(t *testing.T) {
@@ -110,7 +111,7 @@ func TestListShippings(t *testing.T) {
 		{
 			name: "failed to list shippings",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().ListShippings(gomock.Any(), in).Return(nil, int64(0), errmock)
+				mocks.store.EXPECT().ListShippings(gomock.Any(), in).Return(nil, int64(0), assert.AnError)
 			},
 			query: "",
 			expect: &testResponse{
@@ -206,7 +207,7 @@ func TestGetShipping(t *testing.T) {
 		{
 			name: "failed to get shipping",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().GetShipping(gomock.Any(), in).Return(nil, errmock)
+				mocks.store.EXPECT().GetShipping(gomock.Any(), in).Return(nil, assert.AnError)
 			},
 			shippingID: "shipping-id",
 			expect: &testResponse{
@@ -366,7 +367,7 @@ func TestCreateShipping(t *testing.T) {
 		{
 			name: "failed to create shipping",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().CreateShipping(gomock.Any(), in).Return(nil, errmock)
+				mocks.store.EXPECT().CreateShipping(gomock.Any(), in).Return(nil, assert.AnError)
 			},
 			req: &request.CreateShippingRequest{
 				Name: "デフォルト配送設定",
@@ -521,7 +522,7 @@ func TestUpdateShipping(t *testing.T) {
 		{
 			name: "failed to update shipping",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().UpdateShipping(gomock.Any(), in).Return(errmock)
+				mocks.store.EXPECT().UpdateShipping(gomock.Any(), in).Return(assert.AnError)
 			},
 			shippingID: "shipping-id",
 			req: &request.UpdateShippingRequest{
@@ -582,7 +583,7 @@ func TestDeleteShipping(t *testing.T) {
 		{
 			name: "failed to delete shipping",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().DeleteShipping(gomock.Any(), in).Return(errmock)
+				mocks.store.EXPECT().DeleteShipping(gomock.Any(), in).Return(assert.AnError)
 			},
 			shippingID: "shipping-id",
 			expect: &testResponse{

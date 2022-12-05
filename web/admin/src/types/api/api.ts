@@ -506,11 +506,23 @@ export interface CoordinatorResponse {
      */
     'thumbnailUrl': string;
     /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
+     * @memberof CoordinatorResponse
+     */
+    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
+    /**
      * ヘッダー画像URL
      * @type {string}
      * @memberof CoordinatorResponse
      */
     'headerUrl': string;
+    /**
+     * リサイズ済みヘッダー画像URL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>}
+     * @memberof CoordinatorResponse
+     */
+    'headers': Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>;
     /**
      * Twitterアカウント
      * @type {string}
@@ -658,11 +670,23 @@ export interface CoordinatorsResponseCoordinatorsInner {
      */
     'thumbnailUrl': string;
     /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
+     * @memberof CoordinatorsResponseCoordinatorsInner
+     */
+    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
+    /**
      * ヘッダー画像URL
      * @type {string}
      * @memberof CoordinatorsResponseCoordinatorsInner
      */
     'headerUrl': string;
+    /**
+     * リサイズ済みヘッダー画像URL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>}
+     * @memberof CoordinatorsResponseCoordinatorsInner
+     */
+    'headers': Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>;
     /**
      * Twitterアカウント
      * @type {string}
@@ -735,6 +759,44 @@ export interface CoordinatorsResponseCoordinatorsInner {
      * @memberof CoordinatorsResponseCoordinatorsInner
      */
     'updatedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface CoordinatorsResponseCoordinatorsInnerHeadersInner
+ */
+export interface CoordinatorsResponseCoordinatorsInnerHeadersInner {
+    /**
+     * リサイズ済みヘッダー画像URL
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinatorsInnerHeadersInner
+     */
+    'url': string;
+    /**
+     * 画像サイズ(1:240px,2:675px,3:900px)
+     * @type {number}
+     * @memberof CoordinatorsResponseCoordinatorsInnerHeadersInner
+     */
+    'size': number;
+}
+/**
+ * 
+ * @export
+ * @interface CoordinatorsResponseCoordinatorsInnerThumbnailsInner
+ */
+export interface CoordinatorsResponseCoordinatorsInnerThumbnailsInner {
+    /**
+     * リサイズ済みサムネイルURL
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinatorsInnerThumbnailsInner
+     */
+    'url': string;
+    /**
+     * 画像サイズ(1:240px,2:675px,3:900px)
+     * @type {number}
+     * @memberof CoordinatorsResponseCoordinatorsInnerThumbnailsInner
+     */
+    'size': number;
 }
 /**
  * 
@@ -1059,12 +1121,6 @@ export interface CreateProductRequest {
      * @memberof CreateProductRequest
      */
     'producerId': string;
-    /**
-     * 商品種別ID
-     * @type {string}
-     * @memberof CreateProductRequest
-     */
-    'categoryId': string;
     /**
      * 品目ID
      * @type {string}
@@ -2233,6 +2289,43 @@ export interface OrdersResponse {
     'total': number;
 }
 /**
+ * 
+ * @export
+ * @interface PostalCodeResponse
+ */
+export interface PostalCodeResponse {
+    /**
+     * 郵便番号
+     * @type {string}
+     * @memberof PostalCodeResponse
+     */
+    'postalCode': string;
+    /**
+     * 都道府県コード
+     * @type {string}
+     * @memberof PostalCodeResponse
+     */
+    'prefectureCode': string;
+    /**
+     * 都道府県名
+     * @type {string}
+     * @memberof PostalCodeResponse
+     */
+    'prefecture': string;
+    /**
+     * 市区町村名
+     * @type {string}
+     * @memberof PostalCodeResponse
+     */
+    'city': string;
+    /**
+     * 町域名
+     * @type {string}
+     * @memberof PostalCodeResponse
+     */
+    'town': string;
+}
+/**
  * 都道府県コード
  * @export
  * @enum {string}
@@ -2346,11 +2439,23 @@ export interface ProducerResponse {
      */
     'thumbnailUrl': string;
     /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
+     * @memberof ProducerResponse
+     */
+    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
+    /**
      * ヘッダー画像URL
      * @type {string}
      * @memberof ProducerResponse
      */
     'headerUrl': string;
+    /**
+     * リサイズ済みヘッダー画像URL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>}
+     * @memberof ProducerResponse
+     */
+    'headers': Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>;
     /**
      * メールアドレス
      * @type {string}
@@ -2474,17 +2579,29 @@ export interface ProducersResponseProducersInner {
      */
     'storeName': string;
     /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof ProducersResponseProducersInner
+     */
+    'thumbnailUrl': string;
+    /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
+     * @memberof ProducersResponseProducersInner
+     */
+    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
+    /**
      * ヘッダー画像URL
      * @type {string}
      * @memberof ProducersResponseProducersInner
      */
     'headerUrl': string;
     /**
-     * サムネイルURL
-     * @type {string}
+     * リサイズ済みヘッダー画像URL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>}
      * @memberof ProducersResponseProducersInner
      */
-    'thumbnailUrl': string;
+    'headers': Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>;
     /**
      * メールアドレス
      * @type {string}
@@ -2644,10 +2761,10 @@ export interface ProductResponse {
     'iconUrl': string;
     /**
      * 
-     * @type {Array<V1LiveResponseProductsInnerMediaInner>}
+     * @type {Array<ProductsResponseProductsInnerMediaInner>}
      * @memberof ProductResponse
      */
-    'media': Array<V1LiveResponseProductsInnerMediaInner>;
+    'media': Array<ProductsResponseProductsInnerMediaInner>;
     /**
      * 販売価格
      * @type {number}
@@ -2728,6 +2845,12 @@ export interface ProductTypeResponse {
      */
     'iconUrl': string;
     /**
+     * リサイズ済みアイコンURL一覧
+     * @type {Array<ProductTypesResponseProductTypesInnerIconsInner>}
+     * @memberof ProductTypeResponse
+     */
+    'icons': Array<ProductTypesResponseProductTypesInnerIconsInner>;
+    /**
      * 商品種別ID
      * @type {string}
      * @memberof ProductTypeResponse
@@ -2796,6 +2919,12 @@ export interface ProductTypesResponseProductTypesInner {
      */
     'iconUrl': string;
     /**
+     * リサイズ済みアイコンURL一覧
+     * @type {Array<ProductTypesResponseProductTypesInnerIconsInner>}
+     * @memberof ProductTypesResponseProductTypesInner
+     */
+    'icons': Array<ProductTypesResponseProductTypesInnerIconsInner>;
+    /**
      * 商品種別ID
      * @type {string}
      * @memberof ProductTypesResponseProductTypesInner
@@ -2819,6 +2948,25 @@ export interface ProductTypesResponseProductTypesInner {
      * @memberof ProductTypesResponseProductTypesInner
      */
     'updatedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface ProductTypesResponseProductTypesInnerIconsInner
+ */
+export interface ProductTypesResponseProductTypesInnerIconsInner {
+    /**
+     * リサイズ済みアイコンURL
+     * @type {string}
+     * @memberof ProductTypesResponseProductTypesInnerIconsInner
+     */
+    'url': string;
+    /**
+     * 画像サイズ(1:240px,2:675px,3:900px)
+     * @type {number}
+     * @memberof ProductTypesResponseProductTypesInnerIconsInner
+     */
+    'size': number;
 }
 /**
  * 
@@ -2943,10 +3091,10 @@ export interface ProductsResponseProductsInner {
     'iconUrl': string;
     /**
      * 
-     * @type {Array<V1LiveResponseProductsInnerMediaInner>}
+     * @type {Array<ProductsResponseProductsInnerMediaInner>}
      * @memberof ProductsResponseProductsInner
      */
-    'media': Array<V1LiveResponseProductsInnerMediaInner>;
+    'media': Array<ProductsResponseProductsInnerMediaInner>;
     /**
      * 販売価格
      * @type {number}
@@ -3001,6 +3149,50 @@ export interface ProductsResponseProductsInner {
      * @memberof ProductsResponseProductsInner
      */
     'updatedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface ProductsResponseProductsInnerMediaInner
+ */
+export interface ProductsResponseProductsInnerMediaInner {
+    /**
+     * メディアURL
+     * @type {string}
+     * @memberof ProductsResponseProductsInnerMediaInner
+     */
+    'url': string;
+    /**
+     * サムネイルとして使用(1つまで)
+     * @type {boolean}
+     * @memberof ProductsResponseProductsInnerMediaInner
+     */
+    'isThumbnail': boolean;
+    /**
+     * リサイズ済み画像URL一覧
+     * @type {Array<ProductsResponseProductsInnerMediaInnerImagesInner>}
+     * @memberof ProductsResponseProductsInnerMediaInner
+     */
+    'images': Array<ProductsResponseProductsInnerMediaInnerImagesInner>;
+}
+/**
+ * 
+ * @export
+ * @interface ProductsResponseProductsInnerMediaInnerImagesInner
+ */
+export interface ProductsResponseProductsInnerMediaInnerImagesInner {
+    /**
+     * リサイズ済み画像URL
+     * @type {string}
+     * @memberof ProductsResponseProductsInnerMediaInnerImagesInner
+     */
+    'url': string;
+    /**
+     * 画像サイズ(1:240px,2:675px,3:900px)
+     * @type {number}
+     * @memberof ProductsResponseProductsInnerMediaInnerImagesInner
+     */
+    'size': number;
 }
 /**
  * 
@@ -3208,15 +3400,15 @@ export interface RegisterAuthDeviceRequest {
 /**
  * 
  * @export
- * @interface RelatedProducerRequest
+ * @interface RelateProducersRequest
  */
-export interface RelatedProducerRequest {
+export interface RelateProducersRequest {
     /**
-     * 関連付けるコーディネータID
-     * @type {string}
-     * @memberof RelatedProducerRequest
+     * 関連つける生産者ID一覧 (20件まで)
+     * @type {Array<string>}
+     * @memberof RelateProducersRequest
      */
-    'coordinatorId'?: string;
+    'producerIds': Array<string>;
 }
 /**
  * 
@@ -4071,12 +4263,6 @@ export interface UpdateProductRequest {
      */
     'producerId': string;
     /**
-     * 商品種別ID
-     * @type {string}
-     * @memberof UpdateProductRequest
-     */
-    'categoryId': string;
-    /**
      * 品目ID
      * @type {string}
      * @memberof UpdateProductRequest
@@ -4797,6 +4983,115 @@ export interface VerifyAuthEmailRequest {
      */
     'verifyCode': string;
 }
+
+/**
+ * AddressApi - axios parameter creator
+ * @export
+ */
+export const AddressApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary 郵便番号情報検索
+         * @param {string} postalCode 郵便番号(ハイフンなし)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1SearchPostalCode: async (postalCode: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'postalCode' is not null or undefined
+            assertParamExists('v1SearchPostalCode', 'postalCode', postalCode)
+            const localVarPath = `/v1/postal-codes/{postalCode}`
+                .replace(`{${"postalCode"}}`, encodeURIComponent(String(postalCode)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * AddressApi - functional programming interface
+ * @export
+ */
+export const AddressApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = AddressApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary 郵便番号情報検索
+         * @param {string} postalCode 郵便番号(ハイフンなし)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1SearchPostalCode(postalCode: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostalCodeResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SearchPostalCode(postalCode, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * AddressApi - factory interface
+ * @export
+ */
+export const AddressApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = AddressApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary 郵便番号情報検索
+         * @param {string} postalCode 郵便番号(ハイフンなし)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1SearchPostalCode(postalCode: string, options?: any): AxiosPromise<PostalCodeResponse> {
+            return localVarFp.v1SearchPostalCode(postalCode, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * AddressApi - object-oriented interface
+ * @export
+ * @class AddressApi
+ * @extends {BaseAPI}
+ */
+export class AddressApi extends BaseAPI {
+    /**
+     * 
+     * @summary 郵便番号情報検索
+     * @param {string} postalCode 郵便番号(ハイフンなし)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AddressApi
+     */
+    public v1SearchPostalCode(postalCode: string, options?: AxiosRequestConfig) {
+        return AddressApiFp(this.configuration).v1SearchPostalCode(postalCode, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
 
 /**
  * AdministratorApi - axios parameter creator
@@ -6778,6 +7073,140 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
+         * @summary 関連付けられた生産者一覧
+         * @param {string} coordinatorId コーディネータID
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListRelatedProducers: async (coordinatorId: string, limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'coordinatorId' is not null or undefined
+            assertParamExists('v1ListRelatedProducers', 'coordinatorId', coordinatorId)
+            const localVarPath = `/v1/coordinators/{coordinatorId}/producers`
+                .replace(`{${"coordinatorId"}}`, encodeURIComponent(String(coordinatorId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 生産者を関連付け
+         * @param {string} coordinatorId コーディネータID
+         * @param {RelateProducersRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1RelateProducers: async (coordinatorId: string, body: RelateProducersRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'coordinatorId' is not null or undefined
+            assertParamExists('v1RelateProducers', 'coordinatorId', coordinatorId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1RelateProducers', 'body', body)
+            const localVarPath = `/v1/coordinators/{coordinatorId}/producers`
+                .replace(`{${"coordinatorId"}}`, encodeURIComponent(String(coordinatorId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 生産者の関連付けを解除
+         * @param {string} coordinatorId コーディネータID
+         * @param {string} producerId 生産者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UnrelateProducer: async (coordinatorId: string, producerId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'coordinatorId' is not null or undefined
+            assertParamExists('v1UnrelateProducer', 'coordinatorId', coordinatorId)
+            // verify required parameter 'producerId' is not null or undefined
+            assertParamExists('v1UnrelateProducer', 'producerId', producerId)
+            const localVarPath = `/v1/coordinators/{coordinatorId}/producers/{producerId}`
+                .replace(`{${"coordinatorId"}}`, encodeURIComponent(String(coordinatorId)))
+                .replace(`{${"producerId"}}`, encodeURIComponent(String(producerId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary コーディネータ更新
          * @param {string} coordinatorId コーディネータID
          * @param {UpdateCoordinatorRequest} body 
@@ -7051,6 +7480,43 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary 関連付けられた生産者一覧
+         * @param {string} coordinatorId コーディネータID
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ListRelatedProducers(coordinatorId: string, limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProducersResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListRelatedProducers(coordinatorId, limit, offset, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 生産者を関連付け
+         * @param {string} coordinatorId コーディネータID
+         * @param {RelateProducersRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1RelateProducers(coordinatorId: string, body: RelateProducersRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1RelateProducers(coordinatorId, body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 生産者の関連付けを解除
+         * @param {string} coordinatorId コーディネータID
+         * @param {string} producerId 生産者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UnrelateProducer(coordinatorId: string, producerId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UnrelateProducer(coordinatorId, producerId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary コーディネータ更新
          * @param {string} coordinatorId コーディネータID
          * @param {UpdateCoordinatorRequest} body 
@@ -7157,6 +7623,40 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
          */
         v1ListCoordinators(limit?: number, offset?: number, options?: any): AxiosPromise<CoordinatorsResponse> {
             return localVarFp.v1ListCoordinators(limit, offset, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 関連付けられた生産者一覧
+         * @param {string} coordinatorId コーディネータID
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListRelatedProducers(coordinatorId: string, limit?: number, offset?: number, options?: any): AxiosPromise<ProducersResponse> {
+            return localVarFp.v1ListRelatedProducers(coordinatorId, limit, offset, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 生産者を関連付け
+         * @param {string} coordinatorId コーディネータID
+         * @param {RelateProducersRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1RelateProducers(coordinatorId: string, body: RelateProducersRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1RelateProducers(coordinatorId, body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 生産者の関連付けを解除
+         * @param {string} coordinatorId コーディネータID
+         * @param {string} producerId 生産者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UnrelateProducer(coordinatorId: string, producerId: string, options?: any): AxiosPromise<object> {
+            return localVarFp.v1UnrelateProducer(coordinatorId, producerId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7268,6 +7768,46 @@ export class CoordinatorApi extends BaseAPI {
      */
     public v1ListCoordinators(limit?: number, offset?: number, options?: AxiosRequestConfig) {
         return CoordinatorApiFp(this.configuration).v1ListCoordinators(limit, offset, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 関連付けられた生産者一覧
+     * @param {string} coordinatorId コーディネータID
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CoordinatorApi
+     */
+    public v1ListRelatedProducers(coordinatorId: string, limit?: number, offset?: number, options?: AxiosRequestConfig) {
+        return CoordinatorApiFp(this.configuration).v1ListRelatedProducers(coordinatorId, limit, offset, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 生産者を関連付け
+     * @param {string} coordinatorId コーディネータID
+     * @param {RelateProducersRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CoordinatorApi
+     */
+    public v1RelateProducers(coordinatorId: string, body: RelateProducersRequest, options?: AxiosRequestConfig) {
+        return CoordinatorApiFp(this.configuration).v1RelateProducers(coordinatorId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 生産者の関連付けを解除
+     * @param {string} coordinatorId コーディネータID
+     * @param {string} producerId 生産者ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CoordinatorApi
+     */
+    public v1UnrelateProducer(coordinatorId: string, producerId: string, options?: AxiosRequestConfig) {
+        return CoordinatorApiFp(this.configuration).v1UnrelateProducer(coordinatorId, producerId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -8339,88 +8879,6 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
-         * @summary 生産者とコーディネータを関連付け
-         * @param {string} producerId 生産者ID
-         * @param {RelatedProducerRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1RelatedProducer: async (producerId: string, body: RelatedProducerRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'producerId' is not null or undefined
-            assertParamExists('v1RelatedProducer', 'producerId', producerId)
-            // verify required parameter 'body' is not null or undefined
-            assertParamExists('v1RelatedProducer', 'body', body)
-            const localVarPath = `/v1/producers/{producerId}/relationship`
-                .replace(`{${"producerId"}}`, encodeURIComponent(String(producerId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 生産者とコーディネータの関連付けを解除
-         * @param {string} producerId 生産者ID
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UnrelatedProducer: async (producerId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'producerId' is not null or undefined
-            assertParamExists('v1UnrelatedProducer', 'producerId', producerId)
-            const localVarPath = `/v1/producers/{producerId}/relationship`
-                .replace(`{${"producerId"}}`, encodeURIComponent(String(producerId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
          * @summary 生産者更新
          * @param {string} producerId 生産者ID
          * @param {UpdateProducerRequest} body 
@@ -8693,29 +9151,6 @@ export const ProducerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 生産者とコーディネータを関連付け
-         * @param {string} producerId 生産者ID
-         * @param {RelatedProducerRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1RelatedProducer(producerId: string, body: RelatedProducerRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1RelatedProducer(producerId, body, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @summary 生産者とコーディネータの関連付けを解除
-         * @param {string} producerId 生産者ID
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UnrelatedProducer(producerId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UnrelatedProducer(producerId, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
          * @summary 生産者更新
          * @param {string} producerId 生産者ID
          * @param {UpdateProducerRequest} body 
@@ -8823,27 +9258,6 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
          */
         v1ListProducers(limit?: number, offset?: number, filters?: string, options?: any): AxiosPromise<ProducersResponse> {
             return localVarFp.v1ListProducers(limit, offset, filters, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 生産者とコーディネータを関連付け
-         * @param {string} producerId 生産者ID
-         * @param {RelatedProducerRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1RelatedProducer(producerId: string, body: RelatedProducerRequest, options?: any): AxiosPromise<object> {
-            return localVarFp.v1RelatedProducer(producerId, body, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 生産者とコーディネータの関連付けを解除
-         * @param {string} producerId 生産者ID
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UnrelatedProducer(producerId: string, options?: any): AxiosPromise<object> {
-            return localVarFp.v1UnrelatedProducer(producerId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -8956,31 +9370,6 @@ export class ProducerApi extends BaseAPI {
      */
     public v1ListProducers(limit?: number, offset?: number, filters?: string, options?: AxiosRequestConfig) {
         return ProducerApiFp(this.configuration).v1ListProducers(limit, offset, filters, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 生産者とコーディネータを関連付け
-     * @param {string} producerId 生産者ID
-     * @param {RelatedProducerRequest} body 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ProducerApi
-     */
-    public v1RelatedProducer(producerId: string, body: RelatedProducerRequest, options?: AxiosRequestConfig) {
-        return ProducerApiFp(this.configuration).v1RelatedProducer(producerId, body, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 生産者とコーディネータの関連付けを解除
-     * @param {string} producerId 生産者ID
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ProducerApi
-     */
-    public v1UnrelatedProducer(producerId: string, options?: AxiosRequestConfig) {
-        return ProducerApiFp(this.configuration).v1UnrelatedProducer(producerId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

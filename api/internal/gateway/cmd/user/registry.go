@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/url"
 	"sync"
+	"time"
 
 	v1 "github.com/and-period/furumaru/api/internal/gateway/user/v1/handler"
 	"github.com/and-period/furumaru/api/internal/messenger"
@@ -17,6 +18,7 @@ import (
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/database"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/slack"
 	"github.com/and-period/furumaru/api/pkg/sqs"
@@ -52,6 +54,7 @@ type params struct {
 	newRelic        *newrelic.Application
 	adminWebURL     *url.URL
 	userWebURL      *url.URL
+	now             func() time.Time
 	dbHost          string
 	dbPort          string
 	dbUsername      string
@@ -66,6 +69,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	params := &params{
 		config:    conf,
 		logger:    logger,
+		now:       jst.Now,
 		waitGroup: &sync.WaitGroup{},
 	}
 
@@ -231,6 +235,7 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 	cli, err := database.NewClient(
 		params,
 		database.WithLogger(p.logger),
+		database.WithNow(p.now),
 		database.WithTLS(p.config.DBEnabledTLS),
 		database.WithTimeZone(p.config.DBTimeZone),
 	)

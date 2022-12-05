@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"sync"
+	"time"
 
 	firebase "firebase.google.com/go/v4"
 	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database"
@@ -13,6 +14,7 @@ import (
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/firebase/messaging"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/line"
 	"github.com/and-period/furumaru/api/pkg/mailer"
 	"github.com/and-period/furumaru/api/pkg/secret"
@@ -41,6 +43,7 @@ type params struct {
 	aws               aws.Config
 	firebase          *firebase.App
 	secret            secret.Client
+	now               func() time.Time
 	dbHost            string
 	dbPort            string
 	dbUsername        string
@@ -56,6 +59,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	params := &params{
 		config:    conf,
 		logger:    logger,
+		now:       jst.Now,
 		waitGroup: &sync.WaitGroup{},
 	}
 
@@ -230,6 +234,7 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 	return database.NewClient(
 		params,
 		database.WithLogger(p.logger),
+		database.WithNow(p.now),
 		database.WithTLS(p.config.DBEnabledTLS),
 		database.WithTimeZone(p.config.DBTimeZone),
 	)

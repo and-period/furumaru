@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
@@ -37,7 +38,9 @@ func TestListCoordinators(t *testing.T) {
 			PhoneNumber:      "+819012345678",
 			StoreName:        "&.農園",
 			ThumbnailURL:     "https://and-period.jp/thumbnail.png",
+			Thumbnails:       common.Images{},
 			HeaderURL:        "https://and-period.jp/header.png",
+			Headers:          common.Images{},
 			TwitterAccount:   "twitter-account",
 			InstagramAccount: "instagram-account",
 			FacebookAccount:  "facebook-account",
@@ -84,7 +87,7 @@ func TestListCoordinators(t *testing.T) {
 		{
 			name: "failed to list coordinators",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().List(gomock.Any(), params).Return(nil, errmock)
+				mocks.db.Coordinator.EXPECT().List(gomock.Any(), params).Return(nil, assert.AnError)
 				mocks.db.Coordinator.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &user.ListCoordinatorsInput{
@@ -99,7 +102,7 @@ func TestListCoordinators(t *testing.T) {
 			name: "failed to count coordinators",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().List(gomock.Any(), params).Return(coordinators, nil)
-				mocks.db.Coordinator.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
+				mocks.db.Coordinator.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
 			},
 			input: &user.ListCoordinatorsInput{
 				Limit:  30,
@@ -141,7 +144,9 @@ func TestMultiGetCoordinators(t *testing.T) {
 			PhoneNumber:      "+819012345678",
 			StoreName:        "&.農園",
 			ThumbnailURL:     "https://and-period.jp/thumbnail.png",
+			Thumbnails:       common.Images{},
 			HeaderURL:        "https://and-period.jp/header.png",
+			Headers:          common.Images{},
 			TwitterAccount:   "twitter-account",
 			InstagramAccount: "instagram-account",
 			FacebookAccount:  "facebook-account",
@@ -185,7 +190,7 @@ func TestMultiGetCoordinators(t *testing.T) {
 		{
 			name: "failed to multi get coordinators",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().MultiGet(ctx, []string{"admin-id"}).Return(nil, errmock)
+				mocks.db.Coordinator.EXPECT().MultiGet(ctx, []string{"admin-id"}).Return(nil, assert.AnError)
 			},
 			input: &user.MultiGetCoordinatorsInput{
 				CoordinatorIDs: []string{"admin-id"},
@@ -223,7 +228,9 @@ func TestGetCoordinator(t *testing.T) {
 		PhoneNumber:      "+819012345678",
 		StoreName:        "&.農園",
 		ThumbnailURL:     "https://and-period.jp/thumbnail.png",
+		Thumbnails:       common.Images{},
 		HeaderURL:        "https://and-period.jp/header.png",
+		Headers:          common.Images{},
 		TwitterAccount:   "twitter-account",
 		InstagramAccount: "instagram-account",
 		FacebookAccount:  "facebook-account",
@@ -264,7 +271,7 @@ func TestGetCoordinator(t *testing.T) {
 		{
 			name: "failed to get coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Get(ctx, "admin-id").Return(nil, errmock)
+				mocks.db.Coordinator.EXPECT().Get(ctx, "admin-id").Return(nil, assert.AnError)
 			},
 			input: &user.GetCoordinatorInput{
 				CoordinatorID: "admin-id",
@@ -328,9 +335,9 @@ func TestCreateCoordinator(t *testing.T) {
 						assert.Equal(t, expectCoordinator, coordinator)
 						return nil
 					})
-				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(errmock)
-				mocks.media.EXPECT().ResizeCoordinatorThumbnail(gomock.Any(), gomock.Any()).Return(errmock)
-				mocks.media.EXPECT().ResizeCoordinatorHeader(gomock.Any(), gomock.Any()).Return(errmock)
+				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.media.EXPECT().ResizeCoordinatorThumbnail(gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.media.EXPECT().ResizeCoordinatorHeader(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.CreateCoordinatorInput{
 				Lastname:         "&.",
@@ -358,7 +365,7 @@ func TestCreateCoordinator(t *testing.T) {
 			name: "success without notify register admin",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(nil)
-				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(errmock)
+				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.CreateCoordinatorInput{
 				Lastname:         "&.",
@@ -391,7 +398,7 @@ func TestCreateCoordinator(t *testing.T) {
 		{
 			name: "failed to create admin",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(errmock)
+				mocks.db.Coordinator.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.CreateCoordinatorInput{
 				Lastname:         "&.",
@@ -444,7 +451,9 @@ func TestUpdateCoordinator(t *testing.T) {
 		PhoneNumber:      "+819012345678",
 		StoreName:        "&.農園",
 		ThumbnailURL:     "https://and-period.jp/thumbnail.png",
+		Thumbnails:       common.Images{},
 		HeaderURL:        "https://and-period.jp/header.png",
+		Headers:          common.Images{},
 		TwitterAccount:   "twitter-account",
 		InstagramAccount: "instagram-account",
 		FacebookAccount:  "facebook-account",
@@ -490,8 +499,8 @@ func TestUpdateCoordinator(t *testing.T) {
 				params.HeaderURL = "https://tmp.and-period.jp/header.png"
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
 				mocks.db.Coordinator.EXPECT().Update(ctx, "coordinator-id", &params).Return(nil)
-				mocks.media.EXPECT().ResizeCoordinatorThumbnail(gomock.Any(), gomock.Any()).Return(errmock)
-				mocks.media.EXPECT().ResizeCoordinatorHeader(gomock.Any(), gomock.Any()).Return(errmock)
+				mocks.media.EXPECT().ResizeCoordinatorThumbnail(gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.media.EXPECT().ResizeCoordinatorHeader(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.UpdateCoordinatorInput{
 				CoordinatorID:    "coordinator-id",
@@ -524,7 +533,7 @@ func TestUpdateCoordinator(t *testing.T) {
 		{
 			name: "failed to get coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(nil, errmock)
+				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(nil, assert.AnError)
 			},
 			input: &user.UpdateCoordinatorInput{
 				CoordinatorID:    "coordinator-id",
@@ -552,7 +561,7 @@ func TestUpdateCoordinator(t *testing.T) {
 			name: "failed to update coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
-				mocks.db.Coordinator.EXPECT().Update(ctx, "coordinator-id", params).Return(errmock)
+				mocks.db.Coordinator.EXPECT().Update(ctx, "coordinator-id", params).Return(assert.AnError)
 			},
 			input: &user.UpdateCoordinatorInput{
 				CoordinatorID:    "coordinator-id",
@@ -606,7 +615,9 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 		PhoneNumber:      "+819012345678",
 		StoreName:        "&.農園",
 		ThumbnailURL:     "https://and-period.jp/thumbnail.png",
+		Thumbnails:       common.Images{},
 		HeaderURL:        "https://and-period.jp/header.png",
+		Headers:          common.Images{},
 		TwitterAccount:   "twitter-account",
 		InstagramAccount: "instagram-account",
 		FacebookAccount:  "facebook-account",
@@ -651,7 +662,7 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 		{
 			name: "failed to get by admin id",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(nil, errmock)
+				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(nil, assert.AnError)
 			},
 			input: &user.UpdateCoordinatorEmailInput{
 				CoordinatorID: "coordinator-id",
@@ -663,7 +674,7 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 			name: "failed to admin change email",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
-				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(errmock)
+				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(assert.AnError)
 			},
 			input: &user.UpdateCoordinatorEmailInput{
 				CoordinatorID: "coordinator-id",
@@ -676,7 +687,7 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
 				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(nil)
-				mocks.db.Admin.EXPECT().UpdateEmail(ctx, "coordinator-id", "test-admin@and-period.jp").Return(errmock)
+				mocks.db.Admin.EXPECT().UpdateEmail(ctx, "coordinator-id", "test-admin@and-period.jp").Return(assert.AnError)
 			},
 			input: &user.UpdateCoordinatorEmailInput{
 				CoordinatorID: "coordinator-id",
@@ -690,6 +701,132 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateCoordinatorEmail(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestUpdateCoordinatorThumbnails(t *testing.T) {
+	t.Parallel()
+
+	thumbnails := common.Images{
+		{
+			Size: common.ImageSizeSmall,
+			URL:  "https://and-period.jp/thumbnail_240.png",
+		},
+		{
+			Size: common.ImageSizeMedium,
+			URL:  "https://and-period.jp/thumbnail_675.png",
+		},
+		{
+			Size: common.ImageSizeLarge,
+			URL:  "https://and-period.jp/thumbnail_900.png",
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.UpdateCoordinatorThumbnailsInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Coordinator.EXPECT().UpdateThumbnails(ctx, "coordinator-id", thumbnails).Return(nil)
+			},
+			input: &user.UpdateCoordinatorThumbnailsInput{
+				CoordinatorID: "coordinator-id",
+				Thumbnails:    thumbnails,
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.UpdateCoordinatorThumbnailsInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to update thumbnails",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Coordinator.EXPECT().UpdateThumbnails(ctx, "coordinator-id", thumbnails).Return(assert.AnError)
+			},
+			input: &user.UpdateCoordinatorThumbnailsInput{
+				CoordinatorID: "coordinator-id",
+				Thumbnails:    thumbnails,
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.UpdateCoordinatorThumbnails(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestUpdateCoordinatorHeaders(t *testing.T) {
+	t.Parallel()
+
+	headers := common.Images{
+		{
+			Size: common.ImageSizeSmall,
+			URL:  "https://and-period.jp/header_240.png",
+		},
+		{
+			Size: common.ImageSizeMedium,
+			URL:  "https://and-period.jp/header_675.png",
+		},
+		{
+			Size: common.ImageSizeLarge,
+			URL:  "https://and-period.jp/header_900.png",
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.UpdateCoordinatorHeadersInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Coordinator.EXPECT().UpdateHeaders(ctx, "coordinator-id", headers).Return(nil)
+			},
+			input: &user.UpdateCoordinatorHeadersInput{
+				CoordinatorID: "coordinator-id",
+				Headers:       headers,
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.UpdateCoordinatorHeadersInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to update headers",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Coordinator.EXPECT().UpdateHeaders(ctx, "coordinator-id", headers).Return(assert.AnError)
+			},
+			input: &user.UpdateCoordinatorHeadersInput{
+				CoordinatorID: "coordinator-id",
+				Headers:       headers,
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.UpdateCoordinatorHeaders(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
@@ -714,7 +851,9 @@ func TestResetCoordinatorPassword(t *testing.T) {
 		PhoneNumber:      "+819012345678",
 		StoreName:        "&.農園",
 		ThumbnailURL:     "https://and-period.jp/thumbnail.png",
+		Thumbnails:       common.Images{},
 		HeaderURL:        "https://and-period.jp/header.png",
+		Headers:          common.Images{},
 		TwitterAccount:   "twitter-account",
 		InstagramAccount: "instagram-account",
 		FacebookAccount:  "facebook-account",
@@ -760,7 +899,7 @@ func TestResetCoordinatorPassword(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
 				mocks.adminAuth.EXPECT().AdminChangePassword(ctx, gomock.Any()).Return(nil)
-				mocks.messenger.EXPECT().NotifyResetAdminPassword(gomock.Any(), gomock.Any()).Return(errmock)
+				mocks.messenger.EXPECT().NotifyResetAdminPassword(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.ResetCoordinatorPasswordInput{
 				CoordinatorID: "coordinator-id",
@@ -776,7 +915,7 @@ func TestResetCoordinatorPassword(t *testing.T) {
 		{
 			name: "failed to get by admin id",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(nil, errmock)
+				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(nil, assert.AnError)
 			},
 			input: &user.ResetCoordinatorPasswordInput{
 				CoordinatorID: "coordinator-id",
@@ -787,7 +926,7 @@ func TestResetCoordinatorPassword(t *testing.T) {
 			name: "failed to admin change password",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
-				mocks.adminAuth.EXPECT().AdminChangePassword(ctx, gomock.Any()).Return(errmock)
+				mocks.adminAuth.EXPECT().AdminChangePassword(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.ResetCoordinatorPasswordInput{
 				CoordinatorID: "coordinator-id",
@@ -832,7 +971,7 @@ func TestDeleteCoordinator(t *testing.T) {
 		{
 			name: "failed to delete",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Delete(ctx, "coordinator-id", gomock.Any()).Return(errmock)
+				mocks.db.Coordinator.EXPECT().Delete(ctx, "coordinator-id", gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.DeleteCoordinatorInput{
 				CoordinatorID: "coordinator-id",

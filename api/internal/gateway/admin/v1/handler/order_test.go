@@ -13,6 +13,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestFilterAccessOrder(t *testing.T) {
@@ -131,7 +132,7 @@ func TestFilterAccessOrder(t *testing.T) {
 		{
 			name: "coordinator failed to get order",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().GetOrder(gomock.Any(), in).Return(nil, errmock)
+				mocks.store.EXPECT().GetOrder(gomock.Any(), in).Return(nil, assert.AnError)
 			},
 			options: []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("coordinator-id")},
 			expect:  http.StatusInternalServerError,
@@ -288,7 +289,6 @@ func TestListOrders(t *testing.T) {
 		{
 			ID:              "product-id",
 			TypeID:          "product-type-id",
-			CategoryID:      "category-id",
 			ProducerID:      "producer-id",
 			Name:            "新鮮なじゃがいも",
 			Description:     "新鮮なじゃがいもをお届けします。",
@@ -390,8 +390,16 @@ func TestListOrders(t *testing.T) {
 									Quantity:  1,
 									Weight:    1.0,
 									Media: []*response.ProductMedia{
-										{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
-										{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+										{
+											URL:         "https://and-period.jp/thumbnail01.png",
+											IsThumbnail: true,
+											Images:      []*response.Image{},
+										},
+										{
+											URL:         "https://and-period.jp/thumbnail02.png",
+											IsThumbnail: false,
+											Images:      []*response.Image{},
+										},
 									},
 								},
 							},
@@ -455,7 +463,7 @@ func TestListOrders(t *testing.T) {
 		{
 			name: "failed to list orders",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().ListOrders(gomock.Any(), ordersIn).Return(nil, int64(0), errmock)
+				mocks.store.EXPECT().ListOrders(gomock.Any(), ordersIn).Return(nil, int64(0), assert.AnError)
 			},
 			query: "",
 			expect: &testResponse{
@@ -466,7 +474,7 @@ func TestListOrders(t *testing.T) {
 			name: "failed to multi get users",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().ListOrders(gomock.Any(), ordersIn).Return(orders, int64(1), nil)
-				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(nil, errmock)
+				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(nil, assert.AnError)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
 			},
 			query: "",
@@ -479,7 +487,7 @@ func TestListOrders(t *testing.T) {
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().ListOrders(gomock.Any(), ordersIn).Return(orders, int64(1), nil)
 				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(users, nil)
-				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(nil, errmock)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(nil, assert.AnError)
 			},
 			query: "",
 			expect: &testResponse{
@@ -625,7 +633,6 @@ func TestGetOrder(t *testing.T) {
 		{
 			ID:              "product-id",
 			TypeID:          "product-type-id",
-			CategoryID:      "category-id",
 			ProducerID:      "producer-id",
 			Name:            "新鮮なじゃがいも",
 			Description:     "新鮮なじゃがいもをお届けします。",
@@ -724,8 +731,16 @@ func TestGetOrder(t *testing.T) {
 								Quantity:  1,
 								Weight:    1.0,
 								Media: []*response.ProductMedia{
-									{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
-									{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+									{
+										URL:         "https://and-period.jp/thumbnail01.png",
+										IsThumbnail: true,
+										Images:      []*response.Image{},
+									},
+									{
+										URL:         "https://and-period.jp/thumbnail02.png",
+										IsThumbnail: false,
+										Images:      []*response.Image{},
+									},
 								},
 							},
 						},
@@ -742,7 +757,7 @@ func TestGetOrder(t *testing.T) {
 		{
 			name: "failed to get order",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().GetOrder(gomock.Any(), orderIn).Return(nil, errmock)
+				mocks.store.EXPECT().GetOrder(gomock.Any(), orderIn).Return(nil, assert.AnError)
 			},
 			orderID: "order-id",
 			expect: &testResponse{
@@ -753,7 +768,7 @@ func TestGetOrder(t *testing.T) {
 			name: "failed to get user",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().GetOrder(gomock.Any(), orderIn).Return(order, nil)
-				mocks.user.EXPECT().GetUser(gomock.Any(), userIn).Return(nil, errmock)
+				mocks.user.EXPECT().GetUser(gomock.Any(), userIn).Return(nil, assert.AnError)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
 			},
 			orderID: "order-id",
@@ -766,7 +781,7 @@ func TestGetOrder(t *testing.T) {
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().GetOrder(gomock.Any(), orderIn).Return(order, nil)
 				mocks.user.EXPECT().GetUser(gomock.Any(), userIn).Return(u, nil)
-				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(nil, errmock)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(nil, assert.AnError)
 			},
 			orderID: "order-id",
 			expect: &testResponse{

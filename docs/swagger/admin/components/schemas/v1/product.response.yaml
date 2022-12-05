@@ -62,9 +62,26 @@ productResponse:
           isThumbnail:
             type: boolean
             description: サムネイルとして使用(1つまで)
+          images:
+            type: array
+            description: リサイズ済み画像URL一覧
+            items:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: リサイズ済み画像URL
+                size:
+                  type: integer
+                  format: int32
+                  description: 画像サイズ(1:240px,2:675px,3:900px)
+              required:
+              - url
+              - size
         required:
         - url
         - isThumbnail
+        - images
     price:
       type: integer
       format: int64
@@ -146,8 +163,16 @@ productResponse:
     media:
     - url: 'https://and-period.jp/thumbnail01.png'
       isThumbnail: true
+      images:
+      - url: 'https://and-period.jp/thumbnail_240.png'
+        size: 1
+      - url: 'https://and-period.jp/thumbnail_675.png'
+        size: 2
+      - url: 'https://and-period.jp/thumbnail_900.png'
+        size: 3
     - url: 'https://and-period.jp/thumbnail02.png'
       isThumbnail: false
+      images: []
     price: 2500
     deliveryType: 1
     box60Rate: 80
@@ -227,9 +252,26 @@ productsResponse:
                 isThumbnail:
                   type: boolean
                   description: サムネイルとして使用(1つまで)
+                images:
+                  type: array
+                  description: リサイズ済み画像URL一覧
+                  items:
+                    type: object
+                    properties:
+                      url:
+                        type: string
+                        description: リサイズ済み画像URL
+                      size:
+                        type: integer
+                        format: int32
+                        description: 画像サイズ(1:240px,2:675px,3:900px)
+                    required:
+                    - url
+                    - size
               required:
               - url
               - isThumbnail
+              - images
           price:
             type: integer
             format: int64
@@ -315,11 +357,25 @@ productsResponse:
       weight: 2.5
       itemUnit: '袋'
       itemDescription: '1袋あたり2.5kgのじゃがいも'
-      media:
-      - url: 'https://and-period.jp/thumbnail01.png'
-        isThumbnail: true
-      - url: 'https://and-period.jp/thumbnail02.png'
-        isThumbnail: false
+    media:
+    - url: 'https://and-period.jp/thumbnail01.png'
+      isThumbnail: true
+      images:
+      - url: 'https://and-period.jp/thumbnail01_240.png'
+        size: 1
+      - url: 'https://and-period.jp/thumbnail01_675.png'
+        size: 2
+      - url: 'https://and-period.jp/thumbnail01_900.png'
+        size: 3
+    - url: 'https://and-period.jp/thumbnail02.png'
+      isThumbnail: false
+      images:
+      - url: 'https://and-period.jp/thumbnail02_240.png'
+        size: 1
+      - url: 'https://and-period.jp/thumbnail02_675.png'
+        size: 2
+      - url: 'https://and-period.jp/thumbnail02_900.png'
+        size: 3
       price: 2500
       deliveryType: 1
       box60Rate: 80
@@ -347,8 +403,10 @@ productsResponse:
       media:
       - url: 'https://and-period.jp/thumbnail01.png'
         isThumbnail: true
+        images: []
       - url: 'https://and-period.jp/thumbnail02.png'
         isThumbnail: false
+        images: []
       price: 2500
       deliveryType: 1
       box60Rate: 80

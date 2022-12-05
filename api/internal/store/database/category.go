@@ -13,10 +13,6 @@ import (
 
 const categoryTable = "categories"
 
-var categoryFields = []string{
-	"id", "name", "created_at", "updated_at",
-}
-
 type category struct {
 	db  *database.Client
 	now func() time.Time
@@ -33,11 +29,8 @@ func (c *category) List(
 	ctx context.Context, params *ListCategoriesParams, fields ...string,
 ) (entity.Categories, error) {
 	var categories entity.Categories
-	if len(fields) == 0 {
-		fields = categoryFields
-	}
 
-	stmt := c.db.DB.WithContext(ctx).Table(categoryTable).Select(fields)
+	stmt := c.db.Statement(ctx, c.db.DB, categoryTable, fields...)
 	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
@@ -53,21 +46,17 @@ func (c *category) List(
 func (c *category) Count(ctx context.Context, params *ListCategoriesParams) (int64, error) {
 	var total int64
 
-	stmt := c.db.DB.WithContext(ctx).Table(categoryTable).Select("COUNT(*)")
+	stmt := c.db.Count(ctx, c.db.DB, categoryTable)
 	stmt = params.stmt(stmt)
 
-	err := stmt.Count(&total).Error
+	err := stmt.Find(&total).Error
 	return total, exception.InternalError(err)
 }
 
 func (c *category) MultiGet(ctx context.Context, categoryIDs []string, fields ...string) (entity.Categories, error) {
 	var categories entity.Categories
-	if len(fields) == 0 {
-		fields = categoryFields
-	}
 
-	err := c.db.DB.WithContext(ctx).
-		Table(categoryTable).Select(fields).
+	err := c.db.Statement(ctx, c.db.DB, categoryTable, fields...).
 		Where("id IN (?)", categoryIDs).
 		Find(&categories).Error
 	return categories, exception.InternalError(err)
@@ -127,12 +116,8 @@ func (c *category) get(
 	ctx context.Context, tx *gorm.DB, categoryID string, fields ...string,
 ) (*entity.Category, error) {
 	var category *entity.Category
-	if len(fields) == 0 {
-		fields = categoryFields
-	}
 
-	err := tx.WithContext(ctx).
-		Table(categoryTable).Select(fields).
+	err := c.db.Statement(ctx, tx, categoryTable, fields...).
 		Where("id = ?", categoryID).
 		First(&category).Error
 	return category, err

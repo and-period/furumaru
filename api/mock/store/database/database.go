@@ -8,6 +8,7 @@ import (
 	context "context"
 	reflect "reflect"
 
+	common "github.com/and-period/furumaru/api/internal/common"
 	database "github.com/and-period/furumaru/api/internal/store/database"
 	entity "github.com/and-period/furumaru/api/internal/store/entity"
 	gomock "github.com/golang/mock/gomock"
@@ -151,6 +152,49 @@ func (m *MockCategory) Update(ctx context.Context, categoryID, name string) erro
 func (mr *MockCategoryMockRecorder) Update(ctx, categoryID, name interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockCategory)(nil).Update), ctx, categoryID, name)
+}
+
+// MockLive is a mock of Live interface.
+type MockLive struct {
+	ctrl     *gomock.Controller
+	recorder *MockLiveMockRecorder
+}
+
+// MockLiveMockRecorder is the mock recorder for MockLive.
+type MockLiveMockRecorder struct {
+	mock *MockLive
+}
+
+// NewMockLive creates a new mock instance.
+func NewMockLive(ctrl *gomock.Controller) *MockLive {
+	mock := &MockLive{ctrl: ctrl}
+	mock.recorder = &MockLiveMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockLive) EXPECT() *MockLiveMockRecorder {
+	return m.recorder
+}
+
+// Get mocks base method.
+func (m *MockLive) Get(ctx context.Context, liveID string, fields ...string) (*entity.Live, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, liveID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.Live)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockLiveMockRecorder) Get(ctx, liveID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, liveID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockLive)(nil).Get), varargs...)
 }
 
 // MockOrder is a mock of Order interface.
@@ -386,6 +430,20 @@ func (mr *MockProductMockRecorder) Update(ctx, productID, params interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockProduct)(nil).Update), ctx, productID, params)
 }
 
+// UpdateMedia mocks base method.
+func (m *MockProduct) UpdateMedia(ctx context.Context, productID string, set func(entity.MultiProductMedia) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateMedia", ctx, productID, set)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateMedia indicates an expected call of UpdateMedia.
+func (mr *MockProductMockRecorder) UpdateMedia(ctx, productID, set interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateMedia", reflect.TypeOf((*MockProduct)(nil).UpdateMedia), ctx, productID, set)
+}
+
 // MockProductType is a mock of ProductType interface.
 type MockProductType struct {
 	ctrl     *gomock.Controller
@@ -524,6 +582,20 @@ func (m *MockProductType) Update(ctx context.Context, productTypeID, name, iconU
 func (mr *MockProductTypeMockRecorder) Update(ctx, productTypeID, name, iconURL interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockProductType)(nil).Update), ctx, productTypeID, name, iconURL)
+}
+
+// UpdateIcons mocks base method.
+func (m *MockProductType) UpdateIcons(ctx context.Context, productTypeID string, icons common.Images) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateIcons", ctx, productTypeID, icons)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateIcons indicates an expected call of UpdateIcons.
+func (mr *MockProductTypeMockRecorder) UpdateIcons(ctx, productTypeID, icons interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateIcons", reflect.TypeOf((*MockProductType)(nil).UpdateIcons), ctx, productTypeID, icons)
 }
 
 // MockPromotion is a mock of Promotion interface.

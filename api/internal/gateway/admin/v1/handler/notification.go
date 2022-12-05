@@ -76,6 +76,13 @@ func (h *handler) ListNotifications(ctx *gin.Context) {
 		return
 	}
 	notifications := service.NewNotifications(mnotifications)
+	if len(notifications) == 0 {
+		res := &response.NotificationsResponse{
+			Notifications: []*response.Notification{},
+		}
+		ctx.JSON(http.StatusOK, res)
+		return
+	}
 
 	adminIn := &user.MultiGetAdminsInput{
 		AdminIDs: notifications.AdminIDs(),

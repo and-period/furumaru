@@ -44,6 +44,13 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 		return
 	}
 	users := service.NewUsers(uusers)
+	if len(users) == 0 {
+		res := &response.UsersResponse{
+			Users: []*response.UserList{},
+		}
+		ctx.JSON(http.StatusOK, res)
+		return
+	}
 
 	ordersIn := &store.AggregateOrdersInput{
 		UserIDs: uusers.IDs(),

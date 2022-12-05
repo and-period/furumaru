@@ -51,6 +51,6 @@ func (s *service) generateFile(
 		return "", fmt.Errorf("%w: %s", exception.ErrInvalidArgument, err.Error())
 	}
 	path := reg.GenerateFilePath(in.Header)
-	url, err := s.tmp.Upload(ctx, path, in.File)
+	url, err := s.tmp.Upload(ctx, path, &buf)
 	return url, exception.InternalError(err)
 }

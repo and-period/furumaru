@@ -1,5 +1,7 @@
 package user
 
+import "github.com/and-period/furumaru/api/internal/common"
+
 type SignInAdminInput struct {
 	Key      string `validate:"required"`
 	Password string `validate:"required"`
@@ -155,6 +157,16 @@ type UpdateCoordinatorEmailInput struct {
 	Email         string `validate:"required,max=256,email"`
 }
 
+type UpdateCoordinatorThumbnailsInput struct {
+	CoordinatorID string        `validate:"required"`
+	Thumbnails    common.Images `validate:""`
+}
+
+type UpdateCoordinatorHeadersInput struct {
+	CoordinatorID string        `validate:"required"`
+	Headers       common.Images `validate:""`
+}
+
 type ResetCoordinatorPasswordInput struct {
 	CoordinatorID string `validate:"required"`
 }
@@ -217,16 +229,26 @@ type UpdateProducerEmailInput struct {
 	Email      string `validate:"required,max=256,email"`
 }
 
+type UpdateProducerThumbnailsInput struct {
+	ProducerID string        `validate:"required"`
+	Thumbnails common.Images `validate:""`
+}
+
+type UpdateProducerHeadersInput struct {
+	ProducerID string        `validate:"required"`
+	Headers    common.Images `validate:""`
+}
+
 type ResetProducerPasswordInput struct {
 	ProducerID string `validate:"required"`
 }
 
-type RelatedProducerInput struct {
-	ProducerID    string `validate:"required"`
-	CoordinatorID string `validate:"required"`
+type RelateProducersInput struct {
+	CoordinatorID string   `validate:"required"`
+	ProducerIDs   []string `validate:"min=1,max=20,dive,required"`
 }
 
-type UnrelatedProducerInput struct {
+type UnrelateProducerInput struct {
 	ProducerID string `validate:"required"`
 }
 

@@ -3,7 +3,7 @@ package entity
 import (
 	"time"
 
-	set "github.com/and-period/furumaru/api/pkg/set/v2"
+	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/gorm"
 )
@@ -31,6 +31,7 @@ type Live struct {
 	Canceled     bool           `gorm:""`                     // 配信中止フラグ
 	StartAt      time.Time      `gorm:""`                     // 配信開始日時
 	EndAt        time.Time      `gorm:""`                     // 配信終了日時
+	ChannelArn   string         `gorm:"default:null"`         // チャンネルArn
 	CreatedAt    time.Time      `gorm:"<-:create"`            // 登録日時
 	UpdatedAt    time.Time      `gorm:""`                     // 更新日時
 	DeletedAt    gorm.DeletedAt `gorm:"default:null"`         // 削除日時

@@ -59,6 +59,10 @@ type Service interface {
 	UpdateCoordinator(ctx context.Context, in *UpdateCoordinatorInput) error
 	// コーディネータメールアドレス更新
 	UpdateCoordinatorEmail(ctx context.Context, in *UpdateCoordinatorEmailInput) error
+	// コーディネータサムネイル(リサイズ済み)更新
+	UpdateCoordinatorThumbnails(ctx context.Context, in *UpdateCoordinatorThumbnailsInput) error
+	// コーディネータヘッダー画像(リサイズ済み)更新
+	UpdateCoordinatorHeaders(ctx context.Context, in *UpdateCoordinatorHeadersInput) error
 	// コーディネータパスワードリセット
 	ResetCoordinatorPassword(ctx context.Context, in *ResetCoordinatorPasswordInput) error
 	// コーディネータ退会
@@ -75,12 +79,16 @@ type Service interface {
 	UpdateProducer(ctx context.Context, in *UpdateProducerInput) error
 	// 生産者メールアドレス更新
 	UpdateProducerEmail(ctx context.Context, in *UpdateProducerEmailInput) error
+	// 生産者サムネイル(リサイズ済み)更新
+	UpdateProducerThumbnails(ctx context.Context, in *UpdateProducerThumbnailsInput) error
+	// 生産者ヘッダー画像(リサイズ済み)更新
+	UpdateProducerHeaders(ctx context.Context, in *UpdateProducerHeadersInput) error
 	// 生産者パスワードリセット
 	ResetProducerPassword(ctx context.Context, in *ResetProducerPasswordInput) error
 	// 生産者関連付け
-	RelatedProducer(ctx context.Context, in *RelatedProducerInput) error
+	RelateProducers(ctx context.Context, in *RelateProducersInput) error
 	// 生産者関連付け解除
-	UnrelatedProducer(ctx context.Context, in *UnrelatedProducerInput) error
+	UnrelateProducer(ctx context.Context, in *UnrelateProducerInput) error
 	// 生産者退会
 	DeleteProducer(ctx context.Context, in *DeleteProducerInput) error
 	// 購入者サインイン

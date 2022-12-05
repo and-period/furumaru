@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	set "github.com/and-period/furumaru/api/pkg/set/v2"
+	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/shopspring/decimal"
 )
 
@@ -92,7 +92,6 @@ func NewProduct(product *entity.Product) *Product {
 		Product: response.Product{
 			ID:               product.ID,
 			ProducerID:       product.ProducerID,
-			CategoryID:       product.CategoryID,
 			TypeID:           product.TypeID,
 			Name:             product.Name,
 			Description:      product.Description,
@@ -115,13 +114,12 @@ func NewProduct(product *entity.Product) *Product {
 	}
 }
 
-func (p *Product) Fill(category *Category, productType *ProductType, producer *Producer) {
-	if category != nil {
-		p.CategoryName = category.Name
-	}
+func (p *Product) Fill(productType *ProductType, producer *Producer) {
 	if productType != nil {
 		p.TypeName = productType.Name
 		p.TypeIconURL = productType.IconURL
+		p.CategoryID = productType.CategoryID
+		p.CategoryName = productType.CategoryName
 	}
 	if producer != nil {
 		p.StoreName = producer.StoreName
@@ -167,12 +165,15 @@ func (ps Products) Map() map[string]*Product {
 }
 
 func (ps Products) Fill(
-	categories map[string]*Category,
 	productTypes map[string]*ProductType,
 	producers map[string]*Producer,
 ) {
 	for i := range ps {
-		ps[i].Fill(categories[ps[i].CategoryID], productTypes[ps[i].TypeID], producers[ps[i].ProducerID])
+		productType, ok := productTypes[ps[i].TypeID]
+		if !ok {
+			productType = &ProductType{}
+		}
+		ps[i].Fill(productType, producers[ps[i].ProducerID])
 	}
 }
 
@@ -189,6 +190,7 @@ func NewProductMedia(media *entity.ProductMedia) *ProductMedia {
 		ProductMedia: response.ProductMedia{
 			URL:         media.URL,
 			IsThumbnail: media.IsThumbnail,
+			Images:      NewImages(media.Images).Response(),
 		},
 	}
 }

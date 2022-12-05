@@ -69,7 +69,7 @@ func TestReporter(t *testing.T) {
 		{
 			name: "failed to get report template",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ReportTemplate.EXPECT().Get(ctx, entity.ReportIDReceivedContact).Return(nil, errmock)
+				mocks.db.ReportTemplate.EXPECT().Get(ctx, entity.ReportIDReceivedContact).Return(nil, assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -80,13 +80,13 @@ func TestReporter(t *testing.T) {
 					Link:     "htts://admin.and-period.jp/contacts/contact-id",
 				},
 			},
-			expectErr: errmock,
+			expectErr: assert.AnError,
 		},
 		{
 			name: "failed to push line message",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ReportTemplate.EXPECT().Get(ctx, entity.ReportIDReceivedContact).Return(template, nil)
-				mocks.line.EXPECT().PushMessage(ctx, gomock.Any()).Return(errmock)
+				mocks.line.EXPECT().PushMessage(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",

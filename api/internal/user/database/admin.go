@@ -13,13 +13,6 @@ import (
 
 const adminTable = "admins"
 
-var adminFields = []string{
-	"id", "cognito_id", "role", "device", "email",
-	"lastname", "firstname", "lastname_kana", "firstname_kana",
-	"created_at", "updated_at", "deleted_at",
-	// "exists"
-}
-
 type admin struct {
 	db  *database.Client
 	now func() time.Time
@@ -36,12 +29,8 @@ func (a *admin) MultiGet(
 	ctx context.Context, adminIDs []string, fields ...string,
 ) (entity.Admins, error) {
 	var admins entity.Admins
-	if len(fields) == 0 {
-		fields = adminFields
-	}
 
-	err := a.db.DB.WithContext(ctx).
-		Table(adminTable).Select(fields).
+	err := a.db.Statement(ctx, a.db.DB, adminTable, fields...).
 		Where("id IN (?)", adminIDs).
 		Find(&admins).Error
 	return admins, exception.InternalError(err)
@@ -58,12 +47,8 @@ func (a *admin) GetByCognitoID(
 	ctx context.Context, cognitoID string, fields ...string,
 ) (*entity.Admin, error) {
 	var admin *entity.Admin
-	if len(fields) == 0 {
-		fields = adminFields
-	}
 
-	stmt := a.db.DB.WithContext(ctx).
-		Table(adminTable).Select(fields).
+	stmt := a.db.Statement(ctx, a.db.DB, adminTable, fields...).
 		Where("cognito_id = ?", cognitoID)
 
 	if err := stmt.First(&admin).Error; err != nil {
@@ -112,12 +97,8 @@ func (a *admin) UpdateDevice(ctx context.Context, adminID, device string) error 
 
 func (a *admin) get(ctx context.Context, tx *gorm.DB, adminID string, fields ...string) (*entity.Admin, error) {
 	var admin *entity.Admin
-	if len(fields) == 0 {
-		fields = adminFields
-	}
 
-	err := tx.WithContext(ctx).
-		Table(adminTable).Select(fields).
+	err := a.db.Statement(ctx, tx, adminTable, fields...).
 		Where("id = ?", adminID).
 		First(&admin).Error
 	return admin, err

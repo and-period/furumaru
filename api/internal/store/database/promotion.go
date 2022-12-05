@@ -13,12 +13,6 @@ import (
 
 const promotionTable = "promotions"
 
-var promotionFields = []string{
-	"id", "title", "description", "public", "published_at",
-	"discount_type", "discount_rate", "code", "code_type",
-	"start_at", "end_at", "created_at", "updated_at",
-}
-
 type promotion struct {
 	db  *database.Client
 	now func() time.Time
@@ -33,11 +27,8 @@ func NewPromotion(db *database.Client) Promotion {
 
 func (p *promotion) List(ctx context.Context, params *ListPromotionsParams, fields ...string) (entity.Promotions, error) {
 	var promotions entity.Promotions
-	if len(fields) == 0 {
-		fields = promotionFields
-	}
 
-	stmt := p.db.DB.WithContext(ctx).Table(promotionTable).Select(fields)
+	stmt := p.db.Statement(ctx, p.db.DB, promotionTable, fields...)
 	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
@@ -53,10 +44,10 @@ func (p *promotion) List(ctx context.Context, params *ListPromotionsParams, fiel
 func (p *promotion) Count(ctx context.Context, params *ListPromotionsParams) (int64, error) {
 	var total int64
 
-	stmt := p.db.DB.WithContext(ctx).Table(promotionTable).Select("COUNT(*)")
+	stmt := p.db.Count(ctx, p.db.DB, promotionTable)
 	stmt = params.stmt(stmt)
 
-	err := stmt.Count(&total).Error
+	err := stmt.Find(&total).Error
 	return total, exception.InternalError(err)
 }
 
@@ -123,12 +114,8 @@ func (p *promotion) get(
 	ctx context.Context, tx *gorm.DB, promotionID string, fields ...string,
 ) (*entity.Promotion, error) {
 	var promotion *entity.Promotion
-	if len(fields) == 0 {
-		fields = promotionFields
-	}
 
-	err := tx.WithContext(ctx).
-		Table(promotionTable).Select(fields).
+	err := p.db.Statement(ctx, tx, promotionTable, fields...).
 		Where("id = ?", promotionID).
 		First(&promotion).Error
 	return promotion, err

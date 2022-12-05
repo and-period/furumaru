@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -8,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/gin-gonic/gin"
@@ -56,17 +58,19 @@ func (h *handler) ListProductTypes(ctx *gin.Context) {
 		return
 	}
 	productTypes := service.NewProductTypes(sproductTypes)
-
-	categoriesIn := &store.MultiGetCategoriesInput{
-		CategoryIDs: productTypes.CategoryIDs(),
+	if len(productTypes) == 0 {
+		res := &response.ProductTypesResponse{
+			ProductTypes: []*response.ProductType{},
+		}
+		ctx.JSON(http.StatusOK, res)
+		return
 	}
-	scategories, err := h.store.MultiGetCategories(ctx, categoriesIn)
+
+	categories, err := h.multiGetCategories(ctx, productTypes.CategoryIDs())
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
-	categories := service.NewCategories(scategories)
-
 	productTypes.Fill(categories.Map())
 
 	res := &response.ProductTypesResponse{
@@ -102,20 +106,24 @@ func (h *handler) CreateProductType(ctx *gin.Context) {
 		return
 	}
 
-	categoryIn := &store.GetCategoryInput{
-		CategoryID: util.GetParam(ctx, "categoryId"),
-	}
-	scategory, err := h.store.GetCategory(ctx, categoryIn)
+	category, err := h.getCategory(ctx, util.GetParam(ctx, "categoryId"))
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
-	category := service.NewCategory(scategory)
+	uploadIn := &media.UploadFileInput{
+		URL: req.IconURL,
+	}
+	iconURL, err := h.media.UploadProductTypeIcon(ctx, uploadIn)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
 
 	typeIn := &store.CreateProductTypeInput{
 		CategoryID: category.ID,
 		Name:       req.Name,
-		IconURL:    req.IconURL,
+		IconURL:    iconURL,
 	}
 	sproductType, err := h.store.CreateProductType(ctx, typeIn)
 	if err != nil {
@@ -139,10 +147,19 @@ func (h *handler) UpdateProductType(ctx *gin.Context) {
 		return
 	}
 
+	uploadIn := &media.UploadFileInput{
+		URL: req.IconURL,
+	}
+	iconURL, err := h.media.UploadProductTypeIcon(ctx, uploadIn)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+
 	in := &store.UpdateProductTypeInput{
 		ProductTypeID: util.GetParam(ctx, "productTypeId"),
 		Name:          req.Name,
-		IconURL:       req.IconURL,
+		IconURL:       iconURL,
 	}
 	if err := h.store.UpdateProductType(ctx, in); err != nil {
 		httpError(ctx, err)
@@ -162,4 +179,38 @@ func (h *handler) DeleteProductType(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) multiGetProductTypes(ctx context.Context, productTypeIDs []string) (service.ProductTypes, error) {
+	in := &store.MultiGetProductTypesInput{
+		ProductTypeIDs: productTypeIDs,
+	}
+	sproductTypes, err := h.store.MultiGetProductTypes(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	productTypes := service.NewProductTypes(sproductTypes)
+	categories, err := h.multiGetCategories(ctx, productTypes.CategoryIDs())
+	if err != nil {
+		return nil, err
+	}
+	productTypes.Fill(categories.Map())
+	return productTypes, nil
+}
+
+func (h *handler) getProductType(ctx context.Context, productTypeID string) (*service.ProductType, error) {
+	in := &store.GetProductTypeInput{
+		ProductTypeID: productTypeID,
+	}
+	sproductType, err := h.store.GetProductType(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	productType := service.NewProductType(sproductType)
+	category, err := h.getCategory(ctx, productType.CategoryID)
+	if err != nil {
+		return nil, err
+	}
+	productType.Fill(category)
+	return productType, nil
 }

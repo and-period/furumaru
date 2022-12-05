@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -132,4 +133,26 @@ func (h *handler) DeleteCategory(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) multiGetCategories(ctx context.Context, categoryIDs []string) (service.Categories, error) {
+	in := &store.MultiGetCategoriesInput{
+		CategoryIDs: categoryIDs,
+	}
+	categories, err := h.store.MultiGetCategories(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewCategories(categories), nil
+}
+
+func (h *handler) getCategory(ctx context.Context, categoryID string) (*service.Category, error) {
+	in := &store.GetCategoryInput{
+		CategoryID: categoryID,
+	}
+	category, err := h.store.GetCategory(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewCategory(category), nil
 }

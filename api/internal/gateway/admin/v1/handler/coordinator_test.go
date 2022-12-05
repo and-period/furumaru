@@ -5,8 +5,10 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
@@ -32,11 +34,21 @@ func TestListCoordinator(t *testing.T) {
 				FirstnameKana: "かんりしゃ",
 				Email:         "test-coordinator@and-period.jp",
 			},
-			AdminID:          "coordinator-id01",
-			CompanyName:      "&.株式会社",
-			StoreName:        "&.農園",
-			ThumbnailURL:     "https://and-period.jp/thumbnail.png",
-			HeaderURL:        "https://and-period.jp/header.png",
+			AdminID:      "coordinator-id01",
+			CompanyName:  "&.株式会社",
+			StoreName:    "&.農園",
+			ThumbnailURL: "https://and-period.jp/thumbnail.png",
+			Thumbnails: common.Images{
+				{URL: "https://and-period.jp/thumbnail_240.png", Size: common.ImageSizeSmall},
+				{URL: "https://and-period.jp/thumbnail_675.png", Size: common.ImageSizeMedium},
+				{URL: "https://and-period.jp/thumbnail_900.png", Size: common.ImageSizeLarge},
+			},
+			HeaderURL: "https://and-period.jp/header.png",
+			Headers: common.Images{
+				{URL: "https://and-period.jp/header_240.png", Size: common.ImageSizeSmall},
+				{URL: "https://and-period.jp/header_675.png", Size: common.ImageSizeMedium},
+				{URL: "https://and-period.jp/header_900.png", Size: common.ImageSizeLarge},
+			},
 			TwitterAccount:   "twitter-id",
 			InstagramAccount: "instagram-id",
 			FacebookAccount:  "facebook-id",
@@ -90,15 +102,25 @@ func TestListCoordinator(t *testing.T) {
 				body: &response.CoordinatorsResponse{
 					Coordinators: []*response.Coordinator{
 						{
-							ID:               "coordinator-id01",
-							Lastname:         "&.",
-							Firstname:        "管理者",
-							LastnameKana:     "あんどどっと",
-							FirstnameKana:    "かんりしゃ",
-							CompanyName:      "&.株式会社",
-							StoreName:        "&.農園",
-							ThumbnailURL:     "https://and-period.jp/thumbnail.png",
-							HeaderURL:        "https://and-period.jp/header.png",
+							ID:            "coordinator-id01",
+							Lastname:      "&.",
+							Firstname:     "管理者",
+							LastnameKana:  "あんどどっと",
+							FirstnameKana: "かんりしゃ",
+							CompanyName:   "&.株式会社",
+							StoreName:     "&.農園",
+							ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+							Thumbnails: []*response.Image{
+								{URL: "https://and-period.jp/thumbnail_240.png", Size: int32(service.ImageSizeSmall)},
+								{URL: "https://and-period.jp/thumbnail_675.png", Size: int32(service.ImageSizeMedium)},
+								{URL: "https://and-period.jp/thumbnail_900.png", Size: int32(service.ImageSizeLarge)},
+							},
+							HeaderURL: "https://and-period.jp/header.png",
+							Headers: []*response.Image{
+								{URL: "https://and-period.jp/header_240.png", Size: int32(service.ImageSizeSmall)},
+								{URL: "https://and-period.jp/header_675.png", Size: int32(service.ImageSizeMedium)},
+								{URL: "https://and-period.jp/header_900.png", Size: int32(service.ImageSizeLarge)},
+							},
 							TwitterAccount:   "twitter-id",
 							InstagramAccount: "instagram-id",
 							FacebookAccount:  "facebook-id",
@@ -119,7 +141,9 @@ func TestListCoordinator(t *testing.T) {
 							CompanyName:      "&.株式会社",
 							StoreName:        "&.農園",
 							ThumbnailURL:     "https://and-period.jp/thumbnail.png",
+							Thumbnails:       []*response.Image{},
 							HeaderURL:        "https://and-period.jp/header.png",
+							Headers:          []*response.Image{},
 							TwitterAccount:   "twitter-id",
 							InstagramAccount: "instagram-id",
 							FacebookAccount:  "facebook-id",
@@ -157,7 +181,7 @@ func TestListCoordinator(t *testing.T) {
 		{
 			name: "failed to get coordinators",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().ListCoordinators(gomock.Any(), in).Return(nil, int64(0), errmock)
+				mocks.user.EXPECT().ListCoordinators(gomock.Any(), in).Return(nil, int64(0), assert.AnError)
 			},
 			query: "",
 			expect: &testResponse{
@@ -191,11 +215,21 @@ func TestGetCoordinator(t *testing.T) {
 			FirstnameKana: "かんりしゃ",
 			Email:         "test-coordinator@and-period.jp",
 		},
-		AdminID:          "coordinator-id",
-		CompanyName:      "&.株式会社",
-		StoreName:        "&.農園",
-		ThumbnailURL:     "https://and-period.jp/thumbnail.png",
-		HeaderURL:        "https://and-period.jp/header.png",
+		AdminID:      "coordinator-id",
+		CompanyName:  "&.株式会社",
+		StoreName:    "&.農園",
+		ThumbnailURL: "https://and-period.jp/thumbnail.png",
+		Thumbnails: common.Images{
+			{URL: "https://and-period.jp/thumbnail_240.png", Size: common.ImageSizeSmall},
+			{URL: "https://and-period.jp/thumbnail_675.png", Size: common.ImageSizeMedium},
+			{URL: "https://and-period.jp/thumbnail_900.png", Size: common.ImageSizeLarge},
+		},
+		HeaderURL: "https://and-period.jp/header.png",
+		Headers: common.Images{
+			{URL: "https://and-period.jp/header_240.png", Size: common.ImageSizeSmall},
+			{URL: "https://and-period.jp/header_675.png", Size: common.ImageSizeMedium},
+			{URL: "https://and-period.jp/header_900.png", Size: common.ImageSizeLarge},
+		},
 		TwitterAccount:   "twitter-id",
 		InstagramAccount: "instagram-id",
 		FacebookAccount:  "facebook-id",
@@ -223,15 +257,25 @@ func TestGetCoordinator(t *testing.T) {
 				code: http.StatusOK,
 				body: &response.CoordinatorResponse{
 					Coordinator: &response.Coordinator{
-						ID:               "coordinator-id",
-						Lastname:         "&.",
-						Firstname:        "管理者",
-						LastnameKana:     "あんどどっと",
-						FirstnameKana:    "かんりしゃ",
-						CompanyName:      "&.株式会社",
-						StoreName:        "&.農園",
-						ThumbnailURL:     "https://and-period.jp/thumbnail.png",
-						HeaderURL:        "https://and-period.jp/header.png",
+						ID:            "coordinator-id",
+						Lastname:      "&.",
+						Firstname:     "管理者",
+						LastnameKana:  "あんどどっと",
+						FirstnameKana: "かんりしゃ",
+						CompanyName:   "&.株式会社",
+						StoreName:     "&.農園",
+						ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+						Thumbnails: []*response.Image{
+							{URL: "https://and-period.jp/thumbnail_240.png", Size: int32(service.ImageSizeSmall)},
+							{URL: "https://and-period.jp/thumbnail_675.png", Size: int32(service.ImageSizeMedium)},
+							{URL: "https://and-period.jp/thumbnail_900.png", Size: int32(service.ImageSizeLarge)},
+						},
+						HeaderURL: "https://and-period.jp/header.png",
+						Headers: []*response.Image{
+							{URL: "https://and-period.jp/header_240.png", Size: int32(service.ImageSizeSmall)},
+							{URL: "https://and-period.jp/header_675.png", Size: int32(service.ImageSizeMedium)},
+							{URL: "https://and-period.jp/header_900.png", Size: int32(service.ImageSizeLarge)},
+						},
 						TwitterAccount:   "twitter-id",
 						InstagramAccount: "instagram-id",
 						FacebookAccount:  "facebook-id",
@@ -249,7 +293,7 @@ func TestGetCoordinator(t *testing.T) {
 		{
 			name: "failed to get coordinator",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), in).Return(nil, errmock)
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), in).Return(nil, assert.AnError)
 			},
 			coordinatorID: "coordinator-id",
 			expect: &testResponse{
@@ -371,7 +415,9 @@ func TestCreateCoordinator(t *testing.T) {
 						CompanyName:      "&.株式会社",
 						StoreName:        "&.農園",
 						ThumbnailURL:     "https://and-period.jp/thumbnail.png",
+						Thumbnails:       []*response.Image{},
 						HeaderURL:        "https://and-period.jp/header.png",
+						Headers:          []*response.Image{},
 						TwitterAccount:   "twitter-id",
 						InstagramAccount: "instagram-id",
 						FacebookAccount:  "facebook-id",
@@ -454,7 +500,7 @@ func TestCreateCoordinator(t *testing.T) {
 				in := *in
 				in.ThumbnailURL = ""
 				in.HeaderURL = ""
-				mocks.user.EXPECT().CreateCoordinator(gomock.Any(), &in).Return(nil, errmock)
+				mocks.user.EXPECT().CreateCoordinator(gomock.Any(), &in).Return(nil, assert.AnError)
 			},
 			req: &request.CreateCoordinatorRequest{
 				Lastname:         "&.",
@@ -611,7 +657,7 @@ func TestUpdateCoordinator(t *testing.T) {
 				in := *in
 				in.ThumbnailURL = ""
 				in.HeaderURL = ""
-				mocks.user.EXPECT().UpdateCoordinator(gomock.Any(), &in).Return(errmock)
+				mocks.user.EXPECT().UpdateCoordinator(gomock.Any(), &in).Return(assert.AnError)
 			},
 			coordinatorID: "coordinator-id",
 			req: &request.UpdateCoordinatorRequest{
@@ -676,7 +722,7 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 		{
 			name: "failed to update coordinator email",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().UpdateCoordinatorEmail(gomock.Any(), in).Return(errmock)
+				mocks.user.EXPECT().UpdateCoordinatorEmail(gomock.Any(), in).Return(assert.AnError)
 			},
 			coordinatorID: "coordinator-id",
 			req: &request.UpdateCoordinatorEmailRequest{
@@ -724,7 +770,7 @@ func TestResetCoordinatorPassword(t *testing.T) {
 		{
 			name: "failed to reset coordinator password",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().ResetCoordinatorPassword(gomock.Any(), in).Return(errmock)
+				mocks.user.EXPECT().ResetCoordinatorPassword(gomock.Any(), in).Return(assert.AnError)
 			},
 			coordinatorID: "coordinator-id",
 			expect: &testResponse{
@@ -769,7 +815,7 @@ func TestDeleteCoordinator(t *testing.T) {
 		{
 			name: "failed to delete coordinator",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.user.EXPECT().DeleteCoordinator(gomock.Any(), in).Return(errmock)
+				mocks.user.EXPECT().DeleteCoordinator(gomock.Any(), in).Return(assert.AnError)
 			},
 			coordinatorID: "coordinator-id",
 			expect: &testResponse{

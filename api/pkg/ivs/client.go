@@ -24,6 +24,11 @@ type Client interface {
 	GetChannel(ctx context.Context, params *GetChannelParams) (*ivs.GetChannelOutput, error)
 	// チャンネル削除
 	DeleteChannel(ctx context.Context, params *DeleteChannelParams) error
+	// ######################
+	// ストリーム関連
+	// ######################
+	// ストリーム取得
+	GetStream(ctx context.Context, params *GetStreamParams) (*ivs.GetStreamOutput, error)
 }
 
 var (

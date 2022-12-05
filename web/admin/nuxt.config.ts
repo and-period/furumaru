@@ -33,7 +33,13 @@ const config: NuxtConfig = {
   css: ['~/assets/main.scss'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ['~/plugins/firebase', '~/plugins/google-analytics'],
+  plugins: [
+    '~/plugins/firebase',
+    '~/plugins/google-analytics',
+    '~/plugins/auth',
+    '~/plugins/api-error-handler',
+    '~/plugins/api-client',
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: [
@@ -54,6 +60,7 @@ const config: NuxtConfig = {
     '@nuxtjs/vuetify',
     '@nuxtjs/composition-api/module',
     '@pinia/nuxt',
+    '@nuxtjs/google-fonts',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -119,6 +126,16 @@ const config: NuxtConfig = {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
+
+  googleFonts: {
+    download: true,
+    inject: true,
+    overwriting: true,
+    display: 'swap',
+    families: {
+      'BIZ+UDGothic': true,
+    },
+  },
 }
 
 export default config

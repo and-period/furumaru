@@ -9,6 +9,7 @@ on:
 env:
   SERVICE: user-web
   TZ: 'Asia/Tokyo'
+  NODE_VERSION: 16.14.2
 
 jobs:
   setup:
@@ -21,15 +22,15 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        node: ['16.14.2']
+
     steps:
     - name: Check out code
       uses: actions/checkout@v3
 
-    - name: Use Node.js ${{ matrix.node }}
+    - name: Use Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node }}
+        node-version: ${{ env.NODE_VERSION }}
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
@@ -60,15 +61,15 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        node: ['16.14.2']
+
     steps:
     - name: Check out code
       uses: actions/checkout@v3
 
-    - name: Use Node.js ${{ matrix.node }}
+    - name: Use Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node }}
+        node-version: ${{ env.NODE_VERSION }}
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
@@ -102,15 +103,15 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        node: ['16.14.2']
+
     steps:
     - name: Check out code
       uses: actions/checkout@v3
 
-    - name: Use Node.js ${{ matrix.node }}
+    - name: Use Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node }}
+        node-version: ${{ env.NODE_VERSION }}
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
@@ -144,15 +145,15 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        node: ['16.14.2']
+
     steps:
     - name: Check out code
       uses: actions/checkout@v3
 
-    - name: Use Node.js ${{ matrix.node }}
+    - name: Use Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node }}
+        node-version: ${{ env.NODE_VERSION }}
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 

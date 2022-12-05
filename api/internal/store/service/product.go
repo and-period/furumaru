@@ -5,11 +5,15 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/pkg/set"
+	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -92,7 +96,6 @@ func (s *service) CreateProduct(ctx context.Context, in *store.CreateProductInpu
 	}
 	params := &entity.NewProductParams{
 		ProducerID:       in.ProducerID,
-		CategoryID:       in.CategoryID,
 		TypeID:           in.TypeID,
 		Name:             in.Name,
 		Description:      in.Description,
@@ -116,11 +119,20 @@ func (s *service) CreateProduct(ctx context.Context, in *store.CreateProductInpu
 	if err := s.db.Product.Create(ctx, product); err != nil {
 		return nil, exception.InternalError(err)
 	}
+	s.waitGroup.Add(1)
+	go func() {
+		defer s.waitGroup.Done()
+		s.resizeProduct(context.Background(), product.ID, product.Media)
+	}()
 	return product, nil
 }
 
 func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInput) error {
 	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	product, err := s.db.Product.Get(ctx, in.ProductID)
+	if err != nil {
 		return exception.InternalError(err)
 	}
 	media := make(entity.MultiProductMedia, len(in.Media))
@@ -133,7 +145,7 @@ func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInpu
 	producerIn := &user.GetProducerInput{
 		ProducerID: in.ProducerID,
 	}
-	_, err := s.user.GetProducer(ctx, producerIn)
+	_, err = s.user.GetProducer(ctx, producerIn)
 	if errors.Is(err, exception.ErrNotFound) {
 		return fmt.Errorf("api: invalid admin id: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
@@ -142,7 +154,6 @@ func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInpu
 	}
 	params := &database.UpdateProductParams{
 		ProducerID:       in.ProducerID,
-		CategoryID:       in.CategoryID,
 		TypeID:           in.TypeID,
 		Name:             in.Name,
 		Description:      in.Description,
@@ -162,7 +173,48 @@ func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInpu
 		OriginPrefecture: in.OriginPrefecture,
 		OriginCity:       in.OriginCity,
 	}
-	err = s.db.Product.Update(ctx, in.ProductID, params)
+	if err := s.db.Product.Update(ctx, in.ProductID, params); err != nil {
+		return exception.InternalError(err)
+	}
+	s.waitGroup.Add(1)
+	go func() {
+		defer s.waitGroup.Done()
+		set := set.NewEmpty[string](len(product.Media))
+		for _, m := range product.Media {
+			set.Add(m.URL)
+		}
+		ms := make(entity.MultiProductMedia, 0, len(in.Media))
+		for i := range media {
+			if set.Contains(media[i].URL) {
+				continue
+			}
+			ms = append(ms, media[i])
+		}
+		s.resizeProduct(context.Background(), product.ID, ms)
+	}()
+	return nil
+}
+
+func (s *service) UpdateProductMedia(ctx context.Context, in *store.UpdateProductMediaInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	resized := make(map[string]common.Images, len(in.Images))
+	for _, image := range in.Images {
+		resized[image.OriginURL] = image.Images
+	}
+	setFn := func(media entity.MultiProductMedia) (exists bool) {
+		for i := range media {
+			images, ok := resized[media[i].URL]
+			if !ok {
+				continue
+			}
+			exists = true
+			media[i].Images = images
+		}
+		return
+	}
+	err := s.db.Product.UpdateMedia(ctx, in.ProductID, setFn)
 	return exception.InternalError(err)
 }
 
@@ -172,4 +224,20 @@ func (s *service) DeleteProduct(ctx context.Context, in *store.DeleteProductInpu
 	}
 	err := s.db.Product.Delete(ctx, in.ProductID)
 	return exception.InternalError(err)
+}
+
+func (s *service) resizeProduct(ctx context.Context, productID string, ms entity.MultiProductMedia) {
+	urls := make([]string, len(ms))
+	for i := range ms {
+		urls[i] = ms[i].URL
+	}
+	in := &media.ResizeFileInput{
+		TargetID: productID,
+		URLs:     urls,
+	}
+	if err := s.media.ResizeProductMedia(ctx, in); err != nil {
+		s.logger.Error("Failed to resize product media",
+			zap.String("productId", productID), zap.Error(err),
+		)
+	}
 }

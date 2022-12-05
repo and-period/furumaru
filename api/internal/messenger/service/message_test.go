@@ -79,7 +79,7 @@ func TestListMessages(t *testing.T) {
 		{
 			name: "failed to list messages",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Message.EXPECT().List(gomock.Any(), params).Return(nil, errmock)
+				mocks.db.Message.EXPECT().List(gomock.Any(), params).Return(nil, assert.AnError)
 				mocks.db.Message.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &messenger.ListMessagesInput{
@@ -99,7 +99,7 @@ func TestListMessages(t *testing.T) {
 			name: "failed to count messagses",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Message.EXPECT().List(gomock.Any(), params).Return(messages, nil)
-				mocks.db.Message.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
+				mocks.db.Message.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
 			},
 			input: &messenger.ListMessagesInput{
 				Limit:    20,
@@ -212,7 +212,7 @@ func TestGetMessage(t *testing.T) {
 		{
 			name: "failed to get message",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Message.EXPECT().Get(ctx, "message-id").Return(nil, errmock)
+				mocks.db.Message.EXPECT().Get(ctx, "message-id").Return(nil, assert.AnError)
 			},
 			input: &messenger.GetMessageInput{
 				MessageID: "message-id",
@@ -245,7 +245,7 @@ func TestGetMessage(t *testing.T) {
 					Read:     false,
 				}
 				mocks.db.Message.EXPECT().Get(ctx, "message-id").Return(message, nil)
-				mocks.db.Message.EXPECT().UpdateRead(gomock.Any(), "message-id").Return(errmock)
+				mocks.db.Message.EXPECT().UpdateRead(gomock.Any(), "message-id").Return(assert.AnError)
 			},
 			input: &messenger.GetMessageInput{
 				MessageID: "message-id",

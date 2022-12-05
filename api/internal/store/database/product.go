@@ -9,18 +9,11 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
 const productTable = "products"
-
-var productFields = []string{
-	"id", "producer_id", "category_id", "product_type_id",
-	"name", "description", "public", "inventory",
-	"weight", "weight_unit", "item", "item_unit", "item_description",
-	"media", "price", "delivery_type", "box60_rate", "box80_rate", "box100_rate",
-	"origin_prefecture", "origin_city", "created_at", "updated_at", "deleted_at",
-}
 
 type product struct {
 	db  *database.Client
@@ -36,11 +29,8 @@ func NewProduct(db *database.Client) Product {
 
 func (p *product) List(ctx context.Context, params *ListProductsParams, fields ...string) (entity.Products, error) {
 	var products entity.Products
-	if len(fields) == 0 {
-		fields = productFields
-	}
 
-	stmt := p.db.DB.WithContext(ctx).Table(productTable).Select(fields)
+	stmt := p.db.Statement(ctx, p.db.DB, productTable, fields...)
 	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
@@ -61,27 +51,26 @@ func (p *product) List(ctx context.Context, params *ListProductsParams, fields .
 func (p *product) Count(ctx context.Context, params *ListProductsParams) (int64, error) {
 	var total int64
 
-	stmt := p.db.DB.WithContext(ctx).Table(productTable).Select("COUNT(*)")
+	stmt := p.db.Count(ctx, p.db.DB, productTable)
 	stmt = params.stmt(stmt)
 
-	err := stmt.Count(&total).Error
+	err := stmt.Find(&total).Error
 	return total, exception.InternalError(err)
 }
 
 func (p *product) MultiGet(ctx context.Context, productIDs []string, fields ...string) (entity.Products, error) {
 	var products entity.Products
-	if len(fields) == 0 {
-		fields = productFields
-	}
 
-	err := p.db.DB.WithContext(ctx).
-		Table(productTable).Select(fields).
-		Where("id IN (?)", productIDs).
-		Find(&products).Error
-	if err := products.Fill(); err != nil {
-		return nil, err
+	stmt := p.db.Statement(ctx, p.db.DB, productTable, fields...).
+		Where("id IN (?)", productIDs)
+
+	if err := stmt.Find(&products).Error; err != nil {
+		return nil, exception.InternalError(err)
 	}
-	return products, exception.InternalError(err)
+	if err := products.Fill(); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return products, nil
 }
 
 func (p *product) Get(ctx context.Context, productID string, fields ...string) (*entity.Product, error) {
@@ -112,7 +101,6 @@ func (p *product) Update(ctx context.Context, productID string, params *UpdatePr
 
 		updates := map[string]interface{}{
 			"producer_id":       params.ProducerID,
-			"category_id":       params.CategoryID,
 			"product_type_id":   params.TypeID,
 			"name":              params.Name,
 			"description":       params.Description,
@@ -148,6 +136,36 @@ func (p *product) Update(ctx context.Context, productID string, params *UpdatePr
 	return exception.InternalError(err)
 }
 
+func (p *product) UpdateMedia(
+	ctx context.Context, productID string, set func(media entity.MultiProductMedia) bool,
+) error {
+	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+		product, err := p.get(ctx, tx, productID, "media")
+		if err != nil {
+			return nil, err
+		}
+		if exists := set(product.Media); !exists {
+			return nil, fmt.Errorf("database: media is non-existent: %w", exception.ErrFailedPrecondition)
+		}
+
+		buf, err := product.Media.Marshal()
+		if err != nil {
+			return nil, err
+		}
+		params := map[string]interface{}{
+			"media":      datatypes.JSON(buf),
+			"updated_at": p.now(),
+		}
+
+		err = tx.WithContext(ctx).
+			Table(productTable).
+			Where("id = ?", productID).
+			Updates(params).Error
+		return nil, err
+	})
+	return exception.InternalError(err)
+}
+
 func (p *product) Delete(ctx context.Context, productID string) error {
 	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		if _, err := p.get(ctx, tx, productID); err != nil {
@@ -168,12 +186,8 @@ func (p *product) Delete(ctx context.Context, productID string) error {
 
 func (p *product) get(ctx context.Context, tx *gorm.DB, productID string, fields ...string) (*entity.Product, error) {
 	var product *entity.Product
-	if len(fields) == 0 {
-		fields = productFields
-	}
 
-	err := tx.WithContext(ctx).
-		Table(productTable).Select(fields).
+	err := p.db.Statement(ctx, tx, productTable, fields...).
 		Where("id = ?", productID).
 		First(&product).Error
 	if err != nil {

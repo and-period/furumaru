@@ -139,7 +139,7 @@ func TestListOrders(t *testing.T) {
 		{
 			name: "failed to list orders",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().List(gomock.Any(), params).Return(nil, errmock)
+				mocks.db.Order.EXPECT().List(gomock.Any(), params).Return(nil, assert.AnError)
 				mocks.db.Order.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListOrdersInput{
@@ -155,7 +155,7 @@ func TestListOrders(t *testing.T) {
 			name: "failed to count orders",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().List(gomock.Any(), params).Return(orders, nil)
-				mocks.db.Order.EXPECT().Count(gomock.Any(), params).Return(int64(0), errmock)
+				mocks.db.Order.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
 			},
 			input: &store.ListOrdersInput{
 				CoordinatorID: "coordinator-id",
@@ -290,7 +290,7 @@ func TestGetOrder(t *testing.T) {
 		{
 			name: "failed to get order",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(nil, errmock)
+				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(nil, assert.AnError)
 			},
 			input: &store.GetOrderInput{
 				OrderID: "order-id",
@@ -352,7 +352,7 @@ func TestAggregateOrders(t *testing.T) {
 		{
 			name: "failed to aggregate",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().Aggregate(ctx, []string{"user-id"}).Return(nil, errmock)
+				mocks.db.Order.EXPECT().Aggregate(ctx, []string{"user-id"}).Return(nil, assert.AnError)
 			},
 			input: &store.AggregateOrdersInput{
 				UserIDs: []string{"user-id"},

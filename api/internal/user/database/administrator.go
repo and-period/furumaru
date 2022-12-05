@@ -13,10 +13,6 @@ import (
 
 const administratorTable = "administrators"
 
-var administratorFields = []string{
-	"admin_id", "phone_number", "created_at", "updated_at", "deleted_at",
-}
-
 type administrator struct {
 	db  *database.Client
 	now func() time.Time
@@ -33,11 +29,8 @@ func (a *administrator) List(
 	ctx context.Context, params *ListAdministratorsParams, fields ...string,
 ) (entity.Administrators, error) {
 	var administrators entity.Administrators
-	if len(fields) == 0 {
-		fields = administratorFields
-	}
 
-	stmt := a.db.DB.WithContext(ctx).Table(administratorTable).Select(fields)
+	stmt := a.db.Statement(ctx, a.db.DB, administratorTable, fields...)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
 	}
@@ -57,9 +50,7 @@ func (a *administrator) List(
 func (a *administrator) Count(ctx context.Context, params *ListAdministratorsParams) (int64, error) {
 	var total int64
 
-	stmt := a.db.DB.WithContext(ctx).Table(administratorTable).Select("COUNT(*)")
-
-	err := stmt.Count(&total).Error
+	err := a.db.Count(ctx, a.db.DB, administratorTable).Find(&total).Error
 	return total, exception.InternalError(err)
 }
 
@@ -67,12 +58,8 @@ func (a *administrator) MultiGet(
 	ctx context.Context, administratorIDs []string, fields ...string,
 ) (entity.Administrators, error) {
 	var administrators entity.Administrators
-	if len(fields) == 0 {
-		fields = administratorFields
-	}
 
-	stmt := a.db.DB.WithContext(ctx).
-		Table(administratorTable).Select(fields).
+	stmt := a.db.Statement(ctx, a.db.DB, administratorTable, fields...).
 		Where("admin_id IN (?)", administratorIDs)
 
 	if err := stmt.Find(&administrators).Error; err != nil {
@@ -191,12 +178,8 @@ func (a *administrator) get(
 	ctx context.Context, tx *gorm.DB, administratorID string, fields ...string,
 ) (*entity.Administrator, error) {
 	var administrator *entity.Administrator
-	if len(fields) == 0 {
-		fields = administratorFields
-	}
 
-	err := tx.WithContext(ctx).
-		Table(administratorTable).Select(fields).
+	err := a.db.Statement(ctx, tx, administratorTable, fields...).
 		Where("admin_id = ?", administratorID).
 		First(&administrator).Error
 	return administrator, err
@@ -210,8 +193,7 @@ func (a *administrator) fill(ctx context.Context, tx *gorm.DB, administrators ..
 		return nil
 	}
 
-	stmt := tx.WithContext(ctx).
-		Table(adminTable).Select(adminFields).
+	stmt := a.db.Statement(ctx, tx, adminTable).
 		Where("id IN (?)", ids)
 	if err := stmt.Find(&admins).Error; err != nil {
 		return err

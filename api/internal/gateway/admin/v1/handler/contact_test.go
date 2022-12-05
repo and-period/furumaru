@@ -12,6 +12,7 @@ import (
 	mentity "github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestListContacts(t *testing.T) {
@@ -98,7 +99,7 @@ func TestListContacts(t *testing.T) {
 		{
 			name: "failed to list contacts",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.messenger.EXPECT().ListContacts(gomock.Any(), contactsIn).Return(nil, int64(0), errmock)
+				mocks.messenger.EXPECT().ListContacts(gomock.Any(), contactsIn).Return(nil, int64(0), assert.AnError)
 			},
 			query: "",
 			expect: &testResponse{
@@ -170,7 +171,7 @@ func TestGetContact(t *testing.T) {
 		{
 			name: "failed to get contact",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.messenger.EXPECT().GetContact(gomock.Any(), contactIn).Return(nil, errmock)
+				mocks.messenger.EXPECT().GetContact(gomock.Any(), contactIn).Return(nil, assert.AnError)
 			},
 			contactID: "contact-id",
 			expect: &testResponse{
@@ -223,7 +224,7 @@ func TestUpdateContact(t *testing.T) {
 		{
 			name: "failed to update contact",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.messenger.EXPECT().UpdateContact(gomock.Any(), contactIn).Return(errmock)
+				mocks.messenger.EXPECT().UpdateContact(gomock.Any(), contactIn).Return(assert.AnError)
 			},
 			contactID: "contact-id",
 			req: &request.UpdateContactRequest{

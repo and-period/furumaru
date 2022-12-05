@@ -31,6 +31,8 @@ type Service interface {
 	CreateProductType(ctx context.Context, in *CreateProductTypeInput) (*entity.ProductType, error)
 	// 品目更新
 	UpdateProductType(ctx context.Context, in *UpdateProductTypeInput) error
+	// 品目アイコン画像(リサイズ済み)更新
+	UpdateProductTypeIcons(ctx context.Context, in *UpdateProductTypeIconsInput) error
 	// 品目削除
 	DeleteProductType(ctx context.Context, in *DeleteProductTypeInput) error
 	// 配送設定一覧取得
@@ -55,6 +57,8 @@ type Service interface {
 	CreateProduct(ctx context.Context, in *CreateProductInput) (*entity.Product, error)
 	// 商品更新
 	UpdateProduct(ctx context.Context, in *UpdateProductInput) error
+	// 商品画像(リサイズ済み)更新
+	UpdateProductMedia(ctx context.Context, in *UpdateProductMediaInput) error
 	// 商品削除
 	DeleteProduct(ctx context.Context, in *DeleteProductInput) error
 	// プロモーション一覧取得
@@ -75,4 +79,6 @@ type Service interface {
 	GetOrder(ctx context.Context, in *GetOrderInput) (*entity.Order, error)
 	// 注文履歴集計結果一覧取得
 	AggregateOrders(ctx context.Context, in *AggregateOrdersInput) (entity.AggregatedOrders, error)
+	// 郵便番号情報検索
+	SearchPostalCode(ctx context.Context, in *SearchPostalCodeInput) (*entity.PostalCode, error)
 }

@@ -11,9 +11,9 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )
@@ -143,61 +143,11 @@ func (h *handler) newProductOrders(ctx *gin.Context) ([]*store.ListProductsOrder
 }
 
 func (h *handler) GetProduct(ctx *gin.Context) {
-	in := &store.GetProductInput{
-		ProductID: util.GetParam(ctx, "productId"),
-	}
-	sproduct, err := h.store.GetProduct(ctx, in)
+	product, err := h.getProduct(ctx, util.GetParam(ctx, "productId"))
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
-	product := service.NewProduct(sproduct)
-
-	var (
-		producer    *service.Producer
-		category    *service.Category
-		productType *service.ProductType
-	)
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() error {
-		in := &user.GetProducerInput{
-			ProducerID: product.ProducerID,
-		}
-		uproducer, err := h.user.GetProducer(ectx, in)
-		if err != nil {
-			return err
-		}
-		producer = service.NewProducer(uproducer)
-		return nil
-	})
-	eg.Go(func() error {
-		in := &store.GetCategoryInput{
-			CategoryID: product.CategoryID,
-		}
-		scategory, err := h.store.GetCategory(ectx, in)
-		if err != nil {
-			return err
-		}
-		category = service.NewCategory(scategory)
-		return nil
-	})
-	eg.Go(func() error {
-		in := &store.GetProductTypeInput{
-			ProductTypeID: product.TypeID,
-		}
-		stype, err := h.store.GetProductType(ectx, in)
-		if err != nil {
-			return err
-		}
-		productType = service.NewProductType(stype)
-		return nil
-	})
-	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
-		return
-	}
-
-	product.Fill(category, productType, producer)
 
 	res := &response.ProductResponse{
 		Product: product.Response(),
@@ -224,42 +174,16 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 
 	var (
 		producer    *service.Producer
-		category    *service.Category
 		productType *service.ProductType
 	)
 	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() error {
-		in := &user.GetProducerInput{
-			ProducerID: req.ProducerID,
-		}
-		uproducer, err := h.user.GetProducer(ectx, in)
-		if err != nil {
-			return err
-		}
-		producer = service.NewProducer(uproducer)
-		return nil
+	eg.Go(func() (err error) {
+		producer, err = h.getProducer(ectx, req.ProducerID)
+		return
 	})
-	eg.Go(func() error {
-		in := &store.GetCategoryInput{
-			CategoryID: req.CategoryID,
-		}
-		scategory, err := h.store.GetCategory(ectx, in)
-		if err != nil {
-			return err
-		}
-		category = service.NewCategory(scategory)
-		return nil
-	})
-	eg.Go(func() error {
-		in := &store.GetProductTypeInput{
-			ProductTypeID: req.TypeID,
-		}
-		stype, err := h.store.GetProductType(ectx, in)
-		if err != nil {
-			return err
-		}
-		productType = service.NewProductType(stype)
-		return nil
+	eg.Go(func() (err error) {
+		productType, err = h.getProductType(ctx, req.TypeID)
+		return
 	})
 	err := eg.Wait()
 	if errors.Is(err, exception.ErrNotFound) {
@@ -271,18 +195,32 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		return
 	}
 
-	media := make([]*store.CreateProductMedia, len(req.Media))
+	productMedia := make([]*store.CreateProductMedia, len(req.Media))
 	for i := range req.Media {
-		media[i] = &store.CreateProductMedia{
-			URL:         req.Media[i].URL,
-			IsThumbnail: req.Media[i].IsThumbnail,
-		}
+		i := i
+		eg.Go(func() error {
+			in := &media.UploadFileInput{
+				URL: req.Media[i].URL,
+			}
+			url, err := h.media.UploadProductMedia(ectx, in)
+			if err != nil {
+				return err
+			}
+			productMedia[i] = &store.CreateProductMedia{
+				URL:         url,
+				IsThumbnail: req.Media[i].IsThumbnail,
+			}
+			return nil
+		})
 	}
-	weight, weightUnit := service.NewProductWeightFromRequest(req.Weight)
+	if err := eg.Wait(); err != nil {
+		httpError(ctx, err)
+		return
+	}
 
+	weight, weightUnit := service.NewProductWeightFromRequest(req.Weight)
 	in := &store.CreateProductInput{
 		ProducerID:       req.ProducerID,
-		CategoryID:       req.CategoryID,
 		TypeID:           req.TypeID,
 		Name:             req.Name,
 		Description:      req.Description,
@@ -293,7 +231,7 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		Item:             1, // 1固定
 		ItemUnit:         req.ItemUnit,
 		ItemDescription:  req.ItemDescription,
-		Media:            media,
+		Media:            productMedia,
 		Price:            req.Price,
 		DeliveryType:     service.DeliveryType(req.DeliveryType).StoreEntity(),
 		Box60Rate:        req.Box60Rate,
@@ -309,7 +247,7 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 	}
 	product := service.NewProduct(sproduct)
 
-	product.Fill(category, productType, producer)
+	product.Fill(productType, producer)
 
 	res := &response.ProductResponse{
 		Product: product.Response(),
@@ -324,19 +262,34 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 		return
 	}
 
-	media := make([]*store.UpdateProductMedia, len(req.Media))
+	eg, ectx := errgroup.WithContext(ctx)
+	productMedia := make([]*store.UpdateProductMedia, len(req.Media))
 	for i := range req.Media {
-		media[i] = &store.UpdateProductMedia{
-			URL:         req.Media[i].URL,
-			IsThumbnail: req.Media[i].IsThumbnail,
-		}
+		i := i
+		eg.Go(func() error {
+			in := &media.UploadFileInput{
+				URL: req.Media[i].URL,
+			}
+			url, err := h.media.UploadProductMedia(ectx, in)
+			if err != nil {
+				return err
+			}
+			productMedia[i] = &store.UpdateProductMedia{
+				URL:         url,
+				IsThumbnail: req.Media[i].IsThumbnail,
+			}
+			return nil
+		})
 	}
-	weight, weightUnit := service.NewProductWeightFromRequest(req.Weight)
+	if err := eg.Wait(); err != nil {
+		httpError(ctx, err)
+		return
+	}
 
+	weight, weightUnit := service.NewProductWeightFromRequest(req.Weight)
 	in := &store.UpdateProductInput{
 		ProductID:        util.GetParam(ctx, "productId"),
 		ProducerID:       req.ProducerID,
-		CategoryID:       req.CategoryID,
 		TypeID:           req.TypeID,
 		Name:             req.Name,
 		Description:      req.Description,
@@ -347,7 +300,7 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 		Item:             1, // 1固定
 		ItemUnit:         req.ItemUnit,
 		ItemDescription:  req.ItemDescription,
-		Media:            media,
+		Media:            productMedia,
 		Price:            req.Price,
 		DeliveryType:     service.DeliveryType(req.DeliveryType).StoreEntity(),
 		Box60Rate:        req.Box60Rate,
@@ -383,57 +336,35 @@ func (h *handler) getProduct(ctx context.Context, productID string) (*service.Pr
 	in := &store.GetProductInput{
 		ProductID: productID,
 	}
-	product, err := h.store.GetProduct(ctx, in)
+	sproduct, err := h.store.GetProduct(ctx, in)
 	if err != nil {
 		return nil, err
 	}
-	return service.NewProduct(product), nil
+	product := service.NewProduct(sproduct)
+	if err := h.getProductsDetails(ctx, product); err != nil {
+		return nil, err
+	}
+	return product, nil
 }
 
 func (h *handler) getProductsDetails(ctx context.Context, products ...*service.Product) error {
 	ps := service.Products(products)
 	var (
-		producers  service.Producers
-		categories service.Categories
-		types      service.ProductTypes
+		producers service.Producers
+		types     service.ProductTypes
 	)
 	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() error {
-		in := &user.MultiGetProducersInput{
-			ProducerIDs: ps.ProducerIDs(),
-		}
-		uproducers, err := h.user.MultiGetProducers(ectx, in)
-		if err != nil {
-			return err
-		}
-		producers = service.NewProducers(uproducers)
-		return nil
+	eg.Go(func() (err error) {
+		producers, err = h.multiGetProducers(ectx, ps.ProducerIDs())
+		return
 	})
-	eg.Go(func() error {
-		in := &store.MultiGetCategoriesInput{
-			CategoryIDs: ps.CategoryIDs(),
-		}
-		scategories, err := h.store.MultiGetCategories(ectx, in)
-		if err != nil {
-			return err
-		}
-		categories = service.NewCategories(scategories)
-		return nil
-	})
-	eg.Go(func() error {
-		in := &store.MultiGetProductTypesInput{
-			ProductTypeIDs: ps.ProductTypeIDs(),
-		}
-		stypes, err := h.store.MultiGetProductTypes(ectx, in)
-		if err != nil {
-			return err
-		}
-		types = service.NewProductTypes(stypes)
-		return nil
+	eg.Go(func() (err error) {
+		types, err = h.multiGetProductTypes(ectx, ps.ProductTypeIDs())
+		return
 	})
 	if err := eg.Wait(); err != nil {
 		return err
 	}
-	ps.Fill(categories.Map(), types.Map(), producers.Map())
+	ps.Fill(types.Map(), producers.Map())
 	return nil
 }

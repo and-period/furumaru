@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	set "github.com/and-period/furumaru/api/pkg/set/v2"
+	"github.com/and-period/furumaru/api/pkg/set"
 )
 
 type ProductType struct {
@@ -19,6 +19,7 @@ func NewProductType(productType *entity.ProductType) *ProductType {
 			CategoryID: productType.CategoryID,
 			Name:       productType.Name,
 			IconURL:    productType.IconURL,
+			Icons:      NewImages(productType.Icons).Response(),
 			CreatedAt:  productType.CreatedAt.Unix(),
 			UpdatedAt:  productType.UpdatedAt.Unix(),
 		},

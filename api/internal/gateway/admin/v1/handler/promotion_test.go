@@ -12,6 +12,7 @@ import (
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestListPromotions(t *testing.T) {
@@ -103,7 +104,7 @@ func TestListPromotions(t *testing.T) {
 		{
 			name: "failedo to list promotions",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().ListPromotions(gomock.Any(), in).Return(nil, int64(0), errmock)
+				mocks.store.EXPECT().ListPromotions(gomock.Any(), in).Return(nil, int64(0), assert.AnError)
 			},
 			query: "",
 			expect: &testResponse{
@@ -180,7 +181,7 @@ func TestGetPromotion(t *testing.T) {
 		{
 			name: "failed to get promotion",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().GetPromotion(gomock.Any(), in).Return(nil, errmock)
+				mocks.store.EXPECT().GetPromotion(gomock.Any(), in).Return(nil, assert.AnError)
 			},
 			promotionID: "promotion-id",
 			expect: &testResponse{
@@ -275,7 +276,7 @@ func TestCreatePromotion(t *testing.T) {
 		{
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().CreatePromotion(gomock.Any(), in).Return(nil, errmock)
+				mocks.store.EXPECT().CreatePromotion(gomock.Any(), in).Return(nil, assert.AnError)
 			},
 			req: &request.CreatePromotionRequest{
 				Title:        "プロモーションタイトル",
@@ -351,7 +352,7 @@ func TestUpdatePromotion(t *testing.T) {
 		{
 			name: "failed to update promotion",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().UpdatePromotion(gomock.Any(), in).Return(errmock)
+				mocks.store.EXPECT().UpdatePromotion(gomock.Any(), in).Return(assert.AnError)
 			},
 			promotionID: "promotion-id",
 			req: &request.UpdatePromotionRequest{
@@ -407,7 +408,7 @@ func TestDeletePromotion(t *testing.T) {
 		{
 			name: "failed to delete promotion",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().DeletePromotion(gomock.Any(), in).Return(errmock)
+				mocks.store.EXPECT().DeletePromotion(gomock.Any(), in).Return(assert.AnError)
 			},
 			promotionID: "promotion-id",
 			expect: &testResponse{

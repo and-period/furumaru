@@ -118,7 +118,7 @@ func TestCreateSchedule(t *testing.T) {
 		{
 			name: "failed to get coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, errmock)
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, assert.AnError)
 				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
 				mocks.db.Shipping.EXPECT().Get(gomock.Any(), shippingIn).Return(shipping, nil)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
@@ -177,7 +177,7 @@ func TestCreateSchedule(t *testing.T) {
 			name: "failed to get producers",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(nil, errmock)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(nil, assert.AnError)
 				mocks.db.Shipping.EXPECT().Get(gomock.Any(), shippingIn).Return(shipping, nil)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
 			},
@@ -236,7 +236,7 @@ func TestCreateSchedule(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
-				mocks.db.Shipping.EXPECT().Get(gomock.Any(), shippingIn).Return(nil, errmock)
+				mocks.db.Shipping.EXPECT().Get(gomock.Any(), shippingIn).Return(nil, assert.AnError)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
 			},
 			input: &store.CreateScheduleInput{
@@ -295,7 +295,7 @@ func TestCreateSchedule(t *testing.T) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
 				mocks.db.Shipping.EXPECT().Get(gomock.Any(), shippingIn).Return(shipping, nil)
-				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(nil, errmock)
+				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(nil, assert.AnError)
 			},
 			input: &store.CreateScheduleInput{
 				CoordinatorID: "coordinator-id",
@@ -354,7 +354,7 @@ func TestCreateSchedule(t *testing.T) {
 				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
 				mocks.db.Shipping.EXPECT().Get(gomock.Any(), shippingIn).Return(shipping, nil)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
-				mocks.db.Schedule.EXPECT().Create(ctx, gomock.Any(), gomock.Any(), gomock.Any()).Return(errmock)
+				mocks.db.Schedule.EXPECT().Create(ctx, gomock.Any(), gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateScheduleInput{
 				CoordinatorID: "coordinator-id",

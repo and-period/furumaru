@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
@@ -24,6 +25,7 @@ func (s *service) ListProducers(ctx context.Context, in *user.ListProducersInput
 		CoordinatorID: in.CoordinatorID,
 		Limit:         int(in.Limit),
 		Offset:        int(in.Offset),
+		OnlyUnrelated: in.OnlyUnrelated,
 	}
 	var (
 		producers entity.Producers
@@ -94,7 +96,11 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 		return nil, exception.InternalError(err)
 	}
 	s.logger.Debug("Create producer", zap.String("producerId", producer.ID), zap.String("password", password))
-	s.waitGroup.Add(1)
+	s.waitGroup.Add(2)
+	go func() {
+		defer s.waitGroup.Done()
+		s.resizeProducer(context.Background(), producer.ID, in.ThumbnailURL, in.HeaderURL)
+	}()
 	go func() {
 		defer s.waitGroup.Done()
 		err := s.notifyRegisterAdmin(context.Background(), producer.ID, password)
@@ -107,6 +113,10 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 
 func (s *service) UpdateProducer(ctx context.Context, in *user.UpdateProducerInput) error {
 	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	producer, err := s.db.Producer.Get(ctx, in.ProducerID)
+	if err != nil {
 		return exception.InternalError(err)
 	}
 	params := &database.UpdateProducerParams{
@@ -124,8 +134,22 @@ func (s *service) UpdateProducer(ctx context.Context, in *user.UpdateProducerInp
 		AddressLine1:  in.AddressLine1,
 		AddressLine2:  in.AddressLine2,
 	}
-	err := s.db.Producer.Update(ctx, in.ProducerID, params)
-	return exception.InternalError(err)
+	if err := s.db.Producer.Update(ctx, in.ProducerID, params); err != nil {
+		return exception.InternalError(err)
+	}
+	s.waitGroup.Add(1)
+	go func() {
+		defer s.waitGroup.Done()
+		var thumbnailURL, headerURL string
+		if producer.ThumbnailURL != in.ThumbnailURL {
+			thumbnailURL = in.ThumbnailURL
+		}
+		if producer.HeaderURL != in.HeaderURL {
+			headerURL = in.HeaderURL
+		}
+		s.resizeProducer(context.Background(), producer.ID, thumbnailURL, headerURL)
+	}()
+	return nil
 }
 
 func (s *service) UpdateProducerEmail(ctx context.Context, in *user.UpdateProducerEmailInput) error {
@@ -144,6 +168,22 @@ func (s *service) UpdateProducerEmail(ctx context.Context, in *user.UpdateProduc
 		return exception.InternalError(err)
 	}
 	err = s.db.Admin.UpdateEmail(ctx, in.ProducerID, in.Email)
+	return exception.InternalError(err)
+}
+
+func (s *service) UpdateProducerThumbnails(ctx context.Context, in *user.UpdateProducerThumbnailsInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	err := s.db.Producer.UpdateThumbnails(ctx, in.ProducerID, in.Thumbnails)
+	return exception.InternalError(err)
+}
+
+func (s *service) UpdateProducerHeaders(ctx context.Context, in *user.UpdateProducerHeadersInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	err := s.db.Producer.UpdateHeaders(ctx, in.ProducerID, in.Headers)
 	return exception.InternalError(err)
 }
 
@@ -181,33 +221,34 @@ func (s *service) ResetProducerPassword(ctx context.Context, in *user.ResetProdu
 	return nil
 }
 
-func (s *service) RelatedProducer(ctx context.Context, in *user.RelatedProducerInput) error {
+func (s *service) RelateProducers(ctx context.Context, in *user.RelateProducersInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	producer, err := s.db.Producer.Get(ctx, in.ProducerID, "coordinator_id")
-	if err != nil {
-		return exception.InternalError(err)
-	}
-	if producer.CoordinatorID != "" {
-		return fmt.Errorf("api: this producer is related: %w", exception.ErrFailedPrecondition)
-	}
-	_, err = s.db.Coordinator.Get(ctx, in.CoordinatorID)
+	_, err := s.db.Coordinator.Get(ctx, in.CoordinatorID)
 	if errors.Is(err, exception.ErrNotFound) {
 		return fmt.Errorf("api: invalid coordinator id: %w", exception.ErrInvalidArgument)
 	}
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	err = s.db.Producer.UpdateRelationship(ctx, in.ProducerID, in.CoordinatorID)
+	producers, err := s.db.Producer.MultiGet(ctx, in.ProducerIDs)
+	if err != nil {
+		return exception.InternalError(err)
+	}
+	producers = producers.Unrelated()
+	if len(producers) != len(in.ProducerIDs) {
+		return fmt.Errorf("api: contains invalid producers: %w", exception.ErrFailedPrecondition)
+	}
+	err = s.db.Producer.UpdateRelationship(ctx, in.CoordinatorID, in.ProducerIDs...)
 	return exception.InternalError(err)
 }
 
-func (s *service) UnrelatedProducer(ctx context.Context, in *user.UnrelatedProducerInput) error {
+func (s *service) UnrelateProducer(ctx context.Context, in *user.UnrelateProducerInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	err := s.db.Producer.UpdateRelationship(ctx, in.ProducerID, "")
+	err := s.db.Producer.UpdateRelationship(ctx, "", in.ProducerID)
 	return exception.InternalError(err)
 }
 
@@ -217,4 +258,38 @@ func (s *service) DeleteProducer(ctx context.Context, in *user.DeleteProducerInp
 	}
 	err := s.db.Producer.Delete(ctx, in.ProducerID, s.deleteCognitoAdmin(in.ProducerID))
 	return exception.InternalError(err)
+}
+
+func (s *service) resizeProducer(ctx context.Context, producerID, thumbnailURL, headerURL string) {
+	s.waitGroup.Add(2)
+	go func() {
+		defer s.waitGroup.Done()
+		if thumbnailURL == "" {
+			return
+		}
+		in := &media.ResizeFileInput{
+			TargetID: producerID,
+			URLs:     []string{thumbnailURL},
+		}
+		if err := s.media.ResizeProducerThumbnail(ctx, in); err != nil {
+			s.logger.Error("Failed to resize producer thumbnail",
+				zap.String("producerId", producerID), zap.Error(err),
+			)
+		}
+	}()
+	go func() {
+		defer s.waitGroup.Done()
+		if headerURL == "" {
+			return
+		}
+		in := &media.ResizeFileInput{
+			TargetID: producerID,
+			URLs:     []string{headerURL},
+		}
+		if err := s.media.ResizeProducerHeader(ctx, in); err != nil {
+			s.logger.Error("Failed to resize producer header",
+				zap.String("producerId", producerID), zap.Error(err),
+			)
+		}
+	}()
 }

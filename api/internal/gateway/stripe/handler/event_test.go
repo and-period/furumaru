@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 	"github.com/stripe/stripe-go/v73"
 )
 
@@ -42,7 +43,7 @@ func TestEvent(t *testing.T) {
 		{
 			name: "invalid request",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.receiver.EXPECT().Receive(gomock.Any(), signaturemock).Return(nil, errmock)
+				mocks.receiver.EXPECT().Receive(gomock.Any(), signaturemock).Return(nil, assert.AnError)
 			},
 			req: &stripe.Event{},
 			expect: &testResponse{

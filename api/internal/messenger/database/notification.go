@@ -14,11 +14,6 @@ import (
 
 const notificationTable = "notifications"
 
-var notificationFields = []string{
-	"id", "created_by", "creator_name", "updated_by", "title", "body",
-	"published_at", "targets", "public", "created_at", "updated_at", "deleted_at",
-}
-
 type notification struct {
 	db  *database.Client
 	now func() time.Time
@@ -35,11 +30,8 @@ func (n *notification) List(
 	ctx context.Context, params *ListNotificationsParams, fields ...string,
 ) (entity.Notifications, error) {
 	var notifications entity.Notifications
-	if len(fields) == 0 {
-		fields = notificationFields
-	}
 
-	stmt := n.db.DB.WithContext(ctx).Table(notificationTable).Select(fields)
+	stmt := n.db.Statement(ctx, n.db.DB, notificationTable, fields...)
 	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
@@ -60,10 +52,10 @@ func (n *notification) List(
 func (n *notification) Count(ctx context.Context, params *ListNotificationsParams) (int64, error) {
 	var total int64
 
-	stmt := n.db.DB.WithContext(ctx).Table(notificationTable).Select("COUNT(*)")
+	stmt := n.db.Count(ctx, n.db.DB, notificationTable)
 	stmt = params.stmt(stmt)
 
-	err := stmt.Count(&total).Error
+	err := stmt.Find(&total).Error
 	return total, exception.InternalError(err)
 }
 
@@ -140,12 +132,8 @@ func (n *notification) get(
 	ctx context.Context, tx *gorm.DB, notificationID string, fields ...string,
 ) (*entity.Notification, error) {
 	var notification *entity.Notification
-	if len(fields) == 0 {
-		fields = notificationFields
-	}
 
-	err := tx.WithContext(ctx).
-		Table(notificationTable).Select(fields).
+	err := n.db.Statement(ctx, tx, notificationTable, fields...).
 		Where("id = ?", notificationID).
 		First(&notification).Error
 	if err != nil {

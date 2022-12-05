@@ -3,6 +3,7 @@ package entity
 import (
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -61,9 +62,38 @@ func TestCoordinator_Fill(t *testing.T) {
 		coordinator *Coordinator
 		admin       *Admin
 		expect      *Coordinator
+		hasErr      bool
 	}{
 		{
 			name: "success",
+			coordinator: &Coordinator{
+				AdminID:        "admin-id",
+				ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+				HeadersJSON:    []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+			},
+			admin: &Admin{
+				ID:        "admin-id",
+				CognitoID: "cognito-id",
+			},
+			expect: &Coordinator{
+				AdminID:        "admin-id",
+				ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+				Thumbnails: common.Images{
+					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
+				},
+				HeadersJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+				Headers: common.Images{
+					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
+				},
+				Admin: Admin{
+					ID:        "admin-id",
+					CognitoID: "cognito-id",
+				},
+			},
+			hasErr: false,
+		},
+		{
+			name: "success empty",
 			coordinator: &Coordinator{
 				AdminID: "admin-id",
 			},
@@ -72,19 +102,23 @@ func TestCoordinator_Fill(t *testing.T) {
 				CognitoID: "cognito-id",
 			},
 			expect: &Coordinator{
-				AdminID: "admin-id",
+				AdminID:    "admin-id",
+				Thumbnails: common.Images{},
+				Headers:    common.Images{},
 				Admin: Admin{
 					ID:        "admin-id",
 					CognitoID: "cognito-id",
 				},
 			},
+			hasErr: false,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.coordinator.Fill(tt.admin)
+			err := tt.coordinator.Fill(tt.admin)
+			assert.Equal(t, tt.hasErr, err != nil, err)
 			assert.Equal(t, tt.expect, tt.coordinator)
 		})
 	}

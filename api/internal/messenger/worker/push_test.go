@@ -79,7 +79,7 @@ func TestMultiSendPush(t *testing.T) {
 		{
 			name: "failed to get tokens",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().MultiGetAdminDevices(ctx, in).Return(nil, errmock)
+				mocks.user.EXPECT().MultiGetAdminDevices(ctx, in).Return(nil, assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				EventType: entity.EventTypeReceivedContact,
@@ -90,13 +90,13 @@ func TestMultiSendPush(t *testing.T) {
 					Data:   map[string]string{"Title": "テストお問い合わせ"},
 				},
 			},
-			expectErr: errmock,
+			expectErr: assert.AnError,
 		},
 		{
 			name: "failed to get push template",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().MultiGetAdminDevices(ctx, in).Return(devices, nil)
-				mocks.db.PushTemplate.EXPECT().Get(ctx, entity.PushIDContact).Return(nil, errmock)
+				mocks.db.PushTemplate.EXPECT().Get(ctx, entity.PushIDContact).Return(nil, assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				EventType: entity.EventTypeReceivedContact,
@@ -107,14 +107,14 @@ func TestMultiSendPush(t *testing.T) {
 					Data:   map[string]string{"Title": "テストお問い合わせ"},
 				},
 			},
-			expectErr: errmock,
+			expectErr: assert.AnError,
 		},
 		{
 			name: "failed to multi send push",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().MultiGetAdminDevices(ctx, in).Return(devices, nil)
 				mocks.db.PushTemplate.EXPECT().Get(ctx, entity.PushIDContact).Return(template, nil)
-				mocks.messaging.EXPECT().MultiSend(gomock.Any(), message, devices).Return(int64(0), int64(0), errmock)
+				mocks.messaging.EXPECT().MultiSend(gomock.Any(), message, devices).Return(int64(0), int64(0), assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				EventType: entity.EventTypeReceivedContact,
@@ -190,7 +190,7 @@ func TestFetchTokens(t *testing.T) {
 			name: "failed to multi get admin devices",
 			setup: func(ctx context.Context, mocks *mocks) {
 				in := &user.MultiGetAdminDevicesInput{AdminIDs: []string{"admin-id"}}
-				mocks.user.EXPECT().MultiGetAdminDevices(ctx, in).Return(nil, errmock)
+				mocks.user.EXPECT().MultiGetAdminDevices(ctx, in).Return(nil, assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				EventType: entity.EventTypeReceivedContact,
@@ -202,13 +202,13 @@ func TestFetchTokens(t *testing.T) {
 				},
 			},
 			expect:    nil,
-			expectErr: errmock,
+			expectErr: assert.AnError,
 		},
 		{
 			name: "failed to multi get user devices",
 			setup: func(ctx context.Context, mocks *mocks) {
 				in := &user.MultiGetUserDevicesInput{UserIDs: []string{"user-id"}}
-				mocks.user.EXPECT().MultiGetUserDevices(ctx, in).Return(nil, errmock)
+				mocks.user.EXPECT().MultiGetUserDevices(ctx, in).Return(nil, assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				EventType: entity.EventTypeReceivedContact,
@@ -220,7 +220,7 @@ func TestFetchTokens(t *testing.T) {
 				},
 			},
 			expect:    nil,
-			expectErr: errmock,
+			expectErr: assert.AnError,
 		},
 		{
 			name:  "failed to unknown user type",

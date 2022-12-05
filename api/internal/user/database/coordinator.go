@@ -2,23 +2,19 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
 const coordinatorTable = "coordinators"
-
-var coordinatorFields = []string{
-	"admin_id", "phone_number", "company_name", "store_name", "thumbnail_url", "header_url",
-	"twitter_account", "instagram_account", "facebook_account",
-	"postal_code", "prefecture", "city", "address_line1", "address_line2",
-	"created_at", "updated_at", "deleted_at",
-}
 
 type coordinator struct {
 	db  *database.Client
@@ -36,11 +32,8 @@ func (c *coordinator) List(
 	ctx context.Context, params *ListCoordinatorsParams, fields ...string,
 ) (entity.Coordinators, error) {
 	var coordinators entity.Coordinators
-	if len(fields) == 0 {
-		fields = coordinatorFields
-	}
 
-	stmt := c.db.DB.WithContext(ctx).Table(coordinatorTable).Select(fields)
+	stmt := c.db.Statement(ctx, c.db.DB, coordinatorTable, fields...)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
 	}
@@ -60,9 +53,7 @@ func (c *coordinator) List(
 func (c *coordinator) Count(ctx context.Context, params *ListCoordinatorsParams) (int64, error) {
 	var total int64
 
-	stmt := c.db.DB.WithContext(ctx).Table(coordinatorTable).Select("COUNT(*)")
-
-	err := stmt.Count(&total).Error
+	err := c.db.Count(ctx, c.db.DB, coordinatorTable).Find(&total).Error
 	return total, exception.InternalError(err)
 }
 
@@ -70,12 +61,8 @@ func (c *coordinator) MultiGet(
 	ctx context.Context, coordinatorIDs []string, fields ...string,
 ) (entity.Coordinators, error) {
 	var coordinators entity.Coordinators
-	if len(fields) == 0 {
-		fields = coordinatorFields
-	}
 
-	stmt := c.db.DB.WithContext(ctx).
-		Table(coordinatorTable).Select(fields).
+	stmt := c.db.Statement(ctx, c.db.DB, coordinatorTable, fields...).
 		Where("admin_id IN (?)", coordinatorIDs)
 
 	if err := stmt.Find(&coordinators).Error; err != nil {
@@ -164,6 +151,62 @@ func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *
 	return exception.InternalError(err)
 }
 
+func (c *coordinator) UpdateThumbnails(ctx context.Context, coordinatorID string, thumbnails common.Images) error {
+	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+		coordinator, err := c.get(ctx, tx, coordinatorID, "thumbnail_url")
+		if err != nil {
+			return nil, err
+		}
+		if coordinator.ThumbnailURL == "" {
+			return nil, fmt.Errorf("database: thumbnail url is empty: %w", exception.ErrFailedPrecondition)
+		}
+
+		buf, err := thumbnails.Marshal()
+		if err != nil {
+			return nil, err
+		}
+		params := map[string]interface{}{
+			"thumbnails": datatypes.JSON(buf),
+			"updated_at": c.now(),
+		}
+
+		err = tx.WithContext(ctx).
+			Table(coordinatorTable).
+			Where("admin_id = ?", coordinatorID).
+			Updates(params).Error
+		return nil, err
+	})
+	return exception.InternalError(err)
+}
+
+func (c *coordinator) UpdateHeaders(ctx context.Context, coordinatorID string, headers common.Images) error {
+	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+		coordinator, err := c.get(ctx, tx, coordinatorID, "header_url")
+		if err != nil {
+			return nil, err
+		}
+		if coordinator.HeaderURL == "" {
+			return nil, fmt.Errorf("database: header url is empty: %w", exception.ErrFailedPrecondition)
+		}
+
+		buf, err := headers.Marshal()
+		if err != nil {
+			return nil, err
+		}
+		params := map[string]interface{}{
+			"headers":    datatypes.JSON(buf),
+			"updated_at": c.now(),
+		}
+
+		err = tx.WithContext(ctx).
+			Table(coordinatorTable).
+			Where("admin_id = ?", coordinatorID).
+			Updates(params).Error
+		return nil, err
+	})
+	return exception.InternalError(err)
+}
+
 func (c *coordinator) Delete(ctx context.Context, coordinatorID string, auth func(ctx context.Context) error) error {
 	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
 		if _, err := c.get(ctx, tx, coordinatorID); err != nil {
@@ -203,12 +246,8 @@ func (c *coordinator) get(
 	ctx context.Context, tx *gorm.DB, coordinatorID string, fields ...string,
 ) (*entity.Coordinator, error) {
 	var coordinator *entity.Coordinator
-	if len(fields) == 0 {
-		fields = coordinatorFields
-	}
 
-	err := tx.WithContext(ctx).
-		Table(coordinatorTable).Select(fields).
+	err := c.db.Statement(ctx, tx, coordinatorTable, fields...).
 		Where("admin_id = ?", coordinatorID).
 		First(&coordinator).Error
 	return coordinator, err
@@ -222,8 +261,7 @@ func (c *coordinator) fill(ctx context.Context, tx *gorm.DB, coordinators ...*en
 		return nil
 	}
 
-	stmt := tx.WithContext(ctx).
-		Table(adminTable).Select(adminFields).
+	stmt := c.db.Statement(ctx, tx, adminTable).
 		Where("id IN (?)", ids)
 	if err := stmt.Find(&admins).Error; err != nil {
 		return err
@@ -237,7 +275,9 @@ func (c *coordinator) fill(ctx context.Context, tx *gorm.DB, coordinators ...*en
 			admin = &entity.Admin{}
 		}
 
-		coordinators[i].Fill(admin)
+		if err := coordinators[i].Fill(admin); err != nil {
+			return err
+		}
 	}
 	return nil
 }

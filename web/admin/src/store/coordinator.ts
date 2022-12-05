@@ -13,19 +13,20 @@ import {
   UpdateCoordinatorRequest,
   UploadImageResponse,
 } from '~/types/api'
-import {
-  AuthError,
-  ConnectionError,
-  InternalServerError,
-  NotFoundError,
-  ValidationError,
-} from '~/types/exception'
+import { AuthError } from '~/types/exception'
 
 export const useCoordinatorStore = defineStore('Coordinator', {
-  state: () => ({
-    coordinators: [] as CoordinatorsResponse['coordinators'],
-    totalItems: 0,
-  }),
+  state: () => {
+    const apiClient = (token: string) => {
+      const factory = new ApiClientFactory()
+      return factory.create(CoordinatorApi, token)
+    }
+    return {
+      coordinators: [] as CoordinatorsResponse['coordinators'],
+      totalItems: 0,
+      apiClient,
+    }
+  },
   actions: {
     async fetchCoordinators(
       limit: number = 20,
@@ -51,7 +52,9 @@ export const useCoordinatorStore = defineStore('Coordinator', {
         )
         this.coordinators = res.data.coordinators
         this.totalItems = res.data.total
-      } catch {}
+      } catch (error) {
+        return this.errorHandler(error)
+      }
     },
 
     /**
@@ -78,24 +81,8 @@ export const useCoordinatorStore = defineStore('Coordinator', {
       } catch (error) {
         console.log(error)
         if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          switch (error.response.status) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 400:
-              return Promise.reject(
-                new ValidationError('入力値に誤りがあります。', error)
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
+          return this.errorHandler(error)
         }
-        throw new InternalServerError(error)
       }
     },
 
@@ -117,29 +104,9 @@ export const useCoordinatorStore = defineStore('Coordinator', {
         const res = await coordinatorsApiClient.v1GetCoordinator(id)
         return res.data
       } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください', error)
-              )
-            case 404:
-              return Promise.reject(
-                new NotFoundError(
-                  '一致するコーディネータが見つかりませんでした。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+        return this.errorHandler(error, {
+          404: '該当するコーディーネータが見つかりませんでした。',
+        })
       }
     },
 
@@ -162,26 +129,9 @@ export const useCoordinatorStore = defineStore('Coordinator', {
           color: 'info',
         })
       } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 400:
-              return Promise.reject(
-                new ValidationError('入力された内容では更新できません。', error)
-              )
-            case 404:
-              return Promise.reject(
-                new NotFoundError(
-                  '該当するコーディネータが見つかりませんでした。',
-                  error
-                )
-              )
-          }
-        }
-        throw new Error('Internal Server Error')
+        return this.errorHandler(error, {
+          404: '該当するコーディーネータが見つかりませんでした。',
+        })
       }
     },
 
@@ -212,29 +162,9 @@ export const useCoordinatorStore = defineStore('Coordinator', {
         )
         return res.data
       } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください', error)
-              )
-            case 400:
-              return Promise.reject(
-                new ValidationError(
-                  'このファイルはアップロードできません。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+        return this.errorHandler(error, {
+          400: 'このファイルはアップロードできません。',
+        })
       }
     },
 
@@ -263,29 +193,9 @@ export const useCoordinatorStore = defineStore('Coordinator', {
         )
         return res.data
       } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください', error)
-              )
-            case 400:
-              return Promise.reject(
-                new ValidationError(
-                  'このファイルはアップロードできません。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+        return this.errorHandler(error, {
+          400: 'このファイルはアップロードできません。',
+        })
       }
     },
     async deleteCoordinator(id: string): Promise<void> {

@@ -11,6 +11,7 @@ import (
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestListCategories(t *testing.T) {
@@ -97,7 +98,7 @@ func TestListCategories(t *testing.T) {
 		{
 			name: "failed to get categories",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().ListCategories(gomock.Any(), in).Return(nil, int64(0), errmock)
+				mocks.store.EXPECT().ListCategories(gomock.Any(), in).Return(nil, int64(0), assert.AnError)
 			},
 			query: "?name=野菜",
 			expect: &testResponse{
@@ -158,7 +159,7 @@ func TestCreateCategory(t *testing.T) {
 		{
 			name: "failed to create category",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().CreateCategory(gomock.Any(), in).Return(nil, errmock)
+				mocks.store.EXPECT().CreateCategory(gomock.Any(), in).Return(nil, assert.AnError)
 			},
 			req: &request.CreateCategoryRequest{
 				Name: "野菜",
@@ -209,7 +210,7 @@ func TestUpdateCategory(t *testing.T) {
 		{
 			name: "failed to update category",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().UpdateCategory(gomock.Any(), in).Return(errmock)
+				mocks.store.EXPECT().UpdateCategory(gomock.Any(), in).Return(assert.AnError)
 			},
 			categoryID: "category-id",
 			req: &request.UpdateCategoryRequest{
@@ -257,7 +258,7 @@ func TestDeleteCategory(t *testing.T) {
 		{
 			name: "failed to delete category",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().DeleteCategory(gomock.Any(), in).Return(errmock)
+				mocks.store.EXPECT().DeleteCategory(gomock.Any(), in).Return(assert.AnError)
 			},
 			categoryID: "category-id",
 			expect: &testResponse{

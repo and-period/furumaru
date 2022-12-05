@@ -14,12 +14,6 @@ import (
 
 const orderTable = "orders"
 
-var orderFields = []string{
-	"id", "user_id", "schedule_id", "coordinator_id",
-	"payment_status", "fulfillment_status", "cancel_type", "cancel_reason", "canceled_at",
-	"ordered_at", "confirmed_at", "captured_at", "delivered_at", "created_at", "updated_at",
-}
-
 type order struct {
 	db  *database.Client
 	now func() time.Time
@@ -34,11 +28,8 @@ func NewOrder(db *database.Client) Order {
 
 func (o *order) List(ctx context.Context, params *ListOrdersParams, fields ...string) (entity.Orders, error) {
 	var orders entity.Orders
-	if len(fields) == 0 {
-		fields = orderFields
-	}
 
-	stmt := o.db.DB.WithContext(ctx).Table(orderTable).Select(fields)
+	stmt := o.db.Statement(ctx, o.db.DB, orderTable, fields...)
 	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
@@ -59,9 +50,7 @@ func (o *order) List(ctx context.Context, params *ListOrdersParams, fields ...st
 func (o *order) Count(ctx context.Context, params *ListOrdersParams) (int64, error) {
 	var total int64
 
-	stmt := o.db.DB.WithContext(ctx).Table(orderTable).Select("COUNT(*)")
-
-	err := stmt.Count(&total).Error
+	err := o.db.Count(ctx, o.db.DB, orderTable).Find(&total).Error
 	return total, exception.InternalError(err)
 }
 
@@ -86,7 +75,7 @@ func (o *order) Aggregate(ctx context.Context, userIDs []string) (entity.Aggrega
 		"SUM(order_payments.discount) AS discount",
 	}
 
-	stmt := o.db.DB.WithContext(ctx).Table(orderTable).Select(fields).
+	stmt := o.db.Statement(ctx, o.db.DB, orderTable, fields...).
 		Joins("INNER JOIN order_payments ON order_payments.order_id = orders.id").
 		Where("orders.user_id IN (?)", userIDs).
 		Group("orders.user_id")
@@ -97,12 +86,8 @@ func (o *order) Aggregate(ctx context.Context, userIDs []string) (entity.Aggrega
 
 func (o *order) get(ctx context.Context, tx *gorm.DB, orderID string, fields ...string) (*entity.Order, error) {
 	var order *entity.Order
-	if len(fields) == 0 {
-		fields = orderFields
-	}
 
-	err := tx.WithContext(ctx).
-		Table(orderTable).Select(fields).
+	err := o.db.Statement(ctx, tx, orderTable, fields...).
 		Where("id = ?", orderID).
 		First(&order).Error
 	return order, err
@@ -123,27 +108,19 @@ func (o *order) fill(ctx context.Context, tx *gorm.DB, orders ...*entity.Order) 
 
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		stmt := tx.WithContext(ectx).
-			Table(orderItemTable).Select(orderItemFields).
-			Where("order_id IN (?)", ids)
+		stmt := o.db.Statement(ectx, tx, orderItemTable).Where("order_id IN (?)", ids)
 		return stmt.Find(&items).Error
 	})
 	eg.Go(func() error {
-		stmt := tx.WithContext(ectx).
-			Table(orderPaymentTable).Select(orderPaymentFields).
-			Where("order_id IN (?)", ids)
+		stmt := o.db.Statement(ectx, tx, orderPaymentTable).Where("order_id IN (?)", ids)
 		return stmt.Find(&payments).Error
 	})
 	eg.Go(func() error {
-		stmt := tx.WithContext(ectx).
-			Table(orderFulfillmentTable).Select(orderFulfillmentFields).
-			Where("order_id IN (?)", ids)
+		stmt := o.db.Statement(ectx, tx, orderFulfillmentTable).Where("order_id IN (?)", ids)
 		return stmt.Find(&fulfillments).Error
 	})
 	eg.Go(func() error {
-		stmt := tx.WithContext(ectx).
-			Table(orderActivityTable).Select(orderActivityFields).
-			Where("order_id IN (?)", ids)
+		stmt := o.db.Statement(ectx, tx, orderActivityTable).Where("order_id IN (?)", ids)
 		return stmt.Find(&activities).Error
 	})
 	if err := eg.Wait(); err != nil {

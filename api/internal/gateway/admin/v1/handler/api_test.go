@@ -3,7 +3,6 @@ package handler
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -23,7 +22,6 @@ import (
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	mock_media "github.com/and-period/furumaru/api/mock/media"
 	mock_messenger "github.com/and-period/furumaru/api/mock/messenger"
-	mock_storage "github.com/and-period/furumaru/api/mock/pkg/storage"
 	mock_store "github.com/and-period/furumaru/api/mock/store"
 	mock_user "github.com/and-period/furumaru/api/mock/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -38,11 +36,9 @@ import (
 var (
 	idmock    = "kSByoE6FetnPs5Byk3a9Zx"
 	tokenmock = "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ"
-	errmock   = errors.New("some error")
 )
 
 type mocks struct {
-	storage   *mock_storage.MockBucket
 	user      *mock_user.MockService
 	store     *mock_store.MockService
 	messenger *mock_messenger.MockService
@@ -84,7 +80,6 @@ func withAdminID(adminID string) testOption {
 
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
-		storage:   mock_storage.NewMockBucket(ctrl),
 		user:      mock_user.NewMockService(ctrl),
 		store:     mock_store.NewMockService(ctrl),
 		messenger: mock_messenger.NewMockService(ctrl),
@@ -101,7 +96,6 @@ func newHandler(mocks *mocks, opts *testOptions) Handler {
 	params := &Params{
 		WaitGroup: &sync.WaitGroup{},
 		Enforcer:  enforcer,
-		Storage:   mocks.storage,
 		User:      mocks.user,
 		Store:     mocks.store,
 		Messenger: mocks.messenger,

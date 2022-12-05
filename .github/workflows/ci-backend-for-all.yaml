@@ -14,6 +14,7 @@ env:
   DB_PORT: 3306
   DB_USERNAME: root
   DB_PASSWORD: 12345678
+  GO_VERSION: 1.19.3
 
 jobs:
   setup:
@@ -26,15 +27,15 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        golang: ['1.19.2']
+
     steps:
     - name: Check out code
       uses: actions/checkout@v3
 
-    - name: Use Golang ${{ matrix.golang }}
+    - name: Use Golang ${{ env.GO_VERSION }}
       uses: actions/setup-go@v3
       with:
-        go-version: ${{ matrix.golang }}
+        go-version: ${{ env.GO_VERSION }}
 
     - uses: actions/cache@v3
       id: modules-cache
@@ -58,15 +59,15 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        golang: ['1.19.0']
+
     steps:
     - name: Check out code
       uses: actions/checkout@v3
 
-    - name: Use Golang ${{ matrix.golang }}
+    - name: Use Golang ${{ env.GO_VERSION }}
       uses: actions/setup-go@v3
       with:
-        go-version: ${{ matrix.golang }}
+        go-version: ${{ env.GO_VERSION }}
 
     - name: Setup
       run: make setup
@@ -91,15 +92,15 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        golang: ['1.19.0']
+
     steps:
     - name: Check out code
       uses: actions/checkout@v3
 
-    - name: Use Golang ${{ matrix.golang }}
+    - name: Use Golang ${{ env.GO_VERSION }}
       uses: actions/setup-go@v3
       with:
-        go-version: ${{ matrix.golang }}
+        go-version: ${{ env.GO_VERSION }}
 
     - uses: actions/cache@v3
       id: modules-cache
@@ -125,6 +126,9 @@ jobs:
     - name: Build messenger scheduler
       run: make build SERVICE=messenger/scheduler
 
+    - name: Build media resizer
+      run: make build SERVICE=media/resizer
+
   test:
     name: test
     needs: setup
@@ -136,16 +140,15 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-        golang: ['1.19.0']
 
     steps:
     - name: Check out code
       uses: actions/checkout@v3
 
-    - name: Use Golang ${{ matrix.golang }}
+    - name: Use Golang ${{ env.GO_VERSION }}
       uses: actions/setup-go@v3
       with:
-        go-version: ${{ matrix.golang }}
+        go-version: ${{ env.GO_VERSION }}
 
     - name: Start MySQL container
       working-directory: .

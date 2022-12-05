@@ -3,7 +3,7 @@ package codes
 import (
 	"errors"
 
-	set "github.com/and-period/furumaru/api/pkg/set/v2"
+	"github.com/and-period/furumaru/api/pkg/set"
 )
 
 var ErrUnknownPrefecture = errors.New("entity: unknown prefecture")

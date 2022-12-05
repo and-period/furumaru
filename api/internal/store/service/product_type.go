@@ -4,9 +4,11 @@ import (
 	"context"
 
 	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -77,6 +79,11 @@ func (s *service) CreateProductType(
 	if err := s.db.ProductType.Create(ctx, productType); err != nil {
 		return nil, exception.InternalError(err)
 	}
+	s.waitGroup.Add(1)
+	go func() {
+		defer s.waitGroup.Done()
+		s.resizeProductType(context.Background(), productType.ID, productType.IconURL)
+	}()
 	return productType, nil
 }
 
@@ -84,7 +91,30 @@ func (s *service) UpdateProductType(ctx context.Context, in *store.UpdateProduct
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	err := s.db.ProductType.Update(ctx, in.ProductTypeID, in.Name, in.IconURL)
+	productType, err := s.db.ProductType.Get(ctx, in.ProductTypeID)
+	if err != nil {
+		return exception.InternalError(err)
+	}
+	if err := s.db.ProductType.Update(ctx, in.ProductTypeID, in.Name, in.IconURL); err != nil {
+		return exception.InternalError(err)
+	}
+	s.waitGroup.Add(1)
+	go func() {
+		defer s.waitGroup.Done()
+		var iconURL string
+		if productType.IconURL != in.IconURL {
+			iconURL = in.IconURL
+		}
+		s.resizeProductType(context.Background(), productType.ID, iconURL)
+	}()
+	return nil
+}
+
+func (s *service) UpdateProductTypeIcons(ctx context.Context, in *store.UpdateProductTypeIconsInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	err := s.db.ProductType.UpdateIcons(ctx, in.ProductTypeID, in.Icons)
 	return exception.InternalError(err)
 }
 
@@ -94,4 +124,23 @@ func (s *service) DeleteProductType(ctx context.Context, in *store.DeleteProduct
 	}
 	err := s.db.ProductType.Delete(ctx, in.ProductTypeID)
 	return exception.InternalError(err)
+}
+
+func (s *service) resizeProductType(ctx context.Context, productTypeID, iconURL string) {
+	s.waitGroup.Add(1)
+	go func() {
+		defer s.waitGroup.Done()
+		if iconURL == "" {
+			return
+		}
+		in := &media.ResizeFileInput{
+			TargetID: productTypeID,
+			URLs:     []string{iconURL},
+		}
+		if err := s.media.ResizeProductTypeIcon(ctx, in); err != nil {
+			s.logger.Error("Failed to resize product type icon",
+				zap.String("productTypeId", productTypeID), zap.Error(err),
+			)
+		}
+	}()
 }

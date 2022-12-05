@@ -1,15 +1,16 @@
 package handler
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
-	"github.com/and-period/furumaru/api/internal/store/codes"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/gin-gonic/gin"
 )
@@ -91,16 +92,7 @@ func (h *handler) newShippingOrders(ctx *gin.Context) ([]*store.ListShippingsOrd
 }
 
 func (h *handler) GetShipping(ctx *gin.Context) {
-	in := &store.GetShippingInput{
-		ShippingID: util.GetParam(ctx, "shippingId"),
-	}
-	sshipping, err := h.store.GetShipping(ctx, in)
-	if err != nil {
-		httpError(ctx, err)
-		return
-	}
-
-	shipping, err := service.NewShipping(sshipping)
+	shipping, err := h.getShipping(ctx, util.GetParam(ctx, "shippingId"))
 	if err != nil {
 		httpError(ctx, err)
 		return
@@ -251,4 +243,15 @@ func (h *handler) DeleteShipping(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) getShipping(ctx context.Context, shippingID string) (*service.Shipping, error) {
+	in := &store.GetShippingInput{
+		ShippingID: shippingID,
+	}
+	shipping, err := h.store.GetShipping(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewShipping(shipping)
 }

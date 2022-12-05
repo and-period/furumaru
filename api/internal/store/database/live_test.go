@@ -1,10 +1,16 @@
 package database
 
 import (
+	"context"
 	"fmt"
+	"testing"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func testLive(id, scheduleID, producerID string, productIDs []string, now time.Time) *entity.Live {
@@ -29,13 +35,99 @@ func testLive(id, scheduleID, producerID string, productIDs []string, now time.T
 	return l
 }
 
-func testLives(id, scheduleID, producerID string, productIDs []string, now time.Time, length int) entity.Lives {
+func testLives(id, scheduleID, producerID string, liveIDs []string, now time.Time, length int) entity.Lives {
 	lives := make(entity.Lives, length)
 	for i := 0; i < length; i++ {
 		liveID := fmt.Sprintf("%s-%2d", id, i)
-		lives[i] = testLive(liveID, scheduleID, producerID, productIDs, now)
+		lives[i] = testLive(liveID, scheduleID, producerID, liveIDs, now)
 	}
 	return lives
+}
+
+func TestLive_Get(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, liveProductTable, liveTable, scheduleTable, productTable, productTypeTable, categoryTable, shippingTable)
+	category := testCategory("category-id", "野菜", now())
+	err = m.db.DB.Create(&category).Error
+	require.NoError(t, err)
+	productType := testProductType("type-id", "category-id", "野菜", now())
+	err = m.db.DB.Create(&productType).Error
+	require.NoError(t, err)
+	products := make(entity.Products, 2)
+	products[0] = testProduct("product-id01", "type-id", "category-id", "producer-id", now())
+	products[1] = testProduct("product-id02", "type-id", "category-id", "producer-id", now())
+	err = m.db.DB.Create(&products).Error
+	require.NoError(t, err)
+	shipping := testShipping("shipping-id", now())
+	err = m.db.DB.Create(&shipping).Error
+	require.NoError(t, err)
+	productIDs := []string{"product-id01", "product-id02"}
+	schedule := testSchedule("schedule-id", now())
+	err = m.db.DB.Create(&schedule).Error
+	require.NoError(t, err)
+	l := testLive("live-id", "schedule-id", "producer-id", productIDs, now())
+	err = m.db.DB.Create(&l).Error
+	require.NoError(t, err)
+	liveProducts := make(entity.LiveProducts, 2)
+	liveProducts[0] = testLiveProduct("live-id", "product-id01", now())
+	liveProducts[1] = testLiveProduct("live-id", "product-id02", now())
+	err = m.db.DB.Create(&liveProducts).Error
+	require.NoError(t, err)
+
+	type args struct {
+		liveID string
+	}
+	type want struct {
+		live   *entity.Live
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				liveID: "live-id",
+			},
+			want: want{
+				live:   l,
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &live{db: m.db, now: now}
+			actual, err := db.Get(ctx, tt.args.liveID)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			fillIgnoreLiveField(actual, now())
+			assert.Equal(t, tt.want.live, actual)
+		})
+	}
 }
 
 func fillIgnoreLiveField(l *entity.Live, now time.Time) {
@@ -46,6 +138,10 @@ func fillIgnoreLiveField(l *entity.Live, now time.Time) {
 	l.EndAt = now
 	l.CreatedAt = now
 	l.UpdatedAt = now
+	for i := range l.LiveProducts {
+		l.LiveProducts[i].CreatedAt = now
+		l.LiveProducts[i].UpdatedAt = now
+	}
 }
 
 func fillIgnoreLivesField(ls entity.Lives, now time.Time) {

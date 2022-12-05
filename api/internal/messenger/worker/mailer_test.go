@@ -64,7 +64,7 @@ func TestMultiSendMail(t *testing.T) {
 		{
 			name: "failed to new personalizations",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().MultiGetAdmins(ctx, in).Return(nil, errmock)
+				mocks.user.EXPECT().MultiGetAdmins(ctx, in).Return(nil, assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				EventType: entity.EventTypeRegisterAdmin,
@@ -75,7 +75,7 @@ func TestMultiSendMail(t *testing.T) {
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
-			expectErr: errmock,
+			expectErr: assert.AnError,
 		},
 	}
 
@@ -130,7 +130,7 @@ func TestSendMail(t *testing.T) {
 		{
 			name: "failed to send info mail",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.mailer.EXPECT().MultiSendFromInfo(ctx, "email-id", personalizations).Return(errmock)
+				mocks.mailer.EXPECT().MultiSendFromInfo(ctx, "email-id", personalizations).Return(assert.AnError)
 			},
 			emailID:          "email-id",
 			personalizations: personalizations,
@@ -455,13 +455,13 @@ func TestFetchAdmins(t *testing.T) {
 		{
 			name: "failed to get admins",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().MultiGetAdmins(ctx, in).Return(nil, errmock)
+				mocks.user.EXPECT().MultiGetAdmins(ctx, in).Return(nil, assert.AnError)
 			},
 			adminIDs: []string{"admin-id"},
 			execute: func(t *testing.T) func(name, email string) {
 				return nil
 			},
-			expectErr: errmock,
+			expectErr: assert.AnError,
 		},
 	}
 	for _, tt := range tests {
@@ -521,13 +521,13 @@ func TestFetchAdministrators(t *testing.T) {
 		{
 			name: "failed to get administrators",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().MultiGetAdministrators(ctx, in).Return(nil, errmock)
+				mocks.user.EXPECT().MultiGetAdministrators(ctx, in).Return(nil, assert.AnError)
 			},
 			administratorIDs: []string{"admin-id"},
 			execute: func(t *testing.T) func(name, email string) {
 				return nil
 			},
-			expectErr: errmock,
+			expectErr: assert.AnError,
 		},
 	}
 	for _, tt := range tests {
@@ -598,13 +598,13 @@ func TestFetchCoordinators(t *testing.T) {
 		{
 			name: "failed to get coordinators",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().MultiGetCoordinators(ctx, in).Return(nil, errmock)
+				mocks.user.EXPECT().MultiGetCoordinators(ctx, in).Return(nil, assert.AnError)
 			},
 			coordinatorIDs: []string{"admin-id"},
 			execute: func(t *testing.T) func(name, email string) {
 				return nil
 			},
-			expectErr: errmock,
+			expectErr: assert.AnError,
 		},
 	}
 	for _, tt := range tests {
@@ -672,13 +672,13 @@ func TestFetchProducers(t *testing.T) {
 		{
 			name: "failed to get producers",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().MultiGetProducers(ctx, in).Return(nil, errmock)
+				mocks.user.EXPECT().MultiGetProducers(ctx, in).Return(nil, assert.AnError)
 			},
 			producerIDs: []string{"admin-id"},
 			execute: func(t *testing.T) func(name, email string) {
 				return nil
 			},
-			expectErr: errmock,
+			expectErr: assert.AnError,
 		},
 	}
 	for _, tt := range tests {
@@ -747,13 +747,13 @@ func TestFetchUsers(t *testing.T) {
 		{
 			name: "failed to get users",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().MultiGetUsers(ctx, in).Return(nil, errmock)
+				mocks.user.EXPECT().MultiGetUsers(ctx, in).Return(nil, assert.AnError)
 			},
 			userIDs: []string{"user-id"},
 			execute: func(t *testing.T) func(name, email string) {
 				return nil
 			},
-			expectErr: errmock,
+			expectErr: assert.AnError,
 		},
 	}
 	for _, tt := range tests {

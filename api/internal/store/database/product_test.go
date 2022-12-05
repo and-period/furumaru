@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
@@ -462,7 +463,6 @@ func TestProduct_Update(t *testing.T) {
 				productID: "product-id",
 				params: &UpdateProductParams{
 					ProducerID:      "producer-id",
-					CategoryID:      "category-id",
 					TypeID:          "type-id",
 					Name:            "新鮮なじゃがいも",
 					Description:     "新鮮なじゃがいもをお届けします。",
@@ -515,6 +515,116 @@ func TestProduct_Update(t *testing.T) {
 
 			db := &product{db: m.db, now: now}
 			err = db.Update(ctx, tt.args.productID, tt.args.params)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
+func TestProduct_UpdateMedia(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, productTable, productTypeTable, categoryTable)
+	category := testCategory("category-id", "野菜", now())
+	err = m.db.DB.Create(&category).Error
+	require.NoError(t, err)
+	productType := testProductType("type-id", "category-id", "野菜", now())
+	err = m.db.DB.Create(&productType).Error
+	require.NoError(t, err)
+
+	type args struct {
+		productID string
+		set       func(media entity.MultiProductMedia) bool
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				product := testProduct("product-id", "type-id", "category-id", "producer-id", now())
+				err = m.db.DB.Create(&product).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				productID: "product-id",
+				set: func(media entity.MultiProductMedia) (exists bool) {
+					resized := map[string]common.Images{
+						"https://and-period.jp/thumbnail01.png": {{
+							Size: common.ImageSizeSmall,
+							URL:  "https://and-period.jp/thumbnail01_240.png",
+						}},
+					}
+					for i := range media {
+						images, ok := resized[media[i].URL]
+						if !ok {
+							continue
+						}
+						exists = true
+						media[i].Images = images
+					}
+					return
+				},
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				productID: "product-id",
+				set:       func(media entity.MultiProductMedia) bool { return false },
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+		{
+			name: "media is non existent",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				product := testProduct("product-id", "type-id", "category-id", "producer-id", now())
+				err = m.db.DB.Create(&product).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				productID: "product-id",
+				set:       func(media entity.MultiProductMedia) bool { return false },
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := m.dbDelete(ctx, productTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, m)
+
+			db := &product{db: m.db, now: now}
+			err = db.UpdateMedia(ctx, tt.args.productID, tt.args.set)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}
@@ -600,7 +710,6 @@ func testProduct(id, typeID, categoryID, producerID string, now time.Time) *enti
 	p := &entity.Product{
 		ID:              id,
 		TypeID:          typeID,
-		CategoryID:      categoryID,
 		ProducerID:      producerID,
 		Name:            "新鮮なじゃがいも",
 		Description:     "新鮮なじゃがいもをお届けします。",

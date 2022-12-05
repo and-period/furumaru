@@ -3,6 +3,7 @@ package store
 import (
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
@@ -70,6 +71,11 @@ type UpdateProductTypeInput struct {
 	ProductTypeID string `validate:"required"`
 	Name          string `validate:"required,max=32"`
 	IconURL       string `validate:"required"`
+}
+
+type UpdateProductTypeIconsInput struct {
+	ProductTypeID string        `validate:"required"`
+	Icons         common.Images `validate:""`
 }
 
 type DeleteProductTypeInput struct {
@@ -166,7 +172,6 @@ type GetProductInput struct {
 
 type CreateProductInput struct {
 	ProducerID       string                `validate:"required"`
-	CategoryID       string                `validate:"required"`
 	TypeID           string                `validate:"required"`
 	Name             string                `validate:"required,max=128"`
 	Description      string                `validate:"required,max=20000"`
@@ -195,7 +200,6 @@ type CreateProductMedia struct {
 type UpdateProductInput struct {
 	ProductID        string                `validate:"required"`
 	ProducerID       string                `validate:"required"`
-	CategoryID       string                `validate:"required"`
 	TypeID           string                `validate:"required"`
 	Name             string                `validate:"required,max=128"`
 	Description      string                `validate:"required,max=20000"`
@@ -219,6 +223,16 @@ type UpdateProductInput struct {
 type UpdateProductMedia struct {
 	URL         string `validate:"required,url"`
 	IsThumbnail bool   `validate:""`
+}
+
+type UpdateProductMediaInput struct {
+	ProductID string                     `validate:"required"`
+	Images    []*UpdateProductMediaImage `validate:"omitempty,dive,required,unique=URL"`
+}
+
+type UpdateProductMediaImage struct {
+	OriginURL string        `validate:"required"`
+	Images    common.Images `validate:""`
 }
 
 type DeleteProductInput struct {
@@ -309,4 +323,8 @@ type GetOrderInput struct {
 
 type AggregateOrdersInput struct {
 	UserIDs []string `validate:"omitempty,dive,required"`
+}
+
+type SearchPostalCodeInput struct {
+	PostlCode string `validate:"required,numeric,len=7"`
 }

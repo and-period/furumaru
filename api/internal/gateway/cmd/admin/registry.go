@@ -2,8 +2,10 @@ package cmd
 
 import (
 	"context"
+	"net/http"
 	"net/url"
 	"sync"
+	"time"
 
 	v1 "github.com/and-period/furumaru/api/internal/gateway/admin/v1/handler"
 	shandler "github.com/and-period/furumaru/api/internal/gateway/stripe/handler"
@@ -20,6 +22,8 @@ import (
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/database"
+	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/postalcode"
 	"github.com/and-period/furumaru/api/pkg/rbac"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/slack"
@@ -63,6 +67,8 @@ type params struct {
 	receiver         stripe.Receiver
 	adminWebURL      *url.URL
 	userWebURL       *url.URL
+	postalCode       postalcode.Client
+	now              func() time.Time
 	dbHost           string
 	dbPort           string
 	dbUsername       string
@@ -79,6 +85,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	params := &params{
 		config:    conf,
 		logger:    logger,
+		now:       jst.Now,
 		waitGroup: &sync.WaitGroup{},
 	}
 
@@ -163,6 +170,9 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		params.slack = slack.NewClient(slackParams, slack.WithLogger(logger))
 	}
 
+	// PostalCodeの設定
+	params.postalCode = postalcode.NewClient(&http.Client{}, postalcode.WithLogger(logger))
+
 	// WebURLの設定
 	adminWebURL, err := url.Parse(conf.AminWebURL)
 	if err != nil {
@@ -188,7 +198,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	if err != nil {
 		return nil, err
 	}
-	storeService, err := newStoreService(params, userService, messengerService)
+	storeService, err := newStoreService(params, userService, mediaService, messengerService)
 	if err != nil {
 		return nil, err
 	}
@@ -197,7 +207,6 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	v1Params := &v1.Params{
 		WaitGroup: params.waitGroup,
 		Enforcer:  enforcer,
-		Storage:   storage.NewBucket(awscfg, storageParams),
 		User:      userService,
 		Store:     storeService,
 		Messenger: messengerService,
@@ -298,6 +307,7 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 	cli, err := database.NewClient(
 		params,
 		database.WithLogger(p.logger),
+		database.WithNow(p.now),
 		database.WithTLS(p.config.DBEnabledTLS),
 		database.WithTimeZone(p.config.DBTimeZone),
 	)
@@ -362,7 +372,9 @@ func newUserService(p *params, media media.Service, messenger messenger.Service)
 	return usersrv.NewService(params, usersrv.WithLogger(p.logger)), nil
 }
 
-func newStoreService(p *params, user user.Service, messenger messenger.Service) (store.Service, error) {
+func newStoreService(
+	p *params, user user.Service, media media.Service, messenger messenger.Service,
+) (store.Service, error) {
 	mysql, err := newDatabase("stores", p)
 	if err != nil {
 		return nil, err
@@ -371,10 +383,12 @@ func newStoreService(p *params, user user.Service, messenger messenger.Service) 
 		Database: mysql,
 	}
 	params := &storesrv.Params{
-		WaitGroup: p.waitGroup,
-		Database:  storedb.NewDatabase(dbParams),
-		User:      user,
-		Messenger: messenger,
+		WaitGroup:  p.waitGroup,
+		Database:   storedb.NewDatabase(dbParams),
+		User:       user,
+		Messenger:  messenger,
+		Media:      media,
+		PostalCode: p.postalCode,
 	}
 	return storesrv.NewService(params, storesrv.WithLogger(p.logger)), nil
 }

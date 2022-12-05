@@ -3,7 +3,6 @@ package handler
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"net/http"
 	"net/http/httptest"
 	"sync"
@@ -19,10 +18,7 @@ import (
 	"go.uber.org/zap"
 )
 
-var (
-	signaturemock = "signature"
-	errmock       = errors.New("some error")
-)
+var signaturemock = "signature"
 
 type mocks struct {
 	receiver *mock_stripe.MockReceiver

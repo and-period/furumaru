@@ -8,6 +8,7 @@ import (
 	context "context"
 	reflect "reflect"
 
+	common "github.com/and-period/furumaru/api/internal/common"
 	database "github.com/and-period/furumaru/api/internal/user/database"
 	entity "github.com/and-period/furumaru/api/internal/user/entity"
 	gomock "github.com/golang/mock/gomock"
@@ -404,6 +405,34 @@ func (mr *MockCoordinatorMockRecorder) Update(ctx, coordinatorID, params interfa
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockCoordinator)(nil).Update), ctx, coordinatorID, params)
 }
 
+// UpdateHeaders mocks base method.
+func (m *MockCoordinator) UpdateHeaders(ctx context.Context, coordinatorID string, headers common.Images) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateHeaders", ctx, coordinatorID, headers)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateHeaders indicates an expected call of UpdateHeaders.
+func (mr *MockCoordinatorMockRecorder) UpdateHeaders(ctx, coordinatorID, headers interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateHeaders", reflect.TypeOf((*MockCoordinator)(nil).UpdateHeaders), ctx, coordinatorID, headers)
+}
+
+// UpdateThumbnails mocks base method.
+func (m *MockCoordinator) UpdateThumbnails(ctx context.Context, coordinatorID string, thumbnails common.Images) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateThumbnails", ctx, coordinatorID, thumbnails)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateThumbnails indicates an expected call of UpdateThumbnails.
+func (mr *MockCoordinatorMockRecorder) UpdateThumbnails(ctx, coordinatorID, thumbnails interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateThumbnails", reflect.TypeOf((*MockCoordinator)(nil).UpdateThumbnails), ctx, coordinatorID, thumbnails)
+}
+
 // MockMember is a mock of Member interface.
 type MockMember struct {
 	ctrl     *gomock.Controller
@@ -697,18 +726,51 @@ func (mr *MockProducerMockRecorder) Update(ctx, producerID, params interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockProducer)(nil).Update), ctx, producerID, params)
 }
 
-// UpdateRelationship mocks base method.
-func (m *MockProducer) UpdateRelationship(ctx context.Context, producerID, coordinatorID string) error {
+// UpdateHeaders mocks base method.
+func (m *MockProducer) UpdateHeaders(ctx context.Context, producerID string, headers common.Images) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateRelationship", ctx, producerID, coordinatorID)
+	ret := m.ctrl.Call(m, "UpdateHeaders", ctx, producerID, headers)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateHeaders indicates an expected call of UpdateHeaders.
+func (mr *MockProducerMockRecorder) UpdateHeaders(ctx, producerID, headers interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateHeaders", reflect.TypeOf((*MockProducer)(nil).UpdateHeaders), ctx, producerID, headers)
+}
+
+// UpdateRelationship mocks base method.
+func (m *MockProducer) UpdateRelationship(ctx context.Context, coordinatorID string, producerIDs ...string) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, coordinatorID}
+	for _, a := range producerIDs {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "UpdateRelationship", varargs...)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // UpdateRelationship indicates an expected call of UpdateRelationship.
-func (mr *MockProducerMockRecorder) UpdateRelationship(ctx, producerID, coordinatorID interface{}) *gomock.Call {
+func (mr *MockProducerMockRecorder) UpdateRelationship(ctx, coordinatorID interface{}, producerIDs ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRelationship", reflect.TypeOf((*MockProducer)(nil).UpdateRelationship), ctx, producerID, coordinatorID)
+	varargs := append([]interface{}{ctx, coordinatorID}, producerIDs...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRelationship", reflect.TypeOf((*MockProducer)(nil).UpdateRelationship), varargs...)
+}
+
+// UpdateThumbnails mocks base method.
+func (m *MockProducer) UpdateThumbnails(ctx context.Context, producerID string, thumbnails common.Images) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateThumbnails", ctx, producerID, thumbnails)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateThumbnails indicates an expected call of UpdateThumbnails.
+func (mr *MockProducerMockRecorder) UpdateThumbnails(ctx, producerID, thumbnails interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateThumbnails", reflect.TypeOf((*MockProducer)(nil).UpdateThumbnails), ctx, producerID, thumbnails)
 }
 
 // MockUser is a mock of User interface.

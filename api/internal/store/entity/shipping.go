@@ -5,8 +5,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/store/codes"
-	set "github.com/and-period/furumaru/api/pkg/set/v2"
+	"github.com/and-period/furumaru/api/internal/codes"
+	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/datatypes"
 )

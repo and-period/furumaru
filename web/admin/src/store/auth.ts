@@ -48,7 +48,7 @@ export const useAuthStore = defineStore('auth', {
         this.user = res.data
 
         const cookies = new Cookies()
-        cookies.set('refreshToken', this.user.refreshToken)
+        cookies.set('refreshToken', this.user.refreshToken, { secure: true })
 
         // Push通知の許可設定
         this.getDeviceToken()
@@ -240,7 +240,7 @@ export const useAuthStore = defineStore('auth', {
         await authApiClient.v1RegisterAuthDevice({ device: deviceToken })
 
         const cookies = new Cookies()
-        cookies.set('deviceToken', deviceToken)
+        cookies.set('deviceToken', deviceToken, { secure: true })
       } catch (error) {
         if (axios.isAxiosError(error)) {
           if (!error.response) {

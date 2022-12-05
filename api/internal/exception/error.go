@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/firebase/messaging"
 	"github.com/and-period/furumaru/api/pkg/line"
 	"github.com/and-period/furumaru/api/pkg/mailer"
+	"github.com/and-period/furumaru/api/pkg/postalcode"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/go-playground/validator/v10"
 	"github.com/go-sql-driver/mysql"
@@ -68,6 +69,9 @@ func InternalError(err error) error {
 		return err
 	}
 	if err := notifierError(err); err != nil {
+		return err
+	}
+	if err := externalError(err); err != nil {
 		return err
 	}
 	return wrapError("internal", ErrUnknown, err)
@@ -261,6 +265,26 @@ func notifierError(err error) error {
 	case errors.Is(err, line.ErrCanceled):
 		return wrapError(prefix, ErrCanceled, err)
 	case errors.Is(err, line.ErrTimeout):
+		return wrapError(prefix, ErrDeadlineExceeded, err)
+	default:
+		return nil
+	}
+}
+
+func externalError(err error) error {
+	const prefix = "external"
+	switch {
+	case errors.Is(err, postalcode.ErrInvalidArgument):
+		return wrapError(prefix, ErrInvalidArgument, err)
+	case errors.Is(err, postalcode.ErrNotFound):
+		return wrapError(prefix, ErrNotFound, err)
+	case errors.Is(err, postalcode.ErrInternal):
+		return wrapError(prefix, ErrInternal, err)
+	case errors.Is(err, postalcode.ErrUnavailable):
+		return wrapError(prefix, ErrUnavailable, err)
+	case errors.Is(err, postalcode.ErrCanceled):
+		return wrapError(prefix, ErrCanceled, err)
+	case errors.Is(err, postalcode.ErrTimeout):
 		return wrapError(prefix, ErrDeadlineExceeded, err)
 	default:
 		return nil

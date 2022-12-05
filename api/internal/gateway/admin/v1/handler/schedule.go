@@ -9,7 +9,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/store"
-	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
@@ -34,47 +33,24 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		err       error
 	)
 	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() error {
-		in := &user.GetCoordinatorInput{
-			CoordinatorID: req.CoordinatorID,
-		}
-		_, err := h.user.GetCoordinator(ectx, in)
-		if err != nil {
-			return err
-		}
-		return nil
+	eg.Go(func() (err error) {
+		_, err = h.getCoordinator(ectx, req.CoordinatorID)
+		return
 	})
-	eg.Go(func() error {
-		var producerIDs []string
+	eg.Go(func() (err error) {
+		producerIDs := make([]string, len(req.Lives))
 		for i := range req.Lives {
-			producerIDs = append(producerIDs, req.Lives[i].ProducerID)
+			producerIDs[i] = req.Lives[i].ProducerID
 		}
-		in := &user.MultiGetProducersInput{
-			ProducerIDs: producerIDs,
-		}
-		sproducers, err := h.user.MultiGetProducers(ectx, in)
-		if err != nil {
-			return err
-		}
-		producers = service.NewProducers(sproducers)
-		return nil
+		producers, err = h.multiGetProducers(ectx, producerIDs)
+		return
+	})
+	eg.Go(func() (err error) {
+		shipping, err = h.getShipping(ectx, req.ShippingID)
+		return
 	})
 	eg.Go(func() error {
-		in := &store.GetShippingInput{
-			ShippingID: req.ShippingID,
-		}
-		sshipping, err := h.store.GetShipping(ectx, in)
-		if err != nil {
-			return err
-		}
-		shipping, err = service.NewShipping(sshipping)
-		if err != nil {
-			return err
-		}
-		return nil
-	})
-	eg.Go(func() error {
-		var productIDs []string
+		productIDs := make([]string, 0, len(req.Lives))
 		for i := range req.Lives {
 			productIDs = append(productIDs, req.Lives[i].ProductIDs...)
 		}
@@ -87,12 +63,12 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		}
 		return nil
 	})
-	gerr := eg.Wait()
+	err = eg.Wait()
 	if errors.Is(err, exception.ErrNotFound) {
-		badRequest(ctx, gerr)
+		badRequest(ctx, err)
 	}
-	if gerr != nil {
-		httpError(ctx, gerr)
+	if err != nil {
+		httpError(ctx, err)
 		return
 	}
 

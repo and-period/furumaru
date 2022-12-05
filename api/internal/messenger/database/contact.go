@@ -13,11 +13,6 @@ import (
 
 const contactTable = "contacts"
 
-var contactFields = []string{
-	"id", "title", "content", "username", "email", "phone_number",
-	"status", "priority", "note", "created_at", "updated_at",
-}
-
 type contact struct {
 	db  *database.Client
 	now func() time.Time
@@ -32,11 +27,8 @@ func NewContact(db *database.Client) Contact {
 
 func (c *contact) List(ctx context.Context, params *ListContactsParams, fields ...string) (entity.Contacts, error) {
 	var contacts entity.Contacts
-	if len(fields) == 0 {
-		fields = contactFields
-	}
 
-	stmt := c.db.DB.WithContext(ctx).Table(contactTable).Select(fields)
+	stmt := c.db.Statement(ctx, c.db.DB, contactTable, fields...)
 	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
@@ -52,9 +44,7 @@ func (c *contact) List(ctx context.Context, params *ListContactsParams, fields .
 func (c *contact) Count(ctx context.Context, params *ListContactsParams) (int64, error) {
 	var total int64
 
-	stmt := c.db.DB.WithContext(ctx).Table(contactTable).Select("COUNT(*)")
-
-	err := stmt.Find(&total).Error
+	err := c.db.Count(ctx, c.db.DB, contactTable).Find(&total).Error
 	return total, exception.InternalError(err)
 }
 
@@ -118,12 +108,8 @@ func (c *contact) get(
 	ctx context.Context, tx *gorm.DB, contactID string, fields ...string,
 ) (*entity.Contact, error) {
 	var contact *entity.Contact
-	if len(fields) == 0 {
-		fields = contactFields
-	}
 
-	err := tx.WithContext(ctx).
-		Table(contactTable).Select(fields).
+	err := c.db.Statement(ctx, tx, contactTable, fields...).
 		Where("id = ?", contactID).
 		First(&contact).Error
 	return contact, err
