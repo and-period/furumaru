@@ -30,8 +30,8 @@ func TestOrder_List(t *testing.T) {
 	}
 
 	_ = m.dbDelete(ctx,
-		orderItemTable, orderActivityTable, orderPaymentTable, orderFulfillmentTable,
-		orderTable, scheduleTable, shippingTable, productTable, productTypeTable, categoryTable,
+		activityTable, paymentTable, fulfillmentTable, orderItemTable, orderTable,
+		adddressTable, scheduleTable, shippingTable, productTable, productTypeTable, categoryTable,
 	)
 	categories := make(entity.Categories, 2)
 	categories[0] = testCategory("category-id01", "野菜", now())
@@ -54,38 +54,41 @@ func TestOrder_List(t *testing.T) {
 	schedule := testSchedule("schedule-id", now())
 	err = m.db.DB.Create(&schedule).Error
 	require.NoError(t, err)
+	address := testAddress("address-id", "user-id", now())
+	err = m.db.DB.Create(&address).Error
+	require.NoError(t, err)
 
 	orders := make(entity.Orders, 2)
-	orders[0] = testOrder("order-id01", "user-id", "schedule-id", "coordinator-id", now())
-	orders[1] = testOrder("order-id02", "user-id", "schedule-id", "coordinator-id", now())
+	orders[0] = testOrder("order-id01", "user-id", "schedule-id", "", "coordinator-id", now())
+	orders[1] = testOrder("order-id02", "user-id", "schedule-id", "", "coordinator-id", now())
 	err = m.db.DB.Create(&orders).Error
 	require.NoError(t, err)
-	payments := make(entity.OrderPayments, 2)
-	payments[0] = testOrderPayment("payment-id01", "transaction-id01", "order-id01", "", "payment-id", now())
-	orders[0].OrderPayment = *payments[0]
-	payments[1] = testOrderPayment("payment-id02", "transaction-id02", "order-id02", "", "payment-id", now())
-	orders[1].OrderPayment = *payments[1]
+	payments := make(entity.Payments, 2)
+	payments[0] = testPayment("order-id01", "address-id", "transaction-id01", "payment-id", now())
+	orders[0].Payment = *payments[0]
+	payments[1] = testPayment("order-id02", "address-id", "transaction-id02", "payment-id", now())
+	orders[1].Payment = *payments[1]
 	err = m.db.DB.Create(&payments).Error
 	require.NoError(t, err)
-	fulfillments := make(entity.OrderFulfillments, 2)
-	fulfillments[0] = testOrderFulfillment("fulfillment-id01", "order-id01", "shipping-id", now())
-	orders[0].OrderFulfillment = *fulfillments[0]
-	fulfillments[1] = testOrderFulfillment("fulfillment-id02", "order-id02", "shipping-id", now())
-	orders[1].OrderFulfillment = *fulfillments[1]
+	fulfillments := make(entity.Fulfillments, 2)
+	fulfillments[0] = testFulfillment("order-id01", "address-id", now())
+	orders[0].Fulfillment = *fulfillments[0]
+	fulfillments[1] = testFulfillment("order-id02", "address-id", now())
+	orders[1].Fulfillment = *fulfillments[1]
 	err = m.db.DB.Create(&fulfillments).Error
 	require.NoError(t, err)
 	items := make(entity.OrderItems, 2)
-	items[0] = testOrderItem("item-id01", "order-id01", "product-id01", now())
+	items[0] = testOrderItem("order-id01", "product-id01", now())
 	orders[0].OrderItems = []*entity.OrderItem{items[0]}
-	items[1] = testOrderItem("item-id02", "order-id02", "product-id02", now())
+	items[1] = testOrderItem("order-id02", "product-id02", now())
 	orders[1].OrderItems = []*entity.OrderItem{items[1]}
 	err = m.db.DB.Create(&items).Error
 	require.NoError(t, err)
-	activities := make(entity.OrderActivities, 2)
-	activities[0] = testOrderActivity("activity-id01", "order-id01", "user-id", now())
-	orders[0].OrderActivities = []*entity.OrderActivity{activities[0]}
-	activities[1] = testOrderActivity("activity-id02", "order-id02", "user-id", now())
-	orders[1].OrderActivities = []*entity.OrderActivity{activities[1]}
+	activities := make(entity.Activities, 2)
+	activities[0] = testActivity("activity-id01", "order-id01", "user-id", now())
+	orders[0].Activities = []*entity.Activity{activities[0]}
+	activities[1] = testActivity("activity-id02", "order-id02", "user-id", now())
+	orders[1].Activities = []*entity.Activity{activities[1]}
 	err = m.db.DB.Create(&activities).Error
 	require.NoError(t, err)
 
@@ -168,9 +171,8 @@ func TestOrder_Count(t *testing.T) {
 	}
 
 	_ = m.dbDelete(ctx,
-		orderItemTable, orderActivityTable, orderPaymentTable, orderFulfillmentTable,
-		orderTable, shippingTable, productTable, productTypeTable, categoryTable,
-		scheduleTable,
+		activityTable, paymentTable, fulfillmentTable, orderItemTable, orderTable,
+		adddressTable, scheduleTable, shippingTable, productTable, productTypeTable, categoryTable,
 	)
 	categories := make(entity.Categories, 2)
 	categories[0] = testCategory("category-id01", "野菜", now())
@@ -193,38 +195,41 @@ func TestOrder_Count(t *testing.T) {
 	schedule := testSchedule("schedule-id", now())
 	err = m.db.DB.Create(&schedule).Error
 	require.NoError(t, err)
+	address := testAddress("address-id", "user-id", now())
+	err = m.db.DB.Create(&address).Error
+	require.NoError(t, err)
 
 	orders := make(entity.Orders, 2)
-	orders[0] = testOrder("order-id01", "user-id", "schedule-id", "coordinator-id", now())
-	orders[1] = testOrder("order-id02", "user-id", "schedule-id", "coordinator-id", now())
+	orders[0] = testOrder("order-id01", "user-id", "schedule-id", "", "coordinator-id", now())
+	orders[1] = testOrder("order-id02", "user-id", "schedule-id", "", "coordinator-id", now())
 	err = m.db.DB.Create(&orders).Error
 	require.NoError(t, err)
-	payments := make(entity.OrderPayments, 2)
-	payments[0] = testOrderPayment("payment-id01", "transaction-id01", "order-id01", "", "payment-id", now())
-	orders[0].OrderPayment = *payments[0]
-	payments[1] = testOrderPayment("payment-id02", "transaction-id02", "order-id02", "", "payment-id", now())
-	orders[1].OrderPayment = *payments[1]
+	payments := make(entity.Payments, 2)
+	payments[0] = testPayment("order-id01", "address-id", "transaction-id01", "payment-id", now())
+	orders[0].Payment = *payments[0]
+	payments[1] = testPayment("order-id02", "address-id", "transaction-id02", "payment-id", now())
+	orders[1].Payment = *payments[1]
 	err = m.db.DB.Create(&payments).Error
 	require.NoError(t, err)
-	fulfillments := make(entity.OrderFulfillments, 2)
-	fulfillments[0] = testOrderFulfillment("fulfillment-id01", "order-id01", "shipping-id", now())
-	orders[0].OrderFulfillment = *fulfillments[0]
-	fulfillments[1] = testOrderFulfillment("fulfillment-id02", "order-id02", "shipping-id", now())
-	orders[1].OrderFulfillment = *fulfillments[1]
+	fulfillments := make(entity.Fulfillments, 2)
+	fulfillments[0] = testFulfillment("order-id01", "address-id", now())
+	orders[0].Fulfillment = *fulfillments[0]
+	fulfillments[1] = testFulfillment("order-id02", "address-id", now())
+	orders[1].Fulfillment = *fulfillments[1]
 	err = m.db.DB.Create(&fulfillments).Error
 	require.NoError(t, err)
 	items := make(entity.OrderItems, 2)
-	items[0] = testOrderItem("item-id01", "order-id01", "product-id01", now())
+	items[0] = testOrderItem("order-id01", "product-id01", now())
 	orders[0].OrderItems = []*entity.OrderItem{items[0]}
-	items[1] = testOrderItem("item-id02", "order-id02", "product-id02", now())
+	items[1] = testOrderItem("order-id02", "product-id02", now())
 	orders[1].OrderItems = []*entity.OrderItem{items[1]}
 	err = m.db.DB.Create(&items).Error
 	require.NoError(t, err)
-	activities := make(entity.OrderActivities, 2)
-	activities[0] = testOrderActivity("activity-id01", "order-id01", "user-id", now())
-	orders[0].OrderActivities = []*entity.OrderActivity{activities[0]}
-	activities[1] = testOrderActivity("activity-id02", "order-id02", "user-id", now())
-	orders[1].OrderActivities = []*entity.OrderActivity{activities[1]}
+	activities := make(entity.Activities, 2)
+	activities[0] = testActivity("activity-id01", "order-id01", "user-id", now())
+	orders[0].Activities = []*entity.Activity{activities[0]}
+	activities[1] = testActivity("activity-id02", "order-id02", "user-id", now())
+	orders[1].Activities = []*entity.Activity{activities[1]}
 	err = m.db.DB.Create(&activities).Error
 	require.NoError(t, err)
 
@@ -289,9 +294,8 @@ func TestOrder_Get(t *testing.T) {
 	}
 
 	_ = m.dbDelete(ctx,
-		orderItemTable, orderActivityTable, orderPaymentTable, orderFulfillmentTable,
-		orderTable, shippingTable, productTable, productTypeTable, categoryTable,
-		scheduleTable,
+		activityTable, paymentTable, fulfillmentTable, orderItemTable, orderTable,
+		adddressTable, scheduleTable, shippingTable, productTable, productTypeTable, categoryTable,
 	)
 	categories := make(entity.Categories, 2)
 	categories[0] = testCategory("category-id01", "野菜", now())
@@ -314,28 +318,31 @@ func TestOrder_Get(t *testing.T) {
 	schedule := testSchedule("schedule-id", now())
 	err = m.db.DB.Create(&schedule).Error
 	require.NoError(t, err)
+	address := testAddress("address-id", "user-id", now())
+	err = m.db.DB.Create(&address).Error
+	require.NoError(t, err)
 
-	o := testOrder("order-id", "user-id", "schedule-id", "coordinator-id", now())
+	o := testOrder("order-id", "user-id", "schedule-id", "", "coordinator-id", now())
 	err = m.db.DB.Create(&o).Error
 	require.NoError(t, err)
-	payment := testOrderPayment("payment-id", "transaction-id", "order-id", "", "payment-id", now())
-	o.OrderPayment = *payment
+	payment := testPayment("order-id", "address-id", "transaction-id", "payment-id", now())
+	o.Payment = *payment
 	err = m.db.DB.Create(&payment).Error
 	require.NoError(t, err)
-	fulfillment := testOrderFulfillment("fulfillment-id", "order-id", "shipping-id", now())
-	o.OrderFulfillment = *fulfillment
+	fulfillment := testFulfillment("order-id", "address-id", now())
+	o.Fulfillment = *fulfillment
 	err = m.db.DB.Create(&fulfillment).Error
 	require.NoError(t, err)
 	items := make(entity.OrderItems, 2)
-	items[0] = testOrderItem("item-id01", "order-id", "product-id01", now())
-	items[1] = testOrderItem("item-id02", "order-id", "product-id02", now())
+	items[0] = testOrderItem("order-id", "product-id01", now())
+	items[1] = testOrderItem("order-id", "product-id02", now())
 	o.OrderItems = items
 	err = m.db.DB.Create(&items).Error
 	require.NoError(t, err)
-	activities := make(entity.OrderActivities, 2)
-	activities[0] = testOrderActivity("activity-id01", "order-id", "user-id", now())
-	activities[1] = testOrderActivity("activity-id02", "order-id", "user-id", now())
-	o.OrderActivities = activities
+	activities := make(entity.Activities, 2)
+	activities[0] = testActivity("activity-id01", "order-id", "user-id", now())
+	activities[1] = testActivity("activity-id02", "order-id", "user-id", now())
+	o.Activities = activities
 	err = m.db.DB.Create(&activities).Error
 	require.NoError(t, err)
 
@@ -409,9 +416,8 @@ func TestOrder_Aggregate(t *testing.T) {
 	}
 
 	_ = m.dbDelete(ctx,
-		orderItemTable, orderActivityTable, orderPaymentTable, orderFulfillmentTable,
-		orderTable, shippingTable, productTable, productTypeTable, categoryTable,
-		scheduleTable,
+		activityTable, paymentTable, fulfillmentTable, orderItemTable, orderTable,
+		adddressTable, scheduleTable, shippingTable, productTable, productTypeTable, categoryTable,
 	)
 	categories := make(entity.Categories, 2)
 	categories[0] = testCategory("category-id01", "野菜", now())
@@ -434,28 +440,41 @@ func TestOrder_Aggregate(t *testing.T) {
 	schedule := testSchedule("schedule-id", now())
 	err = m.db.DB.Create(&schedule).Error
 	require.NoError(t, err)
+	address := testAddress("address-id", "user-id", now())
+	err = m.db.DB.Create(&address).Error
+	require.NoError(t, err)
 
-	o := testOrder("order-id", "user-id", "schedule-id", "coordinator-id", now())
-	err = m.db.DB.Create(&o).Error
+	orders := make(entity.Orders, 2)
+	orders[0] = testOrder("order-id01", "user-id", "schedule-id", "", "coordinator-id", now())
+	orders[1] = testOrder("order-id02", "user-id", "schedule-id", "", "coordinator-id", now())
+	err = m.db.DB.Create(&orders).Error
 	require.NoError(t, err)
-	payment := testOrderPayment("payment-id", "transaction-id", "order-id", "", "payment-id", now())
-	o.OrderPayment = *payment
-	err = m.db.DB.Create(&payment).Error
+	payments := make(entity.Payments, 2)
+	payments[0] = testPayment("order-id01", "address-id", "transaction-id01", "payment-id", now())
+	orders[0].Payment = *payments[0]
+	payments[1] = testPayment("order-id02", "address-id", "transaction-id02", "payment-id", now())
+	orders[1].Payment = *payments[1]
+	err = m.db.DB.Create(&payments).Error
 	require.NoError(t, err)
-	fulfillment := testOrderFulfillment("fulfillment-id", "order-id", "shipping-id", now())
-	o.OrderFulfillment = *fulfillment
-	err = m.db.DB.Create(&fulfillment).Error
+	fulfillments := make(entity.Fulfillments, 2)
+	fulfillments[0] = testFulfillment("order-id01", "address-id", now())
+	orders[0].Fulfillment = *fulfillments[0]
+	fulfillments[1] = testFulfillment("order-id02", "address-id", now())
+	orders[1].Fulfillment = *fulfillments[1]
+	err = m.db.DB.Create(&fulfillments).Error
 	require.NoError(t, err)
 	items := make(entity.OrderItems, 2)
-	items[0] = testOrderItem("item-id01", "order-id", "product-id01", now())
-	items[1] = testOrderItem("item-id02", "order-id", "product-id02", now())
-	o.OrderItems = items
+	items[0] = testOrderItem("order-id01", "product-id01", now())
+	orders[0].OrderItems = []*entity.OrderItem{items[0]}
+	items[1] = testOrderItem("order-id02", "product-id02", now())
+	orders[1].OrderItems = []*entity.OrderItem{items[1]}
 	err = m.db.DB.Create(&items).Error
 	require.NoError(t, err)
-	activities := make(entity.OrderActivities, 2)
-	activities[0] = testOrderActivity("activity-id01", "order-id", "user-id", now())
-	activities[1] = testOrderActivity("activity-id02", "order-id", "user-id", now())
-	o.OrderActivities = activities
+	activities := make(entity.Activities, 2)
+	activities[0] = testActivity("activity-id01", "order-id01", "user-id", now())
+	orders[0].Activities = []*entity.Activity{activities[0]}
+	activities[1] = testActivity("activity-id02", "order-id02", "user-id", now())
+	orders[1].Activities = []*entity.Activity{activities[1]}
 	err = m.db.DB.Create(&activities).Error
 	require.NoError(t, err)
 
@@ -482,8 +501,8 @@ func TestOrder_Aggregate(t *testing.T) {
 				orders: entity.AggregatedOrders{
 					{
 						UserID:     "user-id",
-						OrderCount: 1,
-						Subtotal:   100,
+						OrderCount: 2,
+						Subtotal:   3600,
 						Discount:   0,
 					},
 				},
@@ -510,11 +529,12 @@ func TestOrder_Aggregate(t *testing.T) {
 	}
 }
 
-func testOrder(id, userID, scheduleID, coordinatorID string, now time.Time) *entity.Order {
+func testOrder(id, userID, scheduleID, promotionID, coordinatorID string, now time.Time) *entity.Order {
 	return &entity.Order{
 		ID:                id,
 		UserID:            userID,
 		ScheduleID:        scheduleID,
+		PromotionID:       promotionID,
 		CoordinatorID:     coordinatorID,
 		PaymentStatus:     entity.PaymentStatusCaptured,
 		FulfillmentStatus: entity.FulfillmentStatusFulfilled,
@@ -530,13 +550,13 @@ func fillIgnoreOrderField(o *entity.Order, now time.Time) {
 	}
 	o.CreatedAt = now
 	o.UpdatedAt = now
-	o.OrderPayment.CreatedAt = now
-	o.OrderPayment.UpdatedAt = now
-	o.OrderFulfillment.CreatedAt = now
-	o.OrderFulfillment.UpdatedAt = now
-	for i := range o.OrderActivities {
-		o.OrderActivities[i].CreatedAt = now
-		o.OrderActivities[i].UpdatedAt = now
+	o.Payment.CreatedAt = now
+	o.Payment.UpdatedAt = now
+	o.Fulfillment.CreatedAt = now
+	o.Fulfillment.UpdatedAt = now
+	for i := range o.Activities {
+		o.Activities[i].CreatedAt = now
+		o.Activities[i].UpdatedAt = now
 	}
 	for i := range o.OrderItems {
 		o.OrderItems[i].CreatedAt = now

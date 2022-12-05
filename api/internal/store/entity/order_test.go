@@ -11,24 +11,24 @@ func TestOrder_Fill(t *testing.T) {
 	tests := []struct {
 		name        string
 		order       *Order
+		payment     *Payment
+		fulfillment *Fulfillment
+		activities  Activities
 		items       OrderItems
-		payment     *OrderPayment
-		fulfillment *OrderFulfillment
-		activities  OrderActivities
 		expect      *Order
 	}{
 		{
 			name:        "success",
 			order:       &Order{},
-			items:       OrderItems{{ID: "item-id"}},
-			payment:     &OrderPayment{ID: "payment-id"},
-			fulfillment: &OrderFulfillment{ID: "fulfillment-id"},
-			activities:  OrderActivities{{ID: "activity-id"}},
+			payment:     &Payment{OrderID: "order-id", MethodID: "payment-id"},
+			fulfillment: &Fulfillment{OrderID: "order-id"},
+			activities:  Activities{{OrderID: "order-id", ID: "activity-id"}},
+			items:       OrderItems{{OrderID: "order-id", ProductID: "item-id"}},
 			expect: &Order{
-				OrderItems:       OrderItems{{ID: "item-id"}},
-				OrderPayment:     OrderPayment{ID: "payment-id"},
-				OrderFulfillment: OrderFulfillment{ID: "fulfillment-id"},
-				OrderActivities:  OrderActivities{{ID: "activity-id"}},
+				Payment:     Payment{OrderID: "order-id", MethodID: "payment-id"},
+				Fulfillment: Fulfillment{OrderID: "order-id"},
+				Activities:  Activities{{OrderID: "order-id", ID: "activity-id"}},
+				OrderItems:  OrderItems{{OrderID: "order-id", ProductID: "item-id"}},
 			},
 		},
 	}
@@ -36,7 +36,7 @@ func TestOrder_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.order.Fill(tt.items, tt.payment, tt.fulfillment, tt.activities)
+			tt.order.Fill(tt.payment, tt.fulfillment, tt.activities, tt.items)
 			assert.Equal(t, tt.expect, tt.order)
 		})
 	}
@@ -53,11 +53,11 @@ func TestOrders_IDs(t *testing.T) {
 			name: "success",
 			orders: Orders{
 				{
-					ID:               "order-id",
-					OrderItems:       OrderItems{{ID: "item-id"}},
-					OrderPayment:     OrderPayment{ID: "payment-id"},
-					OrderFulfillment: OrderFulfillment{ID: "fulfillment-id"},
-					OrderActivities:  OrderActivities{{ID: "activity-id"}},
+					ID:          "order-id",
+					Payment:     Payment{OrderID: "order-id", MethodID: "payment-id"},
+					Fulfillment: Fulfillment{OrderID: "order-id"},
+					Activities:  Activities{{OrderID: "order-id", ID: "activity-id"}},
+					OrderItems:  OrderItems{{OrderID: "order-id", ProductID: "item-id"}},
 				},
 			},
 			expect: []string{"order-id"},

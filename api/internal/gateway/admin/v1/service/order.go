@@ -24,27 +24,34 @@ func NewOrder(order *entity.Order) *Order {
 			ID:          order.ID,
 			UserID:      order.UserID,
 			ScheduleID:  order.ScheduleID,
+			PromotionID: order.PromotionID,
 			OrderedAt:   jst.Unix(order.OrderedAt),
-			PaidAt:      jst.Unix(order.ConfirmedAt),
-			DeliveredAt: jst.Unix(order.DeliveredAt),
-			CanceledAt:  jst.Unix(order.CanceledAt),
+			PaidAt:      jst.Unix(order.PaidAt),
+			DeliveredAt: jst.Unix(order.ShippedAt),
+			CanceledAt:  jst.Unix(order.RefundedAt),
 			CreatedAt:   order.CreatedAt.Unix(),
 			UpdatedAt:   order.UpdatedAt.Unix(),
 		},
-		payment:       NewOrderPayment(&order.OrderPayment, order.PaymentStatus),
-		fulfillment:   NewOrderFulfillment(&order.OrderFulfillment, order.FulfillmentStatus),
+		payment:       NewOrderPayment(&order.Payment, order.PaymentStatus),
+		fulfillment:   NewOrderFulfillment(&order.Fulfillment, order.FulfillmentStatus),
 		refund:        NewOrderRefund(order),
 		items:         NewOrderItems(order.OrderItems),
 		CoordinatorID: order.CoordinatorID,
 	}
 }
 
-func (o *Order) Fill(user *User, products map[string]*Product) {
+func (o *Order) Fill(user *User, products map[string]*Product, addresses map[string]*Address) {
 	if user != nil {
 		o.UserName = user.Name()
 	}
 	if o.items != nil {
 		o.items.Fill(products)
+	}
+	if a, ok := addresses[o.payment.AddressID]; ok {
+		o.payment.Fill(a)
+	}
+	if a, ok := addresses[o.fulfillment.AddressID]; ok {
+		o.fulfillment.Fill(a)
 	}
 }
 
@@ -68,9 +75,9 @@ func NewOrders(orders entity.Orders) Orders {
 	return res
 }
 
-func (os Orders) Fill(users map[string]*User, products map[string]*Product) {
+func (os Orders) Fill(users map[string]*User, products map[string]*Product, addresses map[string]*Address) {
 	for i := range os {
-		os[i].Fill(users[os[i].UserID], products)
+		os[i].Fill(users[os[i].UserID], products, addresses)
 	}
 }
 
@@ -84,6 +91,14 @@ func (os Orders) ProductIDs() []string {
 	res := set.NewEmpty[string](len(os))
 	for i := range os {
 		res.Add(os[i].ProductIDs()...)
+	}
+	return res.Slice()
+}
+
+func (os Orders) AddressIDs() []string {
+	res := set.NewEmpty[string](len(os) * 2) // payment + fulfillment
+	for i := range os {
+		res.Add(os[i].payment.AddressID, os[i].fulfillment.AddressID)
 	}
 	return res.Slice()
 }

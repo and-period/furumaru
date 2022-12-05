@@ -3,7 +3,6 @@ package service
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/shopspring/decimal"
 )
 
 // FulfillmentStatus - 配送状況
@@ -36,9 +35,7 @@ const (
 
 type OrderFulfillment struct {
 	response.OrderFulfillment
-	id         string
-	orderID    string
-	shippingID string
+	orderID string
 }
 
 func NewFulfillmentStatus(status entity.FulfillmentStatus) FulfillmentStatus {
@@ -88,13 +85,7 @@ func (s ShippingSize) Response() int32 {
 	return int32(s)
 }
 
-func NewOrderFulfillment(fulfillment *entity.OrderFulfillment, status entity.FulfillmentStatus) *OrderFulfillment {
-	var weightTotal float64
-	if fulfillment != nil {
-		div := decimal.NewFromInt(1000)
-		weight := decimal.New(fulfillment.WeightTotal, 0).DivRound(div, 1)
-		weightTotal, _ = weight.Float64()
-	}
+func NewOrderFulfillment(fulfillment *entity.Fulfillment, status entity.FulfillmentStatus) *OrderFulfillment {
 	return &OrderFulfillment{
 		OrderFulfillment: response.OrderFulfillment{
 			TrackingNumber:  fulfillment.TrackingNumber,
@@ -102,21 +93,14 @@ func NewOrderFulfillment(fulfillment *entity.OrderFulfillment, status entity.Ful
 			ShippingCarrier: NewShippingCarrier(fulfillment.ShippingCarrier).Response(),
 			ShippingMethod:  NewDeliveryType(fulfillment.ShippingMethod).Response(),
 			BoxSize:         NewShippingSize(fulfillment.BoxSize).Response(),
-			BoxCount:        fulfillment.BoxCount,
-			WeightTotal:     weightTotal,
-			Lastname:        fulfillment.Lastname,
-			Firstname:       fulfillment.Firstname,
-			PostalCode:      fulfillment.PostalCode,
-			Prefecture:      fulfillment.Prefecture,
-			City:            fulfillment.City,
-			AddressLine1:    fulfillment.AddressLine1,
-			AddressLine2:    fulfillment.AddressLine2,
-			PhoneNumber:     fulfillment.PhoneNumber,
+			AddressID:       fulfillment.AddressID,
 		},
-		id:         fulfillment.ID,
-		orderID:    fulfillment.OrderID,
-		shippingID: fulfillment.ShippingID,
+		orderID: fulfillment.OrderID,
 	}
+}
+
+func (f *OrderFulfillment) Fill(address *Address) {
+	f.Address = address.Response()
 }
 
 func (f *OrderFulfillment) Response() *response.OrderFulfillment {

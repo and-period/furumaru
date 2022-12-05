@@ -6,32 +6,28 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestOrderFulfillments_MapByOrderID(t *testing.T) {
+func TestFulfillments_MapByOrderID(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name         string
-		fulfillments OrderFulfillments
-		expect       map[string]*OrderFulfillment
+		fulfillments Fulfillments
+		expect       map[string]*Fulfillment
 	}{
 		{
 			name: "success",
-			fulfillments: OrderFulfillments{
+			fulfillments: Fulfillments{
 				{
-					ID:      "fulfillment-id01",
 					OrderID: "order-id01",
 				},
 				{
-					ID:      "fulfillment-id02",
 					OrderID: "order-id02",
 				},
 			},
-			expect: map[string]*OrderFulfillment{
+			expect: map[string]*Fulfillment{
 				"order-id01": {
-					ID:      "fulfillment-id01",
 					OrderID: "order-id01",
 				},
 				"order-id02": {
-					ID:      "fulfillment-id02",
 					OrderID: "order-id02",
 				},
 			},

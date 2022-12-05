@@ -5,13 +5,13 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
-// PaymentType - 決済手段
-type PaymentType int32
+// PaymentMethodType - 決済手段
+type PaymentMethodType int32
 
 const (
-	PaymentTypeUnknown PaymentType = 0
-	PaymentTypeCash    PaymentType = 1 // 代引支払い
-	PaymentTypeCard    PaymentType = 2 // クレジットカード払い
+	PaymentMethodTypeUnknown PaymentMethodType = 0
+	PaymentMethodTypeCash    PaymentMethodType = 1 // 代引支払い
+	PaymentMethodTypeCard    PaymentMethodType = 2 // クレジットカード払い
 )
 
 // PaymentStatus - 支払い状況
@@ -29,22 +29,21 @@ const (
 
 type OrderPayment struct {
 	response.OrderPayment
-	id      string
 	orderID string
 }
 
-func NewPaymentType(typ entity.PaymentType) PaymentType {
+func NewPaymentMethodType(typ entity.PaymentMethodType) PaymentMethodType {
 	switch typ {
-	case entity.PaymentTypeCash:
-		return PaymentTypeCash
-	case entity.PaymentTypeCard:
-		return PaymentTypeCard
+	case entity.PaymentMethodTypeCash:
+		return PaymentMethodTypeCash
+	case entity.PaymentMethodTypeCard:
+		return PaymentMethodTypeCard
 	default:
-		return PaymentTypeUnknown
+		return PaymentMethodTypeUnknown
 	}
 }
 
-func (t PaymentType) Response() int32 {
+func (t PaymentMethodType) Response() int32 {
 	return int32(t)
 }
 
@@ -71,31 +70,26 @@ func (s PaymentStatus) Response() int32 {
 	return int32(s)
 }
 
-func NewOrderPayment(payment *entity.OrderPayment, status entity.PaymentStatus) *OrderPayment {
+func NewOrderPayment(payment *entity.Payment, status entity.PaymentStatus) *OrderPayment {
 	return &OrderPayment{
 		OrderPayment: response.OrderPayment{
-			TransactionID:  payment.TransactionID,
-			PromotionID:    payment.PromotionID,
-			PaymentID:      payment.PaymentID,
-			PaymentType:    NewPaymentType(payment.PaymentType).Response(),
-			Status:         NewPaymentStatus(status).Response(),
-			Subtotal:       payment.Subtotal,
-			Discount:       payment.Discount,
-			ShippingCharge: payment.ShippingCharge,
-			Tax:            payment.Tax,
-			Total:          payment.Total,
-			Lastname:       payment.Lastname,
-			Firstname:      payment.Firstname,
-			PostalCode:     payment.PostalCode,
-			Prefecture:     payment.Prefecture,
-			City:           payment.City,
-			AddressLine1:   payment.AddressLine1,
-			AddressLine2:   payment.AddressLine2,
-			PhoneNumber:    payment.PhoneNumber,
+			TransactionID: payment.TransactionID,
+			MethodID:      payment.MethodID,
+			MethodType:    NewPaymentMethodType(payment.MethodType).Response(),
+			Status:        NewPaymentStatus(status).Response(),
+			Subtotal:      payment.Subtotal,
+			Discount:      payment.Discount,
+			ShippingFee:   payment.ShippingFee,
+			Tax:           payment.Tax,
+			Total:         payment.Total,
+			AddressID:     payment.AddressID,
 		},
-		id:      payment.ID,
 		orderID: payment.OrderID,
 	}
+}
+
+func (p *OrderPayment) Fill(address *Address) {
+	p.Address = address.Response()
 }
 
 func (p *OrderPayment) Response() *response.OrderPayment {
