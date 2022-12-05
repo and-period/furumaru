@@ -180,30 +180,19 @@ func TestOrderFulfillment(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name        string
-		fulfillment *entity.OrderFulfillment
+		fulfillment *entity.Fulfillment
 		status      entity.FulfillmentStatus
 		expect      *OrderFulfillment
 	}{
 		{
 			name: "success",
-			fulfillment: &entity.OrderFulfillment{
-				ID:              "fulfillment-id",
+			fulfillment: &entity.Fulfillment{
 				OrderID:         "order-id",
-				ShippingID:      "shipping-id",
+				AddressID:       "address-id",
 				TrackingNumber:  "",
 				ShippingCarrier: entity.ShippingCarrierUnknown,
 				ShippingMethod:  entity.DeliveryTypeNormal,
 				BoxSize:         entity.ShippingSize60,
-				BoxCount:        1,
-				WeightTotal:     1000,
-				Lastname:        "&.",
-				Firstname:       "スタッフ",
-				PostalCode:      "1000014",
-				Prefecture:      "東京都",
-				City:            "千代田区",
-				AddressLine1:    "永田町1-7-1",
-				AddressLine2:    "",
-				PhoneNumber:     "+819012345678",
 				CreatedAt:       jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt:       jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
@@ -215,20 +204,9 @@ func TestOrderFulfillment(t *testing.T) {
 					ShippingCarrier: ShippingCarrierUnknown.Response(),
 					ShippingMethod:  DeliveryTypeNormal.Response(),
 					BoxSize:         ShippingSize60.Response(),
-					BoxCount:        1,
-					WeightTotal:     1.0,
-					Lastname:        "&.",
-					Firstname:       "スタッフ",
-					PostalCode:      "1000014",
-					Prefecture:      "東京都",
-					City:            "千代田区",
-					AddressLine1:    "永田町1-7-1",
-					AddressLine2:    "",
-					PhoneNumber:     "+819012345678",
+					AddressID:       "address-id",
 				},
-				id:         "fulfillment-id",
-				orderID:    "order-id",
-				shippingID: "shipping-id",
+				orderID: "order-id",
 			},
 		},
 	}
@@ -237,6 +215,73 @@ func TestOrderFulfillment(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewOrderFulfillment(tt.fulfillment, tt.status))
+		})
+	}
+}
+
+func TestOrderFulfillment_Fill(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name        string
+		fulfillment *OrderFulfillment
+		address     *Address
+		expect      *OrderFulfillment
+	}{
+		{
+			name: "success",
+			fulfillment: &OrderFulfillment{
+				OrderFulfillment: response.OrderFulfillment{
+					TrackingNumber:  "",
+					Status:          FulfillmentStatusFulfilled.Response(),
+					ShippingCarrier: ShippingCarrierUnknown.Response(),
+					ShippingMethod:  DeliveryTypeNormal.Response(),
+					BoxSize:         ShippingSize60.Response(),
+					AddressID:       "address-id",
+				},
+				orderID: "order-id",
+			},
+			address: &Address{
+				Address: response.Address{
+					Lastname:     "&.",
+					Firstname:    "スタッフ",
+					PostalCode:   "1000014",
+					Prefecture:   "東京都",
+					City:         "千代田区",
+					AddressLine1: "永田町1-7-1",
+					AddressLine2: "",
+					PhoneNumber:  "+819012345678",
+				},
+				id: "address-id",
+			},
+			expect: &OrderFulfillment{
+				OrderFulfillment: response.OrderFulfillment{
+					TrackingNumber:  "",
+					Status:          FulfillmentStatusFulfilled.Response(),
+					ShippingCarrier: ShippingCarrierUnknown.Response(),
+					ShippingMethod:  DeliveryTypeNormal.Response(),
+					BoxSize:         ShippingSize60.Response(),
+					AddressID:       "address-id",
+					Address: &response.Address{
+						Lastname:     "&.",
+						Firstname:    "スタッフ",
+						PostalCode:   "1000014",
+						Prefecture:   "東京都",
+						City:         "千代田区",
+						AddressLine1: "永田町1-7-1",
+						AddressLine2: "",
+						PhoneNumber:  "+819012345678",
+					},
+				},
+				orderID: "order-id",
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.fulfillment.Fill(tt.address)
+			assert.Equal(t, tt.expect, tt.fulfillment)
 		})
 	}
 }
@@ -253,41 +298,41 @@ func TestOrderFulfillment_Response(t *testing.T) {
 			fulfillment: &OrderFulfillment{
 				OrderFulfillment: response.OrderFulfillment{
 					TrackingNumber:  "",
-					Status:          FulfillmentStatusUnfulfilled.Response(),
+					Status:          FulfillmentStatusFulfilled.Response(),
 					ShippingCarrier: ShippingCarrierUnknown.Response(),
 					ShippingMethod:  DeliveryTypeNormal.Response(),
 					BoxSize:         ShippingSize60.Response(),
-					BoxCount:        1,
-					WeightTotal:     1.0,
-					Lastname:        "&.",
-					Firstname:       "スタッフ",
-					PostalCode:      "1000014",
-					Prefecture:      "東京都",
-					City:            "千代田区",
-					AddressLine1:    "永田町1-7-1",
-					AddressLine2:    "",
-					PhoneNumber:     "+819012345678",
+					AddressID:       "address-id",
+					Address: &response.Address{
+						Lastname:     "&.",
+						Firstname:    "スタッフ",
+						PostalCode:   "1000014",
+						Prefecture:   "東京都",
+						City:         "千代田区",
+						AddressLine1: "永田町1-7-1",
+						AddressLine2: "",
+						PhoneNumber:  "+819012345678",
+					},
 				},
-				id:         "fulfillment-id",
-				orderID:    "order-id",
-				shippingID: "shipping-id",
+				orderID: "order-id",
 			},
 			expect: &response.OrderFulfillment{
 				TrackingNumber:  "",
-				Status:          FulfillmentStatusUnfulfilled.Response(),
+				Status:          FulfillmentStatusFulfilled.Response(),
 				ShippingCarrier: ShippingCarrierUnknown.Response(),
 				ShippingMethod:  DeliveryTypeNormal.Response(),
 				BoxSize:         ShippingSize60.Response(),
-				BoxCount:        1,
-				WeightTotal:     1.0,
-				Lastname:        "&.",
-				Firstname:       "スタッフ",
-				PostalCode:      "1000014",
-				Prefecture:      "東京都",
-				City:            "千代田区",
-				AddressLine1:    "永田町1-7-1",
-				AddressLine2:    "",
-				PhoneNumber:     "+819012345678",
+				AddressID:       "address-id",
+				Address: &response.Address{
+					Lastname:     "&.",
+					Firstname:    "スタッフ",
+					PostalCode:   "1000014",
+					Prefecture:   "東京都",
+					City:         "千代田区",
+					AddressLine1: "永田町1-7-1",
+					AddressLine2: "",
+					PhoneNumber:  "+819012345678",
+				},
 			},
 		},
 	}

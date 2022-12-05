@@ -17,33 +17,33 @@ func TestOrderItems_GroupByOrderID(t *testing.T) {
 			name: "success",
 			items: OrderItems{
 				{
-					ID:      "item-id01",
-					OrderID: "order-id01",
+					OrderID:   "order-id01",
+					ProductID: "product-id01",
 				},
 				{
-					ID:      "item-id02",
-					OrderID: "order-id01",
+					OrderID:   "order-id01",
+					ProductID: "product-id02",
 				},
 				{
-					ID:      "item-id03",
-					OrderID: "order-id02",
+					OrderID:   "order-id02",
+					ProductID: "product-id01",
 				},
 			},
 			expect: map[string]OrderItems{
 				"order-id01": {
 					{
-						ID:      "item-id01",
-						OrderID: "order-id01",
+						OrderID:   "order-id01",
+						ProductID: "product-id01",
 					},
 					{
-						ID:      "item-id02",
-						OrderID: "order-id01",
+						OrderID:   "order-id01",
+						ProductID: "product-id02",
 					},
 				},
 				"order-id02": {
 					{
-						ID:      "item-id03",
-						OrderID: "order-id02",
+						OrderID:   "order-id02",
+						ProductID: "product-id01",
 					},
 				},
 			},

@@ -19,7 +19,6 @@ func NewOrderItem(item *entity.OrderItem) *OrderItem {
 			ProductID: item.ProductID,
 			Price:     item.Price,
 			Quantity:  item.Quantity,
-			Weight:    NewProductWeight(item.Weight, item.WeightUnit),
 		},
 		orderID: item.OrderID,
 	}
@@ -28,6 +27,7 @@ func NewOrderItem(item *entity.OrderItem) *OrderItem {
 func (i *OrderItem) Fill(product *Product) {
 	if product != nil {
 		i.Name = product.Name
+		i.Weight = product.Weight
 		i.Media = product.Media
 	}
 }

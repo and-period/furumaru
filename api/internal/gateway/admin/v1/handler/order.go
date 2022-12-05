@@ -85,40 +85,10 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, res)
 		return
 	}
-
-	var (
-		users    service.Users
-		products service.Products
-	)
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() error {
-		in := &user.MultiGetUsersInput{
-			UserIDs: orders.UserIDs(),
-		}
-		uusers, err := h.user.MultiGetUsers(ectx, in)
-		if err != nil {
-			return err
-		}
-		users = service.NewUsers(uusers)
-		return nil
-	})
-	eg.Go(func() error {
-		in := &store.MultiGetProductsInput{
-			ProductIDs: orders.ProductIDs(),
-		}
-		sproducts, err := h.store.MultiGetProducts(ectx, in)
-		if err != nil {
-			return err
-		}
-		products = service.NewProducts(sproducts)
-		return nil
-	})
-	if err := eg.Wait(); err != nil {
+	if err := h.getOrderDetails(ctx, orders...); err != nil {
 		httpError(ctx, err)
 		return
 	}
-
-	orders.Fill(users.Map(), products.Map())
 
 	res := &response.OrdersResponse{
 		Orders: orders.Response(),
@@ -154,49 +124,11 @@ func (h *handler) newOrderOrders(ctx *gin.Context) ([]*store.ListOrdersOrder, er
 }
 
 func (h *handler) GetOrder(ctx *gin.Context) {
-	in := &store.GetOrderInput{
-		OrderID: util.GetParam(ctx, "orderId"),
-	}
-	sorder, err := h.store.GetOrder(ctx, in)
+	order, err := h.getOrder(ctx, util.GetParam(ctx, "orderId"))
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
-	order := service.NewOrder(sorder)
-
-	var (
-		u        *service.User
-		products service.Products
-	)
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() error {
-		in := &user.GetUserInput{
-			UserID: order.UserID,
-		}
-		uuser, err := h.user.GetUser(ectx, in)
-		if err != nil {
-			return err
-		}
-		u = service.NewUser(uuser)
-		return nil
-	})
-	eg.Go(func() error {
-		in := &store.MultiGetProductsInput{
-			ProductIDs: order.ProductIDs(),
-		}
-		sproducts, err := h.store.MultiGetProducts(ectx, in)
-		if err != nil {
-			return err
-		}
-		products = service.NewProducts(sproducts)
-		return nil
-	})
-	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
-		return
-	}
-
-	order.Fill(u, products.Map())
 
 	res := &response.OrderResponse{
 		Order: order.Response(),
@@ -208,9 +140,54 @@ func (h *handler) getOrder(ctx context.Context, orderID string) (*service.Order,
 	in := &store.GetOrderInput{
 		OrderID: orderID,
 	}
-	order, err := h.store.GetOrder(ctx, in)
+	sorder, err := h.store.GetOrder(ctx, in)
 	if err != nil {
 		return nil, err
 	}
-	return service.NewOrder(order), nil
+	order := service.NewOrder(sorder)
+	if err := h.getOrderDetails(ctx, order); err != nil {
+		return nil, err
+	}
+	return order, nil
+}
+
+func (h *handler) getOrderDetails(ctx context.Context, orders ...*service.Order) error {
+	os := service.Orders(orders)
+	var (
+		users     service.Users
+		products  service.Products
+		addresses service.Addresses
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		in := &user.MultiGetUsersInput{
+			UserIDs: os.UserIDs(),
+		}
+		uusers, err := h.user.MultiGetUsers(ectx, in)
+		if err != nil {
+			return err
+		}
+		users = service.NewUsers(uusers)
+		return nil
+	})
+	eg.Go(func() error {
+		in := &store.MultiGetProductsInput{
+			ProductIDs: os.ProductIDs(),
+		}
+		sproducts, err := h.store.MultiGetProducts(ectx, in)
+		if err != nil {
+			return err
+		}
+		products = service.NewProducts(sproducts)
+		return nil
+	})
+	eg.Go(func() error {
+		// TODO: Address取得処理の詳細実装
+		return nil
+	})
+	if err := eg.Wait(); err != nil {
+		return err
+	}
+	os.Fill(users.Map(), products.Map(), addresses.Map())
+	return nil
 }

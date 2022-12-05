@@ -17,26 +17,34 @@ type Address struct {
 	UserID         string         `gorm:""`                     // ユーザーID
 	Hash           string         `gorm:""`                     // 住所識別ID(ハッシュ値)
 	IsDefault      bool           `gorm:""`                     // デフォルト設定フラグ
+	Lastname       string         `gorm:""`                     // 姓
+	Firstname      string         `gorm:""`                     // 名
 	PostalCode     string         `gorm:""`                     // 郵便番号
 	Prefecture     string         `gorm:""`                     // 都道府県
 	PrefectureCode int64          `gorm:""`                     // 都道府県コード
 	City           string         `gorm:""`                     // 市区町村
 	AddressLine1   string         `gorm:""`                     // 町名・番地
 	AddressLine2   string         `gorm:""`                     // ビル名・号室など
+	PhoneNumber    string         `gorm:"default:null"`         // 電話番号
 	CreatedAt      time.Time      `gorm:"<-:create"`            // 登録日時
 	UpdatedAt      time.Time      `gorm:""`                     // 更新日時
 	DeletedAt      gorm.DeletedAt `gorm:"default:null"`         // 退会日時
 }
 
+type Addresses []*Address
+
 type NewAddressParams struct {
 	UserID         string
 	IsDefault      bool
+	Lastname       string
+	Firstname      string
 	PostalCode     string
 	Prefecture     string
 	PrefectureCode string
 	City           string
 	AddressLine1   string
 	AddressLine2   string
+	PhoneNumber    string
 }
 
 func NewAddress(params *NewAddressParams) (*Address, error) {
@@ -49,12 +57,15 @@ func NewAddress(params *NewAddressParams) (*Address, error) {
 		UserID:         params.UserID,
 		Hash:           NewAddressHash(params.UserID, params.PostalCode, params.AddressLine1, params.AddressLine2),
 		IsDefault:      params.IsDefault,
+		Lastname:       params.Lastname,
+		Firstname:      params.Firstname,
 		PostalCode:     params.PostalCode,
 		Prefecture:     params.Prefecture,
 		PrefectureCode: prefecture,
 		City:           params.City,
 		AddressLine1:   params.AddressLine1,
 		AddressLine2:   params.AddressLine2,
+		PhoneNumber:    params.PhoneNumber,
 	}, nil
 }
 
