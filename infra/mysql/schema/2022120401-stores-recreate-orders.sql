@@ -85,9 +85,9 @@ CREATE TABLE IF NOT EXISTS `stores`.`payments` (
   `created_at`      DATETIME    NOT NULL,          -- 登録日時
   `updated_at`      DATETIME    NOT NULL,          -- 更新日時
   `deleted_at`      DATETIME    NULL DEFAULT NULL, -- 削除日時
-  PRIMARY KEY (`orders_id`),
+  PRIMARY KEY (`order_id`),
   CONSTRAINT `fk_payments_order_id`
-    FOREIGN KEY (`orders_id`) REFERENCES `stores`.`orders` (`id`)
+    FOREIGN KEY (`order_id`) REFERENCES `stores`.`orders` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_payments_address_id`
     FOREIGN KEY (`address_id`) REFERENCES `stores`.`addresses` (`id`)
@@ -108,9 +108,9 @@ CREATE TABLE IF NOT EXISTS `stores`.`fulfillments` (
   `created_at`       DATETIME    NOT NULL,          -- 登録日時
   `updated_at`       DATETIME    NOT NULL,          -- 更新日時
   `deleted_at`       DATETIME    NULL DEFAULT NULL, -- 削除日時
-  PRIMARY KEY (`orders_id`),
+  PRIMARY KEY (`order_id`),
   CONSTRAINT `fk_fulfillments_order_id`
-    FOREIGN KEY (`orders_id`) REFERENCES `stores`.`orders` (`id`)
+    FOREIGN KEY (`order_id`) REFERENCES `stores`.`orders` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_fulfillments_address_id`
     FOREIGN KEY (`address_id`) REFERENCES `stores`.`addresses` (`id`)

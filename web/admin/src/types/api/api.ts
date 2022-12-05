@@ -1917,6 +1917,12 @@ export interface OrderResponse {
      */
     'scheduleId': string;
     /**
+     * プロモーションID
+     * @type {string}
+     * @memberof OrderResponse
+     */
+    'promotionId': string;
+    /**
      * ユーザーID
      * @type {string}
      * @memberof OrderResponse
@@ -2026,17 +2032,11 @@ export interface OrderResponseFulfillment {
      */
     'boxSize': number;
     /**
-     * 箱の個数
-     * @type {number}
+     * 配送先情報ID
+     * @type {string}
      * @memberof OrderResponseFulfillment
      */
-    'boxCount': number;
-    /**
-     * 合計重量(kg,少数第一位まで)
-     * @type {number}
-     * @memberof OrderResponseFulfillment
-     */
-    'weightTotal': number;
+    'addressId': string;
     /**
      * 配送先情報 姓
      * @type {string}
@@ -2142,23 +2142,17 @@ export interface OrderResponsePayment {
      */
     'transactionId': string;
     /**
-     * プロモーションID
-     * @type {string}
-     * @memberof OrderResponsePayment
-     */
-    'promotionId': string;
-    /**
      * 決済手段ID
      * @type {string}
      * @memberof OrderResponsePayment
      */
-    'paymentId': string;
+    'methodId': string;
     /**
      * 決済手段(0:不明,1:代引支払い,2:クレジットカード払い)
      * @type {number}
      * @memberof OrderResponsePayment
      */
-    'paymentType': number;
+    'methodType': number;
     /**
      * 支払い状況(0:不明,1:未払い,2:保留中,3:仮売上,4:支払い完了,5:返金済み,6:期限切れ)
      * @type {number}
@@ -2182,7 +2176,7 @@ export interface OrderResponsePayment {
      * @type {number}
      * @memberof OrderResponsePayment
      */
-    'shippingCharge': number;
+    'shippingFee': number;
     /**
      * 消費税
      * @type {number}
@@ -2195,6 +2189,12 @@ export interface OrderResponsePayment {
      * @memberof OrderResponsePayment
      */
     'total': number;
+    /**
+     * 請求先情報ID
+     * @type {string}
+     * @memberof OrderResponsePayment
+     */
+    'addressId': string;
     /**
      * 請求先情報 姓
      * @type {string}
@@ -2268,6 +2268,12 @@ export interface OrderResponseRefund {
      * @memberof OrderResponseRefund
      */
     'reason': string;
+    /**
+     * 返金金額
+     * @type {number}
+     * @memberof OrderResponseRefund
+     */
+    'total': number;
 }
 /**
  * 
