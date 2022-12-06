@@ -182,7 +182,14 @@ func (h *handler) getOrderDetails(ctx context.Context, orders ...*service.Order)
 		return nil
 	})
 	eg.Go(func() error {
-		// TODO: Address取得処理の詳細実装
+		in := &store.MultiGetAddressesInput{
+			AddressIDs: os.AddressIDs(),
+		}
+		saddresses, err := h.store.MultiGetAddresses(ectx, in)
+		if err != nil {
+			return err
+		}
+		addresses = service.NewAddresses(saddresses)
 		return nil
 	})
 	if err := eg.Wait(); err != nil {
