@@ -14,6 +14,49 @@ import (
 	gomock "github.com/golang/mock/gomock"
 )
 
+// MockAddress is a mock of Address interface.
+type MockAddress struct {
+	ctrl     *gomock.Controller
+	recorder *MockAddressMockRecorder
+}
+
+// MockAddressMockRecorder is the mock recorder for MockAddress.
+type MockAddressMockRecorder struct {
+	mock *MockAddress
+}
+
+// NewMockAddress creates a new mock instance.
+func NewMockAddress(ctrl *gomock.Controller) *MockAddress {
+	mock := &MockAddress{ctrl: ctrl}
+	mock.recorder = &MockAddressMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockAddress) EXPECT() *MockAddressMockRecorder {
+	return m.recorder
+}
+
+// MultiGet mocks base method.
+func (m *MockAddress) MultiGet(ctx context.Context, addressIDs []string, fields ...string) (entity.Addresses, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, addressIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGet", varargs...)
+	ret0, _ := ret[0].(entity.Addresses)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGet indicates an expected call of MultiGet.
+func (mr *MockAddressMockRecorder) MultiGet(ctx, addressIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, addressIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockAddress)(nil).MultiGet), varargs...)
+}
+
 // MockCategory is a mock of Category interface.
 type MockCategory struct {
 	ctrl     *gomock.Controller

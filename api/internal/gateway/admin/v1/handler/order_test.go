@@ -149,6 +149,28 @@ func TestFilterAccessOrder(t *testing.T) {
 			UpdatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
 	}
+	addressesIn := &store.MultiGetAddressesInput{
+		AddressIDs: []string{"address-id"},
+	}
+	addresses := sentity.Addresses{
+		{
+			ID:             "address-id",
+			UserID:         "user-id",
+			Hash:           "789ef22a79a364f95c66a3d3b1fda213c1316a6c7f8b6306b493d8c46d2dce75",
+			IsDefault:      true,
+			Lastname:       "&.",
+			Firstname:      "購入者",
+			PostalCode:     "1000014",
+			Prefecture:     "東京都",
+			PrefectureCode: 13,
+			City:           "千代田区",
+			AddressLine1:   "永田町1-7-1",
+			AddressLine2:   "",
+			PhoneNumber:    "+819012345678",
+			CreatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		},
+	}
 
 	tests := []struct {
 		name    string
@@ -168,6 +190,7 @@ func TestFilterAccessOrder(t *testing.T) {
 				mocks.store.EXPECT().GetOrder(gomock.Any(), in).Return(order, nil)
 				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(users, nil)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetAddresses(gomock.Any(), addressesIn).Return(addresses, nil)
 			},
 			options: []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("coordinator-id")},
 			expect:  http.StatusOK,
@@ -178,6 +201,7 @@ func TestFilterAccessOrder(t *testing.T) {
 				mocks.store.EXPECT().GetOrder(gomock.Any(), in).Return(order, nil)
 				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(users, nil)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetAddresses(gomock.Any(), addressesIn).Return(addresses, nil)
 			},
 			options: []testOption{withRole(uentity.AdminRoleCoordinator)},
 			expect:  http.StatusForbidden,
@@ -345,6 +369,28 @@ func TestListOrders(t *testing.T) {
 			UpdatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
 	}
+	addressesIn := &store.MultiGetAddressesInput{
+		AddressIDs: []string{"address-id"},
+	}
+	addresses := sentity.Addresses{
+		{
+			ID:             "address-id",
+			UserID:         "user-id",
+			Hash:           "789ef22a79a364f95c66a3d3b1fda213c1316a6c7f8b6306b493d8c46d2dce75",
+			IsDefault:      true,
+			Lastname:       "&.",
+			Firstname:      "購入者",
+			PostalCode:     "1000014",
+			Prefecture:     "東京都",
+			PrefectureCode: 13,
+			City:           "千代田区",
+			AddressLine1:   "永田町1-7-1",
+			AddressLine2:   "",
+			PhoneNumber:    "+819012345678",
+			CreatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		},
+	}
 
 	tests := []struct {
 		name    string
@@ -359,6 +405,7 @@ func TestListOrders(t *testing.T) {
 				mocks.store.EXPECT().ListOrders(gomock.Any(), ordersIn).Return(orders, int64(1), nil)
 				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(users, nil)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetAddresses(gomock.Any(), addressesIn).Return(addresses, nil)
 			},
 			options: []testOption{withRole(uentity.AdminRoleAdministrator)},
 			query:   "",
@@ -383,6 +430,16 @@ func TestListOrders(t *testing.T) {
 								Tax:           160,
 								Total:         1760,
 								AddressID:     "address-id",
+								Address: &response.Address{
+									Lastname:     "&.",
+									Firstname:    "購入者",
+									PostalCode:   "1000014",
+									Prefecture:   "東京都",
+									City:         "千代田区",
+									AddressLine1: "永田町1-7-1",
+									AddressLine2: "",
+									PhoneNumber:  "+819012345678",
+								},
 							},
 							Fulfillment: &response.OrderFulfillment{
 								TrackingNumber:  "",
@@ -391,6 +448,16 @@ func TestListOrders(t *testing.T) {
 								ShippingMethod:  int32(service.DeliveryTypeNormal),
 								BoxSize:         int32(service.ShippingSize60),
 								AddressID:       "address-id",
+								Address: &response.Address{
+									Lastname:     "&.",
+									Firstname:    "購入者",
+									PostalCode:   "1000014",
+									Prefecture:   "東京都",
+									City:         "千代田区",
+									AddressLine1: "永田町1-7-1",
+									AddressLine2: "",
+									PhoneNumber:  "+819012345678",
+								},
 							},
 							Refund: &response.OrderRefund{
 								Canceled: false,
@@ -484,6 +551,7 @@ func TestListOrders(t *testing.T) {
 				mocks.store.EXPECT().ListOrders(gomock.Any(), ordersIn).Return(orders, int64(1), nil)
 				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(nil, assert.AnError)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetAddresses(gomock.Any(), addressesIn).Return(addresses, nil)
 			},
 			query: "",
 			expect: &testResponse{
@@ -496,6 +564,20 @@ func TestListOrders(t *testing.T) {
 				mocks.store.EXPECT().ListOrders(gomock.Any(), ordersIn).Return(orders, int64(1), nil)
 				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(users, nil)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(nil, assert.AnError)
+				mocks.store.EXPECT().MultiGetAddresses(gomock.Any(), addressesIn).Return(addresses, nil)
+			},
+			query: "",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to multi get addresses",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().ListOrders(gomock.Any(), ordersIn).Return(orders, int64(1), nil)
+				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(users, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetAddresses(gomock.Any(), addressesIn).Return(nil, assert.AnError)
 			},
 			query: "",
 			expect: &testResponse{
@@ -646,6 +728,28 @@ func TestGetOrder(t *testing.T) {
 			UpdatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
 	}
+	addressesIn := &store.MultiGetAddressesInput{
+		AddressIDs: []string{"address-id"},
+	}
+	addresses := sentity.Addresses{
+		{
+			ID:             "address-id",
+			UserID:         "user-id",
+			Hash:           "789ef22a79a364f95c66a3d3b1fda213c1316a6c7f8b6306b493d8c46d2dce75",
+			IsDefault:      true,
+			Lastname:       "&.",
+			Firstname:      "購入者",
+			PostalCode:     "1000014",
+			Prefecture:     "東京都",
+			PrefectureCode: 13,
+			City:           "千代田区",
+			AddressLine1:   "永田町1-7-1",
+			AddressLine2:   "",
+			PhoneNumber:    "+819012345678",
+			CreatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		},
+	}
 
 	tests := []struct {
 		name    string
@@ -659,6 +763,7 @@ func TestGetOrder(t *testing.T) {
 				mocks.store.EXPECT().GetOrder(gomock.Any(), orderIn).Return(order, nil)
 				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(users, nil)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetAddresses(gomock.Any(), addressesIn).Return(addresses, nil)
 			},
 			orderID: "order-id",
 			expect: &testResponse{
@@ -681,6 +786,16 @@ func TestGetOrder(t *testing.T) {
 							Tax:           160,
 							Total:         1760,
 							AddressID:     "address-id",
+							Address: &response.Address{
+								Lastname:     "&.",
+								Firstname:    "購入者",
+								PostalCode:   "1000014",
+								Prefecture:   "東京都",
+								City:         "千代田区",
+								AddressLine1: "永田町1-7-1",
+								AddressLine2: "",
+								PhoneNumber:  "+819012345678",
+							},
 						},
 						Fulfillment: &response.OrderFulfillment{
 							TrackingNumber:  "",
@@ -689,6 +804,16 @@ func TestGetOrder(t *testing.T) {
 							ShippingMethod:  int32(service.DeliveryTypeNormal),
 							BoxSize:         int32(service.ShippingSize60),
 							AddressID:       "address-id",
+							Address: &response.Address{
+								Lastname:     "&.",
+								Firstname:    "購入者",
+								PostalCode:   "1000014",
+								Prefecture:   "東京都",
+								City:         "千代田区",
+								AddressLine1: "永田町1-7-1",
+								AddressLine2: "",
+								PhoneNumber:  "+819012345678",
+							},
 						},
 						Refund: &response.OrderRefund{
 							Canceled: false,
@@ -735,6 +860,7 @@ func TestGetOrder(t *testing.T) {
 				mocks.store.EXPECT().GetOrder(gomock.Any(), orderIn).Return(order, nil)
 				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(nil, assert.AnError)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetAddresses(gomock.Any(), addressesIn).Return(addresses, nil)
 			},
 			orderID: "order-id",
 			expect: &testResponse{
@@ -747,6 +873,20 @@ func TestGetOrder(t *testing.T) {
 				mocks.store.EXPECT().GetOrder(gomock.Any(), orderIn).Return(order, nil)
 				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(users, nil)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(nil, assert.AnError)
+				mocks.store.EXPECT().MultiGetAddresses(gomock.Any(), addressesIn).Return(addresses, nil)
+			},
+			orderID: "order-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to multi get addresses",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().GetOrder(gomock.Any(), orderIn).Return(order, nil)
+				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(users, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetAddresses(gomock.Any(), addressesIn).Return(nil, assert.AnError)
 			},
 			orderID: "order-id",
 			expect: &testResponse{

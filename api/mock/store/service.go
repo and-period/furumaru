@@ -398,6 +398,21 @@ func (mr *MockServiceMockRecorder) ListShippings(ctx, in interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListShippings", reflect.TypeOf((*MockService)(nil).ListShippings), ctx, in)
 }
 
+// MultiGetAddresses mocks base method.
+func (m *MockService) MultiGetAddresses(ctx context.Context, in *store.MultiGetAddressesInput) (entity.Addresses, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MultiGetAddresses", ctx, in)
+	ret0, _ := ret[0].(entity.Addresses)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGetAddresses indicates an expected call of MultiGetAddresses.
+func (mr *MockServiceMockRecorder) MultiGetAddresses(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetAddresses", reflect.TypeOf((*MockService)(nil).MultiGetAddresses), ctx, in)
+}
+
 // MultiGetCategories mocks base method.
 func (m *MockService) MultiGetCategories(ctx context.Context, in *store.MultiGetCategoriesInput) (entity.Categories, error) {
 	m.ctrl.T.Helper()
