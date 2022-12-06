@@ -21,14 +21,16 @@ type Client interface {
 	// チャンネル作成
 	CreateChannel(ctx context.Context, params *CreateChannelParams) (*ivs.CreateChannelOutput, error)
 	// チャンネル取得
-	GetChannel(ctx context.Context, params *GetChannelParams) (*ivs.GetChannelOutput, error)
+	GetChannel(ctx context.Context, params *GetChannelParams) (*types.Channel, error)
 	// チャンネル削除
 	DeleteChannel(ctx context.Context, params *DeleteChannelParams) error
 	// ######################
 	// ストリーム関連
 	// ######################
 	// ストリーム取得
-	GetStream(ctx context.Context, params *GetStreamParams) (*ivs.GetStreamOutput, error)
+	GetStream(ctx context.Context, params *GetStreamParams) (*types.Stream, error)
+	// ストリームキー取得
+	GetStreamKey(ctx context.Context, params *GetStreamKeyParams) (*types.StreamKey, error)
 }
 
 var (
