@@ -139,6 +139,13 @@ func (h *handler) newNotificationOrders(ctx *gin.Context) ([]*messenger.ListNoti
 		"publishedAt": entity.NotificationOrderByPublishedAt,
 	}
 	params := util.GetOrders(ctx)
+	if len(params) == 0 {
+		res := []*messenger.ListNotificationsOrder{
+			{Key: entity.NotificationOrderByPublishedAt, OrderByASC: false},
+			{Key: entity.NotificationOrderByPublic, OrderByASC: false},
+		}
+		return res, nil
+	}
 	res := make([]*messenger.ListNotificationsOrder, len(params))
 	for i, p := range params {
 		key, ok := notifications[p.Key]
