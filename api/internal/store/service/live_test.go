@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/ivs"
@@ -81,6 +82,63 @@ func TestGetLive(t *testing.T) {
 				ViewerCount:    100,
 			},
 			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &store.GetLiveInput{},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get live",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(nil, assert.AnError)
+			},
+			input: &store.GetLiveInput{
+				LiveID: "live-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "failed to not found channel",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
+				mocks.ivs.EXPECT().GetChannel(ctx, channelIn).Return(nil, exception.ErrNotFound)
+			},
+			input: &store.GetLiveInput{
+				LiveID: "live-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrNotFound,
+		},
+		{
+			name: "failed to not found stream",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
+				mocks.ivs.EXPECT().GetChannel(ctx, channelIn).Return(channel, nil)
+				mocks.ivs.EXPECT().GetStream(ctx, streamIn).Return(nil, exception.ErrNotFound)
+			},
+			input: &store.GetLiveInput{
+				LiveID: "live-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrNotFound,
+		},
+		{
+			name: "failed to not found streamKey",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
+				mocks.ivs.EXPECT().GetChannel(ctx, channelIn).Return(channel, nil)
+				mocks.ivs.EXPECT().GetStream(ctx, streamIn).Return(stream, nil)
+				mocks.ivs.EXPECT().GetStreamKey(ctx, streamKeyIn).Return(nil, exception.ErrNotFound)
+			},
+			input: &store.GetLiveInput{
+				LiveID: "live-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrNotFound,
 		},
 	}
 
