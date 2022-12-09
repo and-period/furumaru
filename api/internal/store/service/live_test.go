@@ -10,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/ivs"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ivs/types"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -63,9 +64,9 @@ func TestGetLive(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
-				mocks.ivs.EXPECT().GetChannel(ctx, channelIn).Return(channel, nil)
-				mocks.ivs.EXPECT().GetStream(ctx, streamIn).Return(stream, nil)
-				mocks.ivs.EXPECT().GetStreamKey(ctx, streamKeyIn).Return(streamKey, nil)
+				mocks.ivs.EXPECT().GetChannel(gomock.Any(), channelIn).Return(channel, nil)
+				mocks.ivs.EXPECT().GetStream(gomock.Any(), streamIn).Return(stream, nil)
+				mocks.ivs.EXPECT().GetStreamKey(gomock.Any(), streamKeyIn).Return(streamKey, nil)
 			},
 			input: &store.GetLiveInput{
 				LiveID: "live-id",
@@ -105,7 +106,9 @@ func TestGetLive(t *testing.T) {
 			name: "failed to not found channel",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
-				mocks.ivs.EXPECT().GetChannel(ctx, channelIn).Return(nil, exception.ErrNotFound)
+				mocks.ivs.EXPECT().GetChannel(gomock.Any(), channelIn).Return(nil, exception.ErrNotFound)
+				mocks.ivs.EXPECT().GetStream(gomock.Any(), streamIn).Return(stream, nil)
+				mocks.ivs.EXPECT().GetStreamKey(gomock.Any(), streamKeyIn).Return(streamKey, nil)
 			},
 			input: &store.GetLiveInput{
 				LiveID: "live-id",
@@ -117,8 +120,9 @@ func TestGetLive(t *testing.T) {
 			name: "failed to not found stream",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
-				mocks.ivs.EXPECT().GetChannel(ctx, channelIn).Return(channel, nil)
-				mocks.ivs.EXPECT().GetStream(ctx, streamIn).Return(nil, exception.ErrNotFound)
+				mocks.ivs.EXPECT().GetChannel(gomock.Any(), channelIn).Return(channel, nil)
+				mocks.ivs.EXPECT().GetStream(gomock.Any(), streamIn).Return(nil, exception.ErrNotFound)
+				mocks.ivs.EXPECT().GetStreamKey(gomock.Any(), streamKeyIn).Return(streamKey, nil)
 			},
 			input: &store.GetLiveInput{
 				LiveID: "live-id",
@@ -130,9 +134,9 @@ func TestGetLive(t *testing.T) {
 			name: "failed to not found streamKey",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
-				mocks.ivs.EXPECT().GetChannel(ctx, channelIn).Return(channel, nil)
-				mocks.ivs.EXPECT().GetStream(ctx, streamIn).Return(stream, nil)
-				mocks.ivs.EXPECT().GetStreamKey(ctx, streamKeyIn).Return(nil, exception.ErrNotFound)
+				mocks.ivs.EXPECT().GetChannel(gomock.Any(), channelIn).Return(channel, nil)
+				mocks.ivs.EXPECT().GetStream(gomock.Any(), streamIn).Return(stream, nil)
+				mocks.ivs.EXPECT().GetStreamKey(gomock.Any(), streamKeyIn).Return(nil, exception.ErrNotFound)
 			},
 			input: &store.GetLiveInput{
 				LiveID: "live-id",

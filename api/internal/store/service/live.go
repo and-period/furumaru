@@ -8,6 +8,8 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/ivs"
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/ivs/types"
+	"golang.org/x/sync/errgroup"
 )
 
 func (s *service) GetLive(ctx context.Context, in *store.GetLiveInput) (*entity.Live, error) {
@@ -20,27 +22,34 @@ func (s *service) GetLive(ctx context.Context, in *store.GetLiveInput) (*entity.
 		return nil, exception.InternalError(err)
 	}
 
-	channelIn := &ivs.GetChannelParams{
-		Arn: live.ChannelArn,
-	}
-	channel, err := s.ivs.GetChannel(ctx, channelIn)
-	if err != nil {
-		return nil, exception.InternalError(err)
-	}
-
-	streamIn := &ivs.GetStreamParams{
-		ChannelArn: live.ChannelArn,
-	}
-	stream, err := s.ivs.GetStream(ctx, streamIn)
-	if err != nil {
-		return nil, exception.InternalError(err)
-	}
-
-	streamKeyIn := &ivs.GetStreamKeyParams{
-		StreamKeyArn: live.StreamKeyArn,
-	}
-	streamKey, err := s.ivs.GetStreamKey(ctx, streamKeyIn)
-	if err != nil {
+	var (
+		channel   *types.Channel
+		stream    *types.Stream
+		streamKey *types.StreamKey
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		in := &ivs.GetChannelParams{
+			Arn: live.ChannelArn,
+		}
+		channel, err = s.ivs.GetChannel(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		in := &ivs.GetStreamParams{
+			ChannelArn: live.ChannelArn,
+		}
+		stream, err = s.ivs.GetStream(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		in := &ivs.GetStreamKeyParams{
+			StreamKeyArn: live.StreamKeyArn,
+		}
+		streamKey, err = s.ivs.GetStreamKey(ectx, in)
+		return
+	})
+	if err := eg.Wait(); err != nil {
 		return nil, exception.InternalError(err)
 	}
 
