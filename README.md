@@ -5,4 +5,4 @@
 2. Root directory配下で "make start"
 3. 以下のパスに起動   
    ユーザー側 => localhost:3000  
-   管理者・コーディネーター側 => localhost:3010
+   管理者・コーディネータ側 => localhost:3010

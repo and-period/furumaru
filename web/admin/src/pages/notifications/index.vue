@@ -123,7 +123,7 @@ export default defineComponent({
           case 2:
             return '生産者'
           case 3:
-            return 'コーディネーター'
+            return 'コーディネータ'
           default:
             return ''
         }
