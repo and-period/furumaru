@@ -44,12 +44,12 @@
 <script lang="ts">
 import { defineComponent, ref, computed, PropType } from '@vue/composition-api'
 
-import { Event } from '~/types/props'
+import { CalendarEvent } from '~/types/props'
 
 export default defineComponent({
   props: {
     events: {
-      type: Array as PropType<Event[]>,
+      type: Array as PropType<CalendarEvent[]>,
       default: () => {
         return []
       },

@@ -1,4 +1,4 @@
-export interface Event {
+export interface CalendarEvent {
   name: string
   start: Date
   end: Date
