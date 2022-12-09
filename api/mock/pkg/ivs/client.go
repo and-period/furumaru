@@ -10,6 +10,7 @@ import (
 
 	ivs "github.com/and-period/furumaru/api/pkg/ivs"
 	ivs0 "github.com/aws/aws-sdk-go-v2/service/ivs"
+	types "github.com/aws/aws-sdk-go-v2/service/ivs/types"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -66,10 +67,10 @@ func (mr *MockClientMockRecorder) DeleteChannel(ctx, params interface{}) *gomock
 }
 
 // GetChannel mocks base method.
-func (m *MockClient) GetChannel(ctx context.Context, params *ivs.GetChannelParams) (*ivs0.GetChannelOutput, error) {
+func (m *MockClient) GetChannel(ctx context.Context, params *ivs.GetChannelParams) (*types.Channel, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetChannel", ctx, params)
-	ret0, _ := ret[0].(*ivs0.GetChannelOutput)
+	ret0, _ := ret[0].(*types.Channel)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -81,10 +82,10 @@ func (mr *MockClientMockRecorder) GetChannel(ctx, params interface{}) *gomock.Ca
 }
 
 // GetStream mocks base method.
-func (m *MockClient) GetStream(ctx context.Context, params *ivs.GetStreamParams) (*ivs0.GetStreamOutput, error) {
+func (m *MockClient) GetStream(ctx context.Context, params *ivs.GetStreamParams) (*types.Stream, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetStream", ctx, params)
-	ret0, _ := ret[0].(*ivs0.GetStreamOutput)
+	ret0, _ := ret[0].(*types.Stream)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -93,4 +94,19 @@ func (m *MockClient) GetStream(ctx context.Context, params *ivs.GetStreamParams)
 func (mr *MockClientMockRecorder) GetStream(ctx, params interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStream", reflect.TypeOf((*MockClient)(nil).GetStream), ctx, params)
+}
+
+// GetStreamKey mocks base method.
+func (m *MockClient) GetStreamKey(ctx context.Context, params *ivs.GetStreamKeyParams) (*types.StreamKey, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetStreamKey", ctx, params)
+	ret0, _ := ret[0].(*types.StreamKey)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetStreamKey indicates an expected call of GetStreamKey.
+func (mr *MockClientMockRecorder) GetStreamKey(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStreamKey", reflect.TypeOf((*MockClient)(nil).GetStreamKey), ctx, params)
 }

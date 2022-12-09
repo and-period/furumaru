@@ -303,6 +303,54 @@ func TestLive_Fill(t *testing.T) {
 	}
 }
 
+func TestLive_FillIVS(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		live   *Live
+		params FillLiveIvsParams
+		expect *Live
+	}{
+		{
+			name: "success",
+			live: &Live{
+				ID:           "live-id",
+				ChannelArn:   "channel-arn",
+				StreamKeyArn: "streamKey-arn",
+			},
+			params: FillLiveIvsParams{
+				ChannelName:    "配信チャンネル",
+				IngestEndpoint: "ingest-endpoint",
+				StreamKey:      "streamKey-value",
+				StreamID:       "stream-id",
+				PlaybackURL:    "playback-url",
+				ViewerCount:    100,
+			},
+			expect: &Live{
+				ID:             "live-id",
+				ChannelArn:     "channel-arn",
+				StreamKeyArn:   "streamKey-arn",
+				ChannelName:    "配信チャンネル",
+				IngestEndpoint: "ingest-endpoint",
+				StreamKey:      "streamKey-value",
+				StreamID:       "stream-id",
+				PlaybackURL:    "playback-url",
+				ViewerCount:    100,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.live.FillIVS(tt.params)
+			assert.Equal(t, tt.expect, tt.live)
+		})
+	}
+}
+
 func TestLives_ProducerIDs(t *testing.T) {
 	t.Parallel()
 

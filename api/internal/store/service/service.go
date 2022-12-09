@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/pkg/ivs"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/postalcode"
 	"github.com/and-period/furumaru/api/pkg/validator"
@@ -23,6 +24,7 @@ type Params struct {
 	Messenger  messenger.Service
 	Media      media.Service
 	PostalCode postalcode.Client
+	Ivs        ivs.Client
 }
 
 type service struct {
@@ -36,6 +38,7 @@ type service struct {
 	messenger   messenger.Service
 	media       media.Service
 	postalCode  postalcode.Client
+	ivs         ivs.Client
 }
 
 type options struct {
@@ -68,5 +71,6 @@ func NewService(params *Params, opts ...Option) store.Service {
 		messenger:   params.Messenger,
 		media:       params.Media,
 		postalCode:  params.PostalCode,
+		ivs:         params.Ivs,
 	}
 }

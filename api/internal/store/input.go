@@ -305,6 +305,10 @@ type CreateScheduleLive struct {
 	EndAt       time.Time `validate:"required"`
 }
 
+type GetLiveInput struct {
+	LiveID string `validate:"required"`
+}
+
 type ListOrdersInput struct {
 	CoordinatorID string             `validate:"omitempty"`
 	Limit         int64              `validate:"required,max=200"`

@@ -36,7 +36,7 @@ func (c *client) CreateChannel(ctx context.Context, params *CreateChannelParams)
 	return out, nil
 }
 
-func (c *client) GetChannel(ctx context.Context, params *GetChannelParams) (*ivs.GetChannelOutput, error) {
+func (c *client) GetChannel(ctx context.Context, params *GetChannelParams) (*types.Channel, error) {
 	in := &ivs.GetChannelInput{
 		Arn: aws.String(params.Arn),
 	}
@@ -45,7 +45,7 @@ func (c *client) GetChannel(ctx context.Context, params *GetChannelParams) (*ivs
 	if err != nil {
 		return nil, c.streamError(err)
 	}
-	return out, nil
+	return out.Channel, nil
 }
 
 func (c *client) DeleteChannel(ctx context.Context, params *DeleteChannelParams) error {
