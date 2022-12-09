@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/messenger"
+	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	mentity "github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
@@ -27,7 +28,10 @@ func TestListNotifications(t *testing.T) {
 		Since:         jst.ParseFromUnix(date),
 		Until:         jst.ParseFromUnix(date),
 		OnlyPublished: false,
-		Orders:        []*messenger.ListNotificationsOrder{},
+		Orders: []*messenger.ListNotificationsOrder{
+			{Key: entity.NotificationOrderByPublishedAt, OrderByASC: false},
+			{Key: entity.NotificationOrderByPublic, OrderByASC: false},
+		},
 	}
 	notifications := mentity.Notifications{
 		{
