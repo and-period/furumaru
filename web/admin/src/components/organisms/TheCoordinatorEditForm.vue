@@ -34,12 +34,12 @@
             v-model="v$.lastname.$model"
             :error-messages="getErrorMessage(v$.lastname.$errors)"
             class="mr-4"
-            label="コーディネーター:姓"
+            label="コーディネータ:姓"
           />
           <v-text-field
             v-model="v$.firstname.$model"
             :error-messages="getErrorMessage(v$.firstname.$errors)"
-            label="コーディネーター:名"
+            label="コーディネータ:名"
           />
         </div>
         <div class="d-flex">
@@ -47,12 +47,12 @@
             v-model="v$.lastnameKana.$model"
             :error-messages="getErrorMessage(v$.lastnameKana.$errors)"
             class="mr-4"
-            label="コーディネーター:姓（ふりがな）"
+            label="コーディネータ:姓（ふりがな）"
           />
           <v-text-field
             v-model="v$.firstnameKana.$model"
             :error-messages="getErrorMessage(v$.firstnameKana.$errors)"
-            label="コーディネーター:名（ふりがな）"
+            label="コーディネータ:名（ふりがな）"
           />
         </div>
 

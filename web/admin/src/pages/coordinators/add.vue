@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card-title>コーディネーター登録</v-card-title>
+    <v-card-title>コーディネータ登録</v-card-title>
     <the-coordinator-create-form
       :form-data="formData"
       :thumbnail-upload-status="thumbnailUploadStatus"

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card-title>コーディネーター編集</v-card-title>
+    <v-card-title>コーディネータ編集</v-card-title>
 
     <v-skeleton-loader v-if="fetchState.pending" type="article" />
 
