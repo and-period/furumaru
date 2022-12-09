@@ -22,7 +22,10 @@ func TestListPromotions(t *testing.T) {
 	in := &store.ListPromotionsInput{
 		Limit:  20,
 		Offset: 0,
-		Orders: []*store.ListPromotionsOrder{},
+		Orders: []*store.ListPromotionsOrder{
+			{Key: sentity.PromotionOrderByPublishedAt, OrderByASC: false},
+			{Key: sentity.PromotionOrderByPublic, OrderByASC: false},
+		},
 	}
 	promotions := sentity.Promotions{
 		{
