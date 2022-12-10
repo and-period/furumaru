@@ -59,7 +59,11 @@
 
     <v-app-bar flat app clipped-left color="primary" dark>
       <v-app-bar-nav-icon @click="handleClickNavIcon"></v-app-bar-nav-icon>
-      <v-toolbar-title>Online Marche</v-toolbar-title>
+      <v-toolbar-title>
+        <nuxt-link to="/">
+          <the-app-title class="pt-2" />
+        </nuxt-link>
+      </v-toolbar-title>
       <v-spacer />
       <v-btn icon>
         <v-icon>mdi-bell</v-icon>
