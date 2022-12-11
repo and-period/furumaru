@@ -51,9 +51,7 @@ func (c *coordinator) List(
 }
 
 func (c *coordinator) Count(ctx context.Context, params *ListCoordinatorsParams) (int64, error) {
-	var total int64
-
-	err := c.db.Count(ctx, c.db.DB, coordinatorTable).Find(&total).Error
+	total, err := c.db.Count(ctx, c.db.DB, &entity.Coordinator{}, nil)
 	return total, exception.InternalError(err)
 }
 

@@ -48,9 +48,7 @@ func (a *administrator) List(
 }
 
 func (a *administrator) Count(ctx context.Context, params *ListAdministratorsParams) (int64, error) {
-	var total int64
-
-	err := a.db.Count(ctx, a.db.DB, administratorTable).Find(&total).Error
+	total, err := a.db.Count(ctx, a.db.DB, &entity.Administrator{}, nil)
 	return total, exception.InternalError(err)
 }
 

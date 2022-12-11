@@ -48,9 +48,7 @@ func (s *shipping) List(ctx context.Context, params *ListShippingsParams, fields
 }
 
 func (s *shipping) Count(ctx context.Context, params *ListShippingsParams) (int64, error) {
-	var total int64
-
-	err := s.db.Count(ctx, s.db.DB, shippingTable).Find(&total).Error
+	total, err := s.db.Count(ctx, s.db.DB, &entity.Shipping{}, params.stmt)
 	return total, exception.InternalError(err)
 }
 
