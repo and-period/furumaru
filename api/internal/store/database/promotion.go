@@ -42,12 +42,7 @@ func (p *promotion) List(ctx context.Context, params *ListPromotionsParams, fiel
 }
 
 func (p *promotion) Count(ctx context.Context, params *ListPromotionsParams) (int64, error) {
-	var total int64
-
-	stmt := p.db.Count(ctx, p.db.DB, promotionTable)
-	stmt = params.stmt(stmt)
-
-	err := stmt.Find(&total).Error
+	total, err := p.db.Count(ctx, p.db.DB, &entity.Promotion{}, params.stmt)
 	return total, exception.InternalError(err)
 }
 

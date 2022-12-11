@@ -49,12 +49,7 @@ func (p *product) List(ctx context.Context, params *ListProductsParams, fields .
 }
 
 func (p *product) Count(ctx context.Context, params *ListProductsParams) (int64, error) {
-	var total int64
-
-	stmt := p.db.Count(ctx, p.db.DB, productTable)
-	stmt = params.stmt(stmt)
-
-	err := stmt.Find(&total).Error
+	total, err := p.db.Count(ctx, p.db.DB, &entity.Product{}, params.stmt)
 	return total, exception.InternalError(err)
 }
 

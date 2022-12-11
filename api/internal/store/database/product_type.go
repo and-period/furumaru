@@ -52,12 +52,7 @@ func (t *productType) List(
 }
 
 func (t *productType) Count(ctx context.Context, params *ListProductTypesParams) (int64, error) {
-	var total int64
-
-	stmt := t.db.Count(ctx, t.db.DB, productTypeTable)
-	stmt = params.stmt(stmt)
-
-	err := stmt.Find(&total).Error
+	total, err := t.db.Count(ctx, t.db.DB, &entity.ProductType{}, params.stmt)
 	return total, exception.InternalError(err)
 }
 

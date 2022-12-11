@@ -137,8 +137,14 @@ func (c *Client) Statement(ctx context.Context, tx *gorm.DB, table string, field
 }
 
 // Statement - カウントクエリの生成
-func (c *Client) Count(ctx context.Context, tx *gorm.DB, table string) *gorm.DB {
-	return tx.WithContext(ctx).Table(table).Select("COUNT(*)")
+func (c *Client) Count(ctx context.Context, tx *gorm.DB, model interface{}, fn func(*gorm.DB) *gorm.DB) (int64, error) {
+	var total int64
+
+	stmt := tx.WithContext(ctx).Model(model).Select("COUNT(*)")
+	if fn != nil {
+		stmt = fn(stmt)
+	}
+	return total, stmt.Find(&total).Error
 }
 
 func newDBClient(params *Params, opts *options) (*gorm.DB, error) {

@@ -48,9 +48,7 @@ func (o *order) List(ctx context.Context, params *ListOrdersParams, fields ...st
 }
 
 func (o *order) Count(ctx context.Context, params *ListOrdersParams) (int64, error) {
-	var total int64
-
-	err := o.db.Count(ctx, o.db.DB, orderTable).Find(&total).Error
+	total, err := o.db.Count(ctx, o.db.DB, &entity.Order{}, nil)
 	return total, exception.InternalError(err)
 }
 

@@ -44,12 +44,7 @@ func (c *category) List(
 }
 
 func (c *category) Count(ctx context.Context, params *ListCategoriesParams) (int64, error) {
-	var total int64
-
-	stmt := c.db.Count(ctx, c.db.DB, categoryTable)
-	stmt = params.stmt(stmt)
-
-	err := stmt.Find(&total).Error
+	total, err := c.db.Count(ctx, c.db.DB, &entity.Category{}, params.stmt)
 	return total, exception.InternalError(err)
 }
 

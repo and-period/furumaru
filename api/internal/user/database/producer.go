@@ -52,12 +52,7 @@ func (p *producer) List(
 }
 
 func (p *producer) Count(ctx context.Context, params *ListProducersParams) (int64, error) {
-	var total int64
-
-	stmt := p.db.Count(ctx, p.db.DB, producerTable)
-	stmt = params.stmt(stmt)
-
-	err := stmt.Find(&total).Error
+	total, err := p.db.Count(ctx, p.db.DB, &entity.Producer{}, params.stmt)
 	return total, exception.InternalError(err)
 }
 

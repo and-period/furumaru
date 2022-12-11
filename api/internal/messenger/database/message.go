@@ -42,12 +42,7 @@ func (m *message) List(ctx context.Context, params *ListMessagesParams, fields .
 }
 
 func (m *message) Count(ctx context.Context, params *ListMessagesParams) (int64, error) {
-	var total int64
-
-	stmt := m.db.Count(ctx, m.db.DB, messageTable)
-	stmt = params.stmt(stmt)
-
-	err := stmt.Find(&total).Error
+	total, err := m.db.Count(ctx, m.db.DB, &entity.Message{}, params.stmt)
 	return total, exception.InternalError(err)
 }
 
