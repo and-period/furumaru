@@ -13,7 +13,13 @@ import {
   UpdateCoordinatorRequest,
   UploadImageResponse,
 } from '~/types/api'
-import { AuthError } from '~/types/exception'
+import {
+  AuthError,
+  ConnectionError,
+  InternalServerError,
+  NotFoundError,
+  ValidationError,
+} from '~/types/exception'
 
 export const useCoordinatorStore = defineStore('Coordinator', {
   state: () => {
