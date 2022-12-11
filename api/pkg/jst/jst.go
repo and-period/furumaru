@@ -9,6 +9,11 @@ func Now() time.Time {
 	return time.Now().In(jst)
 }
 
+// Location ロケーション
+func Location() *time.Location {
+	return jst
+}
+
 // Date time.Timeの生成
 func Date(year int, month time.Month, day, hour, min, sec, nsec int) time.Time {
 	return time.Date(year, month, day, hour, min, sec, nsec, jst)
