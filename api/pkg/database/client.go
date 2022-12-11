@@ -4,9 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"strings"
 	"time"
 
+	dmysql "github.com/go-sql-driver/mysql"
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -28,25 +28,17 @@ type Params struct {
 }
 
 type options struct {
-	logger     *zap.Logger
-	now        func() time.Time
-	timezone   string
-	enabledTLS bool
+	logger               *zap.Logger
+	now                  func() time.Time
+	location             *time.Location
+	charset              string
+	collation            string
+	enabledTLS           bool
+	allowNativePasswords bool
+	maxAllowedPacket     int
 }
 
 type Option func(opts *options)
-
-func WithTimeZone(timezone string) Option {
-	return func(opts *options) {
-		opts.timezone = timezone
-	}
-}
-
-func WithTLS(enabled bool) Option {
-	return func(opts *options) {
-		opts.enabledTLS = enabled
-	}
-}
 
 func WithLogger(logger *zap.Logger) Option {
 	return func(opts *options) {
@@ -60,13 +52,53 @@ func WithNow(now func() time.Time) Option {
 	}
 }
 
+func WithLocation(location *time.Location) Option {
+	return func(opts *options) {
+		opts.location = location
+	}
+}
+
+func WithCharset(charset string) Option {
+	return func(opts *options) {
+		opts.charset = charset
+	}
+}
+
+func WithCollation(collation string) Option {
+	return func(opts *options) {
+		opts.collation = collation
+	}
+}
+
+func WithTLS(enable bool) Option {
+	return func(opts *options) {
+		opts.enabledTLS = enable
+	}
+}
+
+func WithNativePasswords(enable bool) Option {
+	return func(opts *options) {
+		opts.allowNativePasswords = enable
+	}
+}
+
+func WithMaxAllowedPacket(size int) Option {
+	return func(opts *options) {
+		opts.maxAllowedPacket = size
+	}
+}
+
 // NewClient - DBクライアントの構造体
 func NewClient(params *Params, opts ...Option) (*Client, error) {
 	dopts := &options{
-		logger:     zap.NewNop(),
-		now:        time.Now,
-		timezone:   "",
-		enabledTLS: false,
+		logger:               zap.NewNop(),
+		now:                  time.Now,
+		location:             time.UTC,
+		charset:              "utf8mb4",
+		collation:            "utf8mb4_general_ci",
+		enabledTLS:           false,
+		allowNativePasswords: true,
+		maxAllowedPacket:     4194304, // 4MiB
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -150,50 +182,27 @@ func newDBClient(params *Params, opts *options) (*gorm.DB, error) {
 		Logger:  zapgorm2.New(opts.logger),
 		NowFunc: opts.now,
 	}
-
 	dsn := newDSN(params, opts)
 	return gorm.Open(mysql.Open(dsn), conf)
 }
 
 func newDSN(params *Params, opts *options) string {
-	switch params.Socket {
-	case "tcp":
-		return fmt.Sprintf(
-			"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True%s%s",
-			params.Username,
-			params.Password,
-			params.Host,
-			params.Port,
-			params.Database,
-			withTLS(opts.enabledTLS),
-			withTimeZone(opts.timezone),
-		)
-	case "unix":
-		return fmt.Sprintf(
-			"%s:%s@unix(%s)/%s?charset=utf8mb4&parseTime=true%s",
-			params.Username,
-			params.Password,
-			params.Host,
-			params.Database,
-			withTLS(opts.enabledTLS),
-		)
-	default:
-		return ""
+	dsn := &dmysql.Config{
+		User:                 params.Username,
+		Passwd:               params.Password,
+		Net:                  params.Socket,
+		Addr:                 fmt.Sprintf("%s:%s", params.Host, params.Port),
+		DBName:               params.Database,
+		Collation:            opts.collation,
+		Loc:                  opts.location,
+		MaxAllowedPacket:     opts.maxAllowedPacket,
+		ParseTime:            true,
+		AllowNativePasswords: opts.allowNativePasswords,
+		CheckConnLiveness:    true,
+		Params:               map[string]string{"charset": opts.charset},
 	}
-}
-
-func withTLS(enabled bool) string {
-	if !enabled {
-		return ""
+	if opts.enabledTLS {
+		dsn.TLSConfig = "true"
 	}
-	return "&tls=true"
-}
-
-func withTimeZone(tz string) string {
-	if tz == "" {
-		tz = "Asia%2FTokyo"
-	} else {
-		tz = strings.Replace(tz, "/", "%2F", -1)
-	}
-	return fmt.Sprintf("&loc=%s", tz)
+	return dsn.FormatDSN()
 }
