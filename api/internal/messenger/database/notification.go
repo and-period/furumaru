@@ -62,23 +62,23 @@ func (n *notification) Get(
 }
 
 func (n *notification) Create(ctx context.Context, notification *entity.Notification) error {
-	_, err := n.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := n.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := n.now()
 		notification.CreatedAt, notification.UpdatedAt = now, now
 		err := notification.FillJSON()
 		if err != nil {
-			return nil, err
+			return err
 		}
 		err = tx.WithContext(ctx).Table(notificationTable).Create(&notification).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (n *notification) Update(ctx context.Context, notificationID string, params *UpdateNotificationParams) error {
-	_, err := n.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := n.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := n.get(ctx, tx, notificationID); err != nil {
-			return nil, err
+			return err
 		}
 
 		updates := map[string]interface{}{
@@ -92,7 +92,7 @@ func (n *notification) Update(ctx context.Context, notificationID string, params
 		if len(params.Targets) > 0 {
 			target, err := entity.Marshal(params.Targets)
 			if err != nil {
-				return nil, fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
+				return fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
 			}
 			updates["targets"] = target
 		}
@@ -100,15 +100,15 @@ func (n *notification) Update(ctx context.Context, notificationID string, params
 			Table(notificationTable).
 			Where("id = ?", notificationID).
 			Updates(updates).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (n *notification) Delete(ctx context.Context, notificationID string) error {
-	_, err := n.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := n.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := n.get(ctx, tx, notificationID); err != nil {
-			return nil, err
+			return err
 		}
 
 		params := map[string]interface{}{
@@ -118,7 +118,7 @@ func (n *notification) Delete(ctx context.Context, notificationID string) error 
 			Table(notificationTable).
 			Where("id = ?", notificationID).
 			Updates(params).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }

@@ -31,24 +31,24 @@ func (q *receivedQueue) Get(ctx context.Context, queueID string, fields ...strin
 }
 
 func (q *receivedQueue) Create(ctx context.Context, queue *entity.ReceivedQueue) error {
-	_, err := q.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := q.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if err := queue.FillJSON(); err != nil {
-			return nil, err
+			return err
 		}
 
 		now := q.now()
 		queue.CreatedAt, queue.UpdatedAt = now, now
 
 		err := tx.WithContext(ctx).Table(receivedQueueTable).Create(&queue).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (q *receivedQueue) UpdateDone(ctx context.Context, queueID string, done bool) error {
-	_, err := q.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := q.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := q.get(ctx, tx, queueID); err != nil {
-			return nil, err
+			return err
 		}
 
 		updates := map[string]interface{}{
@@ -59,7 +59,7 @@ func (q *receivedQueue) UpdateDone(ctx context.Context, queueID string, done boo
 			Table(receivedQueueTable).
 			Where("id = ?", queueID).
 			Updates(updates).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }

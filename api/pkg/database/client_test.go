@@ -93,11 +93,10 @@ func TestTransaction(t *testing.T) {
 	}
 	client, err := NewClient(params)
 	require.NoError(t, err)
-	data, err := client.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
-		return "data", nil
+	err = client.Transaction(ctx, func(tx *gorm.DB) error {
+		return nil
 	})
 	require.NoError(t, err)
-	require.NotNil(t, data)
 }
 
 func TestNewDSN(t *testing.T) {

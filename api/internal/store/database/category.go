@@ -63,20 +63,20 @@ func (c *category) Get(ctx context.Context, categoryID string, fields ...string)
 }
 
 func (c *category) Create(ctx context.Context, category *entity.Category) error {
-	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := c.now()
 		category.CreatedAt, category.UpdatedAt = now, now
 
 		err := tx.WithContext(ctx).Table(categoryTable).Create(&category).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (c *category) Update(ctx context.Context, categoryID, name string) error {
-	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := c.get(ctx, tx, categoryID); err != nil {
-			return nil, err
+			return err
 		}
 
 		params := map[string]interface{}{
@@ -87,22 +87,22 @@ func (c *category) Update(ctx context.Context, categoryID, name string) error {
 			Table(categoryTable).
 			Where("id = ?", categoryID).
 			Updates(params).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (c *category) Delete(ctx context.Context, categoryID string) error {
-	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := c.get(ctx, tx, categoryID); err != nil {
-			return nil, err
+			return err
 		}
 
 		err := tx.WithContext(ctx).
 			Table(categoryTable).
 			Where("id = ?", categoryID).
 			Delete(&entity.Category{}).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }

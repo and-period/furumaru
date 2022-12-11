@@ -52,7 +52,7 @@ func (m *message) Get(ctx context.Context, messageID string, fields ...string) (
 }
 
 func (m *message) MultiCreate(ctx context.Context, messages entity.Messages) error {
-	_, err := m.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := m.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := m.now()
 		for i := range messages {
 			messages[i].CreatedAt = now
@@ -60,19 +60,19 @@ func (m *message) MultiCreate(ctx context.Context, messages entity.Messages) err
 		}
 
 		err := tx.WithContext(ctx).Table(messageTable).Create(&messages).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (m *message) UpdateRead(ctx context.Context, messageID string) error {
-	_, err := m.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := m.db.Transaction(ctx, func(tx *gorm.DB) error {
 		current, err := m.get(ctx, tx, messageID, "read")
 		if err != nil {
-			return nil, err
+			return err
 		}
 		if current.Read {
-			return nil, exception.ErrFailedPrecondition
+			return exception.ErrFailedPrecondition
 		}
 
 		params := map[string]interface{}{
@@ -83,7 +83,7 @@ func (m *message) UpdateRead(ctx context.Context, messageID string) error {
 			Table(messageTable).
 			Where("id = ?", messageID).
 			Updates(params).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }

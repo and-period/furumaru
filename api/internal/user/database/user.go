@@ -78,12 +78,12 @@ func (u *user) Get(ctx context.Context, userID string, fields ...string) (*entit
 }
 
 func (u *user) Create(ctx context.Context, user *entity.User) error {
-	_, err := u.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := u.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := u.now()
 		user.CreatedAt, user.UpdatedAt = now, now
 
 		err := tx.WithContext(ctx).Table(userTable).Create(&user).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }

@@ -58,9 +58,9 @@ func (a *admin) GetByCognitoID(
 }
 
 func (a *admin) UpdateEmail(ctx context.Context, adminID, email string) error {
-	_, err := a.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := a.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := a.get(ctx, tx, adminID); err != nil {
-			return nil, err
+			return err
 		}
 
 		params := map[string]interface{}{
@@ -71,15 +71,15 @@ func (a *admin) UpdateEmail(ctx context.Context, adminID, email string) error {
 			Table(adminTable).
 			Where("id = ?", adminID).
 			Updates(params).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (a *admin) UpdateDevice(ctx context.Context, adminID, device string) error {
-	_, err := a.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := a.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := a.get(ctx, tx, adminID); err != nil {
-			return nil, err
+			return err
 		}
 
 		params := map[string]interface{}{
@@ -90,7 +90,7 @@ func (a *admin) UpdateDevice(ctx context.Context, adminID, device string) error 
 			Table(adminTable).
 			Where("id = ?", adminID).
 			Updates(params).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }

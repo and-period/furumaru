@@ -52,20 +52,20 @@ func (c *contact) Get(ctx context.Context, contactID string, fields ...string) (
 }
 
 func (c *contact) Create(ctx context.Context, contact *entity.Contact) error {
-	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := c.now()
 		contact.CreatedAt, contact.UpdatedAt = now, now
 
 		err := tx.WithContext(ctx).Table(contactTable).Create(&contact).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (c *contact) Update(ctx context.Context, contactID string, params *UpdateContactParams) error {
-	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := c.get(ctx, tx, contactID); err != nil {
-			return nil, err
+			return err
 		}
 
 		updates := map[string]interface{}{
@@ -78,15 +78,15 @@ func (c *contact) Update(ctx context.Context, contactID string, params *UpdateCo
 			Table(contactTable).
 			Where("id = ?", contactID).
 			Updates(updates).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (c *contact) Delete(ctx context.Context, contactID string) error {
-	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := c.get(ctx, tx, contactID); err != nil {
-			return nil, err
+			return err
 		}
 
 		updates := map[string]interface{}{
@@ -97,7 +97,7 @@ func (c *contact) Delete(ctx context.Context, contactID string) error {
 			Table(contactTable).
 			Where("id = ?", contactID).
 			Updates(updates).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
