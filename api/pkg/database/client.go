@@ -103,12 +103,10 @@ func (c *Client) Close(tx *gorm.DB) func() {
 }
 
 // Transaction - トランザクション処理
-func (c *Client) Transaction(
-	ctx context.Context, f func(tx *gorm.DB) (interface{}, error),
-) (data interface{}, err error) {
+func (c *Client) Transaction(ctx context.Context, f func(tx *gorm.DB) error) (err error) {
 	tx, err := c.Begin(ctx)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer func() {
 		if r := recover(); r != nil {
@@ -121,7 +119,7 @@ func (c *Client) Transaction(
 		}
 		err = tx.Commit().Error
 	}()
-	data, err = f(tx)
+	err = f(tx)
 	return
 }
 

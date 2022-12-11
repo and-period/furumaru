@@ -88,25 +88,25 @@ func (c *coordinator) Get(
 func (c *coordinator) Create(
 	ctx context.Context, coordinator *entity.Coordinator, auth func(ctx context.Context) error,
 ) error {
-	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := c.now()
 		coordinator.Admin.CreatedAt, coordinator.Admin.UpdatedAt = now, now
 		if err := tx.WithContext(ctx).Table(adminTable).Create(&coordinator.Admin).Error; err != nil {
-			return nil, err
+			return err
 		}
 		coordinator.CreatedAt, coordinator.UpdatedAt = now, now
 		if err := tx.WithContext(ctx).Table(coordinatorTable).Create(&coordinator).Error; err != nil {
-			return nil, err
+			return err
 		}
-		return nil, auth(ctx)
+		return auth(ctx)
 	})
 	return exception.InternalError(err)
 }
 
 func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *UpdateCoordinatorParams) error {
-	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := c.get(ctx, tx, coordinatorID); err != nil {
-			return nil, err
+			return err
 		}
 
 		now := c.now()
@@ -138,30 +138,30 @@ func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *
 			Where("id = ?", coordinatorID).
 			Updates(adminParams).Error
 		if err != nil {
-			return nil, err
+			return err
 		}
 		err = tx.WithContext(ctx).
 			Table(coordinatorTable).
 			Where("admin_id = ?", coordinatorID).
 			Updates(coordinatorParams).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (c *coordinator) UpdateThumbnails(ctx context.Context, coordinatorID string, thumbnails common.Images) error {
-	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
 		coordinator, err := c.get(ctx, tx, coordinatorID, "thumbnail_url")
 		if err != nil {
-			return nil, err
+			return err
 		}
 		if coordinator.ThumbnailURL == "" {
-			return nil, fmt.Errorf("database: thumbnail url is empty: %w", exception.ErrFailedPrecondition)
+			return fmt.Errorf("database: thumbnail url is empty: %w", exception.ErrFailedPrecondition)
 		}
 
 		buf, err := thumbnails.Marshal()
 		if err != nil {
-			return nil, err
+			return err
 		}
 		params := map[string]interface{}{
 			"thumbnails": datatypes.JSON(buf),
@@ -172,24 +172,24 @@ func (c *coordinator) UpdateThumbnails(ctx context.Context, coordinatorID string
 			Table(coordinatorTable).
 			Where("admin_id = ?", coordinatorID).
 			Updates(params).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (c *coordinator) UpdateHeaders(ctx context.Context, coordinatorID string, headers common.Images) error {
-	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
 		coordinator, err := c.get(ctx, tx, coordinatorID, "header_url")
 		if err != nil {
-			return nil, err
+			return err
 		}
 		if coordinator.HeaderURL == "" {
-			return nil, fmt.Errorf("database: header url is empty: %w", exception.ErrFailedPrecondition)
+			return fmt.Errorf("database: header url is empty: %w", exception.ErrFailedPrecondition)
 		}
 
 		buf, err := headers.Marshal()
 		if err != nil {
-			return nil, err
+			return err
 		}
 		params := map[string]interface{}{
 			"headers":    datatypes.JSON(buf),
@@ -200,15 +200,15 @@ func (c *coordinator) UpdateHeaders(ctx context.Context, coordinatorID string, h
 			Table(coordinatorTable).
 			Where("admin_id = ?", coordinatorID).
 			Updates(params).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (c *coordinator) Delete(ctx context.Context, coordinatorID string, auth func(ctx context.Context) error) error {
-	_, err := c.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := c.get(ctx, tx, coordinatorID); err != nil {
-			return nil, err
+			return err
 		}
 
 		now := c.now()
@@ -221,7 +221,7 @@ func (c *coordinator) Delete(ctx context.Context, coordinatorID string, auth fun
 			Where("admin_id = ?", coordinatorID).
 			Updates(coordinatorParams).Error
 		if err != nil {
-			return nil, err
+			return err
 		}
 		adminParams := map[string]interface{}{
 			"exists":     nil,
@@ -233,9 +233,9 @@ func (c *coordinator) Delete(ctx context.Context, coordinatorID string, auth fun
 			Where("id = ?", coordinatorID).
 			Updates(adminParams).Error
 		if err != nil {
-			return nil, err
+			return err
 		}
-		return nil, auth(ctx)
+		return auth(ctx)
 	})
 	return exception.InternalError(err)
 }

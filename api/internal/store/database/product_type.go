@@ -79,27 +79,27 @@ func (t *productType) Get(ctx context.Context, productTypeID string, fields ...s
 }
 
 func (t *productType) Create(ctx context.Context, productType *entity.ProductType) error {
-	_, err := t.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := t.db.Transaction(ctx, func(tx *gorm.DB) error {
 		err := t.db.Statement(ctx, tx, categoryTable).
 			Where("id = ?", productType.CategoryID).
 			First(&entity.Category{}).Error
 		if err != nil {
-			return nil, err
+			return err
 		}
 
 		now := t.now()
 		productType.CreatedAt, productType.UpdatedAt = now, now
 
 		err = tx.WithContext(ctx).Table(productTypeTable).Create(&productType).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (t *productType) Update(ctx context.Context, productTypeID, name, iconURL string) error {
-	_, err := t.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := t.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := t.get(ctx, tx, productTypeID); err != nil {
-			return nil, err
+			return err
 		}
 
 		params := map[string]interface{}{
@@ -111,24 +111,24 @@ func (t *productType) Update(ctx context.Context, productTypeID, name, iconURL s
 			Table(productTypeTable).
 			Where("id = ?", productTypeID).
 			Updates(params).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (t *productType) UpdateIcons(ctx context.Context, productTypeID string, icons common.Images) error {
-	_, err := t.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := t.db.Transaction(ctx, func(tx *gorm.DB) error {
 		productType, err := t.get(ctx, tx, productTypeID, "icon_url")
 		if err != nil {
-			return nil, err
+			return err
 		}
 		if productType.IconURL == "" {
-			return nil, fmt.Errorf("database: icon url is empty: %w", exception.ErrFailedPrecondition)
+			return fmt.Errorf("database: icon url is empty: %w", exception.ErrFailedPrecondition)
 		}
 
 		buf, err := icons.Marshal()
 		if err != nil {
-			return nil, err
+			return err
 		}
 		params := map[string]interface{}{
 			"icons":      datatypes.JSON(buf),
@@ -139,22 +139,22 @@ func (t *productType) UpdateIcons(ctx context.Context, productTypeID string, ico
 			Table(productTypeTable).
 			Where("id = ?", productTypeID).
 			Updates(params).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (t *productType) Delete(ctx context.Context, productTypeID string) error {
-	_, err := t.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := t.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := t.get(ctx, tx, productTypeID); err != nil {
-			return nil, err
+			return err
 		}
 
 		err := tx.WithContext(ctx).
 			Table(productTypeTable).
 			Where("id = ?", productTypeID).
 			Delete(&entity.ProductType{}).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
