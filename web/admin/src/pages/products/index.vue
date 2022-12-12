@@ -19,19 +19,22 @@
       </v-btn>
     </div>
 
-    <v-data-table
-      v-model="selectedProducts"
-      :loading="fetchState.pending"
-      :headers="headers"
-      :items="products"
-      show-select
-      no-data-text="登録されている商品がありません。"
-      :items-per-page.sync="itemsPerPage"
-      :server-items-length="totalItems"
-      :footer-props="options"
-      @update:items-per-page="handleUpdateItemsPerPage"
-      @update:page="handleUpdatePage"
-    />
+    <v-card :loading="fetchState.pending">
+      <v-card-text>
+        <v-data-table
+          v-model="selectedProducts"
+          :headers="headers"
+          :items="products"
+          show-select
+          no-data-text="登録されている商品がありません。"
+          :items-per-page.sync="itemsPerPage"
+          :server-items-length="totalItems"
+          :footer-props="options"
+          @update:items-per-page="handleUpdateItemsPerPage"
+          @update:page="handleUpdatePage"
+        />
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 

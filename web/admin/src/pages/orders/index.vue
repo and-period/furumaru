@@ -2,16 +2,20 @@
   <div>
     <v-card-title>注文</v-card-title>
 
-    <v-data-table
-      show-select
-      :headers="headers"
-      :items="orders"
-      :server-items-length="totalItems"
-      :footer-props="options"
-      no-data-text="表示する注文がありません"
-      @update:items-per-page="handleUpdateItemsPerPage"
-      @update:page="handleUpdatePage"
-    />
+    <v-card>
+      <v-card-text>
+        <v-data-table
+          show-select
+          :headers="headers"
+          :items="orders"
+          :server-items-length="totalItems"
+          :footer-props="options"
+          no-data-text="表示する注文がありません"
+          @update:items-per-page="handleUpdateItemsPerPage"
+          @update:page="handleUpdatePage"
+        />
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 
