@@ -57,6 +57,7 @@ p, notification_create, /v1/notifications, POST, allow
 p, notification_update, /v1/notifications/*, PATCH, allow
 p, notification_delete, /v1/notifications/*, DELETE, allow
 p, schedule_create, /v1/schedules, POST, allow
+p, live_get, /v1/schedules/*/lives/*, GET, allow
 p, message_list, /v1/messages, GET, allow
 p, message_get, /v1/messages/*, GET, allow
 p, postal_code_search, /v1/postal-codes/*, GET, allow
@@ -119,6 +120,7 @@ g, administrator, notification_create
 g, administrator, notification_update
 g, administrator, notification_delete
 g, administrator, schedule_create
+g, administrator, live_get
 g, administrator, message_list
 g, administrator, message_get
 g, administrator, postal_code_search
@@ -156,6 +158,7 @@ g, coordinator, notification_create
 g, coordinator, notification_update
 g, coordinator, notification_delete
 g, coordinator, schedule_create
+g, coordinator, live_get
 g, coordinator, message_list
 g, coordinator, message_get
 g, coordinator, postal_code_search
@@ -174,6 +177,7 @@ g, producer, order_list
 g, producer, order_get
 g, producer, notification_list
 g, producer, notification_get
+g, producer, live_get
 g, producer, message_list
 g, producer, message_get
 g, producer, postal_code_search
