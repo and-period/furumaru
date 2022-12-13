@@ -112,6 +112,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.contactRoutes(v1.Group("/contacts"))
 	h.messageRoutes(v1.Group("/messages"))
 	h.scheduleRoutes(v1.Group("/schedules"))
+	h.liveRoutes(v1.Group("/schedules/:scheduleId/lives"))
 	h.userRoutes(v1.Group("/users"))
 	h.postalCodeRoutes(v1.Group("/postal-codes"))
 	v1.GET("/categories/-/product-types", h.authentication, h.ListProductTypes)
