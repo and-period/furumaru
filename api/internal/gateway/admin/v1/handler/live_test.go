@@ -19,35 +19,11 @@ import (
 func TestGetLive(t *testing.T) {
 	t.Parallel()
 
-	coordinatorIn := &user.GetCoordinatorInput{
-		CoordinatorID: "coordinator-id",
-	}
-	coordinator := &uentity.Coordinator{
-		Admin: uentity.Admin{
-			ID:            "coordinator-id",
-			Lastname:      "&.",
-			Firstname:     "管理者",
-			LastnameKana:  "あんどどっと",
-			FirstnameKana: "かんりしゃ",
-			Email:         "test-coordinator@and-period.jp",
-		},
-		AdminID:          "coordinator-id",
-		CompanyName:      "&.株式会社",
-		StoreName:        "&.農園",
-		ThumbnailURL:     "https://and-period.jp/thumbnail.png",
-		HeaderURL:        "https://and-period.jp/header.png",
-		TwitterAccount:   "twitter-id",
-		InstagramAccount: "instagram-id",
-		FacebookAccount:  "facebook-id",
-		PhoneNumber:      "+819012345678",
-		PostalCode:       "1000014",
-		Prefecture:       "東京都",
-		City:             "千代田区",
-		CreatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
-		UpdatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
-	}
 	producerIn := &user.GetProducerInput{
 		ProducerID: "producer-id",
+	}
+	producersIn := &user.MultiGetProducersInput{
+		ProducerIDs: []string{"producer-id"},
 	}
 	producer := &uentity.Producer{
 		Admin: uentity.Admin{
@@ -70,6 +46,7 @@ func TestGetLive(t *testing.T) {
 		CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 	}
+	producers := uentity.Producers{producer}
 	categoriesIn := &store.MultiGetCategoriesInput{
 		CategoryIDs: []string{"category-id"},
 	}
@@ -185,8 +162,8 @@ func TestGetLive(t *testing.T) {
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().GetLive(gomock.Any(), liveIn).Return(live, nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
 				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
 				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(productTypes, nil)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
@@ -275,7 +252,7 @@ func TestGetLive(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			const format = "v1/schedules/%s/lives/%s"
+			const format = "/v1/schedules/%s/lives/%s"
 			path := fmt.Sprintf(format, tt.scheduleID, tt.liveID)
 			testGet(t, tt.setup, tt.expect, path)
 		})
