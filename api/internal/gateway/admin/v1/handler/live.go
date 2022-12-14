@@ -46,15 +46,11 @@ func (h *handler) getLive(ctx context.Context, liveID string) (*service.Live, er
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
-		productIDs := make([]string, 0, len(live.Products))
-		for i := range live.Products {
-			productIDs = append(productIDs, live.Products[i].ID)
-		}
-		products, err = h.multiGetProducts(ectx, productIDs)
+		products, err = h.multiGetProducts(ectx, live.ProductIDs)
 		if err != nil {
 			return err
 		}
-		if len(products) != len(productIDs) {
+		if len(products) != len(live.ProductIDs) {
 			return errors.New("error: invalid argument")
 		}
 		return nil
