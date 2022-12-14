@@ -48,7 +48,7 @@ require (
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/datatypes v1.0.7
 	gorm.io/driver/mysql v1.3.6
-	gorm.io/gorm v1.24.1
+	gorm.io/gorm v1.24.2
 	moul.io/zapgorm2 v1.1.3
 )
 
