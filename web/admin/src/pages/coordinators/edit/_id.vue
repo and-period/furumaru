@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card-title>コーディネーター登録</v-card-title>
+    <v-card-title>コーディネーター編集</v-card-title>
 
     <v-tabs v-model="tab" grow color="dark">
       <v-tabs-slider color="accent"></v-tabs-slider>
@@ -100,7 +100,7 @@
         </v-card>
       </v-tab-item>
 
-      <v-tab-item value="relationProducers"> </v-tab-item>
+      <v-tab-item value="relationProducers">
 
       <v-dialog v-model="dialog" width="500">
         <template #activator="{ on, attrs }">
@@ -121,7 +121,7 @@
             label="関連生産者"
             multiple
             filled
-            :items="producers"
+            :items="producerItems"
             item-text="firstname"
             item-value="firstname"
           >
@@ -145,6 +145,7 @@
         @update:page="handleUpdatePage"
       >
       </v-data-table>
+      </v-tab-item>
     </v-tabs-items>
   </div>
 </template>
@@ -178,7 +179,7 @@ import { Coordinator } from '~/types/props/coordinator'
 
 export default defineComponent({
   setup() {
-    const tab = ref<string>('customers')
+    const tab = ref<string>('coordinators')
     const tabItems: Coordinator[] = [
       { name: '基本情報', value: 'coordinators' },
       { name: '関連生産者', value: 'relationProducers' },
@@ -186,7 +187,7 @@ export default defineComponent({
     const coordinatorStore = useCoordinatorStore()
 
     const producerStore = useProducerStore()
-    const producers = computed(() => {
+    const producerItems = computed(() => {
       return producerStore.producers
     })
 
@@ -334,6 +335,14 @@ export default defineComponent({
       }
     }
 
+    useFetch(async () => {
+      try {
+        await producerStore.fetchProducers(20, 0, 'unrelated')
+      } catch (err) {
+        console.log(err)
+      }
+    })
+
     return {
       id,
       fetchState,
@@ -350,7 +359,7 @@ export default defineComponent({
       handleUpdateHeader,
       tabItems,
       tab,
-      producers,
+      producerItems,
     }
   },
 })

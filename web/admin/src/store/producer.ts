@@ -45,7 +45,8 @@ export const useProducerStore = defineStore('Producer', {
      */
     async fetchProducers(
       limit: number = 20,
-      offset: number = 0
+      offset: number = 0,
+      options: string = '',
     ): Promise<void> {
       try {
         const authStore = useAuthStore()
@@ -58,7 +59,8 @@ export const useProducerStore = defineStore('Producer', {
 
         const res = await this.apiClient(accessToken).v1ListProducers(
           limit,
-          offset
+          offset,
+          options,
         )
         this.producers = res.data.producers
         this.totalItems = res.data.total
