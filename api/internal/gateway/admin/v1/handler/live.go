@@ -40,6 +40,13 @@ func (h *handler) getLive(ctx context.Context, liveID string) (*service.Live, er
 		return nil, err
 	}
 	live := service.NewLive(slive)
+	if err := h.getLiveDetails(ctx, live); err != nil {
+		return nil, err
+	}
+	return live, nil
+}
+
+func (h *handler) getLiveDetails(ctx context.Context, live *service.Live) error {
 	var (
 		products service.Products
 		producer *service.Producer
@@ -60,9 +67,8 @@ func (h *handler) getLive(ctx context.Context, liveID string) (*service.Live, er
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		return nil, err
+		return err
 	}
-
 	live.Fill(producer, products.Map())
-	return live, nil
+	return nil
 }
