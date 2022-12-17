@@ -14,16 +14,16 @@ type Live struct {
 	Canceled       bool       `json:"canceled"`       // 配信中止
 	Status         int32      `json:"status"`         // 配信ステータス
 	Products       []*Product `json:"products"`       // 商品一覧
-	ChannelArn     string     `json:"ChannelArn"`     // チャンネルArn
-	StreamKeyArn   string     `json:"StreamKeyArn"`   // ストリームキーArn
+	ChannelArn     string     `json:"channelArn"`     // チャンネルArn
+	StreamKeyArn   string     `json:"streamKeyArn"`   // ストリームキーArn
 	CreatedAt      int64      `json:"createdAt"`      // 作成日時
-	UpdatedAt      int64      `json:"UpdatedAt"`      // 作成日時
-	ChannelName    string     `json:"ChannelName"`    // チャンネル名
-	IngestEndpoint string     `json:"IngestEndpoint"` // 配信エンドポイント
-	StreamKey      string     `json:"StreamKey"`      // ストリームキー
-	StreamID       string     `json:"SrtreamID"`      // ストリームID
-	PlaybackURL    string     `json:"PlaybackURL"`    // 再生用URL
-	ViewerCount    int64      `json:"ViewerCount"`    // 視聴者数
+	UpdatedAt      int64      `json:"updatedAt"`      // 作成日時
+	ChannelName    string     `json:"channelName"`    // チャンネル名
+	IngestEndpoint string     `json:"ingestEndpoint"` // 配信エンドポイント
+	StreamKey      string     `json:"streamKey"`      // ストリームキー
+	StreamID       string     `json:"srtreamID"`      // ストリームID
+	PlaybackURL    string     `json:"playbackURL"`    // 再生用URL
+	ViewerCount    int64      `json:"viewerCount"`    // 視聴者数
 }
 
 type LiveResponse struct {
