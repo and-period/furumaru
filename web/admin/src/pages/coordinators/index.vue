@@ -34,7 +34,12 @@
     <v-card class="mt-4" flat :loading="fetchState.pending">
       <v-card-text>
         <form class="d-flex align-center" @submit.prevent="handleSearch">
-          <v-text-field v-model="search" label="絞り込み" />
+          <v-autocomplete
+            v-model="search"
+            item-text="firstname"
+            :items="coordinators"
+            label="絞り込み"
+          />
           <v-btn type="submit" class="ml-4" small outlined color="primary">
             <v-icon>mdi-search</v-icon>
             検索
@@ -106,9 +111,16 @@ import { useCommonStore } from '~/store/common'
 import { useCoordinatorStore } from '~/store/coordinator'
 import { CoordinatorsResponseCoordinatorsInner } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
+import { Coordinator } from '~/types/props/coordinator'
 
 export default defineComponent({
   setup() {
+    const tab = ref<string>('coordinators')
+    const tabItems: Coordinator[] = [
+      { name: '基本情報', value: 'coordinators' },
+      { name: '生産者管理', value: 'customers' },
+    ]
+
     const router = useRouter()
 
     const { isShow, alertText, alertType, show } = useAlert('error')
@@ -126,6 +138,7 @@ export default defineComponent({
 
     const deleteDialog = ref<boolean>(false)
     const selectedId = ref<string>('')
+    const selectedName = ref<string>('')
 
     const selectedItemName = computed(() => {
       const selectedItem = coordinators.value.find(
@@ -164,6 +177,14 @@ export default defineComponent({
     const handleUpdatePage = async (page: number) => {
       updateCurrentPage(page)
       await coordinatorStore.fetchCoordinators(itemsPerPage.value, offset.value)
+    }
+
+    const openDeleteDialog = (
+      item: CoordinatorsResponseCoordinatorsInner
+    ): void => {
+      selectedId.value = item.id
+      selectedName.value = item.firstname
+      deleteDialog.value = true
     }
 
     const { fetchState, fetch } = useFetch(async () => {
@@ -268,6 +289,9 @@ export default defineComponent({
       handleUpdateItemsPerPage,
       handleClickAddButton,
       handleEdit,
+      openDeleteDialog,
+      tab,
+      tabItems,
       handleClickCancelButton,
       handleClickDeleteButton,
       handleDeleteFormSubmit,

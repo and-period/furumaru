@@ -1,31 +1,59 @@
 <template>
   <div>
-    <v-card-title>コーディネータ登録</v-card-title>
-    <the-coordinator-create-form
-      :form-data="formData"
-      :thumbnail-upload-status="thumbnailUploadStatus"
-      :header-upload-status="headerUploadStatus"
-      :search-loading="searchLoading"
-      :search-error-message="searchErrorMessage"
-      @update:thumbnailFile="handleUpdateThumbnail"
-      @update:headerFile="handleUpdateHeader"
-      @submit="handleSubmit"
-      @click:search="searchAddress"
-    />
+    <v-card-title>コーディネーター登録</v-card-title>
+
+    <v-tabs v-model="tab" grow color="dark">
+      <v-tabs-slider color="accent"></v-tabs-slider>
+      <v-tab
+        v-for="tabItem in tabItems"
+        :key="tabItem.value"
+        :href="`#${tabItem.value}`"
+      >
+        {{ tabItem.name }}
+      </v-tab>
+    </v-tabs>
+
+    <v-tabs-items v-model="tab">
+      <v-tab-item value="coordinators">
+        <the-coordinator-create-form
+          :form-data="formData"
+          :thumbnail-upload-status="thumbnailUploadStatus"
+          :header-upload-status="headerUploadStatus"
+          :search-loading="searchLoading"
+          :search-error-message="searchErrorMessage"
+          @update:thumbnailFile="handleUpdateThumbnail"
+          @update:headerFile="handleUpdateHeader"
+          @submit="handleSubmit"
+          @click:search="searchAddress"
+        />
+      </v-tab-item>
+
+      <v-tab-item value="relationProducers"> </v-tab-item>
+    </v-tabs-items>
   </div>
 </template>
 
 <script lang="ts">
-import { reactive, useRouter } from '@nuxtjs/composition-api'
-import { defineComponent } from '@vue/composition-api'
+import {
+  reactive,
+  ref,
+  useRouter,
+  defineComponent,
+} from '@nuxtjs/composition-api'
 
 import { useSearchAddress } from '~/lib/hooks'
 import { useCoordinatorStore } from '~/store/coordinator'
 import { CreateCoordinatorRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
+import { Coordinator } from '~/types/props/coordinator'
 
 export default defineComponent({
   setup() {
+    const tab = ref<string>('customers')
+    const tabItems: Coordinator[] = [
+      { name: '基本情報', value: 'coordinators' },
+      { name: '関連生産者', value: 'relationProducers' },
+    ]
     const router = useRouter()
     const {
       createCoordinator,
@@ -126,6 +154,8 @@ export default defineComponent({
       searchAddress,
       searchLoading,
       searchErrorMessage,
+      tabItems,
+      tab,
     }
   },
 })

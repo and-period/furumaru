@@ -219,7 +219,7 @@ export default defineComponent({
       await Promise.all([
         productTypeStore.fetchProductTypes(),
         categoryStore.fetchCategories(),
-        producerStore.fetchProducers(),
+        producerStore.fetchProducers(20, 0, ''),
       ])
     })
 

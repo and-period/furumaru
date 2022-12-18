@@ -13,7 +13,13 @@ import {
   UpdateCoordinatorRequest,
   UploadImageResponse,
 } from '~/types/api'
-import { AuthError } from '~/types/exception'
+import {
+  AuthError,
+  ConnectionError,
+  InternalServerError,
+  NotFoundError,
+  ValidationError,
+} from '~/types/exception'
 
 export const useCoordinatorStore = defineStore('Coordinator', {
   state: () => {
@@ -233,18 +239,56 @@ export const useCoordinatorStore = defineStore('Coordinator', {
      */
     async deleteCoordinator(id: string) {
       try {
-        const token = this.$nuxt.$auth.accessToken
-        if (!token) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
+        const authStore = useAuthStore()
+        const accessToken = authStore.accessToken
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
         }
-        await this.apiClient(token).v1DeleteCoordinator(id)
-      } catch (error) {
-        return this.errorHandler(error, {
-          404: 'このコーディーネータは存在しません。',
+
+        const factory = new ApiClientFactory()
+        const coordinatorsApiClient = factory.create(
+          CoordinatorApi,
+          accessToken
+        )
+        await coordinatorsApiClient.v1DeleteCoordinator(id)
+        const commonStore = useCommonStore()
+        commonStore.addSnackbar({
+          message: 'コーディネーターの削除が完了しました',
+          color: 'info',
         })
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          const statusCode = error.response.status
+          switch (statusCode) {
+            case 400:
+              return Promise.reject(
+                new ValidationError(
+                  '削除できませんでした。管理者にお問い合わせしてください。',
+                  error
+                )
+              )
+            case 401:
+              return Promise.reject(
+                new AuthError('認証エラー。再度ログインをしてください。', error)
+              )
+            case 404:
+              return Promise.reject(
+                new NotFoundError(
+                  '削除するコーディネーターが見つかりませんでした。',
+                  error
+                )
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+        throw new InternalServerError(error)
       }
+      this.fetchCoordinators()
     },
   },
 })

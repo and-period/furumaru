@@ -154,7 +154,7 @@ export default defineComponent({
     } = usePagination()
 
     watch(itemsPerPage, () => {
-      producerStore.fetchProducers(itemsPerPage.value, 0)
+      producerStore.fetchProducers(itemsPerPage.value, 0, '')
     })
 
     const selectedItemName = computed(() => {
@@ -168,7 +168,7 @@ export default defineComponent({
 
     const handleUpdatePage = async (page: number) => {
       updateCurrentPage(page)
-      await producerStore.fetchProducers(itemsPerPage.value, offset.value)
+      await producerStore.fetchProducers(itemsPerPage.value, offset.value, '')
     }
 
     const { fetchState, fetch } = useFetch(async () => {

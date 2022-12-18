@@ -1,21 +1,94 @@
 <template>
   <div>
-    <v-card-title>コーディネータ編集</v-card-title>
+    <v-card-title>コーディネーター編集</v-card-title>
 
-    <v-skeleton-loader v-if="fetchState.pending" type="article" />
+    <v-tabs v-model="tab" grow color="dark">
+      <v-tabs-slider color="accent"></v-tabs-slider>
+      <v-tab
+        v-for="tabItem in tabItems"
+        :key="tabItem.value"
+        :href="`#${tabItem.value}`"
+      >
+        {{ tabItem.name }}
+      </v-tab>
+    </v-tabs>
 
-    <the-coordinator-edit-form
-      v-else
-      :form-data="formData"
-      :thumbnail-upload-status="thumbnailUploadStatus"
-      :header-upload-status="headerUploadStatus"
-      :search-loading="searchLoading"
-      :search-error-message="searchErrorMessage"
-      @update:thumbnailFile="handleUpdateThumbnail"
-      @update:headerFile="handleUpdateHeader"
-      @submit="handleSubmit"
-      @click:search="searchAddress"
-    />
+    <v-tabs-items v-model="tab">
+      <v-tab-item value="coordinators">
+        <v-skeleton-loader v-if="fetchState.pending" type="article" />
+
+        <the-coordinator-edit-form
+          v-else
+          :form-data="formData"
+          :thumbnail-upload-status="thumbnailUploadStatus"
+          :header-upload-status="headerUploadStatus"
+          :search-loading="searchLoading"
+          :search-error-message="searchErrorMessage"
+          @update:thumbnailFile="handleUpdateThumbnail"
+          @update:headerFile="handleUpdateHeader"
+          @submit="handleSubmit"
+          @click:search="searchAddress"
+        />
+      </v-tab-item>
+
+      <v-tab-item value="relationProducers">
+        <v-dialog width="500">
+          <template #activator="{ on, attrs }">
+            <div class="d-flex pt-3 pr-3">
+              <v-spacer />
+              <v-btn outlined color="primary" v-bind="attrs" v-on="on">
+                <v-icon left>mdi-plus</v-icon>
+                生産者登録
+              </v-btn>
+            </div>
+          </template>
+
+          <v-card>
+            <v-card-title class="primaryLight"> 生産者を追加 </v-card-title>
+
+            <v-autocomplete
+              v-model="producers"
+              chips
+              label="関連生産者"
+              multiple
+              filled
+              :items="producerItems"
+              item-text="firstname"
+              item-value="id"
+            >
+              <template #selection="data">
+                <v-chip close @click:close="remove(data.item.id)">
+                  <v-avatar left>
+                    <v-img :src="data.item.thumbnailUrl"></v-img>
+                  </v-avatar>
+                  {{ data.item.firstname }}
+                </v-chip>
+              </template>
+              <template #item="data">
+                <v-list-item-avatar>
+                  <img :src="data.item.thumbnailUrl" />
+                </v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title>{{
+                    data.item.firstname
+                  }}</v-list-item-title>
+                  <v-list-item-subtitle>{{
+                    data.item.storeName
+                  }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </template>
+            </v-autocomplete>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="primary"> 登録 </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <v-data-table no-data-text="関連生産者はいません。"> </v-data-table>
+      </v-tab-item>
+    </v-tabs-items>
   </div>
 </template>
 
@@ -24,6 +97,7 @@ import {
   computed,
   defineComponent,
   reactive,
+  ref,
   useFetch,
   useRoute,
   useRouter,
@@ -40,13 +114,27 @@ import {
   maxLength,
 } from '~/lib/validations'
 import { useCoordinatorStore } from '~/store/coordinator'
+import { useProducerStore } from '~/store/producer'
 import { UpdateCoordinatorRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
+import { Coordinator } from '~/types/props/coordinator'
 
 export default defineComponent({
   components: { TheCoordinatorEditForm },
   setup() {
+    const tab = ref<string>('coordinators')
+    const tabItems: Coordinator[] = [
+      { name: '基本情報', value: 'coordinators' },
+      { name: '関連生産者', value: 'relationProducers' },
+    ]
     const coordinatorStore = useCoordinatorStore()
+
+    const producers = ref<string[]>([])
+
+    const producerStore = useProducerStore()
+    const producerItems = computed(() => {
+      return producerStore.producers
+    })
 
     const route = useRoute()
     const id = route.value.params.id
@@ -182,10 +270,23 @@ export default defineComponent({
       }
     }
 
+    const remove = (item: string) => {
+      producers.value = producers.value.filter((id) => id !== item)
+    }
+
+    useFetch(async () => {
+      try {
+        await producerStore.fetchProducers(20, 0, 'unrelated')
+      } catch (err) {
+        console.log(err)
+      }
+    })
+
     return {
       id,
       fetchState,
       formData,
+      producers,
       v$,
       getErrorMessage,
       searchLoading,
@@ -196,6 +297,10 @@ export default defineComponent({
       thumbnailUploadStatus,
       headerUploadStatus,
       handleUpdateHeader,
+      tabItems,
+      tab,
+      producerItems,
+      remove,
     }
   },
 })
