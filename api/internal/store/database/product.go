@@ -49,12 +49,7 @@ func (p *product) List(ctx context.Context, params *ListProductsParams, fields .
 }
 
 func (p *product) Count(ctx context.Context, params *ListProductsParams) (int64, error) {
-	var total int64
-
-	stmt := p.db.Count(ctx, p.db.DB, productTable)
-	stmt = params.stmt(stmt)
-
-	err := stmt.Find(&total).Error
+	total, err := p.db.Count(ctx, p.db.DB, &entity.Product{}, params.stmt)
 	return total, exception.InternalError(err)
 }
 
@@ -79,24 +74,24 @@ func (p *product) Get(ctx context.Context, productID string, fields ...string) (
 }
 
 func (p *product) Create(ctx context.Context, product *entity.Product) error {
-	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if err := product.FillJSON(); err != nil {
-			return nil, err
+			return err
 		}
 
 		now := p.now()
 		product.CreatedAt, product.UpdatedAt = now, now
 
 		err := tx.WithContext(ctx).Table(productTable).Create(&product).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (p *product) Update(ctx context.Context, productID string, params *UpdateProductParams) error {
-	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := p.get(ctx, tx, productID); err != nil {
-			return nil, err
+			return err
 		}
 
 		updates := map[string]interface{}{
@@ -123,7 +118,7 @@ func (p *product) Update(ctx context.Context, productID string, params *UpdatePr
 		if len(params.Media) > 0 {
 			media, err := params.Media.Marshal()
 			if err != nil {
-				return nil, fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
+				return fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
 			}
 			updates["media"] = media
 		}
@@ -131,7 +126,7 @@ func (p *product) Update(ctx context.Context, productID string, params *UpdatePr
 			Table(productTable).
 			Where("id = ?", productID).
 			Updates(updates).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
@@ -139,18 +134,18 @@ func (p *product) Update(ctx context.Context, productID string, params *UpdatePr
 func (p *product) UpdateMedia(
 	ctx context.Context, productID string, set func(media entity.MultiProductMedia) bool,
 ) error {
-	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
 		product, err := p.get(ctx, tx, productID, "media")
 		if err != nil {
-			return nil, err
+			return err
 		}
 		if exists := set(product.Media); !exists {
-			return nil, fmt.Errorf("database: media is non-existent: %w", exception.ErrFailedPrecondition)
+			return fmt.Errorf("database: media is non-existent: %w", exception.ErrFailedPrecondition)
 		}
 
 		buf, err := product.Media.Marshal()
 		if err != nil {
-			return nil, err
+			return err
 		}
 		params := map[string]interface{}{
 			"media":      datatypes.JSON(buf),
@@ -161,15 +156,15 @@ func (p *product) UpdateMedia(
 			Table(productTable).
 			Where("id = ?", productID).
 			Updates(params).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (p *product) Delete(ctx context.Context, productID string) error {
-	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := p.get(ctx, tx, productID); err != nil {
-			return nil, err
+			return err
 		}
 
 		params := map[string]interface{}{
@@ -179,7 +174,7 @@ func (p *product) Delete(ctx context.Context, productID string) error {
 			Table(productTable).
 			Where("id = ?", productID).
 			Updates(params).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }

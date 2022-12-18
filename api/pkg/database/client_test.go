@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -47,7 +48,17 @@ func TestNewClient(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client, err := NewClient(tt.params)
+			client, err := NewClient(
+				tt.params,
+				WithLogger(zap.NewNop()),
+				WithNow(time.Now),
+				WithLocation(time.UTC),
+				WithCharset("utf8mb4"),
+				WithCollation("utf8mb4_general_ci"),
+				WithTLS(false),
+				WithNativePasswords(true),
+				WithMaxAllowedPacket(4194304),
+			)
 			if tt.isErr {
 				assert.Error(t, err)
 				assert.Nil(t, client)
@@ -93,15 +104,23 @@ func TestTransaction(t *testing.T) {
 	}
 	client, err := NewClient(params)
 	require.NoError(t, err)
-	data, err := client.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
-		return "data", nil
+	t.Run("success", func(t *testing.T) {
+		err := client.Transaction(ctx, func(tx *gorm.DB) error {
+			return nil
+		})
+		require.NoError(t, err)
 	})
-	require.NoError(t, err)
-	require.NotNil(t, data)
+	t.Run("failure", func(t *testing.T) {
+		err := client.Transaction(ctx, func(tx *gorm.DB) error {
+			return assert.AnError
+		})
+		require.Error(t, err)
+	})
 }
 
 func TestNewDSN(t *testing.T) {
 	t.Parallel()
+	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
 	tests := []struct {
 		name    string
 		params  *Params
@@ -109,7 +128,7 @@ func TestNewDSN(t *testing.T) {
 		expect  string
 	}{
 		{
-			name: "tcp socket",
+			name: "success",
 			params: &Params{
 				Socket:   "tcp",
 				Host:     "127.0.0.1",
@@ -119,14 +138,19 @@ func TestNewDSN(t *testing.T) {
 				Password: "12345678",
 			},
 			options: &options{
-				logger:     zap.NewNop(),
-				timezone:   "",
-				enabledTLS: false,
+				logger:               zap.NewNop(),
+				now:                  time.Now,
+				location:             time.UTC,
+				charset:              "utf8mb4",
+				collation:            "utf8mb4_general_ci",
+				enabledTLS:           false,
+				allowNativePasswords: true,
+				maxAllowedPacket:     4194304, // 4MiB
 			},
-			expect: "root:12345678@tcp(127.0.0.1:3306)/test?charset=utf8mb4&parseTime=True&loc=Asia%2FTokyo",
+			expect: "root:12345678@tcp(127.0.0.1:3306)/test?parseTime=true&charset=utf8mb4",
 		},
 		{
-			name: "tcp socket with options",
+			name: "success with options",
 			params: &Params{
 				Socket:   "tcp",
 				Host:     "127.0.0.1",
@@ -136,48 +160,16 @@ func TestNewDSN(t *testing.T) {
 				Password: "12345678",
 			},
 			options: &options{
-				logger:     zap.NewNop(),
-				timezone:   "UTC",
-				enabledTLS: true,
+				logger:               zap.NewNop(),
+				now:                  time.Now,
+				location:             jst,
+				charset:              "utf8mb4",
+				collation:            "utf8mb4_0900_ai_ci",
+				enabledTLS:           true,
+				allowNativePasswords: false,
+				maxAllowedPacket:     8388608, // 8MiB
 			},
-			expect: "root:12345678@tcp(127.0.0.1:3306)/test?charset=utf8mb4&parseTime=True&tls=true&loc=UTC",
-		},
-		{
-			name: "unix socket",
-			params: &Params{
-				Socket:   "unix",
-				Host:     "127.0.0.1",
-				Database: "test",
-				Username: "root",
-				Password: "12345678",
-			},
-			options: &options{
-				logger:     zap.NewNop(),
-				timezone:   "",
-				enabledTLS: false,
-			},
-			expect: "root:12345678@unix(127.0.0.1)/test?charset=utf8mb4&parseTime=true",
-		},
-		{
-			name: "unix socket with options",
-			params: &Params{
-				Socket:   "unix",
-				Host:     "127.0.0.1",
-				Database: "test",
-				Username: "root",
-				Password: "12345678",
-			},
-			options: &options{
-				logger:     zap.NewNop(),
-				timezone:   "UTC",
-				enabledTLS: true,
-			},
-			expect: "root:12345678@unix(127.0.0.1)/test?charset=utf8mb4&parseTime=true&tls=true",
-		},
-		{
-			name:   "invalid socket type",
-			params: &Params{},
-			expect: "",
+			expect: "root:12345678@tcp(127.0.0.1:3306)/test?allowNativePasswords=false&collation=utf8mb4_0900_ai_ci&loc=Asia%2FTokyo&parseTime=true&tls=true&maxAllowedPacket=8388608&charset=utf8mb4",
 		},
 	}
 

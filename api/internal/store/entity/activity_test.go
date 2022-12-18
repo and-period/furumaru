@@ -6,16 +6,16 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestOrderActivities_GroupByOrderID(t *testing.T) {
+func TestActivities_GroupByOrderID(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name       string
-		activities OrderActivities
-		expect     map[string]OrderActivities
+		activities Activities
+		expect     map[string]Activities
 	}{
 		{
 			name: "success",
-			activities: OrderActivities{
+			activities: Activities{
 				{
 					ID:      "activity-id01",
 					OrderID: "order-id01",
@@ -29,7 +29,7 @@ func TestOrderActivities_GroupByOrderID(t *testing.T) {
 					OrderID: "order-id02",
 				},
 			},
-			expect: map[string]OrderActivities{
+			expect: map[string]Activities{
 				"order-id01": {
 					{
 						ID:      "activity-id01",

@@ -9,56 +9,56 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPaymentType(t *testing.T) {
+func TestPaymentMethodType(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name        string
-		paymentType entity.PaymentType
-		expect      PaymentType
+		name              string
+		PaymentMethodType entity.PaymentMethodType
+		expect            PaymentMethodType
 	}{
 		{
-			name:        "cash",
-			paymentType: entity.PaymentTypeCash,
-			expect:      PaymentTypeCash,
+			name:              "cash",
+			PaymentMethodType: entity.PaymentMethodTypeCash,
+			expect:            PaymentMethodTypeCash,
 		},
 		{
-			name:        "card",
-			paymentType: entity.PaymentTypeCard,
-			expect:      PaymentTypeCard,
+			name:              "card",
+			PaymentMethodType: entity.PaymentMethodTypeCard,
+			expect:            PaymentMethodTypeCard,
 		},
 		{
-			name:        "unknown",
-			paymentType: entity.PaymentTypeUnknown,
-			expect:      PaymentTypeUnknown,
+			name:              "unknown",
+			PaymentMethodType: entity.PaymentMethodTypeUnknown,
+			expect:            PaymentMethodTypeUnknown,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewPaymentType(tt.paymentType))
+			assert.Equal(t, tt.expect, NewPaymentMethodType(tt.PaymentMethodType))
 		})
 	}
 }
 
-func TestPaymentType_Response(t *testing.T) {
+func TestPaymentMethodType_Response(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name        string
-		paymentType PaymentType
-		expect      int32
+		name              string
+		PaymentMethodType PaymentMethodType
+		expect            int32
 	}{
 		{
-			name:        "success",
-			paymentType: PaymentTypeCard,
-			expect:      2,
+			name:              "success",
+			PaymentMethodType: PaymentMethodTypeCard,
+			expect:            2,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, tt.paymentType.Response())
+			assert.Equal(t, tt.expect, tt.PaymentMethodType.Response())
 		})
 	}
 }
@@ -141,58 +141,40 @@ func TestOrderPayment(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		payment *entity.OrderPayment
+		payment *entity.Payment
 		status  entity.PaymentStatus
 		expect  *OrderPayment
 	}{
 		{
 			name: "success",
-			payment: &entity.OrderPayment{
-				ID:             "payment-id",
-				TransactionID:  "transaction-id",
-				OrderID:        "order-id",
-				PromotionID:    "promotion-id",
-				PaymentID:      "payment-id",
-				PaymentType:    entity.PaymentTypeCard,
-				Subtotal:       100,
-				Discount:       0,
-				ShippingCharge: 500,
-				Tax:            60,
-				Total:          660,
-				Lastname:       "&.",
-				Firstname:      "スタッフ",
-				PostalCode:     "1000014",
-				Prefecture:     "東京都",
-				City:           "千代田区",
-				AddressLine1:   "永田町1-7-1",
-				AddressLine2:   "",
-				PhoneNumber:    "+819012345678",
-				CreatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				UpdatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			payment: &entity.Payment{
+				OrderID:       "order-id",
+				AddressID:     "address-id",
+				TransactionID: "transaction-id",
+				MethodType:    entity.PaymentMethodTypeCard,
+				MethodID:      "payment-id",
+				Subtotal:      1100,
+				Discount:      0,
+				ShippingFee:   500,
+				Tax:           160,
+				Total:         1760,
+				CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			status: entity.PaymentStatusCaptured,
 			expect: &OrderPayment{
 				OrderPayment: response.OrderPayment{
-					TransactionID:  "transaction-id",
-					PromotionID:    "promotion-id",
-					PaymentID:      "payment-id",
-					PaymentType:    PaymentTypeCard.Response(),
-					Status:         PaymentStatusPaid.Response(),
-					Subtotal:       100,
-					Discount:       0,
-					ShippingCharge: 500,
-					Tax:            60,
-					Total:          660,
-					Lastname:       "&.",
-					Firstname:      "スタッフ",
-					PostalCode:     "1000014",
-					Prefecture:     "東京都",
-					City:           "千代田区",
-					AddressLine1:   "永田町1-7-1",
-					AddressLine2:   "",
-					PhoneNumber:    "+819012345678",
+					TransactionID: "transaction-id",
+					MethodID:      "payment-id",
+					MethodType:    PaymentMethodTypeCard.Response(),
+					Status:        PaymentStatusPaid.Response(),
+					Subtotal:      1100,
+					Discount:      0,
+					ShippingFee:   500,
+					Tax:           160,
+					Total:         1760,
+					AddressID:     "address-id",
 				},
-				id:      "payment-id",
 				orderID: "order-id",
 			},
 		},
@@ -202,6 +184,81 @@ func TestOrderPayment(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewOrderPayment(tt.payment, tt.status))
+		})
+	}
+}
+
+func TestOrderPayment_Fill(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		payment *OrderPayment
+		address *Address
+		expect  *OrderPayment
+	}{
+		{
+			name: "success",
+			payment: &OrderPayment{
+				OrderPayment: response.OrderPayment{
+					TransactionID: "transaction-id",
+					MethodID:      "payment-id",
+					MethodType:    PaymentMethodTypeCard.Response(),
+					Status:        PaymentStatusPaid.Response(),
+					Subtotal:      100,
+					Discount:      0,
+					ShippingFee:   500,
+					Tax:           60,
+					Total:         660,
+					AddressID:     "address-id",
+				},
+				orderID: "order-id",
+			},
+			address: &Address{
+				Address: response.Address{
+					Lastname:     "&.",
+					Firstname:    "購入者",
+					PostalCode:   "1000014",
+					Prefecture:   "東京都",
+					City:         "千代田区",
+					AddressLine1: "永田町1-7-1",
+					AddressLine2: "",
+					PhoneNumber:  "+819012345678",
+				},
+				id: "address-id",
+			},
+			expect: &OrderPayment{
+				OrderPayment: response.OrderPayment{
+					TransactionID: "transaction-id",
+					MethodID:      "payment-id",
+					MethodType:    PaymentMethodTypeCard.Response(),
+					Status:        PaymentStatusPaid.Response(),
+					Subtotal:      100,
+					Discount:      0,
+					ShippingFee:   500,
+					Tax:           60,
+					Total:         660,
+					AddressID:     "address-id",
+					Address: &response.Address{
+						Lastname:     "&.",
+						Firstname:    "購入者",
+						PostalCode:   "1000014",
+						Prefecture:   "東京都",
+						City:         "千代田区",
+						AddressLine1: "永田町1-7-1",
+						AddressLine2: "",
+						PhoneNumber:  "+819012345678",
+					},
+				},
+				orderID: "order-id",
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.payment.Fill(tt.address)
+			assert.Equal(t, tt.expect, tt.payment)
 		})
 	}
 }
@@ -217,47 +274,50 @@ func TestOrderPayment_Response(t *testing.T) {
 			name: "success",
 			payment: &OrderPayment{
 				OrderPayment: response.OrderPayment{
-					TransactionID:  "transaction-id",
-					PromotionID:    "promotion-id",
-					PaymentID:      "payment-id",
-					PaymentType:    PaymentTypeCard.Response(),
-					Status:         PaymentStatusPaid.Response(),
-					Subtotal:       100,
-					Discount:       0,
-					ShippingCharge: 500,
-					Tax:            60,
-					Total:          660,
-					Lastname:       "&.",
-					Firstname:      "スタッフ",
-					PostalCode:     "1000014",
-					Prefecture:     "東京都",
-					City:           "千代田区",
-					AddressLine1:   "永田町1-7-1",
-					AddressLine2:   "",
-					PhoneNumber:    "+819012345678",
+					TransactionID: "transaction-id",
+					MethodID:      "payment-id",
+					MethodType:    PaymentMethodTypeCard.Response(),
+					Status:        PaymentStatusPaid.Response(),
+					Subtotal:      100,
+					Discount:      0,
+					ShippingFee:   500,
+					Tax:           60,
+					Total:         660,
+					AddressID:     "address-id",
+					Address: &response.Address{
+						Lastname:     "&.",
+						Firstname:    "購入者",
+						PostalCode:   "1000014",
+						Prefecture:   "東京都",
+						City:         "千代田区",
+						AddressLine1: "永田町1-7-1",
+						AddressLine2: "",
+						PhoneNumber:  "+819012345678",
+					},
 				},
-				id:      "payment-id",
 				orderID: "order-id",
 			},
 			expect: &response.OrderPayment{
-				TransactionID:  "transaction-id",
-				PromotionID:    "promotion-id",
-				PaymentID:      "payment-id",
-				PaymentType:    PaymentTypeCard.Response(),
-				Status:         PaymentStatusPaid.Response(),
-				Subtotal:       100,
-				Discount:       0,
-				ShippingCharge: 500,
-				Tax:            60,
-				Total:          660,
-				Lastname:       "&.",
-				Firstname:      "スタッフ",
-				PostalCode:     "1000014",
-				Prefecture:     "東京都",
-				City:           "千代田区",
-				AddressLine1:   "永田町1-7-1",
-				AddressLine2:   "",
-				PhoneNumber:    "+819012345678",
+				TransactionID: "transaction-id",
+				MethodID:      "payment-id",
+				MethodType:    PaymentMethodTypeCard.Response(),
+				Status:        PaymentStatusPaid.Response(),
+				Subtotal:      100,
+				Discount:      0,
+				ShippingFee:   500,
+				Tax:           60,
+				Total:         660,
+				AddressID:     "address-id",
+				Address: &response.Address{
+					Lastname:     "&.",
+					Firstname:    "購入者",
+					PostalCode:   "1000014",
+					Prefecture:   "東京都",
+					City:         "千代田区",
+					AddressLine1: "永田町1-7-1",
+					AddressLine2: "",
+					PhoneNumber:  "+819012345678",
+				},
 			},
 		},
 	}

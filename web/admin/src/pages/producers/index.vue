@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-card-title>生産者管理</v-card-title>
+
     <div class="d-flex">
       <v-spacer />
       <v-btn outlined color="primary" @click="handleClickAddButton">
@@ -8,6 +9,28 @@
         生産者登録
       </v-btn>
     </div>
+
+    <v-alert v-model="isShow" :type="alertType" class="my-2" dismissible>
+      {{ alertText }}
+    </v-alert>
+
+    <v-dialog v-model="deleteDialog" width="500">
+      <v-card>
+        <v-card-title>
+          {{ selectedItemName }}を本当に削除しますか？
+        </v-card-title>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="accentDarken" text @click="handleClickCancelButton">
+            キャンセル
+          </v-btn>
+          <v-btn color="primary" outlined @click="handleDeleteFormSubmit">
+            削除
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-card class="mt-4" flat :loading="fetchState.pending">
       <v-card-text>
         <form class="d-flex align-center" @submit.prevent="handleSearch">
@@ -51,7 +74,12 @@
               <v-icon small>mdi-pencil</v-icon>
               編集
             </v-btn>
-            <v-btn outlined color="primary" small @click="handleDelete(item)">
+            <v-btn
+              outlined
+              color="primary"
+              small
+              @click="handleClickDeleteButton(item)"
+            >
               <v-icon small>mdi-delete</v-icon>
               削除
             </v-btn>
@@ -79,14 +107,26 @@ import {
 } from '@nuxtjs/composition-api'
 import { DataTableHeader } from 'vuetify'
 
-import { usePagination } from '~/lib/hooks'
+import { useAlert, usePagination } from '~/lib/hooks'
+import { useCommonStore } from '~/store/common'
 import { useProducerStore } from '~/store/producer'
 import { ProducersResponseProducersInner } from '~/types/api'
+import { ApiBaseError } from '~/types/exception'
 
 export default defineComponent({
   setup() {
     const router = useRouter()
+
+    const { isShow, alertText, alertType, show } = useAlert('error')
     const producerStore = useProducerStore()
+    const { addSnackbar } = useCommonStore()
+
+    const search = ref<string>('')
+    const query = ref<string>('')
+
+    const deleteDialog = ref<boolean>(false)
+    const selectedId = ref<string>('')
+
     const producers = computed(() => {
       return producerStore.producers
     })
@@ -94,9 +134,6 @@ export default defineComponent({
     const totalItems = computed(() => {
       return producerStore.totalItems
     })
-
-    const search = ref<string>('')
-    const query = ref<string>('')
 
     const noResultsText = computed(() => {
       return `「${query.value}」に一致するデータはありません。`
@@ -120,16 +157,29 @@ export default defineComponent({
       producerStore.fetchProducers(itemsPerPage.value, 0, '')
     })
 
+    const selectedItemName = computed(() => {
+      const selectedItem = producers.value.find(
+        (item) => item.id === selectedId.value
+      )
+      return selectedItem
+        ? `${selectedItem.lastname} ${selectedItem.firstname}`
+        : ''
+    })
+
     const handleUpdatePage = async (page: number) => {
       updateCurrentPage(page)
       await producerStore.fetchProducers(itemsPerPage.value, offset.value, '')
     }
 
-    const { fetchState } = useFetch(async () => {
+    const { fetchState, fetch } = useFetch(async () => {
       try {
-        await producerStore.fetchProducers(itemsPerPage.value, offset.value, '')
-      } catch (err) {
-        console.log(err)
+        await producerStore.fetchProducers(itemsPerPage.value, offset.value)
+      } catch (error) {
+        const errorMessage =
+          error instanceof ApiBaseError
+            ? error.message
+            : '不明なエラーが発生しました。'
+        show(errorMessage)
       }
     })
 
@@ -178,8 +228,31 @@ export default defineComponent({
       router.push(`/producers/edit/${item.id}`)
     }
 
-    const handleDelete = (item: ProducersResponseProducersInner) => {
-      console.log(item)
+    const handleClickCancelButton = () => {
+      deleteDialog.value = false
+    }
+
+    const handleClickDeleteButton = (item: ProducersResponseProducersInner) => {
+      selectedId.value = item.id
+      deleteDialog.value = true
+    }
+
+    const handleDeleteFormSubmit = async () => {
+      try {
+        await producerStore.deleteProducer(selectedId.value)
+        addSnackbar({
+          color: 'info',
+          message: '生産者を削除しました。',
+        })
+        fetch()
+      } catch (error) {
+        const errorMessage =
+          error instanceof ApiBaseError
+            ? error.message
+            : '不明なエラーが発生しました。'
+        show(errorMessage)
+      }
+      deleteDialog.value = false
     }
 
     const handleAddVideo = (item: ProducersResponseProducersInner) => {
@@ -187,20 +260,30 @@ export default defineComponent({
     }
 
     return {
-      handleClickAddButton,
+      // 定数
       headers,
       options,
-      handleUpdatePage,
-      handleUpdateItemsPerPage,
-      totalItems,
+      noResultsText,
+      alertType,
+      // 変数
+      isShow,
+      alertText,
+      deleteDialog,
+      fetchState,
       producers,
+      totalItems,
       search,
       query,
-      noResultsText,
-      fetchState,
+      selectedItemName,
+      // 関数
+      handleClickAddButton,
+      handleUpdatePage,
+      handleUpdateItemsPerPage,
       handleSearch,
       handleEdit,
-      handleDelete,
+      handleClickDeleteButton,
+      handleClickCancelButton,
+      handleDeleteFormSubmit,
       handleAddVideo,
     }
   },

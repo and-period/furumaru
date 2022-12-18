@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -27,68 +28,48 @@ func TestFilterAccessOrder(t *testing.T) {
 		UserID:            "user-id",
 		CoordinatorID:     "coordinator-id",
 		ScheduleID:        "schedule-id",
-		PaymentStatus:     sentity.PaymentStatusCaptured,
-		FulfillmentStatus: sentity.FulfillmentStatusFulfilled,
+		PromotionID:       "",
+		PaymentStatus:     sentity.PaymentStatusInitialized,
+		FulfillmentStatus: sentity.FulfillmentStatusUnfulfilled,
 		CancelType:        sentity.CancelTypeUnknown,
 		CancelReason:      "",
-		OrderItems: sentity.OrderItems{
+		CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		OrderItems: []*sentity.OrderItem{
 			{
-				ID:         "item-id",
-				OrderID:    "order-id",
-				ProductID:  "product-id",
-				Price:      100,
-				Quantity:   1,
-				Weight:     1000,
-				WeightUnit: sentity.WeightUnitGram,
-				CreatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				OrderID:   "order-id",
+				ProductID: "product-id",
+				Price:     100,
+				Quantity:  1,
+				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 		},
-		OrderPayment: sentity.OrderPayment{
-			ID:             "payment-id",
-			TransactionID:  "transaction-id",
-			OrderID:        "order-id",
-			PromotionID:    "promotion-id",
-			PaymentID:      "payment-id",
-			PaymentType:    sentity.PaymentTypeCard,
-			Subtotal:       100,
-			Discount:       0,
-			ShippingCharge: 500,
-			Tax:            60,
-			Total:          660,
-			Lastname:       "&.",
-			Firstname:      "スタッフ",
-			PostalCode:     "1000014",
-			Prefecture:     "東京都",
-			City:           "千代田区",
-			AddressLine1:   "永田町1-7-1",
-			AddressLine2:   "",
-			PhoneNumber:    "+819012345678",
-			CreatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
-			UpdatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		Payment: sentity.Payment{
+			OrderID:       "order-id",
+			AddressID:     "address-id",
+			TransactionID: "transaction-id",
+			MethodType:    sentity.PaymentMethodTypeCard,
+			MethodID:      "payment-id",
+			Subtotal:      1100,
+			Discount:      0,
+			ShippingFee:   500,
+			Tax:           160,
+			Total:         1760,
+			CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
-		OrderFulfillment: sentity.OrderFulfillment{
-			ID:              "fulfillment-id",
+		Fulfillment: sentity.Fulfillment{
 			OrderID:         "order-id",
-			ShippingID:      "shipping-id",
+			AddressID:       "address-id",
 			TrackingNumber:  "",
 			ShippingCarrier: sentity.ShippingCarrierUnknown,
 			ShippingMethod:  sentity.DeliveryTypeNormal,
 			BoxSize:         sentity.ShippingSize60,
-			BoxCount:        1,
-			WeightTotal:     1000,
-			Lastname:        "&.",
-			Firstname:       "スタッフ",
-			PostalCode:      "1000014",
-			Prefecture:      "東京都",
-			City:            "千代田区",
-			AddressLine1:    "永田町1-7-1",
-			AddressLine2:    "",
-			PhoneNumber:     "+819012345678",
 			CreatedAt:       jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			UpdatedAt:       jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
-		OrderActivities: sentity.OrderActivities{
+		Activities: []*sentity.Activity{
 			{
 				ID:        "event-id",
 				OrderID:   "order-id",
@@ -96,152 +77,6 @@ func TestFilterAccessOrder(t *testing.T) {
 				EventType: sentity.OrderEventTypeUnknown,
 				Detail:    "支払いが完了しました。",
 			},
-		},
-		CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
-		UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
-	}
-
-	tests := []struct {
-		name    string
-		setup   func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
-		options []testOption
-		expect  int
-	}{
-		{
-			name:    "administrator success",
-			setup:   func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
-			options: []testOption{withRole(uentity.AdminRoleAdministrator)},
-			expect:  http.StatusOK,
-		},
-		{
-			name: "coordinator success",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().GetOrder(gomock.Any(), in).Return(order, nil)
-			},
-			options: []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("coordinator-id")},
-			expect:  http.StatusOK,
-		},
-		{
-			name: "coordinator forbidden",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().GetOrder(gomock.Any(), in).Return(order, nil)
-			},
-			options: []testOption{withRole(uentity.AdminRoleCoordinator)},
-			expect:  http.StatusForbidden,
-		},
-		{
-			name: "coordinator failed to get order",
-			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
-				mocks.store.EXPECT().GetOrder(gomock.Any(), in).Return(nil, assert.AnError)
-			},
-			options: []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("coordinator-id")},
-			expect:  http.StatusInternalServerError,
-		},
-		{
-			name:    "forbidden order",
-			setup:   func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
-			options: []testOption{withRole(uentity.AdminRoleProducer)},
-			expect:  http.StatusForbidden,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			const route, path = "/orders/:orderId", "/orders/order-id"
-			testMiddleware(t, tt.setup, route, path, tt.expect, func(h *handler) gin.HandlerFunc {
-				return h.filterAccessOrder
-			}, tt.options...)
-		})
-	}
-}
-
-func TestListOrders(t *testing.T) {
-	t.Parallel()
-
-	ordersIn := &store.ListOrdersInput{
-		Limit:  20,
-		Offset: 0,
-		Orders: []*store.ListOrdersOrder{},
-	}
-	orders := sentity.Orders{
-		{
-			ID:                "order-id",
-			UserID:            "user-id",
-			CoordinatorID:     "coordinator-id",
-			ScheduleID:        "schedule-id",
-			PaymentStatus:     sentity.PaymentStatusCaptured,
-			FulfillmentStatus: sentity.FulfillmentStatusFulfilled,
-			CancelType:        sentity.CancelTypeUnknown,
-			CancelReason:      "",
-			OrderItems: sentity.OrderItems{
-				{
-					ID:         "item-id",
-					OrderID:    "order-id",
-					ProductID:  "product-id",
-					Price:      100,
-					Quantity:   1,
-					Weight:     1000,
-					WeightUnit: sentity.WeightUnitGram,
-					CreatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
-					UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				},
-			},
-			OrderPayment: sentity.OrderPayment{
-				ID:             "payment-id",
-				TransactionID:  "transaction-id",
-				OrderID:        "order-id",
-				PromotionID:    "promotion-id",
-				PaymentID:      "payment-id",
-				PaymentType:    sentity.PaymentTypeCard,
-				Subtotal:       100,
-				Discount:       0,
-				ShippingCharge: 500,
-				Tax:            60,
-				Total:          660,
-				Lastname:       "&.",
-				Firstname:      "スタッフ",
-				PostalCode:     "1000014",
-				Prefecture:     "東京都",
-				City:           "千代田区",
-				AddressLine1:   "永田町1-7-1",
-				AddressLine2:   "",
-				PhoneNumber:    "+819012345678",
-				CreatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				UpdatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
-			},
-			OrderFulfillment: sentity.OrderFulfillment{
-				ID:              "fulfillment-id",
-				OrderID:         "order-id",
-				ShippingID:      "shipping-id",
-				TrackingNumber:  "",
-				ShippingCarrier: sentity.ShippingCarrierUnknown,
-				ShippingMethod:  sentity.DeliveryTypeNormal,
-				BoxSize:         sentity.ShippingSize60,
-				BoxCount:        1,
-				WeightTotal:     1000,
-				Lastname:        "&.",
-				Firstname:       "スタッフ",
-				PostalCode:      "1000014",
-				Prefecture:      "東京都",
-				City:            "千代田区",
-				AddressLine1:    "永田町1-7-1",
-				AddressLine2:    "",
-				PhoneNumber:     "+819012345678",
-				CreatedAt:       jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				UpdatedAt:       jst.Date(2022, 1, 1, 0, 0, 0, 0),
-			},
-			OrderActivities: sentity.OrderActivities{
-				{
-					ID:        "event-id",
-					OrderID:   "order-id",
-					UserID:    "user-id",
-					EventType: sentity.OrderEventTypeUnknown,
-					Detail:    "支払いが完了しました。",
-				},
-			},
-			CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
-			UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
 	}
 	usersIn := &user.MultiGetUsersInput{
@@ -254,9 +89,9 @@ func TestListOrders(t *testing.T) {
 			Customer: uentity.Customer{
 				UserID:        "user-id",
 				Lastname:      "&.",
-				Firstname:     "スタッフ",
+				Firstname:     "購入者",
 				LastnameKana:  "あんどどっと",
-				FirstnameKana: "すたっふ",
+				FirstnameKana: "こうにゅうしゃ",
 				PostalCode:    "1000014",
 				Prefecture:    "東京都",
 				City:          "千代田区",
@@ -314,6 +149,248 @@ func TestListOrders(t *testing.T) {
 			UpdatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
 	}
+	addressesIn := &store.MultiGetAddressesInput{
+		AddressIDs: []string{"address-id"},
+	}
+	addresses := sentity.Addresses{
+		{
+			ID:             "address-id",
+			UserID:         "user-id",
+			Hash:           "789ef22a79a364f95c66a3d3b1fda213c1316a6c7f8b6306b493d8c46d2dce75",
+			IsDefault:      true,
+			Lastname:       "&.",
+			Firstname:      "購入者",
+			PostalCode:     "1000014",
+			Prefecture:     "東京都",
+			PrefectureCode: 13,
+			City:           "千代田区",
+			AddressLine1:   "永田町1-7-1",
+			AddressLine2:   "",
+			PhoneNumber:    "+819012345678",
+			CreatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		},
+	}
+
+	tests := []struct {
+		name    string
+		setup   func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		options []testOption
+		expect  int
+	}{
+		{
+			name:    "administrator success",
+			setup:   func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			options: []testOption{withRole(uentity.AdminRoleAdministrator)},
+			expect:  http.StatusOK,
+		},
+		{
+			name: "coordinator success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().GetOrder(gomock.Any(), in).Return(order, nil)
+				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(users, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetAddresses(gomock.Any(), addressesIn).Return(addresses, nil)
+			},
+			options: []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("coordinator-id")},
+			expect:  http.StatusOK,
+		},
+		{
+			name: "coordinator forbidden",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().GetOrder(gomock.Any(), in).Return(order, nil)
+				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(users, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetAddresses(gomock.Any(), addressesIn).Return(addresses, nil)
+			},
+			options: []testOption{withRole(uentity.AdminRoleCoordinator)},
+			expect:  http.StatusForbidden,
+		},
+		{
+			name: "coordinator failed to get order",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().GetOrder(gomock.Any(), in).Return(nil, assert.AnError)
+			},
+			options: []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("coordinator-id")},
+			expect:  http.StatusInternalServerError,
+		},
+		{
+			name:    "forbidden order",
+			setup:   func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {},
+			options: []testOption{withRole(uentity.AdminRoleProducer)},
+			expect:  http.StatusForbidden,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const route, path = "/orders/:orderId", "/orders/order-id"
+			testMiddleware(t, tt.setup, route, path, tt.expect, func(h *handler) gin.HandlerFunc {
+				return h.filterAccessOrder
+			}, tt.options...)
+		})
+	}
+}
+
+func TestListOrders(t *testing.T) {
+	t.Parallel()
+
+	ordersIn := &store.ListOrdersInput{
+		Limit:  20,
+		Offset: 0,
+		Orders: []*store.ListOrdersOrder{},
+	}
+	orders := sentity.Orders{
+		{
+			ID:                "order-id",
+			UserID:            "user-id",
+			CoordinatorID:     "coordinator-id",
+			ScheduleID:        "schedule-id",
+			PromotionID:       "",
+			PaymentStatus:     sentity.PaymentStatusInitialized,
+			FulfillmentStatus: sentity.FulfillmentStatusUnfulfilled,
+			CancelType:        sentity.CancelTypeUnknown,
+			CancelReason:      "",
+			CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			OrderItems: []*sentity.OrderItem{
+				{
+					OrderID:   "order-id",
+					ProductID: "product-id",
+					Price:     100,
+					Quantity:  1,
+					CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				},
+			},
+			Payment: sentity.Payment{
+				OrderID:       "order-id",
+				AddressID:     "address-id",
+				TransactionID: "transaction-id",
+				MethodType:    sentity.PaymentMethodTypeCard,
+				MethodID:      "payment-id",
+				Subtotal:      1100,
+				Discount:      0,
+				ShippingFee:   500,
+				Tax:           160,
+				Total:         1760,
+				CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			},
+			Fulfillment: sentity.Fulfillment{
+				OrderID:         "order-id",
+				AddressID:       "address-id",
+				TrackingNumber:  "",
+				ShippingCarrier: sentity.ShippingCarrierUnknown,
+				ShippingMethod:  sentity.DeliveryTypeNormal,
+				BoxSize:         sentity.ShippingSize60,
+				CreatedAt:       jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt:       jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			},
+			Activities: []*sentity.Activity{
+				{
+					ID:        "event-id",
+					OrderID:   "order-id",
+					UserID:    "user-id",
+					EventType: sentity.OrderEventTypeUnknown,
+					Detail:    "支払いが完了しました。",
+				},
+			},
+		},
+	}
+	usersIn := &user.MultiGetUsersInput{
+		UserIDs: []string{"user-id"},
+	}
+	users := uentity.Users{
+		{
+			ID:         "user-id",
+			Registered: true,
+			Customer: uentity.Customer{
+				UserID:        "user-id",
+				Lastname:      "&.",
+				Firstname:     "購入者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "こうにゅうしゃ",
+				PostalCode:    "1000014",
+				Prefecture:    "東京都",
+				City:          "千代田区",
+				AddressLine1:  "永田町1-7-1",
+				AddressLine2:  "",
+				CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			},
+			Member: uentity.Member{
+				UserID:       "user-id",
+				AccountID:    "account-id",
+				CognitoID:    "cognito-id",
+				Username:     "username",
+				ProviderType: uentity.ProviderTypeEmail,
+				Email:        "test-user@and-period.jp",
+				PhoneNumber:  "+819012345678",
+				ThumbnailURL: "https://and-period.jp/thumbnail.png",
+				CreatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				VerifiedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			},
+			CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		},
+	}
+	productsIn := &store.MultiGetProductsInput{
+		ProductIDs: []string{"product-id"},
+	}
+	products := sentity.Products{
+		{
+			ID:              "product-id",
+			TypeID:          "product-type-id",
+			ProducerID:      "producer-id",
+			Name:            "新鮮なじゃがいも",
+			Description:     "新鮮なじゃがいもをお届けします。",
+			Public:          true,
+			Inventory:       100,
+			Weight:          1300,
+			WeightUnit:      sentity.WeightUnitGram,
+			Item:            1,
+			ItemUnit:        "袋",
+			ItemDescription: "1袋あたり100gのじゃがいも",
+			Media: sentity.MultiProductMedia{
+				{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+				{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+			},
+			Price:            400,
+			DeliveryType:     sentity.DeliveryTypeNormal,
+			Box60Rate:        50,
+			Box80Rate:        40,
+			Box100Rate:       30,
+			OriginPrefecture: "滋賀県",
+			OriginCity:       "彦根市",
+			CreatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		},
+	}
+	addressesIn := &store.MultiGetAddressesInput{
+		AddressIDs: []string{"address-id"},
+	}
+	addresses := sentity.Addresses{
+		{
+			ID:             "address-id",
+			UserID:         "user-id",
+			Hash:           "789ef22a79a364f95c66a3d3b1fda213c1316a6c7f8b6306b493d8c46d2dce75",
+			IsDefault:      true,
+			Lastname:       "&.",
+			Firstname:      "購入者",
+			PostalCode:     "1000014",
+			Prefecture:     "東京都",
+			PrefectureCode: 13,
+			City:           "千代田区",
+			AddressLine1:   "永田町1-7-1",
+			AddressLine2:   "",
+			PhoneNumber:    "+819012345678",
+			CreatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		},
+	}
 
 	tests := []struct {
 		name    string
@@ -328,6 +405,7 @@ func TestListOrders(t *testing.T) {
 				mocks.store.EXPECT().ListOrders(gomock.Any(), ordersIn).Return(orders, int64(1), nil)
 				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(users, nil)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetAddresses(gomock.Any(), addressesIn).Return(addresses, nil)
 			},
 			options: []testOption{withRole(uentity.AdminRoleAdministrator)},
 			query:   "",
@@ -336,51 +414,56 @@ func TestListOrders(t *testing.T) {
 				body: &response.OrdersResponse{
 					Orders: []*response.Order{
 						{
-							ID:         "order-id",
-							UserID:     "user-id",
-							UserName:   "&. スタッフ",
-							ScheduleID: "schedule-id",
+							ID:          "order-id",
+							UserID:      "user-id",
+							UserName:    "&. 購入者",
+							ScheduleID:  "schedule-id",
+							PromotionID: "",
 							Payment: &response.OrderPayment{
-								TransactionID:  "transaction-id",
-								PromotionID:    "promotion-id",
-								PaymentID:      "payment-id",
-								PaymentType:    2,
-								Status:         4,
-								Subtotal:       100,
-								Discount:       0,
-								ShippingCharge: 500,
-								Tax:            60,
-								Total:          660,
-								Lastname:       "&.",
-								Firstname:      "スタッフ",
-								PostalCode:     "1000014",
-								Prefecture:     "東京都",
-								City:           "千代田区",
-								AddressLine1:   "永田町1-7-1",
-								AddressLine2:   "",
-								PhoneNumber:    "+819012345678",
+								TransactionID: "transaction-id",
+								MethodID:      "payment-id",
+								MethodType:    int32(service.PaymentMethodTypeCard),
+								Status:        int32(service.PaymentStatusUnpaid),
+								Subtotal:      1100,
+								Discount:      0,
+								ShippingFee:   500,
+								Tax:           160,
+								Total:         1760,
+								AddressID:     "address-id",
+								Address: &response.Address{
+									Lastname:     "&.",
+									Firstname:    "購入者",
+									PostalCode:   "1000014",
+									Prefecture:   "東京都",
+									City:         "千代田区",
+									AddressLine1: "永田町1-7-1",
+									AddressLine2: "",
+									PhoneNumber:  "+819012345678",
+								},
 							},
 							Fulfillment: &response.OrderFulfillment{
 								TrackingNumber:  "",
-								Status:          2,
-								ShippingCarrier: 0,
-								ShippingMethod:  1,
-								BoxSize:         1,
-								BoxCount:        1,
-								WeightTotal:     1.0,
-								Lastname:        "&.",
-								Firstname:       "スタッフ",
-								PostalCode:      "1000014",
-								Prefecture:      "東京都",
-								City:            "千代田区",
-								AddressLine1:    "永田町1-7-1",
-								AddressLine2:    "",
-								PhoneNumber:     "+819012345678",
+								Status:          int32(service.FulfillmentStatusUnfulfilled),
+								ShippingCarrier: int32(service.ShippingCarrierUnknown),
+								ShippingMethod:  int32(service.DeliveryTypeNormal),
+								BoxSize:         int32(service.ShippingSize60),
+								AddressID:       "address-id",
+								Address: &response.Address{
+									Lastname:     "&.",
+									Firstname:    "購入者",
+									PostalCode:   "1000014",
+									Prefecture:   "東京都",
+									City:         "千代田区",
+									AddressLine1: "永田町1-7-1",
+									AddressLine2: "",
+									PhoneNumber:  "+819012345678",
+								},
 							},
 							Refund: &response.OrderRefund{
 								Canceled: false,
-								Type:     0,
+								Type:     int32(service.OrderRefundTypeUnknown),
 								Reason:   "",
+								Total:    0,
 							},
 							Items: []*response.OrderItem{
 								{
@@ -388,18 +471,10 @@ func TestListOrders(t *testing.T) {
 									Name:      "新鮮なじゃがいも",
 									Price:     100,
 									Quantity:  1,
-									Weight:    1.0,
+									Weight:    1.3,
 									Media: []*response.ProductMedia{
-										{
-											URL:         "https://and-period.jp/thumbnail01.png",
-											IsThumbnail: true,
-											Images:      []*response.Image{},
-										},
-										{
-											URL:         "https://and-period.jp/thumbnail02.png",
-											IsThumbnail: false,
-											Images:      []*response.Image{},
-										},
+										{URL: "https://and-period.jp/thumbnail01.png", Images: []*response.Image{}, IsThumbnail: true},
+										{URL: "https://and-period.jp/thumbnail02.png", Images: []*response.Image{}, IsThumbnail: false},
 									},
 								},
 							},
@@ -476,6 +551,7 @@ func TestListOrders(t *testing.T) {
 				mocks.store.EXPECT().ListOrders(gomock.Any(), ordersIn).Return(orders, int64(1), nil)
 				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(nil, assert.AnError)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetAddresses(gomock.Any(), addressesIn).Return(addresses, nil)
 			},
 			query: "",
 			expect: &testResponse{
@@ -488,6 +564,20 @@ func TestListOrders(t *testing.T) {
 				mocks.store.EXPECT().ListOrders(gomock.Any(), ordersIn).Return(orders, int64(1), nil)
 				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(users, nil)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(nil, assert.AnError)
+				mocks.store.EXPECT().MultiGetAddresses(gomock.Any(), addressesIn).Return(addresses, nil)
+			},
+			query: "",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to multi get addresses",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().ListOrders(gomock.Any(), ordersIn).Return(orders, int64(1), nil)
+				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(users, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetAddresses(gomock.Any(), addressesIn).Return(nil, assert.AnError)
 			},
 			query: "",
 			expect: &testResponse{
@@ -517,68 +607,48 @@ func TestGetOrder(t *testing.T) {
 		UserID:            "user-id",
 		CoordinatorID:     "coordinator-id",
 		ScheduleID:        "schedule-id",
-		PaymentStatus:     sentity.PaymentStatusCaptured,
-		FulfillmentStatus: sentity.FulfillmentStatusFulfilled,
+		PromotionID:       "",
+		PaymentStatus:     sentity.PaymentStatusInitialized,
+		FulfillmentStatus: sentity.FulfillmentStatusUnfulfilled,
 		CancelType:        sentity.CancelTypeUnknown,
 		CancelReason:      "",
-		OrderItems: sentity.OrderItems{
+		CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		OrderItems: []*sentity.OrderItem{
 			{
-				ID:         "item-id",
-				OrderID:    "order-id",
-				ProductID:  "product-id",
-				Price:      100,
-				Quantity:   1,
-				Weight:     1000,
-				WeightUnit: sentity.WeightUnitGram,
-				CreatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				OrderID:   "order-id",
+				ProductID: "product-id",
+				Price:     100,
+				Quantity:  1,
+				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 		},
-		OrderPayment: sentity.OrderPayment{
-			ID:             "payment-id",
-			TransactionID:  "transaction-id",
-			OrderID:        "order-id",
-			PromotionID:    "promotion-id",
-			PaymentID:      "payment-id",
-			PaymentType:    sentity.PaymentTypeCard,
-			Subtotal:       100,
-			Discount:       0,
-			ShippingCharge: 500,
-			Tax:            60,
-			Total:          660,
-			Lastname:       "&.",
-			Firstname:      "スタッフ",
-			PostalCode:     "1000014",
-			Prefecture:     "東京都",
-			City:           "千代田区",
-			AddressLine1:   "永田町1-7-1",
-			AddressLine2:   "",
-			PhoneNumber:    "+819012345678",
-			CreatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
-			UpdatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		Payment: sentity.Payment{
+			OrderID:       "order-id",
+			AddressID:     "address-id",
+			TransactionID: "transaction-id",
+			MethodType:    sentity.PaymentMethodTypeCard,
+			MethodID:      "payment-id",
+			Subtotal:      1100,
+			Discount:      0,
+			ShippingFee:   500,
+			Tax:           160,
+			Total:         1760,
+			CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
-		OrderFulfillment: sentity.OrderFulfillment{
-			ID:              "fulfillment-id",
+		Fulfillment: sentity.Fulfillment{
 			OrderID:         "order-id",
-			ShippingID:      "shipping-id",
+			AddressID:       "address-id",
 			TrackingNumber:  "",
 			ShippingCarrier: sentity.ShippingCarrierUnknown,
 			ShippingMethod:  sentity.DeliveryTypeNormal,
 			BoxSize:         sentity.ShippingSize60,
-			BoxCount:        1,
-			WeightTotal:     1000,
-			Lastname:        "&.",
-			Firstname:       "スタッフ",
-			PostalCode:      "1000014",
-			Prefecture:      "東京都",
-			City:            "千代田区",
-			AddressLine1:    "永田町1-7-1",
-			AddressLine2:    "",
-			PhoneNumber:     "+819012345678",
 			CreatedAt:       jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			UpdatedAt:       jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
-		OrderActivities: sentity.OrderActivities{
+		Activities: []*sentity.Activity{
 			{
 				ID:        "event-id",
 				OrderID:   "order-id",
@@ -587,44 +657,44 @@ func TestGetOrder(t *testing.T) {
 				Detail:    "支払いが完了しました。",
 			},
 		},
-		CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
-		UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 	}
-	userIn := &user.GetUserInput{
-		UserID: "user-id",
+	usersIn := &user.MultiGetUsersInput{
+		UserIDs: []string{"user-id"},
 	}
-	u := &uentity.User{
-		ID:         "user-id",
-		Registered: true,
-		Customer: uentity.Customer{
-			UserID:        "user-id",
-			Lastname:      "&.",
-			Firstname:     "スタッフ",
-			LastnameKana:  "あんどどっと",
-			FirstnameKana: "すたっふ",
-			PostalCode:    "1000014",
-			Prefecture:    "東京都",
-			City:          "千代田区",
-			AddressLine1:  "永田町1-7-1",
-			AddressLine2:  "",
-			CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
-			UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+	users := uentity.Users{
+		{
+			ID:         "user-id",
+			Registered: true,
+			Customer: uentity.Customer{
+				UserID:        "user-id",
+				Lastname:      "&.",
+				Firstname:     "購入者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "こうにゅうしゃ",
+				PostalCode:    "1000014",
+				Prefecture:    "東京都",
+				City:          "千代田区",
+				AddressLine1:  "永田町1-7-1",
+				AddressLine2:  "",
+				CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			},
+			Member: uentity.Member{
+				UserID:       "user-id",
+				AccountID:    "account-id",
+				CognitoID:    "cognito-id",
+				Username:     "username",
+				ProviderType: uentity.ProviderTypeEmail,
+				Email:        "test-user@and-period.jp",
+				PhoneNumber:  "+819012345678",
+				ThumbnailURL: "https://and-period.jp/thumbnail.png",
+				CreatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				VerifiedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			},
+			CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
-		Member: uentity.Member{
-			UserID:       "user-id",
-			AccountID:    "account-id",
-			CognitoID:    "cognito-id",
-			Username:     "username",
-			ProviderType: uentity.ProviderTypeEmail,
-			Email:        "test-user@and-period.jp",
-			PhoneNumber:  "+819012345678",
-			ThumbnailURL: "https://and-period.jp/thumbnail.png",
-			CreatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
-			UpdatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
-			VerifiedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
-		},
-		CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
-		UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 	}
 	productsIn := &store.MultiGetProductsInput{
 		ProductIDs: []string{"product-id"},
@@ -658,6 +728,28 @@ func TestGetOrder(t *testing.T) {
 			UpdatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
 		},
 	}
+	addressesIn := &store.MultiGetAddressesInput{
+		AddressIDs: []string{"address-id"},
+	}
+	addresses := sentity.Addresses{
+		{
+			ID:             "address-id",
+			UserID:         "user-id",
+			Hash:           "789ef22a79a364f95c66a3d3b1fda213c1316a6c7f8b6306b493d8c46d2dce75",
+			IsDefault:      true,
+			Lastname:       "&.",
+			Firstname:      "購入者",
+			PostalCode:     "1000014",
+			Prefecture:     "東京都",
+			PrefectureCode: 13,
+			City:           "千代田区",
+			AddressLine1:   "永田町1-7-1",
+			AddressLine2:   "",
+			PhoneNumber:    "+819012345678",
+			CreatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			UpdatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		},
+	}
 
 	tests := []struct {
 		name    string
@@ -669,59 +761,65 @@ func TestGetOrder(t *testing.T) {
 			name: "success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().GetOrder(gomock.Any(), orderIn).Return(order, nil)
-				mocks.user.EXPECT().GetUser(gomock.Any(), userIn).Return(u, nil)
+				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(users, nil)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetAddresses(gomock.Any(), addressesIn).Return(addresses, nil)
 			},
 			orderID: "order-id",
 			expect: &testResponse{
 				code: http.StatusOK,
 				body: &response.OrderResponse{
 					Order: &response.Order{
-						ID:         "order-id",
-						UserID:     "user-id",
-						UserName:   "&. スタッフ",
-						ScheduleID: "schedule-id",
+						ID:          "order-id",
+						UserID:      "user-id",
+						UserName:    "&. 購入者",
+						ScheduleID:  "schedule-id",
+						PromotionID: "",
 						Payment: &response.OrderPayment{
-							TransactionID:  "transaction-id",
-							PromotionID:    "promotion-id",
-							PaymentID:      "payment-id",
-							PaymentType:    2,
-							Status:         4,
-							Subtotal:       100,
-							Discount:       0,
-							ShippingCharge: 500,
-							Tax:            60,
-							Total:          660,
-							Lastname:       "&.",
-							Firstname:      "スタッフ",
-							PostalCode:     "1000014",
-							Prefecture:     "東京都",
-							City:           "千代田区",
-							AddressLine1:   "永田町1-7-1",
-							AddressLine2:   "",
-							PhoneNumber:    "+819012345678",
+							TransactionID: "transaction-id",
+							MethodID:      "payment-id",
+							MethodType:    int32(service.PaymentMethodTypeCard),
+							Status:        int32(service.PaymentStatusUnpaid),
+							Subtotal:      1100,
+							Discount:      0,
+							ShippingFee:   500,
+							Tax:           160,
+							Total:         1760,
+							AddressID:     "address-id",
+							Address: &response.Address{
+								Lastname:     "&.",
+								Firstname:    "購入者",
+								PostalCode:   "1000014",
+								Prefecture:   "東京都",
+								City:         "千代田区",
+								AddressLine1: "永田町1-7-1",
+								AddressLine2: "",
+								PhoneNumber:  "+819012345678",
+							},
 						},
 						Fulfillment: &response.OrderFulfillment{
 							TrackingNumber:  "",
-							Status:          2,
-							ShippingCarrier: 0,
-							ShippingMethod:  1,
-							BoxSize:         1,
-							BoxCount:        1,
-							WeightTotal:     1.0,
-							Lastname:        "&.",
-							Firstname:       "スタッフ",
-							PostalCode:      "1000014",
-							Prefecture:      "東京都",
-							City:            "千代田区",
-							AddressLine1:    "永田町1-7-1",
-							AddressLine2:    "",
-							PhoneNumber:     "+819012345678",
+							Status:          int32(service.FulfillmentStatusUnfulfilled),
+							ShippingCarrier: int32(service.ShippingCarrierUnknown),
+							ShippingMethod:  int32(service.DeliveryTypeNormal),
+							BoxSize:         int32(service.ShippingSize60),
+							AddressID:       "address-id",
+							Address: &response.Address{
+								Lastname:     "&.",
+								Firstname:    "購入者",
+								PostalCode:   "1000014",
+								Prefecture:   "東京都",
+								City:         "千代田区",
+								AddressLine1: "永田町1-7-1",
+								AddressLine2: "",
+								PhoneNumber:  "+819012345678",
+							},
 						},
 						Refund: &response.OrderRefund{
 							Canceled: false,
-							Type:     0,
+							Type:     int32(service.OrderRefundTypeUnknown),
 							Reason:   "",
+							Total:    0,
 						},
 						Items: []*response.OrderItem{
 							{
@@ -729,18 +827,10 @@ func TestGetOrder(t *testing.T) {
 								Name:      "新鮮なじゃがいも",
 								Price:     100,
 								Quantity:  1,
-								Weight:    1.0,
+								Weight:    1.3,
 								Media: []*response.ProductMedia{
-									{
-										URL:         "https://and-period.jp/thumbnail01.png",
-										IsThumbnail: true,
-										Images:      []*response.Image{},
-									},
-									{
-										URL:         "https://and-period.jp/thumbnail02.png",
-										IsThumbnail: false,
-										Images:      []*response.Image{},
-									},
+									{URL: "https://and-period.jp/thumbnail01.png", Images: []*response.Image{}, IsThumbnail: true},
+									{URL: "https://and-period.jp/thumbnail02.png", Images: []*response.Image{}, IsThumbnail: false},
 								},
 							},
 						},
@@ -768,8 +858,9 @@ func TestGetOrder(t *testing.T) {
 			name: "failed to get user",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().GetOrder(gomock.Any(), orderIn).Return(order, nil)
-				mocks.user.EXPECT().GetUser(gomock.Any(), userIn).Return(nil, assert.AnError)
+				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(nil, assert.AnError)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetAddresses(gomock.Any(), addressesIn).Return(addresses, nil)
 			},
 			orderID: "order-id",
 			expect: &testResponse{
@@ -780,8 +871,22 @@ func TestGetOrder(t *testing.T) {
 			name: "failed to multi get products",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().GetOrder(gomock.Any(), orderIn).Return(order, nil)
-				mocks.user.EXPECT().GetUser(gomock.Any(), userIn).Return(u, nil)
+				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(users, nil)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(nil, assert.AnError)
+				mocks.store.EXPECT().MultiGetAddresses(gomock.Any(), addressesIn).Return(addresses, nil)
+			},
+			orderID: "order-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to multi get addresses",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().GetOrder(gomock.Any(), orderIn).Return(order, nil)
+				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(users, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetAddresses(gomock.Any(), addressesIn).Return(nil, assert.AnError)
 			},
 			orderID: "order-id",
 			expect: &testResponse{

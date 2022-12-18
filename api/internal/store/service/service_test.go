@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/database"
 	mock_media "github.com/and-period/furumaru/api/mock/media"
 	mock_messenger "github.com/and-period/furumaru/api/mock/messenger"
+	mock_ivs "github.com/and-period/furumaru/api/mock/pkg/ivs"
 	mock_postalcode "github.com/and-period/furumaru/api/mock/pkg/postalcode"
 	mock_database "github.com/and-period/furumaru/api/mock/store/database"
 	mock_user "github.com/and-period/furumaru/api/mock/user"
@@ -24,9 +25,11 @@ type mocks struct {
 	messenger  *mock_messenger.MockService
 	media      *mock_media.MockService
 	postalCode *mock_postalcode.MockClient
+	ivs        *mock_ivs.MockClient
 }
 
 type dbMocks struct {
+	Address     *mock_database.MockAddress
 	Category    *mock_database.MockCategory
 	Order       *mock_database.MockOrder
 	Product     *mock_database.MockProduct
@@ -34,6 +37,7 @@ type dbMocks struct {
 	Promotion   *mock_database.MockPromotion
 	Shipping    *mock_database.MockShipping
 	Schedule    *mock_database.MockSchedule
+	Live        *mock_database.MockLive
 }
 
 type testOptions struct {
@@ -59,11 +63,13 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 		messenger:  mock_messenger.NewMockService(ctrl),
 		media:      mock_media.NewMockService(ctrl),
 		postalCode: mock_postalcode.NewMockClient(ctrl),
+		ivs:        mock_ivs.NewMockClient(ctrl),
 	}
 }
 
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
+		Address:     mock_database.NewMockAddress(ctrl),
 		Category:    mock_database.NewMockCategory(ctrl),
 		Order:       mock_database.NewMockOrder(ctrl),
 		Product:     mock_database.NewMockProduct(ctrl),
@@ -71,6 +77,7 @@ func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 		Promotion:   mock_database.NewMockPromotion(ctrl),
 		Shipping:    mock_database.NewMockShipping(ctrl),
 		Schedule:    mock_database.NewMockSchedule(ctrl),
+		Live:        mock_database.NewMockLive(ctrl),
 	}
 }
 
@@ -84,6 +91,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 	params := &Params{
 		WaitGroup: &sync.WaitGroup{},
 		Database: &database.Database{
+			Address:     mocks.db.Address,
 			Category:    mocks.db.Category,
 			Order:       mocks.db.Order,
 			Product:     mocks.db.Product,
@@ -91,11 +99,13 @@ func newService(mocks *mocks, opts ...testOption) *service {
 			Promotion:   mocks.db.Promotion,
 			Shipping:    mocks.db.Shipping,
 			Schedule:    mocks.db.Schedule,
+			Live:        mocks.db.Live,
 		},
 		User:       mocks.user,
 		Messenger:  mocks.messenger,
 		Media:      mocks.media,
 		PostalCode: mocks.postalCode,
+		Ivs:        mocks.ivs,
 	}
 	service := NewService(params).(*service)
 	service.now = func() time.Time {

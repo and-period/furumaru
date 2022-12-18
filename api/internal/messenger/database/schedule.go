@@ -38,10 +38,10 @@ func (s *schedule) List(ctx context.Context, params *ListSchedulesParams, fields
 }
 
 func (s *schedule) UpsertProcessing(ctx context.Context, schedule *entity.Schedule) error {
-	_, err := s.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
 		current, err := s.get(ctx, tx, schedule.MessageType, schedule.MessageID)
 		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, err
+			return err
 		}
 
 		now := s.now()
@@ -49,7 +49,7 @@ func (s *schedule) UpsertProcessing(ctx context.Context, schedule *entity.Schedu
 			schedule.CreatedAt, schedule.UpdatedAt = now, now
 		} else {
 			if !current.Executable(now) {
-				return nil, fmt.Errorf("database: schedule is not executable %w", exception.ErrFailedPrecondition)
+				return fmt.Errorf("database: schedule is not executable %w", exception.ErrFailedPrecondition)
 			}
 			schedule.UpdatedAt = now
 		}
@@ -57,20 +57,20 @@ func (s *schedule) UpsertProcessing(ctx context.Context, schedule *entity.Schedu
 		schedule.Count++
 
 		err = tx.WithContext(ctx).Table(scheduleTable).Save(&schedule).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (s *schedule) UpdateDone(ctx context.Context, messageType entity.ScheduleType, messageID string) error {
-	_, err := s.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
 		current, err := s.get(ctx, tx, messageType, messageID, "status")
 		if err != nil {
-			return nil, err
+			return err
 		}
 
 		if current.Status == entity.ScheduleStatusDone {
-			return nil, fmt.Errorf("database: schedule is already done: %w", exception.ErrFailedPrecondition)
+			return fmt.Errorf("database: schedule is already done: %w", exception.ErrFailedPrecondition)
 		}
 
 		params := map[string]interface{}{
@@ -82,21 +82,21 @@ func (s *schedule) UpdateDone(ctx context.Context, messageType entity.ScheduleTy
 			Where("message_type = ?", messageType).
 			Where("message_id = ?", messageID).
 			Updates(params).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (s *schedule) UpdateCancel(ctx context.Context, messageType entity.ScheduleType, messageID string) error {
-	_, err := s.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
 		current, err := s.get(ctx, tx, messageType, messageID)
 		if err != nil {
-			return nil, err
+			return err
 		}
 
 		now := s.now()
 		if !current.ShouldCancel(now) {
-			return nil, fmt.Errorf("database: schedule should not cancel: %w", exception.ErrFailedPrecondition)
+			return fmt.Errorf("database: schedule should not cancel: %w", exception.ErrFailedPrecondition)
 		}
 
 		params := map[string]interface{}{
@@ -108,7 +108,7 @@ func (s *schedule) UpdateCancel(ctx context.Context, messageType entity.Schedule
 			Where("message_type = ?", messageType).
 			Where("message_id = ?", messageID).
 			Updates(params).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }

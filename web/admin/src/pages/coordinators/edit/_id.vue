@@ -15,89 +15,20 @@
 
     <v-tabs-items v-model="tab">
       <v-tab-item value="coordinators">
-        <v-card elevation="0">
-          <v-card-text>
-            <v-text-field
-              v-model="v$.companyName.$model"
-              :error-messages="getErrorMessage(v$.companyName.$errors)"
-              label="会社名"
-            />
-            <v-text-field
-              v-model="v$.storeName.$model"
-              :error-messages="getErrorMessage(v$.storeName.$errors)"
-              label="店舗名"
-            />
-            <div class="mb-2 d-flex">
-              <the-profile-select-form
-                class="mr-4 flex-grow-1 flex-shrink-1"
-                :img-url="formData.thumbnailUrl"
-                :error="thumbnailUploadStatus.error"
-                :message="thumbnailUploadStatus.message"
-                @update:file="handleUpdateThumbnail"
-              />
-              <the-header-select-form
-                class="flex-grow-1 flex-shrink-1"
-                :img-url="formData.headerUrl"
-                :error="headerUploadStatus.error"
-                :message="headerUploadStatus.message"
-                @update:file="handleUpdateHeader"
-              />
-            </div>
-            <div class="d-flex">
-              <v-text-field
-                v-model="v$.lastname.$model"
-                :error-messages="getErrorMessage(v$.lastname.$errors)"
-                class="mr-4"
-                label="コーディネーター:姓"
-              />
-              <v-text-field
-                v-model="v$.firstname.$model"
-                :error-messages="getErrorMessage(v$.firstname.$errors)"
-                label="コーディネーター:名"
-              />
-            </div>
-            <div class="d-flex">
-              <v-text-field
-                v-model="v$.lastnameKana.$model"
-                :error-messages="getErrorMessage(v$.lastnameKana.$errors)"
-                label="コーディネーター:姓（ふりがな）"
-              />
-              <v-text-field
-                v-model="v$.firstnameKana.$model"
-                :error-messages="getErrorMessage(v$.firstnameKana.$errors)"
-                class="mr-4"
-                label="コーディネーター:名（ふりがな）"
-              />
-            </div>
-            <v-text-field
-              v-model="v$.email.$model"
-              label="連絡先（Email）"
-              :error-messages="getErrorMessage(v$.email.$errors)"
-            />
-            <v-text-field
-              v-model="v$.phoneNumber.$model"
-              :error-messages="getErrorMessage(v$.phoneNumber.$errors)"
-              type="tel"
-              label="連絡先（電話番号）"
-            />
+        <v-skeleton-loader v-if="fetchState.pending" type="article" />
 
-            <the-address-form
-              :postal-code.sync="formData.postalCode"
-              :prefecture.sync="formData.prefecture"
-              :city.sync="formData.city"
-              :address-line1.sync="formData.addressLine1"
-              :address-line2.sync="formData.addressLine2"
-              :loading="searchLoading"
-              :error-message="searchErrorMessage"
-              @click:search="searchAddress"
-            />
-          </v-card-text>
-          <v-card-actions>
-            <v-btn block outlined color="primary" @click="handleSubmit"
-              >登録</v-btn
-            >
-          </v-card-actions>
-        </v-card>
+        <the-coordinator-edit-form
+          v-else
+          :form-data="formData"
+          :thumbnail-upload-status="thumbnailUploadStatus"
+          :header-upload-status="headerUploadStatus"
+          :search-loading="searchLoading"
+          :search-error-message="searchErrorMessage"
+          @update:thumbnailFile="handleUpdateThumbnail"
+          @update:headerFile="handleUpdateHeader"
+          @submit="handleSubmit"
+          @click:search="searchAddress"
+        />
       </v-tab-item>
 
       <v-tab-item value="relationProducers">
@@ -126,10 +57,7 @@
               item-value="id"
             >
               <template #selection="data">
-                <v-chip
-                  close
-                  @click:close="remove(data.item.id)"
-                >
+                <v-chip close @click:close="remove(data.item.id)">
                   <v-avatar left>
                     <v-img :src="data.item.thumbnailUrl"></v-img>
                   </v-avatar>
@@ -186,22 +114,23 @@ import {
 } from '@nuxtjs/composition-api'
 import { useVuelidate } from '@vuelidate/core'
 
+import TheCoordinatorEditForm from '~/components/organisms/TheCoordinatorEditForm.vue'
 import { useSearchAddress } from '~/lib/hooks'
 import {
   kana,
   getErrorMessage,
   required,
-  email,
   tel,
   maxLength,
 } from '~/lib/validations'
 import { useCoordinatorStore } from '~/store/coordinator'
 import { useProducerStore } from '~/store/producer'
-import { CoordinatorResponse } from '~/types/api'
+import { UpdateCoordinatorRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 import { Coordinator } from '~/types/props/coordinator'
 
 export default defineComponent({
+  components: { TheCoordinatorEditForm },
   setup() {
     const tab = ref<string>('coordinators')
     const tabItems: Coordinator[] = [
@@ -226,8 +155,7 @@ export default defineComponent({
 
     const { getCoordinator } = useCoordinatorStore()
 
-    const formData = reactive<CoordinatorResponse>({
-      id,
+    const formData = reactive<UpdateCoordinatorRequest>({
       storeName: '',
       firstname: '',
       lastname: '',
@@ -235,21 +163,16 @@ export default defineComponent({
       lastnameKana: '',
       companyName: '',
       thumbnailUrl: '',
-      thumbnails: [],
       headerUrl: '',
-      headers: [],
       twitterAccount: '',
       instagramAccount: '',
       facebookAccount: '',
-      email: '',
       phoneNumber: '',
       postalCode: '',
       prefecture: '',
       city: '',
       addressLine1: '',
       addressLine2: '',
-      createdAt: 0,
-      updatedAt: 0,
     })
 
     const { fetchState } = useFetch(async () => {
@@ -265,15 +188,12 @@ export default defineComponent({
       formData.twitterAccount = coordinator.twitterAccount
       formData.instagramAccount = coordinator.instagramAccount
       formData.facebookAccount = coordinator.facebookAccount
-      formData.email = coordinator.email
       formData.phoneNumber = coordinator.phoneNumber.replace('+81', '0')
       formData.postalCode = coordinator.postalCode
       formData.prefecture = coordinator.prefecture
       formData.city = coordinator.city
       formData.addressLine1 = coordinator.addressLine1
       formData.addressLine2 = coordinator.addressLine2
-      formData.createdAt = coordinator.createdAt
-      formData.updatedAt = coordinator.updatedAt
     })
 
     const rules = computed(() => ({
@@ -284,7 +204,6 @@ export default defineComponent({
       firstnameKana: { required, kana },
       lastnameKana: { required, kana },
       phoneNumber: { required, tel },
-      email: { required, email },
     }))
 
     const v$ = useVuelidate(rules, formData)
@@ -355,14 +274,14 @@ export default defineComponent({
           },
           id
         )
-        router.push('/')
+        router.push('/coordinators')
       } catch (error) {
         console.log(error)
       }
     }
 
     const remove = (item: string) => {
-      producers.value = producers.value.filter(id => id !== item)
+      producers.value = producers.value.filter((id) => id !== item)
     }
 
     useFetch(async () => {

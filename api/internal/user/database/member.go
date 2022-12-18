@@ -53,33 +53,33 @@ func (m *member) GetByEmail(ctx context.Context, email string, fields ...string)
 }
 
 func (m *member) Create(ctx context.Context, user *entity.User, auth func(ctx context.Context) error) error {
-	_, err := m.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := m.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := m.now()
 		user.CreatedAt, user.UpdatedAt = now, now
 		if err := tx.WithContext(ctx).Table(userTable).Create(&user).Error; err != nil {
-			return nil, err
+			return err
 		}
 		user.Member.CreatedAt, user.Member.UpdatedAt = now, now
 		if err := tx.WithContext(ctx).Table(memberTable).Create(&user.Member).Error; err != nil {
-			return nil, err
+			return err
 		}
 		user.Customer.CreatedAt, user.Customer.UpdatedAt = now, now
 		if err := tx.WithContext(ctx).Table(customerTable).Create(&user.Customer).Error; err != nil {
-			return nil, err
+			return err
 		}
-		return nil, auth(ctx)
+		return auth(ctx)
 	})
 	return exception.InternalError(err)
 }
 
 func (m *member) UpdateVerified(ctx context.Context, userID string) error {
-	_, err := m.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := m.db.Transaction(ctx, func(tx *gorm.DB) error {
 		current, err := m.get(ctx, tx, userID, "verified_at")
 		if err != nil {
-			return nil, err
+			return err
 		}
 		if !current.VerifiedAt.IsZero() {
-			return nil, exception.ErrFailedPrecondition
+			return exception.ErrFailedPrecondition
 		}
 
 		now := m.now()
@@ -91,15 +91,15 @@ func (m *member) UpdateVerified(ctx context.Context, userID string) error {
 			Table(memberTable).
 			Where("user_id = ?", userID).
 			Updates(params).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (m *member) UpdateAccount(ctx context.Context, userID, accountID, username string) error {
-	_, err := m.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := m.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := m.get(ctx, tx, userID); err != nil {
-			return nil, err
+			return err
 		}
 
 		var current *entity.Member
@@ -108,10 +108,10 @@ func (m *member) UpdateAccount(ctx context.Context, userID, accountID, username 
 			Where("account_id = ?", accountID).
 			First(&current).Error
 		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, err
+			return err
 		}
 		if current.UserID != "" {
-			return nil, exception.ErrAlreadyExists
+			return exception.ErrAlreadyExists
 		}
 
 		now := m.now()
@@ -124,19 +124,19 @@ func (m *member) UpdateAccount(ctx context.Context, userID, accountID, username 
 			Table(memberTable).
 			Where("user_id = ?", userID).
 			Updates(params).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (m *member) UpdateEmail(ctx context.Context, userID, email string) error {
-	_, err := m.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := m.db.Transaction(ctx, func(tx *gorm.DB) error {
 		current, err := m.get(ctx, tx, userID, "provider_type")
 		if err != nil {
-			return nil, err
+			return err
 		}
 		if current.ProviderType != entity.ProviderTypeEmail {
-			return nil, exception.ErrFailedPrecondition
+			return exception.ErrFailedPrecondition
 		}
 
 		now := m.now()
@@ -148,15 +148,15 @@ func (m *member) UpdateEmail(ctx context.Context, userID, email string) error {
 			Table(memberTable).
 			Where("user_id = ?", userID).
 			Updates(params).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (m *member) Delete(ctx context.Context, userID string, auth func(ctx context.Context) error) error {
-	_, err := m.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := m.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := m.get(ctx, tx, userID, "user_id"); err != nil {
-			return nil, err
+			return err
 		}
 
 		now := m.now()
@@ -170,7 +170,7 @@ func (m *member) Delete(ctx context.Context, userID string, auth func(ctx contex
 			Where("user_id = ?", userID).
 			Updates(memberParams).Error
 		if err != nil {
-			return nil, err
+			return err
 		}
 		userParams := map[string]interface{}{
 			"updated_at": now,
@@ -181,9 +181,9 @@ func (m *member) Delete(ctx context.Context, userID string, auth func(ctx contex
 			Where("id = ?", userID).
 			Updates(userParams).Error
 		if err != nil {
-			return nil, err
+			return err
 		}
-		return nil, auth(ctx)
+		return auth(ctx)
 	})
 	return exception.InternalError(err)
 }

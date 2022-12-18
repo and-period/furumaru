@@ -305,6 +305,10 @@ type CreateScheduleLive struct {
 	EndAt       time.Time `validate:"required"`
 }
 
+type GetLiveInput struct {
+	LiveID string `validate:"required"`
+}
+
 type ListOrdersInput struct {
 	CoordinatorID string             `validate:"omitempty"`
 	Limit         int64              `validate:"required,max=200"`
@@ -323,6 +327,10 @@ type GetOrderInput struct {
 
 type AggregateOrdersInput struct {
 	UserIDs []string `validate:"omitempty,dive,required"`
+}
+
+type MultiGetAddressesInput struct {
+	AddressIDs []string `validate:"omitempty,dive,required"`
 }
 
 type SearchPostalCodeInput struct {

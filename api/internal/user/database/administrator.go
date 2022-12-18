@@ -48,9 +48,7 @@ func (a *administrator) List(
 }
 
 func (a *administrator) Count(ctx context.Context, params *ListAdministratorsParams) (int64, error) {
-	var total int64
-
-	err := a.db.Count(ctx, a.db.DB, administratorTable).Find(&total).Error
+	total, err := a.db.Count(ctx, a.db.DB, &entity.Administrator{}, nil)
 	return total, exception.InternalError(err)
 }
 
@@ -87,25 +85,25 @@ func (a *administrator) Get(
 func (a *administrator) Create(
 	ctx context.Context, administrator *entity.Administrator, auth func(ctx context.Context) error,
 ) error {
-	_, err := a.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := a.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := a.now()
 		administrator.Admin.CreatedAt, administrator.Admin.UpdatedAt = now, now
 		if err := tx.WithContext(ctx).Table(adminTable).Create(&administrator.Admin).Error; err != nil {
-			return nil, err
+			return err
 		}
 		administrator.CreatedAt, administrator.UpdatedAt = now, now
 		if err := tx.WithContext(ctx).Table(administratorTable).Create(&administrator).Error; err != nil {
-			return nil, err
+			return err
 		}
-		return nil, auth(ctx)
+		return auth(ctx)
 	})
 	return exception.InternalError(err)
 }
 
 func (a *administrator) Update(ctx context.Context, administratorID string, params *UpdateAdministratorParams) error {
-	_, err := a.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := a.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := a.get(ctx, tx, administratorID); err != nil {
-			return nil, err
+			return err
 		}
 
 		now := a.now()
@@ -126,13 +124,13 @@ func (a *administrator) Update(ctx context.Context, administratorID string, para
 			Where("id = ?", administratorID).
 			Updates(adminParams).Error
 		if err != nil {
-			return nil, err
+			return err
 		}
 		err = tx.WithContext(ctx).
 			Table(administratorTable).
 			Where("admin_id = ?", administratorID).
 			Updates(administratorParams).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
@@ -140,9 +138,9 @@ func (a *administrator) Update(ctx context.Context, administratorID string, para
 func (a *administrator) Delete(
 	ctx context.Context, administratorID string, auth func(ctx context.Context) error,
 ) error {
-	_, err := a.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := a.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := a.get(ctx, tx, administratorID); err != nil {
-			return nil, err
+			return err
 		}
 
 		now := a.now()
@@ -155,7 +153,7 @@ func (a *administrator) Delete(
 			Where("admin_id = ?", administratorID).
 			Updates(administratorParams).Error
 		if err != nil {
-			return nil, err
+			return err
 		}
 		adminParams := map[string]interface{}{
 			"exists":     nil,
@@ -167,9 +165,9 @@ func (a *administrator) Delete(
 			Where("id = ?", administratorID).
 			Updates(adminParams).Error
 		if err != nil {
-			return nil, err
+			return err
 		}
-		return nil, auth(ctx)
+		return auth(ctx)
 	})
 	return exception.InternalError(err)
 }

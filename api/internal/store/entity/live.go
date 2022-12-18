@@ -20,21 +20,28 @@ const (
 
 // ライブ配信情報
 type Live struct {
-	LiveProducts `gorm:"-"`
-	ID           string         `gorm:"primaryKey;<-:create"` // ライブ配信ID
-	ScheduleID   string         `gorm:""`                     // 開催スケジュールID
-	ProducerID   string         `gorm:""`                     // 生産者ID
-	Title        string         `gorm:""`                     // タイトル
-	Description  string         `gorm:""`                     // 説明
-	Status       LiveStatus     `gorm:"-"`                    // 配信ステータス
-	Published    bool           `gorm:""`                     // 配信公開フラグ
-	Canceled     bool           `gorm:""`                     // 配信中止フラグ
-	StartAt      time.Time      `gorm:""`                     // 配信開始日時
-	EndAt        time.Time      `gorm:""`                     // 配信終了日時
-	ChannelArn   string         `gorm:"default:null"`         // チャンネルArn
-	CreatedAt    time.Time      `gorm:"<-:create"`            // 登録日時
-	UpdatedAt    time.Time      `gorm:""`                     // 更新日時
-	DeletedAt    gorm.DeletedAt `gorm:"default:null"`         // 削除日時
+	LiveProducts   `gorm:"-"`
+	ID             string         `gorm:"primaryKey;<-:create"` // ライブ配信ID
+	ScheduleID     string         `gorm:""`                     // 開催スケジュールID
+	ProducerID     string         `gorm:""`                     // 生産者ID
+	Title          string         `gorm:""`                     // タイトル
+	Description    string         `gorm:""`                     // 説明
+	Status         LiveStatus     `gorm:"-"`                    // 配信ステータス
+	Published      bool           `gorm:""`                     // 配信公開フラグ
+	Canceled       bool           `gorm:""`                     // 配信中止フラグ
+	StartAt        time.Time      `gorm:""`                     // 配信開始日時
+	EndAt          time.Time      `gorm:""`                     // 配信終了日時
+	ChannelArn     string         `gorm:"default:null"`         // チャンネルArn
+	StreamKeyArn   string         `gorm:"default:null"`         // ストリームキーArn
+	CreatedAt      time.Time      `gorm:"<-:create"`            // 登録日時
+	UpdatedAt      time.Time      `gorm:""`                     // 更新日時
+	DeletedAt      gorm.DeletedAt `gorm:"default:null"`         // 削除日時
+	ChannelName    string         `gorm:"-"`                    // チャンネル名
+	IngestEndpoint string         `gorm:"-"`                    // 配信エンドポイント
+	StreamKey      string         `gorm:"-"`                    // ストリームキー
+	StreamID       string         `gorm:"-"`                    // ストリームID
+	PlaybackURL    string         `gorm:"-"`                    // 再生用URL
+	ViewerCount    int64          `gorm:"-"`                    // 視聴者数
 }
 
 type Lives []*Live
@@ -46,6 +53,15 @@ type NewLiveParams struct {
 	Description string
 	StartAt     time.Time
 	EndAt       time.Time
+}
+
+type FillLiveIvsParams struct {
+	ChannelName    string
+	IngestEndpoint string
+	StreamKey      string
+	PlaybackURL    string
+	StreamID       string
+	ViewerCount    int64
 }
 
 func NewLive(params *NewLiveParams) *Live {
@@ -63,6 +79,15 @@ func NewLive(params *NewLiveParams) *Live {
 func (l *Live) Fill(products LiveProducts, now time.Time) {
 	l.LiveProducts = products
 	l.Status = l.status(now)
+}
+
+func (l *Live) FillIVS(params FillLiveIvsParams) {
+	l.ChannelName = params.ChannelName
+	l.IngestEndpoint = params.IngestEndpoint
+	l.StreamKey = params.StreamKey
+	l.PlaybackURL = params.PlaybackURL
+	l.StreamID = params.StreamID
+	l.ViewerCount = params.ViewerCount
 }
 
 func (l *Live) status(now time.Time) LiveStatus {

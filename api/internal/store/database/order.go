@@ -48,9 +48,7 @@ func (o *order) List(ctx context.Context, params *ListOrdersParams, fields ...st
 }
 
 func (o *order) Count(ctx context.Context, params *ListOrdersParams) (int64, error) {
-	var total int64
-
-	err := o.db.Count(ctx, o.db.DB, orderTable).Find(&total).Error
+	total, err := o.db.Count(ctx, o.db.DB, &entity.Order{}, nil)
 	return total, exception.InternalError(err)
 }
 
@@ -71,12 +69,12 @@ func (o *order) Aggregate(ctx context.Context, userIDs []string) (entity.Aggrega
 	fields := []string{
 		"orders.user_id AS user_id",
 		"COUNT(DISTINCT(orders.id)) AS order_count",
-		"SUM(order_payments.subtotal) AS subtotal",
-		"SUM(order_payments.discount) AS discount",
+		"SUM(payments.subtotal) AS subtotal",
+		"SUM(payments.discount) AS discount",
 	}
 
 	stmt := o.db.Statement(ctx, o.db.DB, orderTable, fields...).
-		Joins("INNER JOIN order_payments ON order_payments.order_id = orders.id").
+		Joins("INNER JOIN payments ON payments.order_id = orders.id").
 		Where("orders.user_id IN (?)", userIDs).
 		Group("orders.user_id")
 
@@ -95,10 +93,10 @@ func (o *order) get(ctx context.Context, tx *gorm.DB, orderID string, fields ...
 
 func (o *order) fill(ctx context.Context, tx *gorm.DB, orders ...*entity.Order) error {
 	var (
+		payments     entity.Payments
+		fulfillments entity.Fulfillments
+		activities   entity.Activities
 		items        entity.OrderItems
-		payments     entity.OrderPayments
-		fulfillments entity.OrderFulfillments
-		activities   entity.OrderActivities
 	)
 
 	ids := entity.Orders(orders).IDs()
@@ -108,41 +106,40 @@ func (o *order) fill(ctx context.Context, tx *gorm.DB, orders ...*entity.Order) 
 
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		stmt := o.db.Statement(ectx, tx, orderItemTable).Where("order_id IN (?)", ids)
-		return stmt.Find(&items).Error
-	})
-	eg.Go(func() error {
-		stmt := o.db.Statement(ectx, tx, orderPaymentTable).Where("order_id IN (?)", ids)
+		stmt := o.db.Statement(ectx, tx, paymentTable).Where("order_id IN (?)", ids)
 		return stmt.Find(&payments).Error
 	})
 	eg.Go(func() error {
-		stmt := o.db.Statement(ectx, tx, orderFulfillmentTable).Where("order_id IN (?)", ids)
+		stmt := o.db.Statement(ectx, tx, fulfillmentTable).Where("order_id IN (?)", ids)
 		return stmt.Find(&fulfillments).Error
 	})
 	eg.Go(func() error {
-		stmt := o.db.Statement(ectx, tx, orderActivityTable).Where("order_id IN (?)", ids)
+		stmt := o.db.Statement(ectx, tx, activityTable).Where("order_id IN (?)", ids)
 		return stmt.Find(&activities).Error
+	})
+	eg.Go(func() error {
+		stmt := o.db.Statement(ectx, tx, orderItemTable).Where("order_id IN (?)", ids)
+		return stmt.Find(&items).Error
 	})
 	if err := eg.Wait(); err != nil {
 		return err
 	}
 
-	itemsMap := items.GroupByOrderID()
 	paymentMap := payments.MapByOrderID()
 	fulfillmentMap := fulfillments.MapByOrderID()
 	activitiesMap := activities.GroupByOrderID()
+	itemsMap := items.GroupByOrderID()
 
 	for i, o := range orders {
 		payment, ok := paymentMap[o.ID]
 		if !ok {
-			payment = &entity.OrderPayment{}
+			payment = &entity.Payment{}
 		}
 		fulfillment, ok := fulfillmentMap[o.ID]
 		if !ok {
-			fulfillment = &entity.OrderFulfillment{}
+			fulfillment = &entity.Fulfillment{}
 		}
-
-		orders[i].Fill(itemsMap[o.ID], payment, fulfillment, activitiesMap[o.ID])
+		orders[i].Fill(payment, fulfillment, activitiesMap[o.ID], itemsMap[o.ID])
 	}
 	return nil
 }

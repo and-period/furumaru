@@ -8,48 +8,57 @@
         お知らせ登録
       </v-btn>
     </div>
+
+    <v-dialog v-model="deleteDialog" width="500">
+      <v-card>
+        <v-card-title class="text-h7">
+          {{ selectedName }}を本当に削除しますか？
+        </v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="accentDarken" text @click="hideDeleteDialog">
+            キャンセル
+          </v-btn>
+          <v-btn color="primary" outlined @click="handleDelete"> 削除 </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-card class="mt-4" flat>
-      <v-data-table
-        :headers="headers"
-        :items="notifications"
-        no-data-text="登録されているお知らせ情報がありません"
-      >
-        <template #[`item.public`]="{ item }">
-          <v-chip small :color="getStatusColor(item.public)">
-            {{ getPublic(item.public) }}
-          </v-chip>
-        </template>
-        <template #[`item.targets`]="{ item }">
-          {{ getTarget(item.targets) }}
-        </template>
-        <template #[`item.publishedAt`]="{ item }">
-          {{ getDay(item.publishedAt) }}
-        </template>
-        <template #[`item.actions`]="{ item }">
-          <v-btn outlined color="primary" small @click="handleEdit(item)">
-            <v-icon small>mdi-pencil</v-icon>
-            編集
-          </v-btn>
-          <v-btn outlined color="primary" small @click="openDeleteDialog(item)">
-            <v-icon small>mdi-delete</v-icon>
-            削除
-          </v-btn>
-        </template>
-      </v-data-table>
-      <v-dialog v-model="deleteDialog" width="500">
-        <v-card>
-          <v-card-title class="text-h7">
-            {{ selectedName }}を本当に削除しますか？
-          </v-card-title>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="accentDarken" text @click="hideDeleteDialog">
-              キャンセル
+      <v-card-text>
+        <v-data-table
+          :headers="headers"
+          :items="notifications"
+          no-data-text="登録されているお知らせ情報がありません"
+        >
+          <template #[`item.public`]="{ item }">
+            <v-chip small :color="getStatusColor(item.public)">
+              {{ getPublic(item.public) }}
+            </v-chip>
+          </template>
+          <template #[`item.targets`]="{ item }">
+            {{ getTarget(item.targets) }}
+          </template>
+          <template #[`item.publishedAt`]="{ item }">
+            {{ getDay(item.publishedAt) }}
+          </template>
+          <template #[`item.actions`]="{ item }">
+            <v-btn outlined color="primary" small @click="handleEdit(item)">
+              <v-icon small>mdi-pencil</v-icon>
+              編集
             </v-btn>
-            <v-btn color="primary" outlined @click="handleDelete"> 削除 </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+            <v-btn
+              outlined
+              color="primary"
+              small
+              @click="openDeleteDialog(item)"
+            >
+              <v-icon small>mdi-delete</v-icon>
+              削除
+            </v-btn>
+          </template>
+        </v-data-table>
+      </v-card-text>
     </v-card>
   </div>
 </template>
@@ -123,7 +132,7 @@ export default defineComponent({
           case 2:
             return '生産者'
           case 3:
-            return 'コーディネーター'
+            return 'コーディネータ'
           default:
             return ''
         }

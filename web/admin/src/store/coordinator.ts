@@ -34,6 +34,12 @@ export const useCoordinatorStore = defineStore('Coordinator', {
     }
   },
   actions: {
+    /**
+     * コーディネータの一覧を取得する非同期関数
+     * @param limit 最大取得件数
+     * @param offset 取得開始位置
+     * @returns
+     */
     async fetchCoordinators(
       limit: number = 20,
       offset: number = 0
@@ -64,7 +70,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
     },
 
     /**
-     * 仲介者を登録する非同期関数
+     * コーディネータを登録する非同期関数
      * @param payload
      * @returns
      */
@@ -92,6 +98,11 @@ export const useCoordinatorStore = defineStore('Coordinator', {
       }
     },
 
+    /**
+     * コーディネータの詳細情報を取得する非同期関数
+     * @param id 対象のコーディネータのID
+     * @returns
+     */
     async getCoordinator(id: string): Promise<CoordinatorResponse> {
       try {
         const authStore = useAuthStore()
@@ -116,6 +127,12 @@ export const useCoordinatorStore = defineStore('Coordinator', {
       }
     },
 
+    /**
+     * コーディネータの情報を更新する非同期関数
+     * @param payload
+     * @param coordinatorId 更新するコーディネータのID
+     * @returns
+     */
     async updateCoordinator(
       payload: UpdateCoordinatorRequest,
       coordinatorId: string
@@ -141,6 +158,11 @@ export const useCoordinatorStore = defineStore('Coordinator', {
       }
     },
 
+    /**
+     * コーディネータのサムネイル画像をアップロードする非同期関数
+     * @param payload サムネイル画像
+     * @returns アップロードされた画像のURI
+     */
     async uploadCoordinatorThumbnail(
       payload: File
     ): Promise<UploadImageResponse> {
@@ -174,6 +196,11 @@ export const useCoordinatorStore = defineStore('Coordinator', {
       }
     },
 
+    /**
+     * コーディネータのヘッダー画像をアップロードする非同期関数
+     * @param payload ヘッダー画像
+     * @returns アップロードされた画像のURI
+     */
     async uploadCoordinatorHeader(payload: File): Promise<UploadImageResponse> {
       try {
         const authStore = useAuthStore()
@@ -204,8 +231,13 @@ export const useCoordinatorStore = defineStore('Coordinator', {
         })
       }
     },
-    async deleteCoordinator(id: string): Promise<void> {
-      const commonStore = useCommonStore()
+
+    /**
+     * コーディーネータを削除する非同期関数
+     * @param id 削除するコーディネータのID
+     * @returns
+     */
+    async deleteCoordinator(id: string) {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -219,6 +251,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
           accessToken
         )
         await coordinatorsApiClient.v1DeleteCoordinator(id)
+        const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: 'コーディネーターの削除が完了しました',
           color: 'info',

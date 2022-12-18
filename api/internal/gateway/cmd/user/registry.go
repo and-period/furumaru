@@ -232,12 +232,16 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 		Username: p.dbUsername,
 		Password: p.dbPassword,
 	}
+	location, err := time.LoadLocation(p.config.DBTimeZone)
+	if err != nil {
+		return nil, err
+	}
 	cli, err := database.NewClient(
 		params,
 		database.WithLogger(p.logger),
 		database.WithNow(p.now),
 		database.WithTLS(p.config.DBEnabledTLS),
-		database.WithTimeZone(p.config.DBTimeZone),
+		database.WithLocation(location),
 	)
 	if err != nil {
 		return nil, err

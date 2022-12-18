@@ -36,6 +36,7 @@ func NewOrderRefund(order *entity.Order) *OrderRefund {
 			Canceled: cancelType.IsCanceled(),
 			Type:     cancelType.Response(),
 			Reason:   order.CancelReason,
+			Total:    order.RefundTotal,
 		},
 	}
 }

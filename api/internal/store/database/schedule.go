@@ -28,27 +28,27 @@ func NewSchedule(db *database.Client) Schedule {
 func (s *schedule) Create(
 	ctx context.Context, schedule *entity.Schedule, lives entity.Lives, products entity.LiveProducts,
 ) error {
-	_, err := s.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := s.now()
 		schedule.CreatedAt, schedule.UpdatedAt = now, now
 		err := tx.WithContext(ctx).Table(scheduleTable).Create(&schedule).Error
 		if err != nil {
-			return nil, err
+			return err
 		}
 		for i := range lives {
 			lives[i].CreatedAt, lives[i].UpdatedAt = now, now
 			if err := tx.WithContext(ctx).Table(liveTable).Create(&lives[i]).Error; err != nil {
-				return nil, err
+				return err
 			}
 		}
 		for i := range products {
 			products[i].CreatedAt, products[i].UpdatedAt = now, now
 			if err := tx.WithContext(ctx).Table(liveProductTable).Create(&products[i]).Error; err != nil {
-				return nil, err
+				return err
 			}
 		}
 		lives.Fill(products.GroupByLiveID(), now)
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }

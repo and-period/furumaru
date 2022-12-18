@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-card-title>コーディネータ管理</v-card-title>
+
     <div class="d-flex">
       <v-spacer />
       <v-btn outlined color="primary" @click="handleClickAddButton">
@@ -8,6 +9,27 @@
         コーディネータ登録
       </v-btn>
     </div>
+
+    <v-alert v-model="isShow" :type="alertType" class="my-2" dismissible>
+      {{ alertText }}
+    </v-alert>
+
+    <v-dialog v-model="deleteDialog" width="500">
+      <v-card>
+        <v-card-title
+          >{{ selectedItemName }}を本当に削除しますか？</v-card-title
+        >
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="accentDarken" text @click="handleClickCancelButton">
+            キャンセル
+          </v-btn>
+          <v-btn color="primary" outlined @click="handleDeleteFormSubmit">
+            削除
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <v-card class="mt-4" flat :loading="fetchState.pending">
       <v-card-text>
@@ -55,7 +77,16 @@
           <template #[`item.actions`]="{ item }">
             <v-btn outlined color="primary" small @click="handleEdit(item)">
               <v-icon small>mdi-pencil</v-icon>
-              詳細
+              編集
+            </v-btn>
+            <v-btn
+              outlined
+              color="primary"
+              small
+              @click="handleClickDeleteButton(item)"
+            >
+              <v-icon small>mdi-delete</v-icon>
+              削除
             </v-btn>
           </template>
         </v-data-table>
@@ -75,9 +106,11 @@ import {
 } from '@nuxtjs/composition-api'
 import { DataTableHeader } from 'vuetify'
 
-import { usePagination } from '~/lib/hooks'
+import { useAlert, usePagination } from '~/lib/hooks'
+import { useCommonStore } from '~/store/common'
 import { useCoordinatorStore } from '~/store/coordinator'
 import { CoordinatorsResponseCoordinatorsInner } from '~/types/api'
+import { ApiBaseError } from '~/types/exception'
 import { Coordinator } from '~/types/props/coordinator'
 
 export default defineComponent({
@@ -89,6 +122,11 @@ export default defineComponent({
     ]
 
     const router = useRouter()
+
+    const { isShow, alertText, alertType, show } = useAlert('error')
+
+    const { addSnackbar } = useCommonStore()
+
     const coordinatorStore = useCoordinatorStore()
     const coordinators = computed(() => {
       return coordinatorStore.coordinators
@@ -101,6 +139,16 @@ export default defineComponent({
     const deleteDialog = ref<boolean>(false)
     const selectedId = ref<string>('')
     const selectedName = ref<string>('')
+
+    const selectedItemName = computed(() => {
+      const selectedItem = coordinators.value.find(
+        (item) => item.id === selectedId.value
+      )
+      return selectedItem
+        ? `${selectedItem.lastname} ${selectedItem.firstname}`
+        : ''
+    })
+
     const search = ref<string>('')
     const query = ref<string>('')
 
@@ -139,7 +187,7 @@ export default defineComponent({
       deleteDialog.value = true
     }
 
-    const { fetchState } = useFetch(async () => {
+    const { fetchState, fetch } = useFetch(async () => {
       try {
         await coordinatorStore.fetchCoordinators(
           itemsPerPage.value,
@@ -190,39 +238,63 @@ export default defineComponent({
       router.push(`/coordinators/edit/${item.id}`)
     }
 
-    const handleDelete = async (): Promise<void> => {
+    const handleClickDeleteButton = (
+      item: CoordinatorsResponseCoordinatorsInner
+    ): void => {
+      selectedId.value = item.id
+      deleteDialog.value = true
+    }
+
+    const handleClickCancelButton = () => {
+      deleteDialog.value = false
+    }
+
+    const handleDeleteFormSubmit = async () => {
       try {
         await coordinatorStore.deleteCoordinator(selectedId.value)
-      } catch (err) {
-        console.log(err)
+        addSnackbar({
+          color: 'info',
+          message: 'コーディネータを削除しました。',
+        })
+        fetch()
+      } catch (error) {
+        const errorMessage =
+          error instanceof ApiBaseError
+            ? error.message
+            : '不明なエラーが発生しました。'
+        show(errorMessage)
       }
       deleteDialog.value = false
     }
 
-    const hideDeleteDialog = (): void => {
-      deleteDialog.value = false
-    }
-
     return {
-      handleClickAddButton,
+      // 定数
       headers,
       options,
-      handleUpdatePage,
-      handleUpdateItemsPerPage,
-      totalItems,
+      noResultsText,
+      alertType,
+      // 変数
+      isShow,
+      alertText,
+      deleteDialog,
+      fetchState,
       coordinators,
+      totalItems,
       search,
       query,
-      noResultsText,
-      fetchState,
+      selectedItemName,
+      // 関数
       handleSearch,
+      handleUpdatePage,
+      handleUpdateItemsPerPage,
+      handleClickAddButton,
       handleEdit,
-      handleDelete,
       openDeleteDialog,
-      deleteDialog,
-      hideDeleteDialog,
       tab,
       tabItems,
+      handleClickCancelButton,
+      handleClickDeleteButton,
+      handleDeleteFormSubmit,
     }
   },
 })

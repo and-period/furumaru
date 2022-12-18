@@ -18,6 +18,7 @@ type Params struct {
 }
 
 type Database struct {
+	Address     Address
 	Category    Category
 	Order       Order
 	Product     Product
@@ -30,6 +31,7 @@ type Database struct {
 
 func NewDatabase(params *Params) *Database {
 	return &Database{
+		Address:     NewAddress(params.Database),
 		Category:    NewCategory(params.Database),
 		Live:        NewLive(params.Database),
 		Order:       NewOrder(params.Database),
@@ -44,6 +46,10 @@ func NewDatabase(params *Params) *Database {
 /**
  * interface
  */
+type Address interface {
+	MultiGet(ctx context.Context, addressIDs []string, fields ...string) (entity.Addresses, error)
+}
+
 type Category interface {
 	List(ctx context.Context, params *ListCategoriesParams, fields ...string) (entity.Categories, error)
 	Count(ctx context.Context, params *ListCategoriesParams) (int64, error)

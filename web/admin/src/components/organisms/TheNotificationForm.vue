@@ -31,7 +31,7 @@
         ></v-checkbox>
         <v-checkbox
           v-model="formData.targets"
-          label="コーディネーター"
+          label="コーディネータ"
           :value="Number(3)"
         ></v-checkbox>
         <p class="text-h6">投稿予約時間</p>

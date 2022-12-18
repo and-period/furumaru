@@ -7,6 +7,9 @@ orderResponse:
     scheduleId:
       type: string
       description: 開催スケジュールID
+    promotionId:
+      type: string
+      description: プロモーションID
     userId:
       type: string
       description: ユーザーID
@@ -20,13 +23,10 @@ orderResponse:
         transactionId:
           type: string
           description: 取引ID
-        promotionId:
-          type: string
-          description: プロモーションID
-        paymentId:
+        methodId:
           type: string
           description: 決済手段ID
-        paymentType:
+        methodType:
           type: integer
           format: int32
           description: 決済手段(0:不明,1:代引支払い,2:クレジットカード払い)
@@ -42,7 +42,7 @@ orderResponse:
           type: integer
           format: int64
           description: 割引金額
-        shippingCharge:
+        shippingFee:
           type: integer
           format: int64
           description: 配送料金
@@ -54,6 +54,9 @@ orderResponse:
           type: integer
           format: int64
           description: 支払い合計金額
+        addressId:
+          type: string
+          description: 請求先情報ID
         lastname:
           type: string
           description: 請求先情報 姓
@@ -80,15 +83,15 @@ orderResponse:
           description: 請求先情報 電話番号
       required:
       - transactionId
-      - promotionId
-      - paymentId
-      - paymentType
+      - methodId
+      - methodType
       - status
       - subtotal
       - discount
-      - shippingCharge
+      - shippingFee
       - tax
       - total
+      - addressId
       - lastname
       - firstname
       - postalCode
@@ -120,14 +123,9 @@ orderResponse:
           type: integer
           format: int32
           description: 箱の大きさ(0:不明,1:60,2:80,3:100)
-        boxCount:
-          type: integer
-          format: int64
-          description: 箱の個数
-        weightTotal:
-          type: number
-          format: double
-          description: 合計重量(kg,少数第一位まで)
+        addressId:
+          type: string
+          description: 配送先情報ID
         lastname:
           type: string
           description: 配送先情報 姓
@@ -158,8 +156,7 @@ orderResponse:
       - shippingCarrier
       - shippingMethod
       - boxSize
-      - boxCount
-      - weightTotal
+      - addressId
       - lastname
       - firstname
       - postalCode
@@ -182,10 +179,15 @@ orderResponse:
         reason:
           type: string
           description: 注文キャンセル理由詳細
+        total:
+          type: integer
+          format: int64
+          description: 返金金額
       required:
       - canceled
       - type
       - reason
+      - total
     items:
       type: array
       description: 注文商品一覧
@@ -258,6 +260,7 @@ orderResponse:
   required:
   - id
   - scheduleId
+  - promotionId
   - userId
   - userName
   - payment
@@ -273,19 +276,20 @@ orderResponse:
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
+    promotionId: 'kSByoE6FetnPs5Byk3a9Zx'
     userId: 'kSByoE6FetnPs5Byk3a9Zx'
     userName: '&. 購入者'
     payment:
       transactionId: 'kSByoE6FetnPs5Byk3a9Zx'
-      promotionId: 'kSByoE6FetnPs5Byk3a9Zx'
-      paymentId: 'kSByoE6FetnPs5Byk3a9Zx'
-      paymentType: 2
+      methodId: 'kSByoE6FetnPs5Byk3a9Zx'
+      methodType: 2
       status: 4
       subtotal: 1000
       discount: 200
-      shippingCharge: 500
+      shippingFee: 500
       tax: 130
       total: 1430
+      addressId: 'kSByoE6FetnPs5Byk3a9Zx'
       lastname: '&.'
       firstname: '購入者'
       postalCode: '1000014'
@@ -300,8 +304,7 @@ orderResponse:
       shippingCarrier: 1
       shippingMethod: 1
       boxSize: 2
-      boxCount: 1
-      weightTotal: 2.0
+      addressId: 'kSByoE6FetnPs5Byk3a9Zx'
       lastname: '&.'
       firstname: '購入者'
       postalCode: '1000014'
@@ -314,6 +317,7 @@ orderResponse:
       canceled: false
       type: 0
       reason: ''
+      total: 0
     items:
     - productId: 'kSByoE6FetnPs5Byk3a9Zx'
       name: '新鮮なじゃがいも'
@@ -322,8 +326,10 @@ orderResponse:
       weight: 1.0
       media:
       - url: 'https://and-period.jp/thumbnail01.png'
+        images: []
         isThumbnail: true
       - url: 'https://and-period.jp/thumbnail02.png'
+        images: []
         isThumbnail: false
     orderedAt: 1640962800
     paidAt: 1640962800
@@ -346,6 +352,9 @@ ordersResponse:
           scheduleId:
             type: string
             description: 開催スケジュールID
+          promotionId:
+            type: string
+            description: プロモーションID
           userId:
             type: string
             description: ユーザーID
@@ -359,13 +368,10 @@ ordersResponse:
               transactionId:
                 type: string
                 description: 取引ID
-              promotionId:
-                type: string
-                description: プロモーションID
-              paymentId:
+              methodId:
                 type: string
                 description: 決済手段ID
-              paymentType:
+              methodType:
                 type: integer
                 format: int32
                 description: 決済手段(0:不明,1:代引支払い,2:クレジットカード払い)
@@ -381,7 +387,7 @@ ordersResponse:
                 type: integer
                 format: int64
                 description: 割引金額
-              shippingCharge:
+              shippingFee:
                 type: integer
                 format: int64
                 description: 配送料金
@@ -393,6 +399,9 @@ ordersResponse:
                 type: integer
                 format: int64
                 description: 支払い合計金額
+              addressId:
+                type: string
+                description: 請求先情報ID
               lastname:
                 type: string
                 description: 請求先情報 姓
@@ -419,15 +428,15 @@ ordersResponse:
                 description: 請求先情報 電話番号
             required:
             - transactionId
-            - promotionId
-            - paymentId
-            - paymentType
+            - methodId
+            - methodType
             - status
             - subtotal
             - discount
-            - shippingCharge
+            - shippingFee
             - tax
             - total
+            - addressId
             - lastname
             - firstname
             - postalCode
@@ -459,14 +468,9 @@ ordersResponse:
                 type: integer
                 format: int32
                 description: 箱の大きさ(0:不明,1:60,2:80,3:100)
-              boxCount:
-                type: integer
-                format: int64
-                description: 箱の個数
-              weightTotal:
-                type: number
-                format: double
-                description: 合計重量(kg,少数第一位まで)
+              addressId:
+                type: string
+                description: 配送先情報ID
               lastname:
                 type: string
                 description: 配送先情報 姓
@@ -497,8 +501,7 @@ ordersResponse:
             - shippingCarrier
             - shippingMethod
             - boxSize
-            - boxCount
-            - weightTotal
+            - addressId
             - lastname
             - firstname
             - postalCode
@@ -521,10 +524,15 @@ ordersResponse:
               reason:
                 type: string
                 description: 注文キャンセル理由詳細
+              total:
+                type: integer
+                format: int64
+                description: 返金金額
             required:
             - canceled
             - type
             - reason
+            - total
           items:
             type: array
             description: 注文商品一覧
@@ -597,6 +605,7 @@ ordersResponse:
         required:
         - id
         - scheduleId
+        - promotionId
         - userId
         - userName
         - payment
@@ -620,19 +629,20 @@ ordersResponse:
     orders:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
+      promotionId: 'kSByoE6FetnPs5Byk3a9Zx'
       userId: 'kSByoE6FetnPs5Byk3a9Zx'
       userName: '&. 購入者'
       payment:
         transactionId: 'kSByoE6FetnPs5Byk3a9Zx'
-        promotionId: 'kSByoE6FetnPs5Byk3a9Zx'
-        paymentId: 'kSByoE6FetnPs5Byk3a9Zx'
-        paymentType: 2
+        methodId: 'kSByoE6FetnPs5Byk3a9Zx'
+        methodType: 2
         status: 4
         subtotal: 1000
         discount: 200
-        shippingCharge: 500
+        shippingFee: 500
         tax: 130
         total: 1430
+        addressId: 'kSByoE6FetnPs5Byk3a9Zx'
         lastname: '&.'
         firstname: '購入者'
         postalCode: '1000014'
@@ -647,8 +657,7 @@ ordersResponse:
         shippingCarrier: 1
         shippingMethod: 1
         boxSize: 2
-        boxCount: 1
-        weightTotal: 2.0
+        addressId: 'kSByoE6FetnPs5Byk3a9Zx'
         lastname: '&.'
         firstname: '購入者'
         postalCode: '1000014'
@@ -661,6 +670,7 @@ ordersResponse:
         canceled: false
         type: 0
         reason: ''
+        total: 0
       items:
       - productId: 'kSByoE6FetnPs5Byk3a9Zx'
         name: '新鮮なじゃがいも'

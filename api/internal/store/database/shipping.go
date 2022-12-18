@@ -48,9 +48,7 @@ func (s *shipping) List(ctx context.Context, params *ListShippingsParams, fields
 }
 
 func (s *shipping) Count(ctx context.Context, params *ListShippingsParams) (int64, error) {
-	var total int64
-
-	err := s.db.Count(ctx, s.db.DB, shippingTable).Find(&total).Error
+	total, err := s.db.Count(ctx, s.db.DB, &entity.Shipping{}, params.stmt)
 	return total, exception.InternalError(err)
 }
 
@@ -74,24 +72,24 @@ func (s *shipping) Get(ctx context.Context, shoppingID string, fields ...string)
 }
 
 func (s *shipping) Create(ctx context.Context, shipping *entity.Shipping) error {
-	_, err := s.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if err := shipping.FillJSON(); err != nil {
-			return nil, err
+			return err
 		}
 
 		now := s.now()
 		shipping.CreatedAt, shipping.UpdatedAt = now, now
 
 		err := tx.WithContext(ctx).Table(shippingTable).Create(&shipping).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (s *shipping) Update(ctx context.Context, shippingID string, params *UpdateShippingParams) error {
-	_, err := s.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := s.get(ctx, tx, shippingID); err != nil {
-			return nil, err
+			return err
 		}
 
 		updates := map[string]interface{}{
@@ -109,21 +107,21 @@ func (s *shipping) Update(ctx context.Context, shippingID string, params *Update
 		if len(params.Box60Rates) > 0 {
 			rates, err := params.Box60Rates.Marshal()
 			if err != nil {
-				return nil, fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
+				return fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
 			}
 			updates["box60_rates"] = rates
 		}
 		if len(params.Box80Rates) > 0 {
 			rates, err := params.Box80Rates.Marshal()
 			if err != nil {
-				return nil, fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
+				return fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
 			}
 			updates["box80_rates"] = rates
 		}
 		if len(params.Box100Rates) > 0 {
 			rates, err := params.Box100Rates.Marshal()
 			if err != nil {
-				return nil, fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
+				return fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
 			}
 			updates["box100_rates"] = rates
 		}
@@ -131,22 +129,22 @@ func (s *shipping) Update(ctx context.Context, shippingID string, params *Update
 			Table(shippingTable).
 			Where("id = ?", shippingID).
 			Updates(updates).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (s *shipping) Delete(ctx context.Context, shippingID string) error {
-	_, err := s.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := s.get(ctx, tx, shippingID); err != nil {
-			return nil, err
+			return err
 		}
 
 		err := tx.WithContext(ctx).
 			Table(shippingTable).
 			Where("id = ?", shippingID).
 			Delete(&entity.Shipping{}).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }

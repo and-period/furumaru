@@ -6,8 +6,8 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
-func testOrderActivity(id, orderID, userID string, now time.Time) *entity.OrderActivity {
-	return &entity.OrderActivity{
+func testActivity(id, orderID, userID string, now time.Time) *entity.Activity {
+	return &entity.Activity{
 		ID:        id,
 		OrderID:   orderID,
 		UserID:    userID,

@@ -42,12 +42,7 @@ func (p *promotion) List(ctx context.Context, params *ListPromotionsParams, fiel
 }
 
 func (p *promotion) Count(ctx context.Context, params *ListPromotionsParams) (int64, error) {
-	var total int64
-
-	stmt := p.db.Count(ctx, p.db.DB, promotionTable)
-	stmt = params.stmt(stmt)
-
-	err := stmt.Find(&total).Error
+	total, err := p.db.Count(ctx, p.db.DB, &entity.Promotion{}, params.stmt)
 	return total, exception.InternalError(err)
 }
 
@@ -57,20 +52,19 @@ func (p *promotion) Get(ctx context.Context, promotionID string, fields ...strin
 }
 
 func (p *promotion) Create(ctx context.Context, promotion *entity.Promotion) error {
-	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := p.now()
 		promotion.CreatedAt, promotion.UpdatedAt = now, now
 
-		err := tx.WithContext(ctx).Table(promotionTable).Create(&promotion).Error
-		return nil, err
+		return tx.WithContext(ctx).Table(promotionTable).Create(&promotion).Error
 	})
 	return exception.InternalError(err)
 }
 
 func (p *promotion) Update(ctx context.Context, promotionID string, params *UpdatePromotionParams) error {
-	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := p.get(ctx, tx, promotionID); err != nil {
-			return nil, err
+			return err
 		}
 
 		updates := map[string]interface{}{
@@ -90,22 +84,22 @@ func (p *promotion) Update(ctx context.Context, promotionID string, params *Upda
 			Table(promotionTable).
 			Where("id = ?", promotionID).
 			Updates(updates).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }
 
 func (p *promotion) Delete(ctx context.Context, promotionID string) error {
-	_, err := p.db.Transaction(ctx, func(tx *gorm.DB) (interface{}, error) {
+	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := p.get(ctx, tx, promotionID); err != nil {
-			return nil, err
+			return err
 		}
 
 		err := tx.WithContext(ctx).
 			Table(promotionTable).
 			Where("id = ?", promotionID).
 			Delete(&entity.Promotion{}).Error
-		return nil, err
+		return err
 	})
 	return exception.InternalError(err)
 }

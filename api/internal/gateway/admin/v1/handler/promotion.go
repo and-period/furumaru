@@ -74,6 +74,13 @@ func (h *handler) newPromotionOrders(ctx *gin.Context) ([]*store.ListPromotionsO
 		"updatedAt":   sentity.PromotionOrderByUpdatedAt,
 	}
 	params := util.GetOrders(ctx)
+	if len(params) == 0 {
+		res := []*store.ListPromotionsOrder{
+			{Key: sentity.PromotionOrderByPublishedAt, OrderByASC: false},
+			{Key: sentity.PromotionOrderByPublic, OrderByASC: false},
+		}
+		return res, nil
+	}
 	res := make([]*store.ListPromotionsOrder, len(params))
 	for i, p := range params {
 		key, ok := categories[p.Key]
