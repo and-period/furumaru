@@ -32,7 +32,7 @@
       </v-tab-item>
 
       <v-tab-item value="relationProducers">
-        <v-dialog v-model="dialog" width="500">
+        <v-dialog width="500">
           <template #activator="{ on, attrs }">
             <div class="d-flex pt-3 pr-3">
               <v-spacer />
@@ -86,17 +86,7 @@
           </v-card>
         </v-dialog>
 
-        <v-data-table
-          :headers="headers"
-          :items="coordinators"
-          :no-results-text="noResultsText"
-          :server-items-length="totalItems"
-          :footer-props="options"
-          no-data-text="関連生産者はいません。"
-          @update:items-per-page="handleUpdateItemsPerPage"
-          @update:page="handleUpdatePage"
-        >
-        </v-data-table>
+        <v-data-table no-data-text="関連生産者はいません。"> </v-data-table>
       </v-tab-item>
     </v-tabs-items>
   </div>
