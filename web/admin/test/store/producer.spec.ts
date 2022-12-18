@@ -39,8 +39,8 @@ describe('Producer Store', () => {
   })
 
   describe('fetchProducers', () => {
-    const producersPath = `${baseURL}/v1/producers?limit=20&offset=0`
-    axiosMock.onGet(producersPath).reply(200, { producers: [] })
+    const producersPath = `${baseURL}/v1/producers?limit=20&offset=0&filters=`
+    axiosMock.onGet(producersPath).reply(200, { producers: [], total: 0 })
 
     it('success', async () => {
       setupAuthStore(true)
