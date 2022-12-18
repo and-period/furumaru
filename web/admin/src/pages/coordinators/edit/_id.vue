@@ -101,50 +101,74 @@
       </v-tab-item>
 
       <v-tab-item value="relationProducers">
+        <v-dialog v-model="dialog" width="500">
+          <template #activator="{ on, attrs }">
+            <div class="d-flex pt-3 pr-3">
+              <v-spacer />
+              <v-btn outlined color="primary" v-bind="attrs" v-on="on">
+                <v-icon left>mdi-plus</v-icon>
+                生産者登録
+              </v-btn>
+            </div>
+          </template>
 
-      <v-dialog v-model="dialog" width="500">
-        <template #activator="{ on, attrs }">
-          <div class="d-flex pt-3 pr-3">
-            <v-spacer />
-            <v-btn outlined color="primary" v-bind="attrs" v-on="on">
-              <v-icon left>mdi-plus</v-icon>
-              生産者登録
-            </v-btn>
-          </div>
-        </template>
+          <v-card>
+            <v-card-title class="primaryLight"> 生産者を追加 </v-card-title>
 
-        <v-card>
-          <v-card-title class="primaryLight"> 生産者を追加 </v-card-title>
+            <v-autocomplete
+              v-model="producers"
+              chips
+              label="関連生産者"
+              multiple
+              filled
+              :items="producerItems"
+              item-text="firstname"
+              item-value="id"
+            >
+              <template #selection="data">
+                <v-chip
+                  close
+                  @click:close="remove(data.item.id)"
+                >
+                  <v-avatar left>
+                    <v-img :src="data.item.thumbnailUrl"></v-img>
+                  </v-avatar>
+                  {{ data.item.firstname }}
+                </v-chip>
+              </template>
+              <template #item="data">
+                <v-list-item-avatar>
+                  <img :src="data.item.thumbnailUrl" />
+                </v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title>{{
+                    data.item.firstname
+                  }}</v-list-item-title>
+                  <v-list-item-subtitle>{{
+                    data.item.storeName
+                  }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </template>
+            </v-autocomplete>
 
-          <v-autocomplete
-            chips
-            label="関連生産者"
-            multiple
-            filled
-            :items="producerItems"
-            item-text="firstname"
-            item-value="firstname"
-          >
-          </v-autocomplete>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="primary"> 登録 </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
 
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary"> 登録 </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-
-      <v-data-table
-        :headers="headers"
-        :items="coordinators"
-        :no-results-text="noResultsText"
-        :server-items-length="totalItems"
-        :footer-props="options"
-        no-data-text="関連生産者はいません。"
-        @update:items-per-page="handleUpdateItemsPerPage"
-        @update:page="handleUpdatePage"
-      >
-      </v-data-table>
+        <v-data-table
+          :headers="headers"
+          :items="coordinators"
+          :no-results-text="noResultsText"
+          :server-items-length="totalItems"
+          :footer-props="options"
+          no-data-text="関連生産者はいません。"
+          @update:items-per-page="handleUpdateItemsPerPage"
+          @update:page="handleUpdatePage"
+        >
+        </v-data-table>
       </v-tab-item>
     </v-tabs-items>
   </div>
@@ -185,6 +209,8 @@ export default defineComponent({
       { name: '関連生産者', value: 'relationProducers' },
     ]
     const coordinatorStore = useCoordinatorStore()
+
+    const producers = ref<string[]>([])
 
     const producerStore = useProducerStore()
     const producerItems = computed(() => {
@@ -335,6 +361,10 @@ export default defineComponent({
       }
     }
 
+    const remove = (item: string) => {
+      producers.value = producers.value.filter(id => id !== item)
+    }
+
     useFetch(async () => {
       try {
         await producerStore.fetchProducers(20, 0, 'unrelated')
@@ -347,6 +377,7 @@ export default defineComponent({
       id,
       fetchState,
       formData,
+      producers,
       v$,
       getErrorMessage,
       searchLoading,
@@ -360,6 +391,7 @@ export default defineComponent({
       tabItems,
       tab,
       producerItems,
+      remove,
     }
   },
 })
