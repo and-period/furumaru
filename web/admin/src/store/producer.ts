@@ -326,5 +326,24 @@ export const useProducerStore = defineStore('Producer', {
         throw new InternalServerError(error)
       }
     },
+
+    /**
+     * 生産者を削除する非同期関数
+     * @param id 削除する生産者のID
+     * @returns
+     */
+    async deleteProducer(id: string) {
+      try {
+        const { accessToken } = useAuthStore()
+        if (!accessToken) {
+          return Promise.reject(
+            new AuthError('認証エラー。再度ログインをしてください。')
+          )
+        }
+        await this.apiClient(accessToken).v1DeleteProducer(id)
+      } catch (error) {
+        return this.errorHandler(error)
+      }
+    },
   },
 })
