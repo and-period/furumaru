@@ -19,7 +19,7 @@
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/composition-api": "^0.32.0",
     "@pinia/nuxt": "^0.1.9",
-    "@tiptap/starter-kit": "^2.0.0-beta.185",
+    "@tiptap/starter-kit": "^2.0.0-beta.209",
     "@tiptap/vue-2": "^2.0.0-beta.79",
     "@tiptap/vue-3": "^2.0.0-beta.96",
     "@vuelidate/core": "^2.0.0-alpha.44",
