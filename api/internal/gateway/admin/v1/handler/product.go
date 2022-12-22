@@ -24,6 +24,7 @@ func (h *handler) productRoutes(rg *gin.RouterGroup) {
 	arg.POST("", h.CreateProduct)
 	arg.GET("/:productId", h.filterAccessProduct, h.GetProduct)
 	arg.PATCH("/:productId", h.filterAccessProduct, h.UpdateProduct)
+	arg.DELETE("/:productId", h.filterAccessProduct, h.DeleteProduct)
 }
 
 func (h *handler) filterAccessProduct(ctx *gin.Context) {
@@ -310,6 +311,18 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 		OriginCity:       req.OriginCity,
 	}
 	if err := h.store.UpdateProduct(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) DeleteProduct(ctx *gin.Context) {
+	in := &store.DeleteProductInput{
+		ProductID: util.GetParam(ctx, "productId"),
+	}
+	if err := h.store.DeleteProduct(ctx, in); err != nil {
 		httpError(ctx, err)
 		return
 	}

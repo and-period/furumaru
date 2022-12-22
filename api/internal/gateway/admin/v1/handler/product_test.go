@@ -1412,3 +1412,46 @@ func TestUpdateProduct(t *testing.T) {
 		})
 	}
 }
+
+func TestDeleteProduct(t *testing.T) {
+	t.Parallel()
+	in := &store.DeleteProductInput{
+		ProductID: "product-id",
+	}
+	tests := []struct {
+		name      string
+		setup     func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		productID string
+		expect    *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().DeleteProduct(gomock.Any(), in).Return(nil)
+			},
+			productID: "product-id",
+			expect: &testResponse{
+				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to delete product",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().DeleteProduct(gomock.Any(), in).Return(assert.AnError)
+			},
+			productID: "product-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const format = "/v1/products/%s"
+			path := fmt.Sprintf(format, tt.productID)
+			testDelete(t, tt.setup, tt.expect, path)
+		})
+	}
+}

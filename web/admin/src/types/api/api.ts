@@ -9491,6 +9491,44 @@ export const ProductApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
+         * @summary 商品削除
+         * @param {string} productId 商品ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteProduct: async (productId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'productId' is not null or undefined
+            assertParamExists('v1DeleteProduct', 'productId', productId)
+            const localVarPath = `/v1/products/{productId}`
+                .replace(`{${"productId"}}`, encodeURIComponent(String(productId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 商品取得
          * @param {string} productId 商品ID
          * @param {*} [options] Override http request option.
@@ -9734,6 +9772,17 @@ export const ProductApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary 商品削除
+         * @param {string} productId 商品ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1DeleteProduct(productId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteProduct(productId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary 商品取得
          * @param {string} productId 商品ID
          * @param {*} [options] Override http request option.
@@ -9813,6 +9862,16 @@ export const ProductApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
+         * @summary 商品削除
+         * @param {string} productId 商品ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteProduct(productId: string, options?: any): AxiosPromise<object> {
+            return localVarFp.v1DeleteProduct(productId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary 商品取得
          * @param {string} productId 商品ID
          * @param {*} [options] Override http request option.
@@ -9885,6 +9944,18 @@ export class ProductApi extends BaseAPI {
      */
     public v1CreateProduct(body: CreateProductRequest, options?: AxiosRequestConfig) {
         return ProductApiFp(this.configuration).v1CreateProduct(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 商品削除
+     * @param {string} productId 商品ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProductApi
+     */
+    public v1DeleteProduct(productId: string, options?: AxiosRequestConfig) {
+        return ProductApiFp(this.configuration).v1DeleteProduct(productId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
