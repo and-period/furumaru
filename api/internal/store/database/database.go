@@ -10,11 +10,13 @@ import (
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
+	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"gorm.io/gorm"
 )
 
 type Params struct {
 	Database *database.Client
+	DynamoDB dynamodb.Client
 }
 
 type Database struct {
@@ -24,6 +26,7 @@ type Database struct {
 	Product     Product
 	ProductType ProductType
 	Promotion   Promotion
+	Rehearsal   Rehearsal
 	Shipping    Shipping
 	Schedule    Schedule
 	Live        Live
@@ -38,6 +41,7 @@ func NewDatabase(params *Params) *Database {
 		Product:     NewProduct(params.Database),
 		ProductType: NewProductType(params.Database),
 		Promotion:   NewPromotion(params.Database),
+		Rehearsal:   NewRehearsal(params.DynamoDB),
 		Shipping:    NewShipping(params.Database),
 		Schedule:    NewSchedule(params.Database),
 	}
@@ -100,6 +104,11 @@ type Promotion interface {
 	Create(ctx context.Context, promotion *entity.Promotion) error
 	Update(ctx context.Context, promotionID string, params *UpdatePromotionParams) error
 	Delete(ctx context.Context, promotionID string) error
+}
+
+type Rehearsal interface {
+	Get(ctx context.Context, liveID string) (*entity.Rehearsal, error)
+	Create(ctx context.Context, rehearsal *entity.Rehearsal) error
 }
 
 type Shipping interface {
