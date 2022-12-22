@@ -72,6 +72,7 @@ func (l *live) Update(ctx context.Context, liveID string, params *UpdateLiveInpu
 	})
 	return exception.InternalError(err)
 }
+
 func (l *live) get(ctx context.Context, tx *gorm.DB, liveID string, fields ...string) (*entity.Live, error) {
 	var (
 		live         *entity.Live
