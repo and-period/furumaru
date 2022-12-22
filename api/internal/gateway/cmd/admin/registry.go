@@ -22,6 +22,7 @@ import (
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/database"
+	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/postalcode"
 	"github.com/and-period/furumaru/api/pkg/rbac"
@@ -60,6 +61,7 @@ type params struct {
 	tmpStorage       storage.Bucket
 	adminAuth        cognito.Client
 	userAuth         cognito.Client
+	dynamodb         dynamodb.Client
 	messengerQueue   sqs.Producer
 	mediaQueue       sqs.Producer
 	slack            slack.Client
@@ -117,7 +119,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	tmpStorageParams := &storage.Params{
 		Bucket: conf.S3TmpBucket,
 	}
-	params.tmpStorage = storage.NewBucket(awscfg, tmpStorageParams)
+	params.tmpStorage = storage.NewBucket(awscfg, tmpStorageParams, storage.WithLogger(params.logger))
 
 	// Amazon Cognitoの設定
 	adminAuthParams := &cognito.Params{
@@ -129,7 +131,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		UserPoolID:  conf.CognitoUserPoolID,
 		AppClientID: conf.CognitoUserClientID,
 	}
-	params.userAuth = cognito.NewClient(awscfg, userAuthParams)
+	params.userAuth = cognito.NewClient(awscfg, userAuthParams, cognito.WithLogger(params.logger))
 
 	// Amazon SQSの設定
 	messengerSQSParams := &sqs.Params{
@@ -140,6 +142,12 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		QueueURL: conf.SQSMediaQueueURL,
 	}
 	params.mediaQueue = sqs.NewProducer(awscfg, mediaSQSParams, sqs.WithDryRun(conf.SQSMockEnabled))
+
+	// Amazon DynamoDBの設定
+	dynamodbParams := &dynamodb.Params{
+		TablePrefix: params.config.Environment,
+	}
+	params.dynamodb = dynamodb.NewClient(awscfg, dynamodbParams, dynamodb.WithLogger(params.logger))
 
 	// New Relicの設定
 	if params.newRelicLicense != "" {
@@ -385,6 +393,7 @@ func newStoreService(
 	}
 	dbParams := &storedb.Params{
 		Database: mysql,
+		DynamoDB: p.dynamodb,
 	}
 	params := &storesrv.Params{
 		WaitGroup:  p.waitGroup,
