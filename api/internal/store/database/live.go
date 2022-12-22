@@ -30,7 +30,7 @@ func (l *live) Get(ctx context.Context, liveID string, fields ...string) (*entit
 	return live, exception.InternalError(err)
 }
 
-func (l *live) Update(ctx context.Context, liveID string, params *UpdateLiveParams) error {
+func (l *live) Update(ctx context.Context, liveID string, params *UpdateLiveInput) error {
 	err := l.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := l.now()
 		products := params.LiveProducts
@@ -51,7 +51,7 @@ func (l *live) Update(ctx context.Context, liveID string, params *UpdateLivePara
 			err := tx.WithContext(ctx).
 				Table(liveProductTable).
 				Where("live_id = ?", liveID).
-				Delete().Error
+				Delete(&entity.LiveProduct{}).Error
 			if err != nil {
 				return err
 			}
