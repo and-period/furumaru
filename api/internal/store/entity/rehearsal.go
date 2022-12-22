@@ -8,7 +8,7 @@ type Rehearsal struct {
 	ScheduleID     string    `dynamodbav:"schedule_id"`         // 開催スケジュールID
 	ChannelName    string    `dyanmodbav:"channel_name"`        // IVS チャンネル名
 	ChannelArn     string    `dynamodbav:"channel_arn"`         // IVS チャンネルARN
-	IngestEndpoint string    `dynamodbav:"ingenst_endpoint"`    // IVS 配信取り込みエンドポイント
+	IngestEndpoint string    `dynamodbav:"ingest_endpoint"`     // IVS 配信取り込みエンドポイント
 	StreamKey      string    `dynamodbav:"stream_key"`          // IVS 配信用ストリームキー
 	PlaybackURL    string    `dynamodbav:"playback_url"`        // IVS 再生用URL
 	StartAt        time.Time `dynamodbav:"start_at"`            // 配信開始日時
