@@ -1623,19 +1623,19 @@ export interface LiveResponse {
      */
     'updatedAt': number;
     /**
-     * チャンネル名
+     * 【配信用】チャンネル名
      * @type {string}
      * @memberof LiveResponse
      */
     'channelName'?: string;
     /**
-     * 配信エンドポイント
+     * 【配信用】配信エンドポイント
      * @type {string}
      * @memberof LiveResponse
      */
     'ingestEndpoint'?: string;
     /**
-     * ストリームキー
+     * 【配信用】ストリームキー
      * @type {string}
      * @memberof LiveResponse
      */
@@ -1647,13 +1647,13 @@ export interface LiveResponse {
      */
     'streamId'?: string;
     /**
-     * 再生用URL
+     * 【視聴用】再生用URL
      * @type {string}
      * @memberof LiveResponse
      */
     'playbackUrl'?: string;
     /**
-     * 視聴者数
+     * 【共用】視聴者数
      * @type {number}
      * @memberof LiveResponse
      */
