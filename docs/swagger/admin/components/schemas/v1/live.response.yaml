@@ -156,23 +156,23 @@ liveResponse:
       description: 更新日時 (unixtime)
     channelName:
       type: string
-      description: チャンネル名
+      description: 【配信用】チャンネル名
     ingestEndpoint:
       type: string
-      description: 配信エンドポイント
+      description: 【配信用】配信エンドポイント
     streamKey:
       type: string
-      description: ストリームキー
+      description: 【配信用】ストリームキー
     streamId:
       type: string
       description: ストリームキーID
     playbackUrl:
       type: string
-      description: 再生用URL
+      description: 【視聴用】再生用URL
     viewerCount:
       type: integer
       format: int64
-      description: 視聴者数
+      description: 【共用】視聴者数
   required:
   - id
   - scheduleId
