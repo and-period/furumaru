@@ -56,7 +56,7 @@ func TestLive(t *testing.T) {
 					CreatedAt:   1640962800,
 					UpdatedAt:   1640962800,
 				},
-				productIDs: []string{"product-id"},
+				ProductIDs: []string{"product-id"},
 			},
 		},
 	}
@@ -99,7 +99,7 @@ func TestLive_Fill(t *testing.T) {
 					CreatedAt:    1640962800,
 					UpdatedAt:    1640962800,
 				},
-				productIDs: []string{"product-id"},
+				ProductIDs: []string{"product-id"},
 			},
 			producer: &Producer{
 				Producer: response.Producer{
@@ -223,7 +223,7 @@ func TestLive_Fill(t *testing.T) {
 					CreatedAt:    1640962800,
 					UpdatedAt:    1640962800,
 				},
-				productIDs: []string{"product-id"},
+				ProductIDs: []string{"product-id"},
 			},
 		},
 	}

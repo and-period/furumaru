@@ -227,6 +227,21 @@ func (mr *MockServiceMockRecorder) GetCategory(ctx, in interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCategory", reflect.TypeOf((*MockService)(nil).GetCategory), ctx, in)
 }
 
+// GetLive mocks base method.
+func (m *MockService) GetLive(ctx context.Context, in *store.GetLiveInput) (*entity.Live, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetLive", ctx, in)
+	ret0, _ := ret[0].(*entity.Live)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetLive indicates an expected call of GetLive.
+func (mr *MockServiceMockRecorder) GetLive(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLive", reflect.TypeOf((*MockService)(nil).GetLive), ctx, in)
+}
+
 // GetOrder mocks base method.
 func (m *MockService) GetOrder(ctx context.Context, in *store.GetOrderInput) (*entity.Order, error) {
 	m.ctrl.T.Helper()

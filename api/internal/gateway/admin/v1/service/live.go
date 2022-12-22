@@ -18,7 +18,7 @@ const (
 
 type Live struct {
 	response.Live
-	productIDs []string
+	ProductIDs []string
 }
 
 type Lives []*Live
@@ -45,19 +45,27 @@ func (s LiveStatus) Response() int32 {
 func NewLive(live *entity.Live) *Live {
 	return &Live{
 		Live: response.Live{
-			ID:          live.ID,
-			ScheduleID:  live.ScheduleID,
-			Title:       live.Title,
-			Description: live.Description,
-			ProducerID:  live.ProducerID,
-			StartAt:     live.StartAt.Unix(),
-			EndAt:       live.EndAt.Unix(),
-			Canceled:    live.Canceled,
-			Status:      NewLiveStatus(live.Status).Response(),
-			CreatedAt:   live.CreatedAt.Unix(),
-			UpdatedAt:   live.UpdatedAt.Unix(),
+			ID:             live.ID,
+			ScheduleID:     live.ScheduleID,
+			Title:          live.Title,
+			Description:    live.Description,
+			ProducerID:     live.ProducerID,
+			StartAt:        live.StartAt.Unix(),
+			EndAt:          live.EndAt.Unix(),
+			Canceled:       live.Canceled,
+			Status:         NewLiveStatus(live.Status).Response(),
+			ChannelArn:     live.ChannelArn,
+			StreamKeyArn:   live.StreamKeyArn,
+			CreatedAt:      live.CreatedAt.Unix(),
+			UpdatedAt:      live.UpdatedAt.Unix(),
+			ChannelName:    live.ChannelName,
+			IngestEndpoint: live.IngestEndpoint,
+			StreamKey:      live.StreamKey,
+			StreamID:       live.StreamID,
+			PlaybackURL:    live.PlaybackURL,
+			ViewerCount:    live.ViewerCount,
 		},
-		productIDs: live.LiveProducts.ProductIDs(),
+		ProductIDs: live.LiveProducts.ProductIDs(),
 	}
 }
 
@@ -65,13 +73,13 @@ func (l *Live) Fill(producer *Producer, products map[string]*Product) {
 	if producer != nil {
 		l.ProducerName = producer.Name()
 	}
-	ps := make(Products, len(l.productIDs))
-	for i, productID := range l.productIDs {
+	ps := make(Products, 0, len(l.ProductIDs))
+	for _, productID := range l.ProductIDs {
 		p, ok := products[productID]
 		if !ok {
 			continue
 		}
-		ps[i] = p
+		ps = append(ps, p)
 	}
 	l.Products = ps.Response()
 }
