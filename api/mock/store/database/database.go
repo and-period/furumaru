@@ -241,7 +241,7 @@ func (mr *MockLiveMockRecorder) Get(ctx, liveID interface{}, fields ...interface
 }
 
 // Update mocks base method.
-func (m *MockLive) Update(ctx context.Context, liveID string, params *database.UpdateLiveParams) error {
+func (m *MockLive) Update(ctx context.Context, liveID string, params *database.UpdateLiveInput) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", ctx, liveID, params)
 	ret0, _ := ret[0].(error)

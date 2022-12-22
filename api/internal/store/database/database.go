@@ -66,7 +66,7 @@ type Category interface {
 
 type Live interface {
 	Get(ctx context.Context, liveID string, fields ...string) (*entity.Live, error)
-	Update(ctx context.Context, liveID string, params *UpdateLiveParams) error
+	Update(ctx context.Context, liveID string, params *UpdateLiveInput) error
 }
 
 type Order interface {
