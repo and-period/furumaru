@@ -128,8 +128,11 @@ paths:
   /v1/messages/{messageId}:
     $ref: './paths/v1/messages/_messageId/index.yaml'
   # Schedule
-  /v1/Schedules:
+  /v1/schedules:
     $ref: './paths/v1/schedules/index.yaml'
+  # Live
+  /v1/schedules/{scheduleId}/Lives/{liveId}:
+    $ref: './paths/v1/schedules/_scheduleId/lives/_liveId/index.yaml'
   # Order
   /v1/orders:
     $ref: './paths/v1/orders/index.yaml'

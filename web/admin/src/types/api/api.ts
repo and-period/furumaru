@@ -1159,10 +1159,10 @@ export interface CreateProductRequest {
     'itemDescription': string;
     /**
      * メディア一覧(8つまで)
-     * @type {Array<V1LiveResponseProductsInnerMediaInner>}
+     * @type {Array<CreateProductRequestMediaInner>}
      * @memberof CreateProductRequest
      */
-    'media': Array<V1LiveResponseProductsInnerMediaInner>;
+    'media': Array<CreateProductRequestMediaInner>;
     /**
      * 販売価格(0以上)
      * @type {number}
@@ -1205,6 +1205,25 @@ export interface CreateProductRequest {
      * @memberof CreateProductRequest
      */
     'originCity': string;
+}
+/**
+ * 
+ * @export
+ * @interface CreateProductRequestMediaInner
+ */
+export interface CreateProductRequestMediaInner {
+    /**
+     * メディアURL
+     * @type {string}
+     * @memberof CreateProductRequestMediaInner
+     */
+    'url': string;
+    /**
+     * サムネイルとして使用(1つまで)
+     * @type {boolean}
+     * @memberof CreateProductRequestMediaInner
+     */
+    'isThumbnail': boolean;
 }
 /**
  * 
@@ -1575,10 +1594,22 @@ export interface LiveResponse {
     'status': number;
     /**
      * 
-     * @type {Array<V1LiveResponseProductsInner>}
+     * @type {Array<ScheduleResponseLivesInnerProductsInner>}
      * @memberof LiveResponse
      */
-    'products': Array<V1LiveResponseProductsInner>;
+    'products': Array<ScheduleResponseLivesInnerProductsInner>;
+    /**
+     * チャンネルArn
+     * @type {string}
+     * @memberof LiveResponse
+     */
+    'channelArn'?: string;
+    /**
+     * ストリームキーArn
+     * @type {string}
+     * @memberof LiveResponse
+     */
+    'streamKeyArn'?: string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
@@ -1591,6 +1622,42 @@ export interface LiveResponse {
      * @memberof LiveResponse
      */
     'updatedAt': number;
+    /**
+     * 【配信用】チャンネル名
+     * @type {string}
+     * @memberof LiveResponse
+     */
+    'channelName'?: string;
+    /**
+     * 【配信用】配信エンドポイント
+     * @type {string}
+     * @memberof LiveResponse
+     */
+    'ingestEndpoint'?: string;
+    /**
+     * 【配信用】ストリームキー
+     * @type {string}
+     * @memberof LiveResponse
+     */
+    'streamKey'?: string;
+    /**
+     * ストリームキーID
+     * @type {string}
+     * @memberof LiveResponse
+     */
+    'streamId'?: string;
+    /**
+     * 【視聴用】再生用URL
+     * @type {string}
+     * @memberof LiveResponse
+     */
+    'playbackUrl'?: string;
+    /**
+     * 【共用】視聴者数
+     * @type {number}
+     * @memberof LiveResponse
+     */
+    'viewerCount'?: number;
 }
 /**
  * 
@@ -2124,10 +2191,10 @@ export interface OrderResponseItemsInner {
     'weight': number;
     /**
      * 
-     * @type {Array<V1LiveResponseProductsInnerMediaInner>}
+     * @type {Array<CreateProductRequestMediaInner>}
      * @memberof OrderResponseItemsInner
      */
-    'media': Array<V1LiveResponseProductsInnerMediaInner>;
+    'media': Array<CreateProductRequestMediaInner>;
 }
 /**
  * 支払い情報
@@ -3581,10 +3648,10 @@ export interface ScheduleResponseLivesInner {
     'status'?: number;
     /**
      * 
-     * @type {Array<V1LiveResponseProductsInner>}
+     * @type {Array<ScheduleResponseLivesInnerProductsInner>}
      * @memberof ScheduleResponseLivesInner
      */
-    'products'?: Array<V1LiveResponseProductsInner>;
+    'products'?: Array<ScheduleResponseLivesInnerProductsInner>;
     /**
      * 登録日時 (unixtime)
      * @type {number}
@@ -3595,6 +3662,169 @@ export interface ScheduleResponseLivesInner {
      * 更新日時 (unixtime)
      * @type {number}
      * @memberof ScheduleResponseLivesInner
+     */
+    'updatedAt'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface ScheduleResponseLivesInnerProductsInner
+ */
+export interface ScheduleResponseLivesInnerProductsInner {
+    /**
+     * 商品ID
+     * @type {string}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'id'?: string;
+    /**
+     * 商品名
+     * @type {string}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'name'?: string;
+    /**
+     * 商品説明
+     * @type {string}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'description'?: string;
+    /**
+     * 生産者ID
+     * @type {string}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'producerId'?: string;
+    /**
+     * 農家名
+     * @type {string}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'storeName'?: string;
+    /**
+     * 商品種別ID
+     * @type {string}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'categoryId'?: string;
+    /**
+     * 商品種別名
+     * @type {string}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'categoryName'?: string;
+    /**
+     * 品目ID
+     * @type {string}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'productTypeId'?: string;
+    /**
+     * 品目名
+     * @type {string}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'productTypeName'?: string;
+    /**
+     * アイコンURL
+     * @type {string}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'productTypeIconUrl'?: string;
+    /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'public'?: boolean;
+    /**
+     * 在庫数
+     * @type {number}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'inventory'?: number;
+    /**
+     * 重量(kg:少数第1位まで)
+     * @type {number}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'weight'?: number;
+    /**
+     * 数量単位
+     * @type {string}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'itemUnit'?: string;
+    /**
+     * 数量単位説明
+     * @type {string}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'itemDescription'?: string;
+    /**
+     * アイコンURL
+     * @type {string}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'iconUrl'?: string;
+    /**
+     * 
+     * @type {Array<CreateProductRequestMediaInner>}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'media'?: Array<CreateProductRequestMediaInner>;
+    /**
+     * 販売価格
+     * @type {number}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'price'?: number;
+    /**
+     * 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
+     * @type {number}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'deliveryType'?: number;
+    /**
+     * 箱の占有率(サイズ:60)
+     * @type {number}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'box60Rate'?: number;
+    /**
+     * 箱の占有率(サイズ:80)
+     * @type {number}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'box80Rate'?: number;
+    /**
+     * 箱の占有率(サイズ:100)
+     * @type {number}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'box100Rate'?: number;
+    /**
+     * 原産地(都道府県)
+     * @type {string}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'originPrefecture'?: string;
+    /**
+     * 原産地(市区町村)
+     * @type {string}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'originCity'?: string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ScheduleResponseLivesInnerProductsInner
+     */
+    'createdAt'?: number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof ScheduleResponseLivesInnerProductsInner
      */
     'updatedAt'?: number;
 }
@@ -4306,10 +4536,10 @@ export interface UpdateProductRequest {
     'itemDescription': string;
     /**
      * メディア一覧(8つまで)
-     * @type {Array<V1LiveResponseProductsInnerMediaInner>}
+     * @type {Array<CreateProductRequestMediaInner>}
      * @memberof UpdateProductRequest
      */
-    'media': Array<V1LiveResponseProductsInnerMediaInner>;
+    'media': Array<CreateProductRequestMediaInner>;
     /**
      * 販売価格(0以上)
      * @type {number}
@@ -4702,279 +4932,6 @@ export interface UsersResponseUsersInner {
      * @memberof UsersResponseUsersInner
      */
     'totalAmount'?: number;
-}
-/**
- * 
- * @export
- * @interface V1LiveResponse
- */
-export interface V1LiveResponse {
-    /**
-     * 配信ID
-     * @type {string}
-     * @memberof V1LiveResponse
-     */
-    'id': string;
-    /**
-     * スケジュールID
-     * @type {string}
-     * @memberof V1LiveResponse
-     */
-    'scheduleId': string;
-    /**
-     * ライブタイトル(128文字まで)
-     * @type {string}
-     * @memberof V1LiveResponse
-     */
-    'title': string;
-    /**
-     * ライブ説明(20000文字まで)
-     * @type {string}
-     * @memberof V1LiveResponse
-     */
-    'description': string;
-    /**
-     * 生産者ID
-     * @type {string}
-     * @memberof V1LiveResponse
-     */
-    'producerId': string;
-    /**
-     * 生産者名
-     * @type {string}
-     * @memberof V1LiveResponse
-     */
-    'producerName': string;
-    /**
-     * ライブ開始日時
-     * @type {number}
-     * @memberof V1LiveResponse
-     */
-    'startAt': number;
-    /**
-     * ライブ終了日時
-     * @type {number}
-     * @memberof V1LiveResponse
-     */
-    'endAt': number;
-    /**
-     * 配信公開フラグ
-     * @type {boolean}
-     * @memberof V1LiveResponse
-     */
-    'published': boolean;
-    /**
-     * キャンセルフラグ
-     * @type {boolean}
-     * @memberof V1LiveResponse
-     */
-    'canceled': boolean;
-    /**
-     * 配信ステータス(0:不明,1:配信前,2:配信中,3:配信終了,4:配信中止)
-     * @type {number}
-     * @memberof V1LiveResponse
-     */
-    'status': number;
-    /**
-     * 
-     * @type {Array<V1LiveResponseProductsInner>}
-     * @memberof V1LiveResponse
-     */
-    'products': Array<V1LiveResponseProductsInner>;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof V1LiveResponse
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof V1LiveResponse
-     */
-    'updatedAt': number;
-}
-/**
- * 
- * @export
- * @interface V1LiveResponseProductsInner
- */
-export interface V1LiveResponseProductsInner {
-    /**
-     * 商品ID
-     * @type {string}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'id'?: string;
-    /**
-     * 商品名
-     * @type {string}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'name'?: string;
-    /**
-     * 商品説明
-     * @type {string}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'description'?: string;
-    /**
-     * 生産者ID
-     * @type {string}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'producerId'?: string;
-    /**
-     * 農家名
-     * @type {string}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'storeName'?: string;
-    /**
-     * 商品種別ID
-     * @type {string}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'categoryId'?: string;
-    /**
-     * 商品種別名
-     * @type {string}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'categoryName'?: string;
-    /**
-     * 品目ID
-     * @type {string}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'productTypeId'?: string;
-    /**
-     * 品目名
-     * @type {string}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'productTypeName'?: string;
-    /**
-     * アイコンURL
-     * @type {string}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'productTypeIconUrl'?: string;
-    /**
-     * 公開フラグ
-     * @type {boolean}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'public'?: boolean;
-    /**
-     * 在庫数
-     * @type {number}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'inventory'?: number;
-    /**
-     * 重量(kg:少数第1位まで)
-     * @type {number}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'weight'?: number;
-    /**
-     * 数量単位
-     * @type {string}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'itemUnit'?: string;
-    /**
-     * 数量単位説明
-     * @type {string}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'itemDescription'?: string;
-    /**
-     * アイコンURL
-     * @type {string}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'iconUrl'?: string;
-    /**
-     * 
-     * @type {Array<V1LiveResponseProductsInnerMediaInner>}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'media'?: Array<V1LiveResponseProductsInnerMediaInner>;
-    /**
-     * 販売価格
-     * @type {number}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'price'?: number;
-    /**
-     * 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
-     * @type {number}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'deliveryType'?: number;
-    /**
-     * 箱の占有率(サイズ:60)
-     * @type {number}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'box60Rate'?: number;
-    /**
-     * 箱の占有率(サイズ:80)
-     * @type {number}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'box80Rate'?: number;
-    /**
-     * 箱の占有率(サイズ:100)
-     * @type {number}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'box100Rate'?: number;
-    /**
-     * 原産地(都道府県)
-     * @type {string}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'originPrefecture'?: string;
-    /**
-     * 原産地(市区町村)
-     * @type {string}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'originCity'?: string;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'createdAt'?: number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof V1LiveResponseProductsInner
-     */
-    'updatedAt'?: number;
-}
-/**
- * 
- * @export
- * @interface V1LiveResponseProductsInnerMediaInner
- */
-export interface V1LiveResponseProductsInnerMediaInner {
-    /**
-     * メディアURL
-     * @type {string}
-     * @memberof V1LiveResponseProductsInnerMediaInner
-     */
-    'url': string;
-    /**
-     * サムネイルとして使用(1つまで)
-     * @type {boolean}
-     * @memberof V1LiveResponseProductsInnerMediaInner
-     */
-    'isThumbnail': boolean;
 }
 /**
  * 
@@ -7877,6 +7834,115 @@ export class CoordinatorApi extends BaseAPI {
      */
     public v1UploadCoordinatorThumbnail(thumbnail?: any, options?: AxiosRequestConfig) {
         return CoordinatorApiFp(this.configuration).v1UploadCoordinatorThumbnail(thumbnail, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * LiveApi - axios parameter creator
+ * @export
+ */
+export const LiveApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary 配信詳細取得
+         * @param {string} liveId 配信ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetLive: async (liveId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'liveId' is not null or undefined
+            assertParamExists('v1GetLive', 'liveId', liveId)
+            const localVarPath = `/v1/schedules/{scheduleId}/Lives/{liveId}`
+                .replace(`{${"liveId"}}`, encodeURIComponent(String(liveId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * LiveApi - functional programming interface
+ * @export
+ */
+export const LiveApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = LiveApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary 配信詳細取得
+         * @param {string} liveId 配信ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetLive(liveId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LiveResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetLive(liveId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * LiveApi - factory interface
+ * @export
+ */
+export const LiveApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = LiveApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary 配信詳細取得
+         * @param {string} liveId 配信ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetLive(liveId: string, options?: any): AxiosPromise<LiveResponse> {
+            return localVarFp.v1GetLive(liveId, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * LiveApi - object-oriented interface
+ * @export
+ * @class LiveApi
+ * @extends {BaseAPI}
+ */
+export class LiveApi extends BaseAPI {
+    /**
+     * 
+     * @summary 配信詳細取得
+     * @param {string} liveId 配信ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof LiveApi
+     */
+    public v1GetLive(liveId: string, options?: AxiosRequestConfig) {
+        return LiveApiFp(this.configuration).v1GetLive(liveId, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -11019,7 +11085,7 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
         v1CreateSchedule: async (body: CreateScheduleRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'body' is not null or undefined
             assertParamExists('v1CreateSchedule', 'body', body)
-            const localVarPath = `/v1/Schedules`;
+            const localVarPath = `/v1/schedules`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;

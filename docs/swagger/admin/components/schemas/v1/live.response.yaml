@@ -140,6 +140,12 @@ liveResponse:
             type: integer
             format: int64
             description: 更新日時 (unixtime)
+    channelArn:
+      type: string
+      description: チャンネルArn
+    streamKeyArn:
+      type: string
+      description: ストリームキーArn
     createdAt:
       type: integer
       format: int64
@@ -148,6 +154,25 @@ liveResponse:
       type: integer
       format: int64
       description: 更新日時 (unixtime)
+    channelName:
+      type: string
+      description: 【配信用】チャンネル名
+    ingestEndpoint:
+      type: string
+      description: 【配信用】配信エンドポイント
+    streamKey:
+      type: string
+      description: 【配信用】ストリームキー
+    streamId:
+      type: string
+      description: ストリームキーID
+    playbackUrl:
+      type: string
+      description: 【視聴用】再生用URL
+    viewerCount:
+      type: integer
+      format: int64
+      description: 【共用】視聴者数
   required:
   - id
   - scheduleId
@@ -206,6 +231,13 @@ liveResponse:
       originCity: '彦根市'
       createdAt: 1640962800
       updatedAt: 1640962800
+    channelArn: 'cahnnel-arn'
+    streamKeyArn: 'streamKey-arn'
     createdAt: 1640962800
     updatedAt: 1640962800
-
+    channelName: 'channel-name'
+    ingestEndpoint: 'xxxxxxx.global-contribute.live-video.net'
+    streamKey: 'sk_us-east-1_kSByoE6FetnPs5Byk3a9Zx'
+    streamId: 'stream-id'
+    playbackUrl: 'https://5579c3526712.us-east-1.playback.live-video.net/api/video/v1/us-east-1.386661535629.channel.kSByoE6FetnPs5Byk3a9Zx.m3u8'
+    viewerCount: 100
