@@ -310,14 +310,14 @@ type GetLiveInput struct {
 }
 
 type UpdateLiveInput struct {
-	LiveProducts []*entity.LiveProducts `validate:"required"`
-	ProducerID   string                 `validate:"required"`
-	Title        string                 `validate:"required,max=64"`
-	Description  string                 `validate:"required,max=2000"`
-	Published    bool                   `validate:""`
-	Canceled     bool                   `validate:""`
-	StartAt      time.Time              `validate:"required"`
-	EndAt        time.Time              `validate:"required"`
+	LiveProducts entity.LiveProducts `validate:"required"`
+	ProducerID   string              `validate:"required"`
+	Title        string              `validate:"required,max=64"`
+	Description  string              `validate:"required,max=2000"`
+	Published    bool                `validate:""`
+	Canceled     bool                `validate:""`
+	StartAt      time.Time           `validate:"required"`
+	EndAt        time.Time           `validate:"required"`
 }
 
 type ListOrdersInput struct {

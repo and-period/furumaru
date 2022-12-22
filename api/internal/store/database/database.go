@@ -66,7 +66,7 @@ type Category interface {
 
 type Live interface {
 	Get(ctx context.Context, liveID string, fields ...string) (*entity.Live, error)
-	Update(ctx context.Context, liveID string, params *UpdateLiveInput) error
+	Update(ctx context.Context, liveID string, params *UpdateLiveParams) error
 }
 
 type Order interface {
@@ -155,6 +155,17 @@ func (p *ListCategoriesParams) stmt(stmt *gorm.DB) *gorm.DB {
 		stmt = stmt.Order(value)
 	}
 	return stmt
+}
+
+type UpdateLiveParams struct {
+	LiveProducts entity.LiveProducts
+	ProducerID   string
+	Title        string
+	Description  string
+	Published    bool
+	Canceled     bool
+	StartAt      time.Time
+	EndAt        time.Time
 }
 
 type ListOrdersParams struct {
