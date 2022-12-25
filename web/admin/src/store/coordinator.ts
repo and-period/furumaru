@@ -10,6 +10,7 @@ import {
   CoordinatorResponse,
   CoordinatorsResponse,
   CreateCoordinatorRequest,
+  RelateProducersRequest,
   UpdateCoordinatorRequest,
   UploadImageResponse,
 } from '~/types/api'
@@ -18,6 +19,7 @@ import {
   ConnectionError,
   InternalServerError,
   NotFoundError,
+  PreconditionError,
   ValidationError,
 } from '~/types/exception'
 
@@ -289,6 +291,68 @@ export const useCoordinatorStore = defineStore('Coordinator', {
         throw new InternalServerError(error)
       }
       this.fetchCoordinators()
+    },
+
+    /**
+     * コーディーネータに生産者を紐づける非同期関数
+     * @param id 生産者を紐づけるコーディネータのID
+     * @param payload コーディネーターに紐づく生産者
+     * @returns
+     */
+    async relateProducers(
+      id: string,
+      payload: RelateProducersRequest
+    ): Promise<void> {
+      try {
+        const authStore = useAuthStore()
+        const accessToken = authStore.accessToken
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
+        }
+        const factory = new ApiClientFactory()
+        const contactsApiClient = factory.create(CoordinatorApi, accessToken)
+        await contactsApiClient.v1RelateProducers(id, payload)
+        const commonStore = useCommonStore()
+        commonStore.addSnackbar({
+          message: 'コーディネーターと生産者の紐付けが完了しました',
+          color: 'info',
+        })
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          const statusCode = error.response.status
+          switch (statusCode) {
+            case 400:
+              return Promise.reject(
+                new ValidationError('入力内容に誤りがあります。', error)
+              )
+            case 401:
+              return Promise.reject(
+                new AuthError('認証エラー。再度ログインをしてください。', error)
+              )
+            case 404:
+              return Promise.reject(
+                new NotFoundError(
+                  'コーディネーターが見つかりませんでした。',
+                  error
+                )
+              )
+            case 412:
+              return Promise.reject(
+                new PreconditionError(
+                  '既に関連づけられている生産者または、存在しない生産者が指定されています。',
+                  error
+                )
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+        throw new InternalServerError(error)
+      }
     },
   },
 })
