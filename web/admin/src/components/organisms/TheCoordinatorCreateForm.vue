@@ -87,7 +87,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from '@vue/composition-api'
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 
 import {
   kana,
