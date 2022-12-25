@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { defineStore } from 'pinia'
 
 import { useAuthStore } from './auth'
@@ -16,11 +15,6 @@ import {
 } from '~/types/api'
 import {
   AuthError,
-  ConnectionError,
-  InternalServerError,
-  NotFoundError,
-  PreconditionError,
-  ValidationError,
 } from '~/types/exception'
 
 export const useCoordinatorStore = defineStore('Coordinator', {
@@ -94,9 +88,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
         return res.data
       } catch (error) {
         console.log(error)
-        if (axios.isAxiosError(error)) {
-          return this.errorHandler(error)
-        }
+        return this.errorHandler(error)
       }
     },
 
@@ -123,9 +115,8 @@ export const useCoordinatorStore = defineStore('Coordinator', {
         const res = await coordinatorsApiClient.v1GetCoordinator(id)
         return res.data
       } catch (error) {
-        return this.errorHandler(error, {
-          404: '該当するコーディーネータが見つかりませんでした。',
-        })
+        console.log(error)
+        return this.errorHandler(error)
       }
     },
 
@@ -154,9 +145,8 @@ export const useCoordinatorStore = defineStore('Coordinator', {
           color: 'info',
         })
       } catch (error) {
-        return this.errorHandler(error, {
-          404: '該当するコーディーネータが見つかりませんでした。',
-        })
+        console.log(error)
+        return this.errorHandler(error)
       }
     },
 
@@ -192,9 +182,8 @@ export const useCoordinatorStore = defineStore('Coordinator', {
         )
         return res.data
       } catch (error) {
-        return this.errorHandler(error, {
-          400: 'このファイルはアップロードできません。',
-        })
+        console.log(error)
+        return this.errorHandler(error)
       }
     },
 
@@ -228,9 +217,8 @@ export const useCoordinatorStore = defineStore('Coordinator', {
         )
         return res.data
       } catch (error) {
-        return this.errorHandler(error, {
-          400: 'このファイルはアップロードできません。',
-        })
+        console.log(error)
+        return this.errorHandler(error)
       }
     },
 
@@ -259,36 +247,8 @@ export const useCoordinatorStore = defineStore('Coordinator', {
           color: 'info',
         })
       } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 400:
-              return Promise.reject(
-                new ValidationError(
-                  '削除できませんでした。管理者にお問い合わせしてください。',
-                  error
-                )
-              )
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 404:
-              return Promise.reject(
-                new NotFoundError(
-                  '削除するコーディネーターが見つかりませんでした。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+        console.log(error)
+        return this.errorHandler(error)
       }
       this.fetchCoordinators()
     },
@@ -318,40 +278,8 @@ export const useCoordinatorStore = defineStore('Coordinator', {
           color: 'info',
         })
       } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 400:
-              return Promise.reject(
-                new ValidationError('入力内容に誤りがあります。', error)
-              )
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 404:
-              return Promise.reject(
-                new NotFoundError(
-                  'コーディネーターが見つかりませんでした。',
-                  error
-                )
-              )
-            case 412:
-              return Promise.reject(
-                new PreconditionError(
-                  '既に関連づけられている生産者または、存在しない生産者が指定されています。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+        console.log(error)
+        return this.errorHandler(error)
       }
     },
   },

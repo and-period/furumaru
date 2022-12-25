@@ -38,13 +38,13 @@
               <v-spacer />
               <v-btn outlined color="primary" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-plus</v-icon>
-                生産者登録
+                生産者紐付け
               </v-btn>
             </div>
           </template>
 
           <v-card>
-            <v-card-title class="primaryLight"> 生産者登録 </v-card-title>
+            <v-card-title class="primaryLight"> 生産者紐付け </v-card-title>
 
             <v-autocomplete
               v-model="producers"
