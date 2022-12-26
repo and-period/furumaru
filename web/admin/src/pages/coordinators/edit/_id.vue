@@ -32,7 +32,7 @@
       </v-tab-item>
 
       <v-tab-item value="relationProducers">
-        <v-dialog width="500">
+        <v-dialog v-model="dialog" width="500">
           <template #activator="{ on, attrs }">
             <div class="d-flex pt-3 pr-3">
               <v-spacer />
@@ -81,6 +81,9 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
+              <v-btn color="accentDarken" text @click="cancel">
+                キャンセル
+              </v-btn>
               <v-btn color="primary" outlined @click="relateProducers">
                 登録
               </v-btn>
@@ -132,6 +135,7 @@ export default defineComponent({
     const coordinatorStore = useCoordinatorStore()
 
     const producers = ref<string[]>([])
+    const dialog = ref<boolean>(false)
 
     const producerStore = useProducerStore()
     const producerItems = computed(() => {
@@ -280,6 +284,7 @@ export default defineComponent({
       producerData.producerIds = producers.value
       try {
         await coordinatorStore.relateProducers(id, producerData)
+        dialog.value = false
       } catch (error) {
         console.log(error)
       }
@@ -287,6 +292,10 @@ export default defineComponent({
 
     const remove = (item: string) => {
       producers.value = producers.value.filter((id) => id !== item)
+    }
+
+    const cancel = (): void => {
+      dialog.value = false
     }
 
     useFetch(async () => {
@@ -317,6 +326,8 @@ export default defineComponent({
       producerItems,
       remove,
       relateProducers,
+      dialog,
+      cancel,
     }
   },
 })
