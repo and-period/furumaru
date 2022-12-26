@@ -130,6 +130,95 @@ func TestLive_Get(t *testing.T) {
 	}
 }
 
+func TestLive_Update(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, liveTable, liveProductTable, productTable, productTypeTable, categoryTable)
+	category := testCategory("category-id", "野菜", now())
+	err = m.db.DB.Create(&category).Error
+	require.NoError(t, err)
+	productType := testProductType("type-id", "category-id", "野菜", now())
+	err = m.db.DB.Create(&productType).Error
+	require.NoError(t, err)
+	products := make(entity.Products, 2)
+	products[0] = testProduct("product-id01", "type-id", "category-id", "producer-id", now())
+	products[1] = testProduct("product-id02", "type-id", "category-id", "producer-id", now())
+	err = m.db.DB.Create(&products).Error
+	require.NoError(t, err)
+
+	type args struct {
+		liveID string
+		params *UpdateLiveParams
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+				live := testLive("live-id", "schedule-id", "producer-id", []string{"product-id01", "product-id02"}, now())
+				err = m.db.DB.Create(&live).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				liveID: "live-id",
+				params: &UpdateLiveParams{
+					LiveProducts: entity.LiveProducts{
+						{
+							LiveID:    "live-id",
+							ProductID: "product-id01",
+						},
+						{
+							LiveID:    "live-id",
+							ProductID: "product-id02",
+						},
+					},
+					Title:       "じゃがいもの祭典",
+					Description: "いろんなじゃがいも勢揃い",
+					Published:   true,
+					StartAt:     now(),
+					EndAt:       now(),
+				},
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := m.dbDelete(ctx, liveTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, m)
+
+			db := &live{db: m.db, now: now}
+			err = db.Update(ctx, tt.args.liveID, tt.args.params)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
 func fillIgnoreLiveField(l *entity.Live, now time.Time) {
 	if l == nil {
 		return
