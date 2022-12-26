@@ -56,10 +56,10 @@ func (l *live) Update(ctx context.Context, liveID string, params *UpdateLivePara
 		}
 		for i := range products {
 			products[i].CreatedAt, products[i].UpdatedAt = now, now
-			err = tx.WithContext(ctx).Table(liveProductTable).Create(&products[i]).Error
-			if err != nil {
-				return err
-			}
+		}
+		err = tx.WithContext(ctx).Table(liveProductTable).Create(&products).Error
+		if err != nil {
+			return err
 		}
 		err = tx.WithContext(ctx).
 			Table(liveTable).
