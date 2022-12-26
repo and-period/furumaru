@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { defineStore } from 'pinia'
 
 import { useAuthStore } from './auth'
@@ -10,16 +9,11 @@ import {
   CoordinatorResponse,
   CoordinatorsResponse,
   CreateCoordinatorRequest,
+  RelateProducersRequest,
   UpdateCoordinatorRequest,
   UploadImageResponse,
 } from '~/types/api'
-import {
-  AuthError,
-  ConnectionError,
-  InternalServerError,
-  NotFoundError,
-  ValidationError,
-} from '~/types/exception'
+import { AuthError } from '~/types/exception'
 
 export const useCoordinatorStore = defineStore('Coordinator', {
   state: () => {
@@ -92,9 +86,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
         return res.data
       } catch (error) {
         console.log(error)
-        if (axios.isAxiosError(error)) {
-          return this.errorHandler(error)
-        }
+        return this.errorHandler(error)
       }
     },
 
@@ -121,9 +113,8 @@ export const useCoordinatorStore = defineStore('Coordinator', {
         const res = await coordinatorsApiClient.v1GetCoordinator(id)
         return res.data
       } catch (error) {
-        return this.errorHandler(error, {
-          404: '該当するコーディーネータが見つかりませんでした。',
-        })
+        console.log(error)
+        return this.errorHandler(error)
       }
     },
 
@@ -152,9 +143,8 @@ export const useCoordinatorStore = defineStore('Coordinator', {
           color: 'info',
         })
       } catch (error) {
-        return this.errorHandler(error, {
-          404: '該当するコーディーネータが見つかりませんでした。',
-        })
+        console.log(error)
+        return this.errorHandler(error)
       }
     },
 
@@ -190,9 +180,8 @@ export const useCoordinatorStore = defineStore('Coordinator', {
         )
         return res.data
       } catch (error) {
-        return this.errorHandler(error, {
-          400: 'このファイルはアップロードできません。',
-        })
+        console.log(error)
+        return this.errorHandler(error)
       }
     },
 
@@ -226,9 +215,8 @@ export const useCoordinatorStore = defineStore('Coordinator', {
         )
         return res.data
       } catch (error) {
-        return this.errorHandler(error, {
-          400: 'このファイルはアップロードできません。',
-        })
+        console.log(error)
+        return this.errorHandler(error)
       }
     },
 
@@ -257,38 +245,40 @@ export const useCoordinatorStore = defineStore('Coordinator', {
           color: 'info',
         })
       } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 400:
-              return Promise.reject(
-                new ValidationError(
-                  '削除できませんでした。管理者にお問い合わせしてください。',
-                  error
-                )
-              )
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 404:
-              return Promise.reject(
-                new NotFoundError(
-                  '削除するコーディネーターが見つかりませんでした。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+        console.log(error)
+        return this.errorHandler(error)
       }
       this.fetchCoordinators()
+    },
+
+    /**
+     * コーディーネータに生産者を紐づける非同期関数
+     * @param id 生産者を紐づけるコーディネータのID
+     * @param payload コーディネーターに紐づく生産者
+     * @returns
+     */
+    async relateProducers(
+      id: string,
+      payload: RelateProducersRequest
+    ): Promise<void> {
+      try {
+        const authStore = useAuthStore()
+        const accessToken = authStore.accessToken
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
+        }
+        const factory = new ApiClientFactory()
+        const contactsApiClient = factory.create(CoordinatorApi, accessToken)
+        await contactsApiClient.v1RelateProducers(id, payload)
+        const commonStore = useCommonStore()
+        commonStore.addSnackbar({
+          message: 'コーディネーターと生産者の紐付けが完了しました',
+          color: 'info',
+        })
+      } catch (error) {
+        console.log(error)
+        return this.errorHandler(error)
+      }
     },
   },
 })

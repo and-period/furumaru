@@ -32,19 +32,19 @@
       </v-tab-item>
 
       <v-tab-item value="relationProducers">
-        <v-dialog width="500">
+        <v-dialog v-model="dialog" width="500">
           <template #activator="{ on, attrs }">
             <div class="d-flex pt-3 pr-3">
               <v-spacer />
               <v-btn outlined color="primary" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-plus</v-icon>
-                生産者登録
+                生産者紐付け
               </v-btn>
             </div>
           </template>
 
           <v-card>
-            <v-card-title class="primaryLight"> 生産者を追加 </v-card-title>
+            <v-card-title class="primaryLight"> 生産者紐付け </v-card-title>
 
             <v-autocomplete
               v-model="producers"
@@ -81,7 +81,12 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="primary"> 登録 </v-btn>
+              <v-btn color="accentDarken" text @click="cancel">
+                キャンセル
+              </v-btn>
+              <v-btn color="primary" outlined @click="relateProducers">
+                登録
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -115,7 +120,7 @@ import {
 } from '~/lib/validations'
 import { useCoordinatorStore } from '~/store/coordinator'
 import { useProducerStore } from '~/store/producer'
-import { UpdateCoordinatorRequest } from '~/types/api'
+import { RelateProducersRequest, UpdateCoordinatorRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 import { Coordinator } from '~/types/props/coordinator'
 
@@ -130,6 +135,7 @@ export default defineComponent({
     const coordinatorStore = useCoordinatorStore()
 
     const producers = ref<string[]>([])
+    const dialog = ref<boolean>(false)
 
     const producerStore = useProducerStore()
     const producerItems = computed(() => {
@@ -163,6 +169,10 @@ export default defineComponent({
       city: '',
       addressLine1: '',
       addressLine2: '',
+    })
+
+    const producerData = reactive<RelateProducersRequest>({
+      producerIds: [],
     })
 
     const { fetchState } = useFetch(async () => {
@@ -270,8 +280,22 @@ export default defineComponent({
       }
     }
 
+    const relateProducers = async (): Promise<void> => {
+      producerData.producerIds = producers.value
+      try {
+        await coordinatorStore.relateProducers(id, producerData)
+        dialog.value = false
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
     const remove = (item: string) => {
       producers.value = producers.value.filter((id) => id !== item)
+    }
+
+    const cancel = (): void => {
+      dialog.value = false
     }
 
     useFetch(async () => {
@@ -301,6 +325,9 @@ export default defineComponent({
       tab,
       producerItems,
       remove,
+      relateProducers,
+      dialog,
+      cancel,
     }
   },
 })
