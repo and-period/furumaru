@@ -47,24 +47,21 @@ func (l *live) Update(ctx context.Context, liveID string, params *UpdateLivePara
 			"end_at":      params.EndAt,
 			"updated_at":  now,
 		}
-		if len(products) > 0 {
-			err := tx.WithContext(ctx).
-				Table(liveProductTable).
-				Where("live_id = ?", liveID).
-				Delete(&entity.LiveProduct{}).Error
+		err := tx.WithContext(ctx).
+			Table(liveProductTable).
+			Where("live_id = ?", liveID).
+			Delete(&entity.LiveProduct{}).Error
+		if err != nil {
+			return err
+		}
+		for i := range products {
+			products[i].CreatedAt, products[i].UpdatedAt = now, now
+			err = tx.WithContext(ctx).Table(liveProductTable).Create(&products[i]).Error
 			if err != nil {
 				return err
 			}
-			for i := range products {
-				products[i].CreatedAt, products[i].UpdatedAt = now, now
-				err = tx.WithContext(ctx).Table(liveProductTable).Create(&products[i]).Error
-				if err != nil {
-					return err
-				}
-			}
-			return err
 		}
-		err := tx.WithContext(ctx).
+		err = tx.WithContext(ctx).
 			Table(liveTable).
 			Where("id = ?", liveID).
 			Updates(updates).Error
