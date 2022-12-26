@@ -37,15 +37,15 @@ func (s *schedule) Create(
 		}
 		for i := range lives {
 			lives[i].CreatedAt, lives[i].UpdatedAt = now, now
-			if err := tx.WithContext(ctx).Table(liveTable).Create(&lives[i]).Error; err != nil {
-				return err
-			}
+		}
+		if err := tx.WithContext(ctx).Table(liveTable).Create(&lives).Error; err != nil {
+			return err
 		}
 		for i := range products {
 			products[i].CreatedAt, products[i].UpdatedAt = now, now
-			if err := tx.WithContext(ctx).Table(liveProductTable).Create(&products[i]).Error; err != nil {
-				return err
-			}
+		}
+		if err := tx.WithContext(ctx).Table(liveProductTable).Create(&products).Error; err != nil {
+			return err
 		}
 		lives.Fill(products.GroupByLiveID(), now)
 		return err
