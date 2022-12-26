@@ -200,6 +200,17 @@ func TestLive_Update(t *testing.T) {
 				hasErr: false,
 			},
 		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				liveID: "live-id",
+				params: &UpdateLiveParams{},
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
 	}
 
 	for _, tt := range tests {
