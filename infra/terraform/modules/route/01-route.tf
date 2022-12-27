@@ -53,7 +53,7 @@ resource "aws_route" "instance" {
   route_table_id = data.aws_route_table.this.id
 
   destination_cidr_block = each.value.destination_cidr_block
-  instance_id            = data.aws_instance.this[each.key].id
+  network_interface_id   = data.aws_instance.this[each.key].network_interface_id
 }
 
 resource "aws_route" "network_interface" {

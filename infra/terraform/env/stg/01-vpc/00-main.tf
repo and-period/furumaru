@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.0"
+      version = "~> 4.0"
     }
   }
 }
@@ -111,11 +111,12 @@ module "vpc" {
   #####################################################################
   # NAT Gateway
   #####################################################################
-  nat_gateways = [
-    {
-      name        = "furumaru-stg-ngw"
-      subnet_name = "furumaru-stg-sub-pub-1a"
-      eip_name    = "furumaru-stg-eip-ngw"
-    },
-  ]
+  # NATインスタンス利用構成にするため不要
+  # nat_gateways = [
+  #   {
+  #     name        = "furumaru-stg-ngw"
+  #     subnet_name = "furumaru-stg-sub-pub-1a"
+  #     eip_name    = "furumaru-stg-eip-ngw"
+  #   },
+  # ]
 }
