@@ -240,6 +240,20 @@ func (mr *MockLiveMockRecorder) Get(ctx, liveID interface{}, fields ...interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockLive)(nil).Get), varargs...)
 }
 
+// Update mocks base method.
+func (m *MockLive) Update(ctx context.Context, liveID string, params *database.UpdateLiveParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", ctx, liveID, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockLiveMockRecorder) Update(ctx, liveID, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockLive)(nil).Update), ctx, liveID, params)
+}
+
 // MockOrder is a mock of Order interface.
 type MockOrder struct {
 	ctrl     *gomock.Controller
@@ -759,6 +773,58 @@ func (m *MockPromotion) Update(ctx context.Context, promotionID string, params *
 func (mr *MockPromotionMockRecorder) Update(ctx, promotionID, params interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockPromotion)(nil).Update), ctx, promotionID, params)
+}
+
+// MockRehearsal is a mock of Rehearsal interface.
+type MockRehearsal struct {
+	ctrl     *gomock.Controller
+	recorder *MockRehearsalMockRecorder
+}
+
+// MockRehearsalMockRecorder is the mock recorder for MockRehearsal.
+type MockRehearsalMockRecorder struct {
+	mock *MockRehearsal
+}
+
+// NewMockRehearsal creates a new mock instance.
+func NewMockRehearsal(ctrl *gomock.Controller) *MockRehearsal {
+	mock := &MockRehearsal{ctrl: ctrl}
+	mock.recorder = &MockRehearsalMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockRehearsal) EXPECT() *MockRehearsalMockRecorder {
+	return m.recorder
+}
+
+// Create mocks base method.
+func (m *MockRehearsal) Create(ctx context.Context, rehearsal *entity.Rehearsal) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, rehearsal)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockRehearsalMockRecorder) Create(ctx, rehearsal interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockRehearsal)(nil).Create), ctx, rehearsal)
+}
+
+// Get mocks base method.
+func (m *MockRehearsal) Get(ctx context.Context, liveID string) (*entity.Rehearsal, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Get", ctx, liveID)
+	ret0, _ := ret[0].(*entity.Rehearsal)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockRehearsalMockRecorder) Get(ctx, liveID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockRehearsal)(nil).Get), ctx, liveID)
 }
 
 // MockShipping is a mock of Shipping interface.

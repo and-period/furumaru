@@ -30,6 +30,46 @@ func (l *live) Get(ctx context.Context, liveID string, fields ...string) (*entit
 	return live, exception.InternalError(err)
 }
 
+func (l *live) Update(ctx context.Context, liveID string, params *UpdateLiveParams) error {
+	err := l.db.Transaction(ctx, func(tx *gorm.DB) error {
+		now := l.now()
+		products := params.LiveProducts
+		if _, err := l.get(ctx, tx, liveID); err != nil {
+			return err
+		}
+		updates := map[string]interface{}{
+			"producer_id": params.ProducerID,
+			"title":       params.Title,
+			"description": params.Description,
+			"published":   params.Published,
+			"canceled":    params.Canceled,
+			"start_at":    params.StartAt,
+			"end_at":      params.EndAt,
+			"updated_at":  now,
+		}
+		err := tx.WithContext(ctx).
+			Table(liveProductTable).
+			Where("live_id = ?", liveID).
+			Delete(&entity.LiveProduct{}).Error
+		if err != nil {
+			return err
+		}
+		for i := range products {
+			products[i].CreatedAt, products[i].UpdatedAt = now, now
+		}
+		err = tx.WithContext(ctx).Table(liveProductTable).Create(&products).Error
+		if err != nil {
+			return err
+		}
+		err = tx.WithContext(ctx).
+			Table(liveTable).
+			Where("id = ?", liveID).
+			Updates(updates).Error
+		return err
+	})
+	return exception.InternalError(err)
+}
+
 func (l *live) get(ctx context.Context, tx *gorm.DB, liveID string, fields ...string) (*entity.Live, error) {
 	var (
 		live         *entity.Live
