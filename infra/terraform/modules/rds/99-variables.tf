@@ -257,6 +257,12 @@ variable "db_enabled_cloudwatch_logs_exports" {
 }
 
 # メンテナンス設定
+variable "apply_immediately" {
+  description = "変更をすぐに反映"
+  type        = bool
+  default     = false
+}
+
 variable "db_maintenance_window" {
   description = "DBに適用される保留中、メンテナンスの期間 (※db_backup_windowがtrueの際設定不要)"
   default     = "Mon:00:00-Mon:01:00" # Format: Mon:01:23-Mon:23:01

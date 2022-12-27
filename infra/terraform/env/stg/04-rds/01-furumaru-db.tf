@@ -51,7 +51,7 @@ module "furumaru_db" {
 
   ### DBエンジンの設定 ####################################
   db_engine = "mysql"
-  db_engine_version = "8.0.29"
+  db_engine_version = "8.0.31"
   db_instance_class = "db.t4g.micro"
 
   ### ストレージ設定 ######################################

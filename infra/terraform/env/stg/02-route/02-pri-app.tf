@@ -22,8 +22,8 @@ module "route_pri_app" {
   routes = [
     {
       destination_cidr_block = "0.0.0.0/0"
-      target_resource        = "nat_gateway"
-      target_resource_name   = "furumaru-stg-ngw"
+      target_resource        = "instance"
+      target_resource_name   = "furumaru-stg-nat"
     },
   ]
 }

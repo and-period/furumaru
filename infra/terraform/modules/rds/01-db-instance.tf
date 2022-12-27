@@ -53,6 +53,7 @@ resource "aws_db_instance" "master" {
   enabled_cloudwatch_logs_exports = var.db_enabled_cloudwatch_logs_exports
 
   # メンテナンス設定
+  apply_immediately          = var.apply_immediately
   auto_minor_version_upgrade = var.db_auto_minor_version_upgrade
   maintenance_window         = var.db_backup_window != "" ? null : var.db_maintenance_window
 
@@ -107,6 +108,7 @@ resource "aws_db_instance" "replica" {
   monitoring_interval = var.db_replica_monitoring_interval
   monitoring_role_arn = var.db_replica_monitoring_role_arn
 
+  apply_immediately          = var.apply_immediately
   auto_minor_version_upgrade = var.db_replica_auto_minor_version_upgrade
 
   deletion_protection = var.db_replica_deletion_protection

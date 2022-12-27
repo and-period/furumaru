@@ -1,5 +1,4 @@
-module "sg_debug" {
-  count = 0 # 未使用のためリソースは削除状態へ
+module "sg_nat" {
   source = "./../../../modules/security-group"
 
   #####################################################################
@@ -11,8 +10,8 @@ module "sg_debug" {
   #####################################################################
   # Security Group
   #####################################################################
-  name        = "furumaru-stg-sg-debug"
-  description = "for debug instance"
+  name        = "furumaru-stg-sg-nat"
+  description = "for nat instance"
 
   ingress_rules = [
     {
@@ -30,6 +29,15 @@ module "sg_debug" {
       from_port            = 22
       to_port              = 22
       cidr_blocks          = ["0.0.0.0/0"]
+      prefix_list_ids      = []
+      security_group_names = []
+    },
+    {
+      description          = "all from internal"
+      protocol             = "-1"
+      from_port            = 0
+      to_port              = 0
+      cidr_blocks          = ["10.110.0.0/16"]
       prefix_list_ids      = []
       security_group_names = []
     },
