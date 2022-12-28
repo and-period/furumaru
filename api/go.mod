@@ -31,7 +31,7 @@ require (
 	github.com/newrelic/go-agent/v3/integrations/nrgin v1.1.3
 	github.com/prometheus/client_golang v1.13.0
 	github.com/rafaelhl/gorm-newrelic-telemetry-plugin v1.0.0
-	github.com/rs/cors v1.8.2
+	github.com/rs/cors v1.8.3
 	github.com/rs/cors/wrapper/gin v0.0.0-20220619195839-da52b0701de5
 	github.com/samber/lo v1.36.0
 	github.com/satori/go.uuid v1.2.0
