@@ -9,16 +9,20 @@ frontend (user):
 ##################################################
 # Backend
 ##################################################
+backend (api):
+- api/**/*
 backend (gateway):
-- api/**/gateway/**/*
+- api/internal/gateway/**/*
 backend (media):
-- api/**/media/**/*
+- api/internal/media/**/*
 backend (messenger):
-- api/**/messenger/**/*
+- api/internal/messenger/**/*
 backend (store):
-- api/**/store/**/*
+- api/internal/store/**/*
 backend (user):
-- api/**/user/**/*
+- api/internal/user/**/*
+backend (function):
+- func/**/*
 
 ##################################################
 # Infrastructure
@@ -27,8 +31,6 @@ infra (container):
 - infra/docker/**/*
 - infra/helm/**
 - infra/kubernetes/**
-infra (functions):
-- infra/functions/**/*
 infra (terraform):
 - infra/terraform/**/*
 infra (database):
@@ -41,6 +43,7 @@ docs:
 - docs/**/*
 test:
 - api/**/*_test.go
+- func/**/*_test.go
 - web/**/*.spec.ts
 - web/**/*.test.ts
 workflow:
