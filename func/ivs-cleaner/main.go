@@ -31,8 +31,7 @@ func main() {
 }
 
 func init() {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	ctx := context.Background()
 	// Loggerの設定
 	var err error
 	app.logger, err = zap.NewDevelopment()
