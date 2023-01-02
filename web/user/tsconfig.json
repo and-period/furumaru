@@ -8,6 +8,6 @@
       "~~/*": ["./../*"],
       "@@/*": ["./../*"]
     },
-    "types": ["@nuxt/types", "@nuxtjs/axios", "@nuxtjs/vuetify", "@nuxtjs/i18n", "@types/jest", "@types/node"]
+    "types": ["@nuxt/types", "@nuxtjs/axios", "@nuxtjs/vuetify", "@nuxtjs/i18n", "@types/node", "vitest/globals"]
   }
 }
