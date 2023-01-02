@@ -1,13 +1,12 @@
 /// <reference types="vitest" />
 
-import { defineConfig } from 'vite'
-import Vue from '@vitejs/plugin-vue'
 import path from 'path'
 
+import Vue from '@vitejs/plugin-vue'
+import { defineConfig } from 'vite'
+
 export default defineConfig({
-  plugins: [
-    Vue()
-  ],
+  plugins: [Vue()],
   test: {
     globals: true,
     environment: 'jsdom',
