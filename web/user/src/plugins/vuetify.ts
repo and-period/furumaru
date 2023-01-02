@@ -1,21 +1,14 @@
 import 'vuetify/styles'
 import '@fortawesome/fontawesome-free/css/all.css'
-import { createVuetify } from 'vuetify'
+import { createVuetify, VuetifyOptions } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { aliases, fa } from 'vuetify/iconsets/fa'
 import colors from 'vuetify/lib/util/colors'
 
-const opts = {
+const opts: VuetifyOptions = {
   components,
   directives,
-  icons: {
-    defaultSet: 'fa',
-    aliases,
-    sets: {
-      fa,
-    },
-  },
   theme: {
     defaultTheme: 'light',
     themes: {
@@ -43,15 +36,16 @@ const opts = {
       },
     },
   },
+  icons: {
+    defaultSet: 'fa',
+    aliases,
+    sets: {
+      fa,
+    },
+  },
 }
 
 export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify(opts)
   nuxtApp.vueApp.use(vuetify)
-  nuxtApp.provide('vuetify', vuetify)
-  return {
-    provide: {
-      injected: () => vuetify,
-    },
-  }
 })

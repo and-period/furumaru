@@ -1,14 +1,14 @@
 <template>
   <div>
     <atoms-the-marche-logo class="text-center mb-6" />
-    <v-card variant="outlined" class="mx-auto" :max-width="isMobile ? 360 : 440">
+    <v-card variant="outlined" class="mx-auto" :max-width="mobile ? 360 : 440">
       <v-card-text class="pa-md-12 pa-sm-4">
         <form @submit.prevent="handleSubmit">
           <v-text-field type="tel" :label="t('tel')" variant="outlined" dense required />
           <v-text-field type="email" :label="t('email')" variant="outlined" dense required />
           <v-text-field type="password" :label="t('password')" variant="outlined" dense required />
           <v-text-field type="password" :label="t('passwordConfirm')" variant="outlined" dense required />
-          <molecules-the-submit-button :is-mobile="isMobile">
+          <molecules-the-submit-button :is-mobile="mobile">
             {{ t('signUp') }}
           </molecules-the-submit-button>
         </form>
@@ -21,16 +21,17 @@
 </template>
 
 <script lang="ts" setup>
-import { useIsMobile } from '~/lib/hooks'
+import { useDisplay } from 'vuetify'
+
 import { I18n } from '~/types/locales'
 
 definePageMeta({
   layout: 'auth',
 })
 
-const { isMobile } = useIsMobile()
-const { $i18n } = useNuxtApp()
 const router = useRouter()
+const { $i18n } = useNuxtApp()
+const { mobile } = useDisplay()
 
 const t = (str: keyof I18n['auth']['signUp']) => {
   return $i18n.t(`auth.signUp.${str}`)

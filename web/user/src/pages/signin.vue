@@ -9,9 +9,7 @@
           <div>
             <nuxt-link to="/">{{ t('forgetPasswordLink') }}</nuxt-link>
           </div>
-          <molecules-the-submit-button class="mt-6" :is-mobile="isMobile">{{
-            t('signIn')
-          }}</molecules-the-submit-button>
+          <molecules-the-submit-button class="mt-6" :is-mobile="mobile">{{ t('signIn') }}</molecules-the-submit-button>
         </v-form>
       </v-col>
     </v-row>
@@ -22,8 +20,8 @@
             variant="outlined"
             block
             class="base rounded-xl google-btn"
-            :height="isMobile ? 40 : 64"
-            :size="!isMobile && 'x-large'"
+            :height="mobile ? 40 : 64"
+            :size="!mobile ? 'x-large' : undefined"
             @click="handleClickGoogleSingInButton"
           >
             <img src="~/assets/img/g-normal.png" height="18" width="18" alt="google icon" class="mr-6" />
@@ -33,8 +31,8 @@
             block
             variant="outlined"
             class="facebook text-white rounded-xl"
-            :height="isMobile ? 40 : 64"
-            :size="!isMobile && 'x-large'"
+            :height="mobile ? 40 : 64"
+            :size="!mobile ? 'x-large' : undefined"
             @click="handleClickFacebookSingInButton"
           >
             <v-icon start class="mr-6">fa-brands fa-facebook</v-icon>
@@ -44,8 +42,8 @@
             block
             variant="outlined"
             class="line text-white rounded-xl"
-            :height="isMobile ? 40 : 64"
-            :size="!isMobile && 'x-large'"
+            :height="mobile ? 40 : 64"
+            :size="!mobile ? 'x-large' : undefined"
             @click="handleClickLineSingInButton"
           >
             <v-icon start class="mr-6">fa-brands fa-line</v-icon>
@@ -62,15 +60,16 @@
 </template>
 
 <script lang="ts" setup>
-import { useIsMobile } from '~/lib/hooks'
+import { useDisplay } from 'vuetify'
+
 import { I18n } from '~/types/locales'
 
 definePageMeta({
   layout: 'auth',
 })
 
-const { isMobile } = useIsMobile()
 const { $i18n } = useNuxtApp()
+const { mobile } = useDisplay()
 
 const t = (str: keyof I18n['auth']['signIn']) => {
   return $i18n.t(`auth.signIn.${str}`)
