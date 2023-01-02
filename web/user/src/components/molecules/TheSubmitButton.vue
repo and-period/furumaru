@@ -6,21 +6,17 @@
     type="submit"
     elevation="0"
     :height="isMobile ? 40 : 64"
-    :x-large="!isMobile"
+    :size="!isMobile && 'x-large'"
   >
     <slot />
   </v-btn>
 </template>
 
-<script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
-
-export default defineComponent({
-  props: {
-    isMobile: {
-      type: Boolean,
-      default: false,
-    },
+<script lang="ts" setup>
+const props = defineProps({
+  isMobile: {
+    type: Boolean,
+    default: false,
   },
 })
 </script>

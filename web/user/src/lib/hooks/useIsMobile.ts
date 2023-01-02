@@ -1,13 +1,12 @@
-import { computed, useContext } from '@nuxtjs/composition-api'
+import { computed } from 'vue'
 
 export function useIsMobile() {
-  const { $vuetify } = useContext()
+  const { $vuetify } = useNuxtApp()
 
   const breakpointList = ['sm', 'xs']
 
-  const isMobile = computed(() =>
-    breakpointList.includes($vuetify.breakpoint.name)
-  )
+  // FIXME: $vuetifyの取得がうまくできていない
+  const isMobile = computed(() => breakpointList.includes($vuetify.breakpoint?.name))
 
   return { isMobile }
 }
