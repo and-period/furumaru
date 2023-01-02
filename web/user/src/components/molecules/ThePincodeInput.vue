@@ -20,7 +20,7 @@ const emits = defineEmits<{
   (name: 'update:value', val: string): void
 }>()
 
-const formData = computed({
+computed({
   get: () => props.value,
   set: (val: string) => emits('update:value', val),
 })
