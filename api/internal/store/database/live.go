@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/aws/aws-sdk-go-v2/service/ivs"
 	"gorm.io/gorm"
 )
 
@@ -68,25 +69,33 @@ func (l *live) Update(ctx context.Context, liveID string, params *UpdateLivePara
 	return exception.InternalError(err)
 }
 
-func (l *live) UpdateLivePublic(ctx context.Context, liveID string, params *UpdateLivePublicParams, ivs func(ctx context.Context) error) error {
+func (l *live) UpdateLivePublic(
+	ctx context.Context, liveID string, params *UpdateLivePublicParams, ivs func(ctx context.Context) (*ivs.CreateChannelOutput, error),
+) error {
 	err := l.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := l.get(ctx, tx, liveID); err != nil {
 			return err
 		}
 		now := l.now()
-		updates := map[string]interface{}{
-			"published":  params.Published,
-			"canceled":   params.Canceled,
-			"updated_at": now,
+		cout, err := ivs(ctx)
+		if err != nil {
+			return err
 		}
-		err := tx.WithContext(ctx).
+		updates := map[string]interface{}{
+			"published":     params.Published,
+			"canceled":      params.Canceled,
+			"channel_arn":   cout.Channel.Arn,
+			"streamKey_arn": cout.StreamKey.Arn,
+			"updated_at":    now,
+		}
+		err = tx.WithContext(ctx).
 			Table(liveTable).
 			Where("id = ?", liveID).
 			Updates(updates).Error
 		if err != nil {
 			return err
 		}
-		return ivs(ctx)
+		return nil
 	})
 	return exception.InternalError(err)
 }

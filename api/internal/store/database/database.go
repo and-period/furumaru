@@ -11,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/ivs"
 	"gorm.io/gorm"
 )
 
@@ -124,7 +125,7 @@ type Schedule interface {
 type Live interface {
 	Get(ctx context.Context, liveID string, fields ...string) (*entity.Live, error)
 	Update(ctx context.Context, liveID string, params *UpdateLiveParams) error
-	UpdateLivePublic(ctx context.Context, liveID string, params *UpdateLivePublicParams, ivs func(ctx context.Context) error) error
+	UpdateLivePublic(ctx context.Context, liveID string, params *UpdateLivePublicParams, ivs func(ctx context.Context) (*ivs.CreateChannelOutput, error)) error
 }
 
 /**
