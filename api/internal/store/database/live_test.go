@@ -191,7 +191,6 @@ func TestLive_Update(t *testing.T) {
 					},
 					Title:       "じゃがいもの祭典",
 					Description: "いろんなじゃがいも勢揃い",
-					Published:   true,
 					StartAt:     now(),
 					EndAt:       now(),
 				},

@@ -41,8 +41,6 @@ func (l *live) Update(ctx context.Context, liveID string, params *UpdateLivePara
 			"producer_id": params.ProducerID,
 			"title":       params.Title,
 			"description": params.Description,
-			"published":   params.Published,
-			"canceled":    params.Canceled,
 			"start_at":    params.StartAt,
 			"end_at":      params.EndAt,
 			"updated_at":  now,
@@ -66,6 +64,29 @@ func (l *live) Update(ctx context.Context, liveID string, params *UpdateLivePara
 			Where("id = ?", liveID).
 			Updates(updates).Error
 		return err
+	})
+	return exception.InternalError(err)
+}
+
+func (l *live) UpdateLivePublic(ctx context.Context, liveID string, params *UpdateLivePublicParams, ivs func(ctx context.Context) error) error {
+	err := l.db.Transaction(ctx, func(tx *gorm.DB) error {
+		if _, err := l.get(ctx, tx, liveID); err != nil {
+			return err
+		}
+		now := l.now()
+		updates := map[string]interface{}{
+			"published":  params.Published,
+			"canceled":   params.Canceled,
+			"updated_at": now,
+		}
+		err := tx.WithContext(ctx).
+			Table(liveTable).
+			Where("id = ?", liveID).
+			Updates(updates).Error
+		if err != nil {
+			return err
+		}
+		return ivs(ctx)
 	})
 	return exception.InternalError(err)
 }
