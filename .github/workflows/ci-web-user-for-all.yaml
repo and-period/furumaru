@@ -182,7 +182,7 @@ jobs:
       run: yarn postinstall
 
     - name: Test
-      run: yarn test
+      run: yarn coverage
 
     - uses: codecov/codecov-action@v3
       with:
