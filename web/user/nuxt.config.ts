@@ -1,5 +1,5 @@
-import ja from './src/locales/ja_jp.json'
 import en from './src/locales/en_us.json'
+import ja from './src/locales/ja_jp.json'
 
 export default defineNuxtConfig({
   ssr: false,
@@ -22,9 +22,7 @@ export default defineNuxtConfig({
   },
   css: ['vuetify/lib/styles/main.sass', '@fortawesome/fontawesome-free/css/all.css', '~/assets/css/variables.scss'],
   plugins: ['~/plugins/vuetify'],
-  modules: [
-    '@nuxtjs/i18n',
-  ],
+  modules: ['@nuxtjs/i18n'],
   i18n: {
     locales: ['ja', 'en'],
     defaultLocale: 'ja',
@@ -33,7 +31,7 @@ export default defineNuxtConfig({
       messages: {
         ja,
         en,
-      }
+      },
     },
   },
   runtimeConfig: {
@@ -45,10 +43,10 @@ export default defineNuxtConfig({
   vite: {
     server: {
       proxy: {
-        "/api/": {
+        '/api/': {
           target: process.env.API_BASE_URL,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ""),
+          rewrite: (path) => path.replace(/^\/api/, ''),
         },
       },
     },

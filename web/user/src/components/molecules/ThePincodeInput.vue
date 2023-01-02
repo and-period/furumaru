@@ -1,6 +1,6 @@
 <template>
   <client-only>
-    <pincode-input v-model="formData" :length="length" placeholder="・" />
+    <pincode-input v-model="formData" :length="props.length" placeholder="・" />
   </client-only>
 </template>
 
@@ -17,7 +17,7 @@ const props = defineProps({
 })
 
 const emits = defineEmits<{
-  (name: 'update:value', val: string): void;
+  (name: 'update:value', val: string): void
 }>()
 
 const formData = computed({

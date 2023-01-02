@@ -11,14 +11,14 @@
           </v-badge>
         </v-btn>
       </template>
-      <span>{{ cartIsEmpty ? cartEmptyMessage : cartNotEmptyMessage }}</span>
+      <span>{{ cartIsEmpty ? props.cartEmptyMessage : props.cartNotEmptyMessage }}</span>
     </v-tooltip>
     <v-menu>
       <template #activator="{ on }">
-        <molecules-the-header-menu-button :img-src="profileImgUrl" v-on="on" />
+        <molecules-the-header-menu-button :img-src="props.profileImgUrl" v-on="on" />
       </template>
       <v-list>
-        <v-list-item v-for="(menuItem, i) in menuList" :key="i" @click="menuItem.onClick">
+        <v-list-item v-for="(menuItem, i) in props.menuList" :key="i" @click="menuItem.onClick">
           <v-list-item-title>{{ menuItem.name }}</v-list-item-title>
         </v-list-item>
       </v-list>
@@ -28,6 +28,7 @@
 
 <script lang="ts" setup>
 import { PropType } from 'vue'
+
 import { HeaderMenuItem } from '~/types/props'
 
 const props = defineProps({
@@ -58,9 +59,8 @@ const props = defineProps({
 })
 
 const emits = defineEmits<{
-  (name: 'click:cart'): void;
+  (name: 'click:cart'): void
 }>()
-
 
 const cartItemCount = computed<number>(() => {
   return props.cartItemCount

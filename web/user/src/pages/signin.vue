@@ -9,7 +9,9 @@
           <div>
             <nuxt-link to="/">{{ t('forgetPasswordLink') }}</nuxt-link>
           </div>
-          <molecules-the-submit-button class="mt-6" :is-mobile="isMobile">{{ t('signIn') }}</molecules-the-submit-button>
+          <molecules-the-submit-button class="mt-6" :is-mobile="isMobile">{{
+            t('signIn')
+          }}</molecules-the-submit-button>
         </v-form>
       </v-col>
     </v-row>
@@ -65,7 +67,7 @@ import { I18n } from '~/types/locales'
 
 definePageMeta({
   layout: 'auth',
-});
+})
 
 const { isMobile } = useIsMobile()
 const { $i18n } = useNuxtApp()

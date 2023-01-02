@@ -5,8 +5,8 @@
     block
     type="submit"
     elevation="0"
-    :height="isMobile ? 40 : 64"
-    :size="!isMobile && 'x-large'"
+    :height="props.isMobile ? 40 : 64"
+    :size="!props.isMobile && 'x-large'"
   >
     <slot />
   </v-btn>

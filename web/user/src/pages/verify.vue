@@ -23,7 +23,7 @@ import { I18n } from '~/types/locales'
 
 definePageMeta({
   layout: 'auth',
-});
+})
 
 const { isMobile } = useIsMobile()
 const { $i18n } = useNuxtApp()
