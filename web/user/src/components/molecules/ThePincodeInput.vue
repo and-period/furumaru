@@ -1,7 +1,7 @@
 <template>
-  <client-only>
-    <pincode-input v-model="formData" :length="props.length" placeholder="・" />
-  </client-only>
+  <div>
+    <!-- <v-otp-input v-model="formData" :length="props.length" type="password"></v-otp-input> -->
+  </div>
 </template>
 
 <script lang="ts" setup>
