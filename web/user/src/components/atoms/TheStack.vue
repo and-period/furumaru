@@ -1,28 +1,21 @@
 <template>
-  <div class="stack" :style="spaceStyle"><slot /></div>
+  <div class="stack" :style="spaceStyle">
+    <slot />
+  </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from '@nuxtjs/composition-api'
-
-export default defineComponent({
-  props: {
-    space: {
-      type: Number,
-      default: 16,
-    },
+<script lang="ts" setup>
+const props = defineProps({
+  space: {
+    type: Number,
+    default: 16,
   },
-  setup(props) {
-    const spaceStyle = computed(() => {
-      return {
-        '--space': `${props.space}px`,
-      }
-    })
+})
 
-    return {
-      spaceStyle,
-    }
-  },
+const spaceStyle = computed(() => {
+  return {
+    '--space': `${props.space}px`,
+  }
 })
 </script>
 

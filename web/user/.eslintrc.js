@@ -6,32 +6,11 @@ module.exports = {
   },
   extends: [
     '@nuxtjs/eslint-config-typescript',
-    'plugin:nuxt/recommended',
-    'plugin:import/recommended',
-    'plugin:import/typescript',
+    'plugin:vue/vue3-recommended',
+    'plugin:vuetify/recommended',
     'prettier',
   ],
-  plugins: ['@typescript-eslint'],
-  parserOptions: {
-    tsconfigRootDir: '.',
-  },
-  settings: {
-    'import/resolver': {
-      node: {
-        extensions: ['.ts', '.vue'],
-      },
-      'babel-module': {
-        root: '.',
-        alias: {
-          '~': './src',
-          '@': './src',
-          '~~': '.',
-          '@@': '.',
-        },
-      },
-    },
-  },
-  // add your custom rules here
+  plugins: ['vue', 'vuetify', '@typescript-eslint'],
   rules: {
     'dot-notation': 'off',
     'no-unused-expressions': 'off',
@@ -41,15 +20,7 @@ module.exports = {
     'import/order': [
       'error',
       {
-        groups: [
-          'builtin',
-          'external',
-          'parent',
-          'sibling',
-          'index',
-          'object',
-          'type',
-        ],
+        groups: ['builtin', 'external', 'parent', 'sibling', 'index', 'object', 'type'],
         alphabetize: { order: 'asc' },
         'newlines-between': 'always',
       },

@@ -1,35 +1,28 @@
 <template>
-  <client-only>
-    <pincode-input v-model="formData" :length="length" placeholder="・" />
-  </client-only>
+  <div>
+    <!-- <v-otp-input v-model="formData" :length="props.length" type="password"></v-otp-input> -->
+  </div>
 </template>
 
-<script lang="ts">
-import {
-  computed,
-  defineComponent,
-  SetupContext,
-} from '@nuxtjs/composition-api'
-
-export default defineComponent({
-  props: {
-    value: {
-      type: String,
-      required: true,
-    },
-    length: {
-      type: Number,
-      default: 4,
-    },
+<script lang="ts" setup>
+const props = defineProps({
+  value: {
+    type: String,
+    required: true,
   },
-  setup(props, { emit }: SetupContext) {
-    const formData = computed({
-      get: () => props.value,
-      set: (val: string) => emit('update:value', val),
-    })
-
-    return { formData }
+  length: {
+    type: Number,
+    default: 4,
   },
+})
+
+const emits = defineEmits<{
+  (name: 'update:value', val: string): void
+}>()
+
+computed({
+  get: () => props.value,
+  set: (val: string) => emits('update:value', val),
 })
 </script>
 
