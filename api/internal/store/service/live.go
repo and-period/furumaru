@@ -85,13 +85,13 @@ func (s *service) UpdateLivePublic(ctx context.Context, in *store.UpdateLivePubl
 	if err != nil {
 		return exception.InternalError(err)
 	}
+
 	dbParams := &database.UpdateLivePublicParams{
 		Published:    in.Published,
 		Canceled:     in.Canceled,
 		ChannelArn:   aws.ToString(cout.Channel.Arn),
 		StreamKeyArn: aws.ToString(cout.StreamKey.Arn),
 	}
-
 	err = s.db.Live.UpdatePublic(ctx, in.LiveID, dbParams)
 	return exception.InternalError(err)
 }
