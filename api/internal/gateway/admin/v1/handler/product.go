@@ -339,6 +339,9 @@ func (h *handler) multiGetProducts(ctx context.Context, productIDs []string) (se
 		return nil, err
 	}
 	products := service.NewProducts(sproducts)
+	if len(products) == 0 {
+		return products, nil
+	}
 	if err := h.getProductsDetails(ctx, products...); err != nil {
 		return nil, err
 	}

@@ -14,6 +14,7 @@ import (
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateSchedule(t *testing.T) {
@@ -220,13 +221,14 @@ func TestCreateSchedule(t *testing.T) {
 	}
 	lives := sentity.Lives{live}
 	tests := []struct {
-		name   string
-		setup  func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
-		req    *request.CreateScheduleRequest
-		expect *testResponse
+		name    string
+		setup   func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		options []testOption
+		req     *request.CreateScheduleRequest
+		expect  *testResponse
 	}{
 		{
-			name: "success",
+			name: "administrator success",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil).Times(2)
@@ -236,6 +238,7 @@ func TestCreateSchedule(t *testing.T) {
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
 				mocks.store.EXPECT().CreateSchedule(gomock.Any(), scheduleIn).Return(schedule, lives, nil)
 			},
+			options: []testOption{withRole(uentity.AdminRoleAdministrator)},
 			req: &request.CreateScheduleRequest{
 				CoordinatorID: "coordinator-id",
 				ShippingID:    "shipping-id",
@@ -339,13 +342,363 @@ func TestCreateSchedule(t *testing.T) {
 				},
 			},
 		},
+		{
+			name: "coordinator success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil).Times(2)
+				mocks.store.EXPECT().GetShipping(gomock.Any(), shippingIn).Return(shipping, nil)
+				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
+				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(productTypes, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().CreateSchedule(gomock.Any(), scheduleIn).Return(schedule, lives, nil)
+			},
+			options: []testOption{withRole(uentity.AdminRoleCoordinator), withAdminID("coordinator-id")},
+			req: &request.CreateScheduleRequest{
+				CoordinatorID: "coordinator-id",
+				ShippingID:    "shipping-id",
+				Title:         "スケジュールタイトル",
+				Description:   "スケジュールの説明",
+				ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
+				StartAt:       1640962800,
+				EndAt:         1640962800,
+				Lives: []*request.CreateScheduleLive{
+					{
+						Title:       "配信タイトル",
+						Description: "配信の説明",
+						ProducerID:  "producer-id",
+						ProductIDs:  []string{"product-id"},
+						StartAt:     1640962800,
+						EndAt:       1640962800,
+					},
+				},
+			},
+			expect: &testResponse{
+				code: http.StatusOK,
+				body: &response.ScheduleResponse{
+					Schedule: &response.Schedule{
+						ID:            "schedule-id",
+						CoordinatorID: "coordinator-id",
+						ShippingID:    "shipping-id",
+						ShippingName:  "デフォルト配送設定",
+						Title:         "スケジュールタイトル",
+						Description:   "スケジュールの説明",
+						ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
+						StartAt:       1640962800,
+						EndAt:         1640962800,
+						CreatedAt:     1640962800,
+						UpdatedAt:     1640962800,
+					},
+					Lives: []*response.Live{
+						{
+							ID:           "live-id",
+							ScheduleID:   "schedule-id",
+							Title:        "配信タイトル",
+							Description:  "配信の説明",
+							Status:       1,
+							Published:    false,
+							Canceled:     false,
+							ProducerID:   "producer-id",
+							ProducerName: "&. 管理者",
+							Products: []*response.Product{
+								{
+									ID:              "product-id",
+									TypeID:          "product-type-id",
+									TypeName:        "じゃがいも",
+									TypeIconURL:     "https://and-period.jp/icon.png",
+									CategoryID:      "category-id",
+									CategoryName:    "野菜",
+									ProducerID:      "producer-id",
+									StoreName:       "&.農園",
+									Name:            "新鮮なじゃがいも",
+									Description:     "新鮮なじゃがいもをお届けします。",
+									Public:          true,
+									Inventory:       100,
+									Weight:          1.3,
+									ItemUnit:        "袋",
+									ItemDescription: "1袋あたり100gのじゃがいも",
+									Media: []*response.ProductMedia{
+										{
+											URL:         "https://and-period.jp/thumbnail01.png",
+											IsThumbnail: true,
+											Images: []*response.Image{
+												{URL: "https://and-period.jp/thumbnail01_240.png", Size: int32(service.ImageSizeSmall)},
+												{URL: "https://and-period.jp/thumbnail01_675.png", Size: int32(service.ImageSizeMedium)},
+												{URL: "https://and-period.jp/thumbnail01_900.png", Size: int32(service.ImageSizeLarge)},
+											},
+										},
+										{
+											URL:         "https://and-period.jp/thumbnail02.png",
+											IsThumbnail: false,
+											Images: []*response.Image{
+												{URL: "https://and-period.jp/thumbnail02_240.png", Size: int32(service.ImageSizeSmall)},
+												{URL: "https://and-period.jp/thumbnail02_675.png", Size: int32(service.ImageSizeMedium)},
+												{URL: "https://and-period.jp/thumbnail02_900.png", Size: int32(service.ImageSizeLarge)},
+											},
+										},
+									},
+									Price:            400,
+									DeliveryType:     1,
+									Box60Rate:        50,
+									Box80Rate:        40,
+									Box100Rate:       30,
+									OriginPrefecture: "滋賀県",
+									OriginCity:       "彦根市",
+									CreatedAt:        1640962800,
+									UpdatedAt:        1640962800,
+								},
+							},
+							StartAt:   1640962800,
+							EndAt:     1640962800,
+							CreatedAt: 1640962800,
+							UpdatedAt: 1640962800,
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "failed to get coordinator",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, assert.AnError)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil).Times(2)
+				mocks.store.EXPECT().GetShipping(gomock.Any(), shippingIn).Return(shipping, nil)
+				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
+				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(productTypes, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+			},
+			options: []testOption{withRole(uentity.AdminRoleAdministrator)},
+			req: &request.CreateScheduleRequest{
+				CoordinatorID: "coordinator-id",
+				ShippingID:    "shipping-id",
+				Title:         "スケジュールタイトル",
+				Description:   "スケジュールの説明",
+				ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
+				StartAt:       1640962800,
+				EndAt:         1640962800,
+				Lives: []*request.CreateScheduleLive{
+					{
+						Title:       "配信タイトル",
+						Description: "配信の説明",
+						ProducerID:  "producer-id",
+						ProductIDs:  []string{"product-id"},
+						StartAt:     1640962800,
+						EndAt:       1640962800,
+					},
+				},
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to multi get producers",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(nil, assert.AnError).Times(2)
+				mocks.store.EXPECT().GetShipping(gomock.Any(), shippingIn).Return(shipping, nil)
+				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
+				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(productTypes, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+			},
+			options: []testOption{withRole(uentity.AdminRoleAdministrator)},
+			req: &request.CreateScheduleRequest{
+				CoordinatorID: "coordinator-id",
+				ShippingID:    "shipping-id",
+				Title:         "スケジュールタイトル",
+				Description:   "スケジュールの説明",
+				ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
+				StartAt:       1640962800,
+				EndAt:         1640962800,
+				Lives: []*request.CreateScheduleLive{
+					{
+						Title:       "配信タイトル",
+						Description: "配信の説明",
+						ProducerID:  "producer-id",
+						ProductIDs:  []string{"product-id"},
+						StartAt:     1640962800,
+						EndAt:       1640962800,
+					},
+				},
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to contain invalid producer id",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(uentity.Producers{}, nil).Times(2)
+				mocks.store.EXPECT().GetShipping(gomock.Any(), shippingIn).Return(shipping, nil)
+				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
+				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(productTypes, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+			},
+			options: []testOption{withRole(uentity.AdminRoleAdministrator)},
+			req: &request.CreateScheduleRequest{
+				CoordinatorID: "coordinator-id",
+				ShippingID:    "shipping-id",
+				Title:         "スケジュールタイトル",
+				Description:   "スケジュールの説明",
+				ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
+				StartAt:       1640962800,
+				EndAt:         1640962800,
+				Lives: []*request.CreateScheduleLive{
+					{
+						Title:       "配信タイトル",
+						Description: "配信の説明",
+						ProducerID:  "producer-id",
+						ProductIDs:  []string{"product-id"},
+						StartAt:     1640962800,
+						EndAt:       1640962800,
+					},
+				},
+			},
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name: "failed to get shipping",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil).Times(2)
+				mocks.store.EXPECT().GetShipping(gomock.Any(), shippingIn).Return(nil, assert.AnError)
+				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
+				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(productTypes, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+			},
+			options: []testOption{withRole(uentity.AdminRoleAdministrator)},
+			req: &request.CreateScheduleRequest{
+				CoordinatorID: "coordinator-id",
+				ShippingID:    "shipping-id",
+				Title:         "スケジュールタイトル",
+				Description:   "スケジュールの説明",
+				ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
+				StartAt:       1640962800,
+				EndAt:         1640962800,
+				Lives: []*request.CreateScheduleLive{
+					{
+						Title:       "配信タイトル",
+						Description: "配信の説明",
+						ProducerID:  "producer-id",
+						ProductIDs:  []string{"product-id"},
+						StartAt:     1640962800,
+						EndAt:       1640962800,
+					},
+				},
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to multi get products",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
+				mocks.store.EXPECT().GetShipping(gomock.Any(), shippingIn).Return(shipping, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(nil, assert.AnError)
+			},
+			options: []testOption{withRole(uentity.AdminRoleAdministrator)},
+			req: &request.CreateScheduleRequest{
+				CoordinatorID: "coordinator-id",
+				ShippingID:    "shipping-id",
+				Title:         "スケジュールタイトル",
+				Description:   "スケジュールの説明",
+				ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
+				StartAt:       1640962800,
+				EndAt:         1640962800,
+				Lives: []*request.CreateScheduleLive{
+					{
+						Title:       "配信タイトル",
+						Description: "配信の説明",
+						ProducerID:  "producer-id",
+						ProductIDs:  []string{"product-id"},
+						StartAt:     1640962800,
+						EndAt:       1640962800,
+					},
+				},
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to contain invalid product id",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
+				mocks.store.EXPECT().GetShipping(gomock.Any(), shippingIn).Return(shipping, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(sentity.Products{}, nil)
+			},
+			options: []testOption{withRole(uentity.AdminRoleAdministrator)},
+			req: &request.CreateScheduleRequest{
+				CoordinatorID: "coordinator-id",
+				ShippingID:    "shipping-id",
+				Title:         "スケジュールタイトル",
+				Description:   "スケジュールの説明",
+				ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
+				StartAt:       1640962800,
+				EndAt:         1640962800,
+				Lives: []*request.CreateScheduleLive{
+					{
+						Title:       "配信タイトル",
+						Description: "配信の説明",
+						ProducerID:  "producer-id",
+						ProductIDs:  []string{"product-id"},
+						StartAt:     1640962800,
+						EndAt:       1640962800,
+					},
+				},
+			},
+			expect: &testResponse{
+				code: http.StatusBadRequest,
+			},
+		},
+		{
+			name: "failed to create schedule",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil).Times(2)
+				mocks.store.EXPECT().GetShipping(gomock.Any(), shippingIn).Return(shipping, nil)
+				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
+				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(productTypes, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.store.EXPECT().CreateSchedule(gomock.Any(), scheduleIn).Return(nil, nil, assert.AnError)
+			},
+			options: []testOption{withRole(uentity.AdminRoleAdministrator)},
+			req: &request.CreateScheduleRequest{
+				CoordinatorID: "coordinator-id",
+				ShippingID:    "shipping-id",
+				Title:         "スケジュールタイトル",
+				Description:   "スケジュールの説明",
+				ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
+				StartAt:       1640962800,
+				EndAt:         1640962800,
+				Lives: []*request.CreateScheduleLive{
+					{
+						Title:       "配信タイトル",
+						Description: "配信の説明",
+						ProducerID:  "producer-id",
+						ProductIDs:  []string{"product-id"},
+						StartAt:     1640962800,
+						EndAt:       1640962800,
+					},
+				},
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			const path = "/v1/schedules"
-			testPost(t, tt.setup, tt.expect, path, tt.req)
+			testPost(t, tt.setup, tt.expect, path, tt.req, tt.options...)
 		})
 	}
 }
