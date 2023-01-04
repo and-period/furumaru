@@ -40,15 +40,4 @@ export default defineNuxtConfig({
   build: {
     transpile: ['vuetify'],
   },
-  vite: {
-    server: {
-      proxy: {
-        '/api/': {
-          target: process.env.API_BASE_URL,
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ''),
-        },
-      },
-    },
-  },
 })
