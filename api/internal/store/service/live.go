@@ -2,14 +2,15 @@ package service
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	pivs "github.com/and-period/furumaru/api/pkg/ivs"
+	"github.com/and-period/furumaru/api/pkg/ivs"
 	"github.com/aws/aws-sdk-go-v2/aws"
-	ivs "github.com/aws/aws-sdk-go-v2/service/ivs"
 	"github.com/aws/aws-sdk-go-v2/service/ivs/types"
 	"golang.org/x/sync/errgroup"
 )
@@ -31,21 +32,21 @@ func (s *service) GetLive(ctx context.Context, in *store.GetLiveInput) (*entity.
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
-		in := &pivs.GetChannelParams{
+		in := &ivs.GetChannelParams{
 			Arn: live.ChannelArn,
 		}
 		channel, err = s.ivs.GetChannel(ectx, in)
 		return
 	})
 	eg.Go(func() (err error) {
-		in := &pivs.GetStreamParams{
+		in := &ivs.GetStreamParams{
 			ChannelArn: live.ChannelArn,
 		}
 		stream, err = s.ivs.GetStream(ectx, in)
 		return
 	})
 	eg.Go(func() (err error) {
-		in := &pivs.GetStreamKeyParams{
+		in := &ivs.GetStreamKeyParams{
 			StreamKeyArn: live.StreamKeyArn,
 		}
 		streamKey, err = s.ivs.GetStreamKey(ectx, in)
@@ -71,26 +72,26 @@ func (s *service) UpdateLivePublic(ctx context.Context, in *store.UpdateLivePubl
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	live, err := s.db.Live.Get(ctx, in.LiveID)
+	_, err := s.db.Live.Get(ctx, in.LiveID)
+	if errors.Is(err, exception.ErrNotFound) {
+		return fmt.Errorf("api: invalid live id: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	params := &database.UpdateLivePublicParams{
-		Published: in.Published,
-		Canceled:  in.Canceled,
+	ivsParams := &ivs.CreateChannelParams{
+		LatencyMode: "NORMAL",
+		Name:        in.ChannelName,
+		ChannelType: "BASIC",
 	}
-	ivs := func(ctx context.Context) (*ivs.CreateChannelOutput, error) {
-		if live.ChannelArn != "" {
-			return nil, exception.ErrAlreadyExists
-		}
-		in := &pivs.CreateChannelParams{
-			LatencyMode: "NORMAL",
-			Name:        in.ChannelName,
-			ChannelType: "BASIC",
-		}
-		cout, err := s.ivs.CreateChannel(ctx, in)
-		return cout, err
+	cout, err := s.ivs.CreateChannel(ctx, ivsParams)
+
+	dbParams := &database.UpdateLivePublicParams{
+		Published:    in.Published,
+		Canceled:     in.Canceled,
+		ChannelArn:   aws.ToString(cout.Channel.Arn),
+		StreamKeyArn: aws.ToString(cout.StreamKey.Arn),
 	}
-	err = s.db.Live.UpdateLivePublic(ctx, in.LiveID, params, ivs)
+	err = s.db.Live.UpdatePublic(ctx, in.LiveID, dbParams)
 	return exception.InternalError(err)
 }
