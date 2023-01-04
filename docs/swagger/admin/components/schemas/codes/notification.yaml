@@ -1,7 +1,7 @@
-imageSize:
+notificationTargetType:
   type: integer
   format: int32
-  description: 画像サイズ
+  description: 掲載対象
   nullable: false
   enum:
   - 0
@@ -10,11 +10,11 @@ imageSize:
   - 3
   x-enum-varnames:
   - UNKNOWN
-  - SMALL
-  - MEDIUM
-  - LARGE
+  - USERS
+  - PRODUCERS
+  - COORDINATORS
   x-enum-descriptions:
   - 不明
-  - '小:240px'
-  - '中:675px'
-  - '高:900px'
+  - 購入者
+  - 生産者
+  - コーディネータ

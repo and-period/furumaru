@@ -21,13 +21,9 @@ contactResponse:
       type: string
       description: 電話番号(国際番号 + 電話番号)
     status:
-      type: integer
-      format: int32
-      description: 対応状況(0:不明,1:ToDo,2:進行中,3:完了,4:対応不要)
+      $ref: './../../../openapi.yaml#/components/schemas/contactStatus'
     priority:
-      type: integer
-      format: int32
-      description: 優先度(0:不明1:低,2:中,3:高)
+      $ref: './../../../openapi.yaml#/components/schemas/contactPriority'
     note:
       type: string
       description: 対応時メモ
@@ -92,13 +88,9 @@ contactsResponse:
             type: string
             description: 電話番号(国際番号 + 電話番号)
           status:
-            type: integer
-            format: int32
-            description: 対応状況(0:不明,1:ToDo,2:進行中,3:完了,4:対応不要)
+            $ref: './../../../openapi.yaml#/components/schemas/contactStatus'
           priority:
-            type: integer
-            format: int32
-            description: 優先度(0:不明1:低,2:中,3:高)
+            $ref: './../../../openapi.yaml#/components/schemas/contactPriority'
           note:
             type: string
             description: 対応時メモ

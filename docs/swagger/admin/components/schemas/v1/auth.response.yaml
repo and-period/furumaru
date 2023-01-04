@@ -5,9 +5,7 @@ authResponse:
       type: string
       description: 管理者ID
     role:
-      type: integer
-      format: int32
-      description: 権限(1:システム管理者,2:コーディネータ,3:生産者)
+      $ref: './../../../openapi.yaml#/components/schemas/adminRole'
     accessToken:
       type: string
       description: アクセストークン

@@ -27,13 +27,9 @@ orderResponse:
           type: string
           description: 決済手段ID
         methodType:
-          type: integer
-          format: int32
-          description: 決済手段(0:不明,1:代引支払い,2:クレジットカード払い)
+          $ref: './../../../openapi.yaml#/components/schemas/paymentMethodType'
         status:
-          type: integer
-          format: int32
-          description: 支払い状況(0:不明,1:未払い,2:保留中,3:仮売上,4:支払い完了,5:返金済み,6:期限切れ)
+          $ref: './../../../openapi.yaml#/components/schemas/paymentStatus'
         subtotal:
           type: integer
           format: int64
@@ -108,21 +104,13 @@ orderResponse:
           type: string
           description: 伝票番号
         status:
-          type: integer
-          format: int32
-          description: 配送状況(0:不明,1:未発送,2:発送済み)
+          $ref: './../../../openapi.yaml#/components/schemas/fulfillmentStatus'
         shippingCarrier:
-          type: integer
-          format: int32
-          description: 配送会社(0:不明,1:ヤマト運輸,2:佐川急便)
+          $ref: './../../../openapi.yaml#/components/schemas/shippingCarrier'
         shippingMethod:
-          type: integer
-          format: int32
-          description: 配送方法(0:不明,1:通常便,2:冷蔵便,3:冷凍便)
+          $ref: './../../../openapi.yaml#/components/schemas/deliveryType'
         boxSize:
-          type: integer
-          format: int32
-          description: 箱の大きさ(0:不明,1:60,2:80,3:100)
+          $ref: './../../../openapi.yaml#/components/schemas/shippingSize'
         addressId:
           type: string
           description: 配送先情報ID
@@ -173,9 +161,7 @@ orderResponse:
           type: boolean
           description: 注文キャンセルフラグ
         type:
-          type: integer
-          format: int32
-          description: 注文キャンセル種別(0:不明)
+          $ref: './../../../openapi.yaml#/components/schemas/orderRefundType'
         reason:
           type: string
           description: 注文キャンセル理由詳細
@@ -372,13 +358,9 @@ ordersResponse:
                 type: string
                 description: 決済手段ID
               methodType:
-                type: integer
-                format: int32
-                description: 決済手段(0:不明,1:代引支払い,2:クレジットカード払い)
+                $ref: './../../../openapi.yaml#/components/schemas/paymentMethodType'
               status:
-                type: integer
-                format: int32
-                description: 支払い状況(0:不明,1:未払い,2:保留中,3:仮売上,4:支払い完了,5:返金済み,6:期限切れ)
+                $ref: './../../../openapi.yaml#/components/schemas/paymentStatus'
               subtotal:
                 type: integer
                 format: int64
@@ -453,21 +435,13 @@ ordersResponse:
                 type: string
                 description: 伝票番号
               status:
-                type: integer
-                format: int32
-                description: 配送状況(0:不明,1:未発送,2:発送済み)
+                $ref: './../../../openapi.yaml#/components/schemas/fulfillmentStatus'
               shippingCarrier:
-                type: integer
-                format: int32
-                description: 配送会社(0:不明,1:ヤマト運輸,2:佐川急便)
+                $ref: './../../../openapi.yaml#/components/schemas/shippingCarrier'
               shippingMethod:
-                type: integer
-                format: int32
-                description: 配送方法(0:不明,1:通常便,2:冷蔵便,3:冷凍便)
+                $ref: './../../../openapi.yaml#/components/schemas/deliveryType'
               boxSize:
-                type: integer
-                format: int32
-                description: 箱の大きさ(0:不明,1:60,2:80,3:100)
+                $ref: './../../../openapi.yaml#/components/schemas/shippingSize'
               addressId:
                 type: string
                 description: 配送先情報ID
@@ -518,9 +492,7 @@ ordersResponse:
                 type: boolean
                 description: 注文キャンセルフラグ
               type:
-                type: integer
-                format: int32
-                description: 注文キャンセル種別(0:不明)
+                $ref: './../../../openapi.yaml#/components/schemas/orderRefundType'
               reason:
                 type: string
                 description: 注文キャンセル理由詳細

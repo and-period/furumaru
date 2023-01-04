@@ -33,10 +33,6 @@ scheduleResponse:
     canceled:
       type: boolean
       description: キャンセルフラグ
-    status:
-      type: integer
-      format: int32
-      description: 開催ステータス (0:不明, 1:開催前, 2:開催中, 3:開催後)
     createdAt:
       type: integer
       format: int64
@@ -83,9 +79,7 @@ scheduleResponse:
             type: boolean
             description: キャンセルフラグ
           status:
-            type: integer
-            format: int32
-            description: 配信ステータス(0:不明,1:配信前,2:配信中,3:配信終了,4:配信中止)
+            $ref: './../../../openapi.yaml#/components/schemas/imageSize'
           products:
             type: array
             items:
@@ -160,9 +154,7 @@ scheduleResponse:
                   format: int64
                   description: 販売価格
                 deliveryType:
-                  type: integer
-                  format: int32
-                  description: 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
+                  $ref: './../../../openapi.yaml#/components/schemas/deliveryType'
                 box60Rate:
                   type: integer
                   format: int64
@@ -223,7 +215,6 @@ scheduleResponse:
     startAt: 1640962800
     endAt: 1640962800
     canceled: false
-    status: 1
     lives:
     - id: 'live-id'
       scheduleId: 'schedule-id'

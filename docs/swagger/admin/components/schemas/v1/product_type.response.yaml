@@ -20,9 +20,7 @@ productTypeResponse:
             type: string
             description: リサイズ済みアイコンURL
           size:
-            type: integer
-            format: int32
-            description: 画像サイズ(1:240px,2:675px,3:900px)
+            $ref: './../../../openapi.yaml#/components/schemas/imageSize'
         required:
         - url
         - size
@@ -92,9 +90,7 @@ productTypesResponse:
                   type: string
                   description: リサイズ済みアイコンURL
                 size:
-                  type: integer
-                  format: int32
-                  description: 画像サイズ(1:240px,2:675px,3:900px)
+                  $ref: './../../../openapi.yaml#/components/schemas/imageSize'
               required:
               - url
               - size

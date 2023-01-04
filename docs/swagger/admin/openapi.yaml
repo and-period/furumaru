@@ -182,6 +182,8 @@ components:
       $ref: './components/schemas/codes/live.yaml#/liveStatus'
     messageType:
       $ref: './components/schemas/codes/message.yaml#/messageType'
+    notificationTargetType:
+      $ref: './components/schemas/codes/notification.yaml#/notificationTargetType'
     fulfillmentStatus:
       $ref: './components/schemas/codes/order_fulfillment.yaml#/fulfillmentStatus'
     shippingCarrier:

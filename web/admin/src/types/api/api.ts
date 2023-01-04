@@ -203,11 +203,11 @@ export interface AuthResponse {
      */
     'adminId': string;
     /**
-     * 権限(1:システム管理者,2:コーディネータ,3:生産者)
-     * @type {number}
+     * 
+     * @type {AdminRole}
      * @memberof AuthResponse
      */
-    'role': number;
+    'role': AdminRole;
     /**
      * アクセストークン
      * @type {string}
@@ -385,17 +385,17 @@ export interface ContactResponse {
      */
     'phoneNumber': string;
     /**
-     * 対応状況(0:不明,1:ToDo,2:進行中,3:完了,4:対応不要)
-     * @type {number}
+     * 
+     * @type {ContactStatus}
      * @memberof ContactResponse
      */
-    'status': number;
+    'status': ContactStatus;
     /**
-     * 優先度(0:不明1:低,2:中,3:高)
-     * @type {number}
+     * 
+     * @type {ContactPriority}
      * @memberof ContactResponse
      */
-    'priority': number;
+    'priority': ContactPriority;
     /**
      * 対応時メモ
      * @type {string}
@@ -509,17 +509,17 @@ export interface ContactsResponseContactsInner {
      */
     'phoneNumber': string;
     /**
-     * 対応状況(0:不明,1:ToDo,2:進行中,3:完了,4:対応不要)
-     * @type {number}
+     * 
+     * @type {ContactStatus}
      * @memberof ContactsResponseContactsInner
      */
-    'status': number;
+    'status': ContactStatus;
     /**
-     * 優先度(0:不明1:低,2:中,3:高)
-     * @type {number}
+     * 
+     * @type {ContactPriority}
      * @memberof ContactsResponseContactsInner
      */
-    'priority': number;
+    'priority': ContactPriority;
     /**
      * 対応時メモ
      * @type {string}
@@ -861,11 +861,11 @@ export interface CoordinatorsResponseCoordinatorsInnerHeadersInner {
      */
     'url': string;
     /**
-     * 画像サイズ(1:240px,2:675px,3:900px)
-     * @type {number}
+     * 
+     * @type {ImageSize}
      * @memberof CoordinatorsResponseCoordinatorsInnerHeadersInner
      */
-    'size': number;
+    'size': ImageSize;
 }
 /**
  * 
@@ -880,11 +880,11 @@ export interface CoordinatorsResponseCoordinatorsInnerThumbnailsInner {
      */
     'url': string;
     /**
-     * 画像サイズ(1:240px,2:675px,3:900px)
-     * @type {number}
+     * 
+     * @type {ImageSize}
      * @memberof CoordinatorsResponseCoordinatorsInnerThumbnailsInner
      */
-    'size': number;
+    'size': ImageSize;
 }
 /**
  * 
@@ -1077,10 +1077,10 @@ export interface CreateNotificationRequest {
     'body': string;
     /**
      * 掲載対象一覧(3つまで,全部指定の際は1,2,3)
-     * @type {Array<number>}
+     * @type {Array<NotificationTargetType>}
      * @memberof CreateNotificationRequest
      */
-    'targets': Array<number>;
+    'targets': Array<NotificationTargetType>;
     /**
      * 公開フラグ
      * @type {boolean}
@@ -1258,11 +1258,11 @@ export interface CreateProductRequest {
      */
     'price': number;
     /**
-     * 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
-     * @type {number}
+     * 
+     * @type {DeliveryType}
      * @memberof CreateProductRequest
      */
-    'deliveryType': number;
+    'deliveryType': DeliveryType;
     /**
      * 箱の占有率(サイズ:60)(0以上,100以下)
      * @type {number}
@@ -1363,11 +1363,11 @@ export interface CreatePromotionRequest {
      */
     'publishedAt': number;
     /**
-     * 割引方法(1:固定額(円),2:料率計算(%),3:送料無料)
-     * @type {number}
+     * 
+     * @type {DiscountType}
      * @memberof CreatePromotionRequest
      */
-    'discountType': number;
+    'discountType': DiscountType;
     /**
      * 割引額(単位:円/%,0以上)
      * @type {number}
@@ -1499,10 +1499,10 @@ export interface CreateShippingRate {
     'price': number;
     /**
      * 対象都道府県コード一覧
-     * @type {Array<string>}
+     * @type {Array<Prefecture>}
      * @memberof CreateShippingRate
      */
-    'prefectures': Array<string>;
+    'prefectures': Array<Prefecture>;
 }
 /**
  * 
@@ -1700,15 +1700,15 @@ export const ImageSize = {
     */
     UNKNOWN: 0,
     /**
-    * 画像サイズ:小
+    * 小:240px
     */
     SMALL: 1,
     /**
-    * 画像サイズ:中
+    * 中:675px
     */
     MEDIUM: 2,
     /**
-    * 画像サイズ:高
+    * 高:900px
     */
     LARGE: 3
 } as const;
@@ -1783,11 +1783,11 @@ export interface LiveResponse {
      */
     'canceled': boolean;
     /**
-     * 配信ステータス(0:不明,1:配信前,2:配信中,3:配信終了,4:配信中止)
-     * @type {number}
+     * 
+     * @type {LiveStatus}
      * @memberof LiveResponse
      */
-    'status': number;
+    'status': LiveStatus;
     /**
      * 
      * @type {Array<ScheduleResponseLivesInnerProductsInner>}
@@ -1900,11 +1900,11 @@ export interface MessageResponse {
      */
     'id': string;
     /**
-     * メッセージ種別(1:お知らせ)
-     * @type {number}
+     * 
+     * @type {MessageType}
      * @memberof MessageResponse
      */
-    'type': number;
+    'type': MessageType;
     /**
      * メッセージ件名
      * @type {string}
@@ -2000,11 +2000,11 @@ export interface MessagesResponseMessagesInner {
      */
     'id': string;
     /**
-     * メッセージ種別(1:お知らせ)
-     * @type {number}
+     * 
+     * @type {MessageType}
      * @memberof MessagesResponseMessagesInner
      */
-    'type': number;
+    'type': MessageType;
     /**
      * メッセージ件名
      * @type {string}
@@ -2092,10 +2092,10 @@ export interface NotificationResponse {
     'body': string;
     /**
      * 掲載対象一覧(3つまで)
-     * @type {Array<number>}
+     * @type {Array<NotificationTargetType>}
      * @memberof NotificationResponse
      */
-    'targets': Array<number>;
+    'targets': Array<NotificationTargetType>;
     /**
      * 公開フラグ
      * @type {boolean}
@@ -2121,6 +2121,34 @@ export interface NotificationResponse {
      */
     'updatedAt': number;
 }
+/**
+ * 掲載対象
+ * @export
+ * @enum {string}
+ */
+
+export const NotificationTargetType = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 購入者
+    */
+    USERS: 1,
+    /**
+    * 生産者
+    */
+    PRODUCERS: 2,
+    /**
+    * コーディネータ
+    */
+    COORDINATORS: 3
+} as const;
+
+export type NotificationTargetType = typeof NotificationTargetType[keyof typeof NotificationTargetType];
+
+
 /**
  * 
  * @export
@@ -2184,10 +2212,10 @@ export interface NotificationsResponseNotificationsInner {
     'body': string;
     /**
      * 掲載対象一覧(3つまで)
-     * @type {Array<number>}
+     * @type {Array<NotificationTargetType>}
      * @memberof NotificationsResponseNotificationsInner
      */
-    'targets': Array<number>;
+    'targets': Array<NotificationTargetType>;
     /**
      * 公開フラグ
      * @type {boolean}
@@ -2339,29 +2367,29 @@ export interface OrderResponseFulfillment {
      */
     'trackingNumber': string;
     /**
-     * 配送状況(0:不明,1:未発送,2:発送済み)
-     * @type {number}
+     * 
+     * @type {FulfillmentStatus}
      * @memberof OrderResponseFulfillment
      */
-    'status': number;
+    'status': FulfillmentStatus;
     /**
-     * 配送会社(0:不明,1:ヤマト運輸,2:佐川急便)
-     * @type {number}
+     * 
+     * @type {ShippingCarrier}
      * @memberof OrderResponseFulfillment
      */
-    'shippingCarrier': number;
+    'shippingCarrier': ShippingCarrier;
     /**
-     * 配送方法(0:不明,1:通常便,2:冷蔵便,3:冷凍便)
-     * @type {number}
+     * 
+     * @type {DeliveryType}
      * @memberof OrderResponseFulfillment
      */
-    'shippingMethod': number;
+    'shippingMethod': DeliveryType;
     /**
-     * 箱の大きさ(0:不明,1:60,2:80,3:100)
-     * @type {number}
+     * 
+     * @type {ShippingSize}
      * @memberof OrderResponseFulfillment
      */
-    'boxSize': number;
+    'boxSize': ShippingSize;
     /**
      * 配送先情報ID
      * @type {string}
@@ -2479,17 +2507,17 @@ export interface OrderResponsePayment {
      */
     'methodId': string;
     /**
-     * 決済手段(0:不明,1:代引支払い,2:クレジットカード払い)
-     * @type {number}
+     * 
+     * @type {PaymentMethodType}
      * @memberof OrderResponsePayment
      */
-    'methodType': number;
+    'methodType': PaymentMethodType;
     /**
-     * 支払い状況(0:不明,1:未払い,2:保留中,3:仮売上,4:支払い完了,5:返金済み,6:期限切れ)
-     * @type {number}
+     * 
+     * @type {PaymentStatus}
      * @memberof OrderResponsePayment
      */
-    'status': number;
+    'status': PaymentStatus;
     /**
      * 購入金額
      * @type {number}
@@ -2588,11 +2616,11 @@ export interface OrderResponseRefund {
      */
     'canceled': boolean;
     /**
-     * 注文キャンセル種別(0:不明)
-     * @type {number}
+     * 
+     * @type {OrderRefundType}
      * @memberof OrderResponseRefund
      */
-    'type': number;
+    'type': OrderRefundType;
     /**
      * 注文キャンセル理由詳細
      * @type {string}
@@ -2702,11 +2730,11 @@ export interface PostalCodeResponse {
      */
     'postalCode': string;
     /**
-     * 都道府県コード
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof PostalCodeResponse
      */
-    'prefectureCode': string;
+    'prefectureCode': Prefecture;
     /**
      * 都道府県名
      * @type {string}
@@ -3314,11 +3342,11 @@ export interface ProductResponse {
      */
     'price': number;
     /**
-     * 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
-     * @type {number}
+     * 
+     * @type {DeliveryType}
      * @memberof ProductResponse
      */
-    'deliveryType': number;
+    'deliveryType': DeliveryType;
     /**
      * 箱の占有率(サイズ:60)
      * @type {number}
@@ -3504,11 +3532,11 @@ export interface ProductTypesResponseProductTypesInnerIconsInner {
      */
     'url': string;
     /**
-     * 画像サイズ(1:240px,2:675px,3:900px)
-     * @type {number}
+     * 
+     * @type {ImageSize}
      * @memberof ProductTypesResponseProductTypesInnerIconsInner
      */
-    'size': number;
+    'size': ImageSize;
 }
 /**
  * 
@@ -3644,11 +3672,11 @@ export interface ProductsResponseProductsInner {
      */
     'price': number;
     /**
-     * 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
-     * @type {number}
+     * 
+     * @type {DeliveryType}
      * @memberof ProductsResponseProductsInner
      */
-    'deliveryType': number;
+    'deliveryType': DeliveryType;
     /**
      * 箱の占有率(サイズ:60)
      * @type {number}
@@ -3730,11 +3758,11 @@ export interface ProductsResponseProductsInnerMediaInnerImagesInner {
      */
     'url': string;
     /**
-     * 画像サイズ(1:240px,2:675px,3:900px)
-     * @type {number}
+     * 
+     * @type {ImageSize}
      * @memberof ProductsResponseProductsInnerMediaInnerImagesInner
      */
-    'size': number;
+    'size': ImageSize;
 }
 /**
  * 
@@ -3773,11 +3801,11 @@ export interface PromotionResponse {
      */
     'publishedAt': number;
     /**
-     * 割引方法(1:固定額(円),2:料率計算(%),3:送料無料)
-     * @type {number}
+     * 
+     * @type {DiscountType}
      * @memberof PromotionResponse
      */
-    'discountType': number;
+    'discountType': DiscountType;
     /**
      * 割引額(単位:円/%)
      * @type {number}
@@ -3871,11 +3899,11 @@ export interface PromotionsResponsePromotionsInner {
      */
     'publishedAt': number;
     /**
-     * 割引方法(1:固定額(円),2:料率計算(%),3:送料無料)
-     * @type {number}
+     * 
+     * @type {DiscountType}
      * @memberof PromotionsResponsePromotionsInner
      */
-    'discountType': number;
+    'discountType': DiscountType;
     /**
      * 割引額(単位:円/%)
      * @type {number}
@@ -4019,12 +4047,6 @@ export interface ScheduleResponse {
      */
     'canceled': boolean;
     /**
-     * 開催ステータス (0:不明, 1:開催前, 2:開催中, 3:開催後)
-     * @type {number}
-     * @memberof ScheduleResponse
-     */
-    'status': number;
-    /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof ScheduleResponse
@@ -4110,11 +4132,11 @@ export interface ScheduleResponseLivesInner {
      */
     'canceled'?: boolean;
     /**
-     * 配信ステータス(0:不明,1:配信前,2:配信中,3:配信終了,4:配信中止)
-     * @type {number}
+     * 
+     * @type {ImageSize}
      * @memberof ScheduleResponseLivesInner
      */
-    'status'?: number;
+    'status'?: ImageSize;
     /**
      * 
      * @type {Array<ScheduleResponseLivesInnerProductsInner>}
@@ -4249,11 +4271,11 @@ export interface ScheduleResponseLivesInnerProductsInner {
      */
     'price'?: number;
     /**
-     * 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
-     * @type {number}
+     * 
+     * @type {DeliveryType}
      * @memberof ScheduleResponseLivesInnerProductsInner
      */
-    'deliveryType'?: number;
+    'deliveryType'?: DeliveryType;
     /**
      * 箱の占有率(サイズ:60)
      * @type {number}
@@ -4347,10 +4369,10 @@ export interface ShippingRate {
     'price': number;
     /**
      * 対象都道府県コード一覧
-     * @type {Array<string>}
+     * @type {Array<Prefecture>}
      * @memberof ShippingRate
      */
-    'prefectures': Array<string>;
+    'prefectures': Array<Prefecture>;
 }
 /**
  * 
@@ -4720,17 +4742,17 @@ export interface UpdateCategoryRequest {
  */
 export interface UpdateContactRequest {
     /**
-     * 対応状況(1:ToDo,2:進行中,3:完了,4:対応不要)
-     * @type {number}
+     * 
+     * @type {ContactStatus}
      * @memberof UpdateContactRequest
      */
-    'status': number;
+    'status': ContactStatus;
     /**
-     * 優先度(1:低,2:中,3:高)
-     * @type {number}
+     * 
+     * @type {ContactPriority}
      * @memberof UpdateContactRequest
      */
-    'priority': number;
+    'priority': ContactPriority;
     /**
      * 対応メモ(2000文字まで)
      * @type {string}
@@ -4880,10 +4902,10 @@ export interface UpdateNotificationRequest {
     'body': string;
     /**
      * 掲載対象一覧(3つまで,全部指定の際は1,2,3)
-     * @type {Array<number>}
+     * @type {Array<NotificationTargetType>}
      * @memberof UpdateNotificationRequest
      */
-    'targets': Array<number>;
+    'targets': Array<NotificationTargetType>;
     /**
      * 公開フラグ
      * @type {boolean}
@@ -5154,11 +5176,11 @@ export interface UpdatePromotionRequest {
      */
     'publishedAt': number;
     /**
-     * 割引方法(1:固定額(円),2:料率計算(%),3:送料無料)
-     * @type {number}
+     * 
+     * @type {DiscountType}
      * @memberof UpdatePromotionRequest
      */
-    'discountType': number;
+    'discountType': DiscountType;
     /**
      * 割引額(単位:円/%,0以上)
      * @type {number}
