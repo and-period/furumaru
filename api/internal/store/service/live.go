@@ -2,8 +2,6 @@ package service
 
 import (
 	"context"
-	"errors"
-	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
@@ -72,26 +70,25 @@ func (s *service) UpdateLivePublic(ctx context.Context, in *store.UpdateLivePubl
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
+
 	_, err := s.db.Live.Get(ctx, in.LiveID)
-	if errors.Is(err, exception.ErrNotFound) {
-		return fmt.Errorf("api: invalid live id: %s: %w", err.Error(), exception.ErrInvalidArgument)
-	}
 	if err != nil {
 		return exception.InternalError(err)
 	}
+
 	ivsParams := &ivs.CreateChannelParams{
 		LatencyMode: "NORMAL",
 		Name:        in.ChannelName,
 		ChannelType: "BASIC",
 	}
 	cout, err := s.ivs.CreateChannel(ctx, ivsParams)
-
 	dbParams := &database.UpdateLivePublicParams{
 		Published:    in.Published,
 		Canceled:     in.Canceled,
 		ChannelArn:   aws.ToString(cout.Channel.Arn),
 		StreamKeyArn: aws.ToString(cout.StreamKey.Arn),
 	}
+
 	err = s.db.Live.UpdatePublic(ctx, in.LiveID, dbParams)
 	return exception.InternalError(err)
 }
