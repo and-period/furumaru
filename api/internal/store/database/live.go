@@ -75,11 +75,11 @@ func (l *live) UpdatePublic(ctx context.Context, liveID string, params *UpdateLi
 		}
 		now := l.now()
 		updates := map[string]interface{}{
-			"published":     params.Published,
-			"canceled":      params.Canceled,
-			"channel_arn":   params.ChannelArn,
-			"streamKey_arn": params.StreamKeyArn,
-			"updated_at":    now,
+			"published":      params.Published,
+			"canceled":       params.Canceled,
+			"channel_arn":    params.ChannelArn,
+			"stream_key_arn": params.StreamKeyArn,
+			"updated_at":     now,
 		}
 		err := tx.WithContext(ctx).
 			Table(liveTable).
