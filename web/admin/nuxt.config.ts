@@ -3,17 +3,9 @@ import colors from 'vuetify/es5/util/colors'
 import ja from 'vuetify/src/locale/ja'
 
 const config: NuxtConfig = {
-  dev: false,
-  telemetry: false,
-
-  // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
-  ssr: false,
   srcDir: 'src',
-
-  // Target: https://go.nuxtjs.dev/config-target
+  ssr: false,
   target: 'static',
-
-  // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: 'ふるマル - 管理者ツール',
     htmlAttrs: {
@@ -27,20 +19,14 @@ const config: NuxtConfig = {
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
-
-  // Global CSS: https://go.nuxtjs.dev/config-css
   css: ['~/assets/main.scss'],
-
-  // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    '~/plugins/api-client',
+    '~/plugins/api-error-handler',
+    '~/plugins/auth',
     '~/plugins/firebase',
     '~/plugins/google-analytics',
-    '~/plugins/auth',
-    '~/plugins/api-error-handler',
-    '~/plugins/api-client',
   ],
-
-  // Auto import components: https://go.nuxtjs.dev/config-components
   components: [
     { path: '~/components' },
     { path: '~/components/atoms' },
@@ -48,33 +34,19 @@ const config: NuxtConfig = {
     { path: '~/components/organisms' },
     { path: '~/components/templates' },
   ],
-
-  // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
-    // https://go.nuxtjs.dev/typescript
     '@nuxt/typescript-build',
-    // https://go.nuxtjs.dev/stylelint
-    '@nuxtjs/stylelint-module',
-    // https://go.nuxtjs.dev/vuetify
-    '@nuxtjs/vuetify',
     '@nuxtjs/composition-api/module',
-    '@pinia/nuxt',
     '@nuxtjs/google-fonts',
+    '@nuxtjs/vuetify',
+    '@pinia/nuxt',
   ],
-
-  // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
   ],
-
-  // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
     baseURL: '/',
   },
-
-  // env
   env: {
     API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:18010',
     FIREBASE_API_KEY: process.env.FIREBASE_API_KEY || '',
@@ -87,12 +59,9 @@ const config: NuxtConfig = {
     FIREBASE_MEASUREMENT_ID: process.env.FIREBASE_MEASUREMENT_ID || '',
     FIREBASE_VAPID_KEY: process.env.FIREBASE_VAPID_KEY || '',
   },
-
   router: {
     middleware: 'auth',
   },
-
-  // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     treeShake: true,
@@ -122,10 +91,6 @@ const config: NuxtConfig = {
       options: { customProperties: true },
     },
   },
-
-  // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {},
-
   googleFonts: {
     download: true,
     inject: true,
@@ -135,6 +100,7 @@ const config: NuxtConfig = {
       'BIZ+UDGothic': true,
     },
   },
+  build: {},
 }
 
 export default config
