@@ -3,7 +3,7 @@ module github.com/and-period/furumaru/api
 go 1.19
 
 require (
-	firebase.google.com/go/v4 v4.9.0
+	firebase.google.com/go/v4 v4.10.0
 	github.com/aws/aws-lambda-go v1.36.0
 	github.com/aws/aws-sdk-go-v2 v1.17.3
 	github.com/aws/aws-sdk-go-v2/config v1.18.7
@@ -52,6 +52,11 @@ require (
 	gorm.io/driver/mysql v1.3.6
 	gorm.io/gorm v1.24.2
 	moul.io/zapgorm2 v1.1.3
+)
+
+require (
+	github.com/MicahParks/keyfunc v1.5.1 // indirect
+	github.com/golang-jwt/jwt/v4 v4.4.2 // indirect
 )
 
 require (
