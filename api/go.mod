@@ -29,7 +29,7 @@ require (
 	github.com/line/line-bot-sdk-go/v7 v7.18.0
 	github.com/newrelic/go-agent/v3 v3.18.2
 	github.com/newrelic/go-agent/v3/integrations/nrgin v1.1.3
-	github.com/prometheus/client_golang v1.13.0
+	github.com/prometheus/client_golang v1.14.0
 	github.com/rafaelhl/gorm-newrelic-telemetry-plugin v1.0.0
 	github.com/rs/cors v1.8.3
 	github.com/rs/cors/wrapper/gin v0.0.0-20220619195839-da52b0701de5
@@ -109,7 +109,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/prometheus/client_model v0.2.0 // indirect
+	github.com/prometheus/client_model v0.3.0 // indirect
 	github.com/prometheus/common v0.37.0 // indirect
 	github.com/prometheus/procfs v0.8.0 // indirect
 	github.com/rogpeppe/go-internal v1.8.1 // indirect
