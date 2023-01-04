@@ -124,7 +124,7 @@ type Schedule interface {
 type Live interface {
 	Get(ctx context.Context, liveID string, fields ...string) (*entity.Live, error)
 	Update(ctx context.Context, liveID string, params *UpdateLiveParams) error
-	UpdateLivePublic(ctx context.Context, liveID string, params *UpdateLivePublicParams) error
+	UpdatePublic(ctx context.Context, liveID string, params *UpdateLivePublicParams) error
 }
 
 /**

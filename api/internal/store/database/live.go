@@ -68,7 +68,7 @@ func (l *live) Update(ctx context.Context, liveID string, params *UpdateLivePara
 	return exception.InternalError(err)
 }
 
-func (l *live) UpdateLivePublic(ctx context.Context, liveID string, params *UpdateLivePublicParams) error {
+func (l *live) UpdatePublic(ctx context.Context, liveID string, params *UpdateLivePublicParams) error {
 	err := l.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := l.get(ctx, tx, liveID); err != nil {
 			return err
