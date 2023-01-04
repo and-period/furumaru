@@ -166,9 +166,9 @@ func TestUpdateLivePublic(t *testing.T) {
 	}
 
 	channelIn := &pivs.CreateChannelParams{
-		LatencyMode: "NORMAL",
+		LatencyMode: types.ChannelLatencyModeNormalLatency,
 		Name:        "channel-name",
-		ChannelType: "BASIC",
+		ChannelType: types.ChannelTypeBasicChannelType,
 	}
 
 	channelOut := &ivs.CreateChannelOutput{

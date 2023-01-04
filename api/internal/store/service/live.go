@@ -77,9 +77,9 @@ func (s *service) UpdateLivePublic(ctx context.Context, in *store.UpdateLivePubl
 	}
 
 	ivsParams := &ivs.CreateChannelParams{
-		LatencyMode: "NORMAL",
+		LatencyMode: types.ChannelLatencyModeNormalLatency,
 		Name:        in.ChannelName,
-		ChannelType: "BASIC",
+		ChannelType: types.ChannelTypeBasicChannelType,
 	}
 	cout, err := s.ivs.CreateChannel(ctx, ivsParams)
 	if err != nil {
