@@ -10,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )
@@ -25,6 +26,10 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
+	coordinatorID := req.CoordinatorID
+	if getRole(ctx) == service.AdminRoleCoordinator {
+		coordinatorID = getAdminID(ctx)
+	}
 
 	var (
 		producers service.Producers
@@ -34,15 +39,22 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
-		_, err = h.getCoordinator(ectx, req.CoordinatorID)
+		_, err = h.getCoordinator(ectx, coordinatorID)
 		return
 	})
 	eg.Go(func() (err error) {
-		producerIDs := make([]string, len(req.Lives))
+		set := set.NewEmpty[string](len(req.Lives))
 		for i := range req.Lives {
-			producerIDs[i] = req.Lives[i].ProducerID
+			set.Add(req.Lives[i].ProducerID)
 		}
+		producerIDs := set.Slice()
 		producers, err = h.multiGetProducers(ectx, producerIDs)
+		if err != nil {
+			return err
+		}
+		if len(producers) != len(producerIDs) {
+			return errInvalidProducerID
+		}
 		return
 	})
 	eg.Go(func() (err error) {
@@ -50,25 +62,29 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		return
 	})
 	eg.Go(func() error {
-		productIDs := make([]string, 0, len(req.Lives))
+		set := set.NewEmpty[string](len(req.Lives))
 		for i := range req.Lives {
-			productIDs = append(productIDs, req.Lives[i].ProductIDs...)
+			set.Add(req.Lives[i].ProductIDs...)
 		}
+		productIDs := set.Slice()
 		products, err = h.multiGetProducts(ectx, productIDs)
 		if err != nil {
 			return err
 		}
 		if len(products) != len(productIDs) {
-			return errors.New("error: invalid argument")
+			return errInvalidProductID
 		}
 		return nil
 	})
-	err = eg.Wait()
-	if errors.Is(err, exception.ErrNotFound) {
-		badRequest(ctx, err)
-	}
-	if err != nil {
-		httpError(ctx, err)
+	if err := eg.Wait(); err != nil {
+		switch {
+		case errors.Is(err, exception.ErrNotFound),
+			errors.Is(err, errInvalidProducerID),
+			errors.Is(err, errInvalidProductID):
+			badRequest(ctx, err)
+		default:
+			httpError(ctx, err)
+		}
 		return
 	}
 
@@ -85,7 +101,7 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 	}
 
 	in := &store.CreateScheduleInput{
-		CoordinatorID: req.CoordinatorID,
+		CoordinatorID: coordinatorID,
 		ShippingID:    req.ShippingID,
 		Title:         req.Title,
 		Description:   req.Description,
