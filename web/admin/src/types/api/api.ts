@@ -8390,14 +8390,18 @@ export const LiveApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * 
          * @summary 配信詳細取得
+         * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {string} liveId 配信ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetLive: async (liveId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1GetLive: async (scheduleId: string, liveId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'scheduleId' is not null or undefined
+            assertParamExists('v1GetLive', 'scheduleId', scheduleId)
             // verify required parameter 'liveId' is not null or undefined
             assertParamExists('v1GetLive', 'liveId', liveId)
             const localVarPath = `/v1/schedules/{scheduleId}/Lives/{liveId}`
+                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)))
                 .replace(`{${"liveId"}}`, encodeURIComponent(String(liveId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -8438,12 +8442,13 @@ export const LiveApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary 配信詳細取得
+         * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {string} liveId 配信ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1GetLive(liveId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LiveResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetLive(liveId, options);
+        async v1GetLive(scheduleId: string, liveId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LiveResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetLive(scheduleId, liveId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -8459,12 +8464,13 @@ export const LiveApiFactory = function (configuration?: Configuration, basePath?
         /**
          * 
          * @summary 配信詳細取得
+         * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {string} liveId 配信ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetLive(liveId: string, options?: any): AxiosPromise<LiveResponse> {
-            return localVarFp.v1GetLive(liveId, options).then((request) => request(axios, basePath));
+        v1GetLive(scheduleId: string, liveId: string, options?: any): AxiosPromise<LiveResponse> {
+            return localVarFp.v1GetLive(scheduleId, liveId, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -8479,13 +8485,14 @@ export class LiveApi extends BaseAPI {
     /**
      * 
      * @summary 配信詳細取得
+     * @param {string} scheduleId マルシェ開催スケジュールID
      * @param {string} liveId 配信ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof LiveApi
      */
-    public v1GetLive(liveId: string, options?: AxiosRequestConfig) {
-        return LiveApiFp(this.configuration).v1GetLive(liveId, options).then((request) => request(this.axios, this.basePath));
+    public v1GetLive(scheduleId: string, liveId: string, options?: AxiosRequestConfig) {
+        return LiveApiFp(this.configuration).v1GetLive(scheduleId, liveId, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

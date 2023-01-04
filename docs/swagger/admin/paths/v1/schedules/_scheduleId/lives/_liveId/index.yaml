@@ -7,6 +7,13 @@ get:
   - BearerAuth: []
   parameters:
   - in: path
+    name: scheduleId
+    schema:
+      type: string
+    description: マルシェ開催スケジュールID
+    required: true
+    example: 'schedule-id'
+  - in: path
     name: liveId
     schema:
       type: string
