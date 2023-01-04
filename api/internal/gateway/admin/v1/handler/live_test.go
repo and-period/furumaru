@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/common"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/store"
@@ -337,6 +338,68 @@ func TestGetLive(t *testing.T) {
 			const format = "/v1/schedules/%s/lives/%s"
 			path := fmt.Sprintf(format, tt.scheduleID, tt.liveID)
 			testGet(t, tt.setup, tt.expect, path)
+		})
+	}
+}
+
+func TestUpdateLivePublic(t *testing.T) {
+	t.Parallel()
+
+	in := &store.UpdateLivePublicInput{
+		LiveID:      "live-id",
+		Published:   true,
+		Canceled:    false,
+		ChannelName: "channel-name",
+	}
+
+	tests := []struct {
+		name       string
+		setup      func(t *testing.T, mocks *mocks, ctrl *gomock.Controller)
+		scheduleID string
+		liveID     string
+		req        *request.UpdateLivePublicRequest
+		expect     *testResponse
+	}{
+		{
+			name: "success",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().UpdateLivePublic(gomock.Any(), in).Return(nil)
+			},
+			scheduleID: "schedule-id",
+			liveID:     "live-id",
+			req: &request.UpdateLivePublicRequest{
+				Published:   true,
+				Canceled:    false,
+				ChannelName: "channel-name",
+			},
+			expect: &testResponse{
+				code: http.StatusNoContent,
+			},
+		},
+		{
+			name: "failed to update live",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().UpdateLivePublic(gomock.Any(), in).Return(assert.AnError)
+			},
+			scheduleID: "schedule-id",
+			liveID:     "live-id",
+			req: &request.UpdateLivePublicRequest{
+				Published:   true,
+				Canceled:    false,
+				ChannelName: "channel-name",
+			},
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			const format = "/v1/schedules/%s/lives/%s/public"
+			path := fmt.Sprintf(format, tt.scheduleID, tt.liveID)
+			testPost(t, tt.setup, tt.expect, path, tt.req)
 		})
 	}
 }
