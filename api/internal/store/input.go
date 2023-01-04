@@ -311,7 +311,7 @@ type GetLiveInput struct {
 
 type UpdateLiveInput struct {
 	LiveProducts entity.LiveProducts `validate:"required"`
-	LiveID       string              `validated:"required"`
+	LiveID       string              `validate:"required"`
 	ProducerID   string              `validate:"required"`
 	Title        string              `validate:"required,max=64"`
 	Description  string              `validate:"required,max=2000"`
@@ -322,7 +322,7 @@ type UpdateLiveInput struct {
 }
 
 type UpdateLivePublicInput struct {
-	LiveID      string `validated:"required"`
+	LiveID      string `validate:"required"`
 	Published   bool   `validate:""`
 	Canceled    bool   `validate:""`
 	ChannelName string `validate:""`
