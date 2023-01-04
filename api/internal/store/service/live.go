@@ -82,6 +82,9 @@ func (s *service) UpdateLivePublic(ctx context.Context, in *store.UpdateLivePubl
 		ChannelType: "BASIC",
 	}
 	cout, err := s.ivs.CreateChannel(ctx, ivsParams)
+	if err != nil {
+		return exception.InternalError(err)
+	}
 	dbParams := &database.UpdateLivePublicParams{
 		Published:    in.Published,
 		Canceled:     in.Canceled,
