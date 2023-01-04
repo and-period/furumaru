@@ -22,6 +22,34 @@ import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObj
 import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from './base';
 
 /**
+ * 管理者権限
+ * @export
+ * @enum {string}
+ */
+
+export const AdminRole = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 管理者
+    */
+    ADMINISTRATOR: 1,
+    /**
+    * コーディネータ
+    */
+    COORDINATOR: 2,
+    /**
+    * 生産者
+    */
+    PRODUCER: 3
+} as const;
+
+export type AdminRole = typeof AdminRole[keyof typeof AdminRole];
+
+
+/**
  * 
  * @export
  * @interface AdministratorResponse
@@ -287,6 +315,34 @@ export interface CategoryResponse {
     'updatedAt': number;
 }
 /**
+ * お問い合わせ対応優先度
+ * @export
+ * @enum {string}
+ */
+
+export const ContactPriority = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 低
+    */
+    LOW: 1,
+    /**
+    * 中
+    */
+    MIDDLE: 2,
+    /**
+    * 高
+    */
+    HIGH: 3
+} as const;
+
+export type ContactPriority = typeof ContactPriority[keyof typeof ContactPriority];
+
+
+/**
  * 
  * @export
  * @interface ContactResponse
@@ -359,6 +415,38 @@ export interface ContactResponse {
      */
     'updatedAt': number;
 }
+/**
+ * お問い合わせ対応状況
+ * @export
+ * @enum {string}
+ */
+
+export const ContactStatus = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * ToDo
+    */
+    TODO: 1,
+    /**
+    * 対応中
+    */
+    INPROGRESS: 2,
+    /**
+    * 完了
+    */
+    DONE: 3,
+    /**
+    * 対応不要
+    */
+    DISCARD: 4
+} as const;
+
+export type ContactStatus = typeof ContactStatus[keyof typeof ContactStatus];
+
+
 /**
  * 
  * @export
@@ -1496,6 +1584,62 @@ export interface CreateShippingRequest {
     'freeShippingRates': number;
 }
 /**
+ * 配送方法
+ * @export
+ * @enum {string}
+ */
+
+export const DeliveryType = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 通常便
+    */
+    NORMAL: 1,
+    /**
+    * 冷蔵便
+    */
+    REFRIGERATED: 2,
+    /**
+    * 冷凍便
+    */
+    FROZEN: 3
+} as const;
+
+export type DeliveryType = typeof DeliveryType[keyof typeof DeliveryType];
+
+
+/**
+ * 割引計算方法
+ * @export
+ * @enum {string}
+ */
+
+export const DiscountType = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 固定額(円)
+    */
+    AMOUNT: 1,
+    /**
+    * 料率計算(%)
+    */
+    RATE: 2,
+    /**
+    * 送料無料
+    */
+    FREE_SHIPPING: 3
+} as const;
+
+export type DiscountType = typeof DiscountType[keyof typeof DiscountType];
+
+
+/**
  * 
  * @export
  * @interface ErrorResponse
@@ -1520,6 +1664,58 @@ export interface ErrorResponse {
      */
     'details': string;
 }
+/**
+ * 配送状況
+ * @export
+ * @enum {string}
+ */
+
+export const FulfillmentStatus = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 未発送
+    */
+    UNFULFILLED: 1,
+    /**
+    * 発送済み
+    */
+    FULFILLED: 2
+} as const;
+
+export type FulfillmentStatus = typeof FulfillmentStatus[keyof typeof FulfillmentStatus];
+
+
+/**
+ * 画像サイズ
+ * @export
+ * @enum {string}
+ */
+
+export const ImageSize = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 画像サイズ:小
+    */
+    SMALL: 1,
+    /**
+    * 画像サイズ:中
+    */
+    MEDIUM: 2,
+    /**
+    * 画像サイズ:高
+    */
+    LARGE: 3
+} as const;
+
+export type ImageSize = typeof ImageSize[keyof typeof ImageSize];
+
+
 /**
  * 
  * @export
@@ -1660,6 +1856,38 @@ export interface LiveResponse {
     'viewerCount'?: number;
 }
 /**
+ * ライブ配信ステータス
+ * @export
+ * @enum {string}
+ */
+
+export const LiveStatus = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 配信開始前
+    */
+    WAITING: 1,
+    /**
+    * 配信中
+    */
+    OPENED: 2,
+    /**
+    * 配信終了
+    */
+    CLOSED: 3,
+    /**
+    * 配信中止
+    */
+    CANCELED: 4
+} as const;
+
+export type LiveStatus = typeof LiveStatus[keyof typeof LiveStatus];
+
+
+/**
  * 
  * @export
  * @interface MessageResponse
@@ -1720,6 +1948,26 @@ export interface MessageResponse {
      */
     'updatedAt': number;
 }
+/**
+ * メッセージ種別
+ * @export
+ * @enum {string}
+ */
+
+export const MessageType = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * お知らせ
+    */
+    NOTIFICATION: 1
+} as const;
+
+export type MessageType = typeof MessageType[keyof typeof MessageType];
+
+
 /**
  * 
  * @export
@@ -1965,6 +2213,22 @@ export interface NotificationsResponseNotificationsInner {
      */
     'updatedAt': number;
 }
+/**
+ * 注文キャンセル理由
+ * @export
+ * @enum {string}
+ */
+
+export const OrderRefundType = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0
+} as const;
+
+export type OrderRefundType = typeof OrderRefundType[keyof typeof OrderRefundType];
+
+
 /**
  * 
  * @export
@@ -2362,6 +2626,70 @@ export interface OrdersResponse {
     'total': number;
 }
 /**
+ * 決済手段
+ * @export
+ * @enum {string}
+ */
+
+export const PaymentMethodType = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 代引き支払い
+    */
+    CASH: 1,
+    /**
+    * クレジットカード払い
+    */
+    CARD: 2
+} as const;
+
+export type PaymentMethodType = typeof PaymentMethodType[keyof typeof PaymentMethodType];
+
+
+/**
+ * 支払い状況
+ * @export
+ * @enum {string}
+ */
+
+export const PaymentStatus = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 未払い
+    */
+    UNPAID: 1,
+    /**
+    * 保留中
+    */
+    PENDING: 2,
+    /**
+    * オーソリ済み
+    */
+    AUTHORIZED: 3,
+    /**
+    * 支払い済み
+    */
+    PAID: 4,
+    /**
+    * 返金済み
+    */
+    REFUNDED: 5,
+    /**
+    * 期限切れ
+    */
+    EXPIRED: 6
+} as const;
+
+export type PaymentStatus = typeof PaymentStatus[keyof typeof PaymentStatus];
+
+
+/**
  * 
  * @export
  * @interface PostalCodeResponse
@@ -2405,53 +2733,194 @@ export interface PostalCodeResponse {
  */
 
 export const Prefecture = {
-    Hokkaido: 'hokkaido',
-    Aomori: 'aomori',
-    Iwate: 'iwate',
-    Miyagi: 'miyagi',
-    Akita: 'akita',
-    Yamagata: 'yamagata',
-    Fukushima: 'fukushima',
-    Ibaraki: 'ibaraki',
-    Tochigi: 'tochigi',
-    Gunma: 'gunma',
-    Saitama: 'saitama',
-    Chiba: 'chiba',
-    Tokyo: 'tokyo',
-    Kanagawa: 'kanagawa',
-    Niigata: 'niigata',
-    Toyama: 'toyama',
-    Ishikawa: 'ishikawa',
-    Fukui: 'fukui',
-    Yamanashi: 'yamanashi',
-    Nagano: 'nagano',
-    Gifu: 'gifu',
-    Shizuoka: 'shizuoka',
-    Aichi: 'aichi',
-    Mie: 'mie',
-    Shiga: 'shiga',
-    Kyoto: 'kyoto',
-    Osaka: 'osaka',
-    Hyogo: 'hyogo',
-    Nara: 'nara',
-    Wakayama: 'wakayama',
-    Tottori: 'tottori',
-    Shimane: 'shimane',
-    Okayama: 'okayama',
-    Hiroshima: 'hiroshima',
-    Yamaguchi: 'yamaguchi',
-    Tokushima: 'tokushima',
-    Kagawa: 'kagawa',
-    Ehime: 'ehime',
-    Kochi: 'kochi',
-    Fukuoka: 'fukuoka',
-    Saga: 'saga',
-    Nagasaki: 'nagasaki',
-    Kumamoto: 'kumamoto',
-    Oita: 'oita',
-    Miyazaki: 'miyazaki',
-    Kagoshima: 'kagoshima',
-    Okinawa: 'okinawa'
+    /**
+    * 北海道
+    */
+    HOKKAIDO: 'hokkaido',
+    /**
+    * 青森県
+    */
+    AOMORI: 'aomori',
+    /**
+    * 岩手県
+    */
+    IWATE: 'iwate',
+    /**
+    * 宮城県
+    */
+    MIYAGI: 'miyagi',
+    /**
+    * 秋田県
+    */
+    AKITA: 'akita',
+    /**
+    * 山形県
+    */
+    YAMAGATA: 'yamagata',
+    /**
+    * 福島県
+    */
+    FUKUSHIMA: 'fukushima',
+    /**
+    * 茨城県
+    */
+    IBARAKI: 'ibaraki',
+    /**
+    * 栃木県
+    */
+    TOCHIGI: 'tochigi',
+    /**
+    * 群馬県
+    */
+    GUNMA: 'gunma',
+    /**
+    * 埼玉県
+    */
+    SAITAMA: 'saitama',
+    /**
+    * 千葉県
+    */
+    CHIBA: 'chiba',
+    /**
+    * 東京都
+    */
+    TOKYO: 'tokyo',
+    /**
+    * 神奈川県
+    */
+    KANAGAWA: 'kanagawa',
+    /**
+    * 新潟県
+    */
+    NIIGATA: 'niigata',
+    /**
+    * 富山県
+    */
+    TOYAMA: 'toyama',
+    /**
+    * 石川県
+    */
+    ISHIKAWA: 'ishikawa',
+    /**
+    * 福井県
+    */
+    FUKUI: 'fukui',
+    /**
+    * 山梨県
+    */
+    YAMANASHI: 'yamanashi',
+    /**
+    * 長野県
+    */
+    NAGANO: 'nagano',
+    /**
+    * 岐阜県
+    */
+    GIFU: 'gifu',
+    /**
+    * 静岡県
+    */
+    SHIZUOKA: 'shizuoka',
+    /**
+    * 愛知県
+    */
+    AICHI: 'aichi',
+    /**
+    * 三重県
+    */
+    MIE: 'mie',
+    /**
+    * 滋賀県
+    */
+    SHIGA: 'shiga',
+    /**
+    * 京都府
+    */
+    KYOTO: 'kyoto',
+    /**
+    * 大坂府
+    */
+    OSAKA: 'osaka',
+    /**
+    * 兵庫県
+    */
+    HYOGO: 'hyogo',
+    /**
+    * 奈良県
+    */
+    NARA: 'nara',
+    /**
+    * 和歌山県
+    */
+    WAKAYAMA: 'wakayama',
+    /**
+    * 鳥取県
+    */
+    TOTTORI: 'tottori',
+    /**
+    * 島根県
+    */
+    SHIMANE: 'shimane',
+    /**
+    * 岡山県
+    */
+    OKAYAMA: 'okayama',
+    /**
+    * 広島県
+    */
+    HIROSHIMA: 'hiroshima',
+    /**
+    * 山口県
+    */
+    YAMAGUCHI: 'yamaguchi',
+    /**
+    * 徳島県
+    */
+    TOKUSHIMA: 'tokushima',
+    /**
+    * 香川県
+    */
+    KAGAWA: 'kagawa',
+    /**
+    * 愛媛県
+    */
+    EHIME: 'ehime',
+    /**
+    * 高知県
+    */
+    KOCHI: 'kochi',
+    /**
+    * 福岡県
+    */
+    FUKUOKA: 'fukuoka',
+    /**
+    * 佐賀県
+    */
+    SAGA: 'saga',
+    /**
+    * 長崎県
+    */
+    NAGASAKI: 'nagasaki',
+    /**
+    * 熊本県
+    */
+    KUMAMOTO: 'kumamoto',
+    /**
+    * 大分県
+    */
+    OITA: 'oita',
+    /**
+    * 宮崎県
+    */
+    MIYAZAKI: 'miyazaki',
+    /**
+    * 鹿児島県
+    */
+    KAGOSHIMA: 'kagoshima',
+    /**
+    * 沖縄県
+    */
+    OKINAWA: 'okinawa'
 } as const;
 
 export type Prefecture = typeof Prefecture[keyof typeof Prefecture];
@@ -3829,6 +4298,30 @@ export interface ScheduleResponseLivesInnerProductsInner {
     'updatedAt'?: number;
 }
 /**
+ * 配送会社
+ * @export
+ * @enum {string}
+ */
+
+export const ShippingCarrier = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * ヤマト運輸
+    */
+    YAMATO: 1,
+    /**
+    * 佐川急便
+    */
+    SAGAWA: 2
+} as const;
+
+export type ShippingCarrier = typeof ShippingCarrier[keyof typeof ShippingCarrier];
+
+
+/**
  * 
  * @export
  * @interface ShippingRate
@@ -3956,6 +4449,34 @@ export interface ShippingResponse {
      */
     'updatedAt': number;
 }
+/**
+ * 配送時の箱の大きさ
+ * @export
+ * @enum {string}
+ */
+
+export const ShippingSize = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 箱のサイズ:60
+    */
+    SIZE60: 1,
+    /**
+    * 箱のサイズ:80
+    */
+    SIZE80: 2,
+    /**
+    * 箱のサイズ:100
+    */
+    SIZE100: 3
+} as const;
+
+export type ShippingSize = typeof ShippingSize[keyof typeof ShippingSize];
+
+
 /**
  * 
  * @export

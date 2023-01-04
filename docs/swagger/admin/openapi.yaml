@@ -168,8 +168,36 @@ components:
       scheme: bearer
   schemas:
     # Common
+    adminRole:
+      $ref: './components/schemas/codes/auth.yaml#/adminRole'
     prefecture:
-      $ref: './components/schemas/codes.yaml#/prefecture'
+      $ref: './components/schemas/codes/common.yaml#/prefecture'
+    contactStatus:
+      $ref: './components/schemas/codes/contact.yaml#/contactStatus'
+    contactPriority:
+      $ref: './components/schemas/codes/contact.yaml#/contactPriority'
+    imageSize:
+      $ref: './components/schemas/codes/image.yaml#/imageSize'
+    liveStatus:
+      $ref: './components/schemas/codes/live.yaml#/liveStatus'
+    messageType:
+      $ref: './components/schemas/codes/message.yaml#/messageType'
+    fulfillmentStatus:
+      $ref: './components/schemas/codes/order_fulfillment.yaml#/fulfillmentStatus'
+    shippingCarrier:
+      $ref: './components/schemas/codes/order_fulfillment.yaml#/shippingCarrier'
+    shippingSize:
+      $ref: './components/schemas/codes/order_fulfillment.yaml#/shippingSize'
+    paymentMethodType:
+      $ref: './components/schemas/codes/order_payment.yaml#/paymentMethodType'
+    paymentStatus:
+      $ref: './components/schemas/codes/order_payment.yaml#/paymentStatus'
+    orderRefundType:
+      $ref: './components/schemas/codes/order_refund.yaml#/orderRefundType'
+    deliveryType:
+      $ref: './components/schemas/codes/product.yaml#/deliveryType'
+    discountType:
+      $ref: './components/schemas/codes/promotion.yaml#/discountType'
     errorResponse:
       $ref: './components/schemas/common.yaml#/errorResponse'
     # Request

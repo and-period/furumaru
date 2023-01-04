@@ -1,0 +1,46 @@
+paymentMethodType:
+  type: integer
+  format: int32
+  description: 決済手段
+  nullable: false
+  enum:
+  - 0
+  - 1
+  - 2
+  x-enum-varnames:
+  - UNKNOWN
+  - CASH
+  - CARD
+  x-enum-descriptions:
+  - 不明
+  - 代引き支払い
+  - クレジットカード払い
+paymentStatus:
+  type: integer
+  format: int32
+  description: 支払い状況
+  nullable: false
+  enum:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  x-enum-varnames:
+  - UNKNOWN
+  - UNPAID
+  - PENDING
+  - AUTHORIZED
+  - PAID
+  - REFUNDED
+  - EXPIRED
+  x-enum-descriptions:
+  - 不明
+  - 未払い
+  - 保留中
+  - オーソリ済み
+  - 支払い済み
+  - 返金済み
+  - 期限切れ
