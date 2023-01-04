@@ -64,11 +64,6 @@ type Category interface {
 	Delete(ctx context.Context, categoryID string) error
 }
 
-type Live interface {
-	Get(ctx context.Context, liveID string, fields ...string) (*entity.Live, error)
-	Update(ctx context.Context, liveID string, params *UpdateLiveParams) error
-}
-
 type Order interface {
 	List(ctx context.Context, params *ListOrdersParams, fields ...string) (entity.Orders, error)
 	Count(ctx context.Context, params *ListOrdersParams) (int64, error)
@@ -126,6 +121,12 @@ type Schedule interface {
 	Create(ctx context.Context, schedule *entity.Schedule, lives entity.Lives, products entity.LiveProducts) error
 }
 
+type Live interface {
+	Get(ctx context.Context, liveID string, fields ...string) (*entity.Live, error)
+	Update(ctx context.Context, liveID string, params *UpdateLiveParams) error
+	UpdatePublic(ctx context.Context, liveID string, params *UpdateLivePublicParams) error
+}
+
 /**
  * params
  */
@@ -162,10 +163,15 @@ type UpdateLiveParams struct {
 	ProducerID   string
 	Title        string
 	Description  string
-	Published    bool
-	Canceled     bool
 	StartAt      time.Time
 	EndAt        time.Time
+}
+
+type UpdateLivePublicParams struct {
+	Published    bool
+	Canceled     bool
+	ChannelArn   string
+	StreamKeyArn string
 }
 
 type ListOrdersParams struct {

@@ -309,6 +309,25 @@ type GetLiveInput struct {
 	LiveID string `validate:"required"`
 }
 
+type UpdateLiveInput struct {
+	LiveProducts entity.LiveProducts `validate:"required"`
+	LiveID       string              `validate:"required"`
+	ProducerID   string              `validate:"required"`
+	Title        string              `validate:"required,max=64"`
+	Description  string              `validate:"required,max=2000"`
+	Published    bool                `validate:""`
+	Canceled     bool                `validate:""`
+	StartAt      time.Time           `validate:"required"`
+	EndAt        time.Time           `validate:"required"`
+}
+
+type UpdateLivePublicInput struct {
+	LiveID      string `validate:"required"`
+	Published   bool   `validate:""`
+	Canceled    bool   `validate:""`
+	ChannelName string `validate:""`
+}
+
 type ListOrdersInput struct {
 	CoordinatorID string             `validate:"omitempty"`
 	Limit         int64              `validate:"required,max=200"`
