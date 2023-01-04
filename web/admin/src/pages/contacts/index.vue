@@ -63,10 +63,6 @@ export default defineComponent({
         value: 'status',
       },
       {
-        text: 'メモ',
-        value: 'note',
-      },
-      {
         text: 'Actions',
         value: 'actions',
         sortable: false,
@@ -76,13 +72,13 @@ export default defineComponent({
     const getPriorityColor = (priority: any): string => {
       switch (priority) {
         case 1:
-          return 'red'
+          return 'error'
         case 2:
-          return 'orange'
+          return 'secondary'
         case 3:
-          return 'blue'
+          return 'primary'
         default:
-          return ''
+          return 'unknown'
       }
     }
 
@@ -102,13 +98,13 @@ export default defineComponent({
     const getStatusColor = (status: any): string => {
       switch (status) {
         case 1:
-          return 'red'
+          return 'error'
         case 2:
-          return 'orange'
+          return 'secondary'
         case 3:
-          return 'blue'
+          return 'primary'
         default:
-          return ''
+          return 'unknown'
       }
     }
 

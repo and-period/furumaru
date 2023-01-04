@@ -13,7 +13,13 @@
           no-data-text="表示する注文がありません"
           @update:items-per-page="handleUpdateItemsPerPage"
           @update:page="handleUpdatePage"
-        />
+        >
+          <template #[`item.status`]="{ item }">
+            <v-chip samll :color="getSatusColor(item.status)">
+              {{ getStatus(item.status) }}
+            </v-chip>
+          </template>
+        </v-data-table>
       </v-card-text>
     </v-card>
   </div>
@@ -46,7 +52,7 @@ export default defineComponent({
 
     const headers: DataTableHeader[] = [
       {
-        text: 'ID',
+        text: '注文ID',
         value: 'id',
       },
       {
@@ -55,7 +61,7 @@ export default defineComponent({
       },
       {
         text: '配送ステータス',
-        value: '',
+        value: 'status',
       },
       {
         text: '購入日時',
@@ -63,7 +69,7 @@ export default defineComponent({
       },
       {
         text: '配送方法',
-        value: '',
+        value: 'payment.paymentType',
       },
       {
         text: '購入金額',
@@ -73,11 +79,35 @@ export default defineComponent({
         text: '伝票番号',
         value: 'payment.paymentId',
       },
+      {
+        text: 'Actions',
+        value: 'actions',
+        sortable: false,
+      }
     ]
 
     const handleUpdatePage = async (page: number) => {
       updateCurrentPage(page)
       await orderStore.fetchOrders(itemsPerPage.value, offset.value)
+    }
+
+    const getStatusColor = (status: number): string => {
+      switch (status) {
+        case 1:
+          return 'accent'
+        case 2:
+          return ''
+        case 3:
+          return ''
+        case 4:
+          return ''
+        case 5:
+          return ''
+        case 6:
+          return ''
+        default:
+          return 'accentDarken'
+      }
     }
 
     return {
@@ -88,6 +118,7 @@ export default defineComponent({
       options,
       handleUpdateItemsPerPage,
       handleUpdatePage,
+      getStatusColor,
     }
   },
 })
