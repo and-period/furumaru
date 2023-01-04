@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
@@ -16,6 +17,7 @@ import (
 func (h *handler) liveRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication)
 	arg.GET("/:liveId", h.GetLive)
+	arg.POST("/:liveId/public", h.UpdateLivePublic)
 }
 
 func (h *handler) GetLive(ctx *gin.Context) {
@@ -29,6 +31,28 @@ func (h *handler) GetLive(ctx *gin.Context) {
 		Live: live.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) UpdateLivePublic(ctx *gin.Context) {
+	req := &request.UpdateLivePublicRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	in := &store.UpdateLivePublicInput{
+		LiveID:      util.GetParam(ctx, "liveId"),
+		Published:   req.Published,
+		Canceled:    req.Canceled,
+		ChannelName: req.ChannelName,
+	}
+
+	if err := h.store.UpdateLivePublic(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
 func (h *handler) getLive(ctx context.Context, liveID string) (*service.Live, error) {
