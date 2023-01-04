@@ -15,7 +15,7 @@
 import { computed, defineComponent, PropType } from '@vue/composition-api'
 import dayjs from 'dayjs'
 
-import { CreatePromotionRequest } from '~/types/api'
+import { CreatePromotionRequest, DiscountType } from '~/types/api'
 import { PromotionTime } from '~/types/props'
 
 export default defineComponent({
@@ -28,7 +28,7 @@ export default defineComponent({
           description: '',
           public: false,
           publishedAt: dayjs().unix(),
-          discountType: 1,
+          discountType: DiscountType.AMOUNT,
           discountRate: 0,
           code: '',
           startAt: dayjs().unix(),

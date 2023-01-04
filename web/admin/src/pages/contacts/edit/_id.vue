@@ -78,7 +78,12 @@ import {
 } from '@nuxtjs/composition-api'
 
 import { useContactStore } from '~/store/contact'
-import { ContactResponse, UpdateContactRequest } from '~/types/api'
+import {
+  ContactPriority,
+  ContactResponse,
+  ContactStatus,
+  UpdateContactRequest,
+} from '~/types/api'
 
 export default defineComponent({
   setup() {
@@ -128,26 +133,26 @@ export default defineComponent({
       formNote.value = formData.note
     })
 
-    const getPriority = (priority: number): string => {
+    const getPriority = (priority: ContactPriority): string => {
       switch (priority) {
-        case 1:
+        case ContactPriority.LOW:
           return 'High'
-        case 2:
+        case ContactPriority.MIDDLE:
           return 'Middle'
-        case 3:
+        case ContactPriority.HIGH:
           return 'Low'
         default:
           return 'Middle'
       }
     }
 
-    const getStatus = (status: number): string => {
+    const getStatus = (status: ContactStatus): string => {
       switch (status) {
-        case 1:
+        case ContactStatus.TODO:
           return '未着手'
-        case 2:
+        case ContactStatus.INPROGRESS:
           return '進行中'
-        case 3:
+        case ContactStatus.DONE:
           return '完了'
         default:
           return '未着手'
@@ -169,29 +174,29 @@ export default defineComponent({
       }
     }
 
-    const getPriorityID = (priority: string): number => {
+    const getPriorityID = (priority: string): ContactPriority => {
       switch (priority) {
         case 'High':
-          return 1
+          return ContactPriority.HIGH
         case 'Middle':
-          return 2
+          return ContactPriority.MIDDLE
         case 'Low':
-          return 3
+          return ContactPriority.LOW
         default:
-          return 2
+          return ContactPriority.MIDDLE
       }
     }
 
-    const getStatusID = (status: string): number => {
+    const getStatusID = (status: string): ContactStatus => {
       switch (status) {
         case '未着手':
-          return 1
+          return ContactStatus.TODO
         case '進行中':
-          return 2
+          return ContactStatus.INPROGRESS
         case '完了':
-          return 3
+          return ContactStatus.DONE
         default:
-          return 1
+          return ContactStatus.TODO
       }
     }
 

@@ -187,7 +187,7 @@ import { computed, ref } from '@nuxtjs/composition-api'
 import { defineComponent, PropType } from '@vue/composition-api'
 import dayjs from 'dayjs'
 
-import { CreatePromotionRequest } from '~/types/api'
+import { CreatePromotionRequest, DiscountType } from '~/types/api'
 import { PromotionTime } from '~/types/props'
 
 export default defineComponent({
@@ -207,7 +207,7 @@ export default defineComponent({
           description: '',
           public: false,
           publishedAt: dayjs().unix(),
-          discountType: 1,
+          discountType: DiscountType.AMOUNT,
           discountRate: 0,
           code: '',
           startAt: dayjs().unix(),
@@ -313,9 +313,9 @@ export default defineComponent({
     ]
 
     const discountMethodList = [
-      { method: '円', value: 1 },
-      { method: '%', value: 2 },
-      { method: '送料無料', value: 3 },
+      { method: '円', value: DiscountType.AMOUNT },
+      { method: '%', value: DiscountType.RATE },
+      { method: '送料無料', value: DiscountType.FREE_SHIPPING },
     ]
 
     return {
