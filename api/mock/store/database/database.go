@@ -11,7 +11,6 @@ import (
 	common "github.com/and-period/furumaru/api/internal/common"
 	database "github.com/and-period/furumaru/api/internal/store/database"
 	entity "github.com/and-period/furumaru/api/internal/store/entity"
-	ivs "github.com/aws/aws-sdk-go-v2/service/ivs"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -1006,15 +1005,15 @@ func (mr *MockLiveMockRecorder) Update(ctx, liveID, params interface{}) *gomock.
 }
 
 // UpdateLivePublic mocks base method.
-func (m *MockLive) UpdateLivePublic(ctx context.Context, liveID string, params *database.UpdateLivePublicParams, ivs func(context.Context) (*ivs.CreateChannelOutput, error)) error {
+func (m *MockLive) UpdateLivePublic(ctx context.Context, liveID string, params *database.UpdateLivePublicParams) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateLivePublic", ctx, liveID, params, ivs)
+	ret := m.ctrl.Call(m, "UpdateLivePublic", ctx, liveID, params)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // UpdateLivePublic indicates an expected call of UpdateLivePublic.
-func (mr *MockLiveMockRecorder) UpdateLivePublic(ctx, liveID, params, ivs interface{}) *gomock.Call {
+func (mr *MockLiveMockRecorder) UpdateLivePublic(ctx, liveID, params interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateLivePublic", reflect.TypeOf((*MockLive)(nil).UpdateLivePublic), ctx, liveID, params, ivs)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateLivePublic", reflect.TypeOf((*MockLive)(nil).UpdateLivePublic), ctx, liveID, params)
 }
