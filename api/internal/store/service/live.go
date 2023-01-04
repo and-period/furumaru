@@ -10,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/ivs"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ivs/types"
+	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -93,5 +94,8 @@ func (s *service) UpdateLivePublic(ctx context.Context, in *store.UpdateLivePubl
 		StreamKeyArn: aws.ToString(cout.StreamKey.Arn),
 	}
 	err = s.db.Live.UpdatePublic(ctx, in.LiveID, dbParams)
+	if err != nil {
+		s.logger.Error("Failed to update Public", zap.String("liveId", in.LiveID), zap.Any("ivs", cout))
+	}
 	return exception.InternalError(err)
 }
