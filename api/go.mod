@@ -33,7 +33,7 @@ require (
 	github.com/rafaelhl/gorm-newrelic-telemetry-plugin v1.0.0
 	github.com/rs/cors v1.8.3
 	github.com/rs/cors/wrapper/gin v0.0.0-20220619195839-da52b0701de5
-	github.com/samber/lo v1.36.0
+	github.com/samber/lo v1.37.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/sendgrid/sendgrid-go v3.12.0+incompatible
 	github.com/shopspring/decimal v1.3.1
