@@ -210,6 +210,40 @@ func TestUpdateLivePublic(t *testing.T) {
 			},
 			expectErr: nil,
 		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &store.UpdateLivePublicInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get live",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(nil, assert.AnError)
+			},
+			input: &store.UpdateLivePublicInput{
+				LiveID:      "live-id",
+				Published:   true,
+				Canceled:    false,
+				ChannelName: "channel-name",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "failed to update live",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
+				mocks.ivs.EXPECT().CreateChannel(gomock.Any(), channelIn).Return(channelOut, nil)
+				mocks.db.Live.EXPECT().UpdatePublic(ctx, "live-id", params).Return(assert.AnError)
+			},
+			input: &store.UpdateLivePublicInput{
+				LiveID:      "live-id",
+				Published:   true,
+				Canceled:    false,
+				ChannelName: "channel-name",
+			},
+			expectErr: exception.ErrUnknown,
+		},
 	}
 
 	for _, tt := range tests {
