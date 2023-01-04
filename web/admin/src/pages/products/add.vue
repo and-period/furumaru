@@ -54,7 +54,7 @@
             <v-select
               v-model="formData.itemUnit"
               label="単位"
-              :items="['個']"
+              :items="['個', '瓶']"
             />
             <v-spacer />
           </div>
@@ -306,8 +306,12 @@ export default defineComponent({
     const { alertType, isShow, alertText, show } = useAlert('error')
 
     const handleFormSubmit = async () => {
-      const result = await v$.value.v$alidate()
+      const result = await v$.value.$validate()
       if (!result) {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth',
+        })
         return
       }
       try {
