@@ -34,9 +34,7 @@ liveResponse:
       type: boolean
       description: キャンセルフラグ
     status:
-      type: integer
-      format: int32
-      description: 配信ステータス(0:不明,1:配信前,2:配信中,3:配信終了,4:配信中止)
+      $ref: './../../../openapi.yaml#/components/schemas/liveStatus'
     products:
       type: array
       items:
@@ -111,9 +109,7 @@ liveResponse:
             format: int64
             description: 販売価格
           deliveryType:
-            type: integer
-            format: int32
-            description: 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
+            $ref: './../../../openapi.yaml#/components/schemas/deliveryType'
           box60Rate:
             type: integer
             format: int64

@@ -1,0 +1,20 @@
+notificationTargetType:
+  type: integer
+  format: int32
+  description: 掲載対象
+  nullable: false
+  enum:
+  - 0
+  - 1
+  - 2
+  - 3
+  x-enum-varnames:
+  - UNKNOWN
+  - USERS
+  - PRODUCERS
+  - COORDINATORS
+  x-enum-descriptions:
+  - 不明
+  - 購入者
+  - 生産者
+  - コーディネータ

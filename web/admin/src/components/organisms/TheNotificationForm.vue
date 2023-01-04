@@ -22,17 +22,17 @@
         <v-checkbox
           v-model="formData.targets"
           label="ユーザー"
-          :value="Number(1)"
+          :value="NotificationTargetType.USERS"
         ></v-checkbox>
         <v-checkbox
           v-model="formData.targets"
           label="生産者"
-          :value="Number(2)"
+          :value="NotificationTargetType.PRODUCERS"
         ></v-checkbox>
         <v-checkbox
           v-model="formData.targets"
           label="コーディネータ"
-          :value="Number(3)"
+          :value="NotificationTargetType.COORDINATORS"
         ></v-checkbox>
         <p class="text-h6">投稿予約時間</p>
         <div class="d-flex align-center justify-center">
@@ -90,7 +90,7 @@ import { computed, PropType, ref } from '@nuxtjs/composition-api'
 import { defineComponent } from '@vue/composition-api'
 import dayjs from 'dayjs'
 
-import { CreateNotificationRequest } from '~/types/api'
+import { CreateNotificationRequest, NotificationTargetType } from '~/types/api'
 import { NotificationTime } from '~/types/props'
 
 export default defineComponent({
@@ -162,6 +162,7 @@ export default defineComponent({
       statusList,
       postMenu,
       handleSubmit,
+      NotificationTargetType,
     }
   },
 })

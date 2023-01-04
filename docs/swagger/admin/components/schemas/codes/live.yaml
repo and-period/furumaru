@@ -1,0 +1,23 @@
+liveStatus:
+  type: integer
+  format: int32
+  description: ライブ配信ステータス
+  nullable: false
+  enum:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  x-enum-varnames:
+  - UNKNOWN
+  - WAITING
+  - OPENED
+  - CLOSED
+  - CANCELED
+  x-enum-descriptions:
+  - 不明
+  - 配信開始前
+  - 配信中
+  - 配信終了
+  - 配信中止

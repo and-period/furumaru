@@ -50,9 +50,7 @@ createProductRequest:
       format: int64
       description: 販売価格(0以上)
     deliveryType:
-      type: integer
-      format: int32
-      description: 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
+      $ref: './../../../openapi.yaml#/components/schemas/deliveryType'
     box60Rate:
       type: integer
       format: int64

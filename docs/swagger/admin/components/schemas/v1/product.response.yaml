@@ -72,9 +72,7 @@ productResponse:
                   type: string
                   description: リサイズ済み画像URL
                 size:
-                  type: integer
-                  format: int32
-                  description: 画像サイズ(1:240px,2:675px,3:900px)
+                  $ref: './../../../openapi.yaml#/components/schemas/imageSize'
               required:
               - url
               - size
@@ -87,9 +85,7 @@ productResponse:
       format: int64
       description: 販売価格
     deliveryType:
-      type: integer
-      format: int32
-      description: 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
+      $ref: './../../../openapi.yaml#/components/schemas/deliveryType'
     box60Rate:
       type: integer
       format: int64
@@ -262,9 +258,7 @@ productsResponse:
                         type: string
                         description: リサイズ済み画像URL
                       size:
-                        type: integer
-                        format: int32
-                        description: 画像サイズ(1:240px,2:675px,3:900px)
+                        $ref: './../../../openapi.yaml#/components/schemas/imageSize'
                     required:
                     - url
                     - size
@@ -277,9 +271,7 @@ productsResponse:
             format: int64
             description: 販売価格
           deliveryType:
-            type: integer
-            format: int32
-            description: 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
+            $ref: './../../../openapi.yaml#/components/schemas/deliveryType'
           box60Rate:
             type: integer
             format: int64

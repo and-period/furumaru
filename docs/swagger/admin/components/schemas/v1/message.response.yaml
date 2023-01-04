@@ -5,9 +5,7 @@ messageResponse:
       type: string
       description: メッセージID
     type:
-      type: integer
-      format: int32
-      description: メッセージ種別(1:お知らせ)
+      $ref: './../../../openapi.yaml#/components/schemas/messageType'
     title:
       type: string
       description: メッセージ件名
@@ -65,9 +63,7 @@ messagesResponse:
             type: string
             description: メッセージID
           type:
-            type: integer
-            format: int32
-            description: メッセージ種別(1:お知らせ)
+            $ref: './../../../openapi.yaml#/components/schemas/messageType'
           title:
             type: string
             description: メッセージ件名

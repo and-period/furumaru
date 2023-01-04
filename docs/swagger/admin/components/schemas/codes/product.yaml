@@ -1,0 +1,20 @@
+deliveryType:
+  type: integer
+  format: int32
+  description: 配送方法
+  nullable: false
+  enum:
+  - 0
+  - 1
+  - 2
+  - 3
+  x-enum-varnames:
+  - UNKNOWN
+  - NORMAL
+  - REFRIGERATED
+  - FROZEN
+  x-enum-descriptions:
+  - 不明
+  - 通常便
+  - 冷蔵便
+  - 冷凍便

@@ -35,9 +35,7 @@ producerResponse:
             type: string
             description: リサイズ済みサムネイルURL
           size:
-            type: integer
-            format: int32
-            description: 画像サイズ(1:240px,2:675px,3:900px)
+            $ref: './../../../openapi.yaml#/components/schemas/imageSize'
         required:
         - url
         - size
@@ -54,9 +52,7 @@ producerResponse:
             type: string
             description: リサイズ済みヘッダー画像URL
           size:
-            type: integer
-            format: int32
-            description: 画像サイズ(1:240px,2:675px,3:900px)
+            $ref: './../../../openapi.yaml#/components/schemas/imageSize'
         required:
         - url
         - size
@@ -186,9 +182,7 @@ producersResponse:
                   type: string
                   description: リサイズ済みサムネイルURL
                 size:
-                  type: integer
-                  format: int32
-                  description: 画像サイズ(1:240px,2:675px,3:900px)
+                  $ref: './../../../openapi.yaml#/components/schemas/imageSize'
               required:
               - url
               - size
@@ -205,9 +199,7 @@ producersResponse:
                   type: string
                   description: リサイズ済みヘッダー画像URL
                 size:
-                  type: integer
-                  format: int32
-                  description: 画像サイズ(1:240px,2:675px,3:900px)
+                  $ref: './../../../openapi.yaml#/components/schemas/imageSize'
               required:
               - url
               - size

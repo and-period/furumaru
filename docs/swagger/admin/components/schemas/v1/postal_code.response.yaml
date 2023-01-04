@@ -5,8 +5,7 @@ postalCodeResponse:
       type: string
       description: 郵便番号
     prefectureCode:
-      type: string
-      description: 都道府県コード
+      $ref: './../../../openapi.yaml#/components/schemas/prefecture'
     prefecture:
       type: string
       description: 都道府県名

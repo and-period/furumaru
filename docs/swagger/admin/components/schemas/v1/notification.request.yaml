@@ -11,9 +11,7 @@ createNotificationRequest:
       type: array
       description: 掲載対象一覧(3つまで,全部指定の際は1,2,3)
       items:
-        type: integer
-        format: int32
-        description: 掲載対象(0:不明,1:ユーザー,2:生産者,3:コーディネーター)
+        $ref: './../../../openapi.yaml#/components/schemas/notificationTargetType'
     public:
       type: boolean
       description: 公開フラグ
@@ -46,9 +44,7 @@ updateNotificationRequest:
       type: array
       description: 掲載対象一覧(3つまで,全部指定の際は1,2,3)
       items:
-        type: integer
-        format: int32
-        description: 掲載対象(0:不明,1:ユーザー,2:生産者,3:コーディネーター)
+        $ref: './../../../openapi.yaml#/components/schemas/notificationTargetType'
     public:
       type: boolean
       description: 公開フラグ

@@ -12,8 +12,7 @@ createShippingRate:
       type: array
       description: 対象都道府県コード一覧
       items:
-        type: string
-        description: 都道府県コード
+        $ref: './../../../openapi.yaml#/components/schemas/prefecture'
   required:
   - name
   - price
@@ -134,8 +133,7 @@ updateShippingRate:
       type: array
       description: 対象都道府県コード一覧
       items:
-        type: string
-        description: 都道府県コード
+        $ref: './../../../openapi.yaml#/components/schemas/prefecture'
   required:
   - name
   - price
