@@ -122,7 +122,6 @@ const config: NuxtConfig = {
           error: colors.deepOrange.accent4,
           unknown: colors.grey.darken2,
           success: colors.green.accent3,
-          accentDarken: colors.orange.darken4,
         },
       },
       options: { customProperties: true },
