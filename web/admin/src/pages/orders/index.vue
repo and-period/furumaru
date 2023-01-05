@@ -7,7 +7,12 @@
         <v-icon left>mdi-import</v-icon>
         Import
       </v-btn>
-      <v-btn outlined class="ml-4" color="secondary" @click="toggleExportDialog">
+      <v-btn
+        outlined
+        class="ml-4"
+        color="secondary"
+        @click="toggleExportDialog"
+      >
         <v-icon left>mdi-export</v-icon>
         Export
       </v-btn>
@@ -30,7 +35,9 @@
         <v-divider />
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="error" text @click="toggleImportDialog"> キャンセル </v-btn>
+          <v-btn color="error" text @click="toggleImportDialog">
+            キャンセル
+          </v-btn>
           <v-btn color="primary" outlined @click="handleImport"> 登録 </v-btn>
         </v-card-actions>
       </v-card>
@@ -54,7 +61,9 @@
         <v-divider />
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="error" text @click="toggleExportDialog"> キャンセル </v-btn>
+          <v-btn color="error" text @click="toggleExportDialog">
+            キャンセル
+          </v-btn>
           <v-btn color="primary" outlined @click="handleExport"> 登録 </v-btn>
         </v-card-actions>
       </v-card>
