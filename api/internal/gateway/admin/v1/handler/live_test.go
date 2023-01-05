@@ -368,8 +368,6 @@ func TestUpdateLivePublic(t *testing.T) {
 			scheduleID: "schedule-id",
 			liveID:     "live-id",
 			req: &request.UpdateLivePublicRequest{
-				Published:   true,
-				Canceled:    false,
 				ChannelName: "channel-name",
 			},
 			expect: &testResponse{
@@ -384,8 +382,6 @@ func TestUpdateLivePublic(t *testing.T) {
 			scheduleID: "schedule-id",
 			liveID:     "live-id",
 			req: &request.UpdateLivePublicRequest{
-				Published:   true,
-				Canceled:    false,
 				ChannelName: "channel-name",
 			},
 			expect: &testResponse{

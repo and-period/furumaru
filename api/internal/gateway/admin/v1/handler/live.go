@@ -42,8 +42,8 @@ func (h *handler) UpdateLivePublic(ctx *gin.Context) {
 
 	in := &store.UpdateLivePublicInput{
 		LiveID:      util.GetParam(ctx, "liveId"),
-		Published:   req.Published,
-		Canceled:    req.Canceled,
+		Published:   true,
+		Canceled:    false,
 		ChannelName: req.ChannelName,
 	}
 
