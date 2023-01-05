@@ -98,9 +98,7 @@
         </p>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="error" text @click="hideEditDialog">
-            キャンセル
-          </v-btn>
+          <v-btn color="error" text @click="hideEditDialog"> キャンセル </v-btn>
           <v-btn color="primary" outlined @click="handleEdit"> 編集 </v-btn>
         </v-card-actions>
       </v-card>
