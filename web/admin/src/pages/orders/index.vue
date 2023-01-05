@@ -3,11 +3,11 @@
     <v-card-title>注文</v-card-title>
     <div class="d-flex">
       <v-spacer />
-      <v-btn outlined color="primary" @click="openImportDialog">
+      <v-btn outlined color="primary" @click="toggleImportDialog">
         <v-icon left>mdi-import</v-icon>
         Import
       </v-btn>
-      <v-btn outlined class="ml-4" color="secondary" @click="openExportDialog">
+      <v-btn outlined class="ml-4" color="secondary" @click="toggleExportDialog">
         <v-icon left>mdi-export</v-icon>
         Export
       </v-btn>
@@ -30,7 +30,7 @@
         <v-divider />
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="error" text @click="importCancel"> キャンセル </v-btn>
+          <v-btn color="error" text @click="toggleImportDialog"> キャンセル </v-btn>
           <v-btn color="primary" outlined @click="handleImport"> 登録 </v-btn>
         </v-card-actions>
       </v-card>
@@ -54,7 +54,7 @@
         <v-divider />
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="error" text @click="exportCancel"> キャンセル </v-btn>
+          <v-btn color="error" text @click="toggleExportDialog"> キャンセル </v-btn>
           <v-btn color="primary" outlined @click="handleExport"> 登録 </v-btn>
         </v-card-actions>
       </v-card>
@@ -171,8 +171,6 @@ export default defineComponent({
 
     const getStatusColor = (status: PaymentStatus): string => {
       switch (status) {
-        case PaymentStatus.UNKNOWN:
-          return 'unkown'
         case PaymentStatus.UNPAID:
           return 'secondary'
         case PaymentStatus.PENDING:
@@ -213,31 +211,23 @@ export default defineComponent({
 
     const getShippingMethod = (shippingMethod: DeliveryType): string => {
       switch (shippingMethod) {
-        case DeliveryType.UNKNOWN:
-          return '不明'
         case DeliveryType.NORMAL:
           return '通常便'
         case DeliveryType.REFRIGERATED:
           return '冷蔵便'
         case DeliveryType.FROZEN:
           return '冷凍便'
+        default:
+          return '不明'
       }
     }
 
-    const openImportDialog = (): void => {
-      importDialog.value = true
+    const toggleImportDialog = (): void => {
+      importDialog.value = !importDialog.value
     }
 
-    const openExportDialog = (): void => {
-      exportDialog.value = true
-    }
-
-    const importCancel = (): void => {
-      importDialog.value = false
-    }
-
-    const exportCancel = (): void => {
-      exportDialog.value = false
+    const toggleExportDialog = (): void => {
+      exportDialog.value = !exportDialog.value
     }
 
     const deliveryCompanyList = [
@@ -268,10 +258,8 @@ export default defineComponent({
       deliveryCompanyList,
       importDialog,
       exportDialog,
-      importCancel,
-      exportCancel,
-      openImportDialog,
-      openExportDialog,
+      toggleImportDialog,
+      toggleExportDialog,
       handleUpdateItemsPerPage,
       handleUpdatePage,
       handleEdit,
