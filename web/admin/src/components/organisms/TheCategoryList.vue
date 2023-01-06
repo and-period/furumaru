@@ -28,9 +28,7 @@
         </v-card-title>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="accentDarken" text @click="deleteCancel">
-            キャンセル
-          </v-btn>
+          <v-btn color="error" text @click="deleteCancel"> キャンセル </v-btn>
           <v-btn color="primary" outlined @click="handleDelete"> 削除 </v-btn>
         </v-card-actions>
       </v-card>
@@ -50,9 +48,7 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="accentDarken" text @click="editCancel">
-            キャンセル
-          </v-btn>
+          <v-btn color="error" text @click="editCancel"> キャンセル </v-btn>
           <v-btn color="primary" outlined @click="handleEdit"> 編集 </v-btn>
         </v-card-actions>
       </v-card>

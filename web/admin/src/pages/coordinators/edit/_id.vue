@@ -81,9 +81,7 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="accentDarken" text @click="cancel">
-                キャンセル
-              </v-btn>
+              <v-btn color="error" text @click="cancel"> キャンセル </v-btn>
               <v-btn color="primary" outlined @click="relateProducers">
                 登録
               </v-btn>

@@ -16,7 +16,7 @@
         </v-card-title>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="accentDarken" text @click="hideDeleteDialog">
+          <v-btn color="error" text @click="hideDeleteDialog">
             キャンセル
           </v-btn>
           <v-btn color="primary" outlined @click="handleDelete"> 削除 </v-btn>
@@ -190,7 +190,7 @@ export default defineComponent({
       if (status) {
         return 'primary'
       } else {
-        return 'accentDarken'
+        return 'error'
       }
     }
 

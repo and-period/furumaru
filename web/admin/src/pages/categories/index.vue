@@ -39,7 +39,7 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="accentDarken" text @click="categoryCancel">
+              <v-btn color="error" text @click="categoryCancel">
                 キャンセル
               </v-btn>
               <v-btn color="primary" outlined @click="categoryRegister">
@@ -129,7 +129,7 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="accentDarken" text @click="productTypeCancel">
+              <v-btn color="error" text @click="productTypeCancel">
                 キャンセル
               </v-btn>
               <v-btn color="primary" outlined @click="productTypeRegister">

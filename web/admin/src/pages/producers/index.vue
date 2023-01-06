@@ -21,7 +21,7 @@
         </v-card-title>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="accentDarken" text @click="handleClickCancelButton">
+          <v-btn color="error" text @click="handleClickCancelButton">
             キャンセル
           </v-btn>
           <v-btn color="primary" outlined @click="handleDeleteFormSubmit">
