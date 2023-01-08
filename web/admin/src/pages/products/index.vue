@@ -31,10 +31,15 @@
           @update:items-per-page="handleUpdateItemsPerPage"
           @update:page="handleUpdatePage"
         >
+          <template #[`item.media`]="{ item }">
+            <v-avatar tile>
+              <v-img contain :src="item.media.find((m) => m.isThumbnail).url" />
+            </v-avatar>
+          </template>
           <template #[`item.public`]="{ item }">
-            <v-chip :color="item.public ? 'primary' : 'warning'">{{
-              item.public ? '公開' : '非公開'
-            }}</v-chip>
+            <v-chip :color="item.public ? 'primary' : 'warning'">
+              {{ item.public ? '公開' : '非公開' }}
+            </v-chip>
           </template>
         </v-data-table>
       </v-card-text>
@@ -95,6 +100,10 @@ export default defineComponent({
     }
 
     const headers: DataTableHeader[] = [
+      {
+        text: '',
+        value: 'media',
+      },
       {
         text: '商品名',
         value: 'name',
