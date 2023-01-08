@@ -22,17 +22,21 @@
     <v-card :loading="fetchState.pending">
       <v-card-text>
         <v-data-table
-          v-model="selectedProducts"
           :headers="headers"
           :items="products"
-          show-select
           no-data-text="登録されている商品がありません。"
           :items-per-page.sync="itemsPerPage"
           :server-items-length="totalItems"
           :footer-props="options"
           @update:items-per-page="handleUpdateItemsPerPage"
           @update:page="handleUpdatePage"
-        />
+        >
+          <template #[`item.public`]="{ item }">
+            <v-chip :color="item.public ? 'primary' : 'warning'">{{
+              item.public ? '公開' : '非公開'
+            }}</v-chip>
+          </template>
+        </v-data-table>
       </v-card-text>
     </v-card>
   </div>
@@ -47,24 +51,10 @@ import {
   computed,
   watch,
 } from '@nuxtjs/composition-api'
+import { DataTableHeader } from 'vuetify'
 
 import { usePagination } from '~/lib/hooks/'
 import { useProductStore } from '~/store/product'
-
-interface IProduct {
-  id: string
-  name: string
-  description: string
-  public: 0 | 1
-  type: string
-  price: number
-}
-
-interface DataTableHeader {
-  text: string
-  value: string
-  sortable?: boolean
-}
 
 export default defineComponent({
   setup() {
@@ -106,15 +96,11 @@ export default defineComponent({
 
     const headers: DataTableHeader[] = [
       {
-        text: 'id',
-        value: 'id',
-      },
-      {
         text: '商品名',
         value: 'name',
       },
       {
-        text: '公開',
+        text: 'ステータス',
         value: 'public',
       },
       {
@@ -125,9 +111,23 @@ export default defineComponent({
         text: '価格',
         value: 'price',
       },
+      {
+        text: '在庫',
+        value: 'inventory',
+      },
+      {
+        text: 'ジャンル',
+        value: 'categoryName',
+      },
+      {
+        text: '品目',
+        value: 'productTypeName',
+      },
+      {
+        text: '農園名',
+        value: 'storeName',
+      },
     ]
-
-    const selectedProducts = ref<IProduct[]>([])
 
     return {
       fetchState,
@@ -140,7 +140,6 @@ export default defineComponent({
       handleUpdateItemsPerPage,
       handleUpdatePage,
       options,
-      selectedProducts,
     }
   },
 })
