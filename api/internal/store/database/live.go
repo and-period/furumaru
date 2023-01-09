@@ -103,7 +103,7 @@ func (l *live) get(ctx context.Context, tx *gorm.DB, liveID string, fields ...st
 		return nil, err
 	}
 	err = l.db.Statement(ctx, tx, liveProductTable).
-		Where("live_id IN (?)", liveID).
+		Where("live_id = ?", liveID).
 		Find(&liveProducts).Error
 	if err != nil {
 		return nil, err
