@@ -25,6 +25,11 @@ func NewSchedule(db *database.Client) Schedule {
 	}
 }
 
+func (s *schedule) Get(ctx context.Context, scheduleID string, fields ...string) (*entity.Schedule, error) {
+	schedule, err := s.get(ctx, s.db.DB, scheduleID, fields...)
+	return schedule, exception.InternalError(err)
+}
+
 func (s *schedule) Create(
 	ctx context.Context, schedule *entity.Schedule, lives entity.Lives, products entity.LiveProducts,
 ) error {
@@ -51,4 +56,17 @@ func (s *schedule) Create(
 		return err
 	})
 	return exception.InternalError(err)
+}
+
+func (s *schedule) get(ctx context.Context, tx *gorm.DB, scheduleID string, fields ...string) (*entity.Schedule, error) {
+	var schedule *entity.Schedule
+
+	err := s.db.Statement(ctx, tx, scheduleTable, fields...).
+		Where("id = ?", scheduleID).
+		First(&schedule).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return schedule, nil
 }
