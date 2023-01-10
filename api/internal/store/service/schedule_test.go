@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
@@ -14,6 +15,72 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+func TestGetSchedule(t *testing.T) {
+	t.Parallel()
+
+	now := time.Date(2022, time.January, 3, 18, 30, 0, 0, time.UTC)
+	schedule := &entity.Schedule{
+		ID:            "schedule-id",
+		CoordinatorID: "coordinator-id",
+		ShippingID:    "shipping-id",
+		Title:         "タイトル",
+		Description:   "説明",
+		ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
+		StartAt:       now,
+		EndAt:         now,
+		Canceled:      false,
+		CreatedAt:     now,
+		UpdatedAt:     now,
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.GetScheduleInput
+		expect    *entity.Schedule
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().Get(ctx, "schedule-id").Return(schedule, nil)
+			},
+			input: &store.GetScheduleInput{
+				ScheduleID: "schedule-id",
+			},
+			expect:    schedule,
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &store.GetScheduleInput{},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get schedule",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().Get(ctx, "schedule-id").Return(nil, assert.AnError)
+			},
+			input: &store.GetScheduleInput{
+				ScheduleID: "schedule-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.GetSchedule(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
 
 func TestCreateSchedule(t *testing.T) {
 	t.Parallel()

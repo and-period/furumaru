@@ -12,6 +12,14 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+func (s *service) GetSchedule(ctx context.Context, in *store.GetScheduleInput) (*entity.Schedule, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	schedule, err := s.db.Schedule.Get(ctx, in.ScheduleID)
+	return schedule, exception.InternalError(err)
+}
+
 func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleInput) (*entity.Schedule, entity.Lives, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, nil, exception.InternalError(err)
