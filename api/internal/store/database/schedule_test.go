@@ -16,6 +16,71 @@ func TestSchedule(t *testing.T) {
 	assert.NotNil(t, NewSchedule(nil))
 }
 
+func TestSchedule_Get(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := time.Date(2022, time.January, 2, 18, 30, 0, 0, time.UTC)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, shippingTable, scheduleTable)
+	shipping := testShipping("shipping-id", now())
+	err = m.db.DB.Create(&shipping).Error
+	require.NoError(t, err)
+	s := testSchedule("schedule-id", now())
+	err = m.db.DB.Create(&s).Error
+	require.NoError(t, err)
+
+	type args struct {
+		scheduleID string
+	}
+	type want struct {
+		schedule *entity.Schedule
+		hasErr   bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				scheduleID: "schedule-id",
+			},
+			want: want{
+				schedule: s,
+				hasErr:   false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &schedule{db: m.db, now: now}
+			actual, err := db.Get(ctx, tt.args.scheduleID)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.schedule, actual)
+		})
+	}
+}
+
 func TestSchedule_Create(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -132,6 +197,8 @@ func fillIgnoreScheduleField(s *entity.Schedule, now time.Time) {
 	if s == nil {
 		return
 	}
+	s.StartAt = now
+	s.EndAt = now
 	s.CreatedAt = now
 	s.UpdatedAt = now
 }
