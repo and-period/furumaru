@@ -30,6 +30,7 @@
           :footer-props="options"
           @update:items-per-page="handleUpdateItemsPerPage"
           @update:page="handleUpdatePage"
+          @click:row="handleRowClick"
         >
           <template #[`item.media`]="{ item }">
             <v-avatar tile>
@@ -95,6 +96,10 @@ export default defineComponent({
 
     const searchWord = ref<string>('')
 
+    const handleRowClick = (_, { item }) => {
+      router.push(`/products/${item.id}`)
+    }
+
     const handleClickAddBtn = () => {
       router.push('/products/add')
     }
@@ -148,6 +153,7 @@ export default defineComponent({
       itemsPerPage,
       handleUpdateItemsPerPage,
       handleUpdatePage,
+      handleRowClick,
       options,
     }
   },
