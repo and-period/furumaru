@@ -89,7 +89,7 @@ const config: NuxtConfig = {
   },
 
   router: {
-    middleware: 'auth',
+    middleware: ['auth', 'notification'],
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify

@@ -65,9 +65,11 @@
         </nuxt-link>
       </v-toolbar-title>
       <v-spacer />
-      <v-btn icon>
-        <v-icon>mdi-bell</v-icon>
-      </v-btn>
+      <v-badge :value="hasUnread" color="info" dot overlap>
+        <v-btn icon>
+          <v-icon>mdi-bell</v-icon>
+        </v-btn>
+      </v-badge>
     </v-app-bar>
 
     <v-snackbar
@@ -101,6 +103,7 @@
 import { computed, defineComponent, ref } from '@vue/composition-api'
 
 import { useCommonStore } from '~/store/common'
+import { useMessageStore } from '~/store/message'
 
 interface NavigationDrawerItem {
   to: string
@@ -113,10 +116,12 @@ export default defineComponent({
     const drawer = ref<boolean>(true)
 
     const commonStore = useCommonStore()
+    const messageStore = useMessageStore()
 
     const snackbars = computed(() => {
       return commonStore.snackbars.filter((item) => item.isOpen)
     })
+    const hasUnread = computed<boolean>(() => messageStore.hasUnread)
 
     const navigationDrawerHomeItem: NavigationDrawerItem = {
       to: '/',
@@ -201,6 +206,7 @@ export default defineComponent({
       navigationDrawerList,
       navigationDrawerSettingsList,
       handleClickNavIcon,
+      hasUnread,
       snackbars,
       commonStore,
       calcStyle,

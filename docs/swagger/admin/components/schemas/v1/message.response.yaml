@@ -74,7 +74,7 @@ messagesResponse:
             type: string
             description: 遷移先リンク
           read:
-            type: string
+            type: boolean
             description: 既読フラグ
           receivedAt:
             type: integer
