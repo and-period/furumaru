@@ -149,9 +149,9 @@ func (p *ListCategoriesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	for i := range p.Orders {
 		var value string
 		if p.Orders[i].OrderByASC {
-			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
+			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
 		} else {
-			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
+			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
 		}
 		stmt = stmt.Order(value)
 	}
@@ -193,9 +193,9 @@ func (p *ListOrdersParams) stmt(stmt *gorm.DB) *gorm.DB {
 	for i := range p.Orders {
 		var value string
 		if p.Orders[i].OrderByASC {
-			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
+			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
 		} else {
-			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
+			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
 		}
 		stmt = stmt.Order(value)
 	}
@@ -229,9 +229,9 @@ func (p *ListProductsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	for i := range p.Orders {
 		var value string
 		if p.Orders[i].OrderByASC {
-			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
+			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
 		} else {
-			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
+			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
 		}
 		stmt = stmt.Order(value)
 	}
@@ -283,9 +283,9 @@ func (p *ListProductTypesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	for i := range p.Orders {
 		var value string
 		if p.Orders[i].OrderByASC {
-			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
+			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
 		} else {
-			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
+			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
 		}
 		stmt = stmt.Order(value)
 	}
@@ -307,9 +307,9 @@ func (p *ListPromotionsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	for i := range p.Orders {
 		var value string
 		if p.Orders[i].OrderByASC {
-			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
+			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
 		} else {
-			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
+			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
 		}
 		stmt = stmt.Order(value)
 	}
@@ -344,9 +344,9 @@ func (p *ListShippingsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	for i := range p.Orders {
 		var value string
 		if p.Orders[i].OrderByASC {
-			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
+			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
 		} else {
-			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
+			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
 		}
 		stmt = stmt.Order(value)
 	}
