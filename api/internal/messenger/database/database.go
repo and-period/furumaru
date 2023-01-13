@@ -112,9 +112,9 @@ func (p *ListContactsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	for i := range p.Orders {
 		var value string
 		if p.Orders[i].OrderByASC {
-			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
+			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
 		} else {
-			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
+			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
 		}
 		stmt = stmt.Order(value)
 	}
@@ -150,9 +150,9 @@ func (p *ListMessagesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	for i := range p.Orders {
 		var value string
 		if p.Orders[i].OrderByASC {
-			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
+			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
 		} else {
-			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
+			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
 		}
 		stmt = stmt.Order(value)
 	}
@@ -186,9 +186,9 @@ func (p *ListNotificationsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	for i := range p.Orders {
 		var value string
 		if p.Orders[i].OrderByASC {
-			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
+			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
 		} else {
-			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
+			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
 		}
 		stmt = stmt.Order(value)
 	}
