@@ -285,6 +285,10 @@ type DeletePromotionInput struct {
 	PromotionID string `validate:"required"`
 }
 
+type GetScheduleInput struct {
+	ScheduleID string `validate:"required"`
+}
+
 type CreateScheduleInput struct {
 	CoordinatorID string                `validate:"required"`
 	ShippingID    string                `validate:"required"`

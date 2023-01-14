@@ -119,6 +119,7 @@ type Shipping interface {
 
 type Schedule interface {
 	Create(ctx context.Context, schedule *entity.Schedule, lives entity.Lives, products entity.LiveProducts) error
+	Get(ctx context.Context, scheduleID string, fields ...string) (*entity.Schedule, error)
 }
 
 type Live interface {

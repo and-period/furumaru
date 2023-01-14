@@ -302,6 +302,21 @@ func (mr *MockServiceMockRecorder) GetPromotion(ctx, in interface{}) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPromotion", reflect.TypeOf((*MockService)(nil).GetPromotion), ctx, in)
 }
 
+// GetSchedule mocks base method.
+func (m *MockService) GetSchedule(ctx context.Context, in *store.GetScheduleInput) (*entity.Schedule, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetSchedule", ctx, in)
+	ret0, _ := ret[0].(*entity.Schedule)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetSchedule indicates an expected call of GetSchedule.
+func (mr *MockServiceMockRecorder) GetSchedule(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSchedule", reflect.TypeOf((*MockService)(nil).GetSchedule), ctx, in)
+}
+
 // GetShipping mocks base method.
 func (m *MockService) GetShipping(ctx context.Context, in *store.GetShippingInput) (*entity.Shipping, error) {
 	m.ctrl.T.Helper()

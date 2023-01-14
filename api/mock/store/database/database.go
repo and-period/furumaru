@@ -947,6 +947,26 @@ func (mr *MockScheduleMockRecorder) Create(ctx, schedule, lives, products interf
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockSchedule)(nil).Create), ctx, schedule, lives, products)
 }
 
+// Get mocks base method.
+func (m *MockSchedule) Get(ctx context.Context, scheduleID string, fields ...string) (*entity.Schedule, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, scheduleID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.Schedule)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockScheduleMockRecorder) Get(ctx, scheduleID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, scheduleID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockSchedule)(nil).Get), varargs...)
+}
+
 // MockLive is a mock of Live interface.
 type MockLive struct {
 	ctrl     *gomock.Controller
