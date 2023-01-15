@@ -3,7 +3,7 @@ module github.com/and-period/furumaru/api
 go 1.19
 
 require (
-	firebase.google.com/go/v4 v4.9.0
+	firebase.google.com/go/v4 v4.10.0
 	github.com/aws/aws-lambda-go v1.36.0
 	github.com/aws/aws-sdk-go-v2 v1.17.3
 	github.com/aws/aws-sdk-go-v2/config v1.18.7
@@ -13,8 +13,8 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.17.9
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.29.6
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.16.5
-	github.com/aws/aws-sdk-go-v2/service/sqs v1.19.16
-	github.com/casbin/casbin/v2 v2.57.0
+	github.com/aws/aws-sdk-go-v2/service/sqs v1.20.0
+	github.com/casbin/casbin/v2 v2.60.0
 	github.com/gin-contrib/gzip v0.0.6
 	github.com/gin-contrib/zap v0.1.0
 	github.com/gin-gonic/gin v1.8.2
@@ -29,11 +29,11 @@ require (
 	github.com/line/line-bot-sdk-go/v7 v7.18.0
 	github.com/newrelic/go-agent/v3 v3.18.2
 	github.com/newrelic/go-agent/v3/integrations/nrgin v1.1.3
-	github.com/prometheus/client_golang v1.13.0
+	github.com/prometheus/client_golang v1.14.0
 	github.com/rafaelhl/gorm-newrelic-telemetry-plugin v1.0.0
 	github.com/rs/cors v1.8.3
 	github.com/rs/cors/wrapper/gin v0.0.0-20220619195839-da52b0701de5
-	github.com/samber/lo v1.36.0
+	github.com/samber/lo v1.37.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/sendgrid/sendgrid-go v3.12.0+incompatible
 	github.com/shopspring/decimal v1.3.1
@@ -52,6 +52,11 @@ require (
 	gorm.io/driver/mysql v1.3.6
 	gorm.io/gorm v1.24.2
 	moul.io/zapgorm2 v1.1.3
+)
+
+require (
+	github.com/MicahParks/keyfunc v1.5.1 // indirect
+	github.com/golang-jwt/jwt/v4 v4.4.2 // indirect
 )
 
 require (
@@ -104,7 +109,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/prometheus/client_model v0.2.0 // indirect
+	github.com/prometheus/client_model v0.3.0 // indirect
 	github.com/prometheus/common v0.37.0 // indirect
 	github.com/prometheus/procfs v0.8.0 // indirect
 	github.com/rogpeppe/go-internal v1.8.1 // indirect
