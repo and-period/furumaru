@@ -65,11 +65,11 @@
         </nuxt-link>
       </v-toolbar-title>
       <v-spacer />
-      <v-badge :value="hasUnread" color="info" dot overlap>
-        <v-btn icon>
+      <v-btn icon>
+        <v-badge :value="hasUnread" color="info" dot overlap>
           <v-icon>mdi-bell</v-icon>
-        </v-btn>
-      </v-badge>
+        </v-badge>
+      </v-btn>
     </v-app-bar>
 
     <v-snackbar
