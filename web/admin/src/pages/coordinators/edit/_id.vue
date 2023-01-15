@@ -91,7 +91,50 @@
           </v-card>
         </v-dialog>
 
-        <v-data-table no-data-text="関連生産者はいません。"> </v-data-table>
+        <v-data-table
+          :headers="headers"
+          :items="relationProducers"
+          :items-per-page="5"
+          no-data-text="関連生産者はいません。"
+        >
+          <template #[`item.thumbnail`]="{ item }">
+            <v-avatar>
+              <img
+                v-if="item.thumbnailUrl !== ''"
+                :src="item.thumbnailUrl"
+                :alt="`${item.storeName}-profile`"
+              />
+              <v-icon v-else>mdi-account</v-icon>
+            </v-avatar>
+          </template>
+          <template #[`item.name`]="{ item }">
+            {{ `${item.lastname} ${item.firstname}` }}
+          </template>
+          <template #[`item.phoneNumber`]="{ item }">
+            {{ `${item.phoneNumber}`.replace('+81', '0') }}
+          </template>
+          <template #[`item.actions`]="{ item }">
+            <v-btn outlined color="primary" small @click="handleEdit(item)">
+              <v-icon small>mdi-pencil</v-icon>
+              編集
+            </v-btn>
+            <v-btn
+              outlined
+              color="primary"
+              small
+              @click="handleClickDeleteButton(item)"
+            >
+              <v-icon small>mdi-delete</v-icon>
+              削除
+            </v-btn>
+          </template>
+          <template #[`item.video`]="{ item }">
+            <v-btn outlined color="primary" small @click="handleAddVideo(item)">
+              <v-icon small>mdi-plus</v-icon>
+              追加
+            </v-btn>
+          </template>
+        </v-data-table>
       </v-tab-item>
     </v-tabs-items>
   </div>
@@ -108,6 +151,7 @@ import {
   useRouter,
 } from '@nuxtjs/composition-api'
 import { useVuelidate } from '@vuelidate/core'
+import { DataTableHeader } from 'vuetify'
 
 import TheCoordinatorEditForm from '~/components/organisms/TheCoordinatorEditForm.vue'
 import { useSearchAddress } from '~/lib/hooks'
@@ -283,6 +327,7 @@ export default defineComponent({
     const relateProducers = async (): Promise<void> => {
       producerData.producerIds = producers.value
       try {
+        console.log(relationProducers)
         await coordinatorStore.relateProducers(id, producerData)
         dialog.value = false
       } catch (error) {
@@ -298,9 +343,52 @@ export default defineComponent({
       dialog.value = false
     }
 
+    const relationProducers = computed(() => {
+      return producerStore.producers
+    })
+
+    const headers: DataTableHeader[] = [
+      {
+        text: 'サムネイル',
+        value: 'thumbnail',
+      },
+      {
+        text: '農園名',
+        value: 'storeName',
+      },
+      {
+        text: '生産者名',
+        value: 'name',
+      },
+      {
+        text: 'Email',
+        value: 'email',
+      },
+      {
+        text: '電話番号',
+        value: 'phoneNumber',
+      },
+      {
+        text: 'Actions',
+        value: 'actions',
+        sortable: false,
+      },
+      {
+        text: '動画',
+        value: 'video',
+        sortable: false,
+      },
+    ]
+
+    const handleEdit = async () => {}
+
+    const handleDeleteFormSubmit = async () => {}
+
+    const handleAddVideo = () => {}
+
     useFetch(async () => {
       try {
-        await producerStore.fetchProducers(20, 0, 'unrelated')
+        await producerStore.fetchProducers(20, 0, 'kokomuzui')
       } catch (err) {
         console.log(err)
       }
@@ -328,6 +416,11 @@ export default defineComponent({
       relateProducers,
       dialog,
       cancel,
+      relationProducers,
+      headers,
+      handleEdit,
+      handleDeleteFormSubmit,
+      handleAddVideo,
     }
   },
 })
