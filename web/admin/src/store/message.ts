@@ -5,6 +5,7 @@ import { useAuthStore } from './auth'
 import ApiClientFactory from '~/plugins/factory'
 import {
   MessageApi,
+  MessageResponse,
   MessagesResponse,
   MessagesResponseMessagesInner,
 } from '~/types/api'
@@ -18,6 +19,7 @@ export const useMessageStore = defineStore('message', {
     }
     return {
       apiClient,
+      message: {} as MessageResponse,
       messages: [] as Array<MessagesResponseMessagesInner>,
       total: 0,
       hasUnread: false,
@@ -52,6 +54,28 @@ export const useMessageStore = defineStore('message', {
         this.messages = messages
         this.total = total
         this.hasUnread = messages.some((message): boolean => !message.read)
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * メッセージの一覧を取得する非同期関数
+     * @param limit 最大取得件数
+     * @param offset 取得開始位置
+     * @param orders ソートキー
+     * @returns
+     */
+    async fetchMessage(messageId = ''): Promise<void> {
+      try {
+        const accessToken = this.getAccessToken()
+        const res = await this.apiClient(accessToken).v1GetMessage(messageId)
+        const message = res.data || {}
+
+        this.message = message
+        this.messages.forEach((v: MessagesResponseMessagesInner, i: number) => {
+          if (v.id === message.id) this.messages[i].read = true
+        })
       } catch (err) {
         return this.errorHandler(err)
       }

@@ -66,7 +66,7 @@
       </v-toolbar-title>
       <v-spacer />
       <v-badge :value="hasUnread" color="info" dot overlap>
-        <v-btn icon>
+        <v-btn icon @click="handleClickMessage">
           <v-icon>mdi-bell</v-icon>
         </v-btn>
       </v-badge>
@@ -100,6 +100,7 @@
 </template>
 
 <script lang="ts">
+import { useRouter } from '@nuxtjs/composition-api'
 import { computed, defineComponent, ref } from '@vue/composition-api'
 
 import { useCommonStore } from '~/store/common'
@@ -114,6 +115,7 @@ interface NavigationDrawerItem {
 export default defineComponent({
   setup() {
     const drawer = ref<boolean>(true)
+    const router = useRouter()
 
     const commonStore = useCommonStore()
     const messageStore = useMessageStore()
@@ -193,6 +195,9 @@ export default defineComponent({
     const handleClickNavIcon = () => {
       drawer.value = !drawer.value
     }
+    const handleClickMessage = () => {
+      router.push('/messages')
+    }
 
     const calcStyle = (i: number) => {
       if (i > 0) {
@@ -206,6 +211,7 @@ export default defineComponent({
       navigationDrawerList,
       navigationDrawerSettingsList,
       handleClickNavIcon,
+      handleClickMessage,
       hasUnread,
       snackbars,
       commonStore,
