@@ -23,48 +23,11 @@ func (s *service) GetLive(ctx context.Context, in *store.GetLiveInput) (*entity.
 	if err != nil {
 		return nil, exception.InternalError(err)
 	}
-
-	var (
-		channel   *types.Channel
-		stream    *types.Stream
-		streamKey *types.StreamKey
-	)
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() (err error) {
-		in := &ivs.GetChannelParams{
-			Arn: live.ChannelArn,
-		}
-		channel, err = s.ivs.GetChannel(ectx, in)
-		return
-	})
-	eg.Go(func() (err error) {
-		in := &ivs.GetStreamParams{
-			ChannelArn: live.ChannelArn,
-		}
-		stream, err = s.ivs.GetStream(ectx, in)
-		return
-	})
-	eg.Go(func() (err error) {
-		in := &ivs.GetStreamKeyParams{
-			StreamKeyArn: live.StreamKeyArn,
-		}
-		streamKey, err = s.ivs.GetStreamKey(ectx, in)
-		return
-	})
-	if err := eg.Wait(); err != nil {
+	err = s.getIVSDetails(ctx, live)
+	if err != nil {
 		return nil, exception.InternalError(err)
 	}
-
-	fillIvsParams := &entity.FillLiveIvsParams{
-		ChannelName:    aws.ToString(channel.Name),
-		IngestEndpoint: aws.ToString(channel.IngestEndpoint),
-		StreamKey:      aws.ToString(streamKey.Value),
-		PlaybackURL:    aws.ToString(channel.PlaybackUrl),
-		StreamID:       aws.ToString(stream.StreamId),
-		ViewerCount:    aws.ToInt64(&stream.ViewerCount),
-	}
-	live.FillIVS(*fillIvsParams)
-	return live, nil
+	return live, exception.InternalError(err)
 }
 
 func (s *service) UpdateLivePublic(ctx context.Context, in *store.UpdateLivePublicInput) error {
@@ -98,4 +61,47 @@ func (s *service) UpdateLivePublic(ctx context.Context, in *store.UpdateLivePubl
 		s.logger.Error("Failed to update Public", zap.String("liveId", in.LiveID), zap.Any("ivs", cout))
 	}
 	return exception.InternalError(err)
+}
+
+func (s *service) getIVSDetails(ctx context.Context, live *entity.Live) (err error) {
+	var (
+		channel   *types.Channel
+		stream    *types.Stream
+		streamKey *types.StreamKey
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		in := &ivs.GetChannelParams{
+			Arn: live.ChannelArn,
+		}
+		channel, err = s.ivs.GetChannel(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		in := &ivs.GetStreamParams{
+			ChannelArn: live.ChannelArn,
+		}
+		stream, err = s.ivs.GetStream(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		in := &ivs.GetStreamKeyParams{
+			StreamKeyArn: live.StreamKeyArn,
+		}
+		streamKey, err = s.ivs.GetStreamKey(ectx, in)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		return exception.InternalError(err)
+	}
+	fillIvsParams := &entity.FillLiveIvsParams{
+		ChannelName:    aws.ToString(channel.Name),
+		IngestEndpoint: aws.ToString(channel.IngestEndpoint),
+		StreamKey:      aws.ToString(streamKey.Value),
+		PlaybackURL:    aws.ToString(channel.PlaybackUrl),
+		StreamID:       aws.ToString(stream.StreamId),
+		ViewerCount:    aws.ToInt64(&stream.ViewerCount),
+	}
+	live.FillIVS(*fillIvsParams)
+	return nil
 }
