@@ -123,6 +123,7 @@ type Schedule interface {
 }
 
 type Live interface {
+	MultiGet(ctx context.Context, liveIDs []string, fields ...string) (entity.Lives, error)
 	Get(ctx context.Context, liveID string, fields ...string) (*entity.Live, error)
 	Update(ctx context.Context, liveID string, params *UpdateLiveParams) error
 	UpdatePublic(ctx context.Context, liveID string, params *UpdateLivePublicParams) error

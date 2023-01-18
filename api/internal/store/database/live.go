@@ -25,6 +25,16 @@ func NewLive(db *database.Client) Live {
 	}
 }
 
+func (l *live) MultiGet(
+	ctx context.Context, liveIDs []string, fields ...string,
+) (entity.Lives, error) {
+	lives, err := l.multiGet(ctx, l.db.DB, liveIDs, fields...)
+	if err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return lives, nil
+}
+
 func (l *live) Get(ctx context.Context, liveID string, fields ...string) (*entity.Live, error) {
 	live, err := l.get(ctx, l.db.DB, liveID, fields...)
 	return live, exception.InternalError(err)
@@ -88,6 +98,30 @@ func (l *live) UpdatePublic(ctx context.Context, liveID string, params *UpdateLi
 		return err
 	})
 	return exception.InternalError(err)
+}
+
+func (l *live) multiGet(
+	ctx context.Context, tx *gorm.DB, liveIDs []string, fields ...string,
+) (entity.Lives, error) {
+	var (
+		lives        entity.Lives
+		liveProducts entity.LiveProducts
+	)
+	err := l.db.Statement(ctx, tx, liveTable, fields...).
+		Where("id IN (?)", liveIDs).
+		Find(&lives).Error
+	if err != nil {
+		return nil, err
+	}
+	err = l.db.Statement(ctx, tx, liveProductTable).
+		Where("live_id IN (?)", liveIDs).
+		Find(&liveProducts).Error
+	if err != nil {
+		return nil, err
+	}
+	lpmap := liveProducts.GroupByLiveID()
+	lives.Fill(lpmap, jst.Now())
+	return lives, nil
 }
 
 func (l *live) get(ctx context.Context, tx *gorm.DB, liveID string, fields ...string) (*entity.Live, error) {

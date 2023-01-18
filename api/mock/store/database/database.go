@@ -1010,6 +1010,26 @@ func (mr *MockLiveMockRecorder) Get(ctx, liveID interface{}, fields ...interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockLive)(nil).Get), varargs...)
 }
 
+// MultiGet mocks base method.
+func (m *MockLive) MultiGet(ctx context.Context, liveIDs []string, fields ...string) (entity.Lives, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, liveIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGet", varargs...)
+	ret0, _ := ret[0].(entity.Lives)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGet indicates an expected call of MultiGet.
+func (mr *MockLiveMockRecorder) MultiGet(ctx, liveIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, liveIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockLive)(nil).MultiGet), varargs...)
+}
+
 // Update mocks base method.
 func (m *MockLive) Update(ctx context.Context, liveID string, params *database.UpdateLiveParams) error {
 	m.ctrl.T.Helper()
