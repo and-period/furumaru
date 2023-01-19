@@ -313,6 +313,10 @@ type GetLiveInput struct {
 	LiveID string `validate:"required"`
 }
 
+type MultiGetLivesInput struct {
+	LiveIDs []string `validate:"dive,required"`
+}
+
 type UpdateLiveInput struct {
 	LiveProducts entity.LiveProducts `validate:"required"`
 	LiveID       string              `validate:"required"`
