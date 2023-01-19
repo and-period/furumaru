@@ -32,7 +32,17 @@ func (l *live) MultiGet(
 	if err != nil {
 		return nil, exception.InternalError(err)
 	}
-	return lives, nil
+	return lives, exception.InternalError(err)
+}
+
+func (l *live) MultiGetByScheduleID(
+	ctx context.Context, scheduleID string, fields ...string,
+) (entity.Lives, error) {
+	lives, err := l.multigetByScheduleID(ctx, l.db.DB, scheduleID, fields...)
+	if err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return lives, exception.InternalError(err)
 }
 
 func (l *live) Get(ctx context.Context, liveID string, fields ...string) (*entity.Live, error) {
@@ -115,6 +125,31 @@ func (l *live) multiGet(
 	}
 	err = l.db.Statement(ctx, tx, liveProductTable).
 		Where("live_id IN (?)", liveIDs).
+		Find(&liveProducts).Error
+	if err != nil {
+		return nil, err
+	}
+	lpmap := liveProducts.GroupByLiveID()
+	lives.Fill(lpmap, jst.Now())
+	return lives, nil
+}
+
+func (l *live) multigetByScheduleID(
+	ctx context.Context, tx *gorm.DB, scheduleID string, fields ...string,
+) (entity.Lives, error) {
+	var (
+		lives        entity.Lives
+		liveProducts entity.LiveProducts
+	)
+
+	err := l.db.Statement(ctx, tx, liveTable, fields...).
+		Where("schedule_id = ?", scheduleID).
+		Find(&lives).Error
+	if err != nil {
+		return nil, err
+	}
+	err = l.db.Statement(ctx, tx, liveProductTable).
+		Where("live_id IN (?)", lives.IDs()).
 		Find(&liveProducts).Error
 	if err != nil {
 		return nil, err
