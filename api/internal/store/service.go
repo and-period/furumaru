@@ -79,6 +79,8 @@ type Service interface {
 	GetLive(ctx context.Context, in *GetLiveInput) (*entity.Live, error)
 	// 配信一覧取得(ID指定)
 	MultiGetLives(ctx context.Context, in *MultiGetLivesInput) (entity.Lives, error)
+	// 配信一覧取得(開催スケジュールID指定)
+	MultiGetLivesByScheduleID(ctx context.Context, in *MultiGetLivesByScheduleIDInput) (entity.Lives, error)
 	// 配信公開更新
 	UpdateLivePublic(ctx context.Context, in *UpdateLivePublicInput) error
 	// 注文履歴一覧取得
