@@ -50,6 +50,21 @@ func (s *service) ListLivesByScheduleID(ctx context.Context, in *store.ListLives
 	return lives, exception.InternalError(err)
 }
 
+func (s *service) MultiGetLivesByScheduleID(ctx context.Context, in *store.MultiGetLivesByScheduleIDInput) (entity.Lives, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, exception.InternalError(err)
+	}
+
+	lives, err := s.db.Live.MultiGetByScheduleID(ctx, in.ScheduleID)
+	if err != nil {
+		return nil, exception.InternalError(err)
+	}
+	for i := range lives {
+		s.getIVSDetails(ctx, lives[i])
+	}
+	return lives, exception.InternalError(err)
+}
+
 func (s *service) GetLive(ctx context.Context, in *store.GetLiveInput) (*entity.Live, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
