@@ -488,6 +488,21 @@ func (mr *MockServiceMockRecorder) MultiGetLives(ctx, in interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetLives", reflect.TypeOf((*MockService)(nil).MultiGetLives), ctx, in)
 }
 
+// MultiGetLivesByScheduleID mocks base method.
+func (m *MockService) MultiGetLivesByScheduleID(ctx context.Context, in *store.MultiGetLivesByScheduleIDInput) (entity.Lives, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MultiGetLivesByScheduleID", ctx, in)
+	ret0, _ := ret[0].(entity.Lives)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGetLivesByScheduleID indicates an expected call of MultiGetLivesByScheduleID.
+func (mr *MockServiceMockRecorder) MultiGetLivesByScheduleID(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetLivesByScheduleID", reflect.TypeOf((*MockService)(nil).MultiGetLivesByScheduleID), ctx, in)
+}
+
 // MultiGetProductTypes mocks base method.
 func (m *MockService) MultiGetProductTypes(ctx context.Context, in *store.MultiGetProductTypesInput) (entity.ProductTypes, error) {
 	m.ctrl.T.Helper()
