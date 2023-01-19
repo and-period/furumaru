@@ -225,6 +225,101 @@ func TestLive_ListByScheduleID(t *testing.T) {
 		})
 	}
 }
+func TestLive_MultiGetByScheduleID(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	m, err := newMocks(ctrl)
+	require.NoError(t, err)
+	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	now := func() time.Time {
+		return current
+	}
+
+	_ = m.dbDelete(ctx, liveProductTable, liveTable, scheduleTable, productTable, productTypeTable, categoryTable, shippingTable)
+	category := testCategory("category-id", "野菜", now())
+	err = m.db.DB.Create(&category).Error
+	require.NoError(t, err)
+	productType := testProductType("type-id", "category-id", "野菜", now())
+	err = m.db.DB.Create(&productType).Error
+	require.NoError(t, err)
+	products := make(entity.Products, 2)
+	products[0] = testProduct("product-id01", "type-id", "category-id", "producer-id", now())
+	products[1] = testProduct("product-id02", "type-id", "category-id", "producer-id", now())
+	err = m.db.DB.Create(&products).Error
+	require.NoError(t, err)
+	shipping := testShipping("shipping-id", now())
+	err = m.db.DB.Create(&shipping).Error
+	require.NoError(t, err)
+	productIDs := []string{"product-id01", "product-id02"}
+	schedule := testSchedule("schedule-id", now())
+	err = m.db.DB.Create(&schedule).Error
+	require.NoError(t, err)
+	lives := make(entity.Lives, 3)
+	lives[0] = testLive("live-id01", "schedule-id", "producer-id", productIDs, now())
+	lives[1] = testLive("live-id02", "schedule-id", "producer-id", productIDs, now())
+	lives[2] = testLive("live-id03", "schedule-id", "producer-id", productIDs, now())
+	err = m.db.DB.Create(&lives).Error
+	require.NoError(t, err)
+	liveProducts := make(entity.LiveProducts, 6)
+	liveProducts[0] = testLiveProduct("live-id01", "product-id01", now())
+	liveProducts[1] = testLiveProduct("live-id01", "product-id02", now())
+	liveProducts[2] = testLiveProduct("live-id02", "product-id01", now())
+	liveProducts[3] = testLiveProduct("live-id02", "product-id02", now())
+	liveProducts[4] = testLiveProduct("live-id03", "product-id01", now())
+	liveProducts[5] = testLiveProduct("live-id03", "product-id02", now())
+	err = m.db.DB.Create(&liveProducts).Error
+	require.NoError(t, err)
+
+	type args struct {
+		scheduleID string
+	}
+	type want struct {
+		lives  entity.Lives
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, m *mocks)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			args: args{
+				scheduleID: "schedule-id",
+			},
+			want: want{
+				lives:  lives[:3],
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, m)
+
+			db := &live{db: m.db, now: now}
+			actual, err := db.MultiGetByScheduleID(ctx, tt.args.scheduleID)
+			if tt.want.hasErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			fillIgnoreLivesField(actual, now())
+			assert.ElementsMatch(t, tt.want.lives, actual)
+		})
+	}
+}
 
 func TestLive_Get(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
