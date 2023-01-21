@@ -109,8 +109,11 @@ func (p *promotion) get(
 ) (*entity.Promotion, error) {
 	var promotion *entity.Promotion
 
-	err := p.db.Statement(ctx, tx, promotionTable, fields...).
-		Where("id = ?", promotionID).
-		First(&promotion).Error
-	return promotion, err
+	stmt := p.db.Statement(ctx, tx, promotionTable, fields...).
+		Where("id = ?", promotionID)
+
+	if err := stmt.First(&promotion).Error; err != nil {
+		return nil, err
+	}
+	return promotion, nil
 }

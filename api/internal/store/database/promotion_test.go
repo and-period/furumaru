@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -22,19 +22,19 @@ func TestPromotion_List(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, promotionTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	promotions := make(entity.Promotions, 3)
 	promotions[0] = testPromotion("promotion-id01", "code0001", now())
 	promotions[1] = testPromotion("promotion-id02", "code0002", now())
 	promotions[2] = testPromotion("promotion-id03", "code0003", now())
-	err = m.db.DB.Create(&promotions).Error
+	err = db.DB.Create(&promotions).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -46,13 +46,13 @@ func TestPromotion_List(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListPromotionsParams{
 					Limit:  2,
@@ -66,7 +66,7 @@ func TestPromotion_List(t *testing.T) {
 		},
 		{
 			name:  "success with sort",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListPromotionsParams{
 					Orders: []*ListPromotionsOrder{
@@ -90,16 +90,11 @@ func TestPromotion_List(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &promotion{db: m.db, now: now}
+			db := &promotion{db: db, now: now}
 			actual, err := db.List(ctx, tt.args.params)
-			if tt.want.hasErr {
-				assert.Error(t, err)
-				return
-			}
-			assert.NoError(t, err)
-			fillIgnorePromotionsField(actual, now())
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.promotions, actual)
 		})
 	}
@@ -111,19 +106,19 @@ func TestPromotion_Count(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, promotionTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	promotions := make(entity.Promotions, 3)
 	promotions[0] = testPromotion("promotion-id01", "code0001", now())
 	promotions[1] = testPromotion("promotion-id02", "code0002", now())
 	promotions[2] = testPromotion("promotion-id03", "code0003", now())
-	err = m.db.DB.Create(&promotions).Error
+	err = db.DB.Create(&promotions).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -135,13 +130,13 @@ func TestPromotion_Count(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListPromotionsParams{
 					Limit:  2,
@@ -163,9 +158,9 @@ func TestPromotion_Count(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &promotion{db: m.db, now: now}
+			db := &promotion{db: db, now: now}
 			actual, err := db.Count(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.total, actual)
@@ -179,16 +174,16 @@ func TestPromotion_Get(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, promotionTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	p := testPromotion("promotion-id", "code0001", now())
-	err = m.db.DB.Create(&p).Error
+	err = db.DB.Create(&p).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -200,13 +195,13 @@ func TestPromotion_Get(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				promotionID: "promotion-id",
 			},
@@ -217,7 +212,7 @@ func TestPromotion_Get(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				promotionID: "other-id",
 			},
@@ -236,16 +231,11 @@ func TestPromotion_Get(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &promotion{db: m.db, now: now}
+			db := &promotion{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.promotionID)
-			if tt.want.hasErr {
-				assert.Error(t, err)
-				return
-			}
-			assert.NoError(t, err)
-			fillIgnorePromotionField(actual, now())
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.promotion, actual)
 		})
 	}
@@ -257,14 +247,13 @@ func TestPromotion_Create(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, promotionTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
 
 	type args struct {
 		promotion *entity.Promotion
@@ -274,13 +263,13 @@ func TestPromotion_Create(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				promotion: testPromotion("promotion-id", "code0001", now()),
 			},
@@ -290,9 +279,9 @@ func TestPromotion_Create(t *testing.T) {
 		},
 		{
 			name: "duplicate entry",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				promotion := testPromotion("promotion-id", "code0001", now())
-				err = m.db.DB.Create(&promotion).Error
+				err = db.DB.Create(&promotion).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -310,11 +299,12 @@ func TestPromotion_Create(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, promotionTable)
+			err := delete(ctx, promotionTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &promotion{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &promotion{db: db, now: now}
 			err = db.Create(ctx, tt.args.promotion)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -327,14 +317,13 @@ func TestPromotion_Update(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, promotionTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
 
 	type args struct {
 		promotionID string
@@ -345,15 +334,15 @@ func TestPromotion_Update(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				promotion := testPromotion("promotion-id", "code0001", now())
-				err := m.db.DB.Create(&promotion).Error
+				err := db.DB.Create(&promotion).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -377,7 +366,7 @@ func TestPromotion_Update(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				promotionID: "promotion-id",
 				params:      &UpdatePromotionParams{},
@@ -388,11 +377,11 @@ func TestPromotion_Update(t *testing.T) {
 		},
 		{
 			name: "code is unique",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				promotion := testPromotion("promotion-id", "code0001", now())
-				err := m.db.DB.Create(&promotion).Error
+				err := db.DB.Create(&promotion).Error
 				promotion = testPromotion("other-id", "code0002", now())
-				err = m.db.DB.Create(&promotion).Error
+				err = db.DB.Create(&promotion).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -411,11 +400,12 @@ func TestPromotion_Update(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, promotionTable)
+			err := delete(ctx, promotionTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &promotion{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &promotion{db: db, now: now}
 			err = db.Update(ctx, tt.args.promotionID, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -428,14 +418,13 @@ func TestPromotion_Delete(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, promotionTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
 
 	type args struct {
 		promotionID string
@@ -445,15 +434,15 @@ func TestPromotion_Delete(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				promotion := testPromotion("promotion-id", "code0001", now())
-				err := m.db.DB.Create(&promotion).Error
+				err := db.DB.Create(&promotion).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -465,7 +454,7 @@ func TestPromotion_Delete(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				promotionID: "promotion-id",
 			},
@@ -481,11 +470,12 @@ func TestPromotion_Delete(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, promotionTable)
+			err := delete(ctx, promotionTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &promotion{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &promotion{db: db, now: now}
 			err = db.Delete(ctx, tt.args.promotionID)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -507,22 +497,5 @@ func testPromotion(id, code string, now time.Time) *entity.Promotion {
 		EndAt:        now.AddDate(0, 1, 0),
 		CreatedAt:    now,
 		UpdatedAt:    now,
-	}
-}
-
-func fillIgnorePromotionField(p *entity.Promotion, now time.Time) {
-	if p == nil {
-		return
-	}
-	p.PublishedAt = now
-	p.StartAt = now
-	p.EndAt = now.AddDate(0, 1, 0)
-	p.CreatedAt = now
-	p.UpdatedAt = now
-}
-
-func fillIgnorePromotionsField(ps entity.Promotions, now time.Time) {
-	for i := range ps {
-		fillIgnorePromotionField(ps[i], now)
 	}
 }

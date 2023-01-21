@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -50,39 +50,39 @@ func TestLive_Get(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, liveProductTable, liveTable, scheduleTable, productTable, productTypeTable, categoryTable, shippingTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	category := testCategory("category-id", "野菜", now())
-	err = m.db.DB.Create(&category).Error
+	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
 	productType := testProductType("type-id", "category-id", "野菜", now())
-	err = m.db.DB.Create(&productType).Error
+	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
 	products[0] = testProduct("product-id01", "type-id", "category-id", "producer-id", now())
 	products[1] = testProduct("product-id02", "type-id", "category-id", "producer-id", now())
-	err = m.db.DB.Create(&products).Error
+	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	shipping := testShipping("shipping-id", now())
-	err = m.db.DB.Create(&shipping).Error
+	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
 	productIDs := []string{"product-id01", "product-id02"}
 	schedule := testSchedule("schedule-id", now())
-	err = m.db.DB.Create(&schedule).Error
+	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 	l := testLive("live-id", "schedule-id", "producer-id", productIDs, now())
-	err = m.db.DB.Create(&l).Error
+	err = db.DB.Create(&l).Error
 	require.NoError(t, err)
 	liveProducts := make(entity.LiveProducts, 2)
 	liveProducts[0] = testLiveProduct("live-id", "product-id01", now())
 	liveProducts[1] = testLiveProduct("live-id", "product-id02", now())
-	err = m.db.DB.Create(&liveProducts).Error
+	err = db.DB.Create(&liveProducts).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -94,13 +94,13 @@ func TestLive_Get(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				liveID: "live-id",
 			},
@@ -119,12 +119,11 @@ func TestLive_Get(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &live{db: m.db, now: now}
+			db := &live{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.liveID)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
-			fillIgnoreLiveField(actual, now())
 			assert.Equal(t, tt.want.live, actual)
 		})
 	}
@@ -136,24 +135,30 @@ func TestLive_Update(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, liveTable, liveProductTable, productTable, productTypeTable, categoryTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	category := testCategory("category-id", "野菜", now())
-	err = m.db.DB.Create(&category).Error
+	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
 	productType := testProductType("type-id", "category-id", "野菜", now())
-	err = m.db.DB.Create(&productType).Error
+	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
 	products[0] = testProduct("product-id01", "type-id", "category-id", "producer-id", now())
 	products[1] = testProduct("product-id02", "type-id", "category-id", "producer-id", now())
-	err = m.db.DB.Create(&products).Error
+	err = db.DB.Create(&products).Error
+	require.NoError(t, err)
+	shipping := testShipping("shipping-id", now())
+	err = db.DB.Create(&shipping).Error
+	require.NoError(t, err)
+	schedule := testSchedule("schedule-id", now())
+	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -165,15 +170,15 @@ func TestLive_Update(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				live := testLive("live-id", "schedule-id", "producer-id", []string{"product-id01", "product-id02"}, now())
-				err = m.db.DB.Create(&live).Error
+				err = db.DB.Create(&live).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -201,7 +206,7 @@ func TestLive_Update(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				liveID: "live-id",
 				params: &UpdateLiveParams{},
@@ -218,11 +223,12 @@ func TestLive_Update(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, liveTable)
+			err := delete(ctx, liveTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &live{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &live{db: db, now: now}
 			err = db.Update(ctx, tt.args.liveID, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -235,24 +241,30 @@ func TestLive_UpdateLivePublic(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, liveTable, liveProductTable, productTable, productTypeTable, categoryTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	category := testCategory("category-id", "野菜", now())
-	err = m.db.DB.Create(&category).Error
+	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
 	productType := testProductType("type-id", "category-id", "野菜", now())
-	err = m.db.DB.Create(&productType).Error
+	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
 	products[0] = testProduct("product-id01", "type-id", "category-id", "producer-id", now())
 	products[1] = testProduct("product-id02", "type-id", "category-id", "producer-id", now())
-	err = m.db.DB.Create(&products).Error
+	err = db.DB.Create(&products).Error
+	require.NoError(t, err)
+	shipping := testShipping("shipping-id", now())
+	err = db.DB.Create(&shipping).Error
+	require.NoError(t, err)
+	schedule := testSchedule("schedule-id", now())
+	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -264,15 +276,15 @@ func TestLive_UpdateLivePublic(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				live := testLive("live-id", "schedule-id", "producer-id", []string{"product-id01", "product-id02"}, now())
-				err = m.db.DB.Create(&live).Error
+				err = db.DB.Create(&live).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -290,7 +302,7 @@ func TestLive_UpdateLivePublic(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				liveID: "live-id",
 				params: &UpdateLivePublicParams{},
@@ -307,33 +319,14 @@ func TestLive_UpdateLivePublic(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, liveTable)
+			err := delete(ctx, liveTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &live{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &live{db: db, now: now}
 			err = db.UpdatePublic(ctx, tt.args.liveID, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
-	}
-}
-
-func fillIgnoreLiveField(l *entity.Live, now time.Time) {
-	if l == nil {
-		return
-	}
-	l.StartAt = now
-	l.EndAt = now
-	l.CreatedAt = now
-	l.UpdatedAt = now
-	for i := range l.LiveProducts {
-		l.LiveProducts[i].CreatedAt = now
-		l.LiveProducts[i].UpdatedAt = now
-	}
-}
-
-func fillIgnoreLivesField(ls entity.Lives, now time.Time) {
-	for i := range ls {
-		fillIgnoreLiveField(ls[i], now)
 	}
 }

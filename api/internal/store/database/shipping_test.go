@@ -7,7 +7,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -24,19 +24,19 @@ func TestShipping_List(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, shippingTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	shippings := make(entity.Shippings, 3)
 	shippings[0] = testShipping("shipping-id01", now())
 	shippings[1] = testShipping("shipping-id02", now())
 	shippings[2] = testShipping("shipping-id03", now())
-	err = m.db.DB.Create(&shippings).Error
+	err = db.DB.Create(&shippings).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -48,13 +48,13 @@ func TestShipping_List(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListShippingsParams{
 					Limit:  20,
@@ -68,7 +68,7 @@ func TestShipping_List(t *testing.T) {
 		},
 		{
 			name:  "success with sort",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListShippingsParams{
 					Orders: []*ListShippingsOrder{
@@ -92,9 +92,9 @@ func TestShipping_List(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &shipping{db: m.db, now: now}
+			db := &shipping{db: db, now: now}
 			actual, err := db.List(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			fillIgnoreShippingsField(actual, now())
@@ -109,19 +109,19 @@ func TestShipping_Count(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, shippingTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	shippings := make(entity.Shippings, 3)
 	shippings[0] = testShipping("shipping-id01", now())
 	shippings[1] = testShipping("shipping-id02", now())
 	shippings[2] = testShipping("shipping-id03", now())
-	err = m.db.DB.Create(&shippings).Error
+	err = db.DB.Create(&shippings).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -133,13 +133,13 @@ func TestShipping_Count(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListShippingsParams{
 					Limit:  20,
@@ -161,9 +161,9 @@ func TestShipping_Count(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &shipping{db: m.db, now: now}
+			db := &shipping{db: db, now: now}
 			actual, err := db.Count(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.total, actual)
@@ -177,18 +177,18 @@ func TestShipping_MultiGet(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, shippingTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	shippings := make(entity.Shippings, 2)
 	shippings[0] = testShipping("shipping-id01", now())
 	shippings[1] = testShipping("shipping-id02", now())
-	err = m.db.DB.Create(&shippings).Error
+	err = db.DB.Create(&shippings).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -200,13 +200,13 @@ func TestShipping_MultiGet(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				shippingIDs: []string{"shipping-id01", "shipping-id02", "shipping-id03"},
 			},
@@ -225,9 +225,9 @@ func TestShipping_MultiGet(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &shipping{db: m.db, now: now}
+			db := &shipping{db: db, now: now}
 			actual, err := db.MultiGet(ctx, tt.args.shippingIDs)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			fillIgnoreShippingsField(actual, now())
@@ -242,16 +242,16 @@ func TestShipping_Get(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, shippingTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	s := testShipping("shipping-id", now())
-	err = m.db.DB.Create(&s).Error
+	err = db.DB.Create(&s).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -263,13 +263,13 @@ func TestShipping_Get(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				shippingID: "shipping-id",
 			},
@@ -280,7 +280,7 @@ func TestShipping_Get(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				shippingID: "other-id",
 			},
@@ -299,9 +299,9 @@ func TestShipping_Get(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &shipping{db: m.db, now: now}
+			db := &shipping{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.shippingID)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			fillIgnoreShippingField(actual, now())
@@ -316,14 +316,14 @@ func TestShipping_Create(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, shippingTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	s := testShipping("shipping-id", now())
 
 	type args struct {
@@ -334,13 +334,13 @@ func TestShipping_Create(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				shipping: s,
 			},
@@ -350,8 +350,8 @@ func TestShipping_Create(t *testing.T) {
 		},
 		{
 			name: "failed to duplicate key",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				err := m.db.DB.Create(&s).Error
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+				err := db.DB.Create(&s).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -369,11 +369,11 @@ func TestShipping_Create(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, shippingTable)
+			err := delete(ctx, shippingTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &shipping{db: m.db, now: now}
+			db := &shipping{db: db, now: now}
 			err = db.Create(ctx, tt.args.shipping)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -386,14 +386,14 @@ func TestShipping_Update(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, shippingTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	s := testShipping("shipping-id", now())
 
 	type args struct {
@@ -405,14 +405,14 @@ func TestShipping_Update(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				err := m.db.DB.Create(&s).Error
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+				err := db.DB.Create(&s).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -438,7 +438,7 @@ func TestShipping_Update(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				shippingID: "shipping-id",
 				params:     &UpdateShippingParams{},
@@ -455,11 +455,12 @@ func TestShipping_Update(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, shippingTable)
+			err := delete(ctx, shippingTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &shipping{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &shipping{db: db, now: now}
 			err = db.Update(ctx, tt.args.shippingID, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -472,14 +473,14 @@ func TestShipping_Delete(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, shippingTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	s := testShipping("shipping-id", now())
 
 	type args struct {
@@ -490,14 +491,14 @@ func TestShipping_Delete(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				err := m.db.DB.Create(&s).Error
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+				err := db.DB.Create(&s).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -509,7 +510,7 @@ func TestShipping_Delete(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				shippingID: "shipping-id",
 			},
@@ -525,11 +526,12 @@ func TestShipping_Delete(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, shippingTable)
+			err := delete(ctx, shippingTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &shipping{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &shipping{db: db, now: now}
 			err = db.Delete(ctx, tt.args.shippingID)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -581,8 +583,6 @@ func fillIgnoreShippingField(s *entity.Shipping, now time.Time) {
 		return
 	}
 	_ = s.FillJSON()
-	s.CreatedAt = now
-	s.UpdatedAt = now
 }
 
 func fillIgnoreShippingsField(ss entity.Shippings, now time.Time) {

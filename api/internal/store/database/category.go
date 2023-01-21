@@ -112,8 +112,11 @@ func (c *category) get(
 ) (*entity.Category, error) {
 	var category *entity.Category
 
-	err := c.db.Statement(ctx, tx, categoryTable, fields...).
-		Where("id = ?", categoryID).
-		First(&category).Error
-	return category, err
+	stmt := c.db.Statement(ctx, tx, categoryTable, fields...).
+		Where("id = ?", categoryID)
+
+	if err := stmt.First(&category).Error; err != nil {
+		return nil, err
+	}
+	return category, nil
 }
