@@ -50,37 +50,37 @@ func TestLive_MultiGet(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, liveProductTable, liveTable, scheduleTable, productTable, productTypeTable, categoryTable, shippingTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	category := testCategory("category-id", "野菜", now())
-	err = m.db.DB.Create(&category).Error
+	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
 	productType := testProductType("type-id", "category-id", "野菜", now())
-	err = m.db.DB.Create(&productType).Error
+	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
 	products[0] = testProduct("product-id01", "type-id", "category-id", "producer-id", now())
 	products[1] = testProduct("product-id02", "type-id", "category-id", "producer-id", now())
-	err = m.db.DB.Create(&products).Error
+	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	shipping := testShipping("shipping-id", now())
-	err = m.db.DB.Create(&shipping).Error
+	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
 	productIDs := []string{"product-id01", "product-id02"}
 	schedule := testSchedule("schedule-id", now())
-	err = m.db.DB.Create(&schedule).Error
+	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 	lives := make(entity.Lives, 3)
 	lives[0] = testLive("live-id01", "schedule-id", "producer-id", productIDs, now())
 	lives[1] = testLive("live-id02", "schedule-id", "producer-id", productIDs, now())
 	lives[2] = testLive("live-id03", "schedule-id", "producer-id", productIDs, now())
-	err = m.db.DB.Create(&lives).Error
+	err = db.DB.Create(&lives).Error
 	require.NoError(t, err)
 	liveProducts := make(entity.LiveProducts, 6)
 	liveProducts[0] = testLiveProduct("live-id01", "product-id01", now())
@@ -89,7 +89,7 @@ func TestLive_MultiGet(t *testing.T) {
 	liveProducts[3] = testLiveProduct("live-id02", "product-id02", now())
 	liveProducts[4] = testLiveProduct("live-id03", "product-id01", now())
 	liveProducts[5] = testLiveProduct("live-id03", "product-id02", now())
-	err = m.db.DB.Create(&liveProducts).Error
+	err = db.DB.Create(&liveProducts).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -101,13 +101,13 @@ func TestLive_MultiGet(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				liveIDs: []string{"live-id01", "live-id02", "live-id03"},
 			},
@@ -125,16 +125,11 @@ func TestLive_MultiGet(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &live{db: m.db, now: now}
+			db := &live{db: db, now: now}
 			actual, err := db.MultiGet(ctx, tt.args.liveIDs)
-			if tt.want.hasErr {
-				assert.Error(t, err)
-				return
-			}
-			assert.NoError(t, err)
-			fillIgnoreLivesField(actual, now())
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.ElementsMatch(t, tt.want.lives, actual)
 		})
 	}
@@ -145,37 +140,37 @@ func TestLive_ListByScheduleID(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, liveProductTable, liveTable, scheduleTable, productTable, productTypeTable, categoryTable, shippingTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	category := testCategory("category-id", "野菜", now())
-	err = m.db.DB.Create(&category).Error
+	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
 	productType := testProductType("type-id", "category-id", "野菜", now())
-	err = m.db.DB.Create(&productType).Error
+	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
 	products[0] = testProduct("product-id01", "type-id", "category-id", "producer-id", now())
 	products[1] = testProduct("product-id02", "type-id", "category-id", "producer-id", now())
-	err = m.db.DB.Create(&products).Error
+	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	shipping := testShipping("shipping-id", now())
-	err = m.db.DB.Create(&shipping).Error
+	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
 	productIDs := []string{"product-id01", "product-id02"}
 	schedule := testSchedule("schedule-id", now())
-	err = m.db.DB.Create(&schedule).Error
+	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 	lives := make(entity.Lives, 3)
 	lives[0] = testLive("live-id01", "schedule-id", "producer-id", productIDs, now())
 	lives[1] = testLive("live-id02", "schedule-id", "producer-id", productIDs, now())
 	lives[2] = testLive("live-id03", "schedule-id", "producer-id", productIDs, now())
-	err = m.db.DB.Create(&lives).Error
+	err = db.DB.Create(&lives).Error
 	require.NoError(t, err)
 	liveProducts := make(entity.LiveProducts, 6)
 	liveProducts[0] = testLiveProduct("live-id01", "product-id01", now())
@@ -184,7 +179,7 @@ func TestLive_ListByScheduleID(t *testing.T) {
 	liveProducts[3] = testLiveProduct("live-id02", "product-id02", now())
 	liveProducts[4] = testLiveProduct("live-id03", "product-id01", now())
 	liveProducts[5] = testLiveProduct("live-id03", "product-id02", now())
-	err = m.db.DB.Create(&liveProducts).Error
+	err = db.DB.Create(&liveProducts).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -196,13 +191,13 @@ func TestLive_ListByScheduleID(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				scheduleID: "schedule-id",
 			},
@@ -220,16 +215,11 @@ func TestLive_ListByScheduleID(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &live{db: m.db, now: now}
+			db := &live{db: db, now: now}
 			actual, err := db.ListByScheduleID(ctx, tt.args.scheduleID)
-			if tt.want.hasErr {
-				assert.Error(t, err)
-				return
-			}
-			assert.NoError(t, err)
-			fillIgnoreLivesField(actual, now())
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.ElementsMatch(t, tt.want.lives, actual)
 		})
 	}
