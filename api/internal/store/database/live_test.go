@@ -134,6 +134,7 @@ func TestLive_MultiGet(t *testing.T) {
 		})
 	}
 }
+
 func TestLive_ListByScheduleID(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
