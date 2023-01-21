@@ -296,13 +296,87 @@ func TestGetSchedule(t *testing.T) {
 			},
 		},
 		{
+			name: "failed to get lives",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().GetSchedule(gomock.Any(), scheduleIn).Return(schedule, nil)
+				mocks.store.EXPECT().ListLivesByScheduleID(gomock.Any(), livesIn).Return(nil, assert.AnError)
+			},
+			scheduleID: "schedule-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
 			name: "failed to get producer",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().GetSchedule(gomock.Any(), scheduleIn).Return(schedule, nil)
+				mocks.store.EXPECT().ListLivesByScheduleID(gomock.Any(), livesIn).Return(lives, nil)
+				mocks.store.EXPECT().GetShipping(gomock.Any(), shippingIn).Return(shipping, nil)
 				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
 				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(productTypes, nil)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
-				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(nil, assert.AnError)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(nil, assert.AnError).Times(2)
+			},
+			scheduleID: "schedule-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to get shipping",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().GetSchedule(gomock.Any(), scheduleIn).Return(schedule, nil)
+				mocks.store.EXPECT().ListLivesByScheduleID(gomock.Any(), livesIn).Return(lives, nil)
+				mocks.store.EXPECT().GetShipping(gomock.Any(), shippingIn).Return(nil, assert.AnError)
+				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
+				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(productTypes, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil).Times(2)
+			},
+			scheduleID: "schedule-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to get products",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().GetSchedule(gomock.Any(), scheduleIn).Return(schedule, nil)
+				mocks.store.EXPECT().ListLivesByScheduleID(gomock.Any(), livesIn).Return(lives, nil)
+				mocks.store.EXPECT().GetShipping(gomock.Any(), shippingIn).Return(shipping, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(nil, assert.AnError)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
+			},
+			scheduleID: "schedule-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to get category",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().GetSchedule(gomock.Any(), scheduleIn).Return(schedule, nil)
+				mocks.store.EXPECT().ListLivesByScheduleID(gomock.Any(), livesIn).Return(lives, nil)
+				mocks.store.EXPECT().GetShipping(gomock.Any(), shippingIn).Return(shipping, nil)
+				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(nil, assert.AnError)
+				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(productTypes, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil).Times(2)
+			},
+			scheduleID: "schedule-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to get product type",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().GetSchedule(gomock.Any(), scheduleIn).Return(schedule, nil)
+				mocks.store.EXPECT().ListLivesByScheduleID(gomock.Any(), livesIn).Return(lives, nil)
+				mocks.store.EXPECT().GetShipping(gomock.Any(), shippingIn).Return(shipping, nil)
+				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(nil, assert.AnError)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil).Times(2)
 			},
 			scheduleID: "schedule-id",
 			expect: &testResponse{
