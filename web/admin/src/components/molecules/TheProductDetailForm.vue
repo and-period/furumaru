@@ -20,6 +20,7 @@
       />
       <v-select
         v-model="originCityValue"
+        :items="filteredCityList"
         label="原産地（市町村）"
         messages="先に原産地を選択してください。"
       />
@@ -37,7 +38,7 @@
 <script lang="ts">
 import { computed, defineComponent } from '@vue/composition-api'
 
-import { prefecturesList } from '~/constants/prefectures'
+import { prefecturesList, cityList } from '~/constants'
 
 export default defineComponent({
   props: {
@@ -92,10 +93,27 @@ export default defineComponent({
       set: (val: string) => emit('update:originCity', val),
     })
 
+    const selectedPrefecture = computed(() => {
+      return prefecturesList.find(
+        (item) => item.text === props.originPrefecture
+      )
+    })
+
+    const filteredCityList = computed(() => {
+      if (selectedPrefecture.value) {
+        return cityList.filter(
+          (item) => item.prefId === selectedPrefecture.value?.id
+        )
+      } else {
+        return []
+      }
+    })
+
     return {
       // 定数
       prefecturesList,
       // リアクティブ変数
+      filteredCityList,
       producerIdValue,
       productTypeIdValue,
       originPrefectureValue,

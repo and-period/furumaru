@@ -59,7 +59,7 @@ export default defineComponent({
 
     const inventoryValue = computed({
       get: () => props.inventory,
-      set: (val: number) => emit('update:inventory', val),
+      set: (val: number) => emit('update:inventory', Number(val)),
     })
 
     const itemUnitValue = computed({

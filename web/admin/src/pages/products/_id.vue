@@ -15,7 +15,10 @@ import {
   useRoute,
 } from '@nuxtjs/composition-api'
 
+import { useCategoryStore } from '~/store/category'
+import { useProducerStore } from '~/store/producer'
 import { useProductStore } from '~/store/product'
+import { useProductTypeStore } from '~/store/product-type'
 import { UpdateProductRequest } from '~/types/api'
 
 export default defineComponent({
@@ -44,10 +47,19 @@ export default defineComponent({
     })
 
     const productStore = useProductStore()
+    const productTypeStore = useProductTypeStore()
+    const categoryStore = useCategoryStore()
+    const producerStore = useProducerStore()
 
     const { fetchState } = useFetch(async () => {
       try {
-        await productStore.getProduct(id)
+        Promise.all([
+          productTypeStore.fetchProductTypes(),
+          categoryStore.fetchCategories(),
+          producerStore.fetchProducers(20, 0, ''),
+        ])
+        const data = await productStore.getProduct(id)
+        Object.assign(formData, data)
       } catch (error) {
         console.log(error)
       }

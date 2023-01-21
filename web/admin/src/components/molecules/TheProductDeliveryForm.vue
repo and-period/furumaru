@@ -36,6 +36,7 @@
             min="0"
             max="100"
             label="占有率"
+            :error-messages="box60RateErrorMessage"
           >
             <template #append>%</template>
           </v-text-field>
@@ -53,6 +54,7 @@
             min="0"
             max="100"
             label="占有率"
+            :error-messages="box80RateErrorMessage"
           >
             <template #append>%</template>
           </v-text-field>
@@ -70,6 +72,7 @@
             min="0"
             max="100"
             label="占有率"
+            :error-messages="box100RateErrorMessage"
           >
             <template #append>%</template>
           </v-text-field>
@@ -100,13 +103,25 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
+    box60RateErrorMessage: {
+      type: String,
+      default: '',
+    },
     box80Rate: {
       type: Number,
       default: 0,
     },
+    box80RateErrorMessage: {
+      type: String,
+      default: '',
+    },
     box100Rate: {
       type: Number,
       default: 0,
+    },
+    box100RateErrorMessage: {
+      type: String,
+      default: '',
     },
   },
 
@@ -119,7 +134,7 @@ export default defineComponent({
 
     const weightValue = computed({
       get: () => props.weight,
-      set: (val: number) => emit('update:weight', val),
+      set: (val: number) => emit('update:weight', Number(val)),
     })
 
     const deliveryTypeValue = computed({
@@ -129,17 +144,17 @@ export default defineComponent({
 
     const box60RateValue = computed({
       get: () => props.box60Rate,
-      set: (val: number) => emit('update:box60Rate', val),
+      set: (val: number) => emit('update:box60Rate', Number(val)),
     })
 
     const box80RateValue = computed({
       get: () => props.box80Rate,
-      set: (val: number) => emit('update:box80Rate', val),
+      set: (val: number) => emit('update:box80Rate', Number(val)),
     })
 
     const box100RateValue = computed({
       get: () => props.box100Rate,
-      set: (val: number) => emit('update:box100Rate', val),
+      set: (val: number) => emit('update:box100Rate', Number(val)),
     })
 
     return {
