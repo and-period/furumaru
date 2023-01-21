@@ -8,7 +8,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/user/entity"
-	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -25,31 +25,31 @@ func TestProducer_List(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, producerTable, coordinatorTable, adminTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	coordinator := testCoordinator("coordinator-id", now())
 	coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-	err = m.db.DB.Create(&coordinator.Admin).Error
+	err = db.DB.Create(&coordinator.Admin).Error
 	require.NoError(t, err)
-	err = m.db.DB.Create(&coordinator).Error
+	err = db.DB.Create(&coordinator).Error
 	require.NoError(t, err)
 	admins := make(entity.Admins, 2)
 	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
-	err = m.db.DB.Create(&admins).Error
+	err = db.DB.Create(&admins).Error
 	producers := make(entity.Producers, 2)
 	require.NoError(t, err)
 	producers[0] = testProducer("admin-id01", "coordinator-id", "&.農園", now())
 	producers[0].Admin = *admins[0]
 	producers[1] = testProducer("admin-id02", "coordinator-id", "&.水産", now())
 	producers[1].Admin = *admins[1]
-	err = m.db.DB.Create(&producers).Error
+	err = db.DB.Create(&producers).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -61,13 +61,13 @@ func TestProducer_List(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListProducersParams{
 					CoordinatorID: "coordinator-id",
@@ -82,7 +82,7 @@ func TestProducer_List(t *testing.T) {
 		},
 		{
 			name:  "success only unrelated",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListProducersParams{
 					Limit:         1,
@@ -104,17 +104,12 @@ func TestProducer_List(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &producer{db: m.db, now: now}
+			db := &producer{db: db, now: now}
 			actual, err := db.List(ctx, tt.args.params)
-			if tt.want.hasErr {
-				assert.Error(t, err)
-				return
-			}
-			assert.NoError(t, err)
-			fillIgnoreProducersField(actual, now())
-			assert.ElementsMatch(t, tt.want.producers, actual)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.producers, actual)
 		})
 	}
 }
@@ -125,30 +120,30 @@ func TestProducer_Count(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, producerTable, coordinatorTable, adminTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	coordinator := testCoordinator("coordinator-id", now())
 	coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-	err = m.db.DB.Create(&coordinator.Admin).Error
+	err = db.DB.Create(&coordinator.Admin).Error
 	require.NoError(t, err)
-	err = m.db.DB.Create(&coordinator).Error
+	err = db.DB.Create(&coordinator).Error
 	require.NoError(t, err)
 	admins := make(entity.Admins, 2)
 	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
-	err = m.db.DB.Create(&admins).Error
+	err = db.DB.Create(&admins).Error
 	producers := make(entity.Producers, 2)
 	producers[0] = testProducer("admin-id01", "coordinator-id", "&.農園", now())
 	producers[0].Admin = *admins[0]
 	producers[1] = testProducer("admin-id02", "coordinator-id", "&.水産", now())
 	producers[1].Admin = *admins[1]
-	err = m.db.DB.Create(&producers).Error
+	err = db.DB.Create(&producers).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -160,13 +155,13 @@ func TestProducer_Count(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListProducersParams{},
 			},
@@ -184,9 +179,9 @@ func TestProducer_Count(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &producer{db: m.db, now: now}
+			db := &producer{db: db, now: now}
 			actual, err := db.Count(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.total, actual)
@@ -200,30 +195,30 @@ func TestProducer_MultiGet(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, producerTable, coordinatorTable, adminTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	coordinator := testCoordinator("coordinator-id", now())
 	coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-	err = m.db.DB.Create(&coordinator.Admin).Error
+	err = db.DB.Create(&coordinator.Admin).Error
 	require.NoError(t, err)
-	err = m.db.DB.Create(&coordinator).Error
+	err = db.DB.Create(&coordinator).Error
 	require.NoError(t, err)
 	admins := make(entity.Admins, 2)
 	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
-	err = m.db.DB.Create(&admins).Error
+	err = db.DB.Create(&admins).Error
 	producers := make(entity.Producers, 2)
 	producers[0] = testProducer("admin-id01", "coordinator-id", "&.農園", now())
 	producers[0].Admin = *admins[0]
 	producers[1] = testProducer("admin-id02", "coordinator-id", "&.水産", now())
 	producers[1].Admin = *admins[1]
-	err = m.db.DB.Create(&producers).Error
+	err = db.DB.Create(&producers).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -235,13 +230,13 @@ func TestProducer_MultiGet(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				producerIDs: []string{"admin-id01", "admin-id02"},
 			},
@@ -259,17 +254,12 @@ func TestProducer_MultiGet(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &producer{db: m.db, now: now}
+			db := &producer{db: db, now: now}
 			actual, err := db.MultiGet(ctx, tt.args.producerIDs)
-			if tt.want.hasErr {
-				assert.Error(t, err)
-				return
-			}
-			assert.NoError(t, err)
-			fillIgnoreProducersField(actual, now())
-			assert.ElementsMatch(t, tt.want.producers, actual)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.producers, actual)
 		})
 	}
 }
@@ -280,26 +270,26 @@ func TestProducer_Get(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, producerTable, coordinatorTable, adminTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	coordinator := testCoordinator("coordinator-id", now())
 	coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-	err = m.db.DB.Create(&coordinator.Admin).Error
+	err = db.DB.Create(&coordinator.Admin).Error
 	require.NoError(t, err)
-	err = m.db.DB.Create(&coordinator).Error
+	err = db.DB.Create(&coordinator).Error
 	require.NoError(t, err)
 	admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-	err = m.db.DB.Create(&admin).Error
+	err = db.DB.Create(&admin).Error
 	require.NoError(t, err)
 	p := testProducer("admin-id", "coordinator-id", "&.農園", now())
 	p.Admin = *admin
-	err = m.db.DB.Create(&p).Error
+	err = db.DB.Create(&p).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -311,13 +301,13 @@ func TestProducer_Get(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				producerID: "admin-id",
 			},
@@ -328,7 +318,7 @@ func TestProducer_Get(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				producerID: "",
 			},
@@ -346,31 +336,29 @@ func TestProducer_Get(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &producer{db: m.db, now: now}
+			db := &producer{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.producerID)
-			if tt.want.hasErr {
-				assert.Error(t, err)
-				return
-			}
-			assert.NoError(t, err)
-			fillIgnoreProducerField(actual, now())
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.producer, actual)
 		})
 	}
 }
 
 func TestProducer_Create(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
 
 	p := testProducer("admin-id", "coordinator-id", "&.農園", now())
 	p.Admin = *testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
@@ -384,18 +372,18 @@ func TestProducer_Create(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = m.db.DB.Create(&coordinator.Admin).Error
+				err = db.DB.Create(&coordinator.Admin).Error
 				require.NoError(t, err)
-				err = m.db.DB.Create(&coordinator).Error
+				err = db.DB.Create(&coordinator).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -408,7 +396,7 @@ func TestProducer_Create(t *testing.T) {
 		},
 		{
 			name:  "failed to not found coordinator",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				producer: p,
 				auth:     func(ctx context.Context) error { return nil },
@@ -419,18 +407,18 @@ func TestProducer_Create(t *testing.T) {
 		},
 		{
 			name: "failed to duplicate entry in admin auth",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = m.db.DB.Create(&coordinator.Admin).Error
+				err = db.DB.Create(&coordinator.Admin).Error
 				require.NoError(t, err)
-				err = m.db.DB.Create(&coordinator).Error
+				err = db.DB.Create(&coordinator).Error
 				require.NoError(t, err)
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = m.db.DB.Create(&admin).Error
+				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
 				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
-				err = m.db.DB.Create(&p).Error
+				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -443,12 +431,12 @@ func TestProducer_Create(t *testing.T) {
 		},
 		{
 			name: "failed to execute external service",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = m.db.DB.Create(&coordinator.Admin).Error
+				err = db.DB.Create(&coordinator.Admin).Error
 				require.NoError(t, err)
-				err = m.db.DB.Create(&coordinator).Error
+				err = db.DB.Create(&coordinator).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -467,11 +455,12 @@ func TestProducer_Create(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, producerTable, coordinatorTable, adminTable)
+			err := delete(ctx, producerTable, coordinatorTable, adminTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &producer{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &producer{db: db, now: now}
 			err = db.Create(ctx, tt.args.producer, tt.args.auth)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -479,15 +468,18 @@ func TestProducer_Create(t *testing.T) {
 }
 
 func TestProducer_Update(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
 
 	type args struct {
 		producerID string
@@ -498,24 +490,24 @@ func TestProducer_Update(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = m.db.DB.Create(&coordinator.Admin).Error
+				err = db.DB.Create(&coordinator.Admin).Error
 				require.NoError(t, err)
-				err = m.db.DB.Create(&coordinator).Error
+				err = db.DB.Create(&coordinator).Error
 				require.NoError(t, err)
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = m.db.DB.Create(&admin).Error
+				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
 				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
-				err = m.db.DB.Create(&p).Error
+				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -541,7 +533,7 @@ func TestProducer_Update(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				producerID: "admin-id",
 				params:     &UpdateProducerParams{},
@@ -558,11 +550,12 @@ func TestProducer_Update(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, producerTable, coordinatorTable, adminTable)
+			err := delete(ctx, producerTable, coordinatorTable, adminTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &producer{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &producer{db: db, now: now}
 			err = db.Update(ctx, tt.args.producerID, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -570,15 +563,18 @@ func TestProducer_Update(t *testing.T) {
 }
 
 func TestProducer_UpdateThumbnails(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
 
 	type args struct {
 		producerID string
@@ -589,24 +585,24 @@ func TestProducer_UpdateThumbnails(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = m.db.DB.Create(&coordinator.Admin).Error
+				err = db.DB.Create(&coordinator.Admin).Error
 				require.NoError(t, err)
-				err = m.db.DB.Create(&coordinator).Error
+				err = db.DB.Create(&coordinator).Error
 				require.NoError(t, err)
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = m.db.DB.Create(&admin).Error
+				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
 				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
-				err = m.db.DB.Create(&p).Error
+				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -632,7 +628,7 @@ func TestProducer_UpdateThumbnails(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				producerID: "admin-id",
 			},
@@ -642,19 +638,19 @@ func TestProducer_UpdateThumbnails(t *testing.T) {
 		},
 		{
 			name: "failed precondition for thumbnail url is empty",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = m.db.DB.Create(&coordinator.Admin).Error
+				err = db.DB.Create(&coordinator.Admin).Error
 				require.NoError(t, err)
-				err = m.db.DB.Create(&coordinator).Error
+				err = db.DB.Create(&coordinator).Error
 				require.NoError(t, err)
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = m.db.DB.Create(&admin).Error
+				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
 				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
 				p.ThumbnailURL = ""
-				err = m.db.DB.Create(&p).Error
+				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -686,11 +682,12 @@ func TestProducer_UpdateThumbnails(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, producerTable, adminTable)
+			err := delete(ctx, producerTable, adminTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &producer{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &producer{db: db, now: now}
 			err = db.UpdateThumbnails(ctx, tt.args.producerID, tt.args.thumbnails)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -698,15 +695,18 @@ func TestProducer_UpdateThumbnails(t *testing.T) {
 }
 
 func TestProducer_UpdateHeaders(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
 
 	type args struct {
 		ProducerID string
@@ -717,24 +717,24 @@ func TestProducer_UpdateHeaders(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = m.db.DB.Create(&coordinator.Admin).Error
+				err = db.DB.Create(&coordinator.Admin).Error
 				require.NoError(t, err)
-				err = m.db.DB.Create(&coordinator).Error
+				err = db.DB.Create(&coordinator).Error
 				require.NoError(t, err)
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = m.db.DB.Create(&admin).Error
+				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
 				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
-				err = m.db.DB.Create(&p).Error
+				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -760,7 +760,7 @@ func TestProducer_UpdateHeaders(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				ProducerID: "admin-id",
 			},
@@ -770,19 +770,19 @@ func TestProducer_UpdateHeaders(t *testing.T) {
 		},
 		{
 			name: "failed precondition for header url is empty",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = m.db.DB.Create(&coordinator.Admin).Error
+				err = db.DB.Create(&coordinator.Admin).Error
 				require.NoError(t, err)
-				err = m.db.DB.Create(&coordinator).Error
+				err = db.DB.Create(&coordinator).Error
 				require.NoError(t, err)
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = m.db.DB.Create(&admin).Error
+				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
 				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
 				p.HeaderURL = ""
-				err = m.db.DB.Create(&p).Error
+				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -814,11 +814,12 @@ func TestProducer_UpdateHeaders(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, producerTable, adminTable)
+			err := delete(ctx, producerTable, adminTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &producer{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &producer{db: db, now: now}
 			err = db.UpdateHeaders(ctx, tt.args.ProducerID, tt.args.headers)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -826,15 +827,18 @@ func TestProducer_UpdateHeaders(t *testing.T) {
 }
 
 func TestProducer_UpdateRelationship(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
 
 	type args struct {
 		coordinatorID string
@@ -845,24 +849,24 @@ func TestProducer_UpdateRelationship(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success to relate",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = m.db.DB.Create(&coordinator.Admin).Error
+				err = db.DB.Create(&coordinator.Admin).Error
 				require.NoError(t, err)
-				err = m.db.DB.Create(&coordinator).Error
+				err = db.DB.Create(&coordinator).Error
 				require.NoError(t, err)
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = m.db.DB.Create(&admin).Error
+				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
 				p := testProducer("admin-id", "", "&.農園", now())
-				err = m.db.DB.Create(&p).Error
+				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -875,18 +879,18 @@ func TestProducer_UpdateRelationship(t *testing.T) {
 		},
 		{
 			name: "success to unrelate",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = m.db.DB.Create(&coordinator.Admin).Error
+				err = db.DB.Create(&coordinator.Admin).Error
 				require.NoError(t, err)
-				err = m.db.DB.Create(&coordinator).Error
+				err = db.DB.Create(&coordinator).Error
 				require.NoError(t, err)
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = m.db.DB.Create(&admin).Error
+				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
 				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
-				err = m.db.DB.Create(&p).Error
+				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -905,11 +909,12 @@ func TestProducer_UpdateRelationship(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, producerTable, coordinatorTable, adminTable)
+			err := delete(ctx, producerTable, coordinatorTable, adminTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &producer{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &producer{db: db, now: now}
 			err = db.UpdateRelationship(ctx, tt.args.coordinatorID, tt.args.producerIDs...)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -917,15 +922,18 @@ func TestProducer_UpdateRelationship(t *testing.T) {
 }
 
 func TestProducer_Delete(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
 
 	type args struct {
 		producerID string
@@ -936,24 +944,24 @@ func TestProducer_Delete(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = m.db.DB.Create(&coordinator.Admin).Error
+				err = db.DB.Create(&coordinator.Admin).Error
 				require.NoError(t, err)
-				err = m.db.DB.Create(&coordinator).Error
+				err = db.DB.Create(&coordinator).Error
 				require.NoError(t, err)
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = m.db.DB.Create(&admin).Error
+				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
 				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
-				err = m.db.DB.Create(&p).Error
+				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -966,7 +974,7 @@ func TestProducer_Delete(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				producerID: "admin-id",
 				auth:       func(ctx context.Context) error { return nil },
@@ -977,18 +985,18 @@ func TestProducer_Delete(t *testing.T) {
 		},
 		{
 			name: "failed to execute external service",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = m.db.DB.Create(&coordinator.Admin).Error
+				err = db.DB.Create(&coordinator.Admin).Error
 				require.NoError(t, err)
-				err = m.db.DB.Create(&coordinator).Error
+				err = db.DB.Create(&coordinator).Error
 				require.NoError(t, err)
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = m.db.DB.Create(&admin).Error
+				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
 				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
-				err = m.db.DB.Create(&p).Error
+				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -1007,11 +1015,12 @@ func TestProducer_Delete(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, producerTable, coordinatorTable, adminTable)
+			err := delete(ctx, producerTable, coordinatorTable, adminTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &producer{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &producer{db: db, now: now}
 			err = db.Delete(ctx, tt.args.producerID, tt.args.auth)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -1045,21 +1054,4 @@ func fillProducerJSON(p *entity.Producer) {
 	headers, _ := json.Marshal(p.Headers)
 	p.ThumbnailsJSON = datatypes.JSON(thumbnails)
 	p.HeadersJSON = datatypes.JSON(headers)
-}
-
-func fillIgnoreProducerField(p *entity.Producer, now time.Time) {
-	if p == nil {
-		return
-	}
-	fillProducerJSON(p)
-	p.CreatedAt = now
-	p.UpdatedAt = now
-	p.Admin.CreatedAt = now
-	p.Admin.UpdatedAt = now
-}
-
-func fillIgnoreProducersField(ps entity.Producers, now time.Time) {
-	for i := range ps {
-		fillIgnoreProducerField(ps[i], now)
-	}
 }

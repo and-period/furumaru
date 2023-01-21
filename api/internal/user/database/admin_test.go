@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/user/entity"
-	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -22,41 +22,41 @@ func TestAdmin_MultiGet(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, adminTable)
-	s := make(entity.Admins, 2)
-	s[0] = testAdmin("admin-id01", "cognito-id01", "test-admin1@and-period.jp", now())
-	s[1] = testAdmin("admin-id02", "cognito-id02", "test-admin2@and-period.jp", now())
-	err = m.db.DB.Create(&s).Error
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	admins := make(entity.Admins, 2)
+	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin1@and-period.jp", now())
+	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin2@and-period.jp", now())
+	err = db.DB.Create(&admins).Error
 	require.NoError(t, err)
 
 	type args struct {
 		adminIDs []string
 	}
 	type want struct {
-		s      entity.Admins
+		admins entity.Admins
 		hasErr bool
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				adminIDs: []string{"admin-id01", "admin-id02"},
 			},
 			want: want{
-				s:      s,
+				admins: admins,
 				hasErr: false,
 			},
 		},
@@ -69,37 +69,32 @@ func TestAdmin_MultiGet(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &admin{db: m.db, now: now}
+			db := &admin{db: db, now: now}
 			actual, err := db.MultiGet(ctx, tt.args.adminIDs)
-			if tt.want.hasErr {
-				assert.Error(t, err)
-				return
-			}
-			assert.NoError(t, err)
-			fillIgnoreAdminsField(actual, now())
-			assert.Equal(t, tt.want.s, actual)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.admins, actual)
 		})
 	}
 }
 
-func TestAdmin_GetByAdminID(t *testing.T) {
+func TestAdmin_Get(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, adminTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	a := testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
-	err = m.db.DB.Create(&a).Error
+	err = db.DB.Create(&a).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -111,13 +106,13 @@ func TestAdmin_GetByAdminID(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				adminID: "admin-id",
 			},
@@ -128,7 +123,7 @@ func TestAdmin_GetByAdminID(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				adminID: "",
 			},
@@ -146,16 +141,11 @@ func TestAdmin_GetByAdminID(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &admin{db: m.db, now: now}
+			db := &admin{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.adminID)
-			if tt.want.hasErr {
-				assert.Error(t, err)
-				return
-			}
-			assert.NoError(t, err)
-			fillIgnoreAdminField(actual, now())
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.admin, actual)
 		})
 	}
@@ -167,16 +157,16 @@ func TestAdmin_GetByCognitoID(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, adminTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	a := testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
-	err = m.db.DB.Create(&a).Error
+	err = db.DB.Create(&a).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -188,13 +178,13 @@ func TestAdmin_GetByCognitoID(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				cognitoID: "cognito-id",
 			},
@@ -205,7 +195,7 @@ func TestAdmin_GetByCognitoID(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				cognitoID: "",
 			},
@@ -223,16 +213,11 @@ func TestAdmin_GetByCognitoID(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &admin{db: m.db, now: now}
+			db := &admin{db: db, now: now}
 			actual, err := db.GetByCognitoID(ctx, tt.args.cognitoID)
-			if tt.want.hasErr {
-				assert.Error(t, err)
-				return
-			}
-			assert.NoError(t, err)
-			fillIgnoreAdminField(actual, now())
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.admin, actual)
 		})
 	}
@@ -244,14 +229,13 @@ func TestAdmin_UpdateDevice(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, adminTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
 
 	type args struct {
 		adminID string
@@ -262,15 +246,15 @@ func TestAdmin_UpdateDevice(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				a := testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
-				err = m.db.DB.Create(&a).Error
+				err = db.DB.Create(&a).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -283,7 +267,7 @@ func TestAdmin_UpdateDevice(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				adminID: "admin-id",
 				device:  "device",
@@ -300,11 +284,12 @@ func TestAdmin_UpdateDevice(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, adminTable)
+			err := delete(ctx, adminTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &admin{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &admin{db: db, now: now}
 			err = db.UpdateDevice(ctx, tt.args.adminID, tt.args.device)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -324,19 +309,5 @@ func testAdmin(adminID, cognitoID, email string, now time.Time) *entity.Admin {
 		Device:        "instance-id",
 		CreatedAt:     now,
 		UpdatedAt:     now,
-	}
-}
-
-func fillIgnoreAdminField(a *entity.Admin, now time.Time) {
-	if a == nil {
-		return
-	}
-	a.CreatedAt = now
-	a.UpdatedAt = now
-}
-
-func fillIgnoreAdminsField(as entity.Admins, now time.Time) {
-	for i := range as {
-		fillIgnoreAdminField(as[i], now)
 	}
 }

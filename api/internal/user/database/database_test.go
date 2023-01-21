@@ -5,17 +5,30 @@ import (
 	"fmt"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/pkg/database"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 )
 
-type mocks struct {
-	db *database.Client
+var (
+	dbClient *database.Client
+	current  = time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC)
+)
+
+func TestMain(m *testing.M) {
+	setEnv()
+
+	client, err := newTestDBClient()
+	if err != nil {
+		panic(err)
+	}
+	dbClient = client
+
+	os.Exit(m.Run())
 }
 
-func newMocks(ctrl *gomock.Controller) (*mocks, error) {
+func newTestDBClient() (*database.Client, error) {
 	setEnv()
 	// テスト用Database接続用クライアントの生成
 	params := &database.Params{
@@ -26,18 +39,28 @@ func newMocks(ctrl *gomock.Controller) (*mocks, error) {
 		Username: os.Getenv("DB_USERNAME"),
 		Password: os.Getenv("DB_PASSWORD"),
 	}
-	db, err := database.NewClient(params)
-	if err != nil {
-		return nil, err
-	}
-
-	return &mocks{db: db}, nil
+	return database.NewClient(params)
 }
 
-func (m *mocks) dbDelete(ctx context.Context, tables ...string) error {
+func deleteAll(ctx context.Context) error {
+	tables := []string{
+		// テストに対応したテーブルから追記(削除順)
+		producerTable,
+		coordinatorTable,
+		administratorTable,
+		adminTable,
+		guestTable,
+		memberTable,
+		customerTable,
+		userTable,
+	}
+	return delete(ctx, tables...)
+}
+
+func delete(ctx context.Context, tables ...string) error {
 	for _, table := range tables {
 		sql := fmt.Sprintf("DELETE FROM %s", table)
-		if err := m.db.DB.Exec(sql).Error; err != nil {
+		if err := dbClient.DB.Exec(sql).Error; err != nil {
 			return err
 		}
 	}

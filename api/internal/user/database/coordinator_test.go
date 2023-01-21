@@ -8,7 +8,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/user/entity"
-	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -25,24 +25,24 @@ func TestCoordinator_List(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, coordinatorTable, adminTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	admins := make(entity.Admins, 2)
 	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
-	err = m.db.DB.Debug().Create(&admins).Error
+	err = db.DB.Debug().Create(&admins).Error
 	coordinators := make(entity.Coordinators, 2)
 	coordinators[0] = testCoordinator("admin-id01", now())
 	coordinators[0].Admin = *admins[0]
 	coordinators[1] = testCoordinator("admin-id02", now())
 	coordinators[1].Admin = *admins[1]
-	err = m.db.DB.Debug().Create(&coordinators).Error
+	err = db.DB.Debug().Create(&coordinators).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -54,13 +54,13 @@ func TestCoordinator_List(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListCoordinatorsParams{
 					Limit:  1,
@@ -81,16 +81,11 @@ func TestCoordinator_List(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &coordinator{db: m.db, now: now}
+			db := &coordinator{db: db, now: now}
 			actual, err := db.List(ctx, tt.args.params)
-			if tt.want.hasErr {
-				assert.Error(t, err)
-				return
-			}
-			assert.NoError(t, err)
-			fillIgnoreCoordinatorsField(actual, now())
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.coordinators, actual)
 		})
 	}
@@ -102,24 +97,24 @@ func TestCoordinator_Count(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, coordinatorTable, adminTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	admins := make(entity.Admins, 2)
 	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
-	err = m.db.DB.Create(&admins).Error
+	err = db.DB.Create(&admins).Error
 	coordinators := make(entity.Coordinators, 2)
 	coordinators[0] = testCoordinator("admin-id01", now())
 	coordinators[0].Admin = *admins[0]
 	coordinators[1] = testCoordinator("admin-id02", now())
 	coordinators[1].Admin = *admins[1]
-	err = m.db.DB.Create(&coordinators).Error
+	err = db.DB.Create(&coordinators).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -131,13 +126,13 @@ func TestCoordinator_Count(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListCoordinatorsParams{
 					Limit:  1,
@@ -158,9 +153,9 @@ func TestCoordinator_Count(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &coordinator{db: m.db, now: now}
+			db := &coordinator{db: db, now: now}
 			actual, err := db.Count(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.total, actual)
@@ -174,24 +169,24 @@ func TestCoordinator_MultiGet(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, coordinatorTable, adminTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	admins := make(entity.Admins, 2)
 	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
-	err = m.db.DB.Create(&admins).Error
+	err = db.DB.Create(&admins).Error
 	coordinators := make(entity.Coordinators, 2)
 	coordinators[0] = testCoordinator("admin-id01", now())
 	coordinators[0].Admin = *admins[0]
 	coordinators[1] = testCoordinator("admin-id02", now())
 	coordinators[1].Admin = *admins[1]
-	err = m.db.DB.Create(&coordinators).Error
+	err = db.DB.Create(&coordinators).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -203,13 +198,13 @@ func TestCoordinator_MultiGet(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				adminIDs: []string{"admin-id01", "admin-id02"},
 			},
@@ -227,16 +222,11 @@ func TestCoordinator_MultiGet(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &coordinator{db: m.db, now: now}
+			db := &coordinator{db: db, now: now}
 			actual, err := db.MultiGet(ctx, tt.args.adminIDs)
-			if tt.want.hasErr {
-				assert.Error(t, err)
-				return
-			}
-			assert.NoError(t, err)
-			fillIgnoreCoordinatorsField(actual, now())
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.coordinators, actual)
 		})
 	}
@@ -248,20 +238,20 @@ func TestCoordinator_Get(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, coordinatorTable, adminTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-	err = m.db.DB.Create(&admin).Error
+	err = db.DB.Create(&admin).Error
 	require.NoError(t, err)
 	c := testCoordinator("admin-id", now())
 	c.Admin = *admin
-	err = m.db.DB.Create(&c).Error
+	err = db.DB.Create(&c).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -273,13 +263,13 @@ func TestCoordinator_Get(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				adminID: "admin-id",
 			},
@@ -290,7 +280,7 @@ func TestCoordinator_Get(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				adminID: "",
 			},
@@ -308,31 +298,29 @@ func TestCoordinator_Get(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &coordinator{db: m.db, now: now}
+			db := &coordinator{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.adminID)
-			if tt.want.hasErr {
-				assert.Error(t, err)
-				return
-			}
-			assert.NoError(t, err)
-			fillIgnoreCoordinatorField(actual, now())
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.coordinator, actual)
 		})
 	}
 }
 
 func TestCoordinator_Create(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
 
 	c := testCoordinator("admin-id", now())
 	c.Admin = *testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
@@ -346,13 +334,13 @@ func TestCoordinator_Create(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				coordinator: c,
 				auth:        func(ctx context.Context) error { return nil },
@@ -363,12 +351,12 @@ func TestCoordinator_Create(t *testing.T) {
 		},
 		{
 			name: "failed to duplicate entry in admin auth",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = m.db.DB.Create(&admin).Error
+				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
 				coordinator := testCoordinator("admin-id", now())
-				err = m.db.DB.Create(&coordinator).Error
+				err = db.DB.Create(&coordinator).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -381,7 +369,7 @@ func TestCoordinator_Create(t *testing.T) {
 		},
 		{
 			name:  "failed to execute external service",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				coordinator: c,
 				auth:        func(ctx context.Context) error { return assert.AnError },
@@ -398,11 +386,12 @@ func TestCoordinator_Create(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, coordinatorTable, adminTable)
+			err := delete(ctx, coordinatorTable, adminTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &coordinator{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &coordinator{db: db, now: now}
 			err = db.Create(ctx, tt.args.coordinator, tt.args.auth)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -410,15 +399,18 @@ func TestCoordinator_Create(t *testing.T) {
 }
 
 func TestCoordinator_Update(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
 
 	type args struct {
 		coordinatorID string
@@ -429,19 +421,18 @@ func TestCoordinator_Update(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				_ = m.dbDelete(ctx, coordinatorTable, adminTable)
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = m.db.DB.Create(&admin).Error
+				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
 				coordinator := testCoordinator("admin-id", now())
-				err = m.db.DB.Create(&coordinator).Error
+				err = db.DB.Create(&coordinator).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -471,7 +462,7 @@ func TestCoordinator_Update(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				coordinatorID: "admin-id",
 				params:        &UpdateCoordinatorParams{},
@@ -488,11 +479,12 @@ func TestCoordinator_Update(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, coordinatorTable, adminTable)
+			err := delete(ctx, coordinatorTable, adminTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &coordinator{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &coordinator{db: db, now: now}
 			err = db.Update(ctx, tt.args.coordinatorID, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -500,15 +492,18 @@ func TestCoordinator_Update(t *testing.T) {
 }
 
 func TestCoordinator_UpdateThumbnails(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
 
 	type args struct {
 		coordinatorID string
@@ -519,19 +514,18 @@ func TestCoordinator_UpdateThumbnails(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				_ = m.dbDelete(ctx, coordinatorTable, adminTable)
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = m.db.DB.Create(&admin).Error
+				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
 				coordinator := testCoordinator("admin-id", now())
-				err = m.db.DB.Create(&coordinator).Error
+				err = db.DB.Create(&coordinator).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -557,7 +551,7 @@ func TestCoordinator_UpdateThumbnails(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				coordinatorID: "admin-id",
 			},
@@ -567,14 +561,13 @@ func TestCoordinator_UpdateThumbnails(t *testing.T) {
 		},
 		{
 			name: "failed precondition for thumbnail url is empty",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				_ = m.dbDelete(ctx, coordinatorTable, adminTable)
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = m.db.DB.Create(&admin).Error
+				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
 				coordinator := testCoordinator("admin-id", now())
 				coordinator.ThumbnailURL = ""
-				err = m.db.DB.Create(&coordinator).Error
+				err = db.DB.Create(&coordinator).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -606,11 +599,12 @@ func TestCoordinator_UpdateThumbnails(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, coordinatorTable, adminTable)
+			err := delete(ctx, coordinatorTable, adminTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &coordinator{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &coordinator{db: db, now: now}
 			err = db.UpdateThumbnails(ctx, tt.args.coordinatorID, tt.args.thumbnails)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -618,15 +612,18 @@ func TestCoordinator_UpdateThumbnails(t *testing.T) {
 }
 
 func TestCoordinator_UpdateHeaders(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
 
 	type args struct {
 		coordinatorID string
@@ -637,19 +634,18 @@ func TestCoordinator_UpdateHeaders(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				_ = m.dbDelete(ctx, coordinatorTable, adminTable)
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = m.db.DB.Create(&admin).Error
+				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
 				coordinator := testCoordinator("admin-id", now())
-				err = m.db.DB.Create(&coordinator).Error
+				err = db.DB.Create(&coordinator).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -675,7 +671,7 @@ func TestCoordinator_UpdateHeaders(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				coordinatorID: "admin-id",
 			},
@@ -685,14 +681,13 @@ func TestCoordinator_UpdateHeaders(t *testing.T) {
 		},
 		{
 			name: "failed precondition for header url is empty",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				_ = m.dbDelete(ctx, coordinatorTable, adminTable)
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = m.db.DB.Create(&admin).Error
+				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
 				coordinator := testCoordinator("admin-id", now())
 				coordinator.HeaderURL = ""
-				err = m.db.DB.Create(&coordinator).Error
+				err = db.DB.Create(&coordinator).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -724,11 +719,12 @@ func TestCoordinator_UpdateHeaders(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, coordinatorTable, adminTable)
+			err := delete(ctx, coordinatorTable, adminTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &coordinator{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &coordinator{db: db, now: now}
 			err = db.UpdateHeaders(ctx, tt.args.coordinatorID, tt.args.headers)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -736,15 +732,18 @@ func TestCoordinator_UpdateHeaders(t *testing.T) {
 }
 
 func TestCoordinator_Delete(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
 
 	type args struct {
 		coordinatorID string
@@ -755,19 +754,18 @@ func TestCoordinator_Delete(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				_ = m.dbDelete(ctx, coordinatorTable, adminTable)
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = m.db.DB.Create(&admin).Error
+				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
 				coordinator := testCoordinator("admin-id", now())
-				err = m.db.DB.Create(&coordinator).Error
+				err = db.DB.Create(&coordinator).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -780,7 +778,7 @@ func TestCoordinator_Delete(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				coordinatorID: "admin-id",
 				auth:          func(ctx context.Context) error { return nil },
@@ -791,13 +789,12 @@ func TestCoordinator_Delete(t *testing.T) {
 		},
 		{
 			name: "failed to execute external service",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				_ = m.dbDelete(ctx, coordinatorTable, adminTable)
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = m.db.DB.Create(&admin).Error
+				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
 				coordinator := testCoordinator("admin-id", now())
-				err = m.db.DB.Create(&coordinator).Error
+				err = db.DB.Create(&coordinator).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -816,11 +813,12 @@ func TestCoordinator_Delete(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, coordinatorTable, adminTable)
+			err := delete(ctx, coordinatorTable, adminTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &coordinator{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &coordinator{db: db, now: now}
 			err = db.Delete(ctx, tt.args.coordinatorID, tt.args.auth)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
