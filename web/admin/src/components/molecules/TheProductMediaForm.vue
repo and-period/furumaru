@@ -14,7 +14,7 @@
       >
         <v-radio :value="i" />
         <v-img :src="img.url" max-width="200" class="mx-4" />
-        <p class="mb-0">{{ img.url }}</p>
+        <p class="mb-0 img-url">{{ img.url }}</p>
       </div>
     </v-radio-group>
     <p>※ check された商品画像がサムネイルになります</p>
@@ -59,3 +59,9 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.img-url {
+  word-break: break-all;
+}
+</style>

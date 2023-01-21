@@ -38,7 +38,10 @@
       <v-card class="mb-4">
         <v-card-title>商品画像登録</v-card-title>
         <v-card-text>
-          <the-product-media-form :media.sync="formData.media" />
+          <the-product-media-form
+            :media.sync="formData.media"
+            @update:files="handleImageUpload"
+          />
         </v-card-text>
       </v-card>
 
@@ -164,6 +167,8 @@ export default defineComponent({
       return {
         name: { required, maxLength: maxLength(128) },
         inventory: { required, minValue: minValue(0) },
+        price: { required, minValue: minValue(0) },
+        weight: { required, minValue: minValue(0) },
         box60Rate: { minValue: minValue(0), maxValue: maxValue(100) },
         box80Rate: { minValue: minValue(0), maxValue: maxValue(100) },
         box100Rate: { minValue: minValue(0), maxValue: maxValue(100) },
@@ -171,6 +176,10 @@ export default defineComponent({
     })
 
     const v$ = useVuelidate<UpdateProductRequest>(rules, formDataValue)
+
+    const handleImageUpload = (files: FileList) => {
+      emit('update:files', files)
+    }
 
     const handleSubmit = async () => {
       const result = await v$.value.$validate()
@@ -193,6 +202,7 @@ export default defineComponent({
       formDataValue,
       // 関数
       getErrorMessage,
+      handleImageUpload,
       handleSubmit,
     }
   },
