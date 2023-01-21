@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"errors"
 	"net/http"
 
@@ -8,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/set"
@@ -17,7 +19,24 @@ import (
 
 func (h *handler) scheduleRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication)
+	arg.GET("/:scheduleId", h.GetSchedule)
 	arg.POST("", h.CreateSchedule)
+}
+
+func (h *handler) GetSchedule(ctx *gin.Context) {
+	scheduleID := util.GetParam(ctx, "scheduleId")
+	schedule, err := h.getSchedule(ctx, scheduleID)
+	lives, err := h.getScheduleDetailsByScheduleID(ctx, schedule)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	res := response.ScheduleResponse{
+		Schedule: schedule.Response(),
+		Lives:    lives.Response(),
+	}
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (h *handler) CreateSchedule(ctx *gin.Context) {
@@ -126,4 +145,74 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		Lives:    lives.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) getSchedule(ctx context.Context, scheduleID string) (*service.Schedule, error) {
+	in := &store.GetScheduleInput{
+		ScheduleID: scheduleID,
+	}
+	sschedule, err := h.store.GetSchedule(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	schedule := service.NewSchedule(sschedule)
+	return schedule, nil
+}
+
+func (h *handler) getScheduleDetailsByScheduleID(ctx context.Context, schedule *service.Schedule) (service.Lives, error) {
+	in := &store.ListLivesByScheduleIDInput{
+		ScheduleID: schedule.ID,
+	}
+	slives, err := h.store.ListLivesByScheduleID(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	var (
+		producers service.Producers
+		shipping  *service.Shipping
+		products  service.Products
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		set := set.NewEmpty[string](len(slives))
+		for i := range slives {
+			set.Add(slives[i].ProducerID)
+		}
+		producerIDs := set.Slice()
+		producers, err = h.multiGetProducers(ectx, producerIDs)
+		if err != nil {
+			return err
+		}
+		if len(producers) != len(producerIDs) {
+			return errInvalidProducerID
+		}
+		return
+	})
+	eg.Go(func() (err error) {
+		shipping, err = h.getShipping(ectx, schedule.ShippingID)
+		return
+	})
+	eg.Go(func() error {
+		set := set.NewEmpty[string](len(slives))
+		for i := range slives {
+			set.Add(slives[i].ProductIDs()...)
+		}
+		productIDs := set.Slice()
+		products, err = h.multiGetProducts(ectx, productIDs)
+		if err != nil {
+			return err
+		}
+		if len(products) != len(productIDs) {
+			return errInvalidProductID
+		}
+		return nil
+	})
+	if err := eg.Wait(); err != nil {
+		return nil, err
+	}
+	lives := service.NewLives(slives)
+	schedule.Fill(shipping)
+	lives.Fill(producers.Map(), products.Map())
+
+	return lives, nil
 }
