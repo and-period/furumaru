@@ -1,13 +1,13 @@
 <template>
   <div>
-    <v-card-title>セール情報</v-card-title>
-    <div class="d-flex">
+    <v-card-title>
+      セール情報
       <v-spacer />
       <v-btn outlined color="primary" @click="handleClickAddButton">
         <v-icon left>mdi-plus</v-icon>
         セール情報登録
       </v-btn>
-    </div>
+    </v-card-title>
 
     <v-dialog v-model="deleteDialog" width="500">
       <v-card>
