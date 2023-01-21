@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-card-title>注文</v-card-title>
-    <div class="d-flex">
+    <v-card-title>
+      注文
       <v-spacer />
       <v-btn outlined color="primary" @click="toggleImportDialog">
         <v-icon left>mdi-import</v-icon>
@@ -16,7 +16,8 @@
         <v-icon left>mdi-export</v-icon>
         Export
       </v-btn>
-    </div>
+    </v-card-title>
+
     <v-dialog v-model="importDialog" width="500">
       <v-card>
         <v-card-title class="text-h6 primaryLight">

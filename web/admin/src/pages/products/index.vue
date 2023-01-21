@@ -1,26 +1,27 @@
 <template>
   <div>
-    <div class="d-flex align-center mb-4">
-      <v-card-title>商品管理</v-card-title>
+    <v-card-title>
+      商品管理
       <v-spacer />
-      <v-text-field
-        v-model="searchWord"
-        append-icon="mdi-magnify"
-        label="商品名"
-        hide-details
-        single-line
-      />
-    </div>
-    <div class="d-flex">
-      <v-spacer />
-      <v-btn outlined class="mb-4" color="primary" @click="handleClickAddBtn">
+      <v-btn outlined color="primary" @click="handleClickAddBtn">
         <v-icon left>mdi-plus</v-icon>
         商品登録
       </v-btn>
-    </div>
+    </v-card-title>
 
     <v-card :loading="fetchState.pending">
       <v-card-text>
+        <div class="d-flex align-center mb-4">
+          <v-spacer />
+          <v-text-field
+            v-model="searchWord"
+            append-icon="mdi-magnify"
+            label="商品名"
+            hide-details
+            single-line
+          />
+        </div>
+
         <v-data-table
           v-model="selectedProducts"
           :headers="headers"

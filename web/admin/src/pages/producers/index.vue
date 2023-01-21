@@ -1,14 +1,13 @@
 <template>
   <div>
-    <v-card-title>生産者管理</v-card-title>
-
-    <div class="d-flex">
+    <v-card-title>
+      生産者管理
       <v-spacer />
       <v-btn outlined color="primary" @click="handleClickAddButton">
         <v-icon left>mdi-plus</v-icon>
         生産者登録
       </v-btn>
-    </div>
+    </v-card-title>
 
     <v-alert v-model="isShow" :type="alertType" class="my-2" dismissible>
       {{ alertText }}
