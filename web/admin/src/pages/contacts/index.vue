@@ -3,7 +3,15 @@
     <v-card-title>お問い合わせ管理</v-card-title>
     <v-card>
       <v-card-text>
-        <v-data-table :headers="headers" :items="contacts" :items-per-page="5">
+        <v-data-table
+          :headers="headers"
+          :items="contacts"
+          :items-per-page="itemsPerPage"
+          :server-items-length="total"
+          :footer-props="options"
+          @update:page="handleUpdatePage"
+          @update:items-per-page="handleUpdateItemsPerPage"
+        >
           <template #[`item.priority`]="{ item }">
             <v-chip :color="getPriorityColor(item.priority)" small dark>
               {{ getPriority(item.priority) }}
@@ -32,19 +40,30 @@ import {
   defineComponent,
   useFetch,
   useRouter,
+  watch,
 } from '@nuxtjs/composition-api'
 import { DataTableHeader } from 'vuetify'
 
+import { usePagination } from '~/lib/hooks'
 import { useContactStore } from '~/store/contact'
-import { ContactsResponseContactsInner } from '~/types/api'
+import {
+  ContactPriority,
+  ContactsResponseContactsInner,
+  ContactStatus,
+} from '~/types/api'
 
 export default defineComponent({
   setup() {
     const router = useRouter()
     const contactStore = useContactStore()
-    const contacts = computed(() => {
-      return contactStore.contacts
-    })
+    const {
+      itemsPerPage,
+      offset,
+      options,
+      updateCurrentPage,
+      handleUpdateItemsPerPage,
+    } = usePagination()
+
     const headers: DataTableHeader[] = [
       {
         text: '件名',
@@ -69,53 +88,85 @@ export default defineComponent({
       },
     ]
 
-    const getPriorityColor = (priority: any): string => {
+    useFetch(async () => {
+      await fetchContacts()
+    })
+
+    const contacts = computed(() => {
+      return contactStore.contacts
+    })
+    const total = computed(() => {
+      return contactStore.total
+    })
+
+    watch(itemsPerPage, () => {
+      fetchContacts()
+    })
+
+    const handleUpdatePage = async (page: number) => {
+      updateCurrentPage(page)
+      await fetchContacts()
+    }
+
+    const fetchContacts = async () => {
+      try {
+        await contactStore.fetchContacts(itemsPerPage.value, offset.value)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+
+    const getPriorityColor = (priority: ContactPriority): string => {
       switch (priority) {
-        case 1:
-          return 'error'
-        case 2:
-          return 'secondary'
-        case 3:
+        case ContactPriority.LOW:
           return 'primary'
+        case ContactPriority.MIDDLE:
+          return 'secondary'
+        case ContactPriority.HIGH:
+          return 'error'
         default:
           return 'unknown'
       }
     }
 
-    const getPriority = (priority: any): string => {
+    const getPriority = (priority: ContactPriority): string => {
       switch (priority) {
-        case 1:
-          return 'High'
-        case 2:
-          return 'Middle'
-        case 3:
-          return 'Low'
+        case ContactPriority.LOW:
+          return '低'
+        case ContactPriority.MIDDLE:
+          return '中'
+        case ContactPriority.HIGH:
+          return '高'
         default:
-          return 'Unknown'
+          return '未設定'
       }
     }
 
-    const getStatusColor = (status: any): string => {
+    const getStatusColor = (status: ContactStatus): string => {
       switch (status) {
-        case 1:
+        case ContactStatus.TODO:
           return 'error'
-        case 2:
+        case ContactStatus.INPROGRESS:
           return 'secondary'
-        case 3:
+        case ContactStatus.DONE:
           return 'primary'
+        case ContactStatus.DISCARD:
+          return 'info'
         default:
           return 'unknown'
       }
     }
 
-    const getStatus = (status: any): string => {
+    const getStatus = (status: ContactStatus): string => {
       switch (status) {
-        case 1:
+        case ContactStatus.TODO:
           return '未着手'
-        case 2:
+        case ContactStatus.INPROGRESS:
           return '進行中'
-        case 3:
-          return '完了'
+        case ContactStatus.DONE:
+          return '対応完了'
+        case ContactStatus.DISCARD:
+          return '対応不要'
         default:
           return '不明'
       }
@@ -125,23 +176,19 @@ export default defineComponent({
       router.push(`/contacts/edit/${item.id}`)
     }
 
-    const { fetchState } = useFetch(async () => {
-      try {
-        await contactStore.fetchContacts()
-      } catch (err) {
-        console.log(err)
-      }
-    })
-
     return {
       headers,
       contacts,
-      fetchState,
+      itemsPerPage,
+      total,
+      options,
       getPriority,
       getPriorityColor,
       getStatus,
       getStatusColor,
       handleEdit,
+      handleUpdatePage,
+      handleUpdateItemsPerPage,
     }
   },
 })
