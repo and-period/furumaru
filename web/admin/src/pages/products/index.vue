@@ -61,6 +61,7 @@ import { DataTableHeader } from 'vuetify'
 
 import { usePagination } from '~/lib/hooks/'
 import { useProductStore } from '~/store/product'
+import { ProductsResponseProductsInner } from '~/types/api'
 
 export default defineComponent({
   setup() {
@@ -96,7 +97,10 @@ export default defineComponent({
 
     const searchWord = ref<string>('')
 
-    const handleRowClick = (_, { item }) => {
+    const handleRowClick = (
+      _: any,
+      { item }: { item: ProductsResponseProductsInner }
+    ): void => {
       router.push(`/products/${item.id}`)
     }
 
