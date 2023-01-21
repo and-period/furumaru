@@ -107,6 +107,12 @@ func (l *Live) status(now time.Time) LiveStatus {
 	}
 }
 
+func (ls Lives) IDs() []string {
+	return set.UniqBy(ls, func(l *Live) string {
+		return l.ID
+	})
+}
+
 func (ls Lives) ProducerIDs() []string {
 	return set.UniqBy(ls, func(l *Live) string {
 		return l.ProducerID

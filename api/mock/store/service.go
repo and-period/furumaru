@@ -348,6 +348,21 @@ func (mr *MockServiceMockRecorder) ListCategories(ctx, in interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCategories", reflect.TypeOf((*MockService)(nil).ListCategories), ctx, in)
 }
 
+// ListLivesByScheduleID mocks base method.
+func (m *MockService) ListLivesByScheduleID(ctx context.Context, in *store.ListLivesByScheduleIDInput) (entity.Lives, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListLivesByScheduleID", ctx, in)
+	ret0, _ := ret[0].(entity.Lives)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListLivesByScheduleID indicates an expected call of ListLivesByScheduleID.
+func (mr *MockServiceMockRecorder) ListLivesByScheduleID(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListLivesByScheduleID", reflect.TypeOf((*MockService)(nil).ListLivesByScheduleID), ctx, in)
+}
+
 // ListOrders mocks base method.
 func (m *MockService) ListOrders(ctx context.Context, in *store.ListOrdersInput) (entity.Orders, int64, error) {
 	m.ctrl.T.Helper()
@@ -456,6 +471,21 @@ func (m *MockService) MultiGetCategories(ctx context.Context, in *store.MultiGet
 func (mr *MockServiceMockRecorder) MultiGetCategories(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetCategories", reflect.TypeOf((*MockService)(nil).MultiGetCategories), ctx, in)
+}
+
+// MultiGetLives mocks base method.
+func (m *MockService) MultiGetLives(ctx context.Context, in *store.MultiGetLivesInput) (entity.Lives, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MultiGetLives", ctx, in)
+	ret0, _ := ret[0].(entity.Lives)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGetLives indicates an expected call of MultiGetLives.
+func (mr *MockServiceMockRecorder) MultiGetLives(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetLives", reflect.TypeOf((*MockService)(nil).MultiGetLives), ctx, in)
 }
 
 // MultiGetProductTypes mocks base method.
