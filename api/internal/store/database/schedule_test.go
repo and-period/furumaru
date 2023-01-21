@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -22,19 +22,19 @@ func TestSchedule_Get(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := time.Date(2022, time.January, 2, 18, 30, 0, 0, time.UTC)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, shippingTable, scheduleTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	shipping := testShipping("shipping-id", now())
-	err = m.db.DB.Create(&shipping).Error
+	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
 	s := testSchedule("schedule-id", now())
-	err = m.db.DB.Create(&s).Error
+	err = db.DB.Create(&s).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -46,13 +46,13 @@ func TestSchedule_Get(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				scheduleID: "schedule-id",
 			},
@@ -71,9 +71,9 @@ func TestSchedule_Get(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &schedule{db: m.db, now: now}
+			db := &schedule{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.scheduleID)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.schedule, actual)
@@ -87,27 +87,27 @@ func TestSchedule_Create(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, liveProductTable, liveTable, scheduleTable, productTable, productTypeTable, categoryTable, shippingTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	category := testCategory("category-id", "野菜", now())
-	err = m.db.DB.Create(&category).Error
+	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
 	productType := testProductType("type-id", "category-id", "野菜", now())
-	err = m.db.DB.Create(&productType).Error
+	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
 	products[0] = testProduct("product-id01", "type-id", "category-id", "producer-id", now())
 	products[1] = testProduct("product-id02", "type-id", "category-id", "producer-id", now())
-	err = m.db.DB.Create(&products).Error
+	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	shipping := testShipping("shipping-id", now())
-	err = m.db.DB.Create(&shipping).Error
+	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
 
 	productIDs := []string{"product-id01", "product-id02"}
@@ -128,13 +128,13 @@ func TestSchedule_Create(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				schedule: s,
 				lives:    lives,
@@ -146,9 +146,9 @@ func TestSchedule_Create(t *testing.T) {
 		},
 		{
 			name: "duplicate entry",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				schedule := testSchedule("schedule-id", now())
-				err = m.db.DB.Create(&schedule).Error
+				err = db.DB.Create(&schedule).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -168,11 +168,12 @@ func TestSchedule_Create(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, scheduleTable)
+			err := delete(ctx, scheduleTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &schedule{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &schedule{db: db, now: now}
 			err = db.Create(ctx, tt.args.schedule, tt.args.lives, tt.args.products)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -190,21 +191,5 @@ func testSchedule(id string, now time.Time) *entity.Schedule {
 		EndAt:        now,
 		CreatedAt:    now,
 		UpdatedAt:    now,
-	}
-}
-
-func fillIgnoreScheduleField(s *entity.Schedule, now time.Time) {
-	if s == nil {
-		return
-	}
-	s.StartAt = now
-	s.EndAt = now
-	s.CreatedAt = now
-	s.UpdatedAt = now
-}
-
-func fillIgnoreSchedulesField(ss entity.Schedules, now time.Time) {
-	for i := range ss {
-		fillIgnoreScheduleField(ss[i], now)
 	}
 }

@@ -7,7 +7,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -23,29 +23,29 @@ func TestProduct_List(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, productTable, productTypeTable, categoryTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	categories := make(entity.Categories, 2)
 	categories[0] = testCategory("category-id01", "野菜", now())
 	categories[1] = testCategory("category-id02", "果物", now())
-	err = m.db.DB.Create(&categories).Error
+	err = db.DB.Create(&categories).Error
 	require.NoError(t, err)
 	productTypes := make(entity.ProductTypes, 2)
 	productTypes[0] = testProductType("type-id01", "category-id01", "野菜", now())
 	productTypes[1] = testProductType("type-id02", "category-id02", "果物", now())
-	err = m.db.DB.Create(&productTypes).Error
+	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 3)
 	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", now())
 	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", now())
 	products[2] = testProduct("product-id03", "type-id02", "category-id02", "producer-id", now())
-	err = m.db.DB.Create(&products).Error
+	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -57,13 +57,13 @@ func TestProduct_List(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListProductsParams{
 					Name:        "いも",
@@ -80,7 +80,7 @@ func TestProduct_List(t *testing.T) {
 		},
 		{
 			name:  "success with sort",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListProductsParams{
 					Orders: []*ListProductsOrder{
@@ -104,9 +104,9 @@ func TestProduct_List(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &product{db: m.db, now: now}
+			db := &product{db: db, now: now}
 			actual, err := db.List(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			fillIgnoreProductsField(actual, now())
@@ -121,29 +121,29 @@ func TestProduct_Count(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, productTable, productTypeTable, categoryTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	categories := make(entity.Categories, 2)
 	categories[0] = testCategory("category-id01", "野菜", now())
 	categories[1] = testCategory("category-id02", "果物", now())
-	err = m.db.DB.Create(&categories).Error
+	err = db.DB.Create(&categories).Error
 	require.NoError(t, err)
 	productTypes := make(entity.ProductTypes, 2)
 	productTypes[0] = testProductType("type-id01", "category-id01", "野菜", now())
 	productTypes[1] = testProductType("type-id02", "category-id02", "果物", now())
-	err = m.db.DB.Create(&productTypes).Error
+	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 3)
 	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", now())
 	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", now())
 	products[2] = testProduct("product-id03", "type-id02", "category-id02", "producer-id", now())
-	err = m.db.DB.Create(&products).Error
+	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -155,13 +155,13 @@ func TestProduct_Count(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListProductsParams{
 					Name:       "いも",
@@ -183,9 +183,9 @@ func TestProduct_Count(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &product{db: m.db, now: now}
+			db := &product{db: db, now: now}
 			actual, err := db.Count(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.total, actual)
@@ -199,30 +199,30 @@ func TestProduct_MultiGet(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, productTable, productTypeTable, categoryTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	categories := make(entity.Categories, 2)
 	categories[0] = testCategory("category-id01", "野菜", now())
 	categories[1] = testCategory("category-id02", "果物", now())
-	err = m.db.DB.Create(&categories).Error
+	err = db.DB.Create(&categories).Error
 	require.NoError(t, err)
 	productTypes := make(entity.ProductTypes, 3)
 	productTypes[0] = testProductType("type-id01", "category-id01", "野菜", now())
 	productTypes[1] = testProductType("type-id02", "category-id02", "果物", now())
 	productTypes[2] = testProductType("type-id03", "category-id02", "水産物", now())
-	err = m.db.DB.Create(&productTypes).Error
+	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 3)
 	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", now())
 	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", now())
 	products[2] = testProduct("product-id03", "type-id03", "category-id02", "producer-id", now())
-	err = m.db.DB.Create(&products).Error
+	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -234,13 +234,13 @@ func TestProduct_MultiGet(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				productIDs: []string{"product-id01", "product-id02", "product-id03"},
 			},
@@ -258,15 +258,11 @@ func TestProduct_MultiGet(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &product{db: m.db, now: now}
+			db := &product{db: db, now: now}
 			actual, err := db.MultiGet(ctx, tt.args.productIDs)
-			if tt.want.hasErr {
-				assert.Error(t, err)
-				return
-			}
-			assert.NoError(t, err)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			fillIgnoreProductsField(actual, now())
 			assert.ElementsMatch(t, tt.want.products, actual)
 		})
@@ -279,22 +275,22 @@ func TestProduct_Get(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, productTable, productTypeTable, categoryTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	category := testCategory("category-id", "野菜", now())
-	err = m.db.DB.Create(&category).Error
+	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
 	productType := testProductType("type-id", "category-id", "野菜", now())
-	err = m.db.DB.Create(&productType).Error
+	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 	p := testProduct("product-id", "type-id", "category-id", "producer-id", now())
-	err = m.db.DB.Create(&p).Error
+	err = db.DB.Create(&p).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -306,13 +302,13 @@ func TestProduct_Get(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				productID: "product-id",
 			},
@@ -331,9 +327,9 @@ func TestProduct_Get(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &product{db: m.db, now: now}
+			db := &product{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.productID)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			fillIgnoreProductField(actual, now())
@@ -348,19 +344,19 @@ func TestProduct_Create(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, productTable, productTypeTable, categoryTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	category := testCategory("category-id", "野菜", now())
-	err = m.db.DB.Create(&category).Error
+	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
 	productType := testProductType("type-id", "category-id", "野菜", now())
-	err = m.db.DB.Create(&productType).Error
+	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -371,13 +367,13 @@ func TestProduct_Create(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				product: testProduct("product-id", "type-id", "category-id", "producer-id", now()),
 			},
@@ -387,9 +383,9 @@ func TestProduct_Create(t *testing.T) {
 		},
 		{
 			name: "failed to duplicate entry",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				product := testProduct("product-id", "type-id", "category-id", "producer-id", now())
-				err = m.db.DB.Create(&product).Error
+				err = db.DB.Create(&product).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -407,11 +403,12 @@ func TestProduct_Create(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, productTable)
+			err := delete(ctx, productTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &product{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &product{db: db, now: now}
 			err = db.Create(ctx, tt.args.product)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -424,19 +421,19 @@ func TestProduct_Update(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, productTable, productTypeTable, categoryTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	category := testCategory("category-id", "野菜", now())
-	err = m.db.DB.Create(&category).Error
+	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
 	productType := testProductType("type-id", "category-id", "野菜", now())
-	err = m.db.DB.Create(&productType).Error
+	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -448,15 +445,15 @@ func TestProduct_Update(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				product := testProduct("product-id", "type-id", "category-id", "producer-id", now())
-				err = m.db.DB.Create(&product).Error
+				err = db.DB.Create(&product).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -492,7 +489,7 @@ func TestProduct_Update(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				productID: "product-id",
 				params:    &UpdateProductParams{},
@@ -509,11 +506,12 @@ func TestProduct_Update(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, productTable)
+			err := delete(ctx, productTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &product{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &product{db: db, now: now}
 			err = db.Update(ctx, tt.args.productID, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -526,19 +524,19 @@ func TestProduct_UpdateMedia(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, productTable, productTypeTable, categoryTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	category := testCategory("category-id", "野菜", now())
-	err = m.db.DB.Create(&category).Error
+	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
 	productType := testProductType("type-id", "category-id", "野菜", now())
-	err = m.db.DB.Create(&productType).Error
+	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -550,15 +548,15 @@ func TestProduct_UpdateMedia(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				product := testProduct("product-id", "type-id", "category-id", "producer-id", now())
-				err = m.db.DB.Create(&product).Error
+				err = db.DB.Create(&product).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -587,7 +585,7 @@ func TestProduct_UpdateMedia(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				productID: "product-id",
 				set:       func(media entity.MultiProductMedia) bool { return false },
@@ -598,9 +596,9 @@ func TestProduct_UpdateMedia(t *testing.T) {
 		},
 		{
 			name: "media is non existent",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				product := testProduct("product-id", "type-id", "category-id", "producer-id", now())
-				err = m.db.DB.Create(&product).Error
+				err = db.DB.Create(&product).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -619,11 +617,12 @@ func TestProduct_UpdateMedia(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, productTable)
+			err := delete(ctx, productTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &product{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &product{db: db, now: now}
 			err = db.UpdateMedia(ctx, tt.args.productID, tt.args.set)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -636,19 +635,19 @@ func TestProduct_Delete(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, productTable, productTypeTable, categoryTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	category := testCategory("category-id", "野菜", now())
-	err = m.db.DB.Create(&category).Error
+	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
 	productType := testProductType("type-id", "category-id", "野菜", now())
-	err = m.db.DB.Create(&productType).Error
+	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -659,15 +658,15 @@ func TestProduct_Delete(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				product := testProduct("product-id", "type-id", "category-id", "producer-id", now())
-				err = m.db.DB.Create(&product).Error
+				err = db.DB.Create(&product).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -679,7 +678,7 @@ func TestProduct_Delete(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				productID: "product-id",
 			},
@@ -695,11 +694,12 @@ func TestProduct_Delete(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, productTable)
+			err := delete(ctx, productTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &product{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &product{db: db, now: now}
 			err = db.Delete(ctx, tt.args.productID)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -743,8 +743,6 @@ func fillIgnoreProductField(p *entity.Product, now time.Time) {
 		return
 	}
 	_ = p.FillJSON()
-	p.CreatedAt = now
-	p.UpdatedAt = now
 }
 
 func fillIgnoreProductsField(ps entity.Products, now time.Time) {
