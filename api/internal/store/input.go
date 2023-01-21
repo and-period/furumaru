@@ -317,7 +317,7 @@ type MultiGetLivesInput struct {
 	LiveIDs []string `validate:"dive,required"`
 }
 
-type MultiGetLivesByScheduleIDInput struct {
+type ListLivesByScheduleIDInput struct {
 	ScheduleID string `validate:"required"`
 }
 

@@ -1010,6 +1010,26 @@ func (mr *MockLiveMockRecorder) Get(ctx, liveID interface{}, fields ...interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockLive)(nil).Get), varargs...)
 }
 
+// ListByScheduleID mocks base method.
+func (m *MockLive) ListByScheduleID(ctx context.Context, scheduleID string, fields ...string) (entity.Lives, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, scheduleID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ListByScheduleID", varargs...)
+	ret0, _ := ret[0].(entity.Lives)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListByScheduleID indicates an expected call of ListByScheduleID.
+func (mr *MockLiveMockRecorder) ListByScheduleID(ctx, scheduleID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, scheduleID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByScheduleID", reflect.TypeOf((*MockLive)(nil).ListByScheduleID), varargs...)
+}
+
 // MultiGet mocks base method.
 func (m *MockLive) MultiGet(ctx context.Context, liveIDs []string, fields ...string) (entity.Lives, error) {
 	m.ctrl.T.Helper()
@@ -1028,26 +1048,6 @@ func (mr *MockLiveMockRecorder) MultiGet(ctx, liveIDs interface{}, fields ...int
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, liveIDs}, fields...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockLive)(nil).MultiGet), varargs...)
-}
-
-// MultiGetByScheduleID mocks base method.
-func (m *MockLive) MultiGetByScheduleID(ctx context.Context, scheduleID string, fields ...string) (entity.Lives, error) {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{ctx, scheduleID}
-	for _, a := range fields {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "MultiGetByScheduleID", varargs...)
-	ret0, _ := ret[0].(entity.Lives)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// MultiGetByScheduleID indicates an expected call of MultiGetByScheduleID.
-func (mr *MockLiveMockRecorder) MultiGetByScheduleID(ctx, scheduleID interface{}, fields ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{ctx, scheduleID}, fields...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetByScheduleID", reflect.TypeOf((*MockLive)(nil).MultiGetByScheduleID), varargs...)
 }
 
 // Update mocks base method.

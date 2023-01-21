@@ -139,7 +139,7 @@ func TestLive_MultiGet(t *testing.T) {
 		})
 	}
 }
-func TestLive_MultiGetByScheduleID(t *testing.T) {
+func TestLive_ListByScheduleID(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	ctrl := gomock.NewController(t)
@@ -223,7 +223,7 @@ func TestLive_MultiGetByScheduleID(t *testing.T) {
 			tt.setup(ctx, t, m)
 
 			db := &live{db: m.db, now: now}
-			actual, err := db.MultiGetByScheduleID(ctx, tt.args.scheduleID)
+			actual, err := db.ListByScheduleID(ctx, tt.args.scheduleID)
 			if tt.want.hasErr {
 				assert.Error(t, err)
 				return

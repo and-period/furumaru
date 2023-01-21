@@ -35,10 +35,10 @@ func (l *live) MultiGet(
 	return lives, exception.InternalError(err)
 }
 
-func (l *live) MultiGetByScheduleID(
+func (l *live) ListByScheduleID(
 	ctx context.Context, scheduleID string, fields ...string,
 ) (entity.Lives, error) {
-	lives, err := l.multigetByScheduleID(ctx, l.db.DB, scheduleID, fields...)
+	lives, err := l.listByScheduleID(ctx, l.db.DB, scheduleID, fields...)
 	if err != nil {
 		return nil, exception.InternalError(err)
 	}
@@ -134,7 +134,7 @@ func (l *live) multiGet(
 	return lives, nil
 }
 
-func (l *live) multigetByScheduleID(
+func (l *live) listByScheduleID(
 	ctx context.Context, tx *gorm.DB, scheduleID string, fields ...string,
 ) (entity.Lives, error) {
 	var (

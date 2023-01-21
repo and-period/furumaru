@@ -118,7 +118,7 @@ func TestMultiGetLives(t *testing.T) {
 	}
 }
 
-func TestMultiGetLivesByScheduleID(t *testing.T) {
+func TestListByScheduleID(t *testing.T) {
 	t.Parallel()
 
 	lives := entity.Lives{
@@ -169,19 +169,19 @@ func TestMultiGetLivesByScheduleID(t *testing.T) {
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *store.MultiGetLivesByScheduleIDInput
+		input     *store.ListLivesByScheduleIDInput
 		expect    entity.Lives
 		expectErr error
 	}{
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Live.EXPECT().MultiGetByScheduleID(ctx, "schedule-id").Return(lives, nil)
+				mocks.db.Live.EXPECT().ListByScheduleID(ctx, "schedule-id").Return(lives, nil)
 				mocks.ivs.EXPECT().GetChannel(gomock.Any(), channelIn).Return(channel, nil).Times(2)
 				mocks.ivs.EXPECT().GetStream(gomock.Any(), streamIn).Return(stream, nil).Times(2)
 				mocks.ivs.EXPECT().GetStreamKey(gomock.Any(), streamKeyIn).Return(streamKey, nil).Times(2)
 			},
-			input: &store.MultiGetLivesByScheduleIDInput{
+			input: &store.ListLivesByScheduleIDInput{
 				ScheduleID: "schedule-id",
 			},
 			expect: entity.Lives{
@@ -217,7 +217,7 @@ func TestMultiGetLivesByScheduleID(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.MultiGetLivesByScheduleID(ctx, tt.input)
+			actual, err := service.ListLivesByScheduleID(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.ElementsMatch(t, tt.expect, actual)
 		}))
