@@ -285,6 +285,30 @@ func TestGetSchedule(t *testing.T) {
 				},
 			},
 		},
+		{
+			name: "failed to get schedule",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().GetSchedule(gomock.Any(), scheduleIn).Return(nil, assert.AnError)
+			},
+			scheduleID: "schedule-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
+		{
+			name: "failed to get producer",
+			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
+				mocks.store.EXPECT().GetSchedule(gomock.Any(), scheduleIn).Return(schedule, nil)
+				mocks.store.EXPECT().MultiGetCategories(gomock.Any(), categoriesIn).Return(categories, nil)
+				mocks.store.EXPECT().MultiGetProductTypes(gomock.Any(), productTypesIn).Return(productTypes, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productsIn).Return(products, nil)
+				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(nil, assert.AnError)
+			},
+			scheduleID: "schedule-id",
+			expect: &testResponse{
+				code: http.StatusInternalServerError,
+			},
+		},
 	}
 
 	for _, tt := range tests {

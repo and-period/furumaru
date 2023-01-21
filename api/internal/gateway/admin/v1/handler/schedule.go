@@ -26,6 +26,10 @@ func (h *handler) scheduleRoutes(rg *gin.RouterGroup) {
 func (h *handler) GetSchedule(ctx *gin.Context) {
 	scheduleID := util.GetParam(ctx, "scheduleId")
 	schedule, err := h.getSchedule(ctx, scheduleID)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
 	lives, err := h.getScheduleDetailsByScheduleID(ctx, schedule)
 	if err != nil {
 		httpError(ctx, err)
@@ -180,9 +184,6 @@ func (h *handler) getScheduleDetailsByScheduleID(ctx context.Context, schedule *
 		}
 		producerIDs := set.Slice()
 		producers, err = h.multiGetProducers(ectx, producerIDs)
-		if err != nil {
-			return err
-		}
 		if len(producers) != len(producerIDs) {
 			return errInvalidProducerID
 		}
@@ -192,20 +193,17 @@ func (h *handler) getScheduleDetailsByScheduleID(ctx context.Context, schedule *
 		shipping, err = h.getShipping(ectx, schedule.ShippingID)
 		return
 	})
-	eg.Go(func() error {
+	eg.Go(func() (err error) {
 		set := set.NewEmpty[string](len(slives))
 		for i := range slives {
 			set.Add(slives[i].ProductIDs()...)
 		}
 		productIDs := set.Slice()
 		products, err = h.multiGetProducts(ectx, productIDs)
-		if err != nil {
-			return err
-		}
 		if len(products) != len(productIDs) {
 			return errInvalidProductID
 		}
-		return nil
+		return
 	})
 	if err := eg.Wait(); err != nil {
 		return nil, err
