@@ -98,8 +98,11 @@ func (a *admin) UpdateDevice(ctx context.Context, adminID, device string) error 
 func (a *admin) get(ctx context.Context, tx *gorm.DB, adminID string, fields ...string) (*entity.Admin, error) {
 	var admin *entity.Admin
 
-	err := a.db.Statement(ctx, tx, adminTable, fields...).
-		Where("id = ?", adminID).
-		First(&admin).Error
-	return admin, err
+	stmt := a.db.Statement(ctx, tx, adminTable, fields...).
+		Where("id = ?", adminID)
+
+	if err := stmt.First(&admin).Error; err != nil {
+		return nil, err
+	}
+	return admin, nil
 }

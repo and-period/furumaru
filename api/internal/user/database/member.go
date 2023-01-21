@@ -37,8 +37,10 @@ func (m *member) GetByCognitoID(ctx context.Context, cognitoID string, fields ..
 	stmt := m.db.Statement(ctx, m.db.DB, memberTable, fields...).
 		Where("cognito_id = ?", cognitoID)
 
-	err := stmt.First(&member).Error
-	return member, exception.InternalError(err)
+	if err := stmt.First(&member).Error; err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return member, nil
 }
 
 func (m *member) GetByEmail(ctx context.Context, email string, fields ...string) (*entity.Member, error) {
@@ -48,8 +50,10 @@ func (m *member) GetByEmail(ctx context.Context, email string, fields ...string)
 		Where("email = ?", email).
 		Where("provider_type = ?", entity.ProviderTypeEmail)
 
-	err := stmt.First(&member).Error
-	return member, exception.InternalError(err)
+	if err := stmt.First(&member).Error; err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return member, nil
 }
 
 func (m *member) Create(ctx context.Context, user *entity.User, auth func(ctx context.Context) error) error {
@@ -191,8 +195,11 @@ func (m *member) Delete(ctx context.Context, userID string, auth func(ctx contex
 func (m *member) get(ctx context.Context, tx *gorm.DB, userID string, fields ...string) (*entity.Member, error) {
 	var member *entity.Member
 
-	err := m.db.Statement(ctx, tx, memberTable, fields...).
-		Where("user_id = ?", userID).
-		First(&member).Error
-	return member, err
+	stmt := m.db.Statement(ctx, tx, memberTable, fields...).
+		Where("user_id = ?", userID)
+
+	if err := stmt.First(&member).Error; err != nil {
+		return nil, err
+	}
+	return member, nil
 }

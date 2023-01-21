@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/user/entity"
-	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -22,22 +22,21 @@ func TestUser_List(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	err = m.dbDelete(ctx, customerTable, memberTable, userTable)
+	err := deleteAll(ctx)
 	require.NoError(t, err)
+
 	users := make(entity.Users, 2)
 	users[0] = testUser("user-id01", "test-user01@and-period.jp", "+810000000001", now())
 	users[1] = testUser("user-id02", "test-user02@and-period.jp", "+810000000002", now())
-	err = m.db.DB.Create(&users).Error
+	err = db.DB.Create(&users).Error
 	for i := range users {
-		err = m.db.DB.Create(&users[i].Member).Error
-		err = m.db.DB.Create(&users[i].Customer).Error
+		err = db.DB.Create(&users[i].Member).Error
+		err = db.DB.Create(&users[i].Customer).Error
 	}
 	require.NoError(t, err)
 
@@ -50,13 +49,13 @@ func TestUser_List(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListUsersParams{
 					Limit:  1,
@@ -77,17 +76,12 @@ func TestUser_List(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &user{db: m.db, now: now}
+			db := &user{db: db, now: now}
 			actual, err := db.List(ctx, tt.args.params)
-			if tt.want.hasErr {
-				assert.Error(t, err)
-				return
-			}
-			assert.NoError(t, err)
-			fillIgnoreUsersField(actual, now())
-			assert.ElementsMatch(t, tt.want.users, actual)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.users, actual)
 		})
 	}
 }
@@ -98,22 +92,21 @@ func TestUser_Count(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	err = m.dbDelete(ctx, customerTable, memberTable, userTable)
+	err := deleteAll(ctx)
 	require.NoError(t, err)
+
 	users := make(entity.Users, 2)
 	users[0] = testUser("user-id01", "test-user01@and-period.jp", "+810000000001", now())
 	users[1] = testUser("user-id02", "test-user02@and-period.jp", "+810000000002", now())
-	err = m.db.DB.Create(&users).Error
+	err = db.DB.Create(&users).Error
 	for i := range users {
-		err = m.db.DB.Create(&users[i].Member).Error
-		err = m.db.DB.Create(&users[i].Customer).Error
+		err = db.DB.Create(&users[i].Member).Error
+		err = db.DB.Create(&users[i].Customer).Error
 	}
 	require.NoError(t, err)
 
@@ -126,13 +119,13 @@ func TestUser_Count(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListUsersParams{
 					Limit:  1,
@@ -153,9 +146,9 @@ func TestUser_Count(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &user{db: m.db, now: now}
+			db := &user{db: db, now: now}
 			actual, err := db.Count(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.total, actual)
@@ -169,22 +162,21 @@ func TestUser_MultiGet(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	err = m.dbDelete(ctx, customerTable, memberTable, userTable)
+	err := deleteAll(ctx)
 	require.NoError(t, err)
+
 	users := make(entity.Users, 2)
 	users[0] = testUser("user-id01", "test-user01@and-period.jp", "+810000000001", now())
 	users[1] = testUser("user-id02", "test-user02@and-period.jp", "+810000000002", now())
-	err = m.db.DB.Create(&users).Error
+	err = db.DB.Create(&users).Error
 	for i := range users {
-		err = m.db.DB.Create(&users[i].Member).Error
-		err = m.db.DB.Create(&users[i].Customer).Error
+		err = db.DB.Create(&users[i].Member).Error
+		err = db.DB.Create(&users[i].Customer).Error
 	}
 	require.NoError(t, err)
 
@@ -197,13 +189,13 @@ func TestUser_MultiGet(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				userIDs: []string{"user-id01", "user-id02"},
 			},
@@ -221,17 +213,12 @@ func TestUser_MultiGet(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &user{db: m.db, now: now}
+			db := &user{db: db, now: now}
 			actual, err := db.MultiGet(ctx, tt.args.userIDs)
-			if tt.want.hasErr {
-				assert.Error(t, err)
-				return
-			}
-			assert.NoError(t, err)
-			fillIgnoreUsersField(actual, now())
-			assert.ElementsMatch(t, tt.want.users, actual)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.users, actual)
 		})
 	}
 }
@@ -242,21 +229,20 @@ func TestUser_Get(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	err = m.dbDelete(ctx, customerTable, memberTable, userTable)
+	err := deleteAll(ctx)
 	require.NoError(t, err)
+
 	u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
-	err = m.db.DB.Create(&u).Error
+	err = db.DB.Create(&u).Error
 	require.NoError(t, err)
-	err = m.db.DB.Create(&u.Member).Error
+	err = db.DB.Create(&u.Member).Error
 	require.NoError(t, err)
-	err = m.db.DB.Create(&u.Customer).Error
+	err = db.DB.Create(&u.Customer).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -268,13 +254,13 @@ func TestUser_Get(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				userID: "user-id",
 			},
@@ -285,7 +271,7 @@ func TestUser_Get(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				userID: "",
 			},
@@ -303,16 +289,11 @@ func TestUser_Get(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &user{db: m.db, now: now}
+			db := &user{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.userID)
-			if tt.want.hasErr {
-				assert.Error(t, err)
-				return
-			}
-			assert.NoError(t, err)
-			fillIgnoreUserField(actual, now())
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.user, actual)
 		})
 	}
@@ -326,24 +307,5 @@ func testUser(id, email, phoneNumber string, now time.Time) *entity.User {
 		Customer:   *testCustomer(id, now),
 		CreatedAt:  now,
 		UpdatedAt:  now,
-	}
-}
-
-func fillIgnoreUserField(u *entity.User, now time.Time) {
-	if u == nil {
-		return
-	}
-	u.CreatedAt = now
-	u.UpdatedAt = now
-	u.Member.CreatedAt = now
-	u.Member.UpdatedAt = now
-	u.Member.VerifiedAt = now
-	u.Customer.CreatedAt = now
-	u.Customer.UpdatedAt = now
-}
-
-func fillIgnoreUsersField(us entity.Users, now time.Time) {
-	for i := range us {
-		fillIgnoreUserField(us[i], now)
 	}
 }
