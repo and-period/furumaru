@@ -26,19 +26,123 @@
               :value="getMethodType(formData.payment.methodType)"
               readonly
             ></v-text-field>
-          </v-card-text>
-          <v-container>
-            <v-row>
-              <span class="mx-4">配送状況:</span>
-              <v-chip
-                small
-                :color="getPaymentStatusColor(formData.payment.status)"
+            <v-container>
+              <p class="text-h6">購入情報</p>
+              <v-row class="mt-4">
+                <span class="mx-4">支払い状況:</span>
+                <v-chip
+                  small
+                  :color="getPaymentStatusColor(formData.payment.status)"
+                >
+                  {{ getPaymentStatus(formData.payment.status) }}
+                </v-chip>
+              </v-row>
+            </v-container>
+              <v-text-field
+                class="mt-4"
+                name="total"
+                label="支払い合計金額"
+                :value="formData.payment.total"
+                readonly
               >
-                {{ getPaymentStatus(formData.payment.status) }}
-              </v-chip>
-            </v-row>
-          </v-container>
+                <template #append>円</template>
+              </v-text-field>
+            <div class="d-flex align-center">
+              <v-text-field
+                class="mr-4"
+                name="subTotal"
+                label="購入金額"
+                :value="formData.payment.subtotal"
+                readonly
+              >
+                <template #append>円</template>
+              </v-text-field>
+              <v-text-field
+                name="discount"
+                label="割引金額"
+                :value="formData.payment.discount"
+                readonly
+              >
+                <template #append>円</template>
+              </v-text-field>
+            </div>
+            <div class="d-flex align-center mt-4">
+              <v-text-field
+                class="mr-4"
+                name="shippingFee"
+                label="配送料金"
+                :value="formData.payment.shippingFee"
+                readonly
+              >
+                <template #append>円</template>
+              </v-text-field>
+              <v-text-field
+                name="tax"
+                label="消費税"
+                :value="formData.payment.tax"
+                readonly
+              >
+                <template #append>円</template>
+              </v-text-field>
+            </div>
+              <p class="text-h6">請求先情報</p>
+            <div class="d-flex align-center">
+              <v-text-field
+                class="mr-4"
+                name="lastname"
+                label="姓"
+                :value="formData.payment.lastname"
+                readonly
+              ></v-text-field>
+              <v-text-field
+                name="firstname"
+                label="名"
+                :value="formData.payment.firstname"
+                readonly
+              ></v-text-field>
+            </div>
+              <v-text-field
+                name="phoneNumber"
+                label="電話番号"
+                :value="convertPhone(formData.payment.phoneNumber)"
+                readonly
+              ></v-text-field>
+              <v-text-field
+                name="postalCode"
+                label="郵便番号"
+                :value="formData.payment.postalCode"
+                readonly
+              ></v-text-field>
+            <div class="d-flex align-center">
+              <v-text-field
+                class="mr-4"
+                name="prefecture"
+                label="都道府県"
+                :value="formData.payment.prefecture"
+                readonly
+              ></v-text-field>
+              <v-text-field
+                name="city"
+                label="市区町村"
+                :value="formData.payment.city"
+                readonly
+              ></v-text-field>
+              </div>
+              <v-text-field
+                name="addressLine1"
+                label="町名・番地"
+                :value="formData.payment.addressLine1"
+              ></v-text-field>
+              <v-text-field
+                name="addressLine2"
+                label="ビル名・号室など"
+                :value="formData.payment.addressLine2"
+              ></v-text-field>
+          </v-card-text>
         </v-card>
+        <v-tab-item value="tab-orderInformation">
+          <v-card elevation="0"> </v-card>
+        </v-tab-item>
       </v-tab-item>
     </v-tabs-items>
   </div>
@@ -61,8 +165,8 @@ export default defineComponent({
     const selector = ref<string>('shippingInformation')
 
     const items: Order[] = [
-      { name: '配送情報', value: 'shippingInformation' },
-      { name: '購入情報', value: 'orderInformation' },
+      { name: '支払い情報', value: 'shippingInformation' },
+      { name: '配送情報', value: 'orderInformation' },
     ]
 
     const formData = reactive<OrderResponse>({
@@ -193,6 +297,10 @@ export default defineComponent({
       }
     }
 
+    const convertPhone = (phoneNumber: string): string => {
+      return phoneNumber.replace('+81', '0')
+    }
+
     return {
       items,
       formData,
@@ -201,6 +309,7 @@ export default defineComponent({
       getMethodType,
       getPaymentStatus,
       getPaymentStatusColor,
+      convertPhone,
     }
   },
 })
