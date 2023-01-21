@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
-	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -22,19 +22,19 @@ func TestNotification_List(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, notificationTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	notifications := make(entity.Notifications, 3)
 	notifications[0] = testNotification("notification-id01", false, now())
 	notifications[1] = testNotification("notification-id02", true, now())
 	notifications[2] = testNotification("notification-id03", true, now())
-	err = m.db.DB.Create(&notifications).Error
+	err = db.DB.Create(&notifications).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -46,13 +46,13 @@ func TestNotification_List(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListNotificationsParams{
 					Limit:         20,
@@ -69,7 +69,7 @@ func TestNotification_List(t *testing.T) {
 		},
 		{
 			name:  "success with sort",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListNotificationsParams{
 					Orders: []*ListNotificationsOrder{
@@ -91,12 +91,11 @@ func TestNotification_List(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &notification{db: m.db, now: now}
+			db := &notification{db: db, now: now}
 			actual, err := db.List(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
-			fillIgnoreNotificationsField(actual, now())
 			assert.ElementsMatch(t, tt.want.notifications, actual)
 		})
 	}
@@ -108,20 +107,19 @@ func TestNotificaiton_Count(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, notificationTable)
+	err := deleteAll(ctx)
 	require.NoError(t, err)
+
 	notifications := make(entity.Notifications, 3)
 	notifications[0] = testNotification("notification-id01", true, now())
 	notifications[1] = testNotification("notification-id02", true, now())
 	notifications[2] = testNotification("notification-id03", true, now())
-	err = m.db.DB.Create(&notifications).Error
+	err = db.DB.Create(&notifications).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -133,13 +131,13 @@ func TestNotificaiton_Count(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListNotificationsParams{
 					Since: now(),
@@ -161,9 +159,9 @@ func TestNotificaiton_Count(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &notification{db: m.db, now: now}
+			db := &notification{db: db, now: now}
 			actual, err := db.Count(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.total, actual)
@@ -177,16 +175,16 @@ func TestNotification_Get(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, notificationTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	n := testNotification("notification-id", false, now())
-	err = m.db.DB.Create(&n).Error
+	err = db.DB.Create(&n).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -198,13 +196,13 @@ func TestNotification_Get(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				notificationID: "notification-id",
 			},
@@ -215,7 +213,7 @@ func TestNotification_Get(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				notificationID: "other-id",
 			},
@@ -233,27 +231,29 @@ func TestNotification_Get(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &notification{db: m.db, now: now}
+			db := &notification{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.notificationID)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
-			fillIgnoreNotificationField(actual, now())
 			assert.Equal(t, tt.want.notification, actual)
 		})
 	}
 }
 
 func TestNotification_Create(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 6, 26, 19, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
 
 	type args struct {
 		notification *entity.Notification
@@ -263,13 +263,13 @@ func TestNotification_Create(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				notification: testNotification("notification-id", true, now()),
 			},
@@ -279,9 +279,9 @@ func TestNotification_Create(t *testing.T) {
 		},
 		{
 			name: "failed to duplicate entry",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				n := testNotification("notification-id", true, now())
-				err = m.db.DB.Create(&n).Error
+				err = db.DB.Create(&n).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -299,11 +299,12 @@ func TestNotification_Create(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, notificationTable)
+			err := delete(ctx, notificationTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &notification{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &notification{db: db, now: now}
 			err = db.Create(ctx, tt.args.notification)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -316,14 +317,13 @@ func TestNotification_Update(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, notificationTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
 
 	type args = struct {
 		notificationID string
@@ -334,15 +334,15 @@ func TestNotification_Update(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				notification := testNotification("notification-id", true, now())
-				err = m.db.DB.Create(&notification).Error
+				err = db.DB.Create(&notification).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -364,7 +364,7 @@ func TestNotification_Update(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				notificationID: "notification-id",
 				params:         &UpdateNotificationParams{},
@@ -381,11 +381,12 @@ func TestNotification_Update(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, notificationTable)
+			err := delete(ctx, notificationTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &notification{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &notification{db: db, now: now}
 			err = db.Update(ctx, tt.args.notificationID, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -398,14 +399,12 @@ func TestNotificaiton_Delete(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, notificationTable)
+	err := deleteAll(ctx)
 	require.NoError(t, err)
 
 	type args struct {
@@ -416,15 +415,15 @@ func TestNotificaiton_Delete(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				notification := testNotification("notification-id", true, now())
-				err = m.db.DB.Create(&notification).Error
+				err = db.DB.Create(&notification).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -436,7 +435,7 @@ func TestNotificaiton_Delete(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				notificationID: "notification-id",
 			},
@@ -452,11 +451,12 @@ func TestNotificaiton_Delete(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, notificationTable)
+			err := delete(ctx, notificationTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &notification{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &notification{db: db, now: now}
 			err = db.Delete(ctx, tt.args.notificationID)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -479,20 +479,4 @@ func testNotification(id string, public bool, now time.Time) *entity.Notificatio
 	}
 	_ = n.FillJSON()
 	return n
-}
-
-func fillIgnoreNotificationField(n *entity.Notification, now time.Time) {
-	if n == nil {
-		return
-	}
-	_ = n.FillJSON()
-	n.PublishedAt = now
-	n.CreatedAt = now
-	n.UpdatedAt = now
-}
-
-func fillIgnoreNotificationsField(ns entity.Notifications, now time.Time) {
-	for i := range ns {
-		fillIgnoreNotificationField(ns[i], now)
-	}
 }

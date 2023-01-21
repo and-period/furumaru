@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
-	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -22,16 +22,16 @@ func TestReceivedQueue_Get(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, receivedQueueTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	q := testReceivedQueue("queue-id", now())
-	err = m.db.DB.Create(&q).Error
+	err = db.DB.Create(&q).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -43,13 +43,13 @@ func TestReceivedQueue_Get(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				queueID: "queue-id",
 			},
@@ -60,7 +60,7 @@ func TestReceivedQueue_Get(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				queueID: "other-id",
 			},
@@ -78,12 +78,11 @@ func TestReceivedQueue_Get(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &receivedQueue{db: m.db, now: now}
+			db := &receivedQueue{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.queueID)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
-			fillIgnoreReceivedQueueField(actual, now())
 			assert.Equal(t, tt.want.queue, actual)
 		})
 	}
@@ -95,14 +94,14 @@ func TestReceivedQueue_Create(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, receivedQueueTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	q := testReceivedQueue("queue-id", now())
 
 	type args struct {
@@ -113,13 +112,13 @@ func TestReceivedQueue_Create(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				queue: q,
 			},
@@ -129,8 +128,8 @@ func TestReceivedQueue_Create(t *testing.T) {
 		},
 		{
 			name: "failed to duplicate entry",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				err = m.db.DB.Create(&q).Error
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+				err = db.DB.Create(&q).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -147,11 +146,12 @@ func TestReceivedQueue_Create(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, receivedQueueTable)
+			err := delete(ctx, receivedQueueTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &receivedQueue{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &receivedQueue{db: db, now: now}
 			err = db.Create(ctx, tt.args.queue)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -164,14 +164,14 @@ func TestReceivedQueue_Update(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, receivedQueueTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	q := testReceivedQueue("queue-id", now())
 
 	type args struct {
@@ -183,14 +183,14 @@ func TestReceivedQueue_Update(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				err = m.db.DB.Create(&q).Error
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+				err = db.DB.Create(&q).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -203,7 +203,7 @@ func TestReceivedQueue_Update(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				queueID: "queue-id",
 				done:    true,
@@ -219,11 +219,12 @@ func TestReceivedQueue_Update(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, receivedQueueTable)
+			err := delete(ctx, receivedQueueTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &receivedQueue{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &receivedQueue{db: db, now: now}
 			err = db.UpdateDone(ctx, tt.args.queueID, tt.args.done)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -242,13 +243,4 @@ func testReceivedQueue(id string, now time.Time) *entity.ReceivedQueue {
 	}
 	_ = q.FillJSON()
 	return q
-}
-
-func fillIgnoreReceivedQueueField(q *entity.ReceivedQueue, now time.Time) {
-	if q == nil {
-		return
-	}
-	_ = q.FillJSON()
-	q.CreatedAt = now
-	q.UpdatedAt = now
 }

@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
-	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -22,19 +22,19 @@ func TestSchedule_List(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, scheduleTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	schedules := make(entity.Schedules, 3)
 	schedules[0] = testSchedule(entity.ScheduleTypeNotification, "schedule-id01", now().Add(-time.Hour))
 	schedules[1] = testSchedule(entity.ScheduleTypeNotification, "schedule-id02", now())
 	schedules[2] = testSchedule(entity.ScheduleTypeNotification, "schedule-id03", now())
-	err = m.db.DB.Create(&schedules).Error
+	err = db.DB.Create(&schedules).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -46,13 +46,13 @@ func TestSchedule_List(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListSchedulesParams{
 					Types:    []entity.ScheduleType{entity.ScheduleTypeNotification},
@@ -75,12 +75,11 @@ func TestSchedule_List(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &schedule{db: m.db, now: now}
+			db := &schedule{db: db, now: now}
 			actual, err := db.List(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
-			fillIgnoreSchedulesField(actual, now())
 			assert.ElementsMatch(t, tt.want.schedules, actual)
 		})
 	}
@@ -92,14 +91,13 @@ func TestSchedule_UpsertProcessing(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, scheduleTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
 
 	type args struct {
 		schedule *entity.Schedule
@@ -109,13 +107,13 @@ func TestSchedule_UpsertProcessing(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success create",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				schedule: testSchedule(entity.ScheduleTypeNotification, "schedule-id", now()),
 			},
@@ -125,9 +123,9 @@ func TestSchedule_UpsertProcessing(t *testing.T) {
 		},
 		{
 			name: "success update",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				schedule := testSchedule(entity.ScheduleTypeNotification, "schedule-id", now().Add(-15*time.Minute))
-				err := m.db.DB.Create(&schedule).Error
+				err := db.DB.Create(&schedule).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -139,9 +137,9 @@ func TestSchedule_UpsertProcessing(t *testing.T) {
 		},
 		{
 			name: "not executable",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				schedule := testSchedule(entity.ScheduleTypeNotification, "schedule-id", now())
-				err := m.db.DB.Create(&schedule).Error
+				err := db.DB.Create(&schedule).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -158,11 +156,12 @@ func TestSchedule_UpsertProcessing(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, scheduleTable)
+			err := delete(ctx, scheduleTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &schedule{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &schedule{db: db, now: now}
 			err = db.UpsertProcessing(ctx, tt.args.schedule)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -175,14 +174,13 @@ func TestSchedule_UpdateDone(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, scheduleTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
 
 	type args struct {
 		messageType entity.ScheduleType
@@ -193,16 +191,16 @@ func TestSchedule_UpdateDone(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				schedule := testSchedule(entity.ScheduleTypeNotification, "schedule-id", now())
 				schedule.Status = entity.ScheduleStatusProcessing
-				err := m.db.DB.Create(&schedule).Error
+				err := db.DB.Create(&schedule).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -215,7 +213,7 @@ func TestSchedule_UpdateDone(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				messageType: entity.ScheduleTypeNotification,
 				messageID:   "schedule-id",
@@ -226,10 +224,10 @@ func TestSchedule_UpdateDone(t *testing.T) {
 		},
 		{
 			name: "already done",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				schedule := testSchedule(entity.ScheduleTypeNotification, "schedule-id", now())
 				schedule.Status = entity.ScheduleStatusDone
-				err := m.db.DB.Create(&schedule).Error
+				err := db.DB.Create(&schedule).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -247,11 +245,12 @@ func TestSchedule_UpdateDone(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, scheduleTable)
+			err := delete(ctx, scheduleTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &schedule{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &schedule{db: db, now: now}
 			err = db.UpdateDone(ctx, tt.args.messageType, tt.args.messageID)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -264,14 +263,13 @@ func TestSchedule_UpdateCancel(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, scheduleTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
 
 	type args struct {
 		messageType entity.ScheduleType
@@ -282,17 +280,17 @@ func TestSchedule_UpdateCancel(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				schedule := testSchedule(entity.ScheduleTypeNotification, "schedule-id", now().Add(-15*time.Minute))
 				schedule.Status = entity.ScheduleStatusProcessing
 				schedule.Count = 2
-				err := m.db.DB.Create(&schedule).Error
+				err := db.DB.Create(&schedule).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -305,7 +303,7 @@ func TestSchedule_UpdateCancel(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				messageType: entity.ScheduleTypeNotification,
 				messageID:   "schedule-id",
@@ -316,10 +314,10 @@ func TestSchedule_UpdateCancel(t *testing.T) {
 		},
 		{
 			name: "should not cancel",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
 				schedule := testSchedule(entity.ScheduleTypeNotification, "schedule-id", now())
 				schedule.Status = entity.ScheduleStatusDone
-				err := m.db.DB.Create(&schedule).Error
+				err := db.DB.Create(&schedule).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -337,11 +335,12 @@ func TestSchedule_UpdateCancel(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, scheduleTable)
+			err := delete(ctx, scheduleTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
 
-			db := &schedule{db: m.db, now: now}
+			tt.setup(ctx, t, db)
+
+			db := &schedule{db: db, now: now}
 			err = db.UpdateCancel(ctx, tt.args.messageType, tt.args.messageID)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -357,20 +356,5 @@ func testSchedule(typ entity.ScheduleType, id string, now time.Time) *entity.Sch
 		SentAt:      now,
 		CreatedAt:   now,
 		UpdatedAt:   now,
-	}
-}
-
-func fillIgnoreScheduleField(s *entity.Schedule, now time.Time) {
-	if s == nil {
-		return
-	}
-	s.SentAt = now
-	s.CreatedAt = now
-	s.UpdatedAt = now
-}
-
-func fillIgnoreSchedulesField(ss entity.Schedules, now time.Time) {
-	for i := range ss {
-		fillIgnoreScheduleField(ss[i], now)
 	}
 }
