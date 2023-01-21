@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
-	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -22,19 +22,19 @@ func TestContact_List(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, contactTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	contacts := make(entity.Contacts, 3)
 	contacts[0] = testContact("contact-id01", now())
 	contacts[1] = testContact("contact-id02", now())
 	contacts[2] = testContact("contact-id03", now())
-	err = m.db.DB.Create(&contacts).Error
+	err = db.DB.Create(&contacts).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -46,13 +46,13 @@ func TestContact_List(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListContactsParams{
 					Limit:  2,
@@ -66,7 +66,7 @@ func TestContact_List(t *testing.T) {
 		},
 		{
 			name:  "success with sort",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListContactsParams{
 					Orders: []*ListContactsOrder{
@@ -88,12 +88,11 @@ func TestContact_List(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &contact{db: m.db, now: now}
+			db := &contact{db: db, now: now}
 			actual, err := db.List(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
-			fillIgnoreContactsField(actual, now())
 			assert.ElementsMatch(t, tt.want.contacts, actual)
 		})
 	}
@@ -105,19 +104,19 @@ func TestContact_Count(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, contactTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	contacts := make(entity.Contacts, 3)
 	contacts[0] = testContact("contact-id01", now())
 	contacts[1] = testContact("contact-id02", now())
 	contacts[2] = testContact("contact-id03", now())
-	err = m.db.DB.Create(&contacts).Error
+	err = db.DB.Create(&contacts).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -129,13 +128,13 @@ func TestContact_Count(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListContactsParams{},
 			},
@@ -153,9 +152,9 @@ func TestContact_Count(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &contact{db: m.db, now: now}
+			db := &contact{db: db, now: now}
 			actual, err := db.Count(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.total, actual)
@@ -169,16 +168,16 @@ func TestContact_Get(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, contactTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	c := testContact("contact-id", now())
-	err = m.db.DB.Create(&c).Error
+	err = db.DB.Create(&c).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -190,13 +189,13 @@ func TestContact_Get(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				contactID: "contact-id",
 			},
@@ -207,7 +206,7 @@ func TestContact_Get(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				contactID: "other-id",
 			},
@@ -225,16 +224,15 @@ func TestContact_Get(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &contact{db: m.db, now: now}
+			db := &contact{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.contactID)
 			if tt.want.hasErr {
 				assert.Error(t, err)
 				return
 			}
 			assert.NoError(t, err)
-			fillIgnoreContactField(actual, now())
 			assert.Equal(t, tt.want.contact, actual)
 		})
 	}
@@ -246,14 +244,14 @@ func TestContact_Create(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, contactTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	c := testContact("contact-id", now())
 
 	type args struct {
@@ -264,13 +262,13 @@ func TestContact_Create(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				contact: c,
 			},
@@ -280,8 +278,8 @@ func TestContact_Create(t *testing.T) {
 		},
 		{
 			name: "failed to duplicate entry",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				err = m.db.DB.Create(&c).Error
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+				err = db.DB.Create(&c).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -298,11 +296,11 @@ func TestContact_Create(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, contactTable)
+			err := delete(ctx, contactTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &contact{db: m.db, now: now}
+			db := &contact{db: db, now: now}
 			err = db.Create(ctx, tt.args.contact)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -315,14 +313,14 @@ func TestContact_Update(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, contactTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	c := testContact("contact-id", now())
 
 	type args struct {
@@ -334,14 +332,14 @@ func TestContact_Update(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				err = m.db.DB.Create(&c).Error
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+				err = db.DB.Create(&c).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -358,7 +356,7 @@ func TestContact_Update(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				contactID: "contact-id",
 				params: &UpdateContactParams{
@@ -378,11 +376,11 @@ func TestContact_Update(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, contactTable)
+			err := delete(ctx, contactTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &contact{db: m.db, now: now}
+			db := &contact{db: db, now: now}
 			err = db.Update(ctx, tt.args.contactID, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -395,14 +393,14 @@ func TestContact_Delete(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, contactTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	c := testContact("contact-id", now())
 
 	type args struct {
@@ -413,14 +411,14 @@ func TestContact_Delete(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {
-				err = m.db.DB.Create(&c).Error
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+				err = db.DB.Create(&c).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -432,7 +430,7 @@ func TestContact_Delete(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				contactID: "contact-id",
 			},
@@ -447,11 +445,11 @@ func TestContact_Delete(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := m.dbDelete(ctx, contactTable)
+			err := delete(ctx, contactTable)
 			require.NoError(t, err)
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &contact{db: m.db, now: now}
+			db := &contact{db: db, now: now}
 			err = db.Delete(ctx, tt.args.contactID)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
@@ -471,19 +469,5 @@ func testContact(id string, now time.Time) *entity.Contact {
 		Note:        "対応者のメモです",
 		CreatedAt:   now,
 		UpdatedAt:   now,
-	}
-}
-
-func fillIgnoreContactField(c *entity.Contact, now time.Time) {
-	if c == nil {
-		return
-	}
-	c.CreatedAt = now
-	c.UpdatedAt = now
-}
-
-func fillIgnoreContactsField(cs entity.Contacts, now time.Time) {
-	for i := range cs {
-		fillIgnoreContactField(cs[i], now)
 	}
 }

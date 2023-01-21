@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
-	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -22,16 +22,16 @@ func TestPushTemplate_Get(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m, err := newMocks(ctrl)
-	require.NoError(t, err)
-	current := jst.Date(2022, 1, 2, 18, 30, 0, 0)
+	db := dbClient
 	now := func() time.Time {
 		return current
 	}
 
-	_ = m.dbDelete(ctx, pushTemplateTable)
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
 	tmpl := testPushTemplate("message-id", now())
-	err = m.db.DB.Create(&tmpl).Error
+	err = db.DB.Create(&tmpl).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -43,13 +43,13 @@ func TestPushTemplate_Get(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, m *mocks)
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				messageID: "message-id",
 			},
@@ -60,7 +60,7 @@ func TestPushTemplate_Get(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, m *mocks) {},
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				messageID: "other-id",
 			},
@@ -78,16 +78,15 @@ func TestPushTemplate_Get(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			tt.setup(ctx, t, m)
+			tt.setup(ctx, t, db)
 
-			db := &pushTemplate{db: m.db, now: now}
+			db := &pushTemplate{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.messageID)
 			if tt.want.hasErr {
 				assert.Error(t, err)
 				return
 			}
 			assert.NoError(t, err)
-			fillIgnorePushTemplateField(actual, now())
 			assert.Equal(t, tt.want.template, actual)
 		})
 	}
@@ -102,12 +101,4 @@ func testPushTemplate(id string, now time.Time) *entity.PushTemplate {
 		CreatedAt:     now,
 		UpdatedAt:     now,
 	}
-}
-
-func fillIgnorePushTemplateField(t *entity.PushTemplate, now time.Time) {
-	if t == nil {
-		return
-	}
-	t.CreatedAt = now
-	t.UpdatedAt = now
 }
