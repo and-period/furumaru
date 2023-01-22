@@ -7,6 +7,7 @@ import {
   minLength as _minLength,
   maxLength as _maxLength,
   minValue as _minValue,
+  maxValue as _maxValue,
   sameAs as _sameAs,
 } from '@vuelidate/validators'
 
@@ -91,6 +92,17 @@ const minValue = (min: string | number | Ref<number> | Ref<string>) =>
   )
 
 /**
+ * 最大地のバリデーションルールをラップする関数
+ * @param min
+ * @returns
+ */
+const maxValue = (max: string | number | Ref<number> | Ref<string>) =>
+  helpers.withMessage(
+    ({ $params }: MessageProps) => `${$params.max}以下で入力してください。`,
+    _maxValue(max)
+  )
+
+/**
  * 入力値が別のプロパティとの一致しているかのバリデーションルールをラップする関数
  * @param equalTo
  * @param otherName
@@ -111,5 +123,6 @@ export {
   minLength,
   maxLength,
   minValue,
+  maxValue,
   sameAs,
 }

@@ -23,17 +23,27 @@
         </div>
 
         <v-data-table
-          v-model="selectedProducts"
           :headers="headers"
           :items="products"
-          show-select
           no-data-text="登録されている商品がありません。"
           :items-per-page.sync="itemsPerPage"
           :server-items-length="totalItems"
           :footer-props="options"
           @update:items-per-page="handleUpdateItemsPerPage"
           @update:page="handleUpdatePage"
-        />
+          @click:row="handleRowClick"
+        >
+          <template #[`item.media`]="{ item }">
+            <v-avatar tile>
+              <v-img contain :src="item.media.find((m) => m.isThumbnail).url" />
+            </v-avatar>
+          </template>
+          <template #[`item.public`]="{ item }">
+            <v-chip :color="item.public ? 'primary' : 'warning'">
+              {{ item.public ? '公開' : '非公開' }}
+            </v-chip>
+          </template>
+        </v-data-table>
       </v-card-text>
     </v-card>
   </div>
@@ -48,24 +58,11 @@ import {
   computed,
   watch,
 } from '@nuxtjs/composition-api'
+import { DataTableHeader } from 'vuetify'
 
 import { usePagination } from '~/lib/hooks/'
 import { useProductStore } from '~/store/product'
-
-interface IProduct {
-  id: string
-  name: string
-  description: string
-  public: 0 | 1
-  type: string
-  price: number
-}
-
-interface DataTableHeader {
-  text: string
-  value: string
-  sortable?: boolean
-}
+import { ProductsResponseProductsInner } from '~/types/api'
 
 export default defineComponent({
   setup() {
@@ -101,21 +98,28 @@ export default defineComponent({
 
     const searchWord = ref<string>('')
 
+    const handleRowClick = (
+      _: any,
+      { item }: { item: ProductsResponseProductsInner }
+    ): void => {
+      router.push(`/products/${item.id}`)
+    }
+
     const handleClickAddBtn = () => {
       router.push('/products/add')
     }
 
     const headers: DataTableHeader[] = [
       {
-        text: 'id',
-        value: 'id',
+        text: '',
+        value: 'media',
       },
       {
         text: '商品名',
         value: 'name',
       },
       {
-        text: '公開',
+        text: 'ステータス',
         value: 'public',
       },
       {
@@ -126,9 +130,23 @@ export default defineComponent({
         text: '価格',
         value: 'price',
       },
+      {
+        text: '在庫',
+        value: 'inventory',
+      },
+      {
+        text: 'ジャンル',
+        value: 'categoryName',
+      },
+      {
+        text: '品目',
+        value: 'productTypeName',
+      },
+      {
+        text: '農園名',
+        value: 'storeName',
+      },
     ]
-
-    const selectedProducts = ref<IProduct[]>([])
 
     return {
       fetchState,
@@ -140,8 +158,8 @@ export default defineComponent({
       itemsPerPage,
       handleUpdateItemsPerPage,
       handleUpdatePage,
+      handleRowClick,
       options,
-      selectedProducts,
     }
   },
 })
