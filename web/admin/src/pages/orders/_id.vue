@@ -38,15 +38,15 @@
                 </v-chip>
               </v-row>
             </v-container>
-              <v-text-field
-                class="mt-4"
-                name="total"
-                label="支払い合計金額"
-                :value="formData.payment.total"
-                readonly
-              >
-                <template #append>円</template>
-              </v-text-field>
+            <v-text-field
+              class="mt-4"
+              name="total"
+              label="支払い合計金額"
+              :value="formData.payment.total"
+              readonly
+            >
+              <template #append>円</template>
+            </v-text-field>
             <div class="d-flex align-center">
               <v-text-field
                 class="mr-4"
@@ -85,7 +85,7 @@
                 <template #append>円</template>
               </v-text-field>
             </div>
-              <p class="text-h6">請求先情報</p>
+            <p class="text-h6">請求先情報</p>
             <div class="d-flex align-center">
               <v-text-field
                 class="mr-4"
@@ -101,18 +101,18 @@
                 readonly
               ></v-text-field>
             </div>
-              <v-text-field
-                name="phoneNumber"
-                label="電話番号"
-                :value="convertPhone(formData.payment.phoneNumber)"
-                readonly
-              ></v-text-field>
-              <v-text-field
-                name="postalCode"
-                label="郵便番号"
-                :value="formData.payment.postalCode"
-                readonly
-              ></v-text-field>
+            <v-text-field
+              name="phoneNumber"
+              label="電話番号"
+              :value="convertPhone(formData.payment.phoneNumber)"
+              readonly
+            ></v-text-field>
+            <v-text-field
+              name="postalCode"
+              label="郵便番号"
+              :value="formData.payment.postalCode"
+              readonly
+            ></v-text-field>
             <div class="d-flex align-center">
               <v-text-field
                 class="mr-4"
@@ -127,17 +127,46 @@
                 :value="formData.payment.city"
                 readonly
               ></v-text-field>
-              </div>
-              <v-text-field
-                name="addressLine1"
-                label="町名・番地"
-                :value="formData.payment.addressLine1"
-              ></v-text-field>
-              <v-text-field
-                name="addressLine2"
-                label="ビル名・号室など"
-                :value="formData.payment.addressLine2"
-              ></v-text-field>
+            </div>
+            <v-text-field
+              name="addressLine1"
+              label="町名・番地"
+              :value="formData.payment.addressLine1"
+            ></v-text-field>
+            <v-text-field
+              name="addressLine2"
+              label="ビル名・号室など"
+              :value="formData.payment.addressLine2"
+            ></v-text-field>
+            <p class="text-h6">キャンセル情報</p>
+            <v-row class="mt-4">
+                <span class="mx-4">注文キャンセル状況:</span>
+                <v-chip
+                  small
+                  :color="getRefundStatusColor(formData.refund.canceled)"
+                >
+                  {{ getRefundStatus(formData.refund.canceled) }}
+                </v-chip>
+              </v-row>
+            <v-text-field
+              class="mt-8"
+              name="type"
+              label="注文キャンセル理由"
+              :value="getRefundType(formData.refund.type)"
+              readonly
+            ></v-text-field>
+            <v-textarea
+              name="reason"
+              label="注文キャンセル理由詳細"
+              :value="formData.refund.reason"
+              readonly
+            ></v-textarea>
+            <v-text-field
+              name="refundTotal"
+              label="返済金額"
+              :value="formData.refund.total"
+              readonly
+            ></v-text-field>
           </v-card-text>
         </v-card>
         <v-tab-item value="tab-orderInformation">
@@ -153,7 +182,7 @@ import { ref, useFetch, useRoute } from '@nuxtjs/composition-api'
 import { defineComponent, reactive } from '@vue/composition-api'
 
 import { useOrderStore } from '~/store/orders'
-import { OrderResponse, PaymentMethodType, PaymentStatus } from '~/types/api'
+import { OrderRefundType, OrderResponse, PaymentMethodType, PaymentStatus } from '~/types/api'
 import { Order } from '~/types/props/order'
 
 export default defineComponent({
@@ -244,6 +273,7 @@ export default defineComponent({
       const res = await orderStore.getOrder(id)
       formData.userName = res.userName
       formData.payment = res.payment
+      formData.refund = res.refund
     })
 
     const getMethodType = (status: PaymentMethodType): string => {
@@ -278,6 +308,13 @@ export default defineComponent({
       }
     }
 
+    const getRefundType = (status: OrderRefundType): string => {
+      switch (status) {
+        default:
+          return '不明'
+      }
+    }
+
     const getPaymentStatusColor = (status: PaymentStatus): string => {
       switch (status) {
         case PaymentStatus.UNPAID:
@@ -297,6 +334,22 @@ export default defineComponent({
       }
     }
 
+    const getRefundStatus = (status: boolean): string => {
+      if (status) {
+        return 'キャンセル'
+      } else {
+        return '注文受付済み'
+      }
+    }
+
+    const getRefundStatusColor = (status: boolean): string => {
+      if (status) {
+          return 'error'
+      } else {
+          return 'primary'
+      }
+    }
+
     const convertPhone = (phoneNumber: string): string => {
       return phoneNumber.replace('+81', '0')
     }
@@ -308,7 +361,10 @@ export default defineComponent({
       fetchState,
       getMethodType,
       getPaymentStatus,
+      getRefundType,
       getPaymentStatusColor,
+      getRefundStatusColor,
+      getRefundStatus,
       convertPhone,
     }
   },
