@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <div>
     <organisms-the-app-header
       :cart-item-count="0"
       :cart-empty-message="t('cartEmptyMessage')"
@@ -11,15 +11,10 @@
         {{ t('becomeShopOwner') }}
       </nuxt-link>
     </organisms-the-app-header>
-    <v-main class="bg-color">
-      <v-container>
-        <slot />
-      </v-container>
-    </v-main>
-    <v-footer app>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
-    </v-footer>
-  </v-app>
+    <main class="bg-color">
+      <slot />
+    </main>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -65,7 +60,7 @@ const headerMenuList = computed<HeaderMenuItem[]>(() => [
 
 <style scoped>
 .bg-color {
-  background-color: #faf2e2;
+  background-color: #f9f6ea;
 }
 
 .header-link {
