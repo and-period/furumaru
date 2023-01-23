@@ -1,7 +1,7 @@
 <template>
   <div>
     <atoms-the-marche-logo class="text-center mb-6" />
-    <v-card variant="outlined" class="mx-auto" :max-width="mobile ? 360 : 440">
+    <v-card variant="outlined" class="mx-auto">
       <v-card-text class="pa-md-12 pa-sm-4">
         <form @submit.prevent="handleSubmit">
           <v-text-field type="tel" :label="t('tel')" variant="outlined" dense required />
@@ -21,8 +21,6 @@
 </template>
 
 <script lang="ts" setup>
-import { useDisplay } from 'vuetify'
-
 import { I18n } from '~/types/locales'
 
 definePageMeta({
@@ -31,7 +29,6 @@ definePageMeta({
 
 const router = useRouter()
 const { $i18n } = useNuxtApp()
-const { mobile } = useDisplay()
 
 const t = (str: keyof I18n['auth']['signUp']) => {
   return $i18n.t(`auth.signUp.${str}`)
