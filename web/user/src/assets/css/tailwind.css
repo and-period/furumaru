@@ -1,0 +1,10 @@
+@tailwind base;
+
+@layer base {
+  html {
+    @apply text-typography;
+  }
+}
+
+@tailwind components;
+@tailwind utilities;
