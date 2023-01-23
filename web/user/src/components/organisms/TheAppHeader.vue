@@ -1,29 +1,5 @@
 <template>
-  <v-app-bar flat color="base">
-    <v-toolbar-title class="text-accent text-h6">Online Marche</v-toolbar-title>
-    <v-spacer />
-    <slot />
-    <v-tooltip location="bottom">
-      <template #activator="{ on, attrs }">
-        <v-btn icon class="mr-4" v-bind="attrs" v-on="on" @click="handleCartClick">
-          <v-badge :content="cartContent" :value="!cartIsEmpty">
-            <v-icon>mdi-cart-outline</v-icon>
-          </v-badge>
-        </v-btn>
-      </template>
-      <span>{{ cartIsEmpty ? props.cartEmptyMessage : props.cartNotEmptyMessage }}</span>
-    </v-tooltip>
-    <v-menu>
-      <template #activator="{ on }">
-        <molecules-the-header-menu-button :img-src="props.profileImgUrl" v-on="on" />
-      </template>
-      <v-list>
-        <v-list-item v-for="(menuItem, i) in props.menuList" :key="i" @click="menuItem.onClick">
-          <v-list-item-title>{{ menuItem.name }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
-  </v-app-bar>
+  <div color="base">aaa</div>
 </template>
 
 <script lang="ts" setup>

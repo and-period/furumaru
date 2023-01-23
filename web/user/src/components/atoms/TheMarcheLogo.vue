@@ -1,14 +1,3 @@
 <template>
-  <p class="brand-logo">&amp;. Marche</p>
+  <img src="~/assets/img/logo.svg" height="80" width="250" alt="furumaru logo" class="block m-auto" />
 </template>
-
-<style lang="scss" scoped>
-.brand-logo {
-  font-size: 32px;
-  font-family: 'STIX Two Text';
-  font-style: normal;
-  font-weight: 400;
-  line-height: 40px;
-  margin: 0;
-}
-</style>

@@ -1,9 +1,8 @@
 <template>
-  <v-btn class="menu-btn" variant="outlined" @click="handleClick">
-    <v-icon class="mr-1" color="grey">mdi-menu</v-icon>
-    <v-img v-if="props.imgSrc" class="profile-img" alt="profile img" :src="props.imgSrc" width="24" />
-    <v-icon v-else color="grey">mdi-account-circle</v-icon>
-  </v-btn>
+  <btn class="menu-btn" variant="outlined" @click="handleClick">
+    <img v-if="props.imgSrc" class="profile-img" alt="profile img" :src="props.imgSrc" width="24" />
+    <icon v-else color="grey">mdi-account-circle</icon>
+  </btn>
 </template>
 
 <script lang="ts" setup>
