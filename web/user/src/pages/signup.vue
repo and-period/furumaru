@@ -15,7 +15,9 @@
       </v-card-text>
     </v-card>
     <div class="text-center mt-10">
-      <nuxt-link :to="localePath('/signin')">{{ t('alreadyHas') }}</nuxt-link>
+      <nuxt-link :to="localePath('/signin')">
+        {{ t('alreadyHas') }}
+      </nuxt-link>
     </div>
   </div>
 </template>
@@ -24,7 +26,7 @@
 import { I18n } from '~/types/locales'
 
 definePageMeta({
-  layout: 'auth',
+  layout: 'auth'
 })
 
 const router = useRouter()

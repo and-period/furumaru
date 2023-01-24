@@ -1,7 +1,9 @@
 <template>
   <btn class="menu-btn" variant="outlined" @click="handleClick">
-    <img v-if="props.imgSrc" class="profile-img" alt="profile img" :src="props.imgSrc" width="24" />
-    <icon v-else color="grey">mdi-account-circle</icon>
+    <img v-if="props.imgSrc" class="profile-img" alt="profile img" :src="props.imgSrc" width="24">
+    <icon v-else color="grey">
+      mdi-account-circle
+    </icon>
   </btn>
 </template>
 
@@ -10,13 +12,11 @@ const props = defineProps({
   imgSrc: {
     type: String,
     required: false,
-    default: null,
-  },
+    default: null
+  }
 })
 
-const emits = defineEmits<{
-  (name: 'click', e: Event): void
-}>()
+const emits = defineEmits<{(name: 'click', e: Event): void}>()
 
 const handleClick = (e: Event) => {
   emits('click', e)

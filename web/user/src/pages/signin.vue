@@ -4,7 +4,9 @@
     <the-card>
       <the-card-title>ログイン</the-card-title>
       <the-card-content class="sm:px-16 sm:px-6 text-center">
-        <the-alert class="mb-2">メールアドレスかパスワードが間違っています。</the-alert>
+        <the-alert class="mb-2">
+          メールアドレスかパスワードが間違っています。
+        </the-alert>
         <the-stack>
           <the-sign-in-form
             v-model="formData"
@@ -18,7 +20,9 @@
           />
 
           <p class="underline my-3">
-            <nuxt-link to="/">{{ t('forgetPasswordLink') }}</nuxt-link>
+            <nuxt-link to="/">
+              {{ t('forgetPasswordLink') }}
+            </nuxt-link>
           </p>
 
           <the-google-auth-button @click="handleClickGoogleSingInButton" />
@@ -26,8 +30,10 @@
           <the-line-auth-button @click="handleClickLineSingInButton" />
 
           <p class="my-2">
-            {{ t('dontHaveAccount') }}<br />
-            <nuxt-link :to="localePath('/signup')" class="underline">{{ t('signUpLink') }}</nuxt-link>
+            {{ t('dontHaveAccount') }}<br>
+            <nuxt-link :to="localePath('/signup')" class="underline">
+              {{ t('signUpLink') }}
+            </nuxt-link>
           </p>
         </the-stack>
       </the-card-content>
@@ -40,7 +46,7 @@ import { SignInRequest } from '~/types/api'
 import { I18n } from '~/types/locales'
 
 definePageMeta({
-  layout: 'auth',
+  layout: 'auth'
 })
 
 const { $i18n } = useNuxtApp()
@@ -61,6 +67,6 @@ const handleClickLineSingInButton = () => {
 
 const formData = reactive<SignInRequest>({
   username: '',
-  password: '',
+  password: ''
 })
 </script>

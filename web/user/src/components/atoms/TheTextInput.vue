@@ -15,13 +15,14 @@ const props = withDefaults(defineProps<Props>(), {
   required: false,
   withLabel: true,
   error: false,
-  errorMessage: '',
+  message: undefined,
+  errorMessage: ''
 })
-const emits = defineEmits<{ (e: 'update:modelValue', val: string | number): void }>()
+const emits = defineEmits<{(e: 'update:modelValue', val: string | number): void }>()
 
 const value = computed({
   get: () => props.modelValue,
-  set: (val: string | number) => emits('update:modelValue', val),
+  set: (val: string | number) => emits('update:modelValue', val)
 })
 
 /**
@@ -64,7 +65,7 @@ const viewMessage = computed(() => {
           'form-control block w-full px-2 bg-transparent border-b border-text-main focus:outline-none leading-10': true,
           'border-b-2 border-orange': hasError,
         }"
-      />
+      >
     </div>
     <p :class="{ 'text-orange': hasError, 'text-left text-sm': true }">
       {{ viewMessage }}

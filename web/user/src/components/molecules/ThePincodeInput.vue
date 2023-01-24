@@ -8,21 +8,19 @@
 const props = defineProps({
   value: {
     type: String,
-    required: true,
+    required: true
   },
   length: {
     type: Number,
-    default: 4,
-  },
+    default: 4
+  }
 })
 
-const emits = defineEmits<{
-  (name: 'update:value', val: string): void
-}>()
+const emits = defineEmits<{(name: 'update:value', val: string): void}>()
 
 computed({
   get: () => props.value,
-  set: (val: string) => emits('update:value', val),
+  set: (val: string) => emits('update:value', val)
 })
 </script>
 

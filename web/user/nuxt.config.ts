@@ -9,16 +9,16 @@ export default defineNuxtConfig({
       titleTemplate: '%s - user',
       title: 'user',
       htmlAttrs: {
-        lang: 'ja',
+        lang: 'ja'
       },
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { hid: 'description', name: 'description', content: '' },
-        { name: 'format-detection', content: 'telephone=no' },
+        { name: 'format-detection', content: 'telephone=no' }
       ],
-      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
-    },
+      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+    }
   },
   plugins: [],
   modules: ['@nuxtjs/i18n', '@nuxtjs/tailwindcss'],
@@ -29,18 +29,18 @@ export default defineNuxtConfig({
       fallbackLocale: 'ja',
       messages: {
         ja,
-        en,
-      },
-    },
+        en
+      }
+    }
   },
   components: [
     {
       path: '~/components/',
-      pathPrefix: false,
-    },
+      pathPrefix: false
+    }
   ],
   runtimeConfig: {
-    API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:18000',
+    API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:18000'
   },
-  build: {},
+  build: {}
 })

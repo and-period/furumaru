@@ -40,21 +40,21 @@ const headerMenuList = computed<HeaderMenuItem[]>(() => [
     name: t('signUp'),
     onClick: () => {
       router.push(`${localeRef.value}/signup`)
-    },
+    }
   },
   {
     name: t('signIn'),
     onClick: () => {
       router.push(`${localeRef.value}/signin`)
-    },
+    }
   },
   {
     name: t('changeLocaleText'),
     onClick: () => {
       const targetLocale = $i18n.localeCodes.find((code: string) => code !== $i18n.locale)
       targetLocale && $i18n.setLocale(targetLocale)
-    },
-  },
+    }
+  }
 ])
 </script>
 

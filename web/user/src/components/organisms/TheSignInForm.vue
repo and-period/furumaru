@@ -13,11 +13,11 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const emits = defineEmits<{ (e: 'update:modelValue', val: SignInRequest): void; (e: 'submit'): void }>()
+const emits = defineEmits<{(e: 'update:modelValue', val: SignInRequest): void; (e: 'submit'): void }>()
 
 const formData = computed({
   get: () => props.modelValue,
-  set: (val: SignInRequest) => emits('update:modelValue', val),
+  set: (val: SignInRequest) => emits('update:modelValue', val)
 })
 
 const handleSubmit = () => {
@@ -43,7 +43,7 @@ const handleSubmit = () => {
         :label="passwordLabel"
         :placeholder="passwordPlaceholder"
         :with-label="false"
-        :errorMessage="passwordErrorMessage"
+        :error-message="passwordErrorMessage"
         type="password"
         required
       />
