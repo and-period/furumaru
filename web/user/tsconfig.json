@@ -1,5 +1,6 @@
 {
   "extends": "./.nuxt/tsconfig.json",
+  "exclude": ["./src/types/api/**"],
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
@@ -8,6 +9,6 @@
       "~~/*": ["./../*"],
       "@@/*": ["./../*"]
     },
-    "types": ["@nuxt/types", "@nuxtjs/i18n", "@types/node", "vitest/globals"]
+    "types": ["@nuxt/types", "@nuxtjs/i18n", "@types/node", "vitest/globals"],
   }
 }

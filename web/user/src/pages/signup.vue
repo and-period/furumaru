@@ -8,7 +8,7 @@
           <v-text-field type="email" :label="t('email')" variant="outlined" dense required />
           <v-text-field type="password" :label="t('password')" variant="outlined" dense required />
           <v-text-field type="password" :label="t('passwordConfirm')" variant="outlined" dense required />
-          <molecules-the-submit-button :is-mobile="mobile">
+          <molecules-the-submit-button>
             {{ t('signUp') }}
           </molecules-the-submit-button>
         </form>
@@ -30,10 +30,11 @@ definePageMeta({
 })
 
 const router = useRouter()
-const { $i18n } = useNuxtApp()
+const i18n = useI18n()
+const localePath = useLocalePath()
 
 const t = (str: keyof I18n['auth']['signUp']) => {
-  return $i18n.t(`auth.signUp.${str}`)
+  return i18n.t(`auth.signUp.${str}`)
 }
 
 const handleSubmit = () => {

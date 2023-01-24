@@ -22,18 +22,18 @@ import { I18n } from '~/types/locales'
 import { HeaderMenuItem } from '~/types/props'
 
 const router = useRouter()
-const { $i18n } = useNuxtApp()
+const i18n = useI18n()
 
 const t = (str: keyof I18n['layout']['header']) => {
-  return $i18n.t(`layout.header.${str}`)
+  return i18n.t(`layout.header.${str}`)
 }
 
 const handleCartClick = (): void => {
   console.log('NOT IMPLEMENTED')
 }
 
-const localeRef = computed<string>(() => {
-  return $i18n.locale === $i18n.defaultLocale ? '' : $i18n.locale
+const localeRef = computed(() => {
+  return i18n.locale === i18n.fallbackLocale ? '' : i18n.locale
 })
 const headerMenuList = computed<HeaderMenuItem[]>(() => [
   {
@@ -51,8 +51,8 @@ const headerMenuList = computed<HeaderMenuItem[]>(() => [
   {
     name: t('changeLocaleText'),
     onClick: () => {
-      const targetLocale = $i18n.localeCodes.find((code: string) => code !== $i18n.locale)
-      targetLocale && $i18n.setLocale(targetLocale)
+      const targetLocale = i18n.localeCodes.find((code: string) => code !== i18n.locale)
+      targetLocale && i18n.setLocale(targetLocale)
     }
   }
 ])

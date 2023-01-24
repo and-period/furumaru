@@ -49,10 +49,11 @@ definePageMeta({
   layout: 'auth'
 })
 
-const { $i18n } = useNuxtApp()
+const i18n = useI18n()
+const localePath = useLocalePath()
 
 const t = (str: keyof I18n['auth']['signIn']): string => {
-  return $i18n.t(`auth.signIn.${str}`)
+  return i18n.t(`auth.signIn.${str}`)
 }
 
 const handleClickGoogleSingInButton = () => {
