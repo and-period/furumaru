@@ -42,24 +42,6 @@ func (s *service) ListLivesByScheduleID(ctx context.Context, in *store.ListLives
 		return nil, exception.InternalError(err)
 	}
 	for i := range lives {
-		err = s.getIVSDetails(ctx, lives[i])
-		if err != nil {
-			return nil, exception.InternalError(err)
-		}
-	}
-	return lives, exception.InternalError(err)
-}
-
-func (s *service) ListLivesByScheduleID(ctx context.Context, in *store.ListLivesByScheduleIDInput) (entity.Lives, error) {
-	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
-	}
-
-	lives, err := s.db.Live.ListByScheduleID(ctx, in.ScheduleID)
-	if err != nil {
-		return nil, exception.InternalError(err)
-	}
-	for i := range lives {
 		s.getIVSDetails(ctx, lives[i])
 	}
 	return lives, exception.InternalError(err)
