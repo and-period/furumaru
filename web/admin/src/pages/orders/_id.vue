@@ -40,6 +40,13 @@
             </v-container>
             <v-text-field
               class="mt-4"
+              name="deliveredAt"
+              label="支払日時"
+              :value="getDay(formData.paidAt)"
+              readonly
+            ></v-text-field>
+            <v-text-field
+              class="mt-4"
               name="total"
               label="支払い合計金額"
               :value="formData.payment.total"
@@ -140,16 +147,22 @@
             ></v-text-field>
             <p class="text-h6">キャンセル情報</p>
             <v-row class="mt-4">
-                <span class="mx-4">注文キャンセル状況:</span>
-                <v-chip
-                  small
-                  :color="getRefundStatusColor(formData.refund.canceled)"
-                >
-                  {{ getRefundStatus(formData.refund.canceled) }}
-                </v-chip>
-              </v-row>
+              <span class="mx-4">注文キャンセル状況:</span>
+              <v-chip
+                small
+                :color="getRefundStatusColor(formData.refund.canceled)"
+              >
+                {{ getRefundStatus(formData.refund.canceled) }}
+              </v-chip>
+            </v-row>
             <v-text-field
               class="mt-8"
+              name="canceledAt"
+              label="注文キャンセル日時"
+              :value="getDay(formData.canceledAt)"
+              readonly
+            ></v-text-field>
+            <v-text-field
               name="type"
               label="注文キャンセル理由"
               :value="getRefundType(formData.refund.type)"
@@ -169,9 +182,104 @@
             ></v-text-field>
           </v-card-text>
         </v-card>
-        <v-tab-item value="tab-orderInformation">
-          <v-card elevation="0"> </v-card>
-        </v-tab-item>
+      </v-tab-item>
+      <v-tab-item value="tab-orderInformation">
+        <v-card-text>
+          <v-card elevation="0">
+            <p class="text-h6">注文情報</p>
+            <v-text-field
+              name="orderedAt"
+              label="注文日時"
+              :value="getDay(formData.orderedAt)"
+              readonly
+            ></v-text-field>
+            <v-row class="my-4">
+              <span class="mx-4">配送状況:</span>
+              <v-chip
+                small
+                :color="getFulfillmentStatusColor(formData.fulfillment.status)"
+              >
+                {{ getFulfillmentStatus(formData.fulfillment.status) }}
+              </v-chip>
+            </v-row>
+            <v-text-field
+              name="deliveredAt"
+              label="配送日時"
+              :value="getDay(formData.deliveredAt)"
+              readonly
+            ></v-text-field>
+            <v-data-table
+              :headers="headers"
+              :items="formData.items"
+              :footer-props="options"
+              no-data-text="表示する注文がありません"
+            >
+              <template #[`item.media`]="{ item }">
+                <v-avatar>
+                  <img :src="getThumnail(item.media)" />
+                </v-avatar>
+              </template>
+            </v-data-table>
+            <v-text-field
+              name="trackingNumber"
+              label="伝票番号"
+              :value="formData.fulfillment.trackingNumber"
+              readonly
+            ></v-text-field>
+            <div>
+              <v-text-field
+                class="mr-4"
+                name="lastname"
+                label="姓"
+                :value="formData.fulfillment.lastname"
+                readonly
+              ></v-text-field>
+              <v-text-field
+                name="firstname"
+                label="名"
+                :value="formData.fulfillment.firstname"
+                readonly
+              ></v-text-field>
+            </div>
+            <v-text-field
+              name="phoneNumber"
+              label="電話番号"
+              :value="convertPhone(formData.fulfillment.phoneNumber)"
+              readonly
+            ></v-text-field>
+            <v-text-field
+              name="postalCode"
+              label="郵便番号"
+              :value="formData.fulfillment.postalCode"
+              readonly
+            ></v-text-field>
+            <div class="d-flex align-center">
+              <v-text-field
+                class="mr-4"
+                name="prefecture"
+                label="都道府県"
+                :value="formData.fulfillment.prefecture"
+                readonly
+              ></v-text-field>
+              <v-text-field
+                name="city"
+                label="市区町村"
+                :value="formData.fulfillment.city"
+                readonly
+              ></v-text-field>
+            </div>
+            <v-text-field
+              name="addressLine1"
+              label="町名・番地"
+              :value="formData.fulfillment.addressLine1"
+            ></v-text-field>
+            <v-text-field
+              name="addressLine2"
+              label="ビル名・号室など"
+              :value="formData.fulfillment.addressLine2"
+            ></v-text-field>
+          </v-card>
+        </v-card-text>
       </v-tab-item>
     </v-tabs-items>
   </div>
@@ -180,10 +288,19 @@
 <script lang="ts">
 import { ref, useFetch, useRoute } from '@nuxtjs/composition-api'
 import { defineComponent, reactive } from '@vue/composition-api'
+import dayjs from 'dayjs'
+import { DataTableHeader } from 'vuetify'
 
+import { usePagination } from '~/lib/hooks'
 import { useOrderStore } from '~/store/orders'
-import { OrderRefundType, OrderResponse, PaymentMethodType, PaymentStatus } from '~/types/api'
-import { Order } from '~/types/props/order'
+import {
+  FulfillmentStatus,
+  OrderRefundType,
+  OrderResponse,
+  PaymentMethodType,
+  PaymentStatus,
+} from '~/types/api'
+import { Order, OrderItems } from '~/types/props/order'
 
 export default defineComponent({
   setup() {
@@ -192,6 +309,14 @@ export default defineComponent({
     const id = route.value.params.id
 
     const selector = ref<string>('shippingInformation')
+
+    const {
+      updateCurrentPage,
+      itemsPerPage,
+      handleUpdateItemsPerPage,
+      options,
+      offset,
+    } = usePagination()
 
     const items: Order[] = [
       { name: '支払い情報', value: 'shippingInformation' },
@@ -273,8 +398,41 @@ export default defineComponent({
       const res = await orderStore.getOrder(id)
       formData.userName = res.userName
       formData.payment = res.payment
+      formData.fulfillment = res.fulfillment
       formData.refund = res.refund
+      formData.items = res.items
+      formData.orderedAt = res.orderedAt
+      formData.paidAt = res.paidAt
+      formData.deliveredAt = res.deliveredAt
+      formData.canceledAt = res.canceledAt
     })
+
+    const headers: DataTableHeader[] = [
+      {
+        text: 'サムネイル',
+        value: 'media',
+      },
+      {
+        text: '商品名',
+        value: 'name',
+      },
+      {
+        text: '購入価格',
+        value: 'price',
+      },
+      {
+        text: '購入数量',
+        value: 'quantity',
+      },
+      {
+        text: '重量',
+        value: 'weight',
+      },
+    ]
+
+    const getDay = (unixTime: number): string => {
+      return dayjs.unix(unixTime).format('YYYY/MM/DD HH:mm')
+    }
 
     const getMethodType = (status: PaymentMethodType): string => {
       switch (status) {
@@ -344,9 +502,31 @@ export default defineComponent({
 
     const getRefundStatusColor = (status: boolean): string => {
       if (status) {
-          return 'error'
+        return 'error'
       } else {
+        return 'primary'
+      }
+    }
+
+    const getFulfillmentStatus = (status: FulfillmentStatus): string => {
+      switch (status) {
+        case FulfillmentStatus.UNFULFILLED:
+          return '未配送'
+        case FulfillmentStatus.FULFILLED:
+          return '配送済み'
+        default:
+          return '不明'
+      }
+    }
+
+    const getFulfillmentStatusColor = (status: FulfillmentStatus): string => {
+      switch (status) {
+        case FulfillmentStatus.UNFULFILLED:
+          return 'error'
+        case FulfillmentStatus.FULFILLED:
           return 'primary'
+        default:
+          return 'unkown'
       }
     }
 
@@ -354,7 +534,16 @@ export default defineComponent({
       return phoneNumber.replace('+81', '0')
     }
 
+    // isThumnailがtrueのものを引っ掛けて商品でサムネイルに設定されているURLを探す
+    const getThumnail = (medias: OrderItems[]): string => {
+      const orderItem: OrderItems[] = medias.filter((item) => item.isThumbnail)
+      return orderItem[0].url
+    }
+
+    // TODO: boxSize, shippingMethod追加
+
     return {
+      headers,
       items,
       formData,
       selector,
@@ -366,6 +555,15 @@ export default defineComponent({
       getRefundStatusColor,
       getRefundStatus,
       convertPhone,
+      updateCurrentPage,
+      itemsPerPage,
+      handleUpdateItemsPerPage,
+      options,
+      offset,
+      getThumnail,
+      getDay,
+      getFulfillmentStatusColor,
+      getFulfillmentStatus,
     }
   },
 })
