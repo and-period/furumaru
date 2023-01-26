@@ -1,78 +1,59 @@
 <template>
-  <div class="text-center px-4">
-    <atoms-the-marche-logo class="mb-6" />
-    <v-row justify="center">
-      <v-col cols="12" sm="12" md="6">
-        <v-form>
-          <v-text-field :label="t('email')" :placeholder="t('email')" variant="outlined" required type="email" dense />
-          <v-text-field :label="t('password')" :placeholder="t('password')" variant="outlined" required dense />
-          <div>
-            <nuxt-link to="/">{{ t('forgetPasswordLink') }}</nuxt-link>
-          </div>
-          <molecules-the-submit-button class="mt-6" :is-mobile="mobile">{{ t('signIn') }}</molecules-the-submit-button>
-        </v-form>
-      </v-col>
-    </v-row>
-    <v-row justify="center">
-      <v-col cols="12" sm="12" md="6">
-        <atoms-the-stack :space="32" class="my-10 px-4">
-          <v-btn
-            variant="outlined"
-            block
-            class="base rounded-xl google-btn"
-            :height="mobile ? 40 : 64"
-            :size="!mobile ? 'x-large' : undefined"
-            @click="handleClickGoogleSingInButton"
-          >
-            <img src="~/assets/img/g-normal.png" height="18" width="18" alt="google icon" class="mr-6" />
-            Log In with Google
-          </v-btn>
-          <v-btn
-            block
-            variant="outlined"
-            class="facebook text-white rounded-xl"
-            :height="mobile ? 40 : 64"
-            :size="!mobile ? 'x-large' : undefined"
-            @click="handleClickFacebookSingInButton"
-          >
-            <v-icon start class="mr-6">fa-brands fa-facebook</v-icon>
-            Log In with Facebook
-          </v-btn>
-          <v-btn
-            block
-            variant="outlined"
-            class="line text-white rounded-xl"
-            :height="mobile ? 40 : 64"
-            :size="!mobile ? 'x-large' : undefined"
-            @click="handleClickLineSingInButton"
-          >
-            <v-icon start class="mr-6">fa-brands fa-line</v-icon>
-            Log In with LINE
-          </v-btn>
-        </atoms-the-stack>
-      </v-col>
-    </v-row>
-    <p>
-      {{ t('dontHaveAccount') }}
-      <nuxt-link :to="localePath('/signup')">{{ t('signUpLink') }}</nuxt-link>
-    </p>
+  <div class="block m-auto sm:min-w-[560px]">
+    <the-marche-logo class="mb-10" />
+    <the-card>
+      <the-card-title>ログイン</the-card-title>
+      <the-card-content class="sm:px-16 sm:px-6 text-center">
+        <the-alert class="mb-2">
+          メールアドレスかパスワードが間違っています。
+        </the-alert>
+        <the-stack>
+          <the-sign-in-form
+            v-model="formData"
+            :button-text="t('signIn')"
+            :username-label="t('email')"
+            :username-placeholder="t('email')"
+            username-error-message=""
+            :password-label="t('password')"
+            :password-placeholder="t('password')"
+            password-error-message=""
+          />
+
+          <p class="underline my-3">
+            <nuxt-link to="/">
+              {{ t('forgetPasswordLink') }}
+            </nuxt-link>
+          </p>
+
+          <the-google-auth-button @click="handleClickGoogleSingInButton" />
+          <the-facebook-auth-button @click="handleClickFacebookSingInButton" />
+          <the-line-auth-button @click="handleClickLineSingInButton" />
+
+          <p class="my-2">
+            {{ t('dontHaveAccount') }}<br>
+            <nuxt-link :to="localePath('/signup')" class="underline">
+              {{ t('signUpLink') }}
+            </nuxt-link>
+          </p>
+        </the-stack>
+      </the-card-content>
+    </the-card>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useDisplay } from 'vuetify'
-
+import { SignInRequest } from '~/types/api'
 import { I18n } from '~/types/locales'
 
 definePageMeta({
-  layout: 'auth',
+  layout: 'auth'
 })
 
-const { $i18n } = useNuxtApp()
-const { mobile } = useDisplay()
+const i18n = useI18n()
+const localePath = useLocalePath()
 
-const t = (str: keyof I18n['auth']['signIn']) => {
-  return $i18n.t(`auth.signIn.${str}`)
+const t = (str: keyof I18n['auth']['signIn']): string => {
+  return i18n.t(`auth.signIn.${str}`)
 }
 
 const handleClickGoogleSingInButton = () => {
@@ -84,11 +65,9 @@ const handleClickFacebookSingInButton = () => {
 const handleClickLineSingInButton = () => {
   console.log('NOT IMPLEMENTED')
 }
-</script>
 
-<style lang="scss" scoped>
-.google-btn {
-  border-color: rgba(0, 0, 0, 0.3) !important;
-  color: rgba(0, 0, 0, 0.54);
-}
-</style>
+const formData = reactive<SignInRequest>({
+  username: '',
+  password: ''
+})
+</script>

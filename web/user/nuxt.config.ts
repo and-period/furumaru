@@ -9,20 +9,19 @@ export default defineNuxtConfig({
       titleTemplate: '%s - user',
       title: 'user',
       htmlAttrs: {
-        lang: 'ja',
+        lang: 'ja'
       },
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { hid: 'description', name: 'description', content: '' },
-        { name: 'format-detection', content: 'telephone=no' },
+        { name: 'format-detection', content: 'telephone=no' }
       ],
-      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
-    },
+      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+    }
   },
-  css: ['vuetify/lib/styles/main.sass', '@fortawesome/fontawesome-free/css/all.css', '~/assets/css/variables.scss'],
-  plugins: ['~/plugins/vuetify'],
-  modules: ['@nuxtjs/i18n'],
+  plugins: [],
+  modules: ['@nuxtjs/i18n', '@nuxtjs/tailwindcss'],
   i18n: {
     locales: ['ja', 'en'],
     defaultLocale: 'ja',
@@ -30,14 +29,18 @@ export default defineNuxtConfig({
       fallbackLocale: 'ja',
       messages: {
         ja,
-        en,
-      },
-    },
+        en
+      }
+    }
   },
+  components: [
+    {
+      path: '~/components/',
+      pathPrefix: false
+    }
+  ],
   runtimeConfig: {
-    API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:18000',
+    API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:18000'
   },
-  build: {
-    transpile: ['vuetify'],
-  },
+  build: {}
 })

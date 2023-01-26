@@ -1,22 +1,7 @@
-<template>
-  <v-btn
-    class="rounded-xl"
-    color="accent"
-    block
-    type="submit"
-    elevation="0"
-    :height="props.isMobile ? 40 : 64"
-    :size="!props.isMobile && 'x-large'"
-  >
-    <slot />
-  </v-btn>
-</template>
+<script lang="ts" setup></script>
 
-<script lang="ts" setup>
-const props = defineProps({
-  isMobile: {
-    type: Boolean,
-    default: false,
-  },
-})
-</script>
+<template>
+  <the-button class="bg-main w-full text-white" type="submit">
+    <slot />
+  </the-button>
+</template>
