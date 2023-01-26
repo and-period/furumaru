@@ -1,13 +1,5 @@
 <template>
-  <v-app>
-    <v-main class="d-flex justify-center align-center bg-color">
-      <slot />
-    </v-main>
-  </v-app>
+  <div class="flex flex-col h-screen bg-base">
+    <slot />
+  </div>
 </template>
-
-<style scoped>
-.bg-color {
-  background: #faf2e2;
-}
-</style>
