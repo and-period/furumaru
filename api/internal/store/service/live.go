@@ -42,7 +42,10 @@ func (s *service) ListLivesByScheduleID(ctx context.Context, in *store.ListLives
 		return nil, exception.InternalError(err)
 	}
 	for i := range lives {
-		s.getIVSDetails(ctx, lives[i])
+		err = s.getIVSDetails(ctx, lives[i])
+		if err != nil {
+			return nil, exception.InternalError(err)
+		}
 	}
 	return lives, exception.InternalError(err)
 }
