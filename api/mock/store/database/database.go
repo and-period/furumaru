@@ -1033,26 +1033,6 @@ func (mr *MockLiveMockRecorder) ListByScheduleID(ctx, scheduleID interface{}, fi
 // MultiGet mocks base method.
 func (m *MockLive) MultiGet(ctx context.Context, liveIDs []string, fields ...string) (entity.Lives, error) {
 	m.ctrl.T.Helper()
-	varargs := []interface{}{ctx, scheduleID}
-	for _, a := range fields {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "ListByScheduleID", varargs...)
-	ret0, _ := ret[0].(entity.Lives)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// ListByScheduleID indicates an expected call of ListByScheduleID.
-func (mr *MockLiveMockRecorder) ListByScheduleID(ctx, scheduleID interface{}, fields ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{ctx, scheduleID}, fields...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByScheduleID", reflect.TypeOf((*MockLive)(nil).ListByScheduleID), varargs...)
-}
-
-// MultiGet mocks base method.
-func (m *MockLive) MultiGet(ctx context.Context, liveIDs []string, fields ...string) (entity.Lives, error) {
-	m.ctrl.T.Helper()
 	varargs := []interface{}{ctx, liveIDs}
 	for _, a := range fields {
 		varargs = append(varargs, a)
