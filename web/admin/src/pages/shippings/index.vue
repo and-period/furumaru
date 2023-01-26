@@ -1,13 +1,13 @@
 <template>
   <div>
-    <v-card-title>配送設定一覧</v-card-title>
-    <div class="d-flex">
+    <v-card-title>
+      配送設定一覧
       <v-spacer />
       <v-btn outlined color="primary" @click="handleClickAddButton">
         <v-icon left>mdi-plus</v-icon>
         配送情報登録
       </v-btn>
-    </div>
+    </v-card-title>
     <v-card class="mt-4" flat :loading="fetchState.pending">
       <v-card-text>
         <v-data-table

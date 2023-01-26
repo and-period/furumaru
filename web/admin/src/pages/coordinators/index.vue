@@ -1,14 +1,13 @@
 <template>
   <div>
-    <v-card-title>コーディネータ管理</v-card-title>
-
-    <div class="d-flex">
+    <v-card-title>
+      コーディネータ管理
       <v-spacer />
       <v-btn outlined color="primary" @click="handleClickAddButton">
         <v-icon left>mdi-plus</v-icon>
         コーディネータ登録
       </v-btn>
-    </div>
+    </v-card-title>
 
     <v-alert v-model="isShow" :type="alertType" class="my-2" dismissible>
       {{ alertText }}

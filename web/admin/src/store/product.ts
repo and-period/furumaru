@@ -7,7 +7,9 @@ import ApiClientFactory from '~/plugins/factory'
 import {
   CreateProductRequest,
   ProductApi,
+  ProductResponse,
   ProductsResponseProductsInner,
+  UpdateProductRequest,
   UploadImageResponse,
 } from '~/types/api'
 import {
@@ -157,6 +159,43 @@ export const useProductStore = defineStore('product', {
           }
         }
         throw new InternalServerError(error)
+      }
+    },
+
+    /**
+     * 商品詳細を取得する非同期関数
+     * @param id
+     * @returns
+     */
+    async getProduct(id: string): Promise<ProductResponse> {
+      const authStore = useAuthStore()
+      const accessToken = authStore.accessToken
+      if (!accessToken) {
+        throw new AuthError('認証エラー。再度ログインをしてください。')
+      }
+      try {
+        const res = await this.apiClient(accessToken).v1GetProduct(id)
+        return res.data
+      } catch (error) {
+        return this.errorHandler(error)
+      }
+    },
+
+    /**
+     * 商品を更新する関数
+     * @param id
+     * @param payload
+     */
+    async updateProduct(id: string, payload: UpdateProductRequest) {
+      const authStore = useAuthStore()
+      const accessToken = authStore.accessToken
+      if (!accessToken) {
+        throw new AuthError('認証エラー。再度ログインをしてください。')
+      }
+      try {
+        await this.apiClient(accessToken).v1UpdateProduct(id, payload)
+      } catch (error) {
+        return this.errorHandler(error)
       }
     },
   },

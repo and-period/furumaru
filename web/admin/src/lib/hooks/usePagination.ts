@@ -26,7 +26,7 @@ export function usePagination() {
     if (currentPage.value === 1) {
       return 0
     } else {
-      return itemsPerPage.value * (currentPage.value - 1) + 1
+      return itemsPerPage.value * (currentPage.value - 1)
     }
   })
 

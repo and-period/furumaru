@@ -9,32 +9,50 @@ import {
   ContactApi,
   ContactResponse,
   ContactsResponse,
+  ContactsResponseContactsInner,
   UpdateContactRequest,
 } from '~/types/api'
 import {
+  AuthError,
   ConnectionError,
   NotFoundError,
   ValidationError,
 } from '~/types/exception'
 
-export const useContactStore = defineStore('Contact', {
-  state: () => ({
-    contacts: [] as ContactsResponse['contacts'],
-  }),
+export const useContactStore = defineStore('contact', {
+  state: () => {
+    const apiClient = (token: string) => {
+      const factory = new ApiClientFactory()
+      return factory.create(ContactApi, token)
+    }
+
+    return {
+      apiClient,
+      contacts: [] as Array<ContactsResponseContactsInner>,
+      total: 0,
+    }
+  },
+
   actions: {
+    /**
+     * お問い合わせの一覧を取得する非同期関数
+     * @param limit 最大取得件数
+     * @param offset 取得開始位置
+     * @returns
+     */
     async fetchContacts(limit: number = 20, offset: number = 0): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-        const factory = new ApiClientFactory()
-        const contactsApiClient = factory.create(ContactApi, accessToken)
-        const res = await contactsApiClient.v1ListContacts(limit, offset)
-        this.contacts = res.data.contacts
-      } catch (error) {
-        throw new Error('Internal Server Error')
+        const accessToken = this.getAccessToken()
+        const res = await this.apiClient(accessToken).v1ListContacts(
+          limit,
+          offset
+        )
+        const { contacts, total }: ContactsResponse = res.data
+
+        this.contacts = contacts
+        this.total = total
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
@@ -108,6 +126,15 @@ export const useContactStore = defineStore('Contact', {
         }
         throw new Error('Internal Server Error')
       }
+    },
+
+    getAccessToken(): string {
+      const authStore = useAuthStore()
+      const accessToken = authStore.accessToken
+      if (!accessToken) {
+        throw new AuthError('認証エラー。再度ログインをしてください。')
+      }
+      return accessToken
     },
   },
 })
