@@ -39,6 +39,7 @@
               </v-row>
             </v-container>
             <v-text-field
+              v-if="getPaymentStatus(formData.payment.status) == '支払い済み'"
               class="mt-4"
               name="deliveredAt"
               label="支払日時"
@@ -155,31 +156,35 @@
                 {{ getRefundStatus(formData.refund.canceled) }}
               </v-chip>
             </v-row>
-            <v-text-field
-              class="mt-8"
-              name="canceledAt"
-              label="注文キャンセル日時"
-              :value="getDay(formData.canceledAt)"
-              readonly
-            ></v-text-field>
-            <v-text-field
-              name="type"
-              label="注文キャンセル理由"
-              :value="getRefundType(formData.refund.type)"
-              readonly
-            ></v-text-field>
-            <v-textarea
-              name="reason"
-              label="注文キャンセル理由詳細"
-              :value="formData.refund.reason"
-              readonly
-            ></v-textarea>
-            <v-text-field
-              name="refundTotal"
-              label="返済金額"
-              :value="formData.refund.total"
-              readonly
-            ></v-text-field>
+            <v-container
+              v-if="getRefundStatus(formData.refund.canceled) == 'キャンセル'"
+            >
+              <v-text-field
+                class="mt-8"
+                name="canceledAt"
+                label="注文キャンセル日時"
+                :value="getDay(formData.canceledAt)"
+                readonly
+              ></v-text-field>
+              <v-text-field
+                name="type"
+                label="注文キャンセル理由"
+                :value="getRefundType(formData.refund.type)"
+                readonly
+              ></v-text-field>
+              <v-textarea
+                name="reason"
+                label="注文キャンセル理由詳細"
+                :value="formData.refund.reason"
+                readonly
+              ></v-textarea>
+              <v-text-field
+                name="refundTotal"
+                label="返済金額"
+                :value="formData.refund.total"
+                readonly
+              ></v-text-field>
+            </v-container>
           </v-card-text>
         </v-card>
       </v-tab-item>
@@ -187,6 +192,12 @@
         <v-card-text>
           <v-card elevation="0">
             <p class="text-h6">注文情報</p>
+            <v-text-field
+              name="id"
+              label="注文ID"
+              :value="formData.id"
+              readonly
+            ></v-text-field>
             <v-text-field
               name="orderedAt"
               label="注文日時"
@@ -202,7 +213,34 @@
                 {{ getFulfillmentStatus(formData.fulfillment.status) }}
               </v-chip>
             </v-row>
+            <div class="d-flex align-center">
+              <v-text-field
+                class="mr-4"
+                name="shippingCarrier"
+                label="配送会社"
+                :value="
+                  getShippingCarrier(formData.fulfillment.shippingCarrier)
+                "
+                readonly
+              ></v-text-field>
+              <v-text-field
+                class="mr-4"
+                name="shippingmethod"
+                label="配送方法"
+                :value="getShippingMethod(formData.fulfillment.shippingMethod)"
+                readonly
+              ></v-text-field>
+              <v-text-field
+                name="boxSize"
+                label="配送時の箱の大きさ"
+                :value="getBoxSize(formData.fulfillment.boxSize)"
+                readonly
+              ></v-text-field>
+            </div>
             <v-text-field
+              v-if="
+                getFulfillmentStatus(formData.fulfillment.status) == '配送済み'
+              "
               name="deliveredAt"
               label="配送日時"
               :value="getDay(formData.deliveredAt)"
@@ -294,11 +332,14 @@ import { DataTableHeader } from 'vuetify'
 import { usePagination } from '~/lib/hooks'
 import { useOrderStore } from '~/store/orders'
 import {
+  DeliveryType,
   FulfillmentStatus,
   OrderRefundType,
   OrderResponse,
   PaymentMethodType,
   PaymentStatus,
+  ShippingCarrier,
+  ShippingSize,
 } from '~/types/api'
 import { Order, OrderItems } from '~/types/props/order'
 
@@ -396,6 +437,7 @@ export default defineComponent({
 
     const { fetchState } = useFetch(async () => {
       const res = await orderStore.getOrder(id)
+      formData.id = res.id
       formData.userName = res.userName
       formData.payment = res.payment
       formData.fulfillment = res.fulfillment
@@ -540,7 +582,42 @@ export default defineComponent({
       return orderItem[0].url
     }
 
-    // TODO: boxSize, shippingMethod追加
+    const getShippingCarrier = (carrier: ShippingCarrier): string => {
+      switch (carrier) {
+        case ShippingCarrier.YAMATO:
+          return 'ヤマト運輸'
+        case ShippingCarrier.SAGAWA:
+          return '佐川急便'
+        default:
+          return '不明'
+      }
+    }
+
+    const getShippingMethod = (method: DeliveryType): string => {
+      switch (method) {
+        case DeliveryType.NORMAL:
+          return '通常便'
+        case DeliveryType.REFRIGERATED:
+          return '冷蔵便'
+        case DeliveryType.FROZEN:
+          return '冷凍便'
+        default:
+          return '不明'
+      }
+    }
+
+    const getBoxSize = (size: ShippingSize): string => {
+      switch (size) {
+        case ShippingSize.SIZE60:
+          return '60'
+        case ShippingSize.SIZE80:
+          return '80'
+        case ShippingSize.SIZE100:
+          return '100'
+        default:
+          return '不明'
+      }
+    }
 
     return {
       headers,
@@ -548,6 +625,9 @@ export default defineComponent({
       formData,
       selector,
       fetchState,
+      itemsPerPage,
+      options,
+      offset,
       getMethodType,
       getPaymentStatus,
       getRefundType,
@@ -556,14 +636,14 @@ export default defineComponent({
       getRefundStatus,
       convertPhone,
       updateCurrentPage,
-      itemsPerPage,
       handleUpdateItemsPerPage,
-      options,
-      offset,
       getThumnail,
       getDay,
       getFulfillmentStatusColor,
       getFulfillmentStatus,
+      getShippingMethod,
+      getShippingCarrier,
+      getBoxSize,
     }
   },
 })

@@ -143,10 +143,6 @@ export default defineComponent({
 
     const headers: DataTableHeader[] = [
       {
-        text: '注文ID',
-        value: 'id',
-      },
-      {
         text: '注文者',
         value: 'userName',
       },
@@ -174,6 +170,10 @@ export default defineComponent({
         text: 'Actions',
         value: 'actions',
         sortable: false,
+      },
+      {
+        text: '注文ID',
+        value: 'id',
       },
     ]
 
