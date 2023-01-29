@@ -89,6 +89,9 @@
           <template #[`item.fulfillment.shippingMethod`]="{ item }">
             {{ getShippingMethod(item.fulfillment.shippingMethod) }}
           </template>
+          <template #[`item.orderedAt`]="{ item }">
+            {{ getDay(item.orderedAt) }}
+          </template>
           <template #[`item.actions`]="{ item }">
             <v-btn outlined color="primary" small @click="handleEdit(item)">
               <v-icon small>mdi-pencil</v-icon>
@@ -108,6 +111,7 @@ import {
   useFetch,
   useRouter,
 } from '@nuxtjs/composition-api'
+import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 import { DataTableHeader } from 'vuetify'
 
@@ -140,10 +144,6 @@ export default defineComponent({
 
     const headers: DataTableHeader[] = [
       {
-        text: '注文ID',
-        value: 'id',
-      },
-      {
         text: '注文者',
         value: 'userName',
       },
@@ -171,6 +171,10 @@ export default defineComponent({
         text: 'Actions',
         value: 'actions',
         sortable: false,
+      },
+      {
+        text: '注文ID',
+        value: 'id',
       },
     ]
 
@@ -232,6 +236,10 @@ export default defineComponent({
       }
     }
 
+    const getDay = (unixTime: number): string => {
+      return dayjs.unix(unixTime).format('YYYY/MM/DD HH:mm')
+    }
+
     const toggleImportDialog = (): void => {
       importDialog.value = !importDialog.value
     }
@@ -268,6 +276,7 @@ export default defineComponent({
       deliveryCompanyList,
       importDialog,
       exportDialog,
+      getDay,
       toggleImportDialog,
       toggleExportDialog,
       handleUpdateItemsPerPage,
