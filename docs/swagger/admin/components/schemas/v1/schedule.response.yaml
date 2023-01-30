@@ -183,10 +183,10 @@ scheduleResponse:
                   description: 更新日時 (unixtime)
           channelArn:
             type: string
-            description: チャンネルArn
+            description: チャンネルARN
           streamKeyArn:
             type: string
-            description: ストリームキーArn
+            description: ストリームキーARN
           createdAt:
             type: integer
             format: int64
