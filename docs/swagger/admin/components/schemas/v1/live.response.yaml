@@ -182,6 +182,13 @@ liveResponse:
   - canceled
   - status
   - products
+  - channelArn
+  - streamKeyArn
+  - channelName
+  - ingestEndpoint
+  - streamKey
+  - streamId
+  - playbackUrl
   - createdAt
   - updatedAt
   example:

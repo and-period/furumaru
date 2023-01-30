@@ -214,6 +214,28 @@ scheduleResponse:
             type: integer
             format: int64
             description: 【共用】視聴者数
+        required:
+        - id
+        - scheduleId
+        - title
+        - description
+        - producerId
+        - producerName
+        - startAt
+        - endAt
+        - published
+        - canceled
+        - status
+        - products
+        - channelArn
+        - streamKeyArn
+        - channelName
+        - ingestEndpoint
+        - streamKey
+        - streamId
+        - playbackUrl
+        - createdAt
+        - updatedAt
   required:
   - id
   - coordinatorId
@@ -229,6 +251,7 @@ scheduleResponse:
   - createdAt
   - updatedAt
   - lives
+
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     coordinatorId: 'coordinator-id'
