@@ -21,7 +21,6 @@ const formData = computed({
 })
 
 const handleSubmit = () => {
-  console.log('submit')
   emits('submit')
 }
 </script>

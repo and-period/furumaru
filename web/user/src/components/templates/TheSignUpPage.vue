@@ -1,0 +1,78 @@
+<script lang="ts" setup>
+import { CreateAuthRequest } from '~/types/api'
+import { LinkItem } from '~/types/props'
+
+interface Props {
+  pageName: string
+  buttonText: string
+  modelValue: CreateAuthRequest
+  telLabel: string
+  telPlaceholder: string
+  telErrorMessage: string
+  emailLabel: string
+  emailPlaceholder: string
+  emailErrorMessage: string
+  passwordLabel: string
+  passwordPlaceholder: string
+  passwordErrorMessage: string
+  passwordConfirmLabel: string
+  passwordConfirmPlaceholder: string
+  passwordConfirmErrorMessage: string
+  alreadyHasLink: LinkItem
+}
+
+interface Emits {
+  (e: 'submit'): void
+  (e: 'update:modelValue', value: CreateAuthRequest): void
+}
+
+const props = defineProps<Props>()
+const emits = defineEmits<Emits>()
+
+const formData = computed({
+  get: () => props.modelValue,
+  set: (val: CreateAuthRequest) => emits('update:modelValue', val)
+})
+
+const handleSubmit = () => {
+  emits('submit')
+}
+</script>
+
+<template>
+  <div class="block m-auto sm:min-w-[560px]">
+    <the-marche-logo class="mb-10" />
+    <the-card>
+      <the-card-title>
+        {{ pageName }}
+      </the-card-title>
+      <the-card-content class="sm:px-16 sm:px-6 text-center">
+        <the-stack>
+          <the-sign-up-form
+            v-model="formData"
+            :button-text="buttonText"
+            :tel-label="telLabel"
+            :tel-placeholder="telPlaceholder"
+            :tel-error-message="telErrorMessage"
+            :email-label="emailLabel"
+            :email-placeholder="emailPlaceholder"
+            :email-error-message="emailErrorMessage"
+            :password-label="passwordLabel"
+            :password-placeholder="passwordPlaceholder"
+            :password-error-message="passwordErrorMessage"
+            :password-confirm-label="passwordConfirmLabel"
+            :password-confirm-placeholder="passwordConfirmPlaceholder"
+            :password-confirm-error-message="passwordConfirmErrorMessage"
+            @submit="handleSubmit"
+          />
+
+          <p class="underline my-3">
+            <nuxt-link :to="alreadyHasLink.href">
+              {{ alreadyHasLink.text }}
+            </nuxt-link>
+          </p>
+        </the-stack>
+      </the-card-content>
+    </the-card>
+  </div>
+</template>
