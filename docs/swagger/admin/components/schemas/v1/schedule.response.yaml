@@ -181,6 +181,12 @@ scheduleResponse:
                   type: integer
                   format: int64
                   description: 更新日時 (unixtime)
+          channelArn:
+            type: string
+            description: チャンネルARN
+          streamKeyArn:
+            type: string
+            description: ストリームキーARN
           createdAt:
             type: integer
             format: int64
@@ -189,6 +195,47 @@ scheduleResponse:
             type: integer
             format: int64
             description: 更新日時 (unixtime)
+          channelName:
+            type: string
+            description: 【配信用】チャンネル名
+          ingestEndpoint:
+            type: string
+            description: 【配信用】配信エンドポイント
+          streamKey:
+            type: string
+            description: 【配信用】ストリームキー
+          streamId:
+            type: string
+            description: ストリームキーID
+          playbackUrl:
+            type: string
+            description: 【視聴用】再生用URL
+          viewerCount:
+            type: integer
+            format: int64
+            description: 【共用】視聴者数
+        required:
+        - id
+        - scheduleId
+        - title
+        - description
+        - producerId
+        - producerName
+        - startAt
+        - endAt
+        - published
+        - canceled
+        - status
+        - products
+        - channelArn
+        - streamKeyArn
+        - channelName
+        - ingestEndpoint
+        - streamKey
+        - streamId
+        - playbackUrl
+        - createdAt
+        - updatedAt
   required:
   - id
   - coordinatorId
@@ -204,6 +251,7 @@ scheduleResponse:
   - createdAt
   - updatedAt
   - lives
+
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     coordinatorId: 'coordinator-id'
@@ -260,5 +308,13 @@ scheduleResponse:
         updatedAt: 1640962800
       createdAt: 1640962800
       updatedAt: 1640962800
+      channelArn: 'cahnnel-arn'
+      streamKeyArn: 'streamKey-arn'
+      channelName: 'channel-name'
+      ingestEndpoint: 'xxxxxxx.global-contribute.live-video.net'
+      streamKey: 'sk_us-east-1_kSByoE6FetnPs5Byk3a9Zx'
+      streamId: 'stream-id'
+      playbackUrl: 'https://5579c3526712.us-east-1.playback.live-video.net/api/video/v1/us-east-1.386661535629.channel.kSByoE6FetnPs5Byk3a9Zx.m3u8'
+      viewerCount: 100
     createdAt: 1640962800
     updatedAt: 1640962800
