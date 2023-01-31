@@ -11,6 +11,7 @@
   },
   "auth": {
     "signIn": {
+      "pageName": "Log in to Your Account",
       "email": "Email",
       "password": "Password",
       "forgetPasswordLink": "Forget Password?",
@@ -19,6 +20,7 @@
       "signUpLink": "Sign up"
     },
     "signUp": {
+      "pageName": "Create a new Account",
       "tel": "Tel",
       "email": "Email",
       "password": "Password",
@@ -27,6 +29,7 @@
       "alreadyHas": "Do you already have an account?"
     },
     "verify": {
+      "pageName": "Verify",
       "message": "Enter the verification code",
       "btnText": "Verify"
     }
