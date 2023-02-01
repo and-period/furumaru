@@ -14,6 +14,9 @@ interface Props {
   passwordPlaceholder: string
   passwordErrorMessage: string
   dontHaveAccountText: string
+  googleButtonText: string
+  facebookButtonText: string
+  lineButtonText: string
   forgetPasswordLink: LinkItem
   signUpLink: LinkItem
 }
@@ -55,7 +58,7 @@ const handleClickLineSingInButton = () => {
     <the-marche-logo class="mb-10" />
     <the-card>
       <the-card-title>{{ pageName }}</the-card-title>
-      <the-card-content class="sm:px-16 sm:px-6 text-center">
+      <the-card-content>
         <the-alert v-show="hasError" class="mb-2">
           メールアドレスかパスワードが間違っています。
         </the-alert>
@@ -73,22 +76,24 @@ const handleClickLineSingInButton = () => {
             @submit="handleSubmit"
           />
 
-          <p class="underline my-3">
+          <p class="underline my-6">
             <nuxt-link :to="forgetPasswordLink.href">
               {{ forgetPasswordLink.text }}
             </nuxt-link>
           </p>
 
-          <the-google-auth-button @click="handleClickGoogleSingInButton" />
-          <the-facebook-auth-button @click="handleClickFacebookSingInButton" />
-          <the-line-auth-button @click="handleClickLineSingInButton" />
+          <the-google-auth-button :button-text="googleButtonText" @click="handleClickGoogleSingInButton" />
+          <the-facebook-auth-button :button-text="facebookButtonText" @click="handleClickFacebookSingInButton" />
+          <the-line-auth-button :button-text="lineButtonText" @click="handleClickLineSingInButton" />
 
-          <p class="my-2">
-            {{ dontHaveAccountText }}<br>
+          <div class="my-6">
+            <p class="mb-2">
+              {{ dontHaveAccountText }}<br>
+            </p>
             <nuxt-link :to="signUpLink.href" class="underline">
               {{ signUpLink.text }}
             </nuxt-link>
-          </p>
+          </div>
         </the-stack>
       </the-card-content>
     </the-card>

@@ -76,7 +76,9 @@ const handleSubmit = () => {
         type="password"
         required
       />
-      <the-submit-button>{{ buttonText }}</the-submit-button>
+      <the-submit-button class="mt-4">
+        {{ buttonText }}
+      </the-submit-button>
     </the-stack>
   </form>
 </template>

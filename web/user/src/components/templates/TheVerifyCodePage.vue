@@ -31,7 +31,7 @@ const handleSubmit = () => {
       <the-card-title>
         {{ pageName }}
       </the-card-title>
-      <the-card-content class="sm:px-16 sm:px-6 text-center">
+      <the-card-content>
         <the-stack>
           <p>{{ message }}</p>
           <the-verify-code-form v-model:code="codeValue" :button-text="buttonText" @submit="handleSubmit" />

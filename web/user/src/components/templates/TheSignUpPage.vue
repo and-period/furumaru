@@ -46,7 +46,7 @@ const handleSubmit = () => {
       <the-card-title>
         {{ pageName }}
       </the-card-title>
-      <the-card-content class="sm:px-16 sm:px-6 text-center">
+      <the-card-content>
         <the-stack>
           <the-sign-up-form
             v-model="formData"
@@ -66,7 +66,7 @@ const handleSubmit = () => {
             @submit="handleSubmit"
           />
 
-          <p class="underline my-3">
+          <p class="underline my-6">
             <nuxt-link :to="alreadyHasLink.href">
               {{ alreadyHasLink.text }}
             </nuxt-link>

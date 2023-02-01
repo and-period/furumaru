@@ -44,6 +44,9 @@ const hasError = ref<boolean>(false)
     :password-placeholder="t('password')"
     password-error-message=""
     :dont-have-account-text="t('dontHaveAccount')"
+    :google-button-text="t('googleButtonText')"
+    :facebook-button-text="t('facebookButtonText')"
+    :line-button-text="t('lineButtonText')"
     :forget-password-link="{
       href: localePath('/'),
       text: t('forgetPasswordLink')
