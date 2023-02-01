@@ -2,7 +2,7 @@
 
 @layer base {
   html {
-    @apply text-typography;
+    @apply text-typography tracking-wide;
   }
 }
 
