@@ -6,7 +6,11 @@
       "cartNotEmptyMessage": "レジに進む",
       "signUp": "登録する",
       "signIn": "ログイン",
-      "changeLocaleText": "英語に切り替える"
+      "changeLocaleText": "英語に切り替える",
+      "topLinkText": "TOP",
+      "searchItemLinkText": "商品をさがす",
+      "allItemLinkText": "すべての商品",
+      "aboutLinkText": "ふるマルについて"
     }
   },
   "auth": {

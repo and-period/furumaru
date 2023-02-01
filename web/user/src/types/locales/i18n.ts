@@ -7,6 +7,11 @@ export interface I18n {
       signUp: string;
       signIn: string;
       changeLocaleText: string;
+
+      topLinkText: string
+      searchItemLinkText: string
+      allItemLinkText: string
+      aboutLinkText: string
     };
   };
 
