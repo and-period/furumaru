@@ -14,10 +14,13 @@
       "pageName": "ログイン",
       "email": "メールアドレス",
       "password": "パスワード",
-      "forgetPasswordLink": "パスワードを忘れた場合",
+      "forgetPasswordLink": "パスワードをお忘れの方はこちら",
       "signIn": "ログイン",
       "dontHaveAccount": "アカウントをお持ちではないですか？",
-      "signUpLink": "登録する"
+      "signUpLink": "新規登録はこちら",
+      "googleButtonText": "Googleでログイン",
+      "facebookButtonText": "Facebookでログイン",
+      "lineButtonText": "LINEでログイン"
     },
     "signUp": {
       "pageName": "新規アカウント作成",

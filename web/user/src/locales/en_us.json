@@ -17,7 +17,10 @@
       "forgetPasswordLink": "Forget Password?",
       "signIn": "Log in",
       "dontHaveAccount": "Don’t have an account?",
-      "signUpLink": "Sign up"
+      "signUpLink": "Sign up",
+      "googleButtonText": "Log In with Google",
+      "facebookButtonText": "Log In with Facebook",
+      "lineButtonText": "Log In with LINE"
     },
     "signUp": {
       "pageName": "Create a new Account",

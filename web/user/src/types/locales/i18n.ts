@@ -9,6 +9,7 @@ export interface I18n {
       changeLocaleText: string;
     };
   };
+
   auth: {
     signIn: {
       pageName: string;
@@ -16,9 +17,13 @@ export interface I18n {
       password: string;
       forgetPasswordLink: string;
       signIn: string;
+      googleButtonText: string;
+      facebookButtonText: string;
+      lineButtonText: string;
       dontHaveAccount: string;
       signUpLink: string;
     };
+
     signUp: {
       pageName: string;
       tel: string;
@@ -28,6 +33,7 @@ export interface I18n {
       signUp: string;
       alreadyHas: string;
     };
+
     verify: {
       pageName: string;
       message: string;
