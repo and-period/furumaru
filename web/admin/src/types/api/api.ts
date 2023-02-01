@@ -1795,17 +1795,17 @@ export interface LiveResponse {
      */
     'products': Array<ScheduleResponseLivesInnerProductsInner>;
     /**
-     * チャンネルArn
+     * チャンネルARN
      * @type {string}
      * @memberof LiveResponse
      */
-    'channelArn'?: string;
+    'channelArn': string;
     /**
-     * ストリームキーArn
+     * ストリームキーARN
      * @type {string}
      * @memberof LiveResponse
      */
-    'streamKeyArn'?: string;
+    'streamKeyArn': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
@@ -1823,31 +1823,31 @@ export interface LiveResponse {
      * @type {string}
      * @memberof LiveResponse
      */
-    'channelName'?: string;
+    'channelName': string;
     /**
      * 【配信用】配信エンドポイント
      * @type {string}
      * @memberof LiveResponse
      */
-    'ingestEndpoint'?: string;
+    'ingestEndpoint': string;
     /**
      * 【配信用】ストリームキー
      * @type {string}
      * @memberof LiveResponse
      */
-    'streamKey'?: string;
+    'streamKey': string;
     /**
      * ストリームキーID
      * @type {string}
      * @memberof LiveResponse
      */
-    'streamId'?: string;
+    'streamId': string;
     /**
      * 【視聴用】再生用URL
      * @type {string}
      * @memberof LiveResponse
      */
-    'playbackUrl'?: string;
+    'playbackUrl': string;
     /**
      * 【共用】視聴者数
      * @type {number}
@@ -4076,127 +4076,127 @@ export interface ScheduleResponseLivesInner {
      * @type {string}
      * @memberof ScheduleResponseLivesInner
      */
-    'id'?: string;
+    'id': string;
     /**
      * スケジュールID
      * @type {string}
      * @memberof ScheduleResponseLivesInner
      */
-    'scheduleId'?: string;
+    'scheduleId': string;
     /**
      * ライブタイトル(128文字まで)
      * @type {string}
      * @memberof ScheduleResponseLivesInner
      */
-    'title'?: string;
+    'title': string;
     /**
      * ライブ説明(20000文字まで)
      * @type {string}
      * @memberof ScheduleResponseLivesInner
      */
-    'description'?: string;
+    'description': string;
     /**
      * 生産者ID
      * @type {string}
      * @memberof ScheduleResponseLivesInner
      */
-    'producerId'?: string;
+    'producerId': string;
     /**
      * 生産者名
      * @type {string}
      * @memberof ScheduleResponseLivesInner
      */
-    'producerName'?: string;
+    'producerName': string;
     /**
      * ライブ開始日時
      * @type {number}
      * @memberof ScheduleResponseLivesInner
      */
-    'startAt'?: number;
+    'startAt': number;
     /**
      * ライブ終了日時
      * @type {number}
      * @memberof ScheduleResponseLivesInner
      */
-    'endAt'?: number;
+    'endAt': number;
     /**
      * 配信公開フラグ
      * @type {boolean}
      * @memberof ScheduleResponseLivesInner
      */
-    'published'?: boolean;
+    'published': boolean;
     /**
      * キャンセルフラグ
      * @type {boolean}
      * @memberof ScheduleResponseLivesInner
      */
-    'canceled'?: boolean;
+    'canceled': boolean;
     /**
      * 
      * @type {ImageSize}
      * @memberof ScheduleResponseLivesInner
      */
-    'status'?: ImageSize;
+    'status': ImageSize;
     /**
      * 
      * @type {Array<ScheduleResponseLivesInnerProductsInner>}
      * @memberof ScheduleResponseLivesInner
      */
-    'products'?: Array<ScheduleResponseLivesInnerProductsInner>;
+    'products': Array<ScheduleResponseLivesInnerProductsInner>;
     /**
-     * チャンネルArn
+     * チャンネルARN
      * @type {string}
      * @memberof ScheduleResponseLivesInner
      */
-    'channelArn'?: string;
+    'channelArn': string;
     /**
-     * ストリームキーArn
+     * ストリームキーARN
      * @type {string}
      * @memberof ScheduleResponseLivesInner
      */
-    'streamKeyArn'?: string;
+    'streamKeyArn': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof ScheduleResponseLivesInner
      */
-    'createdAt'?: number;
+    'createdAt': number;
     /**
      * 更新日時 (unixtime)
      * @type {number}
      * @memberof ScheduleResponseLivesInner
      */
-    'updatedAt'?: number;
+    'updatedAt': number;
     /**
      * 【配信用】チャンネル名
      * @type {string}
      * @memberof ScheduleResponseLivesInner
      */
-    'channelName'?: string;
+    'channelName': string;
     /**
      * 【配信用】配信エンドポイント
      * @type {string}
      * @memberof ScheduleResponseLivesInner
      */
-    'ingestEndpoint'?: string;
+    'ingestEndpoint': string;
     /**
      * 【配信用】ストリームキー
      * @type {string}
      * @memberof ScheduleResponseLivesInner
      */
-    'streamKey'?: string;
+    'streamKey': string;
     /**
      * ストリームキーID
      * @type {string}
      * @memberof ScheduleResponseLivesInner
      */
-    'streamId'?: string;
+    'streamId': string;
     /**
      * 【視聴用】再生用URL
      * @type {string}
      * @memberof ScheduleResponseLivesInner
      */
-    'playbackUrl'?: string;
+    'playbackUrl': string;
     /**
      * 【共用】視聴者数
      * @type {number}
