@@ -13,7 +13,7 @@ const handleClick = (): void => {
 
 <template>
   <the-button class="border border-gray-400 flex items-center text-typography" @click="handleClick">
-    <img src="~/assets/img/g-normal.png" height="18" width="18" alt="google icon" class="block">
+    <img src="~/assets/img/g-normal.png" height="24" width="24" alt="google icon" class="block">
     <p class="text-center w-full">
       {{ buttonText }}
     </p>

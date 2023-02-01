@@ -7,7 +7,7 @@ const handleClick = (): void => {
 </script>
 
 <template>
-  <button class="px-2 py-3" @click="handleClick">
+  <button class="px-3 py-3" @click="handleClick">
     <slot />
   </button>
 </template>
