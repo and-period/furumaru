@@ -1,4 +1,10 @@
 <script lang="ts" setup>
+interface Props {
+  buttonText: string
+}
+
+defineProps<Props>()
+
 const emits = defineEmits<{(e: 'click'): void}>()
 
 const handleClick = (): void => {
@@ -8,8 +14,9 @@ const handleClick = (): void => {
 
 <template>
   <the-button class="bg-line flex items-center" @click="handleClick">
+    <the-line-icon />
     <p class="text-center w-full text-white">
-      Log In with LINE
+      {{ buttonText }}
     </p>
   </the-button>
 </template>

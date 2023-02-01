@@ -1,46 +1,3 @@
-<template>
-  <div class="block m-auto sm:min-w-[560px]">
-    <the-marche-logo class="mb-10" />
-    <the-card>
-      <the-card-title>ログイン</the-card-title>
-      <the-card-content class="sm:px-16 sm:px-6 text-center">
-        <the-alert class="mb-2">
-          メールアドレスかパスワードが間違っています。
-        </the-alert>
-        <the-stack>
-          <the-sign-in-form
-            v-model="formData"
-            :button-text="t('signIn')"
-            :username-label="t('email')"
-            :username-placeholder="t('email')"
-            username-error-message=""
-            :password-label="t('password')"
-            :password-placeholder="t('password')"
-            password-error-message=""
-          />
-
-          <p class="underline my-3">
-            <nuxt-link to="/">
-              {{ t('forgetPasswordLink') }}
-            </nuxt-link>
-          </p>
-
-          <the-google-auth-button @click="handleClickGoogleSingInButton" />
-          <the-facebook-auth-button @click="handleClickFacebookSingInButton" />
-          <the-line-auth-button @click="handleClickLineSingInButton" />
-
-          <p class="my-2">
-            {{ t('dontHaveAccount') }}<br>
-            <nuxt-link :to="localePath('/signup')" class="underline">
-              {{ t('signUpLink') }}
-            </nuxt-link>
-          </p>
-        </the-stack>
-      </the-card-content>
-    </the-card>
-  </div>
-</template>
-
 <script lang="ts" setup>
 import { SignInRequest } from '~/types/api'
 import { I18n } from '~/types/locales'
@@ -70,4 +27,36 @@ const formData = reactive<SignInRequest>({
   username: '',
   password: ''
 })
+
+const hasError = ref<boolean>(false)
 </script>
+
+<template>
+  <the-sign-in-page
+    v-model="formData"
+    :page-name="t('pageName')"
+    :button-text="t('signIn')"
+    :has-error="hasError"
+    :username-label="t('email')"
+    :username-placeholder="t('email')"
+    username-error-message=""
+    :password-label="t('password')"
+    :password-placeholder="t('password')"
+    password-error-message=""
+    :dont-have-account-text="t('dontHaveAccount')"
+    :google-button-text="t('googleButtonText')"
+    :facebook-button-text="t('facebookButtonText')"
+    :line-button-text="t('lineButtonText')"
+    :forget-password-link="{
+      href: localePath('/'),
+      text: t('forgetPasswordLink')
+    }"
+    :sign-up-link="{
+      href: localePath('/signup'),
+      text: t('signUpLink')
+    }"
+    @click:google-sing-in-button="handleClickGoogleSingInButton"
+    @click:facebook-sing-in-button="handleClickFacebookSingInButton"
+    @click:line-sing-in-button="handleClickLineSingInButton"
+  />
+</template>

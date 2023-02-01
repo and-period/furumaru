@@ -11,23 +11,29 @@
   },
   "auth": {
     "signIn": {
+      "pageName": "ログイン",
       "email": "メールアドレス",
       "password": "パスワード",
-      "forgetPasswordLink": "パスワードを忘れた場合",
+      "forgetPasswordLink": "パスワードをお忘れの方はこちら",
       "signIn": "ログイン",
       "dontHaveAccount": "アカウントをお持ちではないですか？",
-      "signUpLink": "登録する"
+      "signUpLink": "新規登録はこちら",
+      "googleButtonText": "Googleでログイン",
+      "facebookButtonText": "Facebookでログイン",
+      "lineButtonText": "LINEでログイン"
     },
     "signUp": {
+      "pageName": "新規アカウント作成",
       "tel": "電話番号",
       "email": "メールアドレス",
       "password": "パスワード",
       "passwordConfirm": "パスワード（確認用）",
-      "signUp": "サインアップ",
-      "alreadyHas": "すでにアカウントをお持ちですか？"
+      "signUp": "アカウントを作成",
+      "alreadyHas": "すでにアカウントをお持ちの方はこちら"
     },
     "verify": {
-      "message": "認証コードを入力してください",
+      "pageName": "認証コード入力",
+      "message": "送信された6桁のコードを入力してください",
       "btnText": "認証"
     }
   }

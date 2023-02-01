@@ -1,39 +1,54 @@
-<template>
-  <div>
-    <!-- <v-otp-input v-model="formData" :length="props.length" type="password"></v-otp-input> -->
-  </div>
-</template>
-
 <script lang="ts" setup>
-const props = defineProps({
-  value: {
-    type: String,
-    required: true
-  },
-  length: {
-    type: Number,
-    default: 4
+interface Props {
+  modelValue: string
+  length?: number
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  length: 6
+})
+
+const emits = defineEmits<{(name: 'update:modelValue', val: string): void}>()
+
+const divs = ref<any>([])
+const values = ref<string[]>([])
+const type = 'password'
+
+onBeforeUpdate(() => {
+  divs.value = []
+})
+
+onMounted(() => {
+  values.value = [...Array(props.length)].map(() => '')
+})
+
+watch(values, () => {
+  const val = values.value.map(item => item).join('')
+  emits('update:modelValue', val)
+}, { deep: true })
+
+const handleKeyup = (event: KeyboardEvent, i: number) => {
+  const key = event.key
+  if (key === 'Backspace' && i !== 0) {
+    divs.value[i].previousSibling.focus()
   }
-})
-
-const emits = defineEmits<{(name: 'update:value', val: string): void}>()
-
-computed({
-  get: () => props.value,
-  set: (val: string) => emits('update:value', val)
-})
+  if (key.length === 1 && i !== props.length - 1) {
+    divs.value[i].nextSibling.focus()
+  }
+}
 </script>
 
-<style lang="scss" scoped>
-div.vue-pincode-input-wrapper {
-  display: block;
-}
-
-::v-deep input.vue-pincode-input {
-  background-color: #f7f8f9 !important;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  box-sizing: border-box;
-  border-radius: 6px;
-  box-shadow: none;
-}
-</style>
+<template>
+  <div class="flex flex-row justify-center text-center px-2 mt-5">
+    <input
+      v-for="item in [...Array(length)].map((_, i) => i)"
+      :ref="el => { if (el) divs[item] = el}"
+      :key="item"
+      v-model="values[item]"
+      class="m-2 border h-12 w-10 text-center border-main rounded focus:outline-current"
+      :type="type"
+      maxlength="1"
+      @keyup="(e) => handleKeyup(e, item)"
+    >
+  </div>
+</template>

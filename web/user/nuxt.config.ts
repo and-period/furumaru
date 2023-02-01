@@ -23,7 +23,18 @@ export default defineNuxtConfig({
   plugins: [],
   modules: ['@nuxtjs/i18n', '@nuxtjs/tailwindcss'],
   i18n: {
-    locales: ['ja', 'en'],
+    locales: [
+      {
+        code: 'ja',
+        iso: 'ja',
+        file: 'ja_jp.json'
+      },
+      {
+        code: 'en',
+        iso: 'en',
+        file: 'en_us.json'
+      }
+    ],
     defaultLocale: 'ja',
     vueI18n: {
       fallbackLocale: 'ja',

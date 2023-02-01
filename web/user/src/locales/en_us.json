@@ -11,14 +11,19 @@
   },
   "auth": {
     "signIn": {
+      "pageName": "Log in to Your Account",
       "email": "Email",
       "password": "Password",
       "forgetPasswordLink": "Forget Password?",
       "signIn": "Log in",
       "dontHaveAccount": "Don’t have an account?",
-      "signUpLink": "Sign up"
+      "signUpLink": "Sign up",
+      "googleButtonText": "Log In with Google",
+      "facebookButtonText": "Log In with Facebook",
+      "lineButtonText": "Log In with LINE"
     },
     "signUp": {
+      "pageName": "Create a new Account",
       "tel": "Tel",
       "email": "Email",
       "password": "Password",
@@ -27,6 +32,7 @@
       "alreadyHas": "Do you already have an account?"
     },
     "verify": {
+      "pageName": "Verify",
       "message": "Enter the verification code",
       "btnText": "Verify"
     }
