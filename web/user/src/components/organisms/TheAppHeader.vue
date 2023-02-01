@@ -1,54 +1,50 @@
-<template>
-  <div color="base">
-    aaa
-  </div>
-</template>
-
 <script lang="ts" setup>
-import { PropType } from 'vue'
-
 import { HeaderMenuItem } from '~/types/props'
 
-const props = defineProps({
-  profileImgUrl: {
-    type: String,
-    required: false,
-    default: null
-  },
-  cartItemCount: {
-    type: Number,
-    required: true,
-    default: 0
-  },
-  cartEmptyMessage: {
-    type: String,
-    required: true
-  },
-  cartNotEmptyMessage: {
-    type: String,
-    required: true
-  },
-  menuList: {
-    type: Array as PropType<HeaderMenuItem[]>,
-    default: () => {
-      return []
-    }
-  }
-})
+interface Props {
+  menuItems: HeaderMenuItem[]
+}
+
+defineProps<Props>()
 
 const emits = defineEmits<{(name: 'click:cart'): void}>()
 
-const cartItemCount = computed<number>(() => {
-  return props.cartItemCount
-})
 const _cartIsEmpty = computed<boolean>(() => {
-  return cartItemCount.value === 0
-})
-const _cartContent = computed<number | string>(() => {
-  return cartItemCount.value > 99 ? '99+' : cartItemCount.value
+  return true
 })
 
-const _handleCartClick = (): void => {
+const handleCartClick = (): void => {
   emits('click:cart')
 }
 </script>
+
+<template>
+  <div class="flex px-10 py-4 bg-base items-center">
+    <the-marche-logo class="m-0 " />
+    <div class="flex items-center justify-end w-full text-main">
+      <nav class="mr-16">
+        <ul class="list-none flex gap-x-10">
+          <li v-for="item, i in menuItems" :key="i">
+            <a href="#" :class="{'border-b border-main pb-1': item.active}" @click="item.onClick">
+              {{ item.text }}
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="flex gap-x-8">
+        <the-icon-button>
+          <the-account-icon />
+        </the-icon-button>
+
+        <the-icon-button>
+          <the-ring-icon />
+        </the-icon-button>
+
+        <the-icon-button @click="handleCartClick">
+          <the-cart-icon />
+        </the-icon-button>
+      </div>
+    </div>
+  </div>
+</template>
