@@ -62,7 +62,7 @@ const viewMessage = computed(() => {
         :required="required"
         :type="type"
         :class="{
-          'form-control block w-full px-2 bg-transparent border-b border-text-main focus:outline-none leading-10': true,
+          'form-control block w-full px-2 bg-transparent border-b border-main leading-10 focus:outline-none': true,
           'border-b-2 border-orange': hasError,
         }"
       >
