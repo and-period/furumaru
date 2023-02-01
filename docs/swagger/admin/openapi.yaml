@@ -130,6 +130,8 @@ paths:
   # Schedule
   /v1/schedules:
     $ref: './paths/v1/schedules/index.yaml'
+  /v1/schedules/{scheduleId}:
+    $ref: './paths/v1/schedules/_scheduleId/index.yaml'
   # Live
   /v1/schedules/{scheduleId}/Lives/{liveId}:
     $ref: './paths/v1/schedules/_scheduleId/lives/_liveId/index.yaml'

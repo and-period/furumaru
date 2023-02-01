@@ -1795,17 +1795,17 @@ export interface LiveResponse {
      */
     'products': Array<ScheduleResponseLivesInnerProductsInner>;
     /**
-     * チャンネルArn
+     * チャンネルARN
      * @type {string}
      * @memberof LiveResponse
      */
-    'channelArn'?: string;
+    'channelArn': string;
     /**
-     * ストリームキーArn
+     * ストリームキーARN
      * @type {string}
      * @memberof LiveResponse
      */
-    'streamKeyArn'?: string;
+    'streamKeyArn': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
@@ -1823,31 +1823,31 @@ export interface LiveResponse {
      * @type {string}
      * @memberof LiveResponse
      */
-    'channelName'?: string;
+    'channelName': string;
     /**
      * 【配信用】配信エンドポイント
      * @type {string}
      * @memberof LiveResponse
      */
-    'ingestEndpoint'?: string;
+    'ingestEndpoint': string;
     /**
      * 【配信用】ストリームキー
      * @type {string}
      * @memberof LiveResponse
      */
-    'streamKey'?: string;
+    'streamKey': string;
     /**
      * ストリームキーID
      * @type {string}
      * @memberof LiveResponse
      */
-    'streamId'?: string;
+    'streamId': string;
     /**
      * 【視聴用】再生用URL
      * @type {string}
      * @memberof LiveResponse
      */
-    'playbackUrl'?: string;
+    'playbackUrl': string;
     /**
      * 【共用】視聴者数
      * @type {number}
@@ -4076,85 +4076,133 @@ export interface ScheduleResponseLivesInner {
      * @type {string}
      * @memberof ScheduleResponseLivesInner
      */
-    'id'?: string;
+    'id': string;
     /**
      * スケジュールID
      * @type {string}
      * @memberof ScheduleResponseLivesInner
      */
-    'scheduleId'?: string;
+    'scheduleId': string;
     /**
      * ライブタイトル(128文字まで)
      * @type {string}
      * @memberof ScheduleResponseLivesInner
      */
-    'title'?: string;
+    'title': string;
     /**
      * ライブ説明(20000文字まで)
      * @type {string}
      * @memberof ScheduleResponseLivesInner
      */
-    'description'?: string;
+    'description': string;
     /**
      * 生産者ID
      * @type {string}
      * @memberof ScheduleResponseLivesInner
      */
-    'producerId'?: string;
+    'producerId': string;
     /**
      * 生産者名
      * @type {string}
      * @memberof ScheduleResponseLivesInner
      */
-    'producerName'?: string;
+    'producerName': string;
     /**
      * ライブ開始日時
      * @type {number}
      * @memberof ScheduleResponseLivesInner
      */
-    'startAt'?: number;
+    'startAt': number;
     /**
      * ライブ終了日時
      * @type {number}
      * @memberof ScheduleResponseLivesInner
      */
-    'endAt'?: number;
+    'endAt': number;
     /**
      * 配信公開フラグ
      * @type {boolean}
      * @memberof ScheduleResponseLivesInner
      */
-    'published'?: boolean;
+    'published': boolean;
     /**
      * キャンセルフラグ
      * @type {boolean}
      * @memberof ScheduleResponseLivesInner
      */
-    'canceled'?: boolean;
+    'canceled': boolean;
     /**
      * 
      * @type {ImageSize}
      * @memberof ScheduleResponseLivesInner
      */
-    'status'?: ImageSize;
+    'status': ImageSize;
     /**
      * 
      * @type {Array<ScheduleResponseLivesInnerProductsInner>}
      * @memberof ScheduleResponseLivesInner
      */
-    'products'?: Array<ScheduleResponseLivesInnerProductsInner>;
+    'products': Array<ScheduleResponseLivesInnerProductsInner>;
+    /**
+     * チャンネルARN
+     * @type {string}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'channelArn': string;
+    /**
+     * ストリームキーARN
+     * @type {string}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'streamKeyArn': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof ScheduleResponseLivesInner
      */
-    'createdAt'?: number;
+    'createdAt': number;
     /**
      * 更新日時 (unixtime)
      * @type {number}
      * @memberof ScheduleResponseLivesInner
      */
-    'updatedAt'?: number;
+    'updatedAt': number;
+    /**
+     * 【配信用】チャンネル名
+     * @type {string}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'channelName': string;
+    /**
+     * 【配信用】配信エンドポイント
+     * @type {string}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'ingestEndpoint': string;
+    /**
+     * 【配信用】ストリームキー
+     * @type {string}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'streamKey': string;
+    /**
+     * ストリームキーID
+     * @type {string}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'streamId': string;
+    /**
+     * 【視聴用】再生用URL
+     * @type {string}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'playbackUrl': string;
+    /**
+     * 【共用】視聴者数
+     * @type {number}
+     * @memberof ScheduleResponseLivesInner
+     */
+    'viewerCount'?: number;
 }
 /**
  * 
@@ -11665,6 +11713,44 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary 開催スケジュール取得
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetSchedule: async (scheduleId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'scheduleId' is not null or undefined
+            assertParamExists('v1GetSchedule', 'scheduleId', scheduleId)
+            const localVarPath = `/v1/schedules/{scheduleId}`
+                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -11684,6 +11770,17 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
          */
         async v1CreateSchedule(body: CreateScheduleRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateSchedule(body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 開催スケジュール取得
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetSchedule(scheduleId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetSchedule(scheduleId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -11706,6 +11803,16 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
         v1CreateSchedule(body: CreateScheduleRequest, options?: any): AxiosPromise<ScheduleResponse> {
             return localVarFp.v1CreateSchedule(body, options).then((request) => request(axios, basePath));
         },
+        /**
+         * 
+         * @summary 開催スケジュール取得
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetSchedule(scheduleId: string, options?: any): AxiosPromise<ScheduleResponse> {
+            return localVarFp.v1GetSchedule(scheduleId, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -11726,6 +11833,18 @@ export class ScheduleApi extends BaseAPI {
      */
     public v1CreateSchedule(body: CreateScheduleRequest, options?: AxiosRequestConfig) {
         return ScheduleApiFp(this.configuration).v1CreateSchedule(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 開催スケジュール取得
+     * @param {string} scheduleId マルシェ開催スケジュールID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ScheduleApi
+     */
+    public v1GetSchedule(scheduleId: string, options?: AxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1GetSchedule(scheduleId, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
