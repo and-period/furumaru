@@ -13,6 +13,13 @@ export interface I18n {
       allItemLinkText: string
       aboutLinkText: string
     };
+
+    footer: {
+      qaLinkText: string
+      privacyPolicyLinkText: string
+      lawLinkText: string
+      inquiryLinkText: string
+    }
   };
 
   auth: {

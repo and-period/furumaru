@@ -11,6 +11,12 @@
       "searchItemLinkText": "Search Item",
       "allItemLinkText": "All Items",
       "aboutLinkText": "About"
+    },
+    "footer": {
+      "qaLinkText": "Q and A",
+      "privacyPolicyLinkText": "Privacy Policy",
+      "lawLinkText": "Law Info",
+      "inquiryLinkText": "Inquiry"
     }
   },
   "auth": {
