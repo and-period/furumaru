@@ -1,14 +1,18 @@
 <script lang="ts" setup>
 import { I18n } from '~/types/locales'
-import { HeaderMenuItem } from '~/types/props'
+import { FooterMenuItem, HeaderMenuItem } from '~/types/props'
 
 const router = useRouter()
 const route = useRoute()
 const i18n = useI18n()
 const localePath = useLocalePath()
 
-const t = (str: keyof I18n['layout']['header']) => {
+const ht = (str: keyof I18n['layout']['header']) => {
   return i18n.t(`layout.header.${str}`)
+}
+
+const ft = (str: keyof I18n['layout']['footer']) => {
+  return i18n.t(`layout.footer.${str}`)
 }
 
 const handleCartClick = (): void => {
@@ -21,26 +25,46 @@ const _localeRef = computed(() => {
 
 const navbarMenuList = computed<HeaderMenuItem[]>(() => [
   {
-    text: t('topLinkText'),
+    text: ht('topLinkText'),
     onClick: () => router.push(localePath('/')),
     active: route.path === localePath('/')
   },
   {
-    text: t('searchItemLinkText'),
+    text: ht('searchItemLinkText'),
     onClick: () => router.push(localePath('/search')),
     active: route.path === localePath('/search')
   },
   {
-    text: t('allItemLinkText'),
+    text: ht('allItemLinkText'),
     onClick: () => router.push(localePath('/items')),
     active: route.path === localePath('/search')
   },
   {
-    text: t('aboutLinkText'),
+    text: ht('aboutLinkText'),
     onClick: () => router.push(localePath('/about')),
     active: route.path === localePath('/about')
   }
 ])
+
+const footerMenuList = computed<FooterMenuItem[]>(() => [
+  {
+    text: ft('qaLinkText'),
+    onClick: () => {}
+  },
+  {
+    text: ft('privacyPolicyLinkText'),
+    onClick: () => {}
+  },
+  {
+    text: ft('lawLinkText'),
+    onClick: () => {}
+  },
+  {
+    text: ft('inquiryLinkText'),
+    onClick: () => {}
+  }
+])
+
 </script>
 
 <template>
@@ -52,6 +76,6 @@ const navbarMenuList = computed<HeaderMenuItem[]>(() => [
     <main class="bg-base flex-grow">
       <slot />
     </main>
-    <the-app-footer />
+    <the-app-footer :menu-items="footerMenuList" />
   </div>
 </template>
