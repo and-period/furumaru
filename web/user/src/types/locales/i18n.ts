@@ -52,4 +52,21 @@ export interface I18n {
       btnText: string;
     };
   };
+
+  base: {
+    about: {
+      leadSentence: string
+      description: string
+      firstPointTitle: string
+      firstPointDescription: string
+      firstPointLinkText: string
+      secondPointTitle: string
+      secondPointDescription: string
+      thirdPointTitle: string
+      thirdPointDescription: string
+      forthPointTitle: string
+      forthPointDescription: string
+      forthPointLinkText: string
+    }
+  }
 }
