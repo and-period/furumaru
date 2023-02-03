@@ -6,7 +6,17 @@
       "cartNotEmptyMessage": "Place your order",
       "signUp": "Sign Up",
       "signIn": "Sign In",
-      "changeLocaleText": "Change Language to Japanese"
+      "changeLocaleText": "Change Language to Japanese",
+      "topLinkText": "TOP",
+      "searchItemLinkText": "Search Item",
+      "allItemLinkText": "All Items",
+      "aboutLinkText": "About"
+    },
+    "footer": {
+      "qaLinkText": "Q and A",
+      "privacyPolicyLinkText": "Privacy Policy",
+      "lawLinkText": "Law Info",
+      "inquiryLinkText": "Inquiry"
     }
   },
   "auth": {
