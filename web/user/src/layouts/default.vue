@@ -74,7 +74,9 @@ const footerMenuList = computed<FooterMenuItem[]>(() => [
       @click:cart="handleCartClick"
     />
     <main class="bg-base flex-grow">
-      <slot />
+      <div class="container pb-10 mx-auto">
+        <slot />
+      </div>
     </main>
     <the-app-footer :menu-items="footerMenuList" />
   </div>
