@@ -21,7 +21,17 @@ export default defineNuxtConfig({
     }
   },
   plugins: [],
-  modules: ['@nuxtjs/i18n', '@nuxtjs/tailwindcss'],
+  modules: [
+    '@nuxtjs/i18n',
+    '@nuxtjs/tailwindcss',
+    ['@pinia/nuxt',
+      {
+        autoImports: [
+          // automatically imports `defineStore`
+          'defineStore'
+        ]
+      }]
+  ],
   i18n: {
     locales: [
       {
