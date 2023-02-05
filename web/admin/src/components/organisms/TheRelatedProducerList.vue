@@ -1,0 +1,94 @@
+<template>
+  <div>
+    <v-data-table
+      :headers="producerHeaders"
+      :items="relateProducers"
+      :server-items-length="totalItems"
+      :footer-props="tableFooterProps"
+      no-data-text="登録されている生産者がいません。"
+      @update:items-per-page="handleUpdateItemsPerPage"
+      @update:page="handleUpdatePage"
+    >
+      <template #[`item.thumbnail`]="{ item }">
+        <v-avatar>
+          <img
+            v-if="item.thumbnailUrl !== ''"
+            :src="item.thumbnailUrl"
+            :alt="`${item.storeName}-profile`"
+          />
+          <v-icon v-else>mdi-account</v-icon>
+        </v-avatar>
+      </template>
+      <template #[`item.name`]="{ item }">
+        {{ `${item.lastname} ${item.firstname}` }}
+      </template>
+    </v-data-table>
+  </div>
+</template>
+
+<script lang="ts">
+import { computed, defineComponent } from '@vue/composition-api'
+import { DataTableHeader } from 'vuetify'
+
+import { useCoordinatorStore } from '~/store/coordinator'
+
+export default defineComponent({
+  props: {
+    tableFooterProps: {
+      type: Object,
+      default: () => {},
+    },
+  },
+  setup(_, { emit }) {
+    const coordinatorStore = useCoordinatorStore()
+
+    const relateProducers = computed(() => {
+      console.log(coordinatorStore.producers)
+      return coordinatorStore.producers
+    })
+
+    const totalItems = computed(() => {
+      return coordinatorStore.totalItems
+    })
+
+    const producerHeaders: DataTableHeader[] = [
+      {
+        text: 'サムネイル',
+        value: 'thumbnailUrl',
+      },
+      {
+        text: '生産者名',
+        value: 'name',
+      },
+      {
+        text: '店舗名',
+        value: 'storeName',
+      },
+      {
+        text: 'Email',
+        value: 'email',
+      },
+      {
+        text: '電話番号',
+        value: 'phoneNumber',
+      },
+    ]
+
+    const handleUpdateItemsPerPage = (page: number) => {
+      emit('update:items-per-page', page)
+    }
+
+    const handleUpdatePage = (page: number) => {
+      emit('update:page', page)
+    }
+
+    return {
+      relateProducers,
+      totalItems,
+      producerHeaders,
+      handleUpdateItemsPerPage,
+      handleUpdatePage,
+    }
+  },
+})
+</script>

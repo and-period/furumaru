@@ -78,7 +78,7 @@ export default defineComponent({
     ]
 
     const getAccountColor = (account: boolean): string => {
-      return account ? 'primary' : 'error'
+      return account ? 'primary' : 'red'
     }
 
     const getAccount = (account: boolean): string => {

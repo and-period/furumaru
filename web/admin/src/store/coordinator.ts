@@ -271,7 +271,10 @@ export const useCoordinatorStore = defineStore('Coordinator', {
           return Promise.reject(new Error('認証エラー'))
         }
         const factory = new ApiClientFactory()
-        const coordinatorsApiClient = factory.create(CoordinatorApi, accessToken)
+        const coordinatorsApiClient = factory.create(
+          CoordinatorApi,
+          accessToken
+        )
         await coordinatorsApiClient.v1RelateProducers(id, payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
@@ -289,7 +292,11 @@ export const useCoordinatorStore = defineStore('Coordinator', {
      * @param id コーディネータのID
      * @returns
      */
-    async fetchRelatedProducers(id: string, limit: number = 20, offset: number = 0): Promise<void> {
+    async fetchRelatedProducers(
+      id: string,
+      limit: number = 20,
+      offset: number = 0
+    ): Promise<void> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -297,13 +304,20 @@ export const useCoordinatorStore = defineStore('Coordinator', {
           return Promise.reject(new Error('認証エラー'))
         }
         const factory = new ApiClientFactory()
-        const coordinatorsApiClient = factory.create(CoordinatorApi, accessToken)
-        const res = await coordinatorsApiClient.v1ListRelatedProducers(id, limit, offset)
+        const coordinatorsApiClient = factory.create(
+          CoordinatorApi,
+          accessToken
+        )
+        const res = await coordinatorsApiClient.v1ListRelatedProducers(
+          id,
+          limit,
+          offset
+        )
         this.producers = res.data.producers
       } catch (error) {
         console.log(error)
         return this.errorHandler(error)
       }
-    }
+    },
   },
 })
