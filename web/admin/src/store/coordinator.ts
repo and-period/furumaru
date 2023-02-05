@@ -9,6 +9,7 @@ import {
   CoordinatorResponse,
   CoordinatorsResponse,
   CreateCoordinatorRequest,
+  ProducersResponse,
   RelateProducersRequest,
   UpdateCoordinatorRequest,
   UploadImageResponse,
@@ -23,7 +24,9 @@ export const useCoordinatorStore = defineStore('Coordinator', {
     }
     return {
       coordinators: [] as CoordinatorsResponse['coordinators'],
+      producers: [] as ProducersResponse['producers'],
       totalItems: 0,
+      producerTotalItems: 0,
       apiClient,
     }
   },
@@ -268,13 +271,49 @@ export const useCoordinatorStore = defineStore('Coordinator', {
           return Promise.reject(new Error('認証エラー'))
         }
         const factory = new ApiClientFactory()
-        const contactsApiClient = factory.create(CoordinatorApi, accessToken)
-        await contactsApiClient.v1RelateProducers(id, payload)
+        const coordinatorsApiClient = factory.create(
+          CoordinatorApi,
+          accessToken
+        )
+        await coordinatorsApiClient.v1RelateProducers(id, payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: 'コーディネーターと生産者の紐付けが完了しました',
           color: 'info',
         })
+      } catch (error) {
+        console.log(error)
+        return this.errorHandler(error)
+      }
+    },
+
+    /**
+     * コーディーネータに紐づいている生産者を取得する非同期関数
+     * @param id コーディネータのID
+     * @returns
+     */
+    async fetchRelatedProducers(
+      id: string,
+      limit: number = 20,
+      offset: number = 0
+    ): Promise<void> {
+      try {
+        const authStore = useAuthStore()
+        const accessToken = authStore.accessToken
+        if (!accessToken) {
+          return Promise.reject(new Error('認証エラー'))
+        }
+        const factory = new ApiClientFactory()
+        const coordinatorsApiClient = factory.create(
+          CoordinatorApi,
+          accessToken
+        )
+        const res = await coordinatorsApiClient.v1ListRelatedProducers(
+          id,
+          limit,
+          offset
+        )
+        this.producers = res.data.producers
       } catch (error) {
         console.log(error)
         return this.errorHandler(error)
