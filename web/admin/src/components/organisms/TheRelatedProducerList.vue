@@ -26,11 +26,11 @@
         {{ convertPhone(item.phoneNumber) }}
       </template>
       <template #[`item.actions`]="{ item }">
-            <v-btn outlined color="primary" small @click="handleEdit(item)">
-              <v-icon small>mdi-pencil</v-icon>
-              編集
-            </v-btn>
-          </template>
+        <v-btn outlined color="primary" small @click="handleEdit(item)">
+          <v-icon small>mdi-pencil</v-icon>
+          編集
+        </v-btn>
+      </template>
     </v-data-table>
   </div>
 </template>
