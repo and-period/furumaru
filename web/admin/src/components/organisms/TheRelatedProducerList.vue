@@ -9,7 +9,7 @@
       @update:items-per-page="handleUpdateItemsPerPage"
       @update:page="handleUpdatePage"
     >
-      <template #[`item.thumbnail`]="{ item }">
+      <template #[`item.thumbnailUrl`]="{ item }">
         <v-avatar>
           <img
             v-if="item.thumbnailUrl !== ''"
@@ -21,6 +21,9 @@
       </template>
       <template #[`item.name`]="{ item }">
         {{ `${item.lastname} ${item.firstname}` }}
+      </template>
+      <template #[`item.phoneNumber`]="{ item }">
+        {{ convertPhone(item.phoneNumber) }}
       </template>
     </v-data-table>
   </div>
@@ -82,12 +85,17 @@ export default defineComponent({
       emit('update:page', page)
     }
 
+    const convertPhone = (phoneNumber: string): string => {
+      return phoneNumber.replace('+81', '0')
+    }
+
     return {
       relateProducers,
       totalItems,
       producerHeaders,
       handleUpdateItemsPerPage,
       handleUpdatePage,
+      convertPhone,
     }
   },
 })
