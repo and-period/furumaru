@@ -61,7 +61,9 @@ export default defineNuxtConfig({
     }
   ],
   runtimeConfig: {
-    API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:18000'
+    public: {
+      API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:18000'
+    }
   },
   build: {}
 })
