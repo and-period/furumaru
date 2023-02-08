@@ -1,13 +1,19 @@
 <script lang="ts" setup>
+import { useAuthStore } from '~/store/auth'
 import { SignInRequest } from '~/types/api'
+import { ApiBaseError } from '~/types/exception'
 import { I18n } from '~/types/locales'
 
 definePageMeta({
   layout: 'auth'
 })
 
+const { signIn } = useAuthStore()
+
 const i18n = useI18n()
 const localePath = useLocalePath()
+
+const router = useRouter()
 
 const t = (str: keyof I18n['auth']['signIn']): string => {
   return i18n.t(`auth.signIn.${str}`)
@@ -29,6 +35,19 @@ const formData = reactive<SignInRequest>({
 })
 
 const hasError = ref<boolean>(false)
+const errorMessage = ref<string>('')
+
+const handleSubmit = async () => {
+  try {
+    await signIn(formData)
+    router.push(localePath('/'))
+  } catch (error) {
+    hasError.value = true
+    if (error instanceof ApiBaseError) {
+      errorMessage.value = error.message
+    }
+  }
+}
 </script>
 
 <template>
@@ -37,6 +56,7 @@ const hasError = ref<boolean>(false)
     :page-name="t('pageName')"
     :button-text="t('signIn')"
     :has-error="hasError"
+    :error-message="errorMessage"
     :username-label="t('email')"
     :username-placeholder="t('email')"
     username-error-message=""
@@ -55,6 +75,7 @@ const hasError = ref<boolean>(false)
       href: localePath('/signup'),
       text: t('signUpLink')
     }"
+    @submit="handleSubmit"
     @click:google-sing-in-button="handleClickGoogleSingInButton"
     @click:facebook-sing-in-button="handleClickFacebookSingInButton"
     @click:line-sing-in-button="handleClickLineSingInButton"

@@ -7,6 +7,7 @@ interface Props {
   modelValue: SignInRequest
   buttonText: string
   hasError: boolean
+  errorMessage: string
   usernameLabel: string
   usernamePlaceholder: string
   usernameErrorMessage: string
@@ -60,7 +61,7 @@ const handleClickLineSingInButton = () => {
       <the-card-title>{{ pageName }}</the-card-title>
       <the-card-content>
         <the-alert v-show="hasError" class="mb-2">
-          メールアドレスかパスワードが間違っています。
+          {{ errorMessage }}
         </the-alert>
 
         <the-stack>
