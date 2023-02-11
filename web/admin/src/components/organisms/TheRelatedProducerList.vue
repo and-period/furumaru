@@ -9,7 +9,7 @@
       @update:items-per-page="handleUpdateItemsPerPage"
       @update:page="handleUpdatePage"
     >
-      <template #[`item.thumbnail`]="{ item }">
+      <template #[`item.thumbnailUrl`]="{ item }">
         <v-avatar>
           <img
             v-if="item.thumbnailUrl !== ''"
@@ -22,15 +22,26 @@
       <template #[`item.name`]="{ item }">
         {{ `${item.lastname} ${item.firstname}` }}
       </template>
+      <template #[`item.phoneNumber`]="{ item }">
+        {{ convertPhone(item.phoneNumber) }}
+      </template>
+      <template #[`item.actions`]="{ item }">
+        <v-btn outlined color="primary" small @click="handleEdit(item)">
+          <v-icon small>mdi-pencil</v-icon>
+          編集
+        </v-btn>
+      </template>
     </v-data-table>
   </div>
 </template>
 
 <script lang="ts">
+import { useRouter } from '@nuxtjs/composition-api'
 import { computed, defineComponent } from '@vue/composition-api'
 import { DataTableHeader } from 'vuetify'
 
 import { useCoordinatorStore } from '~/store/coordinator'
+import { ProducersResponseProducersInner } from '~/types/api'
 
 export default defineComponent({
   props: {
@@ -40,6 +51,7 @@ export default defineComponent({
     },
   },
   setup(_, { emit }) {
+    const router = useRouter()
     const coordinatorStore = useCoordinatorStore()
 
     const relateProducers = computed(() => {
@@ -72,6 +84,11 @@ export default defineComponent({
         text: '電話番号',
         value: 'phoneNumber',
       },
+      {
+        text: 'Actions',
+        value: 'actions',
+        sortable: false,
+      },
     ]
 
     const handleUpdateItemsPerPage = (page: number) => {
@@ -82,12 +99,22 @@ export default defineComponent({
       emit('update:page', page)
     }
 
+    const convertPhone = (phoneNumber: string): string => {
+      return phoneNumber.replace('+81', '0')
+    }
+
+    const handleEdit = (item: ProducersResponseProducersInner) => {
+      router.push(`/producers/edit/${item.id}`)
+    }
+
     return {
       relateProducers,
       totalItems,
       producerHeaders,
       handleUpdateItemsPerPage,
       handleUpdatePage,
+      convertPhone,
+      handleEdit,
     }
   },
 })
