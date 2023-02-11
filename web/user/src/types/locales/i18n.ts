@@ -25,6 +25,7 @@ export interface I18n {
   auth: {
     signIn: {
       pageName: string;
+      authErrorMessage: string
       email: string;
       password: string;
       forgetPasswordLink: string;

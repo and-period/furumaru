@@ -22,6 +22,7 @@
   "auth": {
     "signIn": {
       "pageName": "ログイン",
+      "authErrorMessage": "メールアドレスかパスワードが間違っています",
       "email": "メールアドレス",
       "password": "パスワード",
       "forgetPasswordLink": "パスワードをお忘れの方はこちら",
