@@ -37,7 +37,7 @@ const handleClickRightArrowButton = () => {
 
 <template>
   <div class="flex justify-center items-center gap-x-4">
-    <the-icon-button class="bg-white bg-opacity-70 w-10 h-10 z-50" @click="handleClickLeftArrowButton">
+    <the-icon-button class="bg-white w-10 h-10 z-50 bg-opacity-70 hover:bg-opacity-100" @click="handleClickLeftArrowButton">
       <the-left-arrow-icon />
     </the-icon-button>
 
@@ -56,7 +56,7 @@ const handleClickRightArrowButton = () => {
       />
     </div>
 
-    <the-icon-button class="bg-white bg-opacity-50 w-10 h-10 z-50" @click="handleClickRightArrowButton">
+    <the-icon-button class="bg-white w-10 h-10 z-50 bg-opacity-50 hover:bg-opacity-100" @click="handleClickRightArrowButton">
       <the-right-arrow-icon />
     </the-icon-button>
   </div>
