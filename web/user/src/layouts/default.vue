@@ -68,12 +68,12 @@ const footerMenuList = computed<FooterMenuItem[]>(() => [
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen">
+  <div class="flex flex-col min-h-screen bg-base">
     <the-app-header
       :menu-items="navbarMenuList"
       @click:cart="handleCartClick"
     />
-    <main class="bg-base flex-grow">
+    <main class="flex-grow overflow-hidden">
       <div class="container pb-10 mx-auto">
         <slot />
       </div>
