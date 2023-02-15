@@ -10,7 +10,10 @@
       "topLinkText": "TOP",
       "searchItemLinkText": "Search Item",
       "allItemLinkText": "All Items",
-      "aboutLinkText": "About"
+      "aboutLinkText": "About",
+      "notificationTitle": "Notification",
+      "noNotificationItemText": "No Notification",
+      "cartMenuMessage": "買い物カゴに<br>商品が{count}点入っています。"
     },
     "footer": {
       "qaLinkText": "Q and A",

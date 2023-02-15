@@ -12,6 +12,11 @@ export interface I18n {
       searchItemLinkText: string
       allItemLinkText: string
       aboutLinkText: string
+
+      cartMenuMessage: string
+
+      notificationTitle: string
+      noNotificationItemText: string
     };
 
     footer: {

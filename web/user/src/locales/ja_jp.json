@@ -10,7 +10,10 @@
       "topLinkText": "TOP",
       "searchItemLinkText": "商品をさがす",
       "allItemLinkText": "すべての商品",
-      "aboutLinkText": "ふるマルについて"
+      "aboutLinkText": "ふるマルについて",
+      "notificationTitle": "お知らせ",
+      "noNotificationItemText": "お知らせはありません。",
+      "cartMenuMessage": "買い物カゴに<br>商品が{count}点入っています。"
     },
     "footer": {
       "qaLinkText": "よくあるご質問",
