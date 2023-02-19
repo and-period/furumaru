@@ -1,11 +1,24 @@
 <script lang="ts" setup>
+import { storeToRefs } from 'pinia'
+import { useAuthStore } from '~/store/auth'
+import { useNotificationStore } from '~/store/notification'
+import { useShoppingStore } from '~/store/shopping'
 import { I18n } from '~/types/locales'
-import { FooterMenuItem, HeaderMenuItem } from '~/types/props'
+import { FooterMenuItem, HeaderMenuItem, LinkItem } from '~/types/props'
 
 const router = useRouter()
 const route = useRoute()
 const i18n = useI18n()
 const localePath = useLocalePath()
+
+const notificationStore = useNotificationStore()
+const { notifications } = storeToRefs(notificationStore)
+
+const authStore = useAuthStore()
+const { isAuthenticated } = storeToRefs(authStore)
+
+const shoppingStore = useShoppingStore()
+const { cartIsEmpty, cartItems } = storeToRefs(shoppingStore)
 
 const ht = (str: keyof I18n['layout']['header']) => {
   return i18n.t(`layout.header.${str}`)
@@ -15,12 +28,8 @@ const ft = (str: keyof I18n['layout']['footer']) => {
   return i18n.t(`layout.footer.${str}`)
 }
 
-const handleCartClick = (): void => {
-  console.log('NOT IMPLEMENTED')
-}
-
-const _localeRef = computed(() => {
-  return i18n.locale === i18n.fallbackLocale ? '' : i18n.locale
+const cartMenuMessage = computed<string>(() => {
+  return i18n.t('layout.header.cartMenuMessage', { count: cartItems.value.length })
 })
 
 const navbarMenuList = computed<HeaderMenuItem[]>(() => [
@@ -46,6 +55,19 @@ const navbarMenuList = computed<HeaderMenuItem[]>(() => [
   }
 ])
 
+const authenticatedMenuItems = computed<LinkItem[]>(() => [])
+
+const noAuthenticatedMenuItems = computed<LinkItem[]>(() => [
+  {
+    text: ht('signIn'),
+    href: localePath('/signin')
+  },
+  {
+    text: ht('signUp'),
+    href: localePath('/signup')
+  }
+])
+
 const footerMenuList = computed<FooterMenuItem[]>(() => [
   {
     text: ft('qaLinkText'),
@@ -64,14 +86,21 @@ const footerMenuList = computed<FooterMenuItem[]>(() => [
     onClick: () => {}
   }
 ])
-
 </script>
 
 <template>
   <div class="flex flex-col min-h-screen bg-base">
     <the-app-header
+      :is-authenticated="isAuthenticated"
+      :authenticated-account-menu-item="authenticatedMenuItems"
+      :no-authenticated-account-menu-item="noAuthenticatedMenuItems"
       :menu-items="navbarMenuList"
-      @click:cart="handleCartClick"
+      :notification-title="ht('notificationTitle')"
+      :no-notification-item-text="ht('noNotificationItemText')"
+      :notification-items="notifications"
+      :cart-is-empty="cartIsEmpty"
+      :cart-items="cartItems"
+      :cart-menu-message="cartMenuMessage"
     />
     <main class="flex-grow overflow-hidden">
       <div class="container pb-10 mx-auto">

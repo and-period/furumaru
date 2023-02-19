@@ -1,0 +1,21 @@
+<template>
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="24" height="24" rx="12" fill="#604C3F" />
+    <line
+      x1="18.0208"
+      y1="6.70711"
+      x2="6.70712"
+      y2="18.0208"
+      stroke="white"
+      stroke-width="2"
+    />
+    <line
+      y1="-1"
+      x2="16"
+      y2="-1"
+      transform="matrix(0.707107 0.707107 0.707107 -0.707107 7.31372 6)"
+      stroke="white"
+      stroke-width="2"
+    />
+  </svg>
+</template>
