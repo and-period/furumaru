@@ -9,7 +9,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.10.8
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.18.4
 	github.com/aws/aws-sdk-go-v2/service/ivs v1.18.7
-	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.29.0
+	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.31.2
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.30.0
 	go.uber.org/zap v1.24.0
 )
