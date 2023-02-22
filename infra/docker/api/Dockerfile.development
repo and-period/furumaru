@@ -1,4 +1,4 @@
-FROM golang:1.19.3-alpine
+FROM golang:1.20.1-alpine
 
 ENV LANG C.UTF-8
 ENV TZ Asia/Tokyo
