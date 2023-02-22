@@ -8,7 +8,7 @@ on:
 env:
   SERVICE: func
   TZ: 'Asia/Tokyo'
-  GO_VERSION: 1.19.3
+  GO_VERSION: 1.20.1
 
 jobs:
   setup:
