@@ -20,14 +20,14 @@ defineProps<Props>()
 
         <div class="flex justify-center gap-x-3">
           <a href="#" class="block">
-            <the-instagram-icon class="inline w-5 h-5" />
+            <the-instagram-icon id="footer-instagram-icon" class="inline w-5 h-5" />
           </a>
           <a href="#" class="block">
-            <the-facebook-icon class="inline w-5 h-5" />
+            <the-facebook-icon id="footer-facebook-icon" class="inline w-5 h-5" />
           </a>
         </div>
 
-        <ul class="list-none flex justify-center gap-x-10 mt-4">
+        <ul class="list-none flex md:flex-row flex-col justify-center md:gap-10 gap-4 mt-4">
           <li v-for="item,i in menuItems" :key="i">
             <a href="#" @click="item.onClick">
               {{ item.text }}
