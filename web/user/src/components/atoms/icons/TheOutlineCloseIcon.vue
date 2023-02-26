@@ -1,0 +1,20 @@
+<template>
+  <svg width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <line
+      x1="1.29289"
+      y1="18.2929"
+      x2="18.2929"
+      y2="1.29289"
+      stroke="#604C3F"
+      stroke-width="2"
+    />
+    <line
+      x1="1.70711"
+      y1="1.29289"
+      x2="18.7071"
+      y2="18.2929"
+      stroke="#604C3F"
+      stroke-width="2"
+    />
+  </svg>
+</template>
