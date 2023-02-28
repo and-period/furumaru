@@ -13,7 +13,9 @@
       "aboutLinkText": "About",
       "notificationTitle": "Notification",
       "noNotificationItemText": "No Notification",
-      "cartMenuMessage": "買い物カゴに<br>商品が{count}点入っています。"
+    "cartMenuMessage": "買い物カゴに<br>商品が{count}点入っています。",
+      "myPageLinkText": "My Page",
+      "viewMyCartText": "View My Cart"
     },
     "footer": {
       "qaLinkText": "Q and A",

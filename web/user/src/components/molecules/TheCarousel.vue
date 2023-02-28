@@ -52,7 +52,7 @@ const handleClickRightArrowButton = () => {
           '2xl:-translate-x-[560px] -translate-x-72': imageItem.leftContent,
           '2xl:translate-x-[560px] translate-x-72': imageItem.rightContent,
         }"
-        :style="`background-size: cover; background-image: url(${imageItem.src});`"
+        :style="`background-position: center; background-size: cover; background-image: url(${imageItem.src});`"
       />
     </div>
 

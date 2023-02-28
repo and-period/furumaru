@@ -17,6 +17,9 @@ export interface I18n {
 
       notificationTitle: string
       noNotificationItemText: string
+
+      myPageLinkText: string
+      viewMyCartText: string
     };
 
     footer: {

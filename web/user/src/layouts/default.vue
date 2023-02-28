@@ -55,6 +55,17 @@ const navbarMenuList = computed<HeaderMenuItem[]>(() => [
   }
 ])
 
+const spModeMenuItems = computed<LinkItem[]>(() => [
+  {
+    text: ht('myPageLinkText'),
+    href: localePath('/mypage')
+  },
+  {
+    text: ht('viewMyCartText'),
+    href: localePath('/cart')
+  }
+])
+
 const authenticatedMenuItems = computed<LinkItem[]>(() => [])
 
 const noAuthenticatedMenuItems = computed<LinkItem[]>(() => [
@@ -90,18 +101,23 @@ const footerMenuList = computed<FooterMenuItem[]>(() => [
 
 <template>
   <div class="flex flex-col min-h-screen bg-base">
-    <the-app-header
-      :is-authenticated="isAuthenticated"
-      :authenticated-account-menu-item="authenticatedMenuItems"
-      :no-authenticated-account-menu-item="noAuthenticatedMenuItems"
-      :menu-items="navbarMenuList"
-      :notification-title="ht('notificationTitle')"
-      :no-notification-item-text="ht('noNotificationItemText')"
-      :notification-items="notifications"
-      :cart-is-empty="cartIsEmpty"
-      :cart-items="cartItems"
-      :cart-menu-message="cartMenuMessage"
-    />
+    <div class="sticky top-0 z-[60]">
+      <the-app-header
+        :home-path="localePath('/')"
+        :is-authenticated="isAuthenticated"
+        :authenticated-account-menu-item="authenticatedMenuItems"
+        :no-authenticated-account-menu-item="noAuthenticatedMenuItems"
+        :menu-items="navbarMenuList"
+        :notification-title="ht('notificationTitle')"
+        :no-notification-item-text="ht('noNotificationItemText')"
+        :notification-items="notifications"
+        :cart-is-empty="cartIsEmpty"
+        :cart-items="cartItems"
+        :cart-menu-message="cartMenuMessage"
+        :sp-menu-items="spModeMenuItems"
+        :footer-menu-items="footerMenuList"
+      />
+    </div>
     <main class="flex-grow overflow-hidden">
       <div class="container pb-10 mx-auto">
         <slot />

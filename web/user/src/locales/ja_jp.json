@@ -13,7 +13,9 @@
       "aboutLinkText": "ふるマルについて",
       "notificationTitle": "お知らせ",
       "noNotificationItemText": "お知らせはありません。",
-      "cartMenuMessage": "買い物カゴに<br>商品が{count}点入っています。"
+      "cartMenuMessage": "買い物カゴに<br>商品が{count}点入っています。",
+      "myPageLinkText": "マイページ",
+      "viewMyCartText": "買い物カゴを見る"
     },
     "footer": {
       "qaLinkText": "よくあるご質問",
