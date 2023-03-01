@@ -56,7 +56,7 @@ require (
 
 require (
 	github.com/MicahParks/keyfunc v1.5.1 // indirect
-	github.com/golang-jwt/jwt/v4 v4.4.2 // indirect
+	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 )
 
 require (
