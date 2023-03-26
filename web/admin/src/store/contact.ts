@@ -38,14 +38,16 @@ export const useContactStore = defineStore('contact', {
      * お問い合わせの一覧を取得する非同期関数
      * @param limit 最大取得件数
      * @param offset 取得開始位置
+     * @param orders ソートキー
      * @returns
      */
-    async fetchContacts(limit: number = 20, offset: number = 0): Promise<void> {
+    async fetchContacts(limit: number = 20, offset: number = 0, orders: string[] = []): Promise<void> {
       try {
         const accessToken = this.getAccessToken()
         const res = await this.apiClient(accessToken).v1ListContacts(
           limit,
-          offset
+          offset,
+          orders.join(','),
         )
         const { contacts, total }: ContactsResponse = res.data
 

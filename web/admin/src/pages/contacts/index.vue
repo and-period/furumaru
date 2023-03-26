@@ -7,10 +7,14 @@
           :headers="headers"
           :items="contacts"
           :items-per-page="itemsPerPage"
+          :sort-by.sync="sortBy"
+          :sort-desc.sync="sortDesc"
           :server-items-length="total"
           :footer-props="options"
           @update:page="handleUpdatePage"
           @update:items-per-page="handleUpdateItemsPerPage"
+          @update:sort-by="fetch"
+          @update:sort-desc="fetch"
         >
           <template #[`item.priority`]="{ item }">
             <v-chip :color="getPriorityColor(item.priority)" small dark>
@@ -38,6 +42,7 @@
 import {
   computed,
   defineComponent,
+  ref,
   useFetch,
   useRouter,
   watch,
@@ -88,9 +93,12 @@ export default defineComponent({
       },
     ]
 
-    useFetch(async () => {
+    const { fetch } = useFetch(async () => {
       await fetchContacts()
     })
+
+    const sortBy = ref<string>('')
+    const sortDesc = ref<boolean>()
 
     const contacts = computed(() => {
       return contactStore.contacts
@@ -110,7 +118,8 @@ export default defineComponent({
 
     const fetchContacts = async () => {
       try {
-        await contactStore.fetchContacts(itemsPerPage.value, offset.value)
+        const order: string = sortDesc.value ? `-${sortBy.value}` : sortBy.value
+        await contactStore.fetchContacts(itemsPerPage.value, offset.value, [order])
       } catch (err) {
         console.log(err)
       }
@@ -177,18 +186,21 @@ export default defineComponent({
     }
 
     return {
-      headers,
       contacts,
+      fetch,
+      headers,
       itemsPerPage,
-      total,
       options,
+      sortBy,
+      sortDesc,
+      total,
       getPriority,
       getPriorityColor,
       getStatus,
       getStatusColor,
       handleEdit,
-      handleUpdatePage,
       handleUpdateItemsPerPage,
+      handleUpdatePage,
     }
   },
 })
