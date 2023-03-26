@@ -41,13 +41,17 @@ export const useContactStore = defineStore('contact', {
      * @param orders ソートキー
      * @returns
      */
-    async fetchContacts(limit: number = 20, offset: number = 0, orders: string[] = []): Promise<void> {
+    async fetchContacts(
+      limit: number = 20,
+      offset: number = 0,
+      orders: string[] = []
+    ): Promise<void> {
       try {
         const accessToken = this.getAccessToken()
         const res = await this.apiClient(accessToken).v1ListContacts(
           limit,
           offset,
-          orders.join(','),
+          orders.join(',')
         )
         const { contacts, total }: ContactsResponse = res.data
 
