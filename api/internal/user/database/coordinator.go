@@ -50,7 +50,7 @@ func (c *coordinator) List(
 	return coordinators, nil
 }
 
-func (c *coordinator) Count(ctx context.Context, params *ListCoordinatorsParams) (int64, error) {
+func (c *coordinator) Count(ctx context.Context, _ *ListCoordinatorsParams) (int64, error) {
 	total, err := c.db.Count(ctx, c.db.DB, &entity.Coordinator{}, nil)
 	return total, exception.InternalError(err)
 }

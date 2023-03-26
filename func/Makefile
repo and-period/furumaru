@@ -1,7 +1,7 @@
 .PHONY: help setup install create update fmt vet lint test build
 
 GOFUMPT_VERSION := 0.4.0
-GOLANGCI_VERSION := 1.51.2
+GOLANGCI_VERSION := 1.52.2
 
 LAMBDA_ROLE :=  arn:aws:iam::386661535629:role/service-role/furumaru-stg-lambda
 

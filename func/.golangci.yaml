@@ -11,7 +11,7 @@ run:
   - '.*_test.go'
 
 service:
-  golangci-lint-version: 1.51.2
+  golangci-lint-version: 1.52.2
 
 linters:
   disable-all: true

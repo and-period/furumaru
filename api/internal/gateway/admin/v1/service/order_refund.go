@@ -16,7 +16,7 @@ type OrderRefund struct {
 	response.OrderRefund
 }
 
-func NewOrderRefundType(typ entity.CancelType) OrderRefundType {
+func NewOrderRefundType(_ entity.CancelType) OrderRefundType {
 	// TODO: 必要な種別が決まったら詳細実装
 	return OrderRefundTypeUnknown
 }
