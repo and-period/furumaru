@@ -20,7 +20,7 @@ import {
 // メッセージを変更できるステータスコードの一覧（500系のエラーはシステム固有のメッセージを利用する）
 const STATUS_CODES = [400, 401, 403, 404, 409, 412, 429, 499] as const
 
-type StatusCode = typeof STATUS_CODES[number]
+type StatusCode = (typeof STATUS_CODES)[number]
 
 export type CustomErrorMessage = {
   [key in StatusCode]?: string
