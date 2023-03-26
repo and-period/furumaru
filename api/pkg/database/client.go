@@ -118,7 +118,7 @@ func NewClient(params *Params, opts ...Option) (*Client, error) {
 
 // Begin - トランザクションの開始処理
 func (c *Client) Begin(ctx context.Context, opts ...*sql.TxOptions) (*gorm.DB, error) {
-	tx := c.DB.WithContext(ctx).Begin()
+	tx := c.DB.WithContext(ctx).Begin(opts...)
 	if err := tx.Error; err != nil {
 		return nil, err
 	}

@@ -86,10 +86,7 @@ func (c *client) do(req *http.Request, out interface{}) error {
 	if err := c.checkStatus(res); err != nil {
 		return err
 	}
-	if err := c.bind(out, res); err != nil {
-		return err
-	}
-	return nil
+	return c.bind(out, res)
 }
 
 func (c *client) retryable(status int) bool {

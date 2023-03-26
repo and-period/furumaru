@@ -42,7 +42,7 @@ func (c *contact) List(ctx context.Context, params *ListContactsParams, fields .
 }
 
 func (c *contact) Count(ctx context.Context, params *ListContactsParams) (int64, error) {
-	total, err := c.db.Count(ctx, c.db.DB, &entity.Contact{}, nil)
+	total, err := c.db.Count(ctx, c.db.DB, &entity.Contact{}, params.stmt)
 	return total, exception.InternalError(err)
 }
 

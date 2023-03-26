@@ -15,7 +15,7 @@ func RegisterHealthServer(s *grpc.Server) {
 	health.RegisterHealthServer(s, &healthServer{})
 }
 
-func (s *healthServer) Check(ctx context.Context, req *health.HealthCheckRequest) (*health.HealthCheckResponse, error) {
+func (s *healthServer) Check(_ context.Context, req *health.HealthCheckRequest) (*health.HealthCheckResponse, error) {
 	return &health.HealthCheckResponse{
 		Status: health.HealthCheckResponse_SERVING,
 	}, nil
