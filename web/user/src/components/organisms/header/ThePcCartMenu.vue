@@ -12,7 +12,7 @@ defineProps<Props>()
 <template>
   <the-dropdown-with-icon>
     <template #icon>
-      <the-cart-icon />
+      <the-cart-icon id="header-cart-icon" fill="#604C3F" />
     </template>
     <template #content>
       <div class="p-4 leading-8">
