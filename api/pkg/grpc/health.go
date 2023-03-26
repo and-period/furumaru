@@ -15,12 +15,12 @@ func RegisterHealthServer(s *grpc.Server) {
 	health.RegisterHealthServer(s, &healthServer{})
 }
 
-func (s *healthServer) Check(_ context.Context, req *health.HealthCheckRequest) (*health.HealthCheckResponse, error) {
+func (s *healthServer) Check(_ context.Context, _ *health.HealthCheckRequest) (*health.HealthCheckResponse, error) {
 	return &health.HealthCheckResponse{
 		Status: health.HealthCheckResponse_SERVING,
 	}, nil
 }
 
-func (s *healthServer) Watch(*health.HealthCheckRequest, health.Health_WatchServer) error {
+func (s *healthServer) Watch(_ *health.HealthCheckRequest, _ health.Health_WatchServer) error {
 	return status.Error(codes.Unimplemented, "Watching is not supported")
 }

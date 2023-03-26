@@ -180,7 +180,7 @@ func (s *service) NotifyNotification(ctx context.Context, in *messenger.NotifyNo
 	return s.sendMessage(ctx, payload)
 }
 
-func (s *service) notifyUserNotification(ctx context.Context, notification *entity.Notification) error {
+func (s *service) notifyUserNotification(_ context.Context, _ *entity.Notification) error {
 	// TODO: 後ほどユーザー側への通知も実装する
 	return nil
 }
