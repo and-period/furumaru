@@ -10,7 +10,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.19.2
 	github.com/aws/aws-sdk-go-v2/service/ivs v1.21.0
 	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.34.0
-	github.com/aws/aws-sdk-go-v2/service/s3 v1.31.0
+	github.com/aws/aws-sdk-go-v2/service/s3 v1.31.1
 	go.uber.org/zap v1.24.0
 )
 
