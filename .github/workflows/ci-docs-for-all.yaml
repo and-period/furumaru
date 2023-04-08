@@ -160,7 +160,7 @@ jobs:
 
     - name: Install
       run: |
-        docker compose run --rm swagger_generator sh -c 'make setup && yarn'
+        docker compose run --rm swagger_generator yarn
 
     - name: Build
       run: make swagger
