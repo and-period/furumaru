@@ -22,24 +22,24 @@ const formData = reactive<CreateProducerRequest>({
   prefecture: '',
   city: '',
   addressLine1: '',
-  addressLine2: '',
+  addressLine2: ''
 })
 
 const thumbnailUploadStatus = reactive<ImageUploadStatus>({
   error: false,
-  message: '',
+  message: ''
 })
 
 const headerUploadStatus = reactive<ImageUploadStatus>({
   error: false,
-  message: '',
+  message: ''
 })
 
 const handleSubmit = async () => {
   try {
     await createProducer({
       ...formData,
-      phoneNumber: formData.phoneNumber.replace('0', '+81'),
+      phoneNumber: formData.phoneNumber.replace('0', '+81')
     })
     router.push('/producers')
   } catch (error) {
@@ -76,7 +76,7 @@ const handleUpdateHeader = async (files: FileList) => {
 const {
   loading: searchLoading,
   errorMessage: searchErrorMessage,
-  searchAddressByPostalCode,
+  searchAddressByPostalCode
 } = useSearchAddress()
 
 const searchAddress = async () => {

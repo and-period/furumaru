@@ -8,6 +8,19 @@ const handleClick = () => {
 }
 </script>
 
+<template>
+  <div>
+    <div class="cube" role="button" @click="handleClick">
+      <div class="cube-item" />
+      <div class="cube-item" />
+      <div class="cube-item text-center">
+        <img height="45px" src="/furulogo.png" alt="ふるまるロゴ">
+      </div>
+      <div class="cube-item text-center" />
+    </div>
+  </div>
+</template>
+
 <style lang="scss" scoped>
 $bg-color: #e7d0a9;
 $tape-bg-color: #b89f89;
@@ -58,16 +71,3 @@ $border-color: #c1ae8d;
   width: 80px;
 }
 </style>
-
-<template>
-  <div>
-    <div class="cube" role="button" @click="handleClick">
-      <div class="cube-item" />
-      <div class="cube-item" />
-      <div class="cube-item text-center">
-        <img height="45px" src="/furulogo.png" alt="ふるまるロゴ" />
-      </div>
-      <div class="cube-item text-center"></div>
-    </div>
-  </div>
-</template>

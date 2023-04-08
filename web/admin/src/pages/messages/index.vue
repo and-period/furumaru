@@ -32,9 +32,11 @@ const handleClickMessage = async (messageId: string) => {
           @click="handleClickMessage(message.id)"
         >
           <v-list-item-icon>
-            <v-icon>{{
-              message.read ? 'mdi-email-open-outline' : 'mdi-email-outline'
-            }}</v-icon>
+            <v-icon>
+              {{
+                message.read ? 'mdi-email-open-outline' : 'mdi-email-outline'
+              }}
+            </v-icon>
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>{{ message.title }}</v-list-item-title>
@@ -48,11 +50,13 @@ const handleClickMessage = async (messageId: string) => {
       </v-list>
     </v-card>
     <v-card class="elevation-1 d-flex flex-grow-1 flex-column">
-      <v-card-title>{{
-        message.title
-          ? `件名：${message.title}`
-          : 'メッセージを選択してください'
-      }}</v-card-title>
+      <v-card-title>
+        {{
+          message.title
+            ? `件名：${message.title}`
+            : 'メッセージを選択してください'
+        }}
+      </v-card-title>
       <v-divider />
       <v-card-text>{{ message.body }}</v-card-text>
     </v-card>

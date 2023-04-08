@@ -21,23 +21,23 @@ const props = defineProps({
       box80Rate: 0,
       box100Rate: 0,
       originPrefecture: '',
-      originCity: '',
-    }),
+      originCity: ''
+    })
   },
   loading: {
     type: Boolean,
-    default: false,
+    default: false
   },
   producersItems: {
     type: Array,
     default: () => {
       return []
-    },
+    }
   },
   productTypesItems: {
     type: Array,
-    default: () => [],
-  },
+    default: () => []
+  }
 })
 
 const emit = defineEmits<{
@@ -48,7 +48,7 @@ const emit = defineEmits<{
 
 const formDataValue = computed({
   get: (): UpdateProductRequest => props.formData as UpdateProductRequest,
-  set: (val: UpdateProductRequest) => emit('update:formData', val),
+  set: (val: UpdateProductRequest) => emit('update:formData', val)
 })
 
 const handleImageUpload = (files?: FileList) => {

@@ -2,40 +2,40 @@
 const props = defineProps({
   weight: {
     type: Number,
-    default: 0,
+    default: 0
   },
   weightErrorMessage: {
     type: String,
-    default: '',
+    default: ''
   },
   deliveryType: {
     type: Number,
-    default: 0,
+    default: 0
   },
   box60Rate: {
     type: Number,
-    default: 0,
+    default: 0
   },
   box60RateErrorMessage: {
     type: String,
-    default: '',
+    default: ''
   },
   box80Rate: {
     type: Number,
-    default: 0,
+    default: 0
   },
   box80RateErrorMessage: {
     type: String,
-    default: '',
+    default: ''
   },
   box100Rate: {
     type: Number,
-    default: 0,
+    default: 0
   },
   box100RateErrorMessage: {
     type: String,
-    default: '',
-  },
+    default: ''
+  }
 })
 
 const emit = defineEmits<{
@@ -49,32 +49,32 @@ const emit = defineEmits<{
 const deliveryTypeItems = [
   { text: '通常便', value: 1 },
   { text: '冷蔵便', value: 2 },
-  { text: '冷凍便', value: 3 },
+  { text: '冷凍便', value: 3 }
 ]
 
 const weightValue = computed({
   get: () => props.weight,
-  set: (val: number) => emit('update:weight', Number(val)),
+  set: (val: number) => emit('update:weight', Number(val))
 })
 
 const deliveryTypeValue = computed({
   get: () => props.deliveryType,
-  set: (val: number) => emit('update:deliveryType', val),
+  set: (val: number) => emit('update:deliveryType', val)
 })
 
 const box60RateValue = computed({
   get: () => props.box60Rate,
-  set: (val: number) => emit('update:box60Rate', Number(val)),
+  set: (val: number) => emit('update:box60Rate', Number(val))
 })
 
 const box80RateValue = computed({
   get: () => props.box80Rate,
-  set: (val: number) => emit('update:box80Rate', Number(val)),
+  set: (val: number) => emit('update:box80Rate', Number(val))
 })
 
 const box100RateValue = computed({
   get: () => props.box100Rate,
-  set: (val: number) => emit('update:box100Rate', Number(val)),
+  set: (val: number) => emit('update:box100Rate', Number(val))
 })
 </script>
 
@@ -86,7 +86,9 @@ const box100RateValue = computed({
         label="重さ"
         :error-messages="props.weightErrorMessage"
       >
-        <template #append>kg</template>
+        <template #append>
+          kg
+        </template>
       </v-text-field>
       <v-spacer />
     </div>
@@ -107,7 +109,9 @@ const box100RateValue = computed({
 
       <v-list-item>
         <v-list-item-action>
-          <p class="mb-0 mx-6 text-h6">60</p>
+          <p class="mb-0 mx-6 text-h6">
+            60
+          </p>
         </v-list-item-action>
         <v-list-item-content>
           <v-text-field
@@ -118,14 +122,18 @@ const box100RateValue = computed({
             label="占有率"
             :error-messages="props.box60RateErrorMessage"
           >
-            <template #append>%</template>
+            <template #append>
+              %
+            </template>
           </v-text-field>
         </v-list-item-content>
       </v-list-item>
 
       <v-list-item>
         <v-list-item-action>
-          <p class="mb-0 mx-6 text-h6">80</p>
+          <p class="mb-0 mx-6 text-h6">
+            80
+          </p>
         </v-list-item-action>
         <v-list-item-content>
           <v-text-field
@@ -136,14 +144,18 @@ const box100RateValue = computed({
             label="占有率"
             :error-messages="props.box80RateErrorMessage"
           >
-            <template #append>%</template>
+            <template #append>
+              %
+            </template>
           </v-text-field>
         </v-list-item-content>
       </v-list-item>
 
       <v-list-item>
         <v-list-item-action>
-          <p class="mb-0 mx-6 text-h6">100</p>
+          <p class="mb-0 mx-6 text-h6">
+            100
+          </p>
         </v-list-item-action>
         <v-list-item-content>
           <v-text-field
@@ -154,7 +166,9 @@ const box100RateValue = computed({
             label="占有率"
             :error-messages="props.box100RateErrorMessage"
           >
-            <template #append>%</template>
+            <template #append>
+              %
+            </template>
           </v-text-field>
         </v-list-item-content>
       </v-list-item>

@@ -6,7 +6,7 @@ import { useContactStore } from '~/store'
 import {
   ContactPriority,
   ContactsResponseContactsInner,
-  ContactStatus,
+  ContactStatus
 } from '~/types/api'
 
 const router = useRouter()
@@ -16,31 +16,31 @@ const {
   offset,
   options,
   updateCurrentPage,
-  handleUpdateItemsPerPage,
+  handleUpdateItemsPerPage
 } = usePagination()
 
 const headers: DataTableHeader[] = [
   {
     text: '件名',
-    value: 'title',
+    value: 'title'
   },
   {
     text: 'メールアドレス',
-    value: 'email',
+    value: 'email'
   },
   {
     text: '優先度',
-    value: 'priority',
+    value: 'priority'
   },
   {
     text: 'ステータス',
-    value: 'status',
+    value: 'status'
   },
   {
     text: 'Actions',
     value: 'actions',
-    sortable: false,
-  },
+    sortable: false
+  }
 ]
 
 const fetchState = useAsyncData(async () => {
@@ -142,11 +142,11 @@ const handleEdit = (item: ContactsResponseContactsInner) => {
     <v-card>
       <v-card-text>
         <v-data-table
+          v-model:sort-by="sortBy"
+          v-model:sort-desc="sortDesc"
           :headers="headers"
           :items="contacts"
           :items-per-page="itemsPerPage"
-          :sort-by.sync="sortBy"
-          :sort-desc.sync="sortDesc"
           :server-items-length="total"
           :footer-props="options"
           @update:page="handleUpdatePage"
@@ -166,7 +166,9 @@ const handleEdit = (item: ContactsResponseContactsInner) => {
           </template>
           <template #[`item.actions`]="{ item }">
             <v-btn outlined color="primary" small @click="handleEdit(item)">
-              <v-icon small>mdi-pencil</v-icon>
+              <v-icon small>
+                mdi-pencil
+              </v-icon>
               編集
             </v-btn>
           </template>

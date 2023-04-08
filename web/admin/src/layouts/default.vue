@@ -12,9 +12,9 @@
             <v-icon>{{ navigationDrawerHomeItem.icon }}</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title>{{
-              navigationDrawerHomeItem.title
-            }}</v-list-item-title>
+            <v-list-item-title>
+              {{ navigationDrawerHomeItem.title }}
+            </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -58,7 +58,7 @@
     </v-navigation-drawer>
 
     <v-app-bar flat app clipped-left color="primary" dark>
-      <v-app-bar-nav-icon @click="handleClickNavIcon"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon @click="handleClickNavIcon" />
       <v-toolbar-title>
         <nuxt-link to="/">
           <the-app-title class="pt-2" />
@@ -85,9 +85,9 @@
     >
       {{ snackbar.message }}
       <template #action="{ attrs }">
-        <v-btn text v-bind="attrs" @click="commonStore.hideSnackbar(i)"
-          >閉じる</v-btn
-        >
+        <v-btn text v-bind="attrs" @click="commonStore.hideSnackbar(i)">
+          閉じる
+        </v-btn>
       </template>
     </v-snackbar>
 
@@ -103,8 +103,7 @@
 import { useRouter } from '@nuxtjs/composition-api'
 import { computed, defineComponent, ref } from '@vue/composition-api'
 
-import { useCommonStore } from '~/store'
-import { useMessageStore } from '~/store'
+import { useCommonStore, useMessageStore } from '~/store'
 
 interface NavigationDrawerItem {
   to: string
@@ -113,7 +112,7 @@ interface NavigationDrawerItem {
 }
 
 export default defineComponent({
-  setup() {
+  setup () {
     const drawer = ref<boolean>(true)
     const router = useRouter()
 
@@ -121,31 +120,31 @@ export default defineComponent({
     const messageStore = useMessageStore()
 
     const snackbars = computed(() => {
-      return commonStore.snackbars.filter((item) => item.isOpen)
+      return commonStore.snackbars.filter(item => item.isOpen)
     })
     const hasUnread = computed<boolean>(() => messageStore.hasUnread)
 
     const navigationDrawerHomeItem: NavigationDrawerItem = {
       to: '/',
       icon: 'mdi-home',
-      title: 'ホーム',
+      title: 'ホーム'
     }
 
     const navigationDrawerList: NavigationDrawerItem[] = [
       {
         to: '/orders',
         icon: 'mdi-order-bool-ascending-variant',
-        title: '注文',
+        title: '注文'
       },
       {
         to: '/products',
         icon: 'mdi-cart',
-        title: '商品管理',
+        title: '商品管理'
       },
       {
         to: '/livestreaming',
         icon: 'mdi-antenna',
-        title: 'ライブ配信',
+        title: 'ライブ配信'
       },
       // {
       //   to: '/analytics',
@@ -155,41 +154,41 @@ export default defineComponent({
       {
         to: '/customers',
         icon: 'mdi-account-details',
-        title: '顧客管理',
+        title: '顧客管理'
       },
       {
         to: '/contacts',
         icon: 'mdi-forum',
-        title: 'お問い合わせ管理',
+        title: 'お問い合わせ管理'
       },
       {
         to: '/notifications',
         icon: 'mdi-bell-ring',
-        title: 'お知らせ管理',
+        title: 'お知らせ管理'
       },
       {
         to: '/promotions',
         icon: 'mdi-cash-100',
-        title: 'セール情報管理',
+        title: 'セール情報管理'
       },
       {
         to: '/producers',
         icon: 'mdi-account',
-        title: '生産者管理',
+        title: '生産者管理'
       },
       {
         to: '/coordinators',
         icon: 'mdi-account-star-outline',
-        title: 'コーディネータ管理',
-      },
+        title: 'コーディネータ管理'
+      }
     ]
 
     const navigationDrawerSettingsList: NavigationDrawerItem[] = [
       {
         to: '/settings',
         icon: 'mdi-cog',
-        title: 'システム設定',
-      },
+        title: 'システム設定'
+      }
     ]
 
     const handleClickNavIcon = () => {
@@ -215,9 +214,9 @@ export default defineComponent({
       hasUnread,
       snackbars,
       commonStore,
-      calcStyle,
+      calcStyle
     }
-  },
+  }
 })
 </script>
 

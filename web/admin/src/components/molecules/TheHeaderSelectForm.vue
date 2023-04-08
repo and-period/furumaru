@@ -2,16 +2,16 @@
 const props = defineProps({
   imgUrl: {
     type: String,
-    default: '',
+    default: ''
   },
   error: {
     type: Boolean,
-    default: false,
+    default: false
   },
   message: {
     type: String,
-    default: '',
-  },
+    default: ''
+  }
 })
 
 const emit = defineEmits<{
@@ -46,7 +46,9 @@ const handleInputFileChange = () => {
     >
       <v-card-text>
         <v-avatar size="96">
-          <v-icon x-large>mdi-plus</v-icon>
+          <v-icon x-large>
+            mdi-plus
+          </v-icon>
         </v-avatar>
         <input
           ref="inputRef"
@@ -54,10 +56,14 @@ const handleInputFileChange = () => {
           class="d-none"
           accept="image/*"
           @change="handleInputFileChange"
-        />
-        <p class="ma-0">ヘッダー画像を選択</p>
+        >
+        <p class="ma-0">
+          ヘッダー画像を選択
+        </p>
       </v-card-text>
     </v-card>
-    <p v-show="props.error" class="red--text ma-0">{{ props.message }}</p>
+    <p v-show="props.error" class="red--text ma-0">
+      {{ props.message }}
+    </p>
   </div>
 </template>

@@ -19,37 +19,37 @@ const promotions = computed(() => {
 const headers: DataTableHeader[] = [
   {
     text: 'タイトル',
-    value: 'title',
+    value: 'title'
   },
   {
     text: 'ステータス',
-    value: 'public',
+    value: 'public'
   },
   {
     text: '割引コード',
-    value: 'code',
+    value: 'code'
   },
   {
     text: '割引方法',
-    value: 'discount',
+    value: 'discount'
   },
   {
     text: '投稿開始',
-    value: 'publishedAt',
+    value: 'publishedAt'
   },
   {
     text: '使用開始',
-    value: 'startAt',
+    value: 'startAt'
   },
   {
     text: '使用終了',
-    value: 'endAt',
+    value: 'endAt'
   },
   {
     text: 'Actions',
     value: 'actions',
-    sortable: false,
-  },
+    sortable: false
+  }
 ]
 
 const getDiscount = (discountType: number, discountRate: number): string => {
@@ -127,7 +127,9 @@ const fetchState = useAsyncData(async () => {
       セール情報
       <v-spacer />
       <v-btn outlined color="primary" @click="handleClickAddButton">
-        <v-icon left>mdi-plus</v-icon>
+        <v-icon left>
+          mdi-plus
+        </v-icon>
         セール情報登録
       </v-btn>
     </v-card-title>
@@ -138,11 +140,13 @@ const fetchState = useAsyncData(async () => {
           {{ selectedName }}を本当に削除しますか？
         </v-card-title>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn color="error" text @click="hideDeleteDialog">
             キャンセル
           </v-btn>
-          <v-btn color="primary" outlined @click="handleDelete"> 削除 </v-btn>
+          <v-btn color="primary" outlined @click="handleDelete">
+            削除
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -179,7 +183,9 @@ const fetchState = useAsyncData(async () => {
           </template>
           <template #[`item.actions`]="{ item }">
             <v-btn outlined color="primary" small @click="handleEdit(item)">
-              <v-icon small>mdi-pencil</v-icon>
+              <v-icon small>
+                mdi-pencil
+              </v-icon>
               編集
             </v-btn>
             <v-btn
@@ -188,7 +194,9 @@ const fetchState = useAsyncData(async () => {
               small
               @click="openDeleteDialog(item)"
             >
-              <v-icon small>mdi-delete</v-icon>
+              <v-icon small>
+                mdi-delete
+              </v-icon>
               削除
             </v-btn>
           </template>

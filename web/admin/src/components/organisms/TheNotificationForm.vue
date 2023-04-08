@@ -10,7 +10,7 @@ const props = defineProps({
     default: 'create',
     validator: (value: string) => {
       return ['create', 'edit'].includes(value)
-    },
+    }
   },
   formData: {
     type: Object,
@@ -19,16 +19,16 @@ const props = defineProps({
       body: '',
       targets: [],
       public: false,
-      publishedAt: dayjs().unix(),
-    }),
+      publishedAt: dayjs().unix()
+    })
   },
   timeData: {
     type: Object,
     default: (): NotificationTime => ({
       publishedDate: '',
-      publishedTime: '',
-    }),
-  },
+      publishedTime: ''
+    })
+  }
 })
 
 const emit = defineEmits<{
@@ -40,12 +40,12 @@ const emit = defineEmits<{
 const formDataValue = computed({
   get: (): CreateNotificationRequest =>
     props.formData as CreateNotificationRequest,
-  set: (val: CreateNotificationRequest) => emit('update:formData', val),
+  set: (val: CreateNotificationRequest) => emit('update:formData', val)
 })
 
 const timeDataValue = computed({
   get: (): NotificationTime => props.timeData as NotificationTime,
-  set: (val: NotificationTime) => emit('update:timeData', val),
+  set: (val: NotificationTime) => emit('update:timeData', val)
 })
 
 const btnText = computed(() => {
@@ -55,7 +55,7 @@ const postMenu = ref<boolean>(false)
 
 const statusList = [
   { public: '公開', value: true },
-  { public: '非公開', value: false },
+  { public: '非公開', value: false }
 ]
 
 const handleSubmit = () => {
@@ -76,7 +76,7 @@ const handleSubmit = () => {
           label="ステータス"
           item-text="public"
           item-value="value"
-        ></v-select>
+        />
         <v-text-field
           v-model="props.formData.title"
           label="タイトル"
@@ -90,23 +90,27 @@ const handleSubmit = () => {
         />
       </v-card-text>
       <v-container class="ml-2">
-        <p class="text-h6">公開範囲</p>
+        <p class="text-h6">
+          公開範囲
+        </p>
         <v-checkbox
           v-model="props.formData.targets"
           label="ユーザー"
           :value="NotificationTargetType.USERS"
-        ></v-checkbox>
+        />
         <v-checkbox
           v-model="props.formData.targets"
           label="生産者"
           :value="NotificationTargetType.PRODUCERS"
-        ></v-checkbox>
+        />
         <v-checkbox
           v-model="props.formData.targets"
           label="コーディネータ"
           :value="NotificationTargetType.COORDINATORS"
-        ></v-checkbox>
-        <p class="text-h6">投稿予約時間</p>
+        />
+        <p class="text-h6">
+          投稿予約時間
+        </p>
         <div class="d-flex align-center justify-center">
           <v-menu
             v-model="postMenu"
@@ -132,7 +136,7 @@ const handleSubmit = () => {
               scrollable
               @input="postMenu = false"
             >
-              <v-spacer></v-spacer>
+              <v-spacer />
               <v-btn text color="primary" @click="postMenu = false">
                 閉じる
               </v-btn>
@@ -144,7 +148,9 @@ const handleSubmit = () => {
             required
             outlined
           />
-          <p class="text-h6 mb-6 ml-4">〜</p>
+          <p class="text-h6 mb-6 ml-4">
+            〜
+          </p>
           <v-spacer />
         </div>
       </v-container>

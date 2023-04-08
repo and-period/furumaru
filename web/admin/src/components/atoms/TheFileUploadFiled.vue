@@ -2,12 +2,12 @@
 const props = defineProps({
   text: {
     type: String,
-    required: true,
+    required: true
   },
   value: {
     type: Object,
-    default: null,
-  },
+    default: null
+  }
 })
 
 const emit = defineEmits<{
@@ -17,7 +17,7 @@ const emit = defineEmits<{
 
 const formData = computed({
   get: (): any => props.value,
-  set: (val: any) => emit('update:value', val),
+  set: (val: any) => emit('update:value', val)
 })
 
 const inputRef = ref<HTMLInputElement | null>(null)
@@ -60,17 +60,6 @@ const handleDrop = (e: DragEvent) => {
 }
 </script>
 
-<style lang="scss" scoped>
-.file_upload_area {
-  border: dashed var(--v-secondary-lighten4);
-  height: 100px;
-}
-
-.active {
-  border: dashed var(--v-primary-darken3);
-}
-</style>
-
 <template>
   <div>
     <div
@@ -85,8 +74,10 @@ const handleDrop = (e: DragEvent) => {
     >
       <p class="mb-0 text-center">
         クリックまたはドラッグ&amp;ドロップでファイルを追加
-        <br />
-        <v-icon left>mdi-plus</v-icon>
+        <br>
+        <v-icon left>
+          mdi-plus
+        </v-icon>
         {{ props.text }}
         <input
           ref="inputRef"
@@ -95,8 +86,19 @@ const handleDrop = (e: DragEvent) => {
           accept="image/*"
           multiple
           @change="handleInputFileChange"
-        />
+        >
       </p>
     </div>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.file_upload_area {
+  border: dashed var(--v-secondary-lighten4);
+  height: 100px;
+}
+
+.active {
+  border: dashed var(--v-primary-darken3);
+}
+</style>

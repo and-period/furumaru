@@ -3,10 +3,12 @@ import { useVuelidate } from '@vuelidate/core'
 
 import { useAlert } from '~/lib/hooks'
 import { required, minValue } from '~/lib/validations'
-import { useCategoryStore } from '~/store'
-import { useProducerStore } from '~/store'
-import { useProductStore } from '~/store'
-import { useProductTypeStore } from '~/store'
+import {
+  useCategoryStore,
+  useProducerStore,
+  useProductStore,
+  useProductTypeStore
+} from '~/store'
 import { CreateProductRequest, UploadImageResponse } from '~/types/api'
 
 const productTypeStore = useProductTypeStore()
@@ -17,7 +19,7 @@ useAsyncData(async () => {
   await Promise.all([
     productTypeStore.fetchProductTypes(),
     categoryStore.fetchCategories(),
-    producerStore.fetchProducers(20, 0, ''),
+    producerStore.fetchProducers(20, 0, '')
   ])
 })
 
@@ -28,23 +30,23 @@ const breadcrumbsItem = [
   {
     text: '商品管理',
     href: '/products',
-    disabled: false,
+    disabled: false
   },
   {
     text: '商品登録',
     href: 'add',
-    disabled: true,
-  },
+    disabled: true
+  }
 ]
 
 const statusItems = [
   { text: '公開', value: true },
-  { text: '非公開', value: false },
+  { text: '非公開', value: false }
 ]
 const deliveryTypeItems = [
   { text: '通常便', value: 1 },
   { text: '冷蔵便', value: 2 },
-  { text: '冷凍便', value: 3 },
+  { text: '冷凍便', value: 3 }
 ]
 
 const formData = reactive<CreateProductRequest>({
@@ -64,7 +66,7 @@ const formData = reactive<CreateProductRequest>({
   box80Rate: 0,
   box100Rate: 0,
   originPrefecture: '',
-  originCity: '',
+  originCity: ''
 })
 
 const rules = computed(() => ({
@@ -73,7 +75,7 @@ const rules = computed(() => ({
   price: { required, minValue: minValue(0) },
   weight: { required, minValue: minValue(0) },
   itemUnit: { required },
-  itemDescription: { required },
+  itemDescription: { required }
 }))
 
 const v$ = useVuelidate(rules, formData)
@@ -88,7 +90,7 @@ const handleImageUpload = async (files: FileList) => {
       const uploadImage: UploadImageResponse = await uploadProductImage(file)
       formData.media.push({
         ...uploadImage,
-        isThumbnail: index === 0,
+        isThumbnail: index === 0
       })
     } catch (error) {
       console.log(error)
@@ -103,7 +105,7 @@ const handleFormSubmit = async () => {
   if (!result) {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth',
+      behavior: 'smooth'
     })
     return
   }
@@ -114,7 +116,7 @@ const handleFormSubmit = async () => {
     show(error.message)
     window.scrollTo({
       top: 0,
-      behavior: 'smooth',
+      behavior: 'smooth'
     })
   }
 }
@@ -194,7 +196,9 @@ const getErrorMessage = (key: string): string | Ref<string> => {
               label="単位説明"
               :error-messages="getErrorMessage('itemDescription')"
             />
-            <p class="ml-12 mb-0">ex) 1kg → 5個入り</p>
+            <p class="ml-12 mb-0">
+              ex) 1kg → 5個入り
+            </p>
             <v-spacer />
           </div>
         </v-card-text>
@@ -216,8 +220,10 @@ const getErrorMessage = (key: string): string | Ref<string> => {
               class="d-flex flex-row align-center"
             >
               <v-radio :value="i" />
-              <img :src="img.url" width="200" class="mx-4" />
-              <p class="mb-0">{{ img.url }}</p>
+              <img :src="img.url" width="200" class="mx-4">
+              <p class="mb-0">
+                {{ img.url }}
+              </p>
             </div>
           </v-radio-group>
           <p>※ check された商品画像がサムネイルになります</p>
@@ -244,7 +250,9 @@ const getErrorMessage = (key: string): string | Ref<string> => {
               label="重さ"
               :error-messages="getErrorMessage('weight')"
             >
-              <template #append>kg</template>
+              <template #append>
+                kg
+              </template>
             </v-text-field>
             <v-spacer />
           </div>
@@ -264,7 +272,9 @@ const getErrorMessage = (key: string): string | Ref<string> => {
             </v-list-item>
             <v-list-item v-for="(size, i) in [60, 80, 100]" :key="i">
               <v-list-item-action>
-                <p class="mb-0 mx-6 text-h6">{{ size }}</p>
+                <p class="mb-0 mx-6 text-h6">
+                  {{ size }}
+                </p>
               </v-list-item-action>
               <v-list-item-content>
                 <v-text-field
@@ -274,7 +284,9 @@ const getErrorMessage = (key: string): string | Ref<string> => {
                   max="100"
                   label="占有率"
                 >
-                  <template #append>%</template>
+                  <template #append>
+                    %
+                  </template>
                 </v-text-field>
               </v-list-item-content>
             </v-list-item>
@@ -313,7 +325,9 @@ const getErrorMessage = (key: string): string | Ref<string> => {
       </v-card>
     </div>
     <v-btn block outlined @click="handleFormSubmit">
-      <v-icon left>mdi-plus</v-icon>
+      <v-icon left>
+        mdi-plus
+      </v-icon>
       登録
     </v-btn>
   </div>

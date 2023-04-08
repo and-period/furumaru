@@ -5,23 +5,23 @@ import { useProductTypeStore } from '~/store'
 import {
   ProductTypesResponseProductTypesInner,
   UpdateProductTypeRequest,
-  UploadImageResponse,
+  UploadImageResponse
 } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false,
+    default: false
   },
   tableFooterProps: {
     type: Object,
-    default: () => {},
+    default: () => {}
   },
   categories: {
     type: Array,
-    default: () => [],
-  },
+    default: () => []
+  }
 })
 
 const emit = defineEmits<{
@@ -40,7 +40,7 @@ const selectedName = ref<string>('')
 
 const editFormData = reactive<UpdateProductTypeRequest>({
   name: '',
-  iconUrl: '',
+  iconUrl: ''
 })
 
 const productTypes = computed(() => {
@@ -53,29 +53,29 @@ const totalItems = computed(() => {
 
 const headerUploadStatus = reactive<ImageUploadStatus>({
   error: false,
-  message: '',
+  message: ''
 })
 
 const productTypeHeaders: DataTableHeader[] = [
   {
     text: 'アイコン',
-    value: 'icon',
+    value: 'icon'
   },
   {
     text: 'カテゴリー',
-    value: 'category',
+    value: 'category'
   },
   {
     text: '品目',
-    value: 'productType',
+    value: 'productType'
   },
   {
     text: 'Actions',
     value: 'actions',
     width: 200,
     align: 'end',
-    sortable: false,
-  },
+    sortable: false
+  }
 ]
 
 const handleUpdateItemsPerPage = (page: number) => {
@@ -181,8 +181,10 @@ const handleInputFileChange = () => {
             v-if="item.iconlUrl !== ''"
             :src="item.iconUrl"
             :alt="`${item.categoryName}-profile`"
-          />
-          <v-icon v-else>mdi-account</v-icon>
+          >
+          <v-icon v-else>
+            mdi-account
+          </v-icon>
         </v-avatar>
       </template>
       <template #[`item.category`]="{ item }">
@@ -193,11 +195,15 @@ const handleInputFileChange = () => {
       </template>
       <template #[`item.actions`]="{ item }">
         <v-btn outlined color="primary" small @click="openEditDialog(item)">
-          <v-icon small>mdi-pencil</v-icon>
+          <v-icon small>
+            mdi-pencil
+          </v-icon>
           編集
         </v-btn>
         <v-btn outlined color="primary" small @click="openDeleteDialog(item)">
-          <v-icon small>mdi-delete</v-icon>
+          <v-icon small>
+            mdi-delete
+          </v-icon>
           削除
         </v-btn>
       </template>
@@ -205,7 +211,9 @@ const handleInputFileChange = () => {
 
     <v-dialog v-model="editDialog" width="500">
       <v-card>
-        <v-card-title class="primaryLight">品目編集</v-card-title>
+        <v-card-title class="primaryLight">
+          品目編集
+        </v-card-title>
         <v-card-text class="mt-4">
           <v-autocomplete
             v-model="selectedCategoryId"
@@ -238,9 +246,9 @@ const handleInputFileChange = () => {
         <v-card class="text-center" role="button" flat @click="handleClick">
           <v-card-text>
             <v-avatar size="96">
-              <v-icon v-if="editFormData.iconUrl === ''" x-large
-                >mdi-plus</v-icon
-              >
+              <v-icon v-if="editFormData.iconUrl === ''" x-large>
+                mdi-plus
+              </v-icon>
               <v-img
                 v-else
                 :src="editFormData.iconUrl"
@@ -255,17 +263,23 @@ const handleInputFileChange = () => {
               class="d-none"
               accept="image/png, image/jpeg"
               @change="handleInputFileChange"
-            />
-            <p class="ma-0">アイコン画像を選択</p>
+            >
+            <p class="ma-0">
+              アイコン画像を選択
+            </p>
           </v-card-text>
         </v-card>
         <p v-show="headerUploadStatus.error" class="red--text ma-0">
           {{ headerUploadStatus.message }}
         </p>
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="error" text @click="hideEditDialog"> キャンセル </v-btn>
-          <v-btn color="primary" outlined @click="handleEdit"> 編集 </v-btn>
+          <v-spacer />
+          <v-btn color="error" text @click="hideEditDialog">
+            キャンセル
+          </v-btn>
+          <v-btn color="primary" outlined @click="handleEdit">
+            編集
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -276,11 +290,13 @@ const handleInputFileChange = () => {
           {{ selectedName }}を本当に削除しますか？
         </v-card-title>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn color="error" text @click="hideDeleteDialog">
             キャンセル
           </v-btn>
-          <v-btn color="primary" outlined @click="handleDelete"> 削除 </v-btn>
+          <v-btn color="primary" outlined @click="handleDelete">
+            削除
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

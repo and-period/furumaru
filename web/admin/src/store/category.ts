@@ -10,7 +10,7 @@ import {
   CategoriesResponse,
   CategoryApi,
   CreateCategoryRequest,
-  UpdateCategoryRequest,
+  UpdateCategoryRequest
 } from '~/types/api'
 import {
   AuthError,
@@ -18,7 +18,7 @@ import {
   ConnectionError,
   InternalServerError,
   NotFoundError,
-  ValidationError,
+  ValidationError
 } from '~/types/exception'
 
 export const useCategoryStore = defineStore('Category', {
@@ -30,7 +30,7 @@ export const useCategoryStore = defineStore('Category', {
     return {
       categories: [] as CategoriesResponse['categories'],
       totalCategoryItems: 0,
-      apiClient,
+      apiClient
     }
   },
 
@@ -40,10 +40,7 @@ export const useCategoryStore = defineStore('Category', {
      * @param limit 取得上限数
      * @param offset 取得開始位置
      */
-    async fetchCategories(
-      limit: number = 20,
-      offset: number = 0
-    ): Promise<void> {
+    async fetchCategories (limit = 20, offset = 0): Promise<void> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -80,7 +77,7 @@ export const useCategoryStore = defineStore('Category', {
      * カテゴリを新規登録する非同期関数
      * @param payload
      */
-    async createCategory(payload: CreateCategoryRequest): Promise<void> {
+    async createCategory (payload: CreateCategoryRequest): Promise<void> {
       const commonStore = useCommonStore()
       try {
         const authStore = useAuthStore()
@@ -93,7 +90,7 @@ export const useCategoryStore = defineStore('Category', {
         this.categories.unshift(res.data)
         commonStore.addSnackbar({
           message: 'カテゴリーを追加しました。',
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -131,7 +128,7 @@ export const useCategoryStore = defineStore('Category', {
      * @param payload
      * @param categoryId
      */
-    async editCategory(categoryId: string, payload: UpdateCategoryRequest) {
+    async editCategory (categoryId: string, payload: UpdateCategoryRequest) {
       const commonStore = useCommonStore()
       try {
         const authStore = useAuthStore()
@@ -142,8 +139,8 @@ export const useCategoryStore = defineStore('Category', {
 
         await this.apiClient(accessToken).v1UpdateCategory(categoryId, payload)
         commonStore.addSnackbar({
-          message: `変更しました。`,
-          color: 'info',
+          message: '変更しました。',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -188,7 +185,7 @@ export const useCategoryStore = defineStore('Category', {
      * カテゴリを削除する非同期関数
      * @param categoryId
      */
-    async deleteCategory(categoryId: string): Promise<void> {
+    async deleteCategory (categoryId: string): Promise<void> {
       const commonStore = useCommonStore()
       try {
         const authStore = useAuthStore()
@@ -200,7 +197,7 @@ export const useCategoryStore = defineStore('Category', {
         await this.apiClient(accessToken).v1DeleteCategory(categoryId)
         commonStore.addSnackbar({
           message: 'カテゴリー削除が完了しました',
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -235,6 +232,6 @@ export const useCategoryStore = defineStore('Category', {
         throw new InternalServerError(error)
       }
       this.fetchCategories()
-    },
-  },
+    }
+  }
 })

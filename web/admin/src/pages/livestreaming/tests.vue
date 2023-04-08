@@ -2,7 +2,7 @@
 import IVSBroadcastClient, {
   STANDARD_LANDSCAPE,
   STANDARD_PORTRAIT,
-  LOG_LEVEL,
+  LOG_LEVEL
 } from 'amazon-ivs-web-broadcast'
 
 const router = useRouter()
@@ -10,7 +10,7 @@ const router = useRouter()
 let client = IVSBroadcastClient.create({
   streamConfig: STANDARD_LANDSCAPE,
   ingestEndpoint: '',
-  logLevel: LOG_LEVEL.DEBUG,
+  logLevel: LOG_LEVEL.DEBUG
 })
 
 const formData = reactive({
@@ -18,12 +18,12 @@ const formData = reactive({
   ingestEndpoint: '',
   streamKey: '',
   videoDevice: undefined,
-  audioDevice: undefined,
+  audioDevice: undefined
 })
 
 const channelConfigs = [
   { text: 'Standard: Landscape', value: STANDARD_LANDSCAPE },
-  { text: 'Standard: Portrait', value: STANDARD_PORTRAIT },
+  { text: 'Standard: Portrait', value: STANDARD_PORTRAIT }
 ]
 const videoDevices = reactive([])
 const audioDevices = reactive([])
@@ -31,12 +31,12 @@ const audioDevices = reactive([])
 const handlePermissions = async () => {
   let permissions = {
     audio: false,
-    video: false,
+    video: false
   }
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
       video: true,
-      audio: true,
+      audio: true
     })
     for (const track of stream.getTracks()) {
       track.stop()
@@ -55,8 +55,8 @@ const handlePermissions = async () => {
 
 const getDevices = async () => {
   const devices = await navigator.mediaDevices.enumerateDevices()
-  const video = devices.filter((d) => d.kind === 'videoinput')
-  const audio = devices.filter((d) => d.kind === 'audioinput')
+  const video = devices.filter(d => d.kind === 'videoinput')
+  const audio = devices.filter(d => d.kind === 'audioinput')
 
   video.forEach((val) => {
     videoDevices.push({ text: val.label, value: val.deviceId })
@@ -82,7 +82,7 @@ const recreateClient = async () => {
   const config = {
     streamConfig: formData.streamConfig,
     ingestEndpoint: formData.ingestEndpoint,
-    logLevel: LOG_LEVEL.DEBUG,
+    logLevel: LOG_LEVEL.DEBUG
   }
   client = IVSBroadcastClient.create(config)
   client.on(
@@ -110,7 +110,7 @@ const handleSelectVideo = async (deviceId) => {
   }
   const { width, height } = formData.streamConfig.maxResolution
   const cameraStream = await navigator.mediaDevices.getUserMedia({
-    video: { deviceId, width: { max: width }, height: { max: height } },
+    video: { deviceId, width: { max: width }, height: { max: height } }
   })
   await client.addVideoInputDevice(cameraStream, 'camera', { index: 0 })
 }
@@ -123,7 +123,7 @@ const handleSelectAudio = async (deviceId) => {
     return
   }
   const microphoneStream = await navigator.mediaDevices.getUserMedia({
-    audio: { deviceId },
+    audio: { deviceId }
   })
   await client.addAudioInputDevice(microphoneStream, 'microphone')
 }
@@ -149,14 +149,6 @@ const stopBroadcast = () => {
 }
 </script>
 
-<style scoped>
-#preview {
-  margin-bottom: 1.5rem;
-  background: green;
-  width: 100%;
-}
-</style>
-
 <template>
   <v-card>
     <v-card-title>配信テスト用モック</v-card-title>
@@ -165,7 +157,7 @@ const stopBroadcast = () => {
     </v-card-subtitle>
 
     <v-container>
-      <canvas id="preview"></canvas>
+      <canvas id="preview" />
     </v-container>
 
     <v-card-text>
@@ -195,9 +187,23 @@ const stopBroadcast = () => {
     </v-card-text>
 
     <v-card-actions>
-      <v-btn @click="startBroadcast">Start Broadcast</v-btn>
-      <v-btn @click="stopBroadcast">Stop Broadcast</v-btn>
-      <v-btn @click="handleClickViewing">Live Viewing</v-btn>
+      <v-btn @click="startBroadcast">
+        Start Broadcast
+      </v-btn>
+      <v-btn @click="stopBroadcast">
+        Stop Broadcast
+      </v-btn>
+      <v-btn @click="handleClickViewing">
+        Live Viewing
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>
+
+<style scoped>
+#preview {
+  margin-bottom: 1.5rem;
+  background: green;
+  width: 100%;
+}
+</style>

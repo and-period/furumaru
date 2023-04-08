@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useAlert, useSearchAddress } from '~/lib/hooks'
-import { useCommonStore } from '~/store'
-import { useProducerStore } from '~/store'
+import { useCommonStore, useProducerStore } from '~/store'
 import { ProducerResponse } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 import { ImageUploadStatus } from '~/types/props'
@@ -18,12 +17,12 @@ const { uploadProducerThumbnail, uploadProducerHeader, updateProducer } =
 
 const thumbnailUploadStatus = reactive<ImageUploadStatus>({
   error: false,
-  message: '',
+  message: ''
 })
 
 const headerUploadStatus = reactive<ImageUploadStatus>({
   error: false,
-  message: '',
+  message: ''
 })
 
 const { alertType, isShow, alertText, show } = useAlert('error')
@@ -48,7 +47,7 @@ const formData = reactive<ProducerResponse>({
   updatedAt: -1,
   thumbnailUrl: '',
   thumbnails: [],
-  email: '',
+  email: ''
 })
 
 const fetchState = useAsyncData(async () => {
@@ -101,7 +100,7 @@ const handleUpdateHeader = async (files: FileList) => {
 const {
   loading: searchLoading,
   errorMessage: searchErrorMessage,
-  searchAddressByPostalCode,
+  searchAddressByPostalCode
 } = useSearchAddress()
 
 const searchAddress = async () => {
@@ -120,7 +119,7 @@ const handleSubmit = async () => {
     await updateProducer(id, formData)
     addSnackbar({
       color: 'info',
-      message: `${formData.storeName}を更新しました。`,
+      message: `${formData.storeName}を更新しました。`
     })
     router.push('/producers')
   } catch (error) {
@@ -128,7 +127,7 @@ const handleSubmit = async () => {
       show(error.message)
       window.scrollTo({
         top: 0,
-        behavior: 'smooth',
+        behavior: 'smooth'
       })
     }
   }

@@ -6,8 +6,8 @@ const props = defineProps({
     type: Array<CreateProductRequestMediaInner>,
     default: () => {
       return []
-    },
-  },
+    }
+  }
 })
 
 const emit = defineEmits<{
@@ -17,13 +17,13 @@ const emit = defineEmits<{
 
 const selected = ref<number>(-1)
 
-selected.value = props.media.findIndex((item) => item.isThumbnail)
+selected.value = props.media.findIndex(item => item.isThumbnail)
 
 watch(selected, () => {
   const newVal = props.media.map((item, i) => {
     return {
       ...item,
-      isThumbnail: i === selected.value,
+      isThumbnail: i === selected.value
     }
   })
   emit('update:media', newVal)
@@ -33,12 +33,6 @@ const handleImageUpload = (files?: FileList) => {
   emit('update:files', files)
 }
 </script>
-
-<style lang="scss" scoped>
-.img-url {
-  word-break: break-all;
-}
-</style>
 
 <template>
   <div>
@@ -56,9 +50,17 @@ const handleImageUpload = (files?: FileList) => {
       >
         <v-radio :value="i" />
         <v-img :src="img.url" max-width="200" class="mx-4" />
-        <p class="mb-0 img-url">{{ img.url }}</p>
+        <p class="mb-0 img-url">
+          {{ img.url }}
+        </p>
       </div>
     </v-radio-group>
     <p>※ check された商品画像がサムネイルになります</p>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.img-url {
+  word-break: break-all;
+}
+</style>

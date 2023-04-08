@@ -7,8 +7,8 @@ import { ProducersResponseProducersInner } from '~/types/api'
 const props = defineProps({
   tableFooterProps: {
     type: Object,
-    default: () => {},
-  },
+    default: () => {}
+  }
 })
 
 const emit = defineEmits<{
@@ -31,29 +31,29 @@ const totalItems = computed(() => {
 const producerHeaders: DataTableHeader[] = [
   {
     text: 'サムネイル',
-    value: 'thumbnailUrl',
+    value: 'thumbnailUrl'
   },
   {
     text: '生産者名',
-    value: 'name',
+    value: 'name'
   },
   {
     text: '店舗名',
-    value: 'storeName',
+    value: 'storeName'
   },
   {
     text: 'Email',
-    value: 'email',
+    value: 'email'
   },
   {
     text: '電話番号',
-    value: 'phoneNumber',
+    value: 'phoneNumber'
   },
   {
     text: 'Actions',
     value: 'actions',
-    sortable: false,
-  },
+    sortable: false
+  }
 ]
 
 const handleUpdateItemsPerPage = (page: number) => {
@@ -90,8 +90,10 @@ const handleEdit = (item: ProducersResponseProducersInner) => {
             v-if="item.thumbnailUrl !== ''"
             :src="item.thumbnailUrl"
             :alt="`${item.storeName}-profile`"
-          />
-          <v-icon v-else>mdi-account</v-icon>
+          >
+          <v-icon v-else>
+            mdi-account
+          </v-icon>
         </v-avatar>
       </template>
       <template #[`item.name`]="{ item }">
@@ -102,7 +104,9 @@ const handleEdit = (item: ProducersResponseProducersInner) => {
       </template>
       <template #[`item.actions`]="{ item }">
         <v-btn outlined color="primary" small @click="handleEdit(item)">
-          <v-icon small>mdi-pencil</v-icon>
+          <v-icon small>
+            mdi-pencil
+          </v-icon>
           編集
         </v-btn>
       </template>

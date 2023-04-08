@@ -9,25 +9,25 @@ const menuList = ref<{ text: string; onClick: Function; class?: string }[]>([
     text: 'カテゴリー・品目登録',
     onClick: () => {
       router.push('/categories')
-    },
+    }
   },
   {
     text: '配送設定',
     onClick: () => {
       router.push('/shippings')
-    },
+    }
   },
   {
     text: 'メールアドレス変更',
     onClick: () => {
       router.push('/accounts/email')
-    },
+    }
   },
   {
     text: 'パスワード変更',
     onClick: () => {
       router.push('/accounts/password')
-    },
+    }
   },
   {
     text: 'サインアウト',
@@ -35,8 +35,8 @@ const menuList = ref<{ text: string; onClick: Function; class?: string }[]>([
     onClick: () => {
       logout()
       router.push('/')
-    },
-  },
+    }
+  }
 ])
 </script>
 

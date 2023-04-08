@@ -2,17 +2,10 @@
 const props = defineProps({
   width: {
     type: Number,
-    default: 200,
-  },
+    default: 200
+  }
 })
 </script>
-
-<style lang="scss" scoped>
-.logo {
-  height: auto;
-  display: block;
-}
-</style>
 
 <template>
   <img
@@ -20,5 +13,12 @@ const props = defineProps({
     alt="ふるマル ロゴ"
     src="/app-logo-with-title.svg"
     :width="props.width"
-  />
+  >
 </template>
+
+<style lang="scss" scoped>
+.logo {
+  height: auto;
+  display: block;
+}
+</style>

@@ -8,7 +8,7 @@ const router = useRouter()
 const {
   createCoordinator,
   uploadCoordinatorThumbnail,
-  uploadCoordinatorHeader,
+  uploadCoordinatorHeader
 } = useCoordinatorStore()
 
 const formData = reactive<CreateCoordinatorRequest>({
@@ -26,24 +26,24 @@ const formData = reactive<CreateCoordinatorRequest>({
   prefecture: '',
   city: '',
   addressLine1: '',
-  addressLine2: '',
+  addressLine2: ''
 })
 
 const thumbnailUploadStatus = reactive<ImageUploadStatus>({
   error: false,
-  message: '',
+  message: ''
 })
 
 const headerUploadStatus = reactive<ImageUploadStatus>({
   error: false,
-  message: '',
+  message: ''
 })
 
 const handleSubmit = async () => {
   try {
     await createCoordinator({
       ...formData,
-      phoneNumber: formData.phoneNumber.replace('0', '+81'),
+      phoneNumber: formData.phoneNumber.replace('0', '+81')
     })
     router.push('/coordinators')
   } catch (error) {
@@ -80,7 +80,7 @@ const handleUpdateHeader = (files: FileList) => {
 const {
   loading: searchLoading,
   errorMessage: searchErrorMessage,
-  searchAddressByPostalCode,
+  searchAddressByPostalCode
 } = useSearchAddress()
 
 const searchAddress = async () => {

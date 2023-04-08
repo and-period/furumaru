@@ -4,13 +4,13 @@ import { useAuthStore } from '~/store'
 import { SignInRequest } from '~/types/api'
 
 definePageMeta({
-  layout: 'auth',
+  layout: 'auth'
 })
 
 const router = useRouter()
 const formData = reactive<SignInRequest>({
   username: '',
-  password: '',
+  password: ''
 })
 const passwordShow = ref<boolean>(false)
 const { alertType, isShow, alertText, show } = useAlert('error')
@@ -54,7 +54,9 @@ const handleSubmit = async () => {
           />
         </v-card-text>
         <v-card-actions>
-          <v-btn block color="primary" type="submit" outlined> ログイン </v-btn>
+          <v-btn block color="primary" type="submit" outlined>
+            ログイン
+          </v-btn>
         </v-card-actions>
       </form>
     </v-card>

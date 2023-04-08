@@ -6,7 +6,7 @@ import {
   getErrorMessage,
   maxLength,
   minValue,
-  maxValue,
+  maxValue
 } from '~/lib/validations'
 import { UpdateProductRequest } from '~/types/api'
 
@@ -30,17 +30,17 @@ const props = defineProps({
       box80Rate: 0,
       box100Rate: 0,
       originPrefecture: '',
-      originCity: '',
-    }),
+      originCity: ''
+    })
   },
   producersItems: {
     type: Array,
-    default: () => [],
+    default: () => []
   },
   productTypesItems: {
     type: Array,
-    default: () => [],
-  },
+    default: () => []
+  }
 })
 
 const emit = defineEmits<{
@@ -51,17 +51,17 @@ const emit = defineEmits<{
 
 const statusItems = [
   { text: '公開', value: true },
-  { text: '非公開', value: false },
+  { text: '非公開', value: false }
 ]
 const deliveryTypeItems = [
   { text: '通常便', value: 1 },
   { text: '冷蔵便', value: 2 },
-  { text: '冷凍便', value: 3 },
+  { text: '冷凍便', value: 3 }
 ]
 
 const formDataValue = computed({
   get: (): UpdateProductRequest => props.formData as UpdateProductRequest,
-  set: (val: UpdateProductRequest) => emit('update:formData', val),
+  set: (val: UpdateProductRequest) => emit('update:formData', val)
 })
 
 const rules = computed(() => {
@@ -72,7 +72,7 @@ const rules = computed(() => {
     weight: { required, minValue: minValue(0) },
     box60Rate: { minValue: minValue(0), maxValue: maxValue(100) },
     box80Rate: { minValue: minValue(0), maxValue: maxValue(100) },
-    box100Rate: { minValue: minValue(0), maxValue: maxValue(100) },
+    box100Rate: { minValue: minValue(0), maxValue: maxValue(100) }
   }
 })
 
@@ -87,7 +87,7 @@ const handleSubmit = async () => {
   if (!result) {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth',
+      behavior: 'smooth'
     })
     return
   }
@@ -102,7 +102,7 @@ const handleSubmit = async () => {
         <v-card-title>商品ステータス</v-card-title>
         <v-card-text>
           <v-select
-            v-model="props.formData.public"
+            v-model="formDataValue.public"
             label="ステータス"
             :items="statusItems"
           />
@@ -113,8 +113,8 @@ const handleSubmit = async () => {
         <v-card-title>基本情報</v-card-title>
         <v-card-text>
           <the-product-name-and-description-form
-            :name.sync="v$.name.$model"
-            :description.sync="props.formData.description"
+            v-model:name="v$.name.$model"
+            v-model:description="formDataValue.description"
             :name-error-message="getErrorMessage(v$.name.$errors)"
           />
         </v-card-text>
@@ -124,9 +124,9 @@ const handleSubmit = async () => {
         <v-card-title>在庫</v-card-title>
         <v-card-text>
           <the-product-inventory-form
-            :inventory.sync="v$.inventory.$model"
-            :item-unit.sync="props.formData.itemUnit"
-            :item-description.sync="props.formData.itemDescription"
+            v-model:inventory="v$.inventory.$model"
+            v-model:item-unit="formDataValue.itemUnit"
+            v-model:item-description="formDataValue.itemDescription"
             :inventory-error-message="getErrorMessage(v$.inventory.$errors)"
           />
         </v-card-text>
@@ -136,7 +136,7 @@ const handleSubmit = async () => {
         <v-card-title>商品画像登録</v-card-title>
         <v-card-text>
           <the-product-media-form
-            :media.sync="props.formData.media"
+            v-model:media="formDataValue.media"
             @update:files="handleImageUpload"
           />
         </v-card-text>
@@ -146,10 +146,10 @@ const handleSubmit = async () => {
         <v-card-title>詳細情報</v-card-title>
         <v-card-text>
           <the-product-detail-form
-            :producer-id.sync="props.formData.producerId"
-            :product-type-id.sync="props.formData.productTypeId"
-            :origin-prefecture.sync="props.formData.originPrefecture"
-            :origin-city.sync="props.formData.originCity"
+            v-model:producer-id="formDataValue.producerId"
+            v-model:product-type-id="formDataValue.productTypeId"
+            v-model:origin-prefecture="formDataValue.originPrefecture"
+            v-model:origin-city="formDataValue.originCity"
             :producers-items="producersItems"
             :product-types-items="productTypesItems"
           />
@@ -160,7 +160,7 @@ const handleSubmit = async () => {
         <v-card-title>価格</v-card-title>
         <v-card-text>
           <v-text-field
-            v-model.number="props.formData.price"
+            v-model.number="formDataValue.price"
             label="販売価格"
             type="number"
           />
@@ -171,11 +171,11 @@ const handleSubmit = async () => {
         <v-card-title>配送情報</v-card-title>
         <v-card-text>
           <the-product-delivery-form
-            :weight.sync="props.formData.weight"
-            :delivery-type.sync="props.formData.deliveryType"
-            :box60-rate.sync="v$.box60Rate.$model"
-            :box80-rate.sync="v$.box80Rate.$model"
-            :box100-rate.sync="v$.box100Rate.$model"
+            v-model:weight="formDataValue.weight"
+            v-model:delivery-type="formDataValue.deliveryType"
+            v-model:box60-rate="v$.box60Rate.$model"
+            v-model:box80-rate="v$.box80Rate.$model"
+            v-model:box100-rate="v$.box100Rate.$model"
             :box60-rate-error-message="getErrorMessage(v$.box60Rate.$errors)"
             :box80-rate-error-message="getErrorMessage(v$.box80Rate.$errors)"
             :box100-rate-error-message="getErrorMessage(v$.box100Rate.$errors)"
@@ -184,7 +184,9 @@ const handleSubmit = async () => {
       </v-card>
 
       <v-btn block outlined color="primary" type="submit">
-        <v-icon left>mdi-plus</v-icon>
+        <v-icon left>
+          mdi-plus
+        </v-icon>
         更新
       </v-btn>
     </div>

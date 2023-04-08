@@ -10,13 +10,13 @@ import {
   ProductResponse,
   ProductsResponseProductsInner,
   UpdateProductRequest,
-  UploadImageResponse,
+  UploadImageResponse
 } from '~/types/api'
 import {
   AuthError,
   ConnectionError,
   InternalServerError,
-  ValidationError,
+  ValidationError
 } from '~/types/exception'
 
 export const useProductStore = defineStore('product', {
@@ -28,7 +28,7 @@ export const useProductStore = defineStore('product', {
     return {
       products: [] as ProductsResponseProductsInner[],
       totalItems: 0,
-      apiClient,
+      apiClient
     }
   },
 
@@ -39,7 +39,7 @@ export const useProductStore = defineStore('product', {
      * @param offset 取得開始位置
      * @returns
      */
-    async fetchProducts(limit: number = 20, offset: number = 0): Promise<void> {
+    async fetchProducts (limit = 20, offset = 0): Promise<void> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -78,7 +78,7 @@ export const useProductStore = defineStore('product', {
      * @param payload
      * @returns
      */
-    async uploadProductImage(payload: File): Promise<UploadImageResponse> {
+    async uploadProductImage (payload: File): Promise<UploadImageResponse> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -91,8 +91,8 @@ export const useProductStore = defineStore('product', {
           payload,
           {
             headers: {
-              'Content-Type': 'multipart/form-data',
-            },
+              'Content-Type': 'multipart/form-data'
+            }
           }
         )
         return res.data
@@ -125,7 +125,7 @@ export const useProductStore = defineStore('product', {
     /**
      * 商品を作成する非同期関数
      */
-    async createProduct(payload: CreateProductRequest): Promise<void> {
+    async createProduct (payload: CreateProductRequest): Promise<void> {
       try {
         const authStore = useAuthStore()
         const user = authStore.user
@@ -137,7 +137,7 @@ export const useProductStore = defineStore('product', {
         }
         await this.apiClient(accessToken).v1CreateProduct({
           ...payload,
-          inventory: Number(payload.inventory),
+          inventory: Number(payload.inventory)
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -167,7 +167,7 @@ export const useProductStore = defineStore('product', {
      * @param id
      * @returns
      */
-    async getProduct(id: string): Promise<ProductResponse> {
+    async getProduct (id: string): Promise<ProductResponse> {
       const authStore = useAuthStore()
       const accessToken = authStore.accessToken
       if (!accessToken) {
@@ -186,7 +186,7 @@ export const useProductStore = defineStore('product', {
      * @param id
      * @param payload
      */
-    async updateProduct(id: string, payload: UpdateProductRequest) {
+    async updateProduct (id: string, payload: UpdateProductRequest) {
       const authStore = useAuthStore()
       const accessToken = authStore.accessToken
       if (!accessToken) {
@@ -197,6 +197,6 @@ export const useProductStore = defineStore('product', {
       } catch (error) {
         return this.errorHandler(error)
       }
-    },
-  },
+    }
+  }
 })

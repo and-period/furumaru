@@ -12,7 +12,7 @@ const formData = reactive<CreateNotificationRequest>({
   body: '',
   targets: [],
   public: false,
-  publishedAt: dayjs().unix(),
+  publishedAt: dayjs().unix()
 })
 
 const handleSubmit = async () => {

@@ -3,12 +3,11 @@ import { useVuelidate } from '@vuelidate/core'
 
 import { usePagination, useSearchAddress } from '~/lib/hooks'
 import { kana, required, tel, maxLength } from '~/lib/validations'
-import { useCoordinatorStore } from '~/store'
-import { useProducerStore } from '~/store'
+import { useCoordinatorStore, useProducerStore } from '~/store'
 import {
   ProducersResponseProducersInner,
   RelateProducersRequest,
-  UpdateCoordinatorRequest,
+  UpdateCoordinatorRequest
 } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 import { Coordinator } from '~/types/props/coordinator'
@@ -16,7 +15,7 @@ import { Coordinator } from '~/types/props/coordinator'
 const tab = ref<string>('coordinators')
 const tabItems: Coordinator[] = [
   { name: '基本情報', value: 'coordinators' },
-  { name: '関連生産者', value: 'relationProducers' },
+  { name: '関連生産者', value: 'relationProducers' }
 ]
 const coordinatorStore = useCoordinatorStore()
 
@@ -48,7 +47,7 @@ const {
   offset: producersOffset,
   options: producersOptions,
   handleUpdateItemsPerPage: handleUpdateProducersItemsPerPage,
-  updateCurrentPage: _handleUpdateProducersPage,
+  updateCurrentPage: _handleUpdateProducersPage
 } = usePagination()
 
 watch(producersItemsPerPage, () => {
@@ -81,11 +80,11 @@ const formData = reactive<UpdateCoordinatorRequest>({
   prefecture: '',
   city: '',
   addressLine1: '',
-  addressLine2: '',
+  addressLine2: ''
 })
 
 const producerData = reactive<RelateProducersRequest>({
-  producerIds: [],
+  producerIds: []
 })
 
 const fetchState = useAsyncData(async () => {
@@ -110,7 +109,7 @@ const fetchState = useAsyncData(async () => {
     formData.addressLine2 = coordinator.addressLine2
 
     await Promise.all([
-      coordinatorStore.fetchRelatedProducers(id, producersItemsPerPage.value),
+      coordinatorStore.fetchRelatedProducers(id, producersItemsPerPage.value)
     ])
     relateProducersItems.relateProducers = coordinatorStore.producers
   } catch (err) {
@@ -125,7 +124,7 @@ const rules = computed(() => ({
   lastname: { required, maxLength: maxLength(16) },
   firstnameKana: { required, kana },
   lastnameKana: { required, kana },
-  phoneNumber: { required, tel },
+  phoneNumber: { required, tel }
 }))
 
 const v$ = useVuelidate(rules, formData)
@@ -133,7 +132,7 @@ const v$ = useVuelidate(rules, formData)
 const {
   loading: searchLoading,
   errorMessage: searchErrorMessage,
-  searchAddressByPostalCode,
+  searchAddressByPostalCode
 } = useSearchAddress()
 
 const searchAddress = async () => {
@@ -149,12 +148,12 @@ const searchAddress = async () => {
 
 const thumbnailUploadStatus = reactive<ImageUploadStatus>({
   error: false,
-  message: '',
+  message: ''
 })
 
 const headerUploadStatus = reactive<ImageUploadStatus>({
   error: false,
-  message: '',
+  message: ''
 })
 
 const handleUpdateThumbnail = (files: FileList) => {
@@ -192,7 +191,7 @@ const handleSubmit = async (): Promise<void> => {
     await coordinatorStore.updateCoordinator(
       {
         ...formData,
-        phoneNumber: formData.phoneNumber.replace('0', '+81'),
+        phoneNumber: formData.phoneNumber.replace('0', '+81')
       },
       id
     )
@@ -213,7 +212,7 @@ const relateProducers = async (): Promise<void> => {
 }
 
 const remove = (item: string) => {
-  producers.value = producers.value.filter((id) => id !== item)
+  producers.value = producers.value.filter(id => id !== item)
 }
 
 const cancel = (): void => {
@@ -234,7 +233,7 @@ useAsyncData(async () => {
     <v-card-title>コーディネーター編集</v-card-title>
 
     <v-tabs v-model="tab" grow color="dark">
-      <v-tabs-slider color="accent"></v-tabs-slider>
+      <v-tabs-slider color="accent" />
       <v-tab
         v-for="tabItem in tabItems"
         :key="tabItem.value"
@@ -268,14 +267,18 @@ useAsyncData(async () => {
             <div class="d-flex pt-3 pr-3">
               <v-spacer />
               <v-btn outlined color="primary" v-bind="attrs" v-on="on">
-                <v-icon left>mdi-plus</v-icon>
+                <v-icon left>
+                  mdi-plus
+                </v-icon>
                 生産者紐付け
               </v-btn>
             </div>
           </template>
 
           <v-card>
-            <v-card-title class="primaryLight"> 生産者紐付け </v-card-title>
+            <v-card-title class="primaryLight">
+              生産者紐付け
+            </v-card-title>
 
             <v-autocomplete
               v-model="producers"
@@ -290,29 +293,31 @@ useAsyncData(async () => {
               <template #selection="data">
                 <v-chip close @click:close="remove(data.item.id)">
                   <v-avatar left>
-                    <v-img :src="data.item.thumbnailUrl"></v-img>
+                    <v-img :src="data.item.thumbnailUrl" />
                   </v-avatar>
                   {{ data.item.firstname }}
                 </v-chip>
               </template>
               <template #item="data">
                 <v-list-item-avatar>
-                  <img :src="data.item.thumbnailUrl" />
+                  <img :src="data.item.thumbnailUrl">
                 </v-list-item-avatar>
                 <v-list-item-content>
-                  <v-list-item-title>{{
-                    data.item.firstname
-                  }}</v-list-item-title>
-                  <v-list-item-subtitle>{{
-                    data.item.storeName
-                  }}</v-list-item-subtitle>
+                  <v-list-item-title>
+                    {{ data.item.firstname }}
+                  </v-list-item-title>
+                  <v-list-item-subtitle>
+                    {{ data.item.storeName }}
+                  </v-list-item-subtitle>
                 </v-list-item-content>
               </template>
             </v-autocomplete>
 
             <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="error" text @click="cancel"> キャンセル </v-btn>
+              <v-spacer />
+              <v-btn color="error" text @click="cancel">
+                キャンセル
+              </v-btn>
               <v-btn color="primary" outlined @click="relateProducers">
                 更新
               </v-btn>
@@ -324,7 +329,7 @@ useAsyncData(async () => {
           :table-footer-props="producersOptions"
           @update:items-per-page="handleUpdateProducersItemsPerPage"
           @update:page="handleUpdateProducersPage"
-        ></the-related-producer-list>
+        />
       </v-tab-item>
     </v-tabs-items>
   </div>

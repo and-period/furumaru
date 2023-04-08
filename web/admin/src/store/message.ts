@@ -7,7 +7,7 @@ import {
   MessageApi,
   MessageResponse,
   MessagesResponse,
-  MessagesResponseMessagesInner,
+  MessagesResponseMessagesInner
 } from '~/types/api'
 import { AuthError } from '~/types/exception'
 
@@ -22,7 +22,7 @@ export const useMessageStore = defineStore('message', {
       message: {} as MessageResponse,
       messages: [] as Array<MessagesResponseMessagesInner>,
       total: 0,
-      hasUnread: false,
+      hasUnread: false
     }
   },
 
@@ -34,9 +34,9 @@ export const useMessageStore = defineStore('message', {
      * @param orders ソートキー
      * @returns
      */
-    async fetchMessages(
-      limit: number = 20,
-      offset: number = 0,
+    async fetchMessages (
+      limit = 20,
+      offset = 0,
       orders: string[] = []
     ): Promise<void> {
       try {
@@ -66,7 +66,7 @@ export const useMessageStore = defineStore('message', {
      * @param orders ソートキー
      * @returns
      */
-    async fetchMessage(messageId = ''): Promise<void> {
+    async fetchMessage (messageId = ''): Promise<void> {
       try {
         const accessToken = this.getAccessToken()
         const res = await this.apiClient(accessToken).v1GetMessage(messageId)
@@ -74,20 +74,22 @@ export const useMessageStore = defineStore('message', {
 
         this.message = message
         this.messages.forEach((v: MessagesResponseMessagesInner, i: number) => {
-          if (v.id === message.id) this.messages[i].read = true
+          if (v.id === message.id) {
+            this.messages[i].read = true
+          }
         })
       } catch (err) {
         return this.errorHandler(err)
       }
     },
 
-    getAccessToken(): string {
+    getAccessToken (): string {
       const authStore = useAuthStore()
       const accessToken = authStore.accessToken
       if (!accessToken) {
         throw new AuthError('認証エラー。再度ログインをしてください。')
       }
       return accessToken
-    },
-  },
+    }
+  }
 })

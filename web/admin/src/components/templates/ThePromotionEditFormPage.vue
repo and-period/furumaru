@@ -16,8 +16,8 @@ const props = defineProps({
       discountRate: 0,
       code: '',
       startAt: dayjs().unix(),
-      endAt: dayjs().unix(),
-    }),
+      endAt: dayjs().unix()
+    })
   },
   timeData: {
     type: Object,
@@ -27,13 +27,13 @@ const props = defineProps({
       startDate: '',
       startTime: '',
       endDate: '',
-      endTime: '',
-    }),
+      endTime: ''
+    })
   },
   formDataLoading: {
     type: Boolean,
-    default: false,
-  },
+    default: false
+  }
 })
 
 const emit = defineEmits<{
@@ -44,12 +44,12 @@ const emit = defineEmits<{
 
 const formDataValue = computed({
   get: (): CreatePromotionRequest => props.formData as CreatePromotionRequest,
-  set: (val: CreatePromotionRequest) => emit('update:formData', val),
+  set: (val: CreatePromotionRequest) => emit('update:formData', val)
 })
 
 const timeDataValue = computed({
   get: (): PromotionTime => props.timeData as PromotionTime,
-  set: (val: PromotionTime) => emit('update:timeData', val),
+  set: (val: PromotionTime) => emit('update:timeData', val)
 })
 
 const handleSubmit = () => {
@@ -59,7 +59,9 @@ const handleSubmit = () => {
 
 <template>
   <div>
-    <p class="text-h6">セール情報編集</p>
+    <p class="text-h6">
+      セール情報編集
+    </p>
     <the-promotion-form
       form-type="edit"
       :form-data="formDataValue"

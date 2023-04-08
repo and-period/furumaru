@@ -3,53 +3,53 @@ const props = defineProps({
   autofocus: {
     type: Boolean,
     required: false,
-    default: false,
+    default: false
   },
   label: {
     type: String,
     required: false,
-    default: '',
+    default: ''
   },
   name: {
     type: String,
     required: false,
-    default: '',
+    default: ''
   },
   outlined: {
     type: Boolean,
     required: false,
-    default: false,
+    default: false
   },
   prependIcon: {
     type: String,
     required: false,
-    default: undefined,
+    default: undefined
   },
   appendIcon: {
     type: String,
     required: false,
-    default: undefined,
+    default: undefined
   },
   readonly: {
     type: Boolean,
     require: false,
-    default: false,
+    default: false
   },
   rules: {
     type: Object,
     required: false,
-    default: () => ({}),
+    default: () => ({})
   },
   type: {
     type: String,
     required: false,
-    default: 'text',
+    default: 'text'
   },
   value: {
     type: String,
     required: false,
-    default: '',
-  },
+    default: ''
+  }
 })
 
 const emit = defineEmits<{
@@ -58,7 +58,7 @@ const emit = defineEmits<{
 
 const formData = computed({
   get: () => props.value,
-  set: (val: string) => emit('update:value', val),
+  set: (val: string) => emit('update:value', val)
 })
 </script>
 

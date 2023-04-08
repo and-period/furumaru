@@ -8,7 +8,7 @@ import { CreateShippingRequest, UpdateShippingRequest } from '~/types/api'
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false,
+    default: false
   },
   value: {
     type: Object,
@@ -18,8 +18,8 @@ const props = defineProps({
         {
           name: '',
           price: 0,
-          prefectures: [],
-        },
+          prefectures: []
+        }
       ],
       box60Refrigerated: 0,
       box60Frozen: 0,
@@ -27,8 +27,8 @@ const props = defineProps({
         {
           name: '',
           price: 0,
-          prefectures: [],
-        },
+          prefectures: []
+        }
       ],
       box80Refrigerated: 0,
       box80Frozen: 0,
@@ -36,15 +36,15 @@ const props = defineProps({
         {
           name: '',
           price: 0,
-          prefectures: [],
-        },
+          prefectures: []
+        }
       ],
       box100Refrigerated: 0,
       box100Frozen: 0,
       hasFreeShipping: false,
-      freeShippingRates: 0,
-    }),
-  },
+      freeShippingRates: 0
+    })
+  }
 })
 
 const emit = defineEmits<{
@@ -63,13 +63,13 @@ const formData = computed({
   get: (): UpdateShippingRequest | CreateShippingRequest =>
     props.value as CreateShippingRequest | UpdateShippingRequest,
   set: (val: UpdateShippingRequest | CreateShippingRequest) =>
-    emit('update:value', val),
+    emit('update:value', val)
 })
 
 const rules = computed(() => {
   return {
     name: { required },
-    hasFreeShipping: { required },
+    hasFreeShipping: { required }
   }
 })
 
@@ -104,20 +104,20 @@ const handleClickSelectAll = (rate: '60' | '80' | '100', i: number) => {
     case '60':
       formData.value.box60Rates[i].prefectures =
         getSelectableBox60RatePrefecturesList(i)
-          .filter((item) => !item.disabled)
-          .map((item) => item.value)
+          .filter(item => !item.disabled)
+          .map(item => item.value)
       break
     case '80':
       formData.value.box80Rates[i].prefectures =
         getSelectableBox80RatePrefecturesList(i)
-          .filter((item) => !item.disabled)
-          .map((item) => item.value)
+          .filter(item => !item.disabled)
+          .map(item => item.value)
       break
     case '100':
       formData.value.box100Rates[i].prefectures =
         getSelectableBox100RatePrefecturesList(i)
-          .filter((item) => !item.disabled)
-          .map((item) => item.value)
+          .filter(item => !item.disabled)
+          .map(item => item.value)
       break
   }
 }
@@ -168,7 +168,9 @@ const handleClickRemoveItemButton = (
           "
         />
         <div class="my-4">
-          <p class="text-h6">サイズ60配送オプション</p>
+          <p class="text-h6">
+            サイズ60配送オプション
+          </p>
           <div class="d-flex">
             <v-text-field
               v-model.number="formData.box60Refrigerated"
@@ -182,7 +184,9 @@ const handleClickRemoveItemButton = (
           </div>
           <div v-for="i in box60RateItemsSize" :key="i">
             <div class="d-flex align-center">
-              <p class="mb-0">オプション{{ i + 1 }}</p>
+              <p class="mb-0">
+                オプション{{ i + 1 }}
+              </p>
               <v-spacer />
               <v-btn
                 icon
@@ -224,7 +228,9 @@ const handleClickRemoveItemButton = (
           </v-btn>
         </div>
         <div class="my-4">
-          <p class="text-h6">サイズ80配送オプション</p>
+          <p class="text-h6">
+            サイズ80配送オプション
+          </p>
           <div class="d-flex">
             <v-text-field
               v-model.number="formData.box80Refrigerated"
@@ -238,14 +244,17 @@ const handleClickRemoveItemButton = (
           </div>
           <div v-for="i in box80RateItemsSize" :key="i">
             <div class="d-flex align-center">
-              <p class="mb-0">オプション{{ i + 1 }}</p>
+              <p class="mb-0">
+                オプション{{ i + 1 }}
+              </p>
               <v-spacer />
               <v-btn
                 icon
                 :disabled="box80RateItemsSize.length === 1"
                 @click="handleClickRemoveItemButton('80', i)"
-                ><v-icon>mdi-close</v-icon></v-btn
               >
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
             </div>
             <v-text-field v-model="formData.box80Rates[i].name" label="名前" />
             <v-text-field
@@ -280,7 +289,9 @@ const handleClickRemoveItemButton = (
         </div>
 
         <div class="my-4">
-          <p class="text-h6">サイズ100配送オプション</p>
+          <p class="text-h6">
+            サイズ100配送オプション
+          </p>
           <div class="d-flex">
             <v-text-field
               v-model.number="formData.box100Refrigerated"
@@ -294,14 +305,17 @@ const handleClickRemoveItemButton = (
           </div>
           <div v-for="i in box100RateItemsSize" :key="i">
             <div class="d-flex align-center">
-              <p class="mb-0">オプション{{ i + 1 }}</p>
+              <p class="mb-0">
+                オプション{{ i + 1 }}
+              </p>
               <v-spacer />
               <v-btn
                 icon
                 :disabled="box100RateItemsSize.length === 1"
                 @click="handleClickRemoveItemButton('100', i)"
-                ><v-icon>mdi-close</v-icon></v-btn
               >
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
             </div>
             <v-text-field v-model="formData.box100Rates[i].name" label="名前" />
             <v-text-field
@@ -336,7 +350,9 @@ const handleClickRemoveItemButton = (
         </div>
       </v-card-text>
       <v-card-actions>
-        <v-btn type="submit" outlined color="primary" block>登録</v-btn>
+        <v-btn type="submit" outlined color="primary" block>
+          登録
+        </v-btn>
       </v-card-actions>
     </form>
   </v-card>

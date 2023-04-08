@@ -2,24 +2,24 @@
 const props = defineProps({
   inventory: {
     type: Number,
-    default: 0,
+    default: 0
   },
   inventoryErrorMessage: {
     type: String,
-    default: '',
+    default: ''
   },
   itemUnit: {
     type: String,
-    default: '個',
+    default: '個'
   },
   itemDescription: {
     type: String,
-    default: '',
+    default: ''
   },
   itemDescriptionErrorMessage: {
     type: String,
-    default: '',
-  },
+    default: ''
+  }
 })
 
 const emit = defineEmits<{
@@ -32,17 +32,17 @@ const itemUnitItems = ['個', '瓶']
 
 const inventoryValue = computed({
   get: () => props.inventory,
-  set: (val: number) => emit('update:inventory', Number(val)),
+  set: (val: number) => emit('update:inventory', Number(val))
 })
 
 const itemUnitValue = computed({
   get: () => props.itemUnit,
-  set: (val: string) => emit('update:itemUnit', val),
+  set: (val: string) => emit('update:itemUnit', val)
 })
 
 const itemDescriptionValue = computed({
   get: () => props.itemDescription,
-  set: (val: string) => emit('update:itemDescription', val),
+  set: (val: string) => emit('update:itemDescription', val)
 })
 </script>
 
@@ -69,7 +69,9 @@ const itemDescriptionValue = computed({
         label="単位説明"
         :error-messages="props.itemDescriptionErrorMessage"
       />
-      <p class="ml-12 mb-0">ex) 1kg → 5個入り</p>
+      <p class="ml-12 mb-0">
+        ex) 1kg → 5個入り
+      </p>
       <v-spacer />
     </div>
   </div>

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useAlert } from '~/lib/hooks'
-import { useCommonStore } from '~/store'
-import { useShippingStore } from '~/store'
+import { useCommonStore, useShippingStore } from '~/store'
 import { CreateShippingRequest } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 
@@ -13,8 +12,8 @@ const formData = reactive<CreateShippingRequest>({
     {
       name: '',
       price: 0,
-      prefectures: [],
-    },
+      prefectures: []
+    }
   ],
   box60Refrigerated: 0,
   box60Frozen: 0,
@@ -22,8 +21,8 @@ const formData = reactive<CreateShippingRequest>({
     {
       name: '',
       price: 0,
-      prefectures: [],
-    },
+      prefectures: []
+    }
   ],
   box80Refrigerated: 0,
   box80Frozen: 0,
@@ -31,20 +30,20 @@ const formData = reactive<CreateShippingRequest>({
     {
       name: '',
       price: 0,
-      prefectures: [],
-    },
+      prefectures: []
+    }
   ],
   box100Refrigerated: 0,
   box100Frozen: 0,
   hasFreeShipping: false,
-  freeShippingRates: 0,
+  freeShippingRates: 0
 })
 
 const addBox60RateItem = () => {
   formData.box60Rates.push({
     name: '',
     price: 0,
-    prefectures: [],
+    prefectures: []
   })
 }
 
@@ -52,7 +51,7 @@ const addBox80RateItem = () => {
   formData.box80Rates.push({
     name: '',
     price: 0,
-    prefectures: [],
+    prefectures: []
   })
 }
 
@@ -60,7 +59,7 @@ const addBox100RateItem = () => {
   formData.box100Rates.push({
     name: '',
     price: 0,
-    prefectures: [],
+    prefectures: []
   })
 }
 
@@ -79,7 +78,7 @@ const handleSubmit = async (): Promise<void> => {
     await createShipping(formData)
     addSnackbar({
       color: 'info',
-      message: `${formData.name}を登録しました。`,
+      message: `${formData.name}を登録しました。`
     })
     router.push('/shippings')
   } catch (error) {
@@ -87,7 +86,7 @@ const handleSubmit = async (): Promise<void> => {
       show(error.message)
       window.scrollTo({
         top: 0,
-        behavior: 'smooth',
+        behavior: 'smooth'
       })
     }
   }

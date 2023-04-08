@@ -15,7 +15,7 @@ const {
   itemsPerPage,
   handleUpdateItemsPerPage,
   options,
-  offset,
+  offset
 } = usePagination()
 
 watch(itemsPerPage, () => {
@@ -51,40 +51,40 @@ const handleClickAddBtn = () => {
 const headers: DataTableHeader[] = [
   {
     text: '',
-    value: 'media',
+    value: 'media'
   },
   {
     text: '商品名',
-    value: 'name',
+    value: 'name'
   },
   {
     text: 'ステータス',
-    value: 'public',
+    value: 'public'
   },
   {
     text: '種類',
-    value: 'type',
+    value: 'type'
   },
   {
     text: '価格',
-    value: 'price',
+    value: 'price'
   },
   {
     text: '在庫',
-    value: 'inventory',
+    value: 'inventory'
   },
   {
     text: 'ジャンル',
-    value: 'categoryName',
+    value: 'categoryName'
   },
   {
     text: '品目',
-    value: 'productTypeName',
+    value: 'productTypeName'
   },
   {
     text: '農園名',
-    value: 'storeName',
-  },
+    value: 'storeName'
+  }
 ]
 </script>
 
@@ -94,7 +94,9 @@ const headers: DataTableHeader[] = [
       商品管理
       <v-spacer />
       <v-btn outlined color="primary" @click="handleClickAddBtn">
-        <v-icon left>mdi-plus</v-icon>
+        <v-icon left>
+          mdi-plus
+        </v-icon>
         商品登録
       </v-btn>
     </v-card-title>
@@ -113,10 +115,10 @@ const headers: DataTableHeader[] = [
         </div>
 
         <v-data-table
+          v-model:items-per-page="itemsPerPage"
           :headers="headers"
           :items="products"
           no-data-text="登録されている商品がありません。"
-          :items-per-page.sync="itemsPerPage"
           :server-items-length="totalItems"
           :footer-props="options"
           @update:items-per-page="handleUpdateItemsPerPage"

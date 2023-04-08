@@ -1,7 +1,6 @@
 import { Context } from '@nuxt/types'
 
-import { useAuthStore } from '~/store'
-import { useMessageStore } from '~/store'
+import { useAuthStore, useMessageStore } from '~/store'
 
 export default ({ route }: Context) => {
   const publicPages = ['/signin']

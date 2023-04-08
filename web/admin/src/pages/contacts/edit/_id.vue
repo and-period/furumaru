@@ -4,7 +4,7 @@ import {
   ContactPriority,
   ContactResponse,
   ContactStatus,
-  UpdateContactRequest,
+  UpdateContactRequest
 } from '~/types/api'
 
 const route = useRoute()
@@ -36,7 +36,7 @@ const formData = reactive<ContactResponse>({
   priority: 0,
   note: '',
   createdAt: 0,
-  updatedAt: 0,
+  updatedAt: 0
 })
 
 useAsyncData(async () => {
@@ -91,7 +91,7 @@ const handleEdit = async (): Promise<void> => {
     const payload = reactive<UpdateContactRequest>({
       status: getStatusID(formStatus.value),
       priority: getPriorityID(formPriority.value),
-      note: formNote.value,
+      note: formNote.value
     })
 
     await contactStore.contactUpdate(payload, id)
@@ -138,21 +138,21 @@ const getStatusID = (status: string): ContactStatus => {
           label="名前"
           v-model="formData.username"
           readonly
-        ></v-text-field>
+        />
 
         <v-text-field
           name="title"
           label="件名"
           v-model="formData.title"
           readonly
-        ></v-text-field>
+        />
 
         <v-textarea
           name="contact"
           label="お問合せ内容"
           v-model="formData.content"
           readonly
-        ></v-textarea>
+        />
 
         <v-select
           v-model="formPriority"
@@ -166,21 +166,21 @@ const getStatusID = (status: string): ContactStatus => {
           :items="statuses"
           label="ステータス"
           :item-value="getStatus(formData.status)"
-        ></v-select>
+        />
 
         <v-text-field
           name="mailAddress"
           label="メールアドレス"
           v-model="formData.email"
           readonly
-        ></v-text-field>
+        />
 
         <v-text-field
           name="phoneNumber"
           label="電話番号"
           v-model="formData.phoneNumber"
           readonly
-        ></v-text-field>
+        />
 
         <v-textarea
           v-model="formNote"

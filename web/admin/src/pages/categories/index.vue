@@ -2,13 +2,11 @@
 import TheCategoryList from '~/components/organisms/TheCategoryList.vue'
 import TheProductTypeList from '~/components/organisms/TheProductTypeList.vue'
 import { usePagination } from '~/lib/hooks'
-import { useAuthStore } from '~/store'
-import { useCategoryStore } from '~/store'
-import { useProductTypeStore } from '~/store'
+import { useAuthStore, useCategoryStore, useProductTypeStore } from '~/store'
 import {
   CategoriesResponseCategoriesInner,
   CreateCategoryRequest,
-  CreateProductTypeRequest,
+  CreateProductTypeRequest
 } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 import { Category } from '~/types/props/category'
@@ -30,20 +28,20 @@ const selectedCategoryId = ref<string>('')
 const imgUrl = ref<string>('')
 const items: Category[] = [
   { name: 'カテゴリー', value: 'categories' },
-  { name: '品目', value: 'categoryItems' },
+  { name: '品目', value: 'categoryItems' }
 ]
 const headerUploadStatus = reactive<ImageUploadStatus>({
   error: false,
-  message: '',
+  message: ''
 })
 
 const categoryFormData = reactive<CreateCategoryRequest>({
-  name: '',
+  name: ''
 })
 
 const productTypeFormData = reactive<CreateProductTypeRequest>({
   name: '',
-  iconUrl: '',
+  iconUrl: ''
 })
 
 const categoryCancel = (): void => {
@@ -80,7 +78,7 @@ const {
   offset: categoriesOffset,
   options: categoriesOptions,
   handleUpdateItemsPerPage: handleUpdateCategoriesItemsPerPage,
-  updateCurrentPage: _handleUpdateCategoriesPage,
+  updateCurrentPage: _handleUpdateCategoriesPage
 } = usePagination()
 
 watch(categoriesItemsPerPage, () => {
@@ -100,14 +98,14 @@ const {
   offset: productTypesOffset,
   options: productTypesOptions,
   handleUpdateItemsPerPage: handleUpdateProductTypesItemsPerPage,
-  updateCurrentPage: _handleUpdateProductTypesPage,
+  updateCurrentPage: _handleUpdateProductTypesPage
 } = usePagination()
 
 const fetchState = useAsyncData(async () => {
   try {
     await Promise.all([
       categoryStore.fetchCategories(categoriesItemsPerPage.value),
-      productTypeStore.fetchProductTypes(productTypesItemsPerPage.value),
+      productTypeStore.fetchProductTypes(productTypesItemsPerPage.value)
     ])
     categoriesItems.categories = categoryStore.categories
   } catch (err) {
@@ -166,7 +164,7 @@ const handleInputFileChange = () => {
   <div>
     <v-card-title>カテゴリー・品目設定</v-card-title>
     <v-tabs v-model="selector" grow color="dark">
-      <v-tabs-slider color="accent"></v-tabs-slider>
+      <v-tabs-slider color="accent" />
       <v-tab
         v-for="item in items"
         :key="item.value"
@@ -183,7 +181,9 @@ const handleInputFileChange = () => {
             <div class="d-flex pt-3 pr-3">
               <v-spacer />
               <v-btn outlined color="primary" v-bind="attrs" v-on="on">
-                <v-icon left>mdi-plus</v-icon>
+                <v-icon left>
+                  mdi-plus
+                </v-icon>
                 追加
               </v-btn>
             </div>
@@ -202,7 +202,7 @@ const handleInputFileChange = () => {
             <v-divider />
 
             <v-card-actions>
-              <v-spacer></v-spacer>
+              <v-spacer />
               <v-btn color="error" text @click="categoryCancel">
                 キャンセル
               </v-btn>
@@ -226,13 +226,17 @@ const handleInputFileChange = () => {
             <div class="d-flex pt-3 pr-3">
               <v-spacer />
               <v-btn outlined color="primary" v-bind="attrs" v-on="on">
-                <v-icon left>mdi-plus</v-icon>
+                <v-icon left>
+                  mdi-plus
+                </v-icon>
                 追加
               </v-btn>
             </div>
           </template>
           <v-card>
-            <v-card-title class="primaryLight"> 品目登録 </v-card-title>
+            <v-card-title class="primaryLight">
+              品目登録
+            </v-card-title>
             <v-card-text class="mt-4">
               <v-autocomplete
                 v-model="selectedCategoryId"
@@ -265,9 +269,9 @@ const handleInputFileChange = () => {
             <v-card class="text-center" role="button" flat @click="handleClick">
               <v-card-text>
                 <v-avatar size="96">
-                  <v-icon v-if="productTypeFormData.iconUrl === ''" x-large
-                    >mdi-plus</v-icon
-                  >
+                  <v-icon v-if="productTypeFormData.iconUrl === ''" x-large>
+                    mdi-plus
+                  </v-icon>
                   <v-img
                     v-else
                     :src="productTypeFormData.iconUrl"
@@ -282,8 +286,10 @@ const handleInputFileChange = () => {
                   class="d-none"
                   accept="image/png, image/jpeg"
                   @change="handleInputFileChange"
-                />
-                <p class="ma-0">アイコン画像を選択</p>
+                >
+                <p class="ma-0">
+                  アイコン画像を選択
+                </p>
               </v-card-text>
             </v-card>
             <p v-show="headerUploadStatus.error" class="red--text ma-0">
@@ -292,7 +298,7 @@ const handleInputFileChange = () => {
             <v-divider />
 
             <v-card-actions>
-              <v-spacer></v-spacer>
+              <v-spacer />
               <v-btn color="error" text @click="productTypeCancel">
                 キャンセル
               </v-btn>

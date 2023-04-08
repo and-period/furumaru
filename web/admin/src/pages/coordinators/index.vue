@@ -2,8 +2,7 @@
 import { DataTableHeader } from 'vuetify'
 
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useCommonStore } from '~/store'
-import { useCoordinatorStore } from '~/store'
+import { useCommonStore, useCoordinatorStore } from '~/store'
 import { CoordinatorsResponseCoordinatorsInner } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 
@@ -27,7 +26,7 @@ const selectedId = ref<string>('')
 
 const selectedItemName = computed(() => {
   const selectedItem = coordinators.value.find(
-    (item) => item.id === selectedId.value
+    item => item.id === selectedId.value
   )
   return selectedItem
     ? `${selectedItem.lastname} ${selectedItem.firstname}`
@@ -52,7 +51,7 @@ const {
   itemsPerPage,
   handleUpdateItemsPerPage,
   options,
-  offset,
+  offset
 } = usePagination()
 
 watch(itemsPerPage, () => {
@@ -75,29 +74,29 @@ const fetchState = useAsyncData(async () => {
 const headers: DataTableHeader[] = [
   {
     text: 'サムネイル',
-    value: 'thumbnail',
+    value: 'thumbnail'
   },
   {
     text: '店舗名',
-    value: 'storeName',
+    value: 'storeName'
   },
   {
     text: 'コーディネータ名',
-    value: 'name',
+    value: 'name'
   },
   {
     text: 'Email',
-    value: 'email',
+    value: 'email'
   },
   {
     text: '電話番号',
-    value: 'phoneNumber',
+    value: 'phoneNumber'
   },
   {
     text: 'Actions',
     value: 'actions',
-    sortable: false,
-  },
+    sortable: false
+  }
 ]
 
 const handleClickAddButton = () => {
@@ -128,7 +127,7 @@ const handleDeleteFormSubmit = async () => {
     await coordinatorStore.deleteCoordinator(selectedId.value)
     addSnackbar({
       color: 'info',
-      message: 'コーディネータを削除しました。',
+      message: 'コーディネータを削除しました。'
     })
     fetchState.refresh()
   } catch (error) {
@@ -148,7 +147,9 @@ const handleDeleteFormSubmit = async () => {
       コーディネータ管理
       <v-spacer />
       <v-btn outlined color="primary" @click="handleClickAddButton">
-        <v-icon left>mdi-plus</v-icon>
+        <v-icon left>
+          mdi-plus
+        </v-icon>
         コーディネータ登録
       </v-btn>
     </v-card-title>
@@ -159,9 +160,9 @@ const handleDeleteFormSubmit = async () => {
 
     <v-dialog v-model="deleteDialog" width="500">
       <v-card>
-        <v-card-title
-          >{{ selectedItemName }}を本当に削除しますか？</v-card-title
-        >
+        <v-card-title>
+          {{ selectedItemName }}を本当に削除しますか？
+        </v-card-title>
         <v-card-actions>
           <v-spacer />
           <v-btn color="error" text @click="handleClickCancelButton">
@@ -207,8 +208,10 @@ const handleDeleteFormSubmit = async () => {
                 v-if="item.thumbnailUrl !== ''"
                 :src="item.thumbnailUrl"
                 :alt="`${item.storeName}-profile`"
-              />
-              <v-icon v-else>mdi-account</v-icon>
+              >
+              <v-icon v-else>
+                mdi-account
+              </v-icon>
             </v-avatar>
           </template>
           <template #[`item.name`]="{ item }">
@@ -219,7 +222,9 @@ const handleDeleteFormSubmit = async () => {
           </template>
           <template #[`item.actions`]="{ item }">
             <v-btn outlined color="primary" small @click="handleEdit(item)">
-              <v-icon small>mdi-pencil</v-icon>
+              <v-icon small>
+                mdi-pencil
+              </v-icon>
               編集
             </v-btn>
             <v-btn
@@ -228,7 +233,9 @@ const handleDeleteFormSubmit = async () => {
               small
               @click="handleClickDeleteButton(item)"
             >
-              <v-icon small>mdi-delete</v-icon>
+              <v-icon small>
+                mdi-delete
+              </v-icon>
               削除
             </v-btn>
           </template>

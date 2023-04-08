@@ -1,6 +1,4 @@
 import { defineNuxtConfig } from 'nuxt/config'
-import colors from 'vuetify/es5/util/colors'
-import ja from 'vuetify/src/locale/ja'
 
 export default defineNuxtConfig({
   dev: false,
@@ -11,40 +9,32 @@ export default defineNuxtConfig({
   head: {
     titleTemplate: 'ふるマル - 管理者ツール',
     htmlAttrs: {
-      lang: 'ja',
+      lang: 'ja'
     },
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: '' },
-      { name: 'format-detection', content: 'telephone=no' },
+      { name: 'format-detection', content: 'telephone=no' }
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
-  css: ['~/assets/main.scss'],
+  css: ['~/assets/main.scss', '~/assets/variables.scss'],
   plugins: [
     '~/plugins/firebase',
     '~/plugins/google-analytics',
     '~/plugins/auth',
     '~/plugins/api-error-handler',
     '~/plugins/api-client',
+    '~/plugins/vuetify'
   ],
   components: [
-    { path: '~/components' },
-    { path: '~/components/atoms' },
-    { path: '~/components/molecules' },
-    { path: '~/components/organisms' },
-    { path: '~/components/templates' },
+    { path: '~/components', pathPrefix: false },
+    { path: '~/components/', pathPrefix: false }
   ],
-  modules: [
-    // '@nuxtjs/axios',
-    '@nuxtjs/google-fonts',
-    '@nuxtjs/stylelint-module',
-    // '@nuxtjs/vuetify',
-    '@pinia/nuxt',
-  ],
+  modules: ['@nuxtjs/google-fonts', '@nuxtjs/stylelint-module', '@pinia/nuxt'],
   axios: {
-    baseURL: '/',
+    baseURL: '/'
   },
   env: {
     API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:18010',
@@ -56,44 +46,10 @@ export default defineNuxtConfig({
       process.env.FIREBASE_MESSAGING_SENDER_ID || '',
     FIREBASE_APP_ID: process.env.FIREBASE_APP_ID || '',
     FIREBASE_MEASUREMENT_ID: process.env.FIREBASE_MEASUREMENT_ID || '',
-    FIREBASE_VAPID_KEY: process.env.FIREBASE_VAPID_KEY || '',
+    FIREBASE_VAPID_KEY: process.env.FIREBASE_VAPID_KEY || ''
   },
   router: {
-    middleware: ['auth', 'notification'],
-  },
-  vuetify: {
-    customVariables: ['~/assets/variables.scss'],
-    treeShake: true,
-    lang: {
-      locales: { ja },
-      current: 'ja',
-    },
-    theme: {
-      dark: false,
-      themes: {
-        dark: {
-          primary: colors.green.accent1,
-          accent: colors.grey.darken3,
-          secondary: colors.amber.darken3,
-          info: colors.teal.lighten1,
-          warning: colors.amber.base,
-          error: colors.deepOrange.accent4,
-          success: colors.green.accent3,
-        },
-        light: {
-          primary: colors.lightGreen.darken2,
-          primaryLight: colors.lightGreen.lighten2,
-          accent: colors.amber.darken1,
-          secondary: colors.amber.darken3,
-          info: colors.teal.lighten1,
-          warning: colors.amber.base,
-          error: colors.deepOrange.accent4,
-          unknown: colors.grey.darken2,
-          success: colors.green.accent3,
-        },
-      },
-      options: { customProperties: true },
-    },
+    middleware: ['auth', 'notification']
   },
   build: {},
   googleFonts: {
@@ -102,7 +58,7 @@ export default defineNuxtConfig({
     overwriting: true,
     display: 'swap',
     families: {
-      'BIZ+UDGothic': true,
-    },
-  },
+      'BIZ+UDGothic': true
+    }
+  }
 })

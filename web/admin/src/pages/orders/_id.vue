@@ -12,7 +12,7 @@ import {
   PaymentMethodType,
   PaymentStatus,
   ShippingCarrier,
-  ShippingSize,
+  ShippingSize
 } from '~/types/api'
 import { Order, OrderItems } from '~/types/props/order'
 
@@ -27,12 +27,12 @@ const {
   itemsPerPage,
   handleUpdateItemsPerPage,
   options,
-  offset,
+  offset
 } = usePagination()
 
 const items: Order[] = [
   { name: '支払い情報', value: 'shippingInformation' },
-  { name: '配送情報', value: 'orderInformation' },
+  { name: '配送情報', value: 'orderInformation' }
 ]
 
 const formData = reactive<OrderResponse>({
@@ -59,7 +59,7 @@ const formData = reactive<OrderResponse>({
     city: '',
     addressLine1: '',
     addressLine2: '',
-    phoneNumber: '',
+    phoneNumber: ''
   },
   fulfillment: {
     trackingNumber: '',
@@ -75,13 +75,13 @@ const formData = reactive<OrderResponse>({
     city: '',
     addressLine1: '',
     addressLine2: '',
-    phoneNumber: '',
+    phoneNumber: ''
   },
   refund: {
     canceled: false,
     type: 0,
     reason: '',
-    total: 0,
+    total: 0
   },
   items: [
     {
@@ -93,17 +93,17 @@ const formData = reactive<OrderResponse>({
       media: [
         {
           url: '',
-          isThumbnail: false,
-        },
-      ],
-    },
+          isThumbnail: false
+        }
+      ]
+    }
   ],
   orderedAt: -1,
   paidAt: -1,
   deliveredAt: -1,
   canceledAt: -1,
   createdAt: -1,
-  updatedAt: -1,
+  updatedAt: -1
 })
 
 const fetchState = useAsyncData(async () => {
@@ -123,24 +123,24 @@ const fetchState = useAsyncData(async () => {
 const headers: DataTableHeader[] = [
   {
     text: 'サムネイル',
-    value: 'media',
+    value: 'media'
   },
   {
     text: '商品名',
-    value: 'name',
+    value: 'name'
   },
   {
     text: '購入価格',
-    value: 'price',
+    value: 'price'
   },
   {
     text: '購入数量',
-    value: 'quantity',
+    value: 'quantity'
   },
   {
     text: '重量',
-    value: 'weight',
-  },
+    value: 'weight'
+  }
 ]
 
 const getDay = (unixTime: number): string => {
@@ -249,7 +249,7 @@ const convertPhone = (phoneNumber: string): string => {
 
 // isThumnailがtrueのものを引っ掛けて商品でサムネイルに設定されているURLを探す
 const getThumnail = (medias: OrderItems[]): string => {
-  const orderItem: OrderItems[] = medias.filter((item) => item.isThumbnail)
+  const orderItem: OrderItems[] = medias.filter(item => item.isThumbnail)
   return orderItem[0].url
 }
 
@@ -294,7 +294,7 @@ const getBoxSize = (size: ShippingSize): string => {
 <template>
   <div>
     <v-tabs v-model="selector" grow color="dark">
-      <v-tabs-slider color="accent"></v-tabs-slider>
+      <v-tabs-slider color="accent" />
       <v-tab
         v-for="item in items"
         :key="item.value"
@@ -312,15 +312,17 @@ const getBoxSize = (size: ShippingSize): string => {
               label="注文者名"
               :value="formData.userName"
               readonly
-            ></v-text-field>
+            />
             <v-text-field
               name="paymentMethodType"
               label="決済手段"
               :value="getMethodType(formData.payment.methodType)"
               readonly
-            ></v-text-field>
+            />
             <v-container>
-              <p class="text-h6">購入情報</p>
+              <p class="text-h6">
+                購入情報
+              </p>
               <v-row class="mt-4">
                 <span class="mx-4">支払い状況:</span>
                 <v-chip
@@ -338,7 +340,7 @@ const getBoxSize = (size: ShippingSize): string => {
               label="支払日時"
               :value="getDay(formData.paidAt)"
               readonly
-            ></v-text-field>
+            />
             <v-text-field
               class="mt-4"
               name="total"
@@ -346,7 +348,9 @@ const getBoxSize = (size: ShippingSize): string => {
               :value="formData.payment.total"
               readonly
             >
-              <template #append>円</template>
+              <template #append>
+                円
+              </template>
             </v-text-field>
             <div class="d-flex align-center">
               <v-text-field
@@ -356,7 +360,9 @@ const getBoxSize = (size: ShippingSize): string => {
                 :value="formData.payment.subtotal"
                 readonly
               >
-                <template #append>円</template>
+                <template #append>
+                  円
+                </template>
               </v-text-field>
               <v-text-field
                 name="discount"
@@ -364,7 +370,9 @@ const getBoxSize = (size: ShippingSize): string => {
                 :value="formData.payment.discount"
                 readonly
               >
-                <template #append>円</template>
+                <template #append>
+                  円
+                </template>
               </v-text-field>
             </div>
             <div class="d-flex align-center mt-4">
@@ -375,7 +383,9 @@ const getBoxSize = (size: ShippingSize): string => {
                 :value="formData.payment.shippingFee"
                 readonly
               >
-                <template #append>円</template>
+                <template #append>
+                  円
+                </template>
               </v-text-field>
               <v-text-field
                 name="tax"
@@ -383,10 +393,14 @@ const getBoxSize = (size: ShippingSize): string => {
                 :value="formData.payment.tax"
                 readonly
               >
-                <template #append>円</template>
+                <template #append>
+                  円
+                </template>
               </v-text-field>
             </div>
-            <p class="text-h6">請求先情報</p>
+            <p class="text-h6">
+              請求先情報
+            </p>
             <div class="d-flex align-center">
               <v-text-field
                 class="mr-4"
@@ -394,26 +408,26 @@ const getBoxSize = (size: ShippingSize): string => {
                 label="姓"
                 :value="formData.payment.lastname"
                 readonly
-              ></v-text-field>
+              />
               <v-text-field
                 name="firstname"
                 label="名"
                 :value="formData.payment.firstname"
                 readonly
-              ></v-text-field>
+              />
             </div>
             <v-text-field
               name="phoneNumber"
               label="電話番号"
               :value="convertPhone(formData.payment.phoneNumber)"
               readonly
-            ></v-text-field>
+            />
             <v-text-field
               name="postalCode"
               label="郵便番号"
               :value="formData.payment.postalCode"
               readonly
-            ></v-text-field>
+            />
             <div class="d-flex align-center">
               <v-text-field
                 class="mr-4"
@@ -421,25 +435,27 @@ const getBoxSize = (size: ShippingSize): string => {
                 label="都道府県"
                 :value="formData.payment.prefecture"
                 readonly
-              ></v-text-field>
+              />
               <v-text-field
                 name="city"
                 label="市区町村"
                 :value="formData.payment.city"
                 readonly
-              ></v-text-field>
+              />
             </div>
             <v-text-field
               name="addressLine1"
               label="町名・番地"
               :value="formData.payment.addressLine1"
-            ></v-text-field>
+            />
             <v-text-field
               name="addressLine2"
               label="ビル名・号室など"
               :value="formData.payment.addressLine2"
-            ></v-text-field>
-            <p class="text-h6">キャンセル情報</p>
+            />
+            <p class="text-h6">
+              キャンセル情報
+            </p>
             <v-row class="mt-4">
               <span class="mx-4">注文キャンセル状況:</span>
               <v-chip
@@ -458,25 +474,25 @@ const getBoxSize = (size: ShippingSize): string => {
                 label="注文キャンセル日時"
                 :value="getDay(formData.canceledAt)"
                 readonly
-              ></v-text-field>
+              />
               <v-text-field
                 name="type"
                 label="注文キャンセル理由"
                 :value="getRefundType(formData.refund.type)"
                 readonly
-              ></v-text-field>
+              />
               <v-textarea
                 name="reason"
                 label="注文キャンセル理由詳細"
                 :value="formData.refund.reason"
                 readonly
-              ></v-textarea>
+              />
               <v-text-field
                 name="refundTotal"
                 label="返済金額"
                 :value="formData.refund.total"
                 readonly
-              ></v-text-field>
+              />
             </v-container>
           </v-card-text>
         </v-card>
@@ -484,19 +500,21 @@ const getBoxSize = (size: ShippingSize): string => {
       <v-tab-item value="tab-orderInformation">
         <v-card-text>
           <v-card elevation="0">
-            <p class="text-h6">注文情報</p>
+            <p class="text-h6">
+              注文情報
+            </p>
             <v-text-field
               name="id"
               label="注文ID"
               :value="formData.id"
               readonly
-            ></v-text-field>
+            />
             <v-text-field
               name="orderedAt"
               label="注文日時"
               :value="getDay(formData.orderedAt)"
               readonly
-            ></v-text-field>
+            />
             <v-row class="my-4">
               <span class="mx-4">配送状況:</span>
               <v-chip
@@ -515,20 +533,20 @@ const getBoxSize = (size: ShippingSize): string => {
                   getShippingCarrier(formData.fulfillment.shippingCarrier)
                 "
                 readonly
-              ></v-text-field>
+              />
               <v-text-field
                 class="mr-4"
                 name="shippingmethod"
                 label="配送方法"
                 :value="getShippingMethod(formData.fulfillment.shippingMethod)"
                 readonly
-              ></v-text-field>
+              />
               <v-text-field
                 name="boxSize"
                 label="配送時の箱の大きさ"
                 :value="getBoxSize(formData.fulfillment.boxSize)"
                 readonly
-              ></v-text-field>
+              />
             </div>
             <v-text-field
               v-if="
@@ -538,7 +556,7 @@ const getBoxSize = (size: ShippingSize): string => {
               label="配送日時"
               :value="getDay(formData.deliveredAt)"
               readonly
-            ></v-text-field>
+            />
             <v-data-table
               :headers="headers"
               :items="formData.items"
@@ -547,7 +565,7 @@ const getBoxSize = (size: ShippingSize): string => {
             >
               <template #[`item.media`]="{ item }">
                 <v-avatar>
-                  <img :src="getThumnail(item.media)" />
+                  <img :src="getThumnail(item.media)">
                 </v-avatar>
               </template>
             </v-data-table>
@@ -556,7 +574,7 @@ const getBoxSize = (size: ShippingSize): string => {
               label="伝票番号"
               :value="formData.fulfillment.trackingNumber"
               readonly
-            ></v-text-field>
+            />
             <div>
               <v-text-field
                 class="mr-4"
@@ -564,26 +582,26 @@ const getBoxSize = (size: ShippingSize): string => {
                 label="姓"
                 :value="formData.fulfillment.lastname"
                 readonly
-              ></v-text-field>
+              />
               <v-text-field
                 name="firstname"
                 label="名"
                 :value="formData.fulfillment.firstname"
                 readonly
-              ></v-text-field>
+              />
             </div>
             <v-text-field
               name="phoneNumber"
               label="電話番号"
               :value="convertPhone(formData.fulfillment.phoneNumber)"
               readonly
-            ></v-text-field>
+            />
             <v-text-field
               name="postalCode"
               label="郵便番号"
               :value="formData.fulfillment.postalCode"
               readonly
-            ></v-text-field>
+            />
             <div class="d-flex align-center">
               <v-text-field
                 class="mr-4"
@@ -591,24 +609,24 @@ const getBoxSize = (size: ShippingSize): string => {
                 label="都道府県"
                 :value="formData.fulfillment.prefecture"
                 readonly
-              ></v-text-field>
+              />
               <v-text-field
                 name="city"
                 label="市区町村"
                 :value="formData.fulfillment.city"
                 readonly
-              ></v-text-field>
+              />
             </div>
             <v-text-field
               name="addressLine1"
               label="町名・番地"
               :value="formData.fulfillment.addressLine1"
-            ></v-text-field>
+            />
             <v-text-field
               name="addressLine2"
               label="ビル名・号室など"
               :value="formData.fulfillment.addressLine2"
-            ></v-text-field>
+            />
           </v-card>
         </v-card-text>
       </v-tab-item>

@@ -8,6 +8,20 @@ const handleClick = () => {
 }
 </script>
 
+<template>
+  <div role="button" @click="handleClick">
+    <div class="cube-top" />
+    <div class="cube-x">
+      <div class="cube-left" />
+      <div class="cube">
+        <slot />
+      </div>
+      <div class="cube-right" />
+    </div>
+    <div class="cube-bottom" />
+  </div>
+</template>
+
 <style lang="scss" scoped>
 $bg-color: #e7d0a9;
 $border-color: #c1ae8d;
@@ -57,17 +71,3 @@ $border-color: #c1ae8d;
   margin: auto;
 }
 </style>
-
-<template>
-  <div role="button" @click="handleClick">
-    <div class="cube-top" />
-    <div class="cube-x">
-      <div class="cube-left" />
-      <div class="cube">
-        <slot />
-      </div>
-      <div class="cube-right" />
-    </div>
-    <div class="cube-bottom" />
-  </div>
-</template>

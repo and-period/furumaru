@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import { useAlert } from '~/lib/hooks'
-import { useCommonStore } from '~/store'
-import { useProducerStore } from '~/store'
-import { useProductStore } from '~/store'
-import { useProductTypeStore } from '~/store'
+import {
+  useCommonStore,
+  useProducerStore,
+  useProductStore,
+  useProductTypeStore
+} from '~/store'
 import { UpdateProductRequest, UploadImageResponse } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 
@@ -31,7 +33,7 @@ const formData = reactive<UpdateProductRequest>({
   box80Rate: 0,
   box100Rate: 0,
   originPrefecture: '',
-  originCity: '',
+  originCity: ''
 })
 
 const productStore = useProductStore()
@@ -42,7 +44,7 @@ const fetchState = useAsyncData(async () => {
   try {
     Promise.all([
       productTypeStore.fetchProductTypes(),
-      producerStore.fetchProducers(),
+      producerStore.fetchProducers()
     ])
     const data = await productStore.getProduct(id)
     Object.assign(formData, data)
@@ -70,7 +72,7 @@ const handleImageUpload = async (files: FileList) => {
         await productStore.uploadProductImage(file)
       formData.media.push({
         ...uploadImage,
-        isThumbnail: false,
+        isThumbnail: false
       })
     } catch (error) {
       console.log(error)
@@ -85,7 +87,7 @@ const handleSubmit = async () => {
     await productStore.updateProduct(id, formData)
     commonStore.addSnackbar({
       color: 'success',
-      message: '商品を更新しました。',
+      message: '商品を更新しました。'
     })
     router.push('/products')
   } catch (error) {

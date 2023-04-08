@@ -9,14 +9,14 @@ import {
   ShippingApi,
   ShippingResponse,
   ShippingsResponseShippingsInner,
-  UpdateShippingRequest,
+  UpdateShippingRequest
 } from '~/types/api'
 import {
   AuthError,
   ConnectionError,
   InternalServerError,
   NotFoundError,
-  ValidationError,
+  ValidationError
 } from '~/types/exception'
 
 export const useShippingStore = defineStore('shippings', {
@@ -28,7 +28,7 @@ export const useShippingStore = defineStore('shippings', {
     return {
       shippings: [] as ShippingsResponseShippingsInner[],
       totalItems: 0,
-      apiClient,
+      apiClient
     }
   },
 
@@ -39,10 +39,7 @@ export const useShippingStore = defineStore('shippings', {
      * @param offset 取得開始位置
      * @returns
      */
-    async fetchShippings(
-      limit: number = 20,
-      offset: number = 0
-    ): Promise<void> {
+    async fetchShippings (limit = 20, offset = 0): Promise<void> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -81,7 +78,7 @@ export const useShippingStore = defineStore('shippings', {
      * @param id 配送設定情報ID
      * @returns 配送設定情報
      */
-    async getShipping(id: string): Promise<ShippingResponse> {
+    async getShipping (id: string): Promise<ShippingResponse> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -116,7 +113,7 @@ export const useShippingStore = defineStore('shippings', {
      * @param payload
      * @returns
      */
-    async createShipping(payload: CreateShippingRequest): Promise<void> {
+    async createShipping (payload: CreateShippingRequest): Promise<void> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -155,7 +152,7 @@ export const useShippingStore = defineStore('shippings', {
      * @param payload
      * @returns
      */
-    async updateShipping(
+    async updateShipping (
       id: string,
       payload: UpdateShippingRequest
     ): Promise<void> {
@@ -193,6 +190,6 @@ export const useShippingStore = defineStore('shippings', {
         }
         throw new InternalServerError(error)
       }
-    },
-  },
+    }
+  }
 })

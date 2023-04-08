@@ -10,7 +10,7 @@ import {
   PromotionApi,
   PromotionResponse,
   PromotionsResponse,
-  UpdatePromotionRequest,
+  UpdatePromotionRequest
 } from '~/types/api'
 import {
   AuthError,
@@ -18,12 +18,12 @@ import {
   ConnectionError,
   InternalServerError,
   NotFoundError,
-  ValidationError,
+  ValidationError
 } from '~/types/exception'
 
 export const usePromotionStore = defineStore('Promotion', {
   state: () => ({
-    promotions: [] as PromotionsResponse['promotions'],
+    promotions: [] as PromotionsResponse['promotions']
   }),
   actions: {
     /**
@@ -31,10 +31,7 @@ export const usePromotionStore = defineStore('Promotion', {
      * @param limit 取得上限数
      * @param offset 取得開始位置
      */
-    async fetchPromotions(
-      limit: number = 20,
-      offset: number = 0
-    ): Promise<void> {
+    async fetchPromotions (limit = 20, offset = 0): Promise<void> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -72,7 +69,7 @@ export const usePromotionStore = defineStore('Promotion', {
      * セール情報を登録する非同期関数
      * @param payload
      */
-    async createPromotion(payload: CreatePromotionRequest): Promise<void> {
+    async createPromotion (payload: CreatePromotionRequest): Promise<void> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -88,7 +85,7 @@ export const usePromotionStore = defineStore('Promotion', {
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: `${payload.title}を作成しました。`,
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -126,7 +123,7 @@ export const usePromotionStore = defineStore('Promotion', {
      * セール情報を削除する非同期関数
      * @param id お知らせID
      */
-    async deletePromotion(id: string): Promise<void> {
+    async deletePromotion (id: string): Promise<void> {
       const commonStore = useCommonStore()
       try {
         const authStore = useAuthStore()
@@ -140,7 +137,7 @@ export const usePromotionStore = defineStore('Promotion', {
         await promotionsApiClient.v1DeletePromotion(id)
         commonStore.addSnackbar({
           message: 'セール情報の削除が完了しました',
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -182,7 +179,7 @@ export const usePromotionStore = defineStore('Promotion', {
      * @param id セールID
      * @returns セールの情報
      */
-    async getPromotion(id: string): Promise<PromotionResponse> {
+    async getPromotion (id: string): Promise<PromotionResponse> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -225,7 +222,7 @@ export const usePromotionStore = defineStore('Promotion', {
      * @param id セールID
      * @param payload
      */
-    async editPromotion(
+    async editPromotion (
       id: string,
       payload: UpdatePromotionRequest
     ): Promise<void> {
@@ -241,7 +238,7 @@ export const usePromotionStore = defineStore('Promotion', {
         await promotionsApiClient.v1UpdatePromotion(id, payload)
         commonStore.addSnackbar({
           message: 'セール情報の編集が完了しました',
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -279,6 +276,6 @@ export const usePromotionStore = defineStore('Promotion', {
         }
         throw new InternalServerError(error)
       }
-    },
-  },
+    }
+  }
 })

@@ -20,20 +20,20 @@ const shippings = computed(() => {
 const headers: DataTableHeader[] = [
   {
     text: '名前',
-    value: 'name',
+    value: 'name'
   },
   {
     text: '配送無料オプション',
-    value: 'hasFreeShipping',
+    value: 'hasFreeShipping'
   },
   {
     text: '更新日',
-    value: 'updatedAt',
+    value: 'updatedAt'
   },
   {
     text: '',
-    value: 'actions',
-  },
+    value: 'actions'
+  }
 ]
 
 const {
@@ -41,7 +41,7 @@ const {
   offset,
   itemsPerPage,
   updateCurrentPage,
-  handleUpdateItemsPerPage,
+  handleUpdateItemsPerPage
 } = usePagination()
 
 const fetchState = useAsyncData(async () => {
@@ -67,7 +67,9 @@ const handleClickEditButton = (id: string) => {
       配送設定一覧
       <v-spacer />
       <v-btn outlined color="primary" @click="handleClickAddButton">
-        <v-icon left>mdi-plus</v-icon>
+        <v-icon left>
+          mdi-plus
+        </v-icon>
         配送情報登録
       </v-btn>
     </v-card-title>
@@ -108,7 +110,9 @@ const handleClickEditButton = (id: string) => {
           <template #expanded-item="{ item }">
             <td :colspan="headers.length" class="pa-4">
               <div v-for="n in [60, 80, 100]" :key="n">
-                <div class="row my-2">サイズ{{ n }}詳細</div>
+                <div class="row my-2">
+                  サイズ{{ n }}詳細
+                </div>
                 <v-row
                   v-for="(boxRate, i) in item[`box${n}Rates`]"
                   :key="i"
@@ -120,7 +124,9 @@ const handleClickEditButton = (id: string) => {
                   <v-col cols="1">
                     {{ boxRate.name }}
                   </v-col>
-                  <v-col cols="1"> {{ moneyFormat(boxRate.price) }} 円 </v-col>
+                  <v-col cols="1">
+                    {{ moneyFormat(boxRate.price) }} 円
+                  </v-col>
                   <v-col cols="9">
                     <v-select
                       :value="boxRate.prefectures"

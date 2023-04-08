@@ -19,25 +19,25 @@ const {
 const headers: DataTableHeader[] = [
   {
     text: 'タイトル',
-    value: 'title',
+    value: 'title'
   },
   {
     text: '公開状況',
-    value: 'public',
+    value: 'public'
   },
   {
     text: '投稿範囲',
-    value: 'targets',
+    value: 'targets'
   },
   {
     text: '掲載開始時間',
-    value: 'publishedAt',
+    value: 'publishedAt'
   },
   {
     text: 'Actions',
     value: 'actions',
-    sortable: false,
-  },
+    sortable: false
+  }
 ]
 
 const fetchState = useAsyncData(async () => {
@@ -147,7 +147,9 @@ const handleDelete = async (): Promise<void> => {
       お知らせ管理
       <v-spacer />
       <v-btn outlined color="primary" @click="handleClickAddButton">
-        <v-icon left>mdi-plus</v-icon>
+        <v-icon left>
+          mdi-plus
+        </v-icon>
         お知らせ登録
       </v-btn>
     </v-card-title>
@@ -158,11 +160,13 @@ const handleDelete = async (): Promise<void> => {
           {{ selectedName }}を本当に削除しますか？
         </v-card-title>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn color="error" text @click="hideDeleteDialog">
             キャンセル
           </v-btn>
-          <v-btn color="primary" outlined @click="handleDelete"> 削除 </v-btn>
+          <v-btn color="primary" outlined @click="handleDelete">
+            削除
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -193,7 +197,9 @@ const handleDelete = async (): Promise<void> => {
           </template>
           <template #[`item.actions`]="{ item }">
             <v-btn outlined color="primary" small @click="handleEdit(item)">
-              <v-icon small>mdi-pencil</v-icon>
+              <v-icon small>
+                mdi-pencil
+              </v-icon>
               編集
             </v-btn>
             <v-btn
@@ -202,7 +208,9 @@ const handleDelete = async (): Promise<void> => {
               small
               @click="openDeleteDialog(item)"
             >
-              <v-icon small>mdi-delete</v-icon>
+              <v-icon small>
+                mdi-delete
+              </v-icon>
               削除
             </v-btn>
           </template>

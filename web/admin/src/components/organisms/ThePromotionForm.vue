@@ -10,7 +10,7 @@ const props = defineProps({
     default: 'create',
     validator: (value: string) => {
       return ['create', 'edit'].includes(value)
-    },
+    }
   },
   formData: {
     type: Object,
@@ -23,8 +23,8 @@ const props = defineProps({
       discountRate: 0,
       code: '',
       startAt: dayjs().unix(),
-      endAt: dayjs().unix(),
-    }),
+      endAt: dayjs().unix()
+    })
   },
   timeData: {
     type: Object,
@@ -34,9 +34,9 @@ const props = defineProps({
       startDate: '',
       startTime: '',
       endDate: '',
-      endTime: '',
-    }),
-  },
+      endTime: ''
+    })
+  }
 })
 
 const emit = defineEmits<{
@@ -47,12 +47,12 @@ const emit = defineEmits<{
 
 const formDataValue = computed({
   get: (): CreatePromotionRequest => props.formData as CreatePromotionRequest,
-  set: (val: CreatePromotionRequest) => emit('update:formData', val),
+  set: (val: CreatePromotionRequest) => emit('update:formData', val)
 })
 
 const timeDataValue = computed({
   get: (): PromotionTime => props.timeData as PromotionTime,
-  set: (val: PromotionTime) => emit('update:timeData', val),
+  set: (val: PromotionTime) => emit('update:timeData', val)
 })
 
 const publishMenu = ref<boolean>(false)
@@ -118,13 +118,13 @@ const getErrorMessage = () => {
 
 const statusList = [
   { status: '有効', value: true },
-  { status: '無効', value: false },
+  { status: '無効', value: false }
 ]
 
 const discountMethodList = [
   { method: '円', value: DiscountType.AMOUNT },
   { method: '%', value: DiscountType.RATE },
-  { method: '送料無料', value: DiscountType.FREE_SHIPPING },
+  { method: '送料無料', value: DiscountType.FREE_SHIPPING }
 ]
 </script>
 
@@ -184,7 +184,9 @@ const discountMethodList = [
           />
         </div>
 
-        <p class="text-h6">投稿開始</p>
+        <p class="text-h6">
+          投稿開始
+        </p>
         <div class="d-flex align-center justify-center">
           <v-menu
             v-model="publishMenu"
@@ -210,7 +212,7 @@ const discountMethodList = [
               scrollable
               @input="publishMenu = false"
             >
-              <v-spacer></v-spacer>
+              <v-spacer />
               <v-btn text color="primary" @click="pubulishMenu = false">
                 閉じる
               </v-btn>
@@ -222,11 +224,15 @@ const discountMethodList = [
             required
             outlined
           />
-          <p class="text-h6 mb-6 ml-4">〜</p>
+          <p class="text-h6 mb-6 ml-4">
+            〜
+          </p>
           <v-spacer />
         </div>
 
-        <p class="text-h6">使用期間</p>
+        <p class="text-h6">
+          使用期間
+        </p>
         <div class="d-flex align-center">
           <v-menu
             v-model="useStartMenu"
@@ -252,7 +258,7 @@ const discountMethodList = [
               scrollable
               @input="useStartMenu = false"
             >
-              <v-spacer></v-spacer>
+              <v-spacer />
               <v-btn text color="primary" @click="useStartMenu = false">
                 閉じる
               </v-btn>
@@ -264,7 +270,9 @@ const discountMethodList = [
             required
             outlined
           />
-          <p class="text-h6 mx-4 mb-6">〜</p>
+          <p class="text-h6 mx-4 mb-6">
+            〜
+          </p>
           <v-menu
             v-model="useEndMenu"
             :close-on-content-click="false"
@@ -289,7 +297,7 @@ const discountMethodList = [
               scrollable
               @input="useEndMenu = false"
             >
-              <v-spacer></v-spacer>
+              <v-spacer />
               <v-btn text color="primary" @click="endEndMenu = false">
                 閉じる
               </v-btn>

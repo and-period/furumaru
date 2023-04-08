@@ -13,7 +13,7 @@ import {
   PreconditionError,
   ServiceUnavailableError,
   TooManyRequestsError,
-  ValidationError,
+  ValidationError
 } from '~/types/exception'
 
 // メッセージを変更できるステータスコードの一覧（500系のエラーはシステム固有のメッセージを利用する）
@@ -28,7 +28,7 @@ export type CustomErrorMessage = {
 /**
  * APIのエラーハンドリングを共通化するpiniaのプラグイン
  */
-function apiErrorHandler({ store }: PiniaPluginContext) {
+function apiErrorHandler ({ store }: PiniaPluginContext) {
   /**
    * apiクライアントのエラーをハンドリングする関数
    * @param error 発生したエラーオブジェクト

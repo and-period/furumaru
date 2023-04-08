@@ -2,16 +2,16 @@
 const props = defineProps({
   name: {
     type: String,
-    default: '',
+    default: ''
   },
   description: {
     type: String,
-    default: '',
+    default: ''
   },
   nameErrorMessage: {
     type: String,
-    default: '',
-  },
+    default: ''
+  }
 })
 
 const emit = defineEmits<{
@@ -21,7 +21,7 @@ const emit = defineEmits<{
 
 const nameValue = computed({
   get: () => props.name,
-  set: (val: string) => emit('update:name', val),
+  set: (val: string) => emit('update:name', val)
 })
 
 const handleUpdateFormDataDescription = (htmlString: string) => {

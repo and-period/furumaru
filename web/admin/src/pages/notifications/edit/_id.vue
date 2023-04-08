@@ -22,12 +22,12 @@ const formData = reactive<NotificationResponse>({
   public: false,
   publishedAt: -1,
   createdAt: -1,
-  updatedAt: -1,
+  updatedAt: -1
 })
 
 const timeData = reactive<NotificationTime>({
   publishedDate: '',
-  publishedTime: '',
+  publishedTime: ''
 })
 
 const fetchState = useAsyncData(async () => {

@@ -4,30 +4,30 @@ import { CalendarEvent } from '~/types/props'
 const props = defineProps({
   events: {
     type: Array<CalendarEvent>,
-    default: () => [],
-  },
+    default: () => []
+  }
 })
 
 const calendarValue = ref<string>('')
 const type = ref<string>('month')
 const calendarRef = ref<{
   title: string
-  prev: () => {}
+  prev:() => {}
   next: () => {}
-} | null>(null)
+    } | null>(null)
 const typeItems = [
   {
     text: '日',
-    value: 'day',
+    value: 'day'
   },
   {
     text: '週',
-    value: 'week',
+    value: 'week'
   },
   {
     text: '月',
-    value: 'month',
-  },
+    value: 'month'
+  }
 ]
 
 const calendarTitle = computed(() => {

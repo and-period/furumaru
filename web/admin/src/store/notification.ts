@@ -10,14 +10,14 @@ import {
   NotificationApi,
   NotificationResponse,
   NotificationsResponse,
-  UpdateNotificationRequest,
+  UpdateNotificationRequest
 } from '~/types/api'
 import {
   AuthError,
   ConnectionError,
   InternalServerError,
   NotFoundError,
-  ValidationError,
+  ValidationError
 } from '~/types/exception'
 
 export const useNotificationStore = defineStore('Notification', {
@@ -29,7 +29,7 @@ export const useNotificationStore = defineStore('Notification', {
     return {
       notifications: [] as NotificationsResponse['notifications'],
       totalItems: 0,
-      apiClient,
+      apiClient
     }
   },
   actions: {
@@ -39,10 +39,7 @@ export const useNotificationStore = defineStore('Notification', {
      * @param offset 取得開始位置
      * @returns
      */
-    async fetchNotifications(
-      limit: number = 20,
-      offset: number = 0
-    ): Promise<void> {
+    async fetchNotifications (limit = 20, offset = 0): Promise<void> {
       try {
         const accessToken = this.getAccessToken()
         const res = await this.apiClient(accessToken).v1ListNotifications(
@@ -62,7 +59,7 @@ export const useNotificationStore = defineStore('Notification', {
      * お知らせを登録する非同期関数
      * @param payload
      */
-    async createNotification(
+    async createNotification (
       payload: CreateNotificationRequest
     ): Promise<void> {
       try {
@@ -78,7 +75,7 @@ export const useNotificationStore = defineStore('Notification', {
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: `${payload.title}を作成しました。`,
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -109,7 +106,7 @@ export const useNotificationStore = defineStore('Notification', {
      * お知らせを削除する非同期関数
      * @param id お知らせID
      */
-    async deleteNotification(id: string): Promise<void> {
+    async deleteNotification (id: string): Promise<void> {
       const commonStore = useCommonStore()
       try {
         const authStore = useAuthStore()
@@ -121,7 +118,7 @@ export const useNotificationStore = defineStore('Notification', {
         await this.apiClient(accessToken).v1DeleteNotification(id)
         commonStore.addSnackbar({
           message: '品物削除が完了しました',
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -163,7 +160,7 @@ export const useNotificationStore = defineStore('Notification', {
      * @param id お知らせID
      * @returns お知らせ情報
      */
-    async getNotification(id: string): Promise<NotificationResponse> {
+    async getNotification (id: string): Promise<NotificationResponse> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -204,7 +201,7 @@ export const useNotificationStore = defineStore('Notification', {
      * @param id セールID
      * @param payload
      */
-    async editNotification(
+    async editNotification (
       id: string,
       payload: UpdateNotificationRequest
     ): Promise<void> {
@@ -218,7 +215,7 @@ export const useNotificationStore = defineStore('Notification', {
         await this.apiClient(accessToken).v1UpdateNotification(id, payload)
         commonStore.addSnackbar({
           message: 'お知らせ情報の編集が完了しました',
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {

@@ -12,7 +12,7 @@ import {
   ProducersResponse,
   RelateProducersRequest,
   UpdateCoordinatorRequest,
-  UploadImageResponse,
+  UploadImageResponse
 } from '~/types/api'
 import { AuthError } from '~/types/exception'
 
@@ -27,7 +27,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
       producers: [] as ProducersResponse['producers'],
       totalItems: 0,
       producerTotalItems: 0,
-      apiClient,
+      apiClient
     }
   },
   actions: {
@@ -37,10 +37,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
      * @param offset 取得開始位置
      * @returns
      */
-    async fetchCoordinators(
-      limit: number = 20,
-      offset: number = 0
-    ): Promise<void> {
+    async fetchCoordinators (limit = 20, offset = 0): Promise<void> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -71,7 +68,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
      * @param payload
      * @returns
      */
-    async createCoordinator(payload: CreateCoordinatorRequest) {
+    async createCoordinator (payload: CreateCoordinatorRequest) {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -98,7 +95,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
      * @param id 対象のコーディネータのID
      * @returns
      */
-    async getCoordinator(id: string): Promise<CoordinatorResponse> {
+    async getCoordinator (id: string): Promise<CoordinatorResponse> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -127,7 +124,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
      * @param coordinatorId 更新するコーディネータのID
      * @returns
      */
-    async updateCoordinator(
+    async updateCoordinator (
       payload: UpdateCoordinatorRequest,
       coordinatorId: string
     ): Promise<void> {
@@ -143,7 +140,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: 'コーディネータ情報が更新されました。',
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         console.log(error)
@@ -156,7 +153,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
      * @param payload サムネイル画像
      * @returns アップロードされた画像のURI
      */
-    async uploadCoordinatorThumbnail(
+    async uploadCoordinatorThumbnail (
       payload: File
     ): Promise<UploadImageResponse> {
       try {
@@ -177,8 +174,8 @@ export const useCoordinatorStore = defineStore('Coordinator', {
           payload,
           {
             headers: {
-              'Content-Type': 'multipart/form-data',
-            },
+              'Content-Type': 'multipart/form-data'
+            }
           }
         )
         return res.data
@@ -193,7 +190,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
      * @param payload ヘッダー画像
      * @returns アップロードされた画像のURI
      */
-    async uploadCoordinatorHeader(payload: File): Promise<UploadImageResponse> {
+    async uploadCoordinatorHeader (payload: File): Promise<UploadImageResponse> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -212,8 +209,8 @@ export const useCoordinatorStore = defineStore('Coordinator', {
           payload,
           {
             headers: {
-              'Content-Type': 'multipart/form-data',
-            },
+              'Content-Type': 'multipart/form-data'
+            }
           }
         )
         return res.data
@@ -228,7 +225,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
      * @param id 削除するコーディネータのID
      * @returns
      */
-    async deleteCoordinator(id: string) {
+    async deleteCoordinator (id: string) {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -245,7 +242,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: 'コーディネーターの削除が完了しました',
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         console.log(error)
@@ -260,7 +257,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
      * @param payload コーディネーターに紐づく生産者
      * @returns
      */
-    async relateProducers(
+    async relateProducers (
       id: string,
       payload: RelateProducersRequest
     ): Promise<void> {
@@ -279,7 +276,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: 'コーディネーターと生産者の紐付けが完了しました',
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         console.log(error)
@@ -292,10 +289,10 @@ export const useCoordinatorStore = defineStore('Coordinator', {
      * @param id コーディネータのID
      * @returns
      */
-    async fetchRelatedProducers(
+    async fetchRelatedProducers (
       id: string,
-      limit: number = 20,
-      offset: number = 0
+      limit = 20,
+      offset = 0
     ): Promise<void> {
       try {
         const authStore = useAuthStore()
@@ -318,6 +315,6 @@ export const useCoordinatorStore = defineStore('Coordinator', {
         console.log(error)
         return this.errorHandler(error)
       }
-    },
-  },
+    }
+  }
 })

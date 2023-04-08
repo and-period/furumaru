@@ -2,12 +2,6 @@
 const stepValue = ref<number>(1)
 </script>
 
-<style lang="scss" scoped>
-.v-stepper__header {
-  box-shadow: none;
-}
-</style>
-
 <template>
   <div>
     <v-stepper v-model="stepValue" alt-labels flat>
@@ -20,7 +14,9 @@ const stepValue = ref<number>(1)
           タイムテーブル設定
         </v-stepper-step>
         <v-divider />
-        <v-stepper-step step="3"> 開催地情報 </v-stepper-step>
+        <v-stepper-step step="3">
+          開催地情報
+        </v-stepper-step>
       </v-stepper-header>
 
       <v-stepper-items>
@@ -74,7 +70,9 @@ const stepValue = ref<number>(1)
                 戻る
               </v-btn>
               <v-spacer />
-              <v-btn outlined color="primary"> 完了 </v-btn>
+              <v-btn outlined color="primary">
+                完了
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-stepper-content>
@@ -82,3 +80,9 @@ const stepValue = ref<number>(1)
     </v-stepper>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.v-stepper__header {
+  box-shadow: none;
+}
+</style>

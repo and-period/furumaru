@@ -14,7 +14,7 @@ import {
   SignInRequest,
   UpdateAuthEmailRequest,
   UpdateAuthPasswordRequest,
-  VerifyAuthEmailRequest,
+  VerifyAuthEmailRequest
 } from '~/types/api'
 import {
   AuthError,
@@ -22,24 +22,24 @@ import {
   ConnectionError,
   InternalServerError,
   PreconditionError,
-  ValidationError,
+  ValidationError
 } from '~/types/exception'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     redirectPath: '/',
     isAuthenticated: false,
-    user: undefined as AuthResponse | undefined,
+    user: undefined as AuthResponse | undefined
   }),
 
   getters: {
-    accessToken(state): string | undefined {
+    accessToken (state): string | undefined {
       return state.user?.accessToken
-    },
+    }
   },
 
   actions: {
-    async signIn(payload: SignInRequest): Promise<string> {
+    async signIn (payload: SignInRequest): Promise<string> {
       try {
         const factory = new ApiClientFactory()
         const authApiClient = factory.create(AuthApi)
@@ -89,7 +89,7 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async passwordUpdate(payload: UpdateAuthPasswordRequest): Promise<void> {
+    async passwordUpdate (payload: UpdateAuthPasswordRequest): Promise<void> {
       try {
         const factory = new ApiClientFactory()
         const authApiClient = factory.create(AuthApi, this.user?.accessToken)
@@ -97,7 +97,7 @@ export const useAuthStore = defineStore('auth', {
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: 'パスワードを更新しました。',
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -122,7 +122,7 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async emailUpdate(payload: UpdateAuthEmailRequest): Promise<void> {
+    async emailUpdate (payload: UpdateAuthEmailRequest): Promise<void> {
       try {
         const factory = new ApiClientFactory()
         const authApiClient = factory.create(AuthApi, this.user?.accessToken)
@@ -130,7 +130,7 @@ export const useAuthStore = defineStore('auth', {
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: '認証コードを送信しました。',
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -170,7 +170,7 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async codeVerify(payload: VerifyAuthEmailRequest): Promise<void> {
+    async codeVerify (payload: VerifyAuthEmailRequest): Promise<void> {
       try {
         const factory = new ApiClientFactory()
         const authApiClient = factory.create(AuthApi, this.user?.accessToken)
@@ -178,7 +178,7 @@ export const useAuthStore = defineStore('auth', {
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: 'メールアドレスが変更されました。',
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -204,12 +204,12 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async getAuthByRefreshToken(refreshToken: string): Promise<void> {
+    async getAuthByRefreshToken (refreshToken: string): Promise<void> {
       try {
         const factory = new ApiClientFactory()
         const authApiClient = factory.create(AuthApi)
         const res = await authApiClient.v1RefreshAuthToken({
-          refreshToken,
+          refreshToken
         })
         this.isAuthenticated = true
         this.user = res.data
@@ -233,7 +233,7 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async registerDeviceToken(deviceToken: string): Promise<void> {
+    async registerDeviceToken (deviceToken: string): Promise<void> {
       try {
         const factory = new ApiClientFactory()
         const authApiClient = factory.create(AuthApi, this.user?.accessToken)
@@ -259,7 +259,7 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async getDeviceToken(): Promise<string> {
+    async getDeviceToken (): Promise<string> {
       const supported = await isSupported()
       if (!supported) {
         console.log('this browser does not support push notificatins.')
@@ -267,7 +267,7 @@ export const useAuthStore = defineStore('auth', {
       }
 
       return await getToken(Firebase.messaging, {
-        vapidKey: process.env.FIREBASE_VAPID_KEY,
+        vapidKey: process.env.FIREBASE_VAPID_KEY
       })
         .then((currentToken) => {
           return currentToken
@@ -278,11 +278,11 @@ export const useAuthStore = defineStore('auth', {
         })
     },
 
-    setRedirectPath(payload: string) {
+    setRedirectPath (payload: string) {
       this.redirectPath = payload
     },
 
-    logout() {
+    logout () {
       try {
         const factory = new ApiClientFactory()
         const authApiClient = factory.create(AuthApi, this.accessToken)
@@ -293,6 +293,6 @@ export const useAuthStore = defineStore('auth', {
       } catch (error) {
         console.log('APIでエラーが発生しました。', error)
       }
-    },
-  },
+    }
+  }
 })

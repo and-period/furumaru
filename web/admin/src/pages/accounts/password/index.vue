@@ -7,7 +7,7 @@ import {
   minLength,
   maxLength,
   sameAs,
-  getErrorMessage,
+  getErrorMessage
 } from '~/lib/validations'
 import { useAuthStore } from '~/store'
 import { UpdateAuthPasswordRequest } from '~/types/api'
@@ -16,7 +16,7 @@ const router = useRouter()
 const formData = reactive<UpdateAuthPasswordRequest>({
   oldPassword: '',
   newPassword: '',
-  passwordConfirmation: '',
+  passwordConfirmation: ''
 })
 
 const rules = computed(() => ({
@@ -24,9 +24,9 @@ const rules = computed(() => ({
   newPassword: {
     required,
     minLength: minLength(8),
-    maxLength: maxLength(32),
+    maxLength: maxLength(32)
   },
-  passwordConfirmation: { required, sameAs: sameAs(formData.newPassword) },
+  passwordConfirmation: { required, sameAs: sameAs(formData.newPassword) }
 }))
 
 const v$ = useVuelidate(rules, formData)
@@ -90,7 +90,9 @@ const handleSubmit = async (): Promise<void> => {
           />
         </v-card-text>
         <v-card-actions>
-          <v-btn block outlined color="primary" type="submit"> 変更 </v-btn>
+          <v-btn block outlined color="primary" type="submit">
+            変更
+          </v-btn>
         </v-card-actions>
       </v-card>
     </form>

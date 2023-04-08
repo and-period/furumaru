@@ -8,10 +8,10 @@ import { AdministratorApi, AdministratorsResponse } from '~/types/api'
 
 export const useAdministratorStore = defineStore('administrator', {
   state: () => ({
-    administrators: [] as AdministratorsResponse['administrators'],
+    administrators: [] as AdministratorsResponse['administrators']
   }),
   actions: {
-    async fetchAdministrators(): Promise<void> {
+    async fetchAdministrators (): Promise<void> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -30,6 +30,6 @@ export const useAdministratorStore = defineStore('administrator', {
         // TODO: エラーハンドリング
         throw new Error('Internal Server Error')
       }
-    },
-  },
+    }
+  }
 })

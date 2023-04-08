@@ -8,7 +8,7 @@ const props = defineProps({
     default: 'create',
     validator: (value: string) => {
       return ['create', 'edit'].includes(value)
-    },
+    }
   },
   formData: {
     type: Object,
@@ -26,31 +26,31 @@ const props = defineProps({
       prefecture: '',
       city: '',
       addressLine1: '',
-      addressLine2: '',
-    }),
+      addressLine2: ''
+    })
   },
   thumbnailUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: '',
-    }),
+      message: ''
+    })
   },
   headerUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: '',
-    }),
+      message: ''
+    })
   },
   searchErrorMessage: {
     type: String,
-    default: '',
+    default: ''
   },
   searchLoading: {
     type: Boolean,
-    default: false,
-  },
+    default: false
+  }
 })
 
 const emit = defineEmits<{
@@ -63,7 +63,7 @@ const emit = defineEmits<{
 
 const formDataValue = computed({
   get: (): CreateProducerRequest => props.formData as CreateProducerRequest,
-  set: (val: CreateProducerRequest) => emit('update:formData', val),
+  set: (val: CreateProducerRequest) => emit('update:formData', val)
 })
 
 const btnText = computed(() => {
@@ -156,11 +156,11 @@ const handleSearchClick = () => {
         />
 
         <the-address-form
-          :postal-code.sync="props.formData.postalCode"
-          :prefecture.sync="props.formData.prefecture"
-          :city.sync="props.formData.city"
-          :address-line1.sync="props.formData.addressLine1"
-          :address-line2.sync="props.formData.addressLine2"
+          v-model:postal-code="props.formData.postalCode"
+          v-model:prefecture="props.formData.prefecture"
+          v-model:city="props.formData.city"
+          v-model:address-line1="props.formData.addressLine1"
+          v-model:address-line2="props.formData.addressLine2"
           :loading="props.searchLoading"
           :error-message="props.searchErrorMessage"
           @click:search="handleSearchClick"

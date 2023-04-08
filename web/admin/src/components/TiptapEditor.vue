@@ -5,12 +5,12 @@ import { EditorContent, Editor } from '@tiptap/vue-3'
 const props = defineProps({
   label: {
     type: String,
-    default: '',
+    default: ''
   },
   value: {
     type: String,
-    default: '',
-  },
+    default: ''
+  }
 })
 
 const emit = defineEmits<{
@@ -23,7 +23,7 @@ const editor = reactive<Editor>(
     extensions: [StarterKit],
     onUpdate: (p) => {
       emit('update:value', p.editor.getHTML())
-    },
+    }
   })
 )
 
@@ -34,41 +34,41 @@ const fontSize = [
   { text: 'H3', value: 3 },
   { text: 'H4', value: 4 },
   { text: 'H5', value: 5 },
-  { text: 'H6', value: 6 },
+  { text: 'H6', value: 6 }
 ]
 
 const menus = [
   {
     label: 'bold',
     icon: 'mdi-format-bold',
-    onClick: () => editor.chain().focus().toggleBold().run(),
+    onClick: () => editor.chain().focus().toggleBold().run()
   },
   {
     label: 'italic',
     icon: 'mdi-format-italic',
-    onClick: () => editor.chain().focus().toggleItalic().run(),
+    onClick: () => editor.chain().focus().toggleItalic().run()
   },
   {
     label: 'strike',
     icon: 'mdi-format-strikethrough',
-    onClick: () => editor.chain().focus().toggleStrike().run(),
+    onClick: () => editor.chain().focus().toggleStrike().run()
   },
   {
     label: 'code',
     icon: 'mdi-code-tags',
-    onClick: () => editor.chain().focus().toggleCode().run(),
+    onClick: () => editor.chain().focus().toggleCode().run()
   },
   {
     label: 'codeBlock',
     icon: 'mdi-code-not-equal-variant',
-    onClick: () => editor.chain().focus().toggleCodeBlock().run(),
-  },
+    onClick: () => editor.chain().focus().toggleCodeBlock().run()
+  }
 ]
 
 const activeMenus = computed<number[]>(() => {
   return menus
     .map((menu, i) => (editor.isActive(menu.label) ? i : -1))
-    .filter((item) => item !== -1)
+    .filter(item => item !== -1)
 })
 
 const activeStyle = computed(() => {
@@ -109,35 +109,18 @@ const handleChangeTextStyle = (level: number): void => {
 }
 </script>
 
-<style lang="scss" scoped>
-.editor {
-  ::v-deep .ProseMirror {
-    border: solid var(--v-secondary-lighten5);
-    border-radius: 4px;
-    padding: 4px;
-    min-height: 200px;
-    max-height: 500px;
-    overflow: scroll;
-  }
-
-  ::v-deep .ProseMirror-focused {
-    outline: none;
-  }
-}
-</style>
-
 <template>
   <div v-if="editor">
     <p>{{ props.label }}</p>
 
     <div class="mb-2">
       <v-btn-toggle :value="[]" dense>
-        <v-btn @click="editor.chain().focus().undo().run()"
-          ><v-icon>mdi-undo</v-icon></v-btn
-        >
-        <v-btn @click="editor.chain().focus().redo().run()"
-          ><v-icon>mdi-redo</v-icon></v-btn
-        >
+        <v-btn @click="editor.chain().focus().undo().run()">
+          <v-icon>mdi-undo</v-icon>
+        </v-btn>
+        <v-btn @click="editor.chain().focus().redo().run()">
+          <v-icon>mdi-redo</v-icon>
+        </v-btn>
       </v-btn-toggle>
 
       <v-btn-toggle multiple :value="activeMenus" dense>
@@ -186,3 +169,20 @@ const handleChangeTextStyle = (level: number): void => {
     <editor-content class="editor" :editor="editor" />
   </div>
 </template>
+
+<style lang="scss" scoped>
+.editor {
+  ::v-deep .ProseMirror {
+    border: solid var(--v-secondary-lighten5);
+    border-radius: 4px;
+    padding: 4px;
+    min-height: 200px;
+    max-height: 500px;
+    overflow: scroll;
+  }
+
+  ::v-deep .ProseMirror-focused {
+    outline: none;
+  }
+}
+</style>

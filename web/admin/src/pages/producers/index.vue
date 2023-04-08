@@ -2,8 +2,7 @@
 import { DataTableHeader } from 'vuetify'
 
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useCommonStore } from '~/store'
-import { useProducerStore } from '~/store'
+import { useCommonStore, useProducerStore } from '~/store'
 import { ProducersResponseProducersInner } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 
@@ -42,7 +41,7 @@ const {
   itemsPerPage,
   handleUpdateItemsPerPage,
   options,
-  offset,
+  offset
 } = usePagination()
 
 watch(itemsPerPage, () => {
@@ -51,7 +50,7 @@ watch(itemsPerPage, () => {
 
 const selectedItemName = computed(() => {
   const selectedItem = producers.value.find(
-    (item) => item.id === selectedId.value
+    item => item.id === selectedId.value
   )
   return selectedItem
     ? `${selectedItem.lastname} ${selectedItem.firstname}`
@@ -78,34 +77,34 @@ const fetchState = useAsyncData(async () => {
 const headers: DataTableHeader[] = [
   {
     text: 'サムネイル',
-    value: 'thumbnail',
+    value: 'thumbnail'
   },
   {
     text: '農園名',
-    value: 'storeName',
+    value: 'storeName'
   },
   {
     text: '生産者名',
-    value: 'name',
+    value: 'name'
   },
   {
     text: 'Email',
-    value: 'email',
+    value: 'email'
   },
   {
     text: '電話番号',
-    value: 'phoneNumber',
+    value: 'phoneNumber'
   },
   {
     text: 'Actions',
     value: 'actions',
-    sortable: false,
+    sortable: false
   },
   {
     text: '動画',
     value: 'video',
-    sortable: false,
-  },
+    sortable: false
+  }
 ]
 
 const handleClickAddButton = () => {
@@ -134,7 +133,7 @@ const handleDeleteFormSubmit = async () => {
     await producerStore.deleteProducer(selectedId.value)
     addSnackbar({
       color: 'info',
-      message: '生産者を削除しました。',
+      message: '生産者を削除しました。'
     })
     fetchState.refresh()
   } catch (error) {
@@ -158,7 +157,9 @@ const handleAddVideo = (item: ProducersResponseProducersInner) => {
       生産者管理
       <v-spacer />
       <v-btn outlined color="primary" @click="handleClickAddButton">
-        <v-icon left>mdi-plus</v-icon>
+        <v-icon left>
+          mdi-plus
+        </v-icon>
         生産者登録
       </v-btn>
     </v-card-title>
@@ -212,8 +213,10 @@ const handleAddVideo = (item: ProducersResponseProducersInner) => {
                 v-if="item.thumbnailUrl !== ''"
                 :src="item.thumbnailUrl"
                 :alt="`${item.storeName}-profile`"
-              />
-              <v-icon v-else>mdi-account</v-icon>
+              >
+              <v-icon v-else>
+                mdi-account
+              </v-icon>
             </v-avatar>
           </template>
           <template #[`item.name`]="{ item }">
@@ -224,7 +227,9 @@ const handleAddVideo = (item: ProducersResponseProducersInner) => {
           </template>
           <template #[`item.actions`]="{ item }">
             <v-btn outlined color="primary" small @click="handleEdit(item)">
-              <v-icon small>mdi-pencil</v-icon>
+              <v-icon small>
+                mdi-pencil
+              </v-icon>
               編集
             </v-btn>
             <v-btn
@@ -233,13 +238,17 @@ const handleAddVideo = (item: ProducersResponseProducersInner) => {
               small
               @click="handleClickDeleteButton(item)"
             >
-              <v-icon small>mdi-delete</v-icon>
+              <v-icon small>
+                mdi-delete
+              </v-icon>
               削除
             </v-btn>
           </template>
           <template #[`item.video`]="{ item }">
             <v-btn outlined color="primary" small @click="handleAddVideo(item)">
-              <v-icon small>mdi-plus</v-icon>
+              <v-icon small>
+                mdi-plus
+              </v-icon>
               追加
             </v-btn>
           </template>

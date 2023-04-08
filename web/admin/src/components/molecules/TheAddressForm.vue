@@ -2,32 +2,32 @@
 const props = defineProps({
   postalCode: {
     type: String,
-    default: '',
+    default: ''
   },
   prefecture: {
     type: String,
-    default: '',
+    default: ''
   },
   city: {
     type: String,
-    default: '',
+    default: ''
   },
   addressLine1: {
     type: String,
-    default: '',
+    default: ''
   },
   addressLine2: {
     type: String,
-    default: '',
+    default: ''
   },
   loading: {
     type: Boolean,
-    default: false,
+    default: false
   },
   errorMessage: {
     type: String,
-    default: '',
-  },
+    default: ''
+  }
 })
 
 const emit = defineEmits<{
@@ -41,27 +41,27 @@ const emit = defineEmits<{
 
 const postalCodeValue = computed({
   get: (): any => props.postalCode,
-  set: (val: any) => emit('update:postalCode', val),
+  set: (val: any) => emit('update:postalCode', val)
 })
 
 const prefectureValue = computed({
   get: (): any => props.prefecture,
-  set: (val: any) => emit('update:prefecture', val),
+  set: (val: any) => emit('update:prefecture', val)
 })
 
 const cityValue = computed({
   get: (): any => props.city,
-  set: (val: any) => emit('update:city', val),
+  set: (val: any) => emit('update:city', val)
 })
 
 const addressLine1Value = computed({
   get: (): any => props.addressLine1,
-  set: (val: any) => emit('update:addressLine1', val),
+  set: (val: any) => emit('update:addressLine1', val)
 })
 
 const addressLine2Value = computed({
   get: (): any => props.addressLine2,
-  set: (val: any) => emit('update:addressLine2', val),
+  set: (val: any) => emit('update:addressLine2', val)
 })
 
 const handleSearch = () => {

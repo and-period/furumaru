@@ -19,31 +19,31 @@ const props = defineProps({
       prefecture: '',
       city: '',
       addressLine1: '',
-      addressLine2: '',
-    }),
+      addressLine2: ''
+    })
   },
   thumbnailUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: '',
-    }),
+      message: ''
+    })
   },
   headerUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: '',
-    }),
+      message: ''
+    })
   },
   searchErrorMessage: {
     type: String,
-    default: '',
+    default: ''
   },
   searchLoading: {
     type: Boolean,
-    default: false,
-  },
+    default: false
+  }
 })
 
 const emit = defineEmits<{
@@ -56,7 +56,7 @@ const emit = defineEmits<{
 
 const formDataValue = computed({
   get: (): CreateProducerRequest => props.formData as CreateProducerRequest,
-  set: (val: CreateProducerRequest) => emit('update:formData', val),
+  set: (val: CreateProducerRequest) => emit('update:formData', val)
 })
 
 const updateThumbnailFileHandler = (files?: FileList) => {
@@ -78,7 +78,9 @@ const handleSearchClick = () => {
 
 <template>
   <div>
-    <p class="text-h6">生産者登録</p>
+    <p class="text-h6">
+      生産者登録
+    </p>
     <the-producer-form
       :form-data="formDataValue"
       :thumbnail-upload-status="props.thumbnailUploadStatus"

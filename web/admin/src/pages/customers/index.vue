@@ -16,7 +16,7 @@ const id = 'ThisIsID'
 const headers = [
   {
     text: '名前',
-    value: 'name',
+    value: 'name'
   },
   {
     text: '電話番号',
@@ -36,8 +36,8 @@ const headers = [
   },
   {
     text: 'Action',
-    value: 'action',
-  },
+    value: 'action'
+  }
 ]
 
 const fetchState = useAsyncData(async () => {
@@ -112,7 +112,9 @@ const handleEdit = () => {
               詳細
             </v-btn>
             <v-btn outlined color="primary" small>
-              <v-icon small>mdi-delete</v-icon>
+              <v-icon small>
+                mdi-delete
+              </v-icon>
               削除
             </v-btn>
           </template>

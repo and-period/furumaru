@@ -21,7 +21,7 @@ const {
   itemsPerPage,
   handleUpdateItemsPerPage,
   options,
-  offset,
+  offset
 } = usePagination()
 
 const _ = useAsyncData(() => {
@@ -31,37 +31,37 @@ const _ = useAsyncData(() => {
 const headers: DataTableHeader[] = [
   {
     text: '注文者',
-    value: 'userName',
+    value: 'userName'
   },
   {
     text: '配送ステータス',
-    value: 'payment.status',
+    value: 'payment.status'
   },
   {
     text: '購入日時',
-    value: 'orderedAt',
+    value: 'orderedAt'
   },
   {
     text: '配送方法',
-    value: 'fulfillment.shippingMethod',
+    value: 'fulfillment.shippingMethod'
   },
   {
     text: '購入金額',
-    value: 'payment.total',
+    value: 'payment.total'
   },
   {
     text: '伝票番号',
-    value: 'payment.paymentId',
+    value: 'payment.paymentId'
   },
   {
     text: 'Actions',
     value: 'actions',
-    sortable: false,
+    sortable: false
   },
   {
     text: '注文ID',
-    value: 'id',
-  },
+    value: 'id'
+  }
 ]
 
 const handleUpdatePage = async (page: number) => {
@@ -136,7 +136,7 @@ const toggleExportDialog = (): void => {
 
 const deliveryCompanyList = [
   { deliveryCompany: '佐川急便', value: '佐川急便' },
-  { deliveryCompany: 'ヤマト運輸', value: 'ヤマト運輸' },
+  { deliveryCompany: 'ヤマト運輸', value: 'ヤマト運輸' }
 ]
 
 const handleEdit = (item: OrderResponse) => {
@@ -158,7 +158,9 @@ const handleExport = () => {
       注文
       <v-spacer />
       <v-btn outlined color="primary" @click="toggleImportDialog">
-        <v-icon left>mdi-import</v-icon>
+        <v-icon left>
+          mdi-import
+        </v-icon>
         Import
       </v-btn>
       <v-btn
@@ -167,7 +169,9 @@ const handleExport = () => {
         color="secondary"
         @click="toggleExportDialog"
       >
-        <v-icon left>mdi-export</v-icon>
+        <v-icon left>
+          mdi-export
+        </v-icon>
         Export
       </v-btn>
     </v-card-title>
@@ -189,11 +193,13 @@ const handleExport = () => {
         <v-file-input class="mr-2" label="CSVを選択" />
         <v-divider />
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn color="error" text @click="toggleImportDialog">
             キャンセル
           </v-btn>
-          <v-btn color="primary" outlined @click="handleImport"> 登録 </v-btn>
+          <v-btn color="primary" outlined @click="handleImport">
+            登録
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -215,11 +221,13 @@ const handleExport = () => {
         <v-file-input class="mr-2" label="CSVを選択" />
         <v-divider />
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn color="error" text @click="toggleExportDialog">
             キャンセル
           </v-btn>
-          <v-btn color="primary" outlined @click="handleExport"> 登録 </v-btn>
+          <v-btn color="primary" outlined @click="handleExport">
+            登録
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -248,7 +256,9 @@ const handleExport = () => {
           </template>
           <template #[`item.actions`]="{ item }">
             <v-btn outlined color="primary" small @click="handleEdit(item)">
-              <v-icon small>mdi-pencil</v-icon>
+              <v-icon small>
+                mdi-pencil
+              </v-icon>
               詳細
             </v-btn>
           </template>

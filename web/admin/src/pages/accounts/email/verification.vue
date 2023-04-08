@@ -10,10 +10,10 @@ const email = route.params.email as string
 const verifyCode = route.params.verifyCode as string
 
 const convertEmail: UpdateAuthEmailRequest = {
-  email,
+  email
 }
 const formData = reactive<VerifyAuthEmailRequest>({
-  verifyCode,
+  verifyCode
 })
 
 const handleClickAddBtn = async (): Promise<void> => {
@@ -36,26 +36,27 @@ const verificationBtn = async (): Promise<void> => {
 
 <template>
   <v-card elevation="0">
-    <h1 class="text-center">二要素認証</h1>
+    <h1 class="text-center">
+      二要素認証
+    </h1>
     <v-card-text>
-      <h4 class="text-center">認証コードが{{ email }}に送信されました</h4>
+      <h4 class="text-center">
+        認証コードが{{ email }}に送信されました
+      </h4>
       <div class="ma-auto" style="max-width: 300px">
-        <v-otp-input
-          v-model="formData.verifyCode"
-          type="number"
-          length="6"
-        ></v-otp-input>
+        <v-otp-input v-model="formData.verifyCode" type="number" length="6" />
       </div>
       <div class="text-center">
-        <a class="orange--text text--darken-4" @click="handleClickAddBtn"
-          >認証コードを再送する</a
-        >
+        <a
+          class="orange--text text--darken-4"
+          @click="handleClickAddBtn"
+        >認証コードを再送する</a>
       </div>
     </v-card-text>
     <v-card-actions>
-      <v-btn block outlined color="primary" @click="verificationBtn"
-        >認証</v-btn
-      >
+      <v-btn block outlined color="primary" @click="verificationBtn">
+        認証
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>

@@ -10,13 +10,13 @@ import {
   ContactResponse,
   ContactsResponse,
   ContactsResponseContactsInner,
-  UpdateContactRequest,
+  UpdateContactRequest
 } from '~/types/api'
 import {
   AuthError,
   ConnectionError,
   NotFoundError,
-  ValidationError,
+  ValidationError
 } from '~/types/exception'
 
 export const useContactStore = defineStore('contact', {
@@ -29,7 +29,7 @@ export const useContactStore = defineStore('contact', {
     return {
       apiClient,
       contacts: [] as Array<ContactsResponseContactsInner>,
-      total: 0,
+      total: 0
     }
   },
 
@@ -41,9 +41,9 @@ export const useContactStore = defineStore('contact', {
      * @param orders ソートキー
      * @returns
      */
-    async fetchContacts(
-      limit: number = 20,
-      offset: number = 0,
+    async fetchContacts (
+      limit = 20,
+      offset = 0,
       orders: string[] = []
     ): Promise<void> {
       try {
@@ -62,11 +62,13 @@ export const useContactStore = defineStore('contact', {
       }
     },
 
-    async getContact(id: string): Promise<ContactResponse> {
+    async getContact (id: string): Promise<ContactResponse> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
-        if (!accessToken) throw new Error('認証エラー')
+        if (!accessToken) {
+          throw new Error('認証エラー')
+        }
 
         const factory = new ApiClientFactory()
         const contactsApiClient = factory.create(ContactApi, accessToken)
@@ -92,7 +94,7 @@ export const useContactStore = defineStore('contact', {
       }
     },
 
-    async contactUpdate(
+    async contactUpdate (
       payload: UpdateContactRequest,
       contactId: string
     ): Promise<void> {
@@ -108,7 +110,7 @@ export const useContactStore = defineStore('contact', {
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: 'お問い合わせ情報が更新されました。',
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -134,13 +136,13 @@ export const useContactStore = defineStore('contact', {
       }
     },
 
-    getAccessToken(): string {
+    getAccessToken (): string {
       const authStore = useAuthStore()
       const accessToken = authStore.accessToken
       if (!accessToken) {
         throw new AuthError('認証エラー。再度ログインをしてください。')
       }
       return accessToken
-    },
-  },
+    }
+  }
 })

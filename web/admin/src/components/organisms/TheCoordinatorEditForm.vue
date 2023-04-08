@@ -6,7 +6,7 @@ import {
   getErrorMessage,
   required,
   tel,
-  maxLength,
+  maxLength
 } from '~/lib/validations'
 import { UpdateCoordinatorRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
@@ -29,36 +29,36 @@ const props = defineProps({
         prefecture: '',
         city: '',
         addressLine1: '',
-        addressLine2: '',
+        addressLine2: ''
       }
-    },
+    }
   },
   thumbnailUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => {
       return {
         error: false,
-        message: '',
+        message: ''
       }
-    },
+    }
   },
   headerUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => {
       return {
         error: false,
-        message: '',
+        message: ''
       }
-    },
+    }
   },
   searchErrorMessage: {
     type: String,
-    default: '',
+    default: ''
   },
   searchLoading: {
     type: Boolean,
-    default: false,
-  },
+    default: false
+  }
 })
 
 const emit = defineEmits<{
@@ -72,7 +72,7 @@ const emit = defineEmits<{
 const formDataValue = computed({
   get: (): UpdateCoordinatorRequest =>
     props.formData as UpdateCoordinatorRequest,
-  set: (val: UpdateCoordinatorRequest) => emit('update:formData', val),
+  set: (val: UpdateCoordinatorRequest) => emit('update:formData', val)
 })
 
 const rules = computed(() => ({
@@ -82,7 +82,7 @@ const rules = computed(() => ({
   lastname: { required, maxLength: maxLength(16) },
   firstnameKana: { required, kana },
   lastnameKana: { required, kana },
-  phoneNumber: { required, tel },
+  phoneNumber: { required, tel }
 }))
 
 const v$ = useVuelidate(rules, formDataValue)
@@ -175,18 +175,20 @@ const handleSubmit = async () => {
         />
 
         <the-address-form
-          :postal-code.sync="props.formData.postalCode"
-          :prefecture.sync="props.formData.prefecture"
-          :city.sync="props.formData.city"
-          :address-line1.sync="props.formData.addressLine1"
-          :address-line2.sync="props.formData.addressLine2"
+          v-model:postal-code="props.formData.postalCode"
+          v-model:prefecture="props.formData.prefecture"
+          v-model:city="props.formData.city"
+          v-model:address-line1="props.formData.addressLine1"
+          v-model:address-line2="props.formData.addressLine2"
           :error-message="props.searchErrorMessage"
           :loading="props.searchLoading"
           @click:search="handleSearchClick"
         />
       </v-card-text>
       <v-card-actions>
-        <v-btn block outlined color="primary" type="submit">更新</v-btn>
+        <v-btn block outlined color="primary" type="submit">
+          更新
+        </v-btn>
       </v-card-actions>
     </v-card>
   </form>

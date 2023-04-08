@@ -12,20 +12,20 @@ const props = defineProps({
       body: '',
       targets: [],
       public: false,
-      publishedAt: dayjs().unix(),
-    }),
+      publishedAt: dayjs().unix()
+    })
   },
   timeData: {
     type: Object,
     default: (): NotificationTime => ({
       publishedDate: '',
-      publishedTime: '',
-    }),
+      publishedTime: ''
+    })
   },
   formDataLoading: {
     type: Boolean,
-    default: false,
-  },
+    default: false
+  }
 })
 
 const emit = defineEmits<{
@@ -37,12 +37,12 @@ const emit = defineEmits<{
 const formDataValue = computed({
   get: (): CreateNotificationRequest =>
     props.formData as CreateNotificationRequest,
-  set: (val: CreateNotificationRequest) => emit('update:formData', val),
+  set: (val: CreateNotificationRequest) => emit('update:formData', val)
 })
 
 const timeDataValue = computed({
   get: (): NotificationTime => props.timeData as NotificationTime,
-  set: (val: NotificationTime) => emit('update:timeData', val),
+  set: (val: NotificationTime) => emit('update:timeData', val)
 })
 
 const handleSubmit = () => {
@@ -52,7 +52,9 @@ const handleSubmit = () => {
 
 <template>
   <div>
-    <p class="text-h6">お知らせ編集</p>
+    <p class="text-h6">
+      お知らせ編集
+    </p>
     <the-notification-form
       form-type="edit"
       :form-data="formDataValue"

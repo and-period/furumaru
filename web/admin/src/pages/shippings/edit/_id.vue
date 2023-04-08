@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useAlert } from '~/lib/hooks'
-import { useCommonStore } from '~/store'
-import { useShippingStore } from '~/store'
+import { useCommonStore, useShippingStore } from '~/store'
 import { UpdateShippingRequest } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 
@@ -18,8 +17,8 @@ const formData = ref<UpdateShippingRequest>({
     {
       name: '',
       price: 0,
-      prefectures: [],
-    },
+      prefectures: []
+    }
   ],
   box60Refrigerated: 0,
   box60Frozen: 0,
@@ -27,8 +26,8 @@ const formData = ref<UpdateShippingRequest>({
     {
       name: '',
       price: 0,
-      prefectures: [],
-    },
+      prefectures: []
+    }
   ],
   box80Refrigerated: 0,
   box80Frozen: 0,
@@ -36,13 +35,13 @@ const formData = ref<UpdateShippingRequest>({
     {
       name: '',
       price: 0,
-      prefectures: [],
-    },
+      prefectures: []
+    }
   ],
   box100Refrigerated: 0,
   box100Frozen: 0,
   hasFreeShipping: false,
-  freeShippingRates: 0,
+  freeShippingRates: 0
 })
 
 const { getShipping, updateShipping } = useShippingStore()
@@ -62,7 +61,7 @@ const addBox60RateItem = () => {
   formData.value.box60Rates.push({
     name: '',
     price: 0,
-    prefectures: [],
+    prefectures: []
   })
 }
 
@@ -70,7 +69,7 @@ const addBox80RateItem = () => {
   formData.value.box80Rates.push({
     name: '',
     price: 0,
-    prefectures: [],
+    prefectures: []
   })
 }
 
@@ -78,7 +77,7 @@ const addBox100RateItem = () => {
   formData.value.box100Rates.push({
     name: '',
     price: 0,
-    prefectures: [],
+    prefectures: []
   })
 }
 
@@ -108,7 +107,7 @@ const handleSubmit = async () => {
     await updateShipping(id, formData.value)
     addSnackbar({
       color: 'info',
-      message: `${formData.value.name}を更新しました。`,
+      message: `${formData.value.name}を更新しました。`
     })
     router.push('/shippings')
   } catch (error) {
@@ -116,7 +115,7 @@ const handleSubmit = async () => {
       show(error.message)
       window.scrollTo({
         top: 0,
-        behavior: 'smooth',
+        behavior: 'smooth'
       })
     }
   }

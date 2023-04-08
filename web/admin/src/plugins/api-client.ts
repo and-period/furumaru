@@ -5,7 +5,7 @@ import ApiClientFactory from './factory'
 
 import { OrderApi } from '~/types/api'
 
-function apiClientInjector({ store }: PiniaPluginContext) {
+function apiClientInjector ({ store }: PiniaPluginContext) {
   const apiClientFactory = new ApiClientFactory()
 
   const orderApiClient = (token: string) =>

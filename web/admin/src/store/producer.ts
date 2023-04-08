@@ -12,7 +12,7 @@ import {
   ProducerResponse,
   ProducersResponse,
   UpdateProducerRequest,
-  UploadImageResponse,
+  UploadImageResponse
 } from '~/types/api'
 import {
   AuthError,
@@ -20,7 +20,7 @@ import {
   ConnectionError,
   InternalServerError,
   NotFoundError,
-  ValidationError,
+  ValidationError
 } from '~/types/exception'
 
 export const useProducerStore = defineStore('Producer', {
@@ -33,7 +33,7 @@ export const useProducerStore = defineStore('Producer', {
     return {
       producers: [] as ProducersResponse['producers'],
       totalItems: 0,
-      apiClient,
+      apiClient
     }
   },
 
@@ -43,11 +43,7 @@ export const useProducerStore = defineStore('Producer', {
      * @param limit 取得上限数
      * @param offset 取得開始位置
      */
-    async fetchProducers(
-      limit: number = 20,
-      offset: number = 0,
-      options: string = ''
-    ): Promise<void> {
+    async fetchProducers (limit = 20, offset = 0, options = ''): Promise<void> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -87,7 +83,7 @@ export const useProducerStore = defineStore('Producer', {
      * 生産者を新規登録する非同期関数
      * @param payload
      */
-    async createProducer(payload: CreateProducerRequest): Promise<void> {
+    async createProducer (payload: CreateProducerRequest): Promise<void> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -101,7 +97,7 @@ export const useProducerStore = defineStore('Producer', {
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: `${payload.storeName}を作成しました。`,
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -140,7 +136,7 @@ export const useProducerStore = defineStore('Producer', {
      * @param payload サムネイル画像のファイルオブジェクト
      * @returns アップロード後のサムネイル画像のパスを含んだオブジェクト
      */
-    async uploadProducerThumbnail(payload: File): Promise<UploadImageResponse> {
+    async uploadProducerThumbnail (payload: File): Promise<UploadImageResponse> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -154,8 +150,8 @@ export const useProducerStore = defineStore('Producer', {
           payload,
           {
             headers: {
-              'Content-Type': 'multipart/form-data',
-            },
+              'Content-Type': 'multipart/form-data'
+            }
           }
         )
         return res.data
@@ -191,7 +187,7 @@ export const useProducerStore = defineStore('Producer', {
      * @param payload ヘッダー画像のファイルオブジェクト
      * @returns アップロード後のヘッダー画像のパスを含んだオブジェクト
      */
-    async uploadProducerHeader(payload: File): Promise<UploadImageResponse> {
+    async uploadProducerHeader (payload: File): Promise<UploadImageResponse> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -205,8 +201,8 @@ export const useProducerStore = defineStore('Producer', {
           payload,
           {
             headers: {
-              'Content-Type': 'multipart/form-data',
-            },
+              'Content-Type': 'multipart/form-data'
+            }
           }
         )
         return res.data
@@ -242,7 +238,7 @@ export const useProducerStore = defineStore('Producer', {
      * @param id 生産者ID
      * @returns 生産者の情報
      */
-    async getProducer(id: string): Promise<ProducerResponse> {
+    async getProducer (id: string): Promise<ProducerResponse> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -287,7 +283,7 @@ export const useProducerStore = defineStore('Producer', {
      * @param payload
      * @returns
      */
-    async updateProducer(id: string, payload: UpdateProducerRequest) {
+    async updateProducer (id: string, payload: UpdateProducerRequest) {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -334,7 +330,7 @@ export const useProducerStore = defineStore('Producer', {
      * @param id 削除する生産者のID
      * @returns
      */
-    async deleteProducer(id: string) {
+    async deleteProducer (id: string) {
       try {
         const { accessToken } = useAuthStore()
         if (!accessToken) {
@@ -346,6 +342,6 @@ export const useProducerStore = defineStore('Producer', {
       } catch (error) {
         return this.errorHandler(error)
       }
-    },
-  },
+    }
+  }
 })

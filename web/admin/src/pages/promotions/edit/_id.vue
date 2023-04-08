@@ -23,7 +23,7 @@ const formData = reactive<PromotionResponse>({
   startAt: dayjs().unix(),
   endAt: dayjs().unix(),
   createdAt: -1,
-  updatedAt: -1,
+  updatedAt: -1
 })
 
 const timeData = reactive<PromotionTime>({
@@ -32,7 +32,7 @@ const timeData = reactive<PromotionTime>({
   startDate: '',
   startTime: '',
   endDate: '',
-  endTime: '',
+  endTime: ''
 })
 
 const fetchState = useAsyncData(async () => {
@@ -57,7 +57,7 @@ const handleSubmit = async () => {
   try {
     await editPromotion(id, {
       ...formData,
-      discountRate: Number(formData.discountRate),
+      discountRate: Number(formData.discountRate)
     })
     router.push('/promotions')
   } catch (error) {

@@ -16,7 +16,7 @@ const formData = reactive<CreatePromotionRequest>({
   discountRate: 0,
   code: '',
   startAt: dayjs().unix(),
-  endAt: dayjs().unix(),
+  endAt: dayjs().unix()
 })
 
 const handleSubmit = async () => {

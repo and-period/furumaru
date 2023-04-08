@@ -11,7 +11,7 @@ import {
   ProductTypeApi,
   ProductTypesResponse,
   UpdateProductTypeRequest,
-  UploadImageResponse,
+  UploadImageResponse
 } from '~/types/api'
 import {
   AuthError,
@@ -19,7 +19,7 @@ import {
   ConnectionError,
   InternalServerError,
   NotFoundError,
-  ValidationError,
+  ValidationError
 } from '~/types/exception'
 
 export const useProductTypeStore = defineStore('ProductType', {
@@ -31,7 +31,7 @@ export const useProductTypeStore = defineStore('ProductType', {
     return {
       productTypes: [] as ProductTypesResponse['productTypes'],
       totalItems: 0,
-      apiClient,
+      apiClient
     }
   },
   actions: {
@@ -40,10 +40,7 @@ export const useProductTypeStore = defineStore('ProductType', {
      * @param limit 取得上限数
      * @param offset 取得開始位置
      */
-    async fetchProductTypes(
-      limit: number = 20,
-      offset: number = 0
-    ): Promise<void> {
+    async fetchProductTypes (limit = 20, offset = 0): Promise<void> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -82,7 +79,7 @@ export const useProductTypeStore = defineStore('ProductType', {
      * @param payload
      * @returns
      */
-    async createProductType(
+    async createProductType (
       categoryId: string,
       payload: CreateProductTypeRequest
     ): Promise<void> {
@@ -100,8 +97,8 @@ export const useProductTypeStore = defineStore('ProductType', {
         )
         this.productTypes.unshift(res.data)
         commonStore.addSnackbar({
-          message: `品目を追加しました。`,
-          color: 'info',
+          message: '品目を追加しました。',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -141,7 +138,7 @@ export const useProductTypeStore = defineStore('ProductType', {
      * @param payload 品目情報
      * @returns
      */
-    async editProductType(
+    async editProductType (
       categoryId: string,
       productTypeId: string,
       payload: UpdateProductTypeRequest
@@ -195,7 +192,7 @@ export const useProductTypeStore = defineStore('ProductType', {
      * @param productTypeId 品目ID
      * @returns
      */
-    async deleteProductType(
+    async deleteProductType (
       categoryId: string,
       productTypeId: string
     ): Promise<void> {
@@ -213,7 +210,7 @@ export const useProductTypeStore = defineStore('ProductType', {
         )
         commonStore.addSnackbar({
           message: '品目削除が完了しました',
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -252,7 +249,7 @@ export const useProductTypeStore = defineStore('ProductType', {
      * @param payload 品目画像のファイルオブジェクト
      * @returns アップロード後の品目画像のパスを含んだオブジェクト
      */
-    async uploadProductTypeIcon(payload: File): Promise<UploadImageResponse> {
+    async uploadProductTypeIcon (payload: File): Promise<UploadImageResponse> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -266,8 +263,8 @@ export const useProductTypeStore = defineStore('ProductType', {
           payload,
           {
             headers: {
-              'Content-Type': 'multipart/form-data',
-            },
+              'Content-Type': 'multipart/form-data'
+            }
           }
         )
         return res.data
@@ -296,6 +293,6 @@ export const useProductTypeStore = defineStore('ProductType', {
         }
         throw new InternalServerError(error)
       }
-    },
-  },
+    }
+  }
 })

@@ -4,32 +4,32 @@ import { prefecturesList, cityList } from '~/constants'
 const props = defineProps({
   producerId: {
     type: String,
-    default: '',
+    default: ''
   },
   producersItems: {
     type: Array,
     default: () => {
       return []
-    },
+    }
   },
   productTypeId: {
     type: String,
-    default: '',
+    default: ''
   },
   productTypesItems: {
     type: Array,
     default: () => {
       return []
-    },
+    }
   },
   originPrefecture: {
     type: String,
-    default: '',
+    default: ''
   },
   originCity: {
     type: String,
-    default: '',
-  },
+    default: ''
+  }
 })
 
 const emit = defineEmits<{
@@ -41,32 +41,32 @@ const emit = defineEmits<{
 
 const producerIdValue = computed({
   get: () => props.producerId,
-  set: (val: string) => emit('update:producerId', val),
+  set: (val: string) => emit('update:producerId', val)
 })
 
 const productTypeIdValue = computed({
   get: () => props.productTypeId,
-  set: (val: string) => emit('update:productTypeId', val),
+  set: (val: string) => emit('update:productTypeId', val)
 })
 
 const originPrefectureValue = computed({
   get: () => props.originPrefecture,
-  set: (val: string) => emit('update:originPrefecture', val),
+  set: (val: string) => emit('update:originPrefecture', val)
 })
 
 const originCityValue = computed({
   get: () => props.originCity,
-  set: (val: string) => emit('update:originCity', val),
+  set: (val: string) => emit('update:originCity', val)
 })
 
 const selectedPrefecture = computed(() => {
-  return prefecturesList.find((item) => item.text === props.originPrefecture)
+  return prefecturesList.find(item => item.text === props.originPrefecture)
 })
 
 const filteredCityList = computed(() => {
   if (selectedPrefecture.value) {
     return cityList.filter(
-      (item) => item.prefId === selectedPrefecture.value?.id
+      item => item.prefId === selectedPrefecture.value?.id
     )
   } else {
     return []

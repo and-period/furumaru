@@ -4,18 +4,18 @@ import { DataTableHeader } from 'vuetify'
 import { useCategoryStore } from '~/store'
 import {
   CategoriesResponseCategoriesInner,
-  UpdateCategoryRequest,
+  UpdateCategoryRequest
 } from '~/types/api'
 
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false,
+    default: false
   },
   tableFooterProps: {
     type: Object,
-    default: () => {},
-  },
+    default: () => {}
+  }
 })
 
 const emit = defineEmits<{
@@ -30,7 +30,7 @@ const selectedItem = ref<string>('')
 const selectedName = ref<string>('')
 const categoryId = ref<string>('')
 const categoryFormData = reactive<UpdateCategoryRequest>({
-  name: '',
+  name: ''
 })
 
 const categories = computed(() => {
@@ -43,15 +43,15 @@ const totalItems = computed(() => {
 const categoryHeaders: DataTableHeader[] = [
   {
     text: 'カテゴリー',
-    value: 'name',
+    value: 'name'
   },
   {
     text: 'Actions',
     value: 'actions',
     width: 200,
     align: 'end',
-    sortable: false,
-  },
+    sortable: false
+  }
 ]
 
 const handleUpdateItemsPerPage = (page: number) => {
@@ -114,11 +114,15 @@ const handleDelete = async (): Promise<void> => {
     >
       <template #[`item.actions`]="{ item }">
         <v-btn outlined color="primary" small @click="openEditDialog(item)">
-          <v-icon small>mdi-pencil</v-icon>
+          <v-icon small>
+            mdi-pencil
+          </v-icon>
           編集
         </v-btn>
         <v-btn outlined color="primary" small @click="openDeleteDialog(item)">
-          <v-icon small>mdi-delete</v-icon>
+          <v-icon small>
+            mdi-delete
+          </v-icon>
           削除
         </v-btn>
       </template>
@@ -130,16 +134,22 @@ const handleDelete = async (): Promise<void> => {
           {{ selectedName }}を本当に削除しますか？
         </v-card-title>
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="error" text @click="deleteCancel"> キャンセル </v-btn>
-          <v-btn color="primary" outlined @click="handleDelete"> 削除 </v-btn>
+          <v-spacer />
+          <v-btn color="error" text @click="deleteCancel">
+            キャンセル
+          </v-btn>
+          <v-btn color="primary" outlined @click="handleDelete">
+            削除
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
     <v-dialog v-model="editDialog" width="500">
       <v-card>
-        <v-card-title class="primaryLight"> カテゴリー編集 </v-card-title>
+        <v-card-title class="primaryLight">
+          カテゴリー編集
+        </v-card-title>
         <v-card-text class="mt-6">
           <v-text-field
             v-model="categoryFormData.name"
@@ -150,9 +160,13 @@ const handleDelete = async (): Promise<void> => {
         <v-divider />
 
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="error" text @click="editCancel"> キャンセル </v-btn>
-          <v-btn color="primary" outlined @click="handleEdit"> 編集 </v-btn>
+          <v-spacer />
+          <v-btn color="error" text @click="editCancel">
+            キャンセル
+          </v-btn>
+          <v-btn color="primary" outlined @click="handleEdit">
+            編集
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

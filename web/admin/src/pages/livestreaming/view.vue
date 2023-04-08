@@ -5,7 +5,7 @@ const router = useRouter()
 const hls = new HLS()
 
 const formData = reactive({
-  playbackUrl: '',
+  playbackUrl: ''
 })
 
 const handleClickStreaming = () => {
@@ -27,13 +27,6 @@ const startWatching = () => {
 }
 </script>
 
-<style scoped>
-#video {
-  margin-bottom: 1.5em;
-  width: 100%;
-}
-</style>
-
 <template>
   <v-card>
     <v-card-title>視聴テスト用モック</v-card-title>
@@ -42,7 +35,7 @@ const startWatching = () => {
     </v-card-subtitle>
 
     <v-container>
-      <video id="video" controls></video>
+      <video id="video" controls />
     </v-container>
 
     <v-card-text>
@@ -50,8 +43,19 @@ const startWatching = () => {
     </v-card-text>
 
     <v-card-actions>
-      <v-btn @click="startWatching">Start Watching</v-btn>
-      <v-btn @click="handleClickStreaming">Live Streaming</v-btn>
+      <v-btn @click="startWatching">
+        Start Watching
+      </v-btn>
+      <v-btn @click="handleClickStreaming">
+        Live Streaming
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>
+
+<style scoped>
+#video {
+  margin-bottom: 1.5em;
+  width: 100%;
+}
+</style>

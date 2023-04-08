@@ -7,7 +7,7 @@ export const useOrderStore = defineStore('order', {
   state: () => {
     return {
       orders: [] as OrdersResponse['orders'],
-      totalItems: 0,
+      totalItems: 0
     }
   },
 
@@ -18,7 +18,7 @@ export const useOrderStore = defineStore('order', {
      * @param offset
      * @returns
      */
-    async fetchOrders(limit: number = 20, offset: number = 0): Promise<void> {
+    async fetchOrders (limit = 20, offset = 0): Promise<void> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -42,7 +42,7 @@ export const useOrderStore = defineStore('order', {
      * @param id 注文ID
      * @returns 注文情報
      */
-    async getOrder(id: string): Promise<OrderResponse> {
+    async getOrder (id: string): Promise<OrderResponse> {
       try {
         const authStore = useAuthStore()
         const accessToken = authStore.accessToken
@@ -55,6 +55,6 @@ export const useOrderStore = defineStore('order', {
         console.log(error)
         return this.errorHandler(error)
       }
-    },
-  },
+    }
+  }
 })

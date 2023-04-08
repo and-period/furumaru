@@ -5,7 +5,9 @@ import firebase from './firebase'
 
 const googleAnalyticsPlugin: Plugin = ({ app }: Context) => {
   // 開発環境のイベントはGAに送信しない
-  if (process.env.NODE_ENV !== 'production') return
+  if (process.env.NODE_ENV !== 'production') {
+    return
+  }
 
   const analytics: Analytics = getAnalytics(firebase.app)
 
@@ -15,7 +17,7 @@ const googleAnalyticsPlugin: Plugin = ({ app }: Context) => {
     logEvent(analytics, 'page_view', {
       page_location: location.hostname,
       page_path: to.fullPath,
-      page_title: to.name || 'admin',
+      page_title: to.name || 'admin'
     })
   })
 }

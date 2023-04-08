@@ -11,9 +11,9 @@ const props = defineProps({
       body: '',
       targets: [],
       public: false,
-      publishedAt: dayjs().unix(),
-    }),
-  },
+      publishedAt: dayjs().unix()
+    })
+  }
 })
 
 const emit = defineEmits<{
@@ -24,7 +24,7 @@ const emit = defineEmits<{
 const formDataValue = computed({
   get: (): CreateNotificationRequest =>
     props.formData as CreateNotificationRequest,
-  set: (val: CreateNotificationRequest) => emit('update:formData', val),
+  set: (val: CreateNotificationRequest) => emit('update:formData', val)
 })
 
 const handleSubmit = () => {
@@ -34,7 +34,9 @@ const handleSubmit = () => {
 
 <template>
   <div>
-    <p class="text-h6">生産者登録</p>
+    <p class="text-h6">
+      生産者登録
+    </p>
     <the-notification-form :form-data="formDataValue" @submit="handleSubmit" />
   </div>
 </template>
