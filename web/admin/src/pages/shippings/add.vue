@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useAlert } from '~/lib/hooks'
-import { useCommonStore } from '~/store/common'
-import { useShippingStore } from '~/store/shippings'
+import { useCommonStore } from '~/store'
+import { useShippingStore } from '~/store'
 import { CreateShippingRequest } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 
@@ -62,6 +62,10 @@ const addBox100RateItem = () => {
     price: 0,
     prefectures: [],
   })
+}
+
+const handleClickRemoveItemButton = () => {
+  // FIXME: template側で指定されていたため、定義のみ行う
 }
 
 const { createShipping } = useShippingStore()

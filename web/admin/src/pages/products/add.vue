@@ -3,10 +3,10 @@ import { useVuelidate } from '@vuelidate/core'
 
 import { useAlert } from '~/lib/hooks'
 import { required, minValue } from '~/lib/validations'
-import { useCategoryStore } from '~/store/category'
-import { useProducerStore } from '~/store/producer'
-import { useProductStore } from '~/store/product'
-import { useProductTypeStore } from '~/store/product-type'
+import { useCategoryStore } from '~/store'
+import { useProducerStore } from '~/store'
+import { useProductStore } from '~/store'
+import { useProductTypeStore } from '~/store'
 import { CreateProductRequest, UploadImageResponse } from '~/types/api'
 
 const productTypeStore = useProductTypeStore()

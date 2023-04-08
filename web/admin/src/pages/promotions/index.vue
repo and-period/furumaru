@@ -2,7 +2,7 @@
 import dayjs from 'dayjs'
 import { DataTableHeader } from 'vuetify'
 
-import { usePromotionStore } from '~/store/promotion'
+import { usePromotionStore } from '~/store'
 import { PromotionsResponsePromotionsInner } from '~/types/api'
 
 const router = useRouter()

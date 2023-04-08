@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { DataTableHeader } from 'vuetify'
 
-import { useCoordinatorStore } from '~/store/coordinator'
+import { useCoordinatorStore } from '~/store'
 import { ProducersResponseProducersInner } from '~/types/api'
 
 const props = defineProps({

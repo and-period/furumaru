@@ -2,8 +2,8 @@
 import { DataTableHeader } from 'vuetify'
 
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useCommonStore } from '~/store/common'
-import { useProducerStore } from '~/store/producer'
+import { useCommonStore } from '~/store'
+import { useProducerStore } from '~/store'
 import { ProducersResponseProducersInner } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 

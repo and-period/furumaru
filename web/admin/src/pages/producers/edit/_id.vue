@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useAlert, useSearchAddress } from '~/lib/hooks'
-import { useCommonStore } from '~/store/common'
-import { useProducerStore } from '~/store/producer'
+import { useCommonStore } from '~/store'
+import { useProducerStore } from '~/store'
 import { ProducerResponse } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 import { ImageUploadStatus } from '~/types/props'

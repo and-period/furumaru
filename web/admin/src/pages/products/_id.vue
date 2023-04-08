@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { useAlert } from '~/lib/hooks'
-import { useCommonStore } from '~/store/common'
-import { useProducerStore } from '~/store/producer'
-import { useProductStore } from '~/store/product'
-import { useProductTypeStore } from '~/store/product-type'
+import { useCommonStore } from '~/store'
+import { useProducerStore } from '~/store'
+import { useProductStore } from '~/store'
+import { useProductTypeStore } from '~/store'
 import { UpdateProductRequest, UploadImageResponse } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 

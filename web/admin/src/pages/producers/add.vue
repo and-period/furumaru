@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useSearchAddress } from '~/lib/hooks'
-import { useProducerStore } from '~/store/producer'
+import { useProducerStore } from '~/store'
 import { CreateProducerRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 

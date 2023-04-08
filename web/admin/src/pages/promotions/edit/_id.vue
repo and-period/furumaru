@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
 
-import { usePromotionStore } from '~/store/promotion'
+import { usePromotionStore } from '~/store'
 import { PromotionResponse } from '~/types/api'
 import { PromotionTime } from '~/types/props'
 

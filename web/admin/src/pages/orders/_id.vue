@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import { DataTableHeader } from 'vuetify'
 
 import { usePagination } from '~/lib/hooks'
-import { useOrderStore } from '~/store/orders'
+import { useOrderStore } from '~/store'
 import {
   DeliveryType,
   FulfillmentStatus,

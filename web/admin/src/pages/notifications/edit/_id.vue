@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
 
-import { useNotificationStore } from '~/store/notification'
+import { useNotificationStore } from '~/store'
 import { NotificationResponse } from '~/types/api'
 import { NotificationTime } from '~/types/props'
 

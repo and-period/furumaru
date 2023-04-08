@@ -2,8 +2,8 @@ import { setActivePinia, createPinia } from 'pinia'
 
 import { axiosMock, baseURL } from '../helpers/axios-helpter'
 
-import { useAuthStore } from '~/store/auth'
-import { useCommonStore } from '~/store/common'
+import { useAuthStore } from '~/store'
+import { useCommonStore } from '~/store'
 import {
   AuthError,
   ConnectionError,

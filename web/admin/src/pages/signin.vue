@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useAlert } from '~/lib/hooks'
-import { useAuthStore } from '~/store/auth'
+import { useAuthStore } from '~/store'
 import { SignInRequest } from '~/types/api'
 
 definePageMeta({

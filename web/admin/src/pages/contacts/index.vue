@@ -2,7 +2,7 @@
 import { DataTableHeader } from 'vuetify'
 
 import { usePagination } from '~/lib/hooks'
-import { useContactStore } from '~/store/contact'
+import { useContactStore } from '~/store'
 import {
   ContactPriority,
   ContactsResponseContactsInner,

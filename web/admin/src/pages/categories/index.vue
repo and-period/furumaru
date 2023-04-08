@@ -2,9 +2,9 @@
 import TheCategoryList from '~/components/organisms/TheCategoryList.vue'
 import TheProductTypeList from '~/components/organisms/TheProductTypeList.vue'
 import { usePagination } from '~/lib/hooks'
-import { useAuthStore } from '~/store/auth'
-import { useCategoryStore } from '~/store/category'
-import { useProductTypeStore } from '~/store/product-type'
+import { useAuthStore } from '~/store'
+import { useCategoryStore } from '~/store'
+import { useProductTypeStore } from '~/store'
 import {
   CategoriesResponseCategoriesInner,
   CreateCategoryRequest,

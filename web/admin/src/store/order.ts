@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-import { useAuthStore } from '~/store/auth'
+import { useAuthStore } from '~/store'
 import { OrderResponse, OrdersResponse } from '~/types/api'
 
 export const useOrderStore = defineStore('order', {

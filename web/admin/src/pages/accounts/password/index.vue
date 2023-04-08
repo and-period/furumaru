@@ -9,7 +9,7 @@ import {
   sameAs,
   getErrorMessage,
 } from '~/lib/validations'
-import { useAuthStore } from '~/store/auth'
+import { useAuthStore } from '~/store'
 import { UpdateAuthPasswordRequest } from '~/types/api'
 
 const router = useRouter()

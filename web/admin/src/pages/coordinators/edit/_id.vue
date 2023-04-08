@@ -3,8 +3,8 @@ import { useVuelidate } from '@vuelidate/core'
 
 import { usePagination, useSearchAddress } from '~/lib/hooks'
 import { kana, required, tel, maxLength } from '~/lib/validations'
-import { useCoordinatorStore } from '~/store/coordinator'
-import { useProducerStore } from '~/store/producer'
+import { useCoordinatorStore } from '~/store'
+import { useProducerStore } from '~/store'
 import {
   ProducersResponseProducersInner,
   RelateProducersRequest,

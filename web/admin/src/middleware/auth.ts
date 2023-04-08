@@ -1,7 +1,7 @@
 import { Context, Middleware } from '@nuxt/types'
 import Cookies from 'universal-cookie'
 
-import { useAuthStore } from '~/store/auth'
+import { useAuthStore } from '~/store'
 
 const routing: Middleware = async ({ route, redirect }: Context) => {
   const publicPages = ['/signin']

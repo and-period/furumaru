@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useAuthStore } from '~/store/auth'
+import { useAuthStore } from '~/store'
 import { UpdateAuthEmailRequest } from '~/types/api'
 
 const formData = reactive<UpdateAuthEmailRequest>({

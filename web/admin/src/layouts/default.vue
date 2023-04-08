@@ -103,8 +103,8 @@
 import { useRouter } from '@nuxtjs/composition-api'
 import { computed, defineComponent, ref } from '@vue/composition-api'
 
-import { useCommonStore } from '~/store/common'
-import { useMessageStore } from '~/store/message'
+import { useCommonStore } from '~/store'
+import { useMessageStore } from '~/store'
 
 interface NavigationDrawerItem {
   to: string

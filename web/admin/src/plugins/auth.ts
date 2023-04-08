@@ -1,6 +1,6 @@
 import { Plugin } from '@nuxt/types'
 
-import { useAuthStore } from '~/store/auth'
+import { useAuthStore } from '~/store'
 
 /**
  * authStoreを注入するプラグイン

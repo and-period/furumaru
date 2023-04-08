@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
 
-import { useNotificationStore } from '~/store/notification'
+import { useNotificationStore } from '~/store'
 import { CreateNotificationRequest } from '~/types/api'
 
 const router = useRouter()

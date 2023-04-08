@@ -1,5 +1,5 @@
 <script lang="ts">
-import { useAuthStore } from '~/store/auth'
+import { useAuthStore } from '~/store'
 
 const router = useRouter()
 const { logout } = useAuthStore()

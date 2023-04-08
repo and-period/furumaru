@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import { DataTableHeader } from 'vuetify'
 
 import { usePagination } from '~/lib/hooks'
-import { useNotificationStore } from '~/store/notification'
+import { useNotificationStore } from '~/store'
 import { NotificationsResponseNotificationsInner } from '~/types/api'
 
 const router = useRouter()

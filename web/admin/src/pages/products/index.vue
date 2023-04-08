@@ -2,7 +2,7 @@
 import { DataTableHeader } from 'vuetify'
 
 import { usePagination } from '~/lib/hooks/'
-import { useProductStore } from '~/store/product'
+import { useProductStore } from '~/store'
 import { ProductsResponseProductsInner } from '~/types/api'
 
 const router = useRouter()

@@ -1,5 +1,5 @@
 import { CustomErrorMessage } from '~/plugins/api-error-handler'
-import { useAuthStore } from '~/store/auth'
+import { useAuthStore } from '~/store'
 import { OrderApi } from '~/types/api'
 
 import 'pinia'

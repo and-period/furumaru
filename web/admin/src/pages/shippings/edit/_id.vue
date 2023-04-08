@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useAlert } from '~/lib/hooks'
-import { useCommonStore } from '~/store/common'
-import { useShippingStore } from '~/store/shippings'
+import { useCommonStore } from '~/store'
+import { useShippingStore } from '~/store'
 import { UpdateShippingRequest } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 
@@ -82,6 +82,10 @@ const addBox100RateItem = () => {
   })
 }
 
+const isLoading = (): boolean => {
+  return fetchState?.pending.value || false
+}
+
 const handleClickRemoveItemButton = (
   rate: '60' | '80' | '100',
   index: number
@@ -127,7 +131,7 @@ const handleSubmit = async () => {
 
     <the-shipping-form
       v-model="formData"
-      :loading="fetchState.pending"
+      :loading="isLoading"
       @click:addBox60RateItem="addBox60RateItem"
       @click:addBox80RateItem="addBox80RateItem"
       @click:addBox100RateItem="addBox100RateItem"

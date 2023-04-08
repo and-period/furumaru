@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useContactStore } from '~/store/contact'
+import { useContactStore } from '~/store'
 import {
   ContactPriority,
   ContactResponse,

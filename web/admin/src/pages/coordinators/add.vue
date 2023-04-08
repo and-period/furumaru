@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useSearchAddress } from '~/lib/hooks'
-import { useCoordinatorStore } from '~/store/coordinator'
+import { useCoordinatorStore } from '~/store'
 import { CreateCoordinatorRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 

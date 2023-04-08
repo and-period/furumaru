@@ -1,5 +1,4 @@
 import { Plugin } from '@nuxt/types'
-import { markRaw } from '@nuxtjs/composition-api'
 import axios from 'axios'
 import { PiniaPluginContext } from 'pinia'
 

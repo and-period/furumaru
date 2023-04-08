@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { DataTableHeader } from 'vuetify'
 
-import { useCategoryStore } from '~/store/category'
+import { useCategoryStore } from '~/store'
 import {
   CategoriesResponseCategoriesInner,
   UpdateCategoryRequest,

@@ -1,4 +1,4 @@
-import { useAuthStore } from '~/store/auth'
+import { useAuthStore } from '~/store'
 
 export function setupAuthStore(isAuthenticated: boolean) {
   const authStore = useAuthStore()

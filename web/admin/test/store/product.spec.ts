@@ -3,7 +3,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { setupAuthStore } from '../helpers/auth-helpter'
 import { axiosMock, baseURL } from '../helpers/axios-helpter'
 
-import { useProductStore } from '~/store/product'
+import { useProductStore } from '~/store'
 import { ProductApi } from '~/types/api'
 import {
   AuthError,

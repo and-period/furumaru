@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { DataTableHeader } from 'vuetify'
 
-import { useProductTypeStore } from '~/store/product-type'
+import { useProductTypeStore } from '~/store'
 import {
   ProductTypesResponseProductTypesInner,
   UpdateProductTypeRequest,

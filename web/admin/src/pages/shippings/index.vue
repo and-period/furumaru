@@ -4,7 +4,7 @@ import { DataTableHeader } from 'vuetify'
 import { prefecturesList } from '~/constants'
 import { dateTimeFormatter, moneyFormat } from '~/lib/formatter'
 import { usePagination } from '~/lib/hooks'
-import { useShippingStore } from '~/store/shippings'
+import { useShippingStore } from '~/store'
 
 const shippingStore = useShippingStore()
 const router = useRouter()
