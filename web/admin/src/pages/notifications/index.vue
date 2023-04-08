@@ -29,7 +29,13 @@
         <v-data-table
           :headers="headers"
           :items="notifications"
+          :items-per-page="itemsPerPage"
+          :footer-props="options"
           no-data-text="登録されているお知らせ情報がありません"
+          @update:page="handleUpdatePage"
+          @update:items-per-page="handleUpdateItemsPerPage"
+          @update:sort-by="fetch"
+          @update:sort-desc="fetch"
         >
           <template #[`item.public`]="{ item }">
             <v-chip small :color="getStatusColor(item.public)">
@@ -65,10 +71,11 @@
 
 <script lang="ts">
 import { computed, useFetch, useRouter } from '@nuxtjs/composition-api'
-import { defineComponent, ref } from '@vue/composition-api'
+import { defineComponent, ref, watch } from '@vue/composition-api'
 import dayjs from 'dayjs'
 import { DataTableHeader } from 'vuetify'
 
+import { usePagination } from '~/lib/hooks'
 import { useNotificationStore } from '~/store/notification'
 import { NotificationsResponseNotificationsInner } from '~/types/api'
 
@@ -76,13 +83,13 @@ export default defineComponent({
   setup() {
     const router = useRouter()
     const notificationStore = useNotificationStore()
-
-    const deleteDialog = ref<boolean>(false)
-    const selectedId = ref<string>('')
-    const selectedName = ref<string>('')
-    const notifications = computed(() => {
-      return notificationStore.notifications
-    })
+    const {
+      itemsPerPage,
+      offset,
+      options,
+      updateCurrentPage,
+      handleUpdateItemsPerPage,
+    } = usePagination()
 
     const headers: DataTableHeader[] = [
       {
@@ -107,6 +114,41 @@ export default defineComponent({
         sortable: false,
       },
     ]
+
+    const { fetch } = useFetch(async () => {
+      await fetchNotifications()
+    })
+
+    const deleteDialog = ref<boolean>(false)
+    const selectedId = ref<string>('')
+    const selectedName = ref<string>('')
+
+    const notifications = computed(() => {
+      return notificationStore.notifications
+    })
+    const total = computed(() => {
+      return notificationStore.totalItems
+    })
+
+    watch(itemsPerPage, () => {
+      fetchNotifications()
+    })
+
+    const handleUpdatePage = async (page: number) => {
+      updateCurrentPage(page)
+      await fetchNotifications()
+    }
+
+    const fetchNotifications = async () => {
+      try {
+        await notificationStore.fetchNotifications(
+          itemsPerPage.value,
+          offset.value
+        )
+      } catch (err) {
+        console.log(err)
+      }
+    }
 
     const getStatusColor = (status: boolean): string => {
       if (status) {
@@ -173,25 +215,22 @@ export default defineComponent({
       deleteDialog.value = false
     }
 
-    const { fetchState } = useFetch(async () => {
-      try {
-        await notificationStore.fetchNotifications()
-      } catch (err) {
-        console.log(err)
-      }
-    })
-
     return {
       headers,
+      itemsPerPage,
+      options,
+      total,
       notifications,
-      fetchState,
       selectedName,
       deleteDialog,
+      fetch,
       openDeleteDialog,
       hideDeleteDialog,
       getStatusColor,
       handleClickAddButton,
       handleEdit,
+      handleUpdateItemsPerPage,
+      handleUpdatePage,
       handleDelete,
       getPublic,
       getTarget,
