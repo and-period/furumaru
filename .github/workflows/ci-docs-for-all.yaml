@@ -126,6 +126,9 @@ jobs:
           ${{ steps.yarn-cache-dir-path.outputs.dir }}
         key: ${{ env.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
+    - name: Setup
+      run: make setup
+
     - name: Install
       if: steps.yarn-cache.outputs.cache-hit != 'true'
       run: yarn --check-files --frozen-lockfile --non-interactive
