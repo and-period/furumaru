@@ -1,3 +1,39 @@
+<script lang="ts" setup>
+import { useAuthStore } from '~/store/auth'
+import { UpdateAuthEmailRequest, VerifyAuthEmailRequest } from '~/types/api'
+
+const router = useRouter()
+const route = useRoute()
+const authStore = useAuthStore()
+
+const email = route.params.email as string
+const verifyCode = route.params.verifyCode as string
+
+const convertEmail: UpdateAuthEmailRequest = {
+  email,
+}
+const formData = reactive<VerifyAuthEmailRequest>({
+  verifyCode,
+})
+
+const handleClickAddBtn = async (): Promise<void> => {
+  try {
+    await authStore.emailUpdate(convertEmail)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const verificationBtn = async (): Promise<void> => {
+  try {
+    await authStore.codeVerify(formData)
+    router.push('/')
+  } catch (error) {
+    console.log(error)
+  }
+}
+</script>
+
 <template>
   <v-card elevation="0">
     <h1 class="text-center">二要素認証</h1>
@@ -23,56 +59,3 @@
     </v-card-actions>
   </v-card>
 </template>
-
-<script lang="ts">
-import {
-  defineComponent,
-  reactive,
-  useRoute,
-  useRouter,
-} from '@nuxtjs/composition-api'
-
-import { useAuthStore } from '~/store/auth'
-import { UpdateAuthEmailRequest, VerifyAuthEmailRequest } from '~/types/api'
-
-export default defineComponent({
-  setup() {
-    const formData = reactive<VerifyAuthEmailRequest>({
-      verifyCode: '',
-    })
-    const router = useRouter()
-    const route = useRoute()
-    const email = route.value.params.email
-    const authStore = useAuthStore()
-    const verifyCode = route.value.params.verifyCode
-    const convertEmail: UpdateAuthEmailRequest = {
-      email,
-    }
-
-    const handleClickAddBtn = async (): Promise<void> => {
-      try {
-        await authStore.emailUpdate(convertEmail)
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    const verificationBtn = async (): Promise<void> => {
-      try {
-        await authStore.codeVerify(formData)
-        router.push('/')
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    return {
-      verificationBtn,
-      handleClickAddBtn,
-      verifyCode,
-      formData,
-      email,
-    }
-  },
-})
-</script>

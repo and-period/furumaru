@@ -1,3 +1,13 @@
+<script lang="ts" setup>
+const stepValue = ref<number>(1)
+</script>
+
+<style lang="scss" scoped>
+.v-stepper__header {
+  box-shadow: none;
+}
+</style>
+
 <template>
   <div>
     <v-stepper v-model="stepValue" alt-labels flat>
@@ -72,23 +82,3 @@
     </v-stepper>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, ref } from '@nuxtjs/composition-api'
-
-export default defineComponent({
-  setup() {
-    const stepValue = ref<number>(1)
-
-    return {
-      stepValue,
-    }
-  },
-})
-</script>
-
-<style lang="scss" scoped>
-.v-stepper__header {
-  box-shadow: none;
-}
-</style>

@@ -1,3 +1,134 @@
+<script lang="ts" setup>
+import { useVuelidate } from '@vuelidate/core'
+
+import { useAlert } from '~/lib/hooks'
+import { required, minValue } from '~/lib/validations'
+import { useCategoryStore } from '~/store/category'
+import { useProducerStore } from '~/store/producer'
+import { useProductStore } from '~/store/product'
+import { useProductTypeStore } from '~/store/product-type'
+import { CreateProductRequest, UploadImageResponse } from '~/types/api'
+
+const productTypeStore = useProductTypeStore()
+const categoryStore = useCategoryStore()
+const producerStore = useProducerStore()
+
+useAsyncData(async () => {
+  await Promise.all([
+    productTypeStore.fetchProductTypes(),
+    categoryStore.fetchCategories(),
+    producerStore.fetchProducers(20, 0, ''),
+  ])
+})
+
+const router = useRouter()
+
+const { uploadProductImage, createProduct } = useProductStore()
+const breadcrumbsItem = [
+  {
+    text: '商品管理',
+    href: '/products',
+    disabled: false,
+  },
+  {
+    text: '商品登録',
+    href: 'add',
+    disabled: true,
+  },
+]
+
+const statusItems = [
+  { text: '公開', value: true },
+  { text: '非公開', value: false },
+]
+const deliveryTypeItems = [
+  { text: '通常便', value: 1 },
+  { text: '冷蔵便', value: 2 },
+  { text: '冷凍便', value: 3 },
+]
+
+const formData = reactive<CreateProductRequest>({
+  name: '',
+  description: '',
+  producerId: '',
+  productTypeId: '',
+  public: true,
+  inventory: 0,
+  weight: 0,
+  itemUnit: '',
+  itemDescription: '',
+  media: [],
+  price: 0,
+  deliveryType: 1,
+  box60Rate: 0,
+  box80Rate: 0,
+  box100Rate: 0,
+  originPrefecture: '',
+  originCity: '',
+})
+
+const rules = computed(() => ({
+  name: { required },
+  inventory: { required, minValue: minValue(0) },
+  price: { required, minValue: minValue(0) },
+  weight: { required, minValue: minValue(0) },
+  itemUnit: { required },
+  itemDescription: { required },
+}))
+
+const v$ = useVuelidate(rules, formData)
+
+const handleUpdateFormDataDescription = (htmlString: string) => {
+  formData.description = htmlString
+}
+
+const handleImageUpload = async (files: FileList) => {
+  for (const [index, file] of Array.from(files).entries()) {
+    try {
+      const uploadImage: UploadImageResponse = await uploadProductImage(
+        file
+      )
+      formData.media.push({
+        ...uploadImage,
+        isThumbnail: index === 0,
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
+
+const { alertType, isShow, alertText, show } = useAlert('error')
+
+const handleFormSubmit = async () => {
+  const result = await v$.value.$validate()
+  if (!result) {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+    return
+  }
+  try {
+    await createProduct(formData)
+    router.push('/products')
+  } catch (error) {
+    show(error.message)
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+  }
+}
+
+const getErrorMessage = (key: string): string | Ref<string> => {
+  const error = v$.value.$errors.find((e) => {
+    return e.$property === key
+  })
+  return error ? error.$message : ''
+}
+</script>
+
 <template>
   <div>
     <v-card-title>商品登録</v-card-title>
@@ -160,7 +291,7 @@
             <v-select
               v-model="formData.productTypeId"
               label="品目"
-              :items="productTypesItem"
+              :items="productTypeStore.productTypesItem"
               item-text="name"
               item-value="id"
             />
@@ -176,7 +307,7 @@
           <v-select
             v-model="formData.producerId"
             label="店舗名"
-            :items="producersItem"
+            :items="productTypeStore.producersItem"
             item-text="storeName"
             item-value="id"
           />
@@ -189,169 +320,3 @@
     </v-btn>
   </div>
 </template>
-
-<script lang="ts">
-import { useFetch, useRouter } from '@nuxtjs/composition-api'
-import {
-  computed,
-  defineComponent,
-  reactive,
-  Ref,
-  ref,
-} from '@vue/composition-api'
-import { useVuelidate } from '@vuelidate/core'
-
-import { useAlert } from '~/lib/hooks'
-import { required, minValue } from '~/lib/validations'
-import { useCategoryStore } from '~/store/category'
-import { useProducerStore } from '~/store/producer'
-import { useProductStore } from '~/store/product'
-import { useProductTypeStore } from '~/store/product-type'
-import { CreateProductRequest, UploadImageResponse } from '~/types/api'
-
-export default defineComponent({
-  setup() {
-    const productTypeStore = useProductTypeStore()
-    const categoryStore = useCategoryStore()
-    const producerStore = useProducerStore()
-
-    useFetch(async () => {
-      await Promise.all([
-        productTypeStore.fetchProductTypes(),
-        categoryStore.fetchCategories(),
-        producerStore.fetchProducers(20, 0, ''),
-      ])
-    })
-
-    const router = useRouter()
-
-    const { uploadProductImage, createProduct } = useProductStore()
-    const breadcrumbsItem = [
-      {
-        text: '商品管理',
-        href: '/products',
-        disabled: false,
-      },
-      {
-        text: '商品登録',
-        href: 'add',
-        disabled: true,
-      },
-    ]
-
-    const statusItems = [
-      { text: '公開', value: true },
-      { text: '非公開', value: false },
-    ]
-    const deliveryTypeItems = [
-      { text: '通常便', value: 1 },
-      { text: '冷蔵便', value: 2 },
-      { text: '冷凍便', value: 3 },
-    ]
-
-    const formData = reactive<CreateProductRequest>({
-      name: '',
-      description: '',
-      producerId: '',
-      productTypeId: '',
-      public: true,
-      inventory: 0,
-      weight: 0,
-      itemUnit: '',
-      itemDescription: '',
-      media: [],
-      price: 0,
-      deliveryType: 1,
-      box60Rate: 0,
-      box80Rate: 0,
-      box100Rate: 0,
-      originPrefecture: '',
-      originCity: '',
-    })
-
-    const rules = computed(() => ({
-      name: { required },
-      inventory: { required, minValue: minValue(0) },
-      price: { required, minValue: minValue(0) },
-      weight: { required, minValue: minValue(0) },
-      itemUnit: { required },
-      itemDescription: { required },
-    }))
-
-    const v$ = useVuelidate(rules, formData)
-
-    const uploadFiles = ref<FileList | null>(null)
-
-    const productRef = ref<string>('')
-    const handleUpdateFormDataDescription = (htmlString: string) => {
-      formData.description = htmlString
-    }
-
-    const handleImageUpload = async (files: FileList) => {
-      for (const [index, file] of Array.from(files).entries()) {
-        try {
-          const uploadImage: UploadImageResponse = await uploadProductImage(
-            file
-          )
-          formData.media.push({
-            ...uploadImage,
-            isThumbnail: index === 0,
-          })
-        } catch (error) {
-          console.log(error)
-        }
-      }
-    }
-
-    const { alertType, isShow, alertText, show } = useAlert('error')
-
-    const handleFormSubmit = async () => {
-      const result = await v$.value.$validate()
-      if (!result) {
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth',
-        })
-        return
-      }
-      try {
-        await createProduct(formData)
-        router.push('/products')
-      } catch (error) {
-        show(error.message)
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth',
-        })
-      }
-    }
-
-    const getErrorMessage = (key: string): string | Ref<string> => {
-      const error = v$.value.$errors.find((e) => {
-        return e.$property === key
-      })
-      return error ? error.$message : ''
-    }
-
-    return {
-      alertType,
-      isShow,
-      alertText,
-      productTypesItem: productTypeStore.productTypes,
-      categoriesItem: categoryStore.categories,
-      producersItem: producerStore.producers,
-      breadcrumbsItem,
-      statusItems,
-      deliveryTypeItems,
-      formData,
-      v$,
-      uploadFiles,
-      productRef,
-      handleUpdateFormDataDescription,
-      handleImageUpload,
-      handleFormSubmit,
-      getErrorMessage,
-    }
-  },
-})
-</script>

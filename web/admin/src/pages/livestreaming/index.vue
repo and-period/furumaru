@@ -1,3 +1,15 @@
+<script lang="ts" setup>
+const router = useRouter()
+
+const handleClickAddButton = () => {
+  router.push('/livestreaming/add')
+}
+
+const handleClickTestButton = () => {
+  router.push('/livestreaming/tests')
+}
+</script>
+
 <template>
   <div class="d-flex mb-4">
     <v-spacer />
@@ -10,26 +22,3 @@
     </v-btn>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, useRouter } from '@nuxtjs/composition-api'
-
-export default defineComponent({
-  setup() {
-    const router = useRouter()
-
-    const handleClickAddButton = () => {
-      router.push('/livestreaming/add')
-    }
-
-    const handleClickTestButton = () => {
-      router.push('/livestreaming/tests')
-    }
-
-    return {
-      handleClickAddButton,
-      handleClickTestButton,
-    }
-  },
-})
-</script>

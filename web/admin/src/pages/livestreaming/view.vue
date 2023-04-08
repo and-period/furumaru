@@ -1,3 +1,39 @@
+<script setup>
+import HLS from 'hls.js'
+
+const router = useRouter()
+const hls = new HLS()
+
+const formData = reactive({
+  playbackUrl: '',
+})
+
+const handleClickStreaming = () => {
+  router.push('/livestreaming')
+}
+
+const startWatching = () => {
+  if (formData.playbackUrl === '') {
+    alert('playback url is required!')
+    return
+  }
+
+  try {
+    hls.loadSource(formData.playbackUrl)
+    hls.attachMedia(document.getElementById('video'))
+  } catch (err) {
+    console.error(err)
+  }
+}
+</script>
+
+<style scoped>
+#video {
+  margin-bottom: 1.5em;
+  width: 100%;
+}
+</style>
+
 <template>
   <v-card>
     <v-card-title>視聴テスト用モック</v-card-title>
@@ -19,50 +55,3 @@
     </v-card-actions>
   </v-card>
 </template>
-
-<script>
-import { defineComponent, reactive, useRouter } from '@nuxtjs/composition-api'
-import HLS from 'hls.js'
-
-export default defineComponent({
-  setup() {
-    const router = useRouter()
-    const hls = new HLS()
-
-    const formData = reactive({
-      playbackUrl: '',
-    })
-
-    const handleClickStreaming = () => {
-      router.push('/livestreaming')
-    }
-
-    const startWatching = () => {
-      if (formData.playbackUrl === '') {
-        alert('playback url is required!')
-        return
-      }
-
-      try {
-        hls.loadSource(formData.playbackUrl)
-        hls.attachMedia(document.getElementById('video'))
-      } catch (err) {
-        console.error(err)
-      }
-    }
-
-    return {
-      formData,
-      handleClickStreaming,
-      startWatching,
-    }
-  },
-})
-</script>
-
-<style scoped>
-#video {
-  margin-bottom: 1.5em;
-  width: 100%;
-}
-</style>

@@ -1,3 +1,167 @@
+<script lang="ts" setup>
+import TheCategoryList from '~/components/organisms/TheCategoryList.vue'
+import TheProductTypeList from '~/components/organisms/TheProductTypeList.vue'
+import { usePagination } from '~/lib/hooks'
+import { useAuthStore } from '~/store/auth'
+import { useCategoryStore } from '~/store/category'
+import { useProductTypeStore } from '~/store/product-type'
+import {
+  CategoriesResponseCategoriesInner,
+  CreateCategoryRequest,
+  CreateProductTypeRequest,
+} from '~/types/api'
+import { ImageUploadStatus } from '~/types/props'
+import { Category } from '~/types/props/category'
+
+const categoryStore = useCategoryStore()
+const productTypeStore = useProductTypeStore()
+const { accessToken } = useAuthStore()
+
+const categoriesItems = reactive<{
+  offset: number
+  categories: CategoriesResponseCategoriesInner[]
+}>({ offset: 0, categories: [] })
+
+const inputRef = ref<HTMLInputElement | null>(null)
+const selector = ref<string>('categories')
+const categoryDialog = ref<boolean>(false)
+const productTypeDialog = ref<boolean>(false)
+const selectedCategoryId = ref<string>('')
+const imgUrl = ref<string>('')
+const items: Category[] = [
+  { name: 'カテゴリー', value: 'categories' },
+  { name: '品目', value: 'categoryItems' },
+]
+const headerUploadStatus = reactive<ImageUploadStatus>({
+  error: false,
+  message: '',
+})
+
+const categoryFormData = reactive<CreateCategoryRequest>({
+  name: '',
+})
+
+const productTypeFormData = reactive<CreateProductTypeRequest>({
+  name: '',
+  iconUrl: '',
+})
+
+const categoryCancel = (): void => {
+  categoryDialog.value = false
+}
+
+const productTypeCancel = (): void => {
+  productTypeDialog.value = false
+}
+
+const categoryRegister = async (): Promise<void> => {
+  try {
+    await categoryStore.createCategory(categoryFormData)
+    categoryDialog.value = false
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const productTypeRegister = async (): Promise<void> => {
+  try {
+    await productTypeStore.createProductType(
+      selectedCategoryId.value,
+      productTypeFormData
+    )
+    productTypeDialog.value = false
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const {
+  itemsPerPage: categoriesItemsPerPage,
+  offset: categoriesOffset,
+  options: categoriesOptions,
+  handleUpdateItemsPerPage: handleUpdateCategoriesItemsPerPage,
+  updateCurrentPage: _handleUpdateCategoriesPage,
+} = usePagination()
+
+watch(categoriesItemsPerPage, () => {
+  categoryStore.fetchCategories(categoriesItemsPerPage.value, 0)
+})
+
+const handleUpdateCategoriesPage = async (page: number) => {
+  _handleUpdateCategoriesPage(page)
+  await categoryStore.fetchCategories(
+    categoriesItemsPerPage.value,
+    categoriesOffset.value
+  )
+}
+
+const {
+  itemsPerPage: productTypesItemsPerPage,
+  offset: productTypesOffset,
+  options: productTypesOptions,
+  handleUpdateItemsPerPage: handleUpdateProductTypesItemsPerPage,
+  updateCurrentPage: _handleUpdateProductTypesPage,
+} = usePagination()
+
+const fetchState = useAsyncData(async () => {
+  try {
+    await Promise.all([
+      categoryStore.fetchCategories(categoriesItemsPerPage.value),
+      productTypeStore.fetchProductTypes(productTypesItemsPerPage.value),
+    ])
+    categoriesItems.categories = categoryStore.categories
+  } catch (err) {
+    console.log(err)
+  }
+})
+
+watch(productTypesItemsPerPage, () => {
+  productTypeStore.fetchProductTypes(productTypesItemsPerPage.value)
+})
+
+const handleUpdateProductTypesPage = async (page: number) => {
+  _handleUpdateProductTypesPage(page)
+  await productTypeStore.fetchProductTypes(
+    productTypesItemsPerPage.value,
+    productTypesOffset.value
+  )
+}
+
+const handleMoreCategoryItems = async () => {
+  if (accessToken) {
+    const limit = 20
+    categoriesItems.offset = categoriesItems.offset + limit + 1
+    const res = await categoryStore
+      .apiClient(accessToken)
+      .v1ListCategories(limit, categoriesItems.offset)
+    categoriesItems.categories.push(...res.data.categories)
+  }
+}
+
+const handleClick = () => {
+  if (inputRef.value !== null) {
+    inputRef.value.click()
+  }
+}
+
+const handleInputFileChange = () => {
+  const files = inputRef.value?.files
+  if (inputRef.value && inputRef.value.files) {
+    if (files && files.length > 0) {
+      productTypeStore
+        .uploadProductTypeIcon(files[0])
+        .then((res) => {
+          productTypeFormData.iconUrl = res.url
+        })
+        .catch(() => {
+          headerUploadStatus.error = true
+          headerUploadStatus.message = 'アップロードに失敗しました。'
+        })
+    }
+  }
+}
+</script>
+
 <template>
   <div>
     <v-card-title>カテゴリー・品目設定</v-card-title>
@@ -150,212 +314,3 @@
     </v-tabs-items>
   </div>
 </template>
-
-<script lang="ts">
-import {
-  defineComponent,
-  reactive,
-  ref,
-  useFetch,
-  watch,
-} from '@nuxtjs/composition-api'
-
-import TheCategoryList from '~/components/organisms/TheCategoryList.vue'
-import TheProductTypeList from '~/components/organisms/TheProductTypeList.vue'
-import { usePagination } from '~/lib/hooks'
-import { useAuthStore } from '~/store/auth'
-import { useCategoryStore } from '~/store/category'
-import { useProductTypeStore } from '~/store/product-type'
-import {
-  CategoriesResponseCategoriesInner,
-  CreateCategoryRequest,
-  CreateProductTypeRequest,
-} from '~/types/api'
-import { ImageUploadStatus } from '~/types/props'
-import { Category } from '~/types/props/category'
-
-export default defineComponent({
-  components: {
-    TheCategoryList,
-    TheProductTypeList,
-  },
-
-  setup() {
-    const categoryStore = useCategoryStore()
-    const productTypeStore = useProductTypeStore()
-    const { accessToken } = useAuthStore()
-
-    const categoriesItems = reactive<{
-      offset: number
-      categories: CategoriesResponseCategoriesInner[]
-    }>({ offset: 0, categories: [] })
-
-    const inputRef = ref<HTMLInputElement | null>(null)
-    const selector = ref<string>('categories')
-    const categoryDialog = ref<boolean>(false)
-    const productTypeDialog = ref<boolean>(false)
-    const selectedCategoryId = ref<string>('')
-    const imgUrl = ref<string>('')
-    const items: Category[] = [
-      { name: 'カテゴリー', value: 'categories' },
-      { name: '品目', value: 'categoryItems' },
-    ]
-    const headerUploadStatus = reactive<ImageUploadStatus>({
-      error: false,
-      message: '',
-    })
-
-    const categoryFormData = reactive<CreateCategoryRequest>({
-      name: '',
-    })
-
-    const productTypeFormData = reactive<CreateProductTypeRequest>({
-      name: '',
-      iconUrl: '',
-    })
-
-    const categoryCancel = (): void => {
-      categoryDialog.value = false
-    }
-
-    const productTypeCancel = (): void => {
-      productTypeDialog.value = false
-    }
-
-    const categoryRegister = async (): Promise<void> => {
-      try {
-        await categoryStore.createCategory(categoryFormData)
-        categoryDialog.value = false
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    const productTypeRegister = async (): Promise<void> => {
-      try {
-        await productTypeStore.createProductType(
-          selectedCategoryId.value,
-          productTypeFormData
-        )
-        productTypeDialog.value = false
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    const {
-      itemsPerPage: categoriesItemsPerPage,
-      offset: categoriesOffset,
-      options: categoriesOptions,
-      handleUpdateItemsPerPage: handleUpdateCategoriesItemsPerPage,
-      updateCurrentPage: _handleUpdateCategoriesPage,
-    } = usePagination()
-
-    watch(categoriesItemsPerPage, () => {
-      categoryStore.fetchCategories(categoriesItemsPerPage.value, 0)
-    })
-
-    const handleUpdateCategoriesPage = async (page: number) => {
-      _handleUpdateCategoriesPage(page)
-      await categoryStore.fetchCategories(
-        categoriesItemsPerPage.value,
-        categoriesOffset.value
-      )
-    }
-
-    const {
-      itemsPerPage: productTypesItemsPerPage,
-      offset: productTypesOffset,
-      options: productTypesOptions,
-      handleUpdateItemsPerPage: handleUpdateProductTypesItemsPerPage,
-      updateCurrentPage: _handleUpdateProductTypesPage,
-    } = usePagination()
-
-    const { fetchState } = useFetch(async () => {
-      try {
-        await Promise.all([
-          categoryStore.fetchCategories(categoriesItemsPerPage.value),
-          productTypeStore.fetchProductTypes(productTypesItemsPerPage.value),
-        ])
-        categoriesItems.categories = categoryStore.categories
-      } catch (err) {
-        console.log(err)
-      }
-    })
-
-    watch(productTypesItemsPerPage, () => {
-      productTypeStore.fetchProductTypes(productTypesItemsPerPage.value)
-    })
-
-    const handleUpdateProductTypesPage = async (page: number) => {
-      _handleUpdateProductTypesPage(page)
-      await productTypeStore.fetchProductTypes(
-        productTypesItemsPerPage.value,
-        productTypesOffset.value
-      )
-    }
-
-    const handleMoreCategoryItems = async () => {
-      if (accessToken) {
-        const limit = 20
-        categoriesItems.offset = categoriesItems.offset + limit + 1
-        const res = await categoryStore
-          .apiClient(accessToken)
-          .v1ListCategories(limit, categoriesItems.offset)
-        categoriesItems.categories.push(...res.data.categories)
-      }
-    }
-
-    const handleClick = () => {
-      if (inputRef.value !== null) {
-        inputRef.value.click()
-      }
-    }
-
-    const handleInputFileChange = () => {
-      const files = inputRef.value?.files
-      if (inputRef.value && inputRef.value.files) {
-        if (files && files.length > 0) {
-          productTypeStore
-            .uploadProductTypeIcon(files[0])
-            .then((res) => {
-              productTypeFormData.iconUrl = res.url
-            })
-            .catch(() => {
-              headerUploadStatus.error = true
-              headerUploadStatus.message = 'アップロードに失敗しました。'
-            })
-        }
-      }
-    }
-
-    return {
-      fetchState,
-      categoriesOptions,
-      imgUrl,
-      productTypesOptions,
-      categoriesItems,
-      items,
-      selector,
-      categoryDialog,
-      categoryFormData,
-      productTypeFormData,
-      productTypeDialog,
-      selectedCategoryId,
-      inputRef,
-      headerUploadStatus,
-      handleClick,
-      handleInputFileChange,
-      handleUpdateCategoriesItemsPerPage,
-      handleUpdateCategoriesPage,
-      handleUpdateProductTypesItemsPerPage,
-      handleUpdateProductTypesPage,
-      categoryCancel,
-      productTypeCancel,
-      categoryRegister,
-      productTypeRegister,
-      handleMoreCategoryItems,
-    }
-  },
-})
-</script>

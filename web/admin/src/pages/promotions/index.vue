@@ -1,3 +1,131 @@
+<script lang="ts" setup>
+import dayjs from 'dayjs'
+import { DataTableHeader } from 'vuetify'
+
+import { usePromotionStore } from '~/store/promotion'
+import { PromotionsResponsePromotionsInner } from '~/types/api'
+
+const router = useRouter()
+const promotionStore = usePromotionStore()
+
+const deleteDialog = ref<boolean>(false)
+const selectedId = ref<string>('')
+const selectedName = ref<string>('')
+
+const promotions = computed(() => {
+  return promotionStore.promotions
+})
+
+const headers: DataTableHeader[] = [
+  {
+    text: 'タイトル',
+    value: 'title',
+  },
+  {
+    text: 'ステータス',
+    value: 'public',
+  },
+  {
+    text: '割引コード',
+    value: 'code',
+  },
+  {
+    text: '割引方法',
+    value: 'discount',
+  },
+  {
+    text: '投稿開始',
+    value: 'publishedAt',
+  },
+  {
+    text: '使用開始',
+    value: 'startAt',
+  },
+  {
+    text: '使用終了',
+    value: 'endAt',
+  },
+  {
+    text: 'Actions',
+    value: 'actions',
+    sortable: false,
+  },
+]
+
+const getDiscount = (
+  discountType: number,
+  discountRate: number
+): string => {
+  switch (discountType) {
+    case 1:
+      return '-' + discountRate + '円'
+    case 2:
+      return '-' + discountRate + '%'
+    case 3:
+      return '送料無料'
+    default:
+      return ''
+  }
+}
+
+const handleClickAddButton = () => {
+  router.push('/promotions/add')
+}
+
+const handleDelete = async (): Promise<void> => {
+  try {
+    await promotionStore.deletePromotion(selectedId.value)
+  } catch (err) {
+    console.log(err)
+  }
+  deleteDialog.value = false
+}
+
+const handleEdit = (item: PromotionsResponsePromotionsInner) => {
+  router.push(`/promotions/edit/${item.id}`)
+}
+
+const openDeleteDialog = (
+  item: PromotionsResponsePromotionsInner
+): void => {
+  selectedId.value = item.id
+  selectedName.value = item.title
+  deleteDialog.value = true
+}
+
+const hideDeleteDialog = () => {
+  deleteDialog.value = false
+}
+
+const getStatus = (status: boolean): string => {
+  if (status) {
+    return '有効'
+  } else {
+    return '無効'
+  }
+}
+
+const getStatusColor = (status: boolean): string => {
+  if (status) {
+    return 'primary'
+  } else {
+    return 'error'
+  }
+}
+
+const getDay = (unixTime: number): string => {
+  return dayjs.unix(unixTime).format('YYYY/MM/DD HH:mm')
+}
+
+const fetchState = useAsyncData(async () => {
+  try {
+    await promotionStore.fetchPromotions()
+  } catch (err) {
+    console.log(err)
+  }
+})
+</script>
+
 <template>
   <div>
     <v-card-title>
@@ -74,154 +202,3 @@
     </v-card>
   </div>
 </template>
-
-<script lang="ts">
-import { computed, ref, useFetch, useRouter } from '@nuxtjs/composition-api'
-import { defineComponent } from '@vue/composition-api'
-import dayjs from 'dayjs'
-import { DataTableHeader } from 'vuetify'
-
-import { usePromotionStore } from '~/store/promotion'
-import { PromotionsResponsePromotionsInner } from '~/types/api'
-
-export default defineComponent({
-  setup() {
-    const router = useRouter()
-    const promotionStore = usePromotionStore()
-
-    const deleteDialog = ref<boolean>(false)
-    const selectedId = ref<string>('')
-    const selectedName = ref<string>('')
-
-    const promotions = computed(() => {
-      return promotionStore.promotions
-    })
-
-    const headers: DataTableHeader[] = [
-      {
-        text: 'タイトル',
-        value: 'title',
-      },
-      {
-        text: 'ステータス',
-        value: 'public',
-      },
-      {
-        text: '割引コード',
-        value: 'code',
-      },
-      {
-        text: '割引方法',
-        value: 'discount',
-      },
-      {
-        text: '投稿開始',
-        value: 'publishedAt',
-      },
-      {
-        text: '使用開始',
-        value: 'startAt',
-      },
-      {
-        text: '使用終了',
-        value: 'endAt',
-      },
-      {
-        text: 'Actions',
-        value: 'actions',
-        sortable: false,
-      },
-    ]
-
-    const getDiscount = (
-      discountType: number,
-      discountRate: number
-    ): string => {
-      switch (discountType) {
-        case 1:
-          return '-' + discountRate + '円'
-        case 2:
-          return '-' + discountRate + '%'
-        case 3:
-          return '送料無料'
-        default:
-          return ''
-      }
-    }
-
-    const handleClickAddButton = () => {
-      router.push('/promotions/add')
-    }
-
-    const handleDelete = async (): Promise<void> => {
-      try {
-        await promotionStore.deletePromotion(selectedId.value)
-      } catch (err) {
-        console.log(err)
-      }
-      deleteDialog.value = false
-    }
-
-    const handleEdit = (item: PromotionsResponsePromotionsInner) => {
-      router.push(`/promotions/edit/${item.id}`)
-    }
-
-    const openDeleteDialog = (
-      item: PromotionsResponsePromotionsInner
-    ): void => {
-      selectedId.value = item.id
-      selectedName.value = item.title
-      deleteDialog.value = true
-    }
-
-    const hideDeleteDialog = () => {
-      deleteDialog.value = false
-    }
-
-    const getStatus = (status: boolean): string => {
-      if (status) {
-        return '有効'
-      } else {
-        return '無効'
-      }
-    }
-
-    const getStatusColor = (status: boolean): string => {
-      if (status) {
-        return 'primary'
-      } else {
-        return 'error'
-      }
-    }
-
-    const getDay = (unixTime: number): string => {
-      return dayjs.unix(unixTime).format('YYYY/MM/DD HH:mm')
-    }
-
-    const { fetchState } = useFetch(async () => {
-      try {
-        await promotionStore.fetchPromotions()
-      } catch (err) {
-        console.log(err)
-      }
-    })
-
-    return {
-      headers,
-      promotions,
-      fetchState,
-      selectedName,
-      deleteDialog,
-      openDeleteDialog,
-      hideDeleteDialog,
-      handleDelete,
-      handleEdit,
-      handleClickAddButton,
-      getDiscount,
-      getStatus,
-      getStatusColor,
-      getDay,
-    }
-  },
-})
-</script>

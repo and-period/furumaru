@@ -1,3 +1,65 @@
+<script lang="ts" setup>
+const accountValue = '有'
+
+const headers = [
+  {
+    text: '関連マルシェ',
+    value: 'marche',
+  },
+  {
+    text: '開催日時',
+    value: 'date',
+  },
+  {
+    text: '購入金額',
+    value: 'price',
+  },
+]
+
+const items = [
+  {
+    marche: '大崎上島マルシェ',
+    date: '2023/04/01 14:34',
+    price: 1000,
+  },
+  {
+    marche: '福岡マルシェ',
+    date: '2023/04/02 14:34',
+    price: 2000,
+  },
+  {
+    marche: '大崎上島マルシェ',
+    date: '2023/04/01 14:34',
+    price: 1000,
+  },
+  {
+    marche: '福岡マルシェ',
+    date: '2023/04/02 14:34',
+    price: 2000,
+  },
+  {
+    marche: '大崎上島マルシェ',
+    date: '2023/04/01 14:34',
+    price: 1000,
+  },
+  {
+    marche: '福岡マルシェ',
+    date: '2023/04/02 14:34',
+    price: 2000,
+  },
+  {
+    marche: '大崎上島マルシェ',
+    date: '2023/04/01 14:34',
+    price: 1000,
+  },
+  {
+    marche: '福岡マルシェ',
+    date: '2023/04/02 14:34',
+    price: 2000,
+  },
+]
+</script>
+
 <template>
   <div>
     <v-card-title>顧客管理</v-card-title>
@@ -70,75 +132,3 @@
     </v-card>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
-export default defineComponent({
-  setup() {
-    const accountValue = '有'
-    const headers = [
-      {
-        text: '関連マルシェ',
-        value: 'marche',
-      },
-      {
-        text: '開催日時',
-        value: 'date',
-      },
-      {
-        text: '購入金額',
-        value: 'price',
-      },
-    ]
-
-    const items = [
-      {
-        marche: '大崎上島マルシェ',
-        date: '2023/04/01 14:34',
-        price: 1000,
-      },
-      {
-        marche: '福岡マルシェ',
-        date: '2023/04/02 14:34',
-        price: 2000,
-      },
-      {
-        marche: '大崎上島マルシェ',
-        date: '2023/04/01 14:34',
-        price: 1000,
-      },
-      {
-        marche: '福岡マルシェ',
-        date: '2023/04/02 14:34',
-        price: 2000,
-      },
-      {
-        marche: '大崎上島マルシェ',
-        date: '2023/04/01 14:34',
-        price: 1000,
-      },
-      {
-        marche: '福岡マルシェ',
-        date: '2023/04/02 14:34',
-        price: 2000,
-      },
-      {
-        marche: '大崎上島マルシェ',
-        date: '2023/04/01 14:34',
-        price: 1000,
-      },
-      {
-        marche: '福岡マルシェ',
-        date: '2023/04/02 14:34',
-        price: 2000,
-      },
-    ]
-
-    return {
-      accountValue,
-      headers,
-      items,
-    }
-  },
-})
-</script>

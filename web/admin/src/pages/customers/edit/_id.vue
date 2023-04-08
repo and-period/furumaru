@@ -1,3 +1,73 @@
+<script lang="ts" setup>
+import { Customer } from '~/types/props/customer'
+
+const tab = ref<string>('customers')
+const tabItems: Customer[] = [
+  { name: '顧客情報', value: 'customers' },
+  { name: '購入に関して', value: 'customerItems' },
+]
+
+const accountValue = '有'
+
+const headers = [
+  {
+    text: '関連マルシェ',
+    value: 'marche',
+  },
+  {
+    text: '開催日時',
+    value: 'date',
+  },
+  {
+    text: '購入金額',
+    value: 'price',
+  },
+]
+
+const items = [
+  {
+    marche: '大崎上島マルシェ',
+    date: '2023/04/01 14:34',
+    price: 1000,
+  },
+  {
+    marche: '福岡マルシェ',
+    date: '2023/04/02 14:34',
+    price: 2000,
+  },
+  {
+    marche: '大崎上島マルシェ',
+    date: '2023/04/01 14:34',
+    price: 1000,
+  },
+  {
+    marche: '福岡マルシェ',
+    date: '2023/04/02 14:34',
+    price: 2000,
+  },
+  {
+    marche: '大崎上島マルシェ',
+    date: '2023/04/01 14:34',
+    price: 1000,
+  },
+  {
+    marche: '福岡マルシェ',
+    date: '2023/04/02 14:34',
+    price: 2000,
+  },
+  {
+    marche: '大崎上島マルシェ',
+    date: '2023/04/01 14:34',
+    price: 1000,
+  },
+  {
+    marche: '福岡マルシェ',
+    date: '2023/04/02 14:34',
+    price: 2000,
+  },
+]
+</script>
+
 <template>
   <div>
     <v-card-title>顧客管理</v-card-title>
@@ -84,86 +154,3 @@
     </v-tabs-items>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, ref } from '@nuxtjs/composition-api'
-
-import { Customer } from '~/types/props/customer'
-export default defineComponent({
-  setup() {
-    const tab = ref<string>('customers')
-    const tabItems: Customer[] = [
-      { name: '顧客情報', value: 'customers' },
-      { name: '購入に関して', value: 'customerItems' },
-    ]
-
-    const accountValue = '有'
-
-    const headers = [
-      {
-        text: '関連マルシェ',
-        value: 'marche',
-      },
-      {
-        text: '開催日時',
-        value: 'date',
-      },
-      {
-        text: '購入金額',
-        value: 'price',
-      },
-    ]
-
-    const items = [
-      {
-        marche: '大崎上島マルシェ',
-        date: '2023/04/01 14:34',
-        price: 1000,
-      },
-      {
-        marche: '福岡マルシェ',
-        date: '2023/04/02 14:34',
-        price: 2000,
-      },
-      {
-        marche: '大崎上島マルシェ',
-        date: '2023/04/01 14:34',
-        price: 1000,
-      },
-      {
-        marche: '福岡マルシェ',
-        date: '2023/04/02 14:34',
-        price: 2000,
-      },
-      {
-        marche: '大崎上島マルシェ',
-        date: '2023/04/01 14:34',
-        price: 1000,
-      },
-      {
-        marche: '福岡マルシェ',
-        date: '2023/04/02 14:34',
-        price: 2000,
-      },
-      {
-        marche: '大崎上島マルシェ',
-        date: '2023/04/01 14:34',
-        price: 1000,
-      },
-      {
-        marche: '福岡マルシェ',
-        date: '2023/04/02 14:34',
-        price: 2000,
-      },
-    ]
-
-    return {
-      accountValue,
-      headers,
-      items,
-      tabItems,
-      tab,
-    }
-  },
-})
-</script>

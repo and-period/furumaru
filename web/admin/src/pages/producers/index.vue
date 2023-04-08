@@ -1,3 +1,157 @@
+<script lang="ts" setup>
+import { DataTableHeader } from 'vuetify'
+
+import { useAlert, usePagination } from '~/lib/hooks'
+import { useCommonStore } from '~/store/common'
+import { useProducerStore } from '~/store/producer'
+import { ProducersResponseProducersInner } from '~/types/api'
+import { ApiBaseError } from '~/types/exception'
+
+const router = useRouter()
+
+const { isShow, alertText, alertType, show } = useAlert('error')
+const producerStore = useProducerStore()
+const { addSnackbar } = useCommonStore()
+
+const search = ref<string>('')
+const query = ref<string>('')
+
+const deleteDialog = ref<boolean>(false)
+const selectedId = ref<string>('')
+
+const producers = computed(() => {
+  return producerStore.producers
+})
+
+const totalItems = computed(() => {
+  return producerStore.totalItems
+})
+
+const noResultsText = computed(() => {
+  return `「${query.value}」に一致するデータはありません。`
+})
+
+watch(search, () => {
+  if (search.value === '') {
+    query.value = ''
+  }
+})
+
+const {
+  updateCurrentPage,
+  itemsPerPage,
+  handleUpdateItemsPerPage,
+  options,
+  offset,
+} = usePagination()
+
+watch(itemsPerPage, () => {
+  producerStore.fetchProducers(itemsPerPage.value, 0, '')
+})
+
+const selectedItemName = computed(() => {
+  const selectedItem = producers.value.find(
+    (item) => item.id === selectedId.value
+  )
+  return selectedItem
+    ? `${selectedItem.lastname} ${selectedItem.firstname}`
+    : ''
+})
+
+const handleUpdatePage = async (page: number) => {
+  updateCurrentPage(page)
+  await producerStore.fetchProducers(itemsPerPage.value, offset.value, '')
+}
+
+const fetchState = useAsyncData(async () => {
+  try {
+    await producerStore.fetchProducers(itemsPerPage.value, offset.value)
+  } catch (error) {
+    const errorMessage =
+      error instanceof ApiBaseError
+        ? error.message
+        : '不明なエラーが発生しました。'
+    show(errorMessage)
+  }
+})
+
+const headers: DataTableHeader[] = [
+  {
+    text: 'サムネイル',
+    value: 'thumbnail',
+  },
+  {
+    text: '農園名',
+    value: 'storeName',
+  },
+  {
+    text: '生産者名',
+    value: 'name',
+  },
+  {
+    text: 'Email',
+    value: 'email',
+  },
+  {
+    text: '電話番号',
+    value: 'phoneNumber',
+  },
+  {
+    text: 'Actions',
+    value: 'actions',
+    sortable: false,
+  },
+  {
+    text: '動画',
+    value: 'video',
+    sortable: false,
+  },
+]
+
+const handleClickAddButton = () => {
+  router.push('/producers/add')
+}
+
+const handleSearch = () => {
+  query.value = search.value
+}
+
+const handleEdit = (item: ProducersResponseProducersInner) => {
+  router.push(`/producers/edit/${item.id}`)
+}
+
+const handleClickCancelButton = () => {
+  deleteDialog.value = false
+}
+
+const handleClickDeleteButton = (item: ProducersResponseProducersInner) => {
+  selectedId.value = item.id
+  deleteDialog.value = true
+}
+
+const handleDeleteFormSubmit = async () => {
+  try {
+    await producerStore.deleteProducer(selectedId.value)
+    addSnackbar({
+      color: 'info',
+      message: '生産者を削除しました。',
+    })
+    fetchState.refresh()
+  } catch (error) {
+    const errorMessage =
+      error instanceof ApiBaseError
+        ? error.message
+        : '不明なエラーが発生しました。'
+    show(errorMessage)
+  }
+  deleteDialog.value = false
+}
+
+const handleAddVideo = (item: ProducersResponseProducersInner) => {
+  console.log(item)
+}
+</script>
+
 <template>
   <div>
     <v-card-title>
@@ -94,197 +248,3 @@
     </v-card>
   </div>
 </template>
-
-<script lang="ts">
-import {
-  computed,
-  defineComponent,
-  ref,
-  useFetch,
-  useRouter,
-  watch,
-} from '@nuxtjs/composition-api'
-import { DataTableHeader } from 'vuetify'
-
-import { useAlert, usePagination } from '~/lib/hooks'
-import { useCommonStore } from '~/store/common'
-import { useProducerStore } from '~/store/producer'
-import { ProducersResponseProducersInner } from '~/types/api'
-import { ApiBaseError } from '~/types/exception'
-
-export default defineComponent({
-  setup() {
-    const router = useRouter()
-
-    const { isShow, alertText, alertType, show } = useAlert('error')
-    const producerStore = useProducerStore()
-    const { addSnackbar } = useCommonStore()
-
-    const search = ref<string>('')
-    const query = ref<string>('')
-
-    const deleteDialog = ref<boolean>(false)
-    const selectedId = ref<string>('')
-
-    const producers = computed(() => {
-      return producerStore.producers
-    })
-
-    const totalItems = computed(() => {
-      return producerStore.totalItems
-    })
-
-    const noResultsText = computed(() => {
-      return `「${query.value}」に一致するデータはありません。`
-    })
-
-    watch(search, () => {
-      if (search.value === '') {
-        query.value = ''
-      }
-    })
-
-    const {
-      updateCurrentPage,
-      itemsPerPage,
-      handleUpdateItemsPerPage,
-      options,
-      offset,
-    } = usePagination()
-
-    watch(itemsPerPage, () => {
-      producerStore.fetchProducers(itemsPerPage.value, 0, '')
-    })
-
-    const selectedItemName = computed(() => {
-      const selectedItem = producers.value.find(
-        (item) => item.id === selectedId.value
-      )
-      return selectedItem
-        ? `${selectedItem.lastname} ${selectedItem.firstname}`
-        : ''
-    })
-
-    const handleUpdatePage = async (page: number) => {
-      updateCurrentPage(page)
-      await producerStore.fetchProducers(itemsPerPage.value, offset.value, '')
-    }
-
-    const { fetchState, fetch } = useFetch(async () => {
-      try {
-        await producerStore.fetchProducers(itemsPerPage.value, offset.value)
-      } catch (error) {
-        const errorMessage =
-          error instanceof ApiBaseError
-            ? error.message
-            : '不明なエラーが発生しました。'
-        show(errorMessage)
-      }
-    })
-
-    const headers: DataTableHeader[] = [
-      {
-        text: 'サムネイル',
-        value: 'thumbnail',
-      },
-      {
-        text: '農園名',
-        value: 'storeName',
-      },
-      {
-        text: '生産者名',
-        value: 'name',
-      },
-      {
-        text: 'Email',
-        value: 'email',
-      },
-      {
-        text: '電話番号',
-        value: 'phoneNumber',
-      },
-      {
-        text: 'Actions',
-        value: 'actions',
-        sortable: false,
-      },
-      {
-        text: '動画',
-        value: 'video',
-        sortable: false,
-      },
-    ]
-
-    const handleClickAddButton = () => {
-      router.push('/producers/add')
-    }
-
-    const handleSearch = () => {
-      query.value = search.value
-    }
-
-    const handleEdit = (item: ProducersResponseProducersInner) => {
-      router.push(`/producers/edit/${item.id}`)
-    }
-
-    const handleClickCancelButton = () => {
-      deleteDialog.value = false
-    }
-
-    const handleClickDeleteButton = (item: ProducersResponseProducersInner) => {
-      selectedId.value = item.id
-      deleteDialog.value = true
-    }
-
-    const handleDeleteFormSubmit = async () => {
-      try {
-        await producerStore.deleteProducer(selectedId.value)
-        addSnackbar({
-          color: 'info',
-          message: '生産者を削除しました。',
-        })
-        fetch()
-      } catch (error) {
-        const errorMessage =
-          error instanceof ApiBaseError
-            ? error.message
-            : '不明なエラーが発生しました。'
-        show(errorMessage)
-      }
-      deleteDialog.value = false
-    }
-
-    const handleAddVideo = (item: ProducersResponseProducersInner) => {
-      console.log(item)
-    }
-
-    return {
-      // 定数
-      headers,
-      options,
-      noResultsText,
-      alertType,
-      // 変数
-      isShow,
-      alertText,
-      deleteDialog,
-      fetchState,
-      producers,
-      totalItems,
-      search,
-      query,
-      selectedItemName,
-      // 関数
-      handleClickAddButton,
-      handleUpdatePage,
-      handleUpdateItemsPerPage,
-      handleSearch,
-      handleEdit,
-      handleClickDeleteButton,
-      handleClickCancelButton,
-      handleDeleteFormSubmit,
-      handleAddVideo,
-    }
-  },
-})
-</script>

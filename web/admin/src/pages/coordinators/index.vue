@@ -1,3 +1,150 @@
+<script lang="ts" setup>
+import { DataTableHeader } from 'vuetify'
+
+import { useAlert, usePagination } from '~/lib/hooks'
+import { useCommonStore } from '~/store/common'
+import { useCoordinatorStore } from '~/store/coordinator'
+import { CoordinatorsResponseCoordinatorsInner } from '~/types/api'
+import { ApiBaseError } from '~/types/exception'
+
+const router = useRouter()
+
+const { isShow, alertText, alertType, show } = useAlert('error')
+
+const { addSnackbar } = useCommonStore()
+
+const coordinatorStore = useCoordinatorStore()
+const coordinators = computed(() => {
+  return coordinatorStore.coordinators
+})
+
+const totalItems = computed(() => {
+  return coordinatorStore.totalItems
+})
+
+const deleteDialog = ref<boolean>(false)
+const selectedId = ref<string>('')
+
+const selectedItemName = computed(() => {
+  const selectedItem = coordinators.value.find(
+    (item) => item.id === selectedId.value
+  )
+  return selectedItem
+    ? `${selectedItem.lastname} ${selectedItem.firstname}`
+    : ''
+})
+
+const search = ref<string>('')
+const query = ref<string>('')
+
+const noResultsText = computed(() => {
+  return `「${query.value}」に一致するデータはありません。`
+})
+
+watch(search, () => {
+  if (search.value === '') {
+    query.value = ''
+  }
+})
+
+const {
+  updateCurrentPage,
+  itemsPerPage,
+  handleUpdateItemsPerPage,
+  options,
+  offset,
+} = usePagination()
+
+watch(itemsPerPage, () => {
+  coordinatorStore.fetchCoordinators(itemsPerPage.value, 0)
+})
+
+const handleUpdatePage = async (page: number) => {
+  updateCurrentPage(page)
+  await coordinatorStore.fetchCoordinators(itemsPerPage.value, offset.value)
+}
+
+const fetchState = useAsyncData(async () => {
+  try {
+    await coordinatorStore.fetchCoordinators(
+      itemsPerPage.value,
+      offset.value
+    )
+  } catch (err) {
+    console.log(err)
+  }
+})
+
+const headers: DataTableHeader[] = [
+  {
+    text: 'サムネイル',
+    value: 'thumbnail',
+  },
+  {
+    text: '店舗名',
+    value: 'storeName',
+  },
+  {
+    text: 'コーディネータ名',
+    value: 'name',
+  },
+  {
+    text: 'Email',
+    value: 'email',
+  },
+  {
+    text: '電話番号',
+    value: 'phoneNumber',
+  },
+  {
+    text: 'Actions',
+    value: 'actions',
+    sortable: false,
+  },
+]
+
+const handleClickAddButton = () => {
+  router.push('/coordinators/add')
+}
+
+const handleSearch = () => {
+  query.value = search.value
+}
+
+const handleEdit = (item: CoordinatorsResponseCoordinatorsInner) => {
+  router.push(`/coordinators/edit/${item.id}`)
+}
+
+const handleClickDeleteButton = (
+  item: CoordinatorsResponseCoordinatorsInner
+): void => {
+  selectedId.value = item.id
+  deleteDialog.value = true
+}
+
+const handleClickCancelButton = () => {
+  deleteDialog.value = false
+}
+
+const handleDeleteFormSubmit = async () => {
+  try {
+    await coordinatorStore.deleteCoordinator(selectedId.value)
+    addSnackbar({
+      color: 'info',
+      message: 'コーディネータを削除しました。',
+    })
+    fetchState.refresh()
+  } catch (error) {
+    const errorMessage =
+      error instanceof ApiBaseError
+        ? error.message
+        : '不明なエラーが発生しました。'
+    show(errorMessage)
+  }
+  deleteDialog.value = false
+}
+</script>
+
 <template>
   <div>
     <v-card-title>
@@ -93,208 +240,3 @@
     </v-card>
   </div>
 </template>
-
-<script lang="ts">
-import {
-  computed,
-  defineComponent,
-  ref,
-  useFetch,
-  useRouter,
-  watch,
-} from '@nuxtjs/composition-api'
-import { DataTableHeader } from 'vuetify'
-
-import { useAlert, usePagination } from '~/lib/hooks'
-import { useCommonStore } from '~/store/common'
-import { useCoordinatorStore } from '~/store/coordinator'
-import { CoordinatorsResponseCoordinatorsInner } from '~/types/api'
-import { ApiBaseError } from '~/types/exception'
-import { Coordinator } from '~/types/props/coordinator'
-
-export default defineComponent({
-  setup() {
-    const tab = ref<string>('coordinators')
-    const tabItems: Coordinator[] = [
-      { name: '基本情報', value: 'coordinators' },
-      { name: '生産者管理', value: 'customers' },
-    ]
-
-    const router = useRouter()
-
-    const { isShow, alertText, alertType, show } = useAlert('error')
-
-    const { addSnackbar } = useCommonStore()
-
-    const coordinatorStore = useCoordinatorStore()
-    const coordinators = computed(() => {
-      return coordinatorStore.coordinators
-    })
-
-    const totalItems = computed(() => {
-      return coordinatorStore.totalItems
-    })
-
-    const deleteDialog = ref<boolean>(false)
-    const selectedId = ref<string>('')
-    const selectedName = ref<string>('')
-
-    const selectedItemName = computed(() => {
-      const selectedItem = coordinators.value.find(
-        (item) => item.id === selectedId.value
-      )
-      return selectedItem
-        ? `${selectedItem.lastname} ${selectedItem.firstname}`
-        : ''
-    })
-
-    const search = ref<string>('')
-    const query = ref<string>('')
-
-    const noResultsText = computed(() => {
-      return `「${query.value}」に一致するデータはありません。`
-    })
-
-    watch(search, () => {
-      if (search.value === '') {
-        query.value = ''
-      }
-    })
-
-    const {
-      updateCurrentPage,
-      itemsPerPage,
-      handleUpdateItemsPerPage,
-      options,
-      offset,
-    } = usePagination()
-
-    watch(itemsPerPage, () => {
-      coordinatorStore.fetchCoordinators(itemsPerPage.value, 0)
-    })
-
-    const handleUpdatePage = async (page: number) => {
-      updateCurrentPage(page)
-      await coordinatorStore.fetchCoordinators(itemsPerPage.value, offset.value)
-    }
-
-    const openDeleteDialog = (
-      item: CoordinatorsResponseCoordinatorsInner
-    ): void => {
-      selectedId.value = item.id
-      selectedName.value = item.firstname
-      deleteDialog.value = true
-    }
-
-    const { fetchState, fetch } = useFetch(async () => {
-      try {
-        await coordinatorStore.fetchCoordinators(
-          itemsPerPage.value,
-          offset.value
-        )
-      } catch (err) {
-        console.log(err)
-      }
-    })
-
-    const headers: DataTableHeader[] = [
-      {
-        text: 'サムネイル',
-        value: 'thumbnail',
-      },
-      {
-        text: '店舗名',
-        value: 'storeName',
-      },
-      {
-        text: 'コーディネータ名',
-        value: 'name',
-      },
-      {
-        text: 'Email',
-        value: 'email',
-      },
-      {
-        text: '電話番号',
-        value: 'phoneNumber',
-      },
-      {
-        text: 'Actions',
-        value: 'actions',
-        sortable: false,
-      },
-    ]
-
-    const handleClickAddButton = () => {
-      router.push('/coordinators/add')
-    }
-
-    const handleSearch = () => {
-      query.value = search.value
-    }
-
-    const handleEdit = (item: CoordinatorsResponseCoordinatorsInner) => {
-      router.push(`/coordinators/edit/${item.id}`)
-    }
-
-    const handleClickDeleteButton = (
-      item: CoordinatorsResponseCoordinatorsInner
-    ): void => {
-      selectedId.value = item.id
-      deleteDialog.value = true
-    }
-
-    const handleClickCancelButton = () => {
-      deleteDialog.value = false
-    }
-
-    const handleDeleteFormSubmit = async () => {
-      try {
-        await coordinatorStore.deleteCoordinator(selectedId.value)
-        addSnackbar({
-          color: 'info',
-          message: 'コーディネータを削除しました。',
-        })
-        fetch()
-      } catch (error) {
-        const errorMessage =
-          error instanceof ApiBaseError
-            ? error.message
-            : '不明なエラーが発生しました。'
-        show(errorMessage)
-      }
-      deleteDialog.value = false
-    }
-
-    return {
-      // 定数
-      headers,
-      options,
-      noResultsText,
-      alertType,
-      // 変数
-      isShow,
-      alertText,
-      deleteDialog,
-      fetchState,
-      coordinators,
-      totalItems,
-      search,
-      query,
-      selectedItemName,
-      // 関数
-      handleSearch,
-      handleUpdatePage,
-      handleUpdateItemsPerPage,
-      handleClickAddButton,
-      handleEdit,
-      openDeleteDialog,
-      tab,
-      tabItems,
-      handleClickCancelButton,
-      handleClickDeleteButton,
-      handleDeleteFormSubmit,
-    }
-  },
-})
-</script>

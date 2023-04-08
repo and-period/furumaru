@@ -1,3 +1,242 @@
+<script lang="ts" setup>
+import { useVuelidate } from '@vuelidate/core'
+
+import { usePagination, useSearchAddress } from '~/lib/hooks'
+import {
+  kana,
+  required,
+  tel,
+  maxLength,
+} from '~/lib/validations'
+import { useCoordinatorStore } from '~/store/coordinator'
+import { useProducerStore } from '~/store/producer'
+import {
+  ProducersResponseProducersInner,
+  RelateProducersRequest,
+  UpdateCoordinatorRequest,
+} from '~/types/api'
+import { ImageUploadStatus } from '~/types/props'
+import { Coordinator } from '~/types/props/coordinator'
+
+const tab = ref<string>('coordinators')
+const tabItems: Coordinator[] = [
+  { name: '基本情報', value: 'coordinators' },
+  { name: '関連生産者', value: 'relationProducers' },
+]
+const coordinatorStore = useCoordinatorStore()
+
+const producers = ref<string[]>([])
+const dialog = ref<boolean>(false)
+
+const producerStore = useProducerStore()
+
+const producerItems = computed(() => {
+  return producerStore.producers
+})
+
+const relateProducersItems = reactive<{
+  offset: number
+  relateProducers: ProducersResponseProducersInner[]
+}>({ offset: 0, relateProducers: [] })
+
+const route = useRoute()
+const id = route.params.id
+const router = useRouter()
+
+const { uploadCoordinatorThumbnail, uploadCoordinatorHeader } =
+  useCoordinatorStore()
+
+const { getCoordinator } = useCoordinatorStore()
+
+const {
+  itemsPerPage: producersItemsPerPage,
+  offset: producersOffset,
+  options: producersOptions,
+  handleUpdateItemsPerPage: handleUpdateProducersItemsPerPage,
+  updateCurrentPage: _handleUpdateProducersPage,
+} = usePagination()
+
+watch(producersItemsPerPage, () => {
+  coordinatorStore.fetchRelatedProducers(id, producersItemsPerPage.value, 0)
+})
+
+const handleUpdateProducersPage = async (page: number) => {
+  _handleUpdateProducersPage(page)
+  await coordinatorStore.fetchRelatedProducers(
+    id,
+    producersItemsPerPage.value,
+    producersOffset.value
+  )
+}
+
+const formData = reactive<UpdateCoordinatorRequest>({
+  storeName: '',
+  firstname: '',
+  lastname: '',
+  firstnameKana: '',
+  lastnameKana: '',
+  companyName: '',
+  thumbnailUrl: '',
+  headerUrl: '',
+  twitterAccount: '',
+  instagramAccount: '',
+  facebookAccount: '',
+  phoneNumber: '',
+  postalCode: '',
+  prefecture: '',
+  city: '',
+  addressLine1: '',
+  addressLine2: '',
+})
+
+const producerData = reactive<RelateProducersRequest>({
+  producerIds: [],
+})
+
+const fetchState = useAsyncData(async () => {
+  try {
+    const coordinator = await getCoordinator(id)
+    formData.storeName = coordinator.storeName
+    formData.firstname = coordinator.firstname
+    formData.lastname = coordinator.lastname
+    formData.firstnameKana = coordinator.firstnameKana
+    formData.lastnameKana = coordinator.lastnameKana
+    formData.companyName = coordinator.companyName
+    formData.thumbnailUrl = coordinator.thumbnailUrl
+    formData.headerUrl = coordinator.headerUrl
+    formData.twitterAccount = coordinator.twitterAccount
+    formData.instagramAccount = coordinator.instagramAccount
+    formData.facebookAccount = coordinator.facebookAccount
+    formData.phoneNumber = coordinator.phoneNumber.replace('+81', '0')
+    formData.postalCode = coordinator.postalCode
+    formData.prefecture = coordinator.prefecture
+    formData.city = coordinator.city
+    formData.addressLine1 = coordinator.addressLine1
+    formData.addressLine2 = coordinator.addressLine2
+
+    await Promise.all([
+      coordinatorStore.fetchRelatedProducers(
+        id,
+        producersItemsPerPage.value
+      ),
+    ])
+    relateProducersItems.relateProducers = coordinatorStore.producers
+  } catch (err) {
+    console.log(err)
+  }
+})
+
+const rules = computed(() => ({
+  storeName: { required, maxLength: maxLength(64) },
+  companyName: { required, maxLength: maxLength(64) },
+  firstname: { required, maxLength: maxLength(16) },
+  lastname: { required, maxLength: maxLength(16) },
+  firstnameKana: { required, kana },
+  lastnameKana: { required, kana },
+  phoneNumber: { required, tel },
+}))
+
+const v$ = useVuelidate(rules, formData)
+
+const {
+  loading: searchLoading,
+  errorMessage: searchErrorMessage,
+  searchAddressByPostalCode,
+} = useSearchAddress()
+
+const searchAddress = async () => {
+  searchLoading.value = true
+  searchErrorMessage.value = ''
+  const res = await searchAddressByPostalCode(Number(formData.postalCode))
+  if (res) {
+    formData.prefecture = res.prefecture
+    formData.city = res.city
+    formData.addressLine1 = res.addressLine1
+  }
+}
+
+const thumbnailUploadStatus = reactive<ImageUploadStatus>({
+  error: false,
+  message: '',
+})
+
+const headerUploadStatus = reactive<ImageUploadStatus>({
+  error: false,
+  message: '',
+})
+
+const handleUpdateThumbnail = (files: FileList) => {
+  if (files.length > 0) {
+    uploadCoordinatorThumbnail(files[0])
+      .then((res) => {
+        formData.thumbnailUrl = res.url
+      })
+      .catch(() => {
+        thumbnailUploadStatus.error = true
+        thumbnailUploadStatus.message = 'アップロードに失敗しました。'
+      })
+  }
+}
+
+const handleUpdateHeader = async (files: FileList) => {
+  if (files.length > 0) {
+    await uploadCoordinatorHeader(files[0])
+      .then((res) => {
+        formData.headerUrl = res.url
+      })
+      .catch(() => {
+        headerUploadStatus.error = true
+        headerUploadStatus.message = 'アップロードに失敗しました。'
+      })
+  }
+}
+
+const handleSubmit = async (): Promise<void> => {
+  try {
+    const result = await v$.value.$validate()
+    if (!result) {
+      return
+    }
+    await coordinatorStore.updateCoordinator(
+      {
+        ...formData,
+        phoneNumber: formData.phoneNumber.replace('0', '+81'),
+      },
+      id
+    )
+    router.push('/coordinators')
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const relateProducers = async (): Promise<void> => {
+  producerData.producerIds = producers.value
+  try {
+    await coordinatorStore.relateProducers(id, producerData)
+    dialog.value = false
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const remove = (item: string) => {
+  producers.value = producers.value.filter((id) => id !== item)
+}
+
+const cancel = (): void => {
+  dialog.value = false
+}
+
+useAsyncData(async () => {
+  try {
+    await producerStore.fetchProducers(20, 0, 'unrelated')
+  } catch (err) {
+    console.log(err)
+  }
+})
+</script>
+
 <template>
   <div>
     <v-card-title>コーディネーター編集</v-card-title>
@@ -98,284 +337,3 @@
     </v-tabs-items>
   </div>
 </template>
-
-<script lang="ts">
-import {
-  computed,
-  defineComponent,
-  reactive,
-  ref,
-  useFetch,
-  useRoute,
-  useRouter,
-  watch,
-} from '@nuxtjs/composition-api'
-import { useVuelidate } from '@vuelidate/core'
-
-import { usePagination, useSearchAddress } from '~/lib/hooks'
-import {
-  kana,
-  getErrorMessage,
-  required,
-  tel,
-  maxLength,
-} from '~/lib/validations'
-import { useCoordinatorStore } from '~/store/coordinator'
-import { useProducerStore } from '~/store/producer'
-import {
-  ProducersResponseProducersInner,
-  RelateProducersRequest,
-  UpdateCoordinatorRequest,
-} from '~/types/api'
-import { ImageUploadStatus } from '~/types/props'
-import { Coordinator } from '~/types/props/coordinator'
-
-export default defineComponent({
-  setup() {
-    const tab = ref<string>('coordinators')
-    const tabItems: Coordinator[] = [
-      { name: '基本情報', value: 'coordinators' },
-      { name: '関連生産者', value: 'relationProducers' },
-    ]
-    const coordinatorStore = useCoordinatorStore()
-
-    const producers = ref<string[]>([])
-    const dialog = ref<boolean>(false)
-
-    const producerStore = useProducerStore()
-
-    const producerItems = computed(() => {
-      return producerStore.producers
-    })
-
-    const relateProducersItems = reactive<{
-      offset: number
-      relateProducers: ProducersResponseProducersInner[]
-    }>({ offset: 0, relateProducers: [] })
-
-    const route = useRoute()
-    const id = route.value.params.id
-    const router = useRouter()
-
-    const { uploadCoordinatorThumbnail, uploadCoordinatorHeader } =
-      useCoordinatorStore()
-
-    const { getCoordinator } = useCoordinatorStore()
-
-    const {
-      itemsPerPage: producersItemsPerPage,
-      offset: producersOffset,
-      options: producersOptions,
-      handleUpdateItemsPerPage: handleUpdateProducersItemsPerPage,
-      updateCurrentPage: _handleUpdateProducersPage,
-    } = usePagination()
-
-    watch(producersItemsPerPage, () => {
-      coordinatorStore.fetchRelatedProducers(id, producersItemsPerPage.value, 0)
-    })
-
-    const handleUpdateProducersPage = async (page: number) => {
-      _handleUpdateProducersPage(page)
-      await coordinatorStore.fetchRelatedProducers(
-        id,
-        producersItemsPerPage.value,
-        producersOffset.value
-      )
-    }
-
-    const formData = reactive<UpdateCoordinatorRequest>({
-      storeName: '',
-      firstname: '',
-      lastname: '',
-      firstnameKana: '',
-      lastnameKana: '',
-      companyName: '',
-      thumbnailUrl: '',
-      headerUrl: '',
-      twitterAccount: '',
-      instagramAccount: '',
-      facebookAccount: '',
-      phoneNumber: '',
-      postalCode: '',
-      prefecture: '',
-      city: '',
-      addressLine1: '',
-      addressLine2: '',
-    })
-
-    const producerData = reactive<RelateProducersRequest>({
-      producerIds: [],
-    })
-
-    const { fetchState } = useFetch(async () => {
-      try {
-        const coordinator = await getCoordinator(id)
-        formData.storeName = coordinator.storeName
-        formData.firstname = coordinator.firstname
-        formData.lastname = coordinator.lastname
-        formData.firstnameKana = coordinator.firstnameKana
-        formData.lastnameKana = coordinator.lastnameKana
-        formData.companyName = coordinator.companyName
-        formData.thumbnailUrl = coordinator.thumbnailUrl
-        formData.headerUrl = coordinator.headerUrl
-        formData.twitterAccount = coordinator.twitterAccount
-        formData.instagramAccount = coordinator.instagramAccount
-        formData.facebookAccount = coordinator.facebookAccount
-        formData.phoneNumber = coordinator.phoneNumber.replace('+81', '0')
-        formData.postalCode = coordinator.postalCode
-        formData.prefecture = coordinator.prefecture
-        formData.city = coordinator.city
-        formData.addressLine1 = coordinator.addressLine1
-        formData.addressLine2 = coordinator.addressLine2
-
-        await Promise.all([
-          coordinatorStore.fetchRelatedProducers(
-            id,
-            producersItemsPerPage.value
-          ),
-        ])
-        relateProducersItems.relateProducers = coordinatorStore.producers
-      } catch (err) {
-        console.log(err)
-      }
-    })
-
-    const rules = computed(() => ({
-      storeName: { required, maxLength: maxLength(64) },
-      companyName: { required, maxLength: maxLength(64) },
-      firstname: { required, maxLength: maxLength(16) },
-      lastname: { required, maxLength: maxLength(16) },
-      firstnameKana: { required, kana },
-      lastnameKana: { required, kana },
-      phoneNumber: { required, tel },
-    }))
-
-    const v$ = useVuelidate(rules, formData)
-
-    const {
-      loading: searchLoading,
-      errorMessage: searchErrorMessage,
-      searchAddressByPostalCode,
-    } = useSearchAddress()
-
-    const searchAddress = async () => {
-      searchLoading.value = true
-      searchErrorMessage.value = ''
-      const res = await searchAddressByPostalCode(Number(formData.postalCode))
-      if (res) {
-        formData.prefecture = res.prefecture
-        formData.city = res.city
-        formData.addressLine1 = res.addressLine1
-      }
-    }
-
-    const thumbnailUploadStatus = reactive<ImageUploadStatus>({
-      error: false,
-      message: '',
-    })
-
-    const headerUploadStatus = reactive<ImageUploadStatus>({
-      error: false,
-      message: '',
-    })
-
-    const handleUpdateThumbnail = (files: FileList) => {
-      if (files.length > 0) {
-        uploadCoordinatorThumbnail(files[0])
-          .then((res) => {
-            formData.thumbnailUrl = res.url
-          })
-          .catch(() => {
-            thumbnailUploadStatus.error = true
-            thumbnailUploadStatus.message = 'アップロードに失敗しました。'
-          })
-      }
-    }
-
-    const handleUpdateHeader = async (files: FileList) => {
-      if (files.length > 0) {
-        await uploadCoordinatorHeader(files[0])
-          .then((res) => {
-            formData.headerUrl = res.url
-          })
-          .catch(() => {
-            headerUploadStatus.error = true
-            headerUploadStatus.message = 'アップロードに失敗しました。'
-          })
-      }
-    }
-
-    const handleSubmit = async (): Promise<void> => {
-      try {
-        const result = await v$.value.$validate()
-        if (!result) {
-          return
-        }
-        await coordinatorStore.updateCoordinator(
-          {
-            ...formData,
-            phoneNumber: formData.phoneNumber.replace('0', '+81'),
-          },
-          id
-        )
-        router.push('/coordinators')
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    const relateProducers = async (): Promise<void> => {
-      producerData.producerIds = producers.value
-      try {
-        await coordinatorStore.relateProducers(id, producerData)
-        dialog.value = false
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    const remove = (item: string) => {
-      producers.value = producers.value.filter((id) => id !== item)
-    }
-
-    const cancel = (): void => {
-      dialog.value = false
-    }
-
-    useFetch(async () => {
-      try {
-        await producerStore.fetchProducers(20, 0, 'unrelated')
-      } catch (err) {
-        console.log(err)
-      }
-    })
-
-    return {
-      id,
-      fetchState,
-      formData,
-      producers,
-      v$,
-      searchLoading,
-      searchErrorMessage,
-      thumbnailUploadStatus,
-      headerUploadStatus,
-      tabItems,
-      tab,
-      dialog,
-      producersOptions,
-      producerItems,
-      getErrorMessage,
-      searchAddress,
-      handleSubmit,
-      handleUpdateThumbnail,
-      handleUpdateHeader,
-      remove,
-      relateProducers,
-      cancel,
-      handleUpdateProducersItemsPerPage,
-      handleUpdateProducersPage,
-    }
-  },
-})
-</script>

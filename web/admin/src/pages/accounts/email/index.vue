@@ -1,3 +1,26 @@
+<script lang="ts" setup>
+import { useAuthStore } from '~/store/auth'
+import { UpdateAuthEmailRequest } from '~/types/api'
+
+const formData = reactive<UpdateAuthEmailRequest>({
+  email: '',
+})
+const router = useRouter()
+const authStore = useAuthStore()
+
+const handleClickAddBtn = async (): Promise<void> => {
+  try {
+    await authStore.emailUpdate(formData)
+    router.push({
+      name: 'accounts-email-verification',
+      params: { email: formData.email },
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+</script>
+
 <template>
   <div>
     <p class="text-h6">メールアドレス変更</p>
@@ -13,36 +36,3 @@
     </v-card>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, reactive, useRouter } from '@nuxtjs/composition-api'
-
-import { useAuthStore } from '~/store/auth'
-import { UpdateAuthEmailRequest } from '~/types/api'
-
-export default defineComponent({
-  setup() {
-    const formData = reactive<UpdateAuthEmailRequest>({
-      email: '',
-    })
-    const router = useRouter()
-    const authStore = useAuthStore()
-
-    const handleClickAddBtn = async (): Promise<void> => {
-      try {
-        await authStore.emailUpdate(formData)
-        router.push({
-          name: 'accounts-email-verification',
-          params: { email: formData.email },
-        })
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    return {
-      handleClickAddBtn,
-      formData,
-    }
-  },
-})
-</script>

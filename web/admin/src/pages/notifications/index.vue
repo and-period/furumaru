@@ -1,3 +1,146 @@
+<script lang="ts" setup>
+import dayjs from 'dayjs'
+import { DataTableHeader } from 'vuetify'
+
+import { usePagination } from '~/lib/hooks'
+import { useNotificationStore } from '~/store/notification'
+import { NotificationsResponseNotificationsInner } from '~/types/api'
+
+const router = useRouter()
+const notificationStore = useNotificationStore()
+const {
+  itemsPerPage,
+  offset,
+  options,
+  updateCurrentPage,
+  handleUpdateItemsPerPage,
+} = usePagination()
+
+const headers: DataTableHeader[] = [
+  {
+    text: 'タイトル',
+    value: 'title',
+  },
+  {
+    text: '公開状況',
+    value: 'public',
+  },
+  {
+    text: '投稿範囲',
+    value: 'targets',
+  },
+  {
+    text: '掲載開始時間',
+    value: 'publishedAt',
+  },
+  {
+    text: 'Actions',
+    value: 'actions',
+    sortable: false,
+  },
+]
+
+const fetchState = useAsyncData(async () => {
+  await fetchNotifications()
+})
+
+const deleteDialog = ref<boolean>(false)
+const selectedId = ref<string>('')
+const selectedName = ref<string>('')
+
+const notifications = computed(() => {
+  return notificationStore.notifications
+})
+const total = computed(() => {
+  return notificationStore.totalItems
+})
+
+watch(itemsPerPage, () => {
+  fetchNotifications()
+})
+
+const handleUpdatePage = async (page: number) => {
+  updateCurrentPage(page)
+  await fetchNotifications()
+}
+
+const fetchNotifications = async () => {
+  try {
+    await notificationStore.fetchNotifications(
+      itemsPerPage.value,
+      offset.value
+    )
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+const getStatusColor = (status: boolean): string => {
+  if (status) {
+    return 'primary'
+  } else {
+    return 'error'
+  }
+}
+
+const getPublic = (isPublic: boolean): string => {
+  if (isPublic) {
+    return '公開'
+  } else {
+    return '非公開'
+  }
+}
+
+const getTarget = (targets: number[]): string => {
+  const actors: string[] = targets.map((target: number): string => {
+    switch (target) {
+      case 1:
+        return 'ユーザー'
+      case 2:
+        return '生産者'
+      case 3:
+        return 'コーディネータ'
+      default:
+        return ''
+    }
+  })
+  return actors.join(', ')
+}
+
+const getDay = (unixTime: number): string => {
+  return dayjs.unix(unixTime).format('YYYY/MM/DD HH:mm')
+}
+
+const openDeleteDialog = (
+  item: NotificationsResponseNotificationsInner
+): void => {
+  selectedId.value = item.id
+  selectedName.value = item.title
+  deleteDialog.value = true
+}
+
+const hideDeleteDialog = () => {
+  deleteDialog.value = false
+}
+
+const handleClickAddButton = () => {
+  router.push('/notifications/add')
+}
+
+const handleEdit = (item: NotificationsResponseNotificationsInner) => {
+  router.push(`/notifications/edit/${item.id}`)
+}
+
+const handleDelete = async (): Promise<void> => {
+  try {
+    await notificationStore.deleteNotification(selectedId.value)
+  } catch (err) {
+    console.log(err)
+  }
+  deleteDialog.value = false
+}
+</script>
+
 <template>
   <div>
     <v-card-title>
@@ -34,8 +177,8 @@
           no-data-text="登録されているお知らせ情報がありません"
           @update:page="handleUpdatePage"
           @update:items-per-page="handleUpdateItemsPerPage"
-          @update:sort-by="fetch"
-          @update:sort-desc="fetch"
+          @update:sort-by="fetchState.refresh"
+          @update:sort-desc="fetchState.refresh"
         >
           <template #[`item.public`]="{ item }">
             <v-chip small :color="getStatusColor(item.public)">
@@ -68,174 +211,3 @@
     </v-card>
   </div>
 </template>
-
-<script lang="ts">
-import { computed, useFetch, useRouter } from '@nuxtjs/composition-api'
-import { defineComponent, ref, watch } from '@vue/composition-api'
-import dayjs from 'dayjs'
-import { DataTableHeader } from 'vuetify'
-
-import { usePagination } from '~/lib/hooks'
-import { useNotificationStore } from '~/store/notification'
-import { NotificationsResponseNotificationsInner } from '~/types/api'
-
-export default defineComponent({
-  setup() {
-    const router = useRouter()
-    const notificationStore = useNotificationStore()
-    const {
-      itemsPerPage,
-      offset,
-      options,
-      updateCurrentPage,
-      handleUpdateItemsPerPage,
-    } = usePagination()
-
-    const headers: DataTableHeader[] = [
-      {
-        text: 'タイトル',
-        value: 'title',
-      },
-      {
-        text: '公開状況',
-        value: 'public',
-      },
-      {
-        text: '投稿範囲',
-        value: 'targets',
-      },
-      {
-        text: '掲載開始時間',
-        value: 'publishedAt',
-      },
-      {
-        text: 'Actions',
-        value: 'actions',
-        sortable: false,
-      },
-    ]
-
-    const { fetch } = useFetch(async () => {
-      await fetchNotifications()
-    })
-
-    const deleteDialog = ref<boolean>(false)
-    const selectedId = ref<string>('')
-    const selectedName = ref<string>('')
-
-    const notifications = computed(() => {
-      return notificationStore.notifications
-    })
-    const total = computed(() => {
-      return notificationStore.totalItems
-    })
-
-    watch(itemsPerPage, () => {
-      fetchNotifications()
-    })
-
-    const handleUpdatePage = async (page: number) => {
-      updateCurrentPage(page)
-      await fetchNotifications()
-    }
-
-    const fetchNotifications = async () => {
-      try {
-        await notificationStore.fetchNotifications(
-          itemsPerPage.value,
-          offset.value
-        )
-      } catch (err) {
-        console.log(err)
-      }
-    }
-
-    const getStatusColor = (status: boolean): string => {
-      if (status) {
-        return 'primary'
-      } else {
-        return 'error'
-      }
-    }
-
-    const getPublic = (isPublic: boolean): string => {
-      if (isPublic) {
-        return '公開'
-      } else {
-        return '非公開'
-      }
-    }
-
-    const getTarget = (targets: number[]): string => {
-      const actors: string[] = targets.map((target: number): string => {
-        switch (target) {
-          case 1:
-            return 'ユーザー'
-          case 2:
-            return '生産者'
-          case 3:
-            return 'コーディネータ'
-          default:
-            return ''
-        }
-      })
-      return actors.join(', ')
-    }
-
-    const getDay = (unixTime: number): string => {
-      return dayjs.unix(unixTime).format('YYYY/MM/DD HH:mm')
-    }
-
-    const openDeleteDialog = (
-      item: NotificationsResponseNotificationsInner
-    ): void => {
-      selectedId.value = item.id
-      selectedName.value = item.title
-      deleteDialog.value = true
-    }
-
-    const hideDeleteDialog = () => {
-      deleteDialog.value = false
-    }
-
-    const handleClickAddButton = () => {
-      router.push('/notifications/add')
-    }
-
-    const handleEdit = (item: NotificationsResponseNotificationsInner) => {
-      router.push(`/notifications/edit/${item.id}`)
-    }
-
-    const handleDelete = async (): Promise<void> => {
-      try {
-        await notificationStore.deleteNotification(selectedId.value)
-      } catch (err) {
-        console.log(err)
-      }
-      deleteDialog.value = false
-    }
-
-    return {
-      headers,
-      itemsPerPage,
-      options,
-      total,
-      notifications,
-      selectedName,
-      deleteDialog,
-      fetch,
-      openDeleteDialog,
-      hideDeleteDialog,
-      getStatusColor,
-      handleClickAddButton,
-      handleEdit,
-      handleUpdateItemsPerPage,
-      handleUpdatePage,
-      handleDelete,
-      getPublic,
-      getTarget,
-      getDay,
-    }
-  },
-})
-</script>

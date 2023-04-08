@@ -1,3 +1,66 @@
+<script lang="ts" setup>
+import { DataTableHeader } from 'vuetify'
+
+import { prefecturesList } from '~/constants'
+import { dateTimeFormatter, moneyFormat } from '~/lib/formatter'
+import { usePagination } from '~/lib/hooks'
+import { useShippingStore } from '~/store/shippings'
+
+const shippingStore = useShippingStore()
+const router = useRouter()
+
+const totalItems = computed(() => {
+  return shippingStore.totalItems
+})
+
+const shippings = computed(() => {
+  return shippingStore.shippings
+})
+
+const headers: DataTableHeader[] = [
+  {
+    text: '名前',
+    value: 'name',
+  },
+  {
+    text: '配送無料オプション',
+    value: 'hasFreeShipping',
+  },
+  {
+    text: '更新日',
+    value: 'updatedAt',
+  },
+  {
+    text: '',
+    value: 'actions',
+  },
+]
+
+const {
+  options,
+  offset,
+  itemsPerPage,
+  updateCurrentPage,
+  handleUpdateItemsPerPage,
+} = usePagination()
+
+const fetchState = useAsyncData(async () => {
+  try {
+    await shippingStore.fetchShippings(itemsPerPage.value, offset.value)
+  } catch (err) {
+    console.log(err)
+  }
+})
+
+const handleClickAddButton = () => {
+  router.push('/shippings/add')
+}
+
+const handleClickEditButton = (id: string) => {
+  router.push(`/shippings/edit/${id}`)
+}
+</script>
+
 <template>
   <div>
     <v-card-title>
@@ -88,92 +151,3 @@
     </v-card>
   </div>
 </template>
-
-<script lang="ts">
-import {
-  computed,
-  defineComponent,
-  useFetch,
-  useRouter,
-} from '@nuxtjs/composition-api'
-import { DataTableHeader } from 'vuetify'
-
-import { prefecturesList } from '~/constants'
-import { dateTimeFormatter, moneyFormat } from '~/lib/formatter'
-import { usePagination } from '~/lib/hooks'
-import { useShippingStore } from '~/store/shippings'
-export default defineComponent({
-  setup() {
-    const shippingStore = useShippingStore()
-    const router = useRouter()
-
-    const totalItems = computed(() => {
-      return shippingStore.totalItems
-    })
-
-    const shippings = computed(() => {
-      return shippingStore.shippings
-    })
-
-    const headers: DataTableHeader[] = [
-      {
-        text: '名前',
-        value: 'name',
-      },
-      {
-        text: '配送無料オプション',
-        value: 'hasFreeShipping',
-      },
-      {
-        text: '更新日',
-        value: 'updatedAt',
-      },
-      {
-        text: '',
-        value: 'actions',
-      },
-    ]
-
-    const {
-      options,
-      offset,
-      itemsPerPage,
-      updateCurrentPage,
-      handleUpdateItemsPerPage,
-    } = usePagination()
-
-    const { fetchState } = useFetch(async () => {
-      try {
-        await shippingStore.fetchShippings(itemsPerPage.value, offset.value)
-      } catch (err) {
-        console.log(err)
-      }
-    })
-
-    const handleClickAddButton = () => {
-      router.push('/shippings/add')
-    }
-
-    const handleClickEditButton = (id: string) => {
-      router.push(`/shippings/edit/${id}`)
-    }
-
-    return {
-      fetchState, // 初回ロード状況
-      totalItems, // サーバ上の配送情報の個数
-      options, // ページネーションのオプション
-      itemsPerPage, // 1ページあたりの表示件数
-      headers, // テーブルヘッダー
-      shippings, // 配送情報一覧
-      prefecturesList, // 都道府県リスト
-      // 関数
-      dateTimeFormatter,
-      moneyFormat,
-      updateCurrentPage,
-      handleUpdateItemsPerPage,
-      handleClickAddButton,
-      handleClickEditButton,
-    }
-  },
-})
-</script>

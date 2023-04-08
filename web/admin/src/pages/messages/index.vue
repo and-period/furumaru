@@ -1,3 +1,20 @@
+<script lang="ts" setup>
+import { useMessageStore } from '~/store/message'
+
+const messageStore = useMessageStore()
+
+const message = computed(() => {
+  return messageStore.message
+})
+const messages = computed(() => {
+  return messageStore.messages
+})
+
+const handleClickMessage = async (messageId: string) => {
+  await messageStore.fetchMessage(messageId)
+}
+</script>
+
 <template>
   <div class="d-flex flex-row mt-2">
     <v-card class="elevation-1 flex-shrink-0 mr-3">
@@ -41,32 +58,3 @@
     </v-card>
   </div>
 </template>
-
-<script lang="ts">
-import { computed, defineComponent } from '@nuxtjs/composition-api'
-
-import { useMessageStore } from '~/store/message'
-
-export default defineComponent({
-  setup() {
-    const messageStore = useMessageStore()
-
-    const message = computed(() => {
-      return messageStore.message
-    })
-    const messages = computed(() => {
-      return messageStore.messages
-    })
-
-    const handleClickMessage = async (messageId: string) => {
-      await messageStore.fetchMessage(messageId)
-    }
-
-    return {
-      message,
-      messages,
-      handleClickMessage,
-    }
-  },
-})
-</script>

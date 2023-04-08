@@ -1,3 +1,296 @@
+<script lang="ts" setup>
+import dayjs from 'dayjs'
+import { DataTableHeader } from 'vuetify'
+
+import { usePagination } from '~/lib/hooks'
+import { useOrderStore } from '~/store/orders'
+import {
+  DeliveryType,
+  FulfillmentStatus,
+  OrderRefundType,
+  OrderResponse,
+  PaymentMethodType,
+  PaymentStatus,
+  ShippingCarrier,
+  ShippingSize,
+} from '~/types/api'
+import { Order, OrderItems } from '~/types/props/order'
+
+const route = useRoute()
+const orderStore = useOrderStore()
+const id = route.params.id
+
+const selector = ref<string>('shippingInformation')
+
+const {
+  updateCurrentPage,
+  itemsPerPage,
+  handleUpdateItemsPerPage,
+  options,
+  offset,
+} = usePagination()
+
+const items: Order[] = [
+  { name: '支払い情報', value: 'shippingInformation' },
+  { name: '配送情報', value: 'orderInformation' },
+]
+
+const formData = reactive<OrderResponse>({
+  id: '',
+  scheduleId: '',
+  promotionId: '',
+  userId: '',
+  userName: '',
+  payment: {
+    transactionId: '',
+    methodId: '',
+    methodType: 0,
+    status: 0,
+    subtotal: 0,
+    discount: 0,
+    shippingFee: 0,
+    tax: 0,
+    total: 0,
+    addressId: '',
+    lastname: '',
+    firstname: '',
+    postalCode: '',
+    prefecture: '',
+    city: '',
+    addressLine1: '',
+    addressLine2: '',
+    phoneNumber: '',
+  },
+  fulfillment: {
+    trackingNumber: '',
+    status: 0,
+    shippingCarrier: 0,
+    shippingMethod: 0,
+    boxSize: 0,
+    addressId: '',
+    lastname: '',
+    firstname: '',
+    postalCode: '',
+    prefecture: '',
+    city: '',
+    addressLine1: '',
+    addressLine2: '',
+    phoneNumber: '',
+  },
+  refund: {
+    canceled: false,
+    type: 0,
+    reason: '',
+    total: 0,
+  },
+  items: [
+    {
+      productId: '',
+      name: '',
+      price: 0,
+      quantity: 0,
+      weight: 0,
+      media: [
+        {
+          url: '',
+          isThumbnail: false,
+        },
+      ],
+    },
+  ],
+  orderedAt: -1,
+  paidAt: -1,
+  deliveredAt: -1,
+  canceledAt: -1,
+  createdAt: -1,
+  updatedAt: -1,
+})
+
+const fetchState = useAsyncData(async () => {
+  const res = await orderStore.getOrder(id)
+  formData.id = res.id
+  formData.userName = res.userName
+  formData.payment = res.payment
+  formData.fulfillment = res.fulfillment
+  formData.refund = res.refund
+  formData.items = res.items
+  formData.orderedAt = res.orderedAt
+  formData.paidAt = res.paidAt
+  formData.deliveredAt = res.deliveredAt
+  formData.canceledAt = res.canceledAt
+})
+
+const headers: DataTableHeader[] = [
+  {
+    text: 'サムネイル',
+    value: 'media',
+  },
+  {
+    text: '商品名',
+    value: 'name',
+  },
+  {
+    text: '購入価格',
+    value: 'price',
+  },
+  {
+    text: '購入数量',
+    value: 'quantity',
+  },
+  {
+    text: '重量',
+    value: 'weight',
+  },
+]
+
+const getDay = (unixTime: number): string => {
+  return dayjs.unix(unixTime).format('YYYY/MM/DD HH:mm')
+}
+
+const getMethodType = (status: PaymentMethodType): string => {
+  switch (status) {
+    case PaymentMethodType.CASH:
+      return '代引き支払い'
+    case PaymentMethodType.CARD:
+      return 'クレジットカード払い'
+    default:
+      return '不明'
+  }
+}
+
+const getPaymentStatus = (status: PaymentStatus): string => {
+  switch (status) {
+    case PaymentStatus.UNKNOWN:
+      return '不明'
+    case PaymentStatus.UNPAID:
+      return '未払い'
+    case PaymentStatus.PENDING:
+      return '保留中'
+    case PaymentStatus.AUTHORIZED:
+      return 'オーソリ済み'
+    case PaymentStatus.PAID:
+      return '支払い済み'
+    case PaymentStatus.REFUNDED:
+      return '返金済み'
+    case PaymentStatus.EXPIRED:
+      return '期限切れ'
+    default:
+      return '不明'
+  }
+}
+
+const getRefundType = (status: OrderRefundType): string => {
+  switch (status) {
+    default:
+      return '不明'
+  }
+}
+
+const getPaymentStatusColor = (status: PaymentStatus): string => {
+  switch (status) {
+    case PaymentStatus.UNPAID:
+      return 'secondary'
+    case PaymentStatus.PENDING:
+      return 'secondary'
+    case PaymentStatus.AUTHORIZED:
+      return 'info'
+    case PaymentStatus.PAID:
+      return 'primary'
+    case PaymentStatus.REFUNDED:
+      return 'primary'
+    case PaymentStatus.EXPIRED:
+      return 'error'
+    default:
+      return 'unkown'
+  }
+}
+
+const getRefundStatus = (status: boolean): string => {
+  if (status) {
+    return 'キャンセル'
+  } else {
+    return '注文受付済み'
+  }
+}
+
+const getRefundStatusColor = (status: boolean): string => {
+  if (status) {
+    return 'error'
+  } else {
+    return 'primary'
+  }
+}
+
+const getFulfillmentStatus = (status: FulfillmentStatus): string => {
+  switch (status) {
+    case FulfillmentStatus.UNFULFILLED:
+      return '未配送'
+    case FulfillmentStatus.FULFILLED:
+      return '配送済み'
+    default:
+      return '不明'
+  }
+}
+
+const getFulfillmentStatusColor = (status: FulfillmentStatus): string => {
+  switch (status) {
+    case FulfillmentStatus.UNFULFILLED:
+      return 'error'
+    case FulfillmentStatus.FULFILLED:
+      return 'primary'
+    default:
+      return 'unkown'
+  }
+}
+
+const convertPhone = (phoneNumber: string): string => {
+  return phoneNumber.replace('+81', '0')
+}
+
+// isThumnailがtrueのものを引っ掛けて商品でサムネイルに設定されているURLを探す
+const getThumnail = (medias: OrderItems[]): string => {
+  const orderItem: OrderItems[] = medias.filter((item) => item.isThumbnail)
+  return orderItem[0].url
+}
+
+const getShippingCarrier = (carrier: ShippingCarrier): string => {
+  switch (carrier) {
+    case ShippingCarrier.YAMATO:
+      return 'ヤマト運輸'
+    case ShippingCarrier.SAGAWA:
+      return '佐川急便'
+    default:
+      return '不明'
+  }
+}
+
+const getShippingMethod = (method: DeliveryType): string => {
+  switch (method) {
+    case DeliveryType.NORMAL:
+      return '通常便'
+    case DeliveryType.REFRIGERATED:
+      return '冷蔵便'
+    case DeliveryType.FROZEN:
+      return '冷凍便'
+    default:
+      return '不明'
+  }
+}
+
+const getBoxSize = (size: ShippingSize): string => {
+  switch (size) {
+    case ShippingSize.SIZE60:
+      return '60'
+    case ShippingSize.SIZE80:
+      return '80'
+    case ShippingSize.SIZE100:
+      return '100'
+    default:
+      return '不明'
+  }
+}
+</script>
+
 <template>
   <div>
     <v-tabs v-model="selector" grow color="dark">
@@ -322,329 +615,3 @@
     </v-tabs-items>
   </div>
 </template>
-
-<script lang="ts">
-import { ref, useFetch, useRoute } from '@nuxtjs/composition-api'
-import { defineComponent, reactive } from '@vue/composition-api'
-import dayjs from 'dayjs'
-import { DataTableHeader } from 'vuetify'
-
-import { usePagination } from '~/lib/hooks'
-import { useOrderStore } from '~/store/orders'
-import {
-  DeliveryType,
-  FulfillmentStatus,
-  OrderRefundType,
-  OrderResponse,
-  PaymentMethodType,
-  PaymentStatus,
-  ShippingCarrier,
-  ShippingSize,
-} from '~/types/api'
-import { Order, OrderItems } from '~/types/props/order'
-
-export default defineComponent({
-  setup() {
-    const route = useRoute()
-    const orderStore = useOrderStore()
-    const id = route.value.params.id
-
-    const selector = ref<string>('shippingInformation')
-
-    const {
-      updateCurrentPage,
-      itemsPerPage,
-      handleUpdateItemsPerPage,
-      options,
-      offset,
-    } = usePagination()
-
-    const items: Order[] = [
-      { name: '支払い情報', value: 'shippingInformation' },
-      { name: '配送情報', value: 'orderInformation' },
-    ]
-
-    const formData = reactive<OrderResponse>({
-      id: '',
-      scheduleId: '',
-      promotionId: '',
-      userId: '',
-      userName: '',
-      payment: {
-        transactionId: '',
-        methodId: '',
-        methodType: 0,
-        status: 0,
-        subtotal: 0,
-        discount: 0,
-        shippingFee: 0,
-        tax: 0,
-        total: 0,
-        addressId: '',
-        lastname: '',
-        firstname: '',
-        postalCode: '',
-        prefecture: '',
-        city: '',
-        addressLine1: '',
-        addressLine2: '',
-        phoneNumber: '',
-      },
-      fulfillment: {
-        trackingNumber: '',
-        status: 0,
-        shippingCarrier: 0,
-        shippingMethod: 0,
-        boxSize: 0,
-        addressId: '',
-        lastname: '',
-        firstname: '',
-        postalCode: '',
-        prefecture: '',
-        city: '',
-        addressLine1: '',
-        addressLine2: '',
-        phoneNumber: '',
-      },
-      refund: {
-        canceled: false,
-        type: 0,
-        reason: '',
-        total: 0,
-      },
-      items: [
-        {
-          productId: '',
-          name: '',
-          price: 0,
-          quantity: 0,
-          weight: 0,
-          media: [
-            {
-              url: '',
-              isThumbnail: false,
-            },
-          ],
-        },
-      ],
-      orderedAt: -1,
-      paidAt: -1,
-      deliveredAt: -1,
-      canceledAt: -1,
-      createdAt: -1,
-      updatedAt: -1,
-    })
-
-    const { fetchState } = useFetch(async () => {
-      const res = await orderStore.getOrder(id)
-      formData.id = res.id
-      formData.userName = res.userName
-      formData.payment = res.payment
-      formData.fulfillment = res.fulfillment
-      formData.refund = res.refund
-      formData.items = res.items
-      formData.orderedAt = res.orderedAt
-      formData.paidAt = res.paidAt
-      formData.deliveredAt = res.deliveredAt
-      formData.canceledAt = res.canceledAt
-    })
-
-    const headers: DataTableHeader[] = [
-      {
-        text: 'サムネイル',
-        value: 'media',
-      },
-      {
-        text: '商品名',
-        value: 'name',
-      },
-      {
-        text: '購入価格',
-        value: 'price',
-      },
-      {
-        text: '購入数量',
-        value: 'quantity',
-      },
-      {
-        text: '重量',
-        value: 'weight',
-      },
-    ]
-
-    const getDay = (unixTime: number): string => {
-      return dayjs.unix(unixTime).format('YYYY/MM/DD HH:mm')
-    }
-
-    const getMethodType = (status: PaymentMethodType): string => {
-      switch (status) {
-        case PaymentMethodType.CASH:
-          return '代引き支払い'
-        case PaymentMethodType.CARD:
-          return 'クレジットカード払い'
-        default:
-          return '不明'
-      }
-    }
-
-    const getPaymentStatus = (status: PaymentStatus): string => {
-      switch (status) {
-        case PaymentStatus.UNKNOWN:
-          return '不明'
-        case PaymentStatus.UNPAID:
-          return '未払い'
-        case PaymentStatus.PENDING:
-          return '保留中'
-        case PaymentStatus.AUTHORIZED:
-          return 'オーソリ済み'
-        case PaymentStatus.PAID:
-          return '支払い済み'
-        case PaymentStatus.REFUNDED:
-          return '返金済み'
-        case PaymentStatus.EXPIRED:
-          return '期限切れ'
-        default:
-          return '不明'
-      }
-    }
-
-    const getRefundType = (status: OrderRefundType): string => {
-      switch (status) {
-        default:
-          return '不明'
-      }
-    }
-
-    const getPaymentStatusColor = (status: PaymentStatus): string => {
-      switch (status) {
-        case PaymentStatus.UNPAID:
-          return 'secondary'
-        case PaymentStatus.PENDING:
-          return 'secondary'
-        case PaymentStatus.AUTHORIZED:
-          return 'info'
-        case PaymentStatus.PAID:
-          return 'primary'
-        case PaymentStatus.REFUNDED:
-          return 'primary'
-        case PaymentStatus.EXPIRED:
-          return 'error'
-        default:
-          return 'unkown'
-      }
-    }
-
-    const getRefundStatus = (status: boolean): string => {
-      if (status) {
-        return 'キャンセル'
-      } else {
-        return '注文受付済み'
-      }
-    }
-
-    const getRefundStatusColor = (status: boolean): string => {
-      if (status) {
-        return 'error'
-      } else {
-        return 'primary'
-      }
-    }
-
-    const getFulfillmentStatus = (status: FulfillmentStatus): string => {
-      switch (status) {
-        case FulfillmentStatus.UNFULFILLED:
-          return '未配送'
-        case FulfillmentStatus.FULFILLED:
-          return '配送済み'
-        default:
-          return '不明'
-      }
-    }
-
-    const getFulfillmentStatusColor = (status: FulfillmentStatus): string => {
-      switch (status) {
-        case FulfillmentStatus.UNFULFILLED:
-          return 'error'
-        case FulfillmentStatus.FULFILLED:
-          return 'primary'
-        default:
-          return 'unkown'
-      }
-    }
-
-    const convertPhone = (phoneNumber: string): string => {
-      return phoneNumber.replace('+81', '0')
-    }
-
-    // isThumnailがtrueのものを引っ掛けて商品でサムネイルに設定されているURLを探す
-    const getThumnail = (medias: OrderItems[]): string => {
-      const orderItem: OrderItems[] = medias.filter((item) => item.isThumbnail)
-      return orderItem[0].url
-    }
-
-    const getShippingCarrier = (carrier: ShippingCarrier): string => {
-      switch (carrier) {
-        case ShippingCarrier.YAMATO:
-          return 'ヤマト運輸'
-        case ShippingCarrier.SAGAWA:
-          return '佐川急便'
-        default:
-          return '不明'
-      }
-    }
-
-    const getShippingMethod = (method: DeliveryType): string => {
-      switch (method) {
-        case DeliveryType.NORMAL:
-          return '通常便'
-        case DeliveryType.REFRIGERATED:
-          return '冷蔵便'
-        case DeliveryType.FROZEN:
-          return '冷凍便'
-        default:
-          return '不明'
-      }
-    }
-
-    const getBoxSize = (size: ShippingSize): string => {
-      switch (size) {
-        case ShippingSize.SIZE60:
-          return '60'
-        case ShippingSize.SIZE80:
-          return '80'
-        case ShippingSize.SIZE100:
-          return '100'
-        default:
-          return '不明'
-      }
-    }
-
-    return {
-      headers,
-      items,
-      formData,
-      selector,
-      fetchState,
-      itemsPerPage,
-      options,
-      offset,
-      getMethodType,
-      getPaymentStatus,
-      getRefundType,
-      getPaymentStatusColor,
-      getRefundStatusColor,
-      getRefundStatus,
-      convertPhone,
-      updateCurrentPage,
-      handleUpdateItemsPerPage,
-      getThumnail,
-      getDay,
-      getFulfillmentStatusColor,
-      getFulfillmentStatus,
-      getShippingMethod,
-      getShippingCarrier,
-      getBoxSize,
-    }
-  },
-})
-</script>
