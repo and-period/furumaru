@@ -13,7 +13,7 @@ const {
   offset,
   options,
   updateCurrentPage,
-  handleUpdateItemsPerPage,
+  handleUpdateItemsPerPage
 } = usePagination()
 
 const headers: DataTableHeader[] = [

@@ -248,13 +248,13 @@ export const useNotificationStore = defineStore('Notification', {
       }
     },
 
-    getAccessToken(): string {
+    getAccessToken (): string {
       const authStore = useAuthStore()
       const accessToken = authStore.accessToken
       if (!accessToken) {
         throw new AuthError('認証エラー。再度ログインをしてください。')
       }
       return accessToken
-    },
-  },
+    }
+  }
 })
