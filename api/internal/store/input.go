@@ -264,7 +264,7 @@ type CreatePromotionInput struct {
 	Code         string                   `validate:"len=8"`
 	CodeType     entity.PromotionCodeType `validate:"required,oneof=1 2"`
 	StartAt      time.Time                `validate:"required"`
-	EndAt        time.Time                `validate:"required"`
+	EndAt        time.Time                `validate:"required,gtfield=StartAt"`
 }
 
 type UpdatePromotionInput struct {
@@ -278,7 +278,7 @@ type UpdatePromotionInput struct {
 	Code         string                   `validate:"len=8"`
 	CodeType     entity.PromotionCodeType `validate:"required,oneof=1 2"`
 	StartAt      time.Time                `validate:"required"`
-	EndAt        time.Time                `validate:"required"`
+	EndAt        time.Time                `validate:"required,gtfield=StartAt"`
 }
 
 type DeletePromotionInput struct {
