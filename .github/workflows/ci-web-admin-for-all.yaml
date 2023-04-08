@@ -9,7 +9,7 @@ on:
 env:
   SERVICE: admin-web
   TZ: 'Asia/Tokyo'
-  NODE_VERSION: 16.14.2
+  NODE_VERSION: 18.15.0
 
 jobs:
   setup:
@@ -50,6 +50,9 @@ jobs:
       if: steps.yarn-cache.outputs.cache-hit != 'true'
       run: yarn --check-files --frozen-lockfile --non-interactive
 
+    - name: Postinstall
+      run: yarn postinstall
+
   lint:
     name: lint
     needs: setup
@@ -88,6 +91,9 @@ jobs:
     - name: Install
       if: steps.yarn-cache.outputs.cache-hit != 'true'
       run: yarn --check-files --frozen-lockfile --non-interactive
+
+    - name: Postinstall
+      run: yarn postinstall
 
     - name: Lint
       run: yarn lint
@@ -131,6 +137,9 @@ jobs:
       if: steps.yarn-cache.outputs.cache-hit != 'true'
       run: yarn --check-files --frozen-lockfile --non-interactive
 
+    - name: Postinstall
+      run: yarn postinstall
+
     - name: Build
       run: yarn build
 
@@ -172,6 +181,9 @@ jobs:
     - name: Install
       if: steps.yarn-cache.outputs.cache-hit != 'true'
       run: yarn --check-files --frozen-lockfile --non-interactive
+
+    - name: Postinstall
+      run: yarn postinstall
 
     - name: Test
       run: yarn test
