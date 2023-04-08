@@ -144,7 +144,7 @@ jobs:
 
   diff:
     name: diff
-    needs: build
+    needs: setup
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -158,11 +158,9 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v3
 
-    - name: Setup
-      run: make setup
-
     - name: Install
-      run: docker compose run --rm swagger_generator yarn
+      run: |
+        docker compose run --rm swagger_generator sh -c 'make setup && yarn'
 
     - name: Build
       run: make swagger
