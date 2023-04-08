@@ -1,3 +1,114 @@
+<script lang="ts" setup>
+import { useVuelidate } from '@vuelidate/core'
+
+import {
+  kana,
+  getErrorMessage,
+  required,
+  tel,
+  maxLength,
+} from '~/lib/validations'
+import { UpdateCoordinatorRequest } from '~/types/api'
+import { ImageUploadStatus } from '~/types/props'
+
+const props = defineProps({
+  formData: {
+    type: Object,
+    default: (): UpdateCoordinatorRequest => {
+      return {
+        lastname: '',
+        lastnameKana: '',
+        firstname: '',
+        firstnameKana: '',
+        companyName: '',
+        storeName: '',
+        thumbnailUrl: '',
+        headerUrl: '',
+        phoneNumber: '',
+        postalCode: '',
+        prefecture: '',
+        city: '',
+        addressLine1: '',
+        addressLine2: '',
+      }
+    },
+  },
+  thumbnailUploadStatus: {
+    type: Object,
+    default: (): ImageUploadStatus => {
+      return {
+        error: false,
+        message: '',
+      }
+    },
+  },
+  headerUploadStatus: {
+    type: Object,
+    default: (): ImageUploadStatus => {
+      return {
+        error: false,
+        message: '',
+      }
+    },
+  },
+  searchErrorMessage: {
+    type: String,
+    default: '',
+  },
+  searchLoading: {
+    type: Boolean,
+    default: false,
+  },
+})
+
+const emit = defineEmits<{
+  (e: 'update:formData', formData: UpdateCoordinatorRequest): void
+  (e: 'update:thumbnailFile', files?: FileList): void
+  (e: 'update:headerFile', files?: FileList): void
+  (e: 'click:search'): void
+  (e: 'submit'): void
+}>()
+
+const formDataValue = computed({
+  get: (): UpdateCoordinatorRequest =>
+    props.formData as UpdateCoordinatorRequest,
+  set: (val: UpdateCoordinatorRequest) => emit('update:formData', val),
+})
+
+const rules = computed(() => ({
+  storeName: { required, maxLength: maxLength(64) },
+  companyName: { required, maxLength: maxLength(64) },
+  firstname: { required, maxLength: maxLength(16) },
+  lastname: { required, maxLength: maxLength(16) },
+  firstnameKana: { required, kana },
+  lastnameKana: { required, kana },
+  phoneNumber: { required, tel },
+}))
+
+const v$ = useVuelidate(rules, formDataValue)
+
+const updateThumbnailFileHandler = (files?: FileList) => {
+  emit('update:thumbnailFile', files)
+}
+
+const updateHeaderFileHandler = (files?: FileList) => {
+  emit('update:headerFile', files)
+}
+
+const handleSearchClick = () => {
+  emit('click:search')
+}
+
+const handleSubmit = async () => {
+  const result = await v$.value.$validate()
+  if (!result) {
+    return
+  }
+
+  emit('submit')
+}
+</script>
+
 <template>
   <form @submit.prevent="handleSubmit">
     <v-card>
@@ -15,16 +126,16 @@
         <div class="mb-2 d-flex">
           <the-profile-select-form
             class="mr-4 flex-grow-1 flex-shrink-1"
-            :img-url="formData.thumbnailUrl"
-            :error="thumbnailUploadStatus.error"
-            :message="thumbnailUploadStatus.message"
+            :img-url="props.formData.thumbnailUrl"
+            :error="props.thumbnailUploadStatus.error"
+            :message="props.thumbnailUploadStatus.message"
             @update:file="updateThumbnailFileHandler"
           />
           <the-header-select-form
             class="flex-grow-1 flex-shrink-1"
-            :img-url="formData.headerUrl"
-            :error="headerUploadStatus.error"
-            :message="headerUploadStatus.message"
+            :img-url="props.formData.headerUrl"
+            :error="props.headerUploadStatus.error"
+            :message="props.headerUploadStatus.message"
             @update:file="updateHeaderFileHandler"
           />
         </div>
@@ -64,13 +175,13 @@
         />
 
         <the-address-form
-          :postal-code.sync="formData.postalCode"
-          :prefecture.sync="formData.prefecture"
-          :city.sync="formData.city"
-          :address-line1.sync="formData.addressLine1"
-          :address-line2.sync="formData.addressLine2"
-          :error-message="searchErrorMessage"
-          :loading="searchLoading"
+          :postal-code.sync="props.formData.postalCode"
+          :prefecture.sync="props.formData.prefecture"
+          :city.sync="props.formData.city"
+          :address-line1.sync="props.formData.addressLine1"
+          :address-line2.sync="props.formData.addressLine2"
+          :error-message="props.searchErrorMessage"
+          :loading="props.searchLoading"
           @click:search="handleSearchClick"
         />
       </v-card-text>
@@ -80,125 +191,3 @@
     </v-card>
   </form>
 </template>
-
-<script lang="ts">
-import { computed, defineComponent, PropType } from '@vue/composition-api'
-import { useVuelidate } from '@vuelidate/core'
-
-import {
-  kana,
-  getErrorMessage,
-  required,
-  tel,
-  maxLength,
-} from '~/lib/validations'
-import { UpdateCoordinatorRequest } from '~/types/api'
-import { ImageUploadStatus } from '~/types/props'
-
-export default defineComponent({
-  props: {
-    formData: {
-      type: Object as PropType<UpdateCoordinatorRequest>,
-      default: () => {
-        return {
-          lastname: '',
-          lastnameKana: '',
-          firstname: '',
-          firstnameKana: '',
-          companyName: '',
-          storeName: '',
-          thumbnailUrl: '',
-          headerUrl: '',
-          email: '',
-          phoneNumber: '',
-          postalCode: '',
-          prefecture: '',
-          city: '',
-          addressLine1: '',
-          addressLine2: '',
-        }
-      },
-    },
-
-    thumbnailUploadStatus: {
-      type: Object as PropType<ImageUploadStatus>,
-      default: () => {
-        return {
-          error: false,
-          message: '',
-        }
-      },
-    },
-
-    headerUploadStatus: {
-      type: Object as PropType<ImageUploadStatus>,
-      default: () => {
-        return {
-          error: false,
-          message: '',
-        }
-      },
-    },
-
-    searchErrorMessage: {
-      type: String,
-      default: '',
-    },
-
-    searchLoading: {
-      type: Boolean,
-      default: false,
-    },
-  },
-
-  setup(props, { emit }) {
-    const formDataValue = computed({
-      get: (): UpdateCoordinatorRequest => props.formData,
-      set: (val: UpdateCoordinatorRequest) => emit('update:formData', val),
-    })
-
-    const rules = computed(() => ({
-      storeName: { required, maxLength: maxLength(64) },
-      companyName: { required, maxLength: maxLength(64) },
-      firstname: { required, maxLength: maxLength(16) },
-      lastname: { required, maxLength: maxLength(16) },
-      firstnameKana: { required, kana },
-      lastnameKana: { required, kana },
-      phoneNumber: { required, tel },
-    }))
-
-    const v$ = useVuelidate(rules, formDataValue)
-
-    const updateThumbnailFileHandler = (files: FileList) => {
-      emit('update:thumbnailFile', files)
-    }
-
-    const updateHeaderFileHandler = (files: FileList) => {
-      emit('update:headerFile', files)
-    }
-
-    const handleSearchClick = () => {
-      emit('click:search')
-    }
-
-    const handleSubmit = async () => {
-      const result = await v$.value.$validate()
-      if (!result) {
-        return
-      }
-
-      emit('submit')
-    }
-
-    return {
-      formDataValue,
-      updateThumbnailFileHandler,
-      updateHeaderFileHandler,
-      handleSearchClick,
-      handleSubmit,
-      getErrorMessage,
-      v$,
-    }
-  },
-})
-</script>

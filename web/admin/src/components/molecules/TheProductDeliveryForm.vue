@@ -1,10 +1,90 @@
+<script lang="ts" setup>
+const props = defineProps({
+  weight: {
+    type: Number,
+    default: 0,
+  },
+  weightErrorMessage: {
+    type: String,
+    default: '',
+  },
+  deliveryType: {
+    type: Number,
+    default: 0,
+  },
+  box60Rate: {
+    type: Number,
+    default: 0,
+  },
+  box60RateErrorMessage: {
+    type: String,
+    default: '',
+  },
+  box80Rate: {
+    type: Number,
+    default: 0,
+  },
+  box80RateErrorMessage: {
+    type: String,
+    default: '',
+  },
+  box100Rate: {
+    type: Number,
+    default: 0,
+  },
+  box100RateErrorMessage: {
+    type: String,
+    default: '',
+  },
+})
+
+const emit = defineEmits<{
+  (e: 'update:weight', weight: number): void
+  (e: 'update:deliveryType', type: number): void
+  (e: 'update:box60Rate', rate: number): void
+  (e: 'update:box80Rate', rate: number): void
+  (e: 'update:box100Rate', rate: number): void
+}>()
+
+const deliveryTypeItems = [
+  { text: '通常便', value: 1 },
+  { text: '冷蔵便', value: 2 },
+  { text: '冷凍便', value: 3 },
+]
+
+const weightValue = computed({
+  get: () => props.weight,
+  set: (val: number) => emit('update:weight', Number(val)),
+})
+
+const deliveryTypeValue = computed({
+  get: () => props.deliveryType,
+  set: (val: number) => emit('update:deliveryType', val),
+})
+
+const box60RateValue = computed({
+  get: () => props.box60Rate,
+  set: (val: number) => emit('update:box60Rate', Number(val)),
+})
+
+const box80RateValue = computed({
+  get: () => props.box80Rate,
+  set: (val: number) => emit('update:box80Rate', Number(val)),
+})
+
+const box100RateValue = computed({
+  get: () => props.box100Rate,
+  set: (val: number) => emit('update:box100Rate', Number(val)),
+})
+</script>
+
 <template>
   <div>
     <div class="d-flex">
       <v-text-field
         v-model.number="weightValue"
         label="重さ"
-        :error-messages="weightErrorMessage"
+        :error-messages="props.weightErrorMessage"
       >
         <template #append>kg</template>
       </v-text-field>
@@ -36,7 +116,7 @@
             min="0"
             max="100"
             label="占有率"
-            :error-messages="box60RateErrorMessage"
+            :error-messages="props.box60RateErrorMessage"
           >
             <template #append>%</template>
           </v-text-field>
@@ -54,7 +134,7 @@
             min="0"
             max="100"
             label="占有率"
-            :error-messages="box80RateErrorMessage"
+            :error-messages="props.box80RateErrorMessage"
           >
             <template #append>%</template>
           </v-text-field>
@@ -72,7 +152,7 @@
             min="0"
             max="100"
             label="占有率"
-            :error-messages="box100RateErrorMessage"
+            :error-messages="props.box100RateErrorMessage"
           >
             <template #append>%</template>
           </v-text-field>
@@ -81,92 +161,3 @@
     </v-list>
   </div>
 </template>
-
-<script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api'
-
-export default defineComponent({
-  props: {
-    weight: {
-      type: Number,
-      default: 0,
-    },
-    weightErrorMessage: {
-      type: String,
-      default: '',
-    },
-    deliveryType: {
-      type: Number,
-      default: 0,
-    },
-    box60Rate: {
-      type: Number,
-      default: 0,
-    },
-    box60RateErrorMessage: {
-      type: String,
-      default: '',
-    },
-    box80Rate: {
-      type: Number,
-      default: 0,
-    },
-    box80RateErrorMessage: {
-      type: String,
-      default: '',
-    },
-    box100Rate: {
-      type: Number,
-      default: 0,
-    },
-    box100RateErrorMessage: {
-      type: String,
-      default: '',
-    },
-  },
-
-  setup(props, { emit }) {
-    const deliveryTypeItems = [
-      { text: '通常便', value: 1 },
-      { text: '冷蔵便', value: 2 },
-      { text: '冷凍便', value: 3 },
-    ]
-
-    const weightValue = computed({
-      get: () => props.weight,
-      set: (val: number) => emit('update:weight', Number(val)),
-    })
-
-    const deliveryTypeValue = computed({
-      get: () => props.deliveryType,
-      set: (val: number) => emit('update:deliveryType', val),
-    })
-
-    const box60RateValue = computed({
-      get: () => props.box60Rate,
-      set: (val: number) => emit('update:box60Rate', Number(val)),
-    })
-
-    const box80RateValue = computed({
-      get: () => props.box80Rate,
-      set: (val: number) => emit('update:box80Rate', Number(val)),
-    })
-
-    const box100RateValue = computed({
-      get: () => props.box100Rate,
-      set: (val: number) => emit('update:box100Rate', Number(val)),
-    })
-
-    return {
-      // 定数
-      deliveryTypeItems,
-      // リアクティブ変数
-      weightValue,
-      deliveryTypeValue,
-      box60RateValue,
-      box80RateValue,
-      box100RateValue,
-    }
-  },
-})
-</script>

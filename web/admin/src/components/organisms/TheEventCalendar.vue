@@ -1,3 +1,60 @@
+<script lang="ts" setup>
+import { CalendarEvent } from '~/types/props'
+
+const props = defineProps({
+  events: {
+    type: Array<CalendarEvent>,
+    default: () => [],
+  },
+})
+
+const calendarValue = ref<string>('')
+const type = ref<string>('month')
+const calendarRef = ref<{
+  title: string
+  prev: () => {}
+  next: () => {}
+} | null>(null)
+const typeItems = [
+  {
+    text: '日',
+    value: 'day',
+  },
+  {
+    text: '週',
+    value: 'week',
+  },
+  {
+    text: '月',
+    value: 'month',
+  },
+]
+
+const calendarTitle = computed(() => {
+  if (calendarRef && calendarRef.value) {
+    return calendarRef.value?.title
+  } else {
+    return ''
+  }
+})
+
+const handleClickToDayButton = () => {
+  calendarValue.value = ''
+}
+
+const handleClickPrevButton = () => {
+  if (calendarRef && calendarRef.value) {
+    calendarRef.value?.prev()
+  }
+}
+
+const handleClickNextButton = () => {
+  if (calendarRef && calendarRef.value) {
+    calendarRef.value?.next()
+  }
+}
+</script>
+
 <template>
   <div>
     <v-toolbar flat>
@@ -35,84 +92,8 @@
         ref="calendarRef"
         v-model="calendarValue"
         :type="type"
-        :events="events"
+        :events="props.events"
       />
     </v-sheet>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, ref, computed, PropType } from '@vue/composition-api'
-
-import { CalendarEvent } from '~/types/props'
-
-export default defineComponent({
-  props: {
-    events: {
-      type: Array as PropType<CalendarEvent[]>,
-      default: () => {
-        return []
-      },
-    },
-  },
-
-  setup() {
-    const calendarValue = ref<string>('')
-    const type = ref<string>('month')
-    const calendarRef = ref<{
-      title: string
-      prev: () => {}
-      next: () => {}
-    } | null>(null)
-    const typeItems = [
-      {
-        text: '日',
-        value: 'day',
-      },
-      {
-        text: '週',
-        value: 'week',
-      },
-      {
-        text: '月',
-        value: 'month',
-      },
-    ]
-
-    const calendarTitle = computed(() => {
-      if (calendarRef && calendarRef.value) {
-        return calendarRef.value?.title
-      } else {
-        return ''
-      }
-    })
-
-    const handleClickToDayButton = () => {
-      calendarValue.value = ''
-    }
-
-    const handleClickPrevButton = () => {
-      if (calendarRef && calendarRef.value) {
-        calendarRef.value?.prev()
-      }
-    }
-
-    const handleClickNextButton = () => {
-      if (calendarRef && calendarRef.value) {
-        calendarRef.value?.next()
-      }
-    }
-
-    return {
-      calendarValue,
-      type,
-      typeItems,
-      calendarRef,
-      calendarTitle,
-      handleClickToDayButton,
-      handleClickPrevButton,
-      handleClickNextButton,
-    }
-  },
-})
-</script>

@@ -69,9 +69,7 @@ const handleUpdatePage = async (page: number) => {
 const fetchContacts = async () => {
   try {
     const order: string = sortDesc.value ? `-${sortBy.value}` : sortBy.value
-    await contactStore.fetchContacts(itemsPerPage.value, offset.value, [
-      order,
-    ])
+    await contactStore.fetchContacts(itemsPerPage.value, offset.value, [order])
   } catch (err) {
     console.log(err)
   }

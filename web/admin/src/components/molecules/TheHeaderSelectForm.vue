@@ -1,3 +1,38 @@
+<script lang="ts" setup>
+const props = defineProps({
+  imgUrl: {
+    type: String,
+    default: '',
+  },
+  error: {
+    type: Boolean,
+    default: false,
+  },
+  message: {
+    type: String,
+    default: '',
+  },
+})
+
+const emit = defineEmits<{
+  (e: 'update:file', files?: FileList): void
+}>()
+
+const inputRef = ref<HTMLInputElement | null>(null)
+
+const handleClick = () => {
+  if (inputRef.value !== null) {
+    inputRef.value.click()
+  }
+}
+
+const handleInputFileChange = () => {
+  if (inputRef.value && inputRef.value.files) {
+    emit('update:file', inputRef.value.files)
+  }
+}
+</script>
+
 <template>
   <div>
     <p>ヘッダー画像の設定</p>
@@ -6,7 +41,7 @@
       role="button"
       min-width="180"
       flat
-      :img="imgUrl"
+      :img="props.imgUrl"
       @click="handleClick"
     >
       <v-card-text>
@@ -23,47 +58,6 @@
         <p class="ma-0">ヘッダー画像を選択</p>
       </v-card-text>
     </v-card>
-    <p v-show="error" class="red--text ma-0">{{ message }}</p>
+    <p v-show="props.error" class="red--text ma-0">{{ props.message }}</p>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api'
-
-export default defineComponent({
-  props: {
-    imgUrl: {
-      type: String,
-      default: '',
-    },
-    error: {
-      type: Boolean,
-      default: false,
-    },
-    message: {
-      type: String,
-      default: '',
-    },
-  },
-  setup(_, { emit }) {
-    const inputRef = ref<HTMLInputElement | null>(null)
-    const handleClick = () => {
-      if (inputRef.value !== null) {
-        inputRef.value.click()
-      }
-    }
-
-    const handleInputFileChange = () => {
-      if (inputRef.value && inputRef.value.files) {
-        emit('update:file', inputRef.value.files)
-      }
-    }
-
-    return {
-      inputRef,
-      handleClick,
-      handleInputFileChange,
-    }
-  },
-})
-</script>

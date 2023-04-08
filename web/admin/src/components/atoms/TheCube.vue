@@ -1,30 +1,11 @@
-<template>
-  <div>
-    <div class="cube" role="button" @click="handleClick">
-      <div class="cube-item" />
-      <div class="cube-item" />
-      <div class="cube-item text-center">
-        <img height="45px" src="/furulogo.png" alt="ふるまるロゴ" />
-      </div>
-      <div class="cube-item text-center"></div>
-    </div>
-  </div>
-</template>
+<script lang="ts" setup>
+const emit = defineEmits<{
+  (e: 'click'): void
+}>()
 
-<script lang="ts">
-import { defineComponent } from '@vue/composition-api'
-
-export default defineComponent({
-  setup(_, { emit }) {
-    const handleClick = () => {
-      emit('click')
-    }
-
-    return {
-      handleClick,
-    }
-  },
-})
+const handleClick = () => {
+  emit('click')
+}
 </script>
 
 <style lang="scss" scoped>
@@ -77,3 +58,16 @@ $border-color: #c1ae8d;
   width: 80px;
 }
 </style>
+
+<template>
+  <div>
+    <div class="cube" role="button" @click="handleClick">
+      <div class="cube-item" />
+      <div class="cube-item" />
+      <div class="cube-item text-center">
+        <img height="45px" src="/furulogo.png" alt="ふるまるロゴ" />
+      </div>
+      <div class="cube-item text-center"></div>
+    </div>
+  </div>
+</template>

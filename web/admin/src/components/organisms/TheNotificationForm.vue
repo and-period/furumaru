@@ -1,36 +1,108 @@
+<script lang="ts" setup>
+import dayjs from 'dayjs'
+
+import { CreateNotificationRequest, NotificationTargetType } from '~/types/api'
+import { NotificationTime } from '~/types/props'
+
+const props = defineProps({
+  formType: {
+    type: String,
+    default: 'create',
+    validator: (value: string) => {
+      return ['create', 'edit'].includes(value)
+    },
+  },
+  formData: {
+    type: Object,
+    default: (): CreateNotificationRequest => ({
+      title: '',
+      body: '',
+      targets: [],
+      public: false,
+      publishedAt: dayjs().unix(),
+    }),
+  },
+  timeData: {
+    type: Object,
+    default: (): NotificationTime => ({
+      publishedDate: '',
+      publishedTime: '',
+    }),
+  },
+})
+
+const emit = defineEmits<{
+  (e: 'update:formData', formData: CreateNotificationRequest): void
+  (e: 'update:timeData', timeData: NotificationTime): void
+  (e: 'submit'): void
+}>()
+
+const formDataValue = computed({
+  get: (): CreateNotificationRequest =>
+    props.formData as CreateNotificationRequest,
+  set: (val: CreateNotificationRequest) => emit('update:formData', val),
+})
+
+const timeDataValue = computed({
+  get: (): NotificationTime => props.timeData as NotificationTime,
+  set: (val: NotificationTime) => emit('update:timeData', val),
+})
+
+const btnText = computed(() => {
+  return props.formType === 'create' ? '登録' : '更新'
+})
+const postMenu = ref<boolean>(false)
+
+const statusList = [
+  { public: '公開', value: true },
+  { public: '非公開', value: false },
+]
+
+const handleSubmit = () => {
+  formDataValue.value.publishedAt = dayjs(
+    timeDataValue.value.publishedDate + ' ' + timeDataValue.value.publishedTime
+  ).unix()
+  emit('submit')
+}
+</script>
+
 <template>
   <form @submit.prevent="handleSubmit">
     <v-card elevation="0">
       <v-card-text>
         <v-select
-          v-model="formData.public"
+          v-model="props.formData.public"
           :items="statusList"
           label="ステータス"
           item-text="public"
           item-value="value"
         ></v-select>
         <v-text-field
-          v-model="formData.title"
+          v-model="props.formData.title"
           label="タイトル"
           required
           maxlength="128"
         />
-        <v-textarea v-model="formData.body" label="本文" maxlength="2000" />
+        <v-textarea
+          v-model="props.formData.body"
+          label="本文"
+          maxlength="2000"
+        />
       </v-card-text>
       <v-container class="ml-2">
         <p class="text-h6">公開範囲</p>
         <v-checkbox
-          v-model="formData.targets"
+          v-model="props.formData.targets"
           label="ユーザー"
           :value="NotificationTargetType.USERS"
         ></v-checkbox>
         <v-checkbox
-          v-model="formData.targets"
+          v-model="props.formData.targets"
           label="生産者"
           :value="NotificationTargetType.PRODUCERS"
         ></v-checkbox>
         <v-checkbox
-          v-model="formData.targets"
+          v-model="props.formData.targets"
           label="コーディネータ"
           :value="NotificationTargetType.COORDINATORS"
         ></v-checkbox>
@@ -46,7 +118,7 @@
           >
             <template #activator="{ on, attrs }">
               <v-text-field
-                v-model="timeData.publishedDate"
+                v-model="props.timeData.publishedDate"
                 class="mr-2"
                 label="投稿開始日"
                 readonly
@@ -56,7 +128,7 @@
               />
             </template>
             <v-date-picker
-              v-model="timeData.publishedDate"
+              v-model="props.timeData.publishedDate"
               scrollable
               @input="postMenu = false"
             >
@@ -67,7 +139,7 @@
             </v-date-picker>
           </v-menu>
           <v-text-field
-            v-model="timeData.publishedTime"
+            v-model="props.timeData.publishedTime"
             type="time"
             required
             outlined
@@ -84,86 +156,3 @@
     </v-card>
   </form>
 </template>
-
-<script lang="ts">
-import { computed, PropType, ref } from '@nuxtjs/composition-api'
-import { defineComponent } from '@vue/composition-api'
-import dayjs from 'dayjs'
-
-import { CreateNotificationRequest, NotificationTargetType } from '~/types/api'
-import { NotificationTime } from '~/types/props'
-
-export default defineComponent({
-  props: {
-    formType: {
-      type: String,
-      default: 'create',
-      validator: (value: string) => {
-        return ['create', 'edit'].includes(value)
-      },
-    },
-    formData: {
-      type: Object as PropType<CreateNotificationRequest>,
-      default: () => {
-        return {
-          title: '',
-          body: '',
-          targets: [],
-          public: false,
-          publishedAt: dayjs().unix(),
-        }
-      },
-    },
-    timeData: {
-      type: Object as PropType<NotificationTime>,
-      default: () => {
-        return {
-          publishedDate: '',
-          publishedTime: '',
-        }
-      },
-    },
-  },
-
-  setup(props, { emit }) {
-    const formDataValue = computed({
-      get: (): CreateNotificationRequest => props.formData,
-      set: (val: CreateNotificationRequest) => emit('update:formData', val),
-    })
-
-    const timeDataValue = computed({
-      get: (): NotificationTime => props.timeData,
-      set: (val: NotificationTime) => emit('update:formData', val),
-    })
-
-    const btnText = computed(() => {
-      return props.formType === 'create' ? '登録' : '更新'
-    })
-    const postMenu = ref<boolean>(false)
-
-    const statusList = [
-      { public: '公開', value: true },
-      { public: '非公開', value: false },
-    ]
-
-    const handleSubmit = () => {
-      formDataValue.value.publishedAt = dayjs(
-        timeDataValue.value.publishedDate +
-          ' ' +
-          timeDataValue.value.publishedTime
-      ).unix()
-      emit('submit')
-    }
-
-    return {
-      formDataValue,
-      timeDataValue,
-      btnText,
-      statusList,
-      postMenu,
-      handleSubmit,
-      NotificationTargetType,
-    }
-  },
-})
-</script>

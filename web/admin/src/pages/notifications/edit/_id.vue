@@ -40,9 +40,7 @@ const fetchState = useAsyncData(async () => {
   timeData.publishedDate = dayjs
     .unix(notification.publishedAt)
     .format('YYYY-MM-DD')
-  timeData.publishedTime = dayjs
-    .unix(notification.publishedAt)
-    .format('HH:mm')
+  timeData.publishedTime = dayjs.unix(notification.publishedAt).format('HH:mm')
 })
 
 const handleSubmit = async () => {

@@ -1,11 +1,177 @@
+<script lang="ts" setup>
+import { DataTableHeader } from 'vuetify'
+
+import { useProductTypeStore } from '~/store/product-type'
+import {
+  ProductTypesResponseProductTypesInner,
+  UpdateProductTypeRequest,
+  UploadImageResponse,
+} from '~/types/api'
+import { ImageUploadStatus } from '~/types/props'
+
+const props = defineProps({
+  loading: {
+    type: Boolean,
+    default: false,
+  },
+  tableFooterProps: {
+    type: Object,
+    default: () => {},
+  },
+  categories: {
+    type: Array,
+    default: () => [],
+  },
+})
+
+const emit = defineEmits<{
+  (e: 'update:items-per-page', page: number): void
+  (e: 'update:page', page: number): void
+  (e: 'click:more-item'): void
+}>()
+
+const productTypeStore = useProductTypeStore()
+const inputRef = ref<HTMLInputElement | null>(null)
+const deleteDialog = ref<boolean>(false)
+const editDialog = ref<boolean>(false)
+const selectedCategoryId = ref<string>('')
+const selectedItemId = ref<string>('')
+const selectedName = ref<string>('')
+
+const editFormData = reactive<UpdateProductTypeRequest>({
+  name: '',
+  iconUrl: '',
+})
+
+const productTypes = computed(() => {
+  return productTypeStore.productTypes
+})
+
+const totalItems = computed(() => {
+  return productTypeStore.totalItems
+})
+
+const headerUploadStatus = reactive<ImageUploadStatus>({
+  error: false,
+  message: '',
+})
+
+const productTypeHeaders: DataTableHeader[] = [
+  {
+    text: 'アイコン',
+    value: 'icon',
+  },
+  {
+    text: 'カテゴリー',
+    value: 'category',
+  },
+  {
+    text: '品目',
+    value: 'productType',
+  },
+  {
+    text: 'Actions',
+    value: 'actions',
+    width: 200,
+    align: 'end',
+    sortable: false,
+  },
+]
+
+const handleUpdateItemsPerPage = (page: number) => {
+  emit('update:items-per-page', page)
+}
+
+const handleUpdatePage = (page: number) => {
+  emit('update:page', page)
+}
+
+const handleMoreCategoryItems = () => {
+  emit('click:more-item')
+}
+
+const openEditDialog = (item: ProductTypesResponseProductTypesInner) => {
+  editDialog.value = true
+  selectedCategoryId.value = item.categoryId
+  selectedItemId.value = item.id
+  editFormData.name = item.name
+  editFormData.iconUrl = item.iconUrl
+}
+
+const hideEditDialog = () => {
+  editDialog.value = false
+}
+
+const handleEdit = async () => {
+  try {
+    await productTypeStore.editProductType(
+      selectedCategoryId.value,
+      selectedItemId.value,
+      editFormData
+    )
+    editDialog.value = false
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const openDeleteDialog = (
+  item: ProductTypesResponseProductTypesInner
+): void => {
+  selectedCategoryId.value = item.categoryId
+  selectedItemId.value = item.id
+  selectedName.value = item.name
+  deleteDialog.value = true
+}
+
+const handleDelete = async (): Promise<void> => {
+  try {
+    await productTypeStore.deleteProductType(
+      selectedCategoryId.value,
+      selectedItemId.value
+    )
+  } catch (error) {
+    console.log(error)
+  }
+  deleteDialog.value = false
+}
+
+const hideDeleteDialog = (): void => {
+  deleteDialog.value = false
+}
+
+const handleClick = () => {
+  if (inputRef.value !== null) {
+    inputRef.value.click()
+  }
+}
+
+const handleInputFileChange = () => {
+  const files = inputRef.value?.files
+  if (inputRef.value && inputRef.value.files) {
+    if (files && files.length > 0) {
+      productTypeStore
+        .uploadProductTypeIcon(files[0])
+        .then((res: UploadImageResponse) => {
+          editFormData.iconUrl = res.url
+        })
+        .catch(() => {
+          headerUploadStatus.error = true
+          headerUploadStatus.message = 'アップロードに失敗しました。'
+        })
+    }
+  }
+}
+</script>
+
 <template>
   <div>
     <v-data-table
       :headers="productTypeHeaders"
       :items="productTypes"
-      :loading="loading"
+      :loading="props.loading"
       :server-items-length="totalItems"
-      :footer-props="tableFooterProps"
+      :footer-props="props.tableFooterProps"
       @update:items-per-page="handleUpdateItemsPerPage"
       @update:page="handleUpdatePage"
     >
@@ -43,7 +209,7 @@
         <v-card-text class="mt-4">
           <v-autocomplete
             v-model="selectedCategoryId"
-            :items="categories"
+            :items="props.categories"
             item-text="name"
             item-value="id"
             label="カテゴリー"
@@ -120,190 +286,3 @@
     </v-dialog>
   </div>
 </template>
-
-<script lang="ts">
-import { ref, computed, defineComponent, reactive } from '@vue/composition-api'
-import { DataTableHeader } from 'vuetify'
-
-import { useProductTypeStore } from '~/store/product-type'
-import {
-  ProductTypesResponseProductTypesInner,
-  UpdateProductTypeRequest,
-} from '~/types/api'
-import { ImageUploadStatus } from '~/types/props'
-
-export default defineComponent({
-  props: {
-    loading: {
-      type: Boolean,
-      default: false,
-    },
-    tableFooterProps: {
-      type: Object,
-      default: () => {},
-    },
-    categories: {
-      type: Array,
-      default: () => [],
-    },
-  },
-  setup(_, { emit }) {
-    const productTypeStore = useProductTypeStore()
-    const inputRef = ref<HTMLInputElement | null>(null)
-    const deleteDialog = ref<boolean>(false)
-    const editDialog = ref<boolean>(false)
-    const selectedCategoryId = ref<string>('')
-    const selectedItemId = ref<string>('')
-    const selectedName = ref<string>('')
-
-    const editFormData = reactive<UpdateProductTypeRequest>({
-      name: '',
-      iconUrl: '',
-    })
-
-    const productTypes = computed(() => {
-      return productTypeStore.productTypes
-    })
-
-    const totalItems = computed(() => {
-      return productTypeStore.totalItems
-    })
-
-    const headerUploadStatus = reactive<ImageUploadStatus>({
-      error: false,
-      message: '',
-    })
-
-    const productTypeHeaders: DataTableHeader[] = [
-      {
-        text: 'アイコン',
-        value: 'icon',
-      },
-      {
-        text: 'カテゴリー',
-        value: 'category',
-      },
-      {
-        text: '品目',
-        value: 'productType',
-      },
-      {
-        text: 'Actions',
-        value: 'actions',
-        width: 200,
-        align: 'end',
-        sortable: false,
-      },
-    ]
-
-    const handleUpdateItemsPerPage = (page: number) => {
-      emit('update:items-per-page', page)
-    }
-
-    const handleUpdatePage = (page: number) => {
-      emit('update:page', page)
-    }
-
-    const handleMoreCategoryItems = () => {
-      emit('click:more-item')
-    }
-
-    const openEditDialog = (item: ProductTypesResponseProductTypesInner) => {
-      editDialog.value = true
-      selectedCategoryId.value = item.categoryId
-      selectedItemId.value = item.id
-      editFormData.name = item.name
-      editFormData.iconUrl = item.iconUrl
-    }
-
-    const hideEditDialog = () => {
-      editDialog.value = false
-    }
-
-    const handleEdit = async () => {
-      try {
-        await productTypeStore.editProductType(
-          selectedCategoryId.value,
-          selectedItemId.value,
-          editFormData
-        )
-        editDialog.value = false
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    const openDeleteDialog = (
-      item: ProductTypesResponseProductTypesInner
-    ): void => {
-      selectedCategoryId.value = item.categoryId
-      selectedItemId.value = item.id
-      selectedName.value = item.name
-      deleteDialog.value = true
-    }
-
-    const handleDelete = async (): Promise<void> => {
-      try {
-        await productTypeStore.deleteProductType(
-          selectedCategoryId.value,
-          selectedItemId.value
-        )
-      } catch (error) {
-        console.log(error)
-      }
-      deleteDialog.value = false
-    }
-
-    const hideDeleteDialog = (): void => {
-      deleteDialog.value = false
-    }
-
-    const handleClick = () => {
-      if (inputRef.value !== null) {
-        inputRef.value.click()
-      }
-    }
-
-    const handleInputFileChange = () => {
-      const files = inputRef.value?.files
-      if (inputRef.value && inputRef.value.files) {
-        if (files && files.length > 0) {
-          productTypeStore
-            .uploadProductTypeIcon(files[0])
-            .then((res) => {
-              editFormData.iconUrl = res.url
-            })
-            .catch(() => {
-              headerUploadStatus.error = true
-              headerUploadStatus.message = 'アップロードに失敗しました。'
-            })
-        }
-      }
-    }
-
-    return {
-      productTypeHeaders,
-      productTypes,
-      selectedName,
-      selectedCategoryId,
-      deleteDialog,
-      editFormData,
-      inputRef,
-      editDialog,
-      headerUploadStatus,
-      totalItems,
-      handleClick,
-      handleInputFileChange,
-      openEditDialog,
-      hideEditDialog,
-      openDeleteDialog,
-      hideDeleteDialog,
-      handleEdit,
-      handleDelete,
-      handleUpdateItemsPerPage,
-      handleUpdatePage,
-      handleMoreCategoryItems,
-    }
-  },
-})
-</script>

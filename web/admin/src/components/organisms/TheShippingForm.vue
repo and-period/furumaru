@@ -1,5 +1,157 @@
+<script lang="ts" setup>
+import { useVuelidate } from '@vuelidate/core'
+
+import { getSelectablePrefecturesList } from '~/lib/prefectures'
+import { required, getErrorMessage } from '~/lib/validations'
+import { CreateShippingRequest, UpdateShippingRequest } from '~/types/api'
+
+const props = defineProps({
+  loading: {
+    type: Boolean,
+    default: false,
+  },
+  value: {
+    type: Object,
+    default: (): UpdateShippingRequest | CreateShippingRequest => ({
+      name: '',
+      box60Rates: [
+        {
+          name: '',
+          price: 0,
+          prefectures: [],
+        },
+      ],
+      box60Refrigerated: 0,
+      box60Frozen: 0,
+      box80Rates: [
+        {
+          name: '',
+          price: 0,
+          prefectures: [],
+        },
+      ],
+      box80Refrigerated: 0,
+      box80Frozen: 0,
+      box100Rates: [
+        {
+          name: '',
+          price: 0,
+          prefectures: [],
+        },
+      ],
+      box100Refrigerated: 0,
+      box100Frozen: 0,
+      hasFreeShipping: false,
+      freeShippingRates: 0,
+    }),
+  },
+})
+
+const emit = defineEmits<{
+  (
+    e: 'update:value',
+    formData: CreateShippingRequest | UpdateShippingRequest
+  ): void
+  (e: 'click:addBox60RateItem'): void
+  (e: 'click:addBox80RateItem'): void
+  (e: 'click:addBox100RateItem'): void
+  (e: 'click:removeItemButton', rate: '60' | '80' | '100', index: number): void
+  (e: 'submit'): void
+}>()
+
+const formData = computed({
+  get: (): UpdateShippingRequest | CreateShippingRequest =>
+    props.value as CreateShippingRequest | UpdateShippingRequest,
+  set: (val: UpdateShippingRequest | CreateShippingRequest) =>
+    emit('update:value', val),
+})
+
+const rules = computed(() => {
+  return {
+    name: { required },
+    hasFreeShipping: { required },
+  }
+})
+
+const v$ = useVuelidate(rules, formData)
+
+const box60RateItemsSize = computed(() => {
+  return [...Array(formData.value.box60Rates.length).keys()]
+})
+
+const box80RateItemsSize = computed(() => {
+  return [...Array(formData.value.box80Rates.length).keys()]
+})
+
+const box100RateItemsSize = computed(() => {
+  return [...Array(formData.value.box100Rates.length).keys()]
+})
+
+const getSelectableBox60RatePrefecturesList = (i: number) => {
+  return getSelectablePrefecturesList(formData.value.box60Rates, i)
+}
+
+const getSelectableBox80RatePrefecturesList = (i: number) => {
+  return getSelectablePrefecturesList(formData.value.box80Rates, i)
+}
+
+const getSelectableBox100RatePrefecturesList = (i: number) => {
+  return getSelectablePrefecturesList(formData.value.box100Rates, i)
+}
+
+const handleClickSelectAll = (rate: '60' | '80' | '100', i: number) => {
+  switch (rate) {
+    case '60':
+      formData.value.box60Rates[i].prefectures =
+        getSelectableBox60RatePrefecturesList(i)
+          .filter((item) => !item.disabled)
+          .map((item) => item.value)
+      break
+    case '80':
+      formData.value.box80Rates[i].prefectures =
+        getSelectableBox80RatePrefecturesList(i)
+          .filter((item) => !item.disabled)
+          .map((item) => item.value)
+      break
+    case '100':
+      formData.value.box100Rates[i].prefectures =
+        getSelectableBox100RatePrefecturesList(i)
+          .filter((item) => !item.disabled)
+          .map((item) => item.value)
+      break
+  }
+}
+
+const addBox60RateItem = () => {
+  emit('click:addBox60RateItem')
+}
+
+const addBox80RateItem = () => {
+  emit('click:addBox80RateItem')
+}
+
+const addBox100RateItem = () => {
+  emit('click:addBox100RateItem')
+}
+
+const handleSubmit = async () => {
+  const result = await v$.value.$validate()
+  if (!result) {
+    return
+  }
+  emit('submit')
+}
+
+const handleClickRemoveItemButton = (
+  rate: '60' | '80' | '100',
+  index: number
+) => {
+  emit('click:removeItemButton', rate, index)
+}
+</script>
+
 <template>
-  <v-card :loading="loading">
+  <v-card :loading="props.loading">
     <form @submit.prevent="handleSubmit">
       <v-card-text>
         <v-text-field
@@ -189,171 +341,3 @@
     </form>
   </v-card>
 </template>
-
-<script lang="ts">
-import { PropType, defineComponent, computed } from '@vue/composition-api'
-import { useVuelidate } from '@vuelidate/core'
-
-import { prefecturesList } from '~/constants'
-import { getSelectablePrefecturesList } from '~/lib/prefectures'
-import { required, getErrorMessage } from '~/lib/validations'
-import { CreateShippingRequest, UpdateShippingRequest } from '~/types/api'
-
-export default defineComponent({
-  props: {
-    loading: {
-      type: Boolean,
-      default: false,
-    },
-    value: {
-      type: Object as PropType<UpdateShippingRequest | CreateShippingRequest>,
-      default: () => {
-        return {
-          name: '',
-          box60Rates: [
-            {
-              name: '',
-              price: 0,
-              prefectures: [],
-            },
-          ],
-          box60Refrigerated: 0,
-          box60Frozen: 0,
-          box80Rates: [
-            {
-              name: '',
-              price: 0,
-              prefectures: [],
-            },
-          ],
-          box80Refrigerated: 0,
-          box80Frozen: 0,
-          box100Rates: [
-            {
-              name: '',
-              price: 0,
-              prefectures: [],
-            },
-          ],
-          box100Refrigerated: 0,
-          box100Frozen: 0,
-          hasFreeShipping: false,
-          freeShippingRates: 0,
-        }
-      },
-    },
-  },
-
-  setup(props, { emit }) {
-    const formData = computed({
-      get: (): UpdateShippingRequest | CreateShippingRequest => props.value,
-      set: (val: UpdateShippingRequest | CreateShippingRequest) =>
-        emit('update:value', val),
-    })
-
-    const rules = computed(() => {
-      return {
-        name: { required },
-        hasFreeShipping: { required },
-      }
-    })
-
-    const v$ = useVuelidate(rules, formData)
-
-    const box60RateItemsSize = computed(() => {
-      return [...Array(formData.value.box60Rates.length).keys()]
-    })
-
-    const box80RateItemsSize = computed(() => {
-      return [...Array(formData.value.box80Rates.length).keys()]
-    })
-
-    const box100RateItemsSize = computed(() => {
-      return [...Array(formData.value.box100Rates.length).keys()]
-    })
-
-    const getSelectableBox60RatePrefecturesList = (i: number) => {
-      return getSelectablePrefecturesList(formData.value.box60Rates, i)
-    }
-
-    const getSelectableBox80RatePrefecturesList = (i: number) => {
-      return getSelectablePrefecturesList(formData.value.box80Rates, i)
-    }
-
-    const getSelectableBox100RatePrefecturesList = (i: number) => {
-      return getSelectablePrefecturesList(formData.value.box100Rates, i)
-    }
-
-    const handleClickSelectAll = (rate: '60' | '80' | '100', i: number) => {
-      switch (rate) {
-        case '60':
-          formData.value.box60Rates[i].prefectures =
-            getSelectableBox60RatePrefecturesList(i)
-              .filter((item) => !item.disabled)
-              .map((item) => item.value)
-          break
-        case '80':
-          formData.value.box80Rates[i].prefectures =
-            getSelectableBox80RatePrefecturesList(i)
-              .filter((item) => !item.disabled)
-              .map((item) => item.value)
-          break
-        case '100':
-          formData.value.box100Rates[i].prefectures =
-            getSelectableBox100RatePrefecturesList(i)
-              .filter((item) => !item.disabled)
-              .map((item) => item.value)
-          break
-      }
-    }
-
-    const addBox60RateItem = () => {
-      emit('click:addBox60RateItem')
-    }
-
-    const addBox80RateItem = () => {
-      emit('click:addBox80RateItem')
-    }
-
-    const addBox100RateItem = () => {
-      emit('click:addBox100RateItem')
-    }
-
-    const handleSubmit = async () => {
-      const result = await v$.value.$validate()
-      if (!result) {
-        return
-      }
-      emit('submit')
-    }
-
-    const handleClickRemoveItemButton = (
-      rate: '60' | '80' | '100',
-      index: number
-    ) => {
-      emit('click:removeItemButton', rate, index)
-    }
-
-    return {
-      // 変数
-      formData,
-      v$,
-      box60RateItemsSize,
-      box80RateItemsSize,
-      box100RateItemsSize,
-      prefecturesList,
-      // 関数
-      getErrorMessage,
-      handleSubmit,
-      handleClickSelectAll,
-      handleClickRemoveItemButton,
-      getSelectableBox60RatePrefecturesList,
-      getSelectableBox80RatePrefecturesList,
-      getSelectableBox100RatePrefecturesList,
-      addBox60RateItem,
-      addBox80RateItem,
-      addBox100RateItem,
-    }
-  },
-})
-</script>

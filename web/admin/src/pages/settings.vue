@@ -4,42 +4,40 @@ import { useAuthStore } from '~/store/auth'
 const router = useRouter()
 const { logout } = useAuthStore()
 
-const menuList = ref<{ text: string; onClick: Function; class?: string }[]>(
-  [
-    {
-      text: 'カテゴリー・品目登録',
-      onClick: () => {
-        router.push('/categories')
-      },
+const menuList = ref<{ text: string; onClick: Function; class?: string }[]>([
+  {
+    text: 'カテゴリー・品目登録',
+    onClick: () => {
+      router.push('/categories')
     },
-    {
-      text: '配送設定',
-      onClick: () => {
-        router.push('/shippings')
-      },
+  },
+  {
+    text: '配送設定',
+    onClick: () => {
+      router.push('/shippings')
     },
-    {
-      text: 'メールアドレス変更',
-      onClick: () => {
-        router.push('/accounts/email')
-      },
+  },
+  {
+    text: 'メールアドレス変更',
+    onClick: () => {
+      router.push('/accounts/email')
     },
-    {
-      text: 'パスワード変更',
-      onClick: () => {
-        router.push('/accounts/password')
-      },
+  },
+  {
+    text: 'パスワード変更',
+    onClick: () => {
+      router.push('/accounts/password')
     },
-    {
-      text: 'サインアウト',
-      class: 'red--text ',
-      onClick: () => {
-        logout()
-        router.push('/')
-      },
+  },
+  {
+    text: 'サインアウト',
+    class: 'red--text ',
+    onClick: () => {
+      logout()
+      router.push('/')
     },
-  ]
-)
+  },
+])
 </script>
 
 <template>

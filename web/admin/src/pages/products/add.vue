@@ -85,9 +85,7 @@ const handleUpdateFormDataDescription = (htmlString: string) => {
 const handleImageUpload = async (files: FileList) => {
   for (const [index, file] of Array.from(files).entries()) {
     try {
-      const uploadImage: UploadImageResponse = await uploadProductImage(
-        file
-      )
+      const uploadImage: UploadImageResponse = await uploadProductImage(file)
       formData.media.push({
         ...uploadImage,
         isThumbnail: index === 0,

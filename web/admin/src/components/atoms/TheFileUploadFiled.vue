@@ -1,3 +1,76 @@
+<script lang="ts" setup>
+const props = defineProps({
+  text: {
+    type: String,
+    required: true,
+  },
+  value: {
+    type: Object,
+    default: null,
+  },
+})
+
+const emit = defineEmits<{
+  (e: 'update:value', value: any): void
+  (e: 'update:files', file?: FileList): void
+}>()
+
+const formData = computed({
+  get: (): any => props.value,
+  set: (val: any) => emit('update:value', val),
+})
+
+const inputRef = ref<HTMLInputElement | null>(null)
+const active = ref<boolean>(false)
+const files = ref<FileList | null>(null)
+
+watch(files, () => {
+  emit('update:files', files.value)
+})
+
+const handleInputFileChange = () => {
+  if (inputRef.value && inputRef.value.files) {
+    files.value = inputRef.value?.files
+  }
+}
+
+const handleClick = () => {
+  if (inputRef.value) {
+    inputRef.value.click()
+  }
+}
+
+const handleDragenter = () => {
+  active.value = true
+}
+
+const handleDragover = () => {
+  active.value = true
+}
+
+const handleDragleave = () => {
+  active.value = false
+}
+
+const handleDrop = (e: DragEvent) => {
+  if (e.dataTransfer && inputRef.value) {
+    files.value = e.dataTransfer.files
+  }
+  active.value = false
+}
+</script>
+
+<style lang="scss" scoped>
+.file_upload_area {
+  border: dashed var(--v-secondary-lighten4);
+  height: 100px;
+}
+
+.active {
+  border: dashed var(--v-primary-darken3);
+}
+</style>
+
 <template>
   <div>
     <div
@@ -14,7 +87,7 @@
         クリックまたはドラッグ&amp;ドロップでファイルを追加
         <br />
         <v-icon left>mdi-plus</v-icon>
-        {{ text }}
+        {{ props.text }}
         <input
           ref="inputRef"
           type="file"
@@ -27,101 +100,3 @@
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import {
-  defineComponent,
-  ref,
-  computed,
-  PropType,
-  watch,
-} from '@vue/composition-api'
-
-export default defineComponent({
-  props: {
-    text: {
-      type: String,
-      required: true,
-    },
-    value: {
-      type: Object as PropType<any>,
-      default: null,
-    },
-  },
-
-  setup(props, { emit }) {
-    const formData = computed({
-      get: (): any => props.value,
-      set: (val: any) => emit('update:value', val),
-    })
-
-    const inputRef = ref<HTMLInputElement | null>(null)
-    const active = ref<boolean>(false)
-    const files = ref<FileList | null>(null)
-
-    watch(files, () => {
-      emit('update:files', files.value)
-    })
-
-    const handleInputFileChange = () => {
-      if (inputRef.value && inputRef.value.files) {
-        files.value = inputRef.value?.files
-      }
-    }
-
-    const handleClick = () => {
-      if (inputRef.value) {
-        inputRef.value.click()
-      }
-    }
-
-    const handleDragenter = () => {
-      active.value = true
-    }
-
-    const handleDragover = () => {
-      active.value = true
-    }
-
-    const handleDragleave = () => {
-      active.value = false
-    }
-
-    const handleDrop = (e: DragEvent) => {
-      if (e.dataTransfer && inputRef.value) {
-        files.value = e.dataTransfer.files
-      }
-      active.value = false
-    }
-
-    const createPreviewURL = (file: File) => {
-      return URL.createObjectURL(file)
-    }
-
-    return {
-      files,
-      formData,
-      inputRef,
-      active,
-      handleInputFileChange,
-      handleClick,
-      handleDragenter,
-      handleDragleave,
-      handleDrop,
-      handleDragover,
-      createPreviewURL,
-    }
-  },
-})
-</script>
-
-<style lang="scss" scoped>
-.file_upload_area {
-  border: dashed var(--v-secondary-lighten4);
-  height: 100px;
-}
-
-.active {
-  border: dashed var(--v-primary-darken3);
-}
-</style>

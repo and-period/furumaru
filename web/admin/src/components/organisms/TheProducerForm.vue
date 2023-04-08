@@ -1,3 +1,92 @@
+<script lang="ts" setup>
+import { CreateProducerRequest } from '~/types/api'
+import { ImageUploadStatus } from '~/types/props'
+
+const props = defineProps({
+  formType: {
+    type: String,
+    default: 'create',
+    validator: (value: string) => {
+      return ['create', 'edit'].includes(value)
+    },
+  },
+  formData: {
+    type: Object,
+    default: (): CreateProducerRequest => ({
+      lastname: '',
+      lastnameKana: '',
+      firstname: '',
+      firstnameKana: '',
+      storeName: '',
+      thumbnailUrl: '',
+      headerUrl: '',
+      email: '',
+      phoneNumber: '',
+      postalCode: '',
+      prefecture: '',
+      city: '',
+      addressLine1: '',
+      addressLine2: '',
+    }),
+  },
+  thumbnailUploadStatus: {
+    type: Object,
+    default: (): ImageUploadStatus => ({
+      error: false,
+      message: '',
+    }),
+  },
+  headerUploadStatus: {
+    type: Object,
+    default: (): ImageUploadStatus => ({
+      error: false,
+      message: '',
+    }),
+  },
+  searchErrorMessage: {
+    type: String,
+    default: '',
+  },
+  searchLoading: {
+    type: Boolean,
+    default: false,
+  },
+})
+
+const emit = defineEmits<{
+  (e: 'update:formData', formData: CreateProducerRequest): void
+  (e: 'update:thumbnailFile', files?: FileList): void
+  (e: 'update:headerFile', files?: FileList): void
+  (e: 'click:search'): void
+  (e: 'submit'): void
+}>()
+
+const formDataValue = computed({
+  get: (): CreateProducerRequest => props.formData as CreateProducerRequest,
+  set: (val: CreateProducerRequest) => emit('update:formData', val),
+})
+
+const btnText = computed(() => {
+  return props.formType === 'create' ? '登録' : '更新'
+})
+
+const updateThumbnailFileHandler = (files?: FileList) => {
+  emit('update:thumbnailFile', files)
+}
+
+const updateHeaderFileHandler = (files?: FileList) => {
+  emit('update:headerFile', files)
+}
+
+const handleSubmit = () => {
+  emit('submit')
+}
+
+const handleSearchClick = () => {
+  emit('click:search')
+}
+</script>
+
 <template>
   <form @submit.prevent="handleSubmit">
     <v-card elevation="0">
@@ -11,16 +100,16 @@
         <div class="mb-2 d-flex">
           <the-profile-select-form
             class="mr-4 flex-grow-1 flex-shrink-1"
-            :img-url="formData.thumbnailUrl"
-            :error="thumbnailUploadStatus.error"
-            :message="thumbnailUploadStatus.message"
+            :img-url="props.formData.thumbnailUrl"
+            :error="props.thumbnailUploadStatus.error"
+            :message="props.thumbnailUploadStatus.message"
             @update:file="updateThumbnailFileHandler"
           />
           <the-header-select-form
             class="flex-grow-1 flex-shrink-1"
-            :img-url="formData.headerUrl"
-            :error="headerUploadStatus.error"
-            :message="headerUploadStatus.message"
+            :img-url="props.formData.headerUrl"
+            :error="props.headerUploadStatus.error"
+            :message="props.headerUploadStatus.message"
             @update:file="updateHeaderFileHandler"
           />
         </div>
@@ -48,32 +137,32 @@
             required
           />
           <v-text-field
-            v-model="formData.firstnameKana"
+            v-model="formDataValue.firstnameKana"
             label="生産者名:名（ふりがな）"
             maxlength="32"
             required
           />
         </div>
         <v-text-field
-          v-model="formData.email"
+          v-model="formDataValue.email"
           label="連絡先（Email）"
           type="email"
           required
         />
         <v-text-field
-          v-model="formData.phoneNumber"
+          v-model="formDataValue.phoneNumber"
           label="連絡先（電話番号）"
           required
         />
 
         <the-address-form
-          :postal-code.sync="formData.postalCode"
-          :prefecture.sync="formData.prefecture"
-          :city.sync="formData.city"
-          :address-line1.sync="formData.addressLine1"
-          :address-line2.sync="formData.addressLine2"
-          :loading="searchLoading"
-          :error-message="searchErrorMessage"
+          :postal-code.sync="props.formData.postalCode"
+          :prefecture.sync="props.formData.prefecture"
+          :city.sync="props.formData.city"
+          :address-line1.sync="props.formData.addressLine1"
+          :address-line2.sync="props.formData.addressLine2"
+          :loading="props.searchLoading"
+          :error-message="props.searchErrorMessage"
           @click:search="handleSearchClick"
         />
       </v-card-text>
@@ -85,105 +174,3 @@
     </v-card>
   </form>
 </template>
-
-<script lang="ts">
-import { computed, defineComponent, PropType } from '@vue/composition-api'
-
-import { CreateProducerRequest } from '~/types/api'
-import { ImageUploadStatus } from '~/types/props'
-
-export default defineComponent({
-  props: {
-    formType: {
-      type: String,
-      default: 'create',
-      validator: (value: string) => {
-        return ['create', 'edit'].includes(value)
-      },
-    },
-    formData: {
-      type: Object as PropType<CreateProducerRequest>,
-      default: () => {
-        return {
-          lastname: '',
-          lastnameKana: '',
-          firstname: '',
-          firstnameKana: '',
-          storeName: '',
-          thumbnailUrl: '',
-          headerUrl: '',
-          email: '',
-          phoneNumber: '',
-          postalCode: '',
-          prefecture: '',
-          city: '',
-          addressLine1: '',
-          addressLine2: '',
-        }
-      },
-    },
-    thumbnailUploadStatus: {
-      type: Object as PropType<ImageUploadStatus>,
-      default: () => {
-        return {
-          error: false,
-          message: '',
-        }
-      },
-    },
-    headerUploadStatus: {
-      type: Object as PropType<ImageUploadStatus>,
-      default: () => {
-        return {
-          error: false,
-          message: '',
-        }
-      },
-    },
-    searchErrorMessage: {
-      type: String,
-      default: '',
-    },
-    searchLoading: {
-      type: Boolean,
-      default: false,
-    },
-  },
-
-  setup(props, { emit }) {
-    const formDataValue = computed({
-      get: (): CreateProducerRequest => props.formData,
-      set: (val: CreateProducerRequest) => emit('update:formData', val),
-    })
-
-    const btnText = computed(() => {
-      return props.formType === 'create' ? '登録' : '更新'
-    })
-
-    const updateThumbnailFileHandler = (files: FileList) => {
-      emit('update:thumbnailFile', files)
-    }
-
-    const updateHeaderFileHandler = (files: FileList) => {
-      emit('update:headerFile', files)
-    }
-
-    const handleSubmit = () => {
-      emit('submit')
-    }
-
-    const handleSearchClick = () => {
-      emit('click:search')
-    }
-
-    return {
-      formDataValue,
-      btnText,
-      updateThumbnailFileHandler,
-      updateHeaderFileHandler,
-      handleSubmit,
-      handleSearchClick,
-    }
-  },
-})
-</script>

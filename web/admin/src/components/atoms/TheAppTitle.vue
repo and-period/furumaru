@@ -1,22 +1,18 @@
-<template>
-  <img class="title" alt="ふるマル" src="/app-title.svg" :width="width" />
-</template>
-
-<script>
-import { defineComponent } from '@vue/composition-api'
-
-export default defineComponent({
-  props: {
-    width: {
-      type: Number,
-      default: 140,
-    },
+<script lang="ts" setup>
+const props = defineProps({
+  width: {
+    type: Number,
+    default: 140,
   },
 })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .title {
   height: auto;
 }
 </style>
+
+<template>
+  <img class="title" alt="ふるマル" src="/app-title.svg" :width="props.width" />
+</template>

@@ -89,10 +89,7 @@ const handleSubmit = async (): Promise<void> => {
   }
 }
 
-const handleClickCloseButton = (
-  rate: '60' | '80' | '100',
-  index: number
-) => {
+const handleClickCloseButton = (rate: '60' | '80' | '100', index: number) => {
   switch (rate) {
     case '60':
       formData.box60Rates.splice(index, 1)

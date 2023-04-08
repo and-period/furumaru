@@ -2,12 +2,7 @@
 import { useVuelidate } from '@vuelidate/core'
 
 import { usePagination, useSearchAddress } from '~/lib/hooks'
-import {
-  kana,
-  required,
-  tel,
-  maxLength,
-} from '~/lib/validations'
+import { kana, required, tel, maxLength } from '~/lib/validations'
 import { useCoordinatorStore } from '~/store/coordinator'
 import { useProducerStore } from '~/store/producer'
 import {
@@ -115,10 +110,7 @@ const fetchState = useAsyncData(async () => {
     formData.addressLine2 = coordinator.addressLine2
 
     await Promise.all([
-      coordinatorStore.fetchRelatedProducers(
-        id,
-        producersItemsPerPage.value
-      ),
+      coordinatorStore.fetchRelatedProducers(id, producersItemsPerPage.value),
     ])
     relateProducersItems.relateProducers = coordinatorStore.producers
   } catch (err) {

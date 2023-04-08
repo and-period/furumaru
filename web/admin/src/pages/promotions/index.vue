@@ -52,10 +52,7 @@ const headers: DataTableHeader[] = [
   },
 ]
 
-const getDiscount = (
-  discountType: number,
-  discountRate: number
-): string => {
+const getDiscount = (discountType: number, discountRate: number): string => {
   switch (discountType) {
     case 1:
       return '-' + discountRate + '円'
@@ -85,9 +82,7 @@ const handleEdit = (item: PromotionsResponsePromotionsInner) => {
   router.push(`/promotions/edit/${item.id}`)
 }
 
-const openDeleteDialog = (
-  item: PromotionsResponsePromotionsInner
-): void => {
+const openDeleteDialog = (item: PromotionsResponsePromotionsInner): void => {
   selectedId.value = item.id
   selectedName.value = item.title
   deleteDialog.value = true

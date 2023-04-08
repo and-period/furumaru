@@ -66,10 +66,7 @@ const handleUpdatePage = async (page: number) => {
 
 const fetchState = useAsyncData(async () => {
   try {
-    await coordinatorStore.fetchCoordinators(
-      itemsPerPage.value,
-      offset.value
-    )
+    await coordinatorStore.fetchCoordinators(itemsPerPage.value, offset.value)
   } catch (err) {
     console.log(err)
   }

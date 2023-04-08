@@ -1,11 +1,114 @@
+<script lang="ts" setup>
+import { DataTableHeader } from 'vuetify'
+
+import { useCategoryStore } from '~/store/category'
+import {
+  CategoriesResponseCategoriesInner,
+  UpdateCategoryRequest,
+} from '~/types/api'
+
+const props = defineProps({
+  loading: {
+    type: Boolean,
+    default: false,
+  },
+  tableFooterProps: {
+    type: Object,
+    default: () => {},
+  },
+})
+
+const emit = defineEmits<{
+  (e: 'update:items-per-page', page: number): void
+  (e: 'update:page', page: number): void
+}>()
+
+const categoryStore = useCategoryStore()
+const deleteDialog = ref<boolean>(false)
+const editDialog = ref<boolean>(false)
+const selectedItem = ref<string>('')
+const selectedName = ref<string>('')
+const categoryId = ref<string>('')
+const categoryFormData = reactive<UpdateCategoryRequest>({
+  name: '',
+})
+
+const categories = computed(() => {
+  return categoryStore.categories
+})
+const totalItems = computed(() => {
+  return categoryStore.totalCategoryItems
+})
+
+const categoryHeaders: DataTableHeader[] = [
+  {
+    text: 'カテゴリー',
+    value: 'name',
+  },
+  {
+    text: 'Actions',
+    value: 'actions',
+    width: 200,
+    align: 'end',
+    sortable: false,
+  },
+]
+
+const handleUpdateItemsPerPage = (page: number) => {
+  emit('update:items-per-page', page)
+}
+
+const handleUpdatePage = (page: number) => {
+  emit('update:page', page)
+}
+
+const deleteCancel = (): void => {
+  deleteDialog.value = false
+}
+
+const editCancel = (): void => {
+  editDialog.value = false
+}
+
+const openEditDialog = (item: CategoriesResponseCategoriesInner): void => {
+  categoryFormData.name = item.name
+  categoryId.value = item.id
+  editDialog.value = true
+}
+
+const openDeleteDialog = (item: CategoriesResponseCategoriesInner): void => {
+  selectedItem.value = item.id
+  selectedName.value = item.name
+  deleteDialog.value = true
+}
+
+const handleEdit = async (): Promise<void> => {
+  try {
+    await categoryStore.editCategory(categoryId.value, categoryFormData)
+    editDialog.value = false
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const handleDelete = async (): Promise<void> => {
+  try {
+    await categoryStore.deleteCategory(selectedItem.value)
+  } catch (error) {
+    console.log(error)
+  }
+  deleteDialog.value = false
+}
+</script>
+
 <template>
   <div>
     <v-data-table
       :headers="categoryHeaders"
       :items="categories"
-      :loading="loading"
+      :loading="props.loading"
       :server-items-length="totalItems"
-      :footer-props="tableFooterProps"
+      :footer-props="props.tableFooterProps"
       @update:items-per-page="handleUpdateItemsPerPage"
       @update:page="handleUpdatePage"
     >
@@ -55,125 +158,3 @@
     </v-dialog>
   </div>
 </template>
-
-<script lang="ts">
-import { reactive, ref, computed, defineComponent } from '@vue/composition-api'
-import { DataTableHeader } from 'vuetify'
-
-import { useCategoryStore } from '~/store/category'
-import {
-  CategoriesResponseCategoriesInner,
-  UpdateCategoryRequest,
-} from '~/types/api'
-
-export default defineComponent({
-  props: {
-    loading: {
-      type: Boolean,
-      default: false,
-    },
-    tableFooterProps: {
-      type: Object,
-      default: () => {},
-    },
-  },
-  setup(_, { emit }) {
-    const categoryStore = useCategoryStore()
-    const deleteDialog = ref<boolean>(false)
-    const editDialog = ref<boolean>(false)
-    const selectedItem = ref<string>('')
-    const selectedName = ref<string>('')
-    const categoryId = ref<string>('')
-    const categoryFormData = reactive<UpdateCategoryRequest>({
-      name: '',
-    })
-
-    const categories = computed(() => {
-      return categoryStore.categories
-    })
-    const totalItems = computed(() => {
-      return categoryStore.totalCategoryItems
-    })
-
-    const categoryHeaders: DataTableHeader[] = [
-      {
-        text: 'カテゴリー',
-        value: 'name',
-      },
-      {
-        text: 'Actions',
-        value: 'actions',
-        width: 200,
-        align: 'end',
-        sortable: false,
-      },
-    ]
-
-    const handleUpdateItemsPerPage = (page: number) => {
-      emit('update:items-per-page', page)
-    }
-
-    const handleUpdatePage = (page: number) => {
-      emit('update:page', page)
-    }
-
-    const deleteCancel = (): void => {
-      deleteDialog.value = false
-    }
-
-    const editCancel = (): void => {
-      editDialog.value = false
-    }
-
-    const openEditDialog = (item: CategoriesResponseCategoriesInner): void => {
-      categoryFormData.name = item.name
-      categoryId.value = item.id
-      editDialog.value = true
-    }
-
-    const openDeleteDialog = (
-      item: CategoriesResponseCategoriesInner
-    ): void => {
-      selectedItem.value = item.id
-      selectedName.value = item.name
-      deleteDialog.value = true
-    }
-
-    const handleEdit = async (): Promise<void> => {
-      try {
-        await categoryStore.editCategory(categoryId.value, categoryFormData)
-        editDialog.value = false
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    const handleDelete = async (): Promise<void> => {
-      try {
-        await categoryStore.deleteCategory(selectedItem.value)
-      } catch (error) {
-        console.log(error)
-      }
-      deleteDialog.value = false
-    }
-
-    return {
-      categoryHeaders,
-      handleUpdateItemsPerPage,
-      handleUpdatePage,
-      categories,
-      totalItems,
-      deleteDialog,
-      editDialog,
-      selectedName,
-      categoryFormData,
-      openEditDialog,
-      openDeleteDialog,
-      editCancel,
-      deleteCancel,
-      handleEdit,
-      handleDelete,
-    }
-  },
-})
-</script>

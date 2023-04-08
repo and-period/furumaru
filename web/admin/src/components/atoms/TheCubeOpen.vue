@@ -1,31 +1,11 @@
-<template>
-  <div role="button" @click="handleClick">
-    <div class="cube-top" />
-    <div class="cube-x">
-      <div class="cube-left" />
-      <div class="cube">
-        <slot />
-      </div>
-      <div class="cube-right" />
-    </div>
-    <div class="cube-bottom" />
-  </div>
-</template>
+<script lang="ts" setup>
+const emit = defineEmits<{
+  (e: 'click'): void
+}>()
 
-<script lang="ts">
-import { defineComponent } from '@vue/composition-api'
-
-export default defineComponent({
-  setup(_, { emit }) {
-    const handleClick = () => {
-      emit('click')
-    }
-
-    return {
-      handleClick,
-    }
-  },
-})
+const handleClick = () => {
+  emit('click')
+}
 </script>
 
 <style lang="scss" scoped>
@@ -77,3 +57,17 @@ $border-color: #c1ae8d;
   margin: auto;
 }
 </style>
+
+<template>
+  <div role="button" @click="handleClick">
+    <div class="cube-top" />
+    <div class="cube-x">
+      <div class="cube-left" />
+      <div class="cube">
+        <slot />
+      </div>
+      <div class="cube-right" />
+    </div>
+    <div class="cube-bottom" />
+  </div>
+</template>
