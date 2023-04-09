@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" setup>
 import { useAuthStore } from '~/store'
 
 const router = useRouter()
