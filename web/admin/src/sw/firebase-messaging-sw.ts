@@ -5,7 +5,7 @@ const fs = require('fs')
  * firebase-messaging-sw.js - 生成用
  */
 fs.writeFileSync(
-  './src/static/firebase-messaging-sw.js',
+  './src/public/firebase-messaging-sw.js',
   `importScripts("https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js");
 importScripts("https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js");
 

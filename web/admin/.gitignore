@@ -1,5 +1,5 @@
 # sw
-/src/static/firebase-messaging-sw.js
+/src/public/firebase-messaging-sw.js
 
 # google font
 /src/assets/css/fonts.css
