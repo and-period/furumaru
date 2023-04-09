@@ -1,15 +1,13 @@
 import { defineStore } from 'pinia'
 
-import { useAuthStore } from '~/store'
 import { OrderResponse, OrdersResponse } from '~/types/api'
+import { getAccessToken } from './auth'
 
 export const useOrderStore = defineStore('order', {
-  state: () => {
-    return {
-      orders: [] as OrdersResponse['orders'],
-      totalItems: 0
-    }
-  },
+  state: () => ({
+    orders: [] as OrdersResponse['orders'],
+    totalItems: 0
+  }),
 
   actions: {
     /**
@@ -20,12 +18,7 @@ export const useOrderStore = defineStore('order', {
      */
     async fetchOrders (limit = 20, offset = 0): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-
+        const accessToken = getAccessToken()
         const res = await this.orderApiClient(accessToken).v1ListOrders(
           limit,
           offset
@@ -44,11 +37,7 @@ export const useOrderStore = defineStore('order', {
      */
     async getOrder (id: string): Promise<OrderResponse> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
+        const accessToken = getAccessToken()
         const res = await this.orderApiClient(accessToken).v1GetOrder(id)
         return res.data
       } catch (error) {

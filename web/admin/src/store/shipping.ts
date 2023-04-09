@@ -1,12 +1,9 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
 
-import { useAuthStore } from './auth'
-
-import ApiClientFactory from '~/plugins/factory'
+import { getAccessToken } from './auth'
 import {
   CreateShippingRequest,
-  ShippingApi,
   ShippingResponse,
   ShippingsResponseShippingsInner,
   UpdateShippingRequest
@@ -20,17 +17,10 @@ import {
 } from '~/types/exception'
 
 export const useShippingStore = defineStore('shippings', {
-  state: () => {
-    const apiClient = (token: string) => {
-      const factory = new ApiClientFactory()
-      return factory.create(ShippingApi, token)
-    }
-    return {
-      shippings: [] as ShippingsResponseShippingsInner[],
-      totalItems: 0,
-      apiClient
-    }
-  },
+  state: () => ({
+    shippings: [] as ShippingsResponseShippingsInner[],
+    totalItems: 0,
+  }),
 
   actions: {
     /**
@@ -41,14 +31,8 @@ export const useShippingStore = defineStore('shippings', {
      */
     async fetchShippings (limit = 20, offset = 0): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-        const res = await this.apiClient(accessToken).v1ListShippings(
+        const accessToken = getAccessToken()
+        const res = await this.shippingApiClient(accessToken).v1ListShippings(
           limit,
           offset
         )
@@ -80,14 +64,8 @@ export const useShippingStore = defineStore('shippings', {
      */
     async getShipping (id: string): Promise<ShippingResponse> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-        const res = await this.apiClient(accessToken).v1GetShipping(id)
+        const accessToken = getAccessToken()
+        const res = await this.shippingApiClient(accessToken).v1GetShipping(id)
         return res.data
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -115,14 +93,8 @@ export const useShippingStore = defineStore('shippings', {
      */
     async createShipping (payload: CreateShippingRequest): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-        await this.apiClient(accessToken).v1CreateShipping(payload)
+        const accessToken = getAccessToken()
+        await this.shippingApiClient(accessToken).v1CreateShipping(payload)
       } catch (error) {
         if (axios.isAxiosError(error)) {
           if (!error.response) {
@@ -157,14 +129,8 @@ export const useShippingStore = defineStore('shippings', {
       payload: UpdateShippingRequest
     ): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-        await this.apiClient(accessToken).v1UpdateShipping(id, payload)
+        const accessToken = getAccessToken()
+        await this.shippingApiClient(accessToken).v1UpdateShipping(id, payload)
       } catch (error) {
         if (axios.isAxiosError(error)) {
           if (!error.response) {

@@ -1,8 +1,8 @@
+import 'pinia'
+
 import { CustomErrorMessage } from '~/plugins/api-error-handler'
 import { useAuthStore } from '~/store'
-import { OrderApi } from '~/types/api'
-
-import 'pinia'
+import { AdministratorApi, AuthApi, CategoryApi, ContactApi, CoordinatorApi, MessageApi, NotificationApi, OrderApi, ProducerApi, ProductApi, ProductTypeApi, PromotionApi, ShippingApi } from '~/types/api'
 
 declare module 'vue/types/vue' {
   interface Vue {
@@ -33,6 +33,23 @@ declare module 'pinia' {
       customObject?: CustomErrorMessage
     ) => Promise<never>
 
-    orderApiClient: (token: string) => OrderApi
+    /**
+     * apiクライアントの定義
+     * @param token APIリクエスト時の認証用トークン
+     * @returns OpenApi Generatorによって自動生成されたAPIクライアントを返す。
+     */
+    administratorApiClient: (token?: string) => AdministratorApi
+    authApiClient: (token?: string) => AuthApi
+    categoryApiClient: (token?: string) => CategoryApi
+    contactApiClient: (token?: string) => ContactApi
+    coordinatorApiClient: (token?: string) => CoordinatorApi
+    messageApiClient: (token?: string) => MessageApi
+    notificationApiClient: (token?: string) => NotificationApi
+    orderApiClient: (token?: string) => OrderApi
+    producerApiClient: (token?: string) => ProducerApi
+    productApiClient: (token?: string) => ProductApi
+    productTypeApiClient: (token?: string) => ProductTypeApi
+    promotionApiClient: (token?: string) => PromotionApi
+    shippingApiClient: (token?: string) => ShippingApi
   }
 }

@@ -1,11 +1,10 @@
-import { Context, Middleware } from '@nuxt/types'
 import Cookies from 'universal-cookie'
 
 import { useAuthStore } from '~/store'
 
-const routing: Middleware = async ({ route, redirect }: Context) => {
+export default defineNuxtRouteMiddleware(async (to, _) => {
   const publicPages = ['/signin']
-  if (publicPages.includes(route.path)) {
+  if (publicPages.includes(to.path)) {
     return
   }
 
@@ -16,18 +15,18 @@ const routing: Middleware = async ({ route, redirect }: Context) => {
   if (store.isAuthenticated) {
     return // ログイン済み
   }
-  store.setRedirectPath(route.path)
+  store.setRedirectPath(to.path)
 
   // RefreshTokenの有無検証
   const refreshToken: string = cookies.get('refreshToken')
   if (!refreshToken) {
-    redirect('/signin')
-    return
+    return navigateTo('/signin')
   }
 
   // AccessTokenの更新
-  await store.getAuthByRefreshToken(refreshToken).catch(() => {
-    redirect('/signin')
+  await store.getAuthByRefreshToken(refreshToken).catch((err) => {
+    console.log('failed to refresh auth token', err)
+    navigateTo('/signin')
   })
 
   // Push通知用のDeviceToken取得/登録
@@ -46,6 +45,4 @@ const routing: Middleware = async ({ route, redirect }: Context) => {
     .catch((err) => {
       console.log('Push notifications are disabled.', err)
     })
-}
-
-export default routing
+})

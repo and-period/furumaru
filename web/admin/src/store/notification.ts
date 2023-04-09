@@ -1,13 +1,10 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
 
-import { useAuthStore } from './auth'
+import { getAccessToken } from './auth'
 import { useCommonStore } from './common'
-
-import ApiClientFactory from '~/plugins/factory'
 import {
   CreateNotificationRequest,
-  NotificationApi,
   NotificationResponse,
   NotificationsResponse,
   UpdateNotificationRequest
@@ -21,17 +18,10 @@ import {
 } from '~/types/exception'
 
 export const useNotificationStore = defineStore('Notification', {
-  state: () => {
-    const apiClient = (token: string) => {
-      const factory = new ApiClientFactory()
-      return factory.create(NotificationApi, token)
-    }
-    return {
-      notifications: [] as NotificationsResponse['notifications'],
-      totalItems: 0,
-      apiClient
-    }
-  },
+  state: () => ({
+    notifications: [] as NotificationsResponse['notifications'],
+    totalItems: 0,
+  }),
   actions: {
     /**
      * 登録済みのお知らせ一覧を取得する非同期関数
@@ -41,8 +31,8 @@ export const useNotificationStore = defineStore('Notification', {
      */
     async fetchNotifications (limit = 20, offset = 0): Promise<void> {
       try {
-        const accessToken = this.getAccessToken()
-        const res = await this.apiClient(accessToken).v1ListNotifications(
+        const accessToken = getAccessToken()
+        const res = await this.notificationApiClient(accessToken).v1ListNotifications(
           limit,
           offset
         )
@@ -63,15 +53,8 @@ export const useNotificationStore = defineStore('Notification', {
       payload: CreateNotificationRequest
     ): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-
-        await this.apiClient(accessToken).v1CreateNotification(payload)
+        const accessToken = getAccessToken()
+        const res = await this.notificationApiClient(accessToken).v1CreateNotification(payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: `${payload.title}を作成しました。`,
@@ -109,13 +92,8 @@ export const useNotificationStore = defineStore('Notification', {
     async deleteNotification (id: string): Promise<void> {
       const commonStore = useCommonStore()
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-
-        await this.apiClient(accessToken).v1DeleteNotification(id)
+        const accessToken = getAccessToken()
+        const res = await this.notificationApiClient(accessToken).v1DeleteNotification(id)
         commonStore.addSnackbar({
           message: '品物削除が完了しました',
           color: 'info'
@@ -162,12 +140,8 @@ export const useNotificationStore = defineStore('Notification', {
      */
     async getNotification (id: string): Promise<NotificationResponse> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-        const res = await this.apiClient(accessToken).v1GetNotification(id)
+        const accessToken = getAccessToken()
+        const res = await this.notificationApiClient(accessToken).v1GetNotification(id)
         return res.data
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -207,12 +181,8 @@ export const useNotificationStore = defineStore('Notification', {
     ): Promise<void> {
       const commonStore = useCommonStore()
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-        await this.apiClient(accessToken).v1UpdateNotification(id, payload)
+        const accessToken = getAccessToken()
+        await this.notificationApiClient(accessToken).v1UpdateNotification(id, payload)
         commonStore.addSnackbar({
           message: 'お知らせ情報の編集が完了しました',
           color: 'info'
@@ -246,15 +216,6 @@ export const useNotificationStore = defineStore('Notification', {
         }
         throw new InternalServerError(error)
       }
-    },
-
-    getAccessToken (): string {
-      const authStore = useAuthStore()
-      const accessToken = authStore.accessToken
-      if (!accessToken) {
-        throw new AuthError('認証エラー。再度ログインをしてください。')
-      }
-      return accessToken
     }
   }
 })

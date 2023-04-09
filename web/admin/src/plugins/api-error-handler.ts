@@ -1,4 +1,3 @@
-import { Plugin } from '@nuxt/types'
 import axios from 'axios'
 import { PiniaPluginContext } from 'pinia'
 
@@ -125,8 +124,6 @@ function apiErrorHandler ({ store }: PiniaPluginContext) {
 /**
  * piniaに共通エラーハンドラーを注入するプラグイン
  */
-const apiErrorHandlerPlugin: Plugin = (ctx, _inject) => {
-  ctx.$pinia.use(apiErrorHandler)
-}
-
-export default apiErrorHandlerPlugin
+export default defineNuxtPlugin((nuxtApp) => {
+  nuxtApp.$pinia.use(apiErrorHandler)
+})

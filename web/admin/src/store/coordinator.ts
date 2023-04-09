@@ -1,11 +1,8 @@
 import { defineStore } from 'pinia'
 
-import { useAuthStore } from './auth'
+import { getAccessToken } from './auth'
 import { useCommonStore } from './common'
-
-import ApiClientFactory from '~/plugins/factory'
 import {
-  CoordinatorApi,
   CoordinatorResponse,
   CoordinatorsResponse,
   CreateCoordinatorRequest,
@@ -14,22 +11,14 @@ import {
   UpdateCoordinatorRequest,
   UploadImageResponse
 } from '~/types/api'
-import { AuthError } from '~/types/exception'
 
 export const useCoordinatorStore = defineStore('Coordinator', {
-  state: () => {
-    const apiClient = (token: string) => {
-      const factory = new ApiClientFactory()
-      return factory.create(CoordinatorApi, token)
-    }
-    return {
-      coordinators: [] as CoordinatorsResponse['coordinators'],
-      producers: [] as ProducersResponse['producers'],
-      totalItems: 0,
-      producerTotalItems: 0,
-      apiClient
-    }
-  },
+  state: () => ({
+    coordinators: [] as CoordinatorsResponse['coordinators'],
+    producers: [] as ProducersResponse['producers'],
+    totalItems: 0,
+    producerTotalItems: 0,
+  }),
   actions: {
     /**
      * コーディネータの一覧を取得する非同期関数
@@ -39,20 +28,8 @@ export const useCoordinatorStore = defineStore('Coordinator', {
      */
     async fetchCoordinators (limit = 20, offset = 0): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-
-        const factory = new ApiClientFactory()
-        const coordinatorsApiClient = factory.create(
-          CoordinatorApi,
-          accessToken
-        )
-        const res = await coordinatorsApiClient.v1ListCoordinators(
+        const accessToken = getAccessToken()
+        const res = await this.coordinatorApiClient(accessToken).v1ListCoordinators(
           limit,
           offset
         )
@@ -70,19 +47,8 @@ export const useCoordinatorStore = defineStore('Coordinator', {
      */
     async createCoordinator (payload: CreateCoordinatorRequest) {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-        const factory = new ApiClientFactory()
-        const coordinatorsApiClient = factory.create(
-          CoordinatorApi,
-          accessToken
-        )
-        const res = await coordinatorsApiClient.v1CreateCoordinator(payload)
+        const accessToken = getAccessToken()
+        const res = await this.coordinatorApiClient(accessToken).v1CreateCoordinator(payload)
         return res.data
       } catch (error) {
         console.log(error)
@@ -97,20 +63,8 @@ export const useCoordinatorStore = defineStore('Coordinator', {
      */
     async getCoordinator (id: string): Promise<CoordinatorResponse> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください')
-          )
-        }
-
-        const factory = new ApiClientFactory()
-        const coordinatorsApiClient = factory.create(
-          CoordinatorApi,
-          accessToken
-        )
-        const res = await coordinatorsApiClient.v1GetCoordinator(id)
+        const accessToken = getAccessToken()
+        const res = await this.coordinatorApiClient(accessToken).v1GetCoordinator(id)
         return res.data
       } catch (error) {
         console.log(error)
@@ -129,14 +83,8 @@ export const useCoordinatorStore = defineStore('Coordinator', {
       coordinatorId: string
     ): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-        const factory = new ApiClientFactory()
-        const contactsApiClient = factory.create(CoordinatorApi, accessToken)
-        await contactsApiClient.v1UpdateCoordinator(coordinatorId, payload)
+        const accessToken = getAccessToken()
+        await this.coordinatorApiClient(accessToken).v1UpdateCoordinator(coordinatorId, payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: 'コーディネータ情報が更新されました。',
@@ -157,20 +105,8 @@ export const useCoordinatorStore = defineStore('Coordinator', {
       payload: File
     ): Promise<UploadImageResponse> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-
-        const factory = new ApiClientFactory()
-        const coordinatorsApiClient = factory.create(
-          CoordinatorApi,
-          accessToken
-        )
-        const res = await coordinatorsApiClient.v1UploadCoordinatorThumbnail(
+        const accessToken = getAccessToken()
+        const res = await this.coordinatorApiClient(accessToken).v1UploadCoordinatorThumbnail(
           payload,
           {
             headers: {
@@ -192,20 +128,8 @@ export const useCoordinatorStore = defineStore('Coordinator', {
      */
     async uploadCoordinatorHeader (payload: File): Promise<UploadImageResponse> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-
-        const factory = new ApiClientFactory()
-        const coordinatorsApiClient = factory.create(
-          CoordinatorApi,
-          accessToken
-        )
-        const res = await coordinatorsApiClient.v1UploadCoordinatorHeader(
+        const accessToken = getAccessToken()
+        const res = await this.coordinatorApiClient(accessToken).v1UploadCoordinatorHeader(
           payload,
           {
             headers: {
@@ -227,18 +151,8 @@ export const useCoordinatorStore = defineStore('Coordinator', {
      */
     async deleteCoordinator (id: string) {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-
-        const factory = new ApiClientFactory()
-        const coordinatorsApiClient = factory.create(
-          CoordinatorApi,
-          accessToken
-        )
-        await coordinatorsApiClient.v1DeleteCoordinator(id)
+        const accessToken = getAccessToken()
+        await this.coordinatorApiClient(accessToken).v1DeleteCoordinator(id)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: 'コーディネーターの削除が完了しました',
@@ -262,17 +176,8 @@ export const useCoordinatorStore = defineStore('Coordinator', {
       payload: RelateProducersRequest
     ): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-        const factory = new ApiClientFactory()
-        const coordinatorsApiClient = factory.create(
-          CoordinatorApi,
-          accessToken
-        )
-        await coordinatorsApiClient.v1RelateProducers(id, payload)
+        const accessToken = getAccessToken()
+        await this.coordinatorApiClient(accessToken).v1RelateProducers(id, payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: 'コーディネーターと生産者の紐付けが完了しました',
@@ -295,17 +200,8 @@ export const useCoordinatorStore = defineStore('Coordinator', {
       offset = 0
     ): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-        const factory = new ApiClientFactory()
-        const coordinatorsApiClient = factory.create(
-          CoordinatorApi,
-          accessToken
-        )
-        const res = await coordinatorsApiClient.v1ListRelatedProducers(
+        const accessToken = getAccessToken()
+        const res = await this.coordinatorApiClient(accessToken).v1ListRelatedProducers(
           id,
           limit,
           offset

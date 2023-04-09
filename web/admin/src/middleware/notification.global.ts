@@ -1,10 +1,8 @@
-import { Context } from '@nuxt/types'
-
 import { useAuthStore, useMessageStore } from '~/store'
 
-export default ({ route }: Context) => {
+export default defineNuxtRouteMiddleware((to, _ ) => {
   const publicPages = ['/signin']
-  if (publicPages.includes(route.path)) {
+  if (publicPages.includes(to.path)) {
     return
   }
 
@@ -21,4 +19,4 @@ export default ({ route }: Context) => {
   messageStore.fetchMessages().catch((err: Error) => {
     console.log('failed to get messages', err)
   })
-}
+})

@@ -5,41 +5,37 @@ export default defineNuxtConfig({
   telemetry: false,
   ssr: false,
   srcDir: 'src',
-  target: 'static',
-  head: {
-    titleTemplate: 'ふるマル - 管理者ツール',
-    htmlAttrs: {
-      lang: 'ja'
+  app: {
+    head: {
+      titleTemplate: 'ふるマル - 管理者ツール',
+      htmlAttrs: {
+        lang: 'ja'
+      },
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { hid: 'description', name: 'description', content: '' },
+        { name: 'format-detection', content: 'telephone=no' }
+      ],
+      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
     },
-    meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
-      { name: 'format-detection', content: 'telephone=no' }
-    ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
   css: ['~/assets/main.scss', '~/assets/variables.scss'],
   plugins: [
+    '~/plugins/auth',
     '~/plugins/firebase',
     '~/plugins/google-analytics',
-    '~/plugins/auth',
-    '~/plugins/api-error-handler',
-    '~/plugins/api-client',
     '~/plugins/vuetify'
   ],
   components: [
     { path: '~/components', pathPrefix: false },
     { path: '~/components/', pathPrefix: false }
   ],
-  modules: ['@nuxtjs/google-fonts', '@nuxtjs/stylelint-module', '@pinia/nuxt'],
-  axios: {
-    baseURL: '/'
-  },
-  router: {
-    middleware: ['auth', 'notification']
-  },
-  build: {},
+  modules: [
+    '@nuxtjs/google-fonts',
+    '@nuxtjs/stylelint-module',
+    ['@pinia/nuxt', { autoImports: ['defineStore'] }]
+  ],
   googleFonts: {
     download: true,
     inject: true,
@@ -51,15 +47,16 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBaseUrl: 'http://localhost:18010',
-      firebaseApiKey: '',
-      firebaseAuthDomain: '',
-      firebaseProjectId: '',
-      firebaseStorageBucket: '',
-      firebaseMessagingSenderId: '',
-      firebaseAppId: '',
-      firebaseMeasurementId: '',
-      firebaseVapidKey: '',
+      API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:18010',
+      FIREBASE_API_KEY: process.env.FIREBASE_API_KEY || '',
+      FIREBASE_AUTH_DOMAIN: process.env.FIREBASE_AUTH_DOMAIN || '',
+      FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID || '',
+      FIREBASE_STORAGE_BUCKET: process.env.FIREBASE_STORAGE_BUCKET || '',
+      FIREBASE_MESSAGING_SENDER_ID:
+        process.env.FIREBASE_MESSAGING_SENDER_ID || '',
+      FIREBASE_APP_ID: process.env.FIREBASE_APP_ID || '',
+      FIREBASE_MEASUREMENT_ID: process.env.FIREBASE_MEASUREMENT_ID || '',
+      FIREBASE_VAPID_KEY: process.env.FIREBASE_VAPID_KEY || '',
     }
   }
 })

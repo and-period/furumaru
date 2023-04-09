@@ -1,37 +1,25 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
 
-import { useAuthStore } from './auth'
+import { getAccessToken } from './auth'
 import { useCommonStore } from './common'
-
-import ApiClientFactory from '~/plugins/factory'
 import {
-  ContactApi,
   ContactResponse,
   ContactsResponse,
   ContactsResponseContactsInner,
   UpdateContactRequest
 } from '~/types/api'
 import {
-  AuthError,
   ConnectionError,
   NotFoundError,
   ValidationError
 } from '~/types/exception'
 
 export const useContactStore = defineStore('contact', {
-  state: () => {
-    const apiClient = (token: string) => {
-      const factory = new ApiClientFactory()
-      return factory.create(ContactApi, token)
-    }
-
-    return {
-      apiClient,
-      contacts: [] as Array<ContactsResponseContactsInner>,
-      total: 0
-    }
-  },
+  state: () => ({
+    contacts: [] as Array<ContactsResponseContactsInner>,
+    total: 0
+  }),
 
   actions: {
     /**
@@ -47,8 +35,8 @@ export const useContactStore = defineStore('contact', {
       orders: string[] = []
     ): Promise<void> {
       try {
-        const accessToken = this.getAccessToken()
-        const res = await this.apiClient(accessToken).v1ListContacts(
+        const accessToken = getAccessToken()
+        const res = await this.contactApiClient(accessToken).v1ListContacts(
           limit,
           offset,
           orders.join(',')
@@ -64,15 +52,8 @@ export const useContactStore = defineStore('contact', {
 
     async getContact (id: string): Promise<ContactResponse> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          throw new Error('認証エラー')
-        }
-
-        const factory = new ApiClientFactory()
-        const contactsApiClient = factory.create(ContactApi, accessToken)
-        const res = await contactsApiClient.v1GetContact(id)
+        const accessToken = getAccessToken()
+        const res = await this.contactApiClient(accessToken).v1GetContact(id)
         return res.data
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -99,14 +80,8 @@ export const useContactStore = defineStore('contact', {
       contactId: string
     ): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-        const factory = new ApiClientFactory()
-        const contactsApiClient = factory.create(ContactApi, accessToken)
-        await contactsApiClient.v1UpdateContact(contactId, payload)
+        const accessToken = getAccessToken()
+        await this.contactApiClient(accessToken).v1UpdateContact(contactId, payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: 'お問い合わせ情報が更新されました。',
@@ -135,14 +110,5 @@ export const useContactStore = defineStore('contact', {
         throw new Error('Internal Server Error')
       }
     },
-
-    getAccessToken (): string {
-      const authStore = useAuthStore()
-      const accessToken = authStore.accessToken
-      if (!accessToken) {
-        throw new AuthError('認証エラー。再度ログインをしてください。')
-      }
-      return accessToken
-    }
   }
 })

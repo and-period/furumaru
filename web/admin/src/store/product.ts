@@ -1,12 +1,9 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
 
-import { useAuthStore } from './auth'
-
-import ApiClientFactory from '~/plugins/factory'
+import { getAccessToken } from './auth'
 import {
   CreateProductRequest,
-  ProductApi,
   ProductResponse,
   ProductsResponseProductsInner,
   UpdateProductRequest,
@@ -20,17 +17,10 @@ import {
 } from '~/types/exception'
 
 export const useProductStore = defineStore('product', {
-  state: () => {
-    const apiClient = (token: string) => {
-      const factory = new ApiClientFactory()
-      return factory.create(ProductApi, token)
-    }
-    return {
-      products: [] as ProductsResponseProductsInner[],
-      totalItems: 0,
-      apiClient
-    }
-  },
+  state: () => ({
+    products: [] as ProductsResponseProductsInner[],
+    totalItems: 0,
+  }),
 
   actions: {
     /**
@@ -41,14 +31,8 @@ export const useProductStore = defineStore('product', {
      */
     async fetchProducts (limit = 20, offset = 0): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-        const res = await this.apiClient(accessToken).v1ListProducts(
+        const accessToken = getAccessToken()
+        const res = await this.productApiClient(accessToken).v1ListProducts(
           limit,
           offset
         )
@@ -80,14 +64,8 @@ export const useProductStore = defineStore('product', {
      */
     async uploadProductImage (payload: File): Promise<UploadImageResponse> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-        const res = await this.apiClient(accessToken).v1UploadProductImage(
+        const accessToken = getAccessToken()
+        const res = await this.productApiClient(accessToken).v1UploadProductImage(
           payload,
           {
             headers: {
@@ -127,15 +105,8 @@ export const useProductStore = defineStore('product', {
      */
     async createProduct (payload: CreateProductRequest): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const user = authStore.user
-        const accessToken = authStore.accessToken
-        if (!user || !accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-        await this.apiClient(accessToken).v1CreateProduct({
+        const accessToken = getAccessToken()
+        await this.productApiClient(accessToken).v1CreateProduct({
           ...payload,
           inventory: Number(payload.inventory)
         })
@@ -168,13 +139,9 @@ export const useProductStore = defineStore('product', {
      * @returns
      */
     async getProduct (id: string): Promise<ProductResponse> {
-      const authStore = useAuthStore()
-      const accessToken = authStore.accessToken
-      if (!accessToken) {
-        throw new AuthError('認証エラー。再度ログインをしてください。')
-      }
       try {
-        const res = await this.apiClient(accessToken).v1GetProduct(id)
+        const accessToken = getAccessToken()
+        const res = await this.productApiClient(accessToken).v1GetProduct(id)
         return res.data
       } catch (error) {
         return this.errorHandler(error)
@@ -187,13 +154,9 @@ export const useProductStore = defineStore('product', {
      * @param payload
      */
     async updateProduct (id: string, payload: UpdateProductRequest) {
-      const authStore = useAuthStore()
-      const accessToken = authStore.accessToken
-      if (!accessToken) {
-        throw new AuthError('認証エラー。再度ログインをしてください。')
-      }
       try {
-        await this.apiClient(accessToken).v1UpdateProduct(id, payload)
+        const accessToken = getAccessToken()
+        await this.productApiClient(accessToken).v1UpdateProduct(id, payload)
       } catch (error) {
         return this.errorHandler(error)
       }

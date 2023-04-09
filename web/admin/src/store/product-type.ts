@@ -1,14 +1,10 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
 
-import ApiClientFactory from '../plugins/factory'
-
-import { useAuthStore } from './auth'
+import { getAccessToken } from './auth'
 import { useCommonStore } from './common'
-
 import {
   CreateProductTypeRequest,
-  ProductTypeApi,
   ProductTypesResponse,
   UpdateProductTypeRequest,
   UploadImageResponse
@@ -23,17 +19,10 @@ import {
 } from '~/types/exception'
 
 export const useProductTypeStore = defineStore('ProductType', {
-  state: () => {
-    const apiClient = (token: string) => {
-      const factory = new ApiClientFactory()
-      return factory.create(ProductTypeApi, token)
-    }
-    return {
-      productTypes: [] as ProductTypesResponse['productTypes'],
-      totalItems: 0,
-      apiClient
-    }
-  },
+  state: () => ({
+    productTypes: [] as ProductTypesResponse['productTypes'],
+    totalItems: 0,
+  }),
   actions: {
     /**
      * 品目を全件取得する非同期関数
@@ -42,13 +31,8 @@ export const useProductTypeStore = defineStore('ProductType', {
      */
     async fetchProductTypes (limit = 20, offset = 0): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-
-        const res = await this.apiClient(accessToken).v1ListAllProductTypes(
+        const accessToken = getAccessToken()
+        const res = await this.productTypeApiClient(accessToken).v1ListAllProductTypes(
           limit,
           offset
         )
@@ -85,13 +69,8 @@ export const useProductTypeStore = defineStore('ProductType', {
     ): Promise<void> {
       const commonStore = useCommonStore()
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-
-        const res = await this.apiClient(accessToken).v1CreateProductType(
+        const accessToken = getAccessToken()
+        const res = await this.productTypeApiClient(accessToken).v1CreateProductType(
           categoryId,
           payload
         )
@@ -144,13 +123,8 @@ export const useProductTypeStore = defineStore('ProductType', {
       payload: UpdateProductTypeRequest
     ) {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-
-        await this.apiClient(accessToken).v1UpdateProductType(
+        const accessToken = getAccessToken()
+        await this.productTypeApiClient(accessToken).v1UpdateProductType(
           categoryId,
           productTypeId,
           payload
@@ -198,13 +172,8 @@ export const useProductTypeStore = defineStore('ProductType', {
     ): Promise<void> {
       const commonStore = useCommonStore()
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-
-        await this.apiClient(accessToken).v1DeleteProductType(
+        const accessToken = getAccessToken()
+        await this.productTypeApiClient(accessToken).v1DeleteProductType(
           categoryId,
           productTypeId
         )
@@ -251,15 +220,8 @@ export const useProductTypeStore = defineStore('ProductType', {
      */
     async uploadProductTypeIcon (payload: File): Promise<UploadImageResponse> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-
-        const res = await this.apiClient(accessToken).v1UploadProductTypeIcon(
+        const accessToken = getAccessToken()
+        const res = await this.productTypeApiClient(accessToken).v1UploadProductTypeIcon(
           payload,
           {
             headers: {

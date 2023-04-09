@@ -1,13 +1,10 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
 
-import { useAuthStore } from './auth'
+import { getAccessToken } from './auth'
 import { useCommonStore } from './common'
-
-import ApiClientFactory from '~/plugins/factory'
 import {
   CreatePromotionRequest,
-  PromotionApi,
   PromotionResponse,
   PromotionsResponse,
   UpdatePromotionRequest
@@ -33,17 +30,8 @@ export const usePromotionStore = defineStore('Promotion', {
      */
     async fetchPromotions (limit = 20, offset = 0): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-
-        const factory = new ApiClientFactory()
-        const promotionsApiClient = factory.create(PromotionApi, accessToken)
-        const res = await promotionsApiClient.v1ListPromotions(limit, offset)
+        const accessToken = getAccessToken()
+        const res = await this.promotionApiClient(accessToken).v1ListPromotions(limit, offset)
         this.promotions = res.data.promotions
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -71,17 +59,8 @@ export const usePromotionStore = defineStore('Promotion', {
      */
     async createPromotion (payload: CreatePromotionRequest): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-        const factory = new ApiClientFactory()
-        const promotionsApiClient = factory.create(PromotionApi, accessToken)
-
-        await promotionsApiClient.v1CreatePromotion(payload)
+        const accessToken = getAccessToken()
+        const res = await this.promotionApiClient(accessToken).v1CreatePromotion(payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: `${payload.title}を作成しました。`,
@@ -126,15 +105,8 @@ export const usePromotionStore = defineStore('Promotion', {
     async deletePromotion (id: string): Promise<void> {
       const commonStore = useCommonStore()
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-        const factory = new ApiClientFactory()
-        const promotionsApiClient = factory.create(PromotionApi, accessToken)
-
-        await promotionsApiClient.v1DeletePromotion(id)
+        const accessToken = getAccessToken()
+        await this.promotionApiClient(accessToken).v1DeletePromotion(id)
         commonStore.addSnackbar({
           message: 'セール情報の削除が完了しました',
           color: 'info'
@@ -181,14 +153,8 @@ export const usePromotionStore = defineStore('Promotion', {
      */
     async getPromotion (id: string): Promise<PromotionResponse> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-        const factory = new ApiClientFactory()
-        const promotionsApiClient = factory.create(PromotionApi, accessToken)
-        const res = await promotionsApiClient.v1GetPromotion(id)
+        const accessToken = getAccessToken()
+        const res = await this.promotionApiClient(accessToken).v1GetPromotion(id)
         return res.data
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -228,14 +194,8 @@ export const usePromotionStore = defineStore('Promotion', {
     ): Promise<void> {
       const commonStore = useCommonStore()
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-        const factory = new ApiClientFactory()
-        const promotionsApiClient = factory.create(PromotionApi, accessToken)
-        await promotionsApiClient.v1UpdatePromotion(id, payload)
+        const accessToken = getAccessToken()
+        await this.promotionApiClient(accessToken).v1UpdatePromotion(id, payload)
         commonStore.addSnackbar({
           message: 'セール情報の編集が完了しました',
           color: 'info'
