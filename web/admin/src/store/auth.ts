@@ -260,6 +260,8 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async getDeviceToken (): Promise<string> {
+      const config = useRuntimeConfig()
+
       const supported = await isSupported()
       if (!supported) {
         console.log('this browser does not support push notificatins.')
@@ -267,7 +269,7 @@ export const useAuthStore = defineStore('auth', {
       }
 
       return await getToken(Firebase.messaging, {
-        vapidKey: process.env.FIREBASE_VAPID_KEY
+        vapidKey: config.public.firebaseVapidKey
       })
         .then((currentToken) => {
           return currentToken

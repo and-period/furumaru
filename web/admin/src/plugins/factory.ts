@@ -1,7 +1,8 @@
 import { Configuration } from '~/types/api'
 import { BaseAPI } from '~/types/api/base'
 
-const basePath = process.env.API_BASE_URL || 'http://localhost:18010'
+const runtimeConfig = useRuntimeConfig()
+const basePath = runtimeConfig.public.apiBaseUrl
 
 export default class ApiClientFactory {
   create<T extends BaseAPI> (
