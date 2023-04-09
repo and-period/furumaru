@@ -7,7 +7,7 @@ import { PromotionTime } from '~/types/props'
 
 const router = useRouter()
 const route = useRoute()
-const id = route.params.id
+const id = route.params.id as string
 
 const { getPromotion, editPromotion } = usePromotionStore()
 
@@ -53,6 +53,10 @@ const fetchState = useAsyncData(async () => {
   timeData.endTime = dayjs.unix(promotion.endAt).format('HH:mm')
 })
 
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || false
+}
+
 const handleSubmit = async () => {
   try {
     await editPromotion(id, {
@@ -70,7 +74,7 @@ const handleSubmit = async () => {
   <the-promotion-edit-form-page
     :form-data="formData"
     :time-data="timeData"
-    :form-data-loading="fetchState.pending"
+    :form-data-loading="isLoading"
     @submit="handleSubmit"
   />
 </template>

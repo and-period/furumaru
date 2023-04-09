@@ -10,7 +10,7 @@ import { UpdateProductRequest, UploadImageResponse } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 
 const route = useRoute()
-const id = route.params.id
+const id = route.params.id as string
 
 const router = useRouter()
 
@@ -65,7 +65,11 @@ const producersItems = computed(() => {
   return producerStore.producers
 })
 
-const handleImageUpload = async (files: FileList) => {
+const handleImageUpload = async (files?: FileList) => {
+  if (!files) {
+    return
+  }
+
   for (const [, file] of Array.from(files).entries()) {
     try {
       const uploadImage: UploadImageResponse =
@@ -81,6 +85,10 @@ const handleImageUpload = async (files: FileList) => {
 }
 
 const commonStore = useCommonStore()
+
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || false
+}
 
 const handleSubmit = async () => {
   try {
@@ -105,7 +113,7 @@ const handleSubmit = async () => {
     <v-alert v-model="isShow" :type="alertType" v-text="alertText" />
 
     <the-product-update-form-page
-      :loading="fetchState.pending"
+      :loading="isLoading"
       :form-data="formData"
       :producers-items="producersItems"
       :product-types-items="productTypesItems"

@@ -6,7 +6,7 @@ import { ApiBaseError } from '~/types/exception'
 
 const route = useRoute()
 const router = useRouter()
-const id = route.params.id
+const id = route.params.id as string
 const { alertType, isShow, alertText, show } = useAlert('error')
 
 const { addSnackbar } = useCommonStore()
@@ -82,7 +82,7 @@ const addBox100RateItem = () => {
 }
 
 const isLoading = (): boolean => {
-  return fetchState?.pending.value || false
+  return fetchState?.pending?.value || false
 }
 
 const handleClickRemoveItemButton = (

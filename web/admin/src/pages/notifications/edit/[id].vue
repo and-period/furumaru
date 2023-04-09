@@ -7,7 +7,7 @@ import { NotificationTime } from '~/types/props'
 
 const router = useRouter()
 const route = useRoute()
-const id = route.params.id
+const id = route.params.id as string
 
 const { getNotification, editNotification } = useNotificationStore()
 
@@ -43,6 +43,10 @@ const fetchState = useAsyncData(async () => {
   timeData.publishedTime = dayjs.unix(notification.publishedAt).format('HH:mm')
 })
 
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || false
+}
+
 const handleSubmit = async () => {
   try {
     await editNotification(id, formData)
@@ -57,7 +61,7 @@ const handleSubmit = async () => {
   <the-notification-edit-form-page
     :form-data="formData"
     :time-data="timeData"
-    :form-data-loading="fetchState.pending"
+    :form-data-loading="isLoading"
     @submit="handleSubmit"
   />
 </template>

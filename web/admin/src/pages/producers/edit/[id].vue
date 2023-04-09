@@ -7,7 +7,7 @@ import { ImageUploadStatus } from '~/types/props'
 
 const route = useRoute()
 const router = useRouter()
-const id = route.params.id
+const id = route.params.id as string
 
 const { getProducer } = useProducerStore()
 const { addSnackbar } = useCommonStore()
@@ -71,30 +71,34 @@ const fetchState = useAsyncData(async () => {
   formData.updatedAt = producer.updatedAt
 })
 
-const handleUpdateThumbnail = (files: FileList) => {
-  if (files.length > 0) {
-    uploadProducerThumbnail(files[0])
-      .then((res) => {
-        formData.thumbnailUrl = res.url
-      })
-      .catch(() => {
-        thumbnailUploadStatus.error = true
-        thumbnailUploadStatus.message = 'アップロードに失敗しました。'
-      })
+const handleUpdateThumbnail = (files?: FileList) => {
+  if (!files || files.length === 0) {
+    return
   }
+
+  uploadProducerThumbnail(files[0])
+    .then((res) => {
+      formData.thumbnailUrl = res.url
+    })
+    .catch(() => {
+      thumbnailUploadStatus.error = true
+      thumbnailUploadStatus.message = 'アップロードに失敗しました。'
+    })
 }
 
-const handleUpdateHeader = async (files: FileList) => {
-  if (files.length > 0) {
-    await uploadProducerHeader(files[0])
-      .then((res) => {
-        formData.headerUrl = res.url
-      })
-      .catch(() => {
-        headerUploadStatus.error = true
-        headerUploadStatus.message = 'アップロードに失敗しました。'
-      })
+const handleUpdateHeader = async (files?: FileList) => {
+  if (!files || files.length === 0) {
+    return
   }
+
+  await uploadProducerHeader(files[0])
+    .then((res) => {
+      formData.headerUrl = res.url
+    })
+    .catch(() => {
+      headerUploadStatus.error = true
+      headerUploadStatus.message = 'アップロードに失敗しました。'
+    })
 }
 
 const {
@@ -112,6 +116,10 @@ const searchAddress = async () => {
     formData.city = res.city
     formData.addressLine1 = res.addressLine1
   }
+}
+
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || false
 }
 
 const handleSubmit = async () => {
@@ -140,7 +148,7 @@ const handleSubmit = async () => {
 
     <the-producer-edit-form-page
       :form-data="formData"
-      :form-data-loading="fetchState.pending"
+      :form-data-loading="isLoading"
       :thumbnail-upload-status="thumbnailUploadStatus"
       :header-upload-status="headerUploadStatus"
       :search-loading="searchLoading"

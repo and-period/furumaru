@@ -7,7 +7,8 @@ import { useCoordinatorStore, useProducerStore } from '~/store'
 import {
   ProducersResponseProducersInner,
   RelateProducersRequest,
-  UpdateCoordinatorRequest
+  UpdateCoordinatorRequest,
+UploadImageResponse
 } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 import { Coordinator } from '~/types/props/coordinator'
@@ -34,7 +35,7 @@ const relateProducersItems = reactive<{
 }>({ offset: 0, relateProducers: [] })
 
 const route = useRoute()
-const id = route.params.id
+const id = route.params.id as string
 const router = useRouter()
 
 const { uploadCoordinatorThumbnail, uploadCoordinatorHeader } =
@@ -156,30 +157,34 @@ const headerUploadStatus = reactive<ImageUploadStatus>({
   message: ''
 })
 
-const handleUpdateThumbnail = (files: FileList) => {
-  if (files.length > 0) {
-    uploadCoordinatorThumbnail(files[0])
-      .then((res) => {
-        formData.thumbnailUrl = res.url
-      })
-      .catch(() => {
-        thumbnailUploadStatus.error = true
-        thumbnailUploadStatus.message = 'アップロードに失敗しました。'
-      })
+const handleUpdateThumbnail = (files?: FileList) => {
+  if (!files || files.length === 0) {
+    return
   }
+
+  uploadCoordinatorThumbnail(files[0])
+    .then((res: UploadImageResponse) => {
+      formData.thumbnailUrl = res.url
+    })
+    .catch(() => {
+      thumbnailUploadStatus.error = true
+      thumbnailUploadStatus.message = 'アップロードに失敗しました。'
+    })
 }
 
-const handleUpdateHeader = async (files: FileList) => {
-  if (files.length > 0) {
-    await uploadCoordinatorHeader(files[0])
-      .then((res) => {
-        formData.headerUrl = res.url
-      })
-      .catch(() => {
-        headerUploadStatus.error = true
-        headerUploadStatus.message = 'アップロードに失敗しました。'
-      })
+const handleUpdateHeader = async (files?: FileList) => {
+  if (!files || files.length === 0) {
+    return
   }
+
+  await uploadCoordinatorHeader(files[0])
+    .then((res: UploadImageResponse) => {
+      formData.headerUrl = res.url
+    })
+    .catch(() => {
+      headerUploadStatus.error = true
+      headerUploadStatus.message = 'アップロードに失敗しました。'
+    })
 }
 
 const handleSubmit = async (): Promise<void> => {
