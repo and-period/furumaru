@@ -8,7 +8,7 @@ import {
   ProducersResponseProducersInner,
   RelateProducersRequest,
   UpdateCoordinatorRequest,
-UploadImageResponse
+  UploadImageResponse
 } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 import { Coordinator } from '~/types/props/coordinator'

@@ -99,12 +99,6 @@ const calcStyle = (i: number) => {
 }
 </script>
 
-<style lang="scss" scoped>
-.bg-color {
-  background-color: #eef5f9;
-}
-</style>
-
 <template>
   <v-app>
     <v-navigation-drawer v-model="drawer" app clipped>
@@ -205,3 +199,9 @@ const calcStyle = (i: number) => {
     </v-main>
   </v-app>
 </template>
+
+<style lang="scss" scoped>
+.bg-color {
+  background-color: #eef5f9;
+}
+</style>

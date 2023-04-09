@@ -1,13 +1,13 @@
 <script setup>
 definePageMeta({
   name: 'EmptyLayout',
-  layout: 'empty',
+  layout: 'empty'
 })
 
 const props = defineProps({
   error: {
     type: Object,
-    default: null,
+    default: null
   }
 })
 
@@ -18,12 +18,6 @@ useHead({
   title: props.error?.statusCode === 404 ? pageNotFound : otherError
 })
 </script>
-
-<style scoped>
-h1 {
-  font-size: 20px;
-}
-</style>
 
 <template>
   <v-app dark>
@@ -38,3 +32,9 @@ h1 {
     </nuxt-link>
   </v-app>
 </template>
+
+<style scoped>
+h1 {
+  font-size: 20px;
+}
+</style>
