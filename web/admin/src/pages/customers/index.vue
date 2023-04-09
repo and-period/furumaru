@@ -8,7 +8,7 @@
           :items="users"
           :items-per-page="itemsPerPage"
           :footer-props="options"
-          no-data-text="登録されているお知らせ情報がありません"
+          no-data-text="登録されている顧客情報がありません"
           @update:page="handleUpdatePage"
           @update:items-per-page="handleUpdateItemsPerPage"
         >
