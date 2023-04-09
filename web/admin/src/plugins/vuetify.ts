@@ -1,7 +1,8 @@
 import { createVuetify } from 'vuetify/lib/framework.mjs'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
-import colors from 'vuetify/lib/util/color'
+// @ts-ignore
+import colors from 'vuetify/lib/util/colors.mjs'
 
 export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify({
