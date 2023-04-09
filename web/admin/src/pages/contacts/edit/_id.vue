@@ -48,7 +48,7 @@
         <v-text-field
           name="phoneNumber"
           label="電話番号"
-          :value="formData.phoneNumber"
+          :value="convertPhone(formData.phoneNumber)"
           readonly
         ></v-text-field>
 
@@ -200,6 +200,10 @@ export default defineComponent({
       }
     }
 
+    const convertPhone = (phoneNumber: string): string => {
+      return phoneNumber.replace('+81', '0')
+    }
+
     return {
       priority: ['High', 'Middle', 'Low'],
       status: ['未着手', '進行中', '完了'],
@@ -215,6 +219,7 @@ export default defineComponent({
       formStatus,
       getPriorityID,
       getStatusID,
+      convertPhone,
     }
   },
 })
