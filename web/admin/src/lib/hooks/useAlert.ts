@@ -1,5 +1,3 @@
-import { ref } from '@nuxtjs/composition-api'
-
 type AlertType = 'success' | 'info' | 'warning' | 'error'
 
 export function useAlert (alertType: AlertType) {

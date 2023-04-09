@@ -1,5 +1,3 @@
-import { Ref, ref } from '@vue/composition-api'
-
 import {
   searchAddressByPostalCode as _searchAddressByPostalCode,
   SearchAddressResponse
