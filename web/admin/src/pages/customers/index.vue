@@ -26,7 +26,7 @@
           <template #[`item.action`]>
             <v-btn outlined color="primary" small @click="handleEdit()">
               <v-icon small>mdi-pencil</v-icon>
-              編集
+              詳細
             </v-btn>
             <v-btn outlined color="primary" small>
               <v-icon small>mdi-delete</v-icon>
