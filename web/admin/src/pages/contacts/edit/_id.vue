@@ -60,7 +60,7 @@
         ></v-textarea>
       </v-card-text>
       <v-card-actions>
-        <v-btn block outlined color="primary" @click="handleEdit">登録</v-btn>
+        <v-btn block outlined color="primary" @click="handleEdit">更新</v-btn>
       </v-card-actions>
     </v-card>
   </div>
