@@ -134,23 +134,23 @@ const getStatusID = (status: string): ContactStatus => {
     <v-card elevation="0">
       <v-card-text>
         <v-text-field
+          v-model="formData.username"
           name="name"
           label="名前"
-          v-model="formData.username"
           readonly
         />
 
         <v-text-field
+          v-model="formData.title"
           name="title"
           label="件名"
-          v-model="formData.title"
           readonly
         />
 
         <v-textarea
+          v-model="formData.content"
           name="contact"
           label="お問合せ内容"
-          v-model="formData.content"
           readonly
         />
 
@@ -159,7 +159,7 @@ const getStatusID = (status: string): ContactStatus => {
           :items="priorities"
           label="優先度"
           :item-value="getPriority(formData.priority)"
-        ></v-select>
+        />
 
         <v-select
           v-model="formStatus"
@@ -169,16 +169,16 @@ const getStatusID = (status: string): ContactStatus => {
         />
 
         <v-text-field
+          v-model="formData.email"
           name="mailAddress"
           label="メールアドレス"
-          v-model="formData.email"
           readonly
         />
 
         <v-text-field
+          v-model="formData.phoneNumber"
           name="phoneNumber"
           label="電話番号"
-          v-model="formData.phoneNumber"
           readonly
         />
 
@@ -186,10 +186,12 @@ const getStatusID = (status: string): ContactStatus => {
           v-model="formNote"
           name="note"
           label="メモ"
-        ></v-textarea>
+        />
       </v-card-text>
       <v-card-actions>
-        <v-btn block outlined color="primary" @click="handleEdit">更新</v-btn>
+        <v-btn block outlined color="primary" @click="handleEdit">
+          更新
+        </v-btn>
       </v-card-actions>
     </v-card>
   </div>

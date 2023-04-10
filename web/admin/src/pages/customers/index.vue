@@ -9,7 +9,7 @@ const {
   offset,
   options,
   updateCurrentPage,
-  handleUpdateItemsPerPage,
+  handleUpdateItemsPerPage
 } = usePagination()
 const id = 'ThisIsID'
 
@@ -20,19 +20,19 @@ const headers = [
   },
   {
     text: '電話番号',
-    value: 'phoneNumber',
+    value: 'phoneNumber'
   },
   {
     text: '購入数',
-    value: 'totalOrder',
+    value: 'totalOrder'
   },
   {
     text: '購入金額',
-    value: 'totalAmount',
+    value: 'totalAmount'
   },
   {
     text: 'アカウントの有無',
-    value: 'registered',
+    value: 'registered'
   },
   {
     text: 'Action',
@@ -108,7 +108,9 @@ const handleEdit = () => {
           </template>
           <template #[`item.action`]>
             <v-btn outlined color="primary" small @click="handleEdit()">
-              <v-icon small>mdi-pencil</v-icon>
+              <v-icon small>
+                mdi-pencil
+              </v-icon>
               詳細
             </v-btn>
             <v-btn outlined color="primary" small>

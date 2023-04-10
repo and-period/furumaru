@@ -1,20 +1,18 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
 
-import { useAuthStore } from './auth'
-
 import { UsersResponse } from '~/types/api'
 import {
   AuthError,
   ConnectionError,
-  InternalServerError,
+  InternalServerError
 } from '~/types/exception'
 import { apiClient } from '~/plugins/api-client'
 
 export const useUserStore = defineStore('User', {
   state: () => ({
     users: [] as UsersResponse['users'],
-    totalItems: 0,
+    totalItems: 0
   }),
   actions: {
     /**
@@ -22,7 +20,7 @@ export const useUserStore = defineStore('User', {
      * @param limit 取得上限数
      * @param offset 取得開始位置
      */
-    async fetchUsers(limit: number = 20, offset: number = 0): Promise<void> {
+    async fetchUsers (limit = 20, offset = 0): Promise<void> {
       try {
         const res = await apiClient.userApi().v1ListUsers(limit, offset)
         this.users = res.data.users
@@ -44,6 +42,6 @@ export const useUserStore = defineStore('User', {
         }
         throw new InternalServerError(error)
       }
-    },
-  },
+    }
+  }
 })
