@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
+import { apiClient } from '~/plugins/api-client'
 
-import { getAccessToken } from './auth'
 import {
   MessageResponse,
   MessagesResponse,
@@ -29,11 +29,10 @@ export const useMessageStore = defineStore('message', {
       orders: string[] = []
     ): Promise<void> {
       try {
-        const accessToken = getAccessToken()
         if (orders.length === 0) {
           orders = ['-read', '-receivedAt'] // 優先順位: 未読 && 受信日時が新しい
         }
-        const res = await this.messageApiClient(accessToken).v1ListMessages(
+        const res = await apiClient.messageApi().v1ListMessages(
           limit,
           offset,
           orders.join(',')
@@ -57,8 +56,7 @@ export const useMessageStore = defineStore('message', {
      */
     async fetchMessage (messageId = ''): Promise<void> {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.messageApiClient(accessToken).v1GetMessage(messageId)
+        const res = await apiClient.messageApi().v1GetMessage(messageId)
         const message = res.data || {}
 
         this.message = message

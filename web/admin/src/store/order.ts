@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
+import { apiClient } from '~/plugins/api-client'
 
 import { OrderResponse, OrdersResponse } from '~/types/api'
-import { getAccessToken } from './auth'
 
 export const useOrderStore = defineStore('order', {
   state: () => ({
@@ -18,8 +18,7 @@ export const useOrderStore = defineStore('order', {
      */
     async fetchOrders (limit = 20, offset = 0): Promise<void> {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.orderApiClient(accessToken).v1ListOrders(
+        const res = await apiClient.orderApi().v1ListOrders(
           limit,
           offset
         )
@@ -37,8 +36,7 @@ export const useOrderStore = defineStore('order', {
      */
     async getOrder (id: string): Promise<OrderResponse> {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.orderApiClient(accessToken).v1GetOrder(id)
+        const res = await apiClient.orderApi().v1GetOrder(id)
         return res.data
       } catch (error) {
         console.log(error)

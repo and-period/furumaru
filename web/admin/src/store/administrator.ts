@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 
-import { getAccessToken } from './auth'
 import { AdministratorsResponse } from '~/types/api'
+import { apiClient } from '~/plugins/api-client'
 
 export const useAdministratorStore = defineStore('administrator', {
   state: () => ({
@@ -10,8 +10,7 @@ export const useAdministratorStore = defineStore('administrator', {
   actions: {
     async fetchAdministrators(): Promise<void> {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.administratorApiClient(accessToken).v1ListAdministrators()
+        const res = await apiClient.administratorApi().v1ListAdministrators()
         this.administrators = res.data.administrators
       } catch (error) {
         // TODO: エラーハンドリング

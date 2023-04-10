@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
 
-import { getAccessToken } from './auth'
 import { useCommonStore } from './common'
 import {
   CategoriesResponse,
@@ -16,6 +15,7 @@ import {
   NotFoundError,
   ValidationError
 } from '~/types/exception'
+import { apiClient } from '~/plugins/api-client'
 
 export const useCategoryStore = defineStore('Category', {
   state: () => ({
@@ -31,8 +31,7 @@ export const useCategoryStore = defineStore('Category', {
      */
     async fetchCategories (limit = 20, offset = 0): Promise<void> {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.categoryApiClient(accessToken).v1ListCategories(
+        const res = await apiClient.categoryApi().v1ListCategories(
           limit,
           offset
         )
@@ -64,8 +63,7 @@ export const useCategoryStore = defineStore('Category', {
     async createCategory (payload: CreateCategoryRequest): Promise<void> {
       const commonStore = useCommonStore()
       try {
-        const accessToken = getAccessToken()
-        const res = await this.categoryApiClient(accessToken).v1CreateCategory(payload)
+        const res = await apiClient.categoryApi().v1CreateCategory(payload)
         this.categories.unshift(res.data)
         commonStore.addSnackbar({
           message: 'カテゴリーを追加しました。',
@@ -110,8 +108,7 @@ export const useCategoryStore = defineStore('Category', {
     async editCategory (categoryId: string, payload: UpdateCategoryRequest) {
       const commonStore = useCommonStore()
       try {
-        const accessToken = getAccessToken()
-        await this.categoryApiClient(accessToken).v1UpdateCategory(categoryId, payload)
+        await apiClient.categoryApi().v1UpdateCategory(categoryId, payload)
         commonStore.addSnackbar({
           message: '変更しました。',
           color: 'info'
@@ -162,8 +159,7 @@ export const useCategoryStore = defineStore('Category', {
     async deleteCategory (categoryId: string): Promise<void> {
       const commonStore = useCommonStore()
       try {
-        const accessToken = getAccessToken()
-        await this.categoryApiClient(accessToken).v1DeleteCategory(categoryId)
+        await apiClient.categoryApi().v1DeleteCategory(categoryId)
         commonStore.addSnackbar({
           message: 'カテゴリー削除が完了しました',
           color: 'info'

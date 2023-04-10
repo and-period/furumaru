@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 
-import { getAccessToken } from './auth'
 import { useCommonStore } from './common'
 import {
   CoordinatorResponse,
@@ -11,6 +10,7 @@ import {
   UpdateCoordinatorRequest,
   UploadImageResponse
 } from '~/types/api'
+import { apiClient } from '~/plugins/api-client'
 
 export const useCoordinatorStore = defineStore('Coordinator', {
   state: () => ({
@@ -28,8 +28,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
      */
     async fetchCoordinators (limit = 20, offset = 0): Promise<void> {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.coordinatorApiClient(accessToken).v1ListCoordinators(
+        const res = await apiClient.coordinatorApi().v1ListCoordinators(
           limit,
           offset
         )
@@ -47,8 +46,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
      */
     async createCoordinator (payload: CreateCoordinatorRequest) {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.coordinatorApiClient(accessToken).v1CreateCoordinator(payload)
+        const res = await apiClient.coordinatorApi().v1CreateCoordinator(payload)
         return res.data
       } catch (error) {
         console.log(error)
@@ -63,8 +61,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
      */
     async getCoordinator (id: string): Promise<CoordinatorResponse> {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.coordinatorApiClient(accessToken).v1GetCoordinator(id)
+        const res = await apiClient.coordinatorApi().v1GetCoordinator(id)
         return res.data
       } catch (error) {
         console.log(error)
@@ -83,8 +80,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
       coordinatorId: string
     ): Promise<void> {
       try {
-        const accessToken = getAccessToken()
-        await this.coordinatorApiClient(accessToken).v1UpdateCoordinator(coordinatorId, payload)
+        await apiClient.coordinatorApi().v1UpdateCoordinator(coordinatorId, payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: 'コーディネータ情報が更新されました。',
@@ -105,8 +101,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
       payload: File
     ): Promise<UploadImageResponse> {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.coordinatorApiClient(accessToken).v1UploadCoordinatorThumbnail(
+        const res = await apiClient.coordinatorApi().v1UploadCoordinatorThumbnail(
           payload,
           {
             headers: {
@@ -128,8 +123,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
      */
     async uploadCoordinatorHeader (payload: File): Promise<UploadImageResponse> {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.coordinatorApiClient(accessToken).v1UploadCoordinatorHeader(
+        const res = await apiClient.coordinatorApi().v1UploadCoordinatorHeader(
           payload,
           {
             headers: {
@@ -151,8 +145,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
      */
     async deleteCoordinator (id: string) {
       try {
-        const accessToken = getAccessToken()
-        await this.coordinatorApiClient(accessToken).v1DeleteCoordinator(id)
+        await apiClient.coordinatorApi().v1DeleteCoordinator(id)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: 'コーディネーターの削除が完了しました',
@@ -176,8 +169,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
       payload: RelateProducersRequest
     ): Promise<void> {
       try {
-        const accessToken = getAccessToken()
-        await this.coordinatorApiClient(accessToken).v1RelateProducers(id, payload)
+        await apiClient.coordinatorApi().v1RelateProducers(id, payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: 'コーディネーターと生産者の紐付けが完了しました',
@@ -200,8 +192,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
       offset = 0
     ): Promise<void> {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.coordinatorApiClient(accessToken).v1ListRelatedProducers(
+        const res = await apiClient.coordinatorApi().v1ListRelatedProducers(
           id,
           limit,
           offset

@@ -27,6 +27,7 @@ export default defineNuxtRouteMiddleware(async (to, _) => {
   await store.getAuthByRefreshToken(refreshToken).catch((err) => {
     console.log('failed to refresh auth token', err)
     navigateTo('/signin')
+    return
   })
 
   // Push通知用のDeviceToken取得/登録

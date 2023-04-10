@@ -23,9 +23,11 @@ export default defineNuxtConfig({
   css: ['~/assets/main.scss', '~/assets/variables.scss'],
   plugins: [
     '~/plugins/auth',
+    '~/plugins/axios',
     '~/plugins/firebase',
     '~/plugins/google-analytics',
-    '~/plugins/vuetify'
+    '~/plugins/vuetify',
+    '~/plugins/api-client',
   ],
   components: [
     { path: '~/components', pathPrefix: false },

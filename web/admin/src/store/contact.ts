@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
 
-import { getAccessToken } from './auth'
 import { useCommonStore } from './common'
 import {
   ContactResponse,
@@ -14,6 +13,7 @@ import {
   NotFoundError,
   ValidationError
 } from '~/types/exception'
+import { apiClient } from '~/plugins/api-client'
 
 export const useContactStore = defineStore('contact', {
   state: () => ({
@@ -35,8 +35,7 @@ export const useContactStore = defineStore('contact', {
       orders: string[] = []
     ): Promise<void> {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.contactApiClient(accessToken).v1ListContacts(
+        const res = await apiClient.contactApi().v1ListContacts(
           limit,
           offset,
           orders.join(',')
@@ -52,8 +51,7 @@ export const useContactStore = defineStore('contact', {
 
     async getContact (id: string): Promise<ContactResponse> {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.contactApiClient(accessToken).v1GetContact(id)
+        const res = await apiClient.contactApi().v1GetContact(id)
         return res.data
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -80,8 +78,7 @@ export const useContactStore = defineStore('contact', {
       contactId: string
     ): Promise<void> {
       try {
-        const accessToken = getAccessToken()
-        await this.contactApiClient(accessToken).v1UpdateContact(contactId, payload)
+        await apiClient.contactApi().v1UpdateContact(contactId, payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: 'お問い合わせ情報が更新されました。',

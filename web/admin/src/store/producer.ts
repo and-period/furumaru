@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
 
-import { getAccessToken } from './auth'
 import { useCommonStore } from './common'
 import {
   CreateProducerRequest,
@@ -18,6 +17,7 @@ import {
   NotFoundError,
   ValidationError
 } from '~/types/exception'
+import { apiClient } from '~/plugins/api-client'
 
 export const useProducerStore = defineStore('Producer', {
   state: () => ({
@@ -33,8 +33,7 @@ export const useProducerStore = defineStore('Producer', {
      */
     async fetchProducers (limit = 20, offset = 0, options = ''): Promise<void> {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.producerApiClient(accessToken).v1ListProducers(
+        const res = await apiClient.producerApi().v1ListProducers(
           limit,
           offset,
           options
@@ -66,8 +65,7 @@ export const useProducerStore = defineStore('Producer', {
      */
     async createProducer (payload: CreateProducerRequest): Promise<void> {
       try {
-        const accessToken = getAccessToken()
-        await this.producerApiClient(accessToken).v1CreateProducer(payload)
+        await apiClient.producerApi().v1CreateProducer(payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: `${payload.storeName}を作成しました。`,
@@ -112,8 +110,7 @@ export const useProducerStore = defineStore('Producer', {
      */
     async uploadProducerThumbnail (payload: File): Promise<UploadImageResponse> {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.producerApiClient(accessToken).v1UploadProducerThumbnail(
+        const res = await apiClient.producerApi().v1UploadProducerThumbnail(
           payload,
           {
             headers: {
@@ -156,8 +153,7 @@ export const useProducerStore = defineStore('Producer', {
      */
     async uploadProducerHeader (payload: File): Promise<UploadImageResponse> {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.producerApiClient(accessToken).v1UploadProducerHeader(
+        const res = await apiClient.producerApi().v1UploadProducerHeader(
           payload,
           {
             headers: {
@@ -200,8 +196,7 @@ export const useProducerStore = defineStore('Producer', {
      */
     async getProducer (id: string): Promise<ProducerResponse> {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.producerApiClient(accessToken).v1GetProducer(id)
+        const res = await apiClient.producerApi().v1GetProducer(id)
         return res.data
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -238,8 +233,7 @@ export const useProducerStore = defineStore('Producer', {
      */
     async updateProducer (id: string, payload: UpdateProducerRequest) {
       try {
-        const accessToken = getAccessToken()
-        await this.producerApiClient(accessToken).v1UpdateProducer(id, payload)
+        await apiClient.producerApi().v1UpdateProducer(id, payload)
       } catch (error) {
         if (axios.isAxiosError(error)) {
           if (!error.response) {
@@ -278,8 +272,7 @@ export const useProducerStore = defineStore('Producer', {
      */
     async deleteProducer (id: string) {
       try {
-        const accessToken = getAccessToken()
-        await this.producerApiClient(accessToken).v1DeleteProducer(id)
+        await apiClient.producerApi().v1DeleteProducer(id)
       } catch (error) {
         return this.errorHandler(error)
       }

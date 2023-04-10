@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
+import { apiClient } from '~/plugins/api-client'
 
-import { getAccessToken } from './auth'
 import {
   CreateProductRequest,
   ProductResponse,
@@ -31,8 +31,7 @@ export const useProductStore = defineStore('product', {
      */
     async fetchProducts (limit = 20, offset = 0): Promise<void> {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.productApiClient(accessToken).v1ListProducts(
+        const res = await apiClient.productApi().v1ListProducts(
           limit,
           offset
         )
@@ -64,8 +63,7 @@ export const useProductStore = defineStore('product', {
      */
     async uploadProductImage (payload: File): Promise<UploadImageResponse> {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.productApiClient(accessToken).v1UploadProductImage(
+        const res = await apiClient.productApi().v1UploadProductImage(
           payload,
           {
             headers: {
@@ -105,8 +103,7 @@ export const useProductStore = defineStore('product', {
      */
     async createProduct (payload: CreateProductRequest): Promise<void> {
       try {
-        const accessToken = getAccessToken()
-        await this.productApiClient(accessToken).v1CreateProduct({
+        await apiClient.productApi().v1CreateProduct({
           ...payload,
           inventory: Number(payload.inventory)
         })
@@ -140,8 +137,7 @@ export const useProductStore = defineStore('product', {
      */
     async getProduct (id: string): Promise<ProductResponse> {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.productApiClient(accessToken).v1GetProduct(id)
+        const res = await apiClient.productApi().v1GetProduct(id)
         return res.data
       } catch (error) {
         return this.errorHandler(error)
@@ -155,8 +151,7 @@ export const useProductStore = defineStore('product', {
      */
     async updateProduct (id: string, payload: UpdateProductRequest) {
       try {
-        const accessToken = getAccessToken()
-        await this.productApiClient(accessToken).v1UpdateProduct(id, payload)
+        await apiClient.productApi().v1UpdateProduct(id, payload)
       } catch (error) {
         return this.errorHandler(error)
       }

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
+import { apiClient } from '~/plugins/api-client'
 
-import { getAccessToken } from './auth'
 import {
   CreateShippingRequest,
   ShippingResponse,
@@ -31,8 +31,7 @@ export const useShippingStore = defineStore('shippings', {
      */
     async fetchShippings (limit = 20, offset = 0): Promise<void> {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.shippingApiClient(accessToken).v1ListShippings(
+        const res = await apiClient.shippingApi().v1ListShippings(
           limit,
           offset
         )
@@ -64,8 +63,7 @@ export const useShippingStore = defineStore('shippings', {
      */
     async getShipping (id: string): Promise<ShippingResponse> {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.shippingApiClient(accessToken).v1GetShipping(id)
+        const res = await apiClient.shippingApi().v1GetShipping(id)
         return res.data
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -93,8 +91,7 @@ export const useShippingStore = defineStore('shippings', {
      */
     async createShipping (payload: CreateShippingRequest): Promise<void> {
       try {
-        const accessToken = getAccessToken()
-        await this.shippingApiClient(accessToken).v1CreateShipping(payload)
+        await apiClient.shippingApi().v1CreateShipping(payload)
       } catch (error) {
         if (axios.isAxiosError(error)) {
           if (!error.response) {
@@ -129,8 +126,7 @@ export const useShippingStore = defineStore('shippings', {
       payload: UpdateShippingRequest
     ): Promise<void> {
       try {
-        const accessToken = getAccessToken()
-        await this.shippingApiClient(accessToken).v1UpdateShipping(id, payload)
+        await apiClient.shippingApi().v1UpdateShipping(id, payload)
       } catch (error) {
         if (axios.isAxiosError(error)) {
           if (!error.response) {

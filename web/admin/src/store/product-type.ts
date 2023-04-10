@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
 
-import { getAccessToken } from './auth'
 import { useCommonStore } from './common'
 import {
   CreateProductTypeRequest,
@@ -17,6 +16,7 @@ import {
   NotFoundError,
   ValidationError
 } from '~/types/exception'
+import { apiClient } from '~/plugins/api-client'
 
 export const useProductTypeStore = defineStore('ProductType', {
   state: () => ({
@@ -31,8 +31,7 @@ export const useProductTypeStore = defineStore('ProductType', {
      */
     async fetchProductTypes (limit = 20, offset = 0): Promise<void> {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.productTypeApiClient(accessToken).v1ListAllProductTypes(
+        const res = await apiClient.productTypeApi().v1ListAllProductTypes(
           limit,
           offset
         )
@@ -69,8 +68,7 @@ export const useProductTypeStore = defineStore('ProductType', {
     ): Promise<void> {
       const commonStore = useCommonStore()
       try {
-        const accessToken = getAccessToken()
-        const res = await this.productTypeApiClient(accessToken).v1CreateProductType(
+        const res = await apiClient.productTypeApi().v1CreateProductType(
           categoryId,
           payload
         )
@@ -123,8 +121,7 @@ export const useProductTypeStore = defineStore('ProductType', {
       payload: UpdateProductTypeRequest
     ) {
       try {
-        const accessToken = getAccessToken()
-        await this.productTypeApiClient(accessToken).v1UpdateProductType(
+        await apiClient.productTypeApi().v1UpdateProductType(
           categoryId,
           productTypeId,
           payload
@@ -172,8 +169,7 @@ export const useProductTypeStore = defineStore('ProductType', {
     ): Promise<void> {
       const commonStore = useCommonStore()
       try {
-        const accessToken = getAccessToken()
-        await this.productTypeApiClient(accessToken).v1DeleteProductType(
+        await apiClient.productTypeApi().v1DeleteProductType(
           categoryId,
           productTypeId
         )
@@ -220,8 +216,7 @@ export const useProductTypeStore = defineStore('ProductType', {
      */
     async uploadProductTypeIcon (payload: File): Promise<UploadImageResponse> {
       try {
-        const accessToken = getAccessToken()
-        const res = await this.productTypeApiClient(accessToken).v1UploadProductTypeIcon(
+        const res = await apiClient.productTypeApi().v1UploadProductTypeIcon(
           payload,
           {
             headers: {

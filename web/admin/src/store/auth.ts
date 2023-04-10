@@ -20,6 +20,7 @@ import {
   PreconditionError,
   ValidationError,
 } from '~/types/exception'
+import { apiClient } from '~/plugins/api-client'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -37,7 +38,7 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async signIn(payload: SignInRequest): Promise<string> {
       try {
-        const res = await this.authApiClient().v1SignIn(payload)
+        const res = await apiClient.authApi().v1SignIn(payload)
         this.isAuthenticated = true
         this.user = res.data
 
@@ -85,7 +86,7 @@ export const useAuthStore = defineStore('auth', {
 
     async passwordUpdate(payload: UpdateAuthPasswordRequest): Promise<void> {
       try {
-        await this.authApiClient(this.user?.accessToken).v1UpdateAuthPassword(payload)
+        await apiClient.authApi().v1UpdateAuthPassword(payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: 'パスワードを更新しました。',
@@ -116,7 +117,7 @@ export const useAuthStore = defineStore('auth', {
 
     async emailUpdate(payload: UpdateAuthEmailRequest): Promise<void> {
       try {
-        await this.authApiClient(this.user?.accessToken).v1UpdateAuthEmail(payload)
+        await apiClient.authApi().v1UpdateAuthEmail(payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: '認証コードを送信しました。',
@@ -162,7 +163,7 @@ export const useAuthStore = defineStore('auth', {
 
     async codeVerify(payload: VerifyAuthEmailRequest): Promise<void> {
       try {
-        await this.authApiClient(this.user?.accessToken).v1VerifyAuthEmail(payload)
+        await apiClient.authApi().v1VerifyAuthEmail(payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: 'メールアドレスが変更されました。',
@@ -194,7 +195,7 @@ export const useAuthStore = defineStore('auth', {
 
     async getAuthByRefreshToken(refreshToken: string): Promise<void> {
       try {
-        const res = await this.authApiClient().v1RefreshAuthToken({
+        const res = await apiClient.authApi().v1RefreshAuthToken({
           refreshToken,
         })
         this.isAuthenticated = true
@@ -221,7 +222,7 @@ export const useAuthStore = defineStore('auth', {
 
     async registerDeviceToken(deviceToken: string): Promise<void> {
       try {
-        await this.authApiClient(this.user?.accessToken).v1RegisterAuthDevice({ device: deviceToken })
+        await apiClient.authApi().v1RegisterAuthDevice({ device: deviceToken })
 
         const cookies = new Cookies()
         cookies.set('deviceToken', deviceToken, { secure: true })
@@ -268,7 +269,7 @@ export const useAuthStore = defineStore('auth', {
 
     logout() {
       try {
-        this.authApiClient(this.accessToken).v1SignOut()
+        apiClient.authApi().v1SignOut()
         const cookies = new Cookies()
         cookies.remove('refreshToken')
         this.$reset()
@@ -278,12 +279,3 @@ export const useAuthStore = defineStore('auth', {
     },
   },
 })
-
-export function getAccessToken(): string {
-  const authStore = useAuthStore()
-  const accessToken = authStore.accessToken
-  if (!accessToken) {
-    throw new AuthError('認証エラー。再度ログインをしてください。')
-  }
-  return accessToken
-}
