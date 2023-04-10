@@ -1,28 +1,5 @@
-<template>
-  <div>
-    <atoms-the-marche-logo class="text-center mb-6" />
-    <v-card variant="outlined" class="mx-auto">
-      <v-card-text class="pa-md-12 pa-sm-4">
-        <form @submit.prevent="handleSubmit">
-          <v-text-field type="tel" :label="t('tel')" variant="outlined" dense required />
-          <v-text-field type="email" :label="t('email')" variant="outlined" dense required />
-          <v-text-field type="password" :label="t('password')" variant="outlined" dense required />
-          <v-text-field type="password" :label="t('passwordConfirm')" variant="outlined" dense required />
-          <molecules-the-submit-button>
-            {{ t('signUp') }}
-          </molecules-the-submit-button>
-        </form>
-      </v-card-text>
-    </v-card>
-    <div class="text-center mt-10">
-      <nuxt-link :to="localePath('/signin')">
-        {{ t('alreadyHas') }}
-      </nuxt-link>
-    </div>
-  </div>
-</template>
-
 <script lang="ts" setup>
+import { CreateAuthRequest } from '~/types/api'
 import { I18n } from '~/types/locales'
 
 definePageMeta({
@@ -37,7 +14,39 @@ const t = (str: keyof I18n['auth']['signUp']) => {
   return i18n.t(`auth.signUp.${str}`)
 }
 
+const formData = reactive<CreateAuthRequest>({
+  email: '',
+  phoneNumber: '',
+  password: '',
+  passwordConfirmation: ''
+})
+
 const handleSubmit = () => {
   router.push('/verify')
 }
 </script>
+
+<template>
+  <the-sign-up-page
+    v-model="formData"
+    :page-name="t('pageName')"
+    :button-text="t('signUp')"
+    :tel-label="t('tel')"
+    :tel-placeholder="t('tel')"
+    tel-error-message=""
+    :email-label="t('email')"
+    :email-placeholder="t('email')"
+    email-error-message=""
+    :password-label="t('password')"
+    :password-placeholder="t('password')"
+    password-error-message=""
+    :password-confirm-label="t('passwordConfirm')"
+    :password-confirm-placeholder="t('passwordConfirm')"
+    password-confirm-error-message=""
+    :already-has-link="{
+      href: localePath('/signin'),
+      text: t('alreadyHas')
+    }"
+    @submit="handleSubmit"
+  />
+</template>

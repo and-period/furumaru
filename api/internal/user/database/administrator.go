@@ -47,7 +47,7 @@ func (a *administrator) List(
 	return administrators, nil
 }
 
-func (a *administrator) Count(ctx context.Context, params *ListAdministratorsParams) (int64, error) {
+func (a *administrator) Count(ctx context.Context, _ *ListAdministratorsParams) (int64, error) {
 	total, err := a.db.Count(ctx, a.db.DB, &entity.Administrator{}, nil)
 	return total, exception.InternalError(err)
 }

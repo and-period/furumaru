@@ -264,7 +264,7 @@ type CreatePromotionInput struct {
 	Code         string                   `validate:"len=8"`
 	CodeType     entity.PromotionCodeType `validate:"required,oneof=1 2"`
 	StartAt      time.Time                `validate:"required"`
-	EndAt        time.Time                `validate:"required"`
+	EndAt        time.Time                `validate:"required,gtfield=StartAt"`
 }
 
 type UpdatePromotionInput struct {
@@ -278,7 +278,7 @@ type UpdatePromotionInput struct {
 	Code         string                   `validate:"len=8"`
 	CodeType     entity.PromotionCodeType `validate:"required,oneof=1 2"`
 	StartAt      time.Time                `validate:"required"`
-	EndAt        time.Time                `validate:"required"`
+	EndAt        time.Time                `validate:"required,gtfield=StartAt"`
 }
 
 type DeletePromotionInput struct {
@@ -296,7 +296,7 @@ type CreateScheduleInput struct {
 	Description   string                `validate:"required,max=2000"`
 	ThumbnailURL  string                `validate:"required"`
 	StartAt       time.Time             `validate:"required"`
-	EndAt         time.Time             `validate:"required"`
+	EndAt         time.Time             `validate:"required,gtfield=StartAt"`
 	Lives         []*CreateScheduleLive `validate:"required"`
 }
 
@@ -306,7 +306,7 @@ type CreateScheduleLive struct {
 	ProducerID  string    `validate:"required"`
 	ProductIDs  []string  `validate:"dive,required,unique"`
 	StartAt     time.Time `validate:"required"`
-	EndAt       time.Time `validate:"required"`
+	EndAt       time.Time `validate:"required,gtfield=StartAt"`
 }
 
 type GetLiveInput struct {
@@ -330,7 +330,7 @@ type UpdateLiveInput struct {
 	Published    bool                `validate:""`
 	Canceled     bool                `validate:""`
 	StartAt      time.Time           `validate:"required"`
-	EndAt        time.Time           `validate:"required"`
+	EndAt        time.Time           `validate:"required,gtfield=StartAt"`
 }
 
 type UpdateLivePublicInput struct {

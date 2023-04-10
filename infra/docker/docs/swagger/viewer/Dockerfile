@@ -1,4 +1,4 @@
-FROM swaggerapi/swagger-ui:v4.14.3
+FROM swaggerapi/swagger-ui:v4.18.1
 
 ENV LANG C.UTF-8
 ENV TZ Asia/Tokyo

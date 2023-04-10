@@ -45,7 +45,7 @@ func (u *user) List(ctx context.Context, params *ListUsersParams, fields ...stri
 	return users, nil
 }
 
-func (u *user) Count(ctx context.Context, params *ListUsersParams) (int64, error) {
+func (u *user) Count(ctx context.Context, _ *ListUsersParams) (int64, error) {
 	total, err := u.db.Count(ctx, u.db.DB, &entity.User{}, nil)
 	return total, exception.InternalError(err)
 }

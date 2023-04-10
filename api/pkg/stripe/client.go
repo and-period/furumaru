@@ -127,7 +127,7 @@ func (c *client) do(ctx context.Context, fn func() error) error {
 	return backoff.Retry(ctx, retry, fn, backoff.WithRetryablel(isRetryable))
 }
 
-func isRetryable(err error) bool {
+func isRetryable(_ error) bool {
 	// TODO: 設定する
 	return false
 }

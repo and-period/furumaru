@@ -48,7 +48,7 @@ func (s *service) MultiGetUsers(ctx context.Context, in *user.MultiGetUsersInput
 	return users, exception.InternalError(err)
 }
 
-func (s *service) MultiGetUserDevices(ctx context.Context, in *user.MultiGetUserDevicesInput) ([]string, error) {
+func (s *service) MultiGetUserDevices(_ context.Context, in *user.MultiGetUserDevicesInput) ([]string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}

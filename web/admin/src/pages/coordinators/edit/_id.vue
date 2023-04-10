@@ -83,13 +83,17 @@
               <v-spacer></v-spacer>
               <v-btn color="error" text @click="cancel"> キャンセル </v-btn>
               <v-btn color="primary" outlined @click="relateProducers">
-                登録
+                更新
               </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
 
-        <v-data-table no-data-text="関連生産者はいません。"> </v-data-table>
+        <the-related-producer-list
+          :table-footer-props="producersOptions"
+          @update:items-per-page="handleUpdateProducersItemsPerPage"
+          @update:page="handleUpdateProducersPage"
+        ></the-related-producer-list>
       </v-tab-item>
     </v-tabs-items>
   </div>
@@ -104,11 +108,11 @@ import {
   useFetch,
   useRoute,
   useRouter,
+  watch,
 } from '@nuxtjs/composition-api'
 import { useVuelidate } from '@vuelidate/core'
 
-import TheCoordinatorEditForm from '~/components/organisms/TheCoordinatorEditForm.vue'
-import { useSearchAddress } from '~/lib/hooks'
+import { usePagination, useSearchAddress } from '~/lib/hooks'
 import {
   kana,
   getErrorMessage,
@@ -118,12 +122,15 @@ import {
 } from '~/lib/validations'
 import { useCoordinatorStore } from '~/store/coordinator'
 import { useProducerStore } from '~/store/producer'
-import { RelateProducersRequest, UpdateCoordinatorRequest } from '~/types/api'
+import {
+  ProducersResponseProducersInner,
+  RelateProducersRequest,
+  UpdateCoordinatorRequest,
+} from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 import { Coordinator } from '~/types/props/coordinator'
 
 export default defineComponent({
-  components: { TheCoordinatorEditForm },
   setup() {
     const tab = ref<string>('coordinators')
     const tabItems: Coordinator[] = [
@@ -136,9 +143,15 @@ export default defineComponent({
     const dialog = ref<boolean>(false)
 
     const producerStore = useProducerStore()
+
     const producerItems = computed(() => {
       return producerStore.producers
     })
+
+    const relateProducersItems = reactive<{
+      offset: number
+      relateProducers: ProducersResponseProducersInner[]
+    }>({ offset: 0, relateProducers: [] })
 
     const route = useRoute()
     const id = route.value.params.id
@@ -148,6 +161,27 @@ export default defineComponent({
       useCoordinatorStore()
 
     const { getCoordinator } = useCoordinatorStore()
+
+    const {
+      itemsPerPage: producersItemsPerPage,
+      offset: producersOffset,
+      options: producersOptions,
+      handleUpdateItemsPerPage: handleUpdateProducersItemsPerPage,
+      updateCurrentPage: _handleUpdateProducersPage,
+    } = usePagination()
+
+    watch(producersItemsPerPage, () => {
+      coordinatorStore.fetchRelatedProducers(id, producersItemsPerPage.value, 0)
+    })
+
+    const handleUpdateProducersPage = async (page: number) => {
+      _handleUpdateProducersPage(page)
+      await coordinatorStore.fetchRelatedProducers(
+        id,
+        producersItemsPerPage.value,
+        producersOffset.value
+      )
+    }
 
     const formData = reactive<UpdateCoordinatorRequest>({
       storeName: '',
@@ -174,24 +208,36 @@ export default defineComponent({
     })
 
     const { fetchState } = useFetch(async () => {
-      const coordinator = await getCoordinator(id)
-      formData.storeName = coordinator.storeName
-      formData.firstname = coordinator.firstname
-      formData.lastname = coordinator.lastname
-      formData.firstnameKana = coordinator.firstnameKana
-      formData.lastnameKana = coordinator.lastnameKana
-      formData.companyName = coordinator.companyName
-      formData.thumbnailUrl = coordinator.thumbnailUrl
-      formData.headerUrl = coordinator.headerUrl
-      formData.twitterAccount = coordinator.twitterAccount
-      formData.instagramAccount = coordinator.instagramAccount
-      formData.facebookAccount = coordinator.facebookAccount
-      formData.phoneNumber = coordinator.phoneNumber.replace('+81', '0')
-      formData.postalCode = coordinator.postalCode
-      formData.prefecture = coordinator.prefecture
-      formData.city = coordinator.city
-      formData.addressLine1 = coordinator.addressLine1
-      formData.addressLine2 = coordinator.addressLine2
+      try {
+        const coordinator = await getCoordinator(id)
+        formData.storeName = coordinator.storeName
+        formData.firstname = coordinator.firstname
+        formData.lastname = coordinator.lastname
+        formData.firstnameKana = coordinator.firstnameKana
+        formData.lastnameKana = coordinator.lastnameKana
+        formData.companyName = coordinator.companyName
+        formData.thumbnailUrl = coordinator.thumbnailUrl
+        formData.headerUrl = coordinator.headerUrl
+        formData.twitterAccount = coordinator.twitterAccount
+        formData.instagramAccount = coordinator.instagramAccount
+        formData.facebookAccount = coordinator.facebookAccount
+        formData.phoneNumber = coordinator.phoneNumber.replace('+81', '0')
+        formData.postalCode = coordinator.postalCode
+        formData.prefecture = coordinator.prefecture
+        formData.city = coordinator.city
+        formData.addressLine1 = coordinator.addressLine1
+        formData.addressLine2 = coordinator.addressLine2
+
+        await Promise.all([
+          coordinatorStore.fetchRelatedProducers(
+            id,
+            producersItemsPerPage.value
+          ),
+        ])
+        relateProducersItems.relateProducers = coordinatorStore.producers
+      } catch (err) {
+        console.log(err)
+      }
     })
 
     const rules = computed(() => ({
@@ -310,22 +356,25 @@ export default defineComponent({
       formData,
       producers,
       v$,
-      getErrorMessage,
       searchLoading,
       searchErrorMessage,
+      thumbnailUploadStatus,
+      headerUploadStatus,
+      tabItems,
+      tab,
+      dialog,
+      producersOptions,
+      producerItems,
+      getErrorMessage,
       searchAddress,
       handleSubmit,
       handleUpdateThumbnail,
-      thumbnailUploadStatus,
-      headerUploadStatus,
       handleUpdateHeader,
-      tabItems,
-      tab,
-      producerItems,
       remove,
       relateProducers,
-      dialog,
       cancel,
+      handleUpdateProducersItemsPerPage,
+      handleUpdateProducersPage,
     }
   },
 })

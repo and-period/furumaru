@@ -1,4 +1,9 @@
 <script lang="ts" setup>
+interface Props {
+  buttonText: string
+}
+defineProps<Props>()
+
 const emits = defineEmits<{(e: 'click'): void}>()
 
 const handleClick = (): void => {
@@ -8,8 +13,9 @@ const handleClick = (): void => {
 
 <template>
   <the-button class="bg-facebook flex items-center" @click="handleClick">
+    <the-facebook-icon id="facebook-auth-icon" class="w-6" />
     <p class="text-center w-full text-white">
-      Log In with Facebook
+      {{ buttonText }}
     </p>
   </the-button>
 </template>

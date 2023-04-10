@@ -3,7 +3,7 @@
     <p class="text-h6">メールアドレス変更</p>
     <v-card elevation="0">
       <v-card-text>
-        <v-text-field v-model="formData.email" label="メールアドレス" />
+        <v-text-field v-model="formData.email" label="新規メールアドレス" />
       </v-card-text>
       <v-card-actions>
         <v-btn block outlined color="primary" @click="handleClickAddBtn"

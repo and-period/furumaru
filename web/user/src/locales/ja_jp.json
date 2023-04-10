@@ -6,29 +6,67 @@
       "cartNotEmptyMessage": "レジに進む",
       "signUp": "登録する",
       "signIn": "ログイン",
-      "changeLocaleText": "英語に切り替える"
+      "changeLocaleText": "英語に切り替える",
+      "topLinkText": "TOP",
+      "searchItemLinkText": "商品をさがす",
+      "allItemLinkText": "すべての商品",
+      "aboutLinkText": "ふるマルについて",
+      "notificationTitle": "お知らせ",
+      "noNotificationItemText": "お知らせはありません。",
+      "cartMenuMessage": "買い物カゴに<br>商品が{count}点入っています。",
+      "myPageLinkText": "マイページ",
+      "viewMyCartText": "買い物カゴを見る"
+    },
+    "footer": {
+      "qaLinkText": "よくあるご質問",
+      "privacyPolicyLinkText": "プライバシーポリシー",
+      "lawLinkText": "特定商取引法に基づく表記",
+      "inquiryLinkText": "お問い合わせ"
     }
   },
   "auth": {
     "signIn": {
+      "pageName": "ログイン",
+      "authErrorMessage": "メールアドレスかパスワードが間違っています",
       "email": "メールアドレス",
       "password": "パスワード",
-      "forgetPasswordLink": "パスワードを忘れた場合",
+      "forgetPasswordLink": "パスワードをお忘れの方はこちら",
       "signIn": "ログイン",
       "dontHaveAccount": "アカウントをお持ちではないですか？",
-      "signUpLink": "登録する"
+      "signUpLink": "新規登録はこちら",
+      "googleButtonText": "Googleでログイン",
+      "facebookButtonText": "Facebookでログイン",
+      "lineButtonText": "LINEでログイン"
     },
     "signUp": {
+      "pageName": "新規アカウント作成",
       "tel": "電話番号",
       "email": "メールアドレス",
       "password": "パスワード",
       "passwordConfirm": "パスワード（確認用）",
-      "signUp": "サインアップ",
-      "alreadyHas": "すでにアカウントをお持ちですか？"
+      "signUp": "アカウントを作成",
+      "alreadyHas": "すでにアカウントをお持ちの方はこちら"
     },
     "verify": {
-      "message": "認証コードを入力してください",
+      "pageName": "認証コード入力",
+      "message": "送信された6桁のコードを入力してください",
       "btnText": "認証"
+    }
+  },
+  "base": {
+    "about": {
+      "leadSentence": "地域とつながる、おいしさ見つかる。",
+      "description": "「ふるマル」は、まるで地方のマルシェに来たような感覚で<br>全国各地から届くこだわりの品を動画を見ながら購入できる<br>ライブコマースを配信するプラットフォームです。",
+      "firstPointTitle": "産地直送の<br>新鮮な商品がたくさん",
+      "firstPointDescription": "全国各地の「ふるさと」から、新鮮な農畜産物などの商品を直接お届けします。旬の食材や地域の特産品もたくさん取り扱っているので、新しい発見や思わぬ出会いがきっとあるはずです。",
+      "firstPointLinkText": "商品一覧を見る",
+      "secondPointTitle": "ライブコマースで<br>地域ごとにマルシェを開催",
+      "secondPointDescription": "地域に根ざしたコーディネーターが商品をセレクトし、マルシェを配信。商品の魅力や生産者の想いを、リアルタイムでお伝えします。さらに、アーカイブ配信や商品検索からいつでもお買い物が楽しめます。",
+      "thirdPointTitle": "生産者に直接質問できるので<br>イメージしやすい",
+      "thirdPointDescription": "ライブ配信を見ながらチャットで質問ができるので、まるで実際にマルシェに来たような感覚でお買い物をお楽しみいただけます。写真だけでは伝わりにくい商品詳細も映像を通してよりリアルに確認できます。",
+      "forthPointTitle": "同じ地域の商品を同梱発送するので<br>送料がおトクに",
+      "forthPointDescription": "ふるマルの送料は、商品（生産者）ごとではなくマルシェごとに加算されます。同じマルシェでのお買い物なら、同じ箱に収まる限りいくつ買っても追加の送料はかかりません。",
+      "forthPointLinkText": "送料について詳しくはこちら"
     }
   }
 }

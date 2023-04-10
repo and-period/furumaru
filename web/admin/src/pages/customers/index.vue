@@ -3,16 +3,30 @@
     <v-card-title>顧客管理</v-card-title>
     <v-card>
       <v-card-text>
-        <v-data-table :headers="headers" :items="items" :items-per-page="5">
-          <template #[`item.account`]="{ item }">
-            <v-chip :color="getAccountColor(item.account)" small dark>
-              {{ getAccount(item.account) }}
+        <v-data-table
+          :headers="headers"
+          :items="users"
+          :items-per-page="itemsPerPage"
+          :footer-props="options"
+          no-data-text="登録されている顧客情報がありません"
+          @update:page="handleUpdatePage"
+          @update:items-per-page="handleUpdateItemsPerPage"
+        >
+          <template #[`item.name`]="{ item }">
+            {{ `${item.lastname} ${item.firstname}` }}
+          </template>
+          <template #[`item.totalAmount`]="{ item }">
+            {{ `${item.totalAmount}` }} 円
+          </template>
+          <template #[`item.registered`]="{ item }">
+            <v-chip small :color="getStatusColor(item.registered)">
+              {{ registerStatus(item.registered) }}
             </v-chip>
           </template>
           <template #[`item.action`]>
             <v-btn outlined color="primary" small @click="handleEdit()">
               <v-icon small>mdi-pencil</v-icon>
-              編集
+              詳細
             </v-btn>
             <v-btn outlined color="primary" small>
               <v-icon small>mdi-delete</v-icon>
@@ -26,11 +40,27 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRouter } from '@nuxtjs/composition-api'
+import {
+  computed,
+  defineComponent,
+  useFetch,
+  useRouter,
+} from '@nuxtjs/composition-api'
+
+import { usePagination } from '~/lib/hooks'
+import { useUserStore } from '~/store/customer'
 
 export default defineComponent({
   setup() {
     const router = useRouter()
+    const {
+      itemsPerPage,
+      offset,
+      options,
+      updateCurrentPage,
+      handleUpdateItemsPerPage,
+    } = usePagination()
+
     const id = 'ThisIsID'
 
     const headers = [
@@ -39,20 +69,20 @@ export default defineComponent({
         value: 'name',
       },
       {
-        text: '住所',
-        value: 'address',
+        text: '電話番号',
+        value: 'phoneNumber',
       },
       {
         text: '購入数',
-        value: 'quantity',
+        value: 'totalOrder',
       },
       {
         text: '購入金額',
-        value: 'price',
+        value: 'totalAmount',
       },
       {
         text: 'アカウントの有無',
-        value: 'account',
+        value: 'registered',
       },
       {
         text: 'Action',
@@ -60,29 +90,37 @@ export default defineComponent({
       },
     ]
 
-    const items = [
-      {
-        name: 'namae',
-        address: 'juu',
-        quantity: 1,
-        price: 1000,
-        account: false,
-      },
-      {
-        name: 'namae2',
-        address: 'juu2',
-        quantity: 2,
-        price: 2000,
-        account: true,
-      },
-    ]
+    const { fetch } = useFetch(async () => {
+      await fetchUsers()
+    })
 
-    const getAccountColor = (account: boolean): string => {
-      return account ? 'primary' : 'error'
+    const handleUpdatePage = async (page: number) => {
+      updateCurrentPage(page)
+      await fetchUsers()
     }
 
-    const getAccount = (account: boolean): string => {
-      return account ? '有' : '無'
+    const users = computed(() => {
+      return useUserStore().users
+    })
+
+    const total = computed(() => {
+      return useUserStore().totalItems
+    })
+
+    const fetchUsers = async () => {
+      try {
+        await useUserStore().fetchUsers(itemsPerPage.value, offset.value)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+
+    const getStatusColor = (account: boolean): string => {
+      return account ? 'primary' : 'red'
+    }
+
+    const registerStatus = (isAccount: boolean): string => {
+      return isAccount ? '有' : '無'
     }
 
     const handleEdit = () => {
@@ -91,11 +129,17 @@ export default defineComponent({
 
     return {
       headers,
-      items,
-      getAccountColor,
-      getAccount,
-      handleEdit,
       id,
+      options,
+      users,
+      total,
+      fetch,
+      getStatusColor,
+      registerStatus,
+      handleEdit,
+      fetchUsers,
+      handleUpdatePage,
+      handleUpdateItemsPerPage,
     }
   },
 })

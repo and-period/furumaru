@@ -77,7 +77,7 @@ func NewClient(params *Params, opts ...Option) (Client, error) {
 	}, nil
 }
 
-func (c *client) PushMessage(ctx context.Context, messages ...linebot.SendingMessage) error {
+func (c *client) PushMessage(_ context.Context, messages ...linebot.SendingMessage) error {
 	_, err := c.client.PushMessage(c.roomID, messages...).Do()
 	return c.lineError(err)
 }

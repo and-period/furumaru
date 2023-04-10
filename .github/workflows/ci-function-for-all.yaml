@@ -8,7 +8,7 @@ on:
 env:
   SERVICE: func
   TZ: 'Asia/Tokyo'
-  GO_VERSION: 1.19.3
+  GO_VERSION: 1.20.2
 
 jobs:
   setup:
@@ -27,7 +27,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Use Golang ${{ env.GO_VERSION }}
-      uses: actions/setup-go@v3
+      uses: actions/setup-go@v4
       with:
         go-version: ${{ env.GO_VERSION }}
 
@@ -59,7 +59,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Use Golang ${{ env.GO_VERSION }}
-      uses: actions/setup-go@v3
+      uses: actions/setup-go@v4
       with:
         go-version: ${{ env.GO_VERSION }}
 
@@ -92,7 +92,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Use Golang ${{ env.GO_VERSION }}
-      uses: actions/setup-go@v3
+      uses: actions/setup-go@v4
       with:
         go-version: ${{ env.GO_VERSION }}
 
@@ -128,7 +128,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Use Golang ${{ env.GO_VERSION }}
-      uses: actions/setup-go@v3
+      uses: actions/setup-go@v4
       with:
         go-version: ${{ env.GO_VERSION }}
 

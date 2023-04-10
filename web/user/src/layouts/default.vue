@@ -1,70 +1,128 @@
-<template>
-  <div>
-    <organisms-the-app-header
-      :cart-item-count="0"
-      :cart-empty-message="t('cartEmptyMessage')"
-      :cart-not-empty-message="t('cartNotEmptyMessage')"
-      :menu-list="headerMenuList"
-      @click:cart="handleCartClick"
-    >
-      <nuxt-link to="/" class="mr-4 header-link">
-        {{ t('becomeShopOwner') }}
-      </nuxt-link>
-    </organisms-the-app-header>
-    <main class="bg-color">
-      <slot />
-    </main>
-  </div>
-</template>
-
 <script lang="ts" setup>
+import { storeToRefs } from 'pinia'
+import { useAuthStore } from '~/store/auth'
+import { useNotificationStore } from '~/store/notification'
+import { useShoppingStore } from '~/store/shopping'
 import { I18n } from '~/types/locales'
-import { HeaderMenuItem } from '~/types/props'
+import { FooterMenuItem, HeaderMenuItem, LinkItem } from '~/types/props'
 
 const router = useRouter()
+const route = useRoute()
 const i18n = useI18n()
+const localePath = useLocalePath()
 
-const t = (str: keyof I18n['layout']['header']) => {
+const notificationStore = useNotificationStore()
+const { notifications } = storeToRefs(notificationStore)
+
+const authStore = useAuthStore()
+const { isAuthenticated } = storeToRefs(authStore)
+
+const shoppingStore = useShoppingStore()
+const { cartIsEmpty, cartItems } = storeToRefs(shoppingStore)
+
+const ht = (str: keyof I18n['layout']['header']) => {
   return i18n.t(`layout.header.${str}`)
 }
 
-const handleCartClick = (): void => {
-  console.log('NOT IMPLEMENTED')
+const ft = (str: keyof I18n['layout']['footer']) => {
+  return i18n.t(`layout.footer.${str}`)
 }
 
-const localeRef = computed(() => {
-  return i18n.locale === i18n.fallbackLocale ? '' : i18n.locale
+const cartMenuMessage = computed<string>(() => {
+  return i18n.t('layout.header.cartMenuMessage', { count: cartItems.value.length })
 })
-const headerMenuList = computed<HeaderMenuItem[]>(() => [
+
+const navbarMenuList = computed<HeaderMenuItem[]>(() => [
   {
-    name: t('signUp'),
-    onClick: () => {
-      router.push(`${localeRef.value}/signup`)
-    }
+    text: ht('topLinkText'),
+    onClick: () => router.push(localePath('/')),
+    active: route.path === localePath('/')
   },
   {
-    name: t('signIn'),
-    onClick: () => {
-      router.push(`${localeRef.value}/signin`)
-    }
+    text: ht('searchItemLinkText'),
+    onClick: () => router.push(localePath('/search')),
+    active: route.path === localePath('/search')
   },
   {
-    name: t('changeLocaleText'),
-    onClick: () => {
-      const targetLocale = i18n.localeCodes.find((code: string) => code !== i18n.locale)
-      targetLocale && i18n.setLocale(targetLocale)
-    }
+    text: ht('allItemLinkText'),
+    onClick: () => router.push(localePath('/items')),
+    active: route.path === localePath('/search')
+  },
+  {
+    text: ht('aboutLinkText'),
+    onClick: () => router.push(localePath('/about')),
+    active: route.path === localePath('/about')
+  }
+])
+
+const spModeMenuItems = computed<LinkItem[]>(() => [
+  {
+    text: ht('myPageLinkText'),
+    href: localePath('/mypage')
+  },
+  {
+    text: ht('viewMyCartText'),
+    href: localePath('/cart')
+  }
+])
+
+const authenticatedMenuItems = computed<LinkItem[]>(() => [])
+
+const noAuthenticatedMenuItems = computed<LinkItem[]>(() => [
+  {
+    text: ht('signIn'),
+    href: localePath('/signin')
+  },
+  {
+    text: ht('signUp'),
+    href: localePath('/signup')
+  }
+])
+
+const footerMenuList = computed<FooterMenuItem[]>(() => [
+  {
+    text: ft('qaLinkText'),
+    onClick: () => {}
+  },
+  {
+    text: ft('privacyPolicyLinkText'),
+    onClick: () => {}
+  },
+  {
+    text: ft('lawLinkText'),
+    onClick: () => {}
+  },
+  {
+    text: ft('inquiryLinkText'),
+    onClick: () => {}
   }
 ])
 </script>
 
-<style scoped>
-.bg-color {
-  background-color: #f9f6ea;
-}
-
-.header-link {
-  text-decoration: none;
-  color: #1b1b22;
-}
-</style>
+<template>
+  <div class="flex flex-col min-h-screen bg-base">
+    <div class="sticky top-0 z-[60]">
+      <the-app-header
+        :home-path="localePath('/')"
+        :is-authenticated="isAuthenticated"
+        :authenticated-account-menu-item="authenticatedMenuItems"
+        :no-authenticated-account-menu-item="noAuthenticatedMenuItems"
+        :menu-items="navbarMenuList"
+        :notification-title="ht('notificationTitle')"
+        :no-notification-item-text="ht('noNotificationItemText')"
+        :notification-items="notifications"
+        :cart-is-empty="cartIsEmpty"
+        :cart-items="cartItems"
+        :cart-menu-message="cartMenuMessage"
+        :sp-menu-items="spModeMenuItems"
+        :footer-menu-items="footerMenuList"
+      />
+    </div>
+    <main class="flex-grow overflow-hidden">
+      <div class="container pb-10 mx-auto">
+        <slot />
+      </div>
+    </main>
+    <the-app-footer :menu-items="footerMenuList" />
+  </div>
+</template>

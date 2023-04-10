@@ -21,9 +21,30 @@ export default defineNuxtConfig({
     }
   },
   plugins: [],
-  modules: ['@nuxtjs/i18n', '@nuxtjs/tailwindcss'],
+  modules: [
+    '@nuxtjs/i18n',
+    '@nuxtjs/tailwindcss',
+    ['@pinia/nuxt',
+      {
+        autoImports: [
+          // automatically imports `defineStore`
+          'defineStore'
+        ]
+      }]
+  ],
   i18n: {
-    locales: ['ja', 'en'],
+    locales: [
+      {
+        code: 'ja',
+        iso: 'ja',
+        file: 'ja_jp.json'
+      },
+      {
+        code: 'en',
+        iso: 'en',
+        file: 'en_us.json'
+      }
+    ],
     defaultLocale: 'ja',
     vueI18n: {
       fallbackLocale: 'ja',
@@ -40,7 +61,9 @@ export default defineNuxtConfig({
     }
   ],
   runtimeConfig: {
-    API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:18000'
+    public: {
+      API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:18000'
+    }
   },
   build: {}
 })

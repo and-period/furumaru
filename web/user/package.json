@@ -14,8 +14,11 @@
     "typecheck": "nuxt typecheck"
   },
   "dependencies": {
+    "@pinia/nuxt": "^0.4.6",
     "axios": "^1.2.2",
-    "nuxt": "^3.0.0",
+    "nuxt": "^3.3.2",
+    "pinia": "^2.0.30",
+    "postcss-custom-properties": "^13.1.4",
     "sass": "^1.57.1"
   },
   "devDependencies": {

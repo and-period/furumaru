@@ -13,13 +13,15 @@
  */
 
 
-import { Configuration } from './configuration';
-import globalAxios, { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios';
+import type { Configuration } from './configuration';
+import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios';
+import globalAxios from 'axios';
 // Some imports not used depending on template conditions
 // @ts-ignore
 import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObject, setBearerAuthToObject, setOAuthToObject, setSearchParams, serializeDataIfNeeded, toPathString, createRequestFunction } from './common';
+import type { RequestArgs } from './base';
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from './base';
+import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError } from './base';
 
 /**
  * 管理者権限
@@ -233,6 +235,8 @@ export interface AuthResponse {
      */
     'tokenType': string;
 }
+
+
 /**
  * 
  * @export
@@ -415,6 +419,8 @@ export interface ContactResponse {
      */
     'updatedAt': number;
 }
+
+
 /**
  * お問い合わせ対応状況
  * @export
@@ -539,6 +545,8 @@ export interface ContactsResponseContactsInner {
      */
     'updatedAt': number;
 }
+
+
 /**
  * 
  * @export
@@ -867,6 +875,8 @@ export interface CoordinatorsResponseCoordinatorsInnerHeadersInner {
      */
     'size': ImageSize;
 }
+
+
 /**
  * 
  * @export
@@ -886,6 +896,8 @@ export interface CoordinatorsResponseCoordinatorsInnerThumbnailsInner {
      */
     'size': ImageSize;
 }
+
+
 /**
  * 
  * @export
@@ -1294,6 +1306,8 @@ export interface CreateProductRequest {
      */
     'originCity': string;
 }
+
+
 /**
  * 
  * @export
@@ -1393,6 +1407,8 @@ export interface CreatePromotionRequest {
      */
     'endAt': number;
 }
+
+
 /**
  * 
  * @export
@@ -1855,6 +1871,8 @@ export interface LiveResponse {
      */
     'viewerCount'?: number;
 }
+
+
 /**
  * ライブ配信ステータス
  * @export
@@ -1948,6 +1966,8 @@ export interface MessageResponse {
      */
     'updatedAt': number;
 }
+
+
 /**
  * メッセージ種別
  * @export
@@ -2048,6 +2068,8 @@ export interface MessagesResponseMessagesInner {
      */
     'updatedAt': number;
 }
+
+
 /**
  * 
  * @export
@@ -2445,6 +2467,8 @@ export interface OrderResponseFulfillment {
      */
     'phoneNumber': string;
 }
+
+
 /**
  * 
  * @export
@@ -2603,6 +2627,8 @@ export interface OrderResponsePayment {
      */
     'phoneNumber': string;
 }
+
+
 /**
  * 注文キャンセル情報
  * @export
@@ -2634,6 +2660,8 @@ export interface OrderResponseRefund {
      */
     'total': number;
 }
+
+
 /**
  * 
  * @export
@@ -2754,6 +2782,8 @@ export interface PostalCodeResponse {
      */
     'town': string;
 }
+
+
 /**
  * 都道府県コード
  * @export
@@ -3390,6 +3420,8 @@ export interface ProductResponse {
      */
     'updatedAt': number;
 }
+
+
 /**
  * 
  * @export
@@ -3538,6 +3570,8 @@ export interface ProductTypesResponseProductTypesInnerIconsInner {
      */
     'size': ImageSize;
 }
+
+
 /**
  * 
  * @export
@@ -3720,6 +3754,8 @@ export interface ProductsResponseProductsInner {
      */
     'updatedAt': number;
 }
+
+
 /**
  * 
  * @export
@@ -3764,6 +3800,8 @@ export interface ProductsResponseProductsInnerMediaInnerImagesInner {
      */
     'size': ImageSize;
 }
+
+
 /**
  * 
  * @export
@@ -3843,6 +3881,8 @@ export interface PromotionResponse {
      */
     'updatedAt': number;
 }
+
+
 /**
  * 
  * @export
@@ -3941,6 +3981,8 @@ export interface PromotionsResponsePromotionsInner {
      */
     'updatedAt': number;
 }
+
+
 /**
  * 
  * @export
@@ -4204,6 +4246,8 @@ export interface ScheduleResponseLivesInner {
      */
     'viewerCount'?: number;
 }
+
+
 /**
  * 
  * @export
@@ -4367,6 +4411,8 @@ export interface ScheduleResponseLivesInnerProductsInner {
      */
     'updatedAt'?: number;
 }
+
+
 /**
  * 配送会社
  * @export
@@ -4808,6 +4854,8 @@ export interface UpdateContactRequest {
      */
     'note': string;
 }
+
+
 /**
  * 
  * @export
@@ -5254,6 +5302,8 @@ export interface UpdatePromotionRequest {
      */
     'endAt': number;
 }
+
+
 /**
  * 
  * @export
@@ -7894,11 +7944,11 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         /**
          * 
          * @summary コーディネータヘッダー画像アップロード
-         * @param {any} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
+         * @param {File} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadCoordinatorHeader: async (image?: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1UploadCoordinatorHeader: async (image?: File, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/upload/coordinators/header`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -7937,11 +7987,11 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         /**
          * 
          * @summary コーディネータサムネイルアップロード
-         * @param {any} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
+         * @param {File} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadCoordinatorThumbnail: async (thumbnail?: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1UploadCoordinatorThumbnail: async (thumbnail?: File, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/upload/coordinators/thumbnail`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -8108,22 +8158,22 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary コーディネータヘッダー画像アップロード
-         * @param {any} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
+         * @param {File} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadCoordinatorHeader(image?: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
+        async v1UploadCoordinatorHeader(image?: File, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorHeader(image, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
          * @summary コーディネータサムネイルアップロード
-         * @param {any} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
+         * @param {File} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadCoordinatorThumbnail(thumbnail?: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
+        async v1UploadCoordinatorThumbnail(thumbnail?: File, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorThumbnail(thumbnail, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -8248,21 +8298,21 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
         /**
          * 
          * @summary コーディネータヘッダー画像アップロード
-         * @param {any} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
+         * @param {File} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadCoordinatorHeader(image?: any, options?: any): AxiosPromise<UploadImageResponse> {
+        v1UploadCoordinatorHeader(image?: File, options?: any): AxiosPromise<UploadImageResponse> {
             return localVarFp.v1UploadCoordinatorHeader(image, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary コーディネータサムネイルアップロード
-         * @param {any} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
+         * @param {File} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadCoordinatorThumbnail(thumbnail?: any, options?: any): AxiosPromise<UploadImageResponse> {
+        v1UploadCoordinatorThumbnail(thumbnail?: File, options?: any): AxiosPromise<UploadImageResponse> {
             return localVarFp.v1UploadCoordinatorThumbnail(thumbnail, options).then((request) => request(axios, basePath));
         },
     };
@@ -8406,24 +8456,24 @@ export class CoordinatorApi extends BaseAPI {
     /**
      * 
      * @summary コーディネータヘッダー画像アップロード
-     * @param {any} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
+     * @param {File} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CoordinatorApi
      */
-    public v1UploadCoordinatorHeader(image?: any, options?: AxiosRequestConfig) {
+    public v1UploadCoordinatorHeader(image?: File, options?: AxiosRequestConfig) {
         return CoordinatorApiFp(this.configuration).v1UploadCoordinatorHeader(image, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @summary コーディネータサムネイルアップロード
-     * @param {any} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
+     * @param {File} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CoordinatorApi
      */
-    public v1UploadCoordinatorThumbnail(thumbnail?: any, options?: AxiosRequestConfig) {
+    public v1UploadCoordinatorThumbnail(thumbnail?: File, options?: AxiosRequestConfig) {
         return CoordinatorApiFp(this.configuration).v1UploadCoordinatorThumbnail(thumbnail, options).then((request) => request(this.axios, this.basePath));
     }
 }
@@ -9680,11 +9730,11 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
         /**
          * 
          * @summary 生産者ヘッダー画像アップロード
-         * @param {any} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
+         * @param {File} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProducerHeader: async (image?: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1UploadProducerHeader: async (image?: File, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/upload/producers/header`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -9723,11 +9773,11 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
         /**
          * 
          * @summary 生産者サムネイルアップロード
-         * @param {any} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
+         * @param {File} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProducerThumbnail: async (thumbnail?: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1UploadProducerThumbnail: async (thumbnail?: File, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/upload/producers/thumbnail`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -9858,22 +9908,22 @@ export const ProducerApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary 生産者ヘッダー画像アップロード
-         * @param {any} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
+         * @param {File} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadProducerHeader(image?: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
+        async v1UploadProducerHeader(image?: File, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProducerHeader(image, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
          * @summary 生産者サムネイルアップロード
-         * @param {any} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
+         * @param {File} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadProducerThumbnail(thumbnail?: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
+        async v1UploadProducerThumbnail(thumbnail?: File, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProducerThumbnail(thumbnail, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -9965,21 +10015,21 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
         /**
          * 
          * @summary 生産者ヘッダー画像アップロード
-         * @param {any} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
+         * @param {File} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProducerHeader(image?: any, options?: any): AxiosPromise<UploadImageResponse> {
+        v1UploadProducerHeader(image?: File, options?: any): AxiosPromise<UploadImageResponse> {
             return localVarFp.v1UploadProducerHeader(image, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary 生産者サムネイルアップロード
-         * @param {any} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
+         * @param {File} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProducerThumbnail(thumbnail?: any, options?: any): AxiosPromise<UploadImageResponse> {
+        v1UploadProducerThumbnail(thumbnail?: File, options?: any): AxiosPromise<UploadImageResponse> {
             return localVarFp.v1UploadProducerThumbnail(thumbnail, options).then((request) => request(axios, basePath));
         },
     };
@@ -10084,24 +10134,24 @@ export class ProducerApi extends BaseAPI {
     /**
      * 
      * @summary 生産者ヘッダー画像アップロード
-     * @param {any} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
+     * @param {File} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProducerApi
      */
-    public v1UploadProducerHeader(image?: any, options?: AxiosRequestConfig) {
+    public v1UploadProducerHeader(image?: File, options?: AxiosRequestConfig) {
         return ProducerApiFp(this.configuration).v1UploadProducerHeader(image, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @summary 生産者サムネイルアップロード
-     * @param {any} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
+     * @param {File} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProducerApi
      */
-    public v1UploadProducerThumbnail(thumbnail?: any, options?: AxiosRequestConfig) {
+    public v1UploadProducerThumbnail(thumbnail?: File, options?: AxiosRequestConfig) {
         return ProducerApiFp(this.configuration).v1UploadProducerThumbnail(thumbnail, options).then((request) => request(this.axios, this.basePath));
     }
 }
@@ -10330,11 +10380,11 @@ export const ProductApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 
          * @summary 商品画像アップロード
-         * @param {any} [image] 商品画像(png,jpeg形式,10MBまで)
+         * @param {File} [image] 商品画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProductImage: async (image?: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1UploadProductImage: async (image?: File, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/upload/products/image`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -10373,11 +10423,11 @@ export const ProductApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 
          * @summary 商品動画アップロード
-         * @param {any} [video] 商品動画(mp4形式,200MBまで)
+         * @param {File} [video] 商品動画(mp4形式,200MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProductVideo: async (video?: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1UploadProductVideo: async (video?: File, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/upload/products/video`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -10485,22 +10535,22 @@ export const ProductApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary 商品画像アップロード
-         * @param {any} [image] 商品画像(png,jpeg形式,10MBまで)
+         * @param {File} [image] 商品画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadProductImage(image?: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
+        async v1UploadProductImage(image?: File, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProductImage(image, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
          * @summary 商品動画アップロード
-         * @param {any} [video] 商品動画(mp4形式,200MBまで)
+         * @param {File} [video] 商品動画(mp4形式,200MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadProductVideo(video?: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadVideoResponse>> {
+        async v1UploadProductVideo(video?: File, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadVideoResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProductVideo(video, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -10571,21 +10621,21 @@ export const ProductApiFactory = function (configuration?: Configuration, basePa
         /**
          * 
          * @summary 商品画像アップロード
-         * @param {any} [image] 商品画像(png,jpeg形式,10MBまで)
+         * @param {File} [image] 商品画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProductImage(image?: any, options?: any): AxiosPromise<UploadImageResponse> {
+        v1UploadProductImage(image?: File, options?: any): AxiosPromise<UploadImageResponse> {
             return localVarFp.v1UploadProductImage(image, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary 商品動画アップロード
-         * @param {any} [video] 商品動画(mp4形式,200MBまで)
+         * @param {File} [video] 商品動画(mp4形式,200MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProductVideo(video?: any, options?: any): AxiosPromise<UploadVideoResponse> {
+        v1UploadProductVideo(video?: File, options?: any): AxiosPromise<UploadVideoResponse> {
             return localVarFp.v1UploadProductVideo(video, options).then((request) => request(axios, basePath));
         },
     };
@@ -10665,24 +10715,24 @@ export class ProductApi extends BaseAPI {
     /**
      * 
      * @summary 商品画像アップロード
-     * @param {any} [image] 商品画像(png,jpeg形式,10MBまで)
+     * @param {File} [image] 商品画像(png,jpeg形式,10MBまで)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProductApi
      */
-    public v1UploadProductImage(image?: any, options?: AxiosRequestConfig) {
+    public v1UploadProductImage(image?: File, options?: AxiosRequestConfig) {
         return ProductApiFp(this.configuration).v1UploadProductImage(image, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @summary 商品動画アップロード
-     * @param {any} [video] 商品動画(mp4形式,200MBまで)
+     * @param {File} [video] 商品動画(mp4形式,200MBまで)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProductApi
      */
-    public v1UploadProductVideo(video?: any, options?: AxiosRequestConfig) {
+    public v1UploadProductVideo(video?: File, options?: AxiosRequestConfig) {
         return ProductApiFp(this.configuration).v1UploadProductVideo(video, options).then((request) => request(this.axios, this.basePath));
     }
 }
@@ -10943,11 +10993,11 @@ export const ProductTypeApiAxiosParamCreator = function (configuration?: Configu
         /**
          * 
          * @summary 品目アイコンアップロード
-         * @param {any} [icon] 商品アイコン(png,jpeg形式,10MBまで)
+         * @param {File} [icon] 商品アイコン(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProductTypeIcon: async (icon?: any, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1UploadProductTypeIcon: async (icon?: File, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/upload/product-types/icon`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -11062,11 +11112,11 @@ export const ProductTypeApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary 品目アイコンアップロード
-         * @param {any} [icon] 商品アイコン(png,jpeg形式,10MBまで)
+         * @param {File} [icon] 商品アイコン(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadProductTypeIcon(icon?: any, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
+        async v1UploadProductTypeIcon(icon?: File, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProductTypeIcon(icon, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -11144,11 +11194,11 @@ export const ProductTypeApiFactory = function (configuration?: Configuration, ba
         /**
          * 
          * @summary 品目アイコンアップロード
-         * @param {any} [icon] 商品アイコン(png,jpeg形式,10MBまで)
+         * @param {File} [icon] 商品アイコン(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProductTypeIcon(icon?: any, options?: any): AxiosPromise<UploadImageResponse> {
+        v1UploadProductTypeIcon(icon?: File, options?: any): AxiosPromise<UploadImageResponse> {
             return localVarFp.v1UploadProductTypeIcon(icon, options).then((request) => request(axios, basePath));
         },
     };
@@ -11235,12 +11285,12 @@ export class ProductTypeApi extends BaseAPI {
     /**
      * 
      * @summary 品目アイコンアップロード
-     * @param {any} [icon] 商品アイコン(png,jpeg形式,10MBまで)
+     * @param {File} [icon] 商品アイコン(png,jpeg形式,10MBまで)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProductTypeApi
      */
-    public v1UploadProductTypeIcon(icon?: any, options?: AxiosRequestConfig) {
+    public v1UploadProductTypeIcon(icon?: File, options?: AxiosRequestConfig) {
         return ProductTypeApiFp(this.configuration).v1UploadProductTypeIcon(icon, options).then((request) => request(this.axios, this.basePath));
     }
 }
