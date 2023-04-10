@@ -106,6 +106,6 @@ export const useContactStore = defineStore('contact', {
         }
         throw new Error('Internal Server Error')
       }
-    },
+    }
   }
 })

@@ -1,6 +1,6 @@
 import { useAuthStore, useMessageStore } from '~/store'
 
-export default defineNuxtRouteMiddleware((to, _ ) => {
+export default defineNuxtRouteMiddleware((to, _) => {
   const publicPages = ['/signin']
   if (publicPages.includes(to.path)) {
     return

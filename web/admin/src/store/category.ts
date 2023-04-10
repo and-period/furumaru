@@ -20,7 +20,7 @@ import { apiClient } from '~/plugins/api-client'
 export const useCategoryStore = defineStore('Category', {
   state: () => ({
     categories: [] as CategoriesResponse['categories'],
-    totalCategoryItems: 0,
+    totalCategoryItems: 0
   }),
 
   actions: {

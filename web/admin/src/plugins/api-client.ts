@@ -1,73 +1,74 @@
-import { AxiosInstance } from "axios";
-import { AddressApi, AdministratorApi, AuthApi, CategoryApi, Configuration, ContactApi, CoordinatorApi, MessageApi, NotificationApi, OrderApi, ProducerApi, ProductApi, ProductTypeApi, PromotionApi, ShippingApi } from "~/types/api";
-import { client } from "./axios";
+import { AxiosInstance } from 'axios'
+import { client } from './axios'
+import { AddressApi, AdministratorApi, AuthApi, CategoryApi, Configuration, ContactApi, CoordinatorApi, MessageApi, NotificationApi, OrderApi, ProducerApi, ProductApi, ProductTypeApi, PromotionApi, ShippingApi } from '~/types/api'
 
+// eslint-disable-next-line import/no-mutable-exports, no-use-before-define
 let apiClient: ApiClient
 
 export class ApiClient {
-  basePath: string;
-  config: Configuration;
-  instance: AxiosInstance;
+  basePath: string
+  config: Configuration
+  instance: AxiosInstance
 
-  constructor(basePath: string) {
+  constructor (basePath: string) {
     this.basePath = basePath
-    this.config = new Configuration();
-    this.instance = client;
+    this.config = new Configuration()
+    this.instance = client
   }
 
-  addressApi() {
+  addressApi () {
     return new AddressApi(this.config, this.basePath, this.instance)
   }
 
-  administratorApi() {
+  administratorApi () {
     return new AdministratorApi(this.config, this.basePath, this.instance)
   }
 
-  authApi() {
+  authApi () {
     return new AuthApi(this.config, this.basePath, this.instance)
   }
 
-  categoryApi() {
+  categoryApi () {
     return new CategoryApi(this.config, this.basePath, this.instance)
   }
 
-  contactApi() {
+  contactApi () {
     return new ContactApi(this.config, this.basePath, this.instance)
   }
 
-  coordinatorApi() {
+  coordinatorApi () {
     return new CoordinatorApi(this.config, this.basePath, this.instance)
   }
 
-  messageApi() {
+  messageApi () {
     return new MessageApi(this.config, this.basePath, this.instance)
   }
 
-  notificationApi() {
+  notificationApi () {
     return new NotificationApi(this.config, this.basePath, this.instance)
   }
 
-  orderApi() {
+  orderApi () {
     return new OrderApi(this.config, this.basePath, this.instance)
   }
 
-  producerApi() {
+  producerApi () {
     return new ProducerApi(this.config, this.basePath, this.instance)
   }
 
-  productApi() {
+  productApi () {
     return new ProductApi(this.config, this.basePath, this.instance)
   }
 
-  productTypeApi() {
+  productTypeApi () {
     return new ProductTypeApi(this.config, this.basePath, this.instance)
   }
 
-  promotionApi() {
+  promotionApi () {
     return new PromotionApi(this.config, this.basePath, this.instance)
   }
 
-  shippingApi() {
+  shippingApi () {
     return new ShippingApi(this.config, this.basePath, this.instance)
   }
 }

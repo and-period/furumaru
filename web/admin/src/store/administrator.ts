@@ -5,10 +5,10 @@ import { apiClient } from '~/plugins/api-client'
 
 export const useAdministratorStore = defineStore('administrator', {
   state: () => ({
-    administrators: [] as AdministratorsResponse['administrators'],
+    administrators: [] as AdministratorsResponse['administrators']
   }),
   actions: {
-    async fetchAdministrators(): Promise<void> {
+    async fetchAdministrators (): Promise<void> {
       try {
         const res = await apiClient.administratorApi().v1ListAdministrators()
         this.administrators = res.data.administrators
@@ -16,6 +16,6 @@ export const useAdministratorStore = defineStore('administrator', {
         // TODO: エラーハンドリング
         throw new Error('Internal Server Error')
       }
-    },
-  },
+    }
+  }
 })

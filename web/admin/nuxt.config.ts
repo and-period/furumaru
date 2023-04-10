@@ -18,7 +18,7 @@ export default defineNuxtConfig({
         { name: 'format-detection', content: 'telephone=no' }
       ],
       link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
-    },
+    }
   },
   css: ['~/assets/main.scss', '~/assets/variables.scss'],
   plugins: [
@@ -27,7 +27,7 @@ export default defineNuxtConfig({
     '~/plugins/firebase',
     '~/plugins/google-analytics',
     '~/plugins/vuetify',
-    '~/plugins/api-client',
+    '~/plugins/api-client'
   ],
   components: [
     { path: '~/components', pathPrefix: false },
@@ -58,7 +58,7 @@ export default defineNuxtConfig({
         process.env.FIREBASE_MESSAGING_SENDER_ID || '',
       FIREBASE_APP_ID: process.env.FIREBASE_APP_ID || '',
       FIREBASE_MEASUREMENT_ID: process.env.FIREBASE_MEASUREMENT_ID || '',
-      FIREBASE_VAPID_KEY: process.env.FIREBASE_VAPID_KEY || '',
+      FIREBASE_VAPID_KEY: process.env.FIREBASE_VAPID_KEY || ''
     }
   }
 })

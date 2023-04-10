@@ -22,7 +22,7 @@ import { apiClient } from '~/plugins/api-client'
 export const useProducerStore = defineStore('Producer', {
   state: () => ({
     producers: [] as ProducersResponse['producers'],
-    totalItems: 0,
+    totalItems: 0
   }),
 
   actions: {

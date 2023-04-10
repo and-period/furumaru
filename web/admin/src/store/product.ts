@@ -19,7 +19,7 @@ import {
 export const useProductStore = defineStore('product', {
   state: () => ({
     products: [] as ProductsResponseProductsInner[],
-    totalItems: 0,
+    totalItems: 0
   }),
 
   actions: {

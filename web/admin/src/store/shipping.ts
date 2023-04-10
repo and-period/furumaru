@@ -19,7 +19,7 @@ import {
 export const useShippingStore = defineStore('shippings', {
   state: () => ({
     shippings: [] as ShippingsResponseShippingsInner[],
-    totalItems: 0,
+    totalItems: 0
   }),
 
   actions: {

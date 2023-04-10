@@ -17,7 +17,7 @@ export const useCoordinatorStore = defineStore('Coordinator', {
     coordinators: [] as CoordinatorsResponse['coordinators'],
     producers: [] as ProducersResponse['producers'],
     totalItems: 0,
-    producerTotalItems: 0,
+    producerTotalItems: 0
   }),
   actions: {
     /**

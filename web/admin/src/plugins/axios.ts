@@ -1,6 +1,7 @@
-import axios, { AxiosInstance } from "axios"
-import { useAuthStore } from "~/store"
+import axios, { AxiosInstance } from 'axios'
+import { useAuthStore } from '~/store'
 
+// eslint-disable-next-line import/no-mutable-exports
 let client: AxiosInstance
 
 export default defineNuxtPlugin(() => {
@@ -11,7 +12,7 @@ export default defineNuxtPlugin(() => {
     baseURL: baseUrl,
     timeout: 10000, // 10sec
     withCredentials: true,
-    headers:  {},
+    headers: {}
   })
 
   client.interceptors.request.use((config) => {
@@ -27,7 +28,7 @@ export default defineNuxtPlugin(() => {
 
   return {
     provide: {
-      axios: client,
+      axios: client
     }
   }
 })

@@ -21,7 +21,7 @@ import { apiClient } from '~/plugins/api-client'
 export const useProductTypeStore = defineStore('ProductType', {
   state: () => ({
     productTypes: [] as ProductTypesResponse['productTypes'],
-    totalItems: 0,
+    totalItems: 0
   }),
   actions: {
     /**

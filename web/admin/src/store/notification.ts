@@ -20,7 +20,7 @@ import { apiClient } from '~/plugins/api-client'
 export const useNotificationStore = defineStore('Notification', {
   state: () => ({
     notifications: [] as NotificationsResponse['notifications'],
-    totalItems: 0,
+    totalItems: 0
   }),
   actions: {
     /**
