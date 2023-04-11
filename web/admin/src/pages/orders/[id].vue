@@ -289,6 +289,12 @@ const getBoxSize = (size: ShippingSize): string => {
       return '不明'
   }
 }
+
+try {
+  await fetchState.execute()
+} catch (err) {
+  console.log('failed to setup', err)
+}
 </script>
 
 <template>
@@ -326,7 +332,7 @@ const getBoxSize = (size: ShippingSize): string => {
               <v-row class="mt-4">
                 <span class="mx-4">支払い状況:</span>
                 <v-chip
-                  small
+                  size="small"
                   :color="getPaymentStatusColor(formData.payment.status)"
                 >
                   {{ getPaymentStatus(formData.payment.status) }}
@@ -459,7 +465,7 @@ const getBoxSize = (size: ShippingSize): string => {
             <v-row class="mt-4">
               <span class="mx-4">注文キャンセル状況:</span>
               <v-chip
-                small
+                size="small"
                 :color="getRefundStatusColor(formData.refund.canceled)"
               >
                 {{ getRefundStatus(formData.refund.canceled) }}
@@ -518,7 +524,7 @@ const getBoxSize = (size: ShippingSize): string => {
             <v-row class="my-4">
               <span class="mx-4">配送状況:</span>
               <v-chip
-                small
+                size="small"
                 :color="getFulfillmentStatusColor(formData.fulfillment.status)"
               >
                 {{ getFulfillmentStatus(formData.fulfillment.status) }}

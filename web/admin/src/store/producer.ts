@@ -19,7 +19,7 @@ import {
 } from '~/types/exception'
 import { apiClient } from '~/plugins/api-client'
 
-export const useProducerStore = defineStore('Producer', {
+export const useProducerStore = defineStore('producer', {
   state: () => ({
     producers: [] as ProducersResponse['producers'],
     totalItems: 0

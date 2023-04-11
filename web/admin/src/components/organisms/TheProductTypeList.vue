@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { DataTableHeader } from 'vuetify'
-
 import { useProductTypeStore } from '~/store'
 import {
   ProductTypesResponseProductTypesInner,
@@ -56,7 +54,7 @@ const headerUploadStatus = reactive<ImageUploadStatus>({
   message: ''
 })
 
-const productTypeHeaders: DataTableHeader[] = [
+const productTypeHeaders = [
   {
     text: 'アイコン',
     value: 'icon'
@@ -194,14 +192,14 @@ const handleInputFileChange = () => {
         {{ `${item.name}` }}
       </template>
       <template #[`item.actions`]="{ item }">
-        <v-btn outlined color="primary" small @click="openEditDialog(item)">
-          <v-icon small>
+        <v-btn variant="outlined" color="primary" size="small" @click="openEditDialog(item)">
+          <v-icon size="small">
             mdi-pencil
           </v-icon>
           編集
         </v-btn>
-        <v-btn outlined color="primary" small @click="openDeleteDialog(item)">
-          <v-icon small>
+        <v-btn variant="outlined" color="primary" size="small" @click="openDeleteDialog(item)">
+          <v-icon size="small">
             mdi-delete
           </v-icon>
           削除
@@ -218,14 +216,14 @@ const handleInputFileChange = () => {
           <v-autocomplete
             v-model="selectedCategoryId"
             :items="props.categories"
-            item-text="name"
+            item-title="name"
             item-value="id"
             label="カテゴリー"
           >
             <template #append-item>
               <div class="pa-2">
                 <v-btn
-                  outlined
+                  variant="outlined"
                   block
                   color="primary"
                   @click="handleMoreCategoryItems"
@@ -246,7 +244,7 @@ const handleInputFileChange = () => {
         <v-card class="text-center" role="button" flat @click="handleClick">
           <v-card-text>
             <v-avatar size="96">
-              <v-icon v-if="editFormData.iconUrl === ''" x-large>
+              <v-icon v-if="editFormData.iconUrl === ''" size="x-large">
                 mdi-plus
               </v-icon>
               <v-img
@@ -274,10 +272,10 @@ const handleInputFileChange = () => {
         </p>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="error" text @click="hideEditDialog">
+          <v-btn color="error" variant="text" @click="hideEditDialog">
             キャンセル
           </v-btn>
-          <v-btn color="primary" outlined @click="handleEdit">
+          <v-btn color="primary" variant="outlined" @click="handleEdit">
             編集
           </v-btn>
         </v-card-actions>
@@ -291,10 +289,10 @@ const handleInputFileChange = () => {
         </v-card-title>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="error" text @click="hideDeleteDialog">
+          <v-btn color="error" variant="text" @click="hideDeleteDialog">
             キャンセル
           </v-btn>
-          <v-btn color="primary" outlined @click="handleDelete">
+          <v-btn color="primary" variant="outlined" @click="handleDelete">
             削除
           </v-btn>
         </v-card-actions>

@@ -90,7 +90,7 @@ const handleSubmit = async (): Promise<void> => {
           />
         </v-card-text>
         <v-card-actions>
-          <v-btn block outlined color="primary" type="submit">
+          <v-btn block variant="outlined" color="primary" type="submit">
             変更
           </v-btn>
         </v-card-actions>

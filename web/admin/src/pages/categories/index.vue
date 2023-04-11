@@ -158,6 +158,12 @@ const handleInputFileChange = () => {
     }
   }
 }
+
+try {
+  await fetchState.execute()
+} catch (err) {
+  console.log('failed to setup', err)
+}
 </script>
 
 <template>
@@ -180,8 +186,8 @@ const handleInputFileChange = () => {
           <template #activator="{ on, attrs }">
             <div class="d-flex pt-3 pr-3">
               <v-spacer />
-              <v-btn outlined color="primary" v-bind="attrs" v-on="on">
-                <v-icon left>
+              <v-btn variant="outlined" color="primary" v-bind="attrs" v-on="on">
+                <v-icon start>
                   mdi-plus
                 </v-icon>
                 追加
@@ -203,10 +209,10 @@ const handleInputFileChange = () => {
 
             <v-card-actions>
               <v-spacer />
-              <v-btn color="error" text @click="categoryCancel">
+              <v-btn color="error" variant="text" @click="categoryCancel">
                 キャンセル
               </v-btn>
-              <v-btn color="primary" outlined @click="categoryRegister">
+              <v-btn color="primary" variant="outlined" @click="categoryRegister">
                 登録
               </v-btn>
             </v-card-actions>
@@ -225,8 +231,8 @@ const handleInputFileChange = () => {
           <template #activator="{ on, attrs }">
             <div class="d-flex pt-3 pr-3">
               <v-spacer />
-              <v-btn outlined color="primary" v-bind="attrs" v-on="on">
-                <v-icon left>
+              <v-btn variant="outlined" color="primary" v-bind="attrs" v-on="on">
+                <v-icon start>
                   mdi-plus
                 </v-icon>
                 追加
@@ -241,7 +247,7 @@ const handleInputFileChange = () => {
               <v-autocomplete
                 v-model="selectedCategoryId"
                 :items="categoriesItems.categories"
-                item-text="name"
+                item-title="name"
                 item-value="id"
                 label="カテゴリー"
               >
@@ -299,10 +305,10 @@ const handleInputFileChange = () => {
 
             <v-card-actions>
               <v-spacer />
-              <v-btn color="error" text @click="productTypeCancel">
+              <v-btn color="error" variant="text" @click="productTypeCancel">
                 キャンセル
               </v-btn>
-              <v-btn color="primary" outlined @click="productTypeRegister">
+              <v-btn color="primary" variant="outlined" @click="productTypeRegister">
                 登録
               </v-btn>
             </v-card-actions>

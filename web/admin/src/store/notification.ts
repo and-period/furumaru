@@ -17,7 +17,7 @@ import {
 } from '~/types/exception'
 import { apiClient } from '~/plugins/api-client'
 
-export const useNotificationStore = defineStore('Notification', {
+export const useNotificationStore = defineStore('notification', {
   state: () => ({
     notifications: [] as NotificationsResponse['notifications'],
     totalItems: 0

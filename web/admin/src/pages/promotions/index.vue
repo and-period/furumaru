@@ -119,6 +119,12 @@ const fetchState = useAsyncData(async () => {
     console.log(err)
   }
 })
+
+try {
+  await fetchState.execute()
+} catch (err) {
+  console.log('failed to setup', err)
+}
 </script>
 
 <template>
@@ -126,8 +132,8 @@ const fetchState = useAsyncData(async () => {
     <v-card-title>
       セール情報
       <v-spacer />
-      <v-btn outlined color="primary" @click="handleClickAddButton">
-        <v-icon left>
+      <v-btn variant="outlined" color="primary" @click="handleClickAddButton">
+        <v-icon start>
           mdi-plus
         </v-icon>
         セール情報登録
@@ -141,10 +147,10 @@ const fetchState = useAsyncData(async () => {
         </v-card-title>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="error" text @click="hideDeleteDialog">
+          <v-btn color="error" variant="text" @click="hideDeleteDialog">
             キャンセル
           </v-btn>
-          <v-btn color="primary" outlined @click="handleDelete">
+          <v-btn color="primary" variant="outlined" @click="handleDelete">
             削除
           </v-btn>
         </v-card-actions>
@@ -162,7 +168,7 @@ const fetchState = useAsyncData(async () => {
             {{ item.title }}
           </template>
           <template #[`item.public`]="{ item }">
-            <v-chip small :color="getStatusColor(item.public)">
+            <v-chip size="small" :color="getStatusColor(item.public)">
               {{ getStatus(item.public) }}
             </v-chip>
           </template>
@@ -182,8 +188,8 @@ const fetchState = useAsyncData(async () => {
             {{ getDay(item.endAt) }}
           </template>
           <template #[`item.actions`]="{ item }">
-            <v-btn outlined color="primary" small @click="handleEdit(item)">
-              <v-icon small>
+            <v-btn variant="outlined" color="primary" size="small" @click="handleEdit(item)">
+              <v-icon size="small">
                 mdi-pencil
               </v-icon>
               編集
@@ -191,10 +197,10 @@ const fetchState = useAsyncData(async () => {
             <v-btn
               outlined
               color="primary"
-              small
+              size="small"
               @click="openDeleteDialog(item)"
             >
-              <v-icon small>
+              <v-icon size="small">
                 mdi-delete
               </v-icon>
               削除

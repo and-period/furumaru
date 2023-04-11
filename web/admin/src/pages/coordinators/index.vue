@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { DataTableHeader } from 'vuetify'
-
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useCommonStore, useCoordinatorStore } from '~/store'
 import { CoordinatorsResponseCoordinatorsInner } from '~/types/api'
@@ -71,7 +69,7 @@ const fetchState = useAsyncData(async () => {
   }
 })
 
-const headers: DataTableHeader[] = [
+const headers = [
   {
     text: 'サムネイル',
     value: 'thumbnail'
@@ -98,6 +96,10 @@ const headers: DataTableHeader[] = [
     sortable: false
   }
 ]
+
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || false
+}
 
 const handleClickAddButton = () => {
   router.push('/coordinators/add')
@@ -139,6 +141,12 @@ const handleDeleteFormSubmit = async () => {
   }
   deleteDialog.value = false
 }
+
+try {
+  await fetchState.execute()
+} catch (err) {
+  console.log('failed to setup', err)
+}
 </script>
 
 <template>
@@ -146,15 +154,15 @@ const handleDeleteFormSubmit = async () => {
     <v-card-title>
       コーディネータ管理
       <v-spacer />
-      <v-btn outlined color="primary" @click="handleClickAddButton">
-        <v-icon left>
+      <v-btn variant="outlined" color="primary" @click="handleClickAddButton">
+        <v-icon start>
           mdi-plus
         </v-icon>
         コーディネータ登録
       </v-btn>
     </v-card-title>
 
-    <v-alert v-model="isShow" :type="alertType" class="my-2" dismissible>
+    <v-alert v-model="isShow" :type="alertType" class="my-2" closable>
       {{ alertText }}
     </v-alert>
 
@@ -165,26 +173,26 @@ const handleDeleteFormSubmit = async () => {
         </v-card-title>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="error" text @click="handleClickCancelButton">
+          <v-btn color="error" variant="text" @click="handleClickCancelButton">
             キャンセル
           </v-btn>
-          <v-btn color="primary" outlined @click="handleDeleteFormSubmit">
+          <v-btn color="primary" variant="outlined" @click="handleDeleteFormSubmit">
             削除
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
-    <v-card class="mt-4" flat :loading="fetchState.pending">
+    <v-card class="mt-4" flat :loading="isLoading">
       <v-card-text>
         <form class="d-flex align-center" @submit.prevent="handleSearch">
           <v-autocomplete
             v-model="search"
-            item-text="firstname"
+            item-title="firstname"
             :items="coordinators"
             label="絞り込み"
           />
-          <v-btn type="submit" class="ml-4" small outlined color="primary">
+          <v-btn type="submit" class="ml-4" size="small" variant="outlined" color="primary">
             <v-icon>mdi-search</v-icon>
             検索
           </v-btn>
@@ -221,19 +229,19 @@ const handleDeleteFormSubmit = async () => {
             {{ `${item.phoneNumber}`.replace('+81', '0') }}
           </template>
           <template #[`item.actions`]="{ item }">
-            <v-btn outlined color="primary" small @click="handleEdit(item)">
-              <v-icon small>
+            <v-btn variant="outlined" color="primary" size="small" @click="handleEdit(item)">
+              <v-icon size="small">
                 mdi-pencil
               </v-icon>
               編集
             </v-btn>
             <v-btn
-              outlined
+              variant="outlined"
               color="primary"
-              small
+              size="small"
               @click="handleClickDeleteButton(item)"
             >
-              <v-icon small>
+              <v-icon size="small">
                 mdi-delete
               </v-icon>
               削除

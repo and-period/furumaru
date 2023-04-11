@@ -15,7 +15,7 @@ const productTypeStore = useProductTypeStore()
 const categoryStore = useCategoryStore()
 const producerStore = useProducerStore()
 
-useAsyncData(async () => {
+const fetchState = useAsyncData(async () => {
   await Promise.all([
     productTypeStore.fetchProductTypes(),
     categoryStore.fetchCategories(),
@@ -126,6 +126,12 @@ const getErrorMessage = (key: string): string | Ref<string> => {
     return e.$property === key
   })
   return error ? error.$message : ''
+}
+
+try {
+  await fetchState.execute()
+} catch (err) {
+  console.log('failed to setup', err)
 }
 </script>
 
@@ -302,7 +308,7 @@ const getErrorMessage = (key: string): string | Ref<string> => {
               v-model="formData.productTypeId"
               label="品目"
               :items="productTypeStore.productTypesItem"
-              item-text="name"
+              item-title="name"
               item-value="id"
             />
           </div>
@@ -318,14 +324,14 @@ const getErrorMessage = (key: string): string | Ref<string> => {
             v-model="formData.producerId"
             label="店舗名"
             :items="productTypeStore.producersItem"
-            item-text="storeName"
+            item-title="storeName"
             item-value="id"
           />
         </v-card-text>
       </v-card>
     </div>
-    <v-btn block outlined @click="handleFormSubmit">
-      <v-icon left>
+    <v-btn block variant="outlined" @click="handleFormSubmit">
+      <v-icon start>
         mdi-plus
       </v-icon>
       登録

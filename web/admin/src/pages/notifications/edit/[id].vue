@@ -55,6 +55,12 @@ const handleSubmit = async () => {
     console.log(error)
   }
 }
+
+try {
+  await fetchState.execute()
+} catch (err) {
+  console.log('failed to setup', err)
+}
 </script>
 
 <template>

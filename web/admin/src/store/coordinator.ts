@@ -12,7 +12,7 @@ import {
 } from '~/types/api'
 import { apiClient } from '~/plugins/api-client'
 
-export const useCoordinatorStore = defineStore('Coordinator', {
+export const useCoordinatorStore = defineStore('coordinator', {
   state: () => ({
     coordinators: [] as CoordinatorsResponse['coordinators'],
     producers: [] as ProducersResponse['producers'],

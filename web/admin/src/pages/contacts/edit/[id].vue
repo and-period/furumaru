@@ -39,7 +39,7 @@ const formData = reactive<ContactResponse>({
   updatedAt: 0
 })
 
-useAsyncData(async () => {
+const fetchState = useAsyncData(async () => {
   const contact = await getContact(id)
   formData.title = contact.title
   formData.content = contact.content
@@ -126,6 +126,12 @@ const getStatusID = (status: string): ContactStatus => {
       return ContactStatus.TODO
   }
 }
+
+try {
+  await fetchState.execute()
+} catch (err) {
+  console.log('failed to setup', err)
+}
 </script>
 
 <template>
@@ -189,7 +195,7 @@ const getStatusID = (status: string): ContactStatus => {
         />
       </v-card-text>
       <v-card-actions>
-        <v-btn block outlined color="primary" @click="handleEdit">
+        <v-btn block variant="outlined" color="primary" @click="handleEdit">
           更新
         </v-btn>
       </v-card-actions>

@@ -18,7 +18,7 @@ import {
 } from '~/types/exception'
 import { apiClient } from '~/plugins/api-client'
 
-export const useProductTypeStore = defineStore('ProductType', {
+export const useProductTypeStore = defineStore('productType', {
   state: () => ({
     productTypes: [] as ProductTypesResponse['productTypes'],
     totalItems: 0

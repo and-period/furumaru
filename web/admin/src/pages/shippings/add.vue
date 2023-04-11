@@ -115,10 +115,10 @@ const handleClickCloseButton = (rate: '60' | '80' | '100', index: number) => {
 
     <the-shipping-form
       v-model="formData"
-      @click:addBox60RateItem="addBox60RateItem"
-      @click:addBox80RateItem="addBox80RateItem"
-      @click:addBox100RateItem="addBox100RateItem"
-      @click:removeItemButton="handleClickRemoveItemButton"
+      @click:add-box60-rate-item="addBox60RateItem"
+      @click:add-box80-rate-item="addBox80RateItem"
+      @click:add-box100-rate-item="addBox100RateItem"
+      @click:remove-item-button="handleClickRemoveItemButton"
       @submit="handleSubmit"
     />
   </div>

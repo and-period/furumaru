@@ -224,13 +224,12 @@ const cancel = (): void => {
   dialog.value = false
 }
 
-useAsyncData(async () => {
-  try {
-    await producerStore.fetchProducers(20, 0, 'unrelated')
-  } catch (err) {
-    console.log(err)
-  }
-})
+try {
+  await fetchState.execute()
+  await producerStore.fetchProducers(20, 0, 'unrelated')
+} catch (err) {
+  console.log('failed to setup', err)
+}
 </script>
 
 <template>
@@ -259,8 +258,8 @@ useAsyncData(async () => {
           :header-upload-status="headerUploadStatus"
           :search-loading="searchLoading"
           :search-error-message="searchErrorMessage"
-          @update:thumbnailFile="handleUpdateThumbnail"
-          @update:headerFile="handleUpdateHeader"
+          @update:thumbnail-file="handleUpdateThumbnail"
+          @update:header-file="handleUpdateHeader"
           @submit="handleSubmit"
           @click:search="searchAddress"
         />
@@ -271,8 +270,8 @@ useAsyncData(async () => {
           <template #activator="{ on, attrs }">
             <div class="d-flex pt-3 pr-3">
               <v-spacer />
-              <v-btn outlined color="primary" v-bind="attrs" v-on="on">
-                <v-icon left>
+              <v-btn variant="outlined" color="primary" v-bind="attrs" v-on="on">
+                <v-icon start>
                   mdi-plus
                 </v-icon>
                 生産者紐付け
@@ -292,12 +291,12 @@ useAsyncData(async () => {
               multiple
               filled
               :items="producerItems"
-              item-text="firstname"
+              item-title="firstname"
               item-value="id"
             >
               <template #selection="data">
                 <v-chip close @click:close="remove(data.item.id)">
-                  <v-avatar left>
+                  <v-avatar start>
                     <v-img :src="data.item.thumbnailUrl" />
                   </v-avatar>
                   {{ data.item.firstname }}
@@ -320,10 +319,10 @@ useAsyncData(async () => {
 
             <v-card-actions>
               <v-spacer />
-              <v-btn color="error" text @click="cancel">
+              <v-btn color="error" variant="text" @click="cancel">
                 キャンセル
               </v-btn>
-              <v-btn color="primary" outlined @click="relateProducers">
+              <v-btn color="primary" variant="outlined" @click="relateProducers">
                 更新
               </v-btn>
             </v-card-actions>

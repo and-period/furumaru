@@ -81,7 +81,7 @@ const filteredCityList = computed(() => {
         v-model="productTypeIdValue"
         label="品目"
         :items="props.productTypesItems"
-        item-text="name"
+        item-title="name"
         item-value="id"
       />
     </div>
@@ -89,7 +89,7 @@ const filteredCityList = computed(() => {
       <v-select
         v-model="originPrefectureValue"
         :items="prefecturesList"
-        item-text="text"
+        item-title="text"
         item-value="text"
         class="mr-4"
         label="原産地（都道府県）"
@@ -105,7 +105,7 @@ const filteredCityList = computed(() => {
       v-model="producerIdValue"
       label="店舗名"
       :items="props.producersItems"
-      item-text="storeName"
+      item-title="storeName"
       item-value="id"
     />
   </div>

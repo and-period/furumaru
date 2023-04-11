@@ -54,7 +54,7 @@ const verificationBtn = async (): Promise<void> => {
       </div>
     </v-card-text>
     <v-card-actions>
-      <v-btn block outlined color="primary" @click="verificationBtn">
+      <v-btn block variant="outlined" color="primary" @click="verificationBtn">
         認証
       </v-btn>
     </v-card-actions>

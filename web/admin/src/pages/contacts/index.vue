@@ -134,6 +134,12 @@ const getStatus = (status: ContactStatus): string => {
 const handleEdit = (item: ContactsResponseContactsInner) => {
   router.push(`/contacts/edit/${item.id}`)
 }
+
+try {
+  await fetchState.execute()
+} catch (err) {
+  console.log('failed to setup', err)
+}
 </script>
 
 <template>
@@ -155,18 +161,18 @@ const handleEdit = (item: ContactsResponseContactsInner) => {
           @update:sort-desc="fetchState"
         >
           <template #[`item.priority`]="{ item }">
-            <v-chip :color="getPriorityColor(item.priority)" small dark>
+            <v-chip :color="getPriorityColor(item.priority)" size="small" dark>
               {{ getPriority(item.priority) }}
             </v-chip>
           </template>
           <template #[`item.status`]="{ item }">
-            <v-chip :color="getStatusColor(item.status)" small dark>
+            <v-chip :color="getStatusColor(item.status)" size="small" dark>
               {{ getStatus(item.status) }}
             </v-chip>
           </template>
           <template #[`item.actions`]="{ item }">
-            <v-btn outlined color="primary" small @click="handleEdit(item)">
-              <v-icon small>
+            <v-btn variant="outlined" color="primary" size="small" @click="handleEdit(item)">
+              <v-icon size="small">
                 mdi-pencil
               </v-icon>
               編集

@@ -183,8 +183,8 @@ const handleSubmit = async () => {
         </v-card-text>
       </v-card>
 
-      <v-btn block outlined color="primary" type="submit">
-        <v-icon left>
+      <v-btn block variant="outlined" color="primary" type="submit">
+        <v-icon start>
           mdi-plus
         </v-icon>
         更新

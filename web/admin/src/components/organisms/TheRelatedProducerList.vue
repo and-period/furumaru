@@ -103,8 +103,8 @@ const handleEdit = (item: ProducersResponseProducersInner) => {
         {{ convertPhone(item.phoneNumber) }}
       </template>
       <template #[`item.actions`]="{ item }">
-        <v-btn outlined color="primary" small @click="handleEdit(item)">
-          <v-icon small>
+        <v-btn variant="outlined" color="primary" size="small" @click="handleEdit(item)">
+          <v-icon size="small">
             mdi-pencil
           </v-icon>
           編集

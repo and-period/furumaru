@@ -17,7 +17,7 @@ import {
 } from '~/types/exception'
 import { apiClient } from '~/plugins/api-client'
 
-export const useCategoryStore = defineStore('Category', {
+export const useCategoryStore = defineStore('category', {
   state: () => ({
     categories: [] as CategoriesResponse['categories'],
     totalCategoryItems: 0

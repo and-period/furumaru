@@ -55,8 +55,8 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: 'update:formData', formData: CreateProducerRequest): void
-  (e: 'update:thumbnailFile', files?: FileList): void
-  (e: 'update:headerFile', files?: FileList): void
+  (e: 'update:thumbnail-file', files?: FileList): void
+  (e: 'update:header-file', files?: FileList): void
   (e: 'click:search'): void
   (e: 'submit'): void
 }>()
@@ -71,11 +71,11 @@ const btnText = computed(() => {
 })
 
 const updateThumbnailFileHandler = (files?: FileList) => {
-  emit('update:thumbnailFile', files)
+  emit('update:thumbnail-file', files)
 }
 
 const updateHeaderFileHandler = (files?: FileList) => {
-  emit('update:headerFile', files)
+  emit('update:header-file', files)
 }
 
 const handleSubmit = () => {
@@ -167,7 +167,7 @@ const handleSearchClick = () => {
         />
       </v-card-text>
       <v-card-actions>
-        <v-btn block outlined color="primary" type="submit">
+        <v-btn block variant="outlined" color="primary" type="submit">
           {{ btnText }}
         </v-btn>
       </v-card-actions>

@@ -9,7 +9,7 @@ import {
 } from '~/types/exception'
 import { apiClient } from '~/plugins/api-client'
 
-export const useUserStore = defineStore('User', {
+export const useUserStore = defineStore('user', {
   state: () => ({
     users: [] as UsersResponse['users'],
     totalItems: 0

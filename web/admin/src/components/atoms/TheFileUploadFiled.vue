@@ -75,7 +75,7 @@ const handleDrop = (e: DragEvent) => {
       <p class="mb-0 text-center">
         クリックまたはドラッグ&amp;ドロップでファイルを追加
         <br>
-        <v-icon left>
+        <v-icon start>
           mdi-plus
         </v-icon>
         {{ props.text }}

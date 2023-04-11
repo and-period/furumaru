@@ -16,7 +16,7 @@ import {
   ValidationError
 } from '~/types/exception'
 
-export const useShippingStore = defineStore('shippings', {
+export const useShippingStore = defineStore('shipping', {
   state: () => ({
     shippings: [] as ShippingsResponseShippingsInner[],
     totalItems: 0

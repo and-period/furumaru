@@ -74,7 +74,7 @@ const handleSubmit = () => {
           v-model="props.formData.public"
           :items="statusList"
           label="ステータス"
-          item-text="public"
+          item-title="public"
           item-value="value"
         />
         <v-text-field
@@ -126,7 +126,7 @@ const handleSubmit = () => {
                 class="mr-2"
                 label="投稿開始日"
                 readonly
-                outlined
+                variant="outlined"
                 v-bind="attrs"
                 v-on="on"
               />
@@ -137,7 +137,7 @@ const handleSubmit = () => {
               @input="postMenu = false"
             >
               <v-spacer />
-              <v-btn text color="primary" @click="postMenu = false">
+              <v-btn variant="text" color="primary" @click="postMenu = false">
                 閉じる
               </v-btn>
             </v-date-picker>
@@ -146,7 +146,7 @@ const handleSubmit = () => {
             v-model="props.timeData.publishedTime"
             type="time"
             required
-            outlined
+            variant="outlined"
           />
           <p class="text-h6 mb-6 ml-4">
             〜
@@ -155,7 +155,7 @@ const handleSubmit = () => {
         </div>
       </v-container>
       <v-card-actions>
-        <v-btn block outlined color="primary" type="submit" class="mt-4">
+        <v-btn block variant="outlined" color="primary" type="submit" class="mt-4">
           {{ btnText }}
         </v-btn>
       </v-card-actions>

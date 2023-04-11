@@ -52,10 +52,10 @@ const emit = defineEmits<{
     e: 'update:value',
     formData: CreateShippingRequest | UpdateShippingRequest
   ): void
-  (e: 'click:addBox60RateItem'): void
-  (e: 'click:addBox80RateItem'): void
-  (e: 'click:addBox100RateItem'): void
-  (e: 'click:removeItemButton', rate: '60' | '80' | '100', index: number): void
+  (e: 'click:add-box60-rate-item'): void
+  (e: 'click:add-box80-rate-item'): void
+  (e: 'click:add-box100-rate-item'): void
+  (e: 'click:remove-item-button', rate: '60' | '80' | '100', index: number): void
   (e: 'submit'): void
 }>()
 
@@ -123,15 +123,15 @@ const handleClickSelectAll = (rate: '60' | '80' | '100', i: number) => {
 }
 
 const addBox60RateItem = () => {
-  emit('click:addBox60RateItem')
+  emit('click:add-box60-rate-item')
 }
 
 const addBox80RateItem = () => {
-  emit('click:addBox80RateItem')
+  emit('click:add-box80-rate-item')
 }
 
 const addBox100RateItem = () => {
-  emit('click:addBox100RateItem')
+  emit('click:add-box100-rate-item')
 }
 
 const handleSubmit = async () => {
@@ -146,7 +146,7 @@ const handleClickRemoveItemButton = (
   rate: '60' | '80' | '100',
   index: number
 ) => {
-  emit('click:removeItemButton', rate, index)
+  emit('click:remove-item-button', rate, index)
 }
 </script>
 
@@ -222,7 +222,7 @@ const handleClickRemoveItemButton = (
               </template>
             </v-select>
           </div>
-          <v-btn color="primary" outlined block @click="addBox60RateItem">
+          <v-btn color="primary" variant="outlined" block @click="addBox60RateItem">
             <v-icon>mdi-plus</v-icon>
             追加
           </v-btn>
@@ -282,7 +282,7 @@ const handleClickRemoveItemButton = (
               </template>
             </v-select>
           </div>
-          <v-btn color="primary" outlined block @click="addBox80RateItem">
+          <v-btn color="primary" variant="outlined" block @click="addBox80RateItem">
             <v-icon>mdi-plus</v-icon>
             追加
           </v-btn>
@@ -343,14 +343,14 @@ const handleClickRemoveItemButton = (
               </template>
             </v-select>
           </div>
-          <v-btn color="primary" outlined block @click="addBox100RateItem">
+          <v-btn color="primary" variant="outlined" block @click="addBox100RateItem">
             <v-icon>mdi-plus</v-icon>
             追加
           </v-btn>
         </div>
       </v-card-text>
       <v-card-actions>
-        <v-btn type="submit" outlined color="primary" block>
+        <v-btn type="submit" variant="outlined" color="primary" block>
           登録
         </v-btn>
       </v-card-actions>

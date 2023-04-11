@@ -149,6 +149,12 @@ const handleDeleteFormSubmit = async () => {
 const handleAddVideo = (item: ProducersResponseProducersInner) => {
   console.log(item)
 }
+
+try {
+  await fetchState.execute()
+} catch (err) {
+  console.log('failed to setup', err)
+}
 </script>
 
 <template>
@@ -156,15 +162,15 @@ const handleAddVideo = (item: ProducersResponseProducersInner) => {
     <v-card-title>
       生産者管理
       <v-spacer />
-      <v-btn outlined color="primary" @click="handleClickAddButton">
-        <v-icon left>
+      <v-btn variant="outlined" color="primary" @click="handleClickAddButton">
+        <v-icon start>
           mdi-plus
         </v-icon>
         生産者登録
       </v-btn>
     </v-card-title>
 
-    <v-alert v-model="isShow" :type="alertType" class="my-2" dismissible>
+    <v-alert v-model="isShow" :type="alertType" class="my-2" closable>
       {{ alertText }}
     </v-alert>
 
@@ -175,10 +181,10 @@ const handleAddVideo = (item: ProducersResponseProducersInner) => {
         </v-card-title>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="error" text @click="handleClickCancelButton">
+          <v-btn color="error" variant="text" @click="handleClickCancelButton">
             キャンセル
           </v-btn>
-          <v-btn color="primary" outlined @click="handleDeleteFormSubmit">
+          <v-btn color="primary" variant="outlined" @click="handleDeleteFormSubmit">
             削除
           </v-btn>
         </v-card-actions>
@@ -189,7 +195,7 @@ const handleAddVideo = (item: ProducersResponseProducersInner) => {
       <v-card-text>
         <form class="d-flex align-center" @submit.prevent="handleSearch">
           <v-text-field v-model="search" label="絞り込み" />
-          <v-btn type="submit" class="ml-4" small outlined color="primary">
+          <v-btn type="submit" class="ml-4" size="small" variant="outlined" color="primary">
             <v-icon>mdi-search</v-icon>
             検索
           </v-btn>
@@ -226,8 +232,8 @@ const handleAddVideo = (item: ProducersResponseProducersInner) => {
             {{ `${item.phoneNumber}`.replace('+81', '0') }}
           </template>
           <template #[`item.actions`]="{ item }">
-            <v-btn outlined color="primary" small @click="handleEdit(item)">
-              <v-icon small>
+            <v-btn variant="outlined" color="primary" size="small" @click="handleEdit(item)">
+              <v-icon size="small">
                 mdi-pencil
               </v-icon>
               編集
@@ -235,18 +241,18 @@ const handleAddVideo = (item: ProducersResponseProducersInner) => {
             <v-btn
               outlined
               color="primary"
-              small
+              size="small"
               @click="handleClickDeleteButton(item)"
             >
-              <v-icon small>
+              <v-icon size="small">
                 mdi-delete
               </v-icon>
               削除
             </v-btn>
           </template>
           <template #[`item.video`]="{ item }">
-            <v-btn outlined color="primary" small @click="handleAddVideo(item)">
-              <v-icon small>
+            <v-btn variant="outlined" color="primary" size="small" @click="handleAddVideo(item)">
+              <v-icon size="small">
                 mdi-plus
               </v-icon>
               追加

@@ -98,8 +98,8 @@ const searchAddress = async () => {
     :header-upload-status="headerUploadStatus"
     :search-loading="searchLoading"
     :search-error-message="searchErrorMessage"
-    @update:thumbnailFile="handleUpdateThumbnail"
-    @update:headerFile="handleUpdateHeader"
+    @update:thumbnail-file="handleUpdateThumbnail"
+    @update:header-file="handleUpdateHeader"
     @submit="handleSubmit"
     @click:search="searchAddress"
   />

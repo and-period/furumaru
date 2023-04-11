@@ -63,7 +63,7 @@ const handleClickNextButton = () => {
       </v-toolbar-title>
       <v-select
         v-model="type"
-        outlined
+        variant="outlined"
         :items="typeItems"
         dense
         hide-details
@@ -79,7 +79,7 @@ const handleClickNextButton = () => {
 
       <v-spacer />
       <v-btn
-        outlined
+        variant="outlined"
         color="primary"
         class="mx-2"
         @click="handleClickToDayButton"

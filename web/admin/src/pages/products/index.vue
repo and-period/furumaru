@@ -86,6 +86,12 @@ const headers: DataTableHeader[] = [
     value: 'storeName'
   }
 ]
+
+try {
+  await fetchState.execute()
+} catch (err) {
+  console.log('failed to setup', err)
+}
 </script>
 
 <template>
@@ -93,8 +99,8 @@ const headers: DataTableHeader[] = [
     <v-card-title>
       商品管理
       <v-spacer />
-      <v-btn outlined color="primary" @click="handleClickAddBtn">
-        <v-icon left>
+      <v-btn variant="outlined" color="primary" @click="handleClickAddBtn">
+        <v-icon start>
           mdi-plus
         </v-icon>
         商品登録

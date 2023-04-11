@@ -139,6 +139,12 @@ const handleDelete = async (): Promise<void> => {
   }
   deleteDialog.value = false
 }
+
+try {
+  fetchState.execute()
+} catch (err) {
+  console.log('failed to setup', err)
+}
 </script>
 
 <template>
@@ -146,8 +152,8 @@ const handleDelete = async (): Promise<void> => {
     <v-card-title>
       お知らせ管理
       <v-spacer />
-      <v-btn outlined color="primary" @click="handleClickAddButton">
-        <v-icon left>
+      <v-btn color="primary" variant="outlined" @click="handleClickAddButton">
+        <v-icon start>
           mdi-plus
         </v-icon>
         お知らせ登録
@@ -161,10 +167,10 @@ const handleDelete = async (): Promise<void> => {
         </v-card-title>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="error" text @click="hideDeleteDialog">
+          <v-btn color="error" variant="text" @click="hideDeleteDialog">
             キャンセル
           </v-btn>
-          <v-btn color="primary" outlined @click="handleDelete">
+          <v-btn color="primary" variant="outlined" @click="handleDelete">
             削除
           </v-btn>
         </v-card-actions>
@@ -178,6 +184,7 @@ const handleDelete = async (): Promise<void> => {
           :items="notifications"
           :items-per-page="itemsPerPage"
           :footer-props="options"
+          item-props="item"
           no-data-text="登録されているお知らせ情報がありません"
           @update:page="handleUpdatePage"
           @update:items-per-page="handleUpdateItemsPerPage"
@@ -185,7 +192,7 @@ const handleDelete = async (): Promise<void> => {
           @update:sort-desc="fetchState.refresh"
         >
           <template #[`item.public`]="{ item }">
-            <v-chip small :color="getStatusColor(item.public)">
+            <v-chip size="small" :color="getStatusColor(item.public)">
               {{ getPublic(item.public) }}
             </v-chip>
           </template>
@@ -196,19 +203,19 @@ const handleDelete = async (): Promise<void> => {
             {{ getDay(item.publishedAt) }}
           </template>
           <template #[`item.actions`]="{ item }">
-            <v-btn outlined color="primary" small @click="handleEdit(item)">
-              <v-icon small>
+            <v-btn variant="outlined" color="primary" size="small" @click="handleEdit(item)">
+              <v-icon size="small">
                 mdi-pencil
               </v-icon>
               編集
             </v-btn>
             <v-btn
-              outlined
+              variant="outlined"
               color="primary"
-              small
+              size="small"
               @click="openDeleteDialog(item)"
             >
-              <v-icon small>
+              <v-icon size="small">
                 mdi-delete
               </v-icon>
               削除

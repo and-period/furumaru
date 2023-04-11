@@ -54,7 +54,7 @@ const handleSubmit = async () => {
           />
         </v-card-text>
         <v-card-actions>
-          <v-btn block color="primary" type="submit" outlined>
+          <v-btn block color="primary" type="submit" variant="outlined">
             ログイン
           </v-btn>
         </v-card-actions>

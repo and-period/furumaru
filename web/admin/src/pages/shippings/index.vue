@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { DataTableHeader } from 'vuetify'
-
 import { prefecturesList } from '~/constants'
 import { dateTimeFormatter, moneyFormat } from '~/lib/formatter'
 import { usePagination } from '~/lib/hooks'
@@ -17,7 +15,7 @@ const shippings = computed(() => {
   return shippingStore.shippings
 })
 
-const headers: DataTableHeader[] = [
+const headers = [
   {
     text: '名前',
     value: 'name'
@@ -52,12 +50,22 @@ const fetchState = useAsyncData(async () => {
   }
 })
 
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || false
+}
+
 const handleClickAddButton = () => {
   router.push('/shippings/add')
 }
 
 const handleClickEditButton = (id: string) => {
   router.push(`/shippings/edit/${id}`)
+}
+
+try {
+  await fetchState.execute()
+} catch (err) {
+  console.log('failed to setup', err)
 }
 </script>
 
@@ -66,14 +74,14 @@ const handleClickEditButton = (id: string) => {
     <v-card-title>
       配送設定一覧
       <v-spacer />
-      <v-btn outlined color="primary" @click="handleClickAddButton">
-        <v-icon left>
+      <v-btn variant="outlined" color="primary" @click="handleClickAddButton">
+        <v-icon start>
           mdi-plus
         </v-icon>
         配送情報登録
       </v-btn>
     </v-card-title>
-    <v-card class="mt-4" flat :loading="fetchState.pending">
+    <v-card class="mt-4" flat :loading="isLoading">
       <v-card-text>
         <v-data-table
           :headers="headers"
@@ -86,7 +94,7 @@ const handleClickEditButton = (id: string) => {
           @update:items-per-page="handleUpdateItemsPerPage"
         >
           <template #[`item.hasFreeShipping`]="{ item }">
-            <v-chip small>
+            <v-chip size="small">
               {{ item.hasFreeShipping ? '有り' : '無し' }}
             </v-chip>
           </template>
@@ -97,9 +105,9 @@ const handleClickEditButton = (id: string) => {
 
           <template #[`item.actions`]="{ item }">
             <v-btn
-              outlined
+              variant="outlined"
               color="primary"
-              small
+              size="small"
               @click="handleClickEditButton(item.id)"
             >
               <v-icon>mdi-pencil</v-icon>
@@ -129,14 +137,13 @@ const handleClickEditButton = (id: string) => {
                   </v-col>
                   <v-col cols="9">
                     <v-select
-                      :value="boxRate.prefectures"
+                      v-model="boxRate.prefectures"
                       :items="prefecturesList"
                       :label="`${boxRate.prefectures.length}/${prefecturesList.length}`"
-                      multiple
                       hide-details
                     >
                       <template #selection="{ item: selectItem, index }">
-                        <v-chip v-if="index < 5" small>
+                        <v-chip v-if="index < 5" size="small">
                           <span>{{ selectItem.text }}</span>
                         </v-chip>
                         <span

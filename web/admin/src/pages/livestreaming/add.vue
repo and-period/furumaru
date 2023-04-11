@@ -35,7 +35,7 @@ const stepValue = ref<number>(1)
             </v-card-text>
             <v-card-actions>
               <v-spacer />
-              <v-btn outlined color="primary" @click="stepValue = 2">
+              <v-btn variant="outlined" color="primary" @click="stepValue = 2">
                 次へ
               </v-btn>
             </v-card-actions>
@@ -47,11 +47,11 @@ const stepValue = ref<number>(1)
               <v-calendar type="day" hide-header />
             </v-card-text>
             <v-card-actions>
-              <v-btn outlined color="primary" @click="stepValue = 1">
+              <v-btn variant="outlined" color="primary" @click="stepValue = 1">
                 戻る
               </v-btn>
               <v-spacer />
-              <v-btn outlined color="primary" @click="stepValue = 3">
+              <v-btn variant="outlined" color="primary" @click="stepValue = 3">
                 次へ
               </v-btn>
             </v-card-actions>
@@ -66,11 +66,11 @@ const stepValue = ref<number>(1)
               <v-calendar type="day" hide-header />
             </v-card-text>
             <v-card-actions>
-              <v-btn outlined color="primary" @click="stepValue = 2">
+              <v-btn variant="outlined" color="primary" @click="stepValue = 2">
                 戻る
               </v-btn>
               <v-spacer />
-              <v-btn outlined color="primary">
+              <v-btn variant="outlined" color="primary">
                 完了
               </v-btn>
             </v-card-actions>

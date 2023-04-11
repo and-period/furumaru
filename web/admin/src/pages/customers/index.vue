@@ -79,6 +79,12 @@ const registerStatus = (registered: boolean): string => {
 const handleEdit = () => {
   router.push(`/customers/edit/${id}`)
 }
+
+try {
+  await fetchState.execute()
+} catch (err) {
+  console.log('failed to setup', err)
+}
 </script>
 
 <template>
@@ -102,19 +108,19 @@ const handleEdit = () => {
             {{ `${item.totalAmount}` }} 円
           </template>
           <template #[`item.registered`]="{ item }">
-            <v-chip small :color="getStatusColor(item.registered)">
+            <v-chip size="small" :color="getStatusColor(item.registered)">
               {{ registerStatus(item.registered) }}
             </v-chip>
           </template>
           <template #[`item.action`]>
-            <v-btn outlined color="primary" small @click="handleEdit()">
-              <v-icon small>
+            <v-btn variant="outlined" color="primary" size="small" @click="handleEdit()">
+              <v-icon size="small">
                 mdi-pencil
               </v-icon>
               詳細
             </v-btn>
-            <v-btn outlined color="primary" small>
-              <v-icon small>
+            <v-btn variant="outlined" color="primary" size="small">
+              <v-icon size="small">
                 mdi-delete
               </v-icon>
               削除

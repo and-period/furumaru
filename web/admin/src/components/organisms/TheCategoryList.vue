@@ -113,14 +113,14 @@ const handleDelete = async (): Promise<void> => {
       @update:page="handleUpdatePage"
     >
       <template #[`item.actions`]="{ item }">
-        <v-btn outlined color="primary" small @click="openEditDialog(item)">
-          <v-icon small>
+        <v-btn variant="outlined" color="primary" size="small" @click="openEditDialog(item)">
+          <v-icon size="small">
             mdi-pencil
           </v-icon>
           編集
         </v-btn>
-        <v-btn outlined color="primary" small @click="openDeleteDialog(item)">
-          <v-icon small>
+        <v-btn variant="outlined" color="primary" size="small" @click="openDeleteDialog(item)">
+          <v-icon size="small">
             mdi-delete
           </v-icon>
           削除
@@ -135,10 +135,10 @@ const handleDelete = async (): Promise<void> => {
         </v-card-title>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="error" text @click="deleteCancel">
+          <v-btn color="error" variant="text" @click="deleteCancel">
             キャンセル
           </v-btn>
-          <v-btn color="primary" outlined @click="handleDelete">
+          <v-btn color="primary" variant="outlined" @click="handleDelete">
             削除
           </v-btn>
         </v-card-actions>
@@ -161,10 +161,10 @@ const handleDelete = async (): Promise<void> => {
 
         <v-card-actions>
           <v-spacer />
-          <v-btn color="error" text @click="editCancel">
+          <v-btn color="error" variant="text" @click="editCancel">
             キャンセル
           </v-btn>
-          <v-btn color="primary" outlined @click="handleEdit">
+          <v-btn color="primary" variant="outlined" @click="handleEdit">
             編集
           </v-btn>
         </v-card-actions>

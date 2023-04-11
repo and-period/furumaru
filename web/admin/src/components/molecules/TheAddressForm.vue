@@ -81,7 +81,7 @@ const handleSearch = () => {
         :error="props.errorMessage !== ''"
         @keydown.enter="handleSearch"
       />
-      <v-btn color="primary" outlined small @click="handleSearch">
+      <v-btn color="primary" variant="outlined" size="small" @click="handleSearch">
         住所検索
       </v-btn>
       <v-spacer />

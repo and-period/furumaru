@@ -154,7 +154,7 @@ const discountMethodList = [
               props.formData.code.length === 8 ? '' : '割引コードは8文字です'
             "
           />
-          <v-btn outlined small color="primary" @click="handleGenerate">
+          <v-btn variant="outlined" size="small" color="primary" @click="handleGenerate">
             自動生成
           </v-btn>
           <v-spacer />
@@ -163,14 +163,14 @@ const discountMethodList = [
           v-model="formDataValue.public"
           :items="statusList"
           label="ステータス"
-          item-text="status"
+          item-title="status"
           item-value="value"
         />
         <div class="d-flex align-center">
           <v-select
             v-model="formDataValue.discountType"
             :items="discountMethodList"
-            item-text="method"
+            item-title="method"
             item-value="value"
             label="割引方法"
           />
@@ -202,7 +202,7 @@ const discountMethodList = [
                 class="mr-2"
                 label="投稿開始日"
                 readonly
-                outlined
+                variant="outlined"
                 v-bind="attrs"
                 v-on="on"
               />
@@ -213,7 +213,7 @@ const discountMethodList = [
               @input="publishMenu = false"
             >
               <v-spacer />
-              <v-btn text color="primary" @click="pubulishMenu = false">
+              <v-btn variant="text" color="primary" @click="pubulishMenu = false">
                 閉じる
               </v-btn>
             </v-date-picker>
@@ -222,7 +222,7 @@ const discountMethodList = [
             v-model="timeDataValue.publishedTime"
             type="time"
             required
-            outlined
+            variant="outlined"
           />
           <p class="text-h6 mb-6 ml-4">
             〜
@@ -247,7 +247,7 @@ const discountMethodList = [
                 v-model="timeDataValue.startDate"
                 label="使用開始日"
                 readonly
-                outlined
+                variant="outlined"
                 v-bind="attrs"
                 class="mr-2"
                 v-on="on"
@@ -259,7 +259,7 @@ const discountMethodList = [
               @input="useStartMenu = false"
             >
               <v-spacer />
-              <v-btn text color="primary" @click="useStartMenu = false">
+              <v-btn variant="text" color="primary" @click="useStartMenu = false">
                 閉じる
               </v-btn>
             </v-date-picker>
@@ -268,7 +268,7 @@ const discountMethodList = [
             v-model="timeDataValue.startTime"
             type="time"
             required
-            outlined
+            variant="outlined"
           />
           <p class="text-h6 mx-4 mb-6">
             〜
@@ -286,7 +286,7 @@ const discountMethodList = [
                 v-model="timeDataValue.endDate"
                 label="使用終了日"
                 readonly
-                outlined
+                variant="outlined"
                 v-bind="attrs"
                 class="mr-2"
                 v-on="on"
@@ -298,7 +298,7 @@ const discountMethodList = [
               @input="useEndMenu = false"
             >
               <v-spacer />
-              <v-btn text color="primary" @click="endEndMenu = false">
+              <v-btn variant="text" color="primary" @click="endEndMenu = false">
                 閉じる
               </v-btn>
             </v-date-picker>
@@ -307,12 +307,12 @@ const discountMethodList = [
             v-model="timeDataValue.endTime"
             type="time"
             required
-            outlined
+            variant="outlined"
           />
         </div>
       </v-card-text>
       <v-card-actions>
-        <v-btn block outlined color="primary" type="submit" class="mt-4">
+        <v-btn block variant="outlined" color="primary" type="submit" class="mt-4">
           {{ btnText }}
         </v-btn>
       </v-card-actions>

@@ -31,7 +31,7 @@ const handleClickAddBtn = async (): Promise<void> => {
         <v-text-field v-model="formData.email" label="新規メールアドレス" />
       </v-card-text>
       <v-card-actions>
-        <v-btn block outlined color="primary" @click="handleClickAddBtn">
+        <v-btn block variant="outlined" color="primary" @click="handleClickAddBtn">
           変更
         </v-btn>
       </v-card-actions>

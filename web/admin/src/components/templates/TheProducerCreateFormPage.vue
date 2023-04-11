@@ -48,8 +48,8 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: 'update:formData', formData: CreateProducerRequest): void
-  (e: 'update:thumbnailFile', files?: FileList): void
-  (e: 'update:headerFile', files?: FileList): void
+  (e: 'update:thumbnail-file', files?: FileList): void
+  (e: 'update:header-file', files?: FileList): void
   (e: 'submit'): void
   (e: 'click:search'): void
 }>()
@@ -60,11 +60,11 @@ const formDataValue = computed({
 })
 
 const updateThumbnailFileHandler = (files?: FileList) => {
-  emit('update:thumbnailFile', files)
+  emit('update:thumbnail-file', files)
 }
 
 const updateHeaderFileHandler = (files?: FileList) => {
-  emit('update:headerFile', files)
+  emit('update:header-file', files)
 }
 
 const handleSubmit = () => {
@@ -87,8 +87,8 @@ const handleSearchClick = () => {
       :header-upload-status="props.headerUploadStatus"
       :search-loading="props.searchLoading"
       :search-error-message="props.searchErrorMessage"
-      @update:thumbnailFile="updateThumbnailFileHandler"
-      @update:headerFile="updateHeaderFileHandler"
+      @update:thumbnail-file="updateThumbnailFileHandler"
+      @update:header-file="updateHeaderFileHandler"
       @submit="handleSubmit"
       @click:search="handleSearchClick"
     />

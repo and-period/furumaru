@@ -18,7 +18,7 @@ import {
 } from '~/types/exception'
 import { apiClient } from '~/plugins/api-client'
 
-export const usePromotionStore = defineStore('Promotion', {
+export const usePromotionStore = defineStore('promotion', {
   state: () => ({
     promotions: [] as PromotionsResponse['promotions']
   }),
