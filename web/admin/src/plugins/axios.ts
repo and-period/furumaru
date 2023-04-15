@@ -12,7 +12,7 @@ export default defineNuxtPlugin(() => {
     baseURL: baseUrl,
     timeout: 10000, // 10sec
     withCredentials: true,
-    headers: {},
+    headers: {}
   })
 
   client.interceptors.request.use((config) => {
