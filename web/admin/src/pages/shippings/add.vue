@@ -113,7 +113,7 @@ const handleClickCloseButton = (rate: '60' | '80' | '100', index: number) => {
 
     <v-alert v-model="isShow" :type="alertType" v-text="alertText" />
 
-    <the-shipping-form
+    <organisms-shipping-form
       v-model="formData"
       @click:add-box60-rate-item="addBox60RateItem"
       @click:add-box80-rate-item="addBox80RateItem"

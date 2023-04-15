@@ -29,10 +29,6 @@ export default defineNuxtConfig({
     '~/plugins/vuetify',
     '~/plugins/api-client'
   ],
-  components: [
-    { path: '~/components', pathPrefix: false },
-    { path: '~/components/', pathPrefix: false }
-  ],
   modules: [
     '@nuxtjs/google-fonts',
     '@nuxtjs/stylelint-module',

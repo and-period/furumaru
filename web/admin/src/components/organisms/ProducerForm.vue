@@ -98,14 +98,14 @@ const handleSearchClick = () => {
           maxlength="64"
         />
         <div class="mb-2 d-flex">
-          <the-profile-select-form
+          <molecules-profile-select-form
             class="mr-4 flex-grow-1 flex-shrink-1"
             :img-url="props.formData.thumbnailUrl"
             :error="props.thumbnailUploadStatus.error"
             :message="props.thumbnailUploadStatus.message"
             @update:file="updateThumbnailFileHandler"
           />
-          <the-header-select-form
+          <molecules-header-select-form
             class="flex-grow-1 flex-shrink-1"
             :img-url="props.formData.headerUrl"
             :error="props.headerUploadStatus.error"
@@ -155,7 +155,7 @@ const handleSearchClick = () => {
           required
         />
 
-        <the-address-form
+        <molecules-address-form
           v-model:postal-code="props.formData.postalCode"
           v-model:prefecture="props.formData.prefecture"
           v-model:city="props.formData.city"

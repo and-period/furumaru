@@ -40,9 +40,9 @@ const searchWord = ref<string>('')
 
 const handleRowClick = (
   _: any,
-  { item }: { item: ProductsResponseProductsInner }
+  { item }: { item: VDataTable["itemValue"] }
 ): void => {
-  router.push(`/products/${item.id}`)
+  router.push(`/products/${item.raw.id}`)
 }
 
 const handleClickAddBtn = () => {

@@ -86,7 +86,7 @@ const handleSearchClick = () => {
       生産者編集
     </p>
     <v-skeleton-loader v-if="props.formDataLoading" type="article" />
-    <the-producer-form
+    <organisms-producer-form
       v-else
       form-type="edit"
       :form-data="formDataValue"

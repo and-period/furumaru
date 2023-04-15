@@ -252,7 +252,7 @@ try {
       <v-tab-item value="coordinators">
         <v-skeleton-loader v-if="fetchState.pending" type="article" />
 
-        <the-coordinator-edit-form
+        <organisms-coordinator-edit-form
           v-else
           :form-data="formData"
           :thumbnail-upload-status="thumbnailUploadStatus"
@@ -328,7 +328,7 @@ try {
           </v-card>
         </v-dialog>
 
-        <the-related-producer-list
+        <organisms-related-producer-list
           :table-footer-props="producersOptions"
           @update:items-per-page="handleUpdateProducersItemsPerPage"
           @update:page="handleUpdateProducersPage"

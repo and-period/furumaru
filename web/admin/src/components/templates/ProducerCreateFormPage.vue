@@ -81,7 +81,7 @@ const handleSearchClick = () => {
     <p class="text-h6">
       生産者登録
     </p>
-    <the-producer-form
+    <organisms-producer-form
       :form-data="formDataValue"
       :thumbnail-upload-status="props.thumbnailUploadStatus"
       :header-upload-status="props.headerUploadStatus"

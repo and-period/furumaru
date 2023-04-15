@@ -113,7 +113,7 @@ const handleSubmit = async () => {
       <v-card class="mb-4">
         <v-card-title>基本情報</v-card-title>
         <v-card-text>
-          <the-product-name-and-description-form
+          <molecules-product-name-and-description-form
             v-model:name="v$.name.$model"
             v-model:description="formDataValue.description"
             :name-error-message="getErrorMessage(v$.name.$errors)"
@@ -124,7 +124,7 @@ const handleSubmit = async () => {
       <v-card class="mb-4">
         <v-card-title>在庫</v-card-title>
         <v-card-text>
-          <the-product-inventory-form
+          <molecules-product-inventory-form
             v-model:inventory="v$.inventory.$model"
             v-model:item-unit="formDataValue.itemUnit"
             v-model:item-description="formDataValue.itemDescription"
@@ -136,7 +136,7 @@ const handleSubmit = async () => {
       <v-card class="mb-4">
         <v-card-title>商品画像登録</v-card-title>
         <v-card-text>
-          <the-product-media-form
+          <molecules-product-media-form
             v-model:media="formDataValue.media"
             @update:files="handleImageUpload"
           />
@@ -146,7 +146,7 @@ const handleSubmit = async () => {
       <v-card class="mb-4">
         <v-card-title>詳細情報</v-card-title>
         <v-card-text>
-          <the-product-detail-form
+          <molecules-product-detail-form
             v-model:producer-id="formDataValue.producerId"
             v-model:product-type-id="formDataValue.productTypeId"
             v-model:origin-prefecture="formDataValue.originPrefecture"
@@ -171,7 +171,7 @@ const handleSubmit = async () => {
       <v-card class="mb-4">
         <v-card-title>配送情報</v-card-title>
         <v-card-text>
-          <the-product-delivery-form
+          <molecules-product-delivery-form
             v-model:weight="formDataValue.weight"
             v-model:delivery-type="formDataValue.deliveryType"
             v-model:box60-rate="v$.box60Rate.$model"

@@ -69,7 +69,7 @@ const handleSubmit = () => {
       type="article"
     />
     <div v-else>
-      <the-product-update-form
+      <organisms-product-update-form
         :form-data="formDataValue"
         :producers-items="props.producersItems"
         :product-types-items="props.productTypesItems"

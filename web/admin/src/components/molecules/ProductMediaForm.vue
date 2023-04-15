@@ -37,7 +37,7 @@ const handleImageUpload = (files?: FileList) => {
 <template>
   <div>
     <div>
-      <the-file-upload-filed
+      <atom-file-upload-filed
         text="商品画像"
         @update:files="handleImageUpload"
       />

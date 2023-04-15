@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { mdiPlus } from '@mdi/js'
-import TheCategoryList from '~/components/organisms/TheCategoryList.vue'
-import TheProductTypeList from '~/components/organisms/TheProductTypeList.vue'
+import TheCategoryList from '~/components/organisms/CategoryList.vue'
+import TheProductTypeList from '~/components/organisms/ProductTypeList.vue'
 import { usePagination } from '~/lib/hooks'
 import { useAuthStore, useCategoryStore, useProductTypeStore } from '~/store'
 import {
@@ -175,14 +175,14 @@ try {
       <v-tab
         v-for="item in items"
         :key="item.value"
-        :href="`#tab-${item.value}`"
+        :value="item.value"
       >
         {{ item.name }}
       </v-tab>
     </v-tabs>
 
-    <v-tabs-items v-model="selector">
-      <v-tab-item value="tab-categories">
+    <v-window v-model="selector">
+      <v-window-item value="categories">
         <v-dialog v-model="categoryDialog" width="500">
           <template #activator="{ on, attrs }">
             <div class="d-flex pt-3 pr-3">
@@ -217,15 +217,15 @@ try {
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <the-category-list
+        <organisms-category-list
           :loading="fetchState.pending"
           :table-footer-props="categoriesOptions"
           @update:items-per-page="handleUpdateCategoriesItemsPerPage"
           @update:page="handleUpdateCategoriesPage"
         />
-      </v-tab-item>
+      </v-window-item>
 
-      <v-tab-item value="tab-categoryItems">
+      <v-window-item value="categoryItems">
         <v-dialog v-model="productTypeDialog" width="500">
           <template #activator="{ on, attrs }">
             <div class="d-flex pt-3 pr-3">
@@ -309,7 +309,7 @@ try {
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <the-product-type-list
+        <organisms-product-type-list
           :loading="fetchState.pending"
           :table-footer-props="productTypesOptions"
           :categories="categoriesItems.categories"
@@ -317,7 +317,7 @@ try {
           @update:page="handleUpdateProductTypesPage"
           @click:more-item="handleMoreCategoryItems"
         />
-      </v-tab-item>
-    </v-tabs-items>
+      </v-window-item>
+    </v-window>
   </div>
 </template>

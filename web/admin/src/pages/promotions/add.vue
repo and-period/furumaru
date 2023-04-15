@@ -30,7 +30,7 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <the-promotion-create-form-page
+  <templates-promotion-create-form-page
     :form-data="formData"
     @submit="handleSubmit"
   />

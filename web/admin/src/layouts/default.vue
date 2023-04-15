@@ -150,7 +150,7 @@ const calcStyle = (i: number) => {
       </v-app-bar-nav-icon>
       <v-toolbar-title>
         <nuxt-link to="/">
-          <the-app-title class="pt-2" />
+          <atoms-app-title class="pt-2" />
         </nuxt-link>
       </v-toolbar-title>
       <v-spacer />

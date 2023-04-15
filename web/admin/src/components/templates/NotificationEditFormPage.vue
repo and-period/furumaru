@@ -55,7 +55,7 @@ const handleSubmit = () => {
     <p class="text-h6">
       お知らせ編集
     </p>
-    <the-notification-form
+    <organisms-notification-form
       form-type="edit"
       :form-data="formDataValue"
       :time-data="timeDataValue"

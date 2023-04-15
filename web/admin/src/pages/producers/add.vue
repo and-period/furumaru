@@ -92,7 +92,7 @@ const searchAddress = async () => {
 </script>
 
 <template>
-  <the-producer-create-form-page
+  <templates-producer-create-form-page
     :form-data="formData"
     :thumbnail-upload-status="thumbnailUploadStatus"
     :header-upload-status="headerUploadStatus"

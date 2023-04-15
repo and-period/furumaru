@@ -37,6 +37,6 @@ const handleSubmit = () => {
     <p class="text-h6">
       生産者登録
     </p>
-    <the-notification-form :form-data="formDataValue" @submit="handleSubmit" />
+    <organisms-notification-form :form-data="formDataValue" @submit="handleSubmit" />
   </div>
 </template>

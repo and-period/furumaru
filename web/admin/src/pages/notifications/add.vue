@@ -26,7 +26,7 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <the-notification-create-form-page
+  <templates-notification-create-form-page
     :form-data="formData"
     @submit="handleSubmit"
   />

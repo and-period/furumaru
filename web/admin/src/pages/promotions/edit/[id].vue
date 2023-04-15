@@ -77,7 +77,7 @@ try {
 </script>
 
 <template>
-  <the-promotion-edit-form-page
+  <templates-promotion-edit-form-page
     :form-data="formData"
     :time-data="timeData"
     :form-data-loading="isLoading"

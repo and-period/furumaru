@@ -118,7 +118,7 @@ try {
   <div>
     <v-alert v-model="isShow" :type="alertType" v-text="alertText" />
 
-    <the-product-update-form-page
+    <templates-product-update-form-page
       :loading="isLoading"
       :form-data="formData"
       :producers-items="producersItems"

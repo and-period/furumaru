@@ -134,7 +134,7 @@ try {
 
     <v-alert v-model="isShow" :type="alertType" v-text="alertText" />
 
-    <the-shipping-form
+    <organisms-shipping-form
       v-model="formData"
       :loading="isLoading"
       @click:add-box60-rate-item="addBox60RateItem"

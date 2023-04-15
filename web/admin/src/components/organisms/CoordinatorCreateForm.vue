@@ -5,51 +5,47 @@ import {
   kana,
   getErrorMessage,
   required,
+  email,
   tel,
   maxLength
 } from '~/lib/validations'
-import { UpdateCoordinatorRequest } from '~/types/api'
+import { CreateCoordinatorRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
   formData: {
     type: Object,
-    default: (): UpdateCoordinatorRequest => {
-      return {
-        lastname: '',
-        lastnameKana: '',
-        firstname: '',
-        firstnameKana: '',
-        companyName: '',
-        storeName: '',
-        thumbnailUrl: '',
-        headerUrl: '',
-        phoneNumber: '',
-        postalCode: '',
-        prefecture: '',
-        city: '',
-        addressLine1: '',
-        addressLine2: ''
-      }
-    }
+    default: (): CreateCoordinatorRequest => ({
+      lastname: '',
+      lastnameKana: '',
+      firstname: '',
+      firstnameKana: '',
+      companyName: '',
+      storeName: '',
+      thumbnailUrl: '',
+      headerUrl: '',
+      email: '',
+      phoneNumber: '',
+      postalCode: '',
+      prefecture: '',
+      city: '',
+      addressLine1: '',
+      addressLine2: ''
+    })
   },
   thumbnailUploadStatus: {
     type: Object,
-    default: (): ImageUploadStatus => {
-      return {
-        error: false,
-        message: ''
-      }
-    }
+    default: (): ImageUploadStatus => ({
+      error: false,
+      message: ''
+    })
   },
   headerUploadStatus: {
     type: Object,
-    default: (): ImageUploadStatus => {
-      return {
-        error: false,
-        message: ''
-      }
-    }
+    default: (): ImageUploadStatus => ({
+      error: false,
+      message: ''
+    })
   },
   searchErrorMessage: {
     type: String,
@@ -62,7 +58,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:formData', formData: UpdateCoordinatorRequest): void
+  (e: 'update:formData', formData: CreateCoordinatorRequest): void
   (e: 'update:thumbnail-file', files?: FileList): void
   (e: 'update:header-file', files?: FileList): void
   (e: 'click:search'): void
@@ -70,9 +66,9 @@ const emit = defineEmits<{
 }>()
 
 const formDataValue = computed({
-  get: (): UpdateCoordinatorRequest =>
-    props.formData as UpdateCoordinatorRequest,
-  set: (val: UpdateCoordinatorRequest) => emit('update:formData', val)
+  get: (): CreateCoordinatorRequest =>
+    props.formData as CreateCoordinatorRequest,
+  set: (val: CreateCoordinatorRequest) => emit('update:formData', val)
 })
 
 const rules = computed(() => ({
@@ -82,7 +78,8 @@ const rules = computed(() => ({
   lastname: { required, maxLength: maxLength(16) },
   firstnameKana: { required, kana },
   lastnameKana: { required, kana },
-  phoneNumber: { required, tel }
+  phoneNumber: { required, tel },
+  email: { required, email }
 }))
 
 const v$ = useVuelidate(rules, formDataValue)
@@ -124,14 +121,14 @@ const handleSubmit = async () => {
           label="店舗名"
         />
         <div class="mb-2 d-flex">
-          <the-profile-select-form
+          <molecules-profile-select-form
             class="mr-4 flex-grow-1 flex-shrink-1"
             :img-url="props.formData.thumbnailUrl"
             :error="props.thumbnailUploadStatus.error"
             :message="props.thumbnailUploadStatus.message"
             @update:file="updateThumbnailFileHandler"
           />
-          <the-header-select-form
+          <molecules-header-select-form
             class="flex-grow-1 flex-shrink-1"
             :img-url="props.formData.headerUrl"
             :error="props.headerUploadStatus.error"
@@ -166,7 +163,11 @@ const handleSubmit = async () => {
             label="コーディネータ:名（ふりがな）"
           />
         </div>
-
+        <v-text-field
+          v-model="v$.email.$model"
+          label="連絡先（Email）"
+          :error-messages="getErrorMessage(v$.email.$errors)"
+        />
         <v-text-field
           v-model="v$.phoneNumber.$model"
           :error-messages="getErrorMessage(v$.phoneNumber.$errors)"
@@ -174,7 +175,7 @@ const handleSubmit = async () => {
           label="連絡先（電話番号）"
         />
 
-        <the-address-form
+        <molecules-address-form
           v-model:postal-code="props.formData.postalCode"
           v-model:prefecture="props.formData.prefecture"
           v-model:city="props.formData.city"
@@ -187,7 +188,7 @@ const handleSubmit = async () => {
       </v-card-text>
       <v-card-actions>
         <v-btn block variant="outlined" color="primary" type="submit">
-          更新
+          登録
         </v-btn>
       </v-card-actions>
     </v-card>

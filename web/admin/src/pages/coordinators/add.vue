@@ -99,7 +99,7 @@ const searchAddress = async () => {
   <div>
     <v-card-title>コーディネーター登録</v-card-title>
     <v-card>
-      <the-coordinator-create-form
+      <organisms-coordinator-create-form
         :form-data="formData"
         :thumbnail-upload-status="thumbnailUploadStatus"
         :header-upload-status="headerUploadStatus"

@@ -215,7 +215,7 @@ try {
         <v-card-title>商品画像登録</v-card-title>
         <v-card-text>
           <div class="mb-2">
-            <the-file-upload-filed
+            <atom-file-upload-filed
               text="商品画像"
               @update:files="handleImageUpload"
             />
