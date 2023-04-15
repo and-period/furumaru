@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { DataTableHeader } from 'vuetify'
+import { mdiPlus, mdiSearchWeb, mdiAccount, mdiPencil, mdiDelete } from '@mdi/js'
+import { VDataTable } from 'vuetify/lib/labs/components'
 
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useCommonStore, useProducerStore } from '~/store'
@@ -74,35 +75,35 @@ const fetchState = useAsyncData(async () => {
   }
 })
 
-const headers: DataTableHeader[] = [
+const headers: VDataTable['headers'] = [
   {
-    text: 'サムネイル',
-    value: 'thumbnail'
+    title: 'サムネイル',
+    key: 'thumbnail'
   },
   {
-    text: '農園名',
-    value: 'storeName'
+    title: '農園名',
+    key: 'storeName'
   },
   {
-    text: '生産者名',
-    value: 'name'
+    title: '生産者名',
+    key: 'name'
   },
   {
-    text: 'Email',
-    value: 'email'
+    title: 'Email',
+    key: 'email'
   },
   {
-    text: '電話番号',
-    value: 'phoneNumber'
+    title: '電話番号',
+    key: 'phoneNumber'
   },
   {
-    text: 'Actions',
-    value: 'actions',
+    title: 'Actions',
+    key: 'actions',
     sortable: false
   },
   {
-    text: '動画',
-    value: 'video',
+    title: '動画',
+    key: 'video',
     sortable: false
   }
 ]
@@ -163,9 +164,7 @@ try {
       生産者管理
       <v-spacer />
       <v-btn variant="outlined" color="primary" @click="handleClickAddButton">
-        <v-icon start>
-          mdi-plus
-        </v-icon>
+        <v-icon start :icon="mdiPlus" />
         生産者登録
       </v-btn>
     </v-card-title>
@@ -196,18 +195,18 @@ try {
         <form class="d-flex align-center" @submit.prevent="handleSearch">
           <v-text-field v-model="search" label="絞り込み" />
           <v-btn type="submit" class="ml-4" size="small" variant="outlined" color="primary">
-            <v-icon>mdi-search</v-icon>
+            <v-icon :icon="mdiSearchWeb" />
             検索
           </v-btn>
           <v-spacer />
         </form>
-        <v-data-table
+        <v-data-table-server
           show-select
           :headers="headers"
           :items="producers"
           :search="query"
           :no-results-text="noResultsText"
-          :server-items-length="totalItems"
+          :items-length="totalItems"
           :footer-props="options"
           no-data-text="登録されている生産者がいません。"
           @update:items-per-page="handleUpdateItemsPerPage"
@@ -216,49 +215,41 @@ try {
           <template #[`item.thumbnail`]="{ item }">
             <v-avatar>
               <img
-                v-if="item.thumbnailUrl !== ''"
-                :src="item.thumbnailUrl"
-                :alt="`${item.storeName}-profile`"
+                v-if="item.raw.thumbnailUrl !== ''"
+                :src="item.raw.thumbnailUrl"
+                :alt="`${item.raw.storeName}-profile`"
               >
-              <v-icon v-else>
-                mdi-account
-              </v-icon>
+              <v-icon v-else :icon="mdiAccount" />
             </v-avatar>
           </template>
           <template #[`item.name`]="{ item }">
-            {{ `${item.lastname} ${item.firstname}` }}
+            {{ `${item.raw.lastname} ${item.raw.firstname}` }}
           </template>
           <template #[`item.phoneNumber`]="{ item }">
-            {{ `${item.phoneNumber}`.replace('+81', '0') }}
+            {{ `${item.raw.phoneNumber}`.replace('+81', '0') }}
           </template>
           <template #[`item.actions`]="{ item }">
-            <v-btn variant="outlined" color="primary" size="small" @click="handleEdit(item)">
-              <v-icon size="small">
-                mdi-pencil
-              </v-icon>
+            <v-btn variant="outlined" color="primary" size="small" @click="handleEdit(item.raw)">
+              <v-icon size="small" :icon="mdiPencil" />
               編集
             </v-btn>
             <v-btn
-              outlined
               color="primary"
               size="small"
-              @click="handleClickDeleteButton(item)"
+              variant="outlined"
+              @click="handleClickDeleteButton(item.raw)"
             >
-              <v-icon size="small">
-                mdi-delete
-              </v-icon>
+              <v-icon size="small" :icon="mdiDelete" />
               削除
             </v-btn>
           </template>
           <template #[`item.video`]="{ item }">
-            <v-btn variant="outlined" color="primary" size="small" @click="handleAddVideo(item)">
-              <v-icon size="small">
-                mdi-plus
-              </v-icon>
+            <v-btn variant="outlined" color="primary" size="small" @click="handleAddVideo(item.raw)">
+              <v-icon size="small" :icon="mdiPlus" />
               追加
             </v-btn>
           </template>
-        </v-data-table>
+        </v-data-table-server>
       </v-card-text>
     </v-card>
   </div>

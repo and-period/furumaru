@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { mdiEmailOpenOutline, mdiEmailOutline } from '@mdi/js'
 import { useMessageStore } from '~/store'
 
 const messageStore = useMessageStore()
@@ -34,7 +35,7 @@ const handleClickMessage = async (messageId: string) => {
           <v-list-item-icon>
             <v-icon>
               {{
-                message.read ? 'mdi-email-open-outline' : 'mdi-email-outline'
+                message.read ? mdiEmailOpenOutline : mdiEmailOutline
               }}
             </v-icon>
           </v-list-item-icon>

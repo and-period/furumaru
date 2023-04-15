@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { mdiAccount, mdiPencil, mdiDelete, mdiPlus } from '@mdi/js'
+
 import { useProductTypeStore } from '~/store'
 import {
   ProductTypesResponseProductTypesInner,
@@ -164,11 +166,11 @@ const handleInputFileChange = () => {
 
 <template>
   <div>
-    <v-data-table
+    <v-data-table-server
       :headers="productTypeHeaders"
       :items="productTypes"
       :loading="props.loading"
-      :server-items-length="totalItems"
+      :items-length="totalItems"
       :footer-props="props.tableFooterProps"
       @update:items-per-page="handleUpdateItemsPerPage"
       @update:page="handleUpdatePage"
@@ -176,36 +178,30 @@ const handleInputFileChange = () => {
       <template #[`item.icon`]="{ item }">
         <v-avatar>
           <img
-            v-if="item.iconlUrl !== ''"
-            :src="item.iconUrl"
-            :alt="`${item.categoryName}-profile`"
+            v-if="item.raw.iconlUrl !== ''"
+            :src="item.raw.iconUrl"
+            :alt="`${item.raw.categoryName}-profile`"
           >
-          <v-icon v-else>
-            mdi-account
-          </v-icon>
+          <v-icon v-else :icon="mdiAccount" />
         </v-avatar>
       </template>
       <template #[`item.category`]="{ item }">
-        {{ `${item.categoryName}` }}
+        {{ `${item.raw.categoryName}` }}
       </template>
       <template #[`item.productType`]="{ item }">
-        {{ `${item.name}` }}
+        {{ `${item.raw.name}` }}
       </template>
       <template #[`item.actions`]="{ item }">
-        <v-btn variant="outlined" color="primary" size="small" @click="openEditDialog(item)">
-          <v-icon size="small">
-            mdi-pencil
-          </v-icon>
+        <v-btn variant="outlined" color="primary" size="small" @click="openEditDialog(item.raw)">
+          <v-icon size="small" :icon="mdiPencil" />
           編集
         </v-btn>
-        <v-btn variant="outlined" color="primary" size="small" @click="openDeleteDialog(item)">
-          <v-icon size="small">
-            mdi-delete
-          </v-icon>
+        <v-btn variant="outlined" color="primary" size="small" @click="openDeleteDialog(item.raw)">
+          <v-icon size="small" :icon="mdiDelete" />
           削除
         </v-btn>
       </template>
-    </v-data-table>
+    </v-data-table-server>
 
     <v-dialog v-model="editDialog" width="500">
       <v-card>
@@ -228,7 +224,7 @@ const handleInputFileChange = () => {
                   color="primary"
                   @click="handleMoreCategoryItems"
                 >
-                  <v-icon>mdi-plus</v-icon>
+                  <v-icon :icon="mdiPlus" />
                   さらに読み込む
                 </v-btn>
               </div>
@@ -244,9 +240,7 @@ const handleInputFileChange = () => {
         <v-card class="text-center" role="button" flat @click="handleClick">
           <v-card-text>
             <v-avatar size="96">
-              <v-icon v-if="editFormData.iconUrl === ''" size="x-large">
-                mdi-plus
-              </v-icon>
+              <v-icon v-if="editFormData.iconUrl === ''" size="x-large" :icon="mdiPlus" />
               <v-img
                 v-else
                 :src="editFormData.iconUrl"

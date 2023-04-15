@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { DataTableHeader } from 'vuetify'
+import { mdiPlus, mdiMagnify } from '@mdi/js'
+import { VDataTable } from 'vuetify/lib/labs/components'
 
 import { usePagination } from '~/lib/hooks/'
 import { useProductStore } from '~/store'
@@ -48,42 +49,42 @@ const handleClickAddBtn = () => {
   router.push('/products/add')
 }
 
-const headers: DataTableHeader[] = [
+const headers: VDataTable['headers'] = [
   {
-    text: '',
-    value: 'media'
+    title: '',
+    key: 'media'
   },
   {
-    text: '商品名',
-    value: 'name'
+    title: '商品名',
+    key: 'name'
   },
   {
-    text: 'ステータス',
-    value: 'public'
+    title: 'ステータス',
+    key: 'public'
   },
   {
-    text: '種類',
-    value: 'type'
+    title: '種類',
+    key: 'type'
   },
   {
-    text: '価格',
-    value: 'price'
+    title: '価格',
+    key: 'price'
   },
   {
-    text: '在庫',
-    value: 'inventory'
+    title: '在庫',
+    key: 'inventory'
   },
   {
-    text: 'ジャンル',
-    value: 'categoryName'
+    title: 'ジャンル',
+    key: 'categoryName'
   },
   {
-    text: '品目',
-    value: 'productTypeName'
+    title: '品目',
+    key: 'productTypeName'
   },
   {
-    text: '農園名',
-    value: 'storeName'
+    title: '農園名',
+    key: 'storeName'
   }
 ]
 
@@ -100,9 +101,7 @@ try {
       商品管理
       <v-spacer />
       <v-btn variant="outlined" color="primary" @click="handleClickAddBtn">
-        <v-icon start>
-          mdi-plus
-        </v-icon>
+        <v-icon start :icon="mdiPlus" />
         商品登録
       </v-btn>
     </v-card-title>
@@ -113,19 +112,19 @@ try {
           <v-spacer />
           <v-text-field
             v-model="searchWord"
-            append-icon="mdi-magnify"
+            :append-icon="mdiMagnify"
             label="商品名"
             hide-details
             single-line
           />
         </div>
 
-        <v-data-table
+        <v-data-table-server
           v-model:items-per-page="itemsPerPage"
           :headers="headers"
           :items="products"
           no-data-text="登録されている商品がありません。"
-          :server-items-length="totalItems"
+          :items-length="totalItems"
           :footer-props="options"
           @update:items-per-page="handleUpdateItemsPerPage"
           @update:page="handleUpdatePage"
@@ -133,15 +132,15 @@ try {
         >
           <template #[`item.media`]="{ item }">
             <v-avatar tile>
-              <v-img contain :src="item.media.find((m) => m.isThumbnail).url" />
+              <v-img contain :src="item.raw.media.find((m) => m.isThumbnail).url" />
             </v-avatar>
           </template>
           <template #[`item.public`]="{ item }">
-            <v-chip :color="item.public ? 'primary' : 'warning'">
+            <v-chip :color="item.raw.public ? 'primary' : 'warning'">
               {{ item.public ? '公開' : '非公開' }}
             </v-chip>
           </template>
-        </v-data-table>
+        </v-data-table-server>
       </v-card-text>
     </v-card>
   </div>

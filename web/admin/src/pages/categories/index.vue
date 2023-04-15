@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { mdiPlus } from '@mdi/js'
 import TheCategoryList from '~/components/organisms/TheCategoryList.vue'
 import TheProductTypeList from '~/components/organisms/TheProductTypeList.vue'
 import { usePagination } from '~/lib/hooks'
@@ -187,9 +188,7 @@ try {
             <div class="d-flex pt-3 pr-3">
               <v-spacer />
               <v-btn variant="outlined" color="primary" v-bind="attrs" v-on="on">
-                <v-icon start>
-                  mdi-plus
-                </v-icon>
+                <v-icon start :icon="mdiPlus" />
                 追加
               </v-btn>
             </div>
@@ -232,9 +231,7 @@ try {
             <div class="d-flex pt-3 pr-3">
               <v-spacer />
               <v-btn variant="outlined" color="primary" v-bind="attrs" v-on="on">
-                <v-icon start>
-                  mdi-plus
-                </v-icon>
+                <v-icon start :icon="mdiPlus" />
                 追加
               </v-btn>
             </div>
@@ -259,7 +256,7 @@ try {
                       color="primary"
                       @click="handleMoreCategoryItems"
                     >
-                      <v-icon>mdi-plus</v-icon>
+                      <v-icon :icon="mdiPlus" />
                       さらに読み込む
                     </v-btn>
                   </div>
@@ -275,9 +272,7 @@ try {
             <v-card class="text-center" role="button" flat @click="handleClick">
               <v-card-text>
                 <v-avatar size="96">
-                  <v-icon v-if="productTypeFormData.iconUrl === ''" x-large>
-                    mdi-plus
-                  </v-icon>
+                  <v-icon v-if="productTypeFormData.iconUrl === ''" size="x-large" :icon="mdiPlus" />
                   <v-img
                     v-else
                     :src="productTypeFormData.iconUrl"

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { mdiAccount } from '@mdi/js'
+
 const props = defineProps({
   imgUrl: {
     type: String,
@@ -39,9 +41,7 @@ const handleInputFileChange = () => {
     <v-card class="text-center" role="button" flat @click="handleClick">
       <v-card-text>
         <v-avatar size="96">
-          <v-icon v-if="props.imgUrl === ''" x-large>
-            mdi-account
-          </v-icon>
+          <v-icon v-if="props.imgUrl === ''" :icon="mdiAccount" size="x-large" />
           <v-img
             v-else
             :src="props.imgUrl"

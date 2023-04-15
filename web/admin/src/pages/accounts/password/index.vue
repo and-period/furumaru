@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { mdiEye, mdiEyeOff } from '@mdi/js'
 import { useVuelidate } from '@vuelidate/core'
 
 import { useAlert } from '~/lib/hooks'
@@ -64,7 +65,7 @@ const handleSubmit = async (): Promise<void> => {
             v-model="v$.oldPassword.$model"
             :error-messages="getErrorMessage(v$.oldPassword.$errors)"
             label="現在のパスワード"
-            :append-icon="oldPasswordShow ? 'mdi-eye' : 'mdi-eye-off'"
+            :append-icon="oldPasswordShow ? 'mdiEye' : mdiEyeOff"
             :type="oldPasswordShow ? 'text' : 'password'"
             @click:append="oldPasswordShow = !oldPasswordShow"
           />
@@ -72,14 +73,14 @@ const handleSubmit = async (): Promise<void> => {
             v-model="v$.newPassword.$model"
             :error-messages="getErrorMessage(v$.newPassword.$errors)"
             label="新しいパスワード"
-            :append-icon="newPasswordShow ? 'mdi-eye' : 'mdi-eye-off'"
+            :append-icon="newPasswordShow ? 'mdiEye' : mdiEyeOff"
             :type="newPasswordShow ? 'text' : 'password'"
             @click:append="newPasswordShow = !newPasswordShow"
           />
           <v-text-field
             v-model="v$.passwordConfirmation.$model"
             label="新しいパスワード(確認用)"
-            :append-icon="passwordConfirmationShow ? 'mdi-eye' : 'mdi-eye-off'"
+            :append-icon="passwordConfirmationShow ? 'mdiEye' : mdiEyeOff"
             :type="passwordConfirmationShow ? 'text' : 'password'"
             :error-messages="
               getErrorMessage(v$.passwordConfirmation.$errors) === ''

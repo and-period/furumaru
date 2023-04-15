@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { mdiPlus } from '@mdi/js'
 import { useVuelidate } from '@vuelidate/core'
 
 import { useAlert } from '~/lib/hooks'
@@ -331,9 +332,7 @@ try {
       </v-card>
     </div>
     <v-btn block variant="outlined" @click="handleFormSubmit">
-      <v-icon start>
-        mdi-plus
-      </v-icon>
+      <v-icon start :icon="mdiPlus" />
       登録
     </v-btn>
   </div>

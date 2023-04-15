@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { mdiHome, mdiMenu, mdiOrderBoolAscendingVariant, mdiCart, mdiAntenna, mdiAccountDetails, mdiForum, mdiBellRing, mdiCash100, mdiAccount, mdiAccountStarOutline, mdiCog, mdiBell } from '@mdi/js'
 import { useCommonStore, useMessageStore } from '~/store'
 
 interface NavigationDrawerItem {
@@ -20,59 +21,59 @@ const hasUnread = computed<boolean>(() => messageStore.hasUnread)
 
 const navigationDrawerHomeItem: NavigationDrawerItem = {
   to: '/',
-  icon: 'mdi-home',
+  icon: mdiHome,
   title: 'ホーム'
 }
 
 const navigationDrawerList: NavigationDrawerItem[] = [
   {
     to: '/orders',
-    icon: 'mdi-order-bool-ascending-variant',
+    icon: mdiOrderBoolAscendingVariant,
     title: '注文'
   },
   {
     to: '/products',
-    icon: 'mdi-cart',
+    icon: mdiCart,
     title: '商品管理'
   },
   {
     to: '/livestreaming',
-    icon: 'mdi-antenna',
+    icon: mdiAntenna,
     title: 'ライブ配信'
   },
   // {
   //   to: '/analytics',
-  //   icon: 'mdi-poll',
+  //   icon: mdiPoll,
   //   title: '分析',
   // },
   {
     to: '/customers',
-    icon: 'mdi-account-details',
+    icon: mdiAccountDetails,
     title: '顧客管理'
   },
   {
     to: '/contacts',
-    icon: 'mdi-forum',
+    icon: mdiForum,
     title: 'お問い合わせ管理'
   },
   {
     to: '/notifications',
-    icon: 'mdi-bell-ring',
+    icon: mdiBellRing,
     title: 'お知らせ管理'
   },
   {
     to: '/promotions',
-    icon: 'mdi-cash-100',
+    icon: mdiCash100,
     title: 'セール情報管理'
   },
   {
     to: '/producers',
-    icon: 'mdi-account',
+    icon: mdiAccount,
     title: '生産者管理'
   },
   {
     to: '/coordinators',
-    icon: 'mdi-account-star-outline',
+    icon: mdiAccountStarOutline,
     title: 'コーディネータ管理'
   }
 ]
@@ -80,7 +81,7 @@ const navigationDrawerList: NavigationDrawerItem[] = [
 const navigationDrawerSettingsList: NavigationDrawerItem[] = [
   {
     to: '/settings',
-    icon: 'mdi-cog',
+    icon: mdiCog,
     title: 'システム設定'
   }
 ]
@@ -101,65 +102,52 @@ const calcStyle = (i: number) => {
 
 <template>
   <v-app>
-    <v-navigation-drawer v-model="drawer" app clipped>
-      <v-list shaped>
+    <v-navigation-drawer v-model="drawer" scrim>
+      <v-list>
         <v-list-item
           :to="navigationDrawerHomeItem.to"
-          router
           exact
+          :prepend-icon="navigationDrawerHomeItem.icon"
           color="primary"
         >
-          <v-list-item-icon>
-            <v-icon>{{ navigationDrawerHomeItem.icon }}</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>
-              {{ navigationDrawerHomeItem.title }}
-            </v-list-item-title>
-          </v-list-item-content>
+          <v-list-item-title>
+            {{ navigationDrawerHomeItem.title }}
+          </v-list-item-title>
         </v-list-item>
       </v-list>
 
       <v-divider />
-      <v-list shaped>
+      <v-list>
         <v-list-item
           v-for="(item, i) in navigationDrawerList"
           :key="i"
           :to="item.to"
-          router
+          :prepend-icon="item.icon"
           color="primary"
         >
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
+          <v-list-item-title>{{ item.title }}</v-list-item-title>
         </v-list-item>
       </v-list>
       <v-divider />
 
-      <v-list shaped>
+      <v-list>
         <v-list-item
           v-for="(item, i) in navigationDrawerSettingsList"
           :key="i"
           :to="item.to"
-          router
           exact
+          :prepend-icon="item.icon"
           color="primary"
         >
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
+          <v-list-item-title>{{ item.title }}</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar flat app clipped-left color="primary" dark>
-      <v-app-bar-nav-icon @click="handleClickNavIcon" />
+    <v-app-bar flat color="primary">
+      <v-app-bar-nav-icon @click="handleClickNavIcon">
+        <v-icon :icon="mdiMenu" color="white" />
+      </v-app-bar-nav-icon>
       <v-toolbar-title>
         <nuxt-link to="/">
           <the-app-title class="pt-2" />
@@ -167,8 +155,8 @@ const calcStyle = (i: number) => {
       </v-toolbar-title>
       <v-spacer />
       <v-btn icon @click="handleClickMessage">
-        <v-badge :value="hasUnread" color="info" dot overlap>
-          <v-icon>mdi-bell</v-icon>
+        <v-badge v-value="hasUnread" color="info" dot overlap>
+          <v-icon :icon="mdiBell" color="white" />
         </v-badge>
       </v-btn>
     </v-app-bar>
@@ -178,8 +166,7 @@ const calcStyle = (i: number) => {
       :key="i"
       v-model="snackbar.isOpen"
       :color="snackbar.color"
-      top
-      app
+      location="top"
       elevation="1"
       :timeout="snackbar.timeout"
       :style="calcStyle(i)"

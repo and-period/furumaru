@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { DataTableHeader } from 'vuetify'
+import { mdiDelete, mdiPencil } from '@mdi/js'
+import { VDataTable } from 'vuetify/lib/labs/components'
 
 import { useCategoryStore } from '~/store'
 import {
@@ -40,14 +41,14 @@ const totalItems = computed(() => {
   return categoryStore.totalCategoryItems
 })
 
-const categoryHeaders: DataTableHeader[] = [
+const categoryHeaders: VDataTable['headers'] = [
   {
-    text: 'カテゴリー',
-    value: 'name'
+    title: 'カテゴリー',
+    key: 'name'
   },
   {
-    text: 'Actions',
-    value: 'actions',
+    title: 'Actions',
+    key: 'actions',
     width: 200,
     align: 'end',
     sortable: false
@@ -103,30 +104,26 @@ const handleDelete = async (): Promise<void> => {
 
 <template>
   <div>
-    <v-data-table
+    <v-data-table-server
       :headers="categoryHeaders"
       :items="categories"
       :loading="props.loading"
-      :server-items-length="totalItems"
+      :items-length="totalItems"
       :footer-props="props.tableFooterProps"
       @update:items-per-page="handleUpdateItemsPerPage"
       @update:page="handleUpdatePage"
     >
       <template #[`item.actions`]="{ item }">
-        <v-btn variant="outlined" color="primary" size="small" @click="openEditDialog(item)">
-          <v-icon size="small">
-            mdi-pencil
-          </v-icon>
+        <v-btn variant="outlined" color="primary" size="small" @click="openEditDialog(item.raw)">
+          <v-icon size="small" :icon="mdiPencil" />
           編集
         </v-btn>
-        <v-btn variant="outlined" color="primary" size="small" @click="openDeleteDialog(item)">
-          <v-icon size="small">
-            mdi-delete
-          </v-icon>
+        <v-btn variant="outlined" color="primary" size="small" @click="openDeleteDialog(item.raw)">
+          <v-icon size="small" :icon="mdiDelete" />
           削除
         </v-btn>
       </template>
-    </v-data-table>
+    </v-data-table-server>
 
     <v-dialog v-model="deleteDialog" width="500">
       <v-card>

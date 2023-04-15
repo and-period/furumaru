@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+import { mdiImport, mdiExport, mdiPencil } from '@mdi/js'
 import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
-import { DataTableHeader } from 'vuetify'
+import { VDataTable } from 'vuetify/lib/labs/components'
 
 import { usePagination } from '~/lib/hooks'
 import { useOrderStore } from '~/store'
@@ -28,39 +29,39 @@ const fetchState = useAsyncData(() => {
   return orderStore.fetchOrders(itemsPerPage.value, offset.value)
 })
 
-const headers: DataTableHeader[] = [
+const headers: VDataTable['headers'] = [
   {
-    text: '注文者',
-    value: 'userName'
+    title: '注文者',
+    key: 'userName'
   },
   {
-    text: '配送ステータス',
-    value: 'payment.status'
+    title: '配送ステータス',
+    key: 'payment.status'
   },
   {
-    text: '購入日時',
-    value: 'orderedAt'
+    title: '購入日時',
+    key: 'orderedAt'
   },
   {
-    text: '配送方法',
-    value: 'fulfillment.shippingMethod'
+    title: '配送方法',
+    key: 'fulfillment.shippingMethod'
   },
   {
-    text: '購入金額',
-    value: 'payment.total'
+    title: '購入金額',
+    key: 'payment.total'
   },
   {
-    text: '伝票番号',
-    value: 'payment.paymentId'
+    title: '伝票番号',
+    key: 'payment.paymentId'
   },
   {
-    text: 'Actions',
-    value: 'actions',
+    title: 'Actions',
+    key: 'actions',
     sortable: false
   },
   {
-    text: '注文ID',
-    value: 'id'
+    title: '注文ID',
+    key: 'id'
   }
 ]
 
@@ -164,9 +165,7 @@ try {
       注文
       <v-spacer />
       <v-btn variant="outlined" color="primary" @click="toggleImportDialog">
-        <v-icon start>
-          mdi-import
-        </v-icon>
+        <v-icon start :icon="mdiImport" />
         Import
       </v-btn>
       <v-btn
@@ -175,9 +174,7 @@ try {
         color="secondary"
         @click="toggleExportDialog"
       >
-        <v-icon start>
-          mdi-export
-        </v-icon>
+        <v-icon start :icon="mdiExport" />
         Export
       </v-btn>
     </v-card-title>
@@ -239,36 +236,34 @@ try {
     </v-dialog>
     <v-card class="mt-4" flat>
       <v-card-text>
-        <v-data-table
+        <v-data-table-server
           show-select
           :headers="headers"
           :items="orders"
-          :server-items-length="totalItems"
+          :items-length="totalItems"
           :footer-props="options"
           no-data-text="表示する注文がありません"
           @update:items-per-page="handleUpdateItemsPerPage"
           @update:page="handleUpdatePage"
         >
           <template #[`item.payment.status`]="{ item }">
-            <v-chip size="small" :color="getStatusColor(item.payment.status)">
-              {{ getStatus(item.payment.status) }}
+            <v-chip size="small" :color="getStatusColor(item.raw.payment.status)">
+              {{ getStatus(item.raw.payment.status) }}
             </v-chip>
           </template>
           <template #[`item.fulfillment.shippingMethod`]="{ item }">
-            {{ getShippingMethod(item.fulfillment.shippingMethod) }}
+            {{ getShippingMethod(item.raw.fulfillment.shippingMethod) }}
           </template>
           <template #[`item.orderedAt`]="{ item }">
-            {{ getDay(item.orderedAt) }}
+            {{ getDay(item.raw.orderedAt) }}
           </template>
           <template #[`item.actions`]="{ item }">
-            <v-btn variant="outlined" color="primary" size="small" @click="handleEdit(item)">
-              <v-icon size="small">
-                mdi-pencil
-              </v-icon>
+            <v-btn variant="outlined" color="primary" size="small" @click="handleEdit(item.raw)">
+              <v-icon size="small" :icon="mdiPencil" />
               詳細
             </v-btn>
           </template>
-        </v-data-table>
+        </v-data-table-server>
       </v-card-text>
     </v-card>
   </div>

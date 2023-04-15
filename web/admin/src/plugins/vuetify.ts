@@ -1,16 +1,32 @@
 import { createVuetify } from 'vuetify/lib/framework.mjs'
+import { md3 } from 'vuetify/blueprints'
+import { ja } from 'vuetify/locale'
 import * as components from 'vuetify/components'
+import * as labs from 'vuetify/labs/components'
 import * as directives from 'vuetify/directives'
+import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
 // @ts-ignore
 import colors from 'vuetify/lib/util/colors.mjs'
 
 export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify({
     locale: {
-      locale: 'ja'
+      locale: 'ja',
+      messages: { ja }
     },
-    components,
+    blueprint: md3,
+    components: {
+      ...labs,
+      ...components
+    },
     directives,
+    icons: {
+      defaultSet: 'mdi',
+      aliases,
+      sets: {
+        mdi
+      }
+    },
     theme: {
       defaultTheme: 'light',
       themes: {

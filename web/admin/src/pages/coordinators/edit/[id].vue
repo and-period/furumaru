@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { mdiPlus } from '@mdi/js'
 import { useVuelidate } from '@vuelidate/core'
 
 import { usePagination, useSearchAddress } from '~/lib/hooks'
@@ -271,9 +272,7 @@ try {
             <div class="d-flex pt-3 pr-3">
               <v-spacer />
               <v-btn variant="outlined" color="primary" v-bind="attrs" v-on="on">
-                <v-icon start>
-                  mdi-plus
-                </v-icon>
+                <v-icon start :icon="mdiPlus" />
                 生産者紐付け
               </v-btn>
             </div>

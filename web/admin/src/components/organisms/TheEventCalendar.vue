@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { mdiChevronLeft, mdiChevronRight } from '@mdi/js'
+
 import { CalendarEvent } from '~/types/props'
 
 const props = defineProps({
@@ -65,16 +67,16 @@ const handleClickNextButton = () => {
         v-model="type"
         variant="outlined"
         :items="typeItems"
-        dense
+        density="default"
         hide-details
         label="表示形式"
         class="ml-4"
       />
       <v-btn icon class="ma-2" @click="handleClickPrevButton">
-        <v-icon>mdi-chevron-left</v-icon>
+        <v-icon :icon="mdiChevronLeft" />
       </v-btn>
       <v-btn icon class="ma-2" @click="handleClickNextButton">
-        <v-icon>mdi-chevron-right</v-icon>
+        <v-icon :icon="mdiChevronRight" />
       </v-btn>
 
       <v-spacer />

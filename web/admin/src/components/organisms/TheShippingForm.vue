@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { mdiClose, mdiPlus } from '@mdi/js'
 import { useVuelidate } from '@vuelidate/core'
 
 import { getSelectablePrefecturesList } from '~/lib/prefectures'
@@ -193,7 +194,7 @@ const handleClickRemoveItemButton = (
                 :disabled="box60RateItemsSize.length === 1"
                 @click="handleClickRemoveItemButton('60', i)"
               >
-                <v-icon>mdi-close</v-icon>
+                <v-icon :icon="mdiClose" />
               </v-btn>
             </div>
             <v-text-field v-model="formData.box60Rates[i].name" label="名前" />
@@ -223,7 +224,7 @@ const handleClickRemoveItemButton = (
             </v-select>
           </div>
           <v-btn color="primary" variant="outlined" block @click="addBox60RateItem">
-            <v-icon>mdi-plus</v-icon>
+            <v-icon :icon="mdiPlus" />
             追加
           </v-btn>
         </div>
@@ -253,7 +254,7 @@ const handleClickRemoveItemButton = (
                 :disabled="box80RateItemsSize.length === 1"
                 @click="handleClickRemoveItemButton('80', i)"
               >
-                <v-icon>mdi-close</v-icon>
+                <v-icon :icon="mdiClose" />
               </v-btn>
             </div>
             <v-text-field v-model="formData.box80Rates[i].name" label="名前" />
@@ -283,7 +284,7 @@ const handleClickRemoveItemButton = (
             </v-select>
           </div>
           <v-btn color="primary" variant="outlined" block @click="addBox80RateItem">
-            <v-icon>mdi-plus</v-icon>
+            <v-icon :icon="mdiPlus" />
             追加
           </v-btn>
         </div>
@@ -314,7 +315,7 @@ const handleClickRemoveItemButton = (
                 :disabled="box100RateItemsSize.length === 1"
                 @click="handleClickRemoveItemButton('100', i)"
               >
-                <v-icon>mdi-close</v-icon>
+                <v-icon :icon="mdiClose" />
               </v-btn>
             </div>
             <v-text-field v-model="formData.box100Rates[i].name" label="名前" />
@@ -344,7 +345,7 @@ const handleClickRemoveItemButton = (
             </v-select>
           </div>
           <v-btn color="primary" variant="outlined" block @click="addBox100RateItem">
-            <v-icon>mdi-plus</v-icon>
+            <v-icon :icon="mdiPlus" />
             追加
           </v-btn>
         </div>

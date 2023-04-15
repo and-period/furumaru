@@ -1,6 +1,7 @@
 <script lang="ts" setup>
+import { mdiPlus, mdiPencil, mdiDelete } from '@mdi/js'
 import dayjs from 'dayjs'
-import { DataTableHeader } from 'vuetify'
+import { VDataTable } from 'vuetify/labs/components'
 
 import { usePagination } from '~/lib/hooks'
 import { useNotificationStore } from '~/store'
@@ -16,26 +17,26 @@ const {
   handleUpdateItemsPerPage
 } = usePagination()
 
-const headers: DataTableHeader[] = [
+const headers: VDataTable['headers'] = [
   {
-    text: 'タイトル',
-    value: 'title'
+    title: 'タイトル',
+    key: 'title'
   },
   {
-    text: '公開状況',
-    value: 'public'
+    title: '公開状況',
+    key: 'public'
   },
   {
-    text: '投稿範囲',
-    value: 'targets'
+    title: '投稿範囲',
+    key: 'targets'
   },
   {
-    text: '掲載開始時間',
-    value: 'publishedAt'
+    title: '掲載開始時間',
+    key: 'publishedAt'
   },
   {
-    text: 'Actions',
-    value: 'actions',
+    title: 'Actions',
+    key: 'actions',
     sortable: false
   }
 ]
@@ -47,6 +48,7 @@ const fetchState = useAsyncData(async () => {
 const deleteDialog = ref<boolean>(false)
 const selectedId = ref<string>('')
 const selectedName = ref<string>('')
+const sortBy = ref<VDataTable['sortBy']>([])
 
 const notifications = computed(() => {
   return notificationStore.notifications
@@ -92,7 +94,7 @@ const getPublic = (isPublic: boolean): string => {
 }
 
 const getTarget = (targets: number[]): string => {
-  const actors: string[] = targets.map((target: number): string => {
+  const actors: string[] = targets?.map((target: number): string => {
     switch (target) {
       case 1:
         return 'ユーザー'
@@ -103,7 +105,7 @@ const getTarget = (targets: number[]): string => {
       default:
         return ''
     }
-  })
+  }) || []
   return actors.join(', ')
 }
 
@@ -153,9 +155,7 @@ try {
       お知らせ管理
       <v-spacer />
       <v-btn color="primary" variant="outlined" @click="handleClickAddButton">
-        <v-icon start>
-          mdi-plus
-        </v-icon>
+        <v-icon start :icon="mdiPlus" />
         お知らせ登録
       </v-btn>
     </v-card-title>
@@ -179,12 +179,14 @@ try {
 
     <v-card class="mt-4" flat>
       <v-card-text>
-        <v-data-table
+        <v-data-table-server
+          v-model:sort-by="sortBy"
           :headers="headers"
           :items="notifications"
           :items-per-page="itemsPerPage"
+          :items-length="total"
           :footer-props="options"
-          item-props="item"
+          :multi-sort="true"
           no-data-text="登録されているお知らせ情報がありません"
           @update:page="handleUpdatePage"
           @update:items-per-page="handleUpdateItemsPerPage"
@@ -192,36 +194,32 @@ try {
           @update:sort-desc="fetchState.refresh"
         >
           <template #[`item.public`]="{ item }">
-            <v-chip size="small" :color="getStatusColor(item.public)">
-              {{ getPublic(item.public) }}
+            <v-chip size="small" :color="getStatusColor(item.raw.public)">
+              {{ getPublic(item.raw.public) }}
             </v-chip>
           </template>
           <template #[`item.targets`]="{ item }">
-            {{ getTarget(item.targets) }}
+            {{ getTarget(item.raw.targets) }}
           </template>
           <template #[`item.publishedAt`]="{ item }">
-            {{ getDay(item.publishedAt) }}
+            {{ getDay(item.raw.publishedAt) }}
           </template>
           <template #[`item.actions`]="{ item }">
-            <v-btn variant="outlined" color="primary" size="small" @click="handleEdit(item)">
-              <v-icon size="small">
-                mdi-pencil
-              </v-icon>
+            <v-btn variant="outlined" color="primary" size="small" @click="handleEdit(item.raw)">
+              <v-icon size="small" :icon="mdiPencil" />
               編集
             </v-btn>
             <v-btn
               variant="outlined"
               color="primary"
               size="small"
-              @click="openDeleteDialog(item)"
+              @click="openDeleteDialog(item.raw)"
             >
-              <v-icon size="small">
-                mdi-delete
-              </v-icon>
+              <v-icon size="small" :icon="mdiDelete" />
               削除
             </v-btn>
           </template>
-        </v-data-table>
+        </v-data-table-server>
       </v-card-text>
     </v-card>
   </div>

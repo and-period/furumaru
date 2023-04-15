@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { mdiPlus, mdiPencil } from '@mdi/js'
+import { VDataTable } from 'vuetify/lib/labs/components'
 import { prefecturesList } from '~/constants'
 import { dateTimeFormatter, moneyFormat } from '~/lib/formatter'
 import { usePagination } from '~/lib/hooks'
@@ -15,22 +17,22 @@ const shippings = computed(() => {
   return shippingStore.shippings
 })
 
-const headers = [
+const headers: VDataTable['headers'] = [
   {
-    text: '名前',
-    value: 'name'
+    title: '名前',
+    key: 'name'
   },
   {
-    text: '配送無料オプション',
-    value: 'hasFreeShipping'
+    title: '配送無料オプション',
+    key: 'hasFreeShipping'
   },
   {
-    text: '更新日',
-    value: 'updatedAt'
+    title: '更新日',
+    key: 'updatedAt'
   },
   {
-    text: '',
-    value: 'actions'
+    title: '',
+    key: 'actions'
   }
 ]
 
@@ -75,17 +77,15 @@ try {
       配送設定一覧
       <v-spacer />
       <v-btn variant="outlined" color="primary" @click="handleClickAddButton">
-        <v-icon start>
-          mdi-plus
-        </v-icon>
+        <v-icon start :icon="mdiPlus" />
         配送情報登録
       </v-btn>
     </v-card-title>
     <v-card class="mt-4" flat :loading="isLoading">
       <v-card-text>
-        <v-data-table
+        <v-data-table-server
           :headers="headers"
-          :server-items-length="totalItems"
+          :items-length="totalItems"
           :footer-props="options"
           :items="shippings"
           show-expand
@@ -95,12 +95,12 @@ try {
         >
           <template #[`item.hasFreeShipping`]="{ item }">
             <v-chip size="small">
-              {{ item.hasFreeShipping ? '有り' : '無し' }}
+              {{ item.raw.hasFreeShipping ? '有り' : '無し' }}
             </v-chip>
           </template>
 
           <template #[`item.updatedAt`]="{ item }">
-            {{ dateTimeFormatter(item.updatedAt) }}
+            {{ dateTimeFormatter(item.raw.updatedAt) }}
           </template>
 
           <template #[`item.actions`]="{ item }">
@@ -108,9 +108,9 @@ try {
               variant="outlined"
               color="primary"
               size="small"
-              @click="handleClickEditButton(item.id)"
+              @click="handleClickEditButton(item.raw.id)"
             >
-              <v-icon>mdi-pencil</v-icon>
+              <v-icon :icon="mdiPencil" />
               編集
             </v-btn>
           </template>
@@ -122,7 +122,7 @@ try {
                   サイズ{{ n }}詳細
                 </div>
                 <v-row
-                  v-for="(boxRate, i) in item[`box${n}Rates`]"
+                  v-for="(boxRate, i) in item.raw[`box${n}Rates`]"
                   :key="i"
                   class="align-center"
                 >
@@ -159,7 +159,7 @@ try {
               </div>
             </td>
           </template>
-        </v-data-table>
+        </v-data-table-server>
       </v-card-text>
     </v-card>
   </div>

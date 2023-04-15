@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { mdiEye, mdiEyeOff } from '@mdi/js'
+
 import { useAlert } from '~/lib/hooks'
 import { useAuthStore } from '~/store'
 import { SignInRequest } from '~/types/api'
@@ -47,7 +49,7 @@ const handleSubmit = async () => {
           <v-text-field
             v-model="formData.password"
             label="パスワード"
-            :append-icon="passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
+            :append-icon="passwordShow ? mdiEye : mdiEyeOff"
             :type="passwordShow ? 'text' : 'password'"
             required
             @click:append="passwordShow = !passwordShow"

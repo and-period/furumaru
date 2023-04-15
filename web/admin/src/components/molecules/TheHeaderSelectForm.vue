@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { mdiPlus } from '@mdi/js'
+
 const props = defineProps({
   imgUrl: {
     type: String,
@@ -46,9 +48,7 @@ const handleInputFileChange = () => {
     >
       <v-card-text>
         <v-avatar size="96">
-          <v-icon x-large>
-            mdi-plus
-          </v-icon>
+          <v-icon x-large :icon="mdiPlus" />
         </v-avatar>
         <input
           ref="inputRef"

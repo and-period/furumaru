@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
-import { DataTableHeader } from 'vuetify'
+import { VDataTable } from 'vuetify/lib/labs/components'
 
 import { usePagination } from '~/lib/hooks'
 import { useOrderStore } from '~/store'
@@ -120,26 +120,26 @@ const fetchState = useAsyncData(async () => {
   formData.canceledAt = res.canceledAt
 })
 
-const headers: DataTableHeader[] = [
+const headers: VDataTable['headers'] = [
   {
-    text: 'サムネイル',
-    value: 'media'
+    title: 'サムネイル',
+    key: 'media'
   },
   {
-    text: '商品名',
-    value: 'name'
+    title: '商品名',
+    key: 'name'
   },
   {
-    text: '購入価格',
-    value: 'price'
+    title: '購入価格',
+    key: 'price'
   },
   {
-    text: '購入数量',
-    value: 'quantity'
+    title: '購入数量',
+    key: 'quantity'
   },
   {
-    text: '重量',
-    value: 'weight'
+    title: '重量',
+    key: 'weight'
   }
 ]
 
@@ -563,7 +563,7 @@ try {
               :value="getDay(formData.deliveredAt)"
               readonly
             />
-            <v-data-table
+            <v-data-table-server
               :headers="headers"
               :items="formData.items"
               :footer-props="options"
@@ -571,10 +571,10 @@ try {
             >
               <template #[`item.media`]="{ item }">
                 <v-avatar>
-                  <img :src="getThumnail(item.media)">
+                  <img :src="getThumnail(item.raw.media)">
                 </v-avatar>
               </template>
-            </v-data-table>
+            </v-data-table-server>
             <v-text-field
               name="trackingNumber"
               label="伝票番号"

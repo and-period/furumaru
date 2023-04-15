@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { mdiFormatBold, mdiFormatItalic, mdiFormatStrikethrough, mdiCodeTags, mdiCodeNotEqualVariant, mdiUndo, mdiRedo, mdiFormatListBulleted, mdiFormatListNumbered, mdiArrowSplitHorizontal, mdiKeyboardReturn } from '@mdi/js'
+
 import StarterKit from '@tiptap/starter-kit'
 import { EditorContent, Editor } from '@tiptap/vue-3'
 
@@ -40,27 +42,27 @@ const fontSize = [
 const menus = [
   {
     label: 'bold',
-    icon: 'mdi-format-bold',
+    icon: mdiFormatBold,
     onClick: () => editor.chain().focus().toggleBold().run()
   },
   {
     label: 'italic',
-    icon: 'mdi-format-italic',
+    icon: mdiFormatItalic,
     onClick: () => editor.chain().focus().toggleItalic().run()
   },
   {
     label: 'strike',
-    icon: 'mdi-format-strikethrough',
+    icon: mdiFormatStrikethrough,
     onClick: () => editor.chain().focus().toggleStrike().run()
   },
   {
     label: 'code',
-    icon: 'mdi-code-tags',
+    icon: mdiCodeTags,
     onClick: () => editor.chain().focus().toggleCode().run()
   },
   {
     label: 'codeBlock',
-    icon: 'mdi-code-not-equal-variant',
+    icon: mdiCodeNotEqualVariant,
     onClick: () => editor.chain().focus().toggleCodeBlock().run()
   }
 ]
@@ -114,42 +116,42 @@ const handleChangeTextStyle = (level: number): void => {
     <p>{{ props.label }}</p>
 
     <div class="mb-2">
-      <v-btn-toggle :value="[]" dense>
+      <v-btn-toggle density="default">
         <v-btn @click="editor.chain().focus().undo().run()">
-          <v-icon>mdi-undo</v-icon>
+          <v-icon :icon="mdiUndo" />
         </v-btn>
         <v-btn @click="editor.chain().focus().redo().run()">
-          <v-icon>mdi-redo</v-icon>
+          <v-icon :icon="mdiRedo" />
         </v-btn>
       </v-btn-toggle>
 
-      <v-btn-toggle multiple :value="activeMenus" dense>
+      <v-btn-toggle v-value="activeMenus" multiple density="default">
         <v-btn v-for="(menu, i) in menus" :key="i" @click="menu.onClick">
           <v-icon>{{ menu.icon }}</v-icon>
         </v-btn>
       </v-btn-toggle>
 
-      <v-btn-toggle dense>
+      <v-btn-toggle density="default">
         <v-btn
           :class="{ 'is-active': editor.isActive('bulletList') }"
           @click="editor.chain().focus().toggleBulletList().run()"
         >
-          <v-icon>mdi-format-list-bulleted</v-icon>
+          <v-icon :icon="mdiFormatListBulleted" />
         </v-btn>
         <v-btn
           :class="{ 'is-active': editor.isActive('orderedList') }"
           @click="editor.chain().focus().toggleOrderedList().run()"
         >
-          <v-icon>mdi-format-list-numbered</v-icon>
+          <v-icon :icon="mdiFormatListNumbered" />
         </v-btn>
       </v-btn-toggle>
 
-      <v-btn-toggle :value="[]" dense>
+      <v-btn-toggle density="default">
         <v-btn @click="editor.chain().focus().setHorizontalRule().run()">
-          <v-icon>mdi-arrow-split-horizontal</v-icon>
+          <v-icon :icon="mdiArrowSplitHorizontal" />
         </v-btn>
         <v-btn @click="editor.chain().focus().setHardBreak().run()">
-          <v-icon>mdi-keyboard-return</v-icon>
+          <v-icon :icon="mdiKeyboardReturn" />
         </v-btn>
       </v-btn-toggle>
 
@@ -158,7 +160,7 @@ const handleChangeTextStyle = (level: number): void => {
           :value="activeStyle"
           :items="fontSize"
           hide-details
-          dense
+          density="default"
           class="pa-0 mt-0"
           label="スタイル"
           @change="handleChangeTextStyle"

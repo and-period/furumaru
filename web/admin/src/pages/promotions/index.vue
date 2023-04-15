@@ -1,6 +1,7 @@
 <script lang="ts" setup>
+import { mdiPlus, mdiPencil, mdiDelete } from '@mdi/js'
 import dayjs from 'dayjs'
-import { DataTableHeader } from 'vuetify'
+import { VDataTable } from 'vuetify/lib/labs/components'
 
 import { usePromotionStore } from '~/store'
 import { PromotionsResponsePromotionsInner } from '~/types/api'
@@ -16,38 +17,38 @@ const promotions = computed(() => {
   return promotionStore.promotions
 })
 
-const headers: DataTableHeader[] = [
+const headers: VDataTable['headers'] = [
   {
-    text: 'タイトル',
-    value: 'title'
+    title: 'タイトル',
+    key: 'title'
   },
   {
-    text: 'ステータス',
-    value: 'public'
+    title: 'ステータス',
+    key: 'public'
   },
   {
-    text: '割引コード',
-    value: 'code'
+    title: '割引コード',
+    key: 'code'
   },
   {
-    text: '割引方法',
-    value: 'discount'
+    title: '割引方法',
+    key: 'discount'
   },
   {
-    text: '投稿開始',
-    value: 'publishedAt'
+    title: '投稿開始',
+    key: 'publishedAt'
   },
   {
-    text: '使用開始',
-    value: 'startAt'
+    title: '使用開始',
+    key: 'startAt'
   },
   {
-    text: '使用終了',
-    value: 'endAt'
+    title: '使用終了',
+    key: 'endAt'
   },
   {
-    text: 'Actions',
-    value: 'actions',
+    title: 'Actions',
+    key: 'actions',
     sortable: false
   }
 ]
@@ -133,9 +134,7 @@ try {
       セール情報
       <v-spacer />
       <v-btn variant="outlined" color="primary" @click="handleClickAddButton">
-        <v-icon start>
-          mdi-plus
-        </v-icon>
+        <v-icon start :icon="mdiPlus" />
         セール情報登録
       </v-btn>
     </v-card-title>
@@ -165,44 +164,40 @@ try {
           no-data-text="登録されているセール情報がありません。"
         >
           <template #[`item.title`]="{ item }">
-            {{ item.title }}
+            {{ item.raw.title }}
           </template>
           <template #[`item.public`]="{ item }">
-            <v-chip size="small" :color="getStatusColor(item.public)">
-              {{ getStatus(item.public) }}
+            <v-chip size="small" :color="getStatusColor(item.raw.public)">
+              {{ getStatus(item.raw.public) }}
             </v-chip>
           </template>
           <template #[`item.code`]="{ item }">
-            {{ item.code }}
+            {{ item.raw.code }}
           </template>
           <template #[`item.discount`]="{ item }">
-            {{ getDiscount(item.discountType, item.discountRate) }}
+            {{ getDiscount(item.raw.discountType, item.raw.discountRate) }}
           </template>
           <template #[`item.publishedAt`]="{ item }">
-            {{ getDay(item.publishedAt) }}
+            {{ getDay(item.raw.publishedAt) }}
           </template>
           <template #[`item.startAt`]="{ item }">
-            {{ getDay(item.startAt) }}
+            {{ getDay(item.raw.startAt) }}
           </template>
           <template #[`item.endAt`]="{ item }">
-            {{ getDay(item.endAt) }}
+            {{ getDay(item.raw.endAt) }}
           </template>
           <template #[`item.actions`]="{ item }">
-            <v-btn variant="outlined" color="primary" size="small" @click="handleEdit(item)">
-              <v-icon size="small">
-                mdi-pencil
-              </v-icon>
+            <v-btn variant="outlined" color="primary" size="small" @click="handleEdit(item.raw)">
+              <v-icon size="small" :icon="mdiPencil" />
               編集
             </v-btn>
             <v-btn
-              outlined
               color="primary"
               size="small"
-              @click="openDeleteDialog(item)"
+              variant="outlined"
+              @click="openDeleteDialog(item.raw)"
             >
-              <v-icon size="small">
-                mdi-delete
-              </v-icon>
+              <v-icon size="small" :icon="mdiDelete" />
               削除
             </v-btn>
           </template>

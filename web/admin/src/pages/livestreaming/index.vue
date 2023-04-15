@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { mdiPlus } from '@mdi/js'
+
 const router = useRouter()
 
 const handleClickAddButton = () => {
@@ -17,7 +19,7 @@ const handleClickTestButton = () => {
       テスト配信
     </v-btn>
     <v-btn color="primary" variant="outlined" @click="handleClickAddButton">
-      <v-icon>mdi-plus</v-icon>
+      <v-icon :icon="mdiPlus" />
       ライブマルシェ登録
     </v-btn>
   </div>

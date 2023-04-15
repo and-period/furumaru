@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { mdiPlus } from '@mdi/js'
 import { useVuelidate } from '@vuelidate/core'
 
 import {
@@ -184,9 +185,7 @@ const handleSubmit = async () => {
       </v-card>
 
       <v-btn block variant="outlined" color="primary" type="submit">
-        <v-icon start>
-          mdi-plus
-        </v-icon>
+        <v-icon start :icon="mdiPlus" />
         更新
       </v-btn>
     </div>

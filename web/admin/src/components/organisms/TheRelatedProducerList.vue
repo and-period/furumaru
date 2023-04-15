@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { DataTableHeader } from 'vuetify'
+import { mdiAccount, mdiPencil } from '@mdi/js'
+import { VDataTable } from 'vuetify/lib/labs/components'
 
 import { useCoordinatorStore } from '~/store'
 import { ProducersResponseProducersInner } from '~/types/api'
@@ -28,30 +29,30 @@ const totalItems = computed(() => {
   return coordinatorStore.totalItems
 })
 
-const producerHeaders: DataTableHeader[] = [
+const producerHeaders: VDataTable['headers'] = [
   {
-    text: 'サムネイル',
-    value: 'thumbnailUrl'
+    title: 'サムネイル',
+    key: 'thumbnailUrl'
   },
   {
-    text: '生産者名',
-    value: 'name'
+    title: '生産者名',
+    key: 'name'
   },
   {
-    text: '店舗名',
-    value: 'storeName'
+    title: '店舗名',
+    key: 'storeName'
   },
   {
-    text: 'Email',
-    value: 'email'
+    title: 'Email',
+    key: 'email'
   },
   {
-    text: '電話番号',
-    value: 'phoneNumber'
+    title: '電話番号',
+    key: 'phoneNumber'
   },
   {
-    text: 'Actions',
-    value: 'actions',
+    title: 'Actions',
+    key: 'actions',
     sortable: false
   }
 ]
@@ -75,10 +76,10 @@ const handleEdit = (item: ProducersResponseProducersInner) => {
 
 <template>
   <div>
-    <v-data-table
+    <v-data-table-server
       :headers="producerHeaders"
       :items="relateProducers"
-      :server-items-length="totalItems"
+      :items-length="totalItems"
       :footer-props="props.tableFooterProps"
       no-data-text="登録されている生産者がいません。"
       @update:items-per-page="handleUpdateItemsPerPage"
@@ -87,29 +88,25 @@ const handleEdit = (item: ProducersResponseProducersInner) => {
       <template #[`item.thumbnailUrl`]="{ item }">
         <v-avatar>
           <img
-            v-if="item.thumbnailUrl !== ''"
-            :src="item.thumbnailUrl"
-            :alt="`${item.storeName}-profile`"
+            v-if="item.raw.thumbnailUrl !== ''"
+            :src="item.raw.thumbnailUrl"
+            :alt="`${item.raw.storeName}-profile`"
           >
-          <v-icon v-else>
-            mdi-account
-          </v-icon>
+          <v-icon v-else :icon="mdiAccount" />
         </v-avatar>
       </template>
       <template #[`item.name`]="{ item }">
-        {{ `${item.lastname} ${item.firstname}` }}
+        {{ `${item.raw.lastname} ${item.raw.firstname}` }}
       </template>
       <template #[`item.phoneNumber`]="{ item }">
-        {{ convertPhone(item.phoneNumber) }}
+        {{ convertPhone(item.raw.phoneNumber) }}
       </template>
       <template #[`item.actions`]="{ item }">
-        <v-btn variant="outlined" color="primary" size="small" @click="handleEdit(item)">
-          <v-icon size="small">
-            mdi-pencil
-          </v-icon>
+        <v-btn variant="outlined" color="primary" size="small" @click="handleEdit(item.raw)">
+          <v-icon size="small" :icon="mdiPencil" />
           編集
         </v-btn>
       </template>
-    </v-data-table>
+    </v-data-table-server>
   </div>
 </template>

@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import { VDataTable } from 'vuetify/labs/components'
+import { mdiPencil, mdiDelete } from '@mdi/js'
+
 import { usePagination } from '~/lib/hooks'
 import { useUserStore } from '~/store/customer'
 
@@ -13,30 +16,30 @@ const {
 } = usePagination()
 const id = 'ThisIsID'
 
-const headers = [
+const headers: VDataTable['headers'] = [
   {
-    text: '名前',
-    value: 'name'
+    title: '名前',
+    key: 'name'
   },
   {
-    text: '電話番号',
-    value: 'phoneNumber'
+    title: '電話番号',
+    key: 'phoneNumber'
   },
   {
-    text: '購入数',
-    value: 'totalOrder'
+    title: '購入数',
+    key: 'totalOrder'
   },
   {
-    text: '購入金額',
-    value: 'totalAmount'
+    title: '購入金額',
+    key: 'totalAmount'
   },
   {
-    text: 'アカウントの有無',
-    value: 'registered'
+    title: 'アカウントの有無',
+    key: 'registered'
   },
   {
-    text: 'Action',
-    value: 'action'
+    title: 'Action',
+    key: 'action'
   }
 ]
 
@@ -102,27 +105,23 @@ try {
           @update:items-per-page="handleUpdateItemsPerPage"
         >
           <template #[`item.name`]="{ item }">
-            {{ `${item.lastname} ${item.firstname}` }}
+            {{ `${item.raw.lastname} ${item.raw.firstname}` }}
           </template>
           <template #[`item.totalAmount`]="{ item }">
-            {{ `${item.totalAmount}` }} 円
+            {{ `${item.raw.totalAmount}` }} 円
           </template>
           <template #[`item.registered`]="{ item }">
-            <v-chip size="small" :color="getStatusColor(item.registered)">
-              {{ registerStatus(item.registered) }}
+            <v-chip size="small" :color="getStatusColor(item.raw.registered)">
+              {{ registerStatus(item.raw.registered) }}
             </v-chip>
           </template>
           <template #[`item.action`]>
             <v-btn variant="outlined" color="primary" size="small" @click="handleEdit()">
-              <v-icon size="small">
-                mdi-pencil
-              </v-icon>
+              <v-icon size="small" :icon="mdiPencil" />
               詳細
             </v-btn>
             <v-btn variant="outlined" color="primary" size="small">
-              <v-icon size="small">
-                mdi-delete
-              </v-icon>
+              <v-icon size="small" :icon="mdiDelete" />
               削除
             </v-btn>
           </template>

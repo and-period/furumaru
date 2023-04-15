@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { mdiPlus, mdiSearchWeb, mdiAccount, mdiPencil, mdiDelete } from '@mdi/js'
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useCommonStore, useCoordinatorStore } from '~/store'
 import { CoordinatorsResponseCoordinatorsInner } from '~/types/api'
@@ -155,9 +156,7 @@ try {
       コーディネータ管理
       <v-spacer />
       <v-btn variant="outlined" color="primary" @click="handleClickAddButton">
-        <v-icon start>
-          mdi-plus
-        </v-icon>
+        <v-icon start :icon="mdiPlus" />
         コーディネータ登録
       </v-btn>
     </v-card-title>
@@ -193,18 +192,18 @@ try {
             label="絞り込み"
           />
           <v-btn type="submit" class="ml-4" size="small" variant="outlined" color="primary">
-            <v-icon>mdi-search</v-icon>
+            <v-icon :icon="mdiSearchWeb" />
             検索
           </v-btn>
           <v-spacer />
         </form>
-        <v-data-table
+        <v-data-table-server
           show-select
           :headers="headers"
           :items="coordinators"
           :search="query"
           :no-results-text="noResultsText"
-          :server-items-length="totalItems"
+          :items-length="totalItems"
           :footer-props="options"
           no-data-text="登録されているコーディネータがいません。"
           @update:items-per-page="handleUpdateItemsPerPage"
@@ -213,41 +212,35 @@ try {
           <template #[`item.thumbnail`]="{ item }">
             <v-avatar>
               <img
-                v-if="item.thumbnailUrl !== ''"
-                :src="item.thumbnailUrl"
-                :alt="`${item.storeName}-profile`"
+                v-if="item.raw.thumbnailUrl !== ''"
+                :src="item.raw.thumbnailUrl"
+                :alt="`${item.raw.storeName}-profile`"
               >
-              <v-icon v-else>
-                mdi-account
-              </v-icon>
+              <v-icon v-else :icon="mdiAccount" />
             </v-avatar>
           </template>
           <template #[`item.name`]="{ item }">
-            {{ `${item.lastname} ${item.firstname}` }}
+            {{ `${item.raw.lastname} ${item.raw.firstname}` }}
           </template>
           <template #[`item.phoneNumber`]="{ item }">
-            {{ `${item.phoneNumber}`.replace('+81', '0') }}
+            {{ `${item.raw.phoneNumber}`.replace('+81', '0') }}
           </template>
           <template #[`item.actions`]="{ item }">
-            <v-btn variant="outlined" color="primary" size="small" @click="handleEdit(item)">
-              <v-icon size="small">
-                mdi-pencil
-              </v-icon>
+            <v-btn variant="outlined" color="primary" size="small" @click="handleEdit(item.raw)">
+              <v-icon size="small" :icon="mdiPencil" />
               編集
             </v-btn>
             <v-btn
               variant="outlined"
               color="primary"
               size="small"
-              @click="handleClickDeleteButton(item)"
+              @click="handleClickDeleteButton(item.raw)"
             >
-              <v-icon size="small">
-                mdi-delete
-              </v-icon>
+              <v-icon size="small" :icon="mdiDelete" />
               削除
             </v-btn>
           </template>
-        </v-data-table>
+        </v-data-table-server>
       </v-card-text>
     </v-card>
   </div>

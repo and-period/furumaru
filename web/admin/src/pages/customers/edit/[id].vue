@@ -137,7 +137,7 @@ const items = [
       </v-tab-item>
 
       <v-tab-item value="customerItems">
-        <v-data-table :headers="headers" :items="items">
+        <v-data-table-server :headers="headers" :items="items">
           <template #foot>
             <tfoot>
               <tr>
@@ -148,7 +148,7 @@ const items = [
               </tr>
             </tfoot>
           </template>
-        </v-data-table>
+        </v-data-table-server>
       </v-tab-item>
     </v-tabs-items>
   </div>
