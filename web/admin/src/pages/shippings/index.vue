@@ -1,18 +1,91 @@
+<script lang="ts" setup>
+import { mdiPlus, mdiPencil } from '@mdi/js'
+import { VDataTable } from 'vuetify/lib/labs/components'
+import { prefecturesList } from '~/constants'
+import { dateTimeFormatter, moneyFormat } from '~/lib/formatter'
+import { usePagination } from '~/lib/hooks'
+import { useShippingStore } from '~/store'
+
+const shippingStore = useShippingStore()
+const router = useRouter()
+
+const totalItems = computed(() => {
+  return shippingStore.totalItems
+})
+
+const shippings = computed(() => {
+  return shippingStore.shippings
+})
+
+const headers: VDataTable['headers'] = [
+  {
+    title: '名前',
+    key: 'name'
+  },
+  {
+    title: '配送無料オプション',
+    key: 'hasFreeShipping'
+  },
+  {
+    title: '更新日',
+    key: 'updatedAt'
+  },
+  {
+    title: '',
+    key: 'actions'
+  }
+]
+
+const {
+  options,
+  offset,
+  itemsPerPage,
+  updateCurrentPage,
+  handleUpdateItemsPerPage
+} = usePagination()
+
+const fetchState = useAsyncData(async () => {
+  try {
+    await shippingStore.fetchShippings(itemsPerPage.value, offset.value)
+  } catch (err) {
+    console.log(err)
+  }
+})
+
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || false
+}
+
+const handleClickAddButton = () => {
+  router.push('/shippings/add')
+}
+
+const handleClickEditButton = (id: string) => {
+  router.push(`/shippings/edit/${id}`)
+}
+
+try {
+  await fetchState.execute()
+} catch (err) {
+  console.log('failed to setup', err)
+}
+</script>
+
 <template>
   <div>
-    <v-card-title>
+    <v-card-title class="d-flex flex-row">
       配送設定一覧
       <v-spacer />
-      <v-btn outlined color="primary" @click="handleClickAddButton">
-        <v-icon left>mdi-plus</v-icon>
+      <v-btn variant="outlined" color="primary" @click="handleClickAddButton">
+        <v-icon start :icon="mdiPlus" />
         配送情報登録
       </v-btn>
     </v-card-title>
-    <v-card class="mt-4" flat :loading="fetchState.pending">
+    <v-card class="mt-4" flat :loading="isLoading()">
       <v-card-text>
-        <v-data-table
+        <v-data-table-server
           :headers="headers"
-          :server-items-length="totalItems"
+          :items-length="totalItems"
           :footer-props="options"
           :items="shippings"
           show-expand
@@ -21,23 +94,23 @@
           @update:items-per-page="handleUpdateItemsPerPage"
         >
           <template #[`item.hasFreeShipping`]="{ item }">
-            <v-chip small>
-              {{ item.hasFreeShipping ? '有り' : '無し' }}
+            <v-chip size="small">
+              {{ item.raw.hasFreeShipping ? '有り' : '無し' }}
             </v-chip>
           </template>
 
           <template #[`item.updatedAt`]="{ item }">
-            {{ dateTimeFormatter(item.updatedAt) }}
+            {{ dateTimeFormatter(item.raw.updatedAt) }}
           </template>
 
           <template #[`item.actions`]="{ item }">
             <v-btn
-              outlined
+              variant="outlined"
               color="primary"
-              small
-              @click="handleClickEditButton(item.id)"
+              size="small"
+              @click="handleClickEditButton(item.raw.id)"
             >
-              <v-icon>mdi-pencil</v-icon>
+              <v-icon :icon="mdiPencil" />
               編集
             </v-btn>
           </template>
@@ -45,9 +118,11 @@
           <template #expanded-item="{ item }">
             <td :colspan="headers.length" class="pa-4">
               <div v-for="n in [60, 80, 100]" :key="n">
-                <div class="row my-2">サイズ{{ n }}詳細</div>
+                <div class="row my-2">
+                  サイズ{{ n }}詳細
+                </div>
                 <v-row
-                  v-for="(boxRate, i) in item[`box${n}Rates`]"
+                  v-for="(boxRate, i) in item.raw[`box${n}Rates`]"
                   :key="i"
                   class="align-center"
                 >
@@ -57,17 +132,18 @@
                   <v-col cols="1">
                     {{ boxRate.name }}
                   </v-col>
-                  <v-col cols="1"> {{ moneyFormat(boxRate.price) }} 円 </v-col>
+                  <v-col cols="1">
+                    {{ moneyFormat(boxRate.price) }} 円
+                  </v-col>
                   <v-col cols="9">
                     <v-select
-                      :value="boxRate.prefectures"
+                      v-model="boxRate.prefectures"
                       :items="prefecturesList"
                       :label="`${boxRate.prefectures.length}/${prefecturesList.length}`"
-                      multiple
                       hide-details
                     >
                       <template #selection="{ item: selectItem, index }">
-                        <v-chip v-if="index < 5" small>
+                        <v-chip v-if="index < 5" size="small">
                           <span>{{ selectItem.text }}</span>
                         </v-chip>
                         <span
@@ -83,97 +159,8 @@
               </div>
             </td>
           </template>
-        </v-data-table>
+        </v-data-table-server>
       </v-card-text>
     </v-card>
   </div>
 </template>
-
-<script lang="ts">
-import {
-  computed,
-  defineComponent,
-  useFetch,
-  useRouter,
-} from '@nuxtjs/composition-api'
-import { DataTableHeader } from 'vuetify'
-
-import { prefecturesList } from '~/constants'
-import { dateTimeFormatter, moneyFormat } from '~/lib/formatter'
-import { usePagination } from '~/lib/hooks'
-import { useShippingStore } from '~/store/shippings'
-export default defineComponent({
-  setup() {
-    const shippingStore = useShippingStore()
-    const router = useRouter()
-
-    const totalItems = computed(() => {
-      return shippingStore.totalItems
-    })
-
-    const shippings = computed(() => {
-      return shippingStore.shippings
-    })
-
-    const headers: DataTableHeader[] = [
-      {
-        text: '名前',
-        value: 'name',
-      },
-      {
-        text: '配送無料オプション',
-        value: 'hasFreeShipping',
-      },
-      {
-        text: '更新日',
-        value: 'updatedAt',
-      },
-      {
-        text: '',
-        value: 'actions',
-      },
-    ]
-
-    const {
-      options,
-      offset,
-      itemsPerPage,
-      updateCurrentPage,
-      handleUpdateItemsPerPage,
-    } = usePagination()
-
-    const { fetchState } = useFetch(async () => {
-      try {
-        await shippingStore.fetchShippings(itemsPerPage.value, offset.value)
-      } catch (err) {
-        console.log(err)
-      }
-    })
-
-    const handleClickAddButton = () => {
-      router.push('/shippings/add')
-    }
-
-    const handleClickEditButton = (id: string) => {
-      router.push(`/shippings/edit/${id}`)
-    }
-
-    return {
-      fetchState, // 初回ロード状況
-      totalItems, // サーバ上の配送情報の個数
-      options, // ページネーションのオプション
-      itemsPerPage, // 1ページあたりの表示件数
-      headers, // テーブルヘッダー
-      shippings, // 配送情報一覧
-      prefecturesList, // 都道府県リスト
-      // 関数
-      dateTimeFormatter,
-      moneyFormat,
-      updateCurrentPage,
-      handleUpdateItemsPerPage,
-      handleClickAddButton,
-      handleClickEditButton,
-    }
-  },
-})
-</script>

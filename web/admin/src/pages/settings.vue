@@ -1,3 +1,45 @@
+<script lang="ts" setup>
+import { useAuthStore } from '~/store'
+
+const router = useRouter()
+const { logout } = useAuthStore()
+
+const menuList = ref<{ text: string; onClick: Function; class?: string }[]>([
+  {
+    text: 'カテゴリー・品目登録',
+    onClick: () => {
+      router.push('/categories')
+    }
+  },
+  {
+    text: '配送設定',
+    onClick: () => {
+      router.push('/shippings')
+    }
+  },
+  {
+    text: 'メールアドレス変更',
+    onClick: () => {
+      router.push('/accounts/email')
+    }
+  },
+  {
+    text: 'パスワード変更',
+    onClick: () => {
+      router.push('/accounts/password')
+    }
+  },
+  {
+    text: 'サインアウト',
+    class: 'red--text ',
+    onClick: () => {
+      logout()
+      router.push('/')
+    }
+  }
+])
+</script>
+
 <template>
   <div>
     <v-card-title>システム設定</v-card-title>
@@ -13,57 +55,3 @@
     </v-list>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, ref, useRouter } from '@nuxtjs/composition-api'
-
-import { useAuthStore } from '~/store/auth'
-
-export default defineComponent({
-  setup() {
-    const router = useRouter()
-    const { logout } = useAuthStore()
-
-    const menuList = ref<{ text: string; onClick: Function; class?: string }[]>(
-      [
-        {
-          text: 'カテゴリー・品目登録',
-          onClick: () => {
-            router.push('/categories')
-          },
-        },
-        {
-          text: '配送設定',
-          onClick: () => {
-            router.push('/shippings')
-          },
-        },
-        {
-          text: 'メールアドレス変更',
-          onClick: () => {
-            router.push('/accounts/email')
-          },
-        },
-        {
-          text: 'パスワード変更',
-          onClick: () => {
-            router.push('/accounts/password')
-          },
-        },
-        {
-          text: 'サインアウト',
-          class: 'red--text ',
-          onClick: () => {
-            logout()
-            router.push('/')
-          },
-        },
-      ]
-    )
-
-    return {
-      menuList,
-    }
-  },
-})
-</script>

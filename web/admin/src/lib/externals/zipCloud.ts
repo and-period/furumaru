@@ -29,7 +29,7 @@ export interface SearchAddressResponse {
  * @param code 郵便番号
  * @returns
  */
-export async function searchAddressByPostalCode(
+export async function searchAddressByPostalCode (
   code: number
 ): Promise<SearchAddressResponse> {
   try {
@@ -48,7 +48,7 @@ export async function searchAddressByPostalCode(
     const result: SearchAddressResponse = {
       prefecture: res.data.results[0].address1,
       city: res.data.results[0].address2,
-      addressLine1: res.data.results[0].address3,
+      addressLine1: res.data.results[0].address3
     }
     return result
   } catch (error) {

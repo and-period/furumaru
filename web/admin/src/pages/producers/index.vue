@@ -1,15 +1,181 @@
+<script lang="ts" setup>
+import { mdiPlus, mdiAccount, mdiPencil, mdiDelete } from '@mdi/js'
+import { VDataTable } from 'vuetify/lib/labs/components'
+
+import { useAlert, usePagination } from '~/lib/hooks'
+import { useCommonStore, useProducerStore } from '~/store'
+import { ImageSize, ProducersResponseProducersInner } from '~/types/api'
+import { ApiBaseError } from '~/types/exception'
+
+const router = useRouter()
+
+const { isShow, alertText, alertType, show } = useAlert('error')
+const producerStore = useProducerStore()
+const { addSnackbar } = useCommonStore()
+
+const deleteDialog = ref<boolean>(false)
+const selectedId = ref<string>('')
+
+const producers = computed(() => {
+  return producerStore.producers
+})
+
+const totalItems = computed(() => {
+  return producerStore.totalItems
+})
+
+const {
+  updateCurrentPage,
+  itemsPerPage,
+  handleUpdateItemsPerPage,
+  options,
+  offset
+} = usePagination()
+
+watch(itemsPerPage, () => {
+  producerStore.fetchProducers(itemsPerPage.value, 0, '')
+})
+
+const selectedItemName = computed(() => {
+  const selectedItem = producers.value.find(
+    item => item.id === selectedId.value
+  )
+  return selectedItem
+    ? `${selectedItem.lastname} ${selectedItem.firstname}`
+    : ''
+})
+
+const handleUpdatePage = async (page: number) => {
+  updateCurrentPage(page)
+  await producerStore.fetchProducers(itemsPerPage.value, offset.value, '')
+}
+
+const fetchState = useAsyncData(async () => {
+  try {
+    await producerStore.fetchProducers(itemsPerPage.value, offset.value)
+  } catch (error) {
+    const errorMessage =
+      error instanceof ApiBaseError
+        ? error.message
+        : '不明なエラーが発生しました。'
+    show(errorMessage)
+  }
+})
+
+const headers: VDataTable['headers'] = [
+  {
+    title: 'サムネイル',
+    key: 'thumbnail'
+  },
+  {
+    title: '農園名',
+    key: 'storeName'
+  },
+  {
+    title: '生産者名',
+    key: 'name'
+  },
+  {
+    title: 'Email',
+    key: 'email'
+  },
+  {
+    title: '電話番号',
+    key: 'phoneNumber'
+  },
+  {
+    title: 'Actions',
+    key: 'actions',
+    sortable: false
+  },
+  {
+    title: '動画',
+    key: 'video',
+    sortable: false
+  }
+]
+
+const handleClickAddButton = () => {
+  router.push('/producers/add')
+}
+
+const handleEdit = (item: ProducersResponseProducersInner) => {
+  router.push(`/producers/edit/${item.id}`)
+}
+
+const handleClickCancelButton = () => {
+  deleteDialog.value = false
+}
+
+const handleClickDeleteButton = (item: ProducersResponseProducersInner) => {
+  selectedId.value = item.id
+  deleteDialog.value = true
+}
+
+const handleDeleteFormSubmit = async () => {
+  try {
+    await producerStore.deleteProducer(selectedId.value)
+    addSnackbar({
+      color: 'info',
+      message: '生産者を削除しました。'
+    })
+    fetchState.refresh()
+  } catch (error) {
+    const errorMessage =
+      error instanceof ApiBaseError
+        ? error.message
+        : '不明なエラーが発生しました。'
+    show(errorMessage)
+  }
+  deleteDialog.value = false
+}
+
+const handleAddVideo = (item: ProducersResponseProducersInner) => {
+  console.log(item)
+}
+
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || false
+}
+
+const getImages = (producer: ProducersResponseProducersInner): string => {
+  if (!producer.thumbnails) {
+    return ''
+  }
+  const images: string[] = producer.thumbnails.map((thumbnail): string => {
+    switch (thumbnail.size) {
+      case ImageSize.SMALL:
+        return `${thumbnail.url} 1x`
+      case ImageSize.MEDIUM:
+        return `${thumbnail.url} 2x`
+      case ImageSize.LARGE:
+        return `${thumbnail.url} 3x`
+      default:
+        return thumbnail.url
+    }
+  })
+  return images.join(', ')
+}
+
+try {
+  await fetchState.execute()
+} catch (err) {
+  console.log('failed to setup', err)
+}
+</script>
+
 <template>
   <div>
-    <v-card-title>
+    <v-card-title class="d-flex flex-row">
       生産者管理
       <v-spacer />
-      <v-btn outlined color="primary" @click="handleClickAddButton">
-        <v-icon left>mdi-plus</v-icon>
+      <v-btn variant="outlined" color="primary" @click="handleClickAddButton">
+        <v-icon start :icon="mdiPlus" />
         生産者登録
       </v-btn>
     </v-card-title>
 
-    <v-alert v-model="isShow" :type="alertType" class="my-2" dismissible>
+    <v-alert v-model="isShow" :type="alertType" class="my-2" closable>
       {{ alertText }}
     </v-alert>
 
@@ -20,33 +186,24 @@
         </v-card-title>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="error" text @click="handleClickCancelButton">
+          <v-btn color="error" variant="text" @click="handleClickCancelButton">
             キャンセル
           </v-btn>
-          <v-btn color="primary" outlined @click="handleDeleteFormSubmit">
+          <v-btn color="primary" variant="outlined" @click="handleDeleteFormSubmit">
             削除
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
-    <v-card class="mt-4" flat :loading="fetchState.pending">
+    <v-card class="mt-4" flat :loading="isLoading()">
       <v-card-text>
-        <form class="d-flex align-center" @submit.prevent="handleSearch">
-          <v-text-field v-model="search" label="絞り込み" />
-          <v-btn type="submit" class="ml-4" small outlined color="primary">
-            <v-icon>mdi-search</v-icon>
-            検索
-          </v-btn>
-          <v-spacer />
-        </form>
-        <v-data-table
-          show-select
+        <v-data-table-server
           :headers="headers"
           :items="producers"
           :search="query"
           :no-results-text="noResultsText"
-          :server-items-length="totalItems"
+          :items-length="totalItems"
           :footer-props="options"
           no-data-text="登録されている生産者がいません。"
           @update:items-per-page="handleUpdateItemsPerPage"
@@ -54,237 +211,45 @@
         >
           <template #[`item.thumbnail`]="{ item }">
             <v-avatar>
-              <img
-                v-if="item.thumbnailUrl !== ''"
-                :src="item.thumbnailUrl"
-                :alt="`${item.storeName}-profile`"
+              <v-img
+                v-if="item.raw.thumbnailUrl !== ''"
+                cover
+                :src="item.raw.thumbnailUrl"
+                :srcset="getImages(item.raw)"
+                :alt="`${item.raw.storeName}-profile`"
               />
-              <v-icon v-else>mdi-account</v-icon>
+              <v-icon v-else :icon="mdiAccount" />
             </v-avatar>
           </template>
           <template #[`item.name`]="{ item }">
-            {{ `${item.lastname} ${item.firstname}` }}
+            {{ `${item.raw.lastname} ${item.raw.firstname}` }}
           </template>
           <template #[`item.phoneNumber`]="{ item }">
-            {{ `${item.phoneNumber}`.replace('+81', '0') }}
+            {{ `${item.raw.phoneNumber}`.replace('+81', '0') }}
           </template>
           <template #[`item.actions`]="{ item }">
-            <v-btn outlined color="primary" small @click="handleEdit(item)">
-              <v-icon small>mdi-pencil</v-icon>
+            <v-btn class="mr-2" variant="outlined" color="primary" size="small" @click="handleEdit(item.raw)">
+              <v-icon size="small" :icon="mdiPencil" />
               編集
             </v-btn>
             <v-btn
-              outlined
               color="primary"
-              small
-              @click="handleClickDeleteButton(item)"
+              size="small"
+              variant="outlined"
+              @click="handleClickDeleteButton(item.raw)"
             >
-              <v-icon small>mdi-delete</v-icon>
+              <v-icon size="small" :icon="mdiDelete" />
               削除
             </v-btn>
           </template>
           <template #[`item.video`]="{ item }">
-            <v-btn outlined color="primary" small @click="handleAddVideo(item)">
-              <v-icon small>mdi-plus</v-icon>
+            <v-btn variant="outlined" color="primary" size="small" @click="handleAddVideo(item.raw)">
+              <v-icon size="small" :icon="mdiPlus" />
               追加
             </v-btn>
           </template>
-        </v-data-table>
+        </v-data-table-server>
       </v-card-text>
     </v-card>
   </div>
 </template>
-
-<script lang="ts">
-import {
-  computed,
-  defineComponent,
-  ref,
-  useFetch,
-  useRouter,
-  watch,
-} from '@nuxtjs/composition-api'
-import { DataTableHeader } from 'vuetify'
-
-import { useAlert, usePagination } from '~/lib/hooks'
-import { useCommonStore } from '~/store/common'
-import { useProducerStore } from '~/store/producer'
-import { ProducersResponseProducersInner } from '~/types/api'
-import { ApiBaseError } from '~/types/exception'
-
-export default defineComponent({
-  setup() {
-    const router = useRouter()
-
-    const { isShow, alertText, alertType, show } = useAlert('error')
-    const producerStore = useProducerStore()
-    const { addSnackbar } = useCommonStore()
-
-    const search = ref<string>('')
-    const query = ref<string>('')
-
-    const deleteDialog = ref<boolean>(false)
-    const selectedId = ref<string>('')
-
-    const producers = computed(() => {
-      return producerStore.producers
-    })
-
-    const totalItems = computed(() => {
-      return producerStore.totalItems
-    })
-
-    const noResultsText = computed(() => {
-      return `「${query.value}」に一致するデータはありません。`
-    })
-
-    watch(search, () => {
-      if (search.value === '') {
-        query.value = ''
-      }
-    })
-
-    const {
-      updateCurrentPage,
-      itemsPerPage,
-      handleUpdateItemsPerPage,
-      options,
-      offset,
-    } = usePagination()
-
-    watch(itemsPerPage, () => {
-      producerStore.fetchProducers(itemsPerPage.value, 0, '')
-    })
-
-    const selectedItemName = computed(() => {
-      const selectedItem = producers.value.find(
-        (item) => item.id === selectedId.value
-      )
-      return selectedItem
-        ? `${selectedItem.lastname} ${selectedItem.firstname}`
-        : ''
-    })
-
-    const handleUpdatePage = async (page: number) => {
-      updateCurrentPage(page)
-      await producerStore.fetchProducers(itemsPerPage.value, offset.value, '')
-    }
-
-    const { fetchState, fetch } = useFetch(async () => {
-      try {
-        await producerStore.fetchProducers(itemsPerPage.value, offset.value)
-      } catch (error) {
-        const errorMessage =
-          error instanceof ApiBaseError
-            ? error.message
-            : '不明なエラーが発生しました。'
-        show(errorMessage)
-      }
-    })
-
-    const headers: DataTableHeader[] = [
-      {
-        text: 'サムネイル',
-        value: 'thumbnail',
-      },
-      {
-        text: '農園名',
-        value: 'storeName',
-      },
-      {
-        text: '生産者名',
-        value: 'name',
-      },
-      {
-        text: 'Email',
-        value: 'email',
-      },
-      {
-        text: '電話番号',
-        value: 'phoneNumber',
-      },
-      {
-        text: 'Actions',
-        value: 'actions',
-        sortable: false,
-      },
-      {
-        text: '動画',
-        value: 'video',
-        sortable: false,
-      },
-    ]
-
-    const handleClickAddButton = () => {
-      router.push('/producers/add')
-    }
-
-    const handleSearch = () => {
-      query.value = search.value
-    }
-
-    const handleEdit = (item: ProducersResponseProducersInner) => {
-      router.push(`/producers/edit/${item.id}`)
-    }
-
-    const handleClickCancelButton = () => {
-      deleteDialog.value = false
-    }
-
-    const handleClickDeleteButton = (item: ProducersResponseProducersInner) => {
-      selectedId.value = item.id
-      deleteDialog.value = true
-    }
-
-    const handleDeleteFormSubmit = async () => {
-      try {
-        await producerStore.deleteProducer(selectedId.value)
-        addSnackbar({
-          color: 'info',
-          message: '生産者を削除しました。',
-        })
-        fetch()
-      } catch (error) {
-        const errorMessage =
-          error instanceof ApiBaseError
-            ? error.message
-            : '不明なエラーが発生しました。'
-        show(errorMessage)
-      }
-      deleteDialog.value = false
-    }
-
-    const handleAddVideo = (item: ProducersResponseProducersInner) => {
-      console.log(item)
-    }
-
-    return {
-      // 定数
-      headers,
-      options,
-      noResultsText,
-      alertType,
-      // 変数
-      isShow,
-      alertText,
-      deleteDialog,
-      fetchState,
-      producers,
-      totalItems,
-      search,
-      query,
-      selectedItemName,
-      // 関数
-      handleClickAddButton,
-      handleUpdatePage,
-      handleUpdateItemsPerPage,
-      handleSearch,
-      handleEdit,
-      handleClickDeleteButton,
-      handleClickCancelButton,
-      handleDeleteFormSubmit,
-      handleAddVideo,
-    }
-  },
-})
-</script>

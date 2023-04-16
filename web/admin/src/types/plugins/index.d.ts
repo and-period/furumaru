@@ -1,8 +1,7 @@
-import { CustomErrorMessage } from '~/plugins/api-error-handler'
-import { useAuthStore } from '~/store/auth'
-import { OrderApi } from '~/types/api'
-
 import 'pinia'
+
+import { CustomErrorMessage } from '~/plugins/api-error-handler'
+import { useAuthStore } from '~/store'
 
 declare module 'vue/types/vue' {
   interface Vue {
@@ -32,7 +31,5 @@ declare module 'pinia' {
       error: unknown,
       customObject?: CustomErrorMessage
     ) => Promise<never>
-
-    orderApiClient: (token: string) => OrderApi
   }
 }

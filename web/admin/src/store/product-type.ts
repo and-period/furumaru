@@ -1,17 +1,12 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
 
-import ApiClientFactory from '../plugins/factory'
-
-import { useAuthStore } from './auth'
 import { useCommonStore } from './common'
-
 import {
   CreateProductTypeRequest,
-  ProductTypeApi,
   ProductTypesResponse,
   UpdateProductTypeRequest,
-  UploadImageResponse,
+  UploadImageResponse
 } from '~/types/api'
 import {
   AuthError,
@@ -19,39 +14,24 @@ import {
   ConnectionError,
   InternalServerError,
   NotFoundError,
-  ValidationError,
+  ValidationError
 } from '~/types/exception'
+import { apiClient } from '~/plugins/api-client'
 
-export const useProductTypeStore = defineStore('ProductType', {
-  state: () => {
-    const apiClient = (token: string) => {
-      const factory = new ApiClientFactory()
-      return factory.create(ProductTypeApi, token)
-    }
-    return {
-      productTypes: [] as ProductTypesResponse['productTypes'],
-      totalItems: 0,
-      apiClient,
-    }
-  },
+export const useProductTypeStore = defineStore('productType', {
+  state: () => ({
+    productTypes: [] as ProductTypesResponse['productTypes'],
+    totalItems: 0
+  }),
   actions: {
     /**
      * 品目を全件取得する非同期関数
      * @param limit 取得上限数
      * @param offset 取得開始位置
      */
-    async fetchProductTypes(
-      limit: number = 20,
-      offset: number = 0
-    ): Promise<void> {
+    async fetchProductTypes (limit = 20, offset = 0): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-
-        const res = await this.apiClient(accessToken).v1ListAllProductTypes(
+        const res = await apiClient.productTypeApi().v1ListAllProductTypes(
           limit,
           offset
         )
@@ -82,26 +62,20 @@ export const useProductTypeStore = defineStore('ProductType', {
      * @param payload
      * @returns
      */
-    async createProductType(
+    async createProductType (
       categoryId: string,
       payload: CreateProductTypeRequest
     ): Promise<void> {
       const commonStore = useCommonStore()
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-
-        const res = await this.apiClient(accessToken).v1CreateProductType(
+        const res = await apiClient.productTypeApi().v1CreateProductType(
           categoryId,
           payload
         )
         this.productTypes.unshift(res.data)
         commonStore.addSnackbar({
-          message: `品目を追加しました。`,
-          color: 'info',
+          message: '品目を追加しました。',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -141,19 +115,13 @@ export const useProductTypeStore = defineStore('ProductType', {
      * @param payload 品目情報
      * @returns
      */
-    async editProductType(
+    async editProductType (
       categoryId: string,
       productTypeId: string,
       payload: UpdateProductTypeRequest
     ) {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-
-        await this.apiClient(accessToken).v1UpdateProductType(
+        await apiClient.productTypeApi().v1UpdateProductType(
           categoryId,
           productTypeId,
           payload
@@ -195,25 +163,19 @@ export const useProductTypeStore = defineStore('ProductType', {
      * @param productTypeId 品目ID
      * @returns
      */
-    async deleteProductType(
+    async deleteProductType (
       categoryId: string,
       productTypeId: string
     ): Promise<void> {
       const commonStore = useCommonStore()
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-
-        await this.apiClient(accessToken).v1DeleteProductType(
+        await apiClient.productTypeApi().v1DeleteProductType(
           categoryId,
           productTypeId
         )
         commonStore.addSnackbar({
           message: '品目削除が完了しました',
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -252,22 +214,14 @@ export const useProductTypeStore = defineStore('ProductType', {
      * @param payload 品目画像のファイルオブジェクト
      * @returns アップロード後の品目画像のパスを含んだオブジェクト
      */
-    async uploadProductTypeIcon(payload: File): Promise<UploadImageResponse> {
+    async uploadProductTypeIcon (payload: File): Promise<UploadImageResponse> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-
-        const res = await this.apiClient(accessToken).v1UploadProductTypeIcon(
+        const res = await apiClient.productTypeApi().v1UploadProductTypeIcon(
           payload,
           {
             headers: {
-              'Content-Type': 'multipart/form-data',
-            },
+              'Content-Type': 'multipart/form-data'
+            }
           }
         )
         return res.data
@@ -296,6 +250,6 @@ export const useProductTypeStore = defineStore('ProductType', {
         }
         throw new InternalServerError(error)
       }
-    },
-  },
+    }
+  }
 })

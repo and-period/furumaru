@@ -1,18 +1,13 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
 
-import ApiClientFactory from '../plugins/factory'
-
-import { useAuthStore } from './auth'
 import { useCommonStore } from './common'
-
 import {
   CreateProducerRequest,
-  ProducerApi,
   ProducerResponse,
   ProducersResponse,
   UpdateProducerRequest,
-  UploadImageResponse,
+  UploadImageResponse
 } from '~/types/api'
 import {
   AuthError,
@@ -20,22 +15,15 @@ import {
   ConnectionError,
   InternalServerError,
   NotFoundError,
-  ValidationError,
+  ValidationError
 } from '~/types/exception'
+import { apiClient } from '~/plugins/api-client'
 
-export const useProducerStore = defineStore('Producer', {
-  state: () => {
-    const apiClient = (token: string) => {
-      const factory = new ApiClientFactory()
-      return factory.create(ProducerApi, token)
-    }
-
-    return {
-      producers: [] as ProducersResponse['producers'],
-      totalItems: 0,
-      apiClient,
-    }
-  },
+export const useProducerStore = defineStore('producer', {
+  state: () => ({
+    producers: [] as ProducersResponse['producers'],
+    totalItems: 0
+  }),
 
   actions: {
     /**
@@ -43,21 +31,9 @@ export const useProducerStore = defineStore('Producer', {
      * @param limit 取得上限数
      * @param offset 取得開始位置
      */
-    async fetchProducers(
-      limit: number = 20,
-      offset: number = 0,
-      options: string = ''
-    ): Promise<void> {
+    async fetchProducers (limit = 20, offset = 0, options = ''): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-
-        const res = await this.apiClient(accessToken).v1ListProducers(
+        const res = await apiClient.producerApi().v1ListProducers(
           limit,
           offset,
           options
@@ -87,21 +63,13 @@ export const useProducerStore = defineStore('Producer', {
      * 生産者を新規登録する非同期関数
      * @param payload
      */
-    async createProducer(payload: CreateProducerRequest): Promise<void> {
+    async createProducer (payload: CreateProducerRequest): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-
-        await this.apiClient(accessToken).v1CreateProducer(payload)
+        await apiClient.producerApi().v1CreateProducer(payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: `${payload.storeName}を作成しました。`,
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -140,22 +108,14 @@ export const useProducerStore = defineStore('Producer', {
      * @param payload サムネイル画像のファイルオブジェクト
      * @returns アップロード後のサムネイル画像のパスを含んだオブジェクト
      */
-    async uploadProducerThumbnail(payload: File): Promise<UploadImageResponse> {
+    async uploadProducerThumbnail (payload: File): Promise<UploadImageResponse> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-
-        const res = await this.apiClient(accessToken).v1UploadProducerThumbnail(
+        const res = await apiClient.producerApi().v1UploadProducerThumbnail(
           payload,
           {
             headers: {
-              'Content-Type': 'multipart/form-data',
-            },
+              'Content-Type': 'multipart/form-data'
+            }
           }
         )
         return res.data
@@ -191,22 +151,14 @@ export const useProducerStore = defineStore('Producer', {
      * @param payload ヘッダー画像のファイルオブジェクト
      * @returns アップロード後のヘッダー画像のパスを含んだオブジェクト
      */
-    async uploadProducerHeader(payload: File): Promise<UploadImageResponse> {
+    async uploadProducerHeader (payload: File): Promise<UploadImageResponse> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-
-        const res = await this.apiClient(accessToken).v1UploadProducerHeader(
+        const res = await apiClient.producerApi().v1UploadProducerHeader(
           payload,
           {
             headers: {
-              'Content-Type': 'multipart/form-data',
-            },
+              'Content-Type': 'multipart/form-data'
+            }
           }
         )
         return res.data
@@ -242,17 +194,9 @@ export const useProducerStore = defineStore('Producer', {
      * @param id 生産者ID
      * @returns 生産者の情報
      */
-    async getProducer(id: string): Promise<ProducerResponse> {
+    async getProducer (id: string): Promise<ProducerResponse> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください')
-          )
-        }
-
-        const res = await this.apiClient(accessToken).v1GetProducer(id)
+        const res = await apiClient.producerApi().v1GetProducer(id)
         return res.data
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -287,17 +231,9 @@ export const useProducerStore = defineStore('Producer', {
      * @param payload
      * @returns
      */
-    async updateProducer(id: string, payload: UpdateProducerRequest) {
+    async updateProducer (id: string, payload: UpdateProducerRequest) {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください')
-          )
-        }
-
-        await this.apiClient(accessToken).v1UpdateProducer(id, payload)
+        await apiClient.producerApi().v1UpdateProducer(id, payload)
       } catch (error) {
         if (axios.isAxiosError(error)) {
           if (!error.response) {
@@ -334,18 +270,12 @@ export const useProducerStore = defineStore('Producer', {
      * @param id 削除する生産者のID
      * @returns
      */
-    async deleteProducer(id: string) {
+    async deleteProducer (id: string) {
       try {
-        const { accessToken } = useAuthStore()
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-        await this.apiClient(accessToken).v1DeleteProducer(id)
+        await apiClient.producerApi().v1DeleteProducer(id)
       } catch (error) {
         return this.errorHandler(error)
       }
-    },
-  },
+    }
+  }
 })

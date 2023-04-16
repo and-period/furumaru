@@ -1,21 +1,89 @@
-import { Plugin } from '@nuxt/types'
-import { PiniaPluginContext } from 'pinia'
+import { AxiosInstance } from 'axios'
+import { client } from './axios'
+import { AddressApi, AdministratorApi, AuthApi, CategoryApi, Configuration, ContactApi, CoordinatorApi, MessageApi, NotificationApi, OrderApi, ProducerApi, ProductApi, ProductTypeApi, PromotionApi, ShippingApi, UserApi } from '~/types/api'
 
-import ApiClientFactory from './factory'
+// eslint-disable-next-line import/no-mutable-exports, no-use-before-define
+let apiClient: ApiClient
 
-import { OrderApi } from '~/types/api'
+export class ApiClient {
+  basePath: string
+  config: Configuration
+  instance: AxiosInstance
 
-function apiClientInjector({ store }: PiniaPluginContext) {
-  const apiClientFactory = new ApiClientFactory()
+  constructor (basePath: string) {
+    this.basePath = basePath
+    this.config = new Configuration()
+    this.instance = client
+  }
 
-  const orderApiClient = (token: string) =>
-    apiClientFactory.create(OrderApi, token)
+  addressApi () {
+    return new AddressApi(this.config, this.basePath, this.instance)
+  }
 
-  store.orderApiClient = orderApiClient
+  administratorApi () {
+    return new AdministratorApi(this.config, this.basePath, this.instance)
+  }
+
+  authApi () {
+    return new AuthApi(this.config, this.basePath, this.instance)
+  }
+
+  categoryApi () {
+    return new CategoryApi(this.config, this.basePath, this.instance)
+  }
+
+  contactApi () {
+    return new ContactApi(this.config, this.basePath, this.instance)
+  }
+
+  coordinatorApi () {
+    return new CoordinatorApi(this.config, this.basePath, this.instance)
+  }
+
+  messageApi () {
+    return new MessageApi(this.config, this.basePath, this.instance)
+  }
+
+  notificationApi () {
+    return new NotificationApi(this.config, this.basePath, this.instance)
+  }
+
+  orderApi () {
+    return new OrderApi(this.config, this.basePath, this.instance)
+  }
+
+  producerApi () {
+    return new ProducerApi(this.config, this.basePath, this.instance)
+  }
+
+  productApi () {
+    return new ProductApi(this.config, this.basePath, this.instance)
+  }
+
+  productTypeApi () {
+    return new ProductTypeApi(this.config, this.basePath, this.instance)
+  }
+
+  promotionApi () {
+    return new PromotionApi(this.config, this.basePath, this.instance)
+  }
+
+  shippingApi () {
+    return new ShippingApi(this.config, this.basePath, this.instance)
+  }
+
+  userApi () {
+    return new UserApi(this.config, this.basePath, this.instance)
+  }
 }
 
-const apiClientPlugin: Plugin = (ctx, _inject) => {
-  ctx.$pinia.use(apiClientInjector)
-}
+export default defineNuxtPlugin(() => {
+  const runtimeConfig = useRuntimeConfig()
+  const baseUrl = runtimeConfig.public.API_BASE_URL
 
-export default apiClientPlugin
+  apiClient = new ApiClient(baseUrl)
+
+  return { provide: { } }
+})
+
+export { apiClient }

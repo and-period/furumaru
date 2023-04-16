@@ -1,16 +1,11 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
 
-import ApiClientFactory from '../plugins/factory'
-
-import { useAuthStore } from './auth'
 import { useCommonStore } from './common'
-
 import {
   CategoriesResponse,
-  CategoryApi,
   CreateCategoryRequest,
-  UpdateCategoryRequest,
+  UpdateCategoryRequest
 } from '~/types/api'
 import {
   AuthError,
@@ -18,21 +13,15 @@ import {
   ConnectionError,
   InternalServerError,
   NotFoundError,
-  ValidationError,
+  ValidationError
 } from '~/types/exception'
+import { apiClient } from '~/plugins/api-client'
 
-export const useCategoryStore = defineStore('Category', {
-  state: () => {
-    const apiClient = (token: string) => {
-      const factory = new ApiClientFactory()
-      return factory.create(CategoryApi, token)
-    }
-    return {
-      categories: [] as CategoriesResponse['categories'],
-      totalCategoryItems: 0,
-      apiClient,
-    }
-  },
+export const useCategoryStore = defineStore('category', {
+  state: () => ({
+    categories: [] as CategoriesResponse['categories'],
+    totalCategoryItems: 0
+  }),
 
   actions: {
     /**
@@ -40,23 +29,40 @@ export const useCategoryStore = defineStore('Category', {
      * @param limit 取得上限数
      * @param offset 取得開始位置
      */
-    async fetchCategories(
-      limit: number = 20,
-      offset: number = 0
-    ): Promise<void> {
+    async fetchCategories (limit = 20, offset = 0): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
+        const res = await listCategories(limit, offset)
+        this.categories = res.categories
+        this.totalCategoryItems = res.total
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          switch (error.response.status) {
+            case 401:
+              return Promise.reject(
+                new AuthError('認証エラー。再度ログインをしてください。', error)
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
         }
+        throw new InternalServerError(error)
+      }
+    },
 
-        const res = await this.apiClient(accessToken).v1ListCategories(
-          limit,
-          offset
-        )
-        this.categories = res.data.categories
-        this.totalCategoryItems = res.data.total
+    /**
+     * カテゴリを追加取得する非同期関数
+     * @param limit 取得上限数
+     * @param offset 取得開始位置
+     */
+    async moreCategories (limit = 20, offset = 0): Promise<void> {
+      try {
+        const res = await listCategories(limit, offset)
+        this.categories.push(...res.categories)
+        this.totalCategoryItems = res.total
       } catch (error) {
         if (axios.isAxiosError(error)) {
           if (!error.response) {
@@ -80,20 +86,14 @@ export const useCategoryStore = defineStore('Category', {
      * カテゴリを新規登録する非同期関数
      * @param payload
      */
-    async createCategory(payload: CreateCategoryRequest): Promise<void> {
+    async createCategory (payload: CreateCategoryRequest): Promise<void> {
       const commonStore = useCommonStore()
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-
-        const res = await this.apiClient(accessToken).v1CreateCategory(payload)
+        const res = await apiClient.categoryApi().v1CreateCategory(payload)
         this.categories.unshift(res.data)
         commonStore.addSnackbar({
           message: 'カテゴリーを追加しました。',
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -131,19 +131,13 @@ export const useCategoryStore = defineStore('Category', {
      * @param payload
      * @param categoryId
      */
-    async editCategory(categoryId: string, payload: UpdateCategoryRequest) {
+    async editCategory (categoryId: string, payload: UpdateCategoryRequest) {
       const commonStore = useCommonStore()
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-
-        await this.apiClient(accessToken).v1UpdateCategory(categoryId, payload)
+        await apiClient.categoryApi().v1UpdateCategory(categoryId, payload)
         commonStore.addSnackbar({
-          message: `変更しました。`,
-          color: 'info',
+          message: '変更しました。',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -188,19 +182,13 @@ export const useCategoryStore = defineStore('Category', {
      * カテゴリを削除する非同期関数
      * @param categoryId
      */
-    async deleteCategory(categoryId: string): Promise<void> {
+    async deleteCategory (categoryId: string): Promise<void> {
       const commonStore = useCommonStore()
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-
-        await this.apiClient(accessToken).v1DeleteCategory(categoryId)
+        await apiClient.categoryApi().v1DeleteCategory(categoryId)
         commonStore.addSnackbar({
           message: 'カテゴリー削除が完了しました',
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -235,6 +223,29 @@ export const useCategoryStore = defineStore('Category', {
         throw new InternalServerError(error)
       }
       this.fetchCategories()
-    },
-  },
+    }
+  }
 })
+
+async function listCategories (limit = 20, offset = 0): Promise<CategoriesResponse> {
+  try {
+    const res = await apiClient.categoryApi().v1ListCategories(limit, offset)
+    return { ...res.data }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (!error.response) {
+        return Promise.reject(new ConnectionError(error))
+      }
+      switch (error.response.status) {
+        case 401:
+          return Promise.reject(
+            new AuthError('認証エラー。再度ログインをしてください。', error)
+          )
+        case 500:
+        default:
+          return Promise.reject(new InternalServerError(error))
+      }
+    }
+    throw new InternalServerError(error)
+  }
+}

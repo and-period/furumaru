@@ -1,36 +1,26 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
+import { apiClient } from '~/plugins/api-client'
 
-import { useAuthStore } from './auth'
-
-import ApiClientFactory from '~/plugins/factory'
 import {
   CreateProductRequest,
-  ProductApi,
   ProductResponse,
   ProductsResponseProductsInner,
   UpdateProductRequest,
-  UploadImageResponse,
+  UploadImageResponse
 } from '~/types/api'
 import {
   AuthError,
   ConnectionError,
   InternalServerError,
-  ValidationError,
+  ValidationError
 } from '~/types/exception'
 
 export const useProductStore = defineStore('product', {
-  state: () => {
-    const apiClient = (token: string) => {
-      const factory = new ApiClientFactory()
-      return factory.create(ProductApi, token)
-    }
-    return {
-      products: [] as ProductsResponseProductsInner[],
-      totalItems: 0,
-      apiClient,
-    }
-  },
+  state: () => ({
+    products: [] as ProductsResponseProductsInner[],
+    totalItems: 0
+  }),
 
   actions: {
     /**
@@ -39,16 +29,9 @@ export const useProductStore = defineStore('product', {
      * @param offset 取得開始位置
      * @returns
      */
-    async fetchProducts(limit: number = 20, offset: number = 0): Promise<void> {
+    async fetchProducts (limit = 20, offset = 0): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-        const res = await this.apiClient(accessToken).v1ListProducts(
+        const res = await apiClient.productApi().v1ListProducts(
           limit,
           offset
         )
@@ -78,21 +61,14 @@ export const useProductStore = defineStore('product', {
      * @param payload
      * @returns
      */
-    async uploadProductImage(payload: File): Promise<UploadImageResponse> {
+    async uploadProductImage (payload: File): Promise<UploadImageResponse> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-        const res = await this.apiClient(accessToken).v1UploadProductImage(
+        const res = await apiClient.productApi().v1UploadProductImage(
           payload,
           {
             headers: {
-              'Content-Type': 'multipart/form-data',
-            },
+              'Content-Type': 'multipart/form-data'
+            }
           }
         )
         return res.data
@@ -125,19 +101,11 @@ export const useProductStore = defineStore('product', {
     /**
      * 商品を作成する非同期関数
      */
-    async createProduct(payload: CreateProductRequest): Promise<void> {
+    async createProduct (payload: CreateProductRequest): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const user = authStore.user
-        const accessToken = authStore.accessToken
-        if (!user || !accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-        await this.apiClient(accessToken).v1CreateProduct({
+        await apiClient.productApi().v1CreateProduct({
           ...payload,
-          inventory: Number(payload.inventory),
+          inventory: Number(payload.inventory)
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -167,14 +135,9 @@ export const useProductStore = defineStore('product', {
      * @param id
      * @returns
      */
-    async getProduct(id: string): Promise<ProductResponse> {
-      const authStore = useAuthStore()
-      const accessToken = authStore.accessToken
-      if (!accessToken) {
-        throw new AuthError('認証エラー。再度ログインをしてください。')
-      }
+    async getProduct (id: string): Promise<ProductResponse> {
       try {
-        const res = await this.apiClient(accessToken).v1GetProduct(id)
+        const res = await apiClient.productApi().v1GetProduct(id)
         return res.data
       } catch (error) {
         return this.errorHandler(error)
@@ -186,17 +149,12 @@ export const useProductStore = defineStore('product', {
      * @param id
      * @param payload
      */
-    async updateProduct(id: string, payload: UpdateProductRequest) {
-      const authStore = useAuthStore()
-      const accessToken = authStore.accessToken
-      if (!accessToken) {
-        throw new AuthError('認証エラー。再度ログインをしてください。')
-      }
+    async updateProduct (id: string, payload: UpdateProductRequest) {
       try {
-        await this.apiClient(accessToken).v1UpdateProduct(id, payload)
+        await apiClient.productApi().v1UpdateProduct(id, payload)
       } catch (error) {
         return this.errorHandler(error)
       }
-    },
-  },
+    }
+  }
 })

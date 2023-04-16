@@ -1,17 +1,30 @@
-import { FirebaseOptions, initializeApp } from 'firebase/app'
-import { getMessaging } from 'firebase/messaging'
+import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app'
+import { getMessaging, Messaging } from 'firebase/messaging'
 
-const config: FirebaseOptions = {
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.FIREBASE_APP_ID,
-  measurementId: process.env.FIREBASE_MEASUREMENT_ID,
-}
+/* eslint-disable import/no-mutable-exports */
+let app: FirebaseApp
+let messaging: Messaging
+/* eslint-enable */
 
-const app = initializeApp(config)
-const messaging = getMessaging(app)
+export default defineNuxtPlugin(() => {
+  const runtimeConfig = useRuntimeConfig()
 
-export default { app, messaging }
+  const config: FirebaseOptions = {
+    apiKey: runtimeConfig.public.FIREBASE_API_KEY,
+    authDomain: runtimeConfig.public.FIREBASE_AUTH_DOMAIN,
+    projectId: runtimeConfig.public.FIREBASE_PROJECT_ID,
+    storageBucket: runtimeConfig.public.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: runtimeConfig.public.FIREBASE_MESSAGING_SENDER_ID,
+    appId: runtimeConfig.public.FIREBASE_APP_ID,
+    measurementId: runtimeConfig.public.FIREBASE_MEASUREMENT_ID
+  }
+
+  app = initializeApp(config)
+  messaging = getMessaging(app)
+
+  return {
+    provide: {}
+  }
+})
+
+export { app, messaging }

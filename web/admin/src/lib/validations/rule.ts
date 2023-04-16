@@ -1,4 +1,3 @@
-import { Ref } from '@vue/composition-api'
 import {
   helpers,
   MessageProps,
@@ -8,7 +7,7 @@ import {
   maxLength as _maxLength,
   minValue as _minValue,
   maxValue as _maxValue,
-  sameAs as _sameAs,
+  sameAs as _sameAs
 } from '@vuelidate/validators'
 
 /**
@@ -124,5 +123,5 @@ export {
   maxLength,
   minValue,
   maxValue,
-  sameAs,
+  sameAs
 }

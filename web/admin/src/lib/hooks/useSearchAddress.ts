@@ -1,8 +1,6 @@
-import { Ref, ref } from '@vue/composition-api'
-
 import {
   searchAddressByPostalCode as _searchAddressByPostalCode,
-  SearchAddressResponse,
+  SearchAddressResponse
 } from '../externals'
 
 export interface UseSearchAddress {
@@ -16,7 +14,7 @@ export interface UseSearchAddress {
 /**
  * 郵便場号から住所を取得するカスタムフック
  */
-export function useSearchAddress(): UseSearchAddress {
+export function useSearchAddress (): UseSearchAddress {
   const loading = ref<boolean>(false)
   const errorMessage = ref<string>('')
 
@@ -40,6 +38,6 @@ export function useSearchAddress(): UseSearchAddress {
   return {
     loading,
     errorMessage,
-    searchAddressByPostalCode,
+    searchAddressByPostalCode
   }
 }

@@ -1,5 +1,3 @@
-import { Plugin } from '@nuxt/types'
-import { markRaw } from '@nuxtjs/composition-api'
 import axios from 'axios'
 import { PiniaPluginContext } from 'pinia'
 
@@ -14,7 +12,7 @@ import {
   PreconditionError,
   ServiceUnavailableError,
   TooManyRequestsError,
-  ValidationError,
+  ValidationError
 } from '~/types/exception'
 
 // メッセージを変更できるステータスコードの一覧（500系のエラーはシステム固有のメッセージを利用する）
@@ -29,7 +27,7 @@ export type CustomErrorMessage = {
 /**
  * APIのエラーハンドリングを共通化するpiniaのプラグイン
  */
-function apiErrorHandler({ store }: PiniaPluginContext) {
+function apiErrorHandler ({ store }: PiniaPluginContext) {
   /**
    * apiクライアントのエラーをハンドリングする関数
    * @param error 発生したエラーオブジェクト
@@ -126,8 +124,6 @@ function apiErrorHandler({ store }: PiniaPluginContext) {
 /**
  * piniaに共通エラーハンドラーを注入するプラグイン
  */
-const apiErrorHandlerPlugin: Plugin = (ctx, _inject) => {
-  ctx.$pinia.use(apiErrorHandler)
-}
-
-export default apiErrorHandlerPlugin
+export default defineNuxtPlugin((nuxtApp) => {
+  nuxtApp.$pinia.use(apiErrorHandler)
+})

@@ -1,16 +1,12 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
 
-import { useAuthStore } from './auth'
 import { useCommonStore } from './common'
-
-import ApiClientFactory from '~/plugins/factory'
 import {
   CreatePromotionRequest,
-  PromotionApi,
   PromotionResponse,
   PromotionsResponse,
-  UpdatePromotionRequest,
+  UpdatePromotionRequest
 } from '~/types/api'
 import {
   AuthError,
@@ -18,12 +14,13 @@ import {
   ConnectionError,
   InternalServerError,
   NotFoundError,
-  ValidationError,
+  ValidationError
 } from '~/types/exception'
+import { apiClient } from '~/plugins/api-client'
 
-export const usePromotionStore = defineStore('Promotion', {
+export const usePromotionStore = defineStore('promotion', {
   state: () => ({
-    promotions: [] as PromotionsResponse['promotions'],
+    promotions: [] as PromotionsResponse['promotions']
   }),
   actions: {
     /**
@@ -31,22 +28,9 @@ export const usePromotionStore = defineStore('Promotion', {
      * @param limit 取得上限数
      * @param offset 取得開始位置
      */
-    async fetchPromotions(
-      limit: number = 20,
-      offset: number = 0
-    ): Promise<void> {
+    async fetchPromotions (limit = 20, offset = 0): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-
-        const factory = new ApiClientFactory()
-        const promotionsApiClient = factory.create(PromotionApi, accessToken)
-        const res = await promotionsApiClient.v1ListPromotions(limit, offset)
+        const res = await apiClient.promotionApi().v1ListPromotions(limit, offset)
         this.promotions = res.data.promotions
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -72,23 +56,13 @@ export const usePromotionStore = defineStore('Promotion', {
      * セール情報を登録する非同期関数
      * @param payload
      */
-    async createPromotion(payload: CreatePromotionRequest): Promise<void> {
+    async createPromotion (payload: CreatePromotionRequest): Promise<void> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。')
-          )
-        }
-        const factory = new ApiClientFactory()
-        const promotionsApiClient = factory.create(PromotionApi, accessToken)
-
-        await promotionsApiClient.v1CreatePromotion(payload)
+        const res = await apiClient.promotionApi().v1CreatePromotion(payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: `${payload.title}を作成しました。`,
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -126,21 +100,13 @@ export const usePromotionStore = defineStore('Promotion', {
      * セール情報を削除する非同期関数
      * @param id お知らせID
      */
-    async deletePromotion(id: string): Promise<void> {
+    async deletePromotion (id: string): Promise<void> {
       const commonStore = useCommonStore()
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-        const factory = new ApiClientFactory()
-        const promotionsApiClient = factory.create(PromotionApi, accessToken)
-
-        await promotionsApiClient.v1DeletePromotion(id)
+        await apiClient.promotionApi().v1DeletePromotion(id)
         commonStore.addSnackbar({
           message: 'セール情報の削除が完了しました',
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -182,16 +148,9 @@ export const usePromotionStore = defineStore('Promotion', {
      * @param id セールID
      * @returns セールの情報
      */
-    async getPromotion(id: string): Promise<PromotionResponse> {
+    async getPromotion (id: string): Promise<PromotionResponse> {
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-        const factory = new ApiClientFactory()
-        const promotionsApiClient = factory.create(PromotionApi, accessToken)
-        const res = await promotionsApiClient.v1GetPromotion(id)
+        const res = await apiClient.promotionApi().v1GetPromotion(id)
         return res.data
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -225,23 +184,16 @@ export const usePromotionStore = defineStore('Promotion', {
      * @param id セールID
      * @param payload
      */
-    async editPromotion(
+    async editPromotion (
       id: string,
       payload: UpdatePromotionRequest
     ): Promise<void> {
       const commonStore = useCommonStore()
       try {
-        const authStore = useAuthStore()
-        const accessToken = authStore.accessToken
-        if (!accessToken) {
-          return Promise.reject(new Error('認証エラー'))
-        }
-        const factory = new ApiClientFactory()
-        const promotionsApiClient = factory.create(PromotionApi, accessToken)
-        await promotionsApiClient.v1UpdatePromotion(id, payload)
+        await apiClient.promotionApi().v1UpdatePromotion(id, payload)
         commonStore.addSnackbar({
           message: 'セール情報の編集が完了しました',
-          color: 'info',
+          color: 'info'
         })
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -279,6 +231,6 @@ export const usePromotionStore = defineStore('Promotion', {
         }
         throw new InternalServerError(error)
       }
-    },
-  },
+    }
+  }
 })

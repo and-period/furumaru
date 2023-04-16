@@ -11,20 +11,20 @@ interface PrefecturesListSelectItems extends PrefecturesListItem {
  * @param index
  * @returns
  */
-export function getSelectablePrefecturesList(
+export function getSelectablePrefecturesList (
   items: CreateShippingRate[],
   index: number
 ): PrefecturesListSelectItems[] {
   const unselectedPrefecturesList: string[] = [
     ...items
       .filter((_, i) => i !== index)
-      .map((item) => item.prefectures)
-      .flat(),
+      .map(item => item.prefectures)
+      .flat()
   ]
   return prefecturesList.map((item) => {
     return {
       ...item,
-      disabled: unselectedPrefecturesList.includes(item.value),
+      disabled: unselectedPrefecturesList.includes(item.value)
     }
   })
 }
