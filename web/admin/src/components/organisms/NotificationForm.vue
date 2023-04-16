@@ -112,35 +112,13 @@ const handleSubmit = () => {
           投稿予約時間
         </p>
         <div class="d-flex align-center justify-center">
-          <v-menu
-            v-model="postMenu"
-            :close-on-content-click="false"
-            :nudge-right="40"
-            transition="scale-transition"
-            offset-y
-            min-width="auto"
-          >
-            <template #activator="{ props }">
-              <v-text-field
-                v-model="timeDataValue.publishedDate"
-                class="mr-2"
-                label="投稿開始日"
-                readonly
-                variant="outlined"
-                v-bind="props"
-              />
-            </template>
-            <v-date-picker
-              v-model="timeDataValue.publishedDate"
-              scrollable
-              @input="postMenu = false"
-            >
-              <v-spacer />
-              <v-btn variant="text" color="primary" @click="postMenu = false">
-                閉じる
-              </v-btn>
-            </v-date-picker>
-          </v-menu>
+          <v-text-field
+            v-model="timeDataValue.publishedDate"
+            type="date"
+            class="mr-2"
+            required
+            variant="outlined"
+          />
           <v-text-field
             v-model="timeDataValue.publishedTime"
             type="time"
