@@ -1,57 +1,42 @@
 <script lang="ts" setup>
 import { useAuthStore } from '~/store'
+import { SettingMenu } from '~/types/props'
 
 const router = useRouter()
-const { logout } = useAuthStore()
+const authStore = useAuthStore()
 
-const menuList = ref<{ text: string; onClick: Function; class?: string }[]>([
+const menus: SettingMenu[] = [
   {
     text: 'カテゴリー・品目登録',
-    onClick: () => {
-      router.push('/categories')
-    }
+    action: () => router.push('/categories')
   },
   {
     text: '配送設定',
-    onClick: () => {
-      router.push('/shippings')
-    }
+    action: () => router.push('/shippings')
   },
   {
     text: 'メールアドレス変更',
-    onClick: () => {
-      router.push('/accounts/email')
-    }
+    action: () => router.push('/accounts/email')
   },
   {
     text: 'パスワード変更',
-    onClick: () => {
-      router.push('/accounts/password')
-    }
+    action: () => router.push('/accounts/password')
   },
   {
     text: 'サインアウト',
-    class: 'red--text ',
-    onClick: () => {
-      logout()
+    color: 'error',
+    action: () => {
+      authStore.logout()
       router.push('/')
     }
   }
-])
+]
+
+const handleClick = (action: () => void): void => {
+  action()
+}
 </script>
 
 <template>
-  <div>
-    <v-card-title>システム設定</v-card-title>
-    <v-list>
-      <div v-for="(item, i) in menuList" :key="i">
-        <v-list-item :class="item.class" @click="item.onClick">
-          <v-list-item-content>
-            <v-list-item-title>{{ item.text }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-divider />
-      </div>
-    </v-list>
-  </div>
+  <templates-setting-top-page :menus="menus" @click="handleClick" />
 </template>

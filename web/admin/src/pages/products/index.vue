@@ -36,8 +36,6 @@ const fetchState = useAsyncData(async () => {
   }
 })
 
-const searchWord = ref<string>('')
-
 const handleRowClick = (
   _: any,
   { item }: { item: VDataTable['itemValue'] }
@@ -61,10 +59,6 @@ const headers: VDataTable['headers'] = [
   {
     title: 'ステータス',
     key: 'public'
-  },
-  {
-    title: '種類',
-    key: 'type'
   },
   {
     title: '価格',
