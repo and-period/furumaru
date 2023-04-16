@@ -154,7 +154,7 @@ try {
 
     <templates-producer-edit-form-page
       :form-data="formData"
-      :form-data-loading="isLoading"
+      :form-data-loading="isLoading()"
       :thumbnail-upload-status="thumbnailUploadStatus"
       :header-upload-status="headerUploadStatus"
       :search-loading="searchLoading"

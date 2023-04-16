@@ -67,7 +67,7 @@ try {
   <templates-notification-edit-form-page
     :form-data="formData"
     :time-data="timeData"
-    :form-data-loading="isLoading"
+    :form-data-loading="isLoading()"
     @submit="handleSubmit"
   />
 </template>

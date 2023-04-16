@@ -136,7 +136,7 @@ try {
 
     <organisms-shipping-form
       v-model="formData"
-      :loading="isLoading"
+      :loading="isLoading()"
       @click:add-box60-rate-item="addBox60RateItem"
       @click:add-box80-rate-item="addBox80RateItem"
       @click:add-box100-rate-item="addBox100RateItem"

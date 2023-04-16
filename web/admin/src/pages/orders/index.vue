@@ -237,7 +237,6 @@ try {
     <v-card class="mt-4" flat>
       <v-card-text>
         <v-data-table-server
-          show-select
           :headers="headers"
           :items="orders"
           :items-length="totalItems"

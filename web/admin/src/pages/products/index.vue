@@ -141,18 +141,6 @@ try {
 
     <v-card class="mt-4" flat :loading="isLoading()">
       <v-card-text>
-        <div class="d-flex align-center mb-4">
-          <v-spacer />
-          <v-text-field
-            v-model="searchWord"
-            :append-icon="mdiMagnify"
-            label="商品名"
-            hide-details
-            single-line
-            variant="underlined"
-          />
-        </div>
-
         <v-data-table-server
           v-model:items-per-page="itemsPerPage"
           :headers="headers"

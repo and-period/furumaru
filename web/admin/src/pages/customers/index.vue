@@ -93,7 +93,7 @@ try {
 <template>
   <div>
     <v-card-title>顧客管理</v-card-title>
-    <v-card>
+    <v-card flat>
       <v-card-text>
         <v-data-table
           :headers="headers"

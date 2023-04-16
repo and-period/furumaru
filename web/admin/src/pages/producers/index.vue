@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { mdiPlus, mdiSearchWeb, mdiAccount, mdiPencil, mdiDelete } from '@mdi/js'
+import { mdiPlus, mdiAccount, mdiPencil, mdiDelete } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components'
 
 import { useAlert, usePagination } from '~/lib/hooks'
@@ -13,9 +13,6 @@ const { isShow, alertText, alertType, show } = useAlert('error')
 const producerStore = useProducerStore()
 const { addSnackbar } = useCommonStore()
 
-const search = ref<string>('')
-const query = ref<string>('')
-
 const deleteDialog = ref<boolean>(false)
 const selectedId = ref<string>('')
 
@@ -25,16 +22,6 @@ const producers = computed(() => {
 
 const totalItems = computed(() => {
   return producerStore.totalItems
-})
-
-const noResultsText = computed(() => {
-  return `「${query.value}」に一致するデータはありません。`
-})
-
-watch(search, () => {
-  if (search.value === '') {
-    query.value = ''
-  }
 })
 
 const {
@@ -110,10 +97,6 @@ const headers: VDataTable['headers'] = [
 
 const handleClickAddButton = () => {
   router.push('/producers/add')
-}
-
-const handleSearch = () => {
-  query.value = search.value
 }
 
 const handleEdit = (item: ProducersResponseProducersInner) => {
@@ -215,16 +198,7 @@ try {
 
     <v-card class="mt-4" flat :loading="isLoading()">
       <v-card-text>
-        <form class="d-flex align-center" @submit.prevent="handleSearch">
-          <v-text-field v-model="search" variant="underlined" label="絞り込み" />
-          <v-btn type="submit" class="ml-4" variant="outlined" color="primary">
-            <v-icon :icon="mdiSearchWeb" />
-            検索
-          </v-btn>
-          <v-spacer />
-        </form>
         <v-data-table-server
-          show-select
           :headers="headers"
           :items="producers"
           :search="query"

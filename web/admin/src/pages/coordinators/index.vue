@@ -34,19 +34,6 @@ const selectedItemName = computed(() => {
     : ''
 })
 
-const search = ref<string>('')
-const query = ref<string>('')
-
-const noResultsText = computed(() => {
-  return `「${query.value}」に一致するデータはありません。`
-})
-
-watch(search, () => {
-  if (search.value === '') {
-    query.value = ''
-  }
-})
-
 const {
   updateCurrentPage,
   itemsPerPage,
@@ -106,10 +93,6 @@ const isLoading = (): boolean => {
 
 const handleClickAddButton = () => {
   router.push('/coordinators/add')
-}
-
-const handleSearch = () => {
-  query.value = search.value
 }
 
 const handleEdit = (item: CoordinatorsResponseCoordinatorsInner) => {
@@ -205,25 +188,9 @@ try {
 
     <v-card class="mt-4" flat :loading="isLoading()">
       <v-card-text>
-        <form class="d-flex align-center" @submit.prevent="handleSearch">
-          <v-select
-            v-model="search"
-            item-title="firstname"
-            :items="coordinators"
-            label="絞り込み"
-            variant="underlined"
-          />
-          <v-btn type="submit" class="ml-4" variant="outlined" color="primary">
-            <v-icon :icon="mdiSearchWeb" />
-            検索
-          </v-btn>
-          <v-spacer />
-        </form>
         <v-data-table-server
-          show-select
           :headers="headers"
           :items="coordinators"
-          :search="query"
           :no-results-text="noResultsText"
           :items-length="totalItems"
           :footer-props="options"
