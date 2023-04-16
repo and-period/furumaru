@@ -47,9 +47,9 @@ const emit = defineEmits<{
 }>()
 
 const deliveryTypeItems = [
-  { text: '通常便', value: 1 },
-  { text: '冷蔵便', value: 2 },
-  { text: '冷凍便', value: 3 }
+  { title: '通常便', value: 1 },
+  { title: '冷蔵便', value: 2 },
+  { title: '冷凍便', value: 3 }
 ]
 
 const weightValue = computed({
@@ -96,6 +96,8 @@ const box100RateValue = computed({
       <v-select
         v-model.number="deliveryTypeValue"
         :items="deliveryTypeItems"
+        item-title="title"
+        item-value="value"
         label="配送種別"
       />
       <v-spacer />

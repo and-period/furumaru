@@ -106,6 +106,8 @@ const handleSubmit = async () => {
             v-model="formDataValue.public"
             label="ステータス"
             :items="statusItems"
+            item-title="text"
+            item-value="value"
           />
         </v-card-text>
       </v-card>

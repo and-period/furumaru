@@ -44,6 +44,10 @@ const statusItems = [
   { text: '公開', value: true },
   { text: '非公開', value: false }
 ]
+const itemUnits = [
+  { text: '個', value: '個' },
+  { text: '瓶', value: '瓶' }
+]
 const deliveryTypeItems = [
   { text: '通常便', value: 1 },
   { text: '冷蔵便', value: 2 },
@@ -151,6 +155,8 @@ try {
             v-model="formData.public"
             label="ステータス"
             :items="statusItems"
+            item-title="text"
+            item-value="value"
           />
         </v-card-text>
       </v-card>
@@ -192,7 +198,9 @@ try {
             <v-select
               v-model="formData.itemUnit"
               label="単位"
-              :items="['個', '瓶']"
+              :items="itemUnits"
+              item-title="text"
+              item-value="value"
             />
             <v-spacer />
           </div>
@@ -267,6 +275,8 @@ try {
             <v-select
               v-model="formData.deliveryType"
               :items="deliveryTypeItems"
+              item-title="text"
+              item-value="value"
               label="配送種別"
             />
             <v-spacer />

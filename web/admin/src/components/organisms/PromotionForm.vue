@@ -188,35 +188,13 @@ const discountMethodList = [
           投稿開始
         </p>
         <div class="d-flex align-center justify-center">
-          <v-menu
-            v-model="publishMenu"
-            :close-on-content-click="false"
-            :nudge-right="40"
-            transition="scale-transition"
-            offset-y
-            min-width="auto"
-          >
-            <template #activator="{ props }">
-              <v-text-field
-                v-model="timeDataValue.publishedDate"
-                class="mr-2"
-                label="投稿開始日"
-                readonly
-                variant="outlined"
-                v-bind="props"
-              />
-            </template>
-            <v-date-picker
-              v-model="timeData.publishedDate"
-              scrollable
-              @input="publishMenu = false"
-            >
-              <v-spacer />
-              <v-btn variant="text" color="primary" @click="pubulishMenu = false">
-                閉じる
-              </v-btn>
-            </v-date-picker>
-          </v-menu>
+          <v-text-field
+            v-model="timeDataValue.publishedDate"
+            type="date"
+            variant="outlined"
+            required
+            class="mr-2"
+          />
           <v-text-field
             v-model="timeDataValue.publishedTime"
             type="time"
@@ -233,35 +211,13 @@ const discountMethodList = [
           使用期間
         </p>
         <div class="d-flex align-center">
-          <v-menu
-            v-model="useStartMenu"
-            :close-on-content-click="false"
-            :nudge-right="40"
-            transition="scale-transition"
-            offset-y
-            min-width="auto"
-          >
-            <template #activator="{ props }">
-              <v-text-field
-                v-model="timeDataValue.startDate"
-                label="使用開始日"
-                readonly
-                variant="outlined"
-                v-bind="props"
-                class="mr-2"
-              />
-            </template>
-            <v-date-picker
-              v-model="timeDataValue.startDate"
-              scrollable
-              @input="useStartMenu = false"
-            >
-              <v-spacer />
-              <v-btn variant="text" color="primary" @click="useStartMenu = false">
-                閉じる
-              </v-btn>
-            </v-date-picker>
-          </v-menu>
+          <v-text-field
+            v-model="timeDataValue.startDate"
+            type="date"
+            variant="outlined"
+            required
+            class="mr-2"
+          />
           <v-text-field
             v-model="timeDataValue.startTime"
             type="time"
@@ -271,35 +227,13 @@ const discountMethodList = [
           <p class="text-h6 mx-4 mb-6">
             〜
           </p>
-          <v-menu
-            v-model="useEndMenu"
-            :close-on-content-click="false"
-            :nudge-right="40"
-            transition="scale-transition"
-            offset-y
-            min-width="auto"
-          >
-            <template #activator="{ props }">
-              <v-text-field
-                v-model="timeDataValue.endDate"
-                label="使用終了日"
-                readonly
-                variant="outlined"
-                v-bind="props"
-                class="mr-2"
-              />
-            </template>
-            <v-date-picker
-              v-model="timeDataValue.endDate"
-              scrollable
-              @input="useEndMenu = false"
-            >
-              <v-spacer />
-              <v-btn variant="text" color="primary" @click="endEndMenu = false">
-                閉じる
-              </v-btn>
-            </v-date-picker>
-          </v-menu>
+          <v-text-field
+            v-model="timeDataValue.endDate"
+            type="date"
+            variant="outlined"
+            required
+            class="mr-2"
+          />
           <v-text-field
             v-model="timeDataValue.endTime"
             type="time"

@@ -57,7 +57,7 @@ const handleSubmit = async (): Promise<void> => {
 <template>
   <div>
     <v-card-title>パスワード変更</v-card-title>
-    <v-alert .sync="isShow" :type="alertType" v-text="alertText" />
+    <v-alert v-show="isShow" :type="alertType" v-text="alertText" />
     <form @submit.prevent="handleSubmit">
       <v-card>
         <v-card-text>
