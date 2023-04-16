@@ -1,3 +1,3 @@
 <template>
-  <organisms-event-calendar />
+  <templates-home-page />
 </template>
