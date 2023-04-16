@@ -4,7 +4,7 @@ import { VDataTable } from 'vuetify/lib/labs/components'
 
 import { usePagination } from '~/lib/hooks/'
 import { useProductStore } from '~/store'
-import { ProductsResponseProductsInner } from '~/types/api'
+import { ImageSize, ProductsResponseProductsInner, ProductsResponseProductsInnerMediaInner } from '~/types/api'
 
 const router = useRouter()
 const productStore = useProductStore()
@@ -88,6 +88,39 @@ const headers: VDataTable['headers'] = [
   }
 ]
 
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || false
+}
+
+const getThumbnail = (product: ProductsResponseProductsInner): string => {
+  const thumbnail = product.media?.find((media: ProductsResponseProductsInnerMediaInner) => {
+    return media.isThumbnail
+  })
+  return thumbnail?.url || ''
+}
+
+const getResizedThumbnails = (product: ProductsResponseProductsInner): string => {
+  const thumbnail = product.media?.find((media: ProductsResponseProductsInnerMediaInner) => {
+    return media.isThumbnail
+  })
+  if (!thumbnail) {
+    return ''
+  }
+  const images: string[] = thumbnail.images.map((image): string => {
+    switch (image.size) {
+      case ImageSize.SMALL:
+        return `${thumbnail.url} 1x`
+      case ImageSize.MEDIUM:
+        return `${thumbnail.url} 2x`
+      case ImageSize.LARGE:
+        return `${thumbnail.url} 3x`
+      default:
+        return thumbnail.url
+    }
+  })
+  return images.join(', ')
+}
+
 try {
   await fetchState.execute()
 } catch (err) {
@@ -97,7 +130,7 @@ try {
 
 <template>
   <div>
-    <v-card-title>
+    <v-card-title class="d-flex flex-row">
       商品管理
       <v-spacer />
       <v-btn variant="outlined" color="primary" @click="handleClickAddBtn">
@@ -106,7 +139,7 @@ try {
       </v-btn>
     </v-card-title>
 
-    <v-card :loading="fetchState.pending">
+    <v-card class="mt-4" flat :loading="isLoading()">
       <v-card-text>
         <div class="d-flex align-center mb-4">
           <v-spacer />
@@ -116,6 +149,7 @@ try {
             label="商品名"
             hide-details
             single-line
+            variant="underlined"
           />
         </div>
 
@@ -131,8 +165,8 @@ try {
           @click:row="handleRowClick"
         >
           <template #[`item.media`]="{ item }">
-            <v-avatar tile>
-              <v-img contain :src="item.raw.media.find((m) => m.isThumbnail).url" />
+            <v-avatar>
+              <v-img :src="getThumbnail(item.raw)" :srcset="getResizedThumbnails(item.raw)" />
             </v-avatar>
           </template>
           <template #[`item.public`]="{ item }">

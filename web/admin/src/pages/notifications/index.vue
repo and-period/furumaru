@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { mdiPlus, mdiPencil, mdiDelete } from '@mdi/js'
-import dayjs from 'dayjs'
+import * as dayjs from 'dayjs'
 import { VDataTable } from 'vuetify/labs/components'
 
 import { usePagination } from '~/lib/hooks'
@@ -142,6 +142,10 @@ const handleDelete = async (): Promise<void> => {
   deleteDialog.value = false
 }
 
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || false
+}
+
 try {
   fetchState.execute()
 } catch (err) {
@@ -151,7 +155,7 @@ try {
 
 <template>
   <div>
-    <v-card-title>
+    <v-card-title class="d-flex flex-row">
       お知らせ管理
       <v-spacer />
       <v-btn color="primary" variant="outlined" @click="handleClickAddButton">
@@ -177,7 +181,7 @@ try {
       </v-card>
     </v-dialog>
 
-    <v-card class="mt-4" flat>
+    <v-card class="mt-4" flat :loading="isLoading()">
       <v-card-text>
         <v-data-table-server
           v-model:sort-by="sortBy"

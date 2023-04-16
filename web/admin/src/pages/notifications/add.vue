@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import dayjs from 'dayjs'
+import * as dayjs from 'dayjs'
 
 import { useNotificationStore } from '~/store'
 import { CreateNotificationRequest } from '~/types/api'

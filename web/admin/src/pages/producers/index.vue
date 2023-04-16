@@ -4,7 +4,7 @@ import { VDataTable } from 'vuetify/lib/labs/components'
 
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useCommonStore, useProducerStore } from '~/store'
-import { ProducersResponseProducersInner } from '~/types/api'
+import { ImageSize, ProducersResponseProducersInner } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 
 const router = useRouter()
@@ -151,6 +151,29 @@ const handleAddVideo = (item: ProducersResponseProducersInner) => {
   console.log(item)
 }
 
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || false
+}
+
+const getImages = (producer: ProducersResponseProducersInner): string => {
+  if (!producer.thumbnails) {
+    return ''
+  }
+  const images: string[] = producer.thumbnails.map((thumbnail): string => {
+    switch (thumbnail.size) {
+      case ImageSize.SMALL:
+        return `${thumbnail.url} 1x`
+      case ImageSize.MEDIUM:
+        return `${thumbnail.url} 2x`
+      case ImageSize.LARGE:
+        return `${thumbnail.url} 3x`
+      default:
+        return thumbnail.url
+    }
+  })
+  return images.join(', ')
+}
+
 try {
   await fetchState.execute()
 } catch (err) {
@@ -160,7 +183,7 @@ try {
 
 <template>
   <div>
-    <v-card-title>
+    <v-card-title class="d-flex flex-row">
       生産者管理
       <v-spacer />
       <v-btn variant="outlined" color="primary" @click="handleClickAddButton">
@@ -190,11 +213,11 @@ try {
       </v-card>
     </v-dialog>
 
-    <v-card class="mt-4" flat :loading="fetchState.pending">
+    <v-card class="mt-4" flat :loading="isLoading()">
       <v-card-text>
         <form class="d-flex align-center" @submit.prevent="handleSearch">
-          <v-text-field v-model="search" label="絞り込み" />
-          <v-btn type="submit" class="ml-4" size="small" variant="outlined" color="primary">
+          <v-text-field v-model="search" variant="underlined" label="絞り込み" />
+          <v-btn type="submit" class="ml-4" variant="outlined" color="primary">
             <v-icon :icon="mdiSearchWeb" />
             検索
           </v-btn>
@@ -214,11 +237,13 @@ try {
         >
           <template #[`item.thumbnail`]="{ item }">
             <v-avatar>
-              <img
+              <v-img
                 v-if="item.raw.thumbnailUrl !== ''"
+                cover
                 :src="item.raw.thumbnailUrl"
+                :srcset="getImages(item.raw)"
                 :alt="`${item.raw.storeName}-profile`"
-              >
+              />
               <v-icon v-else :icon="mdiAccount" />
             </v-avatar>
           </template>

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { mdiImport, mdiExport, mdiPencil } from '@mdi/js'
-import dayjs from 'dayjs'
+import * as dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 import { VDataTable } from 'vuetify/lib/labs/components'
 

@@ -145,6 +145,10 @@ const handleEdit = (item: ContactsResponseContactsInner) => {
   router.push(`/contacts/edit/${item.id}`)
 }
 
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || false
+}
+
 try {
   await fetchState.execute()
 } catch (err) {
@@ -155,7 +159,7 @@ try {
 <template>
   <div>
     <v-card-title>お問い合わせ管理</v-card-title>
-    <v-card>
+    <v-card class="mt-4" flat :loading="isLoading()">
       <v-card-text>
         <v-data-table-server
           v-model:sort-by="sortBy"

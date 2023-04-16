@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import dayjs from 'dayjs'
+import * as dayjs from 'dayjs'
 import { VDataTable } from 'vuetify/lib/labs/components'
 
 import { usePagination } from '~/lib/hooks'
@@ -301,22 +301,18 @@ try {
   <div>
     <v-tabs v-model="selector" grow color="dark">
       <v-tabs-slider color="accent" />
-      <v-tab
-        v-for="item in items"
-        :key="item.value"
-        :href="`#tab-${item.value}`"
-      >
+      <v-tab v-for="item in items" :key="item.value" :value="item.value">
         {{ item.name }}
       </v-tab>
     </v-tabs>
-    <v-tabs-items v-model="selector">
-      <v-tab-item value="tab-shippingInformation">
+    <v-window v-model="selector">
+      <v-window-item value="shippingInformation">
         <v-card elevation="0">
           <v-card-text>
             <v-text-field
+              v-model="formData.userName"
               name="userName"
               label="注文者名"
-              :value="formData.userName"
               readonly
             />
             <v-text-field
@@ -348,10 +344,10 @@ try {
               readonly
             />
             <v-text-field
+              v-value="formData.payment.total"
               class="mt-4"
               name="total"
               label="支払い合計金額"
-              :value="formData.payment.total"
               readonly
             >
               <template #append>
@@ -360,10 +356,10 @@ try {
             </v-text-field>
             <div class="d-flex align-center">
               <v-text-field
+                v-model="formData.payment.subtotal"
                 class="mr-4"
                 name="subTotal"
                 label="購入金額"
-                :value="formData.payment.subtotal"
                 readonly
               >
                 <template #append>
@@ -371,9 +367,9 @@ try {
                 </template>
               </v-text-field>
               <v-text-field
+                v-model="formData.payment.discount"
                 name="discount"
                 label="割引金額"
-                :value="formData.payment.discount"
                 readonly
               >
                 <template #append>
@@ -383,10 +379,10 @@ try {
             </div>
             <div class="d-flex align-center mt-4">
               <v-text-field
+                v-model="formData.payment.shippingFee"
                 class="mr-4"
                 name="shippingFee"
                 label="配送料金"
-                :value="formData.payment.shippingFee"
                 readonly
               >
                 <template #append>
@@ -394,9 +390,9 @@ try {
                 </template>
               </v-text-field>
               <v-text-field
+                v-model="formData.payment.tax"
                 name="tax"
                 label="消費税"
-                :value="formData.payment.tax"
                 readonly
               >
                 <template #append>
@@ -409,16 +405,16 @@ try {
             </p>
             <div class="d-flex align-center">
               <v-text-field
+                v-model="formData.payment.lastname"
                 class="mr-4"
                 name="lastname"
                 label="姓"
-                :value="formData.payment.lastname"
                 readonly
               />
               <v-text-field
+                v-model="formData.payment.firstname"
                 name="firstname"
                 label="名"
-                :value="formData.payment.firstname"
                 readonly
               />
             </div>
@@ -429,35 +425,35 @@ try {
               readonly
             />
             <v-text-field
+              v-model="formData.payment.postalCode"
               name="postalCode"
               label="郵便番号"
-              :value="formData.payment.postalCode"
               readonly
             />
             <div class="d-flex align-center">
               <v-text-field
+                v-model="formData.payment.prefecture"
                 class="mr-4"
                 name="prefecture"
                 label="都道府県"
-                :value="formData.payment.prefecture"
                 readonly
               />
               <v-text-field
+                v-model="formData.payment.city"
                 name="city"
                 label="市区町村"
-                :value="formData.payment.city"
                 readonly
               />
             </div>
             <v-text-field
+              v-model="formData.payment.addressLine1"
               name="addressLine1"
               label="町名・番地"
-              :value="formData.payment.addressLine1"
             />
             <v-text-field
+              v-model="formData.payment.addressLine2"
               name="addressLine2"
               label="ビル名・号室など"
-              :value="formData.payment.addressLine2"
             />
             <p class="text-h6">
               キャンセル情報
@@ -488,31 +484,31 @@ try {
                 readonly
               />
               <v-textarea
+                v-model="formData.refund.reason"
                 name="reason"
                 label="注文キャンセル理由詳細"
-                :value="formData.refund.reason"
                 readonly
               />
               <v-text-field
+                v-model="formData.refund.total"
                 name="refundTotal"
                 label="返済金額"
-                :value="formData.refund.total"
                 readonly
               />
             </v-container>
           </v-card-text>
         </v-card>
-      </v-tab-item>
-      <v-tab-item value="tab-orderInformation">
+      </v-window-item>
+      <v-window-item value="orderInformation">
         <v-card-text>
           <v-card elevation="0">
             <p class="text-h6">
               注文情報
             </p>
             <v-text-field
+              v-model="formData.id"
               name="id"
               label="注文ID"
-              :value="formData.id"
               readonly
             />
             <v-text-field
@@ -576,23 +572,23 @@ try {
               </template>
             </v-data-table-server>
             <v-text-field
+              v-model="formData.fulfillment.trackingNumber"
               name="trackingNumber"
               label="伝票番号"
-              :value="formData.fulfillment.trackingNumber"
               readonly
             />
             <div>
               <v-text-field
+                v-model="formData.fulfillment.lastname"
                 class="mr-4"
                 name="lastname"
                 label="姓"
-                :value="formData.fulfillment.lastname"
                 readonly
               />
               <v-text-field
+                v-model="formData.fulfillment.firstname"
                 name="firstname"
                 label="名"
-                :value="formData.fulfillment.firstname"
                 readonly
               />
             </div>
@@ -603,39 +599,39 @@ try {
               readonly
             />
             <v-text-field
+              v-model="formData.fulfillment.postalCode"
               name="postalCode"
               label="郵便番号"
-              :value="formData.fulfillment.postalCode"
               readonly
             />
             <div class="d-flex align-center">
               <v-text-field
+                v-model="formData.fulfillment.prefecture"
                 class="mr-4"
                 name="prefecture"
                 label="都道府県"
-                :value="formData.fulfillment.prefecture"
                 readonly
               />
               <v-text-field
+                v-model="formData.fulfillment.city"
                 name="city"
                 label="市区町村"
-                :value="formData.fulfillment.city"
                 readonly
               />
             </div>
             <v-text-field
+              v-model="formData.fulfillment.addressLine1"
               name="addressLine1"
               label="町名・番地"
-              :value="formData.fulfillment.addressLine1"
             />
             <v-text-field
+              v-model="formData.fulfillment.addressLine2"
               name="addressLine2"
               label="ビル名・号室など"
-              :value="formData.fulfillment.addressLine2"
             />
           </v-card>
         </v-card-text>
-      </v-tab-item>
-    </v-tabs-items>
+      </v-window-item>
+    </v-window>
   </div>
 </template>

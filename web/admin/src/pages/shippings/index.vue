@@ -73,7 +73,7 @@ try {
 
 <template>
   <div>
-    <v-card-title>
+    <v-card-title class="d-flex flex-row">
       配送設定一覧
       <v-spacer />
       <v-btn variant="outlined" color="primary" @click="handleClickAddButton">
@@ -81,7 +81,7 @@ try {
         配送情報登録
       </v-btn>
     </v-card-title>
-    <v-card class="mt-4" flat :loading="isLoading">
+    <v-card class="mt-4" flat :loading="isLoading()">
       <v-card-text>
         <v-data-table-server
           :headers="headers"

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { mdiPlus, mdiPencil, mdiDelete } from '@mdi/js'
-import dayjs from 'dayjs'
+import * as dayjs from 'dayjs'
 import { VDataTable } from 'vuetify/lib/labs/components'
 
 import { usePromotionStore } from '~/store'
@@ -130,7 +130,7 @@ try {
 
 <template>
   <div>
-    <v-card-title>
+    <v-card-title class="d-flex flex-row">
       セール情報
       <v-spacer />
       <v-btn variant="outlined" color="primary" @click="handleClickAddButton">

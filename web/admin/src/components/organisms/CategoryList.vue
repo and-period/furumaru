@@ -9,11 +9,19 @@ import {
 } from '~/types/api'
 
 const props = defineProps({
-  loading: {
-    type: Boolean,
-    default: false
+  categories: {
+    type: Array<CategoriesResponseCategoriesInner>,
+    default: () => []
   },
-  tableFooterProps: {
+  tableItemsPerPage: {
+    type: Number,
+    default: 20
+  },
+  tableItemsLength: {
+    type: Number,
+    default: 0
+  },
+  tableFooterOptions: {
     type: Object,
     default: () => {}
   }
@@ -32,13 +40,6 @@ const selectedName = ref<string>('')
 const categoryId = ref<string>('')
 const categoryFormData = reactive<UpdateCategoryRequest>({
   name: ''
-})
-
-const categories = computed(() => {
-  return categoryStore.categories
-})
-const totalItems = computed(() => {
-  return categoryStore.totalCategoryItems
 })
 
 const categoryHeaders: VDataTable['headers'] = [
@@ -106,12 +107,12 @@ const handleDelete = async (): Promise<void> => {
   <div>
     <v-data-table-server
       :headers="categoryHeaders"
-      :items="categories"
-      :loading="props.loading"
-      :items-length="totalItems"
-      :footer-props="props.tableFooterProps"
-      @update:items-per-page="handleUpdateItemsPerPage"
+      :items="props.categories"
+      :items-per-page="props.tableItemsPerPage"
+      :items-length="props.tableItemsLength"
+      :footer-props="props.tableFooterOptions"
       @update:page="handleUpdatePage"
+      @update:items-per-page="handleUpdateItemsPerPage"
     >
       <template #[`item.actions`]="{ item }">
         <v-btn variant="outlined" color="primary" size="small" @click="openEditDialog(item.raw)">

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { VDataTable } from 'vuetify/lib/labs/components'
 import { Customer } from '~/types/props/customer'
 
 const tab = ref<string>('customers')
@@ -9,18 +10,18 @@ const tabItems: Customer[] = [
 
 const accountValue = '有'
 
-const headers = [
+const headers: VDataTable['headers'] = [
   {
-    text: '関連マルシェ',
-    value: 'marche'
+    title: '関連マルシェ',
+    key: 'marche'
   },
   {
-    text: '開催日時',
-    value: 'date'
+    title: '開催日時',
+    key: 'date'
   },
   {
-    text: '購入金額',
-    value: 'price'
+    title: '購入金額',
+    key: 'price'
   }
 ]
 
@@ -137,7 +138,7 @@ const items = [
       </v-tab-item>
 
       <v-tab-item value="customerItems">
-        <v-data-table-server :headers="headers" :items="items">
+        <v-data-table :headers="headers" :items="items">
           <template #foot>
             <tfoot>
               <tr>
@@ -148,7 +149,7 @@ const items = [
               </tr>
             </tfoot>
           </template>
-        </v-data-table-server>
+        </v-data-table>
       </v-tab-item>
     </v-tabs-items>
   </div>

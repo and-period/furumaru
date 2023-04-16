@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import dayjs from 'dayjs'
+import * as dayjs from 'dayjs'
 
 import { usePromotionStore } from '~/store'
 import { CreatePromotionRequest } from '~/types/api'

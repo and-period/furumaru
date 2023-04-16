@@ -67,6 +67,8 @@ const handleClickNextButton = () => {
         v-model="type"
         variant="outlined"
         :items="typeItems"
+        item-title="text"
+        item-value="value"
         density="default"
         hide-details
         label="表示形式"
@@ -90,12 +92,13 @@ const handleClickNextButton = () => {
       </v-btn>
     </v-toolbar>
     <v-sheet height="80vh">
-      <v-calendar
+      TODO: v-calendarが実装されたら対応する
+      <!-- <v-calendar
         ref="calendarRef"
         v-model="calendarValue"
         :type="type"
         :events="props.events"
-      />
+      /> -->
     </v-sheet>
   </div>
 </template>

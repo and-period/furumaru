@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import { mdiPlus, mdiSearchWeb, mdiAccount, mdiPencil, mdiDelete } from '@mdi/js'
+import { VDataTable } from 'vuetify/labs/components'
+
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useCommonStore, useCoordinatorStore } from '~/store'
-import { CoordinatorsResponseCoordinatorsInner } from '~/types/api'
+import { CoordinatorsResponseCoordinatorsInner, ImageSize } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 
 const router = useRouter()
@@ -70,30 +72,30 @@ const fetchState = useAsyncData(async () => {
   }
 })
 
-const headers = [
+const headers: VDataTable['headers'] = [
   {
-    text: 'サムネイル',
-    value: 'thumbnail'
+    title: 'サムネイル',
+    key: 'thumbnail'
   },
   {
-    text: '店舗名',
-    value: 'storeName'
+    title: '店舗名',
+    key: 'storeName'
   },
   {
-    text: 'コーディネータ名',
-    value: 'name'
+    title: 'コーディネータ名',
+    key: 'name'
   },
   {
-    text: 'Email',
-    value: 'email'
+    title: 'Email',
+    key: 'email'
   },
   {
-    text: '電話番号',
-    value: 'phoneNumber'
+    title: '電話番号',
+    key: 'phoneNumber'
   },
   {
-    text: 'Actions',
-    value: 'actions',
+    title: 'Actions',
+    key: 'actions',
     sortable: false
   }
 ]
@@ -143,6 +145,25 @@ const handleDeleteFormSubmit = async () => {
   deleteDialog.value = false
 }
 
+const getImages = (coordinator: CoordinatorsResponseCoordinatorsInner): string => {
+  if (!coordinator.thumbnails) {
+    return ''
+  }
+  const images: string[] = coordinator.thumbnails.map((thumbnail): string => {
+    switch (thumbnail.size) {
+      case ImageSize.SMALL:
+        return `${thumbnail.url} 1x`
+      case ImageSize.MEDIUM:
+        return `${thumbnail.url} 2x`
+      case ImageSize.LARGE:
+        return `${thumbnail.url} 3x`
+      default:
+        return thumbnail.url
+    }
+  })
+  return images.join(', ')
+}
+
 try {
   await fetchState.execute()
 } catch (err) {
@@ -152,7 +173,7 @@ try {
 
 <template>
   <div>
-    <v-card-title>
+    <v-card-title class="d-flex flex-row">
       コーディネータ管理
       <v-spacer />
       <v-btn variant="outlined" color="primary" @click="handleClickAddButton">
@@ -182,16 +203,17 @@ try {
       </v-card>
     </v-dialog>
 
-    <v-card class="mt-4" flat :loading="isLoading">
+    <v-card class="mt-4" flat :loading="isLoading()">
       <v-card-text>
         <form class="d-flex align-center" @submit.prevent="handleSearch">
-          <v-autocomplete
+          <v-select
             v-model="search"
             item-title="firstname"
             :items="coordinators"
             label="絞り込み"
+            variant="underlined"
           />
-          <v-btn type="submit" class="ml-4" size="small" variant="outlined" color="primary">
+          <v-btn type="submit" class="ml-4" variant="outlined" color="primary">
             <v-icon :icon="mdiSearchWeb" />
             検索
           </v-btn>
@@ -211,11 +233,13 @@ try {
         >
           <template #[`item.thumbnail`]="{ item }">
             <v-avatar>
-              <img
+              <v-img
                 v-if="item.raw.thumbnailUrl !== ''"
+                cover
                 :src="item.raw.thumbnailUrl"
+                :srcset="getImages(item.raw)"
                 :alt="`${item.raw.storeName}-profile`"
-              >
+              />
               <v-icon v-else :icon="mdiAccount" />
             </v-avatar>
           </template>

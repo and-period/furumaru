@@ -63,11 +63,7 @@ const handleSubmit = () => {
 <template>
   <div>
     <v-card-title>商品詳細</v-card-title>
-    <v-skeleton-loader
-      v-if="props.loading"
-      :loading="props.loading"
-      type="article"
-    />
+    <v-skeleton-loader v-if="props.loading" loading type="article" />
     <div v-else>
       <organisms-product-update-form
         :form-data="formDataValue"

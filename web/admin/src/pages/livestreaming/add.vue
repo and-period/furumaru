@@ -26,7 +26,7 @@ const stepValue = ref<number>(1)
               <v-text-field label="タイトル" />
               <v-textarea label="詳細情報" />
               <p>サムネイル画像</p>
-              <atom-file-upload-filed />
+              <atoms-file-upload-filed />
               <v-switch
                 label="テスト"
                 hint="有効にするとテスト用のマルシェを作成します。テスト用のマルシェは一般ユーザーには公開されません。"

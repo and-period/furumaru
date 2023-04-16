@@ -34,7 +34,7 @@ const handleSubmit = async () => {
   <div>
     <v-alert v-model="isShow" :type="alertType" v-text="alertText" />
     <div class="pa-8">
-      <atom-app-logo-with-title :width="450" class="ma-auto" />
+      <atoms-app-logo-with-title :width="450" class="ma-auto" />
     </div>
     <v-card>
       <form @submit.prevent="handleSubmit">

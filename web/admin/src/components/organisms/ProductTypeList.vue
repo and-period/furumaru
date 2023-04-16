@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import { mdiAccount, mdiPencil, mdiDelete, mdiPlus } from '@mdi/js'
+import { VDataTable } from 'vuetify/lib/labs/components'
 
 import { useProductTypeStore } from '~/store'
 import {
+  CategoriesResponseCategoriesInner,
   ProductTypesResponseProductTypesInner,
   UpdateProductTypeRequest,
   UploadImageResponse
@@ -10,17 +12,25 @@ import {
 import { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
-  loading: {
-    type: Boolean,
-    default: false
-  },
-  tableFooterProps: {
-    type: Object,
-    default: () => {}
+  productTypes: {
+    type: Array<ProductTypesResponseProductTypesInner>,
+    default: () => []
   },
   categories: {
-    type: Array,
+    type: Array<CategoriesResponseCategoriesInner>,
     default: () => []
+  },
+  tableItemsPerPage: {
+    type: Number,
+    default: 20
+  },
+  tableItemsLength: {
+    type: Number,
+    default: 0
+  },
+  tableFooterOptions: {
+    type: Object,
+    default: () => {}
   }
 })
 
@@ -43,35 +53,27 @@ const editFormData = reactive<UpdateProductTypeRequest>({
   iconUrl: ''
 })
 
-const productTypes = computed(() => {
-  return productTypeStore.productTypes
-})
-
-const totalItems = computed(() => {
-  return productTypeStore.totalItems
-})
-
 const headerUploadStatus = reactive<ImageUploadStatus>({
   error: false,
   message: ''
 })
 
-const productTypeHeaders = [
+const productTypeHeaders: VDataTable['headers'] = [
   {
-    text: 'アイコン',
-    value: 'icon'
+    title: 'アイコン',
+    key: 'icon'
   },
   {
-    text: 'カテゴリー',
-    value: 'category'
+    title: 'カテゴリー',
+    key: 'category'
   },
   {
-    text: '品目',
-    value: 'productType'
+    title: '品目',
+    key: 'productType'
   },
   {
-    text: 'Actions',
-    value: 'actions',
+    title: 'Actions',
+    key: 'actions',
     width: 200,
     align: 'end',
     sortable: false
@@ -168,12 +170,12 @@ const handleInputFileChange = () => {
   <div>
     <v-data-table-server
       :headers="productTypeHeaders"
-      :items="productTypes"
-      :loading="props.loading"
-      :items-length="totalItems"
-      :footer-props="props.tableFooterProps"
-      @update:items-per-page="handleUpdateItemsPerPage"
+      :items="props.productTypes"
+      :items-per-page="props.tableItemsPerPage"
+      :items-length="props.tableItemsLength"
+      :footer-props="props.tableFooterOptions"
       @update:page="handleUpdatePage"
+      @update:items-per-page="handleUpdateItemsPerPage"
     >
       <template #[`item.icon`]="{ item }">
         <v-avatar>
@@ -243,10 +245,9 @@ const handleInputFileChange = () => {
               <v-icon v-if="editFormData.iconUrl === ''" size="x-large" :icon="mdiPlus" />
               <v-img
                 v-else
+                cover
                 :src="editFormData.iconUrl"
                 aspect-ratio="1"
-                max-height="150"
-                contain
               />
             </v-avatar>
             <input

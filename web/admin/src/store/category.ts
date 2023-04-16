@@ -31,12 +31,38 @@ export const useCategoryStore = defineStore('category', {
      */
     async fetchCategories (limit = 20, offset = 0): Promise<void> {
       try {
-        const res = await apiClient.categoryApi().v1ListCategories(
-          limit,
-          offset
-        )
-        this.categories = res.data.categories
-        this.totalCategoryItems = res.data.total
+        const res = await listCategories(limit, offset)
+        this.categories = res.categories
+        this.totalCategoryItems = res.total
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            return Promise.reject(new ConnectionError(error))
+          }
+          switch (error.response.status) {
+            case 401:
+              return Promise.reject(
+                new AuthError('認証エラー。再度ログインをしてください。', error)
+              )
+            case 500:
+            default:
+              return Promise.reject(new InternalServerError(error))
+          }
+        }
+        throw new InternalServerError(error)
+      }
+    },
+
+    /**
+     * カテゴリを追加取得する非同期関数
+     * @param limit 取得上限数
+     * @param offset 取得開始位置
+     */
+    async moreCategories (limit = 20, offset = 0): Promise<void> {
+      try {
+        const res = await listCategories(limit, offset)
+        this.categories.push(...res.categories)
+        this.totalCategoryItems = res.total
       } catch (error) {
         if (axios.isAxiosError(error)) {
           if (!error.response) {
@@ -200,3 +226,26 @@ export const useCategoryStore = defineStore('category', {
     }
   }
 })
+
+async function listCategories (limit = 20, offset = 0): Promise<CategoriesResponse> {
+  try {
+    const res = await apiClient.categoryApi().v1ListCategories(limit, offset)
+    return { ...res.data }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (!error.response) {
+        return Promise.reject(new ConnectionError(error))
+      }
+      switch (error.response.status) {
+        case 401:
+          return Promise.reject(
+            new AuthError('認証エラー。再度ログインをしてください。', error)
+          )
+        case 500:
+        default:
+          return Promise.reject(new InternalServerError(error))
+      }
+    }
+    throw new InternalServerError(error)
+  }
+}

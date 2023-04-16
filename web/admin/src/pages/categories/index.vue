@@ -1,11 +1,8 @@
 <script lang="ts" setup>
 import { mdiPlus } from '@mdi/js'
-import TheCategoryList from '~/components/organisms/CategoryList.vue'
-import TheProductTypeList from '~/components/organisms/ProductTypeList.vue'
 import { usePagination } from '~/lib/hooks'
-import { useAuthStore, useCategoryStore, useProductTypeStore } from '~/store'
+import { useCategoryStore, useProductTypeStore } from '~/store'
 import {
-  CategoriesResponseCategoriesInner,
   CreateCategoryRequest,
   CreateProductTypeRequest
 } from '~/types/api'
@@ -14,136 +11,124 @@ import { Category } from '~/types/props/category'
 
 const categoryStore = useCategoryStore()
 const productTypeStore = useProductTypeStore()
-const { accessToken } = useAuthStore()
+const categoryPagination = usePagination()
+const productTypePagination = usePagination()
 
-const categoriesItems = reactive<{
-  offset: number
-  categories: CategoriesResponseCategoriesInner[]
-}>({ offset: 0, categories: [] })
+const tabItems: Category[] = [
+  { name: 'カテゴリー', value: 'categories' },
+  { name: '品目', value: 'categoryItems' }
+]
 
 const inputRef = ref<HTMLInputElement | null>(null)
 const selector = ref<string>('categories')
 const categoryDialog = ref<boolean>(false)
 const productTypeDialog = ref<boolean>(false)
 const selectedCategoryId = ref<string>('')
-const imgUrl = ref<string>('')
-const items: Category[] = [
-  { name: 'カテゴリー', value: 'categories' },
-  { name: '品目', value: 'categoryItems' }
-]
+
 const headerUploadStatus = reactive<ImageUploadStatus>({
   error: false,
   message: ''
 })
-
 const categoryFormData = reactive<CreateCategoryRequest>({
   name: ''
 })
-
 const productTypeFormData = reactive<CreateProductTypeRequest>({
   name: '',
   iconUrl: ''
 })
 
-const categoryCancel = (): void => {
-  categoryDialog.value = false
+const categories = computed(() => {
+  return categoryStore.categories
+})
+const categoryTotal = computed(() => {
+  return categoryStore.totalCategoryItems
+})
+const productTypes = computed(() => {
+  return productTypeStore.productTypes
+})
+const productTypeTotal = computed(() => {
+  return productTypeStore.totalItems
+})
+
+watch(categoryPagination.itemsPerPage, () => {
+  fetchCategories()
+})
+watch(productTypePagination.itemsPerPage, () => {
+  fetchProductTypes()
+})
+watch(selector, async () => {
+  categoryPagination.updateCurrentPage(1)
+  productTypePagination.updateCurrentPage(1)
+  await Promise.all([categoryState.execute(), productTypeState.execute()])
+})
+
+/*
+ * category methods
+ */
+const categoryState = useAsyncData(async () => {
+  await fetchCategories()
+})
+
+const fetchCategories = async () => {
+  try {
+    await categoryStore.fetchCategories(categoryPagination.itemsPerPage.value, categoryPagination.offset.value)
+  } catch (err) {
+    console.log(err)
+  }
 }
 
-const productTypeCancel = (): void => {
-  productTypeDialog.value = false
+const moreCategories = async () => {
+  try {
+    categoryPagination.updateCurrentPage(categoryPagination.offset.value + 1)
+    await categoryStore.moreCategories(categoryPagination.itemsPerPage.value, categoryPagination.offset.value)
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 const categoryRegister = async (): Promise<void> => {
   try {
     await categoryStore.createCategory(categoryFormData)
     categoryDialog.value = false
-  } catch (error) {
-    console.log(error)
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+const categoryCancel = (): void => {
+  categoryDialog.value = false
+}
+
+/*
+ * productType methods
+ */
+const productTypeState = useAsyncData(async () => {
+  await fetchProductTypes()
+})
+
+const handleUpdateCategoryPage = async (page: number) => {
+  categoryPagination.updateCurrentPage(page)
+  await fetchCategories()
+}
+
+const fetchProductTypes = async () => {
+  try {
+    await productTypeStore.fetchProductTypes(productTypePagination.itemsPerPage.value, productTypePagination.offset.value)
+  } catch (err) {
+    console.log(err)
   }
 }
 
 const productTypeRegister = async (): Promise<void> => {
   try {
-    await productTypeStore.createProductType(
-      selectedCategoryId.value,
-      productTypeFormData
-    )
+    await productTypeStore.createProductType(selectedCategoryId.value, productTypeFormData)
     productTypeDialog.value = false
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-const {
-  itemsPerPage: categoriesItemsPerPage,
-  offset: categoriesOffset,
-  options: categoriesOptions,
-  handleUpdateItemsPerPage: handleUpdateCategoriesItemsPerPage,
-  updateCurrentPage: _handleUpdateCategoriesPage
-} = usePagination()
-
-watch(categoriesItemsPerPage, () => {
-  categoryStore.fetchCategories(categoriesItemsPerPage.value, 0)
-})
-
-const handleUpdateCategoriesPage = async (page: number) => {
-  _handleUpdateCategoriesPage(page)
-  await categoryStore.fetchCategories(
-    categoriesItemsPerPage.value,
-    categoriesOffset.value
-  )
-}
-
-const {
-  itemsPerPage: productTypesItemsPerPage,
-  offset: productTypesOffset,
-  options: productTypesOptions,
-  handleUpdateItemsPerPage: handleUpdateProductTypesItemsPerPage,
-  updateCurrentPage: _handleUpdateProductTypesPage
-} = usePagination()
-
-const fetchState = useAsyncData(async () => {
-  try {
-    await Promise.all([
-      categoryStore.fetchCategories(categoriesItemsPerPage.value),
-      productTypeStore.fetchProductTypes(productTypesItemsPerPage.value)
-    ])
-    categoriesItems.categories = categoryStore.categories
   } catch (err) {
     console.log(err)
   }
-})
-
-watch(productTypesItemsPerPage, () => {
-  productTypeStore.fetchProductTypes(productTypesItemsPerPage.value)
-})
-
-const handleUpdateProductTypesPage = async (page: number) => {
-  _handleUpdateProductTypesPage(page)
-  await productTypeStore.fetchProductTypes(
-    productTypesItemsPerPage.value,
-    productTypesOffset.value
-  )
 }
 
-const handleMoreCategoryItems = async () => {
-  if (accessToken) {
-    const limit = 20
-    categoriesItems.offset = categoriesItems.offset + limit + 1
-    const res = await categoryStore
-      .apiClient(accessToken)
-      .v1ListCategories(limit, categoriesItems.offset)
-    categoriesItems.categories.push(...res.data.categories)
-  }
-}
-
-const handleClick = () => {
-  if (inputRef.value !== null) {
-    inputRef.value.click()
-  }
-}
-
-const handleInputFileChange = () => {
+const handleUploadProductTypeIcon = () => {
   const files = inputRef.value?.files
   if (inputRef.value && inputRef.value.files) {
     if (files && files.length > 0) {
@@ -160,8 +145,26 @@ const handleInputFileChange = () => {
   }
 }
 
+const productTypeCancel = (): void => {
+  productTypeDialog.value = false
+}
+
+/**
+ * common methods
+ */
+const isLoading = (): boolean => {
+  return categoryState.pending.value && productTypeState.pending.value
+}
+
+const handleClick = () => {
+  if (!inputRef.value) {
+    return
+  }
+  inputRef.value.click()
+}
+
 try {
-  await fetchState.execute()
+  await Promise.all([categoryState.execute(), productTypeState.execute()])
 } catch (err) {
   console.log('failed to setup', err)
 }
@@ -172,11 +175,7 @@ try {
     <v-card-title>カテゴリー・品目設定</v-card-title>
     <v-tabs v-model="selector" grow color="dark">
       <v-tabs-slider color="accent" />
-      <v-tab
-        v-for="item in items"
-        :key="item.value"
-        :value="item.value"
-      >
+      <v-tab v-for="item in tabItems" :key="item.value" :value="item.value">
         {{ item.name }}
       </v-tab>
     </v-tabs>
@@ -194,7 +193,7 @@ try {
             </div>
           </template>
 
-          <v-card>
+          <v-card :loading="isLoading()">
             <v-card-title class="text-h6 primaryLight">
               カテゴリー登録
             </v-card-title>
@@ -218,10 +217,12 @@ try {
           </v-card>
         </v-dialog>
         <organisms-category-list
-          :loading="fetchState.pending"
-          :table-footer-props="categoriesOptions"
-          @update:items-per-page="handleUpdateCategoriesItemsPerPage"
-          @update:page="handleUpdateCategoriesPage"
+          :categories="categories"
+          :table-items-per-page="categoryPagination.itemsPerPage.value"
+          :table-items-length="categoryTotal"
+          :table-footer-options="categoryPagination.options"
+          @update:page="handleUpdateCategoryPage"
+          @update:items-per-page="categoryPagination.handleUpdateItemsPerPage"
         />
       </v-window-item>
 
@@ -236,14 +237,14 @@ try {
               </v-btn>
             </div>
           </template>
-          <v-card>
+          <v-card :loading="isLoading()">
             <v-card-title class="primaryLight">
               品目登録
             </v-card-title>
             <v-card-text class="mt-4">
               <v-autocomplete
                 v-model="selectedCategoryId"
-                :items="categoriesItems.categories"
+                :items="categories"
                 item-title="name"
                 item-value="id"
                 label="カテゴリー"
@@ -251,10 +252,10 @@ try {
                 <template #append-item>
                   <div class="pa-2">
                     <v-btn
-                      outlined
                       block
                       color="primary"
-                      @click="handleMoreCategoryItems"
+                      variant="outlined"
+                      @click="moreCategories"
                     >
                       <v-icon :icon="mdiPlus" />
                       さらに読み込む
@@ -286,7 +287,7 @@ try {
                   type="file"
                   class="d-none"
                   accept="image/png, image/jpeg"
-                  @change="handleInputFileChange"
+                  @change="handleUploadProductTypeIcon"
                 >
                 <p class="ma-0">
                   アイコン画像を選択
@@ -310,12 +311,14 @@ try {
           </v-card>
         </v-dialog>
         <organisms-product-type-list
-          :loading="fetchState.pending"
-          :table-footer-props="productTypesOptions"
-          :categories="categoriesItems.categories"
-          @update:items-per-page="handleUpdateProductTypesItemsPerPage"
-          @update:page="handleUpdateProductTypesPage"
-          @click:more-item="handleMoreCategoryItems"
+          :product-types="productTypes"
+          :categories="categories"
+          :table-items-per-page="productTypePagination.itemsPerPage.value"
+          :table-items-length="productTypeTotal"
+          :table-footer-options="productTypePagination.options"
+          @update:page="handleUpdateCategoryPage"
+          @update:items-per-page="productTypePagination.handleUpdateItemsPerPage"
+          @click:more-item="moreCategories"
         />
       </v-window-item>
     </v-window>

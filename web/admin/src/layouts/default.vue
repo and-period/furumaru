@@ -102,88 +102,93 @@ const calcStyle = (i: number) => {
 
 <template>
   <v-app>
-    <v-navigation-drawer v-model="drawer" scrim>
-      <v-list>
-        <v-list-item
-          :to="navigationDrawerHomeItem.to"
-          exact
-          :prepend-icon="navigationDrawerHomeItem.icon"
-          color="primary"
-        >
-          <v-list-item-title>
-            {{ navigationDrawerHomeItem.title }}
-          </v-list-item-title>
-        </v-list-item>
-      </v-list>
+    <v-layout>
+      <v-app-bar color="primary">
+        <template #prepend>
+          <v-app-bar-nav-icon @click="handleClickNavIcon">
+            <v-icon :icon="mdiMenu" color="white" />
+          </v-app-bar-nav-icon>
+        </template>
+        <v-toolbar-title>
+          <nuxt-link to="/">
+            <atoms-app-title class="pt-2" />
+          </nuxt-link>
+        </v-toolbar-title>
+        <template #append>
+          <v-btn icon @click="handleClickMessage">
+            <v-badge v-value="hasUnread" color="info" dot overlap>
+              <v-icon :icon="mdiBell" color="white" />
+            </v-badge>
+          </v-btn>
+        </template>
+      </v-app-bar>
 
-      <v-divider />
-      <v-list>
-        <v-list-item
-          v-for="(item, i) in navigationDrawerList"
-          :key="i"
-          :to="item.to"
-          :prepend-icon="item.icon"
-          color="primary"
-        >
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-      <v-divider />
+      <v-navigation-drawer v-model="drawer">
+        <v-list>
+          <v-list-item
+            :to="navigationDrawerHomeItem.to"
+            exact
+            :prepend-icon="navigationDrawerHomeItem.icon"
+            color="primary"
+          >
+            <v-list-item-title>
+              {{ navigationDrawerHomeItem.title }}
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
 
-      <v-list>
-        <v-list-item
-          v-for="(item, i) in navigationDrawerSettingsList"
-          :key="i"
-          :to="item.to"
-          exact
-          :prepend-icon="item.icon"
-          color="primary"
-        >
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
+        <v-divider />
+        <v-list>
+          <v-list-item
+            v-for="(item, i) in navigationDrawerList"
+            :key="i"
+            :to="item.to"
+            :prepend-icon="item.icon"
+            color="primary"
+          >
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+        <v-divider />
 
-    <v-app-bar flat color="primary">
-      <v-app-bar-nav-icon @click="handleClickNavIcon">
-        <v-icon :icon="mdiMenu" color="white" />
-      </v-app-bar-nav-icon>
-      <v-toolbar-title>
-        <nuxt-link to="/">
-          <atoms-app-title class="pt-2" />
-        </nuxt-link>
-      </v-toolbar-title>
-      <v-spacer />
-      <v-btn icon @click="handleClickMessage">
-        <v-badge v-value="hasUnread" color="info" dot overlap>
-          <v-icon :icon="mdiBell" color="white" />
-        </v-badge>
-      </v-btn>
-    </v-app-bar>
+        <v-list>
+          <v-list-item
+            v-for="(item, i) in navigationDrawerSettingsList"
+            :key="i"
+            :to="item.to"
+            exact
+            :prepend-icon="item.icon"
+            color="primary"
+          >
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
 
-    <v-snackbar
-      v-for="(snackbar, i) in snackbars"
-      :key="i"
-      v-model="snackbar.isOpen"
-      :color="snackbar.color"
-      location="top"
-      elevation="1"
-      :timeout="snackbar.timeout"
-      :style="calcStyle(i)"
-    >
-      {{ snackbar.message }}
-      <template #action="{ attrs }">
-        <v-btn variant="text" v-bind="attrs" @click="commonStore.hideSnackbar(i)">
-          閉じる
-        </v-btn>
-      </template>
-    </v-snackbar>
+      <v-snackbar
+        v-for="(snackbar, i) in snackbars"
+        :key="i"
+        v-model="snackbar.isOpen"
+        :color="snackbar.color"
+        location="top"
+        variant="elevated"
+        :timeout="snackbar.timeout"
+        :style="calcStyle(i)"
+      >
+        {{ snackbar.message }}
+        <template #action="{ attrs }">
+          <v-btn variant="text" v-bind="attrs" @click="commonStore.hideSnackbar(i)">
+            閉じる
+          </v-btn>
+        </template>
+      </v-snackbar>
 
-    <v-main class="bg-color">
-      <v-container>
-        <slot />
-      </v-container>
-    </v-main>
+      <v-main class="bg-color">
+        <v-container>
+          <slot />
+        </v-container>
+      </v-main>
+    </v-layout>
   </v-app>
 </template>
 
