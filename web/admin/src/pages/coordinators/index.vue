@@ -217,7 +217,7 @@ try {
             {{ `${item.raw.phoneNumber}`.replace('+81', '0') }}
           </template>
           <template #[`item.actions`]="{ item }">
-            <v-btn variant="outlined" color="primary" size="small" @click="handleEdit(item.raw)">
+            <v-btn class="mr-2" variant="outlined" color="primary" size="small" @click="handleEdit(item.raw)">
               <v-icon size="small" :icon="mdiPencil" />
               編集
             </v-btn>

@@ -116,7 +116,7 @@ try {
             </v-chip>
           </template>
           <template #[`item.action`]>
-            <v-btn variant="outlined" color="primary" size="small" @click="handleEdit()">
+            <v-btn class="mr-2" variant="outlined" color="primary" size="small" @click="handleEdit()">
               <v-icon size="small" :icon="mdiPencil" />
               詳細
             </v-btn>

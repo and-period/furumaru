@@ -18,22 +18,15 @@ import { Order, OrderItems } from '~/types/props/order'
 
 const route = useRoute()
 const orderStore = useOrderStore()
-const id = route.params.id
-
-const selector = ref<string>('shippingInformation')
-
-const {
-  updateCurrentPage,
-  itemsPerPage,
-  handleUpdateItemsPerPage,
-  options,
-  offset
-} = usePagination()
+const { options } = usePagination()
+const id = route.params.id as string
 
 const items: Order[] = [
   { name: '支払い情報', value: 'shippingInformation' },
   { name: '配送情報', value: 'orderInformation' }
 ]
+
+const selector = ref<string>('shippingInformation')
 
 const formData = reactive<OrderResponse>({
   id: '',
@@ -119,6 +112,18 @@ const fetchState = useAsyncData(async () => {
   formData.deliveredAt = res.deliveredAt
   formData.canceledAt = res.canceledAt
 })
+
+const paymentMethodType = computed((): string => getMethodType(formData.payment.methodType))
+const refundType = computed((): string => getRefundType(formData.refund.type))
+const shippingCarrier = computed((): string => getShippingCarrier(formData.fulfillment.shippingCarrier))
+const shippingMethod = computed((): string => getShippingMethod(formData.fulfillment.shippingMethod))
+const paymentPhoneNumber = computed((): string => convertPhone(formData.payment.phoneNumber))
+const fulfillmentPhoneNumber = computed((): string => convertPhone(formData.fulfillment.phoneNumber))
+const boxSize = computed((): string => getBoxSize(formData.fulfillment.boxSize))
+const paidAt = computed((): string => getDay(formData.paidAt))
+const canceledAt = computed((): string => getDay(formData.canceledAt))
+const orderedAt = computed((): string => getDay(formData.orderedAt))
+const deliveredAt = computed((): string => getDay(formData.deliveredAt))
 
 const headers: VDataTable['headers'] = [
   {
@@ -248,7 +253,7 @@ const convertPhone = (phoneNumber: string): string => {
 }
 
 // isThumnailがtrueのものを引っ掛けて商品でサムネイルに設定されているURLを探す
-const getThumnail = (medias: OrderItems[]): string => {
+const getThumbnail = (medias: OrderItems[]): string => {
   const orderItem: OrderItems[] = medias.filter(item => item.isThumbnail)
   return orderItem[0].url
 }
@@ -316,9 +321,9 @@ try {
               readonly
             />
             <v-text-field
+              v-model="paymentMethodType"
               name="paymentMethodType"
               label="決済手段"
-              :value="getMethodType(formData.payment.methodType)"
               readonly
             />
             <v-container>
@@ -337,10 +342,10 @@ try {
             </v-container>
             <v-text-field
               v-if="getPaymentStatus(formData.payment.status) == '支払い済み'"
+              v-model="paidAt"
               class="mt-4"
               name="deliveredAt"
               label="支払日時"
-              :value="getDay(formData.paidAt)"
               readonly
             />
             <v-text-field
@@ -419,9 +424,9 @@ try {
               />
             </div>
             <v-text-field
+              v-model="paymentPhoneNumber"
               name="phoneNumber"
               label="電話番号"
-              :value="convertPhone(formData.payment.phoneNumber)"
               readonly
             />
             <v-text-field
@@ -471,16 +476,16 @@ try {
               v-if="getRefundStatus(formData.refund.canceled) == 'キャンセル'"
             >
               <v-text-field
+                v-model="canceledAt"
                 class="mt-8"
                 name="canceledAt"
                 label="注文キャンセル日時"
-                :value="getDay(formData.canceledAt)"
                 readonly
               />
               <v-text-field
+                v-model="refundType"
                 name="type"
                 label="注文キャンセル理由"
-                :value="getRefundType(formData.refund.type)"
                 readonly
               />
               <v-textarea
@@ -512,9 +517,9 @@ try {
               readonly
             />
             <v-text-field
+              v-model="orderedAt"
               name="orderedAt"
               label="注文日時"
-              :value="getDay(formData.orderedAt)"
               readonly
             />
             <v-row class="my-4">
@@ -528,25 +533,23 @@ try {
             </v-row>
             <div class="d-flex align-center">
               <v-text-field
+                v-model="shippingCarrier"
                 class="mr-4"
                 name="shippingCarrier"
                 label="配送会社"
-                :value="
-                  getShippingCarrier(formData.fulfillment.shippingCarrier)
-                "
                 readonly
               />
               <v-text-field
+                v-model="shippingMethod"
                 class="mr-4"
                 name="shippingmethod"
                 label="配送方法"
-                :value="getShippingMethod(formData.fulfillment.shippingMethod)"
                 readonly
               />
               <v-text-field
+                v-model="boxSize"
                 name="boxSize"
                 label="配送時の箱の大きさ"
-                :value="getBoxSize(formData.fulfillment.boxSize)"
                 readonly
               />
             </div>
@@ -554,9 +557,9 @@ try {
               v-if="
                 getFulfillmentStatus(formData.fulfillment.status) == '配送済み'
               "
+              v-model="deliveredAt"
               name="deliveredAt"
               label="配送日時"
-              :value="getDay(formData.deliveredAt)"
               readonly
             />
             <v-data-table-server
@@ -567,7 +570,7 @@ try {
             >
               <template #[`item.media`]="{ item }">
                 <v-avatar>
-                  <img :src="getThumnail(item.raw.media)">
+                  <img :src="getThumbnail(item.raw.media)">
                 </v-avatar>
               </template>
             </v-data-table-server>
@@ -593,9 +596,9 @@ try {
               />
             </div>
             <v-text-field
+              v-model="fulfillmentPhoneNumber"
               name="phoneNumber"
               label="電話番号"
-              :value="convertPhone(formData.fulfillment.phoneNumber)"
               readonly
             />
             <v-text-field

@@ -194,7 +194,7 @@ const handleInputFileChange = () => {
         {{ `${item.raw.name}` }}
       </template>
       <template #[`item.actions`]="{ item }">
-        <v-btn variant="outlined" color="primary" size="small" @click="openEditDialog(item.raw)">
+        <v-btn class="mr-2" variant="outlined" color="primary" size="small" @click="openEditDialog(item.raw)">
           <v-icon size="small" :icon="mdiPencil" />
           編集
         </v-btn>

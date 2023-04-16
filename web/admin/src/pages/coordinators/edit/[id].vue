@@ -225,6 +225,10 @@ const cancel = (): void => {
   dialog.value = false
 }
 
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || false
+}
+
 try {
   await fetchState.execute()
   await producerStore.fetchProducers(20, 0, 'unrelated')
@@ -242,15 +246,15 @@ try {
       <v-tab
         v-for="tabItem in tabItems"
         :key="tabItem.value"
-        :href="`#${tabItem.value}`"
+        :value="tabItem.value"
       >
         {{ tabItem.name }}
       </v-tab>
     </v-tabs>
 
-    <v-tabs-items v-model="tab">
-      <v-tab-item value="coordinators">
-        <v-skeleton-loader v-if="fetchState.pending" type="article" />
+    <v-window v-model="tab">
+      <v-window-item value="coordinators">
+        <v-skeleton-loader v-if="isLoading()" type="article" />
 
         <organisms-coordinator-edit-form
           v-else
@@ -264,9 +268,9 @@ try {
           @submit="handleSubmit"
           @click:search="searchAddress"
         />
-      </v-tab-item>
+      </v-window-item>
 
-      <v-tab-item value="relationProducers">
+      <v-window-item value="relationProducers">
         <v-dialog v-model="dialog" width="500">
           <template #activator="{ on, attrs }">
             <div class="d-flex pt-3 pr-3">
@@ -333,7 +337,7 @@ try {
           @update:items-per-page="handleUpdateProducersItemsPerPage"
           @update:page="handleUpdateProducersPage"
         />
-      </v-tab-item>
-    </v-tabs-items>
+      </v-window-item>
+    </v-window>
   </div>
 </template>
