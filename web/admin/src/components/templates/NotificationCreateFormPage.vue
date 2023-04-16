@@ -2,6 +2,7 @@
 import * as dayjs from 'dayjs'
 
 import { CreateNotificationRequest } from '~/types/api'
+import { NotificationTime } from '~/types/props'
 
 const props = defineProps({
   formData: {
@@ -13,11 +14,19 @@ const props = defineProps({
       public: false,
       publishedAt: dayjs().unix()
     })
+  },
+  timeData: {
+    type: Object,
+    default: (): NotificationTime => ({
+      publishedDate: '',
+      publishedTime: ''
+    })
   }
 })
 
 const emit = defineEmits<{
   (e: 'update:formData', formData: CreateNotificationRequest): void
+  (e: 'update:timeData', timeData: NotificationTime): void
   (e: 'submit'): void
 }>()
 
@@ -25,6 +34,11 @@ const formDataValue = computed({
   get: (): CreateNotificationRequest =>
     props.formData as CreateNotificationRequest,
   set: (val: CreateNotificationRequest) => emit('update:formData', val)
+})
+
+const timeDataValue = computed({
+  get: (): NotificationTime => props.timeData as NotificationTime,
+  set: (val: NotificationTime) => emit('update:timeData', val)
 })
 
 const handleSubmit = () => {
@@ -37,6 +51,6 @@ const handleSubmit = () => {
     <p class="text-h6">
       生産者登録
     </p>
-    <organisms-notification-form :form-data="formDataValue" @submit="handleSubmit" />
+    <organisms-notification-form :form-data="formDataValue" :time-data="timeDataValue" @submit="handleSubmit" />
   </div>
 </template>

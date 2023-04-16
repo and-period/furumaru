@@ -196,15 +196,14 @@ const discountMethodList = [
             offset-y
             min-width="auto"
           >
-            <template #activator="{ on, attrs }">
+            <template #activator="{ props }">
               <v-text-field
                 v-model="timeDataValue.publishedDate"
                 class="mr-2"
                 label="投稿開始日"
                 readonly
                 variant="outlined"
-                v-bind="attrs"
-                v-on="on"
+                v-bind="props"
               />
             </template>
             <v-date-picker
@@ -242,15 +241,14 @@ const discountMethodList = [
             offset-y
             min-width="auto"
           >
-            <template #activator="{ on, attrs }">
+            <template #activator="{ props }">
               <v-text-field
                 v-model="timeDataValue.startDate"
                 label="使用開始日"
                 readonly
                 variant="outlined"
-                v-bind="attrs"
+                v-bind="props"
                 class="mr-2"
-                v-on="on"
               />
             </template>
             <v-date-picker
@@ -281,15 +279,14 @@ const discountMethodList = [
             offset-y
             min-width="auto"
           >
-            <template #activator="{ on, attrs }">
+            <template #activator="{ props }">
               <v-text-field
                 v-model="timeDataValue.endDate"
                 label="使用終了日"
                 readonly
                 variant="outlined"
-                v-bind="attrs"
+                v-bind="props"
                 class="mr-2"
-                v-on="on"
               />
             </template>
             <v-date-picker

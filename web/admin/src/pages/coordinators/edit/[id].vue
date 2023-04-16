@@ -272,10 +272,10 @@ try {
 
       <v-window-item value="relationProducers">
         <v-dialog v-model="dialog" width="500">
-          <template #activator="{ on, attrs }">
+          <template #activator="{ props }">
             <div class="d-flex pt-3 pr-3">
               <v-spacer />
-              <v-btn variant="outlined" color="primary" v-bind="attrs" v-on="on">
+              <v-btn variant="outlined" color="primary" v-bind="props">
                 <v-icon start :icon="mdiPlus" />
                 生産者紐付け
               </v-btn>

@@ -3,9 +3,15 @@ import * as dayjs from 'dayjs'
 
 import { useNotificationStore } from '~/store'
 import { CreateNotificationRequest } from '~/types/api'
+import { NotificationTime } from '~/types/props'
 
 const router = useRouter()
 const notificationStore = useNotificationStore()
+
+const timeData = reactive<NotificationTime>({
+  publishedDate: '',
+  publishedTime: ''
+})
 
 const formData = reactive<CreateNotificationRequest>({
   title: '',
@@ -28,6 +34,7 @@ const handleSubmit = async () => {
 <template>
   <templates-notification-create-form-page
     :form-data="formData"
+    :time-data="timeData"
     @submit="handleSubmit"
   />
 </template>

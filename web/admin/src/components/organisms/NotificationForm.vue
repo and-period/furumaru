@@ -120,19 +120,18 @@ const handleSubmit = () => {
             offset-y
             min-width="auto"
           >
-            <template #activator="{ on, attrs }">
+            <template #activator="{ props }">
               <v-text-field
-                v-model="props.timeData.publishedDate"
+                v-model="timeDataValue.publishedDate"
                 class="mr-2"
                 label="投稿開始日"
                 readonly
                 variant="outlined"
-                v-bind="attrs"
-                v-on="on"
+                v-bind="props"
               />
             </template>
             <v-date-picker
-              v-model="props.timeData.publishedDate"
+              v-model="timeDataValue.publishedDate"
               scrollable
               @input="postMenu = false"
             >
@@ -143,7 +142,7 @@ const handleSubmit = () => {
             </v-date-picker>
           </v-menu>
           <v-text-field
-            v-model="props.timeData.publishedTime"
+            v-model="timeDataValue.publishedTime"
             type="time"
             required
             variant="outlined"

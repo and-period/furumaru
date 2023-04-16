@@ -79,7 +79,7 @@ const fetchCategories = async () => {
 
 const moreCategories = async () => {
   try {
-    categoryPagination.updateCurrentPage(categoryPagination.offset.value + 1)
+    categoryPagination.updateCurrentPage(categoryPagination.offset.value + categoryPagination.itemsPerPage.value)
     await categoryStore.moreCategories(categoryPagination.itemsPerPage.value, categoryPagination.offset.value)
   } catch (err) {
     console.log(err)
@@ -183,10 +183,10 @@ try {
     <v-window v-model="selector">
       <v-window-item value="categories">
         <v-dialog v-model="categoryDialog" width="500">
-          <template #activator="{ on, attrs }">
+          <template #activator="{ props }">
             <div class="d-flex pt-3 pr-3">
               <v-spacer />
-              <v-btn variant="outlined" color="primary" v-bind="attrs" v-on="on">
+              <v-btn variant="outlined" color="primary" v-bind="props">
                 <v-icon start :icon="mdiPlus" />
                 追加
               </v-btn>
@@ -228,10 +228,10 @@ try {
 
       <v-window-item value="categoryItems">
         <v-dialog v-model="productTypeDialog" width="500">
-          <template #activator="{ on, attrs }">
+          <template #activator="{ props }">
             <div class="d-flex pt-3 pr-3">
               <v-spacer />
-              <v-btn variant="outlined" color="primary" v-bind="attrs" v-on="on">
+              <v-btn variant="outlined" color="primary" v-bind="props">
                 <v-icon start :icon="mdiPlus" />
                 追加
               </v-btn>
