@@ -146,20 +146,6 @@ const handleSubmit = async () => {
       </v-card>
 
       <v-card class="mb-4">
-        <v-card-title>詳細情報</v-card-title>
-        <v-card-text>
-          <molecules-product-detail-form
-            v-model:producer-id="formDataValue.producerId"
-            v-model:product-type-id="formDataValue.productTypeId"
-            v-model:origin-prefecture="formDataValue.originPrefecture"
-            v-model:origin-city="formDataValue.originCity"
-            :producers-items="producersItems"
-            :product-types-items="productTypesItems"
-          />
-        </v-card-text>
-      </v-card>
-
-      <v-card class="mb-4">
         <v-card-title>価格</v-card-title>
         <v-card-text>
           <v-text-field
@@ -182,6 +168,20 @@ const handleSubmit = async () => {
             :box60-rate-error-message="getErrorMessage(v$.box60Rate.$errors)"
             :box80-rate-error-message="getErrorMessage(v$.box80Rate.$errors)"
             :box100-rate-error-message="getErrorMessage(v$.box100Rate.$errors)"
+          />
+        </v-card-text>
+      </v-card>
+
+      <v-card class="mb-4">
+        <v-card-title>詳細情報</v-card-title>
+        <v-card-text>
+          <molecules-product-detail-form
+            v-model:producer-id="formDataValue.producerId"
+            v-model:product-type-id="formDataValue.productTypeId"
+            v-model:origin-prefecture="formDataValue.originPrefecture"
+            v-model:origin-city="formDataValue.originCity"
+            :producers-items="producersItems"
+            :product-types-items="productTypesItems"
           />
         </v-card-text>
       </v-card>
