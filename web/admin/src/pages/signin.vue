@@ -24,12 +24,13 @@ const handleSubmit = async () => {
     if (err instanceof Error) {
       show(err.message)
     }
+    console.log('failed to sign in', err)
   }
 }
 </script>
 
 <template>
-  <templates-sign-in-page
+  <templates-auth-sign-in
     v-model:form-data="formData"
     :is-alert="isShow"
     :alert-type="alertType"

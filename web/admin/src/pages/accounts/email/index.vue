@@ -1,40 +1,38 @@
 <script lang="ts" setup>
+import { useAlert } from '~/lib/hooks'
 import { useAuthStore } from '~/store'
 import { UpdateAuthEmailRequest } from '~/types/api'
+
+const router = useRouter()
+const authStore = useAuthStore()
+const { alertType, isShow, alertText, show } = useAlert('error')
 
 const formData = reactive<UpdateAuthEmailRequest>({
   email: ''
 })
-const router = useRouter()
-const authStore = useAuthStore()
 
-const handleClickAddBtn = async (): Promise<void> => {
+const handleSubmit = async (): Promise<void> => {
   try {
     await authStore.emailUpdate(formData)
     router.push({
       name: 'accounts-email-verification',
       params: { email: formData.email }
     })
-  } catch (error) {
-    console.log(error)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log('failed to update email', err)
   }
 }
 </script>
 
 <template>
-  <div>
-    <p class="text-h6">
-      メールアドレス変更
-    </p>
-    <v-card elevation="0">
-      <v-card-text>
-        <v-text-field v-model="formData.email" label="新規メールアドレス" />
-      </v-card-text>
-      <v-card-actions>
-        <v-btn block variant="outlined" color="primary" @click="handleClickAddBtn">
-          変更
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </div>
+  <templates-auth-edit-email
+    v-model:form-data="formData"
+    :is-alert="isShow"
+    :alert-type="alertType"
+    :alert-text="alertText"
+    @submit="handleSubmit"
+  />
 </template>
