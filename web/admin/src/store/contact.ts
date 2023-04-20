@@ -17,6 +17,7 @@ import { apiClient } from '~/plugins/api-client'
 
 export const useContactStore = defineStore('contact', {
   state: () => ({
+    contact: {} as ContactResponse,
     contacts: [] as Array<ContactsResponseContactsInner>,
     total: 0
   }),
@@ -52,6 +53,7 @@ export const useContactStore = defineStore('contact', {
     async getContact (id: string): Promise<ContactResponse> {
       try {
         const res = await apiClient.contactApi().v1GetContact(id)
+        this.contact = res.data
         return res.data
       } catch (error) {
         if (axios.isAxiosError(error)) {

@@ -38,5 +38,5 @@ const handleClick = (action: () => void): void => {
 </script>
 
 <template>
-  <templates-setting-top-page :menus="menus" @click="handleClick" />
+  <templates-setting-top :menus="menus" @click="handleClick" />
 </template>
