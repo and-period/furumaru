@@ -21,12 +21,14 @@ import {
   ValidationError
 } from '~/types/exception'
 import { apiClient } from '~/plugins/api-client'
+import dayjs, { Dayjs } from 'dayjs'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     redirectPath: '/',
     isAuthenticated: false,
-    user: undefined as AuthResponse | undefined
+    user: undefined as AuthResponse | undefined,
+    expiredAt: undefined as Dayjs | undefined,
   }),
 
   getters: {
@@ -39,6 +41,7 @@ export const useAuthStore = defineStore('auth', {
     async signIn (payload: SignInRequest): Promise<string> {
       try {
         const res = await apiClient.authApi().v1SignIn(payload)
+        this.setExpiredAt(res.data)
         this.isAuthenticated = true
         this.user = res.data
 
@@ -198,6 +201,7 @@ export const useAuthStore = defineStore('auth', {
         const res = await apiClient.authApi().v1RefreshAuthToken({
           refreshToken
         })
+        this.setExpiredAt(res.data)
         this.isAuthenticated = true
         this.user = res.data
         this.user.refreshToken = refreshToken
@@ -267,6 +271,10 @@ export const useAuthStore = defineStore('auth', {
 
     setRedirectPath (payload: string) {
       this.redirectPath = payload
+    },
+
+    setExpiredAt (user: AuthResponse) {
+      this.expiredAt = dayjs().add(user.expiresIn, 'second')
     },
 
     logout () {
