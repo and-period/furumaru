@@ -3,6 +3,7 @@ import { getToken, isSupported } from 'firebase/messaging'
 import { defineStore } from 'pinia'
 import Cookies from 'universal-cookie'
 
+import dayjs, { Dayjs } from 'dayjs'
 import { useCommonStore } from './common'
 import { messaging } from '~/plugins/firebase'
 import {
@@ -21,14 +22,13 @@ import {
   ValidationError
 } from '~/types/exception'
 import { apiClient } from '~/plugins/api-client'
-import dayjs, { Dayjs } from 'dayjs'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     redirectPath: '/',
     isAuthenticated: false,
     user: undefined as AuthResponse | undefined,
-    expiredAt: undefined as Dayjs | undefined,
+    expiredAt: undefined as Dayjs | undefined
   }),
 
   getters: {
