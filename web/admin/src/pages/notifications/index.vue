@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { mdiPlus, mdiPencil, mdiDelete } from '@mdi/js'
+import { mdiPlus, mdiDelete } from '@mdi/js'
 import * as dayjs from 'dayjs'
 import { VDataTable } from 'vuetify/labs/components'
 
@@ -129,7 +129,7 @@ const handleClickAddButton = () => {
   router.push('/notifications/add')
 }
 
-const handleEdit = (item: NotificationsResponseNotificationsInner) => {
+const handleClickRow = (item: NotificationsResponseNotificationsInner) => {
   router.push(`/notifications/edit/${item.id}`)
 }
 
@@ -191,11 +191,13 @@ try {
           :items-length="total"
           :footer-props="options"
           :multi-sort="true"
+          hover
           no-data-text="登録されているお知らせ情報がありません"
           @update:page="handleUpdatePage"
           @update:items-per-page="handleUpdateItemsPerPage"
           @update:sort-by="fetchState.refresh"
           @update:sort-desc="fetchState.refresh"
+          @click:row="(_, {item}:any) => handleClickRow(item.raw)"
         >
           <template #[`item.public`]="{ item }">
             <v-chip size="small" :color="getStatusColor(item.raw.public)">
@@ -209,15 +211,11 @@ try {
             {{ getDay(item.raw.publishedAt) }}
           </template>
           <template #[`item.actions`]="{ item }">
-            <v-btn class="mr-2" variant="outlined" color="primary" size="small" @click="handleEdit(item.raw)">
-              <v-icon size="small" :icon="mdiPencil" />
-              編集
-            </v-btn>
             <v-btn
               variant="outlined"
               color="primary"
               size="small"
-              @click="openDeleteDialog(item.raw)"
+              @click.stop="openDeleteDialog(item.raw)"
             >
               <v-icon size="small" :icon="mdiDelete" />
               削除
