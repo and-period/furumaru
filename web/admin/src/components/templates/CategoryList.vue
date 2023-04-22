@@ -10,8 +10,6 @@ import {
   required,
   getErrorMessage,
   maxLength,
-  minValue,
-  maxValue
 } from '~/lib/validations'
 
 const props = defineProps({
@@ -109,17 +107,14 @@ const categoryDialogValue = computed({
   get: () => props.categoryDialog,
   set: (val: boolean) => emits('update:category-dialog', val)
 })
-
 const productTypeDialogValue = computed({
   get: () => props.productTypeDialog,
   set: (val: boolean) => emits('update:product-type-dialog', val)
 })
-
 const categoryFormDataValue = computed({
   get: () => props.categoryFormData,
   set: (val: CreateCategoryRequest) => emits('update:category-form-data', val)
 })
-
 const categoryFormDataRules = computed(() => {
   return {
     name: { required, maxlength: maxLength(32) }
