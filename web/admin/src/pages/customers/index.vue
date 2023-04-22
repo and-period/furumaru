@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { VDataTable } from 'vuetify/labs/components'
-import { mdiPencil, mdiDelete } from '@mdi/js'
+import { mdiDelete } from '@mdi/js'
 
 import { usePagination } from '~/lib/hooks'
 import { useUserStore } from '~/store/customer'
+import { UsersResponseUsersInner } from '~/types/api'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -14,7 +15,6 @@ const {
   updateCurrentPage,
   handleUpdateItemsPerPage
 } = usePagination()
-const id = 'ThisIsID'
 
 const headers: VDataTable['headers'] = [
   {
@@ -39,7 +39,8 @@ const headers: VDataTable['headers'] = [
   },
   {
     title: 'Action',
-    key: 'action'
+    key: 'action',
+    sortable: false
   }
 ]
 
@@ -79,8 +80,12 @@ const registerStatus = (registered: boolean): string => {
   return registered ? '有' : '無'
 }
 
-const handleEdit = () => {
-  router.push(`/customers/edit/${id}`)
+const handleRowClick = (item: UsersResponseUsersInner): void => {
+  router.push(`/customers/edit/${item.id}`)
+}
+
+const handleDeleteButtonClick = () => {
+  console.log('削除ボタンクリック')
 }
 
 try {
@@ -101,8 +106,10 @@ try {
           :items-per-page="itemsPerPage"
           :footer-props="options"
           no-data-text="登録されている顧客情報がありません"
+          hover
           @update:page="handleUpdatePage"
           @update:items-per-page="handleUpdateItemsPerPage"
+          @click:row="(_: any, { item }: any) => handleRowClick(item.raw)"
         >
           <template #[`item.name`]="{ item }">
             {{ `${item.raw.lastname} ${item.raw.firstname}` }}
@@ -116,11 +123,7 @@ try {
             </v-chip>
           </template>
           <template #[`item.action`]>
-            <v-btn class="mr-2" variant="outlined" color="primary" size="small" @click="handleEdit()">
-              <v-icon size="small" :icon="mdiPencil" />
-              詳細
-            </v-btn>
-            <v-btn variant="outlined" color="primary" size="small">
+            <v-btn variant="outlined" color="primary" size="small" @click.stop="handleDeleteButtonClick">
               <v-icon size="small" :icon="mdiDelete" />
               削除
             </v-btn>
