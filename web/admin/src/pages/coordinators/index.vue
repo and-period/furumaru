@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { mdiPlus, mdiSearchWeb, mdiAccount, mdiPencil, mdiDelete } from '@mdi/js'
+import { mdiPlus, mdiAccount, mdiDelete } from '@mdi/js'
 import { VDataTable } from 'vuetify/labs/components'
 
 import { useAlert, usePagination } from '~/lib/hooks'
@@ -95,7 +95,7 @@ const handleClickAddButton = () => {
   router.push('/coordinators/add')
 }
 
-const handleEdit = (item: CoordinatorsResponseCoordinatorsInner) => {
+const handleClickRow = (item: CoordinatorsResponseCoordinatorsInner) => {
   router.push(`/coordinators/edit/${item.id}`)
 }
 
@@ -191,12 +191,13 @@ try {
         <v-data-table-server
           :headers="headers"
           :items="coordinators"
-          :no-results-text="noResultsText"
           :items-length="totalItems"
           :footer-props="options"
+          hover
           no-data-text="登録されているコーディネータがいません。"
           @update:items-per-page="handleUpdateItemsPerPage"
           @update:page="handleUpdatePage"
+          @click:row="(_:any, {item}: any) => handleClickRow(item.raw)"
         >
           <template #[`item.thumbnail`]="{ item }">
             <v-avatar>
@@ -217,15 +218,11 @@ try {
             {{ `${item.raw.phoneNumber}`.replace('+81', '0') }}
           </template>
           <template #[`item.actions`]="{ item }">
-            <v-btn class="mr-2" variant="outlined" color="primary" size="small" @click="handleEdit(item.raw)">
-              <v-icon size="small" :icon="mdiPencil" />
-              編集
-            </v-btn>
             <v-btn
               variant="outlined"
               color="primary"
               size="small"
-              @click="handleClickDeleteButton(item.raw)"
+              @click.stop="handleClickDeleteButton(item.raw)"
             >
               <v-icon size="small" :icon="mdiDelete" />
               削除

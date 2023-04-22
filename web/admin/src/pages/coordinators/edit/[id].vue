@@ -241,103 +241,106 @@ try {
   <div>
     <v-card-title>コーディネーター編集</v-card-title>
 
-    <v-tabs v-model="tab" grow color="dark">
-      <v-tabs-slider color="accent" />
-      <v-tab
-        v-for="tabItem in tabItems"
-        :key="tabItem.value"
-        :value="tabItem.value"
-      >
-        {{ tabItem.name }}
-      </v-tab>
-    </v-tabs>
+    <v-card>
+      <v-tabs v-model="tab" grow color="dark">
+        <v-tabs-slider color="accent" />
+        <v-tab
+          v-for="tabItem in tabItems"
+          :key="tabItem.value"
+          :value="tabItem.value"
+        >
+          {{ tabItem.name }}
+        </v-tab>
+      </v-tabs>
 
-    <v-window v-model="tab">
-      <v-window-item value="coordinators">
-        <v-skeleton-loader v-if="isLoading()" type="article" />
+      <v-window v-model="tab">
+        <v-window-item value="coordinators">
+          <v-skeleton-loader v-if="isLoading()" type="article" />
 
-        <organisms-coordinator-edit-form
-          v-else
-          :form-data="formData"
-          :thumbnail-upload-status="thumbnailUploadStatus"
-          :header-upload-status="headerUploadStatus"
-          :search-loading="searchLoading"
-          :search-error-message="searchErrorMessage"
-          @update:thumbnail-file="handleUpdateThumbnail"
-          @update:header-file="handleUpdateHeader"
-          @submit="handleSubmit"
-          @click:search="searchAddress"
-        />
-      </v-window-item>
+          <organisms-coordinator-edit-form
+            v-else
+            :form-data="formData"
+            :thumbnail-upload-status="thumbnailUploadStatus"
+            :header-upload-status="headerUploadStatus"
+            :search-loading="searchLoading"
+            :search-error-message="searchErrorMessage"
+            @update:thumbnail-file="handleUpdateThumbnail"
+            @update:header-file="handleUpdateHeader"
+            @submit="handleSubmit"
+            @click:search="searchAddress"
+          />
+        </v-window-item>
 
-      <v-window-item value="relationProducers">
-        <v-dialog v-model="dialog" width="500">
-          <template #activator="{ props }">
-            <div class="d-flex pt-3 pr-3">
-              <v-spacer />
-              <v-btn variant="outlined" color="primary" v-bind="props">
-                <v-icon start :icon="mdiPlus" />
+        <v-window-item value="relationProducers">
+          <v-dialog v-model="dialog" width="500">
+            <template #activator="{ props }">
+              <div class="d-flex pt-3 pr-3">
+                <v-spacer />
+                <v-btn variant="outlined" color="primary" v-bind="props">
+                  <v-icon start :icon="mdiPlus" />
+                  生産者紐付け
+                </v-btn>
+              </div>
+            </template>
+            <v-card>
+              <v-card-title class="primaryLight">
                 生産者紐付け
-              </v-btn>
-            </div>
-          </template>
+              </v-card-title>
 
-          <v-card>
-            <v-card-title class="primaryLight">
-              生産者紐付け
-            </v-card-title>
-
-            <v-autocomplete
-              v-model="producers"
-              chips
-              label="関連生産者"
-              multiple
-              filled
-              :items="producerItems"
-              item-title="firstname"
-              item-value="id"
-            >
-              <template #selection="data">
-                <v-chip close @click:close="remove(data.item.id)">
-                  <v-avatar start>
-                    <v-img :src="data.item.thumbnailUrl" />
-                  </v-avatar>
-                  {{ data.item.firstname }}
-                </v-chip>
-              </template>
-              <template #item="data">
-                <v-list-item-avatar>
-                  <img :src="data.item.thumbnailUrl">
-                </v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title>
+              <v-autocomplete
+                v-model="producers"
+                chips
+                label="関連生産者"
+                multiple
+                filled
+                :items="producerItems"
+                item-title="firstname"
+                item-value="id"
+              >
+                <template #selection="data">
+                  <v-chip close @click:close="remove(data.item.id)">
+                    <v-avatar start>
+                      <v-img :src="data.item.thumbnailUrl" />
+                    </v-avatar>
                     {{ data.item.firstname }}
-                  </v-list-item-title>
-                  <v-list-item-subtitle>
-                    {{ data.item.storeName }}
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-              </template>
-            </v-autocomplete>
+                  </v-chip>
+                </template>
+                <template #item="data">
+                  <v-list-item-avatar>
+                    <img :src="data.item.thumbnailUrl">
+                  </v-list-item-avatar>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      {{ data.item.firstname }}
+                    </v-list-item-title>
+                    <v-list-item-subtitle>
+                      {{ data.item.storeName }}
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </template>
+              </v-autocomplete>
 
-            <v-card-actions>
-              <v-spacer />
-              <v-btn color="error" variant="text" @click="cancel">
-                キャンセル
-              </v-btn>
-              <v-btn color="primary" variant="outlined" @click="relateProducers">
-                更新
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+              <v-card-actions>
+                <v-spacer />
+                <v-btn color="error" variant="text" @click="cancel">
+                  キャンセル
+                </v-btn>
+                <v-btn color="primary" variant="outlined" @click="relateProducers">
+                  更新
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
 
-        <organisms-related-producer-list
-          :table-footer-props="producersOptions"
-          @update:items-per-page="handleUpdateProducersItemsPerPage"
-          @update:page="handleUpdateProducersPage"
-        />
-      </v-window-item>
-    </v-window>
+          <v-card-text>
+            <organisms-related-producer-list
+              :table-footer-props="producersOptions"
+              @update:items-per-page="handleUpdateProducersItemsPerPage"
+              @update:page="handleUpdateProducersPage"
+            />
+          </v-card-text>
+        </v-window-item>
+      </v-window>
+    </v-card>
   </div>
 </template>
