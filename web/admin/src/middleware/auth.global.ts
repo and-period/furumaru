@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import Cookies from 'universal-cookie'
 
 import { useAuthStore } from '~/store'
@@ -11,9 +12,9 @@ export default defineNuxtRouteMiddleware(async (to, _) => {
   const store = useAuthStore()
   const cookies = new Cookies()
 
-  // TODO: AccessTokenの有効期限確認も追加
-  if (store.isAuthenticated) {
-    return // ログイン済み
+  // ログイン中 && AccessTokenの有効期限が切れていないかの検証
+  if (store.isAuthenticated && dayjs().isBefore(store.expiredAt)) {
+    return // ログイン済み && AccessTokenが有効
   }
   store.setRedirectPath(to.path)
 
