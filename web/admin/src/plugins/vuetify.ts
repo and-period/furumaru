@@ -27,6 +27,14 @@ export default defineNuxtPlugin((nuxtApp) => {
         mdi
       }
     },
+    defaults: {
+      VTextField: {
+        variant: 'underlined'
+      },
+      VSelect: {
+        variant: 'underlined'
+      }
+    },
     theme: {
       defaultTheme: 'light',
       themes: {

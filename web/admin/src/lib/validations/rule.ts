@@ -91,7 +91,7 @@ const minValue = (min: string | number | Ref<number> | Ref<string>) =>
   )
 
 /**
- * 最大地のバリデーションルールをラップする関数
+ * 最大値のバリデーションルールをラップする関数
  * @param min
  * @returns
  */
