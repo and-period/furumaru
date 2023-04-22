@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { mdiPlus } from '@mdi/js'
 import { useVuelidate } from '@vuelidate/core'
+import { storeToRefs } from 'pinia'
 
 import { useAlert } from '~/lib/hooks'
-import { required, minValue } from '~/lib/validations'
+import { required, minValue, maxValue, maxLength } from '~/lib/validations'
 import {
   useCategoryStore,
   useProducerStore,
@@ -11,10 +12,14 @@ import {
   useProductTypeStore
 } from '~/store'
 import { CreateProductRequest, UploadImageResponse } from '~/types/api'
+import { prefecturesList, cityList } from '~/constants'
 
 const productTypeStore = useProductTypeStore()
 const categoryStore = useCategoryStore()
 const producerStore = useProducerStore()
+
+const { producers } = storeToRefs(producerStore)
+const { productTypes } = storeToRefs(productTypeStore)
 
 const fetchState = useAsyncData(async () => {
   await Promise.all([
@@ -75,7 +80,7 @@ const formData = reactive<CreateProductRequest>({
 })
 
 const rules = computed(() => ({
-  name: { required },
+  name: { required, maxLength: maxLength(128) },
   inventory: { required, minValue: minValue(0) },
   price: { required, minValue: minValue(0) },
   weight: { required, minValue: minValue(0) },
@@ -84,6 +89,15 @@ const rules = computed(() => ({
 }))
 
 const v$ = useVuelidate(rules, formData)
+
+const cityListItems = computed(() => {
+  const selectedPrefecture = prefecturesList.find(prefecture => formData.originPrefecture === prefecture.value)
+  if (!selectedPrefecture) {
+    return []
+  } else {
+    return cityList.filter(city => city.prefId === selectedPrefecture.id)
+  }
+})
 
 const handleUpdateFormDataDescription = (htmlString: string) => {
   formData.description = htmlString
@@ -126,11 +140,11 @@ const handleFormSubmit = async () => {
   }
 }
 
-const getErrorMessage = (key: string): string | Ref<string> => {
+const getErrorMessage = (key: string): string => {
   const error = v$.value.$errors.find((e) => {
     return e.$property === key
   })
-  return error ? error.$message : ''
+  return error ? `${error.$message}` : ''
 }
 
 try {
@@ -145,202 +159,222 @@ try {
     <v-card-title>商品登録</v-card-title>
     <v-breadcrumbs :items="breadcrumbsItem" large class="pa-0 mb-6" />
 
-    <v-alert v-model="isShow" :type="alertType" v-text="alertText" />
+    <v-alert v-model="isShow" class="mb-4" :type="alertType" v-text="alertText" />
 
-    <div class="mb-4">
-      <v-card elevation="0" class="mb-4">
-        <v-card-title>商品ステータス</v-card-title>
-        <v-card-text>
-          <v-select
-            v-model="formData.public"
-            label="ステータス"
-            :items="statusItems"
-            item-title="text"
-            item-value="value"
-          />
-        </v-card-text>
-      </v-card>
+    <v-row>
+      <v-col cols="8">
+        <div class="mb-4">
+          <v-card elevation="0" class="mb-4">
+            <v-card-title>基本情報</v-card-title>
+            <v-card-text>
+              <v-select
+                v-model="formData.producerId"
+                label="販売店舗名"
+                :items="producers"
+                item-title="storeName"
+                item-value="id"
+              />
 
-      <v-card elevation="0" class="mb-4">
-        <v-card-title>基本情報</v-card-title>
-        <v-card-text>
-          <v-text-field
-            v-model="v$.name.$model"
-            label="商品名"
-            outlined
-            :error="v$.name.$error"
-            :error-messages="getErrorMessage('name')"
-          />
-          <client-only>
-            <tiptap-editor
-              label="商品詳細"
-              :value="formData.description"
-              @update:value="handleUpdateFormDataDescription"
-            />
-          </client-only>
-        </v-card-text>
-      </v-card>
+              <v-text-field
+                v-model="v$.name.$model"
+                label="商品名"
+                outlined
+                :error="v$.name.$error"
+                :error-messages="getErrorMessage('name')"
+              />
+              <client-only>
+                <tiptap-editor
+                  label="商品詳細"
+                  :value="formData.description"
+                  @update:value="handleUpdateFormDataDescription"
+                />
+              </client-only>
+            </v-card-text>
+          </v-card>
 
-      <v-card elevation="0" class="mb-4">
-        <v-card-title>在庫</v-card-title>
-        <v-card-text>
-          <div class="d-flex">
-            <v-text-field
-              v-model="v$.inventory.$model"
-              :error-messages="getErrorMessage('inventory')"
-              type="number"
-              label="在庫数"
-            />
-            <v-spacer />
-          </div>
+          <v-card elevation="0" class="mb-4">
+            <v-card-title>商品画像登録</v-card-title>
+            <v-card-text>
+              <div class="mb-2">
+                <atoms-file-upload-filed
+                  text="商品画像"
+                  @update:files="handleImageUpload"
+                />
+              </div>
+              <v-radio-group>
+                <div
+                  v-for="(img, i) in formData.media"
+                  :key="i"
+                  class="d-flex flex-row align-center"
+                >
+                  <v-radio :value="i" />
+                  <img :src="img.url" width="200" class="mx-4">
+                  <p class="mb-0">
+                    {{ img.url }}
+                  </p>
+                </div>
+              </v-radio-group>
+              <p>※ check された商品画像がサムネイルになります</p>
+            </v-card-text>
+          </v-card>
 
-          <div class="d-flex">
-            <v-select
-              v-model="formData.itemUnit"
-              label="単位"
-              :items="itemUnits"
-              item-title="text"
-              item-value="value"
-            />
-            <v-spacer />
-          </div>
+          <v-card elevation="0" class="mb-4">
+            <v-card-title>価格</v-card-title>
+            <v-card-text>
+              <v-text-field
+                v-model="v$.price.$model"
+                label="販売価格"
+                :error-messages="getErrorMessage('price')"
+              >
+                <template #prepend>
+                  &yen;
+                </template>
+              </v-text-field>
+            </v-card-text>
+          </v-card>
 
-          <div class="d-flex align-center">
-            <v-text-field
-              v-model="v$.itemDescription.$model"
-              label="単位説明"
-              :error-messages="getErrorMessage('itemDescription')"
-            />
-            <p class="ml-12 mb-0">
-              ex) 1kg → 5個入り
-            </p>
-            <v-spacer />
-          </div>
-        </v-card-text>
-      </v-card>
+          <v-card elevation="0" class="mb-4">
+            <v-card-title>在庫</v-card-title>
+            <v-card-text>
+              <v-row>
+                <v-col cols="9">
+                  <v-text-field
+                    v-model="v$.inventory.$model"
+                    :error-messages="getErrorMessage('inventory')"
+                    type="number"
+                    label="在庫数"
+                  />
+                </v-col>
+                <v-col cols="3">
+                  <v-select
+                    v-model="formData.itemUnit"
+                    label="単位"
+                    :items="itemUnits"
+                    item-title="text"
+                    item-value="value"
+                  />
+                </v-col>
+              </v-row>
 
-      <v-card elevation="0" class="mb-4">
-        <v-card-title>商品画像登録</v-card-title>
-        <v-card-text>
-          <div class="mb-2">
-            <atoms-file-upload-filed
-              text="商品画像"
-              @update:files="handleImageUpload"
-            />
-          </div>
-          <v-radio-group>
-            <div
-              v-for="(img, i) in formData.media"
-              :key="i"
-              class="d-flex flex-row align-center"
-            >
-              <v-radio :value="i" />
-              <img :src="img.url" width="200" class="mx-4">
-              <p class="mb-0">
-                {{ img.url }}
-              </p>
-            </div>
-          </v-radio-group>
-          <p>※ check された商品画像がサムネイルになります</p>
-        </v-card-text>
-      </v-card>
-
-      <v-card elevation="0" class="mb-4">
-        <v-card-title>価格</v-card-title>
-        <v-card-text>
-          <v-text-field
-            v-model="v$.price.$model"
-            label="販売価格"
-            :error-messages="getErrorMessage('price')"
-          />
-        </v-card-text>
-      </v-card>
-
-      <v-card elevation="0" class="mb-4">
-        <v-card-title>配送情報</v-card-title>
-        <v-card-text>
-          <div class="d-flex">
-            <v-text-field
-              v-model="v$.weight.$model"
-              label="重さ"
-              :error-messages="getErrorMessage('weight')"
-            >
-              <template #append>
-                kg
-              </template>
-            </v-text-field>
-            <v-spacer />
-          </div>
-          <div class="d-flex">
-            <v-select
-              v-model="formData.deliveryType"
-              :items="deliveryTypeItems"
-              item-title="text"
-              item-value="value"
-              label="配送種別"
-            />
-            <v-spacer />
-          </div>
-
-          <v-list>
-            <v-list-item>
-              <v-list-item-action>箱のサイズ</v-list-item-action>
-              <v-list-item-content> 占有率 </v-list-item-content>
-            </v-list-item>
-            <v-list-item v-for="(size, i) in [60, 80, 100]" :key="i">
-              <v-list-item-action>
-                <p class="mb-0 mx-6 text-h6">
-                  {{ size }}
-                </p>
-              </v-list-item-action>
-              <v-list-item-content>
+              <div class="d-flex align-center">
                 <v-text-field
-                  v-model="formData[`box${size}Rate`]"
-                  type="number"
-                  min="0"
-                  max="100"
-                  label="占有率"
+                  v-model="v$.itemDescription.$model"
+                  label="単位説明"
+                  :error-messages="getErrorMessage('itemDescription')"
+                />
+                <p class="ml-12 mb-0">
+                  ex) 1kg → 5個入り
+                </p>
+                <v-spacer />
+              </div>
+            </v-card-text>
+          </v-card>
+
+          <v-card elevation="0" class="mb-4">
+            <v-card-title>配送情報</v-card-title>
+            <v-card-text>
+              <div class="d-flex">
+                <v-text-field
+                  v-model.number="v$.weight.$model"
+                  label="重さ"
+                  :error-messages="getErrorMessage('weight')"
                 >
                   <template #append>
-                    %
+                    kg
                   </template>
                 </v-text-field>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-card-text>
-      </v-card>
+                <v-spacer />
+              </div>
+              <div class="d-flex">
+                <v-select
+                  v-model="formData.deliveryType"
+                  :items="deliveryTypeItems"
+                  item-title="text"
+                  item-value="value"
+                  label="配送種別"
+                />
+                <v-spacer />
+              </div>
 
-      <v-card elevation="0" class="mb-4">
-        <v-card-title>詳細情報</v-card-title>
-        <v-card-text>
-          <div class="d-flex">
+              <v-row>
+                <v-col cols="3">
+                  箱のサイズ
+                </v-col>
+                <v-col cols="9">
+                  占有率
+                </v-col>
+              </v-row>
+              <v-row v-for="(size, i) in [60, 80, 100]" :key="i">
+                <v-col cols="3" align-self="center">
+                  <p class="mb-0 mx-6 text-h6">
+                    {{ size }}
+                  </p>
+                </v-col>
+                <v-col cols="9">
+                  <v-text-field
+                    v-model="formData[`box${size}Rate`]"
+                    type="number"
+                    min="0"
+                    max="100"
+                    label="占有率"
+                  >
+                    <template #append>
+                      %
+                    </template>
+                  </v-text-field>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
+        </div>
+      </v-col>
+
+      <v-col cols="4">
+        <v-card elevation="0" class="mb-4">
+          <v-card-title>商品ステータス</v-card-title>
+          <v-card-text>
             <v-select
-              v-model="formData.productTypeId"
-              label="品目"
-              :items="productTypeStore.productTypesItem"
-              item-title="name"
-              item-value="id"
+              v-model="formData.public"
+              label="ステータス"
+              :items="statusItems"
+              item-title="text"
+              item-value="value"
             />
-          </div>
-          <div class="d-flex">
+          </v-card-text>
+        </v-card>
+
+        <v-card elevation="0" class="mb-4">
+          <v-card-title>詳細情報</v-card-title>
+          <v-card-text>
+            <div class="d-flex">
+              <v-select
+                v-model="formData.productTypeId"
+                label="品目"
+                :items="productTypes"
+                item-title="name"
+                item-value="id"
+              />
+            </div>
             <v-select
               v-model="formData.originPrefecture"
-              class="mr-4"
               label="原産地（都道府県）"
+              :items="prefecturesList"
+              item-title="text"
+              item-value="text"
             />
-            <v-select v-model="formData.originCity" label="原産地（市町村）" />
-          </div>
-          <v-select
-            v-model="formData.producerId"
-            label="店舗名"
-            :items="productTypeStore.producersItem"
-            item-title="storeName"
-            item-value="id"
-          />
-        </v-card-text>
-      </v-card>
-    </div>
+            <v-select
+              v-model="formData.originCity"
+              :items="cityListItems"
+              item-title="text"
+              item-value="text"
+              label="原産地（市町村）"
+              no-data-text="原産地（都道府県）を先に選択してください。"
+            />
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+
     <v-btn block variant="outlined" @click="handleFormSubmit">
       <v-icon start :icon="mdiPlus" />
       登録
