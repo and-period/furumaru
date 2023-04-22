@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { VDataTable } from 'vuetify/lib/labs/components'
 
+import { ContactsResponseContactsInner } from '~/types/api'
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useContactStore } from '~/store'
 
@@ -60,8 +61,8 @@ const handleClickSortBy = (item: VDataTable['sortBy']): void => {
   sortBy.splice(0, sortBy.length, ...item)
 }
 
-const handleEditCategory = (contactId: string) => {
-  router.push(`/contacts/edit/${contactId}`)
+const handleRowClick = (contactItem: ContactsResponseContactsInner) => {
+  router.push(`/contacts/edit/${contactItem.id}`)
 }
 
 const isLoading = (): boolean => {
@@ -87,7 +88,7 @@ try {
     :table-items-total="contactTotal"
     @click:update-page="handleUpdatePage"
     @click:update-items-per-page="handleUpdateItemsPerPage"
-    @click:edit="handleEditCategory"
+    @click:row="handleRowClick"
     @update:sort-by="handleClickSortBy"
   />
 </template>

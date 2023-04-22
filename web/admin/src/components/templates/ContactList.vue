@@ -44,7 +44,7 @@ const emit = defineEmits<{
   (e: 'click:update-page', page: number): void
   (e: 'click:update-items-per-page', page: number): void
   (e: 'click:update-sort-by'): void
-  (e: 'click:edit', categoryId: string): void
+  (e: 'click:row', item: ContactsResponseContactsInner): void
   (e: 'update:sort-by', sortBy: VDataTable['sortBy']): void
 }>()
 
@@ -64,11 +64,6 @@ const headers: VDataTable['headers'] = [
   {
     title: 'ステータス',
     key: 'status'
-  },
-  {
-    title: 'Actions',
-    key: 'actions',
-    sortable: false
   }
 ]
 
@@ -140,8 +135,8 @@ const onClickUpdateSortBy = (sortBy: VDataTable['sortBy']): void => {
   emit('update:sort-by', sortBy)
 }
 
-const onClickEdit = (contactId: string): void => {
-  emit('click:edit', contactId)
+const onClickRow = (contactItem: ContactsResponseContactsInner): void => {
+  emit('click:row', contactItem)
 }
 </script>
 
@@ -156,10 +151,12 @@ const onClickEdit = (contactId: string): void => {
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"
         :multi-sort="true"
+        hover
         :sort-by="props.sortBy"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
         @update:sort-by="onClickUpdateSortBy"
+        @click:row="(_:any, {item}: any) => onClickRow(item.raw)"
       >
         <template #[`item.priority`]="{ item }">
           <v-chip :color="getPriorityColor(item.raw.priority)" size="small">
@@ -170,12 +167,6 @@ const onClickEdit = (contactId: string): void => {
           <v-chip :color="getStatusColor(item.raw.status)" size="small">
             {{ getStatus(item.raw.status) }}
           </v-chip>
-        </template>
-        <template #[`item.actions`]="{ item }">
-          <v-btn variant="outlined" color="primary" size="small" @click="onClickEdit(item.raw.id)">
-            <v-icon size="small" :icon="mdiPencil" />
-            編集
-          </v-btn>
         </template>
       </v-data-table-server>
     </v-card-text>
