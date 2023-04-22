@@ -32,7 +32,7 @@
     "pinia": "^2.0.34",
     "sass": "^1.61.0",
     "universal-cookie": "^4.0.4",
-    "vuetify": "^3.1.14"
+    "vuetify": "^3.1.15"
   },
   "devDependencies": {
     "@mdi/js": "^7.2.96",
