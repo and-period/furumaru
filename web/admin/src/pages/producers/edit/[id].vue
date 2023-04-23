@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { convertIntlToJapanesePhoneNumber, convertJapaneseToIntlPhoneNumber } from '~/lib/formatter'
+import { convertI18nToJapanesePhoneNumber, convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert, useSearchAddress } from '~/lib/hooks'
 import { useCommonStore, useProducerStore } from '~/store'
 import { ProducerResponse } from '~/types/api'
@@ -55,7 +55,7 @@ const fetchState = useAsyncData(async () => {
   console.log('ここ呼ばれる？')
   const producer = await getProducer(id)
   Object.assign(formData, producer)
-  formData.phoneNumber = convertIntlToJapanesePhoneNumber(producer.phoneNumber)
+  formData.phoneNumber = convertI18nToJapanesePhoneNumber(producer.phoneNumber)
 })
 
 const handleUpdateThumbnail = (files?: FileList) => {
@@ -111,7 +111,7 @@ const isLoading = (): boolean => {
 
 const handleSubmit = async () => {
   try {
-    await updateProducer(id, { ...formData, phoneNumber: convertJapaneseToIntlPhoneNumber(formData.phoneNumber) })
+    await updateProducer(id, { ...formData, phoneNumber: convertJapaneseToI18nPhoneNumber(formData.phoneNumber) })
     addSnackbar({
       color: 'info',
       message: `${formData.storeName}を更新しました。`
