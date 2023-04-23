@@ -155,6 +155,22 @@ export const useProductStore = defineStore('product', {
       } catch (error) {
         return this.errorHandler(error)
       }
+    },
+
+    /**
+     * 商品を削除する関数
+     * @param productId
+     * @returns
+     */
+    async deleteProduct (productId: string) {
+      try {
+        await apiClient.productApi().v1DeleteProduct(productId)
+        const index = this.products.findIndex(product => product.id === productId)
+        this.products.splice(index, 1)
+        this.totalItems--
+      } catch (err) {
+        return this.errorHandler(err)
+      }
     }
   }
 })
