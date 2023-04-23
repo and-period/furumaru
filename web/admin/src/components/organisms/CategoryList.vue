@@ -107,10 +107,10 @@ const handleDelete = async (): Promise<void> => {
   <div>
     <v-data-table-server
       :headers="categoryHeaders"
-      :items="props.categories"
-      :items-per-page="props.tableItemsPerPage"
-      :items-length="props.tableItemsLength"
-      :footer-props="props.tableFooterOptions"
+      :items="categories"
+      :items-per-page="tableItemsPerPage"
+      :items-length="tableItemsLength"
+      :footer-props="tableFooterOptions"
       @update:page="handleUpdatePage"
       @update:items-per-page="handleUpdateItemsPerPage"
     >

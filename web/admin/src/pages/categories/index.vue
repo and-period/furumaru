@@ -77,7 +77,9 @@ const handleCreateCategory = async (): Promise<void> => {
   try {
     await categoryStore.createCategory(categoryFormData)
     categoryCloseDialog()
+    categoryFormData.name = ''
   } catch (err) {
+    categoryCloseDialog()
     if (err instanceof Error) {
       show(err.message)
     }
@@ -173,7 +175,8 @@ try {
 
 <template>
   <templates-category-list
-    v-model:dialog="dialog"
+    v-model:category-dialog="dialog.category"
+    v-model:product-type-dialog="dialog.productType"
     v-model:category-form-data="categoryFormData"
     v-model:product-type-form-data="productTypeFormData"
     :loading="isLoading()"
