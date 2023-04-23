@@ -132,7 +132,7 @@ try {
   <div>
     <v-card-title>配送設定編集</v-card-title>
 
-    <v-alert v-model="isShow" :type="alertType" v-text="alertText" />
+    <v-alert v-model="isShow" :type="alertType" class="mb-2" v-text="alertText" />
 
     <organisms-shipping-form
       v-model="formData"

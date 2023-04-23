@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { mdiPlus, mdiPencil, mdiDelete } from '@mdi/js'
+import { mdiPlus, mdiDelete } from '@mdi/js'
 import * as dayjs from 'dayjs'
 import { VDataTable } from 'vuetify/lib/labs/components'
 
@@ -79,7 +79,7 @@ const handleDelete = async (): Promise<void> => {
   deleteDialog.value = false
 }
 
-const handleEdit = (item: PromotionsResponsePromotionsInner) => {
+const handleClickRow = (item: PromotionsResponsePromotionsInner) => {
   router.push(`/promotions/edit/${item.id}`)
 }
 
@@ -161,7 +161,9 @@ try {
         <v-data-table
           :headers="headers"
           :items="promotions"
+          hover
           no-data-text="登録されているセール情報がありません。"
+          @click:row="(_: any, {item}: any) => handleClickRow(item.raw)"
         >
           <template #[`item.title`]="{ item }">
             {{ item.raw.title }}
@@ -187,15 +189,11 @@ try {
             {{ getDay(item.raw.endAt) }}
           </template>
           <template #[`item.actions`]="{ item }">
-            <v-btn class="mr-2" variant="outlined" color="primary" size="small" @click="handleEdit(item.raw)">
-              <v-icon size="small" :icon="mdiPencil" />
-              編集
-            </v-btn>
             <v-btn
               color="primary"
               size="small"
               variant="outlined"
-              @click="openDeleteDialog(item.raw)"
+              @click.stop="openDeleteDialog(item.raw)"
             >
               <v-icon size="small" :icon="mdiDelete" />
               削除

@@ -505,11 +505,8 @@ try {
         </v-card>
       </v-window-item>
       <v-window-item value="orderInformation">
-        <v-card-text>
-          <v-card elevation="0">
-            <p class="text-h6">
-              注文情報
-            </p>
+        <v-card elevation="0">
+          <v-card-text>
             <v-text-field
               v-model="formData.id"
               name="id"
@@ -632,8 +629,8 @@ try {
               name="addressLine2"
               label="ビル名・号室など"
             />
-          </v-card>
-        </v-card-text>
+          </v-card-text>
+        </v-card>
       </v-window-item>
     </v-window>
   </div>

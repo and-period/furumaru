@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { mdiPlus, mdiAccount, mdiPencil, mdiDelete } from '@mdi/js'
+import { mdiPlus, mdiAccount, mdiDelete } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components'
 
 import { useAlert, usePagination } from '~/lib/hooks'
@@ -99,7 +99,7 @@ const handleClickAddButton = () => {
   router.push('/producers/add')
 }
 
-const handleEdit = (item: ProducersResponseProducersInner) => {
+const handleClickRow = (item: ProducersResponseProducersInner) => {
   router.push(`/producers/edit/${item.id}`)
 }
 
@@ -201,13 +201,13 @@ try {
         <v-data-table-server
           :headers="headers"
           :items="producers"
-          :search="query"
-          :no-results-text="noResultsText"
           :items-length="totalItems"
           :footer-props="options"
+          hover
           no-data-text="登録されている生産者がいません。"
           @update:items-per-page="handleUpdateItemsPerPage"
           @update:page="handleUpdatePage"
+          @click:row="(_:any, {item}:any) => handleClickRow(item.raw)"
         >
           <template #[`item.thumbnail`]="{ item }">
             <v-avatar>
@@ -228,22 +228,18 @@ try {
             {{ `${item.raw.phoneNumber}`.replace('+81', '0') }}
           </template>
           <template #[`item.actions`]="{ item }">
-            <v-btn class="mr-2" variant="outlined" color="primary" size="small" @click="handleEdit(item.raw)">
-              <v-icon size="small" :icon="mdiPencil" />
-              編集
-            </v-btn>
             <v-btn
               color="primary"
               size="small"
               variant="outlined"
-              @click="handleClickDeleteButton(item.raw)"
+              @click.stop="handleClickDeleteButton(item.raw)"
             >
               <v-icon size="small" :icon="mdiDelete" />
               削除
             </v-btn>
           </template>
           <template #[`item.video`]="{ item }">
-            <v-btn variant="outlined" color="primary" size="small" @click="handleAddVideo(item.raw)">
+            <v-btn variant="outlined" color="primary" size="small" @click.stop="handleAddVideo(item.raw)">
               <v-icon size="small" :icon="mdiPlus" />
               追加
             </v-btn>

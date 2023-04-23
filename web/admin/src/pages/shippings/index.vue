@@ -5,6 +5,7 @@ import { prefecturesList } from '~/constants'
 import { dateTimeFormatter, moneyFormat } from '~/lib/formatter'
 import { usePagination } from '~/lib/hooks'
 import { useShippingStore } from '~/store'
+import { ShippingsResponseShippingsInner } from '~/types/api'
 
 const shippingStore = useShippingStore()
 const router = useRouter()
@@ -29,10 +30,6 @@ const headers: VDataTable['headers'] = [
   {
     title: '更新日',
     key: 'updatedAt'
-  },
-  {
-    title: '',
-    key: 'actions'
   }
 ]
 
@@ -60,8 +57,8 @@ const handleClickAddButton = () => {
   router.push('/shippings/add')
 }
 
-const handleClickEditButton = (id: string) => {
-  router.push(`/shippings/edit/${id}`)
+const handleClickRow = (item: ShippingsResponseShippingsInner) => {
+  router.push(`/shippings/edit/${item.id}`)
 }
 
 try {
@@ -89,9 +86,11 @@ try {
           :footer-props="options"
           :items="shippings"
           show-expand
+          hover
           class="elevation-0"
           @update:page="updateCurrentPage"
           @update:items-per-page="handleUpdateItemsPerPage"
+          @click:row="(_: any, {item}: any) => handleClickRow(item.raw)"
         >
           <template #[`item.hasFreeShipping`]="{ item }">
             <v-chip size="small">
@@ -101,18 +100,6 @@ try {
 
           <template #[`item.updatedAt`]="{ item }">
             {{ dateTimeFormatter(item.raw.updatedAt) }}
-          </template>
-
-          <template #[`item.actions`]="{ item }">
-            <v-btn
-              variant="outlined"
-              color="primary"
-              size="small"
-              @click="handleClickEditButton(item.raw.id)"
-            >
-              <v-icon :icon="mdiPencil" />
-              編集
-            </v-btn>
           </template>
 
           <template #expanded-item="{ item }">

@@ -63,10 +63,6 @@ const addBox100RateItem = () => {
   })
 }
 
-const handleClickRemoveItemButton = () => {
-  // FIXME: template側で指定されていたため、定義のみ行う
-}
-
 const { createShipping } = useShippingStore()
 
 const { alertType, isShow, alertText, show } = useAlert('error')
@@ -92,7 +88,7 @@ const handleSubmit = async (): Promise<void> => {
   }
 }
 
-const handleClickCloseButton = (rate: '60' | '80' | '100', index: number) => {
+const handleClickRemoveItemButton = (rate: '60' | '80' | '100', index: number) => {
   switch (rate) {
     case '60':
       formData.box60Rates.splice(index, 1)
@@ -111,7 +107,7 @@ const handleClickCloseButton = (rate: '60' | '80' | '100', index: number) => {
   <div>
     <v-card-title>配送情報登録</v-card-title>
 
-    <v-alert v-model="isShow" :type="alertType" v-text="alertText" />
+    <v-alert v-model="isShow" :type="alertType" class="mb-2" v-text="alertText" />
 
     <organisms-shipping-form
       v-model="formData"

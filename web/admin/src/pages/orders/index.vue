@@ -55,11 +55,6 @@ const headers: VDataTable['headers'] = [
     key: 'payment.paymentId'
   },
   {
-    title: 'Actions',
-    key: 'actions',
-    sortable: false
-  },
-  {
     title: '注文ID',
     key: 'id'
   }
@@ -140,7 +135,7 @@ const deliveryCompanyList = [
   { deliveryCompany: 'ヤマト運輸', value: 'ヤマト運輸' }
 ]
 
-const handleEdit = (item: OrderResponse) => {
+const handleRowClick = (item: OrderResponse): void => {
   router.push(`/orders/${item.id}`)
 }
 
@@ -242,8 +237,10 @@ try {
           :items-length="totalItems"
           :footer-props="options"
           no-data-text="表示する注文がありません"
+          hover
           @update:items-per-page="handleUpdateItemsPerPage"
           @update:page="handleUpdatePage"
+          @click:row="(_: any, { item }: any) => handleRowClick(item.raw)"
         >
           <template #[`item.payment.status`]="{ item }">
             <v-chip size="small" :color="getStatusColor(item.raw.payment.status)">
@@ -255,12 +252,6 @@ try {
           </template>
           <template #[`item.orderedAt`]="{ item }">
             {{ getDay(item.raw.orderedAt) }}
-          </template>
-          <template #[`item.actions`]="{ item }">
-            <v-btn variant="outlined" color="primary" size="small" @click="handleEdit(item.raw)">
-              <v-icon size="small" :icon="mdiPencil" />
-              詳細
-            </v-btn>
           </template>
         </v-data-table-server>
       </v-card-text>
