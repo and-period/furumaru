@@ -275,7 +275,6 @@ try {
                     item-title="text"
                     item-value="value"
                   />
-                  </v-combobox>
                 </v-col>
               </v-row>
 
