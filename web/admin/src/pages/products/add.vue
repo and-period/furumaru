@@ -244,6 +244,7 @@ try {
             <v-card-text>
               <v-text-field
                 v-model.number="v$.price.$model"
+                v-model="v$.price.$model"
                 label="販売価格"
                 :error-messages="getErrorMessage('price')"
               >
@@ -269,12 +270,16 @@ try {
                 <v-col cols="3">
                   <v-combobox
                     v-model="v$.itemUnit.$model"
+                    v-model="formData.itemUnit"
                     :error-messages="getErrorMessage('itemUnit')"
+                    <v-select
+                  >
                     label="単位"
                     :items="itemUnits"
                     item-title="text"
                     item-value="value"
-                  />
+                    />
+                  </v-combobox>
                 </v-col>
               </v-row>
 
