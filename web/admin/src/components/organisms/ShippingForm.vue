@@ -3,7 +3,7 @@ import { mdiClose, mdiPlus } from '@mdi/js'
 import { useVuelidate } from '@vuelidate/core'
 
 import { getSelectablePrefecturesList } from '~/lib/prefectures'
-import { required, getErrorMessage } from '~/lib/validations'
+import { required, getErrorMessage, minValue } from '~/lib/validations'
 import { CreateShippingRequest, UpdateShippingRequest } from '~/types/api'
 
 const props = defineProps({
@@ -11,7 +11,7 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  value: {
+  modelValue: {
     type: Object,
     default: (): UpdateShippingRequest | CreateShippingRequest => ({
       name: '',
@@ -50,7 +50,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (
-    e: 'update:value',
+    e: 'update:modelValue',
     formData: CreateShippingRequest | UpdateShippingRequest
   ): void
   (e: 'click:add-box60-rate-item'): void
@@ -62,15 +62,21 @@ const emit = defineEmits<{
 
 const formData = computed({
   get: (): UpdateShippingRequest | CreateShippingRequest =>
-    props.value as CreateShippingRequest | UpdateShippingRequest,
+    props.modelValue as CreateShippingRequest | UpdateShippingRequest,
   set: (val: UpdateShippingRequest | CreateShippingRequest) =>
-    emit('update:value', val)
+    emit('update:modelValue', val)
 })
 
 const rules = computed(() => {
   return {
     name: { required },
-    hasFreeShipping: { required }
+    hasFreeShipping: { required },
+    box60Refrigerated: { required, minValue: minValue(0) },
+    box60Frozen: { required, minValue: minValue(0) },
+    box80Refrigerated: { required, minValue: minValue(0) },
+    box80Frozen: { required, minValue: minValue(0) },
+    box100Refrigerated: { required, minValue: minValue(0) },
+    box100Frozen: { required, minValue: minValue(0) }
   }
 })
 
@@ -152,7 +158,7 @@ const handleClickRemoveItemButton = (
 </script>
 
 <template>
-  <v-card :loading="props.loading">
+  <v-card :loading="loading">
     <form @submit.prevent="handleSubmit">
       <v-card-text>
         <v-text-field
@@ -168,19 +174,24 @@ const handleClickRemoveItemButton = (
               : `無料配送オプション: 無し`
           "
         />
-        <div class="my-4">
+
+        <div class="my-6">
           <p class="text-h6">
             サイズ60配送オプション
           </p>
           <div class="d-flex">
             <v-text-field
-              v-model.number="formData.box60Refrigerated"
+              v-model.number="v$.box60Refrigerated.$model"
+              :error-messages="getErrorMessage(v$.box60Refrigerated.$errors)"
               label="冷蔵配送価格"
+              type="number"
               class="mr-4"
             />
             <v-text-field
-              v-model.number="formData.box60Frozen"
+              v-model.number="v$.box60Frozen.$model"
+              :error-messages="getErrorMessage(v$.box60Frozen.$errors)"
               label="冷凍配送価格"
+              type="number"
             />
           </div>
           <div v-for="i in box60RateItemsSize" :key="i">
@@ -191,56 +202,44 @@ const handleClickRemoveItemButton = (
               <v-spacer />
               <v-btn
                 icon
+                color="error"
+                variant="text"
+                size="small"
                 :disabled="box60RateItemsSize.length === 1"
                 @click="handleClickRemoveItemButton('60', i)"
               >
                 <v-icon :icon="mdiClose" />
               </v-btn>
             </div>
-            <v-text-field v-model="formData.box60Rates[i].name" label="名前" />
-            <v-text-field
-              v-model.number="formData.box60Rates[i].price"
-              label="価格"
-              type="number"
+            <molecules-shipping-rate-form
+              v-model="formData.box60Rates[i]"
+              :selectable-prefecture-list="getSelectableBox60RatePrefecturesList(i)"
+              @click:select-all="handleClickSelectAll('60', i)"
             />
-            <v-select
-              v-model="formData.box60Rates[i].prefectures"
-              label="都道府県"
-              chips
-              multiple
-              :items="getSelectableBox60RatePrefecturesList(i)"
-            >
-              <template #prepend-item>
-                <v-list-item
-                  ripple
-                  @click="handleClickSelectAll('60', i)"
-                  @mousedown.prevent
-                >
-                  <v-list-item-content>
-                    <v-list-item-title> すべて選択 </v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </template>
-            </v-select>
           </div>
           <v-btn color="primary" variant="outlined" block @click="addBox60RateItem">
             <v-icon :icon="mdiPlus" />
             追加
           </v-btn>
         </div>
-        <div class="my-4">
+
+        <div class="my-6">
           <p class="text-h6">
             サイズ80配送オプション
           </p>
           <div class="d-flex">
             <v-text-field
-              v-model.number="formData.box80Refrigerated"
+              v-model.number="v$.box80Refrigerated.$model"
+              :error-messages="getErrorMessage(v$.box80Refrigerated.$errors)"
               label="冷蔵配送価格"
+              type="number"
               class="mr-4"
             />
             <v-text-field
-              v-model.number="formData.box80Frozen"
+              v-model.number="v$.box80Frozen.$model"
+              :error-messages="getErrorMessage(v$.box80Frozen.$errors)"
               label="冷凍配送価格"
+              type="number"
             />
           </div>
           <div v-for="i in box80RateItemsSize" :key="i">
@@ -251,37 +250,21 @@ const handleClickRemoveItemButton = (
               <v-spacer />
               <v-btn
                 icon
+                color="error"
+                variant="text"
+                size="small"
                 :disabled="box80RateItemsSize.length === 1"
                 @click="handleClickRemoveItemButton('80', i)"
               >
                 <v-icon :icon="mdiClose" />
               </v-btn>
             </div>
-            <v-text-field v-model="formData.box80Rates[i].name" label="名前" />
-            <v-text-field
-              v-model.number="formData.box80Rates[i].price"
-              label="価格"
-              type="number"
+
+            <molecules-shipping-rate-form
+              v-model="formData.box80Rates[i]"
+              :selectable-prefecture-list="getSelectableBox80RatePrefecturesList(i)"
+              @click:select-all="handleClickSelectAll('80', i)"
             />
-            <v-select
-              v-model="formData.box80Rates[i].prefectures"
-              label="都道府県"
-              chips
-              multiple
-              :items="getSelectableBox80RatePrefecturesList(i)"
-            >
-              <template #prepend-item>
-                <v-list-item
-                  ripple
-                  @click="handleClickSelectAll('80', i)"
-                  @mousedown.prevent
-                >
-                  <v-list-item-content>
-                    <v-list-item-title> すべて選択 </v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </template>
-            </v-select>
           </div>
           <v-btn color="primary" variant="outlined" block @click="addBox80RateItem">
             <v-icon :icon="mdiPlus" />
@@ -289,19 +272,23 @@ const handleClickRemoveItemButton = (
           </v-btn>
         </div>
 
-        <div class="my-4">
+        <div class="my-6">
           <p class="text-h6">
             サイズ100配送オプション
           </p>
           <div class="d-flex">
             <v-text-field
-              v-model.number="formData.box100Refrigerated"
+              v-model.number="v$.box100Refrigerated.$model"
+              :error-messages="getErrorMessage(v$.box100Refrigerated.$errors)"
               label="冷蔵配送価格"
               class="mr-4"
+              type="number"
             />
             <v-text-field
-              v-model.number="formData.box100Frozen"
+              v-model.number="v$.box100Frozen.$model"
+              :error-messages="getErrorMessage(v$.box100Frozen.$errors)"
               label="冷凍配送価格"
+              type="number"
             />
           </div>
           <div v-for="i in box100RateItemsSize" :key="i">
@@ -312,37 +299,21 @@ const handleClickRemoveItemButton = (
               <v-spacer />
               <v-btn
                 icon
+                color="error"
+                variant="text"
+                size="small"
                 :disabled="box100RateItemsSize.length === 1"
                 @click="handleClickRemoveItemButton('100', i)"
               >
                 <v-icon :icon="mdiClose" />
               </v-btn>
             </div>
-            <v-text-field v-model="formData.box100Rates[i].name" label="名前" />
-            <v-text-field
-              v-model.number="formData.box100Rates[i].price"
-              label="価格"
-              type="number"
+
+            <molecules-shipping-rate-form
+              v-model="formData.box100Rates[i]"
+              :selectable-prefecture-list="getSelectableBox100RatePrefecturesList(i)"
+              @click:select-all="handleClickSelectAll('100', i)"
             />
-            <v-select
-              v-model="formData.box100Rates[i].prefectures"
-              label="都道府県"
-              chips
-              multiple
-              :items="getSelectableBox100RatePrefecturesList(i)"
-            >
-              <template #prepend-item>
-                <v-list-item
-                  ripple
-                  @click="handleClickSelectAll('100', i)"
-                  @mousedown.prevent
-                >
-                  <v-list-item-content>
-                    <v-list-item-title> すべて選択 </v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </template>
-            </v-select>
           </div>
           <v-btn color="primary" variant="outlined" block @click="addBox100RateItem">
             <v-icon :icon="mdiPlus" />
@@ -350,6 +321,7 @@ const handleClickRemoveItemButton = (
           </v-btn>
         </div>
       </v-card-text>
+
       <v-card-actions>
         <v-btn type="submit" variant="outlined" color="primary" block>
           登録
