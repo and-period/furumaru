@@ -9,7 +9,7 @@ import { CreateCategoryRequest, CategoriesResponseCategoriesInner, ProductTypesR
 import {
   required,
   getErrorMessage,
-  maxLength,
+  maxLength
 } from '~/lib/validations'
 
 const props = defineProps({

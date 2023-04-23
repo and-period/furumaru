@@ -41,7 +41,7 @@ const props = defineProps({
   },
   tableItemsTotal: {
     type: Number,
-    default: 0,
+    default: 0
   },
   importFormData: {
     type: Object, // TODO: API設計が決まり次第型定義の厳格化
