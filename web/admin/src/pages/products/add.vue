@@ -49,10 +49,8 @@ const statusItems = [
   { text: '公開', value: true },
   { text: '非公開', value: false }
 ]
-const itemUnits = [
-  { text: '個', value: '個' },
-  { text: '瓶', value: '瓶' }
-]
+const itemUnits = ['個', '瓶']
+
 const deliveryTypeItems = [
   { text: '通常便', value: 1 },
   { text: '冷蔵便', value: 2 },
@@ -81,6 +79,9 @@ const formData = reactive<CreateProductRequest>({
 
 const rules = computed(() => ({
   name: { required, maxLength: maxLength(128) },
+  description: { required },
+  producerId: { required },
+  productTypeId: { required },
   inventory: { required, minValue: minValue(0) },
   price: { required, minValue: minValue(0) },
   weight: { required, minValue: minValue(0) },
@@ -91,17 +92,13 @@ const rules = computed(() => ({
 const v$ = useVuelidate(rules, formData)
 
 const cityListItems = computed(() => {
-  const selectedPrefecture = prefecturesList.find(prefecture => formData.originPrefecture === prefecture.value)
+  const selectedPrefecture = prefecturesList.find(prefecture => formData.originPrefecture === prefecture.text)
   if (!selectedPrefecture) {
     return []
   } else {
     return cityList.filter(city => city.prefId === selectedPrefecture.id)
   }
 })
-
-const handleUpdateFormDataDescription = (htmlString: string) => {
-  formData.description = htmlString
-}
 
 const handleImageUpload = async (files: FileList) => {
   for (const [index, file] of Array.from(files).entries()) {
@@ -174,7 +171,8 @@ try {
             <v-card-title>基本情報</v-card-title>
             <v-card-text>
               <v-select
-                v-model="formData.producerId"
+                v-model="v$.producerId.$model"
+                :error-messages="getErrorMessage('producerId')"
                 label="販売店舗名"
                 :items="producers"
                 item-title="storeName"
@@ -190,9 +188,10 @@ try {
               />
               <client-only>
                 <tiptap-editor
-                  label="商品詳細"
-                  :value="formData.description"
-                  @update:value="handleUpdateFormDataDescription"
+                  v-model="v$.description.$model"
+                  :error-message="getErrorMessage('description')"
+                  label="商品説明"
+                  class="mt-4"
                 />
               </client-only>
             </v-card-text>
@@ -244,7 +243,7 @@ try {
             <v-card-title>価格</v-card-title>
             <v-card-text>
               <v-text-field
-                v-model="v$.price.$model"
+                v-model.number="v$.price.$model"
                 label="販売価格"
                 :error-messages="getErrorMessage('price')"
               >
@@ -268,8 +267,9 @@ try {
                   />
                 </v-col>
                 <v-col cols="3">
-                  <v-select
-                    v-model="formData.itemUnit"
+                  <v-combobox
+                    v-model="v$.itemUnit.$model"
+                    :error-messages="getErrorMessage('itemUnit')"
                     label="単位"
                     :items="itemUnits"
                     item-title="text"
@@ -370,7 +370,8 @@ try {
           <v-card-text>
             <div class="d-flex">
               <v-select
-                v-model="formData.productTypeId"
+                v-model="v$.productTypeId.$model"
+                :error-messages="getErrorMessage('productTypeId')"
                 label="品目"
                 :items="productTypes"
                 item-title="name"

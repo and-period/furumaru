@@ -115,7 +115,7 @@ const calcStyle = (i: number) => {
       </v-toolbar-title>
       <template #append>
         <v-btn icon @click="handleClickMessage">
-          <v-badge v-value="hasUnread" color="info" dot floating>
+          <v-badge v-model="hasUnread" color="info" dot floating>
             <v-icon :icon="mdiBell" color="white" />
           </v-badge>
         </v-btn>

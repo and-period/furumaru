@@ -34,8 +34,20 @@ export default defineNuxtPlugin((nuxtApp) => {
       VSelect: {
         variant: 'underlined'
       },
+      VCombobox: {
+        variant: 'underlined'
+      },
       VCard: {
         elevation: 0
+      },
+      VBtnToggle: {
+        rounded: '0',
+        density: 'compact',
+        variant: 'outlined',
+        divided: true,
+        VBtn: {
+          size: 'small'
+        }
       }
     },
     theme: {
