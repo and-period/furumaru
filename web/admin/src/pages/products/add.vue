@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { mdiPlus } from '@mdi/js'
+import { mdiPlus, mdiClose } from '@mdi/js'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 
 import { useAlert } from '~/lib/hooks'
-import { required, minValue, maxValue, maxLength } from '~/lib/validations'
+import { required, minValue, maxLength } from '~/lib/validations'
 import {
   useCategoryStore,
   useProducerStore,
@@ -117,6 +117,12 @@ const handleImageUpload = async (files: FileList) => {
   }
 }
 
+const handleDeleteThumbnailImageButton = (index: number) => {
+  formData.media = formData.media.filter((_, i) => {
+    return i !== index
+  })
+}
+
 const { alertType, isShow, alertText, show } = useAlert('error')
 
 const handleFormSubmit = async () => {
@@ -195,26 +201,42 @@ try {
           <v-card elevation="0" class="mb-4">
             <v-card-title>商品画像登録</v-card-title>
             <v-card-text>
+              <v-radio-group>
+                <v-row>
+                  <v-col
+                    v-for="(img, i) in formData.media"
+                    :key="i"
+                    cols="4"
+                    class="d-flex flex-row align-center"
+                  >
+                    <v-sheet
+                      border
+                      rounded
+                      variant="outlined"
+                      width="100%"
+                    >
+                      <v-img
+                        :src="img.url"
+                        aspect-ratio="1"
+                      >
+                        <div class="d-flex col">
+                          <v-radio :value="i" />
+                          <v-btn :icon="mdiClose" color="error" variant="text" size="small" @click="handleDeleteThumbnailImageButton(i)" />
+                        </div>
+                      </v-img>
+                    </v-sheet>
+                  </v-col>
+                </v-row>
+                <p v-show="formData.media.length > 0" class="mt-2">
+                  ※ check された商品画像がサムネイルになります
+                </p>
+              </v-radio-group>
               <div class="mb-2">
                 <atoms-file-upload-filed
                   text="商品画像"
                   @update:files="handleImageUpload"
                 />
               </div>
-              <v-radio-group>
-                <div
-                  v-for="(img, i) in formData.media"
-                  :key="i"
-                  class="d-flex flex-row align-center"
-                >
-                  <v-radio :value="i" />
-                  <img :src="img.url" width="200" class="mx-4">
-                  <p class="mb-0">
-                    {{ img.url }}
-                  </p>
-                </div>
-              </v-radio-group>
-              <p>※ check された商品画像がサムネイルになります</p>
             </v-card-text>
           </v-card>
 

@@ -33,6 +33,9 @@ export default defineNuxtPlugin((nuxtApp) => {
       },
       VSelect: {
         variant: 'underlined'
+      },
+      VCard: {
+        elevation: 0
       }
     },
     theme: {

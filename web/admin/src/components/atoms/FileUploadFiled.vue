@@ -65,7 +65,7 @@ const handleDrop = (e: DragEvent) => {
 <template>
   <div>
     <div
-      class="d-flex justify-center align-center rounded-lg file_upload_area"
+      class="d-flex justify-center align-center rounded-lg file-upload-area"
       role="button"
       :class="{ active: active }"
       @click="handleClick"
@@ -93,12 +93,12 @@ const handleDrop = (e: DragEvent) => {
 </template>
 
 <style lang="scss" scoped>
-.file_upload_area {
-  border: dashed var(--v-secondary-lighten4);
+.file-upload-area {
+  border: 1.5px dashed #767676;
   height: 100px;
 }
 
 .active {
-  border: dashed var(--v-primary-darken3);
+  border: dashed rgb(var(--v-theme-primary));
 }
 </style>
