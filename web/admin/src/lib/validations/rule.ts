@@ -10,6 +10,8 @@ import {
   sameAs as _sameAs
 } from '@vuelidate/validators'
 
+import { isRef } from 'vue'
+
 /**
  * ひらがなを判定する関数
  * @param value
@@ -113,6 +115,22 @@ const sameAs = (equalTo: unknown, otherName?: string) =>
     _sameAs(equalTo, otherName)
   )
 
+/**
+ * 配列の最小の長さのバリデーションルール（カスタム）
+ * @param minLength 最小の要素数
+ * @returns
+ */
+const minLengthArray = (minLength: number | Ref<number>) => {
+  const minLengthValue = isRef(minLength) ? minLength.value : minLength
+  return helpers.withMessage(
+    `少なくとも${minLengthValue}つ以上選択してください。`,
+    helpers.withParams(
+      { type: 'minLengthArray', minLength },
+      value => Array.isArray(value) && value.length >= minLengthValue
+    )
+  )
+}
+
 export {
   kana,
   tel,
@@ -123,5 +141,6 @@ export {
   maxLength,
   minValue,
   maxValue,
-  sameAs
+  sameAs,
+  minLengthArray
 }
