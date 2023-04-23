@@ -1,7 +1,7 @@
 import { prefecturesList, PrefecturesListItem } from '~/constants'
 import { CreateShippingRate } from '~/types/api'
 
-interface PrefecturesListSelectItems extends PrefecturesListItem {
+export interface PrefecturesListSelectItems extends PrefecturesListItem {
   disabled: boolean
 }
 
