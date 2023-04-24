@@ -189,6 +189,7 @@ const onClickDelete = (): void => {
         :items-length="props.tableItemsTotal"
         :items-per-page="props.tableItemsPerPage"
         no-data-text="登録されている商品がありません。"
+        hover
         @update:page="onUpdatePage"
         @update:items-per-page="onUpdateItemsPerPage"
         @click:row="onClickShow"
