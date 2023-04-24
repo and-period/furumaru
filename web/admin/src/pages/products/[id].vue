@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { mdiPlus } from '@mdi/js'
+import useVuelidate from '@vuelidate/core'
 import { useAlert } from '~/lib/hooks'
 import {
   useCommonStore,
@@ -36,6 +38,8 @@ const formData = reactive<UpdateProductRequest>({
   originCity: ''
 })
 
+const v$ = useVuelidate()
+
 const productStore = useProductStore()
 const productTypeStore = useProductTypeStore()
 const producerStore = useProducerStore()
@@ -54,6 +58,10 @@ const fetchState = useAsyncData(async () => {
     } else {
       show('不明なエラーが発生しました。')
     }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
   }
 })
 
@@ -84,6 +92,12 @@ const handleImageUpload = async (files?: FileList) => {
   }
 }
 
+const handleDeleteThumbnailImageButton = (index: number) => {
+  formData.media = formData.media.filter((_, i) => {
+    return i !== index
+  })
+}
+
 const commonStore = useCommonStore()
 
 const isLoading = (): boolean => {
@@ -91,6 +105,16 @@ const isLoading = (): boolean => {
 }
 
 const handleSubmit = async () => {
+  const result = await v$.value.$validate()
+  console.log(result, v$)
+  if (!result) {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
+    return
+  }
+
   try {
     await productStore.updateProduct(id, formData)
     commonStore.addSnackbar({
@@ -116,15 +140,19 @@ try {
 
 <template>
   <div>
-    <v-alert v-model="isShow" :type="alertType" v-text="alertText" />
+    <v-alert v-model="isShow" :type="alertType" class="mb-2" v-text="alertText" />
 
-    <templates-product-update-form-page
-      :loading="isLoading()"
-      :form-data="formData"
+    <organisms-product-form
+      v-model:form-data="formData"
       :producers-items="producersItems"
       :product-types-items="productTypesItems"
       @update:files="handleImageUpload"
-      @submit="handleSubmit"
+      @delete:thumbnail-image="handleDeleteThumbnailImageButton"
     />
+
+    <v-btn block variant="outlined" @click="handleSubmit">
+      <v-icon start :icon="mdiPlus" />
+      更新
+    </v-btn>
   </div>
 </template>
