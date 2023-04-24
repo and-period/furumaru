@@ -182,7 +182,7 @@ const onClickDelete = (): void => {
         @update:items-per-page="onUpdateItemsPerPage"
         @click:row="onClickShow"
       >
-        <template #[`item.media`]:="{ item }">
+        <template #[`item.media`]="{ item }">
           <v-img aspect-ratio="1/1" :src="getThumbnail(item.raw.media)" :srcset="getResizedThumbnails(item.raw.media)" />
         </template>
         <template #[`item.public`]="{ item }">

@@ -1,16 +1,16 @@
-import { ImageSize } from "~/types/api";
+import { ImageSize } from '~/types/api'
 
 class Image {
-  size: ImageSize;
-  url: string;
+  size: ImageSize
+  url: string
 
-  constructor(size: ImageSize, url: string) {
+  constructor (size: ImageSize, url: string) {
     this.size = size
     this.url = url
   }
 }
 
-export function getResizedImages<T extends Image>(images: T[]): string {
+export function getResizedImages<T extends Image> (images: T[]): string {
   const strs: string[] = images.map((img: T): string => {
     switch (img.size) {
       case ImageSize.SMALL:
