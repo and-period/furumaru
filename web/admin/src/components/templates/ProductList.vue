@@ -2,6 +2,7 @@
 import { mdiDelete, mdiPlus } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components'
 
+import { getResizedImages } from '~/lib/helpers'
 import { AlertType } from '~/lib/hooks'
 import { ProductsResponseProductsInner, ProductsResponseProductsInnerMediaInner, ImageSize, ProductsResponseProductsInnerMediaInnerImagesInner } from '~/types/api'
 
@@ -101,19 +102,7 @@ const getResizedThumbnails = (media: ProductsResponseProductsInnerMediaInner[]):
   if (!thumbnail) {
     return ''
   }
-  const images: string[] = thumbnail.images.map((image: ProductsResponseProductsInnerMediaInnerImagesInner): string => {
-    switch (image.size) {
-      case ImageSize.SMALL:
-        return `${thumbnail.url} 1x`
-      case ImageSize.MEDIUM:
-        return `${thumbnail.url} 2x`
-      case ImageSize.LARGE:
-        return `${thumbnail.url} 3x`
-      default:
-        return thumbnail.url
-    }
-  })
-  return images.join(', ')
+  return getResizedImages(thumbnail.images)
 }
 
 const getPublished = (published: boolean): string => {
@@ -193,7 +182,7 @@ const onClickDelete = (): void => {
         @update:items-per-page="onUpdateItemsPerPage"
         @click:row="onClickShow"
       >
-        <template #[`item.media`]="{ item }">
+        <template #[`item.media`]:="{ item }">
           <v-img aspect-ratio="1/1" :src="getThumbnail(item.raw.media)" :srcset="getResizedThumbnails(item.raw.media)" />
         </template>
         <template #[`item.public`]="{ item }">
