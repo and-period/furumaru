@@ -7,7 +7,8 @@ import {
   getErrorMessage,
   maxLength,
   minValue,
-  maxValue
+  maxValue,
+  maxLengthArray
 } from '~/lib/validations'
 import { UpdateProductRequest, CreateProductRequest, ProducersResponse, ProductTypesResponse } from '~/types/api'
 import { prefecturesList, cityList } from '~/constants'
@@ -52,6 +53,7 @@ const formDataValue = computed({
 const rules = computed(() => ({
   name: { required, maxLength: maxLength(128) },
   description: { required },
+  media: { maxLengthArray: maxLengthArray(8) },
   producerId: { required },
   productTypeId: { required },
   inventory: { required, minValue: minValue(0) },
@@ -72,6 +74,31 @@ const cityListItems = computed(() => {
     return []
   } else {
     return cityList.filter(city => city.prefId === selectedPrefecture.id)
+  }
+})
+
+const thumbnailIndex = computed<number>({
+  get: () => props.formData.media.findIndex(item => item.isThumbnail),
+  set: (index: number) => {
+    if (index < formDataValue.value.media.length) {
+      emits('update:formData', {
+        ...formDataValue.value,
+        media: formDataValue.value.media.map((item) => {
+          return {
+            ...item,
+            isThumbnail: false
+          }
+        }).map((item, i) => {
+          if (i !== index) {
+            return item
+          }
+          return {
+            ...item,
+            isThumbnail: true
+          }
+        })
+      })
+    }
   }
 })
 
@@ -121,7 +148,7 @@ const handleDeleteThumbnailImageButton = (i: number) => {
         <v-card elevation="0" class="mb-4">
           <v-card-title>商品画像登録</v-card-title>
           <v-card-text>
-            <v-radio-group>
+            <v-radio-group v-model="thumbnailIndex" :error-messages="getErrorMessage(v$.media.$errors)">
               <v-row>
                 <v-col
                   v-for="(img, i) in formDataValue.media"
@@ -129,11 +156,11 @@ const handleDeleteThumbnailImageButton = (i: number) => {
                   cols="4"
                   class="d-flex flex-row align-center"
                 >
-                  <v-sheet
-                    border
+                  <v-card
                     rounded
                     variant="outlined"
                     width="100%"
+                    :class="{'thumbnail-border': img.isThumbnail }"
                   >
                     <v-img
                       :src="img.url"
@@ -144,13 +171,13 @@ const handleDeleteThumbnailImageButton = (i: number) => {
                         <v-btn :icon="mdiClose" color="error" variant="text" size="small" @click="handleDeleteThumbnailImageButton(i)" />
                       </div>
                     </v-img>
-                  </v-sheet>
+                  </v-card>
                 </v-col>
               </v-row>
-              <p v-show="formDataValue.media.length > 0" class="mt-2">
-                ※ check された商品画像がサムネイルになります
-              </p>
             </v-radio-group>
+            <p v-show="formDataValue.media.length > 0" class="mt-2">
+              ※ check された商品画像がサムネイルになります
+            </p>
             <div class="mb-2">
               <atoms-file-upload-filed
                 text="商品画像"
@@ -166,6 +193,7 @@ const handleDeleteThumbnailImageButton = (i: number) => {
             <v-text-field
               v-model.number="v$.price.$model"
               label="販売価格"
+              type="number"
               :error-messages="getErrorMessage(v$.price.$errors)"
             >
               <template #prepend>
@@ -320,3 +348,12 @@ const handleDeleteThumbnailImageButton = (i: number) => {
     </v-col>
   </v-row>
 </template>
+
+<style lang="scss">
+.thumbnail-border {
+  border: 2px;
+  border-style: solid;
+  border-color: rgb(var(--v-theme-secondary));;
+}
+
+</style>

@@ -44,7 +44,7 @@ const breadcrumbsItem = [
   }
 ]
 
-const formData = reactive<CreateProductRequest>({
+const formData = ref<CreateProductRequest>({
   name: '',
   description: '',
   producerId: '',
@@ -70,7 +70,7 @@ const handleImageUpload = async (files: FileList) => {
   for (const [index, file] of Array.from(files).entries()) {
     try {
       const uploadImage: UploadImageResponse = await uploadProductImage(file)
-      formData.media.push({
+      formData.value.media.push({
         ...uploadImage,
         isThumbnail: index === 0
       })
@@ -81,7 +81,7 @@ const handleImageUpload = async (files: FileList) => {
 }
 
 const handleDeleteThumbnailImageButton = (index: number) => {
-  formData.media = formData.media.filter((_, i) => {
+  formData.value.media = formData.value.media.filter((_, i) => {
     return i !== index
   })
 }
@@ -98,7 +98,7 @@ const handleFormSubmit = async () => {
     return
   }
   try {
-    await createProduct(formData)
+    await createProduct(formData.value)
     router.push('/products')
   } catch (error) {
     if (error instanceof ApiBaseError) {
