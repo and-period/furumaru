@@ -5,34 +5,26 @@ const props = defineProps({
   text: {
     type: String,
     required: true
-  },
-  value: {
-    type: Object,
-    default: null
   }
 })
 
 const emit = defineEmits<{
-  (e: 'update:value', value: any): void
-  (e: 'update:files', file?: FileList): void
+  (e: 'update:files', file: FileList): void
 }>()
-
-const formData = computed({
-  get: (): any => props.value,
-  set: (val: any) => emit('update:value', val)
-})
 
 const inputRef = ref<HTMLInputElement | null>(null)
 const active = ref<boolean>(false)
 const files = ref<FileList | null>(null)
 
 watch(files, () => {
-  emit('update:files', files.value)
+  if (files.value) {
+    emit('update:files', files.value)
+  }
 })
 
 const handleInputFileChange = () => {
   if (inputRef.value && inputRef.value.files) {
-    files.value = inputRef.value?.files
+    files.value = inputRef.value.files
   }
 }
 
