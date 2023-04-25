@@ -1,13 +1,8 @@
 import { ImageSize } from '~/types/api'
 
-class Image {
+interface Image {
   size: ImageSize
   url: string
-
-  constructor (size: ImageSize, url: string) {
-    this.size = size
-    this.url = url
-  }
 }
 
 export function getResizedImages<T extends Image> (images: T[]): string {
