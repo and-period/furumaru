@@ -2,9 +2,10 @@
 import { mdiPlus, mdiAccount, mdiDelete } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components'
 
+import { getResizedImages } from '~/lib/helpers'
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useCommonStore, useProducerStore } from '~/store'
-import { ImageSize, ProducersResponseProducersInner } from '~/types/api'
+import { ProducersResponseProducersInner } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 
 const router = useRouter()
@@ -142,19 +143,7 @@ const getImages = (producer: ProducersResponseProducersInner): string => {
   if (!producer.thumbnails) {
     return ''
   }
-  const images: string[] = producer.thumbnails.map((thumbnail): string => {
-    switch (thumbnail.size) {
-      case ImageSize.SMALL:
-        return `${thumbnail.url} 1x`
-      case ImageSize.MEDIUM:
-        return `${thumbnail.url} 2x`
-      case ImageSize.LARGE:
-        return `${thumbnail.url} 3x`
-      default:
-        return thumbnail.url
-    }
-  })
-  return images.join(', ')
+  return getResizedImages(producer.thumbnails)
 }
 
 try {
