@@ -94,7 +94,7 @@ func (s *service) VerifyAdminEmail(ctx context.Context, in *user.VerifyAdminEmai
 	if err != nil {
 		return exception.InternalError(err)
 	}
-	admin, err := s.db.Admin.GetByCognitoID(ctx, username, "admin_id", "role")
+	admin, err := s.db.Admin.GetByCognitoID(ctx, username, "id", "role")
 	if err != nil {
 		return exception.InternalError(err)
 	}

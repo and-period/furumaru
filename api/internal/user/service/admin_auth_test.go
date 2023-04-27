@@ -500,7 +500,7 @@ func TestVerifyAdminEmail(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
-				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username", "admin_id", "role").Return(admin, nil)
+				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username", "id", "role").Return(admin, nil)
 				mocks.adminAuth.EXPECT().ConfirmChangeEmail(ctx, params).Return("test-admin@and-period.jp", nil)
 				mocks.db.Admin.EXPECT().UpdateEmail(ctx, "admin-id", "test-admin@and-period.jp").Return(nil)
 			},
@@ -531,7 +531,7 @@ func TestVerifyAdminEmail(t *testing.T) {
 			name: "failed to get by cognito id",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
-				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username", "admin_id", "role").Return(nil, assert.AnError)
+				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username", "id", "role").Return(nil, assert.AnError)
 			},
 			input: &user.VerifyAdminEmailInput{
 				AccessToken: "access-token",
@@ -543,7 +543,7 @@ func TestVerifyAdminEmail(t *testing.T) {
 			name: "failed to confirm change email",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
-				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username", "admin_id", "role").Return(admin, nil)
+				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username", "id", "role").Return(admin, nil)
 				mocks.adminAuth.EXPECT().ConfirmChangeEmail(ctx, params).Return("", assert.AnError)
 			},
 			input: &user.VerifyAdminEmailInput{
