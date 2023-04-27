@@ -18,7 +18,7 @@ const router = useRouter()
 
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const formData = reactive<UpdateProductRequest>({
+const formData = ref<UpdateProductRequest>({
   name: '',
   description: '',
   producerId: '',
@@ -51,7 +51,7 @@ const fetchState = useAsyncData(async () => {
       producerStore.fetchProducers()
     ])
     const data = await productStore.getProduct(id)
-    Object.assign(formData, data)
+    formData.value = data
   } catch (error) {
     if (error instanceof ApiBaseError) {
       show(error.message)
@@ -82,7 +82,7 @@ const handleImageUpload = async (files?: FileList) => {
     try {
       const uploadImage: UploadImageResponse =
         await productStore.uploadProductImage(file)
-      formData.media.push({
+      formData.value.media.push({
         ...uploadImage,
         isThumbnail: false
       })
@@ -93,7 +93,7 @@ const handleImageUpload = async (files?: FileList) => {
 }
 
 const handleDeleteThumbnailImageButton = (index: number) => {
-  formData.media = formData.media.filter((_, i) => {
+  formData.value.media = formData.value.media.filter((_, i) => {
     return i !== index
   })
 }
@@ -116,7 +116,7 @@ const handleSubmit = async () => {
   }
 
   try {
-    await productStore.updateProduct(id, formData)
+    await productStore.updateProduct(id, formData.value)
     commonStore.addSnackbar({
       color: 'success',
       message: '商品を更新しました。'
