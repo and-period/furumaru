@@ -55,10 +55,6 @@ const timeDataValue = computed({
   set: (val: PromotionTime) => emit('update:timeData', val)
 })
 
-const publishMenu = ref<boolean>(false)
-const useStartMenu = ref<boolean>(false)
-const useEndMenu = ref<boolean>(false)
-
 const btnText = computed(() => {
   return props.formType === 'create' ? '登録' : '更新'
 })
@@ -151,7 +147,7 @@ const discountMethodList = [
             required
             maxlength="8"
             :error-messages="
-              props.formData.code.length === 8 ? '' : '割引コードは8文字です'
+              (props.formData.code.length === 0 || props.formData.code.length === 8) ? '' : '割引コードは8文字です'
             "
           />
           <v-btn variant="outlined" size="small" color="primary" @click="handleGenerate">

@@ -2,7 +2,7 @@
 import * as dayjs from 'dayjs'
 
 import { usePromotionStore } from '~/store'
-import { PromotionResponse } from '~/types/api'
+import { UpdatePromotionRequest } from '~/types/api'
 import { PromotionTime } from '~/types/props'
 
 const router = useRouter()
@@ -11,8 +11,7 @@ const id = route.params.id as string
 
 const { getPromotion, editPromotion } = usePromotionStore()
 
-const formData = reactive<PromotionResponse>({
-  id,
+const formData = reactive<UpdatePromotionRequest>({
   title: '',
   description: '',
   public: false,
@@ -21,9 +20,7 @@ const formData = reactive<PromotionResponse>({
   discountRate: 0,
   code: '',
   startAt: dayjs().unix(),
-  endAt: dayjs().unix(),
-  createdAt: -1,
-  updatedAt: -1
+  endAt: dayjs().unix()
 })
 
 const timeData = reactive<PromotionTime>({
