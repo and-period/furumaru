@@ -196,6 +196,7 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		return
 	}
 
+	eg, ectx = errgroup.WithContext(ctx)
 	productMedia := make([]*store.CreateProductMedia, len(req.Media))
 	for i := range req.Media {
 		i := i
