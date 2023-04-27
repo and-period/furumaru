@@ -192,7 +192,7 @@ const onClickDelete = (): void => {
           </v-chip>
         </template>
         <template #[`item.actions`]="{ item }">
-          <v-btn variant="outlined" color="primary" size="small" @click="toggleDeleteDialog(item.raw)">
+          <v-btn variant="outlined" color="primary" size="small" @click.stop="toggleDeleteDialog(item.raw)">
             <v-icon size="small" :icon="mdiDelete" />
             削除
           </v-btn>
