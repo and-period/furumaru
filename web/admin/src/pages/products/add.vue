@@ -80,12 +80,6 @@ const handleImageUpload = async (files: FileList) => {
   }
 }
 
-const handleDeleteThumbnailImageButton = (index: number) => {
-  formData.value.media = formData.value.media.filter((_, i) => {
-    return i !== index
-  })
-}
-
 const { alertType, isShow, alertText, show } = useAlert('error')
 
 const handleFormSubmit = async () => {
@@ -132,7 +126,6 @@ try {
       :producers-items="producers"
       :product-types-items="productTypes"
       @update:files="handleImageUpload"
-      @delete:thumbnail-image="handleDeleteThumbnailImageButton"
     />
 
     <v-btn block variant="outlined" @click="handleFormSubmit">

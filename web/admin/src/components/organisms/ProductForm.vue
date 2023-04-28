@@ -27,7 +27,6 @@ const props = defineProps<Props>()
 interface Emits {
   (e: 'update:formData', formData: FormData): void
   (e: 'update:files', files: FileList): void
-  (e: 'delete:thumbnailImage', i: number): void,
 }
 
 const emits = defineEmits<Emits>()
@@ -107,7 +106,20 @@ const handleImageUpload = (files: FileList) => {
 }
 
 const handleDeleteThumbnailImageButton = (i: number) => {
-  emits('delete:thumbnailImage', i)
+  const targetItem = props.formData.media.find((_, index) => index === i)
+  if (!targetItem) {
+    return
+  }
+
+  const newMedia = targetItem.isThumbnail
+    ? props.formData.media.filter((_, index) => index !== i).map((item, i) => {
+      return i === 0 ? { ...item, isThumbnail: true } : item
+    })
+    : props.formData.media.filter((_, index) => index !== i)
+  emits('update:formData', {
+    ...props.formData,
+    media: newMedia
+  })
 }
 </script>
 
