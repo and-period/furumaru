@@ -52,7 +52,6 @@ func NewLive(live *entity.Live) *Live {
 			ProducerID:     live.ProducerID,
 			StartAt:        live.StartAt.Unix(),
 			EndAt:          live.EndAt.Unix(),
-			Canceled:       live.Canceled,
 			Status:         NewLiveStatus(live.Status).Response(),
 			ChannelArn:     live.ChannelArn,
 			StreamKeyArn:   live.StreamKeyArn,
