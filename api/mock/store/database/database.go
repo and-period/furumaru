@@ -1063,17 +1063,3 @@ func (mr *MockLiveMockRecorder) Update(ctx, liveID, params interface{}) *gomock.
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockLive)(nil).Update), ctx, liveID, params)
 }
-
-// UpdatePublic mocks base method.
-func (m *MockLive) UpdatePublic(ctx context.Context, liveID string, params *database.UpdateLivePublicParams) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdatePublic", ctx, liveID, params)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// UpdatePublic indicates an expected call of UpdatePublic.
-func (mr *MockLiveMockRecorder) UpdatePublic(ctx, liveID, params interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdatePublic", reflect.TypeOf((*MockLive)(nil).UpdatePublic), ctx, liveID, params)
-}
