@@ -473,21 +473,6 @@ func (mr *MockServiceMockRecorder) MultiGetCategories(ctx, in interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetCategories", reflect.TypeOf((*MockService)(nil).MultiGetCategories), ctx, in)
 }
 
-// MultiGetLives mocks base method.
-func (m *MockService) MultiGetLives(ctx context.Context, in *store.MultiGetLivesInput) (entity.Lives, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "MultiGetLives", ctx, in)
-	ret0, _ := ret[0].(entity.Lives)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// MultiGetLives indicates an expected call of MultiGetLives.
-func (mr *MockServiceMockRecorder) MultiGetLives(ctx, in interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetLives", reflect.TypeOf((*MockService)(nil).MultiGetLives), ctx, in)
-}
-
 // MultiGetProductTypes mocks base method.
 func (m *MockService) MultiGetProductTypes(ctx context.Context, in *store.MultiGetProductTypesInput) (entity.ProductTypes, error) {
 	m.ctrl.T.Helper()
@@ -560,20 +545,6 @@ func (m *MockService) UpdateCategory(ctx context.Context, in *store.UpdateCatego
 func (mr *MockServiceMockRecorder) UpdateCategory(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCategory", reflect.TypeOf((*MockService)(nil).UpdateCategory), ctx, in)
-}
-
-// UpdateLivePublic mocks base method.
-func (m *MockService) UpdateLivePublic(ctx context.Context, in *store.UpdateLivePublicInput) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateLivePublic", ctx, in)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// UpdateLivePublic indicates an expected call of UpdateLivePublic.
-func (mr *MockServiceMockRecorder) UpdateLivePublic(ctx, in interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateLivePublic", reflect.TypeOf((*MockService)(nil).UpdateLivePublic), ctx, in)
 }
 
 // UpdateProduct mocks base method.
