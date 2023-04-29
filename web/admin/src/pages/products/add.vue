@@ -78,6 +78,16 @@ const handleImageUpload = async (files: FileList) => {
       console.log(error)
     }
   }
+
+  const thumbnailItem = formData.value.media.find(item => item.isThumbnail)
+  if (!thumbnailItem) {
+    formData.value.media = formData.value.media.map((item, i) => {
+      return {
+        ...item,
+        isThumbnail: i === 0
+      }
+    })
+  }
 }
 
 const { alertType, isShow, alertText, show } = useAlert('error')
