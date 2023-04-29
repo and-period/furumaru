@@ -313,10 +313,6 @@ type GetLiveInput struct {
 	LiveID string `validate:"required"`
 }
 
-type MultiGetLivesInput struct {
-	LiveIDs []string `validate:"dive,required"`
-}
-
 type ListLivesByScheduleIDInput struct {
 	ScheduleID string `validate:"required"`
 }

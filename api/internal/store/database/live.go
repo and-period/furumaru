@@ -25,16 +25,6 @@ func NewLive(db *database.Client) Live {
 	}
 }
 
-func (l *live) MultiGet(
-	ctx context.Context, liveIDs []string, fields ...string,
-) (entity.Lives, error) {
-	lives, err := l.multiGet(ctx, l.db.DB, liveIDs, fields...)
-	if err != nil {
-		return nil, exception.InternalError(err)
-	}
-	return lives, exception.InternalError(err)
-}
-
 func (l *live) ListByScheduleID(
 	ctx context.Context, scheduleID string, fields ...string,
 ) (entity.Lives, error) {
