@@ -333,13 +333,6 @@ type UpdateLiveInput struct {
 	EndAt        time.Time           `validate:"required,gtfield=StartAt"`
 }
 
-type UpdateLivePublicInput struct {
-	LiveID      string `validate:"required"`
-	Published   bool   `validate:""`
-	Canceled    bool   `validate:""`
-	ChannelName string `validate:""`
-}
-
 type ListOrdersInput struct {
 	CoordinatorID string             `validate:"omitempty"`
 	Limit         int64              `validate:"required,max=200"`
