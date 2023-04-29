@@ -6,11 +6,9 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
-	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	pivs "github.com/and-period/furumaru/api/pkg/ivs"
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/service/ivs"
 	"github.com/aws/aws-sdk-go-v2/service/ivs/types"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -362,117 +360,6 @@ func TestGetLive(t *testing.T) {
 			actual, err := service.GetLive(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
-		}))
-	}
-}
-
-func TestUpdateLivePublic(t *testing.T) {
-	t.Parallel()
-
-	live := &entity.Live{
-		ID: "live-id",
-	}
-
-	channelIn := &pivs.CreateChannelParams{
-		LatencyMode: types.ChannelLatencyModeNormalLatency,
-		Name:        "channel-name",
-		ChannelType: types.ChannelTypeBasicChannelType,
-	}
-
-	channelOut := &ivs.CreateChannelOutput{
-		Channel: &types.Channel{
-			Arn:  aws.String("channel-arn"),
-			Name: aws.String("channel-name"),
-		},
-		StreamKey: &types.StreamKey{
-			Arn:        aws.String("streamKey-arn"),
-			ChannelArn: aws.String("channel-name"),
-		},
-	}
-
-	params := &database.UpdateLivePublicParams{
-		Published:    true,
-		Canceled:     false,
-		ChannelArn:   "channel-arn",
-		StreamKeyArn: "streamKey-arn",
-	}
-
-	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *store.UpdateLivePublicInput
-		expectErr error
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
-				mocks.ivs.EXPECT().CreateChannel(gomock.Any(), channelIn).Return(channelOut, nil)
-				mocks.db.Live.EXPECT().UpdatePublic(ctx, "live-id", params).Return(nil)
-			},
-			input: &store.UpdateLivePublicInput{
-				LiveID:      "live-id",
-				Published:   true,
-				Canceled:    false,
-				ChannelName: "channel-name",
-			},
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &store.UpdateLivePublicInput{},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to get live",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(nil, assert.AnError)
-			},
-			input: &store.UpdateLivePublicInput{
-				LiveID:      "live-id",
-				Published:   true,
-				Canceled:    false,
-				ChannelName: "channel-name",
-			},
-			expectErr: exception.ErrUnknown,
-		},
-		{
-			name: "failed to createa channel",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
-				mocks.ivs.EXPECT().CreateChannel(gomock.Any(), channelIn).Return(nil, assert.AnError)
-			},
-			input: &store.UpdateLivePublicInput{
-				LiveID:      "live-id",
-				Published:   true,
-				Canceled:    false,
-				ChannelName: "channel-name",
-			},
-			expectErr: exception.ErrUnknown,
-		},
-		{
-			name: "failed to update live",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
-				mocks.ivs.EXPECT().CreateChannel(gomock.Any(), channelIn).Return(channelOut, nil)
-				mocks.db.Live.EXPECT().UpdatePublic(ctx, "live-id", params).Return(assert.AnError)
-			},
-			input: &store.UpdateLivePublicInput{
-				LiveID:      "live-id",
-				Published:   true,
-				Canceled:    false,
-				ChannelName: "channel-name",
-			},
-			expectErr: exception.ErrUnknown,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateLivePublic(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
 }
