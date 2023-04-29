@@ -27,8 +27,6 @@ type Live struct {
 	Title          string         `gorm:""`                     // タイトル
 	Description    string         `gorm:""`                     // 説明
 	Status         LiveStatus     `gorm:"-"`                    // 配信ステータス
-	Published      bool           `gorm:""`                     // 配信公開フラグ
-	Canceled       bool           `gorm:""`                     // 配信中止フラグ
 	StartAt        time.Time      `gorm:""`                     // 配信開始日時
 	EndAt          time.Time      `gorm:""`                     // 配信終了日時
 	ChannelArn     string         `gorm:"default:null"`         // チャンネルArn
@@ -91,12 +89,6 @@ func (l *Live) FillIVS(params FillLiveIvsParams) {
 }
 
 func (l *Live) status(now time.Time) LiveStatus {
-	if l.Canceled {
-		return LiveStatusCanceled
-	}
-	if !l.Published {
-		return LiveStatusWaiting
-	}
 	switch {
 	case now.Before(l.StartAt):
 		return LiveStatusWaiting
