@@ -88,28 +88,6 @@ func (l *live) Update(ctx context.Context, liveID string, params *UpdateLivePara
 	return exception.InternalError(err)
 }
 
-func (l *live) UpdatePublic(ctx context.Context, liveID string, params *UpdateLivePublicParams) error {
-	err := l.db.Transaction(ctx, func(tx *gorm.DB) error {
-		if _, err := l.get(ctx, tx, liveID); err != nil {
-			return err
-		}
-		now := l.now()
-		updates := map[string]interface{}{
-			"published":      params.Published,
-			"canceled":       params.Canceled,
-			"channel_arn":    params.ChannelArn,
-			"stream_key_arn": params.StreamKeyArn,
-			"updated_at":     now,
-		}
-		err := tx.WithContext(ctx).
-			Table(liveTable).
-			Where("id = ?", liveID).
-			Updates(updates).Error
-		return err
-	})
-	return exception.InternalError(err)
-}
-
 func (l *live) multiGet(
 	ctx context.Context, tx *gorm.DB, liveIDs []string, fields ...string,
 ) (entity.Lives, error) {

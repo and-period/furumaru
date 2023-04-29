@@ -20,8 +20,6 @@ func testLive(id, scheduleID, producerID string, productIDs []string, now time.T
 		ProducerID:  producerID,
 		Title:       "配信のタイトル",
 		Description: "配信の説明",
-		Published:   false,
-		Canceled:    false,
 		StartAt:     now,
 		EndAt:       now,
 		CreatedAt:   now,
@@ -134,10 +132,7 @@ func TestLive_MultiGet(t *testing.T) {
 		})
 	}
 }
-<<<<<<< HEAD
-=======
 
->>>>>>> d10c74e4d7d5cd5e1f72cf43cd0b375aef9b7893
 func TestLive_ListByScheduleID(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -415,102 +410,6 @@ func TestLive_Update(t *testing.T) {
 
 			db := &live{db: db, now: now}
 			err = db.Update(ctx, tt.args.liveID, tt.args.params)
-			assert.Equal(t, tt.want.hasErr, err != nil, err)
-		})
-	}
-}
-
-func TestLive_UpdateLivePublic(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	db := dbClient
-	now := func() time.Time {
-		return current
-	}
-
-	err := deleteAll(ctx)
-	require.NoError(t, err)
-
-	category := testCategory("category-id", "野菜", now())
-	err = db.DB.Create(&category).Error
-	require.NoError(t, err)
-	productType := testProductType("type-id", "category-id", "野菜", now())
-	err = db.DB.Create(&productType).Error
-	require.NoError(t, err)
-	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id", "category-id", "producer-id", now())
-	products[1] = testProduct("product-id02", "type-id", "category-id", "producer-id", now())
-	err = db.DB.Create(&products).Error
-	require.NoError(t, err)
-	shipping := testShipping("shipping-id", now())
-	err = db.DB.Create(&shipping).Error
-	require.NoError(t, err)
-	schedule := testSchedule("schedule-id", now())
-	err = db.DB.Create(&schedule).Error
-	require.NoError(t, err)
-
-	type args struct {
-		liveID string
-		params *UpdateLivePublicParams
-	}
-	type want struct {
-		hasErr bool
-	}
-	tests := []struct {
-		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
-		args  args
-		want  want
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
-				live := testLive("live-id", "schedule-id", "producer-id", []string{"product-id01", "product-id02"}, now())
-				err = db.DB.Create(&live).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				liveID: "live-id",
-				params: &UpdateLivePublicParams{
-					Published:    true,
-					Canceled:     false,
-					ChannelArn:   "channel-arn",
-					StreamKeyArn: "streamKey-arn",
-				},
-			},
-			want: want{
-				hasErr: false,
-			},
-		},
-		{
-			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
-			args: args{
-				liveID: "live-id",
-				params: &UpdateLivePublicParams{},
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
-			defer cancel()
-
-			err := delete(ctx, liveTable)
-			require.NoError(t, err)
-
-			tt.setup(ctx, t, db)
-
-			db := &live{db: db, now: now}
-			err = db.UpdatePublic(ctx, tt.args.liveID, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}

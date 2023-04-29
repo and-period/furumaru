@@ -127,7 +127,6 @@ type Live interface {
 	ListByScheduleID(ctx context.Context, scheduleID string, fields ...string) (entity.Lives, error)
 	Get(ctx context.Context, liveID string, fields ...string) (*entity.Live, error)
 	Update(ctx context.Context, liveID string, params *UpdateLiveParams) error
-	UpdatePublic(ctx context.Context, liveID string, params *UpdateLivePublicParams) error
 }
 
 /**
@@ -168,13 +167,6 @@ type UpdateLiveParams struct {
 	Description  string
 	StartAt      time.Time
 	EndAt        time.Time
-}
-
-type UpdateLivePublicParams struct {
-	Published    bool
-	Canceled     bool
-	ChannelArn   string
-	StreamKeyArn string
 }
 
 type ListOrdersParams struct {
