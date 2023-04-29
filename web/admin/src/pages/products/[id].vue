@@ -90,12 +90,16 @@ const handleImageUpload = async (files?: FileList) => {
       console.log(error)
     }
   }
-}
 
-const handleDeleteThumbnailImageButton = (index: number) => {
-  formData.value.media = formData.value.media.filter((_, i) => {
-    return i !== index
-  })
+  const thumbnailItem = formData.value.media.find(item => item.isThumbnail)
+  if (!thumbnailItem) {
+    formData.value.media = formData.value.media.map((item, i) => {
+      return {
+        ...item,
+        isThumbnail: i === 0
+      }
+    })
+  }
 }
 
 const commonStore = useCommonStore()
@@ -106,7 +110,6 @@ const isLoading = (): boolean => {
 
 const handleSubmit = async () => {
   const result = await v$.value.$validate()
-  console.log(result, v$)
   if (!result) {
     window.scrollTo({
       top: 0,
@@ -147,7 +150,6 @@ try {
       :producers-items="producersItems"
       :product-types-items="productTypesItems"
       @update:files="handleImageUpload"
-      @delete:thumbnail-image="handleDeleteThumbnailImageButton"
     />
 
     <v-btn block variant="outlined" @click="handleSubmit">

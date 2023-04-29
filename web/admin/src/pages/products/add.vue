@@ -78,12 +78,16 @@ const handleImageUpload = async (files: FileList) => {
       console.log(error)
     }
   }
-}
 
-const handleDeleteThumbnailImageButton = (index: number) => {
-  formData.value.media = formData.value.media.filter((_, i) => {
-    return i !== index
-  })
+  const thumbnailItem = formData.value.media.find(item => item.isThumbnail)
+  if (!thumbnailItem) {
+    formData.value.media = formData.value.media.map((item, i) => {
+      return {
+        ...item,
+        isThumbnail: i === 0
+      }
+    })
+  }
 }
 
 const { alertType, isShow, alertText, show } = useAlert('error')
@@ -132,7 +136,6 @@ try {
       :producers-items="producers"
       :product-types-items="productTypes"
       @update:files="handleImageUpload"
-      @delete:thumbnail-image="handleDeleteThumbnailImageButton"
     />
 
     <v-btn block variant="outlined" @click="handleFormSubmit">
