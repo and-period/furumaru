@@ -1,91 +1,53 @@
 <script lang="ts" setup>
 import { VDataTable } from 'vuetify/labs/components'
-import { mdiDelete } from '@mdi/js'
 
-import { usePagination } from '~/lib/hooks'
-import { useUserStore } from '~/store/customer'
-import { UsersResponseUsersInner } from '~/types/api'
+import { storeToRefs } from 'pinia'
+import { useAlert, usePagination } from '~/lib/hooks'
+import { useCustomerStore } from '~/store/customer'
 
 const router = useRouter()
-const userStore = useUserStore()
-const {
-  itemsPerPage,
-  offset,
-  options,
-  updateCurrentPage,
-  handleUpdateItemsPerPage
-} = usePagination()
-
-const headers: VDataTable['headers'] = [
-  {
-    title: '名前',
-    key: 'name'
-  },
-  {
-    title: '電話番号',
-    key: 'phoneNumber'
-  },
-  {
-    title: '購入数',
-    key: 'totalOrder'
-  },
-  {
-    title: '購入金額',
-    key: 'totalAmount'
-  },
-  {
-    title: 'アカウントの有無',
-    key: 'registered'
-  },
-  {
-    title: 'Action',
-    key: 'action',
-    sortable: false
-  }
-]
+const customerStore = useCustomerStore()
+const pagination = usePagination()
+const { alertType, isShow, alertText, show } = useAlert('error')
 
 const fetchState = useAsyncData(async () => {
   await fetchUsers()
 })
 
-const users = computed(() => {
-  return userStore.users
-})
-const total = computed(() => {
-  return userStore.totalItems
-})
+const { customers, totalItems } = storeToRefs(customerStore)
 
-watch(itemsPerPage, () => {
+const sortBy = ref<VDataTable['sortBy']>([])
+
+watch(pagination.itemsPerPage, () => {
   fetchUsers()
 })
 
 const handleUpdatePage = async (page: number) => {
-  updateCurrentPage(page)
+  pagination.updateCurrentPage(page)
   await fetchUsers()
+}
+
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || false
 }
 
 const fetchUsers = async () => {
   try {
-    await userStore.fetchUsers(itemsPerPage.value, offset.value)
+    await customerStore.fetchCustomers(pagination.itemsPerPage.value, pagination.offset.value)
   } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
     console.log(err)
   }
 }
 
-const getStatusColor = (account: boolean): string => {
-  return account ? 'primary' : 'red'
+const handleClickEdit = (customerId: string): void => {
+  router.push(`/customers/${customerId}`)
 }
 
-const registerStatus = (registered: boolean): string => {
-  return registered ? '有' : '無'
-}
-
-const handleRowClick = (item: UsersResponseUsersInner): void => {
-  router.push(`/customers/edit/${item.id}`)
-}
-
-const handleDeleteButtonClick = () => {
-  console.log('削除ボタンクリック')
+const handleClickDelete = (customerId: string) => {
+  console.log('削除ボタンクリック', customerId)
 }
 
 try {
@@ -96,40 +58,19 @@ try {
 </script>
 
 <template>
-  <div>
-    <v-card-title>顧客管理</v-card-title>
-    <v-card flat>
-      <v-card-text>
-        <v-data-table
-          :headers="headers"
-          :items="users"
-          :items-per-page="itemsPerPage"
-          :footer-props="options"
-          no-data-text="登録されている顧客情報がありません"
-          hover
-          @update:page="handleUpdatePage"
-          @update:items-per-page="handleUpdateItemsPerPage"
-          @click:row="(_: any, { item }: any) => handleRowClick(item.raw)"
-        >
-          <template #[`item.name`]="{ item }">
-            {{ `${item.raw.lastname} ${item.raw.firstname}` }}
-          </template>
-          <template #[`item.totalAmount`]="{ item }">
-            {{ `${item.raw.totalAmount}` }} 円
-          </template>
-          <template #[`item.registered`]="{ item }">
-            <v-chip size="small" :color="getStatusColor(item.raw.registered)">
-              {{ registerStatus(item.raw.registered) }}
-            </v-chip>
-          </template>
-          <template #[`item.action`]>
-            <v-btn variant="outlined" color="primary" size="small" @click.stop="handleDeleteButtonClick">
-              <v-icon size="small" :icon="mdiDelete" />
-              削除
-            </v-btn>
-          </template>
-        </v-data-table>
-      </v-card-text>
-    </v-card>
-  </div>
+  <templates-customer-list
+    :loading="isLoading()"
+    :is-alrt="isShow"
+    :alert-type="alertType"
+    :alert-text="alertText"
+    :customers="customers"
+    :table-items-total="totalItems"
+    :table-items-per-page="pagination.itemsPerPage.value"
+    :table-sort-by="sortBy"
+    @click:row="handleClickEdit"
+    @click:delete="handleClickDelete"
+    @click:update-page="handleUpdatePage"
+    @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
+    @update:sort-by="fetchState.refresh"
+  />
 </template>
