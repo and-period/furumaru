@@ -135,9 +135,13 @@ func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInpu
 	if err != nil {
 		return exception.InternalError(err)
 	}
+	currentMedia := product.Media.MapByURL()
 	media := make(entity.MultiProductMedia, len(in.Media))
-	for i := range in.Media {
-		media[i] = entity.NewProductMedia(in.Media[i].URL, in.Media[i].IsThumbnail)
+	for i, m := range in.Media {
+		media[i] = entity.NewProductMedia(m.URL, m.IsThumbnail)
+		if images, ok := currentMedia[m.URL]; ok {
+			media[i].SetImages(images.Images)
+		}
 	}
 	if err := media.Validate(); err != nil {
 		return fmt.Errorf("api: invalid media format: %s: %w", err.Error(), exception.ErrInvalidArgument)
@@ -210,7 +214,7 @@ func (s *service) UpdateProductMedia(ctx context.Context, in *store.UpdateProduc
 				continue
 			}
 			exists = true
-			media[i].Images = images
+			media[i].SetImages(images)
 		}
 		return
 	}
@@ -227,6 +231,9 @@ func (s *service) DeleteProduct(ctx context.Context, in *store.DeleteProductInpu
 }
 
 func (s *service) resizeProduct(ctx context.Context, productID string, ms entity.MultiProductMedia) {
+	if len(ms) == 0 {
+		return
+	}
 	urls := make([]string, len(ms))
 	for i := range ms {
 		urls[i] = ms[i].URL
