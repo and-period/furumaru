@@ -110,11 +110,11 @@ const fulfillmentCompanies: Order[] = [
 
 const importDialogValue = computed({
   get: (): boolean => props.importDialog,
-  set: (v: boolean): void => emit('update:import-dialog', v),
+  set: (v: boolean): void => emit('update:import-dialog', v)
 })
 const exportDialogValue = computed({
   get: (): boolean => props.exportDialog,
-  set: (v: boolean): void => emit('update:export-dialog', v),
+  set: (v: boolean): void => emit('update:export-dialog', v)
 })
 
 const getStatus = (status: PaymentStatus): string => {
