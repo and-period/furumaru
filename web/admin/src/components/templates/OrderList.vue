@@ -12,12 +12,13 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  dialog: {
-    type: Object,
-    default: () => ({
-      import: false,
-      export: false
-    })
+  importDialog: {
+    type: Boolean,
+    default: false
+  },
+  exportDialog: {
+    type: Boolean,
+    default: false
   },
   isAlert: {
     type: Boolean,
@@ -32,7 +33,7 @@ const props = defineProps({
     default: ''
   },
   orders: {
-    type: Array<OrdersResponse['orders']>,
+    type: Array as PropType<OrdersResponse['orders']>,
     default: () => []
   },
   tableItemsPerPage: {
@@ -61,6 +62,8 @@ const emit = defineEmits<{
   (e: 'click:edit', orderId: string): void
   (e: 'click:update-page', page: number): void
   (e: 'click:update-items-per-page', page: number): void
+  (e: 'update:import-dialog', dialog: boolean): void
+  (e: 'update:export-dialog', dialog: boolean): void
   (e: 'submit:import'): void
   (e: 'submit:export'): void
 }>()
@@ -104,6 +107,15 @@ const fulfillmentCompanies: Order[] = [
   { name: '佐川急便', value: '佐川急便' },
   { name: 'ヤマト運輸', value: 'ヤマト運輸' }
 ]
+
+const importDialogValue = computed({
+  get: (): boolean => props.importDialog,
+  set: (v: boolean): void => emit('update:import-dialog', v)
+})
+const exportDialogValue = computed({
+  get: (): boolean => props.exportDialog,
+  set: (v: boolean): void => emit('update:export-dialog', v)
+})
 
 const getStatus = (status: PaymentStatus): string => {
   switch (status) {
@@ -163,11 +175,11 @@ const getOrderdAt = (orderdAt: number): string => {
 }
 
 const toggleImportDialog = (): void => {
-  props.dialog.import = !props.dialog.import
+  importDialogValue.value = !importDialogValue.value
 }
 
 const toggleExportDialog = (): void => {
-  props.dialog.export = !props.dialog.export
+  exportDialogValue.value = !exportDialogValue.value
 }
 
 const onClickUpdatePage = (page: number): void => {
@@ -193,7 +205,7 @@ const onSubmitExport = (): void => {
 
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
-  <v-dialog v-model="props.dialog.import" width="500">
+  <v-dialog v-model="importDialogValue" width="500">
     <v-card>
       <v-card-title class="text-h6 primaryLight">
         ファイルの取り込み
@@ -220,7 +232,7 @@ const onSubmitExport = (): void => {
       </v-card-actions>
     </v-card>
   </v-dialog>
-  <v-dialog v-model="props.dialog.export" width="500">
+  <v-dialog v-model="exportDialogValue" width="500">
     <v-card>
       <v-card-title class="text-h6 primaryLight">
         ファイルの出力

@@ -7,10 +7,9 @@ const orderStore = useOrderStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const dialog = reactive({
-  import: false,
-  export: false
-})
+const importDialog = ref<boolean>(false)
+const exportDialog = ref<boolean>(false)
+
 const importFormData = reactive({ // TODO: API設計が決まり次第型定義の厳格化
   company: ''
 })
@@ -60,13 +59,13 @@ const handleEdit = (orderId: string): void => {
 const handleImport = () => {
   // TODO: APIの実装が完了後に対応
   console.log('debug', 'submit:import')
-  dialog.import = false
+  importDialog.value = false
 }
 
 const handleExport = () => {
   // TODO: APIの実装が完了後に対応
   console.log('debug', 'submit:export')
-  dialog.export = false
+  exportDialog.value = false
 }
 
 try {
@@ -78,7 +77,8 @@ try {
 
 <template>
   <templates-order-list
-    v-model:dialog="dialog"
+    v-model:import-dialog="importDialog"
+    v-model:export-dialog="exportDialog"
     v-model:import-form-data="importFormData"
     v-model:export-form-data="exportFormData"
     :loading="isLoading()"
@@ -87,7 +87,7 @@ try {
     :alert-text="alertText"
     :orders="orders"
     :table-items-length="ordersTotal"
-    :table-items-per-page="pagination.itemsPerPage"
+    :table-items-per-page="pagination.itemsPerPage.value"
     @click:edit="handleEdit"
     @click:update-page="handleUpdateTablePage"
     @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
