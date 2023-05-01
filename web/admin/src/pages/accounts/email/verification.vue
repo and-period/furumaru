@@ -8,6 +8,7 @@ const route = useRoute()
 const authStore = useAuthStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
+// todo: emailの受け渡しを変更する
 const email = route.params.email as string
 
 const formData = reactive<VerifyAuthEmailRequest>({
@@ -40,7 +41,8 @@ const handleSubmit = async (): Promise<void> => {
 <template>
   <templates-auth-verify-email
     v-model:form-data="formData"
-    :is-alert="isShow"
+    v-model:is-alert="isShow"
+    :email="email"
     :alert-type="alertType"
     :alert-text="alertText"
     @submit="handleSubmit"
