@@ -22,7 +22,6 @@ export default defineNuxtConfig({
   },
   css: ['~/assets/main.scss', '~/assets/variables.scss'],
   plugins: [
-    '~/plugins/auth',
     '~/plugins/axios',
     '~/plugins/firebase',
     '~/plugins/google-analytics',
