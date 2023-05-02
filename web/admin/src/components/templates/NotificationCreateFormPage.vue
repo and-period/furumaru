@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import * as dayjs from 'dayjs'
+import dayjs from 'dayjs'
 
 import { CreateNotificationRequest } from '~/types/api'
 import { NotificationTime } from '~/types/props'

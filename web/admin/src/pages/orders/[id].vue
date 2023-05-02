@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import * as dayjs from 'dayjs'
+import dayjs from 'dayjs'
 import { VDataTable } from 'vuetify/lib/labs/components'
 
 import { usePagination } from '~/lib/hooks'
