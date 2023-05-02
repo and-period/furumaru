@@ -11,6 +11,10 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits<{
+  (e: 'update:customer', customer: UserResponse): void
+}>()
+
 const tabs: Customer[] = [
   { name: '顧客情報', value: 'customers' },
   { name: '購入に関して', value: 'customerItems' }
@@ -88,6 +92,10 @@ const orderTotal = computed((): number => {
   })
   return total
 })
+const customerValue = computed({
+  get: (): UserResponse => props.customer,
+  set: (customer: UserResponse): void => emit('update:customer', customer)
+})
 </script>
 
 <template>
@@ -107,11 +115,11 @@ const orderTotal = computed((): number => {
 
           <span>アカウントの有無：</span>
           <v-chip color="primary">
-            {{ props.customer.registered ? '有' : '無' }}
+            {{ customerValue.registered ? '有' : '無' }}
           </v-chip>
 
           <v-text-field
-            v-model="props.customer.email"
+            v-model="customerValue.email"
             name="email"
             label="連絡先:Email"
             readonly
@@ -125,28 +133,28 @@ const orderTotal = computed((): number => {
           />
 
           <v-text-field
-            v-model="props.customer.prefecture"
+            v-model="customerValue.prefecture"
             name="prefecture"
             label="都道府県"
             readonly
           />
 
           <v-text-field
-            v-model="props.customer.city"
+            v-model="customerValue.city"
             name="city"
             label="市区町村"
             readonly
           />
 
           <v-text-field
-            v-model="props.customer.addressLine1"
+            v-model="customerValue.addressLine1"
             name="address"
             label="番地"
             readonly
           />
 
           <v-text-field
-            v-model="props.customer.addressLine2"
+            v-model="customerValue.addressLine2"
             name="building"
             label="建物名・部屋番号"
             readonly
