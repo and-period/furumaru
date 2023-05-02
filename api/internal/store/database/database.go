@@ -164,6 +164,7 @@ type UpdateLiveParams struct {
 	ProducerID   string
 	Title        string
 	Description  string
+	Status       entity.LiveStatus
 	StartAt      time.Time
 	EndAt        time.Time
 }

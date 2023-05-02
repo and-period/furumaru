@@ -22,6 +22,7 @@ func testLive(id, scheduleID, producerID string, productIDs []string, now time.T
 		Description: "配信の説明",
 		StartAt:     now,
 		EndAt:       now,
+		Status:      entity.LiveStatusUnknown,
 		CreatedAt:   now,
 		UpdatedAt:   now,
 	}
