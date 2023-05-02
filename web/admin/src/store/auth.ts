@@ -173,26 +173,9 @@ export const useAuthStore = defineStore('auth', {
           color: 'info'
         })
       } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 400:
-              return Promise.reject(
-                new ValidationError('入力内容に誤りがあります。', error)
-              )
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+        return this.errorHandler(error, {
+          409: 'このメールアドレスはすでに利用されているため使用できません。'
+        })
       }
     },
 
