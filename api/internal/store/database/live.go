@@ -52,6 +52,7 @@ func (l *live) Update(ctx context.Context, liveID string, params *UpdateLivePara
 			"title":       params.Title,
 			"description": params.Description,
 			"start_at":    params.StartAt,
+			"status":      params.Status,
 			"end_at":      params.EndAt,
 			"updated_at":  now,
 		}
