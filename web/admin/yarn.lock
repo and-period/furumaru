@@ -6062,7 +6062,7 @@ deepmerge@^4.2.2:
   resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-4.2.2.tgz#44d2ea3679b8f4d4ffba33f03d865fc1e7bf4955"
   integrity sha512-FJ3UgI4gIl+PHZm53knsuSFpE+nESMr7M4v9QcgB7S63Kj/6WqMiFQJpBBYz1Pt+66bZpP3Q7Lye0Oo9MPKEdg==
 
-deepmerge@^4.3.0:
+deepmerge@^4.3.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-4.3.1.tgz#44b5f2147cd3b00d4b56137685966f26fd25dd4a"
   integrity sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==
@@ -7392,12 +7392,12 @@ globrex@^0.1.2:
   integrity sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==
 
 google-fonts-helper@^3.2.4:
-  version "3.2.4"
-  resolved "https://registry.yarnpkg.com/google-fonts-helper/-/google-fonts-helper-3.2.4.tgz#8b3b252f13f98bea7c9d46d921ed680b5f05852a"
-  integrity sha512-M740UjqBOxmG2qFUW7Lhgak9WDpsT18zxLJuG+MP4r+G1vhqbWm3x3D40xFEzhveQAneaEr8WjPxf+vcx9Xohg==
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/google-fonts-helper/-/google-fonts-helper-3.3.0.tgz#908f9b9fce267497c864e8cd7fb2089c55b126b6"
+  integrity sha512-aFEVbmaavTY6wN3m6jZaWXQHfakMy6XNqdWN8YzHqHWCGpGma91zp8MiWsyb5i8gXQXYeGUWegb9ca/Jf/Q7Yw==
   dependencies:
-    deepmerge "^4.3.0"
-    hookable "^5.4.2"
+    deepmerge "^4.3.1"
+    hookable "^5.5.3"
     ofetch "^1.0.1"
     ufo "^1.1.1"
 
@@ -7514,7 +7514,7 @@ hls.js@^1.4.0:
   resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.4.0.tgz#e73af3e7c8d4310a2bcc92d5ade362dfb781fef7"
   integrity sha512-VEjg7Rx5FlE9TB3MIn0HPgq3J+vR7EoQnjaqMCk/ISEaCOSZlAFh4g867f1QkSxZiq9kHeUZo+iH16X7VS3jKA==
 
-hookable@^5.4.2, hookable@^5.5.3:
+hookable@^5.5.3:
   version "5.5.3"
   resolved "https://registry.yarnpkg.com/hookable/-/hookable-5.5.3.tgz#6cfc358984a1ef991e2518cb9ed4a778bbd3215d"
   integrity sha512-Yc+BQe8SvoXH1643Qez1zqLRmbA5rCL+sSmk6TVos0LWVfNIB7PGncdlId77WzLGSIB5KaWgTaNTs2lNVEI6VQ==
