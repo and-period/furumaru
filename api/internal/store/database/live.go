@@ -100,7 +100,7 @@ func (l *live) listByScheduleID(
 		return nil, err
 	}
 	lpmap := liveProducts.GroupByLiveID()
-	lives.Fill(lpmap, jst.Now())
+	lives.Fill(lpmap)
 	return lives, nil
 }
 

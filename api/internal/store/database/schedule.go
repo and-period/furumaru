@@ -52,7 +52,7 @@ func (s *schedule) Create(
 		if err := tx.WithContext(ctx).Table(liveProductTable).Create(&products).Error; err != nil {
 			return err
 		}
-		lives.Fill(products.GroupByLiveID(), now)
+		lives.Fill(products.GroupByLiveID())
 		return err
 	})
 	return exception.InternalError(err)
