@@ -57,13 +57,14 @@ func TestLive_Fill(t *testing.T) {
 		expect   *Live
 	}{
 		{
-			name: "success waiting",
+			name: "success",
 			live: &Live{
 				ID:          "live-id",
 				ScheduleID:  "schedule-id",
 				ProducerID:  "producer-id",
 				Title:       "ライブのタイトル",
 				Description: "ライブの説明",
+				Status:      LiveStatusWaiting,
 				StartAt:     jst.Date(2022, 8, 1, 0, 0, 0, 0),
 				EndAt:       jst.Date(2022, 9, 1, 0, 0, 0, 0),
 				CreatedAt:   jst.Date(2022, 7, 1, 0, 0, 0, 0),
@@ -85,92 +86,6 @@ func TestLive_Fill(t *testing.T) {
 				Title:       "ライブのタイトル",
 				Description: "ライブの説明",
 				Status:      LiveStatusWaiting,
-				StartAt:     jst.Date(2022, 8, 1, 0, 0, 0, 0),
-				EndAt:       jst.Date(2022, 9, 1, 0, 0, 0, 0),
-				LiveProducts: LiveProducts{
-					{
-						LiveID:    "live-id",
-						ProductID: "product-id",
-						CreatedAt: jst.Date(2022, 7, 1, 0, 0, 0, 0),
-						UpdatedAt: jst.Date(2022, 7, 1, 0, 0, 0, 0),
-					},
-				},
-				CreatedAt: jst.Date(2022, 7, 1, 0, 0, 0, 0),
-				UpdatedAt: jst.Date(2022, 7, 1, 0, 0, 0, 0),
-			},
-		},
-		{
-			name: "success opened",
-			live: &Live{
-				ID:          "live-id",
-				ScheduleID:  "schedule-id",
-				ProducerID:  "producer-id",
-				Title:       "ライブのタイトル",
-				Description: "ライブの説明",
-				StartAt:     jst.Date(2022, 8, 1, 0, 0, 0, 0),
-				EndAt:       jst.Date(2022, 9, 1, 0, 0, 0, 0),
-				CreatedAt:   jst.Date(2022, 7, 1, 0, 0, 0, 0),
-				UpdatedAt:   jst.Date(2022, 7, 1, 0, 0, 0, 0),
-			},
-			products: LiveProducts{
-				{
-					LiveID:    "live-id",
-					ProductID: "product-id",
-					CreatedAt: jst.Date(2022, 7, 1, 0, 0, 0, 0),
-					UpdatedAt: jst.Date(2022, 7, 1, 0, 0, 0, 0),
-				},
-			},
-			now: jst.Date(2022, 8, 15, 0, 0, 0, 0),
-			expect: &Live{
-				ID:          "live-id",
-				ScheduleID:  "schedule-id",
-				ProducerID:  "producer-id",
-				Title:       "ライブのタイトル",
-				Description: "ライブの説明",
-				Status:      LiveStatusOpened,
-				StartAt:     jst.Date(2022, 8, 1, 0, 0, 0, 0),
-				EndAt:       jst.Date(2022, 9, 1, 0, 0, 0, 0),
-				LiveProducts: LiveProducts{
-					{
-						LiveID:    "live-id",
-						ProductID: "product-id",
-						CreatedAt: jst.Date(2022, 7, 1, 0, 0, 0, 0),
-						UpdatedAt: jst.Date(2022, 7, 1, 0, 0, 0, 0),
-					},
-				},
-				CreatedAt: jst.Date(2022, 7, 1, 0, 0, 0, 0),
-				UpdatedAt: jst.Date(2022, 7, 1, 0, 0, 0, 0),
-			},
-		},
-		{
-			name: "success closed",
-			live: &Live{
-				ID:          "live-id",
-				ScheduleID:  "schedule-id",
-				ProducerID:  "producer-id",
-				Title:       "ライブのタイトル",
-				Description: "ライブの説明",
-				StartAt:     jst.Date(2022, 8, 1, 0, 0, 0, 0),
-				EndAt:       jst.Date(2022, 9, 1, 0, 0, 0, 0),
-				CreatedAt:   jst.Date(2022, 7, 1, 0, 0, 0, 0),
-				UpdatedAt:   jst.Date(2022, 7, 1, 0, 0, 0, 0),
-			},
-			products: LiveProducts{
-				{
-					LiveID:    "live-id",
-					ProductID: "product-id",
-					CreatedAt: jst.Date(2022, 7, 1, 0, 0, 0, 0),
-					UpdatedAt: jst.Date(2022, 7, 1, 0, 0, 0, 0),
-				},
-			},
-			now: jst.Date(2022, 9, 15, 0, 0, 0, 0),
-			expect: &Live{
-				ID:          "live-id",
-				ScheduleID:  "schedule-id",
-				ProducerID:  "producer-id",
-				Title:       "ライブのタイトル",
-				Description: "ライブの説明",
-				Status:      LiveStatusClosed,
 				StartAt:     jst.Date(2022, 8, 1, 0, 0, 0, 0),
 				EndAt:       jst.Date(2022, 9, 1, 0, 0, 0, 0),
 				LiveProducts: LiveProducts{

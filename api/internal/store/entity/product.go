@@ -169,6 +169,18 @@ func NewProductMedia(url string, isThumbnail bool) *ProductMedia {
 	}
 }
 
+func (m *ProductMedia) SetImages(images common.Images) {
+	m.Images = images
+}
+
+func (m MultiProductMedia) MapByURL() map[string]*ProductMedia {
+	res := make(map[string]*ProductMedia, len(m))
+	for _, media := range m {
+		res[media.URL] = media
+	}
+	return res
+}
+
 func (m MultiProductMedia) Validate() error {
 	var exists bool
 	for _, media := range m {

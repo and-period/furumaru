@@ -250,6 +250,77 @@ func TestProducts_Fill(t *testing.T) {
 	}
 }
 
+func TestProductMedia_SetImages(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		images common.Images
+		media  *ProductMedia
+		expect *ProductMedia
+	}{
+		{
+			name: "success",
+			images: common.Images{
+				{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
+			},
+			media: &ProductMedia{
+				URL:         "http://example.com/media.png",
+				IsThumbnail: true,
+			},
+			expect: &ProductMedia{
+				URL:         "http://example.com/media.png",
+				IsThumbnail: true,
+				Images: common.Images{
+					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
+				},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.media.SetImages(tt.images)
+			assert.Equal(t, tt.expect, tt.media)
+		})
+	}
+}
+
+func TestMultiProductMedia_MapByURL(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		media  MultiProductMedia
+		expect map[string]*ProductMedia
+	}{
+		{
+			name: "success",
+			media: MultiProductMedia{
+				{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+				{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+				{URL: "https://and-period.jp/thumbnail03.png", IsThumbnail: false},
+			},
+			expect: map[string]*ProductMedia{
+				"https://and-period.jp/thumbnail01.png": {URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+				"https://and-period.jp/thumbnail02.png": {URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+				"https://and-period.jp/thumbnail03.png": {URL: "https://and-period.jp/thumbnail03.png", IsThumbnail: false},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.media.MapByURL()
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
 func TestMultiProductMedia_Validate(t *testing.T) {
 	t.Parallel()
 

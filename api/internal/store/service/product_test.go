@@ -607,6 +607,63 @@ func TestUpdateProduct(t *testing.T) {
 			expectErr: nil,
 		},
 		{
+			name: "success without media",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Product.EXPECT().Get(ctx, "product-id").Return(product, nil)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.db.Product.EXPECT().
+					Update(ctx, "product-id", gomock.Any()).
+					DoAndReturn(func(ctx context.Context, productID string, params *database.UpdateProductParams) error {
+						expect := &database.UpdateProductParams{
+							ProducerID:       "producer-id",
+							TypeID:           "product-type-id",
+							Name:             "新鮮なじゃがいも",
+							Description:      "新鮮なじゃがいもをお届けします。",
+							Public:           true,
+							Inventory:        100,
+							Weight:           100,
+							WeightUnit:       entity.WeightUnitGram,
+							Item:             1,
+							ItemUnit:         "袋",
+							ItemDescription:  "1袋あたり100gのじゃがいも",
+							Media:            entity.MultiProductMedia{},
+							Price:            400,
+							DeliveryType:     entity.DeliveryTypeNormal,
+							Box60Rate:        50,
+							Box80Rate:        40,
+							Box100Rate:       30,
+							OriginPrefecture: "滋賀県",
+							OriginCity:       "彦根市",
+						}
+						assert.Equal(t, expect, params)
+						return nil
+					})
+			},
+			input: &store.UpdateProductInput{
+				ProductID:        "product-id",
+				ProducerID:       "producer-id",
+				TypeID:           "product-type-id",
+				Name:             "新鮮なじゃがいも",
+				Description:      "新鮮なじゃがいもをお届けします。",
+				Public:           true,
+				Inventory:        100,
+				Weight:           100,
+				WeightUnit:       entity.WeightUnitGram,
+				Item:             1,
+				ItemUnit:         "袋",
+				ItemDescription:  "1袋あたり100gのじゃがいも",
+				Media:            []*store.UpdateProductMedia{},
+				Price:            400,
+				DeliveryType:     entity.DeliveryTypeNormal,
+				Box60Rate:        50,
+				Box80Rate:        40,
+				Box100Rate:       30,
+				OriginPrefecture: "滋賀県",
+				OriginCity:       "彦根市",
+			},
+			expectErr: nil,
+		},
+		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.UpdateProductInput{},
