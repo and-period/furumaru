@@ -101,7 +101,7 @@ func (ls Lives) ProducerIDs() []string {
 	})
 }
 
-func (ls Lives) Fill(products map[string]LiveProducts, now time.Time) {
+func (ls Lives) Fill(products map[string]LiveProducts) {
 	for i := range ls {
 		ls[i].Fill(products[ls[i].ID])
 	}
