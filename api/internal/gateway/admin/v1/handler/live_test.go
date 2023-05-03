@@ -136,8 +136,6 @@ func TestGetLive(t *testing.T) {
 		Title:          "配信タイトル",
 		Description:    "配信の説明",
 		Status:         sentity.LiveStatusWaiting,
-		Published:      false,
-		Canceled:       false,
 		ProducerID:     "producer-id",
 		ChannelArn:     "channel-arn",
 		StreamKeyArn:   "streamKey-arn",
@@ -180,8 +178,6 @@ func TestGetLive(t *testing.T) {
 						Title:        "配信タイトル",
 						Description:  "配信の説明",
 						Status:       1,
-						Published:    false,
-						Canceled:     false,
 						ProducerID:   "producer-id",
 						ProducerName: "&. 管理者",
 						Products: []*response.Product{

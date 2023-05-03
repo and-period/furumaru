@@ -1030,26 +1030,6 @@ func (mr *MockLiveMockRecorder) ListByScheduleID(ctx, scheduleID interface{}, fi
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByScheduleID", reflect.TypeOf((*MockLive)(nil).ListByScheduleID), varargs...)
 }
 
-// MultiGet mocks base method.
-func (m *MockLive) MultiGet(ctx context.Context, liveIDs []string, fields ...string) (entity.Lives, error) {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{ctx, liveIDs}
-	for _, a := range fields {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "MultiGet", varargs...)
-	ret0, _ := ret[0].(entity.Lives)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// MultiGet indicates an expected call of MultiGet.
-func (mr *MockLiveMockRecorder) MultiGet(ctx, liveIDs interface{}, fields ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{ctx, liveIDs}, fields...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockLive)(nil).MultiGet), varargs...)
-}
-
 // Update mocks base method.
 func (m *MockLive) Update(ctx context.Context, liveID string, params *database.UpdateLiveParams) error {
 	m.ctrl.T.Helper()
@@ -1062,18 +1042,4 @@ func (m *MockLive) Update(ctx context.Context, liveID string, params *database.U
 func (mr *MockLiveMockRecorder) Update(ctx, liveID, params interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockLive)(nil).Update), ctx, liveID, params)
-}
-
-// UpdatePublic mocks base method.
-func (m *MockLive) UpdatePublic(ctx context.Context, liveID string, params *database.UpdateLivePublicParams) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdatePublic", ctx, liveID, params)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// UpdatePublic indicates an expected call of UpdatePublic.
-func (mr *MockLiveMockRecorder) UpdatePublic(ctx, liveID, params interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdatePublic", reflect.TypeOf((*MockLive)(nil).UpdatePublic), ctx, liveID, params)
 }

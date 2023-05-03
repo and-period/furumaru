@@ -26,9 +26,7 @@ type Live struct {
 	ProducerID     string         `gorm:""`                     // 生産者ID
 	Title          string         `gorm:""`                     // タイトル
 	Description    string         `gorm:""`                     // 説明
-	Status         LiveStatus     `gorm:"-"`                    // 配信ステータス
-	Published      bool           `gorm:""`                     // 配信公開フラグ
-	Canceled       bool           `gorm:""`                     // 配信中止フラグ
+	Status         LiveStatus     `gorm:""`                     // 配信ステータス
 	StartAt        time.Time      `gorm:""`                     // 配信開始日時
 	EndAt          time.Time      `gorm:""`                     // 配信終了日時
 	ChannelArn     string         `gorm:"default:null"`         // チャンネルArn
@@ -51,6 +49,7 @@ type NewLiveParams struct {
 	ProducerID  string
 	Title       string
 	Description string
+	Status      LiveStatus
 	StartAt     time.Time
 	EndAt       time.Time
 }
@@ -71,14 +70,14 @@ func NewLive(params *NewLiveParams) *Live {
 		ProducerID:  params.ProducerID,
 		Title:       params.Title,
 		Description: params.Description,
+		Status:      params.Status,
 		StartAt:     params.StartAt,
 		EndAt:       params.EndAt,
 	}
 }
 
-func (l *Live) Fill(products LiveProducts, now time.Time) {
+func (l *Live) Fill(products LiveProducts) {
 	l.LiveProducts = products
-	l.Status = l.status(now)
 }
 
 func (l *Live) FillIVS(params FillLiveIvsParams) {
@@ -88,23 +87,6 @@ func (l *Live) FillIVS(params FillLiveIvsParams) {
 	l.PlaybackURL = params.PlaybackURL
 	l.StreamID = params.StreamID
 	l.ViewerCount = params.ViewerCount
-}
-
-func (l *Live) status(now time.Time) LiveStatus {
-	if l.Canceled {
-		return LiveStatusCanceled
-	}
-	if !l.Published {
-		return LiveStatusWaiting
-	}
-	switch {
-	case now.Before(l.StartAt):
-		return LiveStatusWaiting
-	case now.Before(l.EndAt):
-		return LiveStatusOpened
-	default:
-		return LiveStatusClosed
-	}
 }
 
 func (ls Lives) IDs() []string {
@@ -119,8 +101,8 @@ func (ls Lives) ProducerIDs() []string {
 	})
 }
 
-func (ls Lives) Fill(products map[string]LiveProducts, now time.Time) {
+func (ls Lives) Fill(products map[string]LiveProducts) {
 	for i := range ls {
-		ls[i].Fill(products[ls[i].ID], now)
+		ls[i].Fill(products[ls[i].ID])
 	}
 }

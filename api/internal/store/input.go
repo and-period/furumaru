@@ -313,10 +313,6 @@ type GetLiveInput struct {
 	LiveID string `validate:"required"`
 }
 
-type MultiGetLivesInput struct {
-	LiveIDs []string `validate:"dive,required"`
-}
-
 type ListLivesByScheduleIDInput struct {
 	ScheduleID string `validate:"required"`
 }
@@ -327,17 +323,8 @@ type UpdateLiveInput struct {
 	ProducerID   string              `validate:"required"`
 	Title        string              `validate:"required,max=64"`
 	Description  string              `validate:"required,max=2000"`
-	Published    bool                `validate:""`
-	Canceled     bool                `validate:""`
 	StartAt      time.Time           `validate:"required"`
 	EndAt        time.Time           `validate:"required,gtfield=StartAt"`
-}
-
-type UpdateLivePublicInput struct {
-	LiveID      string `validate:"required"`
-	Published   bool   `validate:""`
-	Canceled    bool   `validate:""`
-	ChannelName string `validate:""`
 }
 
 type ListOrdersInput struct {
