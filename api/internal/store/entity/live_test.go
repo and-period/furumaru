@@ -269,6 +269,7 @@ func TestLives_Fill(t *testing.T) {
 					ProducerID:  "producer-id",
 					Title:       "ライブのタイトル",
 					Description: "ライブの説明",
+					Status:      LiveStatusCanceled,
 					StartAt:     jst.Date(2022, 8, 1, 0, 0, 0, 0),
 					EndAt:       jst.Date(2022, 9, 1, 0, 0, 0, 0),
 					CreatedAt:   jst.Date(2022, 7, 1, 0, 0, 0, 0),
