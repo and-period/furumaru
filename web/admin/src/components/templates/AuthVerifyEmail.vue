@@ -1,48 +1,66 @@
 <script lang="ts" setup>
+import useVuelidate from '@vuelidate/core'
+import { helpers } from '@vuelidate/validators'
 import { VerifyAuthEmailRequest } from '~/types/api'
 import { AlertType } from '~/lib/hooks'
+import { required, getErrorMessage, minLength, maxLength } from '~/lib/validations'
 
-const props = defineProps({
-  isAlert: {
-    type: Boolean,
-    default: false
-  },
-  alertType: {
-    type: String as PropType<AlertType>,
-    default: undefined
-  },
-  alertText: {
-    type: String,
-    default: ''
-  },
-  email: {
-    type: String,
-    default: ''
-  },
-  formData: {
-    type: Object as PropType<VerifyAuthEmailRequest>,
-    default: () => ({
-      verifyCode: ''
-    })
+interface Props {
+  isAlert: boolean,
+  alertType: AlertType
+  alertText: string
+  email: string
+  formData: VerifyAuthEmailRequest
+}
+
+const props = defineProps<Props>()
+
+interface Emits {
+  (e: 'update:fromData', val: VerifyAuthEmailRequest): void
+  (e: 'update:isAlert', val: boolean): void,
+  (e: 'click:resend-email'): void
+  (e: 'submit'): void
+}
+
+const emits = defineEmits<Emits>()
+
+const isAlertValue = computed({
+  get: () => props.isAlert,
+  set: (val: boolean) => emits('update:isAlert', val)
+})
+
+const formDataValue = computed({
+  get: () => props.formData,
+  set: (val: VerifyAuthEmailRequest) => emits('update:fromData', val)
+})
+
+const rules = computed(() => {
+  return {
+    verifyCode: {
+      required,
+      minLength: helpers.withMessage('検証コードは6文字で入力してください。', minLength(6)),
+      maxLength: helpers.withMessage('検証コードは6文字で入力してください。', maxLength(6))
+    }
   }
 })
 
-const emit = defineEmits<{
-  (e: 'click:resend-email'): void
-  (e: 'submit'): void
-}>()
+const v$ = useVuelidate(rules, formDataValue)
 
 const onClickResendEmail = (): void => {
-  emit('click:resend-email')
+  emits('click:resend-email')
 }
 
-const onSubmit = (): void => {
-  emit('submit')
+const onSubmit = async () => {
+  const result = await v$.value.$validate()
+  if (!result) {
+    return
+  }
+  emits('submit')
 }
 </script>
 
 <template>
-  <v-alert v-model="props.isAlert" :type="props.alertType" :text="props.alertText" />
+  <v-alert v-model="isAlertValue" class="mb-2" :type="alertType" :text="alertText" />
   <v-card elevation="0">
     <v-card-title>二要素認証</v-card-title>
     <v-card-text>
@@ -51,8 +69,7 @@ const onSubmit = (): void => {
       </p>
       <div class="ma-auto" style="max-width: 300px">
         <!-- vuetifyが対応し次第、改修する -->
-        <!-- <v-otp-input v-model="props.formData.verifyCode" type="number" length="6" /> -->
-        <v-text-field v-model="props.formData.verifyCode" />
+        <v-text-field v-model="v$.verifyCode.$model" :error-messages="getErrorMessage(v$.verifyCode.$errors)" />
       </div>
       <div class="text-center">
         <a
