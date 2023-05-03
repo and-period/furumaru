@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { mdiPlus, mdiDelete } from '@mdi/js'
-import * as dayjs from 'dayjs'
+import dayjs from 'dayjs'
 import { VDataTable } from 'vuetify/lib/labs/components'
 
 import { usePromotionStore } from '~/store'

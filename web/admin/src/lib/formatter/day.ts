@@ -1,4 +1,4 @@
-import * as dayjs from 'dayjs'
+import dayjs from 'dayjs'
 
 /**
  * unixtime表記の数値をYYYY/MM/DD HH:mm表記文字列に変換する関数
