@@ -191,7 +191,7 @@ func TestLive_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.live.Fill(tt.products, tt.now)
+			tt.live.Fill(tt.products)
 			assert.Equal(t, tt.expect, tt.live)
 		})
 	}

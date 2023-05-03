@@ -76,7 +76,7 @@ func NewLive(params *NewLiveParams) *Live {
 	}
 }
 
-func (l *Live) Fill(products LiveProducts, now time.Time) {
+func (l *Live) Fill(products LiveProducts) {
 	l.LiveProducts = products
 }
 
@@ -103,6 +103,6 @@ func (ls Lives) ProducerIDs() []string {
 
 func (ls Lives) Fill(products map[string]LiveProducts, now time.Time) {
 	for i := range ls {
-		ls[i].Fill(products[ls[i].ID], now)
+		ls[i].Fill(products[ls[i].ID])
 	}
 }

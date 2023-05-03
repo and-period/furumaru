@@ -123,6 +123,6 @@ func (l *live) get(ctx context.Context, tx *gorm.DB, liveID string, fields ...st
 		return nil, err
 	}
 
-	live.Fill(liveProducts, jst.Now())
+	live.Fill(liveProducts)
 	return live, nil
 }

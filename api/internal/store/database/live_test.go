@@ -30,7 +30,7 @@ func testLive(id, scheduleID, producerID string, productIDs []string, now time.T
 	for i := range productIDs {
 		ps[i] = testLiveProduct(id, productIDs[i], now)
 	}
-	l.Fill(ps, now)
+	l.Fill(ps)
 	return l
 }
 
