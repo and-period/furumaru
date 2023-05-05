@@ -1,3 +1,6 @@
+# version-file
+version.json
+
 # sw
 /src/public/firebase-messaging-sw.js
 
