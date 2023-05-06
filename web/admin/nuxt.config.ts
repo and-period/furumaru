@@ -58,7 +58,8 @@ export default defineNuxtConfig({
         process.env.FIREBASE_MESSAGING_SENDER_ID || '',
       FIREBASE_APP_ID: process.env.FIREBASE_APP_ID || '',
       FIREBASE_MEASUREMENT_ID: process.env.FIREBASE_MEASUREMENT_ID || '',
-      FIREBASE_VAPID_KEY: process.env.FIREBASE_VAPID_KEY || ''
+      FIREBASE_VAPID_KEY: process.env.FIREBASE_VAPID_KEY || '',
+      ENVIRONMENT: process.env.ENVIRONMENT || ''
     }
   }
 })
