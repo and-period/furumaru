@@ -23,6 +23,10 @@ const menus: SettingMenu[] = [
     action: () => router.push('/accounts/password')
   },
   {
+    text: 'バージョン情報',
+    action: () => router.push('/version')
+  },
+  {
     text: 'サインアウト',
     color: 'error',
     action: () => {
