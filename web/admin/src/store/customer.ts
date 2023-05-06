@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
 
-import { UsersResponse } from '~/types/api'
+import { UserResponse, UsersResponse } from '~/types/api'
 import {
   AuthError,
   ConnectionError,
@@ -9,9 +9,10 @@ import {
 } from '~/types/exception'
 import { apiClient } from '~/plugins/api-client'
 
-export const useUserStore = defineStore('user', {
+export const useCustomerStore = defineStore('customer', {
   state: () => ({
-    users: [] as UsersResponse['users'],
+    customer: {} as UserResponse,
+    customers: [] as UsersResponse['users'],
     totalItems: 0
   }),
   actions: {
@@ -20,10 +21,10 @@ export const useUserStore = defineStore('user', {
      * @param limit 取得上限数
      * @param offset 取得開始位置
      */
-    async fetchUsers (limit = 20, offset = 0): Promise<void> {
+    async fetchCustomers (limit = 20, offset = 0): Promise<void> {
       try {
         const res = await apiClient.userApi().v1ListUsers(limit, offset)
-        this.users = res.data.users
+        this.customers = res.data.users
         this.totalItems = res.data.total
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -41,6 +42,19 @@ export const useUserStore = defineStore('user', {
           }
         }
         throw new InternalServerError(error)
+      }
+    },
+
+    /**
+     * 顧客を取得する非同期関数
+     * @param customerId 顧客ID
+     */
+    async fetchCustomer (customerId: string): Promise<void> {
+      try {
+        const res = await apiClient.userApi().v1GetUser(customerId)
+        this.customer = res.data
+      } catch (err) {
+        return this.errorHandler(err)
       }
     }
   }
