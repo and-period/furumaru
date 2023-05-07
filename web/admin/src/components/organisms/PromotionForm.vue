@@ -74,8 +74,7 @@ const handleSubmit = () => {
 }
 
 const handleGenerate = () => {
-  const code = generateRandomString()
-  props.formData.code = code
+  props.formData.code = generateRandomString()
 }
 
 const generateRandomString = (): string => {
