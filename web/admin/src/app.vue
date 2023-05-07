@@ -5,7 +5,7 @@ useHead({
   script: [
     {
       key: 'newRelic',
-      src: `./new-relic/${config.public.ENVIRONMENT}.js`,
+      src: `/new-relic/${config.public.ENVIRONMENT}.js`,
       defer: true,
       type: 'text/javascript'
     }
