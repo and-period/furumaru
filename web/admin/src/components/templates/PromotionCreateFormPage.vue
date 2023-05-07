@@ -58,6 +58,6 @@ const handleSubmit = () => {
     <p class="text-h6">
       セール情報登録
     </p>
-    <organisms-promotion-form :form-data="formDataValue" :time-data="timeDataValue" @submit="handleSubmit" />
+    <organisms-promotion-form v-model:form-data="formDataValue" v-model:time-data="timeDataValue" @submit="handleSubmit" />
   </div>
 </template>

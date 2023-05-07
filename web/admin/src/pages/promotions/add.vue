@@ -44,8 +44,8 @@ const handleSubmit = async () => {
 
 <template>
   <templates-promotion-create-form-page
-    :form-data="formData"
-    :time-data="timeData"
+    v-model:form-data="formData"
+    v-model:time-data="timeData"
     @submit="handleSubmit"
   />
 </template>

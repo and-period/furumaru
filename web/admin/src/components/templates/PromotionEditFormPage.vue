@@ -63,9 +63,9 @@ const handleSubmit = () => {
       セール情報編集
     </p>
     <organisms-promotion-form
+      v-model:form-data="formDataValue"
+      v-model:time-data="timeDataValue"
       form-type="edit"
-      :form-data="formDataValue"
-      :time-data="timeDataValue"
       :form-data-loading="props.formDataLoading"
       @submit="handleSubmit"
     />
