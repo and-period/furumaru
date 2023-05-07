@@ -80,17 +80,12 @@ func (c *client) sendError(err error) error {
 	case messaging.IsInvalidArgument(err):
 		return fmt.Errorf("%w: %s", ErrInvalidArgument, err.Error())
 	case
-		messaging.IsInvalidAPNSCredentials(err),
 		messaging.IsThirdPartyAuthError(err),
-		messaging.IsMismatchedCredential(err):
+		messaging.IsSenderIDMismatch(err):
 		return fmt.Errorf("%w: %s", ErrInternal, err.Error())
-	case
-		messaging.IsRegistrationTokenNotRegistered(err),
-		messaging.IsUnregistered(err):
+	case messaging.IsUnregistered(err):
 		return fmt.Errorf("%w: %s", ErrNotFound, err.Error())
-	case
-		messaging.IsMessageRateExceeded(err),
-		messaging.IsQuotaExceeded(err):
+	case messaging.IsQuotaExceeded(err):
 		return fmt.Errorf("%w: %s", ErrResourceExhausted, err.Error())
 	case messaging.IsUnavailable(err):
 		return fmt.Errorf("%w: %s", ErrUnavailable, err.Error())
