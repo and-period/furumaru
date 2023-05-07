@@ -5,6 +5,7 @@ import { OrderResponse, OrdersResponse } from '~/types/api'
 
 export const useOrderStore = defineStore('order', {
   state: () => ({
+    order: {} as OrderResponse,
     orders: [] as OrdersResponse['orders'],
     totalItems: 0
   }),
@@ -37,6 +38,7 @@ export const useOrderStore = defineStore('order', {
     async getOrder (id: string): Promise<OrderResponse> {
       try {
         const res = await apiClient.orderApi().v1GetOrder(id)
+        this.order = res.data
         return res.data
       } catch (error) {
         console.log(error)

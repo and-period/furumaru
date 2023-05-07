@@ -126,14 +126,14 @@ const handleSubmit = async () => {
         <div class="mb-2 d-flex">
           <molecules-profile-select-form
             class="mr-4 flex-grow-1 flex-shrink-1"
-            :img-url="props.formData.thumbnailUrl"
+            :img-url="formDataValue.thumbnailUrl"
             :error="props.thumbnailUploadStatus.error"
             :message="props.thumbnailUploadStatus.message"
             @update:file="updateThumbnailFileHandler"
           />
           <molecules-header-select-form
             class="flex-grow-1 flex-shrink-1"
-            :img-url="props.formData.headerUrl"
+            :img-url="formDataValue.headerUrl"
             :error="props.headerUploadStatus.error"
             :message="props.headerUploadStatus.message"
             @update:file="updateHeaderFileHandler"
@@ -175,11 +175,11 @@ const handleSubmit = async () => {
         />
 
         <molecules-address-form
-          v-model:postal-code="props.formData.postalCode"
-          v-model:prefecture="props.formData.prefecture"
-          v-model:city="props.formData.city"
-          v-model:address-line1="props.formData.addressLine1"
-          v-model:address-line2="props.formData.addressLine2"
+          v-model:postal-code="formDataValue.postalCode"
+          v-model:prefecture="formDataValue.prefecture"
+          v-model:city="formDataValue.city"
+          v-model:address-line1="formDataValue.addressLine1"
+          v-model:address-line2="formDataValue.addressLine2"
           :error-message="props.searchErrorMessage"
           :loading="props.searchLoading"
           @click:search="handleSearchClick"

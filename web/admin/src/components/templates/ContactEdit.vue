@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import { AlertType } from '~/lib/hooks'
 import { ContactPriority, ContactResponse, ContactStatus, UpdateContactRequest } from '~/types/api'
 
@@ -46,6 +47,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
+  (e: 'update:form-data', formData: UpdateContactRequest): void
   (e: 'submit'): void
 }>()
 
@@ -63,9 +65,15 @@ const statuses = [
   { title: '不明', value: ContactStatus.UNKNOWN }
 ]
 
-const convertPhoneNumber = computed<string>(() => {
-  const phoneNumber = props.contact.phoneNumber.replace('+81', '0')
-  return phoneNumber
+const formDataValue = computed({
+  get: (): UpdateContactRequest => props.formData,
+  set: (v: UpdateContactRequest): void => emit('update:form-data', v)
+})
+const contactValue = computed((): ContactResponse => {
+  return props.contact
+})
+const phoneNumber = computed((): string => {
+  return convertI18nToJapanesePhoneNumber(props.contact.phoneNumber)
 })
 
 const onSubmit = (): void => {
@@ -79,28 +87,28 @@ const onSubmit = (): void => {
     <v-card-title>お問合せ管理</v-card-title>
     <v-card-text>
       <v-text-field
-        v-model="props.contact.username"
+        v-model="contactValue.username"
         name="name"
         label="名前"
         readonly
       />
 
       <v-text-field
-        v-model="props.contact.title"
+        v-model="contactValue.title"
         name="title"
         label="件名"
         readonly
       />
 
       <v-textarea
-        v-model="props.contact.content"
+        v-model="contactValue.content"
         name="contact"
         label="お問合せ内容"
         readonly
       />
 
       <v-select
-        v-model="props.formData.priority"
+        v-model="formDataValue.priority"
         :items="priorities"
         item-title="title"
         item-value="value"
@@ -108,7 +116,7 @@ const onSubmit = (): void => {
       />
 
       <v-select
-        v-model="props.formData.status"
+        v-model="formDataValue.status"
         :items="statuses"
         item-title="title"
         item-value="value"
@@ -116,21 +124,21 @@ const onSubmit = (): void => {
       />
 
       <v-text-field
-        v-model="props.contact.email"
+        v-model="contactValue.email"
         name="mailAddress"
         label="メールアドレス"
         readonly
       />
 
       <v-text-field
-        v-model="convertPhoneNumber"
+        v-model="phoneNumber"
         name="phoneNumber"
         label="電話番号"
         readonly
       />
 
       <v-textarea
-        v-model="props.formData.note"
+        v-model="formDataValue.note"
         name="note"
         label="メモ"
       />
