@@ -150,9 +150,9 @@ const onClickRow = (contactItem: ContactsResponseContactsInner): void => {
         :items="props.contacts"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"
+        :sort-by="props.sortBy"
         :multi-sort="true"
         hover
-        :sort-by="props.sortBy"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
         @update:sort-by="onClickUpdateSortBy"

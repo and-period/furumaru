@@ -24,7 +24,7 @@ const props = defineProps({
   },
   notifications: {
     type: Array<NotificationsResponseNotificationsInner>,
-    defualt: () => []
+    default: () => []
   },
   tableItemsPerPage: {
     type: Number,
@@ -176,11 +176,11 @@ const onClickDelete = (): void => {
   <v-card class="mt-4" flat :loading="props.loading">
     <v-card-text>
       <v-data-table-server
-        v-model:sort-by="props.tableSortBy"
         :headers="headers"
         :items="notifications"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"
+        :sort-by="props.tableSortBy"
         :multi-sort="true"
         hover
         no-data-text="登録されているお知らせ情報がありません"

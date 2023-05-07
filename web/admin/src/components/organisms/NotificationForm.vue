@@ -13,7 +13,7 @@ const props = defineProps({
     }
   },
   formData: {
-    type: Object,
+    type: Object as PropType<CreateNotificationRequest>,
     default: (): CreateNotificationRequest => ({
       title: '',
       body: '',
@@ -38,11 +38,9 @@ const emit = defineEmits<{
 }>()
 
 const formDataValue = computed({
-  get: (): CreateNotificationRequest =>
-    props.formData as CreateNotificationRequest,
+  get: (): CreateNotificationRequest => props.formData,
   set: (val: CreateNotificationRequest) => emit('update:formData', val)
 })
-
 const timeDataValue = computed({
   get: (): NotificationTime => props.timeData as NotificationTime,
   set: (val: NotificationTime) => emit('update:timeData', val)
@@ -71,20 +69,20 @@ const handleSubmit = () => {
     <v-card elevation="0">
       <v-card-text>
         <v-select
-          v-model="props.formData.public"
+          v-model="formDataValue.public"
           :items="statusList"
           label="ステータス"
           item-title="public"
           item-value="value"
         />
         <v-text-field
-          v-model="props.formData.title"
+          v-model="formDataValue.title"
           label="タイトル"
           required
           maxlength="128"
         />
         <v-textarea
-          v-model="props.formData.body"
+          v-model="formDataValue.body"
           label="本文"
           maxlength="2000"
         />
@@ -94,17 +92,17 @@ const handleSubmit = () => {
           公開範囲
         </p>
         <v-checkbox
-          v-model="props.formData.targets"
+          v-model="formDataValue.targets"
           label="ユーザー"
           :value="NotificationTargetType.USERS"
         />
         <v-checkbox
-          v-model="props.formData.targets"
+          v-model="formDataValue.targets"
           label="生産者"
           :value="NotificationTargetType.PRODUCERS"
         />
         <v-checkbox
-          v-model="props.formData.targets"
+          v-model="formDataValue.targets"
           label="コーディネータ"
           :value="NotificationTargetType.COORDINATORS"
         />

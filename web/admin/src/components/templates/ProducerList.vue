@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { mdiAccount, mdiDelete, mdiPlus } from '@mdi/js';
-import { VDataTable } from 'vuetify/lib/labs/components';
-import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter';
-import { getResizedImages } from '~/lib/helpers';
-import { AlertType } from '~/lib/hooks';
-import { ProducersResponseProducersInner } from '~/types/api';
-
+import { mdiAccount, mdiDelete, mdiPlus } from '@mdi/js'
+import { VDataTable } from 'vuetify/lib/labs/components'
+import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
+import { getResizedImages } from '~/lib/helpers'
+import { AlertType } from '~/lib/hooks'
+import { ProducersResponseProducersInner } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -168,6 +167,7 @@ const onClickDelete = (): void => {
         :items="producers"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"
+        :sort-by="props.tableSortBy"
         hover
         no-data-text="登録されている生産者がいません。"
         @update:page="onClickUpdatePage"
