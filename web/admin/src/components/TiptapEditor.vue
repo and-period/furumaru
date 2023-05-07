@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { mdiFormatBold, mdiFormatItalic, mdiFormatStrikethrough, mdiCodeTags, mdiCodeNotEqualVariant, mdiUndo, mdiRedo, mdiFormatListBulleted, mdiFormatListNumbered, mdiArrowSplitHorizontal, mdiKeyboardReturn } from '@mdi/js'
 
-import StarterKit from '@tiptap/starter-kit'
+import { StarterKit } from '@tiptap/starter-kit'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 
 const props = defineProps({

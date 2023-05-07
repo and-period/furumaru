@@ -156,11 +156,11 @@ const handleSearchClick = () => {
         />
 
         <molecules-address-form
-          v-model:postal-code="props.formData.postalCode"
-          v-model:prefecture="props.formData.prefecture"
-          v-model:city="props.formData.city"
-          v-model:address-line1="props.formData.addressLine1"
-          v-model:address-line2="props.formData.addressLine2"
+          v-model:postal-code="formDataValue.postalCode"
+          v-model:prefecture="formDataValue.prefecture"
+          v-model:city="formDataValue.city"
+          v-model:address-line1="formDataValue.addressLine1"
+          v-model:address-line2="formDataValue.addressLine2"
           :loading="props.searchLoading"
           :error-message="props.searchErrorMessage"
           @click:search="handleSearchClick"
