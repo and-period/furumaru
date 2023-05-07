@@ -73,8 +73,8 @@ try {
 
 <template>
   <templates-promotion-edit-form-page
-    :form-data="formData"
-    :time-data="timeData"
+    v-model:form-data="formData"
+    v-model:time-data="timeData"
     :form-data-loading="isLoading()"
     @submit="handleSubmit"
   />
