@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import dayjs from 'dayjs'
+import { unix } from 'dayjs'
 
 import { useNotificationStore } from '~/store'
 import { NotificationResponse } from '~/types/api'
@@ -37,10 +37,8 @@ const fetchState = useAsyncData(async () => {
   formData.targets = notification.targets
   formData.public = notification.public
   formData.publishedAt = notification.publishedAt
-  timeData.publishedDate = dayjs
-    .unix(notification.publishedAt)
-    .format('YYYY-MM-DD')
-  timeData.publishedTime = dayjs.unix(notification.publishedAt).format('HH:mm')
+  timeData.publishedDate = unix(notification.publishedAt).format('YYYY-MM-DD')
+  timeData.publishedTime = unix(notification.publishedAt).format('HH:mm')
 })
 
 const isLoading = (): boolean => {

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { mdiPlus, mdiDelete } from '@mdi/js'
-import dayjs from 'dayjs'
+import { unix } from 'dayjs'
 import { VDataTable } from 'vuetify/lib/labs/components'
 
 import { usePromotionStore } from '~/store'
@@ -110,7 +110,7 @@ const getStatusColor = (status: boolean): string => {
 }
 
 const getDay = (unixTime: number): string => {
-  return dayjs.unix(unixTime).format('YYYY/MM/DD HH:mm')
+  return unix(unixTime).format('YYYY/MM/DD HH:mm')
 }
 
 const fetchState = useAsyncData(async () => {

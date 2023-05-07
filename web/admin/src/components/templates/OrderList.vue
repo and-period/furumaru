@@ -7,6 +7,14 @@ import { AlertType } from '~/lib/hooks'
 import { DeliveryType, OrdersResponse, PaymentStatus } from '~/types/api'
 import { Order } from '~/types/props'
 
+// TODO: API設計が決まり次第型定義の厳格化
+interface importFormData {
+  company: boolean
+}
+interface exportFormData {
+  company: boolean
+}
+
 const props = defineProps({
   loading: {
     type: Boolean,
@@ -45,13 +53,13 @@ const props = defineProps({
     default: 0
   },
   importFormData: {
-    type: Object, // TODO: API設計が決まり次第型定義の厳格化
+    type: Object,
     default: () => ({
       company: false
     })
   },
   exportFormData: {
-    type: Object, // TODO: API設計が決まり次第型定義の厳格化
+    type: Object,
     default: () => ({
       company: false
     })
@@ -64,6 +72,8 @@ const emit = defineEmits<{
   (e: 'click:update-items-per-page', page: number): void
   (e: 'update:import-dialog', dialog: boolean): void
   (e: 'update:export-dialog', dialog: boolean): void
+  (e: 'update:import-form-data', formData: Object): void
+  (e: 'update:export-form-data', formData: Object): void
   (e: 'submit:import'): void
   (e: 'submit:export'): void
 }>()
@@ -115,6 +125,14 @@ const importDialogValue = computed({
 const exportDialogValue = computed({
   get: (): boolean => props.exportDialog,
   set: (v: boolean): void => emit('update:export-dialog', v)
+})
+const importFormDataValue = computed({
+  get: (): importFormData => props.importFormData as importFormData,
+  set: (v: importFormData): void => emit('update:import-form-data', v)
+})
+const exportFormDataValue = computed({
+  get: (): exportFormData => props.importFormData as exportFormData,
+  set: (v: exportFormData): void => emit('update:export-form-data', v)
 })
 
 const getStatus = (status: PaymentStatus): string => {
@@ -212,7 +230,7 @@ const onSubmitExport = (): void => {
       </v-card-title>
 
       <v-select
-        v-model="props.importFormData.company"
+        v-model="importFormDataValue.company"
         label="配送会社"
         class="mr-2 ml-2"
         :items="fulfillmentCompanies"
@@ -240,7 +258,7 @@ const onSubmitExport = (): void => {
       <v-divider />
 
       <v-select
-        v-model="props.exportFormData.company"
+        v-model="exportFormDataValue.company"
         label="配送会社"
         class="mr-2 ml-2"
         :items="fulfillmentCompanies"
