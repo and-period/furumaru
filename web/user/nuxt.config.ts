@@ -1,3 +1,7 @@
+import { createI18n } from '@nuxtjs/i18n/dist/runtime/composables'
+import en from './src/locales/en_us.json'
+import ja from './src/locales/ja_jp.json'
+
 export default defineNuxtConfig({
   ssr: false,
   srcDir: 'src',
@@ -30,7 +34,20 @@ export default defineNuxtConfig({
       }]
   ],
   i18n: {
-    vueI18n: './i18n.config.ts' // if you are using custom path, default
+    defaultLocale: 'ja',
+    locales: [
+      {
+        code: 'ja',
+        iso: 'ja',
+        file: 'ja_jp.json'
+      },
+      {
+        code: 'en',
+        iso: 'en',
+        file: 'en_us.json'
+      }
+    ],
+    vueI18n: './i18n.config.ts'
   },
   components: [
     {
