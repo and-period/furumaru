@@ -1,7 +1,3 @@
-import { createI18n } from '@nuxtjs/i18n/dist/runtime/composables'
-import en from './src/locales/en_us.json'
-import ja from './src/locales/ja_jp.json'
-
 export default defineNuxtConfig({
   ssr: false,
   srcDir: 'src',
