@@ -49,7 +49,7 @@ const handleSubmit = () => {
 <template>
   <div>
     <p class="text-h6">
-      生産者登録
+      お知らせ登録
     </p>
     <organisms-notification-form :form-data="formDataValue" :time-data="timeDataValue" @submit="handleSubmit" />
   </div>
