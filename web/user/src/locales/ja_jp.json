@@ -51,6 +51,15 @@
       "pageName": "認証コード入力",
       "message": "送信された6桁のコードを入力してください",
       "btnText": "認証"
+    },
+    "register": {
+      "pageName": "ユーザー登録",
+      "name": "名前",
+      "username": "ユーザーネーム",
+      "btnText": "登録",
+      "cautionText": "登録をクリックすると\nふるマルの{privacyPolicyLinkText}と{termsOfService}に\n同意したことになります。",
+      "privacyPolicyLinkText": "プライバシーポリシー",
+      "termsOfServiceLink": "利用規約"
     }
   },
   "base": {
