@@ -3,6 +3,7 @@ import dayjs from 'dayjs'
 
 import { usePromotionStore } from '~/store'
 import { CreatePromotionRequest } from '~/types/api'
+import { PromotionTime } from '~/types/props'
 
 const router = useRouter()
 const promotionStore = usePromotionStore()
@@ -19,9 +20,21 @@ const formData = reactive<CreatePromotionRequest>({
   endAt: dayjs().unix()
 })
 
+const timeData = reactive<PromotionTime>({
+  publishedDate: '',
+  publishedTime: '',
+  startDate: '',
+  startTime: '',
+  endDate: '',
+  endTime: ''
+})
+
 const handleSubmit = async () => {
   try {
-    await promotionStore.createPromotion(formData)
+    await promotionStore.createPromotion({
+      ...formData,
+      discountRate: Number(formData.discountRate)
+    })
     router.push('/promotions')
   } catch (error) {
     console.log(error)
@@ -31,7 +44,8 @@ const handleSubmit = async () => {
 
 <template>
   <templates-promotion-create-form-page
-    :form-data="formData"
+    v-model:form-data="formData"
+    v-model:time-data="timeData"
     @submit="handleSubmit"
   />
 </template>

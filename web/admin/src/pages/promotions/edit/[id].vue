@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import dayjs from 'dayjs'
+import dayjs, { unix } from 'dayjs'
 
 import { usePromotionStore } from '~/store'
 import { UpdatePromotionRequest } from '~/types/api'
@@ -40,14 +40,12 @@ const fetchState = useAsyncData(async () => {
   formData.discountType = promotion.discountType
   formData.discountRate = promotion.discountRate
   formData.code = promotion.code
-  timeData.publishedDate = dayjs
-    .unix(promotion.publishedAt)
-    .format('YYYY-MM-DD')
-  timeData.publishedTime = dayjs.unix(promotion.publishedAt).format('HH:mm')
-  timeData.startDate = dayjs.unix(promotion.startAt).format('YYYY-MM-DD')
-  timeData.startTime = dayjs.unix(promotion.startAt).format('HH:mm')
-  timeData.endDate = dayjs.unix(promotion.endAt).format('YYYY-MM-DD')
-  timeData.endTime = dayjs.unix(promotion.endAt).format('HH:mm')
+  timeData.publishedDate = unix(promotion.publishedAt).format('YYYY-MM-DD')
+  timeData.publishedTime = unix(promotion.publishedAt).format('HH:mm')
+  timeData.startDate = unix(promotion.startAt).format('YYYY-MM-DD')
+  timeData.startTime = unix(promotion.startAt).format('HH:mm')
+  timeData.endDate = unix(promotion.endAt).format('YYYY-MM-DD')
+  timeData.endTime = unix(promotion.endAt).format('HH:mm')
 })
 
 const isLoading = (): boolean => {
@@ -75,8 +73,8 @@ try {
 
 <template>
   <templates-promotion-edit-form-page
-    :form-data="formData"
-    :time-data="timeData"
+    v-model:form-data="formData"
+    v-model:time-data="timeData"
     :form-data-loading="isLoading()"
     @submit="handleSubmit"
   />
