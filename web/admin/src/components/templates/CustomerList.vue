@@ -53,10 +53,6 @@ const headers: VDataTable['headers'] = [
     key: 'name'
   },
   {
-    title: '電話番号',
-    key: 'phoneNumber'
-  },
-  {
     title: '購入数',
     key: 'totalOrder'
   },
