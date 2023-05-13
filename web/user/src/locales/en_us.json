@@ -51,6 +51,15 @@
       "pageName": "Verify",
       "message": "Enter the verification code",
       "btnText": "Verify"
+    },
+    "register": {
+      "pageName": "User registration",
+      "name": "Name",
+      "username": "Username",
+      "btnText": "Register",
+      "cautionText": "By clicking 'Register,'you agree to \nFurumaru's {privacyPolicyLinkText} and {termsOfService}.",
+      "privacyPolicyLinkText": "privacy policy",
+      "termsOfServiceLink": "terms of use"
     }
   },
   "base": {
