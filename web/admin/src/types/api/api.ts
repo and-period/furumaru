@@ -1371,7 +1371,7 @@ export interface CreatePromotionRequest {
      */
     'public': boolean;
     /**
-     * 公開日時(unixtime)
+     * (Deprecated) 公開日時(unixtime)
      * @type {number}
      * @memberof CreatePromotionRequest
      */
@@ -5266,7 +5266,7 @@ export interface UpdatePromotionRequest {
      */
     'public': boolean;
     /**
-     * 公開日時(unixtime)
+     * (Deprecated) 公開日時(unixtime)
      * @type {number}
      * @memberof UpdatePromotionRequest
      */
