@@ -258,7 +258,6 @@ type CreatePromotionInput struct {
 	Title        string                   `validate:"required,max=64"`
 	Description  string                   `validate:"required,max=2000"`
 	Public       bool                     `validate:""`
-	PublishedAt  time.Time                `validate:"required"`
 	DiscountType entity.DiscountType      `validate:"required,oneof=1 2 3"`
 	DiscountRate int64                    `validate:"min=0"`
 	Code         string                   `validate:"len=8"`
@@ -272,7 +271,6 @@ type UpdatePromotionInput struct {
 	Title        string                   `validate:"required,max=64"`
 	Description  string                   `validate:"required,max=2000"`
 	Public       bool                     `validate:""`
-	PublishedAt  time.Time                `validate:"required"`
 	DiscountType entity.DiscountType      `validate:"required,oneof=1 2 3"`
 	DiscountRate int64                    `validate:"min=0"`
 	Code         string                   `validate:"len=8"`
