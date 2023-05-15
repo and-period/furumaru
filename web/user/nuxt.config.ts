@@ -1,3 +1,6 @@
+import en from './src/locales/en_us.json'
+import ja from './src/locales/ja_jp.json'
+
 export default defineNuxtConfig({
   ssr: false,
   srcDir: 'src',
@@ -43,7 +46,13 @@ export default defineNuxtConfig({
         file: 'en_us.json'
       }
     ],
-    vueI18n: './i18n.config.ts'
+    vueI18n: {
+      fallbackLocale: 'ja',
+      messages: {
+        ja,
+        en
+      }
+    }
   },
   components: [
     {
