@@ -13,7 +13,7 @@ createPromotionRequest:
     publishedAt:
       type: integer
       format: int64
-      description: 公開日時(unixtime)
+      description: (Deprecated) 公開日時(unixtime)
     discountType:
       $ref: './../../../openapi.yaml#/components/schemas/discountType'
     discountRate:
@@ -66,7 +66,7 @@ updatePromotionRequest:
     publishedAt:
       type: integer
       format: int64
-      description: 公開日時(unixtime)
+      description: (Deprecated) 公開日時(unixtime)
     discountType:
       $ref: './../../../openapi.yaml#/components/schemas/discountType'
     discountRate:
