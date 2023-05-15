@@ -267,6 +267,7 @@ func TestCreatePromotion(t *testing.T) {
 						Code:         "code0001",
 						StartAt:      1640962800,
 						EndAt:        1640962800,
+						PublishedAt:  1640962800,
 						CreatedAt:    1640962800,
 						UpdatedAt:    1640962800,
 					},
@@ -274,7 +275,7 @@ func TestCreatePromotion(t *testing.T) {
 			},
 		},
 		{
-			name: "success",
+			name: "failed to create promotion",
 			setup: func(t *testing.T, mocks *mocks, ctrl *gomock.Controller) {
 				mocks.store.EXPECT().CreatePromotion(gomock.Any(), in).Return(nil, assert.AnError)
 			},
