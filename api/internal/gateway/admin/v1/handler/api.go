@@ -111,7 +111,6 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.promotionRoutes(v1.Group("/promotions"))
 	h.orderRoutes(v1.Group("/orders"))
 	h.notificationRoutes(v1.Group("/notifications"))
-	h.contactRoutes(v1.Group("/contacts"))
 	h.messageRoutes(v1.Group("/messages"))
 	h.scheduleRoutes(v1.Group("/schedules"))
 	h.liveRoutes(v1.Group("/schedules/:scheduleId/lives"))
