@@ -17,7 +17,6 @@ type Params struct {
 }
 
 type Database struct {
-	Contact         Contact
 	Message         Message
 	MessageTemplate MessageTemplate
 	Notification    Notification
@@ -29,7 +28,6 @@ type Database struct {
 
 func NewDatabase(params *Params) *Database {
 	return &Database{
-		Contact:         NewContact(params.Database),
 		Message:         NewMessage(params.Database),
 		MessageTemplate: NewMessageTemplate(params.Database),
 		Notification:    NewNotification(params.Database),
@@ -43,14 +41,6 @@ func NewDatabase(params *Params) *Database {
 /**
  * interface
  */
-type Contact interface {
-	List(ctx context.Context, params *ListContactsParams, fields ...string) (entity.Contacts, error)
-	Count(ctx context.Context, params *ListContactsParams) (int64, error)
-	Get(ctx context.Context, contactID string, fields ...string) (*entity.Contact, error)
-	Create(ctx context.Context, contact *entity.Contact) error
-	Update(ctx context.Context, contactID string, params *UpdateContactParams) error
-	Delete(ctx context.Context, contactID string) error
-}
 
 type Message interface {
 	List(ctx context.Context, params *ListMessagesParams, fields ...string) (entity.Messages, error)
@@ -97,35 +87,6 @@ type Schedule interface {
 /**
  * params
  */
-type ListContactsParams struct {
-	Limit  int
-	Offset int
-	Orders []*ListContactsOrder
-}
-
-type ListContactsOrder struct {
-	Key        entity.ContactOrderBy
-	OrderByASC bool
-}
-
-func (p *ListContactsParams) stmt(stmt *gorm.DB) *gorm.DB {
-	for i := range p.Orders {
-		var value string
-		if p.Orders[i].OrderByASC {
-			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
-		} else {
-			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
-		}
-		stmt = stmt.Order(value)
-	}
-	return stmt
-}
-
-type UpdateContactParams struct {
-	Status   entity.ContactStatus
-	Priority entity.ContactPriority
-	Note     string
-}
 
 type ListMessagesParams struct {
 	Limit    int

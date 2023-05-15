@@ -6,36 +6,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 )
 
-type ListContactsInput struct {
-	Limit  int64                `validate:"required,max=200"`
-	Offset int64                `validate:"min=0"`
-	Orders []*ListContactsOrder `validate:"omitempty,dive,required"`
-}
-
-type ListContactsOrder struct {
-	Key        entity.ContactOrderBy `validate:"required"`
-	OrderByASC bool                  `validate:""`
-}
-
-type GetContactInput struct {
-	ContactID string `validate:"required"`
-}
-
-type CreateContactInput struct {
-	Title       string `validate:"required,max=64"`
-	Content     string `validate:"required,max=2000"`
-	Username    string `validate:"required,max=64"`
-	Email       string `validate:"required,max=256,email"`
-	PhoneNumber string `validate:"min=12,max=18,phone_number"`
-}
-
-type UpdateContactInput struct {
-	ContactID string                 `validate:"required"`
-	Status    entity.ContactStatus   `validate:"required,oneof=1 2 3 4"`
-	Priority  entity.ContactPriority `validate:"required,oneof=1 2 3"`
-	Note      string                 `validate:"max=2000"`
-}
-
 type ListNotificationsInput struct {
 	Limit         int64                     `validate:"required,max=200"`
 	Offset        int64                     `validate:"min=0"`
