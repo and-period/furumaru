@@ -82,6 +82,9 @@ const selector = ref<string>('customers')
 const customerName = computed((): string => {
   return `${props.customer.lastname} ${props.customer.firstname}`
 })
+const customerNameKana = computed((): string => {
+  return `${props.customer.lastnameKana} ${props.customer.firstnameKana}`
+})
 const customerPhoneNumber = computed((): string => {
   return convertI18nToJapanesePhoneNumber(props.customer.phoneNumber)
 })
@@ -112,6 +115,8 @@ const customerValue = computed({
       <v-window v-model="selector">
         <v-window-item value="customers">
           <v-text-field v-model="customerName" name="name" label="名前" readonly />
+
+          <v-text-field v-model="customerNameKana" name="nameKana" label="名前（かな）" readonly />
 
           <span>アカウントの有無：</span>
           <v-chip color="primary">
