@@ -15,7 +15,6 @@ const formData = reactive<UpdatePromotionRequest>({
   title: '',
   description: '',
   public: false,
-  publishedAt: dayjs().unix(),
   discountType: 1,
   discountRate: 0,
   code: '',
@@ -24,8 +23,6 @@ const formData = reactive<UpdatePromotionRequest>({
 })
 
 const timeData = reactive<PromotionTime>({
-  publishedDate: '',
-  publishedTime: '',
   startDate: '',
   startTime: '',
   endDate: '',
@@ -40,8 +37,6 @@ const fetchState = useAsyncData(async () => {
   formData.discountType = promotion.discountType
   formData.discountRate = promotion.discountRate
   formData.code = promotion.code
-  timeData.publishedDate = unix(promotion.publishedAt).format('YYYY-MM-DD')
-  timeData.publishedTime = unix(promotion.publishedAt).format('HH:mm')
   timeData.startDate = unix(promotion.startAt).format('YYYY-MM-DD')
   timeData.startTime = unix(promotion.startAt).format('HH:mm')
   timeData.endDate = unix(promotion.endAt).format('YYYY-MM-DD')

@@ -11,7 +11,6 @@ const props = defineProps({
       title: '',
       description: '',
       public: false,
-      publishedAt: dayjs().unix(),
       discountType: DiscountType.AMOUNT,
       discountRate: 0,
       code: '',
@@ -22,8 +21,6 @@ const props = defineProps({
   timeData: {
     type: Object,
     default: (): PromotionTime => ({
-      publishedDate: '',
-      publishedTime: '',
       startDate: '',
       startTime: '',
       endDate: '',
