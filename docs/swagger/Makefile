@@ -44,7 +44,7 @@ build-docs: ## ホスティング環境へデプロイ用の成果物を生成
 	$(MAKE) download-swagger-ui OUTPUT_DIR=${ARTIFACTS_DIR}
 	$(MAKE) generate TYPE=openapi-yaml INPUT_DIR=${INPUT} OUTPUT_DIR=${ARTIFACTS_DIR}
 	swagger-cli bundle ${ARTIFACTS_DIR}/openapi/openapi.yaml  --outfile ${ARTIFACTS_DIR}/swagger/openapi.yaml --type yaml --format 3
-	sed -i 's/https:\/\/petstore.swagger.io\/v2\/swagger.json/openapi.json/' ${ARTIFACTS_DIR}/swagger/swagger-initializer.js
+	sed -i 's/https:\/\/petstore.swagger.io\/v2\/swagger.json/openapi.yaml/' ${ARTIFACTS_DIR}/swagger/swagger-initializer.js
 
 build-html: ## API仕様書の生成(HTML形式)
 	$(MAKE) generate TYPE=html2 INPUT_DIR=${ADMIN_INPUT_DIR} OUTPUT_DIR=${ADMIN_OUTPUT_DOCS_DIR}
