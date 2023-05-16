@@ -45,7 +45,6 @@ func newTestDBClient() (*database.Client, error) {
 func deleteAll(ctx context.Context) error {
 	tables := []string{
 		// テストに対応したテーブルから追記(削除順)
-		contactTable,
 		scheduleTable,
 		notificationTable,
 		receivedQueueTable,

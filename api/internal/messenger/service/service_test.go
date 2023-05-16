@@ -29,7 +29,6 @@ type mocks struct {
 }
 
 type dbMocks struct {
-	Contact         *mock_database.MockContact
 	Message         *mock_database.MockMessage
 	MessageTemplate *mock_database.MockMessageTemplate
 	Notification    *mock_database.MockNotification
@@ -65,7 +64,6 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
-		Contact:         mock_database.NewMockContact(ctrl),
 		Message:         mock_database.NewMockMessage(ctrl),
 		MessageTemplate: mock_database.NewMockMessageTemplate(ctrl),
 		Notification:    mock_database.NewMockNotification(ctrl),
@@ -88,7 +86,6 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		AdminWebURL: adminWebURL,
 		UserWebURL:  userWebURL,
 		Database: &database.Database{
-			Contact:         mocks.db.Contact,
 			Message:         mocks.db.Message,
 			MessageTemplate: mocks.db.MessageTemplate,
 			Notification:    mocks.db.Notification,

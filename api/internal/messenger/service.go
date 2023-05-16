@@ -9,14 +9,6 @@ import (
 )
 
 type Service interface {
-	// お問い合わせ一覧取得
-	ListContacts(ctx context.Context, in *ListContactsInput) (entity.Contacts, int64, error)
-	// お問い合わせ取得
-	GetContact(ctx context.Context, in *GetContactInput) (*entity.Contact, error)
-	// お問い合わせ登録
-	CreateContact(ctx context.Context, in *CreateContactInput) (*entity.Contact, error)
-	// お問い合わせ更新
-	UpdateContact(ctx context.Context, in *UpdateContactInput) error
 	// お知らせ一覧取得
 	ListNotifications(ctx context.Context, in *ListNotificationsInput) (entity.Notifications, int64, error)
 	// お知らせ取得
@@ -35,8 +27,6 @@ type Service interface {
 	NotifyRegisterAdmin(ctx context.Context, in *NotifyRegisterAdminInput) error
 	// 管理者パスワードリセット通知
 	NotifyResetAdminPassword(ctx context.Context, in *NotifyResetAdminPasswordInput) error
-	// お問い合わせ受領通知
-	NotifyReceivedContact(ctx context.Context, in *NotifyReceivedContactInput) error
 	// お知らせ通知
 	NotifyNotification(ctx context.Context, in *NotifyNotificationInput) error
 }
