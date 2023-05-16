@@ -459,7 +459,7 @@ func TestWorker_Run(t *testing.T) {
 				},
 			},
 			expectErr: exception.ErrUnknown,
-		}
+		},
 		{
 			name: "failed to update received queue",
 			setup: func(ctx context.Context, mocks *mocks) {
