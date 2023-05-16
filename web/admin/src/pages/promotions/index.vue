@@ -35,10 +35,6 @@ const headers: VDataTable['headers'] = [
     key: 'discount'
   },
   {
-    title: '投稿開始',
-    key: 'publishedAt'
-  },
-  {
     title: '使用開始',
     key: 'startAt'
   },
@@ -178,9 +174,6 @@ try {
           </template>
           <template #[`item.discount`]="{ item }">
             {{ getDiscount(item.raw.discountType, item.raw.discountRate) }}
-          </template>
-          <template #[`item.publishedAt`]="{ item }">
-            {{ getDay(item.raw.publishedAt) }}
           </template>
           <template #[`item.startAt`]="{ item }">
             {{ getDay(item.raw.startAt) }}

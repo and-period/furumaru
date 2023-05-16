@@ -12,7 +12,6 @@ const formData = reactive<CreatePromotionRequest>({
   title: '',
   description: '',
   public: false,
-  publishedAt: dayjs().unix(),
   discountType: 1,
   discountRate: 0,
   code: '',
@@ -21,8 +20,6 @@ const formData = reactive<CreatePromotionRequest>({
 })
 
 const timeData = reactive<PromotionTime>({
-  publishedDate: '',
-  publishedTime: '',
   startDate: '',
   startTime: '',
   endDate: '',

@@ -18,7 +18,6 @@ const props = defineProps({
       title: '',
       description: '',
       public: false,
-      publishedAt: dayjs().unix(),
       discountType: DiscountType.AMOUNT,
       discountRate: 0,
       code: '',
@@ -29,8 +28,6 @@ const props = defineProps({
   timeData: {
     type: Object,
     default: (): PromotionTime => ({
-      publishedDate: '',
-      publishedTime: '',
       startDate: '',
       startTime: '',
       endDate: '',
@@ -60,9 +57,6 @@ const btnText = computed(() => {
 })
 
 const handleSubmit = () => {
-  formDataValue.value.publishedAt = dayjs(
-    timeDataValue.value.publishedDate + ' ' + timeDataValue.value.publishedTime
-  ).unix()
   formDataValue.value.startAt = dayjs(
     timeDataValue.value.startDate + ' ' + timeDataValue.value.startTime
   ).unix()
@@ -177,29 +171,6 @@ const discountMethodList = [
             label="割引値"
             :error-messages="getErrorMessage()"
           />
-        </div>
-
-        <p class="text-h6">
-          投稿開始
-        </p>
-        <div class="d-flex align-center justify-center">
-          <v-text-field
-            v-model="timeDataValue.publishedDate"
-            type="date"
-            variant="outlined"
-            required
-            class="mr-2"
-          />
-          <v-text-field
-            v-model="timeDataValue.publishedTime"
-            type="time"
-            required
-            variant="outlined"
-          />
-          <p class="text-h6 mb-6 ml-4">
-            〜
-          </p>
-          <v-spacer />
         </div>
 
         <p class="text-h6">

@@ -13,10 +13,6 @@ promotionResponse:
     public:
       type: boolean
       description: 公開フラグ
-    publishedAt:
-      type: integer
-      format: int64
-      description: 公開フラグ
     discountType:
       $ref: './../../../openapi.yaml#/components/schemas/discountType'
     discountRate:
@@ -47,7 +43,6 @@ promotionResponse:
   - title
   - description
   - public
-  - publishedAt
   - discountType
   - discountRate
   - code
@@ -60,7 +55,6 @@ promotionResponse:
     title: 'プロモーションタイトル'
     description: 'セール情報をお届けします。'
     public: true
-    publishedAt: 1640962800
     discountType: 1
     discountRate: 300
     code: 'code1234'
@@ -88,10 +82,6 @@ promotionsResponse:
             description: 詳細説明
           public:
             type: boolean
-            description: 公開フラグ
-          publishedAt:
-            type: integer
-            format: int64
             description: 公開フラグ
           discountType:
             $ref: './../../../openapi.yaml#/components/schemas/discountType'
@@ -123,7 +113,6 @@ promotionsResponse:
         - title
         - description
         - public
-        - publishedAt
         - discountType
         - discountRate
         - code
@@ -144,7 +133,6 @@ promotionsResponse:
       title: 'プロモーションタイトル'
       description: 'セール情報をお届けします。'
       public: true
-      publishedAt: 1640962800
       discountType: 1
       discountRate: 300
       code: 'code1234'
@@ -156,7 +144,6 @@ promotionsResponse:
       title: 'プロモーションタイトル'
       description: 'セール情報をお届けします。'
       public: true
-      publishedAt: 1640962800
       discountType: 1
       discountRate: 300
       code: 'code1234'

@@ -1371,12 +1371,6 @@ export interface CreatePromotionRequest {
      */
     'public': boolean;
     /**
-     * (Deprecated) 公開日時(unixtime)
-     * @type {number}
-     * @memberof CreatePromotionRequest
-     */
-    'publishedAt': number;
-    /**
      * 
      * @type {DiscountType}
      * @memberof CreatePromotionRequest
@@ -3833,12 +3827,6 @@ export interface PromotionResponse {
      */
     'public': boolean;
     /**
-     * 公開フラグ
-     * @type {number}
-     * @memberof PromotionResponse
-     */
-    'publishedAt': number;
-    /**
      * 
      * @type {DiscountType}
      * @memberof PromotionResponse
@@ -3932,12 +3920,6 @@ export interface PromotionsResponsePromotionsInner {
      * @memberof PromotionsResponsePromotionsInner
      */
     'public': boolean;
-    /**
-     * 公開フラグ
-     * @type {number}
-     * @memberof PromotionsResponsePromotionsInner
-     */
-    'publishedAt': number;
     /**
      * 
      * @type {DiscountType}
@@ -5265,12 +5247,6 @@ export interface UpdatePromotionRequest {
      * @memberof UpdatePromotionRequest
      */
     'public': boolean;
-    /**
-     * (Deprecated) 公開日時(unixtime)
-     * @type {number}
-     * @memberof UpdatePromotionRequest
-     */
-    'publishedAt': number;
     /**
      * 
      * @type {DiscountType}
