@@ -100,5 +100,4 @@ func TestContact_Fill(t *testing.T) {
 			assert.Equal(t, tt.expect, tt.contact)
 		})
 	}
-
 }
