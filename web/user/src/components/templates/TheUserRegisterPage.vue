@@ -34,7 +34,7 @@ const usernameValue = computed({
 </script>
 
 <template>
-  <div class="block m-auto sm:w-[560px]">
+  <div class="block m-x-auto sm:w-[560px]">
     <the-marche-logo class="mb-10" />
     <the-card>
       <the-card-title>
