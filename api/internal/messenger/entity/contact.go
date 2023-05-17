@@ -60,8 +60,8 @@ func NewContact(params *NewContactParams) *Contact {
 	}
 }
 
-func (c *Contact) Fill(categoryId, userId, responderId string) {
-	c.CategoryID = categoryId
-	c.UserID = userId
-	c.ResponderID = responderId
+func (c *Contact) Fill(categoryID, userID, responderID string) {
+	c.CategoryID = categoryID
+	c.UserID = userID
+	c.ResponderID = responderID
 }

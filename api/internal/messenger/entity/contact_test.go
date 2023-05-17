@@ -66,17 +66,17 @@ func TestContact_Fill(t *testing.T) {
 	tests := []struct {
 		name        string
 		contact     *Contact
-		categoryId  string
-		userId      string
-		responderId string
+		categoryID  string
+		userID      string
+		responderID string
 		expect      *Contact
 	}{
 		{
 			name:        "success",
 			contact:     contact,
-			categoryId:  "category-id",
-			userId:      "user-id",
-			responderId: "responder-id",
+			categoryID:  "category-id",
+			userID:      "user-id",
+			responderID: "responder-id",
 			expect: &Contact{
 				Title:       "お問い合わせ件名",
 				CategoryID:  "category-id",
@@ -96,7 +96,7 @@ func TestContact_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.contact.Fill(tt.categoryId, tt.userId, tt.responderId)
+			tt.contact.Fill(tt.categoryID, tt.userID, tt.responderID)
 			assert.Equal(t, tt.expect, tt.contact)
 		})
 	}
