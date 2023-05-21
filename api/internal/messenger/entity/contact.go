@@ -56,7 +56,7 @@ func NewContact(params *NewContactParams) *Contact {
 		Email:       params.Email,
 		PhoneNumber: params.PhoneNumber,
 		Status:      ContactStatusUnknown,
-		Note:        "",
+		Note:        params.Note,
 	}
 }
 
