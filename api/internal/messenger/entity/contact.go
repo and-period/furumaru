@@ -11,11 +11,11 @@ import (
 type ContactStatus int32
 
 const (
-	ContactStatusUnknown    ContactStatus = 0
-	ContactStatusWaiting    ContactStatus = 1 // 未着手
-	ContactStatusInprogress ContactStatus = 2 // 進行中
-	ContactStatusDone       ContactStatus = 3 // 完了
-	ContactStatusDiscard    ContactStatus = 4 // 対応不要
+	ContactStatusUnknown    ContactStatus = iota //不明
+	ContactStatusWaiting                         // 未着手
+	ContactStatusInprogress                      // 進行中
+	ContactStatusDone                            // 完了
+	ContactStatusDiscard                         // 対応不要
 )
 
 // Contact - お問い合わせ情報
