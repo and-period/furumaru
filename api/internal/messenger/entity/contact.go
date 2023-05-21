@@ -11,7 +11,7 @@ import (
 type ContactStatus int32
 
 const (
-	ContactStatusUnknown    ContactStatus = iota //不明
+	ContactStatusUnknown    ContactStatus = iota // 不明
 	ContactStatusWaiting                         // 未着手
 	ContactStatusInprogress                      // 進行中
 	ContactStatusDone                            // 完了
