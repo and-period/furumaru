@@ -17,6 +17,8 @@ type Params struct {
 }
 
 type Database struct {
+	Contact         Contact
+	ContactCategory ContactCategory
 	Message         Message
 	MessageTemplate MessageTemplate
 	Notification    Notification
@@ -28,6 +30,7 @@ type Database struct {
 
 func NewDatabase(params *Params) *Database {
 	return &Database{
+		Contact:         NewContact(params.Database),
 		Message:         NewMessage(params.Database),
 		MessageTemplate: NewMessageTemplate(params.Database),
 		Notification:    NewNotification(params.Database),
@@ -41,6 +44,14 @@ func NewDatabase(params *Params) *Database {
 /**
  * interface
  */
+
+type Contact interface {
+	Get(ctx context.Context, contactID string, fields ...string) (*entity.Contact, error)
+}
+
+type ContactCategory interface {
+	Get(ctx context.Context, categoryID string, fields ...string) (*entity.ContactCategory, error)
+}
 
 type Message interface {
 	List(ctx context.Context, params *ListMessagesParams, fields ...string) (entity.Messages, error)
