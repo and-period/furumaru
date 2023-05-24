@@ -83,3 +83,7 @@ type NotifyNotificationInput struct {
 type GetContactInput struct {
 	ContactID string `validate:"required"`
 }
+
+type GetContactCategoryInput struct {
+	CategoryID string `validate:"required"`
+}
