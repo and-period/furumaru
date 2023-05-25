@@ -52,6 +52,8 @@ func deleteAll(ctx context.Context) error {
 		pushTemplateTable,
 		messageTemplateTable,
 		messageTable,
+		contactTable,
+		contactCategoryTable,
 	}
 	return delete(ctx, tables...)
 }

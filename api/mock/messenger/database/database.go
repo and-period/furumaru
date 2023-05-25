@@ -13,6 +13,92 @@ import (
 	gomock "github.com/golang/mock/gomock"
 )
 
+// MockContact is a mock of Contact interface.
+type MockContact struct {
+	ctrl     *gomock.Controller
+	recorder *MockContactMockRecorder
+}
+
+// MockContactMockRecorder is the mock recorder for MockContact.
+type MockContactMockRecorder struct {
+	mock *MockContact
+}
+
+// NewMockContact creates a new mock instance.
+func NewMockContact(ctrl *gomock.Controller) *MockContact {
+	mock := &MockContact{ctrl: ctrl}
+	mock.recorder = &MockContactMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockContact) EXPECT() *MockContactMockRecorder {
+	return m.recorder
+}
+
+// Get mocks base method.
+func (m *MockContact) Get(ctx context.Context, contactID string, fields ...string) (*entity.Contact, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, contactID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.Contact)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockContactMockRecorder) Get(ctx, contactID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, contactID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockContact)(nil).Get), varargs...)
+}
+
+// MockContactCategory is a mock of ContactCategory interface.
+type MockContactCategory struct {
+	ctrl     *gomock.Controller
+	recorder *MockContactCategoryMockRecorder
+}
+
+// MockContactCategoryMockRecorder is the mock recorder for MockContactCategory.
+type MockContactCategoryMockRecorder struct {
+	mock *MockContactCategory
+}
+
+// NewMockContactCategory creates a new mock instance.
+func NewMockContactCategory(ctrl *gomock.Controller) *MockContactCategory {
+	mock := &MockContactCategory{ctrl: ctrl}
+	mock.recorder = &MockContactCategoryMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockContactCategory) EXPECT() *MockContactCategoryMockRecorder {
+	return m.recorder
+}
+
+// Get mocks base method.
+func (m *MockContactCategory) Get(ctx context.Context, categoryID string, fields ...string) (*entity.ContactCategory, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, categoryID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.ContactCategory)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockContactCategoryMockRecorder) Get(ctx, categoryID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, categoryID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockContactCategory)(nil).Get), varargs...)
+}
+
 // MockMessage is a mock of Message interface.
 type MockMessage struct {
 	ctrl     *gomock.Controller
