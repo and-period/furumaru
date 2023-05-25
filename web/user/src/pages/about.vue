@@ -63,9 +63,9 @@ const circleItems = computed<CircleItem[]>(() => [
           {{ item.description }}
         </p>
         <div v-if="item.linkItem" class="mt-10 font-semibold text-xl">
-          <nuxt-link :to="item.linkItem.href">
-            <div class="">
-              {{ item.linkItem.text }}
+          <nuxt-link :to="item.linkItem.href" class="justify-center flex flex-row">
+            {{ item.linkItem.text }}
+            <div class="ml-2 mt-2">
               <svg width="10" height="17" viewBox="0 0 10 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M1.49023 16.9707L0.0356148 15.5161L7.06628 8.48542L0.0356165 1.45476L1.49024 0.000140667L9.97552 8.48542L1.49023 16.9707Z" fill="#604C3F"/>
               </svg>
