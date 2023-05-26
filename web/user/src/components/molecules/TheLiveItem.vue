@@ -45,7 +45,9 @@ const formattedStartAt = computed(() => {
         </span>
         <span class="after:content-['〜']">{{ formattedStartAt }}</span>
       </div>
-      <p>{{ title }}</p>
+      <p class="line-clamp-3">
+        {{ title }}
+      </p>
     </div>
   </div>
 </template>
