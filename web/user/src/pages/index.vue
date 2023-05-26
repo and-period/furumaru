@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { useShoppingStore } from '~/store/shopping'
+import { MOCK_LIVE_ITEMS } from '~/constants/mock'
 
 const shoppingStore = useShoppingStore()
 const { recommendProducts } = storeToRefs(shoppingStore)
@@ -22,7 +23,24 @@ const banners: string[] = [
       <the-content-box
         title="live"
         sub-title="配信中・配信予定のマルシェ"
-      />
+      >
+        <div class="px-20 grid grid-cols-3 gap-x-10 gap-y-8">
+          <the-live-item
+            v-for="liveItem in MOCK_LIVE_ITEMS"
+            :id="liveItem.id"
+            :key="liveItem.id"
+            :title="liveItem.title"
+            :img-src="liveItem.imgSrc"
+            :start-at="liveItem.startAt"
+            :published="liveItem.published"
+          />
+        </div>
+        <div class="w-full text-center mt-10">
+          <button class="bg-main text-white py-2 w-60">
+            もっと見る
+          </button>
+        </div>
+      </the-content-box>
 
       <the-content-box
         title="archive"
