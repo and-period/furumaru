@@ -1,8 +1,21 @@
 <script lang="ts" setup>
+import { AlertType } from '~/lib/hooks'
 import { CreateProducerRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
+  isAlert: {
+    type: Boolean,
+    default: false
+  },
+  alertType: {
+    type: String as PropType<AlertType>,
+    default: undefined
+  },
+  alertText: {
+    type: String,
+    default: ''
+  },
   formData: {
     type: Object,
     default: (): CreateProducerRequest => ({
@@ -43,20 +56,24 @@ const props = defineProps({
   searchLoading: {
     type: Boolean,
     default: false
+  },
+  formDataLoading: {
+    type: Boolean,
+    default: false
   }
 })
 
 const emit = defineEmits<{
-  (e: 'update:formData', formData: CreateProducerRequest): void
+  (e: 'update:form-data', formData: CreateProducerRequest): void
   (e: 'update:thumbnail-file', files?: FileList): void
   (e: 'update:header-file', files?: FileList): void
-  (e: 'submit'): void
   (e: 'click:search'): void
+  (e: 'submit'): void
 }>()
 
 const formDataValue = computed({
   get: (): CreateProducerRequest => props.formData as CreateProducerRequest,
-  set: (val: CreateProducerRequest) => emit('update:formData', val)
+  set: (val: CreateProducerRequest) => emit('update:form-data', val)
 })
 
 const updateThumbnailFileHandler = (files?: FileList) => {
@@ -77,20 +94,23 @@ const handleSearchClick = () => {
 </script>
 
 <template>
-  <div>
-    <p class="text-h6">
-      生産者登録
-    </p>
-    <organisms-producer-form
-      :form-data="formDataValue"
-      :thumbnail-upload-status="props.thumbnailUploadStatus"
-      :header-upload-status="props.headerUploadStatus"
-      :search-loading="props.searchLoading"
-      :search-error-message="props.searchErrorMessage"
-      @update:thumbnail-file="updateThumbnailFileHandler"
-      @update:header-file="updateHeaderFileHandler"
-      @submit="handleSubmit"
-      @click:search="handleSearchClick"
-    />
-  </div>
+  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <p class="text-h6">
+    生産者編集
+  </p>
+  <v-skeleton-loader v-if="props.formDataLoading" type="article" />
+  <organisms-producer-form
+    v-else
+    form-type="edit"
+    :form-data="formDataValue"
+    :thumbnail-upload-status="props.thumbnailUploadStatus"
+    :header-upload-status="props.headerUploadStatus"
+    :search-loading="props.searchLoading"
+    :search-error-message="props.searchErrorMessage"
+    :form-data-loading="props.formDataLoading"
+    @update:thumbnail-file="updateThumbnailFileHandler"
+    @update:header-file="updateHeaderFileHandler"
+    @submit="handleSubmit"
+    @click:search="handleSearchClick"
+  />
 </template>

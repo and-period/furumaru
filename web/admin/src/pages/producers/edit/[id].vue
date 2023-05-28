@@ -136,20 +136,19 @@ try {
 </script>
 
 <template>
-  <div>
-    <v-alert v-model="isShow" :type="alertType" v-text="alertText" />
-
-    <templates-producer-edit-form-page
-      :form-data="formData"
-      :form-data-loading="isLoading()"
-      :thumbnail-upload-status="thumbnailUploadStatus"
-      :header-upload-status="headerUploadStatus"
-      :search-loading="searchLoading"
-      :search-error-message="searchErrorMessage"
-      @update:thumbnail-file="handleUpdateThumbnail"
-      @update:header-file="handleUpdateHeader"
-      @submit="handleSubmit"
-      @click:search="searchAddress"
-    />
-  </div>
+  <templates-producer-edit
+    v-model:form-data="formData"
+    :is-alrt="isShow"
+    :alert-type="alertType"
+    :alert-text="alertText"
+    :form-data-loading="isLoading()"
+    :thumbnail-upload-status="thumbnailUploadStatus"
+    :header-upload-status="headerUploadStatus"
+    :search-loading="searchLoading"
+    :search-error-message="searchErrorMessage"
+    @update:thumbnail-file="handleUpdateThumbnail"
+    @update:header-file="handleUpdateHeader"
+    @submit="handleSubmit"
+    @click:search="searchAddress"
+  />
 </template>

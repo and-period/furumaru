@@ -47,30 +47,32 @@ const handleSubmit = async () => {
   }
 }
 
-const handleUpdateThumbnail = (files: FileList) => {
-  if (files.length > 0) {
-    uploadProducerThumbnail(files[0])
-      .then((res) => {
-        formData.thumbnailUrl = res.url
-      })
-      .catch(() => {
-        thumbnailUploadStatus.error = true
-        thumbnailUploadStatus.message = 'アップロードに失敗しました。'
-      })
+const handleUpdateThumbnail = (files?: FileList) => {
+  if (!files || files.length === 0) {
+    return
   }
+  uploadProducerThumbnail(files[0])
+    .then((res) => {
+      formData.thumbnailUrl = res.url
+    })
+    .catch(() => {
+      thumbnailUploadStatus.error = true
+      thumbnailUploadStatus.message = 'アップロードに失敗しました。'
+    })
 }
 
-const handleUpdateHeader = async (files: FileList) => {
-  if (files.length > 0) {
-    await uploadProducerHeader(files[0])
-      .then((res) => {
-        formData.headerUrl = res.url
-      })
-      .catch(() => {
-        headerUploadStatus.error = true
-        headerUploadStatus.message = 'アップロードに失敗しました。'
-      })
+const handleUpdateHeader = async (files?: FileList) => {
+  if (!files || files.length === 0) {
+    return
   }
+  await uploadProducerHeader(files[0])
+    .then((res) => {
+      formData.headerUrl = res.url
+    })
+    .catch(() => {
+      headerUploadStatus.error = true
+      headerUploadStatus.message = 'アップロードに失敗しました。'
+    })
 }
 
 const {
@@ -92,7 +94,7 @@ const searchAddress = async () => {
 </script>
 
 <template>
-  <templates-producer-create-form-page
+  <templates-producer-new
     :form-data="formData"
     :thumbnail-upload-status="thumbnailUploadStatus"
     :header-upload-status="headerUploadStatus"
@@ -101,6 +103,6 @@ const searchAddress = async () => {
     @update:thumbnail-file="handleUpdateThumbnail"
     @update:header-file="handleUpdateHeader"
     @submit="handleSubmit"
-    @click:search="searchAddress"
+    @click:search-address="searchAddress"
   />
 </template>

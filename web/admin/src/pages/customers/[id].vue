@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { VDataTable } from 'vuetify/lib/labs/components'
 import { useCustomerStore } from '~/store'
 
 const route = useRoute()
