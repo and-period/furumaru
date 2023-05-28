@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { defineStore } from 'pinia'
 
 import { useCommonStore } from './common'
@@ -9,14 +8,6 @@ import {
   UpdateProducerRequest,
   UploadImageResponse
 } from '~/types/api'
-import {
-  AuthError,
-  ConflictError,
-  ConnectionError,
-  InternalServerError,
-  NotFoundError,
-  ValidationError
-} from '~/types/exception'
 import { apiClient } from '~/plugins/api-client'
 
 export const useProducerStore = defineStore('producer', {
@@ -40,22 +31,8 @@ export const useProducerStore = defineStore('producer', {
         )
         this.producers = res.data.producers
         this.totalItems = res.data.total
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          switch (error.response.status) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
@@ -71,35 +48,8 @@ export const useProducerStore = defineStore('producer', {
           message: `${payload.storeName}を作成しました。`,
           color: 'info'
         })
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 400:
-              return Promise.reject(
-                new ValidationError('入力内容に誤りがあります。', error)
-              )
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 409:
-              return Promise.reject(
-                new ConflictError(
-                  'このメールアドレスはすでに登録されているため、登録できません。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err, { 409: 'このメールアドレスはすでに登録されているため、登録できません。' })
       }
     },
 
@@ -119,30 +69,8 @@ export const useProducerStore = defineStore('producer', {
           }
         )
         return res.data
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください', error)
-              )
-            case 400:
-              return Promise.reject(
-                new ValidationError(
-                  'このファイルはアップロードできません。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
     },
 
@@ -162,30 +90,8 @@ export const useProducerStore = defineStore('producer', {
           }
         )
         return res.data
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください', error)
-              )
-            case 400:
-              return Promise.reject(
-                new ValidationError(
-                  'このファイルはアップロードできません。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
     },
 
@@ -198,30 +104,8 @@ export const useProducerStore = defineStore('producer', {
       try {
         const res = await apiClient.producerApi().v1GetProducer(id)
         return res.data
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください', error)
-              )
-            case 404:
-              return Promise.reject(
-                new NotFoundError(
-                  '一致する生産者が見つかりませんでした。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
@@ -234,34 +118,8 @@ export const useProducerStore = defineStore('producer', {
     async updateProducer (id: string, payload: UpdateProducerRequest) {
       try {
         await apiClient.producerApi().v1UpdateProducer(id, payload)
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 400:
-              return Promise.reject(
-                new ValidationError('入力内容に誤りがあります。', error)
-              )
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください', error)
-              )
-            case 404:
-              return Promise.reject(
-                new NotFoundError(
-                  '一致する生産者が見つかりませんでした。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
@@ -273,8 +131,8 @@ export const useProducerStore = defineStore('producer', {
     async deleteProducer (id: string) {
       try {
         await apiClient.producerApi().v1DeleteProducer(id)
-      } catch (error) {
-        return this.errorHandler(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     }
   }

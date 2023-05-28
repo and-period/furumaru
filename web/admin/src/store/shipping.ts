@@ -1,20 +1,12 @@
-import axios from 'axios'
 import { defineStore } from 'pinia'
-import { apiClient } from '~/plugins/api-client'
 
+import { apiClient } from '~/plugins/api-client'
 import {
   CreateShippingRequest,
   ShippingResponse,
   ShippingsResponseShippingsInner,
   UpdateShippingRequest
 } from '~/types/api'
-import {
-  AuthError,
-  ConnectionError,
-  InternalServerError,
-  NotFoundError,
-  ValidationError
-} from '~/types/exception'
 
 export const useShippingStore = defineStore('shipping', {
   state: () => ({
@@ -51,22 +43,8 @@ export const useShippingStore = defineStore('shipping', {
       try {
         const res = await apiClient.shippingApi().v1GetShipping(id)
         return res.data
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          switch (error.response.status) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
@@ -78,26 +56,8 @@ export const useShippingStore = defineStore('shipping', {
     async createShipping (payload: CreateShippingRequest): Promise<void> {
       try {
         await apiClient.shippingApi().v1CreateShipping(payload)
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          switch (error.response.status) {
-            case 400:
-              return Promise.reject(
-                new ValidationError('入力内容に誤りがあります。', error)
-              )
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
@@ -113,30 +73,8 @@ export const useShippingStore = defineStore('shipping', {
     ): Promise<void> {
       try {
         await apiClient.shippingApi().v1UpdateShipping(id, payload)
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          switch (error.response.status) {
-            case 400:
-              return Promise.reject(
-                new ValidationError('入力内容に誤りがあります。', error)
-              )
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 404:
-              return Promise.reject(
-                new NotFoundError('この配送情報は存在しません。', error)
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     }
   }

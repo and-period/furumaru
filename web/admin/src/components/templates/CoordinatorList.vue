@@ -149,7 +149,7 @@ const onClickDelete = (): void => {
     </v-btn>
   </v-card-title>
 
-  <v-dialog v-model="deleteDialog" width="500">
+  <v-dialog v-model="deleteDialogValue" width="500">
     <v-card>
       <v-card-title>
         {{ coordinatorName(selectedItem) }}を本当に削除しますか？
