@@ -5,6 +5,9 @@ import { CreateShippingRequest } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 
 const router = useRouter()
+const commonStore = useCommonStore()
+const shippingStore = useShippingStore()
+const { alertType, isShow, alertText, show } = useAlert('error')
 
 const formData = reactive<CreateShippingRequest>({
   name: '',
@@ -39,40 +42,10 @@ const formData = reactive<CreateShippingRequest>({
   freeShippingRates: 0
 })
 
-const addBox60RateItem = () => {
-  formData.box60Rates.push({
-    name: '',
-    price: 0,
-    prefectures: []
-  })
-}
-
-const addBox80RateItem = () => {
-  formData.box80Rates.push({
-    name: '',
-    price: 0,
-    prefectures: []
-  })
-}
-
-const addBox100RateItem = () => {
-  formData.box100Rates.push({
-    name: '',
-    price: 0,
-    prefectures: []
-  })
-}
-
-const { createShipping } = useShippingStore()
-
-const { alertType, isShow, alertText, show } = useAlert('error')
-
-const { addSnackbar } = useCommonStore()
-
 const handleSubmit = async (): Promise<void> => {
   try {
-    await createShipping(formData)
-    addSnackbar({
+    await shippingStore.createShipping(formData)
+    commonStore.addSnackbar({
       color: 'info',
       message: `${formData.name}を登録しました。`
     })
@@ -87,35 +60,14 @@ const handleSubmit = async (): Promise<void> => {
     }
   }
 }
-
-const handleClickRemoveItemButton = (rate: '60' | '80' | '100', index: number) => {
-  switch (rate) {
-    case '60':
-      formData.box60Rates.splice(index, 1)
-      break
-    case '80':
-      formData.box80Rates.splice(index, 1)
-      break
-    case '100':
-      formData.box100Rates.splice(index, 1)
-      break
-  }
-}
 </script>
 
 <template>
-  <div>
-    <v-card-title>配送情報登録</v-card-title>
-
-    <v-alert v-model="isShow" :type="alertType" class="mb-2" v-text="alertText" />
-
-    <organisms-shipping-form
-      v-model="formData"
-      @click:add-box60-rate-item="addBox60RateItem"
-      @click:add-box80-rate-item="addBox80RateItem"
-      @click:add-box100-rate-item="addBox100RateItem"
-      @click:remove-item-button="handleClickRemoveItemButton"
-      @submit="handleSubmit"
-    />
-  </div>
+  <templates-shopping-add
+    v-model:form-data="formData"
+    :is-alrt="isShow"
+    :alert-type="alertType"
+    :alert-text="alertText"
+    @submit="handleSubmit"
+  />
 </template>

@@ -50,7 +50,7 @@ const onSubmit = (): void => {
 </script>
 
 <template>
-  <v-alert v-model="isAlert" :type="alertType" class="mb-2" v-text="alertText" />
+  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
 
   <organisms-product-form
     v-model:form-data="formDataValue"

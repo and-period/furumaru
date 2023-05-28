@@ -66,7 +66,7 @@ const onSubmit = (): void => {
   <v-card-title>商品登録</v-card-title>
   <v-breadcrumbs :items="breadcrumbsItem" large class="pa-0 mb-6" />
 
-  <v-alert v-model="isAlert" class="mb-4" :type="alertType" v-text="alertText" />
+  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
 
   <organisms-product-form
     v-model:form-data="formDataValue"

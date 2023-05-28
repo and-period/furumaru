@@ -37,22 +37,8 @@ export const useShippingStore = defineStore('shipping', {
         )
         this.shippings = res.data.shippings
         this.totalItems = res.data.total
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          switch (error.response.status) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
