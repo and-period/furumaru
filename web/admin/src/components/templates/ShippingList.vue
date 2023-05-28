@@ -157,7 +157,7 @@ const onClickAdd = (): void => {
                   >
                     <template #selection="{ item: selectItem, index }">
                       <v-chip v-if="index < 5" size="small">
-                        <span>{{ selectItem.text }}</span>
+                        <span>{{ selectItem.title }}</span>
                       </v-chip>
                       <span
                         v-if="index === 5"

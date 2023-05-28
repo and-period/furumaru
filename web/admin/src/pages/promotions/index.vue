@@ -22,11 +22,6 @@ watch(pagination.itemsPerPage, () => {
   fetchPromotions()
 })
 
-const handleUpdatePage = async (page: number) => {
-  pagination.updateCurrentPage(page)
-  await fetchPromotions()
-}
-
 const fetchPromotions = async () => {
   try {
     await promotionStore.fetchPromotions(pagination.itemsPerPage.value, pagination.offset.value)
@@ -36,6 +31,11 @@ const fetchPromotions = async () => {
     }
     console.log(err)
   }
+}
+
+const handleUpdatePage = async (page: number) => {
+  pagination.updateCurrentPage(page)
+  await fetchPromotions()
 }
 
 const handleClickAdd = () => {

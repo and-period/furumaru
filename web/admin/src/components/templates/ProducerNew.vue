@@ -1,8 +1,21 @@
 <script lang="ts" setup>
+import { AlertType } from '~/lib/hooks'
 import { CreateProducerRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
+  isAlert: {
+    type: Boolean,
+    default: false
+  },
+  alertType: {
+    type: String as PropType<AlertType>,
+    default: undefined
+  },
+  alertText: {
+    type: String,
+    default: ''
+  },
   formData: {
     type: Object,
     default: (): CreateProducerRequest => ({
@@ -50,8 +63,8 @@ const emit = defineEmits<{
   (e: 'update:formData', formData: CreateProducerRequest): void
   (e: 'update:thumbnail-file', files?: FileList): void
   (e: 'update:header-file', files?: FileList): void
+  (e: 'click:search-address'): void
   (e: 'submit'): void
-  (e: 'click:search'): void
 }>()
 
 const formDataValue = computed({
@@ -71,26 +84,27 @@ const handleSubmit = () => {
   emit('submit')
 }
 
-const handleSearchClick = () => {
-  emit('click:search')
+const onClickSearchAddress = () => {
+  emit('click:search-address')
 }
 </script>
 
 <template>
-  <div>
-    <p class="text-h6">
-      生産者登録
-    </p>
-    <organisms-producer-form
-      :form-data="formDataValue"
-      :thumbnail-upload-status="props.thumbnailUploadStatus"
-      :header-upload-status="props.headerUploadStatus"
-      :search-loading="props.searchLoading"
-      :search-error-message="props.searchErrorMessage"
-      @update:thumbnail-file="updateThumbnailFileHandler"
-      @update:header-file="updateHeaderFileHandler"
-      @submit="handleSubmit"
-      @click:search="handleSearchClick"
-    />
-  </div>
+  <p class="text-h6">
+    生産者登録
+  </p>
+
+  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+
+  <organisms-producer-form
+    :form-data="formDataValue"
+    :thumbnail-upload-status="props.thumbnailUploadStatus"
+    :header-upload-status="props.headerUploadStatus"
+    :search-loading="props.searchLoading"
+    :search-error-message="props.searchErrorMessage"
+    @update:thumbnail-file="updateThumbnailFileHandler"
+    @update:header-file="updateHeaderFileHandler"
+    @submit="handleSubmit"
+    @click:search="onClickSearchAddress"
+  />
 </template>

@@ -63,7 +63,7 @@ const handleSubmit = async (): Promise<void> => {
 </script>
 
 <template>
-  <templates-shopping-add
+  <templates-shipping-new
     v-model:form-data="formData"
     :is-alrt="isShow"
     :alert-type="alertType"

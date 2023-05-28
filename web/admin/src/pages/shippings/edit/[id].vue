@@ -6,10 +6,10 @@ import { ApiBaseError } from '~/types/exception'
 
 const route = useRoute()
 const router = useRouter()
+const commonStore = useCommonStore()
+const shippingStore = useShippingStore()
 const id = route.params.id as string
 const { alertType, isShow, alertText, show } = useAlert('error')
-
-const { addSnackbar } = useCommonStore()
 
 const formData = ref<UpdateShippingRequest>({
   name: '',
@@ -44,11 +44,9 @@ const formData = ref<UpdateShippingRequest>({
   freeShippingRates: 0
 })
 
-const { getShipping, updateShipping } = useShippingStore()
-
 const fetchState = useAsyncData(async () => {
   try {
-    const shipping = await getShipping(id)
+    const shipping = await shippingStore.getShipping(id)
     formData.value = { ...shipping }
   } catch (error) {
     if (error instanceof ApiBaseError) {
@@ -57,55 +55,14 @@ const fetchState = useAsyncData(async () => {
   }
 })
 
-const addBox60RateItem = () => {
-  formData.value.box60Rates.push({
-    name: '',
-    price: 0,
-    prefectures: []
-  })
-}
-
-const addBox80RateItem = () => {
-  formData.value.box80Rates.push({
-    name: '',
-    price: 0,
-    prefectures: []
-  })
-}
-
-const addBox100RateItem = () => {
-  formData.value.box100Rates.push({
-    name: '',
-    price: 0,
-    prefectures: []
-  })
-}
-
 const isLoading = (): boolean => {
   return fetchState?.pending?.value || false
 }
 
-const handleClickRemoveItemButton = (
-  rate: '60' | '80' | '100',
-  index: number
-) => {
-  switch (rate) {
-    case '60':
-      formData.value.box60Rates.splice(index, 1)
-      break
-    case '80':
-      formData.value.box80Rates.splice(index, 1)
-      break
-    case '100':
-      formData.value.box100Rates.splice(index, 1)
-      break
-  }
-}
-
 const handleSubmit = async () => {
   try {
-    await updateShipping(id, formData.value)
-    addSnackbar({
+    await shippingStore.updateShipping(id, formData.value)
+    commonStore.addSnackbar({
       color: 'info',
       message: `${formData.value.name}を更新しました。`
     })
@@ -129,19 +86,12 @@ try {
 </script>
 
 <template>
-  <div>
-    <v-card-title>配送設定編集</v-card-title>
-
-    <v-alert v-model="isShow" :type="alertType" class="mb-2" v-text="alertText" />
-
-    <organisms-shipping-form
-      v-model="formData"
-      :loading="isLoading()"
-      @click:add-box60-rate-item="addBox60RateItem"
-      @click:add-box80-rate-item="addBox80RateItem"
-      @click:add-box100-rate-item="addBox100RateItem"
-      @click:remove-item-button="handleClickRemoveItemButton"
-      @submit="handleSubmit"
-    />
-  </div>
+  <templates-shipping-edit
+    v-model:form-data="formData"
+    :loading="isLoading()"
+    :is-alrt="isShow"
+    :alert-type="alertType"
+    :alert-text="alertText"
+    @submit="handleSubmit"
+  />
 </template>

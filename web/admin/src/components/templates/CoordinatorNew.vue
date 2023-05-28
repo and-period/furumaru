@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { AlertType } from '~/lib/hooks'
-import { CreateProducerRequest } from '~/types/api'
+import { CreateCoordinatorRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
@@ -17,23 +17,8 @@ const props = defineProps({
     default: ''
   },
   formData: {
-    type: Object,
-    default: (): CreateProducerRequest => ({
-      lastname: '',
-      lastnameKana: '',
-      firstname: '',
-      firstnameKana: '',
-      storeName: '',
-      thumbnailUrl: '',
-      headerUrl: '',
-      email: '',
-      phoneNumber: '',
-      postalCode: '',
-      prefecture: '',
-      city: '',
-      addressLine1: '',
-      addressLine2: ''
-    })
+    type: Object as PropType<CreateCoordinatorRequest>,
+    default: () => ({})
   },
   thumbnailUploadStatus: {
     type: Object,
@@ -56,24 +41,20 @@ const props = defineProps({
   searchLoading: {
     type: Boolean,
     default: false
-  },
-  formDataLoading: {
-    type: Boolean,
-    default: false
   }
 })
 
 const emit = defineEmits<{
-  (e: 'update:form-data', formData: CreateProducerRequest): void
+  (e: 'update:form-data', v: CreateCoordinatorRequest): void
   (e: 'update:thumbnail-file', files?: FileList): void
   (e: 'update:header-file', files?: FileList): void
-  (e: 'click:search'): void
+  (e: 'click:search-address'): void
   (e: 'submit'): void
 }>()
 
 const formDataValue = computed({
-  get: (): CreateProducerRequest => props.formData as CreateProducerRequest,
-  set: (val: CreateProducerRequest) => emit('update:form-data', val)
+  get: (): CreateCoordinatorRequest => props.formData,
+  set: (v: CreateCoordinatorRequest): void => emit('update:form-data', v)
 })
 
 const updateThumbnailFileHandler = (files?: FileList) => {
@@ -84,33 +65,31 @@ const updateHeaderFileHandler = (files?: FileList) => {
   emit('update:header-file', files)
 }
 
-const handleSubmit = () => {
+const onSubmit = (): void => {
   emit('submit')
 }
 
-const handleSearchClick = () => {
-  emit('click:search')
+const onClickSearchAddress = (): void => {
+  emit('click:search-address')
 }
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
   <p class="text-h6">
-    生産者編集
+    コーディネーター登録
   </p>
-  <v-skeleton-loader v-if="props.formDataLoading" type="article" />
-  <organisms-producer-form
-    v-else
-    form-type="edit"
+
+  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+
+  <organisms-coordinator-create-form
     :form-data="formDataValue"
     :thumbnail-upload-status="props.thumbnailUploadStatus"
     :header-upload-status="props.headerUploadStatus"
     :search-loading="props.searchLoading"
     :search-error-message="props.searchErrorMessage"
-    :form-data-loading="props.formDataLoading"
     @update:thumbnail-file="updateThumbnailFileHandler"
     @update:header-file="updateHeaderFileHandler"
-    @submit="handleSubmit"
-    @click:search="handleSearchClick"
+    @submit="onSubmit"
+    @click:search="onClickSearchAddress"
   />
 </template>
