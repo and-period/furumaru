@@ -20,7 +20,8 @@ import { apiClient } from '~/plugins/api-client'
 
 export const usePromotionStore = defineStore('promotion', {
   state: () => ({
-    promotions: [] as PromotionsResponse['promotions']
+    promotions: [] as PromotionsResponse['promotions'],
+    total: 0
   }),
   actions: {
     /**
@@ -32,6 +33,7 @@ export const usePromotionStore = defineStore('promotion', {
       try {
         const res = await apiClient.promotionApi().v1ListPromotions(limit, offset)
         this.promotions = res.data.promotions
+        this.total = res.data.total
       } catch (error) {
         if (axios.isAxiosError(error)) {
           if (!error.response) {

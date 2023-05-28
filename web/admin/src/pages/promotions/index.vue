@@ -1,121 +1,66 @@
 <script lang="ts" setup>
-import { mdiPlus, mdiDelete } from '@mdi/js'
-import { unix } from 'dayjs'
+import { storeToRefs } from 'pinia'
 import { VDataTable } from 'vuetify/lib/labs/components'
-
+import { useAlert, usePagination } from '~/lib/hooks'
 import { usePromotionStore } from '~/store'
-import { PromotionsResponsePromotionsInner } from '~/types/api'
 
 const router = useRouter()
 const promotionStore = usePromotionStore()
+const pagination = usePagination()
+const { alertType, isShow, alertText, show } = useAlert('error')
 
-const deleteDialog = ref<boolean>(false)
-const selectedId = ref<string>('')
-const selectedName = ref<string>('')
-
-const promotions = computed(() => {
-  return promotionStore.promotions
+const fetchState = useAsyncData(async () => {
+  await fetchPromotions()
 })
 
-const headers: VDataTable['headers'] = [
-  {
-    title: 'タイトル',
-    key: 'title'
-  },
-  {
-    title: 'ステータス',
-    key: 'public'
-  },
-  {
-    title: '割引コード',
-    key: 'code'
-  },
-  {
-    title: '割引方法',
-    key: 'discount'
-  },
-  {
-    title: '使用開始',
-    key: 'startAt'
-  },
-  {
-    title: '使用終了',
-    key: 'endAt'
-  },
-  {
-    title: 'Actions',
-    key: 'actions',
-    sortable: false
-  }
-]
+const { promotions, total } = storeToRefs(promotionStore)
 
-const getDiscount = (discountType: number, discountRate: number): string => {
-  switch (discountType) {
-    case 1:
-      return '-' + discountRate + '円'
-    case 2:
-      return '-' + discountRate + '%'
-    case 3:
-      return '送料無料'
-    default:
-      return ''
+const deleteDialog = ref<boolean>(false)
+const sortBy = ref<VDataTable['sortBy']>([])
+
+watch(pagination.itemsPerPage, () => {
+  fetchPromotions()
+})
+
+const handleUpdatePage = async (page: number) => {
+  pagination.updateCurrentPage(page)
+  await fetchPromotions()
+}
+
+const fetchPromotions = async () => {
+  try {
+    await promotionStore.fetchPromotions(pagination.itemsPerPage.value, pagination.offset.value)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
   }
 }
 
-const handleClickAddButton = () => {
+const handleClickAdd = () => {
   router.push('/promotions/add')
 }
 
-const handleDelete = async (): Promise<void> => {
+const handleClickRow = (promotionId: string) => {
+  router.push(`/promotions/edit/${promotionId}`)
+}
+
+const handleClickDelete = async (promotionId: string): Promise<void> => {
   try {
-    await promotionStore.deletePromotion(selectedId.value)
+    await promotionStore.deletePromotion(promotionId)
   } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
     console.log(err)
   }
   deleteDialog.value = false
 }
 
-const handleClickRow = (item: PromotionsResponsePromotionsInner) => {
-  router.push(`/promotions/edit/${item.id}`)
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || false
 }
-
-const openDeleteDialog = (item: PromotionsResponsePromotionsInner): void => {
-  selectedId.value = item.id
-  selectedName.value = item.title
-  deleteDialog.value = true
-}
-
-const hideDeleteDialog = () => {
-  deleteDialog.value = false
-}
-
-const getStatus = (status: boolean): string => {
-  if (status) {
-    return '有効'
-  } else {
-    return '無効'
-  }
-}
-
-const getStatusColor = (status: boolean): string => {
-  if (status) {
-    return 'primary'
-  } else {
-    return 'error'
-  }
-}
-
-const getDay = (unixTime: number): string => {
-  return unix(unixTime).format('YYYY/MM/DD HH:mm')
-}
-
-const fetchState = useAsyncData(async () => {
-  try {
-    await promotionStore.fetchPromotions()
-  } catch (err) {
-    console.log(err)
-  }
-})
 
 try {
   await fetchState.execute()
@@ -125,75 +70,20 @@ try {
 </script>
 
 <template>
-  <div>
-    <v-card-title class="d-flex flex-row">
-      セール情報
-      <v-spacer />
-      <v-btn variant="outlined" color="primary" @click="handleClickAddButton">
-        <v-icon start :icon="mdiPlus" />
-        セール情報登録
-      </v-btn>
-    </v-card-title>
-
-    <v-dialog v-model="deleteDialog" width="500">
-      <v-card>
-        <v-card-title class="text-h7">
-          {{ selectedName }}を本当に削除しますか？
-        </v-card-title>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="error" variant="text" @click="hideDeleteDialog">
-            キャンセル
-          </v-btn>
-          <v-btn color="primary" variant="outlined" @click="handleDelete">
-            削除
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-card class="mt-4" flat>
-      <v-card-text>
-        <v-data-table
-          :headers="headers"
-          :items="promotions"
-          hover
-          no-data-text="登録されているセール情報がありません。"
-          @click:row="(_: any, {item}: any) => handleClickRow(item.raw)"
-        >
-          <template #[`item.title`]="{ item }">
-            {{ item.raw.title }}
-          </template>
-          <template #[`item.public`]="{ item }">
-            <v-chip size="small" :color="getStatusColor(item.raw.public)">
-              {{ getStatus(item.raw.public) }}
-            </v-chip>
-          </template>
-          <template #[`item.code`]="{ item }">
-            {{ item.raw.code }}
-          </template>
-          <template #[`item.discount`]="{ item }">
-            {{ getDiscount(item.raw.discountType, item.raw.discountRate) }}
-          </template>
-          <template #[`item.startAt`]="{ item }">
-            {{ getDay(item.raw.startAt) }}
-          </template>
-          <template #[`item.endAt`]="{ item }">
-            {{ getDay(item.raw.endAt) }}
-          </template>
-          <template #[`item.actions`]="{ item }">
-            <v-btn
-              color="primary"
-              size="small"
-              variant="outlined"
-              @click.stop="openDeleteDialog(item.raw)"
-            >
-              <v-icon size="small" :icon="mdiDelete" />
-              削除
-            </v-btn>
-          </template>
-        </v-data-table>
-      </v-card-text>
-    </v-card>
-  </div>
+  <templates-promotion-list
+    :loading="isLoading()"
+    :is-alrt="isShow"
+    :alert-type="alertType"
+    :alert-text="alertText"
+    :promotions="promotions"
+    :table-items-per-page="pagination.itemsPerPage.value"
+    :table-items-total="total"
+    :table-sort-by="sortBy"
+    @click:row="handleClickRow"
+    @click:add="handleClickAdd"
+    @click:delete="handleClickDelete"
+    @click:update-page="handleUpdatePage"
+    @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
+    @update:sort-by="fetchState.refresh"
+  />
 </template>

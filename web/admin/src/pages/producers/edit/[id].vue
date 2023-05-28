@@ -139,7 +139,7 @@ try {
   <div>
     <v-alert v-model="isShow" :type="alertType" v-text="alertText" />
 
-    <templates-producer-edit-form-page
+    <templates-producer-edit
       :form-data="formData"
       :form-data-loading="isLoading()"
       :thumbnail-upload-status="thumbnailUploadStatus"

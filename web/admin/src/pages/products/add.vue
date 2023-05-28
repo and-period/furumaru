@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { mdiPlus } from '@mdi/js'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 
@@ -13,12 +12,16 @@ import {
 import { CreateProductRequest, UploadImageResponse } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 
+const router = useRouter()
 const productTypeStore = useProductTypeStore()
 const categoryStore = useCategoryStore()
 const producerStore = useProducerStore()
+const { alertType, isShow, alertText, show } = useAlert('error')
+const v$ = useVuelidate()
 
 const { producers } = storeToRefs(producerStore)
 const { productTypes } = storeToRefs(productTypeStore)
+const { uploadProductImage, createProduct } = useProductStore()
 
 const fetchState = useAsyncData(async () => {
   await Promise.all([
@@ -27,22 +30,6 @@ const fetchState = useAsyncData(async () => {
     producerStore.fetchProducers(20, 0, '')
   ])
 })
-
-const router = useRouter()
-
-const { uploadProductImage, createProduct } = useProductStore()
-const breadcrumbsItem = [
-  {
-    text: '商品管理',
-    href: '/products',
-    disabled: false
-  },
-  {
-    text: '商品登録',
-    href: 'add',
-    disabled: true
-  }
-]
 
 const formData = ref<CreateProductRequest>({
   name: '',
@@ -63,8 +50,6 @@ const formData = ref<CreateProductRequest>({
   originPrefecture: '',
   originCity: ''
 })
-
-const v$ = useVuelidate()
 
 const handleImageUpload = async (files: FileList) => {
   for (const [index, file] of Array.from(files).entries()) {
@@ -90,9 +75,7 @@ const handleImageUpload = async (files: FileList) => {
   }
 }
 
-const { alertType, isShow, alertText, show } = useAlert('error')
-
-const handleFormSubmit = async () => {
+const handleSubmit = async () => {
   const result = await v$.value.$validate()
   if (!result) {
     window.scrollTo({
@@ -125,22 +108,14 @@ try {
 </script>
 
 <template>
-  <div>
-    <v-card-title>商品登録</v-card-title>
-    <v-breadcrumbs :items="breadcrumbsItem" large class="pa-0 mb-6" />
-
-    <v-alert v-model="isShow" class="mb-4" :type="alertType" v-text="alertText" />
-
-    <organisms-product-form
-      v-model:form-data="formData"
-      :producers-items="producers"
-      :product-types-items="productTypes"
-      @update:files="handleImageUpload"
-    />
-
-    <v-btn block variant="outlined" @click="handleFormSubmit">
-      <v-icon start :icon="mdiPlus" />
-      登録
-    </v-btn>
-  </div>
+  <templates-product-new
+    v-model:form-data="formData"
+    :is-alert="isShow"
+    :alert-type="alertType"
+    :alert-text="alertText"
+    :producers="producers"
+    :product-types="productTypes"
+    @update:files="handleImageUpload"
+    @submit="handleSubmit"
+  />
 </template>
