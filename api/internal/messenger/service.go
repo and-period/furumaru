@@ -29,4 +29,8 @@ type Service interface {
 	NotifyResetAdminPassword(ctx context.Context, in *NotifyResetAdminPasswordInput) error
 	// お知らせ通知
 	NotifyNotification(ctx context.Context, in *NotifyNotificationInput) error
+	// お問い合わせ取得
+	GetContact(ctx context.Context, in *GetContactInput) (*entity.Contact, error)
+	// お問い合わせ種別取得
+	GetContactCategory(ctx context.Context, in *GetContactCategoryInput) (*entity.ContactCategory, error)
 }

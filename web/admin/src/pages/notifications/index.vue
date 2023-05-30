@@ -51,6 +51,9 @@ const handleClickDelete = async (notificationId: string): Promise<void> => {
   try {
     await notificationStore.deleteNotification(notificationId)
   } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
     console.log(err)
   }
   deleteDialog.value = false

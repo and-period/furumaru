@@ -65,6 +65,36 @@ func (mr *MockServiceMockRecorder) DeleteNotification(ctx, in interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteNotification", reflect.TypeOf((*MockService)(nil).DeleteNotification), ctx, in)
 }
 
+// GetContact mocks base method.
+func (m *MockService) GetContact(ctx context.Context, in *messenger.GetContactInput) (*entity.Contact, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetContact", ctx, in)
+	ret0, _ := ret[0].(*entity.Contact)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetContact indicates an expected call of GetContact.
+func (mr *MockServiceMockRecorder) GetContact(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetContact", reflect.TypeOf((*MockService)(nil).GetContact), ctx, in)
+}
+
+// GetContactCategory mocks base method.
+func (m *MockService) GetContactCategory(ctx context.Context, in *messenger.GetContactCategoryInput) (*entity.ContactCategory, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetContactCategory", ctx, in)
+	ret0, _ := ret[0].(*entity.ContactCategory)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetContactCategory indicates an expected call of GetContactCategory.
+func (mr *MockServiceMockRecorder) GetContactCategory(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetContactCategory", reflect.TypeOf((*MockService)(nil).GetContactCategory), ctx, in)
+}
+
 // GetMessage mocks base method.
 func (m *MockService) GetMessage(ctx context.Context, in *messenger.GetMessageInput) (*entity.Message, error) {
 	m.ctrl.T.Helper()

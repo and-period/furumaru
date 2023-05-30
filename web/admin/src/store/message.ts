@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/plugins/api-client'
 
+import { apiClient } from '~/plugins/api-client'
 import {
   MessageResponse,
   MessagesResponse,

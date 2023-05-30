@@ -32,7 +32,7 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <templates-notification-create-form-page
+  <templates-notification-new
     :form-data="formData"
     :time-data="timeData"
     @submit="handleSubmit"

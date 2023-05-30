@@ -17,6 +17,7 @@
   "dependencies": {
     "@pinia/nuxt": "^0.4.6",
     "axios": "^1.2.2",
+    "dayjs": "^1.11.7",
     "nuxt": "^3.4.3",
     "pinia": "^2.0.30",
     "postcss-custom-properties": "^13.1.4",
