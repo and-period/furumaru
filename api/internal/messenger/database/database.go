@@ -19,6 +19,7 @@ type Params struct {
 type Database struct {
 	Contact         Contact
 	ContactCategory ContactCategory
+	Thread          Thread
 	Message         Message
 	MessageTemplate MessageTemplate
 	Notification    Notification
@@ -51,6 +52,10 @@ type Contact interface {
 
 type ContactCategory interface {
 	Get(ctx context.Context, categoryID string, fields ...string) (*entity.ContactCategory, error)
+}
+
+type Thread interface {
+	Get(ctx context.Context, threadID string, fields ...string) (*entity.Thread, error)
 }
 
 type Message interface {
