@@ -56,6 +56,7 @@ type ContactCategory interface {
 
 type Thread interface {
 	Get(ctx context.Context, threadID string, fields ...string) (*entity.Thread, error)
+	ListByContactID(ctx context.Context, contactID string, fields ...string) (entity.Threads, error)
 }
 
 type Message interface {
