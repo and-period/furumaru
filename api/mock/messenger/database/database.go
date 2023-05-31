@@ -99,6 +99,49 @@ func (mr *MockContactCategoryMockRecorder) Get(ctx, categoryID interface{}, fiel
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockContactCategory)(nil).Get), varargs...)
 }
 
+// MockThread is a mock of Thread interface.
+type MockThread struct {
+	ctrl     *gomock.Controller
+	recorder *MockThreadMockRecorder
+}
+
+// MockThreadMockRecorder is the mock recorder for MockThread.
+type MockThreadMockRecorder struct {
+	mock *MockThread
+}
+
+// NewMockThread creates a new mock instance.
+func NewMockThread(ctrl *gomock.Controller) *MockThread {
+	mock := &MockThread{ctrl: ctrl}
+	mock.recorder = &MockThreadMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockThread) EXPECT() *MockThreadMockRecorder {
+	return m.recorder
+}
+
+// Get mocks base method.
+func (m *MockThread) Get(ctx context.Context, threadID string, fields ...string) (*entity.Thread, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, threadID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.Thread)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockThreadMockRecorder) Get(ctx, threadID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, threadID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockThread)(nil).Get), varargs...)
+}
+
 // MockMessage is a mock of Message interface.
 type MockMessage struct {
 	ctrl     *gomock.Controller
