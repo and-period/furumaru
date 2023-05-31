@@ -142,6 +142,26 @@ func (mr *MockThreadMockRecorder) Get(ctx, threadID interface{}, fields ...inter
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockThread)(nil).Get), varargs...)
 }
 
+// ListByContactID mocks base method.
+func (m *MockThread) ListByContactID(ctx context.Context, contactID string, fields ...string) (entity.Threads, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, contactID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ListByContactID", varargs...)
+	ret0, _ := ret[0].(entity.Threads)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListByContactID indicates an expected call of ListByContactID.
+func (mr *MockThreadMockRecorder) ListByContactID(ctx, contactID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, contactID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByContactID", reflect.TypeOf((*MockThread)(nil).ListByContactID), varargs...)
+}
+
 // MockMessage is a mock of Message interface.
 type MockMessage struct {
 	ctrl     *gomock.Controller
