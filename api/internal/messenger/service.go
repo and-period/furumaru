@@ -33,4 +33,6 @@ type Service interface {
 	GetContact(ctx context.Context, in *GetContactInput) (*entity.Contact, error)
 	// お問い合わせ種別取得
 	GetContactCategory(ctx context.Context, in *GetContactCategoryInput) (*entity.ContactCategory, error)
+	// お問い合わせ会話履歴取得
+	GetThread(ctx context.Context, in *GetThreadInput) (*entity.Thread, error)
 }
