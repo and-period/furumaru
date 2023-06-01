@@ -125,6 +125,21 @@ func (mr *MockServiceMockRecorder) GetNotification(ctx, in interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetNotification", reflect.TypeOf((*MockService)(nil).GetNotification), ctx, in)
 }
 
+// GetThread mocks base method.
+func (m *MockService) GetThread(ctx context.Context, in *messenger.GetThreadInput) (*entity.Thread, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetThread", ctx, in)
+	ret0, _ := ret[0].(*entity.Thread)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetThread indicates an expected call of GetThread.
+func (mr *MockServiceMockRecorder) GetThread(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetThread", reflect.TypeOf((*MockService)(nil).GetThread), ctx, in)
+}
+
 // ListMessages mocks base method.
 func (m *MockService) ListMessages(ctx context.Context, in *messenger.ListMessagesInput) (entity.Messages, int64, error) {
 	m.ctrl.T.Helper()
