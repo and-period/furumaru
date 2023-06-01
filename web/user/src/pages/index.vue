@@ -1,10 +1,8 @@
 <script lang="ts" setup>
-import { storeToRefs } from 'pinia'
 import { useShoppingStore } from '~/store/shopping'
-import { MOCK_LIVE_ITEMS } from '~/constants/mock'
+import { MOCK_LIVE_ITEMS, MOCK_ARCHIVES_ITEMS, MOCK_RECOMMEND_ITEMS } from '~/constants/mock'
 
 const shoppingStore = useShoppingStore()
-const { recommendProducts } = storeToRefs(shoppingStore)
 
 shoppingStore.setupDummyData()
 
@@ -43,16 +41,44 @@ const banners: string[] = [
       </the-content-box>
 
       <the-content-box
+        class="px-8"
         title="archive"
         sub-title="過去のマルシェ"
-      />
+      >
+        <div class="flex flex-nowrap gap-x-8 overflow-x-scroll">
+          <the-archive-item
+            v-for="archiveItem in MOCK_ARCHIVES_ITEMS"
+            :id="archiveItem.id"
+            :key="archiveItem.id"
+            :title="archiveItem.title"
+            :img-src="archiveItem.imgSrc"
+          />
+        </div>
+
+        <div class="w-full text-center mt-10">
+          <button class="bg-main text-white py-2 w-60">
+            一覧を見る
+          </button>
+        </div>
+      </the-content-box>
 
       <the-content-box
         title="recommend"
         sub-title="おすすめの商品"
       >
-        <div class="grid grid-cols-4 gap-x-4 gap-y-6">
-          <the-product-list-item v-for="product in recommendProducts" :key="product.id" :item="product" />
+        <div class="grid grid-cols-5 gap-x-4 gap-y-6">
+          <the-product-list-item
+            v-for="productItem in MOCK_RECOMMEND_ITEMS"
+            :id="productItem.id"
+            :key="productItem.id"
+            :name="productItem.name"
+            :price="productItem.price"
+            :img-src="productItem.imgSrc"
+            :inventory="productItem.inventory"
+            :address="productItem.address"
+            :cn-name="productItem.cnName"
+            :cn-img-src="productItem.cnImgSrc"
+          />
         </div>
       </the-content-box>
     </div>
