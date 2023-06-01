@@ -172,6 +172,21 @@ func (mr *MockServiceMockRecorder) ListNotifications(ctx, in interface{}) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListNotifications", reflect.TypeOf((*MockService)(nil).ListNotifications), ctx, in)
 }
 
+// ListThreadsByContactID mocks base method.
+func (m *MockService) ListThreadsByContactID(ctx context.Context, in *messenger.ListThreadsByContactIDInput) (entity.Threads, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListThreadsByContactID", ctx, in)
+	ret0, _ := ret[0].(entity.Threads)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListThreadsByContactID indicates an expected call of ListThreadsByContactID.
+func (mr *MockServiceMockRecorder) ListThreadsByContactID(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListThreadsByContactID", reflect.TypeOf((*MockService)(nil).ListThreadsByContactID), ctx, in)
+}
+
 // NotifyNotification mocks base method.
 func (m *MockService) NotifyNotification(ctx context.Context, in *messenger.NotifyNotificationInput) error {
 	m.ctrl.T.Helper()
