@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { getToken, isSupported } from 'firebase/messaging'
 import { defineStore } from 'pinia'
 import Cookies from 'universal-cookie'
@@ -13,14 +12,6 @@ import {
   UpdateAuthPasswordRequest,
   VerifyAuthEmailRequest
 } from '~/types/api'
-import {
-  AuthError,
-  ConflictError,
-  ConnectionError,
-  InternalServerError,
-  PreconditionError,
-  ValidationError
-} from '~/types/exception'
 import { apiClient } from '~/plugins/api-client'
 
 export const useAuthStore = defineStore('auth', {
@@ -66,24 +57,7 @@ export const useAuthStore = defineStore('auth', {
 
         return this.redirectPath
       } catch (err) {
-        if (axios.isAxiosError(err)) {
-          if (!err.response) {
-            return Promise.reject(new ConnectionError(err))
-          }
-          switch (err.response.status) {
-            case 400:
-            case 401:
-              return Promise.reject(
-                new ValidationError(
-                  'ユーザー名またはパスワードが違います。',
-                  err
-                )
-              )
-            default:
-              return Promise.reject(new InternalServerError(err))
-          }
-        }
-        throw new InternalServerError(err)
+        return this.errorHandler(err, { 401: 'ユーザー名またはパスワードが違います。' })
       }
     },
 
@@ -95,26 +69,8 @@ export const useAuthStore = defineStore('auth', {
           message: 'パスワードを更新しました。',
           color: 'info'
         })
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 400:
-              return Promise.reject(
-                new ValidationError('入力値に誤りがあります。', error)
-              )
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
@@ -126,41 +82,11 @@ export const useAuthStore = defineStore('auth', {
           message: '認証コードを送信しました。',
           color: 'info'
         })
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 400:
-              return Promise.reject(
-                new ValidationError('入力内容に誤りがあります。', error)
-              )
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 409:
-              return Promise.reject(
-                new ConflictError(
-                  'このメールアドレスはすでに登録されているため、変更できません。',
-                  error
-                )
-              )
-            case 412:
-              return Promise.reject(
-                new PreconditionError(
-                  '変更前のメールアドレスと同じため、変更できません。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err, {
+          409: 'このメールアドレスはすでに登録されているため、変更できません。',
+          412: '変更前のメールアドレスと同じため、変更できません。'
+        })
       }
     },
 
@@ -172,10 +98,8 @@ export const useAuthStore = defineStore('auth', {
           message: 'メールアドレスが変更されました。',
           color: 'info'
         })
-      } catch (error) {
-        return this.errorHandler(error, {
-          409: 'このメールアドレスはすでに利用されているため使用できません。'
-        })
+      } catch (err) {
+        return this.errorHandler(err, { 409: 'このメールアドレスはすでに利用されているため使用できません。' })
       }
     },
 
@@ -188,22 +112,10 @@ export const useAuthStore = defineStore('auth', {
         this.isAuthenticated = true
         this.user = res.data
         this.user.refreshToken = refreshToken
-      } catch (error) {
+      } catch (err) {
         const cookies = new Cookies()
         cookies.remove('refreshToken')
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          if (error.response.status === 401) {
-            return Promise.reject(
-              new AuthError('認証エラー。再度ログインをしてください。', error)
-            )
-          } else {
-            return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+        return this.errorHandler(err)
       }
     },
 
@@ -213,21 +125,8 @@ export const useAuthStore = defineStore('auth', {
 
         const cookies = new Cookies()
         cookies.set('deviceToken', deviceToken, { secure: true })
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          switch (error.response.status) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 

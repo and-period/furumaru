@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { defineStore } from 'pinia'
 
 import { useCommonStore } from './common'
@@ -8,11 +7,6 @@ import {
   ContactsResponseContactsInner,
   UpdateContactRequest
 } from '~/types/api'
-import {
-  ConnectionError,
-  NotFoundError,
-  ValidationError
-} from '~/types/exception'
 import { apiClient } from '~/plugins/api-client'
 
 export const useContactStore = defineStore('contact', {
@@ -55,23 +49,8 @@ export const useContactStore = defineStore('contact', {
         const res = await apiClient.contactApi().v1GetContact(id)
         this.contact = res.data
         return res.data
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 404:
-              return Promise.reject(
-                new NotFoundError(
-                  '編集するお問い合わせが見つかりませんでした。',
-                  error
-                )
-              )
-          }
-        }
-        throw new Error('Internal Server Error')
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
@@ -86,27 +65,8 @@ export const useContactStore = defineStore('contact', {
           message: 'お問い合わせ情報が更新されました。',
           color: 'info'
         })
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 400:
-              return Promise.reject(
-                new ValidationError('入力された内容では更新できません。', error)
-              )
-            case 404:
-              return Promise.reject(
-                new NotFoundError(
-                  '更新するお問い合わせが見つかりませんでした。',
-                  error
-                )
-              )
-          }
-        }
-        throw new Error('Internal Server Error')
+      } catch (err) {
+        return this.errorHandler(err)
       }
     }
   }

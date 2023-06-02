@@ -34,8 +34,8 @@ export const useCoordinatorStore = defineStore('coordinator', {
         )
         this.coordinators = res.data.coordinators
         this.totalItems = res.data.total
-      } catch (error) {
-        return this.errorHandler(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
@@ -48,9 +48,8 @@ export const useCoordinatorStore = defineStore('coordinator', {
       try {
         const res = await apiClient.coordinatorApi().v1CreateCoordinator(payload)
         return res.data
-      } catch (error) {
-        console.log(error)
-        return this.errorHandler(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
@@ -63,9 +62,8 @@ export const useCoordinatorStore = defineStore('coordinator', {
       try {
         const res = await apiClient.coordinatorApi().v1GetCoordinator(id)
         return res.data
-      } catch (error) {
-        console.log(error)
-        return this.errorHandler(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
@@ -86,9 +84,8 @@ export const useCoordinatorStore = defineStore('coordinator', {
           message: 'コーディネータ情報が更新されました。',
           color: 'info'
         })
-      } catch (error) {
-        console.log(error)
-        return this.errorHandler(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
@@ -110,9 +107,8 @@ export const useCoordinatorStore = defineStore('coordinator', {
           }
         )
         return res.data
-      } catch (error) {
-        console.log(error)
-        return this.errorHandler(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
@@ -132,9 +128,8 @@ export const useCoordinatorStore = defineStore('coordinator', {
           }
         )
         return res.data
-      } catch (error) {
-        console.log(error)
-        return this.errorHandler(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
@@ -151,9 +146,8 @@ export const useCoordinatorStore = defineStore('coordinator', {
           message: 'コーディネーターの削除が完了しました',
           color: 'info'
         })
-      } catch (error) {
-        console.log(error)
-        return this.errorHandler(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
       this.fetchCoordinators()
     },
@@ -175,9 +169,8 @@ export const useCoordinatorStore = defineStore('coordinator', {
           message: 'コーディネーターと生産者の紐付けが完了しました',
           color: 'info'
         })
-      } catch (error) {
-        console.log(error)
-        return this.errorHandler(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
@@ -198,9 +191,8 @@ export const useCoordinatorStore = defineStore('coordinator', {
           offset
         )
         this.producers = res.data.producers
-      } catch (error) {
-        console.log(error)
-        return this.errorHandler(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     }
   }

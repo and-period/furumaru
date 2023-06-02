@@ -67,7 +67,7 @@ try {
 </script>
 
 <template>
-  <templates-promotion-edit-form-page
+  <templates-promotion-edit
     v-model:form-data="formData"
     v-model:time-data="timeData"
     :form-data-loading="isLoading()"

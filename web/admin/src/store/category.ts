@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { defineStore } from 'pinia'
 
 import { useCommonStore } from './common'
@@ -7,14 +6,6 @@ import {
   CreateCategoryRequest,
   UpdateCategoryRequest
 } from '~/types/api'
-import {
-  AuthError,
-  ConflictError,
-  ConnectionError,
-  InternalServerError,
-  NotFoundError,
-  ValidationError
-} from '~/types/exception'
 import { apiClient } from '~/plugins/api-client'
 
 export const useCategoryStore = defineStore('category', {
@@ -34,22 +25,8 @@ export const useCategoryStore = defineStore('category', {
         const res = await listCategories(limit, offset)
         this.categories = res.categories
         this.totalCategoryItems = res.total
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          switch (error.response.status) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
@@ -63,22 +40,8 @@ export const useCategoryStore = defineStore('category', {
         const res = await listCategories(limit, offset)
         this.categories.push(...res.categories)
         this.totalCategoryItems = res.total
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          switch (error.response.status) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
@@ -95,34 +58,8 @@ export const useCategoryStore = defineStore('category', {
           message: 'カテゴリーを追加しました。',
           color: 'info'
         })
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 400:
-              return Promise.reject(
-                new ValidationError('入力内容に誤りがあります。', error)
-              )
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 409:
-              return Promise.reject(
-                new ConflictError(
-                  'このカテゴリー名はすでに登録されています。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err, { 409: 'このカテゴリー名はすでに登録されています。' })
       }
     },
 
@@ -139,41 +76,8 @@ export const useCategoryStore = defineStore('category', {
           message: '変更しました。',
           color: 'info'
         })
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 400:
-              return Promise.reject(
-                new ValidationError('入力内容に誤りがあります。', error)
-              )
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 404:
-              return Promise.reject(
-                new NotFoundError(
-                  '編集するカテゴリーが見つかりませんでした。',
-                  error
-                )
-              )
-            case 409:
-              return Promise.reject(
-                new ConflictError(
-                  'このカテゴリー名はすでに登録されています。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err, { 409: 'このカテゴリー名はすでに登録されています。' })
       }
       this.fetchCategories()
     },
@@ -190,37 +94,8 @@ export const useCategoryStore = defineStore('category', {
           message: 'カテゴリー削除が完了しました',
           color: 'info'
         })
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 400:
-              return Promise.reject(
-                new ValidationError(
-                  '削除できませんでした。管理者にお問い合わせしてください。',
-                  error
-                )
-              )
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 404:
-              return Promise.reject(
-                new NotFoundError(
-                  '削除するカテゴリーが見つかりませんでした。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
       this.fetchCategories()
     }
@@ -228,24 +103,6 @@ export const useCategoryStore = defineStore('category', {
 })
 
 async function listCategories (limit = 20, offset = 0): Promise<CategoriesResponse> {
-  try {
-    const res = await apiClient.categoryApi().v1ListCategories(limit, offset)
-    return { ...res.data }
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      if (!error.response) {
-        return Promise.reject(new ConnectionError(error))
-      }
-      switch (error.response.status) {
-        case 401:
-          return Promise.reject(
-            new AuthError('認証エラー。再度ログインをしてください。', error)
-          )
-        case 500:
-        default:
-          return Promise.reject(new InternalServerError(error))
-      }
-    }
-    throw new InternalServerError(error)
-  }
+  const res = await apiClient.categoryApi().v1ListCategories(limit, offset)
+  return { ...res.data }
 }

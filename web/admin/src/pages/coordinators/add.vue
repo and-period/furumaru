@@ -51,30 +51,32 @@ const handleSubmit = async () => {
   }
 }
 
-const handleUpdateThumbnail = (files: FileList) => {
-  if (files.length > 0) {
-    uploadCoordinatorThumbnail(files[0])
-      .then((res) => {
-        formData.thumbnailUrl = res.url
-      })
-      .catch(() => {
-        thumbnailUploadStatus.error = true
-        thumbnailUploadStatus.message = 'アップロードに失敗しました。'
-      })
+const handleUpdateThumbnail = (files?: FileList) => {
+  if (!files || files.length === 0) {
+    return
   }
+  uploadCoordinatorThumbnail(files[0])
+    .then((res) => {
+      formData.thumbnailUrl = res.url
+    })
+    .catch(() => {
+      thumbnailUploadStatus.error = true
+      thumbnailUploadStatus.message = 'アップロードに失敗しました。'
+    })
 }
 
-const handleUpdateHeader = (files: FileList) => {
-  if (files.length > 0) {
-    uploadCoordinatorHeader(files[0])
-      .then((res) => {
-        formData.headerUrl = res.url
-      })
-      .catch(() => {
-        headerUploadStatus.error = true
-        headerUploadStatus.message = 'アップロードに失敗しました。'
-      })
+const handleUpdateHeader = (files?: FileList) => {
+  if (!files || files.length === 0) {
+    return
   }
+  uploadCoordinatorHeader(files[0])
+    .then((res) => {
+      formData.headerUrl = res.url
+    })
+    .catch(() => {
+      headerUploadStatus.error = true
+      headerUploadStatus.message = 'アップロードに失敗しました。'
+    })
 }
 
 const {
@@ -96,20 +98,15 @@ const searchAddress = async () => {
 </script>
 
 <template>
-  <div>
-    <v-card-title>コーディネーター登録</v-card-title>
-    <v-card>
-      <organisms-coordinator-create-form
-        :form-data="formData"
-        :thumbnail-upload-status="thumbnailUploadStatus"
-        :header-upload-status="headerUploadStatus"
-        :search-loading="searchLoading"
-        :search-error-message="searchErrorMessage"
-        @update:thumbnail-file="handleUpdateThumbnail"
-        @update:header-file="handleUpdateHeader"
-        @submit="handleSubmit"
-        @click:search="searchAddress"
-      />
-    </v-card>
-  </div>
+  <templates-coordinator-new
+    :form-data="formData"
+    :thumbnail-upload-status="thumbnailUploadStatus"
+    :header-upload-status="headerUploadStatus"
+    :search-loading="searchLoading"
+    :search-error-message="searchErrorMessage"
+    @update:thumbnail-file="handleUpdateThumbnail"
+    @update:header-file="handleUpdateHeader"
+    @submit="handleSubmit"
+    @click:search-address="searchAddress"
+  />
 </template>

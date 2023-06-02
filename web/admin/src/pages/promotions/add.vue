@@ -40,7 +40,7 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <templates-promotion-create-form-page
+  <templates-promotion-new
     v-model:form-data="formData"
     v-model:time-data="timeData"
     @submit="handleSubmit"

@@ -62,7 +62,7 @@ try {
 </script>
 
 <template>
-  <templates-notification-edit-form-page
+  <templates-notification-edit
     :form-data="formData"
     :time-data="timeData"
     :form-data-loading="isLoading()"
