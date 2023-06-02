@@ -18,8 +18,11 @@ defineProps<Props>()
       >
     </div>
     <div class="mt-2 flex flex-col gap-2 w-full">
-      <div class="text-sm">
+      <div class="text-sm flex items-center justify-between">
         <span class="font-bold px-2 border-2 border-main text-main rounded">アーカイブ配信</span>
+        <button class="w-4 h-4 hover:scale-110">
+          <the-ellipsis-vertical-icon class="w-5 h-5" />
+        </button>
       </div>
       <p class="line-clamp-3 break-words">
         {{ title }}
