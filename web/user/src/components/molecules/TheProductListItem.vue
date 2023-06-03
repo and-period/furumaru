@@ -1,22 +1,27 @@
 <script lang="ts" setup>
-import { ProductItem } from '~/types/store'
-
 interface Props {
-  item: ProductItem
+  id: string;
+  name: string;
+  inventory: number;
+  price: number;
+  imgSrc: string
+  address: string
+  cnName: string
+  cnImgSrc: string
 }
 
 const props = defineProps<Props>()
 
 const priceString = computed<string>(() => {
-  return new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(props.item.price)
+  return new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(props.price)
 })
 
 const thumbnail = computed(() => {
-  return props.item.media.find(item => item.isThumbnail)
+  return props.imgSrc
 })
 
 const hasStock = computed(() => {
-  return props.item.inventory > 0
+  return props.inventory > 0
 })
 </script>
 
@@ -28,36 +33,48 @@ const hasStock = computed(() => {
           在庫なし
         </p>
       </div>
-      <div v-if="thumbnail">
-        <picture>
-          <img src="~/assets/img/sample.png" :alt="item.name">
-        </picture>
+      <div v-if="thumbnail" class="w-full">
+        <img :src="thumbnail" :alt="name" class="aspect-square w-full">
       </div>
     </div>
 
     <p class="mt-2">
-      {{ item.name }}
+      {{ name }}
     </p>
 
-    <p class="after:ml-2 after:content-['(税込み)'] text-xl my-4">
+    <p class="after:ml-2 text-xl my-4 after:content-['(税込)'] after:text-[16px]">
       {{ priceString }}
     </p>
 
-    <div class="flex items-center justify-between gap-1">
-      <p>数量</p>
-      <div class="border-main border-[1px] pa-2">
-        <select>
+    <div class="flex items-center gap-2 h-8 text-sm">
+      <div class="inline-flex items-center">
+        <label class="block mr-2">数量</label>
+        <select class="border-main border-[1px] px-2 h-full ">
           <option value="0">
             0
           </option>
         </select>
       </div>
-      <the-button
-        class="bg-main text-white py-1 px-4 flex items-center"
+      <button
+        class="grow h-full bg-main text-white py-1 px-4 flex items-center justify-center"
       >
         <the-cart-icon id="add-cart-icon" class="h-4 w-4 mr-1" />
         カゴに入れる
-      </the-button>
+      </button>
+    </div>
+    <div class="mt-4 flex items-center gap-x-4 text-xs">
+      <div class="grow">
+        <span class="whitespace-pre-wrap">
+          {{ address }}
+        </span>
+        <hr class=" border-main border-dashed my-2">
+        <span class="before:content-['CN：']">
+          {{ cnName }}
+        </span>
+      </div>
+      <div class="min-h-14 min-w-14">
+        <img :src="cnImgSrc" class="h-full w-full rounded-full">
+      </div>
     </div>
   </div>
 </template>
