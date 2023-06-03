@@ -87,3 +87,10 @@ type GetContactInput struct {
 type GetContactCategoryInput struct {
 	CategoryID string `validate:"required"`
 }
+
+type ListThreadsByContactIDInput struct {
+	ContactID string `validate:"required"`
+}
+type GetThreadInput struct {
+	ThreadID string `validate:"required"`
+}
