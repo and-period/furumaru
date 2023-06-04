@@ -70,7 +70,7 @@ const navigationDrawerList: NavigationDrawerItem[] = [
     to: '/producers',
     icon: mdiAccount,
     title: '生産者管理'
-  },
+  }
 ]
 
 const navigationDrawerSettingsList: NavigationDrawerItem[] = [
@@ -83,7 +83,7 @@ const navigationDrawerSettingsList: NavigationDrawerItem[] = [
     to: '/system',
     icon: mdiCog,
     title: 'システム設定'
-  },
+  }
 ]
 
 const handleClickNavIcon = () => {
