@@ -71,19 +71,19 @@ const navigationDrawerList: NavigationDrawerItem[] = [
     icon: mdiAccount,
     title: '生産者管理'
   },
-  {
-    to: '/coordinators',
-    icon: mdiAccountStarOutline,
-    title: 'コーディネータ管理'
-  }
 ]
 
 const navigationDrawerSettingsList: NavigationDrawerItem[] = [
   {
     to: '/settings',
+    icon: mdiAccount,
+    title: 'マイページ'
+  },
+  {
+    to: '/system',
     icon: mdiCog,
     title: 'システム設定'
-  }
+  },
 ]
 
 const handleClickNavIcon = () => {
