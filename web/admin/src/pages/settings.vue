@@ -7,14 +7,6 @@ const authStore = useAuthStore()
 
 const menus: SettingMenu[] = [
   {
-    text: 'カテゴリー・品目登録',
-    action: () => router.push('/categories')
-  },
-  {
-    text: '配送設定',
-    action: () => router.push('/shippings')
-  },
-  {
     text: 'メールアドレス変更',
     action: () => router.push('/accounts/email')
   },
