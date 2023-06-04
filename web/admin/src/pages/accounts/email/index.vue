@@ -22,7 +22,7 @@ const handleSubmit = async (): Promise<void> => {
     if (err instanceof Error) {
       show(err.message)
     }
-    console.log('failed to update email', err)
+    console.log(err)
   }
 }
 </script>

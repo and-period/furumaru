@@ -60,6 +60,9 @@ const fetchCategories = async () => {
   try {
     await categoryStore.fetchCategories(categoryPagination.itemsPerPage.value, categoryPagination.offset.value)
   } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
     console.log(err)
   }
 }
@@ -69,6 +72,9 @@ const handleCategoryMorePage = async () => {
     categoryPagination.updateCurrentPage(categoryPagination.currentPage.value + 1)
     await categoryStore.moreCategories(categoryPagination.itemsPerPage.value, categoryPagination.offset.value)
   } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
     console.log(err)
   }
 }
@@ -107,6 +113,9 @@ const fetchProductTypes = async () => {
   try {
     await productTypeStore.fetchProductTypes(productTypePagination.itemsPerPage.value, productTypePagination.offset.value)
   } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
     console.log(err)
   }
 }
@@ -131,8 +140,10 @@ const handleUploadProductTypeIcon = async (files: FileList) => {
     const res = await productTypeStore.uploadProductTypeIcon(files[0])
     productTypeFormData.iconUrl = res.url
   } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
     console.log(err)
-    show('アップロードに失敗しました。')
   }
 }
 

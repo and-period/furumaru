@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import dayjs, { unix } from 'dayjs'
+import { useAlert } from '~/lib/hooks'
 
 import { usePromotionStore } from '~/store'
 import { UpdatePromotionRequest } from '~/types/api'
@@ -10,6 +11,7 @@ const route = useRoute()
 const id = route.params.id as string
 
 const { getPromotion, editPromotion } = usePromotionStore()
+const { alertType, isShow, alertText, show } = useAlert('error')
 
 const formData = reactive<UpdatePromotionRequest>({
   title: '',
@@ -54,8 +56,11 @@ const handleSubmit = async () => {
       discountRate: Number(formData.discountRate)
     })
     router.push('/promotions')
-  } catch (error) {
-    console.log(error)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
   }
 }
 
@@ -70,6 +75,9 @@ try {
   <templates-promotion-edit
     v-model:form-data="formData"
     v-model:time-data="timeData"
+    :is-alrt="isShow"
+    :alert-type="alertType"
+    :alert-text="alertText"
     :form-data-loading="isLoading()"
     @submit="handleSubmit"
   />

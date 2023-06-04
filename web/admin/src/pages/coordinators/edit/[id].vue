@@ -1,70 +1,43 @@
 <script lang="ts" setup>
-import { mdiPlus } from '@mdi/js'
 import { useVuelidate } from '@vuelidate/core'
+import { storeToRefs } from 'pinia'
 
-import { usePagination, useSearchAddress } from '~/lib/hooks'
+import { convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
+import { useAlert, usePagination, useSearchAddress } from '~/lib/hooks'
 import { kana, required, tel, maxLength } from '~/lib/validations'
 import { useCoordinatorStore, useProducerStore } from '~/store'
-import {
-  ProducersResponseProducersInner,
-  RelateProducersRequest,
-  UpdateCoordinatorRequest,
-  UploadImageResponse
-} from '~/types/api'
+import { UpdateCoordinatorRequest, UploadImageResponse } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
-import { Coordinator } from '~/types/props/coordinator'
-
-const tab = ref<string>('coordinators')
-const tabItems: Coordinator[] = [
-  { name: '基本情報', value: 'coordinators' },
-  { name: '関連生産者', value: 'relationProducers' }
-]
-const coordinatorStore = useCoordinatorStore()
-
-const producers = ref<string[]>([])
-const dialog = ref<boolean>(false)
-
-const producerStore = useProducerStore()
-
-const producerItems = computed(() => {
-  return producerStore.producers
-})
-
-const relateProducersItems = reactive<{
-  offset: number
-  relateProducers: ProducersResponseProducersInner[]
-}>({ offset: 0, relateProducers: [] })
 
 const route = useRoute()
-const id = route.params.id as string
 const router = useRouter()
+const coordinatorStore = useCoordinatorStore()
+const producerStore = useProducerStore()
+const relatedProducersPagination = usePagination()
+const unrelatedProducersPagination = usePagination()
+const { alertType, isShow, alertText, show } = useAlert('error')
+const { loading: searchLoading, errorMessage: searchErrorMessage, searchAddressByPostalCode } = useSearchAddress()
 
-const { uploadCoordinatorThumbnail, uploadCoordinatorHeader } =
-  useCoordinatorStore()
+const coordinatorId = route.params.id as string
 
-const { getCoordinator } = useCoordinatorStore()
+const relatedProducersDialog = ref<boolean>(false)
+const selectedProducerIds = ref<string[]>([])
 
-const {
-  itemsPerPage: producersItemsPerPage,
-  offset: producersOffset,
-  options: producersOptions,
-  handleUpdateItemsPerPage: handleUpdateProducersItemsPerPage,
-  updateCurrentPage: _handleUpdateProducersPage
-} = usePagination()
+const { producers: relatedProducers, totalItems } = storeToRefs(coordinatorStore)
+const { producers: unrelatedProducers } = storeToRefs(producerStore)
 
-watch(producersItemsPerPage, () => {
-  coordinatorStore.fetchRelatedProducers(id, producersItemsPerPage.value, 0)
+watch(relatedProducersPagination.itemsPerPage, () => {
+  fetchRelatedProducers()
 })
 
-const handleUpdateProducersPage = async (page: number) => {
-  _handleUpdateProducersPage(page)
-  await coordinatorStore.fetchRelatedProducers(
-    id,
-    producersItemsPerPage.value,
-    producersOffset.value
-  )
-}
-
+const thumbnailUploadStatus = reactive<ImageUploadStatus>({
+  error: false,
+  message: ''
+})
+const headerUploadStatus = reactive<ImageUploadStatus>({
+  error: false,
+  message: ''
+})
 const formData = reactive<UpdateCoordinatorRequest>({
   storeName: '',
   firstname: '',
@@ -85,13 +58,9 @@ const formData = reactive<UpdateCoordinatorRequest>({
   addressLine2: ''
 })
 
-const producerData = reactive<RelateProducersRequest>({
-  producerIds: []
-})
-
 const fetchState = useAsyncData(async () => {
   try {
-    const coordinator = await getCoordinator(id)
+    const coordinator = await coordinatorStore.getCoordinator(coordinatorId)
     formData.storeName = coordinator.storeName
     formData.firstname = coordinator.firstname
     formData.lastname = coordinator.lastname
@@ -109,12 +78,10 @@ const fetchState = useAsyncData(async () => {
     formData.city = coordinator.city
     formData.addressLine1 = coordinator.addressLine1
     formData.addressLine2 = coordinator.addressLine2
-
-    await Promise.all([
-      coordinatorStore.fetchRelatedProducers(id, producersItemsPerPage.value)
-    ])
-    relateProducersItems.relateProducers = coordinatorStore.producers
   } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
     console.log(err)
   }
 })
@@ -131,11 +98,40 @@ const rules = computed(() => ({
 
 const v$ = useVuelidate(rules, formData)
 
-const {
-  loading: searchLoading,
-  errorMessage: searchErrorMessage,
-  searchAddressByPostalCode
-} = useSearchAddress()
+const fetchRelatedProducers = async () => {
+  try {
+    await coordinatorStore.fetchRelatedProducers(
+      coordinatorId,
+      relatedProducersPagination.itemsPerPage.value,
+      relatedProducersPagination.offset.value
+    )
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+}
+
+const fetchUnrelatedProducers = async () => {
+  try {
+    await producerStore.fetchProducers(
+      unrelatedProducersPagination.itemsPerPage.value,
+      unrelatedProducersPagination.offset.value,
+      'unrelated'
+    )
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+}
+
+const handleUpdateRelatedProducersPage = async (page: number) => {
+  relatedProducersPagination.updateCurrentPage(page)
+  await fetchRelatedProducers()
+}
 
 const searchAddress = async () => {
   searchLoading.value = true
@@ -148,22 +144,12 @@ const searchAddress = async () => {
   }
 }
 
-const thumbnailUploadStatus = reactive<ImageUploadStatus>({
-  error: false,
-  message: ''
-})
-
-const headerUploadStatus = reactive<ImageUploadStatus>({
-  error: false,
-  message: ''
-})
-
-const handleUpdateThumbnail = (files?: FileList) => {
-  if (!files || files.length === 0) {
+const handleUpdateThumbnail = (files: FileList) => {
+  if (files.length === 0) {
     return
   }
 
-  uploadCoordinatorThumbnail(files[0])
+  coordinatorStore.uploadCoordinatorThumbnail(files[0])
     .then((res: UploadImageResponse) => {
       formData.thumbnailUrl = res.url
     })
@@ -173,12 +159,12 @@ const handleUpdateThumbnail = (files?: FileList) => {
     })
 }
 
-const handleUpdateHeader = async (files?: FileList) => {
-  if (!files || files.length === 0) {
+const handleUpdateHeader = async (files: FileList) => {
+  if (files.length === 0) {
     return
   }
 
-  await uploadCoordinatorHeader(files[0])
+  await coordinatorStore.uploadCoordinatorHeader(files[0])
     .then((res: UploadImageResponse) => {
       formData.headerUrl = res.url
     })
@@ -188,41 +174,38 @@ const handleUpdateHeader = async (files?: FileList) => {
     })
 }
 
-const handleSubmit = async (): Promise<void> => {
+const handleSubmitCoordinator = async (): Promise<void> => {
   try {
     const result = await v$.value.$validate()
     if (!result) {
       return
     }
-    await coordinatorStore.updateCoordinator(
-      {
-        ...formData,
-        phoneNumber: formData.phoneNumber.replace('0', '+81')
-      },
-      id
-    )
+
+    const req: UpdateCoordinatorRequest = {
+      ...formData,
+      phoneNumber: convertJapaneseToI18nPhoneNumber(formData.phoneNumber)
+    }
+    await coordinatorStore.updateCoordinator(req, coordinatorId)
     router.push('/coordinators')
-  } catch (error) {
-    console.log(error)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
   }
 }
 
-const relateProducers = async (): Promise<void> => {
-  producerData.producerIds = producers.value
+const handleSubmitRelateProducers = async (): Promise<void> => {
   try {
-    await coordinatorStore.relateProducers(id, producerData)
-    dialog.value = false
-  } catch (error) {
-    console.log(error)
+    await coordinatorStore.relateProducers(coordinatorId, { producerIds: selectedProducerIds.value })
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  } finally {
+    relatedProducersDialog.value = false
   }
-}
-
-const remove = (item: string) => {
-  producers.value = producers.value.filter(id => id !== item)
-}
-
-const cancel = (): void => {
-  dialog.value = false
 }
 
 const isLoading = (): boolean => {
@@ -230,117 +213,36 @@ const isLoading = (): boolean => {
 }
 
 try {
-  await fetchState.execute()
-  await producerStore.fetchProducers(20, 0, 'unrelated')
+  Promise.all([fetchState.execute(), fetchRelatedProducers(), fetchUnrelatedProducers()])
 } catch (err) {
   console.log('failed to setup', err)
 }
 </script>
 
 <template>
-  <div>
-    <v-card-title>コーディネーター編集</v-card-title>
-
-    <v-card>
-      <v-tabs v-model="tab" grow color="dark">
-        <v-tabs-slider color="accent" />
-        <v-tab
-          v-for="tabItem in tabItems"
-          :key="tabItem.value"
-          :value="tabItem.value"
-        >
-          {{ tabItem.name }}
-        </v-tab>
-      </v-tabs>
-
-      <v-window v-model="tab">
-        <v-window-item value="coordinators">
-          <v-skeleton-loader v-if="isLoading()" type="article" />
-
-          <organisms-coordinator-edit-form
-            v-else
-            :form-data="formData"
-            :thumbnail-upload-status="thumbnailUploadStatus"
-            :header-upload-status="headerUploadStatus"
-            :search-loading="searchLoading"
-            :search-error-message="searchErrorMessage"
-            @update:thumbnail-file="handleUpdateThumbnail"
-            @update:header-file="handleUpdateHeader"
-            @submit="handleSubmit"
-            @click:search="searchAddress"
-          />
-        </v-window-item>
-
-        <v-window-item value="relationProducers">
-          <v-dialog v-model="dialog" width="500">
-            <template #activator="{ props }">
-              <div class="d-flex pt-3 pr-3">
-                <v-spacer />
-                <v-btn variant="outlined" color="primary" v-bind="props">
-                  <v-icon start :icon="mdiPlus" />
-                  生産者紐付け
-                </v-btn>
-              </div>
-            </template>
-            <v-card>
-              <v-card-title class="primaryLight">
-                生産者紐付け
-              </v-card-title>
-
-              <v-autocomplete
-                v-model="producers"
-                chips
-                label="関連生産者"
-                multiple
-                filled
-                :items="producerItems"
-                item-title="firstname"
-                item-value="id"
-              >
-                <template #selection="data">
-                  <v-chip close @click:close="remove(data.item.id)">
-                    <v-avatar start>
-                      <v-img :src="data.item.thumbnailUrl" />
-                    </v-avatar>
-                    {{ data.item.firstname }}
-                  </v-chip>
-                </template>
-                <template #item="data">
-                  <v-list-item-avatar>
-                    <img :src="data.item.thumbnailUrl">
-                  </v-list-item-avatar>
-                  <v-list-item-content>
-                    <v-list-item-title>
-                      {{ data.item.firstname }}
-                    </v-list-item-title>
-                    <v-list-item-subtitle>
-                      {{ data.item.storeName }}
-                    </v-list-item-subtitle>
-                  </v-list-item-content>
-                </template>
-              </v-autocomplete>
-
-              <v-card-actions>
-                <v-spacer />
-                <v-btn color="error" variant="text" @click="cancel">
-                  キャンセル
-                </v-btn>
-                <v-btn color="primary" variant="outlined" @click="relateProducers">
-                  更新
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-
-          <v-card-text>
-            <organisms-related-producer-list
-              :table-footer-props="producersOptions"
-              @update:items-per-page="handleUpdateProducersItemsPerPage"
-              @update:page="handleUpdateProducersPage"
-            />
-          </v-card-text>
-        </v-window-item>
-      </v-window>
-    </v-card>
-  </div>
+  <templates-coordinator-edit
+    v-model:form-data="formData"
+    v-model:selected-producer-ids="selectedProducerIds"
+    v-model:related-producers-dialog="relatedProducersDialog"
+    :loading="isLoading()"
+    :is-alert="isShow"
+    :is-alrt="isShow"
+    :alert-type="alertType"
+    :alert-text="alertText"
+    :related-producers="relatedProducers"
+    :unrelated-producers="unrelatedProducers"
+    :thumbnail-upload-status="thumbnailUploadStatus"
+    :header-upload-status="headerUploadStatus"
+    :search-loading="searchLoading"
+    :search-error-message="searchErrorMessage"
+    :related-producers-table-items-per-page="relatedProducersPagination.itemsPerPage.value"
+    :related-producers-table-items-total="totalItems"
+    @update:thumbnail-file="handleUpdateThumbnail"
+    @update:header-file="handleUpdateHeader"
+    @update:related-producers-table-page="handleUpdateRelatedProducersPage"
+    @update:related-producers-table-items-per-page="relatedProducersPagination.handleUpdateItemsPerPage"
+    @click:search-address="searchAddress"
+    @submit:coordinator="handleSubmitCoordinator"
+    @submit:related-producers="handleSubmitRelateProducers"
+  />
 </template>

@@ -2,7 +2,6 @@
 import { useAlert } from '~/lib/hooks'
 import { useCommonStore, useShippingStore } from '~/store'
 import { UpdateShippingRequest } from '~/types/api'
-import { ApiBaseError } from '~/types/exception'
 
 const route = useRoute()
 const router = useRouter()
@@ -48,10 +47,11 @@ const fetchState = useAsyncData(async () => {
   try {
     const shipping = await shippingStore.getShipping(id)
     formData.value = { ...shipping }
-  } catch (error) {
-    if (error instanceof ApiBaseError) {
-      show(error.message)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
     }
+    console.log(err)
   }
 })
 
@@ -67,14 +67,16 @@ const handleSubmit = async () => {
       message: `${formData.value.name}を更新しました。`
     })
     router.push('/shippings')
-  } catch (error) {
-    if (error instanceof ApiBaseError) {
-      show(error.message)
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      })
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
     }
+    console.log(err)
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
   }
 }
 

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { unix } from 'dayjs'
+import { useAlert } from '~/lib/hooks'
 
 import { useNotificationStore } from '~/store'
 import { NotificationResponse } from '~/types/api'
@@ -10,6 +11,7 @@ const route = useRoute()
 const id = route.params.id as string
 
 const { getNotification, editNotification } = useNotificationStore()
+const { alertType, isShow, alertText, show } = useAlert('error')
 
 const formData = reactive<NotificationResponse>({
   id,
@@ -49,8 +51,11 @@ const handleSubmit = async () => {
   try {
     await editNotification(id, formData)
     router.push('/notifications')
-  } catch (error) {
-    console.log(error)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
   }
 }
 
@@ -66,6 +71,9 @@ try {
     :form-data="formData"
     :time-data="timeData"
     :form-data-loading="isLoading()"
+    :is-alrt="isShow"
+    :alert-type="alertType"
+    :alert-text="alertText"
     @submit="handleSubmit"
   />
 </template>

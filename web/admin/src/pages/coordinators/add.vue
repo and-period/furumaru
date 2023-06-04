@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useSearchAddress } from '~/lib/hooks'
+import { useAlert, useSearchAddress } from '~/lib/hooks'
 import { useCoordinatorStore } from '~/store'
 import { CreateCoordinatorRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
@@ -10,6 +10,7 @@ const {
   uploadCoordinatorThumbnail,
   uploadCoordinatorHeader
 } = useCoordinatorStore()
+const { alertType, isShow, alertText, show } = useAlert('error')
 
 const formData = reactive<CreateCoordinatorRequest>({
   lastname: '',
@@ -46,8 +47,11 @@ const handleSubmit = async () => {
       phoneNumber: formData.phoneNumber.replace('0', '+81')
     })
     router.push('/coordinators')
-  } catch (error) {
-    console.log(error)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
   }
 }
 
@@ -99,7 +103,10 @@ const searchAddress = async () => {
 
 <template>
   <templates-coordinator-new
-    :form-data="formData"
+    v-model:form-data="formData"
+    :is-alert="isShow"
+    :alert-type="alertType"
+    :alert-text="alertText"
     :thumbnail-upload-status="thumbnailUploadStatus"
     :header-upload-status="headerUploadStatus"
     :search-loading="searchLoading"

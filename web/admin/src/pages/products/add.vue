@@ -59,8 +59,11 @@ const handleImageUpload = async (files: FileList) => {
         ...uploadImage,
         isThumbnail: index === 0
       })
-    } catch (error) {
-      console.log(error)
+    } catch (err) {
+      if (err instanceof Error) {
+        show(err.message)
+      }
+      console.log(err)
     }
   }
 
@@ -87,12 +90,12 @@ const handleSubmit = async () => {
   try {
     await createProduct(formData.value)
     router.push('/products')
-  } catch (error) {
-    if (error instanceof ApiBaseError) {
-      show(error.message)
-    } else {
-      show('不明なエラーが発生しました。')
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
     }
+    console.log(err)
+
     window.scrollTo({
       top: 0,
       behavior: 'smooth'

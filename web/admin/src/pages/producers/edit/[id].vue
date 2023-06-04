@@ -117,14 +117,11 @@ const handleSubmit = async () => {
       message: `${formData.storeName}を更新しました。`
     })
     router.push('/producers')
-  } catch (error) {
-    if (error instanceof ApiBaseError) {
-      show(error.message)
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      })
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
     }
+    console.log(err)
   }
 }
 

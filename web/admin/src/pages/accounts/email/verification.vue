@@ -23,6 +23,7 @@ const handleClickResendEmail = async (): Promise<void> => {
     if (err instanceof Error) {
       show(err.message)
     }
+    console.log(err)
   }
 }
 
@@ -34,6 +35,7 @@ const handleSubmit = async (): Promise<void> => {
     if (err instanceof Error) {
       show(err.message)
     }
+    console.log(err)
   }
 }
 </script>
