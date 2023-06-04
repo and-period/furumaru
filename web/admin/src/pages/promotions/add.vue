@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
+import { useAlert } from '~/lib/hooks'
 
 import { usePromotionStore } from '~/store'
 import { CreatePromotionRequest } from '~/types/api'
@@ -7,6 +8,7 @@ import { PromotionTime } from '~/types/props'
 
 const router = useRouter()
 const promotionStore = usePromotionStore()
+const { alertType, isShow, alertText, show } = useAlert('error')
 
 const formData = reactive<CreatePromotionRequest>({
   title: '',
@@ -33,8 +35,11 @@ const handleSubmit = async () => {
       discountRate: Number(formData.discountRate)
     })
     router.push('/promotions')
-  } catch (error) {
-    console.log(error)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
   }
 }
 </script>
@@ -43,6 +48,9 @@ const handleSubmit = async () => {
   <templates-promotion-new
     v-model:form-data="formData"
     v-model:time-data="timeData"
+    :is-alrt="isShow"
+    :alert-type="alertType"
+    :alert-text="alertText"
     @submit="handleSubmit"
   />
 </template>

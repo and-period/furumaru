@@ -18,8 +18,10 @@ const handleSubmit = async (): Promise<void> => {
     await authStore.passwordUpdate(formData)
     router.push('/')
   } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
     console.log(err)
-    show('パスワードの更新に失敗しました。')
   }
 }
 </script>

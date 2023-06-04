@@ -2,7 +2,6 @@
 import { useAlert } from '~/lib/hooks'
 import { useCommonStore, useShippingStore } from '~/store'
 import { CreateShippingRequest } from '~/types/api'
-import { ApiBaseError } from '~/types/exception'
 
 const router = useRouter()
 const commonStore = useCommonStore()
@@ -50,14 +49,16 @@ const handleSubmit = async (): Promise<void> => {
       message: `${formData.name}を登録しました。`
     })
     router.push('/shippings')
-  } catch (error) {
-    if (error instanceof ApiBaseError) {
-      show(error.message)
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      })
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
     }
+    console.log(err)
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
   }
 }
 </script>

@@ -9,7 +9,6 @@ import {
   useProductTypeStore
 } from '~/store'
 import { UpdateProductRequest, UploadImageResponse } from '~/types/api'
-import { ApiBaseError } from '~/types/exception'
 
 const route = useRoute()
 const router = useRouter()
@@ -53,12 +52,12 @@ const fetchState = useAsyncData(async () => {
     ])
     const data = await productStore.getProduct(id)
     formData.value = data
-  } catch (error) {
-    if (error instanceof ApiBaseError) {
-      show(error.message)
-    } else {
-      show('不明なエラーが発生しました。')
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
     }
+    console.log(err)
+
     window.scrollTo({
       top: 0,
       behavior: 'smooth'
@@ -79,8 +78,11 @@ const handleImageUpload = async (files?: FileList) => {
         ...uploadImage,
         isThumbnail: false
       })
-    } catch (error) {
-      console.log(error)
+    } catch (err) {
+      if (err instanceof Error) {
+        show(err.message)
+      }
+      console.log(err)
     }
   }
 
@@ -112,12 +114,11 @@ const handleSubmit = async () => {
       message: '商品を更新しました。'
     })
     router.push('/products')
-  } catch (error) {
-    if (error instanceof ApiBaseError) {
-      show(error.message)
-    } else {
-      show('不明なエラーが発生しました。')
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
     }
+    console.log(err)
   }
 }
 

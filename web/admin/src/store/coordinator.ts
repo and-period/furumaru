@@ -191,6 +191,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
           offset
         )
         this.producers = res.data.producers
+        this.totalItems = res.data.total
       } catch (err) {
         return this.errorHandler(err)
       }

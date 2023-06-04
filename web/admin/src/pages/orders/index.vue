@@ -43,7 +43,7 @@ const fetchOrders = async (): Promise<void> => {
     if (err instanceof Error) {
       show(err.message)
     }
-    console.log('failed to fetch orders', err)
+    console.log(err)
   }
 }
 

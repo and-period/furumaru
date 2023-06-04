@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useSearchAddress } from '~/lib/hooks'
+import { useAlert, useSearchAddress } from '~/lib/hooks'
 import { useProducerStore } from '~/store'
 import { CreateProducerRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
@@ -7,6 +7,7 @@ import { ImageUploadStatus } from '~/types/props'
 const router = useRouter()
 const { createProducer, uploadProducerThumbnail, uploadProducerHeader } =
   useProducerStore()
+const { alertType, isShow, alertText, show } = useAlert('error')
 
 const formData = reactive<CreateProducerRequest>({
   lastname: '',
@@ -42,8 +43,11 @@ const handleSubmit = async () => {
       phoneNumber: formData.phoneNumber.replace('0', '+81')
     })
     router.push('/producers')
-  } catch (error) {
-    console.log(error)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
   }
 }
 
@@ -96,6 +100,9 @@ const searchAddress = async () => {
 <template>
   <templates-producer-new
     :form-data="formData"
+    :is-alrt="isShow"
+    :alert-type="alertType"
+    :alert-text="alertText"
     :thumbnail-upload-status="thumbnailUploadStatus"
     :header-upload-status="headerUploadStatus"
     :search-loading="searchLoading"
