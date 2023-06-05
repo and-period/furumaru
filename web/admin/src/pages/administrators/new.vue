@@ -8,7 +8,8 @@ const router = useRouter()
 const administratorStore = useAdministratorStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const formData = reactive<CreateAdministratorRequest>({
+const loading = ref<boolean>(false)
+const formData = ref<CreateAdministratorRequest>({
   lastname: '',
   firstname: '',
   lastnameKana: '',
@@ -19,9 +20,10 @@ const formData = reactive<CreateAdministratorRequest>({
 
 const handleSubmit = async (): Promise<void> => {
   try {
+    loading.value = true
     const req: CreateAdministratorRequest = {
-      ...formData,
-      phoneNumber: convertJapaneseToI18nPhoneNumber(formData.phoneNumber)
+      ...formData.value,
+      phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber)
     }
     await administratorStore.createAdministrator(req)
     router.push('/administrators')
@@ -30,6 +32,8 @@ const handleSubmit = async (): Promise<void> => {
       show(err.message)
     }
     console.log(err)
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -37,6 +41,7 @@ const handleSubmit = async (): Promise<void> => {
 <template>
   <templates-administrator-new
     v-model:form-data="formData"
+    :loading="loading"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"

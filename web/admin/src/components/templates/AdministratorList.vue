@@ -126,7 +126,7 @@ const onClickDelete = (): void => {
         <v-btn color="error" variant="text" @click="onClickCloseDeleteDialog">
           キャンセル
         </v-btn>
-        <v-btn color="primary" variant="outlined" @click="onClickDelete">
+        <v-btn color="primary" variant="outlined" :loading="loading" @click="onClickDelete">
           削除
         </v-btn>
       </v-card-actions>
@@ -166,9 +166,9 @@ const onClickDelete = (): void => {
             color="primary"
             size="small"
             variant="outlined"
+            :prepend-icon="mdiDelete"
             @click.stop="onClickOpenDeleteDialog(item.raw)"
           >
-            <v-icon size="small" :icon="mdiDelete" />
             削除
           </v-btn>
         </template>

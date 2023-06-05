@@ -14,6 +14,7 @@ const administratorId = route.params.id as string
 
 const { administrator } = storeToRefs(administratorStore)
 
+const loading = ref<boolean>(false)
 const formData = ref<UpdateAdministratorRequest>({
   lastname: '',
   firstname: '',
@@ -27,7 +28,7 @@ const fetchState = useAsyncData(async (): Promise<void> => {
     await administratorStore.getAdministrator(administratorId)
     formData.value = {
       ...administrator.value,
-      phoneNumber: convertI18nToJapanesePhoneNumber(administrator.value.phoneNumber),
+      phoneNumber: convertI18nToJapanesePhoneNumber(administrator.value.phoneNumber)
     }
   } catch (err) {
     if (err instanceof Error) {
@@ -38,11 +39,12 @@ const fetchState = useAsyncData(async (): Promise<void> => {
 })
 
 const isLoading = (): boolean => {
-  return fetchState?.pending?.value || false
+  return fetchState?.pending?.value || loading.value
 }
 
 const handleSubmit = async (): Promise<void> => {
   try {
+    loading.value = true
     const req: UpdateAdministratorRequest = {
       ...formData.value,
       phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber)
@@ -54,6 +56,8 @@ const handleSubmit = async (): Promise<void> => {
       show(err.message)
     }
     console.log(err)
+  } finally {
+    loading.value = false
   }
 }
 

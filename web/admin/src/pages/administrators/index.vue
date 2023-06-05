@@ -10,6 +10,7 @@ const { alertType, isShow, alertText, show } = useAlert('error')
 
 const { administrators, total } = storeToRefs(administratorStore)
 
+const loading = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
 
 const fetchState = useAsyncData(async (): Promise<void> => {
@@ -32,7 +33,7 @@ const fetchAdministrators = async (): Promise<void> => {
 }
 
 const isLoading = (): boolean => {
-  return fetchState?.pending?.value || false
+  return fetchState?.pending?.value || loading.value
 }
 
 const handleUpdatePage = async (page: number): Promise<void> => {
@@ -46,12 +47,15 @@ const handleClickAdd = (): void => {
 
 const handleClickDelete = async (administratorId: string): Promise<void> => {
   try {
+    loading.value = true
     await administratorStore.deleteAdministrator(administratorId)
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
+  } finally {
+    loading.value = false
   }
 }
 

@@ -1,8 +1,14 @@
 <script lang="ts" setup>
+import useVuelidate from '@vuelidate/core'
 import { AlertType } from '~/lib/hooks'
+import { email, getErrorMessage, maxLength, required, tel } from '~/lib/validations'
 import { CreateAdministratorRequest } from '~/types/api'
 
 const props = defineProps({
+  loading: {
+    type: Boolean,
+    default: false
+  },
   isAlert: {
     type: Boolean,
     default: false
@@ -33,12 +39,27 @@ const emit = defineEmits<{
   (e: 'submit'): void
 }>()
 
+const rules = computed(() => ({
+  lastname: { required, maxLength: maxLength(16) },
+  firstname: { required, maxLength: maxLength(16) },
+  lastnameKana: { required, maxLength: maxLength(32) },
+  firstnameKana: { required, maxLength: maxLength(32) },
+  email: { required, email },
+  phoneNumber: { required, tel }
+}))
 const formDataValue = computed({
   get: (): CreateAdministratorRequest => props.formData,
   set: (formData: CreateAdministratorRequest): void => emit('update:form-data', formData)
 })
 
-const onSubmit = (): void => {
+const validate = useVuelidate(rules, formDataValue)
+
+const onSubmit = async (): Promise<void> => {
+  const valid = await validate.value.$validate()
+  if (!valid) {
+    return
+  }
+
   emit('submit')
 }
 </script>
@@ -46,7 +67,7 @@ const onSubmit = (): void => {
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
 
-  <v-card>
+  <v-card :loading="loading">
     <v-card-title>管理者登録</v-card-title>
 
     <form @submit.prevent="onSubmit">
@@ -54,48 +75,44 @@ const onSubmit = (): void => {
         <div class="d-flex">
           <v-text-field
             v-model="formDataValue.lastname"
+            :error-messages="getErrorMessage(validate.lastname.$errors)"
             class="mr-4"
             label="管理者名:姓"
-            maxlength="16"
-            required
           />
           <v-text-field
             v-model="formDataValue.firstname"
+            :error-messages="getErrorMessage(validate.firstname.$errors)"
             label="管理者名:名"
-            maxlength="16"
-            required
           />
         </div>
         <div class="d-flex">
           <v-text-field
             v-model="formDataValue.lastnameKana"
+            :error-messages="getErrorMessage(validate.lastnameKana.$errors)"
             class="mr-4"
             label="管理者名:姓（ふりがな）"
-            maxlength="32"
-            required
           />
           <v-text-field
             v-model="formDataValue.firstnameKana"
+            :error-messages="getErrorMessage(validate.firstnameKana.$errors)"
             label="管理者名:名（ふりがな）"
-            maxlength="32"
-            required
           />
         </div>
         <v-text-field
           v-model="formDataValue.email"
+          :error-messages="getErrorMessage(validate.email.$errors)"
           label="連絡先（メールアドレス）"
           type="email"
-          required
         />
         <v-text-field
           v-model="formDataValue.phoneNumber"
+          :error-messages="getErrorMessage(validate.phoneNumber.$errors)"
           label="連絡先（電話番号）"
-          required
         />
       </v-card-text>
 
       <v-card-actions>
-        <v-btn block variant="outlined" color="primary" type="submit">
+        <v-btn block :loading="loading" type="submit" variant="outlined" color="primary">
           登録
         </v-btn>
       </v-card-actions>
