@@ -37,10 +37,6 @@ const props = defineProps({
   tableItemsTotal: {
     type: Number,
     default: 0
-  },
-  tableSortBy: {
-    type: Array as PropType<VDataTable['sortBy']>,
-    default: () => []
   }
 })
 
@@ -51,7 +47,6 @@ const emit = defineEmits<{
   (e: 'click:add'): void
   (e: 'click:delete', notificationId: string): void
   (e: 'update:delete-dialog', v: boolean): void
-  (e: 'update:sort-by', sortBy: VDataTable['sortBy']): void
 }>()
 
 const headers: VDataTable['headers'] = [
@@ -96,10 +91,6 @@ const onClickUpdateItemsPerPage = (page: number): void => {
   emit('click:update-items-per-page', page)
 }
 
-const onClickUpdateSortBy = (sortBy: VDataTable['sortBy']): void => {
-  emit('update:sort-by', sortBy)
-}
-
 const onClickRow = (promotionId: string): void => {
   emit('click:row', promotionId)
 }
@@ -135,7 +126,7 @@ const onClickDelete = (): void => {
         <v-btn color="error" variant="text" @click="onClickCloseDeleteDialog">
           キャンセル
         </v-btn>
-        <v-btn color="primary" variant="outlined" @click="onClickDelete">
+        <v-btn color="primary" variant="outlined" :loading="loading" @click="onClickDelete">
           削除
         </v-btn>
       </v-card-actions>
@@ -158,14 +149,10 @@ const onClickDelete = (): void => {
         :items="props.administrators"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"
-        :sort-by="props.tableSortBy"
-        :multi-sort="true"
         hover
         no-data-text="登録されている管理者がいません。"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
-        @update:sort-by="onClickUpdateSortBy"
-        @update:sort-desc="onClickUpdateSortBy"
         @click:row="(_: any, {item}: any) => onClickRow(item.raw.id)"
       >
         <template #[`item.name`]="{ item }">
@@ -179,9 +166,9 @@ const onClickDelete = (): void => {
             color="primary"
             size="small"
             variant="outlined"
+            :prepend-icon="mdiDelete"
             @click.stop="onClickOpenDeleteDialog(item.raw)"
           >
-            <v-icon size="small" :icon="mdiDelete" />
             削除
           </v-btn>
         </template>
