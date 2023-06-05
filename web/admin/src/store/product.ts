@@ -36,6 +36,20 @@ export const useProductStore = defineStore('product', {
     },
 
     /**
+     * 商品詳細を取得する非同期関数
+     * @param productId
+     * @returns
+     */
+    async getProduct (productId: string): Promise<ProductResponse> {
+      try {
+        const res = await apiClient.productApi().v1GetProduct(productId)
+        return res.data
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
      * 商品画像をアップロードする非同期関数
      * @param payload
      * @returns
@@ -71,27 +85,13 @@ export const useProductStore = defineStore('product', {
     },
 
     /**
-     * 商品詳細を取得する非同期関数
-     * @param id
-     * @returns
-     */
-    async getProduct (id: string): Promise<ProductResponse> {
-      try {
-        const res = await apiClient.productApi().v1GetProduct(id)
-        return res.data
-      } catch (err) {
-        return this.errorHandler(err)
-      }
-    },
-
-    /**
      * 商品を更新する関数
-     * @param id
+     * @param productId
      * @param payload
      */
-    async updateProduct (id: string, payload: UpdateProductRequest) {
+    async updateProduct (productId: string, payload: UpdateProductRequest) {
       try {
-        await apiClient.productApi().v1UpdateProduct(id, payload)
+        await apiClient.productApi().v1UpdateProduct(productId, payload)
       } catch (err) {
         return this.errorHandler(err)
       }

@@ -65,7 +65,7 @@ try {
   <templates-shipping-list
     v-model:delete-dialog="deleteDialog"
     :loading="isLoading()"
-    :is-alrt="isShow"
+    :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :shippings="shippings"

@@ -79,7 +79,7 @@ try {
 <template>
   <templates-coordinator-list
     :loading="isLoading()"
-    :is-alrt="isShow"
+    :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :coordinators="coordinators"

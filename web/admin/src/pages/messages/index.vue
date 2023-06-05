@@ -22,7 +22,7 @@ const handleClickMessage = async (messageId: string) => {
 
 <template>
   <templates-message-list
-    :is-alrt="isShow"
+    :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :message="message"

@@ -104,7 +104,7 @@ const onClickAdd = (): void => {
     <v-card-text>
       <v-data-table-server
         :headers="headers"
-        :shippings="shippings"
+        :items="shippings"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"
         :sort-by="props.tableSortBy"

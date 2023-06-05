@@ -8,7 +8,7 @@ const customerStore = useCustomerStore()
 const customerId = route.params.id as string
 
 const fetchState = useAsyncData(async () => {
-  await customerStore.fetchCustomer(customerId)
+  await customerStore.getCustomer(customerId)
 })
 
 const { customer } = storeToRefs(customerStore)

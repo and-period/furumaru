@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { defineStore } from 'pinia'
 
 import { useCommonStore } from './common'
@@ -8,14 +7,6 @@ import {
   UpdateProductTypeRequest,
   UploadImageResponse
 } from '~/types/api'
-import {
-  AuthError,
-  ConflictError,
-  ConnectionError,
-  InternalServerError,
-  NotFoundError,
-  ValidationError
-} from '~/types/exception'
 import { apiClient } from '~/plugins/api-client'
 
 export const useProductTypeStore = defineStore('productType', {
@@ -23,18 +14,17 @@ export const useProductTypeStore = defineStore('productType', {
     productTypes: [] as ProductTypesResponse['productTypes'],
     totalItems: 0
   }),
+
   actions: {
     /**
      * 品目を全件取得する非同期関数
      * @param limit 取得上限数
      * @param offset 取得開始位置
+     * @param orders ソートキー
      */
-    async fetchProductTypes (limit = 20, offset = 0): Promise<void> {
+    async fetchProductTypes (limit = 20, offset = 0, orders = []): Promise<void> {
       try {
-        const res = await apiClient.productTypeApi().v1ListAllProductTypes(
-          limit,
-          offset
-        )
+        const res = await apiClient.productTypeApi().v1ListAllProductTypes(limit, offset, orders.join(','))
         this.productTypes = res.data.productTypes
         this.totalItems = res.data.total
       } catch (err) {
@@ -75,7 +65,7 @@ export const useProductTypeStore = defineStore('productType', {
      * @param payload 品目情報
      * @returns
      */
-    async editProductType (
+    async updateProductType (
       categoryId: string,
       productTypeId: string,
       payload: UpdateProductTypeRequest

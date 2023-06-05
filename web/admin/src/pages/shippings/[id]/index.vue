@@ -91,7 +91,7 @@ try {
   <templates-shipping-edit
     v-model:form-data="formData"
     :loading="isLoading()"
-    :is-alrt="isShow"
+    :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     @submit="handleSubmit"

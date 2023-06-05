@@ -37,6 +37,20 @@ export const useProducerStore = defineStore('producer', {
     },
 
     /**
+     * 生産者IDから生産者の情報を取得する非同期関数
+     * @param producerId 生産者ID
+     * @returns 生産者の情報
+     */
+    async getProducer (producerId: string): Promise<ProducerResponse> {
+      try {
+        const res = await apiClient.producerApi().v1GetProducer(producerId)
+        return res.data
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
      * 生産者を新規登録する非同期関数
      * @param payload
      */
@@ -96,28 +110,14 @@ export const useProducerStore = defineStore('producer', {
     },
 
     /**
-     * 生産者IDから生産者の情報を取得する非同期関数
-     * @param id 生産者ID
-     * @returns 生産者の情報
-     */
-    async getProducer (id: string): Promise<ProducerResponse> {
-      try {
-        const res = await apiClient.producerApi().v1GetProducer(id)
-        return res.data
-      } catch (err) {
-        return this.errorHandler(err)
-      }
-    },
-
-    /**
      * 生産者を更新する非同期関数
-     * @param id 更新対象の生産者ID
+     * @param producerId 更新対象の生産者ID
      * @param payload
      * @returns
      */
-    async updateProducer (id: string, payload: UpdateProducerRequest) {
+    async updateProducer (producerId: string, payload: UpdateProducerRequest) {
       try {
-        await apiClient.producerApi().v1UpdateProducer(id, payload)
+        await apiClient.producerApi().v1UpdateProducer(producerId, payload)
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -125,12 +125,12 @@ export const useProducerStore = defineStore('producer', {
 
     /**
      * 生産者を削除する非同期関数
-     * @param id 削除する生産者のID
+     * @param producerId 削除する生産者のID
      * @returns
      */
-    async deleteProducer (id: string) {
+    async deleteProducer (producerId: string) {
       try {
-        await apiClient.producerApi().v1DeleteProducer(id)
+        await apiClient.producerApi().v1DeleteProducer(producerId)
       } catch (err) {
         return this.errorHandler(err)
       }

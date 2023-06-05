@@ -185,7 +185,7 @@ const handleSubmitCoordinator = async (): Promise<void> => {
       ...formData,
       phoneNumber: convertJapaneseToI18nPhoneNumber(formData.phoneNumber)
     }
-    await coordinatorStore.updateCoordinator(req, coordinatorId)
+    await coordinatorStore.updateCoordinator(coordinatorId, req)
     router.push('/coordinators')
   } catch (err) {
     if (err instanceof Error) {
@@ -226,7 +226,6 @@ try {
     v-model:related-producers-dialog="relatedProducersDialog"
     :loading="isLoading()"
     :is-alert="isShow"
-    :is-alrt="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :related-producers="relatedProducers"

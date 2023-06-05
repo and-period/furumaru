@@ -135,7 +135,7 @@ try {
 <template>
   <templates-producer-edit
     v-model:form-data="formData"
-    :is-alrt="isShow"
+    :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :form-data-loading="isLoading()"

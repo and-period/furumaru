@@ -72,7 +72,7 @@ try {
 <template>
   <templates-promotion-list
     :loading="isLoading()"
-    :is-alrt="isShow"
+    :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :promotions="promotions"

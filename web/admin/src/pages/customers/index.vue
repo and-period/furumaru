@@ -60,7 +60,7 @@ try {
 <template>
   <templates-customer-list
     :loading="isLoading()"
-    :is-alrt="isShow"
+    :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :customers="customers"

@@ -28,7 +28,7 @@ const categories = computed(() => {
   return categoryStore.categories
 })
 const categoryTotal = computed(() => {
-  return categoryStore.totalCategoryItems
+  return categoryStore.total
 })
 const productTypes = computed(() => {
   return productTypeStore.productTypes

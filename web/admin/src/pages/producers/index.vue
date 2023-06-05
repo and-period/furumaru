@@ -75,7 +75,7 @@ try {
 <template>
   <templates-producer-list
     :loading="isLoading()"
-    :is-alrt="isShow"
+    :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :producers="producers"
