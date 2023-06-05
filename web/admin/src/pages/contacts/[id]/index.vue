@@ -42,7 +42,7 @@ const fetchState = useAsyncData(async () => {
 
 const handleSubmit = async (): Promise<void> => {
   try {
-    await contactStore.contactUpdate(formData, contactId)
+    await contactStore.updateContact(formData, contactId)
     router.push('/contacts')
   } catch (err) {
     if (err instanceof Error) {

@@ -10,7 +10,7 @@ const router = useRouter()
 const route = useRoute()
 const id = route.params.id as string
 
-const { getPromotion, editPromotion } = usePromotionStore()
+const { getPromotion, updatePromotion } = usePromotionStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
 const formData = reactive<UpdatePromotionRequest>({
@@ -51,7 +51,7 @@ const isLoading = (): boolean => {
 
 const handleSubmit = async () => {
   try {
-    await editPromotion(id, {
+    await updatePromotion(id, {
       ...formData,
       discountRate: Number(formData.discountRate)
     })

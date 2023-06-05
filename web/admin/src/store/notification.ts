@@ -19,18 +19,30 @@ export const useNotificationStore = defineStore('notification', {
      * 登録済みのお知らせ一覧を取得する非同期関数
      * @param limit 取得上限数
      * @param offset 取得開始位置
+     * @param orders ソートキー
      * @returns
      */
-    async fetchNotifications (limit = 20, offset = 0): Promise<void> {
+    async fetchNotifications (limit = 20, offset = 0, orders = []): Promise<void> {
       try {
-        const res = await apiClient.notificationApi().v1ListNotifications(
-          limit,
-          offset
-        )
+        const res = await apiClient.notificationApi().v1ListNotifications(limit, offset, undefined, undefined, orders.join(''))
         const { notifications, total }: NotificationsResponse = res.data
 
         this.notifications = notifications
         this.totalItems = total
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * お知らせIDからお知らせ情報情報を取得する非同期関数
+     * @param id お知らせID
+     * @returns お知らせ情報
+     */
+    async getNotification (id: string): Promise<NotificationResponse> {
+      try {
+        const res = await apiClient.notificationApi().v1GetNotification(id)
+        return res.data
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -74,25 +86,11 @@ export const useNotificationStore = defineStore('notification', {
     },
 
     /**
-     * お知らせIDからお知らせ情報情報を取得する非同期関数
-     * @param id お知らせID
-     * @returns お知らせ情報
-     */
-    async getNotification (id: string): Promise<NotificationResponse> {
-      try {
-        const res = await apiClient.notificationApi().v1GetNotification(id)
-        return res.data
-      } catch (err) {
-        return this.errorHandler(err)
-      }
-    },
-
-    /**
      * お知らせ情報を編集する非同期関数
      * @param id セールID
      * @param payload
      */
-    async editNotification (
+    async updateNotification (
       id: string,
       payload: UpdateNotificationRequest
     ): Promise<void> {

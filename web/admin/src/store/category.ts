@@ -11,20 +11,21 @@ import { apiClient } from '~/plugins/api-client'
 export const useCategoryStore = defineStore('category', {
   state: () => ({
     categories: [] as CategoriesResponse['categories'],
-    totalCategoryItems: 0
+    total: 0
   }),
 
   actions: {
     /**
-     * カテゴリを全件取得する非同期関数
+     * カテゴリ一覧を取得する非同期関数
      * @param limit 取得上限数
      * @param offset 取得開始位置
+     * @param orders ソートキー
      */
-    async fetchCategories (limit = 20, offset = 0): Promise<void> {
+    async fetchCategories (limit = 20, offset = 0, orders = []): Promise<void> {
       try {
-        const res = await listCategories(limit, offset)
+        const res = await listCategories(limit, offset, orders)
         this.categories = res.categories
-        this.totalCategoryItems = res.total
+        this.total = res.total
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -34,12 +35,13 @@ export const useCategoryStore = defineStore('category', {
      * カテゴリを追加取得する非同期関数
      * @param limit 取得上限数
      * @param offset 取得開始位置
+     * @param orders ソートキー
      */
-    async moreCategories (limit = 20, offset = 0): Promise<void> {
+    async moreCategories (limit = 20, offset = 0, orders = []): Promise<void> {
       try {
-        const res = await listCategories(limit, offset)
+        const res = await listCategories(limit, offset, orders)
         this.categories.push(...res.categories)
-        this.totalCategoryItems = res.total
+        this.total = res.total
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -65,10 +67,10 @@ export const useCategoryStore = defineStore('category', {
 
     /**
      * カテゴリを編集する非同期関数
+     * @param categoryId カテゴリID
      * @param payload
-     * @param categoryId
      */
-    async editCategory (categoryId: string, payload: UpdateCategoryRequest) {
+    async updateCategory (categoryId: string, payload: UpdateCategoryRequest) {
       const commonStore = useCommonStore()
       try {
         await apiClient.categoryApi().v1UpdateCategory(categoryId, payload)
@@ -84,7 +86,7 @@ export const useCategoryStore = defineStore('category', {
 
     /**
      * カテゴリを削除する非同期関数
-     * @param categoryId
+     * @param categoryId カテゴリID
      */
     async deleteCategory (categoryId: string): Promise<void> {
       const commonStore = useCommonStore()
@@ -102,7 +104,7 @@ export const useCategoryStore = defineStore('category', {
   }
 })
 
-async function listCategories (limit = 20, offset = 0): Promise<CategoriesResponse> {
-  const res = await apiClient.categoryApi().v1ListCategories(limit, offset)
+async function listCategories (limit = 20, offset = 0, orders: string[] = []): Promise<CategoriesResponse> {
+  const res = await apiClient.categoryApi().v1ListCategories(limit, offset, '', orders.join(','))
   return { ...res.data }
 }

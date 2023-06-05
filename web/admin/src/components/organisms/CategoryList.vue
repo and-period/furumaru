@@ -86,7 +86,7 @@ const openDeleteDialog = (item: CategoriesResponseCategoriesInner): void => {
 
 const handleEdit = async (): Promise<void> => {
   try {
-    await categoryStore.editCategory(categoryId.value, categoryFormData)
+    await categoryStore.updateCategory(categoryId.value, categoryFormData)
     editDialog.value = false
   } catch (error) {
     console.log(error)

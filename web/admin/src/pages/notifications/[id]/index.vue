@@ -10,7 +10,7 @@ const router = useRouter()
 const route = useRoute()
 const id = route.params.id as string
 
-const { getNotification, editNotification } = useNotificationStore()
+const { getNotification, updateNotification } = useNotificationStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
 const formData = reactive<NotificationResponse>({
@@ -49,7 +49,7 @@ const isLoading = (): boolean => {
 
 const handleSubmit = async () => {
   try {
-    await editNotification(id, formData)
+    await updateNotification(id, formData)
     router.push('/notifications')
   } catch (err) {
     if (err instanceof Error) {

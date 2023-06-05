@@ -9,6 +9,7 @@ export const useCustomerStore = defineStore('customer', {
     customers: [] as UsersResponse['users'],
     totalItems: 0
   }),
+
   actions: {
     /**
      * 顧客の一覧を取得する非同期関数
@@ -29,7 +30,7 @@ export const useCustomerStore = defineStore('customer', {
      * 顧客を取得する非同期関数
      * @param customerId 顧客ID
      */
-    async fetchCustomer (customerId: string): Promise<void> {
+    async getCustomer (customerId: string): Promise<void> {
       try {
         const res = await apiClient.userApi().v1GetUser(customerId)
         this.customer = res.data
