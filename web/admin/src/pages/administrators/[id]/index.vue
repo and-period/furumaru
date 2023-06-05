@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
+import { convertI18nToJapanesePhoneNumber, convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert } from '~/lib/hooks'
 import { useAdministratorStore } from '~/store'
 import { UpdateAdministratorRequest } from '~/types/api'
@@ -25,7 +25,10 @@ const formData = ref<UpdateAdministratorRequest>({
 const fetchState = useAsyncData(async (): Promise<void> => {
   try {
     await administratorStore.getAdministrator(administratorId)
-    formData.value = { ...administrator.value }
+    formData.value = {
+      ...administrator.value,
+      phoneNumber: convertI18nToJapanesePhoneNumber(administrator.value.phoneNumber),
+    }
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
