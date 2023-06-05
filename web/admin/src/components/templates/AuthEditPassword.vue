@@ -13,6 +13,10 @@ import {
 import { UpdateAuthPasswordRequest } from '~/types/api'
 
 const props = defineProps({
+  loading: {
+    type: Boolean,
+    default: false
+  },
   isAlert: {
     type: Boolean,
     default: false
@@ -36,6 +40,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
+  (e: 'update:form-data', formData: UpdateAuthPasswordRequest): void
   (e: 'submit'): void
 }>()
 
@@ -53,8 +58,12 @@ const rules = computed<ValidationArgs>(() => ({
     sameAs: sameAs(props.formData.newPassword)
   }
 }))
+const formDataValue = computed({
+  get: (): UpdateAuthPasswordRequest => props.formData,
+  set: (formData: UpdateAuthPasswordRequest): void => emit('update:form-data', formData)
+})
 
-const validate = useVuelidate(rules, props.formData)
+const validate = useVuelidate(rules, formDataValue)
 
 const showOldPassword = ref<boolean>(false)
 const showNewPassword = ref<boolean>(false)
@@ -73,8 +82,8 @@ const onChangePasswordConfirmationFieldType = (): void => {
 }
 
 const onSubmit = async (): Promise<void> => {
-  const result = await validate.value.$validate()
-  if (!result) {
+  const valid = await validate.value.$validate()
+  if (!valid) {
     return
   }
 
@@ -119,9 +128,10 @@ const onSubmit = async (): Promise<void> => {
           @click:append="onChangePasswordConfirmationFieldType"
         />
       </v-card-text>
+
       <v-card-actions>
-        <v-btn type="submit" block color="primary" variant="outlined">
-          変更
+        <v-btn block :loading="loading" type="submit" color="primary" variant="outlined">
+          更新
         </v-btn>
       </v-card-actions>
     </v-form>

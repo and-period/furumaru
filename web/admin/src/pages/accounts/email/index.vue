@@ -7,22 +7,26 @@ const router = useRouter()
 const authStore = useAuthStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const formData = reactive<UpdateAuthEmailRequest>({
+const loading = ref<boolean>(false)
+const formData = ref<UpdateAuthEmailRequest>({
   email: ''
 })
 
 const handleSubmit = async (): Promise<void> => {
   try {
-    await authStore.emailUpdate(formData)
+    loading.value = true
+    await authStore.emailUpdate(formData.value)
     router.push({
       name: 'accounts-email-verification',
-      params: { email: formData.email }
+      params: { email: formData.value.email }
     })
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -30,6 +34,7 @@ const handleSubmit = async (): Promise<void> => {
 <template>
   <templates-auth-edit-email
     v-model:form-data="formData"
+    :loading="loading"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"

@@ -61,7 +61,7 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async passwordUpdate (payload: UpdateAuthPasswordRequest): Promise<void> {
+    async updatePassword (payload: UpdateAuthPasswordRequest): Promise<void> {
       try {
         await apiClient.authApi().v1UpdateAuthPassword(payload)
         const commonStore = useCommonStore()

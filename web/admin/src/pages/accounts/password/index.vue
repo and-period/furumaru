@@ -7,7 +7,8 @@ const router = useRouter()
 const authStore = useAuthStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const formData = reactive<UpdateAuthPasswordRequest>({
+const loading = ref<boolean>(false)
+const formData = ref<UpdateAuthPasswordRequest>({
   oldPassword: '',
   newPassword: '',
   passwordConfirmation: ''
@@ -15,13 +16,16 @@ const formData = reactive<UpdateAuthPasswordRequest>({
 
 const handleSubmit = async (): Promise<void> => {
   try {
-    await authStore.passwordUpdate(formData)
+    loading.value = true
+    await authStore.updatePassword(formData.value)
     router.push('/')
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -29,6 +33,7 @@ const handleSubmit = async (): Promise<void> => {
 <template>
   <templates-auth-edit-password
     v-model:form-data="formData"
+    :loading="loading"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
