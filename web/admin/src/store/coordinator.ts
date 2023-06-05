@@ -62,7 +62,6 @@ export const useCoordinatorStore = defineStore('coordinator', {
       }
     },
 
-
     /**
      * コーディネータの情報を更新する非同期関数
      * @param payload
