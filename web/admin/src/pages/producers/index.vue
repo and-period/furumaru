@@ -37,7 +37,7 @@ const fetchState = useAsyncData(async () => {
 })
 
 const handleClickAdd = () => {
-  router.push('/producers/add')
+  router.push('/producers/new')
 }
 
 const handleClickAddVideo = (producerId: string) => {
@@ -45,7 +45,7 @@ const handleClickAddVideo = (producerId: string) => {
 }
 
 const handleClickRow = (producerId: string) => {
-  router.push(`/producers/edit/${producerId}`)
+  router.push(`/producers/${producerId}`)
 }
 
 const handleClickDelete = async (producerId: string) => {

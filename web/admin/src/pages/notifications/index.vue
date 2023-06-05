@@ -40,11 +40,11 @@ const fetchNotifications = async () => {
 }
 
 const handleClickAdd = () => {
-  router.push('/notifications/add')
+  router.push('/notifications/new')
 }
 
 const handleClickRow = (notificationId: string) => {
-  router.push(`/notifications/edit/${notificationId}`)
+  router.push(`/notifications/${notificationId}`)
 }
 
 const handleClickDelete = async (notificationId: string): Promise<void> => {

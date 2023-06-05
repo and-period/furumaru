@@ -70,7 +70,7 @@ const convertPhone = (phoneNumber: string): string => {
 }
 
 const handleEdit = (item: ProducersResponseProducersInner) => {
-  router.push(`/producers/edit/${item.id}`)
+  router.push(`/producers/${item.id}`)
 }
 </script>
 

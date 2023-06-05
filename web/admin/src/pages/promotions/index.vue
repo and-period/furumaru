@@ -39,11 +39,11 @@ const handleUpdatePage = async (page: number) => {
 }
 
 const handleClickAdd = () => {
-  router.push('/promotions/add')
+  router.push('/promotions/new')
 }
 
 const handleClickRow = (promotionId: string) => {
-  router.push(`/promotions/edit/${promotionId}`)
+  router.push(`/promotions/${promotionId}`)
 }
 
 const handleClickDelete = async (promotionId: string): Promise<void> => {

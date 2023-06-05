@@ -62,7 +62,7 @@ const handleClickSortBy = (item: VDataTable['sortBy']): void => {
 }
 
 const handleRowClick = (contactItem: ContactsResponseContactsInner) => {
-  router.push(`/contacts/edit/${contactItem.id}`)
+  router.push(`/contacts/${contactItem.id}`)
 }
 
 const isLoading = (): boolean => {

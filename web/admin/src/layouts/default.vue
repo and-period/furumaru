@@ -75,7 +75,7 @@ const navigationDrawerList: NavigationDrawerItem[] = [
 
 const navigationDrawerSettingsList: NavigationDrawerItem[] = [
   {
-    to: '/settings',
+    to: '/accounts',
     icon: mdiAccount,
     title: 'マイページ'
   },
@@ -83,6 +83,11 @@ const navigationDrawerSettingsList: NavigationDrawerItem[] = [
     to: '/system',
     icon: mdiCog,
     title: 'システム設定'
+  },
+  {
+    to: '/version',
+    icon: mdiCog,
+    title: 'バージョン情報'
   }
 ]
 

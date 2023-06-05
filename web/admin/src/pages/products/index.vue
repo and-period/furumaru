@@ -47,7 +47,7 @@ const handleClickShow = (productId: string): void => {
 }
 
 const handleClickNew = () => {
-  router.push('/products/add')
+  router.push('/products/new')
 }
 
 const handleClickDelete = async (productId: string): Promise<void> => {
