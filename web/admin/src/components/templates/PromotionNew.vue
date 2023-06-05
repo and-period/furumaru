@@ -51,10 +51,9 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <div>
-    <p class="text-h6">
-      セール情報登録
-    </p>
+  <v-card>
+    <v-card-title>セール情報登録</v-card-title>
+
     <organisms-promotion-form v-model:form-data="formDataValue" v-model:time-data="timeDataValue" @submit="handleSubmit" />
-  </div>
+  </v-card>
 </template>

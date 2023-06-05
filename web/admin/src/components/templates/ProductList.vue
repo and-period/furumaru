@@ -145,6 +145,7 @@ const onClickDelete = (): void => {
 
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+
   <v-dialog v-model="deleteDialog" width="500">
     <v-card>
       <v-card-text class="text-h7">
@@ -161,6 +162,7 @@ const onClickDelete = (): void => {
       </v-card-actions>
     </v-card>
   </v-dialog>
+
   <v-card class="mt-4" flat :loading="props.loading">
     <v-card-title class="d-flex flex-row">
       商品管理

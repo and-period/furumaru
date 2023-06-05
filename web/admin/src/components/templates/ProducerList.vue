@@ -134,14 +134,6 @@ const onClickDelete = (): void => {
 
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
-  <v-card-title class="d-flex flex-row">
-    生産者管理
-    <v-spacer />
-    <v-btn variant="outlined" color="primary" @click="onClickAdd">
-      <v-icon start :icon="mdiPlus" />
-      生産者登録
-    </v-btn>
-  </v-card-title>
 
   <v-dialog v-model="dialog" width="500">
     <v-card>
@@ -161,6 +153,15 @@ const onClickDelete = (): void => {
   </v-dialog>
 
   <v-card class="mt-4" flat :loading="props.loading">
+    <v-card-title class="d-flex flex-row">
+      生産者管理
+      <v-spacer />
+      <v-btn variant="outlined" color="primary" @click="onClickAdd">
+        <v-icon start :icon="mdiPlus" />
+        生産者登録
+      </v-btn>
+    </v-card-title>
+
     <v-card-text>
       <v-data-table-server
         :headers="headers"

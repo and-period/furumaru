@@ -147,15 +147,6 @@ const onClickDelete = (): void => {
 </script>
 
 <template>
-  <v-card-title class="d-flex flex-row">
-    お知らせ管理
-    <v-spacer />
-    <v-btn color="primary" variant="outlined" @click="onClickAdd">
-      <v-icon start :icon="mdiPlus" />
-      お知らせ登録
-    </v-btn>
-  </v-card-title>
-
   <v-dialog v-model="dialog" width="500">
     <v-card>
       <v-card-title class="text-h7">
@@ -174,6 +165,15 @@ const onClickDelete = (): void => {
   </v-dialog>
 
   <v-card class="mt-4" flat :loading="props.loading">
+    <v-card-title class="d-flex flex-row">
+      お知らせ管理
+      <v-spacer />
+      <v-btn color="primary" variant="outlined" @click="onClickAdd">
+        <v-icon start :icon="mdiPlus" />
+        お知らせ登録
+      </v-btn>
+    </v-card-title>
+
     <v-card-text>
       <v-data-table-server
         :headers="headers"

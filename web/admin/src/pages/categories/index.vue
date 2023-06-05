@@ -82,24 +82,20 @@ const handleCategoryMorePage = async () => {
 const handleCreateCategory = async (): Promise<void> => {
   try {
     await categoryStore.createCategory(categoryFormData)
-    categoryCloseDialog()
     categoryFormData.name = ''
   } catch (err) {
-    categoryCloseDialog()
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
+  } finally {
+    dialog.category = false
   }
 }
 
 const handleUpdateCategoryPage = async (page: number) => {
   categoryPagination.updateCurrentPage(page)
   await fetchCategories()
-}
-
-const categoryCloseDialog = (): void => {
-  dialog.category = false
 }
 
 /*
@@ -123,12 +119,13 @@ const fetchProductTypes = async () => {
 const handleCreateProductType = async (): Promise<void> => {
   try {
     await productTypeStore.createProductType(selectedCategoryId.value, productTypeFormData)
-    productTypeCloseDialog()
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
+  } finally {
+    dialog.productType = false
   }
 }
 
@@ -150,10 +147,6 @@ const handleUploadProductTypeIcon = async (files: FileList) => {
 const handleUpdateProductTypePage = async (page: number) => {
   productTypePagination.updateCurrentPage(page)
   await fetchProductTypes()
-}
-
-const productTypeCloseDialog = (): void => {
-  dialog.productType = false
 }
 
 /**
@@ -203,10 +196,8 @@ try {
     @click:category-update-page="handleUpdateCategoryPage"
     @click:category-update-items-per-page="categoryPagination.handleUpdateItemsPerPage"
     @click:category-more-page="handleCategoryMorePage"
-    @click:category-close-dialog="categoryCloseDialog"
     @click:product-type-update-page="handleUpdateProductTypePage"
     @click:product-type-update-items-per-page="productTypePagination.handleUpdateItemsPerPage"
-    @click:product-type-close-dialog="productTypeCloseDialog"
     @update:tab="handleClickTabs"
     @update:product-type-upload-icon="handleUploadProductTypeIcon"
     @submit:category="handleCreateCategory"

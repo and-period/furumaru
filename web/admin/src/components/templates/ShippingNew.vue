@@ -75,16 +75,18 @@ const onSubmit = (): void => {
 </script>
 
 <template>
-  <v-card-title>配送情報登録</v-card-title>
-
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
 
-  <organisms-shipping-form
-    v-model="formDataValue"
-    @click:add-box60-rate-item="addBox60RateItem"
-    @click:add-box80-rate-item="addBox80RateItem"
-    @click:add-box100-rate-item="addBox100RateItem"
-    @click:remove-item-button="onClickRemoveItem"
-    @submit="onSubmit"
-  />
+  <v-card>
+    <v-card-title>配送情報登録</v-card-title>
+
+    <organisms-shipping-form
+      v-model="formDataValue"
+      @click:add-box60-rate-item="addBox60RateItem"
+      @click:add-box80-rate-item="addBox80RateItem"
+      @click:add-box100-rate-item="addBox100RateItem"
+      @click:remove-item-button="onClickRemoveItem"
+      @submit="onSubmit"
+    />
+  </v-card>
 </template>
