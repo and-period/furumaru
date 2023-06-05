@@ -226,7 +226,6 @@ try {
     v-model:related-producers-dialog="relatedProducersDialog"
     :loading="isLoading()"
     :is-alert="isShow"
-    :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :related-producers="relatedProducers"
