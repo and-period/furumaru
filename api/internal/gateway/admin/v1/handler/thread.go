@@ -13,7 +13,32 @@ import (
 
 func (h *handler) ThreadRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication)
+	arg.GET("", h.ListThreadsByContactID)
 	arg.GET("/:threadId", h.GetThread)
+}
+
+func (h *handler) ListThreadsByContactID(ctx *gin.Context) {
+	threadsIn := &messenger.ListThreadsByContactIDInput{
+		ContactID: util.GetParam(ctx, "contactId"),
+	}
+
+	sthreads, err := h.messenger.ListThreadsByContactID(ctx, threadsIn)
+	if err != nil {
+		httpError(ctx, err)
+	}
+	threads := service.NewThreads(sthreads)
+	if len(threads) == 0 {
+		res := &response.ThreadsResponse{
+			Threads: []*response.Thread{},
+		}
+		ctx.JSON(http.StatusOK, res)
+		return
+	}
+
+	res := &response.ThreadsResponse{
+		Threads: threads.Response(),
+	}
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (h *handler) GetThread(ctx *gin.Context) {
