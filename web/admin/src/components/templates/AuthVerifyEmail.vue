@@ -61,8 +61,10 @@ const onSubmit = async () => {
 
 <template>
   <v-alert v-model="isAlertValue" class="mb-2" :type="alertType" :text="alertText" />
+
   <v-card elevation="0">
     <v-card-title>二要素認証</v-card-title>
+
     <v-card-text>
       <p class="text-center">
         認証コードが{{ props.email }}に送信されました

@@ -48,8 +48,10 @@ const onSubmit = async () => {
 
 <template>
   <v-alert v-model="isAlertValue" :type="props.alertType" :text="props.alertText" class="mb-2" />
+
   <v-card elevation="0">
     <v-card-title>メールアドレス変更</v-card-title>
+
     <v-form @submit.prevent="onSubmit">
       <v-card-text>
         <v-text-field v-model="v$.email.$model" :error-messages="getErrorMessage(v$.email.$errors)" label="新規メールアドレス" />

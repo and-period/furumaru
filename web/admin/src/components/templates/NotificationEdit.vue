@@ -51,10 +51,9 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <div>
-    <p class="text-h6">
-      お知らせ編集
-    </p>
+  <v-card>
+    <v-card-title>お知らせ編集</v-card-title>
+
     <organisms-notification-form
       form-type="edit"
       :form-data="formDataValue"
@@ -62,5 +61,5 @@ const handleSubmit = () => {
       :form-data-loading="props.formDataLoading"
       @submit="handleSubmit"
     />
-  </div>
+  </v-card>
 </template>

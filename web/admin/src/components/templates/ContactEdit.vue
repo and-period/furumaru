@@ -83,8 +83,10 @@ const onSubmit = (): void => {
 
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+
   <v-card elevation="0">
     <v-card-title>お問合せ管理</v-card-title>
+
     <v-card-text>
       <v-text-field
         v-model="contactValue.username"

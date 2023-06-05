@@ -75,21 +75,21 @@ const onClickSearchAddress = (): void => {
 </script>
 
 <template>
-  <p class="text-h6">
-    コーディネーター登録
-  </p>
-
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
 
-  <organisms-coordinator-create-form
-    :form-data="formDataValue"
-    :thumbnail-upload-status="props.thumbnailUploadStatus"
-    :header-upload-status="props.headerUploadStatus"
-    :search-loading="props.searchLoading"
-    :search-error-message="props.searchErrorMessage"
-    @update:thumbnail-file="updateThumbnailFileHandler"
-    @update:header-file="updateHeaderFileHandler"
-    @submit="onSubmit"
-    @click:search="onClickSearchAddress"
-  />
+  <v-card>
+    <v-card-title>コーディネーター登録</v-card-title>
+
+    <organisms-coordinator-create-form
+      :form-data="formDataValue"
+      :thumbnail-upload-status="props.thumbnailUploadStatus"
+      :header-upload-status="props.headerUploadStatus"
+      :search-loading="props.searchLoading"
+      :search-error-message="props.searchErrorMessage"
+      @update:thumbnail-file="updateThumbnailFileHandler"
+      @update:header-file="updateHeaderFileHandler"
+      @submit="onSubmit"
+      @click:search="onClickSearchAddress"
+    />
+  </v-card>
 </template>

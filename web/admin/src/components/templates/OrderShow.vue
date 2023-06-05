@@ -489,6 +489,7 @@ const getBoxSize = (size: ShippingSize): string => {
           </v-card-text>
         </v-card>
       </v-window-item>
+
       <v-window-item value="orderInformation">
         <v-card elevation="0">
           <v-card-text>

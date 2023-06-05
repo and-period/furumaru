@@ -92,15 +92,16 @@ const onClickAdd = (): void => {
 </script>
 
 <template>
-  <v-card-title class="d-flex flex-row">
-    配送設定一覧
-    <v-spacer />
-    <v-btn variant="outlined" color="primary" @click="onClickAdd">
-      <v-icon start :icon="mdiPlus" />
-      配送情報登録
-    </v-btn>
-  </v-card-title>
   <v-card class="mt-4" flat :loading="loading">
+    <v-card-title class="d-flex flex-row">
+      配送設定一覧
+      <v-spacer />
+      <v-btn variant="outlined" color="primary" @click="onClickAdd">
+        <v-icon start :icon="mdiPlus" />
+        配送情報登録
+      </v-btn>
+    </v-card-title>
+
     <v-card-text>
       <v-data-table-server
         :headers="headers"

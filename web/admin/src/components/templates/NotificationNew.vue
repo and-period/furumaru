@@ -47,10 +47,9 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <div>
-    <p class="text-h6">
-      お知らせ登録
-    </p>
+  <v-card>
+    <v-card-title>お知らせ登録</v-card-title>
+
     <organisms-notification-form :form-data="formDataValue" :time-data="timeDataValue" @submit="handleSubmit" />
-  </div>
+  </v-card>
 </template>

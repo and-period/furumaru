@@ -20,5 +20,6 @@ const props = defineProps({
 .logo {
   height: auto;
   display: block;
+  max-width: 80%;
 }
 </style>

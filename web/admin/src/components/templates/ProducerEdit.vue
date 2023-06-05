@@ -95,22 +95,24 @@ const handleSearchClick = () => {
 
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
-  <p class="text-h6">
-    生産者編集
-  </p>
-  <v-skeleton-loader v-if="props.formDataLoading" type="article" />
-  <organisms-producer-form
-    v-else
-    form-type="edit"
-    :form-data="formDataValue"
-    :thumbnail-upload-status="props.thumbnailUploadStatus"
-    :header-upload-status="props.headerUploadStatus"
-    :search-loading="props.searchLoading"
-    :search-error-message="props.searchErrorMessage"
-    :form-data-loading="props.formDataLoading"
-    @update:thumbnail-file="updateThumbnailFileHandler"
-    @update:header-file="updateHeaderFileHandler"
-    @submit="handleSubmit"
-    @click:search="handleSearchClick"
-  />
+
+  <v-card>
+    <v-card-title>生産者編集</v-card-title>
+
+    <v-skeleton-loader v-if="props.formDataLoading" type="article" />
+    <organisms-producer-form
+      v-else
+      form-type="edit"
+      :form-data="formDataValue"
+      :thumbnail-upload-status="props.thumbnailUploadStatus"
+      :header-upload-status="props.headerUploadStatus"
+      :search-loading="props.searchLoading"
+      :search-error-message="props.searchErrorMessage"
+      :form-data-loading="props.formDataLoading"
+      @update:thumbnail-file="updateThumbnailFileHandler"
+      @update:header-file="updateHeaderFileHandler"
+      @submit="handleSubmit"
+      @click:search="handleSearchClick"
+    />
+  </v-card>
 </template>

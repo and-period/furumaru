@@ -142,8 +142,10 @@ const onClickRow = (contactItem: ContactsResponseContactsInner): void => {
 
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+
   <v-card>
     <v-card-title>お問い合わせ管理</v-card-title>
+
     <v-card-text>
       <v-data-table-server
         :headers="headers"

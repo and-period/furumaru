@@ -102,9 +102,9 @@ const customerValue = computed({
 </script>
 
 <template>
-  <v-card-title>顧客管理</v-card-title>
-
   <v-card>
+    <v-card-title>顧客管理</v-card-title>
+
     <v-tabs v-model="selector" grow color="dark">
       <v-tab v-for="item in tabs" :key="item.value" :value="item.value">
         {{ item.name }}

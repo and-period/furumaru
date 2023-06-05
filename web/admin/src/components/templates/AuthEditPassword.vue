@@ -84,9 +84,11 @@ const onSubmit = async (): Promise<void> => {
 
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
-  <v-form @submit.prevent="onSubmit">
-    <v-card>
-      <v-card-title>パスワード変更</v-card-title>
+
+  <v-card>
+    <v-card-title>パスワード変更</v-card-title>
+
+    <v-form @submit.prevent="onSubmit">
       <v-card-text>
         <v-text-field
           v-model="validate.oldPassword.$model"
@@ -122,6 +124,6 @@ const onSubmit = async (): Promise<void> => {
           変更
         </v-btn>
       </v-card-actions>
-    </v-card>
-  </v-form>
+    </v-form>
+  </v-card>
 </template>

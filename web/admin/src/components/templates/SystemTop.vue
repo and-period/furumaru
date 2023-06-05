@@ -20,6 +20,7 @@ const onClick = (action: () => void): void => {
 <template>
   <v-card>
     <v-card-title>システム設定</v-card-title>
+
     <v-card-text>
       <v-list>
         <v-list-item

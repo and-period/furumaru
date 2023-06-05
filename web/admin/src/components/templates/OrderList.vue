@@ -223,22 +223,24 @@ const onSubmitExport = (): void => {
 
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+
   <v-dialog v-model="importDialogValue" width="500">
     <v-card>
       <v-card-title class="text-h6 primaryLight">
         ファイルの取り込み
       </v-card-title>
 
-      <v-select
-        v-model="importFormDataValue.company"
-        label="配送会社"
-        class="mr-2 ml-2"
-        :items="fulfillmentCompanies"
-        item-title="name"
-        item-value="value"
-      />
-      <v-file-input class="mr-2" label="CSVを選択" />
-      <v-divider />
+      <v-card-text>
+        <v-select
+          v-model="importFormDataValue.company"
+          label="配送会社"
+          class="mr-2 ml-2"
+          :items="fulfillmentCompanies"
+          item-title="name"
+          item-value="value"
+        />
+        <v-file-input class="mr-2" label="CSVを選択" />
+      </v-card-text>
       <v-card-actions>
         <v-spacer />
         <v-btn color="error" variant="text" @click="toggleImportDialog">
@@ -250,23 +252,24 @@ const onSubmitExport = (): void => {
       </v-card-actions>
     </v-card>
   </v-dialog>
+
   <v-dialog v-model="exportDialogValue" width="500">
     <v-card>
       <v-card-title class="text-h6 primaryLight">
         ファイルの出力
       </v-card-title>
-      <v-divider />
 
-      <v-select
-        v-model="exportFormDataValue.company"
-        label="配送会社"
-        class="mr-2 ml-2"
-        :items="fulfillmentCompanies"
-        item-title="deliveryCompany"
-        item-value="value"
-      />
-      <v-file-input class="mr-2" label="CSVを選択" />
-      <v-divider />
+      <v-card-text>
+        <v-select
+          v-model="exportFormDataValue.company"
+          label="配送会社"
+          class="mr-2 ml-2"
+          :items="fulfillmentCompanies"
+          item-title="deliveryCompany"
+          item-value="value"
+        />
+        <v-file-input class="mr-2" label="CSVを選択" />
+      </v-card-text>
       <v-card-actions>
         <v-spacer />
         <v-btn color="error" variant="text" @click="toggleExportDialog">
@@ -278,6 +281,7 @@ const onSubmitExport = (): void => {
       </v-card-actions>
     </v-card>
   </v-dialog>
+
   <v-card class="mt-4" flat>
     <v-card-title class="d-flex flex-row">
       注文
