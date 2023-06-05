@@ -15,10 +15,6 @@ const menus: SettingMenu[] = [
     action: () => router.push('/accounts/password')
   },
   {
-    text: 'バージョン情報',
-    action: () => router.push('/version')
-  },
-  {
     text: 'サインアウト',
     color: 'error',
     action: () => {
@@ -34,5 +30,5 @@ const handleClick = (action: () => void): void => {
 </script>
 
 <template>
-  <templates-setting-top :menus="menus" @click="handleClick" />
+  <templates-auth-top :menus="menus" @click="handleClick" />
 </template>

@@ -43,11 +43,11 @@ const handleUpdatePage = async (page: number) => {
 }
 
 const handleClickAdd = () => {
-  router.push('/shippings/add')
+  router.push('/shippings/new')
 }
 
 const handleClickRow = (shippingId: string) => {
-  router.push(`/shippings/edit/${shippingId}`)
+  router.push(`/shippings/${shippingId}`)
 }
 
 const handleClickDelete = (shippingId: string) => {

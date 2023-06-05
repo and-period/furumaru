@@ -3,7 +3,6 @@ import { useAuthStore } from '~/store'
 import { SettingMenu } from '~/types/props'
 
 const router = useRouter()
-const authStore = useAuthStore()
 
 const menus: SettingMenu[] = [
   {
