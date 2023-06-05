@@ -40,7 +40,7 @@ const handleSubmit = async () => {
   <templates-notification-new
     :form-data="formData"
     :time-data="timeData"
-    :is-alrt="isShow"
+    :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     @submit="handleSubmit"

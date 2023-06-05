@@ -75,7 +75,7 @@ try {
   <templates-promotion-edit
     v-model:form-data="formData"
     v-model:time-data="timeData"
-    :is-alrt="isShow"
+    :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :form-data-loading="isLoading()"

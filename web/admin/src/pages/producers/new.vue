@@ -100,7 +100,7 @@ const searchAddress = async () => {
 <template>
   <templates-producer-new
     :form-data="formData"
-    :is-alrt="isShow"
+    :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :thumbnail-upload-status="thumbnailUploadStatus"

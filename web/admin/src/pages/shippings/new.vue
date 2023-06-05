@@ -66,7 +66,7 @@ const handleSubmit = async (): Promise<void> => {
 <template>
   <templates-shipping-new
     v-model:form-data="formData"
-    :is-alrt="isShow"
+    :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     @submit="handleSubmit"

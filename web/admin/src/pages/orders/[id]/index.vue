@@ -37,7 +37,7 @@ try {
 <template>
   <templates-order-show
     :loading="isLoading()"
-    :is-alrt="isShow"
+    :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :order="order"
