@@ -1,0 +1,74 @@
+<script lang="ts" setup>
+import { storeToRefs } from 'pinia'
+import { convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
+import { useAlert } from '~/lib/hooks'
+import { useAdministratorStore } from '~/store'
+import { UpdateAdministratorRequest } from '~/types/api'
+
+const route = useRoute()
+const router = useRouter()
+const administratorStore = useAdministratorStore()
+const { alertType, isShow, alertText, show } = useAlert('error')
+
+const administratorId = route.params.id as string
+
+const { administrator } = storeToRefs(administratorStore)
+
+const formData = ref<UpdateAdministratorRequest>({
+  lastname: '',
+  firstname: '',
+  lastnameKana: '',
+  firstnameKana: '',
+  phoneNumber: ''
+})
+
+const fetchState = useAsyncData(async (): Promise<void> => {
+  try {
+    await administratorStore.getAdministrator(administratorId)
+    formData.value = { ...administrator.value }
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+})
+
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || false
+}
+
+const handleSubmit = async (): Promise<void> => {
+  try {
+    const req: UpdateAdministratorRequest = {
+      ...formData.value,
+      phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber)
+    }
+    await administratorStore.updateAdministrator(administratorId, req)
+    router.push('/administrators')
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+}
+
+try {
+  await fetchState.execute()
+} catch (err) {
+  console.log('failed to setup', err)
+}
+</script>
+
+<template>
+  <templates-administrator-edit
+    v-model:form-data="formData"
+    :loading="isLoading()"
+    :is-alert="isShow"
+    :alert-type="alertType"
+    :alert-text="alertText"
+    :administrator="administrator"
+    @submit="handleSubmit"
+  />
+</template>

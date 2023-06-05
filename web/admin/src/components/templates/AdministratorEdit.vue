@@ -1,0 +1,126 @@
+<script lang="ts" setup>
+import { AlertType } from '~/lib/hooks'
+import { AdministratorResponse, UpdateAdministratorRequest } from '~/types/api'
+
+const props = defineProps({
+  loading: {
+    type: Boolean,
+    default: false
+  },
+  isAlert: {
+    type: Boolean,
+    default: false
+  },
+  alertType: {
+    type: String as PropType<AlertType>,
+    default: undefined
+  },
+  alertText: {
+    type: String,
+    default: ''
+  },
+  administrator: {
+    type: Object as PropType<AdministratorResponse>,
+    default: (): AdministratorResponse => ({
+      id: '',
+      lastname: '',
+      lastnameKana: '',
+      firstname: '',
+      firstnameKana: '',
+      email: '',
+      phoneNumber: '',
+      createdAt: 0,
+      updatedAt: 0
+    })
+  },
+  formData: {
+    type: Object as PropType<UpdateAdministratorRequest>,
+    default: (): UpdateAdministratorRequest => ({
+      lastname: '',
+      lastnameKana: '',
+      firstname: '',
+      firstnameKana: '',
+      phoneNumber: ''
+    })
+  }
+})
+
+const emit = defineEmits<{
+  (e: 'update:administrator', administrator: AdministratorResponse): void
+  (e: 'update:form-data', formData: UpdateAdministratorRequest): void
+  (e: 'submit'): void
+}>()
+
+const administratorValue = computed({
+  get: (): AdministratorResponse => props.administrator,
+  set: (administrator: AdministratorResponse): void => emit('update:administrator', administrator)
+})
+const formDataValue = computed({
+  get: (): UpdateAdministratorRequest => props.formData,
+  set: (formData: UpdateAdministratorRequest): void => emit('update:form-data', formData)
+})
+
+const onSubmit = (): void => {
+  emit('submit')
+}
+</script>
+
+<template>
+  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+
+  <v-card :loading="loading">
+    <v-card-title>管理者編集</v-card-title>
+
+    <form @submit.prevent="onSubmit">
+      <v-card-text>
+        <div class="d-flex">
+          <v-text-field
+            v-model="formDataValue.lastname"
+            class="mr-4"
+            label="管理者名:姓"
+            maxlength="16"
+            required
+          />
+          <v-text-field
+            v-model="formDataValue.firstname"
+            label="管理者名:名"
+            maxlength="16"
+            required
+          />
+        </div>
+        <div class="d-flex">
+          <v-text-field
+            v-model="formDataValue.lastnameKana"
+            class="mr-4"
+            label="管理者名:姓（ふりがな）"
+            maxlength="32"
+            required
+          />
+          <v-text-field
+            v-model="formDataValue.firstnameKana"
+            label="管理者名:名（ふりがな）"
+            maxlength="32"
+            required
+          />
+        </div>
+        <v-text-field
+          v-model="administratorValue.email"
+          label="連絡先（メールアドレス）"
+          type="email"
+          readonly
+        />
+        <v-text-field
+          v-model="formDataValue.phoneNumber"
+          label="連絡先（電話番号）"
+          required
+        />
+      </v-card-text>
+
+      <v-card-actions>
+        <v-btn block variant="outlined" color="primary" type="submit">
+          更新
+        </v-btn>
+      </v-card-actions>
+    </form>
+  </v-card>
+</template>
