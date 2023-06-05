@@ -87,40 +87,32 @@ const onSubmit = async (): Promise<void> => {
   <v-card :loading="loading">
     <v-card-title>管理者編集</v-card-title>
 
-    <form @submit.prevent="onSubmit">
+    <v-form @submit.prevent="onSubmit">
       <v-card-text>
         <div class="d-flex">
           <v-text-field
-            v-model="formDataValue.lastname"
+            v-model="validate.lastname.$model"
             :error-messages="getErrorMessage(validate.lastname.$errors)"
             class="mr-4"
             label="管理者名:姓"
-            maxlength="16"
-            required
           />
           <v-text-field
-            v-model="formDataValue.firstname"
+            v-model="validate.firstname.$model"
             :error-messages="getErrorMessage(validate.firstname.$errors)"
             label="管理者名:名"
-            maxlength="16"
-            required
           />
         </div>
         <div class="d-flex">
           <v-text-field
-            v-model="formDataValue.lastnameKana"
+            v-model="validate.lastnameKana.$model"
             :error-messages="getErrorMessage(validate.lastnameKana.$errors)"
             class="mr-4"
             label="管理者名:姓（ふりがな）"
-            maxlength="32"
-            required
           />
           <v-text-field
-            v-model="formDataValue.firstnameKana"
+            v-model="validate.firstnameKana.$model"
             :error-messages="getErrorMessage(validate.firstnameKana.$errors)"
             label="管理者名:名（ふりがな）"
-            maxlength="32"
-            required
           />
         </div>
         <v-text-field
@@ -130,10 +122,9 @@ const onSubmit = async (): Promise<void> => {
           readonly
         />
         <v-text-field
-          v-model="formDataValue.phoneNumber"
+          v-model="validate.phoneNumber.$model"
           :error-messages="getErrorMessage(validate.phoneNumber.$errors)"
           label="連絡先（電話番号）"
-          required
         />
       </v-card-text>
 
@@ -142,6 +133,6 @@ const onSubmit = async (): Promise<void> => {
           更新
         </v-btn>
       </v-card-actions>
-    </form>
+    </v-form>
   </v-card>
 </template>

@@ -70,42 +70,42 @@ const onSubmit = async (): Promise<void> => {
   <v-card :loading="loading">
     <v-card-title>管理者登録</v-card-title>
 
-    <form @submit.prevent="onSubmit">
+    <v-form @submit.prevent="onSubmit">
       <v-card-text>
         <div class="d-flex">
           <v-text-field
-            v-model="formDataValue.lastname"
+            v-model="validate.lastname.$model"
             :error-messages="getErrorMessage(validate.lastname.$errors)"
             class="mr-4"
             label="管理者名:姓"
           />
           <v-text-field
-            v-model="formDataValue.firstname"
+            v-model="validate.firstname.$model"
             :error-messages="getErrorMessage(validate.firstname.$errors)"
             label="管理者名:名"
           />
         </div>
         <div class="d-flex">
           <v-text-field
-            v-model="formDataValue.lastnameKana"
+            v-model="validate.lastnameKana.$model"
             :error-messages="getErrorMessage(validate.lastnameKana.$errors)"
             class="mr-4"
             label="管理者名:姓（ふりがな）"
           />
           <v-text-field
-            v-model="formDataValue.firstnameKana"
+            v-model="validate.firstnameKana.$model"
             :error-messages="getErrorMessage(validate.firstnameKana.$errors)"
             label="管理者名:名（ふりがな）"
           />
         </div>
         <v-text-field
-          v-model="formDataValue.email"
+          v-model="validate.email.$model"
           :error-messages="getErrorMessage(validate.email.$errors)"
           label="連絡先（メールアドレス）"
           type="email"
         />
         <v-text-field
-          v-model="formDataValue.phoneNumber"
+          v-model="validate.phoneNumber.$model"
           :error-messages="getErrorMessage(validate.phoneNumber.$errors)"
           label="連絡先（電話番号）"
         />
@@ -116,6 +116,6 @@ const onSubmit = async (): Promise<void> => {
           登録
         </v-btn>
       </v-card-actions>
-    </form>
+    </v-form>
   </v-card>
 </template>

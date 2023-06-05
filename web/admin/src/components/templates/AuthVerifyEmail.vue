@@ -5,64 +5,73 @@ import { VerifyAuthEmailRequest } from '~/types/api'
 import { AlertType } from '~/lib/hooks'
 import { required, getErrorMessage, minLength, maxLength } from '~/lib/validations'
 
-interface Props {
-  isAlert: boolean,
-  alertType: AlertType
-  alertText: string
-  email: string
-  formData: VerifyAuthEmailRequest
-}
-
-const props = defineProps<Props>()
-
-interface Emits {
-  (e: 'update:fromData', val: VerifyAuthEmailRequest): void
-  (e: 'update:isAlert', val: boolean): void,
-  (e: 'click:resend-email'): void
-  (e: 'submit'): void
-}
-
-const emits = defineEmits<Emits>()
-
-const isAlertValue = computed({
-  get: () => props.isAlert,
-  set: (val: boolean) => emits('update:isAlert', val)
+const props = defineProps({
+  loading: {
+    type: Boolean,
+    default: false
+  },
+  isAlert: {
+    type: Boolean,
+    default: false
+  },
+  alertType: {
+    type: String as PropType<AlertType>,
+    default: undefined
+  },
+  alertText: {
+    type: String,
+    default: ''
+  },
+  email: {
+    type: String,
+    default: ''
+  },
+  formData: {
+    type: Object as PropType<VerifyAuthEmailRequest>,
+    default: (): VerifyAuthEmailRequest => ({
+      verifyCode: ''
+    })
+  }
 })
 
+const emit = defineEmits<{
+  (e: 'click:resend-email'): void
+  (e: 'update:from-data', formData: VerifyAuthEmailRequest): void
+  (e: 'submit'): void
+}>()
+
+const rules = computed(() => ({
+  verifyCode: {
+    required,
+    minLength: helpers.withMessage('検証コードは6文字で入力してください。', minLength(6)),
+    maxLength: helpers.withMessage('検証コードは6文字で入力してください。', maxLength(6))
+  }
+}))
 const formDataValue = computed({
   get: () => props.formData,
-  set: (val: VerifyAuthEmailRequest) => emits('update:fromData', val)
+  set: (formData: VerifyAuthEmailRequest) => emit('update:from-data', formData)
 })
 
-const rules = computed(() => {
-  return {
-    verifyCode: {
-      required,
-      minLength: helpers.withMessage('検証コードは6文字で入力してください。', minLength(6)),
-      maxLength: helpers.withMessage('検証コードは6文字で入力してください。', maxLength(6))
-    }
-  }
-})
-
-const v$ = useVuelidate(rules, formDataValue)
+const validate = useVuelidate(rules, formDataValue)
 
 const onClickResendEmail = (): void => {
-  emits('click:resend-email')
+  emit('click:resend-email')
 }
 
-const onSubmit = async () => {
-  const result = await v$.value.$validate()
-  if (!result) {
+const onSubmit = async (): Promise<void> => {
+  const valid = await validate.value.$validate()
+  if (!valid) {
     return
   }
-  emits('submit')
+
+  emit('submit')
 }
 </script>
 
 <template>
-  <v-alert v-model="isAlertValue" class="mb-2" :type="alertType" :text="alertText" />
+  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
 
-  <v-card elevation="0">
+  <v-card elevation="0" :loading="loading">
     <v-card-title>二要素認証</v-card-title>
 
     <v-card-text>
@@ -71,17 +80,16 @@ const onSubmit = async () => {
       </p>
       <div class="ma-auto" style="max-width: 300px">
         <!-- vuetifyが対応し次第、改修する -->
-        <v-text-field v-model="v$.verifyCode.$model" :error-messages="getErrorMessage(v$.verifyCode.$errors)" />
+        <v-text-field v-model="validate.verifyCode.$model" :error-messages="getErrorMessage(validate.verifyCode.$errors)" />
       </div>
       <div class="text-center">
-        <a
-          class="orange--text text--darken-4"
-          @click="onClickResendEmail"
-        >認証コードを再送する</a>
+        <a class="orange--text text--darken-4" @click="onClickResendEmail">
+          認証コードを再送する
+        </a>
       </div>
     </v-card-text>
     <v-card-actions>
-      <v-btn block variant="outlined" color="primary" @click="onSubmit">
+      <v-btn block :loading="loading" variant="outlined" color="primary" @click="onSubmit">
         認証
       </v-btn>
     </v-card-actions>
