@@ -3,20 +3,22 @@ import { useAlert } from '~/lib/hooks'
 import { useAuthStore } from '~/store'
 import { UpdateAuthEmailRequest, VerifyAuthEmailRequest } from '~/types/api'
 
-const router = useRouter()
 const route = useRoute()
+const router = useRouter()
 const authStore = useAuthStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
 // todo: emailの受け渡しを変更する
 const email = route.params.email as string
 
-const formData = reactive<VerifyAuthEmailRequest>({
+const loading = ref<boolean>(false)
+const formData = ref<VerifyAuthEmailRequest>({
   verifyCode: route.params.verifyCode as string
 })
 
 const handleClickResendEmail = async (): Promise<void> => {
   try {
+    loading.value = true
     const req: UpdateAuthEmailRequest = { email }
     await authStore.emailUpdate(req)
   } catch (err) {
@@ -24,18 +26,23 @@ const handleClickResendEmail = async (): Promise<void> => {
       show(err.message)
     }
     console.log(err)
+  } finally {
+    loading.value = false
   }
 }
 
 const handleSubmit = async (): Promise<void> => {
   try {
-    await authStore.codeVerify(formData)
+    loading.value = true
+    await authStore.codeVerify(formData.value)
     router.push('/')
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -43,10 +50,11 @@ const handleSubmit = async (): Promise<void> => {
 <template>
   <templates-auth-verify-email
     v-model:form-data="formData"
-    v-model:is-alert="isShow"
-    :email="email"
+    :loading="loading"
+    :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
+    :email="email"
     @submit="handleSubmit"
     @click:resend-email="handleClickResendEmail"
   />

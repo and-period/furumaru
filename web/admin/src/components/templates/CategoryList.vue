@@ -17,14 +17,6 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  categoryDialog: {
-    type: Boolean,
-    default: false
-  },
-  productTypeDialog: {
-    type: Boolean,
-    default: false
-  },
   isAlert: {
     type: Boolean,
     default: false
@@ -36,6 +28,10 @@ const props = defineProps({
   alertText: {
     type: String,
     default: ''
+  },
+  categoryDialog: {
+    type: Boolean,
+    default: false
   },
   categories: {
     type: Array<CategoriesResponseCategoriesInner>,
@@ -54,6 +50,10 @@ const props = defineProps({
   categoryTableItemsTotal: {
     type: Number,
     default: 0
+  },
+  productTypeDialog: {
+    type: Boolean,
+    default: false
   },
   productTypes: {
     type: Array<ProductTypesResponseProductTypesInner>,
@@ -101,39 +101,32 @@ const selector = ref<string>('categories')
 const categoryId = ref<string>('')
 const productTypeIcon = ref<HTMLIFrameElement>()
 
+const categoryFormDataRules = computed(() => ({
+  name: { required, maxlength: maxLength(32) }
+}))
 const categoryDialogValue = computed({
   get: () => props.categoryDialog,
   set: (val: boolean) => emits('update:category-dialog', val)
-})
-const productTypeDialogValue = computed({
-  get: () => props.productTypeDialog,
-  set: (val: boolean) => emits('update:product-type-dialog', val)
 })
 const categoryFormDataValue = computed({
   get: () => props.categoryFormData,
   set: (val: CreateCategoryRequest) => emits('update:category-form-data', val)
 })
-const categoryFormDataRules = computed(() => {
-  return {
-    name: { required, maxlength: maxLength(32) }
-  }
+const productTypeFormDataRules = computed(() => ({
+  name: { required, maxlength: maxLength(32) },
+  iconUrl: { required }
+}))
+const productTypeDialogValue = computed({
+  get: () => props.productTypeDialog,
+  set: (val: boolean) => emits('update:product-type-dialog', val)
 })
-
-const cv$ = useVuelidate<CreateCategoryRequest>(categoryFormDataRules, categoryFormDataValue)
-
 const productTypeFormDataValue = computed({
   get: () => props.productTypeFormData,
   set: (val: CreateProductTypeRequest) => emits('update:product-type-form-data', val)
 })
 
-const productTypeFormDataRules = computed(() => {
-  return {
-    name: { required, maxlength: maxLength(32) },
-    iconUrl: { required }
-  }
-})
-
-const pv$ = useVuelidate<CreateProductTypeRequest>(productTypeFormDataRules, productTypeFormDataValue)
+const cvalidate = useVuelidate<CreateCategoryRequest>(categoryFormDataRules, categoryFormDataValue)
+const pvalidate = useVuelidate<CreateProductTypeRequest>(productTypeFormDataRules, productTypeFormDataValue)
 
 watch(selector, () => {
   emits('update:tab', selector.value)
@@ -180,18 +173,25 @@ const onUploadProductTypeIcon = (event: Event): void => {
   if (!target.files) {
     return
   }
+
   emits('update:product-type-upload-icon', target.files)
 }
 
-const onSubmitCategory = async () => {
-  const result = await cv$.value.$validate()
-  if (!result) {
+const onSubmitCategory = async (): Promise<void> => {
+  const valid = await cvalidate.value.$validate()
+  if (!valid) {
     return
   }
+
   emits('submit:category')
 }
 
-const onSubmitProductType = (): void => {
+const onSubmitProductType = async (): Promise<void> => {
+  const valid = await pvalidate.value.$validate()
+  if (!valid) {
+    return
+  }
+
   emits('submit:product-type', categoryId.value)
 }
 </script>
@@ -207,10 +207,10 @@ const onSubmitProductType = (): void => {
 
       <v-card-text>
         <v-text-field
-          v-model="cv$.name.$model"
+          v-model="cvalidate.name.$model"
           class="mx-4"
           label="カテゴリー名"
-          :error-messages="getErrorMessage(cv$.name.$errors)"
+          :error-messages="getErrorMessage(cvalidate.name.$errors)"
         />
       </v-card-text>
       <v-divider />
@@ -219,7 +219,7 @@ const onSubmitProductType = (): void => {
         <v-btn color="error" variant="text" @click="onClickCategoryCloseDialog">
           キャンセル
         </v-btn>
-        <v-btn color="primary" variant="outlined" @click="onSubmitCategory">
+        <v-btn :loading="loading" color="primary" variant="outlined" @click="onSubmitCategory">
           登録
         </v-btn>
       </v-card-actions>
@@ -251,8 +251,8 @@ const onSubmitProductType = (): void => {
         </v-autocomplete>
         <v-spacer />
         <v-text-field
-          v-model="pv$.name.$model"
-          :error-messages="getErrorMessage(pv$.name.$errors)"
+          v-model="pvalidate.name.$model"
+          :error-messages="getErrorMessage(pvalidate.name.$errors)"
           label="品目"
         />
         <v-card class="text-center" role="button" flat>
@@ -287,7 +287,7 @@ const onSubmitProductType = (): void => {
         <v-btn color="error" variant="text" @click="onClickProductTypeCloseDialog">
           キャンセル
         </v-btn>
-        <v-btn color="primary" variant="outlined" @click="onSubmitProductType">
+        <v-btn :loading="loading" color="primary" variant="outlined" @click="onSubmitProductType">
           登録
         </v-btn>
       </v-card-actions>
