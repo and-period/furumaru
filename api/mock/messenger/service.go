@@ -173,12 +173,13 @@ func (mr *MockServiceMockRecorder) ListNotifications(ctx, in interface{}) *gomoc
 }
 
 // ListThreadsByContactID mocks base method.
-func (m *MockService) ListThreadsByContactID(ctx context.Context, in *messenger.ListThreadsByContactIDInput) (entity.Threads, error) {
+func (m *MockService) ListThreadsByContactID(ctx context.Context, in *messenger.ListThreadsByContactIDInput) (entity.Threads, int64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListThreadsByContactID", ctx, in)
 	ret0, _ := ret[0].(entity.Threads)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
 }
 
 // ListThreadsByContactID indicates an expected call of ListThreadsByContactID.
