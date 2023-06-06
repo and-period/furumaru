@@ -60,13 +60,12 @@ const rules = computed(() => ({
   firstnameKana: { required, maxLength: maxLength(32) },
   phoneNumber: { required, tel }
 }))
-const administratorValue = computed({
-  get: (): AdministratorResponse => props.administrator,
-  set: (administrator: AdministratorResponse): void => emit('update:administrator', administrator)
-})
 const formDataValue = computed({
   get: (): UpdateAdministratorRequest => props.formData,
   set: (formData: UpdateAdministratorRequest): void => emit('update:form-data', formData)
+})
+const administratorValue = computed((): AdministratorResponse => {
+  return props.administrator
 })
 
 const validate = useVuelidate(rules, formDataValue)

@@ -5,7 +5,6 @@ import { useVuelidate } from '@vuelidate/core'
 import { Category } from '~/types/props'
 import { AlertType } from '~/lib/hooks'
 import { CreateCategoryRequest, CategoriesResponseCategoriesInner, ProductTypesResponseProductTypesInner, CreateProductTypeRequest } from '~/types/api'
-
 import {
   required,
   getErrorMessage,

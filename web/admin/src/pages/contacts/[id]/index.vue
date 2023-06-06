@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 import { useContactStore } from '~/store'
 import {
@@ -15,23 +16,19 @@ const { alertType, isShow, alertText, show } = useAlert('error')
 
 const contactId = route.params.id as string
 
-const formData = reactive<UpdateContactRequest>({
+const { contact } = storeToRefs(contactStore)
+
+const loading = ref<boolean>(false)
+const formData = ref<UpdateContactRequest>({
   priority: ContactPriority.UNKNOWN,
   status: ContactStatus.UNKNOWN,
   note: ''
 })
 
-const contact = computed<ContactResponse>(() => {
-  return contactStore.contact
-})
-
-const fetchState = useAsyncData(async () => {
+const fetchState = useAsyncData(async (): Promise<void> => {
   try {
-    const res = await contactStore.getContact(contactId)
-
-    formData.priority = res.priority
-    formData.status = res.status
-    formData.note = res.note
+    await contactStore.getContact(contactId)
+    formData.value = { ...contact.value }
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
@@ -40,15 +37,22 @@ const fetchState = useAsyncData(async () => {
   }
 })
 
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || loading.value
+}
+
 const handleSubmit = async (): Promise<void> => {
   try {
-    await contactStore.updateContact(formData, contactId)
+    loading.value = true
+    await contactStore.updateContact(contactId, formData.value)
     router.push('/contacts')
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
+  } finally {
+    loading.value = false
   }
 }
 
@@ -62,6 +66,7 @@ try {
 <template>
   <templates-contact-edit
     v-model:form-data="formData"
+    :loading="isLoading()"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"

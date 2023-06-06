@@ -1,9 +1,15 @@
 <script lang="ts" setup>
 import { AlertType } from '~/lib/hooks'
 import { CreateCoordinatorRequest } from '~/types/api'
+import { email, getErrorMessage, maxLength, postalCode, required, tel } from '~/lib/validations'
 import { ImageUploadStatus } from '~/types/props'
+import useVuelidate from '@vuelidate/core'
 
 const props = defineProps({
+  loading: {
+    type: Boolean,
+    default: false
+  },
   isAlert: {
     type: Boolean,
     default: false
@@ -18,7 +24,26 @@ const props = defineProps({
   },
   formData: {
     type: Object as PropType<CreateCoordinatorRequest>,
-    default: () => ({})
+    default: (): CreateCoordinatorRequest => ({
+      lastname: '',
+      lastnameKana: '',
+      firstname: '',
+      firstnameKana: '',
+      companyName: '',
+      storeName: '',
+      thumbnailUrl: '',
+      headerUrl: '',
+      twitterAccount: '',
+      instagramAccount: '',
+      facebookAccount: '',
+      email: '',
+      phoneNumber: '',
+      postalCode: '',
+      prefecture: '',
+      city: '',
+      addressLine1: '',
+      addressLine2: ''
+    })
   },
   thumbnailUploadStatus: {
     type: Object,
@@ -33,14 +58,6 @@ const props = defineProps({
       error: false,
       message: ''
     })
-  },
-  searchErrorMessage: {
-    type: String,
-    default: ''
-  },
-  searchLoading: {
-    type: Boolean,
-    default: false
   }
 })
 
@@ -52,10 +69,32 @@ const emit = defineEmits<{
   (e: 'submit'): void
 }>()
 
+const rules = computed(() => ({
+  lastname: { required, maxLength: maxLength(16) },
+  firstname: { required, maxLength: maxLength(16) },
+  lastnameKana: { required, maxLength: maxLength(32) },
+  firstnameKana: { required, maxLength: maxLength(32) },
+  companyName: { required, maxLength: maxLength(64) },
+  storeName: { required, maxLength: maxLength(64) },
+  thumbnailUrl: {},
+  headerUrl: {},
+  twitterAccount: {},
+  instagramAccount: {},
+  facebookAccount: {},
+  email: { required, email },
+  phoneNumber: { required, tel },
+  postalCode: { maxLength: maxLength(7) },
+  prefecture: { maxLength: maxLength(32) },
+  city: { maxLength: maxLength(32) },
+  addressLine1: { maxLength: maxLength(64) },
+  addressLine2: { maxLength: maxLength(64) },
+}))
 const formDataValue = computed({
   get: (): CreateCoordinatorRequest => props.formData,
   set: (v: CreateCoordinatorRequest): void => emit('update:form-data', v)
 })
+
+const validate = useVuelidate(rules, formDataValue)
 
 const updateThumbnailFileHandler = (files?: FileList) => {
   emit('update:thumbnail-file', files)
@@ -66,6 +105,11 @@ const updateHeaderFileHandler = (files?: FileList) => {
 }
 
 const onSubmit = (): void => {
+  const valid = await validate.value.$validate()
+  if (!valid) {
+    return
+  }
+
   emit('submit')
 }
 

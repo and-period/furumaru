@@ -1,36 +1,32 @@
 <script lang="ts" setup>
 import { VDataTable } from 'vuetify/lib/labs/components'
 
-import { ContactsResponseContactsInner } from '~/types/api'
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useContactStore } from '~/store'
+import { storeToRefs } from 'pinia'
 
 const router = useRouter()
 const contactStore = useContactStore()
-const { itemsPerPage, offset, updateCurrentPage, handleUpdateItemsPerPage } = usePagination()
+const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
+const { contacts, total } = storeToRefs(contactStore)
+
+const loading = ref<boolean>(false)
 const sortBy = reactive<VDataTable['sortBy']>([])
 
-const contacts = computed(() => {
-  return contactStore.contacts
-})
-const contactTotal = computed(() => {
-  return contactStore.total
-})
-
-watch(itemsPerPage, () => {
+watch(pagination.itemsPerPage, (): void => {
   fetchState.refresh()
 })
-watch(sortBy, () => {
+watch(sortBy, (): void => {
   fetchState.refresh()
 })
 
-const fetchState = useAsyncData(async () => {
+const fetchState = useAsyncData(async (): Promise<void> => {
   await fetchContacts()
 })
 
-const fetchContacts = async () => {
+const fetchContacts = async (): Promise<void> => {
   try {
     const orders: string[] = sortBy?.map((item) => {
       switch (item.order) {
@@ -43,7 +39,7 @@ const fetchContacts = async () => {
       }
     }) || []
 
-    await contactStore.fetchContacts(itemsPerPage.value, offset.value, orders)
+    await contactStore.fetchContacts(pagination.itemsPerPage.value, pagination.offset.value, orders)
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
@@ -52,21 +48,17 @@ const fetchContacts = async () => {
   }
 }
 
-const handleUpdatePage = async (page: number) => {
-  updateCurrentPage(page)
-  await fetchContacts()
-}
-
-const handleClickSortBy = (item: VDataTable['sortBy']): void => {
-  sortBy.splice(0, sortBy.length, ...item)
-}
-
-const handleRowClick = (contactItem: ContactsResponseContactsInner) => {
-  router.push(`/contacts/${contactItem.id}`)
-}
-
 const isLoading = (): boolean => {
-  return fetchState?.pending?.value || false
+  return fetchState?.pending?.value || loading.value
+}
+
+const handleUpdatePage = async (page: number): Promise<void> => {
+  pagination.updateCurrentPage(page)
+  await fetchState.refresh()
+}
+
+const handleClickRow = (contactId: string): void => {
+  router.push(`/contacts/${contactId}`)
 }
 
 try {
@@ -78,17 +70,16 @@ try {
 
 <template>
   <templates-contact-list
+    v-model:sort-by="sortBy"
     :loading="isLoading()"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :contacts="contacts"
-    :sort-by="sortBy"
-    :table-items-per-page="itemsPerPage"
-    :table-items-total="contactTotal"
+    :table-items-per-page="pagination.itemsPerPage.value"
+    :table-items-total="total"
+    @click:row="handleClickRow"
     @click:update-page="handleUpdatePage"
-    @click:update-items-per-page="handleUpdateItemsPerPage"
-    @click:row="handleRowClick"
-    @update:sort-by="handleClickSortBy"
+    @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
   />
 </template>

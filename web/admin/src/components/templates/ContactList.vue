@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { mdiPencil } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components'
 
 import { AlertType } from '~/lib/hooks'
@@ -43,8 +42,7 @@ const props = defineProps({
 const emit = defineEmits<{
   (e: 'click:update-page', page: number): void
   (e: 'click:update-items-per-page', page: number): void
-  (e: 'click:update-sort-by'): void
-  (e: 'click:row', item: ContactsResponseContactsInner): void
+  (e: 'click:row', contactId: string): void
   (e: 'update:sort-by', sortBy: VDataTable['sortBy']): void
 }>()
 
@@ -135,8 +133,8 @@ const onClickUpdateSortBy = (sortBy: VDataTable['sortBy']): void => {
   emit('update:sort-by', sortBy)
 }
 
-const onClickRow = (contactItem: ContactsResponseContactsInner): void => {
-  emit('click:row', contactItem)
+const onClickRow = (contact: ContactsResponseContactsInner): void => {
+  emit('click:row', contact.id)
 }
 </script>
 

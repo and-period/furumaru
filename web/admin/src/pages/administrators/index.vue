@@ -55,6 +55,7 @@ const handleClickDelete = async (administratorId: string): Promise<void> => {
     }
     console.log(err)
   } finally {
+    deleteDialog.value = false
     loading.value = false
   }
 }
