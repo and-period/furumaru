@@ -18,11 +18,28 @@ func (h *handler) ThreadRoutes(rg *gin.RouterGroup) {
 }
 
 func (h *handler) ListThreadsByContactID(ctx *gin.Context) {
+	const (
+		defaultLimit  = 20
+		defaultOffset = 0
+	)
+
+	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
+	if err != nil {
+		badRequest(ctx, err)
+		return
+	}
+	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
+	if err != nil {
+		badRequest(ctx, err)
+		return
+	}
 	threadsIn := &messenger.ListThreadsByContactIDInput{
 		ContactID: util.GetParam(ctx, "contactId"),
+		Limit:     limit,
+		Offset:    offset,
 	}
 
-	sthreads, err := h.messenger.ListThreadsByContactID(ctx, threadsIn)
+	sthreads, total, err := h.messenger.ListThreadsByContactID(ctx, threadsIn)
 	if err != nil {
 		httpError(ctx, err)
 	}
@@ -37,6 +54,7 @@ func (h *handler) ListThreadsByContactID(ctx *gin.Context) {
 
 	res := &response.ThreadsResponse{
 		Threads: threads.Response(),
+		Total:   total,
 	}
 	ctx.JSON(http.StatusOK, res)
 }
