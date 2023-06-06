@@ -26,13 +26,22 @@ func NewThread(db *database.Client) Thread {
 }
 
 func (t *thread) ListByContactID(
-	ctx context.Context, contactID string, fields ...string,
+	ctx context.Context, params *ListThreadsByContactIDParams, fields ...string,
 ) (entity.Threads, error) {
-	threads, err := t.listByContactID(ctx, t.db.DB, contactID, fields...)
-	if err != nil {
+	var threads entity.Threads
+
+	stmt := t.db.Statement(ctx, t.db.DB, threadTable, fields...)
+	stmt = params.stmt(stmt)
+	if params.Limit > 0 {
+		stmt = stmt.Limit(params.Limit)
+	}
+	if params.Offset > 0 {
+		stmt = stmt.Offset(params.Offset)
+	}
+	if err := stmt.Find(&threads).Error; err != nil {
 		return nil, exception.InternalError(err)
 	}
-	return threads, exception.InternalError(err)
+	return threads, nil
 }
 
 func (t *thread) Get(ctx context.Context, threadID string, fields ...string) (*entity.Thread, error) {

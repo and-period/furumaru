@@ -46,7 +46,7 @@ func TestThread_ListByContactID(t *testing.T) {
 	require.NoError(t, err)
 
 	type args struct {
-		contactID string
+		params *ListThreadsByContactIDParams
 	}
 	type want struct {
 		threads entity.Threads
@@ -62,7 +62,11 @@ func TestThread_ListByContactID(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
-				contactID: "contact-id",
+				params: &ListThreadsByContactIDParams{
+					ContactID: "contact-id",
+					Limit:     3,
+					Offset:    0,
+				},
 			},
 			want: want{
 				threads: threads[:3],
@@ -81,7 +85,7 @@ func TestThread_ListByContactID(t *testing.T) {
 			tt.setup(ctx, t, db)
 
 			db := &thread{db: db, now: now}
-			actual, err := db.ListByContactID(ctx, tt.args.contactID)
+			actual, err := db.ListByContactID(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.ElementsMatch(t, tt.want.threads, actual)
 		})
