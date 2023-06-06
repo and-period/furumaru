@@ -54,20 +54,6 @@ func (t *thread) Get(ctx context.Context, threadID string, fields ...string) (*e
 	return thread, exception.InternalError(err)
 }
 
-func (t *thread) listByContactID(
-	ctx context.Context, tx *gorm.DB, contactID string, fields ...string,
-) (entity.Threads, error) {
-	var threads entity.Threads
-
-	err := t.db.Statement(ctx, tx, threadTable, fields...).
-		Where("contact_id = ?", contactID).
-		Find(&threads).Error
-	if err != nil {
-		return nil, err
-	}
-	return threads, nil
-}
-
 func (t *thread) get(
 	ctx context.Context, tx *gorm.DB, threadID string, fields ...string,
 ) (*entity.Thread, error) {
