@@ -44,6 +44,11 @@ func (t *thread) ListByContactID(
 	return threads, nil
 }
 
+func (t *thread) Count(ctx context.Context, params *ListThreadsByContactIDParams) (int64, error) {
+	total, err := t.db.Count(ctx, t.db.DB, &entity.Thread{}, params.stmt)
+	return total, exception.InternalError(err)
+}
+
 func (t *thread) Get(ctx context.Context, threadID string, fields ...string) (*entity.Thread, error) {
 	thread, err := t.get(ctx, t.db.DB, threadID, fields...)
 	return thread, exception.InternalError(err)

@@ -122,6 +122,21 @@ func (m *MockThread) EXPECT() *MockThreadMockRecorder {
 	return m.recorder
 }
 
+// Count mocks base method.
+func (m *MockThread) Count(ctx context.Context, params *database.ListThreadsByContactIDParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockThreadMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockThread)(nil).Count), ctx, params)
+}
+
 // Get mocks base method.
 func (m *MockThread) Get(ctx context.Context, threadID string, fields ...string) (*entity.Thread, error) {
 	m.ctrl.T.Helper()
