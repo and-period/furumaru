@@ -1,44 +1,29 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { VDataTable } from 'vuetify/lib/labs/components'
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useAdministratorStore } from '~/store'
 
+const router = useRouter()
 const administratorStore = useAdministratorStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const fetchState = useAsyncData(async () => {
-  await fetchAdministrators()
-})
-
 const { administrators, total } = storeToRefs(administratorStore)
 
+const loading = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
 
-const sortBy = reactive<VDataTable['sortBy']>([])
+const fetchState = useAsyncData(async (): Promise<void> => {
+  await fetchAdministrators()
+})
 
 watch(pagination.itemsPerPage, () => {
   fetchState.refresh()
 })
-watch(sortBy, () => {
-  fetchState.refresh()
-})
 
-const fetchAdministrators = async () => {
+const fetchAdministrators = async (): Promise<void> => {
   try {
-    const orders: string[] = sortBy?.map((item) => {
-      switch (item.order) {
-        case 'asc':
-          return item.key
-        case 'desc':
-          return `-${item.key}`
-        default:
-          return item.order ? item.key : `-${item.key}`
-      }
-    }) || []
-
-    await administratorStore.fetchAdministrators(pagination.itemsPerPage.value, pagination.offset.value, orders)
+    await administratorStore.fetchAdministrators(pagination.itemsPerPage.value, pagination.offset.value)
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
@@ -48,24 +33,34 @@ const fetchAdministrators = async () => {
 }
 
 const isLoading = (): boolean => {
-  return fetchState?.pending?.value || false
+  return fetchState?.pending?.value || loading.value
 }
 
-const handleUpdatePage = async (page: number) => {
+const handleUpdatePage = async (page: number): Promise<void> => {
   pagination.updateCurrentPage(page)
   await fetchState.refresh()
 }
 
-const handleClickAdd = () => {
-  console.log('click:add')
+const handleClickAdd = (): void => {
+  router.push('/administrators/new')
 }
 
-const handleClickDelete = (administratorId: string) => {
-  console.log('click:delete', administratorId)
+const handleClickDelete = async (administratorId: string): Promise<void> => {
+  try {
+    loading.value = true
+    await administratorStore.deleteAdministrator(administratorId)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
 }
 
-const handleClickRow = (administratorId: string) => {
-  console.log('click:row', administratorId)
+const handleClickRow = (administratorId: string): void => {
+  router.push(`/administrators/${administratorId}`)
 }
 
 try {
@@ -85,12 +80,10 @@ try {
     :administrators="administrators"
     :table-items-per-page="pagination.itemsPerPage.value"
     :table-items-total="total"
-    :table-sort-by="sortBy"
     @click:row="handleClickRow"
     @click:add="handleClickAdd"
     @click:delete="handleClickDelete"
     @click:update-page="handleUpdatePage"
     @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
-    @update:sort-by="fetchState.refresh"
   />
 </template>
