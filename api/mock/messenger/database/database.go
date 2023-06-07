@@ -122,6 +122,21 @@ func (m *MockThread) EXPECT() *MockThreadMockRecorder {
 	return m.recorder
 }
 
+// Count mocks base method.
+func (m *MockThread) Count(ctx context.Context, params *database.ListThreadsByContactIDParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockThreadMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockThread)(nil).Count), ctx, params)
+}
+
 // Get mocks base method.
 func (m *MockThread) Get(ctx context.Context, threadID string, fields ...string) (*entity.Thread, error) {
 	m.ctrl.T.Helper()
@@ -143,9 +158,9 @@ func (mr *MockThreadMockRecorder) Get(ctx, threadID interface{}, fields ...inter
 }
 
 // ListByContactID mocks base method.
-func (m *MockThread) ListByContactID(ctx context.Context, contactID string, fields ...string) (entity.Threads, error) {
+func (m *MockThread) ListByContactID(ctx context.Context, params *database.ListThreadsByContactIDParams, fields ...string) (entity.Threads, error) {
 	m.ctrl.T.Helper()
-	varargs := []interface{}{ctx, contactID}
+	varargs := []interface{}{ctx, params}
 	for _, a := range fields {
 		varargs = append(varargs, a)
 	}
@@ -156,9 +171,9 @@ func (m *MockThread) ListByContactID(ctx context.Context, contactID string, fiel
 }
 
 // ListByContactID indicates an expected call of ListByContactID.
-func (mr *MockThreadMockRecorder) ListByContactID(ctx, contactID interface{}, fields ...interface{}) *gomock.Call {
+func (mr *MockThreadMockRecorder) ListByContactID(ctx, params interface{}, fields ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{ctx, contactID}, fields...)
+	varargs := append([]interface{}{ctx, params}, fields...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByContactID", reflect.TypeOf((*MockThread)(nil).ListByContactID), varargs...)
 }
 

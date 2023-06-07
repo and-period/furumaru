@@ -56,7 +56,8 @@ type ContactCategory interface {
 
 type Thread interface {
 	Get(ctx context.Context, threadID string, fields ...string) (*entity.Thread, error)
-	ListByContactID(ctx context.Context, contactID string, fields ...string) (entity.Threads, error)
+	ListByContactID(ctx context.Context, params *ListThreadsByContactIDParams, fields ...string) (entity.Threads, error)
+	Count(ctx context.Context, params *ListThreadsByContactIDParams) (int64, error)
 }
 
 type Message interface {
@@ -200,6 +201,19 @@ func (p *ListSchedulesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	}
 	if !p.Until.IsZero() {
 		stmt = stmt.Where("sent_at <= ?", p.Until)
+	}
+	return stmt
+}
+
+type ListThreadsByContactIDParams struct {
+	ContactID string
+	Limit     int
+	Offset    int
+}
+
+func (p *ListThreadsByContactIDParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.ContactID != "" {
+		stmt = stmt.Where("contact_id = ?", p.ContactID)
 	}
 	return stmt
 }
