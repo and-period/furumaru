@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { VDataTable } from 'vuetify/lib/labs/components'
+import { storeToRefs } from 'pinia'
 
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useContactStore } from '~/store'
-import { storeToRefs } from 'pinia'
 
 const router = useRouter()
 const contactStore = useContactStore()
@@ -13,7 +13,7 @@ const { alertType, isShow, alertText, show } = useAlert('error')
 const { contacts, total } = storeToRefs(contactStore)
 
 const loading = ref<boolean>(false)
-const sortBy = reactive<VDataTable['sortBy']>([])
+const sortBy = ref<VDataTable['sortBy']>([])
 
 watch(pagination.itemsPerPage, (): void => {
   fetchState.refresh()
@@ -28,7 +28,7 @@ const fetchState = useAsyncData(async (): Promise<void> => {
 
 const fetchContacts = async (): Promise<void> => {
   try {
-    const orders: string[] = sortBy?.map((item) => {
+    const orders: string[] = sortBy.value.map((item) => {
       switch (item.order) {
         case 'asc':
           return item.key
@@ -54,7 +54,7 @@ const isLoading = (): boolean => {
 
 const handleUpdatePage = async (page: number): Promise<void> => {
   pagination.updateCurrentPage(page)
-  await fetchState.refresh()
+  await fetchContacts()
 }
 
 const handleClickRow = (contactId: string): void => {
@@ -76,10 +76,12 @@ try {
     :alert-type="alertType"
     :alert-text="alertText"
     :contacts="contacts"
+    :sort-by="sortBy"
     :table-items-per-page="pagination.itemsPerPage.value"
     :table-items-total="total"
     @click:row="handleClickRow"
     @click:update-page="handleUpdatePage"
     @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
+    @update:sort-by="fetchState.refresh"
   />
 </template>

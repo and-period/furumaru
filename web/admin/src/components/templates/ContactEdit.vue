@@ -2,7 +2,7 @@
 import useVuelidate from '@vuelidate/core'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import { AlertType } from '~/lib/hooks'
-import { getErrorMessage } from '~/lib/validations'
+import { getErrorMessage, maxLength } from '~/lib/validations'
 import { ContactPriority, ContactResponse, ContactStatus, UpdateContactRequest } from '~/types/api'
 
 const props = defineProps({
@@ -69,9 +69,9 @@ const statuses = [
 ]
 
 const rules = computed(() => ({
-  status: {},
   priority: {},
-  note: {},
+  status: {},
+  note: { maxLength: maxLength(2000) }
 }))
 const formDataValue = computed({
   get: (): UpdateContactRequest => props.formData,
@@ -99,7 +99,7 @@ const onSubmit = async (): Promise<void> => {
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
 
-  <v-card elevation="0">
+  <v-card :loading="loading" elevation="0">
     <v-card-title>お問合せ管理</v-card-title>
 
     <v-form @submit.prevent="onSubmit">

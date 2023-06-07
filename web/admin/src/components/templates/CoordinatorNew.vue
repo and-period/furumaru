@@ -1,9 +1,9 @@
 <script lang="ts" setup>
+import useVuelidate from '@vuelidate/core'
 import { AlertType } from '~/lib/hooks'
 import { CreateCoordinatorRequest } from '~/types/api'
 import { email, getErrorMessage, maxLength, postalCode, required, tel } from '~/lib/validations'
 import { ImageUploadStatus } from '~/types/props'
-import useVuelidate from '@vuelidate/core'
 
 const props = defineProps({
   loading: {
@@ -87,7 +87,7 @@ const rules = computed(() => ({
   prefecture: { maxLength: maxLength(32) },
   city: { maxLength: maxLength(32) },
   addressLine1: { maxLength: maxLength(64) },
-  addressLine2: { maxLength: maxLength(64) },
+  addressLine2: { maxLength: maxLength(64) }
 }))
 const formDataValue = computed({
   get: (): CreateCoordinatorRequest => props.formData,

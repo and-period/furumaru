@@ -133,8 +133,8 @@ const onClickUpdateSortBy = (sortBy: VDataTable['sortBy']): void => {
   emit('update:sort-by', sortBy)
 }
 
-const onClickRow = (contact: ContactsResponseContactsInner): void => {
-  emit('click:row', contact.id)
+const onClickRow = (contactId: string): void => {
+  emit('click:row', contactId)
 }
 </script>
 
@@ -156,7 +156,7 @@ const onClickRow = (contact: ContactsResponseContactsInner): void => {
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
         @update:sort-by="onClickUpdateSortBy"
-        @click:row="(_:any, {item}: any) => onClickRow(item.raw)"
+        @click:row="(_:any, {item}: any) => onClickRow(item.raw.id)"
       >
         <template #[`item.priority`]="{ item }">
           <v-chip :color="getPriorityColor(item.raw.priority)" size="small">

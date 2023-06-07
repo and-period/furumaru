@@ -2,12 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 import { useContactStore } from '~/store'
-import {
-  ContactPriority,
-  ContactResponse,
-  ContactStatus,
-  UpdateContactRequest
-} from '~/types/api'
+import { ContactPriority, ContactStatus, UpdateContactRequest } from '~/types/api'
 
 const route = useRoute()
 const router = useRouter()
