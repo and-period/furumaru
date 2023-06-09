@@ -14,6 +14,7 @@ import { apiClient } from '~/plugins/api-client'
 
 export const useCoordinatorStore = defineStore('coordinator', {
   state: () => ({
+    coordinator: {} as CoordinatorResponse,
     coordinators: [] as CoordinatorsResponse['coordinators'],
     producers: [] as ProducersResponse['producers'],
     totalItems: 0,
@@ -40,10 +41,10 @@ export const useCoordinatorStore = defineStore('coordinator', {
      * コーディネータの詳細情報を取得する非同期関数
      * @param coordinatorId 対象のコーディネータのID
      */
-    async getCoordinator (coordinatorId: string): Promise<CoordinatorResponse> {
+    async getCoordinator (coordinatorId: string): Promise<void> {
       try {
         const res = await apiClient.coordinatorApi().v1GetCoordinator(coordinatorId)
-        return res.data
+        this.coordinator = res.data
       } catch (err) {
         return this.errorHandler(err)
       }

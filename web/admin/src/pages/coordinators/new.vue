@@ -86,7 +86,6 @@ const handleUpdateHeader = (files: FileList): void => {
     })
 }
 
-
 const handleSearchAddress = async (): Promise<void> => {
   try {
     const res = await searchAddress.searchAddressByPostalCode(Number(formData.value.postalCode))

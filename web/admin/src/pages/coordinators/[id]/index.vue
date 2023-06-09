@@ -1,12 +1,10 @@
 <script lang="ts" setup>
-import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 
-import { convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
+import { convertI18nToJapanesePhoneNumber, convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert, usePagination, useSearchAddress } from '~/lib/hooks'
-import { kana, required, tel, maxLength } from '~/lib/validations'
 import { useCoordinatorStore, useProducerStore } from '~/store'
-import { UpdateCoordinatorRequest, UploadImageResponse } from '~/types/api'
+import { RelateProducersRequest, UpdateCoordinatorRequest, UploadImageResponse } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 
 const route = useRoute()
@@ -15,30 +13,19 @@ const coordinatorStore = useCoordinatorStore()
 const producerStore = useProducerStore()
 const relatedProducersPagination = usePagination()
 const unrelatedProducersPagination = usePagination()
+const searchAddress = useSearchAddress()
 const { alertType, isShow, alertText, show } = useAlert('error')
-const { loading: searchLoading, errorMessage: searchErrorMessage, searchAddressByPostalCode } = useSearchAddress()
 
 const coordinatorId = route.params.id as string
 
-const relatedProducersDialog = ref<boolean>(false)
-const selectedProducerIds = ref<string[]>([])
-
+const { coordinator } = storeToRefs(coordinatorStore)
 const { producers: relatedProducers, totalItems } = storeToRefs(coordinatorStore)
 const { producers: unrelatedProducers } = storeToRefs(producerStore)
 
-watch(relatedProducersPagination.itemsPerPage, () => {
-  fetchRelatedProducers()
-})
-
-const thumbnailUploadStatus = reactive<ImageUploadStatus>({
-  error: false,
-  message: ''
-})
-const headerUploadStatus = reactive<ImageUploadStatus>({
-  error: false,
-  message: ''
-})
-const formData = reactive<UpdateCoordinatorRequest>({
+const loading = ref<boolean>(false)
+const relatedProducersDialog = ref<boolean>(false)
+const selectedProducerIds = ref<string[]>([])
+const formData = ref<UpdateCoordinatorRequest>({
   storeName: '',
   firstname: '',
   lastname: '',
@@ -57,27 +44,26 @@ const formData = reactive<UpdateCoordinatorRequest>({
   addressLine1: '',
   addressLine2: ''
 })
+const thumbnailUploadStatus = ref<ImageUploadStatus>({
+  error: false,
+  message: ''
+})
+const headerUploadStatus = ref<ImageUploadStatus>({
+  error: false,
+  message: ''
+})
 
-const fetchState = useAsyncData(async () => {
+watch(relatedProducersPagination.itemsPerPage, () => {
+  fetchRelatedProducers()
+})
+
+const fetchState = useAsyncData(async (): Promise<void> => {
   try {
-    const coordinator = await coordinatorStore.getCoordinator(coordinatorId)
-    formData.storeName = coordinator.storeName
-    formData.firstname = coordinator.firstname
-    formData.lastname = coordinator.lastname
-    formData.firstnameKana = coordinator.firstnameKana
-    formData.lastnameKana = coordinator.lastnameKana
-    formData.companyName = coordinator.companyName
-    formData.thumbnailUrl = coordinator.thumbnailUrl
-    formData.headerUrl = coordinator.headerUrl
-    formData.twitterAccount = coordinator.twitterAccount
-    formData.instagramAccount = coordinator.instagramAccount
-    formData.facebookAccount = coordinator.facebookAccount
-    formData.phoneNumber = coordinator.phoneNumber.replace('+81', '0')
-    formData.postalCode = coordinator.postalCode
-    formData.prefecture = coordinator.prefecture
-    formData.city = coordinator.city
-    formData.addressLine1 = coordinator.addressLine1
-    formData.addressLine2 = coordinator.addressLine2
+    await coordinatorStore.getCoordinator(coordinatorId)
+    formData.value = {
+      ...coordinator.value,
+      phoneNumber: convertI18nToJapanesePhoneNumber(coordinator.value.phoneNumber)
+    }
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
@@ -86,19 +72,11 @@ const fetchState = useAsyncData(async () => {
   }
 })
 
-const rules = computed(() => ({
-  storeName: { required, maxLength: maxLength(64) },
-  companyName: { required, maxLength: maxLength(64) },
-  firstname: { required, maxLength: maxLength(16) },
-  lastname: { required, maxLength: maxLength(16) },
-  firstnameKana: { required, kana },
-  lastnameKana: { required, kana },
-  phoneNumber: { required, tel }
-}))
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || loading.value
+}
 
-const v$ = useVuelidate(rules, formData)
-
-const fetchRelatedProducers = async () => {
+const fetchRelatedProducers = async (): Promise<void> => {
   try {
     await coordinatorStore.fetchRelatedProducers(
       coordinatorId,
@@ -113,7 +91,7 @@ const fetchRelatedProducers = async () => {
   }
 }
 
-const fetchUnrelatedProducers = async () => {
+const fetchUnrelatedProducers = async (): Promise<void> => {
   try {
     await producerStore.fetchProducers(
       unrelatedProducersPagination.itemsPerPage.value,
@@ -133,57 +111,42 @@ const handleUpdateRelatedProducersPage = async (page: number) => {
   await fetchRelatedProducers()
 }
 
-const searchAddress = async () => {
-  searchLoading.value = true
-  searchErrorMessage.value = ''
-  const res = await searchAddressByPostalCode(Number(formData.postalCode))
-  if (res) {
-    formData.prefecture = res.prefecture
-    formData.city = res.city
-    formData.addressLine1 = res.addressLine1
-  }
-}
-
-const handleUpdateThumbnail = (files: FileList) => {
+const handleUpdateThumbnail = (files: FileList): void => {
   if (files.length === 0) {
     return
   }
 
   coordinatorStore.uploadCoordinatorThumbnail(files[0])
-    .then((res: UploadImageResponse) => {
-      formData.thumbnailUrl = res.url
+    .then((res) => {
+      formData.value.thumbnailUrl = res.url
     })
     .catch(() => {
-      thumbnailUploadStatus.error = true
-      thumbnailUploadStatus.message = 'アップロードに失敗しました。'
+      thumbnailUploadStatus.value.error = true
+      thumbnailUploadStatus.value.message = 'アップロードに失敗しました。'
     })
 }
 
-const handleUpdateHeader = async (files: FileList) => {
+const handleUpdateHeader = (files: FileList): void => {
   if (files.length === 0) {
     return
   }
 
-  await coordinatorStore.uploadCoordinatorHeader(files[0])
-    .then((res: UploadImageResponse) => {
-      formData.headerUrl = res.url
+  coordinatorStore.uploadCoordinatorHeader(files[0])
+    .then((res) => {
+      formData.value.headerUrl = res.url
     })
     .catch(() => {
-      headerUploadStatus.error = true
-      headerUploadStatus.message = 'アップロードに失敗しました。'
+      headerUploadStatus.value.error = true
+      headerUploadStatus.value.message = 'アップロードに失敗しました。'
     })
 }
 
 const handleSubmitCoordinator = async (): Promise<void> => {
   try {
-    const result = await v$.value.$validate()
-    if (!result) {
-      return
-    }
-
+    loading.value = true
     const req: UpdateCoordinatorRequest = {
-      ...formData,
-      phoneNumber: convertJapaneseToI18nPhoneNumber(formData.phoneNumber)
+      ...formData.value,
+      phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber)
     }
     await coordinatorStore.updateCoordinator(coordinatorId, req)
     router.push('/coordinators')
@@ -192,12 +155,18 @@ const handleSubmitCoordinator = async (): Promise<void> => {
       show(err.message)
     }
     console.log(err)
+  } finally {
+    loading.value = false
   }
 }
 
 const handleSubmitRelateProducers = async (): Promise<void> => {
   try {
-    await coordinatorStore.relateProducers(coordinatorId, { producerIds: selectedProducerIds.value })
+    loading.value = true
+    const req: RelateProducersRequest = {
+      producerIds: selectedProducerIds.value
+    }
+    await coordinatorStore.relateProducers(coordinatorId, req)
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
@@ -205,11 +174,22 @@ const handleSubmitRelateProducers = async (): Promise<void> => {
     console.log(err)
   } finally {
     relatedProducersDialog.value = false
+    loading.value = false
   }
 }
 
-const isLoading = (): boolean => {
-  return fetchState?.pending?.value || false
+const handleSearchAddress = async () => {
+  try {
+    const res = await searchAddress.searchAddressByPostalCode(Number(formData.value.postalCode))
+    formData.value = { ...formData.value, ...res }
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
 }
 
 try {
@@ -232,15 +212,13 @@ try {
     :unrelated-producers="unrelatedProducers"
     :thumbnail-upload-status="thumbnailUploadStatus"
     :header-upload-status="headerUploadStatus"
-    :search-loading="searchLoading"
-    :search-error-message="searchErrorMessage"
     :related-producers-table-items-per-page="relatedProducersPagination.itemsPerPage.value"
     :related-producers-table-items-total="totalItems"
     @update:thumbnail-file="handleUpdateThumbnail"
     @update:header-file="handleUpdateHeader"
     @update:related-producers-table-page="handleUpdateRelatedProducersPage"
     @update:related-producers-table-items-per-page="relatedProducersPagination.handleUpdateItemsPerPage"
-    @click:search-address="searchAddress"
+    @click:search-address="handleSearchAddress"
     @submit:coordinator="handleSubmitCoordinator"
     @submit:related-producers="handleSubmitRelateProducers"
   />
