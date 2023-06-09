@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import { mdiPlus } from '@mdi/js'
+import useVuelidate from '@vuelidate/core'
 import { AlertType } from '~/lib/hooks'
 import { ProducersResponseProducersInner, UpdateCoordinatorRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
+import { email, getErrorMessage, kana, maxLength, required, tel } from '~/lib/validations'
 import { Coordinator } from '~/types/props/coordinator'
 
 const props = defineProps({
@@ -28,7 +30,25 @@ const props = defineProps({
   },
   formData: {
     type: Object as PropType<UpdateCoordinatorRequest>,
-    default: () => ({})
+    default: (): UpdateCoordinatorRequest => ({
+      storeName: '',
+      firstname: '',
+      lastname: '',
+      firstnameKana: '',
+      lastnameKana: '',
+      companyName: '',
+      thumbnailUrl: '',
+      headerUrl: '',
+      twitterAccount: '',
+      instagramAccount: '',
+      facebookAccount: '',
+      phoneNumber: '',
+      postalCode: '',
+      prefecture: '',
+      city: '',
+      addressLine1: '',
+      addressLine2: ''
+    })
   },
   selectedProducerIds: {
     type: Array<string>,
@@ -55,14 +75,6 @@ const props = defineProps({
       error: false,
       message: ''
     })
-  },
-  searchErrorMessage: {
-    type: String,
-    default: ''
-  },
-  searchLoading: {
-    type: Boolean,
-    default: false
   },
   relatedProducersTableItemsPerPage: {
     type: Number,
@@ -94,6 +106,15 @@ const tabs: Coordinator[] = [
 
 const selector = ref<string>('coordinators')
 
+const rules = computed(() => ({
+  lastname: { required, maxLength: maxLength(16) },
+  lastnameKana: { required, kana },
+  firstname: { required, maxLength: maxLength(16) },
+  firstnameKana: { required, kana },
+  storeName: { required, maxLength: maxLength(64) },
+  companyName: { required, maxLength: maxLength(64) },
+  phoneNumber: { required, tel }
+}))
 const formDataValue = computed({
   get: (): UpdateCoordinatorRequest => props.formData,
   set: (val: UpdateCoordinatorRequest): void => emit('update:form-data', val)
@@ -107,22 +128,22 @@ const selectedProducerIdsValue = computed({
   set: (producerIds: string[]): void => emit('update:selected-producer-ids', producerIds)
 })
 
+const validate = useVuelidate(rules, formDataValue)
+
 const onChangeThumbnailFile = (files?: FileList): void => {
-  if (!files || files.length === 0) {
+  if (!files) {
     return
   }
+
   emit('update:thumbnail-file', files)
 }
 
 const onChangeHeaderFile = (files?: FileList): void => {
-  if (!files || files.length === 0) {
+  if (!files) {
     return
   }
-  emit('update:header-file', files)
-}
 
-const onCilckSearch = (): void => {
-  emit('click:search-address')
+  emit('update:header-file', files)
 }
 
 const onClickRelatedProducersPage = (page: number): void => {
@@ -141,12 +162,21 @@ const onClickCloseRelatedProducersDialog = (): void => {
   relatedProducersDialogValue.value = false
 }
 
-const onSubmitCoordinator = (): void => {
+const onSubmitCoordinator = async (): Promise<void> => {
+  const valid = await validate.value.$validate()
+  if (!valid) {
+    return
+  }
+
   emit('submit:coordinator')
 }
 
 const onSubmitRelatedProducers = (): void => {
   emit('submit:related-producers')
+}
+
+const onCilckSearchAddress = (): void => {
+  emit('click:search-address')
 }
 </script>
 
@@ -212,18 +242,81 @@ const onSubmitRelatedProducers = (): void => {
       <v-window-item value="coordinators">
         <v-skeleton-loader v-if="loading" type="article" />
 
-        <organisms-coordinator-edit-form
-          v-else
-          v-model:form-data="formDataValue"
-          :thumbnail-upload-status="thumbnailUploadStatus"
-          :header-upload-status="headerUploadStatus"
-          :search-loading="searchLoading"
-          :search-error-message="searchErrorMessage"
-          @update:thumbnail-file="onChangeThumbnailFile"
-          @update:header-file="onChangeHeaderFile"
-          @click:search="onCilckSearch"
-          @submit="onSubmitCoordinator"
-        />
+        <v-form @submit.prevent="onSubmitCoordinator">
+          <v-card-text>
+            <v-text-field
+              v-model="validate.companyName.$model"
+              :error-messages="getErrorMessage(validate.companyName.$errors)"
+              label="会社名"
+            />
+            <v-text-field
+              v-model="validate.storeName.$model"
+              :error-messages="getErrorMessage(validate.storeName.$errors)"
+              label="店舗名"
+            />
+            <div class="mb-2 d-flex">
+              <molecules-profile-select-form
+                class="mr-4 flex-grow-1 flex-shrink-1"
+                :img-url="formDataValue.thumbnailUrl"
+                :error="props.thumbnailUploadStatus.error"
+                :message="props.thumbnailUploadStatus.message"
+                @update:file="onChangeThumbnailFile"
+              />
+              <molecules-header-select-form
+                class="flex-grow-1 flex-shrink-1"
+                :img-url="formDataValue.headerUrl"
+                :error="props.headerUploadStatus.error"
+                :message="props.headerUploadStatus.message"
+                @update:file="onChangeHeaderFile"
+              />
+            </div>
+            <div class="d-flex">
+              <v-text-field
+                v-model="validate.lastname.$model"
+                :error-messages="getErrorMessage(validate.lastname.$errors)"
+                class="mr-4"
+                label="コーディネータ:姓"
+              />
+              <v-text-field
+                v-model="validate.firstname.$model"
+                :error-messages="getErrorMessage(validate.firstname.$errors)"
+                label="コーディネータ:名"
+              />
+            </div>
+            <div class="d-flex">
+              <v-text-field
+                v-model="validate.lastnameKana.$model"
+                :error-messages="getErrorMessage(validate.lastnameKana.$errors)"
+                class="mr-4"
+                label="コーディネータ:姓（ふりがな）"
+              />
+              <v-text-field
+                v-model="validate.firstnameKana.$model"
+                :error-messages="getErrorMessage(validate.firstnameKana.$errors)"
+                label="コーディネータ:名（ふりがな）"
+              />
+            </div>
+            <v-text-field
+              v-model="validate.phoneNumber.$model"
+              :error-messages="getErrorMessage(validate.phoneNumber.$errors)"
+              type="tel"
+              label="連絡先（電話番号）"
+            />
+            <molecules-address-form
+              v-model:postal-code="formDataValue.postalCode"
+              v-model:prefecture="formDataValue.prefecture"
+              v-model:city="formDataValue.city"
+              v-model:address-line1="formDataValue.addressLine1"
+              v-model:address-line2="formDataValue.addressLine2"
+              @click:search="onCilckSearchAddress"
+            />
+          </v-card-text>
+          <v-card-actions>
+            <v-btn block variant="outlined" color="primary" type="submit">
+              更新
+            </v-btn>
+          </v-card-actions>
+        </v-form>
       </v-window-item>
 
       <v-window-item value="relationProducers">

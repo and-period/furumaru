@@ -46,10 +46,7 @@ export const useContactStore = defineStore('contact', {
       }
     },
 
-    async updateContact (
-      payload: UpdateContactRequest,
-      contactId: string
-    ): Promise<void> {
+    async updateContact (contactId: string, payload: UpdateContactRequest): Promise<void> {
       try {
         await apiClient.contactApi().v1UpdateContact(contactId, payload)
         const commonStore = useCommonStore()

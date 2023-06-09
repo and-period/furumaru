@@ -1,6 +1,8 @@
 <script lang="ts" setup>
+import useVuelidate from '@vuelidate/core'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import { AlertType } from '~/lib/hooks'
+import { getErrorMessage, maxLength } from '~/lib/validations'
 import { ContactPriority, ContactResponse, ContactStatus, UpdateContactRequest } from '~/types/api'
 
 const props = defineProps({
@@ -40,13 +42,14 @@ const props = defineProps({
     type: Object as PropType<UpdateContactRequest>,
     default: () => ({
       status: ContactStatus.UNKNOWN,
-      proprity: ContactPriority.UNKNOWN,
+      priority: ContactPriority.UNKNOWN,
       note: ''
     })
   }
 })
 
 const emit = defineEmits<{
+  (e: 'update:contact', contact: ContactResponse): void
   (e: 'update:form-data', formData: UpdateContactRequest): void
   (e: 'submit'): void
 }>()
@@ -65,6 +68,11 @@ const statuses = [
   { title: '不明', value: ContactStatus.UNKNOWN }
 ]
 
+const rules = computed(() => ({
+  priority: {},
+  status: {},
+  note: { maxLength: maxLength(2000) }
+}))
 const formDataValue = computed({
   get: (): UpdateContactRequest => props.formData,
   set: (v: UpdateContactRequest): void => emit('update:form-data', v)
@@ -76,7 +84,14 @@ const phoneNumber = computed((): string => {
   return convertI18nToJapanesePhoneNumber(props.contact.phoneNumber)
 })
 
-const onSubmit = (): void => {
+const validate = useVuelidate(rules, formDataValue)
+
+const onSubmit = async (): Promise<void> => {
+  const valid = await validate.value.$validate()
+  if (!valid) {
+    return
+  }
+
   emit('submit')
 }
 </script>
@@ -84,71 +99,70 @@ const onSubmit = (): void => {
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
 
-  <v-card elevation="0">
+  <v-card :loading="loading" elevation="0">
     <v-card-title>お問合せ管理</v-card-title>
 
-    <v-card-text>
-      <v-text-field
-        v-model="contactValue.username"
-        name="name"
-        label="名前"
-        readonly
-      />
+    <v-form @submit.prevent="onSubmit">
+      <v-card-text>
+        <v-text-field
+          v-model="contactValue.username"
+          name="name"
+          label="名前"
+          readonly
+        />
+        <v-text-field
+          v-model="contactValue.title"
+          name="title"
+          label="件名"
+          readonly
+        />
+        <v-textarea
+          v-model="contactValue.content"
+          name="contact"
+          label="お問合せ内容"
+          readonly
+        />
+        <v-select
+          v-model="validate.priority.$model"
+          :error-messages="getErrorMessage(validate.priority.$errors)"
+          :items="priorities"
+          item-title="title"
+          item-value="value"
+          label="優先度"
+        />
+        <v-select
+          v-model="validate.status.$model"
+          :error-messages="getErrorMessage(validate.status.$errors)"
+          :items="statuses"
+          item-title="title"
+          item-value="value"
+          label="ステータス"
+        />
+        <v-text-field
+          v-model="contactValue.email"
+          name="mailAddress"
+          label="メールアドレス"
+          readonly
+        />
+        <v-text-field
+          v-model="phoneNumber"
+          name="phoneNumber"
+          label="電話番号"
+          readonly
+        />
+        <v-textarea
+          v-model="validate.note.$model"
+          :error-messages="getErrorMessage(validate.note.$errors)"
+          name="note"
+          label="メモ"
+        />
+      </v-card-text>
 
-      <v-text-field
-        v-model="contactValue.title"
-        name="title"
-        label="件名"
-        readonly
-      />
-
-      <v-textarea
-        v-model="contactValue.content"
-        name="contact"
-        label="お問合せ内容"
-        readonly
-      />
-
-      <v-select
-        v-model="formDataValue.priority"
-        :items="priorities"
-        item-title="title"
-        item-value="value"
-        label="優先度"
-      />
-
-      <v-select
-        v-model="formDataValue.status"
-        :items="statuses"
-        item-title="title"
-        item-value="value"
-        label="ステータス"
-      />
-
-      <v-text-field
-        v-model="contactValue.email"
-        name="mailAddress"
-        label="メールアドレス"
-        readonly
-      />
-
-      <v-text-field
-        v-model="phoneNumber"
-        name="phoneNumber"
-        label="電話番号"
-        readonly
-      />
-
-      <v-textarea
-        v-model="formDataValue.note"
-        name="note"
-        label="メモ"
-      />
-    </v-card-text>
-    <v-card-actions>
-      <v-btn block variant="outlined" color="primary" @click="onSubmit">
-        更新
-      </v-btn>
-    </v-card-actions>
+      <v-card-actions>
+        <v-btn block :loading="loading" variant="outlined" color="primary">
+          更新
+        </v-btn>
+      </v-card-actions>
+    </v-form>
   </v-card>
 </template>
