@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *handler) ThreadRoutes(rg *gin.RouterGroup) {
+func (h *handler) threadRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication)
 	arg.GET("", h.ListThreadsByContactID)
 	arg.GET("/:threadId", h.GetThread)
