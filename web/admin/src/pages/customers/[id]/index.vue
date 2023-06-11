@@ -7,11 +7,13 @@ const customerStore = useCustomerStore()
 
 const customerId = route.params.id as string
 
+const { customer } = storeToRefs(customerStore)
+
+const loading = ref<boolean>(false)
+
 const fetchState = useAsyncData(async () => {
   await customerStore.getCustomer(customerId)
 })
-
-const { customer } = storeToRefs(customerStore)
 
 try {
   await fetchState.execute()
@@ -21,5 +23,8 @@ try {
 </script>
 
 <template>
-  <templates-customer-show :customer="customer" />
+  <templates-customer-edit
+    :loading="loading"
+    :customer="customer"
+  />
 </template>

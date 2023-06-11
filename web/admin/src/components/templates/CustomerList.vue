@@ -103,7 +103,7 @@ const onClickRow = (item: UsersResponseUsersInner): void => {
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
 
-  <v-card flat>
+  <v-card flat :loading="loading">
     <v-card-title>顧客管理</v-card-title>
 
     <v-card-text>

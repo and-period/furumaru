@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 import { useCommonStore, useShippingStore } from '~/store'
 import { UpdateShippingRequest } from '~/types/api'
@@ -7,9 +8,13 @@ const route = useRoute()
 const router = useRouter()
 const commonStore = useCommonStore()
 const shippingStore = useShippingStore()
-const id = route.params.id as string
 const { alertType, isShow, alertText, show } = useAlert('error')
 
+const shippingId = route.params.id as string
+
+const { shipping } = storeToRefs(shippingStore)
+
+const loading = ref<boolean>(false)
 const formData = ref<UpdateShippingRequest>({
   name: '',
   box60Rates: [
@@ -43,10 +48,10 @@ const formData = ref<UpdateShippingRequest>({
   freeShippingRates: 0
 })
 
-const fetchState = useAsyncData(async () => {
+const fetchState = useAsyncData(async (): Promise<void> => {
   try {
-    const shipping = await shippingStore.getShipping(id)
-    formData.value = { ...shipping }
+    await shippingStore.getShipping(shippingId)
+    formData.value = { ...shipping.value }
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
@@ -56,12 +61,13 @@ const fetchState = useAsyncData(async () => {
 })
 
 const isLoading = (): boolean => {
-  return fetchState?.pending?.value || false
+  return fetchState?.pending?.value || loading.value
 }
 
-const handleSubmit = async () => {
+const handleSubmit = async (): Promise<void> => {
   try {
-    await shippingStore.updateShipping(id, formData.value)
+    loading.value = true
+    await shippingStore.updateShipping(shippingId, formData.value)
     commonStore.addSnackbar({
       color: 'info',
       message: `${formData.value.name}を更新しました。`
@@ -77,6 +83,8 @@ const handleSubmit = async () => {
       top: 0,
       behavior: 'smooth'
     })
+  } finally {
+    loading.value = false
   }
 }
 
@@ -94,6 +102,7 @@ try {
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
+    :shipping="shipping"
     @submit="handleSubmit"
   />
 </template>

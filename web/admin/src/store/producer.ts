@@ -12,6 +12,7 @@ import { apiClient } from '~/plugins/api-client'
 
 export const useProducerStore = defineStore('producer', {
   state: () => ({
+    producer: {} as ProducerResponse,
     producers: [] as ProducersResponse['producers'],
     totalItems: 0
   }),
@@ -24,11 +25,7 @@ export const useProducerStore = defineStore('producer', {
      */
     async fetchProducers (limit = 20, offset = 0, options = ''): Promise<void> {
       try {
-        const res = await apiClient.producerApi().v1ListProducers(
-          limit,
-          offset,
-          options
-        )
+        const res = await apiClient.producerApi().v1ListProducers(limit, offset, options)
         this.producers = res.data.producers
         this.totalItems = res.data.total
       } catch (err) {
@@ -44,6 +41,7 @@ export const useProducerStore = defineStore('producer', {
     async getProducer (producerId: string): Promise<ProducerResponse> {
       try {
         const res = await apiClient.producerApi().v1GetProducer(producerId)
+        this.producer = res.data
         return res.data
       } catch (err) {
         return this.errorHandler(err)

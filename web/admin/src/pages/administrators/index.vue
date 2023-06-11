@@ -17,7 +17,7 @@ const fetchState = useAsyncData(async (): Promise<void> => {
   await fetchAdministrators()
 })
 
-watch(pagination.itemsPerPage, () => {
+watch(pagination.itemsPerPage, (): void => {
   fetchState.refresh()
 })
 

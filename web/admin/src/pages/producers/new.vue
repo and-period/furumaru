@@ -1,15 +1,17 @@
 <script lang="ts" setup>
+import { convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert, useSearchAddress } from '~/lib/hooks'
 import { useProducerStore } from '~/store'
 import { CreateProducerRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 
 const router = useRouter()
-const { createProducer, uploadProducerThumbnail, uploadProducerHeader } =
-  useProducerStore()
+const producerStore = useProducerStore()
+const searchAddress = useSearchAddress()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const formData = reactive<CreateProducerRequest>({
+const loading = ref<boolean>(false)
+const formData = ref<CreateProducerRequest>({
   lastname: '',
   lastnameKana: '',
   firstname: '',
@@ -25,91 +27,99 @@ const formData = reactive<CreateProducerRequest>({
   addressLine1: '',
   addressLine2: ''
 })
-
-const thumbnailUploadStatus = reactive<ImageUploadStatus>({
+const thumbnailUploadStatus = ref<ImageUploadStatus>({
+  error: false,
+  message: ''
+})
+const headerUploadStatus = ref<ImageUploadStatus>({
   error: false,
   message: ''
 })
 
-const headerUploadStatus = reactive<ImageUploadStatus>({
-  error: false,
-  message: ''
-})
-
-const handleSubmit = async () => {
+const handleSubmit = async (): Promise<void> => {
   try {
-    await createProducer({
-      ...formData,
-      phoneNumber: formData.phoneNumber.replace('0', '+81')
-    })
+    loading.value = true
+    const req: CreateProducerRequest = {
+      ...formData.value,
+      phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber)
+    }
+    await producerStore.createProducer(req)
     router.push('/producers')
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
+  } finally {
+    loading.value = false
   }
 }
 
-const handleUpdateThumbnail = (files?: FileList) => {
-  if (!files || files.length === 0) {
+const handleUpdateThumbnail = (files: FileList): void => {
+  if (files.length === 0) {
     return
   }
-  uploadProducerThumbnail(files[0])
+
+  loading.value = true
+  producerStore.uploadProducerThumbnail(files[0])
     .then((res) => {
-      formData.thumbnailUrl = res.url
+      formData.value.thumbnailUrl = res.url
     })
     .catch(() => {
-      thumbnailUploadStatus.error = true
-      thumbnailUploadStatus.message = 'アップロードに失敗しました。'
+      thumbnailUploadStatus.value.error = true
+      thumbnailUploadStatus.value.message = 'アップロードに失敗しました。'
+    })
+    .finally(() => {
+      loading.value = false
     })
 }
 
-const handleUpdateHeader = async (files?: FileList) => {
-  if (!files || files.length === 0) {
+const handleUpdateHeader = (files: FileList): void => {
+  if (files.length === 0) {
     return
   }
-  await uploadProducerHeader(files[0])
+
+  loading.value = true
+  producerStore.uploadProducerHeader(files[0])
     .then((res) => {
-      formData.headerUrl = res.url
+      formData.value.headerUrl = res.url
     })
     .catch(() => {
-      headerUploadStatus.error = true
-      headerUploadStatus.message = 'アップロードに失敗しました。'
+      headerUploadStatus.value.error = true
+      headerUploadStatus.value.message = 'アップロードに失敗しました。'
+    })
+    .finally(() => {
+      loading.value = false
     })
 }
 
-const {
-  loading: searchLoading,
-  errorMessage: searchErrorMessage,
-  searchAddressByPostalCode
-} = useSearchAddress()
-
-const searchAddress = async () => {
-  searchLoading.value = true
-  searchErrorMessage.value = ''
-  const res = await searchAddressByPostalCode(Number(formData.postalCode))
-  if (res) {
-    formData.prefecture = res.prefecture
-    formData.city = res.city
-    formData.addressLine1 = res.addressLine1
+const handleSearchAddress = async (): Promise<void> => {
+  try {
+    const res = await searchAddress.searchAddressByPostalCode(Number(formData.value.postalCode))
+    formData.value = { ...formData.value, ...res }
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  } finally {
+    loading.value = false
   }
 }
 </script>
 
 <template>
   <templates-producer-new
-    :form-data="formData"
+    v-model:form-data="formData"
+    :loading="loading"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :thumbnail-upload-status="thumbnailUploadStatus"
     :header-upload-status="headerUploadStatus"
-    :search-loading="searchLoading"
-    :search-error-message="searchErrorMessage"
+    @click:search-address="handleSearchAddress"
     @update:thumbnail-file="handleUpdateThumbnail"
     @update:header-file="handleUpdateHeader"
     @submit="handleSubmit"
-    @click:search-address="searchAddress"
   />
 </template>

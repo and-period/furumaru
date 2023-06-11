@@ -4,18 +4,13 @@ import { useAlert } from '~/lib/hooks'
 
 import { useNotificationStore } from '~/store'
 import { CreateNotificationRequest } from '~/types/api'
-import { NotificationTime } from '~/types/props'
 
 const router = useRouter()
 const notificationStore = useNotificationStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const timeData = reactive<NotificationTime>({
-  publishedDate: '',
-  publishedTime: ''
-})
-
-const formData = reactive<CreateNotificationRequest>({
+const loading = ref<boolean>(false)
+const formData = ref<CreateNotificationRequest>({
   title: '',
   body: '',
   targets: [],
@@ -25,21 +20,24 @@ const formData = reactive<CreateNotificationRequest>({
 
 const handleSubmit = async () => {
   try {
-    await notificationStore.createNotification(formData)
+    loading.value = true
+    await notificationStore.createNotification(formData.value)
     router.push('/notifications')
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
+  } finally {
+    loading.value = false
   }
 }
 </script>
 
 <template>
   <templates-notification-new
-    :form-data="formData"
-    :time-data="timeData"
+    v-model:form-data="formData"
+    :loading="loading"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"

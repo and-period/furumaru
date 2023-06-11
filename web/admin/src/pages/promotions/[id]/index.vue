@@ -1,19 +1,22 @@
 <script lang="ts" setup>
-import dayjs, { unix } from 'dayjs'
+import dayjs from 'dayjs'
+import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 
 import { usePromotionStore } from '~/store'
 import { UpdatePromotionRequest } from '~/types/api'
-import { PromotionTime } from '~/types/props'
 
 const router = useRouter()
 const route = useRoute()
-const id = route.params.id as string
-
-const { getPromotion, updatePromotion } = usePromotionStore()
+const promotionStore = usePromotionStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const formData = reactive<UpdatePromotionRequest>({
+const promotionId = route.params.id as string
+
+const { promotion } = storeToRefs(promotionStore)
+
+const loading = ref<boolean>(false)
+const formData = ref<UpdatePromotionRequest>({
   title: '',
   description: '',
   public: false,
@@ -24,43 +27,38 @@ const formData = reactive<UpdatePromotionRequest>({
   endAt: dayjs().unix()
 })
 
-const timeData = reactive<PromotionTime>({
-  startDate: '',
-  startTime: '',
-  endDate: '',
-  endTime: ''
-})
-
-const fetchState = useAsyncData(async () => {
-  const promotion = await getPromotion(id)
-  formData.title = promotion.title
-  formData.description = promotion.description
-  formData.public = promotion.public
-  formData.discountType = promotion.discountType
-  formData.discountRate = promotion.discountRate
-  formData.code = promotion.code
-  timeData.startDate = unix(promotion.startAt).format('YYYY-MM-DD')
-  timeData.startTime = unix(promotion.startAt).format('HH:mm')
-  timeData.endDate = unix(promotion.endAt).format('YYYY-MM-DD')
-  timeData.endTime = unix(promotion.endAt).format('HH:mm')
+const fetchState = useAsyncData(async (): Promise<void> => {
+  try {
+    await promotionStore.getPromotion(promotionId)
+    formData.value = { ...promotion.value }
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
 })
 
 const isLoading = (): boolean => {
-  return fetchState?.pending?.value || false
+  return fetchState?.pending?.value || loading.value
 }
 
-const handleSubmit = async () => {
+const handleSubmit = async (): Promise<void> => {
   try {
-    await updatePromotion(id, {
-      ...formData,
-      discountRate: Number(formData.discountRate)
-    })
+    loading.value = true
+    const req: UpdatePromotionRequest = {
+      ...formData.value,
+      discountRate: Number(formData.value.discountRate)
+    }
+    await promotionStore.updatePromotion(promotionId, req)
     router.push('/promotions')
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
+  } finally {
+    loading.value = false
   }
 }
 
@@ -74,11 +72,11 @@ try {
 <template>
   <templates-promotion-edit
     v-model:form-data="formData"
-    v-model:time-data="timeData"
+    :loading="isLoading()"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
-    :form-data-loading="isLoading()"
+    :promotion="promotion"
     @submit="handleSubmit"
   />
 </template>

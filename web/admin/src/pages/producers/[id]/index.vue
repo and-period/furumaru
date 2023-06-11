@@ -1,35 +1,25 @@
 <script lang="ts" setup>
+import { storeToRefs } from 'pinia'
 import { convertI18nToJapanesePhoneNumber, convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert, useSearchAddress } from '~/lib/hooks'
 import { useCommonStore, useProducerStore } from '~/store'
-import { ProducerResponse } from '~/types/api'
-import { ApiBaseError } from '~/types/exception'
+import { ProducerResponse, UpdateProducerRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 
 const route = useRoute()
 const router = useRouter()
-const id = route.params.id as string
-
-const { getProducer } = useProducerStore()
-const { addSnackbar } = useCommonStore()
-
-const { uploadProducerThumbnail, uploadProducerHeader, updateProducer } =
-  useProducerStore()
-
-const thumbnailUploadStatus = reactive<ImageUploadStatus>({
-  error: false,
-  message: ''
-})
-
-const headerUploadStatus = reactive<ImageUploadStatus>({
-  error: false,
-  message: ''
-})
-
+const commonStore = useCommonStore()
+const producerStore = useProducerStore()
+const searchAddress = useSearchAddress()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const formData = reactive<ProducerResponse>({
-  id,
+const producerId = route.params.id as string
+
+const { producer } = storeToRefs(producerStore)
+
+const loading = ref<boolean>(false)
+const formData = ref<ProducerResponse>({
+  id: producerId,
   coordinatorId: '',
   lastname: '',
   lastnameKana: '',
@@ -44,77 +34,103 @@ const formData = reactive<ProducerResponse>({
   storeName: '',
   headerUrl: '',
   headers: [],
-  createdAt: -1,
-  updatedAt: -1,
+  createdAt: 0,
+  updatedAt: 0,
   thumbnailUrl: '',
   thumbnails: [],
   email: ''
 })
-
-const fetchState = useAsyncData(async () => {
-  console.log('ここ呼ばれる？')
-  const producer = await getProducer(id)
-  Object.assign(formData, producer)
-  formData.phoneNumber = convertI18nToJapanesePhoneNumber(producer.phoneNumber)
+const thumbnailUploadStatus = ref<ImageUploadStatus>({
+  error: false,
+  message: ''
+})
+const headerUploadStatus = ref<ImageUploadStatus>({
+  error: false,
+  message: ''
 })
 
-const handleUpdateThumbnail = (files?: FileList) => {
-  if (!files || files.length === 0) {
-    return
+const fetchState = useAsyncData(async (): Promise<void> => {
+  try {
+    await producerStore.getProducer(producerId)
+    formData.value = {
+      ...producer.value,
+      phoneNumber: convertI18nToJapanesePhoneNumber(producer.value.phoneNumber)
+    }
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
   }
-
-  uploadProducerThumbnail(files[0])
-    .then((res) => {
-      formData.thumbnailUrl = res.url
-    })
-    .catch(() => {
-      thumbnailUploadStatus.error = true
-      thumbnailUploadStatus.message = 'アップロードに失敗しました。'
-    })
-}
-
-const handleUpdateHeader = async (files?: FileList) => {
-  if (!files || files.length === 0) {
-    return
-  }
-
-  await uploadProducerHeader(files[0])
-    .then((res) => {
-      formData.headerUrl = res.url
-    })
-    .catch(() => {
-      headerUploadStatus.error = true
-      headerUploadStatus.message = 'アップロードに失敗しました。'
-    })
-}
-
-const {
-  loading: searchLoading,
-  errorMessage: searchErrorMessage,
-  searchAddressByPostalCode
-} = useSearchAddress()
-
-const searchAddress = async () => {
-  searchLoading.value = true
-  searchErrorMessage.value = ''
-  const res = await searchAddressByPostalCode(Number(formData.postalCode))
-  if (res) {
-    formData.prefecture = res.prefecture
-    formData.city = res.city
-    formData.addressLine1 = res.addressLine1
-  }
-}
+})
 
 const isLoading = (): boolean => {
-  return fetchState?.pending?.value || false
+  return fetchState?.pending?.value || loading.value
+}
+
+const handleUpdateThumbnail = (files: FileList): void => {
+  if (files.length === 0) {
+    return
+  }
+
+  loading.value = true
+  producerStore.uploadProducerThumbnail(files[0])
+    .then((res) => {
+      formData.value.thumbnailUrl = res.url
+    })
+    .catch(() => {
+      thumbnailUploadStatus.value.error = true
+      thumbnailUploadStatus.value.message = 'アップロードに失敗しました。'
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
+
+const handleUpdateHeader = (files: FileList): void => {
+  if (files.length === 0) {
+    return
+  }
+
+  loading.value = true
+  producerStore.uploadProducerHeader(files[0])
+    .then((res) => {
+      formData.value.headerUrl = res.url
+    })
+    .catch(() => {
+      headerUploadStatus.value.error = true
+      headerUploadStatus.value.message = 'アップロードに失敗しました。'
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
+
+const handleSearchAddress = async (): Promise<void> => {
+  try {
+    const res = await searchAddress.searchAddressByPostalCode(Number(formData.value.postalCode))
+    formData.value = { ...formData.value, ...res }
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
 }
 
 const handleSubmit = async () => {
   try {
-    await updateProducer(id, { ...formData, phoneNumber: convertJapaneseToI18nPhoneNumber(formData.phoneNumber) })
-    addSnackbar({
+    loading.value = true
+    const req: UpdateProducerRequest = {
+      ...formData.value,
+      phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber)
+    }
+    await producerStore.updateProducer(producerId, req)
+    commonStore.addSnackbar({
       color: 'info',
-      message: `${formData.storeName}を更新しました。`
+      message: `${formData.value.storeName}を更新しました。`
     })
     router.push('/producers')
   } catch (err) {
@@ -122,6 +138,8 @@ const handleSubmit = async () => {
       show(err.message)
     }
     console.log(err)
+  } finally {
+    loading.value = false
   }
 }
 
@@ -135,17 +153,16 @@ try {
 <template>
   <templates-producer-edit
     v-model:form-data="formData"
+    :loading="isLoading()"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
-    :form-data-loading="isLoading()"
     :thumbnail-upload-status="thumbnailUploadStatus"
     :header-upload-status="headerUploadStatus"
-    :search-loading="searchLoading"
-    :search-error-message="searchErrorMessage"
+    :producer="producer"
+    @click:search-address="handleSearchAddress"
     @update:thumbnail-file="handleUpdateThumbnail"
     @update:header-file="handleUpdateHeader"
     @submit="handleSubmit"
-    @click:search="searchAddress"
   />
 </template>

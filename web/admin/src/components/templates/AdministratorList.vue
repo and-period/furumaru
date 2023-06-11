@@ -72,8 +72,8 @@ const headers: VDataTable['headers'] = [
 const selectedItem = ref<AdministratorsResponseAdministratorsInner>()
 
 const deleteDialogValue = computed({
-  get: () => props.deleteDialog,
-  set: (val: boolean) => emit('update:delete-dialog', val)
+  get: (): boolean => props.deleteDialog,
+  set: (val: boolean): void => emit('update:delete-dialog', val)
 })
 
 const getName = (administrator?: AdministratorsResponseAdministratorsInner): string => {

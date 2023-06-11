@@ -76,7 +76,6 @@ try {
     :alert-type="alertType"
     :alert-text="alertText"
     :contacts="contacts"
-    :sort-by="sortBy"
     :table-items-per-page="pagination.itemsPerPage.value"
     :table-items-total="total"
     @click:row="handleClickRow"

@@ -11,6 +11,7 @@ import { apiClient } from '~/plugins/api-client'
 
 export const usePromotionStore = defineStore('promotion', {
   state: () => ({
+    promotion: {} as PromotionResponse,
     promotions: [] as PromotionsResponse['promotions'],
     total: 0
   }),
@@ -21,7 +22,7 @@ export const usePromotionStore = defineStore('promotion', {
      * @param offset 取得開始位置
      * @param orders ソートキー
      */
-    async fetchPromotions (limit = 20, offset = 0, orders = []): Promise<void> {
+    async fetchPromotions (limit = 20, offset = 0, orders: string[] = []): Promise<void> {
       try {
         const res = await apiClient.promotionApi().v1ListPromotions(limit, offset, orders.join(','))
         this.promotions = res.data.promotions
@@ -39,6 +40,7 @@ export const usePromotionStore = defineStore('promotion', {
     async getPromotion (promotionId: string): Promise<PromotionResponse> {
       try {
         const res = await apiClient.promotionApi().v1GetPromotion(promotionId)
+        this.promotion = res.data
         return res.data
       } catch (err) {
         return this.errorHandler(err)
@@ -51,7 +53,7 @@ export const usePromotionStore = defineStore('promotion', {
      */
     async createPromotion (payload: CreatePromotionRequest): Promise<void> {
       try {
-        const res = await apiClient.promotionApi().v1CreatePromotion(payload)
+        await apiClient.promotionApi().v1CreatePromotion(payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: `${payload.title}を作成しました。`,

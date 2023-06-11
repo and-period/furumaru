@@ -61,6 +61,7 @@ const handleUpdateThumbnail = (files: FileList): void => {
     return
   }
 
+  loading.value = true
   coordinatorStore.uploadCoordinatorThumbnail(files[0])
     .then((res) => {
       formData.value.thumbnailUrl = res.url
@@ -69,6 +70,9 @@ const handleUpdateThumbnail = (files: FileList): void => {
       thumbnailUploadStatus.value.error = true
       thumbnailUploadStatus.value.message = 'アップロードに失敗しました。'
     })
+    .finally(() => {
+      loading.value = false
+    })
 }
 
 const handleUpdateHeader = (files: FileList): void => {
@@ -76,6 +80,7 @@ const handleUpdateHeader = (files: FileList): void => {
     return
   }
 
+  loading.value = true
   coordinatorStore.uploadCoordinatorHeader(files[0])
     .then((res) => {
       formData.value.headerUrl = res.url
@@ -83,6 +88,9 @@ const handleUpdateHeader = (files: FileList): void => {
     .catch(() => {
       headerUploadStatus.value.error = true
       headerUploadStatus.value.message = 'アップロードに失敗しました。'
+    })
+    .finally(() => {
+      loading.value = false
     })
 }
 

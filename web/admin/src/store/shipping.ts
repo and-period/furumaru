@@ -10,6 +10,7 @@ import {
 
 export const useShippingStore = defineStore('shipping', {
   state: () => ({
+    shipping: {} as ShippingResponse,
     shippings: [] as ShippingsResponseShippingsInner[],
     totalItems: 0
   }),
@@ -42,6 +43,7 @@ export const useShippingStore = defineStore('shipping', {
     async getShipping (shippingId: string): Promise<ShippingResponse> {
       try {
         const res = await apiClient.shippingApi().v1GetShipping(shippingId)
+        this.shipping = res.data
         return res.data
       } catch (err) {
         return this.errorHandler(err)
