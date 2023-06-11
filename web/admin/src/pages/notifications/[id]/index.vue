@@ -1,61 +1,56 @@
 <script lang="ts" setup>
-import { unix } from 'dayjs'
+import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 
 import { useNotificationStore } from '~/store'
-import { NotificationResponse } from '~/types/api'
-import { NotificationTime } from '~/types/props'
+import { UpdateNotificationRequest } from '~/types/api'
 
-const router = useRouter()
 const route = useRoute()
-const id = route.params.id as string
-
-const { getNotification, updateNotification } = useNotificationStore()
+const router = useRouter()
+const notificationStore = useNotificationStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const formData = reactive<NotificationResponse>({
-  id,
-  createdBy: '',
-  creatorName: '',
-  updatedBy: '',
+const notificationId = route.params.id as string
+
+const { notification } = storeToRefs(notificationStore)
+
+const loading = ref<boolean>(false)
+const formData = ref<UpdateNotificationRequest>({
   title: '',
   body: '',
   targets: [],
   public: false,
-  publishedAt: -1,
-  createdAt: -1,
-  updatedAt: -1
+  publishedAt: 0
 })
 
-const timeData = reactive<NotificationTime>({
-  publishedDate: '',
-  publishedTime: ''
-})
-
-const fetchState = useAsyncData(async () => {
-  const notification = await getNotification(id)
-  formData.title = notification.title
-  formData.body = notification.body
-  formData.targets = notification.targets
-  formData.public = notification.public
-  formData.publishedAt = notification.publishedAt
-  timeData.publishedDate = unix(notification.publishedAt).format('YYYY-MM-DD')
-  timeData.publishedTime = unix(notification.publishedAt).format('HH:mm')
+const fetchState = useAsyncData(async (): Promise<void> => {
+  try {
+    await notificationStore.getNotification(notificationId)
+    formData.value = { ...notification.value }
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
 })
 
 const isLoading = (): boolean => {
-  return fetchState?.pending?.value || false
+  return fetchState?.pending?.value || loading.value
 }
 
-const handleSubmit = async () => {
+const handleSubmit = async (): Promise<void> => {
   try {
-    await updateNotification(id, formData)
+    loading.value = true
+    await notificationStore.updateNotification(notificationId, formData.value)
     router.push('/notifications')
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
+  } finally {
+    loading.value = false
   }
 }
 
@@ -68,12 +63,12 @@ try {
 
 <template>
   <templates-notification-edit
-    :form-data="formData"
-    :time-data="timeData"
-    :form-data-loading="isLoading()"
+    v-model:form-data="formData"
+    :loading="isLoading()"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
+    :notification="notification"
     @submit="handleSubmit"
   />
 </template>

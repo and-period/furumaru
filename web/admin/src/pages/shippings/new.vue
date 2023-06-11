@@ -8,7 +8,8 @@ const commonStore = useCommonStore()
 const shippingStore = useShippingStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const formData = reactive<CreateShippingRequest>({
+const loading = ref<boolean>(false)
+const formData = ref<CreateShippingRequest>({
   name: '',
   box60Rates: [
     {
@@ -43,10 +44,11 @@ const formData = reactive<CreateShippingRequest>({
 
 const handleSubmit = async (): Promise<void> => {
   try {
-    await shippingStore.createShipping(formData)
+    loading.value = true
+    await shippingStore.createShipping(formData.value)
     commonStore.addSnackbar({
       color: 'info',
-      message: `${formData.name}を登録しました。`
+      message: `${formData.value.name}を登録しました。`
     })
     router.push('/shippings')
   } catch (err) {
@@ -59,6 +61,8 @@ const handleSubmit = async (): Promise<void> => {
       top: 0,
       behavior: 'smooth'
     })
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -66,6 +70,7 @@ const handleSubmit = async (): Promise<void> => {
 <template>
   <templates-shipping-new
     v-model:form-data="formData"
+    :loading="loading"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"

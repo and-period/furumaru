@@ -72,7 +72,12 @@ const rules = computed(() => ({
   companyName: { required, maxLength: maxLength(64) },
   storeName: { required, maxLength: maxLength(64) },
   email: { required, email },
-  phoneNumber: { required, tel }
+  phoneNumber: { required, tel },
+  postalCode: {},
+  prefecture: {},
+  city: {},
+  addressLine1: {},
+  addressLine2: {}
 }))
 const formDataValue = computed({
   get: (): CreateCoordinatorRequest => props.formData,
@@ -184,11 +189,12 @@ const onClickSearchAddress = (): void => {
         />
 
         <molecules-address-form
-          v-model:postal-code="formDataValue.postalCode"
-          v-model:prefecture="formDataValue.prefecture"
-          v-model:city="formDataValue.city"
-          v-model:address-line1="formDataValue.addressLine1"
-          v-model:address-line2="formDataValue.addressLine2"
+          v-model:postal-code="validate.postalCode.$model"
+          v-model:prefecture="validate.prefecture.$model"
+          v-model:city="validate.city.$model"
+          v-model:address-line1="validate.addressLine1.$model"
+          v-model:address-line2="validate.addressLine2.$model"
+          :loading="loading"
           @click:search="onClickSearchAddress"
         />
       </v-card-text>

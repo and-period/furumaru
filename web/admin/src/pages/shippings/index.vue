@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { VDataTable } from 'vuetify/lib/labs/components'
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useShippingStore } from '~/store'
 
@@ -9,20 +8,19 @@ const shippingStore = useShippingStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const fetchState = useAsyncData(async () => {
+const { shippings, totalItems } = storeToRefs(shippingStore)
+
+const loading = ref<boolean>(false)
+
+const fetchState = useAsyncData(async (): Promise<void> => {
   await fetchShippings()
 })
 
-const { shippings, totalItems } = storeToRefs(shippingStore)
-
-const deleteDialog = ref<boolean>(false)
-const sortBy = ref<VDataTable['sortBy']>([])
-
-watch(pagination.itemsPerPage, () => {
+watch(pagination.itemsPerPage, (): void => {
   fetchShippings()
 })
 
-const fetchShippings = async () => {
+const fetchShippings = async (): Promise<void> => {
   try {
     await shippingStore.fetchShippings(pagination.itemsPerPage.value, pagination.offset.value)
   } catch (err) {
@@ -34,24 +32,20 @@ const fetchShippings = async () => {
 }
 
 const isLoading = (): boolean => {
-  return fetchState?.pending?.value || false
+  return fetchState?.pending?.value || loading.value
 }
 
-const handleUpdatePage = async (page: number) => {
+const handleUpdatePage = async (page: number): Promise<void> => {
   pagination.updateCurrentPage(page)
   await fetchShippings()
 }
 
-const handleClickAdd = () => {
+const handleClickAdd = (): void => {
   router.push('/shippings/new')
 }
 
-const handleClickRow = (shippingId: string) => {
+const handleClickRow = (shippingId: string): void => {
   router.push(`/shippings/${shippingId}`)
-}
-
-const handleClickDelete = (shippingId: string) => {
-  console.log('delete', shippingId)
 }
 
 try {
@@ -63,7 +57,6 @@ try {
 
 <template>
   <templates-shipping-list
-    v-model:delete-dialog="deleteDialog"
     :loading="isLoading()"
     :is-alert="isShow"
     :alert-type="alertType"
@@ -71,12 +64,9 @@ try {
     :shippings="shippings"
     :table-items-per-page="pagination.itemsPerPage.value"
     :table-items-total="totalItems"
-    :table-sort-by="sortBy"
     @click:row="handleClickRow"
     @click:add="handleClickAdd"
-    @click:delete="handleClickDelete"
     @click:update-page="handleUpdatePage"
     @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
-    @update:sort-by="fetchState.refresh"
   />
 </template>

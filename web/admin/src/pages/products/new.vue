@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 
 import { useAlert } from '~/lib/hooks'
@@ -9,21 +8,19 @@ import {
   useProductStore,
   useProductTypeStore
 } from '~/store'
-import { CreateProductRequest, UploadImageResponse } from '~/types/api'
-import { ApiBaseError } from '~/types/exception'
+import { CreateProductRequest, CreateProductRequestMediaInner } from '~/types/api'
 
 const router = useRouter()
+const productStore = useProductStore()
 const productTypeStore = useProductTypeStore()
 const categoryStore = useCategoryStore()
 const producerStore = useProducerStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
-const v$ = useVuelidate()
 
 const { producers } = storeToRefs(producerStore)
 const { productTypes } = storeToRefs(productTypeStore)
-const { uploadProductImage, createProduct } = useProductStore()
 
-const fetchState = useAsyncData(async () => {
+const fetchState = useAsyncData(async (): Promise<void> => {
   await Promise.all([
     productTypeStore.fetchProductTypes(),
     categoryStore.fetchCategories(),
@@ -31,6 +28,7 @@ const fetchState = useAsyncData(async () => {
   ])
 })
 
+const loading = ref<boolean>(false)
 const formData = ref<CreateProductRequest>({
   name: '',
   description: '',
@@ -51,10 +49,15 @@ const formData = ref<CreateProductRequest>({
   originCity: ''
 })
 
-const handleImageUpload = async (files: FileList) => {
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || loading.value
+}
+
+const handleImageUpload = async (files: FileList): Promise<void> => {
+  loading.value = true
   for (const [index, file] of Array.from(files).entries()) {
     try {
-      const uploadImage: UploadImageResponse = await uploadProductImage(file)
+      const uploadImage = await productStore.uploadProductImage(file)
       formData.value.media.push({
         ...uploadImage,
         isThumbnail: index === 0
@@ -66,29 +69,22 @@ const handleImageUpload = async (files: FileList) => {
       console.log(err)
     }
   }
+  loading.value = false
 
   const thumbnailItem = formData.value.media.find(item => item.isThumbnail)
-  if (!thumbnailItem) {
-    formData.value.media = formData.value.media.map((item, i) => {
-      return {
-        ...item,
-        isThumbnail: i === 0
-      }
-    })
-  }
-}
-
-const handleSubmit = async () => {
-  const result = await v$.value.$validate()
-  if (!result) {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    })
+  if (thumbnailItem) {
     return
   }
+  formData.value.media = formData.value.media.map((item, i): CreateProductRequestMediaInner => ({
+    ...item,
+    isThumbnail: i === 0
+  }))
+}
+
+const handleSubmit = async (): Promise<void> => {
   try {
-    await createProduct(formData.value)
+    loading.value = true
+    await productStore.createProduct(formData.value)
     router.push('/products')
   } catch (err) {
     if (err instanceof Error) {
@@ -100,6 +96,8 @@ const handleSubmit = async () => {
       top: 0,
       behavior: 'smooth'
     })
+  } finally {
+    loading.value = false
   }
 }
 
@@ -113,6 +111,7 @@ try {
 <template>
   <templates-product-new
     v-model:form-data="formData"
+    :loading="isLoading()"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"

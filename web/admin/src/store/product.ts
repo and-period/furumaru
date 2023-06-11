@@ -11,6 +11,7 @@ import {
 
 export const useProductStore = defineStore('product', {
   state: () => ({
+    product: {} as ProductResponse,
     products: [] as ProductsResponseProductsInner[],
     totalItems: 0
   }),
@@ -43,6 +44,7 @@ export const useProductStore = defineStore('product', {
     async getProduct (productId: string): Promise<ProductResponse> {
       try {
         const res = await apiClient.productApi().v1GetProduct(productId)
+        this.product = res.data
         return res.data
       } catch (err) {
         return this.errorHandler(err)

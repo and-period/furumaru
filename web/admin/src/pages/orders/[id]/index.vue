@@ -8,13 +8,15 @@ const route = useRoute()
 const orderStore = useOrderStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const id = route.params.id as string
+const orderId = route.params.id as string
 
 const { order } = storeToRefs(orderStore)
 
-const fetchState = useAsyncData(async () => {
+const loading = ref<boolean>(false)
+
+const fetchState = useAsyncData(async (): Promise<void> => {
   try {
-    await orderStore.getOrder(id)
+    await orderStore.getOrder(orderId)
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
@@ -24,7 +26,7 @@ const fetchState = useAsyncData(async () => {
 })
 
 const isLoading = (): boolean => {
-  return fetchState?.pending?.value || false
+  return fetchState?.pending?.value || loading.value
 }
 
 try {

@@ -4,13 +4,13 @@ import { useAlert } from '~/lib/hooks'
 
 import { usePromotionStore } from '~/store'
 import { CreatePromotionRequest } from '~/types/api'
-import { PromotionTime } from '~/types/props'
 
 const router = useRouter()
 const promotionStore = usePromotionStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const formData = reactive<CreatePromotionRequest>({
+const loading = ref<boolean>(false)
+const formData = ref<CreatePromotionRequest>({
   title: '',
   description: '',
   public: false,
@@ -21,25 +21,22 @@ const formData = reactive<CreatePromotionRequest>({
   endAt: dayjs().unix()
 })
 
-const timeData = reactive<PromotionTime>({
-  startDate: '',
-  startTime: '',
-  endDate: '',
-  endTime: ''
-})
-
-const handleSubmit = async () => {
+const handleSubmit = async (): Promise<void> => {
   try {
-    await promotionStore.createPromotion({
-      ...formData,
-      discountRate: Number(formData.discountRate)
-    })
+    loading.value = true
+    const req: CreatePromotionRequest = {
+      ...formData.value,
+      discountRate: Number(formData.value.discountRate)
+    }
+    await promotionStore.createPromotion(req)
     router.push('/promotions')
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -47,7 +44,7 @@ const handleSubmit = async () => {
 <template>
   <templates-promotion-new
     v-model:form-data="formData"
-    v-model:time-data="timeData"
+    :loading="loading"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"

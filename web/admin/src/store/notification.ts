@@ -11,6 +11,7 @@ import { apiClient } from '~/plugins/api-client'
 
 export const useNotificationStore = defineStore('notification', {
   state: () => ({
+    notification: {} as NotificationResponse,
     notifications: [] as NotificationsResponse['notifications'],
     totalItems: 0
   }),
@@ -42,6 +43,7 @@ export const useNotificationStore = defineStore('notification', {
     async getNotification (id: string): Promise<NotificationResponse> {
       try {
         const res = await apiClient.notificationApi().v1GetNotification(id)
+        this.notification = res.data
         return res.data
       } catch (err) {
         return this.errorHandler(err)

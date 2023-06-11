@@ -9,22 +9,34 @@ const promotionStore = usePromotionStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const fetchState = useAsyncData(async () => {
-  await fetchPromotions()
-})
-
 const { promotions, total } = storeToRefs(promotionStore)
 
+const loading = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
 const sortBy = ref<VDataTable['sortBy']>([])
 
-watch(pagination.itemsPerPage, () => {
+const fetchState = useAsyncData(async (): Promise<void> => {
+  await fetchPromotions()
+})
+
+watch(pagination.itemsPerPage, (): void => {
   fetchPromotions()
 })
 
-const fetchPromotions = async () => {
+const fetchPromotions = async (): Promise<void> => {
   try {
-    await promotionStore.fetchPromotions(pagination.itemsPerPage.value, pagination.offset.value)
+    const orders: string[] = sortBy.value.map((item) => {
+      switch (item.order) {
+        case 'asc':
+          return item.key
+        case 'desc':
+          return `-${item.key}`
+        default:
+          return item.order ? item.key : `-${item.key}`
+      }
+    }) || []
+
+    await promotionStore.fetchPromotions(pagination.itemsPerPage.value, pagination.offset.value, orders)
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
@@ -33,33 +45,36 @@ const fetchPromotions = async () => {
   }
 }
 
-const handleUpdatePage = async (page: number) => {
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || loading.value
+}
+
+const handleUpdatePage = async (page: number): Promise<void> => {
   pagination.updateCurrentPage(page)
   await fetchPromotions()
 }
 
-const handleClickAdd = () => {
+const handleClickAdd = (): void => {
   router.push('/promotions/new')
 }
 
-const handleClickRow = (promotionId: string) => {
+const handleClickRow = (promotionId: string): void => {
   router.push(`/promotions/${promotionId}`)
 }
 
 const handleClickDelete = async (promotionId: string): Promise<void> => {
   try {
+    loading.value = true
     await promotionStore.deletePromotion(promotionId)
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
+  } finally {
+    deleteDialog.value = false
+    loading.value = false
   }
-  deleteDialog.value = false
-}
-
-const isLoading = (): boolean => {
-  return fetchState?.pending?.value || false
 }
 
 try {
@@ -71,6 +86,8 @@ try {
 
 <template>
   <templates-promotion-list
+    v-model:delete-dialog="deleteDialog"
+    v-model:sort-by="sortBy"
     :loading="isLoading()"
     :is-alert="isShow"
     :alert-type="alertType"
@@ -78,7 +95,6 @@ try {
     :promotions="promotions"
     :table-items-per-page="pagination.itemsPerPage.value"
     :table-items-total="total"
-    :table-sort-by="sortBy"
     @click:row="handleClickRow"
     @click:add="handleClickAdd"
     @click:delete="handleClickDelete"

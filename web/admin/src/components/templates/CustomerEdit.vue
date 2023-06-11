@@ -5,6 +5,10 @@ import { UserResponse } from '~/types/api'
 import { Customer } from '~/types/props/customer'
 
 const props = defineProps({
+  loading: {
+    type: Boolean,
+    default: false
+  },
   customer: {
     type: Object as PropType<UserResponse>,
     default: () => ({})
@@ -102,7 +106,7 @@ const customerValue = computed({
 </script>
 
 <template>
-  <v-card>
+  <v-card :loading="loading">
     <v-card-title>顧客管理</v-card-title>
 
     <v-tabs v-model="selector" grow color="dark">

@@ -1,12 +1,32 @@
 <script lang="ts" setup>
-import dayjs from 'dayjs'
+import useVuelidate from '@vuelidate/core'
+import { minValue } from '@vuelidate/validators'
+import dayjs, { unix } from 'dayjs'
 
+import { AlertType } from '~/lib/hooks'
+import { getErrorMessage, maxLength, minLength, required } from '~/lib/validations'
 import { CreatePromotionRequest, DiscountType } from '~/types/api'
 import { PromotionTime } from '~/types/props'
 
 const props = defineProps({
+  loading: {
+    type: Boolean,
+    default: false
+  },
+  isAlert: {
+    type: Boolean,
+    default: false
+  },
+  alertType: {
+    type: String as PropType<AlertType>,
+    default: undefined
+  },
+  alertText: {
+    type: String,
+    default: ''
+  },
   formData: {
-    type: Object,
+    type: Object as PropType<CreatePromotionRequest>,
     default: (): CreatePromotionRequest => ({
       title: '',
       description: '',
@@ -17,43 +37,208 @@ const props = defineProps({
       startAt: dayjs().unix(),
       endAt: dayjs().unix()
     })
-  },
-  timeData: {
-    type: Object,
-    default: (): PromotionTime => ({
-      startDate: '',
-      startTime: '',
-      endDate: '',
-      endTime: ''
-    })
   }
 })
 
 const emit = defineEmits<{
-  (e: 'update:formData', formData: CreatePromotionRequest): void
-  (e: 'update:timeData', timeData: PromotionTime): void
+  (e: 'update:form-data', formData: CreatePromotionRequest): void
   (e: 'submit'): void
 }>()
 
+const statusList = [
+  { status: '有効', value: true },
+  { status: '無効', value: false }
+]
+const discountMethodList = [
+  { method: '円', value: DiscountType.AMOUNT },
+  { method: '%', value: DiscountType.RATE },
+  { method: '送料無料', value: DiscountType.FREE_SHIPPING }
+]
+
+const formDataRules = computed(() => ({
+  title: { required, maxLength: maxLength(200) },
+  description: { required, maxLength: maxLength(2000) },
+  public: {},
+  discountType: {},
+  discountRate: { minValue: minValue(0) },
+  code: { required, minLength: minLength(8), maxLength: maxLength(8) }
+}))
+const timeDataRules = computed(() => ({
+  startDate: { required },
+  startTime: { required },
+  endDate: { required },
+  endTime: { required }
+}))
 const formDataValue = computed({
-  get: (): CreatePromotionRequest => props.formData as CreatePromotionRequest,
-  set: (val: CreatePromotionRequest) => emit('update:formData', val)
+  get: (): CreatePromotionRequest => props.formData,
+  set: (val: CreatePromotionRequest) => emit('update:form-data', val)
 })
-
 const timeDataValue = computed({
-  get: (): PromotionTime => props.timeData as PromotionTime,
-  set: (val: PromotionTime) => emit('update:timeData', val)
+  get: (): PromotionTime => ({
+    startDate: unix(props.formData.startAt).format('YYYY-MM-DD'),
+    startTime: unix(props.formData.startAt).format('HH:mm'),
+    endDate: unix(props.formData.endAt).format('YYYY-MM-DD'),
+    endTime: unix(props.formData.endAt).format('HH:mm')
+  }),
+  set: (timeData: PromotionTime): void => {
+    const startAt = dayjs(`${timeData.startDate} ${timeData.startTime}`)
+    const endAt = dayjs(`${timeData.endDate} ${timeData.endTime}`)
+    formDataValue.value.startAt = startAt.unix()
+    formDataValue.value.endAt = endAt.unix()
+  }
 })
 
-const handleSubmit = () => {
+const formDataValidate = useVuelidate(formDataRules, formDataValue)
+const timeDataValidate = useVuelidate(timeDataRules, timeDataValue)
+
+const onClickGenerateCode = (): void => {
+  formDataValue.value.code = generateRandomString()
+}
+
+const generateRandomString = (): string => {
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  let result = ''
+  const charactersLength = characters.length
+  for (let i = 0; i < 8; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength))
+  }
+
+  return result
+}
+
+const getDiscountErrorMessage = (): string => {
+  switch (formDataValue.value.discountType) {
+    case 1:
+      if (formDataValue.value.discountRate >= 0) {
+        return ''
+      }
+      return '0以上の値を指定してください'
+    case 2:
+      if (formDataValue.value.discountRate >= 0 && formDataValue.value.discountRate <= 100) {
+        return ''
+      }
+      return '0~100の値を指定してください'
+    default:
+      return ''
+  }
+}
+
+const onSubmit = async (): Promise<void> => {
+  const formDataValid = await formDataValidate.value.$validate()
+  const timeDataValid = await timeDataValidate.value.$validate()
+  if (!formDataValid || !timeDataValid) {
+    return
+  }
+
   emit('submit')
 }
 </script>
 
 <template>
-  <v-card>
+  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+
+  <v-card :loading="loading">
     <v-card-title>セール情報登録</v-card-title>
 
-    <organisms-promotion-form v-model:form-data="formDataValue" v-model:time-data="timeDataValue" @submit="handleSubmit" />
+    <v-form @submit.prevent="onSubmit">
+      <v-card-text>
+        <v-text-field
+          v-model="formDataValidate.title.$model"
+          :error-messages="getErrorMessage(formDataValidate.title.$errors)"
+          label="タイトル"
+        />
+        <v-textarea
+          v-model="formDataValidate.description.$model"
+          :error-messages="getErrorMessage(formDataValidate.description.$errors)"
+          label="説明"
+        />
+        <div class="d-flex align-center">
+          <v-text-field
+            v-model="formDataValidate.code.$model"
+            :error-messages="getErrorMessage(formDataValidate.code.$errors)"
+            class="mr-4"
+            label="割引コード(8文字)"
+          />
+          <v-btn variant="outlined" size="small" color="primary" @click="onClickGenerateCode">
+            自動生成
+          </v-btn>
+          <v-spacer />
+        </div>
+        <v-select
+          v-model="formDataValidate.public.$model"
+          :error-messages="getErrorMessage(formDataValidate.public.$errors)"
+          :items="statusList"
+          label="ステータス"
+          item-title="status"
+          item-value="value"
+        />
+        <div class="d-flex align-center">
+          <v-select
+            v-model="formDataValidate.discountType.$model"
+            :error-messages="getErrorMessage(formDataValidate.discountType.$errors)"
+            :items="discountMethodList"
+            item-title="method"
+            item-value="value"
+            label="割引方法"
+          />
+          <v-text-field
+            v-if="formDataValue.discountType != 3"
+            v-model="formDataValidate.discountRate.$model"
+            :error-messages="getDiscountErrorMessage()"
+            class="ml-4"
+            type="number"
+            label="割引値"
+          />
+        </div>
+
+        <p class="text-h6">
+          使用期間
+        </p>
+        <div class="d-flex align-center">
+          <v-text-field
+            v-model="timeDataValidate.startDate.$model"
+            :error-messages="getErrorMessage(timeDataValidate.startDate.$errors)"
+            type="date"
+            variant="outlined"
+            class="mr-2"
+          />
+          <v-text-field
+            v-model="timeDataValidate.startTime.$model"
+            :error-messages="getErrorMessage(timeDataValidate.startTime.$errors)"
+            type="time"
+            variant="outlined"
+          />
+          <p class="text-h6 mx-4 mb-6">
+            〜
+          </p>
+          <v-text-field
+            v-model="timeDataValidate.endDate.$model"
+            :error-messages="getErrorMessage(timeDataValidate.endDate.$errors)"
+            type="date"
+            variant="outlined"
+            class="mr-2"
+          />
+          <v-text-field
+            v-model="timeDataValidate.endTime.$model"
+            :error-messages="getErrorMessage(timeDataValidate.endTime.$errors)"
+            type="time"
+            variant="outlined"
+          />
+        </div>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn
+          block
+          :loading="loading"
+          variant="outlined"
+          color="primary"
+          type="submit"
+          class="mt-4"
+        >
+          登録
+        </v-btn>
+      </v-card-actions>
+    </v-form>
   </v-card>
 </template>
