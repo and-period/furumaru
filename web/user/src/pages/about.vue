@@ -67,10 +67,10 @@ const circleItems = computed<CircleItem[]>(() => [
           <div class="block relative w-[98px] h-[73px] mx-auto mb-16">
             <img :src="item.imgSrc" :alt="`about-point-${i+1}`">
           </div>
-          <p class="font-bold text-2xl break-words whitespace-pre-wrap mb-6">
+          <p class="font-bold text-2xl whitespace-pre mb-6">
             {{ item.title }}
           </p>
-          <p class="text-xl leading-9 text-left break-words whitespace-pre-wrap">
+          <p class="text-xl leading-9 text-left whitespace-pre-wrap">
             {{ item.description }}
           </p>
           <div v-if="item.linkItem" class="mt-10 font-semibold text-xl">
