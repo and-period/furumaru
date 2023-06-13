@@ -48,6 +48,7 @@ func NewDatabase(params *Params) *Database {
 
 type Contact interface {
 	Get(ctx context.Context, contactID string, fields ...string) (*entity.Contact, error)
+	Create(ctx context.Context, contact *entity.Contact) error
 }
 
 type ContactCategory interface {
