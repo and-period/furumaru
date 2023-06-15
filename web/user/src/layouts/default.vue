@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
+import { MOCK_CART_ITEMS } from '~/constants/mock'
 import { useAuthStore } from '~/store/auth'
 import { useNotificationStore } from '~/store/notification'
 import { useShoppingStore } from '~/store/shopping'
@@ -18,7 +19,8 @@ const authStore = useAuthStore()
 const { isAuthenticated } = storeToRefs(authStore)
 
 const shoppingStore = useShoppingStore()
-const { cartIsEmpty, cartItems } = storeToRefs(shoppingStore)
+const { cartIsEmpty } = storeToRefs(shoppingStore)
+const cartItems = MOCK_CART_ITEMS
 
 const ht = (str: keyof I18n['layout']['header']) => {
   return i18n.t(`layout.header.${str}`)
@@ -29,7 +31,7 @@ const ft = (str: keyof I18n['layout']['footer']) => {
 }
 
 const cartMenuMessage = computed<string>(() => {
-  return i18n.t('layout.header.cartMenuMessage', { count: cartItems.value.length })
+  return i18n.t('layout.header.cartMenuMessage', { count: cartItems.length })
 })
 
 const navbarMenuList = computed<HeaderMenuItem[]>(() => [

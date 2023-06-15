@@ -12,6 +12,7 @@ export default <Partial<Config>>{
         typography: '#707070',
         green: '#7CB342',
         orange: '#F48D26',
+        'apple-red': '#E74C3C',
         facebook: '#1877F2',
         line: '#06C755'
       },
