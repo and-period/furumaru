@@ -49,12 +49,13 @@ const onSubmit = (): void => {
 
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" :text="props.alertText" />
-  <div class="py-8">
-    <atoms-app-logo-with-title :width="450" class="mx-auto" />
-  </div>
+
+  <atoms-app-logo-with-title :width="450" class="mx-auto py-8" />
+
   <v-card>
+    <v-card-title>ログイン</v-card-title>
+
     <v-form @submit.prevent="onSubmit">
-      <v-card-title>ログイン</v-card-title>
       <v-card-text>
         <v-text-field
           v-model="formDataValue.username"

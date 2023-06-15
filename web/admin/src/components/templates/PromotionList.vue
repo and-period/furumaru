@@ -26,6 +26,10 @@ const props = defineProps({
     type: String,
     default: ''
   },
+  sortBy: {
+    type: Array as PropType<VDataTable['sortBy']>,
+    default: () => []
+  },
   promotions: {
     type: Array<PromotionsResponsePromotionsInner>,
     default: () => []
@@ -37,10 +41,6 @@ const props = defineProps({
   tableItemsTotal: {
     type: Number,
     default: 0
-  },
-  tableSortBy: {
-    type: Array as PropType<VDataTable['sortBy']>,
-    default: () => []
   }
 })
 
@@ -89,8 +89,8 @@ const headers: VDataTable['headers'] = [
 const selectedItem = ref<PromotionsResponsePromotionsInner>()
 
 const deleteDialogValue = computed({
-  get: () => props.deleteDialog,
-  set: (val: boolean) => emit('update:delete-dialog', val)
+  get: (): boolean => props.deleteDialog,
+  set: (val: boolean): void => emit('update:delete-dialog', val)
 })
 
 const getDiscount = (discountType: number, discountRate: number): string => {
@@ -142,12 +142,12 @@ const onClickRow = (promotionId: string): void => {
   emit('click:row', promotionId)
 }
 
-const onClickOpen = (promotion: PromotionsResponsePromotionsInner): void => {
+const onClickOpenDeleteDialog = (promotion: PromotionsResponsePromotionsInner): void => {
   selectedItem.value = promotion
   deleteDialogValue.value = true
 }
 
-const onClickClose = (): void => {
+const onClickCloseDeleteDialog = (): void => {
   deleteDialogValue.value = false
 }
 
@@ -162,14 +162,6 @@ const onClickDelete = (): void => {
 
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
-  <v-card-title class="d-flex flex-row">
-    セール情報
-    <v-spacer />
-    <v-btn variant="outlined" color="primary" @click="onClickAdd">
-      <v-icon start :icon="mdiPlus" />
-      セール情報登録
-    </v-btn>
-  </v-card-title>
 
   <v-dialog v-model="deleteDialogValue" width="500">
     <v-card>
@@ -181,7 +173,7 @@ const onClickDelete = (): void => {
         <v-btn color="error" variant="text" @click="onClickClose">
           キャンセル
         </v-btn>
-        <v-btn color="primary" variant="outlined" @click="onClickDelete">
+        <v-btn :loading="loading" color="primary" variant="outlined" @click="onClickDelete">
           削除
         </v-btn>
       </v-card-actions>
@@ -189,13 +181,22 @@ const onClickDelete = (): void => {
   </v-dialog>
 
   <v-card class="mt-4" flat :loading="props.loading">
+    <v-card-title class="d-flex flex-row">
+      セール情報
+      <v-spacer />
+      <v-btn variant="outlined" color="primary" @click="onClickAdd">
+        <v-icon start :icon="mdiPlus" />
+        セール情報登録
+      </v-btn>
+    </v-card-title>
+
     <v-card-text>
       <v-data-table-server
         :headers="headers"
         :items="promotions"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"
-        :sort-by="props.tableSortBy"
+        :sort-by="props.sortBy"
         :multi-sort="true"
         hover
         no-data-text="登録されているセール情報がありません。"
@@ -230,7 +231,7 @@ const onClickDelete = (): void => {
             color="primary"
             size="small"
             variant="outlined"
-            @click.stop="onClickOpen(item.raw)"
+            @click.stop="onClickOpenDeleteDialog(item.raw)"
           >
             <v-icon size="small" :icon="mdiDelete" />
             削除

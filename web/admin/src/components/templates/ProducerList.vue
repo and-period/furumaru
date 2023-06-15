@@ -11,6 +11,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  deleteDialog: {
+    type: Boolean,
+    default: false
+  },
   isAlert: {
     type: Boolean,
     default: false
@@ -34,10 +38,6 @@ const props = defineProps({
   tableItemsTotal: {
     type: Number,
     default: 0
-  },
-  tableSortBy: {
-    type: Array as PropType<VDataTable['sortBy']>,
-    default: () => []
   }
 })
 
@@ -48,7 +48,7 @@ const emit = defineEmits<{
   (e: 'click:add'): void
   (e: 'click:add-video', producerId: string): void
   (e: 'click:delete', producerId: string): void
-  (e: 'update:sort-by', sortBy: VDataTable['sortBy']): void
+  (e: 'update:delete-dialog', v: boolean): void
 }>()
 
 const headers: VDataTable['headers'] = [
@@ -76,16 +76,22 @@ const headers: VDataTable['headers'] = [
     title: 'Actions',
     key: 'actions',
     sortable: false
-  },
-  {
-    title: '動画',
-    key: 'video',
-    sortable: false
   }
 ]
 
-const dialog = ref<boolean>(false)
 const selectedItem = ref<ProducersResponseProducersInner>()
+
+const deleteDialogValue = computed({
+  get: (): boolean => props.deleteDialog,
+  set: (val: boolean): void => emit('update:delete-dialog', val)
+})
+
+const getName = (producer?: ProducersResponseProducersInner): string => {
+  if (!producer) {
+    return ''
+  }
+  return `${producer.lastname} ${producer.firstname}`
+}
 
 const getImages = (producer: ProducersResponseProducersInner): string => {
   if (!producer.thumbnails) {
@@ -94,13 +100,13 @@ const getImages = (producer: ProducersResponseProducersInner): string => {
   return getResizedImages(producer.thumbnails)
 }
 
-const onClickOpen = (producer: ProducersResponseProducersInner): void => {
+const onClickOpenDeleteDialog = (producer: ProducersResponseProducersInner): void => {
   selectedItem.value = producer
-  dialog.value = true
+  deleteDialogValue.value = true
 }
 
-const onClickClose = (): void => {
-  dialog.value = false
+const onClickCloseDeleteDialog = (): void => {
+  deleteDialogValue.value = false
 }
 
 const onClickUpdatePage = (page: number): void => {
@@ -109,10 +115,6 @@ const onClickUpdatePage = (page: number): void => {
 
 const onClickUpdateItemsPerPage = (page: number): void => {
   emit('click:update-items-per-page', page)
-}
-
-const onClickUpdateSortBy = (sortBy: VDataTable['sortBy']): void => {
-  emit('update:sort-by', sortBy)
 }
 
 const onClickRow = (notificationId: string): void => {
@@ -134,26 +136,18 @@ const onClickDelete = (): void => {
 
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
-  <v-card-title class="d-flex flex-row">
-    生産者管理
-    <v-spacer />
-    <v-btn variant="outlined" color="primary" @click="onClickAdd">
-      <v-icon start :icon="mdiPlus" />
-      生産者登録
-    </v-btn>
-  </v-card-title>
 
-  <v-dialog v-model="dialog" width="500">
+  <v-dialog v-model="deleteDialogValue" width="500">
     <v-card>
       <v-card-title>
-        {{ selectedItem ? `${selectedItem.lastname} ${selectedItem.firstname}` : '' }}を本当に削除しますか？
+        {{ getName(selectedItem) }}を本当に削除しますか？
       </v-card-title>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="onClickClose">
+        <v-btn color="error" variant="text" @click="onClickCloseDeleteDialog">
           キャンセル
         </v-btn>
-        <v-btn color="primary" variant="outlined" @click="onClickDelete">
+        <v-btn color="primary" variant="outlined" :loading="loading" @click="onClickDelete">
           削除
         </v-btn>
       </v-card-actions>
@@ -161,35 +155,41 @@ const onClickDelete = (): void => {
   </v-dialog>
 
   <v-card class="mt-4" flat :loading="props.loading">
+    <v-card-title class="d-flex flex-row">
+      生産者管理
+      <v-spacer />
+      <v-btn variant="outlined" color="primary" @click="onClickAdd">
+        <v-icon start :icon="mdiPlus" />
+        生産者登録
+      </v-btn>
+    </v-card-title>
+
     <v-card-text>
       <v-data-table-server
         :headers="headers"
         :items="producers"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"
-        :sort-by="props.tableSortBy"
         hover
         no-data-text="登録されている生産者がいません。"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
-        @update:sort-by="onClickUpdateSortBy"
-        @update:sort-desc="onClickUpdateSortBy"
         @click:row="(_: any, { item }:any) => onClickRow(item.raw.id)"
       >
         <template #[`item.thumbnail`]="{ item }">
           <v-avatar>
             <v-img
               v-if="item.raw.thumbnailUrl !== ''"
+              aspect-ratio="1/1"
               cover
               :src="item.raw.thumbnailUrl"
               :srcset="getImages(item.raw)"
-              :alt="`${item.raw.storeName}-profile`"
             />
             <v-icon v-else :icon="mdiAccount" />
           </v-avatar>
         </template>
         <template #[`item.name`]="{ item }">
-          {{ `${item.raw.lastname} ${item.raw.firstname}` }}
+          {{ getName(item.raw) }}
         </template>
         <template #[`item.phoneNumber`]="{ item }">
           {{ convertI18nToJapanesePhoneNumber(item.raw.phoneNumber) }}
@@ -199,13 +199,11 @@ const onClickDelete = (): void => {
             color="primary"
             size="small"
             variant="outlined"
-            @click.stop="onClickOpen(item.raw)"
+            class="mr-4"
+            @click.stop="onClickOpenDeleteDialog(item.raw)"
           >
-            <v-icon size="small" :icon="mdiDelete" />
-            削除
+            <v-icon size="small" :icon="mdiDelete" />削除
           </v-btn>
-        </template>
-        <template #[`item.video`]="{ item }">
           <v-btn variant="outlined" color="primary" size="small" @click.stop="onClickAddVideo(item.raw.id)">
             <v-icon size="small" :icon="mdiPlus" />
             追加

@@ -29,6 +29,7 @@ export const useOrderStore = defineStore('order', {
         return this.errorHandler(err)
       }
     },
+
     /**
      * 注文IDから注文情報を取得する非同期関数
      * @param id 注文ID

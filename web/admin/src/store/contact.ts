@@ -3,7 +3,6 @@ import { defineStore } from 'pinia'
 import { useCommonStore } from './common'
 import {
   ContactResponse,
-  ContactsResponse,
   ContactsResponseContactsInner,
   UpdateContactRequest
 } from '~/types/api'
@@ -22,31 +21,24 @@ export const useContactStore = defineStore('contact', {
      * @param limit 最大取得件数
      * @param offset 取得開始位置
      * @param orders ソートキー
-     * @returns
      */
-    async fetchContacts (
-      limit = 20,
-      offset = 0,
-      orders: string[] = []
-    ): Promise<void> {
+    async fetchContacts (limit = 20, offset = 0, orders: string[] = []): Promise<void> {
       try {
-        const res = await apiClient.contactApi().v1ListContacts(
-          limit,
-          offset,
-          orders.join(',')
-        )
-        const { contacts, total }: ContactsResponse = res.data
-
-        this.contacts = contacts
-        this.total = total
+        const res = await apiClient.contactApi().v1ListContacts(limit, offset, orders.join(','))
+        this.contacts = res.data.contacts
+        this.total = res.data.total
       } catch (err) {
         return this.errorHandler(err)
       }
     },
 
-    async getContact (id: string): Promise<ContactResponse> {
+    /**
+     * お問い合わせの一覧を取得する非同期関数
+     * @param contactId お問い合わせID
+     */
+    async getContact (contactId: string): Promise<ContactResponse> {
       try {
-        const res = await apiClient.contactApi().v1GetContact(id)
+        const res = await apiClient.contactApi().v1GetContact(contactId)
         this.contact = res.data
         return res.data
       } catch (err) {
@@ -54,10 +46,7 @@ export const useContactStore = defineStore('contact', {
       }
     },
 
-    async contactUpdate (
-      payload: UpdateContactRequest,
-      contactId: string
-    ): Promise<void> {
+    async updateContact (contactId: string, payload: UpdateContactRequest): Promise<void> {
       try {
         await apiClient.contactApi().v1UpdateContact(contactId, payload)
         const commonStore = useCommonStore()

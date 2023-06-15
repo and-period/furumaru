@@ -20,6 +20,7 @@ const formattedBuiltAt = computed(() => {
 <template>
   <v-card>
     <v-card-title>バージョン情報</v-card-title>
+
     <v-card-text>
       <v-row>
         <v-col cols="3">

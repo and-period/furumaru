@@ -10,28 +10,20 @@ const customerStore = useCustomerStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
+const { customers, totalItems } = storeToRefs(customerStore)
+
+const loading = ref<boolean>(false)
+const sortBy = ref<VDataTable['sortBy']>([])
+
 const fetchState = useAsyncData(async () => {
   await fetchUsers()
 })
-
-const { customers, totalItems } = storeToRefs(customerStore)
-
-const sortBy = ref<VDataTable['sortBy']>([])
 
 watch(pagination.itemsPerPage, () => {
   fetchUsers()
 })
 
-const handleUpdatePage = async (page: number) => {
-  pagination.updateCurrentPage(page)
-  await fetchUsers()
-}
-
-const isLoading = (): boolean => {
-  return fetchState?.pending?.value || false
-}
-
-const fetchUsers = async () => {
+const fetchUsers = async (): Promise<void> => {
   try {
     await customerStore.fetchCustomers(pagination.itemsPerPage.value, pagination.offset.value)
   } catch (err) {
@@ -40,6 +32,15 @@ const fetchUsers = async () => {
     }
     console.log(err)
   }
+}
+
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || loading.value
+}
+
+const handleUpdatePage = async (page: number) => {
+  pagination.updateCurrentPage(page)
+  await fetchUsers()
 }
 
 const handleClickEdit = (customerId: string): void => {
@@ -60,7 +61,7 @@ try {
 <template>
   <templates-customer-list
     :loading="isLoading()"
-    :is-alrt="isShow"
+    :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :customers="customers"

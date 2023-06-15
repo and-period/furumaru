@@ -11,6 +11,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  deleteDialog: {
+    type: Boolean,
+    default: false
+  },
   isAlert: {
     type: Boolean,
     default: false
@@ -27,13 +31,13 @@ const props = defineProps({
     type: Array<ProductsResponseProductsInner>,
     default: () => []
   },
-  tableItemsTotal: {
-    type: Number,
-    default: 0
-  },
   tableItemsPerPage: {
     type: Number,
     default: 20
+  },
+  tableItemsTotal: {
+    type: Number,
+    default: 0
   }
 })
 
@@ -43,6 +47,7 @@ const emit = defineEmits<{
   (e: 'click:show', productId: string): void
   (e: 'click:new'): void
   (e: 'click:delete', productId: string): void
+  (e: 'update:delete-dialog', v: boolean): void
 }>()
 
 const headers: VDataTable['headers'] = [
@@ -85,8 +90,12 @@ const headers: VDataTable['headers'] = [
   }
 ]
 
-const deleteDialog = ref<boolean>(false)
-const deleteProduct = ref<ProductsResponseProductsInner>()
+const selectedItem = ref<ProductsResponseProductsInner>()
+
+const deleteDialogValue = computed({
+  get: (): boolean => props.deleteDialog,
+  set: (val: boolean): void => emit('update:delete-dialog', val)
+})
 
 const getThumbnail = (media: ProductsResponseProductsInnerMediaInner[]): string => {
   const thumbnail = media.find((media: ProductsResponseProductsInnerMediaInner) => {
@@ -115,9 +124,9 @@ const getPublishedColor = (published: boolean): string => {
 
 const toggleDeleteDialog = (product?: ProductsResponseProductsInner): void => {
   if (product) {
-    deleteProduct.value = product
+    selectedItem.value = product
   }
-  deleteDialog.value = !deleteDialog.value
+  deleteDialogValue.value = !deleteDialogValue.value
 }
 
 const onUpdatePage = (page: number): void => {
@@ -128,9 +137,8 @@ const onUpdateItemsPerPage = (page: number): void => {
   emit('click:update-items-per-page', page)
 }
 
-const onClickShow = (_: Event, { item }: any): void => {
-  const product = item.raw as ProductsResponseProductsInner
-  emit('click:show', product.id)
+const onClickShow = (productId: string): void => {
+  emit('click:show', productId)
 }
 
 const onClickNew = (): void => {
@@ -138,17 +146,17 @@ const onClickNew = (): void => {
 }
 
 const onClickDelete = (): void => {
-  emit('click:delete', deleteProduct?.value?.id || '')
-  deleteDialog.value = false
+  emit('click:delete', selectedItem?.value?.id || '')
 }
 </script>
 
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
-  <v-dialog v-model="deleteDialog" width="500">
+
+  <v-dialog v-model="deleteDialogValue" width="500">
     <v-card>
       <v-card-text class="text-h7">
-        {{ deleteProduct?.name }}を本当に削除しますか？
+        {{ selectedItem?.name }}を本当に削除しますか？
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -161,6 +169,7 @@ const onClickDelete = (): void => {
       </v-card-actions>
     </v-card>
   </v-dialog>
+
   <v-card class="mt-4" flat :loading="props.loading">
     <v-card-title class="d-flex flex-row">
       商品管理
@@ -175,16 +184,16 @@ const onClickDelete = (): void => {
       <v-data-table-server
         :headers="headers"
         :items="props.products"
-        :items-length="props.tableItemsTotal"
         :items-per-page="props.tableItemsPerPage"
-        no-data-text="登録されている商品がありません。"
+        :items-length="props.tableItemsTotal"
         hover
+        no-data-text="登録されている商品がありません。"
         @update:page="onUpdatePage"
         @update:items-per-page="onUpdateItemsPerPage"
-        @click:row="onClickShow"
+        @click:row="(_: any, { item }:any) => onClickShow(item.raw.id)"
       >
         <template #[`item.media`]="{ item }">
-          <v-img aspect-ratio="1/1" :src="getThumbnail(item.raw.media)" :srcset="getResizedThumbnails(item.raw.media)" />
+          <v-img aspect-ratio="1/1" cover :src="getThumbnail(item.raw.media)" :srcset="getResizedThumbnails(item.raw.media)" />
         </template>
         <template #[`item.public`]="{ item }">
           <v-chip :color="getPublishedColor(item.raw.public)">

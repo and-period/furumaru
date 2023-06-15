@@ -10,6 +10,7 @@ import {
 
 export const useShippingStore = defineStore('shipping', {
   state: () => ({
+    shipping: {} as ShippingResponse,
     shippings: [] as ShippingsResponseShippingsInner[],
     totalItems: 0
   }),
@@ -36,12 +37,13 @@ export const useShippingStore = defineStore('shipping', {
 
     /**
      * 指定したIDの配送設定情報を取得する非同期関数
-     * @param id 配送設定情報ID
+     * @param shippingId 配送設定情報ID
      * @returns 配送設定情報
      */
-    async getShipping (id: string): Promise<ShippingResponse> {
+    async getShipping (shippingId: string): Promise<ShippingResponse> {
       try {
-        const res = await apiClient.shippingApi().v1GetShipping(id)
+        const res = await apiClient.shippingApi().v1GetShipping(shippingId)
+        this.shipping = res.data
         return res.data
       } catch (err) {
         return this.errorHandler(err)
@@ -63,16 +65,13 @@ export const useShippingStore = defineStore('shipping', {
 
     /**
      * 指定したIDの配送情報を更新する非同期関数
-     * @param id 配送情報ID
+     * @param shippingId 配送情報ID
      * @param payload
      * @returns
      */
-    async updateShipping (
-      id: string,
-      payload: UpdateShippingRequest
-    ): Promise<void> {
+    async updateShipping (shippingId: string, payload: UpdateShippingRequest): Promise<void> {
       try {
-        await apiClient.shippingApi().v1UpdateShipping(id, payload)
+        await apiClient.shippingApi().v1UpdateShipping(shippingId, payload)
       } catch (err) {
         return this.errorHandler(err)
       }

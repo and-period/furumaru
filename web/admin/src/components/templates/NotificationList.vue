@@ -10,6 +10,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  deleteDialog: {
+    type: Boolean,
+    default: false
+  },
   isAlert: {
     type: Boolean,
     default: false
@@ -47,6 +51,7 @@ const emit = defineEmits<{
   (e: 'click:add'): void
   (e: 'click:delete', notificationId: string): void
   (e: 'update:sort-by', sortBy: VDataTable['sortBy']): void
+  (e: 'update:delete-dialog', v: boolean): void
 }>()
 
 const headers: VDataTable['headers'] = [
@@ -73,8 +78,12 @@ const headers: VDataTable['headers'] = [
   }
 ]
 
-const dialog = ref<boolean>(false)
 const selectedItem = ref<NotificationsResponseNotificationsInner>()
+
+const deleteDialogValue = computed({
+  get: (): boolean => props.deleteDialog,
+  set: (val: boolean): void => emit('update:delete-dialog', val)
+})
 
 const getStatusColor = (status: boolean): string => {
   if (status) {
@@ -112,15 +121,6 @@ const getDay = (unixTime: number): string => {
   return unix(unixTime).format('YYYY/MM/DD HH:mm')
 }
 
-const onClickOpen = (notification: NotificationsResponseNotificationsInner): void => {
-  selectedItem.value = notification
-  dialog.value = true
-}
-
-const onClickClose = (): void => {
-  dialog.value = false
-}
-
 const onClickUpdatePage = (page: number): void => {
   emit('click:update-page', page)
 }
@@ -137,6 +137,15 @@ const onClickRow = (notificationId: string): void => {
   emit('click:row', notificationId)
 }
 
+const onClickOpenDeleteDialog = (notification: NotificationsResponseNotificationsInner): void => {
+  selectedItem.value = notification
+  deleteDialogValue.value = true
+}
+
+const onClickCloseDeleteDialog = (): void => {
+  deleteDialogValue.value = false
+}
+
 const onClickAdd = (): void => {
   emit('click:add')
 }
@@ -147,26 +156,17 @@ const onClickDelete = (): void => {
 </script>
 
 <template>
-  <v-card-title class="d-flex flex-row">
-    お知らせ管理
-    <v-spacer />
-    <v-btn color="primary" variant="outlined" @click="onClickAdd">
-      <v-icon start :icon="mdiPlus" />
-      お知らせ登録
-    </v-btn>
-  </v-card-title>
-
-  <v-dialog v-model="dialog" width="500">
+  <v-dialog v-model="deleteDialogValue" width="500">
     <v-card>
       <v-card-title class="text-h7">
         {{ selectedItem?.title || '' }}を本当に削除しますか？
       </v-card-title>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="onClickClose">
+        <v-btn color="error" variant="text" @click="onClickCloseDeleteDialog">
           キャンセル
         </v-btn>
-        <v-btn color="primary" variant="outlined" @click="onClickDelete">
+        <v-btn color="primary" variant="outlined" :loading="loading" @click="onClickDelete">
           削除
         </v-btn>
       </v-card-actions>
@@ -174,6 +174,15 @@ const onClickDelete = (): void => {
   </v-dialog>
 
   <v-card class="mt-4" flat :loading="props.loading">
+    <v-card-title class="d-flex flex-row">
+      お知らせ管理
+      <v-spacer />
+      <v-btn color="primary" variant="outlined" @click="onClickAdd">
+        <v-icon start :icon="mdiPlus" />
+        お知らせ登録
+      </v-btn>
+    </v-card-title>
+
     <v-card-text>
       <v-data-table-server
         :headers="headers"
@@ -206,7 +215,7 @@ const onClickDelete = (): void => {
             variant="outlined"
             color="primary"
             size="small"
-            @click.stop="onClickOpen(item.raw)"
+            @click.stop="onClickOpenDeleteDialog(item.raw)"
           >
             <v-icon size="small" :icon="mdiDelete" />
             削除

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { storeToRefs } from 'pinia'
+
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useProductStore } from '~/store'
 
@@ -7,19 +9,17 @@ const productStore = useProductStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const products = computed(() => {
-  return productStore.products
-})
-const totalItems = computed(() => {
-  return productStore.totalItems
-})
+const { products, totalItems } = storeToRefs(productStore)
 
-watch(pagination.itemsPerPage, () => {
-  fetchState.refresh()
-})
+const loading = ref<boolean>(false)
+const deleteDialog = ref<boolean>(false)
 
-const fetchState = useAsyncData(async () => {
+const fetchState = useAsyncData(async (): Promise<void> => {
   await fetchProducts()
+})
+
+watch(pagination.itemsPerPage, (): void => {
+  fetchState.refresh()
 })
 
 const fetchProducts = async (): Promise<void> => {
@@ -34,7 +34,7 @@ const fetchProducts = async (): Promise<void> => {
 }
 
 const isLoading = (): boolean => {
-  return fetchState?.pending?.value || false
+  return fetchState?.pending?.value || loading.value
 }
 
 const handleUpdatePage = async (page: number): Promise<void> => {
@@ -46,18 +46,22 @@ const handleClickShow = (productId: string): void => {
   router.push(`/products/${productId}`)
 }
 
-const handleClickNew = () => {
-  router.push('/products/add')
+const handleClickNew = (): void => {
+  router.push('/products/new')
 }
 
 const handleClickDelete = async (productId: string): Promise<void> => {
   try {
+    loading.value = true
     await productStore.deleteProduct(productId)
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
+  } finally {
+    deleteDialog.value = false
+    loading.value = false
   }
 }
 
@@ -70,17 +74,18 @@ try {
 
 <template>
   <templates-product-list
+    v-model:delete-dialog="deleteDialog"
     :loading="isLoading()"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :products="products"
-    :table-items-total="totalItems"
     :table-items-per-page="pagination.itemsPerPage.value"
-    @click:update-page="handleUpdatePage"
-    @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
+    :table-items-total="totalItems"
     @click:show="handleClickShow"
     @click:new="handleClickNew"
     @click:delete="handleClickDelete"
+    @click:update-page="handleUpdatePage"
+    @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
   />
 </template>

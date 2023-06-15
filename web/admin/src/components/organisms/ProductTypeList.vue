@@ -106,7 +106,7 @@ const hideEditDialog = () => {
 
 const handleEdit = async () => {
   try {
-    await productTypeStore.editProductType(
+    await productTypeStore.updateProductType(
       selectedCategoryId.value,
       selectedItemId.value,
       editFormData

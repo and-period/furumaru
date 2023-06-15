@@ -27,6 +27,10 @@ const props = defineProps({
     type: String,
     default: ''
   },
+  sortBy: {
+    type: Array as PropType<VDataTable['sortBy']>,
+    default: () => []
+  },
   coordinators: {
     type: Array<CoordinatorsResponseCoordinatorsInner>,
     default: () => []
@@ -38,10 +42,6 @@ const props = defineProps({
   tableItemsTotal: {
     type: Number,
     default: 0
-  },
-  tableSortBy: {
-    type: Array as PropType<VDataTable['sortBy']>,
-    default: () => []
   }
 })
 
@@ -140,14 +140,6 @@ const onClickDelete = (): void => {
 
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
-  <v-card-title class="d-flex flex-row">
-    コーディネータ管理
-    <v-spacer />
-    <v-btn variant="outlined" color="primary" @click="onClickAdd">
-      <v-icon start :icon="mdiPlus" />
-      コーディネータ登録
-    </v-btn>
-  </v-card-title>
 
   <v-dialog v-model="deleteDialogValue" width="500">
     <v-card>
@@ -159,7 +151,7 @@ const onClickDelete = (): void => {
         <v-btn color="error" variant="text" @click="onClickClose">
           キャンセル
         </v-btn>
-        <v-btn color="primary" variant="outlined" @click="onClickDelete">
+        <v-btn :loading="loading" color="primary" variant="outlined" @click="onClickDelete">
           削除
         </v-btn>
       </v-card-actions>
@@ -167,13 +159,22 @@ const onClickDelete = (): void => {
   </v-dialog>
 
   <v-card class="mt-4" flat :loading="loading">
+    <v-card-title class="d-flex flex-row">
+      コーディネータ管理
+      <v-spacer />
+      <v-btn variant="outlined" color="primary" @click="onClickAdd">
+        <v-icon start :icon="mdiPlus" />
+        コーディネータ登録
+      </v-btn>
+    </v-card-title>
+
     <v-card-text>
       <v-data-table-server
         :headers="headers"
         :items="coordinators"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"
-        :sort-by="props.tableSortBy"
+        :sort-by="props.sortBy"
         :multi-sort="true"
         hover
         no-data-text="登録されているコーディネータがいません。"

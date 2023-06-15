@@ -1,5 +1,9 @@
 <script lang="ts" setup>
 const props = defineProps({
+  loading: {
+    type: Boolean,
+    default: false
+  },
   postalCode: {
     type: String,
     default: ''
@@ -20,10 +24,6 @@ const props = defineProps({
     type: String,
     default: ''
   },
-  loading: {
-    type: Boolean,
-    default: false
-  },
   errorMessage: {
     type: String,
     default: ''
@@ -43,22 +43,18 @@ const postalCodeValue = computed({
   get: (): any => props.postalCode,
   set: (val: any) => emit('update:postalCode', val)
 })
-
 const prefectureValue = computed({
   get: (): any => props.prefecture,
   set: (val: any) => emit('update:prefecture', val)
 })
-
 const cityValue = computed({
   get: (): any => props.city,
   set: (val: any) => emit('update:city', val)
 })
-
 const addressLine1Value = computed({
   get: (): any => props.addressLine1,
   set: (val: any) => emit('update:addressLine1', val)
 })
-
 const addressLine2Value = computed({
   get: (): any => props.addressLine2,
   set: (val: any) => emit('update:addressLine2', val)
@@ -77,11 +73,9 @@ const handleSearch = () => {
         label="郵便番号"
         class="mr-4"
         :loading="props.loading"
-        :messages="props.errorMessage"
-        :error="props.errorMessage !== ''"
         @keydown.enter="handleSearch"
       />
-      <v-btn color="primary" variant="outlined" size="small" @click="handleSearch">
+      <v-btn :loading="props.loading" color="primary" variant="outlined" size="small" @click="handleSearch">
         住所検索
       </v-btn>
       <v-spacer />

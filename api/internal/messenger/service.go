@@ -34,7 +34,7 @@ type Service interface {
 	// お問い合わせ種別取得
 	GetContactCategory(ctx context.Context, in *GetContactCategoryInput) (*entity.ContactCategory, error)
 	// お問い合わせ会話履歴一覧取得(お問い合わせID指定)
-	ListThreadsByContactID(ctx context.Context, in *ListThreadsByContactIDInput) (entity.Threads, error)
+	ListThreadsByContactID(ctx context.Context, in *ListThreadsByContactIDInput) (entity.Threads, int64, error)
 	// お問い合わせ会話履歴取得
 	GetThread(ctx context.Context, in *GetThreadInput) (*entity.Thread, error)
 }

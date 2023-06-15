@@ -40,9 +40,10 @@ const onClickMessage = (messageId: string): void => {
 </script>
 
 <template>
+  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+
   <div class="d-flex flex-row mt-2">
-    <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
-    <v-card class="elevation-1 flex-shrink-0 mr-3">
+    <v-card :loading="loading" class="elevation-1 flex-shrink-0 mr-3">
       <v-list-item>
         <v-list-item-title>メッセージ一覧</v-list-item-title>
       </v-list-item>
@@ -62,6 +63,7 @@ const onClickMessage = (messageId: string): void => {
         </v-list-item>
       </v-list>
     </v-card>
+
     <v-card class="elevation-1 d-flex flex-grow-1 flex-column">
       <v-card-title>
         {{ message.title ? `件名：${message.title}` : 'メッセージを選択してください' }}

@@ -60,6 +60,8 @@ p, live_get, /v1/schedules/*/lives/*, GET, allow
 p, message_list, /v1/messages, GET, allow
 p, message_get, /v1/messages/*, GET, allow
 p, postal_code_search, /v1/postal-codes/*, GET, allow
+p, thread_get, /v1/contacts/*/threads/*, GET, allow
+p, thread_list_by_contactId, /v1/contacts/*/threads, GET, allow
 
 g, administrator, auth
 g, administrator, administrator_list
@@ -122,6 +124,8 @@ g, administrator, live_get
 g, administrator, message_list
 g, administrator, message_get
 g, administrator, postal_code_search
+g, administrator, thread_get
+g, administrator, thread_list_by_contactId
 
 g, coordinator, auth
 g, coordinator, coordinator_uploader
@@ -159,6 +163,8 @@ g, coordinator, live_get
 g, coordinator, message_list
 g, coordinator, message_get
 g, coordinator, postal_code_search
+g, coordinator, thread_get
+g, coordinator, thread_list_by_contactId
 
 g, producer, auth
 g, producer, producer_uploader
@@ -179,3 +185,5 @@ g, producer, live_get
 g, producer, message_list
 g, producer, message_get
 g, producer, postal_code_search
+g, producer, thread_get
+g, producer, thread_list_by_contactId

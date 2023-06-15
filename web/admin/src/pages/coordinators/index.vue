@@ -11,20 +11,24 @@ const coordinatorStore = useCoordinatorStore()
 const pagination = usePagination()
 const { isShow, alertText, alertType, show } = useAlert('error')
 
-const fetchState = useAsyncData(async () => {
-  await fetchCoordinators()
-})
-
 const { coordinators, totalItems } = storeToRefs(coordinatorStore)
 
+const loading = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
 const sortBy = ref<VDataTable['sortBy']>([])
 
-watch(pagination.itemsPerPage, () => {
-  fetchCoordinators()
+const fetchState = useAsyncData(async (): Promise<void> => {
+  await fetchCoordinators()
 })
 
-const fetchCoordinators = async () => {
+watch(pagination.itemsPerPage, (): void => {
+  fetchCoordinators()
+})
+watch(sortBy, (): void => {
+  fetchState.refresh()
+})
+
+const fetchCoordinators = async (): Promise<void> => {
   try {
     await coordinatorStore.fetchCoordinators(pagination.itemsPerPage.value, pagination.offset.value)
   } catch (err) {
@@ -35,21 +39,26 @@ const fetchCoordinators = async () => {
   }
 }
 
-const handleUpdatePage = async (page: number) => {
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || loading.value
+}
+
+const handleUpdatePage = async (page: number): Promise<void> => {
   pagination.updateCurrentPage(page)
-  await fetchCoordinators()
+  await fetchState.refresh()
 }
 
 const handleClickAdd = () => {
-  router.push('/coordinators/add')
+  router.push('/coordinators/new')
 }
 
 const handleClickRow = (coordinatorId: string) => {
-  router.push(`/coordinators/edit/${coordinatorId}`)
+  router.push(`/coordinators/${coordinatorId}`)
 }
 
 const handleClickDelete = async (coordinatorId: string): Promise<void> => {
   try {
+    loading.value = true
     await coordinatorStore.deleteCoordinator(coordinatorId)
     commonStore.addSnackbar({
       color: 'info',
@@ -61,12 +70,10 @@ const handleClickDelete = async (coordinatorId: string): Promise<void> => {
       show(err.message)
     }
     console.log(err)
+  } finally {
+    deleteDialog.value = false
+    loading.value = true
   }
-  deleteDialog.value = false
-}
-
-const isLoading = (): boolean => {
-  return fetchState?.pending?.value || false
 }
 
 try {
@@ -78,19 +85,19 @@ try {
 
 <template>
   <templates-coordinator-list
+    v-model:delete-dialog="deleteDialog"
+    v-model:sort-by="sortBy"
     :loading="isLoading()"
-    :is-alrt="isShow"
+    :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :coordinators="coordinators"
     :table-items-per-page="pagination.itemsPerPage.value"
     :table-items-total="totalItems"
-    :table-sort-by="sortBy"
     @click:row="handleClickRow"
     @click:add="handleClickAdd"
     @click:delete="handleClickDelete"
     @click:update-page="handleUpdatePage"
     @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
-    @update:sort-by="fetchState.refresh"
   />
 </template>

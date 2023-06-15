@@ -90,6 +90,8 @@ type GetContactCategoryInput struct {
 
 type ListThreadsByContactIDInput struct {
 	ContactID string `validate:"required"`
+	Limit     int64  `validate:"required,max=200"`
+	Offset    int64  `validate:"min=0"`
 }
 type GetThreadInput struct {
 	ThreadID string `validate:"required"`

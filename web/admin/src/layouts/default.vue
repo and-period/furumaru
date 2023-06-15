@@ -70,19 +70,24 @@ const navigationDrawerList: NavigationDrawerItem[] = [
     to: '/producers',
     icon: mdiAccount,
     title: '生産者管理'
-  },
-  {
-    to: '/coordinators',
-    icon: mdiAccountStarOutline,
-    title: 'コーディネータ管理'
   }
 ]
 
 const navigationDrawerSettingsList: NavigationDrawerItem[] = [
   {
-    to: '/settings',
+    to: '/accounts',
+    icon: mdiAccount,
+    title: 'マイページ'
+  },
+  {
+    to: '/system',
     icon: mdiCog,
     title: 'システム設定'
+  },
+  {
+    to: '/version',
+    icon: mdiCog,
+    title: 'バージョン情報'
   }
 ]
 
