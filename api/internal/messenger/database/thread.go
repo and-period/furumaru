@@ -51,7 +51,6 @@ func (t *thread) Count(ctx context.Context, params *ListThreadsByContactIDParams
 
 func (t *thread) Create(ctx context.Context, thread *entity.Thread) error {
 	err := t.db.Transaction(ctx, func(tx *gorm.DB) error {
-
 		now := t.now()
 		thread.CreatedAt, thread.UpdatedAt = now, now
 
