@@ -62,6 +62,10 @@ func NewContact(params *NewContactParams) *Contact {
 
 func (c *Contact) Fill(categoryID, userID, responderID string) {
 	c.CategoryID = categoryID
-	c.UserID = userID
-	c.ResponderID = responderID
+	if userID != "" {
+		c.UserID = userID
+	}
+	if responderID != "" {
+		c.ResponderID = responderID
+	}
 }
