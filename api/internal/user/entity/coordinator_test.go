@@ -67,16 +67,21 @@ func TestCoordinator_Fill(t *testing.T) {
 		{
 			name: "success",
 			coordinator: &Coordinator{
-				AdminID:        "admin-id",
-				ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
-				HeadersJSON:    []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+				AdminID:            "admin-id",
+				ProductTypeIDsJSON: []byte(`["product-type-id"]`),
+				ThumbnailsJSON:     []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+				HeadersJSON:        []byte(`[{"url":"http://example.com/media.png","size":1}]`),
 			},
 			admin: &Admin{
 				ID:        "admin-id",
 				CognitoID: "cognito-id",
 			},
 			expect: &Coordinator{
-				AdminID:        "admin-id",
+				AdminID:            "admin-id",
+				ProductTypeIDsJSON: []byte(`["product-type-id"]`),
+				ProductTypeIDs: []string{
+					"product-type-id",
+				},
 				ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
 				Thumbnails: common.Images{
 					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
@@ -102,9 +107,10 @@ func TestCoordinator_Fill(t *testing.T) {
 				CognitoID: "cognito-id",
 			},
 			expect: &Coordinator{
-				AdminID:    "admin-id",
-				Thumbnails: common.Images{},
-				Headers:    common.Images{},
+				AdminID:        "admin-id",
+				ProductTypeIDs: []string{},
+				Thumbnails:     common.Images{},
+				Headers:        common.Images{},
 				Admin: Admin{
 					ID:        "admin-id",
 					CognitoID: "cognito-id",

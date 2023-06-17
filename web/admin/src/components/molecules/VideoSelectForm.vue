@@ -70,9 +70,13 @@ const onChangeFile = () => {
           :accept="acceptedFiles()"
           @change="onChangeFile"
         >
-        <p class="ma-0">{{ props.label }}を選択</p>
+        <p class="ma-0">
+          {{ props.label }}を選択
+        </p>
       </v-card-text>
     </v-card>
-    <p v-show="props.error" class="red--text ma-0">{{ props.message }}</p>
+    <p v-show="props.error" class="red--text ma-0">
+      {{ props.message }}
+    </p>
   </div>
 </template>

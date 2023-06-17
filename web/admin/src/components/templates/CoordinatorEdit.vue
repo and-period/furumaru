@@ -76,7 +76,7 @@ const props = defineProps({
       instagramId: '',
       facebookId: '',
       createdAt: 0,
-      updatedAt: 0,
+      updatedAt: 0
     })
   },
   productTypes: {
@@ -118,7 +118,7 @@ const props = defineProps({
   searchLoading: {
     type: Boolean,
     default: false
-  },
+  }
 })
 
 const emit = defineEmits<{
@@ -141,7 +141,7 @@ const rules = computed(() => ({
   phoneNumber: { required, tel },
   profile: { maxLength: maxLength(2000) },
   instagramId: { maxLength: maxLength(30) },
-  facebookId: { maxLength: maxLength(50) },
+  facebookId: { maxLength: maxLength(50) }
 }))
 const formDataValue = computed({
   get: (): UpdateCoordinatorRequest => props.formData,

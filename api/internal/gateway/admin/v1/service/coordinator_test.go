@@ -63,6 +63,7 @@ func TestCoordinator(t *testing.T) {
 					Firstname:      "管理者",
 					LastnameKana:   "あんどどっと",
 					FirstnameKana:  "かんりしゃ",
+					MarcheName:     "&.マルシェ",
 					Username:       "&.農園",
 					Profile:        "紹介文です。",
 					ProductTypeIDs: []string{"product-type-ids"},

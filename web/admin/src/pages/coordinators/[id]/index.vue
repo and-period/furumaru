@@ -62,7 +62,7 @@ const fetchState = useAsyncData(async (): Promise<void> => {
   try {
     await Promise.all([
       productTypeStore.fetchProductTypes(200),
-      coordinatorStore.getCoordinator(coordinatorId),
+      coordinatorStore.getCoordinator(coordinatorId)
     ])
     formData.value = {
       ...coordinator.value,
@@ -79,7 +79,6 @@ const fetchState = useAsyncData(async (): Promise<void> => {
 const isLoading = (): boolean => {
   return fetchState?.pending?.value || loading.value
 }
-
 
 const handleSubmit = async (): Promise<void> => {
   try {

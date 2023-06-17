@@ -112,7 +112,7 @@ const rules = computed(() => ({
   phoneNumber: { required, tel },
   profile: { maxLength: maxLength(2000) },
   instagramId: { maxLength: maxLength(30) },
-  facebookId: { maxLength: maxLength(50) },
+  facebookId: { maxLength: maxLength(50) }
 }))
 const formDataValue = computed({
   get: (): CreateCoordinatorRequest => props.formData,
