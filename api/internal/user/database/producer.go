@@ -295,6 +295,7 @@ func (p *producer) fill(ctx context.Context, tx *gorm.DB, producers ...*entity.P
 		if !ok {
 			admin = &entity.Admin{}
 		}
+		admin.Fill()
 
 		if err := producers[i].Fill(admin); err != nil {
 			return err
