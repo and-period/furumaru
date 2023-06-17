@@ -35,6 +35,21 @@ func (m *MockService) EXPECT() *MockServiceMockRecorder {
 	return m.recorder
 }
 
+// GenerateCoordinatorBonusVideo mocks base method.
+func (m *MockService) GenerateCoordinatorBonusVideo(ctx context.Context, in *media.GenerateFileInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GenerateCoordinatorBonusVideo", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GenerateCoordinatorBonusVideo indicates an expected call of GenerateCoordinatorBonusVideo.
+func (mr *MockServiceMockRecorder) GenerateCoordinatorBonusVideo(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateCoordinatorBonusVideo", reflect.TypeOf((*MockService)(nil).GenerateCoordinatorBonusVideo), ctx, in)
+}
+
 // GenerateCoordinatorHeader mocks base method.
 func (m *MockService) GenerateCoordinatorHeader(ctx context.Context, in *media.GenerateFileInput) (string, error) {
 	m.ctrl.T.Helper()
@@ -48,6 +63,21 @@ func (m *MockService) GenerateCoordinatorHeader(ctx context.Context, in *media.G
 func (mr *MockServiceMockRecorder) GenerateCoordinatorHeader(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateCoordinatorHeader", reflect.TypeOf((*MockService)(nil).GenerateCoordinatorHeader), ctx, in)
+}
+
+// GenerateCoordinatorPromotionVideo mocks base method.
+func (m *MockService) GenerateCoordinatorPromotionVideo(ctx context.Context, in *media.GenerateFileInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GenerateCoordinatorPromotionVideo", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GenerateCoordinatorPromotionVideo indicates an expected call of GenerateCoordinatorPromotionVideo.
+func (mr *MockServiceMockRecorder) GenerateCoordinatorPromotionVideo(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateCoordinatorPromotionVideo", reflect.TypeOf((*MockService)(nil).GenerateCoordinatorPromotionVideo), ctx, in)
 }
 
 // GenerateCoordinatorThumbnail mocks base method.
@@ -224,6 +254,21 @@ func (mr *MockServiceMockRecorder) ResizeProductTypeIcon(ctx, in interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResizeProductTypeIcon", reflect.TypeOf((*MockService)(nil).ResizeProductTypeIcon), ctx, in)
 }
 
+// UploadCoordinatorBonusVideo mocks base method.
+func (m *MockService) UploadCoordinatorBonusVideo(ctx context.Context, in *media.UploadFileInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UploadCoordinatorBonusVideo", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UploadCoordinatorBonusVideo indicates an expected call of UploadCoordinatorBonusVideo.
+func (mr *MockServiceMockRecorder) UploadCoordinatorBonusVideo(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadCoordinatorBonusVideo", reflect.TypeOf((*MockService)(nil).UploadCoordinatorBonusVideo), ctx, in)
+}
+
 // UploadCoordinatorHeader mocks base method.
 func (m *MockService) UploadCoordinatorHeader(ctx context.Context, in *media.UploadFileInput) (string, error) {
 	m.ctrl.T.Helper()
@@ -237,6 +282,21 @@ func (m *MockService) UploadCoordinatorHeader(ctx context.Context, in *media.Upl
 func (mr *MockServiceMockRecorder) UploadCoordinatorHeader(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadCoordinatorHeader", reflect.TypeOf((*MockService)(nil).UploadCoordinatorHeader), ctx, in)
+}
+
+// UploadCoordinatorPromotionVideo mocks base method.
+func (m *MockService) UploadCoordinatorPromotionVideo(ctx context.Context, in *media.UploadFileInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UploadCoordinatorPromotionVideo", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UploadCoordinatorPromotionVideo indicates an expected call of UploadCoordinatorPromotionVideo.
+func (mr *MockServiceMockRecorder) UploadCoordinatorPromotionVideo(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadCoordinatorPromotionVideo", reflect.TypeOf((*MockService)(nil).UploadCoordinatorPromotionVideo), ctx, in)
 }
 
 // UploadCoordinatorThumbnail mocks base method.

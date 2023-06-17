@@ -13,27 +13,12 @@ createCoordinatorRequest:
     firstnameKana:
       type: string
       description: 名(かな)(ひらがな,32文字まで)
-    companyName:
+    marcheName:
       type: string
-      description: 会社名(64文字まで)
-    storeName:
+      description: マルシェ名(64文字まで)
+    username:
       type: string
-      description: 店舗名(64文字まで)
-    thumbnailUrl:
-      type: string
-      description: サムネイルURL
-    headerUrl:
-      type: string
-      description: ヘッダー画像URL
-    twitterAccount:
-      type: string
-      description: Twitterアカウント(15文字まで)
-    instagramAccount:
-      type: string
-      description: Instagramアカウント(30文字まで)
-    facebookAccount:
-      type: string
-      description: Facebookアカウント(50文字まで)
+      description: コーディネータ(64文字まで)
     email:
       type: string
       format: email
@@ -56,13 +41,40 @@ createCoordinatorRequest:
     addressLine2:
       type: string
       description: ビル名・号室など(64文字まで)
+    profile:
+      type: string
+      description: プロフィール(2000文字まで)
+    productTypeIds:
+      type: array
+      description: 取り扱い品目ID一覧
+      items:
+        type: string
+        description: 品目ID
+    thumbnailUrl:
+      type: string
+      description: サムネイル画像URL
+    headerUrl:
+      type: string
+      description: ヘッダー画像URL
+    promotionVideoUrl:
+      type: string
+      description: 紹介動画URL
+    bonusVideoUrl:
+      type: string
+      description: 購入者動画URL
+    instagramId:
+      type: string
+      description: Instagramアカウント(30文字まで)
+    facebookId:
+      type: string
+      description: Facebookアカウント(50文字まで)
   required:
   - lastname
   - firstname
   - lastnameKana
   - firstnameKana
-  - companyName
-  - storeName
+  - marcheName
+  - username
   - email
   - phoneNumber
   - postalCode
@@ -70,18 +82,21 @@ createCoordinatorRequest:
   - city
   - addressLine1
   - addressLine2
+  - profile
+  - productTypeIds
+  - thumbnailUrl
+  - headerUrl
+  - promotionVideoUrl
+  - bonusVideoUrl
+  - instagramId
+  - facebookId
   example:
     lastname: '&.'
     firstname: '管理者'
     lastnameKana: 'あんどどっと'
     firstnameKana: 'かんりしゃ'
-    companyName: '&.株式会社'
-    storeName: '&.農園'
-    thumbnailUrl: 'https://and-period.jp/thumbnail.png'
-    headerUrl: 'https://and-period.jp/header.png'
-    twitterAccount: 'twitter-id'
-    instagramAccount: 'instagram-id'
-    facebookAccount: 'facebook-id'
+    marcheName: '&.マルシェ'
+    username: '&.農園'
     email: 'test-user@and-period.jp'
     phoneNumber: '+819012345678'
     postalCode: '1000014'
@@ -89,6 +104,14 @@ createCoordinatorRequest:
     city: '千代田区'
     addressLine1: '永田町1-7-1'
     addressLine2: ''
+    profile: '紹介文です。'
+    productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
+    thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+    headerUrl: 'https://and-period.jp/header.png'
+    promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+    bonusVideoUrl: 'https://and-period.jp/bonus.mp4'
+    instagramId: 'instagram-id'
+    facebookId: 'facebook-id'
 updateCoordinatorRequest:
   type: object
   properties:
@@ -104,27 +127,12 @@ updateCoordinatorRequest:
     firstnameKana:
       type: string
       description: 名(かな)(ひらがな,32文字まで)
-    companyName:
+    marcheName:
       type: string
-      description: 会社名(64文字まで)
-    storeName:
+      description: マルシェ名(64文字まで)
+    username:
       type: string
-      description: 店舗名(64文字まで)
-    thumbnailUrl:
-      type: string
-      description: サムネイルURL
-    headerUrl:
-      type: string
-      description: ヘッダー画像URL
-    twitterAccount:
-      type: string
-      description: Twitterアカウント(15文字まで)
-    instagramAccount:
-      type: string
-      description: Instagramアカウント(30文字まで)
-    facebookAccount:
-      type: string
-      description: Facebookアカウント(50文字まで)
+      description: コーディネータ(64文字まで)
     phoneNumber:
       type: string
       description: 電話番号 (国際番号 + 電話番号)
@@ -143,37 +151,75 @@ updateCoordinatorRequest:
     addressLine2:
       type: string
       description: ビル名・号室など(64文字まで)
+    profile:
+      type: string
+      description: プロフィール(2000文字まで)
+    productTypeIds:
+      type: array
+      description: 取り扱い品目ID一覧
+      items:
+        type: string
+        description: 品目ID
+    thumbnailUrl:
+      type: string
+      description: サムネイル画像URL
+    headerUrl:
+      type: string
+      description: ヘッダー画像URL
+    promotionVideoUrl:
+      type: string
+      description: 紹介動画URL
+    bonusVideoUrl:
+      type: string
+      description: 購入者動画URL
+    instagramId:
+      type: string
+      description: Instagramアカウント(30文字まで)
+    facebookId:
+      type: string
+      description: Facebookアカウント(50文字まで)
   required:
   - lastname
   - firstname
   - lastnameKana
   - firstnameKana
-  - companyName
-  - storeName
+  - marcheName
+  - username
   - phoneNumber
   - postalCode
   - prefecture
   - city
   - addressLine1
   - addressLine2
+  - profile
+  - productTypeIds
+  - thumbnailUrl
+  - headerUrl
+  - promotionVideoUrl
+  - bonusVideoUrl
+  - instagramId
+  - facebookId
   example:
     lastname: '&.'
     firstname: '管理者'
     lastnameKana: 'あんどどっと'
     firstnameKana: 'かんりしゃ'
-    companyName: '&.株式会社'
-    storeName: '&.農園'
-    thumbnailUrl: 'https://and-period.jp/thumbnail.png'
-    headerUrl: 'https://and-period.jp/header.png'
-    twitterAccount: 'twitter-id'
-    instagramAccount: 'instagram-id'
-    facebookAccount: 'facebook-id'
+    marcheName: '&.マルシェ'
+    username: '&.農園'
     phoneNumber: '+819012345678'
     postalCode: '1000014'
     prefecture: '東京都'
     city: '千代田区'
     addressLine1: '永田町1-7-1'
     addressLine2: ''
+    profile: '紹介文です。'
+    productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
+    thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+    headerUrl: 'https://and-period.jp/header.png'
+    promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+    bonusVideoUrl: 'https://and-period.jp/bonus.mp4'
+    instagramId: 'instagram-id'
+    facebookId: 'facebook-id'
 updateCoordinatorEmailRequest:
   type: object
   properties:

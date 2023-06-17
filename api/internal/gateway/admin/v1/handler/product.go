@@ -332,6 +332,9 @@ func (h *handler) DeleteProduct(ctx *gin.Context) {
 }
 
 func (h *handler) multiGetProducts(ctx context.Context, productIDs []string) (service.Products, error) {
+	if len(productIDs) == 0 {
+		return service.Products{}, nil
+	}
 	in := &store.MultiGetProductsInput{
 		ProductIDs: productIDs,
 	}

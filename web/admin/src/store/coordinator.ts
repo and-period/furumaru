@@ -8,7 +8,8 @@ import {
   ProducersResponse,
   RelateProducersRequest,
   UpdateCoordinatorRequest,
-  UploadImageResponse
+  UploadImageResponse,
+  UploadVideoResponse
 } from '~/types/api'
 import { apiClient } from '~/plugins/api-client'
 
@@ -110,6 +111,48 @@ export const useCoordinatorStore = defineStore('coordinator', {
     async uploadCoordinatorHeader (payload: File): Promise<UploadImageResponse> {
       try {
         const res = await apiClient.coordinatorApi().v1UploadCoordinatorHeader(
+          payload,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
+        )
+        return res.data
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * コーディネータの紹介画像をアップロードする非同期関数
+     * @param payload 紹介画像
+     * @returns アップロードされた動画のURI
+     */
+    async uploadCoordinatorPromotionVideo (payload: File): Promise<UploadVideoResponse> {
+      try {
+        const res = await apiClient.coordinatorApi().v1UploadCoordinatorPromotionVideo(
+          payload,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
+        )
+        return res.data
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * コーディネータのサンキュー画像をアップロードする非同期関数
+     * @param payload サンキュー画像
+     * @returns アップロードされた動画のURI
+     */
+    async uploadCoordinatorBonusVideo (payload: File): Promise<UploadVideoResponse> {
+      try {
+        const res = await apiClient.coordinatorApi().v1UploadCoordinatorBonusVideo(
           payload,
           {
             headers: {

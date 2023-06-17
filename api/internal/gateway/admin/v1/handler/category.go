@@ -136,6 +136,9 @@ func (h *handler) DeleteCategory(ctx *gin.Context) {
 }
 
 func (h *handler) multiGetCategories(ctx context.Context, categoryIDs []string) (service.Categories, error) {
+	if len(categoryIDs) == 0 {
+		return service.Categories{}, nil
+	}
 	in := &store.MultiGetCategoriesInput{
 		CategoryIDs: categoryIDs,
 	}

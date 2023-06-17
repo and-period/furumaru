@@ -16,12 +16,42 @@ coordinatorResponse:
     firstnameKana:
       type: string
       description: 名(かな)
-    companyName:
+    marcheName:
       type: string
-      description: 会社名
-    storeName:
+      description: マルシェ名
+    username:
       type: string
-      description: 店舗名
+      description: コーディネータ
+    email:
+      type: string
+      description: メールアドレス
+    phoneNumber:
+      type: string
+      description: 電話番号 (国際番号 + 電話番号)
+    postalCode:
+      type: string
+      description: 郵便番号
+    prefecture:
+      type: string
+      description: 都道府県
+    city:
+      type: string
+      description: 市区町村
+    addressLine1:
+      type: string
+      description: 町名・番地
+    addressLine2:
+      type: string
+      description: ビル名・号室など
+    profile:
+      type: string
+      description: プロフィール
+    productTypeIds:
+      type: array
+      description: 取り扱い品目ID一覧
+      items:
+        type: string
+        description: 品目ID
     thumbnailUrl:
       type: string
       description: サムネイルURL
@@ -56,36 +86,18 @@ coordinatorResponse:
         required:
         - url
         - size
-    twitterAccount:
+    promotionVideoUrl:
       type: string
-      description: Twitterアカウント
-    instagramAccount:
+      description: 紹介動画URL
+    bonusVideoUrl:
+      type: string
+      description: 購入特典動画URL
+    instagramId:
       type: string
       description: Instagramアカウント
-    facebookAccount:
+    facebookId:
       type: string
       description: Facebookアカウント
-    email:
-      type: string
-      description: メールアドレス
-    phoneNumber:
-      type: string
-      description: 電話番号 (国際番号 + 電話番号)
-    postalCode:
-      type: string
-      description: 郵便番号
-    prefecture:
-      type: string
-      description: 都道府県
-    city:
-      type: string
-      description: 市区町村
-    addressLine1:
-      type: string
-      description: 町名・番地
-    addressLine2:
-      type: string
-      description: ビル名・号室など
     createdAt:
       type: integer
       format: int64
@@ -100,15 +112,8 @@ coordinatorResponse:
   - firstname
   - lastnameKana
   - firstnameKana
-  - companyName
-  - storeName
-  - thumbnailUrl
-  - thumbnails
-  - headerUrl
-  - headers
-  - twitterAccount
-  - instagramAccount
-  - facebookAccount
+  - marcheName
+  - username
   - email
   - phoneNumber
   - postalCode
@@ -116,6 +121,16 @@ coordinatorResponse:
   - city
   - addressLine1
   - addressLine2
+  - profile
+  - productTypeIds
+  - promotionVideoUrl
+  - bonusVideoUrl
+  - thumbnailUrl
+  - thumbnails
+  - headerUrl
+  - headers
+  - instagramId
+  - facebookId
   - createdAt
   - updatedAt
   example:
@@ -125,6 +140,15 @@ coordinatorResponse:
     lastnameKana: 'あんどどっと'
     firstnameKana: 'かんりしゃ'
     storeName: '&.農園'
+    email: 'test-user@and-period.jp'
+    phoneNumber: '+819012345678'
+    postalCode: '1000014'
+    prefecture: '東京都'
+    city: '千代田区'
+    addressLine1: '永田町1-7-1'
+    addressLine2: ''
+    profile: '紹介文です。'
+    productTypes: ['kSByoE6FetnPs5Byk3a9Zx']
     thumbnailUrl: 'https://and-period.jp/thumbnail.png'
     thumbnails:
     - url: 'https://and-period.jp/thumbnail_240.png'
@@ -141,16 +165,10 @@ coordinatorResponse:
       size: 2
     - url: 'https://and-period.jp/header_900.png'
       size: 3
-    twitterAccount: 'twitter-id'
-    instagramAccount: 'instagram-id'
-    facebookAccount: 'facebook-id'
-    email: 'test-user@and-period.jp'
-    phoneNumber: '+819012345678'
-    postalCode: '1000014'
-    prefecture: '東京都'
-    city: '千代田区'
-    addressLine1: '永田町1-7-1'
-    addressLine2: ''
+    promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+    bonusVideoUrl: 'https://and-period.jp/bonus.mp4'
+    instagramId: 'instagram-id'
+    facebookId: 'facebook-id'
     createdAt: 1640962800
     updatedAt: 1640962800
 coordinatorsResponse:
@@ -177,12 +195,42 @@ coordinatorsResponse:
           firstnameKana:
             type: string
             description: 名(かな)
-          companyName:
+          marcheName:
             type: string
-            description: 会社名
-          storeName:
+            description: マルシェ名
+          username:
             type: string
-            description: 店舗名
+            description: コーディネータ
+          email:
+            type: string
+            description: メールアドレス
+          phoneNumber:
+            type: string
+            description: 電話番号 (国際番号 + 電話番号)
+          postalCode:
+            type: string
+            description: 郵便番号
+          prefecture:
+            type: string
+            description: 都道府県
+          city:
+            type: string
+            description: 市区町村
+          addressLine1:
+            type: string
+            description: 町名・番地
+          addressLine2:
+            type: string
+            description: ビル名・号室など
+          profile:
+            type: string
+            description: プロフィール
+          productTypeIds:
+            type: array
+            description: 取り扱い品目ID一覧
+            items:
+              type: string
+              description: 品目ID
           thumbnailUrl:
             type: string
             description: サムネイルURL
@@ -217,36 +265,18 @@ coordinatorsResponse:
               required:
               - url
               - size
-          twitterAccount:
+          promotionVideoUrl:
             type: string
-            description: Twitterアカウント
-          instagramAccount:
+            description: 紹介動画URL
+          bonusVideoUrl:
+            type: string
+            description: 購入者動画URL
+          instagramId:
             type: string
             description: Instagramアカウント
-          facebookAccount:
+          facebookId:
             type: string
             description: Facebookアカウント
-          email:
-            type: string
-            description: メールアドレス
-          phoneNumber:
-            type: string
-            description: 電話番号 (国際番号 + 電話番号)
-          postalCode:
-            type: string
-            description: 郵便番号
-          prefecture:
-            type: string
-            description: 都道府県
-          city:
-            type: string
-            description: 市区町村
-          addressLine1:
-            type: string
-            description: 町名・番地
-          addressLine2:
-            type: string
-            description: ビル名・号室など
           createdAt:
             type: integer
             format: int64
@@ -261,15 +291,8 @@ coordinatorsResponse:
         - firstname
         - lastnameKana
         - firstnameKana
-        - companyName
-        - storeName
-        - thumbnailUrl
-        - thumbnails
-        - headerUrl
-        - headers
-        - twitterAccount
-        - instagramAccount
-        - facebookAccount
+        - marcheName
+        - username
         - email
         - phoneNumber
         - postalCode
@@ -277,6 +300,16 @@ coordinatorsResponse:
         - city
         - addressLine1
         - addressLine2
+        - profile
+        - productTypeIds
+        - promotionVideoUrl
+        - bonusVideoUrl
+        - thumbnailUrl
+        - thumbnails
+        - headerUrl
+        - headers
+        - instagramId
+        - facebookId
         - createdAt
         - updatedAt
     total:
@@ -293,7 +326,17 @@ coordinatorsResponse:
       firstname: '管理者'
       lastnameKana: 'あんどどっと'
       firstnameKana: 'かんりしゃ'
+      marcheName: '&.マルシェ'
       storeName: '&.農園'
+      email: 'test-user@and-period.jp'
+      phoneNumber: '+819012345678'
+      postalCode: '1000014'
+      prefecture: '東京都'
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      profile: '紹介文です。'
+      productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
       thumbnailUrl: 'https://and-period.jp/thumbnail.png'
       thumbnails:
       - url: 'https://and-period.jp/thumbnail_240.png'
@@ -310,16 +353,10 @@ coordinatorsResponse:
         size: 2
       - url: 'https://and-period.jp/header_900.png'
         size: 3
-      twitterAccount: 'twitter-id'
-      instagramAccount: 'instagram-id'
-      facebookAccount: 'facebook-id'
-      email: 'test-user@and-period.jp'
-      phoneNumber: '+819012345678'
-      postalCode: '1000014'
-      prefecture: '東京都'
-      city: '千代田区'
-      addressLine1: '永田町1-7-1'
-      addressLine2: ''
+      promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+      bonusVideoUrl: 'https://and-period.jp/bonus.mp4'
+      instagramId: 'instagram-id'
+      facebookId: 'facebook-id'
       createdAt: 1640962800
       updatedAt: 1640962800
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -327,14 +364,8 @@ coordinatorsResponse:
       firstname: '管理者'
       lastnameKana: 'あんどどっと'
       firstnameKana: 'かんりしゃ'
+      marcheName: '&.マルシェ'
       storeName: '&.農園'
-      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
-      thumbnails: []
-      headerUrl: 'https://and-period.jp/header.png'
-      headers: []
-      twitterAccount: 'twitter-id'
-      instagramAccount: 'instagram-id'
-      facebookAccount: 'facebook-id'
       email: 'test-user@and-period.jp'
       phoneNumber: '+819012345678'
       postalCode: '1000014'
@@ -342,6 +373,16 @@ coordinatorsResponse:
       city: '千代田区'
       addressLine1: '永田町1-7-1'
       addressLine2: ''
+      profile: ''
+      productTypes: []
+      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+      thumbnails: []
+      headerUrl: 'https://and-period.jp/header.png'
+      headers: []
+      promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+      bonusVideoUrl: 'https://and-period.jp/bonus.mp4'
+      instagramId: 'instagram-id'
+      facebookId: 'facebook-id'
       createdAt: 1640962800
       updatedAt: 1640962800
     total: 2

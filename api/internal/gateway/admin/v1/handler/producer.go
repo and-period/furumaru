@@ -268,6 +268,9 @@ func (h *handler) DeleteProducer(ctx *gin.Context) {
 }
 
 func (h *handler) multiGetProducers(ctx context.Context, producerIDs []string) (service.Producers, error) {
+	if len(producerIDs) == 0 {
+		return service.Producers{}, nil
+	}
 	in := &user.MultiGetProducersInput{
 		ProducerIDs: producerIDs,
 	}
@@ -290,6 +293,9 @@ func (h *handler) getProducer(ctx context.Context, producerID string) (*service.
 }
 
 func (h *handler) getProducersByCoordinatorID(ctx context.Context, coordinatorID string) (service.Producers, error) {
+	if coordinatorID == "" {
+		return service.Producers{}, nil
+	}
 	in := &user.ListProducersInput{
 		CoordinatorID: coordinatorID,
 	}

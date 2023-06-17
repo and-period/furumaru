@@ -117,7 +117,7 @@ func (w *worker) fetchCoordinators(
 		return err
 	}
 	for i := range coordinators {
-		execute(coordinators[i].Name(), coordinators[i].Email)
+		execute(coordinators[i].Username, coordinators[i].Email)
 	}
 	return nil
 }
