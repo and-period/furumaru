@@ -4,6 +4,8 @@ coordinatorResponse:
     id:
       type: string
       description: コーディネータID
+    status:
+      $ref: './../../../openapi.yaml#/components/schemas/adminStatus'
     lastname:
       type: string
       description: 姓
@@ -108,6 +110,7 @@ coordinatorResponse:
       description: 更新日時 (unixtime)
   required:
   - id
+  - status
   - lastname
   - firstname
   - lastnameKana
@@ -135,6 +138,7 @@ coordinatorResponse:
   - updatedAt
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
+    status: 2
     lastname: '&.'
     firstname: '管理者'
     lastnameKana: 'あんどどっと'
@@ -183,6 +187,8 @@ coordinatorsResponse:
           id:
             type: string
             description: コーディネータID
+          status:
+            $ref: './../../../openapi.yaml#/components/schemas/adminStatus'
           lastname:
             type: string
             description: 姓
@@ -287,6 +293,7 @@ coordinatorsResponse:
             description: 更新日時 (unixtime)
         required:
         - id
+        - status
         - lastname
         - firstname
         - lastnameKana
@@ -322,6 +329,7 @@ coordinatorsResponse:
   example:
     coordinators:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      status: 2
       lastname: '&.'
       firstname: '管理者'
       lastnameKana: 'あんどどっと'
@@ -360,6 +368,7 @@ coordinatorsResponse:
       createdAt: 1640962800
       updatedAt: 1640962800
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      status: 2
       lastname: '&.'
       firstname: '管理者'
       lastnameKana: 'あんどどっと'

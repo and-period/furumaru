@@ -284,6 +284,7 @@ func (c *coordinator) fill(ctx context.Context, tx *gorm.DB, coordinators ...*en
 		if !ok {
 			admin = &entity.Admin{}
 		}
+		admin.Fill()
 
 		if err := coordinators[i].Fill(admin); err != nil {
 			return err

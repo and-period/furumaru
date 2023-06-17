@@ -2,7 +2,7 @@
 import useVuelidate from '@vuelidate/core'
 import { AlertType } from '~/lib/hooks'
 import { getErrorMessage, maxLength, required, tel } from '~/lib/validations'
-import { AdministratorResponse, UpdateAdministratorRequest } from '~/types/api'
+import { AdminStatus, AdministratorResponse, UpdateAdministratorRequest } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -25,6 +25,7 @@ const props = defineProps({
     type: Object as PropType<AdministratorResponse>,
     default: (): AdministratorResponse => ({
       id: '',
+      status: AdminStatus.UNKNOWN,
       lastname: '',
       lastnameKana: '',
       firstname: '',

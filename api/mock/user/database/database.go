@@ -125,6 +125,20 @@ func (mr *MockAdminMockRecorder) UpdateEmail(ctx, adminID, email interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateEmail", reflect.TypeOf((*MockAdmin)(nil).UpdateEmail), ctx, adminID, email)
 }
 
+// UpdateSignInAt mocks base method.
+func (m *MockAdmin) UpdateSignInAt(ctx context.Context, adminID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateSignInAt", ctx, adminID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateSignInAt indicates an expected call of UpdateSignInAt.
+func (mr *MockAdminMockRecorder) UpdateSignInAt(ctx, adminID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateSignInAt", reflect.TypeOf((*MockAdmin)(nil).UpdateSignInAt), ctx, adminID)
+}
+
 // MockAdministrator is a mock of Administrator interface.
 type MockAdministrator struct {
 	ctrl     *gomock.Controller

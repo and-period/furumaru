@@ -52,6 +52,34 @@ export type AdminRole = typeof AdminRole[keyof typeof AdminRole];
 
 
 /**
+ * 管理者の状態
+ * @export
+ * @enum {string}
+ */
+
+export const AdminStatus = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 招待中
+    */
+    INVITED: 1,
+    /**
+    * 有効
+    */
+    ACTIVATED: 2,
+    /**
+    * 無効
+    */
+    DEACTIVATED: 3
+} as const;
+
+export type AdminStatus = typeof AdminStatus[keyof typeof AdminStatus];
+
+
+/**
  * 
  * @export
  * @interface AdministratorResponse
@@ -63,6 +91,12 @@ export interface AdministratorResponse {
      * @memberof AdministratorResponse
      */
     'id': string;
+    /**
+     * 
+     * @type {AdminStatus}
+     * @memberof AdministratorResponse
+     */
+    'status': AdminStatus;
     /**
      * 姓
      * @type {string}
@@ -112,6 +146,8 @@ export interface AdministratorResponse {
      */
     'updatedAt': number;
 }
+
+
 /**
  * 
  * @export
@@ -144,6 +180,12 @@ export interface AdministratorsResponseAdministratorsInner {
      */
     'id': string;
     /**
+     * 
+     * @type {AdminStatus}
+     * @memberof AdministratorsResponseAdministratorsInner
+     */
+    'status': AdminStatus;
+    /**
      * 姓
      * @type {string}
      * @memberof AdministratorsResponseAdministratorsInner
@@ -192,6 +234,8 @@ export interface AdministratorsResponseAdministratorsInner {
      */
     'updatedAt': number;
 }
+
+
 /**
  * 
  * @export
@@ -560,6 +604,12 @@ export interface CoordinatorResponse {
      */
     'id': string;
     /**
+     * 
+     * @type {AdminStatus}
+     * @memberof CoordinatorResponse
+     */
+    'status': AdminStatus;
+    /**
      * 姓
      * @type {string}
      * @memberof CoordinatorResponse
@@ -710,6 +760,8 @@ export interface CoordinatorResponse {
      */
     'updatedAt': number;
 }
+
+
 /**
  * 
  * @export
@@ -741,6 +793,12 @@ export interface CoordinatorsResponseCoordinatorsInner {
      * @memberof CoordinatorsResponseCoordinatorsInner
      */
     'id': string;
+    /**
+     * 
+     * @type {AdminStatus}
+     * @memberof CoordinatorsResponseCoordinatorsInner
+     */
+    'status': AdminStatus;
     /**
      * 姓
      * @type {string}
@@ -892,6 +950,8 @@ export interface CoordinatorsResponseCoordinatorsInner {
      */
     'updatedAt': number;
 }
+
+
 /**
  * 
  * @export
@@ -3045,6 +3105,12 @@ export interface ProducerResponse {
      */
     'id': string;
     /**
+     * 
+     * @type {AdminStatus}
+     * @memberof ProducerResponse
+     */
+    'status': AdminStatus;
+    /**
      * 担当コーディネータID
      * @type {string}
      * @memberof ProducerResponse
@@ -3159,6 +3225,8 @@ export interface ProducerResponse {
      */
     'updatedAt': number;
 }
+
+
 /**
  * 
  * @export
@@ -3191,6 +3259,12 @@ export interface ProducersResponseProducersInner {
      */
     'id': string;
     /**
+     * 
+     * @type {AdminStatus}
+     * @memberof ProducersResponseProducersInner
+     */
+    'status': AdminStatus;
+    /**
      * 担当コーディネータID
      * @type {string}
      * @memberof ProducersResponseProducersInner
@@ -3305,6 +3379,8 @@ export interface ProducersResponseProducersInner {
      */
     'updatedAt': number;
 }
+
+
 /**
  * 
  * @export

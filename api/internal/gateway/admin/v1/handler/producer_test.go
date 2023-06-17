@@ -28,6 +28,8 @@ func TestFilterAccessProducer(t *testing.T) {
 	producer := &uentity.Producer{
 		Admin: uentity.Admin{
 			ID:            "producer-id",
+			Role:          entity.AdminRoleProducer,
+			Status:        entity.AdminStatusActivated,
 			Lastname:      "&.",
 			Firstname:     "管理者",
 			LastnameKana:  "あんどどっと",
@@ -107,6 +109,8 @@ func TestListProducers(t *testing.T) {
 		{
 			Admin: uentity.Admin{
 				ID:            "producer-id01",
+				Role:          entity.AdminRoleProducer,
+				Status:        entity.AdminStatusActivated,
 				Lastname:      "&.",
 				Firstname:     "管理者",
 				LastnameKana:  "あんどどっと",
@@ -138,6 +142,8 @@ func TestListProducers(t *testing.T) {
 		{
 			Admin: uentity.Admin{
 				ID:            "producer-id02",
+				Role:          entity.AdminRoleProducer,
+				Status:        entity.AdminStatusActivated,
 				Lastname:      "&.",
 				Firstname:     "管理者",
 				LastnameKana:  "あんどどっと",
@@ -178,6 +184,7 @@ func TestListProducers(t *testing.T) {
 					Producers: []*response.Producer{
 						{
 							ID:            "producer-id01",
+							Status:        entity.AdminStatusActivated,
 							CoordinatorID: "coordinator-id",
 							Lastname:      "&.",
 							Firstname:     "管理者",
@@ -206,6 +213,7 @@ func TestListProducers(t *testing.T) {
 						},
 						{
 							ID:            "producer-id02",
+							Status:        entity.AdminStatusActivated,
 							CoordinatorID: "coordinator-id",
 							Lastname:      "&.",
 							Firstname:     "管理者",
@@ -316,6 +324,8 @@ func TestGetProducer(t *testing.T) {
 	producer := &uentity.Producer{
 		Admin: uentity.Admin{
 			ID:            "producer-id",
+			Role:          entity.AdminRoleProducer,
+			Status:        entity.AdminStatusActivated,
 			Lastname:      "&.",
 			Firstname:     "管理者",
 			LastnameKana:  "あんどどっと",
@@ -362,6 +372,7 @@ func TestGetProducer(t *testing.T) {
 				body: &response.ProducerResponse{
 					Producer: &response.Producer{
 						ID:            "producer-id",
+						Status:        entity.AdminStatusActivated,
 						CoordinatorID: "coordinator-id",
 						Lastname:      "&.",
 						Firstname:     "管理者",
