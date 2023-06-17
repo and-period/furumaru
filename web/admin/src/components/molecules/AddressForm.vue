@@ -1,9 +1,5 @@
 <script lang="ts" setup>
 const props = defineProps({
-  loading: {
-    type: Boolean,
-    default: false
-  },
   postalCode: {
     type: String,
     default: ''
@@ -23,6 +19,10 @@ const props = defineProps({
   addressLine2: {
     type: String,
     default: ''
+  },
+  loading: {
+    type: Boolean,
+    default: false
   },
   errorMessage: {
     type: String,
@@ -73,9 +73,11 @@ const handleSearch = () => {
         label="郵便番号"
         class="mr-4"
         :loading="props.loading"
+        :messages="props.errorMessage"
+        :error="props.errorMessage !== ''"
         @keydown.enter="handleSearch"
       />
-      <v-btn :loading="props.loading" color="primary" variant="outlined" size="small" @click="handleSearch">
+      <v-btn color="primary" variant="outlined" size="small" @click="handleSearch">
         住所検索
       </v-btn>
       <v-spacer />

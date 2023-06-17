@@ -1,14 +1,18 @@
 <script lang="ts" setup>
+import { storeToRefs } from 'pinia'
 import { convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert, useSearchAddress } from '~/lib/hooks'
-import { useCoordinatorStore } from '~/store'
+import { useCoordinatorStore, useProductTypeStore } from '~/store'
 import { CreateCoordinatorRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 
 const router = useRouter()
 const coordinatorStore = useCoordinatorStore()
+const productTypeStore = useProductTypeStore()
 const searchAddress = useSearchAddress()
 const { alertType, isShow, alertText, show } = useAlert('error')
+
+const { productTypes } = storeToRefs(productTypeStore)
 
 const loading = ref<boolean>(false)
 const formData = ref<CreateCoordinatorRequest>({
@@ -16,17 +20,23 @@ const formData = ref<CreateCoordinatorRequest>({
   lastnameKana: '',
   firstname: '',
   firstnameKana: '',
-  companyName: '',
-  storeName: '',
-  thumbnailUrl: '',
-  headerUrl: '',
+  marcheName: '',
+  username: '',
   email: '',
   phoneNumber: '',
   postalCode: '',
   prefecture: '',
   city: '',
   addressLine1: '',
-  addressLine2: ''
+  addressLine2: '',
+  profile: '',
+  productTypeIds: [],
+  thumbnailUrl: '',
+  headerUrl: '',
+  promotionVideoUrl: '',
+  bonusVideoUrl: '',
+  instagramId: '',
+  facebookId: ''
 })
 const thumbnailUploadStatus = ref<ImageUploadStatus>({
   error: false,
@@ -36,6 +46,22 @@ const headerUploadStatus = ref<ImageUploadStatus>({
   error: false,
   message: ''
 })
+const promotionVideoUploadStatus = ref<ImageUploadStatus>({
+  error: false,
+  message: ''
+})
+const bonusVideoUploadStatus = ref<ImageUploadStatus>({
+  error: false,
+  message: ''
+})
+
+const fetchState = useAsyncData(async (): Promise<void> => {
+  await productTypeStore.fetchProductTypes(200)
+})
+
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || loading.value
+}
 
 const handleSubmit = async (): Promise<void> => {
   try {
@@ -94,33 +120,83 @@ const handleUpdateHeader = (files: FileList): void => {
     })
 }
 
+const handleUpdatePromotionVideo = (files: FileList): void => {
+  if (files.length === 0) {
+    return
+  }
+
+  loading.value = true
+  coordinatorStore.uploadCoordinatorPromotionVideo(files[0])
+    .then((res) => {
+      formData.value.promotionVideoUrl = res.url
+    })
+    .catch(() => {
+      promotionVideoUploadStatus.value.error = true
+      promotionVideoUploadStatus.value.message = 'アップロードに失敗しました。'
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
+
+const handleUpdateBonusVideo = (files: FileList): void => {
+  if (files.length === 0) {
+    return
+  }
+
+  loading.value = true
+  coordinatorStore.uploadCoordinatorBonusVideo(files[0])
+    .then((res) => {
+      formData.value.bonusVideoUrl = res.url
+    })
+    .catch(() => {
+      bonusVideoUploadStatus.value.error = true
+      bonusVideoUploadStatus.value.message = 'アップロードに失敗しました。'
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
+
 const handleSearchAddress = async (): Promise<void> => {
   try {
+    searchAddress.loading.value = true
+    searchAddress.errorMessage.value = ''
     const res = await searchAddress.searchAddressByPostalCode(Number(formData.value.postalCode))
     formData.value = { ...formData.value, ...res }
   } catch (err) {
-    if (err instanceof Error) {
-      show(err.message)
-    }
     console.log(err)
   } finally {
     loading.value = false
   }
+}
+
+try {
+  await fetchState.execute()
+} catch (err) {
+  console.log('failed to setup', err)
 }
 </script>
 
 <template>
   <templates-coordinator-new
     v-model:form-data="formData"
-    :loading="loading"
+    :loading="isLoading()"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :thumbnail-upload-status="thumbnailUploadStatus"
     :header-upload-status="headerUploadStatus"
+    :promotion-video-upload-status="promotionVideoUploadStatus"
+    :bonus-video-upload-status="bonusVideoUploadStatus"
+    :search-loading="searchAddress.loading.value"
+    :search-error-message="searchAddress.errorMessage.value"
+    :product-types="productTypes"
     @click:search-address="handleSearchAddress"
     @update:thumbnail-file="handleUpdateThumbnail"
     @update:header-file="handleUpdateHeader"
+    @update:promotion-video="handleUpdatePromotionVideo"
+    @update:bonus-video="handleUpdateBonusVideo"
     @submit="handleSubmit"
   />
 </template>

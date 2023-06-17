@@ -121,23 +121,26 @@ type ListCoordinatorsParams struct {
 }
 
 type UpdateCoordinatorParams struct {
-	Lastname         string
-	Firstname        string
-	LastnameKana     string
-	FirstnameKana    string
-	CompanyName      string
-	StoreName        string
-	ThumbnailURL     string
-	HeaderURL        string
-	TwitterAccount   string
-	InstagramAccount string
-	FacebookAccount  string
-	PhoneNumber      string
-	PostalCode       string
-	Prefecture       string
-	City             string
-	AddressLine1     string
-	AddressLine2     string
+	Lastname          string
+	Firstname         string
+	LastnameKana      string
+	FirstnameKana     string
+	MarcheName        string
+	Username          string
+	Profile           string
+	ProductTypeIDs    []string
+	ThumbnailURL      string
+	HeaderURL         string
+	PromotionVideoURL string
+	BonusVideoURL     string
+	InstagramID       string
+	FacebookID        string
+	PhoneNumber       string
+	PostalCode        string
+	Prefecture        string
+	City              string
+	AddressLine1      string
+	AddressLine2      string
 }
 
 type ListProducersParams struct {

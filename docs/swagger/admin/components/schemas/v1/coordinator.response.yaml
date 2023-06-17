@@ -43,6 +43,15 @@ coordinatorResponse:
     addressLine2:
       type: string
       description: ビル名・号室など
+    profile:
+      type: string
+      description: プロフィール
+    productTypeIds:
+      type: array
+      description: 取り扱い品目ID一覧
+      items:
+        type: string
+        description: 品目ID
     thumbnailUrl:
       type: string
       description: サムネイルURL
@@ -82,7 +91,7 @@ coordinatorResponse:
       description: 紹介動画URL
     bonusVideoUrl:
       type: string
-      description: 購入者動画URL
+      description: 購入特典動画URL
     instagramId:
       type: string
       description: Instagramアカウント
@@ -112,6 +121,8 @@ coordinatorResponse:
   - city
   - addressLine1
   - addressLine2
+  - profile
+  - productTypeIds
   - promotionVideoUrl
   - bonusVideoUrl
   - thumbnailUrl
@@ -136,6 +147,8 @@ coordinatorResponse:
     city: '千代田区'
     addressLine1: '永田町1-7-1'
     addressLine2: ''
+    profile: '紹介文です。'
+    productTypes: ['kSByoE6FetnPs5Byk3a9Zx']
     thumbnailUrl: 'https://and-period.jp/thumbnail.png'
     thumbnails:
     - url: 'https://and-period.jp/thumbnail_240.png'
@@ -209,6 +222,15 @@ coordinatorsResponse:
           addressLine2:
             type: string
             description: ビル名・号室など
+          profile:
+            type: string
+            description: プロフィール
+          productTypeIds:
+            type: array
+            description: 取り扱い品目ID一覧
+            items:
+              type: string
+              description: 品目ID
           thumbnailUrl:
             type: string
             description: サムネイルURL
@@ -278,6 +300,8 @@ coordinatorsResponse:
         - city
         - addressLine1
         - addressLine2
+        - profile
+        - productTypeIds
         - promotionVideoUrl
         - bonusVideoUrl
         - thumbnailUrl
@@ -311,6 +335,8 @@ coordinatorsResponse:
       city: '千代田区'
       addressLine1: '永田町1-7-1'
       addressLine2: ''
+      profile: '紹介文です。'
+      productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
       thumbnailUrl: 'https://and-period.jp/thumbnail.png'
       thumbnails:
       - url: 'https://and-period.jp/thumbnail_240.png'
@@ -347,6 +373,8 @@ coordinatorsResponse:
       city: '千代田区'
       addressLine1: '永田町1-7-1'
       addressLine2: ''
+      profile: ''
+      productTypes: []
       thumbnailUrl: 'https://and-period.jp/thumbnail.png'
       thumbnails: []
       headerUrl: 'https://and-period.jp/header.png'

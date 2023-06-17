@@ -584,59 +584,17 @@ export interface CoordinatorResponse {
      */
     'firstnameKana': string;
     /**
-     * 会社名
+     * マルシェ名
      * @type {string}
      * @memberof CoordinatorResponse
      */
-    'companyName': string;
+    'marcheName': string;
     /**
-     * 店舗名
+     * コーディネータ
      * @type {string}
      * @memberof CoordinatorResponse
      */
-    'storeName': string;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'thumbnailUrl': string;
-    /**
-     * リサイズ済みサムネイルURL一覧
-     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
-     * @memberof CoordinatorResponse
-     */
-    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
-    /**
-     * ヘッダー画像URL
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'headerUrl': string;
-    /**
-     * リサイズ済みヘッダー画像URL一覧
-     * @type {Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>}
-     * @memberof CoordinatorResponse
-     */
-    'headers': Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>;
-    /**
-     * Twitterアカウント
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'twitterAccount': string;
-    /**
-     * Instagramアカウント
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'instagramAccount': string;
-    /**
-     * Facebookアカウント
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'facebookAccount': string;
+    'username': string;
     /**
      * メールアドレス
      * @type {string}
@@ -679,6 +637,66 @@ export interface CoordinatorResponse {
      * @memberof CoordinatorResponse
      */
     'addressLine2': string;
+    /**
+     * プロフィール
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'profile': string;
+    /**
+     * 取り扱い品目ID一覧
+     * @type {Array<string>}
+     * @memberof CoordinatorResponse
+     */
+    'productTypeIds': Array<string>;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'thumbnailUrl': string;
+    /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
+     * @memberof CoordinatorResponse
+     */
+    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
+    /**
+     * ヘッダー画像URL
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'headerUrl': string;
+    /**
+     * リサイズ済みヘッダー画像URL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>}
+     * @memberof CoordinatorResponse
+     */
+    'headers': Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>;
+    /**
+     * 紹介動画URL
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'promotionVideoUrl': string;
+    /**
+     * 購入特典動画URL
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'bonusVideoUrl': string;
+    /**
+     * Instagramアカウント
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'instagramId': string;
+    /**
+     * Facebookアカウント
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'facebookId': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
@@ -748,59 +766,17 @@ export interface CoordinatorsResponseCoordinatorsInner {
      */
     'firstnameKana': string;
     /**
-     * 会社名
+     * マルシェ名
      * @type {string}
      * @memberof CoordinatorsResponseCoordinatorsInner
      */
-    'companyName': string;
+    'marcheName': string;
     /**
-     * 店舗名
+     * コーディネータ
      * @type {string}
      * @memberof CoordinatorsResponseCoordinatorsInner
      */
-    'storeName': string;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'thumbnailUrl': string;
-    /**
-     * リサイズ済みサムネイルURL一覧
-     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
-    /**
-     * ヘッダー画像URL
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'headerUrl': string;
-    /**
-     * リサイズ済みヘッダー画像URL一覧
-     * @type {Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'headers': Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>;
-    /**
-     * Twitterアカウント
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'twitterAccount': string;
-    /**
-     * Instagramアカウント
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'instagramAccount': string;
-    /**
-     * Facebookアカウント
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'facebookAccount': string;
+    'username': string;
     /**
      * メールアドレス
      * @type {string}
@@ -843,6 +819,66 @@ export interface CoordinatorsResponseCoordinatorsInner {
      * @memberof CoordinatorsResponseCoordinatorsInner
      */
     'addressLine2': string;
+    /**
+     * プロフィール
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinatorsInner
+     */
+    'profile': string;
+    /**
+     * 取り扱い品目ID一覧
+     * @type {Array<string>}
+     * @memberof CoordinatorsResponseCoordinatorsInner
+     */
+    'productTypeIds': Array<string>;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinatorsInner
+     */
+    'thumbnailUrl': string;
+    /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
+     * @memberof CoordinatorsResponseCoordinatorsInner
+     */
+    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
+    /**
+     * ヘッダー画像URL
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinatorsInner
+     */
+    'headerUrl': string;
+    /**
+     * リサイズ済みヘッダー画像URL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>}
+     * @memberof CoordinatorsResponseCoordinatorsInner
+     */
+    'headers': Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>;
+    /**
+     * 紹介動画URL
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinatorsInner
+     */
+    'promotionVideoUrl': string;
+    /**
+     * 購入者動画URL
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinatorsInner
+     */
+    'bonusVideoUrl': string;
+    /**
+     * Instagramアカウント
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinatorsInner
+     */
+    'instagramId': string;
+    /**
+     * Facebookアカウント
+     * @type {string}
+     * @memberof CoordinatorsResponseCoordinatorsInner
+     */
+    'facebookId': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
@@ -985,47 +1021,17 @@ export interface CreateCoordinatorRequest {
      */
     'firstnameKana': string;
     /**
-     * 会社名(64文字まで)
+     * マルシェ名(64文字まで)
      * @type {string}
      * @memberof CreateCoordinatorRequest
      */
-    'companyName': string;
+    'marcheName': string;
     /**
-     * 店舗名(64文字まで)
+     * コーディネータ(64文字まで)
      * @type {string}
      * @memberof CreateCoordinatorRequest
      */
-    'storeName': string;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof CreateCoordinatorRequest
-     */
-    'thumbnailUrl'?: string;
-    /**
-     * ヘッダー画像URL
-     * @type {string}
-     * @memberof CreateCoordinatorRequest
-     */
-    'headerUrl'?: string;
-    /**
-     * Twitterアカウント(15文字まで)
-     * @type {string}
-     * @memberof CreateCoordinatorRequest
-     */
-    'twitterAccount'?: string;
-    /**
-     * Instagramアカウント(30文字まで)
-     * @type {string}
-     * @memberof CreateCoordinatorRequest
-     */
-    'instagramAccount'?: string;
-    /**
-     * Facebookアカウント(50文字まで)
-     * @type {string}
-     * @memberof CreateCoordinatorRequest
-     */
-    'facebookAccount'?: string;
+    'username': string;
     /**
      * メールアドレス
      * @type {string}
@@ -1068,6 +1074,54 @@ export interface CreateCoordinatorRequest {
      * @memberof CreateCoordinatorRequest
      */
     'addressLine2': string;
+    /**
+     * プロフィール(2000文字まで)
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'profile': string;
+    /**
+     * 取り扱い品目ID一覧
+     * @type {Array<string>}
+     * @memberof CreateCoordinatorRequest
+     */
+    'productTypeIds': Array<string>;
+    /**
+     * サムネイル画像URL
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'thumbnailUrl': string;
+    /**
+     * ヘッダー画像URL
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'headerUrl': string;
+    /**
+     * 紹介動画URL
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'promotionVideoUrl': string;
+    /**
+     * 購入者動画URL
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'bonusVideoUrl': string;
+    /**
+     * Instagramアカウント(30文字まで)
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'instagramId': string;
+    /**
+     * Facebookアカウント(50文字まで)
+     * @type {string}
+     * @memberof CreateCoordinatorRequest
+     */
+    'facebookId': string;
 }
 /**
  * 
@@ -4882,47 +4936,17 @@ export interface UpdateCoordinatorRequest {
      */
     'firstnameKana': string;
     /**
-     * 会社名(64文字まで)
+     * マルシェ名(64文字まで)
      * @type {string}
      * @memberof UpdateCoordinatorRequest
      */
-    'companyName': string;
+    'marcheName': string;
     /**
-     * 店舗名(64文字まで)
+     * コーディネータ(64文字まで)
      * @type {string}
      * @memberof UpdateCoordinatorRequest
      */
-    'storeName': string;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof UpdateCoordinatorRequest
-     */
-    'thumbnailUrl'?: string;
-    /**
-     * ヘッダー画像URL
-     * @type {string}
-     * @memberof UpdateCoordinatorRequest
-     */
-    'headerUrl'?: string;
-    /**
-     * Twitterアカウント(15文字まで)
-     * @type {string}
-     * @memberof UpdateCoordinatorRequest
-     */
-    'twitterAccount'?: string;
-    /**
-     * Instagramアカウント(30文字まで)
-     * @type {string}
-     * @memberof UpdateCoordinatorRequest
-     */
-    'instagramAccount'?: string;
-    /**
-     * Facebookアカウント(50文字まで)
-     * @type {string}
-     * @memberof UpdateCoordinatorRequest
-     */
-    'facebookAccount'?: string;
+    'username': string;
     /**
      * 電話番号 (国際番号 + 電話番号)
      * @type {string}
@@ -4959,6 +4983,54 @@ export interface UpdateCoordinatorRequest {
      * @memberof UpdateCoordinatorRequest
      */
     'addressLine2': string;
+    /**
+     * プロフィール(2000文字まで)
+     * @type {string}
+     * @memberof UpdateCoordinatorRequest
+     */
+    'profile': string;
+    /**
+     * 取り扱い品目ID一覧
+     * @type {Array<string>}
+     * @memberof UpdateCoordinatorRequest
+     */
+    'productTypeIds': Array<string>;
+    /**
+     * サムネイル画像URL
+     * @type {string}
+     * @memberof UpdateCoordinatorRequest
+     */
+    'thumbnailUrl': string;
+    /**
+     * ヘッダー画像URL
+     * @type {string}
+     * @memberof UpdateCoordinatorRequest
+     */
+    'headerUrl': string;
+    /**
+     * 紹介動画URL
+     * @type {string}
+     * @memberof UpdateCoordinatorRequest
+     */
+    'promotionVideoUrl': string;
+    /**
+     * 購入者動画URL
+     * @type {string}
+     * @memberof UpdateCoordinatorRequest
+     */
+    'bonusVideoUrl': string;
+    /**
+     * Instagramアカウント(30文字まで)
+     * @type {string}
+     * @memberof UpdateCoordinatorRequest
+     */
+    'instagramId': string;
+    /**
+     * Facebookアカウント(50文字まで)
+     * @type {string}
+     * @memberof UpdateCoordinatorRequest
+     */
+    'facebookId': string;
 }
 /**
  * 
@@ -7919,6 +7991,49 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
+         * @summary コーディネータ購入特典動画アップロード
+         * @param {File} [video] コーディネータ購入特典映像(mp4形式,200MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UploadCoordinatorBonusVideo: async (video?: File, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/upload/coordinators/bonus-video`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            if (video !== undefined) { 
+                localVarFormParams.append('video', video as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary コーディネータヘッダー画像アップロード
          * @param {File} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
@@ -7945,6 +8060,49 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
 
             if (image !== undefined) { 
                 localVarFormParams.append('image', image as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary コーディネータ紹介動画アップロード
+         * @param {File} [video] コーディネータ紹介映像(mp4形式,200MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UploadCoordinatorPromotionVideo: async (video?: File, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/upload/coordinators/promotion-video`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            if (video !== undefined) { 
+                localVarFormParams.append('video', video as any);
             }
     
     
@@ -8133,6 +8291,17 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary コーディネータ購入特典動画アップロード
+         * @param {File} [video] コーディネータ購入特典映像(mp4形式,200MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UploadCoordinatorBonusVideo(video?: File, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadVideoResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorBonusVideo(video, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary コーディネータヘッダー画像アップロード
          * @param {File} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
@@ -8140,6 +8309,17 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
          */
         async v1UploadCoordinatorHeader(image?: File, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorHeader(image, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary コーディネータ紹介動画アップロード
+         * @param {File} [video] コーディネータ紹介映像(mp4形式,200MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UploadCoordinatorPromotionVideo(video?: File, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadVideoResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorPromotionVideo(video, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -8273,6 +8453,16 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
+         * @summary コーディネータ購入特典動画アップロード
+         * @param {File} [video] コーディネータ購入特典映像(mp4形式,200MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UploadCoordinatorBonusVideo(video?: File, options?: any): AxiosPromise<UploadVideoResponse> {
+            return localVarFp.v1UploadCoordinatorBonusVideo(video, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary コーディネータヘッダー画像アップロード
          * @param {File} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
@@ -8280,6 +8470,16 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
          */
         v1UploadCoordinatorHeader(image?: File, options?: any): AxiosPromise<UploadImageResponse> {
             return localVarFp.v1UploadCoordinatorHeader(image, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary コーディネータ紹介動画アップロード
+         * @param {File} [video] コーディネータ紹介映像(mp4形式,200MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UploadCoordinatorPromotionVideo(video?: File, options?: any): AxiosPromise<UploadVideoResponse> {
+            return localVarFp.v1UploadCoordinatorPromotionVideo(video, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -8431,6 +8631,18 @@ export class CoordinatorApi extends BaseAPI {
 
     /**
      * 
+     * @summary コーディネータ購入特典動画アップロード
+     * @param {File} [video] コーディネータ購入特典映像(mp4形式,200MBまで)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CoordinatorApi
+     */
+    public v1UploadCoordinatorBonusVideo(video?: File, options?: AxiosRequestConfig) {
+        return CoordinatorApiFp(this.configuration).v1UploadCoordinatorBonusVideo(video, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary コーディネータヘッダー画像アップロード
      * @param {File} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
      * @param {*} [options] Override http request option.
@@ -8439,6 +8651,18 @@ export class CoordinatorApi extends BaseAPI {
      */
     public v1UploadCoordinatorHeader(image?: File, options?: AxiosRequestConfig) {
         return CoordinatorApiFp(this.configuration).v1UploadCoordinatorHeader(image, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary コーディネータ紹介動画アップロード
+     * @param {File} [video] コーディネータ紹介映像(mp4形式,200MBまで)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CoordinatorApi
+     */
+    public v1UploadCoordinatorPromotionVideo(video?: File, options?: AxiosRequestConfig) {
+        return CoordinatorApiFp(this.configuration).v1UploadCoordinatorPromotionVideo(video, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

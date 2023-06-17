@@ -155,6 +155,10 @@ paths:
     $ref: './paths/v1/upload/coordinators/header.yaml'
   /v1/upload/coordinators/thumbnail:
     $ref: './paths/v1/upload/coordinators/thumbnail.yaml'
+  /v1/upload/coordinators/promotion-video:
+    $ref: './paths/v1/upload/coordinators/promotion-video.yaml'
+  /v1/upload/coordinators/bonus-video:
+    $ref: './paths/v1/upload/coordinators/bonus-video.yaml'
   /v1/upload/producers/header:
     $ref: './paths/v1/upload/producers/header.yaml'
   /v1/upload/producers/thumbnail:
@@ -271,6 +275,10 @@ components:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadCoordinatorThumbnailRequest'
     v1UploadCoordinatorHeaderRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadCoordinatorHeaderRequest'
+    v1UploadCoordinatorPromotionVideoRequest:
+      $ref: './components/schemas/v1/upload.request.yaml#/uploadCoordinatorPromotionVideoRequest'
+    v1UploadCoordinatorBonusVideoRequest:
+      $ref: './components/schemas/v1/upload.request.yaml#/uploadCoordinatorBonusVideoRequest'
     v1UploadProducerThumbnailRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadProducerThumbnailRequest'
     v1UploadProducerHeaderRequest:

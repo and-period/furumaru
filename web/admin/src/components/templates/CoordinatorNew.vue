@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import useVuelidate from '@vuelidate/core'
+import { mdiFacebook, mdiInstagram } from '@mdi/js'
 import { AlertType } from '~/lib/hooks'
-import { CreateCoordinatorRequest } from '~/types/api'
-import { email, getErrorMessage, maxLength, required, tel } from '~/lib/validations'
+import { CreateCoordinatorRequest, ProductTypesResponseProductTypesInner } from '~/types/api'
+import { email, kana, getErrorMessage, maxLength, required, tel } from '~/lib/validations'
 import { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
@@ -29,16 +30,28 @@ const props = defineProps({
       lastnameKana: '',
       firstname: '',
       firstnameKana: '',
-      companyName: '',
-      storeName: '',
+      marcheName: '',
+      username: '',
       email: '',
       phoneNumber: '',
       postalCode: '',
       prefecture: '',
       city: '',
       addressLine1: '',
-      addressLine2: ''
+      addressLine2: '',
+      profile: '',
+      productTypeIds: [],
+      thumbnailUrl: '',
+      headerUrl: '',
+      promotionVideoUrl: '',
+      bonusVideoUrl: '',
+      instagramId: '',
+      facebookId: ''
     })
+  },
+  productTypes: {
+    type: Array<ProductTypesResponseProductTypesInner>,
+    default: () => []
   },
   thumbnailUploadStatus: {
     type: Object,
@@ -53,6 +66,28 @@ const props = defineProps({
       error: false,
       message: ''
     })
+  },
+  promotionVideoUploadStatus: {
+    type: Object,
+    default: (): ImageUploadStatus => ({
+      error: false,
+      message: ''
+    })
+  },
+  bonusVideoUploadStatus: {
+    type: Object,
+    default: (): ImageUploadStatus => ({
+      error: false,
+      message: ''
+    })
+  },
+  searchErrorMessage: {
+    type: String,
+    default: ''
+  },
+  searchLoading: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -60,6 +95,8 @@ const emit = defineEmits<{
   (e: 'update:form-data', formData: CreateCoordinatorRequest): void
   (e: 'update:thumbnail-file', files: FileList): void
   (e: 'update:header-file', files: FileList): void
+  (e: 'update:promotion-video', files: FileList): void
+  (e: 'update:bonus-video', files: FileList): void
   (e: 'click:search-address'): void
   (e: 'submit'): void
 }>()
@@ -67,17 +104,15 @@ const emit = defineEmits<{
 const rules = computed(() => ({
   lastname: { required, maxLength: maxLength(16) },
   firstname: { required, maxLength: maxLength(16) },
-  lastnameKana: { required, maxLength: maxLength(32) },
-  firstnameKana: { required, maxLength: maxLength(32) },
-  companyName: { required, maxLength: maxLength(64) },
-  storeName: { required, maxLength: maxLength(64) },
+  lastnameKana: { required, kana, maxLength: maxLength(32) },
+  firstnameKana: { required, kana, maxLength: maxLength(32) },
+  marcheName: { required, maxLength: maxLength(64) },
+  username: { required, maxLength: maxLength(64) },
   email: { required, email },
   phoneNumber: { required, tel },
-  postalCode: {},
-  prefecture: {},
-  city: {},
-  addressLine1: {},
-  addressLine2: {}
+  profile: { maxLength: maxLength(2000) },
+  instagramId: { maxLength: maxLength(30) },
+  facebookId: { maxLength: maxLength(50) },
 }))
 const formDataValue = computed({
   get: (): CreateCoordinatorRequest => props.formData,
@@ -90,7 +125,6 @@ const onChangeThumbnailFile = (files?: FileList) => {
   if (!files) {
     return
   }
-
   emit('update:thumbnail-file', files)
 }
 
@@ -98,8 +132,21 @@ const onChangeHeaderFile = (files?: FileList) => {
   if (!files) {
     return
   }
-
   emit('update:header-file', files)
+}
+
+const onChangePromotionVideo = (files?: FileList) => {
+  if (!files) {
+    return
+  }
+  emit('update:promotion-video', files)
+}
+
+const onChangeBonusVideo = (files?: FileList) => {
+  if (!files) {
+    return
+  }
+  emit('update:bonus-video', files)
 }
 
 const onSubmit = async (): Promise<void> => {
@@ -124,32 +171,54 @@ const onClickSearchAddress = (): void => {
 
     <v-form @submit.prevent="onSubmit">
       <v-card-text>
-        <v-text-field
-          v-model="validate.companyName.$model"
-          :error-messages="getErrorMessage(validate.companyName.$errors)"
-          label="会社名"
-        />
-        <v-text-field
-          v-model="validate.storeName.$model"
-          :error-messages="getErrorMessage(validate.storeName.$errors)"
-          label="店舗名"
-        />
         <div class="mb-2 d-flex">
-          <molecules-profile-select-form
-            class="mr-4 flex-grow-1 flex-shrink-1"
-            :img-url="formDataValue.thumbnailUrl"
-            :error="props.thumbnailUploadStatus.error"
-            :message="props.thumbnailUploadStatus.message"
-            @update:file="onChangeThumbnailFile"
+          <v-text-field
+            v-model="validate.marcheName.$model"
+            :error-messages="getErrorMessage(validate.marcheName.$errors)"
+            class="mr-4"
+            label="マルシェ名"
           />
-          <molecules-header-select-form
-            class="flex-grow-1 flex-shrink-1"
-            :img-url="formDataValue.headerUrl"
-            :error="props.headerUploadStatus.error"
-            :message="props.headerUploadStatus.message"
-            @update:file="onChangeHeaderFile"
+          <v-text-field
+            v-model="validate.username.$model"
+            :error-messages="getErrorMessage(validate.username.$errors)"
+            class="mr-4"
+            label="コーディネータ名"
           />
         </div>
+        <v-autocomplete
+          v-model="formDataValue.productTypeIds"
+          label="取り扱い品目"
+          :items="productTypes"
+          item-title="name"
+          item-value="id"
+          chips
+          closable-chips
+          multiple
+        />
+        <div class="mb-2 d-flex">
+          <molecules-video-select-form
+            label="紹介動画"
+            class="mr-4 flex-grow-1 flex-shrink-1"
+            :video-url="formDataValue.promotionVideoUrl"
+            :error="props.promotionVideoUploadStatus.error"
+            :message="props.promotionVideoUploadStatus.message"
+            @update:file="onChangePromotionVideo"
+          />
+          <molecules-video-select-form
+            label="サンキュー動画"
+            class="mr-4 flex-grow-1 flex-shrink-1"
+            :video-url="formDataValue.bonusVideoUrl"
+            :error="props.bonusVideoUploadStatus.error"
+            :message="props.bonusVideoUploadStatus.message"
+            @update:file="onChangeBonusVideo"
+          />
+        </div>
+        <v-textarea
+          v-model="validate.profile.$model"
+          :error-messages="getErrorMessage(validate.profile.$errors)"
+          label="プロフィール"
+          maxlength="2000"
+        />
         <div class="d-flex">
           <v-text-field
             v-model="validate.lastname.$model"
@@ -178,8 +247,8 @@ const onClickSearchAddress = (): void => {
         </div>
         <v-text-field
           v-model="validate.email.$model"
-          label="連絡先（Email）"
           :error-messages="getErrorMessage(validate.email.$errors)"
+          label="連絡先（Email）"
         />
         <v-text-field
           v-model="validate.phoneNumber.$model"
@@ -187,15 +256,44 @@ const onClickSearchAddress = (): void => {
           type="tel"
           label="連絡先（電話番号）"
         />
-
+        <div class="mb-2 d-flex">
+          <molecules-profile-select-form
+            class="mr-4 flex-grow-1 flex-shrink-1"
+            :img-url="formDataValue.thumbnailUrl"
+            :error="props.thumbnailUploadStatus.error"
+            :message="props.thumbnailUploadStatus.message"
+            @update:file="onChangeThumbnailFile"
+          />
+          <molecules-header-select-form
+            class="flex-grow-1 flex-shrink-1"
+            :img-url="formDataValue.headerUrl"
+            :error="props.headerUploadStatus.error"
+            :message="props.headerUploadStatus.message"
+            @update:file="onChangeHeaderFile"
+          />
+        </div>
         <molecules-address-form
-          v-model:postal-code="validate.postalCode.$model"
-          v-model:prefecture="validate.prefecture.$model"
-          v-model:city="validate.city.$model"
-          v-model:address-line1="validate.addressLine1.$model"
-          v-model:address-line2="validate.addressLine2.$model"
-          :loading="loading"
+          v-model:postal-code="formDataValue.postalCode"
+          v-model:prefecture="formDataValue.prefecture"
+          v-model:city="formDataValue.city"
+          v-model:address-line1="formDataValue.addressLine1"
+          v-model:address-line2="formDataValue.addressLine2"
+          :error-message="props.searchErrorMessage"
+          :loading="props.searchLoading"
           @click:search="onClickSearchAddress"
+        />
+        <p>SNS連携</p>
+        <v-text-field
+          v-model="validate.instagramId.$model"
+          :error-messages="getErrorMessage(validate.instagramId.$errors)"
+          :prepend-icon="mdiInstagram"
+          prefix="https://www.instagram.com/"
+        />
+        <v-text-field
+          v-model="validate.facebookId.$model"
+          :error-messages="getErrorMessage(validate.facebookId.$errors)"
+          :prepend-icon="mdiFacebook"
+          prefix="https://www.facebook.com/"
         />
       </v-card-text>
 

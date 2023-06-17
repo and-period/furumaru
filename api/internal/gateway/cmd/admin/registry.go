@@ -373,11 +373,13 @@ func newUserService(p *params, media media.Service, messenger messenger.Service)
 	dbParams := &userdb.Params{
 		Database: mysql,
 	}
+	store, err := newStoreService(p, nil, nil, nil)
 	params := &usersrv.Params{
 		WaitGroup: p.waitGroup,
 		Database:  userdb.NewDatabase(dbParams),
 		AdminAuth: p.adminAuth,
 		UserAuth:  p.userAuth,
+		Store:     store,
 		Messenger: messenger,
 		Media:     media,
 	}

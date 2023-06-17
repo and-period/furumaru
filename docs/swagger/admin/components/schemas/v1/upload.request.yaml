@@ -12,6 +12,20 @@ uploadCoordinatorHeaderRequest:
       type: string
       format: binary
       description: コーディネータヘッダー画像(png,jpeg形式,10MBまで)
+uploadCoordinatorPromotionVideoRequest:
+  type: object
+  properties:
+    video:
+      type: string
+      format: binary
+      description: コーディネータ紹介映像(mp4形式,200MBまで)
+uploadCoordinatorBonusVideoRequest:
+  type: object
+  properties:
+    video:
+      type: string
+      format: binary
+      description: コーディネータ購入特典映像(mp4形式,200MBまで)
 uploadProducerThumbnailRequest:
   type: object
   properties:

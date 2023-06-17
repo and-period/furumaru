@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -242,20 +243,33 @@ func TestRelateProducers(t *testing.T) {
 			FirstnameKana: "かんりしゃ",
 			Email:         "test-coordinator@and-period.jp",
 		},
-		AdminID:          "coordinator-id",
-		CompanyName:      "&.株式会社",
-		StoreName:        "&.農園",
-		ThumbnailURL:     "https://and-period.jp/thumbnail.png",
-		HeaderURL:        "https://and-period.jp/header.png",
-		TwitterAccount:   "twitter-id",
-		InstagramAccount: "instagram-id",
-		FacebookAccount:  "facebook-id",
-		PhoneNumber:      "+819012345678",
-		PostalCode:       "1000014",
-		Prefecture:       "東京都",
-		City:             "千代田区",
-		CreatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
-		UpdatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		AdminID:        "coordinator-id",
+		MarcheName:     "&.マルシェ",
+		Username:       "&.農園",
+		Profile:        "紹介文です。",
+		ProductTypeIDs: []string{"product-type-id"},
+		ThumbnailURL:   "https://and-period.jp/thumbnail.png",
+		Thumbnails: common.Images{
+			{URL: "https://and-period.jp/thumbnail_240.png", Size: common.ImageSizeSmall},
+			{URL: "https://and-period.jp/thumbnail_675.png", Size: common.ImageSizeMedium},
+			{URL: "https://and-period.jp/thumbnail_900.png", Size: common.ImageSizeLarge},
+		},
+		HeaderURL: "https://and-period.jp/header.png",
+		Headers: common.Images{
+			{URL: "https://and-period.jp/header_240.png", Size: common.ImageSizeSmall},
+			{URL: "https://and-period.jp/header_675.png", Size: common.ImageSizeMedium},
+			{URL: "https://and-period.jp/header_900.png", Size: common.ImageSizeLarge},
+		},
+		PromotionVideoURL: "https://and-period.jp/promotion.mp4",
+		BonusVideoURL:     "https://and-period.jp/bonus.mp4",
+		InstagramID:       "instagram-id",
+		FacebookID:        "facebook-id",
+		PhoneNumber:       "+819012345678",
+		PostalCode:        "1000014",
+		Prefecture:        "東京都",
+		City:              "千代田区",
+		CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 	}
 
 	tests := []struct {
@@ -338,20 +352,33 @@ func TestUnrelateProducer(t *testing.T) {
 			FirstnameKana: "かんりしゃ",
 			Email:         "test-coordinator@and-period.jp",
 		},
-		AdminID:          "coordinator-id",
-		CompanyName:      "&.株式会社",
-		StoreName:        "&.農園",
-		ThumbnailURL:     "https://and-period.jp/thumbnail.png",
-		HeaderURL:        "https://and-period.jp/header.png",
-		TwitterAccount:   "twitter-id",
-		InstagramAccount: "instagram-id",
-		FacebookAccount:  "facebook-id",
-		PhoneNumber:      "+819012345678",
-		PostalCode:       "1000014",
-		Prefecture:       "東京都",
-		City:             "千代田区",
-		CreatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
-		UpdatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		AdminID:        "coordinator-id",
+		MarcheName:     "&.マルシェ",
+		Username:       "&.農園",
+		Profile:        "紹介文です。",
+		ProductTypeIDs: []string{"product-type-id"},
+		ThumbnailURL:   "https://and-period.jp/thumbnail.png",
+		Thumbnails: common.Images{
+			{URL: "https://and-period.jp/thumbnail_240.png", Size: common.ImageSizeSmall},
+			{URL: "https://and-period.jp/thumbnail_675.png", Size: common.ImageSizeMedium},
+			{URL: "https://and-period.jp/thumbnail_900.png", Size: common.ImageSizeLarge},
+		},
+		HeaderURL: "https://and-period.jp/header.png",
+		Headers: common.Images{
+			{URL: "https://and-period.jp/header_240.png", Size: common.ImageSizeSmall},
+			{URL: "https://and-period.jp/header_675.png", Size: common.ImageSizeMedium},
+			{URL: "https://and-period.jp/header_900.png", Size: common.ImageSizeLarge},
+		},
+		PromotionVideoURL: "https://and-period.jp/promotion.mp4",
+		BonusVideoURL:     "https://and-period.jp/bonus.mp4",
+		InstagramID:       "instagram-id",
+		FacebookID:        "facebook-id",
+		PhoneNumber:       "+819012345678",
+		PostalCode:        "1000014",
+		Prefecture:        "東京都",
+		City:              "千代田区",
+		CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 	}
 
 	tests := []struct {

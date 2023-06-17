@@ -19,6 +19,14 @@ func (s *service) UploadCoordinatorHeader(ctx context.Context, in *media.UploadF
 	return s.uploadFile(ctx, in, entity.CoordinatorHeaderPath)
 }
 
+func (s *service) UploadCoordinatorPromotionVideo(ctx context.Context, in *media.UploadFileInput) (string, error) {
+	return s.uploadFile(ctx, in, entity.CoordinatorPromotionVideoPath)
+}
+
+func (s *service) UploadCoordinatorBonusVideo(ctx context.Context, in *media.UploadFileInput) (string, error) {
+	return s.uploadFile(ctx, in, entity.CoordinatorBonusVideoPath)
+}
+
 func (s *service) UploadProducerThumbnail(ctx context.Context, in *media.UploadFileInput) (string, error) {
 	return s.uploadFile(ctx, in, entity.ProducerThumbnailPath)
 }

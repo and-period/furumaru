@@ -41,6 +41,15 @@ createCoordinatorRequest:
     addressLine2:
       type: string
       description: ビル名・号室など(64文字まで)
+    profile:
+      type: string
+      description: プロフィール(2000文字まで)
+    productTypeIds:
+      type: array
+      description: 取り扱い品目ID一覧
+      items:
+        type: string
+        description: 品目ID
     thumbnailUrl:
       type: string
       description: サムネイル画像URL
@@ -73,6 +82,8 @@ createCoordinatorRequest:
   - city
   - addressLine1
   - addressLine2
+  - profile
+  - productTypeIds
   - thumbnailUrl
   - headerUrl
   - promotionVideoUrl
@@ -93,6 +104,8 @@ createCoordinatorRequest:
     city: '千代田区'
     addressLine1: '永田町1-7-1'
     addressLine2: ''
+    profile: '紹介文です。'
+    productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
     thumbnailUrl: 'https://and-period.jp/thumbnail.png'
     headerUrl: 'https://and-period.jp/header.png'
     promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
@@ -138,6 +151,15 @@ updateCoordinatorRequest:
     addressLine2:
       type: string
       description: ビル名・号室など(64文字まで)
+    profile:
+      type: string
+      description: プロフィール(2000文字まで)
+    productTypeIds:
+      type: array
+      description: 取り扱い品目ID一覧
+      items:
+        type: string
+        description: 品目ID
     thumbnailUrl:
       type: string
       description: サムネイル画像URL
@@ -169,6 +191,8 @@ updateCoordinatorRequest:
   - city
   - addressLine1
   - addressLine2
+  - profile
+  - productTypeIds
   - thumbnailUrl
   - headerUrl
   - promotionVideoUrl
@@ -188,6 +212,8 @@ updateCoordinatorRequest:
     city: '千代田区'
     addressLine1: '永田町1-7-1'
     addressLine2: ''
+    profile: '紹介文です。'
+    productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
     thumbnailUrl: 'https://and-period.jp/thumbnail.png'
     headerUrl: 'https://and-period.jp/header.png'
     promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
