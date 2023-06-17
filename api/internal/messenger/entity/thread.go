@@ -37,5 +37,7 @@ func NewThread(params *NewThreadParams) *Thread {
 }
 
 func (t *Thread) Fill(userID string) {
-	t.UserID = userID
+	if userID != "" {
+		t.UserID = userID
+	}
 }
