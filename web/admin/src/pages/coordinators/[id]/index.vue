@@ -2,9 +2,9 @@
 import { storeToRefs } from 'pinia'
 
 import { convertI18nToJapanesePhoneNumber, convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
-import { useAlert, usePagination, useSearchAddress } from '~/lib/hooks'
-import { useCoordinatorStore, useProducerStore, useProductTypeStore } from '~/store'
-import { RelateProducersRequest, UpdateCoordinatorRequest, UploadImageResponse } from '~/types/api'
+import { useAlert, useSearchAddress } from '~/lib/hooks'
+import { useCoordinatorStore, useProductTypeStore } from '~/store'
+import { UpdateCoordinatorRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 
 const route = useRoute()
@@ -17,6 +17,7 @@ const { alertType, isShow, alertText, show } = useAlert('error')
 const coordinatorId = route.params.id as string
 
 const { coordinator } = storeToRefs(coordinatorStore)
+const { productTypes } = storeToRefs(productTypeStore)
 
 const loading = ref<boolean>(false)
 const formData = ref<UpdateCoordinatorRequest>({
@@ -93,6 +94,10 @@ const handleSubmit = async (): Promise<void> => {
     if (err instanceof Error) {
       show(err.message)
     }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
     console.log(err)
   } finally {
     loading.value = false

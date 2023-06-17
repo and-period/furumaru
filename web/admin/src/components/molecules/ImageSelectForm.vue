@@ -6,13 +6,13 @@ const props = defineProps({
     type: String,
     default: ''
   },
-  videoUrl: {
+  imgUrl: {
     type: String,
     default: ''
   },
   accept: {
     type: Array<String>,
-    default: (): string[] => ['video/*']
+    default: (): string[] => ['image/*']
   },
   error: {
     type: Boolean,
@@ -54,8 +54,8 @@ const onChangeFile = (): void => {
     <v-card class="text-center" role="button" flat @click="onClick">
       <v-card-text>
         <div class="mb-4">
-          <v-icon v-if="props.videoUrl === ''" x-large :icon="mdiPlus" />
-          <video v-else id="wrapper" autoplay :src="props.videoUrl" />
+          <v-avatar v-if="props.imgUrl === ''" size="64" :icon="mdiPlus" />
+          <v-avatar v-else size="64" :image="props.imgUrl" />
         </div>
         <input
           ref="inputRef"
@@ -65,7 +65,7 @@ const onChangeFile = (): void => {
           @change="onChangeFile"
         >
         <p class="ma-0">
-          {{ props.label }}を{{ props.videoUrl === '' ? '選択' : '変更' }}
+          {{ props.label }}を{{ props.imgUrl === '' ? '選択' : '変更' }}
         </p>
       </v-card-text>
     </v-card>
@@ -74,12 +74,3 @@ const onChangeFile = (): void => {
     </p>
   </div>
 </template>
-
-<style scoped>
-#wrapper {
-  position:relative;
-  width: 100%;
-  height:100%;
-  background-color:#030303;
-}
-</style>
