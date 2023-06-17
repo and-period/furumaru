@@ -39,4 +39,6 @@ type Service interface {
 	ListThreadsByContactID(ctx context.Context, in *ListThreadsByContactIDInput) (entity.Threads, int64, error)
 	// お問い合わせ会話履歴取得
 	GetThread(ctx context.Context, in *GetThreadInput) (*entity.Thread, error)
+	// お問い合わせ会話履歴作成
+	CreateThread(ctx context.Context, in *CreateThreadInput) (*entity.Thread, error)
 }
