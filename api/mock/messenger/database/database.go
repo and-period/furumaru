@@ -151,6 +151,20 @@ func (mr *MockThreadMockRecorder) Count(ctx, params interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockThread)(nil).Count), ctx, params)
 }
 
+// Create mocks base method.
+func (m *MockThread) Create(ctx context.Context, thread *entity.Thread) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, thread)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockThreadMockRecorder) Create(ctx, thread interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockThread)(nil).Create), ctx, thread)
+}
+
 // Get mocks base method.
 func (m *MockThread) Get(ctx context.Context, threadID string, fields ...string) (*entity.Thread, error) {
 	m.ctrl.T.Helper()

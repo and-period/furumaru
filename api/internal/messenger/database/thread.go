@@ -49,6 +49,17 @@ func (t *thread) Count(ctx context.Context, params *ListThreadsByContactIDParams
 	return total, exception.InternalError(err)
 }
 
+func (t *thread) Create(ctx context.Context, thread *entity.Thread) error {
+	err := t.db.Transaction(ctx, func(tx *gorm.DB) error {
+		now := t.now()
+		thread.CreatedAt, thread.UpdatedAt = now, now
+
+		err := tx.WithContext(ctx).Table(threadTable).Create(&thread).Error
+		return err
+	})
+	return exception.InternalError(err)
+}
+
 func (t *thread) Get(ctx context.Context, threadID string, fields ...string) (*entity.Thread, error) {
 	thread, err := t.get(ctx, t.db.DB, threadID, fields...)
 	return thread, exception.InternalError(err)
