@@ -13,6 +13,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
@@ -30,6 +31,8 @@ func TestListCoordinator(t *testing.T) {
 		{
 			Admin: uentity.Admin{
 				ID:            "coordinator-id01",
+				Role:          entity.AdminRoleCoordinator,
+				Status:        entity.AdminStatusActivated,
 				Lastname:      "&.",
 				Firstname:     "管理者",
 				LastnameKana:  "あんどどっと",
@@ -67,6 +70,8 @@ func TestListCoordinator(t *testing.T) {
 		{
 			Admin: uentity.Admin{
 				ID:            "coordinator-id02",
+				Role:          entity.AdminRoleCoordinator,
+				Status:        entity.AdminStatusActivated,
 				Lastname:      "&.",
 				Firstname:     "管理者",
 				LastnameKana:  "あんどどっと",
@@ -111,6 +116,7 @@ func TestListCoordinator(t *testing.T) {
 					Coordinators: []*response.Coordinator{
 						{
 							ID:             "coordinator-id01",
+							Status:         entity.AdminStatusActivated,
 							Lastname:       "&.",
 							Firstname:      "管理者",
 							LastnameKana:   "あんどどっと",
@@ -145,6 +151,7 @@ func TestListCoordinator(t *testing.T) {
 						},
 						{
 							ID:                "coordinator-id02",
+							Status:            entity.AdminStatusActivated,
 							Lastname:          "&.",
 							Firstname:         "管理者",
 							LastnameKana:      "あんどどっと",
@@ -223,6 +230,8 @@ func TestGetCoordinator(t *testing.T) {
 	coordinator := &uentity.Coordinator{
 		Admin: uentity.Admin{
 			ID:            "coordinator-id",
+			Role:          entity.AdminRoleCoordinator,
+			Status:        entity.AdminStatusActivated,
 			Lastname:      "&.",
 			Firstname:     "管理者",
 			LastnameKana:  "あんどどっと",
@@ -275,6 +284,7 @@ func TestGetCoordinator(t *testing.T) {
 				body: &response.CoordinatorResponse{
 					Coordinator: &response.Coordinator{
 						ID:             "coordinator-id",
+						Status:         entity.AdminStatusActivated,
 						Lastname:       "&.",
 						Firstname:      "管理者",
 						LastnameKana:   "あんどどっと",

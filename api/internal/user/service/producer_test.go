@@ -28,6 +28,7 @@ func TestListProducers(t *testing.T) {
 			Admin: entity.Admin{
 				ID:            "admin-id",
 				Role:          entity.AdminRoleProducer,
+				Status:        entity.AdminStatusActivated,
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどぴりおど",
@@ -130,6 +131,7 @@ func TestMultiGetProducers(t *testing.T) {
 			Admin: entity.Admin{
 				ID:            "admin-id",
 				Role:          entity.AdminRoleProducer,
+				Status:        entity.AdminStatusActivated,
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどぴりおど",
@@ -210,6 +212,7 @@ func TestGetProducer(t *testing.T) {
 		Admin: entity.Admin{
 			ID:            "admin-id",
 			Role:          entity.AdminRoleProducer,
+			Status:        entity.AdminStatusActivated,
 			Lastname:      "&.",
 			Firstname:     "スタッフ",
 			LastnameKana:  "あんどぴりおど",

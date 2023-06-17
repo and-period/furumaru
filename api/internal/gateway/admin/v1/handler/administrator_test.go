@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
@@ -25,6 +26,8 @@ func TestListAdministrators(t *testing.T) {
 		{
 			Admin: uentity.Admin{
 				ID:            "admin-id01",
+				Role:          entity.AdminRoleAdministrator,
+				Status:        entity.AdminStatusActivated,
 				Lastname:      "&.",
 				Firstname:     "管理者",
 				LastnameKana:  "あんどどっと",
@@ -39,6 +42,8 @@ func TestListAdministrators(t *testing.T) {
 		{
 			Admin: uentity.Admin{
 				ID:            "admin-id02",
+				Role:          entity.AdminRoleAdministrator,
+				Status:        entity.AdminStatusActivated,
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどどっと",
@@ -70,6 +75,7 @@ func TestListAdministrators(t *testing.T) {
 					Administrators: []*response.Administrator{
 						{
 							ID:            "admin-id01",
+							Status:        entity.AdminStatusActivated,
 							Lastname:      "&.",
 							Firstname:     "管理者",
 							LastnameKana:  "あんどどっと",
@@ -81,6 +87,7 @@ func TestListAdministrators(t *testing.T) {
 						},
 						{
 							ID:            "admin-id02",
+							Status:        entity.AdminStatusActivated,
 							Lastname:      "&.",
 							Firstname:     "スタッフ",
 							LastnameKana:  "あんどどっと",
@@ -144,6 +151,8 @@ func TestGetAdministrator(t *testing.T) {
 	admin := &uentity.Administrator{
 		Admin: uentity.Admin{
 			ID:            "admin-id",
+			Role:          entity.AdminRoleAdministrator,
+			Status:        entity.AdminStatusActivated,
 			Lastname:      "&.",
 			Firstname:     "管理者",
 			LastnameKana:  "あんどどっと",
@@ -173,6 +182,7 @@ func TestGetAdministrator(t *testing.T) {
 				body: &response.AdministratorResponse{
 					Administrator: &response.Administrator{
 						ID:            "admin-id",
+						Status:        entity.AdminStatusActivated,
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",

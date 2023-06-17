@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { mdiPlus, mdiAccount, mdiDelete } from '@mdi/js'
 import { VDataTable } from 'vuetify/labs/components'
+import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 
 import { getResizedImages } from '~/lib/helpers'
 import { AlertType } from '~/lib/hooks'
-import { CoordinatorsResponseCoordinatorsInner } from '~/types/api'
+import { AdminStatus, CoordinatorsResponseCoordinatorsInner } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -77,6 +78,11 @@ const headers: VDataTable['headers'] = [
     sortable: false
   },
   {
+    title: 'ステータス',
+    key: 'status',
+    sortable: false
+  },
+  {
     title: '',
     key: 'actions',
     sortable: false
@@ -89,6 +95,32 @@ const deleteDialogValue = computed({
   get: () => props.deleteDialog,
   set: (val: boolean) => emit('update:delete-dialog', val)
 })
+
+const getStatus = (status: AdminStatus): string => {
+  switch (status) {
+    case AdminStatus.ACTIVATED:
+      return '有効'
+    case AdminStatus.INVITED:
+      return '招待中'
+    case AdminStatus.DEACTIVATED:
+      return '無効'
+    default:
+      return '不明'
+  }
+}
+
+const getStatusColor = (status: AdminStatus): string => {
+  switch (status) {
+    case AdminStatus.ACTIVATED:
+      return 'primary'
+    case AdminStatus.INVITED:
+      return 'secondary'
+    case AdminStatus.DEACTIVATED:
+      return 'error'
+    default:
+      return 'unknown'
+  }
+}
 
 const coordinatorName = (coordinator?: CoordinatorsResponseCoordinatorsInner): string => {
   if (!coordinator) {
@@ -192,7 +224,12 @@ const onClickDelete = (): void => {
           {{ `${item.raw.lastname} ${item.raw.firstname}` }}
         </template>
         <template #[`item.phoneNumber`]="{ item }">
-          {{ `${item.raw.phoneNumber}`.replace('+81', '0') }}
+          {{ convertI18nToJapanesePhoneNumber(item.raw.phoneNumber) }}
+        </template>
+        <template #[`item.status`]="{ item }">
+          <v-chip size="small" :color="getStatusColor(item.raw.status)">
+            {{ getStatus(item.raw.status) }}
+          </v-chip>
         </template>
         <template #[`item.actions`]="{ item }">
           <v-btn

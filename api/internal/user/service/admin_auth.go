@@ -19,7 +19,13 @@ func (s *service) SignInAdmin(ctx context.Context, in *user.SignInAdminInput) (*
 		return nil, exception.InternalError(err)
 	}
 	auth, err := s.getAdminAuth(ctx, rs)
-	return auth, exception.InternalError(err)
+	if err != nil {
+		return nil, exception.InternalError(err)
+	}
+	if err := s.db.Admin.UpdateSignInAt(ctx, auth.AdminID); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return auth, nil
 }
 
 func (s *service) SignOutAdmin(ctx context.Context, in *user.SignOutAdminInput) error {
@@ -50,6 +56,12 @@ func (s *service) RefreshAdminToken(
 		return nil, exception.InternalError(err)
 	}
 	auth, err := s.getAdminAuth(ctx, rs)
+	if err != nil {
+		return nil, exception.InternalError(err)
+	}
+	if err := s.db.Admin.UpdateSignInAt(ctx, auth.AdminID); err != nil {
+		return nil, exception.InternalError(err)
+	}
 	return auth, exception.InternalError(err)
 }
 

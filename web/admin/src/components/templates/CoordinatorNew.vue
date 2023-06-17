@@ -215,7 +215,7 @@ const onClickSearchAddress = (): void => {
           </template>
         </v-autocomplete>
         <v-row>
-          <v-col cols="6">
+          <v-col cols="12" ms="12" lg="6">
             <molecules-video-select-form
               label="紹介動画"
               :video-url="formDataValue.promotionVideoUrl"
@@ -224,7 +224,7 @@ const onClickSearchAddress = (): void => {
               @update:file="onChangePromotionVideo"
             />
           </v-col>
-          <v-col cols="6">
+          <v-col cols="12" sm="12" lg="6">
             <molecules-video-select-form
               label="サンキュー動画"
               :video-url="formDataValue.bonusVideoUrl"
@@ -278,8 +278,8 @@ const onClickSearchAddress = (): void => {
           label="連絡先（電話番号）"
         />
         <v-row>
-          <v-col cols="6">
-            <molecules-image-select-form
+          <v-col cols="12" sm="6" md="6">
+            <molecules-icon-select-form
               label="アイコン画像"
               :img-url="formDataValue.thumbnailUrl"
               :error="props.thumbnailUploadStatus.error"
@@ -287,7 +287,7 @@ const onClickSearchAddress = (): void => {
               @update:file="onChangeThumbnailFile"
             />
           </v-col>
-          <v-col cols="6">
+          <v-col cols="12" sm="6" md="6">
             <molecules-image-select-form
               label="ヘッダー画像"
               :img-url="formDataValue.headerUrl"

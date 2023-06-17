@@ -4,6 +4,8 @@ producerResponse:
     id:
       type: string
       description: 生産者ID
+    status:
+      $ref: './../../../openapi.yaml#/components/schemas/adminStatus'
     coordinatorId:
       type: string
       description: 担当コーディネータID
@@ -87,6 +89,7 @@ producerResponse:
       description: 更新日時 (unixtime)
   required:
   - id
+  - status
   - coordinatorId
   - lastname
   - firstname
@@ -108,6 +111,7 @@ producerResponse:
   - updatedAt
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
+    status: 2
     coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
     lastname: '&.'
     firstname: '管理者'
@@ -151,6 +155,8 @@ producersResponse:
           id:
             type: string
             description: システム管理者ID
+          status:
+            $ref: './../../../openapi.yaml#/components/schemas/adminStatus'
           coordinatorId:
             type: string
             description: 担当コーディネータID
@@ -234,6 +240,7 @@ producersResponse:
             description: 更新日時 (unixtime)
         required:
         - id
+        - status
         - coordinatorId
         - lastname
         - firstname
@@ -263,6 +270,7 @@ producersResponse:
   example:
     producers:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      status: 2
       coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
       lastname: '&.'
       firstname: '管理者'
@@ -295,6 +303,7 @@ producersResponse:
       createdAt: 1640962800
       updatedAt: 1640962800
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      status: 2
       coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
       lastname: '&.'
       firstname: '管理者'

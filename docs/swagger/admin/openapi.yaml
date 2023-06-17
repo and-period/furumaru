@@ -178,6 +178,8 @@ components:
     # Common
     adminRole:
       $ref: './components/schemas/codes/auth.yaml#/adminRole'
+    adminStatus:
+      $ref: './components/schemas/codes/auth.yaml#/adminStatus'
     prefecture:
       $ref: './components/schemas/codes/common.yaml#/prefecture'
     contactStatus:

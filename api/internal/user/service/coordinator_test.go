@@ -30,6 +30,7 @@ func TestListCoordinators(t *testing.T) {
 			Admin: entity.Admin{
 				ID:            "admin-id",
 				Role:          entity.AdminRoleCoordinator,
+				Status:        entity.AdminStatusActivated,
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどぴりおど",
@@ -135,6 +136,7 @@ func TestMultiGetCoordinators(t *testing.T) {
 			Admin: entity.Admin{
 				ID:            "admin-id",
 				Role:          entity.AdminRoleCoordinator,
+				Status:        entity.AdminStatusActivated,
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどぴりおど",
@@ -218,6 +220,7 @@ func TestGetCoordinator(t *testing.T) {
 		Admin: entity.Admin{
 			ID:            "admin-id",
 			Role:          entity.AdminRoleCoordinator,
+			Status:        entity.AdminStatusActivated,
 			Lastname:      "&.",
 			Firstname:     "スタッフ",
 			LastnameKana:  "あんどぴりおど",
@@ -507,6 +510,7 @@ func TestUpdateCoordinator(t *testing.T) {
 		Admin: entity.Admin{
 			ID:            "admin-id",
 			Role:          entity.AdminRoleCoordinator,
+			Status:        entity.AdminStatusActivated,
 			Lastname:      "&.",
 			Firstname:     "スタッフ",
 			LastnameKana:  "あんどぴりおど",
@@ -743,6 +747,7 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 			ID:            "admin-id",
 			CognitoID:     "cognito-id",
 			Role:          entity.AdminRoleCoordinator,
+			Status:        entity.AdminStatusActivated,
 			Lastname:      "&.",
 			Firstname:     "スタッフ",
 			LastnameKana:  "あんどぴりおど",

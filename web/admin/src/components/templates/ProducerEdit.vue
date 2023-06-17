@@ -3,7 +3,7 @@ import useVuelidate from '@vuelidate/core'
 
 import { AlertType } from '~/lib/hooks'
 import { getErrorMessage, maxLength, required, tel } from '~/lib/validations'
-import { ProducerResponse, UpdateProducerRequest } from '~/types/api'
+import { AdminStatus, ProducerResponse, UpdateProducerRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
@@ -27,6 +27,7 @@ const props = defineProps({
     type: Object as PropType<ProducerResponse>,
     default: (): ProducerResponse => ({
       id: '',
+      status: AdminStatus.UNKNOWN,
       coordinatorId: '',
       lastname: '',
       lastnameKana: '',

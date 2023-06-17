@@ -44,6 +44,7 @@ type Admin interface {
 	GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.Admin, error)
 	UpdateEmail(ctx context.Context, adminID, email string) error
 	UpdateDevice(ctx context.Context, adminID, device string) error
+	UpdateSignInAt(ctx context.Context, adminID string) error
 }
 
 type Administrator interface {
