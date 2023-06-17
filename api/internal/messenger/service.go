@@ -31,6 +31,8 @@ type Service interface {
 	NotifyNotification(ctx context.Context, in *NotifyNotificationInput) error
 	// お問い合わせ取得
 	GetContact(ctx context.Context, in *GetContactInput) (*entity.Contact, error)
+	// お問い合わせ作成
+	CreateContact(ctx context.Context, in *CreateContactInput) (*entity.Contact, error)
 	// お問い合わせ種別取得
 	GetContactCategory(ctx context.Context, in *GetContactCategoryInput) (*entity.ContactCategory, error)
 	// お問い合わせ会話履歴一覧取得(お問い合わせID指定)

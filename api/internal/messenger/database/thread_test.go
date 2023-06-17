@@ -166,6 +166,83 @@ func TestProductType_Count(t *testing.T) {
 	}
 }
 
+func TestThread_Create(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	category := testContactCategory("category-id", "お問い合わせ種別", now())
+	err = db.DB.Create(&category).Error
+	require.NoError(t, err)
+
+	contact := testContact("contact-id", now())
+	err = db.DB.Create(&contact).Error
+	require.NoError(t, err)
+
+	th := testThread("thread-id", "contact-id", now())
+
+	type args struct {
+		thread *entity.Thread
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			args: args{
+				thread: th,
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name: "failed to duplicate entry",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+				err = db.DB.Create(&th).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				thread: th,
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, threadTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, db)
+
+			db := &thread{db: db, now: now}
+			err = db.Create(ctx, tt.args.thread)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
 func TestThread_Get(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

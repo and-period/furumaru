@@ -59,6 +59,7 @@ type Thread interface {
 	Get(ctx context.Context, threadID string, fields ...string) (*entity.Thread, error)
 	ListByContactID(ctx context.Context, params *ListThreadsByContactIDParams, fields ...string) (entity.Threads, error)
 	Count(ctx context.Context, params *ListThreadsByContactIDParams) (int64, error)
+	Create(ctx context.Context, thread *entity.Thread) error
 }
 
 type Message interface {
