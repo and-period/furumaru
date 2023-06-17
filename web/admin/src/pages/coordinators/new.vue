@@ -76,6 +76,10 @@ const handleSubmit = async (): Promise<void> => {
     if (err instanceof Error) {
       show(err.message)
     }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
     console.log(err)
   } finally {
     loading.value = false

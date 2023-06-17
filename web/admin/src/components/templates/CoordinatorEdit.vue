@@ -224,25 +224,46 @@ const onClickSearchAddress = (): void => {
           chips
           closable-chips
           multiple
-        />
-        <div class="mb-2 d-flex">
-          <molecules-video-select-form
-            label="紹介動画"
-            class="mr-4 flex-grow-1 flex-shrink-1"
-            :video-url="formDataValue.promotionVideoUrl"
-            :error="props.promotionVideoUploadStatus.error"
-            :message="props.promotionVideoUploadStatus.message"
-            @update:file="onChangePromotionVideo"
-          />
-          <molecules-video-select-form
-            label="サンキュー動画"
-            class="mr-4 flex-grow-1 flex-shrink-1"
-            :video-url="formDataValue.bonusVideoUrl"
-            :error="props.bonusVideoUploadStatus.error"
-            :message="props.bonusVideoUploadStatus.message"
-            @update:file="onChangeBonusVideo"
-          />
-        </div>
+          density="comfortable"
+        >
+          <template #chip="{ props, item }">
+            <v-chip
+              v-bind="props"
+              :prepend-avatar="item.raw.iconUrl"
+              :text="item.raw.name"
+              rounded
+              class="px-4"
+              variant="outlined"
+            />
+          </template>
+          <template #item="{ props, item }">
+            <v-list-item
+              v-bind="props"
+              :prepend-avatar="item?.raw?.iconUrl"
+              :title="item?.raw?.name"
+            />
+          </template>
+        </v-autocomplete>
+        <v-row>
+          <v-col cols="6">
+            <molecules-video-select-form
+              label="紹介動画"
+              :video-url="formDataValue.promotionVideoUrl"
+              :error="props.promotionVideoUploadStatus.error"
+              :message="props.promotionVideoUploadStatus.message"
+              @update:file="onChangePromotionVideo"
+            />
+          </v-col>
+          <v-col cols="6">
+            <molecules-video-select-form
+              label="サンキュー動画"
+              :video-url="formDataValue.bonusVideoUrl"
+              :error="props.bonusVideoUploadStatus.error"
+              :message="props.bonusVideoUploadStatus.message"
+              @update:file="onChangeBonusVideo"
+            />
+          </v-col>
+        </v-row>
         <v-textarea
           v-model="validate.profile.$model"
           :error-messages="getErrorMessage(validate.profile.$errors)"
@@ -286,22 +307,26 @@ const onClickSearchAddress = (): void => {
           type="tel"
           label="連絡先（電話番号）"
         />
-        <div class="mb-2 d-flex">
-          <molecules-profile-select-form
-            class="mr-4 flex-grow-1 flex-shrink-1"
-            :img-url="formDataValue.thumbnailUrl"
-            :error="props.thumbnailUploadStatus.error"
-            :message="props.thumbnailUploadStatus.message"
-            @update:file="onChangeThumbnailFile"
-          />
-          <molecules-header-select-form
-            class="flex-grow-1 flex-shrink-1"
-            :img-url="formDataValue.headerUrl"
-            :error="props.headerUploadStatus.error"
-            :message="props.headerUploadStatus.message"
-            @update:file="onChangeHeaderFile"
-          />
-        </div>
+        <v-row>
+          <v-col cols="6">
+            <molecules-image-select-form
+              label="アイコン画像"
+              :img-url="formDataValue.thumbnailUrl"
+              :error="props.thumbnailUploadStatus.error"
+              :message="props.thumbnailUploadStatus.message"
+              @update:file="onChangeThumbnailFile"
+            />
+          </v-col>
+          <v-col cols="6">
+            <molecules-image-select-form
+              label="ヘッダー画像"
+              :img-url="formDataValue.headerUrl"
+              :error="props.headerUploadStatus.error"
+              :message="props.headerUploadStatus.message"
+              @update:file="onChangeHeaderFile"
+            />
+          </v-col>
+        </v-row>
         <molecules-address-form
           v-model:postal-code="formDataValue.postalCode"
           v-model:prefecture="formDataValue.prefecture"
@@ -329,7 +354,7 @@ const onClickSearchAddress = (): void => {
 
       <v-card-actions>
         <v-btn block :loading="loading" variant="outlined" color="primary" type="submit">
-          登録
+          更新
         </v-btn>
       </v-card-actions>
     </v-form>

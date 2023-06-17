@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { VDataTable } from 'vuetify/labs/components'
 
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useCommonStore, useCoordinatorStore } from '~/store'
@@ -15,7 +14,6 @@ const { coordinators, totalItems } = storeToRefs(coordinatorStore)
 
 const loading = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
-const sortBy = ref<VDataTable['sortBy']>([])
 
 const fetchState = useAsyncData(async (): Promise<void> => {
   await fetchCoordinators()
@@ -23,9 +21,6 @@ const fetchState = useAsyncData(async (): Promise<void> => {
 
 watch(pagination.itemsPerPage, (): void => {
   fetchCoordinators()
-})
-watch(sortBy, (): void => {
-  fetchState.refresh()
 })
 
 const fetchCoordinators = async (): Promise<void> => {
@@ -69,6 +64,10 @@ const handleClickDelete = async (coordinatorId: string): Promise<void> => {
     if (err instanceof Error) {
       show(err.message)
     }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
     console.log(err)
   } finally {
     deleteDialog.value = false
@@ -86,7 +85,6 @@ try {
 <template>
   <templates-coordinator-list
     v-model:delete-dialog="deleteDialog"
-    v-model:sort-by="sortBy"
     :loading="isLoading()"
     :is-alert="isShow"
     :alert-type="alertType"

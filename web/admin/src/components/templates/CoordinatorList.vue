@@ -27,10 +27,6 @@ const props = defineProps({
     type: String,
     default: ''
   },
-  sortBy: {
-    type: Array as PropType<VDataTable['sortBy']>,
-    default: () => []
-  },
   coordinators: {
     type: Array<CoordinatorsResponseCoordinatorsInner>,
     default: () => []
@@ -52,32 +48,36 @@ const emit = defineEmits<{
   (e: 'click:add'): void
   (e: 'click:delete', coordinatorId: string): void
   (e: 'update:delete-dialog', v: boolean): void
-  (e: 'update:sort-by', sortBy: VDataTable['sortBy']): void
 }>()
 
 const headers: VDataTable['headers'] = [
   {
-    title: 'サムネイル',
-    key: 'thumbnail'
+    title: '',
+    key: 'thumbnail',
+    sortable: false
   },
   {
-    title: '店舗名',
-    key: 'storeName'
+    title: 'マルシェ名',
+    key: 'marcheName',
+    sortable: false
   },
   {
     title: 'コーディネータ名',
-    key: 'name'
+    key: 'username',
+    sortable: false
   },
   {
-    title: 'Email',
-    key: 'email'
+    title: 'メールアドレス',
+    key: 'email',
+    sortable: false
   },
   {
     title: '電話番号',
-    key: 'phoneNumber'
+    key: 'phoneNumber',
+    sortable: false
   },
   {
-    title: 'Actions',
+    title: '',
     key: 'actions',
     sortable: false
   }
@@ -110,10 +110,6 @@ const onClickUpdatePage = (page: number): void => {
 
 const onClickUpdateItemsPerPage = (page: number): void => {
   emit('click:update-items-per-page', page)
-}
-
-const onClickUpdateSortBy = (sortBy: VDataTable['sortBy']): void => {
-  emit('update:sort-by', sortBy)
 }
 
 const onClickRow = (coordinatorId: string): void => {
@@ -174,14 +170,10 @@ const onClickDelete = (): void => {
         :items="coordinators"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"
-        :sort-by="props.sortBy"
-        :multi-sort="true"
         hover
         no-data-text="登録されているコーディネータがいません。"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
-        @update:sort-by="onClickUpdateSortBy"
-        @update:sort-desc="onClickUpdateSortBy"
         @click:row="(_:any, {item}: any) => onClickRow(item.raw.id)"
       >
         <template #[`item.thumbnail`]="{ item }">
