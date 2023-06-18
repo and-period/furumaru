@@ -66,6 +66,21 @@ func (mr *MockServiceMockRecorder) CreateNotification(ctx, in interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateNotification", reflect.TypeOf((*MockService)(nil).CreateNotification), ctx, in)
 }
 
+// CreateThread mocks base method.
+func (m *MockService) CreateThread(ctx context.Context, in *messenger.CreateThreadInput) (*entity.Thread, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateThread", ctx, in)
+	ret0, _ := ret[0].(*entity.Thread)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateThread indicates an expected call of CreateThread.
+func (mr *MockServiceMockRecorder) CreateThread(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateThread", reflect.TypeOf((*MockService)(nil).CreateThread), ctx, in)
+}
+
 // DeleteNotification mocks base method.
 func (m *MockService) DeleteNotification(ctx context.Context, in *messenger.DeleteNotificationInput) error {
 	m.ctrl.T.Helper()
