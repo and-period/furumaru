@@ -9,6 +9,9 @@ producerResponse:
     coordinatorId:
       type: string
       description: 担当コーディネータID
+    coordinatorName:
+      type: string
+      description: 担当コーディネータ名
     lastname:
       type: string
       description: 姓
@@ -106,6 +109,7 @@ producerResponse:
   - id
   - status
   - coordinatorId
+  - coordinatorName
   - lastname
   - firstname
   - lastnameKana
@@ -133,6 +137,7 @@ producerResponse:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     status: 2
     coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+    coordinatorName: '&.コーディネータ'
     lastname: '&.'
     firstname: '管理者'
     lastnameKana: 'あんどどっと'
@@ -185,6 +190,9 @@ producersResponse:
           coordinatorId:
             type: string
             description: 担当コーディネータID
+          coordinatorName:
+            type: string
+            description: 担当コーディネータ名
           lastname:
             type: string
             description: 姓
@@ -282,6 +290,7 @@ producersResponse:
         - id
         - status
         - coordinatorId
+        - coordinatorName
         - lastname
         - firstname
         - lastnameKana
@@ -317,6 +326,7 @@ producersResponse:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       status: 2
       coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+      coordinatorName: '&.コーディネータ'
       lastname: '&.'
       firstname: '管理者'
       lastnameKana: 'あんどどっと'
@@ -355,6 +365,7 @@ producersResponse:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       status: 2
       coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+      coordinatorName: '&.コーディネータ'
       lastname: '&.'
       firstname: '管理者'
       lastnameKana: 'あんどどっと'

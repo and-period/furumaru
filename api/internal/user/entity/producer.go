@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/common"
+	"github.com/and-period/furumaru/api/pkg/set"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
@@ -99,6 +100,12 @@ func (ps Producers) IDs() []string {
 		res[i] = ps[i].AdminID
 	}
 	return res
+}
+
+func (ps Producers) CoordinatorIDs() []string {
+	return set.UniqBy(ps, func(p *Producer) string {
+		return p.CoordinatorID
+	})
 }
 
 func (ps Producers) Related() Producers {

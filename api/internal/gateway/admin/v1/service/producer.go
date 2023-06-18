@@ -13,12 +13,17 @@ type Producer struct {
 
 type Producers []*Producer
 
-func NewProducer(producer *entity.Producer) *Producer {
+func NewProducer(producer *entity.Producer, coordinator *Coordinator) *Producer {
+	var coordinatorName string
+	if coordinator != nil {
+		coordinatorName = coordinator.Username
+	}
 	return &Producer{
 		Producer: response.Producer{
 			ID:                producer.ID,
 			Status:            producer.Status,
 			CoordinatorID:     producer.CoordinatorID,
+			CoordinatorName:   coordinatorName,
 			Lastname:          producer.Lastname,
 			Firstname:         producer.Firstname,
 			LastnameKana:      producer.LastnameKana,
@@ -54,10 +59,11 @@ func (p *Producer) Name() string {
 	return strings.TrimSpace(strings.Join([]string{p.Lastname, p.Firstname}, " "))
 }
 
-func NewProducers(producers entity.Producers) Producers {
+func NewProducers(producers entity.Producers, coordinators map[string]*Coordinator) Producers {
 	res := make(Producers, len(producers))
 	for i := range producers {
-		res[i] = NewProducer(producers[i])
+		coordinator := coordinators[producers[i].CoordinatorID]
+		res[i] = NewProducer(producers[i], coordinator)
 	}
 	return res
 }

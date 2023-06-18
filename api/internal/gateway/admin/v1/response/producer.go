@@ -7,6 +7,7 @@ type Producer struct {
 	ID                string             `json:"id"`                // 生産者ID
 	Status            entity.AdminStatus `json:"status"`            // 生産者の状態
 	CoordinatorID     string             `json:"coordinatorId"`     // 担当コーディネータID
+	CoordinatorName   string             `json:"coordinatorName"`   // 担当コーディネータ名
 	Lastname          string             `json:"lastname"`          // 姓
 	Firstname         string             `json:"firstname"`         // 名
 	LastnameKana      string             `json:"lastnameKana"`      // 姓(かな)
