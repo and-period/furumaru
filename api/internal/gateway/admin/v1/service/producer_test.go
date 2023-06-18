@@ -306,7 +306,7 @@ func TestProducers(t *testing.T) {
 				},
 			},
 			coordinators: map[string]*Coordinator{
-				"coordinator-id": &Coordinator{
+				"coordinator-id": {
 					Coordinator: response.Coordinator{
 						ID:       "coordinator-id",
 						Username: "&.コーディネータ",
