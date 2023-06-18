@@ -12,7 +12,7 @@ type Thread struct {
 	ID        string         `gorm:"primaryKey;<-:create"` // お問い合わせ会話履歴ID
 	ContactID string         `gorm:""`                     // お問い合わせID
 	UserID    string         `gorm:"default:null"`         // 送信者ID(ゲストの場合null)
-	UserType  int32          `gorm:""`                     // 送信者の種別(不明:0, admin:1, uer:2, guest:3)
+	UserType  int32          `gorm:""`                     // 送信者の種別(不明:0, admin:1, user:2, guest:3)
 	Content   string         `gorm:""`                     // 内容
 	CreatedAt time.Time      `gorm:"<-:create"`            // 登録日時
 	UpdatedAt time.Time      `gorm:""`                     // 更新日時
