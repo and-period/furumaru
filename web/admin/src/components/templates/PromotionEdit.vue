@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
-import { AlertType } from '~/lib/hooks'
 
+import { AlertType } from '~/lib/hooks'
 import { getErrorMessage, maxLength, minLength, minValue, required } from '~/lib/validations'
 import { DiscountType, PromotionResponse, UpdatePromotionRequest } from '~/types/api'
 import { PromotionTime } from '~/types/props'
@@ -74,7 +74,6 @@ const discountMethodList = [
 const formDataRules = computed(() => ({
   title: { required, maxLength: maxLength(200) },
   description: { required, maxLength: maxLength(2000) },
-  public: {},
   discountType: {},
   discountRate: { minValue: minValue(0) },
   code: { required, minLength: minLength(8), maxLength: maxLength(8) }
@@ -141,7 +140,7 @@ const onSubmit = async (): Promise<void> => {
 
 <template>
   <v-card>
-    <v-card-title>セール情報編集</v-card-title>
+    <v-card-title>セール情報詳細</v-card-title>
 
     <v-form @submit.prevent="onSubmit">
       <v-card-text>
@@ -164,14 +163,6 @@ const onSubmit = async (): Promise<void> => {
           />
           <v-spacer />
         </div>
-        <v-select
-          v-model="formDataValidate.public.$model"
-          :error-messages="getErrorMessage(formDataValidate.public.$errors)"
-          :items="statusList"
-          label="ステータス"
-          item-title="status"
-          item-value="value"
-        />
         <div class="d-flex align-center">
           <v-select
             v-model="formDataValidate.discountType.$model"
@@ -190,7 +181,6 @@ const onSubmit = async (): Promise<void> => {
             label="割引値"
           />
         </div>
-
         <p class="text-h6">
           使用期間
         </p>
@@ -225,16 +215,11 @@ const onSubmit = async (): Promise<void> => {
             variant="outlined"
           />
         </div>
+        <v-switch v-model="formDataValue.public" label="クーポンを有効にする" color="primary" />
       </v-card-text>
+
       <v-card-actions>
-        <v-btn
-          block
-          :loading="loading"
-          variant="outlined"
-          color="primary"
-          type="submit"
-          class="mt-4"
-        >
+        <v-btn block :loading="loading" variant="outlined" color="primary" type="submit">
           更新
         </v-btn>
       </v-card-actions>

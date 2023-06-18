@@ -264,6 +264,16 @@ func (s *service) DeleteCoordinator(ctx context.Context, in *user.DeleteCoordina
 	return exception.InternalError(err)
 }
 
+func (s *service) AggregateRealatedProducers(
+	ctx context.Context, in *user.AggregateRealatedProducersInput,
+) (map[string]int64, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	res, err := s.db.Producer.AggregateByCoordinatorID(ctx, in.CoordinatorIDs)
+	return res, exception.InternalError(err)
+}
+
 func (s *service) multiGetProductTypes(ctx context.Context, productTypeIDs []string) (sentity.ProductTypes, error) {
 	if len(productTypeIDs) == 0 {
 		return sentity.ProductTypes{}, nil

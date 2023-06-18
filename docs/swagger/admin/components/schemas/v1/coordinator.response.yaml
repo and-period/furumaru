@@ -283,6 +283,10 @@ coordinatorsResponse:
           facebookId:
             type: string
             description: Facebookアカウント
+          producerTotal:
+            type: integer
+            format: int64
+            description: 担当中の生産者数
           createdAt:
             type: integer
             format: int64
@@ -317,6 +321,7 @@ coordinatorsResponse:
         - headers
         - instagramId
         - facebookId
+        - producerTotal
         - createdAt
         - updatedAt
     total:
@@ -365,6 +370,7 @@ coordinatorsResponse:
       bonusVideoUrl: 'https://and-period.jp/bonus.mp4'
       instagramId: 'instagram-id'
       facebookId: 'facebook-id'
+      producerTotal: 0
       createdAt: 1640962800
       updatedAt: 1640962800
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -392,6 +398,7 @@ coordinatorsResponse:
       bonusVideoUrl: 'https://and-period.jp/bonus.mp4'
       instagramId: 'instagram-id'
       facebookId: 'facebook-id'
+      producerTotal: 10
       createdAt: 1640962800
       updatedAt: 1640962800
     total: 2

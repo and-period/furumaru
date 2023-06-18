@@ -52,9 +52,20 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 		httpError(ctx, err)
 		return
 	}
+	scoordinator := service.NewCoordinators(coordinators)
+
+	aggregateIn := &user.AggregateRealatedProducersInput{
+		CoordinatorIDs: coordinators.IDs(),
+	}
+	producerTotals, err := h.user.AggregateRealatedProducers(ctx, aggregateIn)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+	scoordinator.SetProducerTotal(producerTotals)
 
 	res := &response.CoordinatorsResponse{
-		Coordinators: service.NewCoordinators(coordinators).Response(),
+		Coordinators: scoordinator.Response(),
 		Total:        total,
 	}
 	ctx.JSON(http.StatusOK, res)

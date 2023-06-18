@@ -1027,6 +1027,95 @@ func TestProducer_Delete(t *testing.T) {
 	}
 }
 
+func TestProducer_AggregateByCoordinatorID(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	coordinator := testCoordinator("coordinator-id", now())
+	coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+	err = db.DB.Create(&coordinator.Admin).Error
+	require.NoError(t, err)
+	err = db.DB.Create(&coordinator).Error
+	require.NoError(t, err)
+	admins := make(entity.Admins, 2)
+	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
+	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
+	err = db.DB.Create(&admins).Error
+	producers := make(entity.Producers, 2)
+	require.NoError(t, err)
+	producers[0] = testProducer("admin-id01", "coordinator-id", now())
+	producers[0].Admin = *admins[0]
+	producers[1] = testProducer("admin-id02", "coordinator-id", now())
+	producers[1].Admin = *admins[1]
+	err = db.DB.Create(&producers).Error
+	require.NoError(t, err)
+
+	type args struct {
+		coordinatorIDs []string
+	}
+	type want struct {
+		total  map[string]int64
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			args: args{
+				coordinatorIDs: []string{"coordinator-id"},
+			},
+			want: want{
+				total: map[string]int64{
+					"coordinator-id": 2,
+				},
+				hasErr: false,
+			},
+		},
+		{
+			name:  "empty",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			args: args{
+				coordinatorIDs: []string{},
+			},
+			want: want{
+				total:  map[string]int64{},
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &producer{db: db, now: now}
+			actual, err := db.AggregateByCoordinatorID(ctx, tt.args.coordinatorIDs)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.total, actual)
+		})
+	}
+}
+
 func testProducer(id, coordinatorID string, now time.Time) *entity.Producer {
 	p := &entity.Producer{
 		AdminID:           id,
