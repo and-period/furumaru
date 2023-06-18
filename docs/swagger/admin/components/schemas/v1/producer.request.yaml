@@ -1,6 +1,9 @@
 createProducerRequest:
   type: object
   properties:
+    coordinatorId:
+      type: string
+      description: コーディネータID
     lastname:
       type: string
       description: 姓(16文字まで)
@@ -13,15 +16,9 @@ createProducerRequest:
     firstnameKana:
       type: string
       description: 名(かな)(ひらがな,32文字まで)
-    storeName:
+    username:
       type: string
-      description: 店舗名(64文字まで)
-    thumbnailUrl:
-      type: string
-      description: サムネイルURL
-    headerUrl:
-      type: string
-      description: ヘッダー画像URL
+      description: 生産者名(64文字まで)
     email:
       type: string
       format: email
@@ -44,12 +41,34 @@ createProducerRequest:
     addressLine2:
       type: string
       description: ビル名・号室など(64文字まで)
+    profile:
+      type: string
+      description: プロフィール(2000文字まで)
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+    headerUrl:
+      type: string
+      description: ヘッダー画像URL
+    promotionVideoUrl:
+      type: string
+      description: 紹介動画URL
+    bonusVideoUrl:
+      type: string
+      description: 購入者動画URL
+    instagramId:
+      type: string
+      description: Instagramアカウント(30文字まで)
+    facebookId:
+      type: string
+      description: Facebookアカウント(50文字まで)
   required:
+  - coordinatorId
   - lastname
   - firstname
   - lastnameKana
   - firstnameKana
-  - storeName
+  - username
   - email
   - phoneNumber
   - postalCode
@@ -57,14 +76,20 @@ createProducerRequest:
   - city
   - addressLine1
   - addressLine2
+  - profile
+  - thumbnailUrl
+  - headerUrl
+  - promotionVideoUrl
+  - bonusVideoUrl
+  - instagramId
+  - facebookId
   example:
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
     lastname: '&.'
     firstname: '管理者'
     lastnameKana: 'あんどどっと'
     firstnameKana: 'かんりしゃ'
-    storeName: '&.農園'
-    thumbnailUrl: 'https://and-period.jp/thumbnail.png'
-    headerUrl: 'https://and-period.jp/header.png'
+    username: '&.農園'
     email: 'test-user@and-period.jp'
     phoneNumber: '+819012345678'
     postalCode: '1000014'
@@ -72,6 +97,13 @@ createProducerRequest:
     city: '千代田区'
     addressLine1: '永田町1-7-1'
     addressLine2: ''
+    profile: '紹介文です。'
+    thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+    headerUrl: 'https://and-period.jp/header.png'
+    promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+    bonusVideoUrl: 'https://and-period.jp/bonus.mp4'
+    instagramId: 'instagram-id'
+    facebookId: 'facebook-id'
 updateProducerRequest:
   type: object
   properties:
@@ -87,15 +119,9 @@ updateProducerRequest:
     firstnameKana:
       type: string
       description: 名(かな)(ひらがな,32文字まで)
-    storeName:
+    username:
       type: string
-      description: 店舗名(64文字まで)
-    thumbnailUrl:
-      type: string
-      description: サムネイルURL
-    headerUrl:
-      type: string
-      description: ヘッダー画像URL
+      description: 生産者名(64文字まで)
     phoneNumber:
       type: string
       description: 電話番号 (国際番号 + 電話番号)
@@ -114,32 +140,65 @@ updateProducerRequest:
     addressLine2:
       type: string
       description: ビル名・号室など(64文字まで)
+    profile:
+      type: string
+      description: プロフィール(2000文字まで)
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+    headerUrl:
+      type: string
+      description: ヘッダー画像URL
+    promotionVideoUrl:
+      type: string
+      description: 紹介動画URL
+    bonusVideoUrl:
+      type: string
+      description: 購入者動画URL
+    instagramId:
+      type: string
+      description: Instagramアカウント(30文字まで)
+    facebookId:
+      type: string
+      description: Facebookアカウント(50文字まで)
   required:
   - lastname
   - firstname
   - lastnameKana
   - firstnameKana
-  - storeName
+  - username
   - phoneNumber
   - postalCode
   - prefecture
   - city
   - addressLine1
   - addressLine2
+  - profile
+  - thumbnailUrl
+  - headerUrl
+  - promotionVideoUrl
+  - bonusVideoUrl
+  - instagramId
+  - facebookId
   example:
     lastname: '&.'
     firstname: '管理者'
     lastnameKana: 'あんどどっと'
     firstnameKana: 'かんりしゃ'
-    storeName: '&.農園'
-    thumbnailUrl: 'https://and-period.jp/thumbnail.png'
-    headerUrl: 'https://and-period.jp/header.png'
+    username: '&.農園'
     phoneNumber: '+819012345678'
     postalCode: '1000014'
     prefecture: '東京都'
     city: '千代田区'
     addressLine1: '永田町1-7-1'
     addressLine2: ''
+    profile: '紹介文です。'
+    thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+    headerUrl: 'https://and-period.jp/header.png'
+    promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+    bonusVideoUrl: 'https://and-period.jp/bonus.mp4'
+    instagramId: 'instagram-id'
+    facebookId: 'facebook-id'
 updateProducerEmailRequest:
   type: object
   properties:

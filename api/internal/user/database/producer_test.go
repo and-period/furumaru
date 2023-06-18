@@ -45,9 +45,9 @@ func TestProducer_List(t *testing.T) {
 	err = db.DB.Create(&admins).Error
 	producers := make(entity.Producers, 2)
 	require.NoError(t, err)
-	producers[0] = testProducer("admin-id01", "coordinator-id", "&.農園", now())
+	producers[0] = testProducer("admin-id01", "coordinator-id", now())
 	producers[0].Admin = *admins[0]
-	producers[1] = testProducer("admin-id02", "coordinator-id", "&.水産", now())
+	producers[1] = testProducer("admin-id02", "coordinator-id", now())
 	producers[1].Admin = *admins[1]
 	err = db.DB.Create(&producers).Error
 	require.NoError(t, err)
@@ -139,9 +139,9 @@ func TestProducer_Count(t *testing.T) {
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
 	err = db.DB.Create(&admins).Error
 	producers := make(entity.Producers, 2)
-	producers[0] = testProducer("admin-id01", "coordinator-id", "&.農園", now())
+	producers[0] = testProducer("admin-id01", "coordinator-id", now())
 	producers[0].Admin = *admins[0]
-	producers[1] = testProducer("admin-id02", "coordinator-id", "&.水産", now())
+	producers[1] = testProducer("admin-id02", "coordinator-id", now())
 	producers[1].Admin = *admins[1]
 	err = db.DB.Create(&producers).Error
 	require.NoError(t, err)
@@ -214,9 +214,9 @@ func TestProducer_MultiGet(t *testing.T) {
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
 	err = db.DB.Create(&admins).Error
 	producers := make(entity.Producers, 2)
-	producers[0] = testProducer("admin-id01", "coordinator-id", "&.農園", now())
+	producers[0] = testProducer("admin-id01", "coordinator-id", now())
 	producers[0].Admin = *admins[0]
-	producers[1] = testProducer("admin-id02", "coordinator-id", "&.水産", now())
+	producers[1] = testProducer("admin-id02", "coordinator-id", now())
 	producers[1].Admin = *admins[1]
 	err = db.DB.Create(&producers).Error
 	require.NoError(t, err)
@@ -287,7 +287,7 @@ func TestProducer_Get(t *testing.T) {
 	admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 	err = db.DB.Create(&admin).Error
 	require.NoError(t, err)
-	p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+	p := testProducer("admin-id", "coordinator-id", now())
 	p.Admin = *admin
 	err = db.DB.Create(&p).Error
 	require.NoError(t, err)
@@ -360,7 +360,7 @@ func TestProducer_Create(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+	p := testProducer("admin-id", "coordinator-id", now())
 	p.Admin = *testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
 
 	type args struct {
@@ -417,7 +417,7 @@ func TestProducer_Create(t *testing.T) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
-				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+				p := testProducer("admin-id", "coordinator-id", now())
 				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
@@ -506,7 +506,7 @@ func TestProducer_Update(t *testing.T) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
-				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+				p := testProducer("admin-id", "coordinator-id", now())
 				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
@@ -601,7 +601,7 @@ func TestProducer_UpdateThumbnails(t *testing.T) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
-				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+				p := testProducer("admin-id", "coordinator-id", now())
 				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
@@ -648,7 +648,7 @@ func TestProducer_UpdateThumbnails(t *testing.T) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
-				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+				p := testProducer("admin-id", "coordinator-id", now())
 				p.ThumbnailURL = ""
 				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
@@ -733,7 +733,7 @@ func TestProducer_UpdateHeaders(t *testing.T) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
-				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+				p := testProducer("admin-id", "coordinator-id", now())
 				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
@@ -780,7 +780,7 @@ func TestProducer_UpdateHeaders(t *testing.T) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
-				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+				p := testProducer("admin-id", "coordinator-id", now())
 				p.HeaderURL = ""
 				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
@@ -865,7 +865,7 @@ func TestProducer_UpdateRelationship(t *testing.T) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
-				p := testProducer("admin-id", "", "&.農園", now())
+				p := testProducer("admin-id", "", now())
 				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
@@ -889,7 +889,7 @@ func TestProducer_UpdateRelationship(t *testing.T) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
-				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+				p := testProducer("admin-id", "coordinator-id", now())
 				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
@@ -960,7 +960,7 @@ func TestProducer_Delete(t *testing.T) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
-				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+				p := testProducer("admin-id", "coordinator-id", now())
 				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
@@ -995,7 +995,7 @@ func TestProducer_Delete(t *testing.T) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
-				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+				p := testProducer("admin-id", "coordinator-id", now())
 				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
@@ -1027,23 +1027,27 @@ func TestProducer_Delete(t *testing.T) {
 	}
 }
 
-func testProducer(id, coordinatorID, storeName string, now time.Time) *entity.Producer {
+func testProducer(id, coordinatorID string, now time.Time) *entity.Producer {
 	p := &entity.Producer{
-		AdminID:       id,
-		CoordinatorID: coordinatorID,
-		StoreName:     storeName,
-		ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-		Thumbnails:    common.Images{},
-		HeaderURL:     "https://and-period.jp/header.png",
-		Headers:       common.Images{},
-		PhoneNumber:   "+819012345678",
-		PostalCode:    "1000014",
-		Prefecture:    "東京都",
-		City:          "千代田区",
-		AddressLine1:  "永田町1-7-1",
-		AddressLine2:  "",
-		CreatedAt:     now,
-		UpdatedAt:     now,
+		AdminID:           id,
+		CoordinatorID:     coordinatorID,
+		Username:          "&.農園",
+		ThumbnailURL:      "https://and-period.jp/thumbnail.png",
+		Thumbnails:        common.Images{},
+		HeaderURL:         "https://and-period.jp/header.png",
+		Headers:           common.Images{},
+		PromotionVideoURL: "https://and-period.jp/promotion.mp4",
+		BonusVideoURL:     "https://and-period.jp/bonus.mp4",
+		InstagramID:       "instagram-id",
+		FacebookID:        "facebook-id",
+		PhoneNumber:       "+819012345678",
+		PostalCode:        "1000014",
+		Prefecture:        "東京都",
+		City:              "千代田区",
+		AddressLine1:      "永田町1-7-1",
+		AddressLine2:      "",
+		CreatedAt:         now,
+		UpdatedAt:         now,
 	}
 	fillProducerJSON(p)
 	return p

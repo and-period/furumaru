@@ -122,7 +122,7 @@ func (p *Product) Fill(productType *ProductType, producer *Producer) {
 		p.CategoryName = productType.CategoryName
 	}
 	if producer != nil {
-		p.StoreName = producer.StoreName
+		p.StoreName = producer.Username // FIXME: 商品情報の改修時に修正
 	}
 }
 

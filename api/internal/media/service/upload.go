@@ -35,6 +35,14 @@ func (s *service) UploadProducerHeader(ctx context.Context, in *media.UploadFile
 	return s.uploadFile(ctx, in, entity.ProducerHeaderPath)
 }
 
+func (s *service) UploadProducerPromotionVideo(ctx context.Context, in *media.UploadFileInput) (string, error) {
+	return s.uploadFile(ctx, in, entity.ProducerPromotionVideoPath)
+}
+
+func (s *service) UploadProducerBonusVideo(ctx context.Context, in *media.UploadFileInput) (string, error) {
+	return s.uploadFile(ctx, in, entity.ProducerBonusVideoPath)
+}
+
 func (s *service) UploadProductMedia(ctx context.Context, in *media.UploadFileInput) (string, error) {
 	return s.uploadFile(ctx, in, entity.ProductMediaPath)
 }

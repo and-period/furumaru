@@ -18,7 +18,7 @@ createCoordinatorRequest:
       description: マルシェ名(64文字まで)
     username:
       type: string
-      description: コーディネータ(64文字まで)
+      description: コーディネータ名(64文字まで)
     email:
       type: string
       format: email
