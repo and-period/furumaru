@@ -45,8 +45,8 @@ func NewCoordinator(coordinator *entity.Coordinator) *Coordinator {
 	}
 }
 
-func (p *Coordinator) Response() *response.Coordinator {
-	return &p.Coordinator
+func (c *Coordinator) Response() *response.Coordinator {
+	return &c.Coordinator
 }
 
 func NewCoordinators(coordinators entity.Coordinators) Coordinators {
@@ -57,10 +57,18 @@ func NewCoordinators(coordinators entity.Coordinators) Coordinators {
 	return res
 }
 
-func (ps Coordinators) Response() []*response.Coordinator {
-	res := make([]*response.Coordinator, len(ps))
-	for i := range ps {
-		res[i] = ps[i].Response()
+func (cs Coordinators) Map() map[string]*Coordinator {
+	res := make(map[string]*Coordinator, len(cs))
+	for _, c := range cs {
+		res[c.ID] = c
+	}
+	return res
+}
+
+func (cs Coordinators) Response() []*response.Coordinator {
+	res := make([]*response.Coordinator, len(cs))
+	for i := range cs {
+		res[i] = cs[i].Response()
 	}
 	return res
 }

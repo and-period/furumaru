@@ -3153,6 +3153,12 @@ export interface ProducerResponse {
      */
     'coordinatorId': string;
     /**
+     * 担当コーディネータ名
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'coordinatorName': string;
+    /**
      * 姓
      * @type {string}
      * @memberof ProducerResponse
@@ -3336,6 +3342,12 @@ export interface ProducersResponseProducersInner {
      * @memberof ProducersResponseProducersInner
      */
     'coordinatorId': string;
+    /**
+     * 担当コーディネータ名
+     * @type {string}
+     * @memberof ProducersResponseProducersInner
+     */
+    'coordinatorName': string;
     /**
      * 姓
      * @type {string}

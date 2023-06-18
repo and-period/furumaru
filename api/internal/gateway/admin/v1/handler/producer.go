@@ -71,9 +71,14 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 		httpError(ctx, err)
 		return
 	}
+	coordinators, err := h.multiGetCoordinators(ctx, producers.CoordinatorIDs())
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
 
 	res := &response.ProducersResponse{
-		Producers: service.NewProducers(producers).Response(),
+		Producers: service.NewProducers(producers, coordinators.Map()).Response(),
 		Total:     total,
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -192,9 +197,14 @@ func (h *handler) CreateProducer(ctx *gin.Context) {
 		httpError(ctx, err)
 		return
 	}
+	coordinator, err := h.getCoordinator(ctx, producer.CoordinatorID)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
 
 	res := &response.ProducerResponse{
-		Producer: service.NewProducer(producer).Response(),
+		Producer: service.NewProducer(producer, coordinator).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -336,7 +346,14 @@ func (h *handler) multiGetProducers(ctx context.Context, producerIDs []string) (
 	if err != nil {
 		return nil, err
 	}
-	return service.NewProducers(producers), nil
+	if len(producers) == 0 {
+		return service.Producers{}, nil
+	}
+	coordinators, err := h.multiGetCoordinators(ctx, producers.CoordinatorIDs())
+	if err != nil {
+		return nil, err
+	}
+	return service.NewProducers(producers, coordinators.Map()), nil
 }
 
 func (h *handler) getProducer(ctx context.Context, producerID string) (*service.Producer, error) {
@@ -347,7 +364,11 @@ func (h *handler) getProducer(ctx context.Context, producerID string) (*service.
 	if err != nil {
 		return nil, err
 	}
-	return service.NewProducer(producer), nil
+	coordinator, err := h.getCoordinator(ctx, producer.CoordinatorID)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewProducer(producer, coordinator), nil
 }
 
 func (h *handler) getProducersByCoordinatorID(ctx context.Context, coordinatorID string) (service.Producers, error) {
@@ -361,5 +382,12 @@ func (h *handler) getProducersByCoordinatorID(ctx context.Context, coordinatorID
 	if err != nil {
 		return nil, err
 	}
-	return service.NewProducers(producers), nil
+	if len(producers) == 0 {
+		return service.Producers{}, nil
+	}
+	coordinators, err := h.multiGetCoordinators(ctx, producers.CoordinatorIDs())
+	if err != nil {
+		return nil, err
+	}
+	return service.NewProducers(producers, coordinators.Map()), nil
 }
