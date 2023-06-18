@@ -282,6 +282,7 @@ func TestPersonalizations(t *testing.T) {
 						Firstname: "スタッフ",
 						Email:     "test-user@and-period.jp",
 					},
+					Username: "&. スタッフ",
 				}}
 				mocks.user.EXPECT().MultiGetProducers(ctx, in).Return(producers, nil)
 			},
@@ -633,7 +634,7 @@ func TestFetchProducers(t *testing.T) {
 				Email:         "test-admin@and-period.jp",
 			},
 			AdminID:      "admin-id",
-			StoreName:    "&.農園",
+			Username:     "&.農園",
 			ThumbnailURL: "https://and-period.jp/thumbnail.png",
 			HeaderURL:    "https://and-period.jp/header.png",
 			PhoneNumber:  "+819012345678",
@@ -662,7 +663,7 @@ func TestFetchProducers(t *testing.T) {
 			producerIDs: []string{"admin-id"},
 			execute: func(t *testing.T) func(name, email string) {
 				execute := func(name, email string) {
-					assert.Equal(t, "&. スタッフ", name)
+					assert.Equal(t, "&.農園", name)
 					assert.Equal(t, "test-admin@and-period.jp", email)
 				}
 				return execute

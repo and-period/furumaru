@@ -1,0 +1,29 @@
+post:
+  summary: 生産者購入特典動画アップロード
+  operationId: v1UploadProducerBonusVideo
+  tags:
+  - Producer
+  security:
+  - BearerAuth: []
+  requestBody:
+    required: true
+    content:
+      multipart/form-data:
+        schema:
+          $ref: '../../../../openapi.yaml#/components/schemas/v1UploadProducerBonusVideoRequest'
+        encoding:
+          thumbnail:
+            contentType: video/mp4
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../openapi.yaml#/components/schemas/v1UploadVideoResponse'
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'

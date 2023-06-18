@@ -37,6 +37,14 @@ type Service interface {
 	UploadProducerHeader(ctx context.Context, in *UploadFileInput) (string, error)
 	// 生産者ヘッダー画像リサイズ
 	ResizeProducerHeader(ctx context.Context, in *ResizeFileInput) error
+	// 生産者紹介映像を生成
+	GenerateProducerPromotionVideo(ctx context.Context, in *GenerateFileInput) (string, error)
+	// 生産者紹介映像アップロード
+	UploadProducerPromotionVideo(ctx context.Context, in *UploadFileInput) (string, error)
+	// 生産者購入特典映像を生成
+	GenerateProducerBonusVideo(ctx context.Context, in *GenerateFileInput) (string, error)
+	// 生産者購入特典映像アップロード
+	UploadProducerBonusVideo(ctx context.Context, in *UploadFileInput) (string, error)
 	// 商品メディア(画像)を生成
 	GenerateProductMediaImage(ctx context.Context, in *GenerateFileInput) (string, error)
 	// 商品メディア(映像)を生成

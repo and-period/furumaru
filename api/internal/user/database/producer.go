@@ -115,15 +115,20 @@ func (p *producer) Update(ctx context.Context, producerID string, params *Update
 			"updated_at":     now,
 		}
 		producerParams := map[string]interface{}{
-			"store_name":    params.StoreName,
-			"thumbnail_url": params.ThumbnailURL,
-			"header_url":    params.HeaderURL,
-			"phone_number":  params.PhoneNumber,
-			"postal_code":   params.PostalCode,
-			"city":          params.City,
-			"address_line1": params.AddressLine1,
-			"address_line2": params.AddressLine2,
-			"updated_at":    now,
+			"username":            params.Username,
+			"profile":             params.Profile,
+			"thumbnail_url":       params.ThumbnailURL,
+			"header_url":          params.HeaderURL,
+			"promotion_video_url": params.PromotionVideoURL,
+			"bonus_video_url":     params.BonusVideoURL,
+			"instagram_id":        params.InstagramID,
+			"facebook_id":         params.FacebookID,
+			"phone_number":        params.PhoneNumber,
+			"postal_code":         params.PostalCode,
+			"city":                params.City,
+			"address_line1":       params.AddressLine1,
+			"address_line2":       params.AddressLine2,
+			"updated_at":          now,
 		}
 
 		err := tx.WithContext(ctx).

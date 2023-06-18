@@ -6,7 +6,8 @@ import {
   ProducerResponse,
   ProducersResponse,
   UpdateProducerRequest,
-  UploadImageResponse
+  UploadImageResponse,
+  UploadVideoResponse
 } from '~/types/api'
 import { apiClient } from '~/plugins/api-client'
 
@@ -57,7 +58,7 @@ export const useProducerStore = defineStore('producer', {
         await apiClient.producerApi().v1CreateProducer(payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
-          message: `${payload.storeName}を作成しました。`,
+          message: `${payload.username}を作成しました。`,
           color: 'info'
         })
       } catch (err) {
@@ -104,6 +105,48 @@ export const useProducerStore = defineStore('producer', {
         return res.data
       } catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
+      }
+    },
+
+    /**
+     * 生産者の紹介画像をアップロードする非同期関数
+     * @param payload 紹介画像
+     * @returns アップロードされた動画のURI
+     */
+    async uploadProducerPromotionVideo (payload: File): Promise<UploadVideoResponse> {
+      try {
+        const res = await apiClient.producerApi().v1UploadProducerPromotionVideo(
+          payload,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
+        )
+        return res.data
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * 生産者のサンキュー画像をアップロードする非同期関数
+     * @param payload サンキュー画像
+     * @returns アップロードされた動画のURI
+     */
+    async uploadProducerBonusVideo (payload: File): Promise<UploadVideoResponse> {
+      try {
+        const res = await apiClient.producerApi().v1UploadProducerBonusVideo(
+          payload,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
+        )
+        return res.data
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 

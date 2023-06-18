@@ -163,6 +163,10 @@ paths:
     $ref: './paths/v1/upload/producers/header.yaml'
   /v1/upload/producers/thumbnail:
     $ref: './paths/v1/upload/producers/thumbnail.yaml'
+  /v1/upload/producers/promotion-video:
+    $ref: './paths/v1/upload/producers/promotion-video.yaml'
+  /v1/upload/producers/bonus-video:
+    $ref: './paths/v1/upload/producers/bonus-video.yaml'
   /v1/upload/products/image:
     $ref: './paths/v1/upload/products/image.yaml'
   /v1/upload/products/video:
@@ -285,6 +289,10 @@ components:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadProducerThumbnailRequest'
     v1UploadProducerHeaderRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadProducerHeaderRequest'
+    v1UploadProducerPromotionVideoRequest:
+      $ref: './components/schemas/v1/upload.request.yaml#/uploadProducerPromotionVideoRequest'
+    v1UploadProducerBonusVideoRequest:
+      $ref: './components/schemas/v1/upload.request.yaml#/uploadProducerBonusVideoRequest'
     v1UploadProductImageRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadProductImageRequest'
     v1UploadProductVideoRequest:

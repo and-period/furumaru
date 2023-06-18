@@ -37,7 +37,7 @@ func TestGetLive(t *testing.T) {
 		},
 		AdminID:       "producer-id",
 		CoordinatorID: "coordinator-id",
-		StoreName:     "&.農園",
+		Username:      "&.農園",
 		ThumbnailURL:  "https://and-period.jp/thumbnail.png",
 		HeaderURL:     "https://and-period.jp/header.png",
 		PhoneNumber:   "+819012345678",

@@ -35,6 +35,14 @@ func (s *service) GenerateProducerHeader(ctx context.Context, in *media.Generate
 	return s.generateFile(ctx, in, entity.ProducerHeaderRegulation)
 }
 
+func (s *service) GenerateProducerPromotionVideo(ctx context.Context, in *media.GenerateFileInput) (string, error) {
+	return s.generateFile(ctx, in, entity.ProducerPromotionVideoRegulation)
+}
+
+func (s *service) GenerateProducerBonusVideo(ctx context.Context, in *media.GenerateFileInput) (string, error) {
+	return s.generateFile(ctx, in, entity.ProducerBonusVideoRegulation)
+}
+
 func (s *service) GenerateProductMediaImage(ctx context.Context, in *media.GenerateFileInput) (string, error) {
 	return s.generateFile(ctx, in, entity.ProductMediaImageRegulation)
 }

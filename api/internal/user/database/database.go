@@ -162,19 +162,24 @@ func (p *ListProducersParams) stmt(stmt *gorm.DB) *gorm.DB {
 }
 
 type UpdateProducerParams struct {
-	Lastname      string
-	Firstname     string
-	LastnameKana  string
-	FirstnameKana string
-	StoreName     string
-	ThumbnailURL  string
-	HeaderURL     string
-	PhoneNumber   string
-	PostalCode    string
-	Prefecture    string
-	City          string
-	AddressLine1  string
-	AddressLine2  string
+	Lastname          string
+	Firstname         string
+	LastnameKana      string
+	FirstnameKana     string
+	Username          string
+	Profile           string
+	ThumbnailURL      string
+	HeaderURL         string
+	PromotionVideoURL string
+	BonusVideoURL     string
+	InstagramID       string
+	FacebookID        string
+	PhoneNumber       string
+	PostalCode        string
+	Prefecture        string
+	City              string
+	AddressLine1      string
+	AddressLine2      string
 }
 
 type ListUsersParams struct {
