@@ -9,12 +9,14 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/messenger"
+	"github.com/and-period/furumaru/api/internal/messenger/entity"
+	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
 )
 
 func (h *handler) contactRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication)
-	arg.GET("/:contactId")
+	arg.GET("/:contactId", h.GetContact)
 }
 
 func (h *handler) CreateContact(ctx *gin.Context) {
@@ -23,6 +25,69 @@ func (h *handler) CreateContact(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
+	if req.UserID != "" {
+		in := &user.GetUserInput{
+			UserID: req.UserID,
+		}
+		if _, err := h.user.GetUser(ctx, in); err != nil {
+			badRequest(ctx, err)
+			return
+		}
+	}
+	if req.ResponderID != "" {
+		in := &user.GetAdminInput{
+			AdminID: req.ResponderID,
+		}
+		if _, err := h.user.GetAdmin(ctx, in); err != nil {
+			badRequest(ctx, err)
+			return
+		}
+	}
+	if _, err := h.getContactCategory(ctx, req.CategoryID); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	in := &messenger.CreateContactInput{
+		Title:       req.Title,
+		Content:     req.Content,
+		CategoryID:  req.CategoryID,
+		Username:    req.Username,
+		UserID:      req.UserID,
+		Email:       req.Email,
+		PhoneNumber: req.PhoneNumber,
+		ResponderID: req.ResponderID,
+		Note:        req.Note,
+	}
+	h.waitGroup.Add(1)
+	var (
+		scontact *entity.Contact
+		err      error
+	)
+	go func() {
+		defer h.waitGroup.Done()
+		scontact, err = h.messenger.CreateContact(ctx, in)
+		if err != nil {
+			httpError(ctx, err)
+			return
+		}
+	}()
+	threadIn := &messenger.CreateThreadInput{
+		ContactID: scontact.ID,
+		UserID:    req.UserID,
+		UserType:  2,
+		Content:   req.Content,
+	}
+	sthread, err := h.messenger.CreateThread(ctx, threadIn)
+	thread := service.NewThread(sthread)
+	threads := make([]*response.Thread, 1)
+	threads[0] = thread.Response()
+	contact := service.NewContact(scontact)
+	res := &response.ContactResponse{
+		Contact: contact.Response(),
+		Threads: threads,
+	}
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (h *handler) GetContact(ctx *gin.Context) {
