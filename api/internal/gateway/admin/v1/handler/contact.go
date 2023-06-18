@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
@@ -14,6 +15,14 @@ import (
 func (h *handler) contactRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication)
 	arg.GET("/:contactId")
+}
+
+func (h *handler) CreateContact(ctx *gin.Context) {
+	req := &request.CreateContactRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
 }
 
 func (h *handler) GetContact(ctx *gin.Context) {
