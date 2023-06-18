@@ -4,10 +4,12 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/messenger"
+	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,6 +17,7 @@ func (h *handler) threadRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication)
 	arg.GET("", h.ListThreadsByContactID)
 	arg.GET("/:threadId", h.GetThread)
+	arg.POST("", h.CreateThread)
 }
 
 func (h *handler) ListThreadsByContactID(ctx *gin.Context) {
@@ -55,6 +58,41 @@ func (h *handler) ListThreadsByContactID(ctx *gin.Context) {
 	res := &response.ThreadsResponse{
 		Threads: threads.Response(),
 		Total:   total,
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) CreateThread(ctx *gin.Context) {
+	req := &request.CreateThreadRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+	userIn := &user.GetUserInput{
+		UserID: req.UserID,
+	}
+	if req.UserID != "" {
+		if _, err := h.user.GetUser(ctx, userIn); err != nil {
+			badRequest(ctx, err)
+			return
+		}
+	}
+
+	in := &messenger.CreateThreadInput{
+		ContactID: req.ContactID,
+		UserID:    req.UserID,
+		UserType:  req.UserType,
+		Content:   req.Content,
+	}
+	sthread, err := h.messenger.CreateThread(ctx, in)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+	thread := service.NewThread(sthread)
+
+	res := &response.ThreadResponse{
+		Thread: thread.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
