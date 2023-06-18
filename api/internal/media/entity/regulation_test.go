@@ -96,6 +96,78 @@ func TestRegulation_Validate(t *testing.T) {
 			},
 			expect: ErrInvalidFileFormat,
 		},
+		// CoordinatorPromotionVideo
+		{
+			name:       "success coordinator promotion video",
+			regulation: CoordinatorPromotionVideoRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				return testVideoFile(t)
+			},
+			expect: nil,
+		},
+		{
+			name:       "required for coordinator promotion video",
+			regulation: CoordinatorPromotionVideoRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				_, header := testVideoFile(t)
+				return nil, header
+			},
+			expect: ErrInvalidFileFormat,
+		},
+		{
+			name:       "invalid size for coordinator promotion video",
+			regulation: CoordinatorPromotionVideoRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				file, header := testVideoFile(t)
+				header.Size = 200<<20 + 1
+				return file, header
+			},
+			expect: ErrTooLargeFileSize,
+		},
+		{
+			name:       "invalid format for coordinator promotion video",
+			regulation: CoordinatorPromotionVideoRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				return testImageFile(t)
+			},
+			expect: ErrInvalidFileFormat,
+		},
+		// CoordinatorBonusVideo
+		{
+			name:       "success coordinator bonus video",
+			regulation: CoordinatorBonusVideoRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				return testVideoFile(t)
+			},
+			expect: nil,
+		},
+		{
+			name:       "required for coordinator bonus video",
+			regulation: CoordinatorBonusVideoRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				_, header := testVideoFile(t)
+				return nil, header
+			},
+			expect: ErrInvalidFileFormat,
+		},
+		{
+			name:       "invalid size for coordinator bonus video",
+			regulation: CoordinatorBonusVideoRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				file, header := testVideoFile(t)
+				header.Size = 200<<20 + 1
+				return file, header
+			},
+			expect: ErrTooLargeFileSize,
+		},
+		{
+			name:       "invalid format for coordinator bonus video",
+			regulation: CoordinatorBonusVideoRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				return testImageFile(t)
+			},
+			expect: ErrInvalidFileFormat,
+		},
 		// ProducerThumbnail
 		{
 			name:       "success producer thumbnail",
@@ -165,6 +237,78 @@ func TestRegulation_Validate(t *testing.T) {
 			regulation: ProducerHeaderRegulation,
 			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
 				return testVideoFile(t)
+			},
+			expect: ErrInvalidFileFormat,
+		},
+		// ProducerPromotionVideo
+		{
+			name:       "success producer promotion video",
+			regulation: ProducerPromotionVideoRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				return testVideoFile(t)
+			},
+			expect: nil,
+		},
+		{
+			name:       "required for producer promotion video",
+			regulation: ProducerPromotionVideoRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				_, header := testVideoFile(t)
+				return nil, header
+			},
+			expect: ErrInvalidFileFormat,
+		},
+		{
+			name:       "invalid size for producer promotion video",
+			regulation: ProducerPromotionVideoRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				file, header := testVideoFile(t)
+				header.Size = 200<<20 + 1
+				return file, header
+			},
+			expect: ErrTooLargeFileSize,
+		},
+		{
+			name:       "invalid format for producer promotion video",
+			regulation: ProducerPromotionVideoRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				return testImageFile(t)
+			},
+			expect: ErrInvalidFileFormat,
+		},
+		// ProducerBonusVideo
+		{
+			name:       "success producer bonus video",
+			regulation: ProducerBonusVideoRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				return testVideoFile(t)
+			},
+			expect: nil,
+		},
+		{
+			name:       "required for producer bonus video",
+			regulation: ProducerBonusVideoRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				_, header := testVideoFile(t)
+				return nil, header
+			},
+			expect: ErrInvalidFileFormat,
+		},
+		{
+			name:       "invalid size for producer bonus video",
+			regulation: ProducerBonusVideoRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				file, header := testVideoFile(t)
+				header.Size = 200<<20 + 1
+				return file, header
+			},
+			expect: ErrTooLargeFileSize,
+		},
+		{
+			name:       "invalid format for producer bonus video",
+			regulation: ProducerBonusVideoRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				return testImageFile(t)
 			},
 			expect: ErrInvalidFileFormat,
 		},

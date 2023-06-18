@@ -23,7 +23,7 @@ coordinatorResponse:
       description: マルシェ名
     username:
       type: string
-      description: コーディネータ
+      description: コーディネータ名
     email:
       type: string
       description: メールアドレス
@@ -206,7 +206,7 @@ coordinatorsResponse:
             description: マルシェ名
           username:
             type: string
-            description: コーディネータ
+            description: コーディネータ名
           email:
             type: string
             description: メールアドレス

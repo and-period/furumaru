@@ -197,37 +197,48 @@ type GetProducerInput struct {
 }
 
 type CreateProducerInput struct {
-	Lastname      string `validate:"required,max=16"`
-	Firstname     string `validate:"required,max=16"`
-	LastnameKana  string `validate:"required,max=32,hiragana"`
-	FirstnameKana string `validate:"required,max=32,hiragana"`
-	StoreName     string `validate:"required,max=64"`
-	ThumbnailURL  string `validate:"omitempty,url"`
-	HeaderURL     string `validate:"omitempty,url"`
-	Email         string `validate:"required,max=256,email"`
-	PhoneNumber   string `validate:"min=12,max=18,phone_number"`
-	PostalCode    string `validate:"omitempty,max=16,numeric"`
-	Prefecture    string `validate:"omitempty,max=32"`
-	City          string `validate:"omitempty,max=32"`
-	AddressLine1  string `validate:"omitempty,max=64"`
-	AddressLine2  string `validate:"omitempty,max=64"`
+	CoordinatorID     string `validate:"required"`
+	Lastname          string `validate:"required,max=16"`
+	Firstname         string `validate:"required,max=16"`
+	LastnameKana      string `validate:"required,max=32,hiragana"`
+	FirstnameKana     string `validate:"required,max=32,hiragana"`
+	Username          string `validate:"required,max=64"`
+	Profile           string `validate:"omitempty,max=2000"`
+	ThumbnailURL      string `validate:"omitempty,url"`
+	HeaderURL         string `validate:"omitempty,url"`
+	PromotionVideoURL string `validate:"omitempty,url"`
+	BonusVideoURL     string `validate:"omitempty,url"`
+	InstagramID       string `validate:"omitempty,max=30"`
+	FacebookID        string `validate:"omitempty,max=50"`
+	Email             string `validate:"required,max=256,email"`
+	PhoneNumber       string `validate:"min=12,max=18,phone_number"`
+	PostalCode        string `validate:"omitempty,max=16,numeric"`
+	Prefecture        string `validate:"omitempty,max=32"`
+	City              string `validate:"omitempty,max=32"`
+	AddressLine1      string `validate:"omitempty,max=64"`
+	AddressLine2      string `validate:"omitempty,max=64"`
 }
 
 type UpdateProducerInput struct {
-	ProducerID    string `validate:"required"`
-	Lastname      string `validate:"required,max=16"`
-	Firstname     string `validate:"required,max=16"`
-	LastnameKana  string `validate:"required,max=32,hiragana"`
-	FirstnameKana string `validate:"required,max=32,hiragana"`
-	StoreName     string `validate:"required,max=64"`
-	ThumbnailURL  string `validate:"omitempty,url"`
-	HeaderURL     string `validate:"omitempty,url"`
-	PhoneNumber   string `validate:"min=12,max=18,phone_number"`
-	PostalCode    string `validate:"omitempty,max=16,numeric"`
-	Prefecture    string `validate:"omitempty,max=32"`
-	City          string `validate:"omitempty,max=32"`
-	AddressLine1  string `validate:"omitempty,max=64"`
-	AddressLine2  string `validate:"omitempty,max=64"`
+	ProducerID        string `validate:"required"`
+	Lastname          string `validate:"required,max=16"`
+	Firstname         string `validate:"required,max=16"`
+	LastnameKana      string `validate:"required,max=32,hiragana"`
+	FirstnameKana     string `validate:"required,max=32,hiragana"`
+	Username          string `validate:"required,max=64"`
+	Profile           string `validate:"omitempty,max=2000"`
+	ThumbnailURL      string `validate:"omitempty,url"`
+	HeaderURL         string `validate:"omitempty,url"`
+	PromotionVideoURL string `validate:"omitempty,url"`
+	BonusVideoURL     string `validate:"omitempty,url"`
+	InstagramID       string `validate:"omitempty,max=30"`
+	FacebookID        string `validate:"omitempty,max=50"`
+	PhoneNumber       string `validate:"min=12,max=18,phone_number"`
+	PostalCode        string `validate:"omitempty,max=16,numeric"`
+	Prefecture        string `validate:"omitempty,max=32"`
+	City              string `validate:"omitempty,max=32"`
+	AddressLine1      string `validate:"omitempty,max=64"`
+	AddressLine2      string `validate:"omitempty,max=64"`
 }
 
 type UpdateProducerEmailInput struct {

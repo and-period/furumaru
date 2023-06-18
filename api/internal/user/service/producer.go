@@ -67,6 +67,13 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
+	_, err := s.db.Coordinator.Get(ctx, in.CoordinatorID)
+	if errors.Is(err, exception.ErrNotFound) {
+		return nil, fmt.Errorf("api: invalid coordinator id: %w", exception.ErrInvalidArgument)
+	}
+	if err != nil {
+		return nil, exception.InternalError(err)
+	}
 	cognitoID := uuid.Base58Encode(uuid.New())
 	password := random.NewStrings(size)
 	adminParams := &entity.NewAdminParams{
@@ -79,16 +86,22 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 		Email:         in.Email,
 	}
 	params := &entity.NewProducerParams{
-		Admin:        entity.NewAdmin(adminParams),
-		StoreName:    in.StoreName,
-		ThumbnailURL: in.ThumbnailURL,
-		HeaderURL:    in.HeaderURL,
-		PhoneNumber:  in.PhoneNumber,
-		PostalCode:   in.PostalCode,
-		Prefecture:   in.Prefecture,
-		City:         in.City,
-		AddressLine1: in.AddressLine1,
-		AddressLine2: in.AddressLine2,
+		Admin:             entity.NewAdmin(adminParams),
+		CoordinatorID:     in.CoordinatorID,
+		PhoneNumber:       in.PhoneNumber,
+		Username:          in.Username,
+		Profile:           in.Profile,
+		ThumbnailURL:      in.ThumbnailURL,
+		HeaderURL:         in.HeaderURL,
+		PromotionVideoURL: in.PromotionVideoURL,
+		BonusVideoURL:     in.BonusVideoURL,
+		InstagramID:       in.InstagramID,
+		FacebookID:        in.FacebookID,
+		PostalCode:        in.PostalCode,
+		Prefecture:        in.Prefecture,
+		City:              in.City,
+		AddressLine1:      in.AddressLine1,
+		AddressLine2:      in.AddressLine2,
 	}
 	producer := entity.NewProducer(params)
 	auth := s.createCognitoAdmin(cognitoID, in.Email, password)
@@ -120,19 +133,24 @@ func (s *service) UpdateProducer(ctx context.Context, in *user.UpdateProducerInp
 		return exception.InternalError(err)
 	}
 	params := &database.UpdateProducerParams{
-		Lastname:      in.Lastname,
-		Firstname:     in.Firstname,
-		LastnameKana:  in.LastnameKana,
-		FirstnameKana: in.FirstnameKana,
-		StoreName:     in.StoreName,
-		ThumbnailURL:  in.ThumbnailURL,
-		HeaderURL:     in.HeaderURL,
-		PhoneNumber:   in.PhoneNumber,
-		PostalCode:    in.PostalCode,
-		Prefecture:    in.Prefecture,
-		City:          in.City,
-		AddressLine1:  in.AddressLine1,
-		AddressLine2:  in.AddressLine2,
+		Lastname:          in.Lastname,
+		Firstname:         in.Firstname,
+		LastnameKana:      in.LastnameKana,
+		FirstnameKana:     in.FirstnameKana,
+		Username:          in.Username,
+		Profile:           in.Profile,
+		ThumbnailURL:      in.ThumbnailURL,
+		HeaderURL:         in.HeaderURL,
+		PromotionVideoURL: in.PromotionVideoURL,
+		BonusVideoURL:     in.BonusVideoURL,
+		InstagramID:       in.InstagramID,
+		FacebookID:        in.FacebookID,
+		PhoneNumber:       in.PhoneNumber,
+		PostalCode:        in.PostalCode,
+		Prefecture:        in.Prefecture,
+		City:              in.City,
+		AddressLine1:      in.AddressLine1,
+		AddressLine2:      in.AddressLine2,
 	}
 	if err := s.db.Producer.Update(ctx, in.ProducerID, params); err != nil {
 		return exception.InternalError(err)

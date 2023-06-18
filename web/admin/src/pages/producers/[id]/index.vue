@@ -18,33 +18,39 @@ const producerId = route.params.id as string
 const { producer } = storeToRefs(producerStore)
 
 const loading = ref<boolean>(false)
-const formData = ref<ProducerResponse>({
-  id: producerId,
-  coordinatorId: '',
+const formData = ref<UpdateProducerRequest>({
   lastname: '',
   lastnameKana: '',
   firstname: '',
   firstnameKana: '',
-  addressLine1: '',
-  addressLine2: '',
-  city: '',
-  prefecture: '',
+  username: '',
   phoneNumber: '',
   postalCode: '',
-  storeName: '',
-  headerUrl: '',
-  headers: [],
-  createdAt: 0,
-  updatedAt: 0,
+  prefecture: '',
+  city: '',
+  addressLine1: '',
+  addressLine2: '',
+  profile: '',
   thumbnailUrl: '',
-  thumbnails: [],
-  email: ''
+  headerUrl: '',
+  promotionVideoUrl: '',
+  bonusVideoUrl: '',
+  instagramId: '',
+  facebookId: ''
 })
 const thumbnailUploadStatus = ref<ImageUploadStatus>({
   error: false,
   message: ''
 })
 const headerUploadStatus = ref<ImageUploadStatus>({
+  error: false,
+  message: ''
+})
+const promotionVideoUploadStatus = ref<ImageUploadStatus>({
+  error: false,
+  message: ''
+})
+const bonusVideoUploadStatus = ref<ImageUploadStatus>({
   error: false,
   message: ''
 })
@@ -66,6 +72,29 @@ const fetchState = useAsyncData(async (): Promise<void> => {
 
 const isLoading = (): boolean => {
   return fetchState?.pending?.value || loading.value
+}
+
+const handleSubmit = async () => {
+  try {
+    loading.value = true
+    const req: UpdateProducerRequest = {
+      ...formData.value,
+      phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber)
+    }
+    await producerStore.updateProducer(producerId, req)
+    commonStore.addSnackbar({
+      color: 'info',
+      message: `${formData.value.username}を更新しました。`
+    })
+    router.push('/producers')
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
 }
 
 const handleUpdateThumbnail = (files: FileList): void => {
@@ -106,37 +135,51 @@ const handleUpdateHeader = (files: FileList): void => {
     })
 }
 
+const handleUpdatePromotionVideo = (files: FileList): void => {
+  if (files.length === 0) {
+    return
+  }
+
+  loading.value = true
+  producerStore.uploadProducerPromotionVideo(files[0])
+    .then((res) => {
+      formData.value.promotionVideoUrl = res.url
+    })
+    .catch(() => {
+      promotionVideoUploadStatus.value.error = true
+      promotionVideoUploadStatus.value.message = 'アップロードに失敗しました。'
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
+
+const handleUpdateBonusVideo = (files: FileList): void => {
+  if (files.length === 0) {
+    return
+  }
+
+  loading.value = true
+  producerStore.uploadProducerBonusVideo(files[0])
+    .then((res) => {
+      formData.value.bonusVideoUrl = res.url
+    })
+    .catch(() => {
+      bonusVideoUploadStatus.value.error = true
+      bonusVideoUploadStatus.value.message = 'アップロードに失敗しました。'
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
+
 const handleSearchAddress = async (): Promise<void> => {
   try {
+    searchAddress.loading.value = true
+    searchAddress.errorMessage.value = ''
     const res = await searchAddress.searchAddressByPostalCode(Number(formData.value.postalCode))
     formData.value = { ...formData.value, ...res }
   } catch (err) {
-    if (err instanceof Error) {
-      show(err.message)
-    }
-    console.log(err)
-  } finally {
-    loading.value = false
-  }
-}
-
-const handleSubmit = async () => {
-  try {
-    loading.value = true
-    const req: UpdateProducerRequest = {
-      ...formData.value,
-      phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber)
-    }
-    await producerStore.updateProducer(producerId, req)
-    commonStore.addSnackbar({
-      color: 'info',
-      message: `${formData.value.storeName}を更新しました。`
-    })
-    router.push('/producers')
-  } catch (err) {
-    if (err instanceof Error) {
-      show(err.message)
-    }
     console.log(err)
   } finally {
     loading.value = false
@@ -159,10 +202,16 @@ try {
     :alert-text="alertText"
     :thumbnail-upload-status="thumbnailUploadStatus"
     :header-upload-status="headerUploadStatus"
+    :promotion-video-upload-status="promotionVideoUploadStatus"
+    :bonus-video-upload-status="bonusVideoUploadStatus"
+    :search-loading="searchAddress.loading.value"
+    :search-error-message="searchAddress.errorMessage.value"
     :producer="producer"
     @click:search-address="handleSearchAddress"
     @update:thumbnail-file="handleUpdateThumbnail"
     @update:header-file="handleUpdateHeader"
+    @update:promotion-video="handleUpdatePromotionVideo"
+    @update:bonus-video="handleUpdateBonusVideo"
     @submit="handleSubmit"
   />
 </template>

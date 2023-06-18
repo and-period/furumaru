@@ -40,6 +40,20 @@ uploadProducerHeaderRequest:
       type: string
       format: binary
       description: 生産者ヘッダー画像(png,jpeg形式,10MBまで)
+uploadProducerPromotionVideoRequest:
+  type: object
+  properties:
+    video:
+      type: string
+      format: binary
+      description: 生産者紹介映像(mp4形式,200MBまで)
+uploadProducerBonusVideoRequest:
+  type: object
+  properties:
+    video:
+      type: string
+      format: binary
+      description: 生産者購入特典映像(mp4形式,200MBまで)
 uploadProductImageRequest:
   type: object
   properties:
