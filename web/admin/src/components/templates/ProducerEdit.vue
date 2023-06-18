@@ -29,6 +29,7 @@ const props = defineProps({
       id: '',
       status: AdminStatus.UNKNOWN,
       coordinatorId: '',
+      coordinatorName: '',
       lastname: '',
       lastnameKana: '',
       firstname: '',

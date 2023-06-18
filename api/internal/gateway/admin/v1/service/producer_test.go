@@ -13,9 +13,10 @@ import (
 func TestProducer(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name     string
-		producer *entity.Producer
-		expect   *Producer
+		name        string
+		producer    *entity.Producer
+		coordinator *Coordinator
+		expect      *Producer
 	}{
 		{
 			name: "success",
@@ -52,17 +53,24 @@ func TestProducer(t *testing.T) {
 				CreatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
+			coordinator: &Coordinator{
+				Coordinator: response.Coordinator{
+					ID:       "coordinator-id",
+					Username: "&.コーディネータ",
+				},
+			},
 			expect: &Producer{
 				Producer: response.Producer{
-					ID:            "producer-id",
-					Status:        entity.AdminStatusActivated,
-					CoordinatorID: "coordinator-id",
-					Lastname:      "&.",
-					Firstname:     "管理者",
-					LastnameKana:  "あんどどっと",
-					FirstnameKana: "かんりしゃ",
-					Username:      "&.農園",
-					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+					ID:              "producer-id",
+					Status:          entity.AdminStatusActivated,
+					CoordinatorID:   "coordinator-id",
+					CoordinatorName: "&.コーディネータ",
+					Lastname:        "&.",
+					Firstname:       "管理者",
+					LastnameKana:    "あんどどっと",
+					FirstnameKana:   "かんりしゃ",
+					Username:        "&.農園",
+					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
 					Thumbnails: []*response.Image{
 						{URL: "https://and-period.jp/thumbnail_240.png", Size: int32(ImageSizeSmall)},
 						{URL: "https://and-period.jp/thumbnail_675.png", Size: int32(ImageSizeMedium)},
@@ -89,7 +97,7 @@ func TestProducer(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewProducer(tt.producer))
+			assert.Equal(t, tt.expect, NewProducer(tt.producer, tt.coordinator))
 		})
 	}
 }
@@ -232,9 +240,10 @@ func TestProducer_Name(t *testing.T) {
 func TestProducers(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name      string
-		producers entity.Producers
-		expect    Producers
+		name         string
+		producers    entity.Producers
+		coordinators map[string]*Coordinator
+		expect       Producers
 	}{
 		{
 			name: "success",
@@ -296,18 +305,27 @@ func TestProducers(t *testing.T) {
 					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 			},
+			coordinators: map[string]*Coordinator{
+				"coordinator-id": &Coordinator{
+					Coordinator: response.Coordinator{
+						ID:       "coordinator-id",
+						Username: "&.コーディネータ",
+					},
+				},
+			},
 			expect: Producers{
 				{
 					Producer: response.Producer{
-						ID:            "producer-id01",
-						Status:        entity.AdminStatusActivated,
-						CoordinatorID: "coordinator-id",
-						Lastname:      "&.",
-						Firstname:     "管理者",
-						LastnameKana:  "あんどどっと",
-						FirstnameKana: "かんりしゃ",
-						Username:      "&.農園",
-						ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+						ID:              "producer-id01",
+						Status:          entity.AdminStatusActivated,
+						CoordinatorID:   "coordinator-id",
+						CoordinatorName: "&.コーディネータ",
+						Lastname:        "&.",
+						Firstname:       "管理者",
+						LastnameKana:    "あんどどっと",
+						FirstnameKana:   "かんりしゃ",
+						Username:        "&.農園",
+						ThumbnailURL:    "https://and-period.jp/thumbnail.png",
 						Thumbnails: []*response.Image{
 							{URL: "https://and-period.jp/thumbnail_240.png", Size: int32(ImageSizeSmall)},
 							{URL: "https://and-period.jp/thumbnail_675.png", Size: int32(ImageSizeMedium)},
@@ -330,25 +348,26 @@ func TestProducers(t *testing.T) {
 				},
 				{
 					Producer: response.Producer{
-						ID:            "producer-id02",
-						Status:        entity.AdminStatusActivated,
-						CoordinatorID: "coordinator-id",
-						Lastname:      "&.",
-						Firstname:     "管理者",
-						LastnameKana:  "あんどどっと",
-						FirstnameKana: "かんりしゃ",
-						Username:      "&.農園",
-						ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-						Thumbnails:    []*response.Image{},
-						HeaderURL:     "https://and-period.jp/header.png",
-						Headers:       []*response.Image{},
-						Email:         "test-producer02@and-period.jp",
-						PhoneNumber:   "+819012345678",
-						PostalCode:    "1000014",
-						Prefecture:    "東京都",
-						City:          "千代田区",
-						CreatedAt:     1640962800,
-						UpdatedAt:     1640962800,
+						ID:              "producer-id02",
+						Status:          entity.AdminStatusActivated,
+						CoordinatorID:   "coordinator-id",
+						CoordinatorName: "&.コーディネータ",
+						Lastname:        "&.",
+						Firstname:       "管理者",
+						LastnameKana:    "あんどどっと",
+						FirstnameKana:   "かんりしゃ",
+						Username:        "&.農園",
+						ThumbnailURL:    "https://and-period.jp/thumbnail.png",
+						Thumbnails:      []*response.Image{},
+						HeaderURL:       "https://and-period.jp/header.png",
+						Headers:         []*response.Image{},
+						Email:           "test-producer02@and-period.jp",
+						PhoneNumber:     "+819012345678",
+						PostalCode:      "1000014",
+						Prefecture:      "東京都",
+						City:            "千代田区",
+						CreatedAt:       1640962800,
+						UpdatedAt:       1640962800,
 					},
 				},
 			},
@@ -358,7 +377,7 @@ func TestProducers(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewProducers(tt.producers))
+			assert.Equal(t, tt.expect, NewProducers(tt.producers, tt.coordinators))
 		})
 	}
 }

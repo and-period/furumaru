@@ -47,10 +47,6 @@ const handleClickAdd = (): void => {
   router.push('/producers/new')
 }
 
-const handleClickAddVideo = (producerId: string): void => {
-  console.log(producerId)
-}
-
 const handleClickRow = (producerId: string): void => {
   router.push(`/producers/${producerId}`)
 }
@@ -94,7 +90,6 @@ try {
     :table-items-total="totalItems"
     @click:row="handleClickRow"
     @click:add="handleClickAdd"
-    @click:add-video="handleClickAddVideo"
     @click:delete="handleClickDelete"
     @click:update-page="handleUpdatePage"
     @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
