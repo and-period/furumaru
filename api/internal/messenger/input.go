@@ -106,6 +106,13 @@ type ListThreadsByContactIDInput struct {
 	Offset    int64  `validate:"min=0"`
 }
 
+type CreateThreadInput struct {
+	ContactID string `validate:"required"`
+	UserID    string `validate:""`
+	UserType  int32  `validate:"required"`
+	Content   string `validate:"required,max=2000"`
+}
+
 type GetThreadInput struct {
 	ThreadID string `validate:"required"`
 }

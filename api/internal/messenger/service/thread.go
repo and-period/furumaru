@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
@@ -50,4 +52,31 @@ func (s *service) GetThread(ctx context.Context, in *messenger.GetThreadInput) (
 	}
 
 	return thread, exception.InternalError(err)
+}
+
+func (s *service) CreateThread(ctx context.Context, in *messenger.CreateThreadInput) (*entity.Thread, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	contactIn := &messenger.GetContactInput{
+		ContactID: in.ContactID,
+	}
+	_, err := s.GetContact(ctx, contactIn)
+	if errors.Is(err, exception.ErrNotFound) {
+		return nil, fmt.Errorf("api: invalid contact id: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	if err != nil {
+		return nil, exception.InternalError(err)
+	}
+	params := &entity.NewThreadParams{
+		ContactID: in.ContactID,
+		UserType:  in.UserType,
+		Content:   in.Content,
+	}
+	thread := entity.NewThread(params)
+	thread.Fill(in.UserID)
+	if err := s.db.Thread.Create(ctx, thread); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return thread, nil
 }
