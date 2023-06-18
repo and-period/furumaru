@@ -39,6 +39,7 @@ func NewCoordinator(coordinator *entity.Coordinator) *Coordinator {
 			City:              coordinator.City,
 			AddressLine1:      coordinator.AddressLine1,
 			AddressLine2:      coordinator.AddressLine2,
+			ProducerTotal:     0,
 			CreatedAt:         coordinator.CreatedAt.Unix(),
 			UpdatedAt:         coordinator.CreatedAt.Unix(),
 		},
@@ -55,6 +56,16 @@ func NewCoordinators(coordinators entity.Coordinators) Coordinators {
 		res[i] = NewCoordinator(coordinators[i])
 	}
 	return res
+}
+
+func (cs Coordinators) SetProducerTotal(totalMap map[string]int64) {
+	for _, c := range cs {
+		total, ok := totalMap[c.ID]
+		if !ok {
+			continue
+		}
+		c.ProducerTotal = total
+	}
 }
 
 func (cs Coordinators) Map() map[string]*Coordinator {

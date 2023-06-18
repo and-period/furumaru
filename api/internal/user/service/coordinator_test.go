@@ -1128,3 +1128,55 @@ func TestDeleteCoordinator(t *testing.T) {
 		}))
 	}
 }
+
+func TestAggregateRelatedProducers(t *testing.T) {
+	t.Parallel()
+	total := map[string]int64{
+		"coordinator-id": 6,
+	}
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.AggregateRealatedProducersInput
+		expect    map[string]int64
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Producer.EXPECT().AggregateByCoordinatorID(ctx, []string{"coordinator-id"}).Return(total, nil)
+			},
+			input: &user.AggregateRealatedProducersInput{
+				CoordinatorIDs: []string{"coordinator-id"},
+			},
+			expect:    total,
+			expectErr: nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &user.AggregateRealatedProducersInput{
+				CoordinatorIDs: []string{""},
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to delete",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Producer.EXPECT().AggregateByCoordinatorID(ctx, []string{"coordinator-id"}).Return(nil, assert.AnError)
+			},
+			input: &user.AggregateRealatedProducersInput{
+				CoordinatorIDs: []string{"coordinator-id"},
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			res, err := service.AggregateRealatedProducers(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, res)
+		}))
+	}
+}

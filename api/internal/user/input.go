@@ -181,6 +181,10 @@ type DeleteCoordinatorInput struct {
 	CoordinatorID string `validate:"required"`
 }
 
+type AggregateRealatedProducersInput struct {
+	CoordinatorIDs []string `validate:"omitempty,dive,required"`
+}
+
 type ListProducersInput struct {
 	CoordinatorID string `validate:"omitempty"`
 	Limit         int64  `validate:"required_without=CoordinatorID,max=200"`

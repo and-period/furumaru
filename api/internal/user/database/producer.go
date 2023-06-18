@@ -258,6 +258,38 @@ func (p *producer) Delete(ctx context.Context, producerID string, auth func(ctx 
 	return exception.InternalError(err)
 }
 
+func (p *producer) AggregateByCoordinatorID(
+	ctx context.Context, coordinatorIDs []string,
+) (map[string]int64, error) {
+	fields := []string{
+		"coordinator_id",
+		"COUNT(*) AS total",
+	}
+
+	stmt := p.db.Statement(ctx, p.db.DB, producerTable, fields...).
+		Where("coordinator_id IN (?)", coordinatorIDs).
+		Group("coordinator_id")
+
+	rows, err := stmt.Rows()
+	if err != nil {
+		return nil, exception.InternalError(err)
+	}
+	defer rows.Close()
+
+	res := make(map[string]int64, len(coordinatorIDs))
+	for rows.Next() {
+		var (
+			coordinatorID string
+			total         int64
+		)
+		if err := rows.Scan(&coordinatorID, &total); err != nil {
+			return nil, exception.InternalError(err)
+		}
+		res[coordinatorID] = total
+	}
+	return res, nil
+}
+
 func (p *producer) multiGet(
 	ctx context.Context, tx *gorm.DB, producerIDs []string, fields ...string,
 ) (entity.Producers, error) {

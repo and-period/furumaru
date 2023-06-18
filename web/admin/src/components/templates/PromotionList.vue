@@ -57,30 +57,36 @@ const emit = defineEmits<{
 const headers: VDataTable['headers'] = [
   {
     title: 'タイトル',
-    key: 'title'
+    key: 'title',
+    sortable: false
   },
   {
     title: 'ステータス',
-    key: 'public'
+    key: 'public',
+    sortable: false
   },
   {
     title: '割引コード',
-    key: 'code'
+    key: 'code',
+    sortable: false
   },
   {
-    title: '割引方法',
-    key: 'discount'
+    title: '割引額',
+    key: 'discount',
+    sortable: false
   },
   {
-    title: '使用開始',
-    key: 'startAt'
+    title: '使用期間',
+    key: 'term',
+    sortable: false
   },
   {
-    title: '使用終了',
-    key: 'endAt'
+    title: '使用回数',
+    key: 'total',
+    sortable: false
   },
   {
-    title: 'Actions',
+    title: '',
     key: 'actions',
     sortable: false
   }
@@ -96,9 +102,9 @@ const deleteDialogValue = computed({
 const getDiscount = (discountType: number, discountRate: number): string => {
   switch (discountType) {
     case 1:
-      return '-' + discountRate + '円'
+      return '￥' + discountRate
     case 2:
-      return '-' + discountRate + '%'
+      return discountRate + '％'
     case 3:
       return '送料無料'
     default:
@@ -107,23 +113,19 @@ const getDiscount = (discountType: number, discountRate: number): string => {
 }
 
 const getStatus = (status: boolean): string => {
-  if (status) {
-    return '有効'
-  } else {
-    return '無効'
-  }
+  return status ? '有効' : '無効'
 }
 
 const getStatusColor = (status: boolean): string => {
-  if (status) {
-    return 'primary'
-  } else {
-    return 'error'
-  }
+  return status ? 'primary' : 'error'
 }
 
 const getDay = (unixTime: number): string => {
   return unix(unixTime).format('YYYY/MM/DD HH:mm')
+}
+
+const getTerm = (promotion: PromotionsResponsePromotionsInner): string => {
+  return `${getDay(promotion.startAt)} ~ ${getDay(promotion.endAt)}`
 }
 
 const onClickUpdatePage = (page: number): void => {
@@ -170,7 +172,7 @@ const onClickDelete = (): void => {
       </v-card-title>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="onClickClose">
+        <v-btn color="error" variant="text" @click="onClickCloseDeleteDialog">
           キャンセル
         </v-btn>
         <v-btn :loading="loading" color="primary" variant="outlined" @click="onClickDelete">
@@ -220,11 +222,8 @@ const onClickDelete = (): void => {
         <template #[`item.discount`]="{ item }">
           {{ getDiscount(item.raw.discountType, item.raw.discountRate) }}
         </template>
-        <template #[`item.startAt`]="{ item }">
-          {{ getDay(item.raw.startAt) }}
-        </template>
-        <template #[`item.endAt`]="{ item }">
-          {{ getDay(item.raw.endAt) }}
+        <template #[`item.term`]="{ item }">
+          {{ getTerm(item.raw) }}
         </template>
         <template #[`item.actions`]="{ item }">
           <v-btn

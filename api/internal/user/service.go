@@ -65,6 +65,8 @@ type Service interface {
 	UpdateCoordinatorHeaders(ctx context.Context, in *UpdateCoordinatorHeadersInput) error
 	// コーディネータパスワードリセット
 	ResetCoordinatorPassword(ctx context.Context, in *ResetCoordinatorPasswordInput) error
+	// コーディネータごとの担当する生産者数
+	AggregateRealatedProducers(ctx context.Context, in *AggregateRealatedProducersInput) (map[string]int64, error)
 	// コーディネータ退会
 	DeleteCoordinator(ctx context.Context, in *DeleteCoordinatorInput) error
 	// 生産者一覧取得

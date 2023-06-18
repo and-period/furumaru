@@ -211,7 +211,6 @@ const onClickDelete = (): void => {
           <v-avatar>
             <v-img
               v-if="item.raw.thumbnailUrl !== ''"
-              aspect-ratio="1/1"
               cover
               :src="item.raw.thumbnailUrl"
               :srcset="getImages(item.raw)"

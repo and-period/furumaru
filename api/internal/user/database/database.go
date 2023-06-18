@@ -91,6 +91,7 @@ type Producer interface {
 	UpdateHeaders(ctx context.Context, producerID string, headers common.Images) error
 	UpdateRelationship(ctx context.Context, coordinatorID string, producerIDs ...string) error
 	Delete(ctx context.Context, producerID string, auth func(ctx context.Context) error) error
+	AggregateByCoordinatorID(ctx context.Context, coordinatorIDs []string) (map[string]int64, error)
 }
 
 type User interface {

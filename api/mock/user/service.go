@@ -36,6 +36,21 @@ func (m *MockService) EXPECT() *MockServiceMockRecorder {
 	return m.recorder
 }
 
+// AggregateRealatedProducers mocks base method.
+func (m *MockService) AggregateRealatedProducers(ctx context.Context, in *user.AggregateRealatedProducersInput) (map[string]int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AggregateRealatedProducers", ctx, in)
+	ret0, _ := ret[0].(map[string]int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AggregateRealatedProducers indicates an expected call of AggregateRealatedProducers.
+func (mr *MockServiceMockRecorder) AggregateRealatedProducers(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AggregateRealatedProducers", reflect.TypeOf((*MockService)(nil).AggregateRealatedProducers), ctx, in)
+}
+
 // CreateAdministrator mocks base method.
 func (m *MockService) CreateAdministrator(ctx context.Context, in *user.CreateAdministratorInput) (*entity.Administrator, error) {
 	m.ctrl.T.Helper()

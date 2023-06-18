@@ -68,6 +68,11 @@ const headers: VDataTable['headers'] = [
     sortable: false
   },
   {
+    title: '生産者数',
+    key: 'producerTotal',
+    sortable: false
+  },
+  {
     title: 'メールアドレス',
     key: 'email',
     sortable: false
@@ -215,7 +220,6 @@ const onClickDelete = (): void => {
               cover
               :src="item.raw.thumbnailUrl"
               :srcset="getImages(item.raw)"
-              :alt="`${item.raw.storeName}-profile`"
             />
             <v-icon v-else :icon="mdiAccount" />
           </v-avatar>

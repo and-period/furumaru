@@ -623,6 +623,21 @@ func (m *MockProducer) EXPECT() *MockProducerMockRecorder {
 	return m.recorder
 }
 
+// AggregateByCoordinatorID mocks base method.
+func (m *MockProducer) AggregateByCoordinatorID(ctx context.Context, coordinatorIDs []string) (map[string]int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AggregateByCoordinatorID", ctx, coordinatorIDs)
+	ret0, _ := ret[0].(map[string]int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AggregateByCoordinatorID indicates an expected call of AggregateByCoordinatorID.
+func (mr *MockProducerMockRecorder) AggregateByCoordinatorID(ctx, coordinatorIDs interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AggregateByCoordinatorID", reflect.TypeOf((*MockProducer)(nil).AggregateByCoordinatorID), ctx, coordinatorIDs)
+}
+
 // Count mocks base method.
 func (m *MockProducer) Count(ctx context.Context, params *database.ListProducersParams) (int64, error) {
 	m.ctrl.T.Helper()

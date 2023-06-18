@@ -938,6 +938,12 @@ export interface CoordinatorsResponseCoordinatorsInner {
      */
     'facebookId': string;
     /**
+     * 担当中の生産者数
+     * @type {number}
+     * @memberof CoordinatorsResponseCoordinatorsInner
+     */
+    'producerTotal': number;
+    /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof CoordinatorsResponseCoordinatorsInner
@@ -4188,6 +4194,12 @@ export interface PromotionsResponsePromotionsInner {
      * @memberof PromotionsResponsePromotionsInner
      */
     'endAt': number;
+    /**
+     * 使用回数
+     * @type {number}
+     * @memberof PromotionsResponsePromotionsInner
+     */
+    'total': number;
     /**
      * 登録日時 (unixtime)
      * @type {number}
