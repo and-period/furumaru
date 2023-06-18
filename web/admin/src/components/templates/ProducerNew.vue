@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import useVuelidate from '@vuelidate/core'
+import { mdiFacebook, mdiInstagram } from '@mdi/js'
 import { AlertType } from '~/lib/hooks'
 import { CreateProducerRequest } from '~/types/api'
-import { email, getErrorMessage, maxLength, required, tel } from '~/lib/validations'
+import { email, kana, getErrorMessage, maxLength, required, tel } from '~/lib/validations'
 import { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
@@ -25,20 +26,26 @@ const props = defineProps({
   formData: {
     type: Object as PropType<CreateProducerRequest>,
     default: (): CreateProducerRequest => ({
+      coordinatorId: '',
       lastname: '',
       lastnameKana: '',
       firstname: '',
       firstnameKana: '',
-      storeName: '',
-      thumbnailUrl: '',
-      headerUrl: '',
+      username: '',
       email: '',
       phoneNumber: '',
       postalCode: '',
       prefecture: '',
       city: '',
       addressLine1: '',
-      addressLine2: ''
+      addressLine2: '',
+      profile: '',
+      thumbnailUrl: '',
+      headerUrl: '',
+      promotionVideoUrl: '',
+      bonusVideoUrl: '',
+      instagramId: '',
+      facebookId: ''
     })
   },
   thumbnailUploadStatus: {
@@ -54,13 +61,37 @@ const props = defineProps({
       error: false,
       message: ''
     })
+  },
+  promotionVideoUploadStatus: {
+    type: Object,
+    default: (): ImageUploadStatus => ({
+      error: false,
+      message: ''
+    })
+  },
+  bonusVideoUploadStatus: {
+    type: Object,
+    default: (): ImageUploadStatus => ({
+      error: false,
+      message: ''
+    })
+  },
+  searchErrorMessage: {
+    type: String,
+    default: ''
+  },
+  searchLoading: {
+    type: Boolean,
+    default: false
   }
 })
 
 const emit = defineEmits<{
-  (e: 'update:formData', formData: CreateProducerRequest): void
+  (e: 'update:form-data', formData: CreateProducerRequest): void
   (e: 'update:thumbnail-file', files: FileList): void
   (e: 'update:header-file', files: FileList): void
+  (e: 'update:promotion-video', files: FileList): void
+  (e: 'update:bonus-video', files: FileList): void
   (e: 'click:search-address'): void
   (e: 'submit'): void
 }>()
@@ -68,38 +99,48 @@ const emit = defineEmits<{
 const rules = computed(() => ({
   lastname: { required, maxLength: maxLength(16) },
   firstname: { required, maxLength: maxLength(16) },
-  lastnameKana: { required, maxLength: maxLength(32) },
-  firstnameKana: { required, maxLength: maxLength(32) },
-  storeName: { required, maxLength: maxLength(64) },
+  lastnameKana: { required, kana, maxLength: maxLength(32) },
+  firstnameKana: { required, kana, maxLength: maxLength(32) },
+  username: { required, maxLength: maxLength(64) },
   email: { required, email },
   phoneNumber: { required, tel },
-  postalCode: {},
-  prefecture: {},
-  city: {},
-  addressLine1: {},
-  addressLine2: {}
+  profile: { maxLength: maxLength(2000) },
+  instagramId: { maxLength: maxLength(30) },
+  facebookId: { maxLength: maxLength(50) }
 }))
 const formDataValue = computed({
-  get: (): CreateProducerRequest => props.formData as CreateProducerRequest,
-  set: (val: CreateProducerRequest) => emit('update:formData', val)
+  get: (): CreateProducerRequest => props.formData,
+  set: (formData: CreateProducerRequest) => emit('update:form-data', formData)
 })
 
 const validate = useVuelidate(rules, formDataValue)
 
-const updateThumbnailFileHandler = (files?: FileList): void => {
+const onChangeThumbnailFile = (files?: FileList) => {
   if (!files) {
     return
   }
-
   emit('update:thumbnail-file', files)
 }
 
-const updateHeaderFileHandler = (files?: FileList): void => {
+const onChangeHeaderFile = (files?: FileList) => {
   if (!files) {
     return
   }
-
   emit('update:header-file', files)
+}
+
+const onChangePromotionVideo = (files?: FileList) => {
+  if (!files) {
+    return
+  }
+  emit('update:promotion-video', files)
+}
+
+const onChangeBonusVideo = (files?: FileList) => {
+  if (!files) {
+    return
+  }
+  emit('update:bonus-video', files)
 }
 
 const onSubmit = async (): Promise<void> => {
@@ -125,26 +166,36 @@ const onClickSearchAddress = (): void => {
     <v-form @submit.prevent="onSubmit">
       <v-card-text>
         <v-text-field
-          v-model="validate.storeName.$model"
-          :error-messages="getErrorMessage(validate.storeName.$errors)"
-          label="店舗名"
+          v-model="validate.username.$model"
+          :error-messages="getErrorMessage(validate.username.$errors)"
+          label="生産者名"
         />
-        <div class="mb-2 d-flex">
-          <molecules-profile-select-form
-            class="mr-4 flex-grow-1 flex-shrink-1"
-            :img-url="props.formData.thumbnailUrl"
-            :error="props.thumbnailUploadStatus.error"
-            :message="props.thumbnailUploadStatus.message"
-            @update:file="updateThumbnailFileHandler"
-          />
-          <molecules-header-select-form
-            class="flex-grow-1 flex-shrink-1"
-            :img-url="props.formData.headerUrl"
-            :error="props.headerUploadStatus.error"
-            :message="props.headerUploadStatus.message"
-            @update:file="updateHeaderFileHandler"
-          />
-        </div>
+        <v-row>
+          <v-col cols="12" ms="12" lg="6">
+            <molecules-video-select-form
+              label="紹介動画"
+              :video-url="formDataValue.promotionVideoUrl"
+              :error="props.promotionVideoUploadStatus.error"
+              :message="props.promotionVideoUploadStatus.message"
+              @update:file="onChangePromotionVideo"
+            />
+          </v-col>
+          <v-col cols="12" sm="12" lg="6">
+            <molecules-video-select-form
+              label="サンキュー動画"
+              :video-url="formDataValue.bonusVideoUrl"
+              :error="props.bonusVideoUploadStatus.error"
+              :message="props.bonusVideoUploadStatus.message"
+              @update:file="onChangeBonusVideo"
+            />
+          </v-col>
+        </v-row>
+        <v-textarea
+          v-model="validate.profile.$model"
+          :error-messages="getErrorMessage(validate.profile.$errors)"
+          label="プロフィール"
+          maxlength="2000"
+        />
         <div class="d-flex">
           <v-text-field
             v-model="validate.lastname.$model"
@@ -182,17 +233,51 @@ const onClickSearchAddress = (): void => {
           :error-messages="getErrorMessage(validate.phoneNumber.$errors)"
           label="連絡先（電話番号）"
         />
-
+        <v-row>
+          <v-col cols="12" sm="6" md="6">
+            <molecules-icon-select-form
+              label="アイコン画像"
+              :img-url="formDataValue.thumbnailUrl"
+              :error="props.thumbnailUploadStatus.error"
+              :message="props.thumbnailUploadStatus.message"
+              @update:file="onChangeThumbnailFile"
+            />
+          </v-col>
+          <v-col cols="12" sm="6" md="6">
+            <molecules-image-select-form
+              label="ヘッダー画像"
+              :img-url="formDataValue.headerUrl"
+              :error="props.headerUploadStatus.error"
+              :message="props.headerUploadStatus.message"
+              @update:file="onChangeHeaderFile"
+            />
+          </v-col>
+        </v-row>
         <molecules-address-form
-          v-model:postal-code="validate.postalCode.$model"
-          v-model:prefecture="validate.prefecture.$model"
-          v-model:city="validate.city.$model"
-          v-model:address-line1="validate.addressLine1.$model"
-          v-model:address-line2="validate.addressLine2.$model"
-          :loading="loading"
+          v-model:postal-code="formDataValue.postalCode"
+          v-model:prefecture="formDataValue.prefecture"
+          v-model:city="formDataValue.city"
+          v-model:address-line1="formDataValue.addressLine1"
+          v-model:address-line2="formDataValue.addressLine2"
+          :error-message="props.searchErrorMessage"
+          :loading="props.searchLoading"
           @click:search="onClickSearchAddress"
         />
+        <p>SNS連携</p>
+        <v-text-field
+          v-model="validate.instagramId.$model"
+          :error-messages="getErrorMessage(validate.instagramId.$errors)"
+          :prepend-icon="mdiInstagram"
+          prefix="https://www.instagram.com/"
+        />
+        <v-text-field
+          v-model="validate.facebookId.$model"
+          :error-messages="getErrorMessage(validate.facebookId.$errors)"
+          :prepend-icon="mdiFacebook"
+          prefix="https://www.facebook.com/"
+        />
       </v-card-text>
+
       <v-card-actions>
         <v-btn block :loading="loading" variant="outlined" color="primary" type="submit">
           登録

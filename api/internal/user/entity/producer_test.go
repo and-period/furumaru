@@ -27,27 +27,39 @@ func TestProducer(t *testing.T) {
 					FirstnameKana: "すたっふ",
 					Email:         "test-admin@and-period.jp",
 				},
-				StoreName:    "&.農園",
-				ThumbnailURL: "https://and-period.jp/thumbnail.png",
-				HeaderURL:    "https://and-period.jp/header.png",
-				PhoneNumber:  "+819012345678",
-				PostalCode:   "1000014",
-				Prefecture:   "東京都",
-				City:         "千代田区",
-				AddressLine1: "永田町1-7-1",
-				AddressLine2: "",
+				CoordinatorID:     "coordinator-id",
+				PhoneNumber:       "+819012345678",
+				Username:          "&.農園",
+				Profile:           "紹介文です。",
+				ThumbnailURL:      "https://and-period.jp/thumbnail.png",
+				HeaderURL:         "https://and-period.jp/header.png",
+				PromotionVideoURL: "https://and-period.jp/promotion.mp4",
+				BonusVideoURL:     "https://and-period.jp/bonus.mp4",
+				InstagramID:       "instagram-id",
+				FacebookID:        "facebook-id",
+				PostalCode:        "1000014",
+				Prefecture:        "東京都",
+				City:              "千代田区",
+				AddressLine1:      "永田町1-7-1",
+				AddressLine2:      "",
 			},
 			expect: &Producer{
-				AdminID:      "admin-id",
-				StoreName:    "&.農園",
-				ThumbnailURL: "https://and-period.jp/thumbnail.png",
-				HeaderURL:    "https://and-period.jp/header.png",
-				PhoneNumber:  "+819012345678",
-				PostalCode:   "1000014",
-				Prefecture:   "東京都",
-				City:         "千代田区",
-				AddressLine1: "永田町1-7-1",
-				AddressLine2: "",
+				AdminID:           "admin-id",
+				CoordinatorID:     "coordinator-id",
+				PhoneNumber:       "+819012345678",
+				Username:          "&.農園",
+				Profile:           "紹介文です。",
+				ThumbnailURL:      "https://and-period.jp/thumbnail.png",
+				HeaderURL:         "https://and-period.jp/header.png",
+				PromotionVideoURL: "https://and-period.jp/promotion.mp4",
+				BonusVideoURL:     "https://and-period.jp/bonus.mp4",
+				InstagramID:       "instagram-id",
+				FacebookID:        "facebook-id",
+				PostalCode:        "1000014",
+				Prefecture:        "東京都",
+				City:              "千代田区",
+				AddressLine1:      "永田町1-7-1",
+				AddressLine2:      "",
 				Admin: Admin{
 					CognitoID:     "cognito-id",
 					Lastname:      "&.",
@@ -164,6 +176,33 @@ func TestProducers_IDs(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.producers.IDs())
+		})
+	}
+}
+
+func TestProducers_CoordinatorIDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		producers Producers
+		expect    []string
+	}{
+		{
+			name: "success",
+			producers: Producers{
+				{CoordinatorID: "coordinator-id"},
+				{CoordinatorID: "coordinator-id"},
+			},
+			expect: []string{
+				"coordinator-id",
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.producers.CoordinatorIDs())
 		})
 	}
 }

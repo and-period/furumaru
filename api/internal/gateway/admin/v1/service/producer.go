@@ -13,30 +13,40 @@ type Producer struct {
 
 type Producers []*Producer
 
-func NewProducer(producer *entity.Producer) *Producer {
+func NewProducer(producer *entity.Producer, coordinator *Coordinator) *Producer {
+	var coordinatorName string
+	if coordinator != nil {
+		coordinatorName = coordinator.Username
+	}
 	return &Producer{
 		Producer: response.Producer{
-			ID:            producer.ID,
-			Status:        producer.Status,
-			CoordinatorID: producer.CoordinatorID,
-			Lastname:      producer.Lastname,
-			Firstname:     producer.Firstname,
-			LastnameKana:  producer.LastnameKana,
-			FirstnameKana: producer.FirstnameKana,
-			StoreName:     producer.StoreName,
-			ThumbnailURL:  producer.ThumbnailURL,
-			Thumbnails:    NewImages(producer.Thumbnails).Response(),
-			HeaderURL:     producer.HeaderURL,
-			Headers:       NewImages(producer.Headers).Response(),
-			Email:         producer.Email,
-			PhoneNumber:   producer.PhoneNumber,
-			PostalCode:    producer.PostalCode,
-			Prefecture:    producer.Prefecture,
-			City:          producer.City,
-			AddressLine1:  producer.AddressLine1,
-			AddressLine2:  producer.AddressLine2,
-			CreatedAt:     producer.CreatedAt.Unix(),
-			UpdatedAt:     producer.CreatedAt.Unix(),
+			ID:                producer.ID,
+			Status:            producer.Status,
+			CoordinatorID:     producer.CoordinatorID,
+			CoordinatorName:   coordinatorName,
+			Lastname:          producer.Lastname,
+			Firstname:         producer.Firstname,
+			LastnameKana:      producer.LastnameKana,
+			FirstnameKana:     producer.FirstnameKana,
+			Username:          producer.Username,
+			Profile:           producer.Profile,
+			ThumbnailURL:      producer.ThumbnailURL,
+			Thumbnails:        NewImages(producer.Thumbnails).Response(),
+			HeaderURL:         producer.HeaderURL,
+			Headers:           NewImages(producer.Headers).Response(),
+			PromotionVideoURL: producer.PromotionVideoURL,
+			BonusVideoURL:     producer.BonusVideoURL,
+			InstagramID:       producer.InstagramID,
+			FacebookID:        producer.FacebookID,
+			Email:             producer.Email,
+			PhoneNumber:       producer.PhoneNumber,
+			PostalCode:        producer.PostalCode,
+			Prefecture:        producer.Prefecture,
+			City:              producer.City,
+			AddressLine1:      producer.AddressLine1,
+			AddressLine2:      producer.AddressLine2,
+			CreatedAt:         producer.CreatedAt.Unix(),
+			UpdatedAt:         producer.CreatedAt.Unix(),
 		},
 	}
 }
@@ -49,10 +59,11 @@ func (p *Producer) Name() string {
 	return strings.TrimSpace(strings.Join([]string{p.Lastname, p.Firstname}, " "))
 }
 
-func NewProducers(producers entity.Producers) Producers {
+func NewProducers(producers entity.Producers, coordinators map[string]*Coordinator) Producers {
 	res := make(Producers, len(producers))
 	for i := range producers {
-		res[i] = NewProducer(producers[i])
+		coordinator := coordinators[producers[i].CoordinatorID]
+		res[i] = NewProducer(producers[i], coordinator)
 	}
 	return res
 }

@@ -640,7 +640,7 @@ export interface CoordinatorResponse {
      */
     'marcheName': string;
     /**
-     * コーディネータ
+     * コーディネータ名
      * @type {string}
      * @memberof CoordinatorResponse
      */
@@ -830,7 +830,7 @@ export interface CoordinatorsResponseCoordinatorsInner {
      */
     'marcheName': string;
     /**
-     * コーディネータ
+     * コーディネータ名
      * @type {string}
      * @memberof CoordinatorsResponseCoordinatorsInner
      */
@@ -1087,7 +1087,7 @@ export interface CreateCoordinatorRequest {
      */
     'marcheName': string;
     /**
-     * コーディネータ(64文字まで)
+     * コーディネータ名(64文字まで)
      * @type {string}
      * @memberof CreateCoordinatorRequest
      */
@@ -1227,6 +1227,12 @@ export interface CreateNotificationRequest {
  */
 export interface CreateProducerRequest {
     /**
+     * コーディネータID
+     * @type {string}
+     * @memberof CreateProducerRequest
+     */
+    'coordinatorId': string;
+    /**
      * 姓(16文字まで)
      * @type {string}
      * @memberof CreateProducerRequest
@@ -1251,23 +1257,11 @@ export interface CreateProducerRequest {
      */
     'firstnameKana': string;
     /**
-     * 店舗名(64文字まで)
+     * 生産者名(64文字まで)
      * @type {string}
      * @memberof CreateProducerRequest
      */
-    'storeName': string;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof CreateProducerRequest
-     */
-    'thumbnailUrl'?: string;
-    /**
-     * ヘッダー画像URL
-     * @type {string}
-     * @memberof CreateProducerRequest
-     */
-    'headerUrl'?: string;
+    'username': string;
     /**
      * メールアドレス
      * @type {string}
@@ -1310,6 +1304,48 @@ export interface CreateProducerRequest {
      * @memberof CreateProducerRequest
      */
     'addressLine2': string;
+    /**
+     * プロフィール(2000文字まで)
+     * @type {string}
+     * @memberof CreateProducerRequest
+     */
+    'profile': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof CreateProducerRequest
+     */
+    'thumbnailUrl': string;
+    /**
+     * ヘッダー画像URL
+     * @type {string}
+     * @memberof CreateProducerRequest
+     */
+    'headerUrl': string;
+    /**
+     * 紹介動画URL
+     * @type {string}
+     * @memberof CreateProducerRequest
+     */
+    'promotionVideoUrl': string;
+    /**
+     * 購入者動画URL
+     * @type {string}
+     * @memberof CreateProducerRequest
+     */
+    'bonusVideoUrl': string;
+    /**
+     * Instagramアカウント(30文字まで)
+     * @type {string}
+     * @memberof CreateProducerRequest
+     */
+    'instagramId': string;
+    /**
+     * Facebookアカウント(50文字まで)
+     * @type {string}
+     * @memberof CreateProducerRequest
+     */
+    'facebookId': string;
 }
 /**
  * 
@@ -3117,6 +3153,12 @@ export interface ProducerResponse {
      */
     'coordinatorId': string;
     /**
+     * 担当コーディネータ名
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'coordinatorName': string;
+    /**
      * 姓
      * @type {string}
      * @memberof ProducerResponse
@@ -3141,35 +3183,11 @@ export interface ProducerResponse {
      */
     'firstnameKana': string;
     /**
-     * 店舗名
+     * 生産者名
      * @type {string}
      * @memberof ProducerResponse
      */
-    'storeName': string;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof ProducerResponse
-     */
-    'thumbnailUrl': string;
-    /**
-     * リサイズ済みサムネイルURL一覧
-     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
-     * @memberof ProducerResponse
-     */
-    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
-    /**
-     * ヘッダー画像URL
-     * @type {string}
-     * @memberof ProducerResponse
-     */
-    'headerUrl': string;
-    /**
-     * リサイズ済みヘッダー画像URL一覧
-     * @type {Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>}
-     * @memberof ProducerResponse
-     */
-    'headers': Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>;
+    'username': string;
     /**
      * メールアドレス
      * @type {string}
@@ -3212,6 +3230,60 @@ export interface ProducerResponse {
      * @memberof ProducerResponse
      */
     'addressLine2': string;
+    /**
+     * プロフィール
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'profile': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'thumbnailUrl': string;
+    /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
+     * @memberof ProducerResponse
+     */
+    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
+    /**
+     * ヘッダー画像URL
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'headerUrl': string;
+    /**
+     * リサイズ済みヘッダー画像URL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>}
+     * @memberof ProducerResponse
+     */
+    'headers': Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>;
+    /**
+     * 紹介動画URL
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'promotionVideoUrl': string;
+    /**
+     * 購入特典動画URL
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'bonusVideoUrl': string;
+    /**
+     * Instagramアカウント
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'instagramId': string;
+    /**
+     * Facebookアカウント
+     * @type {string}
+     * @memberof ProducerResponse
+     */
+    'facebookId': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
@@ -3253,7 +3325,7 @@ export interface ProducersResponse {
  */
 export interface ProducersResponseProducersInner {
     /**
-     * システム管理者ID
+     * 生産者ID
      * @type {string}
      * @memberof ProducersResponseProducersInner
      */
@@ -3270,6 +3342,12 @@ export interface ProducersResponseProducersInner {
      * @memberof ProducersResponseProducersInner
      */
     'coordinatorId': string;
+    /**
+     * 担当コーディネータ名
+     * @type {string}
+     * @memberof ProducersResponseProducersInner
+     */
+    'coordinatorName': string;
     /**
      * 姓
      * @type {string}
@@ -3295,35 +3373,11 @@ export interface ProducersResponseProducersInner {
      */
     'firstnameKana': string;
     /**
-     * 店舗名
+     * 生産者名
      * @type {string}
      * @memberof ProducersResponseProducersInner
      */
-    'storeName': string;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof ProducersResponseProducersInner
-     */
-    'thumbnailUrl': string;
-    /**
-     * リサイズ済みサムネイルURL一覧
-     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
-     * @memberof ProducersResponseProducersInner
-     */
-    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
-    /**
-     * ヘッダー画像URL
-     * @type {string}
-     * @memberof ProducersResponseProducersInner
-     */
-    'headerUrl': string;
-    /**
-     * リサイズ済みヘッダー画像URL一覧
-     * @type {Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>}
-     * @memberof ProducersResponseProducersInner
-     */
-    'headers': Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>;
+    'username': string;
     /**
      * メールアドレス
      * @type {string}
@@ -3366,6 +3420,60 @@ export interface ProducersResponseProducersInner {
      * @memberof ProducersResponseProducersInner
      */
     'addressLine2': string;
+    /**
+     * プロフィール
+     * @type {string}
+     * @memberof ProducersResponseProducersInner
+     */
+    'profile': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof ProducersResponseProducersInner
+     */
+    'thumbnailUrl': string;
+    /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
+     * @memberof ProducersResponseProducersInner
+     */
+    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
+    /**
+     * ヘッダー画像URL
+     * @type {string}
+     * @memberof ProducersResponseProducersInner
+     */
+    'headerUrl': string;
+    /**
+     * リサイズ済みヘッダー画像URL一覧
+     * @type {Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>}
+     * @memberof ProducersResponseProducersInner
+     */
+    'headers': Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>;
+    /**
+     * 紹介動画URL
+     * @type {string}
+     * @memberof ProducersResponseProducersInner
+     */
+    'promotionVideoUrl': string;
+    /**
+     * 購入特典動画URL
+     * @type {string}
+     * @memberof ProducersResponseProducersInner
+     */
+    'bonusVideoUrl': string;
+    /**
+     * Instagramアカウント
+     * @type {string}
+     * @memberof ProducersResponseProducersInner
+     */
+    'instagramId': string;
+    /**
+     * Facebookアカウント
+     * @type {string}
+     * @memberof ProducersResponseProducersInner
+     */
+    'facebookId': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
@@ -5189,23 +5297,11 @@ export interface UpdateProducerRequest {
      */
     'firstnameKana': string;
     /**
-     * 店舗名(64文字まで)
+     * 生産者名(64文字まで)
      * @type {string}
      * @memberof UpdateProducerRequest
      */
-    'storeName': string;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof UpdateProducerRequest
-     */
-    'thumbnailUrl'?: string;
-    /**
-     * ヘッダー画像URL
-     * @type {string}
-     * @memberof UpdateProducerRequest
-     */
-    'headerUrl'?: string;
+    'username': string;
     /**
      * 電話番号 (国際番号 + 電話番号)
      * @type {string}
@@ -5242,6 +5338,48 @@ export interface UpdateProducerRequest {
      * @memberof UpdateProducerRequest
      */
     'addressLine2': string;
+    /**
+     * プロフィール(2000文字まで)
+     * @type {string}
+     * @memberof UpdateProducerRequest
+     */
+    'profile': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof UpdateProducerRequest
+     */
+    'thumbnailUrl': string;
+    /**
+     * ヘッダー画像URL
+     * @type {string}
+     * @memberof UpdateProducerRequest
+     */
+    'headerUrl': string;
+    /**
+     * 紹介動画URL
+     * @type {string}
+     * @memberof UpdateProducerRequest
+     */
+    'promotionVideoUrl': string;
+    /**
+     * 購入者動画URL
+     * @type {string}
+     * @memberof UpdateProducerRequest
+     */
+    'bonusVideoUrl': string;
+    /**
+     * Instagramアカウント(30文字まで)
+     * @type {string}
+     * @memberof UpdateProducerRequest
+     */
+    'instagramId': string;
+    /**
+     * Facebookアカウント(50文字まで)
+     * @type {string}
+     * @memberof UpdateProducerRequest
+     */
+    'facebookId': string;
 }
 /**
  * 
@@ -10005,6 +10143,49 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
+         * @summary 生産者購入特典動画アップロード
+         * @param {File} [video] 生産者購入特典映像(mp4形式,200MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UploadProducerBonusVideo: async (video?: File, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/upload/producers/bonus-video`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            if (video !== undefined) { 
+                localVarFormParams.append('video', video as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 生産者ヘッダー画像アップロード
          * @param {File} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
@@ -10031,6 +10212,49 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
 
             if (image !== undefined) { 
                 localVarFormParams.append('image', image as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 生産者紹介動画アップロード
+         * @param {File} [video] 生産者紹介映像(mp4形式,200MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UploadProducerPromotionVideo: async (video?: File, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/upload/producers/promotion-video`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            if (video !== undefined) { 
+                localVarFormParams.append('video', video as any);
             }
     
     
@@ -10183,6 +10407,17 @@ export const ProducerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary 生産者購入特典動画アップロード
+         * @param {File} [video] 生産者購入特典映像(mp4形式,200MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UploadProducerBonusVideo(video?: File, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadVideoResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProducerBonusVideo(video, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary 生産者ヘッダー画像アップロード
          * @param {File} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
@@ -10190,6 +10425,17 @@ export const ProducerApiFp = function(configuration?: Configuration) {
          */
         async v1UploadProducerHeader(image?: File, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProducerHeader(image, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 生産者紹介動画アップロード
+         * @param {File} [video] 生産者紹介映像(mp4形式,200MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UploadProducerPromotionVideo(video?: File, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadVideoResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProducerPromotionVideo(video, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -10290,6 +10536,16 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
+         * @summary 生産者購入特典動画アップロード
+         * @param {File} [video] 生産者購入特典映像(mp4形式,200MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UploadProducerBonusVideo(video?: File, options?: any): AxiosPromise<UploadVideoResponse> {
+            return localVarFp.v1UploadProducerBonusVideo(video, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary 生産者ヘッダー画像アップロード
          * @param {File} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
@@ -10297,6 +10553,16 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
          */
         v1UploadProducerHeader(image?: File, options?: any): AxiosPromise<UploadImageResponse> {
             return localVarFp.v1UploadProducerHeader(image, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 生産者紹介動画アップロード
+         * @param {File} [video] 生産者紹介映像(mp4形式,200MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UploadProducerPromotionVideo(video?: File, options?: any): AxiosPromise<UploadVideoResponse> {
+            return localVarFp.v1UploadProducerPromotionVideo(video, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -10409,6 +10675,18 @@ export class ProducerApi extends BaseAPI {
 
     /**
      * 
+     * @summary 生産者購入特典動画アップロード
+     * @param {File} [video] 生産者購入特典映像(mp4形式,200MBまで)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProducerApi
+     */
+    public v1UploadProducerBonusVideo(video?: File, options?: AxiosRequestConfig) {
+        return ProducerApiFp(this.configuration).v1UploadProducerBonusVideo(video, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary 生産者ヘッダー画像アップロード
      * @param {File} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
      * @param {*} [options] Override http request option.
@@ -10417,6 +10695,18 @@ export class ProducerApi extends BaseAPI {
      */
     public v1UploadProducerHeader(image?: File, options?: AxiosRequestConfig) {
         return ProducerApiFp(this.configuration).v1UploadProducerHeader(image, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 生産者紹介動画アップロード
+     * @param {File} [video] 生産者紹介映像(mp4形式,200MBまで)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProducerApi
+     */
+    public v1UploadProducerPromotionVideo(video?: File, options?: AxiosRequestConfig) {
+        return ProducerApiFp(this.configuration).v1UploadProducerPromotionVideo(video, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

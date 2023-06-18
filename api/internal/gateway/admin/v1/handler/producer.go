@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
@@ -70,9 +71,14 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 		httpError(ctx, err)
 		return
 	}
+	coordinators, err := h.multiGetCoordinators(ctx, producers.CoordinatorIDs())
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
 
 	res := &response.ProducersResponse{
-		Producers: service.NewProducers(producers).Response(),
+		Producers: service.NewProducers(producers, coordinators.Map()).Response(),
 		Total:     total,
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -110,8 +116,14 @@ func (h *handler) CreateProducer(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
+	if getRole(ctx) == service.AdminRoleCoordinator {
+		if !currentAdmin(ctx, req.CoordinatorID) {
+			forbidden(ctx, errors.New("handler: invalid coordinator id"))
+			return
+		}
+	}
 
-	var thumbnailURL, headerURL string
+	var thumbnailURL, headerURL, promotionVideoURL, bonusVideoURL string
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
 		if req.ThumbnailURL == "" {
@@ -133,35 +145,66 @@ func (h *handler) CreateProducer(ctx *gin.Context) {
 		headerURL, err = h.media.UploadProducerHeader(ectx, in)
 		return
 	})
+	eg.Go(func() (err error) {
+		if req.PromotionVideoURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.PromotionVideoURL,
+		}
+		promotionVideoURL, err = h.media.UploadProducerPromotionVideo(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		if req.BonusVideoURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.BonusVideoURL,
+		}
+		bonusVideoURL, err = h.media.UploadProducerBonusVideo(ectx, in)
+		return
+	})
 	if err := eg.Wait(); err != nil {
 		httpError(ctx, err)
 		return
 	}
 
 	in := &user.CreateProducerInput{
-		Lastname:      req.Lastname,
-		Firstname:     req.Firstname,
-		LastnameKana:  req.LastnameKana,
-		FirstnameKana: req.FirstnameKana,
-		StoreName:     req.StoreName,
-		ThumbnailURL:  thumbnailURL,
-		HeaderURL:     headerURL,
-		Email:         req.Email,
-		PhoneNumber:   req.PhoneNumber,
-		PostalCode:    req.PostalCode,
-		Prefecture:    req.Prefecture,
-		City:          req.City,
-		AddressLine1:  req.AddressLine1,
-		AddressLine2:  req.AddressLine2,
+		CoordinatorID:     req.CoordinatorID,
+		Lastname:          req.Lastname,
+		Firstname:         req.Firstname,
+		LastnameKana:      req.LastnameKana,
+		FirstnameKana:     req.FirstnameKana,
+		Username:          req.Username,
+		Profile:           req.Profile,
+		ThumbnailURL:      thumbnailURL,
+		HeaderURL:         headerURL,
+		PromotionVideoURL: promotionVideoURL,
+		BonusVideoURL:     bonusVideoURL,
+		InstagramID:       req.InstagramID,
+		FacebookID:        req.FacebookID,
+		Email:             req.Email,
+		PhoneNumber:       req.PhoneNumber,
+		PostalCode:        req.PostalCode,
+		Prefecture:        req.Prefecture,
+		City:              req.City,
+		AddressLine1:      req.AddressLine1,
+		AddressLine2:      req.AddressLine2,
 	}
 	producer, err := h.user.CreateProducer(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
+	coordinator, err := h.getCoordinator(ctx, producer.CoordinatorID)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
 
 	res := &response.ProducerResponse{
-		Producer: service.NewProducer(producer).Response(),
+		Producer: service.NewProducer(producer, coordinator).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -173,7 +216,7 @@ func (h *handler) UpdateProducer(ctx *gin.Context) {
 		return
 	}
 
-	var thumbnailURL, headerURL string
+	var thumbnailURL, headerURL, promotionVideoURL, bonusVideoURL string
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
 		if req.ThumbnailURL == "" {
@@ -195,26 +238,51 @@ func (h *handler) UpdateProducer(ctx *gin.Context) {
 		headerURL, err = h.media.UploadProducerHeader(ectx, in)
 		return
 	})
+	eg.Go(func() (err error) {
+		if req.PromotionVideoURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.PromotionVideoURL,
+		}
+		promotionVideoURL, err = h.media.UploadProducerPromotionVideo(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		if req.BonusVideoURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.BonusVideoURL,
+		}
+		bonusVideoURL, err = h.media.UploadProducerBonusVideo(ectx, in)
+		return
+	})
 	if err := eg.Wait(); err != nil {
 		httpError(ctx, err)
 		return
 	}
 
 	in := &user.UpdateProducerInput{
-		ProducerID:    util.GetParam(ctx, "producerId"),
-		Lastname:      req.Lastname,
-		Firstname:     req.Firstname,
-		LastnameKana:  req.LastnameKana,
-		FirstnameKana: req.FirstnameKana,
-		StoreName:     req.StoreName,
-		ThumbnailURL:  thumbnailURL,
-		HeaderURL:     headerURL,
-		PhoneNumber:   req.PhoneNumber,
-		PostalCode:    req.PostalCode,
-		Prefecture:    req.Prefecture,
-		City:          req.City,
-		AddressLine1:  req.AddressLine1,
-		AddressLine2:  req.AddressLine2,
+		ProducerID:        util.GetParam(ctx, "producerId"),
+		Lastname:          req.Lastname,
+		Firstname:         req.Firstname,
+		LastnameKana:      req.LastnameKana,
+		FirstnameKana:     req.FirstnameKana,
+		Username:          req.Username,
+		Profile:           req.Profile,
+		ThumbnailURL:      thumbnailURL,
+		HeaderURL:         headerURL,
+		PromotionVideoURL: promotionVideoURL,
+		BonusVideoURL:     bonusVideoURL,
+		InstagramID:       req.InstagramID,
+		FacebookID:        req.FacebookID,
+		PhoneNumber:       req.PhoneNumber,
+		PostalCode:        req.PostalCode,
+		Prefecture:        req.Prefecture,
+		City:              req.City,
+		AddressLine1:      req.AddressLine1,
+		AddressLine2:      req.AddressLine2,
 	}
 	if err := h.user.UpdateProducer(ctx, in); err != nil {
 		httpError(ctx, err)
@@ -278,7 +346,14 @@ func (h *handler) multiGetProducers(ctx context.Context, producerIDs []string) (
 	if err != nil {
 		return nil, err
 	}
-	return service.NewProducers(producers), nil
+	if len(producers) == 0 {
+		return service.Producers{}, nil
+	}
+	coordinators, err := h.multiGetCoordinators(ctx, producers.CoordinatorIDs())
+	if err != nil {
+		return nil, err
+	}
+	return service.NewProducers(producers, coordinators.Map()), nil
 }
 
 func (h *handler) getProducer(ctx context.Context, producerID string) (*service.Producer, error) {
@@ -289,7 +364,11 @@ func (h *handler) getProducer(ctx context.Context, producerID string) (*service.
 	if err != nil {
 		return nil, err
 	}
-	return service.NewProducer(producer), nil
+	coordinator, err := h.getCoordinator(ctx, producer.CoordinatorID)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewProducer(producer, coordinator), nil
 }
 
 func (h *handler) getProducersByCoordinatorID(ctx context.Context, coordinatorID string) (service.Producers, error) {
@@ -303,5 +382,12 @@ func (h *handler) getProducersByCoordinatorID(ctx context.Context, coordinatorID
 	if err != nil {
 		return nil, err
 	}
-	return service.NewProducers(producers), nil
+	if len(producers) == 0 {
+		return service.Producers{}, nil
+	}
+	coordinators, err := h.multiGetCoordinators(ctx, producers.CoordinatorIDs())
+	if err != nil {
+		return nil, err
+	}
+	return service.NewProducers(producers, coordinators.Map()), nil
 }

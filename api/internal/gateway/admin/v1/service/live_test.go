@@ -102,7 +102,7 @@ func TestLive_Fill(t *testing.T) {
 					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",
 					FirstnameKana: "かんりしゃ",
-					StoreName:     "&.農園",
+					Username:      "&.農園",
 					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
 					HeaderURL:     "https://and-period.jp/header.png",
 					Email:         "test-producer@and-period.jp",

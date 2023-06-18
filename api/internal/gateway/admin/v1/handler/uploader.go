@@ -23,6 +23,8 @@ func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 	arg.POST("/coordinators/bonus-video", h.uploadCoordinatorBonusVideo)
 	arg.POST("/producers/thumbnail", h.uploadProducerThumbnail)
 	arg.POST("/producers/header", h.uploadProducerHeader)
+	arg.POST("/producers/promotion-video", h.uploadProducerPromotionVideo)
+	arg.POST("/producers/bonus-video", h.UploadProducerBonusVideo)
 	arg.POST("/products/image", h.uploadProductImage)
 	arg.POST("/products/video", h.uploadProductVideo)
 	arg.POST("/product-types/icon", h.uploadProductTypeIcon)
@@ -56,6 +58,16 @@ func (h *handler) uploadProducerThumbnail(ctx *gin.Context) {
 func (h *handler) uploadProducerHeader(ctx *gin.Context) {
 	const filename = "image"
 	h.uploadFile(ctx, filename, h.media.GenerateProducerHeader)
+}
+
+func (h *handler) uploadProducerPromotionVideo(ctx *gin.Context) {
+	const filename = "video"
+	h.uploadFile(ctx, filename, h.media.GenerateProducerPromotionVideo)
+}
+
+func (h *handler) UploadProducerBonusVideo(ctx *gin.Context) {
+	const filename = "video"
+	h.uploadFile(ctx, filename, h.media.GenerateProducerBonusVideo)
 }
 
 func (h *handler) uploadProductImage(ctx *gin.Context) {

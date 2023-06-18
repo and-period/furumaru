@@ -4,7 +4,7 @@ import { VDataTable } from 'vuetify/lib/labs/components'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import { getResizedImages } from '~/lib/helpers'
 import { AlertType } from '~/lib/hooks'
-import { ProducersResponseProducersInner } from '~/types/api'
+import { AdminStatus, ProducersResponseProducersInner } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -46,34 +46,43 @@ const emit = defineEmits<{
   (e: 'click:update-items-per-page', page: number): void
   (e: 'click:row', producerId: string): void
   (e: 'click:add'): void
-  (e: 'click:add-video', producerId: string): void
   (e: 'click:delete', producerId: string): void
   (e: 'update:delete-dialog', v: boolean): void
 }>()
 
 const headers: VDataTable['headers'] = [
   {
-    title: 'サムネイル',
-    key: 'thumbnail'
-  },
-  {
-    title: '農園名',
-    key: 'storeName'
+    title: '',
+    key: 'thumbnail',
+    sortable: false
   },
   {
     title: '生産者名',
-    key: 'name'
+    key: 'username',
+    sortable: false
   },
   {
-    title: 'Email',
-    key: 'email'
+    title: '担当コーディネータ名',
+    key: 'coordinatorName',
+    sortable: false
+  },
+  {
+    title: 'メールアドレス',
+    key: 'email',
+    sortable: false
   },
   {
     title: '電話番号',
-    key: 'phoneNumber'
+    key: 'phoneNumber',
+    sortable: false
   },
   {
-    title: 'Actions',
+    title: 'ステータス',
+    key: 'status',
+    sortable: false
+  },
+  {
+    title: '',
     key: 'actions',
     sortable: false
   }
@@ -86,7 +95,33 @@ const deleteDialogValue = computed({
   set: (val: boolean): void => emit('update:delete-dialog', val)
 })
 
-const getName = (producer?: ProducersResponseProducersInner): string => {
+const getStatus = (status: AdminStatus): string => {
+  switch (status) {
+    case AdminStatus.ACTIVATED:
+      return '有効'
+    case AdminStatus.INVITED:
+      return '招待中'
+    case AdminStatus.DEACTIVATED:
+      return '無効'
+    default:
+      return '不明'
+  }
+}
+
+const getStatusColor = (status: AdminStatus): string => {
+  switch (status) {
+    case AdminStatus.ACTIVATED:
+      return 'primary'
+    case AdminStatus.INVITED:
+      return 'secondary'
+    case AdminStatus.DEACTIVATED:
+      return 'error'
+    default:
+      return 'unknown'
+  }
+}
+
+const producerName = (producer?: ProducersResponseProducersInner): string => {
   if (!producer) {
     return ''
   }
@@ -125,10 +160,6 @@ const onClickAdd = (): void => {
   emit('click:add')
 }
 
-const onClickAddVideo = (producerId: string): void => {
-  emit('click:add-video', producerId)
-}
-
 const onClickDelete = (): void => {
   emit('click:delete', selectedItem?.value?.id || '')
 }
@@ -140,7 +171,7 @@ const onClickDelete = (): void => {
   <v-dialog v-model="deleteDialogValue" width="500">
     <v-card>
       <v-card-title>
-        {{ getName(selectedItem) }}を本当に削除しますか？
+        {{ producerName(selectedItem) }}を本当に削除しますか？
       </v-card-title>
       <v-card-actions>
         <v-spacer />
@@ -188,25 +219,22 @@ const onClickDelete = (): void => {
             <v-icon v-else :icon="mdiAccount" />
           </v-avatar>
         </template>
-        <template #[`item.name`]="{ item }">
-          {{ getName(item.raw) }}
-        </template>
         <template #[`item.phoneNumber`]="{ item }">
           {{ convertI18nToJapanesePhoneNumber(item.raw.phoneNumber) }}
+        </template>
+        <template #[`item.status`]="{ item }">
+          <v-chip size="small" :color="getStatusColor(item.raw.status)">
+            {{ getStatus(item.raw.status) }}
+          </v-chip>
         </template>
         <template #[`item.actions`]="{ item }">
           <v-btn
             color="primary"
             size="small"
             variant="outlined"
-            class="mr-4"
             @click.stop="onClickOpenDeleteDialog(item.raw)"
           >
             <v-icon size="small" :icon="mdiDelete" />削除
-          </v-btn>
-          <v-btn variant="outlined" color="primary" size="small" @click.stop="onClickAddVideo(item.raw.id)">
-            <v-icon size="small" :icon="mdiPlus" />
-            追加
           </v-btn>
         </template>
       </v-data-table-server>

@@ -220,9 +220,6 @@ const onClickDelete = (): void => {
             <v-icon v-else :icon="mdiAccount" />
           </v-avatar>
         </template>
-        <template #[`item.name`]="{ item }">
-          {{ `${item.raw.lastname} ${item.raw.firstname}` }}
-        </template>
         <template #[`item.phoneNumber`]="{ item }">
           {{ convertI18nToJapanesePhoneNumber(item.raw.phoneNumber) }}
         </template>
