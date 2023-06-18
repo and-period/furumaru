@@ -60,6 +60,10 @@ func (h *handler) ListRelatedProducers(ctx *gin.Context) {
 		return
 	}
 	coordinators, err := h.multiGetCoordinators(ctx, producers.CoordinatorIDs())
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
 
 	res := &response.ProducersResponse{
 		Producers: service.NewProducers(producers, coordinators.Map()).Response(),
