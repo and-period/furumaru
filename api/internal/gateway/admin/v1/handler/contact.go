@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/messenger"
+	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
 )
@@ -70,13 +71,13 @@ func (h *handler) CreateContact(ctx *gin.Context) {
 		Content:   req.Content,
 	}
 	sthread, err := h.messenger.CreateThread(ctx, threadIn)
-	thread := service.NewThread(sthread)
-	threads := make([]*response.Thread, 1)
-	threads[0] = thread.Response()
-	contact := service.NewContact(scontact)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
 	res := &response.ContactResponse{
-		Contact: contact.Response(),
-		Threads: threads,
+		Contact: service.NewContact(scontact).Response(),
+		Threads: service.NewThreads(entity.Threads{sthread}).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
