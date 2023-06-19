@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { mdiDelete, mdiPencil, mdiPlus } from '@mdi/js';
-import { VDataTable } from 'vuetify/lib/labs/components';
-import { AlertType } from '~/lib/hooks';
-import { CreateProductTagRequest, ProductTagsResponseProductTagsInner, UpdateProductTagRequest } from '~/types/api';
+import { mdiDelete, mdiPencil, mdiPlus } from '@mdi/js'
+import { VDataTable } from 'vuetify/lib/labs/components'
+import useVuelidate from '@vuelidate/core'
+import { AlertType } from '~/lib/hooks'
+import { CreateProductTagRequest, ProductTagsResponseProductTagsInner, UpdateProductTagRequest } from '~/types/api'
 import { required, getErrorMessage, maxLength } from '~/lib/validations'
-import useVuelidate from '@vuelidate/core';
 
 const props = defineProps({
   loading: {
@@ -62,7 +62,7 @@ const props = defineProps({
     default: (): UpdateProductTagRequest => ({
       name: ''
     })
-  },
+  }
 })
 
 const emit = defineEmits<{
@@ -82,7 +82,7 @@ const emit = defineEmits<{
 const headers: VDataTable['headers'] = [
   {
     title: '商品タグ',
-    key: 'name',
+    key: 'name'
   },
   {
     title: '',
@@ -90,7 +90,7 @@ const headers: VDataTable['headers'] = [
     width: 200,
     align: 'end',
     sortable: false
-  },
+  }
 ]
 
 const selectedItem = ref<ProductTagsResponseProductTagsInner>()
@@ -204,8 +204,12 @@ const submitDelete = (): void => {
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="onClickCloseNewDialog">キャンセル</v-btn>
-        <v-btn :loading="loading" color="primary" variant="outlined" @click="submitCreate">登録</v-btn>
+        <v-btn color="error" variant="text" @click="onClickCloseNewDialog">
+          キャンセル
+        </v-btn>
+        <v-btn :loading="loading" color="primary" variant="outlined" @click="submitCreate">
+          登録
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -225,8 +229,12 @@ const submitDelete = (): void => {
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="onClickCloseEditDialog">キャンセル</v-btn>
-        <v-btn :loading="loading" color="primary" variant="outlined" @click="submitUpdate">更新</v-btn>
+        <v-btn color="error" variant="text" @click="onClickCloseEditDialog">
+          キャンセル
+        </v-btn>
+        <v-btn :loading="loading" color="primary" variant="outlined" @click="submitUpdate">
+          更新
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

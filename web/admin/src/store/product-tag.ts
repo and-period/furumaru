@@ -1,6 +1,6 @@
-import { CreateProductTagRequest, ProductTagResponse, ProductTagsResponse, UpdateProductTagRequest } from "~/types/api";
+import { useCommonStore } from './common'
+import { CreateProductTagRequest, ProductTagResponse, ProductTagsResponse, UpdateProductTagRequest } from '~/types/api'
 import { apiClient } from '~/plugins/api-client'
-import { useCommonStore } from "./common";
 
 export const useProductTagStore = defineStore('productTag', {
   state: () => ({
@@ -16,7 +16,7 @@ export const useProductTagStore = defineStore('productTag', {
      * @param offset 取得開始位置
      * @param orders ソートキー
      */
-    async fetchProductTags(limit = 20, offset = 0, orders: string[] = []): Promise<void> {
+    async fetchProductTags (limit = 20, offset = 0, orders: string[] = []): Promise<void> {
       try {
         const res = await apiClient.productTagApi().v1ListProductTags(limit, offset, '', orders.join(','))
         this.productTags = res.data.productTags
@@ -77,6 +77,6 @@ export const useProductTagStore = defineStore('productTag', {
       } catch (err) {
         this.errorHandler(err)
       }
-    },
+    }
   }
 })

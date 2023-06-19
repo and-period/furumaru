@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { storeToRefs } from 'pinia';
-import { VDataTable } from 'vuetify/lib/labs/components';
-import { useAlert, usePagination } from '~/lib/hooks';
-import { useProductTagStore } from '~/store';
-import { CreateProductTagRequest, UpdateProductTagRequest } from '~/types/api';
+import { storeToRefs } from 'pinia'
+import { VDataTable } from 'vuetify/lib/labs/components'
+import { useAlert, usePagination } from '~/lib/hooks'
+import { useProductTagStore } from '~/store'
+import { CreateProductTagRequest, UpdateProductTagRequest } from '~/types/api'
 
 const productTagStore = useProductTagStore()
 const pagination = usePagination()
@@ -17,10 +17,10 @@ const newDialog = ref<boolean>(false)
 const editDialog = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
 const newFormData = ref<CreateProductTagRequest>({
-  name: '',
+  name: ''
 })
 const editFormData = ref<UpdateProductTagRequest>({
-  name: '',
+  name: ''
 })
 
 const fetchState = useAsyncData(async (): Promise<void> => {
