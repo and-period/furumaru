@@ -35,6 +35,18 @@ type Service interface {
 	UpdateProductTypeIcons(ctx context.Context, in *UpdateProductTypeIconsInput) error
 	// 品目削除
 	DeleteProductType(ctx context.Context, in *DeleteProductTypeInput) error
+	// 商品タグ一覧取得
+	ListProductTags(ctx context.Context, in *ListProductTagsInput) (entity.ProductTags, int64, error)
+	// 商品タグ一覧取得(ID指定)
+	MultiGetProductTags(ctx context.Context, in *MultiGetProductTagsInput) (entity.ProductTags, error)
+	// 商品タグ取得
+	GetProductTag(ctx context.Context, in *GetProductTagInput) (*entity.ProductTag, error)
+	// 商品タグ登録
+	CreateProductTag(ctx context.Context, in *CreateProductTagInput) (*entity.ProductTag, error)
+	// 商品タグ更新
+	UpdateProductTag(ctx context.Context, in *UpdateProductTagInput) error
+	// 商品タグ削除
+	DeleteProductTag(ctx context.Context, in *DeleteProductTagInput) error
 	// 配送設定一覧取得
 	ListShippings(ctx context.Context, in *ListShippingsInput) (entity.Shippings, int64, error)
 	// 配送設定一覧取得(ID指定)

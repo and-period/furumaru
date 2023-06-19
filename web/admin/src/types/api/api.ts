@@ -1486,6 +1486,19 @@ export interface CreateProductRequestMediaInner {
 /**
  * 
  * @export
+ * @interface CreateProductTagRequest
+ */
+export interface CreateProductTagRequest {
+    /**
+     * 商品タグ名(32文字まで)
+     * @type {string}
+     * @memberof CreateProductTagRequest
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
  * @interface CreateProductTypeRequest
  */
 export interface CreateProductTypeRequest {
@@ -3663,6 +3676,87 @@ export interface ProductResponse {
 /**
  * 
  * @export
+ * @interface ProductTagResponse
+ */
+export interface ProductTagResponse {
+    /**
+     * 商品タグID
+     * @type {string}
+     * @memberof ProductTagResponse
+     */
+    'id': string;
+    /**
+     * 商品タグ名(32文字まで)
+     * @type {string}
+     * @memberof ProductTagResponse
+     */
+    'name': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ProductTagResponse
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof ProductTagResponse
+     */
+    'updatedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface ProductTagsResponse
+ */
+export interface ProductTagsResponse {
+    /**
+     * 品目一覧
+     * @type {Array<ProductTagsResponseProductTagsInner>}
+     * @memberof ProductTagsResponse
+     */
+    'productTags': Array<ProductTagsResponseProductTagsInner>;
+    /**
+     * 合計数
+     * @type {number}
+     * @memberof ProductTagsResponse
+     */
+    'total': number;
+}
+/**
+ * 
+ * @export
+ * @interface ProductTagsResponseProductTagsInner
+ */
+export interface ProductTagsResponseProductTagsInner {
+    /**
+     * 商品タグID
+     * @type {string}
+     * @memberof ProductTagsResponseProductTagsInner
+     */
+    'id': string;
+    /**
+     * 商品タグ名(32文字まで)
+     * @type {string}
+     * @memberof ProductTagsResponseProductTagsInner
+     */
+    'name': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ProductTagsResponseProductTagsInner
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof ProductTagsResponseProductTagsInner
+     */
+    'updatedAt': number;
+}
+/**
+ * 
+ * @export
  * @interface ProductTypeResponse
  */
 export interface ProductTypeResponse {
@@ -5501,6 +5595,19 @@ export interface UpdateProductRequest {
      * @memberof UpdateProductRequest
      */
     'originCity': string;
+}
+/**
+ * 
+ * @export
+ * @interface UpdateProductTagRequest
+ */
+export interface UpdateProductTagRequest {
+    /**
+     * 商品タグ名(32文字まで)
+     * @type {string}
+     * @memberof UpdateProductTagRequest
+     */
+    'name': string;
 }
 /**
  * 
@@ -11312,6 +11419,364 @@ export class ProductApi extends BaseAPI {
      */
     public v1UploadProductVideo(video?: File, options?: AxiosRequestConfig) {
         return ProductApiFp(this.configuration).v1UploadProductVideo(video, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * ProductTagApi - axios parameter creator
+ * @export
+ */
+export const ProductTagApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary 商品タグ登録
+         * @param {CreateProductTagRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateProductTag: async (body: CreateProductTagRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1CreateProductTag', 'body', body)
+            const localVarPath = `/v1/product-tags`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 商品タグ削除
+         * @param {string} productTagId 商品タグID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteProductTag: async (productTagId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'productTagId' is not null or undefined
+            assertParamExists('v1DeleteProductTag', 'productTagId', productTagId)
+            const localVarPath = `/v1/product-tags/{productTagId}`
+                .replace(`{${"ProductTagId"}}`, encodeURIComponent(String(productTagId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 商品タグ一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {string} [name] 商品タグ名(あいまい検索)(32文字以内)
+         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListProductTags: async (limit?: number, offset?: number, name?: string, orders?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/product-tags`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+            if (orders !== undefined) {
+                localVarQueryParameter['orders'] = orders;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 商品タグ更新
+         * @param {string} productTagId 商品タグID
+         * @param {UpdateProductTagRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateProductTag: async (productTagId: string, body: UpdateProductTagRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'productTagId' is not null or undefined
+            assertParamExists('v1UpdateProductTag', 'productTagId', productTagId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpdateProductTag', 'body', body)
+            const localVarPath = `/v1/product-tags/{productTagId}`
+                .replace(`{${"ProductTagId"}}`, encodeURIComponent(String(productTagId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ProductTagApi - functional programming interface
+ * @export
+ */
+export const ProductTagApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ProductTagApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary 商品タグ登録
+         * @param {CreateProductTagRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1CreateProductTag(body: CreateProductTagRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductTagResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateProductTag(body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 商品タグ削除
+         * @param {string} productTagId 商品タグID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1DeleteProductTag(productTagId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteProductTag(productTagId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 商品タグ一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {string} [name] 商品タグ名(あいまい検索)(32文字以内)
+         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ListProductTags(limit?: number, offset?: number, name?: string, orders?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductTagsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListProductTags(limit, offset, name, orders, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 商品タグ更新
+         * @param {string} productTagId 商品タグID
+         * @param {UpdateProductTagRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UpdateProductTag(productTagId: string, body: UpdateProductTagRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateProductTag(productTagId, body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * ProductTagApi - factory interface
+ * @export
+ */
+export const ProductTagApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ProductTagApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary 商品タグ登録
+         * @param {CreateProductTagRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateProductTag(body: CreateProductTagRequest, options?: any): AxiosPromise<ProductTagResponse> {
+            return localVarFp.v1CreateProductTag(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 商品タグ削除
+         * @param {string} productTagId 商品タグID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteProductTag(productTagId: string, options?: any): AxiosPromise<object> {
+            return localVarFp.v1DeleteProductTag(productTagId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 商品タグ一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {string} [name] 商品タグ名(あいまい検索)(32文字以内)
+         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListProductTags(limit?: number, offset?: number, name?: string, orders?: string, options?: any): AxiosPromise<ProductTagsResponse> {
+            return localVarFp.v1ListProductTags(limit, offset, name, orders, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 商品タグ更新
+         * @param {string} productTagId 商品タグID
+         * @param {UpdateProductTagRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateProductTag(productTagId: string, body: UpdateProductTagRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1UpdateProductTag(productTagId, body, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ProductTagApi - object-oriented interface
+ * @export
+ * @class ProductTagApi
+ * @extends {BaseAPI}
+ */
+export class ProductTagApi extends BaseAPI {
+    /**
+     * 
+     * @summary 商品タグ登録
+     * @param {CreateProductTagRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProductTagApi
+     */
+    public v1CreateProductTag(body: CreateProductTagRequest, options?: AxiosRequestConfig) {
+        return ProductTagApiFp(this.configuration).v1CreateProductTag(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 商品タグ削除
+     * @param {string} productTagId 商品タグID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProductTagApi
+     */
+    public v1DeleteProductTag(productTagId: string, options?: AxiosRequestConfig) {
+        return ProductTagApiFp(this.configuration).v1DeleteProductTag(productTagId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 商品タグ一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [name] 商品タグ名(あいまい検索)(32文字以内)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProductTagApi
+     */
+    public v1ListProductTags(limit?: number, offset?: number, name?: string, orders?: string, options?: AxiosRequestConfig) {
+        return ProductTagApiFp(this.configuration).v1ListProductTags(limit, offset, name, orders, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 商品タグ更新
+     * @param {string} productTagId 商品タグID
+     * @param {UpdateProductTagRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProductTagApi
+     */
+    public v1UpdateProductTag(productTagId: string, body: UpdateProductTagRequest, options?: AxiosRequestConfig) {
+        return ProductTagApiFp(this.configuration).v1UpdateProductTag(productTagId, body, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

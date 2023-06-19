@@ -268,6 +268,7 @@ func (p *producer) AggregateByCoordinatorID(
 
 	stmt := p.db.Statement(ctx, p.db.DB, producerTable, fields...).
 		Where("coordinator_id IN (?)", coordinatorIDs).
+		Where("deleted_at IS NOT NULL").
 		Group("coordinator_id")
 
 	rows, err := stmt.Rows()

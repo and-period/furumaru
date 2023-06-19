@@ -1,0 +1,73 @@
+productTagResponse:
+  type: object
+  properties:
+    id:
+      type: string
+      description: 商品タグID
+    name:
+      type: string
+      description: 商品タグ名(32文字まで)
+    createdAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
+    updatedAt:
+      type: integer
+      format: int64
+      description: 更新日時 (unixtime)
+  required:
+  - id
+  - name
+  - createdAt
+  - updatedAt
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    name: '贈答品'
+    createdAt: 1640962800
+    updatedAt: 1640962800
+productTagsResponse:
+  type: object
+  properties:
+    productTags:
+      type: array
+      description: 品目一覧
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            description: 商品タグID
+          name:
+            type: string
+            description: 商品タグ名(32文字まで)
+          createdAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+          updatedAt:
+            type: integer
+            format: int64
+            description: 更新日時 (unixtime)
+        required:
+        - id
+        - name
+        - createdAt
+        - updatedAt
+    total:
+      type: integer
+      format: int64
+      description: 合計数
+  required:
+  - productTags
+  - total
+  example:
+    productTags:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: '贈答品'
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: '有機栽培認証'
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    total: 2

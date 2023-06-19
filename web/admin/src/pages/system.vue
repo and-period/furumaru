@@ -14,11 +14,15 @@ const menus: SettingMenu[] = [
     action: () => router.push('/coordinators')
   },
   {
-    text: 'カテゴリー・品目登録',
+    text: 'カテゴリー・品目管理',
     action: () => router.push('/categories')
   },
   {
-    text: '配送設定',
+    text: '商品タグ管理',
+    action: () => router.push('/product-tags')
+  },
+  {
+    text: '配送設定管理',
     action: () => router.push('/shippings')
   }
 ]
