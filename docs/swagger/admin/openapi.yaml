@@ -21,6 +21,8 @@ tags:
   description: 商品種別関連
 - name: ProductType
   description: 品目関連
+- name: ProductTag
+  description: 商品タグ関連
 - name: Product
   description: 商品関連
 - name: Shipping
@@ -104,6 +106,11 @@ paths:
     $ref: './paths/v1/products/index.yaml'
   /v1/products/{productId}:
     $ref: './paths/v1/products/_productId/index.yaml'
+  # ProductTag
+  /v1/product-tags:
+    $ref: './paths/v1/product-tags/index.yaml'
+  /v1/product-tags/{productTagId}:
+    $ref: './paths/v1/product-tags/_productTagId/index.yaml'
   # Shipping
   /v1/shippings:
     $ref: './paths/v1/shippings/index.yaml'
@@ -254,9 +261,13 @@ components:
     v1UpdateCategoryRequest:
       $ref: './components/schemas/v1/category.request.yaml#/updateCategoryRequest'
     v1CreateProductTypeRequest:
-      $ref: './components/schemas/v1/product_type.request.yaml#/createProductTypeRequest'
+      $ref: './components/schemas/v1/product-type.request.yaml#/createProductTypeRequest'
     v1UpdateProductTypeRequest:
-      $ref: './components/schemas/v1/product_type.request.yaml#/updateProductTypeRequest'
+      $ref: './components/schemas/v1/product-type.request.yaml#/updateProductTypeRequest'
+    v1CreateProductTagRequest:
+      $ref: './components/schemas/v1/product-tag.request.yaml#/createProductTagRequest'
+    v1UpdateProductTagRequest:
+      $ref: './components/schemas/v1/product-tag.request.yaml#/updateProductTagRequest'
     v1CreateProductRequest:
       $ref: './components/schemas/v1/product.request.yaml#/createProductRequest'
     v1UpdateProductRequest:
@@ -319,9 +330,13 @@ components:
     v1CategoriesResponse:
       $ref: './components/schemas/v1/category.response.yaml#/categoriesResponse'
     v1ProductTypeResponse:
-      $ref: './components/schemas/v1/product_type.response.yaml#/productTypeResponse'
+      $ref: './components/schemas/v1/product-type.response.yaml#/productTypeResponse'
     v1ProductTypesResponse:
-      $ref: './components/schemas/v1/product_type.response.yaml#/productTypesResponse'
+      $ref: './components/schemas/v1/product-type.response.yaml#/productTypesResponse'
+    v1ProductTagResponse:
+      $ref: './components/schemas/v1/product-tag.response.yaml#/productTagResponse'
+    v1ProductTagsResponse:
+      $ref: './components/schemas/v1/product-tag.response.yaml#/productTagsResponse'
     v1ProductResponse:
       $ref: './components/schemas/v1/product.response.yaml#/productResponse'
     v1ProductsResponse:
@@ -359,7 +374,7 @@ components:
     v1UsersResponse:
       $ref: './components/schemas/v1/user.response.yaml#/usersResponse'
     v1PostalCodeResponse:
-      $ref: './components/schemas/v1/postal_code.response.yaml#/postalCodeResponse'
+      $ref: './components/schemas/v1/postal-code.response.yaml#/postalCodeResponse'
     v1UploadImageResponse:
       $ref: './components/schemas/v1/upload.response.yaml#/uploadImageResponse'
     v1UploadVideoResponse:

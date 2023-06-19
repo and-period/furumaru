@@ -82,6 +82,39 @@ type DeleteProductTypeInput struct {
 	ProductTypeID string `validate:"required"`
 }
 
+type ListProductTagsInput struct {
+	Name   string                  `validate:"omitempty,max=32"`
+	Limit  int64                   `validate:"required,max=200"`
+	Offset int64                   `validate:"min=0"`
+	Orders []*ListProductTagsOrder `validate:"omitempty,dive,required"`
+}
+
+type ListProductTagsOrder struct {
+	Key        entity.ProductTagOrderBy `validate:"required"`
+	OrderByASC bool                     `validate:""`
+}
+
+type MultiGetProductTagsInput struct {
+	ProductTagIDs []string `validate:"omitempty,dive,required"`
+}
+
+type GetProductTagInput struct {
+	ProductTagID string `validate:"required"`
+}
+
+type CreateProductTagInput struct {
+	Name string `validate:"required,max=32"`
+}
+
+type UpdateProductTagInput struct {
+	ProductTagID string `validate:"required"`
+	Name         string `validate:"required,max=32"`
+}
+
+type DeleteProductTagInput struct {
+	ProductTagID string `validate:"required"`
+}
+
 type ListShippingsInput struct {
 	Limit  int64                 `validate:"required,max=200"`
 	Offset int64                 `validate:"min=0"`

@@ -24,6 +24,7 @@ type Database struct {
 	Category    Category
 	Order       Order
 	Product     Product
+	ProductTag  ProductTag
 	ProductType ProductType
 	Promotion   Promotion
 	Rehearsal   Rehearsal
@@ -39,6 +40,7 @@ func NewDatabase(params *Params) *Database {
 		Live:        NewLive(params.Database),
 		Order:       NewOrder(params.Database),
 		Product:     NewProduct(params.Database),
+		ProductTag:  NewProductTag(params.Database),
 		ProductType: NewProductType(params.Database),
 		Promotion:   NewPromotion(params.Database),
 		Rehearsal:   NewRehearsal(params.DynamoDB),
@@ -80,6 +82,16 @@ type Product interface {
 	Update(ctx context.Context, productID string, params *UpdateProductParams) error
 	UpdateMedia(ctx context.Context, productID string, set func(media entity.MultiProductMedia) bool) error
 	Delete(ctx context.Context, productID string) error
+}
+
+type ProductTag interface {
+	List(ctx context.Context, params *ListProductTagsParams, fields ...string) (entity.ProductTags, error)
+	Count(ctx context.Context, params *ListProductTagsParams) (int64, error)
+	MultiGet(ctx context.Context, productTagIDs []string, fields ...string) (entity.ProductTags, error)
+	Get(ctx context.Context, productTagID string, fields ...string) (*entity.ProductTag, error)
+	Create(ctx context.Context, category *entity.ProductTag) error
+	Update(ctx context.Context, productTagID, name string) error
+	Delete(ctx context.Context, productTagID string) error
 }
 
 type ProductType interface {
@@ -253,6 +265,34 @@ type UpdateProductParams struct {
 	Box100Rate       int64
 	OriginPrefecture string
 	OriginCity       string
+}
+
+type ListProductTagsParams struct {
+	Name   string
+	Limit  int
+	Offset int
+	Orders []*ListProductTagsOrder
+}
+
+type ListProductTagsOrder struct {
+	Key        entity.ProductTagOrderBy
+	OrderByASC bool
+}
+
+func (p *ListProductTagsParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.Name != "" {
+		stmt = stmt.Where("name LIKE ?", fmt.Sprintf("%%%s%%", p.Name))
+	}
+	for i := range p.Orders {
+		var value string
+		if p.Orders[i].OrderByASC {
+			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
+		} else {
+			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
+		}
+		stmt = stmt.Order(value)
+	}
+	return stmt
 }
 
 type ListProductTypesParams struct {
