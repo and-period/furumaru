@@ -114,7 +114,7 @@ func (t *productTag) get(
 ) (*entity.ProductTag, error) {
 	var tag *entity.ProductTag
 
-	stmt := t.db.Statement(ctx, tx, categoryTable, fields...).
+	stmt := t.db.Statement(ctx, tx, productTagTable, fields...).
 		Where("id = ?", productTagID)
 
 	if err := stmt.First(&tag).Error; err != nil {
