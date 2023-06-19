@@ -9,7 +9,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/messenger"
-	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
 )
@@ -59,19 +58,11 @@ func (h *handler) CreateContact(ctx *gin.Context) {
 		ResponderID: req.ResponderID,
 		Note:        req.Note,
 	}
-	h.waitGroup.Add(1)
-	var (
-		scontact *entity.Contact
-		err      error
-	)
-	go func() {
-		defer h.waitGroup.Done()
-		scontact, err = h.messenger.CreateContact(ctx, in)
-		if err != nil {
-			httpError(ctx, err)
-			return
-		}
-	}()
+	scontact, err := h.messenger.CreateContact(ctx, in)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
 	threadIn := &messenger.CreateThreadInput{
 		ContactID: scontact.ID,
 		UserID:    req.UserID,
