@@ -2,8 +2,10 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
@@ -12,6 +14,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/sync/errgroup"
 )
 
 func (h *handler) contactRoutes(rg *gin.RouterGroup) {
@@ -25,26 +28,39 @@ func (h *handler) CreateContact(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
-	if req.UserID != "" {
+
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		if req.UserID == "" {
+			return nil
+		}
 		in := &user.GetUserInput{
 			UserID: req.UserID,
 		}
-		if _, err := h.user.GetUser(ctx, in); err != nil {
-			badRequest(ctx, err)
-			return
+		_, err := h.user.GetUser(ectx, in)
+		return err
+	})
+	eg.Go(func() error {
+		if req.ResponderID == "" {
+			return nil
 		}
-	}
-	if req.ResponderID != "" {
 		in := &user.GetAdminInput{
 			AdminID: req.ResponderID,
 		}
-		if _, err := h.user.GetAdmin(ctx, in); err != nil {
-			badRequest(ctx, err)
-			return
-		}
-	}
-	if _, err := h.getContactCategory(ctx, req.CategoryID); err != nil {
+		_, err := h.user.GetAdmin(ectx, in)
+		return err
+	})
+	eg.Go(func() error {
+		_, err := h.getContactCategory(ectx, req.CategoryID)
+		return err
+	})
+	err := eg.Wait()
+	if errors.Is(err, exception.ErrNotFound) {
 		badRequest(ctx, err)
+		return
+	}
+	if err != nil {
+		httpError(ctx, err)
 		return
 	}
 
