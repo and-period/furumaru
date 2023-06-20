@@ -123,3 +123,7 @@ type UpdateThreadInput struct {
 	UserID   string `validate:""`
 	UserType int32  `validate:"required"`
 }
+
+type DeleteThreadInput struct {
+	ThreadID string `validate:"required"`
+}
