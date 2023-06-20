@@ -116,3 +116,10 @@ type CreateThreadInput struct {
 type GetThreadInput struct {
 	ThreadID string `validate:"required"`
 }
+
+type UpdateThreadInput struct {
+	ThreadID string `validate:"required"`
+	Content  string `validate:"required,max=2000"`
+	UserID   string `validate:""`
+	UserType int32  `validate:"required"`
+}
