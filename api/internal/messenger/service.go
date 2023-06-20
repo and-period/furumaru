@@ -43,4 +43,6 @@ type Service interface {
 	CreateThread(ctx context.Context, in *CreateThreadInput) (*entity.Thread, error)
 	// お問い合わせ会話履歴編集
 	UpdateThread(ctx context.Context, in *UpdateThreadInput) error
+	// お問い合わせ会話履歴削除
+	DeleteThread(ctx context.Context, in *DeleteThreadInput) error
 }
