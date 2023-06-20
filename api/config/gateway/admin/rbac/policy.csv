@@ -29,6 +29,10 @@ p, product_type_create, /v1/categories/*/product-types, POST, allow
 p, product_type_update, /v1/categories/*/product-types/*, PATCH, allow
 p, product_type_delete, /v1/categories/*/product-types/*, DELETE, allow
 p, product_type_uploader, /v1/upload/product-types/*, POST, allow
+p, product_tag_list, /v1/product-tags, GET, allow
+p, product_tag_create, /v1/product-tags, POST, allow
+p, product_tag_update, /v1/product-tags/*, PATCH, allow
+p, product_tag_delete, /v1/product-tags/*, DELETE, allow
 p, shipping_list, /v1/shippings, GET, allow
 p, shipping_get, /v1/shippings/*, GET, allow
 p, shipping_create, /v1/shippings, POST, allow
@@ -97,6 +101,10 @@ g, administrator, product_type_create
 g, administrator, product_type_update
 g, administrator, product_type_delete
 g, administrator, product_type_uploader
+g, administrator, product_tag_list
+g, administrator, product_tag_create
+g, administrator, product_tag_update
+g, administrator, product_tag_delete
 g, administrator, shipping_list
 g, administrator, shipping_get
 g, administrator, shipping_create
@@ -148,6 +156,7 @@ g, coordinator, related_producer_create
 g, coordinator, related_producer_delete
 g, coordinator, category_list
 g, coordinator, product_type_list
+g, coordinator, product_tag_list
 g, coordinator, shipping_list
 g, coordinator, shipping_get
 g, coordinator, product_list
@@ -182,6 +191,7 @@ g, producer, auth
 g, producer, producer_uploader
 g, producer, category_list
 g, producer, product_type_list
+g, producer, product_tag_list
 g, producer, shipping_list
 g, producer, shipping_get
 g, producer, product_list
