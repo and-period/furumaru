@@ -65,6 +65,26 @@ func (t *thread) Get(ctx context.Context, threadID string, fields ...string) (*e
 	return thread, exception.InternalError(err)
 }
 
+func (t *thread) Update(ctx context.Context, threadID string, params *UpdateThreadParams) error {
+	err := t.db.Transaction(ctx, func(tx *gorm.DB) error {
+		if _, err := t.get(ctx, tx, threadID); err != nil {
+			return err
+		}
+		updates := map[string]interface{}{
+			"content":    params.Content,
+			"user_id":    params.UserID,
+			"user_type":  params.UserType,
+			"updated_at": t.now(),
+		}
+		err := tx.WithContext(ctx).
+			Table(threadTable).
+			Where("id = ?", threadID).
+			Updates(updates).Error
+		return err
+	})
+	return exception.InternalError(err)
+}
+
 func (t *thread) get(
 	ctx context.Context, tx *gorm.DB, threadID string, fields ...string,
 ) (*entity.Thread, error) {

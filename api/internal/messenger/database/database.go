@@ -60,6 +60,7 @@ type Thread interface {
 	ListByContactID(ctx context.Context, params *ListThreadsByContactIDParams, fields ...string) (entity.Threads, error)
 	Count(ctx context.Context, params *ListThreadsByContactIDParams) (int64, error)
 	Create(ctx context.Context, thread *entity.Thread) error
+	Update(ctx context.Context, threadID string, params *UpdateThreadParams) error
 }
 
 type Message interface {
@@ -218,4 +219,10 @@ func (p *ListThreadsByContactIDParams) stmt(stmt *gorm.DB) *gorm.DB {
 		stmt = stmt.Where("contact_id = ?", p.ContactID)
 	}
 	return stmt
+}
+
+type UpdateThreadParams struct {
+	Content  string
+	UserID   string
+	UserType int32
 }
