@@ -69,6 +69,7 @@ p, contact_create, /vi/contacts, POST, allow
 p, thread_get, /v1/contacts/*/threads/*, GET, allow
 p, thread_list_by_contactId, /v1/contacts/*/threads, GET, allow
 p, thread_create, /v1/contacts/*/threads, POST, allow
+p, thread_update, /v1/contacts/*/threads/*, PATCH, allow
 p, contact_category_get, /v1/contact-categories/*, GET, allow
 
 g, administrator, auth
@@ -141,6 +142,7 @@ g, administrator, contact_create
 g, administrator, thread_get
 g, administrator, thread_list_by_contactId
 g, administrator, thread_create
+g, administrator, thread_update
 g, administrator, contact_category_get
 
 g, coordinator, auth
@@ -185,6 +187,7 @@ g, coordinator, contact_create
 g, coordinator, thread_get
 g, coordinator, thread_list_by_contactId
 g, coordinator, thread_create
+g, coordinator, thread_update
 g, coordinator, contact_category_get
 
 g, producer, auth
@@ -212,4 +215,5 @@ g, producer, contact_create
 g, producer, thread_get
 g, producer, thread_list_by_contactId
 g, producer, thread_create
+g, producer, thread_update
 g, producer, contact_category_get
