@@ -70,6 +70,20 @@ func (mr *MockContactMockRecorder) Get(ctx, contactID interface{}, fields ...int
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockContact)(nil).Get), varargs...)
 }
 
+// Update mocks base method.
+func (m *MockContact) Update(ctx context.Context, contactID string, params *database.UpdateContactParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", ctx, contactID, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockContactMockRecorder) Update(ctx, contactID, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockContact)(nil).Update), ctx, contactID, params)
+}
+
 // MockContactCategory is a mock of ContactCategory interface.
 type MockContactCategory struct {
 	ctrl     *gomock.Controller
