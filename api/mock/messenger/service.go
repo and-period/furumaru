@@ -273,3 +273,17 @@ func (mr *MockServiceMockRecorder) UpdateNotification(ctx, in interface{}) *gomo
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateNotification", reflect.TypeOf((*MockService)(nil).UpdateNotification), ctx, in)
 }
+
+// UpdateThread mocks base method.
+func (m *MockService) UpdateThread(ctx context.Context, in *messenger.UpdateThreadInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateThread", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateThread indicates an expected call of UpdateThread.
+func (mr *MockServiceMockRecorder) UpdateThread(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateThread", reflect.TypeOf((*MockService)(nil).UpdateThread), ctx, in)
+}
