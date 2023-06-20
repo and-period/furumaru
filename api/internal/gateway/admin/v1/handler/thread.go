@@ -19,6 +19,7 @@ func (h *handler) threadRoutes(rg *gin.RouterGroup) {
 	arg.GET("/:threadId", h.GetThread)
 	arg.POST("", h.CreateThread)
 	arg.PATCH("/:threadId", h.UpdateThread)
+	arg.DELETE("/:threadId", h.DeleteThread)
 }
 
 func (h *handler) ListThreadsByContactID(ctx *gin.Context) {
@@ -138,6 +139,18 @@ func (h *handler) UpdateThread(ctx *gin.Context) {
 	}
 
 	if err := h.messenger.UpdateThread(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) DeleteThread(ctx *gin.Context) {
+	in := &messenger.DeleteThreadInput{
+		ThreadID: util.GetParam(ctx, "threadId"),
+	}
+	if err := h.messenger.DeleteThread(ctx, in); err != nil {
 		httpError(ctx, err)
 		return
 	}
