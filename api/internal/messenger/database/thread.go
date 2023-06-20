@@ -85,6 +85,24 @@ func (t *thread) Update(ctx context.Context, threadID string, params *UpdateThre
 	return exception.InternalError(err)
 }
 
+func (t *thread) Delete(ctx context.Context, threadID string) error {
+	err := t.db.Transaction(ctx, func(tx *gorm.DB) error {
+		if _, err := t.get(ctx, tx, threadID); err != nil {
+			return err
+		}
+
+		params := map[string]interface{}{
+			"deleted_at": t.now(),
+		}
+		err := tx.WithContext(ctx).
+			Table(threadTable).
+			Where("id = ?", threadID).
+			Updates(params).Error
+		return err
+	})
+	return exception.InternalError(err)
+}
+
 func (t *thread) get(
 	ctx context.Context, tx *gorm.DB, threadID string, fields ...string,
 ) (*entity.Thread, error) {
