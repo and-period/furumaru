@@ -18,6 +18,7 @@ func (h *handler) threadRoutes(rg *gin.RouterGroup) {
 	arg.GET("", h.ListThreadsByContactID)
 	arg.GET("/:threadId", h.GetThread)
 	arg.POST("", h.CreateThread)
+	arg.PATCH("/:threadId", h.UpdateThread)
 }
 
 func (h *handler) ListThreadsByContactID(ctx *gin.Context) {
@@ -120,4 +121,26 @@ func (h *handler) getThread(ctx context.Context, threadID string) (*service.Thre
 	}
 	thread := service.NewThread(mthread)
 	return thread, nil
+}
+
+func (h *handler) UpdateThread(ctx *gin.Context) {
+	req := &request.UpdateThreadRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	in := &messenger.UpdateThreadInput{
+		ThreadID: util.GetParam(ctx, "threadId"),
+		Content:  req.Content,
+		UserID:   req.UserID,
+		UserType: req.UserType,
+	}
+
+	if err := h.messenger.UpdateThread(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
 }
