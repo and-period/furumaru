@@ -205,6 +205,20 @@ func (mr *MockThreadMockRecorder) ListByContactID(ctx, params interface{}, field
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByContactID", reflect.TypeOf((*MockThread)(nil).ListByContactID), varargs...)
 }
 
+// Update mocks base method.
+func (m *MockThread) Update(ctx context.Context, threadID string, params *database.UpdateThreadParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", ctx, threadID, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockThreadMockRecorder) Update(ctx, threadID, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockThread)(nil).Update), ctx, threadID, params)
+}
+
 // MockMessage is a mock of Message interface.
 type MockMessage struct {
 	ctrl     *gomock.Controller
