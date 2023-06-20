@@ -123,3 +123,11 @@ func (s *service) UpdateThread(ctx context.Context, in *messenger.UpdateThreadIn
 	err = s.db.Thread.Update(ctx, in.ThreadID, params)
 	return exception.InternalError(err)
 }
+
+func (s *service) DeleteThread(ctx context.Context, in *messenger.DeleteThreadInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	err := s.db.Thread.Delete(ctx, in.ThreadID)
+	return exception.InternalError(err)
+}
