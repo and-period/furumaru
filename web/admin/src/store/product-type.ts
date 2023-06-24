@@ -32,6 +32,16 @@ export const useProductTypeStore = defineStore('productType', {
       }
     },
 
+    async fetchProductTypesByCategoryId (categoryId: string, limit = 20, offset = 0): Promise<void> {
+      try {
+        const res = await apiClient.productTypeApi().v1ListProductTypes(categoryId)
+        this.productTypes = res.data.productTypes
+        this.totalItems = res.data.total
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
     /**
      * 品目を新規登録する非同期関数
      * @param categoryId 品目の親となるカテゴリのID

@@ -18,3 +18,26 @@ deliveryType:
   - 通常便
   - 冷蔵便
   - 冷凍便
+storageMethodType:
+  type: integer
+  format: int32
+  description: 保管方法
+  nullable: false
+  enum:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  x-enum-varnames:
+  - UNKNOWN
+  - NORMAL
+  - COOL_DARK_PLACE
+  - REFRIGERATED
+  - FROZEN
+  x-enum-descrptions:
+  - 不明
+  - 常温保存
+  - 冷暗所保存
+  - 冷蔵保存
+  - 冷凍保存

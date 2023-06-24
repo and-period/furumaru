@@ -6,47 +6,63 @@ import {
   useCategoryStore,
   useProducerStore,
   useProductStore,
+  useProductTagStore,
   useProductTypeStore
 } from '~/store'
-import { CreateProductRequest, CreateProductRequestMediaInner } from '~/types/api'
+import { CreateProductRequest, CreateProductRequestMediaInner, DeliveryType, Prefecture, StorageMethodType } from '~/types/api'
 
 const router = useRouter()
-const productStore = useProductStore()
-const productTypeStore = useProductTypeStore()
 const categoryStore = useCategoryStore()
 const producerStore = useProducerStore()
+const productStore = useProductStore()
+const productTagStore = useProductTagStore()
+const productTypeStore = useProductTypeStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
+const { categories } = storeToRefs(categoryStore)
 const { producers } = storeToRefs(producerStore)
+const { productTags } = storeToRefs(productTagStore)
 const { productTypes } = storeToRefs(productTypeStore)
 
-const fetchState = useAsyncData(async (): Promise<void> => {
-  await Promise.all([
-    productTypeStore.fetchProductTypes(),
-    categoryStore.fetchCategories(),
-    producerStore.fetchProducers(20, 0, '')
-  ])
-})
-
 const loading = ref<boolean>(false)
+const selectedCategoryId = ref<string>()
 const formData = ref<CreateProductRequest>({
   name: '',
   description: '',
+  public: false,
   producerId: '',
   productTypeId: '',
-  public: true,
+  productTagIds: [],
+  media: [],
+  price: 0,
+  cost: 0,
   inventory: 0,
   weight: 0,
   itemUnit: '',
   itemDescription: '',
-  media: [],
-  price: 0,
-  deliveryType: 1,
+  deliveryType: DeliveryType.UNKNOWN,
+  recommendedPoint1: '',
+  recommendedPoint2: '',
+  recommendedPoint3: '',
+  expirationDate: 0,
+  storageMethodType: StorageMethodType.UNKNOWN,
   box60Rate: 0,
   box80Rate: 0,
   box100Rate: 0,
-  originPrefecture: '',
+  originPrefecture: Prefecture.HOKKAIDO,
   originCity: ''
+})
+
+const fetchState = useAsyncData(async (): Promise<void> => {
+  await Promise.all([
+    categoryStore.fetchCategories(),
+    producerStore.fetchProducers(20, 0, ''),
+    productTagStore.fetchProductTags(20, 0, [])
+  ])
+})
+
+watch(selectedCategoryId, (): void => {
+  productTypeStore.fetchProductTypesByCategoryId(selectedCategoryId.value || '')
 })
 
 const isLoading = (): boolean => {
@@ -111,12 +127,15 @@ try {
 <template>
   <templates-product-new
     v-model:form-data="formData"
+    v-model:selected-category-id="selectedCategoryId"
     :loading="isLoading()"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :producers="producers"
+    :categories="categories"
     :product-types="productTypes"
+    :product-tags="productTags"
     @update:files="handleImageUpload"
     @submit="handleSubmit"
   />

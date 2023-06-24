@@ -28,3 +28,11 @@ func NewProductTag(name string) *ProductTag {
 		Name: name,
 	}
 }
+
+func (ts ProductTags) IDs() []string {
+	res := make([]string, len(ts))
+	for i := range ts {
+		res[i] = ts[i].ID
+	}
+	return res
+}

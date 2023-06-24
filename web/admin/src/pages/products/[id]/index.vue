@@ -2,67 +2,74 @@
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 import {
+  useCategoryStore,
   useCommonStore,
   useProducerStore,
   useProductStore,
+  useProductTagStore,
   useProductTypeStore
 } from '~/store'
-import { UpdateProductRequest, CreateProductRequestMediaInner, UploadImageResponse } from '~/types/api'
+import { UpdateProductRequest, CreateProductRequestMediaInner, DeliveryType, StorageMethodType, Prefecture } from '~/types/api'
 
 const route = useRoute()
 const router = useRouter()
+const categoryStore = useCategoryStore()
 const commonStore = useCommonStore()
-const productStore = useProductStore()
-const productTypeStore = useProductTypeStore()
 const producerStore = useProducerStore()
+const productStore = useProductStore()
+const productTagStore = useProductTagStore()
+const productTypeStore = useProductTypeStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const { product } = storeToRefs(productStore)
+const { categories } = storeToRefs(categoryStore)
 const { producers } = storeToRefs(producerStore)
+const { productTags } = storeToRefs(productTagStore)
 const { productTypes } = storeToRefs(productTypeStore)
+const { product } = storeToRefs(productStore)
 
 const productId = route.params.id as string
 
 const loading = ref<boolean>(false)
+const selectedCategoryId = ref<string>()
 const formData = ref<UpdateProductRequest>({
   name: '',
   description: '',
+  public: false,
   producerId: '',
   productTypeId: '',
-  public: false,
+  productTagIds: [],
+  media: [],
+  price: 0,
+  cost: 0,
   inventory: 0,
   weight: 0,
   itemUnit: '',
   itemDescription: '',
-  media: [],
-  price: 0,
-  deliveryType: 0,
+  deliveryType: DeliveryType.UNKNOWN,
+  recommendedPoint1: '',
+  recommendedPoint2: '',
+  recommendedPoint3: '',
+  expirationDate: 0,
+  storageMethodType: StorageMethodType.UNKNOWN,
   box60Rate: 0,
   box80Rate: 0,
   box100Rate: 0,
-  originPrefecture: '',
+  originPrefecture: Prefecture.HOKKAIDO,
   originCity: ''
 })
 
 const fetchState = useAsyncData(async (): Promise<void> => {
-  try {
-    await Promise.all([
-      productStore.getProduct(productId),
-      productTypeStore.fetchProductTypes(),
-      producerStore.fetchProducers()
-    ])
-    formData.value = { ...product.value }
-  } catch (err) {
-    if (err instanceof Error) {
-      show(err.message)
-    }
-    console.log(err)
+  await Promise.all([
+    productStore.getProduct(productId),
+    producerStore.fetchProducers(20, 0, ''),
+    productTagStore.fetchProductTags(20, 0, [])
+  ])
+  selectedCategoryId.value = product.value.categoryId
+  formData.value = { ...product.value }
+})
 
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    })
-  }
+watch(selectedCategoryId, (): void => {
+  productTypeStore.fetchProductTypesByCategoryId(selectedCategoryId.value || '')
 })
 
 const isLoading = (): boolean => {
@@ -111,6 +118,11 @@ const handleSubmit = async (): Promise<void> => {
       show(err.message)
     }
     console.log(err)
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
   } finally {
     loading.value = false
   }
@@ -126,13 +138,16 @@ try {
 <template>
   <templates-product-edit
     v-model:form-data="formData"
+    v-model:selected-category-id="selectedCategoryId"
     :loading="isLoading()"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :product="product"
     :producers="producers"
+    :categories="categories"
     :product-types="productTypes"
+    :product-tags="productTags"
     @update:files="handleImageUpload"
     @submit="handleSubmit"
   />

@@ -7,29 +7,21 @@ createProductRequest:
     description:
       type: string
       description: 商品説明(20000文字まで)
+    public:
+      type: boolean
+      description: 公開フラグ
     producerId:
       type: string
       description: 生産者ID
     productTypeId:
       type: string
       description: 品目ID
-    public:
-      type: boolean
-      description: 公開フラグ
-    inventory:
-      type: integer
-      format: int64
-      description: 在庫数(0以上)
-    weight:
-      type: number
-      format: double
-      description: 重量(0以上,kg単位:少数第1位まで)
-    itemUnit:
-      type: string
-      description: 数量単位(16文字まで)
-    itemDescription:
-      type: string
-      description: 数量単位説明(64文字まで)
+    productTagIds:
+      type: array
+      description: 商品タグ一覧
+      items:
+        type: string
+        description: 商品タグID
     media:
       type: array
       description: メディア一覧(8つまで)
@@ -49,8 +41,41 @@ createProductRequest:
       type: integer
       format: int64
       description: 販売価格(0以上)
+    cost:
+      type: integer
+      format: int64
+      description: 原価(0以上)
+    inventory:
+      type: integer
+      format: int64
+      description: 在庫数(0以上)
+    weight:
+      type: number
+      format: double
+      description: 重量(0以上,kg単位:少数第1位まで)
+    itemUnit:
+      type: string
+      description: 数量単位(16文字まで)
+    itemDescription:
+      type: string
+      description: 数量単位説明(64文字まで)
     deliveryType:
       $ref: './../../../openapi.yaml#/components/schemas/deliveryType'
+    recommendedPoint1:
+      type: string
+      description: おすすめポイント1(128文字まで)
+    recommendedPoint2:
+      type: string
+      description: おすすめポイント1(128文字まで)
+    recommendedPoint3:
+      type: string
+      description: おすすめポイント1(128文字まで)
+    expirationDate:
+      type: integer
+      format: int64
+      description: 賞味期限(単位:日,0以上)
+    storageMethodType:
+      $ref: './../../../openapi.yaml#/components/schemas/storageMethodType'
     box60Rate:
       type: integer
       format: int64
@@ -64,24 +89,30 @@ createProductRequest:
       format: int64
       description: 箱の占有率(サイズ:100)(0以上,100以下)
     originPrefecture:
-      type: string
-      description: 原産地(都道府県)(32文字まで)
+      $ref: './../../../openapi.yaml#/components/schemas/prefecture'
     originCity:
       type: string
       description: 原産地(市区町村)(32文字まで)
   required:
   - name
   - description
+  - public
   - producerId
   - productTypeId
-  - public
+  - productTagIds
+  - media
+  - price
+  - cost
   - inventory
   - weight
   - itemUnit
   - itemDescription
-  - media
-  - price
   - deliveryType
+  - recommendedPoint1
+  - recommendedPoint2
+  - recommendedPoint3
+  - expirationDate
+  - storageMethodType
   - box60Rate
   - box80Rate
   - box100Rate
@@ -90,24 +121,31 @@ createProductRequest:
   example:
     name: '新鮮なじゃがいも'
     description: '新鮮なじゃがいもをお届けします。'
+    public: true
     producerId: 'kSByoE6FetnPs5Byk3a9Zx'
     productTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
-    public: true
-    inventory: 30
-    weight: 2.5
-    itemUnit: '袋'
-    itemDescription: '1袋あたり2.5kgのじゃがいも'
+    productTagIds: ['kSByoE6FetnPs5Byk3a9Zx']
     media:
     - url: 'https://and-period.jp/thumbnail01.png'
       isThumbnail: true
     - url: 'https://and-period.jp/thumbnail02.png'
       isThumbnail: false
     price: 2500
+    cost: 200
+    inventory: 30
+    weight: 2.5
+    itemUnit: '袋'
+    itemDescription: '1袋あたり2.5kgのじゃがいも'
     deliveryType: 1
+    recommendedPoint1: 'シャリシャリほろ苦がクセになる！'
+    recommendedPoint2: 'シャリシャリほろ苦がクセになる！'
+    recommendedPoint3: 'シャリシャリほろ苦がクセになる！'
+    expirationDate: 7
+    storageMethodType: 1
     box60Rate: 80
     box80Rate: 50
     box100Rate: 40
-    originPrefecture: '滋賀県'
+    originPrefecture: SHIGA
     originCity: '彦根市'
 updateProductRequest:
   type: object
@@ -118,29 +156,21 @@ updateProductRequest:
     description:
       type: string
       description: 商品説明(20000文字まで)
+    public:
+      type: boolean
+      description: 公開フラグ
     producerId:
       type: string
       description: 生産者ID
     productTypeId:
       type: string
       description: 品目ID
-    public:
-      type: boolean
-      description: 公開フラグ
-    inventory:
-      type: integer
-      format: int64
-      description: 在庫数(0以上)
-    weight:
-      type: number
-      format: double
-      description: 重量(0以上,kg単位:少数第1位まで)
-    itemUnit:
-      type: string
-      description: 数量単位(16文字まで)
-    itemDescription:
-      type: string
-      description: 数量単位説明(64文字まで)
+    productTagIds:
+      type: array
+      description: 商品タグ一覧
+      items:
+        type: string
+        description: 商品タグID
     media:
       type: array
       description: メディア一覧(8つまで)
@@ -160,10 +190,41 @@ updateProductRequest:
       type: integer
       format: int64
       description: 販売価格(0以上)
-    deliveryType:
+    cost:
       type: integer
-      format: int32
-      description: 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
+      format: int64
+      description: 原価(0以上)
+    inventory:
+      type: integer
+      format: int64
+      description: 在庫数(0以上)
+    weight:
+      type: number
+      format: double
+      description: 重量(0以上,kg単位:少数第1位まで)
+    itemUnit:
+      type: string
+      description: 数量単位(16文字まで)
+    itemDescription:
+      type: string
+      description: 数量単位説明(64文字まで)
+    deliveryType:
+      $ref: './../../../openapi.yaml#/components/schemas/deliveryType'
+    recommendedPoint1:
+      type: string
+      description: おすすめポイント1(128文字まで)
+    recommendedPoint2:
+      type: string
+      description: おすすめポイント1(128文字まで)
+    recommendedPoint3:
+      type: string
+      description: おすすめポイント1(128文字まで)
+    expirationDate:
+      type: integer
+      format: int64
+      description: 賞味期限(単位:日,0以上)
+    storageMethodType:
+      $ref: './../../../openapi.yaml#/components/schemas/storageMethodType'
     box60Rate:
       type: integer
       format: int64
@@ -177,24 +238,30 @@ updateProductRequest:
       format: int64
       description: 箱の占有率(サイズ:100)(0以上,100以下)
     originPrefecture:
-      type: string
-      description: 原産地(都道府県)(32文字まで)
+      $ref: './../../../openapi.yaml#/components/schemas/prefecture'
     originCity:
       type: string
       description: 原産地(市区町村)(32文字まで)
   required:
   - name
   - description
+  - public
   - producerId
   - productTypeId
-  - public
+  - productTagIds
+  - media
+  - price
+  - cost
   - inventory
   - weight
   - itemUnit
   - itemDescription
-  - media
-  - price
   - deliveryType
+  - recommendedPoint1
+  - recommendedPoint2
+  - recommendedPoint3
+  - expirationDate
+  - storageMethodType
   - box60Rate
   - box80Rate
   - box100Rate
@@ -203,22 +270,29 @@ updateProductRequest:
   example:
     name: '新鮮なじゃがいも'
     description: '新鮮なじゃがいもをお届けします。'
+    public: true
     producerId: 'kSByoE6FetnPs5Byk3a9Zx'
     productTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
-    public: true
-    inventory: 30
-    weight: 2.5
-    itemUnit: '袋'
-    itemDescription: '1袋あたり2.5kgのじゃがいも'
+    productTagIds: ['kSByoE6FetnPs5Byk3a9Zx']
     media:
     - url: 'https://and-period.jp/thumbnail01.png'
       isThumbnail: true
     - url: 'https://and-period.jp/thumbnail02.png'
       isThumbnail: false
     price: 2500
+    cost: 200
+    inventory: 30
+    weight: 2.5
+    itemUnit: '袋'
+    itemDescription: '1袋あたり2.5kgのじゃがいも'
     deliveryType: 1
+    recommendedPoint1: 'シャリシャリほろ苦がクセになる！'
+    recommendedPoint2: 'シャリシャリほろ苦がクセになる！'
+    recommendedPoint3: 'シャリシャリほろ苦がクセになる！'
+    expirationDate: 7
+    storageMethodType: 1
     box60Rate: 80
     box80Rate: 50
     box100Rate: 40
-    originPrefecture: '滋賀県'
+    originPrefecture: SHIGA
     originCity: '彦根市'

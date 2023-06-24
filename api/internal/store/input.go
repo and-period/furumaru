@@ -204,25 +204,30 @@ type GetProductInput struct {
 }
 
 type CreateProductInput struct {
-	ProducerID       string                `validate:"required"`
-	TypeID           string                `validate:"required"`
-	Name             string                `validate:"required,max=128"`
-	Description      string                `validate:"required,max=20000"`
-	Public           bool                  `validate:""`
-	Inventory        int64                 `validate:"min=0"`
-	Weight           int64                 `validate:"min=0"`
-	WeightUnit       entity.WeightUnit     `validate:"required,oneof=1 2"`
-	Item             int64                 `validate:"min=1"`
-	ItemUnit         string                `validate:"required,max=16"`
-	ItemDescription  string                `validate:"required,max=64"`
-	Media            []*CreateProductMedia `validate:"max=8,unique=URL"`
-	Price            int64                 `validate:"min=0"`
-	DeliveryType     entity.DeliveryType   `validate:"required,oneof=1 2 3"`
-	Box60Rate        int64                 `validate:"min=0,max=100"`
-	Box80Rate        int64                 `validate:"min=0,max=100"`
-	Box100Rate       int64                 `validate:"min=0,max=100"`
-	OriginPrefecture string                `validate:"omitempty,max=32"`
-	OriginCity       string                `validate:"omitempty,max=32"`
+	ProducerID        string                   `validate:"required"`
+	TypeID            string                   `validate:"required"`
+	TagIDs            []string                 `validate:"max=8,dive,required"`
+	Name              string                   `validate:"required,max=128"`
+	Description       string                   `validate:"required,max=20000"`
+	Public            bool                     `validate:""`
+	Inventory         int64                    `validate:"min=0"`
+	Weight            int64                    `validate:"min=0"`
+	WeightUnit        entity.WeightUnit        `validate:"required,oneof=1 2"`
+	Item              int64                    `validate:"min=1"`
+	ItemUnit          string                   `validate:"required,max=16"`
+	ItemDescription   string                   `validate:"required,max=64"`
+	Media             []*CreateProductMedia    `validate:"max=8,unique=URL"`
+	Price             int64                    `validate:"min=0"`
+	Cost              int64                    `validate:"min=0"`
+	ExpirationDate    int64                    `validate:"min=0"`
+	RecommendedPoints []string                 `validate:"max=3,dive,max=128"`
+	StorageMethodType entity.StorageMethodType `validate:"required,oneof=1 2 3 4"`
+	DeliveryType      entity.DeliveryType      `validate:"required,oneof=1 2 3"`
+	Box60Rate         int64                    `validate:"min=0,max=100"`
+	Box80Rate         int64                    `validate:"min=0,max=100"`
+	Box100Rate        int64                    `validate:"min=0,max=100"`
+	OriginPrefecture  int64                    `validate:"min=0"`
+	OriginCity        string                   `validate:"omitempty,max=32"`
 }
 
 type CreateProductMedia struct {
@@ -231,26 +236,31 @@ type CreateProductMedia struct {
 }
 
 type UpdateProductInput struct {
-	ProductID        string                `validate:"required"`
-	ProducerID       string                `validate:"required"`
-	TypeID           string                `validate:"required"`
-	Name             string                `validate:"required,max=128"`
-	Description      string                `validate:"required,max=20000"`
-	Public           bool                  `validate:""`
-	Inventory        int64                 `validate:"min=0"`
-	Weight           int64                 `validate:"min=0"`
-	WeightUnit       entity.WeightUnit     `validate:"required,oneof=1 2"`
-	Item             int64                 `validate:"min=1"`
-	ItemUnit         string                `validate:"required,max=16"`
-	ItemDescription  string                `validate:"required,max=64"`
-	Media            []*UpdateProductMedia `validate:"max=8,unique=URL"`
-	Price            int64                 `validate:"min=0"`
-	DeliveryType     entity.DeliveryType   `validate:"required,oneof=1 2 3"`
-	Box60Rate        int64                 `validate:"min=0,max=100"`
-	Box80Rate        int64                 `validate:"min=0,max=100"`
-	Box100Rate       int64                 `validate:"min=0,max=100"`
-	OriginPrefecture string                `validate:"omitempty,max=32"`
-	OriginCity       string                `validate:"omitempty,max=32"`
+	ProductID         string                   `validate:"required"`
+	ProducerID        string                   `validate:"required"`
+	TypeID            string                   `validate:"required"`
+	TagIDs            []string                 `validate:"max=8,dive,required"`
+	Name              string                   `validate:"required,max=128"`
+	Description       string                   `validate:"required,max=20000"`
+	Public            bool                     `validate:""`
+	Inventory         int64                    `validate:"min=0"`
+	Weight            int64                    `validate:"min=0"`
+	WeightUnit        entity.WeightUnit        `validate:"required,oneof=1 2"`
+	Item              int64                    `validate:"min=1"`
+	ItemUnit          string                   `validate:"required,max=16"`
+	ItemDescription   string                   `validate:"required,max=64"`
+	Media             []*UpdateProductMedia    `validate:"max=8,unique=URL"`
+	Price             int64                    `validate:"min=0"`
+	Cost              int64                    `validate:"min=0"`
+	ExpirationDate    int64                    `validate:"min=0"`
+	RecommendedPoints []string                 `validate:"max=3,dive,max=128"`
+	StorageMethodType entity.StorageMethodType `validate:"required,oneof=1 2 3 4"`
+	DeliveryType      entity.DeliveryType      `validate:"required,oneof=1 2 3"`
+	Box60Rate         int64                    `validate:"min=0,max=100"`
+	Box80Rate         int64                    `validate:"min=0,max=100"`
+	Box100Rate        int64                    `validate:"min=0,max=100"`
+	OriginPrefecture  int64                    `validate:"min=0"`
+	OriginCity        string                   `validate:"omitempty,max=32"`
 }
 
 type UpdateProductMedia struct {
