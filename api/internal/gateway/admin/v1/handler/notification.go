@@ -3,7 +3,6 @@ package handler
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
@@ -56,19 +55,13 @@ func (h *handler) ListNotifications(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
-	onlyPublished, err := strconv.ParseBool(util.GetQuery(ctx, "onlyPublished", "false"))
-	if err != nil {
-		badRequest(ctx, err)
-		return
-	}
 
 	in := &messenger.ListNotificationsInput{
-		Limit:         limit,
-		Offset:        offset,
-		Since:         jst.ParseFromUnix(since),
-		Until:         jst.ParseFromUnix(until),
-		OnlyPublished: onlyPublished,
-		Orders:        orders,
+		Limit:  limit,
+		Offset: offset,
+		Since:  jst.ParseFromUnix(since),
+		Until:  jst.ParseFromUnix(until),
+		Orders: orders,
 	}
 	mnotifications, total, err := h.messenger.ListNotifications(ctx, in)
 	if err != nil {
