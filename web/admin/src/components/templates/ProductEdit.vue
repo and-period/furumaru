@@ -135,7 +135,7 @@ const storageMethodTypes = [
   { title: '常温保存', value: StorageMethodType.NORMAL },
   { title: '冷暗所保存', value: StorageMethodType.COOL_DARK_PLACE },
   { title: '冷蔵保存', value: StorageMethodType.REFRIGERATED },
-  { title: '冷凍保存', value: StorageMethodType.FROZEN },
+  { title: '冷凍保存', value: StorageMethodType.FROZEN }
 ]
 const deliveryTypes = [
   { title: '通常便', value: DeliveryType.NORMAL },
@@ -194,7 +194,7 @@ const thumbnailIndex = computed<number>({
       return
     }
     formDataValue.value.media = formDataValue.value.media
-      .map((item) => ({
+      .map(item => ({
         ...item,
         isThumbnail: false
       }))
@@ -389,8 +389,12 @@ const onSubmit = (): void => {
             <v-table>
               <thead>
                 <tr>
-                  <th class="text-left">コーディネータ様への支払い金額</th>
-                  <th class="text-left">{{ getBenefits() }} 円</th>
+                  <th class="text-left">
+                    コーディネータ様への支払い金額
+                  </th>
+                  <th class="text-left">
+                    {{ getBenefits() }} 円
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -462,12 +466,18 @@ const onSubmit = (): void => {
             />
 
             <v-row>
-              <v-col cols="3">箱のサイズ</v-col>
-              <v-col cols="9">占有率</v-col>
+              <v-col cols="3">
+                箱のサイズ
+              </v-col>
+              <v-col cols="9">
+                占有率
+              </v-col>
             </v-row>
             <v-row v-for="(size, i) in [60, 80, 100]" :key="i">
               <v-col cols="3" align-self="center">
-                <p class="mb-0 mx-6 text-h6">{{ size }}</p>
+                <p class="mb-0 mx-6 text-h6">
+                  {{ size }}
+                </p>
               </v-col>
               <v-col cols="9">
                 <v-text-field
@@ -536,8 +546,8 @@ const onSubmit = (): void => {
             no-data-text="原産地（都道府県）を先に選択してください。"
           />
           <v-select
-            label="商品タグ"
             v-model="validate.productTagIds.$model"
+            label="商品タグ"
             :error-messages="getErrorMessage(validate.productTagIds.$errors)"
             :items="productTags"
             item-title="name"

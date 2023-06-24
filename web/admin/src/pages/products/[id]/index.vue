@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 import {
-useCategoryStore,
+  useCategoryStore,
   useCommonStore,
   useProducerStore,
   useProductStore,
@@ -62,7 +62,7 @@ const fetchState = useAsyncData(async (): Promise<void> => {
   await Promise.all([
     productStore.getProduct(productId),
     producerStore.fetchProducers(20, 0, ''),
-    productTagStore.fetchProductTags(20, 0, []),
+    productTagStore.fetchProductTags(20, 0, [])
   ])
   selectedCategoryId.value = product.value.categoryId
   formData.value = { ...product.value }

@@ -219,6 +219,7 @@ type CreateProductInput struct {
 	Media             []*CreateProductMedia    `validate:"max=8,unique=URL"`
 	Price             int64                    `validate:"min=0"`
 	Cost              int64                    `validate:"min=0"`
+	ExpirationDate    int64                    `validate:"min=0"`
 	RecommendedPoints []string                 `validate:"max=3,dive,max=128"`
 	StorageMethodType entity.StorageMethodType `validate:"required,oneof=1 2 3 4"`
 	DeliveryType      entity.DeliveryType      `validate:"required,oneof=1 2 3"`
@@ -251,6 +252,7 @@ type UpdateProductInput struct {
 	Media             []*UpdateProductMedia    `validate:"max=8,unique=URL"`
 	Price             int64                    `validate:"min=0"`
 	Cost              int64                    `validate:"min=0"`
+	ExpirationDate    int64                    `validate:"min=0"`
 	RecommendedPoints []string                 `validate:"max=3,dive,max=128"`
 	StorageMethodType entity.StorageMethodType `validate:"required,oneof=1 2 3 4"`
 	DeliveryType      entity.DeliveryType      `validate:"required,oneof=1 2 3"`

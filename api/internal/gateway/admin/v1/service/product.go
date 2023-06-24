@@ -160,6 +160,7 @@ func NewProduct(product *entity.Product) *Product {
 			Media:             NewMultiProductMedia(product.Media).Response(),
 			Price:             product.Price,
 			Cost:              product.Cost,
+			ExpirationDate:    product.ExpirationDate,
 			RecommendedPoint1: point1,
 			RecommendedPoint2: point2,
 			RecommendedPoint3: point3,

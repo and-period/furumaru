@@ -261,6 +261,7 @@ type UpdateProductParams struct {
 	Media             entity.MultiProductMedia
 	Price             int64
 	Cost              int64
+	ExpirationDate    int64
 	RecommendedPoints []string
 	StorageMethodType entity.StorageMethodType
 	DeliveryType      entity.DeliveryType

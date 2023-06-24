@@ -108,6 +108,7 @@ func (p *product) Update(ctx context.Context, productID string, params *UpdatePr
 			"item_description":    params.ItemDescription,
 			"price":               params.Price,
 			"cost":                params.Cost,
+			"expiration_date":     params.ExpirationDate,
 			"storage_method_type": params.StorageMethodType,
 			"delivery_type":       params.DeliveryType,
 			"box60_rate":          params.Box60Rate,

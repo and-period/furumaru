@@ -21,6 +21,7 @@ type Product struct {
 	Media             []*ProductMedia `json:"media"`              // メディア一覧
 	Price             int64           `json:"price"`              // 販売価格
 	Cost              int64           `json:"cost"`               // 原価
+	ExpirationDate    int64           `json:"expirationDate"`     // 賞味期限(単位:日)
 	RecommendedPoint1 string          `json:"recommendedPoint1"`  // おすすめポイント1
 	RecommendedPoint2 string          `json:"recommendedPoint2"`  // おすすめポイント2
 	RecommendedPoint3 string          `json:"recommendedPoint3"`  // おすすめポイント3

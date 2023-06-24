@@ -75,6 +75,7 @@ type Product struct {
 	MediaJSON             datatypes.JSON    `gorm:"default:null;column:media"`              // メディア一覧(JSON)
 	Price                 int64             `gorm:""`                                       // 販売価格
 	Cost                  int64             `gorm:""`                                       // 商品原価
+	ExpirationDate        int64             `gorm:""`                                       // 賞味期限(単位:日)
 	RecommendedPoints     []string          `gorm:"-"`                                      // おすすめポイント一覧
 	RecommendedPointsJSON datatypes.JSON    `gorm:"default:null;column:recommended_points"` // おすすめポイント一覧(JSON)
 	StorageMethodType     StorageMethodType `gorm:""`                                       // 保存方法
@@ -116,6 +117,7 @@ type NewProductParams struct {
 	Media             MultiProductMedia
 	Price             int64
 	Cost              int64
+	ExpirationDate    int64
 	RecommendedPoints []string
 	StorageMethodType StorageMethodType
 	DeliveryType      DeliveryType
@@ -144,6 +146,7 @@ func NewProduct(params *NewProductParams) *Product {
 		Media:             params.Media,
 		Price:             params.Price,
 		Cost:              params.Cost,
+		ExpirationDate:    params.ExpirationDate,
 		RecommendedPoints: params.RecommendedPoints,
 		StorageMethodType: params.StorageMethodType,
 		DeliveryType:      params.DeliveryType,
@@ -159,10 +162,7 @@ func (p *Product) Validate() error {
 	if len(p.RecommendedPoints) > 3 {
 		return errors.New("entity: limit exceeded recommended points")
 	}
-	if err := p.Media.Validate(); err != nil {
-		return err
-	}
-	return nil
+	return p.Media.Validate()
 }
 
 func (p *Product) Fill() (err error) {

@@ -44,7 +44,7 @@ func TestProduct_List(t *testing.T) {
 	require.NoError(t, err)
 	productTags := make(entity.ProductTags, 2)
 	productTags[0] = testProductTag("tag-id01", "贈答品", now())
-	productTags[1] = testProductTag("tag-id01", "有機野菜", now())
+	productTags[1] = testProductTag("tag-id02", "有機野菜", now())
 	err = db.DB.Create(&productTags).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 3)
@@ -147,7 +147,7 @@ func TestProduct_Count(t *testing.T) {
 	require.NoError(t, err)
 	productTags := make(entity.ProductTags, 2)
 	productTags[0] = testProductTag("tag-id01", "贈答品", now())
-	productTags[1] = testProductTag("tag-id01", "有機野菜", now())
+	productTags[1] = testProductTag("tag-id02", "有機野菜", now())
 	err = db.DB.Create(&productTags).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 3)
@@ -231,7 +231,7 @@ func TestProduct_MultiGet(t *testing.T) {
 	require.NoError(t, err)
 	productTags := make(entity.ProductTags, 2)
 	productTags[0] = testProductTag("tag-id01", "贈答品", now())
-	productTags[1] = testProductTag("tag-id01", "有機野菜", now())
+	productTags[1] = testProductTag("tag-id02", "有機野菜", now())
 	err = db.DB.Create(&productTags).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 3)
@@ -761,6 +761,7 @@ func testProduct(id, typeID, categoryID, producerID string, tagIDs []string, now
 		},
 		Price:             400,
 		Cost:              300,
+		ExpirationDate:    7,
 		StorageMethodType: entity.StorageMethodTypeNormal,
 		DeliveryType:      entity.DeliveryTypeNormal,
 		Box60Rate:         50,
