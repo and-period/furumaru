@@ -23,11 +23,10 @@ func TestListNotificaitons(t *testing.T) {
 	since := jst.Date(2022, 6, 28, 18, 30, 0, 0)
 	until := jst.Date(2022, 6, 30, 18, 30, 0, 0)
 	params := &database.ListNotificationsParams{
-		Limit:         30,
-		Offset:        0,
-		Since:         since,
-		Until:         until,
-		OnlyPublished: true,
+		Limit:  30,
+		Offset: 0,
+		Since:  since,
+		Until:  until,
 		Orders: []*database.ListNotificationsOrder{
 			{Key: entity.NotificationOrderByPublishedAt, OrderByASC: true},
 		},
@@ -62,11 +61,10 @@ func TestListNotificaitons(t *testing.T) {
 				mocks.db.Notification.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &messenger.ListNotificationsInput{
-				Limit:         30,
-				Offset:        0,
-				Since:         since,
-				Until:         until,
-				OnlyPublished: true,
+				Limit:  30,
+				Offset: 0,
+				Since:  since,
+				Until:  until,
 				Orders: []*messenger.ListNotificationsOrder{
 					{Key: entity.NotificationOrderByPublishedAt, OrderByASC: true},
 				},
@@ -90,11 +88,10 @@ func TestListNotificaitons(t *testing.T) {
 				mocks.db.Notification.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &messenger.ListNotificationsInput{
-				Limit:         30,
-				Offset:        0,
-				Since:         since,
-				Until:         until,
-				OnlyPublished: true,
+				Limit:  30,
+				Offset: 0,
+				Since:  since,
+				Until:  until,
 				Orders: []*messenger.ListNotificationsOrder{
 					{Key: entity.NotificationOrderByPublishedAt, OrderByASC: true},
 				},
@@ -110,11 +107,10 @@ func TestListNotificaitons(t *testing.T) {
 				mocks.db.Notification.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
 			},
 			input: &messenger.ListNotificationsInput{
-				Limit:         30,
-				Offset:        0,
-				Since:         since,
-				Until:         until,
-				OnlyPublished: true,
+				Limit:  30,
+				Offset: 0,
+				Since:  since,
+				Until:  until,
 				Orders: []*messenger.ListNotificationsOrder{
 					{Key: entity.NotificationOrderByPublishedAt, OrderByASC: true},
 				},

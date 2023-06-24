@@ -55,11 +55,10 @@ func TestNotification_List(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListNotificationsParams{
-					Limit:         20,
-					Offset:        1,
-					Since:         now().Add(-time.Hour),
-					Until:         now(),
-					OnlyPublished: true,
+					Limit:  20,
+					Offset: 1,
+					Since:  now().Add(-time.Hour),
+					Until:  now().AddDate(0, 1, 0),
 				},
 			},
 			want: want{
@@ -141,7 +140,7 @@ func TestNotificaiton_Count(t *testing.T) {
 			args: args{
 				params: &ListNotificationsParams{
 					Since: now(),
-					Until: now(),
+					Until: now().AddDate(0, 1, 0),
 				},
 			},
 			want: want{

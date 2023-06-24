@@ -7,12 +7,11 @@ import (
 )
 
 type ListNotificationsInput struct {
-	Limit         int64                     `validate:"required,max=200"`
-	Offset        int64                     `validate:"min=0"`
-	Since         time.Time                 `validate:""`
-	Until         time.Time                 `validate:""`
-	OnlyPublished bool                      `validate:""`
-	Orders        []*ListNotificationsOrder `validate:"omitempty,dive,required"`
+	Limit  int64                     `validate:"required,max=200"`
+	Offset int64                     `validate:"min=0"`
+	Since  time.Time                 `validate:""`
+	Until  time.Time                 `validate:""`
+	Orders []*ListNotificationsOrder `validate:"omitempty,dive,required"`
 }
 
 type ListNotificationsOrder struct {

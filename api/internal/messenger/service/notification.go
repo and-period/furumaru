@@ -26,12 +26,11 @@ func (s *service) ListNotifications(ctx context.Context, in *messenger.ListNotif
 		}
 	}
 	params := &database.ListNotificationsParams{
-		Limit:         int(in.Limit),
-		Offset:        int(in.Offset),
-		Since:         in.Since,
-		Until:         in.Until,
-		OnlyPublished: in.OnlyPublished,
-		Orders:        orders,
+		Limit:  int(in.Limit),
+		Offset: int(in.Offset),
+		Since:  in.Since,
+		Until:  in.Until,
+		Orders: orders,
 	}
 	var (
 		notifications entity.Notifications
