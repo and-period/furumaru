@@ -227,9 +227,9 @@ const onClickSearchAddress = (): void => {
           multiple
           density="comfortable"
         >
-          <template #chip="{ props, item }">
+          <template #chip="{ props: val, item }">
             <v-chip
-              v-bind="props"
+              v-bind="val"
               :prepend-avatar="item.raw.iconUrl"
               :text="item.raw.name"
               rounded
@@ -237,9 +237,9 @@ const onClickSearchAddress = (): void => {
               variant="outlined"
             />
           </template>
-          <template #item="{ props, item }">
+          <template #item="{ props: val, item }">
             <v-list-item
-              v-bind="props"
+              v-bind="val"
               :prepend-avatar="item?.raw?.iconUrl"
               :title="item?.raw?.name"
             />

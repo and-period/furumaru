@@ -137,7 +137,7 @@ func (p *product) Update(ctx context.Context, productID string, params *UpdatePr
 			if err != nil {
 				return fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
 			}
-			updates["recommemded_points"] = points
+			updates["recommended_points"] = points
 		}
 		err := tx.WithContext(ctx).
 			Table(productTable).

@@ -10,7 +10,7 @@ type Product struct {
 	TypeID            string          `json:"productTypeId"`      // 品目ID
 	TypeName          string          `json:"productTypeName"`    // 品目名
 	TypeIconURL       string          `json:"productTypeIconUrl"` // 品目アイコンURL
-	TagIDs            []string        `json:"tagIds"`             // 商品タグID一覧
+	TagIDs            []string        `json:"productTagIds"`      // 商品タグID一覧
 	Name              string          `json:"name"`               // 商品名
 	Description       string          `json:"description"`        // 商品説明
 	Public            bool            `json:"public"`             // 公開フラグ

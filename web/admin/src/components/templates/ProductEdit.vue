@@ -350,7 +350,7 @@ const onSubmit = (): void => {
               label="おすすめポイント3"
             />
             <v-text-field
-              v-model="validate.expirationDate.$model"
+              v-model.number="validate.expirationDate.$model"
               :error-messages="getErrorMessage(validate.expirationDate.$errors)"
               label="賞味期限"
               type="number"
@@ -512,14 +512,14 @@ const onSubmit = (): void => {
       <v-card elevation="0" class="mb-4">
         <v-card-title>詳細情報</v-card-title>
         <v-card-text>
-          <v-select
+          <v-autocomplete
             v-model="selectedCategoryIdValue"
             label="カテゴリ"
             :items="categories"
             item-title="name"
             item-value="id"
           />
-          <v-select
+          <v-autocomplete
             v-model="validate.productTypeId.$model"
             :error-messages="getErrorMessage(validate.productTypeId.$errors)"
             label="品目"
@@ -528,7 +528,7 @@ const onSubmit = (): void => {
             item-value="id"
             no-data-text="カテゴリを先に選択してください。"
           />
-          <v-select
+          <v-autocomplete
             v-model="validate.originPrefecture.$model"
             :error-messages="getErrorMessage(validate.originPrefecture.$errors)"
             label="原産地（都道府県）"
@@ -536,7 +536,7 @@ const onSubmit = (): void => {
             item-title="text"
             item-value="value"
           />
-          <v-select
+          <v-autocomplete
             v-model="validate.originCity.$model"
             :error-messages="getErrorMessage(validate.originCity.$errors)"
             :items="cityListItems"
@@ -545,7 +545,7 @@ const onSubmit = (): void => {
             label="原産地（市町村）"
             no-data-text="原産地（都道府県）を先に選択してください。"
           />
-          <v-select
+          <v-autocomplete
             v-model="validate.productTagIds.$model"
             label="商品タグ"
             :error-messages="getErrorMessage(validate.productTagIds.$errors)"
