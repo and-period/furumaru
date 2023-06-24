@@ -16,14 +16,6 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits<{
-  (e: 'update:customer', customer: UserResponse): void
-}>()
-
-const tabs: Customer[] = [
-  { name: '顧客情報', value: 'customers' },
-  { name: '購入に関して', value: 'customerItems' }
-]
 const headers: VDataTable['headers'] = [
   {
     title: 'No.',
@@ -97,6 +89,29 @@ const orders = [
     price: 2000
   }
 ]
+const activities = [
+  {
+    eventType: 'notification',
+    detail: '注文(#1000)の発想が完了しました。',
+    createdAt: '2023/04/12 10:34'
+  },
+  {
+    eventType: 'notification',
+    detail: '注文(#1000)の発送済みメールを送りました。',
+    createdAt: '2023/04/10 10:34'
+  },
+  {
+    eventType: 'comment',
+    username: 'ふるマル管理者',
+    detail: '発送準備をコーディネータに依頼済み',
+    createdAt: '2023/04/06 12:00'
+  },
+  {
+    eventType: 'notification',
+    detail: '注文(#1000)の支払い完了メールを送りました。',
+    createdAt: '2023/04/05 10:34'
+  }
+]
 
 const getUsername = (): string => {
   return `${props.customer.lastname} ${props.customer.firstname}`
@@ -123,39 +138,7 @@ const getStatusColor = (): string => {
 
 <template>
   <v-row :loading="loading">
-    <v-col sm="12" md="12" lg="8">
-      <v-card elevation="0" class="mb-4">
-        <v-card-text>
-          <v-row>
-            <v-col>
-              <v-card-subtitle class="pb-4">
-                支払い金額
-              </v-card-subtitle>
-              <div class="px-4">
-                &yen; 0
-              </div>
-            </v-col>
-            <v-col>
-              <v-card-subtitle class="pb-4">
-                注文数
-              </v-card-subtitle>
-              <div class="px-4">
-                0
-              </div>
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-card>
-      <v-card elevation="0">
-        <v-card-text>
-          <v-card-title class="pb-4">
-            購入情報
-          </v-card-title>
-          <v-data-table :headers="headers" :items="orders" />
-        </v-card-text>
-      </v-card>
-    </v-col>
-    <v-col sm="12" md="12" lg="4">
+    <v-col sm="12" md="12" lg="4" order-lg="2">
       <v-card elevation="0">
         <v-card-text>
           <v-list>
@@ -193,6 +176,77 @@ const getStatusColor = (): string => {
           </v-list>
         </v-card-text>
       </v-card>
+    </v-col>
+
+    <v-col sm="12" md="12" lg="8" order-lg="1">
+      <v-card elevation="0" class="mb-4">
+        <v-card-text>
+          <v-row>
+            <v-col>
+              <v-card-subtitle class="pb-4">
+                支払い金額
+              </v-card-subtitle>
+              <div class="px-4">
+                &yen; 0
+              </div>
+            </v-col>
+            <v-col>
+              <v-card-subtitle class="pb-4">
+                注文数
+              </v-card-subtitle>
+              <div class="px-4">
+                0
+              </div>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+      <v-card elevation="0" class="mb-4">
+        <v-card-text>
+          <v-card-title class="pb-4">
+            購入情報
+          </v-card-title>
+          <v-data-table :headers="headers" :items="orders" />
+        </v-card-text>
+      </v-card>
+
+      <div class="pa-4">
+        <h4 class="pb-2">
+          タイムライン
+        </h4>
+        <v-divider />
+
+        <v-timeline side="end" density="compact">
+          <template v-for="(activity, i) in activities" :key="i">
+            <v-timeline-item v-if="activity.eventType === 'notification'" class="mb-4" dot-color="grey" size="small" max-width="75vw">
+              <div class="d-flex flex-column flex-lg-row justify-space-between flex-grow-1">
+                <div>{{ activity.detail }}</div>
+                <div class="flex-shrink-0 text-grey">
+                  {{ activity.createdAt }}
+                </div>
+              </div>
+            </v-timeline-item>
+            <v-timeline-item v-if="activity.eventType === 'comment'" class="mb-4" dot-color="grey" size="small" max-width="75vw">
+              <template #icon>
+                <v-avatar image="https://i.pravatar.cc/64" />
+              </template>
+              <v-card class="elevation-0">
+                <v-card-title class="d-lg-flex flex-lg-row align-center">
+                  <div class="pr-2">
+                    {{ activity.username }}
+                  </div>
+                  <div class="text-subtitle-2 text-grey">
+                    {{ activity.createdAt }}
+                  </div>
+                </v-card-title>
+                <v-card-text>
+                  <div>{{ activity.detail }}</div>
+                </v-card-text>
+              </v-card>
+            </v-timeline-item>
+          </template>
+        </v-timeline>
+      </div>
     </v-col>
   </v-row>
 </template>
