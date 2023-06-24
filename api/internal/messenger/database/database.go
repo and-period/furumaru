@@ -49,6 +49,7 @@ func NewDatabase(params *Params) *Database {
 type Contact interface {
 	Get(ctx context.Context, contactID string, fields ...string) (*entity.Contact, error)
 	Create(ctx context.Context, contact *entity.Contact) error
+	Update(ctx context.Context, contactID string, params *UpdateContactParams) error
 }
 
 type ContactCategory interface {
@@ -226,4 +227,17 @@ type UpdateThreadParams struct {
 	Content  string
 	UserID   string
 	UserType int32
+}
+
+type UpdateContactParams struct {
+	Title       string
+	CategoryID  string
+	Content     string
+	Username    string
+	UserID      string
+	Email       string
+	PhoneNumber string
+	Status      entity.ContactStatus
+	ResponderID string
+	Note        string
 }

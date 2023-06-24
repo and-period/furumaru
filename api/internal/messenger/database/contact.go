@@ -41,6 +41,34 @@ func (c *contact) Create(ctx context.Context, contact *entity.Contact) error {
 	return exception.InternalError(err)
 }
 
+func (c *contact) Update(ctx context.Context, contactID string, params *UpdateContactParams) error {
+	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
+		if _, err := c.get(ctx, tx, contactID); err != nil {
+			return err
+		}
+
+		updates := map[string]interface{}{
+			"title":        params.Title,
+			"category_id":  params.CategoryID,
+			"content":      params.Content,
+			"username":     params.Username,
+			"user_id":      params.UserID,
+			"email":        params.Email,
+			"phone_number": params.PhoneNumber,
+			"status":       params.Status,
+			"responder_id": params.ResponderID,
+			"note":         params.Note,
+			"updated_at":   c.now(),
+		}
+		err := tx.WithContext(ctx).
+			Table(contactTable).
+			Where("id = ?", contactID).
+			Updates(updates).Error
+		return err
+	})
+	return exception.InternalError(err)
+}
+
 func (c *contact) get(
 	ctx context.Context, tx *gorm.DB, contactID string, fields ...string,
 ) (*entity.Contact, error) {

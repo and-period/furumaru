@@ -169,6 +169,94 @@ func TestContact_Create(t *testing.T) {
 	}
 }
 
+func TestContact_Update(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	category := testContactCategory("category-id", "お問い合わせ種別", now())
+	err = db.DB.Create(&category).Error
+	require.NoError(t, err)
+
+	type args struct {
+		contactID string
+		params    *UpdateContactParams
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+				contact := testContact("contact-id", now())
+				err = db.DB.Create(&contact).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				contactID: "contact-id",
+				params: &UpdateContactParams{
+					Title:       "件名",
+					CategoryID:  "category-id",
+					Content:     "内容です。",
+					Username:    "あんど ぴりおど",
+					UserID:      "user-id",
+					Email:       "test-user@and-period.jp",
+					PhoneNumber: "+819012345678",
+					Status:      entity.ContactStatusDone,
+					ResponderID: "responder-id",
+					Note:        "メモです",
+				},
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			args: args{
+				contactID: "contact-id",
+				params:    &UpdateContactParams{},
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, contactTable)
+			require.NoError(t, err)
+
+			tt.setup(ctx, t, db)
+
+			db := &contact{db: db, now: now}
+			err = db.Update(ctx, tt.args.contactID, tt.args.params)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
 func testContact(id string, now time.Time) *entity.Contact {
 	return &entity.Contact{
 		ID:          id,
