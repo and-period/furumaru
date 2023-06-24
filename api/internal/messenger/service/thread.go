@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
+	"github.com/and-period/furumaru/api/internal/user"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -79,4 +80,54 @@ func (s *service) CreateThread(ctx context.Context, in *messenger.CreateThreadIn
 		return nil, exception.InternalError(err)
 	}
 	return thread, nil
+}
+
+func (s *service) UpdateThread(ctx context.Context, in *messenger.UpdateThreadInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		if in.UserType != 1 {
+			return nil
+		}
+		adminID := &user.GetAdminInput{
+			AdminID: in.UserID,
+		}
+		_, err := s.user.GetAdmin(ectx, adminID)
+		return err
+	})
+	eg.Go(func() error {
+		if in.UserType != 2 {
+			return nil
+		}
+		userID := &user.GetUserInput{
+			UserID: in.UserID,
+		}
+		_, err := s.user.GetUser(ectx, userID)
+		return err
+	})
+	err := eg.Wait()
+	if errors.Is(err, exception.ErrNotFound) {
+		return fmt.Errorf("api: invalid user id format: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	if err != nil {
+		return exception.InternalError(err)
+	}
+	params := &database.UpdateThreadParams{
+		Content:  in.Content,
+		UserID:   in.UserID,
+		UserType: in.UserType,
+	}
+	err = s.db.Thread.Update(ctx, in.ThreadID, params)
+	return exception.InternalError(err)
+}
+
+func (s *service) DeleteThread(ctx context.Context, in *messenger.DeleteThreadInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	err := s.db.Thread.Delete(ctx, in.ThreadID)
+	return exception.InternalError(err)
 }

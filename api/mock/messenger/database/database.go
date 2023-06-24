@@ -165,6 +165,20 @@ func (mr *MockThreadMockRecorder) Create(ctx, thread interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockThread)(nil).Create), ctx, thread)
 }
 
+// Delete mocks base method.
+func (m *MockThread) Delete(ctx context.Context, threadID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", ctx, threadID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockThreadMockRecorder) Delete(ctx, threadID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockThread)(nil).Delete), ctx, threadID)
+}
+
 // Get mocks base method.
 func (m *MockThread) Get(ctx context.Context, threadID string, fields ...string) (*entity.Thread, error) {
 	m.ctrl.T.Helper()
