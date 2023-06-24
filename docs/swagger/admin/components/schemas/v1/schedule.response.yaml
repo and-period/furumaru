@@ -168,7 +168,7 @@ scheduleResponse:
                   format: int64
                   description: 箱の占有率(サイズ:100)
                 originPrefecture:
-                  type: string
+                  $ref: './../../../openapi.yaml#/components/schemas/prefecture'
                   description: 原産地(都道府県)
                 originCity:
                   type: string
@@ -302,7 +302,7 @@ scheduleResponse:
         box60Rate: 80
         box80Rate: 50
         box100Rate: 40
-        originPrefecture: '滋賀県'
+        originPrefecture: 'tokyo'
         originCity: '彦根市'
         createdAt: 1640962800
         updatedAt: 1640962800

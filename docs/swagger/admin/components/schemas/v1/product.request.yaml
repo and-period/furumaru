@@ -90,6 +90,7 @@ createProductRequest:
       description: 箱の占有率(サイズ:100)(0以上,100以下)
     originPrefecture:
       $ref: './../../../openapi.yaml#/components/schemas/prefecture'
+      description: 原産地(都道府県)
     originCity:
       type: string
       description: 原産地(市区町村)(32文字まで)

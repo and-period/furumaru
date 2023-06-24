@@ -2646,11 +2646,11 @@ export interface OrderResponseFulfillment {
      */
     'postalCode': string;
     /**
-     * 配送先情報 都道府県
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof OrderResponseFulfillment
      */
-    'prefecture': string;
+    'prefecture': Prefecture;
     /**
      * 配送先情報 市区町村
      * @type {string}
@@ -2806,11 +2806,11 @@ export interface OrderResponsePayment {
      */
     'postalCode': string;
     /**
-     * 請求先情報 都道府県
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof OrderResponsePayment
      */
-    'prefecture': string;
+    'prefecture': Prefecture;
     /**
      * 請求先情報 市区町村
      * @type {string}
@@ -4868,11 +4868,11 @@ export interface ScheduleResponseLivesInnerProductsInner {
      */
     'box100Rate'?: number;
     /**
-     * 原産地(都道府県)
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof ScheduleResponseLivesInnerProductsInner
      */
-    'originPrefecture'?: string;
+    'originPrefecture'?: Prefecture;
     /**
      * 原産地(市区町村)
      * @type {string}
