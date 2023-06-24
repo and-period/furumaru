@@ -24,7 +24,7 @@ const formData = ref<CreateNotificationRequest>({
   promotionId: ''
 })
 
-const fetchPromotions = async(): Promise<void> => {
+const fetchPromotions = async (): Promise<void> => {
   try {
     await promotionStore.fetchPromotions()
   } catch (err) {
@@ -38,10 +38,10 @@ const fetchPromotions = async(): Promise<void> => {
 const updateNotificationType = async (type: NotificationType): Promise<void> => {
   loading.value = true
   switch (type) {
-  case NotificationType.PROMOTION:
-    await fetchPromotions()
-    break
-  default:
+    case NotificationType.PROMOTION:
+      await fetchPromotions()
+      break
+    default:
     // 何もしない
   }
   loading.value = false

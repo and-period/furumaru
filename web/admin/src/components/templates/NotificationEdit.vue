@@ -32,7 +32,7 @@ const props = defineProps({
       title: '',
       body: '',
       note: '',
-      publishedAt: dayjs().unix(),
+      publishedAt: dayjs().unix()
     })
   },
   notification: {
@@ -81,7 +81,7 @@ const typeList = [
   { title: 'システム関連', value: NotificationType.SYSTEM },
   { title: 'ライブ関連', value: NotificationType.LIVE },
   { title: 'セール関連', value: NotificationType.PROMOTION },
-  { title: 'その他', value: NotificationType.OTHER },
+  { title: 'その他', value: NotificationType.OTHER }
 ]
 const targetList = [
   { title: 'ユーザー', value: NotificationTarget.USERS },
@@ -94,7 +94,7 @@ const formDataRules = computed(() => ({
   targets: { maxValue: maxValue(4) },
   title: { maxLength: maxLength(128) },
   body: { required, maxLength: maxLength(2000) },
-  note: { required, maxLength: maxLength(2000) },
+  note: { required, maxLength: maxLength(2000) }
 }))
 const timeDataRules = computed(() => ({
   publishedDate: {},
@@ -113,6 +113,9 @@ const timeDataValue = computed({
     const publishedAt = dayjs(`${timeData.publishedDate} ${timeData.publishedTime}`)
     formDataValue.value.publishedAt = publishedAt.unix()
   }
+})
+const notificationValue = computed((): NotificationResponse => {
+  return props.notification
 })
 
 const formDataValidate = useVuelidate(formDataRules, formDataValue)
@@ -152,7 +155,6 @@ const getPromotionDiscount = (): string => {
   }
 }
 
-
 const onSubmit = async (): Promise<void> => {
   const formDataValid = await formDataValidate.value.$validate()
   const timeDataValid = await timeDataValidate.value.$validate()
@@ -171,7 +173,7 @@ const onSubmit = async (): Promise<void> => {
     <v-form @submit.prevent="onSubmit">
       <v-card-text>
         <v-select
-          v-model="notification.type"
+          v-model="notificationValue.type"
           :items="typeList"
           label="お知らせ種別"
           item-title="title"
@@ -212,15 +214,17 @@ const onSubmit = async (): Promise<void> => {
         />
         <!-- 共通部分 -->
         <v-autocomplete
-        v-model="formDataValidate.targets.$model"
-        :error-messages="getErrorMessage(formDataValidate.targets.$errors)"
-        :items="targetList"
-        label="公開範囲"
-        multiple
-        item-title="title"
-        item-value="value"
+          v-model="formDataValidate.targets.$model"
+          :error-messages="getErrorMessage(formDataValidate.targets.$errors)"
+          :items="targetList"
+          label="公開範囲"
+          multiple
+          item-title="title"
+          item-value="value"
         />
-        <p class="text-subtitle-2 text-grey py-2">投稿日時</p>
+        <p class="text-subtitle-2 text-grey py-2">
+          投稿日時
+        </p>
         <div class="d-flex align-center">
           <v-text-field
             v-model="timeDataValidate.publishedDate.$model"
@@ -229,7 +233,7 @@ const onSubmit = async (): Promise<void> => {
             class="mr-2"
             variant="outlined"
             density="compact"
-            />
+          />
           <v-text-field
             v-model="timeDataValidate.publishedTime.$model"
             :error-messages="getErrorMessage(timeDataValidate.publishedTime.$errors)"
@@ -255,7 +259,14 @@ const onSubmit = async (): Promise<void> => {
       </v-card-text>
 
       <v-card-actions>
-        <v-btn block :loading="loading" variant="outlined" color="primary" type="submit" class="mt-4">
+        <v-btn
+          block
+          :loading="loading"
+          variant="outlined"
+          color="primary"
+          type="submit"
+          class="mt-4"
+        >
           更新
         </v-btn>
       </v-card-actions>

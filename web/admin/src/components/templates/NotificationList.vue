@@ -101,38 +101,38 @@ const deleteDialogValue = computed({
 
 const getType = (type: NotificationType): string => {
   switch (type) {
-  case NotificationType.SYSTEM:
-    return 'システム関連'
-  case NotificationType.LIVE:
-    return 'ライブ関連'
-  case NotificationType.PROMOTION:
-    return 'セール関連'
-  case NotificationType.OTHER:
-    return 'その他'
-  default:
-    return 'その他'
+    case NotificationType.SYSTEM:
+      return 'システム関連'
+    case NotificationType.LIVE:
+      return 'ライブ関連'
+    case NotificationType.PROMOTION:
+      return 'セール関連'
+    case NotificationType.OTHER:
+      return 'その他'
+    default:
+      return 'その他'
   }
 }
 
 const getStatus = (status: NotificationStatus): string => {
   switch (status) {
-  case NotificationStatus.WAITING:
-    return 'error'
-  case NotificationStatus.NOTIFIED:
-    return 'primary'
-  default:
-    return ''
+    case NotificationStatus.WAITING:
+      return 'error'
+    case NotificationStatus.NOTIFIED:
+      return 'primary'
+    default:
+      return ''
   }
 }
 
 const getStatusColor = (status: NotificationStatus): string => {
   switch (status) {
-  case NotificationStatus.WAITING:
-    return '投稿前'
-  case NotificationStatus.NOTIFIED:
-    return '投稿済み'
-  default:
-    return '不明'
+    case NotificationStatus.WAITING:
+      return '投稿前'
+    case NotificationStatus.NOTIFIED:
+      return '投稿済み'
+    default:
+      return '不明'
   }
 }
 
