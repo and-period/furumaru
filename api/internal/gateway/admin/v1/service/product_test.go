@@ -3,12 +3,55 @@ package service
 import (
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
 )
+
+func TestStorageMethodType(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name              string
+		storageMethodType entity.StorageMethodType
+		expect            StorageMethodType
+	}{
+		{
+			name:              "success to normal",
+			storageMethodType: entity.StorageMethodTypeNormal,
+			expect:            StorageMethodTypeNormal,
+		},
+		{
+			name:              "success to cook dark",
+			storageMethodType: entity.StorageMethodTypeCoolDark,
+			expect:            StorageMethodTypeCoolDark,
+		},
+		{
+			name:              "success to refrigerated",
+			storageMethodType: entity.StorageMethodTypeRefrigerated,
+			expect:            StorageMethodTypeRefrigerated,
+		},
+		{
+			name:              "success to frozen",
+			storageMethodType: entity.StorageMethodTypeFrozen,
+			expect:            StorageMethodTypeFrozen,
+		},
+		{
+			name:              "success to unknown",
+			storageMethodType: entity.StorageMethodTypeUnknown,
+			expect:            StorageMethodTypeUnknown,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, NewStorageMethodType(tt.storageMethodType))
+		})
+	}
+}
 
 func TestDeliveryType(t *testing.T) {
 	t.Parallel()
@@ -198,8 +241,9 @@ func TestProduct(t *testing.T) {
 			name: "success",
 			product: &entity.Product{
 				ID:              "product-id",
-				TypeID:          "product-type-id",
 				ProducerID:      "producer-id",
+				TypeID:          "product-type-id",
+				TagIDs:          []string{"product-tag-id"},
 				Name:            "新鮮なじゃがいも",
 				Description:     "新鮮なじゃがいもをお届けします。",
 				Public:          true,
@@ -219,26 +263,30 @@ func TestProduct(t *testing.T) {
 						IsThumbnail: false,
 					},
 				},
-				Price:            400,
-				DeliveryType:     entity.DeliveryTypeNormal,
-				Box60Rate:        50,
-				Box80Rate:        40,
-				Box100Rate:       30,
-				OriginPrefecture: "滋賀県",
-				OriginCity:       "彦根市",
-				CreatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				UpdatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				Price:             400,
+				Cost:              300,
+				RecommendedPoints: []string{"ポイント1", "ポイント2", "ポイント3"},
+				StorageMethodType: entity.StorageMethodTypeNormal,
+				DeliveryType:      entity.DeliveryTypeNormal,
+				Box60Rate:         50,
+				Box80Rate:         40,
+				Box100Rate:        30,
+				OriginPrefecture:  codes.PrefectureValues["shiga"],
+				OriginCity:        "彦根市",
+				CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &Product{
 				Product: response.Product{
 					ID:              "product-id",
+					ProducerID:      "producer-id",
+					StoreName:       "",
+					CategoryID:      "",
+					CategoryName:    "",
 					TypeID:          "product-type-id",
 					TypeName:        "",
 					TypeIconURL:     "",
-					CategoryID:      "",
-					CategoryName:    "",
-					ProducerID:      "producer-id",
-					StoreName:       "",
+					TagIDs:          []string{"product-tag-id"},
 					Name:            "新鮮なじゃがいも",
 					Description:     "新鮮なじゃがいもをお届けします。",
 					Public:          true,
@@ -258,15 +306,20 @@ func TestProduct(t *testing.T) {
 							Images:      []*response.Image{},
 						},
 					},
-					Price:            400,
-					DeliveryType:     int32(DeliveryTypeNormal),
-					Box60Rate:        50,
-					Box80Rate:        40,
-					Box100Rate:       30,
-					OriginPrefecture: "滋賀県",
-					OriginCity:       "彦根市",
-					CreatedAt:        1640962800,
-					UpdatedAt:        1640962800,
+					Price:             400,
+					Cost:              300,
+					RecommendedPoint1: "ポイント1",
+					RecommendedPoint2: "ポイント2",
+					RecommendedPoint3: "ポイント3",
+					StorageMethodType: int32(StorageMethodTypeNormal),
+					DeliveryType:      int32(DeliveryTypeNormal),
+					Box60Rate:         50,
+					Box80Rate:         40,
+					Box100Rate:        30,
+					OriginPrefecture:  "shiga",
+					OriginCity:        "彦根市",
+					CreatedAt:         1640962800,
+					UpdatedAt:         1640962800,
 				},
 			},
 		},
@@ -320,7 +373,7 @@ func TestProduct_Fill(t *testing.T) {
 					Box60Rate:        50,
 					Box80Rate:        40,
 					Box100Rate:       30,
-					OriginPrefecture: "滋賀県",
+					OriginPrefecture: "shiga",
 					OriginCity:       "彦根市",
 					CreatedAt:        1640962800,
 					UpdatedAt:        1640962800,
@@ -390,7 +443,7 @@ func TestProduct_Fill(t *testing.T) {
 					Box60Rate:        50,
 					Box80Rate:        40,
 					Box100Rate:       30,
-					OriginPrefecture: "滋賀県",
+					OriginPrefecture: "shiga",
 					OriginCity:       "彦根市",
 					CreatedAt:        1640962800,
 					UpdatedAt:        1640962800,
@@ -451,7 +504,7 @@ func TestProduct_Response(t *testing.T) {
 					Box60Rate:        50,
 					Box80Rate:        40,
 					Box100Rate:       30,
-					OriginPrefecture: "滋賀県",
+					OriginPrefecture: "shiga",
 					OriginCity:       "彦根市",
 					CreatedAt:        1640962800,
 					UpdatedAt:        1640962800,
@@ -490,7 +543,7 @@ func TestProduct_Response(t *testing.T) {
 				Box60Rate:        50,
 				Box80Rate:        40,
 				Box100Rate:       30,
-				OriginPrefecture: "滋賀県",
+				OriginPrefecture: "shiga",
 				OriginCity:       "彦根市",
 				CreatedAt:        1640962800,
 				UpdatedAt:        1640962800,
@@ -554,7 +607,7 @@ func TestProducts(t *testing.T) {
 					Box60Rate:        50,
 					Box80Rate:        40,
 					Box100Rate:       30,
-					OriginPrefecture: "滋賀県",
+					OriginPrefecture: codes.PrefectureValues["shiga"],
 					OriginCity:       "彦根市",
 					CreatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					UpdatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
@@ -603,7 +656,7 @@ func TestProducts(t *testing.T) {
 						Box60Rate:        50,
 						Box80Rate:        40,
 						Box100Rate:       30,
-						OriginPrefecture: "滋賀県",
+						OriginPrefecture: "shiga",
 						OriginCity:       "彦根市",
 						CreatedAt:        1640962800,
 						UpdatedAt:        1640962800,
@@ -657,7 +710,7 @@ func TestProducts_ProducerIDs(t *testing.T) {
 						Box60Rate:        50,
 						Box80Rate:        40,
 						Box100Rate:       30,
-						OriginPrefecture: "滋賀県",
+						OriginPrefecture: "shiga",
 						OriginCity:       "彦根市",
 						CreatedAt:        1640962800,
 						UpdatedAt:        1640962800,
@@ -712,7 +765,7 @@ func TestProducts_CategoryIDs(t *testing.T) {
 						Box60Rate:        50,
 						Box80Rate:        40,
 						Box100Rate:       30,
-						OriginPrefecture: "滋賀県",
+						OriginPrefecture: "shiga",
 						OriginCity:       "彦根市",
 						CreatedAt:        1640962800,
 						UpdatedAt:        1640962800,
@@ -767,7 +820,7 @@ func TestProducts_ProductTypeIDs(t *testing.T) {
 						Box60Rate:        50,
 						Box80Rate:        40,
 						Box100Rate:       30,
-						OriginPrefecture: "滋賀県",
+						OriginPrefecture: "shiga",
 						OriginCity:       "彦根市",
 						CreatedAt:        1640962800,
 						UpdatedAt:        1640962800,
@@ -822,7 +875,7 @@ func TestProducts_Map(t *testing.T) {
 						Box60Rate:        50,
 						Box80Rate:        40,
 						Box100Rate:       30,
-						OriginPrefecture: "滋賀県",
+						OriginPrefecture: "shiga",
 						OriginCity:       "彦根市",
 						CreatedAt:        1640962800,
 						UpdatedAt:        1640962800,
@@ -856,7 +909,7 @@ func TestProducts_Map(t *testing.T) {
 						Box60Rate:        50,
 						Box80Rate:        40,
 						Box100Rate:       30,
-						OriginPrefecture: "滋賀県",
+						OriginPrefecture: "shiga",
 						OriginCity:       "彦根市",
 						CreatedAt:        1640962800,
 						UpdatedAt:        1640962800,
@@ -908,7 +961,7 @@ func TestProducts_Fill(t *testing.T) {
 						Box60Rate:        50,
 						Box80Rate:        40,
 						Box100Rate:       30,
-						OriginPrefecture: "滋賀県",
+						OriginPrefecture: "shiga",
 						OriginCity:       "彦根市",
 						CreatedAt:        1640962800,
 						UpdatedAt:        1640962800,
@@ -976,7 +1029,7 @@ func TestProducts_Fill(t *testing.T) {
 						Box60Rate:        50,
 						Box80Rate:        40,
 						Box100Rate:       30,
-						OriginPrefecture: "滋賀県",
+						OriginPrefecture: "shiga",
 						OriginCity:       "彦根市",
 						CreatedAt:        1640962800,
 						UpdatedAt:        1640962800,
@@ -1031,7 +1084,7 @@ func TestProducts_Response(t *testing.T) {
 						Box60Rate:        50,
 						Box80Rate:        40,
 						Box100Rate:       30,
-						OriginPrefecture: "滋賀県",
+						OriginPrefecture: "shiga",
 						OriginCity:       "彦根市",
 						CreatedAt:        1640962800,
 						UpdatedAt:        1640962800,
@@ -1064,7 +1117,7 @@ func TestProducts_Response(t *testing.T) {
 					Box60Rate:        50,
 					Box80Rate:        40,
 					Box100Rate:       30,
-					OriginPrefecture: "滋賀県",
+					OriginPrefecture: "shiga",
 					OriginCity:       "彦根市",
 					CreatedAt:        1640962800,
 					UpdatedAt:        1640962800,

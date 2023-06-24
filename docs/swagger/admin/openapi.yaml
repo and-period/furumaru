@@ -219,6 +219,8 @@ components:
       $ref: './components/schemas/codes/order_refund.yaml#/orderRefundType'
     deliveryType:
       $ref: './components/schemas/codes/product.yaml#/deliveryType'
+    storageMethodType:
+      $ref: './components/schemas/codes/product.yaml#/storageMethodType'
     discountType:
       $ref: './components/schemas/codes/promotion.yaml#/discountType'
     errorResponse:

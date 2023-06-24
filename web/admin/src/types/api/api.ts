@@ -1372,6 +1372,12 @@ export interface CreateProductRequest {
      */
     'description': string;
     /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof CreateProductRequest
+     */
+    'public': boolean;
+    /**
      * 生産者ID
      * @type {string}
      * @memberof CreateProductRequest
@@ -1384,11 +1390,29 @@ export interface CreateProductRequest {
      */
     'productTypeId': string;
     /**
-     * 公開フラグ
-     * @type {boolean}
+     * 商品タグ一覧
+     * @type {Array<string>}
      * @memberof CreateProductRequest
      */
-    'public': boolean;
+    'productTagIds': Array<string>;
+    /**
+     * メディア一覧(8つまで)
+     * @type {Array<CreateProductRequestMediaInner>}
+     * @memberof CreateProductRequest
+     */
+    'media': Array<CreateProductRequestMediaInner>;
+    /**
+     * 販売価格(0以上)
+     * @type {number}
+     * @memberof CreateProductRequest
+     */
+    'price': number;
+    /**
+     * 原価(0以上)
+     * @type {number}
+     * @memberof CreateProductRequest
+     */
+    'cost': number;
     /**
      * 在庫数(0以上)
      * @type {number}
@@ -1414,23 +1438,41 @@ export interface CreateProductRequest {
      */
     'itemDescription': string;
     /**
-     * メディア一覧(8つまで)
-     * @type {Array<CreateProductRequestMediaInner>}
-     * @memberof CreateProductRequest
-     */
-    'media': Array<CreateProductRequestMediaInner>;
-    /**
-     * 販売価格(0以上)
-     * @type {number}
-     * @memberof CreateProductRequest
-     */
-    'price': number;
-    /**
      * 
      * @type {DeliveryType}
      * @memberof CreateProductRequest
      */
     'deliveryType': DeliveryType;
+    /**
+     * おすすめポイント1(128文字まで)
+     * @type {string}
+     * @memberof CreateProductRequest
+     */
+    'recommendedPoint1': string;
+    /**
+     * おすすめポイント1(128文字まで)
+     * @type {string}
+     * @memberof CreateProductRequest
+     */
+    'recommendedPoint2': string;
+    /**
+     * おすすめポイント1(128文字まで)
+     * @type {string}
+     * @memberof CreateProductRequest
+     */
+    'recommendedPoint3': string;
+    /**
+     * 賞味期限(単位:日,0以上)
+     * @type {number}
+     * @memberof CreateProductRequest
+     */
+    'expirationDate': number;
+    /**
+     * 
+     * @type {StorageMethodType}
+     * @memberof CreateProductRequest
+     */
+    'storageMethodType': StorageMethodType;
     /**
      * 箱の占有率(サイズ:60)(0以上,100以下)
      * @type {number}
@@ -1450,11 +1492,11 @@ export interface CreateProductRequest {
      */
     'box100Rate': number;
     /**
-     * 原産地(都道府県)(32文字まで)
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof CreateProductRequest
      */
-    'originPrefecture': string;
+    'originPrefecture': Prefecture;
     /**
      * 原産地(市区町村)(32文字まで)
      * @type {string}
@@ -3533,17 +3575,23 @@ export interface ProductResponse {
      */
     'description': string;
     /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof ProductResponse
+     */
+    'public': boolean;
+    /**
      * 生産者ID
      * @type {string}
      * @memberof ProductResponse
      */
     'producerId': string;
     /**
-     * 農家名
+     * 生産者名
      * @type {string}
      * @memberof ProductResponse
      */
-    'storeName': string;
+    'producerName': string;
     /**
      * 商品種別ID
      * @type {string}
@@ -3569,17 +3617,41 @@ export interface ProductResponse {
      */
     'productTypeName': string;
     /**
-     * アイコンURL
+     * 品目アイコンURL
      * @type {string}
      * @memberof ProductResponse
      */
     'productTypeIconUrl': string;
     /**
-     * 公開フラグ
-     * @type {boolean}
+     * リサイズ済み品目アイコンURL一覧
+     * @type {Array<ProductsResponseProductsInnerProductTypeIconsInner>}
      * @memberof ProductResponse
      */
-    'public': boolean;
+    'productTypeIcons': Array<ProductsResponseProductsInnerProductTypeIconsInner>;
+    /**
+     * 商品タグ一覧
+     * @type {Array<string>}
+     * @memberof ProductResponse
+     */
+    'productTagIds': Array<string>;
+    /**
+     * 
+     * @type {Array<ProductsResponseProductsInnerMediaInner>}
+     * @memberof ProductResponse
+     */
+    'media': Array<ProductsResponseProductsInnerMediaInner>;
+    /**
+     * 販売価格
+     * @type {number}
+     * @memberof ProductResponse
+     */
+    'price': number;
+    /**
+     * 原価
+     * @type {number}
+     * @memberof ProductResponse
+     */
+    'cost': number;
     /**
      * 在庫数
      * @type {number}
@@ -3605,29 +3677,41 @@ export interface ProductResponse {
      */
     'itemDescription': string;
     /**
-     * アイコンURL
-     * @type {string}
-     * @memberof ProductResponse
-     */
-    'iconUrl': string;
-    /**
-     * 
-     * @type {Array<ProductsResponseProductsInnerMediaInner>}
-     * @memberof ProductResponse
-     */
-    'media': Array<ProductsResponseProductsInnerMediaInner>;
-    /**
-     * 販売価格
-     * @type {number}
-     * @memberof ProductResponse
-     */
-    'price': number;
-    /**
      * 
      * @type {DeliveryType}
      * @memberof ProductResponse
      */
     'deliveryType': DeliveryType;
+    /**
+     * おすすめポイント1(128文字まで)
+     * @type {string}
+     * @memberof ProductResponse
+     */
+    'recommendedPoint1': string;
+    /**
+     * おすすめポイント2(128文字まで)
+     * @type {string}
+     * @memberof ProductResponse
+     */
+    'recommendedPoint2': string;
+    /**
+     * おすすめポイント3(128文字まで)
+     * @type {string}
+     * @memberof ProductResponse
+     */
+    'recommendedPoint3': string;
+    /**
+     * 賞味期限(単位:日)
+     * @type {number}
+     * @memberof ProductResponse
+     */
+    'expirationDate': number;
+    /**
+     * 
+     * @type {StorageMethodType}
+     * @memberof ProductResponse
+     */
+    'storageMethodType': StorageMethodType;
     /**
      * 箱の占有率(サイズ:60)
      * @type {number}
@@ -3647,11 +3731,11 @@ export interface ProductResponse {
      */
     'box100Rate': number;
     /**
-     * 原産地(都道府県)
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof ProductResponse
      */
-    'originPrefecture': string;
+    'originPrefecture': Prefecture;
     /**
      * 原産地(市区町村)
      * @type {string}
@@ -3948,17 +4032,23 @@ export interface ProductsResponseProductsInner {
      */
     'description': string;
     /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof ProductsResponseProductsInner
+     */
+    'public': boolean;
+    /**
      * 生産者ID
      * @type {string}
      * @memberof ProductsResponseProductsInner
      */
     'producerId': string;
     /**
-     * 農家名
+     * 生産者名
      * @type {string}
      * @memberof ProductsResponseProductsInner
      */
-    'storeName': string;
+    'producerName': string;
     /**
      * 商品種別ID
      * @type {string}
@@ -3970,7 +4060,7 @@ export interface ProductsResponseProductsInner {
      * @type {string}
      * @memberof ProductsResponseProductsInner
      */
-    'cateogryName'?: string;
+    'categoryName': string;
     /**
      * 品目ID
      * @type {string}
@@ -3984,17 +4074,41 @@ export interface ProductsResponseProductsInner {
      */
     'productTypeName': string;
     /**
-     * アイコンURL
+     * 品目アイコンURL
      * @type {string}
      * @memberof ProductsResponseProductsInner
      */
     'productTypeIconUrl': string;
     /**
-     * 公開フラグ
-     * @type {boolean}
+     * リサイズ済み品目アイコンURL一覧
+     * @type {Array<ProductsResponseProductsInnerProductTypeIconsInner>}
      * @memberof ProductsResponseProductsInner
      */
-    'public': boolean;
+    'productTypeIcons': Array<ProductsResponseProductsInnerProductTypeIconsInner>;
+    /**
+     * 商品タグ一覧
+     * @type {Array<string>}
+     * @memberof ProductsResponseProductsInner
+     */
+    'productTagIds': Array<string>;
+    /**
+     * 
+     * @type {Array<ProductsResponseProductsInnerMediaInner>}
+     * @memberof ProductsResponseProductsInner
+     */
+    'media': Array<ProductsResponseProductsInnerMediaInner>;
+    /**
+     * 販売価格
+     * @type {number}
+     * @memberof ProductsResponseProductsInner
+     */
+    'price': number;
+    /**
+     * 原価
+     * @type {number}
+     * @memberof ProductsResponseProductsInner
+     */
+    'cost': number;
     /**
      * 在庫数
      * @type {number}
@@ -4020,29 +4134,41 @@ export interface ProductsResponseProductsInner {
      */
     'itemDescription': string;
     /**
-     * アイコンURL
-     * @type {string}
-     * @memberof ProductsResponseProductsInner
-     */
-    'iconUrl': string;
-    /**
-     * 
-     * @type {Array<ProductsResponseProductsInnerMediaInner>}
-     * @memberof ProductsResponseProductsInner
-     */
-    'media': Array<ProductsResponseProductsInnerMediaInner>;
-    /**
-     * 販売価格
-     * @type {number}
-     * @memberof ProductsResponseProductsInner
-     */
-    'price': number;
-    /**
      * 
      * @type {DeliveryType}
      * @memberof ProductsResponseProductsInner
      */
     'deliveryType': DeliveryType;
+    /**
+     * おすすめポイント1(128文字まで)
+     * @type {string}
+     * @memberof ProductsResponseProductsInner
+     */
+    'recommendedPoint1': string;
+    /**
+     * おすすめポイント2(128文字まで)
+     * @type {string}
+     * @memberof ProductsResponseProductsInner
+     */
+    'recommendedPoint2': string;
+    /**
+     * おすすめポイント3(128文字まで)
+     * @type {string}
+     * @memberof ProductsResponseProductsInner
+     */
+    'recommendedPoint3': string;
+    /**
+     * 賞味期限(単位:日)
+     * @type {number}
+     * @memberof ProductsResponseProductsInner
+     */
+    'expirationDate': number;
+    /**
+     * 
+     * @type {StorageMethodType}
+     * @memberof ProductsResponseProductsInner
+     */
+    'storageMethodType': StorageMethodType;
     /**
      * 箱の占有率(サイズ:60)
      * @type {number}
@@ -4062,11 +4188,11 @@ export interface ProductsResponseProductsInner {
      */
     'box100Rate': number;
     /**
-     * 原産地(都道府県)
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof ProductsResponseProductsInner
      */
-    'originPrefecture': string;
+    'originPrefecture': Prefecture;
     /**
      * 原産地(市区町村)
      * @type {string}
@@ -4129,6 +4255,27 @@ export interface ProductsResponseProductsInnerMediaInnerImagesInner {
      * 
      * @type {ImageSize}
      * @memberof ProductsResponseProductsInnerMediaInnerImagesInner
+     */
+    'size': ImageSize;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface ProductsResponseProductsInnerProductTypeIconsInner
+ */
+export interface ProductsResponseProductsInnerProductTypeIconsInner {
+    /**
+     * リサイズ済み品目アイコンURL
+     * @type {string}
+     * @memberof ProductsResponseProductsInnerProductTypeIconsInner
+     */
+    'url': string;
+    /**
+     * 
+     * @type {ImageSize}
+     * @memberof ProductsResponseProductsInnerProductTypeIconsInner
      */
     'size': ImageSize;
 }
@@ -5055,6 +5202,23 @@ export interface SignInRequest {
     'password': string;
 }
 /**
+ * 保管方法
+ * @export
+ * @enum {string}
+ */
+
+export const StorageMethodType = {
+    UNKNOWN: 0,
+    NORMAL: 1,
+    COOL_DARK_PLACE: 2,
+    REFRIGERATED: 3,
+    FROZEN: 4
+} as const;
+
+export type StorageMethodType = typeof StorageMethodType[keyof typeof StorageMethodType];
+
+
+/**
  * 
  * @export
  * @interface UpdateAdministratorEmailRequest
@@ -5506,6 +5670,12 @@ export interface UpdateProductRequest {
      */
     'description': string;
     /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof UpdateProductRequest
+     */
+    'public': boolean;
+    /**
      * 生産者ID
      * @type {string}
      * @memberof UpdateProductRequest
@@ -5518,11 +5688,29 @@ export interface UpdateProductRequest {
      */
     'productTypeId': string;
     /**
-     * 公開フラグ
-     * @type {boolean}
+     * 商品タグ一覧
+     * @type {Array<string>}
      * @memberof UpdateProductRequest
      */
-    'public': boolean;
+    'productTagIds': Array<string>;
+    /**
+     * メディア一覧(8つまで)
+     * @type {Array<CreateProductRequestMediaInner>}
+     * @memberof UpdateProductRequest
+     */
+    'media': Array<CreateProductRequestMediaInner>;
+    /**
+     * 販売価格(0以上)
+     * @type {number}
+     * @memberof UpdateProductRequest
+     */
+    'price': number;
+    /**
+     * 原価(0以上)
+     * @type {number}
+     * @memberof UpdateProductRequest
+     */
+    'cost': number;
     /**
      * 在庫数(0以上)
      * @type {number}
@@ -5548,23 +5736,41 @@ export interface UpdateProductRequest {
      */
     'itemDescription': string;
     /**
-     * メディア一覧(8つまで)
-     * @type {Array<CreateProductRequestMediaInner>}
+     * 
+     * @type {DeliveryType}
      * @memberof UpdateProductRequest
      */
-    'media': Array<CreateProductRequestMediaInner>;
+    'deliveryType': DeliveryType;
     /**
-     * 販売価格(0以上)
+     * おすすめポイント1(128文字まで)
+     * @type {string}
+     * @memberof UpdateProductRequest
+     */
+    'recommendedPoint1': string;
+    /**
+     * おすすめポイント1(128文字まで)
+     * @type {string}
+     * @memberof UpdateProductRequest
+     */
+    'recommendedPoint2': string;
+    /**
+     * おすすめポイント1(128文字まで)
+     * @type {string}
+     * @memberof UpdateProductRequest
+     */
+    'recommendedPoint3': string;
+    /**
+     * 賞味期限(単位:日,0以上)
      * @type {number}
      * @memberof UpdateProductRequest
      */
-    'price': number;
+    'expirationDate': number;
     /**
-     * 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
-     * @type {number}
+     * 
+     * @type {StorageMethodType}
      * @memberof UpdateProductRequest
      */
-    'deliveryType': number;
+    'storageMethodType': StorageMethodType;
     /**
      * 箱の占有率(サイズ:60)(0以上,100以下)
      * @type {number}
@@ -5584,11 +5790,11 @@ export interface UpdateProductRequest {
      */
     'box100Rate': number;
     /**
-     * 原産地(都道府県)(32文字まで)
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof UpdateProductRequest
      */
-    'originPrefecture': string;
+    'originPrefecture': Prefecture;
     /**
      * 原産地(市区町村)(32文字まで)
      * @type {string}
@@ -5596,6 +5802,8 @@ export interface UpdateProductRequest {
      */
     'originCity': string;
 }
+
+
 /**
  * 
  * @export
