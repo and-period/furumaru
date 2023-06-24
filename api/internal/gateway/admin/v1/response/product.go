@@ -4,7 +4,7 @@ package response
 type Product struct {
 	ID                string          `json:"id"`                 // 商品ID
 	ProducerID        string          `json:"producerId"`         // 生産者ID
-	StoreName         string          `json:"storeName"`          // 農家名
+	ProducerName      string          `json:"producerName"`       // 農家名
 	CategoryID        string          `json:"categoryId"`         // 商品種別ID
 	CategoryName      string          `json:"categoryName"`       // 商品種別名
 	TypeID            string          `json:"productTypeId"`      // 品目ID
