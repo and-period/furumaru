@@ -108,7 +108,7 @@ const itemUnits = ['個', '瓶']
 
 const rules = computed(() => ({
   name: { required, maxLength: maxLength(128) },
-  description: { required },
+  description: { required, maxLength: maxLength(20000) },
   public: {},
   producerId: { required },
   productTypeId: { required },
@@ -121,9 +121,9 @@ const rules = computed(() => ({
   itemUnit: { required },
   itemDescription: { required },
   deliveryType: { required },
-  recommendedPoint1: { maxValue: maxValue(128) },
-  recommendedPoint2: { maxValue: maxValue(128) },
-  recommendedPoint3: { maxValue: maxValue(128) },
+  recommendedPoint1: { maxLength: maxLength(128) },
+  recommendedPoint2: { maxLength: maxLength(128) },
+  recommendedPoint3: { maxLength: maxLength(128) },
   expirationDate: { required, minValue: minValue(0) },
   storageMethodType: { required },
   box60Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
@@ -314,7 +314,7 @@ const onSubmit = (): void => {
               label="おすすめポイント3"
             />
             <v-text-field
-              v-model="validate.expirationDate.$model"
+              v-model.number="validate.expirationDate.$model"
               :error-messages="getErrorMessage(validate.expirationDate.$errors)"
               label="賞味期限"
               type="number"

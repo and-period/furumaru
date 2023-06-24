@@ -59,13 +59,21 @@ const formData = ref<UpdateProductRequest>({
 })
 
 const fetchState = useAsyncData(async (): Promise<void> => {
-  await Promise.all([
-    productStore.getProduct(productId),
-    producerStore.fetchProducers(20, 0, ''),
-    productTagStore.fetchProductTags(20, 0, [])
-  ])
-  selectedCategoryId.value = product.value.categoryId
-  formData.value = { ...product.value }
+  try {
+    await Promise.all([
+      productStore.getProduct(productId),
+      categoryStore.fetchCategories(20, 0),
+      producerStore.fetchProducers(20, 0, ''),
+      productTagStore.fetchProductTags(20, 0, [])
+    ])
+    selectedCategoryId.value = product.value.categoryId
+    formData.value = { ...product.value }
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
 })
 
 watch(selectedCategoryId, (): void => {

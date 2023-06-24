@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { mdiDelete, mdiPlus } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components'
+import { PrefecturesListItem, prefecturesList } from '~/constants'
 
 import { getResizedImages } from '~/lib/helpers'
 import { AlertType } from '~/lib/hooks'
-import { ProductsResponseProductsInner, ProductsResponseProductsInnerMediaInner, ImageSize, ProductsResponseProductsInnerMediaInnerImagesInner } from '~/types/api'
+import { ProductsResponseProductsInner, ProductsResponseProductsInnerMediaInner, ImageSize, ProductsResponseProductsInnerMediaInnerImagesInner, Prefecture } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -53,38 +54,52 @@ const emit = defineEmits<{
 const headers: VDataTable['headers'] = [
   {
     title: '',
-    key: 'media'
+    key: 'media',
+    width: 80,
+    sortable: false
   },
   {
     title: '商品名',
-    key: 'name'
+    key: 'name',
+    sortable: false
   },
   {
     title: 'ステータス',
-    key: 'public'
+    key: 'public',
+    sortable: false
   },
   {
     title: '価格',
-    key: 'price'
+    key: 'price',
+    sortable: false
   },
   {
     title: '在庫',
-    key: 'inventory'
+    key: 'inventory',
+    sortable: false
   },
   {
     title: 'ジャンル',
-    key: 'categoryName'
+    key: 'categoryName',
+    sortable: false
   },
   {
     title: '品目',
-    key: 'productTypeName'
+    key: 'productTypeName',
+    sortable: false
   },
   {
-    title: '農園名',
-    key: 'storeName'
+    title: '原産地',
+    key: 'originPrefecture',
+    sortable: false
   },
   {
-    title: 'Action',
+    title: '生産者名',
+    key: 'producerName',
+    sortable: false
+  },
+  {
+    title: '',
     key: 'actions',
     sortable: false
   }
@@ -120,6 +135,15 @@ const getPublished = (published: boolean): string => {
 
 const getPublishedColor = (published: boolean): string => {
   return published ? 'primary' : 'warning'
+}
+
+const getInventoryColor = (inventory: number): string => {
+  return inventory > 0 ? '' : 'text-error'
+}
+
+const getPrefecture = (prefecture: Prefecture): string => {
+  const pref = prefecturesList.find((val: PrefecturesListItem): boolean => prefecture === val.value)
+  return pref?.text || ''
 }
 
 const toggleDeleteDialog = (product?: ProductsResponseProductsInner): void => {
@@ -193,12 +217,20 @@ const onClickDelete = (): void => {
         @click:row="(_: any, { item }:any) => onClickShow(item.raw.id)"
       >
         <template #[`item.media`]="{ item }">
-          <v-img aspect-ratio="1/1" cover :src="getThumbnail(item.raw.media)" :srcset="getResizedThumbnails(item.raw.media)" />
+          <v-img aspect-ratio="1/1" :src="getThumbnail(item.raw.media)" :srcset="getResizedThumbnails(item.raw.media)" />
         </template>
         <template #[`item.public`]="{ item }">
           <v-chip :color="getPublishedColor(item.raw.public)">
             {{ getPublished(item.raw.public) }}
           </v-chip>
+        </template>
+        <template #[`item.inventory`]="{ item }">
+          <div :class="getInventoryColor(item.raw.inventory)">
+            {{ item.raw.inventory }}
+          </div>
+        </template>
+        <template #[`item.originPrefecture`]="{ item }">
+          {{ getPrefecture(item.raw.originPrefecture) }}
         </template>
         <template #[`item.actions`]="{ item }">
           <v-btn variant="outlined" color="primary" size="small" @click.stop="toggleDeleteDialog(item.raw)">
