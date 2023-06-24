@@ -130,7 +130,7 @@ func (p *product) Update(ctx context.Context, productID string, params *UpdatePr
 			if err != nil {
 				return fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
 			}
-			updates["product_tag_id"] = tagIDs
+			updates["product_tag_ids"] = tagIDs
 		}
 		if len(params.RecommendedPoints) > 0 {
 			points, err := entity.ProductMarshalRecommendedPoints(params.RecommendedPoints)
