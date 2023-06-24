@@ -145,7 +145,7 @@ createProductRequest:
     box60Rate: 80
     box80Rate: 50
     box100Rate: 40
-    originPrefecture: SHIGA
+    originPrefecture: 'tokyo'
     originCity: '彦根市'
 updateProductRequest:
   type: object
@@ -294,5 +294,5 @@ updateProductRequest:
     box60Rate: 80
     box80Rate: 50
     box100Rate: 40
-    originPrefecture: SHIGA
+    originPrefecture: 'tokyo'
     originCity: '彦根市'

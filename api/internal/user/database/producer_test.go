@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
@@ -521,7 +522,7 @@ func TestProducer_Update(t *testing.T) {
 					HeaderURL:     "https://and-period.jp/header.png",
 					PhoneNumber:   "+819012345678",
 					PostalCode:    "1000014",
-					Prefecture:    "東京都",
+					Prefecture:    codes.PrefectureValues["tokyo"],
 					City:          "千代田区",
 					AddressLine1:  "永田町1-7-1",
 					AddressLine2:  "",
@@ -1131,7 +1132,7 @@ func testProducer(id, coordinatorID string, now time.Time) *entity.Producer {
 		FacebookID:        "facebook-id",
 		PhoneNumber:       "+819012345678",
 		PostalCode:        "1000014",
-		Prefecture:        "東京都",
+		Prefecture:        codes.PrefectureValues["tokyo"],
 		City:              "千代田区",
 		AddressLine1:      "永田町1-7-1",
 		AddressLine2:      "",

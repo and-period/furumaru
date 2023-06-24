@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { mdiDelete } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components'
+import { PrefecturesListItem, prefecturesList } from '~/constants'
 import { AlertType } from '~/lib/hooks'
-import { UsersResponseUsersInner } from '~/types/api'
+import { UserResponse, UsersResponseUsersInner } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -79,6 +80,13 @@ const getStatusColor = (account: boolean): string => {
   return account ? 'primary' : 'red'
 }
 
+const getAddress = (customer: UsersResponseUsersInner): string => {
+  const prefecture = prefecturesList.find((prefecture: PrefecturesListItem): boolean => {
+    return prefecture.value === customer.prefecture
+  })
+  return `${prefecture?.text || ''} ${customer.city}`
+}
+
 const onClickUpdatePage = (page: number): void => {
   emit('click:update-page', page)
 }
@@ -126,6 +134,9 @@ const onClickRow = (item: UsersResponseUsersInner): void => {
         </template>
         <template #[`item.totalAmount`]="{ item }">
           {{ `${item.raw.totalAmount}` }} 円
+        </template>
+        <template #[`item.address`]="{ item }">
+          {{ getAddress(item) }}
         </template>
         <template #[`item.registered`]="{ item }">
           <v-chip size="small" :color="getStatusColor(item.raw.registered)">

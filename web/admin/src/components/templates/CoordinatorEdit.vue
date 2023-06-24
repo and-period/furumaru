@@ -2,7 +2,7 @@
 import useVuelidate from '@vuelidate/core'
 import { mdiFacebook, mdiInstagram } from '@mdi/js'
 import { AlertType } from '~/lib/hooks'
-import { UpdateCoordinatorRequest, ProductTypesResponseProductTypesInner, CoordinatorResponse, AdminStatus } from '~/types/api'
+import { UpdateCoordinatorRequest, ProductTypesResponseProductTypesInner, CoordinatorResponse, AdminStatus, Prefecture } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 import { getErrorMessage, kana, maxLength, required, tel } from '~/lib/validations'
 
@@ -34,7 +34,7 @@ const props = defineProps({
       username: '',
       phoneNumber: '',
       postalCode: '',
-      prefecture: '',
+      prefecture: Prefecture.UNKNOWN,
       city: '',
       addressLine1: '',
       addressLine2: '',
@@ -62,7 +62,7 @@ const props = defineProps({
       email: '',
       phoneNumber: '',
       postalCode: '',
-      prefecture: '',
+      prefecture: Prefecture.UNKNOWN,
       city: '',
       addressLine1: '',
       addressLine2: '',
