@@ -90,7 +90,6 @@ func (s *service) NotifyNotification(ctx context.Context, in *messenger.NotifyNo
 		ReportID:    entity.ReportIDNotification,
 		Overview:    notification.Title,
 		Detail:      notification.Body,
-		Author:      notification.CreatorName,
 		Link:        maker.Notification(notification.ID),
 		PublishedAt: notification.PublishedAt,
 	}
@@ -113,7 +112,6 @@ func (s *service) notifyAdminNotification(ctx context.Context, notification *ent
 		MessageID:   entity.MessageIDNotification,
 		MessageType: entity.MessageTypeNotification,
 		Title:       notification.Title,
-		Author:      notification.CreatorName,
 		Link:        maker.Notification(notification.ID),
 		ReceivedAt:  s.now(),
 	}
@@ -122,6 +120,12 @@ func (s *service) notifyAdminNotification(ctx context.Context, notification *ent
 		Message:   message,
 	}
 	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		if !notification.HasAdministratorTarget() {
+			return
+		}
+		return s.sendAllAdministrators(ectx, payload)
+	})
 	eg.Go(func() (err error) {
 		if !notification.HasCoordinatorTarget() {
 			return

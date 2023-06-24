@@ -3,7 +3,7 @@ import { mdiDelete, mdiPlus } from '@mdi/js'
 import { unix } from 'dayjs'
 import { VDataTable } from 'vuetify/lib/labs/components'
 import { AlertType } from '~/lib/hooks'
-import { PromotionsResponsePromotionsInner } from '~/types/api'
+import { DiscountType, PromotionsResponsePromotionsInner } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -99,13 +99,13 @@ const deleteDialogValue = computed({
   set: (val: boolean): void => emit('update:delete-dialog', val)
 })
 
-const getDiscount = (discountType: number, discountRate: number): string => {
+const getDiscount = (discountType: number, discountRate: DiscountType): string => {
   switch (discountType) {
-    case 1:
+    case DiscountType.AMOUNT:
       return '￥' + discountRate
-    case 2:
+    case DiscountType.RATE:
       return discountRate + '％'
-    case 3:
+    case DiscountType.FREE_SHIPPING:
       return '送料無料'
     default:
       return ''

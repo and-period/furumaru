@@ -341,7 +341,7 @@ func TestNotification_Update(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
-				notification := testNotification("notification-id", true, now())
+				notification := testNotification("notification-id", true, now().AddDate(0, 0, 1))
 				err = db.DB.Create(&notification).Error
 				require.NoError(t, err)
 			},
@@ -350,11 +350,11 @@ func TestNotification_Update(t *testing.T) {
 				params: &UpdateNotificationParams{
 					Title: "キャベツ祭り開催",
 					Body:  "旬のキャベツが大安売り",
-					Targets: []entity.TargetType{
-						entity.PostTargetProducers,
-						entity.PostTargetCoordinators,
+					Targets: []entity.NotificationTarget{
+						entity.NotificationTargetProducers,
+						entity.NotificationTargetCoordinators,
 					},
-					PublishedAt: now(),
+					PublishedAt: now().AddDate(0, 0, 1),
 					UpdatedBy:   "admin-id",
 				},
 			},
@@ -466,16 +466,16 @@ func TestNotificaiton_Delete(t *testing.T) {
 func testNotification(id string, public bool, now time.Time) *entity.Notification {
 	n := &entity.Notification{
 		ID:          id,
+		Status:      entity.NotificationStatusWaiting,
 		Title:       "お知らせタイトル",
 		Body:        "お知らせの内容です。",
-		Targets:     []entity.TargetType{entity.PostTargetProducers},
-		Public:      public,
-		CreatorName: "&. スタッフ",
+		Note:        "備考です",
+		Targets:     []entity.NotificationTarget{entity.NotificationTargetUsers},
 		CreatedBy:   "coordinator-id",
 		UpdatedBy:   "coordinator-id",
 		CreatedAt:   now,
 		UpdatedAt:   now,
-		PublishedAt: now,
+		PublishedAt: now.AddDate(0, 0, 1),
 	}
 	_ = n.FillJSON()
 	return n

@@ -180,13 +180,14 @@ func (p *ListNotificationsParams) stmt(stmt *gorm.DB) *gorm.DB {
 }
 
 type UpdateNotificationParams struct {
+	Targets     []entity.NotificationTarget
 	Title       string
 	Body        string
-	Targets     []entity.TargetType
+	Note        string
 	PublishedAt time.Time
-	Public      bool
 	UpdatedBy   string
 }
+
 type ListSchedulesParams struct {
 	Types    []entity.ScheduleType
 	Statuses []entity.ScheduleStatus

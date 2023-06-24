@@ -1198,6 +1198,18 @@ export interface CreateCoordinatorRequest {
  */
 export interface CreateNotificationRequest {
     /**
+     * 
+     * @type {NotificationType}
+     * @memberof CreateNotificationRequest
+     */
+    'type': NotificationType;
+    /**
+     * 通知対象一覧
+     * @type {Array<NotificationTarget>}
+     * @memberof CreateNotificationRequest
+     */
+    'targets': Array<NotificationTarget>;
+    /**
      * タイトル(128字まで)
      * @type {string}
      * @memberof CreateNotificationRequest
@@ -1210,24 +1222,26 @@ export interface CreateNotificationRequest {
      */
     'body': string;
     /**
-     * 掲載対象一覧(3つまで,全部指定の際は1,2,3)
-     * @type {Array<NotificationTargetType>}
+     * 備考(2000字まで)
+     * @type {string}
      * @memberof CreateNotificationRequest
      */
-    'targets': Array<NotificationTargetType>;
+    'note': string;
     /**
-     * 公開フラグ
-     * @type {boolean}
-     * @memberof CreateNotificationRequest
-     */
-    'public': boolean;
-    /**
-     * 掲載開始日時
+     * 掲載日時 (unixtime)
      * @type {number}
      * @memberof CreateNotificationRequest
      */
     'publishedAt': number;
+    /**
+     * プロモーションID
+     * @type {string}
+     * @memberof CreateNotificationRequest
+     */
+    'promotionId': string;
 }
+
+
 /**
  * 
  * @export
@@ -2292,6 +2306,54 @@ export interface NotificationResponse {
      */
     'id': string;
     /**
+     * 
+     * @type {NotificationStatus}
+     * @memberof NotificationResponse
+     */
+    'status': NotificationStatus;
+    /**
+     * 
+     * @type {NotificationType}
+     * @memberof NotificationResponse
+     */
+    'type': NotificationType;
+    /**
+     * 通知対象一覧
+     * @type {Array<NotificationTarget>}
+     * @memberof NotificationResponse
+     */
+    'targets': Array<NotificationTarget>;
+    /**
+     * タイトル
+     * @type {string}
+     * @memberof NotificationResponse
+     */
+    'title': string;
+    /**
+     * 本文
+     * @type {string}
+     * @memberof NotificationResponse
+     */
+    'body': string;
+    /**
+     * 備考
+     * @type {string}
+     * @memberof NotificationResponse
+     */
+    'note': string;
+    /**
+     * 掲載日時 (unixtime)
+     * @type {number}
+     * @memberof NotificationResponse
+     */
+    'publishedAt': number;
+    /**
+     * プロモーションID
+     * @type {string}
+     * @memberof NotificationResponse
+     */
+    'promotionId': string;
+    /**
      * 登録者ID
      * @type {string}
      * @memberof NotificationResponse
@@ -2310,36 +2372,6 @@ export interface NotificationResponse {
      */
     'updatedBy': string;
     /**
-     * タイトル(128字まで)
-     * @type {string}
-     * @memberof NotificationResponse
-     */
-    'title': string;
-    /**
-     * 本文(2000字まで)
-     * @type {string}
-     * @memberof NotificationResponse
-     */
-    'body': string;
-    /**
-     * 掲載対象一覧(3つまで)
-     * @type {Array<NotificationTargetType>}
-     * @memberof NotificationResponse
-     */
-    'targets': Array<NotificationTargetType>;
-    /**
-     * 公開フラグ
-     * @type {boolean}
-     * @memberof NotificationResponse
-     */
-    'public': boolean;
-    /**
-     * 掲載開始日時 (unixtime)
-     * @type {number}
-     * @memberof NotificationResponse
-     */
-    'publishedAt': number;
-    /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof NotificationResponse
@@ -2352,13 +2384,39 @@ export interface NotificationResponse {
      */
     'updatedAt': number;
 }
+
+
 /**
- * 掲載対象
+ * お知らせ状態
  * @export
  * @enum {string}
  */
 
-export const NotificationTargetType = {
+export const NotificationStatus = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 通知前
+    */
+    WAITING: 1,
+    /**
+    * 通知済み
+    */
+    NOTIFIED: 2
+} as const;
+
+export type NotificationStatus = typeof NotificationStatus[keyof typeof NotificationStatus];
+
+
+/**
+ * 通知対象種別
+ * @export
+ * @enum {string}
+ */
+
+export const NotificationTarget = {
     /**
     * 不明
     */
@@ -2374,10 +2432,46 @@ export const NotificationTargetType = {
     /**
     * コーディネータ
     */
-    COORDINATORS: 3
+    COORDINATORS: 3,
+    /**
+    * 管理者
+    */
+    ADMINISTRATORS: 4
 } as const;
 
-export type NotificationTargetType = typeof NotificationTargetType[keyof typeof NotificationTargetType];
+export type NotificationTarget = typeof NotificationTarget[keyof typeof NotificationTarget];
+
+
+/**
+ * お知らせ種別
+ * @export
+ * @enum {string}
+ */
+
+export const NotificationType = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * その他
+    */
+    OTHER: 1,
+    /**
+    * システム関連
+    */
+    SYSTEM: 2,
+    /**
+    * ライブ関連
+    */
+    LIVE: 3,
+    /**
+    * セール関連
+    */
+    PROMOTION: 4
+} as const;
+
+export type NotificationType = typeof NotificationType[keyof typeof NotificationType];
 
 
 /**
@@ -2412,6 +2506,54 @@ export interface NotificationsResponseNotificationsInner {
      */
     'id': string;
     /**
+     * 
+     * @type {NotificationStatus}
+     * @memberof NotificationsResponseNotificationsInner
+     */
+    'status': NotificationStatus;
+    /**
+     * 
+     * @type {NotificationType}
+     * @memberof NotificationsResponseNotificationsInner
+     */
+    'type': NotificationType;
+    /**
+     * 通知対象一覧
+     * @type {Array<NotificationTarget>}
+     * @memberof NotificationsResponseNotificationsInner
+     */
+    'targets': Array<NotificationTarget>;
+    /**
+     * タイトル
+     * @type {string}
+     * @memberof NotificationsResponseNotificationsInner
+     */
+    'title': string;
+    /**
+     * 本文
+     * @type {string}
+     * @memberof NotificationsResponseNotificationsInner
+     */
+    'body': string;
+    /**
+     * 備考
+     * @type {string}
+     * @memberof NotificationsResponseNotificationsInner
+     */
+    'note': string;
+    /**
+     * 掲載日時 (unixtime)
+     * @type {number}
+     * @memberof NotificationsResponseNotificationsInner
+     */
+    'publishedAt': number;
+    /**
+     * プロモーションID
+     * @type {string}
+     * @memberof NotificationsResponseNotificationsInner
+     */
+    'promotionId': string;
+    /**
      * 登録者ID
      * @type {string}
      * @memberof NotificationsResponseNotificationsInner
@@ -2430,36 +2572,6 @@ export interface NotificationsResponseNotificationsInner {
      */
     'updatedBy': string;
     /**
-     * タイトル(128字まで)
-     * @type {string}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'title': string;
-    /**
-     * 本文(2000字まで)
-     * @type {string}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'body': string;
-    /**
-     * 掲載対象一覧(3つまで)
-     * @type {Array<NotificationTargetType>}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'targets': Array<NotificationTargetType>;
-    /**
-     * 公開フラグ
-     * @type {boolean}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'public': boolean;
-    /**
-     * 掲載開始日時 (unixtime)
-     * @type {number}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'publishedAt': number;
-    /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof NotificationsResponseNotificationsInner
@@ -2472,6 +2584,8 @@ export interface NotificationsResponseNotificationsInner {
      */
     'updatedAt': number;
 }
+
+
 /**
  * 注文キャンセル理由
  * @export
@@ -5503,6 +5617,12 @@ export interface UpdateCoordinatorRequest {
  */
 export interface UpdateNotificationRequest {
     /**
+     * 通知対象一覧
+     * @type {Array<NotificationTarget>}
+     * @memberof UpdateNotificationRequest
+     */
+    'targets': Array<NotificationTarget>;
+    /**
      * タイトル(128字まで)
      * @type {string}
      * @memberof UpdateNotificationRequest
@@ -5515,19 +5635,13 @@ export interface UpdateNotificationRequest {
      */
     'body': string;
     /**
-     * 掲載対象一覧(3つまで,全部指定の際は1,2,3)
-     * @type {Array<NotificationTargetType>}
+     * 備考(2000字まで)
+     * @type {string}
      * @memberof UpdateNotificationRequest
      */
-    'targets': Array<NotificationTargetType>;
+    'note': string;
     /**
-     * 公開フラグ
-     * @type {boolean}
-     * @memberof UpdateNotificationRequest
-     */
-    'public': boolean;
-    /**
-     * 掲載開始日時
+     * 掲載日時 (unixtime)
      * @type {number}
      * @memberof UpdateNotificationRequest
      */

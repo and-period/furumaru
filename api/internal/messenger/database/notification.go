@@ -43,7 +43,7 @@ func (n *notification) List(
 	if err := stmt.Find(&notifications).Error; err != nil {
 		return nil, exception.InternalError(err)
 	}
-	if err := notifications.Fill(); err != nil {
+	if err := notifications.Fill(n.now()); err != nil {
 		return nil, exception.InternalError(err)
 	}
 	return notifications, nil
@@ -77,26 +77,30 @@ func (n *notification) Create(ctx context.Context, notification *entity.Notifica
 
 func (n *notification) Update(ctx context.Context, notificationID string, params *UpdateNotificationParams) error {
 	err := n.db.Transaction(ctx, func(tx *gorm.DB) error {
-		if _, err := n.get(ctx, tx, notificationID); err != nil {
+		current, err := n.get(ctx, tx, notificationID)
+		if err != nil {
 			return err
+		}
+		if n.now().After(current.PublishedAt) {
+			return exception.ErrFailedPrecondition
 		}
 
 		updates := map[string]interface{}{
 			"title":        params.Title,
 			"body":         params.Body,
+			"note":         params.Note,
 			"published_at": params.PublishedAt,
-			"public":       params.Public,
 			"updated_by":   params.UpdatedBy,
 			"updated_at":   n.now(),
 		}
 		if len(params.Targets) > 0 {
-			target, err := entity.Marshal(params.Targets)
+			target, err := entity.NotificationMarshalTarget(params.Targets)
 			if err != nil {
 				return fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
 			}
 			updates["targets"] = target
 		}
-		err := tx.WithContext(ctx).
+		err = tx.WithContext(ctx).
 			Table(notificationTable).
 			Where("id = ?", notificationID).
 			Updates(updates).Error
@@ -134,7 +138,7 @@ func (n *notification) get(
 	if err != nil {
 		return nil, err
 	}
-	if err := notification.Fill(); err != nil {
+	if err := notification.Fill(n.now()); err != nil {
 		return nil, err
 	}
 	return notification, nil

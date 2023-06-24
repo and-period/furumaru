@@ -8,6 +8,8 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
+	"github.com/and-period/furumaru/api/internal/store"
+	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -33,14 +35,13 @@ func TestListNotificaitons(t *testing.T) {
 	notifications := entity.Notifications{
 		{
 			ID:          "notification-id",
-			CreatedBy:   "admin-id",
-			CreatorName: "ぴりおど あんど",
-			UpdatedBy:   "admin-id",
+			Type:        entity.NotificationTypeSystem,
 			Title:       "キャベツ祭り開催",
 			Body:        "旬のキャベツを売り出します",
-			Targets:     []entity.TargetType{1, 2},
-			Public:      true,
 			PublishedAt: since,
+			Targets:     []entity.NotificationTarget{entity.NotificationTargetUsers},
+			CreatedBy:   "admin-id",
+			UpdatedBy:   "admin-id",
 			CreatedAt:   since,
 			UpdatedAt:   since,
 		},
@@ -141,14 +142,13 @@ func TestGetNotification(t *testing.T) {
 	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
 	notification := &entity.Notification{
 		ID:          "notification-id",
-		CreatedBy:   "admin-id",
-		CreatorName: "ぴりおど あんど",
-		UpdatedBy:   "admin-id",
+		Type:        entity.NotificationTypeSystem,
 		Title:       "キャベツ祭り開催",
 		Body:        "旬のキャベツを売り出します",
-		Targets:     []entity.TargetType{1, 2},
-		Public:      true,
 		PublishedAt: now,
+		Targets:     []entity.NotificationTarget{entity.NotificationTargetUsers},
+		CreatedBy:   "admin-id",
+		UpdatedBy:   "admin-id",
 		CreatedAt:   now,
 		UpdatedAt:   now,
 	}
@@ -203,13 +203,19 @@ func TestGetNotification(t *testing.T) {
 func TestCreateNotification(t *testing.T) {
 	t.Parallel()
 
-	adminID := &user.GetAdminInput{
+	adminIn := &user.GetAdminInput{
 		AdminID: "admin-id",
 	}
 	admin := &uentity.Admin{
 		ID:        "admin-id",
 		Firstname: "あんど",
 		Lastname:  "ぴりおど",
+	}
+	promotionIn := &store.GetPromotionInput{
+		PromotionID: "promotion-id",
+	}
+	promotion := &sentity.Promotion{
+		ID: "promotion-id",
 	}
 	now := jst.Now()
 
@@ -220,34 +226,77 @@ func TestCreateNotification(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name: "success",
+			name: "success system",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminID).Return(admin, nil)
+				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(admin, nil)
 				mocks.db.Notification.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, notification *entity.Notification) error {
 						expect := &entity.Notification{
-							ID:          notification.ID, // ignore
+							ID:    notification.ID, // ignore
+							Type:  entity.NotificationTypeSystem,
+							Title: "キャベツ祭り開催",
+							Body:  "旬のキャベツを売り出します",
+							Note:  "",
+							Targets: []entity.NotificationTarget{
+								entity.NotificationTargetUsers,
+							},
+							PublishedAt: now.AddDate(0, 0, 1),
+							PromotionID: "",
 							CreatedBy:   "admin-id",
-							CreatorName: "ぴりおど あんど",
 							UpdatedBy:   "admin-id",
-							Title:       "キャベツ祭り開催",
-							Body:        "旬のキャベツを売り出します",
-							Targets:     []entity.TargetType{1, 2},
-							Public:      true,
-							PublishedAt: now,
 						}
 						assert.Equal(t, expect, notification)
 						return nil
 					})
 			},
 			input: &messenger.CreateNotificationInput{
-				CreatedBy:   "admin-id",
+				Type:        entity.NotificationTypeSystem,
 				Title:       "キャベツ祭り開催",
 				Body:        "旬のキャベツを売り出します",
-				Targets:     []entity.TargetType{1, 2},
-				Public:      true,
-				PublishedAt: now,
+				Note:        "",
+				Targets:     []entity.NotificationTarget{entity.NotificationTargetUsers},
+				PublishedAt: now.AddDate(0, 0, 1),
+				CreatedBy:   "admin-id",
+				PromotionID: "",
+			},
+			expectErr: nil,
+		},
+		{
+			name: "success system",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(admin, nil)
+				mocks.store.EXPECT().GetPromotion(gomock.Any(), promotionIn).Return(promotion, nil)
+				mocks.db.Notification.EXPECT().
+					Create(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, notification *entity.Notification) error {
+						expect := &entity.Notification{
+							ID:    notification.ID, // ignore
+							Type:  entity.NotificationTypePromotion,
+							Title: "",
+							Body:  "旬のキャベツを売り出します",
+							Note:  "",
+							Targets: []entity.NotificationTarget{
+								entity.NotificationTargetUsers,
+							},
+							PublishedAt: now.AddDate(0, 0, 1),
+							PromotionID: "promotion-id",
+							CreatedBy:   "admin-id",
+							UpdatedBy:   "admin-id",
+						}
+						assert.Equal(t, expect, notification)
+						return nil
+					})
+			},
+			input: &messenger.CreateNotificationInput{
+				Type:        entity.NotificationTypePromotion,
+				Title:       "",
+				Body:        "旬のキャベツを売り出します",
+				Note:        "",
+				Targets:     []entity.NotificationTarget{entity.NotificationTargetUsers},
+				PublishedAt: now.AddDate(0, 0, 1),
+				CreatedBy:   "admin-id",
+				PromotionID: "promotion-id",
 			},
 			expectErr: nil,
 		},
@@ -258,46 +307,54 @@ func TestCreateNotification(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name:  "invalid targets format",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "failed to get admin",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(nil, exception.ErrNotFound)
+			},
 			input: &messenger.CreateNotificationInput{
-				CreatedBy:   "admin-id",
+				Type:        entity.NotificationTypeSystem,
 				Title:       "キャベツ祭り開催",
 				Body:        "旬のキャベツを売り出します",
-				Targets:     []entity.TargetType{4},
-				Public:      true,
-				PublishedAt: now,
+				Note:        "",
+				Targets:     []entity.NotificationTarget{entity.NotificationTargetUsers},
+				PublishedAt: now.AddDate(0, 0, 1),
+				CreatedBy:   "admin-id",
+				PromotionID: "",
 			},
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to get admin",
+			name: "invalid domain validation",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminID).Return(nil, exception.ErrNotFound)
+				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(admin, nil)
 			},
 			input: &messenger.CreateNotificationInput{
-				CreatedBy:   "admin-id",
+				Type:        entity.NotificationTypeSystem,
 				Title:       "キャベツ祭り開催",
 				Body:        "旬のキャベツを売り出します",
-				Targets:     []entity.TargetType{1, 2},
-				Public:      true,
-				PublishedAt: now,
+				Note:        "",
+				Targets:     []entity.NotificationTarget{entity.NotificationTargetUsers},
+				PublishedAt: now.AddDate(0, 0, -1),
+				CreatedBy:   "admin-id",
+				PromotionID: "",
 			},
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to create notification",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminID).Return(admin, nil)
+				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(admin, nil)
 				mocks.db.Notification.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &messenger.CreateNotificationInput{
-				CreatedBy:   "admin-id",
+				Type:        entity.NotificationTypeSystem,
 				Title:       "キャベツ祭り開催",
 				Body:        "旬のキャベツを売り出します",
-				Targets:     []entity.TargetType{1, 2},
-				Public:      true,
-				PublishedAt: now,
+				Note:        "",
+				Targets:     []entity.NotificationTarget{entity.NotificationTargetUsers},
+				PublishedAt: now.AddDate(0, 0, 1),
+				CreatedBy:   "admin-id",
+				PromotionID: "",
 			},
 			expectErr: exception.ErrUnknown,
 		},
@@ -308,7 +365,7 @@ func TestCreateNotification(t *testing.T) {
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateNotification(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		}, withNow(now)))
 	}
 }
 
@@ -323,6 +380,32 @@ func TestUpdateNotification(t *testing.T) {
 	}
 	now := jst.Now()
 
+	params := &database.UpdateNotificationParams{
+		Targets: []entity.NotificationTarget{
+			entity.NotificationTargetProducers,
+			entity.NotificationTargetCoordinators,
+		},
+		Title:       "キャベツ祭り開催",
+		Body:        "旬のキャベツが大安売り",
+		Note:        "",
+		PublishedAt: now.AddDate(0, 0, 1),
+		UpdatedBy:   "admin-id",
+	}
+	notification := func() *entity.Notification {
+		return &entity.Notification{
+			ID:          "notification-id",
+			Type:        entity.NotificationTypeSystem,
+			Title:       "キャベツ祭り開催",
+			Body:        "旬のキャベツを売り出します",
+			PublishedAt: now.AddDate(0, 0, 1),
+			Targets:     []entity.NotificationTarget{entity.NotificationTargetUsers},
+			CreatedBy:   "admin-id",
+			UpdatedBy:   "admin-id",
+			CreatedAt:   now,
+			UpdatedAt:   now,
+		}
+	}
+
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -333,33 +416,19 @@ func TestUpdateNotification(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(admin, nil)
-				mocks.db.Notification.EXPECT().Update(ctx, "notification-id", gomock.Any()).
-					DoAndReturn(func(ctx context.Context, notificationID string, params *database.UpdateNotificationParams) error {
-						expect := &database.UpdateNotificationParams{
-							Title: "キャベツ祭り開催",
-							Body:  "旬のキャベツが大安売り",
-							Targets: []entity.TargetType{
-								entity.PostTargetProducers,
-								entity.PostTargetCoordinators,
-							},
-							PublishedAt: now,
-							Public:      true,
-							UpdatedBy:   "admin-id",
-						}
-						assert.Equal(t, expect, params)
-						return nil
-					})
+				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification(), nil)
+				mocks.db.Notification.EXPECT().Update(ctx, "notification-id", params).Return(nil)
 			},
 			input: &messenger.UpdateNotificationInput{
 				NotificationID: "notification-id",
 				Title:          "キャベツ祭り開催",
 				Body:           "旬のキャベツが大安売り",
-				Targets: []entity.TargetType{
-					entity.PostTargetProducers,
-					entity.PostTargetCoordinators,
+				Note:           "",
+				Targets: []entity.NotificationTarget{
+					entity.NotificationTargetProducers,
+					entity.NotificationTargetCoordinators,
 				},
-				PublishedAt: now,
-				Public:      true,
+				PublishedAt: now.AddDate(0, 0, 1),
 				UpdatedBy:   "admin-id",
 			},
 			expectErr: nil,
@@ -373,12 +442,12 @@ func TestUpdateNotification(t *testing.T) {
 				NotificationID: "notification-id",
 				Title:          "キャベツ祭り開催",
 				Body:           "旬のキャベツが大安売り",
-				Targets: []entity.TargetType{
-					entity.PostTargetProducers,
-					entity.PostTargetCoordinators,
+				Note:           "",
+				Targets: []entity.NotificationTarget{
+					entity.NotificationTargetProducers,
+					entity.NotificationTargetCoordinators,
 				},
-				PublishedAt: now,
-				Public:      true,
+				PublishedAt: now.AddDate(0, 0, 1),
 				UpdatedBy:   "admin-id",
 			},
 			expectErr: exception.ErrInvalidArgument,
@@ -390,21 +459,84 @@ func TestUpdateNotification(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to update notification",
+			name: "failed to get notification",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(admin, nil)
-				mocks.db.Notification.EXPECT().Update(ctx, "notification-id", gomock.Any()).Return(assert.AnError)
+				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(nil, assert.AnError)
 			},
 			input: &messenger.UpdateNotificationInput{
 				NotificationID: "notification-id",
 				Title:          "キャベツ祭り開催",
 				Body:           "旬のキャベツが大安売り",
-				Targets: []entity.TargetType{
-					entity.PostTargetProducers,
-					entity.PostTargetCoordinators,
+				Note:           "",
+				Targets: []entity.NotificationTarget{
+					entity.NotificationTargetProducers,
+					entity.NotificationTargetCoordinators,
 				},
-				PublishedAt: now,
-				Public:      true,
+				PublishedAt: now.AddDate(0, 0, 1),
+				UpdatedBy:   "admin-id",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "already published",
+			setup: func(ctx context.Context, mocks *mocks) {
+				notification := notification()
+				notification.PublishedAt = now.AddDate(0, 0, -1)
+				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(admin, nil)
+				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
+			},
+			input: &messenger.UpdateNotificationInput{
+				NotificationID: "notification-id",
+				Title:          "キャベツ祭り開催",
+				Body:           "旬のキャベツが大安売り",
+				Note:           "",
+				Targets: []entity.NotificationTarget{
+					entity.NotificationTargetProducers,
+					entity.NotificationTargetCoordinators,
+				},
+				PublishedAt: now.AddDate(0, 0, 1),
+				UpdatedBy:   "admin-id",
+			},
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
+			name: "invalid domain validation",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(admin, nil)
+				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification(), nil)
+			},
+			input: &messenger.UpdateNotificationInput{
+				NotificationID: "notification-id",
+				Title:          "キャベツ祭り開催",
+				Body:           "旬のキャベツが大安売り",
+				Note:           "",
+				Targets: []entity.NotificationTarget{
+					entity.NotificationTargetProducers,
+					entity.NotificationTargetCoordinators,
+				},
+				PublishedAt: now.AddDate(0, 0, -1),
+				UpdatedBy:   "admin-id",
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to update notification",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(admin, nil)
+				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification(), nil)
+				mocks.db.Notification.EXPECT().Update(ctx, "notification-id", params).Return(assert.AnError)
+			},
+			input: &messenger.UpdateNotificationInput{
+				NotificationID: "notification-id",
+				Title:          "キャベツ祭り開催",
+				Body:           "旬のキャベツが大安売り",
+				Note:           "",
+				Targets: []entity.NotificationTarget{
+					entity.NotificationTargetProducers,
+					entity.NotificationTargetCoordinators,
+				},
+				PublishedAt: now.AddDate(0, 0, 1),
 				UpdatedBy:   "admin-id",
 			},
 			expectErr: exception.ErrUnknown,
@@ -416,7 +548,7 @@ func TestUpdateNotification(t *testing.T) {
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateNotification(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		}, withNow(now)))
 	}
 }
 

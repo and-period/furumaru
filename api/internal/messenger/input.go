@@ -25,22 +25,24 @@ type GetNotificationInput struct {
 }
 
 type CreateNotificationInput struct {
-	CreatedBy   string              `validate:"required"`
-	Title       string              `validate:"required,max=128"`
-	Body        string              `validate:"required,max=2000"`
-	Targets     []entity.TargetType `validate:"min=1,max=3,dive,min=1,max=3"`
-	Public      bool                `validate:""`
-	PublishedAt time.Time           `validate:"required"`
+	Type        entity.NotificationType     `validate:"required"`
+	Title       string                      `validate:"max=128"`
+	Body        string                      `validate:"required,max=2000"`
+	Note        string                      `validate:"max=2000"`
+	Targets     []entity.NotificationTarget `validate:"min=1,max=4,unique,dive,required"`
+	PublishedAt time.Time                   `validate:"required"`
+	CreatedBy   string                      `validate:"required"`
+	PromotionID string                      `validate:""`
 }
 
 type UpdateNotificationInput struct {
-	NotificationID string              `validate:"required"`
-	Title          string              `validate:"required"`
-	Body           string              `validate:"required"`
-	Targets        []entity.TargetType `validate:"min=1,max=3,dive,min=1,max=3"`
-	Public         bool                `validate:""`
-	PublishedAt    time.Time           `validate:"required"`
-	UpdatedBy      string              `validete:"required"`
+	NotificationID string                      `validate:"required"`
+	Title          string                      `validate:"max=128"`
+	Body           string                      `validate:"required,max=2000"`
+	Note           string                      `validate:"max=2000"`
+	Targets        []entity.NotificationTarget `validate:"min=1,max=4,unique,dive,required"`
+	PublishedAt    time.Time                   `validate:"required"`
+	UpdatedBy      string                      `validete:"required"`
 }
 
 type DeleteNotificationInput struct {
