@@ -139,7 +139,7 @@ type UpdateCoordinatorParams struct {
 	FacebookID        string
 	PhoneNumber       string
 	PostalCode        string
-	Prefecture        string
+	Prefecture        int64
 	City              string
 	AddressLine1      string
 	AddressLine2      string
@@ -177,7 +177,7 @@ type UpdateProducerParams struct {
 	FacebookID        string
 	PhoneNumber       string
 	PostalCode        string
-	Prefecture        string
+	Prefecture        int64
 	City              string
 	AddressLine1      string
 	AddressLine2      string

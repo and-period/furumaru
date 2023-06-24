@@ -3,6 +3,7 @@ package entity
 import (
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
 )
@@ -115,7 +116,7 @@ func TestUser_Email(t *testing.T) {
 					LastnameKana:  "あんどどっと",
 					FirstnameKana: "すたっふ",
 					PostalCode:    "1000014",
-					Prefecture:    "東京都",
+					Prefecture:    codes.PrefectureValues["tokyo"],
 					City:          "千代田区",
 					AddressLine1:  "永田町1-7-1",
 					AddressLine2:  "",
@@ -152,7 +153,7 @@ func TestUser_Email(t *testing.T) {
 					LastnameKana:  "あんどどっと",
 					FirstnameKana: "すたっふ",
 					PostalCode:    "1000014",
-					Prefecture:    "東京都",
+					Prefecture:    codes.PrefectureValues["tokyo"],
 					City:          "千代田区",
 					AddressLine1:  "永田町1-7-1",
 					AddressLine2:  "",
@@ -200,7 +201,7 @@ func TestUser_PhoneNumber(t *testing.T) {
 					LastnameKana:  "あんどどっと",
 					FirstnameKana: "すたっふ",
 					PostalCode:    "1000014",
-					Prefecture:    "東京都",
+					Prefecture:    codes.PrefectureValues["tokyo"],
 					City:          "千代田区",
 					AddressLine1:  "永田町1-7-1",
 					AddressLine2:  "",
@@ -237,7 +238,7 @@ func TestUser_PhoneNumber(t *testing.T) {
 					LastnameKana:  "あんどどっと",
 					FirstnameKana: "すたっふ",
 					PostalCode:    "1000014",
-					Prefecture:    "東京都",
+					Prefecture:    codes.PrefectureValues["tokyo"],
 					City:          "千代田区",
 					AddressLine1:  "永田町1-7-1",
 					AddressLine2:  "",

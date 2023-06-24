@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia'
 import { convertI18nToJapanesePhoneNumber, convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert, useSearchAddress } from '~/lib/hooks'
 import { useCommonStore, useProducerStore } from '~/store'
-import { ProducerResponse, UpdateProducerRequest } from '~/types/api'
+import { Prefecture, UpdateProducerRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 
 const route = useRoute()
@@ -26,7 +26,7 @@ const formData = ref<UpdateProducerRequest>({
   username: '',
   phoneNumber: '',
   postalCode: '',
-  prefecture: '',
+  prefecture: Prefecture.UNKNOWN,
   city: '',
   addressLine1: '',
   addressLine2: '',
@@ -177,8 +177,13 @@ const handleSearchAddress = async (): Promise<void> => {
   try {
     searchAddress.loading.value = true
     searchAddress.errorMessage.value = ''
-    const res = await searchAddress.searchAddressByPostalCode(Number(formData.value.postalCode))
-    formData.value = { ...formData.value, ...res }
+    const res = await searchAddress.searchAddressByPostalCode(formData.value.postalCode)
+    formData.value = {
+      ...formData.value,
+      prefecture: res.prefecture,
+      city: res.city,
+      addressLine1: res.town
+    }
   } catch (err) {
     console.log(err)
   } finally {

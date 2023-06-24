@@ -28,7 +28,7 @@ type Producer struct {
 	InstagramID       string         `gorm:""`                               // SNS(Instagram)アカウント名
 	FacebookID        string         `gorm:""`                               // SNS(Facebook)アカウント名
 	PostalCode        string         `gorm:""`                               // 郵便番号
-	Prefecture        string         `gorm:""`                               // 都道府県
+	Prefecture        int64          `gorm:""`                               // 都道府県
 	City              string         `gorm:""`                               // 市区町村
 	AddressLine1      string         `gorm:""`                               // 町名・番地
 	AddressLine2      string         `gorm:""`                               // ビル名・号室など
@@ -52,7 +52,7 @@ type NewProducerParams struct {
 	InstagramID       string
 	FacebookID        string
 	PostalCode        string
-	Prefecture        string
+	Prefecture        int64
 	City              string
 	AddressLine1      string
 	AddressLine2      string

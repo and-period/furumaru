@@ -25,7 +25,8 @@ type UserList struct {
 	Lastname    string `json:"lastname"`    // 姓
 	Firstname   string `json:"firstname"`   // 名
 	Registered  bool   `json:"registered"`  // 会員登録フラグ
-	Address     string `json:"address"`     // 住所
+	Prefecture  string `json:"prefecture"`  // 都道府県
+	City        string `json:"city"`        // 市区町村
 	TotalOrder  int64  `json:"totalOrder"`  // 購入回数
 	TotalAmount int64  `json:"totalAmount"` // 購入金額
 }

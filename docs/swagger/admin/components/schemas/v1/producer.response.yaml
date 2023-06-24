@@ -37,8 +37,7 @@ producerResponse:
       type: string
       description: 郵便番号
     prefecture:
-      type: string
-      description: 都道府県
+      $ref: './../../../openapi.yaml#/components/schemas/prefecture'
     city:
       type: string
       description: 市区町村
@@ -146,7 +145,7 @@ producerResponse:
     email: 'test-user@and-period.jp'
     phoneNumber: '+819012345678'
     postalCode: '1000014'
-    prefecture: '東京都'
+    prefecture: 'tokyo'
     city: '千代田区'
     addressLine1: '永田町1-7-1'
     addressLine2: ''
@@ -218,8 +217,7 @@ producersResponse:
             type: string
             description: 郵便番号
           prefecture:
-            type: string
-            description: 都道府県
+            $ref: './../../../openapi.yaml#/components/schemas/prefecture'
           city:
             type: string
             description: 市区町村
@@ -335,7 +333,7 @@ producersResponse:
       email: 'test-user@and-period.jp'
       phoneNumber: '+819012345678'
       postalCode: '1000014'
-      prefecture: '東京都'
+      prefecture: 'tokyo'
       city: '千代田区'
       addressLine1: '永田町1-7-1'
       addressLine2: ''
@@ -374,7 +372,7 @@ producersResponse:
       email: 'test-user@and-period.jp'
       phoneNumber: '+819012345678'
       postalCode: '1000014'
-      prefecture: '東京都'
+      prefecture: 'tokyo'
       city: '千代田区'
       addressLine1: '永田町1-7-1'
       addressLine2: ''

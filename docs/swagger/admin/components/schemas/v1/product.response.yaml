@@ -229,7 +229,7 @@ productResponse:
     box60Rate: 80
     box80Rate: 50
     box100Rate: 40
-    originPrefecture: SHIGA
+    originPrefecture: 'tokyo'
     originCity: '彦根市'
     createdAt: 1640962800
     updatedAt: 1640962800
@@ -478,7 +478,7 @@ productsResponse:
       box60Rate: 80
       box80Rate: 50
       box100Rate: 40
-      originPrefecture: SHIGA
+      originPrefecture: 'tokyo'
       originCity: '彦根市'
       createdAt: 1640962800
       updatedAt: 1640962800
@@ -517,7 +517,7 @@ productsResponse:
       box60Rate: 80
       box80Rate: 50
       box100Rate: 40
-      originPrefecture: SHIGA
+      originPrefecture: 'tokyo'
       originCity: '彦根市'
       createdAt: 1640962800
       updatedAt: 1640962800

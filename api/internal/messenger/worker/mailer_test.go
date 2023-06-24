@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -565,7 +566,7 @@ func TestFetchCoordinators(t *testing.T) {
 			FacebookID:   "facebook-account",
 			PhoneNumber:  "+819012345678",
 			PostalCode:   "1000014",
-			Prefecture:   "東京都",
+			Prefecture:   codes.PrefectureValues["tokyo"],
 			City:         "千代田区",
 			AddressLine1: "永田町1-7-1",
 			AddressLine2: "",
@@ -639,7 +640,7 @@ func TestFetchProducers(t *testing.T) {
 			HeaderURL:    "https://and-period.jp/header.png",
 			PhoneNumber:  "+819012345678",
 			PostalCode:   "1000014",
-			Prefecture:   "東京都",
+			Prefecture:   codes.PrefectureValues["tokyo"],
 			City:         "千代田区",
 			AddressLine1: "永田町1-7-1",
 			AddressLine2: "",

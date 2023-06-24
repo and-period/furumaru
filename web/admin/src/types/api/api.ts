@@ -664,11 +664,11 @@ export interface CoordinatorResponse {
      */
     'postalCode': string;
     /**
-     * 都道府県
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof CoordinatorResponse
      */
-    'prefecture': string;
+    'prefecture': Prefecture;
     /**
      * 市区町村
      * @type {string}
@@ -854,11 +854,11 @@ export interface CoordinatorsResponseCoordinatorsInner {
      */
     'postalCode': string;
     /**
-     * 都道府県
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof CoordinatorsResponseCoordinatorsInner
      */
-    'prefecture': string;
+    'prefecture': Prefecture;
     /**
      * 市区町村
      * @type {string}
@@ -1117,11 +1117,11 @@ export interface CreateCoordinatorRequest {
      */
     'postalCode': string;
     /**
-     * 都道府県(32文字まで)
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof CreateCoordinatorRequest
      */
-    'prefecture': string;
+    'prefecture': Prefecture;
     /**
      * 市区町村(32文字まで)
      * @type {string}
@@ -1189,6 +1189,8 @@ export interface CreateCoordinatorRequest {
      */
     'facebookId': string;
 }
+
+
 /**
  * 
  * @export
@@ -1287,11 +1289,11 @@ export interface CreateProducerRequest {
      */
     'postalCode': string;
     /**
-     * 都道府県(32文字まで)
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof CreateProducerRequest
      */
-    'prefecture': string;
+    'prefecture': Prefecture;
     /**
      * 市区町村(32文字まで)
      * @type {string}
@@ -1353,6 +1355,8 @@ export interface CreateProducerRequest {
      */
     'facebookId': string;
 }
+
+
 /**
  * 
  * @export
@@ -2997,6 +3001,10 @@ export interface PostalCodeResponse {
 
 export const Prefecture = {
     /**
+    * 不明
+    */
+    UNKNOWN: '',
+    /**
     * 北海道
     */
     HOKKAIDO: 'hokkaido',
@@ -3268,11 +3276,11 @@ export interface ProducerResponse {
      */
     'postalCode': string;
     /**
-     * 都道府県
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof ProducerResponse
      */
-    'prefecture': string;
+    'prefecture': Prefecture;
     /**
      * 市区町村
      * @type {string}
@@ -3458,11 +3466,11 @@ export interface ProducersResponseProducersInner {
      */
     'postalCode': string;
     /**
-     * 都道府県
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof ProducersResponseProducersInner
      */
-    'prefecture': string;
+    'prefecture': Prefecture;
     /**
      * 市区町村
      * @type {string}
@@ -5414,11 +5422,11 @@ export interface UpdateCoordinatorRequest {
      */
     'postalCode': string;
     /**
-     * 都道府県(32文字まで)
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof UpdateCoordinatorRequest
      */
-    'prefecture': string;
+    'prefecture': Prefecture;
     /**
      * 市区町村(32文字まで)
      * @type {string}
@@ -5486,6 +5494,8 @@ export interface UpdateCoordinatorRequest {
      */
     'facebookId': string;
 }
+
+
 /**
  * 
  * @export
@@ -5585,11 +5595,11 @@ export interface UpdateProducerRequest {
      */
     'postalCode': string;
     /**
-     * 都道府県(32文字まで)
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof UpdateProducerRequest
      */
-    'prefecture': string;
+    'prefecture': Prefecture;
     /**
      * 市区町村(32文字まで)
      * @type {string}
@@ -5651,6 +5661,8 @@ export interface UpdateProducerRequest {
      */
     'facebookId': string;
 }
+
+
 /**
  * 
  * @export
@@ -6059,11 +6071,11 @@ export interface UserResponse {
      */
     'postalCode': string;
     /**
-     * 都道府県
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof UserResponse
      */
-    'prefecture': string;
+    'prefecture': Prefecture;
     /**
      * 市区町村
      * @type {string}
@@ -6095,6 +6107,8 @@ export interface UserResponse {
      */
     'updatedAt': number;
 }
+
+
 /**
  * 
  * @export
@@ -6125,44 +6139,52 @@ export interface UsersResponseUsersInner {
      * @type {string}
      * @memberof UsersResponseUsersInner
      */
-    'id'?: string;
+    'id': string;
     /**
      * 姓
      * @type {string}
      * @memberof UsersResponseUsersInner
      */
-    'lastname'?: string;
+    'lastname': string;
     /**
      * 名
      * @type {string}
      * @memberof UsersResponseUsersInner
      */
-    'firstname'?: string;
+    'firstname': string;
     /**
      * 会員登録フラグ
      * @type {boolean}
      * @memberof UsersResponseUsersInner
      */
-    'registered'?: boolean;
+    'registered': boolean;
     /**
-     * 住所
+     * 
+     * @type {Prefecture}
+     * @memberof UsersResponseUsersInner
+     */
+    'prefecture': Prefecture;
+    /**
+     * 市区町村
      * @type {string}
      * @memberof UsersResponseUsersInner
      */
-    'address'?: string;
+    'city': string;
     /**
      * 購入回数
      * @type {number}
      * @memberof UsersResponseUsersInner
      */
-    'totalOrder'?: number;
+    'totalOrder': number;
     /**
      * 購入金額
      * @type {number}
      * @memberof UsersResponseUsersInner
      */
-    'totalAmount'?: number;
+    'totalAmount': number;
 }
+
+
 /**
  * 
  * @export
