@@ -64,7 +64,6 @@ type NotificationOrderBy string
 
 const (
 	NotificationOrderByTitle       NotificationOrderBy = "title"
-	NotificationOrderByPublic      NotificationOrderBy = "public"
 	NotificationOrderByPublishedAt NotificationOrderBy = "published_at"
 )
 
