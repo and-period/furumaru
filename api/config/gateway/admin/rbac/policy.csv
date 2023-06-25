@@ -67,6 +67,7 @@ p, postal_code_search, /v1/postal-codes/*, GET, allow
 p, contact_get, /v1/contacts/*, GET, allow
 p, contact_create, /v1/contacts, POST, allow
 p, contact_update, /v1/contacts/* PATCH, allow
+p, contact_delete, /v1/contacts/* DELETE, allow
 p, thread_get, /v1/contacts/*/threads/*, GET, allow
 p, thread_list_by_contactId, /v1/contacts/*/threads, GET, allow
 p, thread_create, /v1/contacts/*/threads, POST, allow
@@ -142,6 +143,7 @@ g, administrator, postal_code_search
 g, administrator, contact_get
 g, administrator, contact_create
 g, administrator, contact_update
+g, administrator, contact_delete
 g, administrator, thread_get
 g, administrator, thread_list_by_contactId
 g, administrator, thread_create
@@ -189,6 +191,7 @@ g, coordinator, postal_code_search
 g, coordinator, contact_get
 g, coordinator, contact_create
 g, coordinator, contact_update
+g, coordinator, contact_delete
 g, coordinator, thread_get
 g, coordinator, thread_list_by_contactId
 g, coordinator, thread_create
@@ -219,6 +222,7 @@ g, producer, postal_code_search
 g, producer, contact_get
 g, producer, contact_create
 g, producer, contact_update
+g, producer, contact_delete
 g, producer, thread_get
 g, producer, thread_list_by_contactId
 g, producer, thread_create

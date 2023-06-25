@@ -22,6 +22,7 @@ func (h *handler) contactRoutes(rg *gin.RouterGroup) {
 	arg.GET("/:contactId", h.GetContact)
 	arg.POST("", h.CreateContact)
 	arg.PATCH("/:contactId", h.UpdateContact)
+	arg.DELETE("/:contactId", h.DeleteContact)
 }
 
 func (h *handler) CreateContact(ctx *gin.Context) {
@@ -142,6 +143,18 @@ func (h *handler) UpdateContact(ctx *gin.Context) {
 	}
 
 	if err := h.messenger.UpdateContact(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) DeleteContact(ctx *gin.Context) {
+	in := &messenger.DeleteContactInput{
+		ContactID: util.GetParam(ctx, "contactId"),
+	}
+	if err := h.messenger.DeleteContact(ctx, in); err != nil {
 		httpError(ctx, err)
 		return
 	}

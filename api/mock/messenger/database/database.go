@@ -50,6 +50,20 @@ func (mr *MockContactMockRecorder) Create(ctx, contact interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockContact)(nil).Create), ctx, contact)
 }
 
+// Delete mocks base method.
+func (m *MockContact) Delete(ctx context.Context, contactID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", ctx, contactID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockContactMockRecorder) Delete(ctx, contactID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockContact)(nil).Delete), ctx, contactID)
+}
+
 // Get mocks base method.
 func (m *MockContact) Get(ctx context.Context, contactID string, fields ...string) (*entity.Contact, error) {
 	m.ctrl.T.Helper()
@@ -125,6 +139,26 @@ func (mr *MockContactCategoryMockRecorder) Get(ctx, categoryID interface{}, fiel
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, categoryID}, fields...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockContactCategory)(nil).Get), varargs...)
+}
+
+// List mocks base method.
+func (m *MockContactCategory) List(ctx context.Context, params *database.ListContactCategoriesParams, fields ...string) (entity.ContactCategories, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, params}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "List", varargs...)
+	ret0, _ := ret[0].(entity.ContactCategories)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockContactCategoryMockRecorder) List(ctx, params interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, params}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockContactCategory)(nil).List), varargs...)
 }
 
 // MockThread is a mock of Thread interface.

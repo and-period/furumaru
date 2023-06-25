@@ -50,10 +50,12 @@ type Contact interface {
 	Get(ctx context.Context, contactID string, fields ...string) (*entity.Contact, error)
 	Create(ctx context.Context, contact *entity.Contact) error
 	Update(ctx context.Context, contactID string, params *UpdateContactParams) error
+	Delete(ctx context.Context, contactID string) error
 }
 
 type ContactCategory interface {
 	Get(ctx context.Context, categoryID string, fields ...string) (*entity.ContactCategory, error)
+	List(ctx context.Context, params *ListContactCategoriesParams, fields ...string) (entity.ContactCategories, error)
 }
 
 type Thread interface {
@@ -205,6 +207,11 @@ func (p *ListSchedulesParams) stmt(stmt *gorm.DB) *gorm.DB {
 		stmt = stmt.Where("sent_at <= ?", p.Until)
 	}
 	return stmt
+}
+
+type ListContactCategoriesParams struct {
+	Limit  int
+	Offset int
 }
 
 type ListThreadsByContactIDParams struct {

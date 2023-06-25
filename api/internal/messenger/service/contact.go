@@ -94,3 +94,11 @@ func (s *service) UpdateContact(ctx context.Context, in *messenger.UpdateContact
 	}
 	return nil
 }
+
+func (s *service) DeleteContact(ctx context.Context, in *messenger.DeleteContactInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	err := s.db.Contact.Delete(ctx, in.ContactID)
+	return exception.InternalError(err)
+}
