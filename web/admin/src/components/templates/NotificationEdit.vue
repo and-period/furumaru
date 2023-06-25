@@ -4,7 +4,7 @@ import dayjs, { unix } from 'dayjs'
 import { PropType } from 'nuxt/dist/app/compat/capi'
 import { AlertType } from '~/lib/hooks'
 
-import { getErrorMessage, maxLength, maxValue, required } from '~/lib/validations'
+import { getErrorMessage, maxLength, required } from '~/lib/validations'
 import { DiscountType, NotificationResponse, NotificationStatus, NotificationTarget, NotificationType, PromotionResponse, UpdateNotificationRequest } from '~/types/api'
 import { NotificationTime } from '~/types/props'
 
@@ -91,7 +91,7 @@ const targetList = [
 ]
 
 const formDataRules = computed(() => ({
-  targets: { maxValue: maxValue(4) },
+  targets: {},
   title: { maxLength: maxLength(128) },
   body: { required, maxLength: maxLength(2000) },
   note: { required, maxLength: maxLength(2000) }

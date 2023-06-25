@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
-import { validateLocaleAndSetLanguage } from 'typescript'
 
 import { AlertType } from '~/lib/hooks'
 import { getErrorMessage, maxLength, required } from '~/lib/validations'
@@ -66,7 +65,7 @@ const selectedPromotion = ref<PromotionsResponsePromotionsInner>()
 
 const formDataRules = computed(() => ({
   type: { required },
-  targets: { },
+  targets: {},
   title: { maxLength: maxLength(128) },
   body: { required, maxLength: maxLength(2000) },
   note: { required, maxLength: maxLength(2000) },
