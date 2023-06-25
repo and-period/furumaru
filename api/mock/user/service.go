@@ -182,6 +182,20 @@ func (mr *MockServiceMockRecorder) DeleteUser(ctx, in interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUser", reflect.TypeOf((*MockService)(nil).DeleteUser), ctx, in)
 }
 
+// ForgotAdminPassword mocks base method.
+func (m *MockService) ForgotAdminPassword(ctx context.Context, in *user.ForgotAdminPasswordInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ForgotAdminPassword", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ForgotAdminPassword indicates an expected call of ForgotAdminPassword.
+func (mr *MockServiceMockRecorder) ForgotAdminPassword(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ForgotAdminPassword", reflect.TypeOf((*MockService)(nil).ForgotAdminPassword), ctx, in)
+}
+
 // ForgotUserPassword mocks base method.
 func (m *MockService) ForgotUserPassword(ctx context.Context, in *user.ForgotUserPasswordInput) error {
 	m.ctrl.T.Helper()
@@ -864,6 +878,20 @@ func (m *MockService) VerifyAdminEmail(ctx context.Context, in *user.VerifyAdmin
 func (mr *MockServiceMockRecorder) VerifyAdminEmail(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyAdminEmail", reflect.TypeOf((*MockService)(nil).VerifyAdminEmail), ctx, in)
+}
+
+// VerifyAdminPassword mocks base method.
+func (m *MockService) VerifyAdminPassword(ctx context.Context, in *user.VerifyAdminPasswordInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VerifyAdminPassword", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// VerifyAdminPassword indicates an expected call of VerifyAdminPassword.
+func (mr *MockServiceMockRecorder) VerifyAdminPassword(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyAdminPassword", reflect.TypeOf((*MockService)(nil).VerifyAdminPassword), ctx, in)
 }
 
 // VerifyUser mocks base method.

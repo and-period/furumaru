@@ -77,6 +77,26 @@ func (mr *MockAdminMockRecorder) GetByCognitoID(ctx, cognitoID interface{}, fiel
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByCognitoID", reflect.TypeOf((*MockAdmin)(nil).GetByCognitoID), varargs...)
 }
 
+// GetByEmail mocks base method.
+func (m *MockAdmin) GetByEmail(ctx context.Context, email string, fields ...string) (*entity.Admin, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, email}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetByEmail", varargs...)
+	ret0, _ := ret[0].(*entity.Admin)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByEmail indicates an expected call of GetByEmail.
+func (mr *MockAdminMockRecorder) GetByEmail(ctx, email interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, email}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByEmail", reflect.TypeOf((*MockAdmin)(nil).GetByEmail), varargs...)
+}
+
 // MultiGet mocks base method.
 func (m *MockAdmin) MultiGet(ctx context.Context, adminIDs []string, fields ...string) (entity.Admins, error) {
 	m.ctrl.T.Helper()

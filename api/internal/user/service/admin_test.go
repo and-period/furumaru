@@ -7,6 +7,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
 )
@@ -236,6 +237,142 @@ func TestGetAdmin(t *testing.T) {
 			actual, err := service.GetAdmin(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
+func TestForgotAdminPassword(t *testing.T) {
+	t.Parallel()
+
+	admin := &entity.Admin{CognitoID: "cognito-id"}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.ForgotAdminPasswordInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Admin.EXPECT().GetByEmail(ctx, "test-admin@and-period.jp", "cognito_id").Return(admin, nil)
+				mocks.adminAuth.EXPECT().ForgotPassword(ctx, "cognito-id").Return(nil)
+			},
+			input: &user.ForgotAdminPasswordInput{
+				Email: "test-admin@and-period.jp",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.ForgotAdminPasswordInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to forgot password",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Admin.EXPECT().GetByEmail(ctx, "test-admin@and-period.jp", "cognito_id").Return(nil, assert.AnError)
+			},
+			input: &user.ForgotAdminPasswordInput{
+				Email: "test-admin@and-period.jp",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "failed to forgot password",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Admin.EXPECT().GetByEmail(ctx, "test-admin@and-period.jp", "cognito_id").Return(admin, nil)
+				mocks.adminAuth.EXPECT().ForgotPassword(ctx, "cognito-id").Return(assert.AnError)
+			},
+			input: &user.ForgotAdminPasswordInput{
+				Email: "test-admin@and-period.jp",
+			},
+			expectErr: exception.ErrNotFound,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.ForgotAdminPassword(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestVerifyAdminPassword(t *testing.T) {
+	t.Parallel()
+
+	admin := &entity.Admin{
+		CognitoID: "cognito-id",
+	}
+	params := &cognito.ConfirmForgotPasswordParams{
+		Username:    "cognito-id",
+		VerifyCode:  "123456",
+		NewPassword: "12345678",
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.VerifyAdminPasswordInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Admin.EXPECT().GetByEmail(ctx, "test-admin@and-period.jp", "cognito_id").Return(admin, nil)
+				mocks.adminAuth.EXPECT().ConfirmForgotPassword(ctx, params).Return(nil)
+			},
+			input: &user.VerifyAdminPasswordInput{
+				Email:                "test-admin@and-period.jp",
+				VerifyCode:           "123456",
+				NewPassword:          "12345678",
+				PasswordConfirmation: "12345678",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.VerifyAdminPasswordInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to forgot password",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Admin.EXPECT().GetByEmail(ctx, "test-admin@and-period.jp", "cognito_id").Return(nil, assert.AnError)
+			},
+			input: &user.VerifyAdminPasswordInput{
+				Email:                "test-admin@and-period.jp",
+				VerifyCode:           "123456",
+				NewPassword:          "12345678",
+				PasswordConfirmation: "12345678",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "failed to forgot password",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Admin.EXPECT().GetByEmail(ctx, "test-admin@and-period.jp", "cognito_id").Return(admin, nil)
+				mocks.adminAuth.EXPECT().ConfirmForgotPassword(ctx, params).Return(assert.AnError)
+			},
+			input: &user.VerifyAdminPasswordInput{
+				Email:                "test-admin@and-period.jp",
+				VerifyCode:           "123456",
+				NewPassword:          "12345678",
+				PasswordConfirmation: "12345678",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.VerifyAdminPassword(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
 }

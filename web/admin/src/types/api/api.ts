@@ -1949,6 +1949,19 @@ export interface ErrorResponse {
     'details': string;
 }
 /**
+ * 
+ * @export
+ * @interface ForgotAuthPasswordRequest
+ */
+export interface ForgotAuthPasswordRequest {
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof ForgotAuthPasswordRequest
+     */
+    'email': string;
+}
+/**
  * 配送状況
  * @export
  * @enum {string}
@@ -4665,6 +4678,37 @@ export interface RelateProducersRequest {
 /**
  * 
  * @export
+ * @interface ResetAuthPasswordRequest
+ */
+export interface ResetAuthPasswordRequest {
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof ResetAuthPasswordRequest
+     */
+    'email': string;
+    /**
+     * 検証コード
+     * @type {string}
+     * @memberof ResetAuthPasswordRequest
+     */
+    'verifyCode': string;
+    /**
+     * パスワード(8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
+     * @type {string}
+     * @memberof ResetAuthPasswordRequest
+     */
+    'password': string;
+    /**
+     * パスワード(確認用)
+     * @type {string}
+     * @memberof ResetAuthPasswordRequest
+     */
+    'passwordConfirmation': string;
+}
+/**
+ * 
+ * @export
  * @interface ScheduleResponse
  */
 export interface ScheduleResponse {
@@ -7048,6 +7092,42 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
     return {
         /**
          * 
+         * @summary パスワードリセット
+         * @param {ForgotAuthPasswordRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ForgotAuthPassword: async (body: ForgotAuthPasswordRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1ForgotAuthPassword', 'body', body)
+            const localVarPath = `/v1/auth/forgot-password`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary トークン検証
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7179,6 +7259,42 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             // authentication BearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary パスワードリセット - コード検証
+         * @param {ResetAuthPasswordRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ResetAuthPassword: async (body: ResetAuthPasswordRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1ResetAuthPassword', 'body', body)
+            const localVarPath = `/v1/auth/forgot-password/verified`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
 
     
@@ -7400,6 +7516,17 @@ export const AuthApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary パスワードリセット
+         * @param {ForgotAuthPasswordRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ForgotAuthPassword(body: ForgotAuthPasswordRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ForgotAuthPassword(body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary トークン検証
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7438,6 +7565,17 @@ export const AuthApiFp = function(configuration?: Configuration) {
          */
         async v1RegisterAuthDevice(body: RegisterAuthDeviceRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1RegisterAuthDevice(body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary パスワードリセット - コード検証
+         * @param {ResetAuthPasswordRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ResetAuthPassword(body: ResetAuthPasswordRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ResetAuthPassword(body, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -7506,6 +7644,16 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
     return {
         /**
          * 
+         * @summary パスワードリセット
+         * @param {ForgotAuthPasswordRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ForgotAuthPassword(body: ForgotAuthPasswordRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1ForgotAuthPassword(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary トークン検証
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7541,6 +7689,16 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          */
         v1RegisterAuthDevice(body: RegisterAuthDeviceRequest, options?: any): AxiosPromise<object> {
             return localVarFp.v1RegisterAuthDevice(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary パスワードリセット - コード検証
+         * @param {ResetAuthPasswordRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ResetAuthPassword(body: ResetAuthPasswordRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1ResetAuthPassword(body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7603,6 +7761,18 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
 export class AuthApi extends BaseAPI {
     /**
      * 
+     * @summary パスワードリセット
+     * @param {ForgotAuthPasswordRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public v1ForgotAuthPassword(body: ForgotAuthPasswordRequest, options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1ForgotAuthPassword(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary トークン検証
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -7645,6 +7815,18 @@ export class AuthApi extends BaseAPI {
      */
     public v1RegisterAuthDevice(body: RegisterAuthDeviceRequest, options?: AxiosRequestConfig) {
         return AuthApiFp(this.configuration).v1RegisterAuthDevice(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary パスワードリセット - コード検証
+     * @param {ResetAuthPasswordRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public v1ResetAuthPassword(body: ResetAuthPasswordRequest, options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1ResetAuthPassword(body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

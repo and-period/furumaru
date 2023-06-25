@@ -25,6 +25,10 @@ type Service interface {
 	VerifyAdminEmail(ctx context.Context, in *VerifyAdminEmailInput) error
 	// 管理者パスワード更新
 	UpdateAdminPassword(ctx context.Context, in *UpdateAdminPasswordInput) error
+	// 管理者パスワードリセット (メール送信)
+	ForgotAdminPassword(ctx context.Context, in *ForgotAdminPasswordInput) error
+	// 管理者パスワードリセット (パスワード更新)
+	VerifyAdminPassword(ctx context.Context, in *VerifyAdminPasswordInput) error
 	// 管理者一覧取得(ID指定)
 	MultiGetAdmins(ctx context.Context, in *MultiGetAdminsInput) (entity.Admins, error)
 	// 管理者デバイストークン一覧取得
