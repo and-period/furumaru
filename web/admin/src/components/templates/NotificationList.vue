@@ -117,22 +117,22 @@ const getType = (type: NotificationType): string => {
 const getStatus = (status: NotificationStatus): string => {
   switch (status) {
     case NotificationStatus.WAITING:
-      return 'error'
+      return '投稿前'
     case NotificationStatus.NOTIFIED:
-      return 'primary'
+      return '投稿済み'
     default:
-      return ''
+      return '不明'
   }
 }
 
 const getStatusColor = (status: NotificationStatus): string => {
   switch (status) {
     case NotificationStatus.WAITING:
-      return '投稿前'
+      return 'error'
     case NotificationStatus.NOTIFIED:
-      return '投稿済み'
+      return 'primary'
     default:
-      return '不明'
+      return ''
   }
 }
 

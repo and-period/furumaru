@@ -155,7 +155,7 @@ const onSubmit = async (): Promise<void> => {
           <v-text-field
             v-model="formDataValidate.code.$model"
             :error-messages="getErrorMessage(formDataValidate.code.$errors)"
-            class="mr-4"
+            class="mr-2"
             label="割引コード(8文字)"
           />
           <v-btn variant="outlined" size="small" color="primary" @click="onClickGenerateCode">
@@ -167,38 +167,40 @@ const onSubmit = async (): Promise<void> => {
           <v-select
             v-model="formDataValidate.discountType.$model"
             :error-messages="getErrorMessage(formDataValidate.discountType.$errors)"
+            label="割引方法"
             :items="discountMethodList"
             item-title="method"
             item-value="value"
-            label="割引方法"
+            class="mr-2"
           />
           <v-text-field
             v-if="formDataValue.discountType != 3"
-            v-model="formDataValidate.discountRate.$model"
+            v-model.number="formDataValidate.discountRate.$model"
             :error-messages="getDiscountErrorMessage()"
-            class="ml-4"
-            type="number"
             label="割引値"
+            type="number"
           />
         </div>
-        <p class="text-h6">
+        <p class="text-subtitle-2 text-grey py-2">
           使用期間
         </p>
-        <div class="d-flex align-center">
+        <div class="d-flex flex-column flex-md-row justify-center">
           <v-text-field
             v-model="timeDataValidate.startDate.$model"
             :error-messages="getErrorMessage(timeDataValidate.startDate.$errors)"
             type="date"
             variant="outlined"
-            class="mr-2"
+            density="compact"
+            class="mr-md-2"
           />
           <v-text-field
             v-model="timeDataValidate.startTime.$model"
             :error-messages="getErrorMessage(timeDataValidate.startTime.$errors)"
             type="time"
             variant="outlined"
+            density="compact"
           />
-          <p class="text-h6 mx-4 mb-6">
+          <p class="text-subtitle-2 mx-4 pt-md-3 pb-4 pb-md-6">
             〜
           </p>
           <v-text-field
@@ -206,13 +208,15 @@ const onSubmit = async (): Promise<void> => {
             :error-messages="getErrorMessage(timeDataValidate.endDate.$errors)"
             type="date"
             variant="outlined"
-            class="mr-2"
+            density="compact"
+            class="mr-md-2"
           />
           <v-text-field
             v-model="timeDataValidate.endTime.$model"
             :error-messages="getErrorMessage(timeDataValidate.endTime.$errors)"
             type="time"
             variant="outlined"
+            density="compact"
           />
         </div>
         <v-switch v-model="formDataValue.public" label="クーポンを有効にする" color="primary" />

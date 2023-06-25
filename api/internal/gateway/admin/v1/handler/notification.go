@@ -128,14 +128,12 @@ func (h *handler) GetNotification(ctx *gin.Context) {
 func (h *handler) newNotificationOrders(ctx *gin.Context) ([]*messenger.ListNotificationsOrder, error) {
 	notifications := map[string]entity.NotificationOrderBy{
 		"title":       entity.NotificationOrderByTitle,
-		"public":      entity.NotificationOrderByPublic,
 		"publishedAt": entity.NotificationOrderByPublishedAt,
 	}
 	params := util.GetOrders(ctx)
 	if len(params) == 0 {
 		res := []*messenger.ListNotificationsOrder{
 			{Key: entity.NotificationOrderByPublishedAt, OrderByASC: false},
-			{Key: entity.NotificationOrderByPublic, OrderByASC: false},
 		}
 		return res, nil
 	}
