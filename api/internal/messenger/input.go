@@ -111,6 +111,10 @@ type UpdateContactInput struct {
 	Note        string               `validate:"max=2000"`
 }
 
+type DeleteContactInput struct {
+	ContactID string `validate:"required"`
+}
+
 type GetContactCategoryInput struct {
 	CategoryID string `validate:"required"`
 }
