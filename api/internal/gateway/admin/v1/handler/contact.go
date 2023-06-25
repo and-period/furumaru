@@ -20,6 +20,8 @@ import (
 func (h *handler) contactRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication)
 	arg.GET("/:contactId", h.GetContact)
+	arg.POST("", h.CreateContact)
+	arg.PATCH("/:contactId", h.UpdateContact)
 }
 
 func (h *handler) CreateContact(ctx *gin.Context) {
@@ -116,6 +118,35 @@ func (h *handler) GetContact(ctx *gin.Context) {
 		Threads: threads.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) UpdateContact(ctx *gin.Context) {
+	req := &request.UpdateContactRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	in := &messenger.UpdateContactInput{
+		ContactID:   util.GetParam(ctx, "contactId"),
+		Title:       req.Title,
+		Content:     req.Content,
+		Username:    req.Username,
+		UserID:      req.UserID,
+		CategoryID:  req.CategoryID,
+		Email:       req.Email,
+		PhoneNumber: req.PhoneNumber,
+		Status:      entity.ContactStatus(req.Status),
+		ResponderID: req.ResponderID,
+		Note:        req.Note,
+	}
+
+	if err := h.messenger.UpdateContact(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
 func (h *handler) getContact(ctx context.Context, contactID string) (*service.Contact, error) {
