@@ -69,6 +69,24 @@ func (c *contact) Update(ctx context.Context, contactID string, params *UpdateCo
 	return exception.InternalError(err)
 }
 
+func (c *contact) Delete(ctx context.Context, contactID string) error {
+	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
+		if _, err := c.get(ctx, tx, contactID); err != nil {
+			return err
+		}
+
+		params := map[string]interface{}{
+			"deleted_at": c.now(),
+		}
+		err := tx.WithContext(ctx).
+			Table(contactTable).
+			Where("id = ?", contactID).
+			Updates(params).Error
+		return err
+	})
+	return exception.InternalError(err)
+}
+
 func (c *contact) get(
 	ctx context.Context, tx *gorm.DB, contactID string, fields ...string,
 ) (*entity.Contact, error) {
