@@ -7,6 +7,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
+	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"golang.org/x/sync/errgroup"
@@ -68,6 +69,16 @@ func (s *service) NotifyNotification(ctx context.Context, in *messenger.NotifyNo
 	notification, err := s.db.Notification.Get(ctx, in.NotificationID)
 	if err != nil {
 		return exception.InternalError(err)
+	}
+	if notification.Type == entity.NotificationTypePromotion {
+		in := &store.GetPromotionInput{
+			PromotionID: notification.PromotionID,
+		}
+		promotion, err := s.store.GetPromotion(ctx, in)
+		if err != nil {
+			return exception.InternalError(err)
+		}
+		notification.Title = promotion.Title
 	}
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {

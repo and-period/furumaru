@@ -108,6 +108,7 @@ type ProductType interface {
 type Promotion interface {
 	List(ctx context.Context, params *ListPromotionsParams, fields ...string) (entity.Promotions, error)
 	Count(ctx context.Context, params *ListPromotionsParams) (int64, error)
+	MultiGet(ctx context.Context, promotionIDs []string, fields ...string) (entity.Promotions, error)
 	Get(ctx context.Context, promotionID string, fields ...string) (*entity.Promotion, error)
 	Create(ctx context.Context, promotion *entity.Promotion) error
 	Update(ctx context.Context, promotionID string, params *UpdatePromotionParams) error

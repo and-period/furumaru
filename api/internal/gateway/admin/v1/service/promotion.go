@@ -82,6 +82,14 @@ func NewPromotions(promotions entity.Promotions) Promotions {
 	return res
 }
 
+func (ps Promotions) Map() map[string]*Promotion {
+	res := make(map[string]*Promotion, len(ps))
+	for _, p := range ps {
+		res[p.ID] = p
+	}
+	return res
+}
+
 func (ps Promotions) Response() []*response.Promotion {
 	res := make([]*response.Promotion, len(ps))
 	for i := range ps {

@@ -9,10 +9,10 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/messenger"
-	"github.com/and-period/furumaru/api/internal/messenger/entity"
-	"github.com/and-period/furumaru/api/internal/user"
+	mentity "github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/sync/errgroup"
 )
 
 func (h *handler) notificationRoutes(rg *gin.RouterGroup) {
@@ -63,12 +63,11 @@ func (h *handler) ListNotifications(ctx *gin.Context) {
 		Until:  jst.ParseFromUnix(until),
 		Orders: orders,
 	}
-	mnotifications, total, err := h.messenger.ListNotifications(ctx, in)
+	notifications, total, err := h.messenger.ListNotifications(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
-	notifications := service.NewNotifications(mnotifications)
 	if len(notifications) == 0 {
 		res := &response.NotificationsResponse{
 			Notifications: []*response.Notification{},
@@ -77,20 +76,29 @@ func (h *handler) ListNotifications(ctx *gin.Context) {
 		return
 	}
 
-	adminIn := &user.MultiGetAdminsInput{
-		AdminIDs: notifications.AdminIDs(),
-	}
-	uadmins, err := h.user.MultiGetAdmins(ctx, adminIn)
-	if err != nil {
+	var (
+		admins     service.Admins
+		promotions service.Promotions
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		admins, err = h.multiGetAdmins(ectx, notifications.AdminIDs())
+		return
+	})
+	eg.Go(func() (err error) {
+		promotions, err = h.multiGetPromotions(ectx, notifications.PromotionIDs())
+		return
+	})
+	if err := eg.Wait(); err != nil {
 		httpError(ctx, err)
 		return
 	}
-	admins := service.NewAdmins(uadmins)
 
-	notifications.Fill(admins.Map())
+	snotifications := service.NewNotifications(notifications)
+	snotifications.Fill(admins.Map(), promotions.Map())
 
 	res := &response.NotificationsResponse{
-		Notifications: notifications.Response(),
+		Notifications: snotifications.Response(),
 		Total:         total,
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -100,40 +108,51 @@ func (h *handler) GetNotification(ctx *gin.Context) {
 	in := &messenger.GetNotificationInput{
 		NotificationID: util.GetParam(ctx, "notificationId"),
 	}
-	mnotificaiton, err := h.messenger.GetNotification(ctx, in)
+	notification, err := h.messenger.GetNotification(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
-	notification := service.NewNotification(mnotificaiton)
 
-	adminIn := &user.GetAdminInput{
-		AdminID: notification.CreatedBy,
-	}
-	uadmin, err := h.user.GetAdmin(ctx, adminIn)
-	if err != nil {
+	var (
+		admin     *service.Admin
+		promotion *service.Promotion
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		admin, err = h.getAdmin(ectx, notification.CreatedBy)
+		return
+	})
+	eg.Go(func() (err error) {
+		if notification.Type != mentity.NotificationTypePromotion {
+			return
+		}
+		promotion, err = h.getPromotion(ectx, notification.PromotionID)
+		return
+	})
+	if err := eg.Wait(); err != nil {
 		httpError(ctx, err)
 		return
 	}
-	admin := service.NewAdmin(uadmin)
 
-	notification.Fill(admin)
+	snotification := service.NewNotification(notification)
+	snotification.Fill(admin, promotion)
 
 	res := &response.NotificationResponse{
-		Notification: notification.Response(),
+		Notification: snotification.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
 
 func (h *handler) newNotificationOrders(ctx *gin.Context) ([]*messenger.ListNotificationsOrder, error) {
-	notifications := map[string]entity.NotificationOrderBy{
-		"title":       entity.NotificationOrderByTitle,
-		"publishedAt": entity.NotificationOrderByPublishedAt,
+	notifications := map[string]mentity.NotificationOrderBy{
+		"title":       mentity.NotificationOrderByTitle,
+		"publishedAt": mentity.NotificationOrderByPublishedAt,
 	}
 	params := util.GetOrders(ctx)
 	if len(params) == 0 {
 		res := []*messenger.ListNotificationsOrder{
-			{Key: entity.NotificationOrderByPublishedAt, OrderByASC: false},
+			{Key: mentity.NotificationOrderByPublishedAt, OrderByASC: false},
 		}
 		return res, nil
 	}
@@ -157,14 +176,14 @@ func (h *handler) CreateNotification(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
-	targets := make([]entity.NotificationTarget, len(req.Targets))
+	targets := make([]mentity.NotificationTarget, len(req.Targets))
 	for i := range req.Targets {
-		targets[i] = entity.NotificationTarget(req.Targets[i])
+		targets[i] = mentity.NotificationTarget(req.Targets[i])
 	}
 
 	publishedAt := jst.ParseFromUnix(req.PublishedAt)
 	in := &messenger.CreateNotificationInput{
-		Type:        entity.NotificationType(req.Type),
+		Type:        mentity.NotificationType(req.Type),
 		Title:       req.Title,
 		Body:        req.Body,
 		Note:        req.Note,
@@ -192,9 +211,9 @@ func (h *handler) UpdateNotifcation(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
-	targets := make([]entity.NotificationTarget, len(req.Targets))
+	targets := make([]mentity.NotificationTarget, len(req.Targets))
 	for i := range req.Targets {
-		targets[i] = entity.NotificationTarget(req.Targets[i])
+		targets[i] = mentity.NotificationTarget(req.Targets[i])
 	}
 
 	publishedAt := jst.ParseFromUnix(req.PublishedAt)

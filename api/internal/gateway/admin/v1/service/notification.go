@@ -184,9 +184,12 @@ func NewNotification(notification *entity.Notification) *Notification {
 	}
 }
 
-func (n *Notification) Fill(createdAdmin *Admin) {
-	if createdAdmin != nil {
-		n.CreatorName = createdAdmin.Name()
+func (n *Notification) Fill(admin *Admin, promotion *Promotion) {
+	if admin != nil {
+		n.CreatorName = admin.Name()
+	}
+	if NotificationType(n.Type) == NotificationTypePromotion && promotion != nil {
+		n.Title = promotion.Title
 	}
 }
 
@@ -216,12 +219,8 @@ func (ns Notifications) AdminIDs() []string {
 	})
 }
 
-func (ns Notifications) Fill(admins map[string]*Admin) {
-	for i := range ns {
-		admin, ok := admins[ns[i].CreatedBy]
-		if !ok {
-			continue
-		}
-		ns[i].Fill(admin)
+func (ns Notifications) Fill(admins map[string]*Admin, promotions map[string]*Promotion) {
+	for _, n := range ns {
+		n.Fill(admins[n.CreatedBy], promotions[n.PromotionID])
 	}
 }
