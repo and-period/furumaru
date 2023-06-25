@@ -50,6 +50,20 @@ func (mr *MockContactMockRecorder) Create(ctx, contact interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockContact)(nil).Create), ctx, contact)
 }
 
+// Delete mocks base method.
+func (m *MockContact) Delete(ctx context.Context, contactID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", ctx, contactID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockContactMockRecorder) Delete(ctx, contactID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockContact)(nil).Delete), ctx, contactID)
+}
+
 // Get mocks base method.
 func (m *MockContact) Get(ctx context.Context, contactID string, fields ...string) (*entity.Contact, error) {
 	m.ctrl.T.Helper()
