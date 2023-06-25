@@ -50,6 +50,7 @@ type Contact interface {
 	Get(ctx context.Context, contactID string, fields ...string) (*entity.Contact, error)
 	Create(ctx context.Context, contact *entity.Contact) error
 	Update(ctx context.Context, contactID string, params *UpdateContactParams) error
+	Delete(ctx context.Context, contactID string) error
 }
 
 type ContactCategory interface {
