@@ -29,9 +29,8 @@ func (s *scheduler) dispatchNotification(ctx context.Context, target time.Time) 
 	})
 	eg.Go(func() (err error) {
 		params := &database.ListNotificationsParams{
-			Since:         jst.BeginningOfDay(target),
-			Until:         target,
-			OnlyPublished: true,
+			Since: jst.BeginningOfDay(target),
+			Until: target,
 		}
 		notifications, err = s.db.Notification.List(ectx, params)
 		return

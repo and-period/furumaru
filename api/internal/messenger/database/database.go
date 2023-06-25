@@ -144,12 +144,11 @@ func (p *ListMessagesParams) stmt(stmt *gorm.DB) *gorm.DB {
 }
 
 type ListNotificationsParams struct {
-	Limit         int
-	Offset        int
-	Since         time.Time
-	Until         time.Time
-	OnlyPublished bool
-	Orders        []*ListNotificationsOrder
+	Limit  int
+	Offset int
+	Since  time.Time
+	Until  time.Time
+	Orders []*ListNotificationsOrder
 }
 
 type ListNotificationsOrder struct {
@@ -164,9 +163,6 @@ func (p *ListNotificationsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if !p.Until.IsZero() {
 		stmt = stmt.Where("published_at <= ?", p.Until)
 	}
-	if p.OnlyPublished {
-		stmt = stmt.Where("public = ?", true)
-	}
 	for i := range p.Orders {
 		var value string
 		if p.Orders[i].OrderByASC {
@@ -180,13 +176,14 @@ func (p *ListNotificationsParams) stmt(stmt *gorm.DB) *gorm.DB {
 }
 
 type UpdateNotificationParams struct {
+	Targets     []entity.NotificationTarget
 	Title       string
 	Body        string
-	Targets     []entity.TargetType
+	Note        string
 	PublishedAt time.Time
-	Public      bool
 	UpdatedBy   string
 }
+
 type ListSchedulesParams struct {
 	Types    []entity.ScheduleType
 	Statuses []entity.ScheduleStatus

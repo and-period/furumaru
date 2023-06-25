@@ -1,22 +1,51 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
+import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 
-import { useNotificationStore } from '~/store'
-import { CreateNotificationRequest } from '~/types/api'
+import { useNotificationStore, usePromotionStore } from '~/store'
+import { CreateNotificationRequest, NotificationType } from '~/types/api'
 
 const router = useRouter()
 const notificationStore = useNotificationStore()
+const promotionStore = usePromotionStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
+
+const { promotions } = storeToRefs(promotionStore)
 
 const loading = ref<boolean>(false)
 const formData = ref<CreateNotificationRequest>({
+  type: NotificationType.OTHER,
+  targets: [],
   title: '',
   body: '',
-  targets: [],
-  public: false,
-  publishedAt: dayjs().unix()
+  note: '',
+  publishedAt: dayjs().unix(),
+  promotionId: ''
 })
+
+const fetchPromotions = async (): Promise<void> => {
+  try {
+    await promotionStore.fetchPromotions()
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+}
+
+const updateNotificationType = async (type: NotificationType): Promise<void> => {
+  loading.value = true
+  switch (type) {
+    case NotificationType.PROMOTION:
+      await fetchPromotions()
+      break
+    default:
+    // 何もしない
+  }
+  loading.value = false
+}
 
 const handleSubmit = async () => {
   try {
@@ -41,6 +70,8 @@ const handleSubmit = async () => {
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
+    :promotions="promotions"
+    @update:notification-type="updateNotificationType"
     @submit="handleSubmit"
   />
 </template>

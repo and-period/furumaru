@@ -3,7 +3,6 @@ package handler
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
@@ -56,19 +55,13 @@ func (h *handler) ListNotifications(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
-	onlyPublished, err := strconv.ParseBool(util.GetQuery(ctx, "onlyPublished", "false"))
-	if err != nil {
-		badRequest(ctx, err)
-		return
-	}
 
 	in := &messenger.ListNotificationsInput{
-		Limit:         limit,
-		Offset:        offset,
-		Since:         jst.ParseFromUnix(since),
-		Until:         jst.ParseFromUnix(until),
-		OnlyPublished: onlyPublished,
-		Orders:        orders,
+		Limit:  limit,
+		Offset: offset,
+		Since:  jst.ParseFromUnix(since),
+		Until:  jst.ParseFromUnix(until),
+		Orders: orders,
 	}
 	mnotifications, total, err := h.messenger.ListNotifications(ctx, in)
 	if err != nil {
@@ -166,19 +159,21 @@ func (h *handler) CreateNotification(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
-	targets := make([]entity.TargetType, len(req.Targets))
+	targets := make([]entity.NotificationTarget, len(req.Targets))
 	for i := range req.Targets {
-		targets[i] = entity.TargetType(req.Targets[i])
+		targets[i] = entity.NotificationTarget(req.Targets[i])
 	}
 
 	publishedAt := jst.ParseFromUnix(req.PublishedAt)
 	in := &messenger.CreateNotificationInput{
-		CreatedBy:   getAdminID(ctx),
+		Type:        entity.NotificationType(req.Type),
 		Title:       req.Title,
 		Body:        req.Body,
+		Note:        req.Note,
 		Targets:     targets,
-		Public:      req.Public,
 		PublishedAt: publishedAt,
+		CreatedBy:   getAdminID(ctx),
+		PromotionID: req.PromotionID,
 	}
 
 	notification, err := h.messenger.CreateNotification(ctx, in)
@@ -199,18 +194,18 @@ func (h *handler) UpdateNotifcation(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
-
-	targets := make([]entity.TargetType, len(req.Targets))
+	targets := make([]entity.NotificationTarget, len(req.Targets))
 	for i := range req.Targets {
-		targets[i] = entity.TargetType(req.Targets[i])
+		targets[i] = entity.NotificationTarget(req.Targets[i])
 	}
+
 	publishedAt := jst.ParseFromUnix(req.PublishedAt)
 	in := &messenger.UpdateNotificationInput{
 		NotificationID: util.GetParam(ctx, "notificationId"),
 		Title:          req.Title,
 		Body:           req.Body,
+		Note:           req.Note,
 		Targets:        targets,
-		Public:         req.Public,
 		PublishedAt:    publishedAt,
 		UpdatedBy:      getAdminID(ctx),
 	}

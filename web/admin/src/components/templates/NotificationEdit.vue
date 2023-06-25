@@ -4,8 +4,8 @@ import dayjs, { unix } from 'dayjs'
 import { PropType } from 'nuxt/dist/app/compat/capi'
 import { AlertType } from '~/lib/hooks'
 
-import { getErrorMessage, maxLength, required } from '~/lib/validations'
-import { NotificationResponse, NotificationTargetType, UpdateNotificationRequest } from '~/types/api'
+import { getErrorMessage, maxLength, maxValue, required } from '~/lib/validations'
+import { DiscountType, NotificationResponse, NotificationStatus, NotificationTarget, NotificationType, PromotionResponse, UpdateNotificationRequest } from '~/types/api'
 import { NotificationTime } from '~/types/props'
 
 const props = defineProps({
@@ -25,15 +25,28 @@ const props = defineProps({
     type: String,
     default: ''
   },
+  formData: {
+    type: Object as PropType<UpdateNotificationRequest>,
+    default: (): UpdateNotificationRequest => ({
+      targets: [],
+      title: '',
+      body: '',
+      note: '',
+      publishedAt: dayjs().unix()
+    })
+  },
   notification: {
     type: Object as PropType<NotificationResponse>,
     default: (): NotificationResponse => ({
       id: '',
+      type: NotificationType.UNKNOWN,
+      status: NotificationStatus.UNKNOWN,
+      targets: [],
       title: '',
       body: '',
-      targets: [],
-      public: false,
+      note: '',
       publishedAt: dayjs().unix(),
+      promotionId: '',
       createdBy: '',
       creatorName: '',
       createdAt: 0,
@@ -41,14 +54,20 @@ const props = defineProps({
       updatedAt: 0
     })
   },
-  formData: {
-    type: Object as PropType<UpdateNotificationRequest>,
-    default: (): UpdateNotificationRequest => ({
+  promotion: {
+    type: Object as PropType<PromotionResponse>,
+    default: (): PromotionResponse => ({
+      id: '',
       title: '',
-      body: '',
-      targets: [],
+      description: '',
       public: false,
-      publishedAt: dayjs().unix()
+      discountType: DiscountType.UNKNOWN,
+      discountRate: 0,
+      code: '',
+      startAt: 0,
+      endAt: 0,
+      createdAt: 0,
+      updatedAt: 0
     })
   }
 })
@@ -58,21 +77,24 @@ const emit = defineEmits<{
   (e: 'submit'): void
 }>()
 
-const statusList = [
-  { public: '公開', value: true },
-  { public: '非公開', value: false }
+const typeList = [
+  { title: 'システム関連', value: NotificationType.SYSTEM },
+  { title: 'ライブ関連', value: NotificationType.LIVE },
+  { title: 'セール関連', value: NotificationType.PROMOTION },
+  { title: 'その他', value: NotificationType.OTHER }
 ]
 const targetList = [
-  { title: 'ユーザー', value: NotificationTargetType.USERS },
-  { title: '生産者', value: NotificationTargetType.PRODUCERS },
-  { title: 'コーディネータ', value: NotificationTargetType.COORDINATORS }
+  { title: 'ユーザー', value: NotificationTarget.USERS },
+  { title: '生産者', value: NotificationTarget.PRODUCERS },
+  { title: 'コーディネータ', value: NotificationTarget.COORDINATORS },
+  { title: '管理者', value: NotificationTarget.ADMINISTRATORS }
 ]
 
 const formDataRules = computed(() => ({
-  title: { required, maxLength: maxLength(128) },
+  targets: { maxValue: maxValue(4) },
+  title: { maxLength: maxLength(128) },
   body: { required, maxLength: maxLength(2000) },
-  targets: {},
-  public: {}
+  note: { required, maxLength: maxLength(2000) }
 }))
 const timeDataRules = computed(() => ({
   publishedDate: {},
@@ -92,9 +114,46 @@ const timeDataValue = computed({
     formDataValue.value.publishedAt = publishedAt.unix()
   }
 })
+const notificationValue = computed((): NotificationResponse => {
+  return props.notification
+})
 
 const formDataValidate = useVuelidate(formDataRules, formDataValue)
 const timeDataValidate = useVuelidate(timeDataRules, timeDataValue)
+
+const getDateTime = (unixTime: number): string => {
+  if (unixTime === 0) {
+    return ''
+  }
+  return unix(unixTime).format('YYYY/MM/DD HH:mm')
+}
+
+const getPromotionTerm = (): string => {
+  if (!props.promotion) {
+    return ''
+  }
+
+  const startAt = getDateTime(props.promotion.startAt)
+  const endAt = getDateTime(props.promotion.endAt)
+  return `${startAt} ${endAt}`
+}
+
+const getPromotionDiscount = (): string => {
+  if (!props.promotion) {
+    return ''
+  }
+
+  switch (props.promotion.discountType) {
+    case DiscountType.AMOUNT:
+      return '￥' + props.promotion.discountRate
+    case DiscountType.RATE:
+      return props.promotion.discountRate + '％'
+    case DiscountType.FREE_SHIPPING:
+      return '送料無料'
+    default:
+      return ''
+  }
+}
 
 const onSubmit = async (): Promise<void> => {
   const formDataValid = await formDataValidate.value.$validate()
@@ -114,26 +173,46 @@ const onSubmit = async (): Promise<void> => {
     <v-form @submit.prevent="onSubmit">
       <v-card-text>
         <v-select
-          v-model="formDataValidate.public.$model"
-          :error-messages="getErrorMessage(formDataValidate.public.$errors)"
-          :items="statusList"
-          label="ステータス"
-          item-title="public"
+          v-model="notificationValue.type"
+          :items="typeList"
+          label="お知らせ種別"
+          item-title="title"
           item-value="value"
+          readonly
         />
+        <!-- セール情報 -->
+        <div v-if="notification.type === NotificationType.PROMOTION">
+          <v-table>
+            <tbody>
+              <tr>
+                <td>タイトル</td>
+                <td>{{ promotion?.title || '' }}</td>
+              </tr>
+              <tr>
+                <td>割引コード</td>
+                <td>{{ promotion?.code || '' }}</td>
+              </tr>
+              <tr>
+                <td>割引額</td>
+                <td>{{ getPromotionDiscount() }}</td>
+              </tr>
+              <tr>
+                <td>使用期間</td>
+                <td>{{ getPromotionTerm() }}</td>
+              </tr>
+            </tbody>
+          </v-table>
+        </div>
+        <!-- その他 -->
         <v-text-field
+          v-else
           v-model="formDataValidate.title.$model"
           :error-messages="getErrorMessage(formDataValidate.title.$errors)"
           label="タイトル"
           required
           maxlength="128"
         />
-        <v-textarea
-          v-model="formDataValidate.body.$model"
-          :error-messages="getErrorMessage(formDataValidate.body.$errors)"
-          label="本文"
-          maxlength="2000"
-        />
+        <!-- 共通部分 -->
         <v-autocomplete
           v-model="formDataValidate.targets.$model"
           :error-messages="getErrorMessage(formDataValidate.targets.$errors)"
@@ -143,8 +222,8 @@ const onSubmit = async (): Promise<void> => {
           item-title="title"
           item-value="value"
         />
-        <p class="text-h6">
-          投稿予約時間
+        <p class="text-subtitle-2 text-grey py-2">
+          投稿日時
         </p>
         <div class="d-flex align-center">
           <v-text-field
@@ -152,21 +231,31 @@ const onSubmit = async (): Promise<void> => {
             :error-messages="getErrorMessage(timeDataValidate.publishedDate.$errors)"
             type="date"
             class="mr-2"
-            required
             variant="outlined"
+            density="compact"
           />
           <v-text-field
             v-model="timeDataValidate.publishedTime.$model"
             :error-messages="getErrorMessage(timeDataValidate.publishedTime.$errors)"
             type="time"
-            required
             variant="outlined"
+            density="compact"
           />
-          <p class="text-h6 mb-6 ml-4">
-            〜
-          </p>
-          <v-spacer />
         </div>
+        <v-textarea
+          v-model="formDataValidate.body.$model"
+          :error-messages="getErrorMessage(formDataValidate.body.$errors)"
+          label="本文"
+          placeholder="ユーザーに公開される内容を記載してください"
+          maxlength="2000"
+        />
+        <v-textarea
+          v-model="formDataValidate.note.$model"
+          :error-messages="getErrorMessage(formDataValidate.note.$errors)"
+          label="備考"
+          placeholder="ユーザーには非公開にしたいコメント等を記載してください"
+          maxlength="2000"
+        />
       </v-card-text>
 
       <v-card-actions>
