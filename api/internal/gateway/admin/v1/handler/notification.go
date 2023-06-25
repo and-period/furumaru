@@ -121,7 +121,7 @@ func (h *handler) GetNotification(ctx *gin.Context) {
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
 		admin, err = h.getAdmin(ectx, notification.CreatedBy)
-		return nil
+		return
 	})
 	eg.Go(func() (err error) {
 		if notification.Type != mentity.NotificationTypePromotion {
