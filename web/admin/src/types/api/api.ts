@@ -284,6 +284,72 @@ export interface AuthResponse {
 /**
  * 
  * @export
+ * @interface AuthUserResponse
+ */
+export interface AuthUserResponse {
+    /**
+     * 管理者ID
+     * @type {string}
+     * @memberof AuthUserResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {AdminRole}
+     * @memberof AuthUserResponse
+     */
+    'role': AdminRole;
+    /**
+     * 表示名
+     * @type {string}
+     * @memberof AuthUserResponse
+     */
+    'username': string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof AuthUserResponse
+     */
+    'email': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof AuthUserResponse
+     */
+    'thumbnailUrl': string;
+    /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<AuthUserResponseThumbnailsInner>}
+     * @memberof AuthUserResponse
+     */
+    'thumbnails': Array<AuthUserResponseThumbnailsInner>;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface AuthUserResponseThumbnailsInner
+ */
+export interface AuthUserResponseThumbnailsInner {
+    /**
+     * リサイズ済みサムネイルURL
+     * @type {string}
+     * @memberof AuthUserResponseThumbnailsInner
+     */
+    'url': string;
+    /**
+     * 
+     * @type {ImageSize}
+     * @memberof AuthUserResponseThumbnailsInner
+     */
+    'size': ImageSize;
+}
+
+
+/**
+ * 
+ * @export
  * @interface CategoriesResponse
  */
 export interface CategoriesResponse {
@@ -707,10 +773,10 @@ export interface CoordinatorResponse {
     'thumbnailUrl': string;
     /**
      * リサイズ済みサムネイルURL一覧
-     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
+     * @type {Array<AuthUserResponseThumbnailsInner>}
      * @memberof CoordinatorResponse
      */
-    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
+    'thumbnails': Array<AuthUserResponseThumbnailsInner>;
     /**
      * ヘッダー画像URL
      * @type {string}
@@ -897,10 +963,10 @@ export interface CoordinatorsResponseCoordinatorsInner {
     'thumbnailUrl': string;
     /**
      * リサイズ済みサムネイルURL一覧
-     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
+     * @type {Array<AuthUserResponseThumbnailsInner>}
      * @memberof CoordinatorsResponseCoordinatorsInner
      */
-    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
+    'thumbnails': Array<AuthUserResponseThumbnailsInner>;
     /**
      * ヘッダー画像URL
      * @type {string}
@@ -974,27 +1040,6 @@ export interface CoordinatorsResponseCoordinatorsInnerHeadersInner {
      * 
      * @type {ImageSize}
      * @memberof CoordinatorsResponseCoordinatorsInnerHeadersInner
-     */
-    'size': ImageSize;
-}
-
-
-/**
- * 
- * @export
- * @interface CoordinatorsResponseCoordinatorsInnerThumbnailsInner
- */
-export interface CoordinatorsResponseCoordinatorsInnerThumbnailsInner {
-    /**
-     * リサイズ済みサムネイルURL
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInnerThumbnailsInner
-     */
-    'url': string;
-    /**
-     * 
-     * @type {ImageSize}
-     * @memberof CoordinatorsResponseCoordinatorsInnerThumbnailsInner
      */
     'size': ImageSize;
 }
@@ -3427,10 +3472,10 @@ export interface ProducerResponse {
     'thumbnailUrl': string;
     /**
      * リサイズ済みサムネイルURL一覧
-     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
+     * @type {Array<AuthUserResponseThumbnailsInner>}
      * @memberof ProducerResponse
      */
-    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
+    'thumbnails': Array<AuthUserResponseThumbnailsInner>;
     /**
      * ヘッダー画像URL
      * @type {string}
@@ -3617,10 +3662,10 @@ export interface ProducersResponseProducersInner {
     'thumbnailUrl': string;
     /**
      * リサイズ済みサムネイルURL一覧
-     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
+     * @type {Array<AuthUserResponseThumbnailsInner>}
      * @memberof ProducersResponseProducersInner
      */
-    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
+    'thumbnails': Array<AuthUserResponseThumbnailsInner>;
     /**
      * ヘッダー画像URL
      * @type {string}
@@ -7037,6 +7082,40 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @summary 管理者情報取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetAuthUser: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/auth/user`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary トークン更新
          * @param {RefreshAuthTokenRequest} body 
          * @param {*} [options] Override http request option.
@@ -7331,6 +7410,16 @@ export const AuthApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary 管理者情報取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetAuthUser(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthUserResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetAuthUser(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary トークン更新
          * @param {RefreshAuthTokenRequest} body 
          * @param {*} [options] Override http request option.
@@ -7426,6 +7515,15 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
+         * @summary 管理者情報取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetAuthUser(options?: any): AxiosPromise<AuthUserResponse> {
+            return localVarFp.v1GetAuthUser(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary トークン更新
          * @param {RefreshAuthTokenRequest} body 
          * @param {*} [options] Override http request option.
@@ -7512,6 +7610,17 @@ export class AuthApi extends BaseAPI {
      */
     public v1GetAuth(options?: AxiosRequestConfig) {
         return AuthApiFp(this.configuration).v1GetAuth(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 管理者情報取得
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public v1GetAuthUser(options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1GetAuthUser(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

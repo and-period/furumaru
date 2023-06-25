@@ -30,6 +30,9 @@ export default defineNuxtRouteMiddleware(async (to, _) => {
     navigateTo('/signin')
   })
 
+  // ログインユーザーの情報取得
+  store.getUser()
+
   // Push通知用のDeviceToken取得/登録
   store
     .getDeviceToken()

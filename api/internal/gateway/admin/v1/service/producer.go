@@ -52,6 +52,19 @@ func NewProducer(producer *entity.Producer, coordinator *Coordinator) *Producer 
 	}
 }
 
+func (p *Producer) AuthUser() *AuthUser {
+	return &AuthUser{
+		AuthUser: response.AuthUser{
+			AdminID:      p.ID,
+			Role:         AdminRoleProducer.Response(),
+			Username:     p.Username,
+			Email:        p.Email,
+			ThumbnailURL: p.ThumbnailURL,
+			Thumbnails:   p.Thumbnails,
+		},
+	}
+}
+
 func (p *Producer) Response() *response.Producer {
 	return &p.Producer
 }

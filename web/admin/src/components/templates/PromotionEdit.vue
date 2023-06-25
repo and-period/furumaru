@@ -110,6 +110,16 @@ const promotionValue = computed({
 const formDataValidate = useVuelidate(formDataRules, formDataValue)
 const timeDataValidate = useVuelidate(timeDataRules, timeDataValue)
 
+const onChangeStartAt = (): void => {
+  const startAt = dayjs(`${timeDataValue.value.startDate} ${timeDataValue.value.startTime}`)
+  formDataValue.value.startAt = startAt.unix()
+}
+
+const onChangeEndAt = (): void => {
+  const endAt = dayjs(`${timeDataValue.value.endDate} ${timeDataValue.value.endTime}`)
+  formDataValue.value.endAt = endAt.unix()
+}
+
 const getDiscountErrorMessage = (): string => {
   switch (formDataValue.value.discountType) {
     case 1:
@@ -192,6 +202,7 @@ const onSubmit = async (): Promise<void> => {
             variant="outlined"
             density="compact"
             class="mr-md-2"
+            @update:model-value="onChangeStartAt"
           />
           <v-text-field
             v-model="timeDataValidate.startTime.$model"
@@ -199,6 +210,7 @@ const onSubmit = async (): Promise<void> => {
             type="time"
             variant="outlined"
             density="compact"
+            @update:model-value="onChangeStartAt"
           />
           <p class="text-subtitle-2 mx-4 pt-md-3 mb-4 pb-md-6">
             〜
@@ -210,6 +222,7 @@ const onSubmit = async (): Promise<void> => {
             variant="outlined"
             density="compact"
             class="mr-md-2"
+            @update:model-value="onChangeEndAt"
           />
           <v-text-field
             v-model="timeDataValidate.endTime.$model"
@@ -217,6 +230,7 @@ const onSubmit = async (): Promise<void> => {
             type="time"
             variant="outlined"
             density="compact"
+            @update:model-value="onChangeEndAt"
           />
         </div>
         <v-switch v-model="formDataValue.public" label="クーポンを有効にする" color="primary" />

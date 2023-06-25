@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
+import { validateLocaleAndSetLanguage } from 'typescript'
 
 import { AlertType } from '~/lib/hooks'
-import { getErrorMessage, maxLength, maxValue, required } from '~/lib/validations'
-import { CreateNotificationRequest, DiscountType, NotificationTarget, NotificationType, PromotionApi, PromotionsResponsePromotionsInner } from '~/types/api'
+import { getErrorMessage, maxLength, required } from '~/lib/validations'
+import { CreateNotificationRequest, DiscountType, NotificationTarget, NotificationType, PromotionsResponsePromotionsInner } from '~/types/api'
 import { NotificationTime } from '~/types/props'
 
 const props = defineProps({
@@ -65,7 +66,7 @@ const selectedPromotion = ref<PromotionsResponsePromotionsInner>()
 
 const formDataRules = computed(() => ({
   type: { required },
-  targets: { maxValue: maxValue(4) },
+  targets: { },
   title: { maxLength: maxLength(128) },
   body: { required, maxLength: maxLength(2000) },
   note: { required, maxLength: maxLength(2000) },
@@ -92,6 +93,11 @@ const timeDataValue = computed({
 
 const formDataValidate = useVuelidate(formDataRules, formDataValue)
 const timeDataValidate = useVuelidate(timeDataRules, timeDataValue)
+
+const onChangePublishedAt = (): void => {
+  const publishedAt = dayjs(`${timeDataValue.value.publishedDate} ${timeDataValue.value.publishedTime}`)
+  formDataValue.value.publishedAt = publishedAt.unix()
+}
 
 const getDateTime = (unixTime: number): string => {
   if (unixTime === 0) {
@@ -224,6 +230,7 @@ const onSubmit = async (): Promise<void> => {
             class="mr-2"
             variant="outlined"
             density="compact"
+            @update:model-value="onChangePublishedAt"
           />
           <v-text-field
             v-model="timeDataValidate.publishedTime.$model"
@@ -231,6 +238,7 @@ const onSubmit = async (): Promise<void> => {
             type="time"
             variant="outlined"
             density="compact"
+            @update:model-value="onChangePublishedAt"
           />
         </div>
         <v-textarea

@@ -19,6 +19,10 @@ type Auth struct {
 	response.Auth
 }
 
+type AuthUser struct {
+	response.AuthUser
+}
+
 func NewAdminRole(role entity.AdminRole) AdminRole {
 	switch role {
 	case entity.AdminRoleAdministrator:
@@ -68,4 +72,8 @@ func NewAuth(auth *entity.AdminAuth) *Auth {
 
 func (a *Auth) Response() *response.Auth {
 	return &a.Auth
+}
+
+func (a *AuthUser) Response() *response.AuthUser {
+	return &a.AuthUser
 }

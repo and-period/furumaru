@@ -47,6 +47,19 @@ func NewCoordinator(coordinator *entity.Coordinator) *Coordinator {
 	}
 }
 
+func (c *Coordinator) AuthUser() *AuthUser {
+	return &AuthUser{
+		AuthUser: response.AuthUser{
+			AdminID:      c.ID,
+			Role:         AdminRoleCoordinator.Response(),
+			Username:     c.Username,
+			Email:        c.Email,
+			ThumbnailURL: c.ThumbnailURL,
+			Thumbnails:   c.Thumbnails,
+		},
+	}
+}
+
 func (c *Coordinator) Response() *response.Coordinator {
 	return &c.Coordinator
 }

@@ -354,6 +354,10 @@ func newMessengerService(p *params) (messenger.Service, error) {
 	if err != nil {
 		return nil, err
 	}
+	store, err := newStoreService(p, nil, nil, nil)
+	if err != nil {
+		return nil, err
+	}
 	params := &messengersrv.Params{
 		WaitGroup:   p.waitGroup,
 		Producer:    p.messengerQueue,
@@ -361,6 +365,7 @@ func newMessengerService(p *params) (messenger.Service, error) {
 		UserWebURL:  p.userWebURL,
 		Database:    messengerdb.NewDatabase(dbParams),
 		User:        user,
+		Store:       store,
 	}
 	return messengersrv.NewService(params, messengersrv.WithLogger(p.logger)), nil
 }
