@@ -42,6 +42,7 @@ type Admin interface {
 	MultiGet(ctx context.Context, adminIDs []string, fields ...string) (entity.Admins, error)
 	Get(ctx context.Context, adminID string, fields ...string) (*entity.Admin, error)
 	GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.Admin, error)
+	GetByEmail(ctx context.Context, email string, fields ...string) (*entity.Admin, error)
 	UpdateEmail(ctx context.Context, adminID, email string) error
 	UpdateDevice(ctx context.Context, adminID, device string) error
 	UpdateSignInAt(ctx context.Context, adminID string) error

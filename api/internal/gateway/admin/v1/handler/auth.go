@@ -21,6 +21,8 @@ func (h *handler) authRoutes(rg *gin.RouterGroup) {
 	rg.PATCH("/email", h.authentication, h.UpdateAuthEmail)
 	rg.POST("/email/verified", h.VerifyAuthEmail)
 	rg.PATCH("/password", h.authentication, h.UpdateAuthPassword)
+	rg.POST("/forgot-password", h.ForgotAuthPassword)
+	rg.POST("/forgot-password/verified", h.ResetAuthPassword)
 	rg.GET("/user", h.authentication, h.GetAuthUser)
 }
 
@@ -225,6 +227,45 @@ func (h *handler) UpdateAuthPassword(ctx *gin.Context) {
 		PasswordConfirmation: req.PasswordConfirmation,
 	}
 	if err := h.user.UpdateAdminPassword(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) ForgotAuthPassword(ctx *gin.Context) {
+	req := &request.ForgotAuthPasswordRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	in := &user.ForgotAdminPasswordInput{
+		Email: req.Email,
+	}
+	if err := h.user.ForgotAdminPassword(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) ResetAuthPassword(ctx *gin.Context) {
+	req := &request.ResetAuthPasswordRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	in := &user.VerifyAdminPasswordInput{
+		Email:                req.Email,
+		VerifyCode:           req.VerifyCode,
+		NewPassword:          req.Password,
+		PasswordConfirmation: req.PasswordConfirmation,
+	}
+	if err := h.user.VerifyAdminPassword(ctx, in); err != nil {
 		httpError(ctx, err)
 		return
 	}

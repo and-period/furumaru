@@ -26,3 +26,13 @@ type UpdateAuthPasswordRequest struct {
 	NewPassword          string `json:"newPassword,omitempty"`          // 新しいパスワード
 	PasswordConfirmation string `json:"passwordConfirmation,omitempty"` // パスワード (確認用)
 }
+type ForgotAuthPasswordRequest struct {
+	Email string `json:"email,omitempty"` // メールアドレス
+}
+
+type ResetAuthPasswordRequest struct {
+	Email                string `json:"email,omitempty"`                // メールアドレス
+	VerifyCode           string `json:"verifyCode,omitempty"`           // 検証コード
+	Password             string `json:"password,omitempty"`             // パスワード
+	PasswordConfirmation string `json:"passwordConfirmation,omitempty"` // パスワード (確認用)
+}

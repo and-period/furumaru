@@ -41,6 +41,17 @@ type UpdateAdminPasswordInput struct {
 	PasswordConfirmation string `validate:"required,eqfield=NewPassword"`
 }
 
+type ForgotAdminPasswordInput struct {
+	Email string `validate:"required,max=256,email"`
+}
+
+type VerifyAdminPasswordInput struct {
+	Email                string `validate:"required,max=256,email"`
+	VerifyCode           string `validate:"required"`
+	NewPassword          string `validate:"min=8,max=32,password"`
+	PasswordConfirmation string `validate:"required,eqfield=NewPassword"`
+}
+
 type MultiGetAdminsInput struct {
 	AdminIDs []string `validate:"omitempty,dive,required"`
 }

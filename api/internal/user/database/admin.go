@@ -62,6 +62,19 @@ func (a *admin) GetByCognitoID(
 	return admin, nil
 }
 
+func (a *admin) GetByEmail(ctx context.Context, email string, fields ...string) (*entity.Admin, error) {
+	var admin *entity.Admin
+
+	stmt := a.db.Statement(ctx, a.db.DB, adminTable, fields...).
+		Where("email = ?", email)
+
+	if err := stmt.First(&admin).Error; err != nil {
+		return nil, exception.InternalError(err)
+	}
+	admin.Fill()
+	return admin, nil
+}
+
 func (a *admin) UpdateEmail(ctx context.Context, adminID, email string) error {
 	err := a.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := a.get(ctx, tx, adminID); err != nil {
