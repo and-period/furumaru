@@ -25,6 +25,23 @@ func NewContactCategory(db *database.Client) ContactCategory {
 	}
 }
 
+func (c *contactCategory) List(
+	ctx context.Context, params *ListContactCategoriesParams, fields ...string,
+) (entity.ContactCategories, error) {
+	var categories entity.ContactCategories
+
+	stmt := c.db.Statement(ctx, c.db.DB, contactCategoryTable, fields...)
+	if params.Limit > 0 {
+		stmt = stmt.Limit(params.Limit)
+	}
+	if params.Offset > 0 {
+		stmt = stmt.Offset(params.Offset)
+	}
+
+	err := stmt.Find(&categories).Error
+	return categories, exception.InternalError(err)
+}
+
 func (c *contactCategory) Get(ctx context.Context, categoryID string, fields ...string) (*entity.ContactCategory, error) {
 	category, err := c.get(ctx, c.db.DB, categoryID, fields...)
 	return category, exception.InternalError(err)
