@@ -120,8 +120,8 @@ const getStatus = (status: NotificationStatus): string => {
       return '投稿前'
     case NotificationStatus.NOTIFIED:
       return '投稿済み'
-      default:
-        return '不明'
+    default:
+      return '不明'
   }
 }
 
