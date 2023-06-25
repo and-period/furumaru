@@ -97,6 +97,20 @@ type CreateContactInput struct {
 	Note        string `validate:"max=2000"`
 }
 
+type UpdateContactInput struct {
+	ContactID   string               `validate:"required"`
+	Title       string               `validate:"required,max=128"`
+	Content     string               `validate:"required,max=2000"`
+	Username    string               `validate:"required,max=128"`
+	UserID      string               `validate:""`
+	CategoryID  string               `validate:"required,max=128"`
+	Email       string               `validate:"required,max=256,email"`
+	PhoneNumber string               `validate:"required,min=12,max=18,phone_number"`
+	Status      entity.ContactStatus `validate:"required"`
+	ResponderID string               `validate:""`
+	Note        string               `validate:"max=2000"`
+}
+
 type GetContactCategoryInput struct {
 	CategoryID string `validate:"required"`
 }
