@@ -220,6 +220,25 @@ func (n *Notification) FillJSON() error {
 	return nil
 }
 
+func (ns Notifications) PromotionIDs() []string {
+	set := set.NewEmpty[string](len(ns))
+	for i := range ns {
+		if ns[i].Type != NotificationTypePromotion {
+			continue
+		}
+		set.Add(ns[i].PromotionID)
+	}
+	return set.Slice()
+}
+
+func (ns Notifications) AdminIDs() []string {
+	set := set.NewEmpty[string](len(ns) * 2)
+	for i := range ns {
+		set.Add(ns[i].CreatedBy, ns[i].UpdatedBy)
+	}
+	return set.Slice()
+}
+
 func (ns Notifications) Fill(now time.Time) error {
 	for i := range ns {
 		if err := ns[i].Fill(now); err != nil {

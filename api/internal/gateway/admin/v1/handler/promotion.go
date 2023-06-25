@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -178,4 +179,29 @@ func (h *handler) DeletePromotion(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) multiGetPromotions(ctx context.Context, promotionIDs []string) (service.Promotions, error) {
+	if len(promotionIDs) == 0 {
+		return service.Promotions{}, nil
+	}
+	in := &store.MultiGetPromotionsInput{
+		PromotionIDs: promotionIDs,
+	}
+	promotions, err := h.store.MultiGetPromotions(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewPromotions(promotions), nil
+}
+
+func (h *handler) getPromotion(ctx context.Context, promotionID string) (*service.Promotion, error) {
+	in := &store.GetPromotionInput{
+		PromotionID: promotionID,
+	}
+	promotion, err := h.store.GetPromotion(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewPromotion(promotion), nil
 }

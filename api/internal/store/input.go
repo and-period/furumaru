@@ -293,6 +293,10 @@ type ListPromotionsOrder struct {
 	OrderByASC bool                    `validate:""`
 }
 
+type MultiGetPromotionsInput struct {
+	PromotionIDs []string `validate:"omitempty,dive,required"`
+}
+
 type GetPromotionInput struct {
 	PromotionID string `validate:"required"`
 }

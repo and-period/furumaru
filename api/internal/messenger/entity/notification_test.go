@@ -413,6 +413,122 @@ func TestNotification_FillJSON(t *testing.T) {
 	}
 }
 
+func TestNotifications_AdminIDs(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+	tests := []struct {
+		name          string
+		notifications Notifications
+		expect        []string
+		hasErr        bool
+	}{
+		{
+			name: "success",
+			notifications: Notifications{
+				{
+					ID:          "notification-id01",
+					Title:       "title",
+					Body:        "<html>本文<html>",
+					Type:        NotificationTypeSystem,
+					PromotionID: "invalid-id",
+					TargetsJSON: datatypes.JSON([]byte(`[1,2,3]`)),
+					PublishedAt: now.AddDate(0, 0, -1),
+					CreatedBy:   "admin-id01",
+					UpdatedBy:   "admin-id02",
+				},
+				{
+					ID:          "notification-id02",
+					Title:       "title",
+					Body:        "<html>本文<html>",
+					Type:        NotificationTypePromotion,
+					PromotionID: "promotion-id",
+					TargetsJSON: datatypes.JSON(nil),
+					PublishedAt: now.AddDate(0, 0, -1),
+					CreatedBy:   "admin-id02",
+					UpdatedBy:   "admin-id02",
+				},
+				{
+					ID:          "notification-id03",
+					Title:       "title",
+					Body:        "<html>本文<html>",
+					Type:        NotificationTypePromotion,
+					PromotionID: "promotion-id",
+					TargetsJSON: datatypes.JSON(nil),
+					PublishedAt: now.AddDate(0, 0, -1),
+					CreatedBy:   "admin-id03",
+					UpdatedBy:   "admin-id03",
+				},
+			},
+			expect: []string{"admin-id01", "admin-id02", "admin-id03"},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.notifications.AdminIDs()
+			assert.ElementsMatch(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestNotifications_PromotionIDs(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+	tests := []struct {
+		name          string
+		notifications Notifications
+		expect        []string
+		hasErr        bool
+	}{
+		{
+			name: "success",
+			notifications: Notifications{
+				{
+					ID:          "notification-id01",
+					Title:       "title",
+					Body:        "<html>本文<html>",
+					Type:        NotificationTypeSystem,
+					PromotionID: "invalid-id",
+					TargetsJSON: datatypes.JSON([]byte(`[1,2,3]`)),
+					PublishedAt: now.AddDate(0, 0, -1),
+				},
+				{
+					ID:          "notification-id02",
+					Title:       "title",
+					Body:        "<html>本文<html>",
+					Type:        NotificationTypePromotion,
+					PromotionID: "promotion-id",
+					TargetsJSON: datatypes.JSON(nil),
+					PublishedAt: now.AddDate(0, 0, -1),
+				},
+				{
+					ID:          "notification-id03",
+					Title:       "title",
+					Body:        "<html>本文<html>",
+					Type:        NotificationTypePromotion,
+					PromotionID: "promotion-id",
+					TargetsJSON: datatypes.JSON(nil),
+					PublishedAt: now.AddDate(0, 0, -1),
+				},
+			},
+			expect: []string{"promotion-id"},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.notifications.PromotionIDs()
+			assert.ElementsMatch(t, tt.expect, actual)
+		})
+	}
+}
+
 func TestNotifications_Fill(t *testing.T) {
 	t.Parallel()
 
