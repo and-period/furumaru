@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
@@ -15,6 +16,7 @@ func (h *handler) authRoutes(rg *gin.RouterGroup) {
 	rg.GET("", h.GetAuth)
 	rg.POST("", h.SignIn)
 	rg.DELETE("", h.SignOut)
+	rg.GET("/user", h.GetAuthUser)
 	rg.POST("/refresh-token", h.RefreshAuthToken)
 	rg.POST("/device", h.authentication, h.RegisterDevice)
 	rg.PATCH("/email", h.authentication, h.UpdateAuthEmail)
@@ -40,6 +42,37 @@ func (h *handler) GetAuth(ctx *gin.Context) {
 
 	res := &response.AuthResponse{
 		Auth: service.NewAuth(auth).Response(),
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+type authUser interface {
+	AuthUser() *service.AuthUser
+}
+
+func (h *handler) GetAuthUser(ctx *gin.Context) {
+	adminID := getAdminID(ctx)
+	var (
+		auth authUser
+		err  error
+	)
+	switch getRole(ctx) {
+	case service.AdminRoleAdministrator:
+		auth, err = h.getAdministrator(ctx, adminID)
+	case service.AdminRoleCoordinator:
+		auth, err = h.getCoordinator(ctx, adminID)
+	case service.AdminRoleProducer:
+		auth, err = h.getProducer(ctx, adminID)
+	default:
+		forbidden(ctx, errors.New("handler: unknown admin role"))
+		return
+	}
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+	res := &response.AuthUserResponse{
+		AuthUser: auth.AuthUser().Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

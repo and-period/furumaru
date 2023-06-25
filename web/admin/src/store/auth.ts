@@ -7,6 +7,7 @@ import { useCommonStore } from './common'
 import { messaging } from '~/plugins/firebase'
 import {
   AuthResponse,
+  AuthUserResponse,
   SignInRequest,
   UpdateAuthEmailRequest,
   UpdateAuthPasswordRequest,
@@ -18,13 +19,14 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     redirectPath: '/',
     isAuthenticated: false,
-    user: undefined as AuthResponse | undefined,
+    auth: undefined as AuthResponse | undefined,
+    user: undefined as AuthUserResponse | undefined,
     expiredAt: undefined as Dayjs | undefined
   }),
 
   getters: {
     accessToken (state): string | undefined {
-      return state.user?.accessToken
+      return state.auth?.accessToken
     }
   },
 
@@ -34,10 +36,10 @@ export const useAuthStore = defineStore('auth', {
         const res = await apiClient.authApi().v1SignIn(payload)
         this.setExpiredAt(res.data)
         this.isAuthenticated = true
-        this.user = res.data
+        this.auth = res.data
 
         const cookies = new Cookies()
-        cookies.set('refreshToken', this.user.refreshToken, { secure: true })
+        cookies.set('refreshToken', this.auth.refreshToken, { secure: true })
 
         // Push通知の許可設定
         this.getDeviceToken()
@@ -58,6 +60,15 @@ export const useAuthStore = defineStore('auth', {
         return this.redirectPath
       } catch (err) {
         return this.errorHandler(err, { 401: 'ユーザー名またはパスワードが違います。' })
+      }
+    },
+
+    async getUser (): Promise<void> {
+      try {
+        const res = await apiClient.authApi().v1GetAuthUser()
+        this.user = res.data
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
@@ -110,8 +121,8 @@ export const useAuthStore = defineStore('auth', {
         })
         this.setExpiredAt(res.data)
         this.isAuthenticated = true
-        this.user = res.data
-        this.user.refreshToken = refreshToken
+        this.auth = res.data
+        this.auth.refreshToken = refreshToken
       } catch (err) {
         const cookies = new Cookies()
         cookies.remove('refreshToken')
@@ -155,8 +166,8 @@ export const useAuthStore = defineStore('auth', {
       this.redirectPath = payload
     },
 
-    setExpiredAt (user: AuthResponse) {
-      this.expiredAt = dayjs().add(user.expiresIn, 'second')
+    setExpiredAt (auth: AuthResponse) {
+      this.expiredAt = dayjs().add(auth.expiresIn, 'second')
     },
 
     logout () {

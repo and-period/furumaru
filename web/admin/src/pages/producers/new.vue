@@ -12,7 +12,7 @@ const producerStore = useProducerStore()
 const searchAddress = useSearchAddress()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const { user } = storeToRefs(authStore)
+const { auth } = storeToRefs(authStore)
 
 const loading = ref<boolean>(false)
 const formData = ref<CreateProducerRequest>({
@@ -63,7 +63,7 @@ const handleSubmit = async (): Promise<void> => {
     loading.value = true
     const req: CreateProducerRequest = {
       ...formData.value,
-      coordinatorId: user.value?.adminId || '',
+      coordinatorId: auth.value?.adminId || '',
       phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber)
     }
     await producerStore.createProducer(req)

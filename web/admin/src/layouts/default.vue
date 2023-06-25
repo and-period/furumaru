@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-import { mdiHome, mdiMenu, mdiOrderBoolAscendingVariant, mdiCart, mdiAntenna, mdiAccountDetails, mdiForum, mdiBellRing, mdiCash100, mdiAccount, mdiAccountStarOutline, mdiCog, mdiBell } from '@mdi/js'
-import { useCommonStore, useMessageStore } from '~/store'
+import { mdiHome, mdiMenu, mdiOrderBoolAscendingVariant, mdiCart, mdiAntenna, mdiAccountDetails, mdiForum, mdiBellRing, mdiCash100, mdiAccount, mdiCog, mdiBell } from '@mdi/js'
+import { storeToRefs } from 'pinia'
+import { getResizedImages } from '~/lib/helpers'
+import { useAuthStore, useCommonStore, useMessageStore } from '~/store'
 
 interface NavigationDrawerItem {
   to: string
@@ -10,9 +12,11 @@ interface NavigationDrawerItem {
 
 const drawer = ref<boolean>(true)
 const router = useRouter()
-
+const authStore = useAuthStore()
 const commonStore = useCommonStore()
 const messageStore = useMessageStore()
+
+const { user } = storeToRefs(authStore)
 
 const snackbars = computed(() => {
   return commonStore.snackbars.filter(item => item.isOpen)
@@ -91,9 +95,17 @@ const navigationDrawerSettingsList: NavigationDrawerItem[] = [
   }
 ]
 
+const getImages = (): string => {
+  if (!user.value?.thumbnails) {
+    return ''
+  }
+  return getResizedImages(user.value.thumbnails)
+}
+
 const handleClickNavIcon = () => {
   drawer.value = !drawer.value
 }
+
 const handleClickMessage = () => {
   router.push('/messages')
 }
@@ -129,6 +141,24 @@ const calcStyle = (i: number) => {
 
     <v-navigation-drawer v-model="drawer">
       <v-list>
+        <v-list-item exact>
+          <template #prepend>
+            <v-avatar v-if="user?.thumbnailUrl">
+              <v-img cover :src="user?.thumbnailUrl" :srcset="getImages()" />
+            </v-avatar>
+            <v-icon v-else :icon="mdiAccount" />
+          </template>
+
+          <div>{{ user?.username || '' }}</div>
+          <div class="text-caption text-grey">
+            {{ user?.email || '' }}
+          </div>
+        </v-list-item>
+      </v-list>
+
+      <v-divider />
+
+      <v-list>
         <v-list-item
           :to="navigationDrawerHomeItem.to"
           exact
@@ -142,6 +172,7 @@ const calcStyle = (i: number) => {
       </v-list>
 
       <v-divider />
+
       <v-list>
         <v-list-item
           v-for="(item, i) in navigationDrawerList"

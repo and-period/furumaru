@@ -38,18 +38,21 @@ authUserResponse:
     username:
       type: string
       description: 表示名
+    email:
+      type: string
+      description: メールアドレス
     thumbnailUrl:
       type: string
       description: サムネイルURL
   required:
   - id
+  - username
   - email
-  - phoneNumber
   - thumbnailUrl
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
+    username: '&.購入者'
     email: 'test-user@and-period.jp'
-    phoneNumber: '+819012345678'
     thumbnailUrl: 'https://and-period.jp/thumbnail.png'
 createAuthResponse:
   type: object

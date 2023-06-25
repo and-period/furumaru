@@ -121,6 +121,11 @@ const notificationValue = computed((): NotificationResponse => {
 const formDataValidate = useVuelidate(formDataRules, formDataValue)
 const timeDataValidate = useVuelidate(timeDataRules, timeDataValue)
 
+const onChangePublishedAt = (): void => {
+  const publishedAt = dayjs(`${timeDataValue.value.publishedDate} ${timeDataValue.value.publishedTime}`)
+  formDataValue.value.publishedAt = publishedAt.unix()
+}
+
 const getDateTime = (unixTime: number): string => {
   if (unixTime === 0) {
     return ''
@@ -233,6 +238,7 @@ const onSubmit = async (): Promise<void> => {
             class="mr-2"
             variant="outlined"
             density="compact"
+            @update:model-value="onChangePublishedAt"
           />
           <v-text-field
             v-model="timeDataValidate.publishedTime.$model"
@@ -240,6 +246,7 @@ const onSubmit = async (): Promise<void> => {
             type="time"
             variant="outlined"
             density="compact"
+            @update:model-value="onChangePublishedAt"
           />
         </div>
         <v-textarea
