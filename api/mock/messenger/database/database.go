@@ -141,6 +141,26 @@ func (mr *MockContactCategoryMockRecorder) Get(ctx, categoryID interface{}, fiel
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockContactCategory)(nil).Get), varargs...)
 }
 
+// List mocks base method.
+func (m *MockContactCategory) List(ctx context.Context, params *database.ListContactCategoriesParams, fields ...string) (entity.ContactCategories, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, params}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "List", varargs...)
+	ret0, _ := ret[0].(entity.ContactCategories)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockContactCategoryMockRecorder) List(ctx, params interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, params}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockContactCategory)(nil).List), varargs...)
+}
+
 // MockThread is a mock of Thread interface.
 type MockThread struct {
 	ctrl     *gomock.Controller
