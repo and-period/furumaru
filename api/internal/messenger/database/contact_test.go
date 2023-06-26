@@ -152,7 +152,7 @@ func TestContact_Count(t *testing.T) {
 			tt.setup(ctx, t, db)
 
 			db := &contact{db: db, now: now}
-			actual, err := db.Count(ctx, tt.args.params)
+			actual, err := db.Count(ctx)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.total, actual)
 		})
