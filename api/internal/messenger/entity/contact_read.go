@@ -3,6 +3,7 @@ package entity
 import (
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 )
 
@@ -30,16 +31,23 @@ type ContactReads []*ContactRead
 type NewContactReadParams struct {
 	ContactID string
 	UserType  ContactUserType
+	UserID    string
 	Read      bool
 }
 
-func NewContactRead(params *NewContactReadParams) *ContactRead {
+func NewContactRead(params *NewContactReadParams) (*ContactRead, error) {
+	if params.UserType != ContactUserTypeGuest {
+		if params.UserID == "" {
+			return &ContactRead{}, exception.ErrInvalidArgument
+		}
+	}
 	return &ContactRead{
 		ID:        uuid.Base58Encode(uuid.New()),
+		UserID:    params.UserID,
 		ContactID: params.ContactID,
 		UserType:  params.UserType,
 		Read:      params.Read,
-	}
+	}, nil
 }
 
 func (c *ContactRead) Fill(userID string) {

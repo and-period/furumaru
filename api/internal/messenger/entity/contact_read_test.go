@@ -3,46 +3,62 @@ package entity
 import (
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestContactRead(t *testing.T) {
 	t.Parallel()
-	type params struct {
-		contactID string
-		userType  int32
-		content   string
-	}
 	tests := []struct {
-		name   string
-		params *NewContactReadParams
-		expect *ContactRead
+		name      string
+		params    *NewContactReadParams
+		expect    *ContactRead
+		expectErr error
 	}{
 		{
 			name: "success guest",
 			params: &NewContactReadParams{
 				ContactID: "contact-id",
 				UserType:  ContactUserTypeGuest,
+				UserID:    "",
 				Read:      false,
 			},
 			expect: &ContactRead{
+				ID:        "", //ignore
 				ContactID: "contact-id",
 				UserType:  ContactUserTypeGuest,
+				UserID:    "",
 				Read:      false,
 			},
+			expectErr: nil,
 		},
 		{
 			name: "success admin",
 			params: &NewContactReadParams{
 				ContactID: "contact-id",
 				UserType:  ContactUserTypeAdmin,
+				UserID:    "admin-id",
 				Read:      false,
 			},
 			expect: &ContactRead{
+				ID:        "", //ignore
 				ContactID: "contact-id",
 				UserType:  ContactUserTypeAdmin,
+				UserID:    "admin-id",
 				Read:      false,
 			},
+			expectErr: nil,
+		},
+		{
+			name: "error invalid argument",
+			params: &NewContactReadParams{
+				ContactID: "contact-id",
+				UserType:  ContactUserTypeAdmin,
+				UserID:    "",
+				Read:      false,
+			},
+			expect:    &ContactRead{},
+			expectErr: exception.ErrInvalidArgument,
 		},
 	}
 
@@ -50,9 +66,10 @@ func TestContactRead(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewContactRead(tt.params)
+			actual, err := NewContactRead(tt.params)
 			actual.ID = "" // ignore
 			assert.Equal(t, tt.expect, actual)
+			assert.Equal(t, tt.expectErr, err)
 		})
 	}
 }
