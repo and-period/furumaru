@@ -40,6 +40,11 @@ func (c *contact) List(ctx context.Context, params *ListContactsParams, fields .
 	return contacts, exception.InternalError(err)
 }
 
+func (c *contact) Count(ctx context.Context, params *ListContactsParams) (int64, error) {
+	total, err := c.db.Count(ctx, c.db.DB, &entity.Contact{}, nil)
+	return total, exception.InternalError(err)
+}
+
 func (c *contact) Get(ctx context.Context, contactID string, fields ...string) (*entity.Contact, error) {
 	contact, err := c.get(ctx, c.db.DB, contactID, fields...)
 	return contact, exception.InternalError(err)
