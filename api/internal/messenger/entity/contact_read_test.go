@@ -24,7 +24,7 @@ func TestContactRead(t *testing.T) {
 				Read:      false,
 			},
 			expect: &ContactRead{
-				ID:        "", //ignore
+				ID:        "", // ignore
 				ContactID: "contact-id",
 				UserType:  ContactUserTypeGuest,
 				UserID:    "",
@@ -41,7 +41,7 @@ func TestContactRead(t *testing.T) {
 				Read:      false,
 			},
 			expect: &ContactRead{
-				ID:        "", //ignore
+				ID:        "", // ignore
 				ContactID: "contact-id",
 				UserType:  ContactUserTypeAdmin,
 				UserID:    "admin-id",
