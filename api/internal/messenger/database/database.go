@@ -47,6 +47,8 @@ func NewDatabase(params *Params) *Database {
  */
 
 type Contact interface {
+	List(ctx context.Context, params *ListContactsParams, fields ...string) (entity.Contacts, error)
+	Count(ctx context.Context) (int64, error)
 	Get(ctx context.Context, contactID string, fields ...string) (*entity.Contact, error)
 	Create(ctx context.Context, contact *entity.Contact) error
 	Update(ctx context.Context, contactID string, params *UpdateContactParams) error
@@ -207,6 +209,11 @@ func (p *ListSchedulesParams) stmt(stmt *gorm.DB) *gorm.DB {
 		stmt = stmt.Where("sent_at <= ?", p.Until)
 	}
 	return stmt
+}
+
+type ListContactsParams struct {
+	Limit  int
+	Offset int
 }
 
 type ListContactCategoriesParams struct {
