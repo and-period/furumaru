@@ -1,9 +1,9 @@
 package entity
 
 import (
+	"errors"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 )
 
@@ -38,7 +38,7 @@ type NewContactReadParams struct {
 func NewContactRead(params *NewContactReadParams) (*ContactRead, error) {
 	if params.UserType != ContactUserTypeGuest {
 		if params.UserID == "" {
-			return &ContactRead{}, exception.ErrInvalidArgument
+			return &ContactRead{}, errors.New("entity: failed to new contact read")
 		}
 	}
 	return &ContactRead{

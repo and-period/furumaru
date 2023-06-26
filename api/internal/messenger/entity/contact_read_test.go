@@ -1,9 +1,9 @@
 package entity
 
 import (
+	"errors"
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -58,7 +58,7 @@ func TestContactRead(t *testing.T) {
 				Read:      false,
 			},
 			expect:    &ContactRead{},
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: errors.New("entity: failed to new contact read"),
 		},
 	}
 
