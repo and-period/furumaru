@@ -23,12 +23,12 @@ func TestContactRead(t *testing.T) {
 			params: &NewContactReadParams{
 				ContactID: "contact-id",
 				UserType:  ContactUserTypeGuest,
-				ReadFlag:  false,
+				Read:      false,
 			},
 			expect: &ContactRead{
 				ContactID: "contact-id",
 				UserType:  ContactUserTypeGuest,
-				ReadFlag:  false,
+				Read:      false,
 			},
 		},
 		{
@@ -36,12 +36,12 @@ func TestContactRead(t *testing.T) {
 			params: &NewContactReadParams{
 				ContactID: "contact-id",
 				UserType:  ContactUserTypeAdmin,
-				ReadFlag:  false,
+				Read:      false,
 			},
 			expect: &ContactRead{
 				ContactID: "contact-id",
 				UserType:  ContactUserTypeAdmin,
-				ReadFlag:  false,
+				Read:      false,
 			},
 		},
 	}
@@ -62,7 +62,7 @@ func TestContactRead_Fill(t *testing.T) {
 	contactRead := &ContactRead{
 		ContactID: "contact-id",
 		UserType:  ContactUserTypeAdmin,
-		ReadFlag:  false,
+		Read:      false,
 	}
 	tests := []struct {
 		name        string
@@ -78,7 +78,7 @@ func TestContactRead_Fill(t *testing.T) {
 				ContactID: "contact-id",
 				UserType:  ContactUserTypeAdmin,
 				UserID:    "user-id",
-				ReadFlag:  false,
+				Read:      false,
 			},
 		},
 	}

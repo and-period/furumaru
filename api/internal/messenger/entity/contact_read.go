@@ -20,7 +20,7 @@ type ContactRead struct {
 	ContactID string          `gorm:""`                     // お問い合わせID
 	UserID    string          `gorm:"default:null"`         // 送信者ID(ゲストの場合null)
 	UserType  ContactUserType `gorm:""`                     // 送信者の種別
-	ReadFlag  bool            `gorm:""`                     // 既読フラグ
+	Read      bool            `gorm:""`                     // 既読フラグ
 	CreatedAt time.Time       `gorm:"<-:create"`            // 登録日時
 	UpdatedAt time.Time       `gorm:""`                     // 更新日時
 }
@@ -30,7 +30,7 @@ type ContactReads []*ContactRead
 type NewContactReadParams struct {
 	ContactID string
 	UserType  ContactUserType
-	ReadFlag  bool
+	Read      bool
 }
 
 func NewContactRead(params *NewContactReadParams) *ContactRead {
@@ -38,7 +38,7 @@ func NewContactRead(params *NewContactReadParams) *ContactRead {
 		ID:        uuid.Base58Encode(uuid.New()),
 		ContactID: params.ContactID,
 		UserType:  params.UserType,
-		ReadFlag:  params.ReadFlag,
+		Read:      params.Read,
 	}
 }
 
