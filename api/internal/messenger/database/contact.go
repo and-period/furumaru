@@ -25,6 +25,21 @@ func NewContact(db *database.Client) Contact {
 	}
 }
 
+func (c *contact) List(ctx context.Context, params *ListContactsParams, fields ...string) (entity.Contacts, error) {
+	var contacts entity.Contacts
+
+	stmt := c.db.Statement(ctx, c.db.DB, contactTable)
+	if params.Limit > 0 {
+		stmt = stmt.Limit(params.Limit)
+	}
+	if params.Offset > 0 {
+		stmt = stmt.Offset(params.Offset)
+	}
+
+	err := stmt.Find(&contacts).Error
+	return contacts, exception.InternalError(err)
+}
+
 func (c *contact) Get(ctx context.Context, contactID string, fields ...string) (*entity.Contact, error) {
 	contact, err := c.get(ctx, c.db.DB, contactID, fields...)
 	return contact, exception.InternalError(err)
