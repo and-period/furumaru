@@ -13,7 +13,41 @@ import (
 
 func (h *handler) contactCategoryRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication)
+	arg.GET("", h.ListContactCategories)
 	arg.GET("/:contactCategoryId")
+}
+
+func (h *handler) ListContactCategories(ctx *gin.Context) {
+	const (
+		defaultLimit  = 20
+		defaultOffset = 0
+	)
+
+	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
+	if err != nil {
+		badRequest(ctx, err)
+		return
+	}
+	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
+	if err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	in := &messenger.ListContactCategoriesInput{
+		Limit:  limit,
+		Offset: offset,
+	}
+	categories, err := h.messenger.ListContactCategories(ctx, in)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	res := &response.ContactCategoriesResponse{
+		ContactCategories: service.NewContactCategories(categories).Response(),
+	}
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (h *handler) GetContactCategory(ctx *gin.Context) {
