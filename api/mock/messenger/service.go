@@ -198,6 +198,21 @@ func (mr *MockServiceMockRecorder) GetThread(ctx, in interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetThread", reflect.TypeOf((*MockService)(nil).GetThread), ctx, in)
 }
 
+// ListContactCategories mocks base method.
+func (m *MockService) ListContactCategories(ctx context.Context, in *messenger.ListContactCategoriesInput) (entity.ContactCategories, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListContactCategories", ctx, in)
+	ret0, _ := ret[0].(entity.ContactCategories)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListContactCategories indicates an expected call of ListContactCategories.
+func (mr *MockServiceMockRecorder) ListContactCategories(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListContactCategories", reflect.TypeOf((*MockService)(nil).ListContactCategories), ctx, in)
+}
+
 // ListContacts mocks base method.
 func (m *MockService) ListContacts(ctx context.Context, in *messenger.ListContactsInput) (entity.Contacts, int64, error) {
 	m.ctrl.T.Helper()
