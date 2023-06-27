@@ -19,10 +19,45 @@ import (
 
 func (h *handler) contactRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication)
+	arg.GET("", h.ListContacts)
 	arg.GET("/:contactId", h.GetContact)
 	arg.POST("", h.CreateContact)
 	arg.PATCH("/:contactId", h.UpdateContact)
 	arg.DELETE("/:contactId", h.DeleteContact)
+}
+
+func (h *handler) ListContacts(ctx *gin.Context) {
+	const (
+		defaultLimit  = 20
+		defaultOffset = 0
+	)
+
+	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
+	if err != nil {
+		badRequest(ctx, err)
+		return
+	}
+	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
+	if err != nil {
+		badRequest(ctx, err)
+		return
+	}
+	in := &messenger.ListContactsInput{
+		Limit:  limit,
+		Offset: offset,
+	}
+
+	contacts, total, err := h.messenger.ListContacts(ctx, in)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	res := &response.ContactsResponse{
+		Contacts: service.NewContacts(contacts).Response(),
+		Total:    total,
+	}
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (h *handler) CreateContact(ctx *gin.Context) {
