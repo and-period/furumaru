@@ -58,6 +58,7 @@ type Contact interface {
 type ContactCategory interface {
 	Get(ctx context.Context, categoryID string, fields ...string) (*entity.ContactCategory, error)
 	List(ctx context.Context, params *ListContactCategoriesParams, fields ...string) (entity.ContactCategories, error)
+	Create(ctx context.Context, category *entity.ContactCategory) error
 }
 
 type Thread interface {
