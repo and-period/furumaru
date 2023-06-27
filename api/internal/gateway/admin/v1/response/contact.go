@@ -33,7 +33,7 @@ type ContactResponse struct {
 	Threads []*Thread `json:"threads"`
 }
 
-type ContactsReponse struct {
+type ContactsResponse struct {
 	Contacts []*Contact `json:"contacts"` // お問い合わせ一覧
 	Total    int64      `json:"total"`    // お問い合わせ合計
 }
