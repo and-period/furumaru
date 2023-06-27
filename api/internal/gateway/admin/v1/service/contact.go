@@ -9,6 +9,8 @@ type Contact struct {
 	response.Contact
 }
 
+type Contacts []*Contact
+
 func NewContact(contact *entity.Contact) *Contact {
 	return &Contact{
 		Contact: response.Contact{
@@ -30,4 +32,20 @@ func NewContact(contact *entity.Contact) *Contact {
 
 func (c *Contact) Response() *response.Contact {
 	return &c.Contact
+}
+
+func NewContacts(contacts entity.Contacts) Contacts {
+	res := make(Contacts, len(contacts))
+	for i := range contacts {
+		res[i] = NewContact(contacts[i])
+	}
+	return res
+}
+
+func (cs Contacts) Response() []*response.Contact {
+	res := make([]*response.Contact, len(cs))
+	for i := range cs {
+		res[i] = cs[i].Response()
+	}
+	return res
 }

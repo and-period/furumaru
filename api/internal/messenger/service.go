@@ -29,6 +29,8 @@ type Service interface {
 	NotifyResetAdminPassword(ctx context.Context, in *NotifyResetAdminPasswordInput) error
 	// お知らせ通知
 	NotifyNotification(ctx context.Context, in *NotifyNotificationInput) error
+	// お問い合わせ一覧取得
+	ListContacts(ctx context.Context, in *ListContactsInput) (entity.Contacts, int64, error)
 	// お問い合わせ取得
 	GetContact(ctx context.Context, in *GetContactInput) (*entity.Contact, error)
 	// お問い合わせ作成
@@ -37,6 +39,8 @@ type Service interface {
 	UpdateContact(ctx context.Context, in *UpdateContactInput) error
 	// お問い合わせ削除
 	DeleteContact(ctx context.Context, in *DeleteContactInput) error
+	// お問い合わせ種別一覧取得
+	ListContactCategories(ctx context.Context, in *ListContactCategoriesInput) (entity.ContactCategories, error)
 	// お問い合わせ種別取得
 	GetContactCategory(ctx context.Context, in *GetContactCategoryInput) (*entity.ContactCategory, error)
 	// お問い合わせ会話履歴一覧取得(お問い合わせID指定)

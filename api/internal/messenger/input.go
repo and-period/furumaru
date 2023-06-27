@@ -81,6 +81,11 @@ type NotifyNotificationInput struct {
 	NotificationID string `validate:"required"`
 }
 
+type ListContactsInput struct {
+	Limit  int64 `validate:"required,max=200"`
+	Offset int64 `validate:"min=0"`
+}
+
 type GetContactInput struct {
 	ContactID string `validate:"required"`
 }
@@ -113,6 +118,11 @@ type UpdateContactInput struct {
 
 type DeleteContactInput struct {
 	ContactID string `validate:"required"`
+}
+
+type ListContactCategoriesInput struct {
+	Limit  int64 `validate:"required,max=200"`
+	Offset int64 `validate:"min=0"`
 }
 
 type GetContactCategoryInput struct {
