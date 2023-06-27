@@ -60,6 +60,10 @@ type ContactCategory interface {
 	List(ctx context.Context, params *ListContactCategoriesParams, fields ...string) (entity.ContactCategories, error)
 }
 
+type ContactRead interface {
+	Create(ctx context.Context, contactRead *entity.ContactRead) error
+}
+
 type Thread interface {
 	Get(ctx context.Context, threadID string, fields ...string) (*entity.Thread, error)
 	ListByContactID(ctx context.Context, params *ListThreadsByContactIDParams, fields ...string) (entity.Threads, error)

@@ -196,6 +196,43 @@ func (mr *MockContactCategoryMockRecorder) List(ctx, params interface{}, fields 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockContactCategory)(nil).List), varargs...)
 }
 
+// MockContactRead is a mock of ContactRead interface.
+type MockContactRead struct {
+	ctrl     *gomock.Controller
+	recorder *MockContactReadMockRecorder
+}
+
+// MockContactReadMockRecorder is the mock recorder for MockContactRead.
+type MockContactReadMockRecorder struct {
+	mock *MockContactRead
+}
+
+// NewMockContactRead creates a new mock instance.
+func NewMockContactRead(ctrl *gomock.Controller) *MockContactRead {
+	mock := &MockContactRead{ctrl: ctrl}
+	mock.recorder = &MockContactReadMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockContactRead) EXPECT() *MockContactReadMockRecorder {
+	return m.recorder
+}
+
+// Create mocks base method.
+func (m *MockContactRead) Create(ctx context.Context, contactRead *entity.ContactRead) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, contactRead)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockContactReadMockRecorder) Create(ctx, contactRead interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockContactRead)(nil).Create), ctx, contactRead)
+}
+
 // MockThread is a mock of Thread interface.
 type MockThread struct {
 	ctrl     *gomock.Controller
