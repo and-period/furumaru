@@ -51,6 +51,21 @@ func (mr *MockServiceMockRecorder) CreateContact(ctx, in interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateContact", reflect.TypeOf((*MockService)(nil).CreateContact), ctx, in)
 }
 
+// CreateContactRead mocks base method.
+func (m *MockService) CreateContactRead(ctx context.Context, in *messenger.CreateContactReadInput) (*entity.ContactRead, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateContactRead", ctx, in)
+	ret0, _ := ret[0].(*entity.ContactRead)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateContactRead indicates an expected call of CreateContactRead.
+func (mr *MockServiceMockRecorder) CreateContactRead(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateContactRead", reflect.TypeOf((*MockService)(nil).CreateContactRead), ctx, in)
+}
+
 // CreateNotification mocks base method.
 func (m *MockService) CreateNotification(ctx context.Context, in *messenger.CreateNotificationInput) (*entity.Notification, error) {
 	m.ctrl.T.Helper()
