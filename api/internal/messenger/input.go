@@ -156,3 +156,9 @@ type UpdateThreadInput struct {
 type DeleteThreadInput struct {
 	ThreadID string `validate:"required"`
 }
+
+type CreateContactReadInput struct {
+	ContactID string                 `validate:"required"`
+	UserID    string                 `validate:""`
+	UserType  entity.ContactUserType `validate:"required"`
+}

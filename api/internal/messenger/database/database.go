@@ -19,6 +19,7 @@ type Params struct {
 type Database struct {
 	Contact         Contact
 	ContactCategory ContactCategory
+	ContactRead     ContactRead
 	Thread          Thread
 	Message         Message
 	MessageTemplate MessageTemplate
