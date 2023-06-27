@@ -11,6 +11,6 @@ type ContactCategoryResponse struct {
 	*ContactCategory
 }
 
-type ContactCategoriesRresponse struct {
-	ContactCategoriesRresponse []*ContactCategory `json:"contactCategories"` // お問い合わせ種別一覧
+type ContactCategoriesResponse struct {
+	ContactCategories []*ContactCategory `json:"contactCategories"` // お問い合わせ種別一覧
 }
