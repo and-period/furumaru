@@ -155,6 +155,76 @@ func TestContactCategory_Get(t *testing.T) {
 	}
 }
 
+func TestContactCategory_Create(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	c := testContactCategory("category-id", "問い合わせ種別", now())
+
+	type args struct {
+		category *entity.ContactCategory
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			args: args{
+				category: c,
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name: "failed to duplicate entry",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+				err := db.DB.Create(c).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				category: c,
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, contactCategoryTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, db)
+
+			db := &contactCategory{db: db, now: now}
+			err = db.Create(ctx, tt.args.category)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
 func testContactCategory(id, name string, now time.Time) *entity.ContactCategory {
 	return &entity.ContactCategory{
 		ID:        id,

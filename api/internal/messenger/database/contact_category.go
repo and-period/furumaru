@@ -47,6 +47,17 @@ func (c *contactCategory) Get(ctx context.Context, categoryID string, fields ...
 	return category, exception.InternalError(err)
 }
 
+func (c *contactCategory) Create(ctx context.Context, category *entity.ContactCategory) error {
+	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
+		now := c.now()
+		category.CreatedAt, category.UpdatedAt = now, now
+
+		err := tx.WithContext(ctx).Table(contactCategoryTable).Create(&category).Error
+		return err
+	})
+	return exception.InternalError(err)
+}
+
 func (c *contactCategory) get(
 	ctx context.Context, tx *gorm.DB, categoryID string, fields ...string,
 ) (*entity.ContactCategory, error) {
