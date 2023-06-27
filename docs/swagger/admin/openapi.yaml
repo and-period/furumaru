@@ -41,6 +41,8 @@ tags:
   description: 住所関連
 - name: Contact
   description: お問い合わせ関連
+- name: Thread
+  description: お問い合わせ会話履歴関連
 - name: Notification
   description: お知らせ関連
 - name: Message
@@ -132,6 +134,11 @@ paths:
     $ref: './paths/v1/contacts/index.yaml'
   /v1/contacts/{contactId}:
     $ref: './paths/v1/contacts/_contactId/index.yaml'
+  # Thread
+  /v1/contacts/{contactId}/threads:
+    $ref: './paths/v1/contacts/_contactId/threads/index.yaml'
+  /v1/contacts/{contactId}/threads/{threadId}:
+    $ref: './paths/v1/contacts/_contactId/threads/_threadId/index.yaml'
   # Notification
   /v1/notifications:
     $ref: './paths/v1/notifications/index.yaml'
@@ -377,6 +384,10 @@ components:
       $ref: './components/schemas/v1/contact.response.yaml#/contactResponse'
     v1ContactsResponse:
       $ref: './components/schemas/v1/contact.response.yaml#/contactsResponse'
+    v1ThreadResponse:
+      $ref: './components/schemas/v1/thread.response.yaml#/threadResponse'
+    v1ThreadsResponse:
+      $ref: './components/schemas/v1/thread.response.yaml#/threadsResponse'
     v1NotificationResponse:
       $ref: './components/schemas/v1/notification.response.yaml#/notificationResponse'
     v1NotificationsResponse:
