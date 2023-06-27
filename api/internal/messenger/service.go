@@ -53,4 +53,6 @@ type Service interface {
 	UpdateThread(ctx context.Context, in *UpdateThreadInput) error
 	// お問い合わせ会話履歴削除
 	DeleteThread(ctx context.Context, in *DeleteThreadInput) error
+	// お問い合わせ既読管理作成
+	CreateContactRead(ctx context.Context, in *CreateContactReadInput) (*entity.ContactRead, error)
 }
