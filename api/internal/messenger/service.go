@@ -39,6 +39,8 @@ type Service interface {
 	UpdateContact(ctx context.Context, in *UpdateContactInput) error
 	// お問い合わせ削除
 	DeleteContact(ctx context.Context, in *DeleteContactInput) error
+	// お問い合わせ種別一覧取得
+	ListContactCategories(ctx context.Context, in *ListContactCategoriesInput) (entity.ContactCategories, error)
 	// お問い合わせ種別取得
 	GetContactCategory(ctx context.Context, in *GetContactCategoryInput) (*entity.ContactCategory, error)
 	// お問い合わせ会話履歴一覧取得(お問い合わせID指定)
