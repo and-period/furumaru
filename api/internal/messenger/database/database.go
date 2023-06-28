@@ -262,6 +262,6 @@ type UpdateContactParams struct {
 
 type UpdateContactReadFlagParams struct {
 	ContactID string
-	UserID    string
+	UserID    *string
 	Read      bool
 }

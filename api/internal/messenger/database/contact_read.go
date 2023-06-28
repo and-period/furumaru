@@ -46,14 +46,6 @@ func (c *contactRead) UpdateRead(ctx context.Context, params *UpdateContactReadF
 			"updated_at": c.now(),
 		}
 
-		if params.UserID == "" {
-			err := tx.WithContext(ctx).
-				Table(contactReadTable).
-				Where("contact_id = ? AND user_id IS NULL", params.ContactID).
-				Updates(updates).Error
-			return err
-		}
-
 		err := tx.WithContext(ctx).
 			Table(contactReadTable).
 			Where("contact_id = ? AND user_id = ?", params.ContactID, params.UserID).
@@ -63,16 +55,9 @@ func (c *contactRead) UpdateRead(ctx context.Context, params *UpdateContactReadF
 	return exception.InternalError(err)
 }
 
-func (c *contactRead) getByContactIDAndUserID(ctx context.Context, contactID, userID string, fields ...string,
+func (c *contactRead) getByContactIDAndUserID(ctx context.Context, contactID string, userID *string, fields ...string,
 ) (*entity.ContactRead, error) {
 	var contactRead *entity.ContactRead
-
-	if userID == "" {
-		err := c.db.Statement(ctx, c.db.DB, contactReadTable, fields...).
-			Where("contact_id = ? AND user_id IS NULL", contactID).
-			First(&contactRead).Error
-		return contactRead, err
-	}
 
 	err := c.db.Statement(ctx, c.db.DB, contactReadTable, fields...).
 		Where("contact_id = ? AND user_id = ?", contactID, userID).
