@@ -79,13 +79,3 @@ func (c *contactRead) getByContactIDAndUserID(ctx context.Context, contactID, us
 		First(&contactRead).Error
 	return contactRead, err
 }
-
-func (c *contactRead) get(ctx context.Context, contactReadID string, fields ...string,
-) (*entity.ContactRead, error) {
-	var contactRead *entity.ContactRead
-
-	err := c.db.Statement(ctx, c.db.DB, contactReadTable, fields...).
-		Where("id = ?", contactReadID).
-		First(&contactRead).Error
-	return contactRead, err
-}
