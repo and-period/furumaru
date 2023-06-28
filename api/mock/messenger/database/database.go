@@ -247,6 +247,20 @@ func (mr *MockContactReadMockRecorder) Create(ctx, contactRead interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockContactRead)(nil).Create), ctx, contactRead)
 }
 
+// UpdateRead mocks base method.
+func (m *MockContactRead) UpdateRead(ctx context.Context, params *database.UpdateContactReadFlagParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateRead", ctx, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateRead indicates an expected call of UpdateRead.
+func (mr *MockContactReadMockRecorder) UpdateRead(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRead", reflect.TypeOf((*MockContactRead)(nil).UpdateRead), ctx, params)
+}
+
 // MockThread is a mock of Thread interface.
 type MockThread struct {
 	ctrl     *gomock.Controller
