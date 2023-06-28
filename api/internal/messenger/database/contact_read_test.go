@@ -124,9 +124,6 @@ func TestContactRead_UpdateRead(t *testing.T) {
 	err = db.DB.Create(&contactReads).Error
 	require.NoError(t, err)
 
-	userID := "user-id"
-	adminID := "admin-id"
-
 	type args struct {
 		params *UpdateContactReadFlagParams
 	}
@@ -145,7 +142,7 @@ func TestContactRead_UpdateRead(t *testing.T) {
 			args: args{
 				params: &UpdateContactReadFlagParams{
 					ContactID: "contact-id01",
-					UserID:    &userID,
+					UserID:    "user-id",
 					Read:      true,
 				},
 			},
@@ -159,7 +156,7 @@ func TestContactRead_UpdateRead(t *testing.T) {
 			args: args{
 				params: &UpdateContactReadFlagParams{
 					ContactID: "contact-id01",
-					UserID:    &adminID,
+					UserID:    "admin-id",
 					Read:      true,
 				},
 			},
@@ -173,7 +170,7 @@ func TestContactRead_UpdateRead(t *testing.T) {
 			args: args{
 				params: &UpdateContactReadFlagParams{
 					ContactID: "contact-id02",
-					UserID:    nil,
+					UserID:    "",
 					Read:      true,
 				},
 			},
