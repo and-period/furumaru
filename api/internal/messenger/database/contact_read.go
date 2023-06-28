@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
 	"gorm.io/gorm"
@@ -32,4 +33,49 @@ func (c *contactRead) Create(ctx context.Context, contactRead *entity.ContactRea
 		return err
 	})
 	return err
+}
+
+func (c *contactRead) UpdateRead(ctx context.Context, params *UpdateContactReadFlagParams) error {
+	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
+		if _, err := c.getByContactIDAndUserID(ctx, params.ContactID, params.UserID); err != nil {
+			return err
+		}
+
+		updates := map[string]interface{}{
+			"read":       params.Read,
+			"updated_at": c.now(),
+		}
+
+		if params.UserID == "" {
+			err := tx.WithContext(ctx).
+				Table(contactReadTable).
+				Where("contact_id = ? AND user_id IS NULL", params.ContactID).
+				Updates(updates).Error
+			return err
+		}
+
+		err := tx.WithContext(ctx).
+			Table(contactReadTable).
+			Where("contact_id = ? AND user_id = ?", params.ContactID, params.UserID).
+			Updates(updates).Error
+		return err
+	})
+	return exception.InternalError(err)
+}
+
+func (c *contactRead) getByContactIDAndUserID(ctx context.Context, contactID, userID string, fields ...string,
+) (*entity.ContactRead, error) {
+	var contactRead *entity.ContactRead
+
+	if userID == "" {
+		err := c.db.Statement(ctx, c.db.DB, contactReadTable, fields...).
+			Where("contact_id = ? AND user_id IS NULL", contactID).
+			First(&contactRead).Error
+		return contactRead, err
+	}
+
+	err := c.db.Statement(ctx, c.db.DB, contactReadTable, fields...).
+		Where("contact_id = ? AND user_id = ?", contactID, userID).
+		First(&contactRead).Error
+	return contactRead, err
 }
