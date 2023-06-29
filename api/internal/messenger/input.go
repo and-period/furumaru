@@ -162,3 +162,9 @@ type CreateContactReadInput struct {
 	UserID    string                 `validate:""`
 	UserType  entity.ContactUserType `validate:"required"`
 }
+
+type UpdateContactReadFlagInput struct {
+	ContactID string `validate:"required"`
+	UserID    string `validate:""`
+	Read      bool   `validate:"required"`
+}
