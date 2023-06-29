@@ -7,6 +7,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
+	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 )
 
@@ -38,4 +39,17 @@ func (s *service) CreateContactRead(ctx context.Context, in *messenger.CreateCon
 		return nil, exception.InternalError(err)
 	}
 	return contactRead, exception.InternalError(err)
+}
+
+func (s *service) UpdateContactReadFlag(ctx context.Context, in *messenger.UpdateContactReadFlagInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	params := &database.UpdateContactReadFlagParams{
+		ContactID: in.ContactID,
+		UserID:    in.UserID,
+		Read:      in.Read,
+	}
+	err := s.db.ContactRead.UpdateRead(ctx, params)
+	return exception.InternalError(err)
 }
