@@ -24,6 +24,12 @@ func NewContactRead(db *database.Client) ContactRead {
 	}
 }
 
+func (c *contactRead) Get(ctx context.Context, contactID, userID string, fields ...string,
+) (*entity.ContactRead, error) {
+	contactRead, err := c.getByContactIDAndUserID(ctx, c.db.DB, contactID, userID, fields...)
+	return contactRead, exception.InternalError(err)
+}
+
 func (c *contactRead) Create(ctx context.Context, contactRead *entity.ContactRead) error {
 	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := c.now()
@@ -37,7 +43,7 @@ func (c *contactRead) Create(ctx context.Context, contactRead *entity.ContactRea
 
 func (c *contactRead) UpdateRead(ctx context.Context, params *UpdateContactReadFlagParams) error {
 	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
-		if _, err := c.getByContactIDAndUserID(ctx, params.ContactID, params.UserID); err != nil {
+		if _, err := c.getByContactIDAndUserID(ctx, tx, params.ContactID, params.UserID); err != nil {
 			return err
 		}
 
@@ -63,18 +69,18 @@ func (c *contactRead) UpdateRead(ctx context.Context, params *UpdateContactReadF
 	return exception.InternalError(err)
 }
 
-func (c *contactRead) getByContactIDAndUserID(ctx context.Context, contactID, userID string, fields ...string,
+func (c *contactRead) getByContactIDAndUserID(ctx context.Context, tx *gorm.DB, contactID, userID string, fields ...string,
 ) (*entity.ContactRead, error) {
 	var contactRead *entity.ContactRead
 
 	if userID == "" {
-		err := c.db.Statement(ctx, c.db.DB, contactReadTable, fields...).
+		err := c.db.Statement(ctx, tx, contactReadTable, fields...).
 			Where("contact_id = ? AND user_id IS NULL", contactID).
 			First(&contactRead).Error
 		return contactRead, err
 	}
 
-	err := c.db.Statement(ctx, c.db.DB, contactReadTable, fields...).
+	err := c.db.Statement(ctx, tx, contactReadTable, fields...).
 		Where("contact_id = ? AND user_id = ?", contactID, userID).
 		First(&contactRead).Error
 	return contactRead, err

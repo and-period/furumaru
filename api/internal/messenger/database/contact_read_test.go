@@ -16,6 +16,94 @@ func TestContactRead(t *testing.T) {
 	assert.NotNil(t, NewContactRead(nil))
 }
 
+func TestContactRead_Get(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	category := testContactCategory("category-id", "お問い合わせ種別", now())
+	err = db.DB.Create(&category).Error
+	require.NoError(t, err)
+
+	contact := testContact("contact-id", now())
+	err = db.DB.Create(&contact).Error
+	require.NoError(t, err)
+
+	cr := testContactRead("contact-read-id", "contact-id", "user-id", now())
+	err = db.DB.Create(&cr).Error
+	require.NoError(t, err)
+
+	type args struct {
+		contactID string
+		userID    string
+	}
+	type want struct {
+		contactRead *entity.ContactRead
+		hasErr      bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			args: args{
+				contactID: "contact-id",
+				userID:    "user-id",
+			},
+			want: want{
+				contactRead: cr,
+				hasErr:      false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			args: args{
+				contactID: "other-id",
+				userID:    "user-id",
+			},
+			want: want{
+				contactRead: nil,
+				hasErr:      true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(ctx)
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &contactRead{db: db, now: now}
+			actual, err := db.Get(ctx, tt.args.contactID, tt.args.userID)
+			if tt.want.hasErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			assert.Equal(t, tt.want.contactRead, actual)
+		})
+	}
+}
+
 func TestContactRead_Create(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -212,6 +300,7 @@ func testContactRead(id, contactID, userID string, now time.Time) *entity.Contac
 		ID:        id,
 		ContactID: contactID,
 		UserID:    userID,
+		UserType:  entity.ContactUserTypeUnknown,
 		CreatedAt: now,
 		UpdatedAt: now,
 	}
