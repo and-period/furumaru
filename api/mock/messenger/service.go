@@ -348,6 +348,20 @@ func (mr *MockServiceMockRecorder) UpdateContact(ctx, in interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateContact", reflect.TypeOf((*MockService)(nil).UpdateContact), ctx, in)
 }
 
+// UpdateContactReadFlag mocks base method.
+func (m *MockService) UpdateContactReadFlag(ctx context.Context, in *messenger.UpdateContactReadFlagInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateContactReadFlag", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateContactReadFlag indicates an expected call of UpdateContactReadFlag.
+func (mr *MockServiceMockRecorder) UpdateContactReadFlag(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateContactReadFlag", reflect.TypeOf((*MockService)(nil).UpdateContactReadFlag), ctx, in)
+}
+
 // UpdateNotification mocks base method.
 func (m *MockService) UpdateNotification(ctx context.Context, in *messenger.UpdateNotificationInput) error {
 	m.ctrl.T.Helper()
