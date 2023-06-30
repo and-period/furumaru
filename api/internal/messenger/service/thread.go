@@ -38,6 +38,15 @@ func (s *service) ListThreadsByContactID(ctx context.Context, in *messenger.List
 	if err := eg.Wait(); err != nil {
 		return nil, 0, exception.InternalError(err)
 	}
+	updateReadIn := &messenger.UpdateContactReadFlagInput{
+		ContactID: in.ContactID,
+		UserID:    in.UserID,
+		Read:      true,
+	}
+	err := s.UpdateContactReadFlag(ctx, updateReadIn)
+	if err != nil {
+		return nil, 0, exception.InternalError(err)
+	}
 
 	return threads, total, nil
 }
