@@ -38,6 +38,15 @@ func (s *service) ListThreadsByContactID(ctx context.Context, in *messenger.List
 	if err := eg.Wait(); err != nil {
 		return nil, 0, exception.InternalError(err)
 	}
+	updateReadIn := &messenger.UpdateContactReadFlagInput{
+		ContactID: in.ContactID,
+		UserID:    in.UserID,
+		Read:      true,
+	}
+	err := s.UpdateContactReadFlag(ctx, updateReadIn)
+	if err != nil {
+		return nil, 0, exception.InternalError(err)
+	}
 
 	return threads, total, nil
 }
@@ -69,6 +78,7 @@ func (s *service) CreateThread(ctx context.Context, in *messenger.CreateThreadIn
 	if err != nil {
 		return nil, exception.InternalError(err)
 	}
+
 	params := &entity.NewThreadParams{
 		ContactID: in.ContactID,
 		UserType:  in.UserType,
@@ -77,6 +87,29 @@ func (s *service) CreateThread(ctx context.Context, in *messenger.CreateThreadIn
 	thread := entity.NewThread(params)
 	thread.Fill(in.UserID)
 	if err := s.db.Thread.Create(ctx, thread); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	readIn := &messenger.GetContactReadInput{
+		ContactID: in.ContactID,
+		UserID:    in.UserID,
+	}
+	_, err = s.GetContactRead(ctx, readIn)
+	if errors.Is(err, exception.ErrNotFound) {
+		in := &messenger.CreateContactReadInput{
+			ContactID: in.ContactID,
+			UserID:    in.UserID,
+		}
+		if _, err := s.CreateContactRead(ctx, in); err != nil {
+			return nil, exception.InternalError(err)
+		}
+	}
+	updateReadIn := &messenger.UpdateContactReadFlagInput{
+		ContactID: in.ContactID,
+		UserID:    in.UserID,
+		Read:      false,
+	}
+	err = s.UpdateContactReadFlag(ctx, updateReadIn)
+	if err != nil {
 		return nil, exception.InternalError(err)
 	}
 	return thread, nil
