@@ -247,6 +247,26 @@ func (mr *MockContactReadMockRecorder) Create(ctx, contactRead interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockContactRead)(nil).Create), ctx, contactRead)
 }
 
+// Get mocks base method.
+func (m *MockContactRead) Get(ctx context.Context, contactID, userID string, fields ...string) (*entity.ContactRead, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, contactID, userID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.ContactRead)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockContactReadMockRecorder) Get(ctx, contactID, userID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, contactID, userID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockContactRead)(nil).Get), varargs...)
+}
+
 // UpdateRead mocks base method.
 func (m *MockContactRead) UpdateRead(ctx context.Context, params *database.UpdateContactReadFlagParams) error {
 	m.ctrl.T.Helper()
