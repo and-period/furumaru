@@ -2,8 +2,10 @@
 import { mdiClose, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 
+import dayjs, { unix } from 'dayjs'
 import { AlertType } from '~/lib/hooks'
-import { CategoriesResponseCategoriesInner, CreateProductRequest, DeliveryType, Prefecture, ProducersResponseProducersInner, ProductTagsResponseProductTagsInner, ProductTypesResponseProductTypesInner, StorageMethodType } from '~/types/api'
+import { CategoriesResponseCategoriesInner, CreateProductRequest, DeliveryType, Prefecture, ProducersResponseProducersInner, ProductStatus, ProductTagsResponseProductTagsInner, ProductTypesResponseProductTypesInner, StorageMethodType, Weekday } from '~/types/api'
+import { ProductTime } from '~/types/props'
 import {
   required,
   getErrorMessage,
@@ -47,17 +49,20 @@ const props = defineProps({
       weight: 0,
       itemUnit: '',
       itemDescription: '',
-      deliveryType: DeliveryType.UNKNOWN,
+      deliveryType: DeliveryType.NORMAL,
       recommendedPoint1: '',
       recommendedPoint2: '',
       recommendedPoint3: '',
       expirationDate: 0,
-      storageMethodType: StorageMethodType.UNKNOWN,
+      storageMethodType: StorageMethodType.NORMAL,
       box60Rate: 0,
       box80Rate: 0,
       box100Rate: 0,
       originPrefecture: Prefecture.HOKKAIDO,
-      originCity: ''
+      originCity: '',
+      businessDays: [],
+      startAt: dayjs().unix(),
+      endAt: dayjs().unix()
     })
   },
   selectedCategoryId: {
@@ -93,6 +98,13 @@ const statuses = [
   { title: '公開', value: true },
   { title: '下書き', value: false }
 ]
+const productStatuses = [
+  { title: '予約販売', value: ProductStatus.PRESALE },
+  { title: '販売中', value: ProductStatus.FOR_SALE },
+  { title: '販売期間外', value: ProductStatus.OUT_OF_SALES },
+  { title: '非公開', value: ProductStatus.PRIVATE },
+  { title: '不明', value: ProductStatus.UNKNOWN }
+]
 const storageMethodTypes = [
   { title: '常温保存', value: StorageMethodType.NORMAL },
   { title: '冷暗所保存', value: StorageMethodType.COOL_DARK_PLACE },
@@ -105,8 +117,17 @@ const deliveryTypes = [
   { title: '冷凍便', value: DeliveryType.FROZEN }
 ]
 const itemUnits = ['個', '瓶']
+const weekdays = [
+  { title: '日曜日', value: Weekday.SUNDAY },
+  { title: '月曜日', value: Weekday.MONDAY },
+  { title: '火曜日', value: Weekday.TUESDAY },
+  { title: '水曜日', value: Weekday.WEDNESDAY },
+  { title: '木曜日', value: Weekday.THURSDAY },
+  { title: '金曜日', value: Weekday.FRIDAY },
+  { title: '土曜日', value: Weekday.SATURDAY }
+]
 
-const rules = computed(() => ({
+const formDataRules = computed(() => ({
   name: { required, maxLength: maxLength(128) },
   description: { required, maxLength: maxLength(20000) },
   public: {},
@@ -130,11 +151,50 @@ const rules = computed(() => ({
   box80Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
   box100Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
   originPrefecture: {},
-  originCity: {}
+  originCity: {},
+  businessDays: {}
+}))
+const timeDataRules = computed(() => ({
+  startDate: { required },
+  startTime: { required },
+  endDate: { required },
+  endTime: { required }
 }))
 const formDataValue = computed({
   get: (): CreateProductRequest => props.formData,
   set: (formData: CreateProductRequest): void => emit('update:form-data', formData)
+})
+const timeDataValue = computed({
+  get: (): ProductTime => ({
+    startDate: unix(props.formData.startAt).format('YYYY-MM-DD'),
+    startTime: unix(props.formData.startAt).format('HH:mm'),
+    endDate: unix(props.formData.endAt).format('YYYY-MM-DD'),
+    endTime: unix(props.formData.endAt).format('HH:mm')
+  }),
+  set: (timeData: ProductTime): void => {
+    const startAt = dayjs(`${timeData.startDate} ${timeData.startTime}`)
+    const endAt = dayjs(`${timeData.endDate} ${timeData.endTime}`)
+    formDataValue.value.startAt = startAt.unix()
+    formDataValue.value.endAt = endAt.unix()
+  }
+})
+const productStatus = computed<ProductStatus>(() => {
+  if (!formDataValue.value.public) {
+    return ProductStatus.PRIVATE
+  }
+  if (!formDataValue.value.startAt || !formDataValue.value.endAt) {
+    return ProductStatus.UNKNOWN
+  }
+  const now = dayjs()
+  const startAt = unix(formDataValue.value.startAt)
+  const endAt = unix(formDataValue.value.endAt)
+  if (now.isBefore(startAt)) {
+    return ProductStatus.PRESALE
+  }
+  if (now.isAfter(endAt)) {
+    return ProductStatus.OUT_OF_SALES
+  }
+  return ProductStatus.FOR_SALE
 })
 const selectedCategoryIdValue = computed({
   get: (): string => props.selectedCategoryId || '',
@@ -172,7 +232,18 @@ const thumbnailIndex = computed<number>({
   }
 })
 
-const validate = useVuelidate(rules, formDataValue)
+const formDataValidate = useVuelidate(formDataRules, formDataValue)
+const timeDataValidate = useVuelidate(timeDataRules, timeDataValue)
+
+const onChangeStartAt = (): void => {
+  const startAt = dayjs(`${timeDataValue.value.startDate} ${timeDataValue.value.startTime}`)
+  formDataValue.value.startAt = startAt.unix()
+}
+
+const onChangeEndAt = (): void => {
+  const endAt = dayjs(`${timeDataValue.value.endDate} ${timeDataValue.value.endTime}`)
+  formDataValue.value.endAt = endAt.unix()
+}
 
 const getCommission = (): number => {
   return Math.trunc(formDataValue.value.price * 0.1)
@@ -208,9 +279,10 @@ const onDeleteThumbnail = (i: number): void => {
   formDataValue.value.media = media
 }
 
-const onSubmit = (): void => {
-  const valid = validate.value.$validate()
-  if (!valid) {
+const onSubmit = async (): Promise<void> => {
+  const formDataValid = await formDataValidate.value.$validate()
+  const timeDataValid = await timeDataValidate.value.$validate()
+  if (!formDataValid || !timeDataValid) {
     return
   }
 
@@ -230,16 +302,16 @@ const onSubmit = (): void => {
           <v-card-title>基本情報</v-card-title>
           <v-card-text>
             <v-select
-              v-model="validate.producerId.$model"
-              :error-messages="getErrorMessage(validate.producerId.$errors)"
+              v-model="formDataValidate.producerId.$model"
+              :error-messages="getErrorMessage(formDataValidate.producerId.$errors)"
               label="生産者名"
               :items="producers"
               item-title="username"
               item-value="id"
             />
             <v-text-field
-              v-model="validate.name.$model"
-              :error-messages="getErrorMessage(validate.name.$errors)"
+              v-model="formDataValidate.name.$model"
+              :error-messages="getErrorMessage(formDataValidate.name.$errors)"
               label="商品名"
               outlined
             />
@@ -249,8 +321,8 @@ const onSubmit = (): void => {
           <v-card-text>
             <client-only>
               <tiptap-editor
-                v-model="validate.description.$model"
-                :error-message="getErrorMessage(validate.description.$errors)"
+                v-model="formDataValidate.description.$model"
+                :error-message="getErrorMessage(formDataValidate.description.$errors)"
                 class="mb-4"
               />
             </client-only>
@@ -258,7 +330,7 @@ const onSubmit = (): void => {
 
           <v-card-subtitle>商品画像登録</v-card-subtitle>
           <v-card-text>
-            <v-radio-group v-model="thumbnailIndex" :error-messages="getErrorMessage(validate.media.$errors)">
+            <v-radio-group v-model="thumbnailIndex" :error-messages="getErrorMessage(formDataValidate.media.$errors)">
               <v-row>
                 <v-col
                   v-for="(img, i) in formDataValue.media"
@@ -299,31 +371,31 @@ const onSubmit = (): void => {
 
           <v-card-text>
             <v-text-field
-              v-model="validate.recommendedPoint1.$model"
-              :error-messages="getErrorMessage(validate.recommendedPoint1.$errors)"
+              v-model="formDataValidate.recommendedPoint1.$model"
+              :error-messages="getErrorMessage(formDataValidate.recommendedPoint1.$errors)"
               label="おすすめポイント1"
             />
             <v-text-field
-              v-model="validate.recommendedPoint2.$model"
-              :error-messages="getErrorMessage(validate.recommendedPoint2.$errors)"
+              v-model="formDataValidate.recommendedPoint2.$model"
+              :error-messages="getErrorMessage(formDataValidate.recommendedPoint2.$errors)"
               label="おすすめポイント2"
             />
             <v-text-field
-              v-model="validate.recommendedPoint3.$model"
-              :error-messages="getErrorMessage(validate.recommendedPoint3.$errors)"
+              v-model="formDataValidate.recommendedPoint3.$model"
+              :error-messages="getErrorMessage(formDataValidate.recommendedPoint3.$errors)"
               label="おすすめポイント3"
             />
             <v-text-field
-              v-model.number="validate.expirationDate.$model"
-              :error-messages="getErrorMessage(validate.expirationDate.$errors)"
+              v-model.number="formDataValidate.expirationDate.$model"
+              :error-messages="getErrorMessage(formDataValidate.expirationDate.$errors)"
               label="賞味期限"
               type="number"
               min="0"
               suffix="日"
             />
             <v-select
-              v-model="validate.storageMethodType.$model"
-              :error-messages="getErrorMessage(validate.storageMethodType.$errors)"
+              v-model="formDataValidate.storageMethodType.$model"
+              :error-messages="getErrorMessage(formDataValidate.storageMethodType.$errors)"
               label="保存方法"
               :items="storageMethodTypes"
             />
@@ -334,16 +406,16 @@ const onSubmit = (): void => {
           <v-card-title>価格設定</v-card-title>
           <v-card-text>
             <v-text-field
-              v-model.number="validate.price.$model"
-              :error-messages="getErrorMessage(validate.price.$errors)"
+              v-model.number="formDataValidate.price.$model"
+              :error-messages="getErrorMessage(formDataValidate.price.$errors)"
               label="販売価格(税込)"
               type="number"
               min="0"
               suffix="円"
             />
             <v-text-field
-              v-model.number="validate.cost.$model"
-              :error-messages="getErrorMessage(validate.cost.$errors)"
+              v-model.number="formDataValidate.cost.$model"
+              :error-messages="getErrorMessage(formDataValidate.cost.$errors)"
               label="原価"
               type="number"
               min="0"
@@ -385,8 +457,8 @@ const onSubmit = (): void => {
             <v-row>
               <v-col cols="9">
                 <v-text-field
-                  v-model.number="validate.inventory.$model"
-                  :error-messages="getErrorMessage(validate.inventory.$errors)"
+                  v-model.number="formDataValidate.inventory.$model"
+                  :error-messages="getErrorMessage(formDataValidate.inventory.$errors)"
                   label="在庫数"
                   type="number"
                   min="0"
@@ -394,8 +466,8 @@ const onSubmit = (): void => {
               </v-col>
               <v-col cols="3">
                 <v-combobox
-                  v-model="validate.itemUnit.$model"
-                  :error-messages="getErrorMessage(validate.itemUnit.$errors)"
+                  v-model="formDataValidate.itemUnit.$model"
+                  :error-messages="getErrorMessage(formDataValidate.itemUnit.$errors)"
                   label="単位"
                   :items="itemUnits"
                 />
@@ -404,8 +476,8 @@ const onSubmit = (): void => {
 
             <div class="d-flex align-center">
               <v-text-field
-                v-model="validate.itemDescription.$model"
-                :error-messages="getErrorMessage(validate.itemDescription.$errors)"
+                v-model="formDataValidate.itemDescription.$model"
+                :error-messages="getErrorMessage(formDataValidate.itemDescription.$errors)"
                 label="内容説明(発送時に使用)"
                 placeholder="1個あたり、3kg程のみかんが入っています。(40~50個)"
               />
@@ -417,14 +489,14 @@ const onSubmit = (): void => {
           <v-card-title>配送設定</v-card-title>
           <v-card-text>
             <v-text-field
-              v-model.number="validate.weight.$model"
-              :error-messages="getErrorMessage(validate.weight.$errors)"
+              v-model.number="formDataValidate.weight.$model"
+              :error-messages="getErrorMessage(formDataValidate.weight.$errors)"
               label="重さ"
               suffix="kg"
             />
             <v-select
-              v-model="validate.deliveryType.$model"
-              :error-messages="getErrorMessage(validate.deliveryType.$errors)"
+              v-model="formDataValidate.deliveryType.$model"
+              :error-messages="getErrorMessage(formDataValidate.deliveryType.$errors)"
               label="配送種別"
               :items="deliveryTypes"
             />
@@ -445,8 +517,8 @@ const onSubmit = (): void => {
               </v-col>
               <v-col cols="9">
                 <v-text-field
-                  v-model.number="validate[`box${size}Rate`].$model"
-                  :error-messages="getErrorMessage(validate[`box${size}Rate`].$errors)"
+                  v-model.number="formDataValidate[`box${size}Rate`].$model"
+                  :error-messages="getErrorMessage(formDataValidate[`box${size}Rate`].$errors)"
                   label="占有率"
                   type="number"
                   min="0"
@@ -455,6 +527,62 @@ const onSubmit = (): void => {
                 />
               </v-col>
             </v-row>
+
+            <p class="text-subtitle-2 text-grey py-2">
+              販売期間
+            </p>
+            <div class="d-flex flex-column flex-md-row justify-center">
+              <v-text-field
+                v-model="timeDataValidate.startDate.$model"
+                :error-messages="getErrorMessage(timeDataValidate.startDate.$errors)"
+                type="date"
+                variant="outlined"
+                density="compact"
+                class="mr-md-2"
+                @update:model-value="onChangeStartAt"
+              />
+              <v-text-field
+                v-model="timeDataValidate.startTime.$model"
+                :error-messages="getErrorMessage(timeDataValidate.startTime.$errors)"
+                type="time"
+                variant="outlined"
+                density="compact"
+                @update:model-value="onChangeStartAt"
+              />
+              <p class="text-subtitle-2 mx-4 pt-md-3 pb-4 pb-md-6">
+                〜
+              </p>
+              <v-text-field
+                v-model="timeDataValidate.endDate.$model"
+                :error-messages="getErrorMessage(timeDataValidate.endDate.$errors)"
+                type="date"
+                variant="outlined"
+                density="compact"
+                class="mr-md-2"
+                @update:model-value="onChangeEndAt"
+              />
+              <v-text-field
+                v-model="timeDataValidate.endTime.$model"
+                :error-messages="getErrorMessage(timeDataValidate.endTime.$errors)"
+                type="time"
+                variant="outlined"
+                density="compact"
+                @update:model-value="onChangeEndAt"
+              />
+            </div>
+
+            <v-select
+              v-model="formDataValidate.businessDays.$model"
+              label="営業日(発送可能日)"
+              :error-messages="getErrorMessage(formDataValidate.businessDays.$errors)"
+              :items="weekdays"
+              item-title="title"
+              item-value="value"
+              chips
+              closable-chips
+              multiple
+              density="comfortable"
+            />
           </v-card-text>
         </v-card>
       </div>
@@ -465,10 +593,19 @@ const onSubmit = (): void => {
         <v-card-title>商品ステータス</v-card-title>
         <v-card-text>
           <v-select
-            v-model="validate.public.$model"
-            :error-messages="getErrorMessage(validate.public.$errors)"
-            label="ステータス"
+            v-model="formDataValidate.public.$model"
+            :error-messages="getErrorMessage(formDataValidate.public.$errors)"
+            label="公開状況"
             :items="statuses"
+          />
+          <v-select
+            v-model="productStatus"
+            label="販売状況"
+            :items="productStatuses"
+            item-title="title"
+            item-value="value"
+            variant="plain"
+            readonly
           />
         </v-card-text>
       </v-card>
@@ -484,8 +621,8 @@ const onSubmit = (): void => {
             item-value="id"
           />
           <v-select
-            v-model="validate.productTypeId.$model"
-            :error-messages="getErrorMessage(validate.productTypeId.$errors)"
+            v-model="formDataValidate.productTypeId.$model"
+            :error-messages="getErrorMessage(formDataValidate.productTypeId.$errors)"
             label="品目"
             :items="productTypes"
             item-title="name"
@@ -493,16 +630,16 @@ const onSubmit = (): void => {
             no-data-text="カテゴリを先に選択してください。"
           />
           <v-select
-            v-model="validate.originPrefecture.$model"
-            :error-messages="getErrorMessage(validate.originPrefecture.$errors)"
+            v-model="formDataValidate.originPrefecture.$model"
+            :error-messages="getErrorMessage(formDataValidate.originPrefecture.$errors)"
             label="原産地（都道府県）"
             :items="prefecturesList"
             item-title="text"
             item-value="value"
           />
           <v-select
-            v-model="validate.originCity.$model"
-            :error-messages="getErrorMessage(validate.originCity.$errors)"
+            v-model="formDataValidate.originCity.$model"
+            :error-messages="getErrorMessage(formDataValidate.originCity.$errors)"
             :items="cityListItems"
             item-title="text"
             item-value="text"
@@ -510,9 +647,9 @@ const onSubmit = (): void => {
             no-data-text="原産地（都道府県）を先に選択してください。"
           />
           <v-select
-            v-model="validate.productTagIds.$model"
+            v-model="formDataValidate.productTagIds.$model"
             label="商品タグ"
-            :error-messages="getErrorMessage(validate.productTagIds.$errors)"
+            :error-messages="getErrorMessage(formDataValidate.productTagIds.$errors)"
             :items="productTags"
             item-title="name"
             item-value="id"

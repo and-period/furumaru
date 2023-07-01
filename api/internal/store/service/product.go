@@ -119,6 +119,9 @@ func (s *service) CreateProduct(ctx context.Context, in *store.CreateProductInpu
 		Box100Rate:        in.Box100Rate,
 		OriginPrefecture:  in.OriginPrefecture,
 		OriginCity:        in.OriginCity,
+		BusinessDays:      in.BusinessDays,
+		StartAt:           in.StartAt,
+		EndAt:             in.EndAt,
 	}
 	product := entity.NewProduct(params)
 	if err := s.db.Product.Create(ctx, product); err != nil {
@@ -186,6 +189,9 @@ func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInpu
 		Box100Rate:        in.Box100Rate,
 		OriginPrefecture:  in.OriginPrefecture,
 		OriginCity:        in.OriginCity,
+		BusinessDays:      in.BusinessDays,
+		StartAt:           in.StartAt,
+		EndAt:             in.EndAt,
 	}
 	if err := s.db.Product.Update(ctx, in.ProductID, params); err != nil {
 		return exception.InternalError(err)

@@ -1,5 +1,7 @@
 package request
 
+import "time"
+
 type CreateProductRequest struct {
 	Name              string                `json:"name,omitempty"`              // 商品名
 	Description       string                `json:"description,omitempty"`       // 商品説明
@@ -25,6 +27,9 @@ type CreateProductRequest struct {
 	Box100Rate        int64                 `json:"box100Rate,omitempty"`        // 箱の占有率(サイズ:100)
 	OriginPrefecture  string                `json:"originPrefecture,omitempty"`  // 原産地(都道府県)
 	OriginCity        string                `json:"originCity,omitempty"`        // 原産地(市区町村)
+	BusinessDays      []time.Weekday        `json:"businessDays,omitempty"`      // 営業曜日(発送可能日)
+	StartAt           int64                 `json:"startAt,omitempty"`           // 販売開始日時
+	EndAt             int64                 `json:"endAt,omitempty"`             // 販売終了日時
 }
 
 type CreateProductMedia struct {
@@ -57,6 +62,9 @@ type UpdateProductRequest struct {
 	Box100Rate        int64                 `json:"box100Rate,omitempty"`        // 箱の占有率(サイズ:100)
 	OriginPrefecture  string                `json:"originPrefecture,omitempty"`  // 原産地(都道府県)
 	OriginCity        string                `json:"originCity,omitempty"`        // 原産地(市区町村)
+	BusinessDays      []time.Weekday        `json:"businessDays,omitempty"`      // 営業曜日(発送可能日)
+	StartAt           int64                 `json:"startAt,omitempty"`           // 販売開始日時
+	EndAt             int64                 `json:"endAt,omitempty"`             // 販売終了日時
 }
 
 type UpdateProductMedia struct {

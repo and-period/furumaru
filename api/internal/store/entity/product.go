@@ -13,6 +13,17 @@ import (
 
 var errOnlyOneThumbnail = errors.New("entity: only one thumbnail is available")
 
+// ProductStatus - 販売状況
+type ProductStatus int32
+
+const (
+	ProductStatusUnknown   ProductStatus = 0
+	ProductStatusPrivate   ProductStatus = 1 // 非公開
+	ProductStatusPresale   ProductStatus = 2 // 予約受付中
+	ProductStatusForSale   ProductStatus = 3 // 販売中
+	ProductStatusOutOfSale ProductStatus = 4 // 販売期間外
+)
+
 // WeightUnit - 重量単位
 type WeightUnit int32
 
@@ -65,6 +76,7 @@ type Product struct {
 	Name                  string            `gorm:""`                                       // 商品名
 	Description           string            `gorm:""`                                       // 商品説明
 	Public                bool              `gorm:""`                                       // 公開フラグ
+	Status                ProductStatus     `gorm:"-"`                                      // 販売状況
 	Inventory             int64             `gorm:""`                                       // 在庫数
 	Weight                int64             `gorm:""`                                       // 重量
 	WeightUnit            WeightUnit        `gorm:""`                                       // 重量単位
@@ -85,6 +97,10 @@ type Product struct {
 	Box100Rate            int64             `gorm:""`                                       // 箱の占有率(サイズ:100)
 	OriginPrefecture      int64             `gorm:""`                                       // 原産地(都道府県)
 	OriginCity            string            `gorm:""`                                       // 原産地(市区町村)
+	BusinessDays          []time.Weekday    `gorm:"-"`                                      // 営業曜日(発送可能日)一覧
+	BusinessDaysJSON      datatypes.JSON    `gorm:"default:null;column:business_days"`      // 営業曜日(発送可能日)一覧(JSON)
+	StartAt               time.Time         `gorm:""`                                       // 販売開始日時
+	EndAt                 time.Time         `gorm:""`                                       // 販売終了日時
 	CreatedAt             time.Time         `gorm:"<-:create"`                              // 登録日時
 	UpdatedAt             time.Time         `gorm:""`                                       // 更新日時
 	DeletedAt             gorm.DeletedAt    `gorm:"default:null"`                           // 削除日時
@@ -126,6 +142,9 @@ type NewProductParams struct {
 	Box100Rate        int64
 	OriginPrefecture  int64
 	OriginCity        string
+	BusinessDays      []time.Weekday
+	StartAt           time.Time
+	EndAt             time.Time
 }
 
 func NewProduct(params *NewProductParams) *Product {
@@ -155,6 +174,9 @@ func NewProduct(params *NewProductParams) *Product {
 		Box100Rate:        params.Box100Rate,
 		OriginPrefecture:  params.OriginPrefecture,
 		OriginCity:        params.OriginCity,
+		BusinessDays:      params.BusinessDays,
+		StartAt:           params.StartAt,
+		EndAt:             params.EndAt,
 	}
 }
 
@@ -165,7 +187,7 @@ func (p *Product) Validate() error {
 	return p.Media.Validate()
 }
 
-func (p *Product) Fill() (err error) {
+func (p *Product) Fill(now time.Time) (err error) {
 	p.TagIDs, err = p.unmarshalTagIDs()
 	if err != nil {
 		return
@@ -178,7 +200,27 @@ func (p *Product) Fill() (err error) {
 	if err != nil {
 		return
 	}
+	p.BusinessDays, err = p.unmarshalBusinessDays()
+	if err != nil {
+		return
+	}
+	p.SetStatus(now)
 	return
+}
+
+func (p *Product) SetStatus(now time.Time) {
+	if !p.Public {
+		p.Status = ProductStatusPrivate
+		return
+	}
+	switch {
+	case now.Before(p.StartAt):
+		p.Status = ProductStatusPresale
+	case now.Before(p.EndAt):
+		p.Status = ProductStatusForSale
+	default:
+		p.Status = ProductStatusOutOfSale
+	}
 }
 
 func (p *Product) unmarshalTagIDs() ([]string, error) {
@@ -205,6 +247,14 @@ func (p *Product) unmarshalRecommendedPoints() ([]string, error) {
 	return points, json.Unmarshal(p.RecommendedPointsJSON, &points)
 }
 
+func (p *Product) unmarshalBusinessDays() ([]time.Weekday, error) {
+	if p.BusinessDaysJSON == nil {
+		return []time.Weekday{}, nil
+	}
+	var days []time.Weekday
+	return days, json.Unmarshal(p.BusinessDaysJSON, &days)
+}
+
 func (p *Product) FillJSON() error {
 	media, err := p.Media.Marshal()
 	if err != nil {
@@ -218,9 +268,14 @@ func (p *Product) FillJSON() error {
 	if err != nil {
 		return err
 	}
+	days, err := ProductMarshalBusinessDays(p.BusinessDays)
+	if err != nil {
+		return err
+	}
 	p.MediaJSON = datatypes.JSON(media)
 	p.TagIDsJSON = datatypes.JSON(tagIDs)
 	p.RecommendedPointsJSON = datatypes.JSON(points)
+	p.BusinessDaysJSON = datatypes.JSON(days)
 	return nil
 }
 
@@ -232,9 +287,13 @@ func ProductMarshalRecommendedPoints(points []string) ([]byte, error) {
 	return json.Marshal(points)
 }
 
-func (ps Products) Fill() error {
+func ProductMarshalBusinessDays(days []time.Weekday) ([]byte, error) {
+	return json.Marshal(days)
+}
+
+func (ps Products) Fill(now time.Time) error {
 	for i := range ps {
-		if err := ps[i].Fill(); err != nil {
+		if err := ps[i].Fill(now); err != nil {
 			return err
 		}
 	}

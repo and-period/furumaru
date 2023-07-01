@@ -199,6 +199,8 @@ components:
       $ref: './components/schemas/codes/auth.yaml#/adminStatus'
     prefecture:
       $ref: './components/schemas/codes/common.yaml#/prefecture'
+    weekday:
+      $ref: './components/schemas/codes/common.yaml#/weekday'
     contactStatus:
       $ref: './components/schemas/codes/contact.yaml#/contactStatus'
     contactPriority:
@@ -227,6 +229,8 @@ components:
       $ref: './components/schemas/codes/order_payment.yaml#/paymentStatus'
     orderRefundType:
       $ref: './components/schemas/codes/order_refund.yaml#/orderRefundType'
+    productStatus:
+      $ref: './components/schemas/codes/product.yaml#/productStatus'
     deliveryType:
       $ref: './components/schemas/codes/product.yaml#/deliveryType'
     storageMethodType:

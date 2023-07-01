@@ -8,6 +8,17 @@ import (
 	"github.com/shopspring/decimal"
 )
 
+// ProductStatus - 商品販売状況
+type ProductStatus int32
+
+const (
+	ProductStatusUnknown   ProductStatus = 0
+	ProductStatusPrivate   ProductStatus = 1 // 非公開
+	ProductStatusPresale   ProductStatus = 2 // 予約受付中
+	ProductStatusForSale   ProductStatus = 3 // 販売中
+	ProductStatusOutOfSale ProductStatus = 4 // 販売期間外
+)
+
 // StorageMethodType - 保存方法
 type StorageMethodType int32
 
@@ -40,6 +51,25 @@ type ProductMedia struct {
 }
 
 type MultiProductMedia []*ProductMedia
+
+func NewProductStatus(status entity.ProductStatus) ProductStatus {
+	switch status {
+	case entity.ProductStatusPrivate:
+		return ProductStatusPrivate
+	case entity.ProductStatusPresale:
+		return ProductStatusPresale
+	case entity.ProductStatusForSale:
+		return ProductStatusForSale
+	case entity.ProductStatusOutOfSale:
+		return ProductStatusOutOfSale
+	default:
+		return ProductStatusUnknown
+	}
+}
+
+func (s ProductStatus) Response() int32 {
+	return int32(s)
+}
 
 func NewStorageMethodType(typ entity.StorageMethodType) StorageMethodType {
 	switch typ {
@@ -153,6 +183,7 @@ func NewProduct(product *entity.Product) *Product {
 			Name:              product.Name,
 			Description:       product.Description,
 			Public:            product.Public,
+			Status:            NewProductStatus(product.Status).Response(),
 			Inventory:         product.Inventory,
 			Weight:            NewProductWeight(product.Weight, product.WeightUnit),
 			ItemUnit:          product.ItemUnit,
@@ -171,6 +202,9 @@ func NewProduct(product *entity.Product) *Product {
 			Box100Rate:        product.Box100Rate,
 			OriginPrefecture:  codes.PrefectureNames[product.OriginPrefecture],
 			OriginCity:        product.OriginCity,
+			BusinessDays:      product.BusinessDays,
+			StartAt:           product.StartAt.Unix(),
+			EndAt:             product.EndAt.Unix(),
 			CreatedAt:         product.CreatedAt.Unix(),
 			UpdatedAt:         product.CreatedAt.Unix(),
 		},

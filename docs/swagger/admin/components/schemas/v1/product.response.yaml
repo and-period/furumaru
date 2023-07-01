@@ -13,6 +13,8 @@ productResponse:
     public:
       type: boolean
       description: 公開フラグ
+    status:
+      $ref: './../../../openapi.yaml#/components/schemas/productStatus'
     producerId:
       type: string
       description: 生産者ID
@@ -139,6 +141,19 @@ productResponse:
     originCity:
       type: string
       description: 原産地(市区町村)
+    businessDays:
+      type: array
+      description: 営業曜日
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/weekday'
+    startAt:
+      type: integer
+      format: int64
+      description: 販売開始日時 (unixtime)
+    endAt:
+      type: integer
+      format: int64
+      description: 販売終了日時 (unixtime)
     createdAt:
       type: integer
       format: int64
@@ -152,6 +167,7 @@ productResponse:
   - name
   - description
   - public
+  - status
   - producerId
   - producerName
   - categoryId
@@ -179,6 +195,9 @@ productResponse:
   - box100Rate
   - originPrefecture
   - originCity
+  - businessDays
+  - startAt
+  - endAt
   - createdAt
   - updatedAt
   example:
@@ -186,6 +205,7 @@ productResponse:
     name: '新鮮なじゃがいも'
     description: '新鮮なじゃがいもをお届けします。'
     public: true
+    status: 2
     producerId: 'kSByoE6FetnPs5Byk3a9Zx'
     producerName: '&.農園'
     categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -231,6 +251,9 @@ productResponse:
     box100Rate: 40
     originPrefecture: 'tokyo'
     originCity: '彦根市'
+    businessDays: [1,2,3,4,5]
+    startAt: 1640962800
+    endAt: 1640962800
     createdAt: 1640962800
     updatedAt: 1640962800
 productsResponse:
@@ -393,6 +416,7 @@ productsResponse:
         - name
         - description
         - public
+        - status
         - producerId
         - producerName
         - categoryId
@@ -420,6 +444,9 @@ productsResponse:
         - box100Rate
         - originPrefecture
         - originCity
+        - businessDays
+        - startAt
+        - endAt
         - createdAt
         - updatedAt
     total:
@@ -435,6 +462,7 @@ productsResponse:
       name: '新鮮なじゃがいも'
       description: '新鮮なじゃがいもをお届けします。'
       public: true
+      status: 1
       producerId: 'kSByoE6FetnPs5Byk3a9Zx'
       producerName: '&.農園'
       categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -480,12 +508,16 @@ productsResponse:
       box100Rate: 40
       originPrefecture: 'tokyo'
       originCity: '彦根市'
+      businessDays: [1,2,3,4,5]
+      startAt: 1640962800
+      endAt: 1640962800
       createdAt: 1640962800
       updatedAt: 1640962800
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       name: '新鮮なじゃがいも'
       description: '新鮮なじゃがいもをお届けします。'
       public: true
+      status: 1
       producerId: 'kSByoE6FetnPs5Byk3a9Zx'
       producerName: '&.農園'
       categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -519,5 +551,8 @@ productsResponse:
       box100Rate: 40
       originPrefecture: 'tokyo'
       originCity: '彦根市'
+      businessDays: [1,2,3,4,5]
+      startAt: 1640962800
+      endAt: 1640962800
       createdAt: 1640962800
       updatedAt: 1640962800

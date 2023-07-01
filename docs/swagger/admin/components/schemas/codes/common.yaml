@@ -149,3 +149,32 @@ prefecture:
   - 宮崎県
   - 鹿児島県
   - 沖縄県
+weekday:
+  type: integer
+  format: int32
+  description: 曜日
+  nullable: false
+  enum:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  x-enum-varnames:
+  - SUNDAY
+  - MONDAY
+  - TUESDAY
+  - WEDNESDAY
+  - THURSDAY
+  - FRIDAY
+  - SATURDAY
+  x-enum-descriptions:
+  - 日曜日
+  - 月曜日
+  - 火曜日
+  - 水曜日
+  - 木曜日
+  - 金曜日
+  - 土曜日

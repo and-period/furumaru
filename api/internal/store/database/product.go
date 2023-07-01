@@ -42,7 +42,7 @@ func (p *product) List(ctx context.Context, params *ListProductsParams, fields .
 	if err := stmt.Find(&products).Error; err != nil {
 		return nil, exception.InternalError(err)
 	}
-	if err := products.Fill(); err != nil {
+	if err := products.Fill(p.now()); err != nil {
 		return nil, exception.InternalError(err)
 	}
 	return products, nil
@@ -62,7 +62,7 @@ func (p *product) MultiGet(ctx context.Context, productIDs []string, fields ...s
 	if err := stmt.Find(&products).Error; err != nil {
 		return nil, exception.InternalError(err)
 	}
-	if err := products.Fill(); err != nil {
+	if err := products.Fill(p.now()); err != nil {
 		return nil, exception.InternalError(err)
 	}
 	return products, nil
@@ -94,11 +94,26 @@ func (p *product) Update(ctx context.Context, productID string, params *UpdatePr
 			return err
 		}
 
+		tagIDs, err := entity.ProductMarshalTagIDs(params.TagIDs)
+		if err != nil {
+			return fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
+		}
+		points, err := entity.ProductMarshalRecommendedPoints(params.RecommendedPoints)
+		if err != nil {
+			return fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
+		}
+		days, err := entity.ProductMarshalBusinessDays(params.BusinessDays)
+		if err != nil {
+			return fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
+		}
+
 		updates := map[string]interface{}{
 			"producer_id":         params.ProducerID,
 			"product_type_id":     params.TypeID,
+			"product_tag_ids":     tagIDs,
 			"name":                params.Name,
 			"description":         params.Description,
+			"recommended_points":  points,
 			"public":              params.Public,
 			"inventory":           params.Inventory,
 			"weight":              params.Weight,
@@ -115,7 +130,10 @@ func (p *product) Update(ctx context.Context, productID string, params *UpdatePr
 			"box80_rate":          params.Box80Rate,
 			"box100_rate":         params.Box100Rate,
 			"origin_prefecture":   params.OriginPrefecture,
+			"business_days":       days,
 			"origin_city":         params.OriginCity,
+			"start_at":            params.StartAt,
+			"end_at":              params.EndAt,
 			"updated_at":          p.now(),
 		}
 		if len(params.Media) > 0 {
@@ -125,21 +143,8 @@ func (p *product) Update(ctx context.Context, productID string, params *UpdatePr
 			}
 			updates["media"] = media
 		}
-		if len(params.TagIDs) > 0 {
-			tagIDs, err := entity.ProductMarshalTagIDs(params.TagIDs)
-			if err != nil {
-				return fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
-			}
-			updates["product_tag_ids"] = tagIDs
-		}
-		if len(params.RecommendedPoints) > 0 {
-			points, err := entity.ProductMarshalRecommendedPoints(params.RecommendedPoints)
-			if err != nil {
-				return fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
-			}
-			updates["recommended_points"] = points
-		}
-		err := tx.WithContext(ctx).
+
+		err = tx.WithContext(ctx).
 			Table(productTable).
 			Where("id = ?", productID).
 			Updates(updates).Error
@@ -205,7 +210,7 @@ func (p *product) get(ctx context.Context, tx *gorm.DB, productID string, fields
 	if err != nil {
 		return nil, err
 	}
-	if err := product.Fill(); err != nil {
+	if err := product.Fill(p.now()); err != nil {
 		return nil, err
 	}
 	return product, nil

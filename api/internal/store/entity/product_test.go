@@ -2,6 +2,7 @@ package entity
 
 import (
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
@@ -11,6 +12,7 @@ import (
 
 func TestProduct(t *testing.T) {
 	t.Parallel()
+	now := time.Now()
 	tests := []struct {
 		name   string
 		params *NewProductParams
@@ -19,9 +21,9 @@ func TestProduct(t *testing.T) {
 		{
 			name: "success",
 			params: &NewProductParams{
+				ProducerID:      "producer-id",
 				TypeID:          "type-id",
 				TagIDs:          []string{"tag-id"},
-				ProducerID:      "producer-id",
 				Name:            "新鮮なじゃがいも",
 				Description:     "新鮮なじゃがいもをお届けします。",
 				Public:          true,
@@ -38,6 +40,7 @@ func TestProduct(t *testing.T) {
 				Price:             400,
 				Cost:              300,
 				ExpirationDate:    7,
+				RecommendedPoints: []string{"おすすめポイント"},
 				StorageMethodType: StorageMethodTypeNormal,
 				DeliveryType:      DeliveryTypeNormal,
 				Box60Rate:         50,
@@ -45,14 +48,19 @@ func TestProduct(t *testing.T) {
 				Box100Rate:        30,
 				OriginPrefecture:  codes.PrefectureValues["shiga"],
 				OriginCity:        "彦根市",
+				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+				StartAt:           now,
+				EndAt:             now.AddDate(1, 0, 0),
 			},
 			expect: &Product{
+				ID:              "", // ignore
+				ProducerID:      "producer-id",
 				TypeID:          "type-id",
 				TagIDs:          []string{"tag-id"},
-				ProducerID:      "producer-id",
 				Name:            "新鮮なじゃがいも",
 				Description:     "新鮮なじゃがいもをお届けします。",
 				Public:          true,
+				Status:          0,
 				Inventory:       100,
 				Weight:          100,
 				WeightUnit:      WeightUnitGram,
@@ -66,6 +74,7 @@ func TestProduct(t *testing.T) {
 				Price:             400,
 				Cost:              300,
 				ExpirationDate:    7,
+				RecommendedPoints: []string{"おすすめポイント"},
 				StorageMethodType: StorageMethodTypeNormal,
 				DeliveryType:      DeliveryTypeNormal,
 				Box60Rate:         50,
@@ -73,6 +82,9 @@ func TestProduct(t *testing.T) {
 				Box100Rate:        30,
 				OriginPrefecture:  codes.PrefectureValues["shiga"],
 				OriginCity:        "彦根市",
+				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+				StartAt:           now,
+				EndAt:             now.AddDate(1, 0, 0),
 			},
 		},
 	}
@@ -139,7 +151,7 @@ func TestProduct_Validate(t *testing.T) {
 
 func TestProduct_Fill(t *testing.T) {
 	t.Parallel()
-
+	now := time.Now()
 	tests := []struct {
 		name    string
 		product *Product
@@ -154,10 +166,15 @@ func TestProduct_Fill(t *testing.T) {
 				TagIDsJSON:            datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
 				MediaJSON:             datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":[{"url":"https://and-period.jp/thumbnail_240.png","size":1}]}]`)),
 				RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+				BusinessDaysJSON:      datatypes.JSON([]byte(`[1,3,5]`)),
+				Public:                true,
+				StartAt:               now.AddDate(0, -1, 0),
+				EndAt:                 now.AddDate(0, 1, 0),
 			},
 			expect: &Product{
-				ID:   "product-id",
-				Name: "&.農園のみかん",
+				ID:     "product-id",
+				Name:   "&.農園のみかん",
+				Status: ProductStatusForSale,
 				TagIDs: []string{
 					"tag-id01",
 					"tag-id02",
@@ -181,6 +198,11 @@ func TestProduct_Fill(t *testing.T) {
 					"ポイント2",
 				},
 				RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+				BusinessDays:          []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+				BusinessDaysJSON:      datatypes.JSON([]byte(`[1,3,5]`)),
+				Public:                true,
+				StartAt:               now.AddDate(0, -1, 0),
+				EndAt:                 now.AddDate(0, 1, 0),
 			},
 			hasErr: false,
 		},
@@ -190,9 +212,62 @@ func TestProduct_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			err := tt.product.Fill()
+			err := tt.product.Fill(now)
 			assert.Equal(t, tt.hasErr, err != nil, err)
 			assert.Equal(t, tt.expect, tt.product)
+		})
+	}
+}
+
+func TestProduct_SetStatus(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name    string
+		product *Product
+		expect  ProductStatus
+	}{
+		{
+			name: "private",
+			product: &Product{
+				Public: false,
+			},
+			expect: ProductStatusPrivate,
+		},
+		{
+			name: "presale",
+			product: &Product{
+				Public:  true,
+				StartAt: now.AddDate(0, 1, 0),
+				EndAt:   now.AddDate(0, 1, 0),
+			},
+			expect: ProductStatusPresale,
+		},
+		{
+			name: "for sale",
+			product: &Product{
+				Public:  true,
+				StartAt: now.AddDate(0, -1, 0),
+				EndAt:   now.AddDate(0, 1, 0),
+			},
+			expect: ProductStatusForSale,
+		},
+		{
+			name: "out of sale",
+			product: &Product{
+				Public:  true,
+				StartAt: now.AddDate(0, -1, 0),
+				EndAt:   now.AddDate(0, -1, 0),
+			},
+			expect: ProductStatusOutOfSale,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.product.SetStatus(now)
+			assert.Equal(t, tt.expect, tt.product.Status)
 		})
 	}
 }
@@ -231,6 +306,11 @@ func TestProduct_FillJSON(t *testing.T) {
 					"ポイント1",
 					"ポイント2",
 				},
+				BusinessDays: []time.Weekday{
+					time.Monday,
+					time.Wednesday,
+					time.Friday,
+				},
 			},
 			expect: &Product{
 				ID:   "product-id",
@@ -258,6 +338,12 @@ func TestProduct_FillJSON(t *testing.T) {
 					"ポイント2",
 				},
 				RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+				BusinessDays: []time.Weekday{
+					time.Monday,
+					time.Wednesday,
+					time.Friday,
+				},
+				BusinessDaysJSON: datatypes.JSON([]byte(`[1,3,5]`)),
 			},
 			hasErr: false,
 		},
@@ -276,7 +362,7 @@ func TestProduct_FillJSON(t *testing.T) {
 
 func TestProducts_Fill(t *testing.T) {
 	t.Parallel()
-
+	now := time.Now()
 	tests := []struct {
 		name     string
 		products Products
@@ -289,15 +375,19 @@ func TestProducts_Fill(t *testing.T) {
 				{
 					ID:                    "product-id",
 					Name:                  "&.農園のみかん",
+					Public:                false,
 					TagIDsJSON:            datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
 					MediaJSON:             datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":[{"url":"https://and-period.jp/thumbnail_240.png","size":1}]}]`)),
 					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+					BusinessDaysJSON:      datatypes.JSON([]byte(`[1,3,5]`)),
 				},
 			},
 			expect: Products{
 				{
-					ID:   "product-id",
-					Name: "&.農園のみかん",
+					ID:     "product-id",
+					Name:   "&.農園のみかん",
+					Public: false,
+					Status: ProductStatusPrivate,
 					TagIDs: []string{
 						"tag-id01",
 						"tag-id02",
@@ -321,6 +411,8 @@ func TestProducts_Fill(t *testing.T) {
 						"ポイント2",
 					},
 					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+					BusinessDays:          []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+					BusinessDaysJSON:      datatypes.JSON([]byte(`[1,3,5]`)),
 				},
 			},
 			hasErr: false,
@@ -334,18 +426,22 @@ func TestProducts_Fill(t *testing.T) {
 					TagIDsJSON:            datatypes.JSON(nil),
 					MediaJSON:             datatypes.JSON(nil),
 					RecommendedPointsJSON: datatypes.JSON(nil),
+					BusinessDaysJSON:      datatypes.JSON(nil),
 				},
 			},
 			expect: Products{
 				{
 					ID:                    "product-id",
 					Name:                  "&.農園のみかん",
+					Status:                ProductStatusPrivate,
 					TagIDs:                []string{},
 					TagIDsJSON:            datatypes.JSON(nil),
 					Media:                 MultiProductMedia{},
 					MediaJSON:             datatypes.JSON(nil),
 					RecommendedPoints:     []string{},
 					RecommendedPointsJSON: datatypes.JSON(nil),
+					BusinessDays:          []time.Weekday{},
+					BusinessDaysJSON:      datatypes.JSON(nil),
 				},
 			},
 			hasErr: false,
@@ -356,7 +452,7 @@ func TestProducts_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			err := tt.products.Fill()
+			err := tt.products.Fill(now)
 			assert.Equal(t, tt.hasErr, err != nil, err)
 			assert.ElementsMatch(t, tt.expect, tt.products)
 		})

@@ -2,6 +2,7 @@ package service
 
 import (
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
@@ -10,6 +11,48 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
 )
+
+func TestProductStatus(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		status entity.ProductStatus
+		expect ProductStatus
+	}{
+		{
+			name:   "private",
+			status: entity.ProductStatusPrivate,
+			expect: ProductStatusPrivate,
+		},
+		{
+			name:   "presale",
+			status: entity.ProductStatusPresale,
+			expect: ProductStatusPresale,
+		},
+		{
+			name:   "for sale",
+			status: entity.ProductStatusForSale,
+			expect: ProductStatusForSale,
+		},
+		{
+			name:   "out of sale",
+			status: entity.ProductStatusOutOfSale,
+			expect: ProductStatusOutOfSale,
+		},
+		{
+			name:   "unknown",
+			status: entity.ProductStatusUnknown,
+			expect: ProductStatusUnknown,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, NewProductStatus(tt.status))
+		})
+	}
+}
 
 func TestStorageMethodType(t *testing.T) {
 	t.Parallel()
@@ -245,6 +288,7 @@ func TestProduct(t *testing.T) {
 				TypeID:          "product-type-id",
 				TagIDs:          []string{"product-tag-id"},
 				Name:            "新鮮なじゃがいも",
+				Status:          entity.ProductStatusForSale,
 				Description:     "新鮮なじゃがいもをお届けします。",
 				Public:          true,
 				Inventory:       100,
@@ -273,6 +317,9 @@ func TestProduct(t *testing.T) {
 				Box100Rate:        30,
 				OriginPrefecture:  codes.PrefectureValues["shiga"],
 				OriginCity:        "彦根市",
+				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+				StartAt:           jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				EndAt:             jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
@@ -290,6 +337,7 @@ func TestProduct(t *testing.T) {
 					Name:            "新鮮なじゃがいも",
 					Description:     "新鮮なじゃがいもをお届けします。",
 					Public:          true,
+					Status:          int32(ProductStatusForSale),
 					Inventory:       100,
 					Weight:          1.3,
 					ItemUnit:        "袋",
@@ -318,6 +366,9 @@ func TestProduct(t *testing.T) {
 					Box100Rate:        30,
 					OriginPrefecture:  "shiga",
 					OriginCity:        "彦根市",
+					BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+					StartAt:           1640962800,
+					EndAt:             1640962800,
 					CreatedAt:         1640962800,
 					UpdatedAt:         1640962800,
 				},
@@ -483,6 +534,7 @@ func TestProduct_Response(t *testing.T) {
 					Name:            "新鮮なじゃがいも",
 					Description:     "新鮮なじゃがいもをお届けします。",
 					Public:          true,
+					Status:          int32(ProductStatusForSale),
 					Inventory:       100,
 					Weight:          1.3,
 					ItemUnit:        "袋",
@@ -506,6 +558,9 @@ func TestProduct_Response(t *testing.T) {
 					Box100Rate:       30,
 					OriginPrefecture: "shiga",
 					OriginCity:       "彦根市",
+					BusinessDays:     []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+					StartAt:          1640962800,
+					EndAt:            1640962800,
 					CreatedAt:        1640962800,
 					UpdatedAt:        1640962800,
 				},
@@ -522,6 +577,7 @@ func TestProduct_Response(t *testing.T) {
 				Name:            "新鮮なじゃがいも",
 				Description:     "新鮮なじゃがいもをお届けします。",
 				Public:          true,
+				Status:          int32(ProductStatusForSale),
 				Inventory:       100,
 				Weight:          1.3,
 				ItemUnit:        "袋",
@@ -545,6 +601,9 @@ func TestProduct_Response(t *testing.T) {
 				Box100Rate:       30,
 				OriginPrefecture: "shiga",
 				OriginCity:       "彦根市",
+				BusinessDays:     []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+				StartAt:          1640962800,
+				EndAt:            1640962800,
 				CreatedAt:        1640962800,
 				UpdatedAt:        1640962800,
 			},
@@ -576,6 +635,7 @@ func TestProducts(t *testing.T) {
 					Name:            "新鮮なじゃがいも",
 					Description:     "新鮮なじゃがいもをお届けします。",
 					Public:          true,
+					Status:          entity.ProductStatusForSale,
 					Inventory:       100,
 					Weight:          1300,
 					WeightUnit:      entity.WeightUnitGram,
@@ -609,6 +669,9 @@ func TestProducts(t *testing.T) {
 					Box100Rate:       30,
 					OriginPrefecture: codes.PrefectureValues["shiga"],
 					OriginCity:       "彦根市",
+					BusinessDays:     []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+					StartAt:          jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					EndAt:            jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					CreatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					UpdatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
@@ -627,6 +690,7 @@ func TestProducts(t *testing.T) {
 						Name:            "新鮮なじゃがいも",
 						Description:     "新鮮なじゃがいもをお届けします。",
 						Public:          true,
+						Status:          int32(ProductStatusForSale),
 						Inventory:       100,
 						Weight:          1.3,
 						ItemUnit:        "袋",
@@ -658,6 +722,9 @@ func TestProducts(t *testing.T) {
 						Box100Rate:       30,
 						OriginPrefecture: "shiga",
 						OriginCity:       "彦根市",
+						BusinessDays:     []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+						StartAt:          1640962800,
+						EndAt:            1640962800,
 						CreatedAt:        1640962800,
 						UpdatedAt:        1640962800,
 					},
@@ -1071,6 +1138,7 @@ func TestProducts_Response(t *testing.T) {
 						Name:            "新鮮なじゃがいも",
 						Description:     "新鮮なじゃがいもをお届けします。",
 						Public:          true,
+						Status:          int32(ProductStatusForSale),
 						Inventory:       100,
 						Weight:          1.3,
 						ItemUnit:        "袋",
@@ -1086,6 +1154,9 @@ func TestProducts_Response(t *testing.T) {
 						Box100Rate:       30,
 						OriginPrefecture: "shiga",
 						OriginCity:       "彦根市",
+						BusinessDays:     []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+						StartAt:          1640962800,
+						EndAt:            1640962800,
 						CreatedAt:        1640962800,
 						UpdatedAt:        1640962800,
 					},
@@ -1104,6 +1175,7 @@ func TestProducts_Response(t *testing.T) {
 					Name:            "新鮮なじゃがいも",
 					Description:     "新鮮なじゃがいもをお届けします。",
 					Public:          true,
+					Status:          int32(ProductStatusForSale),
 					Inventory:       100,
 					Weight:          1.3,
 					ItemUnit:        "袋",
@@ -1119,6 +1191,9 @@ func TestProducts_Response(t *testing.T) {
 					Box100Rate:       30,
 					OriginPrefecture: "shiga",
 					OriginCity:       "彦根市",
+					BusinessDays:     []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+					StartAt:          1640962800,
+					EndAt:            1640962800,
 					CreatedAt:        1640962800,
 					UpdatedAt:        1640962800,
 				},

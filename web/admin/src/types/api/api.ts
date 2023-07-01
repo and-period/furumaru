@@ -1566,6 +1566,24 @@ export interface CreateProductRequest {
      * @memberof CreateProductRequest
      */
     'originCity': string;
+    /**
+     * 営業曜日
+     * @type {Array<Weekday>}
+     * @memberof CreateProductRequest
+     */
+    'businessDays': Array<Weekday>;
+    /**
+     * 販売開始日時 (unixtime)
+     * @type {number}
+     * @memberof CreateProductRequest
+     */
+    'startAt': number;
+    /**
+     * 販売終了日時 (unixtime)
+     * @type {number}
+     * @memberof CreateProductRequest
+     */
+    'endAt': number;
 }
 
 
@@ -3761,6 +3779,12 @@ export interface ProductResponse {
      */
     'public': boolean;
     /**
+     * 
+     * @type {ProductStatus}
+     * @memberof ProductResponse
+     */
+    'status': ProductStatus;
+    /**
      * 生産者ID
      * @type {string}
      * @memberof ProductResponse
@@ -3923,6 +3947,24 @@ export interface ProductResponse {
      */
     'originCity': string;
     /**
+     * 営業曜日
+     * @type {Array<Weekday>}
+     * @memberof ProductResponse
+     */
+    'businessDays': Array<Weekday>;
+    /**
+     * 販売開始日時 (unixtime)
+     * @type {number}
+     * @memberof ProductResponse
+     */
+    'startAt': number;
+    /**
+     * 販売終了日時 (unixtime)
+     * @type {number}
+     * @memberof ProductResponse
+     */
+    'endAt': number;
+    /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof ProductResponse
@@ -3935,6 +3977,23 @@ export interface ProductResponse {
      */
     'updatedAt': number;
 }
+
+
+/**
+ * 商品販売ステータス
+ * @export
+ * @enum {string}
+ */
+
+export const ProductStatus = {
+    UNKNOWN: 0,
+    PRIVATE: 1,
+    PRESALE: 2,
+    FOR_SALE: 3,
+    OUT_OF_SALES: 4
+} as const;
+
+export type ProductStatus = typeof ProductStatus[keyof typeof ProductStatus];
 
 
 /**
@@ -6016,6 +6075,24 @@ export interface UpdateProductRequest {
      * @memberof UpdateProductRequest
      */
     'originCity': string;
+    /**
+     * 営業曜日
+     * @type {Array<Weekday>}
+     * @memberof UpdateProductRequest
+     */
+    'businessDays': Array<Weekday>;
+    /**
+     * 販売開始日時 (unixtime)
+     * @type {number}
+     * @memberof UpdateProductRequest
+     */
+    'startAt': number;
+    /**
+     * 販売終了日時 (unixtime)
+     * @type {number}
+     * @memberof UpdateProductRequest
+     */
+    'endAt': number;
 }
 
 
@@ -6401,6 +6478,46 @@ export interface VerifyAuthEmailRequest {
      */
     'verifyCode': string;
 }
+/**
+ * 曜日
+ * @export
+ * @enum {string}
+ */
+
+export const Weekday = {
+    /**
+    * 日曜日
+    */
+    SUNDAY: 0,
+    /**
+    * 月曜日
+    */
+    MONDAY: 1,
+    /**
+    * 火曜日
+    */
+    TUESDAY: 2,
+    /**
+    * 水曜日
+    */
+    WEDNESDAY: 3,
+    /**
+    * 木曜日
+    */
+    THURSDAY: 4,
+    /**
+    * 金曜日
+    */
+    FRIDAY: 5,
+    /**
+    * 土曜日
+    */
+    SATURDAY: 6
+} as const;
+
+export type Weekday = typeof Weekday[keyof typeof Weekday];
+
+
 
 /**
  * AddressApi - axios parameter creator

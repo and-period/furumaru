@@ -1,5 +1,7 @@
 package response
 
+import "time"
+
 // Product - 商品情報
 type Product struct {
 	ID                string          `json:"id"`                 // 商品ID
@@ -14,6 +16,7 @@ type Product struct {
 	Name              string          `json:"name"`               // 商品名
 	Description       string          `json:"description"`        // 商品説明
 	Public            bool            `json:"public"`             // 公開フラグ
+	Status            int32           `json:"status"`             // 販売状況
 	Inventory         int64           `json:"inventory"`          // 在庫数
 	Weight            float64         `json:"weight"`             // 重量(kg,少数第一位まで)
 	ItemUnit          string          `json:"itemUnit"`           // 数量単位
@@ -32,6 +35,9 @@ type Product struct {
 	Box100Rate        int64           `json:"box100Rate"`         // 箱の占有率(サイズ:100)
 	OriginPrefecture  string          `json:"originPrefecture"`   // 原産地(都道府県)
 	OriginCity        string          `json:"originCity"`         // 原産地(市区町村)
+	BusinessDays      []time.Weekday  `json:"businessDays"`       // 営業曜日(発送可能日)
+	StartAt           int64           `json:"startAt"`            // 販売開始日時
+	EndAt             int64           `json:"endAt"`              // 販売終了日時
 	CreatedAt         int64           `json:"createdAt"`          // 登録日時
 	UpdatedAt         int64           `json:"updatedAt"`          // 更新日時
 }

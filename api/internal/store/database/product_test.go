@@ -509,6 +509,8 @@ func TestProduct_Update(t *testing.T) {
 					Box100Rate:        30,
 					OriginPrefecture:  codes.PrefectureValues["shiga"],
 					OriginCity:        "彦根市",
+					StartAt:           now().AddDate(0, -1, 0),
+					EndAt:             now().AddDate(0, 1, 0),
 				},
 			},
 			want: want{
@@ -749,6 +751,7 @@ func testProduct(id, typeID, categoryID, producerID string, tagIDs []string, now
 		Name:            "新鮮なじゃがいも",
 		Description:     "新鮮なじゃがいもをお届けします。",
 		Public:          true,
+		Status:          entity.ProductStatusForSale,
 		Inventory:       100,
 		Weight:          100,
 		WeightUnit:      entity.WeightUnitGram,
@@ -769,6 +772,9 @@ func testProduct(id, typeID, categoryID, producerID string, tagIDs []string, now
 		Box100Rate:        30,
 		OriginPrefecture:  codes.PrefectureValues["shiga"],
 		OriginCity:        "彦根市",
+		BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+		StartAt:           now.AddDate(0, -1, 0),
+		EndAt:             now.AddDate(0, 1, 0),
 		CreatedAt:         now,
 		UpdatedAt:         now,
 	}

@@ -2,8 +2,9 @@
 import { mdiClose, mdiPlus } from '@mdi/js'
 
 import useVuelidate from '@vuelidate/core'
+import dayjs, { unix } from 'dayjs'
 import { AlertType } from '~/lib/hooks'
-import { CategoriesResponseCategoriesInner, DeliveryType, Prefecture, ProducersResponseProducersInner, ProductResponse, ProductTagsResponseProductTagsInner, ProductTypesResponseProductTypesInner, StorageMethodType, UpdateProductRequest } from '~/types/api'
+import { CategoriesResponseCategoriesInner, DeliveryType, Prefecture, ProducersResponseProducersInner, ProductResponse, ProductStatus, ProductTagsResponseProductTagsInner, ProductTypesResponseProductTypesInner, StorageMethodType, UpdateProductRequest } from '~/types/api'
 import {
   required,
   getErrorMessage,
@@ -47,17 +48,20 @@ const props = defineProps({
       weight: 0,
       itemUnit: '',
       itemDescription: '',
-      deliveryType: DeliveryType.UNKNOWN,
+      deliveryType: DeliveryType.NORMAL,
       recommendedPoint1: '',
       recommendedPoint2: '',
       recommendedPoint3: '',
       expirationDate: 0,
-      storageMethodType: StorageMethodType.UNKNOWN,
+      storageMethodType: StorageMethodType.NORMAL,
       box60Rate: 0,
       box80Rate: 0,
       box100Rate: 0,
       originPrefecture: Prefecture.HOKKAIDO,
-      originCity: ''
+      originCity: '',
+      businessDays: [],
+      startAt: dayjs().unix(),
+      endAt: dayjs().unix()
     })
   },
   product: {
@@ -67,6 +71,7 @@ const props = defineProps({
       name: '',
       description: '',
       public: false,
+      status: ProductStatus.UNKNOWN,
       producerId: '',
       producerName: '',
       categoryId: '',
@@ -94,6 +99,9 @@ const props = defineProps({
       box100Rate: 0,
       originPrefecture: Prefecture.HOKKAIDO,
       originCity: '',
+      businessDays: [],
+      startAt: dayjs().unix(),
+      endAt: dayjs().unix(),
       createdAt: 0,
       updatedAt: 0
     })
@@ -130,6 +138,13 @@ const emit = defineEmits<{
 const statuses = [
   { title: '公開', value: true },
   { title: '下書き', value: false }
+]
+const productStatuses = [
+  { title: '予約販売', value: ProductStatus.PRESALE },
+  { title: '販売中', value: ProductStatus.FOR_SALE },
+  { title: '販売期間外', value: ProductStatus.OUT_OF_SALES },
+  { title: '非公開', value: ProductStatus.PRIVATE },
+  { title: '不明', value: ProductStatus.UNKNOWN }
 ]
 const storageMethodTypes = [
   { title: '常温保存', value: StorageMethodType.NORMAL },
@@ -173,6 +188,24 @@ const rules = computed(() => ({
 const formDataValue = computed({
   get: (): UpdateProductRequest => props.formData,
   set: (v: UpdateProductRequest): void => emit('update:form-data', v)
+})
+const productStatus = computed<ProductStatus>(() => {
+  if (!formDataValue.value.public) {
+    return ProductStatus.PRIVATE
+  }
+  if (!formDataValue.value.startAt || !formDataValue.value.endAt) {
+    return ProductStatus.UNKNOWN
+  }
+  const now = dayjs()
+  const startAt = unix(formDataValue.value.startAt)
+  const endAt = unix(formDataValue.value.endAt)
+  if (now.isBefore(startAt)) {
+    return ProductStatus.PRESALE
+  }
+  if (now.isAfter(endAt)) {
+    return ProductStatus.OUT_OF_SALES
+  }
+  return ProductStatus.FOR_SALE
 })
 const selectedCategoryIdValue = computed({
   get: (): string => props.selectedCategoryId || '',
@@ -503,8 +536,17 @@ const onSubmit = (): void => {
           <v-select
             v-model="validate.public.$model"
             :error-messages="getErrorMessage(validate.public.$errors)"
-            label="ステータス"
+            label="公開状況"
             :items="statuses"
+          />
+          <v-select
+            v-model="productStatus"
+            label="販売状況"
+            :items="productStatuses"
+            item-title="title"
+            item-value="value"
+            variant="plain"
+            readonly
           />
         </v-card-text>
       </v-card>
