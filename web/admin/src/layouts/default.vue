@@ -211,8 +211,8 @@ const calcStyle = (i: number) => {
       :style="calcStyle(i)"
     >
       {{ snackbar.message }}
-      <template #action="{ props }">
-        <v-btn variant="text" v-bind="props" @click="commonStore.hideSnackbar(i)">
+      <template #actions>
+        <v-btn variant="text" color="white" @click="commonStore.hideSnackbar(i)">
           閉じる
         </v-btn>
       </template>
