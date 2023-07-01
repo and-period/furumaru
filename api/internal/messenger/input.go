@@ -81,6 +81,10 @@ type NotifyNotificationInput struct {
 	NotificationID string `validate:"required"`
 }
 
+type NotifyReceivedContactInput struct {
+	ContactID string `validate:"required"`
+}
+
 type ListContactsInput struct {
 	Limit  int64 `validate:"required,max=200"`
 	Offset int64 `validate:"min=0"`
@@ -131,6 +135,7 @@ type GetContactCategoryInput struct {
 
 type ListThreadsByContactIDInput struct {
 	ContactID string `validate:"required"`
+	UserID    string `validate:""`
 	Limit     int64  `validate:"required,max=200"`
 	Offset    int64  `validate:"min=0"`
 }
@@ -157,8 +162,19 @@ type DeleteThreadInput struct {
 	ThreadID string `validate:"required"`
 }
 
+type GetContactReadInput struct {
+	ContactID string `validate:"required"`
+	UserID    string `validate:""`
+}
+
 type CreateContactReadInput struct {
 	ContactID string                 `validate:"required"`
 	UserID    string                 `validate:""`
 	UserType  entity.ContactUserType `validate:"required"`
+}
+
+type UpdateContactReadFlagInput struct {
+	ContactID string `validate:"required"`
+	UserID    string `validate:""`
+	Read      bool   `validate:"required"`
 }
