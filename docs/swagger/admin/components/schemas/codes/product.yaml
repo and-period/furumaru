@@ -1,3 +1,26 @@
+productStatus:
+  type: integer
+  format: int32
+  description: 商品販売ステータス
+  nullable: false
+  enum:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  x-enum-varnames:
+  - UNKNOWN
+  - PRIVATE
+  - PRESALE
+  - FOR_SALE
+  - OUT_OF_SALES
+  x-enum:-descriptions:
+  - 不明
+  - 非公開
+  - 予約受付中
+  - 販売中
+  - 販売期間外
 deliveryType:
   type: integer
   format: int32

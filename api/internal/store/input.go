@@ -228,6 +228,9 @@ type CreateProductInput struct {
 	Box100Rate        int64                    `validate:"min=0,max=100"`
 	OriginPrefecture  int64                    `validate:"min=0"`
 	OriginCity        string                   `validate:"omitempty,max=32"`
+	BusinessDays      []time.Weekday           `validate:"max=7,unique"`
+	StartAt           time.Time                `validate:"required"`
+	EndAt             time.Time                `validate:"required,gtfield=StartAt"`
 }
 
 type CreateProductMedia struct {
@@ -261,6 +264,9 @@ type UpdateProductInput struct {
 	Box100Rate        int64                    `validate:"min=0,max=100"`
 	OriginPrefecture  int64                    `validate:"min=0"`
 	OriginCity        string                   `validate:"omitempty,max=32"`
+	BusinessDays      []time.Weekday           `validate:"max=7,unique"`
+	StartAt           time.Time                `validate:"required"`
+	EndAt             time.Time                `validate:"required,gtfield=StartAt"`
 }
 
 type UpdateProductMedia struct {

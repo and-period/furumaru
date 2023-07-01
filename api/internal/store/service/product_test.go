@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
@@ -310,6 +311,7 @@ func TestGetProduct(t *testing.T) {
 func TestCreateProduct(t *testing.T) {
 	t.Parallel()
 
+	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
 	producerIn := &user.GetProducerInput{
 		ProducerID: "producer-id",
 	}
@@ -364,6 +366,9 @@ func TestCreateProduct(t *testing.T) {
 							Box100Rate:        30,
 							OriginPrefecture:  codes.PrefectureValues["shiga"],
 							OriginCity:        "彦根市",
+							BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+							StartAt:           now.AddDate(0, -1, 0),
+							EndAt:             now.AddDate(0, 1, 0),
 						}
 						assert.Equal(t, expect, product)
 						return nil
@@ -403,6 +408,9 @@ func TestCreateProduct(t *testing.T) {
 				Box100Rate:        30,
 				OriginPrefecture:  codes.PrefectureValues["shiga"],
 				OriginCity:        "彦根市",
+				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+				StartAt:           now.AddDate(0, -1, 0),
+				EndAt:             now.AddDate(0, 1, 0),
 			},
 			expectErr: nil,
 		},
@@ -442,6 +450,9 @@ func TestCreateProduct(t *testing.T) {
 				Box100Rate:        30,
 				OriginPrefecture:  codes.PrefectureValues["shiga"],
 				OriginCity:        "彦根市",
+				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+				StartAt:           now.AddDate(0, -1, 0),
+				EndAt:             now.AddDate(0, 1, 0),
 			},
 			expectErr: exception.ErrInvalidArgument,
 		},
@@ -477,6 +488,9 @@ func TestCreateProduct(t *testing.T) {
 				Box100Rate:        30,
 				OriginPrefecture:  codes.PrefectureValues["shiga"],
 				OriginCity:        "彦根市",
+				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+				StartAt:           now.AddDate(0, -1, 0),
+				EndAt:             now.AddDate(0, 1, 0),
 			},
 			expectErr: exception.ErrUnknown,
 		},
@@ -513,6 +527,9 @@ func TestCreateProduct(t *testing.T) {
 				Box100Rate:        30,
 				OriginPrefecture:  codes.PrefectureValues["shiga"],
 				OriginCity:        "彦根市",
+				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+				StartAt:           now.AddDate(0, -1, 0),
+				EndAt:             now.AddDate(0, 1, 0),
 			},
 			expectErr: exception.ErrUnknown,
 		},
@@ -559,6 +576,9 @@ func TestUpdateProduct(t *testing.T) {
 		Box100Rate:        30,
 		OriginPrefecture:  codes.PrefectureValues["shiga"],
 		OriginCity:        "彦根市",
+		BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+		StartAt:           now.AddDate(0, -1, 0),
+		EndAt:             now.AddDate(0, 1, 0),
 		CreatedAt:         now,
 		UpdatedAt:         now,
 	}
@@ -614,6 +634,9 @@ func TestUpdateProduct(t *testing.T) {
 							Box100Rate:        30,
 							OriginPrefecture:  codes.PrefectureValues["shiga"],
 							OriginCity:        "彦根市",
+							BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+							StartAt:           now.AddDate(0, -1, 0),
+							EndAt:             now.AddDate(0, 1, 0),
 						}
 						assert.Equal(t, expect, params)
 						return nil
@@ -648,6 +671,9 @@ func TestUpdateProduct(t *testing.T) {
 				Box100Rate:        30,
 				OriginPrefecture:  codes.PrefectureValues["shiga"],
 				OriginCity:        "彦根市",
+				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+				StartAt:           now.AddDate(0, -1, 0),
+				EndAt:             now.AddDate(0, 1, 0),
 			},
 			expectErr: nil,
 		},
@@ -683,6 +709,9 @@ func TestUpdateProduct(t *testing.T) {
 							Box100Rate:        30,
 							OriginPrefecture:  codes.PrefectureValues["shiga"],
 							OriginCity:        "彦根市",
+							BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+							StartAt:           now.AddDate(0, -1, 0),
+							EndAt:             now.AddDate(0, 1, 0),
 						}
 						assert.Equal(t, expect, params)
 						return nil
@@ -713,6 +742,9 @@ func TestUpdateProduct(t *testing.T) {
 				Box100Rate:        30,
 				OriginPrefecture:  codes.PrefectureValues["shiga"],
 				OriginCity:        "彦根市",
+				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+				StartAt:           now.AddDate(0, -1, 0),
+				EndAt:             now.AddDate(0, 1, 0),
 			},
 			expectErr: nil,
 		},
@@ -755,6 +787,9 @@ func TestUpdateProduct(t *testing.T) {
 				Box100Rate:        30,
 				OriginPrefecture:  codes.PrefectureValues["shiga"],
 				OriginCity:        "彦根市",
+				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+				StartAt:           now.AddDate(0, -1, 0),
+				EndAt:             now.AddDate(0, 1, 0),
 			},
 			expectErr: exception.ErrInvalidArgument,
 		},
@@ -791,6 +826,9 @@ func TestUpdateProduct(t *testing.T) {
 				Box100Rate:        30,
 				OriginPrefecture:  codes.PrefectureValues["shiga"],
 				OriginCity:        "彦根市",
+				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+				StartAt:           now.AddDate(0, -1, 0),
+				EndAt:             now.AddDate(0, 1, 0),
 			},
 			expectErr: exception.ErrUnknown,
 		},
@@ -828,6 +866,9 @@ func TestUpdateProduct(t *testing.T) {
 				Box100Rate:        30,
 				OriginPrefecture:  codes.PrefectureValues["shiga"],
 				OriginCity:        "彦根市",
+				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+				StartAt:           now.AddDate(0, -1, 0),
+				EndAt:             now.AddDate(0, 1, 0),
 			},
 			expectErr: exception.ErrUnknown,
 		},
@@ -866,6 +907,9 @@ func TestUpdateProduct(t *testing.T) {
 				Box100Rate:        30,
 				OriginPrefecture:  codes.PrefectureValues["shiga"],
 				OriginCity:        "彦根市",
+				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+				StartAt:           now.AddDate(0, -1, 0),
+				EndAt:             now.AddDate(0, 1, 0),
 			},
 			expectErr: exception.ErrUnknown,
 		},

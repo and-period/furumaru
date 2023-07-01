@@ -15,6 +15,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )
@@ -247,6 +248,9 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		Box100Rate:        req.Box100Rate,
 		OriginPrefecture:  codes.PrefectureValues[req.OriginPrefecture],
 		OriginCity:        req.OriginCity,
+		BusinessDays:      req.BusinessDays,
+		StartAt:           jst.ParseFromUnix(req.StartAt),
+		EndAt:             jst.ParseFromUnix(req.EndAt),
 	}
 	sproduct, err := h.store.CreateProduct(ctx, in)
 	if err != nil {
@@ -321,6 +325,9 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 		Box100Rate:        req.Box100Rate,
 		OriginPrefecture:  codes.PrefectureValues[req.OriginPrefecture],
 		OriginCity:        req.OriginCity,
+		BusinessDays:      req.BusinessDays,
+		StartAt:           jst.ParseFromUnix(req.StartAt),
+		EndAt:             jst.ParseFromUnix(req.EndAt),
 	}
 	if err := h.store.UpdateProduct(ctx, in); err != nil {
 		httpError(ctx, err)

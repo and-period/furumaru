@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 import {
@@ -45,17 +46,20 @@ const formData = ref<UpdateProductRequest>({
   weight: 0,
   itemUnit: '',
   itemDescription: '',
-  deliveryType: DeliveryType.UNKNOWN,
+  deliveryType: DeliveryType.NORMAL,
   recommendedPoint1: '',
   recommendedPoint2: '',
   recommendedPoint3: '',
   expirationDate: 0,
-  storageMethodType: StorageMethodType.UNKNOWN,
+  storageMethodType: StorageMethodType.NORMAL,
   box60Rate: 0,
   box80Rate: 0,
   box100Rate: 0,
   originPrefecture: Prefecture.HOKKAIDO,
-  originCity: ''
+  originCity: '',
+  businessDays: [],
+  startAt: dayjs().unix(),
+  endAt: dayjs().unix()
 })
 
 const fetchState = useAsyncData(async (): Promise<void> => {
