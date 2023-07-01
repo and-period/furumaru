@@ -592,7 +592,9 @@ const onSubmit = async (): Promise<void> => {
             label="公開状況"
             :items="statuses"
           />
-          <p class="text-subtitle-2 text-grey py-2">販売開始日時</p>
+          <p class="text-subtitle-2 text-grey py-2">
+            販売開始日時
+          </p>
           <div class="d-flex flex-column flex-md-row justify-center">
             <v-text-field
               v-model="timeDataValidate.startDate.$model"
@@ -612,7 +614,9 @@ const onSubmit = async (): Promise<void> => {
               @update:model-value="onChangeStartAt"
             />
           </div>
-          <p class="text-subtitle-2 text-grey py-2">販売終了日時</p>
+          <p class="text-subtitle-2 text-grey py-2">
+            販売終了日時
+          </p>
           <div class="d-flex flex-column flex-md-row justify-center">
             <v-text-field
               v-model="timeDataValidate.endDate.$model"
