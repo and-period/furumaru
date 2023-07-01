@@ -15,7 +15,7 @@ const formData = ref<UpdateAuthEmailRequest>({
 const handleSubmit = async (): Promise<void> => {
   try {
     loading.value = true
-    await authStore.emailUpdate(formData.value)
+    await authStore.updateEmail(formData.value)
     router.push({
       name: 'accounts-email-verification',
       params: { email: formData.value.email }
@@ -32,7 +32,7 @@ const handleSubmit = async (): Promise<void> => {
 </script>
 
 <template>
-  <templates-auth-edit-email
+  <templates-auth-email-edit
     v-model:form-data="formData"
     :loading="loading"
     :is-alert="isShow"

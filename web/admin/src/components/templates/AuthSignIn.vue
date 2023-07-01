@@ -71,6 +71,9 @@ const onSubmit = (): void => {
           :append-icon="showPassword ? mdiEye : mdiEyeOff"
           @click:append="onChangePasswordFieldType"
         />
+        <nuxt-link to="/recover">
+          パスワードを忘れた場合
+        </nuxt-link>
       </v-card-text>
       <v-card-actions>
         <v-btn type="submit" block color="primary" variant="outlined">

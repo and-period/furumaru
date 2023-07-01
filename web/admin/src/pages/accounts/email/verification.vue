@@ -20,7 +20,7 @@ const handleClickResendEmail = async (): Promise<void> => {
   try {
     loading.value = true
     const req: UpdateAuthEmailRequest = { email }
-    await authStore.emailUpdate(req)
+    await authStore.updateEmail(req)
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
@@ -34,7 +34,7 @@ const handleClickResendEmail = async (): Promise<void> => {
 const handleSubmit = async (): Promise<void> => {
   try {
     loading.value = true
-    await authStore.codeVerify(formData.value)
+    await authStore.verifyEmail(formData.value)
     router.push('/')
   } catch (err) {
     if (err instanceof Error) {
@@ -48,7 +48,7 @@ const handleSubmit = async (): Promise<void> => {
 </script>
 
 <template>
-  <templates-auth-verify-email
+  <templates-auth-email-verify
     v-model:form-data="formData"
     :loading="loading"
     :is-alert="isShow"

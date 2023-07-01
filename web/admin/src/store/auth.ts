@@ -8,6 +8,8 @@ import { messaging } from '~/plugins/firebase'
 import {
   AuthResponse,
   AuthUserResponse,
+  ForgotAuthPasswordRequest,
+  ResetAuthPasswordRequest,
   SignInRequest,
   UpdateAuthEmailRequest,
   UpdateAuthPasswordRequest,
@@ -31,6 +33,11 @@ export const useAuthStore = defineStore('auth', {
   },
 
   actions: {
+    /**
+     * サインイン
+     * @param payload メールアドレス/パスワード
+     * @returns 遷移先Path
+     */
     async signIn (payload: SignInRequest): Promise<string> {
       try {
         const res = await apiClient.authApi().v1SignIn(payload)
@@ -63,6 +70,9 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    /**
+     * サインイン中管理者情報取得
+     */
     async getUser (): Promise<void> {
       try {
         const res = await apiClient.authApi().v1GetAuthUser()
@@ -72,20 +82,11 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async updatePassword (payload: UpdateAuthPasswordRequest): Promise<void> {
-      try {
-        await apiClient.authApi().v1UpdateAuthPassword(payload)
-        const commonStore = useCommonStore()
-        commonStore.addSnackbar({
-          message: 'パスワードを更新しました。',
-          color: 'info'
-        })
-      } catch (err) {
-        return this.errorHandler(err)
-      }
-    },
-
-    async emailUpdate (payload: UpdateAuthEmailRequest): Promise<void> {
+    /**
+     * メールアドレス更新
+     * @param payload
+     */
+    async updateEmail (payload: UpdateAuthEmailRequest): Promise<void> {
       try {
         await apiClient.authApi().v1UpdateAuthEmail(payload)
         const commonStore = useCommonStore()
@@ -101,7 +102,11 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async codeVerify (payload: VerifyAuthEmailRequest): Promise<void> {
+    /**
+     * メールアドレス更新後の検証
+     * @param payload
+     */
+    async verifyEmail (payload: VerifyAuthEmailRequest): Promise<void> {
       try {
         await apiClient.authApi().v1VerifyAuthEmail(payload)
         const commonStore = useCommonStore()
@@ -114,6 +119,75 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    /**
+     * パスワード更新
+     * @param payload
+     */
+    async updatePassword (payload: UpdateAuthPasswordRequest): Promise<void> {
+      try {
+        await apiClient.authApi().v1UpdateAuthPassword(payload)
+        const commonStore = useCommonStore()
+        commonStore.addSnackbar({
+          message: 'パスワードを更新しました。',
+          color: 'info'
+        })
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * パスワードリセットの検証
+     */
+    async forgotPassword (payload: ForgotAuthPasswordRequest): Promise<void> {
+      try {
+        await apiClient.authApi().v1ForgotAuthPassword(payload)
+        const commonStore = useCommonStore()
+        commonStore.addSnackbar({
+          message: 'パスワードリセット用のメールをしました。',
+          color: 'info'
+        })
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * パスワードリセット
+     * @param payload
+     */
+    async resetPassword (payload: ResetAuthPasswordRequest): Promise<void> {
+      try {
+        await apiClient.authApi().v1ResetAuthPassword(payload)
+        const commonStore = useCommonStore()
+        commonStore.addSnackbar({
+          message: 'パスワードをリセットしました。',
+          color: 'info'
+        })
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * デバイス情報の登録
+     * @param deviceToken デバイスID
+     */
+    async registerDeviceToken (deviceToken: string): Promise<void> {
+      try {
+        await apiClient.authApi().v1RegisterAuthDevice({ device: deviceToken })
+
+        const cookies = new Cookies()
+        cookies.set('deviceToken', deviceToken, { secure: true })
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * 認証情報の更新
+     * @param refreshToken リフレッシュトークン
+     */
     async getAuthByRefreshToken (refreshToken: string): Promise<void> {
       try {
         const res = await apiClient.authApi().v1RefreshAuthToken({
@@ -130,17 +204,10 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async registerDeviceToken (deviceToken: string): Promise<void> {
-      try {
-        await apiClient.authApi().v1RegisterAuthDevice({ device: deviceToken })
-
-        const cookies = new Cookies()
-        cookies.set('deviceToken', deviceToken, { secure: true })
-      } catch (err) {
-        return this.errorHandler(err)
-      }
-    },
-
+    /**
+     * デバイス情報の取得
+     * @returns デバイスID
+     */
     async getDeviceToken (): Promise<string> {
       const runtimeConfig = useRuntimeConfig()
 
