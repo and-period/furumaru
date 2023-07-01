@@ -61,7 +61,7 @@ ALTER TABLE `stores`.`products` MODIFY COLUMN `end_at` DATETIME(3) NOT NULL;
 
 ALTER TABLE `stores`.`promotions` MODIFY COLUMN `created_at` DATETIME(3) NOT NULL;
 ALTER TABLE `stores`.`promotions` MODIFY COLUMN `updated_at` DATETIME(3) NOT NULL;
-ALTER TABLE `stores`.`promotions` MODIFY COLUMN `deleted_at` DATETIME(3) NULL DEFAULT NULL;
+ALTER TABLE `stores`.`promotions` MODIFY COLUMN `published_at` DATETIME(3) NULL DEFAULT NULL;
 ALTER TABLE `stores`.`promotions` MODIFY COLUMN `start_at` DATETIME(3) NOT NULL;
 ALTER TABLE `stores`.`promotions` MODIFY COLUMN `end_at` DATETIME(3) NOT NULL;
 
