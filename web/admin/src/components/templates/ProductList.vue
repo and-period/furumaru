@@ -5,7 +5,7 @@ import { PrefecturesListItem, prefecturesList } from '~/constants'
 
 import { getResizedImages } from '~/lib/helpers'
 import { AlertType } from '~/lib/hooks'
-import { ProductsResponseProductsInner, ProductsResponseProductsInnerMediaInner, ImageSize, ProductsResponseProductsInnerMediaInnerImagesInner, Prefecture } from '~/types/api'
+import { ProductsResponseProductsInner, ProductsResponseProductsInnerMediaInner, ImageSize, ProductsResponseProductsInnerMediaInnerImagesInner, Prefecture, ProductStatus } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -65,7 +65,7 @@ const headers: VDataTable['headers'] = [
   },
   {
     title: 'ステータス',
-    key: 'public',
+    key: 'status',
     sortable: false
   },
   {
@@ -129,12 +129,34 @@ const getResizedThumbnails = (media: ProductsResponseProductsInnerMediaInner[]):
   return getResizedImages(thumbnail.images)
 }
 
-const getPublished = (published: boolean): string => {
-  return published ? '公開' : '非公開'
+const getStatus = (status: ProductStatus): string => {
+  switch (status) {
+    case ProductStatus.PRESALE:
+      return '予約販売'
+    case ProductStatus.FOR_SALE:
+      return '販売中'
+    case ProductStatus.OUT_OF_SALES:
+      return '販売終了'
+    case ProductStatus.PRIVATE:
+      return '非公開'
+    default:
+      return ''
+  }
 }
 
-const getPublishedColor = (published: boolean): string => {
-  return published ? 'primary' : 'warning'
+const getStatusColor = (status: ProductStatus): string => {
+  switch (status) {
+    case ProductStatus.PRESALE:
+      return 'info'
+    case ProductStatus.FOR_SALE:
+      return 'primary'
+    case ProductStatus.OUT_OF_SALES:
+      return 'secondary'
+    case ProductStatus.PRIVATE:
+      return 'warning'
+    default:
+      return ''
+  }
 }
 
 const getInventoryColor = (inventory: number): string => {
@@ -219,9 +241,9 @@ const onClickDelete = (): void => {
         <template #[`item.media`]="{ item }">
           <v-img aspect-ratio="1/1" :src="getThumbnail(item.raw.media)" :srcset="getResizedThumbnails(item.raw.media)" />
         </template>
-        <template #[`item.public`]="{ item }">
-          <v-chip :color="getPublishedColor(item.raw.public)">
-            {{ getPublished(item.raw.public) }}
+        <template #[`item.status`]="{ item }">
+          <v-chip :color="getStatusColor(item.raw.status)">
+            {{ getStatus(item.raw.status) }}
           </v-chip>
         </template>
         <template #[`item.inventory`]="{ item }">
