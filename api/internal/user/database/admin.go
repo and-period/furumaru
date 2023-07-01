@@ -30,10 +30,14 @@ func (a *admin) MultiGet(
 ) (entity.Admins, error) {
 	var admins entity.Admins
 
-	err := a.db.Statement(ctx, a.db.DB, adminTable, fields...).
-		Where("id IN (?)", adminIDs).
-		Find(&admins).Error
-	return admins, exception.InternalError(err)
+	stmt := a.db.Statement(ctx, a.db.DB, adminTable, fields...).
+		Where("id IN (?)", adminIDs)
+
+	if err := stmt.Find(&admins).Error; err != nil {
+		return nil, exception.InternalError(err)
+	}
+	admins.Fill()
+	return admins, nil
 }
 
 func (a *admin) Get(
@@ -54,6 +58,20 @@ func (a *admin) GetByCognitoID(
 	if err := stmt.First(&admin).Error; err != nil {
 		return nil, exception.InternalError(err)
 	}
+	admin.Fill()
+	return admin, nil
+}
+
+func (a *admin) GetByEmail(ctx context.Context, email string, fields ...string) (*entity.Admin, error) {
+	var admin *entity.Admin
+
+	stmt := a.db.Statement(ctx, a.db.DB, adminTable, fields...).
+		Where("email = ?", email)
+
+	if err := stmt.First(&admin).Error; err != nil {
+		return nil, exception.InternalError(err)
+	}
+	admin.Fill()
 	return admin, nil
 }
 
@@ -95,6 +113,30 @@ func (a *admin) UpdateDevice(ctx context.Context, adminID, device string) error 
 	return exception.InternalError(err)
 }
 
+func (a *admin) UpdateSignInAt(ctx context.Context, adminID string) error {
+	err := a.db.Transaction(ctx, func(tx *gorm.DB) error {
+		admin, err := a.get(ctx, tx, adminID)
+		if err != nil {
+			return err
+		}
+
+		now := a.now()
+		params := map[string]interface{}{
+			"last_sign_in_at": now,
+			"updated_at":      now,
+		}
+		if admin.FirstSignInAt.IsZero() {
+			params["first_sign_in_at"] = now
+		}
+		err = tx.WithContext(ctx).
+			Table(adminTable).
+			Where("id = ?", adminID).
+			Updates(params).Error
+		return err
+	})
+	return exception.InternalError(err)
+}
+
 func (a *admin) get(ctx context.Context, tx *gorm.DB, adminID string, fields ...string) (*entity.Admin, error) {
 	var admin *entity.Admin
 
@@ -104,5 +146,6 @@ func (a *admin) get(ctx context.Context, tx *gorm.DB, adminID string, fields ...
 	if err := stmt.First(&admin).Error; err != nil {
 		return nil, err
 	}
+	admin.Fill()
 	return admin, nil
 }

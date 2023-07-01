@@ -444,6 +444,146 @@ func (mr *MockProductMockRecorder) UpdateMedia(ctx, productID, set interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateMedia", reflect.TypeOf((*MockProduct)(nil).UpdateMedia), ctx, productID, set)
 }
 
+// MockProductTag is a mock of ProductTag interface.
+type MockProductTag struct {
+	ctrl     *gomock.Controller
+	recorder *MockProductTagMockRecorder
+}
+
+// MockProductTagMockRecorder is the mock recorder for MockProductTag.
+type MockProductTagMockRecorder struct {
+	mock *MockProductTag
+}
+
+// NewMockProductTag creates a new mock instance.
+func NewMockProductTag(ctrl *gomock.Controller) *MockProductTag {
+	mock := &MockProductTag{ctrl: ctrl}
+	mock.recorder = &MockProductTagMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockProductTag) EXPECT() *MockProductTagMockRecorder {
+	return m.recorder
+}
+
+// Count mocks base method.
+func (m *MockProductTag) Count(ctx context.Context, params *database.ListProductTagsParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockProductTagMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockProductTag)(nil).Count), ctx, params)
+}
+
+// Create mocks base method.
+func (m *MockProductTag) Create(ctx context.Context, category *entity.ProductTag) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, category)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockProductTagMockRecorder) Create(ctx, category interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockProductTag)(nil).Create), ctx, category)
+}
+
+// Delete mocks base method.
+func (m *MockProductTag) Delete(ctx context.Context, productTagID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", ctx, productTagID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockProductTagMockRecorder) Delete(ctx, productTagID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockProductTag)(nil).Delete), ctx, productTagID)
+}
+
+// Get mocks base method.
+func (m *MockProductTag) Get(ctx context.Context, productTagID string, fields ...string) (*entity.ProductTag, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, productTagID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.ProductTag)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockProductTagMockRecorder) Get(ctx, productTagID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, productTagID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockProductTag)(nil).Get), varargs...)
+}
+
+// List mocks base method.
+func (m *MockProductTag) List(ctx context.Context, params *database.ListProductTagsParams, fields ...string) (entity.ProductTags, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, params}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "List", varargs...)
+	ret0, _ := ret[0].(entity.ProductTags)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockProductTagMockRecorder) List(ctx, params interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, params}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockProductTag)(nil).List), varargs...)
+}
+
+// MultiGet mocks base method.
+func (m *MockProductTag) MultiGet(ctx context.Context, productTagIDs []string, fields ...string) (entity.ProductTags, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, productTagIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGet", varargs...)
+	ret0, _ := ret[0].(entity.ProductTags)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGet indicates an expected call of MultiGet.
+func (mr *MockProductTagMockRecorder) MultiGet(ctx, productTagIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, productTagIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockProductTag)(nil).MultiGet), varargs...)
+}
+
+// Update mocks base method.
+func (m *MockProductTag) Update(ctx context.Context, productTagID, name string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", ctx, productTagID, name)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockProductTagMockRecorder) Update(ctx, productTagID, name interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockProductTag)(nil).Update), ctx, productTagID, name)
+}
+
 // MockProductType is a mock of ProductType interface.
 type MockProductType struct {
 	ctrl     *gomock.Controller
@@ -702,6 +842,26 @@ func (mr *MockPromotionMockRecorder) List(ctx, params interface{}, fields ...int
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, params}, fields...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockPromotion)(nil).List), varargs...)
+}
+
+// MultiGet mocks base method.
+func (m *MockPromotion) MultiGet(ctx context.Context, promotionIDs []string, fields ...string) (entity.Promotions, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, promotionIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGet", varargs...)
+	ret0, _ := ret[0].(entity.Promotions)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGet indicates an expected call of MultiGet.
+func (mr *MockPromotionMockRecorder) MultiGet(ctx, promotionIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, promotionIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockPromotion)(nil).MultiGet), varargs...)
 }
 
 // Update mocks base method.

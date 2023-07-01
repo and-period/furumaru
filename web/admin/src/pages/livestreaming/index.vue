@@ -4,7 +4,7 @@ import { mdiPlus } from '@mdi/js'
 const router = useRouter()
 
 const handleClickAddButton = () => {
-  router.push('/livestreaming/add')
+  router.push('/livestreaming/new')
 }
 
 const handleClickTestButton = () => {

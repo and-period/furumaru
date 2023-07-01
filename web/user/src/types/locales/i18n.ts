@@ -60,6 +60,16 @@ export interface I18n {
       message: string;
       btnText: string;
     };
+
+    register: {
+      pageName: string
+      name: string
+      username: string
+      btnText: string
+      cautionText: string
+      privacyPolicyLinkText: string
+      termsOfServiceLink: string
+    }
   };
 
   base: {

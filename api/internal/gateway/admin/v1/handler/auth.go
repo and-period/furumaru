@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
@@ -20,6 +21,9 @@ func (h *handler) authRoutes(rg *gin.RouterGroup) {
 	rg.PATCH("/email", h.authentication, h.UpdateAuthEmail)
 	rg.POST("/email/verified", h.VerifyAuthEmail)
 	rg.PATCH("/password", h.authentication, h.UpdateAuthPassword)
+	rg.POST("/forgot-password", h.ForgotAuthPassword)
+	rg.POST("/forgot-password/verified", h.ResetAuthPassword)
+	rg.GET("/user", h.authentication, h.GetAuthUser)
 }
 
 func (h *handler) GetAuth(ctx *gin.Context) {
@@ -40,6 +44,37 @@ func (h *handler) GetAuth(ctx *gin.Context) {
 
 	res := &response.AuthResponse{
 		Auth: service.NewAuth(auth).Response(),
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+type authUser interface {
+	AuthUser() *service.AuthUser
+}
+
+func (h *handler) GetAuthUser(ctx *gin.Context) {
+	adminID := getAdminID(ctx)
+	var (
+		auth authUser
+		err  error
+	)
+	switch getRole(ctx) {
+	case service.AdminRoleAdministrator:
+		auth, err = h.getAdministrator(ctx, adminID)
+	case service.AdminRoleCoordinator:
+		auth, err = h.getCoordinator(ctx, adminID)
+	case service.AdminRoleProducer:
+		auth, err = h.getProducer(ctx, adminID)
+	default:
+		forbidden(ctx, errors.New("handler: unknown admin role"))
+		return
+	}
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+	res := &response.AuthUserResponse{
+		AuthUser: auth.AuthUser().Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -192,6 +227,45 @@ func (h *handler) UpdateAuthPassword(ctx *gin.Context) {
 		PasswordConfirmation: req.PasswordConfirmation,
 	}
 	if err := h.user.UpdateAdminPassword(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) ForgotAuthPassword(ctx *gin.Context) {
+	req := &request.ForgotAuthPasswordRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	in := &user.ForgotAdminPasswordInput{
+		Email: req.Email,
+	}
+	if err := h.user.ForgotAdminPassword(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) ResetAuthPassword(ctx *gin.Context) {
+	req := &request.ResetAuthPasswordRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	in := &user.VerifyAdminPasswordInput{
+		Email:                req.Email,
+		VerifyCode:           req.VerifyCode,
+		NewPassword:          req.Password,
+		PasswordConfirmation: req.PasswordConfirmation,
+	}
+	if err := h.user.VerifyAdminPassword(ctx, in); err != nil {
 		httpError(ctx, err)
 		return
 	}

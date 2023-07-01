@@ -19,12 +19,28 @@ func (s *service) GenerateCoordinatorHeader(ctx context.Context, in *media.Gener
 	return s.generateFile(ctx, in, entity.CoordinatorHeaderRegulation)
 }
 
+func (s *service) GenerateCoordinatorPromotionVideo(ctx context.Context, in *media.GenerateFileInput) (string, error) {
+	return s.generateFile(ctx, in, entity.CoordinatorPromotionVideoRegulation)
+}
+
+func (s *service) GenerateCoordinatorBonusVideo(ctx context.Context, in *media.GenerateFileInput) (string, error) {
+	return s.generateFile(ctx, in, entity.CoordinatorBonusVideoRegulation)
+}
+
 func (s *service) GenerateProducerThumbnail(ctx context.Context, in *media.GenerateFileInput) (string, error) {
 	return s.generateFile(ctx, in, entity.ProducerThumbnailRegulation)
 }
 
 func (s *service) GenerateProducerHeader(ctx context.Context, in *media.GenerateFileInput) (string, error) {
 	return s.generateFile(ctx, in, entity.ProducerHeaderRegulation)
+}
+
+func (s *service) GenerateProducerPromotionVideo(ctx context.Context, in *media.GenerateFileInput) (string, error) {
+	return s.generateFile(ctx, in, entity.ProducerPromotionVideoRegulation)
+}
+
+func (s *service) GenerateProducerBonusVideo(ctx context.Context, in *media.GenerateFileInput) (string, error) {
+	return s.generateFile(ctx, in, entity.ProducerBonusVideoRegulation)
 }
 
 func (s *service) GenerateProductMediaImage(ctx context.Context, in *media.GenerateFileInput) (string, error) {

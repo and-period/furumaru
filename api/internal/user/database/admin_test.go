@@ -223,6 +223,78 @@ func TestAdmin_GetByCognitoID(t *testing.T) {
 	}
 }
 
+func TestAdmin_GetByEmail(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	a := testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
+	err = db.DB.Create(&a).Error
+	require.NoError(t, err)
+
+	type args struct {
+		email string
+	}
+	type want struct {
+		admin  *entity.Admin
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			args: args{
+				email: "test-admin@and-period.jp",
+			},
+			want: want{
+				admin:  a,
+				hasErr: false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			args: args{
+				email: "",
+			},
+			want: want{
+				admin:  nil,
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &admin{db: db, now: now}
+			actual, err := db.GetByEmail(ctx, tt.args.email)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.admin, actual)
+		})
+	}
+}
+
 func TestAdmin_UpdateDevice(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -301,12 +373,15 @@ func testAdmin(adminID, cognitoID, email string, now time.Time) *entity.Admin {
 		ID:            adminID,
 		CognitoID:     cognitoID,
 		Role:          entity.AdminRoleAdministrator,
+		Status:        entity.AdminStatusActivated,
 		Lastname:      "&.",
 		Firstname:     "スタッフ",
 		LastnameKana:  "あんどぴりおど",
 		FirstnameKana: "すたっふ",
 		Email:         email,
 		Device:        "instance-id",
+		FirstSignInAt: now,
+		LastSignInAt:  now,
 		CreatedAt:     now,
 		UpdatedAt:     now,
 	}

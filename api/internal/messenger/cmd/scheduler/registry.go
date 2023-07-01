@@ -10,6 +10,9 @@ import (
 	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/scheduler"
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
+	"github.com/and-period/furumaru/api/internal/store"
+	storedb "github.com/and-period/furumaru/api/internal/store/database"
+	storesrv "github.com/and-period/furumaru/api/internal/store/service"
 	"github.com/and-period/furumaru/api/internal/user"
 	userdb "github.com/and-period/furumaru/api/internal/user/database"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
@@ -167,6 +170,10 @@ func newMessengerService(p *params) (messenger.Service, error) {
 	if err != nil {
 		return nil, err
 	}
+	store, err := newStoreService(p)
+	if err != nil {
+		return nil, err
+	}
 	params := &messengersrv.Params{
 		WaitGroup:   p.waitGroup,
 		Producer:    p.producer,
@@ -174,6 +181,7 @@ func newMessengerService(p *params) (messenger.Service, error) {
 		UserWebURL:  p.userWebURL,
 		Database:    messengerdb.NewDatabase(dbParams),
 		User:        user,
+		Store:       store,
 	}
 	return messengersrv.NewService(params, messengersrv.WithLogger(p.logger)), nil
 }
@@ -191,4 +199,19 @@ func newUserService(p *params) (user.Service, error) {
 		Database:  userdb.NewDatabase(dbParams),
 	}
 	return usersrv.NewService(params, usersrv.WithLogger(p.logger)), nil
+}
+
+func newStoreService(p *params) (store.Service, error) {
+	mysql, err := newDatabase("stores", p)
+	if err != nil {
+		return nil, err
+	}
+	dbParams := &storedb.Params{
+		Database: mysql,
+	}
+	params := &storesrv.Params{
+		WaitGroup: p.waitGroup,
+		Database:  storedb.NewDatabase(dbParams),
+	}
+	return storesrv.NewService(params, storesrv.WithLogger(p.logger)), nil
 }

@@ -63,7 +63,7 @@ start-swagger: ## API仕様書用システムの起動
 .PHONY: swagger migrate
 
 swagger: ## API仕様書の生成
-	docker compose run --rm swagger_generator yarn generate
+	docker-compose run --rm swagger_generator make build
 
 migrate: ## データベースにDDLを適用
 	docker compose up -d mysql mysql_test

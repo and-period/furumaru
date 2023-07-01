@@ -14,6 +14,11 @@ module "dns_and_period_work" {
 
   subdomains = [
     {
+      domain  = "furumaru.and-period.work"
+      comment = "ふるさとマルシェ 本番用"
+      ttl     = 60
+    },
+    {
       domain  = "furumaru-stg.and-period.work"
       comment = "ふるさとマルシェ 検証用"
       ttl     = 60

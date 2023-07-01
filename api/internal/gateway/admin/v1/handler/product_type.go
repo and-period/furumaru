@@ -182,6 +182,9 @@ func (h *handler) DeleteProductType(ctx *gin.Context) {
 }
 
 func (h *handler) multiGetProductTypes(ctx context.Context, productTypeIDs []string) (service.ProductTypes, error) {
+	if len(productTypeIDs) == 0 {
+		return service.ProductTypes{}, nil
+	}
 	in := &store.MultiGetProductTypesInput{
 		ProductTypeIDs: productTypeIDs,
 	}
@@ -190,6 +193,9 @@ func (h *handler) multiGetProductTypes(ctx context.Context, productTypeIDs []str
 		return nil, err
 	}
 	productTypes := service.NewProductTypes(sproductTypes)
+	if len(productTypes) == 0 {
+		return productTypes, nil
+	}
 	categories, err := h.multiGetCategories(ctx, productTypes.CategoryIDs())
 	if err != nil {
 		return nil, err

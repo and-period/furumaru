@@ -2,8 +2,10 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
@@ -51,9 +53,20 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 		httpError(ctx, err)
 		return
 	}
+	scoordinator := service.NewCoordinators(coordinators)
+
+	aggregateIn := &user.AggregateRealatedProducersInput{
+		CoordinatorIDs: coordinators.IDs(),
+	}
+	producerTotals, err := h.user.AggregateRealatedProducers(ctx, aggregateIn)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+	scoordinator.SetProducerTotal(producerTotals)
 
 	res := &response.CoordinatorsResponse{
-		Coordinators: service.NewCoordinators(coordinators).Response(),
+		Coordinators: scoordinator.Response(),
 		Total:        total,
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -81,8 +94,17 @@ func (h *handler) CreateCoordinator(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
+	productTypes, err := h.multiGetProductTypes(ctx, req.ProductTypeIDs)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+	if len(productTypes) != len(req.ProductTypeIDs) {
+		badRequest(ctx, errors.New("handler: unmatch product types length"))
+		return
+	}
 
-	var thumbnailURL, headerURL string
+	var thumbnailURL, headerURL, promotionVideoURL, bonusVideoURL string
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
 		if req.ThumbnailURL == "" {
@@ -104,30 +126,53 @@ func (h *handler) CreateCoordinator(ctx *gin.Context) {
 		headerURL, err = h.media.UploadCoordinatorHeader(ectx, in)
 		return
 	})
+	eg.Go(func() (err error) {
+		if req.PromotionVideoURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.PromotionVideoURL,
+		}
+		promotionVideoURL, err = h.media.UploadCoordinatorPromotionVideo(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		if req.BonusVideoURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.BonusVideoURL,
+		}
+		bonusVideoURL, err = h.media.UploadCoordinatorBonusVideo(ectx, in)
+		return
+	})
 	if err := eg.Wait(); err != nil {
 		httpError(ctx, err)
 		return
 	}
 
 	in := &user.CreateCoordinatorInput{
-		Lastname:         req.Lastname,
-		Firstname:        req.Firstname,
-		LastnameKana:     req.LastnameKana,
-		FirstnameKana:    req.FirstnameKana,
-		CompanyName:      req.CompanyName,
-		StoreName:        req.StoreName,
-		ThumbnailURL:     thumbnailURL,
-		HeaderURL:        headerURL,
-		TwitterAccount:   req.TwitterAccount,
-		InstagramAccount: req.InstagramAccount,
-		FacebookAccount:  req.FacebookAccount,
-		Email:            req.Email,
-		PhoneNumber:      req.PhoneNumber,
-		PostalCode:       req.PostalCode,
-		Prefecture:       req.Prefecture,
-		City:             req.City,
-		AddressLine1:     req.AddressLine1,
-		AddressLine2:     req.AddressLine2,
+		Lastname:          req.Lastname,
+		Firstname:         req.Firstname,
+		LastnameKana:      req.LastnameKana,
+		FirstnameKana:     req.FirstnameKana,
+		MarcheName:        req.MarcheName,
+		Username:          req.Username,
+		Profile:           req.Profile,
+		ProductTypeIDs:    req.ProductTypeIDs,
+		ThumbnailURL:      thumbnailURL,
+		HeaderURL:         headerURL,
+		PromotionVideoURL: promotionVideoURL,
+		BonusVideoURL:     bonusVideoURL,
+		InstagramID:       req.InstagramID,
+		FacebookID:        req.FacebookID,
+		Email:             req.Email,
+		PhoneNumber:       req.PhoneNumber,
+		PostalCode:        req.PostalCode,
+		Prefecture:        codes.PrefectureValues[req.Prefecture],
+		City:              req.City,
+		AddressLine1:      req.AddressLine1,
+		AddressLine2:      req.AddressLine2,
 	}
 	coordinator, err := h.user.CreateCoordinator(ctx, in)
 	if err != nil {
@@ -147,8 +192,17 @@ func (h *handler) UpdateCoordinator(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
+	productTypes, err := h.multiGetProductTypes(ctx, req.ProductTypeIDs)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+	if len(productTypes) != len(req.ProductTypeIDs) {
+		badRequest(ctx, errors.New("handler: unmatch product types length"))
+		return
+	}
 
-	var thumbnailURL, headerURL string
+	var thumbnailURL, headerURL, promotionVideoURL, bonusVideoURL string
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
 		if req.ThumbnailURL == "" {
@@ -170,30 +224,53 @@ func (h *handler) UpdateCoordinator(ctx *gin.Context) {
 		headerURL, err = h.media.UploadCoordinatorHeader(ectx, in)
 		return
 	})
+	eg.Go(func() (err error) {
+		if req.PromotionVideoURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.PromotionVideoURL,
+		}
+		promotionVideoURL, err = h.media.UploadCoordinatorPromotionVideo(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		if req.BonusVideoURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.BonusVideoURL,
+		}
+		bonusVideoURL, err = h.media.UploadCoordinatorBonusVideo(ectx, in)
+		return
+	})
 	if err := eg.Wait(); err != nil {
 		httpError(ctx, err)
 		return
 	}
 
 	in := &user.UpdateCoordinatorInput{
-		CoordinatorID:    util.GetParam(ctx, "coordinatorId"),
-		Lastname:         req.Lastname,
-		Firstname:        req.Firstname,
-		LastnameKana:     req.LastnameKana,
-		FirstnameKana:    req.FirstnameKana,
-		CompanyName:      req.CompanyName,
-		StoreName:        req.StoreName,
-		ThumbnailURL:     thumbnailURL,
-		HeaderURL:        headerURL,
-		TwitterAccount:   req.TwitterAccount,
-		InstagramAccount: req.InstagramAccount,
-		FacebookAccount:  req.FacebookAccount,
-		PhoneNumber:      req.PhoneNumber,
-		PostalCode:       req.PostalCode,
-		Prefecture:       req.Prefecture,
-		City:             req.City,
-		AddressLine1:     req.AddressLine1,
-		AddressLine2:     req.AddressLine2,
+		CoordinatorID:     util.GetParam(ctx, "coordinatorId"),
+		Lastname:          req.Lastname,
+		Firstname:         req.Firstname,
+		LastnameKana:      req.LastnameKana,
+		FirstnameKana:     req.FirstnameKana,
+		MarcheName:        req.MarcheName,
+		Username:          req.Username,
+		Profile:           req.Profile,
+		ProductTypeIDs:    req.ProductTypeIDs,
+		ThumbnailURL:      thumbnailURL,
+		HeaderURL:         headerURL,
+		PromotionVideoURL: promotionVideoURL,
+		BonusVideoURL:     bonusVideoURL,
+		InstagramID:       req.InstagramID,
+		FacebookID:        req.FacebookID,
+		PhoneNumber:       req.PhoneNumber,
+		PostalCode:        req.PostalCode,
+		Prefecture:        codes.PrefectureValues[req.Prefecture],
+		City:              req.City,
+		AddressLine1:      req.AddressLine1,
+		AddressLine2:      req.AddressLine2,
 	}
 	if err := h.user.UpdateCoordinator(ctx, in); err != nil {
 		httpError(ctx, err)
@@ -244,6 +321,20 @@ func (h *handler) DeleteCoordinator(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) multiGetCoordinators(ctx context.Context, coordinatorIDs []string) (service.Coordinators, error) {
+	if len(coordinatorIDs) == 0 {
+		return service.Coordinators{}, nil
+	}
+	in := &user.MultiGetCoordinatorsInput{
+		CoordinatorIDs: coordinatorIDs,
+	}
+	coordinators, err := h.user.MultiGetCoordinators(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewCoordinators(coordinators), nil
 }
 
 func (h *handler) getCoordinator(ctx context.Context, coordinatorID string) (*service.Coordinator, error) {

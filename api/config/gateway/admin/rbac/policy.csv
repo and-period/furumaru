@@ -29,6 +29,10 @@ p, product_type_create, /v1/categories/*/product-types, POST, allow
 p, product_type_update, /v1/categories/*/product-types/*, PATCH, allow
 p, product_type_delete, /v1/categories/*/product-types/*, DELETE, allow
 p, product_type_uploader, /v1/upload/product-types/*, POST, allow
+p, product_tag_list, /v1/product-tags, GET, allow
+p, product_tag_create, /v1/product-tags, POST, allow
+p, product_tag_update, /v1/product-tags/*, PATCH, allow
+p, product_tag_delete, /v1/product-tags/*, DELETE, allow
 p, shipping_list, /v1/shippings, GET, allow
 p, shipping_get, /v1/shippings/*, GET, allow
 p, shipping_create, /v1/shippings, POST, allow
@@ -49,9 +53,6 @@ p, order_list, /v1/orders, GET, allow
 p, order_get, /v1/orders/*, GET, allow
 p, user_list, /v1/users, GET, allow
 p, user_get, /v1/users/*, GET, allow
-p, contact_list, /v1/contacts, GET, allow
-p, contact_get, /v1/contacts/*, GET, allow
-p, contact_update, /v1/contacts/*, PATCH, allow
 p, notification_list, /v1/notifications, GET, allow
 p, notification_get, /v1/notifications/*, GET, allow
 p, notification_create, /v1/notifications, POST, allow
@@ -63,6 +64,19 @@ p, live_get, /v1/schedules/*/lives/*, GET, allow
 p, message_list, /v1/messages, GET, allow
 p, message_get, /v1/messages/*, GET, allow
 p, postal_code_search, /v1/postal-codes/*, GET, allow
+p, contact_list, /v1/contacts, GET, allow
+p, contact_get, /v1/contacts/*, GET, allow
+p, contact_create, /v1/contacts, POST, allow
+p, contact_update, /v1/contacts/* PATCH, allow
+p, contact_delete, /v1/contacts/* DELETE, allow
+p, thread_get, /v1/contacts/*/threads/*, GET, allow
+p, thread_list_by_contactId, /v1/contacts/*/threads, GET, allow
+p, thread_create, /v1/contacts/*/threads, POST, allow
+p, thread_update, /v1/contacts/*/threads/*, PATCH, allow
+p, thread_delete, /v1/contacts/*/threads/*, DELETE, allow
+p, contact_category_get, /v1/contact-categories/*, GET, allow
+p, contact_category_list, /vi/contact-categories, GET, allow
+p, contact_read_create, /v1/contact-reads, POST, allow
 
 g, administrator, auth
 g, administrator, administrator_list
@@ -94,6 +108,10 @@ g, administrator, product_type_create
 g, administrator, product_type_update
 g, administrator, product_type_delete
 g, administrator, product_type_uploader
+g, administrator, product_tag_list
+g, administrator, product_tag_create
+g, administrator, product_tag_update
+g, administrator, product_tag_delete
 g, administrator, shipping_list
 g, administrator, shipping_get
 g, administrator, shipping_create
@@ -114,9 +132,6 @@ g, administrator, order_list
 g, administrator, order_get
 g, administrator, user_list
 g, administrator, user_get
-g, administrator, contact_list
-g, administrator, contact_get
-g, administrator, contact_update
 g, administrator, notification_list
 g, administrator, notification_get
 g, administrator, notification_create
@@ -128,6 +143,19 @@ g, administrator, live_get
 g, administrator, message_list
 g, administrator, message_get
 g, administrator, postal_code_search
+g, administrator, contact_get
+g, administrator, contact_list
+g, administrator, contact_create
+g, administrator, contact_update
+g, administrator, contact_delete
+g, administrator, thread_get
+g, administrator, thread_list_by_contactId
+g, administrator, thread_create
+g, administrator, thread_update
+g, administrator, thread_delete
+g, administrator, contact_category_get
+g, administrator, contact_category_list
+g, administrator, contact_read_create
 
 g, coordinator, auth
 g, coordinator, coordinator_uploader
@@ -142,6 +170,7 @@ g, coordinator, related_producer_create
 g, coordinator, related_producer_delete
 g, coordinator, category_list
 g, coordinator, product_type_list
+g, coordinator, product_tag_list
 g, coordinator, shipping_list
 g, coordinator, shipping_get
 g, coordinator, product_list
@@ -154,9 +183,6 @@ g, coordinator, promotion_list
 g, coordinator, promotion_get
 g, coordinator, order_list
 g, coordinator, order_get
-g, coordinator, contact_list
-g, coordinator, contact_get
-g, coordinator, contact_update
 g, coordinator, notification_list
 g, coordinator, notification_get
 g, coordinator, notification_create
@@ -168,11 +194,25 @@ g, coordinator, live_get
 g, coordinator, message_list
 g, coordinator, message_get
 g, coordinator, postal_code_search
+g, coordinator, contact_list
+g, coordinator, contact_get
+g, coordinator, contact_create
+g, coordinator, contact_update
+g, coordinator, contact_delete
+g, coordinator, thread_get
+g, coordinator, thread_list_by_contactId
+g, coordinator, thread_create
+g, coordinator, thread_update
+g, coordinator, thread_delete
+g, coordinator, contact_category_get
+g, coordinator, contact_category_list
+g, coordinator, contact_read_create
 
 g, producer, auth
 g, producer, producer_uploader
 g, producer, category_list
 g, producer, product_type_list
+g, producer, product_tag_list
 g, producer, shipping_list
 g, producer, shipping_get
 g, producer, product_list
@@ -188,3 +228,16 @@ g, producer, live_get
 g, producer, message_list
 g, producer, message_get
 g, producer, postal_code_search
+g, producer, contact_list
+g, producer, contact_get
+g, producer, contact_create
+g, producer, contact_update
+g, producer, contact_delete
+g, producer, thread_get
+g, producer, thread_list_by_contactId
+g, producer, thread_create
+g, producer, thread_update
+g, producer, thread_delete
+g, producer, contact_category_get
+g, producer, contact_category_list
+g, producer, contact_read_create

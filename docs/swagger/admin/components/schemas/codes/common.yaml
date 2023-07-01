@@ -3,6 +3,7 @@ prefecture:
   description: 都道府県コード
   nullable: false
   enum:
+  - ''
   - hokkaido
   - aomori
   - iwate
@@ -51,6 +52,7 @@ prefecture:
   - kagoshima
   - okinawa
   x-enum-varnames:
+  - UNKNOWN
   - HOKKAIDO
   - AOMORI
   - IWATE
@@ -99,6 +101,7 @@ prefecture:
   - KAGOSHIMA
   - OKINAWA
   x-enum-descriptions:
+  - 不明
   - 北海道
   - 青森県
   - 岩手県

@@ -7,6 +7,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/database"
+	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/sqs"
@@ -21,6 +22,7 @@ type Params struct {
 	Database    *database.Database
 	Producer    sqs.Producer
 	User        user.Service
+	Store       store.Service
 }
 
 type service struct {
@@ -33,6 +35,7 @@ type service struct {
 	db          *database.Database
 	producer    sqs.Producer
 	user        user.Service
+	store       store.Service
 }
 
 type options struct {
@@ -72,5 +75,6 @@ func NewService(params *Params, opts ...Option) messenger.Service {
 		userWebURL:  userWebURL,
 		db:          params.Database,
 		user:        params.User,
+		store:       params.Store,
 	}
 }

@@ -80,7 +80,6 @@ func NewHandler(params *Params, opts ...Option) Handler {
 func (h *handler) Routes(rg *gin.RouterGroup) {
 	v1 := rg.Group("/v1")
 	h.authRoutes(v1.Group("/auth"))
-	h.contactRoutes(v1.Group("/contacts"))
 }
 
 /**

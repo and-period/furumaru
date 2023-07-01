@@ -6,6 +6,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/messenger"
+	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/pkg/cognito"
@@ -20,6 +21,7 @@ type Params struct {
 	Database  *database.Database
 	AdminAuth cognito.Client
 	UserAuth  cognito.Client
+	Store     store.Service
 	Messenger messenger.Service
 	Media     media.Service
 }
@@ -33,6 +35,7 @@ type service struct {
 	db          *database.Database
 	adminAuth   cognito.Client
 	userAuth    cognito.Client
+	store       store.Service
 	messenger   messenger.Service
 	media       media.Service
 }
@@ -65,6 +68,7 @@ func NewService(params *Params, opts ...Option) user.Service {
 		db:          params.Database,
 		adminAuth:   params.AdminAuth,
 		userAuth:    params.UserAuth,
+		store:       params.Store,
 		messenger:   params.Messenger,
 		media:       params.Media,
 	}

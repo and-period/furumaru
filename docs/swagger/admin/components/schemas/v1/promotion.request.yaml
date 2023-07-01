@@ -10,10 +10,6 @@ createPromotionRequest:
     public:
       type: boolean
       description: 公開フラグ
-    publishedAt:
-      type: integer
-      format: int64
-      description: 公開日時(unixtime)
     discountType:
       $ref: './../../../openapi.yaml#/components/schemas/discountType'
     discountRate:
@@ -35,7 +31,6 @@ createPromotionRequest:
   - title
   - description
   - public
-  - publishedAt
   - discountType
   - discountRate
   - code
@@ -45,7 +40,6 @@ createPromotionRequest:
     title: 'プロモーションタイトル'
     description: 'セール情報をお届けします。'
     public: true
-    publishedAt: 1640962800
     discountType: 1
     discountRate: 300
     code: 'code1234'
@@ -63,10 +57,6 @@ updatePromotionRequest:
     public:
       type: boolean
       description: 公開フラグ
-    publishedAt:
-      type: integer
-      format: int64
-      description: 公開日時(unixtime)
     discountType:
       $ref: './../../../openapi.yaml#/components/schemas/discountType'
     discountRate:
@@ -88,7 +78,6 @@ updatePromotionRequest:
   - title
   - description
   - public
-  - publishedAt
   - discountType
   - discountRate
   - code
@@ -98,7 +87,6 @@ updatePromotionRequest:
     title: 'プロモーションタイトル'
     description: 'セール情報をお届けします。'
     public: true
-    publishedAt: 1640962800
     discountType: 1
     discountRate: 300
     code: 'code1234'

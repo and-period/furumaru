@@ -3,6 +3,7 @@ package service
 import (
 	"strings"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
@@ -32,7 +33,7 @@ func NewUser(user *uentity.User) *User {
 			Email:         user.Email(),
 			PhoneNumber:   user.PhoneNumber(),
 			PostalCode:    user.Customer.PostalCode,
-			Prefecture:    user.Customer.Prefecture,
+			Prefecture:    codes.PrefectureNames[user.Customer.Prefecture],
 			City:          user.Customer.City,
 			AddressLine1:  user.Customer.AddressLine1,
 			AddressLine2:  user.Customer.AddressLine2,
@@ -92,7 +93,8 @@ func NewUserList(user *User, order *sentity.AggregatedOrder) *UserList {
 			Lastname:    user.Lastname,
 			Firstname:   user.Firstname,
 			Registered:  user.Registered,
-			Address:     strings.TrimSpace(strings.Join([]string{user.Prefecture, user.City}, " ")),
+			Prefecture:  user.Prefecture,
+			City:        user.City,
 			TotalOrder:  order.OrderCount,
 			TotalAmount: order.Subtotal,
 		},

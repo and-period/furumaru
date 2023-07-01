@@ -106,12 +106,12 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.relatedProducerRoutes(v1.Group("/coordinators/:coordinatorId/producers"))
 	h.categoryRoutes(v1.Group("/categories"))
 	h.productTypeRoutes(v1.Group("/categories/:categoryId/product-types"))
+	h.productTagRoutes(v1.Group("/product-tags"))
 	h.shippingRoutes(v1.Group("/shippings"))
 	h.productRoutes(v1.Group("/products"))
 	h.promotionRoutes(v1.Group("/promotions"))
 	h.orderRoutes(v1.Group("/orders"))
 	h.notificationRoutes(v1.Group("/notifications"))
-	h.contactRoutes(v1.Group("/contacts"))
 	h.messageRoutes(v1.Group("/messages"))
 	h.scheduleRoutes(v1.Group("/schedules"))
 	h.liveRoutes(v1.Group("/schedules/:scheduleId/lives"))
@@ -119,6 +119,10 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.postalCodeRoutes(v1.Group("/postal-codes"))
 	v1.GET("/categories/-/product-types", h.authentication, h.ListProductTypes)
 	h.uploadRoutes(v1.Group("/upload"))
+	h.contactRoutes(v1.Group("/contacts"))
+	h.threadRoutes(v1.Group("/contacts/:contactId/threads"))
+	h.contactCategoryRoutes(v1.Group("/contact-categories"))
+	h.contactReadRoutes(v1.Group("/contact-reads"))
 }
 
 /**

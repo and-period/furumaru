@@ -19,8 +19,12 @@ func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication)
 	arg.POST("/coordinators/thumbnail", h.uploadCoordinatorThumbnail)
 	arg.POST("/coordinators/header", h.uploadCoordinatorHeader)
+	arg.POST("/coordinators/promotion-video", h.uploadCoordinatorPromotionVideo)
+	arg.POST("/coordinators/bonus-video", h.uploadCoordinatorBonusVideo)
 	arg.POST("/producers/thumbnail", h.uploadProducerThumbnail)
 	arg.POST("/producers/header", h.uploadProducerHeader)
+	arg.POST("/producers/promotion-video", h.uploadProducerPromotionVideo)
+	arg.POST("/producers/bonus-video", h.UploadProducerBonusVideo)
 	arg.POST("/products/image", h.uploadProductImage)
 	arg.POST("/products/video", h.uploadProductVideo)
 	arg.POST("/product-types/icon", h.uploadProductTypeIcon)
@@ -36,6 +40,16 @@ func (h *handler) uploadCoordinatorHeader(ctx *gin.Context) {
 	h.uploadFile(ctx, filename, h.media.GenerateCoordinatorHeader)
 }
 
+func (h *handler) uploadCoordinatorPromotionVideo(ctx *gin.Context) {
+	const filename = "video"
+	h.uploadFile(ctx, filename, h.media.GenerateCoordinatorPromotionVideo)
+}
+
+func (h *handler) uploadCoordinatorBonusVideo(ctx *gin.Context) {
+	const filename = "video"
+	h.uploadFile(ctx, filename, h.media.GenerateCoordinatorBonusVideo)
+}
+
 func (h *handler) uploadProducerThumbnail(ctx *gin.Context) {
 	const filename = "thumbnail"
 	h.uploadFile(ctx, filename, h.media.GenerateProducerThumbnail)
@@ -44,6 +58,16 @@ func (h *handler) uploadProducerThumbnail(ctx *gin.Context) {
 func (h *handler) uploadProducerHeader(ctx *gin.Context) {
 	const filename = "image"
 	h.uploadFile(ctx, filename, h.media.GenerateProducerHeader)
+}
+
+func (h *handler) uploadProducerPromotionVideo(ctx *gin.Context) {
+	const filename = "video"
+	h.uploadFile(ctx, filename, h.media.GenerateProducerPromotionVideo)
+}
+
+func (h *handler) UploadProducerBonusVideo(ctx *gin.Context) {
+	const filename = "video"
+	h.uploadFile(ctx, filename, h.media.GenerateProducerBonusVideo)
 }
 
 func (h *handler) uploadProductImage(ctx *gin.Context) {

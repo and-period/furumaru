@@ -1,14 +1,17 @@
-import {
-  searchAddressByPostalCode as _searchAddressByPostalCode,
-  SearchAddressResponse
-} from '../externals'
+import axios from 'axios'
+import { apiClient } from '~/plugins/api-client'
+import { Prefecture } from '~/types/api'
+
+export interface SearchAddress {
+  prefecture: Prefecture
+  city: string
+  town: string
+}
 
 export interface UseSearchAddress {
   loading: Ref<boolean>
   errorMessage: Ref<string>
-  searchAddressByPostalCode: (
-    postalCode: number
-  ) => Promise<SearchAddressResponse | undefined>
+  searchAddressByPostalCode: (postalCode: string) => Promise<SearchAddress>
 }
 
 /**
@@ -18,18 +21,35 @@ export function useSearchAddress (): UseSearchAddress {
   const loading = ref<boolean>(false)
   const errorMessage = ref<string>('')
 
-  const searchAddressByPostalCode = async (postalCode: number) => {
+  const searchAddressByPostalCode = async (postalCode: string): Promise<SearchAddress> => {
     loading.value = true
     errorMessage.value = ''
     try {
-      return await _searchAddressByPostalCode(Number(postalCode))
-    } catch (e) {
-      if (e instanceof Error) {
-        errorMessage.value = e.message
-      } else {
-        errorMessage.value =
-          '不明なエラーが発生しました。お手数ですがご自身で入力してください。'
+      const res = await apiClient.addressApi().v1SearchPostalCode(postalCode)
+      return {
+        prefecture: res.data.prefectureCode as Prefecture,
+        city: res.data.city,
+        town: res.data.town
       }
+    } catch (err) {
+      if (!axios.isAxiosError(err)) {
+        errorMessage.value = '不明なエラーが発生しました。お手数ですがご自身で入力してください。'
+        throw err
+      }
+
+      let msg: string
+      switch (err.response?.status) {
+        case 400:
+          msg = '入力内容に誤りがあります'
+          break
+        case 404:
+          msg = '対応する住所が見つかりませんでした。'
+          break
+        default:
+          msg = '不明なエラーが発生しました。お手数ですがご自身で入力してください'
+      }
+      errorMessage.value = msg
+      throw err
     } finally {
       loading.value = false
     }

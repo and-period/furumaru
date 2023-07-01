@@ -51,6 +51,21 @@ func (mr *MockServiceMockRecorder) CreateContact(ctx, in interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateContact", reflect.TypeOf((*MockService)(nil).CreateContact), ctx, in)
 }
 
+// CreateContactRead mocks base method.
+func (m *MockService) CreateContactRead(ctx context.Context, in *messenger.CreateContactReadInput) (*entity.ContactRead, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateContactRead", ctx, in)
+	ret0, _ := ret[0].(*entity.ContactRead)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateContactRead indicates an expected call of CreateContactRead.
+func (mr *MockServiceMockRecorder) CreateContactRead(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateContactRead", reflect.TypeOf((*MockService)(nil).CreateContactRead), ctx, in)
+}
+
 // CreateNotification mocks base method.
 func (m *MockService) CreateNotification(ctx context.Context, in *messenger.CreateNotificationInput) (*entity.Notification, error) {
 	m.ctrl.T.Helper()
@@ -64,6 +79,35 @@ func (m *MockService) CreateNotification(ctx context.Context, in *messenger.Crea
 func (mr *MockServiceMockRecorder) CreateNotification(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateNotification", reflect.TypeOf((*MockService)(nil).CreateNotification), ctx, in)
+}
+
+// CreateThread mocks base method.
+func (m *MockService) CreateThread(ctx context.Context, in *messenger.CreateThreadInput) (*entity.Thread, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateThread", ctx, in)
+	ret0, _ := ret[0].(*entity.Thread)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateThread indicates an expected call of CreateThread.
+func (mr *MockServiceMockRecorder) CreateThread(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateThread", reflect.TypeOf((*MockService)(nil).CreateThread), ctx, in)
+}
+
+// DeleteContact mocks base method.
+func (m *MockService) DeleteContact(ctx context.Context, in *messenger.DeleteContactInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteContact", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteContact indicates an expected call of DeleteContact.
+func (mr *MockServiceMockRecorder) DeleteContact(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteContact", reflect.TypeOf((*MockService)(nil).DeleteContact), ctx, in)
 }
 
 // DeleteNotification mocks base method.
@@ -80,6 +124,20 @@ func (mr *MockServiceMockRecorder) DeleteNotification(ctx, in interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteNotification", reflect.TypeOf((*MockService)(nil).DeleteNotification), ctx, in)
 }
 
+// DeleteThread mocks base method.
+func (m *MockService) DeleteThread(ctx context.Context, in *messenger.DeleteThreadInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteThread", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteThread indicates an expected call of DeleteThread.
+func (mr *MockServiceMockRecorder) DeleteThread(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteThread", reflect.TypeOf((*MockService)(nil).DeleteThread), ctx, in)
+}
+
 // GetContact mocks base method.
 func (m *MockService) GetContact(ctx context.Context, in *messenger.GetContactInput) (*entity.Contact, error) {
 	m.ctrl.T.Helper()
@@ -93,6 +151,36 @@ func (m *MockService) GetContact(ctx context.Context, in *messenger.GetContactIn
 func (mr *MockServiceMockRecorder) GetContact(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetContact", reflect.TypeOf((*MockService)(nil).GetContact), ctx, in)
+}
+
+// GetContactCategory mocks base method.
+func (m *MockService) GetContactCategory(ctx context.Context, in *messenger.GetContactCategoryInput) (*entity.ContactCategory, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetContactCategory", ctx, in)
+	ret0, _ := ret[0].(*entity.ContactCategory)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetContactCategory indicates an expected call of GetContactCategory.
+func (mr *MockServiceMockRecorder) GetContactCategory(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetContactCategory", reflect.TypeOf((*MockService)(nil).GetContactCategory), ctx, in)
+}
+
+// GetContactRead mocks base method.
+func (m *MockService) GetContactRead(ctx context.Context, in *messenger.GetContactReadInput) (*entity.ContactRead, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetContactRead", ctx, in)
+	ret0, _ := ret[0].(*entity.ContactRead)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetContactRead indicates an expected call of GetContactRead.
+func (mr *MockServiceMockRecorder) GetContactRead(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetContactRead", reflect.TypeOf((*MockService)(nil).GetContactRead), ctx, in)
 }
 
 // GetMessage mocks base method.
@@ -123,6 +211,36 @@ func (m *MockService) GetNotification(ctx context.Context, in *messenger.GetNoti
 func (mr *MockServiceMockRecorder) GetNotification(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetNotification", reflect.TypeOf((*MockService)(nil).GetNotification), ctx, in)
+}
+
+// GetThread mocks base method.
+func (m *MockService) GetThread(ctx context.Context, in *messenger.GetThreadInput) (*entity.Thread, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetThread", ctx, in)
+	ret0, _ := ret[0].(*entity.Thread)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetThread indicates an expected call of GetThread.
+func (mr *MockServiceMockRecorder) GetThread(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetThread", reflect.TypeOf((*MockService)(nil).GetThread), ctx, in)
+}
+
+// ListContactCategories mocks base method.
+func (m *MockService) ListContactCategories(ctx context.Context, in *messenger.ListContactCategoriesInput) (entity.ContactCategories, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListContactCategories", ctx, in)
+	ret0, _ := ret[0].(entity.ContactCategories)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListContactCategories indicates an expected call of ListContactCategories.
+func (mr *MockServiceMockRecorder) ListContactCategories(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListContactCategories", reflect.TypeOf((*MockService)(nil).ListContactCategories), ctx, in)
 }
 
 // ListContacts mocks base method.
@@ -173,6 +291,22 @@ func (mr *MockServiceMockRecorder) ListNotifications(ctx, in interface{}) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListNotifications", reflect.TypeOf((*MockService)(nil).ListNotifications), ctx, in)
 }
 
+// ListThreadsByContactID mocks base method.
+func (m *MockService) ListThreadsByContactID(ctx context.Context, in *messenger.ListThreadsByContactIDInput) (entity.Threads, int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListThreadsByContactID", ctx, in)
+	ret0, _ := ret[0].(entity.Threads)
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ListThreadsByContactID indicates an expected call of ListThreadsByContactID.
+func (mr *MockServiceMockRecorder) ListThreadsByContactID(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListThreadsByContactID", reflect.TypeOf((*MockService)(nil).ListThreadsByContactID), ctx, in)
+}
+
 // NotifyNotification mocks base method.
 func (m *MockService) NotifyNotification(ctx context.Context, in *messenger.NotifyNotificationInput) error {
 	m.ctrl.T.Helper()
@@ -185,20 +319,6 @@ func (m *MockService) NotifyNotification(ctx context.Context, in *messenger.Noti
 func (mr *MockServiceMockRecorder) NotifyNotification(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotifyNotification", reflect.TypeOf((*MockService)(nil).NotifyNotification), ctx, in)
-}
-
-// NotifyReceivedContact mocks base method.
-func (m *MockService) NotifyReceivedContact(ctx context.Context, in *messenger.NotifyReceivedContactInput) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "NotifyReceivedContact", ctx, in)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// NotifyReceivedContact indicates an expected call of NotifyReceivedContact.
-func (mr *MockServiceMockRecorder) NotifyReceivedContact(ctx, in interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotifyReceivedContact", reflect.TypeOf((*MockService)(nil).NotifyReceivedContact), ctx, in)
 }
 
 // NotifyRegisterAdmin mocks base method.
@@ -243,6 +363,20 @@ func (mr *MockServiceMockRecorder) UpdateContact(ctx, in interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateContact", reflect.TypeOf((*MockService)(nil).UpdateContact), ctx, in)
 }
 
+// UpdateContactReadFlag mocks base method.
+func (m *MockService) UpdateContactReadFlag(ctx context.Context, in *messenger.UpdateContactReadFlagInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateContactReadFlag", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateContactReadFlag indicates an expected call of UpdateContactReadFlag.
+func (mr *MockServiceMockRecorder) UpdateContactReadFlag(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateContactReadFlag", reflect.TypeOf((*MockService)(nil).UpdateContactReadFlag), ctx, in)
+}
+
 // UpdateNotification mocks base method.
 func (m *MockService) UpdateNotification(ctx context.Context, in *messenger.UpdateNotificationInput) error {
 	m.ctrl.T.Helper()
@@ -255,4 +389,18 @@ func (m *MockService) UpdateNotification(ctx context.Context, in *messenger.Upda
 func (mr *MockServiceMockRecorder) UpdateNotification(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateNotification", reflect.TypeOf((*MockService)(nil).UpdateNotification), ctx, in)
+}
+
+// UpdateThread mocks base method.
+func (m *MockService) UpdateThread(ctx context.Context, in *messenger.UpdateThreadInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateThread", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateThread indicates an expected call of UpdateThread.
+func (mr *MockServiceMockRecorder) UpdateThread(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateThread", reflect.TypeOf((*MockService)(nil).UpdateThread), ctx, in)
 }

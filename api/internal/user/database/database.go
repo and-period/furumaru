@@ -42,8 +42,10 @@ type Admin interface {
 	MultiGet(ctx context.Context, adminIDs []string, fields ...string) (entity.Admins, error)
 	Get(ctx context.Context, adminID string, fields ...string) (*entity.Admin, error)
 	GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.Admin, error)
+	GetByEmail(ctx context.Context, email string, fields ...string) (*entity.Admin, error)
 	UpdateEmail(ctx context.Context, adminID, email string) error
 	UpdateDevice(ctx context.Context, adminID, device string) error
+	UpdateSignInAt(ctx context.Context, adminID string) error
 }
 
 type Administrator interface {
@@ -90,6 +92,7 @@ type Producer interface {
 	UpdateHeaders(ctx context.Context, producerID string, headers common.Images) error
 	UpdateRelationship(ctx context.Context, coordinatorID string, producerIDs ...string) error
 	Delete(ctx context.Context, producerID string, auth func(ctx context.Context) error) error
+	AggregateByCoordinatorID(ctx context.Context, coordinatorIDs []string) (map[string]int64, error)
 }
 
 type User interface {
@@ -121,23 +124,26 @@ type ListCoordinatorsParams struct {
 }
 
 type UpdateCoordinatorParams struct {
-	Lastname         string
-	Firstname        string
-	LastnameKana     string
-	FirstnameKana    string
-	CompanyName      string
-	StoreName        string
-	ThumbnailURL     string
-	HeaderURL        string
-	TwitterAccount   string
-	InstagramAccount string
-	FacebookAccount  string
-	PhoneNumber      string
-	PostalCode       string
-	Prefecture       string
-	City             string
-	AddressLine1     string
-	AddressLine2     string
+	Lastname          string
+	Firstname         string
+	LastnameKana      string
+	FirstnameKana     string
+	MarcheName        string
+	Username          string
+	Profile           string
+	ProductTypeIDs    []string
+	ThumbnailURL      string
+	HeaderURL         string
+	PromotionVideoURL string
+	BonusVideoURL     string
+	InstagramID       string
+	FacebookID        string
+	PhoneNumber       string
+	PostalCode        string
+	Prefecture        int64
+	City              string
+	AddressLine1      string
+	AddressLine2      string
 }
 
 type ListProducersParams struct {
@@ -158,19 +164,24 @@ func (p *ListProducersParams) stmt(stmt *gorm.DB) *gorm.DB {
 }
 
 type UpdateProducerParams struct {
-	Lastname      string
-	Firstname     string
-	LastnameKana  string
-	FirstnameKana string
-	StoreName     string
-	ThumbnailURL  string
-	HeaderURL     string
-	PhoneNumber   string
-	PostalCode    string
-	Prefecture    string
-	City          string
-	AddressLine1  string
-	AddressLine2  string
+	Lastname          string
+	Firstname         string
+	LastnameKana      string
+	FirstnameKana     string
+	Username          string
+	Profile           string
+	ThumbnailURL      string
+	HeaderURL         string
+	PromotionVideoURL string
+	BonusVideoURL     string
+	InstagramID       string
+	FacebookID        string
+	PhoneNumber       string
+	PostalCode        string
+	Prefecture        int64
+	City              string
+	AddressLine1      string
+	AddressLine2      string
 }
 
 type ListUsersParams struct {

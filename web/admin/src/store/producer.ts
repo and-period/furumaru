@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { defineStore } from 'pinia'
 
 import { useCommonStore } from './common'
@@ -7,20 +6,14 @@ import {
   ProducerResponse,
   ProducersResponse,
   UpdateProducerRequest,
-  UploadImageResponse
+  UploadImageResponse,
+  UploadVideoResponse
 } from '~/types/api'
-import {
-  AuthError,
-  ConflictError,
-  ConnectionError,
-  InternalServerError,
-  NotFoundError,
-  ValidationError
-} from '~/types/exception'
 import { apiClient } from '~/plugins/api-client'
 
 export const useProducerStore = defineStore('producer', {
   state: () => ({
+    producer: {} as ProducerResponse,
     producers: [] as ProducersResponse['producers'],
     totalItems: 0
   }),
@@ -33,29 +26,26 @@ export const useProducerStore = defineStore('producer', {
      */
     async fetchProducers (limit = 20, offset = 0, options = ''): Promise<void> {
       try {
-        const res = await apiClient.producerApi().v1ListProducers(
-          limit,
-          offset,
-          options
-        )
+        const res = await apiClient.producerApi().v1ListProducers(limit, offset, options)
         this.producers = res.data.producers
         this.totalItems = res.data.total
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          switch (error.response.status) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * 生産者IDから生産者の情報を取得する非同期関数
+     * @param producerId 生産者ID
+     * @returns 生産者の情報
+     */
+    async getProducer (producerId: string): Promise<ProducerResponse> {
+      try {
+        const res = await apiClient.producerApi().v1GetProducer(producerId)
+        this.producer = res.data
+        return res.data
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
@@ -68,38 +58,11 @@ export const useProducerStore = defineStore('producer', {
         await apiClient.producerApi().v1CreateProducer(payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
-          message: `${payload.storeName}を作成しました。`,
+          message: `${payload.username}を作成しました。`,
           color: 'info'
         })
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 400:
-              return Promise.reject(
-                new ValidationError('入力内容に誤りがあります。', error)
-              )
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 409:
-              return Promise.reject(
-                new ConflictError(
-                  'このメールアドレスはすでに登録されているため、登録できません。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err, { 409: 'このメールアドレスはすでに登録されているため、登録できません。' })
       }
     },
 
@@ -119,30 +82,8 @@ export const useProducerStore = defineStore('producer', {
           }
         )
         return res.data
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください', error)
-              )
-            case 400:
-              return Promise.reject(
-                new ValidationError(
-                  'このファイルはアップロードできません。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
     },
 
@@ -162,119 +103,77 @@ export const useProducerStore = defineStore('producer', {
           }
         )
         return res.data
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください', error)
-              )
-            case 400:
-              return Promise.reject(
-                new ValidationError(
-                  'このファイルはアップロードできません。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
     },
 
     /**
-     * 生産者IDから生産者の情報を取得する非同期関数
-     * @param id 生産者ID
-     * @returns 生産者の情報
+     * 生産者の紹介画像をアップロードする非同期関数
+     * @param payload 紹介画像
+     * @returns アップロードされた動画のURI
      */
-    async getProducer (id: string): Promise<ProducerResponse> {
+    async uploadProducerPromotionVideo (payload: File): Promise<UploadVideoResponse> {
       try {
-        const res = await apiClient.producerApi().v1GetProducer(id)
+        const res = await apiClient.producerApi().v1UploadProducerPromotionVideo(
+          payload,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
+        )
         return res.data
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * 生産者のサンキュー画像をアップロードする非同期関数
+     * @param payload サンキュー画像
+     * @returns アップロードされた動画のURI
+     */
+    async uploadProducerBonusVideo (payload: File): Promise<UploadVideoResponse> {
+      try {
+        const res = await apiClient.producerApi().v1UploadProducerBonusVideo(
+          payload,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
           }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください', error)
-              )
-            case 404:
-              return Promise.reject(
-                new NotFoundError(
-                  '一致する生産者が見つかりませんでした。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+        )
+        return res.data
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
     /**
      * 生産者を更新する非同期関数
-     * @param id 更新対象の生産者ID
+     * @param producerId 更新対象の生産者ID
      * @param payload
      * @returns
      */
-    async updateProducer (id: string, payload: UpdateProducerRequest) {
+    async updateProducer (producerId: string, payload: UpdateProducerRequest) {
       try {
-        await apiClient.producerApi().v1UpdateProducer(id, payload)
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 400:
-              return Promise.reject(
-                new ValidationError('入力内容に誤りがあります。', error)
-              )
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください', error)
-              )
-            case 404:
-              return Promise.reject(
-                new NotFoundError(
-                  '一致する生産者が見つかりませんでした。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+        await apiClient.producerApi().v1UpdateProducer(producerId, payload)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
     /**
      * 生産者を削除する非同期関数
-     * @param id 削除する生産者のID
+     * @param producerId 削除する生産者のID
      * @returns
      */
-    async deleteProducer (id: string) {
+    async deleteProducer (producerId: string) {
       try {
-        await apiClient.producerApi().v1DeleteProducer(id)
-      } catch (error) {
-        return this.errorHandler(error)
+        await apiClient.producerApi().v1DeleteProducer(producerId)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     }
   }

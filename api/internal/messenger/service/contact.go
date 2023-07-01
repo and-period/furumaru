@@ -2,12 +2,14 @@ package service
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
-	"go.uber.org/zap"
+	"github.com/and-period/furumaru/api/internal/user"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -15,17 +17,10 @@ func (s *service) ListContacts(ctx context.Context, in *messenger.ListContactsIn
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, exception.InternalError(err)
 	}
-	orders := make([]*database.ListContactsOrder, len(in.Orders))
-	for i := range in.Orders {
-		orders[i] = &database.ListContactsOrder{
-			Key:        in.Orders[i].Key,
-			OrderByASC: in.Orders[i].OrderByASC,
-		}
-	}
+
 	params := &database.ListContactsParams{
 		Limit:  int(in.Limit),
 		Offset: int(in.Offset),
-		Orders: orders,
 	}
 	var (
 		contacts entity.Contacts
@@ -37,7 +32,7 @@ func (s *service) ListContacts(ctx context.Context, in *messenger.ListContactsIn
 		return
 	})
 	eg.Go(func() (err error) {
-		total, err = s.db.Contact.Count(ectx, params)
+		total, err = s.db.Contact.Count(ectx)
 		return
 	})
 	if err := eg.Wait(); err != nil {
@@ -58,20 +53,20 @@ func (s *service) CreateContact(ctx context.Context, in *messenger.CreateContact
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
-	contact := entity.NewContact(in.Title, in.Content, in.Username, in.Email, in.PhoneNumber)
+	params := &entity.NewContactParams{
+		Title:       in.Title,
+		Content:     in.Content,
+		Username:    in.Username,
+		Email:       in.Email,
+		PhoneNumber: in.PhoneNumber,
+		Note:        in.Note,
+	}
+	contact := entity.NewContact(params)
+	contact.Fill(in.CategoryID, in.UserID, in.ResponderID)
 	if err := s.db.Contact.Create(ctx, contact); err != nil {
 		return nil, exception.InternalError(err)
 	}
-	s.waitGroup.Add(1)
-	go func(contactID string) {
-		defer s.waitGroup.Done()
-		in := &messenger.NotifyReceivedContactInput{
-			ContactID: contactID,
-		}
-		if err := s.NotifyReceivedContact(context.Background(), in); err != nil {
-			s.logger.Error("Failed to notify received contact", zap.String("contactId", contactID), zap.Error(err))
-		}
-	}(contact.ID)
+
 	return contact, nil
 }
 
@@ -79,11 +74,59 @@ func (s *service) UpdateContact(ctx context.Context, in *messenger.UpdateContact
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	params := &database.UpdateContactParams{
-		Status:   in.Status,
-		Priority: in.Priority,
-		Note:     in.Note,
+	if _, err := s.db.Contact.Get(ctx, in.ContactID); err != nil {
+		return exception.InternalError(err)
 	}
-	err := s.db.Contact.Update(ctx, in.ContactID, params)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		if in.UserID == "" {
+			return nil
+		}
+		userID := &user.GetUserInput{
+			UserID: in.UserID,
+		}
+		_, err := s.user.GetUser(ectx, userID)
+		return err
+	})
+	eg.Go(func() error {
+		if in.ResponderID == "" {
+			return nil
+		}
+		adminID := &user.GetAdminInput{
+			AdminID: in.ResponderID,
+		}
+		_, err := s.user.GetAdmin(ectx, adminID)
+		return err
+	})
+	err := eg.Wait()
+	if errors.Is(err, exception.ErrNotFound) {
+		return fmt.Errorf("api: invalid user id format: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	if err != nil {
+		return exception.InternalError(err)
+	}
+	params := &database.UpdateContactParams{
+		Title:       in.Title,
+		CategoryID:  in.CategoryID,
+		Content:     in.Content,
+		Username:    in.Username,
+		UserID:      in.UserID,
+		Email:       in.Email,
+		PhoneNumber: in.PhoneNumber,
+		Status:      in.Status,
+		ResponderID: in.ResponderID,
+		Note:        in.Note,
+	}
+	if err := s.db.Contact.Update(ctx, in.ContactID, params); err != nil {
+		return exception.InternalError(err)
+	}
+	return nil
+}
+
+func (s *service) DeleteContact(ctx context.Context, in *messenger.DeleteContactInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	err := s.db.Contact.Delete(ctx, in.ContactID)
 	return exception.InternalError(err)
 }

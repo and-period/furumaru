@@ -17,6 +17,14 @@ type Service interface {
 	UploadCoordinatorHeader(ctx context.Context, in *UploadFileInput) (string, error)
 	// コーディネータヘッダー画像リサイズ
 	ResizeCoordinatorHeader(ctx context.Context, in *ResizeFileInput) error
+	// コーディネータ紹介映像を生成
+	GenerateCoordinatorPromotionVideo(ctx context.Context, in *GenerateFileInput) (string, error)
+	// コーディネータ紹介映像アップロード
+	UploadCoordinatorPromotionVideo(ctx context.Context, in *UploadFileInput) (string, error)
+	// コーディネータ購入特典映像を生成
+	GenerateCoordinatorBonusVideo(ctx context.Context, in *GenerateFileInput) (string, error)
+	// コーディネータ購入特典映像アップロード
+	UploadCoordinatorBonusVideo(ctx context.Context, in *UploadFileInput) (string, error)
 	// 生産者サムネイル画像を生成
 	GenerateProducerThumbnail(ctx context.Context, in *GenerateFileInput) (string, error)
 	// 生産者サムネイル画像アップロード
@@ -29,6 +37,14 @@ type Service interface {
 	UploadProducerHeader(ctx context.Context, in *UploadFileInput) (string, error)
 	// 生産者ヘッダー画像リサイズ
 	ResizeProducerHeader(ctx context.Context, in *ResizeFileInput) error
+	// 生産者紹介映像を生成
+	GenerateProducerPromotionVideo(ctx context.Context, in *GenerateFileInput) (string, error)
+	// 生産者紹介映像アップロード
+	UploadProducerPromotionVideo(ctx context.Context, in *UploadFileInput) (string, error)
+	// 生産者購入特典映像を生成
+	GenerateProducerBonusVideo(ctx context.Context, in *GenerateFileInput) (string, error)
+	// 生産者購入特典映像アップロード
+	UploadProducerBonusVideo(ctx context.Context, in *UploadFileInput) (string, error)
 	// 商品メディア(画像)を生成
 	GenerateProductMediaImage(ctx context.Context, in *GenerateFileInput) (string, error)
 	// 商品メディア(映像)を生成
