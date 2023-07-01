@@ -1,5 +1,5 @@
 import { useCommonStore } from './common'
-import { CreateProductTagRequest, ProductTagResponse, ProductTagsResponse, UpdateProductTagRequest } from '~/types/api'
+import { CreateProductTagRequest, ProductTagResponse, ProductTagsResponse, ProductTagsResponseProductTagsInner, UpdateProductTagRequest } from '~/types/api'
 import { apiClient } from '~/plugins/api-client'
 
 export const useProductTagStore = defineStore('productTag', {
@@ -20,6 +20,34 @@ export const useProductTagStore = defineStore('productTag', {
       try {
         const res = await apiClient.productTagApi().v1ListProductTags(limit, offset, '', orders.join(','))
         this.productTags = res.data.productTags
+        this.total = res.data.total
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * 商品タグを検索する非同期関数
+     * @param name 商品タグ名(あいまい検索)
+     * @param productTagIds stateの更新時に残しておく必要がある商品タグ情報
+     */
+    async searchProductTags (name = '', productTagIds: string[] = []): Promise<void> {
+      try {
+        const res = await apiClient.productTagApi().v1ListProductTags(undefined, undefined, name)
+        const productTags: ProductTagsResponseProductTagsInner[] = []
+        this.productTags.forEach((productTag: ProductTagsResponseProductTagsInner): void => {
+          if (!productTagIds.includes(productTag.id)) {
+            return
+          }
+          productTags.push(productTag)
+        })
+        res.data.productTags.forEach((productTag: ProductTagsResponseProductTagsInner): void => {
+          if (productTags.find((v): boolean => v.id === productTag.id)) {
+            return
+          }
+          productTags.push(productTag)
+        })
+        this.productTags = productTags
         this.total = res.data.total
       } catch (err) {
         return this.errorHandler(err)

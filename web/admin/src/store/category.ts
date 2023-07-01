@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import { useCommonStore } from './common'
 import {
   CategoriesResponse,
+  CategoriesResponseCategoriesInner,
   CreateCategoryRequest,
   UpdateCategoryRequest
 } from '~/types/api'
@@ -23,8 +24,36 @@ export const useCategoryStore = defineStore('category', {
      */
     async fetchCategories (limit = 20, offset = 0, orders = []): Promise<void> {
       try {
-        const res = await listCategories(limit, offset, orders)
+        const res = await listCategories(limit, offset, '', orders)
         this.categories = res.categories
+        this.total = res.total
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * カテゴリを検索をする非同期関数
+     * @param name カテゴリ名(あいまい検索)
+     * @param categoryIds stateの更新時に残しておく必要があるカテゴリ情報
+     */
+    async searchCategories (name = '', categoryIds: string[] = []): Promise<void> {
+      try {
+        const res = await listCategories(undefined, undefined, name, [])
+        const categories: CategoriesResponseCategoriesInner[] = []
+        this.categories.forEach((category: CategoriesResponseCategoriesInner): void => {
+          if (!categoryIds.includes(category.id)) {
+            return
+          }
+          categories.push(category)
+        })
+        res.categories.forEach((category: CategoriesResponseCategoriesInner): void => {
+          if (categories.find((v): boolean => v.id === category.id)) {
+            return
+          }
+          categories.push(category)
+        })
+        this.categories = categories
         this.total = res.total
       } catch (err) {
         return this.errorHandler(err)
@@ -39,7 +68,7 @@ export const useCategoryStore = defineStore('category', {
      */
     async moreCategories (limit = 20, offset = 0, orders = []): Promise<void> {
       try {
-        const res = await listCategories(limit, offset, orders)
+        const res = await listCategories(limit, offset, '', orders)
         this.categories.push(...res.categories)
         this.total = res.total
       } catch (err) {
@@ -104,7 +133,7 @@ export const useCategoryStore = defineStore('category', {
   }
 })
 
-async function listCategories (limit = 20, offset = 0, orders: string[] = []): Promise<CategoriesResponse> {
-  const res = await apiClient.categoryApi().v1ListCategories(limit, offset, '', orders.join(','))
+async function listCategories (limit = 20, offset = 0, name = '', orders: string[] = []): Promise<CategoriesResponse> {
+  const res = await apiClient.categoryApi().v1ListCategories(limit, offset, name, orders.join(','))
   return { ...res.data }
 }

@@ -3,7 +3,9 @@ import { defineStore } from 'pinia'
 import { useCommonStore } from './common'
 import {
   CreateProductTypeRequest,
+  ProductTagsResponseProductTagsInner,
   ProductTypesResponse,
+  ProductTypesResponseProductTypesInner,
   UpdateProductTypeRequest,
   UploadImageResponse
 } from '~/types/api'
@@ -17,7 +19,7 @@ export const useProductTypeStore = defineStore('productType', {
 
   actions: {
     /**
-     * 品目を全件取得する非同期関数
+     * 品目一覧を取得する非同期関数
      * @param limit 取得上限数
      * @param offset 取得開始位置
      * @param orders ソートキー
@@ -32,10 +34,46 @@ export const useProductTypeStore = defineStore('productType', {
       }
     },
 
+    /**
+     * カテゴリに紐づく品目一覧を取得する非同期関数
+     * @param categoryId カテゴリID
+     * @param limit 取得上限数
+     * @param offset 取得開始位置
+     * @returns
+     */
     async fetchProductTypesByCategoryId (categoryId: string, limit = 20, offset = 0): Promise<void> {
       try {
         const res = await apiClient.productTypeApi().v1ListProductTypes(categoryId)
         this.productTypes = res.data.productTypes
+        this.totalItems = res.data.total
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * 品目を検索する非同期関数
+     * @param name 品目名(あいまい検索)
+     * @param categoryId カテゴリ名
+     * @param productTypeIds stateの更新時に残しておく必要がある品目情報
+     */
+    async searchProductTypes (name = '', categoryId = '', productTypeIds: string[] = []): Promise<void> {
+      try {
+        const res = await apiClient.productTypeApi().v1ListProductTypes(categoryId, undefined, undefined, name)
+        const productTypes: ProductTypesResponseProductTypesInner[] = []
+        this.productTypes.forEach((productType: ProductTypesResponseProductTypesInner): void => {
+          if (!productTypeIds.includes(productType.id)) {
+            return
+          }
+          productTypes.push(productType)
+        })
+        res.data.productTypes.forEach((productType: ProductTypesResponseProductTypesInner): void => {
+          if (productTypes.find((v): boolean => v.id === productType.id)) {
+            return
+          }
+          productTypes.push(productType)
+        })
+        this.productTypes = productTypes
         this.totalItems = res.data.total
       } catch (err) {
         return this.errorHandler(err)

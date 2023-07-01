@@ -91,6 +91,9 @@ const emit = defineEmits<{
   (e: 'update:files', files: FileList): void
   (e: 'update:form-data', formData: CreateProductRequest): void
   (e: 'update:selected-category-id', categoryId: string): void
+  (e: 'update:search-category', name: string): void
+  (e: 'update:search-product-type', name: string): void
+  (e: 'update:search-product-tag', name: string): void
   (e: 'submit'): void
 }>()
 
@@ -251,6 +254,18 @@ const getCommission = (): number => {
 
 const getBenefits = (): number => {
   return formDataValue.value.price - (formDataValue.value.cost + getCommission())
+}
+
+const onChangeSearchCategory = (name: string): void => {
+  emit('update:search-category', name)
+}
+
+const onChangeSearchProductType = (name: string): void => {
+  emit('update:search-product-type', name)
+}
+
+const onChangeSearchProductTag = (name: string): void => {
+  emit('update:search-product-tag', name)
 }
 
 const onClickImageUpload = (files?: FileList): void => {
@@ -611,14 +626,16 @@ const onSubmit = async (): Promise<void> => {
       <v-card elevation="0" class="mb-4">
         <v-card-title>詳細情報</v-card-title>
         <v-card-text>
-          <v-select
+          <v-autocomplete
             v-model="selectedCategoryIdValue"
             label="カテゴリ"
             :items="categories"
             item-title="name"
             item-value="id"
+            clearable
+            @update:search="onChangeSearchCategory"
           />
-          <v-select
+          <v-autocomplete
             v-model="formDataValidate.productTypeId.$model"
             :error-messages="getErrorMessage(formDataValidate.productTypeId.$errors)"
             label="品目"
@@ -626,6 +643,8 @@ const onSubmit = async (): Promise<void> => {
             item-title="name"
             item-value="id"
             no-data-text="カテゴリを先に選択してください。"
+            clearable
+            @update:search="onChangeSearchProductType"
           />
           <v-select
             v-model="formDataValidate.originPrefecture.$model"
@@ -644,16 +663,18 @@ const onSubmit = async (): Promise<void> => {
             label="原産地（市町村）"
             no-data-text="原産地（都道府県）を先に選択してください。"
           />
-          <v-select
+          <v-autocomplete
             v-model="formDataValidate.productTagIds.$model"
             label="商品タグ"
             :error-messages="getErrorMessage(formDataValidate.productTagIds.$errors)"
             :items="productTags"
             item-title="name"
             item-value="id"
+            chips
             closable-chips
             multiple
             density="comfortable"
+            @update:search="onChangeSearchProductTag"
           />
         </v-card-text>
       </v-card>

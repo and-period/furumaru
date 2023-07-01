@@ -67,10 +67,46 @@ const fetchState = useAsyncData(async (): Promise<void> => {
 
 watch(selectedCategoryId, (): void => {
   productTypeStore.fetchProductTypesByCategoryId(selectedCategoryId.value || '')
+  formData.value.productTypeId = ''
 })
 
 const isLoading = (): boolean => {
   return fetchState?.pending?.value || loading.value
+}
+
+const handleSearchCategory = async (name: string): Promise<void> => {
+  try {
+    const categoryIds: string[] = selectedCategoryId.value ? [selectedCategoryId.value] : []
+    await categoryStore.searchCategories(name, categoryIds)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+}
+
+const handleSearchProductType = async (name: string): Promise<void> => {
+  try {
+    const productTypeIds: string[] = formData.value.productTypeId ? [formData.value.productTypeId] : []
+    await productTypeStore.searchProductTypes(name, selectedCategoryId.value, productTypeIds)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+}
+
+const handleSearchProductTag = async (name: string): Promise<void> => {
+  try {
+    await productTagStore.searchProductTags(name, formData.value.productTagIds)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
 }
 
 const handleImageUpload = async (files: FileList): Promise<void> => {
@@ -141,6 +177,9 @@ try {
     :product-types="productTypes"
     :product-tags="productTags"
     @update:files="handleImageUpload"
+    @update:search-category="handleSearchCategory"
+    @update:search-product-type="handleSearchProductType"
+    @update:search-product-tag="handleSearchProductTag"
     @submit="handleSubmit"
   />
 </template>

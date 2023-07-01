@@ -4,7 +4,7 @@ import { mdiClose, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 import { AlertType } from '~/lib/hooks'
-import { CategoriesResponseCategoriesInner, DeliveryType, Prefecture, ProducersResponseProducersInner, ProductResponse, ProductStatus, ProductTagsResponseProductTagsInner, ProductTypesResponseProductTypesInner, StorageMethodType, UpdateProductRequest } from '~/types/api'
+import { CategoriesResponseCategoriesInner, DeliveryType, Prefecture, ProducersResponseProducersInner, ProductResponse, ProductStatus, ProductTagsResponseProductTagsInner, ProductTypesResponseProductTypesInner, StorageMethodType, UpdateProductRequest, Weekday } from '~/types/api'
 import {
   required,
   getErrorMessage,
@@ -133,6 +133,9 @@ const emit = defineEmits<{
   (e: 'update:files', files: FileList): void
   (e: 'update:form-data', formData: UpdateProductRequest): void
   (e: 'update:selected-category-id', categoryId: string): void
+  (e: 'update:search-category', name: string): void
+  (e: 'update:search-product-type', name: string): void
+  (e: 'update:search-product-tag', name: string): void
   (e: 'submit'): void
 }>()
 
@@ -159,6 +162,15 @@ const deliveryTypes = [
   { title: '冷凍便', value: DeliveryType.FROZEN }
 ]
 const itemUnits = ['個', '瓶']
+const weekdays = [
+  { title: '日曜日', value: Weekday.SUNDAY },
+  { title: '月曜日', value: Weekday.MONDAY },
+  { title: '火曜日', value: Weekday.TUESDAY },
+  { title: '水曜日', value: Weekday.WEDNESDAY },
+  { title: '木曜日', value: Weekday.THURSDAY },
+  { title: '金曜日', value: Weekday.FRIDAY },
+  { title: '土曜日', value: Weekday.SATURDAY }
+]
 
 const formDataRules = computed(() => ({
   name: { required, maxLength: maxLength(128) },
@@ -175,9 +187,9 @@ const formDataRules = computed(() => ({
   itemUnit: { required },
   itemDescription: { required },
   deliveryType: { required },
-  recommendedPoint1: { maxValue: maxValue(128) },
-  recommendedPoint2: { maxValue: maxValue(128) },
-  recommendedPoint3: { maxValue: maxValue(128) },
+  recommendedPoint1: { maxLength: maxLength(128) },
+  recommendedPoint2: { maxLength: maxLength(128) },
+  recommendedPoint3: { maxLength: maxLength(128) },
   expirationDate: { required, minValue: minValue(0) },
   storageMethodType: { required },
   box60Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
@@ -284,6 +296,18 @@ const getCommission = (): number => {
 
 const getBenefits = (): number => {
   return formDataValue.value.price - (formDataValue.value.cost + getCommission())
+}
+
+const onChangeSearchCategory = (name: string): void => {
+  emit('update:search-category', name)
+}
+
+const onChangeSearchProductType = (name: string): void => {
+  emit('update:search-product-type', name)
+}
+
+const onChangeSearchProductTag = (name: string): void => {
+  emit('update:search-product-tag', name)
 }
 
 const onClickImageUpload = (files?: FileList): void => {
@@ -648,6 +672,8 @@ const onSubmit = async (): Promise<void> => {
             :items="categories"
             item-title="name"
             item-value="id"
+            clearable
+            @update:search="onChangeSearchCategory"
           />
           <v-autocomplete
             v-model="formDataValidate.productTypeId.$model"
@@ -657,8 +683,10 @@ const onSubmit = async (): Promise<void> => {
             item-title="name"
             item-value="id"
             no-data-text="カテゴリを先に選択してください。"
+            clearable
+            @update:search="onChangeSearchProductType"
           />
-          <v-autocomplete
+          <v-select
             v-model="formDataValidate.originPrefecture.$model"
             :error-messages="getErrorMessage(formDataValidate.originPrefecture.$errors)"
             label="原産地（都道府県）"
@@ -666,7 +694,7 @@ const onSubmit = async (): Promise<void> => {
             item-title="text"
             item-value="value"
           />
-          <v-autocomplete
+          <v-select
             v-model="formDataValidate.originCity.$model"
             :error-messages="getErrorMessage(formDataValidate.originCity.$errors)"
             :items="cityListItems"
@@ -682,9 +710,11 @@ const onSubmit = async (): Promise<void> => {
             :items="productTags"
             item-title="name"
             item-value="id"
+            chips
             closable-chips
             multiple
             density="comfortable"
+            @update:search="onChangeSearchProductTag"
           />
         </v-card-text>
       </v-card>
