@@ -7,9 +7,6 @@ permissions:
   contents: write
   pull-requests: write
 
-env:
-  DEPENDABOT_VERSION: 1.6.0
-
 jobs:
   approve_and_merge:
     name: auto approve and merge
@@ -28,7 +25,7 @@ jobs:
 
     - name: Dependabot metadata
       id: dependabot-metadata
-      uses: dependabot/fetch-metadata@v${{ env.DEPENDABOT_VERSION }}
+      uses: dependabot/fetch-metadata@v1
       with:
         github-token: '${{ secrets.GITHUB_TOKEN }}'
 
