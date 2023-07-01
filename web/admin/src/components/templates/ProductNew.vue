@@ -488,11 +488,16 @@ const onSubmit = async (): Promise<void> => {
         <v-card elevation="0" class="mb-4">
           <v-card-title>配送設定</v-card-title>
           <v-card-text>
-            <v-text-field
-              v-model.number="formDataValidate.weight.$model"
-              :error-messages="getErrorMessage(formDataValidate.weight.$errors)"
-              label="重さ"
-              suffix="kg"
+            <v-select
+              v-model="formDataValidate.businessDays.$model"
+              label="営業日(発送可能日)"
+              :error-messages="getErrorMessage(formDataValidate.businessDays.$errors)"
+              :items="weekdays"
+              item-title="title"
+              item-value="value"
+              chips
+              closable-chips
+              multiple
             />
             <v-select
               v-model="formDataValidate.deliveryType.$model"
@@ -500,7 +505,12 @@ const onSubmit = async (): Promise<void> => {
               label="配送種別"
               :items="deliveryTypes"
             />
-
+            <v-text-field
+              v-model.number="formDataValidate.weight.$model"
+              :error-messages="getErrorMessage(formDataValidate.weight.$errors)"
+              label="重さ"
+              suffix="kg"
+            />
             <v-row>
               <v-col cols="3">
                 箱のサイズ
@@ -527,62 +537,6 @@ const onSubmit = async (): Promise<void> => {
                 />
               </v-col>
             </v-row>
-
-            <p class="text-subtitle-2 text-grey py-2">
-              販売期間
-            </p>
-            <div class="d-flex flex-column flex-md-row justify-center">
-              <v-text-field
-                v-model="timeDataValidate.startDate.$model"
-                :error-messages="getErrorMessage(timeDataValidate.startDate.$errors)"
-                type="date"
-                variant="outlined"
-                density="compact"
-                class="mr-md-2"
-                @update:model-value="onChangeStartAt"
-              />
-              <v-text-field
-                v-model="timeDataValidate.startTime.$model"
-                :error-messages="getErrorMessage(timeDataValidate.startTime.$errors)"
-                type="time"
-                variant="outlined"
-                density="compact"
-                @update:model-value="onChangeStartAt"
-              />
-              <p class="text-subtitle-2 mx-4 pt-md-3 pb-4 pb-md-6">
-                〜
-              </p>
-              <v-text-field
-                v-model="timeDataValidate.endDate.$model"
-                :error-messages="getErrorMessage(timeDataValidate.endDate.$errors)"
-                type="date"
-                variant="outlined"
-                density="compact"
-                class="mr-md-2"
-                @update:model-value="onChangeEndAt"
-              />
-              <v-text-field
-                v-model="timeDataValidate.endTime.$model"
-                :error-messages="getErrorMessage(timeDataValidate.endTime.$errors)"
-                type="time"
-                variant="outlined"
-                density="compact"
-                @update:model-value="onChangeEndAt"
-              />
-            </div>
-
-            <v-select
-              v-model="formDataValidate.businessDays.$model"
-              label="営業日(発送可能日)"
-              :error-messages="getErrorMessage(formDataValidate.businessDays.$errors)"
-              :items="weekdays"
-              item-title="title"
-              item-value="value"
-              chips
-              closable-chips
-              multiple
-              density="comfortable"
-            />
           </v-card-text>
         </v-card>
       </div>
@@ -590,14 +544,8 @@ const onSubmit = async (): Promise<void> => {
 
     <v-col sm="12" md="12" lg="4">
       <v-card elevation="0" class="mb-4">
-        <v-card-title>商品ステータス</v-card-title>
+        <v-card-title>販売設定</v-card-title>
         <v-card-text>
-          <v-select
-            v-model="formDataValidate.public.$model"
-            :error-messages="getErrorMessage(formDataValidate.public.$errors)"
-            label="公開状況"
-            :items="statuses"
-          />
           <v-select
             v-model="productStatus"
             label="販売状況"
@@ -607,6 +555,52 @@ const onSubmit = async (): Promise<void> => {
             variant="plain"
             readonly
           />
+          <v-select
+            v-model="formDataValidate.public.$model"
+            :error-messages="getErrorMessage(formDataValidate.public.$errors)"
+            label="公開状況"
+            :items="statuses"
+          />
+          <p class="text-subtitle-2 text-grey py-2">販売開始日時</p>
+          <div class="d-flex flex-column flex-md-row justify-center">
+            <v-text-field
+              v-model="timeDataValidate.startDate.$model"
+              :error-messages="getErrorMessage(timeDataValidate.startDate.$errors)"
+              type="date"
+              variant="outlined"
+              density="compact"
+              class="mr-md-2"
+              @update:model-value="onChangeStartAt"
+            />
+            <v-text-field
+              v-model="timeDataValidate.startTime.$model"
+              :error-messages="getErrorMessage(timeDataValidate.startTime.$errors)"
+              type="time"
+              variant="outlined"
+              density="compact"
+              @update:model-value="onChangeStartAt"
+            />
+          </div>
+          <p class="text-subtitle-2 text-grey py-2">販売終了日時</p>
+          <div class="d-flex flex-column flex-md-row justify-center">
+            <v-text-field
+              v-model="timeDataValidate.endDate.$model"
+              :error-messages="getErrorMessage(timeDataValidate.endDate.$errors)"
+              type="date"
+              variant="outlined"
+              density="compact"
+              class="mr-md-2"
+              @update:model-value="onChangeEndAt"
+            />
+            <v-text-field
+              v-model="timeDataValidate.endTime.$model"
+              :error-messages="getErrorMessage(timeDataValidate.endTime.$errors)"
+              type="time"
+              variant="outlined"
+              density="compact"
+              @update:model-value="onChangeEndAt"
+            />
+          </div>
         </v-card-text>
       </v-card>
 

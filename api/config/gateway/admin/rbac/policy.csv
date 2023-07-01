@@ -67,8 +67,8 @@ p, postal_code_search, /v1/postal-codes/*, GET, allow
 p, contact_list, /v1/contacts, GET, allow
 p, contact_get, /v1/contacts/*, GET, allow
 p, contact_create, /v1/contacts, POST, allow
-p, contact_update, /v1/contacts/* PATCH, allow
-p, contact_delete, /v1/contacts/* DELETE, allow
+p, contact_update, /v1/contacts/*, PATCH, allow
+p, contact_delete, /v1/contacts/*, DELETE, allow
 p, thread_get, /v1/contacts/*/threads/*, GET, allow
 p, thread_list_by_contactId, /v1/contacts/*/threads, GET, allow
 p, thread_create, /v1/contacts/*/threads, POST, allow
