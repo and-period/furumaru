@@ -127,20 +127,16 @@ func (s *service) DeleteProductType(ctx context.Context, in *store.DeleteProduct
 }
 
 func (s *service) resizeProductType(ctx context.Context, productTypeID, iconURL string) {
-	s.waitGroup.Add(1)
-	go func() {
-		defer s.waitGroup.Done()
-		if iconURL == "" {
-			return
-		}
-		in := &media.ResizeFileInput{
-			TargetID: productTypeID,
-			URLs:     []string{iconURL},
-		}
-		if err := s.media.ResizeProductTypeIcon(ctx, in); err != nil {
-			s.logger.Error("Failed to resize product type icon",
-				zap.String("productTypeId", productTypeID), zap.Error(err),
-			)
-		}
-	}()
+	if iconURL == "" {
+		return
+	}
+	in := &media.ResizeFileInput{
+		TargetID: productTypeID,
+		URLs:     []string{iconURL},
+	}
+	if err := s.media.ResizeProductTypeIcon(ctx, in); err != nil {
+		s.logger.Error("Failed to resize product type icon",
+			zap.String("productTypeId", productTypeID), zap.Error(err),
+		)
+	}
 }

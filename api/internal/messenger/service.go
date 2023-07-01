@@ -9,14 +9,6 @@ import (
 )
 
 type Service interface {
-	// お問い合わせ一覧取得
-	ListContacts(ctx context.Context, in *ListContactsInput) (entity.Contacts, int64, error)
-	// お問い合わせ取得
-	GetContact(ctx context.Context, in *GetContactInput) (*entity.Contact, error)
-	// お問い合わせ登録
-	CreateContact(ctx context.Context, in *CreateContactInput) (*entity.Contact, error)
-	// お問い合わせ更新
-	UpdateContact(ctx context.Context, in *UpdateContactInput) error
 	// お知らせ一覧取得
 	ListNotifications(ctx context.Context, in *ListNotificationsInput) (entity.Notifications, int64, error)
 	// お知らせ取得
@@ -35,8 +27,36 @@ type Service interface {
 	NotifyRegisterAdmin(ctx context.Context, in *NotifyRegisterAdminInput) error
 	// 管理者パスワードリセット通知
 	NotifyResetAdminPassword(ctx context.Context, in *NotifyResetAdminPasswordInput) error
-	// お問い合わせ受領通知
-	NotifyReceivedContact(ctx context.Context, in *NotifyReceivedContactInput) error
 	// お知らせ通知
 	NotifyNotification(ctx context.Context, in *NotifyNotificationInput) error
+	// お問い合わせ一覧取得
+	ListContacts(ctx context.Context, in *ListContactsInput) (entity.Contacts, int64, error)
+	// お問い合わせ取得
+	GetContact(ctx context.Context, in *GetContactInput) (*entity.Contact, error)
+	// お問い合わせ作成
+	CreateContact(ctx context.Context, in *CreateContactInput) (*entity.Contact, error)
+	// お問い合わせ編集
+	UpdateContact(ctx context.Context, in *UpdateContactInput) error
+	// お問い合わせ削除
+	DeleteContact(ctx context.Context, in *DeleteContactInput) error
+	// お問い合わせ種別一覧取得
+	ListContactCategories(ctx context.Context, in *ListContactCategoriesInput) (entity.ContactCategories, error)
+	// お問い合わせ種別取得
+	GetContactCategory(ctx context.Context, in *GetContactCategoryInput) (*entity.ContactCategory, error)
+	// お問い合わせ会話履歴一覧取得(お問い合わせID指定)
+	ListThreadsByContactID(ctx context.Context, in *ListThreadsByContactIDInput) (entity.Threads, int64, error)
+	// お問い合わせ会話履歴取得
+	GetThread(ctx context.Context, in *GetThreadInput) (*entity.Thread, error)
+	// お問い合わせ会話履歴作成
+	CreateThread(ctx context.Context, in *CreateThreadInput) (*entity.Thread, error)
+	// お問い合わせ会話履歴編集
+	UpdateThread(ctx context.Context, in *UpdateThreadInput) error
+	// お問い合わせ会話履歴削除
+	DeleteThread(ctx context.Context, in *DeleteThreadInput) error
+	// お問い合わせ既読管理取得
+	GetContactRead(ctx context.Context, in *GetContactReadInput) (*entity.ContactRead, error)
+	// お問い合わせ既読管理作成
+	CreateContactRead(ctx context.Context, in *CreateContactReadInput) (*entity.ContactRead, error)
+	// お問い合わせ既読フラグ更新
+	UpdateContactReadFlag(ctx context.Context, in *UpdateContactReadFlagInput) error
 }

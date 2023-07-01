@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
@@ -45,9 +46,9 @@ func TestProducer_List(t *testing.T) {
 	err = db.DB.Create(&admins).Error
 	producers := make(entity.Producers, 2)
 	require.NoError(t, err)
-	producers[0] = testProducer("admin-id01", "coordinator-id", "&.農園", now())
+	producers[0] = testProducer("admin-id01", "coordinator-id", now())
 	producers[0].Admin = *admins[0]
-	producers[1] = testProducer("admin-id02", "coordinator-id", "&.水産", now())
+	producers[1] = testProducer("admin-id02", "coordinator-id", now())
 	producers[1].Admin = *admins[1]
 	err = db.DB.Create(&producers).Error
 	require.NoError(t, err)
@@ -139,9 +140,9 @@ func TestProducer_Count(t *testing.T) {
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
 	err = db.DB.Create(&admins).Error
 	producers := make(entity.Producers, 2)
-	producers[0] = testProducer("admin-id01", "coordinator-id", "&.農園", now())
+	producers[0] = testProducer("admin-id01", "coordinator-id", now())
 	producers[0].Admin = *admins[0]
-	producers[1] = testProducer("admin-id02", "coordinator-id", "&.水産", now())
+	producers[1] = testProducer("admin-id02", "coordinator-id", now())
 	producers[1].Admin = *admins[1]
 	err = db.DB.Create(&producers).Error
 	require.NoError(t, err)
@@ -214,9 +215,9 @@ func TestProducer_MultiGet(t *testing.T) {
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
 	err = db.DB.Create(&admins).Error
 	producers := make(entity.Producers, 2)
-	producers[0] = testProducer("admin-id01", "coordinator-id", "&.農園", now())
+	producers[0] = testProducer("admin-id01", "coordinator-id", now())
 	producers[0].Admin = *admins[0]
-	producers[1] = testProducer("admin-id02", "coordinator-id", "&.水産", now())
+	producers[1] = testProducer("admin-id02", "coordinator-id", now())
 	producers[1].Admin = *admins[1]
 	err = db.DB.Create(&producers).Error
 	require.NoError(t, err)
@@ -287,7 +288,7 @@ func TestProducer_Get(t *testing.T) {
 	admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 	err = db.DB.Create(&admin).Error
 	require.NoError(t, err)
-	p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+	p := testProducer("admin-id", "coordinator-id", now())
 	p.Admin = *admin
 	err = db.DB.Create(&p).Error
 	require.NoError(t, err)
@@ -360,7 +361,7 @@ func TestProducer_Create(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+	p := testProducer("admin-id", "coordinator-id", now())
 	p.Admin = *testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
 
 	type args struct {
@@ -417,7 +418,7 @@ func TestProducer_Create(t *testing.T) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
-				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+				p := testProducer("admin-id", "coordinator-id", now())
 				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
@@ -506,7 +507,7 @@ func TestProducer_Update(t *testing.T) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
-				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+				p := testProducer("admin-id", "coordinator-id", now())
 				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
@@ -521,7 +522,7 @@ func TestProducer_Update(t *testing.T) {
 					HeaderURL:     "https://and-period.jp/header.png",
 					PhoneNumber:   "+819012345678",
 					PostalCode:    "1000014",
-					Prefecture:    "東京都",
+					Prefecture:    codes.PrefectureValues["tokyo"],
 					City:          "千代田区",
 					AddressLine1:  "永田町1-7-1",
 					AddressLine2:  "",
@@ -601,7 +602,7 @@ func TestProducer_UpdateThumbnails(t *testing.T) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
-				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+				p := testProducer("admin-id", "coordinator-id", now())
 				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
@@ -648,7 +649,7 @@ func TestProducer_UpdateThumbnails(t *testing.T) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
-				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+				p := testProducer("admin-id", "coordinator-id", now())
 				p.ThumbnailURL = ""
 				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
@@ -733,7 +734,7 @@ func TestProducer_UpdateHeaders(t *testing.T) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
-				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+				p := testProducer("admin-id", "coordinator-id", now())
 				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
@@ -780,7 +781,7 @@ func TestProducer_UpdateHeaders(t *testing.T) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
-				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+				p := testProducer("admin-id", "coordinator-id", now())
 				p.HeaderURL = ""
 				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
@@ -865,7 +866,7 @@ func TestProducer_UpdateRelationship(t *testing.T) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
-				p := testProducer("admin-id", "", "&.農園", now())
+				p := testProducer("admin-id", "", now())
 				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
@@ -889,7 +890,7 @@ func TestProducer_UpdateRelationship(t *testing.T) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
-				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+				p := testProducer("admin-id", "coordinator-id", now())
 				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
@@ -960,7 +961,7 @@ func TestProducer_Delete(t *testing.T) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
-				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+				p := testProducer("admin-id", "coordinator-id", now())
 				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
@@ -995,7 +996,7 @@ func TestProducer_Delete(t *testing.T) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
-				p := testProducer("admin-id", "coordinator-id", "&.農園", now())
+				p := testProducer("admin-id", "coordinator-id", now())
 				err = db.DB.Create(&p).Error
 				require.NoError(t, err)
 			},
@@ -1027,23 +1028,116 @@ func TestProducer_Delete(t *testing.T) {
 	}
 }
 
-func testProducer(id, coordinatorID, storeName string, now time.Time) *entity.Producer {
+func TestProducer_AggregateByCoordinatorID(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	coordinator := testCoordinator("coordinator-id", now())
+	coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+	err = db.DB.Create(&coordinator.Admin).Error
+	require.NoError(t, err)
+	err = db.DB.Create(&coordinator).Error
+	require.NoError(t, err)
+	admins := make(entity.Admins, 2)
+	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
+	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
+	err = db.DB.Create(&admins).Error
+	producers := make(entity.Producers, 2)
+	require.NoError(t, err)
+	producers[0] = testProducer("admin-id01", "coordinator-id", now())
+	producers[0].Admin = *admins[0]
+	producers[1] = testProducer("admin-id02", "coordinator-id", now())
+	producers[1].Admin = *admins[1]
+	err = db.DB.Create(&producers).Error
+	require.NoError(t, err)
+
+	type args struct {
+		coordinatorIDs []string
+	}
+	type want struct {
+		total  map[string]int64
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			args: args{
+				coordinatorIDs: []string{"coordinator-id"},
+			},
+			want: want{
+				total: map[string]int64{
+					"coordinator-id": 2,
+				},
+				hasErr: false,
+			},
+		},
+		{
+			name:  "empty",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			args: args{
+				coordinatorIDs: []string{},
+			},
+			want: want{
+				total:  map[string]int64{},
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &producer{db: db, now: now}
+			actual, err := db.AggregateByCoordinatorID(ctx, tt.args.coordinatorIDs)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.total, actual)
+		})
+	}
+}
+
+func testProducer(id, coordinatorID string, now time.Time) *entity.Producer {
 	p := &entity.Producer{
-		AdminID:       id,
-		CoordinatorID: coordinatorID,
-		StoreName:     storeName,
-		ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-		Thumbnails:    common.Images{},
-		HeaderURL:     "https://and-period.jp/header.png",
-		Headers:       common.Images{},
-		PhoneNumber:   "+819012345678",
-		PostalCode:    "1000014",
-		Prefecture:    "東京都",
-		City:          "千代田区",
-		AddressLine1:  "永田町1-7-1",
-		AddressLine2:  "",
-		CreatedAt:     now,
-		UpdatedAt:     now,
+		AdminID:           id,
+		CoordinatorID:     coordinatorID,
+		Username:          "&.農園",
+		ThumbnailURL:      "https://and-period.jp/thumbnail.png",
+		Thumbnails:        common.Images{},
+		HeaderURL:         "https://and-period.jp/header.png",
+		Headers:           common.Images{},
+		PromotionVideoURL: "https://and-period.jp/promotion.mp4",
+		BonusVideoURL:     "https://and-period.jp/bonus.mp4",
+		InstagramID:       "instagram-id",
+		FacebookID:        "facebook-id",
+		PhoneNumber:       "+819012345678",
+		PostalCode:        "1000014",
+		Prefecture:        codes.PrefectureValues["tokyo"],
+		City:              "千代田区",
+		AddressLine1:      "永田町1-7-1",
+		AddressLine2:      "",
+		CreatedAt:         now,
+		UpdatedAt:         now,
 	}
 	fillProducerJSON(p)
 	return p

@@ -29,7 +29,6 @@ func (c *contact) List(ctx context.Context, params *ListContactsParams, fields .
 	var contacts entity.Contacts
 
 	stmt := c.db.Statement(ctx, c.db.DB, contactTable, fields...)
-	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
 	}
@@ -41,8 +40,8 @@ func (c *contact) List(ctx context.Context, params *ListContactsParams, fields .
 	return contacts, exception.InternalError(err)
 }
 
-func (c *contact) Count(ctx context.Context, params *ListContactsParams) (int64, error) {
-	total, err := c.db.Count(ctx, c.db.DB, &entity.Contact{}, params.stmt)
+func (c *contact) Count(ctx context.Context) (int64, error) {
+	total, err := c.db.Count(ctx, c.db.DB, &entity.Contact{}, nil)
 	return total, exception.InternalError(err)
 }
 
@@ -69,10 +68,17 @@ func (c *contact) Update(ctx context.Context, contactID string, params *UpdateCo
 		}
 
 		updates := map[string]interface{}{
-			"status":     params.Status,
-			"priority":   params.Priority,
-			"note":       params.Note,
-			"updated_at": c.now(),
+			"title":        params.Title,
+			"category_id":  params.CategoryID,
+			"content":      params.Content,
+			"username":     params.Username,
+			"user_id":      params.UserID,
+			"email":        params.Email,
+			"phone_number": params.PhoneNumber,
+			"status":       params.Status,
+			"responder_id": params.ResponderID,
+			"note":         params.Note,
+			"updated_at":   c.now(),
 		}
 		err := tx.WithContext(ctx).
 			Table(contactTable).
@@ -89,14 +95,13 @@ func (c *contact) Delete(ctx context.Context, contactID string) error {
 			return err
 		}
 
-		updates := map[string]interface{}{
-			"status":     entity.ContactStatusDiscard,
-			"updated_at": c.now(),
+		params := map[string]interface{}{
+			"deleted_at": c.now(),
 		}
 		err := tx.WithContext(ctx).
 			Table(contactTable).
 			Where("id = ?", contactID).
-			Updates(updates).Error
+			Updates(params).Error
 		return err
 	})
 	return exception.InternalError(err)

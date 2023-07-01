@@ -30,6 +30,10 @@ func TestContact_List(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	category := testContactCategory("category-id", "お問い合わせ種別", now())
+	err = db.DB.Create(&category).Error
+	require.NoError(t, err)
+
 	contacts := make(entity.Contacts, 3)
 	contacts[0] = testContact("contact-id01", now())
 	contacts[1] = testContact("contact-id02", now())
@@ -55,23 +59,8 @@ func TestContact_List(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListContactsParams{
-					Limit:  2,
-					Offset: 1,
-				},
-			},
-			want: want{
-				contacts: contacts[1:],
-				hasErr:   false,
-			},
-		},
-		{
-			name:  "success with sort",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
-			args: args{
-				params: &ListContactsParams{
-					Orders: []*ListContactsOrder{
-						{Key: entity.ContactOrderByPriority, OrderByASC: true},
-					},
+					Limit:  3,
+					Offset: 0,
 				},
 			},
 			want: want{
@@ -93,7 +82,7 @@ func TestContact_List(t *testing.T) {
 			db := &contact{db: db, now: now}
 			actual, err := db.List(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
-			assert.ElementsMatch(t, tt.want.contacts, actual)
+			assert.Equal(t, tt.want.contacts, actual)
 		})
 	}
 }
@@ -110,6 +99,10 @@ func TestContact_Count(t *testing.T) {
 	}
 
 	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	category := testContactCategory("category-id", "お問い合わせ種別", now())
+	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
 
 	contacts := make(entity.Contacts, 3)
@@ -136,7 +129,10 @@ func TestContact_Count(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
-				params: &ListContactsParams{},
+				params: &ListContactsParams{
+					Limit:  3,
+					Offset: 0,
+				},
 			},
 			want: want{
 				total:  3,
@@ -144,6 +140,7 @@ func TestContact_Count(t *testing.T) {
 			},
 		},
 	}
+
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
@@ -155,7 +152,7 @@ func TestContact_Count(t *testing.T) {
 			tt.setup(ctx, t, db)
 
 			db := &contact{db: db, now: now}
-			actual, err := db.Count(ctx, tt.args.params)
+			actual, err := db.Count(ctx)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.total, actual)
 		})
@@ -174,6 +171,10 @@ func TestContact_Get(t *testing.T) {
 	}
 
 	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	category := testContactCategory("category-id", "お問い合わせ種別", now())
+	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
 
 	c := testContact("contact-id", now())
@@ -252,6 +253,10 @@ func TestContact_Create(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	category := testContactCategory("category-id", "お問い合わせ種別", now())
+	err = db.DB.Create(&category).Error
+	require.NoError(t, err)
+
 	c := testContact("contact-id", now())
 
 	type args struct {
@@ -321,7 +326,9 @@ func TestContact_Update(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	c := testContact("contact-id", now())
+	category := testContactCategory("category-id", "お問い合わせ種別", now())
+	err = db.DB.Create(&category).Error
+	require.NoError(t, err)
 
 	type args struct {
 		contactID string
@@ -339,15 +346,23 @@ func TestContact_Update(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
-				err = db.DB.Create(&c).Error
+				contact := testContact("contact-id", now())
+				err = db.DB.Create(&contact).Error
 				require.NoError(t, err)
 			},
 			args: args{
 				contactID: "contact-id",
 				params: &UpdateContactParams{
-					Status:   entity.ContactStatusDone,
-					Priority: entity.ContactPriorityHigh,
-					Note:     "対応メモです。",
+					Title:       "件名",
+					CategoryID:  "category-id",
+					Content:     "内容です。",
+					Username:    "あんど ぴりおど",
+					UserID:      "user-id",
+					Email:       "test-user@and-period.jp",
+					PhoneNumber: "+819012345678",
+					Status:      entity.ContactStatusDone,
+					ResponderID: "responder-id",
+					Note:        "メモです",
 				},
 			},
 			want: want{
@@ -359,17 +374,14 @@ func TestContact_Update(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				contactID: "contact-id",
-				params: &UpdateContactParams{
-					Status:   entity.ContactStatusDone,
-					Priority: entity.ContactPriorityHigh,
-					Note:     "対応メモです。",
-				},
+				params:    &UpdateContactParams{},
 			},
 			want: want{
 				hasErr: true,
 			},
 		},
 	}
+
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
@@ -378,6 +390,7 @@ func TestContact_Update(t *testing.T) {
 
 			err := delete(ctx, contactTable)
 			require.NoError(t, err)
+
 			tt.setup(ctx, t, db)
 
 			db := &contact{db: db, now: now}
@@ -401,7 +414,9 @@ func TestContact_Delete(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	c := testContact("contact-id", now())
+	category := testContactCategory("category-id", "お問い合わせ種別", now())
+	err = db.DB.Create(&category).Error
+	require.NoError(t, err)
 
 	type args struct {
 		contactID string
@@ -418,7 +433,8 @@ func TestContact_Delete(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
-				err = db.DB.Create(&c).Error
+				contact := testContact("contact-id", now())
+				err = db.DB.Create(&contact).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -439,6 +455,7 @@ func TestContact_Delete(t *testing.T) {
 			},
 		},
 	}
+
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
@@ -447,6 +464,7 @@ func TestContact_Delete(t *testing.T) {
 
 			err := delete(ctx, contactTable)
 			require.NoError(t, err)
+
 			tt.setup(ctx, t, db)
 
 			db := &contact{db: db, now: now}
@@ -460,12 +478,14 @@ func testContact(id string, now time.Time) *entity.Contact {
 	return &entity.Contact{
 		ID:          id,
 		Title:       "お問い合わせ件名",
+		CategoryID:  "category-id",
 		Content:     "お問い合わせ内容です。",
-		Username:    "あんど どっと",
+		Username:    "あんど ぴりおど",
+		UserID:      "user-id",
 		Email:       "test-user@and-period.jp",
 		PhoneNumber: "+819012345678",
 		Status:      entity.ContactStatusInprogress,
-		Priority:    entity.ContactPriorityMiddle,
+		ResponderID: "responder-id",
 		Note:        "対応者のメモです",
 		CreatedAt:   now,
 		UpdatedAt:   now,

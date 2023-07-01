@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -246,6 +247,7 @@ func TestPersonalizations(t *testing.T) {
 						Firstname: "スタッフ",
 						Email:     "test-user@and-period.jp",
 					},
+					Username: "&. スタッフ",
 				}}
 				mocks.user.EXPECT().MultiGetCoordinators(ctx, in).Return(coordinators, nil)
 			},
@@ -281,6 +283,7 @@ func TestPersonalizations(t *testing.T) {
 						Firstname: "スタッフ",
 						Email:     "test-user@and-period.jp",
 					},
+					Username: "&. スタッフ",
 				}}
 				mocks.user.EXPECT().MultiGetProducers(ctx, in).Return(producers, nil)
 			},
@@ -555,21 +558,20 @@ func TestFetchCoordinators(t *testing.T) {
 				FirstnameKana: "すたっふ",
 				Email:         "test-admin@and-period.jp",
 			},
-			AdminID:          "coordinator-id",
-			StoreName:        "&.農園",
-			ThumbnailURL:     "https://and-period.jp/thumbnail.png",
-			HeaderURL:        "https://and-period.jp/header.png",
-			TwitterAccount:   "twitter-account",
-			InstagramAccount: "instagram-account",
-			FacebookAccount:  "facebook-account",
-			PhoneNumber:      "+819012345678",
-			PostalCode:       "1000014",
-			Prefecture:       "東京都",
-			City:             "千代田区",
-			AddressLine1:     "永田町1-7-1",
-			AddressLine2:     "",
-			CreatedAt:        jst.Date(2022, 7, 10, 18, 30, 0, 0),
-			UpdatedAt:        jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			AdminID:      "coordinator-id",
+			Username:     "&.農園",
+			ThumbnailURL: "https://and-period.jp/thumbnail.png",
+			HeaderURL:    "https://and-period.jp/header.png",
+			InstagramID:  "instagram-account",
+			FacebookID:   "facebook-account",
+			PhoneNumber:  "+819012345678",
+			PostalCode:   "1000014",
+			Prefecture:   codes.PrefectureValues["tokyo"],
+			City:         "千代田区",
+			AddressLine1: "永田町1-7-1",
+			AddressLine2: "",
+			CreatedAt:    jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			UpdatedAt:    jst.Date(2022, 7, 10, 18, 30, 0, 0),
 		},
 	}
 
@@ -588,7 +590,7 @@ func TestFetchCoordinators(t *testing.T) {
 			coordinatorIDs: []string{"admin-id"},
 			execute: func(t *testing.T) func(name, email string) {
 				execute := func(name, email string) {
-					assert.Equal(t, "&. スタッフ", name)
+					assert.Equal(t, "&.農園", name)
 					assert.Equal(t, "test-admin@and-period.jp", email)
 				}
 				return execute
@@ -633,12 +635,12 @@ func TestFetchProducers(t *testing.T) {
 				Email:         "test-admin@and-period.jp",
 			},
 			AdminID:      "admin-id",
-			StoreName:    "&.農園",
+			Username:     "&.農園",
 			ThumbnailURL: "https://and-period.jp/thumbnail.png",
 			HeaderURL:    "https://and-period.jp/header.png",
 			PhoneNumber:  "+819012345678",
 			PostalCode:   "1000014",
-			Prefecture:   "東京都",
+			Prefecture:   codes.PrefectureValues["tokyo"],
 			City:         "千代田区",
 			AddressLine1: "永田町1-7-1",
 			AddressLine2: "",
@@ -662,7 +664,7 @@ func TestFetchProducers(t *testing.T) {
 			producerIDs: []string{"admin-id"},
 			execute: func(t *testing.T) func(name, email string) {
 				execute := func(name, email string) {
-					assert.Equal(t, "&. スタッフ", name)
+					assert.Equal(t, "&.農園", name)
 					assert.Equal(t, "test-admin@and-period.jp", email)
 				}
 				return execute

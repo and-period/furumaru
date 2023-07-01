@@ -1,13 +1,18 @@
 <script lang="ts" setup>
 import { mdiDelete, mdiPlus } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components'
+import { PrefecturesListItem, prefecturesList } from '~/constants'
 
 import { getResizedImages } from '~/lib/helpers'
 import { AlertType } from '~/lib/hooks'
-import { ProductsResponseProductsInner, ProductsResponseProductsInnerMediaInner, ImageSize, ProductsResponseProductsInnerMediaInnerImagesInner } from '~/types/api'
+import { ProductsResponseProductsInner, ProductsResponseProductsInnerMediaInner, ImageSize, ProductsResponseProductsInnerMediaInnerImagesInner, Prefecture } from '~/types/api'
 
 const props = defineProps({
   loading: {
+    type: Boolean,
+    default: false
+  },
+  deleteDialog: {
     type: Boolean,
     default: false
   },
@@ -27,13 +32,13 @@ const props = defineProps({
     type: Array<ProductsResponseProductsInner>,
     default: () => []
   },
-  tableItemsTotal: {
-    type: Number,
-    default: 0
-  },
   tableItemsPerPage: {
     type: Number,
     default: 20
+  },
+  tableItemsTotal: {
+    type: Number,
+    default: 0
   }
 })
 
@@ -43,50 +48,69 @@ const emit = defineEmits<{
   (e: 'click:show', productId: string): void
   (e: 'click:new'): void
   (e: 'click:delete', productId: string): void
+  (e: 'update:delete-dialog', v: boolean): void
 }>()
 
 const headers: VDataTable['headers'] = [
   {
     title: '',
-    key: 'media'
+    key: 'media',
+    width: 80,
+    sortable: false
   },
   {
     title: '商品名',
-    key: 'name'
+    key: 'name',
+    sortable: false
   },
   {
     title: 'ステータス',
-    key: 'public'
+    key: 'public',
+    sortable: false
   },
   {
     title: '価格',
-    key: 'price'
+    key: 'price',
+    sortable: false
   },
   {
     title: '在庫',
-    key: 'inventory'
+    key: 'inventory',
+    sortable: false
   },
   {
     title: 'ジャンル',
-    key: 'categoryName'
+    key: 'categoryName',
+    sortable: false
   },
   {
     title: '品目',
-    key: 'productTypeName'
+    key: 'productTypeName',
+    sortable: false
   },
   {
-    title: '農園名',
-    key: 'storeName'
+    title: '原産地',
+    key: 'originPrefecture',
+    sortable: false
   },
   {
-    title: 'Action',
+    title: '生産者名',
+    key: 'producerName',
+    sortable: false
+  },
+  {
+    title: '',
     key: 'actions',
     sortable: false
   }
 ]
 
-const deleteDialog = ref<boolean>(false)
-const deleteProduct = ref<ProductsResponseProductsInner>()
+const selectedItem = ref<ProductsResponseProductsInner>()
+
+const deleteDialogValue = computed({
+  get: (): boolean => props.deleteDialog,
+  set: (val: boolean): void => emit('update:delete-dialog', val)
+})
 
 const getThumbnail = (media: ProductsResponseProductsInnerMediaInner[]): string => {
   const thumbnail = media.find((media: ProductsResponseProductsInnerMediaInner) => {
@@ -113,11 +137,20 @@ const getPublishedColor = (published: boolean): string => {
   return published ? 'primary' : 'warning'
 }
 
+const getInventoryColor = (inventory: number): string => {
+  return inventory > 0 ? '' : 'text-error'
+}
+
+const getPrefecture = (prefecture: Prefecture): string => {
+  const pref = prefecturesList.find((val: PrefecturesListItem): boolean => prefecture === val.value)
+  return pref?.text || ''
+}
+
 const toggleDeleteDialog = (product?: ProductsResponseProductsInner): void => {
   if (product) {
-    deleteProduct.value = product
+    selectedItem.value = product
   }
-  deleteDialog.value = !deleteDialog.value
+  deleteDialogValue.value = !deleteDialogValue.value
 }
 
 const onUpdatePage = (page: number): void => {
@@ -128,9 +161,8 @@ const onUpdateItemsPerPage = (page: number): void => {
   emit('click:update-items-per-page', page)
 }
 
-const onClickShow = (_: Event, { item }: any): void => {
-  const product = item.raw as ProductsResponseProductsInner
-  emit('click:show', product.id)
+const onClickShow = (productId: string): void => {
+  emit('click:show', productId)
 }
 
 const onClickNew = (): void => {
@@ -138,17 +170,17 @@ const onClickNew = (): void => {
 }
 
 const onClickDelete = (): void => {
-  emit('click:delete', deleteProduct?.value?.id || '')
-  deleteDialog.value = false
+  emit('click:delete', selectedItem?.value?.id || '')
 }
 </script>
 
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
-  <v-dialog v-model="deleteDialog" width="500">
+
+  <v-dialog v-model="deleteDialogValue" width="500">
     <v-card>
       <v-card-text class="text-h7">
-        {{ deleteProduct?.name }}を本当に削除しますか？
+        {{ selectedItem?.name }}を本当に削除しますか？
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -161,6 +193,7 @@ const onClickDelete = (): void => {
       </v-card-actions>
     </v-card>
   </v-dialog>
+
   <v-card class="mt-4" flat :loading="props.loading">
     <v-card-title class="d-flex flex-row">
       商品管理
@@ -175,13 +208,13 @@ const onClickDelete = (): void => {
       <v-data-table-server
         :headers="headers"
         :items="props.products"
-        :items-length="props.tableItemsTotal"
         :items-per-page="props.tableItemsPerPage"
-        no-data-text="登録されている商品がありません。"
+        :items-length="props.tableItemsTotal"
         hover
+        no-data-text="登録されている商品がありません。"
         @update:page="onUpdatePage"
         @update:items-per-page="onUpdateItemsPerPage"
-        @click:row="onClickShow"
+        @click:row="(_: any, { item }:any) => onClickShow(item.raw.id)"
       >
         <template #[`item.media`]="{ item }">
           <v-img aspect-ratio="1/1" :src="getThumbnail(item.raw.media)" :srcset="getResizedThumbnails(item.raw.media)" />
@@ -191,8 +224,16 @@ const onClickDelete = (): void => {
             {{ getPublished(item.raw.public) }}
           </v-chip>
         </template>
+        <template #[`item.inventory`]="{ item }">
+          <div :class="getInventoryColor(item.raw.inventory)">
+            {{ item.raw.inventory }}
+          </div>
+        </template>
+        <template #[`item.originPrefecture`]="{ item }">
+          {{ getPrefecture(item.raw.originPrefecture) }}
+        </template>
         <template #[`item.actions`]="{ item }">
-          <v-btn variant="outlined" color="primary" size="small" @click="toggleDeleteDialog(item.raw)">
+          <v-btn variant="outlined" color="primary" size="small" @click.stop="toggleDeleteDialog(item.raw)">
             <v-icon size="small" :icon="mdiDelete" />
             削除
           </v-btn>

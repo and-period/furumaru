@@ -1,8 +1,14 @@
 <script lang="ts" setup>
+import useVuelidate from '@vuelidate/core'
 import { UpdateAuthEmailRequest } from '~/types/api'
 import { AlertType } from '~/lib/hooks'
+import { required, email, getErrorMessage } from '~/lib/validations'
 
 const props = defineProps({
+  loading: {
+    type: Boolean,
+    default: false
+  },
   isAlert: {
     type: Boolean,
     default: false
@@ -17,31 +23,54 @@ const props = defineProps({
   },
   formData: {
     type: Object as PropType<UpdateAuthEmailRequest>,
-    default: () => ({
+    default: (): UpdateAuthEmailRequest => ({
       email: ''
     })
   }
 })
 
-const emit = defineEmits<{
-  (e: 'submit'): void
+const emits = defineEmits<{
+  (e: 'update:form-data', formData: UpdateAuthEmailRequest): void
+  (e: 'submit'): void,
 }>()
 
-const onSubmit = (): void => {
-  emit('submit')
+const rules = computed(() => ({
+  email: { required, email }
+}))
+const formDataValue = computed({
+  get: () => props.formData,
+  set: (formData: UpdateAuthEmailRequest) => emits('update:form-data', formData)
+})
+
+const validate = useVuelidate(rules, formDataValue)
+
+const onSubmit = async (): Promise<void> => {
+  const valid = await validate.value.$validate()
+  if (!valid) {
+    return
+  }
+
+  emits('submit')
 }
 </script>
 
 <template>
-  <v-alert v-model="props.isAlert" :type="props.alertType" :text="props.alertText" />
+  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+
   <v-card elevation="0">
     <v-card-title>メールアドレス変更</v-card-title>
+
     <v-form @submit.prevent="onSubmit">
       <v-card-text>
-        <v-text-field v-model="props.formData.email" label="新規メールアドレス" />
+        <v-text-field
+          v-model="validate.email.$model"
+          :error-messages="getErrorMessage(validate.email.$errors)"
+          label="新規メールアドレス"
+          type="email"
+        />
       </v-card-text>
       <v-card-actions>
-        <v-btn type="submit" block color="primary" variant="outlined">
+        <v-btn block :loading="loading" type="submit" color="primary" variant="outlined">
           変更
         </v-btn>
       </v-card-actions>

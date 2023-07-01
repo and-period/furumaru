@@ -10,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	mock_database "github.com/and-period/furumaru/api/mock/messenger/database"
 	mock_sqs "github.com/and-period/furumaru/api/mock/pkg/sqs"
+	mock_store "github.com/and-period/furumaru/api/mock/store"
 	mock_user "github.com/and-period/furumaru/api/mock/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
@@ -26,10 +27,10 @@ type mocks struct {
 	db       *dbMocks
 	producer *mock_sqs.MockProducer
 	user     *mock_user.MockService
+	store    *mock_store.MockService
 }
 
 type dbMocks struct {
-	Contact         *mock_database.MockContact
 	Message         *mock_database.MockMessage
 	MessageTemplate *mock_database.MockMessageTemplate
 	Notification    *mock_database.MockNotification
@@ -60,12 +61,12 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 		db:       newDBMocks(ctrl),
 		producer: mock_sqs.NewMockProducer(ctrl),
 		user:     mock_user.NewMockService(ctrl),
+		store:    mock_store.NewMockService(ctrl),
 	}
 }
 
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
-		Contact:         mock_database.NewMockContact(ctrl),
 		Message:         mock_database.NewMockMessage(ctrl),
 		MessageTemplate: mock_database.NewMockMessageTemplate(ctrl),
 		Notification:    mock_database.NewMockNotification(ctrl),
@@ -88,7 +89,6 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		AdminWebURL: adminWebURL,
 		UserWebURL:  userWebURL,
 		Database: &database.Database{
-			Contact:         mocks.db.Contact,
 			Message:         mocks.db.Message,
 			MessageTemplate: mocks.db.MessageTemplate,
 			Notification:    mocks.db.Notification,
@@ -99,6 +99,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		},
 		Producer: mocks.producer,
 		User:     mocks.user,
+		Store:    mocks.store,
 	}
 	service := NewService(params).(*service)
 	service.now = func() time.Time {

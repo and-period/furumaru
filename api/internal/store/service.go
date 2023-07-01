@@ -35,6 +35,18 @@ type Service interface {
 	UpdateProductTypeIcons(ctx context.Context, in *UpdateProductTypeIconsInput) error
 	// 品目削除
 	DeleteProductType(ctx context.Context, in *DeleteProductTypeInput) error
+	// 商品タグ一覧取得
+	ListProductTags(ctx context.Context, in *ListProductTagsInput) (entity.ProductTags, int64, error)
+	// 商品タグ一覧取得(ID指定)
+	MultiGetProductTags(ctx context.Context, in *MultiGetProductTagsInput) (entity.ProductTags, error)
+	// 商品タグ取得
+	GetProductTag(ctx context.Context, in *GetProductTagInput) (*entity.ProductTag, error)
+	// 商品タグ登録
+	CreateProductTag(ctx context.Context, in *CreateProductTagInput) (*entity.ProductTag, error)
+	// 商品タグ更新
+	UpdateProductTag(ctx context.Context, in *UpdateProductTagInput) error
+	// 商品タグ削除
+	DeleteProductTag(ctx context.Context, in *DeleteProductTagInput) error
 	// 配送設定一覧取得
 	ListShippings(ctx context.Context, in *ListShippingsInput) (entity.Shippings, int64, error)
 	// 配送設定一覧取得(ID指定)
@@ -63,6 +75,8 @@ type Service interface {
 	DeleteProduct(ctx context.Context, in *DeleteProductInput) error
 	// プロモーション一覧取得
 	ListPromotions(ctx context.Context, in *ListPromotionsInput) (entity.Promotions, int64, error)
+	// プロモーション一覧取得(ID指定)
+	MultiGetPromotions(ctx context.Context, in *MultiGetPromotionsInput) (entity.Promotions, error)
 	// プロモーション取得
 	GetPromotion(ctx context.Context, in *GetPromotionInput) (*entity.Promotion, error)
 	// プロモーション登録
@@ -77,12 +91,8 @@ type Service interface {
 	CreateSchedule(ctx context.Context, in *CreateScheduleInput) (*entity.Schedule, entity.Lives, error)
 	// 配信詳細取得
 	GetLive(ctx context.Context, in *GetLiveInput) (*entity.Live, error)
-	// 配信一覧取得(ID指定)
-	MultiGetLives(ctx context.Context, in *MultiGetLivesInput) (entity.Lives, error)
 	// 配信一覧取得(開催スケジュールID指定)
 	ListLivesByScheduleID(ctx context.Context, in *ListLivesByScheduleIDInput) (entity.Lives, error)
-	// 配信公開更新
-	UpdateLivePublic(ctx context.Context, in *UpdateLivePublicInput) error
 	// 注文履歴一覧取得
 	ListOrders(ctx context.Context, in *ListOrdersInput) (entity.Orders, int64, error)
 	// 注文履歴取得

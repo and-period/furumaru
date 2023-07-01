@@ -1,65 +1,38 @@
 <script lang="ts" setup>
-import { mdiEmailOpenOutline, mdiEmailOutline } from '@mdi/js'
+import { storeToRefs } from 'pinia'
+import { useAlert } from '~/lib/hooks'
 import { useMessageStore } from '~/store'
 
 const messageStore = useMessageStore()
+const { alertType, isShow, alertText, show } = useAlert('error')
 
-const message = computed(() => {
-  return messageStore.message
-})
-const messages = computed(() => {
-  return messageStore.messages
-})
+const { message, messages } = storeToRefs(messageStore)
+
+const loading = ref<boolean>(false)
 
 const handleClickMessage = async (messageId: string) => {
-  await messageStore.fetchMessage(messageId)
+  try {
+    loading.value = true
+    await messageStore.fetchMessage(messageId)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
 <template>
-  <div class="d-flex flex-row mt-2">
-    <v-card class="elevation-1 flex-shrink-0 mr-3">
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>メッセージ一覧</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-      <v-divider />
-      <v-list nav class="pa-2">
-        <v-list-item
-          v-for="message in messages"
-          :key="message.id"
-          link
-          @click="handleClickMessage(message.id)"
-        >
-          <v-list-item-icon>
-            <v-icon>
-              {{
-                message.read ? mdiEmailOpenOutline : mdiEmailOutline
-              }}
-            </v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>{{ message.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item v-if="messages.length === 0">
-          <v-list-item-content>
-            <v-list-item-title>メッセージなし</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-card>
-    <v-card class="elevation-1 d-flex flex-grow-1 flex-column">
-      <v-card-title>
-        {{
-          message.title
-            ? `件名：${message.title}`
-            : 'メッセージを選択してください'
-        }}
-      </v-card-title>
-      <v-divider />
-      <v-card-text>{{ message.body }}</v-card-text>
-    </v-card>
-  </div>
+  <templates-message-list
+    :loading="loading"
+    :is-alert="isShow"
+    :alert-type="alertType"
+    :alert-text="alertText"
+    :message="message"
+    :messages="messages"
+    @click:message="handleClickMessage"
+  />
 </template>

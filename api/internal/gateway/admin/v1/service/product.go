@@ -1,10 +1,22 @@
 package service
 
 import (
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/shopspring/decimal"
+)
+
+// StorageMethodType - 保存方法
+type StorageMethodType int32
+
+const (
+	StorageMethodTypeUnknown      StorageMethodType = 0
+	StorageMethodTypeNormal       StorageMethodType = 1 // 常温保存
+	StorageMethodTypeCoolDark     StorageMethodType = 2 // 冷暗所保存
+	StorageMethodTypeRefrigerated StorageMethodType = 3 // 冷蔵保存
+	StorageMethodTypeFrozen       StorageMethodType = 4 // 冷凍保存
 )
 
 // DeliveryType - 配送方法
@@ -28,6 +40,40 @@ type ProductMedia struct {
 }
 
 type MultiProductMedia []*ProductMedia
+
+func NewStorageMethodType(typ entity.StorageMethodType) StorageMethodType {
+	switch typ {
+	case entity.StorageMethodTypeNormal:
+		return StorageMethodTypeNormal
+	case entity.StorageMethodTypeCoolDark:
+		return StorageMethodTypeCoolDark
+	case entity.StorageMethodTypeRefrigerated:
+		return StorageMethodTypeRefrigerated
+	case entity.StorageMethodTypeFrozen:
+		return StorageMethodTypeFrozen
+	default:
+		return StorageMethodTypeUnknown
+	}
+}
+
+func (t StorageMethodType) StoreEntity() entity.StorageMethodType {
+	switch t {
+	case StorageMethodTypeNormal:
+		return entity.StorageMethodTypeNormal
+	case StorageMethodTypeCoolDark:
+		return entity.StorageMethodTypeCoolDark
+	case StorageMethodTypeRefrigerated:
+		return entity.StorageMethodTypeRefrigerated
+	case StorageMethodTypeFrozen:
+		return entity.StorageMethodTypeFrozen
+	default:
+		return entity.StorageMethodTypeUnknown
+	}
+}
+
+func (t StorageMethodType) Response() int32 {
+	return int32(t)
+}
 
 func NewDeliveryType(typ entity.DeliveryType) DeliveryType {
 	switch typ {
@@ -88,28 +134,45 @@ func NewProductWeightFromRequest(weight float64) (int64, entity.WeightUnit) {
 }
 
 func NewProduct(product *entity.Product) *Product {
+	var point1, point2, point3 string
+	if len(product.RecommendedPoints) > 0 {
+		point1 = product.RecommendedPoints[0]
+	}
+	if len(product.RecommendedPoints) > 1 {
+		point2 = product.RecommendedPoints[1]
+	}
+	if len(product.RecommendedPoints) > 2 {
+		point3 = product.RecommendedPoints[2]
+	}
 	return &Product{
 		Product: response.Product{
-			ID:               product.ID,
-			ProducerID:       product.ProducerID,
-			TypeID:           product.TypeID,
-			Name:             product.Name,
-			Description:      product.Description,
-			Public:           product.Public,
-			Inventory:        product.Inventory,
-			Weight:           NewProductWeight(product.Weight, product.WeightUnit),
-			ItemUnit:         product.ItemUnit,
-			ItemDescription:  product.ItemDescription,
-			Media:            NewMultiProductMedia(product.Media).Response(),
-			Price:            product.Price,
-			DeliveryType:     NewDeliveryType(product.DeliveryType).Response(),
-			Box60Rate:        product.Box60Rate,
-			Box80Rate:        product.Box80Rate,
-			Box100Rate:       product.Box100Rate,
-			OriginPrefecture: product.OriginPrefecture,
-			OriginCity:       product.OriginCity,
-			CreatedAt:        product.CreatedAt.Unix(),
-			UpdatedAt:        product.CreatedAt.Unix(),
+			ID:                product.ID,
+			ProducerID:        product.ProducerID,
+			TypeID:            product.TypeID,
+			TagIDs:            product.TagIDs,
+			Name:              product.Name,
+			Description:       product.Description,
+			Public:            product.Public,
+			Inventory:         product.Inventory,
+			Weight:            NewProductWeight(product.Weight, product.WeightUnit),
+			ItemUnit:          product.ItemUnit,
+			ItemDescription:   product.ItemDescription,
+			Media:             NewMultiProductMedia(product.Media).Response(),
+			Price:             product.Price,
+			Cost:              product.Cost,
+			ExpirationDate:    product.ExpirationDate,
+			RecommendedPoint1: point1,
+			RecommendedPoint2: point2,
+			RecommendedPoint3: point3,
+			StorageMethodType: NewStorageMethodType(product.StorageMethodType).Response(),
+			DeliveryType:      NewDeliveryType(product.DeliveryType).Response(),
+			Box60Rate:         product.Box60Rate,
+			Box80Rate:         product.Box80Rate,
+			Box100Rate:        product.Box100Rate,
+			OriginPrefecture:  codes.PrefectureNames[product.OriginPrefecture],
+			OriginCity:        product.OriginCity,
+			CreatedAt:         product.CreatedAt.Unix(),
+			UpdatedAt:         product.CreatedAt.Unix(),
 		},
 	}
 }
@@ -122,7 +185,7 @@ func (p *Product) Fill(productType *ProductType, producer *Producer) {
 		p.CategoryName = productType.CategoryName
 	}
 	if producer != nil {
-		p.StoreName = producer.StoreName
+		p.ProducerName = producer.Username
 	}
 }
 

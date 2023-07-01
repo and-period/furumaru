@@ -27,6 +27,7 @@ func TestListAdministrators(t *testing.T) {
 			Admin: entity.Admin{
 				ID:            "admin-id",
 				Role:          entity.AdminRoleAdministrator,
+				Status:        entity.AdminStatusActivated,
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどぴりおど",
@@ -120,6 +121,7 @@ func TestMultiGetAdministrators(t *testing.T) {
 			Admin: entity.Admin{
 				ID:            "admin-id",
 				Role:          entity.AdminRoleAdministrator,
+				Status:        entity.AdminStatusActivated,
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどぴりおど",
@@ -191,6 +193,7 @@ func TestGetAdministrator(t *testing.T) {
 		Admin: entity.Admin{
 			ID:            "admin-id",
 			Role:          entity.AdminRoleAdministrator,
+			Status:        entity.AdminStatusActivated,
 			Lastname:      "&.",
 			Firstname:     "スタッフ",
 			LastnameKana:  "あんどぴりおど",

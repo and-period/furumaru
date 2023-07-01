@@ -131,6 +131,22 @@ const minLengthArray = (minLength: number | Ref<number>) => {
   )
 }
 
+/**
+ * 配列の最代の長さのバリデーションルール（カスタム）
+ * @param maxLength 最小の要素数
+ * @returns
+ */
+const maxLengthArray = (maxLength: number | Ref<number>) => {
+  const maxLengthValue = isRef(maxLength) ? maxLength.value : maxLength
+  return helpers.withMessage(
+    `この項目は最大${maxLengthValue}件まです。${maxLengthValue}件以下に修正してください。`,
+    helpers.withParams(
+      { type: 'minLengthArray', minLength: maxLength },
+      value => Array.isArray(value) && value.length <= maxLengthValue
+    )
+  )
+}
+
 export {
   kana,
   tel,
@@ -142,5 +158,6 @@ export {
   minValue,
   maxValue,
   sameAs,
-  minLengthArray
+  minLengthArray,
+  maxLengthArray
 }

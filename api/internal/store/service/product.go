@@ -95,25 +95,30 @@ func (s *service) CreateProduct(ctx context.Context, in *store.CreateProductInpu
 		return nil, exception.InternalError(err)
 	}
 	params := &entity.NewProductParams{
-		ProducerID:       in.ProducerID,
-		TypeID:           in.TypeID,
-		Name:             in.Name,
-		Description:      in.Description,
-		Public:           in.Public,
-		Inventory:        in.Inventory,
-		Weight:           in.Weight,
-		WeightUnit:       in.WeightUnit,
-		Item:             in.Item,
-		ItemUnit:         in.ItemUnit,
-		ItemDescription:  in.ItemDescription,
-		Media:            media,
-		Price:            in.Price,
-		DeliveryType:     in.DeliveryType,
-		Box60Rate:        in.Box60Rate,
-		Box80Rate:        in.Box80Rate,
-		Box100Rate:       in.Box100Rate,
-		OriginPrefecture: in.OriginPrefecture,
-		OriginCity:       in.OriginCity,
+		ProducerID:        in.ProducerID,
+		TypeID:            in.TypeID,
+		TagIDs:            in.TagIDs,
+		Name:              in.Name,
+		Description:       in.Description,
+		Public:            in.Public,
+		Inventory:         in.Inventory,
+		Weight:            in.Weight,
+		WeightUnit:        in.WeightUnit,
+		Item:              in.Item,
+		ItemUnit:          in.ItemUnit,
+		ItemDescription:   in.ItemDescription,
+		Media:             media,
+		Price:             in.Price,
+		Cost:              in.Cost,
+		ExpirationDate:    in.ExpirationDate,
+		RecommendedPoints: in.RecommendedPoints,
+		StorageMethodType: in.StorageMethodType,
+		DeliveryType:      in.DeliveryType,
+		Box60Rate:         in.Box60Rate,
+		Box80Rate:         in.Box80Rate,
+		Box100Rate:        in.Box100Rate,
+		OriginPrefecture:  in.OriginPrefecture,
+		OriginCity:        in.OriginCity,
 	}
 	product := entity.NewProduct(params)
 	if err := s.db.Product.Create(ctx, product); err != nil {
@@ -135,9 +140,13 @@ func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInpu
 	if err != nil {
 		return exception.InternalError(err)
 	}
+	currentMedia := product.Media.MapByURL()
 	media := make(entity.MultiProductMedia, len(in.Media))
-	for i := range in.Media {
-		media[i] = entity.NewProductMedia(in.Media[i].URL, in.Media[i].IsThumbnail)
+	for i, m := range in.Media {
+		media[i] = entity.NewProductMedia(m.URL, m.IsThumbnail)
+		if images, ok := currentMedia[m.URL]; ok {
+			media[i].SetImages(images.Images)
+		}
 	}
 	if err := media.Validate(); err != nil {
 		return fmt.Errorf("api: invalid media format: %s: %w", err.Error(), exception.ErrInvalidArgument)
@@ -153,25 +162,30 @@ func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInpu
 		return exception.InternalError(err)
 	}
 	params := &database.UpdateProductParams{
-		ProducerID:       in.ProducerID,
-		TypeID:           in.TypeID,
-		Name:             in.Name,
-		Description:      in.Description,
-		Public:           in.Public,
-		Inventory:        in.Inventory,
-		Weight:           in.Weight,
-		WeightUnit:       in.WeightUnit,
-		Item:             in.Item,
-		ItemUnit:         in.ItemUnit,
-		ItemDescription:  in.ItemDescription,
-		Media:            media,
-		Price:            in.Price,
-		DeliveryType:     in.DeliveryType,
-		Box60Rate:        in.Box60Rate,
-		Box80Rate:        in.Box80Rate,
-		Box100Rate:       in.Box100Rate,
-		OriginPrefecture: in.OriginPrefecture,
-		OriginCity:       in.OriginCity,
+		ProducerID:        in.ProducerID,
+		TypeID:            in.TypeID,
+		TagIDs:            in.TagIDs,
+		Name:              in.Name,
+		Description:       in.Description,
+		Public:            in.Public,
+		Inventory:         in.Inventory,
+		Weight:            in.Weight,
+		WeightUnit:        in.WeightUnit,
+		Item:              in.Item,
+		ItemUnit:          in.ItemUnit,
+		ItemDescription:   in.ItemDescription,
+		Media:             media,
+		Price:             in.Price,
+		Cost:              in.Cost,
+		ExpirationDate:    in.ExpirationDate,
+		RecommendedPoints: in.RecommendedPoints,
+		StorageMethodType: in.StorageMethodType,
+		DeliveryType:      in.DeliveryType,
+		Box60Rate:         in.Box60Rate,
+		Box80Rate:         in.Box80Rate,
+		Box100Rate:        in.Box100Rate,
+		OriginPrefecture:  in.OriginPrefecture,
+		OriginCity:        in.OriginCity,
 	}
 	if err := s.db.Product.Update(ctx, in.ProductID, params); err != nil {
 		return exception.InternalError(err)
@@ -210,7 +224,7 @@ func (s *service) UpdateProductMedia(ctx context.Context, in *store.UpdateProduc
 				continue
 			}
 			exists = true
-			media[i].Images = images
+			media[i].SetImages(images)
 		}
 		return
 	}
@@ -227,6 +241,9 @@ func (s *service) DeleteProduct(ctx context.Context, in *store.DeleteProductInpu
 }
 
 func (s *service) resizeProduct(ctx context.Context, productID string, ms entity.MultiProductMedia) {
+	if len(ms) == 0 {
+		return
+	}
 	urls := make([]string, len(ms))
 	for i := range ms {
 		urls[i] = ms[i].URL

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
@@ -14,35 +15,53 @@ type Coordinators []*Coordinator
 func NewCoordinator(coordinator *entity.Coordinator) *Coordinator {
 	return &Coordinator{
 		Coordinator: response.Coordinator{
-			ID:               coordinator.ID,
-			Lastname:         coordinator.Lastname,
-			Firstname:        coordinator.Firstname,
-			LastnameKana:     coordinator.LastnameKana,
-			FirstnameKana:    coordinator.FirstnameKana,
-			CompanyName:      coordinator.CompanyName,
-			StoreName:        coordinator.StoreName,
-			ThumbnailURL:     coordinator.ThumbnailURL,
-			Thumbnails:       NewImages(coordinator.Thumbnails).Response(),
-			HeaderURL:        coordinator.HeaderURL,
-			Headers:          NewImages(coordinator.Headers).Response(),
-			TwitterAccount:   coordinator.TwitterAccount,
-			InstagramAccount: coordinator.InstagramAccount,
-			FacebookAccount:  coordinator.FacebookAccount,
-			Email:            coordinator.Email,
-			PhoneNumber:      coordinator.PhoneNumber,
-			PostalCode:       coordinator.PostalCode,
-			Prefecture:       coordinator.Prefecture,
-			City:             coordinator.City,
-			AddressLine1:     coordinator.AddressLine1,
-			AddressLine2:     coordinator.AddressLine2,
-			CreatedAt:        coordinator.CreatedAt.Unix(),
-			UpdatedAt:        coordinator.CreatedAt.Unix(),
+			ID:                coordinator.ID,
+			Status:            coordinator.Status,
+			Lastname:          coordinator.Lastname,
+			Firstname:         coordinator.Firstname,
+			LastnameKana:      coordinator.LastnameKana,
+			FirstnameKana:     coordinator.FirstnameKana,
+			MarcheName:        coordinator.MarcheName,
+			Username:          coordinator.Username,
+			Profile:           coordinator.Profile,
+			ProductTypeIDs:    coordinator.ProductTypeIDs,
+			ThumbnailURL:      coordinator.ThumbnailURL,
+			Thumbnails:        NewImages(coordinator.Thumbnails).Response(),
+			HeaderURL:         coordinator.HeaderURL,
+			Headers:           NewImages(coordinator.Headers).Response(),
+			PromotionVideoURL: coordinator.PromotionVideoURL,
+			BonusVideoURL:     coordinator.BonusVideoURL,
+			InstagramID:       coordinator.InstagramID,
+			FacebookID:        coordinator.FacebookID,
+			Email:             coordinator.Email,
+			PhoneNumber:       coordinator.PhoneNumber,
+			PostalCode:        coordinator.PostalCode,
+			Prefecture:        codes.PrefectureNames[coordinator.Prefecture],
+			City:              coordinator.City,
+			AddressLine1:      coordinator.AddressLine1,
+			AddressLine2:      coordinator.AddressLine2,
+			ProducerTotal:     0,
+			CreatedAt:         coordinator.CreatedAt.Unix(),
+			UpdatedAt:         coordinator.CreatedAt.Unix(),
 		},
 	}
 }
 
-func (p *Coordinator) Response() *response.Coordinator {
-	return &p.Coordinator
+func (c *Coordinator) AuthUser() *AuthUser {
+	return &AuthUser{
+		AuthUser: response.AuthUser{
+			AdminID:      c.ID,
+			Role:         AdminRoleCoordinator.Response(),
+			Username:     c.Username,
+			Email:        c.Email,
+			ThumbnailURL: c.ThumbnailURL,
+			Thumbnails:   c.Thumbnails,
+		},
+	}
+}
+
+func (c *Coordinator) Response() *response.Coordinator {
+	return &c.Coordinator
 }
 
 func NewCoordinators(coordinators entity.Coordinators) Coordinators {
@@ -53,10 +72,28 @@ func NewCoordinators(coordinators entity.Coordinators) Coordinators {
 	return res
 }
 
-func (ps Coordinators) Response() []*response.Coordinator {
-	res := make([]*response.Coordinator, len(ps))
-	for i := range ps {
-		res[i] = ps[i].Response()
+func (cs Coordinators) SetProducerTotal(totalMap map[string]int64) {
+	for _, c := range cs {
+		total, ok := totalMap[c.ID]
+		if !ok {
+			continue
+		}
+		c.ProducerTotal = total
+	}
+}
+
+func (cs Coordinators) Map() map[string]*Coordinator {
+	res := make(map[string]*Coordinator, len(cs))
+	for _, c := range cs {
+		res[c.ID] = c
+	}
+	return res
+}
+
+func (cs Coordinators) Response() []*response.Coordinator {
+	res := make([]*response.Coordinator, len(cs))
+	for i := range cs {
+		res[i] = cs[i].Response()
 	}
 	return res
 }

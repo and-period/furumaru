@@ -6,6 +6,8 @@ info:
 servers:
 - url: http://localhost:18010
   description: 開発環境
+- url: https://admin-api.furumaru-stg.and-period.work
+  description: 検証環境
 tags:
 - name: Auth
   description: 認証関連
@@ -19,6 +21,8 @@ tags:
   description: 商品種別関連
 - name: ProductType
   description: 品目関連
+- name: ProductTag
+  description: 商品タグ関連
 - name: Product
   description: 商品関連
 - name: Shipping
@@ -55,6 +59,12 @@ paths:
     $ref: './paths/v1/auth/email/verified.yaml'
   /v1/auth/password:
     $ref: './paths/v1/auth/password.yaml'
+  /v1/auth/forgot-password:
+    $ref: './paths/v1/auth/forgot-password/index.yaml'
+  /v1/auth/forgot-password/verified:
+    $ref: './paths/v1/auth/forgot-password/verified.yaml'
+  /v1/auth/user:
+    $ref: './paths/v1/auth/user/index.yaml'
   # Administrator
   /v1/administrators:
     $ref: './paths/v1/administrators/index.yaml'
@@ -102,6 +112,11 @@ paths:
     $ref: './paths/v1/products/index.yaml'
   /v1/products/{productId}:
     $ref: './paths/v1/products/_productId/index.yaml'
+  # ProductTag
+  /v1/product-tags:
+    $ref: './paths/v1/product-tags/index.yaml'
+  /v1/product-tags/{productTagId}:
+    $ref: './paths/v1/product-tags/_productTagId/index.yaml'
   # Shipping
   /v1/shippings:
     $ref: './paths/v1/shippings/index.yaml'
@@ -153,10 +168,18 @@ paths:
     $ref: './paths/v1/upload/coordinators/header.yaml'
   /v1/upload/coordinators/thumbnail:
     $ref: './paths/v1/upload/coordinators/thumbnail.yaml'
+  /v1/upload/coordinators/promotion-video:
+    $ref: './paths/v1/upload/coordinators/promotion-video.yaml'
+  /v1/upload/coordinators/bonus-video:
+    $ref: './paths/v1/upload/coordinators/bonus-video.yaml'
   /v1/upload/producers/header:
     $ref: './paths/v1/upload/producers/header.yaml'
   /v1/upload/producers/thumbnail:
     $ref: './paths/v1/upload/producers/thumbnail.yaml'
+  /v1/upload/producers/promotion-video:
+    $ref: './paths/v1/upload/producers/promotion-video.yaml'
+  /v1/upload/producers/bonus-video:
+    $ref: './paths/v1/upload/producers/bonus-video.yaml'
   /v1/upload/products/image:
     $ref: './paths/v1/upload/products/image.yaml'
   /v1/upload/products/video:
@@ -172,6 +195,8 @@ components:
     # Common
     adminRole:
       $ref: './components/schemas/codes/auth.yaml#/adminRole'
+    adminStatus:
+      $ref: './components/schemas/codes/auth.yaml#/adminStatus'
     prefecture:
       $ref: './components/schemas/codes/common.yaml#/prefecture'
     contactStatus:
@@ -184,8 +209,12 @@ components:
       $ref: './components/schemas/codes/live.yaml#/liveStatus'
     messageType:
       $ref: './components/schemas/codes/message.yaml#/messageType'
-    notificationTargetType:
-      $ref: './components/schemas/codes/notification.yaml#/notificationTargetType'
+    notificationStatus:
+      $ref: './components/schemas/codes/notification.yaml#/notificationStatus'
+    notificationType:
+      $ref: './components/schemas/codes/notification.yaml#/notificationType'
+    notificationTarget:
+      $ref: './components/schemas/codes/notification.yaml#/notificationTarget'
     fulfillmentStatus:
       $ref: './components/schemas/codes/order_fulfillment.yaml#/fulfillmentStatus'
     shippingCarrier:
@@ -200,6 +229,8 @@ components:
       $ref: './components/schemas/codes/order_refund.yaml#/orderRefundType'
     deliveryType:
       $ref: './components/schemas/codes/product.yaml#/deliveryType'
+    storageMethodType:
+      $ref: './components/schemas/codes/product.yaml#/storageMethodType'
     discountType:
       $ref: './components/schemas/codes/promotion.yaml#/discountType'
     errorResponse:
@@ -217,6 +248,10 @@ components:
       $ref: './components/schemas/v1/auth.request.yaml#/verifyAuthEmailRequest'
     v1UpdateAuthPasswordRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/updateAuthPasswordRequest'
+    v1ForgotAuthPasswordRequest:
+      $ref: './components/schemas/v1/auth.request.yaml#/forgotAuthPasswordRequest'
+    v1ResetAuthPasswordRequest:
+      $ref: './components/schemas/v1/auth.request.yaml#/resetAuthPasswordRequest'
     v1CreateAdministratorRequest:
       $ref: './components/schemas/v1/administrator.request.yaml#/createAdministratorRequest'
     v1UpdateAdministratorRequest:
@@ -242,9 +277,13 @@ components:
     v1UpdateCategoryRequest:
       $ref: './components/schemas/v1/category.request.yaml#/updateCategoryRequest'
     v1CreateProductTypeRequest:
-      $ref: './components/schemas/v1/product_type.request.yaml#/createProductTypeRequest'
+      $ref: './components/schemas/v1/product-type.request.yaml#/createProductTypeRequest'
     v1UpdateProductTypeRequest:
-      $ref: './components/schemas/v1/product_type.request.yaml#/updateProductTypeRequest'
+      $ref: './components/schemas/v1/product-type.request.yaml#/updateProductTypeRequest'
+    v1CreateProductTagRequest:
+      $ref: './components/schemas/v1/product-tag.request.yaml#/createProductTagRequest'
+    v1UpdateProductTagRequest:
+      $ref: './components/schemas/v1/product-tag.request.yaml#/updateProductTagRequest'
     v1CreateProductRequest:
       $ref: './components/schemas/v1/product.request.yaml#/createProductRequest'
     v1UpdateProductRequest:
@@ -269,10 +308,18 @@ components:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadCoordinatorThumbnailRequest'
     v1UploadCoordinatorHeaderRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadCoordinatorHeaderRequest'
+    v1UploadCoordinatorPromotionVideoRequest:
+      $ref: './components/schemas/v1/upload.request.yaml#/uploadCoordinatorPromotionVideoRequest'
+    v1UploadCoordinatorBonusVideoRequest:
+      $ref: './components/schemas/v1/upload.request.yaml#/uploadCoordinatorBonusVideoRequest'
     v1UploadProducerThumbnailRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadProducerThumbnailRequest'
     v1UploadProducerHeaderRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadProducerHeaderRequest'
+    v1UploadProducerPromotionVideoRequest:
+      $ref: './components/schemas/v1/upload.request.yaml#/uploadProducerPromotionVideoRequest'
+    v1UploadProducerBonusVideoRequest:
+      $ref: './components/schemas/v1/upload.request.yaml#/uploadProducerBonusVideoRequest'
     v1UploadProductImageRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadProductImageRequest'
     v1UploadProductVideoRequest:
@@ -282,6 +329,8 @@ components:
     # Response
     v1AuthResponse:
       $ref: './components/schemas/v1/auth.response.yaml#/authResponse'
+    v1AuthUserResponse:
+      $ref: './components/schemas/v1/auth.response.yaml#/authUserResponse'
     v1AdministratorResponse:
       $ref: './components/schemas/v1/administrator.response.yaml#/administratorResponse'
     v1AdministratorsResponse:
@@ -299,9 +348,13 @@ components:
     v1CategoriesResponse:
       $ref: './components/schemas/v1/category.response.yaml#/categoriesResponse'
     v1ProductTypeResponse:
-      $ref: './components/schemas/v1/product_type.response.yaml#/productTypeResponse'
+      $ref: './components/schemas/v1/product-type.response.yaml#/productTypeResponse'
     v1ProductTypesResponse:
-      $ref: './components/schemas/v1/product_type.response.yaml#/productTypesResponse'
+      $ref: './components/schemas/v1/product-type.response.yaml#/productTypesResponse'
+    v1ProductTagResponse:
+      $ref: './components/schemas/v1/product-tag.response.yaml#/productTagResponse'
+    v1ProductTagsResponse:
+      $ref: './components/schemas/v1/product-tag.response.yaml#/productTagsResponse'
     v1ProductResponse:
       $ref: './components/schemas/v1/product.response.yaml#/productResponse'
     v1ProductsResponse:
@@ -339,7 +392,7 @@ components:
     v1UsersResponse:
       $ref: './components/schemas/v1/user.response.yaml#/usersResponse'
     v1PostalCodeResponse:
-      $ref: './components/schemas/v1/postal_code.response.yaml#/postalCodeResponse'
+      $ref: './components/schemas/v1/postal-code.response.yaml#/postalCodeResponse'
     v1UploadImageResponse:
       $ref: './components/schemas/v1/upload.response.yaml#/uploadImageResponse'
     v1UploadVideoResponse:

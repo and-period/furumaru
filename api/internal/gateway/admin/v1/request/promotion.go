@@ -4,7 +4,6 @@ type CreatePromotionRequest struct {
 	Title        string `json:"title,omitempty"`
 	Description  string `json:"description,omitempty"`
 	Public       bool   `json:"public,omitempty"`
-	PublishedAt  int64  `json:"publishedAt,omitempty"`
 	DiscountType int32  `json:"discountType,omitempty"`
 	DiscountRate int64  `json:"discountRate,omitempty"`
 	Code         string `json:"code,omitempty"`
@@ -16,7 +15,6 @@ type UpdatePromotionRequest struct {
 	Title        string `json:"title,omitempty"`
 	Description  string `json:"description,omitempty"`
 	Public       bool   `json:"public,omitempty"`
-	PublishedAt  int64  `json:"publishedAt,omitempty"`
 	DiscountType int32  `json:"discountType,omitempty"`
 	DiscountRate int64  `json:"discountRate,omitempty"`
 	Code         string `json:"code,omitempty"`

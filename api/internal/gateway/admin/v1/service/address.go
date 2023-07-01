@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
@@ -18,7 +19,7 @@ func NewAddress(address *entity.Address) *Address {
 			Lastname:     address.Lastname,
 			Firstname:    address.Firstname,
 			PostalCode:   address.PostalCode,
-			Prefecture:   address.Prefecture,
+			Prefecture:   codes.PrefectureNames[address.Prefecture],
 			City:         address.City,
 			AddressLine1: address.AddressLine1,
 			AddressLine2: address.AddressLine2,

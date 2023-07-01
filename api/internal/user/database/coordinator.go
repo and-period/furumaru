@@ -89,6 +89,9 @@ func (c *coordinator) Create(
 	ctx context.Context, coordinator *entity.Coordinator, auth func(ctx context.Context) error,
 ) error {
 	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
+		if err := coordinator.FillJSON(); err != nil {
+			return err
+		}
 		now := c.now()
 		coordinator.Admin.CreatedAt, coordinator.Admin.UpdatedAt = now, now
 		if err := tx.WithContext(ctx).Table(adminTable).Create(&coordinator.Admin).Error; err != nil {
@@ -118,19 +121,28 @@ func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *
 			"updated_at":     now,
 		}
 		coordinatorParams := map[string]interface{}{
-			"company_name":      params.CompanyName,
-			"store_name":        params.StoreName,
-			"thumbnail_url":     params.ThumbnailURL,
-			"header_url":        params.HeaderURL,
-			"twitter_account":   params.TwitterAccount,
-			"instagram_account": params.InstagramAccount,
-			"facebook_account":  params.FacebookAccount,
-			"phone_number":      params.PhoneNumber,
-			"postal_code":       params.PostalCode,
-			"city":              params.City,
-			"address_line1":     params.AddressLine1,
-			"address_line2":     params.AddressLine2,
-			"updated_at":        now,
+			"marche_name":         params.MarcheName,
+			"username":            params.Username,
+			"profile":             params.Profile,
+			"thumbnail_url":       params.ThumbnailURL,
+			"header_url":          params.HeaderURL,
+			"promotion_video_url": params.PromotionVideoURL,
+			"bonus_video_url":     params.BonusVideoURL,
+			"instagram_id":        params.InstagramID,
+			"facebook_id":         params.FacebookID,
+			"phone_number":        params.PhoneNumber,
+			"postal_code":         params.PostalCode,
+			"city":                params.City,
+			"address_line1":       params.AddressLine1,
+			"address_line2":       params.AddressLine2,
+			"updated_at":          now,
+		}
+		if len(params.ProductTypeIDs) > 0 {
+			productTypeIDs, err := entity.CoordinatorMarshalProductTypeIDs(params.ProductTypeIDs)
+			if err != nil {
+				return fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
+			}
+			coordinatorParams["product_type_ids"] = datatypes.JSON(productTypeIDs)
 		}
 
 		err := tx.WithContext(ctx).
@@ -272,6 +284,7 @@ func (c *coordinator) fill(ctx context.Context, tx *gorm.DB, coordinators ...*en
 		if !ok {
 			admin = &entity.Admin{}
 		}
+		admin.Fill()
 
 		if err := coordinators[i].Fill(admin); err != nil {
 			return err

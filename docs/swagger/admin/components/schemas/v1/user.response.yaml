@@ -29,8 +29,7 @@ userResponse:
       type: string
       description: 郵便番号
     prefecture:
-      type: string
-      description: 都道府県
+      $ref: './../../../openapi.yaml#/components/schemas/prefecture'
     city:
       type: string
       description: 市区町村
@@ -74,7 +73,7 @@ userResponse:
     email: 'test-user@and-period.jp'
     phoneNumber: '+819012345678'
     postalCode: '1000014'
-    prefecture: '東京都'
+    prefecture: 'tokyo'
     city: '千代田区'
     addressLine1: '永田町1-7-1'
     addressLine2: ''
@@ -101,9 +100,11 @@ usersResponse:
           registered:
             type: boolean
             description: 会員登録フラグ
-          address:
+          prefecture:
+            $ref: './../../../openapi.yaml#/components/schemas/prefecture'
+          city:
             type: string
-            description: 住所
+            description: 市区町村
           totalOrder:
             type: integer
             format: int64
@@ -112,6 +113,15 @@ usersResponse:
             type: integer
             format: int64
             description: 購入金額
+        required:
+        - id
+        - lastname
+        - firstname
+        - registered
+        - prefecture
+        - city
+        - totalOrder
+        - totalAmount
     total:
       type: integer
       format: int64
@@ -125,7 +135,8 @@ usersResponse:
       lastname: '&.'
       firstname: '購入者'
       registered: true
-      address: '神奈川県 横浜市'
+      prefecture: 'tokyo'
+      city: '横浜市'
       totalOrder: 2
       totalAmount: 5000
     total: 1

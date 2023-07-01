@@ -33,6 +33,7 @@ export default defineNuxtConfig({
       }]
   ],
   i18n: {
+    defaultLocale: 'ja',
     locales: [
       {
         code: 'ja',
@@ -45,7 +46,6 @@ export default defineNuxtConfig({
         file: 'en_us.json'
       }
     ],
-    defaultLocale: 'ja',
     vueI18n: {
       fallbackLocale: 'ja',
       messages: {

@@ -24,7 +24,7 @@ const handleSubmit = async () => {
     if (err instanceof Error) {
       show(err.message)
     }
-    console.log('failed to sign in', err)
+    console.log(err)
   }
 }
 </script>

@@ -23,9 +23,8 @@ func TestScheduler_dispatchNotication(t *testing.T) {
 		Until: now,
 	}
 	notificationsParams := &database.ListNotificationsParams{
-		Since:         jst.BeginningOfDay(now),
-		Until:         now,
-		OnlyPublished: true,
+		Since: jst.BeginningOfDay(now),
+		Until: now,
 	}
 	schedules := entity.Schedules{
 		{

@@ -204,6 +204,7 @@ func (a *administrator) fill(ctx context.Context, tx *gorm.DB, administrators ..
 		if !ok {
 			admin = &entity.Admin{}
 		}
+		admin.Fill()
 
 		administrators[i].Fill(admin)
 	}

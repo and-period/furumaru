@@ -24,6 +24,7 @@ type Database struct {
 	Category    Category
 	Order       Order
 	Product     Product
+	ProductTag  ProductTag
 	ProductType ProductType
 	Promotion   Promotion
 	Rehearsal   Rehearsal
@@ -39,6 +40,7 @@ func NewDatabase(params *Params) *Database {
 		Live:        NewLive(params.Database),
 		Order:       NewOrder(params.Database),
 		Product:     NewProduct(params.Database),
+		ProductTag:  NewProductTag(params.Database),
 		ProductType: NewProductType(params.Database),
 		Promotion:   NewPromotion(params.Database),
 		Rehearsal:   NewRehearsal(params.DynamoDB),
@@ -82,6 +84,16 @@ type Product interface {
 	Delete(ctx context.Context, productID string) error
 }
 
+type ProductTag interface {
+	List(ctx context.Context, params *ListProductTagsParams, fields ...string) (entity.ProductTags, error)
+	Count(ctx context.Context, params *ListProductTagsParams) (int64, error)
+	MultiGet(ctx context.Context, productTagIDs []string, fields ...string) (entity.ProductTags, error)
+	Get(ctx context.Context, productTagID string, fields ...string) (*entity.ProductTag, error)
+	Create(ctx context.Context, category *entity.ProductTag) error
+	Update(ctx context.Context, productTagID, name string) error
+	Delete(ctx context.Context, productTagID string) error
+}
+
 type ProductType interface {
 	List(ctx context.Context, params *ListProductTypesParams, fields ...string) (entity.ProductTypes, error)
 	Count(ctx context.Context, params *ListProductTypesParams) (int64, error)
@@ -96,6 +108,7 @@ type ProductType interface {
 type Promotion interface {
 	List(ctx context.Context, params *ListPromotionsParams, fields ...string) (entity.Promotions, error)
 	Count(ctx context.Context, params *ListPromotionsParams) (int64, error)
+	MultiGet(ctx context.Context, promotionIDs []string, fields ...string) (entity.Promotions, error)
 	Get(ctx context.Context, promotionID string, fields ...string) (*entity.Promotion, error)
 	Create(ctx context.Context, promotion *entity.Promotion) error
 	Update(ctx context.Context, promotionID string, params *UpdatePromotionParams) error
@@ -123,11 +136,9 @@ type Schedule interface {
 }
 
 type Live interface {
-	MultiGet(ctx context.Context, liveIDs []string, fields ...string) (entity.Lives, error)
 	ListByScheduleID(ctx context.Context, scheduleID string, fields ...string) (entity.Lives, error)
 	Get(ctx context.Context, liveID string, fields ...string) (*entity.Live, error)
 	Update(ctx context.Context, liveID string, params *UpdateLiveParams) error
-	UpdatePublic(ctx context.Context, liveID string, params *UpdateLivePublicParams) error
 }
 
 /**
@@ -166,15 +177,9 @@ type UpdateLiveParams struct {
 	ProducerID   string
 	Title        string
 	Description  string
+	Status       entity.LiveStatus
 	StartAt      time.Time
 	EndAt        time.Time
-}
-
-type UpdateLivePublicParams struct {
-	Published    bool
-	Canceled     bool
-	ChannelArn   string
-	StreamKeyArn string
 }
 
 type ListOrdersParams struct {
@@ -242,25 +247,58 @@ func (p *ListProductsParams) stmt(stmt *gorm.DB) *gorm.DB {
 }
 
 type UpdateProductParams struct {
-	ProducerID       string
-	TypeID           string
-	Name             string
-	Description      string
-	Public           bool
-	Inventory        int64
-	Weight           int64
-	WeightUnit       entity.WeightUnit
-	Item             int64
-	ItemUnit         string
-	ItemDescription  string
-	Media            entity.MultiProductMedia
-	Price            int64
-	DeliveryType     entity.DeliveryType
-	Box60Rate        int64
-	Box80Rate        int64
-	Box100Rate       int64
-	OriginPrefecture string
-	OriginCity       string
+	ProducerID        string
+	TypeID            string
+	TagIDs            []string
+	Name              string
+	Description       string
+	Public            bool
+	Inventory         int64
+	Weight            int64
+	WeightUnit        entity.WeightUnit
+	Item              int64
+	ItemUnit          string
+	ItemDescription   string
+	Media             entity.MultiProductMedia
+	Price             int64
+	Cost              int64
+	ExpirationDate    int64
+	RecommendedPoints []string
+	StorageMethodType entity.StorageMethodType
+	DeliveryType      entity.DeliveryType
+	Box60Rate         int64
+	Box80Rate         int64
+	Box100Rate        int64
+	OriginPrefecture  int64
+	OriginCity        string
+}
+
+type ListProductTagsParams struct {
+	Name   string
+	Limit  int
+	Offset int
+	Orders []*ListProductTagsOrder
+}
+
+type ListProductTagsOrder struct {
+	Key        entity.ProductTagOrderBy
+	OrderByASC bool
+}
+
+func (p *ListProductTagsParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.Name != "" {
+		stmt = stmt.Where("name LIKE ?", fmt.Sprintf("%%%s%%", p.Name))
+	}
+	for i := range p.Orders {
+		var value string
+		if p.Orders[i].OrderByASC {
+			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
+		} else {
+			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
+		}
+		stmt = stmt.Order(value)
+	}
+	return stmt
 }
 
 type ListProductTypesParams struct {

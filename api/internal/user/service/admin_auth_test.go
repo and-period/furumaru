@@ -38,6 +38,7 @@ func TestSignInAdmin(t *testing.T) {
 				mocks.adminAuth.EXPECT().SignIn(ctx, "username", "password").Return(result, nil)
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username").Return(admin, nil)
+				mocks.db.Admin.EXPECT().UpdateSignInAt(ctx, "admin-id").Return(nil)
 			},
 			input: &user.SignInAdminInput{
 				Key:      "username",
@@ -90,6 +91,21 @@ func TestSignInAdmin(t *testing.T) {
 				mocks.adminAuth.EXPECT().SignIn(ctx, "username", "password").Return(result, nil)
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username").Return(nil, assert.AnError)
+			},
+			input: &user.SignInAdminInput{
+				Key:      "username",
+				Password: "password",
+			},
+			expect:    nil,
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "failed to get by cognito id",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.adminAuth.EXPECT().SignIn(ctx, "username", "password").Return(result, nil)
+				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
+				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username").Return(admin, nil)
+				mocks.db.Admin.EXPECT().UpdateSignInAt(ctx, "admin-id").Return(assert.AnError)
 			},
 			input: &user.SignInAdminInput{
 				Key:      "username",
@@ -162,8 +178,9 @@ func TestGetAdminAuth(t *testing.T) {
 	t.Parallel()
 
 	admin := &entity.Admin{
-		ID:   "admin-id",
-		Role: entity.AdminRoleAdministrator,
+		ID:     "admin-id",
+		Role:   entity.AdminRoleAdministrator,
+		Status: entity.AdminStatusActivated,
 	}
 
 	tests := []struct {
@@ -262,6 +279,7 @@ func TestRefreshAdminToken(t *testing.T) {
 				mocks.adminAuth.EXPECT().RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(result, nil)
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username").Return(admin, nil)
+				mocks.db.Admin.EXPECT().UpdateSignInAt(ctx, "admin-id").Return(nil)
 			},
 			input: &user.RefreshAdminTokenInput{
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
@@ -313,6 +331,20 @@ func TestRefreshAdminToken(t *testing.T) {
 				mocks.adminAuth.EXPECT().RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(result, nil)
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username").Return(nil, assert.AnError)
+			},
+			input: &user.RefreshAdminTokenInput{
+				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+			},
+			expect:    nil,
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.adminAuth.EXPECT().RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(result, nil)
+				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
+				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username").Return(admin, nil)
+				mocks.db.Admin.EXPECT().UpdateSignInAt(ctx, "admin-id").Return(assert.AnError)
 			},
 			input: &user.RefreshAdminTokenInput{
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
@@ -500,7 +532,7 @@ func TestVerifyAdminEmail(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
-				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username", "admin_id", "role").Return(admin, nil)
+				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username", "id", "role").Return(admin, nil)
 				mocks.adminAuth.EXPECT().ConfirmChangeEmail(ctx, params).Return("test-admin@and-period.jp", nil)
 				mocks.db.Admin.EXPECT().UpdateEmail(ctx, "admin-id", "test-admin@and-period.jp").Return(nil)
 			},
@@ -531,7 +563,7 @@ func TestVerifyAdminEmail(t *testing.T) {
 			name: "failed to get by cognito id",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
-				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username", "admin_id", "role").Return(nil, assert.AnError)
+				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username", "id", "role").Return(nil, assert.AnError)
 			},
 			input: &user.VerifyAdminEmailInput{
 				AccessToken: "access-token",
@@ -543,7 +575,7 @@ func TestVerifyAdminEmail(t *testing.T) {
 			name: "failed to confirm change email",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
-				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username", "admin_id", "role").Return(admin, nil)
+				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username", "id", "role").Return(admin, nil)
 				mocks.adminAuth.EXPECT().ConfirmChangeEmail(ctx, params).Return("", assert.AnError)
 			},
 			input: &user.VerifyAdminEmailInput{

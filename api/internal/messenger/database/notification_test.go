@@ -31,9 +31,9 @@ func TestNotification_List(t *testing.T) {
 	require.NoError(t, err)
 
 	notifications := make(entity.Notifications, 3)
-	notifications[0] = testNotification("notification-id01", false, now())
-	notifications[1] = testNotification("notification-id02", true, now())
-	notifications[2] = testNotification("notification-id03", true, now())
+	notifications[0] = testNotification("notification-id01", now())
+	notifications[1] = testNotification("notification-id02", now())
+	notifications[2] = testNotification("notification-id03", now())
 	err = db.DB.Create(&notifications).Error
 	require.NoError(t, err)
 
@@ -55,15 +55,14 @@ func TestNotification_List(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListNotificationsParams{
-					Limit:         20,
-					Offset:        1,
-					Since:         now().Add(-time.Hour),
-					Until:         now(),
-					OnlyPublished: true,
+					Limit:  20,
+					Offset: 1,
+					Since:  now().Add(-time.Hour),
+					Until:  now().AddDate(0, 1, 0),
 				},
 			},
 			want: want{
-				notifications: notifications[2:],
+				notifications: notifications[1:],
 				hasErr:        false,
 			},
 		},
@@ -116,9 +115,9 @@ func TestNotificaiton_Count(t *testing.T) {
 	require.NoError(t, err)
 
 	notifications := make(entity.Notifications, 3)
-	notifications[0] = testNotification("notification-id01", true, now())
-	notifications[1] = testNotification("notification-id02", true, now())
-	notifications[2] = testNotification("notification-id03", true, now())
+	notifications[0] = testNotification("notification-id01", now())
+	notifications[1] = testNotification("notification-id02", now())
+	notifications[2] = testNotification("notification-id03", now())
 	err = db.DB.Create(&notifications).Error
 	require.NoError(t, err)
 
@@ -141,7 +140,7 @@ func TestNotificaiton_Count(t *testing.T) {
 			args: args{
 				params: &ListNotificationsParams{
 					Since: now(),
-					Until: now(),
+					Until: now().AddDate(0, 1, 0),
 				},
 			},
 			want: want{
@@ -183,7 +182,7 @@ func TestNotification_Get(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	n := testNotification("notification-id", false, now())
+	n := testNotification("notification-id", now())
 	err = db.DB.Create(&n).Error
 	require.NoError(t, err)
 
@@ -271,7 +270,7 @@ func TestNotification_Create(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
-				notification: testNotification("notification-id", true, now()),
+				notification: testNotification("notification-id", now()),
 			},
 			want: want{
 				hasErr: false,
@@ -280,12 +279,12 @@ func TestNotification_Create(t *testing.T) {
 		{
 			name: "failed to duplicate entry",
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
-				n := testNotification("notification-id", true, now())
+				n := testNotification("notification-id", now())
 				err = db.DB.Create(&n).Error
 				require.NoError(t, err)
 			},
 			args: args{
-				notification: testNotification("notification-id", true, now()),
+				notification: testNotification("notification-id", now()),
 			},
 			want: want{
 				hasErr: true,
@@ -341,7 +340,7 @@ func TestNotification_Update(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
-				notification := testNotification("notification-id", true, now())
+				notification := testNotification("notification-id", now().AddDate(0, 0, 1))
 				err = db.DB.Create(&notification).Error
 				require.NoError(t, err)
 			},
@@ -350,11 +349,11 @@ func TestNotification_Update(t *testing.T) {
 				params: &UpdateNotificationParams{
 					Title: "キャベツ祭り開催",
 					Body:  "旬のキャベツが大安売り",
-					Targets: []entity.TargetType{
-						entity.PostTargetProducers,
-						entity.PostTargetCoordinators,
+					Targets: []entity.NotificationTarget{
+						entity.NotificationTargetProducers,
+						entity.NotificationTargetCoordinators,
 					},
-					PublishedAt: now(),
+					PublishedAt: now().AddDate(0, 0, 1),
 					UpdatedBy:   "admin-id",
 				},
 			},
@@ -422,7 +421,7 @@ func TestNotificaiton_Delete(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
-				notification := testNotification("notification-id", true, now())
+				notification := testNotification("notification-id", now())
 				err = db.DB.Create(&notification).Error
 				require.NoError(t, err)
 			},
@@ -463,19 +462,19 @@ func TestNotificaiton_Delete(t *testing.T) {
 	}
 }
 
-func testNotification(id string, public bool, now time.Time) *entity.Notification {
+func testNotification(id string, now time.Time) *entity.Notification {
 	n := &entity.Notification{
 		ID:          id,
+		Status:      entity.NotificationStatusWaiting,
 		Title:       "お知らせタイトル",
 		Body:        "お知らせの内容です。",
-		Targets:     []entity.TargetType{entity.PostTargetProducers},
-		Public:      public,
-		CreatorName: "&. スタッフ",
+		Note:        "備考です",
+		Targets:     []entity.NotificationTarget{entity.NotificationTargetUsers},
 		CreatedBy:   "coordinator-id",
 		UpdatedBy:   "coordinator-id",
 		CreatedAt:   now,
 		UpdatedAt:   now,
-		PublishedAt: now,
+		PublishedAt: now.AddDate(0, 0, 1),
 	}
 	_ = n.FillJSON()
 	return n

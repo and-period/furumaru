@@ -5,17 +5,14 @@ import { useAuthStore } from '~/store'
 
 declare module 'vue/types/vue' {
   interface Vue {
-    $auth: ReturnType<typeof useAuthStore>
   }
 }
 
 declare module '@nuxt/types' {
   interface Context {
-    $auth: ReturnType<typeof useAuthStore>
   }
 
   interface NuxtAppOptions {
-    $auth: ReturnType<typeof useAuthStore>
   }
 }
 

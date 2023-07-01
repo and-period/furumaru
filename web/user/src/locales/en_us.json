@@ -13,7 +13,7 @@
       "aboutLinkText": "About",
       "notificationTitle": "Notification",
       "noNotificationItemText": "No Notification",
-    "cartMenuMessage": "買い物カゴに<br>商品が{count}点入っています。",
+    "cartMenuMessage": "買い物カゴに商品が{count}点入っています。",
       "myPageLinkText": "My Page",
       "viewMyCartText": "View My Cart"
     },
@@ -51,22 +51,31 @@
       "pageName": "Verify",
       "message": "Enter the verification code",
       "btnText": "Verify"
+    },
+    "register": {
+      "pageName": "User registration",
+      "name": "Name",
+      "username": "Username",
+      "btnText": "Register",
+      "cautionText": "By clicking 'Register,'you agree to \nFurumaru's {privacyPolicyLinkText} and {termsOfService}.",
+      "privacyPolicyLinkText": "privacy policy",
+      "termsOfServiceLink": "terms of use"
     }
   },
   "base": {
     "about": {
       "leadSentence": "Find wonderful taste",
       "description": "Furumaru is a live commerce platform.",
-      "firstPointTitle": "産地直送の<br>新鮮な商品がたくさん",
-      "firstPointDescription": "全国各地の「ふるさと」から、新鮮な農畜産物などの商品を直接お届けします。旬の食材や地域の特産品もたくさん取り扱っているので、新しい発見や思わぬ出会いがきっとあるはずです。",
-      "firstPointLinkText": "商品一覧を見る",
-      "secondPointTitle": "ライブコマースで<br>地域ごとにマルシェを開催",
-      "secondPointDescription": "地域に根ざしたコーディネーターが商品をセレクトし、マルシェを配信。商品の魅力や生産者の想いを、リアルタイムでお伝えします。さらに、アーカイブ配信や商品検索からいつでもお買い物が楽しめます。",
-      "thirdPointTitle": "生産者に直接質問できるので<br>イメージしやすい",
-      "thirdPointDescription": "ライブ配信を見ながらチャットで質問ができるので、まるで実際にマルシェに来たような感覚でお買い物をお楽しみいただけます。写真だけでは伝わりにくい商品詳細も映像を通してよりリアルに確認できます。",
-      "forthPointTitle": "同じ地域の商品を同梱発送するので<br>送料がおトクに",
-      "forthPointDescription": "ふるマルの送料は、商品（生産者）ごとではなくマルシェごとに加算されます。同じマルシェでのお買い物なら、同じ箱に収まる限りいくつ買っても追加の送料はかかりません。",
-      "forthPointLinkText": "送料について詳しくはこちら"
+      "firstPointTitle": "Lots of fresh products directly from the production area",
+      "firstPointDescription": "We deliver fresh agricultural, livestock, and other products directly from 'hometowns'. We also carry many seasonal foods and local specialties, so you are sure to make new discoveries and have unexpected encounters.",
+      "firstPointLinkText": "View Product List",
+      "secondPointTitle": "Live commerce to organize regional marches",
+      "secondPointDescription": "Coordinators rooted in the community select products and distribute marche. The appeal of the products and the thoughts of the producers are conveyed in real time. In addition, you can enjoy shopping anytime through archived feeds and product searches.",
+      "thirdPointTitle": "You can ask questions directly to the producer, so it's easy to imagine what it would be like.",
+      "thirdPointDescription": "You can ask questions in the chat room while watching the live streaming, so you can enjoy shopping as if you were actually at the marché. You can also check the details of the products through the video, which are difficult to convey through photographs alone.",
+      "forthPointTitle": "Save on shipping costs by shipping items from the same region together!",
+      "forthPointDescription": "Furumaru shipping charges are added per marche, not per item. If you shop at the same marche, you will not be charged additional shipping fees no matter how many items you buy as long as they fit in the same box.",
+      "forthPointLinkText": "For more information about shipping charges, click here."
     }
   }
 }

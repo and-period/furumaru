@@ -93,7 +93,7 @@ func TestListPromotions(t *testing.T) {
 			expectErr:   exception.ErrUnknown,
 		},
 		{
-			name: "success",
+			name: "failed to count promotions",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Promotion.EXPECT().List(gomock.Any(), params).Return(promotions, nil)
 				mocks.db.Promotion.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
@@ -118,6 +118,78 @@ func TestListPromotions(t *testing.T) {
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.ElementsMatch(t, tt.expect, actual)
 			assert.Equal(t, tt.expectTotal, total)
+		}))
+	}
+}
+
+func TestMultiGetPromotions(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2022, 8, 13, 18, 30, 0, 0)
+	promotions := entity.Promotions{
+		{
+			ID:           "promotion-id",
+			Title:        "夏の採れたて野菜マルシェを開催!!",
+			Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
+			Public:       true,
+			PublishedAt:  now,
+			DiscountType: entity.DiscountTypeFreeShipping,
+			DiscountRate: 0,
+			Code:         "code0001",
+			CodeType:     entity.PromotionCodeTypeOnce,
+			StartAt:      now,
+			EndAt:        now.AddDate(0, 1, 0),
+			CreatedAt:    now,
+			UpdatedAt:    now,
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.MultiGetPromotionsInput
+		expect    entity.Promotions
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Promotion.EXPECT().MultiGet(ctx, []string{"promotion-id"}).Return(promotions, nil)
+			},
+			input: &store.MultiGetPromotionsInput{
+				PromotionIDs: []string{"promotion-id"},
+			},
+			expect:    promotions,
+			expectErr: nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.MultiGetPromotionsInput{
+				PromotionIDs: []string{""},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to multi get promotions",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Promotion.EXPECT().MultiGet(ctx, []string{"promotion-id"}).Return(nil, assert.AnError)
+			},
+			input: &store.MultiGetPromotionsInput{
+				PromotionIDs: []string{"promotion-id"},
+			},
+			expect:    nil,
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.MultiGetPromotions(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.ElementsMatch(t, tt.expect, actual)
 		}))
 	}
 }
@@ -211,7 +283,6 @@ func TestCreatePromotion(t *testing.T) {
 							Title:        "プロモーションタイトル",
 							Description:  "プロモーションの詳細です。",
 							Public:       true,
-							PublishedAt:  jst.Date(2022, 7, 30, 18, 30, 0, 0),
 							DiscountType: entity.DiscountTypeRate,
 							DiscountRate: 10,
 							Code:         "excode01",
@@ -227,7 +298,6 @@ func TestCreatePromotion(t *testing.T) {
 				Title:        "プロモーションタイトル",
 				Description:  "プロモーションの詳細です。",
 				Public:       true,
-				PublishedAt:  jst.Date(2022, 7, 30, 18, 30, 0, 0),
 				DiscountType: entity.DiscountTypeRate,
 				DiscountRate: 10,
 				Code:         "excode01",
@@ -252,7 +322,6 @@ func TestCreatePromotion(t *testing.T) {
 				Title:        "プロモーションタイトル",
 				Description:  "プロモーションの詳細です。",
 				Public:       true,
-				PublishedAt:  jst.Date(2022, 7, 30, 18, 30, 0, 0),
 				DiscountType: entity.DiscountTypeRate,
 				DiscountRate: 10,
 				Code:         "excode01",
@@ -280,7 +349,6 @@ func TestUpdatePromotion(t *testing.T) {
 		Title:        "プロモーションタイトル",
 		Description:  "プロモーションの詳細です。",
 		Public:       true,
-		PublishedAt:  jst.Date(2022, 8, 9, 18, 30, 0, 0),
 		DiscountType: entity.DiscountTypeRate,
 		DiscountRate: 10,
 		Code:         "excode01",
@@ -305,7 +373,6 @@ func TestUpdatePromotion(t *testing.T) {
 				Title:        "プロモーションタイトル",
 				Description:  "プロモーションの詳細です。",
 				Public:       true,
-				PublishedAt:  jst.Date(2022, 8, 9, 18, 30, 0, 0),
 				DiscountType: entity.DiscountTypeRate,
 				DiscountRate: 10,
 				Code:         "excode01",
@@ -331,7 +398,6 @@ func TestUpdatePromotion(t *testing.T) {
 				Title:        "プロモーションタイトル",
 				Description:  "プロモーションの詳細です。",
 				Public:       true,
-				PublishedAt:  jst.Date(2022, 8, 9, 18, 30, 0, 0),
 				DiscountType: entity.DiscountTypeRate,
 				DiscountRate: 10,
 				Code:         "excode01",

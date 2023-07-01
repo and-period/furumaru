@@ -115,15 +115,20 @@ func (p *producer) Update(ctx context.Context, producerID string, params *Update
 			"updated_at":     now,
 		}
 		producerParams := map[string]interface{}{
-			"store_name":    params.StoreName,
-			"thumbnail_url": params.ThumbnailURL,
-			"header_url":    params.HeaderURL,
-			"phone_number":  params.PhoneNumber,
-			"postal_code":   params.PostalCode,
-			"city":          params.City,
-			"address_line1": params.AddressLine1,
-			"address_line2": params.AddressLine2,
-			"updated_at":    now,
+			"username":            params.Username,
+			"profile":             params.Profile,
+			"thumbnail_url":       params.ThumbnailURL,
+			"header_url":          params.HeaderURL,
+			"promotion_video_url": params.PromotionVideoURL,
+			"bonus_video_url":     params.BonusVideoURL,
+			"instagram_id":        params.InstagramID,
+			"facebook_id":         params.FacebookID,
+			"phone_number":        params.PhoneNumber,
+			"postal_code":         params.PostalCode,
+			"city":                params.City,
+			"address_line1":       params.AddressLine1,
+			"address_line2":       params.AddressLine2,
+			"updated_at":          now,
 		}
 
 		err := tx.WithContext(ctx).
@@ -253,6 +258,39 @@ func (p *producer) Delete(ctx context.Context, producerID string, auth func(ctx 
 	return exception.InternalError(err)
 }
 
+func (p *producer) AggregateByCoordinatorID(
+	ctx context.Context, coordinatorIDs []string,
+) (map[string]int64, error) {
+	fields := []string{
+		"coordinator_id",
+		"COUNT(*) AS total",
+	}
+
+	stmt := p.db.Statement(ctx, p.db.DB, producerTable, fields...).
+		Where("coordinator_id IN (?)", coordinatorIDs).
+		Where("deleted_at IS NULL").
+		Group("coordinator_id")
+
+	rows, err := stmt.Rows()
+	if err != nil {
+		return nil, exception.InternalError(err)
+	}
+	defer rows.Close()
+
+	res := make(map[string]int64, len(coordinatorIDs))
+	for rows.Next() {
+		var (
+			coordinatorID string
+			total         int64
+		)
+		if err := rows.Scan(&coordinatorID, &total); err != nil {
+			return nil, exception.InternalError(err)
+		}
+		res[coordinatorID] = total
+	}
+	return res, nil
+}
+
 func (p *producer) multiGet(
 	ctx context.Context, tx *gorm.DB, producerIDs []string, fields ...string,
 ) (entity.Producers, error) {
@@ -295,6 +333,7 @@ func (p *producer) fill(ctx context.Context, tx *gorm.DB, producers ...*entity.P
 		if !ok {
 			admin = &entity.Admin{}
 		}
+		admin.Fill()
 
 		if err := producers[i].Fill(admin); err != nil {
 			return err

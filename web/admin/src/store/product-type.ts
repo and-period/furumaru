@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { defineStore } from 'pinia'
 
 import { useCommonStore } from './common'
@@ -8,14 +7,6 @@ import {
   UpdateProductTypeRequest,
   UploadImageResponse
 } from '~/types/api'
-import {
-  AuthError,
-  ConflictError,
-  ConnectionError,
-  InternalServerError,
-  NotFoundError,
-  ValidationError
-} from '~/types/exception'
 import { apiClient } from '~/plugins/api-client'
 
 export const useProductTypeStore = defineStore('productType', {
@@ -23,36 +14,31 @@ export const useProductTypeStore = defineStore('productType', {
     productTypes: [] as ProductTypesResponse['productTypes'],
     totalItems: 0
   }),
+
   actions: {
     /**
      * 品目を全件取得する非同期関数
      * @param limit 取得上限数
      * @param offset 取得開始位置
+     * @param orders ソートキー
      */
-    async fetchProductTypes (limit = 20, offset = 0): Promise<void> {
+    async fetchProductTypes (limit = 20, offset = 0, orders = []): Promise<void> {
       try {
-        const res = await apiClient.productTypeApi().v1ListAllProductTypes(
-          limit,
-          offset
-        )
+        const res = await apiClient.productTypeApi().v1ListAllProductTypes(limit, offset, orders.join(','))
         this.productTypes = res.data.productTypes
         this.totalItems = res.data.total
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          switch (error.response.status) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    async fetchProductTypesByCategoryId (categoryId: string, limit = 20, offset = 0): Promise<void> {
+      try {
+        const res = await apiClient.productTypeApi().v1ListProductTypes(categoryId)
+        this.productTypes = res.data.productTypes
+        this.totalItems = res.data.total
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
@@ -77,34 +63,8 @@ export const useProductTypeStore = defineStore('productType', {
           message: '品目を追加しました。',
           color: 'info'
         })
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 400:
-              return Promise.reject(
-                new ValidationError('入力内容に誤りがあります。', error)
-              )
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 409:
-              return Promise.reject(
-                new ConflictError(
-                  'この品目はすでに登録されているため、登録できません。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err, { 409: 'この品目はすでに登録されているため、登録できません。' })
       }
     },
 
@@ -115,7 +75,7 @@ export const useProductTypeStore = defineStore('productType', {
      * @param payload 品目情報
      * @returns
      */
-    async editProductType (
+    async updateProductType (
       categoryId: string,
       productTypeId: string,
       payload: UpdateProductTypeRequest
@@ -126,34 +86,8 @@ export const useProductTypeStore = defineStore('productType', {
           productTypeId,
           payload
         )
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 400:
-              return Promise.reject(
-                new ValidationError('入力内容に誤りがあります。', error)
-              )
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 409:
-              return Promise.reject(
-                new ConflictError(
-                  'この品目はすでに登録されているため、登録できません。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err, { 409: 'この品目はすでに登録されているため、登録できません。' })
       }
     },
 
@@ -177,36 +111,10 @@ export const useProductTypeStore = defineStore('productType', {
           message: '品目削除が完了しました',
           color: 'info'
         })
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 400:
-              return Promise.reject(
-                new ValidationError(
-                  '削除できませんでした。管理者にお問い合わせしてください。',
-                  error
-                )
-              )
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 404:
-              return Promise.reject(
-                new NotFoundError('削除する品目が見つかりませんでした。', error)
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+        this.fetchProductTypes()
+      } catch (err) {
+        return this.errorHandler(err)
       }
-      this.fetchProductTypes()
     },
 
     /**
@@ -225,30 +133,8 @@ export const useProductTypeStore = defineStore('productType', {
           }
         )
         return res.data
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください', error)
-              )
-            case 400:
-              return Promise.reject(
-                new ValidationError(
-                  'このファイルはアップロードできません。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
     }
   }

@@ -117,7 +117,7 @@ func (w *worker) fetchCoordinators(
 		return err
 	}
 	for i := range coordinators {
-		execute(coordinators[i].Name(), coordinators[i].Email)
+		execute(coordinators[i].Username, coordinators[i].Email)
 	}
 	return nil
 }
@@ -131,7 +131,7 @@ func (w *worker) fetchProducers(ctx context.Context, producerIDs []string, execu
 		return err
 	}
 	for i := range producers {
-		execute(producers[i].Name(), producers[i].Email)
+		execute(producers[i].Username, producers[i].Email)
 	}
 	return nil
 }

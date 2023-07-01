@@ -25,6 +25,10 @@ type Service interface {
 	VerifyAdminEmail(ctx context.Context, in *VerifyAdminEmailInput) error
 	// 管理者パスワード更新
 	UpdateAdminPassword(ctx context.Context, in *UpdateAdminPasswordInput) error
+	// 管理者パスワードリセット (メール送信)
+	ForgotAdminPassword(ctx context.Context, in *ForgotAdminPasswordInput) error
+	// 管理者パスワードリセット (パスワード更新)
+	VerifyAdminPassword(ctx context.Context, in *VerifyAdminPasswordInput) error
 	// 管理者一覧取得(ID指定)
 	MultiGetAdmins(ctx context.Context, in *MultiGetAdminsInput) (entity.Admins, error)
 	// 管理者デバイストークン一覧取得
@@ -65,6 +69,8 @@ type Service interface {
 	UpdateCoordinatorHeaders(ctx context.Context, in *UpdateCoordinatorHeadersInput) error
 	// コーディネータパスワードリセット
 	ResetCoordinatorPassword(ctx context.Context, in *ResetCoordinatorPasswordInput) error
+	// コーディネータごとの担当する生産者数
+	AggregateRealatedProducers(ctx context.Context, in *AggregateRealatedProducersInput) (map[string]int64, error)
 	// コーディネータ退会
 	DeleteCoordinator(ctx context.Context, in *DeleteCoordinatorInput) error
 	// 生産者一覧取得

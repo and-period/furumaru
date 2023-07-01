@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
@@ -163,4 +164,15 @@ func (h *handler) DeleteAdministrator(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) getAdministrator(ctx context.Context, administratorID string) (*service.Administrator, error) {
+	in := &user.GetAdministratorInput{
+		AdministratorID: administratorID,
+	}
+	administrator, err := h.user.GetAdministrator(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewAdministrator(administrator), nil
 }

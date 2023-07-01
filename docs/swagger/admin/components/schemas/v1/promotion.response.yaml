@@ -13,10 +13,6 @@ promotionResponse:
     public:
       type: boolean
       description: 公開フラグ
-    publishedAt:
-      type: integer
-      format: int64
-      description: 公開フラグ
     discountType:
       $ref: './../../../openapi.yaml#/components/schemas/discountType'
     discountRate:
@@ -47,7 +43,6 @@ promotionResponse:
   - title
   - description
   - public
-  - publishedAt
   - discountType
   - discountRate
   - code
@@ -60,7 +55,6 @@ promotionResponse:
     title: 'プロモーションタイトル'
     description: 'セール情報をお届けします。'
     public: true
-    publishedAt: 1640962800
     discountType: 1
     discountRate: 300
     code: 'code1234'
@@ -89,10 +83,6 @@ promotionsResponse:
           public:
             type: boolean
             description: 公開フラグ
-          publishedAt:
-            type: integer
-            format: int64
-            description: 公開フラグ
           discountType:
             $ref: './../../../openapi.yaml#/components/schemas/discountType'
           discountRate:
@@ -110,6 +100,10 @@ promotionsResponse:
             type: integer
             format: int64
             description: クーポン利用可能終了日時(unixtime)
+          total:
+            type: integer
+            format: int64
+            description: 使用回数
           createdAt:
             type: integer
             format: int64
@@ -123,12 +117,12 @@ promotionsResponse:
         - title
         - description
         - public
-        - publishedAt
         - discountType
         - discountRate
         - code
         - startAt
         - endAt
+        - total
         - createdAt
         - updatedAt
     total:
@@ -144,24 +138,24 @@ promotionsResponse:
       title: 'プロモーションタイトル'
       description: 'セール情報をお届けします。'
       public: true
-      publishedAt: 1640962800
       discountType: 1
       discountRate: 300
       code: 'code1234'
       startAt: 1640962800
       endAt: 1640962800
+      total: 0
       createdAt: 1640962800
       updatedAt: 1640962800
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       title: 'プロモーションタイトル'
       description: 'セール情報をお届けします。'
       public: true
-      publishedAt: 1640962800
       discountType: 1
       discountRate: 300
       code: 'code1234'
       startAt: 1640962800
       endAt: 1640962800
+      total: 10
       createdAt: 1640962800
       updatedAt: 1640962800
     total: 2

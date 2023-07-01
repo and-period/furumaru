@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { mdiPencil } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components'
 
 import { AlertType } from '~/lib/hooks'
@@ -43,8 +42,7 @@ const props = defineProps({
 const emit = defineEmits<{
   (e: 'click:update-page', page: number): void
   (e: 'click:update-items-per-page', page: number): void
-  (e: 'click:update-sort-by'): void
-  (e: 'click:row', item: ContactsResponseContactsInner): void
+  (e: 'click:row', contactId: string): void
   (e: 'update:sort-by', sortBy: VDataTable['sortBy']): void
 }>()
 
@@ -135,28 +133,30 @@ const onClickUpdateSortBy = (sortBy: VDataTable['sortBy']): void => {
   emit('update:sort-by', sortBy)
 }
 
-const onClickRow = (contactItem: ContactsResponseContactsInner): void => {
-  emit('click:row', contactItem)
+const onClickRow = (contactId: string): void => {
+  emit('click:row', contactId)
 }
 </script>
 
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+
   <v-card>
     <v-card-title>お問い合わせ管理</v-card-title>
+
     <v-card-text>
       <v-data-table-server
         :headers="headers"
         :items="props.contacts"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"
+        :sort-by="props.sortBy"
         :multi-sort="true"
         hover
-        :sort-by="props.sortBy"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
         @update:sort-by="onClickUpdateSortBy"
-        @click:row="(_:any, {item}: any) => onClickRow(item.raw)"
+        @click:row="(_:any, {item}: any) => onClickRow(item.raw.id)"
       >
         <template #[`item.priority`]="{ item }">
           <v-chip :color="getPriorityColor(item.raw.priority)" size="small">

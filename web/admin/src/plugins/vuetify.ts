@@ -28,6 +28,12 @@ export default defineNuxtPlugin((nuxtApp) => {
       }
     },
     defaults: {
+      VAutocomplete: {
+        variant: 'underlined'
+      },
+      VTextarea: {
+        variant: 'underlined'
+      },
       VTextField: {
         variant: 'underlined'
       },

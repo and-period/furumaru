@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
@@ -15,6 +17,7 @@ func NewAdministrator(admin *entity.Administrator) *Administrator {
 	return &Administrator{
 		Administrator: response.Administrator{
 			ID:            admin.ID,
+			Status:        admin.Status,
 			Lastname:      admin.Lastname,
 			Firstname:     admin.Firstname,
 			LastnameKana:  admin.LastnameKana,
@@ -23,6 +26,17 @@ func NewAdministrator(admin *entity.Administrator) *Administrator {
 			PhoneNumber:   admin.PhoneNumber,
 			CreatedAt:     admin.CreatedAt.Unix(),
 			UpdatedAt:     admin.CreatedAt.Unix(),
+		},
+	}
+}
+
+func (a *Administrator) AuthUser() *AuthUser {
+	return &AuthUser{
+		AuthUser: response.AuthUser{
+			AdminID:  a.ID,
+			Role:     AdminRoleAdministrator.Response(),
+			Username: fmt.Sprintf("%s %s", a.Lastname, a.Firstname),
+			Email:    a.Email,
 		},
 	}
 }
