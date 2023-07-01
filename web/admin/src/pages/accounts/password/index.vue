@@ -31,7 +31,7 @@ const handleSubmit = async (): Promise<void> => {
 </script>
 
 <template>
-  <templates-auth-edit-password
+  <templates-auth-password-edit
     v-model:form-data="formData"
     :loading="loading"
     :is-alert="isShow"
