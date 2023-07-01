@@ -63,7 +63,7 @@ orderResponse:
           type: string
           description: 請求先情報 郵便番号
         prefecture:
-          type: string
+          $ref: './../../../openapi.yaml#/components/schemas/prefecture'
           description: 請求先情報 都道府県
         city:
           type: string
@@ -124,7 +124,7 @@ orderResponse:
           type: string
           description: 配送先情報 郵便番号
         prefecture:
-          type: string
+          $ref: './../../../openapi.yaml#/components/schemas/prefecture'
           description: 配送先情報 都道府県
         city:
           type: string
@@ -279,7 +279,7 @@ orderResponse:
       lastname: '&.'
       firstname: '購入者'
       postalCode: '1000014'
-      prefecture: '東京都'
+      prefecture: 'tokyo'
       city: '千代田区'
       addressLine1: '永田町1-7-1'
       addressLine2: ''
@@ -294,7 +294,7 @@ orderResponse:
       lastname: '&.'
       firstname: '購入者'
       postalCode: '1000014'
-      prefecture: '東京都'
+      prefecture: 'tokyo'
       city: '千代田区'
       addressLine1: '永田町1-7-1'
       addressLine2: ''
@@ -394,7 +394,7 @@ ordersResponse:
                 type: string
                 description: 請求先情報 郵便番号
               prefecture:
-                type: string
+                $ref: './../../../openapi.yaml#/components/schemas/prefecture'
                 description: 請求先情報 都道府県
               city:
                 type: string
@@ -455,7 +455,7 @@ ordersResponse:
                 type: string
                 description: 配送先情報 郵便番号
               prefecture:
-                type: string
+                $ref: './../../../openapi.yaml#/components/schemas/prefecture'
                 description: 配送先情報 都道府県
               city:
                 type: string
@@ -618,7 +618,7 @@ ordersResponse:
         lastname: '&.'
         firstname: '購入者'
         postalCode: '1000014'
-        prefecture: '東京都'
+        prefecture: 'tokyo'
         city: '千代田区'
         addressLine1: '永田町1-7-1'
         addressLine2: ''
@@ -633,7 +633,7 @@ ordersResponse:
         lastname: '&.'
         firstname: '購入者'
         postalCode: '1000014'
-        prefecture: '東京都'
+        prefecture: 'tokyo'
         city: '千代田区'
         addressLine1: '永田町1-7-1'
         addressLine2: ''

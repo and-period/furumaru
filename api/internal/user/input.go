@@ -41,6 +41,17 @@ type UpdateAdminPasswordInput struct {
 	PasswordConfirmation string `validate:"required,eqfield=NewPassword"`
 }
 
+type ForgotAdminPasswordInput struct {
+	Email string `validate:"required,max=256,email"`
+}
+
+type VerifyAdminPasswordInput struct {
+	Email                string `validate:"required,max=256,email"`
+	VerifyCode           string `validate:"required"`
+	NewPassword          string `validate:"min=8,max=32,password"`
+	PasswordConfirmation string `validate:"required,eqfield=NewPassword"`
+}
+
 type MultiGetAdminsInput struct {
 	AdminIDs []string `validate:"omitempty,dive,required"`
 }
@@ -128,7 +139,7 @@ type CreateCoordinatorInput struct {
 	Email             string   `validate:"required,max=256,email"`
 	PhoneNumber       string   `validate:"min=12,max=18,phone_number"`
 	PostalCode        string   `validate:"omitempty,max=16,numeric"`
-	Prefecture        string   `validate:"omitempty,max=32"`
+	Prefecture        int64    `validate:"omitempty,min=0"`
 	City              string   `validate:"omitempty,max=32"`
 	AddressLine1      string   `validate:"omitempty,max=64"`
 	AddressLine2      string   `validate:"omitempty,max=64"`
@@ -152,7 +163,7 @@ type UpdateCoordinatorInput struct {
 	FacebookID        string   `validate:"omitempty,max=50"`
 	PhoneNumber       string   `validate:"min=12,max=18,phone_number"`
 	PostalCode        string   `validate:"omitempty,max=16,numeric"`
-	Prefecture        string   `validate:"omitempty,max=32"`
+	Prefecture        int64    `validate:"omitempty,min=0"`
 	City              string   `validate:"omitempty,max=32"`
 	AddressLine1      string   `validate:"omitempty,max=64"`
 	AddressLine2      string   `validate:"omitempty,max=64"`
@@ -217,7 +228,7 @@ type CreateProducerInput struct {
 	Email             string `validate:"required,max=256,email"`
 	PhoneNumber       string `validate:"min=12,max=18,phone_number"`
 	PostalCode        string `validate:"omitempty,max=16,numeric"`
-	Prefecture        string `validate:"omitempty,max=32"`
+	Prefecture        int64  `validate:"omitempty,min=0"`
 	City              string `validate:"omitempty,max=32"`
 	AddressLine1      string `validate:"omitempty,max=64"`
 	AddressLine2      string `validate:"omitempty,max=64"`
@@ -239,7 +250,7 @@ type UpdateProducerInput struct {
 	FacebookID        string `validate:"omitempty,max=50"`
 	PhoneNumber       string `validate:"min=12,max=18,phone_number"`
 	PostalCode        string `validate:"omitempty,max=16,numeric"`
-	Prefecture        string `validate:"omitempty,max=32"`
+	Prefecture        int64  `validate:"omitempty,min=0"`
 	City              string `validate:"omitempty,max=32"`
 	AddressLine1      string `validate:"omitempty,max=64"`
 	AddressLine2      string `validate:"omitempty,max=64"`

@@ -25,6 +25,26 @@ func NewContact(db *database.Client) Contact {
 	}
 }
 
+func (c *contact) List(ctx context.Context, params *ListContactsParams, fields ...string) (entity.Contacts, error) {
+	var contacts entity.Contacts
+
+	stmt := c.db.Statement(ctx, c.db.DB, contactTable, fields...)
+	if params.Limit > 0 {
+		stmt = stmt.Limit(params.Limit)
+	}
+	if params.Offset > 0 {
+		stmt = stmt.Offset(params.Offset)
+	}
+
+	err := stmt.Find(&contacts).Error
+	return contacts, exception.InternalError(err)
+}
+
+func (c *contact) Count(ctx context.Context) (int64, error) {
+	total, err := c.db.Count(ctx, c.db.DB, &entity.Contact{}, nil)
+	return total, exception.InternalError(err)
+}
+
 func (c *contact) Get(ctx context.Context, contactID string, fields ...string) (*entity.Contact, error) {
 	contact, err := c.get(ctx, c.db.DB, contactID, fields...)
 	return contact, exception.InternalError(err)
@@ -36,6 +56,52 @@ func (c *contact) Create(ctx context.Context, contact *entity.Contact) error {
 		contact.CreatedAt, contact.UpdatedAt = now, now
 
 		err := tx.WithContext(ctx).Table(contactTable).Create(&contact).Error
+		return err
+	})
+	return exception.InternalError(err)
+}
+
+func (c *contact) Update(ctx context.Context, contactID string, params *UpdateContactParams) error {
+	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
+		if _, err := c.get(ctx, tx, contactID); err != nil {
+			return err
+		}
+
+		updates := map[string]interface{}{
+			"title":        params.Title,
+			"category_id":  params.CategoryID,
+			"content":      params.Content,
+			"username":     params.Username,
+			"user_id":      params.UserID,
+			"email":        params.Email,
+			"phone_number": params.PhoneNumber,
+			"status":       params.Status,
+			"responder_id": params.ResponderID,
+			"note":         params.Note,
+			"updated_at":   c.now(),
+		}
+		err := tx.WithContext(ctx).
+			Table(contactTable).
+			Where("id = ?", contactID).
+			Updates(updates).Error
+		return err
+	})
+	return exception.InternalError(err)
+}
+
+func (c *contact) Delete(ctx context.Context, contactID string) error {
+	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
+		if _, err := c.get(ctx, tx, contactID); err != nil {
+			return err
+		}
+
+		params := map[string]interface{}{
+			"deleted_at": c.now(),
+		}
+		err := tx.WithContext(ctx).
+			Table(contactTable).
+			Where("id = ?", contactID).
+			Updates(params).Error
 		return err
 	})
 	return exception.InternalError(err)

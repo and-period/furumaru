@@ -64,8 +64,8 @@ func TestLive_ListByScheduleID(t *testing.T) {
 	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id", "category-id", "producer-id", now())
-	products[1] = testProduct("product-id02", "type-id", "category-id", "producer-id", now())
+	products[0] = testProduct("product-id01", "type-id", "category-id", "producer-id", []string{}, now())
+	products[1] = testProduct("product-id02", "type-id", "category-id", "producer-id", []string{}, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	shipping := testShipping("shipping-id", now())
@@ -155,8 +155,8 @@ func TestLive_Get(t *testing.T) {
 	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id", "category-id", "producer-id", now())
-	products[1] = testProduct("product-id02", "type-id", "category-id", "producer-id", now())
+	products[0] = testProduct("product-id01", "type-id", "category-id", "producer-id", []string{}, now())
+	products[1] = testProduct("product-id02", "type-id", "category-id", "producer-id", []string{}, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	shipping := testShipping("shipping-id", now())
@@ -240,8 +240,8 @@ func TestLive_Update(t *testing.T) {
 	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id", "category-id", "producer-id", now())
-	products[1] = testProduct("product-id02", "type-id", "category-id", "producer-id", now())
+	products[0] = testProduct("product-id01", "type-id", "category-id", "producer-id", []string{}, now())
+	products[1] = testProduct("product-id02", "type-id", "category-id", "producer-id", []string{}, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	shipping := testShipping("shipping-id", now())

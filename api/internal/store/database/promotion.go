@@ -46,6 +46,16 @@ func (p *promotion) Count(ctx context.Context, params *ListPromotionsParams) (in
 	return total, exception.InternalError(err)
 }
 
+func (p *promotion) MultiGet(ctx context.Context, promotionIDs []string, fields ...string) (entity.Promotions, error) {
+	var promotions entity.Promotions
+
+	stmt := p.db.Statement(ctx, p.db.DB, promotionTable, fields...).
+		Where("id IN (?)", promotionIDs)
+
+	err := stmt.Find(&promotions).Error
+	return promotions, exception.InternalError(err)
+}
+
 func (p *promotion) Get(ctx context.Context, promotionID string, fields ...string) (*entity.Promotion, error) {
 	promotion, err := p.get(ctx, p.db.DB, promotionID, fields...)
 	return promotion, exception.InternalError(err)

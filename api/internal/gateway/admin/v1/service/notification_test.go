@@ -22,17 +22,15 @@ func TestNotification(t *testing.T) {
 		{
 			name: "success",
 			notification: &entity.Notification{
-				ID:          "notification-id",
-				CreatedBy:   "admin-id",
-				CreatorName: "登録者",
-				UpdatedBy:   "admin-id",
-				Title:       "キャベツ祭り開催",
-				Body:        "旬のキャベツを大安売り",
-				Targets: []entity.TargetType{
-					entity.PostTargetUsers,
-					entity.PostTargetProducers,
+				ID:        "notification-id",
+				CreatedBy: "admin-id",
+				UpdatedBy: "admin-id",
+				Title:     "キャベツ祭り開催",
+				Body:      "旬のキャベツを大安売り",
+				Targets: []entity.NotificationTarget{
+					entity.NotificationTargetUsers,
+					entity.NotificationTargetProducers,
 				},
-				Public:      true,
 				PublishedAt: jst.ParseFromUnix(date),
 				CreatedAt:   jst.ParseFromUnix(date),
 				UpdatedAt:   jst.ParseFromUnix(date),
@@ -41,16 +39,12 @@ func TestNotification(t *testing.T) {
 				Notification: response.Notification{
 					ID:          "notification-id",
 					CreatedBy:   "admin-id",
-					CreatorName: "登録者",
+					CreatorName: "",
 					UpdatedBy:   "admin-id",
 					Title:       "キャベツ祭り開催",
 					Body:        "旬のキャベツを大安売り",
-					Targets: []response.TargetType{
-						response.PostTargetUsers,
-						response.PostTargetProducers,
-					},
+					Targets:     []int32{1, 2},
 					PublishedAt: 1640962800,
-					Public:      true,
 					CreatedAt:   1640962800,
 					UpdatedAt:   1640962800,
 				},
@@ -72,23 +66,20 @@ func TestNotification_Fill(t *testing.T) {
 		name         string
 		notification *Notification
 		admin        *Admin
+		promotion    *Promotion
 		expect       *Notification
 	}{
 		{
 			name: "success",
 			notification: &Notification{
 				Notification: response.Notification{
-					ID:        "notification-id",
-					CreatedBy: "admin-id",
-					UpdatedBy: "admin-id",
-					Title:     "キャベツ祭り開催",
-					Body:      "旬のキャベツを大安売り",
-					Targets: []response.TargetType{
-						response.PostTargetUsers,
-						response.PostTargetProducers,
-					},
+					ID:          "notification-id",
+					CreatedBy:   "admin-id",
+					UpdatedBy:   "admin-id",
+					Title:       "キャベツ祭り開催",
+					Body:        "旬のキャベツを大安売り",
+					Targets:     []int32{3, 4},
 					PublishedAt: 1640962800,
-					Public:      true,
 					CreatedAt:   1640962800,
 					UpdatedAt:   1640962800,
 				},
@@ -106,6 +97,23 @@ func TestNotification_Fill(t *testing.T) {
 					UpdatedAt:     1640962800,
 				},
 			},
+			promotion: &Promotion{
+				Promotion: response.Promotion{
+					ID:           "promotion-id",
+					Title:        "セール情報",
+					Description:  "セール詳細",
+					Public:       true,
+					PublishedAt:  1640962800,
+					DiscountType: DiscountTypeAmount.Response(),
+					DiscountRate: 3980,
+					Code:         "code",
+					StartAt:      1640962800,
+					EndAt:        1640962800,
+					Total:        0,
+					CreatedAt:    1640962800,
+					UpdatedAt:    1640962800,
+				},
+			},
 			expect: &Notification{
 				Notification: response.Notification{
 					ID:          "notification-id",
@@ -114,12 +122,8 @@ func TestNotification_Fill(t *testing.T) {
 					UpdatedBy:   "admin-id",
 					Title:       "キャベツ祭り開催",
 					Body:        "旬のキャベツを大安売り",
-					Targets: []response.TargetType{
-						response.PostTargetUsers,
-						response.PostTargetProducers,
-					},
+					Targets:     []int32{3, 4},
 					PublishedAt: 1640962800,
-					Public:      true,
 					CreatedAt:   1640962800,
 					UpdatedAt:   1640962800,
 				},
@@ -130,7 +134,7 @@ func TestNotification_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.notification.Fill(tt.admin)
+			tt.notification.Fill(tt.admin, tt.promotion)
 			assert.Equal(t, tt.expect, tt.notification)
 		})
 	}
@@ -153,14 +157,11 @@ func TestNotification_Response(t *testing.T) {
 					UpdatedBy:   "admin-id",
 					Title:       "キャベツ祭り開催",
 					Body:        "旬のキャベツを大安売り",
-					Targets: []response.TargetType{
-						response.PostTargetUsers,
-						response.PostTargetProducers,
-					},
+					Targets:     []int32{3, 4},
 					PublishedAt: 1640962800,
-					Public:      true,
-					CreatedAt:   1640962800,
-					UpdatedAt:   1640962800,
+
+					CreatedAt: 1640962800,
+					UpdatedAt: 1640962800,
 				},
 			},
 			expect: &response.Notification{
@@ -170,12 +171,8 @@ func TestNotification_Response(t *testing.T) {
 				UpdatedBy:   "admin-id",
 				Title:       "キャベツ祭り開催",
 				Body:        "旬のキャベツを大安売り",
-				Targets: []response.TargetType{
-					response.PostTargetUsers,
-					response.PostTargetProducers,
-				},
+				Targets:     []int32{3, 4},
 				PublishedAt: 1640962800,
-				Public:      true,
 				CreatedAt:   1640962800,
 				UpdatedAt:   1640962800,
 			},
@@ -208,11 +205,10 @@ func TestNotifications(t *testing.T) {
 					UpdatedBy: "admin-id",
 					Title:     "キャベツ祭り開催",
 					Body:      "旬のキャベツを大安売り",
-					Targets: []entity.TargetType{
-						entity.PostTargetUsers,
-						entity.PostTargetProducers,
+					Targets: []entity.NotificationTarget{
+						entity.NotificationTargetUsers,
+						entity.NotificationTargetProducers,
 					},
-					Public:      true,
 					PublishedAt: jst.ParseFromUnix(date),
 					CreatedAt:   jst.ParseFromUnix(date),
 					UpdatedAt:   jst.ParseFromUnix(date),
@@ -227,12 +223,8 @@ func TestNotifications(t *testing.T) {
 						UpdatedBy:   "admin-id",
 						Title:       "キャベツ祭り開催",
 						Body:        "旬のキャベツを大安売り",
-						Targets: []response.TargetType{
-							response.PostTargetUsers,
-							response.PostTargetProducers,
-						},
+						Targets:     []int32{1, 2},
 						PublishedAt: 1640962800,
-						Public:      true,
 						CreatedAt:   1640962800,
 						UpdatedAt:   1640962800,
 					},
@@ -267,12 +259,8 @@ func TestNotifications_AdminIDs(t *testing.T) {
 						UpdatedBy:   "admin-id",
 						Title:       "キャベツ祭り開催",
 						Body:        "旬のキャベツを大安売り",
-						Targets: []response.TargetType{
-							response.PostTargetUsers,
-							response.PostTargetProducers,
-						},
+						Targets:     []int32{3, 4},
 						PublishedAt: 1640962800,
-						Public:      true,
 						CreatedAt:   1640962800,
 						UpdatedAt:   1640962800,
 					},
@@ -296,6 +284,7 @@ func TestNotifications_Fill(t *testing.T) {
 		name          string
 		notifications Notifications
 		admins        map[string]*Admin
+		promotions    map[string]*Promotion
 		expect        Notifications
 	}{
 		{
@@ -303,17 +292,29 @@ func TestNotifications_Fill(t *testing.T) {
 			notifications: Notifications{
 				{
 					Notification: response.Notification{
-						ID:        "notification-id",
-						CreatedBy: "admin-id",
-						UpdatedBy: "admin-id",
-						Title:     "キャベツ祭り開催",
-						Body:      "旬のキャベツを大安売り",
-						Targets: []response.TargetType{
-							response.PostTargetUsers,
-							response.PostTargetProducers,
-						},
+						ID:          "notification-id",
+						Type:        NotificationTypeSystem.Response(),
+						CreatedBy:   "admin-id",
+						UpdatedBy:   "admin-id",
+						Title:       "キャベツ祭り開催",
+						Body:        "旬のキャベツを大安売り",
+						Targets:     []int32{3, 4},
 						PublishedAt: 1640962800,
-						Public:      true,
+						CreatedAt:   1640962800,
+						UpdatedAt:   1640962800,
+					},
+				},
+				{
+					Notification: response.Notification{
+						ID:          "notification-id",
+						Type:        NotificationTypePromotion.Response(),
+						CreatedBy:   "admin-id",
+						UpdatedBy:   "admin-id",
+						Title:       "",
+						Body:        "旬のキャベツを大安売り",
+						Targets:     []int32{3, 4},
+						PromotionID: "promotion-id",
+						PublishedAt: 1640962800,
 						CreatedAt:   1640962800,
 						UpdatedAt:   1640962800,
 					},
@@ -334,21 +335,53 @@ func TestNotifications_Fill(t *testing.T) {
 					},
 				},
 			},
+			promotions: map[string]*Promotion{
+				"promotion-id": {
+					Promotion: response.Promotion{
+						ID:           "promotion-id",
+						Title:        "セール情報",
+						Description:  "セール詳細",
+						Public:       true,
+						PublishedAt:  1640962800,
+						DiscountType: DiscountTypeAmount.Response(),
+						DiscountRate: 3980,
+						Code:         "code",
+						StartAt:      1640962800,
+						EndAt:        1640962800,
+						Total:        0,
+						CreatedAt:    1640962800,
+						UpdatedAt:    1640962800,
+					},
+				},
+			},
 			expect: Notifications{
 				{
 					Notification: response.Notification{
 						ID:          "notification-id",
+						Type:        NotificationTypeSystem.Response(),
 						CreatedBy:   "admin-id",
 						CreatorName: "&. 管理者",
 						UpdatedBy:   "admin-id",
 						Title:       "キャベツ祭り開催",
 						Body:        "旬のキャベツを大安売り",
-						Targets: []response.TargetType{
-							response.PostTargetUsers,
-							response.PostTargetProducers,
-						},
+						Targets:     []int32{3, 4},
 						PublishedAt: 1640962800,
-						Public:      true,
+						CreatedAt:   1640962800,
+						UpdatedAt:   1640962800,
+					},
+				},
+				{
+					Notification: response.Notification{
+						ID:          "notification-id",
+						Type:        NotificationTypePromotion.Response(),
+						CreatedBy:   "admin-id",
+						CreatorName: "&. 管理者",
+						UpdatedBy:   "admin-id",
+						Title:       "セール情報",
+						Body:        "旬のキャベツを大安売り",
+						Targets:     []int32{3, 4},
+						PromotionID: "promotion-id",
+						PublishedAt: 1640962800,
 						CreatedAt:   1640962800,
 						UpdatedAt:   1640962800,
 					},
@@ -360,7 +393,7 @@ func TestNotifications_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.notifications.Fill(tt.admins)
+			tt.notifications.Fill(tt.admins, tt.promotions)
 			assert.Equal(t, tt.expect, tt.notifications)
 		})
 	}
@@ -384,12 +417,8 @@ func TestNotifications_Response(t *testing.T) {
 						UpdatedBy:   "admin-id",
 						Title:       "キャベツ祭り開催",
 						Body:        "旬のキャベツを大安売り",
-						Targets: []response.TargetType{
-							response.PostTargetUsers,
-							response.PostTargetProducers,
-						},
+						Targets:     []int32{3, 4},
 						PublishedAt: 1640962800,
-						Public:      true,
 						CreatedAt:   1640962800,
 						UpdatedAt:   1640962800,
 					},
@@ -403,12 +432,8 @@ func TestNotifications_Response(t *testing.T) {
 					UpdatedBy:   "admin-id",
 					Title:       "キャベツ祭り開催",
 					Body:        "旬のキャベツを大安売り",
-					Targets: []response.TargetType{
-						response.PostTargetUsers,
-						response.PostTargetProducers,
-					},
+					Targets:     []int32{3, 4},
 					PublishedAt: 1640962800,
-					Public:      true,
 					CreatedAt:   1640962800,
 					UpdatedAt:   1640962800,
 				},

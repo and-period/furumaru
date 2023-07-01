@@ -2,28 +2,21 @@ package response
 
 // Notification - お知らせ情報
 type Notification struct {
-	ID          string       `json:"id"`          // お知らせID
-	CreatedBy   string       `json:"createdBy"`   // 登録者ID
-	CreatorName string       `json:"creatorName"` // 登録者名
-	UpdatedBy   string       `json:"updatedBy"`   // 更新者ID
-	Title       string       `json:"title"`       // タイトル
-	Body        string       `json:"body"`        // 本文
-	Targets     []TargetType `json:"targets"`     // 掲載対象一覧
-	PublishedAt int64        `json:"publishedAt"` // 掲載開始日時
-	Public      bool         `json:"public"`      // 公開フラグ
-	CreatedAt   int64        `json:"createdAt"`   // 作成日時
-	UpdatedAt   int64        `json:"updatedAt"`   // 更新日時
+	ID          string  `json:"id"`          // お知らせID
+	Status      int32   `json:"status"`      // お知らせ状態
+	Type        int32   `json:"type"`        // お知らせ種別
+	Title       string  `json:"title"`       // タイトル
+	Body        string  `json:"body"`        // 本文
+	Note        string  `json:"note"`        // 備考
+	Targets     []int32 `json:"targets"`     // 掲載対象一覧
+	PublishedAt int64   `json:"publishedAt"` // 掲載開始日時
+	PromotionID string  `json:"promotionId"` // プロモーションID
+	CreatedBy   string  `json:"createdBy"`   // 登録者ID
+	CreatorName string  `json:"creatorName"` // 登録者名
+	UpdatedBy   string  `json:"updatedBy"`   // 更新者ID
+	CreatedAt   int64   `json:"createdAt"`   // 作成日時
+	UpdatedAt   int64   `json:"updatedAt"`   // 更新日時
 }
-
-// 掲載対象
-type TargetType int32
-
-const (
-	PostTargetUnknown      TargetType = 0 // 対象不明
-	PostTargetUsers        TargetType = 1 // ユーザー対象
-	PostTargetProducers    TargetType = 2 // 生産者対象
-	PostTargetCoordinators TargetType = 3 // コーディネータ対象
-)
 
 type NotificationResponse struct {
 	*Notification

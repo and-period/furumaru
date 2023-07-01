@@ -16,6 +16,149 @@ func TestContact(t *testing.T) {
 	assert.NotNil(t, NewContact(nil))
 }
 
+func TestContact_List(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	category := testContactCategory("category-id", "お問い合わせ種別", now())
+	err = db.DB.Create(&category).Error
+	require.NoError(t, err)
+
+	contacts := make(entity.Contacts, 3)
+	contacts[0] = testContact("contact-id01", now())
+	contacts[1] = testContact("contact-id02", now())
+	contacts[2] = testContact("contact-id03", now())
+	err = db.DB.Create(&contacts).Error
+	require.NoError(t, err)
+
+	type args struct {
+		params *ListContactsParams
+	}
+	type want struct {
+		contacts entity.Contacts
+		hasErr   bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			args: args{
+				params: &ListContactsParams{
+					Limit:  3,
+					Offset: 0,
+				},
+			},
+			want: want{
+				contacts: contacts,
+				hasErr:   false,
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &contact{db: db, now: now}
+			actual, err := db.List(ctx, tt.args.params)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.contacts, actual)
+		})
+	}
+}
+
+func TestContact_Count(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	category := testContactCategory("category-id", "お問い合わせ種別", now())
+	err = db.DB.Create(&category).Error
+	require.NoError(t, err)
+
+	contacts := make(entity.Contacts, 3)
+	contacts[0] = testContact("contact-id01", now())
+	contacts[1] = testContact("contact-id02", now())
+	contacts[2] = testContact("contact-id03", now())
+	err = db.DB.Create(&contacts).Error
+	require.NoError(t, err)
+
+	type args struct {
+		params *ListContactsParams
+	}
+	type want struct {
+		total  int64
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			args: args{
+				params: &ListContactsParams{
+					Limit:  3,
+					Offset: 0,
+				},
+			},
+			want: want{
+				total:  3,
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &contact{db: db, now: now}
+			actual, err := db.Count(ctx)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.total, actual)
+		})
+	}
+}
+
 func TestContact_Get(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -164,6 +307,168 @@ func TestContact_Create(t *testing.T) {
 
 			db := &contact{db: db, now: now}
 			err = db.Create(ctx, tt.args.contact)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
+func TestContact_Update(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	category := testContactCategory("category-id", "お問い合わせ種別", now())
+	err = db.DB.Create(&category).Error
+	require.NoError(t, err)
+
+	type args struct {
+		contactID string
+		params    *UpdateContactParams
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+				contact := testContact("contact-id", now())
+				err = db.DB.Create(&contact).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				contactID: "contact-id",
+				params: &UpdateContactParams{
+					Title:       "件名",
+					CategoryID:  "category-id",
+					Content:     "内容です。",
+					Username:    "あんど ぴりおど",
+					UserID:      "user-id",
+					Email:       "test-user@and-period.jp",
+					PhoneNumber: "+819012345678",
+					Status:      entity.ContactStatusDone,
+					ResponderID: "responder-id",
+					Note:        "メモです",
+				},
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			args: args{
+				contactID: "contact-id",
+				params:    &UpdateContactParams{},
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, contactTable)
+			require.NoError(t, err)
+
+			tt.setup(ctx, t, db)
+
+			db := &contact{db: db, now: now}
+			err = db.Update(ctx, tt.args.contactID, tt.args.params)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
+func TestContact_Delete(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	category := testContactCategory("category-id", "お問い合わせ種別", now())
+	err = db.DB.Create(&category).Error
+	require.NoError(t, err)
+
+	type args struct {
+		contactID string
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+				contact := testContact("contact-id", now())
+				err = db.DB.Create(&contact).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				contactID: "contact-id",
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			args: args{
+				contactID: "contact-id",
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, contactTable)
+			require.NoError(t, err)
+
+			tt.setup(ctx, t, db)
+
+			db := &contact{db: db, now: now}
+			err = db.Delete(ctx, tt.args.contactID)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}

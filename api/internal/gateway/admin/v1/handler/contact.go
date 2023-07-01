@@ -19,7 +19,45 @@ import (
 
 func (h *handler) contactRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication)
+	arg.GET("", h.ListContacts)
 	arg.GET("/:contactId", h.GetContact)
+	arg.POST("", h.CreateContact)
+	arg.PATCH("/:contactId", h.UpdateContact)
+	arg.DELETE("/:contactId", h.DeleteContact)
+}
+
+func (h *handler) ListContacts(ctx *gin.Context) {
+	const (
+		defaultLimit  = 20
+		defaultOffset = 0
+	)
+
+	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
+	if err != nil {
+		badRequest(ctx, err)
+		return
+	}
+	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
+	if err != nil {
+		badRequest(ctx, err)
+		return
+	}
+	in := &messenger.ListContactsInput{
+		Limit:  limit,
+		Offset: offset,
+	}
+
+	contacts, total, err := h.messenger.ListContacts(ctx, in)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	res := &response.ContactsResponse{
+		Contacts: service.NewContacts(contacts).Response(),
+		Total:    total,
+	}
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (h *handler) CreateContact(ctx *gin.Context) {
@@ -116,6 +154,47 @@ func (h *handler) GetContact(ctx *gin.Context) {
 		Threads: threads.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) UpdateContact(ctx *gin.Context) {
+	req := &request.UpdateContactRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	in := &messenger.UpdateContactInput{
+		ContactID:   util.GetParam(ctx, "contactId"),
+		Title:       req.Title,
+		Content:     req.Content,
+		Username:    req.Username,
+		UserID:      req.UserID,
+		CategoryID:  req.CategoryID,
+		Email:       req.Email,
+		PhoneNumber: req.PhoneNumber,
+		Status:      entity.ContactStatus(req.Status),
+		ResponderID: req.ResponderID,
+		Note:        req.Note,
+	}
+
+	if err := h.messenger.UpdateContact(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) DeleteContact(ctx *gin.Context) {
+	in := &messenger.DeleteContactInput{
+		ContactID: util.GetParam(ctx, "contactId"),
+	}
+	if err := h.messenger.DeleteContact(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
 func (h *handler) getContact(ctx context.Context, contactID string) (*service.Contact, error) {

@@ -36,6 +36,21 @@ func (m *MockContact) EXPECT() *MockContactMockRecorder {
 	return m.recorder
 }
 
+// Count mocks base method.
+func (m *MockContact) Count(ctx context.Context) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockContactMockRecorder) Count(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockContact)(nil).Count), ctx)
+}
+
 // Create mocks base method.
 func (m *MockContact) Create(ctx context.Context, contact *entity.Contact) error {
 	m.ctrl.T.Helper()
@@ -48,6 +63,20 @@ func (m *MockContact) Create(ctx context.Context, contact *entity.Contact) error
 func (mr *MockContactMockRecorder) Create(ctx, contact interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockContact)(nil).Create), ctx, contact)
+}
+
+// Delete mocks base method.
+func (m *MockContact) Delete(ctx context.Context, contactID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", ctx, contactID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockContactMockRecorder) Delete(ctx, contactID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockContact)(nil).Delete), ctx, contactID)
 }
 
 // Get mocks base method.
@@ -68,6 +97,40 @@ func (mr *MockContactMockRecorder) Get(ctx, contactID interface{}, fields ...int
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, contactID}, fields...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockContact)(nil).Get), varargs...)
+}
+
+// List mocks base method.
+func (m *MockContact) List(ctx context.Context, params *database.ListContactsParams, fields ...string) (entity.Contacts, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, params}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "List", varargs...)
+	ret0, _ := ret[0].(entity.Contacts)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockContactMockRecorder) List(ctx, params interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, params}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockContact)(nil).List), varargs...)
+}
+
+// Update mocks base method.
+func (m *MockContact) Update(ctx context.Context, contactID string, params *database.UpdateContactParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", ctx, contactID, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockContactMockRecorder) Update(ctx, contactID, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockContact)(nil).Update), ctx, contactID, params)
 }
 
 // MockContactCategory is a mock of ContactCategory interface.
@@ -93,6 +156,20 @@ func (m *MockContactCategory) EXPECT() *MockContactCategoryMockRecorder {
 	return m.recorder
 }
 
+// Create mocks base method.
+func (m *MockContactCategory) Create(ctx context.Context, category *entity.ContactCategory) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, category)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockContactCategoryMockRecorder) Create(ctx, category interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockContactCategory)(nil).Create), ctx, category)
+}
+
 // Get mocks base method.
 func (m *MockContactCategory) Get(ctx context.Context, categoryID string, fields ...string) (*entity.ContactCategory, error) {
 	m.ctrl.T.Helper()
@@ -111,6 +188,97 @@ func (mr *MockContactCategoryMockRecorder) Get(ctx, categoryID interface{}, fiel
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, categoryID}, fields...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockContactCategory)(nil).Get), varargs...)
+}
+
+// List mocks base method.
+func (m *MockContactCategory) List(ctx context.Context, params *database.ListContactCategoriesParams, fields ...string) (entity.ContactCategories, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, params}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "List", varargs...)
+	ret0, _ := ret[0].(entity.ContactCategories)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockContactCategoryMockRecorder) List(ctx, params interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, params}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockContactCategory)(nil).List), varargs...)
+}
+
+// MockContactRead is a mock of ContactRead interface.
+type MockContactRead struct {
+	ctrl     *gomock.Controller
+	recorder *MockContactReadMockRecorder
+}
+
+// MockContactReadMockRecorder is the mock recorder for MockContactRead.
+type MockContactReadMockRecorder struct {
+	mock *MockContactRead
+}
+
+// NewMockContactRead creates a new mock instance.
+func NewMockContactRead(ctrl *gomock.Controller) *MockContactRead {
+	mock := &MockContactRead{ctrl: ctrl}
+	mock.recorder = &MockContactReadMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockContactRead) EXPECT() *MockContactReadMockRecorder {
+	return m.recorder
+}
+
+// Create mocks base method.
+func (m *MockContactRead) Create(ctx context.Context, contactRead *entity.ContactRead) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, contactRead)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockContactReadMockRecorder) Create(ctx, contactRead interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockContactRead)(nil).Create), ctx, contactRead)
+}
+
+// Get mocks base method.
+func (m *MockContactRead) Get(ctx context.Context, contactID, userID string, fields ...string) (*entity.ContactRead, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, contactID, userID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.ContactRead)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockContactReadMockRecorder) Get(ctx, contactID, userID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, contactID, userID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockContactRead)(nil).Get), varargs...)
+}
+
+// UpdateRead mocks base method.
+func (m *MockContactRead) UpdateRead(ctx context.Context, params *database.UpdateContactReadFlagParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateRead", ctx, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateRead indicates an expected call of UpdateRead.
+func (mr *MockContactReadMockRecorder) UpdateRead(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRead", reflect.TypeOf((*MockContactRead)(nil).UpdateRead), ctx, params)
 }
 
 // MockThread is a mock of Thread interface.

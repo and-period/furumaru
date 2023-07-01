@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { unix } from 'dayjs'
+import { prefecturesList } from '~/constants'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import { AlertType } from '~/lib/hooks'
-import { DeliveryType, FulfillmentStatus, OrderRefundType, OrderResponse, PaymentMethodType, PaymentStatus, ShippingCarrier, ShippingSize } from '~/types/api'
+import { DeliveryType, FulfillmentStatus, OrderRefundType, OrderResponse, PaymentMethodType, PaymentStatus, Prefecture, ShippingCarrier, ShippingSize } from '~/types/api'
 import { Order, OrderItems } from '~/types/props'
 
 const props = defineProps({
@@ -44,7 +45,7 @@ const props = defineProps({
         lastname: '',
         firstname: '',
         postalCode: '',
-        prefecture: '',
+        prefecture: Prefecture.UNKNOWN,
         city: '',
         addressLine1: '',
         addressLine2: '',
@@ -60,7 +61,7 @@ const props = defineProps({
         lastname: '',
         firstname: '',
         postalCode: '',
-        prefecture: '',
+        prefecture: Prefecture.UNKNOWN,
         city: '',
         addressLine1: '',
         addressLine2: '',
@@ -423,6 +424,9 @@ const getBoxSize = (size: ShippingSize): string => {
             <div class="d-flex align-center">
               <v-text-field
                 v-model="orderValue.payment.prefecture"
+                :items="prefecturesList"
+                item-title="text"
+                item-value="value"
                 class="mr-4"
                 name="prefecture"
                 label="都道府県"
@@ -590,6 +594,9 @@ const getBoxSize = (size: ShippingSize): string => {
             <div class="d-flex align-center">
               <v-text-field
                 v-model="orderValue.fulfillment.prefecture"
+                :items="prefecturesList"
+                item-title="text"
+                item-value="value"
                 class="mr-4"
                 name="prefecture"
                 label="都道府県"

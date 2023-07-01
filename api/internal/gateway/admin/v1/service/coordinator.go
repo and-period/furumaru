@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
@@ -35,13 +36,26 @@ func NewCoordinator(coordinator *entity.Coordinator) *Coordinator {
 			Email:             coordinator.Email,
 			PhoneNumber:       coordinator.PhoneNumber,
 			PostalCode:        coordinator.PostalCode,
-			Prefecture:        coordinator.Prefecture,
+			Prefecture:        codes.PrefectureNames[coordinator.Prefecture],
 			City:              coordinator.City,
 			AddressLine1:      coordinator.AddressLine1,
 			AddressLine2:      coordinator.AddressLine2,
 			ProducerTotal:     0,
 			CreatedAt:         coordinator.CreatedAt.Unix(),
 			UpdatedAt:         coordinator.CreatedAt.Unix(),
+		},
+	}
+}
+
+func (c *Coordinator) AuthUser() *AuthUser {
+	return &AuthUser{
+		AuthUser: response.AuthUser{
+			AdminID:      c.ID,
+			Role:         AdminRoleCoordinator.Response(),
+			Username:     c.Username,
+			Email:        c.Email,
+			ThumbnailURL: c.ThumbnailURL,
+			Thumbnails:   c.Thumbnails,
 		},
 	}
 }

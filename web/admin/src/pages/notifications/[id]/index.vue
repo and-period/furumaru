@@ -2,30 +2,35 @@
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 
-import { useNotificationStore } from '~/store'
-import { UpdateNotificationRequest } from '~/types/api'
+import { useNotificationStore, usePromotionStore } from '~/store'
+import { NotificationType, UpdateNotificationRequest } from '~/types/api'
 
 const route = useRoute()
 const router = useRouter()
 const notificationStore = useNotificationStore()
+const promotionStore = usePromotionStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
 const notificationId = route.params.id as string
 
 const { notification } = storeToRefs(notificationStore)
+const { promotion } = storeToRefs(promotionStore)
 
 const loading = ref<boolean>(false)
 const formData = ref<UpdateNotificationRequest>({
+  targets: [],
   title: '',
   body: '',
-  targets: [],
-  public: false,
+  note: '',
   publishedAt: 0
 })
 
 const fetchState = useAsyncData(async (): Promise<void> => {
   try {
     await notificationStore.getNotification(notificationId)
+    if (notification.value.type === NotificationType.PROMOTION) {
+      await promotionStore.getPromotion(notification.value.promotionId)
+    }
     formData.value = { ...notification.value }
   } catch (err) {
     if (err instanceof Error) {
@@ -69,6 +74,7 @@ try {
     :alert-type="alertType"
     :alert-text="alertText"
     :notification="notification"
+    :promotion="promotion"
     @submit="handleSubmit"
   />
 </template>

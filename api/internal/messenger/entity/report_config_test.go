@@ -20,7 +20,6 @@ func TestReportConfig_Fields(t *testing.T) {
 				ReportID:    ReportIDReceivedContact,
 				Overview:    "レポートの概要です。",
 				Detail:      "レポートの詳細です。",
-				Author:      "&.スタッフ",
 				Link:        "https://and-period.jp",
 				PublishedAt: jst.Date(2022, 7, 14, 18, 30, 0, 0),
 				ReceivedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
@@ -28,7 +27,6 @@ func TestReportConfig_Fields(t *testing.T) {
 			expect: map[string]string{
 				"Overview":    "レポートの概要です。",
 				"Detail":      "レポートの詳細です。",
-				"Author":      "&.スタッフ",
 				"Link":        "https://and-period.jp",
 				"PublishedAt": "2022-07-14 18:30:00",
 				"ReceivedAt":  "2022-07-14 18:30:00",

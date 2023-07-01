@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
+	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
 	"golang.org/x/sync/errgroup"
 )
@@ -25,12 +26,11 @@ func (s *service) ListNotifications(ctx context.Context, in *messenger.ListNotif
 		}
 	}
 	params := &database.ListNotificationsParams{
-		Limit:         int(in.Limit),
-		Offset:        int(in.Offset),
-		Since:         in.Since,
-		Until:         in.Until,
-		OnlyPublished: in.OnlyPublished,
-		Orders:        orders,
+		Limit:  int(in.Limit),
+		Offset: int(in.Offset),
+		Since:  in.Since,
+		Until:  in.Until,
+		Orders: orders,
 	}
 	var (
 		notifications entity.Notifications
@@ -65,29 +65,45 @@ func (s *service) CreateNotification(
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
-	adminID := &user.GetAdminInput{
-		AdminID: in.CreatedBy,
-	}
-	admin, err := s.user.GetAdmin(ctx, adminID)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		req := &user.GetAdminInput{
+			AdminID: in.CreatedBy,
+		}
+		_, err := s.user.GetAdmin(ectx, req)
+		return err
+	})
+	eg.Go(func() error {
+		if in.Type != entity.NotificationTypePromotion {
+			return nil
+		}
+		req := &store.GetPromotionInput{
+			PromotionID: in.PromotionID,
+		}
+		_, err := s.store.GetPromotion(ectx, req)
+		return err
+	})
+	err := eg.Wait()
 	if errors.Is(err, exception.ErrNotFound) {
-		return nil, fmt.Errorf("api: invalid admin id format: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, fmt.Errorf("api: not found reference: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
-
 	if err != nil {
 		return nil, exception.InternalError(err)
 	}
-
 	params := &entity.NewNotificationParams{
-		CreatedBy:   admin.ID,
-		CreatorName: admin.Name(),
-		UpdatedBy:   admin.ID,
+		Type:        in.Type,
+		Targets:     in.Targets,
 		Title:       in.Title,
 		Body:        in.Body,
-		Targets:     in.Targets,
-		Public:      in.Public,
+		Note:        in.Note,
 		PublishedAt: in.PublishedAt,
+		PromotionID: in.PromotionID,
+		CreatedBy:   in.CreatedBy,
 	}
 	notification := entity.NewNotification(params)
+	if err := notification.Validate(s.now()); err != nil {
+		return nil, fmt.Errorf("api: invalid notification: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
 	if err := s.db.Notification.Create(ctx, notification); err != nil {
 		return nil, exception.InternalError(err)
 	}
@@ -98,27 +114,38 @@ func (s *service) UpdateNotification(ctx context.Context, in *messenger.UpdateNo
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	targets := make([]entity.TargetType, len(in.Targets))
-	n := copy(targets, in.Targets)
-	if n == 0 {
-		return exception.ErrInvalidArgument
-	}
-	adminID := &user.GetAdminInput{
+	adminIn := &user.GetAdminInput{
 		AdminID: in.UpdatedBy,
 	}
-	_, err := s.user.GetAdmin(ctx, adminID)
+	_, err := s.user.GetAdmin(ctx, adminIn)
 	if errors.Is(err, exception.ErrNotFound) {
 		return fmt.Errorf("api: invalid admin id format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err != nil {
 		return exception.InternalError(err)
 	}
+	notification, err := s.db.Notification.Get(ctx, in.NotificationID)
+	if err != nil {
+		return exception.InternalError(err)
+	}
+	if s.now().After(notification.PublishedAt) {
+		// すでに投稿済みの場合は更新できない
+		return fmt.Errorf("api: already notified: %w", exception.ErrFailedPrecondition)
+	}
+	notification.Targets = in.Targets
+	notification.Title = in.Title
+	notification.Body = in.Body
+	notification.Note = in.Note
+	notification.PublishedAt = in.PublishedAt
+	if err := notification.Validate(s.now()); err != nil {
+		return fmt.Errorf("api: invalid notification: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
 	params := &database.UpdateNotificationParams{
+		Targets:     in.Targets,
 		Title:       in.Title,
 		Body:        in.Body,
-		Targets:     targets,
+		Note:        in.Note,
 		PublishedAt: in.PublishedAt,
-		Public:      in.Public,
 		UpdatedBy:   in.UpdatedBy,
 	}
 	err = s.db.Notification.Update(ctx, in.NotificationID, params)

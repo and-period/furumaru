@@ -1,26 +1,19 @@
 package request
 
 type CreateNotificationRequest struct {
-	Title       string       `json:"title,omitempty"`       // タイトル
-	Body        string       `json:"body,omitempty"`        // 本文
-	Targets     []TargetType `json:"targets,omitempty"`     // 掲載対象一覧
-	PublishedAt int64        `json:"publishedAt,omitempty"` // 掲載開始日
-	Public      bool         `json:"public,omitempty"`      // 公開フラグ
+	Type        int32   `json:"type,omitempty"`        // お知らせ種別
+	Title       string  `json:"title,omitempty"`       // タイトル
+	Body        string  `json:"body,omitempty"`        // 本文
+	Note        string  `json:"note,omitempty"`        // 備考
+	Targets     []int32 `json:"targets,omitempty"`     // 掲載対象一覧
+	PublishedAt int64   `json:"publishedAt,omitempty"` // 掲載開始日
+	PromotionID string  `json:"promotionId,omitempty"` // プロモーションID
 }
 
-type TargetType int32
-
-const (
-	PostTargetUnknown      TargetType = 0 // 対象不明
-	PostTargetUsers        TargetType = 1 // ユーザー対象
-	PostTargetProducers    TargetType = 2 // 生産者対象
-	PostTargetCoordinators TargetType = 3 // コーディネータ対象
-)
-
 type UpdateNotificationRequest struct {
-	Title       string       `json:"title,omitempty"`       // タイトル
-	Body        string       `json:"body,omitempty"`        // 本文
-	Targets     []TargetType `json:"targets,omitempty"`     // 掲載対象一覧
-	PublishedAt int64        `json:"publishedAt,omitempty"` // 掲載開始日
-	Public      bool         `json:"public,omitempty"`      // 公開フラグ
+	Title       string  `json:"title,omitempty"`       // タイトル
+	Body        string  `json:"body,omitempty"`        // 本文
+	Note        string  `json:"note,omitempty"`        // 備考
+	Targets     []int32 `json:"targets,omitempty"`     // 掲載対象一覧
+	PublishedAt int64   `json:"publishedAt,omitempty"` // 掲載開始日
 }

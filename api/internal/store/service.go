@@ -75,6 +75,8 @@ type Service interface {
 	DeleteProduct(ctx context.Context, in *DeleteProductInput) error
 	// プロモーション一覧取得
 	ListPromotions(ctx context.Context, in *ListPromotionsInput) (entity.Promotions, int64, error)
+	// プロモーション一覧取得(ID指定)
+	MultiGetPromotions(ctx context.Context, in *MultiGetPromotionsInput) (entity.Promotions, error)
 	// プロモーション取得
 	GetPromotion(ctx context.Context, in *GetPromotionInput) (*entity.Promotion, error)
 	// プロモーション登録

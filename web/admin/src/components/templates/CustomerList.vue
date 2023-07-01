@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { mdiDelete } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components'
+import { PrefecturesListItem, prefecturesList } from '~/constants'
 import { AlertType } from '~/lib/hooks'
-import { UsersResponseUsersInner } from '~/types/api'
+import { UserResponse, UsersResponseUsersInner } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -49,23 +50,32 @@ const emit = defineEmits<{
 
 const headers: VDataTable['headers'] = [
   {
-    title: '名前',
-    key: 'name'
+    title: '氏名',
+    key: 'name',
+    sortable: false
   },
   {
-    title: '購入数',
-    key: 'totalOrder'
+    title: '住所',
+    key: 'address',
+    sortable: false
+  },
+  {
+    title: '注文数',
+    key: 'totalOrder',
+    sortable: false
   },
   {
     title: '購入金額',
-    key: 'totalAmount'
+    key: 'totalAmount',
+    sortable: false
   },
   {
     title: 'アカウントの有無',
-    key: 'registered'
+    key: 'registered',
+    sortable: false
   },
   {
-    title: 'Action',
+    title: '',
     key: 'action',
     sortable: false
   }
@@ -77,6 +87,13 @@ const getStatus = (registered: boolean): string => {
 
 const getStatusColor = (account: boolean): string => {
   return account ? 'primary' : 'red'
+}
+
+const getAddress = (customer: UsersResponseUsersInner): string => {
+  const prefecture = prefecturesList.find((prefecture: PrefecturesListItem): boolean => {
+    return prefecture.value === customer.prefecture
+  })
+  return `${prefecture?.text || ''} ${customer.city}`
 }
 
 const onClickUpdatePage = (page: number): void => {
@@ -124,8 +141,11 @@ const onClickRow = (item: UsersResponseUsersInner): void => {
         <template #[`item.name`]="{ item }">
           {{ `${item.raw.lastname} ${item.raw.firstname}` }}
         </template>
+        <template #[`item.address`]="{ item }">
+          {{ getAddress(item.raw) }}
+        </template>
         <template #[`item.totalAmount`]="{ item }">
-          {{ `${item.raw.totalAmount}` }} 円
+          &yen; {{ `${item.raw.totalAmount}` }}
         </template>
         <template #[`item.registered`]="{ item }">
           <v-chip size="small" :color="getStatusColor(item.raw.registered)">

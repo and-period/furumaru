@@ -284,6 +284,72 @@ export interface AuthResponse {
 /**
  * 
  * @export
+ * @interface AuthUserResponse
+ */
+export interface AuthUserResponse {
+    /**
+     * 管理者ID
+     * @type {string}
+     * @memberof AuthUserResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {AdminRole}
+     * @memberof AuthUserResponse
+     */
+    'role': AdminRole;
+    /**
+     * 表示名
+     * @type {string}
+     * @memberof AuthUserResponse
+     */
+    'username': string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof AuthUserResponse
+     */
+    'email': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof AuthUserResponse
+     */
+    'thumbnailUrl': string;
+    /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<AuthUserResponseThumbnailsInner>}
+     * @memberof AuthUserResponse
+     */
+    'thumbnails': Array<AuthUserResponseThumbnailsInner>;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface AuthUserResponseThumbnailsInner
+ */
+export interface AuthUserResponseThumbnailsInner {
+    /**
+     * リサイズ済みサムネイルURL
+     * @type {string}
+     * @memberof AuthUserResponseThumbnailsInner
+     */
+    'url': string;
+    /**
+     * 
+     * @type {ImageSize}
+     * @memberof AuthUserResponseThumbnailsInner
+     */
+    'size': ImageSize;
+}
+
+
+/**
+ * 
+ * @export
  * @interface CategoriesResponse
  */
 export interface CategoriesResponse {
@@ -664,11 +730,11 @@ export interface CoordinatorResponse {
      */
     'postalCode': string;
     /**
-     * 都道府県
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof CoordinatorResponse
      */
-    'prefecture': string;
+    'prefecture': Prefecture;
     /**
      * 市区町村
      * @type {string}
@@ -707,10 +773,10 @@ export interface CoordinatorResponse {
     'thumbnailUrl': string;
     /**
      * リサイズ済みサムネイルURL一覧
-     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
+     * @type {Array<AuthUserResponseThumbnailsInner>}
      * @memberof CoordinatorResponse
      */
-    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
+    'thumbnails': Array<AuthUserResponseThumbnailsInner>;
     /**
      * ヘッダー画像URL
      * @type {string}
@@ -854,11 +920,11 @@ export interface CoordinatorsResponseCoordinatorsInner {
      */
     'postalCode': string;
     /**
-     * 都道府県
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof CoordinatorsResponseCoordinatorsInner
      */
-    'prefecture': string;
+    'prefecture': Prefecture;
     /**
      * 市区町村
      * @type {string}
@@ -897,10 +963,10 @@ export interface CoordinatorsResponseCoordinatorsInner {
     'thumbnailUrl': string;
     /**
      * リサイズ済みサムネイルURL一覧
-     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
+     * @type {Array<AuthUserResponseThumbnailsInner>}
      * @memberof CoordinatorsResponseCoordinatorsInner
      */
-    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
+    'thumbnails': Array<AuthUserResponseThumbnailsInner>;
     /**
      * ヘッダー画像URL
      * @type {string}
@@ -974,27 +1040,6 @@ export interface CoordinatorsResponseCoordinatorsInnerHeadersInner {
      * 
      * @type {ImageSize}
      * @memberof CoordinatorsResponseCoordinatorsInnerHeadersInner
-     */
-    'size': ImageSize;
-}
-
-
-/**
- * 
- * @export
- * @interface CoordinatorsResponseCoordinatorsInnerThumbnailsInner
- */
-export interface CoordinatorsResponseCoordinatorsInnerThumbnailsInner {
-    /**
-     * リサイズ済みサムネイルURL
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInnerThumbnailsInner
-     */
-    'url': string;
-    /**
-     * 
-     * @type {ImageSize}
-     * @memberof CoordinatorsResponseCoordinatorsInnerThumbnailsInner
      */
     'size': ImageSize;
 }
@@ -1117,11 +1162,11 @@ export interface CreateCoordinatorRequest {
      */
     'postalCode': string;
     /**
-     * 都道府県(32文字まで)
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof CreateCoordinatorRequest
      */
-    'prefecture': string;
+    'prefecture': Prefecture;
     /**
      * 市区町村(32文字まで)
      * @type {string}
@@ -1189,12 +1234,26 @@ export interface CreateCoordinatorRequest {
      */
     'facebookId': string;
 }
+
+
 /**
  * 
  * @export
  * @interface CreateNotificationRequest
  */
 export interface CreateNotificationRequest {
+    /**
+     * 
+     * @type {NotificationType}
+     * @memberof CreateNotificationRequest
+     */
+    'type': NotificationType;
+    /**
+     * 通知対象一覧
+     * @type {Array<NotificationTarget>}
+     * @memberof CreateNotificationRequest
+     */
+    'targets': Array<NotificationTarget>;
     /**
      * タイトル(128字まで)
      * @type {string}
@@ -1208,24 +1267,26 @@ export interface CreateNotificationRequest {
      */
     'body': string;
     /**
-     * 掲載対象一覧(3つまで,全部指定の際は1,2,3)
-     * @type {Array<NotificationTargetType>}
+     * 備考(2000字まで)
+     * @type {string}
      * @memberof CreateNotificationRequest
      */
-    'targets': Array<NotificationTargetType>;
+    'note': string;
     /**
-     * 公開フラグ
-     * @type {boolean}
-     * @memberof CreateNotificationRequest
-     */
-    'public': boolean;
-    /**
-     * 掲載開始日時
+     * 掲載日時 (unixtime)
      * @type {number}
      * @memberof CreateNotificationRequest
      */
     'publishedAt': number;
+    /**
+     * プロモーションID
+     * @type {string}
+     * @memberof CreateNotificationRequest
+     */
+    'promotionId': string;
 }
+
+
 /**
  * 
  * @export
@@ -1287,11 +1348,11 @@ export interface CreateProducerRequest {
      */
     'postalCode': string;
     /**
-     * 都道府県(32文字まで)
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof CreateProducerRequest
      */
-    'prefecture': string;
+    'prefecture': Prefecture;
     /**
      * 市区町村(32文字まで)
      * @type {string}
@@ -1353,6 +1414,8 @@ export interface CreateProducerRequest {
      */
     'facebookId': string;
 }
+
+
 /**
  * 
  * @export
@@ -1372,6 +1435,12 @@ export interface CreateProductRequest {
      */
     'description': string;
     /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof CreateProductRequest
+     */
+    'public': boolean;
+    /**
      * 生産者ID
      * @type {string}
      * @memberof CreateProductRequest
@@ -1384,11 +1453,29 @@ export interface CreateProductRequest {
      */
     'productTypeId': string;
     /**
-     * 公開フラグ
-     * @type {boolean}
+     * 商品タグ一覧
+     * @type {Array<string>}
      * @memberof CreateProductRequest
      */
-    'public': boolean;
+    'productTagIds': Array<string>;
+    /**
+     * メディア一覧(8つまで)
+     * @type {Array<CreateProductRequestMediaInner>}
+     * @memberof CreateProductRequest
+     */
+    'media': Array<CreateProductRequestMediaInner>;
+    /**
+     * 販売価格(0以上)
+     * @type {number}
+     * @memberof CreateProductRequest
+     */
+    'price': number;
+    /**
+     * 原価(0以上)
+     * @type {number}
+     * @memberof CreateProductRequest
+     */
+    'cost': number;
     /**
      * 在庫数(0以上)
      * @type {number}
@@ -1414,23 +1501,41 @@ export interface CreateProductRequest {
      */
     'itemDescription': string;
     /**
-     * メディア一覧(8つまで)
-     * @type {Array<CreateProductRequestMediaInner>}
-     * @memberof CreateProductRequest
-     */
-    'media': Array<CreateProductRequestMediaInner>;
-    /**
-     * 販売価格(0以上)
-     * @type {number}
-     * @memberof CreateProductRequest
-     */
-    'price': number;
-    /**
      * 
      * @type {DeliveryType}
      * @memberof CreateProductRequest
      */
     'deliveryType': DeliveryType;
+    /**
+     * おすすめポイント1(128文字まで)
+     * @type {string}
+     * @memberof CreateProductRequest
+     */
+    'recommendedPoint1': string;
+    /**
+     * おすすめポイント1(128文字まで)
+     * @type {string}
+     * @memberof CreateProductRequest
+     */
+    'recommendedPoint2': string;
+    /**
+     * おすすめポイント1(128文字まで)
+     * @type {string}
+     * @memberof CreateProductRequest
+     */
+    'recommendedPoint3': string;
+    /**
+     * 賞味期限(単位:日,0以上)
+     * @type {number}
+     * @memberof CreateProductRequest
+     */
+    'expirationDate': number;
+    /**
+     * 
+     * @type {StorageMethodType}
+     * @memberof CreateProductRequest
+     */
+    'storageMethodType': StorageMethodType;
     /**
      * 箱の占有率(サイズ:60)(0以上,100以下)
      * @type {number}
@@ -1450,11 +1555,11 @@ export interface CreateProductRequest {
      */
     'box100Rate': number;
     /**
-     * 原産地(都道府県)(32文字まで)
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof CreateProductRequest
      */
-    'originPrefecture': string;
+    'originPrefecture': Prefecture;
     /**
      * 原産地(市区町村)(32文字まで)
      * @type {string}
@@ -1842,6 +1947,19 @@ export interface ErrorResponse {
      * @memberof ErrorResponse
      */
     'details': string;
+}
+/**
+ * 
+ * @export
+ * @interface ForgotAuthPasswordRequest
+ */
+export interface ForgotAuthPasswordRequest {
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof ForgotAuthPasswordRequest
+     */
+    'email': string;
 }
 /**
  * 配送状況
@@ -2246,6 +2364,54 @@ export interface NotificationResponse {
      */
     'id': string;
     /**
+     * 
+     * @type {NotificationStatus}
+     * @memberof NotificationResponse
+     */
+    'status': NotificationStatus;
+    /**
+     * 
+     * @type {NotificationType}
+     * @memberof NotificationResponse
+     */
+    'type': NotificationType;
+    /**
+     * 通知対象一覧
+     * @type {Array<NotificationTarget>}
+     * @memberof NotificationResponse
+     */
+    'targets': Array<NotificationTarget>;
+    /**
+     * タイトル
+     * @type {string}
+     * @memberof NotificationResponse
+     */
+    'title': string;
+    /**
+     * 本文
+     * @type {string}
+     * @memberof NotificationResponse
+     */
+    'body': string;
+    /**
+     * 備考
+     * @type {string}
+     * @memberof NotificationResponse
+     */
+    'note': string;
+    /**
+     * 掲載日時 (unixtime)
+     * @type {number}
+     * @memberof NotificationResponse
+     */
+    'publishedAt': number;
+    /**
+     * プロモーションID
+     * @type {string}
+     * @memberof NotificationResponse
+     */
+    'promotionId': string;
+    /**
      * 登録者ID
      * @type {string}
      * @memberof NotificationResponse
@@ -2264,36 +2430,6 @@ export interface NotificationResponse {
      */
     'updatedBy': string;
     /**
-     * タイトル(128字まで)
-     * @type {string}
-     * @memberof NotificationResponse
-     */
-    'title': string;
-    /**
-     * 本文(2000字まで)
-     * @type {string}
-     * @memberof NotificationResponse
-     */
-    'body': string;
-    /**
-     * 掲載対象一覧(3つまで)
-     * @type {Array<NotificationTargetType>}
-     * @memberof NotificationResponse
-     */
-    'targets': Array<NotificationTargetType>;
-    /**
-     * 公開フラグ
-     * @type {boolean}
-     * @memberof NotificationResponse
-     */
-    'public': boolean;
-    /**
-     * 掲載開始日時 (unixtime)
-     * @type {number}
-     * @memberof NotificationResponse
-     */
-    'publishedAt': number;
-    /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof NotificationResponse
@@ -2306,13 +2442,39 @@ export interface NotificationResponse {
      */
     'updatedAt': number;
 }
+
+
 /**
- * 掲載対象
+ * お知らせ状態
  * @export
  * @enum {string}
  */
 
-export const NotificationTargetType = {
+export const NotificationStatus = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 通知前
+    */
+    WAITING: 1,
+    /**
+    * 通知済み
+    */
+    NOTIFIED: 2
+} as const;
+
+export type NotificationStatus = typeof NotificationStatus[keyof typeof NotificationStatus];
+
+
+/**
+ * 通知対象種別
+ * @export
+ * @enum {string}
+ */
+
+export const NotificationTarget = {
     /**
     * 不明
     */
@@ -2328,10 +2490,46 @@ export const NotificationTargetType = {
     /**
     * コーディネータ
     */
-    COORDINATORS: 3
+    COORDINATORS: 3,
+    /**
+    * 管理者
+    */
+    ADMINISTRATORS: 4
 } as const;
 
-export type NotificationTargetType = typeof NotificationTargetType[keyof typeof NotificationTargetType];
+export type NotificationTarget = typeof NotificationTarget[keyof typeof NotificationTarget];
+
+
+/**
+ * お知らせ種別
+ * @export
+ * @enum {string}
+ */
+
+export const NotificationType = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * その他
+    */
+    OTHER: 1,
+    /**
+    * システム関連
+    */
+    SYSTEM: 2,
+    /**
+    * ライブ関連
+    */
+    LIVE: 3,
+    /**
+    * セール関連
+    */
+    PROMOTION: 4
+} as const;
+
+export type NotificationType = typeof NotificationType[keyof typeof NotificationType];
 
 
 /**
@@ -2366,6 +2564,54 @@ export interface NotificationsResponseNotificationsInner {
      */
     'id': string;
     /**
+     * 
+     * @type {NotificationStatus}
+     * @memberof NotificationsResponseNotificationsInner
+     */
+    'status': NotificationStatus;
+    /**
+     * 
+     * @type {NotificationType}
+     * @memberof NotificationsResponseNotificationsInner
+     */
+    'type': NotificationType;
+    /**
+     * 通知対象一覧
+     * @type {Array<NotificationTarget>}
+     * @memberof NotificationsResponseNotificationsInner
+     */
+    'targets': Array<NotificationTarget>;
+    /**
+     * タイトル
+     * @type {string}
+     * @memberof NotificationsResponseNotificationsInner
+     */
+    'title': string;
+    /**
+     * 本文
+     * @type {string}
+     * @memberof NotificationsResponseNotificationsInner
+     */
+    'body': string;
+    /**
+     * 備考
+     * @type {string}
+     * @memberof NotificationsResponseNotificationsInner
+     */
+    'note': string;
+    /**
+     * 掲載日時 (unixtime)
+     * @type {number}
+     * @memberof NotificationsResponseNotificationsInner
+     */
+    'publishedAt': number;
+    /**
+     * プロモーションID
+     * @type {string}
+     * @memberof NotificationsResponseNotificationsInner
+     */
+    'promotionId': string;
+    /**
      * 登録者ID
      * @type {string}
      * @memberof NotificationsResponseNotificationsInner
@@ -2384,36 +2630,6 @@ export interface NotificationsResponseNotificationsInner {
      */
     'updatedBy': string;
     /**
-     * タイトル(128字まで)
-     * @type {string}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'title': string;
-    /**
-     * 本文(2000字まで)
-     * @type {string}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'body': string;
-    /**
-     * 掲載対象一覧(3つまで)
-     * @type {Array<NotificationTargetType>}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'targets': Array<NotificationTargetType>;
-    /**
-     * 公開フラグ
-     * @type {boolean}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'public': boolean;
-    /**
-     * 掲載開始日時 (unixtime)
-     * @type {number}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'publishedAt': number;
-    /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof NotificationsResponseNotificationsInner
@@ -2426,6 +2642,8 @@ export interface NotificationsResponseNotificationsInner {
      */
     'updatedAt': number;
 }
+
+
 /**
  * 注文キャンセル理由
  * @export
@@ -2600,11 +2818,11 @@ export interface OrderResponseFulfillment {
      */
     'postalCode': string;
     /**
-     * 配送先情報 都道府県
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof OrderResponseFulfillment
      */
-    'prefecture': string;
+    'prefecture': Prefecture;
     /**
      * 配送先情報 市区町村
      * @type {string}
@@ -2760,11 +2978,11 @@ export interface OrderResponsePayment {
      */
     'postalCode': string;
     /**
-     * 請求先情報 都道府県
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof OrderResponsePayment
      */
-    'prefecture': string;
+    'prefecture': Prefecture;
     /**
      * 請求先情報 市区町村
      * @type {string}
@@ -2954,6 +3172,10 @@ export interface PostalCodeResponse {
  */
 
 export const Prefecture = {
+    /**
+    * 不明
+    */
+    UNKNOWN: '',
     /**
     * 北海道
     */
@@ -3226,11 +3448,11 @@ export interface ProducerResponse {
      */
     'postalCode': string;
     /**
-     * 都道府県
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof ProducerResponse
      */
-    'prefecture': string;
+    'prefecture': Prefecture;
     /**
      * 市区町村
      * @type {string}
@@ -3263,10 +3485,10 @@ export interface ProducerResponse {
     'thumbnailUrl': string;
     /**
      * リサイズ済みサムネイルURL一覧
-     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
+     * @type {Array<AuthUserResponseThumbnailsInner>}
      * @memberof ProducerResponse
      */
-    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
+    'thumbnails': Array<AuthUserResponseThumbnailsInner>;
     /**
      * ヘッダー画像URL
      * @type {string}
@@ -3416,11 +3638,11 @@ export interface ProducersResponseProducersInner {
      */
     'postalCode': string;
     /**
-     * 都道府県
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof ProducersResponseProducersInner
      */
-    'prefecture': string;
+    'prefecture': Prefecture;
     /**
      * 市区町村
      * @type {string}
@@ -3453,10 +3675,10 @@ export interface ProducersResponseProducersInner {
     'thumbnailUrl': string;
     /**
      * リサイズ済みサムネイルURL一覧
-     * @type {Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>}
+     * @type {Array<AuthUserResponseThumbnailsInner>}
      * @memberof ProducersResponseProducersInner
      */
-    'thumbnails': Array<CoordinatorsResponseCoordinatorsInnerThumbnailsInner>;
+    'thumbnails': Array<AuthUserResponseThumbnailsInner>;
     /**
      * ヘッダー画像URL
      * @type {string}
@@ -3533,17 +3755,23 @@ export interface ProductResponse {
      */
     'description': string;
     /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof ProductResponse
+     */
+    'public': boolean;
+    /**
      * 生産者ID
      * @type {string}
      * @memberof ProductResponse
      */
     'producerId': string;
     /**
-     * 農家名
+     * 生産者名
      * @type {string}
      * @memberof ProductResponse
      */
-    'storeName': string;
+    'producerName': string;
     /**
      * 商品種別ID
      * @type {string}
@@ -3569,17 +3797,41 @@ export interface ProductResponse {
      */
     'productTypeName': string;
     /**
-     * アイコンURL
+     * 品目アイコンURL
      * @type {string}
      * @memberof ProductResponse
      */
     'productTypeIconUrl': string;
     /**
-     * 公開フラグ
-     * @type {boolean}
+     * リサイズ済み品目アイコンURL一覧
+     * @type {Array<ProductsResponseProductsInnerProductTypeIconsInner>}
      * @memberof ProductResponse
      */
-    'public': boolean;
+    'productTypeIcons': Array<ProductsResponseProductsInnerProductTypeIconsInner>;
+    /**
+     * 商品タグ一覧
+     * @type {Array<string>}
+     * @memberof ProductResponse
+     */
+    'productTagIds': Array<string>;
+    /**
+     * 
+     * @type {Array<ProductsResponseProductsInnerMediaInner>}
+     * @memberof ProductResponse
+     */
+    'media': Array<ProductsResponseProductsInnerMediaInner>;
+    /**
+     * 販売価格
+     * @type {number}
+     * @memberof ProductResponse
+     */
+    'price': number;
+    /**
+     * 原価
+     * @type {number}
+     * @memberof ProductResponse
+     */
+    'cost': number;
     /**
      * 在庫数
      * @type {number}
@@ -3605,29 +3857,41 @@ export interface ProductResponse {
      */
     'itemDescription': string;
     /**
-     * アイコンURL
-     * @type {string}
-     * @memberof ProductResponse
-     */
-    'iconUrl': string;
-    /**
-     * 
-     * @type {Array<ProductsResponseProductsInnerMediaInner>}
-     * @memberof ProductResponse
-     */
-    'media': Array<ProductsResponseProductsInnerMediaInner>;
-    /**
-     * 販売価格
-     * @type {number}
-     * @memberof ProductResponse
-     */
-    'price': number;
-    /**
      * 
      * @type {DeliveryType}
      * @memberof ProductResponse
      */
     'deliveryType': DeliveryType;
+    /**
+     * おすすめポイント1(128文字まで)
+     * @type {string}
+     * @memberof ProductResponse
+     */
+    'recommendedPoint1': string;
+    /**
+     * おすすめポイント2(128文字まで)
+     * @type {string}
+     * @memberof ProductResponse
+     */
+    'recommendedPoint2': string;
+    /**
+     * おすすめポイント3(128文字まで)
+     * @type {string}
+     * @memberof ProductResponse
+     */
+    'recommendedPoint3': string;
+    /**
+     * 賞味期限(単位:日)
+     * @type {number}
+     * @memberof ProductResponse
+     */
+    'expirationDate': number;
+    /**
+     * 
+     * @type {StorageMethodType}
+     * @memberof ProductResponse
+     */
+    'storageMethodType': StorageMethodType;
     /**
      * 箱の占有率(サイズ:60)
      * @type {number}
@@ -3647,11 +3911,11 @@ export interface ProductResponse {
      */
     'box100Rate': number;
     /**
-     * 原産地(都道府県)
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof ProductResponse
      */
-    'originPrefecture': string;
+    'originPrefecture': Prefecture;
     /**
      * 原産地(市区町村)
      * @type {string}
@@ -3948,17 +4212,23 @@ export interface ProductsResponseProductsInner {
      */
     'description': string;
     /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof ProductsResponseProductsInner
+     */
+    'public': boolean;
+    /**
      * 生産者ID
      * @type {string}
      * @memberof ProductsResponseProductsInner
      */
     'producerId': string;
     /**
-     * 農家名
+     * 生産者名
      * @type {string}
      * @memberof ProductsResponseProductsInner
      */
-    'storeName': string;
+    'producerName': string;
     /**
      * 商品種別ID
      * @type {string}
@@ -3970,7 +4240,7 @@ export interface ProductsResponseProductsInner {
      * @type {string}
      * @memberof ProductsResponseProductsInner
      */
-    'cateogryName'?: string;
+    'categoryName': string;
     /**
      * 品目ID
      * @type {string}
@@ -3984,17 +4254,41 @@ export interface ProductsResponseProductsInner {
      */
     'productTypeName': string;
     /**
-     * アイコンURL
+     * 品目アイコンURL
      * @type {string}
      * @memberof ProductsResponseProductsInner
      */
     'productTypeIconUrl': string;
     /**
-     * 公開フラグ
-     * @type {boolean}
+     * リサイズ済み品目アイコンURL一覧
+     * @type {Array<ProductsResponseProductsInnerProductTypeIconsInner>}
      * @memberof ProductsResponseProductsInner
      */
-    'public': boolean;
+    'productTypeIcons': Array<ProductsResponseProductsInnerProductTypeIconsInner>;
+    /**
+     * 商品タグ一覧
+     * @type {Array<string>}
+     * @memberof ProductsResponseProductsInner
+     */
+    'productTagIds': Array<string>;
+    /**
+     * 
+     * @type {Array<ProductsResponseProductsInnerMediaInner>}
+     * @memberof ProductsResponseProductsInner
+     */
+    'media': Array<ProductsResponseProductsInnerMediaInner>;
+    /**
+     * 販売価格
+     * @type {number}
+     * @memberof ProductsResponseProductsInner
+     */
+    'price': number;
+    /**
+     * 原価
+     * @type {number}
+     * @memberof ProductsResponseProductsInner
+     */
+    'cost': number;
     /**
      * 在庫数
      * @type {number}
@@ -4020,29 +4314,41 @@ export interface ProductsResponseProductsInner {
      */
     'itemDescription': string;
     /**
-     * アイコンURL
-     * @type {string}
-     * @memberof ProductsResponseProductsInner
-     */
-    'iconUrl': string;
-    /**
-     * 
-     * @type {Array<ProductsResponseProductsInnerMediaInner>}
-     * @memberof ProductsResponseProductsInner
-     */
-    'media': Array<ProductsResponseProductsInnerMediaInner>;
-    /**
-     * 販売価格
-     * @type {number}
-     * @memberof ProductsResponseProductsInner
-     */
-    'price': number;
-    /**
      * 
      * @type {DeliveryType}
      * @memberof ProductsResponseProductsInner
      */
     'deliveryType': DeliveryType;
+    /**
+     * おすすめポイント1(128文字まで)
+     * @type {string}
+     * @memberof ProductsResponseProductsInner
+     */
+    'recommendedPoint1': string;
+    /**
+     * おすすめポイント2(128文字まで)
+     * @type {string}
+     * @memberof ProductsResponseProductsInner
+     */
+    'recommendedPoint2': string;
+    /**
+     * おすすめポイント3(128文字まで)
+     * @type {string}
+     * @memberof ProductsResponseProductsInner
+     */
+    'recommendedPoint3': string;
+    /**
+     * 賞味期限(単位:日)
+     * @type {number}
+     * @memberof ProductsResponseProductsInner
+     */
+    'expirationDate': number;
+    /**
+     * 
+     * @type {StorageMethodType}
+     * @memberof ProductsResponseProductsInner
+     */
+    'storageMethodType': StorageMethodType;
     /**
      * 箱の占有率(サイズ:60)
      * @type {number}
@@ -4062,11 +4368,11 @@ export interface ProductsResponseProductsInner {
      */
     'box100Rate': number;
     /**
-     * 原産地(都道府県)
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof ProductsResponseProductsInner
      */
-    'originPrefecture': string;
+    'originPrefecture': Prefecture;
     /**
      * 原産地(市区町村)
      * @type {string}
@@ -4129,6 +4435,27 @@ export interface ProductsResponseProductsInnerMediaInnerImagesInner {
      * 
      * @type {ImageSize}
      * @memberof ProductsResponseProductsInnerMediaInnerImagesInner
+     */
+    'size': ImageSize;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface ProductsResponseProductsInnerProductTypeIconsInner
+ */
+export interface ProductsResponseProductsInnerProductTypeIconsInner {
+    /**
+     * リサイズ済み品目アイコンURL
+     * @type {string}
+     * @memberof ProductsResponseProductsInnerProductTypeIconsInner
+     */
+    'url': string;
+    /**
+     * 
+     * @type {ImageSize}
+     * @memberof ProductsResponseProductsInnerProductTypeIconsInner
      */
     'size': ImageSize;
 }
@@ -4347,6 +4674,37 @@ export interface RelateProducersRequest {
      * @memberof RelateProducersRequest
      */
     'producerIds': Array<string>;
+}
+/**
+ * 
+ * @export
+ * @interface ResetAuthPasswordRequest
+ */
+export interface ResetAuthPasswordRequest {
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof ResetAuthPasswordRequest
+     */
+    'email': string;
+    /**
+     * 検証コード
+     * @type {string}
+     * @memberof ResetAuthPasswordRequest
+     */
+    'verifyCode': string;
+    /**
+     * パスワード(8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
+     * @type {string}
+     * @memberof ResetAuthPasswordRequest
+     */
+    'password': string;
+    /**
+     * パスワード(確認用)
+     * @type {string}
+     * @memberof ResetAuthPasswordRequest
+     */
+    'passwordConfirmation': string;
 }
 /**
  * 
@@ -4713,11 +5071,11 @@ export interface ScheduleResponseLivesInnerProductsInner {
      */
     'box100Rate'?: number;
     /**
-     * 原産地(都道府県)
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof ScheduleResponseLivesInnerProductsInner
      */
-    'originPrefecture'?: string;
+    'originPrefecture'?: Prefecture;
     /**
      * 原産地(市区町村)
      * @type {string}
@@ -5055,6 +5413,23 @@ export interface SignInRequest {
     'password': string;
 }
 /**
+ * 保管方法
+ * @export
+ * @enum {string}
+ */
+
+export const StorageMethodType = {
+    UNKNOWN: 0,
+    NORMAL: 1,
+    COOL_DARK_PLACE: 2,
+    REFRIGERATED: 3,
+    FROZEN: 4
+} as const;
+
+export type StorageMethodType = typeof StorageMethodType[keyof typeof StorageMethodType];
+
+
+/**
  * 
  * @export
  * @interface UpdateAdministratorEmailRequest
@@ -5250,11 +5625,11 @@ export interface UpdateCoordinatorRequest {
      */
     'postalCode': string;
     /**
-     * 都道府県(32文字まで)
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof UpdateCoordinatorRequest
      */
-    'prefecture': string;
+    'prefecture': Prefecture;
     /**
      * 市区町村(32文字まで)
      * @type {string}
@@ -5322,12 +5697,20 @@ export interface UpdateCoordinatorRequest {
      */
     'facebookId': string;
 }
+
+
 /**
  * 
  * @export
  * @interface UpdateNotificationRequest
  */
 export interface UpdateNotificationRequest {
+    /**
+     * 通知対象一覧
+     * @type {Array<NotificationTarget>}
+     * @memberof UpdateNotificationRequest
+     */
+    'targets': Array<NotificationTarget>;
     /**
      * タイトル(128字まで)
      * @type {string}
@@ -5341,19 +5724,13 @@ export interface UpdateNotificationRequest {
      */
     'body': string;
     /**
-     * 掲載対象一覧(3つまで,全部指定の際は1,2,3)
-     * @type {Array<NotificationTargetType>}
+     * 備考(2000字まで)
+     * @type {string}
      * @memberof UpdateNotificationRequest
      */
-    'targets': Array<NotificationTargetType>;
+    'note': string;
     /**
-     * 公開フラグ
-     * @type {boolean}
-     * @memberof UpdateNotificationRequest
-     */
-    'public': boolean;
-    /**
-     * 掲載開始日時
+     * 掲載日時 (unixtime)
      * @type {number}
      * @memberof UpdateNotificationRequest
      */
@@ -5421,11 +5798,11 @@ export interface UpdateProducerRequest {
      */
     'postalCode': string;
     /**
-     * 都道府県(32文字まで)
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof UpdateProducerRequest
      */
-    'prefecture': string;
+    'prefecture': Prefecture;
     /**
      * 市区町村(32文字まで)
      * @type {string}
@@ -5487,6 +5864,8 @@ export interface UpdateProducerRequest {
      */
     'facebookId': string;
 }
+
+
 /**
  * 
  * @export
@@ -5506,6 +5885,12 @@ export interface UpdateProductRequest {
      */
     'description': string;
     /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof UpdateProductRequest
+     */
+    'public': boolean;
+    /**
      * 生産者ID
      * @type {string}
      * @memberof UpdateProductRequest
@@ -5518,11 +5903,29 @@ export interface UpdateProductRequest {
      */
     'productTypeId': string;
     /**
-     * 公開フラグ
-     * @type {boolean}
+     * 商品タグ一覧
+     * @type {Array<string>}
      * @memberof UpdateProductRequest
      */
-    'public': boolean;
+    'productTagIds': Array<string>;
+    /**
+     * メディア一覧(8つまで)
+     * @type {Array<CreateProductRequestMediaInner>}
+     * @memberof UpdateProductRequest
+     */
+    'media': Array<CreateProductRequestMediaInner>;
+    /**
+     * 販売価格(0以上)
+     * @type {number}
+     * @memberof UpdateProductRequest
+     */
+    'price': number;
+    /**
+     * 原価(0以上)
+     * @type {number}
+     * @memberof UpdateProductRequest
+     */
+    'cost': number;
     /**
      * 在庫数(0以上)
      * @type {number}
@@ -5548,23 +5951,41 @@ export interface UpdateProductRequest {
      */
     'itemDescription': string;
     /**
-     * メディア一覧(8つまで)
-     * @type {Array<CreateProductRequestMediaInner>}
+     * 
+     * @type {DeliveryType}
      * @memberof UpdateProductRequest
      */
-    'media': Array<CreateProductRequestMediaInner>;
+    'deliveryType': DeliveryType;
     /**
-     * 販売価格(0以上)
+     * おすすめポイント1(128文字まで)
+     * @type {string}
+     * @memberof UpdateProductRequest
+     */
+    'recommendedPoint1': string;
+    /**
+     * おすすめポイント1(128文字まで)
+     * @type {string}
+     * @memberof UpdateProductRequest
+     */
+    'recommendedPoint2': string;
+    /**
+     * おすすめポイント1(128文字まで)
+     * @type {string}
+     * @memberof UpdateProductRequest
+     */
+    'recommendedPoint3': string;
+    /**
+     * 賞味期限(単位:日,0以上)
      * @type {number}
      * @memberof UpdateProductRequest
      */
-    'price': number;
+    'expirationDate': number;
     /**
-     * 配送方法(1:通常便,2:冷蔵便,3:冷凍便)
-     * @type {number}
+     * 
+     * @type {StorageMethodType}
      * @memberof UpdateProductRequest
      */
-    'deliveryType': number;
+    'storageMethodType': StorageMethodType;
     /**
      * 箱の占有率(サイズ:60)(0以上,100以下)
      * @type {number}
@@ -5584,11 +6005,11 @@ export interface UpdateProductRequest {
      */
     'box100Rate': number;
     /**
-     * 原産地(都道府県)(32文字まで)
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof UpdateProductRequest
      */
-    'originPrefecture': string;
+    'originPrefecture': Prefecture;
     /**
      * 原産地(市区町村)(32文字まで)
      * @type {string}
@@ -5596,6 +6017,8 @@ export interface UpdateProductRequest {
      */
     'originCity': string;
 }
+
+
 /**
  * 
  * @export
@@ -5851,11 +6274,11 @@ export interface UserResponse {
      */
     'postalCode': string;
     /**
-     * 都道府県
-     * @type {string}
+     * 
+     * @type {Prefecture}
      * @memberof UserResponse
      */
-    'prefecture': string;
+    'prefecture': Prefecture;
     /**
      * 市区町村
      * @type {string}
@@ -5887,6 +6310,8 @@ export interface UserResponse {
      */
     'updatedAt': number;
 }
+
+
 /**
  * 
  * @export
@@ -5917,44 +6342,52 @@ export interface UsersResponseUsersInner {
      * @type {string}
      * @memberof UsersResponseUsersInner
      */
-    'id'?: string;
+    'id': string;
     /**
      * 姓
      * @type {string}
      * @memberof UsersResponseUsersInner
      */
-    'lastname'?: string;
+    'lastname': string;
     /**
      * 名
      * @type {string}
      * @memberof UsersResponseUsersInner
      */
-    'firstname'?: string;
+    'firstname': string;
     /**
      * 会員登録フラグ
      * @type {boolean}
      * @memberof UsersResponseUsersInner
      */
-    'registered'?: boolean;
+    'registered': boolean;
     /**
-     * 住所
+     * 
+     * @type {Prefecture}
+     * @memberof UsersResponseUsersInner
+     */
+    'prefecture': Prefecture;
+    /**
+     * 市区町村
      * @type {string}
      * @memberof UsersResponseUsersInner
      */
-    'address'?: string;
+    'city': string;
     /**
      * 購入回数
      * @type {number}
      * @memberof UsersResponseUsersInner
      */
-    'totalOrder'?: number;
+    'totalOrder': number;
     /**
      * 購入金額
      * @type {number}
      * @memberof UsersResponseUsersInner
      */
-    'totalAmount'?: number;
+    'totalAmount': number;
 }
+
+
 /**
  * 
  * @export
@@ -6659,12 +7092,82 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
     return {
         /**
          * 
+         * @summary パスワードリセット
+         * @param {ForgotAuthPasswordRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ForgotAuthPassword: async (body: ForgotAuthPasswordRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1ForgotAuthPassword', 'body', body)
+            const localVarPath = `/v1/auth/forgot-password`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary トークン検証
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         v1GetAuth: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/auth`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 管理者情報取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetAuthUser: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/auth/user`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -6756,6 +7259,42 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             // authentication BearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary パスワードリセット - コード検証
+         * @param {ResetAuthPasswordRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ResetAuthPassword: async (body: ResetAuthPasswordRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1ResetAuthPassword', 'body', body)
+            const localVarPath = `/v1/auth/forgot-password/verified`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
 
     
@@ -6977,12 +7516,33 @@ export const AuthApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary パスワードリセット
+         * @param {ForgotAuthPasswordRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ForgotAuthPassword(body: ForgotAuthPasswordRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ForgotAuthPassword(body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary トークン検証
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         async v1GetAuth(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetAuth(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 管理者情報取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetAuthUser(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthUserResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetAuthUser(options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -7005,6 +7565,17 @@ export const AuthApiFp = function(configuration?: Configuration) {
          */
         async v1RegisterAuthDevice(body: RegisterAuthDeviceRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1RegisterAuthDevice(body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary パスワードリセット - コード検証
+         * @param {ResetAuthPasswordRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ResetAuthPassword(body: ResetAuthPasswordRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ResetAuthPassword(body, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -7073,12 +7644,31 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
     return {
         /**
          * 
+         * @summary パスワードリセット
+         * @param {ForgotAuthPasswordRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ForgotAuthPassword(body: ForgotAuthPasswordRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1ForgotAuthPassword(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary トークン検証
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         v1GetAuth(options?: any): AxiosPromise<AuthResponse> {
             return localVarFp.v1GetAuth(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 管理者情報取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetAuthUser(options?: any): AxiosPromise<AuthUserResponse> {
+            return localVarFp.v1GetAuthUser(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7099,6 +7689,16 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          */
         v1RegisterAuthDevice(body: RegisterAuthDeviceRequest, options?: any): AxiosPromise<object> {
             return localVarFp.v1RegisterAuthDevice(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary パスワードリセット - コード検証
+         * @param {ResetAuthPasswordRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ResetAuthPassword(body: ResetAuthPasswordRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1ResetAuthPassword(body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7161,6 +7761,18 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
 export class AuthApi extends BaseAPI {
     /**
      * 
+     * @summary パスワードリセット
+     * @param {ForgotAuthPasswordRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public v1ForgotAuthPassword(body: ForgotAuthPasswordRequest, options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1ForgotAuthPassword(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary トークン検証
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -7168,6 +7780,17 @@ export class AuthApi extends BaseAPI {
      */
     public v1GetAuth(options?: AxiosRequestConfig) {
         return AuthApiFp(this.configuration).v1GetAuth(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 管理者情報取得
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public v1GetAuthUser(options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1GetAuthUser(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -7192,6 +7815,18 @@ export class AuthApi extends BaseAPI {
      */
     public v1RegisterAuthDevice(body: RegisterAuthDeviceRequest, options?: AxiosRequestConfig) {
         return AuthApiFp(this.configuration).v1RegisterAuthDevice(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary パスワードリセット - コード検証
+     * @param {ResetAuthPasswordRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public v1ResetAuthPassword(body: ResetAuthPasswordRequest, options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1ResetAuthPassword(body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

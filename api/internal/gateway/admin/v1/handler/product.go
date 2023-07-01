@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
@@ -222,25 +223,30 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 
 	weight, weightUnit := service.NewProductWeightFromRequest(req.Weight)
 	in := &store.CreateProductInput{
-		ProducerID:       req.ProducerID,
-		TypeID:           req.TypeID,
-		Name:             req.Name,
-		Description:      req.Description,
-		Public:           req.Public,
-		Inventory:        req.Inventory,
-		Weight:           weight,
-		WeightUnit:       weightUnit,
-		Item:             1, // 1固定
-		ItemUnit:         req.ItemUnit,
-		ItemDescription:  req.ItemDescription,
-		Media:            productMedia,
-		Price:            req.Price,
-		DeliveryType:     service.DeliveryType(req.DeliveryType).StoreEntity(),
-		Box60Rate:        req.Box60Rate,
-		Box80Rate:        req.Box80Rate,
-		Box100Rate:       req.Box100Rate,
-		OriginPrefecture: req.OriginPrefecture,
-		OriginCity:       req.OriginCity,
+		ProducerID:        req.ProducerID,
+		TypeID:            req.TypeID,
+		TagIDs:            req.TagIDs,
+		Name:              req.Name,
+		Description:       req.Description,
+		Public:            req.Public,
+		Inventory:         req.Inventory,
+		Weight:            weight,
+		WeightUnit:        weightUnit,
+		Item:              1, // 1固定
+		ItemUnit:          req.ItemUnit,
+		ItemDescription:   req.ItemDescription,
+		Media:             productMedia,
+		Price:             req.Price,
+		Cost:              req.Cost,
+		ExpirationDate:    req.ExpirationDate,
+		RecommendedPoints: h.newProductPoints(req.RecommendedPoint1, req.RecommendedPoint2, req.RecommendedPoint3),
+		StorageMethodType: service.StorageMethodType(req.StorageMethodType).StoreEntity(),
+		DeliveryType:      service.DeliveryType(req.DeliveryType).StoreEntity(),
+		Box60Rate:         req.Box60Rate,
+		Box80Rate:         req.Box80Rate,
+		Box100Rate:        req.Box100Rate,
+		OriginPrefecture:  codes.PrefectureValues[req.OriginPrefecture],
+		OriginCity:        req.OriginCity,
 	}
 	sproduct, err := h.store.CreateProduct(ctx, in)
 	if err != nil {
@@ -290,26 +296,31 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 
 	weight, weightUnit := service.NewProductWeightFromRequest(req.Weight)
 	in := &store.UpdateProductInput{
-		ProductID:        util.GetParam(ctx, "productId"),
-		ProducerID:       req.ProducerID,
-		TypeID:           req.TypeID,
-		Name:             req.Name,
-		Description:      req.Description,
-		Public:           req.Public,
-		Inventory:        req.Inventory,
-		Weight:           weight,
-		WeightUnit:       weightUnit,
-		Item:             1, // 1固定
-		ItemUnit:         req.ItemUnit,
-		ItemDescription:  req.ItemDescription,
-		Media:            productMedia,
-		Price:            req.Price,
-		DeliveryType:     service.DeliveryType(req.DeliveryType).StoreEntity(),
-		Box60Rate:        req.Box60Rate,
-		Box80Rate:        req.Box80Rate,
-		Box100Rate:       req.Box100Rate,
-		OriginPrefecture: req.OriginPrefecture,
-		OriginCity:       req.OriginCity,
+		ProductID:         util.GetParam(ctx, "productId"),
+		ProducerID:        req.ProducerID,
+		TypeID:            req.TypeID,
+		TagIDs:            req.TagIDs,
+		Name:              req.Name,
+		Description:       req.Description,
+		Public:            req.Public,
+		Inventory:         req.Inventory,
+		Weight:            weight,
+		WeightUnit:        weightUnit,
+		Item:              1, // 1固定
+		ItemUnit:          req.ItemUnit,
+		ItemDescription:   req.ItemDescription,
+		Media:             productMedia,
+		Price:             req.Price,
+		Cost:              req.Cost,
+		ExpirationDate:    req.ExpirationDate,
+		RecommendedPoints: h.newProductPoints(req.RecommendedPoint1, req.RecommendedPoint2, req.RecommendedPoint3),
+		StorageMethodType: service.StorageMethodType(req.StorageMethodType).StoreEntity(),
+		DeliveryType:      service.DeliveryType(req.DeliveryType).StoreEntity(),
+		Box60Rate:         req.Box60Rate,
+		Box80Rate:         req.Box80Rate,
+		Box100Rate:        req.Box100Rate,
+		OriginPrefecture:  codes.PrefectureValues[req.OriginPrefecture],
+		OriginCity:        req.OriginCity,
 	}
 	if err := h.store.UpdateProduct(ctx, in); err != nil {
 		httpError(ctx, err)
@@ -317,6 +328,17 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) newProductPoints(points ...string) []string {
+	res := make([]string, 0, len(points))
+	for _, point := range points {
+		if point == "" {
+			continue
+		}
+		res = append(res, point)
+	}
+	return res
 }
 
 func (h *handler) DeleteProduct(ctx *gin.Context) {

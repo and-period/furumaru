@@ -2,7 +2,7 @@
 import useVuelidate from '@vuelidate/core'
 import { mdiFacebook, mdiInstagram } from '@mdi/js'
 import { AlertType } from '~/lib/hooks'
-import { CreateCoordinatorRequest, ProductTypesResponseProductTypesInner } from '~/types/api'
+import { CreateCoordinatorRequest, Prefecture, ProductTypesResponseProductTypesInner } from '~/types/api'
 import { email, kana, getErrorMessage, maxLength, required, tel } from '~/lib/validations'
 import { ImageUploadStatus } from '~/types/props'
 
@@ -35,7 +35,7 @@ const props = defineProps({
       email: '',
       phoneNumber: '',
       postalCode: '',
-      prefecture: '',
+      prefecture: Prefecture.UNKNOWN,
       city: '',
       addressLine1: '',
       addressLine2: '',
@@ -196,9 +196,9 @@ const onClickSearchAddress = (): void => {
           multiple
           density="comfortable"
         >
-          <template #chip="{ props, item }">
+          <template #chip="{ props: val, item }">
             <v-chip
-              v-bind="props"
+              v-bind="val"
               :prepend-avatar="item.raw.iconUrl"
               :text="item.raw.name"
               rounded
@@ -206,9 +206,9 @@ const onClickSearchAddress = (): void => {
               variant="outlined"
             />
           </template>
-          <template #item="{ props, item }">
+          <template #item="{ props: val, item }">
             <v-list-item
-              v-bind="props"
+              v-bind="val"
               :prepend-avatar="item?.raw?.iconUrl"
               :title="item?.raw?.name"
             />

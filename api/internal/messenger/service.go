@@ -29,10 +29,18 @@ type Service interface {
 	NotifyResetAdminPassword(ctx context.Context, in *NotifyResetAdminPasswordInput) error
 	// お知らせ通知
 	NotifyNotification(ctx context.Context, in *NotifyNotificationInput) error
+	// お問い合わせ一覧取得
+	ListContacts(ctx context.Context, in *ListContactsInput) (entity.Contacts, int64, error)
 	// お問い合わせ取得
 	GetContact(ctx context.Context, in *GetContactInput) (*entity.Contact, error)
 	// お問い合わせ作成
 	CreateContact(ctx context.Context, in *CreateContactInput) (*entity.Contact, error)
+	// お問い合わせ編集
+	UpdateContact(ctx context.Context, in *UpdateContactInput) error
+	// お問い合わせ削除
+	DeleteContact(ctx context.Context, in *DeleteContactInput) error
+	// お問い合わせ種別一覧取得
+	ListContactCategories(ctx context.Context, in *ListContactCategoriesInput) (entity.ContactCategories, error)
 	// お問い合わせ種別取得
 	GetContactCategory(ctx context.Context, in *GetContactCategoryInput) (*entity.ContactCategory, error)
 	// お問い合わせ会話履歴一覧取得(お問い合わせID指定)
@@ -45,4 +53,10 @@ type Service interface {
 	UpdateThread(ctx context.Context, in *UpdateThreadInput) error
 	// お問い合わせ会話履歴削除
 	DeleteThread(ctx context.Context, in *DeleteThreadInput) error
+	// お問い合わせ既読管理取得
+	GetContactRead(ctx context.Context, in *GetContactReadInput) (*entity.ContactRead, error)
+	// お問い合わせ既読管理作成
+	CreateContactRead(ctx context.Context, in *CreateContactReadInput) (*entity.ContactRead, error)
+	// お問い合わせ既読フラグ更新
+	UpdateContactReadFlag(ctx context.Context, in *UpdateContactReadFlagInput) error
 }

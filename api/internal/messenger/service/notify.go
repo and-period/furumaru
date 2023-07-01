@@ -7,6 +7,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
+	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"golang.org/x/sync/errgroup"
@@ -69,6 +70,16 @@ func (s *service) NotifyNotification(ctx context.Context, in *messenger.NotifyNo
 	if err != nil {
 		return exception.InternalError(err)
 	}
+	if notification.Type == entity.NotificationTypePromotion {
+		in := &store.GetPromotionInput{
+			PromotionID: notification.PromotionID,
+		}
+		promotion, err := s.store.GetPromotion(ctx, in)
+		if err != nil {
+			return exception.InternalError(err)
+		}
+		notification.Title = promotion.Title
+	}
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
 		if !notification.HasUserTarget() {
@@ -90,7 +101,6 @@ func (s *service) NotifyNotification(ctx context.Context, in *messenger.NotifyNo
 		ReportID:    entity.ReportIDNotification,
 		Overview:    notification.Title,
 		Detail:      notification.Body,
-		Author:      notification.CreatorName,
 		Link:        maker.Notification(notification.ID),
 		PublishedAt: notification.PublishedAt,
 	}
@@ -113,7 +123,6 @@ func (s *service) notifyAdminNotification(ctx context.Context, notification *ent
 		MessageID:   entity.MessageIDNotification,
 		MessageType: entity.MessageTypeNotification,
 		Title:       notification.Title,
-		Author:      notification.CreatorName,
 		Link:        maker.Notification(notification.ID),
 		ReceivedAt:  s.now(),
 	}
@@ -122,6 +131,12 @@ func (s *service) notifyAdminNotification(ctx context.Context, notification *ent
 		Message:   message,
 	}
 	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		if !notification.HasAdministratorTarget() {
+			return
+		}
+		return s.sendAllAdministrators(ectx, payload)
+	})
 	eg.Go(func() (err error) {
 		if !notification.HasCoordinatorTarget() {
 			return
@@ -135,6 +150,84 @@ func (s *service) notifyAdminNotification(ctx context.Context, notification *ent
 		return s.sendAllProducers(ectx, payload)
 	})
 	return eg.Wait()
+}
+
+// NotifyReceivedContact - お問い合わせ受領
+func (s *service) NotifyReceivedContact(ctx context.Context, in *messenger.NotifyReceivedContactInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	contact, err := s.db.Contact.Get(ctx, in.ContactID)
+	if err != nil {
+		return exception.InternalError(err)
+	}
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		return s.notifyGuestReceivedContact(ectx, contact)
+	})
+	eg.Go(func() error {
+		return s.notifyAdminReceivedContact(ectx, contact)
+	})
+	eg.Go(func() error {
+		return s.notifyReportReceivedContact(ectx, contact)
+	})
+	if err := eg.Wait(); err != nil {
+		return exception.InternalError(err)
+	}
+	return nil
+}
+
+func (s *service) notifyGuestReceivedContact(ctx context.Context, contact *entity.Contact) error {
+	builder := entity.NewTemplateDataBuilder().
+		Name(contact.Username).
+		Email(contact.Email).
+		Contact(contact.Title, contact.Content)
+	guest := &entity.Guest{
+		Name:  contact.Username,
+		Email: contact.Email,
+	}
+	mail := &entity.MailConfig{
+		EmailID:       entity.EmailIDUserReceivedContact,
+		Substitutions: builder.Build(),
+	}
+	payload := &entity.WorkerPayload{
+		QueueID:   uuid.Base58Encode(uuid.New()),
+		EventType: entity.EventTypeReceivedContact,
+		UserType:  entity.UserTypeGuest,
+		Guest:     guest,
+		Email:     mail,
+	}
+	return s.sendMessage(ctx, payload)
+}
+
+func (s *service) notifyAdminReceivedContact(ctx context.Context, _ *entity.Contact) error {
+	push := &entity.PushConfig{
+		PushID: entity.PushIDContact,
+		Data:   map[string]string{},
+	}
+	payload := &entity.WorkerPayload{
+		EventType: entity.EventTypeReceivedContact,
+		Push:      push,
+	}
+	return s.sendAllAdministrators(ctx, payload)
+}
+
+func (s *service) notifyReportReceivedContact(ctx context.Context, contact *entity.Contact) error {
+	maker := entity.NewAdminURLMaker(s.adminWebURL())
+	report := &entity.ReportConfig{
+		ReportID:   entity.ReportIDReceivedContact,
+		Overview:   contact.Title,
+		Detail:     contact.Content,
+		Link:       maker.Contact(contact.ID),
+		ReceivedAt: contact.CreatedAt,
+	}
+	payload := &entity.WorkerPayload{
+		QueueID:   uuid.Base58Encode(uuid.New()),
+		EventType: entity.EventTypeReceivedContact,
+		UserType:  entity.UserTypeNone,
+		Report:    report,
+	}
+	return s.sendMessage(ctx, payload)
 }
 
 /*

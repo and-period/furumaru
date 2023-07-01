@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
@@ -187,7 +188,7 @@ func (h *handler) CreateProducer(ctx *gin.Context) {
 		Email:             req.Email,
 		PhoneNumber:       req.PhoneNumber,
 		PostalCode:        req.PostalCode,
-		Prefecture:        req.Prefecture,
+		Prefecture:        codes.PrefectureValues[req.Prefecture],
 		City:              req.City,
 		AddressLine1:      req.AddressLine1,
 		AddressLine2:      req.AddressLine2,
@@ -279,7 +280,7 @@ func (h *handler) UpdateProducer(ctx *gin.Context) {
 		FacebookID:        req.FacebookID,
 		PhoneNumber:       req.PhoneNumber,
 		PostalCode:        req.PostalCode,
-		Prefecture:        req.Prefecture,
+		Prefecture:        codes.PrefectureValues[req.Prefecture],
 		City:              req.City,
 		AddressLine1:      req.AddressLine1,
 		AddressLine2:      req.AddressLine2,

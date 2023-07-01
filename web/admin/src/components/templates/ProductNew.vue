@@ -3,7 +3,7 @@ import { mdiClose, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 
 import { AlertType } from '~/lib/hooks'
-import { CreateProductRequest, ProducersResponseProducersInner, ProductTypesResponseProductTypesInner } from '~/types/api'
+import { CategoriesResponseCategoriesInner, CreateProductRequest, DeliveryType, Prefecture, ProducersResponseProducersInner, ProductTagsResponseProductTagsInner, ProductTypesResponseProductTypesInner, StorageMethodType } from '~/types/api'
 import {
   required,
   getErrorMessage,
@@ -12,7 +12,7 @@ import {
   maxValue,
   maxLengthArray
 } from '~/lib/validations'
-import { prefecturesList, cityList } from '~/constants'
+import { PrefecturesListItem, prefecturesList, CityListItem, cityList } from '~/constants'
 
 const props = defineProps({
   loading: {
@@ -36,29 +36,48 @@ const props = defineProps({
     default: (): CreateProductRequest => ({
       name: '',
       description: '',
+      public: false,
       producerId: '',
       productTypeId: '',
-      public: true,
+      productTagIds: [],
+      media: [],
+      price: 0,
+      cost: 0,
       inventory: 0,
       weight: 0,
       itemUnit: '',
       itemDescription: '',
-      media: [],
-      price: 0,
-      deliveryType: 1,
+      deliveryType: DeliveryType.UNKNOWN,
+      recommendedPoint1: '',
+      recommendedPoint2: '',
+      recommendedPoint3: '',
+      expirationDate: 0,
+      storageMethodType: StorageMethodType.UNKNOWN,
       box60Rate: 0,
       box80Rate: 0,
       box100Rate: 0,
-      originPrefecture: '',
+      originPrefecture: Prefecture.HOKKAIDO,
       originCity: ''
     })
+  },
+  selectedCategoryId: {
+    type: String,
+    default: null
   },
   producers: {
     type: Array<ProducersResponseProducersInner>,
     default: () => []
   },
+  categories: {
+    type: Array<CategoriesResponseCategoriesInner>,
+    default: () => []
+  },
   productTypes: {
     type: Array<ProductTypesResponseProductTypesInner>,
+    default: () => []
+  },
+  productTags: {
+    type: Array<ProductTagsResponseProductTagsInner>,
     default: () => []
   }
 })
@@ -66,47 +85,50 @@ const props = defineProps({
 const emit = defineEmits<{
   (e: 'update:files', files: FileList): void
   (e: 'update:form-data', formData: CreateProductRequest): void
+  (e: 'update:selected-category-id', categoryId: string): void
   (e: 'submit'): void
 }>()
 
-const breadcrumbsItem = [
-  {
-    title: '商品管理',
-    href: '/products',
-    disabled: false
-  },
-  {
-    title: '商品登録',
-    href: 'add',
-    disabled: true
-  }
+const statuses = [
+  { title: '公開', value: true },
+  { title: '下書き', value: false }
 ]
-const statusItems = [
-  { text: '公開', value: true },
-  { text: '非公開', value: false }
+const storageMethodTypes = [
+  { title: '常温保存', value: StorageMethodType.NORMAL },
+  { title: '冷暗所保存', value: StorageMethodType.COOL_DARK_PLACE },
+  { title: '冷蔵保存', value: StorageMethodType.REFRIGERATED },
+  { title: '冷凍保存', value: StorageMethodType.FROZEN }
 ]
-const deliveryTypeItems = [
-  { text: '通常便', value: 1 },
-  { text: '冷蔵便', value: 2 },
-  { text: '冷凍便', value: 3 }
+const deliveryTypes = [
+  { title: '通常便', value: DeliveryType.NORMAL },
+  { title: '冷蔵便', value: DeliveryType.REFRIGERATED },
+  { title: '冷凍便', value: DeliveryType.FROZEN }
 ]
 const itemUnits = ['個', '瓶']
 
 const rules = computed(() => ({
   name: { required, maxLength: maxLength(128) },
-  description: { required },
-  media: { maxLengthArray: maxLengthArray(8) },
+  description: { required, maxLength: maxLength(20000) },
+  public: {},
   producerId: { required },
   productTypeId: { required },
-  inventory: { required, minValue: minValue(0) },
+  productTagIds: { maxLengthArray: maxLengthArray(8) },
+  media: { maxLengthArray: maxLengthArray(8) },
   price: { required, minValue: minValue(0) },
+  cost: { required, minValue: minValue(0) },
+  inventory: { required, minValue: minValue(0) },
   weight: { required, minValue: minValue(0) },
+  itemUnit: { required },
+  itemDescription: { required },
+  deliveryType: { required },
+  recommendedPoint1: { maxLength: maxLength(128) },
+  recommendedPoint2: { maxLength: maxLength(128) },
+  recommendedPoint3: { maxLength: maxLength(128) },
+  expirationDate: { required, minValue: minValue(0) },
+  storageMethodType: { required },
   box60Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
   box80Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
   box100Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
-  itemUnit: { required },
-  itemDescription: { required },
-  deliveryType: {},
   originPrefecture: {},
   originCity: {}
 }))
@@ -114,13 +136,18 @@ const formDataValue = computed({
   get: (): CreateProductRequest => props.formData,
   set: (formData: CreateProductRequest): void => emit('update:form-data', formData)
 })
+const selectedCategoryIdValue = computed({
+  get: (): string => props.selectedCategoryId || '',
+  set: (categoryId: string): void => emit('update:selected-category-id', categoryId)
+})
 const cityListItems = computed(() => {
-  const selectedPrefecture = prefecturesList.find(prefecture => props.formData.originPrefecture === prefecture.text)
+  const selectedPrefecture = prefecturesList.find((prefecture: PrefecturesListItem): boolean => {
+    return props.formData.originPrefecture === prefecture.value
+  })
   if (!selectedPrefecture) {
     return []
-  } else {
-    return cityList.filter(city => city.prefId === selectedPrefecture.id)
   }
+  return cityList.filter((city: CityListItem): boolean => city.prefId === selectedPrefecture.id)
 })
 const thumbnailIndex = computed<number>({
   get: (): number => props.formData.media.findIndex(item => item.isThumbnail),
@@ -128,24 +155,32 @@ const thumbnailIndex = computed<number>({
     if (formDataValue.value.media.length <= index) {
       return
     }
-    formDataValue.value.media = formDataValue.value.media.map((item) => {
-      return {
+    formDataValue.value.media = formDataValue.value.media
+      .map(item => ({
         ...item,
         isThumbnail: false
-      }
-    }).map((item, i) => {
-      if (i !== index) {
-        return item
-      }
-      return {
-        ...item,
-        isThumbnail: true
-      }
-    })
+      }))
+      .map((item, i) => {
+        if (i !== index) {
+          return item
+        }
+        return {
+          ...item,
+          isThumbnail: true
+        }
+      })
   }
 })
 
 const validate = useVuelidate(rules, formDataValue)
+
+const getCommission = (): number => {
+  return Math.trunc(formDataValue.value.price * 0.1)
+}
+
+const getBenefits = (): number => {
+  return formDataValue.value.price - (formDataValue.value.cost + getCommission())
+}
 
 const onClickImageUpload = (files?: FileList): void => {
   if (!files) {
@@ -153,6 +188,10 @@ const onClickImageUpload = (files?: FileList): void => {
   }
 
   emit('update:files', files)
+}
+
+const onClickThumbnail = (i: number): void => {
+  thumbnailIndex.value = i
 }
 
 const onDeleteThumbnail = (i: number): void => {
@@ -183,10 +222,9 @@ const onSubmit = (): void => {
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
 
   <v-card-title>商品登録</v-card-title>
-  <v-breadcrumbs :items="breadcrumbsItem" large class="pa-0 mb-6" />
 
   <v-row>
-    <v-col cols="8">
+    <v-col sm="12" md="12" lg="8">
       <div class="mb-4">
         <v-card elevation="0" class="mb-4">
           <v-card-title>基本情報</v-card-title>
@@ -194,32 +232,31 @@ const onSubmit = (): void => {
             <v-select
               v-model="validate.producerId.$model"
               :error-messages="getErrorMessage(validate.producerId.$errors)"
-              label="販売店舗名"
+              label="生産者名"
               :items="producers"
-              item-title="storeName"
+              item-title="username"
               item-value="id"
             />
-
             <v-text-field
               v-model="validate.name.$model"
+              :error-messages="getErrorMessage(validate.name.$errors)"
               label="商品名"
               outlined
-              :error="validate.name.$error"
-              :error-messages="getErrorMessage(validate.name.$errors)"
             />
+          </v-card-text>
+
+          <v-card-subtitle>商品説明</v-card-subtitle>
+          <v-card-text>
             <client-only>
               <tiptap-editor
                 v-model="validate.description.$model"
                 :error-message="getErrorMessage(validate.description.$errors)"
-                label="商品説明"
-                class="mt-4"
+                class="mb-4"
               />
             </client-only>
           </v-card-text>
-        </v-card>
 
-        <v-card elevation="0" class="mb-4">
-          <v-card-title>商品画像登録</v-card-title>
+          <v-card-subtitle>商品画像登録</v-card-subtitle>
           <v-card-text>
             <v-radio-group v-model="thumbnailIndex" :error-messages="getErrorMessage(validate.media.$errors)">
               <v-row>
@@ -234,13 +271,14 @@ const onSubmit = (): void => {
                     variant="outlined"
                     width="100%"
                     :class="{'thumbnail-border': img.isThumbnail }"
+                    @click="onClickThumbnail(i)"
                   >
                     <v-img
                       :src="img.url"
                       aspect-ratio="1"
                     >
                       <div class="d-flex col">
-                        <v-radio :value="i" />
+                        <v-radio :value="i" color="primary" />
                         <v-btn :icon="mdiClose" color="error" variant="text" size="small" @click="onDeleteThumbnail(i)" />
                       </div>
                     </v-img>
@@ -258,34 +296,100 @@ const onSubmit = (): void => {
               />
             </div>
           </v-card-text>
-        </v-card>
 
-        <v-card elevation="0" class="mb-4">
-          <v-card-title>価格</v-card-title>
           <v-card-text>
             <v-text-field
-              v-model.number="validate.price.$model"
-              label="販売価格"
+              v-model="validate.recommendedPoint1.$model"
+              :error-messages="getErrorMessage(validate.recommendedPoint1.$errors)"
+              label="おすすめポイント1"
+            />
+            <v-text-field
+              v-model="validate.recommendedPoint2.$model"
+              :error-messages="getErrorMessage(validate.recommendedPoint2.$errors)"
+              label="おすすめポイント2"
+            />
+            <v-text-field
+              v-model="validate.recommendedPoint3.$model"
+              :error-messages="getErrorMessage(validate.recommendedPoint3.$errors)"
+              label="おすすめポイント3"
+            />
+            <v-text-field
+              v-model.number="validate.expirationDate.$model"
+              :error-messages="getErrorMessage(validate.expirationDate.$errors)"
+              label="賞味期限"
               type="number"
-              :error-messages="getErrorMessage(validate.price.$errors)"
-            >
-              <template #prepend>
-                &yen;
-              </template>
-            </v-text-field>
+              min="0"
+              suffix="日"
+            />
+            <v-select
+              v-model="validate.storageMethodType.$model"
+              :error-messages="getErrorMessage(validate.storageMethodType.$errors)"
+              label="保存方法"
+              :items="storageMethodTypes"
+            />
           </v-card-text>
         </v-card>
 
         <v-card elevation="0" class="mb-4">
-          <v-card-title>在庫</v-card-title>
+          <v-card-title>価格設定</v-card-title>
+          <v-card-text>
+            <v-text-field
+              v-model.number="validate.price.$model"
+              :error-messages="getErrorMessage(validate.price.$errors)"
+              label="販売価格(税込)"
+              type="number"
+              min="0"
+              suffix="円"
+            />
+            <v-text-field
+              v-model.number="validate.cost.$model"
+              :error-messages="getErrorMessage(validate.cost.$errors)"
+              label="原価"
+              type="number"
+              min="0"
+              suffix="円"
+            />
+
+            <v-table>
+              <thead>
+                <tr>
+                  <th class="text-left">
+                    コーディネータ様への支払い金額
+                  </th>
+                  <th class="text-left">
+                    {{ getBenefits() }} 円
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>販売価格</td>
+                  <td>{{ formDataValue.price }} 円</td>
+                </tr>
+                <tr>
+                  <td>原価</td>
+                  <td>{{ formDataValue.cost }} 円</td>
+                </tr>
+                <tr>
+                  <td>手数料(10%)</td>
+                  <td>{{ getCommission() }} 円</td>
+                </tr>
+              </tbody>
+            </v-table>
+          </v-card-text>
+        </v-card>
+
+        <v-card elevation="0" class="mb-4">
+          <v-card-title>在庫設定</v-card-title>
           <v-card-text>
             <v-row>
               <v-col cols="9">
                 <v-text-field
-                  v-model="validate.inventory.$model"
+                  v-model.number="validate.inventory.$model"
                   :error-messages="getErrorMessage(validate.inventory.$errors)"
-                  type="number"
                   label="在庫数"
+                  type="number"
+                  min="0"
                 />
               </v-col>
               <v-col cols="3">
@@ -294,8 +398,6 @@ const onSubmit = (): void => {
                   :error-messages="getErrorMessage(validate.itemUnit.$errors)"
                   label="単位"
                   :items="itemUnits"
-                  item-title="text"
-                  item-value="value"
                 />
               </v-col>
             </v-row>
@@ -303,42 +405,29 @@ const onSubmit = (): void => {
             <div class="d-flex align-center">
               <v-text-field
                 v-model="validate.itemDescription.$model"
-                label="単位説明"
                 :error-messages="getErrorMessage(validate.itemDescription.$errors)"
+                label="内容説明(発送時に使用)"
+                placeholder="1個あたり、3kg程のみかんが入っています。(40~50個)"
               />
-              <p class="ml-12 mb-0">
-                ex) 1kg → 5個入り
-              </p>
-              <v-spacer />
             </div>
           </v-card-text>
         </v-card>
 
         <v-card elevation="0" class="mb-4">
-          <v-card-title>配送情報</v-card-title>
+          <v-card-title>配送設定</v-card-title>
           <v-card-text>
-            <div class="d-flex">
-              <v-text-field
-                v-model.number="validate.weight.$model"
-                label="重さ"
-                :error-messages="getErrorMessage(validate.weight.$errors)"
-              >
-                <template #append>
-                  kg
-                </template>
-              </v-text-field>
-              <v-spacer />
-            </div>
-            <div class="d-flex">
-              <v-select
-                v-model="formDataValue.deliveryType"
-                :items="deliveryTypeItems"
-                item-title="text"
-                item-value="value"
-                label="配送種別"
-              />
-              <v-spacer />
-            </div>
+            <v-text-field
+              v-model.number="validate.weight.$model"
+              :error-messages="getErrorMessage(validate.weight.$errors)"
+              label="重さ"
+              suffix="kg"
+            />
+            <v-select
+              v-model="validate.deliveryType.$model"
+              :error-messages="getErrorMessage(validate.deliveryType.$errors)"
+              label="配送種別"
+              :items="deliveryTypes"
+            />
 
             <v-row>
               <v-col cols="3">
@@ -358,15 +447,12 @@ const onSubmit = (): void => {
                 <v-text-field
                   v-model.number="validate[`box${size}Rate`].$model"
                   :error-messages="getErrorMessage(validate[`box${size}Rate`].$errors)"
+                  label="占有率"
                   type="number"
                   min="0"
                   max="100"
-                  label="占有率"
-                >
-                  <template #append>
-                    %
-                  </template>
-                </v-text-field>
+                  suffix="％"
+                />
               </v-col>
             </v-row>
           </v-card-text>
@@ -374,16 +460,15 @@ const onSubmit = (): void => {
       </div>
     </v-col>
 
-    <v-col cols="4">
+    <v-col sm="12" md="12" lg="4">
       <v-card elevation="0" class="mb-4">
         <v-card-title>商品ステータス</v-card-title>
         <v-card-text>
           <v-select
-            v-model="formDataValue.public"
+            v-model="validate.public.$model"
+            :error-messages="getErrorMessage(validate.public.$errors)"
             label="ステータス"
-            :items="statusItems"
-            item-title="text"
-            item-value="value"
+            :items="statuses"
           />
         </v-card-text>
       </v-card>
@@ -391,30 +476,49 @@ const onSubmit = (): void => {
       <v-card elevation="0" class="mb-4">
         <v-card-title>詳細情報</v-card-title>
         <v-card-text>
-          <div class="d-flex">
-            <v-select
-              v-model="validate.productTypeId.$model"
-              :error-messages="getErrorMessage(validate.productTypeId.$errors)"
-              label="品目"
-              :items="productTypes"
-              item-title="name"
-              item-value="id"
-            />
-          </div>
           <v-select
-            v-model="formDataValue.originPrefecture"
+            v-model="selectedCategoryIdValue"
+            label="カテゴリ"
+            :items="categories"
+            item-title="name"
+            item-value="id"
+          />
+          <v-select
+            v-model="validate.productTypeId.$model"
+            :error-messages="getErrorMessage(validate.productTypeId.$errors)"
+            label="品目"
+            :items="productTypes"
+            item-title="name"
+            item-value="id"
+            no-data-text="カテゴリを先に選択してください。"
+          />
+          <v-select
+            v-model="validate.originPrefecture.$model"
+            :error-messages="getErrorMessage(validate.originPrefecture.$errors)"
             label="原産地（都道府県）"
             :items="prefecturesList"
             item-title="text"
-            item-value="text"
+            item-value="value"
           />
           <v-select
-            v-model="formDataValue.originCity"
+            v-model="validate.originCity.$model"
+            :error-messages="getErrorMessage(validate.originCity.$errors)"
             :items="cityListItems"
             item-title="text"
             item-value="text"
             label="原産地（市町村）"
             no-data-text="原産地（都道府県）を先に選択してください。"
+          />
+          <v-select
+            v-model="validate.productTagIds.$model"
+            label="商品タグ"
+            :error-messages="getErrorMessage(validate.productTagIds.$errors)"
+            :items="productTags"
+            item-title="name"
+            item-value="id"
+            closable-chips
+            multiple
+            density="comfortable"
           />
         </v-card-text>
       </v-card>

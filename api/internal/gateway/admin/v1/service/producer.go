@@ -3,6 +3,7 @@ package service
 import (
 	"strings"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
@@ -41,12 +42,25 @@ func NewProducer(producer *entity.Producer, coordinator *Coordinator) *Producer 
 			Email:             producer.Email,
 			PhoneNumber:       producer.PhoneNumber,
 			PostalCode:        producer.PostalCode,
-			Prefecture:        producer.Prefecture,
+			Prefecture:        codes.PrefectureNames[producer.Prefecture],
 			City:              producer.City,
 			AddressLine1:      producer.AddressLine1,
 			AddressLine2:      producer.AddressLine2,
 			CreatedAt:         producer.CreatedAt.Unix(),
 			UpdatedAt:         producer.CreatedAt.Unix(),
+		},
+	}
+}
+
+func (p *Producer) AuthUser() *AuthUser {
+	return &AuthUser{
+		AuthUser: response.AuthUser{
+			AdminID:      p.ID,
+			Role:         AdminRoleProducer.Response(),
+			Username:     p.Username,
+			Email:        p.Email,
+			ThumbnailURL: p.ThumbnailURL,
+			Thumbnails:   p.Thumbnails,
 		},
 	}
 }

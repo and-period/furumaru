@@ -122,6 +122,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.contactRoutes(v1.Group("/contacts"))
 	h.threadRoutes(v1.Group("/contacts/:contactId/threads"))
 	h.contactCategoryRoutes(v1.Group("/contact-categories"))
+	h.contactReadRoutes(v1.Group("/contact-reads"))
 }
 
 /**

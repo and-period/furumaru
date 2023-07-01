@@ -108,6 +108,7 @@ type ProductType interface {
 type Promotion interface {
 	List(ctx context.Context, params *ListPromotionsParams, fields ...string) (entity.Promotions, error)
 	Count(ctx context.Context, params *ListPromotionsParams) (int64, error)
+	MultiGet(ctx context.Context, promotionIDs []string, fields ...string) (entity.Promotions, error)
 	Get(ctx context.Context, promotionID string, fields ...string) (*entity.Promotion, error)
 	Create(ctx context.Context, promotion *entity.Promotion) error
 	Update(ctx context.Context, promotionID string, params *UpdatePromotionParams) error
@@ -246,25 +247,30 @@ func (p *ListProductsParams) stmt(stmt *gorm.DB) *gorm.DB {
 }
 
 type UpdateProductParams struct {
-	ProducerID       string
-	TypeID           string
-	Name             string
-	Description      string
-	Public           bool
-	Inventory        int64
-	Weight           int64
-	WeightUnit       entity.WeightUnit
-	Item             int64
-	ItemUnit         string
-	ItemDescription  string
-	Media            entity.MultiProductMedia
-	Price            int64
-	DeliveryType     entity.DeliveryType
-	Box60Rate        int64
-	Box80Rate        int64
-	Box100Rate       int64
-	OriginPrefecture string
-	OriginCity       string
+	ProducerID        string
+	TypeID            string
+	TagIDs            []string
+	Name              string
+	Description       string
+	Public            bool
+	Inventory         int64
+	Weight            int64
+	WeightUnit        entity.WeightUnit
+	Item              int64
+	ItemUnit          string
+	ItemDescription   string
+	Media             entity.MultiProductMedia
+	Price             int64
+	Cost              int64
+	ExpirationDate    int64
+	RecommendedPoints []string
+	StorageMethodType entity.StorageMethodType
+	DeliveryType      entity.DeliveryType
+	Box60Rate         int64
+	Box80Rate         int64
+	Box100Rate        int64
+	OriginPrefecture  int64
+	OriginCity        string
 }
 
 type ListProductTagsParams struct {

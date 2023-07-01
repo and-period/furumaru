@@ -190,12 +190,11 @@ func TestNotifyNotification(t *testing.T) {
 		ID:    "notification-id",
 		Title: "お知らせ件名",
 		Body:  "お知らせ内容",
-		Targets: []entity.TargetType{
-			entity.PostTargetUsers,
-			entity.PostTargetCoordinators,
-			entity.PostTargetProducers,
+		Targets: []entity.NotificationTarget{
+			entity.NotificationTargetUsers,
+			entity.NotificationTargetCoordinators,
+			entity.NotificationTargetProducers,
 		},
-		CreatorName: "&.スタッフ",
 		PublishedAt: now,
 	}
 	coordinators := uentity.Coordinators{{AdminID: "admin-id"}}
@@ -242,7 +241,6 @@ func TestNotifyNotification(t *testing.T) {
 								MessageID:   entity.MessageIDNotification,
 								MessageType: entity.MessageTypeNotification,
 								Title:       "お知らせ件名",
-								Author:      "&.スタッフ",
 								Link:        "htts://admin.and-period.jp/notifications/notification-id",
 								ReceivedAt:  payload.Message.ReceivedAt, // ignore
 							},
@@ -279,7 +277,6 @@ func TestNotifyNotification(t *testing.T) {
 								ReportID:    entity.ReportIDNotification,
 								Overview:    "お知らせ件名",
 								Detail:      "お知らせ内容",
-								Author:      "&.スタッフ",
 								Link:        "htts://admin.and-period.jp/notifications/notification-id",
 								PublishedAt: payload.Report.PublishedAt, // ignore
 							},
@@ -296,7 +293,7 @@ func TestNotifyNotification(t *testing.T) {
 		{
 			name: "success to target none",
 			setup: func(ctx context.Context, mocks *mocks) {
-				notification := &entity.Notification{Targets: []entity.TargetType{}}
+				notification := &entity.Notification{Targets: []entity.NotificationTarget{}}
 				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
 				mocks.db.ReceivedQueue.EXPECT().Create(gomock.Any(), gomock.Any()).Return(nil)
 				mocks.producer.EXPECT().SendMessage(gomock.Any(), gomock.Any()).Return("", nil)

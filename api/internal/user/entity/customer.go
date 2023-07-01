@@ -10,7 +10,7 @@ type Customer struct {
 	LastnameKana  string    `gorm:""`                     // 姓(かな)
 	FirstnameKana string    `gorm:""`                     // 名(かな)
 	PostalCode    string    `gorm:""`                     // 郵便番号
-	Prefecture    string    `gorm:""`                     // 都道府県
+	Prefecture    int64     `gorm:""`                     // 都道府県
 	City          string    `gorm:""`                     // 市区町村
 	AddressLine1  string    `gorm:""`                     // 町名・番地
 	AddressLine2  string    `gorm:""`                     // ビル名・号室など
