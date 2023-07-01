@@ -168,6 +168,75 @@ func TestPromotion_Count(t *testing.T) {
 	}
 }
 
+func TestPromotion_MultiGet(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	promotions := make(entity.Promotions, 3)
+	promotions[0] = testPromotion("promotion-id01", "code0001", now())
+	promotions[1] = testPromotion("promotion-id02", "code0002", now())
+	promotions[2] = testPromotion("promotion-id03", "code0003", now())
+	err = db.DB.Create(&promotions).Error
+	require.NoError(t, err)
+
+	type args struct {
+		promotionIDs []string
+	}
+	type want struct {
+		promotions entity.Promotions
+		hasErr     bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			args: args{
+				promotionIDs: []string{
+					"promotion-id01",
+					"promotion-id02",
+					"promotion-id03",
+				},
+			},
+			want: want{
+				promotions: promotions,
+				hasErr:     false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &promotion{db: db, now: now}
+			actual, err := db.MultiGet(ctx, tt.args.promotionIDs)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.ElementsMatch(t, tt.want.promotions, actual)
+		})
+	}
+}
+
 func TestPromotion_Get(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

@@ -77,6 +77,26 @@ func (mr *MockAdminMockRecorder) GetByCognitoID(ctx, cognitoID interface{}, fiel
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByCognitoID", reflect.TypeOf((*MockAdmin)(nil).GetByCognitoID), varargs...)
 }
 
+// GetByEmail mocks base method.
+func (m *MockAdmin) GetByEmail(ctx context.Context, email string, fields ...string) (*entity.Admin, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, email}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetByEmail", varargs...)
+	ret0, _ := ret[0].(*entity.Admin)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByEmail indicates an expected call of GetByEmail.
+func (mr *MockAdminMockRecorder) GetByEmail(ctx, email interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, email}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByEmail", reflect.TypeOf((*MockAdmin)(nil).GetByEmail), varargs...)
+}
+
 // MultiGet mocks base method.
 func (m *MockAdmin) MultiGet(ctx context.Context, adminIDs []string, fields ...string) (entity.Admins, error) {
 	m.ctrl.T.Helper()
@@ -123,6 +143,20 @@ func (m *MockAdmin) UpdateEmail(ctx context.Context, adminID, email string) erro
 func (mr *MockAdminMockRecorder) UpdateEmail(ctx, adminID, email interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateEmail", reflect.TypeOf((*MockAdmin)(nil).UpdateEmail), ctx, adminID, email)
+}
+
+// UpdateSignInAt mocks base method.
+func (m *MockAdmin) UpdateSignInAt(ctx context.Context, adminID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateSignInAt", ctx, adminID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateSignInAt indicates an expected call of UpdateSignInAt.
+func (mr *MockAdminMockRecorder) UpdateSignInAt(ctx, adminID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateSignInAt", reflect.TypeOf((*MockAdmin)(nil).UpdateSignInAt), ctx, adminID)
 }
 
 // MockAdministrator is a mock of Administrator interface.
@@ -607,6 +641,21 @@ func NewMockProducer(ctrl *gomock.Controller) *MockProducer {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockProducer) EXPECT() *MockProducerMockRecorder {
 	return m.recorder
+}
+
+// AggregateByCoordinatorID mocks base method.
+func (m *MockProducer) AggregateByCoordinatorID(ctx context.Context, coordinatorIDs []string) (map[string]int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AggregateByCoordinatorID", ctx, coordinatorIDs)
+	ret0, _ := ret[0].(map[string]int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AggregateByCoordinatorID indicates an expected call of AggregateByCoordinatorID.
+func (mr *MockProducerMockRecorder) AggregateByCoordinatorID(ctx, coordinatorIDs interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AggregateByCoordinatorID", reflect.TypeOf((*MockProducer)(nil).AggregateByCoordinatorID), ctx, coordinatorIDs)
 }
 
 // Count mocks base method.

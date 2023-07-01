@@ -17,6 +17,10 @@ type Params struct {
 }
 
 type Database struct {
+	Contact         Contact
+	ContactCategory ContactCategory
+	ContactRead     ContactRead
+	Thread          Thread
 	Message         Message
 	MessageTemplate MessageTemplate
 	Notification    Notification
@@ -28,6 +32,7 @@ type Database struct {
 
 func NewDatabase(params *Params) *Database {
 	return &Database{
+		Contact:         NewContact(params.Database),
 		Message:         NewMessage(params.Database),
 		MessageTemplate: NewMessageTemplate(params.Database),
 		Notification:    NewNotification(params.Database),
@@ -41,6 +46,36 @@ func NewDatabase(params *Params) *Database {
 /**
  * interface
  */
+
+type Contact interface {
+	List(ctx context.Context, params *ListContactsParams, fields ...string) (entity.Contacts, error)
+	Count(ctx context.Context) (int64, error)
+	Get(ctx context.Context, contactID string, fields ...string) (*entity.Contact, error)
+	Create(ctx context.Context, contact *entity.Contact) error
+	Update(ctx context.Context, contactID string, params *UpdateContactParams) error
+	Delete(ctx context.Context, contactID string) error
+}
+
+type ContactCategory interface {
+	Get(ctx context.Context, categoryID string, fields ...string) (*entity.ContactCategory, error)
+	List(ctx context.Context, params *ListContactCategoriesParams, fields ...string) (entity.ContactCategories, error)
+	Create(ctx context.Context, category *entity.ContactCategory) error
+}
+
+type ContactRead interface {
+	Get(ctx context.Context, contactID, userID string, fields ...string) (*entity.ContactRead, error)
+	Create(ctx context.Context, contactRead *entity.ContactRead) error
+	UpdateRead(ctx context.Context, params *UpdateContactReadFlagParams) error
+}
+
+type Thread interface {
+	Get(ctx context.Context, threadID string, fields ...string) (*entity.Thread, error)
+	ListByContactID(ctx context.Context, params *ListThreadsByContactIDParams, fields ...string) (entity.Threads, error)
+	Count(ctx context.Context, params *ListThreadsByContactIDParams) (int64, error)
+	Create(ctx context.Context, thread *entity.Thread) error
+	Update(ctx context.Context, threadID string, params *UpdateThreadParams) error
+	Delete(ctx context.Context, threadID string) error
+}
 
 type Message interface {
 	List(ctx context.Context, params *ListMessagesParams, fields ...string) (entity.Messages, error)
@@ -121,12 +156,11 @@ func (p *ListMessagesParams) stmt(stmt *gorm.DB) *gorm.DB {
 }
 
 type ListNotificationsParams struct {
-	Limit         int
-	Offset        int
-	Since         time.Time
-	Until         time.Time
-	OnlyPublished bool
-	Orders        []*ListNotificationsOrder
+	Limit  int
+	Offset int
+	Since  time.Time
+	Until  time.Time
+	Orders []*ListNotificationsOrder
 }
 
 type ListNotificationsOrder struct {
@@ -141,9 +175,6 @@ func (p *ListNotificationsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if !p.Until.IsZero() {
 		stmt = stmt.Where("published_at <= ?", p.Until)
 	}
-	if p.OnlyPublished {
-		stmt = stmt.Where("public = ?", true)
-	}
 	for i := range p.Orders {
 		var value string
 		if p.Orders[i].OrderByASC {
@@ -157,13 +188,14 @@ func (p *ListNotificationsParams) stmt(stmt *gorm.DB) *gorm.DB {
 }
 
 type UpdateNotificationParams struct {
+	Targets     []entity.NotificationTarget
 	Title       string
 	Body        string
-	Targets     []entity.TargetType
+	Note        string
 	PublishedAt time.Time
-	Public      bool
 	UpdatedBy   string
 }
+
 type ListSchedulesParams struct {
 	Types    []entity.ScheduleType
 	Statuses []entity.ScheduleStatus
@@ -185,4 +217,52 @@ func (p *ListSchedulesParams) stmt(stmt *gorm.DB) *gorm.DB {
 		stmt = stmt.Where("sent_at <= ?", p.Until)
 	}
 	return stmt
+}
+
+type ListContactsParams struct {
+	Limit  int
+	Offset int
+}
+
+type ListContactCategoriesParams struct {
+	Limit  int
+	Offset int
+}
+
+type ListThreadsByContactIDParams struct {
+	ContactID string
+	Limit     int
+	Offset    int
+}
+
+func (p *ListThreadsByContactIDParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.ContactID != "" {
+		stmt = stmt.Where("contact_id = ?", p.ContactID)
+	}
+	return stmt
+}
+
+type UpdateThreadParams struct {
+	Content  string
+	UserID   string
+	UserType int32
+}
+
+type UpdateContactParams struct {
+	Title       string
+	CategoryID  string
+	Content     string
+	Username    string
+	UserID      string
+	Email       string
+	PhoneNumber string
+	Status      entity.ContactStatus
+	ResponderID string
+	Note        string
+}
+
+type UpdateContactReadFlagParams struct {
+	ContactID string
+	UserID    string
+	Read      bool
 }

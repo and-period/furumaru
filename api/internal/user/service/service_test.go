@@ -10,6 +10,7 @@ import (
 	mock_media "github.com/and-period/furumaru/api/mock/media"
 	mock_messenger "github.com/and-period/furumaru/api/mock/messenger"
 	mock_cognito "github.com/and-period/furumaru/api/mock/pkg/cognito"
+	mock_store "github.com/and-period/furumaru/api/mock/store"
 	mock_database "github.com/and-period/furumaru/api/mock/user/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
@@ -21,6 +22,7 @@ type mocks struct {
 	db        *dbMocks
 	adminAuth *mock_cognito.MockClient
 	userAuth  *mock_cognito.MockClient
+	store     *mock_store.MockService
 	messenger *mock_messenger.MockService
 	media     *mock_media.MockService
 }
@@ -55,6 +57,7 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 		db:        newDBMocks(ctrl),
 		adminAuth: mock_cognito.NewMockClient(ctrl),
 		userAuth:  mock_cognito.NewMockClient(ctrl),
+		store:     mock_store.NewMockService(ctrl),
 		messenger: mock_messenger.NewMockService(ctrl),
 		media:     mock_media.NewMockService(ctrl),
 	}
@@ -90,6 +93,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		},
 		AdminAuth: mocks.adminAuth,
 		UserAuth:  mocks.userAuth,
+		Store:     mocks.store,
 		Messenger: mocks.messenger,
 		Media:     mocks.media,
 	}

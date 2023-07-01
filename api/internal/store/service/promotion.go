@@ -48,6 +48,16 @@ func (s *service) ListPromotions(
 	return promotions, total, nil
 }
 
+func (s *service) MultiGetPromotions(
+	ctx context.Context, in *store.MultiGetPromotionsInput,
+) (entity.Promotions, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	promotions, err := s.db.Promotion.MultiGet(ctx, in.PromotionIDs)
+	return promotions, exception.InternalError(err)
+}
+
 func (s *service) GetPromotion(ctx context.Context, in *store.GetPromotionInput) (*entity.Promotion, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)

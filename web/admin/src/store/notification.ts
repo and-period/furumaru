@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { defineStore } from 'pinia'
 
 import { useCommonStore } from './common'
@@ -8,17 +7,11 @@ import {
   NotificationsResponse,
   UpdateNotificationRequest
 } from '~/types/api'
-import {
-  AuthError,
-  ConnectionError,
-  InternalServerError,
-  NotFoundError,
-  ValidationError
-} from '~/types/exception'
 import { apiClient } from '~/plugins/api-client'
 
 export const useNotificationStore = defineStore('notification', {
   state: () => ({
+    notification: {} as NotificationResponse,
     notifications: [] as NotificationsResponse['notifications'],
     totalItems: 0
   }),
@@ -27,18 +20,31 @@ export const useNotificationStore = defineStore('notification', {
      * 登録済みのお知らせ一覧を取得する非同期関数
      * @param limit 取得上限数
      * @param offset 取得開始位置
+     * @param orders ソートキー
      * @returns
      */
-    async fetchNotifications (limit = 20, offset = 0): Promise<void> {
+    async fetchNotifications (limit = 20, offset = 0, orders = []): Promise<void> {
       try {
-        const res = await apiClient.notificationApi().v1ListNotifications(
-          limit,
-          offset
-        )
+        const res = await apiClient.notificationApi().v1ListNotifications(limit, offset, undefined, undefined, orders.join(''))
         const { notifications, total }: NotificationsResponse = res.data
 
         this.notifications = notifications
         this.totalItems = total
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * お知らせIDからお知らせ情報情報を取得する非同期関数
+     * @param id お知らせID
+     * @returns お知らせ情報
+     */
+    async getNotification (id: string): Promise<NotificationResponse> {
+      try {
+        const res = await apiClient.notificationApi().v1GetNotification(id)
+        this.notification = res.data
+        return res.data
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -58,28 +64,8 @@ export const useNotificationStore = defineStore('notification', {
           message: `${payload.title}を作成しました。`,
           color: 'info'
         })
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 400:
-              return Promise.reject(
-                new ValidationError('入力内容に誤りがあります。', error)
-              )
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
@@ -95,75 +81,10 @@ export const useNotificationStore = defineStore('notification', {
           message: '品物削除が完了しました',
           color: 'info'
         })
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 400:
-              return Promise.reject(
-                new ValidationError(
-                  '削除できませんでした。管理者にお問い合わせしてください。',
-                  error
-                )
-              )
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 404:
-              return Promise.reject(
-                new NotFoundError(
-                  '削除するお知らせが見つかりませんでした。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
       this.fetchNotifications()
-    },
-
-    /**
-     * お知らせIDからお知らせ情報情報を取得する非同期関数
-     * @param id お知らせID
-     * @returns お知らせ情報
-     */
-    async getNotification (id: string): Promise<NotificationResponse> {
-      try {
-        const res = await apiClient.notificationApi().v1GetNotification(id)
-        return res.data
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください', error)
-              )
-            case 404:
-              return Promise.reject(
-                new NotFoundError(
-                  '一致するお知らせ情報が見つかりませんでした。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
-      }
     },
 
     /**
@@ -171,7 +92,7 @@ export const useNotificationStore = defineStore('notification', {
      * @param id セールID
      * @param payload
      */
-    async editNotification (
+    async updateNotification (
       id: string,
       payload: UpdateNotificationRequest
     ): Promise<void> {
@@ -182,34 +103,8 @@ export const useNotificationStore = defineStore('notification', {
           message: 'お知らせ情報の編集が完了しました',
           color: 'info'
         })
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 400:
-              return Promise.reject(
-                new ValidationError('入力内容に誤りがあります。', error)
-              )
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください', error)
-              )
-            case 404:
-              return Promise.reject(
-                new NotFoundError(
-                  '一致するお知らせ情報が見つかりませんでした。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     }
   }

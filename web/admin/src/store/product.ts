@@ -1,7 +1,6 @@
-import axios from 'axios'
 import { defineStore } from 'pinia'
-import { apiClient } from '~/plugins/api-client'
 
+import { apiClient } from '~/plugins/api-client'
 import {
   CreateProductRequest,
   ProductResponse,
@@ -9,15 +8,10 @@ import {
   UpdateProductRequest,
   UploadImageResponse
 } from '~/types/api'
-import {
-  AuthError,
-  ConnectionError,
-  InternalServerError,
-  ValidationError
-} from '~/types/exception'
 
 export const useProductStore = defineStore('product', {
   state: () => ({
+    product: {} as ProductResponse,
     products: [] as ProductsResponseProductsInner[],
     totalItems: 0
   }),
@@ -37,22 +31,23 @@ export const useProductStore = defineStore('product', {
         )
         this.products = res.data.products
         this.totalItems = res.data.total
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          switch (error.response.status) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * 商品詳細を取得する非同期関数
+     * @param productId
+     * @returns
+     */
+    async getProduct (productId: string): Promise<ProductResponse> {
+      try {
+        const res = await apiClient.productApi().v1GetProduct(productId)
+        this.product = res.data
+        return res.data
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
@@ -72,29 +67,8 @@ export const useProductStore = defineStore('product', {
           }
         )
         return res.data
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          switch (error.response.status) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 400:
-              return Promise.reject(
-                new ValidationError(
-                  'このファイルはアップロードできません。',
-                  error
-                )
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
+      } catch (err) {
+        return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
     },
 
@@ -107,53 +81,21 @@ export const useProductStore = defineStore('product', {
           ...payload,
           inventory: Number(payload.inventory)
         })
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          switch (error.response.status) {
-            case 401:
-              return Promise.reject(
-                new AuthError('認証エラー。再度ログインをしてください。', error)
-              )
-            case 400:
-              return Promise.reject(
-                new ValidationError('入力項目に誤りがあります。', error)
-              )
-            case 500:
-            default:
-              return Promise.reject(new InternalServerError(error))
-          }
-        }
-        throw new InternalServerError(error)
-      }
-    },
-
-    /**
-     * 商品詳細を取得する非同期関数
-     * @param id
-     * @returns
-     */
-    async getProduct (id: string): Promise<ProductResponse> {
-      try {
-        const res = await apiClient.productApi().v1GetProduct(id)
-        return res.data
-      } catch (error) {
-        return this.errorHandler(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
     /**
      * 商品を更新する関数
-     * @param id
+     * @param productId
      * @param payload
      */
-    async updateProduct (id: string, payload: UpdateProductRequest) {
+    async updateProduct (productId: string, payload: UpdateProductRequest) {
       try {
-        await apiClient.productApi().v1UpdateProduct(id, payload)
-      } catch (error) {
-        return this.errorHandler(error)
+        await apiClient.productApi().v1UpdateProduct(productId, payload)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 

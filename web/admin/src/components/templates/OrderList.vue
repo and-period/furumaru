@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { mdiImport, mdiExport, mdiPencil } from '@mdi/js'
+import { mdiImport, mdiExport } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components'
 import { unix } from 'dayjs'
 
 import { AlertType } from '~/lib/hooks'
-import { DeliveryType, OrdersResponse, PaymentStatus } from '~/types/api'
+import { DeliveryType, FulfillmentStatus, OrdersResponse, PaymentStatus } from '~/types/api'
 import { Order } from '~/types/props'
 
 // TODO: API設計が決まり次第型定義の厳格化
@@ -67,6 +67,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
+  (e: 'click:row', orderId: string): void
   (e: 'click:edit', orderId: string): void
   (e: 'click:update-page', page: number): void
   (e: 'click:update-items-per-page', page: number): void
@@ -84,33 +85,28 @@ const headers: VDataTable['headers'] = [
     key: 'userName'
   },
   {
-    title: '配送ステータス',
+    title: '支払いステータス',
     key: 'payment.status'
-  },
-  {
-    title: '購入日時',
-    key: 'orderedAt'
-  },
-  {
-    title: '配送方法',
-    key: 'fulfillment.shippingMethod'
   },
   {
     title: '購入金額',
     key: 'payment.total'
   },
   {
+    title: '購入日時',
+    key: 'orderedAt'
+  },
+  {
+    title: '配送ステータス',
+    key: 'fulfillment.status'
+  },
+  {
+    title: '配送方法',
+    key: 'fulfillment.shippingMethod'
+  },
+  {
     title: '伝票番号',
     key: 'payment.paymentId'
-  },
-  {
-    title: 'Actions',
-    key: 'actions',
-    sortable: false
-  },
-  {
-    title: '注文ID',
-    key: 'id'
   }
 ]
 const fulfillmentCompanies: Order[] = [
@@ -135,7 +131,7 @@ const exportFormDataValue = computed({
   set: (v: exportFormData): void => emit('update:export-form-data', v)
 })
 
-const getStatus = (status: PaymentStatus): string => {
+const getPaymentStatus = (status: PaymentStatus): string => {
   switch (status) {
     case PaymentStatus.UNKNOWN:
       return '不明'
@@ -156,7 +152,7 @@ const getStatus = (status: PaymentStatus): string => {
   }
 }
 
-const getStatusColor = (status: PaymentStatus): string => {
+const getPaymentStatusColor = (status: PaymentStatus): string => {
   switch (status) {
     case PaymentStatus.UNPAID:
       return 'secondary'
@@ -172,6 +168,28 @@ const getStatusColor = (status: PaymentStatus): string => {
       return 'error'
     default:
       return 'unkown'
+  }
+}
+
+const getFulfillmentStatus = (status: FulfillmentStatus): string => {
+  switch (status) {
+    case FulfillmentStatus.FULFILLED:
+      return '発送済み'
+    case FulfillmentStatus.UNFULFILLED:
+      return '未発送'
+    default:
+      return '不明'
+  }
+}
+
+const getFulfillmentStatusColor = (status: FulfillmentStatus): string => {
+  switch (status) {
+    case FulfillmentStatus.FULFILLED:
+      return 'primary'
+    case FulfillmentStatus.UNFULFILLED:
+      return 'secondary'
+    default:
+      return 'unknown'
   }
 }
 
@@ -208,8 +226,8 @@ const onClickUpdateItemsPerPage = (page: number): void => {
   emit('click:update-items-per-page', page)
 }
 
-const onEdit = (orderId: string): void => {
-  emit('click:edit', orderId)
+const onClickRow = (orderId: string): void => {
+  emit('click:row', orderId)
 }
 
 const onSubmitImport = (): void => {
@@ -223,61 +241,65 @@ const onSubmitExport = (): void => {
 
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+
   <v-dialog v-model="importDialogValue" width="500">
     <v-card>
       <v-card-title class="text-h6 primaryLight">
         ファイルの取り込み
       </v-card-title>
 
-      <v-select
-        v-model="importFormDataValue.company"
-        label="配送会社"
-        class="mr-2 ml-2"
-        :items="fulfillmentCompanies"
-        item-title="name"
-        item-value="value"
-      />
-      <v-file-input class="mr-2" label="CSVを選択" />
-      <v-divider />
+      <v-card-text>
+        <v-select
+          v-model="importFormDataValue.company"
+          label="配送会社"
+          class="mr-2 ml-2"
+          :items="fulfillmentCompanies"
+          item-title="name"
+          item-value="value"
+        />
+        <v-file-input class="mr-2" label="CSVを選択" />
+      </v-card-text>
       <v-card-actions>
         <v-spacer />
         <v-btn color="error" variant="text" @click="toggleImportDialog">
           キャンセル
         </v-btn>
-        <v-btn color="primary" variant="outlined" @click="onSubmitImport">
+        <v-btn color="primary" variant="outlined" :loading="loading" @click="onSubmitImport">
           登録
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
+
   <v-dialog v-model="exportDialogValue" width="500">
     <v-card>
       <v-card-title class="text-h6 primaryLight">
         ファイルの出力
       </v-card-title>
-      <v-divider />
 
-      <v-select
-        v-model="exportFormDataValue.company"
-        label="配送会社"
-        class="mr-2 ml-2"
-        :items="fulfillmentCompanies"
-        item-title="deliveryCompany"
-        item-value="value"
-      />
-      <v-file-input class="mr-2" label="CSVを選択" />
-      <v-divider />
+      <v-card-text>
+        <v-select
+          v-model="exportFormDataValue.company"
+          label="配送会社"
+          class="mr-2 ml-2"
+          :items="fulfillmentCompanies"
+          item-title="deliveryCompany"
+          item-value="value"
+        />
+        <v-file-input class="mr-2" label="CSVを選択" />
+      </v-card-text>
       <v-card-actions>
         <v-spacer />
         <v-btn color="error" variant="text" @click="toggleExportDialog">
           キャンセル
         </v-btn>
-        <v-btn color="primary" variant="outlined" @click="onSubmitExport">
+        <v-btn color="primary" variant="outlined" :loading="loading" @click="onSubmitExport">
           登録
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
+
   <v-card class="mt-4" flat>
     <v-card-title class="d-flex flex-row">
       注文
@@ -298,13 +320,20 @@ const onSubmitExport = (): void => {
         :items="props.orders"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"
+        hover
         no-data-text="表示する注文がありません"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
+        @click:row="(_: any, {item}: any) => onClickRow(item.raw.id)"
       >
         <template #[`item.payment.status`]="{ item }">
-          <v-chip size="small" :color="getStatusColor(item.raw.payment.status)">
-            {{ getStatus(item.raw.payment.status) }}
+          <v-chip size="small" :color="getPaymentStatusColor(item.raw.payment.status)">
+            {{ getPaymentStatus(item.raw.payment.status) }}
+          </v-chip>
+        </template>
+        <template #[`item.fulfillment.status`]="{ item }">
+          <v-chip size="small" :color="getFulfillmentStatusColor(item.raw.fulfillment.status)">
+            {{ getFulfillmentStatus(item.raw.fulfillment.status) }}
           </v-chip>
         </template>
         <template #[`item.fulfillment.shippingMethod`]="{ item }">
@@ -312,12 +341,6 @@ const onSubmitExport = (): void => {
         </template>
         <template #[`item.orderedAt`]="{ item }">
           {{ getOrderdAt(item.raw.orderedAt) }}
-        </template>
-        <template #[`item.actions`]="{ item }">
-          <v-btn variant="outlined" color="primary" size="small" @click="onEdit(item.raw.id)">
-            <v-icon size="small" :icon="mdiPencil" />
-            詳細
-          </v-btn>
         </template>
       </v-data-table-server>
     </v-card-text>

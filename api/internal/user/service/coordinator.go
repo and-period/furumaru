@@ -2,9 +2,12 @@ package service
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
+	"github.com/and-period/furumaru/api/internal/store"
+	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
@@ -71,6 +74,13 @@ func (s *service) CreateCoordinator(
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
+	productTypes, err := s.multiGetProductTypes(ctx, in.ProductTypeIDs)
+	if err != nil {
+		return nil, exception.InternalError(err)
+	}
+	if len(productTypes) != len(in.ProductTypeIDs) {
+		return nil, fmt.Errorf("api: invalid product type ids: %w", exception.ErrInvalidArgument)
+	}
 	cognitoID := uuid.Base58Encode(uuid.New())
 	password := random.NewStrings(size)
 	adminParams := &entity.NewAdminParams{
@@ -83,20 +93,23 @@ func (s *service) CreateCoordinator(
 		Email:         in.Email,
 	}
 	params := &entity.NewCoordinatorParams{
-		Admin:            entity.NewAdmin(adminParams),
-		CompanyName:      in.CompanyName,
-		StoreName:        in.StoreName,
-		ThumbnailURL:     in.ThumbnailURL,
-		HeaderURL:        in.HeaderURL,
-		TwitterAccount:   in.TwitterAccount,
-		InstagramAccount: in.InstagramAccount,
-		FacebookAccount:  in.FacebookAccount,
-		PhoneNumber:      in.PhoneNumber,
-		PostalCode:       in.PostalCode,
-		Prefecture:       in.Prefecture,
-		City:             in.City,
-		AddressLine1:     in.AddressLine1,
-		AddressLine2:     in.AddressLine2,
+		Admin:             entity.NewAdmin(adminParams),
+		MarcheName:        in.MarcheName,
+		Username:          in.Username,
+		Profile:           in.Profile,
+		ProductTypeIDs:    in.ProductTypeIDs,
+		ThumbnailURL:      in.ThumbnailURL,
+		HeaderURL:         in.HeaderURL,
+		PromotionVideoURL: in.PromotionVideoURL,
+		BonusVideoURL:     in.BonusVideoURL,
+		InstagramID:       in.InstagramID,
+		FacebookID:        in.FacebookID,
+		PhoneNumber:       in.PhoneNumber,
+		PostalCode:        in.PostalCode,
+		Prefecture:        in.Prefecture,
+		City:              in.City,
+		AddressLine1:      in.AddressLine1,
+		AddressLine2:      in.AddressLine2,
 	}
 	coordinator := entity.NewCoordinator(params)
 	auth := s.createCognitoAdmin(cognitoID, in.Email, password)
@@ -127,24 +140,34 @@ func (s *service) UpdateCoordinator(ctx context.Context, in *user.UpdateCoordina
 	if err != nil {
 		return exception.InternalError(err)
 	}
+	productTypes, err := s.multiGetProductTypes(ctx, in.ProductTypeIDs)
+	if err != nil {
+		return exception.InternalError(err)
+	}
+	if len(productTypes) != len(in.ProductTypeIDs) {
+		return fmt.Errorf("api: invalid product type ids: %w", exception.ErrInvalidArgument)
+	}
 	params := &database.UpdateCoordinatorParams{
-		Lastname:         in.Lastname,
-		Firstname:        in.Firstname,
-		LastnameKana:     in.LastnameKana,
-		FirstnameKana:    in.FirstnameKana,
-		CompanyName:      in.CompanyName,
-		StoreName:        in.StoreName,
-		ThumbnailURL:     in.ThumbnailURL,
-		HeaderURL:        in.HeaderURL,
-		TwitterAccount:   in.TwitterAccount,
-		InstagramAccount: in.InstagramAccount,
-		FacebookAccount:  in.FacebookAccount,
-		PhoneNumber:      in.PhoneNumber,
-		PostalCode:       in.PostalCode,
-		Prefecture:       in.Prefecture,
-		City:             in.City,
-		AddressLine1:     in.AddressLine1,
-		AddressLine2:     in.AddressLine2,
+		Lastname:          in.Lastname,
+		Firstname:         in.Firstname,
+		LastnameKana:      in.LastnameKana,
+		FirstnameKana:     in.FirstnameKana,
+		MarcheName:        in.MarcheName,
+		Username:          in.Username,
+		Profile:           in.Profile,
+		ProductTypeIDs:    in.ProductTypeIDs,
+		ThumbnailURL:      in.ThumbnailURL,
+		HeaderURL:         in.HeaderURL,
+		PromotionVideoURL: in.PromotionVideoURL,
+		BonusVideoURL:     in.BonusVideoURL,
+		InstagramID:       in.InstagramID,
+		FacebookID:        in.FacebookID,
+		PhoneNumber:       in.PhoneNumber,
+		PostalCode:        in.PostalCode,
+		Prefecture:        in.Prefecture,
+		City:              in.City,
+		AddressLine1:      in.AddressLine1,
+		AddressLine2:      in.AddressLine2,
 	}
 	if err := s.db.Coordinator.Update(ctx, in.CoordinatorID, params); err != nil {
 		return exception.InternalError(err)
@@ -239,6 +262,26 @@ func (s *service) DeleteCoordinator(ctx context.Context, in *user.DeleteCoordina
 	}
 	err := s.db.Coordinator.Delete(ctx, in.CoordinatorID, s.deleteCognitoAdmin(in.CoordinatorID))
 	return exception.InternalError(err)
+}
+
+func (s *service) AggregateRealatedProducers(
+	ctx context.Context, in *user.AggregateRealatedProducersInput,
+) (map[string]int64, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	res, err := s.db.Producer.AggregateByCoordinatorID(ctx, in.CoordinatorIDs)
+	return res, exception.InternalError(err)
+}
+
+func (s *service) multiGetProductTypes(ctx context.Context, productTypeIDs []string) (sentity.ProductTypes, error) {
+	if len(productTypeIDs) == 0 {
+		return sentity.ProductTypes{}, nil
+	}
+	in := &store.MultiGetProductTypesInput{
+		ProductTypeIDs: productTypeIDs,
+	}
+	return s.store.MultiGetProductTypes(ctx, in)
 }
 
 func (s *service) resizeCoordinator(ctx context.Context, coordinatorID, thumbnailURL, headerURL string) {

@@ -53,15 +53,6 @@ func TestContact(t *testing.T) {
 
 func TestContact_Fill(t *testing.T) {
 	t.Parallel()
-	contact := &Contact{
-		Title:       "お問い合わせ件名",
-		Content:     "お問い合わせ内容",
-		Username:    "お問い合わせ氏名",
-		Email:       "test-user@and-period.jp",
-		PhoneNumber: "+819012345678",
-		Status:      ContactStatusUnknown,
-		Note:        "",
-	}
 
 	tests := []struct {
 		name        string
@@ -72,8 +63,16 @@ func TestContact_Fill(t *testing.T) {
 		expect      *Contact
 	}{
 		{
-			name:        "success",
-			contact:     contact,
+			name: "success",
+			contact: &Contact{
+				Title:       "お問い合わせ件名",
+				Content:     "お問い合わせ内容",
+				Username:    "お問い合わせ氏名",
+				Email:       "test-user@and-period.jp",
+				PhoneNumber: "+819012345678",
+				Status:      ContactStatusUnknown,
+				Note:        "",
+			},
 			categoryID:  "category-id",
 			userID:      "user-id",
 			responderID: "responder-id",
@@ -87,6 +86,87 @@ func TestContact_Fill(t *testing.T) {
 				PhoneNumber: "+819012345678",
 				Status:      ContactStatusUnknown,
 				ResponderID: "responder-id",
+				Note:        "",
+			},
+		},
+		{
+			name: "success without userID",
+			contact: &Contact{
+				Title:       "お問い合わせ件名",
+				Content:     "お問い合わせ内容",
+				Username:    "お問い合わせ氏名",
+				Email:       "test-user@and-period.jp",
+				PhoneNumber: "+819012345678",
+				Status:      ContactStatusUnknown,
+				Note:        "",
+			},
+			categoryID:  "category-id",
+			userID:      "",
+			responderID: "responder-id",
+			expect: &Contact{
+				Title:       "お問い合わせ件名",
+				CategoryID:  "category-id",
+				Content:     "お問い合わせ内容",
+				Username:    "お問い合わせ氏名",
+				UserID:      "",
+				Email:       "test-user@and-period.jp",
+				PhoneNumber: "+819012345678",
+				Status:      ContactStatusUnknown,
+				ResponderID: "responder-id",
+				Note:        "",
+			},
+		},
+		{
+			name: "success without responderID",
+			contact: &Contact{
+				Title:       "お問い合わせ件名",
+				Content:     "お問い合わせ内容",
+				Username:    "お問い合わせ氏名",
+				Email:       "test-user@and-period.jp",
+				PhoneNumber: "+819012345678",
+				Status:      ContactStatusUnknown,
+				Note:        "",
+			},
+			categoryID:  "category-id",
+			userID:      "user-id",
+			responderID: "",
+			expect: &Contact{
+				Title:       "お問い合わせ件名",
+				CategoryID:  "category-id",
+				Content:     "お問い合わせ内容",
+				Username:    "お問い合わせ氏名",
+				UserID:      "user-id",
+				Email:       "test-user@and-period.jp",
+				PhoneNumber: "+819012345678",
+				Status:      ContactStatusUnknown,
+				ResponderID: "",
+				Note:        "",
+			},
+		},
+		{
+			name: "success only categoryID",
+			contact: &Contact{
+				Title:       "お問い合わせ件名",
+				Content:     "お問い合わせ内容",
+				Username:    "お問い合わせ氏名",
+				Email:       "test-user@and-period.jp",
+				PhoneNumber: "+819012345678",
+				Status:      ContactStatusUnknown,
+				Note:        "",
+			},
+			categoryID:  "category-id",
+			userID:      "",
+			responderID: "",
+			expect: &Contact{
+				Title:       "お問い合わせ件名",
+				CategoryID:  "category-id",
+				Content:     "お問い合わせ内容",
+				Username:    "お問い合わせ氏名",
+				UserID:      "",
+				Email:       "test-user@and-period.jp",
+				PhoneNumber: "+819012345678",
+				Status:      ContactStatusUnknown,
+				ResponderID: "",
 				Note:        "",
 			},
 		},

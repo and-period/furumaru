@@ -3,6 +3,7 @@ package entity
 import (
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/stretchr/testify/assert"
 )
@@ -27,11 +28,41 @@ func TestCoordinator(t *testing.T) {
 					FirstnameKana: "すたっふ",
 					Email:         "test-coordinator@and-period.jp",
 				},
-				PhoneNumber: "+819012345678",
+				PhoneNumber:       "+819012345678",
+				MarcheName:        "&.マルシェ",
+				Username:          "&.農園",
+				Profile:           "紹介文です。",
+				ProductTypeIDs:    []string{"product-type-id"},
+				ThumbnailURL:      "https://and-period.jp/thumbnail.png",
+				HeaderURL:         "https://and-period.jp/header.png",
+				PromotionVideoURL: "https://and-period.jp/promotion.mp4",
+				BonusVideoURL:     "https://and-period.jp/bonus.mp4",
+				InstagramID:       "instagram-id",
+				FacebookID:        "facebook-id",
+				PostalCode:        "1000014",
+				Prefecture:        codes.PrefectureValues["tokyo"],
+				City:              "千代田区",
+				AddressLine1:      "永田町1-7-1",
+				AddressLine2:      "",
 			},
 			expect: &Coordinator{
-				AdminID:     "admin-id",
-				PhoneNumber: "+819012345678",
+				AdminID:           "admin-id",
+				PhoneNumber:       "+819012345678",
+				MarcheName:        "&.マルシェ",
+				Username:          "&.農園",
+				Profile:           "紹介文です。",
+				ProductTypeIDs:    []string{"product-type-id"},
+				ThumbnailURL:      "https://and-period.jp/thumbnail.png",
+				HeaderURL:         "https://and-period.jp/header.png",
+				PromotionVideoURL: "https://and-period.jp/promotion.mp4",
+				BonusVideoURL:     "https://and-period.jp/bonus.mp4",
+				InstagramID:       "instagram-id",
+				FacebookID:        "facebook-id",
+				PostalCode:        "1000014",
+				Prefecture:        codes.PrefectureValues["tokyo"],
+				City:              "千代田区",
+				AddressLine1:      "永田町1-7-1",
+				AddressLine2:      "",
 				Admin: Admin{
 					CognitoID:     "cognito-id",
 					Lastname:      "&.",
@@ -67,16 +98,21 @@ func TestCoordinator_Fill(t *testing.T) {
 		{
 			name: "success",
 			coordinator: &Coordinator{
-				AdminID:        "admin-id",
-				ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
-				HeadersJSON:    []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+				AdminID:            "admin-id",
+				ProductTypeIDsJSON: []byte(`["product-type-id"]`),
+				ThumbnailsJSON:     []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+				HeadersJSON:        []byte(`[{"url":"http://example.com/media.png","size":1}]`),
 			},
 			admin: &Admin{
 				ID:        "admin-id",
 				CognitoID: "cognito-id",
 			},
 			expect: &Coordinator{
-				AdminID:        "admin-id",
+				AdminID:            "admin-id",
+				ProductTypeIDsJSON: []byte(`["product-type-id"]`),
+				ProductTypeIDs: []string{
+					"product-type-id",
+				},
 				ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
 				Thumbnails: common.Images{
 					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
@@ -102,9 +138,10 @@ func TestCoordinator_Fill(t *testing.T) {
 				CognitoID: "cognito-id",
 			},
 			expect: &Coordinator{
-				AdminID:    "admin-id",
-				Thumbnails: common.Images{},
-				Headers:    common.Images{},
+				AdminID:        "admin-id",
+				ProductTypeIDs: []string{},
+				Thumbnails:     common.Images{},
+				Headers:        common.Images{},
 				Admin: Admin{
 					ID:        "admin-id",
 					CognitoID: "cognito-id",

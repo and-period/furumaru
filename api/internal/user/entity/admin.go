@@ -22,17 +22,30 @@ const (
 	AdminRoleProducer      AdminRole = 3 // 生産者
 )
 
+// AdminStatus - 管理者ステータス
+type AdminStatus int32
+
+const (
+	AdminStatusUnknown     AdminStatus = 0
+	AdminStatusInvited     AdminStatus = 1 // 招待中
+	AdminStatusActivated   AdminStatus = 2 // 有効
+	AdminStatusDeactivated AdminStatus = 3 // 無効
+)
+
 // Admin - 管理者共通情報
 type Admin struct {
 	ID            string         `gorm:"primaryKey;<-:create"` // 管理者ID
 	CognitoID     string         `gorm:"<-:create"`            // 管理者ID (Cognito用)
 	Role          AdminRole      `gorm:"<-:create"`            // 管理者権限
+	Status        AdminStatus    `gorm:"-"`                    // 管理者ステータス
 	Lastname      string         `gorm:""`                     // 姓
 	Firstname     string         `gorm:""`                     // 名
 	LastnameKana  string         `gorm:""`                     // 姓(かな)
 	FirstnameKana string         `gorm:""`                     // 名(かな)
 	Email         string         `gorm:""`                     // メールアドレス
 	Device        string         `gorm:""`                     // デバイストークン(Push通知用)
+	FirstSignInAt time.Time      `gorm:"default:null"`         // 初回ログイン日時
+	LastSignInAt  time.Time      `gorm:"default:null"`         // 最終ログイン日時
 	CreatedAt     time.Time      `gorm:"<-:create"`            // 登録日時
 	UpdatedAt     time.Time      `gorm:""`                     // 更新日時
 	DeletedAt     gorm.DeletedAt `gorm:"default:null"`         // 削除日時
@@ -84,6 +97,17 @@ func (a *Admin) Name() string {
 	return strings.TrimSpace(strings.Join([]string{a.Lastname, a.Firstname}, " "))
 }
 
+func (a *Admin) Fill() {
+	switch {
+	case !a.DeletedAt.Time.IsZero():
+		a.Status = AdminStatusDeactivated
+	case a.FirstSignInAt.IsZero():
+		a.Status = AdminStatusInvited
+	default:
+		a.Status = AdminStatusActivated
+	}
+}
+
 func (as Admins) Map() map[string]*Admin {
 	res := make(map[string]*Admin, len(as))
 	for _, a := range as {
@@ -121,4 +145,10 @@ func (as Admins) Devices() []string {
 		set.Add(as[i].Device)
 	}
 	return set.Slice()
+}
+
+func (as Admins) Fill() {
+	for i := range as {
+		as[i].Fill()
+	}
 }

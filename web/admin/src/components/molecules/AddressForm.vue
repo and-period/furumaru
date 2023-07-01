@@ -1,11 +1,14 @@
 <script lang="ts" setup>
+import { prefecturesList } from '~/constants'
+import { Prefecture } from '~/types/api'
+
 const props = defineProps({
   postalCode: {
     type: String,
     default: ''
   },
   prefecture: {
-    type: String,
+    type: String as PropType<Prefecture>,
     default: ''
   },
   city: {
@@ -40,28 +43,24 @@ const emit = defineEmits<{
 }>()
 
 const postalCodeValue = computed({
-  get: (): any => props.postalCode,
-  set: (val: any) => emit('update:postalCode', val)
+  get: (): string => props.postalCode,
+  set: (val: string) => emit('update:postalCode', val)
 })
-
 const prefectureValue = computed({
-  get: (): any => props.prefecture,
-  set: (val: any) => emit('update:prefecture', val)
+  get: (): Prefecture => props.prefecture,
+  set: (val: Prefecture) => emit('update:prefecture', val)
 })
-
 const cityValue = computed({
-  get: (): any => props.city,
-  set: (val: any) => emit('update:city', val)
+  get: (): string => props.city,
+  set: (val: string) => emit('update:city', val)
 })
-
 const addressLine1Value = computed({
-  get: (): any => props.addressLine1,
-  set: (val: any) => emit('update:addressLine1', val)
+  get: (): string => props.addressLine1,
+  set: (val: string) => emit('update:addressLine1', val)
 })
-
 const addressLine2Value = computed({
-  get: (): any => props.addressLine2,
-  set: (val: any) => emit('update:addressLine2', val)
+  get: (): string => props.addressLine2,
+  set: (val: string) => emit('update:addressLine2', val)
 })
 
 const handleSearch = () => {
@@ -86,9 +85,12 @@ const handleSearch = () => {
       </v-btn>
       <v-spacer />
     </div>
-    <v-text-field
+    <v-select
       v-model="prefectureValue"
       label="都道府県"
+      :items="prefecturesList"
+      item-title="text"
+      item-value="value"
       :loading="props.loading"
     />
     <v-text-field

@@ -95,25 +95,28 @@ func (p *product) Update(ctx context.Context, productID string, params *UpdatePr
 		}
 
 		updates := map[string]interface{}{
-			"producer_id":       params.ProducerID,
-			"product_type_id":   params.TypeID,
-			"name":              params.Name,
-			"description":       params.Description,
-			"public":            params.Public,
-			"inventory":         params.Inventory,
-			"weight":            params.Weight,
-			"weight_unit":       params.WeightUnit,
-			"item":              params.Item,
-			"item_unit":         params.ItemUnit,
-			"item_description":  params.ItemDescription,
-			"price":             params.Price,
-			"delivery_type":     params.DeliveryType,
-			"box60_rate":        params.Box60Rate,
-			"box80_rate":        params.Box80Rate,
-			"box100_rate":       params.Box100Rate,
-			"origin_prefecture": params.OriginPrefecture,
-			"origin_city":       params.OriginCity,
-			"updated_at":        p.now(),
+			"producer_id":         params.ProducerID,
+			"product_type_id":     params.TypeID,
+			"name":                params.Name,
+			"description":         params.Description,
+			"public":              params.Public,
+			"inventory":           params.Inventory,
+			"weight":              params.Weight,
+			"weight_unit":         params.WeightUnit,
+			"item":                params.Item,
+			"item_unit":           params.ItemUnit,
+			"item_description":    params.ItemDescription,
+			"price":               params.Price,
+			"cost":                params.Cost,
+			"expiration_date":     params.ExpirationDate,
+			"storage_method_type": params.StorageMethodType,
+			"delivery_type":       params.DeliveryType,
+			"box60_rate":          params.Box60Rate,
+			"box80_rate":          params.Box80Rate,
+			"box100_rate":         params.Box100Rate,
+			"origin_prefecture":   params.OriginPrefecture,
+			"origin_city":         params.OriginCity,
+			"updated_at":          p.now(),
 		}
 		if len(params.Media) > 0 {
 			media, err := params.Media.Marshal()
@@ -121,6 +124,20 @@ func (p *product) Update(ctx context.Context, productID string, params *UpdatePr
 				return fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
 			}
 			updates["media"] = media
+		}
+		if len(params.TagIDs) > 0 {
+			tagIDs, err := entity.ProductMarshalTagIDs(params.TagIDs)
+			if err != nil {
+				return fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
+			}
+			updates["product_tag_ids"] = tagIDs
+		}
+		if len(params.RecommendedPoints) > 0 {
+			points, err := entity.ProductMarshalRecommendedPoints(params.RecommendedPoints)
+			if err != nil {
+				return fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
+			}
+			updates["recommended_points"] = points
 		}
 		err := tx.WithContext(ctx).
 			Table(productTable).

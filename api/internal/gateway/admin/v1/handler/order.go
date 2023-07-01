@@ -153,6 +153,9 @@ func (h *handler) getOrder(ctx context.Context, orderID string) (*service.Order,
 
 func (h *handler) getOrderDetails(ctx context.Context, orders ...*service.Order) error {
 	os := service.Orders(orders)
+	if len(os) == 0 {
+		return nil
+	}
 	var (
 		users     service.Users
 		products  service.Products

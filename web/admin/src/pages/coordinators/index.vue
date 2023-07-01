@@ -1,139 +1,78 @@
 <script lang="ts" setup>
-import { mdiPlus, mdiAccount, mdiDelete } from '@mdi/js'
-import { VDataTable } from 'vuetify/labs/components'
+import { storeToRefs } from 'pinia'
 
-import { getResizedImages } from '~/lib/helpers'
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useCommonStore, useCoordinatorStore } from '~/store'
-import { CoordinatorsResponseCoordinatorsInner } from '~/types/api'
-import { ApiBaseError } from '~/types/exception'
 
 const router = useRouter()
-
+const commonStore = useCommonStore()
+const coordinatorStore = useCoordinatorStore()
+const pagination = usePagination()
 const { isShow, alertText, alertType, show } = useAlert('error')
 
-const { addSnackbar } = useCommonStore()
+const { coordinators, totalItems } = storeToRefs(coordinatorStore)
 
-const coordinatorStore = useCoordinatorStore()
-const coordinators = computed(() => {
-  return coordinatorStore.coordinators
-})
-
-const totalItems = computed(() => {
-  return coordinatorStore.totalItems
-})
-
+const loading = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
-const selectedId = ref<string>('')
 
-const selectedItemName = computed(() => {
-  const selectedItem = coordinators.value.find(
-    item => item.id === selectedId.value
-  )
-  return selectedItem
-    ? `${selectedItem.lastname} ${selectedItem.firstname}`
-    : ''
+const fetchState = useAsyncData(async (): Promise<void> => {
+  await fetchCoordinators()
 })
 
-const {
-  updateCurrentPage,
-  itemsPerPage,
-  handleUpdateItemsPerPage,
-  options,
-  offset
-} = usePagination()
-
-watch(itemsPerPage, () => {
-  coordinatorStore.fetchCoordinators(itemsPerPage.value, 0)
+watch(pagination.itemsPerPage, (): void => {
+  fetchCoordinators()
 })
 
-const handleUpdatePage = async (page: number) => {
-  updateCurrentPage(page)
-  await coordinatorStore.fetchCoordinators(itemsPerPage.value, offset.value)
-}
-
-const fetchState = useAsyncData(async () => {
+const fetchCoordinators = async (): Promise<void> => {
   try {
-    await coordinatorStore.fetchCoordinators(itemsPerPage.value, offset.value)
+    await coordinatorStore.fetchCoordinators(pagination.itemsPerPage.value, pagination.offset.value)
   } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
     console.log(err)
   }
-})
-
-const headers: VDataTable['headers'] = [
-  {
-    title: 'サムネイル',
-    key: 'thumbnail'
-  },
-  {
-    title: '店舗名',
-    key: 'storeName'
-  },
-  {
-    title: 'コーディネータ名',
-    key: 'name'
-  },
-  {
-    title: 'Email',
-    key: 'email'
-  },
-  {
-    title: '電話番号',
-    key: 'phoneNumber'
-  },
-  {
-    title: 'Actions',
-    key: 'actions',
-    sortable: false
-  }
-]
+}
 
 const isLoading = (): boolean => {
-  return fetchState?.pending?.value || false
+  return fetchState?.pending?.value || loading.value
 }
 
-const handleClickAddButton = () => {
-  router.push('/coordinators/add')
+const handleUpdatePage = async (page: number): Promise<void> => {
+  pagination.updateCurrentPage(page)
+  await fetchState.refresh()
 }
 
-const handleClickRow = (item: CoordinatorsResponseCoordinatorsInner) => {
-  router.push(`/coordinators/edit/${item.id}`)
+const handleClickAdd = () => {
+  router.push('/coordinators/new')
 }
 
-const handleClickDeleteButton = (
-  item: CoordinatorsResponseCoordinatorsInner
-): void => {
-  selectedId.value = item.id
-  deleteDialog.value = true
+const handleClickRow = (coordinatorId: string) => {
+  router.push(`/coordinators/${coordinatorId}`)
 }
 
-const handleClickCancelButton = () => {
-  deleteDialog.value = false
-}
-
-const handleDeleteFormSubmit = async () => {
+const handleClickDelete = async (coordinatorId: string): Promise<void> => {
   try {
-    await coordinatorStore.deleteCoordinator(selectedId.value)
-    addSnackbar({
+    loading.value = true
+    await coordinatorStore.deleteCoordinator(coordinatorId)
+    commonStore.addSnackbar({
       color: 'info',
       message: 'コーディネータを削除しました。'
     })
     fetchState.refresh()
-  } catch (error) {
-    const errorMessage =
-      error instanceof ApiBaseError
-        ? error.message
-        : '不明なエラーが発生しました。'
-    show(errorMessage)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
+    console.log(err)
+  } finally {
+    deleteDialog.value = false
+    loading.value = true
   }
-  deleteDialog.value = false
-}
-
-const getImages = (coordinator: CoordinatorsResponseCoordinatorsInner): string => {
-  if (!coordinator.thumbnails) {
-    return ''
-  }
-  return getResizedImages(coordinator.thumbnails)
 }
 
 try {
@@ -144,81 +83,19 @@ try {
 </script>
 
 <template>
-  <div>
-    <v-card-title class="d-flex flex-row">
-      コーディネータ管理
-      <v-spacer />
-      <v-btn variant="outlined" color="primary" @click="handleClickAddButton">
-        <v-icon start :icon="mdiPlus" />
-        コーディネータ登録
-      </v-btn>
-    </v-card-title>
-
-    <v-alert v-model="isShow" :type="alertType" class="my-2" closable>
-      {{ alertText }}
-    </v-alert>
-
-    <v-dialog v-model="deleteDialog" width="500">
-      <v-card>
-        <v-card-title>
-          {{ selectedItemName }}を本当に削除しますか？
-        </v-card-title>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="error" variant="text" @click="handleClickCancelButton">
-            キャンセル
-          </v-btn>
-          <v-btn color="primary" variant="outlined" @click="handleDeleteFormSubmit">
-            削除
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-card class="mt-4" flat :loading="isLoading()">
-      <v-card-text>
-        <v-data-table-server
-          :headers="headers"
-          :items="coordinators"
-          :items-length="totalItems"
-          :footer-props="options"
-          hover
-          no-data-text="登録されているコーディネータがいません。"
-          @update:items-per-page="handleUpdateItemsPerPage"
-          @update:page="handleUpdatePage"
-          @click:row="(_:any, {item}: any) => handleClickRow(item.raw)"
-        >
-          <template #[`item.thumbnail`]="{ item }">
-            <v-avatar>
-              <v-img
-                v-if="item.raw.thumbnailUrl !== ''"
-                cover
-                :src="item.raw.thumbnailUrl"
-                :srcset="getImages(item.raw)"
-                :alt="`${item.raw.storeName}-profile`"
-              />
-              <v-icon v-else :icon="mdiAccount" />
-            </v-avatar>
-          </template>
-          <template #[`item.name`]="{ item }">
-            {{ `${item.raw.lastname} ${item.raw.firstname}` }}
-          </template>
-          <template #[`item.phoneNumber`]="{ item }">
-            {{ `${item.raw.phoneNumber}`.replace('+81', '0') }}
-          </template>
-          <template #[`item.actions`]="{ item }">
-            <v-btn
-              variant="outlined"
-              color="primary"
-              size="small"
-              @click.stop="handleClickDeleteButton(item.raw)"
-            >
-              <v-icon size="small" :icon="mdiDelete" />
-              削除
-            </v-btn>
-          </template>
-        </v-data-table-server>
-      </v-card-text>
-    </v-card>
-  </div>
+  <templates-coordinator-list
+    v-model:delete-dialog="deleteDialog"
+    :loading="isLoading()"
+    :is-alert="isShow"
+    :alert-type="alertType"
+    :alert-text="alertText"
+    :coordinators="coordinators"
+    :table-items-per-page="pagination.itemsPerPage.value"
+    :table-items-total="totalItems"
+    @click:row="handleClickRow"
+    @click:add="handleClickAdd"
+    @click:delete="handleClickDelete"
+    @click:update-page="handleUpdatePage"
+    @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
+  />
 </template>

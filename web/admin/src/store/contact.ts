@@ -1,18 +1,11 @@
-import axios from 'axios'
 import { defineStore } from 'pinia'
 
 import { useCommonStore } from './common'
 import {
   ContactResponse,
-  ContactsResponse,
   ContactsResponseContactsInner,
   UpdateContactRequest
 } from '~/types/api'
-import {
-  ConnectionError,
-  NotFoundError,
-  ValidationError
-} from '~/types/exception'
 import { apiClient } from '~/plugins/api-client'
 
 export const useContactStore = defineStore('contact', {
@@ -28,57 +21,32 @@ export const useContactStore = defineStore('contact', {
      * @param limit 最大取得件数
      * @param offset 取得開始位置
      * @param orders ソートキー
-     * @returns
      */
-    async fetchContacts (
-      limit = 20,
-      offset = 0,
-      orders: string[] = []
-    ): Promise<void> {
+    async fetchContacts (limit = 20, offset = 0, orders: string[] = []): Promise<void> {
       try {
-        const res = await apiClient.contactApi().v1ListContacts(
-          limit,
-          offset,
-          orders.join(',')
-        )
-        const { contacts, total }: ContactsResponse = res.data
-
-        this.contacts = contacts
-        this.total = total
+        const res = await apiClient.contactApi().v1ListContacts(limit, offset, orders.join(','))
+        this.contacts = res.data.contacts
+        this.total = res.data.total
       } catch (err) {
         return this.errorHandler(err)
       }
     },
 
-    async getContact (id: string): Promise<ContactResponse> {
+    /**
+     * お問い合わせの一覧を取得する非同期関数
+     * @param contactId お問い合わせID
+     */
+    async getContact (contactId: string): Promise<ContactResponse> {
       try {
-        const res = await apiClient.contactApi().v1GetContact(id)
+        const res = await apiClient.contactApi().v1GetContact(contactId)
         this.contact = res.data
         return res.data
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 404:
-              return Promise.reject(
-                new NotFoundError(
-                  '編集するお問い合わせが見つかりませんでした。',
-                  error
-                )
-              )
-          }
-        }
-        throw new Error('Internal Server Error')
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
 
-    async contactUpdate (
-      payload: UpdateContactRequest,
-      contactId: string
-    ): Promise<void> {
+    async updateContact (contactId: string, payload: UpdateContactRequest): Promise<void> {
       try {
         await apiClient.contactApi().v1UpdateContact(contactId, payload)
         const commonStore = useCommonStore()
@@ -86,27 +54,8 @@ export const useContactStore = defineStore('contact', {
           message: 'お問い合わせ情報が更新されました。',
           color: 'info'
         })
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (!error.response) {
-            return Promise.reject(new ConnectionError(error))
-          }
-          const statusCode = error.response.status
-          switch (statusCode) {
-            case 400:
-              return Promise.reject(
-                new ValidationError('入力された内容では更新できません。', error)
-              )
-            case 404:
-              return Promise.reject(
-                new NotFoundError(
-                  '更新するお問い合わせが見つかりませんでした。',
-                  error
-                )
-              )
-          }
-        }
-        throw new Error('Internal Server Error')
+      } catch (err) {
+        return this.errorHandler(err)
       }
     }
   }

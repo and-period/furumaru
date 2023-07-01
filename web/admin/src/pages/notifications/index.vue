@@ -10,25 +10,24 @@ const notificationStore = useNotificationStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const fetchState = useAsyncData(async () => {
-  await fetchNotifications()
-})
-
 const { notifications, totalItems } = storeToRefs(notificationStore)
 
+const loading = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
 const sortBy = ref<VDataTable['sortBy']>([])
 
-watch(pagination.itemsPerPage, () => {
-  fetchNotifications()
+const fetchState = useAsyncData(async (): Promise<void> => {
+  await fetchNotifications()
 })
 
-const handleUpdatePage = async (page: number) => {
-  pagination.updateCurrentPage(page)
-  await fetchNotifications()
-}
+watch(pagination.itemsPerPage, (): void => {
+  fetchNotifications()
+})
+watch(sortBy, (): void => {
+  fetchState.refresh()
+})
 
-const fetchNotifications = async () => {
+const fetchNotifications = async (): Promise<void> => {
   try {
     await notificationStore.fetchNotifications(pagination.itemsPerPage.value, pagination.offset.value)
   } catch (err) {
@@ -39,25 +38,36 @@ const fetchNotifications = async () => {
   }
 }
 
-const handleClickAdd = () => {
-  router.push('/notifications/add')
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || loading.value
+}
+
+const handleUpdatePage = async (page: number): Promise<void> => {
+  pagination.updateCurrentPage(page)
+  await fetchNotifications()
+}
+
+const handleClickAdd = (): void => {
+  router.push('/notifications/new')
 }
 
 const handleClickRow = (notificationId: string) => {
-  router.push(`/notifications/edit/${notificationId}`)
+  router.push(`/notifications/${notificationId}`)
 }
 
 const handleClickDelete = async (notificationId: string): Promise<void> => {
   try {
+    loading.value = true
     await notificationStore.deleteNotification(notificationId)
   } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
     console.log(err)
+  } finally {
+    deleteDialog.value = false
+    loading.value = false
   }
-  deleteDialog.value = false
-}
-
-const isLoading = (): boolean => {
-  return fetchState?.pending?.value || false
 }
 
 try {
@@ -69,8 +79,9 @@ try {
 
 <template>
   <templates-notification-list
+    v-model:delete-dialog="deleteDialog"
     :loading="isLoading()"
-    :is-alrt="isShow"
+    :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :notifications="notifications"

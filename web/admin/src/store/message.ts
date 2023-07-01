@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/plugins/api-client'
 
+import { apiClient } from '~/plugins/api-client'
 import {
   MessageResponse,
   MessagesResponse,
@@ -49,9 +49,7 @@ export const useMessageStore = defineStore('message', {
 
     /**
      * メッセージの一覧を取得する非同期関数
-     * @param limit 最大取得件数
-     * @param offset 取得開始位置
-     * @param orders ソートキー
+     * @param messageId メッセージID
      * @returns
      */
     async fetchMessage (messageId = ''): Promise<void> {
@@ -59,7 +57,7 @@ export const useMessageStore = defineStore('message', {
         const res = await apiClient.messageApi().v1GetMessage(messageId)
         const message = res.data || {}
 
-        this.message = message
+        this.message = res.data
         this.messages.forEach((v: MessagesResponseMessagesInner, i: number) => {
           if (v.id === message.id) {
             this.messages[i].read = true

@@ -30,7 +30,13 @@ export interface AuthUserResponse {
      * @type {string}
      * @memberof AuthUserResponse
      */
-    username?: string;
+    username: string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof AuthUserResponse
+     */
+    email: string;
     /**
      * サムネイルURL
      * @type {string}
@@ -45,6 +51,8 @@ export interface AuthUserResponse {
 export function instanceOfAuthUserResponse(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "id" in value;
+    isInstance = isInstance && "username" in value;
+    isInstance = isInstance && "email" in value;
     isInstance = isInstance && "thumbnailUrl" in value;
 
     return isInstance;
@@ -61,7 +69,8 @@ export function AuthUserResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
     return {
         
         'id': json['id'],
-        'username': !exists(json, 'username') ? undefined : json['username'],
+        'username': json['username'],
+        'email': json['email'],
         'thumbnailUrl': json['thumbnailUrl'],
     };
 }
@@ -77,6 +86,7 @@ export function AuthUserResponseToJSON(value?: AuthUserResponse | null): any {
         
         'id': value.id,
         'username': value.username,
+        'email': value.email,
         'thumbnailUrl': value.thumbnailUrl,
     };
 }

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/plugins/api-client'
 
+import { apiClient } from '~/plugins/api-client'
 import { OrderResponse, OrdersResponse } from '~/types/api'
 
 export const useOrderStore = defineStore('order', {
@@ -25,11 +25,11 @@ export const useOrderStore = defineStore('order', {
         )
         this.orders = res.data.orders
         this.totalItems = res.data.total
-      } catch (error) {
-        console.log(error)
-        this.errorHandler(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     },
+
     /**
      * 注文IDから注文情報を取得する非同期関数
      * @param id 注文ID
@@ -40,9 +40,8 @@ export const useOrderStore = defineStore('order', {
         const res = await apiClient.orderApi().v1GetOrder(id)
         this.order = res.data
         return res.data
-      } catch (error) {
-        console.log(error)
-        return this.errorHandler(error)
+      } catch (err) {
+        return this.errorHandler(err)
       }
     }
   }
