@@ -2,6 +2,7 @@
 import { mdiClose, mdiPlus } from '@mdi/js'
 
 import useVuelidate from '@vuelidate/core'
+import dayjs, { unix } from 'dayjs'
 import { AlertType } from '~/lib/hooks'
 import { CategoriesResponseCategoriesInner, DeliveryType, Prefecture, ProducersResponseProducersInner, ProductResponse, ProductStatus, ProductTagsResponseProductTagsInner, ProductTypesResponseProductTypesInner, StorageMethodType, UpdateProductRequest } from '~/types/api'
 import {
@@ -13,7 +14,6 @@ import {
   maxLengthArray
 } from '~/lib/validations'
 import { prefecturesList, cityList, PrefecturesListItem, CityListItem } from '~/constants'
-import dayjs, { unix } from 'dayjs'
 
 const props = defineProps({
   loading: {

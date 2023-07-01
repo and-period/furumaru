@@ -2,6 +2,7 @@
 import { mdiClose, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 
+import dayjs, { unix } from 'dayjs'
 import { AlertType } from '~/lib/hooks'
 import { CategoriesResponseCategoriesInner, CreateProductRequest, DeliveryType, Prefecture, ProducersResponseProducersInner, ProductStatus, ProductTagsResponseProductTagsInner, ProductTypesResponseProductTypesInner, StorageMethodType, Weekday } from '~/types/api'
 import { ProductTime } from '~/types/props'
@@ -14,7 +15,6 @@ import {
   maxLengthArray
 } from '~/lib/validations'
 import { PrefecturesListItem, prefecturesList, CityListItem, cityList } from '~/constants'
-import dayjs, { unix } from 'dayjs'
 
 const props = defineProps({
   loading: {
@@ -528,7 +528,9 @@ const onSubmit = async (): Promise<void> => {
               </v-col>
             </v-row>
 
-            <p class="text-subtitle-2 text-grey py-2">販売期間</p>
+            <p class="text-subtitle-2 text-grey py-2">
+              販売期間
+            </p>
             <div class="d-flex flex-column flex-md-row justify-center">
               <v-text-field
                 v-model="timeDataValidate.startDate.$model"
