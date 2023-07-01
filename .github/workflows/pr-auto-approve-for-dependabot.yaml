@@ -1,0 +1,48 @@
+name: Pull Request Auto Approve and Merge
+
+on:
+  pull_request_target:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  approve_and_merge:
+    name: auto approve and merge
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      matrix:
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+
+    - name: Dependabot metadata
+      id: dependabot-metadata
+      uses: dependabot/fetch-metadata@v1
+      with:
+        github-token: '${{ secrets.GITHUB_TOKEN }}'
+
+    - name: Approve a PR if not already approved
+      run: |
+        gh pr checkout "$PR_URL" # sets the upstream metadata for `gh pr status`
+        if [ "$(gh pr status --json reviewDecision -q .currentBranch.reviewDecision)" != "APPROVED" ];
+        then gh pr review --approve "$PR_URL"
+        else echo "PR already approved, skipping additional approvals to minimize emails/notification noise.";
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PR_URL: ${{ github.event.pull_request.html_url }}
+
+    - name: Enable auto-merge for Dependabot PRs
+      if: ${{ steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' }}
+      run: gh pr merge --auto --squash --delete-branch "$PR_URL"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PR_URL: ${{ github.event.pull_request.html_url }}

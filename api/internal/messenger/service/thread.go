@@ -10,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
+	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -36,6 +37,15 @@ func (s *service) ListThreadsByContactID(ctx context.Context, in *messenger.List
 		return
 	})
 	if err := eg.Wait(); err != nil {
+		return nil, 0, exception.InternalError(err)
+	}
+	updateReadIn := &messenger.UpdateContactReadFlagInput{
+		ContactID: in.ContactID,
+		UserID:    in.UserID,
+		Read:      true,
+	}
+	err := s.UpdateContactReadFlag(ctx, updateReadIn)
+	if err != nil {
 		return nil, 0, exception.InternalError(err)
 	}
 
@@ -69,6 +79,7 @@ func (s *service) CreateThread(ctx context.Context, in *messenger.CreateThreadIn
 	if err != nil {
 		return nil, exception.InternalError(err)
 	}
+
 	params := &entity.NewThreadParams{
 		ContactID: in.ContactID,
 		UserType:  in.UserType,
@@ -77,6 +88,39 @@ func (s *service) CreateThread(ctx context.Context, in *messenger.CreateThreadIn
 	thread := entity.NewThread(params)
 	thread.Fill(in.UserID)
 	if err := s.db.Thread.Create(ctx, thread); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	readIn := &messenger.GetContactReadInput{
+		ContactID: in.ContactID,
+		UserID:    in.UserID,
+	}
+	_, err = s.GetContactRead(ctx, readIn)
+	if errors.Is(err, exception.ErrNotFound) {
+		in := &messenger.CreateContactReadInput{
+			ContactID: in.ContactID,
+			UserID:    in.UserID,
+		}
+		if _, err := s.CreateContactRead(ctx, in); err != nil {
+			return nil, exception.InternalError(err)
+		}
+	}
+	s.waitGroup.Add(1)
+	go func(contactID string) {
+		defer s.waitGroup.Done()
+		in := &messenger.NotifyReceivedContactInput{
+			ContactID: thread.ContactID,
+		}
+		if err := s.NotifyReceivedContact(context.Background(), in); err != nil {
+			s.logger.Error("Failed to notify received contact", zap.String("contactId", contactID), zap.Error(err))
+		}
+	}(thread.ContactID)
+	updateReadIn := &messenger.UpdateContactReadFlagInput{
+		ContactID: in.ContactID,
+		UserID:    in.UserID,
+		Read:      false,
+	}
+	err = s.UpdateContactReadFlag(ctx, updateReadIn)
+	if err != nil {
 		return nil, exception.InternalError(err)
 	}
 	return thread, nil

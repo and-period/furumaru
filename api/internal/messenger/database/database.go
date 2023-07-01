@@ -63,7 +63,9 @@ type ContactCategory interface {
 }
 
 type ContactRead interface {
+	Get(ctx context.Context, contactID, userID string, fields ...string) (*entity.ContactRead, error)
 	Create(ctx context.Context, contactRead *entity.ContactRead) error
+	UpdateRead(ctx context.Context, params *UpdateContactReadFlagParams) error
 }
 
 type Thread interface {
@@ -257,4 +259,10 @@ type UpdateContactParams struct {
 	Status      entity.ContactStatus
 	ResponderID string
 	Note        string
+}
+
+type UpdateContactReadFlagParams struct {
+	ContactID string
+	UserID    string
+	Read      bool
 }
