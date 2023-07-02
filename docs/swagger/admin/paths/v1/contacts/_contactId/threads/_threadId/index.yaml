@@ -20,6 +20,57 @@ get:
         application/json:
           schema:
             $ref: './../../../../../../openapi.yaml#/components/schemas/v1ThreadResponse'
+    403:
+      description: お問い合わせ会話の閲覧権限がない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
+    404:
+      description: お問い合わせ会話が存在しない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
+patch:
+  summary: お問い合わせ会話履歴更新
+  operationId: v1UpdateThread
+  tags:
+  - Thread
+  security:
+  - BearerAuth: []
+  parameters:
+  - in: path
+    name: threadId
+    schema:
+      type: string
+    description: お問い合わせ会話ID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../../../../openapi.yaml#/components/schemas/v1UpdateThreadRequest'
+  responses:
+    204:
+      description: 成功
+      content:
+        application/json:
+          schema: {}
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
+    403:
+      description: お問い合わせ会話の更新権限がない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
     404:
       description: お問い合わせ会話が存在しない
       content:
