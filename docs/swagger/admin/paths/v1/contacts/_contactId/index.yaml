@@ -65,3 +65,30 @@ patch:
         application/json:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+delete:
+  summary: お問い合わせ削除
+  operationId: v1DeleteContact
+  tags:
+  - Contact
+  security:
+  - BearerAuth: []
+  parameters:
+  - in: path
+    name: contactId
+    schema:
+      type: string
+    description: お問い合わせID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  responses:
+    204:
+      description: 成功
+      content:
+        application/json:
+          schema: {}
+    404:
+      description: お問い合わせが存在しない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'

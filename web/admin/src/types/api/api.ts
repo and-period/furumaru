@@ -8943,6 +8943,44 @@ export const ContactApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
+         * @summary お問い合わせ削除
+         * @param {string} contactId お問い合わせID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteContact: async (contactId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'contactId' is not null or undefined
+            assertParamExists('v1DeleteContact', 'contactId', contactId)
+            const localVarPath = `/v1/contacts/{contactId}`
+                .replace(`{${"contactId"}}`, encodeURIComponent(String(contactId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary お問い合わせ取得
          * @param {string} contactId お問い合わせID
          * @param {*} [options] Override http request option.
@@ -9090,6 +9128,17 @@ export const ContactApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary お問い合わせ削除
+         * @param {string} contactId お問い合わせID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1DeleteContact(contactId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteContact(contactId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary お問い合わせ取得
          * @param {string} contactId お問い合わせID
          * @param {*} [options] Override http request option.
@@ -9145,6 +9194,16 @@ export const ContactApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
+         * @summary お問い合わせ削除
+         * @param {string} contactId お問い合わせID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteContact(contactId: string, options?: any): AxiosPromise<object> {
+            return localVarFp.v1DeleteContact(contactId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary お問い合わせ取得
          * @param {string} contactId お問い合わせID
          * @param {*} [options] Override http request option.
@@ -9195,6 +9254,18 @@ export class ContactApi extends BaseAPI {
      */
     public v1CreateContact(body: CreateContactRequest, options?: AxiosRequestConfig) {
         return ContactApiFp(this.configuration).v1CreateContact(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary お問い合わせ削除
+     * @param {string} contactId お問い合わせID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContactApi
+     */
+    public v1DeleteContact(contactId: string, options?: AxiosRequestConfig) {
+        return ContactApiFp(this.configuration).v1DeleteContact(contactId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
