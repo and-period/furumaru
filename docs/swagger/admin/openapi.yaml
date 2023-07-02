@@ -39,6 +39,8 @@ tags:
   description: 購入者関連
 - name: Address
   description: 住所関連
+- name: ContactCategory
+  description: お問い合わせ種別関連
 - name: Contact
   description: お問い合わせ関連
 - name: Thread
@@ -129,6 +131,11 @@ paths:
     $ref: './paths/v1/promotions/index.yaml'
   /v1/promotions/{promotionId}:
     $ref: './paths/v1/promotions/_promotionId/index.yaml'
+  # ContactCatogory
+  /v1/contact-categories:
+    $ref: './paths/v1/contact-categories/index.yaml'
+  /v1/contact-categories/{contactCategoryId}:
+    $ref: './paths/v1/contact-categories/_contactCategoryId/index.yaml'
   # Contact
   /v1/contacts:
     $ref: './paths/v1/contacts/index.yaml'
@@ -384,6 +391,10 @@ components:
       $ref: './components/schemas/v1/promotion.response.yaml#/promotionResponse'
     v1PromotionsResponse:
       $ref: './components/schemas/v1/promotion.response.yaml#/promotionsResponse'
+    v1ContactCategoryResponse:
+      $ref: './components/schemas/v1/contact-category.response.yaml#/contactCategoryResponse'
+    v1ContactCategoriesResponse:
+      $ref: './components/schemas/v1/contact-category.response.yaml#/contactCategoriesResponse'
     v1ContactResponse:
       $ref: './components/schemas/v1/contact.response.yaml#/contactResponse'
     v1ContactsResponse:
