@@ -429,6 +429,81 @@ export interface CategoryResponse {
     'updatedAt': number;
 }
 /**
+ * 
+ * @export
+ * @interface ContactCategoriesResponse
+ */
+export interface ContactCategoriesResponse {
+    /**
+     * お問い合わせ種別一覧
+     * @type {Array<ContactCategoriesResponseContactCategoriesInner>}
+     * @memberof ContactCategoriesResponse
+     */
+    'contactCategories': Array<ContactCategoriesResponseContactCategoriesInner>;
+}
+/**
+ * 
+ * @export
+ * @interface ContactCategoriesResponseContactCategoriesInner
+ */
+export interface ContactCategoriesResponseContactCategoriesInner {
+    /**
+     * お問い合わせ種別ID
+     * @type {string}
+     * @memberof ContactCategoriesResponseContactCategoriesInner
+     */
+    'id': string;
+    /**
+     * お問い合わせ種別名
+     * @type {string}
+     * @memberof ContactCategoriesResponseContactCategoriesInner
+     */
+    'title': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ContactCategoriesResponseContactCategoriesInner
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof ContactCategoriesResponseContactCategoriesInner
+     */
+    'updatedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface ContactCategoryResponse
+ */
+export interface ContactCategoryResponse {
+    /**
+     * お問い合わせ種別ID
+     * @type {string}
+     * @memberof ContactCategoryResponse
+     */
+    'id': string;
+    /**
+     * お問い合わせ種別名
+     * @type {string}
+     * @memberof ContactCategoryResponse
+     */
+    'title': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ContactCategoryResponse
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof ContactCategoryResponse
+     */
+    'updatedAt': number;
+}
+/**
  * お問い合わせ対応優先度
  * @export
  * @enum {string}
@@ -9006,6 +9081,195 @@ export class ContactApi extends BaseAPI {
      */
     public v1UpdateContact(contactId: string, body: UpdateContactRequest, options?: AxiosRequestConfig) {
         return ContactApiFp(this.configuration).v1UpdateContact(contactId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * ContactCategoryApi - axios parameter creator
+ * @export
+ */
+export const ContactCategoryApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary お問い合わせ種別取得
+         * @param {string} contactCategoryId お問い合わせ種別ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetContactCategory: async (contactCategoryId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'contactCategoryId' is not null or undefined
+            assertParamExists('v1GetContactCategory', 'contactCategoryId', contactCategoryId)
+            const localVarPath = `/v1/contact-categories/{contactCategoryId}`
+                .replace(`{${"contactCategoryId"}}`, encodeURIComponent(String(contactCategoryId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary お問い合わせ種別一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListContactCategories: async (limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/contact-categories`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ContactCategoryApi - functional programming interface
+ * @export
+ */
+export const ContactCategoryApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ContactCategoryApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary お問い合わせ種別取得
+         * @param {string} contactCategoryId お問い合わせ種別ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetContactCategory(contactCategoryId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ContactCategoryResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetContactCategory(contactCategoryId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary お問い合わせ種別一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ListContactCategories(limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ContactCategoriesResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListContactCategories(limit, offset, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * ContactCategoryApi - factory interface
+ * @export
+ */
+export const ContactCategoryApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ContactCategoryApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary お問い合わせ種別取得
+         * @param {string} contactCategoryId お問い合わせ種別ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetContactCategory(contactCategoryId: string, options?: any): AxiosPromise<ContactCategoryResponse> {
+            return localVarFp.v1GetContactCategory(contactCategoryId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary お問い合わせ種別一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListContactCategories(limit?: number, offset?: number, options?: any): AxiosPromise<ContactCategoriesResponse> {
+            return localVarFp.v1ListContactCategories(limit, offset, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ContactCategoryApi - object-oriented interface
+ * @export
+ * @class ContactCategoryApi
+ * @extends {BaseAPI}
+ */
+export class ContactCategoryApi extends BaseAPI {
+    /**
+     * 
+     * @summary お問い合わせ種別取得
+     * @param {string} contactCategoryId お問い合わせ種別ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContactCategoryApi
+     */
+    public v1GetContactCategory(contactCategoryId: string, options?: AxiosRequestConfig) {
+        return ContactCategoryApiFp(this.configuration).v1GetContactCategory(contactCategoryId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary お問い合わせ種別一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContactCategoryApi
+     */
+    public v1ListContactCategories(limit?: number, offset?: number, options?: AxiosRequestConfig) {
+        return ContactCategoryApiFp(this.configuration).v1ListContactCategories(limit, offset, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
