@@ -1,0 +1,66 @@
+contactCategoryResponse:
+  type: object
+  properties:
+    id:
+      type: string
+      description: お問い合わせ種別ID
+    title:
+      type: string
+      description: お問い合わせ種別名
+    createdAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
+    updatedAt:
+      type: integer
+      format: int64
+      description: 更新日時 (unixtime)
+  required:
+  - id
+  - title
+  - createdAt
+  - updatedAt
+  example:
+    id: "kSByoE6FetnPs5Byk3a9Zx"
+    title: お問い合わせ種別名
+    createdAt: 1580000000
+    updatedAt: 1580000000
+contactCategoriesResponse:
+  type: object
+  properties:
+    contactCategories:
+      type: array
+      description: お問い合わせ種別一覧
+      items:
+        properties:
+          id:
+            type: string
+            description: お問い合わせ種別ID
+          title:
+            type: string
+            description: お問い合わせ種別名
+          createdAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+          updatedAt:
+            type: integer
+            format: int64
+            description: 更新日時 (unixtime)
+        required:
+        - id
+        - title
+        - createdAt
+        - updatedAt
+  required:
+  - contactCategories
+  example:
+    contactCategories:
+    - id: "kSByoE6FetnPs5Byk3a9Zx"
+      title: "配信について"
+      createdAt: 1580000000
+      updatedAt: 1580000000
+    - id: "kSByoE6FetnPs5Byk3a9Zx"
+      title: "商品について"
+      createdAt: 1580000000
+      updatedAt: 1580000000
