@@ -314,6 +314,8 @@ components:
       $ref: './components/schemas/v1/promotion.request.yaml#/createPromotionRequest'
     v1UpdatePromotionRequest:
       $ref: './components/schemas/v1/promotion.request.yaml#/updatePromotionRequest'
+    v1CreateContactRequest:
+      $ref: './components/schemas/v1/contact.request.yaml#/createContactRequest'
     v1UpdateContactRequest:
       $ref: './components/schemas/v1/contact.request.yaml#/updateContactRequest'
     v1CreateThreadRequest:

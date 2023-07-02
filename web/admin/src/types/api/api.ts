@@ -1163,6 +1163,67 @@ export interface CreateCategoryRequest {
 /**
  * 
  * @export
+ * @interface CreateContactRequest
+ */
+export interface CreateContactRequest {
+    /**
+     * お問い合わせ種別ID
+     * @type {string}
+     * @memberof CreateContactRequest
+     */
+    'categoryId': string;
+    /**
+     * お問い合わせ件名(128文字まで)
+     * @type {string}
+     * @memberof CreateContactRequest
+     */
+    'title': string;
+    /**
+     * お問い合わせ内容(2000文字まで)
+     * @type {string}
+     * @memberof CreateContactRequest
+     */
+    'content': string;
+    /**
+     * 氏名(128文字まで)
+     * @type {string}
+     * @memberof CreateContactRequest
+     */
+    'userName': string;
+    /**
+     * 問い合わせ作成者ID
+     * @type {string}
+     * @memberof CreateContactRequest
+     */
+    'userId'?: string;
+    /**
+     * メールアドレス(256文字まで)
+     * @type {string}
+     * @memberof CreateContactRequest
+     */
+    'email': string;
+    /**
+     * 電話番号(18文字まで)
+     * @type {string}
+     * @memberof CreateContactRequest
+     */
+    'phoneNumber': string;
+    /**
+     * 対応者ID
+     * @type {string}
+     * @memberof CreateContactRequest
+     */
+    'responderId': string;
+    /**
+     * 対応メモ(2000文字まで)
+     * @type {string}
+     * @memberof CreateContactRequest
+     */
+    'note': string;
+}
+/**
+ * 
+ * @export
  * @interface CreateCoordinatorRequest
  */
 export interface CreateCoordinatorRequest {
@@ -8842,6 +8903,46 @@ export const ContactApiAxiosParamCreator = function (configuration?: Configurati
     return {
         /**
          * 
+         * @summary お問い合わせ登録
+         * @param {CreateContactRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateContact: async (body: CreateContactRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1CreateContact', 'body', body)
+            const localVarPath = `/v1/contacts`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary お問い合わせ取得
          * @param {string} contactId お問い合わせID
          * @param {*} [options] Override http request option.
@@ -8978,6 +9079,17 @@ export const ContactApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary お問い合わせ登録
+         * @param {CreateContactRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1CreateContact(body: CreateContactRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ContactResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateContact(body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary お問い合わせ取得
          * @param {string} contactId お問い合わせID
          * @param {*} [options] Override http request option.
@@ -9023,6 +9135,16 @@ export const ContactApiFactory = function (configuration?: Configuration, basePa
     return {
         /**
          * 
+         * @summary お問い合わせ登録
+         * @param {CreateContactRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateContact(body: CreateContactRequest, options?: any): AxiosPromise<ContactResponse> {
+            return localVarFp.v1CreateContact(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary お問い合わせ取得
          * @param {string} contactId お問い合わせID
          * @param {*} [options] Override http request option.
@@ -9063,6 +9185,18 @@ export const ContactApiFactory = function (configuration?: Configuration, basePa
  * @extends {BaseAPI}
  */
 export class ContactApi extends BaseAPI {
+    /**
+     * 
+     * @summary お問い合わせ登録
+     * @param {CreateContactRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContactApi
+     */
+    public v1CreateContact(body: CreateContactRequest, options?: AxiosRequestConfig) {
+        return ContactApiFp(this.configuration).v1CreateContact(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary お問い合わせ取得

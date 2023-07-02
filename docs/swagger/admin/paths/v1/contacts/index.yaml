@@ -29,3 +29,35 @@ get:
         application/json:
           schema:
             $ref: './../../../openapi.yaml#/components/schemas/v1ContactsResponse'
+post:
+  summary:  お問い合わせ登録
+  operationId: v1CreateContact
+  tags:
+  - Contact
+  security:
+  - BearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../openapi.yaml#/components/schemas/v1CreateContactRequest'
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/v1ContactResponse'
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/errorResponse'
+    403:
+      description: お問い合わせの登録権限がない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/errorResponse'
