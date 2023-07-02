@@ -5686,6 +5686,123 @@ export type StorageMethodType = typeof StorageMethodType[keyof typeof StorageMet
 /**
  * 
  * @export
+ * @interface ThreadResponse
+ */
+export interface ThreadResponse {
+    /**
+     * お問い合わせ会話履歴ID
+     * @type {string}
+     * @memberof ThreadResponse
+     */
+    'id': string;
+    /**
+     * お問い合わせID
+     * @type {string}
+     * @memberof ThreadResponse
+     */
+    'contactId': string;
+    /**
+     * 送信者ID
+     * @type {string}
+     * @memberof ThreadResponse
+     */
+    'userId'?: string;
+    /**
+     * 送信者タイプ
+     * @type {number}
+     * @memberof ThreadResponse
+     */
+    'userType': number;
+    /**
+     * 会話内容
+     * @type {string}
+     * @memberof ThreadResponse
+     */
+    'content': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ThreadResponse
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof ThreadResponse
+     */
+    'updatedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface ThreadsResponse
+ */
+export interface ThreadsResponse {
+    /**
+     * お問い合わせ会話履歴一覧
+     * @type {Array<ThreadsResponseThreadsInner>}
+     * @memberof ThreadsResponse
+     */
+    'threads': Array<ThreadsResponseThreadsInner>;
+    /**
+     * お問い合わせ会話履歴総数
+     * @type {number}
+     * @memberof ThreadsResponse
+     */
+    'total': number;
+}
+/**
+ * 
+ * @export
+ * @interface ThreadsResponseThreadsInner
+ */
+export interface ThreadsResponseThreadsInner {
+    /**
+     * お問い合わせ会話履歴ID
+     * @type {string}
+     * @memberof ThreadsResponseThreadsInner
+     */
+    'id'?: string;
+    /**
+     * お問い合わせID
+     * @type {string}
+     * @memberof ThreadsResponseThreadsInner
+     */
+    'contactId'?: string;
+    /**
+     * 送信者ID
+     * @type {string}
+     * @memberof ThreadsResponseThreadsInner
+     */
+    'userId'?: string;
+    /**
+     * 送信者タイプ
+     * @type {number}
+     * @memberof ThreadsResponseThreadsInner
+     */
+    'userType'?: number;
+    /**
+     * 会話内容
+     * @type {string}
+     * @memberof ThreadsResponseThreadsInner
+     */
+    'content'?: string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ThreadsResponseThreadsInner
+     */
+    'createdAt'?: number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof ThreadsResponseThreadsInner
+     */
+    'updatedAt'?: number;
+}
+/**
+ * 
+ * @export
  * @interface UpdateAdministratorEmailRequest
  */
 export interface UpdateAdministratorEmailRequest {
@@ -14315,6 +14432,202 @@ export class ShippingApi extends BaseAPI {
      */
     public v1UpdateShipping(shippingId: string, body: UpdateShippingRequest, options?: AxiosRequestConfig) {
         return ShippingApiFp(this.configuration).v1UpdateShipping(shippingId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * ThreadApi - axios parameter creator
+ * @export
+ */
+export const ThreadApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary お問い合わせ会話履歴取得
+         * @param {string} threadId お問い合わせ会話ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetThread: async (threadId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'threadId' is not null or undefined
+            assertParamExists('v1GetThread', 'threadId', threadId)
+            const localVarPath = `/v1/contacts/{contactId}/threads/{threadId}`
+                .replace(`{${"threadId"}}`, encodeURIComponent(String(threadId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary お問い合わせ会話履歴一覧取得
+         * @param {string} contactId お問い合わせID
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListThreadsByContactId: async (contactId: string, limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'contactId' is not null or undefined
+            assertParamExists('v1ListThreadsByContactId', 'contactId', contactId)
+            const localVarPath = `/v1/contacts/{contactId}/threads`
+                .replace(`{${"contactId"}}`, encodeURIComponent(String(contactId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ThreadApi - functional programming interface
+ * @export
+ */
+export const ThreadApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ThreadApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary お問い合わせ会話履歴取得
+         * @param {string} threadId お問い合わせ会話ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetThread(threadId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ThreadResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetThread(threadId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary お問い合わせ会話履歴一覧取得
+         * @param {string} contactId お問い合わせID
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ListThreadsByContactId(contactId: string, limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ThreadsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListThreadsByContactId(contactId, limit, offset, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * ThreadApi - factory interface
+ * @export
+ */
+export const ThreadApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ThreadApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary お問い合わせ会話履歴取得
+         * @param {string} threadId お問い合わせ会話ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetThread(threadId: string, options?: any): AxiosPromise<ThreadResponse> {
+            return localVarFp.v1GetThread(threadId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary お問い合わせ会話履歴一覧取得
+         * @param {string} contactId お問い合わせID
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListThreadsByContactId(contactId: string, limit?: number, offset?: number, options?: any): AxiosPromise<ThreadsResponse> {
+            return localVarFp.v1ListThreadsByContactId(contactId, limit, offset, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ThreadApi - object-oriented interface
+ * @export
+ * @class ThreadApi
+ * @extends {BaseAPI}
+ */
+export class ThreadApi extends BaseAPI {
+    /**
+     * 
+     * @summary お問い合わせ会話履歴取得
+     * @param {string} threadId お問い合わせ会話ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ThreadApi
+     */
+    public v1GetThread(threadId: string, options?: AxiosRequestConfig) {
+        return ThreadApiFp(this.configuration).v1GetThread(threadId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary お問い合わせ会話履歴一覧取得
+     * @param {string} contactId お問い合わせID
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ThreadApi
+     */
+    public v1ListThreadsByContactId(contactId: string, limit?: number, offset?: number, options?: AxiosRequestConfig) {
+        return ThreadApiFp(this.configuration).v1ListThreadsByContactId(contactId, limit, offset, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
