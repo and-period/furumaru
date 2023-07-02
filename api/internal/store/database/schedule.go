@@ -43,7 +43,7 @@ func (s *schedule) List(ctx context.Context, params *ListSchedulesParams, fields
 	return schedules, nil
 }
 
-func (s *schedule) Count(ctx context.Context, params *ListSchedulesParams) (int64, error) {
+func (s *schedule) Count(ctx context.Context, _ *ListSchedulesParams) (int64, error) {
 	total, err := s.db.Count(ctx, s.db.DB, &entity.Schedule{}, nil)
 	return total, exception.InternalError(err)
 }
