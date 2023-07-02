@@ -577,10 +577,10 @@ export interface ContactResponse {
     'updatedAt': number;
     /**
      * 会話履歴一覧
-     * @type {Array<ThreadResponse>}
+     * @type {Array<ThreadResponse1>}
      * @memberof ContactResponse
      */
-    'threads': Array<ThreadResponse>;
+    'threads': Array<ThreadResponse1>;
 }
 
 
@@ -614,6 +614,34 @@ export const ContactStatus = {
 } as const;
 
 export type ContactStatus = typeof ContactStatus[keyof typeof ContactStatus];
+
+
+/**
+ * 送信者タイプ
+ * @export
+ * @enum {string}
+ */
+
+export const ContactUserType = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 管理者
+    */
+    ADMIN: 1,
+    /**
+    * ユーザー
+    */
+    USER: 2,
+    /**
+    * ゲスト
+    */
+    GUEST: 3
+} as const;
+
+export type ContactUserType = typeof ContactUserType[keyof typeof ContactUserType];
 
 
 /**
@@ -709,10 +737,10 @@ export interface ContactsResponseContactsInner {
     'updatedAt': number;
     /**
      * 会話履歴一覧
-     * @type {Array<ThreadResponse>}
+     * @type {Array<ThreadResponse1>}
      * @memberof ContactsResponseContactsInner
      */
-    'threads': Array<ThreadResponse>;
+    'threads': Array<ThreadResponse1>;
 }
 
 
@@ -2024,11 +2052,11 @@ export interface CreateThreadRequest {
      */
     'userId'?: string;
     /**
-     * 送信者タイプ(不明:0, admin:1, uer:2, guest:3)
-     * @type {number}
+     * 
+     * @type {ContactUserType}
      * @memberof CreateThreadRequest
      */
-    'userType': number;
+    'userType': ContactUserType;
     /**
      * 会話内容
      * @type {string}
@@ -2036,6 +2064,8 @@ export interface CreateThreadRequest {
      */
     'content': string;
 }
+
+
 /**
  * 配送方法
  * @export
@@ -5859,11 +5889,11 @@ export interface ThreadResponse {
      */
     'userId'?: string;
     /**
-     * 送信者タイプ
-     * @type {number}
+     * 
+     * @type {ContactUserType}
      * @memberof ThreadResponse
      */
-    'userType': number;
+    'userType': ContactUserType;
     /**
      * 会話内容
      * @type {string}
@@ -5883,6 +5913,59 @@ export interface ThreadResponse {
      */
     'updatedAt': number;
 }
+
+
+/**
+ * 
+ * @export
+ * @interface ThreadResponse1
+ */
+export interface ThreadResponse1 {
+    /**
+     * お問い合わせ会話履歴ID
+     * @type {string}
+     * @memberof ThreadResponse1
+     */
+    'id': string;
+    /**
+     * お問い合わせID
+     * @type {string}
+     * @memberof ThreadResponse1
+     */
+    'contactId': string;
+    /**
+     * 送信者ID
+     * @type {string}
+     * @memberof ThreadResponse1
+     */
+    'userId'?: string;
+    /**
+     * 
+     * @type {ContactUserType}
+     * @memberof ThreadResponse1
+     */
+    'userType': ContactUserType;
+    /**
+     * 会話内容
+     * @type {string}
+     * @memberof ThreadResponse1
+     */
+    'content': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ThreadResponse1
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof ThreadResponse1
+     */
+    'updatedAt': number;
+}
+
+
 /**
  * 
  * @export
@@ -5927,11 +6010,11 @@ export interface ThreadsResponseThreadsInner {
      */
     'userId'?: string;
     /**
-     * 送信者タイプ
-     * @type {number}
+     * 
+     * @type {ContactUserType}
      * @memberof ThreadsResponseThreadsInner
      */
-    'userType'?: number;
+    'userType'?: ContactUserType;
     /**
      * 会話内容
      * @type {string}
@@ -5951,6 +6034,8 @@ export interface ThreadsResponseThreadsInner {
      */
     'updatedAt'?: number;
 }
+
+
 /**
  * 
  * @export
@@ -6782,11 +6867,11 @@ export interface UpdateThreadRequest {
      */
     'userId'?: string;
     /**
-     * 送信者タイプ(不明:0, admin:1, uer:2, guest:3)
-     * @type {number}
+     * 
+     * @type {ContactUserType}
      * @memberof UpdateThreadRequest
      */
-    'userType': number;
+    'userType': ContactUserType;
     /**
      * 会話内容
      * @type {string}
@@ -6794,6 +6879,8 @@ export interface UpdateThreadRequest {
      */
     'content': string;
 }
+
+
 /**
  * 
  * @export
@@ -15210,7 +15297,7 @@ export const ThreadApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1CreateThread(body: CreateThreadRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ThreadResponse>> {
+        async v1CreateThread(body: CreateThreadRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ThreadResponse1>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateThread(body, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -15232,7 +15319,7 @@ export const ThreadApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1GetThread(threadId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ThreadResponse>> {
+        async v1GetThread(threadId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ThreadResponse1>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetThread(threadId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -15278,7 +15365,7 @@ export const ThreadApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreateThread(body: CreateThreadRequest, options?: any): AxiosPromise<ThreadResponse> {
+        v1CreateThread(body: CreateThreadRequest, options?: any): AxiosPromise<ThreadResponse1> {
             return localVarFp.v1CreateThread(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -15298,7 +15385,7 @@ export const ThreadApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetThread(threadId: string, options?: any): AxiosPromise<ThreadResponse> {
+        v1GetThread(threadId: string, options?: any): AxiosPromise<ThreadResponse1> {
             return localVarFp.v1GetThread(threadId, options).then((request) => request(axios, basePath));
         },
         /**

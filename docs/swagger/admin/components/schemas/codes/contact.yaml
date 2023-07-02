@@ -21,3 +21,23 @@ contactStatus:
   - 対応中
   - 完了
   - 対応不要
+contactUserType:
+  type: integer
+  format: int32
+  description: 送信者タイプ
+  nullable: false
+  enum:
+  - 0
+  - 1
+  - 2
+  - 3
+  x-enum-varnames:
+  - UNKNOWN
+  - ADMIN
+  - USER
+  - GUEST
+  x-enum-descriptions:
+  - 不明
+  - 管理者
+  - ユーザー
+  - ゲスト
