@@ -1,0 +1,91 @@
+threadResponse:
+  type: object
+  properties:
+    id:
+      type: string
+      description: お問い合わせ会話履歴ID
+    contactId:
+      type: string
+      description: お問い合わせID
+    userId:
+      type: string
+      description: 送信者ID
+    userType:
+      type: integer
+      format: int32
+      description: 送信者タイプ
+    content:
+      type: string
+      description: 会話内容
+    createdAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
+    updatedAt:
+      type: integer
+      format: int64
+      description: 更新日時 (unixtime)
+  required:
+  - id
+  - contactId
+  - userType
+  - content
+  - createdAt
+  - updatedAt
+  example:
+    id: "kSByoE6FetnPs5Byk3a9Zx"
+    contactId: "kSByoE6FetnPs5Byk3a9Zx"
+    userId: "kSByoE6FetnPs5Byk3a9Zx"
+    userType: 1
+    content: お問い合わせ内容
+    createdAt: 1580000000
+    updatedAt: 1580000000
+threadsResponse:
+  type: object
+  properties:
+    threads:
+      type: array
+      description: お問い合わせ会話履歴一覧
+      items:
+        properties:
+          id:
+            type: string
+            description: お問い合わせ会話履歴ID
+          contactId:
+            type: string
+            description: お問い合わせID
+          userId:
+            type: string
+            description: 送信者ID
+          userType:
+            type: integer
+            format: int32
+            description: 送信者タイプ
+          content:
+            type: string
+            description: 会話内容
+          createdAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+          updatedAt:
+            type: integer
+            format: int64
+            description: 更新日時 (unixtime)
+    total:
+      type: integer
+      format: int32
+      description: お問い合わせ会話履歴総数
+  required:
+  - threads
+  - total
+  example:
+    threads:
+    - id: "kSByoE6FetnPs5Byk3a9Zx"
+      contactId: "kSByoE6FetnPs5Byk3a9Zx"
+      userId: "kSByoE6FetnPs5Byk3a9Zx"
+      userType: 1
+      content: お問い合わせ内容
+      createdAt: 1580000000
+      updatedAt: 1580000000
+    total: 1
