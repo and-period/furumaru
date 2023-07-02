@@ -1886,6 +1886,37 @@ export interface CreateShippingRequest {
     'freeShippingRates': number;
 }
 /**
+ * 
+ * @export
+ * @interface CreateThreadRequest
+ */
+export interface CreateThreadRequest {
+    /**
+     * お問い合わせID
+     * @type {string}
+     * @memberof CreateThreadRequest
+     */
+    'contactId': string;
+    /**
+     * 送信者ID
+     * @type {string}
+     * @memberof CreateThreadRequest
+     */
+    'userId'?: string;
+    /**
+     * 送信者タイプ(不明:0, admin:1, uer:2, guest:3)
+     * @type {number}
+     * @memberof CreateThreadRequest
+     */
+    'userType': number;
+    /**
+     * 会話内容
+     * @type {string}
+     * @memberof CreateThreadRequest
+     */
+    'content': string;
+}
+/**
  * 配送方法
  * @export
  * @enum {string}
@@ -14444,6 +14475,46 @@ export const ThreadApiAxiosParamCreator = function (configuration?: Configuratio
     return {
         /**
          * 
+         * @summary お問い合わせ会話登録
+         * @param {CreateThreadRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateThread: async (body: CreateThreadRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1CreateThread', 'body', body)
+            const localVarPath = `/v1/contacts/{contactId}/threads`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary お問い合わせ会話履歴取得
          * @param {string} threadId お問い合わせ会話ID
          * @param {*} [options] Override http request option.
@@ -14540,6 +14611,17 @@ export const ThreadApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary お問い合わせ会話登録
+         * @param {CreateThreadRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1CreateThread(body: CreateThreadRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ThreadResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateThread(body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary お問い合わせ会話履歴取得
          * @param {string} threadId お問い合わせ会話ID
          * @param {*} [options] Override http request option.
@@ -14574,6 +14656,16 @@ export const ThreadApiFactory = function (configuration?: Configuration, basePat
     return {
         /**
          * 
+         * @summary お問い合わせ会話登録
+         * @param {CreateThreadRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateThread(body: CreateThreadRequest, options?: any): AxiosPromise<ThreadResponse> {
+            return localVarFp.v1CreateThread(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary お問い合わせ会話履歴取得
          * @param {string} threadId お問い合わせ会話ID
          * @param {*} [options] Override http request option.
@@ -14604,6 +14696,18 @@ export const ThreadApiFactory = function (configuration?: Configuration, basePat
  * @extends {BaseAPI}
  */
 export class ThreadApi extends BaseAPI {
+    /**
+     * 
+     * @summary お問い合わせ会話登録
+     * @param {CreateThreadRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ThreadApi
+     */
+    public v1CreateThread(body: CreateThreadRequest, options?: AxiosRequestConfig) {
+        return ThreadApiFp(this.configuration).v1CreateThread(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary お問い合わせ会話履歴取得

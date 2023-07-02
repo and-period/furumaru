@@ -1,0 +1,26 @@
+createThreadRequest:
+  type: object
+  properties:
+    contactId:
+      type: string
+      description: お問い合わせID
+    userId:
+      type: string
+      description: 送信者ID
+    userType:
+      type: integer
+      format: int32
+      description: 送信者タイプ(不明:0, admin:1, uer:2, guest:3)
+    content:
+      type: string
+      description: 会話内容
+  required:
+  - contactId
+  - userType
+  - content
+  example:
+    contactId: "kSByoE6FetnPs5Byk3a9Zx"
+    userId: "kSByoE6FetnPs5Byk3a9Zx"
+    userType: 1
+    content: お問い合わせ内容
+

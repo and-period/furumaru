@@ -36,3 +36,29 @@ get:
         application/json:
           schema:
             $ref: './../../../../../openapi.yaml#/components/schemas/v1ThreadsResponse'
+post:
+  summary: お問い合わせ会話登録
+  operationId: v1CreateThread
+  tags:
+  - Thread
+  security:
+  - BearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../../../openapi.yaml#/components/schemas/v1CreateThreadRequest'
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/v1ThreadResponse'
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
