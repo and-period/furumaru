@@ -48,7 +48,7 @@ func TestOrder_List(t *testing.T) {
 	shipping := testShipping("shipping-id", now())
 	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
-	schedule := testSchedule("schedule-id", now())
+	schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 	address := testAddress("address-id", "user-id", now())
@@ -185,7 +185,7 @@ func TestOrder_Count(t *testing.T) {
 	shipping := testShipping("shipping-id", now())
 	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
-	schedule := testSchedule("schedule-id", now())
+	schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 	address := testAddress("address-id", "user-id", now())
@@ -305,7 +305,7 @@ func TestOrder_Get(t *testing.T) {
 	shipping := testShipping("shipping-id", now())
 	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
-	schedule := testSchedule("schedule-id", now())
+	schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 	address := testAddress("address-id", "user-id", now())
@@ -423,7 +423,7 @@ func TestOrder_Aggregate(t *testing.T) {
 	shipping := testShipping("shipping-id", now())
 	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
-	schedule := testSchedule("schedule-id", now())
+	schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 	address := testAddress("address-id", "user-id", now())

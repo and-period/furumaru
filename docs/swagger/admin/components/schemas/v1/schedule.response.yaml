@@ -7,21 +7,38 @@ scheduleResponse:
     coordinatorId:
       type: string
       description: コーディネーターID
+    coordinatorName:
+      type: string
+      description: コーディネータ名
     shippingId:
       type: string
       description: 配送設定ID
     shippingName:
       type: string
       description: 配送設定名
+    status:
+      $ref: './../../../openapi.yaml#/components/schemas/scheduleStatus'
     title:
       type: string
       description: タイトル
     description:
       type: string
       description: 説明
-    thumnailURL:
+    thumbnailUrl:
       type: string
       description: サムネイルURL
+    openingVideoUrl:
+      type: string
+      description: オープニング動画URL
+    intermissionVideoUrl:
+      type: string
+      description: 幕間動画URL
+    public:
+      type: boolean
+      description: 公開フラグ
+    approved:
+      type: boolean
+      description: 承認フラグ
     startAt:
       type: integer
       format: int64
@@ -30,9 +47,6 @@ scheduleResponse:
       type: integer
       format: int64
       description: ライブ終了日時 (unixtime)
-    canceled:
-      type: boolean
-      description: キャンセルフラグ
     createdAt:
       type: integer
       format: int64
@@ -239,30 +253,40 @@ scheduleResponse:
   required:
   - id
   - coordinatorId
+  - coordinatorName
   - shippingId
   - shippingName
+  - status
   - title
   - description
-  - thumnailURL
+  - thumbnailUrl
+  - openingVideoUrl
+  - intermissionVideoUrl
+  - public
+  - approved
   - startAt
   - endAt
-  - canceled
-  - status
   - createdAt
   - updatedAt
   - lives
-
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     coordinatorId: 'coordinator-id'
+    coordinatorName: '&.コーディネータ'
     shippingId: 'shipping-id'
     shippingName: '配送設定名'
+    status: 4
     title: 'スケジュールタイトル'
     description: 'スケジュールの説明'
-    thumnailURL: 'https://and-period.jp/thumbnail01.png'
+    thumbnailUrl: 'https://and-period.jp/thumbnail01.png'
+    openingVideoUrl: 'https://and-period.jp/thumbnail01.png'
+    intermissionVideoUrl: 'https://and-period.jp/thumbnail01.png'
+    public: true
+    approved: true
     startAt: 1640962800
     endAt: 1640962800
-    canceled: false
+    createdAt: 1640962800
+    updatedAt: 1640962800
     lives:
     - id: 'live-id'
       scheduleId: 'schedule-id'
@@ -316,5 +340,128 @@ scheduleResponse:
       streamId: 'stream-id'
       playbackUrl: 'https://5579c3526712.us-east-1.playback.live-video.net/api/video/v1/us-east-1.386661535629.channel.kSByoE6FetnPs5Byk3a9Zx.m3u8'
       viewerCount: 100
-    createdAt: 1640962800
-    updatedAt: 1640962800
+schedulesResponse:
+  type: object
+  properties:
+    schedules:
+      type: array
+      description: マルシェ開催スケジュール一覧
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            description: スケジュールID
+          coordinatorId:
+            type: string
+            description: コーディネーターID
+          coordinatorName:
+            type: string
+            description: コーディネータ名
+          shippingId:
+            type: string
+            description: 配送設定ID
+          shippingName:
+            type: string
+            description: 配送設定名
+          status:
+            $ref: './../../../openapi.yaml#/components/schemas/scheduleStatus'
+          title:
+            type: string
+            description: タイトル
+          description:
+            type: string
+            description: 説明
+          thumbnailUrl:
+            type: string
+            description: サムネイルURL
+          openingVideoUrl:
+            type: string
+            description: オープニング動画URL
+          intermissionVideoUrl:
+            type: string
+            description: 幕間動画URL
+          public:
+            type: boolean
+            description: 公開フラグ
+          approved:
+            type: boolean
+            description: 承認フラグ
+          startAt:
+            type: integer
+            format: int64
+            description: ライブ開始日時 (unixtime)
+          endAt:
+            type: integer
+            format: int64
+            description: ライブ終了日時 (unixtime)
+          createdAt:
+            type: integer
+            format: int64
+            description: 登録日時 (unixtime)
+          updatedAt:
+            type: integer
+            format: int64
+            description: 更新日時 (unixtime)
+        required:
+        - id
+        - coordinatorId
+        - coordinatorName
+        - shippingId
+        - shippingName
+        - status
+        - title
+        - description
+        - thumbnailUrl
+        - openingVideoUrl
+        - intermissionVideoUrl
+        - public
+        - approved
+        - startAt
+        - endAt
+        - createdAt
+        - updatedAt
+    total:
+      type: integer
+      format: int64
+      description: 合計数
+  required:
+  - schedules
+  - total
+  example:
+    schedules:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      coordinatorId: 'coordinator-id'
+      coordinatorName: '&.コーディネータ'
+      shippingId: 'shipping-id'
+      shippingName: '配送設定名'
+      status: 4
+      title: 'スケジュールタイトル'
+      description: 'スケジュールの説明'
+      thumbnailUrl: 'https://and-period.jp/thumbnail01.png'
+      openingVideoUrl: 'https://and-period.jp/thumbnail01.png'
+      intermissionVideoUrl: 'https://and-period.jp/thumbnail01.png'
+      public: true
+      approved: true
+      startAt: 1640962800
+      endAt: 1640962800
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      coordinatorId: 'coordinator-id'
+      coordinatorName: '&.コーディネータ'
+      shippingId: 'shipping-id'
+      shippingName: '配送設定名'
+      status: 4
+      title: 'スケジュールタイトル'
+      description: 'スケジュールの説明'
+      thumbnailUrl: 'https://and-period.jp/thumbnail01.png'
+      openingVideoUrl: 'https://and-period.jp/thumbnail01.png'
+      intermissionVideoUrl: 'https://and-period.jp/thumbnail01.png'
+      public: true
+      approved: true
+      startAt: 1640962800
+      endAt: 1640962800
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    total: 2

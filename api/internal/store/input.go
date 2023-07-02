@@ -336,19 +336,26 @@ type DeletePromotionInput struct {
 	PromotionID string `validate:"required"`
 }
 
+type ListSchedulesInput struct {
+	Limit  int64 `validate:"required,max=200"`
+	Offset int64 `validate:"min=0"`
+}
+
 type GetScheduleInput struct {
 	ScheduleID string `validate:"required"`
 }
 
 type CreateScheduleInput struct {
-	CoordinatorID string                `validate:"required"`
-	ShippingID    string                `validate:"required"`
-	Title         string                `validate:"required,max=64"`
-	Description   string                `validate:"required,max=2000"`
-	ThumbnailURL  string                `validate:"required"`
-	StartAt       time.Time             `validate:"required"`
-	EndAt         time.Time             `validate:"required,gtfield=StartAt"`
-	Lives         []*CreateScheduleLive `validate:"required"`
+	CoordinatorID        string                `validate:"required"`
+	ShippingID           string                `validate:"required"`
+	Title                string                `validate:"required,max=64"`
+	Description          string                `validate:"required,max=2000"`
+	ThumbnailURL         string                `validate:"omitempty,url"`
+	OpeningVideoURL      string                `validate:"omitempty,url"`
+	IntermissionVideoURL string                `validate:"omitempty,url"`
+	StartAt              time.Time             `validate:"required"`
+	EndAt                time.Time             `validate:"required,gtfield=StartAt"`
+	Lives                []*CreateScheduleLive `validate:"required"`
 }
 
 type CreateScheduleLive struct {

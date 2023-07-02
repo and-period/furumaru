@@ -3986,10 +3986,25 @@ export interface ProductResponse {
  */
 
 export const ProductStatus = {
+    /**
+    * 不明
+    */
     UNKNOWN: 0,
+    /**
+    * 非公開
+    */
     PRIVATE: 1,
+    /**
+    * 予約受付中
+    */
     PRESALE: 2,
+    /**
+    * 販売中
+    */
     FOR_SALE: 3,
+    /**
+    * 販売期間外
+    */
     OUT_OF_SALES: 4
 } as const;
 
@@ -4784,6 +4799,12 @@ export interface ScheduleResponse {
      */
     'coordinatorId': string;
     /**
+     * コーディネータ名
+     * @type {string}
+     * @memberof ScheduleResponse
+     */
+    'coordinatorName': string;
+    /**
      * 配送設定ID
      * @type {string}
      * @memberof ScheduleResponse
@@ -4795,6 +4816,12 @@ export interface ScheduleResponse {
      * @memberof ScheduleResponse
      */
     'shippingName': string;
+    /**
+     * 
+     * @type {ScheduleStatus}
+     * @memberof ScheduleResponse
+     */
+    'status': ScheduleStatus;
     /**
      * タイトル
      * @type {string}
@@ -4812,7 +4839,31 @@ export interface ScheduleResponse {
      * @type {string}
      * @memberof ScheduleResponse
      */
-    'thumnailURL': string;
+    'thumbnailUrl': string;
+    /**
+     * オープニング動画URL
+     * @type {string}
+     * @memberof ScheduleResponse
+     */
+    'openingVideoUrl': string;
+    /**
+     * 幕間動画URL
+     * @type {string}
+     * @memberof ScheduleResponse
+     */
+    'intermissionVideoUrl': string;
+    /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof ScheduleResponse
+     */
+    'public': boolean;
+    /**
+     * 承認フラグ
+     * @type {boolean}
+     * @memberof ScheduleResponse
+     */
+    'approved': boolean;
     /**
      * ライブ開始日時 (unixtime)
      * @type {number}
@@ -4825,12 +4876,6 @@ export interface ScheduleResponse {
      * @memberof ScheduleResponse
      */
     'endAt': number;
-    /**
-     * キャンセルフラグ
-     * @type {boolean}
-     * @memberof ScheduleResponse
-     */
-    'canceled': boolean;
     /**
      * 登録日時 (unixtime)
      * @type {number}
@@ -4850,6 +4895,8 @@ export interface ScheduleResponse {
      */
     'lives': Array<ScheduleResponseLivesInner>;
 }
+
+
 /**
  * 
  * @export
@@ -5153,6 +5200,154 @@ export interface ScheduleResponseLivesInnerProductsInner {
      * @memberof ScheduleResponseLivesInnerProductsInner
      */
     'updatedAt'?: number;
+}
+
+
+/**
+ * マルシェ開催状況
+ * @export
+ * @enum {string}
+ */
+
+export const ScheduleStatus = {
+    UNKNOWN: 0,
+    PRIVATE: 1,
+    IN_PROGRESS: 2,
+    WAITING: 3,
+    LIVE: 4,
+    CLOSED: 5
+} as const;
+
+export type ScheduleStatus = typeof ScheduleStatus[keyof typeof ScheduleStatus];
+
+
+/**
+ * 
+ * @export
+ * @interface SchedulesResponse
+ */
+export interface SchedulesResponse {
+    /**
+     * マルシェ開催スケジュール一覧
+     * @type {Array<SchedulesResponseSchedulesInner>}
+     * @memberof SchedulesResponse
+     */
+    'schedules': Array<SchedulesResponseSchedulesInner>;
+    /**
+     * 合計数
+     * @type {number}
+     * @memberof SchedulesResponse
+     */
+    'total': number;
+}
+/**
+ * 
+ * @export
+ * @interface SchedulesResponseSchedulesInner
+ */
+export interface SchedulesResponseSchedulesInner {
+    /**
+     * スケジュールID
+     * @type {string}
+     * @memberof SchedulesResponseSchedulesInner
+     */
+    'id': string;
+    /**
+     * コーディネーターID
+     * @type {string}
+     * @memberof SchedulesResponseSchedulesInner
+     */
+    'coordinatorId': string;
+    /**
+     * コーディネータ名
+     * @type {string}
+     * @memberof SchedulesResponseSchedulesInner
+     */
+    'coordinatorName': string;
+    /**
+     * 配送設定ID
+     * @type {string}
+     * @memberof SchedulesResponseSchedulesInner
+     */
+    'shippingId': string;
+    /**
+     * 配送設定名
+     * @type {string}
+     * @memberof SchedulesResponseSchedulesInner
+     */
+    'shippingName': string;
+    /**
+     * 
+     * @type {ScheduleStatus}
+     * @memberof SchedulesResponseSchedulesInner
+     */
+    'status': ScheduleStatus;
+    /**
+     * タイトル
+     * @type {string}
+     * @memberof SchedulesResponseSchedulesInner
+     */
+    'title': string;
+    /**
+     * 説明
+     * @type {string}
+     * @memberof SchedulesResponseSchedulesInner
+     */
+    'description': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof SchedulesResponseSchedulesInner
+     */
+    'thumbnailUrl': string;
+    /**
+     * オープニング動画URL
+     * @type {string}
+     * @memberof SchedulesResponseSchedulesInner
+     */
+    'openingVideoUrl': string;
+    /**
+     * 幕間動画URL
+     * @type {string}
+     * @memberof SchedulesResponseSchedulesInner
+     */
+    'intermissionVideoUrl': string;
+    /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof SchedulesResponseSchedulesInner
+     */
+    'public': boolean;
+    /**
+     * 承認フラグ
+     * @type {boolean}
+     * @memberof SchedulesResponseSchedulesInner
+     */
+    'approved': boolean;
+    /**
+     * ライブ開始日時 (unixtime)
+     * @type {number}
+     * @memberof SchedulesResponseSchedulesInner
+     */
+    'startAt': number;
+    /**
+     * ライブ終了日時 (unixtime)
+     * @type {number}
+     * @memberof SchedulesResponseSchedulesInner
+     */
+    'endAt': number;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof SchedulesResponseSchedulesInner
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof SchedulesResponseSchedulesInner
+     */
+    'updatedAt': number;
 }
 
 
@@ -13520,7 +13715,7 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
     return {
         /**
          * 
-         * @summary スケジュール登録
+         * @summary マルシェ開催スケジュール登録
          * @param {CreateScheduleRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -13560,7 +13755,7 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
-         * @summary 開催スケジュール取得
+         * @summary マルシェ開催スケジュール取得
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -13596,6 +13791,50 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary マルシェ開催スケジュール一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListSchedules: async (limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/schedules`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -13608,7 +13847,7 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary スケジュール登録
+         * @summary マルシェ開催スケジュール登録
          * @param {CreateScheduleRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -13619,13 +13858,25 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 開催スケジュール取得
+         * @summary マルシェ開催スケジュール取得
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         async v1GetSchedule(scheduleId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetSchedule(scheduleId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary マルシェ開催スケジュール一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ListSchedules(limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SchedulesResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListSchedules(limit, offset, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -13640,7 +13891,7 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
     return {
         /**
          * 
-         * @summary スケジュール登録
+         * @summary マルシェ開催スケジュール登録
          * @param {CreateScheduleRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -13650,13 +13901,24 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
-         * @summary 開催スケジュール取得
+         * @summary マルシェ開催スケジュール取得
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         v1GetSchedule(scheduleId: string, options?: any): AxiosPromise<ScheduleResponse> {
             return localVarFp.v1GetSchedule(scheduleId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary マルシェ開催スケジュール一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListSchedules(limit?: number, offset?: number, options?: any): AxiosPromise<SchedulesResponse> {
+            return localVarFp.v1ListSchedules(limit, offset, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -13670,7 +13932,7 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
 export class ScheduleApi extends BaseAPI {
     /**
      * 
-     * @summary スケジュール登録
+     * @summary マルシェ開催スケジュール登録
      * @param {CreateScheduleRequest} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -13682,7 +13944,7 @@ export class ScheduleApi extends BaseAPI {
 
     /**
      * 
-     * @summary 開催スケジュール取得
+     * @summary マルシェ開催スケジュール取得
      * @param {string} scheduleId マルシェ開催スケジュールID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -13690,6 +13952,19 @@ export class ScheduleApi extends BaseAPI {
      */
     public v1GetSchedule(scheduleId: string, options?: AxiosRequestConfig) {
         return ScheduleApiFp(this.configuration).v1GetSchedule(scheduleId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary マルシェ開催スケジュール一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ScheduleApi
+     */
+    public v1ListSchedules(limit?: number, offset?: number, options?: AxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1ListSchedules(limit, offset, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

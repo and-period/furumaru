@@ -25,6 +25,29 @@ func NewSchedule(db *database.Client) Schedule {
 	}
 }
 
+func (s *schedule) List(ctx context.Context, params *ListSchedulesParams, fields ...string) (entity.Schedules, error) {
+	var schedules entity.Schedules
+
+	stmt := s.db.Statement(ctx, s.db.DB, scheduleTable, fields...)
+	if params.Limit > 0 {
+		stmt = stmt.Limit(params.Limit)
+	}
+	if params.Offset > 0 {
+		stmt = stmt.Offset(params.Offset)
+	}
+
+	if err := stmt.Find(&schedules).Error; err != nil {
+		return nil, exception.InternalError(err)
+	}
+	schedules.Fill(s.now())
+	return schedules, nil
+}
+
+func (s *schedule) Count(ctx context.Context, params *ListSchedulesParams) (int64, error) {
+	total, err := s.db.Count(ctx, s.db.DB, &entity.Schedule{}, nil)
+	return total, exception.InternalError(err)
+}
+
 func (s *schedule) Get(ctx context.Context, scheduleID string, fields ...string) (*entity.Schedule, error) {
 	schedule, err := s.get(ctx, s.db.DB, scheduleID, fields...)
 	return schedule, exception.InternalError(err)
@@ -67,6 +90,6 @@ func (s *schedule) get(ctx context.Context, tx *gorm.DB, scheduleID string, fiel
 	if err != nil {
 		return nil, err
 	}
-
+	schedule.Fill(s.now())
 	return schedule, nil
 }

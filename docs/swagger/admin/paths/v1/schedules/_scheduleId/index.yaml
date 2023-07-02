@@ -1,5 +1,5 @@
 get:
-  summary: 開催スケジュール取得
+  summary: マルシェ開催スケジュール取得
   operationId: v1GetSchedule
   tags:
   - Schedule

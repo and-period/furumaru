@@ -15,7 +15,7 @@ productStatus:
   - PRESALE
   - FOR_SALE
   - OUT_OF_SALES
-  x-enum:-descriptions:
+  x-enum-descriptions:
   - 不明
   - 非公開
   - 予約受付中

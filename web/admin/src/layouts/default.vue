@@ -41,7 +41,7 @@ const navigationDrawerList: NavigationDrawerItem[] = [
     title: '商品管理'
   },
   {
-    to: '/livestreaming',
+    to: '/schedules',
     icon: mdiAntenna,
     title: 'ライブ配信'
   },
@@ -92,6 +92,11 @@ const navigationDrawerSettingsList: NavigationDrawerItem[] = [
     to: '/version',
     icon: mdiCog,
     title: 'バージョン情報'
+  },
+  {
+    to: '/livestreaming',
+    icon: mdiAntenna,
+    title: '配信(テスト用)'
   }
 ]
 
