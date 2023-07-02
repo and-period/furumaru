@@ -5998,11 +5998,59 @@ export interface UpdateCategoryRequest {
  */
 export interface UpdateContactRequest {
     /**
+     * お問い合わせ種別ID
+     * @type {string}
+     * @memberof UpdateContactRequest
+     */
+    'categoryId': string;
+    /**
+     * お問い合わせ件名(128文字まで)
+     * @type {string}
+     * @memberof UpdateContactRequest
+     */
+    'title': string;
+    /**
+     * お問い合わせ内容(2000文字まで)
+     * @type {string}
+     * @memberof UpdateContactRequest
+     */
+    'content': string;
+    /**
+     * 氏名(128文字まで)
+     * @type {string}
+     * @memberof UpdateContactRequest
+     */
+    'userName': string;
+    /**
+     * 問い合わせ作成者ID
+     * @type {string}
+     * @memberof UpdateContactRequest
+     */
+    'userId'?: string;
+    /**
+     * メールアドレス(256文字まで)
+     * @type {string}
+     * @memberof UpdateContactRequest
+     */
+    'email': string;
+    /**
+     * 電話番号(18文字まで)
+     * @type {string}
+     * @memberof UpdateContactRequest
+     */
+    'phoneNumber': string;
+    /**
      * 
      * @type {ContactStatus}
      * @memberof UpdateContactRequest
      */
     'status': ContactStatus;
+    /**
+     * 対応者ID
+     * @type {string}
+     * @memberof UpdateContactRequest
+     */
+    'responderId': string;
     /**
      * 対応メモ(2000文字まで)
      * @type {string}
