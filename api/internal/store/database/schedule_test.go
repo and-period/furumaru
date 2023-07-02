@@ -35,7 +35,7 @@ func TestSchedule_List(t *testing.T) {
 	require.NoError(t, err)
 	schedules := make(entity.Schedules, 2)
 	schedules[0] = testSchedule("schedule-id01", "coordinator-id", "shipping-id", now())
-	schedules[1] = testSchedule("schedule-id01", "coordinator-id", "shipping-id", now())
+	schedules[1] = testSchedule("schedule-id02", "coordinator-id", "shipping-id", now())
 	err = db.DB.Create(&schedules).Error
 	require.NoError(t, err)
 
@@ -105,7 +105,7 @@ func TestSchedule_Count(t *testing.T) {
 	require.NoError(t, err)
 	schedules := make(entity.Schedules, 2)
 	schedules[0] = testSchedule("schedule-id01", "coordinator-id", "shipping-id", now())
-	schedules[1] = testSchedule("schedule-id01", "coordinator-id", "shipping-id", now())
+	schedules[1] = testSchedule("schedule-id02", "coordinator-id", "shipping-id", now())
 	err = db.DB.Create(&schedules).Error
 	require.NoError(t, err)
 
