@@ -77,3 +77,36 @@ patch:
         application/json:
           schema:
             $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
+delete:
+  summary: お問い合わせ会話履歴削除
+  operationId: v1DeleteThread
+  tags:
+  - Thread
+  security:
+  - BearerAuth: []
+  parameters:
+  - in: path
+    name: threadId
+    schema:
+      type: string
+    description: お問い合わせ会話ID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  responses:
+    204:
+      description: 成功
+      content:
+        application/json:
+          schema: {}
+    403:
+      description: お問い合わせ会話の削除権限がない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
+    404:
+      description: お問い合わせ会話が存在しない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'

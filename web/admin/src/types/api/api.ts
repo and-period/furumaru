@@ -14540,6 +14540,44 @@ export const ThreadApiAxiosParamCreator = function (configuration?: Configuratio
         },
         /**
          * 
+         * @summary お問い合わせ会話履歴削除
+         * @param {string} threadId お問い合わせ会話ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteThread: async (threadId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'threadId' is not null or undefined
+            assertParamExists('v1DeleteThread', 'threadId', threadId)
+            const localVarPath = `/v1/contacts/{contactId}/threads/{threadId}`
+                .replace(`{${"threadId"}}`, encodeURIComponent(String(threadId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary お問い合わせ会話履歴取得
          * @param {string} threadId お問い合わせ会話ID
          * @param {*} [options] Override http request option.
@@ -14691,6 +14729,17 @@ export const ThreadApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary お問い合わせ会話履歴削除
+         * @param {string} threadId お問い合わせ会話ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1DeleteThread(threadId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteThread(threadId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary お問い合わせ会話履歴取得
          * @param {string} threadId お問い合わせ会話ID
          * @param {*} [options] Override http request option.
@@ -14747,6 +14796,16 @@ export const ThreadApiFactory = function (configuration?: Configuration, basePat
         },
         /**
          * 
+         * @summary お問い合わせ会話履歴削除
+         * @param {string} threadId お問い合わせ会話ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteThread(threadId: string, options?: any): AxiosPromise<object> {
+            return localVarFp.v1DeleteThread(threadId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary お問い合わせ会話履歴取得
          * @param {string} threadId お問い合わせ会話ID
          * @param {*} [options] Override http request option.
@@ -14798,6 +14857,18 @@ export class ThreadApi extends BaseAPI {
      */
     public v1CreateThread(body: CreateThreadRequest, options?: AxiosRequestConfig) {
         return ThreadApiFp(this.configuration).v1CreateThread(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary お問い合わせ会話履歴削除
+     * @param {string} threadId お問い合わせ会話ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ThreadApi
+     */
+    public v1DeleteThread(threadId: string, options?: AxiosRequestConfig) {
+        return ThreadApiFp(this.configuration).v1DeleteThread(threadId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
