@@ -72,7 +72,7 @@ func TestLive_ListByScheduleID(t *testing.T) {
 	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
 	productIDs := []string{"product-id01", "product-id02"}
-	schedule := testSchedule("schedule-id", now())
+	schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 	lives := make(entity.Lives, 3)
@@ -163,7 +163,7 @@ func TestLive_Get(t *testing.T) {
 	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
 	productIDs := []string{"product-id01", "product-id02"}
-	schedule := testSchedule("schedule-id", now())
+	schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 	l := testLive("live-id", "schedule-id", "producer-id", productIDs, now())
@@ -247,7 +247,7 @@ func TestLive_Update(t *testing.T) {
 	shipping := testShipping("shipping-id", now())
 	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
-	schedule := testSchedule("schedule-id", now())
+	schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 

@@ -16,6 +16,146 @@ func TestSchedule(t *testing.T) {
 	assert.NotNil(t, NewSchedule(nil))
 }
 
+func TestSchedule_List(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	shipping := testShipping("shipping-id", now())
+	err = db.DB.Create(&shipping).Error
+	require.NoError(t, err)
+	schedules := make(entity.Schedules, 2)
+	schedules[0] = testSchedule("schedule-id01", "coordinator-id", "shipping-id", now())
+	schedules[1] = testSchedule("schedule-id02", "coordinator-id", "shipping-id", now())
+	err = db.DB.Create(&schedules).Error
+	require.NoError(t, err)
+
+	type args struct {
+		params *ListSchedulesParams
+	}
+	type want struct {
+		schedules entity.Schedules
+		hasErr    bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			args: args{
+				params: &ListSchedulesParams{
+					Limit:  1,
+					Offset: 1,
+				},
+			},
+			want: want{
+				schedules: schedules[1:],
+				hasErr:    false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &schedule{db: db, now: now}
+			actual, err := db.List(ctx, tt.args.params)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.ElementsMatch(t, tt.want.schedules, actual)
+		})
+	}
+}
+
+func TestSchedule_Count(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	shipping := testShipping("shipping-id", now())
+	err = db.DB.Create(&shipping).Error
+	require.NoError(t, err)
+	schedules := make(entity.Schedules, 2)
+	schedules[0] = testSchedule("schedule-id01", "coordinator-id", "shipping-id", now())
+	schedules[1] = testSchedule("schedule-id02", "coordinator-id", "shipping-id", now())
+	err = db.DB.Create(&schedules).Error
+	require.NoError(t, err)
+
+	type args struct {
+		params *ListSchedulesParams
+	}
+	type want struct {
+		total  int64
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			args: args{
+				params: &ListSchedulesParams{
+					Limit:  1,
+					Offset: 1,
+				},
+			},
+			want: want{
+				total:  2,
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &schedule{db: db, now: now}
+			actual, err := db.Count(ctx, tt.args.params)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.total, actual)
+		})
+	}
+}
+
 func TestSchedule_Get(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -33,7 +173,7 @@ func TestSchedule_Get(t *testing.T) {
 	shipping := testShipping("shipping-id", now())
 	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
-	s := testSchedule("schedule-id", now())
+	s := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
 	err = db.DB.Create(&s).Error
 	require.NoError(t, err)
 
@@ -111,7 +251,7 @@ func TestSchedule_Create(t *testing.T) {
 	require.NoError(t, err)
 
 	productIDs := []string{"product-id01", "product-id02"}
-	s := testSchedule("schedule-id", now())
+	s := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
 	lives := testLives("live-id", "schedule-id", "producer-id", productIDs, now(), 3)
 	lproducts := make(entity.LiveProducts, 0)
 	for i := range lives {
@@ -147,7 +287,7 @@ func TestSchedule_Create(t *testing.T) {
 		{
 			name: "duplicate entry",
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
-				schedule := testSchedule("schedule-id", now())
+				schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
 				err = db.DB.Create(&schedule).Error
 				require.NoError(t, err)
 			},
@@ -180,16 +320,23 @@ func TestSchedule_Create(t *testing.T) {
 	}
 }
 
-func testSchedule(id string, now time.Time) *entity.Schedule {
+func testSchedule(id, coordinatorID, shippingID string, now time.Time) *entity.Schedule {
 	return &entity.Schedule{
-		ID:           id,
-		ShippingID:   "shipping-id",
-		Title:        "旬の夏野菜配信",
-		Description:  "旬の夏野菜特集",
-		ThumbnailURL: "https://and-period.jp/thumbnail01.png",
-		StartAt:      now,
-		EndAt:        now,
-		CreatedAt:    now,
-		UpdatedAt:    now,
+		ID:                   id,
+		CoordinatorID:        coordinatorID,
+		ShippingID:           shippingID,
+		Status:               entity.ScheduleStatusLive,
+		Title:                "旬の夏野菜配信",
+		Description:          "旬の夏野菜特集",
+		ThumbnailURL:         "https://and-period.jp/thumbnail.png",
+		OpeningVideoURL:      "https://and-period.jp/opening-video.mp4",
+		IntermissionVideoURL: "https://and-period.jp/intermission-video.mp4",
+		Public:               true,
+		Approved:             true,
+		ApprovedAdminID:      "admin-id",
+		StartAt:              now.AddDate(0, -1, 0),
+		EndAt:                now.AddDate(0, 1, 0),
+		CreatedAt:            now,
+		UpdatedAt:            now,
 	}
 }

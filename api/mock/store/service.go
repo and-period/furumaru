@@ -487,6 +487,22 @@ func (mr *MockServiceMockRecorder) ListPromotions(ctx, in interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPromotions", reflect.TypeOf((*MockService)(nil).ListPromotions), ctx, in)
 }
 
+// ListSchedules mocks base method.
+func (m *MockService) ListSchedules(ctx context.Context, in *store.ListSchedulesInput) (entity.Schedules, int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListSchedules", ctx, in)
+	ret0, _ := ret[0].(entity.Schedules)
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ListSchedules indicates an expected call of ListSchedules.
+func (mr *MockServiceMockRecorder) ListSchedules(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListSchedules", reflect.TypeOf((*MockService)(nil).ListSchedules), ctx, in)
+}
+
 // ListShippings mocks base method.
 func (m *MockService) ListShippings(ctx context.Context, in *store.ListShippingsInput) (entity.Shippings, int64, error) {
 	m.ctrl.T.Helper()

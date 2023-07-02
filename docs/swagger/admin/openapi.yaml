@@ -237,6 +237,8 @@ components:
       $ref: './components/schemas/codes/product.yaml#/storageMethodType'
     discountType:
       $ref: './components/schemas/codes/promotion.yaml#/discountType'
+    scheduleStatus:
+      $ref: './components/schemas/codes/schedule.yaml#/scheduleStatus'
     errorResponse:
       $ref: './components/schemas/common.yaml#/errorResponse'
     # Request
@@ -385,6 +387,8 @@ components:
       $ref: './components/schemas/v1/message.response.yaml#/messagesResponse'
     v1ScheduleResponse:
       $ref: './components/schemas/v1/schedule.response.yaml#/scheduleResponse'
+    v1SchedulesResponse:
+      $ref: './components/schemas/v1/schedule.response.yaml#/schedulesResponse'
     v1LiveResponse:
       $ref: './components/schemas/v1/live.response.yaml#/liveResponse'
     v1OrderResponse:

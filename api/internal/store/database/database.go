@@ -120,6 +120,13 @@ type Rehearsal interface {
 	Create(ctx context.Context, rehearsal *entity.Rehearsal) error
 }
 
+type Schedule interface {
+	List(ctx context.Context, params *ListSchedulesParams, fields ...string) (entity.Schedules, error)
+	Count(ctx context.Context, params *ListSchedulesParams) (int64, error)
+	Create(ctx context.Context, schedule *entity.Schedule, lives entity.Lives, products entity.LiveProducts) error
+	Get(ctx context.Context, scheduleID string, fields ...string) (*entity.Schedule, error)
+}
+
 type Shipping interface {
 	List(ctx context.Context, params *ListShippingsParams, fields ...string) (entity.Shippings, error)
 	Count(ctx context.Context, params *ListShippingsParams) (int64, error)
@@ -128,11 +135,6 @@ type Shipping interface {
 	Create(ctx context.Context, shipping *entity.Shipping) error
 	Update(ctx context.Context, shippingID string, params *UpdateShippingParams) error
 	Delete(ctx context.Context, shippingID string) error
-}
-
-type Schedule interface {
-	Create(ctx context.Context, schedule *entity.Schedule, lives entity.Lives, products entity.LiveProducts) error
-	Get(ctx context.Context, scheduleID string, fields ...string) (*entity.Schedule, error)
 }
 
 type Live interface {
@@ -371,6 +373,11 @@ type UpdatePromotionParams struct {
 	CodeType     entity.PromotionCodeType
 	StartAt      time.Time
 	EndAt        time.Time
+}
+
+type ListSchedulesParams struct {
+	Limit  int
+	Offset int
 }
 
 type ListShippingsParams struct {

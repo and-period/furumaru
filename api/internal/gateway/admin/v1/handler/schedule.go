@@ -23,6 +23,67 @@ func (h *handler) scheduleRoutes(rg *gin.RouterGroup) {
 	arg.POST("", h.CreateSchedule)
 }
 
+func (h *handler) ListSchedules(ctx *gin.Context) {
+	const (
+		defaultLimit  = 20
+		defaultOffset = 0
+	)
+
+	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
+	if err != nil {
+		badRequest(ctx, err)
+		return
+	}
+	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
+	if err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	in := &store.ListSchedulesInput{
+		Limit:  limit,
+		Offset: offset,
+	}
+	schedules, total, err := h.store.ListSchedules(ctx, in)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+	if len(schedules) == 0 {
+		res := &response.SchedulesResponse{
+			Schedules: []*response.Schedule{},
+		}
+		ctx.JSON(http.StatusOK, res)
+		return
+	}
+
+	var (
+		shippings    service.Shippings
+		coordinators service.Coordinators
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		shippings, err = h.multiGetShippings(ectx, schedules.ShippingIDs())
+		return
+	})
+	eg.Go(func() (err error) {
+		coordinators, err = h.multiGetCoordinators(ectx, schedules.CoordinatorIDs())
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	sschedules := service.NewSchedules(schedules)
+	sschedules.Fill(shippings.Map(), coordinators.Map())
+	res := &response.SchedulesResponse{
+		Schedules: sschedules.Response(),
+		Total:     total,
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
 func (h *handler) GetSchedule(ctx *gin.Context) {
 	scheduleID := util.GetParam(ctx, "scheduleId")
 	schedule, err := h.getSchedule(ctx, scheduleID)
@@ -55,14 +116,15 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 	}
 
 	var (
-		producers service.Producers
-		shipping  *service.Shipping
-		products  service.Products
-		err       error
+		coordinator *service.Coordinator
+		producers   service.Producers
+		shipping    *service.Shipping
+		products    service.Products
+		err         error
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
-		_, err = h.getCoordinator(ectx, coordinatorID)
+		coordinator, err = h.getCoordinator(ectx, coordinatorID)
 		return
 	})
 	eg.Go(func() (err error) {
@@ -141,7 +203,7 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 	schedule := service.NewSchedule(sschedule)
 	lives := service.NewLives(slives)
 
-	schedule.Fill(shipping)
+	schedule.Fill(shipping, coordinator)
 	lives.Fill(producers.Map(), products.Map())
 
 	res := &response.ScheduleResponse{
@@ -172,11 +234,16 @@ func (h *handler) getScheduleDetailsByScheduleID(ctx context.Context, schedule *
 		return nil, err
 	}
 	var (
-		producers service.Producers
-		shipping  *service.Shipping
-		products  service.Products
+		coordinator *service.Coordinator
+		producers   service.Producers
+		shipping    *service.Shipping
+		products    service.Products
 	)
 	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		coordinator, err = h.getCoordinator(ectx, schedule.CoordinatorID)
+		return
+	})
 	eg.Go(func() (err error) {
 		set := set.NewEmpty[string](len(slives))
 		for i := range slives {
@@ -209,7 +276,7 @@ func (h *handler) getScheduleDetailsByScheduleID(ctx context.Context, schedule *
 		return nil, err
 	}
 	lives := service.NewLives(slives)
-	schedule.Fill(shipping)
+	schedule.Fill(shipping, coordinator)
 	lives.Fill(producers.Map(), products.Map())
 
 	return lives, nil

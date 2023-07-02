@@ -1,0 +1,214 @@
+<script lang="ts" setup>
+import { mdiDelete, mdiPlus } from '@mdi/js'
+import { unix } from 'dayjs'
+import { VDataTable } from 'vuetify/lib/labs/components.mjs'
+import { AlertType } from '~/lib/hooks'
+import { ScheduleStatus, SchedulesResponseSchedulesInner } from '~/types/api'
+
+const props = defineProps({
+  loading: {
+    type: Boolean,
+    default: false
+  },
+  deleteDialog: {
+    type: Boolean,
+    default: false
+  },
+  isAlert: {
+    type: Boolean,
+    default: false
+  },
+  alertType: {
+    type: String as PropType<AlertType>,
+    default: undefined
+  },
+  alertText: {
+    type: String,
+    default: ''
+  },
+  sortBy: {
+    type: Array as PropType<VDataTable['sortBy']>,
+    default: () => []
+  },
+  schedules: {
+    type: Array<SchedulesResponseSchedulesInner>,
+    default: () => []
+  },
+  tableItemsPerPage: {
+    type: Number,
+    default: 20
+  },
+  tableItemsTotal: {
+    type: Number,
+    default: 0
+  }
+})
+
+const emit = defineEmits<{
+  (e: 'click:update-page', page: number): void
+  (e: 'click:update-items-per-page', page: number): void
+  (e: 'click:row', scheduleId: string): void
+  (e: 'click:add'): void
+  (e: 'click:delete', scheduleId: string): void
+  (e: 'update:delete-dialog', v: boolean): void
+}>()
+
+const headers: VDataTable['headers'] = [
+  {
+    title: 'マルシェ名',
+    key: 'title',
+    sortable: false
+  },
+  {
+    title: 'コーディネータ名',
+    key: 'coordinatorName',
+    sortable: false
+  },
+  {
+    title: 'ステータス',
+    key: 'status',
+    sortable: false
+  },
+  {
+    title: '開催期間',
+    key: 'term',
+    sortable: false
+  },
+  {
+    title: '',
+    key: 'actions',
+    sortable: false
+  }
+]
+
+const selectedItem = ref<SchedulesResponseSchedulesInner>()
+
+const deleteDialogValue = computed({
+  get: (): boolean => props.deleteDialog,
+  set: (val: boolean): void => emit('update:delete-dialog', val)
+})
+
+const getStatus = (status: ScheduleStatus): string => {
+  switch (status) {
+    case ScheduleStatus.PRIVATE:
+      return '非公開'
+    case ScheduleStatus.IN_PROGRESS:
+      return '申請中'
+    case ScheduleStatus.WAITING:
+      return '開催前'
+    case ScheduleStatus.LIVE:
+      return '開催中'
+    case ScheduleStatus.CLOSED:
+      return '終了(アーカイブ)'
+    default:
+      return '不明'
+  }
+}
+
+const getStatusColor = (status: ScheduleStatus): string => {
+  switch (status) {
+    case ScheduleStatus.PRIVATE:
+      return 'error'
+    case ScheduleStatus.IN_PROGRESS:
+      return 'warning'
+    case ScheduleStatus.WAITING:
+      return 'info'
+    case ScheduleStatus.LIVE:
+      return 'primary'
+    case ScheduleStatus.CLOSED:
+      return 'secondary'
+    default:
+      return ''
+  }
+}
+
+const getDay = (unixTime: number): string => {
+  return unix(unixTime).format('YYYY/MM/DD HH:mm')
+}
+
+const getTerm = (schedule: SchedulesResponseSchedulesInner): string => {
+  return `${getDay(schedule.startAt)} ~ ${getDay(schedule.endAt)}`
+}
+
+const onClickRow = (scheduleId: string): void => {
+  emit('click:row', scheduleId)
+}
+
+const onClickOpenDeleteDialog = (schedule: SchedulesResponseSchedulesInner): void => {
+  selectedItem.value = schedule
+  deleteDialogValue.value = true
+}
+
+const onClickCloseDeleteDialog = (): void => {
+  deleteDialogValue.value = false
+}
+
+const onClickAdd = (): void => {
+  emit('click:add')
+}
+
+const onClickDelete = (): void => {
+  emit('click:delete', selectedItem?.value?.id || '')
+}
+</script>
+
+<template>
+  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+
+  <v-dialog v-model="deleteDialogValue" width="500">
+    <v-card>
+      <v-card-title class="text-h7">
+        {{ selectedItem?.title || '' }}を本当に削除しますか？
+      </v-card-title>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn color="error" variant="text" @click="onClickCloseDeleteDialog">
+          キャンセル
+        </v-btn>
+        <v-btn :loading="loading" color="primary" variant="outlined" @click="onClickDelete">
+          削除
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <v-card class="mt-4" flat :loading="props.loading">
+    <v-card-title class="d-flex flex-row">
+      マルシェ開催スケジュール管理
+      <v-spacer />
+      <v-btn variant="outlined" color="primary" @click="onClickAdd">
+        <v-icon start :icon="mdiPlus" />
+        開催スケジュール登録
+      </v-btn>
+    </v-card-title>
+
+    <v-card-text>
+      <v-data-table-server
+        :headers="headers"
+        :items="props.schedules"
+        :items-per-page="props.tableItemsPerPage"
+        :items-length="props.tableItemsTotal"
+        hover
+        no-data-text="登録されているスケジュールがありません。"
+        @update:page="onUpdatePage"
+        @update:items-per-page="onUpdateItemsPerPage"
+        @click:row="(_: any, { item }:any) => onClickRow(item.raw.id)"
+      >
+        <template #[`item.status`]="{ item }">
+          <v-chip :color="getStatusColor(item.raw.status)">
+            {{ getStatus(item.raw.status) }}
+          </v-chip>
+        </template>
+        <template #[`item.term`]="{ item }">
+          {{ getTerm(item.raw) }}
+        </template>
+        <template #[`item.actions`]="{ item }">
+          <v-btn variant="outlined" color="primary" size="small" @click.stop="onClickOpenDeleteDialog(item.raw)">
+            <v-icon size="small" :icon="mdiDelete" />
+            削除
+          </v-btn>
+        </template>
+      </v-data-table-server>
+    </v-card-text>
+  </v-card>
+</template>

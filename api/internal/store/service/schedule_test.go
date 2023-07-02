@@ -7,6 +7,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
@@ -15,6 +16,109 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+func TestListSchedules(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2023, 7, 1, 18, 30, 0, 0)
+	params := &database.ListSchedulesParams{
+		Limit:  20,
+		Offset: 0,
+	}
+	schedules := entity.Schedules{
+		{
+			ID:                   "schedule-id",
+			CoordinatorID:        "coordinator-id",
+			ShippingID:           "shipping-id",
+			Status:               entity.ScheduleStatusLive,
+			Title:                "&.マルシェ",
+			Description:          "&.マルシェの開催内容です。",
+			ThumbnailURL:         "https://and-period.jp/thumbnail.png",
+			OpeningVideoURL:      "https://and-period.jp/opening-video.mp4",
+			IntermissionVideoURL: "https://and-period.jp/intermission-video.mp4",
+			Public:               true,
+			Approved:             true,
+			ApprovedAdminID:      "admin-id",
+			StartAt:              now.AddDate(0, -1, 0),
+			EndAt:                now.AddDate(0, 1, 0),
+			CreatedAt:            now,
+			UpdatedAt:            now,
+		},
+	}
+
+	tests := []struct {
+		name        string
+		setup       func(ctx context.Context, mocks *mocks)
+		input       *store.ListSchedulesInput
+		expect      entity.Schedules
+		expectTotal int64
+		expectErr   error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().List(gomock.Any(), params).Return(schedules, nil)
+				mocks.db.Schedule.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
+			},
+			input: &store.ListSchedulesInput{
+				Limit:  20,
+				Offset: 0,
+			},
+			expect:      schedules,
+			expectTotal: 1,
+			expectErr:   nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.ListSchedulesInput{
+				Limit:  0,
+				Offset: 0,
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to list schedules",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().List(gomock.Any(), params).Return(nil, assert.AnError)
+				mocks.db.Schedule.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
+			},
+			input: &store.ListSchedulesInput{
+				Limit:  20,
+				Offset: 0,
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrUnknown,
+		},
+		{
+			name: "failed to count schedules",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().List(gomock.Any(), params).Return(schedules, nil)
+				mocks.db.Schedule.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
+			},
+			input: &store.ListSchedulesInput{
+				Limit:  20,
+				Offset: 0,
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, total, err := service.ListSchedules(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.ElementsMatch(t, tt.expect, actual)
+			assert.Equal(t, tt.expectTotal, total)
+		}))
+	}
+}
 
 func TestGetSchedule(t *testing.T) {
 	t.Parallel()
@@ -29,7 +133,6 @@ func TestGetSchedule(t *testing.T) {
 		ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
 		StartAt:       now,
 		EndAt:         now,
-		Canceled:      false,
 		CreatedAt:     now,
 		UpdatedAt:     now,
 	}
@@ -131,7 +234,6 @@ func TestCreateSchedule(t *testing.T) {
 							ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
 							StartAt:       jst.Date(2022, 1, 2, 18, 30, 0, 0),
 							EndAt:         jst.Date(2022, 1, 3, 18, 30, 0, 0),
-							Canceled:      false,
 						}
 						assert.Equal(t, eschedule, s)
 						require.Len(t, ls, 1)

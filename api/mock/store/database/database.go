@@ -930,6 +930,98 @@ func (mr *MockRehearsalMockRecorder) Get(ctx, liveID interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockRehearsal)(nil).Get), ctx, liveID)
 }
 
+// MockSchedule is a mock of Schedule interface.
+type MockSchedule struct {
+	ctrl     *gomock.Controller
+	recorder *MockScheduleMockRecorder
+}
+
+// MockScheduleMockRecorder is the mock recorder for MockSchedule.
+type MockScheduleMockRecorder struct {
+	mock *MockSchedule
+}
+
+// NewMockSchedule creates a new mock instance.
+func NewMockSchedule(ctrl *gomock.Controller) *MockSchedule {
+	mock := &MockSchedule{ctrl: ctrl}
+	mock.recorder = &MockScheduleMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockSchedule) EXPECT() *MockScheduleMockRecorder {
+	return m.recorder
+}
+
+// Count mocks base method.
+func (m *MockSchedule) Count(ctx context.Context, params *database.ListSchedulesParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockScheduleMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockSchedule)(nil).Count), ctx, params)
+}
+
+// Create mocks base method.
+func (m *MockSchedule) Create(ctx context.Context, schedule *entity.Schedule, lives entity.Lives, products entity.LiveProducts) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, schedule, lives, products)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockScheduleMockRecorder) Create(ctx, schedule, lives, products interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockSchedule)(nil).Create), ctx, schedule, lives, products)
+}
+
+// Get mocks base method.
+func (m *MockSchedule) Get(ctx context.Context, scheduleID string, fields ...string) (*entity.Schedule, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, scheduleID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.Schedule)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockScheduleMockRecorder) Get(ctx, scheduleID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, scheduleID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockSchedule)(nil).Get), varargs...)
+}
+
+// List mocks base method.
+func (m *MockSchedule) List(ctx context.Context, params *database.ListSchedulesParams, fields ...string) (entity.Schedules, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, params}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "List", varargs...)
+	ret0, _ := ret[0].(entity.Schedules)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockScheduleMockRecorder) List(ctx, params interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, params}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockSchedule)(nil).List), varargs...)
+}
+
 // MockShipping is a mock of Shipping interface.
 type MockShipping struct {
 	ctrl     *gomock.Controller
@@ -1068,63 +1160,6 @@ func (m *MockShipping) Update(ctx context.Context, shippingID string, params *da
 func (mr *MockShippingMockRecorder) Update(ctx, shippingID, params interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockShipping)(nil).Update), ctx, shippingID, params)
-}
-
-// MockSchedule is a mock of Schedule interface.
-type MockSchedule struct {
-	ctrl     *gomock.Controller
-	recorder *MockScheduleMockRecorder
-}
-
-// MockScheduleMockRecorder is the mock recorder for MockSchedule.
-type MockScheduleMockRecorder struct {
-	mock *MockSchedule
-}
-
-// NewMockSchedule creates a new mock instance.
-func NewMockSchedule(ctrl *gomock.Controller) *MockSchedule {
-	mock := &MockSchedule{ctrl: ctrl}
-	mock.recorder = &MockScheduleMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockSchedule) EXPECT() *MockScheduleMockRecorder {
-	return m.recorder
-}
-
-// Create mocks base method.
-func (m *MockSchedule) Create(ctx context.Context, schedule *entity.Schedule, lives entity.Lives, products entity.LiveProducts) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", ctx, schedule, lives, products)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Create indicates an expected call of Create.
-func (mr *MockScheduleMockRecorder) Create(ctx, schedule, lives, products interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockSchedule)(nil).Create), ctx, schedule, lives, products)
-}
-
-// Get mocks base method.
-func (m *MockSchedule) Get(ctx context.Context, scheduleID string, fields ...string) (*entity.Schedule, error) {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{ctx, scheduleID}
-	for _, a := range fields {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "Get", varargs...)
-	ret0, _ := ret[0].(*entity.Schedule)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Get indicates an expected call of Get.
-func (mr *MockScheduleMockRecorder) Get(ctx, scheduleID interface{}, fields ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{ctx, scheduleID}, fields...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockSchedule)(nil).Get), varargs...)
 }
 
 // MockLive is a mock of Live interface.
