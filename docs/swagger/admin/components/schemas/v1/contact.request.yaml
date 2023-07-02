@@ -3,16 +3,12 @@ updateContactRequest:
   properties:
     status:
       $ref: './../../../openapi.yaml#/components/schemas/contactStatus'
-    priority:
-      $ref: './../../../openapi.yaml#/components/schemas/contactPriority'
     note:
       type: string
       description: 対応メモ(2000文字まで)
   required:
   - status
-  - priority
   - note
   example:
     status: 1
-    priority: 1
     note: '対応メモ'

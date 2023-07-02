@@ -217,8 +217,6 @@ components:
       $ref: './components/schemas/codes/common.yaml#/weekday'
     contactStatus:
       $ref: './components/schemas/codes/contact.yaml#/contactStatus'
-    contactPriority:
-      $ref: './components/schemas/codes/contact.yaml#/contactPriority'
     imageSize:
       $ref: './components/schemas/codes/image.yaml#/imageSize'
     liveStatus:
