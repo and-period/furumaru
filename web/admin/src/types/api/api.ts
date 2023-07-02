@@ -504,34 +504,6 @@ export interface ContactCategoryResponse {
     'updatedAt': number;
 }
 /**
- * お問い合わせ対応優先度
- * @export
- * @enum {string}
- */
-
-export const ContactPriority = {
-    /**
-    * 不明
-    */
-    UNKNOWN: 0,
-    /**
-    * 低
-    */
-    LOW: 1,
-    /**
-    * 中
-    */
-    MIDDLE: 2,
-    /**
-    * 高
-    */
-    HIGH: 3
-} as const;
-
-export type ContactPriority = typeof ContactPriority[keyof typeof ContactPriority];
-
-
-/**
  * 
  * @export
  * @interface ContactResponse
@@ -549,6 +521,12 @@ export interface ContactResponse {
      * @memberof ContactResponse
      */
     'title': string;
+    /**
+     * お問い合わせ種別ID
+     * @type {string}
+     * @memberof ContactResponse
+     */
+    'categoryId': string;
     /**
      * 内容
      * @type {string}
@@ -580,12 +558,6 @@ export interface ContactResponse {
      */
     'status': ContactStatus;
     /**
-     * 
-     * @type {ContactPriority}
-     * @memberof ContactResponse
-     */
-    'priority': ContactPriority;
-    /**
      * 対応時メモ
      * @type {string}
      * @memberof ContactResponse
@@ -603,6 +575,12 @@ export interface ContactResponse {
      * @memberof ContactResponse
      */
     'updatedAt': number;
+    /**
+     * 会話履歴一覧
+     * @type {Array<ThreadResponse>}
+     * @memberof ContactResponse
+     */
+    'threads': Array<ThreadResponse>;
 }
 
 
@@ -618,9 +596,9 @@ export const ContactStatus = {
     */
     UNKNOWN: 0,
     /**
-    * ToDo
+    * 未着手
     */
-    TODO: 1,
+    WAITING: 1,
     /**
     * 対応中
     */
@@ -676,6 +654,12 @@ export interface ContactsResponseContactsInner {
      */
     'title': string;
     /**
+     * お問い合わせ種別ID
+     * @type {string}
+     * @memberof ContactsResponseContactsInner
+     */
+    'categoryId': string;
+    /**
      * 内容
      * @type {string}
      * @memberof ContactsResponseContactsInner
@@ -706,12 +690,6 @@ export interface ContactsResponseContactsInner {
      */
     'status': ContactStatus;
     /**
-     * 
-     * @type {ContactPriority}
-     * @memberof ContactsResponseContactsInner
-     */
-    'priority': ContactPriority;
-    /**
      * 対応時メモ
      * @type {string}
      * @memberof ContactsResponseContactsInner
@@ -729,6 +707,12 @@ export interface ContactsResponseContactsInner {
      * @memberof ContactsResponseContactsInner
      */
     'updatedAt': number;
+    /**
+     * 会話履歴一覧
+     * @type {Array<ThreadResponse>}
+     * @memberof ContactsResponseContactsInner
+     */
+    'threads': Array<ThreadResponse>;
 }
 
 
@@ -6020,12 +6004,6 @@ export interface UpdateContactRequest {
      */
     'status': ContactStatus;
     /**
-     * 
-     * @type {ContactPriority}
-     * @memberof UpdateContactRequest
-     */
-    'priority': ContactPriority;
-    /**
      * 対応メモ(2000文字まで)
      * @type {string}
      * @memberof UpdateContactRequest
@@ -8857,11 +8835,10 @@ export const ContactApiAxiosParamCreator = function (configuration?: Configurati
          * @summary お問い合わせ一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:status,priority,createdAt,updatedAt 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListContacts: async (limit?: number, offset?: number, orders?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1ListContacts: async (limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/contacts`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -8884,10 +8861,6 @@ export const ContactApiAxiosParamCreator = function (configuration?: Configurati
 
             if (offset !== undefined) {
                 localVarQueryParameter['offset'] = offset;
-            }
-
-            if (orders !== undefined) {
-                localVarQueryParameter['orders'] = orders;
             }
 
 
@@ -8971,12 +8944,11 @@ export const ContactApiFp = function(configuration?: Configuration) {
          * @summary お問い合わせ一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:status,priority,createdAt,updatedAt 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ListContacts(limit?: number, offset?: number, orders?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ContactsResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListContacts(limit, offset, orders, options);
+        async v1ListContacts(limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ContactsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListContacts(limit, offset, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -9016,12 +8988,11 @@ export const ContactApiFactory = function (configuration?: Configuration, basePa
          * @summary お問い合わせ一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:status,priority,createdAt,updatedAt 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListContacts(limit?: number, offset?: number, orders?: string, options?: any): AxiosPromise<ContactsResponse> {
-            return localVarFp.v1ListContacts(limit, offset, orders, options).then((request) => request(axios, basePath));
+        v1ListContacts(limit?: number, offset?: number, options?: any): AxiosPromise<ContactsResponse> {
+            return localVarFp.v1ListContacts(limit, offset, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -9061,13 +9032,12 @@ export class ContactApi extends BaseAPI {
      * @summary お問い合わせ一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
-     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:status,priority,createdAt,updatedAt 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ContactApi
      */
-    public v1ListContacts(limit?: number, offset?: number, orders?: string, options?: AxiosRequestConfig) {
-        return ContactApiFp(this.configuration).v1ListContacts(limit, offset, orders, options).then((request) => request(this.axios, this.basePath));
+    public v1ListContacts(limit?: number, offset?: number, options?: AxiosRequestConfig) {
+        return ContactApiFp(this.configuration).v1ListContacts(limit, offset, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
