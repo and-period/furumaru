@@ -19,8 +19,9 @@ import (
 
 func (h *handler) scheduleRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication)
-	arg.GET("/:scheduleId", h.GetSchedule)
+	arg.GET("", h.ListSchedules)
 	arg.POST("", h.CreateSchedule)
+	arg.GET("/:scheduleId", h.GetSchedule)
 }
 
 func (h *handler) ListSchedules(ctx *gin.Context) {
