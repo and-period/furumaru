@@ -215,10 +215,10 @@ components:
       $ref: './components/schemas/codes/common.yaml#/prefecture'
     weekday:
       $ref: './components/schemas/codes/common.yaml#/weekday'
+    contactUserType:
+      $ref: './components/schemas/codes/contact.yaml#/contactUserType'
     contactStatus:
       $ref: './components/schemas/codes/contact.yaml#/contactStatus'
-    contactPriority:
-      $ref: './components/schemas/codes/contact.yaml#/contactPriority'
     imageSize:
       $ref: './components/schemas/codes/image.yaml#/imageSize'
     liveStatus:
@@ -316,6 +316,8 @@ components:
       $ref: './components/schemas/v1/promotion.request.yaml#/createPromotionRequest'
     v1UpdatePromotionRequest:
       $ref: './components/schemas/v1/promotion.request.yaml#/updatePromotionRequest'
+    v1CreateContactRequest:
+      $ref: './components/schemas/v1/contact.request.yaml#/createContactRequest'
     v1UpdateContactRequest:
       $ref: './components/schemas/v1/contact.request.yaml#/updateContactRequest'
     v1CreateThreadRequest:
