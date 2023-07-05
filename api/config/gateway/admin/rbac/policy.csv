@@ -58,7 +58,7 @@ p, notification_get, /v1/notifications/*, GET, allow
 p, notification_create, /v1/notifications, POST, allow
 p, notification_update, /v1/notifications/*, PATCH, allow
 p, notification_delete, /v1/notifications/*, DELETE, allow
-p, schedule_list, /v1/schedules GET, allow
+p, schedule_list, /v1/schedules, GET, allow
 p, schedule_get, /v1/schedules/*, GET, allow
 p, schedule_create, /v1/schedules, POST, allow
 p, live_get, /v1/schedules/*/lives/*, GET, allow
