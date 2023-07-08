@@ -211,8 +211,8 @@ const onClickDelete = (): void => {
         @update:items-per-page="onUpdateItemsPerPage"
         @click:row="(_: any, { item }:any) => onClickRow(item.raw.id)"
       >
-      <template #[`item.thumbnail`]="{ item }">
-        <v-img aspect-ratio="1/1" :src="getThumbnail(item.raw)" :srcset="getResizedThumbnails(item.raw)" />
+        <template #[`item.thumbnail`]="{ item }">
+          <v-img aspect-ratio="1/1" :src="getThumbnail(item.raw)" :srcset="getResizedThumbnails(item.raw)" />
         </template>
         <template #[`item.status`]="{ item }">
           <v-chip :color="getStatusColor(item.raw.status)">
