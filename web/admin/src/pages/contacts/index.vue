@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { VDataTable } from 'vuetify/lib/labs/components'
+import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { storeToRefs } from 'pinia'
 
 import { useAlert, usePagination } from '~/lib/hooks'

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { mdiDelete, mdiPlus } from '@mdi/js'
 import { unix } from 'dayjs'
-import { VDataTable } from 'vuetify/lib/labs/components'
+import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { AlertType } from '~/lib/hooks'
 import { DiscountType, PromotionsResponsePromotionsInner } from '~/types/api'
 

@@ -2,6 +2,7 @@
 import { mdiDelete, mdiPlus } from '@mdi/js'
 import { unix } from 'dayjs'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
+import { getResizedImages } from '~/lib/helpers'
 import { AlertType } from '~/lib/hooks'
 import { ScheduleStatus, SchedulesResponseSchedulesInner } from '~/types/api'
 
@@ -55,6 +56,11 @@ const emit = defineEmits<{
 
 const headers: VDataTable['headers'] = [
   {
+    title: '',
+    key: 'thumbnail',
+    sortable: false
+  },
+  {
     title: 'マルシェ名',
     key: 'title',
     sortable: false
@@ -87,6 +93,17 @@ const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
   set: (val: boolean): void => emit('update:delete-dialog', val)
 })
+
+const getThumbnail = (schedule: SchedulesResponseSchedulesInner): string => {
+  return schedule.thumbnailUrl || ''
+}
+
+const getResizedThumbnails = (schedule: SchedulesResponseSchedulesInner): string => {
+  if (!schedule.thumbnails) {
+    return ''
+  }
+  return getResizedImages(schedule.thumbnails)
+}
 
 const getStatus = (status: ScheduleStatus): string => {
   switch (status) {
@@ -194,6 +211,9 @@ const onClickDelete = (): void => {
         @update:items-per-page="onUpdateItemsPerPage"
         @click:row="(_: any, { item }:any) => onClickRow(item.raw.id)"
       >
+      <template #[`item.thumbnail`]="{ item }">
+        <v-img aspect-ratio="1/1" :src="getThumbnail(item.raw)" :srcset="getResizedThumbnails(item.raw)" />
+        </template>
         <template #[`item.status`]="{ item }">
           <v-chip :color="getStatusColor(item.raw.status)">
             {{ getStatus(item.raw.status) }}

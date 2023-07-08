@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { mdiAccount, mdiPencil, mdiDelete, mdiPlus } from '@mdi/js'
-import { VDataTable } from 'vuetify/lib/labs/components'
+import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 
 import { useProductTypeStore } from '~/store'
 import {

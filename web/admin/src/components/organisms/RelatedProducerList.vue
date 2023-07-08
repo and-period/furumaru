@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { mdiAccount, mdiPencil } from '@mdi/js'
-import { VDataTable } from 'vuetify/lib/labs/components'
+import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 
 import { useCoordinatorStore } from '~/store'
 import { ProducersResponseProducersInner } from '~/types/api'

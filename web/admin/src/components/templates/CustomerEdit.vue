@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { VDataTable } from 'vuetify/lib/labs/components'
+import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { PrefecturesListItem, prefecturesList } from '~/constants'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import { UserResponse } from '~/types/api'

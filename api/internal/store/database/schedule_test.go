@@ -321,22 +321,24 @@ func TestSchedule_Create(t *testing.T) {
 }
 
 func testSchedule(id, coordinatorID, shippingID string, now time.Time) *entity.Schedule {
-	return &entity.Schedule{
-		ID:                   id,
-		CoordinatorID:        coordinatorID,
-		ShippingID:           shippingID,
-		Status:               entity.ScheduleStatusLive,
-		Title:                "旬の夏野菜配信",
-		Description:          "旬の夏野菜特集",
-		ThumbnailURL:         "https://and-period.jp/thumbnail.png",
-		OpeningVideoURL:      "https://and-period.jp/opening-video.mp4",
-		IntermissionVideoURL: "https://and-period.jp/intermission-video.mp4",
-		Public:               true,
-		Approved:             true,
-		ApprovedAdminID:      "admin-id",
-		StartAt:              now.AddDate(0, -1, 0),
-		EndAt:                now.AddDate(0, 1, 0),
-		CreatedAt:            now,
-		UpdatedAt:            now,
+	schedule := &entity.Schedule{
+		ID:              id,
+		CoordinatorID:   coordinatorID,
+		ShippingID:      shippingID,
+		Status:          entity.ScheduleStatusLive,
+		Title:           "旬の夏野菜配信",
+		Description:     "旬の夏野菜特集",
+		ThumbnailURL:    "https://and-period.jp/thumbnail.png",
+		ImageURL:        "https://and-period.jp/image.png",
+		OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
+		Public:          true,
+		Approved:        true,
+		ApprovedAdminID: "admin-id",
+		StartAt:         now.AddDate(0, -1, 0),
+		EndAt:           now.AddDate(0, 1, 0),
+		CreatedAt:       now,
+		UpdatedAt:       now,
 	}
+	schedule.Fill(now)
+	return schedule
 }
