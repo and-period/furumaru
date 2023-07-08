@@ -39,7 +39,9 @@ func (s *schedule) List(ctx context.Context, params *ListSchedulesParams, fields
 	if err := stmt.Find(&schedules).Error; err != nil {
 		return nil, exception.InternalError(err)
 	}
-	schedules.Fill(s.now())
+	if err := schedules.Fill(s.now()); err != nil {
+		return nil, exception.InternalError(err)
+	}
 	return schedules, nil
 }
 
@@ -59,6 +61,9 @@ func (s *schedule) Create(
 	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := s.now()
 		schedule.CreatedAt, schedule.UpdatedAt = now, now
+		if err := schedule.FillJSON(); err != nil {
+			return err
+		}
 		err := tx.WithContext(ctx).Table(scheduleTable).Create(&schedule).Error
 		if err != nil {
 			return err
@@ -90,6 +95,8 @@ func (s *schedule) get(ctx context.Context, tx *gorm.DB, scheduleID string, fiel
 	if err != nil {
 		return nil, err
 	}
-	schedule.Fill(s.now())
+	if err := schedule.Fill(s.now()); err != nil {
+		return nil, err
+	}
 	return schedule, nil
 }

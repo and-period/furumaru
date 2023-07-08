@@ -53,15 +53,15 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 		return nil, nil, exception.InternalError(err)
 	}
 	params := &entity.NewScheduleParams{
-		CoordinatorID:        in.CoordinatorID,
-		ShippingID:           in.ShippingID,
-		Title:                in.Title,
-		Description:          in.Description,
-		ThumbnailURL:         in.ThumbnailURL,
-		OpeningVideoURL:      in.OpeningVideoURL,
-		IntermissionVideoURL: in.IntermissionVideoURL,
-		StartAt:              in.StartAt,
-		EndAt:                in.EndAt,
+		CoordinatorID:   in.CoordinatorID,
+		ShippingID:      in.ShippingID,
+		Title:           in.Title,
+		Description:     in.Description,
+		ThumbnailURL:    in.ThumbnailURL,
+		ImageURL:        in.ImageURL,
+		OpeningVideoURL: in.OpeningVideoURL,
+		StartAt:         in.StartAt,
+		EndAt:           in.EndAt,
 	}
 	schedule := entity.NewSchedule(params)
 	lives := make(entity.Lives, len(in.Lives))

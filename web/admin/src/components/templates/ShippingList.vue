@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { mdiPlus } from '@mdi/js'
-import { VDataTable } from 'vuetify/lib/labs/components'
+import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { dateTimeFormatter, moneyFormat } from '~/lib/formatter'
 import { AlertType } from '~/lib/hooks'
 import { ShippingsResponseShippingsInner } from '~/types/api'

@@ -504,34 +504,6 @@ export interface ContactCategoryResponse {
     'updatedAt': number;
 }
 /**
- * お問い合わせ対応優先度
- * @export
- * @enum {string}
- */
-
-export const ContactPriority = {
-    /**
-    * 不明
-    */
-    UNKNOWN: 0,
-    /**
-    * 低
-    */
-    LOW: 1,
-    /**
-    * 中
-    */
-    MIDDLE: 2,
-    /**
-    * 高
-    */
-    HIGH: 3
-} as const;
-
-export type ContactPriority = typeof ContactPriority[keyof typeof ContactPriority];
-
-
-/**
  * 
  * @export
  * @interface ContactResponse
@@ -549,6 +521,12 @@ export interface ContactResponse {
      * @memberof ContactResponse
      */
     'title': string;
+    /**
+     * お問い合わせ種別ID
+     * @type {string}
+     * @memberof ContactResponse
+     */
+    'categoryId': string;
     /**
      * 内容
      * @type {string}
@@ -580,12 +558,6 @@ export interface ContactResponse {
      */
     'status': ContactStatus;
     /**
-     * 
-     * @type {ContactPriority}
-     * @memberof ContactResponse
-     */
-    'priority': ContactPriority;
-    /**
      * 対応時メモ
      * @type {string}
      * @memberof ContactResponse
@@ -603,6 +575,12 @@ export interface ContactResponse {
      * @memberof ContactResponse
      */
     'updatedAt': number;
+    /**
+     * 会話履歴一覧
+     * @type {Array<ThreadResponse1>}
+     * @memberof ContactResponse
+     */
+    'threads': Array<ThreadResponse1>;
 }
 
 
@@ -618,9 +596,9 @@ export const ContactStatus = {
     */
     UNKNOWN: 0,
     /**
-    * ToDo
+    * 未着手
     */
-    TODO: 1,
+    WAITING: 1,
     /**
     * 対応中
     */
@@ -636,6 +614,34 @@ export const ContactStatus = {
 } as const;
 
 export type ContactStatus = typeof ContactStatus[keyof typeof ContactStatus];
+
+
+/**
+ * 送信者タイプ
+ * @export
+ * @enum {string}
+ */
+
+export const ContactUserType = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 管理者
+    */
+    ADMIN: 1,
+    /**
+    * ユーザー
+    */
+    USER: 2,
+    /**
+    * ゲスト
+    */
+    GUEST: 3
+} as const;
+
+export type ContactUserType = typeof ContactUserType[keyof typeof ContactUserType];
 
 
 /**
@@ -676,6 +682,12 @@ export interface ContactsResponseContactsInner {
      */
     'title': string;
     /**
+     * お問い合わせ種別ID
+     * @type {string}
+     * @memberof ContactsResponseContactsInner
+     */
+    'categoryId': string;
+    /**
      * 内容
      * @type {string}
      * @memberof ContactsResponseContactsInner
@@ -706,12 +718,6 @@ export interface ContactsResponseContactsInner {
      */
     'status': ContactStatus;
     /**
-     * 
-     * @type {ContactPriority}
-     * @memberof ContactsResponseContactsInner
-     */
-    'priority': ContactPriority;
-    /**
      * 対応時メモ
      * @type {string}
      * @memberof ContactsResponseContactsInner
@@ -729,6 +735,12 @@ export interface ContactsResponseContactsInner {
      * @memberof ContactsResponseContactsInner
      */
     'updatedAt': number;
+    /**
+     * 会話履歴一覧
+     * @type {Array<ThreadResponse1>}
+     * @memberof ContactsResponseContactsInner
+     */
+    'threads': Array<ThreadResponse1>;
 }
 
 
@@ -1175,6 +1187,67 @@ export interface CreateCategoryRequest {
      * @memberof CreateCategoryRequest
      */
     'name': string;
+}
+/**
+ * 
+ * @export
+ * @interface CreateContactRequest
+ */
+export interface CreateContactRequest {
+    /**
+     * お問い合わせ種別ID
+     * @type {string}
+     * @memberof CreateContactRequest
+     */
+    'categoryId': string;
+    /**
+     * お問い合わせ件名(128文字まで)
+     * @type {string}
+     * @memberof CreateContactRequest
+     */
+    'title': string;
+    /**
+     * お問い合わせ内容(2000文字まで)
+     * @type {string}
+     * @memberof CreateContactRequest
+     */
+    'content': string;
+    /**
+     * 氏名(128文字まで)
+     * @type {string}
+     * @memberof CreateContactRequest
+     */
+    'userName': string;
+    /**
+     * 問い合わせ作成者ID
+     * @type {string}
+     * @memberof CreateContactRequest
+     */
+    'userId'?: string;
+    /**
+     * メールアドレス(256文字まで)
+     * @type {string}
+     * @memberof CreateContactRequest
+     */
+    'email': string;
+    /**
+     * 電話番号(18文字まで)
+     * @type {string}
+     * @memberof CreateContactRequest
+     */
+    'phoneNumber': string;
+    /**
+     * 対応者ID
+     * @type {string}
+     * @memberof CreateContactRequest
+     */
+    'responderId': string;
+    /**
+     * 対応メモ(2000文字まで)
+     * @type {string}
+     * @memberof CreateContactRequest
+     */
+    'note': string;
 }
 /**
  * 
@@ -1979,11 +2052,11 @@ export interface CreateThreadRequest {
      */
     'userId'?: string;
     /**
-     * 送信者タイプ(不明:0, admin:1, uer:2, guest:3)
-     * @type {number}
+     * 
+     * @type {ContactUserType}
      * @memberof CreateThreadRequest
      */
-    'userType': number;
+    'userType': ContactUserType;
     /**
      * 会話内容
      * @type {string}
@@ -1991,6 +2064,8 @@ export interface CreateThreadRequest {
      */
     'content': string;
 }
+
+
 /**
  * 配送方法
  * @export
@@ -4947,17 +5022,29 @@ export interface ScheduleResponse {
      */
     'thumbnailUrl': string;
     /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<AuthUserResponseThumbnailsInner>}
+     * @memberof ScheduleResponse
+     */
+    'thumbnails': Array<AuthUserResponseThumbnailsInner>;
+    /**
+     * ふた絵URL
+     * @type {string}
+     * @memberof ScheduleResponse
+     */
+    'imageUrl': string;
+    /**
+     * リサイズ済みふた絵URL一覧
+     * @type {Array<SchedulesResponseSchedulesInnerImagesInner>}
+     * @memberof ScheduleResponse
+     */
+    'images': Array<SchedulesResponseSchedulesInnerImagesInner>;
+    /**
      * オープニング動画URL
      * @type {string}
      * @memberof ScheduleResponse
      */
     'openingVideoUrl': string;
-    /**
-     * 幕間動画URL
-     * @type {string}
-     * @memberof ScheduleResponse
-     */
-    'intermissionVideoUrl': string;
     /**
      * 公開フラグ
      * @type {boolean}
@@ -5407,17 +5494,29 @@ export interface SchedulesResponseSchedulesInner {
      */
     'thumbnailUrl': string;
     /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<AuthUserResponseThumbnailsInner>}
+     * @memberof SchedulesResponseSchedulesInner
+     */
+    'thumbnails': Array<AuthUserResponseThumbnailsInner>;
+    /**
+     * ふた絵URL
+     * @type {string}
+     * @memberof SchedulesResponseSchedulesInner
+     */
+    'imageUrl': string;
+    /**
+     * リサイズ済みふた絵URL一覧
+     * @type {Array<SchedulesResponseSchedulesInnerImagesInner>}
+     * @memberof SchedulesResponseSchedulesInner
+     */
+    'images': Array<SchedulesResponseSchedulesInnerImagesInner>;
+    /**
      * オープニング動画URL
      * @type {string}
      * @memberof SchedulesResponseSchedulesInner
      */
     'openingVideoUrl': string;
-    /**
-     * 幕間動画URL
-     * @type {string}
-     * @memberof SchedulesResponseSchedulesInner
-     */
-    'intermissionVideoUrl': string;
     /**
      * 公開フラグ
      * @type {boolean}
@@ -5454,6 +5553,27 @@ export interface SchedulesResponseSchedulesInner {
      * @memberof SchedulesResponseSchedulesInner
      */
     'updatedAt': number;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface SchedulesResponseSchedulesInnerImagesInner
+ */
+export interface SchedulesResponseSchedulesInnerImagesInner {
+    /**
+     * リサイズ済みふた絵URL
+     * @type {string}
+     * @memberof SchedulesResponseSchedulesInnerImagesInner
+     */
+    'url': string;
+    /**
+     * 
+     * @type {ImageSize}
+     * @memberof SchedulesResponseSchedulesInnerImagesInner
+     */
+    'size': ImageSize;
 }
 
 
@@ -5814,11 +5934,11 @@ export interface ThreadResponse {
      */
     'userId'?: string;
     /**
-     * 送信者タイプ
-     * @type {number}
+     * 
+     * @type {ContactUserType}
      * @memberof ThreadResponse
      */
-    'userType': number;
+    'userType': ContactUserType;
     /**
      * 会話内容
      * @type {string}
@@ -5838,6 +5958,59 @@ export interface ThreadResponse {
      */
     'updatedAt': number;
 }
+
+
+/**
+ * 
+ * @export
+ * @interface ThreadResponse1
+ */
+export interface ThreadResponse1 {
+    /**
+     * お問い合わせ会話履歴ID
+     * @type {string}
+     * @memberof ThreadResponse1
+     */
+    'id': string;
+    /**
+     * お問い合わせID
+     * @type {string}
+     * @memberof ThreadResponse1
+     */
+    'contactId': string;
+    /**
+     * 送信者ID
+     * @type {string}
+     * @memberof ThreadResponse1
+     */
+    'userId'?: string;
+    /**
+     * 
+     * @type {ContactUserType}
+     * @memberof ThreadResponse1
+     */
+    'userType': ContactUserType;
+    /**
+     * 会話内容
+     * @type {string}
+     * @memberof ThreadResponse1
+     */
+    'content': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ThreadResponse1
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof ThreadResponse1
+     */
+    'updatedAt': number;
+}
+
+
 /**
  * 
  * @export
@@ -5882,11 +6055,11 @@ export interface ThreadsResponseThreadsInner {
      */
     'userId'?: string;
     /**
-     * 送信者タイプ
-     * @type {number}
+     * 
+     * @type {ContactUserType}
      * @memberof ThreadsResponseThreadsInner
      */
-    'userType'?: number;
+    'userType'?: ContactUserType;
     /**
      * 会話内容
      * @type {string}
@@ -5906,6 +6079,8 @@ export interface ThreadsResponseThreadsInner {
      */
     'updatedAt'?: number;
 }
+
+
 /**
  * 
  * @export
@@ -6014,17 +6189,59 @@ export interface UpdateCategoryRequest {
  */
 export interface UpdateContactRequest {
     /**
+     * お問い合わせ種別ID
+     * @type {string}
+     * @memberof UpdateContactRequest
+     */
+    'categoryId': string;
+    /**
+     * お問い合わせ件名(128文字まで)
+     * @type {string}
+     * @memberof UpdateContactRequest
+     */
+    'title': string;
+    /**
+     * お問い合わせ内容(2000文字まで)
+     * @type {string}
+     * @memberof UpdateContactRequest
+     */
+    'content': string;
+    /**
+     * 氏名(128文字まで)
+     * @type {string}
+     * @memberof UpdateContactRequest
+     */
+    'userName': string;
+    /**
+     * 問い合わせ作成者ID
+     * @type {string}
+     * @memberof UpdateContactRequest
+     */
+    'userId'?: string;
+    /**
+     * メールアドレス(256文字まで)
+     * @type {string}
+     * @memberof UpdateContactRequest
+     */
+    'email': string;
+    /**
+     * 電話番号(18文字まで)
+     * @type {string}
+     * @memberof UpdateContactRequest
+     */
+    'phoneNumber': string;
+    /**
      * 
      * @type {ContactStatus}
      * @memberof UpdateContactRequest
      */
     'status': ContactStatus;
     /**
-     * 
-     * @type {ContactPriority}
+     * 対応者ID
+     * @type {string}
      * @memberof UpdateContactRequest
      */
-    'priority': ContactPriority;
+    'responderId': string;
     /**
      * 対応メモ(2000文字まで)
      * @type {string}
@@ -6695,11 +6912,11 @@ export interface UpdateThreadRequest {
      */
     'userId'?: string;
     /**
-     * 送信者タイプ(不明:0, admin:1, uer:2, guest:3)
-     * @type {number}
+     * 
+     * @type {ContactUserType}
      * @memberof UpdateThreadRequest
      */
-    'userType': number;
+    'userType': ContactUserType;
     /**
      * 会話内容
      * @type {string}
@@ -6707,6 +6924,8 @@ export interface UpdateThreadRequest {
      */
     'content': string;
 }
+
+
 /**
  * 
  * @export
@@ -8816,6 +9035,84 @@ export const ContactApiAxiosParamCreator = function (configuration?: Configurati
     return {
         /**
          * 
+         * @summary お問い合わせ登録
+         * @param {CreateContactRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateContact: async (body: CreateContactRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1CreateContact', 'body', body)
+            const localVarPath = `/v1/contacts`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary お問い合わせ削除
+         * @param {string} contactId お問い合わせID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteContact: async (contactId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'contactId' is not null or undefined
+            assertParamExists('v1DeleteContact', 'contactId', contactId)
+            const localVarPath = `/v1/contacts/{contactId}`
+                .replace(`{${"contactId"}}`, encodeURIComponent(String(contactId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary お問い合わせ取得
          * @param {string} contactId お問い合わせID
          * @param {*} [options] Override http request option.
@@ -8857,11 +9154,10 @@ export const ContactApiAxiosParamCreator = function (configuration?: Configurati
          * @summary お問い合わせ一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:status,priority,createdAt,updatedAt 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListContacts: async (limit?: number, offset?: number, orders?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1ListContacts: async (limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/contacts`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -8884,10 +9180,6 @@ export const ContactApiAxiosParamCreator = function (configuration?: Configurati
 
             if (offset !== undefined) {
                 localVarQueryParameter['offset'] = offset;
-            }
-
-            if (orders !== undefined) {
-                localVarQueryParameter['orders'] = orders;
             }
 
 
@@ -8957,6 +9249,28 @@ export const ContactApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary お問い合わせ登録
+         * @param {CreateContactRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1CreateContact(body: CreateContactRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ContactResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateContact(body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary お問い合わせ削除
+         * @param {string} contactId お問い合わせID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1DeleteContact(contactId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteContact(contactId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary お問い合わせ取得
          * @param {string} contactId お問い合わせID
          * @param {*} [options] Override http request option.
@@ -8971,12 +9285,11 @@ export const ContactApiFp = function(configuration?: Configuration) {
          * @summary お問い合わせ一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:status,priority,createdAt,updatedAt 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ListContacts(limit?: number, offset?: number, orders?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ContactsResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListContacts(limit, offset, orders, options);
+        async v1ListContacts(limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ContactsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListContacts(limit, offset, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -9003,6 +9316,26 @@ export const ContactApiFactory = function (configuration?: Configuration, basePa
     return {
         /**
          * 
+         * @summary お問い合わせ登録
+         * @param {CreateContactRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateContact(body: CreateContactRequest, options?: any): AxiosPromise<ContactResponse> {
+            return localVarFp.v1CreateContact(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary お問い合わせ削除
+         * @param {string} contactId お問い合わせID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteContact(contactId: string, options?: any): AxiosPromise<object> {
+            return localVarFp.v1DeleteContact(contactId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary お問い合わせ取得
          * @param {string} contactId お問い合わせID
          * @param {*} [options] Override http request option.
@@ -9016,12 +9349,11 @@ export const ContactApiFactory = function (configuration?: Configuration, basePa
          * @summary お問い合わせ一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:status,priority,createdAt,updatedAt 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListContacts(limit?: number, offset?: number, orders?: string, options?: any): AxiosPromise<ContactsResponse> {
-            return localVarFp.v1ListContacts(limit, offset, orders, options).then((request) => request(axios, basePath));
+        v1ListContacts(limit?: number, offset?: number, options?: any): AxiosPromise<ContactsResponse> {
+            return localVarFp.v1ListContacts(limit, offset, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -9046,6 +9378,30 @@ export const ContactApiFactory = function (configuration?: Configuration, basePa
 export class ContactApi extends BaseAPI {
     /**
      * 
+     * @summary お問い合わせ登録
+     * @param {CreateContactRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContactApi
+     */
+    public v1CreateContact(body: CreateContactRequest, options?: AxiosRequestConfig) {
+        return ContactApiFp(this.configuration).v1CreateContact(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary お問い合わせ削除
+     * @param {string} contactId お問い合わせID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContactApi
+     */
+    public v1DeleteContact(contactId: string, options?: AxiosRequestConfig) {
+        return ContactApiFp(this.configuration).v1DeleteContact(contactId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary お問い合わせ取得
      * @param {string} contactId お問い合わせID
      * @param {*} [options] Override http request option.
@@ -9061,13 +9417,12 @@ export class ContactApi extends BaseAPI {
      * @summary お問い合わせ一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
-     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:status,priority,createdAt,updatedAt 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ContactApi
      */
-    public v1ListContacts(limit?: number, offset?: number, orders?: string, options?: AxiosRequestConfig) {
-        return ContactApiFp(this.configuration).v1ListContacts(limit, offset, orders, options).then((request) => request(this.axios, this.basePath));
+    public v1ListContacts(limit?: number, offset?: number, options?: AxiosRequestConfig) {
+        return ContactApiFp(this.configuration).v1ListContacts(limit, offset, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -14987,7 +15342,7 @@ export const ThreadApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1CreateThread(body: CreateThreadRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ThreadResponse>> {
+        async v1CreateThread(body: CreateThreadRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ThreadResponse1>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateThread(body, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -15009,7 +15364,7 @@ export const ThreadApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1GetThread(threadId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ThreadResponse>> {
+        async v1GetThread(threadId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ThreadResponse1>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetThread(threadId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -15055,7 +15410,7 @@ export const ThreadApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreateThread(body: CreateThreadRequest, options?: any): AxiosPromise<ThreadResponse> {
+        v1CreateThread(body: CreateThreadRequest, options?: any): AxiosPromise<ThreadResponse1> {
             return localVarFp.v1CreateThread(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -15075,7 +15430,7 @@ export const ThreadApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetThread(threadId: string, options?: any): AxiosPromise<ThreadResponse> {
+        v1GetThread(threadId: string, options?: any): AxiosPromise<ThreadResponse1> {
             return localVarFp.v1GetThread(threadId, options).then((request) => request(axios, basePath));
         },
         /**

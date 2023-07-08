@@ -3,7 +3,7 @@ import useVuelidate from '@vuelidate/core'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import { AlertType } from '~/lib/hooks'
 import { getErrorMessage, maxLength } from '~/lib/validations'
-import { ContactPriority, ContactResponse, ContactStatus, UpdateContactRequest } from '~/types/api'
+import { ContactResponse, ContactStatus, UpdateContactRequest } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -32,7 +32,6 @@ const props = defineProps({
       email: '',
       phoneNumber: '',
       status: ContactStatus.UNKNOWN,
-      priority: ContactPriority.UNKNOWN,
       note: '',
       createdAt: 0,
       updatedAt: 0
@@ -42,7 +41,6 @@ const props = defineProps({
     type: Object as PropType<UpdateContactRequest>,
     default: () => ({
       status: ContactStatus.UNKNOWN,
-      priority: ContactPriority.UNKNOWN,
       note: ''
     })
   }
@@ -54,12 +52,6 @@ const emit = defineEmits<{
   (e: 'submit'): void
 }>()
 
-const priorities = [
-  { title: '高', value: ContactPriority.HIGH },
-  { title: '中', value: ContactPriority.MIDDLE },
-  { title: '低', value: ContactPriority.LOW },
-  { title: '未設定', value: ContactPriority.UNKNOWN }
-]
 const statuses = [
   { title: '未着手', value: ContactStatus.TODO },
   { title: '進行中', value: ContactStatus.INPROGRESS },
@@ -69,7 +61,6 @@ const statuses = [
 ]
 
 const rules = computed(() => ({
-  priority: {},
   status: {},
   note: { maxLength: maxLength(2000) }
 }))
@@ -121,14 +112,6 @@ const onSubmit = async (): Promise<void> => {
           name="contact"
           label="お問合せ内容"
           readonly
-        />
-        <v-select
-          v-model="validate.priority.$model"
-          :error-messages="getErrorMessage(validate.priority.$errors)"
-          :items="priorities"
-          item-title="title"
-          item-value="value"
-          label="優先度"
         />
         <v-select
           v-model="validate.status.$model"

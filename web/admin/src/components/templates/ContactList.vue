@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { VDataTable } from 'vuetify/lib/labs/components'
+import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 
 import { AlertType } from '~/lib/hooks'
-import { ContactPriority, ContactStatus, ContactsResponseContactsInner } from '~/types/api'
+import { ContactStatus, ContactsResponseContactsInner } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -56,40 +56,10 @@ const headers: VDataTable['headers'] = [
     key: 'email'
   },
   {
-    title: '優先度',
-    key: 'priority'
-  },
-  {
     title: 'ステータス',
     key: 'status'
   }
 ]
-
-const getPriorityColor = (priority: ContactPriority): string => {
-  switch (priority) {
-    case ContactPriority.LOW:
-      return 'primary'
-    case ContactPriority.MIDDLE:
-      return 'secondary'
-    case ContactPriority.HIGH:
-      return 'error'
-    default:
-      return 'unknown'
-  }
-}
-
-const getPriority = (priority: ContactPriority): string => {
-  switch (priority) {
-    case ContactPriority.LOW:
-      return '低'
-    case ContactPriority.MIDDLE:
-      return '中'
-    case ContactPriority.HIGH:
-      return '高'
-    default:
-      return '未設定'
-  }
-}
 
 const getStatusColor = (status: ContactStatus): string => {
   switch (status) {
@@ -158,11 +128,6 @@ const onClickRow = (contactId: string): void => {
         @update:sort-by="onClickUpdateSortBy"
         @click:row="(_:any, {item}: any) => onClickRow(item.raw.id)"
       >
-        <template #[`item.priority`]="{ item }">
-          <v-chip :color="getPriorityColor(item.raw.priority)" size="small">
-            {{ getPriority(item.raw.priority) }}
-          </v-chip>
-        </template>
         <template #[`item.status`]="{ item }">
           <v-chip :color="getStatusColor(item.raw.status)" size="small">
             {{ getStatus(item.raw.status) }}

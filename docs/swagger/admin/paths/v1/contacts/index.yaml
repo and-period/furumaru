@@ -22,17 +22,6 @@ get:
     description: 取得開始位置(min:0)
     required: false
     example: 0
-  - in: query
-    name: orders
-    schema:
-      type: string
-    description: |
-      ソート
-      ・複数指定時は`,`区切り
-      ・降順の場合はprefixに`-`をつける
-      ・指定可能フィールド:status,priority,createdAt,updatedAt
-    required: false
-    example: 'priority,-status'
   responses:
     200:
       description: 成功
@@ -40,3 +29,35 @@ get:
         application/json:
           schema:
             $ref: './../../../openapi.yaml#/components/schemas/v1ContactsResponse'
+post:
+  summary:  お問い合わせ登録
+  operationId: v1CreateContact
+  tags:
+  - Contact
+  security:
+  - BearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../openapi.yaml#/components/schemas/v1CreateContactRequest'
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/v1ContactResponse'
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/errorResponse'
+    403:
+      description: お問い合わせの登録権限がない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/errorResponse'

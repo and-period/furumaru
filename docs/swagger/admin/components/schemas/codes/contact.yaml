@@ -11,20 +11,20 @@ contactStatus:
   - 4
   x-enum-varnames:
   - UNKNOWN
-  - TODO
+  - WAITING
   - INPROGRESS
   - DONE
   - DISCARD
   x-enum-descriptions:
   - 不明
-  - ToDo
+  - 未着手
   - 対応中
   - 完了
   - 対応不要
-contactPriority:
+contactUserType:
   type: integer
   format: int32
-  description: お問い合わせ対応優先度
+  description: 送信者タイプ
   nullable: false
   enum:
   - 0
@@ -33,11 +33,11 @@ contactPriority:
   - 3
   x-enum-varnames:
   - UNKNOWN
-  - LOW
-  - MIDDLE
-  - HIGH
+  - ADMIN
+  - USER
+  - GUEST
   x-enum-descriptions:
   - 不明
-  - 低
-  - 中
-  - 高
+  - 管理者
+  - ユーザー
+  - ゲスト

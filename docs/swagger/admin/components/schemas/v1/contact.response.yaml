@@ -7,6 +7,9 @@ contactResponse:
     title:
       type: string
       description: 件名
+    categoryId:
+      type: string
+      description: お問い合わせ種別ID
     content:
       type: string
       description: 内容
@@ -22,8 +25,6 @@ contactResponse:
       description: 電話番号(国際番号 + 電話番号)
     status:
       $ref: './../../../openapi.yaml#/components/schemas/contactStatus'
-    priority:
-      $ref: './../../../openapi.yaml#/components/schemas/contactPriority'
     note:
       type: string
       description: 対応時メモ
@@ -35,30 +36,44 @@ contactResponse:
       type: integer
       format: int64
       description: 更新日時 (unixtime)
+    threads:
+      type: array
+      description: 会話履歴一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/v1ThreadResponse'
   required:
   - id
   - title
+  - categoryId
   - content
   - username
   - email
   - phoneNumber
   - status
-  - priority
   - note
   - createdAt
   - updatedAt
+  - threads
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     title: 'お問い合わせ件名'
+    categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
     content: 'お問い合わせ内容です。'
     username: '問合 太郎'
     email: 'test-user@and-period.jp'
     phoneNumber: '+819012345678'
     status: 1
-    priority: 1
     note: '対応者のメモです。'
     createdAt: 1640962800
     updatedAt: 1640962800
+    threads:
+      - id: "kSByoE6FetnPs5Byk3a9Zx"
+        contactId: "kSByoE6FetnPs5Byk3a9Zx"
+        userId: "kSByoE6FetnPs5Byk3a9Zx"
+        userType: 1
+        content: お問い合わせ内容
+        createdAt: 1580000000
+        updatedAt: 1580000000
 contactsResponse:
   type: object
   properties:
@@ -74,6 +89,9 @@ contactsResponse:
           title:
             type: string
             description: 件名
+          categoryId:
+            type: string
+            description: お問い合わせ種別ID
           content:
             type: string
             description: 内容
@@ -89,8 +107,6 @@ contactsResponse:
             description: 電話番号(国際番号 + 電話番号)
           status:
             $ref: './../../../openapi.yaml#/components/schemas/contactStatus'
-          priority:
-            $ref: './../../../openapi.yaml#/components/schemas/contactPriority'
           note:
             type: string
             description: 対応時メモ
@@ -102,18 +118,44 @@ contactsResponse:
             type: integer
             format: int64
             description: 更新日時 (unixtime)
+          threads:
+            type: array
+            description: 会話履歴一覧
+            items:
+              $ref: './../../../openapi.yaml#/components/schemas/v1ThreadResponse'
         required:
         - id
         - title
+        - categoryId
         - content
         - username
         - email
         - phoneNumber
         - status
-        - priority
         - note
         - createdAt
         - updatedAt
+        - threads
+        example:
+          id: 'kSByoE6FetnPs5Byk3a9Zx'
+          title: 'お問い合わせ件名'
+          categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
+          content: 'お問い合わせ内容です。'
+          username: '問合 太郎'
+          email: 'test-user@and-period.jp'
+          phoneNumber: '+819012345678'
+          status: 1
+          note: '対応者のメモです。'
+          createdAt: 1640962800
+          updatedAt: 1640962800
+          threads:
+            - id: "kSByoE6FetnPs5Byk3a9Zx"
+              contactId: "kSByoE6FetnPs5Byk3a9Zx"
+              userId: "kSByoE6FetnPs5Byk3a9Zx"
+              userType: 1
+              content: お問い合わせ内容
+              createdAt: 1580000000
+              updatedAt: 1580000000
     total:
       type: integer
       format: int64
@@ -125,13 +167,40 @@ contactsResponse:
     contacts:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       title: 'お問い合わせ件名'
+      categpryId: 'kSByoE6FetnPs5Byk3a9Zx'
       content: 'お問い合わせ内容です。'
       username: '問合 太郎'
       email: 'test-user@and-period.jp'
       phoneNumber: '+819012345678'
       status: 1
-      priority: 1
       note: '対応者のメモです。'
       createdAt: 1640962800
       updatedAt: 1640962800
+      threads:
+      - id: "kSByoE6FetnPs5Byk3a9Zx"
+        contactId: "kSByoE6FetnPs5Byk3a9Zx"
+        userId: "kSByoE6FetnPs5Byk3a9Zx"
+        userType: 1
+        content: お問い合わせ内容
+        createdAt: 1580000000
+        updatedAt: 1580000000
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      title: 'お問い合わせ件名'
+      categpryId: 'kSByoE6FetnPs5Byk3a9Zx'
+      content: 'お問い合わせ内容です。'
+      username: '問合 太郎'
+      email: 'test-user@and-period.jp'
+      phoneNumber: '+819012345678'
+      status: 2
+      note: '対応者のメモです。'
+      createdAt: 1640962800
+      updatedAt: 1640962800
+      threads:
+      - id: "kSByoE6FetnPs5Byk3a9Zx"
+        contactId: "kSByoE6FetnPs5Byk3a9Zx"
+        userId: "kSByoE6FetnPs5Byk3a9Zx"
+        userType: 2
+        content: お問い合わせ内容
+        createdAt: 1580000000
+        updatedAt: 1580000000
     total: 2

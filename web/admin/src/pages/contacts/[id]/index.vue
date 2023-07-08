@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 import { useContactStore } from '~/store'
-import { ContactPriority, ContactStatus, UpdateContactRequest } from '~/types/api'
+import { ContactStatus, UpdateContactRequest } from '~/types/api'
 
 const route = useRoute()
 const router = useRouter()
@@ -15,7 +15,6 @@ const { contact } = storeToRefs(contactStore)
 
 const loading = ref<boolean>(false)
 const formData = ref<UpdateContactRequest>({
-  priority: ContactPriority.UNKNOWN,
   status: ContactStatus.UNKNOWN,
   note: ''
 })

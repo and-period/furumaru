@@ -8,9 +8,7 @@ createThreadRequest:
       type: string
       description: 送信者ID
     userType:
-      type: integer
-      format: int32
-      description: 送信者タイプ(不明:0, admin:1, uer:2, guest:3)
+      $ref: './../../../openapi.yaml#/components/schemas/contactUserType'
     content:
       type: string
       description: 会話内容
@@ -30,9 +28,7 @@ updateThreadRequest:
       type: string
       description: 送信者ID
     userType:
-      type: integer
-      format: int32
-      description: 送信者タイプ(不明:0, admin:1, uer:2, guest:3)
+      $ref: './../../../openapi.yaml#/components/schemas/contactUserType'
     content:
       type: string
       description: 会話内容
