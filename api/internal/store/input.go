@@ -346,25 +346,21 @@ type GetScheduleInput struct {
 }
 
 type CreateScheduleInput struct {
-	CoordinatorID   string                `validate:"required"`
-	ShippingID      string                `validate:"required"`
-	Title           string                `validate:"required,max=64"`
-	Description     string                `validate:"required,max=2000"`
-	ThumbnailURL    string                `validate:"omitempty,url"`
-	ImageURL        string                `validate:"omitempty,url"`
-	OpeningVideoURL string                `validate:"omitempty,url"`
-	StartAt         time.Time             `validate:"required"`
-	EndAt           time.Time             `validate:"required,gtfield=StartAt"`
-	Lives           []*CreateScheduleLive `validate:"required"`
+	CoordinatorID   string    `validate:"required"`
+	ShippingID      string    `validate:"required"`
+	Title           string    `validate:"required,max=64"`
+	Description     string    `validate:"required,max=2000"`
+	ThumbnailURL    string    `validate:"omitempty,url"`
+	ImageURL        string    `validate:"omitempty,url"`
+	OpeningVideoURL string    `validate:"omitempty,url"`
+	Public          bool      `validate:""`
+	StartAt         time.Time `validate:"required"`
+	EndAt           time.Time `validate:"required,gtfield=StartAt"`
 }
 
-type CreateScheduleLive struct {
-	Title       string    `validate:"required,max=64"`
-	Description string    `validate:"required,max=2000"`
-	ProducerID  string    `validate:"required"`
-	ProductIDs  []string  `validate:"dive,required,unique"`
-	StartAt     time.Time `validate:"required"`
-	EndAt       time.Time `validate:"required,gtfield=StartAt"`
+type UpdateScheduleThumbnailsInput struct {
+	ScheduleID string        `validate:"required"`
+	Thumbnails common.Images `validate:""`
 }
 
 type GetLiveInput struct {

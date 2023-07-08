@@ -5034,12 +5034,6 @@ export interface ScheduleResponse {
      */
     'imageUrl': string;
     /**
-     * リサイズ済みふた絵URL一覧
-     * @type {Array<SchedulesResponseSchedulesInnerImagesInner>}
-     * @memberof ScheduleResponse
-     */
-    'images': Array<SchedulesResponseSchedulesInnerImagesInner>;
-    /**
      * オープニング動画URL
      * @type {string}
      * @memberof ScheduleResponse
@@ -5506,12 +5500,6 @@ export interface SchedulesResponseSchedulesInner {
      */
     'imageUrl': string;
     /**
-     * リサイズ済みふた絵URL一覧
-     * @type {Array<SchedulesResponseSchedulesInnerImagesInner>}
-     * @memberof SchedulesResponseSchedulesInner
-     */
-    'images': Array<SchedulesResponseSchedulesInnerImagesInner>;
-    /**
      * オープニング動画URL
      * @type {string}
      * @memberof SchedulesResponseSchedulesInner
@@ -5553,27 +5541,6 @@ export interface SchedulesResponseSchedulesInner {
      * @memberof SchedulesResponseSchedulesInner
      */
     'updatedAt': number;
-}
-
-
-/**
- * 
- * @export
- * @interface SchedulesResponseSchedulesInnerImagesInner
- */
-export interface SchedulesResponseSchedulesInnerImagesInner {
-    /**
-     * リサイズ済みふた絵URL
-     * @type {string}
-     * @memberof SchedulesResponseSchedulesInnerImagesInner
-     */
-    'url': string;
-    /**
-     * 
-     * @type {ImageSize}
-     * @memberof SchedulesResponseSchedulesInnerImagesInner
-     */
-    'size': ImageSize;
 }
 
 
@@ -14627,6 +14594,135 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary 開催スケジュール蓋絵アップロード
+         * @param {File} [image] 開催スケジュール蓋絵画像(png形式,10MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UploadScheduleImage: async (image?: File, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/upload/schedules/image`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            if (image !== undefined) { 
+                localVarFormParams.append('image', image as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 開催スケジュールオープニング動画アップロード
+         * @param {File} [video] 開催スケジュールオープニング動画(mp4形式,200MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UploadScheduleOpeningVideo: async (video?: File, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/upload/schedules/opening-video`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            if (video !== undefined) { 
+                localVarFormParams.append('video', video as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 開催スケジュールサムネイルアップロード
+         * @param {File} [image] 開催スケジュールサムネイル画像(png,jpeg形式,10MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UploadScheduleThumbnail: async (image?: File, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/upload/schedules/thumbnail`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            if (image !== undefined) { 
+                localVarFormParams.append('image', image as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -14671,6 +14767,39 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListSchedules(limit, offset, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
+        /**
+         * 
+         * @summary 開催スケジュール蓋絵アップロード
+         * @param {File} [image] 開催スケジュール蓋絵画像(png形式,10MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UploadScheduleImage(image?: File, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadScheduleImage(image, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 開催スケジュールオープニング動画アップロード
+         * @param {File} [video] 開催スケジュールオープニング動画(mp4形式,200MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UploadScheduleOpeningVideo(video?: File, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadVideoResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadScheduleOpeningVideo(video, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 開催スケジュールサムネイルアップロード
+         * @param {File} [image] 開催スケジュールサムネイル画像(png,jpeg形式,10MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UploadScheduleThumbnail(image?: File, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadScheduleThumbnail(image, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
     }
 };
 
@@ -14711,6 +14840,36 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          */
         v1ListSchedules(limit?: number, offset?: number, options?: any): AxiosPromise<SchedulesResponse> {
             return localVarFp.v1ListSchedules(limit, offset, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 開催スケジュール蓋絵アップロード
+         * @param {File} [image] 開催スケジュール蓋絵画像(png形式,10MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UploadScheduleImage(image?: File, options?: any): AxiosPromise<UploadImageResponse> {
+            return localVarFp.v1UploadScheduleImage(image, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 開催スケジュールオープニング動画アップロード
+         * @param {File} [video] 開催スケジュールオープニング動画(mp4形式,200MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UploadScheduleOpeningVideo(video?: File, options?: any): AxiosPromise<UploadVideoResponse> {
+            return localVarFp.v1UploadScheduleOpeningVideo(video, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 開催スケジュールサムネイルアップロード
+         * @param {File} [image] 開催スケジュールサムネイル画像(png,jpeg形式,10MBまで)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UploadScheduleThumbnail(image?: File, options?: any): AxiosPromise<UploadImageResponse> {
+            return localVarFp.v1UploadScheduleThumbnail(image, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -14757,6 +14916,42 @@ export class ScheduleApi extends BaseAPI {
      */
     public v1ListSchedules(limit?: number, offset?: number, options?: AxiosRequestConfig) {
         return ScheduleApiFp(this.configuration).v1ListSchedules(limit, offset, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 開催スケジュール蓋絵アップロード
+     * @param {File} [image] 開催スケジュール蓋絵画像(png形式,10MBまで)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ScheduleApi
+     */
+    public v1UploadScheduleImage(image?: File, options?: AxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1UploadScheduleImage(image, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 開催スケジュールオープニング動画アップロード
+     * @param {File} [video] 開催スケジュールオープニング動画(mp4形式,200MBまで)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ScheduleApi
+     */
+    public v1UploadScheduleOpeningVideo(video?: File, options?: AxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1UploadScheduleOpeningVideo(video, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 開催スケジュールサムネイルアップロード
+     * @param {File} [image] 開催スケジュールサムネイル画像(png,jpeg形式,10MBまで)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ScheduleApi
+     */
+    public v1UploadScheduleThumbnail(image?: File, options?: AxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1UploadScheduleThumbnail(image, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

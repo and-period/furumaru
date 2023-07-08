@@ -34,8 +34,6 @@ type Schedule struct {
 	Thumbnails      common.Images  `gorm:"-"`                              // サムネイル一覧(リサイズ済み)
 	ThumbnailsJSON  datatypes.JSON `gorm:"default:null;column:thumbnails"` // サムネイル一覧(JSON)
 	ImageURL        string         `gorm:""`                               // ふた絵URL
-	Images          common.Images  `gorm:"-"`                              // ふた絵URL一覧(リサイズ済み)
-	ImagesJSON      datatypes.JSON `gorm:"default:null;column:images"`     // ふた絵URL一覧(JSON)
 	OpeningVideoURL string         `gorm:""`                               // オープニング動画URL
 	Public          bool           `gorm:""`                               // 公開フラグ
 	Approved        bool           `gorm:""`                               // 承認フラグ
@@ -57,6 +55,7 @@ type NewScheduleParams struct {
 	ThumbnailURL    string
 	ImageURL        string
 	OpeningVideoURL string
+	Public          bool
 	StartAt         time.Time
 	EndAt           time.Time
 }
@@ -71,6 +70,7 @@ func NewSchedule(params *NewScheduleParams) *Schedule {
 		ThumbnailURL:    params.ThumbnailURL,
 		ImageURL:        params.ImageURL,
 		OpeningVideoURL: params.OpeningVideoURL,
+		Public:          params.Public,
 		Approved:        false,
 		ApprovedAdminID: "",
 		StartAt:         params.StartAt,
@@ -83,12 +83,7 @@ func (s *Schedule) Fill(now time.Time) error {
 	if err != nil {
 		return err
 	}
-	images, err := common.NewImagesFromBytes(s.ImagesJSON)
-	if err != nil {
-		return err
-	}
 	s.Thumbnails = thumbnails
-	s.Images = images
 	s.SetStatus(now)
 	return nil
 }
@@ -113,12 +108,7 @@ func (s *Schedule) FillJSON() error {
 	if err != nil {
 		return err
 	}
-	images, err := s.Images.Marshal()
-	if err != nil {
-		return err
-	}
 	s.ThumbnailsJSON = thumbnails
-	s.ImagesJSON = images
 	return nil
 }
 

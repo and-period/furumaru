@@ -31,6 +31,9 @@ const (
 	ProductMediaImagePath         = "products/media/image"         // 商品メディア(画像)
 	ProductMediaVideoPath         = "products/media/video"         // 商品メディア(映像)
 	ProductTypeIconPath           = "product-types/icon"           // 品目アイコン
+	ScheduleThumbnailPath         = "schedules/thumbnail"          // 開催スケジュールサムネイル
+	ScheduleImagePath             = "schedules/image"              // 開催スケジュール蓋絵
+	ScheduleOpeningVideoPath      = "schedules/opening-video"      // 開催スケジュールオープニング動画
 )
 
 // Regulation - ファイルアップロード制約
@@ -95,6 +98,21 @@ var (
 		MaxSize: 10 << 20, // 10MB
 		Formats: set.New("image/png", "image/jpeg"),
 		dir:     ProductTypeIconPath,
+	}
+	ScheduleThumbnailRegulation = &Regulation{
+		MaxSize: 10 << 20, // 10MB
+		Formats: set.New("image/png", "image/jpeg"),
+		dir:     ScheduleThumbnailPath,
+	}
+	ScheduleImageRegulation = &Regulation{
+		MaxSize: 10 << 20, // 10MB
+		Formats: set.New("image/png"),
+		dir:     ScheduleImagePath,
+	}
+	ScheduleOpeningVideoRegulation = &Regulation{
+		MaxSize: 200 << 20, // 200MB
+		Formats: set.New("video/mp4"),
+		dir:     ScheduleOpeningVideoPath,
 	}
 )
 

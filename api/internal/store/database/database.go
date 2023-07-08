@@ -123,8 +123,9 @@ type Rehearsal interface {
 type Schedule interface {
 	List(ctx context.Context, params *ListSchedulesParams, fields ...string) (entity.Schedules, error)
 	Count(ctx context.Context, params *ListSchedulesParams) (int64, error)
-	Create(ctx context.Context, schedule *entity.Schedule, lives entity.Lives, products entity.LiveProducts) error
 	Get(ctx context.Context, scheduleID string, fields ...string) (*entity.Schedule, error)
+	Create(ctx context.Context, schedule *entity.Schedule) error
+	UpdateThumbnails(ctx context.Context, scheduleID string, thumbnails common.Images) error
 }
 
 type Shipping interface {

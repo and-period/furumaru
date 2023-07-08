@@ -200,6 +200,51 @@ func (mr *MockServiceMockRecorder) GenerateProductTypeIcon(ctx, in interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateProductTypeIcon", reflect.TypeOf((*MockService)(nil).GenerateProductTypeIcon), ctx, in)
 }
 
+// GenerateScheduleImage mocks base method.
+func (m *MockService) GenerateScheduleImage(ctx context.Context, in *media.GenerateFileInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GenerateScheduleImage", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GenerateScheduleImage indicates an expected call of GenerateScheduleImage.
+func (mr *MockServiceMockRecorder) GenerateScheduleImage(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateScheduleImage", reflect.TypeOf((*MockService)(nil).GenerateScheduleImage), ctx, in)
+}
+
+// GenerateScheduleOpeningVideo mocks base method.
+func (m *MockService) GenerateScheduleOpeningVideo(ctx context.Context, in *media.GenerateFileInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GenerateScheduleOpeningVideo", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GenerateScheduleOpeningVideo indicates an expected call of GenerateScheduleOpeningVideo.
+func (mr *MockServiceMockRecorder) GenerateScheduleOpeningVideo(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateScheduleOpeningVideo", reflect.TypeOf((*MockService)(nil).GenerateScheduleOpeningVideo), ctx, in)
+}
+
+// GenerateScheduleThumbnail mocks base method.
+func (m *MockService) GenerateScheduleThumbnail(ctx context.Context, in *media.GenerateFileInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GenerateScheduleThumbnail", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GenerateScheduleThumbnail indicates an expected call of GenerateScheduleThumbnail.
+func (mr *MockServiceMockRecorder) GenerateScheduleThumbnail(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateScheduleThumbnail", reflect.TypeOf((*MockService)(nil).GenerateScheduleThumbnail), ctx, in)
+}
+
 // ResizeCoordinatorHeader mocks base method.
 func (m *MockService) ResizeCoordinatorHeader(ctx context.Context, in *media.ResizeFileInput) error {
 	m.ctrl.T.Helper()
@@ -282,6 +327,20 @@ func (m *MockService) ResizeProductTypeIcon(ctx context.Context, in *media.Resiz
 func (mr *MockServiceMockRecorder) ResizeProductTypeIcon(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResizeProductTypeIcon", reflect.TypeOf((*MockService)(nil).ResizeProductTypeIcon), ctx, in)
+}
+
+// ResizeScheduleThumbnail mocks base method.
+func (m *MockService) ResizeScheduleThumbnail(ctx context.Context, in *media.ResizeFileInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ResizeScheduleThumbnail", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ResizeScheduleThumbnail indicates an expected call of ResizeScheduleThumbnail.
+func (mr *MockServiceMockRecorder) ResizeScheduleThumbnail(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResizeScheduleThumbnail", reflect.TypeOf((*MockService)(nil).ResizeScheduleThumbnail), ctx, in)
 }
 
 // UploadCoordinatorBonusVideo mocks base method.
@@ -432,4 +491,49 @@ func (m *MockService) UploadProductTypeIcon(ctx context.Context, in *media.Uploa
 func (mr *MockServiceMockRecorder) UploadProductTypeIcon(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadProductTypeIcon", reflect.TypeOf((*MockService)(nil).UploadProductTypeIcon), ctx, in)
+}
+
+// UploadScheduleImage mocks base method.
+func (m *MockService) UploadScheduleImage(ctx context.Context, in *media.UploadFileInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UploadScheduleImage", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UploadScheduleImage indicates an expected call of UploadScheduleImage.
+func (mr *MockServiceMockRecorder) UploadScheduleImage(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadScheduleImage", reflect.TypeOf((*MockService)(nil).UploadScheduleImage), ctx, in)
+}
+
+// UploadScheduleOpeningVideo mocks base method.
+func (m *MockService) UploadScheduleOpeningVideo(ctx context.Context, in *media.UploadFileInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UploadScheduleOpeningVideo", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UploadScheduleOpeningVideo indicates an expected call of UploadScheduleOpeningVideo.
+func (mr *MockServiceMockRecorder) UploadScheduleOpeningVideo(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadScheduleOpeningVideo", reflect.TypeOf((*MockService)(nil).UploadScheduleOpeningVideo), ctx, in)
+}
+
+// UploadScheduleThumbnail mocks base method.
+func (m *MockService) UploadScheduleThumbnail(ctx context.Context, in *media.UploadFileInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UploadScheduleThumbnail", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UploadScheduleThumbnail indicates an expected call of UploadScheduleThumbnail.
+func (mr *MockServiceMockRecorder) UploadScheduleThumbnail(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadScheduleThumbnail", reflect.TypeOf((*MockService)(nil).UploadScheduleThumbnail), ctx, in)
 }

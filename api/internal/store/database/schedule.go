@@ -2,12 +2,15 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -55,32 +58,43 @@ func (s *schedule) Get(ctx context.Context, scheduleID string, fields ...string)
 	return schedule, exception.InternalError(err)
 }
 
-func (s *schedule) Create(
-	ctx context.Context, schedule *entity.Schedule, lives entity.Lives, products entity.LiveProducts,
-) error {
+func (s *schedule) Create(ctx context.Context, schedule *entity.Schedule) error {
 	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
-		now := s.now()
-		schedule.CreatedAt, schedule.UpdatedAt = now, now
 		if err := schedule.FillJSON(); err != nil {
 			return err
 		}
-		err := tx.WithContext(ctx).Table(scheduleTable).Create(&schedule).Error
+
+		now := s.now()
+		schedule.CreatedAt, schedule.UpdatedAt = now, now
+
+		return tx.WithContext(ctx).Table(scheduleTable).Create(&schedule).Error
+	})
+	return exception.InternalError(err)
+}
+
+func (s *schedule) UpdateThumbnails(ctx context.Context, scheduleID string, thumbnails common.Images) error {
+	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
+		schedule, err := s.get(ctx, tx, scheduleID, "thumbnail_url")
 		if err != nil {
 			return err
 		}
-		for i := range lives {
-			lives[i].CreatedAt, lives[i].UpdatedAt = now, now
+		if schedule.ThumbnailURL == "" {
+			return fmt.Errorf("database: thumbnail url is empty: %w", exception.ErrFailedPrecondition)
 		}
-		if err := tx.WithContext(ctx).Table(liveTable).Create(&lives).Error; err != nil {
+
+		buf, err := thumbnails.Marshal()
+		if err != nil {
 			return err
 		}
-		for i := range products {
-			products[i].CreatedAt, products[i].UpdatedAt = now, now
+		params := map[string]interface{}{
+			"thumbnails": datatypes.JSON(buf),
+			"updated_at": s.now(),
 		}
-		if err := tx.WithContext(ctx).Table(liveProductTable).Create(&products).Error; err != nil {
-			return err
-		}
-		lives.Fill(products.GroupByLiveID())
+
+		err = tx.WithContext(ctx).
+			Table(scheduleTable).
+			Where("id = ?", scheduleID).
+			Updates(params).Error
 		return err
 	})
 	return exception.InternalError(err)

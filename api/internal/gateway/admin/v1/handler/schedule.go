@@ -10,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/set"
@@ -111,105 +112,95 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
-	coordinatorID := req.CoordinatorID
-	if getRole(ctx) == service.AdminRoleCoordinator {
-		coordinatorID = getAdminID(ctx)
+	if getRole(ctx).IsCoordinator() {
+		if !currentAdmin(ctx, req.CoordinatorID) {
+			forbidden(ctx, errors.New("handler: invalid coordinator id"))
+			return
+		}
 	}
 
 	var (
 		coordinator *service.Coordinator
-		producers   service.Producers
 		shipping    *service.Shipping
-		products    service.Products
-		err         error
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
-		coordinator, err = h.getCoordinator(ectx, coordinatorID)
-		return
-	})
-	eg.Go(func() (err error) {
-		set := set.NewEmpty[string](len(req.Lives))
-		for i := range req.Lives {
-			set.Add(req.Lives[i].ProducerID)
-		}
-		producerIDs := set.Slice()
-		producers, err = h.multiGetProducers(ectx, producerIDs)
-		if err != nil {
-			return err
-		}
-		if len(producers) != len(producerIDs) {
-			return errInvalidProducerID
-		}
+		coordinator, err = h.getCoordinator(ectx, req.CoordinatorID)
 		return
 	})
 	eg.Go(func() (err error) {
 		shipping, err = h.getShipping(ectx, req.ShippingID)
 		return
 	})
-	eg.Go(func() error {
-		set := set.NewEmpty[string](len(req.Lives))
-		for i := range req.Lives {
-			set.Add(req.Lives[i].ProductIDs...)
-		}
-		productIDs := set.Slice()
-		products, err = h.multiGetProducts(ectx, productIDs)
-		if err != nil {
-			return err
-		}
-		if len(products) != len(productIDs) {
-			return errInvalidProductID
-		}
-		return nil
-	})
-	if err := eg.Wait(); err != nil {
-		switch {
-		case errors.Is(err, exception.ErrNotFound),
-			errors.Is(err, errInvalidProducerID),
-			errors.Is(err, errInvalidProductID):
-			badRequest(ctx, err)
-		default:
-			httpError(ctx, err)
-		}
+	err := eg.Wait()
+	if errors.Is(err, exception.ErrNotFound) {
+		badRequest(ctx, err)
 		return
 	}
-
-	unixLives := make([]*store.CreateScheduleLive, len(req.Lives))
-	for i := range req.Lives {
-		unixLives[i] = &store.CreateScheduleLive{
-			Title:       req.Lives[i].Title,
-			Description: req.Lives[i].Description,
-			ProducerID:  req.Lives[i].ProducerID,
-			ProductIDs:  req.Lives[i].ProductIDs,
-			StartAt:     jst.ParseFromUnix(req.Lives[i].StartAt),
-			EndAt:       jst.ParseFromUnix(req.Lives[i].EndAt),
-		}
-	}
-
-	in := &store.CreateScheduleInput{
-		CoordinatorID: coordinatorID,
-		ShippingID:    req.ShippingID,
-		Title:         req.Title,
-		Description:   req.Description,
-		ThumbnailURL:  req.ThumbnailURL,
-		StartAt:       jst.ParseFromUnix(req.StartAt),
-		EndAt:         jst.ParseFromUnix(req.EndAt),
-		Lives:         unixLives,
-	}
-	sschedule, slives, err := h.store.CreateSchedule(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
-	schedule := service.NewSchedule(sschedule)
-	lives := service.NewLives(slives)
 
-	schedule.Fill(shipping, coordinator)
-	lives.Fill(producers.Map(), products.Map())
+	var thumbnailURL, imageURL, openingVideoURL string
+	eg, ectx = errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		if req.ThumbnailURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.ThumbnailURL,
+		}
+		thumbnailURL, err = h.media.UploadScheduleThumbnail(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		if req.ImageURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.ImageURL,
+		}
+		imageURL, err = h.media.UploadScheduleImage(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		if req.OpeningVideoURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.OpeningVideoURL,
+		}
+		openingVideoURL, err = h.media.UploadScheduleOpeningVideo(ectx, in)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	in := &store.CreateScheduleInput{
+		CoordinatorID:   req.CoordinatorID,
+		ShippingID:      req.ShippingID,
+		Title:           req.Title,
+		Description:     req.Description,
+		ThumbnailURL:    thumbnailURL,
+		ImageURL:        imageURL,
+		OpeningVideoURL: openingVideoURL,
+		Public:          req.Public,
+		StartAt:         jst.ParseFromUnix(req.StartAt),
+		EndAt:           jst.ParseFromUnix(req.EndAt),
+	}
+	schedule, err := h.store.CreateSchedule(ctx, in)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+	sschedule := service.NewSchedule(schedule)
+	sschedule.Fill(shipping, coordinator)
 
 	res := &response.ScheduleResponse{
-		Schedule: schedule.Response(),
-		Lives:    lives.Response(),
+		Schedule: sschedule.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

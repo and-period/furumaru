@@ -200,6 +200,12 @@ paths:
     $ref: './paths/v1/upload/products/video.yaml'
   /v1/upload/product-types/icon:
     $ref: './paths/v1/upload/product-types/icon.yaml'
+  /v1/upload/schedules/thumbnail:
+    $ref: './paths/v1/upload/schedules/thumbnail.yaml'
+  /v1/upload/schedules/image:
+    $ref: './paths/v1/upload/schedules/image.yaml'
+  /v1/upload/schedules/opening-video:
+    $ref: './paths/v1/upload/schedules/opening-video.yaml'
 components:
   securitySchemes:
     BearerAuth:
@@ -352,6 +358,12 @@ components:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadProductVideoRequest'
     v1UploadProductTypeIconRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadProductTypeIconRequest'
+    v1UploadScheduleThumbnailRequest:
+      $ref: './components/schemas/v1/upload.request.yaml#/uploadScheduleThumbnailRequest'
+    v1UploadScheduleImageRequest:
+      $ref: './components/schemas/v1/upload.request.yaml#/uploadScheduleImageRequest'
+    v1UploadScheduleOpeningVideoRequest:
+      $ref: './components/schemas/v1/upload.request.yaml#/uploadScheduleOpeningVideoRequest'
     # Response
     v1AuthResponse:
       $ref: './components/schemas/v1/auth.response.yaml#/authResponse'

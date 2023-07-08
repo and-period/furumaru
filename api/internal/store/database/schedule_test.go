@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/golang/mock/gomock"
@@ -235,33 +236,13 @@ func TestSchedule_Create(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	category := testCategory("category-id", "野菜", now())
-	err = db.DB.Create(&category).Error
-	require.NoError(t, err)
-	productType := testProductType("type-id", "category-id", "野菜", now())
-	err = db.DB.Create(&productType).Error
-	require.NoError(t, err)
-	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id", "category-id", "producer-id", []string{}, now())
-	products[1] = testProduct("product-id02", "type-id", "category-id", "producer-id", []string{}, now())
-	err = db.DB.Create(&products).Error
-	require.NoError(t, err)
 	shipping := testShipping("shipping-id", now())
 	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
-
-	productIDs := []string{"product-id01", "product-id02"}
 	s := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
-	lives := testLives("live-id", "schedule-id", "producer-id", productIDs, now(), 3)
-	lproducts := make(entity.LiveProducts, 0)
-	for i := range lives {
-		lproducts = append(lproducts, lives[i].LiveProducts...)
-	}
 
 	type args struct {
 		schedule *entity.Schedule
-		lives    entity.Lives
-		products entity.LiveProducts
 	}
 	type want struct {
 		hasErr bool
@@ -277,8 +258,6 @@ func TestSchedule_Create(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				schedule: s,
-				lives:    lives,
-				products: lproducts,
 			},
 			want: want{
 				hasErr: false,
@@ -293,8 +272,6 @@ func TestSchedule_Create(t *testing.T) {
 			},
 			args: args{
 				schedule: s,
-				lives:    lives,
-				products: lproducts,
 			},
 			want: want{
 				hasErr: true,
@@ -314,7 +291,139 @@ func TestSchedule_Create(t *testing.T) {
 			tt.setup(ctx, t, db)
 
 			db := &schedule{db: db, now: now}
-			err = db.Create(ctx, tt.args.schedule, tt.args.lives, tt.args.products)
+			err = db.Create(ctx, tt.args.schedule)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
+func TestSchedule_UpdateThumbnails(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	shipping := testShipping("shipping-id", now())
+	err = db.DB.Create(&shipping).Error
+	require.NoError(t, err)
+
+	type args struct {
+		scheduleID string
+		thumbnails common.Images
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+				schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
+				err = db.DB.Create(&schedule).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				scheduleID: "schedule-id",
+				thumbnails: common.Images{
+					{
+						Size: common.ImageSizeSmall,
+						URL:  "https://and-period.jp/thumbnail_240.png",
+					},
+					{
+						Size: common.ImageSizeMedium,
+						URL:  "https://and-period.jp/thumbnail_675.png",
+					},
+					{
+						Size: common.ImageSizeLarge,
+						URL:  "https://and-period.jp/thumbnail_900.png",
+					},
+				},
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name:  "failed to not found",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			args: args{
+				scheduleID: "schedule-id",
+				thumbnails: common.Images{
+					{
+						Size: common.ImageSizeSmall,
+						URL:  "https://and-period.jp/thumbnail_240.png",
+					},
+					{
+						Size: common.ImageSizeMedium,
+						URL:  "https://and-period.jp/thumbnail_675.png",
+					},
+					{
+						Size: common.ImageSizeLarge,
+						URL:  "https://and-period.jp/thumbnail_900.png",
+					},
+				},
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+		{
+			name: "failed to empty thumbnail url",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+				schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
+				schedule.ThumbnailURL = ""
+				err = db.DB.Create(&schedule).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				scheduleID: "schedule-id",
+				thumbnails: common.Images{
+					{
+						Size: common.ImageSizeSmall,
+						URL:  "https://and-period.jp/thumbnail_240.png",
+					},
+					{
+						Size: common.ImageSizeMedium,
+						URL:  "https://and-period.jp/thumbnail_675.png",
+					},
+					{
+						Size: common.ImageSizeLarge,
+						URL:  "https://and-period.jp/thumbnail_900.png",
+					},
+				},
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, scheduleTable)
+			require.NoError(t, err)
+
+			tt.setup(ctx, t, db)
+
+			db := &schedule{db: db, now: now}
+			err = db.UpdateThumbnails(ctx, tt.args.scheduleID, tt.args.thumbnails)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}

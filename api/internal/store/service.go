@@ -90,7 +90,9 @@ type Service interface {
 	// 開催スケジュール取得
 	GetSchedule(ctx context.Context, in *GetScheduleInput) (*entity.Schedule, error)
 	// 開催スケジュール登録
-	CreateSchedule(ctx context.Context, in *CreateScheduleInput) (*entity.Schedule, entity.Lives, error)
+	CreateSchedule(ctx context.Context, in *CreateScheduleInput) (*entity.Schedule, error)
+	// 開催スケジュールサムネイル画像(リサイズ済み)更新
+	UpdateScheduleThumbnails(ctx context.Context, in *UpdateScheduleThumbnailsInput) error
 	// 配信詳細取得
 	GetLive(ctx context.Context, in *GetLiveInput) (*entity.Live, error)
 	// 配信一覧取得(開催スケジュールID指定)
