@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { mdiDelete } from '@mdi/js'
-import { VDataTable } from 'vuetify/lib/labs/components'
+import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { PrefecturesListItem, prefecturesList } from '~/constants'
 import { AlertType } from '~/lib/hooks'
 import { UserResponse, UsersResponseUsersInner } from '~/types/api'

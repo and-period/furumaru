@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { mdiDelete, mdiPencil, mdiPlus } from '@mdi/js'
-import { VDataTable } from 'vuetify/lib/labs/components'
+import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import useVuelidate from '@vuelidate/core'
 import { AlertType } from '~/lib/hooks'
 import { CreateProductTagRequest, ProductTagsResponseProductTagsInner, UpdateProductTagRequest } from '~/types/api'

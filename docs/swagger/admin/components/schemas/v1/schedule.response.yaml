@@ -27,12 +27,40 @@ scheduleResponse:
     thumbnailUrl:
       type: string
       description: サムネイルURL
+    thumbnails:
+      type: array
+      description: リサイズ済みサムネイルURL一覧
+      items:
+        type: object
+        properties:
+          url:
+            type: string
+            description: リサイズ済みサムネイルURL
+          size:
+            $ref: './../../../openapi.yaml#/components/schemas/imageSize'
+        required:
+        - url
+        - size
+    imageUrl:
+      type: string
+      description: ふた絵URL
+    images:
+      type: array
+      description: リサイズ済みふた絵URL一覧
+      items:
+        type: object
+        properties:
+          url:
+            type: string
+            description: リサイズ済みふた絵URL
+          size:
+            $ref: './../../../openapi.yaml#/components/schemas/imageSize'
+        required:
+        - url
+        - size
     openingVideoUrl:
       type: string
       description: オープニング動画URL
-    intermissionVideoUrl:
-      type: string
-      description: 幕間動画URL
     public:
       type: boolean
       description: 公開フラグ
@@ -260,8 +288,10 @@ scheduleResponse:
   - title
   - description
   - thumbnailUrl
+  - thumbnails
+  - imageUrl
+  - images
   - openingVideoUrl
-  - intermissionVideoUrl
   - public
   - approved
   - startAt
@@ -278,9 +308,23 @@ scheduleResponse:
     status: 4
     title: 'スケジュールタイトル'
     description: 'スケジュールの説明'
-    thumbnailUrl: 'https://and-period.jp/thumbnail01.png'
-    openingVideoUrl: 'https://and-period.jp/thumbnail01.png'
-    intermissionVideoUrl: 'https://and-period.jp/thumbnail01.png'
+    thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+    thumbnails:
+    - url: 'https://and-period.jp/thumbnail_240.png'
+      size: 1
+    - url: 'https://and-period.jp/thumbnail_675.png'
+      size: 2
+    - url: 'https://and-period.jp/thumbnail_900.png'
+      size: 3
+    imageUrl: 'https://and-period.jp/image.png'
+    images:
+    - url: 'https://and-period.jp/image_240.png'
+      size: 1
+    - url: 'https://and-period.jp/image_675.png'
+      size: 2
+    - url: 'https://and-period.jp/image_900.png'
+      size: 3
+    openingVideoUrl: 'https://and-period.jp/opening.mp4'
     public: true
     approved: true
     startAt: 1640962800
@@ -375,12 +419,40 @@ schedulesResponse:
           thumbnailUrl:
             type: string
             description: サムネイルURL
+          thumbnails:
+            type: array
+            description: リサイズ済みサムネイルURL一覧
+            items:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: リサイズ済みサムネイルURL
+                size:
+                  $ref: './../../../openapi.yaml#/components/schemas/imageSize'
+              required:
+              - url
+              - size
+          imageUrl:
+            type: string
+            description: ふた絵URL
+          images:
+            type: array
+            description: リサイズ済みふた絵URL一覧
+            items:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: リサイズ済みふた絵URL
+                size:
+                  $ref: './../../../openapi.yaml#/components/schemas/imageSize'
+              required:
+              - url
+              - size
           openingVideoUrl:
             type: string
             description: オープニング動画URL
-          intermissionVideoUrl:
-            type: string
-            description: 幕間動画URL
           public:
             type: boolean
             description: 公開フラグ
@@ -413,8 +485,10 @@ schedulesResponse:
         - title
         - description
         - thumbnailUrl
+        - thumbnails
+        - imageUrl
+        - images
         - openingVideoUrl
-        - intermissionVideoUrl
         - public
         - approved
         - startAt
@@ -438,9 +512,23 @@ schedulesResponse:
       status: 4
       title: 'スケジュールタイトル'
       description: 'スケジュールの説明'
-      thumbnailUrl: 'https://and-period.jp/thumbnail01.png'
-      openingVideoUrl: 'https://and-period.jp/thumbnail01.png'
-      intermissionVideoUrl: 'https://and-period.jp/thumbnail01.png'
+      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+      thumbnails:
+      - url: 'https://and-period.jp/thumbnail_240.png'
+        size: 1
+      - url: 'https://and-period.jp/thumbnail_675.png'
+        size: 2
+      - url: 'https://and-period.jp/thumbnail_900.png'
+        size: 3
+      imageUrl: 'https://and-period.jp/image.png'
+      images:
+      - url: 'https://and-period.jp/image_240.png'
+        size: 1
+      - url: 'https://and-period.jp/image_675.png'
+        size: 2
+      - url: 'https://and-period.jp/image_900.png'
+        size: 3
+      openingVideoUrl: 'https://and-period.jp/opening.mp4'
       public: true
       approved: true
       startAt: 1640962800
@@ -455,9 +543,11 @@ schedulesResponse:
       status: 4
       title: 'スケジュールタイトル'
       description: 'スケジュールの説明'
-      thumbnailUrl: 'https://and-period.jp/thumbnail01.png'
-      openingVideoUrl: 'https://and-period.jp/thumbnail01.png'
-      intermissionVideoUrl: 'https://and-period.jp/thumbnail01.png'
+      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+      thumbnails: []
+      imageUrl: 'https://and-period.jp/image.png'
+      images: []
+      openingVideoUrl: 'https://and-period.jp/opening.mp4'
       public: true
       approved: true
       startAt: 1640962800

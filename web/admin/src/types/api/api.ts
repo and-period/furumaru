@@ -5022,17 +5022,29 @@ export interface ScheduleResponse {
      */
     'thumbnailUrl': string;
     /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<AuthUserResponseThumbnailsInner>}
+     * @memberof ScheduleResponse
+     */
+    'thumbnails': Array<AuthUserResponseThumbnailsInner>;
+    /**
+     * ふた絵URL
+     * @type {string}
+     * @memberof ScheduleResponse
+     */
+    'imageUrl': string;
+    /**
+     * リサイズ済みふた絵URL一覧
+     * @type {Array<SchedulesResponseSchedulesInnerImagesInner>}
+     * @memberof ScheduleResponse
+     */
+    'images': Array<SchedulesResponseSchedulesInnerImagesInner>;
+    /**
      * オープニング動画URL
      * @type {string}
      * @memberof ScheduleResponse
      */
     'openingVideoUrl': string;
-    /**
-     * 幕間動画URL
-     * @type {string}
-     * @memberof ScheduleResponse
-     */
-    'intermissionVideoUrl': string;
     /**
      * 公開フラグ
      * @type {boolean}
@@ -5482,17 +5494,29 @@ export interface SchedulesResponseSchedulesInner {
      */
     'thumbnailUrl': string;
     /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<AuthUserResponseThumbnailsInner>}
+     * @memberof SchedulesResponseSchedulesInner
+     */
+    'thumbnails': Array<AuthUserResponseThumbnailsInner>;
+    /**
+     * ふた絵URL
+     * @type {string}
+     * @memberof SchedulesResponseSchedulesInner
+     */
+    'imageUrl': string;
+    /**
+     * リサイズ済みふた絵URL一覧
+     * @type {Array<SchedulesResponseSchedulesInnerImagesInner>}
+     * @memberof SchedulesResponseSchedulesInner
+     */
+    'images': Array<SchedulesResponseSchedulesInnerImagesInner>;
+    /**
      * オープニング動画URL
      * @type {string}
      * @memberof SchedulesResponseSchedulesInner
      */
     'openingVideoUrl': string;
-    /**
-     * 幕間動画URL
-     * @type {string}
-     * @memberof SchedulesResponseSchedulesInner
-     */
-    'intermissionVideoUrl': string;
     /**
      * 公開フラグ
      * @type {boolean}
@@ -5529,6 +5553,27 @@ export interface SchedulesResponseSchedulesInner {
      * @memberof SchedulesResponseSchedulesInner
      */
     'updatedAt': number;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface SchedulesResponseSchedulesInnerImagesInner
+ */
+export interface SchedulesResponseSchedulesInnerImagesInner {
+    /**
+     * リサイズ済みふた絵URL
+     * @type {string}
+     * @memberof SchedulesResponseSchedulesInnerImagesInner
+     */
+    'url': string;
+    /**
+     * 
+     * @type {ImageSize}
+     * @memberof SchedulesResponseSchedulesInnerImagesInner
+     */
+    'size': ImageSize;
 }
 
 

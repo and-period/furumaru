@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { mdiDelete, mdiPencil } from '@mdi/js'
-import { VDataTable } from 'vuetify/lib/labs/components'
+import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 
 import { useCategoryStore } from '~/store'
 import {
