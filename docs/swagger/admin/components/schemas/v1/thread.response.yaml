@@ -11,9 +11,7 @@ threadResponse:
       type: string
       description: 送信者ID
     userType:
-      type: integer
-      format: int32
-      description: 送信者タイプ
+      $ref: './../../../openapi.yaml#/components/schemas/contactUserType'
     content:
       type: string
       description: 会話内容
@@ -58,9 +56,7 @@ threadsResponse:
             type: string
             description: 送信者ID
           userType:
-            type: integer
-            format: int32
-            description: 送信者タイプ
+            $ref: './../../../openapi.yaml#/components/schemas/contactUserType'
           content:
             type: string
             description: 会話内容
