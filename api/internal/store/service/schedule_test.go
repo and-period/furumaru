@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
@@ -14,7 +15,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestListSchedules(t *testing.T) {
@@ -191,22 +191,13 @@ func TestCreateSchedule(t *testing.T) {
 	coordinatorIn := &user.GetCoordinatorInput{
 		CoordinatorID: "coordinator-id",
 	}
-	producersIn := &user.MultiGetProducersInput{
-		ProducerIDs: []string{"producer-id01"},
-	}
-	shippingIn := "shipping-id"
-
 	coordinator := &uentity.Coordinator{
-		AdminID: "coordinator-id",
-	}
-	producers := uentity.Producers{
-		{AdminID: "producer-id01"},
+		AdminID:  "coordinator-id",
+		Username: "&.コーディネータ",
 	}
 	shipping := &entity.Shipping{
-		ID: "shipping-id",
-	}
-	products := entity.Products{
-		{ID: "product-id"},
+		ID:   "shipping-id",
+		Name: "デフォルト配送設定",
 	}
 
 	tests := []struct {
@@ -219,67 +210,44 @@ func TestCreateSchedule(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
-				mocks.db.Shipping.EXPECT().Get(gomock.Any(), shippingIn).Return(shipping, nil)
-				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
+				mocks.db.Shipping.EXPECT().Get(gomock.Any(), "shipping-id").Return(shipping, nil)
 				mocks.db.Schedule.EXPECT().
-					Create(ctx, gomock.Any(), gomock.Any(), gomock.Any()).
-					DoAndReturn(func(ctx context.Context, s *entity.Schedule, ls entity.Lives, ps entity.LiveProducts) error {
-						eschedule := &entity.Schedule{
-							ID:            s.ID, // ignore
-							CoordinatorID: "coordinator-id",
-							ShippingID:    "shipping-id",
-							Title:         "タイトル",
-							Description:   "説明",
-							ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
-							StartAt:       jst.Date(2022, 1, 2, 18, 30, 0, 0),
-							EndAt:         jst.Date(2022, 1, 3, 18, 30, 0, 0),
+					Create(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, schedule *entity.Schedule) error {
+						expect := &entity.Schedule{
+							ID:              schedule.ID, // ignore
+							CoordinatorID:   "coordinator-id",
+							ShippingID:      "shipping-id",
+							Title:           "タイトル",
+							Description:     "説明",
+							ThumbnailURL:    "https://and-period.jp/thumbnail.png",
+							ImageURL:        "https://and-period.jp/image.png",
+							OpeningVideoURL: "https://ane-period.jp/opening-video.mp4",
+							Public:          true,
+							StartAt:         jst.Date(2022, 1, 2, 18, 30, 0, 0),
+							EndAt:           jst.Date(2022, 1, 3, 18, 30, 0, 0),
 						}
-						assert.Equal(t, eschedule, s)
-						require.Len(t, ls, 1)
-						elives := entity.Lives{{
-							ID:          ls[0].ID, // ignore
-							ScheduleID:  s.ID,
-							ProducerID:  "producer-id01",
-							Title:       "配信タイトル",
-							Description: "配信の説明",
-							StartAt:     jst.Date(2022, 1, 2, 18, 30, 0, 0),
-							EndAt:       jst.Date(2022, 1, 3, 18, 30, 0, 0),
-						}}
-						assert.Equal(t, elives, ls)
-						eproducts := entity.LiveProducts{
-							{
-								LiveID:    ls[0].ID,
-								ProductID: "product-id",
-							},
-						}
-						assert.Equal(t, eproducts, ps)
+						assert.Equal(t, expect, schedule)
 						return nil
 					})
+				mocks.media.EXPECT().ResizeScheduleThumbnail(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateScheduleInput{
-				CoordinatorID: "coordinator-id",
-				ShippingID:    "shipping-id",
-				Title:         "タイトル",
-				Description:   "説明",
-				ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
-				StartAt:       jst.Date(2022, 1, 2, 18, 30, 0, 0),
-				EndAt:         jst.Date(2022, 1, 3, 18, 30, 0, 0),
-				Lives: []*store.CreateScheduleLive{
-					{
-						Title:       "配信タイトル",
-						Description: "配信の説明",
-						ProducerID:  "producer-id01",
-						ProductIDs:  []string{"product-id"},
-						StartAt:     jst.Date(2022, 1, 2, 18, 30, 0, 0),
-						EndAt:       jst.Date(2022, 1, 3, 18, 30, 0, 0),
-					},
-				},
+				CoordinatorID:   "coordinator-id",
+				ShippingID:      "shipping-id",
+				Title:           "タイトル",
+				Description:     "説明",
+				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
+				ImageURL:        "https://and-period.jp/image.png",
+				OpeningVideoURL: "https://ane-period.jp/opening-video.mp4",
+				Public:          true,
+				StartAt:         jst.Date(2022, 1, 2, 18, 30, 0, 0),
+				EndAt:           jst.Date(2022, 1, 3, 18, 30, 0, 0),
 			},
 			expectErr: nil,
 		},
 		{
-			name:      "success",
+			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.CreateScheduleInput{},
 			expectErr: exception.ErrInvalidArgument,
@@ -288,28 +256,19 @@ func TestCreateSchedule(t *testing.T) {
 			name: "failed to get coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, assert.AnError)
-				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
-				mocks.db.Shipping.EXPECT().Get(gomock.Any(), shippingIn).Return(shipping, nil)
-				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
+				mocks.db.Shipping.EXPECT().Get(gomock.Any(), "shipping-id").Return(shipping, nil)
 			},
 			input: &store.CreateScheduleInput{
-				CoordinatorID: "coordinator-id",
-				ShippingID:    "shipping-id",
-				Title:         "タイトル",
-				Description:   "説明",
-				ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
-				StartAt:       jst.Date(2022, 1, 2, 18, 30, 0, 0),
-				EndAt:         jst.Date(2022, 1, 3, 18, 30, 0, 0),
-				Lives: []*store.CreateScheduleLive{
-					{
-						Title:       "配信タイトル",
-						Description: "配信の説明",
-						ProducerID:  "producer-id01",
-						ProductIDs:  []string{"product-id"},
-						StartAt:     jst.Date(2022, 1, 2, 18, 30, 0, 0),
-						EndAt:       jst.Date(2022, 1, 3, 18, 30, 0, 0),
-					},
-				},
+				CoordinatorID:   "coordinator-id",
+				ShippingID:      "shipping-id",
+				Title:           "タイトル",
+				Description:     "説明",
+				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
+				ImageURL:        "https://and-period.jp/image.png",
+				OpeningVideoURL: "https://ane-period.jp/opening-video.mp4",
+				Public:          true,
+				StartAt:         jst.Date(2022, 1, 2, 18, 30, 0, 0),
+				EndAt:           jst.Date(2022, 1, 3, 18, 30, 0, 0),
 			},
 			expectErr: exception.ErrUnknown,
 		},
@@ -317,86 +276,19 @@ func TestCreateSchedule(t *testing.T) {
 			name: "failed to not found coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, exception.ErrNotFound)
-				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
-				mocks.db.Shipping.EXPECT().Get(gomock.Any(), shippingIn).Return(shipping, nil)
-				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
+				mocks.db.Shipping.EXPECT().Get(gomock.Any(), "shipping-id").Return(shipping, nil)
 			},
 			input: &store.CreateScheduleInput{
-				CoordinatorID: "coordinator-id",
-				ShippingID:    "shipping-id",
-				Title:         "タイトル",
-				Description:   "説明",
-				ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
-				StartAt:       jst.Date(2022, 1, 2, 18, 30, 0, 0),
-				EndAt:         jst.Date(2022, 1, 3, 18, 30, 0, 0),
-				Lives: []*store.CreateScheduleLive{
-					{
-						Title:       "配信タイトル",
-						Description: "配信の説明",
-						ProducerID:  "producer-id01",
-						ProductIDs:  []string{"product-id"},
-						StartAt:     jst.Date(2022, 1, 2, 18, 30, 0, 0),
-						EndAt:       jst.Date(2022, 1, 3, 18, 30, 0, 0),
-					},
-				},
-			},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to get producers",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(nil, assert.AnError)
-				mocks.db.Shipping.EXPECT().Get(gomock.Any(), shippingIn).Return(shipping, nil)
-				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
-			},
-			input: &store.CreateScheduleInput{
-				CoordinatorID: "coordinator-id",
-				ShippingID:    "shipping-id",
-				Title:         "タイトル",
-				Description:   "説明",
-				ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
-				StartAt:       jst.Date(2022, 1, 2, 18, 30, 0, 0),
-				EndAt:         jst.Date(2022, 1, 3, 18, 30, 0, 0),
-				Lives: []*store.CreateScheduleLive{
-					{
-						Title:       "配信タイトル",
-						Description: "配信の説明",
-						ProducerID:  "producer-id01",
-						ProductIDs:  []string{"product-id"},
-						StartAt:     jst.Date(2022, 1, 2, 18, 30, 0, 0),
-						EndAt:       jst.Date(2022, 1, 3, 18, 30, 0, 0),
-					},
-				},
-			},
-			expectErr: exception.ErrUnknown,
-		},
-		{
-			name: "failed to unmatch producers length",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(uentity.Producers{}, nil)
-				mocks.db.Shipping.EXPECT().Get(gomock.Any(), shippingIn).Return(shipping, nil)
-				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
-			},
-			input: &store.CreateScheduleInput{
-				CoordinatorID: "coordinator-id",
-				ShippingID:    "shipping-id",
-				Title:         "タイトル",
-				Description:   "説明",
-				ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
-				StartAt:       jst.Date(2022, 1, 2, 18, 30, 0, 0),
-				EndAt:         jst.Date(2022, 1, 3, 18, 30, 0, 0),
-				Lives: []*store.CreateScheduleLive{
-					{
-						Title:       "配信タイトル",
-						Description: "配信の説明",
-						ProducerID:  "producer-id01",
-						ProductIDs:  []string{"product-id"},
-						StartAt:     jst.Date(2022, 1, 2, 18, 30, 0, 0),
-						EndAt:       jst.Date(2022, 1, 3, 18, 30, 0, 0),
-					},
-				},
+				CoordinatorID:   "coordinator-id",
+				ShippingID:      "shipping-id",
+				Title:           "タイトル",
+				Description:     "説明",
+				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
+				ImageURL:        "https://and-period.jp/image.png",
+				OpeningVideoURL: "https://ane-period.jp/opening-video.mp4",
+				Public:          true,
+				StartAt:         jst.Date(2022, 1, 2, 18, 30, 0, 0),
+				EndAt:           jst.Date(2022, 1, 3, 18, 30, 0, 0),
 			},
 			expectErr: exception.ErrInvalidArgument,
 		},
@@ -404,28 +296,19 @@ func TestCreateSchedule(t *testing.T) {
 			name: "failed to get shipping",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
-				mocks.db.Shipping.EXPECT().Get(gomock.Any(), shippingIn).Return(nil, assert.AnError)
-				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
+				mocks.db.Shipping.EXPECT().Get(gomock.Any(), "shipping-id").Return(nil, assert.AnError)
 			},
 			input: &store.CreateScheduleInput{
-				CoordinatorID: "coordinator-id",
-				ShippingID:    "shipping-id",
-				Title:         "タイトル",
-				Description:   "説明",
-				ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
-				StartAt:       jst.Date(2022, 1, 2, 18, 30, 0, 0),
-				EndAt:         jst.Date(2022, 1, 3, 18, 30, 0, 0),
-				Lives: []*store.CreateScheduleLive{
-					{
-						Title:       "配信タイトル",
-						Description: "配信の説明",
-						ProducerID:  "producer-id01",
-						ProductIDs:  []string{"product-id"},
-						StartAt:     jst.Date(2022, 1, 2, 18, 30, 0, 0),
-						EndAt:       jst.Date(2022, 1, 3, 18, 30, 0, 0),
-					},
-				},
+				CoordinatorID:   "coordinator-id",
+				ShippingID:      "shipping-id",
+				Title:           "タイトル",
+				Description:     "説明",
+				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
+				ImageURL:        "https://and-period.jp/image.png",
+				OpeningVideoURL: "https://ane-period.jp/opening-video.mp4",
+				Public:          true,
+				StartAt:         jst.Date(2022, 1, 2, 18, 30, 0, 0),
+				EndAt:           jst.Date(2022, 1, 3, 18, 30, 0, 0),
 			},
 			expectErr: exception.ErrUnknown,
 		},
@@ -433,86 +316,19 @@ func TestCreateSchedule(t *testing.T) {
 			name: "failed to not found shipping",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
-				mocks.db.Shipping.EXPECT().Get(gomock.Any(), shippingIn).Return(nil, exception.ErrNotFound)
-				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
+				mocks.db.Shipping.EXPECT().Get(gomock.Any(), "shipping-id").Return(nil, exception.ErrNotFound)
 			},
 			input: &store.CreateScheduleInput{
-				CoordinatorID: "coordinator-id",
-				ShippingID:    "shipping-id",
-				Title:         "タイトル",
-				Description:   "説明",
-				ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
-				StartAt:       jst.Date(2022, 1, 2, 18, 30, 0, 0),
-				EndAt:         jst.Date(2022, 1, 3, 18, 30, 0, 0),
-				Lives: []*store.CreateScheduleLive{
-					{
-						Title:       "配信タイトル",
-						Description: "配信の説明",
-						ProducerID:  "producer-id01",
-						ProductIDs:  []string{"product-id"},
-						StartAt:     jst.Date(2022, 1, 2, 18, 30, 0, 0),
-						EndAt:       jst.Date(2022, 1, 3, 18, 30, 0, 0),
-					},
-				},
-			},
-			expectErr: exception.ErrNotFound,
-		},
-		{
-			name: "failed to get products",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
-				mocks.db.Shipping.EXPECT().Get(gomock.Any(), shippingIn).Return(shipping, nil)
-				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(nil, assert.AnError)
-			},
-			input: &store.CreateScheduleInput{
-				CoordinatorID: "coordinator-id",
-				ShippingID:    "shipping-id",
-				Title:         "タイトル",
-				Description:   "説明",
-				ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
-				StartAt:       jst.Date(2022, 1, 2, 18, 30, 0, 0),
-				EndAt:         jst.Date(2022, 1, 3, 18, 30, 0, 0),
-				Lives: []*store.CreateScheduleLive{
-					{
-						Title:       "配信タイトル",
-						Description: "配信の説明",
-						ProducerID:  "producer-id01",
-						ProductIDs:  []string{"product-id"},
-						StartAt:     jst.Date(2022, 1, 2, 18, 30, 0, 0),
-						EndAt:       jst.Date(2022, 1, 3, 18, 30, 0, 0),
-					},
-				},
-			},
-			expectErr: exception.ErrUnknown,
-		},
-		{
-			name: "failed to unmatch products length",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
-				mocks.db.Shipping.EXPECT().Get(gomock.Any(), shippingIn).Return(shipping, nil)
-				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(entity.Products{}, nil)
-			},
-			input: &store.CreateScheduleInput{
-				CoordinatorID: "coordinator-id",
-				ShippingID:    "shipping-id",
-				Title:         "タイトル",
-				Description:   "説明",
-				ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
-				StartAt:       jst.Date(2022, 1, 2, 18, 30, 0, 0),
-				EndAt:         jst.Date(2022, 1, 3, 18, 30, 0, 0),
-				Lives: []*store.CreateScheduleLive{
-					{
-						Title:       "配信タイトル",
-						Description: "配信の説明",
-						ProducerID:  "producer-id01",
-						ProductIDs:  []string{"product-id"},
-						StartAt:     jst.Date(2022, 1, 2, 18, 30, 0, 0),
-						EndAt:       jst.Date(2022, 1, 3, 18, 30, 0, 0),
-					},
-				},
+				CoordinatorID:   "coordinator-id",
+				ShippingID:      "shipping-id",
+				Title:           "タイトル",
+				Description:     "説明",
+				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
+				ImageURL:        "https://and-period.jp/image.png",
+				OpeningVideoURL: "https://ane-period.jp/opening-video.mp4",
+				Public:          true,
+				StartAt:         jst.Date(2022, 1, 2, 18, 30, 0, 0),
+				EndAt:           jst.Date(2022, 1, 3, 18, 30, 0, 0),
 			},
 			expectErr: exception.ErrInvalidArgument,
 		},
@@ -520,29 +336,20 @@ func TestCreateSchedule(t *testing.T) {
 			name: "failed to create schedule",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.user.EXPECT().MultiGetProducers(gomock.Any(), producersIn).Return(producers, nil)
-				mocks.db.Shipping.EXPECT().Get(gomock.Any(), shippingIn).Return(shipping, nil)
-				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
-				mocks.db.Schedule.EXPECT().Create(ctx, gomock.Any(), gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.db.Shipping.EXPECT().Get(gomock.Any(), "shipping-id").Return(shipping, nil)
+				mocks.db.Schedule.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateScheduleInput{
-				CoordinatorID: "coordinator-id",
-				ShippingID:    "shipping-id",
-				Title:         "タイトル",
-				Description:   "説明",
-				ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
-				StartAt:       jst.Date(2022, 1, 2, 18, 30, 0, 0),
-				EndAt:         jst.Date(2022, 1, 3, 18, 30, 0, 0),
-				Lives: []*store.CreateScheduleLive{
-					{
-						Title:       "配信タイトル",
-						Description: "配信の説明",
-						ProducerID:  "producer-id01",
-						ProductIDs:  []string{"product-id"},
-						StartAt:     jst.Date(2022, 1, 2, 18, 30, 0, 0),
-						EndAt:       jst.Date(2022, 1, 3, 18, 30, 0, 0),
-					},
-				},
+				CoordinatorID:   "coordinator-id",
+				ShippingID:      "shipping-id",
+				Title:           "タイトル",
+				Description:     "説明",
+				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
+				ImageURL:        "https://and-period.jp/image.png",
+				OpeningVideoURL: "https://ane-period.jp/opening-video.mp4",
+				Public:          true,
+				StartAt:         jst.Date(2022, 1, 2, 18, 30, 0, 0),
+				EndAt:           jst.Date(2022, 1, 3, 18, 30, 0, 0),
 			},
 			expectErr: exception.ErrUnknown,
 		},
@@ -551,7 +358,70 @@ func TestCreateSchedule(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, _, err := service.CreateSchedule(ctx, tt.input)
+			_, err := service.CreateSchedule(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestUpdateScheduleThumbnails(t *testing.T) {
+	t.Parallel()
+
+	thumbnails := common.Images{
+		{
+			Size: common.ImageSizeSmall,
+			URL:  "https://and-period.jp/thumbnail_240.png",
+		},
+		{
+			Size: common.ImageSizeMedium,
+			URL:  "https://and-period.jp/thumbnail_675.png",
+		},
+		{
+			Size: common.ImageSizeLarge,
+			URL:  "https://and-period.jp/thumbnail_900.png",
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.UpdateScheduleThumbnailsInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().UpdateThumbnails(ctx, "schedule-id", thumbnails).Return(nil)
+			},
+			input: &store.UpdateScheduleThumbnailsInput{
+				ScheduleID: "schedule-id",
+				Thumbnails: thumbnails,
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &store.UpdateScheduleThumbnailsInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to update thumbnails",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().UpdateThumbnails(ctx, "schedule-id", thumbnails).Return(assert.AnError)
+			},
+			input: &store.UpdateScheduleThumbnailsInput{
+				ScheduleID: "schedule-id",
+				Thumbnails: thumbnails,
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.UpdateScheduleThumbnails(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}

@@ -33,6 +33,10 @@ func (s *service) ResizeProductTypeIcon(ctx context.Context, in *media.ResizeFil
 	return s.sendResizeMessage(ctx, in, entity.FileTypeProductTypeIcon)
 }
 
+func (s *service) ResizeScheduleThumbnail(ctx context.Context, in *media.ResizeFileInput) error {
+	return s.sendResizeMessage(ctx, in, entity.FileTypeScheduleThumbnail)
+}
+
 func (s *service) sendResizeMessage(ctx context.Context, in *media.ResizeFileInput, fileType entity.FileType) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)

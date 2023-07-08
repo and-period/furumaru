@@ -26,6 +26,7 @@ func TestSchedule(t *testing.T) {
 				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
 				ImageURL:        "https://and-period.jp/image.png",
 				OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
+				Public:          true,
 				StartAt:         jst.Date(2022, 8, 1, 0, 0, 0, 0),
 				EndAt:           jst.Date(2022, 9, 1, 0, 0, 0, 0),
 			},
@@ -38,6 +39,7 @@ func TestSchedule(t *testing.T) {
 				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
 				ImageURL:        "https://and-period.jp/image.png",
 				OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
+				Public:          true,
 				Approved:        false,
 				ApprovedAdminID: "",
 				StartAt:         jst.Date(2022, 8, 1, 0, 0, 0, 0),
@@ -76,10 +78,7 @@ func TestSchedule_FIllJSON(t *testing.T) {
 				Thumbnails: common.Images{
 					{Size: common.ImageSizeSmall, URL: "http://example.com/thumbnail.png"},
 				},
-				ImageURL: "http://example.com/image.png",
-				Images: common.Images{
-					{Size: common.ImageSizeSmall, URL: "http://example.com/image.png"},
-				},
+				ImageURL:        "http://example.com/image.png",
 				OpeningVideoURL: "http://example.jp/opening-video.mp4",
 				Approved:        false,
 				ApprovedAdminID: "",
@@ -97,11 +96,7 @@ func TestSchedule_FIllJSON(t *testing.T) {
 				Thumbnails: common.Images{
 					{Size: common.ImageSizeSmall, URL: "http://example.com/thumbnail.png"},
 				},
-				ImageURL:   "http://example.com/image.png",
-				ImagesJSON: []byte(`[{"url":"http://example.com/image.png","size":1}]`),
-				Images: common.Images{
-					{Size: common.ImageSizeSmall, URL: "http://example.com/image.png"},
-				},
+				ImageURL:        "http://example.com/image.png",
 				OpeningVideoURL: "http://example.jp/opening-video.mp4",
 				Approved:        false,
 				ApprovedAdminID: "",
@@ -212,7 +207,6 @@ func TestSchedules_FIll(t *testing.T) {
 					ThumbnailURL:    "http://example.com/thumbnail.png",
 					ThumbnailsJSON:  []byte(`[{"url":"http://example.com/thumbnail.png","size":1}]`),
 					ImageURL:        "http://example.com/image.png",
-					ImagesJSON:      []byte(`[{"url":"http://example.com/image.png","size":1}]`),
 					OpeningVideoURL: "http://example.jp/opening-video.mp4",
 					Approved:        false,
 					ApprovedAdminID: "",
@@ -233,11 +227,7 @@ func TestSchedules_FIll(t *testing.T) {
 					Thumbnails: common.Images{
 						{Size: common.ImageSizeSmall, URL: "http://example.com/thumbnail.png"},
 					},
-					ImageURL:   "http://example.com/image.png",
-					ImagesJSON: []byte(`[{"url":"http://example.com/image.png","size":1}]`),
-					Images: common.Images{
-						{Size: common.ImageSizeSmall, URL: "http://example.com/image.png"},
-					},
+					ImageURL:        "http://example.com/image.png",
 					OpeningVideoURL: "http://example.jp/opening-video.mp4",
 					Approved:        false,
 					ApprovedAdminID: "",

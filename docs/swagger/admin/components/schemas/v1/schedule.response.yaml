@@ -44,20 +44,6 @@ scheduleResponse:
     imageUrl:
       type: string
       description: ふた絵URL
-    images:
-      type: array
-      description: リサイズ済みふた絵URL一覧
-      items:
-        type: object
-        properties:
-          url:
-            type: string
-            description: リサイズ済みふた絵URL
-          size:
-            $ref: './../../../openapi.yaml#/components/schemas/imageSize'
-        required:
-        - url
-        - size
     openingVideoUrl:
       type: string
       description: オープニング動画URL
@@ -290,7 +276,6 @@ scheduleResponse:
   - thumbnailUrl
   - thumbnails
   - imageUrl
-  - images
   - openingVideoUrl
   - public
   - approved
@@ -317,13 +302,6 @@ scheduleResponse:
     - url: 'https://and-period.jp/thumbnail_900.png'
       size: 3
     imageUrl: 'https://and-period.jp/image.png'
-    images:
-    - url: 'https://and-period.jp/image_240.png'
-      size: 1
-    - url: 'https://and-period.jp/image_675.png'
-      size: 2
-    - url: 'https://and-period.jp/image_900.png'
-      size: 3
     openingVideoUrl: 'https://and-period.jp/opening.mp4'
     public: true
     approved: true
@@ -436,20 +414,6 @@ schedulesResponse:
           imageUrl:
             type: string
             description: ふた絵URL
-          images:
-            type: array
-            description: リサイズ済みふた絵URL一覧
-            items:
-              type: object
-              properties:
-                url:
-                  type: string
-                  description: リサイズ済みふた絵URL
-                size:
-                  $ref: './../../../openapi.yaml#/components/schemas/imageSize'
-              required:
-              - url
-              - size
           openingVideoUrl:
             type: string
             description: オープニング動画URL
@@ -487,7 +451,6 @@ schedulesResponse:
         - thumbnailUrl
         - thumbnails
         - imageUrl
-        - images
         - openingVideoUrl
         - public
         - approved
@@ -521,13 +484,6 @@ schedulesResponse:
       - url: 'https://and-period.jp/thumbnail_900.png'
         size: 3
       imageUrl: 'https://and-period.jp/image.png'
-      images:
-      - url: 'https://and-period.jp/image_240.png'
-        size: 1
-      - url: 'https://and-period.jp/image_675.png'
-        size: 2
-      - url: 'https://and-period.jp/image_900.png'
-        size: 3
       openingVideoUrl: 'https://and-period.jp/opening.mp4'
       public: true
       approved: true
@@ -546,7 +502,6 @@ schedulesResponse:
       thumbnailUrl: 'https://and-period.jp/thumbnail.png'
       thumbnails: []
       imageUrl: 'https://and-period.jp/image.png'
-      images: []
       openingVideoUrl: 'https://and-period.jp/opening.mp4'
       public: true
       approved: true

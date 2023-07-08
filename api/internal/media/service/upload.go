@@ -51,6 +51,18 @@ func (s *service) UploadProductTypeIcon(ctx context.Context, in *media.UploadFil
 	return s.uploadFile(ctx, in, entity.ProductTypeIconPath)
 }
 
+func (s *service) UploadScheduleThumbnail(ctx context.Context, in *media.UploadFileInput) (string, error) {
+	return s.uploadFile(ctx, in, entity.ScheduleThumbnailPath)
+}
+
+func (s *service) UploadScheduleImage(ctx context.Context, in *media.UploadFileInput) (string, error) {
+	return s.uploadFile(ctx, in, entity.ScheduleImagePath)
+}
+
+func (s *service) UploadScheduleOpeningVideo(ctx context.Context, in *media.UploadFileInput) (string, error) {
+	return s.uploadFile(ctx, in, entity.ScheduleOpeningVideoPath)
+}
+
 func (s *service) uploadFile(ctx context.Context, in *media.UploadFileInput, prefix string) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", exception.InternalError(err)

@@ -58,7 +58,6 @@ func NewSchedule(schedule *entity.Schedule) *Schedule {
 			ThumbnailURL:    schedule.ThumbnailURL,
 			Thumbnails:      NewImages(schedule.Thumbnails).Response(),
 			ImageURL:        schedule.ImageURL,
-			Images:          NewImages(schedule.Images).Response(),
 			OpeningVideoURL: schedule.OpeningVideoURL,
 			Public:          schedule.Public,
 			Approved:        schedule.Approved,

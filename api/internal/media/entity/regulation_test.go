@@ -420,6 +420,114 @@ func TestRegulation_Validate(t *testing.T) {
 			},
 			expect: ErrInvalidFileFormat,
 		},
+		// ScheduleThumbnail
+		{
+			name:       "success schedule thumbnail",
+			regulation: ScheduleThumbnailRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				return testImageFile(t)
+			},
+			expect: nil,
+		},
+		{
+			name:       "required for schedule thumbnail",
+			regulation: ScheduleThumbnailRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				_, header := testImageFile(t)
+				return nil, header
+			},
+			expect: ErrInvalidFileFormat,
+		},
+		{
+			name:       "invalid size for schedule thumbnail",
+			regulation: ScheduleThumbnailRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				file, header := testImageFile(t)
+				header.Size = 10<<20 + 1
+				return file, header
+			},
+			expect: ErrTooLargeFileSize,
+		},
+		{
+			name:       "invalid format for schedule thumbnail",
+			regulation: ScheduleThumbnailRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				return testVideoFile(t)
+			},
+			expect: ErrInvalidFileFormat,
+		},
+		// ScheduleImage
+		{
+			name:       "success schedule image",
+			regulation: ScheduleImageRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				return testImageFile(t)
+			},
+			expect: nil,
+		},
+		{
+			name:       "required for schedule image",
+			regulation: ScheduleImageRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				_, header := testImageFile(t)
+				return nil, header
+			},
+			expect: ErrInvalidFileFormat,
+		},
+		{
+			name:       "invalid size for schedule image",
+			regulation: ScheduleImageRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				file, header := testImageFile(t)
+				header.Size = 10<<20 + 1
+				return file, header
+			},
+			expect: ErrTooLargeFileSize,
+		},
+		{
+			name:       "invalid format for schedule image",
+			regulation: ScheduleImageRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				return testVideoFile(t)
+			},
+			expect: ErrInvalidFileFormat,
+		},
+		// ScheduleOpeningVideo
+		{
+			name:       "success schedule opening video",
+			regulation: ScheduleOpeningVideoRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				return testVideoFile(t)
+			},
+			expect: nil,
+		},
+		{
+			name:       "required for schedule opening video",
+			regulation: ScheduleOpeningVideoRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				_, header := testVideoFile(t)
+				return nil, header
+			},
+			expect: ErrInvalidFileFormat,
+		},
+		{
+			name:       "invalid size for schedule opening video",
+			regulation: ScheduleOpeningVideoRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				file, header := testVideoFile(t)
+				header.Size = 200<<20 + 1
+				return file, header
+			},
+			expect: ErrTooLargeFileSize,
+		},
+		{
+			name:       "invalid format for schedule opening video",
+			regulation: ScheduleOpeningVideoRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				return testImageFile(t)
+			},
+			expect: ErrInvalidFileFormat,
+		},
 	}
 	for _, tt := range tests {
 		tt := tt

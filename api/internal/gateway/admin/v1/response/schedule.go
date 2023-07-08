@@ -12,7 +12,6 @@ type Schedule struct {
 	ThumbnailURL    string   `json:"thumnailUrl"`     // サムネイルURL
 	Thumbnails      []*Image `json:"thumbnails"`      // サムネイルURL(リサイズ済み)一覧
 	ImageURL        string   `json:"imageUrl"`        // 蓋絵URL
-	Images          []*Image `json:"images"`          // 蓋絵URL(リサイズ済み)一覧
 	OpeningVideoURL string   `json:"openingVideoUrl"` // オープニング動画URL
 	Public          bool     `json:"public"`          // 公開フラグ
 	Approved        bool     `json:"approved"`        // 承認フラグ
@@ -24,7 +23,7 @@ type Schedule struct {
 
 type ScheduleResponse struct {
 	*Schedule
-	Lives []*Live `json:"lives"`
+	Lives []*Live `json:"lives"` // Deprecated
 }
 
 type SchedulesResponse struct {

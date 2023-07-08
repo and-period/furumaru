@@ -61,6 +61,7 @@ p, notification_delete, /v1/notifications/*, DELETE, allow
 p, schedule_list, /v1/schedules, GET, allow
 p, schedule_get, /v1/schedules/*, GET, allow
 p, schedule_create, /v1/schedules, POST, allow
+p, schedule_uploader, /v1/upload/schedules/*, POST, allow
 p, live_get, /v1/schedules/*/lives/*, GET, allow
 p, message_list, /v1/messages, GET, allow
 p, message_get, /v1/messages/*, GET, allow
@@ -141,6 +142,7 @@ g, administrator, notification_delete
 g, administrator, schedule_list
 g, administrator, schedule_get
 g, administrator, schedule_create
+g, administrator, schedule_uploader
 g, administrator, live_get
 g, administrator, message_list
 g, administrator, message_get
@@ -193,6 +195,7 @@ g, coordinator, notification_delete
 g, coordinator, schedule_list
 g, coordinator, schedule_get
 g, coordinator, schedule_create
+g, coordinator, schedule_uploader
 g, coordinator, live_get
 g, coordinator, message_list
 g, coordinator, message_get

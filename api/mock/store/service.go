@@ -127,13 +127,12 @@ func (mr *MockServiceMockRecorder) CreatePromotion(ctx, in interface{}) *gomock.
 }
 
 // CreateSchedule mocks base method.
-func (m *MockService) CreateSchedule(ctx context.Context, in *store.CreateScheduleInput) (*entity.Schedule, entity.Lives, error) {
+func (m *MockService) CreateSchedule(ctx context.Context, in *store.CreateScheduleInput) (*entity.Schedule, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateSchedule", ctx, in)
 	ret0, _ := ret[0].(*entity.Schedule)
-	ret1, _ := ret[1].(entity.Lives)
-	ret2, _ := ret[2].(error)
-	return ret0, ret1, ret2
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // CreateSchedule indicates an expected call of CreateSchedule.
@@ -735,6 +734,20 @@ func (m *MockService) UpdatePromotion(ctx context.Context, in *store.UpdatePromo
 func (mr *MockServiceMockRecorder) UpdatePromotion(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdatePromotion", reflect.TypeOf((*MockService)(nil).UpdatePromotion), ctx, in)
+}
+
+// UpdateScheduleThumbnails mocks base method.
+func (m *MockService) UpdateScheduleThumbnails(ctx context.Context, in *store.UpdateScheduleThumbnailsInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateScheduleThumbnails", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateScheduleThumbnails indicates an expected call of UpdateScheduleThumbnails.
+func (mr *MockServiceMockRecorder) UpdateScheduleThumbnails(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateScheduleThumbnails", reflect.TypeOf((*MockService)(nil).UpdateScheduleThumbnails), ctx, in)
 }
 
 // UpdateShipping mocks base method.

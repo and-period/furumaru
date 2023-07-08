@@ -6,10 +6,12 @@ import (
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
+	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -48,9 +50,28 @@ func (s *service) GetSchedule(ctx context.Context, in *store.GetScheduleInput) (
 	return schedule, exception.InternalError(err)
 }
 
-func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleInput) (*entity.Schedule, entity.Lives, error) {
+func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleInput) (*entity.Schedule, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, nil, exception.InternalError(err)
+		return nil, exception.InternalError(err)
+	}
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		in := &user.GetCoordinatorInput{
+			CoordinatorID: in.CoordinatorID,
+		}
+		_, err = s.user.GetCoordinator(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		_, err = s.db.Shipping.Get(ectx, in.ShippingID)
+		return
+	})
+	err := eg.Wait()
+	if errors.Is(err, exception.ErrNotFound) {
+		return nil, fmt.Errorf("api: invalid request: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	if err != nil {
+		return nil, exception.InternalError(err)
 	}
 	params := &entity.NewScheduleParams{
 		CoordinatorID:   in.CoordinatorID,
@@ -60,73 +81,41 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 		ThumbnailURL:    in.ThumbnailURL,
 		ImageURL:        in.ImageURL,
 		OpeningVideoURL: in.OpeningVideoURL,
+		Public:          in.Public,
 		StartAt:         in.StartAt,
 		EndAt:           in.EndAt,
 	}
 	schedule := entity.NewSchedule(params)
-	lives := make(entity.Lives, len(in.Lives))
-	products := make(entity.LiveProducts, 0, len(in.Lives))
-	for i := range in.Lives {
-		params := &entity.NewLiveParams{
-			ScheduleID:  schedule.ID,
-			ProducerID:  in.Lives[i].ProducerID,
-			Title:       in.Lives[i].Title,
-			Description: in.Lives[i].Description,
-			StartAt:     in.Lives[i].StartAt,
-			EndAt:       in.Lives[i].EndAt,
-		}
-		lives[i] = entity.NewLive(params)
-		products = append(products, entity.NewLiveProducts(lives[i].ID, in.Lives[i].ProductIDs)...)
+	if err := s.db.Schedule.Create(ctx, schedule); err != nil {
+		return nil, exception.InternalError(err)
 	}
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() error {
-		in := &user.GetCoordinatorInput{
-			CoordinatorID: in.CoordinatorID,
-		}
-		_, err := s.user.GetCoordinator(ectx, in)
-		if errors.Is(err, exception.ErrNotFound) {
-			return fmt.Errorf("service: not found coordinator: %w", exception.ErrInvalidArgument)
-		}
-		return err
-	})
-	eg.Go(func() error {
-		producerIDs := lives.ProducerIDs()
-		in := &user.MultiGetProducersInput{
-			ProducerIDs: producerIDs,
-		}
-		ps, err := s.user.MultiGetProducers(ectx, in)
-		if err != nil {
-			return err
-		}
-		if len(ps) == len(producerIDs) {
-			return nil
-		}
-		return fmt.Errorf("service: unmatch producers length: %w", exception.ErrInvalidArgument)
-	})
-	eg.Go(func() error {
-		shippingID := schedule.ShippingID
-		_, err := s.db.Shipping.Get(ectx, shippingID)
-		if errors.Is(err, exception.ErrNotFound) {
-			return fmt.Errorf("service: not found shipping: %w", exception.ErrNotFound)
-		}
-		return err
-	})
-	eg.Go(func() error {
-		productIDs := products.ProductIDs()
-		ps, err := s.db.Product.MultiGet(ectx, productIDs)
-		if err != nil {
-			return err
-		}
-		if len(ps) == len(productIDs) {
-			return nil
-		}
-		return fmt.Errorf("service: unmatch products length: %w", exception.ErrInvalidArgument)
-	})
-	if err := eg.Wait(); err != nil {
-		return nil, nil, exception.InternalError(err)
+	s.waitGroup.Add(1)
+	go func() {
+		defer s.waitGroup.Done()
+		s.resizeSchedule(context.Background(), schedule.ID, in.ThumbnailURL)
+	}()
+	return schedule, nil
+}
+
+func (s *service) UpdateScheduleThumbnails(ctx context.Context, in *store.UpdateScheduleThumbnailsInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
 	}
-	if err := s.db.Schedule.Create(ctx, schedule, lives, products); err != nil {
-		return nil, nil, exception.InternalError(err)
+	err := s.db.Schedule.UpdateThumbnails(ctx, in.ScheduleID, in.Thumbnails)
+	return exception.InternalError(err)
+}
+
+func (s *service) resizeSchedule(ctx context.Context, scheduleID, thumbnailURL string) {
+	if thumbnailURL == "" {
+		return
 	}
-	return schedule, lives, nil
+	in := &media.ResizeFileInput{
+		TargetID: scheduleID,
+		URLs:     []string{thumbnailURL},
+	}
+	if err := s.media.ResizeScheduleThumbnail(ctx, in); err != nil {
+		s.logger.Error("Failed to resize schedule thumbnail",
+			zap.String("scheduleId", scheduleID), zap.Error(err),
+		)
+	}
 }

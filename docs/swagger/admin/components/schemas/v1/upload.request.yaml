@@ -75,3 +75,24 @@ uploadProductTypeIconRequest:
       type: string
       format: binary
       description: 商品アイコン(png,jpeg形式,10MBまで)
+uploadScheduleThumbnailRequest:
+  type: object
+  properties:
+    image:
+      type: string
+      format: binary
+      description: 開催スケジュールサムネイル画像(png,jpeg形式,10MBまで)
+uploadScheduleImageRequest:
+  type: object
+  properties:
+    image:
+      type: string
+      format: binary
+      description: 開催スケジュール蓋絵画像(png形式,10MBまで)
+uploadScheduleOpeningVideoRequest:
+  type: object
+  properties:
+    video:
+      type: string
+      format: binary
+      description: 開催スケジュールオープニング動画(mp4形式,200MBまで)

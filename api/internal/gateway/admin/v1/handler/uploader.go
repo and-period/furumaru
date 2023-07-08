@@ -28,6 +28,9 @@ func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 	arg.POST("/products/image", h.uploadProductImage)
 	arg.POST("/products/video", h.uploadProductVideo)
 	arg.POST("/product-types/icon", h.uploadProductTypeIcon)
+	arg.POST("/schedules/thumbnail", h.uploadScheduleThumbnail)
+	arg.POST("/schedules/image", h.uploadScheduleImage)
+	arg.POST("/schedules/opening-video", h.uploadScheduleOpeningVideo)
 }
 
 func (h *handler) uploadCoordinatorThumbnail(ctx *gin.Context) {
@@ -83,6 +86,21 @@ func (h *handler) uploadProductVideo(ctx *gin.Context) {
 func (h *handler) uploadProductTypeIcon(ctx *gin.Context) {
 	const filename = "icon"
 	h.uploadFile(ctx, filename, h.media.GenerateProductTypeIcon)
+}
+
+func (h *handler) uploadScheduleThumbnail(ctx *gin.Context) {
+	const filename = "image"
+	h.uploadFile(ctx, filename, h.media.GenerateScheduleThumbnail)
+}
+
+func (h *handler) uploadScheduleImage(ctx *gin.Context) {
+	const filename = "image"
+	h.uploadFile(ctx, filename, h.media.GenerateScheduleImage)
+}
+
+func (h *handler) uploadScheduleOpeningVideo(ctx *gin.Context) {
+	const filename = "video"
+	h.uploadFile(ctx, filename, h.media.GenerateScheduleOpeningVideo)
 }
 
 func (h *handler) uploadFile(

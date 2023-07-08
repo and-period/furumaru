@@ -55,6 +55,18 @@ func (s *service) GenerateProductTypeIcon(ctx context.Context, in *media.Generat
 	return s.generateFile(ctx, in, entity.ProductTypeIconRegulation)
 }
 
+func (s *service) GenerateScheduleThumbnail(ctx context.Context, in *media.GenerateFileInput) (string, error) {
+	return s.generateFile(ctx, in, entity.ScheduleThumbnailRegulation)
+}
+
+func (s *service) GenerateScheduleImage(ctx context.Context, in *media.GenerateFileInput) (string, error) {
+	return s.generateFile(ctx, in, entity.ScheduleImageRegulation)
+}
+
+func (s *service) GenerateScheduleOpeningVideo(ctx context.Context, in *media.GenerateFileInput) (string, error) {
+	return s.generateFile(ctx, in, entity.ScheduleOpeningVideoRegulation)
+}
+
 func (s *service) generateFile(
 	ctx context.Context, in *media.GenerateFileInput, reg *entity.Regulation,
 ) (string, error) {

@@ -59,4 +59,18 @@ type Service interface {
 	UploadProductTypeIcon(ctx context.Context, in *UploadFileInput) (string, error)
 	// 品目アイコン画像リサイズ
 	ResizeProductTypeIcon(ctx context.Context, in *ResizeFileInput) error
+	// 開催スケジュールサムネイル画像を生成
+	GenerateScheduleThumbnail(ctx context.Context, in *GenerateFileInput) (string, error)
+	// 開催スケジュールサムネイル画像アップロード
+	UploadScheduleThumbnail(ctx context.Context, in *UploadFileInput) (string, error)
+	// 開催スケジュールサムネイル画像リサイズ
+	ResizeScheduleThumbnail(ctx context.Context, in *ResizeFileInput) error
+	// 開催スケジュール蓋絵画像を生成
+	GenerateScheduleImage(ctx context.Context, in *GenerateFileInput) (string, error)
+	// 開催スケジュール蓋絵画像アップロード
+	UploadScheduleImage(ctx context.Context, in *UploadFileInput) (string, error)
+	// 開催スケジュールオープニング動画を生成
+	GenerateScheduleOpeningVideo(ctx context.Context, in *GenerateFileInput) (string, error)
+	// 開催スケジュールオープニング動画アップロード
+	UploadScheduleOpeningVideo(ctx context.Context, in *UploadFileInput) (string, error)
 }

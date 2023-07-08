@@ -969,17 +969,17 @@ func (mr *MockScheduleMockRecorder) Count(ctx, params interface{}) *gomock.Call 
 }
 
 // Create mocks base method.
-func (m *MockSchedule) Create(ctx context.Context, schedule *entity.Schedule, lives entity.Lives, products entity.LiveProducts) error {
+func (m *MockSchedule) Create(ctx context.Context, schedule *entity.Schedule) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", ctx, schedule, lives, products)
+	ret := m.ctrl.Call(m, "Create", ctx, schedule)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockScheduleMockRecorder) Create(ctx, schedule, lives, products interface{}) *gomock.Call {
+func (mr *MockScheduleMockRecorder) Create(ctx, schedule interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockSchedule)(nil).Create), ctx, schedule, lives, products)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockSchedule)(nil).Create), ctx, schedule)
 }
 
 // Get mocks base method.
@@ -1020,6 +1020,20 @@ func (mr *MockScheduleMockRecorder) List(ctx, params interface{}, fields ...inte
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, params}, fields...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockSchedule)(nil).List), varargs...)
+}
+
+// UpdateThumbnails mocks base method.
+func (m *MockSchedule) UpdateThumbnails(ctx context.Context, scheduleID string, thumbnails common.Images) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateThumbnails", ctx, scheduleID, thumbnails)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateThumbnails indicates an expected call of UpdateThumbnails.
+func (mr *MockScheduleMockRecorder) UpdateThumbnails(ctx, scheduleID, thumbnails interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateThumbnails", reflect.TypeOf((*MockSchedule)(nil).UpdateThumbnails), ctx, scheduleID, thumbnails)
 }
 
 // MockShipping is a mock of Shipping interface.
