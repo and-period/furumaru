@@ -116,6 +116,7 @@ type DeleteProductTagInput struct {
 }
 
 type ListShippingsInput struct {
+	Name   string                `validate:"omitempty,max=64"`
 	Limit  int64                 `validate:"required,max=200"`
 	Offset int64                 `validate:"min=0"`
 	Orders []*ListShippingsOrder `validate:"omitempty,dive,required"`
@@ -289,6 +290,7 @@ type DeleteProductInput struct {
 }
 
 type ListPromotionsInput struct {
+	Title  string                 `validate:"omitempty,max=64"`
 	Limit  int64                  `validate:"required,max=200"`
 	Offset int64                  `validate:"min=0"`
 	Orders []*ListPromotionsOrder `validate:"omitempty,dive,required"`

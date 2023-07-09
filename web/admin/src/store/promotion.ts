@@ -5,6 +5,7 @@ import {
   CreatePromotionRequest,
   PromotionResponse,
   PromotionsResponse,
+  PromotionsResponsePromotionsInner,
   UpdatePromotionRequest
 } from '~/types/api'
 import { apiClient } from '~/plugins/api-client'
@@ -26,6 +27,34 @@ export const usePromotionStore = defineStore('promotion', {
       try {
         const res = await apiClient.promotionApi().v1ListPromotions(limit, offset, orders.join(','))
         this.promotions = res.data.promotions
+        this.total = res.data.total
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * セール情報を検索する非同期関数
+     * @param name タイトル(あいまい検索)
+     * @param promotionIds stateの更新時に残しておく必要があるセール情報
+     */
+    async searchPromotions (name = '', promotionIds: string[] = []): Promise<void> {
+      try {
+        const res = await apiClient.promotionApi().v1ListPromotions(undefined, undefined, name)
+        const promotions: PromotionsResponsePromotionsInner[] = []
+        this.promotions.forEach((promotion: PromotionsResponsePromotionsInner): void => {
+          if (!promotionIds.includes(promotion.id)) {
+            return
+          }
+          promotions.push(promotion)
+        })
+        res.data.promotions.forEach((promotion: PromotionsResponsePromotionsInner): void => {
+          if (promotions.find((v): boolean => v.id === promotion.id)) {
+            return
+          }
+          promotions.push(promotion)
+        })
+        this.promotions = promotions
         this.total = res.data.total
       } catch (err) {
         return this.errorHandler(err)

@@ -55,6 +55,7 @@ func TestPromotion_List(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListPromotionsParams{
+					Title:  "夏の採れたて野菜",
 					Limit:  2,
 					Offset: 1,
 				},
@@ -139,6 +140,7 @@ func TestPromotion_Count(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListPromotionsParams{
+					Title:  "夏の採れたて野菜",
 					Limit:  2,
 					Offset: 1,
 				},

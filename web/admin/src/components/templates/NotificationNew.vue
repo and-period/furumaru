@@ -45,6 +45,7 @@ const props = defineProps({
 const emit = defineEmits<{
   (e: 'update:form-data', formData: CreateNotificationRequest): void
   (e: 'update:notification-type', type: NotificationType): void
+  (e: 'update:search-promotion', name: string): void
   (e: 'submit'): void
 }>()
 
@@ -136,6 +137,10 @@ const onChangeType = (type: NotificationTarget): void => {
   emit('update:notification-type', type)
 }
 
+const onChangeSearchPromotion = (name: string): void => {
+  emit('update:search-promotion', name)
+}
+
 const onChangePromotion = (promotionId: string): void => {
   const promotion = props.promotions.find((promotion): boolean => promotion.id === promotionId)
   selectedPromotion.value = promotion
@@ -173,7 +178,7 @@ const onSubmit = async (): Promise<void> => {
         />
         <!-- セール情報 -->
         <div v-if="formDataValue.type === NotificationType.PROMOTION">
-          <v-select
+          <v-autocomplete
             v-model="formDataValidate.promotionId.$model"
             :error-messages="getErrorMessage(formDataValidate.promotionId.$errors)"
             :items="promotions"
@@ -181,6 +186,7 @@ const onSubmit = async (): Promise<void> => {
             item-title="title"
             item-value="id"
             @update:model-value="onChangePromotion"
+            @update:search="onChangeSearchPromotion"
           />
           <v-table>
             <tbody>

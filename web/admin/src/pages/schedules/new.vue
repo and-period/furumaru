@@ -49,8 +49,15 @@ const isLoading = (): boolean => {
   return fetchState?.pending?.value || loading.value
 }
 
-const handleSearchShipping = (name: string): void => {
-  console.log('debug: unimplemented search shipping', { name })
+const handleSearchShipping = async (name: string): Promise<void> => {
+  try {
+    await shippingStore.searchCoordinators(name)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
 }
 
 const handleUploadThumbnail = (files: FileList): void => {

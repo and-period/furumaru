@@ -25,6 +25,7 @@ func (s *service) ListPromotions(
 		}
 	}
 	params := &database.ListPromotionsParams{
+		Title:  in.Title,
 		Limit:  int(in.Limit),
 		Offset: int(in.Offset),
 		Orders: orders,

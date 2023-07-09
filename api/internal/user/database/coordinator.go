@@ -34,6 +34,7 @@ func (c *coordinator) List(
 	var coordinators entity.Coordinators
 
 	stmt := c.db.Statement(ctx, c.db.DB, coordinatorTable, fields...)
+	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
 	}
@@ -50,8 +51,8 @@ func (c *coordinator) List(
 	return coordinators, nil
 }
 
-func (c *coordinator) Count(ctx context.Context, _ *ListCoordinatorsParams) (int64, error) {
-	total, err := c.db.Count(ctx, c.db.DB, &entity.Coordinator{}, nil)
+func (c *coordinator) Count(ctx context.Context, params *ListCoordinatorsParams) (int64, error) {
+	total, err := c.db.Count(ctx, c.db.DB, &entity.Coordinator{}, params.stmt)
 	return total, exception.InternalError(err)
 }
 

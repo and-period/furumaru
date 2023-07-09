@@ -47,6 +47,7 @@ func (h *handler) ListPromotions(ctx *gin.Context) {
 	}
 
 	in := &store.ListPromotionsInput{
+		Title:  util.GetQuery(ctx, "title", ""),
 		Limit:  limit,
 		Offset: offset,
 		Orders: orders,

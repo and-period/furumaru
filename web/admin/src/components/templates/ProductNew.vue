@@ -91,6 +91,7 @@ const emit = defineEmits<{
   (e: 'update:files', files: FileList): void
   (e: 'update:form-data', formData: CreateProductRequest): void
   (e: 'update:selected-category-id', categoryId: string): void
+  (e: 'update:search-producer', name: string): void
   (e: 'update:search-category', name: string): void
   (e: 'update:search-product-type', name: string): void
   (e: 'update:search-product-tag', name: string): void
@@ -256,6 +257,10 @@ const getBenefits = (): number => {
   return formDataValue.value.price - (formDataValue.value.cost + getCommission())
 }
 
+const onChangeSearchProducer = (name: string): void => {
+  emit('update:search-producer', name)
+}
+
 const onChangeSearchCategory = (name: string): void => {
   emit('update:search-category', name)
 }
@@ -316,13 +321,14 @@ const onSubmit = async (): Promise<void> => {
         <v-card elevation="0" class="mb-4">
           <v-card-title>基本情報</v-card-title>
           <v-card-text>
-            <v-select
+            <v-autocomplete
               v-model="formDataValidate.producerId.$model"
               :error-messages="getErrorMessage(formDataValidate.producerId.$errors)"
               label="生産者名"
               :items="producers"
               item-title="username"
               item-value="id"
+              @update:search="onChangeSearchProducer"
             />
             <v-text-field
               v-model="formDataValidate.name.$model"

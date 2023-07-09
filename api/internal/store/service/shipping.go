@@ -23,6 +23,7 @@ func (s *service) ListShippings(ctx context.Context, in *store.ListShippingsInpu
 		}
 	}
 	params := &database.ListShippingsParams{
+		Name:   in.Name,
 		Limit:  int(in.Limit),
 		Offset: int(in.Offset),
 		Orders: orders,

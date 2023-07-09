@@ -57,6 +57,7 @@ func TestShipping_List(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListShippingsParams{
+					Name:   "配送設定",
 					Limit:  20,
 					Offset: 1,
 				},
@@ -142,6 +143,7 @@ func TestShipping_Count(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListShippingsParams{
+					Name:   "配送設定",
 					Limit:  20,
 					Offset: 1,
 				},
