@@ -1,11 +1,10 @@
 import { defineStore } from 'pinia'
 
 import { useCommonStore } from './common'
+import { useCategoryStore } from './category'
 import {
   CreateProductTypeRequest,
-  ProductTagsResponseProductTagsInner,
-  ProductTypesResponse,
-  ProductTypesResponseProductTypesInner,
+  ProductType,
   UpdateProductTypeRequest,
   UploadImageResponse
 } from '~/types/api'
@@ -13,7 +12,7 @@ import { apiClient } from '~/plugins/api-client'
 
 export const useProductTypeStore = defineStore('productType', {
   state: () => ({
-    productTypes: [] as ProductTypesResponse['productTypes'],
+    productTypes: [] as ProductType[],
     totalItems: 0
   }),
 
@@ -27,8 +26,11 @@ export const useProductTypeStore = defineStore('productType', {
     async fetchProductTypes (limit = 20, offset = 0, orders = []): Promise<void> {
       try {
         const res = await apiClient.productTypeApi().v1ListAllProductTypes(limit, offset, orders.join(','))
+
+        const categoryStore = useCategoryStore()
         this.productTypes = res.data.productTypes
         this.totalItems = res.data.total
+        categoryStore.categories = res.data.categories
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -44,6 +46,7 @@ export const useProductTypeStore = defineStore('productType', {
     async fetchProductTypesByCategoryId (categoryId: string, limit = 20, offset = 0): Promise<void> {
       try {
         const res = await apiClient.productTypeApi().v1ListProductTypes(categoryId)
+
         this.productTypes = res.data.productTypes
         this.totalItems = res.data.total
       } catch (err) {
@@ -60,14 +63,14 @@ export const useProductTypeStore = defineStore('productType', {
     async searchProductTypes (name = '', categoryId = '', productTypeIds: string[] = []): Promise<void> {
       try {
         const res = await apiClient.productTypeApi().v1ListProductTypes(categoryId, undefined, undefined, name)
-        const productTypes: ProductTypesResponseProductTypesInner[] = []
-        this.productTypes.forEach((productType: ProductTypesResponseProductTypesInner): void => {
+        const productTypes: ProductType[] = []
+        this.productTypes.forEach((productType: ProductType): void => {
           if (!productTypeIds.includes(productType.id)) {
             return
           }
           productTypes.push(productType)
         })
-        res.data.productTypes.forEach((productType: ProductTypesResponseProductTypesInner): void => {
+        res.data.productTypes.forEach((productType: ProductType): void => {
           if (productTypes.find((v): boolean => v.id === productType.id)) {
             return
           }
@@ -96,7 +99,7 @@ export const useProductTypeStore = defineStore('productType', {
           categoryId,
           payload
         )
-        this.productTypes.unshift(res.data)
+        this.productTypes.unshift(res.data.productType)
         commonStore.addSnackbar({
           message: '品目を追加しました。',
           color: 'info'

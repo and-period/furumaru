@@ -5,7 +5,7 @@ import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 
 import { getResizedImages } from '~/lib/helpers'
 import { AlertType } from '~/lib/hooks'
-import { AdminStatus, CoordinatorsResponseCoordinatorsInner } from '~/types/api'
+import { AdminStatus, Coordinator, ProductType } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -29,7 +29,11 @@ const props = defineProps({
     default: ''
   },
   coordinators: {
-    type: Array<CoordinatorsResponseCoordinatorsInner>,
+    type: Array<Coordinator>,
+    default: () => []
+  },
+  productTypes: {
+    type: Array<ProductType>,
     default: () => []
   },
   tableItemsPerPage: {
@@ -94,7 +98,7 @@ const headers: VDataTable['headers'] = [
   }
 ]
 
-const selectedItem = ref<CoordinatorsResponseCoordinatorsInner>()
+const selectedItem = ref<Coordinator>()
 
 const deleteDialogValue = computed({
   get: () => props.deleteDialog,
@@ -127,14 +131,14 @@ const getStatusColor = (status: AdminStatus): string => {
   }
 }
 
-const coordinatorName = (coordinator?: CoordinatorsResponseCoordinatorsInner): string => {
+const coordinatorName = (coordinator?: Coordinator): string => {
   if (!coordinator) {
     return ''
   }
   return `${coordinator.lastname} ${coordinator.firstname}`
 }
 
-const getImages = (coordinator: CoordinatorsResponseCoordinatorsInner): string => {
+const getImages = (coordinator: Coordinator): string => {
   if (!coordinator.thumbnails) {
     return ''
   }
@@ -153,7 +157,7 @@ const onClickRow = (coordinatorId: string): void => {
   emit('click:row', coordinatorId)
 }
 
-const onClickOpen = (coordinator: CoordinatorsResponseCoordinatorsInner): void => {
+const onClickOpen = (coordinator: Coordinator): void => {
   selectedItem.value = coordinator
   deleteDialogValue.value = true
 }

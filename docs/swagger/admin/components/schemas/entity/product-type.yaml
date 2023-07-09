@@ -1,0 +1,60 @@
+productType:
+  type: object
+  description: 品目情報
+  properties:
+    id:
+      type: string
+      description: 品目ID
+    name:
+      type: string
+      description: 品目名
+    iconUrl:
+      type: string
+      description: アイコンURL
+    icons:
+      type: array
+      description: リサイズ済みアイコンURL一覧
+      items:
+        type: object
+        properties:
+          url:
+            type: string
+            description: リサイズ済みアイコンURL
+          size:
+            $ref: './../../../openapi.yaml#/components/schemas/imageSize'
+        required:
+        - url
+        - size
+    categoryId:
+      type: string
+      description: 商品種別ID
+    createdAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
+    updatedAt:
+      type: integer
+      format: int64
+      description: 更新日時 (unixtime)
+  required:
+  - id
+  - name
+  - iconUrl
+  - icons
+  - categoryId
+  - createdAt
+  - updatedAt
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    name: 'じゃがいも'
+    iconUrl: 'https://and-period.jp/icon.png'
+    icons:
+    - url: 'https://and-period.jp/icon_240.png'
+      size: 1
+    - url: 'https://and-period.jp/icon_675.png'
+      size: 2
+    - url: 'https://and-period.jp/icon_900.png'
+      size: 3
+    categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
+    createdAt: 1640962800
+    updatedAt: 1640962800

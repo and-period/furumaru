@@ -24,6 +24,69 @@ import type { RequestArgs } from './base';
 import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError } from './base';
 
 /**
+ * 管理者情報
+ * @export
+ * @interface Admin
+ */
+export interface Admin {
+    /**
+     * 管理者ID
+     * @type {string}
+     * @memberof Admin
+     */
+    'id': string;
+    /**
+     * 
+     * @type {AdminRole}
+     * @memberof Admin
+     */
+    'role': AdminRole;
+    /**
+     * 姓
+     * @type {string}
+     * @memberof Admin
+     */
+    'lastname': string;
+    /**
+     * 名
+     * @type {string}
+     * @memberof Admin
+     */
+    'firstname': string;
+    /**
+     * 姓(かな)
+     * @type {string}
+     * @memberof Admin
+     */
+    'lastnameKana': string;
+    /**
+     * 名(かな)
+     * @type {string}
+     * @memberof Admin
+     */
+    'firstnameKana': string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof Admin
+     */
+    'email': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof Admin
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof Admin
+     */
+    'updatedAt': number;
+}
+
+
+/**
  * 管理者権限
  * @export
  * @enum {string}
@@ -80,74 +143,87 @@ export type AdminStatus = typeof AdminStatus[keyof typeof AdminStatus];
 
 
 /**
+ * 管理者情報
+ * @export
+ * @interface Administrator
+ */
+export interface Administrator {
+    /**
+     * システム管理者ID
+     * @type {string}
+     * @memberof Administrator
+     */
+    'id': string;
+    /**
+     * 
+     * @type {AdminStatus}
+     * @memberof Administrator
+     */
+    'status': AdminStatus;
+    /**
+     * 姓
+     * @type {string}
+     * @memberof Administrator
+     */
+    'lastname': string;
+    /**
+     * 名
+     * @type {string}
+     * @memberof Administrator
+     */
+    'firstname': string;
+    /**
+     * 姓(かな)
+     * @type {string}
+     * @memberof Administrator
+     */
+    'lastnameKana': string;
+    /**
+     * 名(かな)
+     * @type {string}
+     * @memberof Administrator
+     */
+    'firstnameKana': string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof Administrator
+     */
+    'email': string;
+    /**
+     * 電話番号 (国際番号 + 電話番号)
+     * @type {string}
+     * @memberof Administrator
+     */
+    'phoneNumber': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof Administrator
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof Administrator
+     */
+    'updatedAt': number;
+}
+
+
+/**
  * 
  * @export
  * @interface AdministratorResponse
  */
 export interface AdministratorResponse {
     /**
-     * システム管理者ID
-     * @type {string}
-     * @memberof AdministratorResponse
-     */
-    'id': string;
-    /**
      * 
-     * @type {AdminStatus}
+     * @type {Administrator}
      * @memberof AdministratorResponse
      */
-    'status': AdminStatus;
-    /**
-     * 姓
-     * @type {string}
-     * @memberof AdministratorResponse
-     */
-    'lastname': string;
-    /**
-     * 名
-     * @type {string}
-     * @memberof AdministratorResponse
-     */
-    'firstname': string;
-    /**
-     * 姓(かな)
-     * @type {string}
-     * @memberof AdministratorResponse
-     */
-    'lastnameKana': string;
-    /**
-     * 名(かな)
-     * @type {string}
-     * @memberof AdministratorResponse
-     */
-    'firstnameKana': string;
-    /**
-     * メールアドレス
-     * @type {string}
-     * @memberof AdministratorResponse
-     */
-    'email': string;
-    /**
-     * 電話番号 (国際番号 + 電話番号)
-     * @type {string}
-     * @memberof AdministratorResponse
-     */
-    'phoneNumber': string;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof AdministratorResponse
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof AdministratorResponse
-     */
-    'updatedAt': number;
+    'administrator': Administrator;
 }
-
-
 /**
  * 
  * @export
@@ -156,10 +232,10 @@ export interface AdministratorResponse {
 export interface AdministratorsResponse {
     /**
      * システム管理者一覧
-     * @type {Array<AdministratorsResponseAdministratorsInner>}
+     * @type {Array<Administrator>}
      * @memberof AdministratorsResponse
      */
-    'administrators': Array<AdministratorsResponseAdministratorsInner>;
+    'administrators': Array<Administrator>;
     /**
      * 合計数
      * @type {number}
@@ -167,75 +243,6 @@ export interface AdministratorsResponse {
      */
     'total': number;
 }
-/**
- * 
- * @export
- * @interface AdministratorsResponseAdministratorsInner
- */
-export interface AdministratorsResponseAdministratorsInner {
-    /**
-     * システム管理者ID
-     * @type {string}
-     * @memberof AdministratorsResponseAdministratorsInner
-     */
-    'id': string;
-    /**
-     * 
-     * @type {AdminStatus}
-     * @memberof AdministratorsResponseAdministratorsInner
-     */
-    'status': AdminStatus;
-    /**
-     * 姓
-     * @type {string}
-     * @memberof AdministratorsResponseAdministratorsInner
-     */
-    'lastname': string;
-    /**
-     * 名
-     * @type {string}
-     * @memberof AdministratorsResponseAdministratorsInner
-     */
-    'firstname': string;
-    /**
-     * 姓(かな)
-     * @type {string}
-     * @memberof AdministratorsResponseAdministratorsInner
-     */
-    'lastnameKana': string;
-    /**
-     * 名(かな)
-     * @type {string}
-     * @memberof AdministratorsResponseAdministratorsInner
-     */
-    'firstnameKana': string;
-    /**
-     * メールアドレス
-     * @type {string}
-     * @memberof AdministratorsResponseAdministratorsInner
-     */
-    'email': string;
-    /**
-     * 電話番号 (国際番号 + 電話番号)
-     * @type {string}
-     * @memberof AdministratorsResponseAdministratorsInner
-     */
-    'phoneNumber': string;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof AdministratorsResponseAdministratorsInner
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof AdministratorsResponseAdministratorsInner
-     */
-    'updatedAt': number;
-}
-
-
 /**
  * 
  * @export
@@ -319,31 +326,10 @@ export interface AuthUserResponse {
     'thumbnailUrl': string;
     /**
      * リサイズ済みサムネイルURL一覧
-     * @type {Array<AuthUserResponseThumbnailsInner>}
+     * @type {Array<CoordinatorThumbnailsInner>}
      * @memberof AuthUserResponse
      */
-    'thumbnails': Array<AuthUserResponseThumbnailsInner>;
-}
-
-
-/**
- * 
- * @export
- * @interface AuthUserResponseThumbnailsInner
- */
-export interface AuthUserResponseThumbnailsInner {
-    /**
-     * リサイズ済みサムネイルURL
-     * @type {string}
-     * @memberof AuthUserResponseThumbnailsInner
-     */
-    'url': string;
-    /**
-     * 
-     * @type {ImageSize}
-     * @memberof AuthUserResponseThumbnailsInner
-     */
-    'size': ImageSize;
+    'thumbnails': Array<CoordinatorThumbnailsInner>;
 }
 
 
@@ -355,10 +341,10 @@ export interface AuthUserResponseThumbnailsInner {
 export interface CategoriesResponse {
     /**
      * 商品種別一覧
-     * @type {Array<CategoriesResponseCategoriesInner>}
+     * @type {Array<Category>}
      * @memberof CategoriesResponse
      */
-    'categories': Array<CategoriesResponseCategoriesInner>;
+    'categories': Array<Category>;
     /**
      * 合計数
      * @type {number}
@@ -367,33 +353,33 @@ export interface CategoriesResponse {
     'total': number;
 }
 /**
- * 
+ * 商品種別情報
  * @export
- * @interface CategoriesResponseCategoriesInner
+ * @interface Category
  */
-export interface CategoriesResponseCategoriesInner {
+export interface Category {
     /**
      * 商品種別ID
      * @type {string}
-     * @memberof CategoriesResponseCategoriesInner
+     * @memberof Category
      */
     'id': string;
     /**
-     * カテゴリ名
+     * 商品種別名
      * @type {string}
-     * @memberof CategoriesResponseCategoriesInner
+     * @memberof Category
      */
     'name': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
-     * @memberof CategoriesResponseCategoriesInner
+     * @memberof Category
      */
     'createdAt': number;
     /**
      * 更新日時 (unixtime)
      * @type {number}
-     * @memberof CategoriesResponseCategoriesInner
+     * @memberof Category
      */
     'updatedAt': number;
 }
@@ -404,29 +390,11 @@ export interface CategoriesResponseCategoriesInner {
  */
 export interface CategoryResponse {
     /**
-     * 商品種別ID
-     * @type {string}
+     * 
+     * @type {Category}
      * @memberof CategoryResponse
      */
-    'id': string;
-    /**
-     * カテゴリ名
-     * @type {string}
-     * @memberof CategoryResponse
-     */
-    'name': string;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof CategoryResponse
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof CategoryResponse
-     */
-    'updatedAt': number;
+    'category': Category;
 }
 /**
  * 
@@ -745,173 +713,234 @@ export interface ContactsResponseContactsInner {
 
 
 /**
+ * コーディネータ情報
+ * @export
+ * @interface Coordinator
+ */
+export interface Coordinator {
+    /**
+     * コーディネータID
+     * @type {string}
+     * @memberof Coordinator
+     */
+    'id': string;
+    /**
+     * 
+     * @type {AdminStatus}
+     * @memberof Coordinator
+     */
+    'status': AdminStatus;
+    /**
+     * 姓
+     * @type {string}
+     * @memberof Coordinator
+     */
+    'lastname': string;
+    /**
+     * 名
+     * @type {string}
+     * @memberof Coordinator
+     */
+    'firstname': string;
+    /**
+     * 姓(かな)
+     * @type {string}
+     * @memberof Coordinator
+     */
+    'lastnameKana': string;
+    /**
+     * 名(かな)
+     * @type {string}
+     * @memberof Coordinator
+     */
+    'firstnameKana': string;
+    /**
+     * マルシェ名
+     * @type {string}
+     * @memberof Coordinator
+     */
+    'marcheName': string;
+    /**
+     * コーディネータ名
+     * @type {string}
+     * @memberof Coordinator
+     */
+    'username': string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof Coordinator
+     */
+    'email': string;
+    /**
+     * 電話番号 (国際番号 + 電話番号)
+     * @type {string}
+     * @memberof Coordinator
+     */
+    'phoneNumber': string;
+    /**
+     * 郵便番号
+     * @type {string}
+     * @memberof Coordinator
+     */
+    'postalCode': string;
+    /**
+     * 
+     * @type {Prefecture}
+     * @memberof Coordinator
+     */
+    'prefecture': Prefecture;
+    /**
+     * 市区町村
+     * @type {string}
+     * @memberof Coordinator
+     */
+    'city': string;
+    /**
+     * 町名・番地
+     * @type {string}
+     * @memberof Coordinator
+     */
+    'addressLine1': string;
+    /**
+     * ビル名・号室など
+     * @type {string}
+     * @memberof Coordinator
+     */
+    'addressLine2': string;
+    /**
+     * プロフィール
+     * @type {string}
+     * @memberof Coordinator
+     */
+    'profile': string;
+    /**
+     * 取り扱い品目ID一覧
+     * @type {Array<string>}
+     * @memberof Coordinator
+     */
+    'productTypeIds': Array<string>;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof Coordinator
+     */
+    'thumbnailUrl': string;
+    /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<CoordinatorThumbnailsInner>}
+     * @memberof Coordinator
+     */
+    'thumbnails': Array<CoordinatorThumbnailsInner>;
+    /**
+     * ヘッダー画像URL
+     * @type {string}
+     * @memberof Coordinator
+     */
+    'headerUrl': string;
+    /**
+     * リサイズ済みヘッダー画像URL一覧
+     * @type {Array<CoordinatorHeadersInner>}
+     * @memberof Coordinator
+     */
+    'headers': Array<CoordinatorHeadersInner>;
+    /**
+     * 紹介動画URL
+     * @type {string}
+     * @memberof Coordinator
+     */
+    'promotionVideoUrl': string;
+    /**
+     * 購入特典動画URL
+     * @type {string}
+     * @memberof Coordinator
+     */
+    'bonusVideoUrl': string;
+    /**
+     * Instagramアカウント
+     * @type {string}
+     * @memberof Coordinator
+     */
+    'instagramId': string;
+    /**
+     * Facebookアカウント
+     * @type {string}
+     * @memberof Coordinator
+     */
+    'facebookId': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof Coordinator
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof Coordinator
+     */
+    'updatedAt': number;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface CoordinatorHeadersInner
+ */
+export interface CoordinatorHeadersInner {
+    /**
+     * リサイズ済みヘッダー画像URL
+     * @type {string}
+     * @memberof CoordinatorHeadersInner
+     */
+    'url': string;
+    /**
+     * 
+     * @type {ImageSize}
+     * @memberof CoordinatorHeadersInner
+     */
+    'size': ImageSize;
+}
+
+
+/**
  * 
  * @export
  * @interface CoordinatorResponse
  */
 export interface CoordinatorResponse {
     /**
-     * コーディネータID
-     * @type {string}
+     * 
+     * @type {Coordinator}
      * @memberof CoordinatorResponse
      */
-    'id': string;
+    'coordinator': Coordinator;
+    /**
+     * 品目一覧
+     * @type {Array<ProductType>}
+     * @memberof CoordinatorResponse
+     */
+    'productTypes': Array<ProductType>;
+}
+/**
+ * 
+ * @export
+ * @interface CoordinatorThumbnailsInner
+ */
+export interface CoordinatorThumbnailsInner {
+    /**
+     * リサイズ済みサムネイルURL
+     * @type {string}
+     * @memberof CoordinatorThumbnailsInner
+     */
+    'url': string;
     /**
      * 
-     * @type {AdminStatus}
-     * @memberof CoordinatorResponse
+     * @type {ImageSize}
+     * @memberof CoordinatorThumbnailsInner
      */
-    'status': AdminStatus;
-    /**
-     * 姓
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'lastname': string;
-    /**
-     * 名
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'firstname': string;
-    /**
-     * 姓(かな)
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'lastnameKana': string;
-    /**
-     * 名(かな)
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'firstnameKana': string;
-    /**
-     * マルシェ名
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'marcheName': string;
-    /**
-     * コーディネータ名
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'username': string;
-    /**
-     * メールアドレス
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'email': string;
-    /**
-     * 電話番号 (国際番号 + 電話番号)
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'phoneNumber': string;
-    /**
-     * 郵便番号
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'postalCode': string;
-    /**
-     * 
-     * @type {Prefecture}
-     * @memberof CoordinatorResponse
-     */
-    'prefecture': Prefecture;
-    /**
-     * 市区町村
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'city': string;
-    /**
-     * 町名・番地
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'addressLine1': string;
-    /**
-     * ビル名・号室など
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'addressLine2': string;
-    /**
-     * プロフィール
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'profile': string;
-    /**
-     * 取り扱い品目ID一覧
-     * @type {Array<string>}
-     * @memberof CoordinatorResponse
-     */
-    'productTypeIds': Array<string>;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'thumbnailUrl': string;
-    /**
-     * リサイズ済みサムネイルURL一覧
-     * @type {Array<AuthUserResponseThumbnailsInner>}
-     * @memberof CoordinatorResponse
-     */
-    'thumbnails': Array<AuthUserResponseThumbnailsInner>;
-    /**
-     * ヘッダー画像URL
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'headerUrl': string;
-    /**
-     * リサイズ済みヘッダー画像URL一覧
-     * @type {Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>}
-     * @memberof CoordinatorResponse
-     */
-    'headers': Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>;
-    /**
-     * 紹介動画URL
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'promotionVideoUrl': string;
-    /**
-     * 購入特典動画URL
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'bonusVideoUrl': string;
-    /**
-     * Instagramアカウント
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'instagramId': string;
-    /**
-     * Facebookアカウント
-     * @type {string}
-     * @memberof CoordinatorResponse
-     */
-    'facebookId': string;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof CoordinatorResponse
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof CoordinatorResponse
-     */
-    'updatedAt': number;
+    'size': ImageSize;
 }
 
 
@@ -923,10 +952,16 @@ export interface CoordinatorResponse {
 export interface CoordinatorsResponse {
     /**
      * コーディネータ一覧
-     * @type {Array<CoordinatorsResponseCoordinatorsInner>}
+     * @type {Array<Coordinator>}
      * @memberof CoordinatorsResponse
      */
-    'coordinators': Array<CoordinatorsResponseCoordinatorsInner>;
+    'coordinators': Array<Coordinator>;
+    /**
+     * 品目一覧
+     * @type {Array<ProductType>}
+     * @memberof CoordinatorsResponse
+     */
+    'productTypes': Array<ProductType>;
     /**
      * 合計数
      * @type {number}
@@ -934,204 +969,6 @@ export interface CoordinatorsResponse {
      */
     'total': number;
 }
-/**
- * 
- * @export
- * @interface CoordinatorsResponseCoordinatorsInner
- */
-export interface CoordinatorsResponseCoordinatorsInner {
-    /**
-     * コーディネータID
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'id': string;
-    /**
-     * 
-     * @type {AdminStatus}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'status': AdminStatus;
-    /**
-     * 姓
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'lastname': string;
-    /**
-     * 名
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'firstname': string;
-    /**
-     * 姓(かな)
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'lastnameKana': string;
-    /**
-     * 名(かな)
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'firstnameKana': string;
-    /**
-     * マルシェ名
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'marcheName': string;
-    /**
-     * コーディネータ名
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'username': string;
-    /**
-     * メールアドレス
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'email': string;
-    /**
-     * 電話番号 (国際番号 + 電話番号)
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'phoneNumber': string;
-    /**
-     * 郵便番号
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'postalCode': string;
-    /**
-     * 
-     * @type {Prefecture}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'prefecture': Prefecture;
-    /**
-     * 市区町村
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'city': string;
-    /**
-     * 町名・番地
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'addressLine1': string;
-    /**
-     * ビル名・号室など
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'addressLine2': string;
-    /**
-     * プロフィール
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'profile': string;
-    /**
-     * 取り扱い品目ID一覧
-     * @type {Array<string>}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'productTypeIds': Array<string>;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'thumbnailUrl': string;
-    /**
-     * リサイズ済みサムネイルURL一覧
-     * @type {Array<AuthUserResponseThumbnailsInner>}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'thumbnails': Array<AuthUserResponseThumbnailsInner>;
-    /**
-     * ヘッダー画像URL
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'headerUrl': string;
-    /**
-     * リサイズ済みヘッダー画像URL一覧
-     * @type {Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'headers': Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>;
-    /**
-     * 紹介動画URL
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'promotionVideoUrl': string;
-    /**
-     * 購入者動画URL
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'bonusVideoUrl': string;
-    /**
-     * Instagramアカウント
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'instagramId': string;
-    /**
-     * Facebookアカウント
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'facebookId': string;
-    /**
-     * 担当中の生産者数
-     * @type {number}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'producerTotal': number;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof CoordinatorsResponseCoordinatorsInner
-     */
-    'updatedAt': number;
-}
-
-
-/**
- * 
- * @export
- * @interface CoordinatorsResponseCoordinatorsInnerHeadersInner
- */
-export interface CoordinatorsResponseCoordinatorsInnerHeadersInner {
-    /**
-     * リサイズ済みヘッダー画像URL
-     * @type {string}
-     * @memberof CoordinatorsResponseCoordinatorsInnerHeadersInner
-     */
-    'url': string;
-    /**
-     * 
-     * @type {ImageSize}
-     * @memberof CoordinatorsResponseCoordinatorsInnerHeadersInner
-     */
-    'size': ImageSize;
-}
-
-
 /**
  * 
  * @export
@@ -2194,176 +2031,66 @@ export type ImageSize = typeof ImageSize[keyof typeof ImageSize];
 
 
 /**
- * 
+ * メッセージ情報
  * @export
- * @interface LiveResponse
+ * @interface Message
  */
-export interface LiveResponse {
+export interface Message {
     /**
-     * 配信ID
+     * メッセージID
      * @type {string}
-     * @memberof LiveResponse
+     * @memberof Message
      */
     'id': string;
     /**
-     * スケジュールID
-     * @type {string}
-     * @memberof LiveResponse
+     * 
+     * @type {MessageType}
+     * @memberof Message
      */
-    'scheduleId': string;
+    'type': MessageType;
     /**
-     * ライブタイトル(128文字まで)
+     * メッセージ件名
      * @type {string}
-     * @memberof LiveResponse
+     * @memberof Message
      */
     'title': string;
     /**
-     * ライブ説明(20000文字まで)
+     * メッセージ内容
      * @type {string}
-     * @memberof LiveResponse
+     * @memberof Message
      */
-    'description': string;
+    'body': string;
     /**
-     * 生産者ID
+     * 遷移先リンク
      * @type {string}
-     * @memberof LiveResponse
+     * @memberof Message
      */
-    'producerId': string;
+    'link': string;
     /**
-     * 生産者名
-     * @type {string}
-     * @memberof LiveResponse
-     */
-    'producerName': string;
-    /**
-     * ライブ開始日時
-     * @type {number}
-     * @memberof LiveResponse
-     */
-    'startAt': number;
-    /**
-     * ライブ終了日時
-     * @type {number}
-     * @memberof LiveResponse
-     */
-    'endAt': number;
-    /**
-     * 配信公開フラグ
+     * 既読フラグ
      * @type {boolean}
-     * @memberof LiveResponse
+     * @memberof Message
      */
-    'published': boolean;
+    'read': boolean;
     /**
-     * キャンセルフラグ
-     * @type {boolean}
-     * @memberof LiveResponse
+     * 受信日時 (unixtime)
+     * @type {number}
+     * @memberof Message
      */
-    'canceled': boolean;
-    /**
-     * 
-     * @type {LiveStatus}
-     * @memberof LiveResponse
-     */
-    'status': LiveStatus;
-    /**
-     * 
-     * @type {Array<ScheduleResponseLivesInnerProductsInner>}
-     * @memberof LiveResponse
-     */
-    'products': Array<ScheduleResponseLivesInnerProductsInner>;
-    /**
-     * チャンネルARN
-     * @type {string}
-     * @memberof LiveResponse
-     */
-    'channelArn': string;
-    /**
-     * ストリームキーARN
-     * @type {string}
-     * @memberof LiveResponse
-     */
-    'streamKeyArn': string;
+    'receivedAt': number;
     /**
      * 登録日時 (unixtime)
      * @type {number}
-     * @memberof LiveResponse
+     * @memberof Message
      */
     'createdAt': number;
     /**
      * 更新日時 (unixtime)
      * @type {number}
-     * @memberof LiveResponse
+     * @memberof Message
      */
     'updatedAt': number;
-    /**
-     * 【配信用】チャンネル名
-     * @type {string}
-     * @memberof LiveResponse
-     */
-    'channelName': string;
-    /**
-     * 【配信用】配信エンドポイント
-     * @type {string}
-     * @memberof LiveResponse
-     */
-    'ingestEndpoint': string;
-    /**
-     * 【配信用】ストリームキー
-     * @type {string}
-     * @memberof LiveResponse
-     */
-    'streamKey': string;
-    /**
-     * ストリームキーID
-     * @type {string}
-     * @memberof LiveResponse
-     */
-    'streamId': string;
-    /**
-     * 【視聴用】再生用URL
-     * @type {string}
-     * @memberof LiveResponse
-     */
-    'playbackUrl': string;
-    /**
-     * 【共用】視聴者数
-     * @type {number}
-     * @memberof LiveResponse
-     */
-    'viewerCount'?: number;
 }
-
-
-/**
- * ライブ配信ステータス
- * @export
- * @enum {string}
- */
-
-export const LiveStatus = {
-    /**
-    * 不明
-    */
-    UNKNOWN: 0,
-    /**
-    * 配信開始前
-    */
-    WAITING: 1,
-    /**
-    * 配信中
-    */
-    OPENED: 2,
-    /**
-    * 配信終了
-    */
-    CLOSED: 3,
-    /**
-    * 配信中止
-    */
-    CANCELED: 4
-} as const;
-
-export type LiveStatus = typeof LiveStatus[keyof typeof LiveStatus];
 
 
 /**
@@ -2373,62 +2100,12 @@ export type LiveStatus = typeof LiveStatus[keyof typeof LiveStatus];
  */
 export interface MessageResponse {
     /**
-     * メッセージID
-     * @type {string}
-     * @memberof MessageResponse
-     */
-    'id': string;
-    /**
      * 
-     * @type {MessageType}
+     * @type {Message}
      * @memberof MessageResponse
      */
-    'type': MessageType;
-    /**
-     * メッセージ件名
-     * @type {string}
-     * @memberof MessageResponse
-     */
-    'title': string;
-    /**
-     * メッセージ内容
-     * @type {string}
-     * @memberof MessageResponse
-     */
-    'body': string;
-    /**
-     * 遷移先リンク
-     * @type {string}
-     * @memberof MessageResponse
-     */
-    'link': string;
-    /**
-     * 既読フラグ
-     * @type {boolean}
-     * @memberof MessageResponse
-     */
-    'read': boolean;
-    /**
-     * 受信日時 (unixtime)
-     * @type {number}
-     * @memberof MessageResponse
-     */
-    'receivedAt': number;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof MessageResponse
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof MessageResponse
-     */
-    'updatedAt': number;
+    'message': Message;
 }
-
-
 /**
  * メッセージ種別
  * @export
@@ -2457,10 +2134,10 @@ export type MessageType = typeof MessageType[keyof typeof MessageType];
 export interface MessagesResponse {
     /**
      * メッセージ一覧
-     * @type {Array<MessagesResponseMessagesInner>}
+     * @type {Array<Message>}
      * @memberof MessagesResponse
      */
-    'messages': Array<MessagesResponseMessagesInner>;
+    'messages': Array<Message>;
     /**
      * 合計数
      * @type {number}
@@ -2469,63 +2146,87 @@ export interface MessagesResponse {
     'total': number;
 }
 /**
- * 
+ * お知らせ情報
  * @export
- * @interface MessagesResponseMessagesInner
+ * @interface Notification
  */
-export interface MessagesResponseMessagesInner {
+export interface Notification {
     /**
-     * メッセージID
+     * お知らせID
      * @type {string}
-     * @memberof MessagesResponseMessagesInner
+     * @memberof Notification
      */
     'id': string;
     /**
      * 
-     * @type {MessageType}
-     * @memberof MessagesResponseMessagesInner
+     * @type {NotificationStatus}
+     * @memberof Notification
      */
-    'type': MessageType;
+    'status': NotificationStatus;
     /**
-     * メッセージ件名
+     * 
+     * @type {NotificationType}
+     * @memberof Notification
+     */
+    'type': NotificationType;
+    /**
+     * 通知対象一覧
+     * @type {Array<NotificationTarget>}
+     * @memberof Notification
+     */
+    'targets': Array<NotificationTarget>;
+    /**
+     * タイトル
      * @type {string}
-     * @memberof MessagesResponseMessagesInner
+     * @memberof Notification
      */
     'title': string;
     /**
-     * メッセージ内容
+     * 本文
      * @type {string}
-     * @memberof MessagesResponseMessagesInner
+     * @memberof Notification
      */
     'body': string;
     /**
-     * 遷移先リンク
+     * 備考
      * @type {string}
-     * @memberof MessagesResponseMessagesInner
+     * @memberof Notification
      */
-    'link': string;
+    'note': string;
     /**
-     * 既読フラグ
-     * @type {boolean}
-     * @memberof MessagesResponseMessagesInner
-     */
-    'read': boolean;
-    /**
-     * 受信日時 (unixtime)
+     * 掲載日時 (unixtime)
      * @type {number}
-     * @memberof MessagesResponseMessagesInner
+     * @memberof Notification
      */
-    'receivedAt': number;
+    'publishedAt': number;
+    /**
+     * プロモーションID
+     * @type {string}
+     * @memberof Notification
+     */
+    'promotionId': string;
+    /**
+     * 登録者ID
+     * @type {string}
+     * @memberof Notification
+     */
+    'createdBy': string;
+    /**
+     * 更新者ID
+     * @type {string}
+     * @memberof Notification
+     */
+    'updatedBy': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
-     * @memberof MessagesResponseMessagesInner
+     * @memberof Notification
      */
     'createdAt': number;
     /**
      * 更新日時 (unixtime)
      * @type {number}
-     * @memberof MessagesResponseMessagesInner
+     * @memberof Notification
      */
     'updatedAt': number;
 }
@@ -2538,92 +2239,18 @@ export interface MessagesResponseMessagesInner {
  */
 export interface NotificationResponse {
     /**
-     * お知らせID
-     * @type {string}
+     * 
+     * @type {Notification}
      * @memberof NotificationResponse
      */
-    'id': string;
+    'notification': Notification;
     /**
      * 
-     * @type {NotificationStatus}
+     * @type {Admin}
      * @memberof NotificationResponse
      */
-    'status': NotificationStatus;
-    /**
-     * 
-     * @type {NotificationType}
-     * @memberof NotificationResponse
-     */
-    'type': NotificationType;
-    /**
-     * 通知対象一覧
-     * @type {Array<NotificationTarget>}
-     * @memberof NotificationResponse
-     */
-    'targets': Array<NotificationTarget>;
-    /**
-     * タイトル
-     * @type {string}
-     * @memberof NotificationResponse
-     */
-    'title': string;
-    /**
-     * 本文
-     * @type {string}
-     * @memberof NotificationResponse
-     */
-    'body': string;
-    /**
-     * 備考
-     * @type {string}
-     * @memberof NotificationResponse
-     */
-    'note': string;
-    /**
-     * 掲載日時 (unixtime)
-     * @type {number}
-     * @memberof NotificationResponse
-     */
-    'publishedAt': number;
-    /**
-     * プロモーションID
-     * @type {string}
-     * @memberof NotificationResponse
-     */
-    'promotionId': string;
-    /**
-     * 登録者ID
-     * @type {string}
-     * @memberof NotificationResponse
-     */
-    'createdBy': string;
-    /**
-     * 登録者名
-     * @type {string}
-     * @memberof NotificationResponse
-     */
-    'creatorName': string;
-    /**
-     * 更新者ID
-     * @type {string}
-     * @memberof NotificationResponse
-     */
-    'updatedBy': string;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof NotificationResponse
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof NotificationResponse
-     */
-    'updatedAt': number;
+    'admin': Admin;
 }
-
-
 /**
  * お知らせ状態
  * @export
@@ -2720,10 +2347,16 @@ export type NotificationType = typeof NotificationType[keyof typeof Notification
 export interface NotificationsResponse {
     /**
      * お知らせ一覧
-     * @type {Array<NotificationsResponseNotificationsInner>}
+     * @type {Array<Notification>}
      * @memberof NotificationsResponse
      */
-    'notifications': Array<NotificationsResponseNotificationsInner>;
+    'notifications': Array<Notification>;
+    /**
+     * 作成者一覧
+     * @type {Array<Admin>}
+     * @memberof NotificationsResponse
+     */
+    'admins': Array<Admin>;
     /**
      * 合計数
      * @type {number}
@@ -2731,99 +2364,6 @@ export interface NotificationsResponse {
      */
     'total': number;
 }
-/**
- * 
- * @export
- * @interface NotificationsResponseNotificationsInner
- */
-export interface NotificationsResponseNotificationsInner {
-    /**
-     * お知らせID
-     * @type {string}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'id': string;
-    /**
-     * 
-     * @type {NotificationStatus}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'status': NotificationStatus;
-    /**
-     * 
-     * @type {NotificationType}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'type': NotificationType;
-    /**
-     * 通知対象一覧
-     * @type {Array<NotificationTarget>}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'targets': Array<NotificationTarget>;
-    /**
-     * タイトル
-     * @type {string}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'title': string;
-    /**
-     * 本文
-     * @type {string}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'body': string;
-    /**
-     * 備考
-     * @type {string}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'note': string;
-    /**
-     * 掲載日時 (unixtime)
-     * @type {number}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'publishedAt': number;
-    /**
-     * プロモーションID
-     * @type {string}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'promotionId': string;
-    /**
-     * 登録者ID
-     * @type {string}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'createdBy': string;
-    /**
-     * 登録者名
-     * @type {string}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'creatorName': string;
-    /**
-     * 更新者ID
-     * @type {string}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'updatedBy': string;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof NotificationsResponseNotificationsInner
-     */
-    'updatedAt': number;
-}
-
-
 /**
  * 注文キャンセル理由
  * @export
@@ -3550,176 +3090,189 @@ export type Prefecture = typeof Prefecture[keyof typeof Prefecture];
 
 
 /**
+ * 生産者情報
+ * @export
+ * @interface Producer
+ */
+export interface Producer {
+    /**
+     * 生産者ID
+     * @type {string}
+     * @memberof Producer
+     */
+    'id': string;
+    /**
+     * 
+     * @type {AdminStatus}
+     * @memberof Producer
+     */
+    'status': AdminStatus;
+    /**
+     * 担当コーディネータID
+     * @type {string}
+     * @memberof Producer
+     */
+    'coordinatorId': string;
+    /**
+     * 姓
+     * @type {string}
+     * @memberof Producer
+     */
+    'lastname': string;
+    /**
+     * 名
+     * @type {string}
+     * @memberof Producer
+     */
+    'firstname': string;
+    /**
+     * 姓(かな)
+     * @type {string}
+     * @memberof Producer
+     */
+    'lastnameKana': string;
+    /**
+     * 名(かな)
+     * @type {string}
+     * @memberof Producer
+     */
+    'firstnameKana': string;
+    /**
+     * 生産者名
+     * @type {string}
+     * @memberof Producer
+     */
+    'username': string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof Producer
+     */
+    'email': string;
+    /**
+     * 電話番号 (国際番号 + 電話番号)
+     * @type {string}
+     * @memberof Producer
+     */
+    'phoneNumber': string;
+    /**
+     * 郵便番号
+     * @type {string}
+     * @memberof Producer
+     */
+    'postalCode': string;
+    /**
+     * 
+     * @type {Prefecture}
+     * @memberof Producer
+     */
+    'prefecture': Prefecture;
+    /**
+     * 市区町村
+     * @type {string}
+     * @memberof Producer
+     */
+    'city': string;
+    /**
+     * 町名・番地
+     * @type {string}
+     * @memberof Producer
+     */
+    'addressLine1': string;
+    /**
+     * ビル名・号室など
+     * @type {string}
+     * @memberof Producer
+     */
+    'addressLine2': string;
+    /**
+     * プロフィール
+     * @type {string}
+     * @memberof Producer
+     */
+    'profile': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof Producer
+     */
+    'thumbnailUrl': string;
+    /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<CoordinatorThumbnailsInner>}
+     * @memberof Producer
+     */
+    'thumbnails': Array<CoordinatorThumbnailsInner>;
+    /**
+     * ヘッダー画像URL
+     * @type {string}
+     * @memberof Producer
+     */
+    'headerUrl': string;
+    /**
+     * リサイズ済みヘッダー画像URL一覧
+     * @type {Array<CoordinatorHeadersInner>}
+     * @memberof Producer
+     */
+    'headers': Array<CoordinatorHeadersInner>;
+    /**
+     * 紹介動画URL
+     * @type {string}
+     * @memberof Producer
+     */
+    'promotionVideoUrl': string;
+    /**
+     * 購入特典動画URL
+     * @type {string}
+     * @memberof Producer
+     */
+    'bonusVideoUrl': string;
+    /**
+     * Instagramアカウント
+     * @type {string}
+     * @memberof Producer
+     */
+    'instagramId': string;
+    /**
+     * Facebookアカウント
+     * @type {string}
+     * @memberof Producer
+     */
+    'facebookId': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof Producer
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof Producer
+     */
+    'updatedAt': number;
+}
+
+
+/**
  * 
  * @export
  * @interface ProducerResponse
  */
 export interface ProducerResponse {
     /**
-     * 生産者ID
-     * @type {string}
+     * 
+     * @type {Producer}
      * @memberof ProducerResponse
      */
-    'id': string;
+    'producer': Producer;
     /**
      * 
-     * @type {AdminStatus}
+     * @type {Coordinator}
      * @memberof ProducerResponse
      */
-    'status': AdminStatus;
-    /**
-     * 担当コーディネータID
-     * @type {string}
-     * @memberof ProducerResponse
-     */
-    'coordinatorId': string;
-    /**
-     * 担当コーディネータ名
-     * @type {string}
-     * @memberof ProducerResponse
-     */
-    'coordinatorName': string;
-    /**
-     * 姓
-     * @type {string}
-     * @memberof ProducerResponse
-     */
-    'lastname': string;
-    /**
-     * 名
-     * @type {string}
-     * @memberof ProducerResponse
-     */
-    'firstname': string;
-    /**
-     * 姓(かな)
-     * @type {string}
-     * @memberof ProducerResponse
-     */
-    'lastnameKana': string;
-    /**
-     * 名(かな)
-     * @type {string}
-     * @memberof ProducerResponse
-     */
-    'firstnameKana': string;
-    /**
-     * 生産者名
-     * @type {string}
-     * @memberof ProducerResponse
-     */
-    'username': string;
-    /**
-     * メールアドレス
-     * @type {string}
-     * @memberof ProducerResponse
-     */
-    'email': string;
-    /**
-     * 電話番号 (国際番号 + 電話番号)
-     * @type {string}
-     * @memberof ProducerResponse
-     */
-    'phoneNumber': string;
-    /**
-     * 郵便番号
-     * @type {string}
-     * @memberof ProducerResponse
-     */
-    'postalCode': string;
-    /**
-     * 
-     * @type {Prefecture}
-     * @memberof ProducerResponse
-     */
-    'prefecture': Prefecture;
-    /**
-     * 市区町村
-     * @type {string}
-     * @memberof ProducerResponse
-     */
-    'city': string;
-    /**
-     * 町名・番地
-     * @type {string}
-     * @memberof ProducerResponse
-     */
-    'addressLine1': string;
-    /**
-     * ビル名・号室など
-     * @type {string}
-     * @memberof ProducerResponse
-     */
-    'addressLine2': string;
-    /**
-     * プロフィール
-     * @type {string}
-     * @memberof ProducerResponse
-     */
-    'profile': string;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof ProducerResponse
-     */
-    'thumbnailUrl': string;
-    /**
-     * リサイズ済みサムネイルURL一覧
-     * @type {Array<AuthUserResponseThumbnailsInner>}
-     * @memberof ProducerResponse
-     */
-    'thumbnails': Array<AuthUserResponseThumbnailsInner>;
-    /**
-     * ヘッダー画像URL
-     * @type {string}
-     * @memberof ProducerResponse
-     */
-    'headerUrl': string;
-    /**
-     * リサイズ済みヘッダー画像URL一覧
-     * @type {Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>}
-     * @memberof ProducerResponse
-     */
-    'headers': Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>;
-    /**
-     * 紹介動画URL
-     * @type {string}
-     * @memberof ProducerResponse
-     */
-    'promotionVideoUrl': string;
-    /**
-     * 購入特典動画URL
-     * @type {string}
-     * @memberof ProducerResponse
-     */
-    'bonusVideoUrl': string;
-    /**
-     * Instagramアカウント
-     * @type {string}
-     * @memberof ProducerResponse
-     */
-    'instagramId': string;
-    /**
-     * Facebookアカウント
-     * @type {string}
-     * @memberof ProducerResponse
-     */
-    'facebookId': string;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ProducerResponse
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof ProducerResponse
-     */
-    'updatedAt': number;
+    'coordinator': Coordinator;
 }
-
-
 /**
  * 
  * @export
@@ -3728,10 +3281,16 @@ export interface ProducerResponse {
 export interface ProducersResponse {
     /**
      * 生産者一覧
-     * @type {Array<ProducersResponseProducersInner>}
+     * @type {Array<Producer>}
      * @memberof ProducersResponse
      */
-    'producers': Array<ProducersResponseProducersInner>;
+    'producers': Array<Producer>;
+    /**
+     * 担当コーディネータ一覧
+     * @type {Array<Coordinator>}
+     * @memberof ProducersResponse
+     */
+    'coordinators': Array<Coordinator>;
     /**
      * 合計数
      * @type {number}
@@ -3740,173 +3299,249 @@ export interface ProducersResponse {
     'total': number;
 }
 /**
- * 
+ * 商品情報
  * @export
- * @interface ProducersResponseProducersInner
+ * @interface Product
  */
-export interface ProducersResponseProducersInner {
+export interface Product {
     /**
-     * 生産者ID
+     * 商品ID
      * @type {string}
-     * @memberof ProducersResponseProducersInner
+     * @memberof Product
      */
     'id': string;
     /**
+     * 商品名
+     * @type {string}
+     * @memberof Product
+     */
+    'name': string;
+    /**
+     * 商品説明
+     * @type {string}
+     * @memberof Product
+     */
+    'description': string;
+    /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof Product
+     */
+    'public': boolean;
+    /**
      * 
-     * @type {AdminStatus}
-     * @memberof ProducersResponseProducersInner
+     * @type {ProductStatus}
+     * @memberof Product
      */
-    'status': AdminStatus;
+    'status': ProductStatus;
     /**
-     * 担当コーディネータID
+     * 生産者ID
      * @type {string}
-     * @memberof ProducersResponseProducersInner
+     * @memberof Product
      */
-    'coordinatorId': string;
+    'producerId': string;
     /**
-     * 担当コーディネータ名
+     * 商品種別ID
      * @type {string}
-     * @memberof ProducersResponseProducersInner
+     * @memberof Product
      */
-    'coordinatorName': string;
+    'categoryId': string;
     /**
-     * 姓
+     * 品目ID
      * @type {string}
-     * @memberof ProducersResponseProducersInner
+     * @memberof Product
      */
-    'lastname': string;
+    'productTypeId': string;
     /**
-     * 名
-     * @type {string}
-     * @memberof ProducersResponseProducersInner
+     * 商品タグ一覧
+     * @type {Array<string>}
+     * @memberof Product
      */
-    'firstname': string;
+    'productTagIds': Array<string>;
     /**
-     * 姓(かな)
-     * @type {string}
-     * @memberof ProducersResponseProducersInner
+     * 
+     * @type {Array<ProductMediaInner>}
+     * @memberof Product
      */
-    'lastnameKana': string;
+    'media': Array<ProductMediaInner>;
     /**
-     * 名(かな)
-     * @type {string}
-     * @memberof ProducersResponseProducersInner
+     * 販売価格
+     * @type {number}
+     * @memberof Product
      */
-    'firstnameKana': string;
+    'price': number;
     /**
-     * 生産者名
-     * @type {string}
-     * @memberof ProducersResponseProducersInner
+     * 原価
+     * @type {number}
+     * @memberof Product
      */
-    'username': string;
+    'cost': number;
     /**
-     * メールアドレス
-     * @type {string}
-     * @memberof ProducersResponseProducersInner
+     * 在庫数
+     * @type {number}
+     * @memberof Product
      */
-    'email': string;
+    'inventory': number;
     /**
-     * 電話番号 (国際番号 + 電話番号)
-     * @type {string}
-     * @memberof ProducersResponseProducersInner
+     * 重量(kg:少数第1位まで)
+     * @type {number}
+     * @memberof Product
      */
-    'phoneNumber': string;
+    'weight': number;
     /**
-     * 郵便番号
+     * 数量単位
      * @type {string}
-     * @memberof ProducersResponseProducersInner
+     * @memberof Product
      */
-    'postalCode': string;
+    'itemUnit': string;
+    /**
+     * 数量単位説明
+     * @type {string}
+     * @memberof Product
+     */
+    'itemDescription': string;
+    /**
+     * 
+     * @type {DeliveryType}
+     * @memberof Product
+     */
+    'deliveryType': DeliveryType;
+    /**
+     * おすすめポイント1(128文字まで)
+     * @type {string}
+     * @memberof Product
+     */
+    'recommendedPoint1': string;
+    /**
+     * おすすめポイント2(128文字まで)
+     * @type {string}
+     * @memberof Product
+     */
+    'recommendedPoint2': string;
+    /**
+     * おすすめポイント3(128文字まで)
+     * @type {string}
+     * @memberof Product
+     */
+    'recommendedPoint3': string;
+    /**
+     * 賞味期限(単位:日)
+     * @type {number}
+     * @memberof Product
+     */
+    'expirationDate': number;
+    /**
+     * 
+     * @type {StorageMethodType}
+     * @memberof Product
+     */
+    'storageMethodType': StorageMethodType;
+    /**
+     * 箱の占有率(サイズ:60)
+     * @type {number}
+     * @memberof Product
+     */
+    'box60Rate': number;
+    /**
+     * 箱の占有率(サイズ:80)
+     * @type {number}
+     * @memberof Product
+     */
+    'box80Rate': number;
+    /**
+     * 箱の占有率(サイズ:100)
+     * @type {number}
+     * @memberof Product
+     */
+    'box100Rate': number;
     /**
      * 
      * @type {Prefecture}
-     * @memberof ProducersResponseProducersInner
+     * @memberof Product
      */
-    'prefecture': Prefecture;
+    'originPrefecture': Prefecture;
     /**
-     * 市区町村
+     * 原産地(市区町村)
      * @type {string}
-     * @memberof ProducersResponseProducersInner
+     * @memberof Product
      */
-    'city': string;
+    'originCity': string;
     /**
-     * 町名・番地
-     * @type {string}
-     * @memberof ProducersResponseProducersInner
+     * 営業曜日
+     * @type {Array<Weekday>}
+     * @memberof Product
      */
-    'addressLine1': string;
+    'businessDays': Array<Weekday>;
     /**
-     * ビル名・号室など
-     * @type {string}
-     * @memberof ProducersResponseProducersInner
+     * 販売開始日時 (unixtime)
+     * @type {number}
+     * @memberof Product
      */
-    'addressLine2': string;
+    'startAt': number;
     /**
-     * プロフィール
-     * @type {string}
-     * @memberof ProducersResponseProducersInner
+     * 販売終了日時 (unixtime)
+     * @type {number}
+     * @memberof Product
      */
-    'profile': string;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof ProducersResponseProducersInner
-     */
-    'thumbnailUrl': string;
-    /**
-     * リサイズ済みサムネイルURL一覧
-     * @type {Array<AuthUserResponseThumbnailsInner>}
-     * @memberof ProducersResponseProducersInner
-     */
-    'thumbnails': Array<AuthUserResponseThumbnailsInner>;
-    /**
-     * ヘッダー画像URL
-     * @type {string}
-     * @memberof ProducersResponseProducersInner
-     */
-    'headerUrl': string;
-    /**
-     * リサイズ済みヘッダー画像URL一覧
-     * @type {Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>}
-     * @memberof ProducersResponseProducersInner
-     */
-    'headers': Array<CoordinatorsResponseCoordinatorsInnerHeadersInner>;
-    /**
-     * 紹介動画URL
-     * @type {string}
-     * @memberof ProducersResponseProducersInner
-     */
-    'promotionVideoUrl': string;
-    /**
-     * 購入特典動画URL
-     * @type {string}
-     * @memberof ProducersResponseProducersInner
-     */
-    'bonusVideoUrl': string;
-    /**
-     * Instagramアカウント
-     * @type {string}
-     * @memberof ProducersResponseProducersInner
-     */
-    'instagramId': string;
-    /**
-     * Facebookアカウント
-     * @type {string}
-     * @memberof ProducersResponseProducersInner
-     */
-    'facebookId': string;
+    'endAt': number;
     /**
      * 登録日時 (unixtime)
      * @type {number}
-     * @memberof ProducersResponseProducersInner
+     * @memberof Product
      */
     'createdAt': number;
     /**
      * 更新日時 (unixtime)
      * @type {number}
-     * @memberof ProducersResponseProducersInner
+     * @memberof Product
      */
     'updatedAt': number;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface ProductMediaInner
+ */
+export interface ProductMediaInner {
+    /**
+     * メディアURL
+     * @type {string}
+     * @memberof ProductMediaInner
+     */
+    'url': string;
+    /**
+     * サムネイルとして使用(1つまで)
+     * @type {boolean}
+     * @memberof ProductMediaInner
+     */
+    'isThumbnail': boolean;
+    /**
+     * リサイズ済み画像URL一覧
+     * @type {Array<ProductMediaInnerImagesInner>}
+     * @memberof ProductMediaInner
+     */
+    'images': Array<ProductMediaInnerImagesInner>;
+}
+/**
+ * 
+ * @export
+ * @interface ProductMediaInnerImagesInner
+ */
+export interface ProductMediaInnerImagesInner {
+    /**
+     * リサイズ済み画像URL
+     * @type {string}
+     * @memberof ProductMediaInnerImagesInner
+     */
+    'url': string;
+    /**
+     * 
+     * @type {ImageSize}
+     * @memberof ProductMediaInnerImagesInner
+     */
+    'size': ImageSize;
 }
 
 
@@ -3917,230 +3552,36 @@ export interface ProducersResponseProducersInner {
  */
 export interface ProductResponse {
     /**
-     * 商品ID
-     * @type {string}
+     * 
+     * @type {Product}
      * @memberof ProductResponse
      */
-    'id': string;
-    /**
-     * 商品名
-     * @type {string}
-     * @memberof ProductResponse
-     */
-    'name': string;
-    /**
-     * 商品説明
-     * @type {string}
-     * @memberof ProductResponse
-     */
-    'description': string;
-    /**
-     * 公開フラグ
-     * @type {boolean}
-     * @memberof ProductResponse
-     */
-    'public': boolean;
+    'product': Product;
     /**
      * 
-     * @type {ProductStatus}
+     * @type {Producer}
      * @memberof ProductResponse
      */
-    'status': ProductStatus;
+    'producer': Producer;
     /**
-     * 生産者ID
-     * @type {string}
+     * 
+     * @type {Category}
      * @memberof ProductResponse
      */
-    'producerId': string;
+    'category': Category;
     /**
-     * 生産者名
-     * @type {string}
+     * 
+     * @type {ProductType}
      * @memberof ProductResponse
      */
-    'producerName': string;
-    /**
-     * 商品種別ID
-     * @type {string}
-     * @memberof ProductResponse
-     */
-    'categoryId': string;
-    /**
-     * 商品種別名
-     * @type {string}
-     * @memberof ProductResponse
-     */
-    'categoryName': string;
-    /**
-     * 品目ID
-     * @type {string}
-     * @memberof ProductResponse
-     */
-    'productTypeId': string;
-    /**
-     * 品目名
-     * @type {string}
-     * @memberof ProductResponse
-     */
-    'productTypeName': string;
-    /**
-     * 品目アイコンURL
-     * @type {string}
-     * @memberof ProductResponse
-     */
-    'productTypeIconUrl': string;
-    /**
-     * リサイズ済み品目アイコンURL一覧
-     * @type {Array<ProductsResponseProductsInnerProductTypeIconsInner>}
-     * @memberof ProductResponse
-     */
-    'productTypeIcons': Array<ProductsResponseProductsInnerProductTypeIconsInner>;
+    'productType': ProductType;
     /**
      * 商品タグ一覧
-     * @type {Array<string>}
+     * @type {Array<ProductTag>}
      * @memberof ProductResponse
      */
-    'productTagIds': Array<string>;
-    /**
-     * 
-     * @type {Array<ProductsResponseProductsInnerMediaInner>}
-     * @memberof ProductResponse
-     */
-    'media': Array<ProductsResponseProductsInnerMediaInner>;
-    /**
-     * 販売価格
-     * @type {number}
-     * @memberof ProductResponse
-     */
-    'price': number;
-    /**
-     * 原価
-     * @type {number}
-     * @memberof ProductResponse
-     */
-    'cost': number;
-    /**
-     * 在庫数
-     * @type {number}
-     * @memberof ProductResponse
-     */
-    'inventory': number;
-    /**
-     * 重量(kg:少数第1位まで)
-     * @type {number}
-     * @memberof ProductResponse
-     */
-    'weight': number;
-    /**
-     * 数量単位
-     * @type {string}
-     * @memberof ProductResponse
-     */
-    'itemUnit': string;
-    /**
-     * 数量単位説明
-     * @type {string}
-     * @memberof ProductResponse
-     */
-    'itemDescription': string;
-    /**
-     * 
-     * @type {DeliveryType}
-     * @memberof ProductResponse
-     */
-    'deliveryType': DeliveryType;
-    /**
-     * おすすめポイント1(128文字まで)
-     * @type {string}
-     * @memberof ProductResponse
-     */
-    'recommendedPoint1': string;
-    /**
-     * おすすめポイント2(128文字まで)
-     * @type {string}
-     * @memberof ProductResponse
-     */
-    'recommendedPoint2': string;
-    /**
-     * おすすめポイント3(128文字まで)
-     * @type {string}
-     * @memberof ProductResponse
-     */
-    'recommendedPoint3': string;
-    /**
-     * 賞味期限(単位:日)
-     * @type {number}
-     * @memberof ProductResponse
-     */
-    'expirationDate': number;
-    /**
-     * 
-     * @type {StorageMethodType}
-     * @memberof ProductResponse
-     */
-    'storageMethodType': StorageMethodType;
-    /**
-     * 箱の占有率(サイズ:60)
-     * @type {number}
-     * @memberof ProductResponse
-     */
-    'box60Rate': number;
-    /**
-     * 箱の占有率(サイズ:80)
-     * @type {number}
-     * @memberof ProductResponse
-     */
-    'box80Rate': number;
-    /**
-     * 箱の占有率(サイズ:100)
-     * @type {number}
-     * @memberof ProductResponse
-     */
-    'box100Rate': number;
-    /**
-     * 
-     * @type {Prefecture}
-     * @memberof ProductResponse
-     */
-    'originPrefecture': Prefecture;
-    /**
-     * 原産地(市区町村)
-     * @type {string}
-     * @memberof ProductResponse
-     */
-    'originCity': string;
-    /**
-     * 営業曜日
-     * @type {Array<Weekday>}
-     * @memberof ProductResponse
-     */
-    'businessDays': Array<Weekday>;
-    /**
-     * 販売開始日時 (unixtime)
-     * @type {number}
-     * @memberof ProductResponse
-     */
-    'startAt': number;
-    /**
-     * 販売終了日時 (unixtime)
-     * @type {number}
-     * @memberof ProductResponse
-     */
-    'endAt': number;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ProductResponse
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof ProductResponse
-     */
-    'updatedAt': number;
+    'productTags': Array<ProductTag>;
 }
-
-
 /**
  * 商品販売ステータス
  * @export
@@ -4174,35 +3615,48 @@ export type ProductStatus = typeof ProductStatus[keyof typeof ProductStatus];
 
 
 /**
+ * 商品タグ情報
+ * @export
+ * @interface ProductTag
+ */
+export interface ProductTag {
+    /**
+     * 商品タグID
+     * @type {string}
+     * @memberof ProductTag
+     */
+    'id': string;
+    /**
+     * 商品タグ名(32文字まで)
+     * @type {string}
+     * @memberof ProductTag
+     */
+    'name': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ProductTag
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof ProductTag
+     */
+    'updatedAt': number;
+}
+/**
  * 
  * @export
  * @interface ProductTagResponse
  */
 export interface ProductTagResponse {
     /**
-     * 商品タグID
-     * @type {string}
+     * 
+     * @type {ProductTag}
      * @memberof ProductTagResponse
      */
-    'id': string;
-    /**
-     * 商品タグ名(32文字まで)
-     * @type {string}
-     * @memberof ProductTagResponse
-     */
-    'name': string;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ProductTagResponse
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof ProductTagResponse
-     */
-    'updatedAt': number;
+    'productTag': ProductTag;
 }
 /**
  * 
@@ -4212,10 +3666,10 @@ export interface ProductTagResponse {
 export interface ProductTagsResponse {
     /**
      * 品目一覧
-     * @type {Array<ProductTagsResponseProductTagsInner>}
+     * @type {Array<ProductTag>}
      * @memberof ProductTagsResponse
      */
-    'productTags': Array<ProductTagsResponseProductTagsInner>;
+    'productTags': Array<ProductTag>;
     /**
      * 合計数
      * @type {number}
@@ -4224,36 +3678,75 @@ export interface ProductTagsResponse {
     'total': number;
 }
 /**
- * 
+ * 品目情報
  * @export
- * @interface ProductTagsResponseProductTagsInner
+ * @interface ProductType
  */
-export interface ProductTagsResponseProductTagsInner {
+export interface ProductType {
     /**
-     * 商品タグID
+     * 品目ID
      * @type {string}
-     * @memberof ProductTagsResponseProductTagsInner
+     * @memberof ProductType
      */
     'id': string;
     /**
-     * 商品タグ名(32文字まで)
+     * 品目名
      * @type {string}
-     * @memberof ProductTagsResponseProductTagsInner
+     * @memberof ProductType
      */
     'name': string;
     /**
+     * アイコンURL
+     * @type {string}
+     * @memberof ProductType
+     */
+    'iconUrl': string;
+    /**
+     * リサイズ済みアイコンURL一覧
+     * @type {Array<ProductTypeIconsInner>}
+     * @memberof ProductType
+     */
+    'icons': Array<ProductTypeIconsInner>;
+    /**
+     * 商品種別ID
+     * @type {string}
+     * @memberof ProductType
+     */
+    'categoryId': string;
+    /**
      * 登録日時 (unixtime)
      * @type {number}
-     * @memberof ProductTagsResponseProductTagsInner
+     * @memberof ProductType
      */
     'createdAt': number;
     /**
      * 更新日時 (unixtime)
      * @type {number}
-     * @memberof ProductTagsResponseProductTagsInner
+     * @memberof ProductType
      */
     'updatedAt': number;
 }
+/**
+ * 
+ * @export
+ * @interface ProductTypeIconsInner
+ */
+export interface ProductTypeIconsInner {
+    /**
+     * リサイズ済みアイコンURL
+     * @type {string}
+     * @memberof ProductTypeIconsInner
+     */
+    'url': string;
+    /**
+     * 
+     * @type {ImageSize}
+     * @memberof ProductTypeIconsInner
+     */
+    'size': ImageSize;
+}
+
+
 /**
  * 
  * @export
@@ -4261,53 +3754,17 @@ export interface ProductTagsResponseProductTagsInner {
  */
 export interface ProductTypeResponse {
     /**
-     * 品目ID
-     * @type {string}
+     * 
+     * @type {ProductType}
      * @memberof ProductTypeResponse
      */
-    'id': string;
+    'productType': ProductType;
     /**
-     * 品目名
-     * @type {string}
+     * 
+     * @type {Category}
      * @memberof ProductTypeResponse
      */
-    'name': string;
-    /**
-     * アイコンURL
-     * @type {string}
-     * @memberof ProductTypeResponse
-     */
-    'iconUrl': string;
-    /**
-     * リサイズ済みアイコンURL一覧
-     * @type {Array<ProductTypesResponseProductTypesInnerIconsInner>}
-     * @memberof ProductTypeResponse
-     */
-    'icons': Array<ProductTypesResponseProductTypesInnerIconsInner>;
-    /**
-     * 商品種別ID
-     * @type {string}
-     * @memberof ProductTypeResponse
-     */
-    'categoryId': string;
-    /**
-     * 商品種別名
-     * @type {string}
-     * @memberof ProductTypeResponse
-     */
-    'categoryName': string;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ProductTypeResponse
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof ProductTypeResponse
-     */
-    'updatedAt': number;
+    'category': Category;
 }
 /**
  * 
@@ -4317,10 +3774,16 @@ export interface ProductTypeResponse {
 export interface ProductTypesResponse {
     /**
      * 品目一覧
-     * @type {Array<ProductTypesResponseProductTypesInner>}
+     * @type {Array<ProductType>}
      * @memberof ProductTypesResponse
      */
-    'productTypes': Array<ProductTypesResponseProductTypesInner>;
+    'productTypes': Array<ProductType>;
+    /**
+     * 商品種別一覧
+     * @type {Array<Category>}
+     * @memberof ProductTypesResponse
+     */
+    'categories': Array<Category>;
     /**
      * 合計数
      * @type {number}
@@ -4328,82 +3791,6 @@ export interface ProductTypesResponse {
      */
     'total': number;
 }
-/**
- * 
- * @export
- * @interface ProductTypesResponseProductTypesInner
- */
-export interface ProductTypesResponseProductTypesInner {
-    /**
-     * 品目ID
-     * @type {string}
-     * @memberof ProductTypesResponseProductTypesInner
-     */
-    'id': string;
-    /**
-     * 品目名
-     * @type {string}
-     * @memberof ProductTypesResponseProductTypesInner
-     */
-    'name': string;
-    /**
-     * アイコンURL
-     * @type {string}
-     * @memberof ProductTypesResponseProductTypesInner
-     */
-    'iconUrl': string;
-    /**
-     * リサイズ済みアイコンURL一覧
-     * @type {Array<ProductTypesResponseProductTypesInnerIconsInner>}
-     * @memberof ProductTypesResponseProductTypesInner
-     */
-    'icons': Array<ProductTypesResponseProductTypesInnerIconsInner>;
-    /**
-     * 商品種別ID
-     * @type {string}
-     * @memberof ProductTypesResponseProductTypesInner
-     */
-    'categoryId': string;
-    /**
-     * 商品種別名
-     * @type {string}
-     * @memberof ProductTypesResponseProductTypesInner
-     */
-    'categoryName': string;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ProductTypesResponseProductTypesInner
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof ProductTypesResponseProductTypesInner
-     */
-    'updatedAt': number;
-}
-/**
- * 
- * @export
- * @interface ProductTypesResponseProductTypesInnerIconsInner
- */
-export interface ProductTypesResponseProductTypesInnerIconsInner {
-    /**
-     * リサイズ済みアイコンURL
-     * @type {string}
-     * @memberof ProductTypesResponseProductTypesInnerIconsInner
-     */
-    'url': string;
-    /**
-     * 
-     * @type {ImageSize}
-     * @memberof ProductTypesResponseProductTypesInnerIconsInner
-     */
-    'size': ImageSize;
-}
-
-
 /**
  * 
  * @export
@@ -4412,10 +3799,34 @@ export interface ProductTypesResponseProductTypesInnerIconsInner {
 export interface ProductsResponse {
     /**
      * 商品一覧
-     * @type {Array<ProductsResponseProductsInner>}
+     * @type {Array<Product>}
      * @memberof ProductsResponse
      */
-    'products': Array<ProductsResponseProductsInner>;
+    'products': Array<Product>;
+    /**
+     * 生産者一覧
+     * @type {Array<Producer>}
+     * @memberof ProductsResponse
+     */
+    'producers': Array<Producer>;
+    /**
+     * 商品種別一覧
+     * @type {Array<Category>}
+     * @memberof ProductsResponse
+     */
+    'categories': Array<Category>;
+    /**
+     * 品目一覧
+     * @type {Array<ProductType>}
+     * @memberof ProductsResponse
+     */
+    'productTypes': Array<ProductType>;
+    /**
+     * 商品タグ一覧
+     * @type {Array<ProductTag>}
+     * @memberof ProductsResponse
+     */
+    'productTags': Array<ProductTag>;
     /**
      * 合計数
      * @type {number}
@@ -4424,276 +3835,77 @@ export interface ProductsResponse {
     'total': number;
 }
 /**
- * 
+ * プロモーション情報
  * @export
- * @interface ProductsResponseProductsInner
+ * @interface Promotion
  */
-export interface ProductsResponseProductsInner {
+export interface Promotion {
     /**
-     * 商品ID
+     * プロモーションID
      * @type {string}
-     * @memberof ProductsResponseProductsInner
+     * @memberof Promotion
      */
     'id': string;
     /**
-     * 商品名
+     * タイトル
      * @type {string}
-     * @memberof ProductsResponseProductsInner
+     * @memberof Promotion
      */
-    'name': string;
+    'title': string;
     /**
-     * 商品説明
+     * 詳細説明
      * @type {string}
-     * @memberof ProductsResponseProductsInner
+     * @memberof Promotion
      */
     'description': string;
     /**
      * 公開フラグ
      * @type {boolean}
-     * @memberof ProductsResponseProductsInner
+     * @memberof Promotion
      */
     'public': boolean;
     /**
-     * 生産者ID
-     * @type {string}
-     * @memberof ProductsResponseProductsInner
-     */
-    'producerId': string;
-    /**
-     * 生産者名
-     * @type {string}
-     * @memberof ProductsResponseProductsInner
-     */
-    'producerName': string;
-    /**
-     * 商品種別ID
-     * @type {string}
-     * @memberof ProductsResponseProductsInner
-     */
-    'categoryId': string;
-    /**
-     * 商品種別名
-     * @type {string}
-     * @memberof ProductsResponseProductsInner
-     */
-    'categoryName': string;
-    /**
-     * 品目ID
-     * @type {string}
-     * @memberof ProductsResponseProductsInner
-     */
-    'productTypeId': string;
-    /**
-     * 品目名
-     * @type {string}
-     * @memberof ProductsResponseProductsInner
-     */
-    'productTypeName': string;
-    /**
-     * 品目アイコンURL
-     * @type {string}
-     * @memberof ProductsResponseProductsInner
-     */
-    'productTypeIconUrl': string;
-    /**
-     * リサイズ済み品目アイコンURL一覧
-     * @type {Array<ProductsResponseProductsInnerProductTypeIconsInner>}
-     * @memberof ProductsResponseProductsInner
-     */
-    'productTypeIcons': Array<ProductsResponseProductsInnerProductTypeIconsInner>;
-    /**
-     * 商品タグ一覧
-     * @type {Array<string>}
-     * @memberof ProductsResponseProductsInner
-     */
-    'productTagIds': Array<string>;
-    /**
      * 
-     * @type {Array<ProductsResponseProductsInnerMediaInner>}
-     * @memberof ProductsResponseProductsInner
+     * @type {DiscountType}
+     * @memberof Promotion
      */
-    'media': Array<ProductsResponseProductsInnerMediaInner>;
+    'discountType': DiscountType;
     /**
-     * 販売価格
+     * 割引額(単位:円/%)
      * @type {number}
-     * @memberof ProductsResponseProductsInner
+     * @memberof Promotion
      */
-    'price': number;
+    'discountRate': number;
     /**
-     * 原価
-     * @type {number}
-     * @memberof ProductsResponseProductsInner
-     */
-    'cost': number;
-    /**
-     * 在庫数
-     * @type {number}
-     * @memberof ProductsResponseProductsInner
-     */
-    'inventory': number;
-    /**
-     * 重量(kg:少数第1位まで)
-     * @type {number}
-     * @memberof ProductsResponseProductsInner
-     */
-    'weight': number;
-    /**
-     * 数量単位
+     * クーポンコード
      * @type {string}
-     * @memberof ProductsResponseProductsInner
+     * @memberof Promotion
      */
-    'itemUnit': string;
+    'code': string;
     /**
-     * 数量単位説明
-     * @type {string}
-     * @memberof ProductsResponseProductsInner
-     */
-    'itemDescription': string;
-    /**
-     * 
-     * @type {DeliveryType}
-     * @memberof ProductsResponseProductsInner
-     */
-    'deliveryType': DeliveryType;
-    /**
-     * おすすめポイント1(128文字まで)
-     * @type {string}
-     * @memberof ProductsResponseProductsInner
-     */
-    'recommendedPoint1': string;
-    /**
-     * おすすめポイント2(128文字まで)
-     * @type {string}
-     * @memberof ProductsResponseProductsInner
-     */
-    'recommendedPoint2': string;
-    /**
-     * おすすめポイント3(128文字まで)
-     * @type {string}
-     * @memberof ProductsResponseProductsInner
-     */
-    'recommendedPoint3': string;
-    /**
-     * 賞味期限(単位:日)
+     * クーポン利用可能開始日時(unixtime)
      * @type {number}
-     * @memberof ProductsResponseProductsInner
+     * @memberof Promotion
      */
-    'expirationDate': number;
+    'startAt': number;
     /**
-     * 
-     * @type {StorageMethodType}
-     * @memberof ProductsResponseProductsInner
-     */
-    'storageMethodType': StorageMethodType;
-    /**
-     * 箱の占有率(サイズ:60)
+     * クーポン利用可能終了日時(unixtime)
      * @type {number}
-     * @memberof ProductsResponseProductsInner
+     * @memberof Promotion
      */
-    'box60Rate': number;
-    /**
-     * 箱の占有率(サイズ:80)
-     * @type {number}
-     * @memberof ProductsResponseProductsInner
-     */
-    'box80Rate': number;
-    /**
-     * 箱の占有率(サイズ:100)
-     * @type {number}
-     * @memberof ProductsResponseProductsInner
-     */
-    'box100Rate': number;
-    /**
-     * 
-     * @type {Prefecture}
-     * @memberof ProductsResponseProductsInner
-     */
-    'originPrefecture': Prefecture;
-    /**
-     * 原産地(市区町村)
-     * @type {string}
-     * @memberof ProductsResponseProductsInner
-     */
-    'originCity': string;
+    'endAt': number;
     /**
      * 登録日時 (unixtime)
      * @type {number}
-     * @memberof ProductsResponseProductsInner
+     * @memberof Promotion
      */
     'createdAt': number;
     /**
      * 更新日時 (unixtime)
      * @type {number}
-     * @memberof ProductsResponseProductsInner
+     * @memberof Promotion
      */
     'updatedAt': number;
-}
-
-
-/**
- * 
- * @export
- * @interface ProductsResponseProductsInnerMediaInner
- */
-export interface ProductsResponseProductsInnerMediaInner {
-    /**
-     * メディアURL
-     * @type {string}
-     * @memberof ProductsResponseProductsInnerMediaInner
-     */
-    'url': string;
-    /**
-     * サムネイルとして使用(1つまで)
-     * @type {boolean}
-     * @memberof ProductsResponseProductsInnerMediaInner
-     */
-    'isThumbnail': boolean;
-    /**
-     * リサイズ済み画像URL一覧
-     * @type {Array<ProductsResponseProductsInnerMediaInnerImagesInner>}
-     * @memberof ProductsResponseProductsInnerMediaInner
-     */
-    'images': Array<ProductsResponseProductsInnerMediaInnerImagesInner>;
-}
-/**
- * 
- * @export
- * @interface ProductsResponseProductsInnerMediaInnerImagesInner
- */
-export interface ProductsResponseProductsInnerMediaInnerImagesInner {
-    /**
-     * リサイズ済み画像URL
-     * @type {string}
-     * @memberof ProductsResponseProductsInnerMediaInnerImagesInner
-     */
-    'url': string;
-    /**
-     * 
-     * @type {ImageSize}
-     * @memberof ProductsResponseProductsInnerMediaInnerImagesInner
-     */
-    'size': ImageSize;
-}
-
-
-/**
- * 
- * @export
- * @interface ProductsResponseProductsInnerProductTypeIconsInner
- */
-export interface ProductsResponseProductsInnerProductTypeIconsInner {
-    /**
-     * リサイズ済み品目アイコンURL
-     * @type {string}
-     * @memberof ProductsResponseProductsInnerProductTypeIconsInner
-     */
-    'url': string;
-    /**
-     * 
-     * @type {ImageSize}
-     * @memberof ProductsResponseProductsInnerProductTypeIconsInner
-     */
-    'size': ImageSize;
 }
 
 
@@ -4704,74 +3916,12 @@ export interface ProductsResponseProductsInnerProductTypeIconsInner {
  */
 export interface PromotionResponse {
     /**
-     * プロモーションID
-     * @type {string}
-     * @memberof PromotionResponse
-     */
-    'id': string;
-    /**
-     * タイトル
-     * @type {string}
-     * @memberof PromotionResponse
-     */
-    'title': string;
-    /**
-     * 詳細説明
-     * @type {string}
-     * @memberof PromotionResponse
-     */
-    'description': string;
-    /**
-     * 公開フラグ
-     * @type {boolean}
-     * @memberof PromotionResponse
-     */
-    'public': boolean;
-    /**
      * 
-     * @type {DiscountType}
+     * @type {Promotion}
      * @memberof PromotionResponse
      */
-    'discountType': DiscountType;
-    /**
-     * 割引額(単位:円/%)
-     * @type {number}
-     * @memberof PromotionResponse
-     */
-    'discountRate': number;
-    /**
-     * クーポンコード
-     * @type {string}
-     * @memberof PromotionResponse
-     */
-    'code': string;
-    /**
-     * クーポン利用可能開始日時(unixtime)
-     * @type {number}
-     * @memberof PromotionResponse
-     */
-    'startAt': number;
-    /**
-     * クーポン利用可能終了日時(unixtime)
-     * @type {number}
-     * @memberof PromotionResponse
-     */
-    'endAt': number;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof PromotionResponse
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof PromotionResponse
-     */
-    'updatedAt': number;
+    'promotion': Promotion;
 }
-
-
 /**
  * 
  * @export
@@ -4780,10 +3930,10 @@ export interface PromotionResponse {
 export interface PromotionsResponse {
     /**
      * プロモーション一覧
-     * @type {Array<PromotionsResponsePromotionsInner>}
+     * @type {Array<Promotion>}
      * @memberof PromotionsResponse
      */
-    'promotions': Array<PromotionsResponsePromotionsInner>;
+    'promotions': Array<Promotion>;
     /**
      * 合計数
      * @type {number}
@@ -4791,87 +3941,6 @@ export interface PromotionsResponse {
      */
     'total': number;
 }
-/**
- * 
- * @export
- * @interface PromotionsResponsePromotionsInner
- */
-export interface PromotionsResponsePromotionsInner {
-    /**
-     * プロモーションID
-     * @type {string}
-     * @memberof PromotionsResponsePromotionsInner
-     */
-    'id': string;
-    /**
-     * タイトル
-     * @type {string}
-     * @memberof PromotionsResponsePromotionsInner
-     */
-    'title': string;
-    /**
-     * 詳細説明
-     * @type {string}
-     * @memberof PromotionsResponsePromotionsInner
-     */
-    'description': string;
-    /**
-     * 公開フラグ
-     * @type {boolean}
-     * @memberof PromotionsResponsePromotionsInner
-     */
-    'public': boolean;
-    /**
-     * 
-     * @type {DiscountType}
-     * @memberof PromotionsResponsePromotionsInner
-     */
-    'discountType': DiscountType;
-    /**
-     * 割引額(単位:円/%)
-     * @type {number}
-     * @memberof PromotionsResponsePromotionsInner
-     */
-    'discountRate': number;
-    /**
-     * クーポンコード
-     * @type {string}
-     * @memberof PromotionsResponsePromotionsInner
-     */
-    'code': string;
-    /**
-     * クーポン利用可能開始日時(unixtime)
-     * @type {number}
-     * @memberof PromotionsResponsePromotionsInner
-     */
-    'startAt': number;
-    /**
-     * クーポン利用可能終了日時(unixtime)
-     * @type {number}
-     * @memberof PromotionsResponsePromotionsInner
-     */
-    'endAt': number;
-    /**
-     * 使用回数
-     * @type {number}
-     * @memberof PromotionsResponsePromotionsInner
-     */
-    'total': number;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof PromotionsResponsePromotionsInner
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof PromotionsResponsePromotionsInner
-     */
-    'updatedAt': number;
-}
-
-
 /**
  * 
  * @export
@@ -4945,432 +4014,133 @@ export interface ResetAuthPasswordRequest {
 /**
  * 
  * @export
- * @interface ScheduleResponse
+ * @interface Schedule
  */
-export interface ScheduleResponse {
+export interface Schedule {
     /**
      * スケジュールID
      * @type {string}
-     * @memberof ScheduleResponse
+     * @memberof Schedule
      */
     'id': string;
     /**
      * コーディネーターID
      * @type {string}
-     * @memberof ScheduleResponse
+     * @memberof Schedule
      */
     'coordinatorId': string;
     /**
-     * コーディネータ名
-     * @type {string}
-     * @memberof ScheduleResponse
-     */
-    'coordinatorName': string;
-    /**
      * 配送設定ID
      * @type {string}
-     * @memberof ScheduleResponse
+     * @memberof Schedule
      */
     'shippingId': string;
     /**
-     * 配送設定名
-     * @type {string}
-     * @memberof ScheduleResponse
-     */
-    'shippingName': string;
-    /**
      * 
      * @type {ScheduleStatus}
-     * @memberof ScheduleResponse
+     * @memberof Schedule
      */
     'status': ScheduleStatus;
     /**
      * タイトル
      * @type {string}
-     * @memberof ScheduleResponse
+     * @memberof Schedule
      */
     'title': string;
     /**
      * 説明
      * @type {string}
-     * @memberof ScheduleResponse
+     * @memberof Schedule
      */
     'description': string;
     /**
      * サムネイルURL
      * @type {string}
-     * @memberof ScheduleResponse
+     * @memberof Schedule
      */
     'thumbnailUrl': string;
     /**
      * リサイズ済みサムネイルURL一覧
-     * @type {Array<AuthUserResponseThumbnailsInner>}
-     * @memberof ScheduleResponse
+     * @type {Array<CoordinatorThumbnailsInner>}
+     * @memberof Schedule
      */
-    'thumbnails': Array<AuthUserResponseThumbnailsInner>;
+    'thumbnails': Array<CoordinatorThumbnailsInner>;
     /**
      * ふた絵URL
      * @type {string}
-     * @memberof ScheduleResponse
+     * @memberof Schedule
      */
     'imageUrl': string;
     /**
      * オープニング動画URL
      * @type {string}
-     * @memberof ScheduleResponse
+     * @memberof Schedule
      */
     'openingVideoUrl': string;
     /**
      * 公開フラグ
      * @type {boolean}
-     * @memberof ScheduleResponse
+     * @memberof Schedule
      */
     'public': boolean;
     /**
      * 承認フラグ
      * @type {boolean}
-     * @memberof ScheduleResponse
+     * @memberof Schedule
      */
     'approved': boolean;
     /**
      * ライブ開始日時 (unixtime)
      * @type {number}
-     * @memberof ScheduleResponse
+     * @memberof Schedule
      */
     'startAt': number;
     /**
      * ライブ終了日時 (unixtime)
      * @type {number}
-     * @memberof ScheduleResponse
+     * @memberof Schedule
      */
     'endAt': number;
     /**
      * 登録日時 (unixtime)
      * @type {number}
-     * @memberof ScheduleResponse
+     * @memberof Schedule
      */
     'createdAt': number;
     /**
      * 更新日時 (unixtime)
      * @type {number}
-     * @memberof ScheduleResponse
+     * @memberof Schedule
      */
     'updatedAt': number;
-    /**
-     * 
-     * @type {Array<ScheduleResponseLivesInner>}
-     * @memberof ScheduleResponse
-     */
-    'lives': Array<ScheduleResponseLivesInner>;
 }
 
 
 /**
  * 
  * @export
- * @interface ScheduleResponseLivesInner
+ * @interface ScheduleResponse
  */
-export interface ScheduleResponseLivesInner {
-    /**
-     * 配信ID
-     * @type {string}
-     * @memberof ScheduleResponseLivesInner
-     */
-    'id': string;
-    /**
-     * スケジュールID
-     * @type {string}
-     * @memberof ScheduleResponseLivesInner
-     */
-    'scheduleId': string;
-    /**
-     * ライブタイトル(128文字まで)
-     * @type {string}
-     * @memberof ScheduleResponseLivesInner
-     */
-    'title': string;
-    /**
-     * ライブ説明(20000文字まで)
-     * @type {string}
-     * @memberof ScheduleResponseLivesInner
-     */
-    'description': string;
-    /**
-     * 生産者ID
-     * @type {string}
-     * @memberof ScheduleResponseLivesInner
-     */
-    'producerId': string;
-    /**
-     * 生産者名
-     * @type {string}
-     * @memberof ScheduleResponseLivesInner
-     */
-    'producerName': string;
-    /**
-     * ライブ開始日時
-     * @type {number}
-     * @memberof ScheduleResponseLivesInner
-     */
-    'startAt': number;
-    /**
-     * ライブ終了日時
-     * @type {number}
-     * @memberof ScheduleResponseLivesInner
-     */
-    'endAt': number;
-    /**
-     * 配信公開フラグ
-     * @type {boolean}
-     * @memberof ScheduleResponseLivesInner
-     */
-    'published': boolean;
-    /**
-     * キャンセルフラグ
-     * @type {boolean}
-     * @memberof ScheduleResponseLivesInner
-     */
-    'canceled': boolean;
+export interface ScheduleResponse {
     /**
      * 
-     * @type {ImageSize}
-     * @memberof ScheduleResponseLivesInner
+     * @type {Schedule}
+     * @memberof ScheduleResponse
      */
-    'status': ImageSize;
+    'schedule': Schedule;
     /**
      * 
-     * @type {Array<ScheduleResponseLivesInnerProductsInner>}
-     * @memberof ScheduleResponseLivesInner
+     * @type {Coordinator}
+     * @memberof ScheduleResponse
      */
-    'products': Array<ScheduleResponseLivesInnerProductsInner>;
+    'coordinator': Coordinator;
     /**
-     * チャンネルARN
-     * @type {string}
-     * @memberof ScheduleResponseLivesInner
+     * 
+     * @type {Shipping}
+     * @memberof ScheduleResponse
      */
-    'channelArn': string;
-    /**
-     * ストリームキーARN
-     * @type {string}
-     * @memberof ScheduleResponseLivesInner
-     */
-    'streamKeyArn': string;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ScheduleResponseLivesInner
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof ScheduleResponseLivesInner
-     */
-    'updatedAt': number;
-    /**
-     * 【配信用】チャンネル名
-     * @type {string}
-     * @memberof ScheduleResponseLivesInner
-     */
-    'channelName': string;
-    /**
-     * 【配信用】配信エンドポイント
-     * @type {string}
-     * @memberof ScheduleResponseLivesInner
-     */
-    'ingestEndpoint': string;
-    /**
-     * 【配信用】ストリームキー
-     * @type {string}
-     * @memberof ScheduleResponseLivesInner
-     */
-    'streamKey': string;
-    /**
-     * ストリームキーID
-     * @type {string}
-     * @memberof ScheduleResponseLivesInner
-     */
-    'streamId': string;
-    /**
-     * 【視聴用】再生用URL
-     * @type {string}
-     * @memberof ScheduleResponseLivesInner
-     */
-    'playbackUrl': string;
-    /**
-     * 【共用】視聴者数
-     * @type {number}
-     * @memberof ScheduleResponseLivesInner
-     */
-    'viewerCount'?: number;
+    'shipping': Shipping;
 }
-
-
-/**
- * 
- * @export
- * @interface ScheduleResponseLivesInnerProductsInner
- */
-export interface ScheduleResponseLivesInnerProductsInner {
-    /**
-     * 商品ID
-     * @type {string}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'id'?: string;
-    /**
-     * 商品名
-     * @type {string}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'name'?: string;
-    /**
-     * 商品説明
-     * @type {string}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'description'?: string;
-    /**
-     * 生産者ID
-     * @type {string}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'producerId'?: string;
-    /**
-     * 農家名
-     * @type {string}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'storeName'?: string;
-    /**
-     * 商品種別ID
-     * @type {string}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'categoryId'?: string;
-    /**
-     * 商品種別名
-     * @type {string}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'categoryName'?: string;
-    /**
-     * 品目ID
-     * @type {string}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'productTypeId'?: string;
-    /**
-     * 品目名
-     * @type {string}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'productTypeName'?: string;
-    /**
-     * アイコンURL
-     * @type {string}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'productTypeIconUrl'?: string;
-    /**
-     * 公開フラグ
-     * @type {boolean}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'public'?: boolean;
-    /**
-     * 在庫数
-     * @type {number}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'inventory'?: number;
-    /**
-     * 重量(kg:少数第1位まで)
-     * @type {number}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'weight'?: number;
-    /**
-     * 数量単位
-     * @type {string}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'itemUnit'?: string;
-    /**
-     * 数量単位説明
-     * @type {string}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'itemDescription'?: string;
-    /**
-     * アイコンURL
-     * @type {string}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'iconUrl'?: string;
-    /**
-     * 
-     * @type {Array<CreateProductRequestMediaInner>}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'media'?: Array<CreateProductRequestMediaInner>;
-    /**
-     * 販売価格
-     * @type {number}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'price'?: number;
-    /**
-     * 
-     * @type {DeliveryType}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'deliveryType'?: DeliveryType;
-    /**
-     * 箱の占有率(サイズ:60)
-     * @type {number}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'box60Rate'?: number;
-    /**
-     * 箱の占有率(サイズ:80)
-     * @type {number}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'box80Rate'?: number;
-    /**
-     * 箱の占有率(サイズ:100)
-     * @type {number}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'box100Rate'?: number;
-    /**
-     * 
-     * @type {Prefecture}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'originPrefecture'?: Prefecture;
-    /**
-     * 原産地(市区町村)
-     * @type {string}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'originCity'?: string;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'createdAt'?: number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof ScheduleResponseLivesInnerProductsInner
-     */
-    'updatedAt'?: number;
-}
-
-
 /**
  * マルシェ開催状況
  * @export
@@ -5396,11 +4166,41 @@ export type ScheduleStatus = typeof ScheduleStatus[keyof typeof ScheduleStatus];
  */
 export interface SchedulesResponse {
     /**
-     * マルシェ開催スケジュール一覧
-     * @type {Array<SchedulesResponseSchedulesInner>}
+     * 
+     * @type {Schedule}
      * @memberof SchedulesResponse
      */
-    'schedules': Array<SchedulesResponseSchedulesInner>;
+    'schedule'?: Schedule;
+    /**
+     * 
+     * @type {Coordinator}
+     * @memberof SchedulesResponse
+     */
+    'coordinator'?: Coordinator;
+    /**
+     * 
+     * @type {Shipping}
+     * @memberof SchedulesResponse
+     */
+    'shipping'?: Shipping;
+    /**
+     * マルシェ開催スケジュール一覧
+     * @type {Array<Schedule>}
+     * @memberof SchedulesResponse
+     */
+    'schedules': Array<Schedule>;
+    /**
+     * コーディネータ一覧
+     * @type {Array<Coordinator>}
+     * @memberof SchedulesResponse
+     */
+    'coordinators': Array<Coordinator>;
+    /**
+     * 配送設定一覧
+     * @type {Array<Shipping>}
+     * @memberof SchedulesResponse
+     */
+    'shippings': Array<Shipping>;
     /**
      * 合計数
      * @type {number}
@@ -5409,122 +4209,102 @@ export interface SchedulesResponse {
     'total': number;
 }
 /**
- * 
+ * 配送設定情報
  * @export
- * @interface SchedulesResponseSchedulesInner
+ * @interface Shipping
  */
-export interface SchedulesResponseSchedulesInner {
-    /**
-     * スケジュールID
-     * @type {string}
-     * @memberof SchedulesResponseSchedulesInner
-     */
-    'id': string;
-    /**
-     * コーディネーターID
-     * @type {string}
-     * @memberof SchedulesResponseSchedulesInner
-     */
-    'coordinatorId': string;
-    /**
-     * コーディネータ名
-     * @type {string}
-     * @memberof SchedulesResponseSchedulesInner
-     */
-    'coordinatorName': string;
+export interface Shipping {
     /**
      * 配送設定ID
      * @type {string}
-     * @memberof SchedulesResponseSchedulesInner
+     * @memberof Shipping
      */
-    'shippingId': string;
+    'id': string;
     /**
      * 配送設定名
      * @type {string}
-     * @memberof SchedulesResponseSchedulesInner
+     * @memberof Shipping
      */
-    'shippingName': string;
+    'name': string;
     /**
-     * 
-     * @type {ScheduleStatus}
-     * @memberof SchedulesResponseSchedulesInner
+     * 箱サイズ60の通常配送料一覧
+     * @type {Array<ShippingRate>}
+     * @memberof Shipping
      */
-    'status': ScheduleStatus;
+    'box60Rates': Array<ShippingRate>;
     /**
-     * タイトル
-     * @type {string}
-     * @memberof SchedulesResponseSchedulesInner
-     */
-    'title': string;
-    /**
-     * 説明
-     * @type {string}
-     * @memberof SchedulesResponseSchedulesInner
-     */
-    'description': string;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof SchedulesResponseSchedulesInner
-     */
-    'thumbnailUrl': string;
-    /**
-     * リサイズ済みサムネイルURL一覧
-     * @type {Array<AuthUserResponseThumbnailsInner>}
-     * @memberof SchedulesResponseSchedulesInner
-     */
-    'thumbnails': Array<AuthUserResponseThumbnailsInner>;
-    /**
-     * ふた絵URL
-     * @type {string}
-     * @memberof SchedulesResponseSchedulesInner
-     */
-    'imageUrl': string;
-    /**
-     * オープニング動画URL
-     * @type {string}
-     * @memberof SchedulesResponseSchedulesInner
-     */
-    'openingVideoUrl': string;
-    /**
-     * 公開フラグ
-     * @type {boolean}
-     * @memberof SchedulesResponseSchedulesInner
-     */
-    'public': boolean;
-    /**
-     * 承認フラグ
-     * @type {boolean}
-     * @memberof SchedulesResponseSchedulesInner
-     */
-    'approved': boolean;
-    /**
-     * ライブ開始日時 (unixtime)
+     * 箱サイズ60の冷蔵便追加配送料
      * @type {number}
-     * @memberof SchedulesResponseSchedulesInner
+     * @memberof Shipping
      */
-    'startAt': number;
+    'box60Refrigerated': number;
     /**
-     * ライブ終了日時 (unixtime)
+     * 箱サイズ60の冷凍便追加配送料
      * @type {number}
-     * @memberof SchedulesResponseSchedulesInner
+     * @memberof Shipping
      */
-    'endAt': number;
+    'box60Frozen': number;
+    /**
+     * 箱サイズ80の通常配送料一覧
+     * @type {Array<ShippingRate>}
+     * @memberof Shipping
+     */
+    'box80Rates': Array<ShippingRate>;
+    /**
+     * 箱サイズ80の冷蔵便追加配送料
+     * @type {number}
+     * @memberof Shipping
+     */
+    'box80Refrigerated': number;
+    /**
+     * 箱サイズ80の冷凍便追加配送料
+     * @type {number}
+     * @memberof Shipping
+     */
+    'box80Frozen': number;
+    /**
+     * 箱サイズ100の通常配送料一覧
+     * @type {Array<ShippingRate>}
+     * @memberof Shipping
+     */
+    'box100Rates': Array<ShippingRate>;
+    /**
+     * 箱サイズ100の冷蔵便追加配送料
+     * @type {number}
+     * @memberof Shipping
+     */
+    'box100Refrigerated': number;
+    /**
+     * 箱サイズ100の冷凍便追加配送料
+     * @type {number}
+     * @memberof Shipping
+     */
+    'box100Frozen': number;
+    /**
+     * 送料無料オプションの有無
+     * @type {boolean}
+     * @memberof Shipping
+     */
+    'hasFreeShipping': boolean;
+    /**
+     * 送料無料になる金額
+     * @type {number}
+     * @memberof Shipping
+     */
+    'freeShippingRates': number;
     /**
      * 登録日時 (unixtime)
      * @type {number}
-     * @memberof SchedulesResponseSchedulesInner
+     * @memberof Shipping
      */
     'createdAt': number;
     /**
      * 更新日時 (unixtime)
      * @type {number}
-     * @memberof SchedulesResponseSchedulesInner
+     * @memberof Shipping
      */
     'updatedAt': number;
 }
-
-
 /**
  * 配送会社
  * @export
@@ -5550,7 +4330,7 @@ export type ShippingCarrier = typeof ShippingCarrier[keyof typeof ShippingCarrie
 
 
 /**
- * 
+ * 配送料情報
  * @export
  * @interface ShippingRate
  */
@@ -5587,95 +4367,11 @@ export interface ShippingRate {
  */
 export interface ShippingResponse {
     /**
-     * 配送設定ID
-     * @type {string}
+     * 
+     * @type {Shipping}
      * @memberof ShippingResponse
      */
-    'id': string;
-    /**
-     * 配送設定名
-     * @type {string}
-     * @memberof ShippingResponse
-     */
-    'name': string;
-    /**
-     * 箱サイズ60の通常配送料一覧
-     * @type {Array<ShippingRate>}
-     * @memberof ShippingResponse
-     */
-    'box60Rates': Array<ShippingRate>;
-    /**
-     * 箱サイズ60の冷蔵便追加配送料
-     * @type {number}
-     * @memberof ShippingResponse
-     */
-    'box60Refrigerated': number;
-    /**
-     * 箱サイズ60の冷凍便追加配送料
-     * @type {number}
-     * @memberof ShippingResponse
-     */
-    'box60Frozen': number;
-    /**
-     * 箱サイズ80の通常配送料一覧
-     * @type {Array<ShippingRate>}
-     * @memberof ShippingResponse
-     */
-    'box80Rates': Array<ShippingRate>;
-    /**
-     * 箱サイズ80の冷蔵便追加配送料
-     * @type {number}
-     * @memberof ShippingResponse
-     */
-    'box80Refrigerated': number;
-    /**
-     * 箱サイズ80の冷凍便追加配送料
-     * @type {number}
-     * @memberof ShippingResponse
-     */
-    'box80Frozen': number;
-    /**
-     * 箱サイズ100の通常配送料一覧
-     * @type {Array<ShippingRate>}
-     * @memberof ShippingResponse
-     */
-    'box100Rates': Array<ShippingRate>;
-    /**
-     * 箱サイズ100の冷蔵便追加配送料
-     * @type {number}
-     * @memberof ShippingResponse
-     */
-    'box100Refrigerated': number;
-    /**
-     * 箱サイズ100の冷凍便追加配送料
-     * @type {number}
-     * @memberof ShippingResponse
-     */
-    'box100Frozen': number;
-    /**
-     * 送料無料オプションの有無
-     * @type {boolean}
-     * @memberof ShippingResponse
-     */
-    'hasFreeShipping': boolean;
-    /**
-     * 送料無料になる金額
-     * @type {number}
-     * @memberof ShippingResponse
-     */
-    'freeShippingRates': number;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ShippingResponse
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof ShippingResponse
-     */
-    'updatedAt': number;
+    'shipping': Shipping;
 }
 /**
  * 配送時の箱の大きさ
@@ -5713,113 +4409,16 @@ export type ShippingSize = typeof ShippingSize[keyof typeof ShippingSize];
 export interface ShippingsResponse {
     /**
      * 配送設定一覧
-     * @type {Array<ShippingsResponseShippingsInner>}
+     * @type {Array<Shipping>}
      * @memberof ShippingsResponse
      */
-    'shippings': Array<ShippingsResponseShippingsInner>;
+    'shippings': Array<Shipping>;
     /**
      * 合計数
      * @type {number}
      * @memberof ShippingsResponse
      */
     'total': number;
-}
-/**
- * 
- * @export
- * @interface ShippingsResponseShippingsInner
- */
-export interface ShippingsResponseShippingsInner {
-    /**
-     * 配送設定ID
-     * @type {string}
-     * @memberof ShippingsResponseShippingsInner
-     */
-    'id': string;
-    /**
-     * 配送設定名
-     * @type {string}
-     * @memberof ShippingsResponseShippingsInner
-     */
-    'name': string;
-    /**
-     * 箱サイズ60の通常配送料一覧
-     * @type {Array<ShippingRate>}
-     * @memberof ShippingsResponseShippingsInner
-     */
-    'box60Rates': Array<ShippingRate>;
-    /**
-     * 箱サイズ60の冷蔵便追加配送料
-     * @type {number}
-     * @memberof ShippingsResponseShippingsInner
-     */
-    'box60Refrigerated': number;
-    /**
-     * 箱サイズ60の冷凍便追加配送料
-     * @type {number}
-     * @memberof ShippingsResponseShippingsInner
-     */
-    'box60Frozen': number;
-    /**
-     * 箱サイズ80の通常配送料一覧
-     * @type {Array<ShippingRate>}
-     * @memberof ShippingsResponseShippingsInner
-     */
-    'box80Rates': Array<ShippingRate>;
-    /**
-     * 箱サイズ80の冷蔵便追加配送料
-     * @type {number}
-     * @memberof ShippingsResponseShippingsInner
-     */
-    'box80Refrigerated': number;
-    /**
-     * 箱サイズ80の冷凍便追加配送料
-     * @type {number}
-     * @memberof ShippingsResponseShippingsInner
-     */
-    'box80Frozen': number;
-    /**
-     * 箱サイズ100の通常配送料一覧
-     * @type {Array<ShippingRate>}
-     * @memberof ShippingsResponseShippingsInner
-     */
-    'box100Rates': Array<ShippingRate>;
-    /**
-     * 箱サイズ100の冷蔵便追加配送料
-     * @type {number}
-     * @memberof ShippingsResponseShippingsInner
-     */
-    'box100Refrigerated': number;
-    /**
-     * 箱サイズ100の冷凍便追加配送料
-     * @type {number}
-     * @memberof ShippingsResponseShippingsInner
-     */
-    'box100Frozen': number;
-    /**
-     * 送料無料オプションの有無
-     * @type {boolean}
-     * @memberof ShippingsResponseShippingsInner
-     */
-    'hasFreeShipping': boolean;
-    /**
-     * 送料無料になる金額
-     * @type {number}
-     * @memberof ShippingsResponseShippingsInner
-     */
-    'freeShippingRates': number;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ShippingsResponseShippingsInner
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof ShippingsResponseShippingsInner
-     */
-    'updatedAt': number;
 }
 /**
  * 
@@ -6901,99 +5500,99 @@ export interface UploadVideoResponse {
     'url': string;
 }
 /**
- * 
+ * 購入者情報
  * @export
- * @interface UserResponse
+ * @interface User
  */
-export interface UserResponse {
+export interface User {
     /**
      * 購入者ID
      * @type {string}
-     * @memberof UserResponse
+     * @memberof User
      */
     'id': string;
     /**
      * 姓
      * @type {string}
-     * @memberof UserResponse
+     * @memberof User
      */
     'lastname': string;
     /**
      * 名
      * @type {string}
-     * @memberof UserResponse
+     * @memberof User
      */
     'firstname': string;
     /**
      * 姓(かな)
      * @type {string}
-     * @memberof UserResponse
+     * @memberof User
      */
     'lastnameKana': string;
     /**
      * 名(かな)
      * @type {string}
-     * @memberof UserResponse
+     * @memberof User
      */
     'firstnameKana': string;
     /**
      * 会員登録フラグ
      * @type {boolean}
-     * @memberof UserResponse
+     * @memberof User
      */
     'registered': boolean;
     /**
      * メールアドレス
      * @type {string}
-     * @memberof UserResponse
+     * @memberof User
      */
     'email': string;
     /**
      * 電話番号 (国際番号 + 電話番号)
      * @type {string}
-     * @memberof UserResponse
+     * @memberof User
      */
     'phoneNumber': string;
     /**
      * 郵便番号
      * @type {string}
-     * @memberof UserResponse
+     * @memberof User
      */
     'postalCode': string;
     /**
      * 
      * @type {Prefecture}
-     * @memberof UserResponse
+     * @memberof User
      */
     'prefecture': Prefecture;
     /**
      * 市区町村
      * @type {string}
-     * @memberof UserResponse
+     * @memberof User
      */
     'city': string;
     /**
      * 町名・番地
      * @type {string}
-     * @memberof UserResponse
+     * @memberof User
      */
     'addressLine1': string;
     /**
      * ビル名・号室など
      * @type {string}
-     * @memberof UserResponse
+     * @memberof User
      */
     'addressLine2': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
-     * @memberof UserResponse
+     * @memberof User
      */
     'createdAt': number;
     /**
      * 更新日時 (unixtime)
      * @type {number}
-     * @memberof UserResponse
+     * @memberof User
      */
     'updatedAt': number;
 }
@@ -7002,15 +5601,28 @@ export interface UserResponse {
 /**
  * 
  * @export
+ * @interface UserResponse
+ */
+export interface UserResponse {
+    /**
+     * 
+     * @type {User}
+     * @memberof UserResponse
+     */
+    'user': User;
+}
+/**
+ * 
+ * @export
  * @interface UsersResponse
  */
 export interface UsersResponse {
     /**
      * 購入者一覧
-     * @type {Array<UsersResponseUsersInner>}
+     * @type {Array<User>}
      * @memberof UsersResponse
      */
-    'users': Array<UsersResponseUsersInner>;
+    'users': Array<User>;
     /**
      * 合計数
      * @type {number}
@@ -7018,63 +5630,6 @@ export interface UsersResponse {
      */
     'total': number;
 }
-/**
- * 
- * @export
- * @interface UsersResponseUsersInner
- */
-export interface UsersResponseUsersInner {
-    /**
-     * 購入者ID
-     * @type {string}
-     * @memberof UsersResponseUsersInner
-     */
-    'id': string;
-    /**
-     * 姓
-     * @type {string}
-     * @memberof UsersResponseUsersInner
-     */
-    'lastname': string;
-    /**
-     * 名
-     * @type {string}
-     * @memberof UsersResponseUsersInner
-     */
-    'firstname': string;
-    /**
-     * 会員登録フラグ
-     * @type {boolean}
-     * @memberof UsersResponseUsersInner
-     */
-    'registered': boolean;
-    /**
-     * 
-     * @type {Prefecture}
-     * @memberof UsersResponseUsersInner
-     */
-    'prefecture': Prefecture;
-    /**
-     * 市区町村
-     * @type {string}
-     * @memberof UsersResponseUsersInner
-     */
-    'city': string;
-    /**
-     * 購入回数
-     * @type {number}
-     * @memberof UsersResponseUsersInner
-     */
-    'totalOrder': number;
-    /**
-     * 購入金額
-     * @type {number}
-     * @memberof UsersResponseUsersInner
-     */
-    'totalAmount': number;
-}
-
-
 /**
  * 
  * @export
@@ -10708,122 +9263,6 @@ export class CoordinatorApi extends BaseAPI {
 
 
 /**
- * LiveApi - axios parameter creator
- * @export
- */
-export const LiveApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @summary 配信詳細取得
-         * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {string} liveId 配信ID
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1GetLive: async (scheduleId: string, liveId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'scheduleId' is not null or undefined
-            assertParamExists('v1GetLive', 'scheduleId', scheduleId)
-            // verify required parameter 'liveId' is not null or undefined
-            assertParamExists('v1GetLive', 'liveId', liveId)
-            const localVarPath = `/v1/schedules/{scheduleId}/Lives/{liveId}`
-                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)))
-                .replace(`{${"liveId"}}`, encodeURIComponent(String(liveId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication BearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * LiveApi - functional programming interface
- * @export
- */
-export const LiveApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = LiveApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @summary 配信詳細取得
-         * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {string} liveId 配信ID
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1GetLive(scheduleId: string, liveId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LiveResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetLive(scheduleId, liveId, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-    }
-};
-
-/**
- * LiveApi - factory interface
- * @export
- */
-export const LiveApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = LiveApiFp(configuration)
-    return {
-        /**
-         * 
-         * @summary 配信詳細取得
-         * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {string} liveId 配信ID
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1GetLive(scheduleId: string, liveId: string, options?: any): AxiosPromise<LiveResponse> {
-            return localVarFp.v1GetLive(scheduleId, liveId, options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * LiveApi - object-oriented interface
- * @export
- * @class LiveApi
- * @extends {BaseAPI}
- */
-export class LiveApi extends BaseAPI {
-    /**
-     * 
-     * @summary 配信詳細取得
-     * @param {string} scheduleId マルシェ開催スケジュールID
-     * @param {string} liveId 配信ID
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof LiveApi
-     */
-    public v1GetLive(scheduleId: string, liveId: string, options?: AxiosRequestConfig) {
-        return LiveApiFp(this.configuration).v1GetLive(scheduleId, liveId, options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
-/**
  * MessageApi - axios parameter creator
  * @export
  */
@@ -13278,7 +11717,7 @@ export const ProductTagApiAxiosParamCreator = function (configuration?: Configur
             // verify required parameter 'body' is not null or undefined
             assertParamExists('v1UpdateProductTag', 'body', body)
             const localVarPath = `/v1/product-tags/{productTagId}`
-                .replace(`{${"ProductTagId"}}`, encodeURIComponent(String(productTagId)));
+                .replace(`{${"productTagId"}}`, encodeURIComponent(String(productTagId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;

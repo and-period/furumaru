@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/common"
+	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/datatypes"
 )
@@ -53,4 +54,10 @@ func (ts ProductTypes) Fill() error {
 		}
 	}
 	return nil
+}
+
+func (ts ProductTypes) CategoryIDs() []string {
+	return set.UniqBy(ts, func(t *ProductType) string {
+		return t.CategoryID
+	})
 }

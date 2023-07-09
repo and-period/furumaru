@@ -3,7 +3,7 @@ import { mdiDelete, mdiPencil, mdiPlus } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import useVuelidate from '@vuelidate/core'
 import { AlertType } from '~/lib/hooks'
-import { CreateProductTagRequest, ProductTagsResponseProductTagsInner, UpdateProductTagRequest } from '~/types/api'
+import { CreateProductTagRequest, ProductTag, UpdateProductTagRequest } from '~/types/api'
 import { required, getErrorMessage, maxLength } from '~/lib/validations'
 
 const props = defineProps({
@@ -48,7 +48,7 @@ const props = defineProps({
     default: 0
   },
   productTags: {
-    type: Array<ProductTagsResponseProductTagsInner>,
+    type: Array<ProductTag>,
     default: () => []
   },
   newFormData: {
@@ -93,7 +93,7 @@ const headers: VDataTable['headers'] = [
   }
 ]
 
-const selectedItem = ref<ProductTagsResponseProductTagsInner>()
+const selectedItem = ref<ProductTag>()
 
 const newFormDataRules = computed(() => ({
   name: { required, maxlength: maxLength(32) }
@@ -162,7 +162,7 @@ const submitCreate = (): void => {
   emit('submit:create')
 }
 
-const onClickEdit = (item: ProductTagsResponseProductTagsInner): void => {
+const onClickEdit = (item: ProductTag): void => {
   selectedItem.value = item
   editDialogValue.value = true
 }
@@ -176,7 +176,7 @@ const submitUpdate = (): void => {
   emit('submit:update', selectedItem.value?.id || '')
 }
 
-const onClickDelete = (item: ProductTagsResponseProductTagsInner): void => {
+const onClickDelete = (item: ProductTag): void => {
   selectedItem.value = item
   deleteDialogValue.value = true
 }

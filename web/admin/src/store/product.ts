@@ -1,18 +1,22 @@
 import { defineStore } from 'pinia'
 
-import { apiClient } from '~/plugins/api-client'
+import { useCategoryStore } from './category'
+import { useProductTypeStore } from './product-type'
+import { useProductTagStore } from './product-tag'
+import { useProducerStore } from './producer'
 import {
   CreateProductRequest,
   ProductResponse,
-  ProductsResponseProductsInner,
+  Product,
   UpdateProductRequest,
   UploadImageResponse
 } from '~/types/api'
+import { apiClient } from '~/plugins/api-client'
 
 export const useProductStore = defineStore('product', {
   state: () => ({
-    product: {} as ProductResponse,
-    products: [] as ProductsResponseProductsInner[],
+    product: {} as Product,
+    products: [] as Product[],
     totalItems: 0
   }),
 
@@ -25,12 +29,18 @@ export const useProductStore = defineStore('product', {
      */
     async fetchProducts (limit = 20, offset = 0): Promise<void> {
       try {
-        const res = await apiClient.productApi().v1ListProducts(
-          limit,
-          offset
-        )
+        const res = await apiClient.productApi().v1ListProducts(limit, offset)
+
+        const producerStore = useProducerStore()
+        const categoryStore = useCategoryStore()
+        const productTypeStore = useProductTypeStore()
+        const productTagStore = useProductTagStore()
         this.products = res.data.products
         this.totalItems = res.data.total
+        producerStore.producers = res.data.producers
+        categoryStore.categories = res.data.categories
+        productTypeStore.productTypes = res.data.productTypes
+        productTagStore.productTags = res.data.productTags
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -44,7 +54,16 @@ export const useProductStore = defineStore('product', {
     async getProduct (productId: string): Promise<ProductResponse> {
       try {
         const res = await apiClient.productApi().v1GetProduct(productId)
-        this.product = res.data
+
+        const producerStore = useProducerStore()
+        const categoryStore = useCategoryStore()
+        const productTypeStore = useProductTypeStore()
+        const productTagStore = useProductTagStore()
+        this.product = res.data.product
+        producerStore.producers = [res.data.producer]
+        categoryStore.categories = [res.data.category]
+        productTypeStore.productTypes = [res.data.productType]
+        productTagStore.productTags = res.data.productTags
         return res.data
       } catch (err) {
         return this.errorHandler(err)

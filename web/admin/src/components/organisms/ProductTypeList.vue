@@ -4,8 +4,8 @@ import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 
 import { useProductTypeStore } from '~/store'
 import {
-  CategoriesResponseCategoriesInner,
-  ProductTypesResponseProductTypesInner,
+  Category,
+  ProductType,
   UpdateProductTypeRequest,
   UploadImageResponse
 } from '~/types/api'
@@ -13,11 +13,11 @@ import { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
   productTypes: {
-    type: Array<ProductTypesResponseProductTypesInner>,
+    type: Array<ProductType>,
     default: () => []
   },
   categories: {
-    type: Array<CategoriesResponseCategoriesInner>,
+    type: Array<Category>,
     default: () => []
   },
   tableItemsPerPage: {
@@ -69,7 +69,7 @@ const productTypeHeaders: VDataTable['headers'] = [
   },
   {
     title: '品目',
-    key: 'productType'
+    key: 'name'
   },
   {
     title: 'Actions',
@@ -79,6 +79,13 @@ const productTypeHeaders: VDataTable['headers'] = [
     sortable: false
   }
 ]
+
+const getCategoryName = (categoryId: string): string => {
+  const category = props.categories.find((category: Category): boolean => {
+    return category.id === categoryId
+  })
+  return category ? category.name : ''
+}
 
 const handleUpdateItemsPerPage = (page: number) => {
   emit('update:items-per-page', page)
@@ -92,7 +99,7 @@ const handleMoreCategoryItems = () => {
   emit('click:more-item')
 }
 
-const openEditDialog = (item: ProductTypesResponseProductTypesInner) => {
+const openEditDialog = (item: ProductType) => {
   editDialog.value = true
   selectedCategoryId.value = item.categoryId
   selectedItemId.value = item.id
@@ -117,9 +124,7 @@ const handleEdit = async () => {
   }
 }
 
-const openDeleteDialog = (
-  item: ProductTypesResponseProductTypesInner
-): void => {
+const openDeleteDialog = (item: ProductType): void => {
   selectedCategoryId.value = item.categoryId
   selectedItemId.value = item.id
   selectedName.value = item.name
@@ -188,10 +193,7 @@ const handleInputFileChange = () => {
         </v-avatar>
       </template>
       <template #[`item.category`]="{ item }">
-        {{ `${item.raw.categoryName}` }}
-      </template>
-      <template #[`item.productType`]="{ item }">
-        {{ `${item.raw.name}` }}
+        {{ getCategoryName(item.raw.categoryId) }}
       </template>
       <template #[`item.actions`]="{ item }">
         <v-btn class="mr-2" variant="outlined" color="primary" size="small" @click="openEditDialog(item.raw)">

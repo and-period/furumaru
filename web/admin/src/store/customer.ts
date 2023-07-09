@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
 
-import { UserResponse, UsersResponse } from '~/types/api'
+import { User, UsersResponse } from '~/types/api'
 import { apiClient } from '~/plugins/api-client'
 
 export const useCustomerStore = defineStore('customer', {
   state: () => ({
-    customer: {} as UserResponse,
-    customers: [] as UsersResponse['users'],
+    customer: {} as User,
+    customers: [] as User[],
     totalItems: 0
   }),
 
@@ -33,7 +33,7 @@ export const useCustomerStore = defineStore('customer', {
     async getCustomer (customerId: string): Promise<void> {
       try {
         const res = await apiClient.userApi().v1GetUser(customerId)
-        this.customer = res.data
+        this.customer = res.data.user
       } catch (err) {
         return this.errorHandler(err)
       }

@@ -1,30 +1,16 @@
 productTagResponse:
   type: object
   properties:
-    id:
-      type: string
-      description: 商品タグID
-    name:
-      type: string
-      description: 商品タグ名(32文字まで)
-    createdAt:
-      type: integer
-      format: int64
-      description: 登録日時 (unixtime)
-    updatedAt:
-      type: integer
-      format: int64
-      description: 更新日時 (unixtime)
+    productTag:
+      $ref: './../../../openapi.yaml#/components/schemas/productTag'
   required:
-  - id
-  - name
-  - createdAt
-  - updatedAt
+  - productTag
   example:
-    id: 'kSByoE6FetnPs5Byk3a9Zx'
-    name: '贈答品'
-    createdAt: 1640962800
-    updatedAt: 1640962800
+    productTag:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: '贈答品'
+      createdAt: 1640962800
+      updatedAt: 1640962800
 productTagsResponse:
   type: object
   properties:
@@ -32,27 +18,7 @@ productTagsResponse:
       type: array
       description: 品目一覧
       items:
-        type: object
-        properties:
-          id:
-            type: string
-            description: 商品タグID
-          name:
-            type: string
-            description: 商品タグ名(32文字まで)
-          createdAt:
-            type: integer
-            format: int64
-            description: 登録日時 (unixtime)
-          updatedAt:
-            type: integer
-            format: int64
-            description: 更新日時 (unixtime)
-        required:
-        - id
-        - name
-        - createdAt
-        - updatedAt
+        $ref: './../../../openapi.yaml#/components/schemas/productTag'
     total:
       type: integer
       format: int64

@@ -13,10 +13,12 @@ type ProductType struct {
 }
 
 type ProductTypeResponse struct {
-	*ProductType
+	ProductType *ProductType `json:"productType"` // 品目情報
+	Category    *Category    `json:"category"`    // 商品種別情報
 }
 
 type ProductTypesResponse struct {
 	ProductTypes []*ProductType `json:"productTypes"` // 品目一覧
+	Categories   []*Category    `json:"categories"`   // 商品種別一覧
 	Total        int64          `json:"total"`        // 品目合計数
 }

@@ -66,11 +66,8 @@ func TestOrderItem_Fill(t *testing.T) {
 			product: &Product{
 				Product: response.Product{
 					ID:              "product-id",
-					TypeID:          "product-type-id",
-					TypeName:        "",
-					TypeIconURL:     "",
+					ProductTypeID:   "product-type-id",
 					CategoryID:      "category-id",
-					CategoryName:    "",
 					ProducerID:      "producer-id",
 					Name:            "新鮮なじゃがいも",
 					Description:     "新鮮なじゃがいもをお届けします。",
@@ -245,11 +242,8 @@ func TestOrderItems_Fill(t *testing.T) {
 				"product-id": {
 					Product: response.Product{
 						ID:              "product-id",
-						TypeID:          "product-type-id",
-						TypeName:        "",
-						TypeIconURL:     "",
+						ProductTypeID:   "product-type-id",
 						CategoryID:      "category-id",
-						CategoryName:    "",
 						ProducerID:      "producer-id",
 						Name:            "新鮮なじゃがいも",
 						Description:     "新鮮なじゃがいもをお届けします。",

@@ -1,10 +1,9 @@
 import { defineStore } from 'pinia'
 
 import { useCommonStore } from './common'
+import { useProductTypeStore } from './product-type'
 import {
-  CoordinatorResponse,
-  CoordinatorsResponse,
-  CoordinatorsResponseCoordinatorsInner,
+  Coordinator,
   CreateCoordinatorRequest,
   ProducersResponse,
   RelateProducersRequest,
@@ -16,8 +15,8 @@ import { apiClient } from '~/plugins/api-client'
 
 export const useCoordinatorStore = defineStore('coordinator', {
   state: () => ({
-    coordinator: {} as CoordinatorResponse,
-    coordinators: [] as CoordinatorsResponse['coordinators'],
+    coordinator: {} as Coordinator,
+    coordinators: [] as Coordinator[],
     producers: [] as ProducersResponse['producers'],
     totalItems: 0,
     producerTotalItems: 0
@@ -32,8 +31,11 @@ export const useCoordinatorStore = defineStore('coordinator', {
     async fetchCoordinators (limit = 20, offset = 0): Promise<void> {
       try {
         const res = await apiClient.coordinatorApi().v1ListCoordinators(limit, offset)
+
+        const productTypeStore = useProductTypeStore()
         this.coordinators = res.data.coordinators
         this.totalItems = res.data.total
+        productTypeStore.productTypes = res.data.productTypes
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -47,14 +49,14 @@ export const useCoordinatorStore = defineStore('coordinator', {
     async searchCoordinators (name = '', coordinatorIds: string[] = []): Promise<void> {
       try {
         const res = await apiClient.coordinatorApi().v1ListCoordinators(undefined, undefined, name)
-        const coordinators: CoordinatorsResponseCoordinatorsInner[] = []
-        this.coordinators.forEach((coordinator: CoordinatorsResponseCoordinatorsInner): void => {
+        const coordinators: Coordinator[] = []
+        this.coordinators.forEach((coordinator: Coordinator): void => {
           if (!coordinatorIds.includes(coordinator.id)) {
             return
           }
           coordinators.push(coordinator)
         })
-        res.data.coordinators.forEach((coordinator: CoordinatorsResponseCoordinatorsInner): void => {
+        res.data.coordinators.forEach((coordinator: Coordinator): void => {
           if (coordinators.find((v): boolean => v.id === coordinator.id)) {
             return
           }
@@ -74,7 +76,10 @@ export const useCoordinatorStore = defineStore('coordinator', {
     async getCoordinator (coordinatorId: string): Promise<void> {
       try {
         const res = await apiClient.coordinatorApi().v1GetCoordinator(coordinatorId)
-        this.coordinator = res.data
+
+        const productTypeStore = useProductTypeStore()
+        this.coordinator = res.data.coordinator
+        productTypeStore.productTypes = res.data.productTypes
       } catch (err) {
         return this.errorHandler(err)
       }

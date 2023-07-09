@@ -14,7 +14,7 @@ type Message struct {
 }
 
 type MessageResponse struct {
-	*Message
+	Message *Message `json:"message"` // メッセージ情報
 }
 
 type MessagesResponse struct {

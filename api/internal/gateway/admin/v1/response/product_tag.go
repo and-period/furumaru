@@ -9,7 +9,7 @@ type ProductTag struct {
 }
 
 type ProductTagResponse struct {
-	*ProductTag
+	ProductTag *ProductTag `json:"productTag"` // 商品タグ情報
 }
 
 type ProductTagsResponse struct {

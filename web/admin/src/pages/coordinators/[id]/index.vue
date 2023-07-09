@@ -61,10 +61,7 @@ const bonusVideoUploadStatus = ref<ImageUploadStatus>({
 
 const fetchState = useAsyncData(async (): Promise<void> => {
   try {
-    await Promise.all([
-      productTypeStore.fetchProductTypes(200),
-      coordinatorStore.getCoordinator(coordinatorId)
-    ])
+    await coordinatorStore.getCoordinator(coordinatorId)
     formData.value = {
       ...coordinator.value,
       phoneNumber: convertI18nToJapanesePhoneNumber(coordinator.value.phoneNumber)

@@ -1,3 +1,4 @@
+export { useAdminStore } from './admin'
 export { useAdministratorStore } from './administrator'
 export { useAuthStore } from './auth'
 export { useCategoryStore } from './category'

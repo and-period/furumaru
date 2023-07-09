@@ -27,7 +27,7 @@ type ShippingRate struct {
 }
 
 type ShippingResponse struct {
-	*Shipping
+	Shipping *Shipping `json:"shipping"` // 配送設定情報
 }
 
 type ShippingsResponse struct {

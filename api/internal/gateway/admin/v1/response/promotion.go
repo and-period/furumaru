@@ -18,7 +18,7 @@ type Promotion struct {
 }
 
 type PromotionResponse struct {
-	*Promotion
+	Promotion *Promotion `json:"promotion"` // プロモーション情報
 }
 
 type PromotionsResponse struct {

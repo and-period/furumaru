@@ -5,7 +5,7 @@ import { PropType } from 'nuxt/dist/app/compat/capi'
 import { AlertType } from '~/lib/hooks'
 
 import { getErrorMessage, maxLength, required } from '~/lib/validations'
-import { DiscountType, NotificationResponse, NotificationStatus, NotificationTarget, NotificationType, PromotionResponse, UpdateNotificationRequest } from '~/types/api'
+import { DiscountType, NotificationResponse, NotificationStatus, NotificationTarget, NotificationType, Promotion, UpdateNotificationRequest } from '~/types/api'
 import { NotificationTime } from '~/types/props'
 
 const props = defineProps({
@@ -55,8 +55,8 @@ const props = defineProps({
     })
   },
   promotion: {
-    type: Object as PropType<PromotionResponse>,
-    default: (): PromotionResponse => ({
+    type: Object as PropType<Promotion>,
+    default: (): Promotion => ({
       id: '',
       title: '',
       description: '',

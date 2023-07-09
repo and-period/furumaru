@@ -5,7 +5,7 @@ import { PrefecturesListItem, prefecturesList } from '~/constants'
 
 import { getResizedImages } from '~/lib/helpers'
 import { AlertType } from '~/lib/hooks'
-import { ProductsResponseProductsInner, ProductsResponseProductsInnerMediaInner, ImageSize, ProductsResponseProductsInnerMediaInnerImagesInner, Prefecture, ProductStatus } from '~/types/api'
+import { Product, ProductMediaInner, ImageSize, ProductMediaInnerImagesInner, Prefecture, ProductStatus, Category, ProductTag, ProductType, Producer } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -28,8 +28,24 @@ const props = defineProps({
     type: String,
     default: ''
   },
+  categories: {
+    type: Array<Category>,
+    default: () => []
+  },
+  producers: {
+    type: Array<Producer>,
+    default: () => []
+  },
   products: {
-    type: Array<ProductsResponseProductsInner>,
+    type: Array<Product>,
+    default: () => []
+  },
+  productTags: {
+    type: Array<ProductTag>,
+    default: () => []
+  },
+  productTypes: {
+    type: Array<ProductType>,
     default: () => []
   },
   tableItemsPerPage: {
@@ -105,22 +121,43 @@ const headers: VDataTable['headers'] = [
   }
 ]
 
-const selectedItem = ref<ProductsResponseProductsInner>()
+const selectedItem = ref<Product>()
 
 const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
   set: (val: boolean): void => emit('update:delete-dialog', val)
 })
 
-const getThumbnail = (media: ProductsResponseProductsInnerMediaInner[]): string => {
-  const thumbnail = media.find((media: ProductsResponseProductsInnerMediaInner) => {
+const getCategoryName = (categoryId: string): string => {
+  const category = props.categories.find((category: Category): boolean => {
+    return category.id === categoryId
+  })
+  return category ? category.name : ''
+}
+
+const getProductTypeName = (productTypeId: string): string => {
+  const productType = props.productTypes.find((productType: ProductType): boolean => {
+    return productType.id === productTypeId
+  })
+  return productType ? productType.name : ''
+}
+
+const getProducerName = (producerId: string): string => {
+  const producer = props.producers.find((producer: Producer): boolean => {
+    return producer.id === producerId
+  })
+  return producer ? producer.username : ''
+}
+
+const getThumbnail = (media: ProductMediaInner[]): string => {
+  const thumbnail = media.find((media: ProductMediaInner) => {
     return media.isThumbnail
   })
   return thumbnail?.url || ''
 }
 
-const getResizedThumbnails = (media: ProductsResponseProductsInnerMediaInner[]): string => {
-  const thumbnail = media.find((media: ProductsResponseProductsInnerMediaInner) => {
+const getResizedThumbnails = (media: ProductMediaInner[]): string => {
+  const thumbnail = media.find((media: ProductMediaInner) => {
     return media.isThumbnail
   })
   if (!thumbnail) {
@@ -168,7 +205,7 @@ const getPrefecture = (prefecture: Prefecture): string => {
   return pref?.text || ''
 }
 
-const toggleDeleteDialog = (product?: ProductsResponseProductsInner): void => {
+const toggleDeleteDialog = (product?: Product): void => {
   if (product) {
     selectedItem.value = product
   }
@@ -250,6 +287,15 @@ const onClickDelete = (): void => {
           <div :class="getInventoryColor(item.raw.inventory)">
             {{ item.raw.inventory }}
           </div>
+        </template>
+        <template #[`item.categoryName`]="{ item }">
+          {{ getCategoryName(item.raw.categoryId) }}
+        </template>
+        <template #[`item.productTypename`]="{ item }">
+          {{ getProductTypeName(item.raw.productTypeId) }}
+        </template>
+        <template #[`item.producerName`]="{ item }">
+          {{ getProducerName(item.raw.producerId) }}
         </template>
         <template #[`item.originPrefecture`]="{ item }">
           {{ getPrefecture(item.raw.originPrefecture) }}

@@ -468,13 +468,13 @@ func TestUsers_Response(t *testing.T) {
 	}
 }
 
-func TestUserList(t *testing.T) {
+func TestUserSummary(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name   string
 		user   *User
 		order  *sentity.AggregatedOrder
-		expect *UserList
+		expect *UserSummary
 	}{
 		{
 			name: "success",
@@ -503,8 +503,8 @@ func TestUserList(t *testing.T) {
 				Subtotal:   3000,
 				Discount:   0,
 			},
-			expect: &UserList{
-				UserList: response.UserList{
+			expect: &UserSummary{
+				UserSummary: response.UserSummary{
 					ID:          "user-id",
 					Lastname:    "&.",
 					Firstname:   "スタッフ",
@@ -538,8 +538,8 @@ func TestUserList(t *testing.T) {
 				},
 			},
 			order: nil,
-			expect: &UserList{
-				UserList: response.UserList{
+			expect: &UserSummary{
+				UserSummary: response.UserSummary{
 					ID:          "user-id",
 					Lastname:    "&.",
 					Firstname:   "スタッフ",
@@ -556,22 +556,22 @@ func TestUserList(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewUserList(tt.user, tt.order))
+			assert.Equal(t, tt.expect, NewUserSummary(tt.user, tt.order))
 		})
 	}
 }
 
-func TestUserList_Response(t *testing.T) {
+func TestUserSummary_Response(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name   string
-		user   *UserList
-		expect *response.UserList
+		user   *UserSummary
+		expect *response.UserSummary
 	}{
 		{
 			name: "success",
-			user: &UserList{
-				UserList: response.UserList{
+			user: &UserSummary{
+				UserSummary: response.UserSummary{
 					ID:          "user-id",
 					Lastname:    "&.",
 					Firstname:   "スタッフ",
@@ -582,7 +582,7 @@ func TestUserList_Response(t *testing.T) {
 					TotalAmount: 3000,
 				},
 			},
-			expect: &response.UserList{
+			expect: &response.UserSummary{
 				ID:          "user-id",
 				Lastname:    "&.",
 				Firstname:   "スタッフ",
@@ -603,13 +603,13 @@ func TestUserList_Response(t *testing.T) {
 	}
 }
 
-func TestUserLists(t *testing.T) {
+func TestUserSummaries(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name   string
 		users  Users
 		orders map[string]*sentity.AggregatedOrder
-		expect UserLists
+		expect UserSummaries
 	}{
 		{
 			name: "success",
@@ -642,9 +642,9 @@ func TestUserLists(t *testing.T) {
 					Discount:   0,
 				},
 			},
-			expect: UserLists{
+			expect: UserSummaries{
 				{
-					UserList: response.UserList{
+					UserSummary: response.UserSummary{
 						ID:          "user-id",
 						Lastname:    "&.",
 						Firstname:   "スタッフ",
@@ -662,23 +662,23 @@ func TestUserLists(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewUserLists(tt.users, tt.orders))
+			assert.Equal(t, tt.expect, NewUserSummaries(tt.users, tt.orders))
 		})
 	}
 }
 
-func TestUserLists_Response(t *testing.T) {
+func TestUserSummaries_Response(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name   string
-		users  UserLists
-		expect []*response.UserList
+		users  UserSummaries
+		expect []*response.UserSummary
 	}{
 		{
 			name: "success",
-			users: UserLists{
+			users: UserSummaries{
 				{
-					UserList: response.UserList{
+					UserSummary: response.UserSummary{
 						ID:          "user-id",
 						Lastname:    "&.",
 						Firstname:   "スタッフ",
@@ -690,7 +690,7 @@ func TestUserLists_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.UserList{
+			expect: []*response.UserSummary{
 				{
 					ID:          "user-id",
 					Lastname:    "&.",

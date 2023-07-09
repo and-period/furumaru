@@ -54,20 +54,41 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 		httpError(ctx, err)
 		return
 	}
-	scoordinator := service.NewCoordinators(coordinators)
-
-	aggregateIn := &user.AggregateRealatedProducersInput{
-		CoordinatorIDs: coordinators.IDs(),
+	if len(coordinators) == 0 {
+		res := &response.CoordinatorsResponse{
+			Coordinators: []*response.Coordinator{},
+		}
+		ctx.JSON(http.StatusOK, res)
+		return
 	}
-	producerTotals, err := h.user.AggregateRealatedProducers(ctx, aggregateIn)
-	if err != nil {
+
+	var (
+		producerTotals map[string]int64
+		productTypes   service.ProductTypes
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		aggregateIn := &user.AggregateRealatedProducersInput{
+			CoordinatorIDs: coordinators.IDs(),
+		}
+		producerTotals, err = h.user.AggregateRealatedProducers(ctx, aggregateIn)
+		return
+	})
+	eg.Go(func() (err error) {
+		productTypes, err = h.multiGetProductTypes(ectx, coordinators.ProductTypeIDs())
+		return
+	})
+	if err := eg.Wait(); err != nil {
 		httpError(ctx, err)
 		return
 	}
+
+	scoordinator := service.NewCoordinators(coordinators)
 	scoordinator.SetProducerTotal(producerTotals)
 
 	res := &response.CoordinatorsResponse{
 		Coordinators: scoordinator.Response(),
+		ProductTypes: productTypes.Response(),
 		Total:        total,
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -82,9 +103,15 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 		httpError(ctx, err)
 		return
 	}
+	productTypes, err := h.multiGetProductTypes(ctx, coordinator.ProductTypeIDs)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
 
 	res := &response.CoordinatorResponse{
-		Coordinator: service.NewCoordinator(coordinator).Response(),
+		Coordinator:  service.NewCoordinator(coordinator).Response(),
+		ProductTypes: productTypes.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

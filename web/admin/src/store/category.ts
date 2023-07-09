@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { useCommonStore } from './common'
 import {
   CategoriesResponse,
-  CategoriesResponseCategoriesInner,
+  Category,
   CreateCategoryRequest,
   UpdateCategoryRequest
 } from '~/types/api'
@@ -11,7 +11,7 @@ import { apiClient } from '~/plugins/api-client'
 
 export const useCategoryStore = defineStore('category', {
   state: () => ({
-    categories: [] as CategoriesResponse['categories'],
+    categories: [] as Category[],
     total: 0
   }),
 
@@ -40,14 +40,14 @@ export const useCategoryStore = defineStore('category', {
     async searchCategories (name = '', categoryIds: string[] = []): Promise<void> {
       try {
         const res = await listCategories(undefined, undefined, name, [])
-        const categories: CategoriesResponseCategoriesInner[] = []
-        this.categories.forEach((category: CategoriesResponseCategoriesInner): void => {
+        const categories: Category[] = []
+        this.categories.forEach((category: Category): void => {
           if (!categoryIds.includes(category.id)) {
             return
           }
           categories.push(category)
         })
-        res.categories.forEach((category: CategoriesResponseCategoriesInner): void => {
+        res.categories.forEach((category: Category): void => {
           if (categories.find((v): boolean => v.id === category.id)) {
             return
           }
@@ -84,7 +84,7 @@ export const useCategoryStore = defineStore('category', {
       const commonStore = useCommonStore()
       try {
         const res = await apiClient.categoryApi().v1CreateCategory(payload)
-        this.categories.unshift(res.data)
+        this.categories.unshift(res.data.category)
         commonStore.addSnackbar({
           message: 'カテゴリーを追加しました。',
           color: 'info'

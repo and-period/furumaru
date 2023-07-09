@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/common"
+	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
@@ -298,6 +299,26 @@ func (ps Products) Fill(now time.Time) error {
 		}
 	}
 	return nil
+}
+
+func (ps Products) ProducerIDs() []string {
+	return set.UniqBy(ps, func(p *Product) string {
+		return p.ProducerID
+	})
+}
+
+func (ps Products) ProductTypeIDs() []string {
+	return set.UniqBy(ps, func(p *Product) string {
+		return p.TypeID
+	})
+}
+
+func (ps Products) ProductTagIDs() []string {
+	res := set.NewEmpty[string](len(ps))
+	for i := range ps {
+		res.Add(ps[i].TagIDs...)
+	}
+	return res.Slice()
 }
 
 func NewProductMedia(url string, isThumbnail bool) *ProductMedia {

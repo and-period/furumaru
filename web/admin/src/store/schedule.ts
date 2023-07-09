@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
 import { useCommonStore } from './common'
+import { useCoordinatorStore } from './coordinator'
+import { useShippingStore } from './shipping'
 import { apiClient } from '~/plugins/api-client'
 import { CreateScheduleRequest, ScheduleResponse, SchedulesResponse, UploadImageResponse, UploadVideoResponse } from '~/types/api'
 
@@ -18,8 +20,13 @@ export const useScheduleStore = defineStore('schedule', {
     async fetchSchedules (limit = 20, offset = 0): Promise<void> {
       try {
         const res = await apiClient.scheduleApi().v1ListSchedules()
+
+        const coordinatorStore = useCoordinatorStore()
+        const shippingStore = useShippingStore()
         this.schedules = res.data.schedules
         this.total = res.data.total
+        coordinatorStore.coordinators = res.data.coordinators
+        shippingStore.shippings = res.data.shippings
       } catch (err) {
         return this.errorHandler(err)
       }

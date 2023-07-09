@@ -1,0 +1,82 @@
+user:
+  type: object
+  description: 購入者情報
+  properties:
+    id:
+      type: string
+      description: 購入者ID
+    lastname:
+      type: string
+      description: 姓
+    firstname:
+      type: string
+      description: 名
+    lastnameKana:
+      type: string
+      description: 姓(かな)
+    firstnameKana:
+      type: string
+      description: 名(かな)
+    registered:
+      type: boolean
+      description: 会員登録フラグ
+    email:
+      type: string
+      description: メールアドレス
+    phoneNumber:
+      type: string
+      description: 電話番号 (国際番号 + 電話番号)
+    postalCode:
+      type: string
+      description: 郵便番号
+    prefecture:
+      $ref: './../../../openapi.yaml#/components/schemas/prefecture'
+    city:
+      type: string
+      description: 市区町村
+    addressLine1:
+      type: string
+      description: 町名・番地
+    addressLine2:
+      type: string
+      description: ビル名・号室など
+    createdAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
+    updatedAt:
+      type: integer
+      format: int64
+      description: 更新日時 (unixtime)
+  required:
+  - id
+  - lastname
+  - firstname
+  - lastnameKana
+  - firstnameKana
+  - registered
+  - email
+  - phoneNumber
+  - postalCode
+  - prefecture
+  - city
+  - addressLine1
+  - addressLine2
+  - createdAt
+  - updatedAt
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    lastname: '&.'
+    firstname: '購入者'
+    lastnameKana: 'あんどどっと'
+    firstnameKana: 'こうにゅうしゃ'
+    registered: true
+    email: 'test-user@and-period.jp'
+    phoneNumber: '+819012345678'
+    postalCode: '1000014'
+    prefecture: 'tokyo'
+    city: '千代田区'
+    addressLine1: '永田町1-7-1'
+    addressLine2: ''
+    createdAt: 1640962800
+    updatedAt: 1640962800

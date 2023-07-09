@@ -19,8 +19,8 @@ type User struct {
 	UpdatedAt     int64  `json:"updateAt"`      // 更新日時
 }
 
-// UserList - 購入者一覧情報
-type UserList struct {
+// UserSummary - 購入者一覧情報
+type UserSummary struct {
 	ID          string `json:"id"`          // 購入者ID
 	Lastname    string `json:"lastname"`    // 姓
 	Firstname   string `json:"firstname"`   // 名
@@ -32,10 +32,10 @@ type UserList struct {
 }
 
 type UserResponse struct {
-	*User
+	User *User `json:"user"` // 購入者情報
 }
 
 type UsersResponse struct {
-	Users []*UserList `json:"users"`
-	Total int64       `json:"total"`
+	Users []*UserSummary `json:"users"` // 購入者一覧
+	Total int64          `json:"total"` // 購入者合計数
 }

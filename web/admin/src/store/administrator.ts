@@ -1,13 +1,13 @@
 import { defineStore } from 'pinia'
 
 import { useCommonStore } from './common'
-import { AdministratorResponse, AdministratorsResponse, CreateAdministratorRequest, UpdateAdministratorRequest } from '~/types/api'
+import { Administrator, CreateAdministratorRequest, UpdateAdministratorRequest } from '~/types/api'
 import { apiClient } from '~/plugins/api-client'
 
 export const useAdministratorStore = defineStore('administrator', {
   state: () => ({
-    administrator: {} as AdministratorResponse,
-    administrators: [] as AdministratorsResponse['administrators'],
+    administrator: {} as Administrator,
+    administrators: [] as Administrator[],
     total: 0
   }),
 
@@ -37,7 +37,7 @@ export const useAdministratorStore = defineStore('administrator', {
     async getAdministrator (administratorId: string): Promise<void> {
       try {
         const res = await apiClient.administratorApi().v1GetAdministrator(administratorId)
-        this.administrator = res.data
+        this.administrator = res.data.administrator
       } catch (err) {
         return this.errorHandler(err)
       }

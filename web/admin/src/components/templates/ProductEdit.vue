@@ -4,7 +4,7 @@ import { mdiClose, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 import { AlertType } from '~/lib/hooks'
-import { CategoriesResponseCategoriesInner, DeliveryType, Prefecture, ProducersResponseProducersInner, ProductResponse, ProductStatus, ProductTagsResponseProductTagsInner, ProductTypesResponseProductTypesInner, StorageMethodType, UpdateProductRequest, Weekday } from '~/types/api'
+import { Category, DeliveryType, Prefecture, Producer, ProductResponse, ProductStatus, ProductTag, ProductType, StorageMethodType, UpdateProductRequest, Weekday } from '~/types/api'
 import {
   required,
   getErrorMessage,
@@ -112,19 +112,19 @@ const props = defineProps({
     default: null
   },
   producers: {
-    type: Array<ProducersResponseProducersInner>,
+    type: Array<Producer>,
     default: () => []
   },
   categories: {
-    type: Array<CategoriesResponseCategoriesInner>,
+    type: Array<Category>,
     default: () => []
   },
   productTypes: {
-    type: Array<ProductTypesResponseProductTypesInner>,
+    type: Array<ProductType>,
     default: () => []
   },
   productTags: {
-    type: Array<ProductTagsResponseProductTagsInner>,
+    type: Array<ProductTag>,
     default: () => []
   }
 })

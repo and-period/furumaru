@@ -3,7 +3,7 @@ import { mdiDelete, mdiPlus } from '@mdi/js'
 import { unix } from 'dayjs'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { AlertType } from '~/lib/hooks'
-import { NotificationsResponseNotificationsInner, NotificationStatus, NotificationTarget, NotificationType } from '~/types/api'
+import { Admin, Notification, NotificationStatus, NotificationTarget, NotificationType } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -27,7 +27,11 @@ const props = defineProps({
     default: ''
   },
   notifications: {
-    type: Array<NotificationsResponseNotificationsInner>,
+    type: Array<Notification>,
+    default: () => []
+  },
+  admins: {
+    type: Array<Admin>,
     default: () => []
   },
   tableItemsPerPage: {
@@ -92,12 +96,19 @@ const headers: VDataTable['headers'] = [
   }
 ]
 
-const selectedItem = ref<NotificationsResponseNotificationsInner>()
+const selectedItem = ref<Notification>()
 
 const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
   set: (val: boolean): void => emit('update:delete-dialog', val)
 })
+
+const getAdminName = (adminId: string): string => {
+  const admin = props.admins.find((admin: Admin): boolean => {
+    return admin.id === adminId
+  })
+  return admin ? `${admin.lastname} ${admin.firstname}` : ''
+}
 
 const getType = (type: NotificationType): string => {
   switch (type) {
@@ -177,7 +188,7 @@ const onClickRow = (notificationId: string): void => {
   emit('click:row', notificationId)
 }
 
-const onClickOpenDeleteDialog = (notification: NotificationsResponseNotificationsInner): void => {
+const onClickOpenDeleteDialog = (notification: Notification): void => {
   selectedItem.value = notification
   deleteDialogValue.value = true
 }
@@ -252,6 +263,9 @@ const onClickDelete = (): void => {
         </template>
         <template #[`item.publishedAt`]="{ item }">
           {{ getDay(item.raw.publishedAt) }}
+        </template>
+        <template #[`item.creatorName`]="{ item }">
+          {{ getAdminName(item.raw.createdBy) }}
         </template>
         <template #[`item.actions`]="{ item }">
           <v-btn

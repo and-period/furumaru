@@ -92,15 +92,13 @@ func TestSchedule(t *testing.T) {
 			},
 			expect: &Schedule{
 				Schedule: response.Schedule{
-					ID:              "schedule-id",
-					CoordinatorID:   "coordinator-id",
-					CoordinatorName: "",
-					ShippingID:      "shipping-id",
-					ShippingName:    "",
-					Status:          ScheduleStatusLive.Response(),
-					Title:           "スケジュールタイトル",
-					Description:     "スケジュールの詳細です。",
-					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
+					ID:            "schedule-id",
+					CoordinatorID: "coordinator-id",
+					ShippingID:    "shipping-id",
+					Status:        ScheduleStatusLive.Response(),
+					Title:         "スケジュールタイトル",
+					Description:   "スケジュールの詳細です。",
+					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
 					Thumbnails: []*response.Image{
 						{URL: "https://and-period.jp/thumbnail_240.png", Size: int32(ImageSizeSmall)},
 						{URL: "https://and-period.jp/thumbnail_675.png", Size: int32(ImageSizeMedium)},
@@ -127,83 +125,6 @@ func TestSchedule(t *testing.T) {
 	}
 }
 
-func TestSchedule_Fill(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name        string
-		schedule    *Schedule
-		shipping    *Shipping
-		coordinator *Coordinator
-		expect      *Schedule
-	}{
-		{
-			name: "success",
-			schedule: &Schedule{
-				Schedule: response.Schedule{
-					ID:              "schedule-id",
-					CoordinatorID:   "coordinator-id",
-					CoordinatorName: "",
-					ShippingID:      "shipping-id",
-					ShippingName:    "",
-					Status:          ScheduleStatusLive.Response(),
-					Title:           "スケジュールタイトル",
-					Description:     "スケジュールの詳細です。",
-					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
-					ImageURL:        "https://and-period.jp/image.png",
-					OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
-					Public:          true,
-					Approved:        true,
-					StartAt:         1638284400,
-					EndAt:           1643641200,
-					CreatedAt:       1640962800,
-					UpdatedAt:       1640962800,
-				},
-			},
-			shipping: &Shipping{
-				Shipping: response.Shipping{
-					ID:   "shipping-id",
-					Name: "デフォルト配送設定",
-				},
-			},
-			coordinator: &Coordinator{
-				Coordinator: response.Coordinator{
-					ID:       "coordinator-id",
-					Username: "&.コーディネータ",
-				},
-			},
-			expect: &Schedule{
-				Schedule: response.Schedule{
-					ID:              "schedule-id",
-					CoordinatorID:   "coordinator-id",
-					CoordinatorName: "&.コーディネータ",
-					ShippingID:      "shipping-id",
-					ShippingName:    "デフォルト配送設定",
-					Status:          ScheduleStatusLive.Response(),
-					Title:           "スケジュールタイトル",
-					Description:     "スケジュールの詳細です。",
-					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
-					ImageURL:        "https://and-period.jp/image.png",
-					OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
-					Public:          true,
-					Approved:        true,
-					StartAt:         1638284400,
-					EndAt:           1643641200,
-					CreatedAt:       1640962800,
-					UpdatedAt:       1640962800,
-				},
-			},
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			tt.schedule.Fill(tt.shipping, tt.coordinator)
-			assert.Equal(t, tt.expect, tt.schedule)
-		})
-	}
-}
-
 func TestSchedule_Response(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -217,9 +138,7 @@ func TestSchedule_Response(t *testing.T) {
 				Schedule: response.Schedule{
 					ID:              "schedule-id",
 					CoordinatorID:   "coordinator-id",
-					CoordinatorName: "&.コーディネータ",
 					ShippingID:      "shipping-id",
-					ShippingName:    "デフォルト配送設定",
 					Status:          ScheduleStatusLive.Response(),
 					Title:           "スケジュールタイトル",
 					Description:     "スケジュールの詳細です。",
@@ -237,9 +156,7 @@ func TestSchedule_Response(t *testing.T) {
 			expect: &response.Schedule{
 				ID:              "schedule-id",
 				CoordinatorID:   "coordinator-id",
-				CoordinatorName: "&.コーディネータ",
 				ShippingID:      "shipping-id",
-				ShippingName:    "デフォルト配送設定",
 				Status:          ScheduleStatusLive.Response(),
 				Title:           "スケジュールタイトル",
 				Description:     "スケジュールの詳細です。",
@@ -302,15 +219,13 @@ func TestSchedules(t *testing.T) {
 			expect: Schedules{
 				{
 					Schedule: response.Schedule{
-						ID:              "schedule-id",
-						CoordinatorID:   "coordinator-id",
-						CoordinatorName: "",
-						ShippingID:      "shipping-id",
-						ShippingName:    "",
-						Status:          ScheduleStatusLive.Response(),
-						Title:           "スケジュールタイトル",
-						Description:     "スケジュールの詳細です。",
-						ThumbnailURL:    "https://and-period.jp/thumbnail.png",
+						ID:            "schedule-id",
+						CoordinatorID: "coordinator-id",
+						ShippingID:    "shipping-id",
+						Status:        ScheduleStatusLive.Response(),
+						Title:         "スケジュールタイトル",
+						Description:   "スケジュールの詳細です。",
+						ThumbnailURL:  "https://and-period.jp/thumbnail.png",
 						Thumbnails: []*response.Image{
 							{URL: "https://and-period.jp/thumbnail_240.png", Size: int32(ImageSizeSmall)},
 							{URL: "https://and-period.jp/thumbnail_675.png", Size: int32(ImageSizeMedium)},
@@ -352,9 +267,7 @@ func TestSchedules_Response(t *testing.T) {
 					Schedule: response.Schedule{
 						ID:              "schedule-id",
 						CoordinatorID:   "coordinator-id",
-						CoordinatorName: "&.コーディネータ",
 						ShippingID:      "shipping-id",
-						ShippingName:    "デフォルト配送設定",
 						Status:          ScheduleStatusLive.Response(),
 						Title:           "スケジュールタイトル",
 						Description:     "スケジュールの詳細です。",
@@ -374,9 +287,7 @@ func TestSchedules_Response(t *testing.T) {
 				{
 					ID:              "schedule-id",
 					CoordinatorID:   "coordinator-id",
-					CoordinatorName: "&.コーディネータ",
 					ShippingID:      "shipping-id",
-					ShippingName:    "デフォルト配送設定",
 					Status:          ScheduleStatusLive.Response(),
 					Title:           "スケジュールタイトル",
 					Description:     "スケジュールの詳細です。",

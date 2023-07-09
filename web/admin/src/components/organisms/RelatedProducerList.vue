@@ -3,7 +3,7 @@ import { mdiAccount, mdiPencil } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 
 import { useCoordinatorStore } from '~/store'
-import { ProducersResponseProducersInner } from '~/types/api'
+import { Producer } from '~/types/api'
 
 const props = defineProps({
   tableFooterProps: {
@@ -51,7 +51,7 @@ const producerHeaders: VDataTable['headers'] = [
     key: 'phoneNumber'
   },
   {
-    title: 'Actions',
+    title: '',
     key: 'actions',
     sortable: false
   }
@@ -69,7 +69,7 @@ const convertPhone = (phoneNumber: string): string => {
   return phoneNumber.replace('+81', '0')
 }
 
-const handleEdit = (item: ProducersResponseProducersInner) => {
+const handleEdit = (item: Producer) => {
   router.push(`/producers/${item.id}`)
 }
 </script>

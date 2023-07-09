@@ -3,7 +3,7 @@ import { mdiDelete, mdiPlus } from '@mdi/js'
 import { unix } from 'dayjs'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { AlertType } from '~/lib/hooks'
-import { DiscountType, PromotionsResponsePromotionsInner } from '~/types/api'
+import { DiscountType, Promotion } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -31,7 +31,7 @@ const props = defineProps({
     default: () => []
   },
   promotions: {
-    type: Array<PromotionsResponsePromotionsInner>,
+    type: Array<Promotion>,
     default: () => []
   },
   tableItemsPerPage: {
@@ -92,7 +92,7 @@ const headers: VDataTable['headers'] = [
   }
 ]
 
-const selectedItem = ref<PromotionsResponsePromotionsInner>()
+const selectedItem = ref<Promotion>()
 
 const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
@@ -124,7 +124,7 @@ const getDay = (unixTime: number): string => {
   return unix(unixTime).format('YYYY/MM/DD HH:mm')
 }
 
-const getTerm = (promotion: PromotionsResponsePromotionsInner): string => {
+const getTerm = (promotion: Promotion): string => {
   return `${getDay(promotion.startAt)} ~ ${getDay(promotion.endAt)}`
 }
 
@@ -144,7 +144,7 @@ const onClickRow = (promotionId: string): void => {
   emit('click:row', promotionId)
 }
 
-const onClickOpenDeleteDialog = (promotion: PromotionsResponsePromotionsInner): void => {
+const onClickOpenDeleteDialog = (promotion: Promotion): void => {
   selectedItem.value = promotion
   deleteDialogValue.value = true
 }
