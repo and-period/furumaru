@@ -36,6 +36,34 @@ export const useShippingStore = defineStore('shipping', {
     },
 
     /**
+     * 配送情報を検索する非同期関数
+     * @param name 配送設定名(あいまい検索)
+     * @param shippingIds stateの更新時に残しておく必要がある配送設定情報
+     */
+    async searchCoordinators (name = '', shippingIds: string[] = []): Promise<void> {
+      try {
+        const res = await apiClient.shippingApi().v1ListShippings(undefined, undefined, name)
+        const shippings: ShippingsResponseShippingsInner[] = []
+        this.shippings.forEach((shipping: ShippingsResponseShippingsInner): void => {
+          if (!shippingIds.includes(shipping.id)) {
+            return
+          }
+          shippings.push(shipping)
+        })
+        res.data.shippings.forEach((shipping: ShippingsResponseShippingsInner): void => {
+          if (shippings.find((v): boolean => v.id === shipping.id)) {
+            return
+          }
+          shippings.push(shipping)
+        })
+        this.shippings = shippings
+        this.totalItems = res.data.total
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
      * 指定したIDの配送設定情報を取得する非同期関数
      * @param shippingId 配送設定情報ID
      * @returns 配送設定情報

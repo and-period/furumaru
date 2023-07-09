@@ -4,6 +4,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/user/entity"
@@ -119,8 +120,16 @@ type UpdateAdministratorParams struct {
 }
 
 type ListCoordinatorsParams struct {
-	Limit  int
-	Offset int
+	Username string
+	Limit    int
+	Offset   int
+}
+
+func (p *ListCoordinatorsParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.Username != "" {
+		stmt = stmt.Where("username LIKE ?", fmt.Sprintf("%%%s%%", p.Username))
+	}
+	return stmt
 }
 
 type UpdateCoordinatorParams struct {
@@ -148,6 +157,7 @@ type UpdateCoordinatorParams struct {
 
 type ListProducersParams struct {
 	CoordinatorID string
+	Username      string
 	Limit         int
 	Offset        int
 	OnlyUnrelated bool
@@ -159,6 +169,9 @@ func (p *ListProducersParams) stmt(stmt *gorm.DB) *gorm.DB {
 	}
 	if p.OnlyUnrelated {
 		stmt = stmt.Where("coordinator_id IS NULL")
+	}
+	if p.Username != "" {
+		stmt = stmt.Where("username LIKE ?", fmt.Sprintf("%%%s%%", p.Username))
 	}
 	return stmt
 }

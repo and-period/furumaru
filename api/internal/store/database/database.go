@@ -340,6 +340,7 @@ func (p *ListProductTypesParams) stmt(stmt *gorm.DB) *gorm.DB {
 }
 
 type ListPromotionsParams struct {
+	Title  string
 	Limit  int
 	Offset int
 	Orders []*ListPromotionsOrder
@@ -351,6 +352,9 @@ type ListPromotionsOrder struct {
 }
 
 func (p *ListPromotionsParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.Title != "" {
+		stmt = stmt.Where("title LIKE ?", fmt.Sprintf("%%%s%%", p.Title))
+	}
 	for i := range p.Orders {
 		var value string
 		if p.Orders[i].OrderByASC {
@@ -382,6 +386,7 @@ type ListSchedulesParams struct {
 }
 
 type ListShippingsParams struct {
+	Name   string
 	Limit  int
 	Offset int
 	Orders []*ListShippingsOrder
@@ -393,6 +398,9 @@ type ListShippingsOrder struct {
 }
 
 func (p *ListShippingsParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.Name != "" {
+		stmt = stmt.Where("name LIKE ?", fmt.Sprintf("%%%s%%", p.Name))
+	}
 	for i := range p.Orders {
 		var value string
 		if p.Orders[i].OrderByASC {

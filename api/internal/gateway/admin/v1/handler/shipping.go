@@ -47,6 +47,7 @@ func (h *handler) ListShippings(ctx *gin.Context) {
 	}
 
 	in := &store.ListShippingsInput{
+		Name:   util.GetQuery(ctx, "name", ""),
 		Limit:  limit,
 		Offset: offset,
 		Orders: orders,

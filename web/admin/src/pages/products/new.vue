@@ -74,6 +74,17 @@ const isLoading = (): boolean => {
   return fetchState?.pending?.value || loading.value
 }
 
+const handleSearchProducer = async (name: string): Promise<void> => {
+  try {
+    await producerStore.searchProducers(name)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+}
+
 const handleSearchCategory = async (name: string): Promise<void> => {
   try {
     const categoryIds: string[] = selectedCategoryId.value ? [selectedCategoryId.value] : []
@@ -177,6 +188,7 @@ try {
     :product-types="productTypes"
     :product-tags="productTags"
     @update:files="handleImageUpload"
+    @update:search-producer="handleSearchProducer"
     @update:search-category="handleSearchCategory"
     @update:search-product-type="handleSearchProductType"
     @update:search-product-tag="handleSearchProductTag"

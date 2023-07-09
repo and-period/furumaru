@@ -109,8 +109,9 @@ type DeleteAdministratorInput struct {
 }
 
 type ListCoordinatorsInput struct {
-	Limit  int64 `validate:"required,max=200"`
-	Offset int64 `validate:"min=0"`
+	Username string `validate:"omitempty,max=64"`
+	Limit    int64  `validate:"required,max=200"`
+	Offset   int64  `validate:"min=0"`
 }
 
 type MultiGetCoordinatorsInput struct {
@@ -198,6 +199,7 @@ type AggregateRealatedProducersInput struct {
 
 type ListProducersInput struct {
 	CoordinatorID string `validate:"omitempty"`
+	Username      string `validate:"omitempty,max=64"`
 	Limit         int64  `validate:"required_without=CoordinatorID,max=200"`
 	Offset        int64  `validate:"min=0"`
 	OnlyUnrelated bool   `validate:""`

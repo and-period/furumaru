@@ -45,8 +45,9 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 	}
 
 	in := &user.ListCoordinatorsInput{
-		Limit:  limit,
-		Offset: offset,
+		Username: util.GetQuery(ctx, "username", ""),
+		Limit:    limit,
+		Offset:   offset,
 	}
 	coordinators, total, err := h.user.ListCoordinators(ctx, in)
 	if err != nil {

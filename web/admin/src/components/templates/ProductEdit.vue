@@ -363,6 +363,7 @@ const onSubmit = async (): Promise<void> => {
               :items="producers"
               item-title="username"
               item-value="id"
+              readonly
             />
             <v-text-field
               v-model="formDataValidate.name.$model"

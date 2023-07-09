@@ -64,8 +64,9 @@ func TestCoordinator_List(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListCoordinatorsParams{
-					Limit:  1,
-					Offset: 1,
+					Username: "&.",
+					Limit:    1,
+					Offset:   1,
 				},
 			},
 			want: want{
@@ -136,8 +137,9 @@ func TestCoordinator_Count(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListCoordinatorsParams{
-					Limit:  1,
-					Offset: 1,
+					Username: "&.",
+					Limit:    1,
+					Offset:   1,
 				},
 			},
 			want: want{

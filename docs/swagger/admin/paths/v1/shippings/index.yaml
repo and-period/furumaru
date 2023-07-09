@@ -23,6 +23,13 @@ get:
     required: false
     example: 0
   - in: query
+    name: title
+    schema:
+      type: string
+    description: 配送設定名(あいまい検索)(64文字以内)
+    required: false
+    example: 'デフォルト'
+  - in: query
     name: orders
     schema:
       type: string

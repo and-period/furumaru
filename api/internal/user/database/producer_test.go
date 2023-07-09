@@ -72,6 +72,7 @@ func TestProducer_List(t *testing.T) {
 			args: args{
 				params: &ListProducersParams{
 					CoordinatorID: "coordinator-id",
+					Username:      "&.",
 					Limit:         1,
 					Offset:        1,
 				},
@@ -86,6 +87,7 @@ func TestProducer_List(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListProducersParams{
+					Username:      "&.",
 					Limit:         1,
 					Offset:        1,
 					OnlyUnrelated: true,
@@ -164,7 +166,9 @@ func TestProducer_Count(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
-				params: &ListProducersParams{},
+				params: &ListProducersParams{
+					Username: "&.",
+				},
 			},
 			want: want{
 				total:  2,

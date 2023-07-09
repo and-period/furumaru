@@ -63,8 +63,9 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 	}
 
 	in := &user.ListProducersInput{
-		Limit:  limit,
-		Offset: offset,
+		Username: util.GetQuery(ctx, "username", ""),
+		Limit:    limit,
+		Offset:   offset,
 	}
 	h.addlistProducerFilters(ctx, in)
 	producers, total, err := h.user.ListProducers(ctx, in)

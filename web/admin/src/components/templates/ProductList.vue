@@ -239,7 +239,7 @@ const onClickDelete = (): void => {
         @click:row="(_: any, { item }:any) => onClickShow(item.raw.id)"
       >
         <template #[`item.media`]="{ item }">
-          <v-img aspect-ratio="1/1" :src="getThumbnail(item.raw.media)" :srcset="getResizedThumbnails(item.raw.media)" />
+          <v-img aspect-ratio="1/1" :max-height="56" :max-width="80" :src="getThumbnail(item.raw.media)" :srcset="getResizedThumbnails(item.raw.media)" />
         </template>
         <template #[`item.status`]="{ item }">
           <v-chip :color="getStatusColor(item.raw.status)">

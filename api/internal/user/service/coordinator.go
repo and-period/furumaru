@@ -25,8 +25,9 @@ func (s *service) ListCoordinators(
 		return nil, 0, exception.InternalError(err)
 	}
 	params := &database.ListCoordinatorsParams{
-		Limit:  int(in.Limit),
-		Offset: int(in.Offset),
+		Username: in.Username,
+		Limit:    int(in.Limit),
+		Offset:   int(in.Offset),
 	}
 	var (
 		coordinators entity.Coordinators

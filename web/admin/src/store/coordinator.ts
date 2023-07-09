@@ -4,6 +4,7 @@ import { useCommonStore } from './common'
 import {
   CoordinatorResponse,
   CoordinatorsResponse,
+  CoordinatorsResponseCoordinatorsInner,
   CreateCoordinatorRequest,
   ProducersResponse,
   RelateProducersRequest,
@@ -32,6 +33,34 @@ export const useCoordinatorStore = defineStore('coordinator', {
       try {
         const res = await apiClient.coordinatorApi().v1ListCoordinators(limit, offset)
         this.coordinators = res.data.coordinators
+        this.totalItems = res.data.total
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * コーディネータを検索する非同期関数
+     * @param name コーディネータ名(あいまい検索)
+     * @param coordinatorIds stateの更新時に残しておく必要があるコーディネータ情報
+     */
+    async searchCoordinators (name = '', coordinatorIds: string[] = []): Promise<void> {
+      try {
+        const res = await apiClient.coordinatorApi().v1ListCoordinators(undefined, undefined, name)
+        const coordinators: CoordinatorsResponseCoordinatorsInner[] = []
+        this.coordinators.forEach((coordinator: CoordinatorsResponseCoordinatorsInner): void => {
+          if (!coordinatorIds.includes(coordinator.id)) {
+            return
+          }
+          coordinators.push(coordinator)
+        })
+        res.data.coordinators.forEach((coordinator: CoordinatorsResponseCoordinatorsInner): void => {
+          if (coordinators.find((v): boolean => v.id === coordinator.id)) {
+            return
+          }
+          coordinators.push(coordinator)
+        })
+        this.coordinators = coordinators
         this.totalItems = res.data.total
       } catch (err) {
         return this.errorHandler(err)

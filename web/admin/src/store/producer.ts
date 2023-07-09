@@ -5,6 +5,7 @@ import {
   CreateProducerRequest,
   ProducerResponse,
   ProducersResponse,
+  ProducersResponseProducersInner,
   UpdateProducerRequest,
   UploadImageResponse,
   UploadVideoResponse
@@ -28,6 +29,34 @@ export const useProducerStore = defineStore('producer', {
       try {
         const res = await apiClient.producerApi().v1ListProducers(limit, offset, options)
         this.producers = res.data.producers
+        this.totalItems = res.data.total
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * 生産者を検索する非同期関数
+     * @param name 生産者名(あいまい検索)
+     * @param producerIds stateの更新時に残しておく必要がある生産者情報
+     */
+    async searchProducers (name = '', producerIds: string[] = []): Promise<void> {
+      try {
+        const res = await apiClient.producerApi().v1ListProducers(undefined, undefined, name)
+        const producers: ProducersResponseProducersInner[] = []
+        this.producers.forEach((producer: ProducersResponseProducersInner): void => {
+          if (!producerIds.includes(producer.id)) {
+            return
+          }
+          producers.push(producer)
+        })
+        res.data.producers.forEach((producer: ProducersResponseProducersInner): void => {
+          if (producers.find((v): boolean => v.id === producer.id)) {
+            return
+          }
+          producers.push(producer)
+        })
+        this.producers = producers
         this.totalItems = res.data.total
       } catch (err) {
         return this.errorHandler(err)
