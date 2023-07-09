@@ -26,8 +26,6 @@ import (
 var (
 	errInvalidOrderkey   = errors.New("handler: invalid order key")
 	errInvalidFileFormat = errors.New("handler: invalid file format")
-	errInvalidProducerID = errors.New("handler: invalid producer id")
-	errInvalidProductID  = errors.New("handler: invalid product id")
 )
 
 /**
