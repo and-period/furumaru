@@ -1,6 +1,5 @@
 export * from './forms'
 export * from './calendar'
-export * from './category'
 export * from './notification'
 export * from './order'
 export * from './product'

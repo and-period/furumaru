@@ -1,14 +1,18 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useScheduleStore } from '~/store'
+import { useCoordinatorStore, useScheduleStore, useShippingStore } from '~/store'
 
 const router = useRouter()
+const coordinatorStore = useCoordinatorStore()
 const scheduleStore = useScheduleStore()
+const shippingStore = useShippingStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
+const { coordinators } = storeToRefs(coordinatorStore)
 const { schedules, total } = storeToRefs(scheduleStore)
+const { shippings } = storeToRefs(shippingStore)
 
 const loading = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
@@ -68,6 +72,8 @@ try {
     :alert-type="alertType"
     :alert-text="alertText"
     :schedules="schedules"
+    :coordinators="coordinators"
+    :shippings="shippings"
     :table-items-per-page="pagination.itemsPerPage.value"
     :table-items-total="total"
     @click:row="handleClickRow"

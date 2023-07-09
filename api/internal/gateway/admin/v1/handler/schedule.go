@@ -13,7 +13,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )
@@ -77,11 +76,11 @@ func (h *handler) ListSchedules(ctx *gin.Context) {
 		return
 	}
 
-	sschedules := service.NewSchedules(schedules)
-	sschedules.Fill(shippings.Map(), coordinators.Map())
 	res := &response.SchedulesResponse{
-		Schedules: sschedules.Response(),
-		Total:     total,
+		Schedules:    service.NewSchedules(schedules).Response(),
+		Coordinators: coordinators.Response(),
+		Shippings:    shippings.Response(),
+		Total:        total,
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -93,15 +92,29 @@ func (h *handler) GetSchedule(ctx *gin.Context) {
 		httpError(ctx, err)
 		return
 	}
-	lives, err := h.getScheduleDetailsByScheduleID(ctx, schedule)
-	if err != nil {
+
+	var (
+		coordinator *service.Coordinator
+		shipping    *service.Shipping
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		coordinator, err = h.getCoordinator(ectx, schedule.CoordinatorID)
+		return
+	})
+	eg.Go(func() (err error) {
+		shipping, err = h.getShipping(ectx, schedule.ShippingID)
+		return
+	})
+	if err := eg.Wait(); err != nil {
 		httpError(ctx, err)
 		return
 	}
 
 	res := response.ScheduleResponse{
-		Schedule: schedule.Response(),
-		Lives:    lives.Response(),
+		Schedule:    schedule.Response(),
+		Coordinator: coordinator.Response(),
+		Shipping:    shipping.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -197,10 +210,11 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		return
 	}
 	sschedule := service.NewSchedule(schedule)
-	sschedule.Fill(shipping, coordinator)
 
 	res := &response.ScheduleResponse{
-		Schedule: sschedule.Response(),
+		Schedule:    sschedule.Response(),
+		Coordinator: coordinator.Response(),
+		Shipping:    shipping.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -215,61 +229,4 @@ func (h *handler) getSchedule(ctx context.Context, scheduleID string) (*service.
 	}
 	schedule := service.NewSchedule(sschedule)
 	return schedule, nil
-}
-
-func (h *handler) getScheduleDetailsByScheduleID(ctx context.Context, schedule *service.Schedule) (service.Lives, error) {
-	in := &store.ListLivesByScheduleIDInput{
-		ScheduleID: schedule.ID,
-	}
-	slives, err := h.store.ListLivesByScheduleID(ctx, in)
-	if err != nil {
-		return nil, err
-	}
-	var (
-		coordinator *service.Coordinator
-		producers   service.Producers
-		shipping    *service.Shipping
-		products    service.Products
-	)
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() (err error) {
-		coordinator, err = h.getCoordinator(ectx, schedule.CoordinatorID)
-		return
-	})
-	eg.Go(func() (err error) {
-		set := set.NewEmpty[string](len(slives))
-		for i := range slives {
-			set.Add(slives[i].ProducerID)
-		}
-		producerIDs := set.Slice()
-		producers, err = h.multiGetProducers(ectx, producerIDs)
-		if len(producers) != len(producerIDs) {
-			return errInvalidProducerID
-		}
-		return
-	})
-	eg.Go(func() (err error) {
-		shipping, err = h.getShipping(ectx, schedule.ShippingID)
-		return
-	})
-	eg.Go(func() (err error) {
-		set := set.NewEmpty[string](len(slives))
-		for i := range slives {
-			set.Add(slives[i].ProductIDs()...)
-		}
-		productIDs := set.Slice()
-		products, err = h.multiGetProducts(ectx, productIDs)
-		if len(products) != len(productIDs) {
-			return errInvalidProductID
-		}
-		return
-	})
-	if err := eg.Wait(); err != nil {
-		return nil, err
-	}
-	lives := service.NewLives(slives)
-	schedule.Fill(shipping, coordinator)
-	lives.Fill(producers.Map(), products.Map())
-
-	return lives, nil
 }

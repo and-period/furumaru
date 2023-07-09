@@ -2,17 +2,19 @@
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 
-import { useNotificationStore, usePromotionStore } from '~/store'
+import { useAdminStore, useNotificationStore, usePromotionStore } from '~/store'
 import { NotificationType, UpdateNotificationRequest } from '~/types/api'
 
 const route = useRoute()
 const router = useRouter()
+const adminStore = useAdminStore()
 const notificationStore = useNotificationStore()
 const promotionStore = usePromotionStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
 const notificationId = route.params.id as string
 
+const { admin } = storeToRefs(adminStore)
 const { notification } = storeToRefs(notificationStore)
 const { promotion } = storeToRefs(promotionStore)
 
@@ -75,6 +77,7 @@ try {
     :alert-text="alertText"
     :notification="notification"
     :promotion="promotion"
+    :admin="admin"
     @submit="handleSubmit"
   />
 </template>

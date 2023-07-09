@@ -3,14 +3,16 @@ import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 
-import { useNotificationStore, usePromotionStore } from '~/store'
+import { useAdminStore, useNotificationStore, usePromotionStore } from '~/store'
 import { CreateNotificationRequest, NotificationType } from '~/types/api'
 
 const router = useRouter()
+const adminStore = useAdminStore()
 const notificationStore = useNotificationStore()
 const promotionStore = usePromotionStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
+const { admins } = storeToRefs(adminStore)
 const { promotions } = storeToRefs(promotionStore)
 
 const loading = ref<boolean>(false)
@@ -70,6 +72,7 @@ const handleSubmit = async () => {
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
+    :admins="admins"
     :promotions="promotions"
     @update:notification-type="updateNotificationType"
     @submit="handleSubmit"

@@ -178,8 +178,8 @@ func NewProduct(product *entity.Product) *Product {
 		Product: response.Product{
 			ID:                product.ID,
 			ProducerID:        product.ProducerID,
-			TypeID:            product.TypeID,
-			TagIDs:            product.TagIDs,
+			ProductTypeID:     product.TypeID,
+			ProductTagIDs:     product.TagIDs,
 			Name:              product.Name,
 			Description:       product.Description,
 			Public:            product.Public,
@@ -211,18 +211,6 @@ func NewProduct(product *entity.Product) *Product {
 	}
 }
 
-func (p *Product) Fill(productType *ProductType, producer *Producer) {
-	if productType != nil {
-		p.TypeName = productType.Name
-		p.TypeIconURL = productType.IconURL
-		p.CategoryID = productType.CategoryID
-		p.CategoryName = productType.CategoryName
-	}
-	if producer != nil {
-		p.ProducerName = producer.Username
-	}
-}
-
 func (p *Product) Response() *response.Product {
 	return &p.Product
 }
@@ -249,7 +237,7 @@ func (ps Products) CategoryIDs() []string {
 
 func (ps Products) ProductTypeIDs() []string {
 	return set.UniqBy(ps, func(p *Product) string {
-		return p.TypeID
+		return p.ProductTypeID
 	})
 }
 
@@ -259,19 +247,6 @@ func (ps Products) Map() map[string]*Product {
 		res[p.ID] = p
 	}
 	return res
-}
-
-func (ps Products) Fill(
-	productTypes map[string]*ProductType,
-	producers map[string]*Producer,
-) {
-	for i := range ps {
-		productType, ok := productTypes[ps[i].TypeID]
-		if !ok {
-			productType = &ProductType{}
-		}
-		ps[i].Fill(productType, producers[ps[i].ProducerID])
-	}
 }
 
 func (ps Products) Response() []*response.Product {

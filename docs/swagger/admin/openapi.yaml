@@ -30,9 +30,7 @@ tags:
 - name: Promotion
   description: プロモーション関連
 - name: Schedule
-  description: スケジュール関連
-- name: Live
-  description: 配信関連
+  description: マルシェ開催スケジュール関連
 - name: Order
   description: 注文関連
 - name: User
@@ -161,9 +159,6 @@ paths:
     $ref: './paths/v1/schedules/index.yaml'
   /v1/schedules/{scheduleId}:
     $ref: './paths/v1/schedules/_scheduleId/index.yaml'
-  # Live
-  /v1/schedules/{scheduleId}/Lives/{liveId}:
-    $ref: './paths/v1/schedules/_scheduleId/lives/_liveId/index.yaml'
   # Order
   /v1/orders:
     $ref: './paths/v1/orders/index.yaml'
@@ -227,8 +222,6 @@ components:
       $ref: './components/schemas/codes/contact.yaml#/contactStatus'
     imageSize:
       $ref: './components/schemas/codes/image.yaml#/imageSize'
-    liveStatus:
-      $ref: './components/schemas/codes/live.yaml#/liveStatus'
     messageType:
       $ref: './components/schemas/codes/message.yaml#/messageType'
     notificationStatus:
@@ -261,6 +254,35 @@ components:
       $ref: './components/schemas/codes/schedule.yaml#/scheduleStatus'
     errorResponse:
       $ref: './components/schemas/common.yaml#/errorResponse'
+    # Entity
+    admin:
+      $ref: './components/schemas/entity/admin.yaml#/admin'
+    administrator:
+      $ref: './components/schemas/entity/administrator.yaml#/administrator'
+    category:
+      $ref: './components/schemas/entity/category.yaml#/category'
+    coordinator:
+      $ref: './components/schemas/entity/coordinator.yaml#/coordinator'
+    message:
+      $ref: './components/schemas/entity/message.yaml#/message'
+    notification:
+      $ref: './components/schemas/entity/notification.yaml#/notification'
+    producer:
+      $ref: './components/schemas/entity/producer.yaml#/producer'
+    productTag:
+      $ref: './components/schemas/entity/product-tag.yaml#/productTag'
+    productType:
+      $ref: './components/schemas/entity/product-type.yaml#/productType'
+    product:
+      $ref: './components/schemas/entity/product.yaml#/product'
+    promotion:
+      $ref: './components/schemas/entity/promotion.yaml#/promotion'
+    schedule:
+      $ref: './components/schemas/entity/schedule.yaml#/schedule'
+    shipping:
+      $ref: './components/schemas/entity/shipping.yaml#/shipping'
+    user:
+      $ref: './components/schemas/entity/user.yaml#/user'
     # Request
     v1SignInRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/signInRequest'
@@ -429,8 +451,6 @@ components:
       $ref: './components/schemas/v1/schedule.response.yaml#/scheduleResponse'
     v1SchedulesResponse:
       $ref: './components/schemas/v1/schedule.response.yaml#/schedulesResponse'
-    v1LiveResponse:
-      $ref: './components/schemas/v1/live.response.yaml#/liveResponse'
     v1OrderResponse:
       $ref: './components/schemas/v1/order.response.yaml#/orderResponse'
     v1OrdersResponse:

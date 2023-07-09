@@ -1,67 +1,23 @@
 promotionResponse:
   type: object
   properties:
-    id:
-      type: string
-      description: プロモーションID
-    title:
-      type: string
-      description: タイトル
-    description:
-      type: string
-      description: 詳細説明
-    public:
-      type: boolean
-      description: 公開フラグ
-    discountType:
-      $ref: './../../../openapi.yaml#/components/schemas/discountType'
-    discountRate:
-      type: integer
-      format: int64
-      description: 割引額(単位:円/%)
-    code:
-      type: string
-      description: クーポンコード
-    startAt:
-      type: integer
-      format: int64
-      description: クーポン利用可能開始日時(unixtime)
-    endAt:
-      type: integer
-      format: int64
-      description: クーポン利用可能終了日時(unixtime)
-    createdAt:
-      type: integer
-      format: int64
-      description: 登録日時 (unixtime)
-    updatedAt:
-      type: integer
-      format: int64
-      description: 更新日時 (unixtime)
+    promotion:
+      $ref: './../../../openapi.yaml#/components/schemas/promotion'
   required:
-  - id
-  - title
-  - description
-  - public
-  - discountType
-  - discountRate
-  - code
-  - startAt
-  - endAt
-  - createdAt
-  - updatedAt
+  - promotion
   example:
-    id: 'kSByoE6FetnPs5Byk3a9Zx'
-    title: 'プロモーションタイトル'
-    description: 'セール情報をお届けします。'
-    public: true
-    discountType: 1
-    discountRate: 300
-    code: 'code1234'
-    startAt: 1640962800
-    endAt: 1640962800
-    createdAt: 1640962800
-    updatedAt: 1640962800
+    promotion:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      title: 'プロモーションタイトル'
+      description: 'セール情報をお届けします。'
+      public: true
+      discountType: 1
+      discountRate: 300
+      code: 'code1234'
+      startAt: 1640962800
+      endAt: 1640962800
+      createdAt: 1640962800
+      updatedAt: 1640962800
 promotionsResponse:
   type: object
   properties:
@@ -69,62 +25,7 @@ promotionsResponse:
       type: array
       description: プロモーション一覧
       items:
-        type: object
-        properties:
-          id:
-            type: string
-            description: プロモーションID
-          title:
-            type: string
-            description: タイトル
-          description:
-            type: string
-            description: 詳細説明
-          public:
-            type: boolean
-            description: 公開フラグ
-          discountType:
-            $ref: './../../../openapi.yaml#/components/schemas/discountType'
-          discountRate:
-            type: integer
-            format: int64
-            description: 割引額(単位:円/%)
-          code:
-            type: string
-            description: クーポンコード
-          startAt:
-            type: integer
-            format: int64
-            description: クーポン利用可能開始日時(unixtime)
-          endAt:
-            type: integer
-            format: int64
-            description: クーポン利用可能終了日時(unixtime)
-          total:
-            type: integer
-            format: int64
-            description: 使用回数
-          createdAt:
-            type: integer
-            format: int64
-            description: 登録日時 (unixtime)
-          updatedAt:
-            type: integer
-            format: int64
-            description: 更新日時 (unixtime)
-        required:
-        - id
-        - title
-        - description
-        - public
-        - discountType
-        - discountRate
-        - code
-        - startAt
-        - endAt
-        - total
-        - createdAt
-        - updatedAt
+        $ref: './../../../openapi.yaml#/components/schemas/promotion'
     total:
       type: integer
       format: int64

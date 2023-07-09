@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
 
 import { useCommonStore } from './common'
+import { useCoordinatorStore } from './coordinator'
 import {
   CreateProducerRequest,
   ProducerResponse,
-  ProducersResponse,
-  ProducersResponseProducersInner,
+  Producer,
   UpdateProducerRequest,
   UploadImageResponse,
   UploadVideoResponse
@@ -14,8 +14,8 @@ import { apiClient } from '~/plugins/api-client'
 
 export const useProducerStore = defineStore('producer', {
   state: () => ({
-    producer: {} as ProducerResponse,
-    producers: [] as ProducersResponse['producers'],
+    producer: {} as Producer,
+    producers: [] as Producer[],
     totalItems: 0
   }),
 
@@ -28,8 +28,11 @@ export const useProducerStore = defineStore('producer', {
     async fetchProducers (limit = 20, offset = 0, options = ''): Promise<void> {
       try {
         const res = await apiClient.producerApi().v1ListProducers(limit, offset, options)
+
+        const coordinatorStore = useCoordinatorStore()
         this.producers = res.data.producers
         this.totalItems = res.data.total
+        coordinatorStore.coordinators = res.data.coordinators
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -43,14 +46,14 @@ export const useProducerStore = defineStore('producer', {
     async searchProducers (name = '', producerIds: string[] = []): Promise<void> {
       try {
         const res = await apiClient.producerApi().v1ListProducers(undefined, undefined, name)
-        const producers: ProducersResponseProducersInner[] = []
-        this.producers.forEach((producer: ProducersResponseProducersInner): void => {
+        const producers: Producer[] = []
+        this.producers.forEach((producer: Producer): void => {
           if (!producerIds.includes(producer.id)) {
             return
           }
           producers.push(producer)
         })
-        res.data.producers.forEach((producer: ProducersResponseProducersInner): void => {
+        res.data.producers.forEach((producer: Producer): void => {
           if (producers.find((v): boolean => v.id === producer.id)) {
             return
           }
@@ -71,7 +74,10 @@ export const useProducerStore = defineStore('producer', {
     async getProducer (producerId: string): Promise<ProducerResponse> {
       try {
         const res = await apiClient.producerApi().v1GetProducer(producerId)
-        this.producer = res.data
+
+        const coordinatorStore = useCoordinatorStore()
+        this.producer = res.data.producer
+        coordinatorStore.coordinator = res.data.coordinator
         return res.data
       } catch (err) {
         return this.errorHandler(err)

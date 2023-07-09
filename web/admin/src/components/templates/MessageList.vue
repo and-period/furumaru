@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { mdiEmailOpenOutline, mdiEmailOutline } from '@mdi/js'
 import { AlertType } from '~/lib/hooks'
-import { MessageResponse, MessagesResponseMessagesInner } from '~/types/api'
+import { Message } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -21,11 +21,11 @@ const props = defineProps({
     default: ''
   },
   message: {
-    type: Object as PropType<MessageResponse>,
+    type: Object as PropType<Message>,
     default: () => ({})
   },
   messages: {
-    type: Array<MessagesResponseMessagesInner>,
+    type: Array<Message>,
     default: () => []
   }
 })

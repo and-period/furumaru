@@ -66,8 +66,9 @@ func (h *handler) ListRelatedProducers(ctx *gin.Context) {
 	}
 
 	res := &response.ProducersResponse{
-		Producers: service.NewProducers(producers, coordinators.Map()).Response(),
-		Total:     total,
+		Producers:    service.NewProducers(producers).Response(),
+		Coordinators: coordinators.Response(),
+		Total:        total,
 	}
 	ctx.JSON(http.StatusOK, res)
 }

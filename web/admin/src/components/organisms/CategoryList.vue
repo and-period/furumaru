@@ -4,13 +4,13 @@ import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 
 import { useCategoryStore } from '~/store'
 import {
-  CategoriesResponseCategoriesInner,
+  Category,
   UpdateCategoryRequest
 } from '~/types/api'
 
 const props = defineProps({
   categories: {
-    type: Array<CategoriesResponseCategoriesInner>,
+    type: Array<Category>,
     default: () => []
   },
   tableItemsPerPage: {
@@ -72,13 +72,13 @@ const editCancel = (): void => {
   editDialog.value = false
 }
 
-const openEditDialog = (item: CategoriesResponseCategoriesInner): void => {
+const openEditDialog = (item: Category): void => {
   categoryFormData.name = item.name
   categoryId.value = item.id
   editDialog.value = true
 }
 
-const openDeleteDialog = (item: CategoriesResponseCategoriesInner): void => {
+const openDeleteDialog = (item: Category): void => {
   selectedItem.value = item.id
   selectedName.value = item.name
   deleteDialog.value = true

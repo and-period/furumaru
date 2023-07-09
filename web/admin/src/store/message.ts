@@ -1,16 +1,12 @@
 import { defineStore } from 'pinia'
 
 import { apiClient } from '~/plugins/api-client'
-import {
-  MessageResponse,
-  MessagesResponse,
-  MessagesResponseMessagesInner
-} from '~/types/api'
+import { Message, MessagesResponse } from '~/types/api'
 
 export const useMessageStore = defineStore('message', {
   state: () => ({
-    message: {} as MessageResponse,
-    messages: [] as Array<MessagesResponseMessagesInner>,
+    message: {} as Message,
+    messages: [] as Message[],
     total: 0,
     hasUnread: false
   }),
@@ -55,10 +51,10 @@ export const useMessageStore = defineStore('message', {
     async fetchMessage (messageId = ''): Promise<void> {
       try {
         const res = await apiClient.messageApi().v1GetMessage(messageId)
-        const message = res.data || {}
+        const message = res.data.message || {}
 
-        this.message = res.data
-        this.messages.forEach((v: MessagesResponseMessagesInner, i: number) => {
+        this.message = message
+        this.messages.forEach((v: Message, i: number) => {
           if (v.id === message.id) {
             this.messages[i].read = true
           }

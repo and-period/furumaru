@@ -2,9 +2,9 @@
 import { mdiPlus } from '@mdi/js'
 
 import { useVuelidate } from '@vuelidate/core'
-import { Category } from '~/types/props'
+import { VTabs } from 'vuetify/lib/components/index.mjs'
 import { AlertType } from '~/lib/hooks'
-import { CreateCategoryRequest, CategoriesResponseCategoriesInner, ProductTypesResponseProductTypesInner, CreateProductTypeRequest } from '~/types/api'
+import { CreateCategoryRequest, Category, ProductType, CreateProductTypeRequest } from '~/types/api'
 import {
   required,
   getErrorMessage,
@@ -33,7 +33,7 @@ const props = defineProps({
     default: false
   },
   categories: {
-    type: Array<CategoriesResponseCategoriesInner>,
+    type: Array<Category>,
     default: () => []
   },
   categoryFormData: {
@@ -55,7 +55,7 @@ const props = defineProps({
     default: false
   },
   productTypes: {
-    type: Array<ProductTypesResponseProductTypesInner>,
+    type: Array<ProductType>,
     default: () => []
   },
   productTypeFormData: {
@@ -91,7 +91,7 @@ const emits = defineEmits<{
   (e: 'submit:product-type', categoryId: string): void
 }>()
 
-const tabs: Category[] = [
+const tabs: VTabs[] = [
   { name: 'カテゴリー', value: 'categories' },
   { name: '品目', value: 'productTypes' }
 ]

@@ -2,7 +2,7 @@
 import useVuelidate from '@vuelidate/core'
 import { AlertType } from '~/lib/hooks'
 import { getErrorMessage, maxLength, required, tel } from '~/lib/validations'
-import { AdminStatus, AdministratorResponse, UpdateAdministratorRequest } from '~/types/api'
+import { AdminStatus, Administrator, UpdateAdministratorRequest } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -22,8 +22,8 @@ const props = defineProps({
     default: ''
   },
   administrator: {
-    type: Object as PropType<AdministratorResponse>,
-    default: (): AdministratorResponse => ({
+    type: Object as PropType<Administrator>,
+    default: (): Administrator => ({
       id: '',
       status: AdminStatus.UNKNOWN,
       lastname: '',
@@ -49,7 +49,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:administrator', administrator: AdministratorResponse): void
+  (e: 'update:administrator', administrator: Administrator): void
   (e: 'update:form-data', formData: UpdateAdministratorRequest): void
   (e: 'submit'): void
 }>()
@@ -65,7 +65,7 @@ const formDataValue = computed({
   get: (): UpdateAdministratorRequest => props.formData,
   set: (formData: UpdateAdministratorRequest): void => emit('update:form-data', formData)
 })
-const administratorValue = computed((): AdministratorResponse => {
+const administratorValue = computed((): Administrator => {
   return props.administrator
 })
 

@@ -5,15 +5,15 @@ import {
   CreatePromotionRequest,
   PromotionResponse,
   PromotionsResponse,
-  PromotionsResponsePromotionsInner,
+  Promotion,
   UpdatePromotionRequest
 } from '~/types/api'
 import { apiClient } from '~/plugins/api-client'
 
 export const usePromotionStore = defineStore('promotion', {
   state: () => ({
-    promotion: {} as PromotionResponse,
-    promotions: [] as PromotionsResponse['promotions'],
+    promotion: {} as Promotion,
+    promotions: [] as Promotion[],
     total: 0
   }),
   actions: {
@@ -41,14 +41,14 @@ export const usePromotionStore = defineStore('promotion', {
     async searchPromotions (name = '', promotionIds: string[] = []): Promise<void> {
       try {
         const res = await apiClient.promotionApi().v1ListPromotions(undefined, undefined, name)
-        const promotions: PromotionsResponsePromotionsInner[] = []
-        this.promotions.forEach((promotion: PromotionsResponsePromotionsInner): void => {
+        const promotions: Promotion[] = []
+        this.promotions.forEach((promotion: Promotion): void => {
           if (!promotionIds.includes(promotion.id)) {
             return
           }
           promotions.push(promotion)
         })
-        res.data.promotions.forEach((promotion: PromotionsResponsePromotionsInner): void => {
+        res.data.promotions.forEach((promotion: Promotion): void => {
           if (promotions.find((v): boolean => v.id === promotion.id)) {
             return
           }
@@ -69,7 +69,7 @@ export const usePromotionStore = defineStore('promotion', {
     async getPromotion (promotionId: string): Promise<PromotionResponse> {
       try {
         const res = await apiClient.promotionApi().v1GetPromotion(promotionId)
-        this.promotion = res.data
+        this.promotion = res.data.promotion
         return res.data
       } catch (err) {
         return this.errorHandler(err)

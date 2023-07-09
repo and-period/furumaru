@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { mdiPlus } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
-import { dateTimeFormatter, moneyFormat } from '~/lib/formatter'
+import { dateTimeFormatter } from '~/lib/formatter'
 import { AlertType } from '~/lib/hooks'
-import { ShippingsResponseShippingsInner } from '~/types/api'
+import { Shipping } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -23,7 +23,7 @@ const props = defineProps({
     default: ''
   },
   shippings: {
-    type: Array<ShippingsResponseShippingsInner>,
+    type: Array<Shipping>,
     default: () => []
   },
   tableItemsPerPage: {

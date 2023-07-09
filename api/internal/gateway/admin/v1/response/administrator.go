@@ -17,7 +17,7 @@ type Administrator struct {
 }
 
 type AdministratorResponse struct {
-	*Administrator
+	Administrator *Administrator `json:"administrator"` // システム管理者情報
 }
 
 type AdministratorsResponse struct {

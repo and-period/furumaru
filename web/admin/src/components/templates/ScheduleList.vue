@@ -4,7 +4,7 @@ import { unix } from 'dayjs'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { getResizedImages } from '~/lib/helpers'
 import { AlertType } from '~/lib/hooks'
-import { ScheduleStatus, SchedulesResponseSchedulesInner } from '~/types/api'
+import { Coordinator, ScheduleStatus, Schedule, Shipping } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -31,8 +31,16 @@ const props = defineProps({
     type: Array as PropType<VDataTable['sortBy']>,
     default: () => []
   },
+  coordinators: {
+    type: Array<Coordinator>,
+    default: () => []
+  },
   schedules: {
-    type: Array<SchedulesResponseSchedulesInner>,
+    type: Array<Schedule>,
+    default: () => []
+  },
+  shippings: {
+    type: Array<Shipping>,
     default: () => []
   },
   tableItemsPerPage: {
@@ -87,18 +95,25 @@ const headers: VDataTable['headers'] = [
   }
 ]
 
-const selectedItem = ref<SchedulesResponseSchedulesInner>()
+const selectedItem = ref<Schedule>()
 
 const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
   set: (val: boolean): void => emit('update:delete-dialog', val)
 })
 
-const getThumbnail = (schedule: SchedulesResponseSchedulesInner): string => {
+const getCoordinatorName = (coordinatorId: string): string => {
+  const coordinator = props.coordinators.find((coordinator: Coordinator): boolean => {
+    return coordinator.id === coordinatorId
+  })
+  return coordinator ? coordinator.username : ''
+}
+
+const getThumbnail = (schedule: Schedule): string => {
   return schedule.thumbnailUrl || ''
 }
 
-const getResizedThumbnails = (schedule: SchedulesResponseSchedulesInner): string => {
+const getResizedThumbnails = (schedule: Schedule): string => {
   if (!schedule.thumbnails) {
     return ''
   }
@@ -143,7 +158,7 @@ const getDay = (unixTime: number): string => {
   return unix(unixTime).format('YYYY/MM/DD HH:mm')
 }
 
-const getTerm = (schedule: SchedulesResponseSchedulesInner): string => {
+const getTerm = (schedule: Schedule): string => {
   return `${getDay(schedule.startAt)} ~ ${getDay(schedule.endAt)}`
 }
 
@@ -151,7 +166,7 @@ const onClickRow = (scheduleId: string): void => {
   emit('click:row', scheduleId)
 }
 
-const onClickOpenDeleteDialog = (schedule: SchedulesResponseSchedulesInner): void => {
+const onClickOpenDeleteDialog = (schedule: Schedule): void => {
   selectedItem.value = schedule
   deleteDialogValue.value = true
 }
@@ -218,6 +233,9 @@ const onClickDelete = (): void => {
           <v-chip :color="getStatusColor(item.raw.status)">
             {{ getStatus(item.raw.status) }}
           </v-chip>
+        </template>
+        <template #[`item.coordinatorName`]="{ item }">
+          {{ getCoordinatorName(item.raw.coordinatorId) }}
         </template>
         <template #[`item.term`]="{ item }">
           {{ getTerm(item.raw) }}

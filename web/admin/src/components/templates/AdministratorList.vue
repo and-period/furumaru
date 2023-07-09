@@ -3,7 +3,7 @@ import { mdiDelete, mdiPlus } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import { AlertType } from '~/lib/hooks'
-import { AdministratorsResponseAdministratorsInner } from '~/types/api'
+import { Administrator } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -27,7 +27,7 @@ const props = defineProps({
     default: ''
   },
   administrators: {
-    type: Array<AdministratorsResponseAdministratorsInner>,
+    type: Array<Administrator>,
     default: () => []
   },
   tableItemsPerPage: {
@@ -69,14 +69,14 @@ const headers: VDataTable['headers'] = [
   }
 ]
 
-const selectedItem = ref<AdministratorsResponseAdministratorsInner>()
+const selectedItem = ref<Administrator>()
 
 const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
   set: (val: boolean): void => emit('update:delete-dialog', val)
 })
 
-const getName = (administrator?: AdministratorsResponseAdministratorsInner): string => {
+const getName = (administrator?: Administrator): string => {
   if (!administrator) {
     return ''
   }
@@ -95,7 +95,7 @@ const onClickRow = (promotionId: string): void => {
   emit('click:row', promotionId)
 }
 
-const onClickOpenDeleteDialog = (administrator: AdministratorsResponseAdministratorsInner): void => {
+const onClickOpenDeleteDialog = (administrator: Administrator): void => {
   selectedItem.value = administrator
   deleteDialogValue.value = true
 }

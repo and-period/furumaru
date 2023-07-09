@@ -95,10 +95,11 @@ func (h *handler) ListNotifications(ctx *gin.Context) {
 	}
 
 	snotifications := service.NewNotifications(notifications)
-	snotifications.Fill(admins.Map(), promotions.Map())
+	snotifications.Fill(promotions.Map())
 
 	res := &response.NotificationsResponse{
 		Notifications: snotifications.Response(),
+		Admins:        admins.Response(),
 		Total:         total,
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -136,10 +137,11 @@ func (h *handler) GetNotification(ctx *gin.Context) {
 	}
 
 	snotification := service.NewNotification(notification)
-	snotification.Fill(admin, promotion)
+	snotification.Fill(promotion)
 
 	res := &response.NotificationResponse{
 		Notification: snotification.Response(),
+		Admin:        admin.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

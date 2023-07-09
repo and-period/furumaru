@@ -52,12 +52,11 @@ func (h *handler) ListProductTypes(ctx *gin.Context) {
 		Offset:     offset,
 		Orders:     orders,
 	}
-	sproductTypes, total, err := h.store.ListProductTypes(ctx, typesIn)
+	productTypes, total, err := h.store.ListProductTypes(ctx, typesIn)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
-	productTypes := service.NewProductTypes(sproductTypes)
 	if len(productTypes) == 0 {
 		res := &response.ProductTypesResponse{
 			ProductTypes: []*response.ProductType{},
@@ -71,10 +70,10 @@ func (h *handler) ListProductTypes(ctx *gin.Context) {
 		httpError(ctx, err)
 		return
 	}
-	productTypes.Fill(categories.Map())
 
 	res := &response.ProductTypesResponse{
-		ProductTypes: productTypes.Response(),
+		ProductTypes: service.NewProductTypes(productTypes).Response(),
+		Categories:   categories.Response(),
 		Total:        total,
 	}
 	ctx.JSON(http.StatusOK, res)

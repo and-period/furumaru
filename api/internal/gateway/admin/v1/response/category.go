@@ -9,7 +9,7 @@ type Category struct {
 }
 
 type CategoryResponse struct {
-	*Category
+	Category *Category `json:"category"` // 商品種別情報
 }
 
 type CategoriesResponse struct {

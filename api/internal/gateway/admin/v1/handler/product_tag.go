@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -132,4 +133,18 @@ func (h *handler) DeleteProductTag(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) multiGetProductTags(ctx context.Context, productTagIDs []string) (service.ProductTags, error) {
+	if len(productTagIDs) == 0 {
+		return service.ProductTags{}, nil
+	}
+	in := &store.MultiGetProductTagsInput{
+		ProductTagIDs: productTagIDs,
+	}
+	productTags, err := h.store.MultiGetProductTags(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewProductTags(productTags), nil
 }

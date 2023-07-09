@@ -4,7 +4,7 @@ import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import { getResizedImages } from '~/lib/helpers'
 import { AlertType } from '~/lib/hooks'
-import { AdminStatus, ProducersResponseProducersInner } from '~/types/api'
+import { AdminStatus, Coordinator, Producer } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -28,7 +28,11 @@ const props = defineProps({
     default: ''
   },
   producers: {
-    type: Array<ProducersResponseProducersInner>,
+    type: Array<Producer>,
+    default: () => []
+  },
+  coordinators: {
+    type: Array<Coordinator>,
     default: () => []
   },
   tableItemsPerPage: {
@@ -88,12 +92,19 @@ const headers: VDataTable['headers'] = [
   }
 ]
 
-const selectedItem = ref<ProducersResponseProducersInner>()
+const selectedItem = ref<Producer>()
 
 const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
   set: (val: boolean): void => emit('update:delete-dialog', val)
 })
+
+const getCoordinatorName = (coordinatorId: string) => {
+  const coordinator = props.coordinators.find((coordinator: Coordinator): boolean => {
+    return coordinator.id === coordinatorId
+  })
+  return coordinator ? coordinator.username : ''
+}
 
 const getStatus = (status: AdminStatus): string => {
   switch (status) {
@@ -121,21 +132,21 @@ const getStatusColor = (status: AdminStatus): string => {
   }
 }
 
-const producerName = (producer?: ProducersResponseProducersInner): string => {
+const producerName = (producer?: Producer): string => {
   if (!producer) {
     return ''
   }
   return `${producer.lastname} ${producer.firstname}`
 }
 
-const getImages = (producer: ProducersResponseProducersInner): string => {
+const getImages = (producer: Producer): string => {
   if (!producer.thumbnails) {
     return ''
   }
   return getResizedImages(producer.thumbnails)
 }
 
-const onClickOpenDeleteDialog = (producer: ProducersResponseProducersInner): void => {
+const onClickOpenDeleteDialog = (producer: Producer): void => {
   selectedItem.value = producer
   deleteDialogValue.value = true
 }
@@ -217,6 +228,9 @@ const onClickDelete = (): void => {
             />
             <v-icon v-else :icon="mdiAccount" />
           </v-avatar>
+        </template>
+        <template #[`item.coordinatorName`]="{ item }">
+          {{ getCoordinatorName(item.raw.coordinatorId) }}
         </template>
         <template #[`item.phoneNumber`]="{ item }">
           {{ convertI18nToJapanesePhoneNumber(item.raw.phoneNumber) }}

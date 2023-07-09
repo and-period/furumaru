@@ -1,18 +1,18 @@
 import { defineStore } from 'pinia'
 
 import { useCommonStore } from './common'
+import { useAdminStore } from './admin'
 import {
   CreateNotificationRequest,
-  NotificationResponse,
-  NotificationsResponse,
+  Notification,
   UpdateNotificationRequest
 } from '~/types/api'
 import { apiClient } from '~/plugins/api-client'
 
 export const useNotificationStore = defineStore('notification', {
   state: () => ({
-    notification: {} as NotificationResponse,
-    notifications: [] as NotificationsResponse['notifications'],
+    notification: {} as Notification,
+    notifications: [] as Notification[],
     totalItems: 0
   }),
   actions: {
@@ -26,10 +26,11 @@ export const useNotificationStore = defineStore('notification', {
     async fetchNotifications (limit = 20, offset = 0, orders = []): Promise<void> {
       try {
         const res = await apiClient.notificationApi().v1ListNotifications(limit, offset, undefined, undefined, orders.join(''))
-        const { notifications, total }: NotificationsResponse = res.data
 
-        this.notifications = notifications
-        this.totalItems = total
+        const adminStore = useAdminStore()
+        this.notifications = res.data.notifications
+        this.totalItems = res.data.total
+        adminStore.admins = res.data.admins
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -40,11 +41,14 @@ export const useNotificationStore = defineStore('notification', {
      * @param id お知らせID
      * @returns お知らせ情報
      */
-    async getNotification (id: string): Promise<NotificationResponse> {
+    async getNotification (id: string): Promise<Notification> {
       try {
         const res = await apiClient.notificationApi().v1GetNotification(id)
-        this.notification = res.data
-        return res.data
+
+        const adminStore = useAdminStore()
+        this.notification = res.data.notification
+        adminStore.admin = res.data.admin
+        return res.data.notification
       } catch (err) {
         return this.errorHandler(err)
       }

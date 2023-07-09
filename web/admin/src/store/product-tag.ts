@@ -1,11 +1,11 @@
 import { useCommonStore } from './common'
-import { CreateProductTagRequest, ProductTagResponse, ProductTagsResponse, ProductTagsResponseProductTagsInner, UpdateProductTagRequest } from '~/types/api'
+import { CreateProductTagRequest, ProductTag, UpdateProductTagRequest } from '~/types/api'
 import { apiClient } from '~/plugins/api-client'
 
 export const useProductTagStore = defineStore('productTag', {
   state: () => ({
-    productTag: {} as ProductTagResponse,
-    productTags: [] as ProductTagsResponse['productTags'],
+    productTag: {} as ProductTag,
+    productTags: [] as ProductTag[],
     total: 0
   }),
 
@@ -34,14 +34,14 @@ export const useProductTagStore = defineStore('productTag', {
     async searchProductTags (name = '', productTagIds: string[] = []): Promise<void> {
       try {
         const res = await apiClient.productTagApi().v1ListProductTags(undefined, undefined, name)
-        const productTags: ProductTagsResponseProductTagsInner[] = []
-        this.productTags.forEach((productTag: ProductTagsResponseProductTagsInner): void => {
+        const productTags: ProductTag[] = []
+        this.productTags.forEach((productTag: ProductTag): void => {
           if (!productTagIds.includes(productTag.id)) {
             return
           }
           productTags.push(productTag)
         })
-        res.data.productTags.forEach((productTag: ProductTagsResponseProductTagsInner): void => {
+        res.data.productTags.forEach((productTag: ProductTag): void => {
           if (productTags.find((v): boolean => v.id === productTag.id)) {
             return
           }
@@ -62,7 +62,7 @@ export const useProductTagStore = defineStore('productTag', {
       const commonStore = useCommonStore()
       try {
         const res = await apiClient.productTagApi().v1CreateProductTag(payload)
-        this.productTags.unshift(res.data)
+        this.productTags.unshift(res.data.productTag)
         commonStore.addSnackbar({
           message: '商品タグを追加しました。',
           color: 'info'

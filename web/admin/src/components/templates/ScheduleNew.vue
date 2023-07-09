@@ -3,7 +3,7 @@ import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 import { AlertType } from '~/lib/hooks'
 import { getErrorMessage, maxLength, required } from '~/lib/validations'
-import { CreateScheduleRequest, ShippingsResponseShippingsInner } from '~/types/api'
+import { CreateScheduleRequest, Shipping } from '~/types/api'
 import { ImageUploadStatus, ScheduleTime } from '~/types/props'
 
 const props = defineProps({
@@ -39,7 +39,7 @@ const props = defineProps({
     })
   },
   shippings: {
-    type: Array<ShippingsResponseShippingsInner>,
+    type: Array<Shipping>,
     default: () => []
   },
   thumbnailUploadStatus: {

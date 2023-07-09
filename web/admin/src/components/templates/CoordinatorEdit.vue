@@ -2,7 +2,7 @@
 import useVuelidate from '@vuelidate/core'
 import { mdiFacebook, mdiInstagram } from '@mdi/js'
 import { AlertType } from '~/lib/hooks'
-import { UpdateCoordinatorRequest, ProductTypesResponseProductTypesInner, CoordinatorResponse, AdminStatus, Prefecture } from '~/types/api'
+import { UpdateCoordinatorRequest, ProductType, Coordinator, AdminStatus, Prefecture } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 import { getErrorMessage, kana, maxLength, required, tel } from '~/lib/validations'
 
@@ -49,8 +49,8 @@ const props = defineProps({
     })
   },
   coordinator: {
-    type: Object as PropType<CoordinatorResponse>,
-    default: (): CoordinatorResponse => ({
+    type: Object as PropType<Coordinator>,
+    default: (): Coordinator => ({
       id: '',
       status: AdminStatus.UNKNOWN,
       lastname: '',
@@ -81,7 +81,7 @@ const props = defineProps({
     })
   },
   productTypes: {
-    type: Array<ProductTypesResponseProductTypesInner>,
+    type: Array<ProductType>,
     default: () => []
   },
   thumbnailUploadStatus: {

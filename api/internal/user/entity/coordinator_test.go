@@ -188,3 +188,41 @@ func TestCoordinators_IDs(t *testing.T) {
 		})
 	}
 }
+
+func TestCoordinators_ProductTypeIDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name         string
+		coordinators Coordinators
+		expect       []string
+	}{
+		{
+			name: "success",
+			coordinators: Coordinators{
+				{
+					AdminID:        "coordinator-id01",
+					ProductTypeIDs: []string{"product-type-id01"},
+				},
+				{
+					AdminID:        "coordinator-id02",
+					ProductTypeIDs: []string{},
+				},
+				{
+					AdminID:        "coordinator-id03",
+					ProductTypeIDs: []string{"product-type-id01", "product-type-id02"},
+				},
+			},
+			expect: []string{
+				"product-type-id01",
+				"product-type-id02",
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.ElementsMatch(t, tt.expect, tt.coordinators.ProductTypeIDs())
+		})
+	}
+}

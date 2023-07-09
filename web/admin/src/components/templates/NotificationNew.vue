@@ -4,7 +4,7 @@ import dayjs, { unix } from 'dayjs'
 
 import { AlertType } from '~/lib/hooks'
 import { getErrorMessage, maxLength, required } from '~/lib/validations'
-import { CreateNotificationRequest, DiscountType, NotificationTarget, NotificationType, PromotionsResponsePromotionsInner } from '~/types/api'
+import { CreateNotificationRequest, DiscountType, NotificationTarget, NotificationType, Promotion } from '~/types/api'
 import { NotificationTime } from '~/types/props'
 
 const props = defineProps({
@@ -37,8 +37,8 @@ const props = defineProps({
     })
   },
   promotions: {
-    type: Array<PromotionsResponsePromotionsInner>,
-    default: (): PromotionsResponsePromotionsInner[] => []
+    type: Array<Promotion>,
+    default: (): Promotion[] => []
   }
 })
 
@@ -62,7 +62,7 @@ const targetList = [
   { title: '管理者', value: NotificationTarget.ADMINISTRATORS }
 ]
 
-const selectedPromotion = ref<PromotionsResponsePromotionsInner>()
+const selectedPromotion = ref<Promotion>()
 
 const formDataRules = computed(() => ({
   type: { required },

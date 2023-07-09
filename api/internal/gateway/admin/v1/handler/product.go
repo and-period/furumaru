@@ -94,27 +94,50 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		}
 		in.ProducerIDs = producers.IDs()
 	}
-	sproducts, total, err := h.store.ListProducts(ctx, in)
+	products, total, err := h.store.ListProducts(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
-	products := service.NewProducts(sproducts)
 	if len(products) == 0 {
 		res := &response.ProductsResponse{
-			Products: products.Response(),
+			Products: []*response.Product{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
 	}
-	if err := h.getProductsDetails(ctx, products...); err != nil {
-		httpError(ctx, err)
+
+	var (
+		producers    service.Producers
+		categories   service.Categories
+		productTypes service.ProductTypes
+		productTags  service.ProductTags
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		producers, err = h.multiGetProducers(ectx, products.ProducerIDs())
 		return
-	}
+	})
+	eg.Go(func() (err error) {
+		productTypes, err = h.multiGetProductTypes(ectx, products.ProductTypeIDs())
+		if err != nil || len(productTypes) == 0 {
+			return
+		}
+		categories, err = h.multiGetCategories(ectx, productTypes.CategoryIDs())
+		return
+	})
+	eg.Go(func() (err error) {
+		productTags, err = h.multiGetProductTags(ectx, products.ProductTagIDs())
+		return
+	})
 
 	res := &response.ProductsResponse{
-		Products: products.Response(),
-		Total:    total,
+		Products:     service.NewProducts(products).Response(),
+		Producers:    producers.Response(),
+		Categories:   categories.Response(),
+		ProductTypes: productTypes.Response(),
+		ProductTags:  productTags.Response(),
+		Total:        total,
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -152,8 +175,40 @@ func (h *handler) GetProduct(ctx *gin.Context) {
 		return
 	}
 
+	var (
+		producer    *service.Producer
+		category    *service.Category
+		productType *service.ProductType
+		productTags service.ProductTags
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		producer, err = h.getProducer(ectx, product.ProducerID)
+		return
+	})
+	eg.Go(func() (err error) {
+		productType, err = h.getProductType(ectx, product.ProductTypeID)
+		if err != nil {
+			return
+		}
+		category, err = h.getCategory(ectx, productType.ID)
+		return
+	})
+	eg.Go(func() (err error) {
+		productTags, err = h.multiGetProductTags(ectx, product.ProductTagIDs)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
 	res := &response.ProductResponse{
-		Product: product.Response(),
+		Product:     product.Response(),
+		Producer:    producer.Response(),
+		Category:    category.Response(),
+		ProductType: productType.Response(),
+		ProductTags: productTags.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -177,7 +232,9 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 
 	var (
 		producer    *service.Producer
+		category    *service.Category
 		productType *service.ProductType
+		productTags service.ProductTags
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
@@ -185,12 +242,24 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		return
 	})
 	eg.Go(func() (err error) {
-		productType, err = h.getProductType(ctx, req.TypeID)
+		productType, err = h.getProductType(ectx, req.TypeID)
+		if err != nil {
+			return
+		}
+		category, err = h.getCategory(ectx, productType.ID)
+		return
+	})
+	eg.Go(func() (err error) {
+		productTags, err = h.multiGetProductTags(ectx, req.TagIDs)
 		return
 	})
 	err := eg.Wait()
 	if errors.Is(err, exception.ErrNotFound) {
 		badRequest(ctx, err)
+		return
+	}
+	if len(productTags) != len(req.TagIDs) {
+		badRequest(ctx, errors.New("handler: unmatch product tags"))
 		return
 	}
 	if err != nil {
@@ -257,12 +326,13 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		httpError(ctx, err)
 		return
 	}
-	product := service.NewProduct(sproduct)
-
-	product.Fill(productType, producer)
 
 	res := &response.ProductResponse{
-		Product: product.Response(),
+		Product:     service.NewProduct(sproduct).Response(),
+		Producer:    producer.Response(),
+		Category:    category.Response(),
+		ProductType: productType.Response(),
+		ProductTags: productTags.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -274,7 +344,35 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 		return
 	}
 
+	var productTags service.ProductTags
 	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		productType, err := h.getProductType(ectx, req.TypeID)
+		if err != nil {
+			return err
+		}
+		_, err = h.getCategory(ectx, productType.ID)
+		return err
+	})
+	eg.Go(func() (err error) {
+		productTags, err = h.multiGetProductTags(ectx, req.TagIDs)
+		return
+	})
+	err := eg.Wait()
+	if errors.Is(err, exception.ErrNotFound) {
+		badRequest(ctx, err)
+		return
+	}
+	if len(productTags) != len(req.TagIDs) {
+		badRequest(ctx, errors.New("handler: unmatch product tags"))
+		return
+	}
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	eg, ectx = errgroup.WithContext(ctx)
 	productMedia := make([]*store.UpdateProductMedia, len(req.Media))
 	for i := range req.Media {
 		i := i
@@ -360,6 +458,7 @@ func (h *handler) DeleteProduct(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
+//nolint:unused
 func (h *handler) multiGetProducts(ctx context.Context, productIDs []string) (service.Products, error) {
 	if len(productIDs) == 0 {
 		return service.Products{}, nil
@@ -371,14 +470,7 @@ func (h *handler) multiGetProducts(ctx context.Context, productIDs []string) (se
 	if err != nil {
 		return nil, err
 	}
-	products := service.NewProducts(sproducts)
-	if len(products) == 0 {
-		return products, nil
-	}
-	if err := h.getProductsDetails(ctx, products...); err != nil {
-		return nil, err
-	}
-	return products, nil
+	return service.NewProducts(sproducts), nil
 }
 
 func (h *handler) getProduct(ctx context.Context, productID string) (*service.Product, error) {
@@ -389,31 +481,5 @@ func (h *handler) getProduct(ctx context.Context, productID string) (*service.Pr
 	if err != nil {
 		return nil, err
 	}
-	product := service.NewProduct(sproduct)
-	if err := h.getProductsDetails(ctx, product); err != nil {
-		return nil, err
-	}
-	return product, nil
-}
-
-func (h *handler) getProductsDetails(ctx context.Context, products ...*service.Product) error {
-	ps := service.Products(products)
-	var (
-		producers service.Producers
-		types     service.ProductTypes
-	)
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() (err error) {
-		producers, err = h.multiGetProducers(ectx, ps.ProducerIDs())
-		return
-	})
-	eg.Go(func() (err error) {
-		types, err = h.multiGetProductTypes(ectx, ps.ProductTypeIDs())
-		return
-	})
-	if err := eg.Wait(); err != nil {
-		return err
-	}
-	ps.Fill(types.Map(), producers.Map())
-	return nil
+	return service.NewProduct(sproduct), nil
 }

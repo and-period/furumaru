@@ -1,30 +1,16 @@
 categoryResponse:
   type: object
   properties:
-    id:
-      type: string
-      description: 商品種別ID
-    name:
-      type: string
-      description: カテゴリ名
-    createdAt:
-      type: integer
-      format: int64
-      description: 登録日時 (unixtime)
-    updatedAt:
-      type: integer
-      format: int64
-      description: 更新日時 (unixtime)
+    category:
+      $ref: './../../../openapi.yaml#/components/schemas/category'
   required:
-  - id
-  - name
-  - createdAt
-  - updatedAt
+  - category
   example:
-    id: 'kSByoE6FetnPs5Byk3a9Zx'
-    name: '野菜'
-    createdAt: 1640962800
-    updatedAt: 1640962800
+    category:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: '野菜'
+      createdAt: 1640962800
+      updatedAt: 1640962800
 categoriesResponse:
   type: object
   properties:
@@ -32,27 +18,7 @@ categoriesResponse:
       type: array
       description: 商品種別一覧
       items:
-        type: object
-        properties:
-          id:
-            type: string
-            description: 商品種別ID
-          name:
-            type: string
-            description: カテゴリ名
-          createdAt:
-            type: integer
-            format: int64
-            description: 登録日時 (unixtime)
-          updatedAt:
-            type: integer
-            format: int64
-            description: 更新日時 (unixtime)
-        required:
-        - id
-        - name
-        - createdAt
-        - updatedAt
+        $ref: './../../../openapi.yaml#/components/schemas/category'
     total:
       type: integer
       format: int64

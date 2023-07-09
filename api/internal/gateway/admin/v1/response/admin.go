@@ -16,12 +16,3 @@ type Admin struct {
 	CreatedAt     int64            `json:"createdAt"`     // 登録日時
 	UpdatedAt     int64            `json:"updateAt"`      // 更新日時
 }
-
-type AdminResponse struct {
-	*Admin
-}
-
-type AdminsResponse struct {
-	Admins []*Admin `json:"admins"` // 管理者一覧
-	Total  int64    `json:"total"`  // 合計数
-}

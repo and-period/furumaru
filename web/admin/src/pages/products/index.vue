@@ -2,14 +2,22 @@
 import { storeToRefs } from 'pinia'
 
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useProductStore } from '~/store'
+import { useCategoryStore, useProducerStore, useProductStore, useProductTagStore, useProductTypeStore } from '~/store'
 
 const router = useRouter()
+const categoryStore = useCategoryStore()
+const producerStore = useProducerStore()
 const productStore = useProductStore()
+const productTagStore = useProductTagStore()
+const productTypeStore = useProductTypeStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
+const { categories } = storeToRefs(categoryStore)
+const { producers } = storeToRefs(producerStore)
 const { products, totalItems } = storeToRefs(productStore)
+const { productTags } = storeToRefs(productTagStore)
+const { productTypes } = storeToRefs(productTypeStore)
 
 const loading = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
@@ -79,7 +87,11 @@ try {
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
+    :categories="categories"
+    :producers="producers"
     :products="products"
+    :product-tags="productTags"
+    :product-types="productTypes"
     :table-items-per-page="pagination.itemsPerPage.value"
     :table-items-total="totalItems"
     @click:show="handleClickShow"

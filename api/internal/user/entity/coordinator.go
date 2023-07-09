@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/common"
+	"github.com/and-period/furumaru/api/pkg/set"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
@@ -132,4 +133,12 @@ func (cs Coordinators) IDs() []string {
 		res[i] = cs[i].AdminID
 	}
 	return res
+}
+
+func (cs Coordinators) ProductTypeIDs() []string {
+	res := set.NewEmpty[string](len(cs))
+	for i := range cs {
+		res.Add(cs[i].ProductTypeIDs...)
+	}
+	return res.Slice()
 }

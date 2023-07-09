@@ -4,14 +4,14 @@ import { apiClient } from '~/plugins/api-client'
 import {
   CreateShippingRequest,
   ShippingResponse,
-  ShippingsResponseShippingsInner,
+  Shipping,
   UpdateShippingRequest
 } from '~/types/api'
 
 export const useShippingStore = defineStore('shipping', {
   state: () => ({
-    shipping: {} as ShippingResponse,
-    shippings: [] as ShippingsResponseShippingsInner[],
+    shipping: {} as Shipping,
+    shippings: [] as Shipping[],
     totalItems: 0
   }),
 
@@ -43,14 +43,14 @@ export const useShippingStore = defineStore('shipping', {
     async searchCoordinators (name = '', shippingIds: string[] = []): Promise<void> {
       try {
         const res = await apiClient.shippingApi().v1ListShippings(undefined, undefined, name)
-        const shippings: ShippingsResponseShippingsInner[] = []
-        this.shippings.forEach((shipping: ShippingsResponseShippingsInner): void => {
+        const shippings: Shipping[] = []
+        this.shippings.forEach((shipping: Shipping): void => {
           if (!shippingIds.includes(shipping.id)) {
             return
           }
           shippings.push(shipping)
         })
-        res.data.shippings.forEach((shipping: ShippingsResponseShippingsInner): void => {
+        res.data.shippings.forEach((shipping: Shipping): void => {
           if (shippings.find((v): boolean => v.id === shipping.id)) {
             return
           }
@@ -71,7 +71,7 @@ export const useShippingStore = defineStore('shipping', {
     async getShipping (shippingId: string): Promise<ShippingResponse> {
       try {
         const res = await apiClient.shippingApi().v1GetShipping(shippingId)
-        this.shipping = res.data
+        this.shipping = res.data.shipping
         return res.data
       } catch (err) {
         return this.errorHandler(err)

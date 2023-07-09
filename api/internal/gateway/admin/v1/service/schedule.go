@@ -49,9 +49,7 @@ func NewSchedule(schedule *entity.Schedule) *Schedule {
 		Schedule: response.Schedule{
 			ID:              schedule.ID,
 			CoordinatorID:   schedule.CoordinatorID,
-			CoordinatorName: "",
 			ShippingID:      schedule.ShippingID,
-			ShippingName:    "",
 			Status:          NewScheduleStatus(schedule.Status).Response(),
 			Title:           schedule.Title,
 			Description:     schedule.Description,
@@ -69,15 +67,6 @@ func NewSchedule(schedule *entity.Schedule) *Schedule {
 	}
 }
 
-func (s *Schedule) Fill(shipping *Shipping, coordinator *Coordinator) {
-	if shipping != nil {
-		s.ShippingName = shipping.Name
-	}
-	if coordinator != nil {
-		s.CoordinatorName = coordinator.Username
-	}
-}
-
 func (s *Schedule) Response() *response.Schedule {
 	return &s.Schedule
 }
@@ -88,12 +77,6 @@ func NewSchedules(schedules entity.Schedules) Schedules {
 		res[i] = NewSchedule(schedules[i])
 	}
 	return res
-}
-
-func (ss Schedules) Fill(shippings map[string]*Shipping, coordinators map[string]*Coordinator) {
-	for _, s := range ss {
-		s.Fill(shippings[s.ShippingID], coordinators[s.CoordinatorID])
-	}
 }
 
 func (ss Schedules) Response() []*response.Schedule {

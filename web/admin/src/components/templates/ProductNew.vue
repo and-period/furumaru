@@ -4,7 +4,7 @@ import useVuelidate from '@vuelidate/core'
 
 import dayjs, { unix } from 'dayjs'
 import { AlertType } from '~/lib/hooks'
-import { CategoriesResponseCategoriesInner, CreateProductRequest, DeliveryType, Prefecture, ProducersResponseProducersInner, ProductStatus, ProductTagsResponseProductTagsInner, ProductTypesResponseProductTypesInner, StorageMethodType, Weekday } from '~/types/api'
+import { Category, CreateProductRequest, DeliveryType, Prefecture, Producer, ProductStatus, ProductTag, ProductType, StorageMethodType, Weekday } from '~/types/api'
 import { ProductTime } from '~/types/props'
 import {
   required,
@@ -70,19 +70,19 @@ const props = defineProps({
     default: null
   },
   producers: {
-    type: Array<ProducersResponseProducersInner>,
+    type: Array<Producer>,
     default: () => []
   },
   categories: {
-    type: Array<CategoriesResponseCategoriesInner>,
+    type: Array<Category>,
     default: () => []
   },
   productTypes: {
-    type: Array<ProductTypesResponseProductTypesInner>,
+    type: Array<ProductType>,
     default: () => []
   },
   productTags: {
-    type: Array<ProductTagsResponseProductTagsInner>,
+    type: Array<ProductTag>,
     default: () => []
   }
 })

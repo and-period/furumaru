@@ -1,83 +1,39 @@
 notificationResponse:
   type: object
   properties:
-    id:
-      type: string
-      description: お知らせID
-    status:
-      description: お知らせ状態
-      $ref: './../../../openapi.yaml#/components/schemas/notificationStatus'
-    type:
-      description: お知らせ種別
-      $ref: './../../../openapi.yaml#/components/schemas/notificationType'
-    targets:
-      type: array
-      description: 通知対象一覧
-      items:
-        $ref: './../../../openapi.yaml#/components/schemas/notificationTarget'
-    title:
-      type: string
-      description: タイトル
-    body:
-      type: string
-      description: 本文
-    note:
-      type: string
-      description: 備考
-    publishedAt:
-      type: integer
-      format: int64
-      description: 掲載日時 (unixtime)
-    promotionId:
-      type: string
-      description: プロモーションID
-    createdBy:
-      type: string
-      description: 登録者ID
-    creatorName:
-      type: string
-      description: 登録者名
-    updatedBy:
-      type: string
-      description: 更新者ID
-    createdAt:
-      type: integer
-      format: int64
-      description: 登録日時 (unixtime)
-    updatedAt:
-      type: integer
-      format: int64
-      description: 更新日時 (unixtime)
+    notification:
+      $ref: './../../../openapi.yaml#/components/schemas/notification'
+    admin:
+      $ref: './../../../openapi.yaml#/components/schemas/admin'
   required:
-  - id
-  - status
-  - type
-  - targets
-  - title
-  - body
-  - note
-  - publishedAt
-  - promotionId
-  - createdBy
-  - creatorName
-  - updatedBy
-  - createdAt
-  - updatedAt
+  - notification
+  - admin
   example:
-    id: 'kSByoE6FetnPs5Byk3a9Zx'
-    status: 2
-    type: 4
-    targets: [1]
-    title: 'キャベツ祭り開催'
-    body: '旬のキャベツが買い放題'
-    note: '備考'
-    publishedAt: 1640962800
-    promotionId: 'kSByoE6FetnPs5Byk3a9Zx'
-    createdBy: 'kSByoE6FetnPs5Byk3a9Zx'
-    creatorName: 'あんどぴりおど'
-    updatedBy: 'kSByoE6FetnPs5Byk3a9Zx'
-    createdAt: 1640962800
-    updatedAt: 1640962800
+    notification:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      status: 2
+      type: 4
+      targets: [1]
+      title: 'キャベツ祭り開催'
+      body: '旬のキャベツが買い放題'
+      note: '備考'
+      publishedAt: 1640962800
+      promotionId: 'kSByoE6FetnPs5Byk3a9Zx'
+      createdBy: 'kSByoE6FetnPs5Byk3a9Zx'
+      creatorName: 'あんどぴりおど'
+      updatedBy: 'kSByoE6FetnPs5Byk3a9Zx'
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    admin:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      role: 2
+      lastname: '&.'
+      firstname: '管理者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'かんりしゃ'
+      email: 'test-user@and-period.jp'
+      createdAt: 1640962800
+      updatedAt: 1640962800
 notificationsResponse:
   type: object
   properties:
@@ -85,76 +41,19 @@ notificationsResponse:
       type: array
       description: お知らせ一覧
       items:
-        type: object
-        properties:
-          id:
-            type: string
-            description: お知らせID
-          status:
-            description: お知らせ状態
-            $ref: './../../../openapi.yaml#/components/schemas/notificationStatus'
-          type:
-            description: お知らせ種別
-            $ref: './../../../openapi.yaml#/components/schemas/notificationType'
-          targets:
-            type: array
-            description: 通知対象一覧
-            items:
-              $ref: './../../../openapi.yaml#/components/schemas/notificationTarget'
-          title:
-            type: string
-            description: タイトル
-          body:
-            type: string
-            description: 本文
-          note:
-            type: string
-            description: 備考
-          publishedAt:
-            type: integer
-            format: int64
-            description: 掲載日時 (unixtime)
-          promotionId:
-            type: string
-            description: プロモーションID
-          createdBy:
-            type: string
-            description: 登録者ID
-          creatorName:
-            type: string
-            description: 登録者名
-          updatedBy:
-            type: string
-            description: 更新者ID
-          createdAt:
-            type: integer
-            format: int64
-            description: 登録日時 (unixtime)
-          updatedAt:
-            type: integer
-            format: int64
-            description: 更新日時 (unixtime)
-        required:
-        - id
-        - status
-        - type
-        - targets
-        - title
-        - body
-        - note
-        - publishedAt
-        - promotionId
-        - createdBy
-        - creatorName
-        - updatedBy
-        - createdAt
-        - updatedAt
+        $ref: './../../../openapi.yaml#/components/schemas/notification'
+    admins:
+      type: array
+      description: 作成者一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/admin'
     total:
       type: integer
       format: int64
       description: 合計数
   required:
   - notifications
+  - admins
   - total
   example:
     notifications:
@@ -184,6 +83,16 @@ notificationsResponse:
       createdBy: 'kSByoE6FetnPs5Byk3a9Zx'
       creatorName: 'あんどぴりおど'
       updatedBy: 'kSByoE6FetnPs5Byk3a9Zx'
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    admins:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      role: 2
+      lastname: '&.'
+      firstname: '管理者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'かんりしゃ'
+      email: 'test-user@and-period.jp'
       createdAt: 1640962800
       updatedAt: 1640962800
     total: 2

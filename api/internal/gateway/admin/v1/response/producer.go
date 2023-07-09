@@ -7,7 +7,6 @@ type Producer struct {
 	ID                string             `json:"id"`                // 生産者ID
 	Status            entity.AdminStatus `json:"status"`            // 生産者の状態
 	CoordinatorID     string             `json:"coordinatorId"`     // 担当コーディネータID
-	CoordinatorName   string             `json:"coordinatorName"`   // 担当コーディネータ名
 	Lastname          string             `json:"lastname"`          // 姓
 	Firstname         string             `json:"firstname"`         // 名
 	LastnameKana      string             `json:"lastnameKana"`      // 姓(かな)
@@ -34,10 +33,12 @@ type Producer struct {
 }
 
 type ProducerResponse struct {
-	*Producer
+	Producer    *Producer    `json:"producer"`    // 生産者情報
+	Coordinator *Coordinator `json:"coordinator"` // コーディネータ情報
 }
 
 type ProducersResponse struct {
-	Producers []*Producer `json:"producers"` // 生産者一覧
-	Total     int64       `json:"total"`     // 合計数
+	Producers    []*Producer    `json:"producers"`    // 生産者一覧
+	Coordinators []*Coordinator `json:"coordinators"` // コーディネータ一覧
+	Total        int64          `json:"total"`        // 合計数
 }

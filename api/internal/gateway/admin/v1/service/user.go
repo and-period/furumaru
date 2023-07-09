@@ -15,11 +15,11 @@ type User struct {
 
 type Users []*User
 
-type UserList struct {
-	response.UserList
+type UserSummary struct {
+	response.UserSummary
 }
 
-type UserLists []*UserList
+type UserSummaries []*UserSummary
 
 func NewUser(user *uentity.User) *User {
 	return &User{
@@ -83,12 +83,12 @@ func (us Users) Response() []*response.User {
 	return res
 }
 
-func NewUserList(user *User, order *sentity.AggregatedOrder) *UserList {
+func NewUserSummary(user *User, order *sentity.AggregatedOrder) *UserSummary {
 	if order == nil {
 		order = &sentity.AggregatedOrder{}
 	}
-	return &UserList{
-		UserList: response.UserList{
+	return &UserSummary{
+		UserSummary: response.UserSummary{
 			ID:          user.ID,
 			Lastname:    user.Lastname,
 			Firstname:   user.Firstname,
@@ -101,20 +101,20 @@ func NewUserList(user *User, order *sentity.AggregatedOrder) *UserList {
 	}
 }
 
-func (u *UserList) Response() *response.UserList {
-	return &u.UserList
+func (u *UserSummary) Response() *response.UserSummary {
+	return &u.UserSummary
 }
 
-func NewUserLists(users Users, orders map[string]*sentity.AggregatedOrder) UserLists {
-	res := make(UserLists, len(users))
+func NewUserSummaries(users Users, orders map[string]*sentity.AggregatedOrder) UserSummaries {
+	res := make(UserSummaries, len(users))
 	for i := range users {
-		res[i] = NewUserList(users[i], orders[users[i].ID])
+		res[i] = NewUserSummary(users[i], orders[users[i].ID])
 	}
 	return res
 }
 
-func (us UserLists) Response() []*response.UserList {
-	res := make([]*response.UserList, len(us))
+func (us UserSummaries) Response() []*response.UserSummary {
+	res := make([]*response.UserSummary, len(us))
 	for i := range us {
 		res[i] = us[i].Response()
 	}
