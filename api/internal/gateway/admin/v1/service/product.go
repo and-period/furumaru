@@ -178,6 +178,7 @@ func NewProduct(product *entity.Product) *Product {
 		Product: response.Product{
 			ID:                product.ID,
 			ProducerID:        product.ProducerID,
+			CategoryID:        "",
 			ProductTypeID:     product.TypeID,
 			ProductTagIDs:     product.TagIDs,
 			Name:              product.Name,
@@ -208,6 +209,12 @@ func NewProduct(product *entity.Product) *Product {
 			CreatedAt:         product.CreatedAt.Unix(),
 			UpdatedAt:         product.CreatedAt.Unix(),
 		},
+	}
+}
+
+func (p *Product) Fill(category *Category) {
+	if category != nil {
+		p.CategoryID = category.ID
 	}
 }
 
@@ -247,6 +254,16 @@ func (ps Products) Map() map[string]*Product {
 		res[p.ID] = p
 	}
 	return res
+}
+
+func (ps Products) Fill(types map[string]*ProductType, categories map[string]*Category) {
+	for _, p := range ps {
+		typ, ok := types[p.ProductTypeID]
+		if !ok {
+			continue
+		}
+		p.Fill(categories[typ.CategoryID])
+	}
 }
 
 func (ps Products) Response() []*response.Product {

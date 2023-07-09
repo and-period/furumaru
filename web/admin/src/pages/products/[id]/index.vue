@@ -64,12 +64,7 @@ const formData = ref<UpdateProductRequest>({
 
 const fetchState = useAsyncData(async (): Promise<void> => {
   try {
-    await Promise.all([
-      productStore.getProduct(productId),
-      categoryStore.fetchCategories(20, 0),
-      producerStore.fetchProducers(20, 0, ''),
-      productTagStore.fetchProductTags(20, 0, [])
-    ])
+    await productStore.getProduct(productId)
     selectedCategoryId.value = product.value.categoryId
     formData.value = { ...product.value }
   } catch (err) {
@@ -80,8 +75,11 @@ const fetchState = useAsyncData(async (): Promise<void> => {
   }
 })
 
-watch(selectedCategoryId, (): void => {
+watch(selectedCategoryId, (newValue?: string, oldValue?: string): void => {
   productTypeStore.fetchProductTypesByCategoryId(selectedCategoryId.value || '')
+  if (newValue === oldValue) {
+    return
+  }
   formData.value.productTypeId = ''
 })
 

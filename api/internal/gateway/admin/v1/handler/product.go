@@ -130,9 +130,16 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		productTags, err = h.multiGetProductTags(ectx, products.ProductTagIDs())
 		return
 	})
+	if err := eg.Wait(); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	sproducts := service.NewProducts(products)
+	sproducts.Fill(productTypes.Map(), categories.Map())
 
 	res := &response.ProductsResponse{
-		Products:     service.NewProducts(products).Response(),
+		Products:     sproducts.Response(),
 		Producers:    producers.Response(),
 		Categories:   categories.Response(),
 		ProductTypes: productTypes.Response(),
@@ -191,7 +198,7 @@ func (h *handler) GetProduct(ctx *gin.Context) {
 		if err != nil {
 			return
 		}
-		category, err = h.getCategory(ectx, productType.ID)
+		category, err = h.getCategory(ectx, productType.CategoryID)
 		return
 	})
 	eg.Go(func() (err error) {
@@ -202,6 +209,8 @@ func (h *handler) GetProduct(ctx *gin.Context) {
 		httpError(ctx, err)
 		return
 	}
+
+	product.Fill(category)
 
 	res := &response.ProductResponse{
 		Product:     product.Response(),
@@ -246,7 +255,7 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		if err != nil {
 			return
 		}
-		category, err = h.getCategory(ectx, productType.ID)
+		category, err = h.getCategory(ectx, productType.CategoryID)
 		return
 	})
 	eg.Go(func() (err error) {

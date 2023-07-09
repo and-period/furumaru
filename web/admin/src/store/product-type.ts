@@ -44,6 +44,12 @@ export const useProductTypeStore = defineStore('productType', {
      * @returns
      */
     async fetchProductTypesByCategoryId (categoryId: string, limit = 20, offset = 0): Promise<void> {
+      if (categoryId === '') {
+        this.productTypes = []
+        this.totalItems = 0
+        return
+      }
+
       try {
         const res = await apiClient.productTypeApi().v1ListProductTypes(categoryId)
 

@@ -65,8 +65,11 @@ const fetchState = useAsyncData(async (): Promise<void> => {
   ])
 })
 
-watch(selectedCategoryId, (): void => {
+watch(selectedCategoryId, (newValue?: string, oldValue?: string): void => {
   productTypeStore.fetchProductTypesByCategoryId(selectedCategoryId.value || '')
+  if (newValue === oldValue) {
+    return
+  }
   formData.value.productTypeId = ''
 })
 
