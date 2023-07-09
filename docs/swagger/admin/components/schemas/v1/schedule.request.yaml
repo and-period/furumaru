@@ -13,62 +13,45 @@ createScheduleRequest:
     description:
       type: string
       description: 説明(20000文字まで)
-    thumnailURL:
+    thumbnailUrl:
       type: string
       description: サムネイルURL
-    lives:
-      type: array
-      description: ライブ一覧
-      items:
-        type: object
-        properties:
-          title:
-            type: string
-            description: ライブタイトル(128文字まで)
-          description:
-            type: string
-            description: ライブ説明(20000文字まで)
-          producerId:
-            type: string
-            description: 生産者ID
-          productIds:
-            type: array
-            description: 商品ID一覧
-            items:
-              type: string
-              description: 商品ID
-          startAt:
-            type: integer
-            format: int64
-            description: ライブ開始日時
-          endAt:
-            type: integer
-            format: int64
-            description: ライブ終了日時
-        required:
-          - title
-          - description
-          - producerId
-          - productIds
-          - startAt
-          - endAt
+    imageUrl:
+      type: string
+      description: 蓋絵URL
+    openingVideoUrl:
+      type: string
+      description: オープニングURL
+    public:
+      type: boolean
+      description: 公開フラグ
+    startAt:
+      type: integer
+      format: int64
+      description: マルシェ開始日時
+    endAt:
+      type: integer
+      format: int64
+      description: マルシェ終了日時
   required:
   - coordinatorId
   - shippingId
   - title
   - description
-  - thumnailURL
-  - lives
+  - thumbnailUrl
+  - imageUrl
+  - openingVideoUrl
+  - public
+  - startAt
+  - endAt
   example:
     coordinatorId: 'coordinator-id'
     shippingId: 'shipping-id'
     title: 'スケジュールタイトル'
     description: 'スケジュールの説明'
-    thumnailURL: 'https://and-period.jp/thumbnail01.png'
-    lives:
-      - title: 'ライブタイトル'
-        description: 'ライブ説明'
-        producerId: 'kSByoE6FetnPs5Byk3a9Zx'
-        productIds: ['product-id']
-        startAt: 1640962800
-        endAt: 1640962800
+    thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+    imageUrl: 'https://and-period.jp/image.png'
+    openingVideoUrl: 'https://and-period.jp/opening-video.mp4'
+    public: true
+    startAt: 1640962800
+    endAt: 1640962800

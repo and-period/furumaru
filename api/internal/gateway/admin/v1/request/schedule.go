@@ -5,7 +5,7 @@ type CreateScheduleRequest struct {
 	ShippingID      string `json:"shippingId,omitempty"`      // 配送設定ID
 	Title           string `json:"title,omitempty"`           // タイトル
 	Description     string `json:"description,omitempty"`     // 説明
-	ThumbnailURL    string `json:"thumnailUrl,omitempty"`     // サムネイルURL
+	ThumbnailURL    string `json:"thumbnailUrl,omitempty"`    // サムネイルURL
 	ImageURL        string `json:"imageUrl,omitempty"`        // 蓋絵URL
 	OpeningVideoURL string `json:"openingVideoUrl,omitempty"` // オープニング動画URL
 	Public          bool   `json:"public,omitempty"`          // 公開フラグ

@@ -1878,54 +1878,35 @@ export interface CreateScheduleRequest {
      * @type {string}
      * @memberof CreateScheduleRequest
      */
-    'thumnailURL': string;
+    'thumbnailUrl': string;
     /**
-     * ライブ一覧
-     * @type {Array<CreateScheduleRequestLivesInner>}
+     * 蓋絵URL
+     * @type {string}
      * @memberof CreateScheduleRequest
      */
-    'lives': Array<CreateScheduleRequestLivesInner>;
-}
-/**
- * 
- * @export
- * @interface CreateScheduleRequestLivesInner
- */
-export interface CreateScheduleRequestLivesInner {
+    'imageUrl': string;
     /**
-     * ライブタイトル(128文字まで)
+     * オープニングURL
      * @type {string}
-     * @memberof CreateScheduleRequestLivesInner
+     * @memberof CreateScheduleRequest
      */
-    'title': string;
+    'openingVideoUrl': string;
     /**
-     * ライブ説明(20000文字まで)
-     * @type {string}
-     * @memberof CreateScheduleRequestLivesInner
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof CreateScheduleRequest
      */
-    'description': string;
+    'public': boolean;
     /**
-     * 生産者ID
-     * @type {string}
-     * @memberof CreateScheduleRequestLivesInner
-     */
-    'producerId': string;
-    /**
-     * 商品ID一覧
-     * @type {Array<string>}
-     * @memberof CreateScheduleRequestLivesInner
-     */
-    'productIds': Array<string>;
-    /**
-     * ライブ開始日時
+     * マルシェ開始日時
      * @type {number}
-     * @memberof CreateScheduleRequestLivesInner
+     * @memberof CreateScheduleRequest
      */
     'startAt': number;
     /**
-     * ライブ終了日時
+     * マルシェ終了日時
      * @type {number}
-     * @memberof CreateScheduleRequestLivesInner
+     * @memberof CreateScheduleRequest
      */
     'endAt': number;
 }
