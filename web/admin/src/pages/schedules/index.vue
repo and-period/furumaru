@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia'
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useScheduleStore } from '~/store'
 
+const router = useRouter()
 const scheduleStore = useScheduleStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
@@ -41,7 +42,7 @@ const handleUpdatePage = async (page: number): Promise<void> => {
 }
 
 const handleClickAdd = (): void => {
-  console.log('debug', 'click:new-schedule')
+  router.push('/schedules/new')
 }
 
 const handleClickRow = (): void => {

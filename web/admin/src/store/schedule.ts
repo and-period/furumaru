@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
+import { useCommonStore } from './common'
 import { apiClient } from '~/plugins/api-client'
-import { SchedulesResponse } from '~/types/api'
+import { CreateScheduleRequest, ScheduleResponse, SchedulesResponse, UploadImageResponse, UploadVideoResponse } from '~/types/api'
 
 export const useScheduleStore = defineStore('schedule', {
   state: () => ({
@@ -21,6 +22,87 @@ export const useScheduleStore = defineStore('schedule', {
         this.total = res.data.total
       } catch (err) {
         return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * マルシェ開催スケジュールを登録する非同期関数
+     * @param payload
+     */
+    async createSchedule (payload: CreateScheduleRequest): Promise<ScheduleResponse> {
+      try {
+        const res = await apiClient.scheduleApi().v1CreateSchedule(payload)
+        const commonStore = useCommonStore()
+        commonStore.addSnackbar({
+          message: `${payload.title}を作成しました。`,
+          color: 'info'
+        })
+        return res.data
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * サムネイル画像をアップロードする非同期関数
+     * @param payload
+     * @returns アップロード先URL
+     */
+    async uploadScheduleThumbnail (payload: File): Promise<UploadImageResponse> {
+      try {
+        const res = await apiClient.scheduleApi().v1UploadScheduleThumbnail(
+          payload,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
+        )
+        return res.data
+      } catch (err) {
+        return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
+      }
+    },
+
+    /**
+     * 蓋絵画像をアップロードする非同期関数
+     * @param payload
+     * @returns アップロード先URL
+     */
+    async uploadScheduleImage (payload: File): Promise<UploadImageResponse> {
+      try {
+        const res = await apiClient.scheduleApi().v1UploadScheduleImage(
+          payload,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
+        )
+        return res.data
+      } catch (err) {
+        return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
+      }
+    },
+
+    /**
+     * オープニング動画をアップロードする非同期関数
+     * @param payload
+     * @returns アップロード先URL
+     */
+    async uploadScheduleOpeningVideo (payload: File): Promise<UploadVideoResponse> {
+      try {
+        const res = await apiClient.scheduleApi().v1UploadScheduleOpeningVideo(
+          payload,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
+        )
+        return res.data
+      } catch (err) {
+        return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
     }
   }

@@ -9,7 +9,7 @@ type Schedule struct {
 	Status          int32    `json:"status"`          // 開催状況
 	Title           string   `json:"title"`           // タイトル
 	Description     string   `json:"description"`     // 説明
-	ThumbnailURL    string   `json:"thumnailUrl"`     // サムネイルURL
+	ThumbnailURL    string   `json:"thumbnailUrl"`    // サムネイルURL
 	Thumbnails      []*Image `json:"thumbnails"`      // サムネイルURL(リサイズ済み)一覧
 	ImageURL        string   `json:"imageUrl"`        // 蓋絵URL
 	OpeningVideoURL string   `json:"openingVideoUrl"` // オープニング動画URL

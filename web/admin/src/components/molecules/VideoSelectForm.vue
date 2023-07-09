@@ -54,7 +54,7 @@ const onChangeFile = (): void => {
     <v-card class="text-center" role="button" flat @click="onClick">
       <v-card-text>
         <div class="mb-4">
-          <v-icon v-if="props.videoUrl === ''" x-large :icon="mdiPlus" />
+          <v-avatar v-if="props.videoUrl === ''" size="80" :icon="mdiPlus" />
           <video v-else id="wrapper" autoplay :src="props.videoUrl" />
         </div>
         <input

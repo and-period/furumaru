@@ -191,11 +191,11 @@ const onClickDelete = (): void => {
 
   <v-card class="mt-4" flat :loading="props.loading">
     <v-card-title class="d-flex flex-row">
-      マルシェ開催スケジュール管理
+      ライブ配信管理
       <v-spacer />
       <v-btn variant="outlined" color="primary" @click="onClickAdd">
         <v-icon start :icon="mdiPlus" />
-        開催スケジュール登録
+        ライブ配信登録
       </v-btn>
     </v-card-title>
 
