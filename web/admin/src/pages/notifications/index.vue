@@ -3,13 +3,15 @@ import { storeToRefs } from 'pinia'
 import { VDataTable } from 'vuetify/labs/components'
 
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useNotificationStore } from '~/store'
+import { useAdminStore, useNotificationStore } from '~/store'
 
 const router = useRouter()
+const adminStore = useAdminStore()
 const notificationStore = useNotificationStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
+const { admins } = storeToRefs(adminStore)
 const { notifications, totalItems } = storeToRefs(notificationStore)
 
 const loading = ref<boolean>(false)
@@ -85,6 +87,7 @@ try {
     :alert-type="alertType"
     :alert-text="alertText"
     :notifications="notifications"
+    :admins="admins"
     :table-items-per-page="pagination.itemsPerPage.value"
     :table-items-total="totalItems"
     :table-sort-by="sortBy"

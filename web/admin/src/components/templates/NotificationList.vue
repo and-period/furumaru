@@ -86,7 +86,7 @@ const headers: VDataTable['headers'] = [
   },
   {
     title: '作成者',
-    key: 'creatorName',
+    key: 'createdBy',
     sortable: false
   },
   {
@@ -264,7 +264,7 @@ const onClickDelete = (): void => {
         <template #[`item.publishedAt`]="{ item }">
           {{ getDay(item.raw.publishedAt) }}
         </template>
-        <template #[`item.creatorName`]="{ item }">
+        <template #[`item.createdBy`]="{ item }">
           {{ getAdminName(item.raw.createdBy) }}
         </template>
         <template #[`item.actions`]="{ item }">
