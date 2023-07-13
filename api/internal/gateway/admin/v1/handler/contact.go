@@ -143,15 +143,29 @@ func (h *handler) GetContact(ctx *gin.Context) {
 		httpError(ctx, err)
 		return
 	}
-	threads, _, err := h.getContactDetailsByContactID(ctx, contact)
-	if err != nil {
+
+	var (
+		category *service.ContactCategory
+		threads  service.Threads
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		threads, _, err = h.getContactDetailsByContactID(ectx, contact)
+		return
+	})
+	eg.Go(func() (err error) {
+		category, err = h.getContactCategory(ectx, contact.CategoryID)
+		return
+	})
+	if err := eg.Wait(); err != nil {
 		httpError(ctx, err)
 		return
 	}
 
 	res := response.ContactResponse{
-		Contact: contact.Response(),
-		Threads: threads.Response(),
+		Contact:  contact.Response(),
+		Category: category.Response(),
+		Threads:  threads.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
