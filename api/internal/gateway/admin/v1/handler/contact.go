@@ -13,6 +13,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )
@@ -67,29 +68,34 @@ func (h *handler) CreateContact(ctx *gin.Context) {
 		return
 	}
 
+	var (
+		category  *service.ContactCategory
+		sender    *uentity.User
+		responder *uentity.Admin
+	)
 	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() error {
+	eg.Go(func() (err error) {
 		if req.UserID == "" {
 			return nil
 		}
 		in := &user.GetUserInput{
 			UserID: req.UserID,
 		}
-		_, err := h.user.GetUser(ectx, in)
+		sender, err = h.user.GetUser(ectx, in)
 		return err
 	})
-	eg.Go(func() error {
+	eg.Go(func() (err error) {
 		if req.ResponderID == "" {
 			return nil
 		}
 		in := &user.GetAdminInput{
 			AdminID: req.ResponderID,
 		}
-		_, err := h.user.GetAdmin(ectx, in)
+		responder, err = h.user.GetAdmin(ectx, in)
 		return err
 	})
-	eg.Go(func() error {
-		_, err := h.getContactCategory(ectx, req.CategoryID)
+	eg.Go(func() (err error) {
+		category, err = h.getContactCategory(ectx, req.CategoryID)
 		return err
 	})
 	err := eg.Wait()
@@ -130,9 +136,13 @@ func (h *handler) CreateContact(ctx *gin.Context) {
 		return
 	}
 	res := &response.ContactResponse{
-		Contact: service.NewContact(scontact).Response(),
-		Threads: service.NewThreads(entity.Threads{sthread}).Response(),
+		Contact:   service.NewContact(scontact).Response(),
+		Category:  category.Response(),
+		Threads:   service.NewThreads(entity.Threads{sthread}).Response(),
+		User:      service.NewUser(sender).Response(),
+		Responder: service.NewAdmin(responder).Response(),
 	}
+
 	ctx.JSON(http.StatusOK, res)
 }
 
