@@ -155,8 +155,10 @@ func (h *handler) GetContact(ctx *gin.Context) {
 	}
 
 	var (
-		category *service.ContactCategory
-		threads  service.Threads
+		category  *service.ContactCategory
+		threads   service.Threads
+		sender    *uentity.User
+		responder *uentity.Admin
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
@@ -167,15 +169,37 @@ func (h *handler) GetContact(ctx *gin.Context) {
 		category, err = h.getContactCategory(ectx, contact.CategoryID)
 		return
 	})
+	eg.Go(func() (err error) {
+		if contact.UserID == "" {
+			return nil
+		}
+		in := &user.GetUserInput{
+			UserID: contact.UserID,
+		}
+		sender, err = h.user.GetUser(ectx, in)
+		return err
+	})
+	eg.Go(func() (err error) {
+		if contact.ResponderID == "" {
+			return nil
+		}
+		in := &user.GetAdminInput{
+			AdminID: contact.ResponderID,
+		}
+		responder, err = h.user.GetAdmin(ectx, in)
+		return err
+	})
 	if err := eg.Wait(); err != nil {
 		httpError(ctx, err)
 		return
 	}
 
 	res := response.ContactResponse{
-		Contact:  contact.Response(),
-		Category: category.Response(),
-		Threads:  threads.Response(),
+		Contact:   contact.Response(),
+		Category:  category.Response(),
+		Threads:   threads.Response(),
+		User:      service.NewUser(sender).Response(),
+		Responder: service.NewAdmin(responder).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
