@@ -29,9 +29,11 @@ type Contact struct {
 }
 
 type ContactResponse struct {
-	Contact  *Contact         `json:"contact"`  // お問い合わせ情報
-	Category *ContactCategory `json:"category"` // お問い合わせ種別情報
-	Threads  []*Thread        `json:"threads"`  // お問い合わせ会話履歴一覧
+	Contact   *Contact         `json:"contact"`   // お問い合わせ情報
+	Category  *ContactCategory `json:"category"`  // お問い合わせ種別情報
+	Threads   []*Thread        `json:"threads"`   // お問い合わせ会話履歴一覧
+	User      *User            `json:"user"`      // ユーザー情報
+	Responder *Admin           `json:"responder"` // 対応者情報
 }
 
 type ContactsResponse struct {
