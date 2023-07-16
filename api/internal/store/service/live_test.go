@@ -55,7 +55,8 @@ func TestListByScheduleID(t *testing.T) {
 			},
 			expect:    lives,
 			expectErr: nil,
-		}, {
+		},
+		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.ListLivesByScheduleIDInput{},
