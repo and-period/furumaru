@@ -1224,6 +1224,43 @@ export interface CreateCoordinatorRequest {
 /**
  * 
  * @export
+ * @interface CreateLiveRequest
+ */
+export interface CreateLiveRequest {
+    /**
+     * 生産者ID
+     * @type {string}
+     * @memberof CreateLiveRequest
+     */
+    'producerId': string;
+    /**
+     * 商品一覧(8つまで)
+     * @type {Array<string>}
+     * @memberof CreateLiveRequest
+     */
+    'productIds': Array<string>;
+    /**
+     * コメント
+     * @type {string}
+     * @memberof CreateLiveRequest
+     */
+    'comment': string;
+    /**
+     * ライブ開始予定日時 (unixtime)
+     * @type {number}
+     * @memberof CreateLiveRequest
+     */
+    'startAt': number;
+    /**
+     * ライブ終了予定日時 (unixtime)
+     * @type {number}
+     * @memberof CreateLiveRequest
+     */
+    'endAt': number;
+}
+/**
+ * 
+ * @export
  * @interface CreateNotificationRequest
  */
 export interface CreateNotificationRequest {
@@ -2030,6 +2067,123 @@ export const ImageSize = {
 export type ImageSize = typeof ImageSize[keyof typeof ImageSize];
 
 
+/**
+ * ライブ配信情報
+ * @export
+ * @interface Live
+ */
+export interface Live {
+    /**
+     * ライブID
+     * @type {string}
+     * @memberof Live
+     */
+    'id': string;
+    /**
+     * マルシェ開催スケジュールID
+     * @type {string}
+     * @memberof Live
+     */
+    'scheduleId': string;
+    /**
+     * 生産者ID
+     * @type {string}
+     * @memberof Live
+     */
+    'producerId': string;
+    /**
+     * 商品一覧
+     * @type {Array<string>}
+     * @memberof Live
+     */
+    'productIds': Array<string>;
+    /**
+     * コメント
+     * @type {string}
+     * @memberof Live
+     */
+    'comment': string;
+    /**
+     * ライブ開始予定日時 (unixtime)
+     * @type {number}
+     * @memberof Live
+     */
+    'startAt': number;
+    /**
+     * ライブ終了予定日時 (unixtime)
+     * @type {number}
+     * @memberof Live
+     */
+    'endAt': number;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof Live
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof Live
+     */
+    'updatedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface LiveResponse
+ */
+export interface LiveResponse {
+    /**
+     * 
+     * @type {Live}
+     * @memberof LiveResponse
+     */
+    'live': Live;
+    /**
+     * 
+     * @type {Producer}
+     * @memberof LiveResponse
+     */
+    'producer': Producer;
+    /**
+     * 商品一覧
+     * @type {Array<Product>}
+     * @memberof LiveResponse
+     */
+    'products': Array<Product>;
+}
+/**
+ * 
+ * @export
+ * @interface LivesResponse
+ */
+export interface LivesResponse {
+    /**
+     * ライブ配信一覧
+     * @type {Array<Live>}
+     * @memberof LivesResponse
+     */
+    'lives': Array<Live>;
+    /**
+     * 生産者一覧
+     * @type {Array<Producer>}
+     * @memberof LivesResponse
+     */
+    'producers': Array<Producer>;
+    /**
+     * 商品一覧
+     * @type {Array<Product>}
+     * @memberof LivesResponse
+     */
+    'products': Array<Product>;
+    /**
+     * 合計数
+     * @type {number}
+     * @memberof LivesResponse
+     */
+    'total': number;
+}
 /**
  * メッセージ情報
  * @export
@@ -4012,7 +4166,7 @@ export interface ResetAuthPasswordRequest {
     'passwordConfirmation': string;
 }
 /**
- * 
+ * マルシェ開催スケジュール情報
  * @export
  * @interface Schedule
  */
@@ -4165,24 +4319,6 @@ export type ScheduleStatus = typeof ScheduleStatus[keyof typeof ScheduleStatus];
  * @interface SchedulesResponse
  */
 export interface SchedulesResponse {
-    /**
-     * 
-     * @type {Schedule}
-     * @memberof SchedulesResponse
-     */
-    'schedule'?: Schedule;
-    /**
-     * 
-     * @type {Coordinator}
-     * @memberof SchedulesResponse
-     */
-    'coordinator'?: Coordinator;
-    /**
-     * 
-     * @type {Shipping}
-     * @memberof SchedulesResponse
-     */
-    'shipping'?: Shipping;
     /**
      * マルシェ開催スケジュール一覧
      * @type {Array<Schedule>}
@@ -4943,6 +5079,37 @@ export interface UpdateCoordinatorRequest {
 /**
  * 
  * @export
+ * @interface UpdateLiveRequest
+ */
+export interface UpdateLiveRequest {
+    /**
+     * 商品一覧(8つまで)
+     * @type {Array<string>}
+     * @memberof UpdateLiveRequest
+     */
+    'productIds': Array<string>;
+    /**
+     * コメント
+     * @type {string}
+     * @memberof UpdateLiveRequest
+     */
+    'comment': string;
+    /**
+     * ライブ開始予定日時 (unixtime)
+     * @type {number}
+     * @memberof UpdateLiveRequest
+     */
+    'startAt': number;
+    /**
+     * ライブ終了予定日時 (unixtime)
+     * @type {number}
+     * @memberof UpdateLiveRequest
+     */
+    'endAt': number;
+}
+/**
+ * 
+ * @export
  * @interface UpdateNotificationRequest
  */
 export interface UpdateNotificationRequest {
@@ -5367,6 +5534,67 @@ export interface UpdatePromotionRequest {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface UpdateScheduleRequest
+ */
+export interface UpdateScheduleRequest {
+    /**
+     * 配送設定ID
+     * @type {string}
+     * @memberof UpdateScheduleRequest
+     */
+    'shippingId': string;
+    /**
+     * タイトル(128文字まで)
+     * @type {string}
+     * @memberof UpdateScheduleRequest
+     */
+    'title': string;
+    /**
+     * 説明(20000文字まで)
+     * @type {string}
+     * @memberof UpdateScheduleRequest
+     */
+    'description': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof UpdateScheduleRequest
+     */
+    'thumbnailUrl': string;
+    /**
+     * 蓋絵URL
+     * @type {string}
+     * @memberof UpdateScheduleRequest
+     */
+    'imageUrl': string;
+    /**
+     * オープニングURL
+     * @type {string}
+     * @memberof UpdateScheduleRequest
+     */
+    'openingVideoUrl': string;
+    /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof UpdateScheduleRequest
+     */
+    'public': boolean;
+    /**
+     * マルシェ開始日時
+     * @type {number}
+     * @memberof UpdateScheduleRequest
+     */
+    'startAt': number;
+    /**
+     * マルシェ終了日時
+     * @type {number}
+     * @memberof UpdateScheduleRequest
+     */
+    'endAt': number;
+}
 /**
  * 
  * @export
@@ -9263,6 +9491,282 @@ export class CoordinatorApi extends BaseAPI {
 
 
 /**
+ * LiveApi - axios parameter creator
+ * @export
+ */
+export const LiveApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary ライブ配信登録
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {CreateLiveRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateLive: async (scheduleId: string, body: CreateLiveRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'scheduleId' is not null or undefined
+            assertParamExists('v1CreateLive', 'scheduleId', scheduleId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1CreateLive', 'body', body)
+            const localVarPath = `/v1/schedules/{scheduleId}/lives`
+                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary ライブ配信一覧取得
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListLives: async (scheduleId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'scheduleId' is not null or undefined
+            assertParamExists('v1ListLives', 'scheduleId', scheduleId)
+            const localVarPath = `/v1/schedules/{scheduleId}/lives`
+                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary ライブ配信更新
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {string} liveId ライブ配信ID
+         * @param {UpdateLiveRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateLive: async (scheduleId: string, liveId: string, body: UpdateLiveRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'scheduleId' is not null or undefined
+            assertParamExists('v1UpdateLive', 'scheduleId', scheduleId)
+            // verify required parameter 'liveId' is not null or undefined
+            assertParamExists('v1UpdateLive', 'liveId', liveId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpdateLive', 'body', body)
+            const localVarPath = `/v1/schedules/{scheduleId}/lives/{liveId}`
+                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)))
+                .replace(`{${"liveId"}}`, encodeURIComponent(String(liveId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * LiveApi - functional programming interface
+ * @export
+ */
+export const LiveApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = LiveApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary ライブ配信登録
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {CreateLiveRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1CreateLive(scheduleId: string, body: CreateLiveRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LiveResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateLive(scheduleId, body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary ライブ配信一覧取得
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ListLives(scheduleId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LivesResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListLives(scheduleId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary ライブ配信更新
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {string} liveId ライブ配信ID
+         * @param {UpdateLiveRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UpdateLive(scheduleId: string, liveId: string, body: UpdateLiveRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateLive(scheduleId, liveId, body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * LiveApi - factory interface
+ * @export
+ */
+export const LiveApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = LiveApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary ライブ配信登録
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {CreateLiveRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateLive(scheduleId: string, body: CreateLiveRequest, options?: any): AxiosPromise<LiveResponse> {
+            return localVarFp.v1CreateLive(scheduleId, body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary ライブ配信一覧取得
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListLives(scheduleId: string, options?: any): AxiosPromise<LivesResponse> {
+            return localVarFp.v1ListLives(scheduleId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary ライブ配信更新
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {string} liveId ライブ配信ID
+         * @param {UpdateLiveRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateLive(scheduleId: string, liveId: string, body: UpdateLiveRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1UpdateLive(scheduleId, liveId, body, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * LiveApi - object-oriented interface
+ * @export
+ * @class LiveApi
+ * @extends {BaseAPI}
+ */
+export class LiveApi extends BaseAPI {
+    /**
+     * 
+     * @summary ライブ配信登録
+     * @param {string} scheduleId マルシェ開催スケジュールID
+     * @param {CreateLiveRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof LiveApi
+     */
+    public v1CreateLive(scheduleId: string, body: CreateLiveRequest, options?: AxiosRequestConfig) {
+        return LiveApiFp(this.configuration).v1CreateLive(scheduleId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary ライブ配信一覧取得
+     * @param {string} scheduleId マルシェ開催スケジュールID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof LiveApi
+     */
+    public v1ListLives(scheduleId: string, options?: AxiosRequestConfig) {
+        return LiveApiFp(this.configuration).v1ListLives(scheduleId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary ライブ配信更新
+     * @param {string} scheduleId マルシェ開催スケジュールID
+     * @param {string} liveId ライブ配信ID
+     * @param {UpdateLiveRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof LiveApi
+     */
+    public v1UpdateLive(scheduleId: string, liveId: string, body: UpdateLiveRequest, options?: AxiosRequestConfig) {
+        return LiveApiFp(this.configuration).v1UpdateLive(scheduleId, liveId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
  * MessageApi - axios parameter creator
  * @export
  */
@@ -13040,6 +13544,50 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
+         * @summary マルシェ開催スケジュール更新
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {UpdateScheduleRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateSchedule: async (scheduleId: string, body: UpdateScheduleRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'scheduleId' is not null or undefined
+            assertParamExists('v1UpdateSchedule', 'scheduleId', scheduleId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpdateSchedule', 'body', body)
+            const localVarPath = `/v1/schedules/{scheduleId}`
+                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 開催スケジュール蓋絵アップロード
          * @param {File} [image] 開催スケジュール蓋絵画像(png形式,10MBまで)
          * @param {*} [options] Override http request option.
@@ -13213,6 +13761,18 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary マルシェ開催スケジュール更新
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {UpdateScheduleRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UpdateSchedule(scheduleId: string, body: UpdateScheduleRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateSchedule(scheduleId, body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary 開催スケジュール蓋絵アップロード
          * @param {File} [image] 開催スケジュール蓋絵画像(png形式,10MBまで)
          * @param {*} [options] Override http request option.
@@ -13284,6 +13844,17 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          */
         v1ListSchedules(limit?: number, offset?: number, options?: any): AxiosPromise<SchedulesResponse> {
             return localVarFp.v1ListSchedules(limit, offset, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary マルシェ開催スケジュール更新
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {UpdateScheduleRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateSchedule(scheduleId: string, body: UpdateScheduleRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1UpdateSchedule(scheduleId, body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -13360,6 +13931,19 @@ export class ScheduleApi extends BaseAPI {
      */
     public v1ListSchedules(limit?: number, offset?: number, options?: AxiosRequestConfig) {
         return ScheduleApiFp(this.configuration).v1ListSchedules(limit, offset, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary マルシェ開催スケジュール更新
+     * @param {string} scheduleId マルシェ開催スケジュールID
+     * @param {UpdateScheduleRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ScheduleApi
+     */
+    public v1UpdateSchedule(scheduleId: string, body: UpdateScheduleRequest, options?: AxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1UpdateSchedule(scheduleId, body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

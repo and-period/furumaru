@@ -72,6 +72,34 @@ func (s *schedule) Create(ctx context.Context, schedule *entity.Schedule) error 
 	return exception.InternalError(err)
 }
 
+func (s *schedule) Update(ctx context.Context, scheduleID string, params *UpdateScheduleParams) error {
+	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
+		if _, err := s.get(ctx, tx, scheduleID); err != nil {
+			return err
+		}
+
+		params := map[string]interface{}{
+			"shipping_id":       params.ShippingID,
+			"title":             params.Title,
+			"description":       params.Description,
+			"thumbnail_url":     params.ThumbnailURL,
+			"image_url":         params.ImageURL,
+			"opening_video_url": params.OpeningVideoURL,
+			"public":            params.Public,
+			"start_at":          params.StartAt,
+			"end_at":            params.EndAt,
+			"updated_at":        s.now(),
+		}
+
+		err := tx.WithContext(ctx).
+			Table(scheduleTable).
+			Where("id = ?", scheduleID).
+			Updates(params).Error
+		return err
+	})
+	return exception.InternalError(err)
+}
+
 func (s *schedule) UpdateThumbnails(ctx context.Context, scheduleID string, thumbnails common.Images) error {
 	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
 		schedule, err := s.get(ctx, tx, scheduleID, "thumbnail_url")

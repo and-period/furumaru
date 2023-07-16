@@ -55,3 +55,55 @@ createScheduleRequest:
     public: true
     startAt: 1640962800
     endAt: 1640962800
+updateScheduleRequest:
+  type: object
+  properties:
+    shippingId:
+      type: string
+      description: 配送設定ID
+    title:
+      type: string
+      description: タイトル(128文字まで)
+    description:
+      type: string
+      description: 説明(20000文字まで)
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+    imageUrl:
+      type: string
+      description: 蓋絵URL
+    openingVideoUrl:
+      type: string
+      description: オープニングURL
+    public:
+      type: boolean
+      description: 公開フラグ
+    startAt:
+      type: integer
+      format: int64
+      description: マルシェ開始日時
+    endAt:
+      type: integer
+      format: int64
+      description: マルシェ終了日時
+  required:
+  - shippingId
+  - title
+  - description
+  - thumbnailUrl
+  - imageUrl
+  - openingVideoUrl
+  - public
+  - startAt
+  - endAt
+  example:
+    shippingId: 'shipping-id'
+    title: 'スケジュールタイトル'
+    description: 'スケジュールの説明'
+    thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+    imageUrl: 'https://and-period.jp/image.png'
+    openingVideoUrl: 'https://and-period.jp/opening-video.mp4'
+    public: true
+    startAt: 1640962800
+    endAt: 1640962800

@@ -21,7 +21,25 @@ func (h *handler) scheduleRoutes(rg *gin.RouterGroup) {
 	arg := rg.Use(h.authentication)
 	arg.GET("", h.ListSchedules)
 	arg.POST("", h.CreateSchedule)
-	arg.GET("/:scheduleId", h.GetSchedule)
+	arg.GET("/:scheduleId", h.filterAccessSchedule, h.GetSchedule)
+	arg.PATCH("/:scheduleId", h.filterAccessSchedule, h.UpdateSchedule)
+}
+
+func (h *handler) filterAccessSchedule(ctx *gin.Context) {
+	params := &filterAccessParams{
+		coordinator: func(ctx *gin.Context) (bool, error) {
+			schedule, err := h.getSchedule(ctx, util.GetParam(ctx, "scheduleId"))
+			if err != nil {
+				return false, err
+			}
+			return schedule.CoordinatorID == getAdminID(ctx), nil
+		},
+	}
+	if err := filterAccess(ctx, params); err != nil {
+		httpError(ctx, err)
+		return
+	}
+	ctx.Next()
 }
 
 func (h *handler) ListSchedules(ctx *gin.Context) {
@@ -217,6 +235,79 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		Shipping:    shipping.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) UpdateSchedule(ctx *gin.Context) {
+	req := &request.UpdateScheduleRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	_, err := h.getShipping(ctx, req.ShippingID)
+	if errors.Is(err, exception.ErrNotFound) {
+		badRequest(ctx, err)
+		return
+	}
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	var thumbnailURL, imageURL, openingVideoURL string
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		if req.ThumbnailURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.ThumbnailURL,
+		}
+		thumbnailURL, err = h.media.UploadScheduleThumbnail(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		if req.ImageURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.ImageURL,
+		}
+		imageURL, err = h.media.UploadScheduleImage(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		if req.OpeningVideoURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.OpeningVideoURL,
+		}
+		openingVideoURL, err = h.media.UploadScheduleOpeningVideo(ectx, in)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	in := &store.UpdateScheduleInput{
+		ScheduleID:      util.GetParam(ctx, "scheduleId"),
+		ShippingID:      req.ShippingID,
+		Title:           req.Title,
+		Description:     req.Description,
+		ThumbnailURL:    thumbnailURL,
+		ImageURL:        imageURL,
+		OpeningVideoURL: openingVideoURL,
+		Public:          req.Public,
+		StartAt:         jst.ParseFromUnix(req.StartAt),
+		EndAt:           jst.ParseFromUnix(req.EndAt),
+	}
+	if err := h.store.UpdateSchedule(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
 func (h *handler) getSchedule(ctx context.Context, scheduleID string) (*service.Schedule, error) {

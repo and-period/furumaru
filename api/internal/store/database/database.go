@@ -66,6 +66,13 @@ type Category interface {
 	Delete(ctx context.Context, categoryID string) error
 }
 
+type Live interface {
+	ListByScheduleID(ctx context.Context, scheduleID string, fields ...string) (entity.Lives, error)
+	Get(ctx context.Context, liveID string, fields ...string) (*entity.Live, error)
+	Create(ctx context.Context, live *entity.Live) error
+	Update(ctx context.Context, liveID string, params *UpdateLiveParams) error
+}
+
 type Order interface {
 	List(ctx context.Context, params *ListOrdersParams, fields ...string) (entity.Orders, error)
 	Count(ctx context.Context, params *ListOrdersParams) (int64, error)
@@ -125,6 +132,7 @@ type Schedule interface {
 	Count(ctx context.Context, params *ListSchedulesParams) (int64, error)
 	Get(ctx context.Context, scheduleID string, fields ...string) (*entity.Schedule, error)
 	Create(ctx context.Context, schedule *entity.Schedule) error
+	Update(ctx context.Context, scheduleID string, params *UpdateScheduleParams) error
 	UpdateThumbnails(ctx context.Context, scheduleID string, thumbnails common.Images) error
 }
 
@@ -136,12 +144,6 @@ type Shipping interface {
 	Create(ctx context.Context, shipping *entity.Shipping) error
 	Update(ctx context.Context, shippingID string, params *UpdateShippingParams) error
 	Delete(ctx context.Context, shippingID string) error
-}
-
-type Live interface {
-	ListByScheduleID(ctx context.Context, scheduleID string, fields ...string) (entity.Lives, error)
-	Get(ctx context.Context, liveID string, fields ...string) (*entity.Live, error)
-	Update(ctx context.Context, liveID string, params *UpdateLiveParams) error
 }
 
 /**
@@ -176,13 +178,10 @@ func (p *ListCategoriesParams) stmt(stmt *gorm.DB) *gorm.DB {
 }
 
 type UpdateLiveParams struct {
-	LiveProducts entity.LiveProducts
-	ProducerID   string
-	Title        string
-	Description  string
-	Status       entity.LiveStatus
-	StartAt      time.Time
-	EndAt        time.Time
+	ProductIDs []string
+	Comment    string
+	StartAt    time.Time
+	EndAt      time.Time
 }
 
 type ListOrdersParams struct {
@@ -383,6 +382,18 @@ type UpdatePromotionParams struct {
 type ListSchedulesParams struct {
 	Limit  int
 	Offset int
+}
+
+type UpdateScheduleParams struct {
+	ShippingID      string
+	Title           string
+	Description     string
+	ThumbnailURL    string
+	ImageURL        string
+	OpeningVideoURL string
+	Public          bool
+	StartAt         time.Time
+	EndAt           time.Time
 }
 
 type ListShippingsParams struct {

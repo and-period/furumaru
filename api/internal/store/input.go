@@ -360,6 +360,19 @@ type CreateScheduleInput struct {
 	EndAt           time.Time `validate:"required,gtfield=StartAt"`
 }
 
+type UpdateScheduleInput struct {
+	ScheduleID      string    `validate:"required"`
+	ShippingID      string    `validate:"required"`
+	Title           string    `validate:"required,max=64"`
+	Description     string    `validate:"required,max=2000"`
+	ThumbnailURL    string    `validate:"omitempty,url"`
+	ImageURL        string    `validate:"omitempty,url"`
+	OpeningVideoURL string    `validate:"omitempty,url"`
+	Public          bool      `validate:""`
+	StartAt         time.Time `validate:"required"`
+	EndAt           time.Time `validate:"required,gtfield=StartAt"`
+}
+
 type UpdateScheduleThumbnailsInput struct {
 	ScheduleID string        `validate:"required"`
 	Thumbnails common.Images `validate:""`
@@ -373,14 +386,21 @@ type ListLivesByScheduleIDInput struct {
 	ScheduleID string `validate:"required"`
 }
 
+type CreateLiveInput struct {
+	ScheduleID string    `validate:"required"`
+	ProducerID string    `validate:"required"`
+	ProductIDs []string  `validate:"min=0,max=8,unique"`
+	Comment    string    `validate:"required,max=2000"`
+	StartAt    time.Time `validate:"required"`
+	EndAt      time.Time `validate:"required,gtfield=StartAt"`
+}
+
 type UpdateLiveInput struct {
-	LiveProducts entity.LiveProducts `validate:"required"`
-	LiveID       string              `validate:"required"`
-	ProducerID   string              `validate:"required"`
-	Title        string              `validate:"required,max=64"`
-	Description  string              `validate:"required,max=2000"`
-	StartAt      time.Time           `validate:"required"`
-	EndAt        time.Time           `validate:"required,gtfield=StartAt"`
+	LiveID     string    `validate:"required"`
+	ProductIDs []string  `validate:"min=0,max=8,unique"`
+	Comment    string    `validate:"required,max=2000"`
+	StartAt    time.Time `validate:"required"`
+	EndAt      time.Time `validate:"required,gtfield=StartAt"`
 }
 
 type ListOrdersInput struct {

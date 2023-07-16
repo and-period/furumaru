@@ -18,20 +18,21 @@ func TestLive(t *testing.T) {
 		{
 			name: "success",
 			params: &NewLiveParams{
-				ScheduleID:  "schedule-id",
-				ProducerID:  "producer-id",
-				Title:       "ライブのタイトル",
-				Description: "ライブの説明",
-				StartAt:     jst.Date(2022, 8, 1, 0, 0, 0, 0),
-				EndAt:       jst.Date(2022, 9, 1, 0, 0, 0, 0),
+				ScheduleID: "schedule-id",
+				ProducerID: "producer-id",
+				Comment:    "よろしくお願いします。",
+				ProductIDs: []string{},
+				StartAt:    jst.Date(2022, 8, 1, 0, 0, 0, 0),
+				EndAt:      jst.Date(2022, 9, 1, 0, 0, 0, 0),
 			},
 			expect: &Live{
-				ScheduleID:  "schedule-id",
-				ProducerID:  "producer-id",
-				Title:       "ライブのタイトル",
-				Description: "ライブの説明",
-				StartAt:     jst.Date(2022, 8, 1, 0, 0, 0, 0),
-				EndAt:       jst.Date(2022, 9, 1, 0, 0, 0, 0),
+				ScheduleID:   "schedule-id",
+				ProducerID:   "producer-id",
+				ProductIDs:   []string{},
+				Comment:      "よろしくお願いします。",
+				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+				LiveProducts: LiveProducts{},
 			},
 		},
 	}
@@ -59,16 +60,14 @@ func TestLive_Fill(t *testing.T) {
 		{
 			name: "success",
 			live: &Live{
-				ID:          "live-id",
-				ScheduleID:  "schedule-id",
-				ProducerID:  "producer-id",
-				Title:       "ライブのタイトル",
-				Description: "ライブの説明",
-				Status:      LiveStatusWaiting,
-				StartAt:     jst.Date(2022, 8, 1, 0, 0, 0, 0),
-				EndAt:       jst.Date(2022, 9, 1, 0, 0, 0, 0),
-				CreatedAt:   jst.Date(2022, 7, 1, 0, 0, 0, 0),
-				UpdatedAt:   jst.Date(2022, 7, 1, 0, 0, 0, 0),
+				ID:         "live-id",
+				ScheduleID: "schedule-id",
+				ProducerID: "producer-id",
+				Comment:    "よろしくお願いします。",
+				StartAt:    jst.Date(2022, 8, 1, 0, 0, 0, 0),
+				EndAt:      jst.Date(2022, 9, 1, 0, 0, 0, 0),
+				CreatedAt:  jst.Date(2022, 7, 1, 0, 0, 0, 0),
+				UpdatedAt:  jst.Date(2022, 7, 1, 0, 0, 0, 0),
 			},
 			products: LiveProducts{
 				{
@@ -80,14 +79,13 @@ func TestLive_Fill(t *testing.T) {
 			},
 			now: jst.Date(2022, 7, 1, 0, 0, 0, 0),
 			expect: &Live{
-				ID:          "live-id",
-				ScheduleID:  "schedule-id",
-				ProducerID:  "producer-id",
-				Title:       "ライブのタイトル",
-				Description: "ライブの説明",
-				Status:      LiveStatusWaiting,
-				StartAt:     jst.Date(2022, 8, 1, 0, 0, 0, 0),
-				EndAt:       jst.Date(2022, 9, 1, 0, 0, 0, 0),
+				ID:         "live-id",
+				ScheduleID: "schedule-id",
+				ProducerID: "producer-id",
+				ProductIDs: []string{"product-id"},
+				Comment:    "よろしくお願いします。",
+				StartAt:    jst.Date(2022, 8, 1, 0, 0, 0, 0),
+				EndAt:      jst.Date(2022, 9, 1, 0, 0, 0, 0),
 				LiveProducts: LiveProducts{
 					{
 						LiveID:    "live-id",
@@ -112,54 +110,6 @@ func TestLive_Fill(t *testing.T) {
 	}
 }
 
-func TestLive_FillIVS(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name   string
-		live   *Live
-		params FillLiveIvsParams
-		expect *Live
-	}{
-		{
-			name: "success",
-			live: &Live{
-				ID:           "live-id",
-				ChannelArn:   "channel-arn",
-				StreamKeyArn: "streamKey-arn",
-			},
-			params: FillLiveIvsParams{
-				ChannelName:    "配信チャンネル",
-				IngestEndpoint: "ingest-endpoint",
-				StreamKey:      "streamKey-value",
-				StreamID:       "stream-id",
-				PlaybackURL:    "playback-url",
-				ViewerCount:    100,
-			},
-			expect: &Live{
-				ID:             "live-id",
-				ChannelArn:     "channel-arn",
-				StreamKeyArn:   "streamKey-arn",
-				ChannelName:    "配信チャンネル",
-				IngestEndpoint: "ingest-endpoint",
-				StreamKey:      "streamKey-value",
-				StreamID:       "stream-id",
-				PlaybackURL:    "playback-url",
-				ViewerCount:    100,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			tt.live.FillIVS(tt.params)
-			assert.Equal(t, tt.expect, tt.live)
-		})
-	}
-}
-
 func TestLives_IDs(t *testing.T) {
 	t.Parallel()
 
@@ -172,14 +122,13 @@ func TestLives_IDs(t *testing.T) {
 			name: "success",
 			lives: Lives{
 				{
-					ID:          "live-id",
-					ScheduleID:  "schedule-id",
-					ProducerID:  "producer-id",
-					Title:       "ライブのタイトル",
-					Description: "ライブの説明",
-					Status:      LiveStatusCanceled,
-					StartAt:     jst.Date(2022, 8, 1, 0, 0, 0, 0),
-					EndAt:       jst.Date(2022, 9, 1, 0, 0, 0, 0),
+					ID:         "live-id",
+					ScheduleID: "schedule-id",
+					ProducerID: "producer-id",
+					Comment:    "よろしくお願いします。",
+					ProductIDs: []string{"product-id"},
+					StartAt:    jst.Date(2022, 8, 1, 0, 0, 0, 0),
+					EndAt:      jst.Date(2022, 9, 1, 0, 0, 0, 0),
 					LiveProducts: LiveProducts{
 						{
 							LiveID:    "live-id",
@@ -217,14 +166,13 @@ func TestLives_ProducerIDs(t *testing.T) {
 			name: "success",
 			lives: Lives{
 				{
-					ID:          "live-id",
-					ScheduleID:  "schedule-id",
-					ProducerID:  "producer-id",
-					Title:       "ライブのタイトル",
-					Description: "ライブの説明",
-					Status:      LiveStatusCanceled,
-					StartAt:     jst.Date(2022, 8, 1, 0, 0, 0, 0),
-					EndAt:       jst.Date(2022, 9, 1, 0, 0, 0, 0),
+					ID:         "live-id",
+					ScheduleID: "schedule-id",
+					ProducerID: "producer-id",
+					Comment:    "よろしくお願いします。",
+					ProductIDs: []string{"product-id"},
+					StartAt:    jst.Date(2022, 8, 1, 0, 0, 0, 0),
+					EndAt:      jst.Date(2022, 9, 1, 0, 0, 0, 0),
 					LiveProducts: LiveProducts{
 						{
 							LiveID:    "live-id",
@@ -250,6 +198,50 @@ func TestLives_ProducerIDs(t *testing.T) {
 	}
 }
 
+func TestLives_ProductIDs(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		lives  Lives
+		expect []string
+	}{
+		{
+			name: "success",
+			lives: Lives{
+				{
+					ID:         "live-id",
+					ScheduleID: "schedule-id",
+					ProducerID: "producer-id",
+					Comment:    "よろしくお願いします。",
+					ProductIDs: []string{"product-id"},
+					StartAt:    jst.Date(2022, 8, 1, 0, 0, 0, 0),
+					EndAt:      jst.Date(2022, 9, 1, 0, 0, 0, 0),
+					LiveProducts: LiveProducts{
+						{
+							LiveID:    "live-id",
+							ProductID: "product-id",
+							CreatedAt: jst.Date(2022, 7, 1, 0, 0, 0, 0),
+							UpdatedAt: jst.Date(2022, 7, 1, 0, 0, 0, 0),
+						},
+					},
+					CreatedAt: jst.Date(2022, 7, 1, 0, 0, 0, 0),
+					UpdatedAt: jst.Date(2022, 7, 1, 0, 0, 0, 0),
+				},
+			},
+			expect: []string{"product-id"},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.lives.ProductIDs())
+		})
+	}
+}
+
 func TestLives_Fill(t *testing.T) {
 	t.Parallel()
 
@@ -264,16 +256,15 @@ func TestLives_Fill(t *testing.T) {
 			name: "success",
 			lives: Lives{
 				{
-					ID:          "live-id",
-					ScheduleID:  "schedule-id",
-					ProducerID:  "producer-id",
-					Title:       "ライブのタイトル",
-					Description: "ライブの説明",
-					Status:      LiveStatusCanceled,
-					StartAt:     jst.Date(2022, 8, 1, 0, 0, 0, 0),
-					EndAt:       jst.Date(2022, 9, 1, 0, 0, 0, 0),
-					CreatedAt:   jst.Date(2022, 7, 1, 0, 0, 0, 0),
-					UpdatedAt:   jst.Date(2022, 7, 1, 0, 0, 0, 0),
+					ID:         "live-id",
+					ScheduleID: "schedule-id",
+					ProducerID: "producer-id",
+					ProductIDs: []string{"product-id"},
+					Comment:    "よろしくお願いします。",
+					StartAt:    jst.Date(2022, 8, 1, 0, 0, 0, 0),
+					EndAt:      jst.Date(2022, 9, 1, 0, 0, 0, 0),
+					CreatedAt:  jst.Date(2022, 7, 1, 0, 0, 0, 0),
+					UpdatedAt:  jst.Date(2022, 7, 1, 0, 0, 0, 0),
 				},
 			},
 			products: map[string]LiveProducts{
@@ -289,14 +280,13 @@ func TestLives_Fill(t *testing.T) {
 			now: jst.Date(2022, 7, 1, 0, 0, 0, 0),
 			expect: Lives{
 				{
-					ID:          "live-id",
-					ScheduleID:  "schedule-id",
-					ProducerID:  "producer-id",
-					Title:       "ライブのタイトル",
-					Description: "ライブの説明",
-					Status:      LiveStatusCanceled,
-					StartAt:     jst.Date(2022, 8, 1, 0, 0, 0, 0),
-					EndAt:       jst.Date(2022, 9, 1, 0, 0, 0, 0),
+					ID:         "live-id",
+					ScheduleID: "schedule-id",
+					ProducerID: "producer-id",
+					ProductIDs: []string{"product-id"},
+					Comment:    "よろしくお願いします。",
+					StartAt:    jst.Date(2022, 8, 1, 0, 0, 0, 0),
+					EndAt:      jst.Date(2022, 9, 1, 0, 0, 0, 0),
 					LiveProducts: LiveProducts{
 						{
 							LiveID:    "live-id",

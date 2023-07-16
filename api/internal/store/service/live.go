@@ -2,13 +2,14 @@ package service
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/ivs"
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/service/ivs/types"
+	"github.com/and-period/furumaru/api/internal/user"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -16,17 +17,7 @@ func (s *service) ListLivesByScheduleID(ctx context.Context, in *store.ListLives
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
-
 	lives, err := s.db.Live.ListByScheduleID(ctx, in.ScheduleID)
-	if err != nil {
-		return nil, exception.InternalError(err)
-	}
-	for i := range lives {
-		err = s.getIVSDetails(ctx, lives[i])
-		if err != nil {
-			return nil, exception.InternalError(err)
-		}
-	}
 	return lives, exception.InternalError(err)
 }
 
@@ -34,57 +25,78 @@ func (s *service) GetLive(ctx context.Context, in *store.GetLiveInput) (*entity.
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)
 	}
-
 	live, err := s.db.Live.Get(ctx, in.LiveID)
-	if err != nil {
-		return nil, exception.InternalError(err)
-	}
-	err = s.getIVSDetails(ctx, live)
-	if err != nil {
-		return nil, exception.InternalError(err)
-	}
 	return live, exception.InternalError(err)
 }
 
-func (s *service) getIVSDetails(ctx context.Context, live *entity.Live) (err error) {
-	var (
-		channel   *types.Channel
-		stream    *types.Stream
-		streamKey *types.StreamKey
-	)
+func (s *service) CreateLive(ctx context.Context, in *store.CreateLiveInput) (*entity.Live, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, exception.InternalError(err)
+	}
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
-		in := &ivs.GetChannelParams{
-			Arn: live.ChannelArn,
-		}
-		channel, err = s.ivs.GetChannel(ectx, in)
+		_, err = s.db.Schedule.Get(ectx, in.ScheduleID)
 		return
 	})
 	eg.Go(func() (err error) {
-		in := &ivs.GetStreamParams{
-			ChannelArn: live.ChannelArn,
+		in := &user.GetProducerInput{
+			ProducerID: in.ProducerID,
 		}
-		stream, err = s.ivs.GetStream(ectx, in)
+		_, err = s.user.GetProducer(ectx, in)
 		return
 	})
-	eg.Go(func() (err error) {
-		in := &ivs.GetStreamKeyParams{
-			StreamKeyArn: live.StreamKeyArn,
+	eg.Go(func() error {
+		products, err := s.db.Product.MultiGet(ectx, in.ProductIDs)
+		if err != nil {
+			return err
 		}
-		streamKey, err = s.ivs.GetStreamKey(ectx, in)
-		return
+		if len(products) != len(in.ProductIDs) {
+			return fmt.Errorf("api: unmatch product: %w", exception.ErrInvalidArgument)
+		}
+		return nil
 	})
-	if err := eg.Wait(); err != nil {
+	err := eg.Wait()
+	if errors.Is(err, exception.ErrNotFound) {
+		return nil, fmt.Errorf("api: invalid request: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	if err != nil {
+		return nil, exception.InternalError(err)
+	}
+	params := &entity.NewLiveParams{
+		ScheduleID: in.ScheduleID,
+		ProducerID: in.ProducerID,
+		ProductIDs: in.ProductIDs,
+		Comment:    in.Comment,
+		StartAt:    in.StartAt,
+		EndAt:      in.EndAt,
+	}
+	live := entity.NewLive(params)
+	if err := s.db.Live.Create(ctx, live); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	return live, nil
+}
+
+func (s *service) UpdateLive(ctx context.Context, in *store.UpdateLiveInput) error {
+	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
 	}
-	fillIvsParams := &entity.FillLiveIvsParams{
-		ChannelName:    aws.ToString(channel.Name),
-		IngestEndpoint: aws.ToString(channel.IngestEndpoint),
-		StreamKey:      aws.ToString(streamKey.Value),
-		PlaybackURL:    aws.ToString(channel.PlaybackUrl),
-		StreamID:       aws.ToString(stream.StreamId),
-		ViewerCount:    aws.ToInt64(&stream.ViewerCount),
+	if _, err := s.db.Live.Get(ctx, in.LiveID); err != nil {
+		return exception.InternalError(err)
 	}
-	live.FillIVS(*fillIvsParams)
-	return nil
+	products, err := s.db.Product.MultiGet(ctx, in.ProductIDs)
+	if err != nil {
+		return exception.InternalError(err)
+	}
+	if len(products) != len(in.ProductIDs) {
+		return fmt.Errorf("api: umatch product: %w", exception.ErrInvalidArgument)
+	}
+	params := &database.UpdateLiveParams{
+		ProductIDs: in.ProductIDs,
+		Comment:    in.Comment,
+		StartAt:    in.StartAt,
+		EndAt:      in.EndAt,
+	}
+	err = s.db.Live.Update(ctx, in.LiveID, params)
+	return exception.InternalError(err)
 }

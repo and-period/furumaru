@@ -297,6 +297,93 @@ func TestSchedule_Create(t *testing.T) {
 	}
 }
 
+func TestSchedule_Update(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	shipping := testShipping("shipping-id", now())
+	err = db.DB.Create(&shipping).Error
+	require.NoError(t, err)
+
+	type args struct {
+		scheduleID string
+		params     *UpdateScheduleParams
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+				schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
+				err = db.DB.Create(&schedule).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				scheduleID: "schedule-id",
+				params: &UpdateScheduleParams{
+					ShippingID:      "shipping-id",
+					Title:           "開催スケジュール",
+					Description:     "開催スケジュールの詳細です。",
+					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
+					ImageURL:        "https://and-period.jp/image.png",
+					OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
+					Public:          true,
+					StartAt:         now().AddDate(0, -1, 0),
+					EndAt:           now().AddDate(0, 1, 0),
+				},
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name:  "failed to not found",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			args: args{
+				scheduleID: "schedule-id",
+				params:     &UpdateScheduleParams{},
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, scheduleTable)
+			require.NoError(t, err)
+
+			tt.setup(ctx, t, db)
+
+			db := &schedule{db: db, now: now}
+			err = db.Update(ctx, tt.args.scheduleID, tt.args.params)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
 func TestSchedule_UpdateThumbnails(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

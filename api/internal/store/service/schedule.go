@@ -97,6 +97,47 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 	return schedule, nil
 }
 
+func (s *service) UpdateSchedule(ctx context.Context, in *store.UpdateScheduleInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	schedule, err := s.db.Schedule.Get(ctx, in.ScheduleID)
+	if err != nil {
+		return exception.InternalError(err)
+	}
+	_, err = s.db.Shipping.Get(ctx, in.ShippingID)
+	if errors.Is(err, exception.ErrNotFound) {
+		return fmt.Errorf("api: invalid request: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	if err != nil {
+		return exception.InternalError(err)
+	}
+	params := &database.UpdateScheduleParams{
+		ShippingID:      in.ShippingID,
+		Title:           in.Title,
+		Description:     in.Description,
+		ThumbnailURL:    in.ThumbnailURL,
+		ImageURL:        in.ImageURL,
+		OpeningVideoURL: in.OpeningVideoURL,
+		Public:          in.Public,
+		StartAt:         in.StartAt,
+		EndAt:           in.EndAt,
+	}
+	if err := s.db.Schedule.Update(ctx, in.ScheduleID, params); err != nil {
+		return exception.InternalError(err)
+	}
+	s.waitGroup.Add(1)
+	go func() {
+		defer s.waitGroup.Done()
+		var thumbnailURL string
+		if schedule.ThumbnailURL != in.ThumbnailURL {
+			thumbnailURL = in.ThumbnailURL
+		}
+		s.resizeSchedule(context.Background(), schedule.ID, thumbnailURL)
+	}()
+	return nil
+}
+
 func (s *service) UpdateScheduleThumbnails(ctx context.Context, in *store.UpdateScheduleThumbnailsInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return exception.InternalError(err)
