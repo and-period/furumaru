@@ -32,9 +32,8 @@ func TestLive_ListByScheduleID(t *testing.T) {
 	productType := testProductType("type-id", "category-id", "野菜", now())
 	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
-	products := make(entity.Products, 2)
+	products := make(entity.Products, 1)
 	products[0] = testProduct("product-id01", "type-id", "category-id", "producer-id", []string{}, now())
-	products[1] = testProduct("product-id02", "type-id", "category-id", "producer-id", []string{}, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 
@@ -45,7 +44,7 @@ func TestLive_ListByScheduleID(t *testing.T) {
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 
-	productIDs := []string{"product-id01", "product-id02"}
+	productIDs := []string{"product-id01"}
 	lives := make(entity.Lives, 3)
 	lives[0] = testLive("live-id01", "schedule-id", "producer-id", productIDs, now())
 	lives[1] = testLive("live-id02", "schedule-id", "producer-id", productIDs, now())
@@ -120,9 +119,8 @@ func TestLive_Get(t *testing.T) {
 	productType := testProductType("type-id", "category-id", "野菜", now())
 	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
-	products := make(entity.Products, 2)
+	products := make(entity.Products, 1)
 	products[0] = testProduct("product-id01", "type-id", "category-id", "producer-id", []string{}, now())
-	products[1] = testProduct("product-id02", "type-id", "category-id", "producer-id", []string{}, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 
@@ -133,7 +131,7 @@ func TestLive_Get(t *testing.T) {
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 
-	productIDs := []string{"product-id01", "product-id02"}
+	productIDs := []string{"product-id01"}
 	l := testLive("live-id", "schedule-id", "producer-id", productIDs, now())
 	err = db.DB.Create(&l).Error
 	require.NoError(t, err)
