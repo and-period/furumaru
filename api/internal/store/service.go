@@ -91,12 +91,18 @@ type Service interface {
 	GetSchedule(ctx context.Context, in *GetScheduleInput) (*entity.Schedule, error)
 	// 開催スケジュール登録
 	CreateSchedule(ctx context.Context, in *CreateScheduleInput) (*entity.Schedule, error)
+	// 開催スケジュール更新
+	UpdateSchedule(ctx context.Context, in *UpdateScheduleInput) error
 	// 開催スケジュールサムネイル画像(リサイズ済み)更新
 	UpdateScheduleThumbnails(ctx context.Context, in *UpdateScheduleThumbnailsInput) error
-	// 配信詳細取得
-	GetLive(ctx context.Context, in *GetLiveInput) (*entity.Live, error)
-	// 配信一覧取得(開催スケジュールID指定)
+	// ライブ配信一覧取得(開催スケジュールID指定)
 	ListLivesByScheduleID(ctx context.Context, in *ListLivesByScheduleIDInput) (entity.Lives, error)
+	// ライブ配信取得
+	GetLive(ctx context.Context, in *GetLiveInput) (*entity.Live, error)
+	// ライブ配信登録
+	CreateLive(ctx context.Context, in *CreateLiveInput) (*entity.Live, error)
+	// ライブ配信更新
+	UpdateLive(ctx context.Context, in *UpdateLiveInput) error
 	// 注文履歴一覧取得
 	ListOrders(ctx context.Context, in *ListOrdersInput) (entity.Orders, int64, error)
 	// 注文履歴取得

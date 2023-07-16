@@ -66,6 +66,21 @@ func (mr *MockServiceMockRecorder) CreateCategory(ctx, in interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCategory", reflect.TypeOf((*MockService)(nil).CreateCategory), ctx, in)
 }
 
+// CreateLive mocks base method.
+func (m *MockService) CreateLive(ctx context.Context, in *store.CreateLiveInput) (*entity.Live, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateLive", ctx, in)
+	ret0, _ := ret[0].(*entity.Live)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateLive indicates an expected call of CreateLive.
+func (mr *MockServiceMockRecorder) CreateLive(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateLive", reflect.TypeOf((*MockService)(nil).CreateLive), ctx, in)
+}
+
 // CreateProduct mocks base method.
 func (m *MockService) CreateProduct(ctx context.Context, in *store.CreateProductInput) (*entity.Product, error) {
 	m.ctrl.T.Helper()
@@ -652,6 +667,20 @@ func (mr *MockServiceMockRecorder) UpdateCategory(ctx, in interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCategory", reflect.TypeOf((*MockService)(nil).UpdateCategory), ctx, in)
 }
 
+// UpdateLive mocks base method.
+func (m *MockService) UpdateLive(ctx context.Context, in *store.UpdateLiveInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateLive", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateLive indicates an expected call of UpdateLive.
+func (mr *MockServiceMockRecorder) UpdateLive(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateLive", reflect.TypeOf((*MockService)(nil).UpdateLive), ctx, in)
+}
+
 // UpdateProduct mocks base method.
 func (m *MockService) UpdateProduct(ctx context.Context, in *store.UpdateProductInput) error {
 	m.ctrl.T.Helper()
@@ -734,6 +763,20 @@ func (m *MockService) UpdatePromotion(ctx context.Context, in *store.UpdatePromo
 func (mr *MockServiceMockRecorder) UpdatePromotion(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdatePromotion", reflect.TypeOf((*MockService)(nil).UpdatePromotion), ctx, in)
+}
+
+// UpdateSchedule mocks base method.
+func (m *MockService) UpdateSchedule(ctx context.Context, in *store.UpdateScheduleInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateSchedule", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateSchedule indicates an expected call of UpdateSchedule.
+func (mr *MockServiceMockRecorder) UpdateSchedule(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateSchedule", reflect.TypeOf((*MockService)(nil).UpdateSchedule), ctx, in)
 }
 
 // UpdateScheduleThumbnails mocks base method.

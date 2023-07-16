@@ -1,8 +1,8 @@
 get:
-  summary: マルシェ開催スケジュール取得
-  operationId: v1GetSchedule
+  summary: ライブ配信一覧取得
+  operationId: v1ListLives
   tags:
-  - Schedule
+  - Live
   security:
   - BearerAuth: []
   parameters:
@@ -19,18 +19,18 @@ get:
       content:
         application/json:
           schema:
-            $ref: './../../../../openapi.yaml#/components/schemas/v1ScheduleResponse'
+            $ref: './../../../../../openapi.yaml#/components/schemas/v1LivesResponse'
     404:
       description: 開催スケジュールが存在しない
       content:
         application/json:
           schema:
-            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
-patch:
-  summary: マルシェ開催スケジュール更新
-  operationId: v1UpdateSchedule
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
+post:
+  summary: ライブ配信登録
+  operationId: v1CreateLive
   tags:
-  - Schedule
+  - Live
   security:
   - BearerAuth: []
   parameters:
@@ -46,22 +46,29 @@ patch:
     content:
       application/json:
         schema:
-          $ref: './../../../../openapi.yaml#/components/schemas/v1UpdateScheduleRequest'
+          $ref: './../../../../../openapi.yaml#/components/schemas/v1CreateLiveRequest'
   responses:
-    204:
+    200:
       description: 成功
       content:
         application/json:
-          schema: {}
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/v1LiveResponse'
     400:
       description: バリデーションエラー
       content:
         application/json:
           schema:
-            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
     404:
       description: 開催スケジュールが存在しない
       content:
         application/json:
           schema:
-            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
+    412:
+      description: 開催時間,生産者が重複している
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'

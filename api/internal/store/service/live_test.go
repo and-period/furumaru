@@ -6,10 +6,11 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	pivs "github.com/and-period/furumaru/api/pkg/ivs"
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/service/ivs/types"
+	"github.com/and-period/furumaru/api/internal/user"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
@@ -17,49 +18,24 @@ import (
 func TestListByScheduleID(t *testing.T) {
 	t.Parallel()
 
+	now := jst.Date(2023, 7, 1, 18, 30, 0, 0)
 	lives := entity.Lives{
 		{
-			ID:           "live-id01",
-			ScheduleID:   "schedule-id",
-			ChannelArn:   "channel-arn",
-			StreamKeyArn: "streamKey-arn",
+			ID:         "live-id01",
+			ScheduleID: "schedule-id",
+			StartAt:    now.AddDate(0, -1, 0),
+			EndAt:      now.AddDate(0, 1, 0),
+			CreatedAt:  now,
+			UpdatedAt:  now,
 		},
 		{
-			ID:           "live-id02",
-			ScheduleID:   "schedule-id",
-			ChannelArn:   "channel-arn",
-			StreamKeyArn: "streamKey-arn",
+			ID:         "live-id02",
+			ScheduleID: "schedule-id",
+			StartAt:    now.AddDate(0, -1, 0),
+			EndAt:      now.AddDate(0, 1, 0),
+			CreatedAt:  now,
+			UpdatedAt:  now,
 		},
-	}
-	channelIn := &pivs.GetChannelParams{
-		Arn: "channel-arn",
-	}
-
-	streamIn := &pivs.GetStreamParams{
-		ChannelArn: "channel-arn",
-	}
-
-	streamKeyIn := &pivs.GetStreamKeyParams{
-		StreamKeyArn: "streamKey-arn",
-	}
-
-	channel := &types.Channel{
-		Arn:            aws.String("channel-arn"),
-		IngestEndpoint: aws.String("ingest-endpoint"),
-		Name:           aws.String("配信チャンネル"),
-		PlaybackUrl:    aws.String("playback-url"),
-	}
-
-	stream := &types.Stream{
-		ChannelArn:  aws.String("channel-arn"),
-		StreamId:    aws.String("stream-id"),
-		ViewerCount: 100,
-	}
-
-	streamKey := &types.StreamKey{
-		Arn:        aws.String("streamKey-arn"),
-		ChannelArn: aws.String("channel-arn"),
-		Value:      aws.String("streamKey-value"),
 	}
 
 	tests := []struct {
@@ -73,40 +49,29 @@ func TestListByScheduleID(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Live.EXPECT().ListByScheduleID(ctx, "schedule-id").Return(lives, nil)
-				mocks.ivs.EXPECT().GetChannel(gomock.Any(), channelIn).Return(channel, nil).Times(2)
-				mocks.ivs.EXPECT().GetStream(gomock.Any(), streamIn).Return(stream, nil).Times(2)
-				mocks.ivs.EXPECT().GetStreamKey(gomock.Any(), streamKeyIn).Return(streamKey, nil).Times(2)
 			},
 			input: &store.ListLivesByScheduleIDInput{
 				ScheduleID: "schedule-id",
 			},
-			expect: entity.Lives{
-				{
-					ID:             "live-id01",
-					ScheduleID:     "schedule-id",
-					ChannelArn:     "channel-arn",
-					StreamKeyArn:   "streamKey-arn",
-					ChannelName:    "配信チャンネル",
-					IngestEndpoint: "ingest-endpoint",
-					StreamKey:      "streamKey-value",
-					StreamID:       "stream-id",
-					PlaybackURL:    "playback-url",
-					ViewerCount:    100,
-				},
-				{
-					ID:             "live-id02",
-					ScheduleID:     "schedule-id",
-					ChannelArn:     "channel-arn",
-					StreamKeyArn:   "streamKey-arn",
-					ChannelName:    "配信チャンネル",
-					IngestEndpoint: "ingest-endpoint",
-					StreamKey:      "streamKey-value",
-					StreamID:       "stream-id",
-					PlaybackURL:    "playback-url",
-					ViewerCount:    100,
-				},
-			},
+			expect:    lives,
 			expectErr: nil,
+		}, {
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &store.ListLivesByScheduleIDInput{},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to list lives",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Live.EXPECT().ListByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+			},
+			input: &store.ListLivesByScheduleIDInput{
+				ScheduleID: "schedule-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrUnknown,
 		},
 	}
 
@@ -122,41 +87,15 @@ func TestListByScheduleID(t *testing.T) {
 
 func TestGetLive(t *testing.T) {
 	t.Parallel()
+
+	now := jst.Date(2023, 7, 1, 18, 30, 0, 0)
 	live := &entity.Live{
-		ID:           "live-id",
-		ChannelArn:   "channel-arn",
-		StreamKeyArn: "streamKey-arn",
-	}
-
-	channelIn := &pivs.GetChannelParams{
-		Arn: "channel-arn",
-	}
-
-	streamIn := &pivs.GetStreamParams{
-		ChannelArn: "channel-arn",
-	}
-
-	streamKeyIn := &pivs.GetStreamKeyParams{
-		StreamKeyArn: "streamKey-arn",
-	}
-
-	channel := &types.Channel{
-		Arn:            aws.String("channel-arn"),
-		IngestEndpoint: aws.String("ingest-endpoint"),
-		Name:           aws.String("配信チャンネル"),
-		PlaybackUrl:    aws.String("playback-url"),
-	}
-
-	stream := &types.Stream{
-		ChannelArn:  aws.String("channel-arn"),
-		StreamId:    aws.String("stream-id"),
-		ViewerCount: 100,
-	}
-
-	streamKey := &types.StreamKey{
-		Arn:        aws.String("streamKey-arn"),
-		ChannelArn: aws.String("channel-arn"),
-		Value:      aws.String("streamKey-value"),
+		ID:         "live-id",
+		ScheduleID: "schedule-id",
+		StartAt:    now.AddDate(0, -1, 0),
+		EndAt:      now.AddDate(0, 1, 0),
+		CreatedAt:  now,
+		UpdatedAt:  now,
 	}
 
 	tests := []struct {
@@ -170,24 +109,11 @@ func TestGetLive(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
-				mocks.ivs.EXPECT().GetChannel(gomock.Any(), channelIn).Return(channel, nil)
-				mocks.ivs.EXPECT().GetStream(gomock.Any(), streamIn).Return(stream, nil)
-				mocks.ivs.EXPECT().GetStreamKey(gomock.Any(), streamKeyIn).Return(streamKey, nil)
 			},
 			input: &store.GetLiveInput{
 				LiveID: "live-id",
 			},
-			expect: &entity.Live{
-				ID:             "live-id",
-				ChannelArn:     "channel-arn",
-				StreamKeyArn:   "streamKey-arn",
-				ChannelName:    "配信チャンネル",
-				IngestEndpoint: "ingest-endpoint",
-				StreamKey:      "streamKey-value",
-				StreamID:       "stream-id",
-				PlaybackURL:    "playback-url",
-				ViewerCount:    100,
-			},
+			expect:    live,
 			expectErr: nil,
 		},
 		{
@@ -208,48 +134,6 @@ func TestGetLive(t *testing.T) {
 			expect:    nil,
 			expectErr: exception.ErrUnknown,
 		},
-		{
-			name: "failed to not found channel",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
-				mocks.ivs.EXPECT().GetChannel(gomock.Any(), channelIn).Return(nil, exception.ErrNotFound)
-				mocks.ivs.EXPECT().GetStream(gomock.Any(), streamIn).Return(stream, nil)
-				mocks.ivs.EXPECT().GetStreamKey(gomock.Any(), streamKeyIn).Return(streamKey, nil)
-			},
-			input: &store.GetLiveInput{
-				LiveID: "live-id",
-			},
-			expect:    nil,
-			expectErr: exception.ErrNotFound,
-		},
-		{
-			name: "failed to not found stream",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
-				mocks.ivs.EXPECT().GetChannel(gomock.Any(), channelIn).Return(channel, nil)
-				mocks.ivs.EXPECT().GetStream(gomock.Any(), streamIn).Return(nil, exception.ErrNotFound)
-				mocks.ivs.EXPECT().GetStreamKey(gomock.Any(), streamKeyIn).Return(streamKey, nil)
-			},
-			input: &store.GetLiveInput{
-				LiveID: "live-id",
-			},
-			expect:    nil,
-			expectErr: exception.ErrNotFound,
-		},
-		{
-			name: "failed to not found streamKey",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
-				mocks.ivs.EXPECT().GetChannel(gomock.Any(), channelIn).Return(channel, nil)
-				mocks.ivs.EXPECT().GetStream(gomock.Any(), streamIn).Return(stream, nil)
-				mocks.ivs.EXPECT().GetStreamKey(gomock.Any(), streamKeyIn).Return(nil, exception.ErrNotFound)
-			},
-			input: &store.GetLiveInput{
-				LiveID: "live-id",
-			},
-			expect:    nil,
-			expectErr: exception.ErrNotFound,
-		},
 	}
 
 	for _, tt := range tests {
@@ -258,6 +142,293 @@ func TestGetLive(t *testing.T) {
 			actual, err := service.GetLive(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
+func TestCreateLive(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2023, 7, 1, 18, 30, 0, 0)
+	products := entity.Products{
+		{
+			ID:   "product-id",
+			Name: "芽が出たじゃがいも",
+		},
+	}
+	producerIn := &user.GetProducerInput{
+		ProducerID: "producer-id",
+	}
+	producer := &uentity.Producer{
+		AdminID:  "producer-id",
+		Username: "&.農園",
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.CreateLiveInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(&entity.Schedule{}, nil)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
+				mocks.db.Live.EXPECT().
+					Create(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, live *entity.Live) error {
+						expect := &entity.Live{
+							ID:           live.ID,
+							ScheduleID:   "schedule-id",
+							ProducerID:   "producer-id",
+							ProductIDs:   []string{"product-id"},
+							Comment:      "よろしくお願いします。",
+							StartAt:      now.AddDate(0, -1, 0),
+							EndAt:        now.AddDate(0, 1, 0),
+							LiveProducts: live.LiveProducts,
+						}
+						assert.Equal(t, expect, live)
+						return nil
+					})
+			},
+			input: &store.CreateLiveInput{
+				ScheduleID: "schedule-id",
+				ProducerID: "producer-id",
+				ProductIDs: []string{"product-id"},
+				Comment:    "よろしくお願いします。",
+				StartAt:    now.AddDate(0, -1, 0),
+				EndAt:      now.AddDate(0, 1, 0),
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &store.CreateLiveInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get schedule",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(nil, assert.AnError)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
+			},
+			input: &store.CreateLiveInput{
+				ScheduleID: "schedule-id",
+				ProducerID: "producer-id",
+				ProductIDs: []string{"product-id"},
+				Comment:    "よろしくお願いします。",
+				StartAt:    now.AddDate(0, -1, 0),
+				EndAt:      now.AddDate(0, 1, 0),
+			},
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "failed to get producer",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(&entity.Schedule{}, nil)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(nil, assert.AnError)
+				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
+			},
+			input: &store.CreateLiveInput{
+				ScheduleID: "schedule-id",
+				ProducerID: "producer-id",
+				ProductIDs: []string{"product-id"},
+				Comment:    "よろしくお願いします。",
+				StartAt:    now.AddDate(0, -1, 0),
+				EndAt:      now.AddDate(0, 1, 0),
+			},
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "failed to unmatch products",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(&entity.Schedule{}, nil)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(entity.Products{}, nil)
+			},
+			input: &store.CreateLiveInput{
+				ScheduleID: "schedule-id",
+				ProducerID: "producer-id",
+				ProductIDs: []string{"product-id"},
+				Comment:    "よろしくお願いします。",
+				StartAt:    now.AddDate(0, -1, 0),
+				EndAt:      now.AddDate(0, 1, 0),
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get products",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(&entity.Schedule{}, nil)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(nil, assert.AnError)
+			},
+			input: &store.CreateLiveInput{
+				ScheduleID: "schedule-id",
+				ProducerID: "producer-id",
+				ProductIDs: []string{"product-id"},
+				Comment:    "よろしくお願いします。",
+				StartAt:    now.AddDate(0, -1, 0),
+				EndAt:      now.AddDate(0, 1, 0),
+			},
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "failed to create live",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(&entity.Schedule{}, nil)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
+				mocks.db.Live.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
+			},
+			input: &store.CreateLiveInput{
+				ScheduleID: "schedule-id",
+				ProducerID: "producer-id",
+				ProductIDs: []string{"product-id"},
+				Comment:    "よろしくお願いします。",
+				StartAt:    now.AddDate(0, -1, 0),
+				EndAt:      now.AddDate(0, 1, 0),
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.CreateLive(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestUpdateLive(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2023, 7, 1, 18, 30, 0, 0)
+	live := &entity.Live{
+		ID:         "live-id",
+		ScheduleID: "schedule-id",
+		ProducerID: "producer-id",
+		ProductIDs: []string{"product-id"},
+		Comment:    "よろしくお願いします",
+		StartAt:    now.AddDate(0, -1, 0),
+		EndAt:      now.AddDate(0, 1, 0),
+		CreatedAt:  now,
+		UpdatedAt:  now,
+	}
+	products := entity.Products{
+		{
+			ID:   "product-id",
+			Name: "芽が出たじゃがいも",
+		},
+	}
+	params := &database.UpdateLiveParams{
+		ProductIDs: []string{"product-id"},
+		Comment:    "よろしくお願いします。",
+		StartAt:    now.AddDate(0, -1, 0),
+		EndAt:      now.AddDate(0, 1, 0),
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.UpdateLiveInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
+				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products, nil)
+				mocks.db.Live.EXPECT().Update(ctx, "live-id", params).Return(nil)
+			},
+			input: &store.UpdateLiveInput{
+				LiveID:     "live-id",
+				ProductIDs: []string{"product-id"},
+				Comment:    "よろしくお願いします。",
+				StartAt:    now.AddDate(0, -1, 0),
+				EndAt:      now.AddDate(0, 1, 0),
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &store.UpdateLiveInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get live",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(nil, assert.AnError)
+			},
+			input: &store.UpdateLiveInput{
+				LiveID:     "live-id",
+				ProductIDs: []string{"product-id"},
+				Comment:    "よろしくお願いします。",
+				StartAt:    now.AddDate(0, -1, 0),
+				EndAt:      now.AddDate(0, 1, 0),
+			},
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "failed to get products",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
+				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(nil, assert.AnError)
+			},
+			input: &store.UpdateLiveInput{
+				LiveID:     "live-id",
+				ProductIDs: []string{"product-id"},
+				Comment:    "よろしくお願いします。",
+				StartAt:    now.AddDate(0, -1, 0),
+				EndAt:      now.AddDate(0, 1, 0),
+			},
+			expectErr: exception.ErrUnknown,
+		},
+		{
+			name: "failed to unmatch products",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
+				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(entity.Products{}, nil)
+			},
+			input: &store.UpdateLiveInput{
+				LiveID:     "live-id",
+				ProductIDs: []string{"product-id"},
+				Comment:    "よろしくお願いします。",
+				StartAt:    now.AddDate(0, -1, 0),
+				EndAt:      now.AddDate(0, 1, 0),
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to update live",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
+				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products, nil)
+				mocks.db.Live.EXPECT().Update(ctx, "live-id", params).Return(assert.AnError)
+			},
+			input: &store.UpdateLiveInput{
+				LiveID:     "live-id",
+				ProductIDs: []string{"product-id"},
+				Comment:    "よろしくお願いします。",
+				StartAt:    now.AddDate(0, -1, 0),
+				EndAt:      now.AddDate(0, 1, 0),
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.UpdateLive(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
 }

@@ -117,13 +117,6 @@ scheduleResponse:
 schedulesResponse:
   type: object
   properties:
-    schedule:
-      $ref: './../../../openapi.yaml#/components/schemas/schedule'
-    coordinator:
-      $ref: './../../../openapi.yaml#/components/schemas/coordinator'
-    shipping:
-      $ref: './../../../openapi.yaml#/components/schemas/shipping'
-
     schedules:
       type: array
       description: マルシェ開催スケジュール一覧

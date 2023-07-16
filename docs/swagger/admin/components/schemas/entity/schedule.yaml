@@ -1,5 +1,6 @@
 schedule:
   type: object
+  description: マルシェ開催スケジュール情報
   properties:
     id:
       type: string
