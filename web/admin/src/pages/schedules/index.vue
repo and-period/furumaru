@@ -49,8 +49,8 @@ const handleClickAdd = (): void => {
   router.push('/schedules/new')
 }
 
-const handleClickRow = (): void => {
-  console.log('debug', 'click:show-schedule')
+const handleClickRow = (scheduleId: string): void => {
+  router.push(`/schedules/${scheduleId}`)
 }
 
 const handleClickDelete = (): void => {

@@ -70,7 +70,7 @@ const emit = defineEmits<{
   (e: 'update:thumbnail', files: FileList): void
   (e: 'update:image', files: FileList): void
   (e: 'update:opening-video', files: FileList): void
-  (e: 'update:search-shipping', name: string): void
+  (e: 'search:shipping', name: string): void
   (e: 'submit'): void
 }>()
 
@@ -138,8 +138,8 @@ const onChangeOpeningVideo = (files?: FileList) => {
   emit('update:opening-video', files)
 }
 
-const onChangeSearchShipping = (name: string): void => {
-  emit('update:search-shipping', name)
+const onSearchShipping = (name: string): void => {
+  emit('search:shipping', name)
 }
 
 const onSubmit = async (): Promise<void> => {
@@ -254,7 +254,7 @@ const onSubmit = async (): Promise<void> => {
           :items="shippings"
           item-title="name"
           item-value="id"
-          @update:search="onChangeSearchShipping"
+          @update:search="onSearchShipping"
         />
       </v-card-text>
 

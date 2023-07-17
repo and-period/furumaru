@@ -51,7 +51,7 @@ const isLoading = (): boolean => {
 
 const handleSearchShipping = async (name: string): Promise<void> => {
   try {
-    await shippingStore.searchCoordinators(name)
+    await shippingStore.searchShippings(name)
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
@@ -125,7 +125,7 @@ const handleSubmit = async (): Promise<void> => {
       coordinatorId: auth.value?.adminId || ''
     }
     const schedule = await scheduleStore.createSchedule(req)
-    router.push(`/schedules/${schedule.id}`)
+    router.push(`/schedules/${schedule.id}?tab=lives`)
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
@@ -155,7 +155,7 @@ const handleSubmit = async (): Promise<void> => {
     @update:thumbnail="handleUploadThumbnail"
     @update:image="handleUploadImage"
     @update:opening-video="handleUploadOpeningVideo"
-    @udpate:search-shipping="handleSearchShipping"
+    @search:shipping="handleSearchShipping"
     @submit="handleSubmit"
   />
 </template>

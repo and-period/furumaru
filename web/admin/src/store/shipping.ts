@@ -40,7 +40,7 @@ export const useShippingStore = defineStore('shipping', {
      * @param name 配送設定名(あいまい検索)
      * @param shippingIds stateの更新時に残しておく必要がある配送設定情報
      */
-    async searchCoordinators (name = '', shippingIds: string[] = []): Promise<void> {
+    async searchShippings (name = '', shippingIds: string[] = []): Promise<void> {
       try {
         const res = await apiClient.shippingApi().v1ListShippings(undefined, undefined, name)
         const shippings: Shipping[] = []
