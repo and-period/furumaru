@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import dayjs from 'dayjs';
-import { storeToRefs } from 'pinia';
-import { useAlert } from '~/lib/hooks';
-import { useCoordinatorStore, useLiveStore, useProducerStore, useProductStore, useScheduleStore, useShippingStore } from '~/store';
-import { CreateLiveRequest, Live, Producer, UpdateLiveRequest, UpdateScheduleRequest } from '~/types/api';
-import { ImageUploadStatus } from '~/types/props';
+import dayjs from 'dayjs'
+import { storeToRefs } from 'pinia'
+import { useAlert } from '~/lib/hooks'
+import { useCoordinatorStore, useLiveStore, useProducerStore, useProductStore, useScheduleStore, useShippingStore } from '~/store'
+import { CreateLiveRequest, Live, Producer, UpdateLiveRequest, UpdateScheduleRequest } from '~/types/api'
+import { ImageUploadStatus } from '~/types/props'
 
 const route = useRoute()
 const router = useRouter()
@@ -28,6 +28,9 @@ const { shippings } = storeToRefs(shippingStore)
 
 const loading = ref<boolean>(false)
 const selector = ref<string>(tab === 'lives' ? 'lives' : 'schedules')
+const selectedLiveId = ref<string>('')
+const createLiveDialog = ref<boolean>(false)
+const updateLiveDialog = ref<boolean>(false)
 const scheduleFormData = ref<UpdateScheduleRequest>({
   shippingId: '',
   title: '',
@@ -63,6 +66,13 @@ const imageUploadStatus = ref<ImageUploadStatus>({
 const openingVideoUploadStatus = ref<ImageUploadStatus>({
   error: false,
   message: ''
+})
+
+watch(updateLiveDialog, (): void => {
+  if (updateLiveDialog) {
+    return
+  }
+  selectedLiveId.value = ''
 })
 
 const fetchState = useAsyncData(async (): Promise<void> => {
@@ -181,6 +191,41 @@ const handleUploadOpeningVideo = (files: FileList): void => {
     })
 }
 
+const handleClickNewLive = (): void => {
+  createLiveDialog.value = true
+}
+
+const handleClickEditLive = (liveId: string): void => {
+  const live = lives.value.find((live: Live): boolean => {
+    return live.id === liveId
+  })
+  if (!live) {
+    return
+  }
+  selectedLiveId.value = liveId
+  updateLiveFormData.value = { ...live }
+  updateLiveDialog.value = true
+}
+
+const handleSubmitUpdateSchedule = (): void => {
+  console.log('submit:update-schedule', { scheduleFormData })
+}
+
+const handleSubmitCreateLive = (): void => {
+  console.log('submit:create-live', { createLiveFormData })
+  createLiveDialog.value = false
+}
+
+const handleSubmitUpdateLive = (): void => {
+  console.log('submit:update-live', { updateLiveFormData })
+  updateLiveDialog.value = false
+}
+
+const handleSubmitDeleteLive = (): void => {
+  console.log('submit:delete-live', { selectedLiveId })
+  updateLiveDialog.value = false
+}
+
 try {
   await fetchState.execute()
 } catch (err) {
@@ -191,6 +236,8 @@ try {
 <template>
   <templates-schedule-show
     v-model:selected-tab-item="selector"
+    v-model:create-live-dialog="createLiveDialog"
+    v-model:update-live-dialog="updateLiveDialog"
     v-model:schedule-form-data="scheduleFormData"
     v-model:create-live-form-data="createLiveFormData"
     v-model:update-live-form-data="updateLiveFormData"
@@ -207,11 +254,17 @@ try {
     :thumbnail-upload-status="thumbnailUploadStatus"
     :image-upload-status="imageUploadStatus"
     :opening-video-upload-status="openingVideoUploadStatus"
+    @click:new-live="handleClickNewLive"
+    @click:edit-live="handleClickEditLive"
     @update:thumbnail="handleUploadThumbnail"
     @update:image="handleUploadImage"
     @update:opening-video="handleUploadOpeningVideo"
     @search:shipping="handleSearchShipping"
     @search:producer="handleSearchProducer"
     @search:product="handleSearchProduct"
+    @submit:schedule="handleSubmitUpdateSchedule"
+    @submit:create-live="handleSubmitCreateLive"
+    @submit:update-live="handleSubmitUpdateLive"
+    @submit:delete-live="handleSubmitDeleteLive"
   />
 </template>

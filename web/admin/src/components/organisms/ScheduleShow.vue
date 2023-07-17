@@ -42,7 +42,7 @@ const props = defineProps({
       startAt: dayjs().unix(),
       endAt: dayjs().unix(),
       createdAt: 0,
-      updatedAt: 0,
+      updatedAt: 0
     })
   },
   shippings: {
@@ -161,109 +161,111 @@ const onSubmit = async (): Promise<void> => {
 </script>
 
 <template>
-  <v-form @submit.prevent="onSubmit">
-    <v-card-text>
-      <v-text-field
-        v-model="formDataValidate.title.$model"
-        :error-messages="getErrorMessage(formDataValidate.title.$errors)"
-        label="タイトル"
-      />
-      <p class="text-subtitle-2 text-grey py-2">
-        開催期間
-      </p>
-      <div class="d-flex flex-column flex-md-row justify-center">
+  <v-card>
+    <v-form @submit.prevent="onSubmit">
+      <v-card-text>
         <v-text-field
-          v-model="timeDataValidate.startDate.$model"
-          :error-messages="getErrorMessage(timeDataValidate.startDate.$errors)"
-          type="date"
-          variant="outlined"
-          density="compact"
-          class="mr-md-2"
-          @update:model-value="onChangeStartAt"
+          v-model="formDataValidate.title.$model"
+          :error-messages="getErrorMessage(formDataValidate.title.$errors)"
+          label="タイトル"
         />
-        <v-text-field
-          v-model="timeDataValidate.startTime.$model"
-          :error-messages="getErrorMessage(timeDataValidate.startTime.$errors)"
-          type="time"
-          variant="outlined"
-          density="compact"
-          @update:model-value="onChangeStartAt"
-        />
-        <p class="text-subtitle-2 mx-4 pt-md-3 pb-4 pb-md-6">
-          〜
+        <p class="text-subtitle-2 text-grey py-2">
+          開催期間
         </p>
-        <v-text-field
-          v-model="timeDataValidate.endDate.$model"
-          :error-messages="getErrorMessage(timeDataValidate.endDate.$errors)"
-          type="date"
-          variant="outlined"
-          density="compact"
-          class="mr-md-2"
-          @update:model-value="onChangeEndAt"
-        />
-        <v-text-field
-          v-model="timeDataValidate.endTime.$model"
-          :error-messages="getErrorMessage(timeDataValidate.endTime.$errors)"
-          type="time"
-          variant="outlined"
-          density="compact"
-          @update:model-value="onChangeEndAt"
-        />
-      </div>
-      <p class="text-subtitle-2 text-grey py-2">
-        詳細
-      </p>
-      <client-only>
-        <tiptap-editor
-          v-model="formDataValidate.description.$model"
-          :error-message="getErrorMessage(formDataValidate.description.$errors)"
-          class="mb-4"
-        />
-      </client-only>
-      <v-row>
-        <v-col cols="12" sm="12" md="4">
-          <molecules-image-select-form
-            label="サムネイル画像"
-            :img-url="formDataValue.thumbnailUrl"
-            :error="props.thumbnailUploadStatus.error"
-            :message="props.thumbnailUploadStatus.message"
-            @update:file="onChangeThumbnailFile"
+        <div class="d-flex flex-column flex-md-row justify-center">
+          <v-text-field
+            v-model="timeDataValidate.startDate.$model"
+            :error-messages="getErrorMessage(timeDataValidate.startDate.$errors)"
+            type="date"
+            variant="outlined"
+            density="compact"
+            class="mr-md-2"
+            @update:model-value="onChangeStartAt"
           />
-        </v-col>
-        <v-col cols="12" sm="12" md="4">
-          <molecules-video-select-form
-            label="オープニング動画"
-            :video-url="formDataValue.openingVideoUrl"
-            :error="props.openingVideoUploadStatus.error"
-            :message="props.openingVideoUploadStatus.message"
-            @update:file="onChangeOpeningVideo"
+          <v-text-field
+            v-model="timeDataValidate.startTime.$model"
+            :error-messages="getErrorMessage(timeDataValidate.startTime.$errors)"
+            type="time"
+            variant="outlined"
+            density="compact"
+            @update:model-value="onChangeStartAt"
           />
-        </v-col>
-        <v-col cols="12" sm="12" md="4">
-          <molecules-image-select-form
-            label="待機中の画像"
-            :accept="['image/png']"
-            :img-url="formDataValue.imageUrl"
-            :error="props.imageUploadStatus.error"
-            :message="props.imageUploadStatus.message"
-            @update:file="onChangeImageFile"
+          <p class="text-subtitle-2 mx-4 pt-md-3 pb-4 pb-md-6">
+            〜
+          </p>
+          <v-text-field
+            v-model="timeDataValidate.endDate.$model"
+            :error-messages="getErrorMessage(timeDataValidate.endDate.$errors)"
+            type="date"
+            variant="outlined"
+            density="compact"
+            class="mr-md-2"
+            @update:model-value="onChangeEndAt"
           />
-        </v-col>
-      </v-row>
-      <v-autocomplete
-        v-model="formDataValidate.shippingId.$model"
-        label="配送設定"
-        :items="shippings"
-        item-title="name"
-        item-value="id"
-        @update:search="onSearchShipping"
-      />
-    </v-card-text>
+          <v-text-field
+            v-model="timeDataValidate.endTime.$model"
+            :error-messages="getErrorMessage(timeDataValidate.endTime.$errors)"
+            type="time"
+            variant="outlined"
+            density="compact"
+            @update:model-value="onChangeEndAt"
+          />
+        </div>
+        <p class="text-subtitle-2 text-grey py-2">
+          詳細
+        </p>
+        <client-only>
+          <tiptap-editor
+            v-model="formDataValidate.description.$model"
+            :error-message="getErrorMessage(formDataValidate.description.$errors)"
+            class="mb-4"
+          />
+        </client-only>
+        <v-row>
+          <v-col cols="12" sm="12" md="4">
+            <molecules-image-select-form
+              label="サムネイル画像"
+              :img-url="formDataValue.thumbnailUrl"
+              :error="props.thumbnailUploadStatus.error"
+              :message="props.thumbnailUploadStatus.message"
+              @update:file="onChangeThumbnailFile"
+            />
+          </v-col>
+          <v-col cols="12" sm="12" md="4">
+            <molecules-video-select-form
+              label="オープニング動画"
+              :video-url="formDataValue.openingVideoUrl"
+              :error="props.openingVideoUploadStatus.error"
+              :message="props.openingVideoUploadStatus.message"
+              @update:file="onChangeOpeningVideo"
+            />
+          </v-col>
+          <v-col cols="12" sm="12" md="4">
+            <molecules-image-select-form
+              label="待機中の画像"
+              :accept="['image/png']"
+              :img-url="formDataValue.imageUrl"
+              :error="props.imageUploadStatus.error"
+              :message="props.imageUploadStatus.message"
+              @update:file="onChangeImageFile"
+            />
+          </v-col>
+        </v-row>
+        <v-autocomplete
+          v-model="formDataValidate.shippingId.$model"
+          label="配送設定"
+          :items="shippings"
+          item-title="name"
+          item-value="id"
+          @update:search="onSearchShipping"
+        />
+      </v-card-text>
 
-    <v-card-actions>
-      <v-btn block :loading="props.loading" variant="outlined" color="primary" type="submit">
-        更新
-      </v-btn>
-    </v-card-actions>
-  </v-form>
+      <v-card-actions>
+        <v-btn block :loading="props.loading" variant="outlined" color="primary" type="submit">
+          更新
+        </v-btn>
+      </v-card-actions>
+    </v-form>
+  </v-card>
 </template>
