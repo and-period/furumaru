@@ -246,7 +246,7 @@ const onSubmitDeleteLive = (): void => {
     </v-card-text>
   </v-card>
 
-  <v-window v-model="props.selectedTabItem">
+  <v-window v-model="selectedTabItemValue">
     <v-window-item value="schedule">
       <organisms-schedule-show
         v-model:form-data="scheduleFormDataValue"
