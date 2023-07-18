@@ -3,11 +3,12 @@ import { useCommonStore } from './common'
 import { useCoordinatorStore } from './coordinator'
 import { useShippingStore } from './shipping'
 import { apiClient } from '~/plugins/api-client'
-import { CreateScheduleRequest, ScheduleResponse, SchedulesResponse, UploadImageResponse, UploadVideoResponse } from '~/types/api'
+import { CreateScheduleRequest, Schedule, UpdateScheduleRequest, UploadImageResponse, UploadVideoResponse } from '~/types/api'
 
 export const useScheduleStore = defineStore('schedule', {
   state: () => ({
-    schedules: [] as SchedulesResponse['schedules'],
+    schedule: {} as Schedule,
+    schedules: [] as Schedule[],
     total: 0
   }),
 
@@ -19,7 +20,7 @@ export const useScheduleStore = defineStore('schedule', {
      */
     async fetchSchedules (limit = 20, offset = 0): Promise<void> {
       try {
-        const res = await apiClient.scheduleApi().v1ListSchedules()
+        const res = await apiClient.scheduleApi().v1ListSchedules(limit, offset)
 
         const coordinatorStore = useCoordinatorStore()
         const shippingStore = useShippingStore()
@@ -32,11 +33,25 @@ export const useScheduleStore = defineStore('schedule', {
       }
     },
 
+    async getSchedule (scheduleId: string): Promise<void> {
+      try {
+        const res = await apiClient.scheduleApi().v1GetSchedule(scheduleId)
+
+        const coordinatorStore = useCoordinatorStore()
+        const shippingStore = useShippingStore()
+        this.schedule = res.data.schedule
+        coordinatorStore.coordinators.push(res.data.coordinator)
+        shippingStore.shippings.splice(0, shippingStore.shippings.length, res.data.shipping)
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
     /**
      * マルシェ開催スケジュールを登録する非同期関数
      * @param payload
      */
-    async createSchedule (payload: CreateScheduleRequest): Promise<ScheduleResponse> {
+    async createSchedule (payload: CreateScheduleRequest): Promise<Schedule> {
       try {
         const res = await apiClient.scheduleApi().v1CreateSchedule(payload)
         const commonStore = useCommonStore()
@@ -44,7 +59,25 @@ export const useScheduleStore = defineStore('schedule', {
           message: `${payload.title}を作成しました。`,
           color: 'info'
         })
-        return res.data
+        return res.data.schedule
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * マルシェ開催スケジュールを更新する非同期関数
+     * @param scheduleId スケジュールID
+     * @param payload
+     */
+    async updateSchedule (scheduleId: string, payload: UpdateScheduleRequest): Promise<void> {
+      try {
+        await apiClient.scheduleApi().v1UpdateSchedule(scheduleId, payload)
+        const commonStore = useCommonStore()
+        commonStore.addSnackbar({
+          message: `${payload.title}を更新しました。`,
+          color: 'info'
+        })
       } catch (err) {
         return this.errorHandler(err)
       }

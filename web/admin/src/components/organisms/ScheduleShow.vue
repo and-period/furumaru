@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
-import { AlertType } from '~/lib/hooks'
 import { getErrorMessage, maxLength, required } from '~/lib/validations'
-import { CreateScheduleRequest, Shipping } from '~/types/api'
+import { Schedule, ScheduleStatus, Shipping, UpdateScheduleRequest } from '~/types/api'
 import { ImageUploadStatus, ScheduleTime } from '~/types/props'
 
 const props = defineProps({
@@ -11,22 +10,9 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  isAlert: {
-    type: Boolean,
-    default: false
-  },
-  alertType: {
-    type: String as PropType<AlertType>,
-    default: undefined
-  },
-  alertText: {
-    type: String,
-    default: ''
-  },
   formData: {
-    type: Object as PropType<CreateScheduleRequest>,
-    default: (): CreateScheduleRequest => ({
-      coordinatorId: '',
+    type: Object as PropType<UpdateScheduleRequest>,
+    default: (): UpdateScheduleRequest => ({
       shippingId: '',
       title: '',
       description: '',
@@ -36,6 +22,27 @@ const props = defineProps({
       public: false,
       startAt: dayjs().unix(),
       endAt: dayjs().unix()
+    })
+  },
+  schedule: {
+    type: Object as PropType<Schedule>,
+    default: (): Schedule => ({
+      id: '',
+      coordinatorId: '',
+      shippingId: '',
+      title: '',
+      description: '',
+      status: ScheduleStatus.UNKNOWN,
+      thumbnailUrl: '',
+      thumbnails: [],
+      imageUrl: '',
+      openingVideoUrl: '',
+      public: false,
+      approved: false,
+      startAt: dayjs().unix(),
+      endAt: dayjs().unix(),
+      createdAt: 0,
+      updatedAt: 0
     })
   },
   shippings: {
@@ -66,7 +73,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:form-data', formData: CreateScheduleRequest): void
+  (e: 'update:form-data', formData: UpdateScheduleRequest): void
   (e: 'update:thumbnail', files: FileList): void
   (e: 'update:image', files: FileList): void
   (e: 'update:opening-video', files: FileList): void
@@ -86,8 +93,8 @@ const timeDataRules = computed(() => ({
   endTime: { required }
 }))
 const formDataValue = computed({
-  get: (): CreateScheduleRequest => props.formData,
-  set: (formData: CreateScheduleRequest): void => emit('update:form-data', formData)
+  get: (): UpdateScheduleRequest => props.formData,
+  set: (formData: UpdateScheduleRequest): void => emit('update:form-data', formData)
 })
 const timeDataValue = computed({
   get: (): ScheduleTime => ({
@@ -154,11 +161,7 @@ const onSubmit = async (): Promise<void> => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
-
   <v-card>
-    <v-card-title>ライブ配信登録</v-card-title>
-
     <v-form @submit.prevent="onSubmit">
       <v-card-text>
         <v-text-field
@@ -260,7 +263,7 @@ const onSubmit = async (): Promise<void> => {
 
       <v-card-actions>
         <v-btn block :loading="props.loading" variant="outlined" color="primary" type="submit">
-          登録
+          更新
         </v-btn>
       </v-card-actions>
     </v-form>

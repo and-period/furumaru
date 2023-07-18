@@ -47,6 +47,35 @@ export const useProductStore = defineStore('product', {
     },
 
     /**
+     * 商品情報を検索する非同期関数
+     * @param name 商品名(あいまい検索)
+     * @param producerId 生産者ID
+     * @param productIds stateの更新時に残しておく必要がある商品情報
+     */
+    async searchProducts (name = '', producerId = '', productIds: string[] = []): Promise<void> {
+      try {
+        const res = await apiClient.productApi().v1ListProducts(20, 0, producerId, name)
+        const products: Product[] = []
+        this.products.forEach((product: Product): void => {
+          if (!productIds.includes(product.id)) {
+            return
+          }
+          products.push(product)
+        })
+        res.data.products.forEach((product: Product): void => {
+          if (products.find((v): boolean => v.id === product.id)) {
+            return
+          }
+          products.push(product)
+        })
+        this.products = products
+        this.totalItems = res.data.total
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
      * 商品詳細を取得する非同期関数
      * @param productId
      * @returns
