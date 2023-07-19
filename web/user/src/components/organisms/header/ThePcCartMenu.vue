@@ -21,9 +21,7 @@ const totalPrice = computed(() => {
     <template #content>
       <div class="p-4 leading-8 flex flex-col gap-y-4 max-h-[calc(100vh_-_150px)] overflow-auto">
         <p v-html="cartMenuMessage" />
-        <div v-if="!cartIsEmpty" class="my-4">
-          <hr class=" border-main">
-        </div>
+        <hr class=" border-main">
         <div>
           合計金額:
           <p class="font-bold after:ml-2 after:content-['(税込)'] after:text-[16px]">
