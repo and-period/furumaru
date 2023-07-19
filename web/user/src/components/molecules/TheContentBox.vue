@@ -12,7 +12,7 @@ defineProps<Props>()
     <div class="absolute w-full -top-6">
       <the-content-title :value="title" class="mx-auto" />
     </div>
-    <the-content-sub-title :value="subTitle" class="my-4" />
+    <the-content-sub-title :value="subTitle" class="mt-12 mb-11" />
     <slot />
   </div>
 </template>
