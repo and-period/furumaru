@@ -26,7 +26,7 @@ const priceString = computed<string>(() => {
       <div class="flex flex-col">
         <div class="flex items-start grow">
           <div class="inline-flex">
-            <label class="block mr-2">数量</label>
+            <label class="block mr-2 whitespace-nowrap">数量</label>
             <select class="border-main border-[1px] px-2 h-full ">
               <option value="0">
                 0
