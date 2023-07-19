@@ -58,12 +58,12 @@ const banners: string[] = [
   <div>
     <the-carousel :images="banners" />
 
-    <div class="my-6 flex flex-col gap-y-16">
+    <div class="mt-[76px] mb-[72px] flex flex-col gap-y-16">
       <the-content-box
         title="live"
         sub-title="配信中・配信予定のマルシェ"
       >
-        <div class="px-20 grid grid-cols-3 gap-x-10 gap-y-8">
+        <div class="mx-auto max-w-7xl px-20 grid grid-cols-3 gap-x-10 gap-y-8">
           <the-live-item
             v-for="liveItem in MOCK_LIVE_ITEMS"
             :id="liveItem.id"
@@ -74,7 +74,7 @@ const banners: string[] = [
             :published="liveItem.published"
           />
         </div>
-        <div class="w-full text-center mt-10">
+        <div class="w-full mt-10 mb-4 flex justify-center">
           <button class="bg-main text-white py-2 w-60">
             もっと見る
           </button>
@@ -82,11 +82,10 @@ const banners: string[] = [
       </the-content-box>
 
       <the-content-box
-        class="px-8"
         title="archive"
         sub-title="過去のマルシェ"
       >
-        <div class="relative flex">
+        <div class="mx-auto max-w-[1440px] relative flex">
           <div class="absolute left-4 flex items-center h-[208px]">
             <the-icon-button class="bg-white bg-opacity-50 hover:bg-opacity-100" @click="handleClickArchiveLeftButton">
               <the-left-arrow-icon />
@@ -108,7 +107,7 @@ const banners: string[] = [
           </div>
         </div>
 
-        <div class="w-full text-center mt-10">
+        <div class="w-full mt-10 mb-4 flex justify-center">
           <button class="bg-main text-white py-2 w-60">
             一覧を見る
           </button>
@@ -119,7 +118,7 @@ const banners: string[] = [
         title="recommend"
         sub-title="おすすめの商品"
       >
-        <div class="grid grid-cols-5 gap-x-4 gap-y-6">
+        <div class="mx-auto max-w-[1440px] grid grid-cols-5 gap-x-8 gap-y-6">
           <the-product-list-item
             v-for="productItem in MOCK_RECOMMEND_ITEMS"
             :id="productItem.id"
