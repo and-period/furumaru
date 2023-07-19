@@ -38,8 +38,9 @@ github.com/aws/aws-sdk-go-v2/service/internal/endpoint-discovery v1.7.29 h1:gajv
 github.com/aws/aws-sdk-go-v2/service/internal/endpoint-discovery v1.7.29/go.mod h1:SYEgYIjFeLoPSOCIqdFr44QiBwGlnsUIHqMD5OZnsgg=
 github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.28 h1:bkRyG4a929RCnpVSTvLM2j/T4ls015ZhhYApbmYs15s=
 github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.28/go.mod h1:jj7znCIg05jXlaGBlFMGP8+7UN3VtCkRBG2spnmRQkU=
-github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.14.3 h1:dBL3StFxHtpBzJJ/mNEsjXVgfO+7jR0dAIEwLqMapEA=
 github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.14.3/go.mod h1:f1QyiAsvIv4B49DmCqrhlXqyaR+0IxMmyX+1P+AnzOM=
+github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.14.4 h1:hx4WksB0NRQ9utR+2c3gEGzl6uKj3eM6PMQ6tN3lgXs=
+github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.14.4/go.mod h1:JniVpqvw90sVjNqanGLufrVapWySL28fhBlYgl96Q/w=
 github.com/aws/aws-sdk-go-v2/service/ivs v1.23.0 h1:qCqh86wsQifRromgBOupGuU07EuZ/l5hO+fhzorF4J8=
 github.com/aws/aws-sdk-go-v2/service/ivs v1.23.0/go.mod h1:MNPv2asQKFIuBIfvG8EaIOyTciF046C1J+wiKNdFusY=
 github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.38.1 h1:dqdgzwGsa3zHuzO3X/QqpHKiMFVt2xz6M40ysbjmTFU=
