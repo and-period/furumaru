@@ -12,7 +12,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.22.12
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.19.7
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.33.1
-	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.19.7
+	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.19.11
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.22.0
 	github.com/casbin/casbin/v2 v2.68.0
 	github.com/gin-contrib/gzip v0.0.6
@@ -71,7 +71,7 @@ require (
 	github.com/MicahParks/keyfunc v1.9.0 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.4.10 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.13.5 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.34 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.35 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.29 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.35 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/v4a v1.0.26 // indirect
