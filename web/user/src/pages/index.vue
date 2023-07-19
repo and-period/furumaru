@@ -92,7 +92,7 @@ const banners: string[] = [
               <the-left-arrow-icon />
             </the-icon-button>
           </div>
-          <div ref="archiveRef" class="flex flex-nowrap gap-x-8 overflow-x-scroll">
+          <div ref="archiveRef" class="flex flex-nowrap gap-x-8 overflow-x-scroll hidden-scrollbar">
             <the-archive-item
               v-for="archiveItem in MOCK_ARCHIVES_ITEMS"
               :id="archiveItem.id"
