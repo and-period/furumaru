@@ -47,7 +47,7 @@ const handleClickRightArrowButton = () => {
         :key="i"
         :class="{
           'absolute w-full h-full transition-all duration-300': true,
-          'z-40 drop-shadow-xl': imageItem.active,
+          'z-40': imageItem.active,
           'z-0 brightness-75': !imageItem.active,
           '2xl:-translate-x-[560px] -translate-x-72': imageItem.leftContent,
           '2xl:translate-x-[560px] translate-x-72': imageItem.rightContent,

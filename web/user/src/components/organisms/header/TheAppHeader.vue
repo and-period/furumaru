@@ -36,7 +36,7 @@ const handleClickMenuItem = (item: HeaderMenuItem | FooterMenuItem) => {
 </script>
 
 <template>
-  <div class="flex md:px-10 px-4 md:py-4 py-2 bg-base items-center relative drop-shadow-sm">
+  <div class="flex md:px-10 px-4 md:py-4 py-2 bg-base items-center relative">
     <nuxt-link :to="homePath" @click="closeSpMenu">
       <the-marche-logo class="m-0 md:w-64 w-32" />
     </nuxt-link>
