@@ -141,10 +141,10 @@ type ListThreadsByContactIDInput struct {
 }
 
 type CreateThreadInput struct {
-	ContactID string `validate:"required"`
-	UserID    string `validate:""`
-	UserType  int32  `validate:"required"`
-	Content   string `validate:"required,max=2000"`
+	ContactID string                `validate:"required"`
+	UserID    string                `validate:""`
+	UserType  entity.ThreadUserType `validate:"required"`
+	Content   string                `validate:"required,max=2000"`
 }
 
 type GetThreadInput struct {
@@ -152,10 +152,10 @@ type GetThreadInput struct {
 }
 
 type UpdateThreadInput struct {
-	ThreadID string `validate:"required"`
-	Content  string `validate:"required,max=2000"`
-	UserID   string `validate:""`
-	UserType int32  `validate:"required"`
+	ThreadID string                `validate:"required"`
+	Content  string                `validate:"required,max=2000"`
+	UserID   string                `validate:""`
+	UserType entity.ThreadUserType `validate:"required"`
 }
 
 type DeleteThreadInput struct {

@@ -245,7 +245,7 @@ func (p *ListThreadsByContactIDParams) stmt(stmt *gorm.DB) *gorm.DB {
 type UpdateThreadParams struct {
 	Content  string
 	UserID   string
-	UserType int32
+	UserType entity.ThreadUserType
 }
 
 type UpdateContactParams struct {

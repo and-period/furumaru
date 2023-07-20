@@ -92,3 +92,67 @@ func TestThread_Fill(t *testing.T) {
 		})
 	}
 }
+
+func TestThreads_IDs(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name    string
+		threads *Threads
+		expect  []string
+	}{
+		{
+			name: "success",
+			threads: &Threads{
+				{
+					ID:        "thread-id1",
+					ContactID: "contact-id",
+					UserType:  1,
+					Content:   "content",
+					UserID:    "user-id",
+				},
+			},
+			expect: []string{"thread-id1"},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			actual := tt.threads.IDs()
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestThreads_UserIDs(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name    string
+		threads *Threads
+		expect  []string
+	}{
+		{
+			name: "success",
+			threads: &Threads{
+				{
+					ID:        "thread-id1",
+					ContactID: "contact-id",
+					UserType:  1,
+					Content:   "content",
+					UserID:    "user-id",
+				},
+			},
+			expect: []string{"user-id"},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			actual := tt.threads.UserIDs()
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}

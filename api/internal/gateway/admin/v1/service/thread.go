@@ -5,11 +5,37 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 )
 
+type ThreadUserType int32
+
+const (
+	ThreadUserTypeUnknown ThreadUserType = iota // 不明
+	ThreadUserTypeAdmin                         // 管理者
+	ThreadUserTypeUser                          // ユーザー
+	ThreadUserTypeGuest                         // ゲスト(ユーザIDなし)
+)
+
+func NewThreadUserType(typ entity.ThreadUserType) ThreadUserType {
+	switch typ {
+	case entity.ThreadUserTypeAdmin:
+		return ThreadUserTypeAdmin
+	case entity.ThreadUserTypeUser:
+		return ThreadUserTypeUser
+	case entity.ThreadUserTypeGuest:
+		return ThreadUserTypeGuest
+	default:
+		return ThreadUserTypeUnknown
+	}
+}
+
 type Thread struct {
 	response.Thread
 }
 
 type Threads []*Thread
+
+func (t ThreadUserType) Response() int32 {
+	return int32(t)
+}
 
 func NewThread(thread *entity.Thread) *Thread {
 	return &Thread{
@@ -17,7 +43,7 @@ func NewThread(thread *entity.Thread) *Thread {
 			ID:        thread.ID,
 			ContactID: thread.ContactID,
 			UserID:    thread.UserID,
-			UserType:  thread.UserType,
+			UserType:  NewThreadUserType(thread.UserType).Response(),
 			Content:   thread.Content,
 			CreatedAt: thread.CreatedAt.Unix(),
 			UpdatedAt: thread.UpdatedAt.Unix(),
