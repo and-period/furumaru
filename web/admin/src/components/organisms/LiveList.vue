@@ -389,11 +389,7 @@ const onSubmitDelete = (): void => {
           multiple
           density="comfortable"
           @update:search="onSearchProductFromCreate"
-        >
           <template #chip="{ props: val, item }">
-            <v-chip
-              v-bind="val"
-              :prepend-avatar="getProductThumbnailUrl(item.raw)"
               :text="item.raw.name"
               rounded
               class="px-4"
