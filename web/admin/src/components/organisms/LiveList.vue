@@ -60,6 +60,20 @@ const props = defineProps({
       updatedAt: 0
     })
   },
+  live: {
+    type: Object as PropType<Live>,
+    default: (): Live => ({
+      id: '',
+      scheduleId: '',
+      producerId: '',
+      productIds: [],
+      comment: '',
+      startAt: dayjs().unix(),
+      endAt: dayjs().unix(),
+      createdAt: 0,
+      updatedAt: 0
+    })
+  },
   lives: {
     type: Array<Live>,
     default: () => []
@@ -77,17 +91,22 @@ const props = defineProps({
 const emits = defineEmits<{
   (e: 'click:new'): void
   (e: 'click:edit', liveId: string): void
+  (e: 'update:live', live: Live): void
   (e: 'update:create-dialog', val: boolean): void
   (e: 'update:update-dialog', val: boolean): void
   (e: 'update:create-form-data', formData: CreateLiveRequest): void
   (e: 'update:update-form-data', formData: UpdateLiveRequest): void
   (e: 'search:producer', name: string): void
-  (e: 'search:product', name: string): void
+  (e: 'search:product', producerId: string, name: string): void
   (e: 'submit:create'): void
   (e: 'submit:update'): void
   (e: 'submit:delete'): void
 }>()
 
+const liveValue = computed({
+  get: (): Live => props.live,
+  set: (live: Live): void => emits('update:live', live),
+})
 const createFormDataRules = computed(() => ({
   producerId: { required },
   productIds: { maxLengthArray: maxLengthArray(8) },
@@ -248,8 +267,12 @@ const onSearchProducer = (name: string): void => {
   emits('search:producer', name)
 }
 
-const onSearchProduct = (name: string): void => {
-  emits('search:product', name)
+const onSearchProductFromCreate = (name: string): void => {
+  emits('search:product', props.createFormData.producerId, name)
+}
+
+const onSearchProductFromUpdate = (name: string): void => {
+  emits('search:product', props.live.producerId, name)
 }
 
 const onClickNew = (): void => {
@@ -365,7 +388,7 @@ const onSubmitDelete = (): void => {
           clearable
           multiple
           density="comfortable"
-          @update:search="onSearchProduct"
+          @update:search="onSearchProductFromCreate"
         >
           <template #chip="{ props: val, item }">
             <v-chip
@@ -457,6 +480,14 @@ const onSubmitDelete = (): void => {
           />
         </div>
         <v-autocomplete
+          v-model="liveValue.producerId"
+          label="生産者"
+          :items="producers"
+          item-title="username"
+          item-value="id"
+          readonly
+        />
+        <v-autocomplete
           v-model="updateFormDataValidate.productIds.$model"
           :error-messages="getErrorMessage(updateFormDataValidate.productIds.$errors)"
           label="関連する商品"
@@ -468,7 +499,7 @@ const onSubmitDelete = (): void => {
           clearable
           multiple
           density="comfortable"
-          @update:search="onSearchProduct"
+          @update:search="onSearchProductFromUpdate"
         >
           <template #chip="{ props: val, item }">
             <v-chip
