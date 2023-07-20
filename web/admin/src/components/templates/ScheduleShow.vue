@@ -76,6 +76,20 @@ const props = defineProps({
       updatedAt: 0
     })
   },
+  live: {
+    type: Object as PropType<Live>,
+    default: (): Live => ({
+      id: '',
+      scheduleId: '',
+      producerId: '',
+      productIds: [],
+      comment: '',
+      startAt: dayjs().unix(),
+      endAt: dayjs().unix(),
+      createdAt: 0,
+      updatedAt: 0
+    })
+  },
   lives: {
     type: Array<Live>,
     default: () => []
@@ -145,7 +159,7 @@ const emit = defineEmits<{
   (e: 'update:opening-video', files: FileList): void
   (e: 'search:shipping', name: string): void
   (e: 'search:producer', name: string): void
-  (e: 'search:product', name: string): void
+  (e: 'search:product', producerId: string, name: string): void
   (e: 'submit:schedule'): void
   (e: 'submit:create-live'): void
   (e: 'submit:update-live'): void
@@ -210,8 +224,8 @@ const onSearchProducer = (name: string): void => {
   emit('search:producer', name)
 }
 
-const onSearchProduct = (name: string): void => {
-  emit('search:product', name)
+const onSearchProduct = (producerId: string, name: string): void => {
+  emit('search:product', producerId, name)
 }
 
 const onSubmitSchedule = (): void => {

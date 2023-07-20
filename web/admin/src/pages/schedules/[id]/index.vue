@@ -117,7 +117,7 @@ const handleSearchProducer = async (name: string): Promise<void> => {
   }
 }
 
-const handleSearchProduct = async (name: string): Promise<void> => {
+const handleSearchProduct = async (producerId: string, name: string): Promise<void> => {
   try {
     const productIds: string[] = []
     lives.value.forEach((live: Live): void => {
@@ -125,7 +125,7 @@ const handleSearchProduct = async (name: string): Promise<void> => {
         productIds.push(productId)
       })
     })
-    await productStore.searchProducts(name, '', productIds)
+    await productStore.searchProducts(name, producerId, productIds)
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
