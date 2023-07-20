@@ -105,7 +105,7 @@ const emits = defineEmits<{
 
 const liveValue = computed({
   get: (): Live => props.live,
-  set: (live: Live): void => emits('update:live', live),
+  set: (live: Live): void => emits('update:live', live)
 })
 const createFormDataRules = computed(() => ({
   producerId: { required },
@@ -389,7 +389,11 @@ const onSubmitDelete = (): void => {
           multiple
           density="comfortable"
           @update:search="onSearchProductFromCreate"
+        >
           <template #chip="{ props: val, item }">
+            <v-chip
+              v-bind="val"
+              :prepend-avatar="getProductThumbnailUrl(item.raw)"
               :text="item.raw.name"
               rounded
               class="px-4"
@@ -551,22 +555,22 @@ const onSubmitDelete = (): void => {
       </p>
     </v-col>
     <v-col sm="12">
-      <v-card v-for="(live, i) in props.lives" :key="`live-${i}`" class="mb-4">
+      <v-card v-for="(item, i) in props.lives" :key="`live-${i}`" class="mb-4">
         <v-card-title>
           <v-list-item>
             <template #prepend>
               <v-avatar>
                 <v-img
                   cover
-                  :src="getProducerThumbnailUrl(live)"
-                  :srcset="getProducerThumbnails(live)"
+                  :src="getProducerThumbnailUrl(item)"
+                  :srcset="getProducerThumbnails(item)"
                 />
               </v-avatar>
             </template>
-            <v-list-item-title>{{ getProducerName(live) }}</v-list-item-title>
-            <v-list-item-subtitle>{{ getLiveTerm(live) }}</v-list-item-subtitle>
+            <v-list-item-title>{{ getProducerName(item) }}</v-list-item-title>
+            <v-list-item-subtitle>{{ getLiveTerm(item) }}</v-list-item-subtitle>
             <template #append>
-              <v-btn variant="outlined" color="primary" size="small" @click.stop="onClickEdit(live.id)">
+              <v-btn variant="outlined" color="primary" size="small" @click.stop="onClickEdit(item.id)">
                 <v-icon size="small" :icon="mdiPencil" />
               </v-btn>
             </template>
