@@ -23,6 +23,7 @@ func (h *handler) liveRoutes(rg *gin.RouterGroup) {
 	arg.POST("", h.CreateLive)
 	arg.GET("/:liveId", h.filterAccessLive, h.GetLive)
 	arg.PATCH("/:liveId", h.filterAccessLive, h.UpdateLive)
+	arg.DELETE("/:liveId", h.filterAccessLive, h.DeleteLive)
 }
 
 func (h *handler) filterAccessLive(ctx *gin.Context) {
@@ -200,6 +201,17 @@ func (h *handler) UpdateLive(ctx *gin.Context) {
 		EndAt:      jst.ParseFromUnix(req.EndAt),
 	}
 	if err := h.store.UpdateLive(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) DeleteLive(ctx *gin.Context) {
+	in := &store.DeleteLiveInput{
+		LiveID: util.GetParam(ctx, "liveId"),
+	}
+	if err := h.store.DeleteLive(ctx, in); err != nil {
 		httpError(ctx, err)
 		return
 	}

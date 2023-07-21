@@ -60,6 +60,20 @@ const props = defineProps({
       updatedAt: 0
     })
   },
+  live: {
+    type: Object as PropType<Live>,
+    default: (): Live => ({
+      id: '',
+      scheduleId: '',
+      producerId: '',
+      productIds: [],
+      comment: '',
+      startAt: dayjs().unix(),
+      endAt: dayjs().unix(),
+      createdAt: 0,
+      updatedAt: 0
+    })
+  },
   lives: {
     type: Array<Live>,
     default: () => []
@@ -77,17 +91,22 @@ const props = defineProps({
 const emits = defineEmits<{
   (e: 'click:new'): void
   (e: 'click:edit', liveId: string): void
+  (e: 'update:live', live: Live): void
   (e: 'update:create-dialog', val: boolean): void
   (e: 'update:update-dialog', val: boolean): void
   (e: 'update:create-form-data', formData: CreateLiveRequest): void
   (e: 'update:update-form-data', formData: UpdateLiveRequest): void
   (e: 'search:producer', name: string): void
-  (e: 'search:product', name: string): void
+  (e: 'search:product', producerId: string, name: string): void
   (e: 'submit:create'): void
   (e: 'submit:update'): void
   (e: 'submit:delete'): void
 }>()
 
+const liveValue = computed({
+  get: (): Live => props.live,
+  set: (live: Live): void => emits('update:live', live)
+})
 const createFormDataRules = computed(() => ({
   producerId: { required },
   productIds: { maxLengthArray: maxLengthArray(8) },
@@ -169,6 +188,11 @@ const onChangeCreateEndAt = (): void => {
   createFormDataValue.value.endAt = endAt.unix()
 }
 
+const onChangeCreateProducerId = (): void => {
+  onSearchProductFromCreate('')
+  createFormDataValue.value.productIds = []
+}
+
 const onChangeUpdateStartAt = (): void => {
   const startAt = dayjs(`${updateTimeDataValue.value.startDate} ${updateTimeDataValue.value.startTime}`)
   updateFormDataValue.value.startAt = startAt.unix()
@@ -197,7 +221,7 @@ const getProducer = (live: Live): Producer | undefined => {
   })
 }
 
-const getProducts = (live: Live): Product[] => {
+const getProductsByLive = (live: Live): Product[] => {
   const products: Product[] = []
   props.products.forEach((product: Product): void => {
     if (!live.productIds.includes(product.id)) {
@@ -206,6 +230,13 @@ const getProducts = (live: Live): Product[] => {
     products.push(product)
   })
   return products
+}
+
+const getProductsByProducerId = (producerId: string): Product[] => {
+  const products: Product[] = []
+  return props.products.filter((product: Product): boolean => {
+    return product.producerId === producerId
+  })
 }
 
 const getProducerName = (live: Live): string => {
@@ -248,8 +279,12 @@ const onSearchProducer = (name: string): void => {
   emits('search:producer', name)
 }
 
-const onSearchProduct = (name: string): void => {
-  emits('search:product', name)
+const onSearchProductFromCreate = (name: string): void => {
+  emits('search:product', props.createFormData.producerId, name)
+}
+
+const onSearchProductFromUpdate = (name: string): void => {
+  emits('search:product', props.live.producerId, name)
 }
 
 const onClickNew = (): void => {
@@ -301,8 +336,8 @@ const onSubmitDelete = (): void => {
         出演者登録
       </v-card-title>
       <v-card-text>
-        <p class="text-subtitle-2 text-grey py-2">
-          ライブ配信期間
+        <p class="text-subtitle-2 text-grey pb-2">
+          ライブ配開始日時
         </p>
         <div class="d-flex flex-column flex-md-row justify-center">
           <v-text-field
@@ -322,9 +357,11 @@ const onSubmitDelete = (): void => {
             density="compact"
             @update:model-value="onChangeCreateStartAt"
           />
-          <p class="text-subtitle-2 mx-4 pt-md-3 pb-4 pb-md-6">
-            〜
-          </p>
+        </div>
+        <p class="text-subtitle-2 text-grey pb-2">
+          ライブ配終了日時
+        </p>
+        <div class="d-flex flex-column flex-md-row justify-center">
           <v-text-field
             v-model="createTimeDataValidate.endDate.$model"
             :error-messages="getErrorMessage(createTimeDataValidate.endDate.$errors)"
@@ -352,12 +389,13 @@ const onSubmitDelete = (): void => {
           item-value="id"
           clearable
           @update:search="onSearchProducer"
+          @update:model-value="onChangeCreateProducerId"
         />
         <v-autocomplete
           v-model="createFormDataValidate.productIds.$model"
           :error-messages="getErrorMessage(createFormDataValidate.productIds.$errors)"
           label="関連する商品"
-          :items="products"
+          :items="getProductsByProducerId(createFormDataValue.producerId)"
           item-title="name"
           item-value="id"
           chips
@@ -365,7 +403,7 @@ const onSubmitDelete = (): void => {
           clearable
           multiple
           density="comfortable"
-          @update:search="onSearchProduct"
+          @update:search="onSearchProductFromCreate"
         >
           <template #chip="{ props: val, item }">
             <v-chip
@@ -414,8 +452,8 @@ const onSubmitDelete = (): void => {
         出演者更新
       </v-card-title>
       <v-card-text>
-        <p class="text-subtitle-2 text-grey py-2">
-          ライブ配信期間
+        <p class="text-subtitle-2 text-grey pb-2">
+          ライブ配開始日時
         </p>
         <div class="d-flex flex-column flex-md-row justify-center">
           <v-text-field
@@ -435,9 +473,11 @@ const onSubmitDelete = (): void => {
             density="compact"
             @update:model-value="onChangeUpdateStartAt"
           />
-          <p class="text-subtitle-2 mx-4 pt-md-3 pb-4 pb-md-6">
-            〜
-          </p>
+        </div>
+        <p class="text-subtitle-2 text-grey pb-2">
+          ライブ配終了日時
+        </p>
+        <div class="d-flex flex-column flex-md-row justify-center">
           <v-text-field
             v-model="updateTimeDataValidate.endDate.$model"
             :error-messages="getErrorMessage(updateTimeDataValidate.endDate.$errors)"
@@ -457,10 +497,18 @@ const onSubmitDelete = (): void => {
           />
         </div>
         <v-autocomplete
+          v-model="liveValue.producerId"
+          label="生産者"
+          :items="producers"
+          item-title="username"
+          item-value="id"
+          readonly
+        />
+        <v-autocomplete
           v-model="updateFormDataValidate.productIds.$model"
           :error-messages="getErrorMessage(updateFormDataValidate.productIds.$errors)"
           label="関連する商品"
-          :items="products"
+          :items="getProductsByProducerId(liveValue.producerId)"
           item-title="name"
           item-value="id"
           chips
@@ -468,7 +516,7 @@ const onSubmitDelete = (): void => {
           clearable
           multiple
           density="comfortable"
-          @update:search="onSearchProduct"
+          @update:search="onSearchProductFromUpdate"
         >
           <template #chip="{ props: val, item }">
             <v-chip
@@ -524,22 +572,22 @@ const onSubmitDelete = (): void => {
       </p>
     </v-col>
     <v-col sm="12">
-      <v-card v-for="(live, i) in props.lives" :key="`live-${i}`" class="mb-4">
+      <v-card v-for="(item, i) in props.lives" :key="`live-${i}`" class="mb-4">
         <v-card-title>
           <v-list-item>
             <template #prepend>
               <v-avatar>
                 <v-img
                   cover
-                  :src="getProducerThumbnailUrl(live)"
-                  :srcset="getProducerThumbnails(live)"
+                  :src="getProducerThumbnailUrl(item)"
+                  :srcset="getProducerThumbnails(item)"
                 />
               </v-avatar>
             </template>
-            <v-list-item-title>{{ getProducerName(live) }}</v-list-item-title>
-            <v-list-item-subtitle>{{ getLiveTerm(live) }}</v-list-item-subtitle>
+            <v-list-item-title>{{ getProducerName(item) }}</v-list-item-title>
+            <v-list-item-subtitle>{{ getLiveTerm(item) }}</v-list-item-subtitle>
             <template #append>
-              <v-btn variant="outlined" color="primary" size="small" @click.stop="onClickEdit(live.id)">
+              <v-btn variant="outlined" color="primary" size="small" @click.stop="onClickEdit(item.id)">
                 <v-icon size="small" :icon="mdiPencil" />
               </v-btn>
             </template>
@@ -553,7 +601,7 @@ const onSubmitDelete = (): void => {
                 概要
               </p>
               <p class="text-subtitle-2">
-                {{ live.comment }}
+                {{ item.comment }}
               </p>
             </v-col>
             <v-col sm="12">
@@ -570,7 +618,7 @@ const onSubmitDelete = (): void => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(product, j) in getProducts(live)" :key="`product-${j}`">
+                  <tr v-for="(product, j) in getProductsByLive(item)" :key="`product-${j}`">
                     <td>
                       <v-img
                         aspect-ratio="1/1"

@@ -185,6 +185,20 @@ func (mr *MockServiceMockRecorder) DeleteCategory(ctx, in interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCategory", reflect.TypeOf((*MockService)(nil).DeleteCategory), ctx, in)
 }
 
+// DeleteLive mocks base method.
+func (m *MockService) DeleteLive(ctx context.Context, in *store.DeleteLiveInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteLive", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteLive indicates an expected call of DeleteLive.
+func (mr *MockServiceMockRecorder) DeleteLive(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteLive", reflect.TypeOf((*MockService)(nil).DeleteLive), ctx, in)
+}
+
 // DeleteProduct mocks base method.
 func (m *MockService) DeleteProduct(ctx context.Context, in *store.DeleteProductInput) error {
 	m.ctrl.T.Helper()

@@ -43,15 +43,15 @@ const useRate = computed<number>(() => {
 
     <dl class="text-sm flex flex-col gap-y-1">
       <div class="flex">
-        <dt>マルシュ:</dt>
+        <dt>マルシェ：</dt>
         <dd>{{ marcheName }}</dd>
       </div>
       <div class="flex">
-        <dt>箱タイプ:</dt>
+        <dt>箱タイプ：</dt>
         <dd>{{ boxType }}</dd>
       </div>
       <div class="flex">
-        <dt>箱サイズ{{ boxSize }}:</dt>
+        <dt>箱サイズ{{ boxSize }}：</dt>
         <dd>{{ useRate }}%使用</dd>
       </div>
     </dl>

@@ -121,7 +121,7 @@ const footerMenuList = computed<FooterMenuItem[]>(() => [
       />
     </div>
     <main class="flex-grow overflow-hidden">
-      <div class="container pb-10 mx-auto">
+      <div class="pb-10 mx-auto">
         <slot />
       </div>
     </main>
