@@ -60,6 +60,18 @@ func (ts Threads) IDs() []string {
 
 func (ts Threads) UserIDs() []string {
 	return set.UniqBy(ts, func(t *Thread) string {
+		if t.UserType != ThreadUserTypeUser {
+			return ""
+		}
+		return t.UserID
+	})
+}
+
+func (ts Threads) AdminIDs() []string {
+	return set.UniqBy(ts, func(t *Thread) string {
+		if t.UserType != ThreadUserTypeAdmin {
+			return ""
+		}
 		return t.UserID
 	})
 }

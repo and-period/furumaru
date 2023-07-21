@@ -27,6 +27,19 @@ func NewThreadUserType(typ entity.ThreadUserType) ThreadUserType {
 	}
 }
 
+func (t ThreadUserType) StoreEntity() entity.ThreadUserType {
+	switch t {
+	case ThreadUserTypeAdmin:
+		return entity.ThreadUserTypeAdmin
+	case ThreadUserTypeUser:
+		return entity.ThreadUserTypeUser
+	case ThreadUserTypeGuest:
+		return entity.ThreadUserTypeGuest
+	default:
+		return entity.ThreadUserTypeUnknown
+	}
+}
+
 type Thread struct {
 	response.Thread
 }
