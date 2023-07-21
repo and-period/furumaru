@@ -86,6 +86,21 @@ func (l *live) Update(ctx context.Context, liveID string, params *UpdateLivePara
 	return exception.InternalError(err)
 }
 
+func (l *live) Delete(ctx context.Context, liveID string) error {
+	err := l.db.Transaction(ctx, func(tx *gorm.DB) error {
+		if _, err := l.get(ctx, tx, liveID); err != nil {
+			return err
+		}
+
+		err := tx.WithContext(ctx).
+			Table(liveTable).
+			Where("id = ?", liveID).
+			Delete(&entity.Live{}).Error
+		return err
+	})
+	return exception.InternalError(err)
+}
+
 func (l *live) get(ctx context.Context, tx *gorm.DB, liveID string, fields ...string) (*entity.Live, error) {
 	var live *entity.Live
 

@@ -63,10 +63,11 @@ p, schedule_get, /v1/schedules/*, GET, allow
 p, schedule_create, /v1/schedules, POST, allow
 p, schedule_update, /v1/schedules/*, PATCH, allow
 p, schedule_uploader, /v1/upload/schedules/*, POST, allow
-p, live_list, /v1/lives, GET, allow
-p, live_get, /v1/lives/*, GET, allow
-p, live_create, /v1/lives, POST, allow
-p, live_update, /v1/lives/*, PATCH, allow
+p, live_list, /v1/schedules/*/lives, GET, allow
+p, live_get, /v1/schedules/*/lives/*, GET, allow
+p, live_create, /v1/schedules/*/lives, POST, allow
+p, live_update, /v1/schedules/*/lives/*, PATCH, allow
+p, live_delete, /v1/schedules/*/lives/*, DELETE, allow
 p, message_list, /v1/messages, GET, allow
 p, message_get, /v1/messages/*, GET, allow
 p, postal_code_search, /v1/postal-codes/*, GET, allow
@@ -152,6 +153,7 @@ g, administrator, live_list
 g, administrator, live_get
 g, administrator, live_create
 g, administrator, live_update
+g, administrator, live_delete
 g, administrator, message_list
 g, administrator, message_get
 g, administrator, postal_code_search
@@ -209,6 +211,7 @@ g, coordinator, live_list
 g, coordinator, live_get
 g, coordinator, live_create
 g, coordinator, live_update
+g, coordinator, live_delete
 g, coordinator, message_list
 g, coordinator, message_get
 g, coordinator, postal_code_search

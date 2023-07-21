@@ -50,3 +50,43 @@ patch:
         application/json:
           schema:
             $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
+delete:
+  summary: ライブ配信削除
+  operationId: v1DeleteLive
+  tags:
+  - Live
+  security:
+  - BearerAuth: []
+  parameters:
+  - in: path
+    name: scheduleId
+    schema:
+      type: string
+    description: マルシェ開催スケジュールID
+    required: true
+    example: "schedule-id"
+  - in: path
+    name: liveId
+    schema:
+      type: string
+    description: ライブ配信ID
+    required: true
+    example: "live-id"
+  responses:
+    204:
+      description: 成功
+      content:
+        application/json:
+          schema: {}
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
+    404:
+      description: 開催スケジュール,ライブ配信が存在しない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'

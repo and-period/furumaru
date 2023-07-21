@@ -168,7 +168,8 @@ const emit = defineEmits<{
 
 const tabs: VTabs[] = [
   { name: '基本情報', value: 'schedule' },
-  { name: 'ライブスケジュール', value: 'lives' }
+  { name: 'ライブスケジュール', value: 'lives' },
+  { name: 'ライブ配信', value: 'streaming' }
 ]
 
 const selectedTabItemValue = computed({
@@ -286,7 +287,9 @@ const onSubmitDeleteLive = (): void => {
         v-model:create-form-data="createLiveFormDataValue"
         v-model:update-form-data="updateLiveFormDataValue"
         :loading="loading"
+        :live="live"
         :lives="lives"
+        :schedule="schedule"
         :producers="producers"
         :products="products"
         @click:new="onClickNewLive"
@@ -297,6 +300,10 @@ const onSubmitDeleteLive = (): void => {
         @submit:update="onSubmitUpdateLive"
         @submit:delete="onSubmitDeleteLive"
       />
+    </v-window-item>
+
+    <v-window-item value="streaming">
+      <organisms-schedule-streaming />
     </v-window-item>
   </v-window>
 </template>

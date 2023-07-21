@@ -9542,6 +9542,48 @@ export const LiveApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @summary ライブ配信削除
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {string} liveId ライブ配信ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteLive: async (scheduleId: string, liveId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'scheduleId' is not null or undefined
+            assertParamExists('v1DeleteLive', 'scheduleId', scheduleId)
+            // verify required parameter 'liveId' is not null or undefined
+            assertParamExists('v1DeleteLive', 'liveId', liveId)
+            const localVarPath = `/v1/schedules/{scheduleId}/lives/{liveId}`
+                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)))
+                .replace(`{${"liveId"}}`, encodeURIComponent(String(liveId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary ライブ配信一覧取得
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {*} [options] Override http request option.
@@ -9650,6 +9692,18 @@ export const LiveApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary ライブ配信削除
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {string} liveId ライブ配信ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1DeleteLive(scheduleId: string, liveId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteLive(scheduleId, liveId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary ライブ配信一覧取得
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {*} [options] Override http request option.
@@ -9695,6 +9749,17 @@ export const LiveApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
+         * @summary ライブ配信削除
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {string} liveId ライブ配信ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteLive(scheduleId: string, liveId: string, options?: any): AxiosPromise<object> {
+            return localVarFp.v1DeleteLive(scheduleId, liveId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary ライブ配信一覧取得
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {*} [options] Override http request option.
@@ -9736,6 +9801,19 @@ export class LiveApi extends BaseAPI {
      */
     public v1CreateLive(scheduleId: string, body: CreateLiveRequest, options?: AxiosRequestConfig) {
         return LiveApiFp(this.configuration).v1CreateLive(scheduleId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary ライブ配信削除
+     * @param {string} scheduleId マルシェ開催スケジュールID
+     * @param {string} liveId ライブ配信ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof LiveApi
+     */
+    public v1DeleteLive(scheduleId: string, liveId: string, options?: AxiosRequestConfig) {
+        return LiveApiFp(this.configuration).v1DeleteLive(scheduleId, liveId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

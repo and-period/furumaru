@@ -103,6 +103,8 @@ type Service interface {
 	CreateLive(ctx context.Context, in *CreateLiveInput) (*entity.Live, error)
 	// ライブ配信更新
 	UpdateLive(ctx context.Context, in *UpdateLiveInput) error
+	// ライブ配信削除
+	DeleteLive(ctx context.Context, in *DeleteLiveInput) error
 	// 注文履歴一覧取得
 	ListOrders(ctx context.Context, in *ListOrdersInput) (entity.Orders, int64, error)
 	// 注文履歴取得

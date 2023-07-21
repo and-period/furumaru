@@ -71,6 +71,7 @@ type Live interface {
 	Get(ctx context.Context, liveID string, fields ...string) (*entity.Live, error)
 	Create(ctx context.Context, live *entity.Live) error
 	Update(ctx context.Context, liveID string, params *UpdateLiveParams) error
+	Delete(ctx context.Context, liveID string) error
 }
 
 type Order interface {

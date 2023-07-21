@@ -33,6 +33,11 @@ export const useScheduleStore = defineStore('schedule', {
       }
     },
 
+    /**
+     * マルシェ開催スケジュールを取得する非同期関数
+     * @param scheduleId スケジュールID
+     * @returns
+     */
     async getSchedule (scheduleId: string): Promise<void> {
       try {
         const res = await apiClient.scheduleApi().v1GetSchedule(scheduleId)

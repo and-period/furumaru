@@ -403,6 +403,10 @@ type UpdateLiveInput struct {
 	EndAt      time.Time `validate:"required,gtfield=StartAt"`
 }
 
+type DeleteLiveInput struct {
+	LiveID string `validate:"required"`
+}
+
 type ListOrdersInput struct {
 	CoordinatorID string             `validate:"omitempty"`
 	Limit         int64              `validate:"required,max=200"`
