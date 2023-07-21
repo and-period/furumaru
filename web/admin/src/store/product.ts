@@ -54,7 +54,7 @@ export const useProductStore = defineStore('product', {
      */
     async searchProducts (name = '', producerId = '', productIds: string[] = []): Promise<void> {
       try {
-        const res = await apiClient.productApi().v1ListProducts(20, 0, producerId, name)
+        const res = await apiClient.productApi().v1ListProducts(undefined, undefined, producerId, name)
         const products: Product[] = []
         this.products.forEach((product: Product): void => {
           if (!productIds.includes(product.id)) {

@@ -74,6 +74,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: 'update:form-data', formData: UpdateScheduleRequest): void
+  (e: 'update:schedule', formData: UpdateScheduleRequest): void
   (e: 'update:thumbnail', files: FileList): void
   (e: 'update:image', files: FileList): void
   (e: 'update:opening-video', files: FileList): void
@@ -81,10 +82,24 @@ const emit = defineEmits<{
   (e: 'submit'): void
 }>()
 
+const statuses = [
+  { title: '非公開', value: ScheduleStatus.PRIVATE },
+  { title: '申請中', value: ScheduleStatus.IN_PROGRESS },
+  { title: '開催前', value: ScheduleStatus.WAITING },
+  { title: '開催中', value: ScheduleStatus.LIVE },
+  { title: '終了', value: ScheduleStatus.CLOSED },
+  { title: '不明', value: ScheduleStatus.UNKNOWN }
+]
+
+const scheduleValue = computed({
+  get: (): Schedule => props.schedule,
+  set: (schedule: Schedule): void => emit('update:schedule', schedule)
+})
 const formDataRules = computed(() => ({
   title: { required, maxLength: maxLength(200) },
   description: { required, maxLength: maxLength(2000) },
-  shippingId: { required }
+  shippingId: { required },
+  public: {}
 }))
 const timeDataRules = computed(() => ({
   startDate: { required },
@@ -161,111 +176,136 @@ const onSubmit = async (): Promise<void> => {
 </script>
 
 <template>
-  <v-card>
-    <v-form @submit.prevent="onSubmit">
-      <v-card-text>
-        <v-text-field
-          v-model="formDataValidate.title.$model"
-          :error-messages="getErrorMessage(formDataValidate.title.$errors)"
-          label="タイトル"
-        />
-        <p class="text-subtitle-2 text-grey py-2">
-          開催期間
-        </p>
-        <div class="d-flex flex-column flex-md-row justify-center">
-          <v-text-field
-            v-model="timeDataValidate.startDate.$model"
-            :error-messages="getErrorMessage(timeDataValidate.startDate.$errors)"
-            type="date"
-            variant="outlined"
-            density="compact"
-            class="mr-md-2"
-            @update:model-value="onChangeStartAt"
-          />
-          <v-text-field
-            v-model="timeDataValidate.startTime.$model"
-            :error-messages="getErrorMessage(timeDataValidate.startTime.$errors)"
-            type="time"
-            variant="outlined"
-            density="compact"
-            @update:model-value="onChangeStartAt"
-          />
-          <p class="text-subtitle-2 mx-4 pt-md-3 pb-4 pb-md-6">
-            〜
-          </p>
-          <v-text-field
-            v-model="timeDataValidate.endDate.$model"
-            :error-messages="getErrorMessage(timeDataValidate.endDate.$errors)"
-            type="date"
-            variant="outlined"
-            density="compact"
-            class="mr-md-2"
-            @update:model-value="onChangeEndAt"
-          />
-          <v-text-field
-            v-model="timeDataValidate.endTime.$model"
-            :error-messages="getErrorMessage(timeDataValidate.endTime.$errors)"
-            type="time"
-            variant="outlined"
-            density="compact"
-            @update:model-value="onChangeEndAt"
-          />
-        </div>
-        <p class="text-subtitle-2 text-grey py-2">
-          詳細
-        </p>
-        <client-only>
-          <tiptap-editor
-            v-model="formDataValidate.description.$model"
-            :error-message="getErrorMessage(formDataValidate.description.$errors)"
-            class="mb-4"
-          />
-        </client-only>
-        <v-row>
-          <v-col cols="12" sm="12" md="4">
-            <molecules-image-select-form
-              label="サムネイル画像"
-              :img-url="formDataValue.thumbnailUrl"
-              :error="props.thumbnailUploadStatus.error"
-              :message="props.thumbnailUploadStatus.message"
-              @update:file="onChangeThumbnailFile"
+  <v-row>
+    <v-col sm="12" md="12" lg="8">
+      <div class="mb-4">
+        <v-card>
+          <v-card-text>
+            <v-text-field
+              v-model="formDataValidate.title.$model"
+              :error-messages="getErrorMessage(formDataValidate.title.$errors)"
+              label="タイトル"
             />
-          </v-col>
-          <v-col cols="12" sm="12" md="4">
-            <molecules-video-select-form
-              label="オープニング動画"
-              :video-url="formDataValue.openingVideoUrl"
-              :error="props.openingVideoUploadStatus.error"
-              :message="props.openingVideoUploadStatus.message"
-              @update:file="onChangeOpeningVideo"
+            <p class="text-subtitle-2 text-grey py-2">
+              詳細
+            </p>
+            <client-only>
+              <tiptap-editor
+                v-model="formDataValidate.description.$model"
+                :error-message="getErrorMessage(formDataValidate.description.$errors)"
+                class="mb-4"
+              />
+            </client-only>
+            <v-row>
+              <v-col cols="12" sm="12" md="4">
+                <molecules-image-select-form
+                  label="サムネイル画像"
+                  :img-url="formDataValue.thumbnailUrl"
+                  :error="props.thumbnailUploadStatus.error"
+                  :message="props.thumbnailUploadStatus.message"
+                  @update:file="onChangeThumbnailFile"
+                />
+              </v-col>
+              <v-col cols="12" sm="12" md="4">
+                <molecules-video-select-form
+                  label="オープニング動画"
+                  :video-url="formDataValue.openingVideoUrl"
+                  :error="props.openingVideoUploadStatus.error"
+                  :message="props.openingVideoUploadStatus.message"
+                  @update:file="onChangeOpeningVideo"
+                />
+              </v-col>
+              <v-col cols="12" sm="12" md="4">
+                <molecules-image-select-form
+                  label="待機中の画像"
+                  :accept="['image/png']"
+                  :img-url="formDataValue.imageUrl"
+                  :error="props.imageUploadStatus.error"
+                  :message="props.imageUploadStatus.message"
+                  @update:file="onChangeImageFile"
+                />
+              </v-col>
+            </v-row>
+            <v-autocomplete
+              v-model="formDataValidate.shippingId.$model"
+              label="配送設定"
+              :items="shippings"
+              item-title="name"
+              item-value="id"
+              @update:search="onSearchShipping"
             />
-          </v-col>
-          <v-col cols="12" sm="12" md="4">
-            <molecules-image-select-form
-              label="待機中の画像"
-              :accept="['image/png']"
-              :img-url="formDataValue.imageUrl"
-              :error="props.imageUploadStatus.error"
-              :message="props.imageUploadStatus.message"
-              @update:file="onChangeImageFile"
-            />
-          </v-col>
-        </v-row>
-        <v-autocomplete
-          v-model="formDataValidate.shippingId.$model"
-          label="配送設定"
-          :items="shippings"
-          item-title="name"
-          item-value="id"
-          @update:search="onSearchShipping"
-        />
-      </v-card-text>
+          </v-card-text>
+        </v-card>
+      </div>
+    </v-col>
 
-      <v-card-actions>
-        <v-btn block :loading="props.loading" variant="outlined" color="primary" type="submit">
-          更新
-        </v-btn>
-      </v-card-actions>
-    </v-form>
-  </v-card>
+    <v-col sm="12" md="12" lg="4">
+      <v-card>
+        <v-card-text>
+          <v-select
+            v-model="scheduleValue.status"
+            label="開催ステータス"
+            :items="statuses"
+            item-title="title"
+            item-value="value"
+            variant="plain"
+            readonly
+          />
+          <v-switch
+            v-model="formDataValidate.public.$model"
+            label="公開する"
+            color="primary"
+          />
+          <p class="text-subtitle-2 text-grey py-2">
+            開催開始日時
+          </p>
+          <div class="d-flex flex-column flex-md-row justify-center">
+            <v-text-field
+              v-model="timeDataValidate.startDate.$model"
+              :error-messages="getErrorMessage(timeDataValidate.startDate.$errors)"
+              type="date"
+              variant="outlined"
+              density="compact"
+              class="mr-md-2"
+              @update:model-value="onChangeStartAt"
+            />
+            <v-text-field
+              v-model="timeDataValidate.startTime.$model"
+              :error-messages="getErrorMessage(timeDataValidate.startTime.$errors)"
+              type="time"
+              variant="outlined"
+              density="compact"
+              @update:model-value="onChangeStartAt"
+            />
+          </div>
+          <p class="text-subtitle-2 text-grey py-2">
+            開催終了日時
+          </p>
+          <div class="d-flex flex-column flex-md-row justify-center">
+            <v-text-field
+              v-model="timeDataValidate.endDate.$model"
+              :error-messages="getErrorMessage(timeDataValidate.endDate.$errors)"
+              type="date"
+              variant="outlined"
+              density="compact"
+              class="mr-md-2"
+              @update:model-value="onChangeEndAt"
+            />
+            <v-text-field
+              v-model="timeDataValidate.endTime.$model"
+              :error-messages="getErrorMessage(timeDataValidate.endTime.$errors)"
+              type="time"
+              variant="outlined"
+              density="compact"
+              @update:model-value="onChangeEndAt"
+            />
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-col>
+  </v-row>
+
+  <v-btn block :loading="props.loading" variant="outlined" color="primary" @click="onSubmit">
+    更新
+  </v-btn>
 </template>

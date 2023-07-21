@@ -26,9 +26,21 @@ const { producers } = storeToRefs(producerStore)
 const { products } = storeToRefs(productStore)
 const { shippings } = storeToRefs(shippingStore)
 
+const initialLive: Live = {
+  id: '',
+  scheduleId: '',
+  producerId: '',
+  productIds: [],
+  comment: '',
+  startAt: dayjs().unix(),
+  endAt: dayjs().unix(),
+  createdAt: 0,
+  updatedAt: 0
+}
+
 const loading = ref<boolean>(false)
 const selector = ref<string>(tab === 'lives' ? 'lives' : 'schedules')
-const selectedLiveId = ref<string>('')
+const selectedLive = ref<Live>({ ...initialLive })
 const createLiveDialog = ref<boolean>(false)
 const updateLiveDialog = ref<boolean>(false)
 const scheduleFormData = ref<UpdateScheduleRequest>({
@@ -72,7 +84,7 @@ watch(updateLiveDialog, (): void => {
   if (updateLiveDialog) {
     return
   }
-  selectedLiveId.value = ''
+  selectedLive.value = { ...initialLive }
 })
 
 const fetchState = useAsyncData(async (): Promise<void> => {
@@ -192,6 +204,12 @@ const handleUploadOpeningVideo = (files: FileList): void => {
 }
 
 const handleClickNewLive = (): void => {
+  handleSearchProducer('')
+
+  createLiveFormData.value.producerId = ''
+  createLiveFormData.value.productIds = []
+  createLiveFormData.value.startAt = schedule.value.startAt
+  createLiveFormData.value.endAt = schedule.value.endAt
   createLiveDialog.value = true
 }
 
@@ -202,28 +220,87 @@ const handleClickEditLive = (liveId: string): void => {
   if (!live) {
     return
   }
-  selectedLiveId.value = liveId
+  handleSearchProduct(live.producerId, '')
+
+  selectedLive.value = live
   updateLiveFormData.value = { ...live }
   updateLiveDialog.value = true
 }
 
-const handleSubmitUpdateSchedule = (): void => {
-  console.log('submit:update-schedule', { scheduleFormData })
+const handleSubmitUpdateSchedule = async (): Promise<void> => {
+  try {
+    loading.value = true
+    await scheduleStore.updateSchedule(scheduleId, scheduleFormData.value)
+    schedule.value = { ...schedule.value, ...scheduleFormData.value }
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
 }
 
-const handleSubmitCreateLive = (): void => {
-  console.log('submit:create-live', { createLiveFormData })
-  createLiveDialog.value = false
+const handleSubmitCreateLive = async (): Promise<void> => {
+  try {
+    loading.value = true
+    await liveStore.createLive(scheduleId, createLiveFormData.value)
+    createLiveDialog.value = false
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
 }
 
-const handleSubmitUpdateLive = (): void => {
-  console.log('submit:update-live', { updateLiveFormData })
-  updateLiveDialog.value = false
+const handleSubmitUpdateLive = async (): Promise<void> => {
+  try {
+    loading.value = true
+    await liveStore.updateLive(scheduleId, selectedLive.value.id, updateLiveFormData.value)
+    updateLiveDialog.value = false
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
 }
 
-const handleSubmitDeleteLive = (): void => {
-  console.log('submit:delete-live', { selectedLiveId })
-  updateLiveDialog.value = false
+const handleSubmitDeleteLive = async (): Promise<void> => {
+  try {
+    loading.value = true
+    await liveStore.deleteLive(scheduleId, selectedLive.value.id)
+    updateLiveDialog.value = false
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
 }
 
 try {
@@ -246,6 +323,7 @@ try {
     :alert-type="alertType"
     :alert-text="alertText"
     :schedule="schedule"
+    :live="selectedLive"
     :lives="lives"
     :coordinators="coordinators"
     :producers="producers"

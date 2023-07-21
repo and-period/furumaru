@@ -100,3 +100,11 @@ func (s *service) UpdateLive(ctx context.Context, in *store.UpdateLiveInput) err
 	err = s.db.Live.Update(ctx, in.LiveID, params)
 	return exception.InternalError(err)
 }
+
+func (s *service) DeleteLive(ctx context.Context, in *store.DeleteLiveInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return exception.InternalError(err)
+	}
+	err := s.db.Live.Delete(ctx, in.LiveID)
+	return exception.InternalError(err)
+}

@@ -433,3 +433,49 @@ func TestUpdateLive(t *testing.T) {
 		}))
 	}
 }
+
+func TestDeleteLive(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.DeleteLiveInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Live.EXPECT().Delete(ctx, "live-id").Return(nil)
+			},
+			input: &store.DeleteLiveInput{
+				LiveID: "live-id",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &store.DeleteLiveInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to delete live",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Live.EXPECT().Delete(ctx, "live-id").Return(assert.AnError)
+			},
+			input: &store.DeleteLiveInput{
+				LiveID: "live-id",
+			},
+			expectErr: exception.ErrUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.DeleteLive(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
