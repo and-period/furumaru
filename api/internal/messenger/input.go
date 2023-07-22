@@ -133,6 +133,10 @@ type GetContactCategoryInput struct {
 	CategoryID string `validate:"required"`
 }
 
+type MultiGetContactCategoriesInput struct {
+	CategoryIDs []string `validate:"opitempty,dive,required"`
+}
+
 type ListThreadsByContactIDInput struct {
 	ContactID string `validate:"required"`
 	UserID    string `validate:""`

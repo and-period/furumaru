@@ -210,6 +210,26 @@ func (mr *MockContactCategoryMockRecorder) List(ctx, params interface{}, fields 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockContactCategory)(nil).List), varargs...)
 }
 
+// MultiGet mocks base method.
+func (m *MockContactCategory) MultiGet(ctx context.Context, categoryIDs []string, fields ...string) (entity.ContactCategories, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, categoryIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGet", varargs...)
+	ret0, _ := ret[0].(entity.ContactCategories)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGet indicates an expected call of MultiGet.
+func (mr *MockContactCategoryMockRecorder) MultiGet(ctx, categoryIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, categoryIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockContactCategory)(nil).MultiGet), varargs...)
+}
+
 // MockContactRead is a mock of ContactRead interface.
 type MockContactRead struct {
 	ctrl     *gomock.Controller
