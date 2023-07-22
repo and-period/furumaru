@@ -54,9 +54,52 @@ func (h *handler) ListContacts(ctx *gin.Context) {
 		return
 	}
 
+	contactIDs := contacts.IDs()
+	threads := make([]*entity.Thread, 0, len(contactIDs))
+	for _, contact := range contacts {
+		in := &messenger.ListThreadsByContactIDInput{
+			ContactID: contact.ID,
+		}
+		thread, _, err := h.messenger.ListThreadsByContactID(ctx, in)
+		if err != nil {
+			httpError(ctx, err)
+			return
+		}
+		threads = append(threads, thread...)
+	}
+	var (
+		contactCategories service.ContactCategories
+		users             uentity.Users
+		responders        service.Admins
+	)
+
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		usersIn := &user.MultiGetUsersInput{
+			UserIDs: contacts.UserIDs(),
+		}
+		users, err = h.user.MultiGetUsers(ectx, usersIn)
+		return
+	})
+	eg.Go(func() (err error) {
+		responders, err = h.multiGetAdmins(ectx, contacts.ResponderIDs())
+		return
+	})
+	eg.Go(func() (err error) {
+		contactCategories, err = h.multiGetContactCategories(ctx, contacts.CategoryIDs())
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		httpError(ctx, err)
+		return
+	}
 	res := &response.ContactsResponse{
-		Contacts: service.NewContacts(contacts).Response(),
-		Total:    total,
+		Contacts:   service.NewContacts(contacts).Response(),
+		Threads:    service.NewThreads(threads).Response(),
+		Categories: contactCategories.Response(),
+		Users:      service.NewUsers(users).Response(),
+		Responders: responders.Response(),
+		Total:      total,
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -70,7 +113,7 @@ func (h *handler) CreateContact(ctx *gin.Context) {
 
 	var (
 		category  *service.ContactCategory
-		sender    *uentity.User
+		uuser     *uentity.User
 		responder *uentity.Admin
 	)
 	eg, ectx := errgroup.WithContext(ctx)
@@ -81,7 +124,7 @@ func (h *handler) CreateContact(ctx *gin.Context) {
 		in := &user.GetUserInput{
 			UserID: req.UserID,
 		}
-		sender, err = h.user.GetUser(ectx, in)
+		uuser, err = h.user.GetUser(ectx, in)
 		return err
 	})
 	eg.Go(func() (err error) {
@@ -139,7 +182,7 @@ func (h *handler) CreateContact(ctx *gin.Context) {
 		Contact:   service.NewContact(scontact).Response(),
 		Category:  category.Response(),
 		Threads:   service.NewThreads(entity.Threads{sthread}).Response(),
-		User:      service.NewUser(sender).Response(),
+		User:      service.NewUser(uuser).Response(),
 		Responder: service.NewAdmin(responder).Response(),
 	}
 
