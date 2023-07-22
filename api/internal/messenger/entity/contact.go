@@ -76,6 +76,7 @@ func (cs Contacts) IDs() []string {
 		return c.ID
 	})
 }
+
 func (cs Contacts) CategoryIDs() []string {
 	return set.UniqBy(cs, func(c *Contact) string {
 		return c.CategoryID
