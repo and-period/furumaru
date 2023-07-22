@@ -149,7 +149,7 @@ contactsResponse:
       addressLine2: ''
       createdAt: 1640962800
       updatedAt: 1640962800
-    responder:
+    responders:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       role: 2
       lastname: '&.'
