@@ -3,12 +3,16 @@ import { mdiDelete, mdiPlus } from '@mdi/js'
 import { unix } from 'dayjs'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { AlertType } from '~/lib/hooks'
-import { DiscountType, Promotion } from '~/types/api'
+import { AdminRole, DiscountType, Promotion } from '~/types/api'
 
 const props = defineProps({
   loading: {
     type: Boolean,
     default: false
+  },
+  role: {
+    type: Number as PropType<AdminRole>,
+    default: AdminRole.UNKNOWN
   },
   deleteDialog: {
     type: Boolean,
@@ -99,6 +103,10 @@ const deleteDialogValue = computed({
   set: (val: boolean): void => emit('update:delete-dialog', val)
 })
 
+const isRegisterable = (): boolean => {
+  return props.role === AdminRole.ADMINISTRATOR
+}
+
 const getDiscount = (discountType: number, discountRate: DiscountType): string => {
   switch (discountType) {
     case DiscountType.AMOUNT:
@@ -186,7 +194,7 @@ const onClickDelete = (): void => {
     <v-card-title class="d-flex flex-row">
       セール情報
       <v-spacer />
-      <v-btn variant="outlined" color="primary" @click="onClickAdd">
+      <v-btn v-show="isRegisterable()" variant="outlined" color="primary" @click="onClickAdd">
         <v-icon start :icon="mdiPlus" />
         セール情報登録
       </v-btn>

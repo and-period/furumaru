@@ -3,12 +3,16 @@ import { mdiDelete, mdiPlus } from '@mdi/js'
 import { unix } from 'dayjs'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { AlertType } from '~/lib/hooks'
-import { Admin, Notification, NotificationStatus, NotificationTarget, NotificationType } from '~/types/api'
+import { Admin, AdminRole, Notification, NotificationStatus, NotificationTarget, NotificationType } from '~/types/api'
 
 const props = defineProps({
   loading: {
     type: Boolean,
     default: false
+  },
+  role: {
+    type: Number as PropType<AdminRole>,
+    default: AdminRole.UNKNOWN
   },
   deleteDialog: {
     type: Boolean,
@@ -102,6 +106,10 @@ const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
   set: (val: boolean): void => emit('update:delete-dialog', val)
 })
+
+const isRegisterable = (): boolean => {
+  return props.role === AdminRole.ADMINISTRATOR
+}
 
 const getAdminName = (adminId: string): string => {
   const admin = props.admins.find((admin: Admin): boolean => {
@@ -228,7 +236,7 @@ const onClickDelete = (): void => {
     <v-card-title class="d-flex flex-row">
       お知らせ管理
       <v-spacer />
-      <v-btn color="primary" variant="outlined" @click="onClickAdd">
+      <v-btn v-show="isRegisterable()" color="primary" variant="outlined" @click="onClickAdd">
         <v-icon start :icon="mdiPlus" />
         お知らせ登録
       </v-btn>

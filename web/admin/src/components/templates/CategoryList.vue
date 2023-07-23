@@ -4,7 +4,7 @@ import { mdiPlus } from '@mdi/js'
 import { useVuelidate } from '@vuelidate/core'
 import { VTabs } from 'vuetify/lib/components/index.mjs'
 import { AlertType } from '~/lib/hooks'
-import { CreateCategoryRequest, Category, ProductType, CreateProductTypeRequest } from '~/types/api'
+import { CreateCategoryRequest, Category, ProductType, CreateProductTypeRequest, AdminRole } from '~/types/api'
 import {
   required,
   getErrorMessage,
@@ -15,6 +15,10 @@ const props = defineProps({
   loading: {
     type: Boolean,
     default: false
+  },
+  role: {
+    type: Number as PropType<AdminRole>,
+    default: AdminRole.UNKNOWN
   },
   isAlert: {
     type: Boolean,
@@ -130,6 +134,10 @@ const pvalidate = useVuelidate<CreateProductTypeRequest>(productTypeFormDataRule
 watch(selector, () => {
   emits('update:tab', selector.value)
 })
+
+const isRegisterable = (): boolean => {
+  return props.role === AdminRole.ADMINISTRATOR
+}
 
 const onClickCategoryPage = (page: number): void => {
   emits('click:category-update-page', page)
@@ -297,11 +305,11 @@ const onSubmitProductType = async (): Promise<void> => {
     <v-card-title class="d-flex flex-row">
       カテゴリー・品目設定
       <v-spacer />
-      <v-btn v-show="selector === 'categories'" variant="outlined" color="primary" @click="onClickCategoryOpenDialog">
+      <v-btn v-show="isRegisterable() && selector === 'categories'" variant="outlined" color="primary" @click="onClickCategoryOpenDialog">
         <v-icon start :icon="mdiPlus" />
         カテゴリー登録
       </v-btn>
-      <v-btn v-show="selector === 'productTypes'" variant="outlined" color="primary" @click="onClickProductTypeOpenDialog">
+      <v-btn v-show="isRegisterable() && selector === 'productTypes'" variant="outlined" color="primary" @click="onClickProductTypeOpenDialog">
         <v-icon start :icon="mdiPlus" />
         品目登録
       </v-btn>

@@ -3,12 +3,16 @@ import { mdiPlus } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { dateTimeFormatter } from '~/lib/formatter'
 import { AlertType } from '~/lib/hooks'
-import { Shipping } from '~/types/api'
+import { AdminRole, Shipping } from '~/types/api'
 
 const props = defineProps({
   loading: {
     type: Boolean,
     default: false
+  },
+  role: {
+    type: Number as PropType<AdminRole>,
+    default: AdminRole.UNKNOWN
   },
   isAlert: {
     type: Boolean,
@@ -58,6 +62,10 @@ const headers: VDataTable['headers'] = [
   }
 ]
 
+const isRegisterable = (): boolean => {
+  return props.role === AdminRole.ADMINISTRATOR
+}
+
 const onClickUpdatePage = (page: number): void => {
   emit('click:update-page', page)
 }
@@ -80,7 +88,7 @@ const onClickAdd = (): void => {
     <v-card-title class="d-flex flex-row">
       配送設定一覧
       <v-spacer />
-      <v-btn variant="outlined" color="primary" @click="onClickAdd">
+      <v-btn v-show="isRegisterable()" variant="outlined" color="primary" @click="onClickAdd">
         <v-icon start :icon="mdiPlus" />
         配送情報登録
       </v-btn>

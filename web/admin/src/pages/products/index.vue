@@ -2,9 +2,10 @@
 import { storeToRefs } from 'pinia'
 
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useCategoryStore, useProducerStore, useProductStore, useProductTagStore, useProductTypeStore } from '~/store'
+import { useAuthStore, useCategoryStore, useProducerStore, useProductStore, useProductTagStore, useProductTypeStore } from '~/store'
 
 const router = useRouter()
+const authStore = useAuthStore()
 const categoryStore = useCategoryStore()
 const producerStore = useProducerStore()
 const productStore = useProductStore()
@@ -13,6 +14,7 @@ const productTypeStore = useProductTypeStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
+const { role } = storeToRefs(authStore)
 const { categories } = storeToRefs(categoryStore)
 const { producers } = storeToRefs(producerStore)
 const { products, totalItems } = storeToRefs(productStore)
@@ -84,6 +86,7 @@ try {
   <templates-product-list
     v-model:delete-dialog="deleteDialog"
     :loading="isLoading()"
+    :role="role"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"

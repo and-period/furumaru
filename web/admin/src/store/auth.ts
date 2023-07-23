@@ -6,6 +6,7 @@ import dayjs, { Dayjs } from 'dayjs'
 import { useCommonStore } from './common'
 import { messaging } from '~/plugins/firebase'
 import {
+  AdminRole,
   AuthResponse,
   AuthUserResponse,
   ForgotAuthPasswordRequest,
@@ -29,6 +30,9 @@ export const useAuthStore = defineStore('auth', {
   getters: {
     accessToken (state): string | undefined {
       return state.auth?.accessToken
+    },
+    role (state): AdminRole {
+      return state.auth?.role || AdminRole.UNKNOWN
     }
   },
 
@@ -41,9 +45,11 @@ export const useAuthStore = defineStore('auth', {
     async signIn (payload: SignInRequest): Promise<string> {
       try {
         const res = await apiClient.authApi().v1SignIn(payload)
-        this.setExpiredAt(res.data)
-        this.isAuthenticated = true
         this.auth = res.data
+        this.isAuthenticated = true
+
+        this.getUser()
+        this.setExpiredAt(res.data)
 
         const cookies = new Cookies()
         cookies.set('refreshToken', this.auth.refreshToken, { secure: true })

@@ -2,13 +2,15 @@
 import { storeToRefs } from 'pinia'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { useAlert, usePagination } from '~/lib/hooks'
-import { usePromotionStore } from '~/store'
+import { useAuthStore, usePromotionStore } from '~/store'
 
 const router = useRouter()
+const authStore = useAuthStore()
 const promotionStore = usePromotionStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
+const { role } = storeToRefs(authStore)
 const { promotions, total } = storeToRefs(promotionStore)
 
 const loading = ref<boolean>(false)
@@ -89,6 +91,7 @@ try {
     v-model:delete-dialog="deleteDialog"
     v-model:sort-by="sortBy"
     :loading="isLoading()"
+    :role="role"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"

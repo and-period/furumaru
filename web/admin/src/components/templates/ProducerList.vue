@@ -4,12 +4,16 @@ import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import { getResizedImages } from '~/lib/helpers'
 import { AlertType } from '~/lib/hooks'
-import { AdminStatus, Coordinator, Producer } from '~/types/api'
+import { AdminRole, AdminStatus, Coordinator, Producer } from '~/types/api'
 
 const props = defineProps({
   loading: {
     type: Boolean,
     default: false
+  },
+  role: {
+    type: Number as PropType<AdminRole>,
+    default: AdminRole.UNKNOWN
   },
   deleteDialog: {
     type: Boolean,
@@ -98,6 +102,10 @@ const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
   set: (val: boolean): void => emit('update:delete-dialog', val)
 })
+
+const isRegisterable = (): boolean => {
+  return props.role === AdminRole.COORDINATOR
+}
 
 const getCoordinatorName = (coordinatorId: string) => {
   const coordinator = props.coordinators.find((coordinator: Coordinator): boolean => {
@@ -200,7 +208,7 @@ const onClickDelete = (): void => {
     <v-card-title class="d-flex flex-row">
       生産者管理
       <v-spacer />
-      <v-btn variant="outlined" color="primary" @click="onClickAdd">
+      <v-btn v-show="isRegisterable()" variant="outlined" color="primary" @click="onClickAdd">
         <v-icon start :icon="mdiPlus" />
         生産者登録
       </v-btn>
