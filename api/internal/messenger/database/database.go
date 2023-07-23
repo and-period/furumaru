@@ -59,6 +59,7 @@ type Contact interface {
 type ContactCategory interface {
 	Get(ctx context.Context, categoryID string, fields ...string) (*entity.ContactCategory, error)
 	List(ctx context.Context, params *ListContactCategoriesParams, fields ...string) (entity.ContactCategories, error)
+	MultiGet(ctx context.Context, categoryIDs []string, fields ...string) (entity.ContactCategories, error)
 	Create(ctx context.Context, category *entity.ContactCategory) error
 }
 
@@ -245,7 +246,7 @@ func (p *ListThreadsByContactIDParams) stmt(stmt *gorm.DB) *gorm.DB {
 type UpdateThreadParams struct {
 	Content  string
 	UserID   string
-	UserType int32
+	UserType entity.ThreadUserType
 }
 
 type UpdateContactParams struct {

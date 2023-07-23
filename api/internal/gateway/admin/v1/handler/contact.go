@@ -13,6 +13,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )
@@ -53,9 +54,52 @@ func (h *handler) ListContacts(ctx *gin.Context) {
 		return
 	}
 
+	contactIDs := contacts.IDs()
+	threads := make([]*entity.Thread, 0, len(contactIDs))
+	for _, contact := range contacts {
+		in := &messenger.ListThreadsByContactIDInput{
+			ContactID: contact.ID,
+		}
+		thread, _, err := h.messenger.ListThreadsByContactID(ctx, in)
+		if err != nil {
+			httpError(ctx, err)
+			return
+		}
+		threads = append(threads, thread...)
+	}
+	var (
+		contactCategories service.ContactCategories
+		users             uentity.Users
+		responders        service.Admins
+	)
+
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		usersIn := &user.MultiGetUsersInput{
+			UserIDs: contacts.UserIDs(),
+		}
+		users, err = h.user.MultiGetUsers(ectx, usersIn)
+		return
+	})
+	eg.Go(func() (err error) {
+		responders, err = h.multiGetAdmins(ectx, contacts.ResponderIDs())
+		return
+	})
+	eg.Go(func() (err error) {
+		contactCategories, err = h.multiGetContactCategories(ctx, contacts.CategoryIDs())
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		httpError(ctx, err)
+		return
+	}
 	res := &response.ContactsResponse{
-		Contacts: service.NewContacts(contacts).Response(),
-		Total:    total,
+		Contacts:   service.NewContacts(contacts).Response(),
+		Threads:    service.NewThreads(threads).Response(),
+		Categories: contactCategories.Response(),
+		Users:      service.NewUsers(users).Response(),
+		Responders: responders.Response(),
+		Total:      total,
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -67,29 +111,34 @@ func (h *handler) CreateContact(ctx *gin.Context) {
 		return
 	}
 
+	var (
+		category  *service.ContactCategory
+		uuser     *uentity.User
+		responder *uentity.Admin
+	)
 	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() error {
+	eg.Go(func() (err error) {
 		if req.UserID == "" {
 			return nil
 		}
 		in := &user.GetUserInput{
 			UserID: req.UserID,
 		}
-		_, err := h.user.GetUser(ectx, in)
+		uuser, err = h.user.GetUser(ectx, in)
 		return err
 	})
-	eg.Go(func() error {
+	eg.Go(func() (err error) {
 		if req.ResponderID == "" {
 			return nil
 		}
 		in := &user.GetAdminInput{
 			AdminID: req.ResponderID,
 		}
-		_, err := h.user.GetAdmin(ectx, in)
+		responder, err = h.user.GetAdmin(ectx, in)
 		return err
 	})
-	eg.Go(func() error {
-		_, err := h.getContactCategory(ectx, req.CategoryID)
+	eg.Go(func() (err error) {
+		category, err = h.getContactCategory(ectx, req.CategoryID)
 		return err
 	})
 	err := eg.Wait()
@@ -130,9 +179,13 @@ func (h *handler) CreateContact(ctx *gin.Context) {
 		return
 	}
 	res := &response.ContactResponse{
-		Contact: service.NewContact(scontact).Response(),
-		Threads: service.NewThreads(entity.Threads{sthread}).Response(),
+		Contact:   service.NewContact(scontact).Response(),
+		Category:  category.Response(),
+		Threads:   service.NewThreads(entity.Threads{sthread}).Response(),
+		User:      service.NewUser(uuser).Response(),
+		Responder: service.NewAdmin(responder).Response(),
 	}
+
 	ctx.JSON(http.StatusOK, res)
 }
 
@@ -143,15 +196,53 @@ func (h *handler) GetContact(ctx *gin.Context) {
 		httpError(ctx, err)
 		return
 	}
-	threads, _, err := h.getContactDetailsByContactID(ctx, contact)
-	if err != nil {
+
+	var (
+		category  *service.ContactCategory
+		threads   service.Threads
+		sender    *uentity.User
+		responder *uentity.Admin
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		threads, _, err = h.getContactDetailsByContactID(ectx, contact)
+		return
+	})
+	eg.Go(func() (err error) {
+		category, err = h.getContactCategory(ectx, contact.CategoryID)
+		return
+	})
+	eg.Go(func() (err error) {
+		if contact.UserID == "" {
+			return nil
+		}
+		in := &user.GetUserInput{
+			UserID: contact.UserID,
+		}
+		sender, err = h.user.GetUser(ectx, in)
+		return err
+	})
+	eg.Go(func() (err error) {
+		if contact.ResponderID == "" {
+			return nil
+		}
+		in := &user.GetAdminInput{
+			AdminID: contact.ResponderID,
+		}
+		responder, err = h.user.GetAdmin(ectx, in)
+		return err
+	})
+	if err := eg.Wait(); err != nil {
 		httpError(ctx, err)
 		return
 	}
 
 	res := response.ContactResponse{
-		Contact: contact.Response(),
-		Threads: threads.Response(),
+		Contact:   contact.Response(),
+		Category:  category.Response(),
+		Threads:   threads.Response(),
+		User:      service.NewUser(sender).Response(),
+		Responder: service.NewAdmin(responder).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

@@ -12,10 +12,14 @@ type Thread struct {
 }
 
 type ThreadResponse struct {
-	*Thread
+	Thread *Thread `json:"thread"` // お問い合わせ会話履歴
+	User   *User   `json:"user"`   // 送信者情報(ユーザー)
+	Admin  *Admin  `json:"admin"`  // 送信者情報(管理者)
 }
 
 type ThreadsResponse struct {
 	Threads []*Thread `json:"threads"` // お問い合わせ会話履歴一覧
+	Users   []*User   `json:"users"`   // 送信者一覧
+	Admins  []*Admin  `json:"admins"`  // 送信者一覧
 	Total   int64     `json:"total"`   // 会話履歴合計
 }

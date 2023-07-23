@@ -83,6 +83,74 @@ func TestContactCategory_List(t *testing.T) {
 	}
 }
 
+func TestContactCategory_MultiGet(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	contactCategories := make(entity.ContactCategories, 3)
+	contactCategories[0] = testContactCategory("contactCategory-id01", "種別1", now())
+	contactCategories[1] = testContactCategory("contactCategory-id02", "種別2", now())
+	contactCategories[2] = testContactCategory("contactCategory-id03", "種別3", now())
+	err = db.DB.Create(&contactCategories).Error
+	require.NoError(t, err)
+
+	type args struct {
+		categoryIDs []string
+	}
+	type want struct {
+		contactCategories entity.ContactCategories
+		hasErr            bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			args: args{
+				categoryIDs: []string{
+					"contactCategory-id01",
+					"contactCategory-id02",
+					"contactCategory-id03",
+				},
+			},
+			want: want{
+				contactCategories: contactCategories,
+				hasErr:            false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &contactCategory{db: db, now: now}
+			actual, err := db.MultiGet(ctx, tt.args.categoryIDs)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.ElementsMatch(t, tt.want.contactCategories, actual)
+		})
+	}
+}
+
 func TestContactCategory_Get(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

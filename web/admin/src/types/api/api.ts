@@ -397,6 +397,87 @@ export interface CategoryResponse {
     'category': Category;
 }
 /**
+ * お問い合わせ情報
+ * @export
+ * @interface Contact
+ */
+export interface Contact {
+    /**
+     * お問い合わせID
+     * @type {string}
+     * @memberof Contact
+     */
+    'id': string;
+    /**
+     * 件名
+     * @type {string}
+     * @memberof Contact
+     */
+    'title': string;
+    /**
+     * お問い合わせ種別ID
+     * @type {string}
+     * @memberof Contact
+     */
+    'categoryId': string;
+    /**
+     * 内容
+     * @type {string}
+     * @memberof Contact
+     */
+    'content': string;
+    /**
+     * 氏名
+     * @type {string}
+     * @memberof Contact
+     */
+    'username': string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof Contact
+     */
+    'email': string;
+    /**
+     * 電話番号(国際番号 + 電話番号)
+     * @type {string}
+     * @memberof Contact
+     */
+    'phoneNumber': string;
+    /**
+     * 
+     * @type {ContactStatus}
+     * @memberof Contact
+     */
+    'status': ContactStatus;
+    /**
+     * 対応時メモ
+     * @type {string}
+     * @memberof Contact
+     */
+    'note': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof Contact
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof Contact
+     */
+    'updatedAt': number;
+    /**
+     * 会話履歴一覧
+     * @type {Array<ThreadResponse>}
+     * @memberof Contact
+     */
+    'threads': Array<ThreadResponse>;
+}
+
+
+/**
  * 
  * @export
  * @interface ContactCategoriesResponse
@@ -404,39 +485,39 @@ export interface CategoryResponse {
 export interface ContactCategoriesResponse {
     /**
      * お問い合わせ種別一覧
-     * @type {Array<ContactCategoriesResponseContactCategoriesInner>}
+     * @type {Array<ContactCategory>}
      * @memberof ContactCategoriesResponse
      */
-    'contactCategories': Array<ContactCategoriesResponseContactCategoriesInner>;
+    'contactCategories': Array<ContactCategory>;
 }
 /**
- * 
+ * お問い合わせ種別情報
  * @export
- * @interface ContactCategoriesResponseContactCategoriesInner
+ * @interface ContactCategory
  */
-export interface ContactCategoriesResponseContactCategoriesInner {
+export interface ContactCategory {
     /**
      * お問い合わせ種別ID
      * @type {string}
-     * @memberof ContactCategoriesResponseContactCategoriesInner
+     * @memberof ContactCategory
      */
     'id': string;
     /**
      * お問い合わせ種別名
      * @type {string}
-     * @memberof ContactCategoriesResponseContactCategoriesInner
+     * @memberof ContactCategory
      */
     'title': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
-     * @memberof ContactCategoriesResponseContactCategoriesInner
+     * @memberof ContactCategory
      */
     'createdAt': number;
     /**
      * 更新日時 (unixtime)
      * @type {number}
-     * @memberof ContactCategoriesResponseContactCategoriesInner
+     * @memberof ContactCategory
      */
     'updatedAt': number;
 }
@@ -447,29 +528,11 @@ export interface ContactCategoriesResponseContactCategoriesInner {
  */
 export interface ContactCategoryResponse {
     /**
-     * お問い合わせ種別ID
-     * @type {string}
+     * 
+     * @type {ContactCategory}
      * @memberof ContactCategoryResponse
      */
-    'id': string;
-    /**
-     * お問い合わせ種別名
-     * @type {string}
-     * @memberof ContactCategoryResponse
-     */
-    'title': string;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ContactCategoryResponse
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof ContactCategoryResponse
-     */
-    'updatedAt': number;
+    'contactCategory': ContactCategory;
 }
 /**
  * 
@@ -478,80 +541,36 @@ export interface ContactCategoryResponse {
  */
 export interface ContactResponse {
     /**
-     * お問い合わせID
-     * @type {string}
+     * 
+     * @type {Contact}
      * @memberof ContactResponse
      */
-    'id': string;
-    /**
-     * 件名
-     * @type {string}
-     * @memberof ContactResponse
-     */
-    'title': string;
-    /**
-     * お問い合わせ種別ID
-     * @type {string}
-     * @memberof ContactResponse
-     */
-    'categoryId': string;
-    /**
-     * 内容
-     * @type {string}
-     * @memberof ContactResponse
-     */
-    'content': string;
-    /**
-     * 氏名
-     * @type {string}
-     * @memberof ContactResponse
-     */
-    'username': string;
-    /**
-     * メールアドレス
-     * @type {string}
-     * @memberof ContactResponse
-     */
-    'email': string;
-    /**
-     * 電話番号(国際番号 + 電話番号)
-     * @type {string}
-     * @memberof ContactResponse
-     */
-    'phoneNumber': string;
+    'contact': Contact;
     /**
      * 
-     * @type {ContactStatus}
+     * @type {ContactCategory}
      * @memberof ContactResponse
      */
-    'status': ContactStatus;
-    /**
-     * 対応時メモ
-     * @type {string}
-     * @memberof ContactResponse
-     */
-    'note': string;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ContactResponse
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof ContactResponse
-     */
-    'updatedAt': number;
+    'contactCategory': ContactCategory;
     /**
      * 会話履歴一覧
-     * @type {Array<ThreadResponse1>}
+     * @type {Array<Thread>}
      * @memberof ContactResponse
      */
-    'threads': Array<ThreadResponse1>;
+    'threads': Array<Thread>;
+    /**
+     * 
+     * @type {User}
+     * @memberof ContactResponse
+     */
+    'user'?: User;
+    /**
+     * 
+     * @type {Admin}
+     * @memberof ContactResponse
+     */
+    'responder'?: Admin;
 }
-
-
 /**
  * お問い合わせ対応状況
  * @export
@@ -620,10 +639,34 @@ export type ContactUserType = typeof ContactUserType[keyof typeof ContactUserTyp
 export interface ContactsResponse {
     /**
      * お問い合わせ一覧
-     * @type {Array<ContactsResponseContactsInner>}
+     * @type {Array<Contact>}
      * @memberof ContactsResponse
      */
-    'contacts': Array<ContactsResponseContactsInner>;
+    'contacts': Array<Contact>;
+    /**
+     * お問い合わせ種別一覧
+     * @type {Array<ContactCategory>}
+     * @memberof ContactsResponse
+     */
+    'contactCategories': Array<ContactCategory>;
+    /**
+     * 会話履歴一覧
+     * @type {Array<Thread>}
+     * @memberof ContactsResponse
+     */
+    'threads': Array<Thread>;
+    /**
+     * ユーザー一覧
+     * @type {Array<User>}
+     * @memberof ContactsResponse
+     */
+    'users'?: Array<User>;
+    /**
+     * 管理者一覧
+     * @type {Array<Admin>}
+     * @memberof ContactsResponse
+     */
+    'responders'?: Array<Admin>;
     /**
      * 合計数
      * @type {number}
@@ -631,87 +674,6 @@ export interface ContactsResponse {
      */
     'total': number;
 }
-/**
- * 
- * @export
- * @interface ContactsResponseContactsInner
- */
-export interface ContactsResponseContactsInner {
-    /**
-     * お問い合わせID
-     * @type {string}
-     * @memberof ContactsResponseContactsInner
-     */
-    'id': string;
-    /**
-     * 件名
-     * @type {string}
-     * @memberof ContactsResponseContactsInner
-     */
-    'title': string;
-    /**
-     * お問い合わせ種別ID
-     * @type {string}
-     * @memberof ContactsResponseContactsInner
-     */
-    'categoryId': string;
-    /**
-     * 内容
-     * @type {string}
-     * @memberof ContactsResponseContactsInner
-     */
-    'content': string;
-    /**
-     * 氏名
-     * @type {string}
-     * @memberof ContactsResponseContactsInner
-     */
-    'username': string;
-    /**
-     * メールアドレス
-     * @type {string}
-     * @memberof ContactsResponseContactsInner
-     */
-    'email': string;
-    /**
-     * 電話番号(国際番号 + 電話番号)
-     * @type {string}
-     * @memberof ContactsResponseContactsInner
-     */
-    'phoneNumber': string;
-    /**
-     * 
-     * @type {ContactStatus}
-     * @memberof ContactsResponseContactsInner
-     */
-    'status': ContactStatus;
-    /**
-     * 対応時メモ
-     * @type {string}
-     * @memberof ContactsResponseContactsInner
-     */
-    'note': string;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ContactsResponseContactsInner
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof ContactsResponseContactsInner
-     */
-    'updatedAt': number;
-    /**
-     * 会話履歴一覧
-     * @type {Array<ThreadResponse1>}
-     * @memberof ContactsResponseContactsInner
-     */
-    'threads': Array<ThreadResponse1>;
-}
-
-
 /**
  * コーディネータ情報
  * @export
@@ -4593,51 +4555,51 @@ export type StorageMethodType = typeof StorageMethodType[keyof typeof StorageMet
 
 
 /**
- * 
+ * お問い合わせ会話履歴情報
  * @export
- * @interface ThreadResponse
+ * @interface Thread
  */
-export interface ThreadResponse {
+export interface Thread {
     /**
      * お問い合わせ会話履歴ID
      * @type {string}
-     * @memberof ThreadResponse
+     * @memberof Thread
      */
     'id': string;
     /**
      * お問い合わせID
      * @type {string}
-     * @memberof ThreadResponse
+     * @memberof Thread
      */
     'contactId': string;
     /**
      * 送信者ID
      * @type {string}
-     * @memberof ThreadResponse
+     * @memberof Thread
      */
     'userId'?: string;
     /**
      * 
      * @type {ContactUserType}
-     * @memberof ThreadResponse
+     * @memberof Thread
      */
     'userType': ContactUserType;
     /**
      * 会話内容
      * @type {string}
-     * @memberof ThreadResponse
+     * @memberof Thread
      */
     'content': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
-     * @memberof ThreadResponse
+     * @memberof Thread
      */
     'createdAt': number;
     /**
      * 更新日時 (unixtime)
      * @type {number}
-     * @memberof ThreadResponse
+     * @memberof Thread
      */
     'updatedAt': number;
 }
@@ -4646,54 +4608,28 @@ export interface ThreadResponse {
 /**
  * 
  * @export
- * @interface ThreadResponse1
+ * @interface ThreadResponse
  */
-export interface ThreadResponse1 {
-    /**
-     * お問い合わせ会話履歴ID
-     * @type {string}
-     * @memberof ThreadResponse1
-     */
-    'id': string;
-    /**
-     * お問い合わせID
-     * @type {string}
-     * @memberof ThreadResponse1
-     */
-    'contactId': string;
-    /**
-     * 送信者ID
-     * @type {string}
-     * @memberof ThreadResponse1
-     */
-    'userId'?: string;
+export interface ThreadResponse {
     /**
      * 
-     * @type {ContactUserType}
-     * @memberof ThreadResponse1
+     * @type {Thread}
+     * @memberof ThreadResponse
      */
-    'userType': ContactUserType;
+    'thread': Thread;
     /**
-     * 会話内容
-     * @type {string}
-     * @memberof ThreadResponse1
+     * 
+     * @type {User}
+     * @memberof ThreadResponse
      */
-    'content': string;
+    'user'?: User;
     /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ThreadResponse1
+     * 
+     * @type {Admin}
+     * @memberof ThreadResponse
      */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof ThreadResponse1
-     */
-    'updatedAt': number;
+    'admin'?: Admin;
 }
-
-
 /**
  * 
  * @export
@@ -4702,10 +4638,22 @@ export interface ThreadResponse1 {
 export interface ThreadsResponse {
     /**
      * お問い合わせ会話履歴一覧
-     * @type {Array<ThreadsResponseThreadsInner>}
+     * @type {Array<Thread>}
      * @memberof ThreadsResponse
      */
-    'threads': Array<ThreadsResponseThreadsInner>;
+    'threads': Array<Thread>;
+    /**
+     * お問い合わせ会話ユーザー一覧
+     * @type {Array<User>}
+     * @memberof ThreadsResponse
+     */
+    'users'?: Array<User>;
+    /**
+     * お問い合わせ会話管理者一覧
+     * @type {Array<Admin>}
+     * @memberof ThreadsResponse
+     */
+    'admins'?: Array<Admin>;
     /**
      * お問い合わせ会話履歴総数
      * @type {number}
@@ -4713,57 +4661,6 @@ export interface ThreadsResponse {
      */
     'total': number;
 }
-/**
- * 
- * @export
- * @interface ThreadsResponseThreadsInner
- */
-export interface ThreadsResponseThreadsInner {
-    /**
-     * お問い合わせ会話履歴ID
-     * @type {string}
-     * @memberof ThreadsResponseThreadsInner
-     */
-    'id'?: string;
-    /**
-     * お問い合わせID
-     * @type {string}
-     * @memberof ThreadsResponseThreadsInner
-     */
-    'contactId'?: string;
-    /**
-     * 送信者ID
-     * @type {string}
-     * @memberof ThreadsResponseThreadsInner
-     */
-    'userId'?: string;
-    /**
-     * 
-     * @type {ContactUserType}
-     * @memberof ThreadsResponseThreadsInner
-     */
-    'userType'?: ContactUserType;
-    /**
-     * 会話内容
-     * @type {string}
-     * @memberof ThreadsResponseThreadsInner
-     */
-    'content'?: string;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof ThreadsResponseThreadsInner
-     */
-    'createdAt'?: number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof ThreadsResponseThreadsInner
-     */
-    'updatedAt'?: number;
-}
-
-
 /**
  * 
  * @export
@@ -14659,7 +14556,7 @@ export const ThreadApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1CreateThread(body: CreateThreadRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ThreadResponse1>> {
+        async v1CreateThread(body: CreateThreadRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ThreadResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateThread(body, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -14681,7 +14578,7 @@ export const ThreadApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1GetThread(threadId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ThreadResponse1>> {
+        async v1GetThread(threadId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ThreadResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetThread(threadId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -14727,7 +14624,7 @@ export const ThreadApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreateThread(body: CreateThreadRequest, options?: any): AxiosPromise<ThreadResponse1> {
+        v1CreateThread(body: CreateThreadRequest, options?: any): AxiosPromise<ThreadResponse> {
             return localVarFp.v1CreateThread(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -14747,7 +14644,7 @@ export const ThreadApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetThread(threadId: string, options?: any): AxiosPromise<ThreadResponse1> {
+        v1GetThread(threadId: string, options?: any): AxiosPromise<ThreadResponse> {
             return localVarFp.v1GetThread(threadId, options).then((request) => request(axios, basePath));
         },
         /**

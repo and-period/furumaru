@@ -181,3 +181,111 @@ func TestContact_Fill(t *testing.T) {
 		})
 	}
 }
+
+func TestContacts_ContactCategoryIDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		contacts Contacts
+		expect   []string
+	}{
+		{
+			name: "success",
+			contacts: Contacts{
+				{
+					ID:          "contact-id",
+					Title:       "お問い合わせ件名",
+					Content:     "お問い合わせ内容",
+					Username:    "お問い合わせ氏名",
+					Email:       "test-user@and-period.jp",
+					PhoneNumber: "+819012345678",
+					Status:      ContactStatusUnknown,
+					Note:        "",
+					CategoryID:  "category-id",
+					UserID:      "",
+					ResponderID: "responder-id",
+				},
+			},
+			expect: []string{"category-id"},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			assert.ElementsMatch(t, tt.expect, tt.contacts.CategoryIDs())
+		})
+	}
+}
+
+func TestContacts_UserIDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		contacts Contacts
+		expect   []string
+	}{
+		{
+			name: "success",
+			contacts: Contacts{
+				{
+					ID:          "contact-id",
+					Title:       "お問い合わせ件名",
+					Content:     "お問い合わせ内容",
+					Username:    "お問い合わせ氏名",
+					Email:       "test-user@and-period.jp",
+					PhoneNumber: "+819012345678",
+					Status:      ContactStatusUnknown,
+					Note:        "",
+					CategoryID:  "category-id",
+					UserID:      "user-id",
+					ResponderID: "responder-id",
+				},
+			},
+			expect: []string{"user-id"},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			assert.ElementsMatch(t, tt.expect, tt.contacts.UserIDs())
+		})
+	}
+}
+
+func TestContacts_ResponderIDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		contacts Contacts
+		expect   []string
+	}{
+		{
+			name: "success",
+			contacts: Contacts{
+				{
+					ID:          "contact-id",
+					Title:       "お問い合わせ件名",
+					Content:     "お問い合わせ内容",
+					Username:    "お問い合わせ氏名",
+					Email:       "test-user@and-period.jp",
+					PhoneNumber: "+819012345678",
+					Status:      ContactStatusUnknown,
+					Note:        "",
+					CategoryID:  "category-id",
+					UserID:      "user-id",
+					ResponderID: "responder-id",
+				},
+			},
+			expect: []string{"responder-id"},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			assert.ElementsMatch(t, tt.expect, tt.contacts.ResponderIDs())
+		})
+	}
+}

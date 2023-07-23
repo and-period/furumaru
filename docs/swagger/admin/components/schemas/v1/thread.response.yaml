@@ -1,43 +1,40 @@
 threadResponse:
   type: object
   properties:
-    id:
-      type: string
-      description: お問い合わせ会話履歴ID
-    contactId:
-      type: string
-      description: お問い合わせID
-    userId:
-      type: string
-      description: 送信者ID
-    userType:
-      $ref: './../../../openapi.yaml#/components/schemas/contactUserType'
-    content:
-      type: string
-      description: 会話内容
-    createdAt:
-      type: integer
-      format: int64
-      description: 登録日時 (unixtime)
-    updatedAt:
-      type: integer
-      format: int64
-      description: 更新日時 (unixtime)
+    thread:
+      $ref: './../../../openapi.yaml#/components/schemas/thread'
+    user:
+      $ref: './../../../openapi.yaml#/components/schemas/user'
+    admin:
+      $ref: './../../../openapi.yaml#/components/schemas/admin'
   required:
-  - id
-  - contactId
-  - userType
-  - content
-  - createdAt
-  - updatedAt
+  - thread
   example:
-    id: "kSByoE6FetnPs5Byk3a9Zx"
-    contactId: "kSByoE6FetnPs5Byk3a9Zx"
-    userId: "kSByoE6FetnPs5Byk3a9Zx"
-    userType: 1
-    content: お問い合わせ内容
-    createdAt: 1580000000
-    updatedAt: 1580000000
+    thread:
+      id: "kSByoE6FetnPs5Byk3a9Zx"
+      contactId: "kSByoE6FetnPs5Byk3a9Zx"
+      userId: "kSByoE6FetnPs5Byk3a9Zx"
+      userType: 1
+      content: お問い合わせ内容
+      createdAt: 1580000000
+      updatedAt: 1580000000
+    user:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      lastname: '&.'
+      firstname: '購入者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'こうにゅうしゃ'
+      registered: true
+      email: 'test-user@and-period.jp'
+      phoneNumber: '+819012345678'
+      postalCode: '1000014'
+      prefecture: 'tokyo'
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      createdAt: 1640962800
+      updatedAt: 1640962800
+
 threadsResponse:
   type: object
   properties:
@@ -45,32 +42,20 @@ threadsResponse:
       type: array
       description: お問い合わせ会話履歴一覧
       items:
-        properties:
-          id:
-            type: string
-            description: お問い合わせ会話履歴ID
-          contactId:
-            type: string
-            description: お問い合わせID
-          userId:
-            type: string
-            description: 送信者ID
-          userType:
-            $ref: './../../../openapi.yaml#/components/schemas/contactUserType'
-          content:
-            type: string
-            description: 会話内容
-          createdAt:
-            type: integer
-            format: int64
-            description: 登録日時 (unixtime)
-          updatedAt:
-            type: integer
-            format: int64
-            description: 更新日時 (unixtime)
+        $ref: './../../../openapi.yaml#/components/schemas/thread'
+    users:
+      type: array
+      description: お問い合わせ会話ユーザー一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/user'
+    admins:
+      type: array
+      description: お問い合わせ会話管理者一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/admin'
     total:
       type: integer
-      format: int32
+      format: int64
       description: お問い合わせ会話履歴総数
   required:
   - threads
@@ -84,4 +69,29 @@ threadsResponse:
       content: お問い合わせ内容
       createdAt: 1580000000
       updatedAt: 1580000000
-    total: 1
+    users:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      lastname: '&.'
+      firstname: '購入者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'こうにゅうしゃ'
+      registered: true
+      email: 'test-user@and-period.jp'
+      phoneNumber: '+819012345678'
+      postalCode: '1000014'
+      prefecture: 'tokyo'
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    admins:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      role: 2
+      lastname: '&.'
+      firstname: '管理者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'かんりしゃ'
+      email: 'test-user@and-period.jp'
+      createdAt: 1640962800
+      updatedAt: 1640962800

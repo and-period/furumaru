@@ -42,6 +42,15 @@ func (c *contactCategory) List(
 	return categories, exception.InternalError(err)
 }
 
+func (c *contactCategory) MultiGet(ctx context.Context, categoryIDs []string, fields ...string) (entity.ContactCategories, error) {
+	var categories entity.ContactCategories
+
+	err := c.db.Statement(ctx, c.db.DB, contactCategoryTable, fields...).
+		Where("id IN (?)", categoryIDs).
+		Find(&categories).Error
+	return categories, exception.InternalError(err)
+}
+
 func (c *contactCategory) Get(ctx context.Context, categoryID string, fields ...string) (*entity.ContactCategory, error) {
 	category, err := c.get(ctx, c.db.DB, categoryID, fields...)
 	return category, exception.InternalError(err)

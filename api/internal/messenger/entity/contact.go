@@ -3,6 +3,7 @@ package entity
 import (
 	"time"
 
+	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/gorm"
 )
@@ -68,4 +69,28 @@ func (c *Contact) Fill(categoryID, userID, responderID string) {
 	if responderID != "" {
 		c.ResponderID = responderID
 	}
+}
+
+func (cs Contacts) IDs() []string {
+	return set.UniqBy(cs, func(c *Contact) string {
+		return c.ID
+	})
+}
+
+func (cs Contacts) CategoryIDs() []string {
+	return set.UniqBy(cs, func(c *Contact) string {
+		return c.CategoryID
+	})
+}
+
+func (cs Contacts) UserIDs() []string {
+	return set.UniqBy(cs, func(c *Contact) string {
+		return c.UserID
+	})
+}
+
+func (cs Contacts) ResponderIDs() []string {
+	return set.UniqBy(cs, func(c *Contact) string {
+		return c.ResponderID
+	})
 }

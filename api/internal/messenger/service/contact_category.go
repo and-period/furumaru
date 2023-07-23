@@ -24,6 +24,16 @@ func (s *service) ListContactCategories(ctx context.Context, in *messenger.ListC
 	return categories, nil
 }
 
+func (s *service) MultiGetContactCategories(
+	ctx context.Context, in *messenger.MultiGetContactCategoriesInput,
+) (entity.ContactCategories, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, exception.InternalError(err)
+	}
+	categories, err := s.db.ContactCategory.MultiGet(ctx, in.CategoryIDs)
+	return categories, exception.InternalError(err)
+}
+
 func (s *service) GetContactCategory(ctx context.Context, in *messenger.GetContactCategoryInput) (*entity.ContactCategory, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, exception.InternalError(err)

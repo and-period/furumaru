@@ -1,71 +1,41 @@
 contactResponse:
   type: object
   properties:
-    id:
-      type: string
-      description: お問い合わせID
-    title:
-      type: string
-      description: 件名
-    categoryId:
-      type: string
-      description: お問い合わせ種別ID
-    content:
-      type: string
-      description: 内容
-    username:
-      type: string
-      description: 氏名
-    email:
-      type: string
-      format: email
-      description: メールアドレス
-    phoneNumber:
-      type: string
-      description: 電話番号(国際番号 + 電話番号)
-    status:
-      $ref: './../../../openapi.yaml#/components/schemas/contactStatus'
-    note:
-      type: string
-      description: 対応時メモ
-    createdAt:
-      type: integer
-      format: int64
-      description: 登録日時 (unixtime)
-    updatedAt:
-      type: integer
-      format: int64
-      description: 更新日時 (unixtime)
+    contact:
+      $ref: './../../../openapi.yaml#/components/schemas/contact'
+    contactCategory:
+      $ref: './../../../openapi.yaml#/components/schemas/contactCategory'
     threads:
       type: array
       description: 会話履歴一覧
       items:
-        $ref: './../../../openapi.yaml#/components/schemas/v1ThreadResponse'
+        $ref: './../../../openapi.yaml#/components/schemas/thread'
+    user:
+      $ref: './../../../openapi.yaml#/components/schemas/user'
+    responder:
+      $ref: './../../../openapi.yaml#/components/schemas/admin'
   required:
-  - id
-  - title
-  - categoryId
-  - content
-  - username
-  - email
-  - phoneNumber
-  - status
-  - note
-  - createdAt
-  - updatedAt
+  - contact
+  - contactCategory
   - threads
   example:
-    id: 'kSByoE6FetnPs5Byk3a9Zx'
-    title: 'お問い合わせ件名'
-    categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
-    content: 'お問い合わせ内容です。'
-    username: '問合 太郎'
-    email: 'test-user@and-period.jp'
-    phoneNumber: '+819012345678'
-    status: 1
-    note: '対応者のメモです。'
-    createdAt: 1640962800
-    updatedAt: 1640962800
+    contact:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      title: 'お問い合わせ件名'
+      categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
+      content: 'お問い合わせ内容です。'
+      username: '問合 太郎'
+      email: 'test-user@and-period.jp'
+      phoneNumber: '+819012345678'
+      status: 1
+      note: '対応者のメモです。'
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    contactCategory:
+      id: "kSByoE6FetnPs5Byk3a9Zx"
+      title: お問い合わせ種別名
+      createdAt: 1580000000
+      updatedAt: 1580000000
     threads:
       - id: "kSByoE6FetnPs5Byk3a9Zx"
         contactId: "kSByoE6FetnPs5Byk3a9Zx"
@@ -74,6 +44,32 @@ contactResponse:
         content: お問い合わせ内容
         createdAt: 1580000000
         updatedAt: 1580000000
+    user:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      lastname: '&.'
+      firstname: '購入者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'こうにゅうしゃ'
+      registered: true
+      email: 'test-user@and-period.jp'
+      phoneNumber: '+819012345678'
+      postalCode: '1000014'
+      prefecture: 'tokyo'
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    responder:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      role: 2
+      lastname: '&.'
+      firstname: '管理者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'かんりしゃ'
+      email: 'test-user@and-period.jp'
+      createdAt: 1640962800
+      updatedAt: 1640962800
 contactsResponse:
   type: object
   properties:
@@ -81,87 +77,35 @@ contactsResponse:
       type: array
       description: お問い合わせ一覧
       items:
-        type: object
-        properties:
-          id:
-            type: string
-            description: お問い合わせID
-          title:
-            type: string
-            description: 件名
-          categoryId:
-            type: string
-            description: お問い合わせ種別ID
-          content:
-            type: string
-            description: 内容
-          username:
-            type: string
-            description: 氏名
-          email:
-            type: string
-            format: email
-            description: メールアドレス
-          phoneNumber:
-            type: string
-            description: 電話番号(国際番号 + 電話番号)
-          status:
-            $ref: './../../../openapi.yaml#/components/schemas/contactStatus'
-          note:
-            type: string
-            description: 対応時メモ
-          createdAt:
-            type: integer
-            format: int64
-            description: 登録日時 (unixtime)
-          updatedAt:
-            type: integer
-            format: int64
-            description: 更新日時 (unixtime)
-          threads:
-            type: array
-            description: 会話履歴一覧
-            items:
-              $ref: './../../../openapi.yaml#/components/schemas/v1ThreadResponse'
-        required:
-        - id
-        - title
-        - categoryId
-        - content
-        - username
-        - email
-        - phoneNumber
-        - status
-        - note
-        - createdAt
-        - updatedAt
-        - threads
-        example:
-          id: 'kSByoE6FetnPs5Byk3a9Zx'
-          title: 'お問い合わせ件名'
-          categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
-          content: 'お問い合わせ内容です。'
-          username: '問合 太郎'
-          email: 'test-user@and-period.jp'
-          phoneNumber: '+819012345678'
-          status: 1
-          note: '対応者のメモです。'
-          createdAt: 1640962800
-          updatedAt: 1640962800
-          threads:
-            - id: "kSByoE6FetnPs5Byk3a9Zx"
-              contactId: "kSByoE6FetnPs5Byk3a9Zx"
-              userId: "kSByoE6FetnPs5Byk3a9Zx"
-              userType: 1
-              content: お問い合わせ内容
-              createdAt: 1580000000
-              updatedAt: 1580000000
+        $ref: './../../../openapi.yaml#/components/schemas/contact'
+    contactCategories:
+      type: array
+      description: お問い合わせ種別一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/contactCategory'
+    threads:
+      type: array
+      description: 会話履歴一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/thread'
+    users:
+      type: array
+      description: ユーザー一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/user'
+    responders:
+      type: array
+      description: 管理者一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/admin'
     total:
       type: integer
       format: int64
       description: 合計数
   required:
   - contacts
+  - contactCategories
+  - threads
   - total
   example:
     contacts:
@@ -176,31 +120,43 @@ contactsResponse:
       note: '対応者のメモです。'
       createdAt: 1640962800
       updatedAt: 1640962800
-      threads:
-      - id: "kSByoE6FetnPs5Byk3a9Zx"
-        contactId: "kSByoE6FetnPs5Byk3a9Zx"
-        userId: "kSByoE6FetnPs5Byk3a9Zx"
-        userType: 1
-        content: お問い合わせ内容
-        createdAt: 1580000000
-        updatedAt: 1580000000
+    threads:
+    - id: "kSByoE6FetnPs5Byk3a9Zx"
+      contactId: "kSByoE6FetnPs5Byk3a9Zx"
+      userId: "kSByoE6FetnPs5Byk3a9Zx"
+      userType: 1
+      content: お問い合わせ内容
+      createdAt: 1580000000
+      updatedAt: 1580000000
+    contactCategories:
+    - id: "kSByoE6FetnPs5Byk3a9Zx"
+      title: お問い合わせ種別名
+      createdAt: 1580000000
+      updatedAt: 1580000000
+    users:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
-      title: 'お問い合わせ件名'
-      categpryId: 'kSByoE6FetnPs5Byk3a9Zx'
-      content: 'お問い合わせ内容です。'
-      username: '問合 太郎'
+      lastname: '&.'
+      firstname: '購入者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'こうにゅうしゃ'
+      registered: true
       email: 'test-user@and-period.jp'
       phoneNumber: '+819012345678'
-      status: 2
-      note: '対応者のメモです。'
+      postalCode: '1000014'
+      prefecture: 'tokyo'
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
       createdAt: 1640962800
       updatedAt: 1640962800
-      threads:
-      - id: "kSByoE6FetnPs5Byk3a9Zx"
-        contactId: "kSByoE6FetnPs5Byk3a9Zx"
-        userId: "kSByoE6FetnPs5Byk3a9Zx"
-        userType: 2
-        content: お問い合わせ内容
-        createdAt: 1580000000
-        updatedAt: 1580000000
-    total: 2
+    responders:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      role: 2
+      lastname: '&.'
+      firstname: '管理者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'かんりしゃ'
+      email: 'test-user@and-period.jp'
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    total: 1

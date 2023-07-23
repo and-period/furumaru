@@ -10,7 +10,9 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/user"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/sync/errgroup"
 )
 
 func (h *handler) threadRoutes(rg *gin.RouterGroup) {
@@ -48,8 +50,7 @@ func (h *handler) ListThreadsByContactID(ctx *gin.Context) {
 	if err != nil {
 		httpError(ctx, err)
 	}
-	threads := service.NewThreads(sthreads)
-	if len(threads) == 0 {
+	if len(sthreads) == 0 {
 		res := &response.ThreadsResponse{
 			Threads: []*response.Thread{},
 		}
@@ -57,8 +58,33 @@ func (h *handler) ListThreadsByContactID(ctx *gin.Context) {
 		return
 	}
 
+	var (
+		users  uentity.Users
+		admins service.Admins
+	)
+
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		usersIn := &user.MultiGetUsersInput{
+			UserIDs: sthreads.UserIDs(),
+		}
+		users, err = h.user.MultiGetUsers(ectx, usersIn)
+		return
+	})
+	eg.Go(func() (err error) {
+		admins, err = h.multiGetAdmins(ectx, sthreads.AdminIDs())
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
+	threads := service.NewThreads(sthreads)
 	res := &response.ThreadsResponse{
 		Threads: threads.Response(),
+		Users:   service.NewUsers(users).Response(),
+		Admins:  admins.Response(),
 		Total:   total,
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -70,20 +96,36 @@ func (h *handler) CreateThread(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
-	userIn := &user.GetUserInput{
-		UserID: req.UserID,
-	}
-	if req.UserID != "" {
-		if _, err := h.user.GetUser(ctx, userIn); err != nil {
-			badRequest(ctx, err)
-			return
+
+	var (
+		radmin *service.Admin
+		ruser  *uentity.User
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		if req.UserType == 1 {
+			radmin, err = h.getAdmin(ectx, req.UserID)
 		}
+		return
+	})
+	eg.Go(func() (err error) {
+		if req.UserType == 2 {
+			in := &user.GetUserInput{
+				UserID: req.UserID,
+			}
+			ruser, err = h.user.GetUser(ectx, in)
+		}
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		httpError(ctx, err)
+		return
 	}
 
 	in := &messenger.CreateThreadInput{
 		ContactID: req.ContactID,
 		UserID:    req.UserID,
-		UserType:  req.UserType,
+		UserType:  service.ThreadUserType(req.UserType).StoreEntity(),
 		Content:   req.Content,
 	}
 	sthread, err := h.messenger.CreateThread(ctx, in)
@@ -95,6 +137,8 @@ func (h *handler) CreateThread(ctx *gin.Context) {
 
 	res := &response.ThreadResponse{
 		Thread: thread.Response(),
+		User:   service.NewUser(ruser).Response(),
+		Admin:  radmin.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -106,8 +150,36 @@ func (h *handler) GetThread(ctx *gin.Context) {
 		return
 	}
 
+	var (
+		radmin *service.Admin
+		ruser  *uentity.User
+	)
+
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		if thread.UserType == 1 {
+			radmin, err = h.getAdmin(ectx, thread.UserID)
+		}
+		return
+	})
+	eg.Go(func() (err error) {
+		if thread.UserType == 2 {
+			in := &user.GetUserInput{
+				UserID: thread.UserID,
+			}
+			ruser, err = h.user.GetUser(ectx, in)
+		}
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		httpError(ctx, err)
+		return
+	}
+
 	res := &response.ThreadResponse{
 		Thread: thread.Response(),
+		User:   service.NewUser(ruser).Response(),
+		Admin:  radmin.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -135,7 +207,7 @@ func (h *handler) UpdateThread(ctx *gin.Context) {
 		ThreadID: util.GetParam(ctx, "threadId"),
 		Content:  req.Content,
 		UserID:   req.UserID,
-		UserType: req.UserType,
+		UserType: service.ThreadUserType(req.UserType).StoreEntity(),
 	}
 
 	if err := h.messenger.UpdateThread(ctx, in); err != nil {

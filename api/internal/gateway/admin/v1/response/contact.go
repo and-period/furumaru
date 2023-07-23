@@ -29,11 +29,18 @@ type Contact struct {
 }
 
 type ContactResponse struct {
-	*Contact
-	Threads []*Thread `json:"threads"`
+	Contact   *Contact         `json:"contact"`   // お問い合わせ情報
+	Category  *ContactCategory `json:"category"`  // お問い合わせ種別情報
+	Threads   []*Thread        `json:"threads"`   // お問い合わせ会話履歴一覧
+	User      *User            `json:"user"`      // ユーザー情報
+	Responder *Admin           `json:"responder"` // 対応者情報
 }
 
 type ContactsResponse struct {
-	Contacts []*Contact `json:"contacts"` // お問い合わせ一覧
-	Total    int64      `json:"total"`    // お問い合わせ合計
+	Contacts   []*Contact         `json:"contacts"`   // お問い合わせ一覧
+	Categories []*ContactCategory `json:"categories"` // お問い合わせ種別一覧
+	Threads    []*Thread          `json:"threads"`    // お問い合わせ会話履歴一覧
+	Users      []*User            `json:"users"`      // ユーザー一覧
+	Responders []*Admin           `json:"admins"`     // 管理者一覧
+	Total      int64              `json:"total"`      // お問い合わせ合計
 }

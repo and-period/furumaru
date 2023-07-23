@@ -1,30 +1,16 @@
 contactCategoryResponse:
   type: object
   properties:
-    id:
-      type: string
-      description: お問い合わせ種別ID
-    title:
-      type: string
-      description: お問い合わせ種別名
-    createdAt:
-      type: integer
-      format: int64
-      description: 登録日時 (unixtime)
-    updatedAt:
-      type: integer
-      format: int64
-      description: 更新日時 (unixtime)
+    contactCategory:
+      $ref: './../../../openapi.yaml#/components/schemas/contactCategory'
   required:
-  - id
-  - title
-  - createdAt
-  - updatedAt
+  - contactCategory
   example:
-    id: "kSByoE6FetnPs5Byk3a9Zx"
-    title: お問い合わせ種別名
-    createdAt: 1580000000
-    updatedAt: 1580000000
+    contactCategory:
+      id: "kSByoE6FetnPs5Byk3a9Zx"
+      title: お問い合わせ種別名
+      createdAt: 1580000000
+      updatedAt: 1580000000
 contactCategoriesResponse:
   type: object
   properties:
@@ -32,26 +18,7 @@ contactCategoriesResponse:
       type: array
       description: お問い合わせ種別一覧
       items:
-        properties:
-          id:
-            type: string
-            description: お問い合わせ種別ID
-          title:
-            type: string
-            description: お問い合わせ種別名
-          createdAt:
-            type: integer
-            format: int64
-            description: 登録日時 (unixtime)
-          updatedAt:
-            type: integer
-            format: int64
-            description: 更新日時 (unixtime)
-        required:
-        - id
-        - title
-        - createdAt
-        - updatedAt
+        $ref: './../../../openapi.yaml#/components/schemas/contactCategory'
   required:
   - contactCategories
   example:
