@@ -3,13 +3,17 @@ import { mdiDelete, mdiPencil, mdiPlus } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import useVuelidate from '@vuelidate/core'
 import { AlertType } from '~/lib/hooks'
-import { CreateProductTagRequest, ProductTag, UpdateProductTagRequest } from '~/types/api'
+import { AdminRole, CreateProductTagRequest, ProductTag, UpdateProductTagRequest } from '~/types/api'
 import { required, getErrorMessage, maxLength } from '~/lib/validations'
 
 const props = defineProps({
   loading: {
     type: Boolean,
     default: false
+  },
+  role: {
+    type: Number as PropType<AdminRole>,
+    default: AdminRole.UNKNOWN
   },
   newDialog: {
     type: Boolean,
@@ -124,6 +128,10 @@ const editFormDataValue = computed({
 
 const newValidate = useVuelidate<CreateProductTagRequest>(newFormDataRules, newFormDataValue)
 const editValidate = useVuelidate<UpdateProductTagRequest>(editFormDataRules, editFormDataValue)
+
+const isRegisterable = (): boolean => {
+  return props.role === AdminRole.ADMINISTRATOR
+}
 
 const onClickUpdatePage = (page: number): void => {
   emit('click:update-page', page)
@@ -260,7 +268,7 @@ const submitDelete = (): void => {
     <v-card-title class="d-flex flex-row">
       商品タグ管理
       <v-spacer />
-      <v-btn variant="outlined" color="primary" @click="onClickAdd">
+      <v-btn v-show="isRegisterable()" variant="outlined" color="primary" @click="onClickAdd">
         <v-icon start :icon="mdiPlus" />
         商品タグ登録
       </v-btn>

@@ -8,6 +8,7 @@ import (
 	"image/jpeg"
 	"image/png"
 	"io"
+	"net/url"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -53,6 +54,12 @@ func (r *resizer) uploadImages(
 }
 
 func (r *resizer) generateFilePath(originURL string, size common.ImageSize) (string, error) {
+	u, err := url.Parse(originURL)
+	if err != nil {
+		return "", err
+	}
+	path := strings.TrimPrefix(u.Path, "/")
+
 	var suffix string
 	switch size {
 	case common.ImageSizeSmall:
@@ -66,7 +73,7 @@ func (r *resizer) generateFilePath(originURL string, size common.ImageSize) (str
 	}
 
 	extension := filepath.Ext(originURL)
-	keys := strings.Split(originURL, extension)
+	keys := strings.Split(path, extension)
 	filepath := fmt.Sprintf("%s_%s%s", keys[0], suffix, extension)
 	return filepath, nil
 }

@@ -1,15 +1,17 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useCategoryStore, useProductTypeStore } from '~/store'
+import { useAuthStore, useCategoryStore, useProductTypeStore } from '~/store'
 import { CreateCategoryRequest, CreateProductTypeRequest } from '~/types/api'
 
+const authStore = useAuthStore()
 const categoryStore = useCategoryStore()
 const productTypeStore = useProductTypeStore()
 const categoryPagination = usePagination()
 const productTypePagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
+const { role } = storeToRefs(authStore)
 const { categories, total: categoryTotal } = storeToRefs(categoryStore)
 const { productTypes, totalItems: productTypeTotal } = storeToRefs(productTypeStore)
 
@@ -182,6 +184,7 @@ try {
     v-model:category-form-data="categoryFormData"
     v-model:product-type-form-data="productTypeFormData"
     :loading="isLoading()"
+    :role="role"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"

@@ -5,12 +5,16 @@ import { PrefecturesListItem, prefecturesList } from '~/constants'
 
 import { getResizedImages } from '~/lib/helpers'
 import { AlertType } from '~/lib/hooks'
-import { Product, ProductMediaInner, ImageSize, ProductMediaInnerImagesInner, Prefecture, ProductStatus, Category, ProductTag, ProductType, Producer } from '~/types/api'
+import { Product, ProductMediaInner, Prefecture, ProductStatus, Category, ProductTag, ProductType, Producer, AdminRole } from '~/types/api'
 
 const props = defineProps({
   loading: {
     type: Boolean,
     default: false
+  },
+  role: {
+    type: Number as PropType<AdminRole>,
+    default: AdminRole.UNKNOWN
   },
   deleteDialog: {
     type: Boolean,
@@ -127,6 +131,10 @@ const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
   set: (val: boolean): void => emit('update:delete-dialog', val)
 })
+
+const isRegisterable = (): boolean => {
+  return props.role === AdminRole.COORDINATOR
+}
 
 const getCategoryName = (categoryId: string): string => {
   const category = props.categories.find((category: Category): boolean => {
@@ -257,7 +265,7 @@ const onClickDelete = (): void => {
     <v-card-title class="d-flex flex-row">
       商品管理
       <v-spacer />
-      <v-btn variant="outlined" color="primary" @click="onClickNew">
+      <v-btn v-show="isRegisterable()" variant="outlined" color="primary" @click="onClickNew">
         <v-icon start :icon="mdiPlus" />
         商品登録
       </v-btn>

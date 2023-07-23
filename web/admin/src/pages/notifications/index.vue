@@ -3,14 +3,16 @@ import { storeToRefs } from 'pinia'
 import { VDataTable } from 'vuetify/labs/components'
 
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useAdminStore, useNotificationStore } from '~/store'
+import { useAdminStore, useAuthStore, useNotificationStore } from '~/store'
 
 const router = useRouter()
+const authStore = useAuthStore()
 const adminStore = useAdminStore()
 const notificationStore = useNotificationStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
+const { role } = storeToRefs(authStore)
 const { admins } = storeToRefs(adminStore)
 const { notifications, totalItems } = storeToRefs(notificationStore)
 
@@ -83,6 +85,7 @@ try {
   <templates-notification-list
     v-model:delete-dialog="deleteDialog"
     :loading="isLoading()"
+    :role="role"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
