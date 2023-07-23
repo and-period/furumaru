@@ -50,11 +50,11 @@ const updateProductTypeFormData = ref<CreateProductTypeRequest>({
   name: '',
   iconUrl: ''
 })
-const createIconUploadStatus = ref<ImageUploadStatus>({
+const createProductTypeIconUploadStatus = ref<ImageUploadStatus>({
   error: false,
   message: ''
 })
-const updateIconUploadStatus = ref<ImageUploadStatus>({
+const updateProductTypeIconUploadStatus = ref<ImageUploadStatus>({
   error: false,
   message: ''
 })
@@ -210,8 +210,8 @@ const handleUploadCreateProductTypeIcon = (files: FileList): void => {
       createProductTypeFormData.value.iconUrl = res.url
     })
     .catch(() => {
-      createIconUploadStatus.value.error = true
-      createIconUploadStatus.value.message = 'アップロードに失敗しました。'
+      createProductTypeIconUploadStatus.value.error = true
+      createProductTypeIconUploadStatus.value.message = 'アップロードに失敗しました。'
     })
     .finally(() => {
       loading.value = false
@@ -229,8 +229,8 @@ const handleUploadUpdateProductTypeIcon = (files: FileList): void => {
       updateProductTypeFormData.value.iconUrl = res.url
     })
     .catch(() => {
-      updateIconUploadStatus.value.error = true
-      updateIconUploadStatus.value.message = 'アップロードに失敗しました。'
+      updateProductTypeIconUploadStatus.value.error = true
+      updateProductTypeIconUploadStatus.value.message = 'アップロードに失敗しました。'
     })
     .finally(() => {
       loading.value = false
@@ -367,6 +367,8 @@ try {
     :product-types="productTypes"
     :product-type-table-items-per-page="productTypePagination.itemsPerPage.value"
     :product-type-table-items-total="productTypeTotal"
+    :create-product-type-icon-upload-status="createProductTypeIconUploadStatus"
+    :update-product-type-icon-upload-status="updateProductTypeIconUploadStatus"
     @click:new-category="handleClickNewCategory"
     @click:edit-category="handleClickEditCategory"
     @click:delete-category="handleClickDeleteCategory"
