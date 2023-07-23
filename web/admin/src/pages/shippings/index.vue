@@ -1,13 +1,15 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useShippingStore } from '~/store'
+import { useAuthStore, useShippingStore } from '~/store'
 
 const router = useRouter()
+const authStore = useAuthStore()
 const shippingStore = useShippingStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
+const { role } = storeToRefs(authStore)
 const { shippings, totalItems } = storeToRefs(shippingStore)
 
 const loading = ref<boolean>(false)
@@ -58,6 +60,7 @@ try {
 <template>
   <templates-shipping-list
     :loading="isLoading()"
+    :role="role"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"

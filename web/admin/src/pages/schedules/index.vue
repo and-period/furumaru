@@ -1,15 +1,17 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useCoordinatorStore, useScheduleStore, useShippingStore } from '~/store'
+import { useAuthStore, useCoordinatorStore, useScheduleStore, useShippingStore } from '~/store'
 
 const router = useRouter()
+const authStore = useAuthStore()
 const coordinatorStore = useCoordinatorStore()
 const scheduleStore = useScheduleStore()
 const shippingStore = useShippingStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
+const { role } = storeToRefs(authStore)
 const { coordinators } = storeToRefs(coordinatorStore)
 const { schedules, total } = storeToRefs(scheduleStore)
 const { shippings } = storeToRefs(shippingStore)
@@ -68,6 +70,7 @@ try {
   <templates-schedule-list
     v-model:delete-dialog="deleteDialog"
     :loading="isLoading()"
+    :role="role"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"

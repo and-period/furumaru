@@ -3,11 +3,13 @@ import { mdiHome, mdiMenu, mdiOrderBoolAscendingVariant, mdiCart, mdiAntenna, md
 import { storeToRefs } from 'pinia'
 import { getResizedImages } from '~/lib/helpers'
 import { useAuthStore, useCommonStore, useMessageStore } from '~/store'
+import { AdminRole } from '~/types/api'
 
 interface NavigationDrawerItem {
   to: string
   icon: string
   title: string
+  roles?: AdminRole[]
 }
 
 const drawer = ref<boolean>(true)
@@ -16,87 +18,94 @@ const authStore = useAuthStore()
 const commonStore = useCommonStore()
 const messageStore = useMessageStore()
 
-const { user } = storeToRefs(authStore)
+const { user, role } = storeToRefs(authStore)
 
 const snackbars = computed(() => {
   return commonStore.snackbars.filter(item => item.isOpen)
 })
 const hasUnread = computed<boolean>(() => messageStore.hasUnread)
 
-const navigationDrawerHomeItem: NavigationDrawerItem = {
+const homeDrawer: NavigationDrawerItem = {
   to: '/',
   icon: mdiHome,
   title: 'ホーム'
 }
 
-const navigationDrawerList: NavigationDrawerItem[] = [
+const generalDrawers: NavigationDrawerItem[] = [
   {
     to: '/orders',
     icon: mdiOrderBoolAscendingVariant,
-    title: '注文'
+    title: '注文',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   },
   {
     to: '/products',
     icon: mdiCart,
-    title: '商品管理'
+    title: '商品管理',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   },
   {
     to: '/schedules',
     icon: mdiAntenna,
-    title: 'ライブ配信'
+    title: 'ライブ配信',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   },
-  // {
-  //   to: '/analytics',
-  //   icon: mdiPoll,
-  //   title: '分析',
-  // },
   {
     to: '/customers',
     icon: mdiAccountDetails,
-    title: '顧客管理'
+    title: '顧客管理',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   },
   {
     to: '/contacts',
     icon: mdiForum,
-    title: 'お問い合わせ管理'
+    title: 'お問い合わせ管理',
+    roles: [AdminRole.ADMINISTRATOR]
   },
   {
     to: '/notifications',
     icon: mdiBellRing,
-    title: 'お知らせ管理'
+    title: 'お知らせ管理',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   },
   {
     to: '/promotions',
     icon: mdiCash100,
-    title: 'セール情報管理'
+    title: 'セール情報管理',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   },
   {
     to: '/producers',
     icon: mdiAccount,
-    title: '生産者管理'
+    title: '生産者管理',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   }
 ]
 
-const navigationDrawerSettingsList: NavigationDrawerItem[] = [
+const settingDrawers: NavigationDrawerItem[] = [
   {
     to: '/accounts',
     icon: mdiAccount,
-    title: 'マイページ'
+    title: 'マイページ',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   },
   {
     to: '/system',
     icon: mdiCog,
-    title: 'システム設定'
+    title: 'システム設定',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   },
   {
     to: '/version',
     icon: mdiCog,
-    title: 'バージョン情報'
+    title: 'バージョン情報',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   },
   {
     to: '/livestreaming',
     icon: mdiAntenna,
-    title: '配信(テスト用)'
+    title: '配信(テスト用)',
+    roles: [AdminRole.ADMINISTRATOR]
   }
 ]
 
@@ -105,6 +114,18 @@ const getImages = (): string => {
     return ''
   }
   return getResizedImages(user.value.thumbnails)
+}
+
+const getGeneralDrawers = (): NavigationDrawerItem[] => {
+  return generalDrawers.filter((drawer: NavigationDrawerItem): boolean => {
+    return drawer.roles?.includes(role.value) || false
+  })
+}
+
+const getSettingDrawers = (): NavigationDrawerItem[] => {
+  return settingDrawers.filter((drawer: NavigationDrawerItem): boolean => {
+    return drawer.roles?.includes(role.value) || false
+  })
 }
 
 const handleClickNavIcon = () => {
@@ -164,15 +185,8 @@ const calcStyle = (i: number) => {
       <v-divider />
 
       <v-list>
-        <v-list-item
-          :to="navigationDrawerHomeItem.to"
-          exact
-          :prepend-icon="navigationDrawerHomeItem.icon"
-          color="primary"
-        >
-          <v-list-item-title>
-            {{ navigationDrawerHomeItem.title }}
-          </v-list-item-title>
+        <v-list-item :to="homeDrawer.to" exact :prepend-icon="homeDrawer.icon" color="primary">
+          <v-list-item-title>{{ homeDrawer.title }}</v-list-item-title>
         </v-list-item>
       </v-list>
 
@@ -180,7 +194,7 @@ const calcStyle = (i: number) => {
 
       <v-list>
         <v-list-item
-          v-for="(item, i) in navigationDrawerList"
+          v-for="(item, i) in getGeneralDrawers()"
           :key="i"
           :to="item.to"
           :prepend-icon="item.icon"
@@ -193,7 +207,7 @@ const calcStyle = (i: number) => {
 
       <v-list>
         <v-list-item
-          v-for="(item, i) in navigationDrawerSettingsList"
+          v-for="(item, i) in getSettingDrawers()"
           :key="i"
           :to="item.to"
           exact

@@ -4,12 +4,16 @@ import { unix } from 'dayjs'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { getResizedImages } from '~/lib/helpers'
 import { AlertType } from '~/lib/hooks'
-import { Coordinator, ScheduleStatus, Schedule, Shipping } from '~/types/api'
+import { Coordinator, ScheduleStatus, Schedule, Shipping, AdminRole } from '~/types/api'
 
 const props = defineProps({
   loading: {
     type: Boolean,
     default: false
+  },
+  role: {
+    type: Number as PropType<AdminRole>,
+    default: AdminRole.UNKNOWN
   },
   deleteDialog: {
     type: Boolean,
@@ -101,6 +105,10 @@ const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
   set: (val: boolean): void => emit('update:delete-dialog', val)
 })
+
+const isRegisterable = (): boolean => {
+  return props.role === AdminRole.COORDINATOR
+}
 
 const getCoordinatorName = (coordinatorId: string): string => {
   const coordinator = props.coordinators.find((coordinator: Coordinator): boolean => {
@@ -208,7 +216,7 @@ const onClickDelete = (): void => {
     <v-card-title class="d-flex flex-row">
       ライブ配信管理
       <v-spacer />
-      <v-btn variant="outlined" color="primary" @click="onClickAdd">
+      <v-btn v-show="isRegisterable()" variant="outlined" color="primary" @click="onClickAdd">
         <v-icon start :icon="mdiPlus" />
         ライブ配信登録
       </v-btn>
