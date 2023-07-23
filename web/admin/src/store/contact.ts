@@ -2,16 +2,16 @@ import { defineStore } from 'pinia'
 
 import { useCommonStore } from './common'
 import {
+  Contact,
   ContactResponse,
-  ContactsResponseContactsInner,
   UpdateContactRequest
 } from '~/types/api'
 import { apiClient } from '~/plugins/api-client'
 
 export const useContactStore = defineStore('contact', {
   state: () => ({
-    contact: {} as ContactResponse,
-    contacts: [] as Array<ContactsResponseContactsInner>,
+    contact: {} as Contact,
+    contacts: [] as Contact[],
     total: 0
   }),
 
@@ -24,7 +24,7 @@ export const useContactStore = defineStore('contact', {
      */
     async fetchContacts (limit = 20, offset = 0, orders: string[] = []): Promise<void> {
       try {
-        const res = await apiClient.contactApi().v1ListContacts(limit, offset, orders.join(','))
+        const res = await apiClient.contactApi().v1ListContacts(limit, offset)
         this.contacts = res.data.contacts
         this.total = res.data.total
       } catch (err) {
@@ -39,7 +39,7 @@ export const useContactStore = defineStore('contact', {
     async getContact (contactId: string): Promise<ContactResponse> {
       try {
         const res = await apiClient.contactApi().v1GetContact(contactId)
-        this.contact = res.data
+        this.contact = res.data.contact
         return res.data
       } catch (err) {
         return this.errorHandler(err)

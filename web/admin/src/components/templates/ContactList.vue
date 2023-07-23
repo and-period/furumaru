@@ -2,7 +2,7 @@
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 
 import { AlertType } from '~/lib/hooks'
-import { ContactStatus, ContactsResponseContactsInner } from '~/types/api'
+import { ContactStatus, ContactsResponse } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -26,7 +26,7 @@ const props = defineProps({
     default: () => []
   },
   contacts: {
-    type: Array<ContactsResponseContactsInner>,
+    type: Array<ContactsResponse>,
     default: () => []
   },
   tableItemsPerPage: {
