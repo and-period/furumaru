@@ -1,84 +1,176 @@
 <script lang="ts" setup>
 import { mdiAccount, mdiPencil, mdiDelete, mdiPlus } from '@mdi/js'
+import useVuelidate from '@vuelidate/core'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
-
-import { useProductTypeStore } from '~/store'
-import {
-  Category,
-  ProductType,
-  UpdateProductTypeRequest,
-  UploadImageResponse
-} from '~/types/api'
+import { AdminRole, Category, CreateProductTypeRequest, ProductType, UpdateProductTypeRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
+import { required, getErrorMessage, maxLength } from '~/lib/validations'
+import { getResizedImages } from '~/lib/helpers'
 
 const props = defineProps({
-  productTypes: {
-    type: Array<ProductType>,
-    default: () => []
+  loading: {
+    type: Boolean,
+    default: false
+  },
+  role: {
+    type: Number as PropType<AdminRole>,
+    default: AdminRole.UNKNOWN
+  },
+  createDialog: {
+    type: Boolean,
+    default: false
+  },
+  updateDialog: {
+    type: Boolean,
+    default: false
+  },
+  deleteDialog: {
+    type: Boolean,
+    default: false
+  },
+  createFormData: {
+    type: Object as PropType<CreateProductTypeRequest>,
+    default: (): CreateProductTypeRequest => ({
+      name: '',
+      iconUrl: ''
+    })
+  },
+  updateFormData: {
+    type: Object as PropType<UpdateProductTypeRequest>,
+    default: (): UpdateProductTypeRequest => ({
+      name: '',
+      iconUrl: ''
+    })
+  },
+  createIconUploadStatus: {
+    type: Object as PropType<ImageUploadStatus>,
+    default: (): ImageUploadStatus => ({
+      error: false,
+      message: ''
+    })
+  },
+  updateIconUploadStatus: {
+    type: Object as PropType<ImageUploadStatus>,
+    default: (): ImageUploadStatus => ({
+      error: false,
+      message: ''
+    })
   },
   categories: {
     type: Array<Category>,
+    default: () => []
+  },
+  productType: {
+    type: Object as PropType<ProductType>,
+    default: (): ProductType => ({
+      id: '',
+      categoryId: '',
+      name: '',
+      iconUrl: '',
+      icons: [],
+      createdAt: 0,
+      updatedAt: 0
+    })
+  },
+  productTypes: {
+    type: Array<ProductType>,
     default: () => []
   },
   tableItemsPerPage: {
     type: Number,
     default: 20
   },
-  tableItemsLength: {
+  tableItemsTotal: {
     type: Number,
     default: 0
-  },
-  tableFooterOptions: {
-    type: Object,
-    default: () => {}
   }
 })
 
 const emit = defineEmits<{
-  (e: 'update:items-per-page', page: number): void
+  (e: 'click:new'): void
+  (e: 'click:edit', productTypeId: string): void
+  (e: 'click:delete', productTypeId: string): void
+  (e: 'update:create-dialog', v: boolean): void
+  (e: 'update:update-dialog', v: boolean): void
+  (e: 'update:delete-dialog', v: boolean): void
+  (e: 'update:create-form-data', formData: CreateProductTypeRequest): void
+  (e: 'update:update-form-data', formData: UpdateProductTypeRequest): void
+  (e: 'update:product-type', productType: ProductType): void
   (e: 'update:page', page: number): void
-  (e: 'click:more-item'): void
+  (e: 'update:items-per-page', page: number): void
+  (e: 'update:create-icon', files: FileList): void
+  (e: 'update:update-icon', files: FileList): void
+  (e: 'search:category', name: string): void
+  (e: 'submit:create', categoryId: string): void
+  (e: 'submit:update'): void
+  (e: 'submit:delete'): void
 }>()
 
-const productTypeStore = useProductTypeStore()
-const inputRef = ref<HTMLInputElement | null>(null)
-const deleteDialog = ref<boolean>(false)
-const editDialog = ref<boolean>(false)
-const selectedCategoryId = ref<string>('')
-const selectedItemId = ref<string>('')
-const selectedName = ref<string>('')
-
-const editFormData = reactive<UpdateProductTypeRequest>({
-  name: '',
-  iconUrl: ''
-})
-
-const headerUploadStatus = reactive<ImageUploadStatus>({
-  error: false,
-  message: ''
-})
-
-const productTypeHeaders: VDataTable['headers'] = [
+const headers: VDataTable['headers'] = [
   {
     title: 'アイコン',
-    key: 'icon'
+    key: 'icon',
+    sortable: false
   },
   {
     title: 'カテゴリー',
-    key: 'category'
+    key: 'category',
+    sortable: false
   },
   {
     title: '品目',
-    key: 'name'
+    key: 'name',
+    sortable: false
   },
   {
-    title: 'Actions',
+    title: '',
     key: 'actions',
-    width: 200,
     align: 'end',
     sortable: false
   }
 ]
+
+const selectedCategoryId = ref<string>()
+
+const productTypeValue = computed({
+  get: (): ProductType => props.productType,
+  set: (productType: ProductType): void => emit('update:product-type', productType)
+})
+const createDialogValue = computed({
+  get: (): boolean => props.createDialog,
+  set: (val: boolean): void => emit('update:create-dialog', val)
+})
+const updateDialogValue = computed({
+  get: (): boolean => props.updateDialog,
+  set: (val: boolean): void => emit('update:update-dialog', val)
+})
+const deleteDialogValue = computed({
+  get: (): boolean => props.deleteDialog,
+  set: (val: boolean): void => emit('update:delete-dialog', val)
+})
+const createFormDataRules = computed(() => ({
+  name: { required, maxlength: maxLength(32) },
+  iconUrl: { required }
+}))
+const updateFormDataRules = computed(() => ({
+  name: { required, maxlength: maxLength(32) },
+  iconUrl: { required }
+}))
+const createFormDataValue = computed({
+  get: (): CreateProductTypeRequest => props.createFormData,
+  set: (formData: CreateProductTypeRequest): void => emit('update:create-form-data', formData)
+})
+const updateFormDataValue = computed({
+  get: (): UpdateProductTypeRequest => props.updateFormData,
+  set: (formData: UpdateProductTypeRequest): void => emit('update:update-form-data', formData)
+})
+
+const createFormDataValidate = useVuelidate(createFormDataRules, createFormDataValue)
+const updateFormDataValidate = useVuelidate(updateFormDataRules, updateFormDataValue)
+
+const isRegisterable = (): boolean => {
+  return props.role === AdminRole.ADMINISTRATOR
+}
 
 const getCategoryName = (categoryId: string): string => {
   const category = props.categories.find((category: Category): boolean => {
@@ -87,213 +179,227 @@ const getCategoryName = (categoryId: string): string => {
   return category ? category.name : ''
 }
 
-const handleUpdateItemsPerPage = (page: number) => {
-  emit('update:items-per-page', page)
+const getIcons = (productType: ProductType): string => {
+  if (!productType.icons) {
+    return ''
+  }
+  return getResizedImages(productType.icons)
 }
 
-const handleUpdatePage = (page: number) => {
+const onClickNew = (): void => {
+  emit('click:new')
+}
+
+const onClickCloseCreateDialog = (): void => {
+  createDialogValue.value = false
+}
+
+const onClickEdit = (categoryId: string): void => {
+  emit('click:edit', categoryId)
+}
+
+const onClickCloseUpdateDialog = (): void => {
+  updateDialogValue.value = false
+}
+
+const onClickDelete = (categoryId: string): void => {
+  emit('click:delete', categoryId)
+}
+
+const onClickCloseDeleteDialog = (): void => {
+  deleteDialogValue.value = false
+}
+
+const onClickUpdatePage = (page: number) => {
   emit('update:page', page)
 }
 
-const handleMoreCategoryItems = () => {
-  emit('click:more-item')
+const onClickUpdateItemsPerPage = (page: number) => {
+  emit('update:items-per-page', page)
 }
 
-const openEditDialog = (item: ProductType) => {
-  editDialog.value = true
-  selectedCategoryId.value = item.categoryId
-  selectedItemId.value = item.id
-  editFormData.name = item.name
-  editFormData.iconUrl = item.iconUrl
-}
-
-const hideEditDialog = () => {
-  editDialog.value = false
-}
-
-const handleEdit = async () => {
-  try {
-    await productTypeStore.updateProductType(
-      selectedCategoryId.value,
-      selectedItemId.value,
-      editFormData
-    )
-    editDialog.value = false
-  } catch (error) {
-    console.log(error)
+const onChangeCreateIconFile = (files?: FileList): void => {
+  if (!files) {
+    return
   }
+  emit('update:create-icon', files)
 }
 
-const openDeleteDialog = (item: ProductType): void => {
-  selectedCategoryId.value = item.categoryId
-  selectedItemId.value = item.id
-  selectedName.value = item.name
-  deleteDialog.value = true
-}
-
-const handleDelete = async (): Promise<void> => {
-  try {
-    await productTypeStore.deleteProductType(
-      selectedCategoryId.value,
-      selectedItemId.value
-    )
-  } catch (error) {
-    console.log(error)
+const onChangeUpdateIconFile = (files?: FileList): void => {
+  if (!files) {
+    return
   }
-  deleteDialog.value = false
+  emit('update:update-icon', files)
 }
 
-const hideDeleteDialog = (): void => {
-  deleteDialog.value = false
+const onSearchCategory = (name: string): void => {
+  emit('search:category', name)
 }
 
-const handleClick = () => {
-  if (inputRef.value !== null) {
-    inputRef.value.click()
+const onSubmitCreate = async (): Promise<void> => {
+  const valid = await createFormDataValidate.value.$validate()
+  if (!valid) {
+    return
   }
+  emit('submit:create', selectedCategoryId.value || '')
 }
 
-const handleInputFileChange = () => {
-  const files = inputRef.value?.files
-  if (inputRef.value && inputRef.value.files) {
-    if (files && files.length > 0) {
-      productTypeStore
-        .uploadProductTypeIcon(files[0])
-        .then((res: UploadImageResponse) => {
-          editFormData.iconUrl = res.url
-        })
-        .catch(() => {
-          headerUploadStatus.error = true
-          headerUploadStatus.message = 'アップロードに失敗しました。'
-        })
-    }
+const onSubmitUpdate = async (): Promise<void> => {
+  const valid = await updateFormDataValidate.value.$validate()
+  if (!valid) {
+    return
   }
+  emit('submit:update')
 }
+
+const onSubmitDelete = (): void => {
+  emit('submit:delete')
+}
+
 </script>
 
 <template>
-  <div>
-    <v-data-table-server
-      :headers="productTypeHeaders"
-      :items="props.productTypes"
-      :items-per-page="props.tableItemsPerPage"
-      :items-length="props.tableItemsLength"
-      :footer-props="props.tableFooterOptions"
-      @update:page="handleUpdatePage"
-      @update:items-per-page="handleUpdateItemsPerPage"
-    >
-      <template #[`item.icon`]="{ item }">
-        <v-avatar>
-          <img
-            v-if="item.raw.iconlUrl !== ''"
-            :src="item.raw.iconUrl"
-            :alt="`${item.raw.categoryName}-profile`"
-          >
-          <v-icon v-else :icon="mdiAccount" />
-        </v-avatar>
-      </template>
-      <template #[`item.category`]="{ item }">
-        {{ getCategoryName(item.raw.categoryId) }}
-      </template>
-      <template #[`item.actions`]="{ item }">
-        <v-btn class="mr-2" variant="outlined" color="primary" size="small" @click="openEditDialog(item.raw)">
-          <v-icon size="small" :icon="mdiPencil" />
+  <v-dialog v-model="createDialogValue" width="500">
+    <v-card :loading="props.loading">
+      <v-card-title class="primaryLight">
+        品目登録
+      </v-card-title>
+      <v-card-text class="mt-6">
+        <v-autocomplete
+          v-model="selectedCategoryId"
+          label="カテゴリ"
+          :items="categories"
+          item-title="name"
+          item-value="id"
+          @update:search="onSearchCategory"
+        />
+        <v-text-field
+          v-model="createFormDataValidate.name.$model"
+          :error-messages="getErrorMessage(createFormDataValidate.name.$errors)"
+          label="カテゴリー"
+          maxlength="32"
+        />
+        <molecules-image-select-form
+          label="アイコン"
+          :img-url="createFormDataValue.iconUrl"
+          :error="props.createIconUploadStatus.error"
+          :message="props.createIconUploadStatus.message"
+          @update:file="onChangeCreateIconFile"
+        />
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn color="error" variant="text" @click="onClickCloseCreateDialog">
+          キャンセル
+        </v-btn>
+        <v-btn color="primary" variant="outlined" @click="onSubmitCreate">
+          登録
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <v-dialog v-model="updateDialogValue" width="500">
+    <v-card :loading="props.loading">
+      <v-card-title class="primaryLight">
+        カテゴリー編集
+      </v-card-title>
+      <v-card-text class="mt-6">
+        <v-autocomplete
+          v-model="productTypeValue.categoryId"
+          label="カテゴリ"
+          :items="categories"
+          item-title="name"
+          item-value="id"
+          readonly
+        />
+        <v-text-field
+          v-model="updateFormDataValidate.name.$model"
+          :error-messages="getErrorMessage(updateFormDataValidate.name.$errors)"
+          label="カテゴリー"
+          maxlength="32"
+        />
+        <molecules-image-select-form
+          label="アイコン"
+          :img-url="updateFormDataValue.iconUrl"
+          :error="props.updateIconUploadStatus.error"
+          :message="props.updateIconUploadStatus.message"
+          @update:file="onChangeUpdateIconFile"
+        />
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn color="error" variant="text" @click="onClickCloseUpdateDialog">
+          キャンセル
+        </v-btn>
+        <v-btn color="primary" variant="outlined" @click="onSubmitUpdate">
           編集
         </v-btn>
-        <v-btn variant="outlined" color="primary" size="small" @click="openDeleteDialog(item.raw)">
-          <v-icon size="small" :icon="mdiDelete" />
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <v-dialog v-model="deleteDialogValue" width="500">
+    <v-card :loading="props.loading">
+      <v-card-title class="text-h7">
+        {{ props.productType?.name || '' }}を本当に削除しますか？
+      </v-card-title>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn color="error" variant="text" @click="onClickCloseDeleteDialog">
+          キャンセル
+        </v-btn>
+        <v-btn :loading="props.loading" color="primary" variant="outlined" @click="onSubmitDelete">
           削除
         </v-btn>
-      </template>
-    </v-data-table-server>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 
-    <v-dialog v-model="editDialog" width="500">
-      <v-card>
-        <v-card-title class="primaryLight">
-          品目編集
-        </v-card-title>
-        <v-card-text class="mt-4">
-          <v-autocomplete
-            v-model="selectedCategoryId"
-            :items="props.categories"
-            item-title="name"
-            item-value="id"
-            label="カテゴリー"
-          >
-            <template #append-item>
-              <div class="pa-2">
-                <v-btn
-                  variant="outlined"
-                  block
-                  color="primary"
-                  @click="handleMoreCategoryItems"
-                >
-                  <v-icon :icon="mdiPlus" />
-                  さらに読み込む
-                </v-btn>
-              </div>
-            </template>
-          </v-autocomplete>
-          <v-spacer />
-          <v-text-field
-            v-model="editFormData.name"
-            maxlength="32"
-            label="品目"
-          />
-        </v-card-text>
-        <v-card class="text-center" role="button" flat @click="handleClick">
-          <v-card-text>
-            <v-avatar size="96">
-              <v-icon v-if="editFormData.iconUrl === ''" size="x-large" :icon="mdiPlus" />
-              <v-img
-                v-else
-                cover
-                :src="editFormData.iconUrl"
-                aspect-ratio="1"
-              />
-            </v-avatar>
-            <input
-              ref="inputRef"
-              type="file"
-              class="d-none"
-              accept="image/png, image/jpeg"
-              @change="handleInputFileChange"
-            >
-            <p class="ma-0">
-              アイコン画像を選択
-            </p>
-          </v-card-text>
-        </v-card>
-        <p v-show="headerUploadStatus.error" class="red--text ma-0">
-          {{ headerUploadStatus.message }}
-        </p>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="error" variant="text" @click="hideEditDialog">
-            キャンセル
-          </v-btn>
-          <v-btn color="primary" variant="outlined" @click="handleEdit">
+  <v-card>
+    <v-card-title class="d-flex flex-row">
+      <v-spacer />
+      <v-btn v-show="isRegisterable()" variant="outlined" color="primary" @click="onClickNew">
+        <v-icon :icon="mdiPlus" />
+        品目登録
+      </v-btn>
+    </v-card-title>
+
+    <v-card-text>
+      <v-data-table-server
+        :headers="headers"
+        :items="productTypes"
+        :items-per-page="props.tableItemsPerPage"
+        :items-length="props.tableItemsTotal"
+        no-data-text="登録されている品目情報がありません"
+        @update:page="onClickUpdatePage"
+        @update:items-per-page="onClickUpdateItemsPerPage"
+      >
+        <template #[`item.icon`]="{ item }">
+          <v-avatar>
+            <v-img
+              v-if="item.raw.iconUrl !== ''"
+              cover
+              :src="item.raw.iconUrl"
+              :srcset="getIcons(item.raw)"
+            />
+            <v-icon v-else :icon="mdiAccount" />
+          </v-avatar>
+        </template>
+        <template #[`item.category`]="{ item }">
+          {{ getCategoryName(item.raw.categoryId) }}
+        </template>
+        <template #[`item.actions`]="{ item }">
+          <v-btn class="mr-2" variant="outlined" color="primary" size="small" @click="onClickEdit(item.raw)">
+            <v-icon size="small" :icon="mdiPencil" />
             編集
           </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-dialog v-model="deleteDialog" width="500">
-      <v-card>
-        <v-card-title class="text-h7">
-          {{ selectedName }}を本当に削除しますか？
-        </v-card-title>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="error" variant="text" @click="hideDeleteDialog">
-            キャンセル
-          </v-btn>
-          <v-btn color="primary" variant="outlined" @click="handleDelete">
+          <v-btn variant="outlined" color="primary" size="small" @click="onClickDelete(item.raw)">
+            <v-icon size="small" :icon="mdiDelete" />
             削除
           </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </div>
+        </template>
+      </v-data-table-server>
+    </v-card-text>
+  </v-card>
 </template>
