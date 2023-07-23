@@ -1,15 +1,8 @@
 <script lang="ts" setup>
-import { mdiPlus } from '@mdi/js'
-
-import { useVuelidate } from '@vuelidate/core'
 import { VTabs } from 'vuetify/lib/components/index.mjs'
 import { AlertType } from '~/lib/hooks'
-import { CreateCategoryRequest, Category, ProductType, CreateProductTypeRequest, AdminRole } from '~/types/api'
-import {
-  required,
-  getErrorMessage,
-  maxLength
-} from '~/lib/validations'
+import { CreateCategoryRequest, Category, ProductType, CreateProductTypeRequest, AdminRole, UpdateCategoryRequest, UpdateProductTypeRequest } from '~/types/api'
+import { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
   loading: {
@@ -32,17 +25,32 @@ const props = defineProps({
     type: String,
     default: ''
   },
-  categoryDialog: {
+  selectedTabItem: {
+    type: String,
+    default: 'categories'
+  },
+  // Category
+  createCategoryDialog: {
     type: Boolean,
     default: false
   },
-  categories: {
-    type: Array<Category>,
-    default: () => []
+  updateCategoryDialog: {
+    type: Boolean,
+    default: false
   },
-  categoryFormData: {
+  deleteCategoryDialog: {
+    type: Boolean,
+    default: false
+  },
+  createCategoryFormData: {
     type: Object as PropType<CreateCategoryRequest>,
-    default: () => ({
+    default: (): CreateCategoryRequest => ({
+      name: ''
+    })
+  },
+  updateCategoryFormData: {
+    type: Object as PropType<UpdateCategoryRequest>,
+    default: (): UpdateCategoryRequest => ({
       name: ''
     })
   },
@@ -54,19 +62,58 @@ const props = defineProps({
     type: Number,
     default: 0
   },
-  productTypeDialog: {
+  category: {
+    type: Object as PropType<Category>,
+    default: (): Category => ({
+      id: '',
+      name: '',
+      createdAt: 0,
+      updatedAt: 0
+    })
+  },
+  categories: {
+    type: Array<Category>,
+    default: () => []
+  },
+  // ProductType
+  createProductTypeDialog: {
     type: Boolean,
     default: false
   },
-  productTypes: {
-    type: Array<ProductType>,
-    default: () => []
+  updateProductTypeDialog: {
+    type: Boolean,
+    default: false
   },
-  productTypeFormData: {
+  deleteProductTypeDialog: {
+    type: Boolean,
+    default: false
+  },
+  createProductTypeFormData: {
     type: Object as PropType<CreateProductTypeRequest>,
     default: () => ({
       name: '',
       iconUrl: ''
+    })
+  },
+  updateProductTypeFormData: {
+    type: Object as PropType<UpdateProductTypeRequest>,
+    default: () => ({
+      name: '',
+      iconUrl: ''
+    })
+  },
+  createProductTypeIconUploadStatus: {
+    type: Object as PropType<ImageUploadStatus>,
+    default: (): ImageUploadStatus => ({
+      error: false,
+      message: ''
+    })
+  },
+  updateProductTypeIconUploadStatus: {
+    type: Object as PropType<ImageUploadStatus>,
+    default: (): ImageUploadStatus => ({
+      error: false,
+      message: ''
     })
   },
   productTypeTableItemsPerPage: {
@@ -76,23 +123,56 @@ const props = defineProps({
   productTypeTableItemsTotal: {
     type: Number,
     default: 0
+  },
+  productType: {
+    type: Object as PropType<ProductType>,
+    default: (): ProductType => ({
+      id: '',
+      categoryId: '',
+      name: '',
+      iconUrl: '',
+      icons: [],
+      createdAt: 0,
+      updatedAt: 0
+    })
+  },
+  productTypes: {
+    type: Array<ProductType>,
+    default: () => []
   }
 })
 
 const emits = defineEmits<{
-  (e: 'click:category-update-page', page: number): void
-  (e: 'click:category-update-items-per-page', page: number): void
-  (e: 'click:category-more-page'): void
-  (e: 'click:product-type-update-page', page: number): void
-  (e: 'click:product-type-update-items-per-page', page: number): void
-  (e: 'update:category-dialog', val: boolean): void
-  (e: 'update:product-type-dialog', val: boolean): void
-  (e: 'update:category-form-data', val: CreateCategoryRequest): void
-  (e: 'update:product-type-form-data', val: CreateProductTypeRequest): void
-  (e: 'update:tab', key: string): void
-  (e: 'update:product-type-upload-icon', file: FileList): void
-  (e: 'submit:category'): void
-  (e: 'submit:product-type', categoryId: string): void
+  (e: 'click:new-category'): void
+  (e: 'click:edit-category', categoryId: string): void
+  (e: 'click:delete-category', categoryId: string): void
+  (e: 'click:new-product-type'): void
+  (e: 'click:edit-product-type', productTypeId: string): void
+  (e: 'click:delete-product-type', productTypeId: string): void
+  (e: 'update:selected-tab-item', item: string): void
+  (e: 'update:create-category-dialog', v: boolean): void
+  (e: 'update:update-category-dialog', v: boolean): void
+  (e: 'update:delete-category-dialog', v: boolean): void
+  (e: 'update:create-category-form-data', formData: CreateCategoryRequest): void
+  (e: 'update:update-category-form-data', formData: UpdateCategoryRequest): void
+  (e: 'update:create-product-type-dialog', v: boolean): void
+  (e: 'update:update-product-type-dialog', v: boolean): void
+  (e: 'update:delete-product-type-dialog', v: boolean): void
+  (e: 'update:create-product-type-form-data', formData: CreateProductTypeRequest): void
+  (e: 'update:update-product-type-form-data', formData: UpdateProductTypeRequest): void
+  (e: 'update:create-product-type-icon', files: FileList): void
+  (e: 'update:update-product-type-icon', files: FileList): void
+  (e: 'update:category-page', page: number): void
+  (e: 'update:category-items-per-page', page: number): void
+  (e: 'update:product-type-page', page: number): void
+  (e: 'update:product-type-items-per-page', page: number): void
+  (e: 'search:category', name: string): void
+  (e: 'submit:create-category'): void
+  (e: 'submit:update-category'): void
+  (e: 'submit:delete-category'): void
+  (e: 'submit:create-product-type', categoryId: string): void
+  (e: 'submit:update-product-type'): void
+  (e: 'submit:delete-product-type'): void
 }>()
 
 const tabs: VTabs[] = [
@@ -100,251 +180,198 @@ const tabs: VTabs[] = [
   { name: '品目', value: 'productTypes' }
 ]
 
-const selector = ref<string>('categories')
-const categoryId = ref<string>('')
-const productTypeIcon = ref<HTMLIFrameElement>()
+const selectedTabItemValue = computed({
+  get: (): string => props.selectedTabItem,
+  set: (item: string): void => emits('update:selected-tab-item', item)
+})
+const createCategoryDialogValue = computed({
+  get: (): boolean => props.createCategoryDialog,
+  set: (v: boolean): void => emits('update:create-category-dialog', v)
+})
+const updateCategoryDialogValue = computed({
+  get: (): boolean => props.updateCategoryDialog,
+  set: (v: boolean): void => emits('update:update-category-dialog', v)
+})
+const deleteCategoryDialogValue = computed({
+  get: (): boolean => props.deleteCategoryDialog,
+  set: (v: boolean): void => emits('update:delete-category-dialog', v)
+})
+const createCategoryFormDataValue = computed({
+  get: (): CreateCategoryRequest => props.createCategoryFormData,
+  set: (formData: CreateCategoryRequest): void => emits('update:create-category-form-data', formData)
+})
+const updateCategoryFormDataValue = computed({
+  get: (): UpdateCategoryRequest => props.updateCategoryFormData,
+  set: (formData: UpdateCategoryRequest): void => emits('update:update-category-form-data', formData)
+})
+const createProductTypeDialogValue = computed({
+  get: (): boolean => props.createProductTypeDialog,
+  set: (v: boolean): void => emits('update:create-product-type-dialog', v)
+})
+const updateProductTypeDialogValue = computed({
+  get: (): boolean => props.updateProductTypeDialog,
+  set: (v: boolean): void => emits('update:update-product-type-dialog', v)
+})
+const deleteProductTypeDialogValue = computed({
+  get: (): boolean => props.deleteProductTypeDialog,
+  set: (v: boolean): void => emits('update:delete-product-type-dialog', v)
+})
+const createProductTypeFormDataValue = computed({
+  get: (): CreateProductTypeRequest => props.createProductTypeFormData,
+  set: (formData: CreateProductTypeRequest): void => emits('update:create-product-type-form-data', formData)
+})
+const updateProductTypeFormDataValue = computed({
+  get: (): UpdateProductTypeRequest => props.updateProductTypeFormData,
+  set: (formData: UpdateProductTypeRequest): void => emits('update:update-product-type-form-data', formData)
+})
 
-const categoryFormDataRules = computed(() => ({
-  name: { required, maxlength: maxLength(32) }
-}))
-const categoryDialogValue = computed({
-  get: () => props.categoryDialog,
-  set: (val: boolean) => emits('update:category-dialog', val)
-})
-const categoryFormDataValue = computed({
-  get: () => props.categoryFormData,
-  set: (val: CreateCategoryRequest) => emits('update:category-form-data', val)
-})
-const productTypeFormDataRules = computed(() => ({
-  name: { required, maxlength: maxLength(32) },
-  iconUrl: { required }
-}))
-const productTypeDialogValue = computed({
-  get: () => props.productTypeDialog,
-  set: (val: boolean) => emits('update:product-type-dialog', val)
-})
-const productTypeFormDataValue = computed({
-  get: () => props.productTypeFormData,
-  set: (val: CreateProductTypeRequest) => emits('update:product-type-form-data', val)
-})
+const onClickNewCategory = (): void => {
+  emits('click:new-category')
+}
 
-const cvalidate = useVuelidate<CreateCategoryRequest>(categoryFormDataRules, categoryFormDataValue)
-const pvalidate = useVuelidate<CreateProductTypeRequest>(productTypeFormDataRules, productTypeFormDataValue)
+const onClickEditCategory = (categoryId: string): void => {
+  emits('click:edit-category', categoryId)
+}
 
-watch(selector, () => {
-  emits('update:tab', selector.value)
-})
+const onClickDeleteCategory = (categoryId: string): void => {
+  emits('click:delete-category', categoryId)
+}
 
-const isRegisterable = (): boolean => {
-  return props.role === AdminRole.ADMINISTRATOR
+const onClickNewProductType = (): void => {
+  emits('click:new-product-type')
+}
+
+const onClickEditProductType = (productTypeId: string): void => {
+  emits('click:edit-product-type', productTypeId)
+}
+
+const onClickDeleteProductType = (productTypeId: string): void => {
+  emits('click:delete-product-type', productTypeId)
+}
+
+const onChangeCreateProductTypeIcon = (files: FileList): void => {
+  emits('update:create-product-type-icon', files)
+}
+
+const onChangeUpdateProductTypeIcon = (files: FileList): void => {
+  emits('update:create-product-type-icon', files)
 }
 
 const onClickCategoryPage = (page: number): void => {
-  emits('click:category-update-page', page)
+  emits('update:category-page', page)
 }
 
 const onClickCategoryItemsPerPage = (page: number): void => {
-  emits('click:category-update-items-per-page', page)
-}
-
-const onClickCategoryMorePage = (): void => {
-  emits('click:category-more-page')
-}
-
-const onClickCategoryOpenDialog = (): void => {
-  categoryDialogValue.value = true
-}
-
-const onClickCategoryCloseDialog = (): void => {
-  categoryDialogValue.value = false
+  emits('update:category-items-per-page', page)
 }
 
 const onClickProductTypePage = (page: number): void => {
-  emits('click:product-type-update-page', page)
+  emits('update:product-type-page', page)
 }
 
 const onClickProductTypeItemsPerPage = (page: number): void => {
-  emits('click:product-type-update-items-per-page', page)
+  emits('update:product-type-items-per-page', page)
 }
 
-const onClickProductTypeOpenDialog = (): void => {
-  productTypeDialogValue.value = true
+const onSearchCategory = (name: string): void => {
+  emits('search:category', name)
 }
 
-const onClickProductTypeCloseDialog = (): void => {
-  productTypeDialogValue.value = false
+const onSubmitCreateCategory = (): void => {
+  emits('submit:create-category')
 }
 
-const onUploadProductTypeIcon = (event: Event): void => {
-  const target = event.target as HTMLInputElement
-  if (!target.files) {
-    return
-  }
-
-  emits('update:product-type-upload-icon', target.files)
+const onSubmitUpdateCategory = (): void => {
+  emits('submit:update-category')
 }
 
-const onSubmitCategory = async (): Promise<void> => {
-  const valid = await cvalidate.value.$validate()
-  if (!valid) {
-    return
-  }
-
-  emits('submit:category')
+const onSubmitDeleteCategory = (): void => {
+  emits('submit:delete-category')
 }
 
-const onSubmitProductType = async (): Promise<void> => {
-  const valid = await pvalidate.value.$validate()
-  if (!valid) {
-    return
-  }
+const onSubmitCreateProductType = (categoryId: string): void => {
+  emits('submit:create-product-type', categoryId)
+}
 
-  emits('submit:product-type', categoryId.value)
+const onSubmitUpdateProductType = (): void => {
+  emits('submit:update-product-type')
+}
+
+const onSubmitDeleteProductType = (): void => {
+  emits('submit:delete-product-type')
 }
 </script>
 
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
 
-  <v-dialog v-model="categoryDialogValue" width="500">
-    <v-card :loading="loading">
-      <v-card-title class="text-h6 primaryLight">
-        カテゴリー登録
-      </v-card-title>
-
-      <v-card-text>
-        <v-text-field
-          v-model="cvalidate.name.$model"
-          class="mx-4"
-          label="カテゴリー名"
-          :error-messages="getErrorMessage(cvalidate.name.$errors)"
-        />
-      </v-card-text>
-      <v-divider />
-      <v-card-actions>
-        <v-spacer />
-        <v-btn color="error" variant="text" @click="onClickCategoryCloseDialog">
-          キャンセル
-        </v-btn>
-        <v-btn :loading="loading" color="primary" variant="outlined" @click="onSubmitCategory">
-          登録
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
-
-  <v-dialog v-model="productTypeDialogValue" width="500">
-    <v-card :loading="loading">
-      <v-card-title class="primaryLight">
-        品目登録
-      </v-card-title>
-
-      <v-card-text class="mt-4">
-        <v-autocomplete
-          v-model="categoryId"
-          :items="categories"
-          item-title="name"
-          item-value="id"
-          label="カテゴリー"
-        >
-          <template #append-item>
-            <div class="pa-2">
-              <v-btn block color="primary" variant="outlined" @click="onClickCategoryMorePage">
-                <v-icon :icon="mdiPlus" />
-                さらに読み込む
-              </v-btn>
-            </div>
-          </template>
-        </v-autocomplete>
-        <v-spacer />
-        <v-text-field
-          v-model="pvalidate.name.$model"
-          :error-messages="getErrorMessage(pvalidate.name.$errors)"
-          label="品目"
-        />
-        <v-card class="text-center" role="button" flat>
-          <v-card-text>
-            <v-avatar size="96">
-              <v-icon v-if="productTypeFormData.iconUrl === ''" size="x-large" :icon="mdiPlus" />
-              <v-img
-                v-else
-                :src="productTypeFormData.iconUrl"
-                aspect-ratio="1"
-                max-height="150"
-                cover
-              />
-            </v-avatar>
-            <input
-              ref="productTypeIcon"
-              type="file"
-              class="d-none"
-              accept="image/png, image/jpeg"
-              @change="onUploadProductTypeIcon"
-            >
-            <p class="ma-0">
-              アイコン画像を選択
-            </p>
-          </v-card-text>
-        </v-card>
-      </v-card-text>
-      <v-divider />
-
-      <v-card-actions>
-        <v-spacer />
-        <v-btn color="error" variant="text" @click="onClickProductTypeCloseDialog">
-          キャンセル
-        </v-btn>
-        <v-btn :loading="loading" color="primary" variant="outlined" @click="onSubmitProductType">
-          登録
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
-
   <v-card>
     <v-card-title class="d-flex flex-row">
       カテゴリー・品目設定
-      <v-spacer />
-      <v-btn v-show="isRegisterable() && selector === 'categories'" variant="outlined" color="primary" @click="onClickCategoryOpenDialog">
-        <v-icon start :icon="mdiPlus" />
-        カテゴリー登録
-      </v-btn>
-      <v-btn v-show="isRegisterable() && selector === 'productTypes'" variant="outlined" color="primary" @click="onClickProductTypeOpenDialog">
-        <v-icon start :icon="mdiPlus" />
-        品目登録
-      </v-btn>
     </v-card-title>
 
-    <v-tabs v-model="selector" grow color="dark">
-      <v-tab v-for="item in tabs" :key="item.value" :value="item.value">
-        {{ item.name }}
-      </v-tab>
-    </v-tabs>
-
     <v-card-text>
-      <v-window v-model="selector">
-        <v-window-item value="categories">
-          <organisms-category-list
-            :categories="categories"
-            :table-items-per-page="categoryTableItemsPerPage"
-            :table-items-length="categoryTableItemsTotal"
-            @update:page="onClickCategoryPage"
-            @update:items-per-page="onClickCategoryItemsPerPage"
-          />
-        </v-window-item>
-
-        <v-window-item value="productTypes">
-          <organisms-product-type-list
-            :product-types="productTypes"
-            :categories="categories"
-            :table-items-per-page="productTypeTableItemsPerPage"
-            :table-items-length="productTypeTableItemsTotal"
-            @update:page="onClickProductTypePage"
-            @update:items-per-page="onClickProductTypeItemsPerPage"
-            @click:more-item="onClickCategoryMorePage"
-          />
-        </v-window-item>
-      </v-window>
+      <v-tabs v-model="selectedTabItemValue" grow color="dark">
+        <v-tab v-for="item in tabs" :key="item.value" :value="item.value">
+          {{ item.name }}
+        </v-tab>
+      </v-tabs>
     </v-card-text>
+
+    <v-window v-model="selectedTabItemValue">
+      <v-window-item value="categories">
+        <organisms-category-list
+          v-model:create-form-data="createCategoryFormDataValue"
+          v-model:update-form-data="updateCategoryFormDataValue"
+          v-model:create-dialog="createCategoryDialogValue"
+          v-model:update-dialog="updateCategoryDialogValue"
+          v-model:delete-dialog="deleteCategoryDialogValue"
+          :loading="loading"
+          :role="role"
+          :category="category"
+          :categories="categories"
+          :table-items-per-page="categoryTableItemsPerPage"
+          :table-items-total="categoryTableItemsTotal"
+          @click:new="onClickNewCategory"
+          @click:edit="onClickEditCategory"
+          @click:delete="onClickDeleteCategory"
+          @update:page="onClickCategoryPage"
+          @update:items-per-page="onClickCategoryItemsPerPage"
+          @submit:create="onSubmitCreateCategory"
+          @submit:update="onSubmitUpdateCategory"
+          @submit:delete="onSubmitDeleteCategory"
+        />
+      </v-window-item>
+
+      <v-window-item value="productTypes">
+        <organisms-product-type-list
+          v-model:create-form-data="createProductTypeFormDataValue"
+          v-model:update-form-data="updateProductTypeFormDataValue"
+          v-model:create-dialog="createProductTypeDialogValue"
+          v-model:update-dialog="updateProductTypeDialogValue"
+          v-model:delete-dialog="deleteProductTypeDialogValue"
+          :loading="loading"
+          :role="role"
+          :product-type="productType"
+          :product-types="productTypes"
+          :categories="categories"
+          :table-items-per-page="productTypeTableItemsPerPage"
+          :table-items-total="productTypeTableItemsTotal"
+          :create-icon-upload-status="createProductTypeIconUploadStatus"
+          :update-icon-upload-status="updateProductTypeIconUploadStatus"
+          @click:new="onClickNewProductType"
+          @click:edit="onClickEditProductType"
+          @click:delete="onClickDeleteProductType"
+          @update:page="onClickProductTypePage"
+          @update:items-per-page="onClickProductTypeItemsPerPage"
+          @update:create-icon="onChangeCreateProductTypeIcon"
+          @update:update-icon="onChangeUpdateProductTypeIcon"
+          @search:category="onSearchCategory"
+          @submit:create="onSubmitCreateProductType"
+          @submit:update="onSubmitUpdateProductType"
+          @submit:delete="onSubmitDeleteProductType"
+        />
+      </v-window-item>
+    </v-window>
   </v-card>
 </template>
