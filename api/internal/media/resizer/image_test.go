@@ -32,9 +32,9 @@ func TestUploadImages(t *testing.T) {
 					Upload(gomock.Any(), gomock.Any(), gomock.Any()).
 					DoAndReturn(func(ctx context.Context, path string, body io.Reader) (string, error) {
 						expect := []string{
-							"http://example.com/media/image_240.png",
-							"http://example.com/media/image_675.png",
-							"http://example.com/media/image_900.png",
+							"media/image_240.png",
+							"media/image_675.png",
+							"media/image_900.png",
 						}
 						assert.Contains(t, expect, path)
 						return "http://example.com/media/image_xxx.png", nil
@@ -122,7 +122,7 @@ func TestGenerateFilePath(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			originURL: "http://example.com/images/image.png",
 			size:      common.ImageSizeSmall,
-			expect:    "http://example.com/images/image_240.png",
+			expect:    "images/image_240.png",
 			expectErr: nil,
 		},
 		{
@@ -130,7 +130,7 @@ func TestGenerateFilePath(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			originURL: "http://example.com/images/image.png",
 			size:      common.ImageSizeMedium,
-			expect:    "http://example.com/images/image_675.png",
+			expect:    "images/image_675.png",
 			expectErr: nil,
 		},
 		{
@@ -138,13 +138,13 @@ func TestGenerateFilePath(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			originURL: "http://example.com/images/image.png",
 			size:      common.ImageSizeLarge,
-			expect:    "http://example.com/images/image_900.png",
+			expect:    "images/image_900.png",
 			expectErr: nil,
 		},
 		{
 			name:      "failed to generage url for unknown image size",
 			setup:     func(ctx context.Context, mocks *mocks) {},
-			originURL: "http://example.com/images/image.png",
+			originURL: "images/image.png",
 			size:      common.ImageSizeUnknown,
 			expect:    "",
 			expectErr: errUnsupportedImageSize,
