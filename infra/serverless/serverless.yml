@@ -47,13 +47,14 @@ resources:
                     - lambda:InvokeFunction
                   Resource:
                     - '*'
-          - PolicyName: automateMediaLivePolicy
+          - PolicyName: automateMediaServicePolicy
             PolicyDocument:
               Version: "2012-10-17"
               Statement:
                 - Effect: Allow
                   Action:
                     - mediaLive:CreateInput
+                    - mediaStore:CreateContainer
                   Resource:
                     - '*'
 
@@ -98,6 +99,15 @@ stepFunctions:
                       Type: MP4_FILE
                       Sources:
                         - Url: https://s3-ap-northeast-1.amazonaws.com/automate-media-service/automate-media-service.mp4
+              - StartAt: CreateContainer
+                States:
+                  CreateContainer:
+                    Type: Task
+                    End: true
+                    Comment: ライブ配信 - 配信用ストレージを作成
+                    Resource: arn:aws:states:::aws-sdk:mediastore:createContainer
+                    Parameters:
+                      ContainerName: test-container
 
 
 plugins:
