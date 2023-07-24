@@ -81,8 +81,9 @@ stepFunctions:
                     End: true
                     Comment: ライブ配信 - ライブ配信入力用
                     Resource: arn:aws:states:::aws-sdk:medialive:createInput
+                    InputPath: $.RtmpInput
                     Parameters:
-                      Name: InputName
+                      Name.$: $.Name
                       Type: RTMP_PUSH
                       Destinations:
                         - StreamName: live/a
@@ -94,11 +95,11 @@ stepFunctions:
                     End: true
                     Comment: ライブ配信 - オープニング動画入力用
                     Resource: arn:aws:states:::aws-sdk:medialive:createInput
+                    InputPath: $.MP4Input
                     Parameters:
-                      Name: test-mp4
+                      Name.$: $.Name
                       Type: MP4_FILE
-                      Sources:
-                        - Url: https://s3-ap-northeast-1.amazonaws.com/automate-media-service/automate-media-service.mp4
+                      Sources.$: $.Sources
               - StartAt: CreateContainer
                 States:
                   CreateContainer:
@@ -107,7 +108,7 @@ stepFunctions:
                     Comment: ライブ配信 - 配信用ストレージを作成
                     Resource: arn:aws:states:::aws-sdk:mediastore:createContainer
                     Parameters:
-                      ContainerName: test-container
+                      ContainerName.$: $.ContainerName
 
 
 plugins:
