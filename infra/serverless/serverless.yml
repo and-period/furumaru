@@ -86,6 +86,18 @@ stepFunctions:
                       Destinations:
                         - StreamName: live/a
                       InputSecurityGroups: ${self:provider.vpc.securityGroupIds}
+              - StartAt: CreateInput(MP4)
+                States:
+                  CreateInput(MP4):
+                    Type: Task
+                    End: true
+                    Comment: ライブ配信 - オープニング動画入力用
+                    Resource: arn:aws:states:::aws-sdk:medialive:createInput
+                    Parameters:
+                      Name: test-mp4
+                      Type: MP4_FILE
+                      Sources:
+                        - Url: https://s3-ap-northeast-1.amazonaws.com/automate-media-service/automate-media-service.mp4
 
 
 plugins:
