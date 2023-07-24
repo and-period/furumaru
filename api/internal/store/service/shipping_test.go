@@ -20,8 +20,9 @@ func TestListShippings(t *testing.T) {
 
 	now := jst.Date(2022, 7, 15, 18, 30, 0, 0)
 	params := &database.ListShippingsParams{
-		Limit:  20,
-		Offset: 0,
+		CoordinatorID: "coordinator-id",
+		Limit:         20,
+		Offset:        0,
 		Orders: []*database.ListShippingsOrder{
 			{Key: entity.ShippingOrderByName, OrderByASC: true},
 		},
@@ -47,7 +48,9 @@ func TestListShippings(t *testing.T) {
 	shippings := entity.Shippings{
 		{
 			ID:                 "shipping-id",
+			CoordinatorID:      "coordinator-id",
 			Name:               "デフォルト配送設定",
+			IsDefault:          true,
 			Box60Rates:         rates,
 			Box60Refrigerated:  500,
 			Box60Frozen:        800,
@@ -79,8 +82,9 @@ func TestListShippings(t *testing.T) {
 				mocks.db.Shipping.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListShippingsInput{
-				Limit:  20,
-				Offset: 0,
+				CoordinatorID: "coordinator-id",
+				Limit:         20,
+				Offset:        0,
 				Orders: []*store.ListShippingsOrder{
 					{Key: entity.ShippingOrderByName, OrderByASC: true},
 				},
@@ -104,8 +108,9 @@ func TestListShippings(t *testing.T) {
 				mocks.db.Shipping.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListShippingsInput{
-				Limit:  20,
-				Offset: 0,
+				CoordinatorID: "coordinator-id",
+				Limit:         20,
+				Offset:        0,
 				Orders: []*store.ListShippingsOrder{
 					{Key: entity.ShippingOrderByName, OrderByASC: true},
 				},
@@ -121,8 +126,9 @@ func TestListShippings(t *testing.T) {
 				mocks.db.Shipping.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
 			},
 			input: &store.ListShippingsInput{
-				Limit:  20,
-				Offset: 0,
+				CoordinatorID: "coordinator-id",
+				Limit:         20,
+				Offset:        0,
 				Orders: []*store.ListShippingsOrder{
 					{Key: entity.ShippingOrderByName, OrderByASC: true},
 				},
@@ -169,7 +175,9 @@ func TestMutiGetShippings(t *testing.T) {
 	shippings := entity.Shippings{
 		{
 			ID:                 "shipping-id",
+			CoordinatorID:      "coordinator-id",
 			Name:               "デフォルト配送設定",
+			IsDefault:          true,
 			Box60Rates:         rates,
 			Box60Refrigerated:  500,
 			Box60Frozen:        800,
@@ -260,7 +268,9 @@ func TestGetShipping(t *testing.T) {
 	}
 	shipping := &entity.Shipping{
 		ID:                 "shipping-id",
+		CoordinatorID:      "coordinator-id",
 		Name:               "デフォルト配送設定",
+		IsDefault:          true,
 		Box60Rates:         rates,
 		Box60Refrigerated:  500,
 		Box60Frozen:        800,
@@ -364,7 +374,9 @@ func TestCreateShipping(t *testing.T) {
 						}
 						expect := &entity.Shipping{
 							ID:                 shipping.ID, // ignore
+							CoordinatorID:      "coordinator-id",
 							Name:               "デフォルト配送設定",
+							IsDefault:          true,
 							Box60Rates:         rates,
 							Box60Refrigerated:  500,
 							Box60Frozen:        800,
@@ -382,7 +394,9 @@ func TestCreateShipping(t *testing.T) {
 					})
 			},
 			input: &store.CreateShippingInput{
+				CoordinatorID:      "coordinator-id",
 				Name:               "デフォルト配送設定",
+				IsDefault:          true,
 				Box60Rates:         rates,
 				Box60Refrigerated:  500,
 				Box60Frozen:        800,
@@ -409,7 +423,9 @@ func TestCreateShipping(t *testing.T) {
 				mocks.db.Shipping.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateShippingInput{
+				CoordinatorID:      "coordinator-id",
 				Name:               "デフォルト配送設定",
+				IsDefault:          true,
 				Box60Rates:         rates,
 				Box60Refrigerated:  500,
 				Box60Frozen:        800,
@@ -457,7 +473,8 @@ func TestUpdateShipping(t *testing.T) {
 		{Name: "その他", Price: 500, Prefectures: others},
 	}
 	params := &database.UpdateShippingParams{
-		Name: "デフォルト配送設定",
+		Name:      "デフォルト配送設定",
+		IsDefault: true,
 		Box60Rates: entity.ShippingRates{
 			{Number: 1, Name: "四国", Price: 250, Prefectures: shikoku},
 			{Number: 2, Name: "その他", Price: 500, Prefectures: others},
@@ -494,6 +511,7 @@ func TestUpdateShipping(t *testing.T) {
 			input: &store.UpdateShippingInput{
 				ShippingID:         "shipping-id",
 				Name:               "デフォルト配送設定",
+				IsDefault:          true,
 				Box60Rates:         rates,
 				Box60Refrigerated:  500,
 				Box60Frozen:        800,
@@ -522,6 +540,7 @@ func TestUpdateShipping(t *testing.T) {
 			input: &store.UpdateShippingInput{
 				ShippingID:         "shipping-id",
 				Name:               "デフォルト配送設定",
+				IsDefault:          true,
 				Box60Rates:         rates,
 				Box60Refrigerated:  500,
 				Box60Frozen:        800,

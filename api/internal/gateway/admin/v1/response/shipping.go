@@ -3,7 +3,9 @@ package response
 // Shipping - 配送設定情報
 type Shipping struct {
 	ID                 string          `json:"id"`                 // 配送設定ID
+	CoordinatorID      string          `json:"coordinatorId"`      // コーディネータID
 	Name               string          `json:"name"`               // 配送設定名
+	IsDefault          bool            `json:"isDefault"`          // デフォルト設定フラグ
 	Box60Rates         []*ShippingRate `json:"box60Rates"`         // 箱サイズ60の通常便配送料一覧
 	Box60Refrigerated  int64           `json:"box60Refrigerated"`  // 箱サイズ60の冷蔵便追加配送料
 	Box60Frozen        int64           `json:"box60Frozen"`        // 箱サイズ60の冷凍便追加配送料

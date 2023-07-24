@@ -7,7 +7,9 @@ shippingResponse:
   - shipping
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
+    cordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
     name: 'デフォルト配送設定'
+    isDefault: false
     box60Rates:
     - number: 1
       name: '離島'
@@ -63,7 +65,9 @@ shippingsResponse:
   example:
     shippings:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      cordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
       name: 'デフォルト配送設定'
+      isDefault: false
       box60Rates:
       - number: 1
         name: '離島'
@@ -102,7 +106,9 @@ shippingsResponse:
       createdAt: 1640962800
       updatedAt: 1640962800
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      cordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
       name: 'デフォルト配送設定'
+      isDefault: false
       box60Rates:
       - number: 1
         name: '離島'

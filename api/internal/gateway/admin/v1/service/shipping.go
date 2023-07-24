@@ -34,7 +34,9 @@ func NewShipping(shipping *entity.Shipping) (*Shipping, error) {
 	return &Shipping{
 		Shipping: response.Shipping{
 			ID:                 shipping.ID,
+			CoordinatorID:      shipping.CoordinatorID,
 			Name:               shipping.Name,
+			IsDefault:          shipping.IsDefault,
 			Box60Rates:         box60Rates.Response(),
 			Box60Refrigerated:  shipping.Box60Refrigerated,
 			Box60Frozen:        shipping.Box60Frozen,

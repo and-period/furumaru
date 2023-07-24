@@ -398,10 +398,11 @@ type UpdateScheduleParams struct {
 }
 
 type ListShippingsParams struct {
-	Name   string
-	Limit  int
-	Offset int
-	Orders []*ListShippingsOrder
+	CoordinatorID string
+	Name          string
+	Limit         int
+	Offset        int
+	Orders        []*ListShippingsOrder
 }
 
 type ListShippingsOrder struct {
@@ -410,6 +411,9 @@ type ListShippingsOrder struct {
 }
 
 func (p *ListShippingsParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.CoordinatorID != "" {
+		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
+	}
 	if p.Name != "" {
 		stmt = stmt.Where("name LIKE ?", fmt.Sprintf("%%%s%%", p.Name))
 	}
@@ -427,6 +431,7 @@ func (p *ListShippingsParams) stmt(stmt *gorm.DB) *gorm.DB {
 
 type UpdateShippingParams struct {
 	Name               string
+	IsDefault          bool
 	Box60Rates         entity.ShippingRates
 	Box60Refrigerated  int64
 	Box60Frozen        int64

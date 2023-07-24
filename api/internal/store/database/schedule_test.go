@@ -31,7 +31,7 @@ func TestSchedule_List(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	shipping := testShipping("shipping-id", now())
+	shipping := testShipping("shipping-id", "coordinator-id", now())
 	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
 	schedules := make(entity.Schedules, 2)
@@ -101,7 +101,7 @@ func TestSchedule_Count(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	shipping := testShipping("shipping-id", now())
+	shipping := testShipping("shipping-id", "coordinator-id", now())
 	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
 	schedules := make(entity.Schedules, 2)
@@ -171,7 +171,7 @@ func TestSchedule_Get(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	shipping := testShipping("shipping-id", now())
+	shipping := testShipping("shipping-id", "coordinator-id", now())
 	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
 	s := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
@@ -236,7 +236,7 @@ func TestSchedule_Create(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	shipping := testShipping("shipping-id", now())
+	shipping := testShipping("shipping-id", "coordinator-id", now())
 	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
 	s := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
@@ -311,7 +311,7 @@ func TestSchedule_Update(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	shipping := testShipping("shipping-id", now())
+	shipping := testShipping("shipping-id", "coordinator-id", now())
 	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
 
@@ -398,7 +398,7 @@ func TestSchedule_UpdateThumbnails(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	shipping := testShipping("shipping-id", now())
+	shipping := testShipping("shipping-id", "coordinator-id", now())
 	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
 

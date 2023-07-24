@@ -33,9 +33,9 @@ func TestShipping_List(t *testing.T) {
 	require.NoError(t, err)
 
 	shippings := make(entity.Shippings, 3)
-	shippings[0] = testShipping("shipping-id01", now())
-	shippings[1] = testShipping("shipping-id02", now())
-	shippings[2] = testShipping("shipping-id03", now())
+	shippings[0] = testShipping("shipping-id01", "coordinator-id", now())
+	shippings[1] = testShipping("shipping-id02", "coordinator-id", now())
+	shippings[2] = testShipping("shipping-id03", "coordinator-id", now())
 	err = db.DB.Create(&shippings).Error
 	require.NoError(t, err)
 
@@ -57,9 +57,10 @@ func TestShipping_List(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
 				params: &ListShippingsParams{
-					Name:   "配送設定",
-					Limit:  20,
-					Offset: 1,
+					Name:          "配送設定",
+					CoordinatorID: "coordinator-id",
+					Limit:         20,
+					Offset:        1,
 				},
 			},
 			want: want{
@@ -119,9 +120,9 @@ func TestShipping_Count(t *testing.T) {
 	require.NoError(t, err)
 
 	shippings := make(entity.Shippings, 3)
-	shippings[0] = testShipping("shipping-id01", now())
-	shippings[1] = testShipping("shipping-id02", now())
-	shippings[2] = testShipping("shipping-id03", now())
+	shippings[0] = testShipping("shipping-id01", "coordinator-id", now())
+	shippings[1] = testShipping("shipping-id02", "coordinator-id", now())
+	shippings[2] = testShipping("shipping-id03", "coordinator-id", now())
 	err = db.DB.Create(&shippings).Error
 	require.NoError(t, err)
 
@@ -188,8 +189,8 @@ func TestShipping_MultiGet(t *testing.T) {
 	require.NoError(t, err)
 
 	shippings := make(entity.Shippings, 2)
-	shippings[0] = testShipping("shipping-id01", now())
-	shippings[1] = testShipping("shipping-id02", now())
+	shippings[0] = testShipping("shipping-id01", "coordinator-id", now())
+	shippings[1] = testShipping("shipping-id02", "coordinator-id", now())
 	err = db.DB.Create(&shippings).Error
 	require.NoError(t, err)
 
@@ -252,7 +253,7 @@ func TestShipping_Get(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	s := testShipping("shipping-id", now())
+	s := testShipping("shipping-id", "coordinator-id", now())
 	err = db.DB.Create(&s).Error
 	require.NoError(t, err)
 
@@ -326,7 +327,7 @@ func TestShipping_Create(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	s := testShipping("shipping-id", now())
+	s := testShipping("shipping-id", "coordinator-id", now())
 
 	type args struct {
 		shipping *entity.Shipping
@@ -396,7 +397,7 @@ func TestShipping_Update(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	s := testShipping("shipping-id", now())
+	s := testShipping("shipping-id", "coordinator-id", now())
 
 	type args struct {
 		shippingID string
@@ -483,7 +484,7 @@ func TestShipping_Delete(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	s := testShipping("shipping-id", now())
+	s := testShipping("shipping-id", "coordinator-id", now())
 
 	type args struct {
 		shippingID string
@@ -540,7 +541,7 @@ func TestShipping_Delete(t *testing.T) {
 	}
 }
 
-func testShipping(id string, now time.Time) *entity.Shipping {
+func testShipping(shippingID, coordinatorID string, now time.Time) *entity.Shipping {
 	shikoku := []int64{
 		codes.PrefectureValues["tokushima"],
 		codes.PrefectureValues["kagawa"],
@@ -560,8 +561,10 @@ func testShipping(id string, now time.Time) *entity.Shipping {
 		{Number: 2, Name: "その他", Price: 500, Prefectures: others},
 	}
 	shipping := &entity.Shipping{
-		ID:                 id,
+		ID:                 shippingID,
+		CoordinatorID:      coordinatorID,
 		Name:               "デフォルト配送設定",
+		IsDefault:          false,
 		Box60Rates:         rates,
 		Box60Refrigerated:  500,
 		Box60Frozen:        800,
