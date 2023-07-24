@@ -1,0 +1,92 @@
+service: mediaService
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: ${opt:stage, self:custom.defaultStage}
+  region: ${self:custom.envMap.${self:provider.stage}.region}
+  vpc:
+    securityGroupIds: ${self:custom.envMap.${self:provider.stage}.vpc.securityGroups}
+    subnetIds: ${self:custom.envMap.${self:provider.stage}.vpc.subnetIds}
+  iam:
+    role: defaultRole
+  profile: ${env:AWS_PROFILE, 'default'}
+
+custom:
+  defaultStage: stg
+  envMap:
+    prd: ${file(env/prd.yaml)}
+    stg: ${file(env/stg.yaml)}
+
+resources:
+  Resources:
+    defaultRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Principal:
+                AWS:
+                  - '*'
+              Action:
+                - "sts:AssumeRole"
+        Policies:
+          - PolicyName: defaultPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                    - lambda:InvokeFunction
+                  Resource:
+                    - '*'
+          - PolicyName: automateMediaLivePolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - mediaLive:CreateInput
+                  Resource:
+                    - '*'
+
+stepFunctions:
+  stateMachines:
+    mediaLiveStateMachine:
+      name: mediaLiveStepFunction
+      role:
+        Fn::GetAtt: [defaultRole, Arn]
+      definition:
+        Comment: AutomateMediaServiceFunction
+        StartAt: CreateMediaLiveInputAndContainer
+        States:
+          CreateMediaLiveInputAndContainer:
+            Type: Parallel
+            End: true
+            Comment: MediaLive入力とコンテナの作成を並列で実行
+            InputPath: $
+            Branches:
+              - StartAt: CreateInput(RTMP)
+                States:
+                  CreateInput(RTMP):
+                    Type: Task
+                    End: true
+                    Comment: ライブ配信 - ライブ配信入力用
+                    Resource: arn:aws:states:::aws-sdk:medialive:createInput
+                    Parameters:
+                      Name: InputName
+                      Type: RTMP_PUSH
+                      Destinations:
+                        - StreamName: live/a
+                      InputSecurityGroups: ${self:provider.vpc.securityGroupIds}
+
+
+plugins:
+  - serverless-step-functions
