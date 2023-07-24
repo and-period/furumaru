@@ -37,7 +37,9 @@ func TestShipping(t *testing.T) {
 		{
 			name: "success",
 			params: &NewShippingParams{
+				CoordinatorID:      "coordinator-id",
 				Name:               "デフォルト配送設定",
+				IsDefault:          true,
 				Box60Rates:         rates,
 				Box60Refrigerated:  500,
 				Box60Frozen:        800,
@@ -51,7 +53,9 @@ func TestShipping(t *testing.T) {
 				FreeShippingRates:  3000,
 			},
 			expect: &Shipping{
+				CoordinatorID:      "coordinator-id",
 				Name:               "デフォルト配送設定",
+				IsDefault:          true,
 				Box60Rates:         rates,
 				Box60Refrigerated:  500,
 				Box60Frozen:        800,

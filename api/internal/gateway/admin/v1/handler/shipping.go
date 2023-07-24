@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -51,6 +52,9 @@ func (h *handler) ListShippings(ctx *gin.Context) {
 		Limit:  limit,
 		Offset: offset,
 		Orders: orders,
+	}
+	if getRole(ctx) == service.AdminRoleCoordinator {
+		in.CoordinatorID = getAdminID(ctx)
 	}
 	sshippings, total, err := h.store.ListShippings(ctx, in)
 	if err != nil {
@@ -110,6 +114,13 @@ func (h *handler) CreateShipping(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
+	if getRole(ctx) == service.AdminRoleCoordinator {
+		if !currentAdmin(ctx, req.CoordinatorID) {
+			forbidden(ctx, errors.New("handler: invalid coordinator id"))
+			return
+		}
+	}
+
 	box60Rates, err := h.newShippingRatesForCreate(req.Box60Rates)
 	if err != nil {
 		badRequest(ctx, err)
@@ -127,7 +138,9 @@ func (h *handler) CreateShipping(ctx *gin.Context) {
 	}
 
 	in := &store.CreateShippingInput{
+		CoordinatorID:      req.CoordinatorID,
 		Name:               req.Name,
+		IsDefault:          req.IsDefault,
 		Box60Rates:         box60Rates,
 		Box60Refrigerated:  req.Box60Refrigerated,
 		Box60Frozen:        req.Box60Frozen,
@@ -198,6 +211,7 @@ func (h *handler) UpdateShipping(ctx *gin.Context) {
 	in := &store.UpdateShippingInput{
 		ShippingID:         util.GetParam(ctx, "shippingId"),
 		Name:               req.Name,
+		IsDefault:          req.IsDefault,
 		Box60Rates:         box60Rates,
 		Box60Refrigerated:  req.Box60Refrigerated,
 		Box60Frozen:        req.Box60Frozen,

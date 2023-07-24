@@ -23,10 +23,11 @@ func (s *service) ListShippings(ctx context.Context, in *store.ListShippingsInpu
 		}
 	}
 	params := &database.ListShippingsParams{
-		Name:   in.Name,
-		Limit:  int(in.Limit),
-		Offset: int(in.Offset),
-		Orders: orders,
+		CoordinatorID: in.CoordinatorID,
+		Name:          in.Name,
+		Limit:         int(in.Limit),
+		Offset:        int(in.Offset),
+		Orders:        orders,
 	}
 	var (
 		shippings entity.Shippings
@@ -82,7 +83,9 @@ func (s *service) CreateShipping(ctx context.Context, in *store.CreateShippingIn
 		return nil, fmt.Errorf("api: invalid box 100 rates format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	params := &entity.NewShippingParams{
+		CoordinatorID:      in.CoordinatorID,
 		Name:               in.Name,
+		IsDefault:          in.IsDefault,
 		Box60Rates:         box60Rates,
 		Box60Refrigerated:  in.Box60Refrigerated,
 		Box60Frozen:        in.Box60Frozen,
@@ -131,6 +134,7 @@ func (s *service) UpdateShipping(ctx context.Context, in *store.UpdateShippingIn
 	}
 	params := &database.UpdateShippingParams{
 		Name:               in.Name,
+		IsDefault:          in.IsDefault,
 		Box60Rates:         box60Rates,
 		Box60Refrigerated:  in.Box60Refrigerated,
 		Box60Frozen:        in.Box60Frozen,

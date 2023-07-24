@@ -116,10 +116,11 @@ type DeleteProductTagInput struct {
 }
 
 type ListShippingsInput struct {
-	Name   string                `validate:"omitempty,max=64"`
-	Limit  int64                 `validate:"required,max=200"`
-	Offset int64                 `validate:"min=0"`
-	Orders []*ListShippingsOrder `validate:"omitempty,dive,required"`
+	Name          string                `validate:"omitempty,max=64"`
+	CoordinatorID string                `validate:"omitempty"`
+	Limit         int64                 `validate:"required,max=200"`
+	Offset        int64                 `validate:"min=0"`
+	Orders        []*ListShippingsOrder `validate:"omitempty,dive,required"`
 }
 
 type ListShippingsOrder struct {
@@ -136,7 +137,9 @@ type GetShippingInput struct {
 }
 
 type CreateShippingInput struct {
+	CoordinatorID      string                `validate:"required"`
 	Name               string                `validate:"required,max=64"`
+	IsDefault          bool                  `validate:""`
 	Box60Rates         []*CreateShippingRate `validate:"required,dive,required"`
 	Box60Refrigerated  int64                 `validate:"min=0,lt=10000000000"`
 	Box60Frozen        int64                 `validate:"min=0,lt=10000000000"`
@@ -159,6 +162,7 @@ type CreateShippingRate struct {
 type UpdateShippingInput struct {
 	ShippingID         string                `validate:"required"`
 	Name               string                `validate:"required,max=64"`
+	IsDefault          bool                  `validate:""`
 	Box60Rates         []*UpdateShippingRate `validate:"required,dive,required"`
 	Box60Refrigerated  int64                 `validate:"min=0,lt=10000000000"`
 	Box60Frozen        int64                 `validate:"min=0,lt=10000000000"`

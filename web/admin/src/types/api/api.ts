@@ -1784,6 +1784,18 @@ export interface CreateShippingRequest {
      */
     'name': string;
     /**
+     * コーディネータID(必須)
+     * @type {string}
+     * @memberof CreateShippingRequest
+     */
+    'cordinatorId': string;
+    /**
+     * デフォルト設定
+     * @type {boolean}
+     * @memberof CreateShippingRequest
+     */
+    'isDefault': boolean;
+    /**
      * 箱サイズ60の通常配送料一覧(すべての都道府県の設定が必須)
      * @type {Array<CreateShippingRate>}
      * @memberof CreateShippingRequest
@@ -4319,11 +4331,23 @@ export interface Shipping {
      */
     'id': string;
     /**
+     * コーディネータID
+     * @type {string}
+     * @memberof Shipping
+     */
+    'coordinatorId': string;
+    /**
      * 配送設定名
      * @type {string}
      * @memberof Shipping
      */
     'name': string;
+    /**
+     * デフォルト設定
+     * @type {boolean}
+     * @memberof Shipping
+     */
+    'isDefault': boolean;
     /**
      * 箱サイズ60の通常配送料一覧
      * @type {Array<ShippingRate>}
@@ -5495,6 +5519,31 @@ export interface UpdateScheduleRequest {
 /**
  * 
  * @export
+ * @interface UpdateShippingRate
+ */
+export interface UpdateShippingRate {
+    /**
+     * 配送料金設定名
+     * @type {string}
+     * @memberof UpdateShippingRate
+     */
+    'name': string;
+    /**
+     * 配送料金(100万未満)
+     * @type {number}
+     * @memberof UpdateShippingRate
+     */
+    'price': number;
+    /**
+     * 対象都道府県コード一覧
+     * @type {Array<Prefecture>}
+     * @memberof UpdateShippingRate
+     */
+    'prefectures': Array<Prefecture>;
+}
+/**
+ * 
+ * @export
  * @interface UpdateShippingRequest
  */
 export interface UpdateShippingRequest {
@@ -5505,11 +5554,17 @@ export interface UpdateShippingRequest {
      */
     'name': string;
     /**
-     * 箱サイズ60の通常配送料一覧(すべての都道府県の設定が必須)
-     * @type {Array<CreateShippingRate>}
+     * デフォルト設定
+     * @type {boolean}
      * @memberof UpdateShippingRequest
      */
-    'box60Rates': Array<CreateShippingRate>;
+    'isDefault': boolean;
+    /**
+     * 箱サイズ60の通常配送料一覧(すべての都道府県の設定が必須)
+     * @type {Array<UpdateShippingRate>}
+     * @memberof UpdateShippingRequest
+     */
+    'box60Rates': Array<UpdateShippingRate>;
     /**
      * 箱サイズ60の冷蔵便追加配送料(100万未満)
      * @type {number}
@@ -5524,10 +5579,10 @@ export interface UpdateShippingRequest {
     'box60Frozen': number;
     /**
      * 箱サイズ80の通常配送料一覧(すべての都道府県の設定が必須)
-     * @type {Array<CreateShippingRate>}
+     * @type {Array<UpdateShippingRate>}
      * @memberof UpdateShippingRequest
      */
-    'box80Rates': Array<CreateShippingRate>;
+    'box80Rates': Array<UpdateShippingRate>;
     /**
      * 箱サイズ80の冷蔵便追加配送料(100万未満)
      * @type {number}
@@ -5542,10 +5597,10 @@ export interface UpdateShippingRequest {
     'box80Frozen': number;
     /**
      * 箱サイズ100の通常配送料一覧(すべての都道府県の設定が必須)
-     * @type {Array<CreateShippingRate>}
+     * @type {Array<UpdateShippingRate>}
      * @memberof UpdateShippingRequest
      */
-    'box100Rates': Array<CreateShippingRate>;
+    'box100Rates': Array<UpdateShippingRate>;
     /**
      * 箱サイズ100の冷蔵便追加配送料(100万未満)
      * @type {number}

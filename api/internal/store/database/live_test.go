@@ -37,7 +37,7 @@ func TestLive_ListByScheduleID(t *testing.T) {
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 
-	shipping := testShipping("shipping-id", now())
+	shipping := testShipping("shipping-id", "coordinator-id", now())
 	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
 	schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
@@ -124,7 +124,7 @@ func TestLive_Get(t *testing.T) {
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 
-	shipping := testShipping("shipping-id", now())
+	shipping := testShipping("shipping-id", "coordinator-id", now())
 	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
 	schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
@@ -220,7 +220,7 @@ func TestLive_Update(t *testing.T) {
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 
-	shipping := testShipping("shipping-id", now())
+	shipping := testShipping("shipping-id", "coordinator-id", now())
 	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
 	schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
@@ -318,7 +318,7 @@ func TestLive_Delete(t *testing.T) {
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 
-	shipping := testShipping("shipping-id", now())
+	shipping := testShipping("shipping-id", "coordinator-id", now())
 	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
 	schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())

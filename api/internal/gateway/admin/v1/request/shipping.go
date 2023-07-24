@@ -1,7 +1,9 @@
 package request
 
 type CreateShippingRequest struct {
+	CoordinatorID      string                `json:"coordinatorId,omitempty"`      // コーディネータID
 	Name               string                `json:"name,omitempty"`               // 配送設定名
+	IsDefault          bool                  `json:"isDefault,omitempty"`          // デフォルト設定フラグ
 	Box60Rates         []*CreateShippingRate `json:"box60Rates,omitempty"`         // 箱サイズ60の通常便配送料一覧
 	Box60Refrigerated  int64                 `json:"box60Refrigerated,omitempty"`  // 箱サイズ60の冷蔵便追加配送料
 	Box60Frozen        int64                 `json:"box60Frozen,omitempty"`        // 箱サイズ60の冷凍便追加配送料
@@ -23,6 +25,7 @@ type CreateShippingRate struct {
 
 type UpdateShippingRequest struct {
 	Name               string                `json:"name,omitempty"`               // 配送設定名
+	IsDefault          bool                  `json:"isDefault,omitempty"`          // デフォルト設定フラグ
 	Box60Rates         []*UpdateShippingRate `json:"box60Rates,omitempty"`         // 箱サイズ60の通常便配送料一覧
 	Box60Refrigerated  int64                 `json:"box60Refrigerated,omitempty"`  // 箱サイズ60の冷蔵便追加配送料
 	Box60Frozen        int64                 `json:"box60Frozen,omitempty"`        // 箱サイズ60の冷凍便追加配送料

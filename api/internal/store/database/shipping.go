@@ -73,6 +73,17 @@ func (s *shipping) Get(ctx context.Context, shoppingID string, fields ...string)
 
 func (s *shipping) Create(ctx context.Context, shipping *entity.Shipping) error {
 	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
+		if shipping.IsDefault {
+			updates := map[string]interface{}{
+				"is_default": false,
+				"updated_at": s.now(),
+			}
+			stmt := tx.WithContext(ctx).Table(shippingTable).Where("coordinator_id = ?", shipping.CoordinatorID)
+			if err := stmt.Updates(updates).Error; err != nil {
+				return err
+			}
+		}
+
 		if err := shipping.FillJSON(); err != nil {
 			return err
 		}
@@ -88,12 +99,25 @@ func (s *shipping) Create(ctx context.Context, shipping *entity.Shipping) error 
 
 func (s *shipping) Update(ctx context.Context, shippingID string, params *UpdateShippingParams) error {
 	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
-		if _, err := s.get(ctx, tx, shippingID); err != nil {
+		current, err := s.get(ctx, tx, shippingID)
+		if err != nil {
 			return err
+		}
+
+		if params.IsDefault {
+			updates := map[string]interface{}{
+				"is_default": false,
+				"updated_at": s.now(),
+			}
+			stmt := tx.WithContext(ctx).Table(shippingTable).Where("coordinator_id = ?", current.CoordinatorID)
+			if err := stmt.Updates(updates).Error; err != nil {
+				return err
+			}
 		}
 
 		updates := map[string]interface{}{
 			"name":                params.Name,
+			"is_default":          params.IsDefault,
 			"box60_refrigerated":  params.Box60Refrigerated,
 			"box60_frozen":        params.Box60Frozen,
 			"box80_refrigerated":  params.Box80Refrigerated,
@@ -125,7 +149,7 @@ func (s *shipping) Update(ctx context.Context, shippingID string, params *Update
 			}
 			updates["box100_rates"] = rates
 		}
-		err := tx.WithContext(ctx).
+		err = tx.WithContext(ctx).
 			Table(shippingTable).
 			Where("id = ?", shippingID).
 			Updates(updates).Error

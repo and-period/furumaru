@@ -29,7 +29,9 @@ const (
 // Shipping - 配送設定情報
 type Shipping struct {
 	ID                 string         `gorm:"primaryKey;<-:create"`             // 配送設定ID
+	CoordinatorID      string         `gorm:""`                                 // コーディネータID
 	Name               string         `gorm:""`                                 // 配送設定名
+	IsDefault          bool           `gorm:""`                                 // デフォルト設定フラグ
 	Box60Rates         ShippingRates  `gorm:"-"`                                // 箱サイズ60の通常便配送料一覧
 	Box60RatesJSON     datatypes.JSON `gorm:"default:null;column:box60_rates"`  // 箱サイズ60の通常便配送料一覧(JSON)
 	Box60Refrigerated  int64          `gorm:""`                                 // 箱サイズ60の冷蔵便追加配送料
@@ -62,6 +64,8 @@ type ShippingRates []*ShippingRate
 
 type NewShippingParams struct {
 	Name               string
+	CoordinatorID      string
+	IsDefault          bool
 	Box60Rates         ShippingRates
 	Box60Refrigerated  int64
 	Box60Frozen        int64
@@ -78,7 +82,9 @@ type NewShippingParams struct {
 func NewShipping(params *NewShippingParams) *Shipping {
 	return &Shipping{
 		ID:                 uuid.Base58Encode(uuid.New()),
+		CoordinatorID:      params.CoordinatorID,
 		Name:               params.Name,
+		IsDefault:          params.IsDefault,
 		Box60Rates:         params.Box60Rates,
 		Box60Refrigerated:  params.Box60Refrigerated,
 		Box60Frozen:        params.Box60Frozen,
