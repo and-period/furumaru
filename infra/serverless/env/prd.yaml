@@ -1,0 +1,9 @@
+region: ap-northeast-1
+
+vpc:
+  securityGroups:
+    - "4361039"
+  subnetIds:
+    - subnet-0e3b0b0b0b0b0b0b0
+    - subnet-0e3b0b0b0b0b0b0b0
+    - subnet-0e3b0b0b0b0b0b0b0
