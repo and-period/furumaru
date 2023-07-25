@@ -99,6 +99,21 @@ const footerMenuList = computed<FooterMenuItem[]>(() => [
     onClick: () => {}
   }
 ])
+
+const isScrolled = ref<boolean>(false)
+
+const onScroll = () => {
+  isScrolled.value = window.scrollY > 50
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', onScroll)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', onScroll)
+})
+
 </script>
 
 <template>
@@ -107,6 +122,7 @@ const footerMenuList = computed<FooterMenuItem[]>(() => [
       <the-app-header
         :home-path="localePath('/')"
         :is-authenticated="isAuthenticated"
+        :is-scrolled="isScrolled"
         :authenticated-account-menu-item="authenticatedMenuItems"
         :no-authenticated-account-menu-item="noAuthenticatedMenuItems"
         :menu-items="navbarMenuList"
