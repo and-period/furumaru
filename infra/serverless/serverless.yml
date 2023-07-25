@@ -55,6 +55,7 @@ resources:
                   Action:
                     - mediaLive:CreateInput
                     - mediaStore:CreateContainer
+                    - mediaLive:CreateChannel
                   Resource:
                     - '*'
 
@@ -70,7 +71,6 @@ stepFunctions:
         States:
           CreateMediaLiveInputAndContainer:
             Type: Parallel
-            End: true
             Comment: MediaLive入力とコンテナの作成を並列で実行
             InputPath: $
             Branches:
@@ -82,6 +82,7 @@ stepFunctions:
                     Comment: ライブ配信 - ライブ配信入力用
                     Resource: arn:aws:states:::aws-sdk:medialive:createInput
                     InputPath: $.RtmpInput
+                    ResultPath: $.RtmpResult
                     Parameters:
                       Name.$: $.Name
                       Type: RTMP_PUSH
@@ -96,6 +97,7 @@ stepFunctions:
                     Comment: ライブ配信 - オープニング動画入力用
                     Resource: arn:aws:states:::aws-sdk:medialive:createInput
                     InputPath: $.MP4Input
+                    ResultPath: $.MP4Result
                     Parameters:
                       Name.$: $.Name
                       Type: MP4_FILE
@@ -107,9 +109,34 @@ stepFunctions:
                     End: true
                     Comment: ライブ配信 - 配信用ストレージを作成
                     Resource: arn:aws:states:::aws-sdk:mediastore:createContainer
+                    ResultPath: $.ContainerResult
                     Parameters:
                       ContainerName.$: $.ContainerName
-
+            Next: CreateStreamingResoures
+          CreateStreamingResoures:
+            Type: Parallel
+            End: true
+            Comment: 配信リソースの作成を並列で実行
+            InputPath: $
+            Branches:
+              - StartAt: CreateChannel
+                States:
+                  CreateChannel:
+                    Type: Task
+                    Comment: ライブ配信 - チャンネルを作成
+                    InputPath: $
+                    Resource: arn:aws:states:::aws-sdk:medialive:createChannel
+                    Parameters:
+                      Name.$: $[0].ChannelInput.Name
+                      ChannelClass.$: $[0].ChannelInput.ChannelClass
+                      InputAttachments:
+                        - InputId.$: $[0].RtmpResult.Input.Id
+                          InputAttachmentName.$: $[0].RtmpResult.Input.Name
+                        - InputId.$: $[1].MP4Result.Input.Id
+                          InputAttachmentName.$: $[1].MP4Result.Input.Name
+                      Destinations.$: $[0].ChannelInput.Destinations
+                      EncoderSettings.$: $[0].ChannelInput.EncoderSettings
+                    End: true
 
 plugins:
   - serverless-step-functions
