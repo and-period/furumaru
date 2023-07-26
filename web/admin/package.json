@@ -17,12 +17,12 @@
     "sw:build": "node src/sw/firebase-messaging-sw.ts"
   },
   "dependencies": {
-    "@pinia/nuxt": "^0.4.9",
+    "@pinia/nuxt": "^0.4.11",
     "@tiptap/pm": "^2.0.3",
     "@tiptap/starter-kit": "^2.0.3",
     "@tiptap/vue-3": "^2.0.3",
     "@vuelidate/core": "^2.0.2",
-    "@vuelidate/validators": "^2.0.2",
+    "@vuelidate/validators": "^2.0.3",
     "amazon-ivs-web-broadcast": "^1.3.1",
     "aws-amplify": "^5.1.4",
     "axios": "^1.4.0",
