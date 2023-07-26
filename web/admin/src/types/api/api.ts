@@ -4494,6 +4494,12 @@ export interface ShippingResponse {
      * @memberof ShippingResponse
      */
     'shipping': Shipping;
+    /**
+     * 
+     * @type {Coordinator}
+     * @memberof ShippingResponse
+     */
+    'coordinator': Coordinator;
 }
 /**
  * 配送時の箱の大きさ
@@ -4535,6 +4541,12 @@ export interface ShippingsResponse {
      * @memberof ShippingsResponse
      */
     'shippings': Array<Shipping>;
+    /**
+     * コーディネータ一覧
+     * @type {Array<Coordinator>}
+     * @memberof ShippingsResponse
+     */
+    'coordinators': Array<Coordinator>;
     /**
      * 合計数
      * @type {number}
@@ -14070,6 +14082,44 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
+         * @summary 配送設定削除
+         * @param {string} shippingId 配送設定ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteShipping: async (shippingId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'shippingId' is not null or undefined
+            assertParamExists('v1DeleteShipping', 'shippingId', shippingId)
+            const localVarPath = `/v1/shippings/{shippingId}`
+                .replace(`{${"shippingId"}}`, encodeURIComponent(String(shippingId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 配送設定取得
          * @param {string} shippingId 配送設定ID
          * @param {*} [options] Override http request option.
@@ -14227,6 +14277,17 @@ export const ShippingApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary 配送設定削除
+         * @param {string} shippingId 配送設定ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1DeleteShipping(shippingId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteShipping(shippingId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary 配送設定取得
          * @param {string} shippingId 配送設定ID
          * @param {*} [options] Override http request option.
@@ -14284,6 +14345,16 @@ export const ShippingApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
+         * @summary 配送設定削除
+         * @param {string} shippingId 配送設定ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteShipping(shippingId: string, options?: any): AxiosPromise<object> {
+            return localVarFp.v1DeleteShipping(shippingId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary 配送設定取得
          * @param {string} shippingId 配送設定ID
          * @param {*} [options] Override http request option.
@@ -14336,6 +14407,18 @@ export class ShippingApi extends BaseAPI {
      */
     public v1CreateShipping(body: CreateShippingRequest, options?: AxiosRequestConfig) {
         return ShippingApiFp(this.configuration).v1CreateShipping(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 配送設定削除
+     * @param {string} shippingId 配送設定ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ShippingApi
+     */
+    public v1DeleteShipping(shippingId: string, options?: AxiosRequestConfig) {
+        return ShippingApiFp(this.configuration).v1DeleteShipping(shippingId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
