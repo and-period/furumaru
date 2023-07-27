@@ -5,6 +5,7 @@ frameworkVersion: "3"
 provider:
   name: aws
   runtime: nodejs18.x
+  account: ${self:custom.envMap.${self:provider.stage}.accountId}
   stage: ${opt:stage, self:custom.defaultStage}
   region: ${self:custom.envMap.${self:provider.stage}.region}
   vpc:
@@ -54,8 +55,10 @@ resources:
                 - Effect: Allow
                   Action:
                     - mediaLive:CreateInput
-                    - mediaStore:CreateContainer
                     - mediaLive:CreateChannel
+                    - mediaStore:CreateContainer
+                    - mediaStore:DescribeContainer
+                    - mediaStore:PutContainerPolicy
                   Resource:
                     - '*'
 
@@ -106,12 +109,39 @@ stepFunctions:
                 States:
                   CreateContainer:
                     Type: Task
-                    End: true
                     Comment: ライブ配信 - 配信用ストレージを作成
                     Resource: arn:aws:states:::aws-sdk:mediastore:createContainer
                     ResultPath: $.ContainerResult
                     Parameters:
                       ContainerName.$: $.ContainerName
+                    Next: DescribeContainer
+                  DescribeContainer:
+                    Type: Task
+                    Comment: ライブ配信 - 配信用ストレージのステータスを取得する
+                    ResultPath: $.ContainerStatus
+                    Resource: arn:aws:states:::aws-sdk:mediastore:describeContainer
+                    Parameters:
+                      ContainerName.$: $.ContainerName
+                    Next: WaitActive
+                  WaitActive:
+                    Type: Wait
+                    Seconds: 1
+                    Next: CheckContainerActive
+                  CheckContainerActive:
+                    Type: Choice
+                    InputPath: $
+                    Choices:
+                      - Variable: $.ContainerStatus.Container.Status
+                        StringEquals: "ACTIVE"
+                        Next: success
+                      - Variable: $.ContainerStatus.Container.Status
+                        StringEquals: "CREATING"
+                        Next: DescribeContainer
+                    Default: failed
+                  success:
+                    Type: Succeed
+                  failed:
+                    Type: Fail
             Next: CreateStreamingResoures
           CreateStreamingResoures:
             Type: Parallel
