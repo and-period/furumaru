@@ -44,8 +44,8 @@ const handleClickMenuItem = (item: HeaderMenuItem | FooterMenuItem) => {
       'md:h-[116px]': !isScrolled,
     }"
   >
-    <nuxt-link :to="homePath" @click="closeSpMenu">
-      <the-marche-logo class="m-0 md:w-64 w-32" />
+    <nuxt-link :to="homePath" class="h-full flex md:max-w-64 max-w-32" @click="closeSpMenu">
+      <the-marche-logo class="m-0 max-w-full max-h-full items-center" />
     </nuxt-link>
 
     <div class="flex items-center justify-end w-full text-main">
