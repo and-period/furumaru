@@ -167,6 +167,29 @@ stepFunctions:
                       Destinations.$: $[0].ChannelInput.Destinations
                       EncoderSettings.$: $[0].ChannelInput.EncoderSettings
                     End: true
-
+              - StartAt: PutContainerPolicy
+                States:
+                  PutContainerPolicy:
+                    Type: Task
+                    Comment: ライブ配信 - チャンネルに対するポリシーを設定
+                    InputPath: $
+                    Resource: arn:aws:states:::aws-sdk:mediastore:putContainerPolicy
+                    Parameters:
+                      ContainerName.$: $[2].ContainerResult.Container.Name
+                      Policy:
+                        Version: '2012-10-17'
+                        Statement:
+                          - Sid: PublicReadOverHttps
+                            Effect: Allow
+                            Principal:
+                              AWS: '*'
+                            Action:
+                              - mediastore:GetObject
+                              - mediastore:DescribeObject
+                            Resource.$: States.Format('{}/*', $[2].ContainerResult.Container.Arn)
+                            Condition:
+                              Bool:
+                                aws:SecureTransport: 'true'
+                    End: true
 plugins:
   - serverless-step-functions
