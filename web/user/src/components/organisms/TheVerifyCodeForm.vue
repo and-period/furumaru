@@ -14,7 +14,7 @@ const emits = defineEmits<Emits>()
 
 const codeValue = computed({
   get: () => props.code,
-  set: (val: string) => emits('update:code', val)
+  set: (val: string) => emits('update:code', val),
 })
 
 const handleSubmit = () => {

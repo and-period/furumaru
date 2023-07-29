@@ -39,27 +39,35 @@ const handleClickMenuItem = (item: HeaderMenuItem | FooterMenuItem) => {
 <template>
   <div
     :class="{
-      'flex md:px-10 px-4 md:py-4 py-2 bg-base items-center relative duration-300 ease-in-out ': true,
+      'relative flex items-center bg-base px-4 py-2 duration-300 ease-in-out md:px-10 md:py-4 ': true,
       'md:h-[80px]': isScrolled,
       'md:h-[116px]': !isScrolled,
     }"
   >
-    <nuxt-link :to="homePath" class="h-full flex md:max-w-64 max-w-32" @click="closeSpMenu">
-      <the-marche-logo class="m-0 max-w-full max-h-full items-center" />
+    <nuxt-link
+      :to="homePath"
+      class="flex h-full"
+      @click="closeSpMenu"
+    >
+      <the-marche-logo class="m-0 max-h-full max-w-full items-center" />
     </nuxt-link>
 
-    <div class="flex items-center justify-end w-full text-main">
-      <nav class="mr-16 xl:block hidden">
-        <ul class="list-none flex gap-x-10">
-          <li v-for="item, i in menuItems" :key="i">
-            <a href="#" :class="{'border-b border-main pb-1': item.active}" @click="item.onClick">
+    <div class="flex w-full items-center justify-end text-main">
+      <nav class="mr-16 hidden xl:block">
+        <ul class="flex list-none gap-x-10">
+          <li v-for="(item, i) in menuItems" :key="i">
+            <a
+              href="#"
+              :class="{ 'border-b border-main pb-1': item.active }"
+              @click="item.onClick"
+            >
               {{ item.text }}
             </a>
           </li>
         </ul>
       </nav>
 
-      <div class="flex items-center md:gap-x-8 gap-x-2">
+      <div class="flex items-center gap-x-2 md:gap-x-8">
         <the-pc-account-menu
           :is-authenticated="isAuthenticated"
           :authenticated-menu-items="authenticatedAccountMenuItem"
@@ -79,7 +87,10 @@ const handleClickMenuItem = (item: HeaderMenuItem | FooterMenuItem) => {
           :cart-items="cartItems"
         />
 
-        <the-icon-button class="xl:hidden h-10 w-10" @click="handleClickMenuIconButton">
+        <the-icon-button
+          class="h-10 w-10 xl:hidden"
+          @click="handleClickMenuIconButton"
+        >
           <the-outline-close-icon v-if="spMenuOpen" />
           <the-menu-icon v-else />
         </the-icon-button>
@@ -89,21 +100,26 @@ const handleClickMenuItem = (item: HeaderMenuItem | FooterMenuItem) => {
 
   <div
     :class="{
-      'absolute z-[50] bg-base block w-full h-screen transition duration-300 px-16': true,
+      'absolute z-[50] block h-screen w-full bg-base px-16 transition duration-300': true,
       'opacity-100': spMenuOpen,
-      'opacity-0 invisible': !spMenuOpen
+      'invisible opacity-0': !spMenuOpen,
     }"
   >
     <div class="flex flex-col gap-4 text-center text-main">
-      <a v-for="item, i in menuItems" :key="i" href="#" @click="handleClickMenuItem(item)">
+      <a
+        v-for="(item, i) in menuItems"
+        :key="i"
+        href="#"
+        @click="handleClickMenuItem(item)"
+      >
         {{ item.text }}
       </a>
-      <hr class=" border-dashed border-main my-6">
-      <nuxt-link v-for="item ,i in spMenuItems" :key="i" :to="item.href">
+      <hr class="my-6 border-dashed border-main" />
+      <nuxt-link v-for="(item, i) in spMenuItems" :key="i" :to="item.href">
         {{ item.text }}
       </nuxt-link>
 
-      <div class="flex justify-center gap-x-3 my-12">
+      <div class="my-12 flex justify-center gap-x-3">
         <the-icon-button>
           <the-instagram-icon id="header-instagram-icon" fill="#604C3F" />
         </the-icon-button>
@@ -112,7 +128,12 @@ const handleClickMenuItem = (item: HeaderMenuItem | FooterMenuItem) => {
         </the-icon-button>
       </div>
 
-      <a v-for="item, i in footerMenuItems" :key="i" href="#" @click="handleClickMenuItem(item)">
+      <a
+        v-for="(item, i) in footerMenuItems"
+        :key="i"
+        href="#"
+        @click="handleClickMenuItem(item)"
+      >
         {{ item.text }}
       </a>
     </div>

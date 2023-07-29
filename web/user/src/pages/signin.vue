@@ -5,7 +5,7 @@ import { ApiBaseError } from '~/types/exception'
 import { I18n } from '~/types/locales'
 
 definePageMeta({
-  layout: 'auth'
+  layout: 'auth',
 })
 
 const { signIn } = useAuthStore()
@@ -31,7 +31,7 @@ const handleClickLineSingInButton = () => {
 
 const formData = reactive<SignInRequest>({
   username: '',
-  password: ''
+  password: '',
 })
 
 const hasError = ref<boolean>(false)
@@ -69,11 +69,11 @@ const handleSubmit = async () => {
     :line-button-text="t('lineButtonText')"
     :forget-password-link="{
       href: localePath('/'),
-      text: t('forgetPasswordLink')
+      text: t('forgetPasswordLink'),
     }"
     :sign-up-link="{
       href: localePath('/signup'),
-      text: t('signUpLink')
+      text: t('signUpLink'),
     }"
     @submit="handleSubmit"
     @click:google-sing-in-button="handleClickGoogleSingInButton"

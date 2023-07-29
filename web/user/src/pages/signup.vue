@@ -3,7 +3,7 @@ import { CreateAuthRequest } from '~/types/api'
 import { I18n } from '~/types/locales'
 
 definePageMeta({
-  layout: 'auth'
+  layout: 'auth',
 })
 
 const router = useRouter()
@@ -18,7 +18,7 @@ const formData = reactive<CreateAuthRequest>({
   email: '',
   phoneNumber: '',
   password: '',
-  passwordConfirmation: ''
+  passwordConfirmation: '',
 })
 
 const handleSubmit = () => {
@@ -45,7 +45,7 @@ const handleSubmit = () => {
     password-confirm-error-message=""
     :already-has-link="{
       href: localePath('/signin'),
-      text: t('alreadyHas')
+      text: t('alreadyHas'),
     }"
     @submit="handleSubmit"
   />

@@ -17,12 +17,17 @@ defineProps<Props>()
     </template>
     <template #content>
       <div v-if="isAuthenticated">
-        <p v-for="item,i in authenticatedMenuItems" :key="i">
+        <p v-for="(item, i) in authenticatedMenuItems" :key="i">
           {{ item.text }}
         </p>
       </div>
       <div v-else class="flex flex-col">
-        <nuxt-link v-for="item,i in noAuthenticatedMenuItems" :key="i" :href="item.href" class=" hover:bg-gray-200 py-2 px-4">
+        <nuxt-link
+          v-for="(item, i) in noAuthenticatedMenuItems"
+          :key="i"
+          :href="item.href"
+          class="px-4 py-2 hover:bg-gray-200"
+        >
           {{ item.text }}
         </nuxt-link>
       </div>

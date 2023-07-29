@@ -31,7 +31,7 @@ const emits = defineEmits<Emits>()
 
 const formData = computed({
   get: () => props.modelValue,
-  set: (val: CreateAuthRequest) => emits('update:modelValue', val)
+  set: (val: CreateAuthRequest) => emits('update:modelValue', val),
 })
 
 const handleSubmit = () => {
@@ -40,7 +40,7 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <div class="block m-x-auto sm:min-w-[560px]">
+  <div class="mx-auto block sm:min-w-[560px]">
     <the-marche-logo class="mb-10" />
     <the-card>
       <the-card-title>
@@ -66,7 +66,7 @@ const handleSubmit = () => {
             @submit="handleSubmit"
           />
 
-          <p class="underline my-6">
+          <p class="my-6 underline">
             <nuxt-link :to="alreadyHasLink.href">
               {{ alreadyHasLink.text }}
             </nuxt-link>

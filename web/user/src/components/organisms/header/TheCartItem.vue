@@ -1,4 +1,4 @@
-<script setup lang='ts'>
+<script setup lang="ts">
 interface Props {
   cartNumber: number
   marcheName: string
@@ -37,11 +37,9 @@ const useRate = computed<number>(() => {
 
 <template>
   <div class="bg-base p-4">
-    <p class="mt-2 mb-6 text-center">
-      買い物カゴ #{{ cartNumber }}
-    </p>
+    <p class="mb-6 mt-2 text-center">買い物カゴ #{{ cartNumber }}</p>
 
-    <dl class="text-sm flex flex-col gap-y-1">
+    <dl class="flex flex-col gap-y-1 text-sm">
       <div class="flex">
         <dt>マルシェ：</dt>
         <dd>{{ marcheName }}</dd>
@@ -63,41 +61,36 @@ const useRate = computed<number>(() => {
         <the-melon-icon v-if="boxSizeIs100" />
         <div
           :class="{
-            'bg-white w-full rounded-full h-4 border-2': true,
+            'h-4 w-full rounded-full border-2 bg-white': true,
             'border-orange': boxSizeIs60,
             'border-apple-red': boxSizeIs80,
-            'border-green': boxSizeIs100
+            'border-green': boxSizeIs100,
           }"
         >
           <div
             :class="{
-              'rounded-l h-3': true,
-              'bg-orange border-orange border': boxSizeIs60,
-              'bg-apple-red border-apple-red border': boxSizeIs80,
-              'bg-green border-green border': boxSizeIs100
+              'h-3 rounded-l': true,
+              'border border-orange bg-orange': boxSizeIs60,
+              'border border-apple-red bg-apple-red': boxSizeIs80,
+              'border border-green bg-green': boxSizeIs100,
             }"
             :style="`width: ${useRate}%`"
           />
         </div>
       </div>
 
-      <hr class="my-2 border-main border-dashed">
+      <hr class="my-2 border-dashed border-main" />
 
-      <div
-        v-for="item in items"
-        :key="item.id"
-      >
+      <div v-for="item in items" :key="item.id">
         <the-cart-product-item
           :name="item.name"
           :price="item.price"
           :img-src="item.imgSrc"
         />
-        <hr class="my-2 border-main border-dashed">
+        <hr class="my-2 border-dashed border-main" />
       </div>
 
-      <button class="py-1 bg-main text-white w-full">
-        ログインして購入
-      </button>
+      <button class="w-full bg-main py-1 text-white">ログインして購入</button>
     </div>
   </div>
 </template>

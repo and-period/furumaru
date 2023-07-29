@@ -12,8 +12,14 @@ const imageItems = computed(() => {
     return {
       src: item,
       active: i === activeIdx.value,
-      leftContent: activeIdx.value === 0 ? i === props.images.length - 1 : i === activeIdx.value - 1,
-      rightContent: activeIdx.value === props.images.length - 1 ? i === 0 : i === activeIdx.value + 1
+      leftContent:
+        activeIdx.value === 0
+          ? i === props.images.length - 1
+          : i === activeIdx.value - 1,
+      rightContent:
+        activeIdx.value === props.images.length - 1
+          ? i === 0
+          : i === activeIdx.value + 1,
     }
   })
 })
@@ -36,27 +42,37 @@ const handleClickRightArrowButton = () => {
 </script>
 
 <template>
-  <div class="flex justify-center items-center gap-x-4">
-    <the-icon-button class="bg-white w-10 h-10 z-50 bg-opacity-70 hover:bg-opacity-100" @click="handleClickLeftArrowButton">
+  <div class="flex items-center justify-center gap-x-4">
+    <the-icon-button
+      class="z-50 h-10 w-10 bg-white/70 hover:bg-white"
+      @click="handleClickLeftArrowButton"
+    >
       <the-left-arrow-icon />
     </the-icon-button>
 
-    <div class="relative lg:w-[780px] lg:h-[320px] sm:w-[624px] sm:h-[256px] w-[312px] h-[128px]">
+    <div
+      class="relative h-[128px] w-[312px] sm:h-[256px] sm:w-[624px] lg:h-[320px] lg:w-[780px]"
+    >
       <div
-        v-for="imageItem, i in imageItems"
+        v-for="(imageItem, i) in imageItems"
         :key="i"
         :class="{
-          'absolute w-full h-full transition-all duration-300': true,
+          'absolute h-full w-full transition-all duration-300': true,
           'z-40': imageItem.active,
           'z-0 brightness-75': !imageItem.active,
-          'lg:-translate-x-[780px] sm:-translate-x-[624px] -translate-x-[312px]': imageItem.leftContent,
-          'lg:translate-x-[780px] sm:translate-x-[624px] translate-x-[312px]': imageItem.rightContent,
+          'translate-x-[-312px] sm:translate-x-[-624px] lg:translate-x-[-780px]':
+            imageItem.leftContent,
+          'translate-x-[312px] sm:translate-x-[624px] lg:translate-x-[780px]':
+            imageItem.rightContent,
         }"
         :style="`background-position: center; background-size: cover; background-image: url(${imageItem.src});`"
       />
     </div>
 
-    <the-icon-button class="bg-white w-10 h-10 z-50 bg-opacity-50 hover:bg-opacity-100" @click="handleClickRightArrowButton">
+    <the-icon-button
+      class="z-50 h-10 w-10 bg-white/50 hover:bg-white"
+      @click="handleClickRightArrowButton"
+    >
       <the-right-arrow-icon />
     </the-icon-button>
   </div>

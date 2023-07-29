@@ -7,7 +7,9 @@ defineProps<Props>()
 </script>
 
 <template>
-  <div class="w-72 bg-white rounded-3xl border-2 text-main border-main uppercase text-center font-bold text-xl py-2">
+  <div
+    class="w-72 rounded-3xl border-2 border-main bg-white py-2 text-center text-xl font-bold uppercase text-main"
+  >
     {{ value }}
   </div>
 </template>

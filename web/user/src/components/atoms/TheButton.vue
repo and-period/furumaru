@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const emits = defineEmits<{(e: 'click'): void}>()
+const emits = defineEmits<{ (e: 'click'): void }>()
 
 const handleClick = (): void => {
   emits('click')
@@ -7,7 +7,7 @@ const handleClick = (): void => {
 </script>
 
 <template>
-  <button class="px-3 py-3" @click="handleClick">
+  <button class="p-3" @click="handleClick">
     <slot />
   </button>
 </template>

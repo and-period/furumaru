@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen bg-base flex flex-col items-center py-16 overflow-auto">
+  <div class="flex h-screen flex-col items-center overflow-auto bg-base py-16">
     <slot />
   </div>
 </template>

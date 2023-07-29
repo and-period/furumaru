@@ -5,10 +5,10 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  length: 6
+  length: 6,
 })
 
-const emits = defineEmits<{(name: 'update:modelValue', val: string): void}>()
+const emits = defineEmits<{ (name: 'update:modelValue', val: string): void }>()
 
 const divs = ref<any>([])
 const values = ref<string[]>([])
@@ -22,10 +22,14 @@ onMounted(() => {
   values.value = [...Array(props.length)].map(() => '')
 })
 
-watch(values, () => {
-  const val = values.value.map(item => item).join('')
-  emits('update:modelValue', val)
-}, { deep: true })
+watch(
+  values,
+  () => {
+    const val = values.value.map((item) => item).join('')
+    emits('update:modelValue', val)
+  },
+  { deep: true },
+)
 
 const handleKeyup = (event: KeyboardEvent, i: number) => {
   const key = event.key
@@ -39,16 +43,20 @@ const handleKeyup = (event: KeyboardEvent, i: number) => {
 </script>
 
 <template>
-  <div class="flex flex-row justify-center text-center px-2 mt-5">
+  <div class="mt-5 flex flex-row justify-center px-2 text-center">
     <input
       v-for="item in [...Array(length)].map((_, i) => i)"
-      :ref="el => { if (el) divs[item] = el}"
+      :ref="
+        (el) => {
+          if (el) divs[item] = el
+        }
+      "
       :key="item"
       v-model="values[item]"
-      class="m-2 border h-12 w-10 text-center border-main rounded focus:outline-current"
+      class="m-2 h-12 w-10 rounded border border-main text-center focus:outline-current"
       :type="type"
       maxlength="1"
       @keyup="(e) => handleKeyup(e, item)"
-    >
+    />
   </div>
 </template>

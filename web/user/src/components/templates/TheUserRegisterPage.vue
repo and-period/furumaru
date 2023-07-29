@@ -1,4 +1,4 @@
-<script setup lang='ts'>
+<script setup lang="ts">
 interface Props {
   pageName: string
   buttonText: string
@@ -24,17 +24,17 @@ const emits = defineEmits<Emits>()
 
 const nameValue = computed({
   get: () => porps.name,
-  set: (val: string) => emits('update:name', val)
+  set: (val: string) => emits('update:name', val),
 })
 
 const usernameValue = computed({
   get: () => porps.username,
-  set: (val: string) => emits('update:username', val)
+  set: (val: string) => emits('update:username', val),
 })
 </script>
 
 <template>
-  <div class="block m-x-auto sm:w-[560px]">
+  <div class="mx-auto block sm:w-[560px]">
     <the-marche-logo class="mb-10" />
     <the-card>
       <the-card-title>

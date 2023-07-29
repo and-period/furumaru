@@ -1,4 +1,4 @@
-<script setup lang='ts'>
+<script setup lang="ts">
 interface Props {
   name: string
   price: number
@@ -8,29 +8,31 @@ interface Props {
 const props = defineProps<Props>()
 
 const priceString = computed<string>(() => {
-  return new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(props.price)
+  return new Intl.NumberFormat('ja-JP', {
+    style: 'currency',
+    currency: 'JPY',
+  }).format(props.price)
 })
-
 </script>
 
 <template>
   <div>
     <p>{{ name }}</p>
 
-    <p class="font-bold after:ml-2 my-4 after:content-['(税込)'] after:text-[16px]">
+    <p
+      class="my-4 font-bold after:ml-2 after:text-[16px] after:content-['(税込)']"
+    >
       {{ priceString }}
     </p>
 
     <div class="flex gap-x-3 text-sm">
-      <img :src="imgSrc" :alt="name" class="aspect-square w-[72px] h-[72px]">
+      <img :src="imgSrc" :alt="name" class="aspect-square h-[72px] w-[72px]" />
       <div class="flex flex-col">
-        <div class="flex items-start grow">
+        <div class="flex grow items-start">
           <div class="inline-flex">
-            <label class="block mr-2 whitespace-nowrap">数量</label>
-            <select class="border-main border-[1px] px-2 h-full ">
-              <option value="0">
-                0
-              </option>
+            <label class="mr-2 block whitespace-nowrap">数量</label>
+            <select class="h-full border-[1px] border-main px-2">
+              <option value="0">0</option>
             </select>
           </div>
         </div>
