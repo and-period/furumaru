@@ -56,20 +56,35 @@ func (h *handler) ListShippings(ctx *gin.Context) {
 	if getRole(ctx) == service.AdminRoleCoordinator {
 		in.CoordinatorID = getAdminID(ctx)
 	}
-	sshippings, total, err := h.store.ListShippings(ctx, in)
+	shippings, total, err := h.store.ListShippings(ctx, in)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
+	if len(shippings) == 0 {
+		res := &response.ShippingsResponse{
+			Shippings: []*response.Shipping{},
+		}
+		ctx.JSON(http.StatusOK, res)
+		return
+	}
+
+	coordinators, err := h.multiGetCoordinators(ctx, shippings.CoordinatorIDs())
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
 
-	shippings, err := service.NewShippings(sshippings)
+	sshippings, err := service.NewShippings(shippings)
 	if err != nil {
 		httpError(ctx, err)
 		return
 	}
+
 	res := &response.ShippingsResponse{
-		Shippings: shippings.Response(),
-		Total:     total,
+		Shippings:    sshippings.Response(),
+		Coordinators: coordinators.Response(),
+		Total:        total,
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -158,6 +173,11 @@ func (h *handler) CreateShipping(ctx *gin.Context) {
 		httpError(ctx, err)
 		return
 	}
+	coordinator, err := h.getCoordinator(ctx, sshipping.CoordinatorID)
+	if err != nil {
+		httpError(ctx, err)
+		return
+	}
 
 	shipping, err := service.NewShipping(sshipping)
 	if err != nil {
@@ -165,7 +185,8 @@ func (h *handler) CreateShipping(ctx *gin.Context) {
 		return
 	}
 	res := &response.ShippingResponse{
-		Shipping: shipping.Response(),
+		Shipping:    shipping.Response(),
+		Coordinator: coordinator.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

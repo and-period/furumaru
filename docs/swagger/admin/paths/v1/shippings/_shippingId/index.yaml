@@ -65,3 +65,36 @@ patch:
         application/json:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+delete:
+  summary: 配送設定削除
+  operationId: v1DeleteShipping
+  tags:
+  - Shipping
+  security:
+  - BearerAuth: []
+  parameters:
+  - in: path
+    name: shippingId
+    schema:
+      type: string
+    description: 配送設定ID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  responses:
+    204:
+      description: 成功
+      content:
+        application/json:
+          schema: {}
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+    404:
+      description: 配送設定が存在しない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'

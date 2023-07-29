@@ -26,7 +26,9 @@ const props = defineProps({
   formData: {
     type: Object as PropType<CreateShippingRequest>,
     default: (): CreateShippingRequest => ({
+      cordinatorId: '',
       name: '',
+      isDefault: false,
       box60Rates: [
         {
           name: '',
@@ -85,7 +87,6 @@ const box60RateItemsSize = computed(() => {
 const box80RateItemsSize = computed(() => {
   return [...Array(formDataValue.value.box80Rates.length).keys()]
 })
-
 const box100RateItemsSize = computed(() => {
   return [...Array(formDataValue.value.box100Rates.length).keys()]
 })
@@ -189,8 +190,12 @@ const onSubmit = async (): Promise<void> => {
           :error-messages="getErrorMessage(validate.name.$errors)"
         />
         <v-switch
+          v-model="validate.isDefault.$model"
+          :label="デフォルト設定"
+        />
+        <v-switch
           v-model="validate.hasFreeShipping.$model"
-          :label="validate.hasFreeShipping.$model ? `無料配送オプション: 有り` : `無料配送オプション: 無し`"
+          :label="無料配送オプション"
         />
 
         <div class="my-6">

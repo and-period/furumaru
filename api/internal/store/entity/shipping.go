@@ -152,6 +152,12 @@ func (ss Shippings) Fill() error {
 	return nil
 }
 
+func (ss Shippings) CoordinatorIDs() []string {
+	return set.UniqBy(ss, func(s *Shipping) string {
+		return s.CoordinatorID
+	})
+}
+
 func NewShippingRate(num int64, name string, price int64, prefs []int64) *ShippingRate {
 	return &ShippingRate{
 		Number:      num,

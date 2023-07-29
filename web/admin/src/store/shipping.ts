@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 
+import { useCoordinatorStore } from './coordinator'
 import { apiClient } from '~/plugins/api-client'
 import {
   CreateShippingRequest,
@@ -28,8 +29,11 @@ export const useShippingStore = defineStore('shipping', {
           limit,
           offset
         )
+
+        const coordinatorStore = useCoordinatorStore()
         this.shippings = res.data.shippings
         this.totalItems = res.data.total
+        coordinatorStore.coordinators = res.data.coordinators
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -71,7 +75,10 @@ export const useShippingStore = defineStore('shipping', {
     async getShipping (shippingId: string): Promise<ShippingResponse> {
       try {
         const res = await apiClient.shippingApi().v1GetShipping(shippingId)
+
+        const coordinatorStore = useCoordinatorStore()
         this.shipping = res.data.shipping
+        coordinatorStore.coordinator = res.data.coordinator
         return res.data
       } catch (err) {
         return this.errorHandler(err)
@@ -100,6 +107,19 @@ export const useShippingStore = defineStore('shipping', {
     async updateShipping (shippingId: string, payload: UpdateShippingRequest): Promise<void> {
       try {
         await apiClient.shippingApi().v1UpdateShipping(shippingId, payload)
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * 配送情報を削除する非同期関数
+     * @param shippingId 配送情報ID
+     * @returns
+     */
+    async deleteShipping (shippingId: string): Promise<void> {
+      try {
+        await apiClient.shippingApi().v1DeleteShipping(shippingId)
       } catch (err) {
         return this.errorHandler(err)
       }
