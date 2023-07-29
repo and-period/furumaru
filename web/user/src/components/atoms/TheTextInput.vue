@@ -57,9 +57,7 @@ const viewMessage = computed(() => {
 <template>
   <div class="mb-1">
     <div class="w-full">
-      <label v-if="withLabel" class="inline-block">{{
-        label
-      }}</label>
+      <label v-if="withLabel" class="inline-block">{{ label }}</label>
       <input
         v-model="value"
         :placeholder="placeholder"
