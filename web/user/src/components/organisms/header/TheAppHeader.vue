@@ -46,7 +46,7 @@ const handleClickMenuItem = (item: HeaderMenuItem | FooterMenuItem) => {
   >
     <nuxt-link
       :to="homePath"
-      class="md:max-w-64 max-w-32 flex h-full"
+      class="flex h-full"
       @click="closeSpMenu"
     >
       <the-marche-logo class="m-0 max-h-full max-w-full items-center" />

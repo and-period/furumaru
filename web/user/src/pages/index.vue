@@ -84,7 +84,7 @@ const banners: string[] = [
         <div class="relative mx-auto flex max-w-[1440px]">
           <div class="absolute left-4 flex h-[208px] items-center">
             <the-icon-button
-              class="bg-white bg-opacity-50 hover:bg-opacity-100"
+              class="bg-white/50 hover:bg-white"
               @click="handleClickArchiveLeftButton"
             >
               <the-left-arrow-icon />
@@ -104,7 +104,7 @@ const banners: string[] = [
           </div>
           <div class="absolute right-4 flex h-[208px] items-center">
             <the-icon-button
-              class="bg-white bg-opacity-50 hover:bg-opacity-100"
+              class="bg-white/50 hover:bg-white"
               @click="handleClickArchiveRightButton"
             >
               <the-right-arrow-icon />

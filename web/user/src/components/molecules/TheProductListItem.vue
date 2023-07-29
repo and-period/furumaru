@@ -33,7 +33,7 @@ const hasStock = computed(() => {
     <div class="relative">
       <div
         v-if="!hasStock"
-        class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50"
+        class="absolute inset-0 flex items-center justify-center bg-black/50"
       >
         <p class="text-lg font-semibold text-white">在庫なし</p>
       </div>
@@ -76,7 +76,7 @@ const hasStock = computed(() => {
           {{ cnName }}
         </span>
       </div>
-      <div class="min-h-14 min-w-14">
+      <div class="h-14 w-14">
         <img :src="cnImgSrc" class="h-full w-full rounded-full" />
       </div>
     </div>

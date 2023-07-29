@@ -44,7 +44,7 @@ const handleClickRightArrowButton = () => {
 <template>
   <div class="flex items-center justify-center gap-x-4">
     <the-icon-button
-      class="z-50 h-10 w-10 bg-white bg-opacity-70 hover:bg-opacity-100"
+      class="z-50 h-10 w-10 bg-white/70 hover:bg-white"
       @click="handleClickLeftArrowButton"
     >
       <the-left-arrow-icon />
@@ -60,7 +60,7 @@ const handleClickRightArrowButton = () => {
           'absolute h-full w-full transition-all duration-300': true,
           'z-40': imageItem.active,
           'z-0 brightness-75': !imageItem.active,
-          '-translate-x-[312px] sm:-translate-x-[624px] lg:-translate-x-[780px]':
+          'translate-x-[-312px] sm:translate-x-[-624px] lg:translate-x-[-780px]':
             imageItem.leftContent,
           'translate-x-[312px] sm:translate-x-[624px] lg:translate-x-[780px]':
             imageItem.rightContent,
@@ -70,7 +70,7 @@ const handleClickRightArrowButton = () => {
     </div>
 
     <the-icon-button
-      class="z-50 h-10 w-10 bg-white bg-opacity-50 hover:bg-opacity-100"
+      class="z-50 h-10 w-10 bg-white/50 hover:bg-white"
       @click="handleClickRightArrowButton"
     >
       <the-right-arrow-icon />

@@ -57,7 +57,7 @@ const viewMessage = computed(() => {
 <template>
   <div class="mb-1">
     <div class="w-full">
-      <label v-if="withLabel" class="form-label inline-block">{{
+      <label v-if="withLabel" class="inline-block">{{
         label
       }}</label>
       <input
@@ -66,7 +66,7 @@ const viewMessage = computed(() => {
         :required="required"
         :type="type"
         :class="{
-          'form-control block w-full border-b border-main bg-transparent px-2 leading-10 focus:outline-none': true,
+          'block w-full border-b border-main bg-transparent px-2 leading-10 focus:outline-none': true,
           'border-b-2 border-orange': hasError,
         }"
       />

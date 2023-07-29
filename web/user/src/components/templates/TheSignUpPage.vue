@@ -40,7 +40,7 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <div class="m-x-auto block sm:min-w-[560px]">
+  <div class="mx-auto block sm:min-w-[560px]">
     <the-marche-logo class="mb-10" />
     <the-card>
       <the-card-title>
