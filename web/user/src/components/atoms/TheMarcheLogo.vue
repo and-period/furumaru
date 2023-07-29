@@ -1,3 +1,3 @@
 <template>
-  <img src="~/assets/img/logo.svg" alt="furumaru logo" class="block m-auto">
+  <img src="~/assets/img/logo.svg" alt="furumaru logo" class="m-auto block" />
 </template>

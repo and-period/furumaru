@@ -1,4 +1,4 @@
-<script setup lang='ts'>
+<script setup lang="ts">
 import * as dayjs from 'dayjs'
 
 interface Props {
@@ -20,34 +20,35 @@ const formattedStartAt = computed(() => {
   <div
     :class="{
       'p-4 text-main': true,
-      'bg-base': published
+      'bg-base': published,
     }"
   >
-    <div class="w-full relative">
-      <div v-if="published" class="h-16 w-16 absolute bg-orange rounded-full flex flex-col justify-center items-center -top-8 -left-8">
+    <div class="relative w-full">
+      <div
+        v-if="published"
+        class="absolute -left-8 -top-8 flex h-16 w-16 flex-col items-center justify-center rounded-full bg-orange"
+      >
         <the-live-icon />
-        <div class="text-white uppercase text-xl font-bold">
-          live
-        </div>
+        <div class="text-xl font-bold uppercase text-white">live</div>
       </div>
-      <img :src="imgSrc" :alt="`live-${title}-thumbnail`">
+      <img :src="imgSrc" :alt="`live-${title}-thumbnail`" />
     </div>
     <div class="mt-2 flex flex-col gap-2">
-      <div class="flex text-sm items-center">
+      <div class="flex items-center text-sm">
         <div class="grow">
           <span
             :class="{
-              'font-bold px-2 rounded': true,
-              'bg-white border-2 border-orange text-orange':published,
-              'border-2 border-main text-main': !published
+              'rounded px-2 font-bold': true,
+              'border-2 border-orange bg-white text-orange': published,
+              'border-2 border-main text-main': !published,
             }"
           >
-            {{ published? '配信中': '配信予定' }}
+            {{ published ? '配信中' : '配信予定' }}
           </span>
           <span class="ml-2 after:content-['〜']">{{ formattedStartAt }}</span>
         </div>
-        <button class="w-4 h-4 hover:scale-110">
-          <the-ellipsis-vertical-icon class="w-5 h-5" />
+        <button class="h-4 w-4 hover:scale-110">
+          <the-ellipsis-vertical-icon class="h-5 w-5" />
         </button>
       </div>
       <p class="line-clamp-3">

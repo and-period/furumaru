@@ -23,11 +23,11 @@ interface Props {
 }
 
 interface Emits {
-  (e: 'update:modelValue', val: SignInRequest): void;
-  (e: 'submit'): void;
-  (e: 'click:googleSingInButton'): void;
-  (e: 'click:facebookSingInButton'): void;
-  (e: 'click:lineSingInButton'): void;
+  (e: 'update:modelValue', val: SignInRequest): void
+  (e: 'submit'): void
+  (e: 'click:googleSingInButton'): void
+  (e: 'click:facebookSingInButton'): void
+  (e: 'click:lineSingInButton'): void
 }
 
 const props = defineProps<Props>()
@@ -35,7 +35,7 @@ const emits = defineEmits<Emits>()
 
 const formData = computed({
   get: () => props.modelValue,
-  set: (val: SignInRequest) => emits('update:modelValue', val)
+  set: (val: SignInRequest) => emits('update:modelValue', val),
 })
 
 const handleSubmit = () => {
@@ -51,11 +51,10 @@ const handleClickFacebookSingInButton = () => {
 const handleClickLineSingInButton = () => {
   emits('click:lineSingInButton')
 }
-
 </script>
 
 <template>
-  <div class="block m-x-auto sm:min-w-[560px]">
+  <div class="m-x-auto block sm:min-w-[560px]">
     <the-marche-logo class="mb-10" />
     <the-card>
       <the-card-title>{{ pageName }}</the-card-title>
@@ -77,20 +76,27 @@ const handleClickLineSingInButton = () => {
             @submit="handleSubmit"
           />
 
-          <p class="underline my-6">
+          <p class="my-6 underline">
             <nuxt-link :to="forgetPasswordLink.href">
               {{ forgetPasswordLink.text }}
             </nuxt-link>
           </p>
 
-          <the-google-auth-button :button-text="googleButtonText" @click="handleClickGoogleSingInButton" />
-          <the-facebook-auth-button :button-text="facebookButtonText" @click="handleClickFacebookSingInButton" />
-          <the-line-auth-button :button-text="lineButtonText" @click="handleClickLineSingInButton" />
+          <the-google-auth-button
+            :button-text="googleButtonText"
+            @click="handleClickGoogleSingInButton"
+          />
+          <the-facebook-auth-button
+            :button-text="facebookButtonText"
+            @click="handleClickFacebookSingInButton"
+          />
+          <the-line-auth-button
+            :button-text="lineButtonText"
+            @click="handleClickLineSingInButton"
+          />
 
           <div class="my-6">
-            <p class="mb-2">
-              {{ dontHaveAccountText }}<br>
-            </p>
+            <p class="mb-2">{{ dontHaveAccountText }}<br /></p>
             <nuxt-link :to="signUpLink.href" class="underline">
               {{ signUpLink.text }}
             </nuxt-link>

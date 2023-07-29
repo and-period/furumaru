@@ -29,7 +29,7 @@ const emits = defineEmits<Emits>()
 
 const formData = computed({
   get: () => props.modelValue,
-  set: (val: CreateAuthRequest) => emits('update:modelValue', val)
+  set: (val: CreateAuthRequest) => emits('update:modelValue', val),
 })
 
 const handleSubmit = () => {

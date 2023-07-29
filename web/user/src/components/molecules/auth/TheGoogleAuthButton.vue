@@ -4,7 +4,7 @@ interface Props {
 }
 defineProps<Props>()
 
-const emits = defineEmits<{(e: 'click'): void}>()
+const emits = defineEmits<{ (e: 'click'): void }>()
 
 const handleClick = (): void => {
   emits('click')
@@ -12,9 +12,18 @@ const handleClick = (): void => {
 </script>
 
 <template>
-  <the-button class="border border-gray-400 flex items-center text-typography" @click="handleClick">
-    <img src="~/assets/img/g-normal.png" height="24" width="24" alt="google icon" class="block">
-    <p class="text-center w-full">
+  <the-button
+    class="flex items-center border border-gray-400 text-typography"
+    @click="handleClick"
+  >
+    <img
+      src="~/assets/img/g-normal.png"
+      height="24"
+      width="24"
+      alt="google icon"
+      class="block"
+    />
+    <p class="w-full text-center">
       {{ buttonText }}
     </p>
   </the-button>

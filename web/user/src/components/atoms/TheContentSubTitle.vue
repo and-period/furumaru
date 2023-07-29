@@ -7,9 +7,9 @@ defineProps<Props>()
 </script>
 
 <template>
-  <div class="text-main flex justify-center items-center gap-x-4">
-    <span class="border-main border-t inline-block w-5 " />
+  <div class="flex items-center justify-center gap-x-4 text-main">
+    <span class="inline-block w-5 border-t border-main" />
     {{ value }}
-    <span class="border-main border-t inline-block w-5 " />
+    <span class="inline-block w-5 border-t border-main" />
   </div>
 </template>

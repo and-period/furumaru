@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-interface Props{
+interface Props {
   title: string
   subTitle: string
 }
@@ -8,12 +8,12 @@ defineProps<Props>()
 </script>
 
 <template>
-  <div class="bg-white relative min-h-[350px] mt-6">
-    <div class="absolute w-full -top-6">
+  <div class="relative mt-6 min-h-[350px] bg-white">
+    <div class="absolute -top-6 w-full">
       <the-content-title :value="title" class="mx-auto" />
     </div>
-    <the-content-sub-title :value="subTitle" class="mt-12 mb-11" />
-    <div class="py-6 px-4">
+    <the-content-sub-title :value="subTitle" class="mb-11 mt-12" />
+    <div class="px-4 py-6">
       <slot />
     </div>
   </div>

@@ -38,34 +38,34 @@ const navbarMenuList = computed<HeaderMenuItem[]>(() => [
   {
     text: ht('topLinkText'),
     onClick: () => router.push(localePath('/')),
-    active: route.path === localePath('/')
+    active: route.path === localePath('/'),
   },
   {
     text: ht('searchItemLinkText'),
     onClick: () => router.push(localePath('/search')),
-    active: route.path === localePath('/search')
+    active: route.path === localePath('/search'),
   },
   {
     text: ht('allItemLinkText'),
     onClick: () => router.push(localePath('/items')),
-    active: route.path === localePath('/search')
+    active: route.path === localePath('/search'),
   },
   {
     text: ht('aboutLinkText'),
     onClick: () => router.push(localePath('/about')),
-    active: route.path === localePath('/about')
-  }
+    active: route.path === localePath('/about'),
+  },
 ])
 
 const spModeMenuItems = computed<LinkItem[]>(() => [
   {
     text: ht('myPageLinkText'),
-    href: localePath('/mypage')
+    href: localePath('/mypage'),
   },
   {
     text: ht('viewMyCartText'),
-    href: localePath('/cart')
-  }
+    href: localePath('/cart'),
+  },
 ])
 
 const authenticatedMenuItems = computed<LinkItem[]>(() => [])
@@ -73,31 +73,31 @@ const authenticatedMenuItems = computed<LinkItem[]>(() => [])
 const noAuthenticatedMenuItems = computed<LinkItem[]>(() => [
   {
     text: ht('signIn'),
-    href: localePath('/signin')
+    href: localePath('/signin'),
   },
   {
     text: ht('signUp'),
-    href: localePath('/signup')
-  }
+    href: localePath('/signup'),
+  },
 ])
 
 const footerMenuList = computed<FooterMenuItem[]>(() => [
   {
     text: ft('qaLinkText'),
-    onClick: () => {}
+    onClick: () => {},
   },
   {
     text: ft('privacyPolicyLinkText'),
-    onClick: () => {}
+    onClick: () => {},
   },
   {
     text: ft('lawLinkText'),
-    onClick: () => {}
+    onClick: () => {},
   },
   {
     text: ft('inquiryLinkText'),
-    onClick: () => {}
-  }
+    onClick: () => {},
+  },
 ])
 
 const isScrolled = ref<boolean>(false)
@@ -113,11 +113,10 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('scroll', onScroll)
 })
-
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen bg-base">
+  <div class="flex min-h-screen flex-col bg-base">
     <div class="sticky top-0 z-[60]">
       <the-app-header
         :home-path="localePath('/')"
@@ -136,8 +135,8 @@ onUnmounted(() => {
         :footer-menu-items="footerMenuList"
       />
     </div>
-    <main class="flex-grow overflow-hidden">
-      <div class="pb-10 mx-auto">
+    <main class="grow overflow-hidden">
+      <div class="mx-auto pb-10">
         <slot />
       </div>
     </main>

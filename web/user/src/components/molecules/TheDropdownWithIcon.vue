@@ -33,8 +33,11 @@ onBeforeUnmount(() => {
     <the-icon-button @click="handleIconClick">
       <slot name="icon" />
     </the-icon-button>
-    <the-dropdown-area v-show="isShow" class="absolute min-w-[240px] -right-8 before:content-[''] before:absolute before:-top-8 before:right-1 before:border-[24px] before:border-transparent before:-translate-x-1/2 before:border-b-white">
-      <div class="text-right px-4">
+    <the-dropdown-area
+      v-show="isShow"
+      class="absolute -right-8 min-w-[240px] before:absolute before:-top-8 before:right-1 before:-translate-x-1/2 before:border-[24px] before:border-transparent before:border-b-white before:content-['']"
+    >
+      <div class="px-4 text-right">
         <the-icon-button @click="handleCloseIconClick">
           <the-close-icon />
         </the-icon-button>

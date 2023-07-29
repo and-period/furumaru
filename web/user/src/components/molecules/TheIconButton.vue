@@ -4,11 +4,11 @@ interface Props {
 }
 
 interface Emits {
-  (e: 'click'): void;
+  (e: 'click'): void
 }
 
 withDefaults(defineProps<Props>(), {
-  withBadge: false
+  withBadge: false,
 })
 
 const emits = defineEmits<Emits>()
@@ -19,9 +19,9 @@ const handleClick = () => {
 </script>
 
 <template>
-  <button class="p-2 rounded-full" @click="handleClick">
+  <button class="rounded-full p-2" @click="handleClick">
     <div class="relative">
-      <the-badge v-show="withBadge" class="absolute top-0 right-0" />
+      <the-badge v-show="withBadge" class="absolute right-0 top-0" />
       <slot />
     </div>
   </button>

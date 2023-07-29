@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import { useShoppingStore } from '~/store/shopping'
-import { MOCK_LIVE_ITEMS, MOCK_ARCHIVES_ITEMS, MOCK_RECOMMEND_ITEMS } from '~/constants/mock'
+import {
+  MOCK_LIVE_ITEMS,
+  MOCK_ARCHIVES_ITEMS,
+  MOCK_RECOMMEND_ITEMS,
+} from '~/constants/mock'
 
 const shoppingStore = useShoppingStore()
 
@@ -31,7 +35,7 @@ const handleClickArchiveLeftButton = () => {
   if (archiveRef.value) {
     archiveRef.value.scrollTo({
       left: archiveRef.value.scrollLeft - 368,
-      behavior: 'smooth'
+      behavior: 'smooth',
     })
     updateScrollLeft()
   }
@@ -41,7 +45,7 @@ const handleClickArchiveRightButton = () => {
   if (archiveRef.value) {
     archiveRef.value.scrollTo({
       left: archiveRef.value.scrollLeft + 368,
-      behavior: 'smooth'
+      behavior: 'smooth',
     })
     updateScrollLeft()
   }
@@ -50,7 +54,7 @@ const handleClickArchiveRightButton = () => {
 const banners: string[] = [
   '/img/banner.png',
   '/img/banner.png',
-  '/img/banner.png'
+  '/img/banner.png',
 ]
 </script>
 
@@ -58,12 +62,9 @@ const banners: string[] = [
   <div>
     <the-carousel :images="banners" />
 
-    <div class="mt-[76px] mb-[72px] flex flex-col gap-y-16">
-      <the-content-box
-        title="live"
-        sub-title="配信中・配信予定のマルシェ"
-      >
-        <div class="mx-auto max-w-7xl px-20 grid grid-cols-3 gap-x-10 gap-y-8">
+    <div class="mb-[72px] mt-[76px] flex flex-col gap-y-16">
+      <the-content-box title="live" sub-title="配信中・配信予定のマルシェ">
+        <div class="mx-auto grid max-w-7xl grid-cols-3 gap-x-10 gap-y-8 px-20">
           <the-live-item
             v-for="liveItem in MOCK_LIVE_ITEMS"
             :id="liveItem.id"
@@ -74,24 +75,25 @@ const banners: string[] = [
             :published="liveItem.published"
           />
         </div>
-        <div class="w-full mt-10 mb-4 flex justify-center">
-          <button class="bg-main text-white py-2 w-60">
-            もっと見る
-          </button>
+        <div class="mb-4 mt-10 flex w-full justify-center">
+          <button class="w-60 bg-main py-2 text-white">もっと見る</button>
         </div>
       </the-content-box>
 
-      <the-content-box
-        title="archive"
-        sub-title="過去のマルシェ"
-      >
-        <div class="mx-auto max-w-[1440px] relative flex">
-          <div class="absolute left-4 flex items-center h-[208px]">
-            <the-icon-button class="bg-white bg-opacity-50 hover:bg-opacity-100" @click="handleClickArchiveLeftButton">
+      <the-content-box title="archive" sub-title="過去のマルシェ">
+        <div class="relative mx-auto flex max-w-[1440px]">
+          <div class="absolute left-4 flex h-[208px] items-center">
+            <the-icon-button
+              class="bg-white bg-opacity-50 hover:bg-opacity-100"
+              @click="handleClickArchiveLeftButton"
+            >
               <the-left-arrow-icon />
             </the-icon-button>
           </div>
-          <div ref="archiveRef" class="flex flex-nowrap gap-x-8 overflow-x-scroll hidden-scrollbar">
+          <div
+            ref="archiveRef"
+            class="hidden-scrollbar flex flex-nowrap gap-x-8 overflow-x-scroll"
+          >
             <the-archive-item
               v-for="archiveItem in MOCK_ARCHIVES_ITEMS"
               :id="archiveItem.id"
@@ -100,25 +102,23 @@ const banners: string[] = [
               :img-src="archiveItem.imgSrc"
             />
           </div>
-          <div class="absolute right-4 flex items-center h-[208px]">
-            <the-icon-button class="bg-white bg-opacity-50 hover:bg-opacity-100" @click="handleClickArchiveRightButton">
+          <div class="absolute right-4 flex h-[208px] items-center">
+            <the-icon-button
+              class="bg-white bg-opacity-50 hover:bg-opacity-100"
+              @click="handleClickArchiveRightButton"
+            >
               <the-right-arrow-icon />
             </the-icon-button>
           </div>
         </div>
 
-        <div class="w-full mt-10 mb-4 flex justify-center">
-          <button class="bg-main text-white py-2 w-60">
-            一覧を見る
-          </button>
+        <div class="mb-4 mt-10 flex w-full justify-center">
+          <button class="w-60 bg-main py-2 text-white">一覧を見る</button>
         </div>
       </the-content-box>
 
-      <the-content-box
-        title="recommend"
-        sub-title="おすすめの商品"
-      >
-        <div class="mx-auto max-w-[1440px] grid grid-cols-5 gap-x-8 gap-y-6">
+      <the-content-box title="recommend" sub-title="おすすめの商品">
+        <div class="mx-auto grid max-w-[1440px] grid-cols-5 gap-x-8 gap-y-6">
           <the-product-list-item
             v-for="productItem in MOCK_RECOMMEND_ITEMS"
             :id="productItem.id"

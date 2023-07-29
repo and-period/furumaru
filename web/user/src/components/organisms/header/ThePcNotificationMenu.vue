@@ -6,7 +6,6 @@ interface Props {
 }
 
 defineProps<Props>()
-
 </script>
 
 <template>
@@ -16,7 +15,7 @@ defineProps<Props>()
     </template>
     <template #content>
       <div class="p-4">
-        <p class=" font-semibold mb-6">
+        <p class="mb-6 font-semibold">
           {{ title }}
         </p>
 
@@ -24,7 +23,7 @@ defineProps<Props>()
           {{ noItemText }}
         </p>
 
-        <p v-for="item,i in notificationItems" :key="i">
+        <p v-for="(item, i) in notificationItems" :key="i">
           {{ item }}
         </p>
       </div>

@@ -4,7 +4,7 @@ export default <Partial<Config>>{
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Noto Sans JP', 'sans-serif']
+        sans: ['Noto Sans JP', 'sans-serif'],
       },
       colors: {
         base: '#F9F6EA',
@@ -14,15 +14,15 @@ export default <Partial<Config>>{
         orange: '#F48D26',
         'apple-red': '#E74C3C',
         facebook: '#1877F2',
-        line: '#06C755'
+        line: '#06C755',
       },
       screens: {
         sm: '640px',
         md: '768px',
         lg: '1024px',
         xl: '1280px',
-        '2xl': '1536px'
-      }
-    }
-  }
+        '2xl': '1536px',
+      },
+    },
+  },
 }
