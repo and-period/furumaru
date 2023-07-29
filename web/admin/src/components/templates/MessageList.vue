@@ -12,7 +12,7 @@ interface Props {
   messages: Message[]
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 
 const emit = defineEmits<{
   (e: 'click:message', messageId: string): void
@@ -21,6 +21,14 @@ const emit = defineEmits<{
 const onClickMessage = (messageId: string): void => {
   emit('click:message', messageId)
 }
+
+const parsedMessage = computed<string>(() => {
+  if (props.message && props.message.body) {
+    return props.message.body.replaceAll('\\n', '\n')
+  } else {
+    return ''
+  }
+})
 </script>
 
 <template>
@@ -52,12 +60,23 @@ const onClickMessage = (messageId: string): void => {
 
     <v-col cols="10">
       <v-card class="elevation-1 d-flex flex-grow-1 flex-column">
-        <v-card-title>
-          {{ message.title ? `件名：${message.title}` : 'メッセージを選択してください' }}
-        </v-card-title>
-        <v-divider />
-        <v-card-text>{{ message.body }}</v-card-text>
+        <div v-if="message.title">
+          <v-card-title>
+            {{ `件名：${message.title}` }}
+          </v-card-title>
+          <v-divider />
+          <v-card-text class="message-area" v-text="parsedMessage" />
+        </div>
+        <v-card-text v-else class="text-center">
+          メッセージを選択してください
+        </v-card-text>
       </v-card>
     </v-col>
   </v-row>
 </template>
+
+<style scoped>
+.message-area {
+  white-space: pre-wrap;
+}
+</style>
