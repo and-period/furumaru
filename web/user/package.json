@@ -10,6 +10,7 @@
     "start": "npx serve .output/public",
     "postinstall": "nuxt prepare",
     "lint": "eslint --ext .ts,.js,.vue . --ignore-path .gitignore",
+    "format": "prettier -w **.{ts,vue}",
     "test": "vitest --run",
     "coverage": "vitest run --coverage",
     "typecheck": "nuxt typecheck"
