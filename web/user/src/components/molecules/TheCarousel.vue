@@ -41,7 +41,7 @@ const handleClickRightArrowButton = () => {
       <the-left-arrow-icon />
     </the-icon-button>
 
-    <div class="relative 2xl:w-[1440px] 2xl:h-[480px] lg:w-[960px] lg:h-[320px] w-[640px] h-[210px]">
+    <div class="relative 2xl:w-[1170px] 2xl:h-[480px] lg:w-[780px] lg:h-[320px] sm:w-[624px] sm:h-[256px] w-[312px] h-[128px]">
       <div
         v-for="imageItem, i in imageItems"
         :key="i"
@@ -49,8 +49,8 @@ const handleClickRightArrowButton = () => {
           'absolute w-full h-full transition-all duration-300': true,
           'z-40': imageItem.active,
           'z-0 brightness-75': !imageItem.active,
-          '2xl:-translate-x-[1024px] -translate-x-72': imageItem.leftContent,
-          '2xl:translate-x-[1024px] translate-x-72': imageItem.rightContent,
+          '2xl:-translate-x-[1170px] lg:-translate-x-[780px] sm:-translate-x-[624px] -translate-x-[312px]': imageItem.leftContent,
+          '2xl:translate-x-[1170px] lg:translate-x-[780px] sm:translate-x-[624px] translate-x-[312px]': imageItem.rightContent,
         }"
         :style="`background-position: center; background-size: cover; background-image: url(${imageItem.src});`"
       />
