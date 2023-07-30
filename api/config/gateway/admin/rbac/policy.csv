@@ -187,6 +187,9 @@ g, coordinator, product_type_list
 g, coordinator, product_tag_list
 g, coordinator, shipping_list
 g, coordinator, shipping_get
+g, coordinator, shipping_create
+g, coordinator, shipping_update
+g, coordinator, shipping_delete
 g, coordinator, product_list
 g, coordinator, product_get
 g, coordinator, product_create
