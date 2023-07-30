@@ -1,5 +1,5 @@
 patch:
-  summary: ライブ配信更新
+  summary: マルシェタイムテーブル更新
   operationId: v1UpdateLive
   tags:
   - Live
@@ -17,7 +17,7 @@ patch:
     name: liveId
     schema:
       type: string
-    description: ライブ配信ID
+    description: マルシェタイムテーブルID
     required: true
     example: "live-id"
   requestBody:
@@ -39,7 +39,7 @@ patch:
           schema:
             $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
     404:
-      description: 開催スケジュール,ライブ配信が存在しない
+      description: マルシェ開催スケジュール,マルシェタイムテーブルが存在しない
       content:
         application/json:
           schema:
@@ -51,7 +51,7 @@ patch:
           schema:
             $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
 delete:
-  summary: ライブ配信削除
+  summary: マルシェタイムテーブル削除
   operationId: v1DeleteLive
   tags:
   - Live
@@ -69,7 +69,7 @@ delete:
     name: liveId
     schema:
       type: string
-    description: ライブ配信ID
+    description: マルシェタイムテーブルID
     required: true
     example: "live-id"
   responses:
@@ -85,7 +85,7 @@ delete:
           schema:
             $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
     404:
-      description: 開催スケジュール,ライブ配信が存在しない
+      description: マルシェ開催スケジュール,マルシェタイムテーブルが存在しない
       content:
         application/json:
           schema:

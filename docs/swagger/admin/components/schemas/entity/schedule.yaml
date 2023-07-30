@@ -4,7 +4,7 @@ schedule:
   properties:
     id:
       type: string
-      description: スケジュールID
+      description: マルシェ開催スケジュールID
     coordinatorId:
       type: string
       description: コーディネーターID
@@ -86,8 +86,8 @@ schedule:
     coordinatorId: 'coordinator-id'
     shippingId: 'shipping-id'
     status: 4
-    title: 'スケジュールタイトル'
-    description: 'スケジュールの説明'
+    title: 'マルシェ開催スケジュールタイトル'
+    description: 'マルシェ開催スケジュールの説明'
     thumbnailUrl: 'https://and-period.jp/thumbnail.png'
     thumbnails:
     - url: 'https://and-period.jp/thumbnail_240.png'

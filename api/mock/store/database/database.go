@@ -57,6 +57,49 @@ func (mr *MockAddressMockRecorder) MultiGet(ctx, addressIDs interface{}, fields 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockAddress)(nil).MultiGet), varargs...)
 }
 
+// MockBroadcast is a mock of Broadcast interface.
+type MockBroadcast struct {
+	ctrl     *gomock.Controller
+	recorder *MockBroadcastMockRecorder
+}
+
+// MockBroadcastMockRecorder is the mock recorder for MockBroadcast.
+type MockBroadcastMockRecorder struct {
+	mock *MockBroadcast
+}
+
+// NewMockBroadcast creates a new mock instance.
+func NewMockBroadcast(ctrl *gomock.Controller) *MockBroadcast {
+	mock := &MockBroadcast{ctrl: ctrl}
+	mock.recorder = &MockBroadcastMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockBroadcast) EXPECT() *MockBroadcastMockRecorder {
+	return m.recorder
+}
+
+// GetByScheduleID mocks base method.
+func (m *MockBroadcast) GetByScheduleID(ctx context.Context, scheduleID string, fields ...string) (*entity.Broadcast, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, scheduleID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetByScheduleID", varargs...)
+	ret0, _ := ret[0].(*entity.Broadcast)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByScheduleID indicates an expected call of GetByScheduleID.
+func (mr *MockBroadcastMockRecorder) GetByScheduleID(ctx, scheduleID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, scheduleID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByScheduleID", reflect.TypeOf((*MockBroadcast)(nil).GetByScheduleID), varargs...)
+}
+
 // MockCategory is a mock of Category interface.
 type MockCategory struct {
 	ctrl     *gomock.Controller

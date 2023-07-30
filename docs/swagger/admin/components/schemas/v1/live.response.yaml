@@ -115,7 +115,7 @@ livesResponse:
   properties:
     lives:
       type: array
-      description: ライブ配信一覧
+      description: マルシェタイムテーブル一覧
       items:
         $ref: './../../../openapi.yaml#/components/schemas/live'
     producers:
