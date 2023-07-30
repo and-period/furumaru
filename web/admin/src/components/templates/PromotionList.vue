@@ -107,6 +107,10 @@ const isRegisterable = (): boolean => {
   return props.role === AdminRole.ADMINISTRATOR
 }
 
+const isEditable = (): boolean => {
+  return props.role === AdminRole.ADMINISTRATOR
+}
+
 const getDiscount = (discountType: number, discountRate: DiscountType): string => {
   switch (discountType) {
     case DiscountType.AMOUNT:
@@ -235,6 +239,7 @@ const onClickDelete = (): void => {
         </template>
         <template #[`item.actions`]="{ item }">
           <v-btn
+            v-show="isEditable()"
             color="primary"
             size="small"
             variant="outlined"

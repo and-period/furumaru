@@ -1,9 +1,13 @@
 <script lang="ts" setup>
+import { storeToRefs } from 'pinia'
 import { useAuthStore } from '~/store'
 import { AdminRole } from '~/types/api'
 import { SettingMenu } from '~/types/props'
 
 const router = useRouter()
+const authStore = useAuthStore()
+
+const { role } = storeToRefs(authStore)
 
 const menus: SettingMenu[] = [
   {
@@ -33,11 +37,17 @@ const menus: SettingMenu[] = [
   }
 ]
 
+const getMenus = (): SettingMenu[] => {
+  return menus.filter((menu: SettingMenu): boolean => {
+    return menu.roles.includes(role.value)
+  })
+}
+
 const handleClick = (action: () => void): void => {
   action()
 }
 </script>
 
 <template>
-  <templates-system-top :menus="menus" @click="handleClick" />
+  <templates-system-top :menus="getMenus()" @click="handleClick" />
 </template>
