@@ -172,6 +172,10 @@ const isRegisterable = (): boolean => {
   return props.role === AdminRole.ADMINISTRATOR
 }
 
+const isEditable = (): boolean => {
+  return props.role === AdminRole.ADMINISTRATOR
+}
+
 const getCategoryName = (categoryId: string): string => {
   const category = props.categories.find((category: Category): boolean => {
     return category.id === categoryId
@@ -390,11 +394,18 @@ const onSubmitDelete = (): void => {
           {{ getCategoryName(item.raw.categoryId) }}
         </template>
         <template #[`item.actions`]="{ item }">
-          <v-btn class="mr-2" variant="outlined" color="primary" size="small" @click="onClickEdit(item.raw.id)">
+          <v-btn
+            v-show="isEditable()"
+            class="mr-2"
+            variant="outlined"
+            color="primary"
+            size="small"
+            @click="onClickEdit(item.raw.id)"
+          >
             <v-icon size="small" :icon="mdiPencil" />
             編集
           </v-btn>
-          <v-btn variant="outlined" color="primary" size="small" @click="onClickDelete(item.raw.id)">
+          <v-btn v-show="isEditable()" variant="outlined" color="primary" size="small" @click="onClickDelete(item.raw.id)">
             <v-icon size="small" :icon="mdiDelete" />
             削除
           </v-btn>

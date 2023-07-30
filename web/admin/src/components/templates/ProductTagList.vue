@@ -133,6 +133,10 @@ const isRegisterable = (): boolean => {
   return props.role === AdminRole.ADMINISTRATOR
 }
 
+const isEditable = (): boolean => {
+  return props.role === AdminRole.ADMINISTRATOR
+}
+
 const onClickUpdatePage = (page: number): void => {
   emit('click:update-page', page)
 }
@@ -287,11 +291,18 @@ const submitDelete = (): void => {
         @update:sort-by="onClickUpdateSortBy"
       >
         <template #[`item.actions`]="{ item }">
-          <v-btn class="mr-2" variant="outlined" color="primary" size="small" @click="onClickEdit(item.raw)">
+          <v-btn
+            v-show="isEditable()"
+            class="mr-2"
+            variant="outlined"
+            color="primary"
+            size="small"
+            @click="onClickEdit(item.raw)"
+          >
             <v-icon size="small" :icon="mdiPencil" />
             編集
           </v-btn>
-          <v-btn variant="outlined" color="primary" size="small" @click="onClickDelete(item.raw)">
+          <v-btn v-show="isEditable()" variant="outlined" color="primary" size="small" @click="onClickDelete(item.raw)">
             <v-icon size="small" :icon="mdiDelete" />
             削除
           </v-btn>

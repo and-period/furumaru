@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { mdiPlus } from '@mdi/js'
+import { mdiPlus, mdiDelete } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { dateTimeFormatter } from '~/lib/formatter'
 import { AlertType } from '~/lib/hooks'
@@ -97,7 +97,7 @@ const deleteDialogValue = computed({
 })
 
 const isRegisterable = (): boolean => {
-  return props.role === AdminRole.ADMINISTRATOR
+  return props.role === AdminRole.COORDINATOR
 }
 
 const getCoordinatorName = (coordinatorId: string) => {
@@ -120,7 +120,7 @@ const getHasFreeShipping = (hasFreeShipping: boolean): string => {
 }
 
 const getHasFreeShippingColor = (hasFreeShipping: boolean): string => {
-  return hasFreeShipping ? 'primary' : 'error'
+  return hasFreeShipping ? 'primary' : 'warning'
 }
 
 const onClickUpdatePage = (page: number): void => {
@@ -194,7 +194,7 @@ const onSubmitDelete = (): void => {
         @update:items-per-page="onClickUpdateItemsPerPage"
         @click:row="(_: any, {item}: any) => onClickRow(item.raw.id)"
       >
-        <template #[`item.coordinatorName`]="{ item }">
+        <template #[`item.coordinatorId`]="{ item }">
           {{ getCoordinatorName(item.raw.coordinatorId) }}
         </template>
         <template #[`item.isDefault`]="{ item }">

@@ -41,32 +41,29 @@ const handleClickSelectAll = () => {
 <template>
   <v-text-field
     v-model="v$.name.$model"
-    label="名前"
     :error-messages="getErrorMessage(v$.name.$errors)"
+    label="名前"
   />
   <v-text-field
     v-model.number="formDataValue.price"
+    :error-messages="getErrorMessage(v$.price.$errors)"
     label="価格"
     type="number"
-    :error-messages="getErrorMessage(v$.price.$errors)"
+    suffix="円"
   />
   <v-select
     v-model="v$.prefectures.$model"
+    :error-messages="getErrorMessage(v$.prefectures.$errors)"
     label="都道府県"
     chips
     multiple
     :items="selectablePrefectureList"
-    :error-messages="getErrorMessage(v$.prefectures.$errors)"
     item-title="text"
     item-value="value"
   >
     <template #prepend-item>
-      <v-list-item
-        ripple
-        @click="handleClickSelectAll"
-        @mousedown.prevent
-      >
-        <v-list-item-title> すべて選択 </v-list-item-title>
+      <v-list-item ripple @click="handleClickSelectAll" @mousedown.prevent>
+        <v-list-item-title>すべて選択</v-list-item-title>
       </v-list-item>
     </template>
   </v-select>

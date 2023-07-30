@@ -2,11 +2,12 @@
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 
-import { useAdminStore, useNotificationStore, usePromotionStore } from '~/store'
+import { useAdminStore, useAuthStore, useNotificationStore, usePromotionStore } from '~/store'
 import { NotificationType, UpdateNotificationRequest } from '~/types/api'
 
 const route = useRoute()
 const router = useRouter()
+const authStore = useAuthStore()
 const adminStore = useAdminStore()
 const notificationStore = useNotificationStore()
 const promotionStore = usePromotionStore()
@@ -14,6 +15,7 @@ const { alertType, isShow, alertText, show } = useAlert('error')
 
 const notificationId = route.params.id as string
 
+const { role } = storeToRefs(authStore)
 const { admin } = storeToRefs(adminStore)
 const { notification } = storeToRefs(notificationStore)
 const { promotion } = storeToRefs(promotionStore)
@@ -72,6 +74,7 @@ try {
   <templates-notification-edit
     v-model:form-data="formData"
     :loading="isLoading()"
+    :role="role"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"

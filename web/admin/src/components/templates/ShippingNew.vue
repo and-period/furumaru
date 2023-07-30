@@ -69,6 +69,7 @@ const emit = defineEmits<{
 
 const rules = computed(() => ({
   name: { required },
+  isDefault: {},
   hasFreeShipping: { required },
   box60Refrigerated: { required, minValue: minValue(0) },
   box60Frozen: { required, minValue: minValue(0) },
@@ -92,6 +93,10 @@ const box100RateItemsSize = computed(() => {
 })
 
 const validate = useVuelidate(rules, formDataValue)
+
+const hasFreeShippingLabel = (v: boolean): string => {
+  return v ? '無料配送オプション: 有り' : '無料配送オプション: 無し'
+}
 
 const addBox60RateItem = (): void => {
   formDataValue.value.box60Rates.push({
@@ -191,14 +196,16 @@ const onSubmit = async (): Promise<void> => {
         />
         <v-switch
           v-model="validate.isDefault.$model"
-          :label="デフォルト設定"
+          color="primary"
+          label="デフォルト設定"
         />
         <v-switch
           v-model="validate.hasFreeShipping.$model"
-          :label="無料配送オプション"
+          color="primary"
+          :label="hasFreeShippingLabel(validate.hasFreeShipping.$model)"
         />
 
-        <div class="my-6">
+        <div class="mb-6">
           <p class="text-h6">
             サイズ60配送オプション
           </p>
@@ -209,12 +216,14 @@ const onSubmit = async (): Promise<void> => {
               label="冷蔵配送価格"
               type="number"
               class="mr-4"
+              suffix="円"
             />
             <v-text-field
               v-model.number="validate.box60Frozen.$model"
               :error-messages="getErrorMessage(validate.box60Frozen.$errors)"
               label="冷凍配送価格"
               type="number"
+              suffix="円"
             />
           </div>
           <div v-for="i in box60RateItemsSize" :key="i">
@@ -257,12 +266,14 @@ const onSubmit = async (): Promise<void> => {
               label="冷蔵配送価格"
               type="number"
               class="mr-4"
+              suffix="円"
             />
             <v-text-field
               v-model.number="validate.box80Frozen.$model"
               :error-messages="getErrorMessage(validate.box80Frozen.$errors)"
               label="冷凍配送価格"
               type="number"
+              suffix="円"
             />
           </div>
           <div v-for="i in box80RateItemsSize" :key="i">
@@ -306,12 +317,14 @@ const onSubmit = async (): Promise<void> => {
               label="冷蔵配送価格"
               class="mr-4"
               type="number"
+              suffix="円"
             />
             <v-text-field
               v-model.number="validate.box100Frozen.$model"
               :error-messages="getErrorMessage(validate.box100Frozen.$errors)"
               label="冷凍配送価格"
               type="number"
+              suffix="円"
             />
           </div>
           <div v-for="i in box100RateItemsSize" :key="i">

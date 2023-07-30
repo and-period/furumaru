@@ -111,6 +111,10 @@ const isRegisterable = (): boolean => {
   return props.role === AdminRole.ADMINISTRATOR
 }
 
+const isEditable = (): boolean => {
+  return props.role === AdminRole.ADMINISTRATOR
+}
+
 const getAdminName = (adminId: string): string => {
   const admin = props.admins.find((admin: Admin): boolean => {
     return admin.id === adminId
@@ -277,6 +281,7 @@ const onClickDelete = (): void => {
         </template>
         <template #[`item.actions`]="{ item }">
           <v-btn
+            v-show="isEditable()"
             variant="outlined"
             color="primary"
             size="small"

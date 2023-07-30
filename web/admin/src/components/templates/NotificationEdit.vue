@@ -5,13 +5,17 @@ import { PropType } from 'nuxt/dist/app/compat/capi'
 import { AlertType } from '~/lib/hooks'
 
 import { getErrorMessage, maxLength, required } from '~/lib/validations'
-import { DiscountType, NotificationResponse, NotificationStatus, NotificationTarget, NotificationType, Promotion, UpdateNotificationRequest } from '~/types/api'
+import { AdminRole, DiscountType, Notification, NotificationStatus, NotificationTarget, NotificationType, Promotion, UpdateNotificationRequest } from '~/types/api'
 import { NotificationTime } from '~/types/props'
 
 const props = defineProps({
   loading: {
     type: Boolean,
     default: false
+  },
+  role: {
+    type: Number as PropType<AdminRole>,
+    default: AdminRole.UNKNOWN
   },
   isAlert: {
     type: Boolean,
@@ -36,8 +40,8 @@ const props = defineProps({
     })
   },
   notification: {
-    type: Object as PropType<NotificationResponse>,
-    default: (): NotificationResponse => ({
+    type: Object as PropType<Notification>,
+    default: (): Notification => ({
       id: '',
       type: NotificationType.UNKNOWN,
       status: NotificationStatus.UNKNOWN,
@@ -48,7 +52,6 @@ const props = defineProps({
       publishedAt: dayjs().unix(),
       promotionId: '',
       createdBy: '',
-      creatorName: '',
       createdAt: 0,
       updatedBy: '',
       updatedAt: 0
@@ -114,12 +117,16 @@ const timeDataValue = computed({
     formDataValue.value.publishedAt = publishedAt.unix()
   }
 })
-const notificationValue = computed((): NotificationResponse => {
+const notificationValue = computed((): Notification => {
   return props.notification
 })
 
 const formDataValidate = useVuelidate(formDataRules, formDataValue)
 const timeDataValidate = useVuelidate(timeDataRules, timeDataValue)
+
+const isEditable = (): boolean => {
+  return props.role === AdminRole.ADMINISTRATOR
+}
 
 const onChangePublishedAt = (): void => {
   const publishedAt = dayjs(`${timeDataValue.value.publishedDate} ${timeDataValue.value.publishedTime}`)
@@ -267,12 +274,12 @@ const onSubmit = async (): Promise<void> => {
 
       <v-card-actions>
         <v-btn
+          v-show="isEditable()"
           block
           :loading="loading"
           variant="outlined"
           color="primary"
           type="submit"
-          class="mt-4"
         >
           更新
         </v-btn>
