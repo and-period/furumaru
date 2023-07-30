@@ -32,6 +32,8 @@ tags:
 - name: Schedule
   description: マルシェ開催スケジュール関連
 - name: Live
+  description: マルシェタイムテーブル関連
+- name: Broadcast
   description: マルシェライブ配信関連
 - name: Order
   description: 注文関連
@@ -166,6 +168,9 @@ paths:
     $ref: './paths/v1/schedules/_scheduleId/lives/index.yaml'
   /v1/schedules/{scheduleId}/lives/{liveId}:
     $ref: './paths/v1/schedules/_scheduleId/lives/_liveId/index.yaml'
+  # Broadcast
+  /v1/schedules/{scheduleId}/broadcasts:
+    $ref: './paths/v1/schedules/_scheduleId/broadcasts/index.yaml'
   # Order
   /v1/orders:
     $ref: './paths/v1/orders/index.yaml'
@@ -219,6 +224,8 @@ components:
       $ref: './components/schemas/codes/auth.yaml#/adminRole'
     adminStatus:
       $ref: './components/schemas/codes/auth.yaml#/adminStatus'
+    broadcastStatus:
+      $ref: './components/schemas/codes/broadcast.yaml#/broadcastStatus'
     prefecture:
       $ref: './components/schemas/codes/common.yaml#/prefecture'
     weekday:
@@ -266,6 +273,8 @@ components:
       $ref: './components/schemas/entity/admin.yaml#/admin'
     administrator:
       $ref: './components/schemas/entity/administrator.yaml#/administrator'
+    broadcast:
+      $ref: './components/schemas/entity/broadcast.yaml#/broadcast'
     category:
       $ref: './components/schemas/entity/category.yaml#/category'
     contactCategory:
@@ -476,6 +485,8 @@ components:
       $ref: './components/schemas/v1/live.response.yaml#/liveResponse'
     v1LivesResponse:
       $ref: './components/schemas/v1/live.response.yaml#/livesResponse'
+    v1BroadcastResponse:
+      $ref: './components/schemas/v1/broadcast.response.yaml#/broadcastResponse'
     v1OrderResponse:
       $ref: './components/schemas/v1/order.response.yaml#/orderResponse'
     v1OrdersResponse:

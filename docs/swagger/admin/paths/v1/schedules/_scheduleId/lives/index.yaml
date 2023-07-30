@@ -1,5 +1,5 @@
 get:
-  summary: ライブ配信一覧取得
+  summary: マルシェタイムテーブル一覧取得
   operationId: v1ListLives
   tags:
   - Live
@@ -21,13 +21,13 @@ get:
           schema:
             $ref: './../../../../../openapi.yaml#/components/schemas/v1LivesResponse'
     404:
-      description: 開催スケジュールが存在しない
+      description: マルシェタイムテーブルが存在しない
       content:
         application/json:
           schema:
             $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
 post:
-  summary: ライブ配信登録
+  summary: マルシェタイムテーブル登録
   operationId: v1CreateLive
   tags:
   - Live
@@ -61,7 +61,7 @@ post:
           schema:
             $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
     404:
-      description: 開催スケジュールが存在しない
+      description: マルシェタイムテーブルが存在しない
       content:
         application/json:
           schema:

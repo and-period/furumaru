@@ -21,6 +21,7 @@ type Params struct {
 
 type Database struct {
 	Address     Address
+	Broadcast   Broadcast
 	Category    Category
 	Order       Order
 	Product     Product
@@ -36,6 +37,7 @@ type Database struct {
 func NewDatabase(params *Params) *Database {
 	return &Database{
 		Address:     NewAddress(params.Database),
+		Broadcast:   NewBroadcast(params.Database),
 		Category:    NewCategory(params.Database),
 		Live:        NewLive(params.Database),
 		Order:       NewOrder(params.Database),
@@ -54,6 +56,10 @@ func NewDatabase(params *Params) *Database {
  */
 type Address interface {
 	MultiGet(ctx context.Context, addressIDs []string, fields ...string) (entity.Addresses, error)
+}
+
+type Broadcast interface {
+	GetByScheduleID(ctx context.Context, scheduleID string, fields ...string) (*entity.Broadcast, error)
 }
 
 type Category interface {

@@ -334,6 +334,102 @@ export interface AuthUserResponse {
 
 
 /**
+ * マルシェライブ配信情報
+ * @export
+ * @interface Broadcast
+ */
+export interface Broadcast {
+    /**
+     * マルシェライブ配信ID
+     * @type {string}
+     * @memberof Broadcast
+     */
+    'id': string;
+    /**
+     * マルシェ開催スケジュールID
+     * @type {string}
+     * @memberof Broadcast
+     */
+    'scheduleId': string;
+    /**
+     * 
+     * @type {BroadcastStatus}
+     * @memberof Broadcast
+     */
+    'status': BroadcastStatus;
+    /**
+     * ライブ配信URL(入力側)
+     * @type {string}
+     * @memberof Broadcast
+     */
+    'inputUrl': string;
+    /**
+     * ライブ配信URL(出力側)
+     * @type {string}
+     * @memberof Broadcast
+     */
+    'outputUrl': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof Broadcast
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof Broadcast
+     */
+    'updatedAt': number;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface BroadcastResponse
+ */
+export interface BroadcastResponse {
+    /**
+     * 
+     * @type {Broadcast}
+     * @memberof BroadcastResponse
+     */
+    'broadcast': Broadcast;
+}
+/**
+ * マルシェライブ配信状況
+ * @export
+ * @enum {string}
+ */
+
+export const BroadcastStatus = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 配信リソース未作成
+    */
+    DISABLED: 1,
+    /**
+    * 配信リソース作成/削除中
+    */
+    WAITING: 2,
+    /**
+    * 配信停止中
+    */
+    IDLE: 3,
+    /**
+    * 配信中
+    */
+    ACTIVE: 4
+} as const;
+
+export type BroadcastStatus = typeof BroadcastStatus[keyof typeof BroadcastStatus];
+
+
+/**
  * 
  * @export
  * @interface CategoriesResponse
@@ -2042,7 +2138,7 @@ export type ImageSize = typeof ImageSize[keyof typeof ImageSize];
 
 
 /**
- * ライブ配信情報
+ * マルシェタイムテーブル情報
  * @export
  * @interface Live
  */
@@ -2134,7 +2230,7 @@ export interface LiveResponse {
  */
 export interface LivesResponse {
     /**
-     * ライブ配信一覧
+     * マルシェタイムテーブル一覧
      * @type {Array<Live>}
      * @memberof LivesResponse
      */
@@ -4146,7 +4242,7 @@ export interface ResetAuthPasswordRequest {
  */
 export interface Schedule {
     /**
-     * スケジュールID
+     * マルシェ開催スケジュールID
      * @type {string}
      * @memberof Schedule
      */
@@ -7365,6 +7461,115 @@ export class AuthApi extends BaseAPI {
 
 
 /**
+ * BroadcastApi - axios parameter creator
+ * @export
+ */
+export const BroadcastApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary マルシェライブ配信取得
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetBroadcast: async (scheduleId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'scheduleId' is not null or undefined
+            assertParamExists('v1GetBroadcast', 'scheduleId', scheduleId)
+            const localVarPath = `/v1/schedules/{scheduleId}/broadcasts`
+                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * BroadcastApi - functional programming interface
+ * @export
+ */
+export const BroadcastApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = BroadcastApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary マルシェライブ配信取得
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetBroadcast(scheduleId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BroadcastResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetBroadcast(scheduleId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * BroadcastApi - factory interface
+ * @export
+ */
+export const BroadcastApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = BroadcastApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary マルシェライブ配信取得
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetBroadcast(scheduleId: string, options?: any): AxiosPromise<BroadcastResponse> {
+            return localVarFp.v1GetBroadcast(scheduleId, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * BroadcastApi - object-oriented interface
+ * @export
+ * @class BroadcastApi
+ * @extends {BaseAPI}
+ */
+export class BroadcastApi extends BaseAPI {
+    /**
+     * 
+     * @summary マルシェライブ配信取得
+     * @param {string} scheduleId マルシェ開催スケジュールID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BroadcastApi
+     */
+    public v1GetBroadcast(scheduleId: string, options?: AxiosRequestConfig) {
+        return BroadcastApiFp(this.configuration).v1GetBroadcast(scheduleId, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
  * CategoryApi - axios parameter creator
  * @export
  */
@@ -9462,7 +9667,7 @@ export const LiveApiAxiosParamCreator = function (configuration?: Configuration)
     return {
         /**
          * 
-         * @summary ライブ配信登録
+         * @summary マルシェタイムテーブル登録
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {CreateLiveRequest} body 
          * @param {*} [options] Override http request option.
@@ -9506,9 +9711,9 @@ export const LiveApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
-         * @summary ライブ配信削除
+         * @summary マルシェタイムテーブル削除
          * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {string} liveId ライブ配信ID
+         * @param {string} liveId マルシェタイムテーブルID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -9548,7 +9753,7 @@ export const LiveApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
-         * @summary ライブ配信一覧取得
+         * @summary マルシェタイムテーブル一覧取得
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -9586,9 +9791,9 @@ export const LiveApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
-         * @summary ライブ配信更新
+         * @summary マルシェタイムテーブル更新
          * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {string} liveId ライブ配信ID
+         * @param {string} liveId マルシェタイムテーブルID
          * @param {UpdateLiveRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -9644,7 +9849,7 @@ export const LiveApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary ライブ配信登録
+         * @summary マルシェタイムテーブル登録
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {CreateLiveRequest} body 
          * @param {*} [options] Override http request option.
@@ -9656,9 +9861,9 @@ export const LiveApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary ライブ配信削除
+         * @summary マルシェタイムテーブル削除
          * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {string} liveId ライブ配信ID
+         * @param {string} liveId マルシェタイムテーブルID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -9668,7 +9873,7 @@ export const LiveApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary ライブ配信一覧取得
+         * @summary マルシェタイムテーブル一覧取得
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -9679,9 +9884,9 @@ export const LiveApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary ライブ配信更新
+         * @summary マルシェタイムテーブル更新
          * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {string} liveId ライブ配信ID
+         * @param {string} liveId マルシェタイムテーブルID
          * @param {UpdateLiveRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -9702,7 +9907,7 @@ export const LiveApiFactory = function (configuration?: Configuration, basePath?
     return {
         /**
          * 
-         * @summary ライブ配信登録
+         * @summary マルシェタイムテーブル登録
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {CreateLiveRequest} body 
          * @param {*} [options] Override http request option.
@@ -9713,9 +9918,9 @@ export const LiveApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
-         * @summary ライブ配信削除
+         * @summary マルシェタイムテーブル削除
          * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {string} liveId ライブ配信ID
+         * @param {string} liveId マルシェタイムテーブルID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -9724,7 +9929,7 @@ export const LiveApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
-         * @summary ライブ配信一覧取得
+         * @summary マルシェタイムテーブル一覧取得
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -9734,9 +9939,9 @@ export const LiveApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
-         * @summary ライブ配信更新
+         * @summary マルシェタイムテーブル更新
          * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {string} liveId ライブ配信ID
+         * @param {string} liveId マルシェタイムテーブルID
          * @param {UpdateLiveRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -9756,7 +9961,7 @@ export const LiveApiFactory = function (configuration?: Configuration, basePath?
 export class LiveApi extends BaseAPI {
     /**
      * 
-     * @summary ライブ配信登録
+     * @summary マルシェタイムテーブル登録
      * @param {string} scheduleId マルシェ開催スケジュールID
      * @param {CreateLiveRequest} body 
      * @param {*} [options] Override http request option.
@@ -9769,9 +9974,9 @@ export class LiveApi extends BaseAPI {
 
     /**
      * 
-     * @summary ライブ配信削除
+     * @summary マルシェタイムテーブル削除
      * @param {string} scheduleId マルシェ開催スケジュールID
-     * @param {string} liveId ライブ配信ID
+     * @param {string} liveId マルシェタイムテーブルID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof LiveApi
@@ -9782,7 +9987,7 @@ export class LiveApi extends BaseAPI {
 
     /**
      * 
-     * @summary ライブ配信一覧取得
+     * @summary マルシェタイムテーブル一覧取得
      * @param {string} scheduleId マルシェ開催スケジュールID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -9794,9 +9999,9 @@ export class LiveApi extends BaseAPI {
 
     /**
      * 
-     * @summary ライブ配信更新
+     * @summary マルシェタイムテーブル更新
      * @param {string} scheduleId マルシェ開催スケジュールID
-     * @param {string} liveId ライブ配信ID
+     * @param {string} liveId マルシェタイムテーブルID
      * @param {UpdateLiveRequest} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
