@@ -47,7 +47,7 @@ const handleClickSelectAll = () => {
   <v-text-field
     v-model.number="formDataValue.price"
     :error-messages="getErrorMessage(v$.price.$errors)"
-    label="価格"
+    label="配送価格"
     type="number"
     suffix="円"
   />
