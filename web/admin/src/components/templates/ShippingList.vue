@@ -75,11 +75,6 @@ const headers: VDataTable['headers'] = [
     sortable: false
   },
   {
-    title: '配送無料オプション',
-    key: 'hasFreeShipping',
-    sortable: false
-  },
-  {
     title: '更新日時',
     key: 'updatedAt',
     sortable: false
@@ -113,14 +108,6 @@ const getIsDefault = (isDefault: boolean): string => {
 
 const getIsDefaultColor = (isDefault: boolean): string => {
   return isDefault ? 'primary' : ''
-}
-
-const getHasFreeShipping = (hasFreeShipping: boolean): string => {
-  return hasFreeShipping ? '有り' : '無し'
-}
-
-const getHasFreeShippingColor = (hasFreeShipping: boolean): string => {
-  return hasFreeShipping ? 'primary' : 'warning'
 }
 
 const onClickUpdatePage = (page: number): void => {
@@ -200,11 +187,6 @@ const onSubmitDelete = (): void => {
         <template #[`item.isDefault`]="{ item }">
           <v-chip size="small" :color="getIsDefaultColor(item.raw.isDefault)">
             {{ getIsDefault(item.raw.isDefault) }}
-          </v-chip>
-        </template>
-        <template #[`item.hasFreeShipping`]="{ item }">
-          <v-chip size="small" :color="getHasFreeShippingColor(item.raw.hasFreeShipping)">
-            {{ getHasFreeShipping(item.raw.hasFreeShipping) }}
           </v-chip>
         </template>
         <template #[`item.updatedAt`]="{ item }">

@@ -69,7 +69,7 @@ const emit = defineEmits<{
 
 const rules = computed(() => ({
   name: { required },
-  isDefault: {},
+  isDefault: { required },
   hasFreeShipping: { required },
   box60Refrigerated: { required, minValue: minValue(0) },
   box60Frozen: { required, minValue: minValue(0) },
@@ -93,10 +93,6 @@ const box100RateItemsSize = computed(() => {
 })
 
 const validate = useVuelidate(rules, formDataValue)
-
-const hasFreeShippingLabel = (v: boolean): string => {
-  return v ? '無料配送オプション: 有り' : '無料配送オプション: 無し'
-}
 
 const addBox60RateItem = (): void => {
   formDataValue.value.box60Rates.push({
@@ -184,185 +180,187 @@ const onSubmit = async (): Promise<void> => {
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
 
-  <v-card>
-    <v-card-title>配送情報登録</v-card-title>
+  <v-card-title>配送情報登録</v-card-title>
 
-    <v-form @submit.prevent="onSubmit">
-      <v-card-text>
-        <v-text-field
-          v-model="validate.name.$model"
-          label="名前"
-          :error-messages="getErrorMessage(validate.name.$errors)"
-        />
-        <v-switch
-          v-model="validate.isDefault.$model"
-          color="primary"
-          label="デフォルト設定"
-        />
-        <v-switch
-          v-model="validate.hasFreeShipping.$model"
-          color="primary"
-          :label="hasFreeShippingLabel(validate.hasFreeShipping.$model)"
-        />
-
-        <div class="mb-6">
-          <p class="text-h6">
-            サイズ60配送オプション
-          </p>
-          <div class="d-flex">
-            <v-text-field
-              v-model.number="validate.box60Refrigerated.$model"
-              :error-messages="getErrorMessage(validate.box60Refrigerated.$errors)"
-              label="冷蔵配送価格"
-              type="number"
-              class="mr-4"
-              suffix="円"
-            />
-            <v-text-field
-              v-model.number="validate.box60Frozen.$model"
-              :error-messages="getErrorMessage(validate.box60Frozen.$errors)"
-              label="冷凍配送価格"
-              type="number"
-              suffix="円"
-            />
-          </div>
-          <div v-for="i in box60RateItemsSize" :key="i">
-            <div class="d-flex align-center">
-              <p class="mb-0">
-                オプション{{ i + 1 }}
-              </p>
-              <v-spacer />
-              <v-btn
-                icon
-                color="error"
-                variant="text"
-                size="small"
-                :disabled="box60RateItemsSize.length === 1"
-                @click="onClickRemoveItem('60', i)"
-              >
-                <v-icon :icon="mdiClose" />
-              </v-btn>
-            </div>
-            <molecules-shipping-rate-form
-              v-model="formDataValue.box60Rates[i]"
-              :selectable-prefecture-list="getSelectableBox60RatePrefecturesList(i)"
-              @click:select-all="onClickSelectAll('60', i)"
-            />
-          </div>
-          <v-btn color="primary" variant="outlined" block @click="addBox60RateItem">
-            <v-icon :icon="mdiPlus" />
-            追加
-          </v-btn>
-        </div>
-
-        <div class="my-6">
-          <p class="text-h6">
-            サイズ80配送オプション
-          </p>
-          <div class="d-flex">
-            <v-text-field
-              v-model.number="validate.box80Refrigerated.$model"
-              :error-messages="getErrorMessage(validate.box80Refrigerated.$errors)"
-              label="冷蔵配送価格"
-              type="number"
-              class="mr-4"
-              suffix="円"
-            />
-            <v-text-field
-              v-model.number="validate.box80Frozen.$model"
-              :error-messages="getErrorMessage(validate.box80Frozen.$errors)"
-              label="冷凍配送価格"
-              type="number"
-              suffix="円"
-            />
-          </div>
-          <div v-for="i in box80RateItemsSize" :key="i">
-            <div class="d-flex align-center">
-              <p class="mb-0">
-                オプション{{ i + 1 }}
-              </p>
-              <v-spacer />
-              <v-btn
-                icon
-                color="error"
-                variant="text"
-                size="small"
-                :disabled="box80RateItemsSize.length === 1"
-                @click="onClickRemoveItem('80', i)"
-              >
-                <v-icon :icon="mdiClose" />
-              </v-btn>
-            </div>
-
-            <molecules-shipping-rate-form
-              v-model="formDataValue.box80Rates[i]"
-              :selectable-prefecture-list="getSelectableBox80RatePrefecturesList(i)"
-              @click:select-all="onClickSelectAll('80', i)"
-            />
-          </div>
-          <v-btn color="primary" variant="outlined" block @click="addBox80RateItem">
-            <v-icon :icon="mdiPlus" />
-            追加
-          </v-btn>
-        </div>
-
-        <div class="my-6">
-          <p class="text-h6">
-            サイズ100配送オプション
-          </p>
-          <div class="d-flex">
-            <v-text-field
-              v-model.number="validate.box100Refrigerated.$model"
-              :error-messages="getErrorMessage(validate.box100Refrigerated.$errors)"
-              label="冷蔵配送価格"
-              class="mr-4"
-              type="number"
-              suffix="円"
-            />
-            <v-text-field
-              v-model.number="validate.box100Frozen.$model"
-              :error-messages="getErrorMessage(validate.box100Frozen.$errors)"
-              label="冷凍配送価格"
-              type="number"
-              suffix="円"
-            />
-          </div>
-          <div v-for="i in box100RateItemsSize" :key="i">
-            <div class="d-flex align-center">
-              <p class="mb-0">
-                オプション{{ i + 1 }}
-              </p>
-              <v-spacer />
-              <v-btn
-                icon
-                color="error"
-                variant="text"
-                size="small"
-                :disabled="box100RateItemsSize.length === 1"
-                @click="onClickRemoveItem('100', i)"
-              >
-                <v-icon :icon="mdiClose" />
-              </v-btn>
-            </div>
-
-            <molecules-shipping-rate-form
-              v-model="formDataValue.box100Rates[i]"
-              :selectable-prefecture-list="getSelectableBox100RatePrefecturesList(i)"
-              @click:select-all="onClickSelectAll('100', i)"
-            />
-          </div>
-          <v-btn color="primary" variant="outlined" block @click="addBox100RateItem">
-            <v-icon :icon="mdiPlus" />
-            追加
-          </v-btn>
-        </div>
-      </v-card-text>
-
-      <v-card-actions>
-        <v-btn :loading="loading" type="submit" variant="outlined" color="primary" block>
-          登録
-        </v-btn>
-      </v-card-actions>
-    </v-form>
+  <v-card class="mb-4 py-2">
+    <v-card-title>基本情報</v-card-title>
+    <v-card-text>
+      <v-text-field
+        v-model="validate.name.$model"
+        label="名前"
+        :error-messages="getErrorMessage(validate.name.$errors)"
+      />
+      <v-switch
+        v-model="validate.isDefault.$model"
+        label="デフォルト設定"
+        color="primary"
+      />
+    </v-card-text>
   </v-card>
+
+  <v-card class="mb-4 py-2">
+    <v-card-title>配送オプション：サイズ60</v-card-title>
+    <v-card-text>
+      <div class="d-flex flex-column flex-md-row justify-center">
+        <v-text-field
+          v-model.number="validate.box60Refrigerated.$model"
+          :error-messages="getErrorMessage(validate.box60Refrigerated.$errors)"
+          label="冷蔵配送価格"
+          type="number"
+          prefix="通常配送料＋"
+          suffix="円"
+          min="0"
+          class="mr-md-2"
+        />
+        <v-text-field
+          v-model.number="validate.box60Frozen.$model"
+          :error-messages="getErrorMessage(validate.box60Frozen.$errors)"
+          label="冷凍配送価格"
+          type="number"
+          prefix="通常配送料＋"
+          suffix="円"
+          min="0"
+        />
+      </div>
+      <div v-for="i in box60RateItemsSize" :key="`60-${i}`" class="px-4 py-2 mb-2 border">
+        <div class="d-flex flex-row align-center">
+          <p class="text-subtitle-2 text-grey">
+            オプション{{ i + 1 }}
+          </p>
+          <v-spacer />
+          <v-btn
+            v-show="box60RateItemsSize.length > 1"
+            :icon="mdiClose"
+            color="error"
+            variant="text"
+            size="small"
+            @click="onClickRemoveItem('60', i)"
+          />
+        </div>
+        <molecules-shipping-rate-form
+          v-model="formDataValue.box60Rates[i]"
+          :selectable-prefecture-list="getSelectableBox60RatePrefecturesList(i)"
+          @click:select-all="onClickSelectAll('60', i)"
+        />
+      </div>
+    </v-card-text>
+    <v-card-actions>
+      <v-btn color="primary" variant="outlined" block @click="addBox60RateItem">
+        <v-icon :icon="mdiPlus" />
+        追加
+      </v-btn>
+    </v-card-actions>
+  </v-card>
+
+  <v-card class="mb-4 py-2">
+    <v-card-title>配送オプション：サイズ80</v-card-title>
+    <v-card-text>
+      <div class="d-flex flex-column flex-md-row justify-center">
+        <v-text-field
+          v-model.number="validate.box80Refrigerated.$model"
+          :error-messages="getErrorMessage(validate.box80Refrigerated.$errors)"
+          label="冷蔵配送価格"
+          type="number"
+          prefix="通常配送料＋"
+          suffix="円"
+          min="0"
+          class="mr-md-2"
+        />
+        <v-text-field
+          v-model.number="validate.box80Frozen.$model"
+          :error-messages="getErrorMessage(validate.box80Frozen.$errors)"
+          label="冷凍配送価格"
+          type="number"
+          prefix="通常配送料＋"
+          suffix="円"
+          min="0"
+        />
+      </div>
+      <div v-for="i in box80RateItemsSize" :key="`80-${i}`" class="px-4 py-2 mb-2 border">
+        <div class="d-flex flex-row align-center">
+          <p class="text-subtitle-2 text-grey">
+            オプション{{ i + 1 }}
+          </p>
+          <v-spacer />
+          <v-btn
+            v-show="box80RateItemsSize.length > 1"
+            :icon="mdiClose"
+            color="error"
+            variant="text"
+            size="small"
+            @click="onClickRemoveItem('80', i)"
+          />
+        </div>
+        <molecules-shipping-rate-form
+          v-model="formDataValue.box80Rates[i]"
+          :selectable-prefecture-list="getSelectableBox80RatePrefecturesList(i)"
+          @click:select-all="onClickSelectAll('80', i)"
+        />
+      </div>
+    </v-card-text>
+    <v-card-actions>
+      <v-btn color="primary" variant="outlined" block @click="addBox80RateItem">
+        <v-icon :icon="mdiPlus" />
+        追加
+      </v-btn>
+    </v-card-actions>
+  </v-card>
+
+  <v-card class="mb-4 py-2">
+    <v-card-title>配送オプション：サイズ100</v-card-title>
+    <v-card-text>
+      <div class="d-flex flex-column flex-md-row justify-center">
+        <v-text-field
+          v-model.number="validate.box100Refrigerated.$model"
+          :error-messages="getErrorMessage(validate.box100Refrigerated.$errors)"
+          label="冷蔵配送価格"
+          type="number"
+          prefix="通常配送料＋"
+          suffix="円"
+          min="0"
+          class="mr-md-2"
+        />
+        <v-text-field
+          v-model.number="validate.box100Frozen.$model"
+          :error-messages="getErrorMessage(validate.box100Frozen.$errors)"
+          label="冷凍配送価格"
+          type="number"
+          prefix="通常配送料＋"
+          suffix="円"
+          min="0"
+        />
+      </div>
+      <div v-for="i in box100RateItemsSize" :key="`100-${i}`" class="px-4 py-2 mb-2 border">
+        <div class="d-flex flex-row align-center">
+          <p class="text-subtitle-2 text-grey">
+            オプション{{ i + 1 }}
+          </p>
+          <v-spacer />
+          <v-btn
+            v-show="box100RateItemsSize.length > 1"
+            :icon="mdiClose"
+            color="error"
+            variant="text"
+            size="small"
+            @click="onClickRemoveItem('100', i)"
+          />
+        </div>
+        <molecules-shipping-rate-form
+          v-model="formDataValue.box100Rates[i]"
+          :selectable-prefecture-list="getSelectableBox100RatePrefecturesList(i)"
+          @click:select-all="onClickSelectAll('100', i)"
+        />
+      </div>
+    </v-card-text>
+    <v-card-actions>
+      <v-btn color="primary" variant="outlined" block @click="addBox100RateItem">
+        <v-icon :icon="mdiPlus" />
+        追加
+      </v-btn>
+    </v-card-actions>
+  </v-card>
+
+  <v-btn :loading="loading" block variant="outlined" @click="onSubmit">
+    登録
+  </v-btn>
 </template>
