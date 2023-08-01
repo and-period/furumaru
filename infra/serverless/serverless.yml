@@ -59,8 +59,51 @@ resources:
                     - mediaStore:CreateContainer
                     - mediaStore:DescribeContainer
                     - mediaStore:PutContainerPolicy
+                    - cloudFront:CreateDistribution
                   Resource:
                     - '*'
+    lambdaRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: automateMediaServiceLambdaPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - ec2:CreateNetworkInterface
+                    - ec2:DescribeNetworkInterfaces
+                    - ec2:DeleteNetworkInterface
+                  Resource:
+                    - '*'
+                - Effect: Allow
+                  Action:
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                  Resource:
+                    - '*'
+                - Effect: Allow
+                  Action:
+                    - mediaStore:DescribeContainer
+                  Resource:
+                    - '*'
+
+functions:
+  extractMediaStoreDomain:
+    role: lambdaRole
+    handler: functions/extractMediaStoreDomain/handler.extractDomainName
+    memorySize: 128
+    timeout: 10
 
 stepFunctions:
   stateMachines:
@@ -91,7 +134,8 @@ stepFunctions:
                       Type: RTMP_PUSH
                       Destinations:
                         - StreamName: live/a
-                      InputSecurityGroups: ${self:provider.vpc.securityGroupIds}
+                      InputSecurityGroups:
+                        - '4361039'
               - StartAt: CreateInput(MP4)
                 States:
                   CreateInput(MP4):
@@ -166,6 +210,60 @@ stepFunctions:
                           InputAttachmentName.$: $[1].MP4Result.Input.Name
                       Destinations.$: $[0].ChannelInput.Destinations
                       EncoderSettings.$: $[0].ChannelInput.EncoderSettings
+                    End: true
+              - StartAt: ExtractMediaStoreDomain
+                States:
+                  ExtractMediaStoreDomain:
+                    Type: Task
+                    Comment: ライブ配信 - MediaStoreのドメイン名を抽出
+                    InputPath: $
+                    Resource:
+                      Fn::GetAtt: [extractMediaStoreDomain, Arn]
+                    ResultPath: $[2].ContainerStatus.Container.Endpoint
+                    Next: CreateDistribution
+                  CreateDistribution:
+                    Type: Task
+                    Comment: ライブ配信 - MediaStoreをオリジンにするCloudFrontディストリビューションを作成
+                    InputPath: $
+                    Resource: arn:aws:states:::aws-sdk:cloudfront:createDistribution
+                    Parameters:
+                      DistributionConfig:
+                        CallerReference.$: $[2].ContainerResult.Container.Name
+                        Comment: MediaStoreをオリジンにするCloudFrontディストリビューション
+                        Enabled: true
+                        HttpVersion: http2
+                        Origins:
+                          Quantity: 1
+                          Items:
+                          - Id.$: States.Format('{}.data.mediastore.ap-northeast-1.amazonaws.com', $[2].ContainerResult.Container.Name)
+                            DomainName.$: $[2].ContainerStatus.Container.Endpoint
+                            CustomOriginConfig:
+                              HttpPort: 80
+                              HttpsPort: 443
+                              OriginProtocolPolicy: https-only
+                        DefaultCacheBehavior:
+                          TargetOriginId.$: States.Format('{}.data.mediastore.ap-northeast-1.amazonaws.com', $[2].ContainerResult.Container.Name)
+                          ViewerProtocolPolicy: redirect-to-https
+                          AllowedMethods:
+                            Quantity: 7
+                            Items:
+                              - GET
+                              - HEAD
+                              - OPTIONS
+                              - PUT
+                              - POST
+                              - PATCH
+                              - DELETE
+                          ForwardedValues:
+                            QueryString: false
+                            Cookies:
+                              Forward: none
+                            Headers:
+                              Quantity: 2
+                              Items:
+                                - Origin
+                                - Access-Con
+                          MinTTL: 1
                     End: true
               - StartAt: PutContainerPolicy
                 States:
