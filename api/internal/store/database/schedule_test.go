@@ -274,7 +274,8 @@ func TestSchedule_Create(t *testing.T) {
 				require.NoError(t, err)
 			},
 			args: args{
-				schedule: s,
+				schedule:  s,
+				broadcast: b,
 			},
 			want: want{
 				hasErr: true,
