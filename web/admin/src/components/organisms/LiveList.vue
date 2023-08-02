@@ -600,9 +600,7 @@ const onSubmitDelete = (): void => {
               <p class="text-subtitle-2 text-grey pb-2">
                 概要
               </p>
-              <p class="text-subtitle-2">
-                {{ item.comment }}
-              </p>
+              <p class="text-subtitle-2" v-html="item.comment" />
             </v-col>
             <v-col sm="12">
               <p class="text-subtitle-2 text-grey pb-2">
