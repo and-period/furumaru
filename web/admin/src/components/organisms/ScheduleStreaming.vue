@@ -73,7 +73,9 @@ const handleClickVideo = (): void => {
         <v-card-text>
           <v-container>
             <video id="video" ref="videoRef" controls />
-            <v-btn @click="handleClickVideo">映像の更新</v-btn>
+            <v-btn @click="handleClickVideo">
+              映像の更新
+            </v-btn>
           </v-container>
         </v-card-text>
       </v-card>
