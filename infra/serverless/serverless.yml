@@ -225,6 +225,7 @@ stepFunctions:
                     Type: Task
                     Comment: ライブ配信 - MediaStoreをオリジンにするCloudFrontディストリビューションを作成
                     InputPath: $
+                    ResultPath: $[2].DistributionResult
                     Resource: arn:aws:states:::aws-sdk:cloudfront:createDistribution
                     Parameters:
                       DistributionConfig:
@@ -264,9 +265,7 @@ stepFunctions:
                                 - Origin
                                 - Access-Con
                           MinTTL: 1
-                    End: true
-              - StartAt: PutContainerPolicy
-                States:
+                    Next: PutContainerPolicy
                   PutContainerPolicy:
                     Type: Task
                     Comment: ライブ配信 - チャンネルに対するポリシーを設定
@@ -286,6 +285,8 @@ stepFunctions:
                               - mediastore:DescribeObject
                             Resource.$: States.Format('{}/*', $[2].ContainerResult.Container.Arn)
                             Condition:
+                              StringEquals:
+                                AWS:SourceArn.$: $[2].DistributionResult.Distribution.Arn
                               Bool:
                                 aws:SecureTransport: 'true'
                     End: true
