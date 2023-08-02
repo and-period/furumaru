@@ -1117,17 +1117,17 @@ func (mr *MockScheduleMockRecorder) Count(ctx, params interface{}) *gomock.Call 
 }
 
 // Create mocks base method.
-func (m *MockSchedule) Create(ctx context.Context, schedule *entity.Schedule) error {
+func (m *MockSchedule) Create(ctx context.Context, schedule *entity.Schedule, broadcast *entity.Broadcast) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", ctx, schedule)
+	ret := m.ctrl.Call(m, "Create", ctx, schedule, broadcast)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockScheduleMockRecorder) Create(ctx, schedule interface{}) *gomock.Call {
+func (mr *MockScheduleMockRecorder) Create(ctx, schedule, broadcast interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockSchedule)(nil).Create), ctx, schedule)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockSchedule)(nil).Create), ctx, schedule, broadcast)
 }
 
 // Get mocks base method.
