@@ -59,6 +59,7 @@ resources:
                     - mediaStore:CreateContainer
                     - mediaStore:DescribeContainer
                     - mediaStore:PutContainerPolicy
+                    - mediaStore:PutCorsPolicy
                     - cloudFront:CreateDistribution
                   Resource:
                     - '*'
@@ -276,7 +277,7 @@ stepFunctions:
                       Policy:
                         Version: '2012-10-17'
                         Statement:
-                          - Sid: PublicReadOverHttps
+                          - Sid: AllowCloudFrontServicePrincipalReadOnly
                             Effect: Allow
                             Principal:
                               AWS: '*'
@@ -289,6 +290,25 @@ stepFunctions:
                                 AWS:SourceArn.$: $[2].DistributionResult.Distribution.Arn
                               Bool:
                                 aws:SecureTransport: 'true'
+                    End: true
+              - StartAt: PutCorsPolicy
+                States:
+                  PutCorsPolicy:
+                    Type: Task
+                    Comment: ライブ配信 - チャンネルに対するCORSポリシーを設定
+                    InputPath: $
+                    Resource: arn:aws:states:::aws-sdk:mediastore:putCorsPolicy
+                    Parameters:
+                      ContainerName.$: $[2].ContainerResult.Container.Name
+                      CorsPolicy:
+                        - AllowedOrigins:
+                            - '*'
+                          AllowedMethods:
+                            - GET
+                            - HEAD
+                          AllowedHeaders:
+                            - '*'
+                          MaxAgeSeconds: 3000
                     End: true
 plugins:
   - serverless-step-functions
