@@ -2,13 +2,14 @@
 import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
-import { useCoordinatorStore, useLiveStore, useProducerStore, useProductStore, useScheduleStore, useShippingStore } from '~/store'
+import { useBroadcastStore, useCoordinatorStore, useLiveStore, useProducerStore, useProductStore, useScheduleStore, useShippingStore } from '~/store'
 import { CreateLiveRequest, Live, UpdateLiveRequest, UpdateScheduleRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 
 const route = useRoute()
 const scheduleStore = useScheduleStore()
 const liveStore = useLiveStore()
+const broadcastStore = useBroadcastStore()
 const coordinatorStore = useCoordinatorStore()
 const producerStore = useProducerStore()
 const productStore = useProductStore()
@@ -20,6 +21,7 @@ const tab = route.query.tab as string
 
 const { schedule } = storeToRefs(scheduleStore)
 const { lives } = storeToRefs(liveStore)
+const { broadcast } = storeToRefs(broadcastStore)
 const { coordinators } = storeToRefs(coordinatorStore)
 const { producers } = storeToRefs(producerStore)
 const { products } = storeToRefs(productStore)
@@ -90,7 +92,8 @@ const fetchState = useAsyncData(async (): Promise<void> => {
   try {
     await Promise.all([
       scheduleStore.getSchedule(scheduleId),
-      liveStore.fetchLives(scheduleId)
+      liveStore.fetchLives(scheduleId),
+      broadcastStore.getBroadcastByScheduleId(scheduleId)
     ])
     scheduleFormData.value = { ...schedule.value }
   } catch (err) {
@@ -324,6 +327,7 @@ try {
     :schedule="schedule"
     :live="selectedLive"
     :lives="lives"
+    :broadcast="broadcast"
     :coordinators="coordinators"
     :producers="producers"
     :products="products"

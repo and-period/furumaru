@@ -1,6 +1,7 @@
 export { useAdminStore } from './admin'
 export { useAdministratorStore } from './administrator'
 export { useAuthStore } from './auth'
+export { useBroadcastStore } from './broadcast'
 export { useCategoryStore } from './category'
 export { useCommonStore } from './common'
 export { useContactStore } from './contact'
