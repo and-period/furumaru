@@ -73,7 +73,7 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 	if err != nil {
 		return nil, exception.InternalError(err)
 	}
-	params := &entity.NewScheduleParams{
+	sparams := &entity.NewScheduleParams{
 		CoordinatorID:   in.CoordinatorID,
 		ShippingID:      in.ShippingID,
 		Title:           in.Title,
@@ -85,8 +85,12 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 		StartAt:         in.StartAt,
 		EndAt:           in.EndAt,
 	}
-	schedule := entity.NewSchedule(params)
-	if err := s.db.Schedule.Create(ctx, schedule); err != nil {
+	schedule := entity.NewSchedule(sparams)
+	bparams := &entity.NewBroadcastParams{
+		ScheduleID: schedule.ID,
+	}
+	broadcast := entity.NewBroadcast(bparams)
+	if err := s.db.Schedule.Create(ctx, schedule, broadcast); err != nil {
 		return nil, exception.InternalError(err)
 	}
 	s.waitGroup.Add(1)
