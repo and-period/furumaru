@@ -56,6 +56,7 @@ resources:
                   Action:
                     - mediaLive:CreateInput
                     - mediaLive:CreateChannel
+                    - mediaLive:BatchUpdateSchedule
                     - mediaStore:CreateContainer
                     - mediaStore:DescribeContainer
                     - mediaStore:PutContainerPolicy
@@ -201,6 +202,7 @@ stepFunctions:
                     Type: Task
                     Comment: ライブ配信 - チャンネルを作成
                     InputPath: $
+                    ResultPath: $[0].ChannelResult
                     Resource: arn:aws:states:::aws-sdk:medialive:createChannel
                     Parameters:
                       Name.$: $[0].ChannelInput.Name
@@ -212,6 +214,23 @@ stepFunctions:
                           InputAttachmentName.$: $[1].MP4Result.Input.Name
                       Destinations.$: $[0].ChannelInput.Destinations
                       EncoderSettings.$: $[0].ChannelInput.EncoderSettings
+                    Next: BatchUpdateSchedule
+                  BatchUpdateSchedule:
+                    Type: Task
+                    Comment: ライブ配信 - 配信スケジュールを更新
+                    InputPath: $
+                    Resource: arn:aws:states:::aws-sdk:medialive:batchUpdateSchedule
+                    Parameters:
+                      ChannelId.$: $[0].ChannelResult.Channel.Id
+                      Creates:
+                        ScheduleActions:
+                          - ActionName: StartLive
+                            ScheduleActionStartSettings:
+                              FixedModeScheduleActionStartSettings:
+                                Time.$: $[0].ChannelInput.StartTime
+                            ScheduleActionSettings:
+                              InputSwitchSettings:
+                                InputAttachmentNameReference.$: $[0].RtmpResult.Input.Name
                     End: true
               - StartAt: ExtractMediaStoreDomain
                 States:
