@@ -201,6 +201,14 @@ stepFunctions:
             End: true
             Comment: 配信リソースの作成を並列で実行
             InputPath: $
+            ResultSelector:
+              CloudFrontUrl.$: $[1][2].DistributionResult.Location
+              CloudFrontDistributionArn.$: $[1][2].DistributionResult.Distribution.Arn
+              MediaLiveRtmpInputArn.$: $[0][0].RtmpResult.Input.Arn
+              MediaLiveRtmpInputUrl.$: $[0][0].RtmpResult.Input.Destinations[0].Url
+              MediaLiveMp4InputArn.$: $[0][1].MP4Result.Input.Arn
+              MediaLiveChannelArn.$: $[0][0].ChannelResult.Channel.Arn
+              MediaStoreContainerArn.$: $[0][2].ContainerResult.Container.Arn
             Branches:
               - StartAt: CreateChannel
                 States:
@@ -320,6 +328,7 @@ stepFunctions:
                     Type: Task
                     Comment: ライブ配信 - 配信スケジュールを更新
                     InputPath: $
+                    ResultPath: $[0].ChannelResult.Schedule
                     Resource: arn:aws:states:::aws-sdk:medialive:batchUpdateSchedule
                     Parameters:
                       ChannelId.$: $[0].ChannelResult.Channel.Id
@@ -444,10 +453,12 @@ stepFunctions:
                     Type: Task
                     Comment: ライブ配信 - MediaStoreコンテナに対するライフサイクルポリシーを設定
                     InputPath: $
+                    ResultPath: $[2].LifecyclePolicyResult
                     Resource: arn:aws:states:::aws-sdk:mediastore:putLifecyclePolicy
                     Parameters:
                       ContainerName.$: $[2].ContainerResult.Container.Name
                       LifecyclePolicy:  {"rules":[{"definition":{"path":[{"wildcard":"*"}],"days_since_create":[{"numeric":[">",1]}]},"action":"EXPIRE"}]}
                     End: true
+
 plugins:
   - serverless-step-functions
