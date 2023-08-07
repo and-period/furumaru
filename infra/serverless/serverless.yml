@@ -107,6 +107,11 @@ functions:
     handler: functions/extractMediaStoreDomain/handler.extractDomainName
     memorySize: 128
     timeout: 10
+  calculateMP4StartTime:
+    role: lambdaRole
+    handler: functions/calculateMP4StartTime/handler.calculateMP4StartTime
+    memorySize: 128
+    timeout: 10
 
 stepFunctions:
   stateMachines:
@@ -212,8 +217,18 @@ stepFunctions:
                           InputAttachmentName.$: $[0].RtmpResult.Input.Name
                         - InputId.$: $[1].MP4Result.Input.Id
                           InputAttachmentName.$: $[1].MP4Result.Input.Name
+                          InputSettings:
+                            SourceEndBehavior: LOOP
                       Destinations.$: $[0].ChannelInput.Destinations
                       EncoderSettings.$: $[0].ChannelInput.EncoderSettings
+                    Next: CalculateMP4StartTime
+                  CalculateMP4StartTime:
+                    Type: Task
+                    Comment: ライブ配信 - オープニング動画の開始時間を計算
+                    InputPath: $
+                    ResultPath: $[0].ChannelInput.MP4StartTime
+                    Resource:
+                      Fn::GetAtt: [calculateMP4StartTime, Arn]
                     Next: BatchUpdateSchedule
                   BatchUpdateSchedule:
                     Type: Task
@@ -224,6 +239,13 @@ stepFunctions:
                       ChannelId.$: $[0].ChannelResult.Channel.Id
                       Creates:
                         ScheduleActions:
+                          - ActionName: StartMP4
+                            ScheduleActionStartSettings:
+                              FixedModeScheduleActionStartSettings:
+                                Time.$: $[0].ChannelInput.MP4StartTime
+                            ScheduleActionSettings:
+                              InputSwitchSettings:
+                                InputAttachmentNameReference.$: $[1].MP4Result.Input.Name
                           - ActionName: StartLive
                             ScheduleActionStartSettings:
                               FixedModeScheduleActionStartSettings:
