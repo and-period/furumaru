@@ -138,7 +138,7 @@ stepFunctions:
                     InputPath: $.RtmpInput
                     ResultPath: $.RtmpResult
                     Parameters:
-                      Name.$: $.Name
+                      Name.$: States.UUID()
                       Type: RTMP_PUSH
                       Destinations:
                         - StreamName: live/a
@@ -154,7 +154,7 @@ stepFunctions:
                     InputPath: $.MP4Input
                     ResultPath: $.MP4Result
                     Parameters:
-                      Name.$: $.Name
+                      Name.$: States.UUID()
                       Type: MP4_FILE
                       Sources:
                         - Url.$: $.OpeningVideoUrl
@@ -166,7 +166,7 @@ stepFunctions:
                     Resource: arn:aws:states:::aws-sdk:mediastore:createContainer
                     ResultPath: $.ContainerResult
                     Parameters:
-                      ContainerName.$: $.ContainerName
+                      ContainerName.$: States.UUID()
                     Next: DescribeContainer
                   DescribeContainer:
                     Type: Task
@@ -174,7 +174,7 @@ stepFunctions:
                     ResultPath: $.ContainerStatus
                     Resource: arn:aws:states:::aws-sdk:mediastore:describeContainer
                     Parameters:
-                      ContainerName.$: $.ContainerName
+                      ContainerName.$: $.ContainerResult.Container.Name
                     Next: WaitActive
                   WaitActive:
                     Type: Wait
@@ -228,7 +228,10 @@ stepFunctions:
                           InputAttachmentName.$: $[1].MP4Result.Input.Name
                           InputSettings:
                             SourceEndBehavior: LOOP
-                      Destinations.$: $[0].ChannelInput.Destinations
+                      Destinations:
+                        - Id: MediaStore
+                          Settings:
+                            - Url.$: $[0].ChannelInput.DestinationUrl
                       EncoderSettings:
                         GlobalConfiguration:
                           InputEndAction: NONE
