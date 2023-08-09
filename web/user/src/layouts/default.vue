@@ -136,7 +136,7 @@ onUnmounted(() => {
       />
     </div>
     <main class="grow overflow-hidden">
-      <div class="mx-auto pb-10">
+      <div class="mx-auto pb-16">
         <slot />
       </div>
     </main>
