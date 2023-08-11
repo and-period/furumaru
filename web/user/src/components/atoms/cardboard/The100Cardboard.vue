@@ -1,5 +1,13 @@
+<script setup lang="ts">
+interface Props {
+  useRate: number
+}
+
+defineProps<Props>()
+</script>
+
 <template>
-  <div>
+  <div class="relative">
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="255"
@@ -49,6 +57,72 @@
           d="M253.8 0L231.625 38.4533H90.5262L112.701 0H252.874"
           fill="#D6C8AB"
         />
+      </g>
+      <defs>
+        <clipPath id="clip0_626_1610">
+          <rect width="254.545" height="168" fill="white" />
+        </clipPath>
+      </defs>
+    </svg>
+
+    <div class="absolute bottom-[4px] left-[41px]">
+      <div class="relative">
+        <the-melon-item v-show="useRate > 0" class="absolute bottom-0 z-10" />
+        <the-melon-item
+          v-show="useRate > 8.3"
+          class="absolute bottom-[32px] left-[32px]"
+        />
+        <the-melon-item
+          v-show="useRate > 16.6"
+          class="absolute bottom-0 left-[52px] z-10"
+        />
+        <the-melon-item
+          v-show="useRate > 24.9"
+          class="absolute bottom-[32px] left-[84px]"
+        />
+        <the-melon-item
+          v-show="useRate > 33.2"
+          class="absolute bottom-0 left-[104px] z-10"
+        />
+        <the-melon-item
+          v-show="useRate > 41.5"
+          class="absolute bottom-[32px] left-[136px]"
+        />
+        <the-melon-item
+          v-show="useRate > 50"
+          class="absolute bottom-[32px] z-20"
+        />
+        <the-melon-item
+          v-show="useRate > 58.1"
+          class="absolute bottom-[64px] left-[32px]"
+        />
+        <the-melon-item
+          v-show="useRate > 66.4"
+          class="absolute bottom-[32px] left-[52px] z-20"
+        />
+        <the-melon-item
+          v-show="useRate > 74.7"
+          class="absolute bottom-[64px] left-[84px]"
+        />
+        <the-melon-item
+          v-show="useRate > 83"
+          class="absolute bottom-[32px] left-[104px] z-10"
+        />
+        <the-melon-item
+          v-show="useRate === 100"
+          class="absolute bottom-[64px] left-[136px]"
+        />
+      </div>
+    </div>
+
+    <div class="absolute top-0 z-50">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="255"
+        height="168"
+        viewBox="0 0 255 168"
+        fill="none"
+      >
         <path
           d="M38.8739 91.428H38.2311C37.8712 91.428 37.5884 91.1448 37.5884 90.7843C37.5884 90.4238 37.8712 90.1406 38.2311 90.1406H38.8739C39.2338 90.1406 39.5167 90.4238 39.5167 90.7843C39.5167 91.1448 39.2338 91.428 38.8739 91.428Z"
           fill="white"
@@ -85,12 +159,7 @@
           d="M179.368 91.4285C179.201 91.4285 179.034 91.3642 178.918 91.2354C178.661 90.978 178.661 90.5789 178.918 90.3214L179.368 89.8708C179.625 89.6134 180.024 89.6134 180.281 89.8708C180.538 90.1283 180.538 90.5274 180.281 90.7849L179.831 91.2354C179.703 91.3642 179.535 91.4285 179.381 91.4285H179.368Z"
           fill="white"
         />
-      </g>
-      <defs>
-        <clipPath id="clip0_626_1610">
-          <rect width="254.545" height="168" fill="white" />
-        </clipPath>
-      </defs>
-    </svg>
+      </svg>
+    </div>
   </div>
 </template>

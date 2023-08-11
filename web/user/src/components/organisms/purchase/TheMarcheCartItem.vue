@@ -80,7 +80,7 @@ const priceStringFormatter = (price: number): string => {
       </div>
 
       <div class="mt-12 flex gap-20">
-        <the-cardboard />
+        <the-cardboard :box-size="boxSize" :use-rate="70" />
 
         <div class="flex flex-col gap-4">
           <div class="flex flex-col gap-2 text-center">
