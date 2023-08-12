@@ -63,6 +63,7 @@ resources:
                     - mediaStore:PutCorsPolicy
                     - mediaStore:PutLifecyclePolicy
                     - cloudFront:CreateDistribution
+                    - iam:PassRole
                   Resource:
                     - '*'
     lambdaRole:
@@ -228,6 +229,7 @@ stepFunctions:
                     Resource: arn:aws:states:::aws-sdk:medialive:createChannel
                     Parameters:
                       Name.$: $[0].ChannelInput.Name
+                      RoleArn: arn:aws:iam::${self:provider.account}:role/MediaLiveAccessRole
                       ChannelClass: SINGLE_PIPELINE
                       InputAttachments:
                         - InputId.$: $[0].RtmpResult.Input.Id
@@ -239,7 +241,7 @@ stepFunctions:
                       Destinations:
                         - Id: MediaStore
                           Settings:
-                            - Url.$: $[0].ChannelInput.DestinationUrl
+                            - Url.$: States.Format('mediastoressl://{}/live/a', $[2].ContainerStatus.Container.Endpoint)
                       EncoderSettings:
                         GlobalConfiguration:
                           InputEndAction: NONE
