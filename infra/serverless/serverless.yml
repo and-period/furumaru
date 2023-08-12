@@ -186,11 +186,19 @@ stepFunctions:
                     Choices:
                       - Variable: $.ContainerStatus.Container.Status
                         StringEquals: "ACTIVE"
-                        Next: success
+                        Next: ExtractMediaStoreDomain
                       - Variable: $.ContainerStatus.Container.Status
                         StringEquals: "CREATING"
                         Next: DescribeContainer
                     Default: failed
+                  ExtractMediaStoreDomain:
+                    Type: Task
+                    Comment: ライブ配信 - MediaStoreのドメイン名を抽出
+                    InputPath: $
+                    Resource:
+                      Fn::GetAtt: [extractMediaStoreDomain, Arn]
+                    ResultPath: $.ContainerStatus.Container.Endpoint
+                    Next: success
                   success:
                     Type: Succeed
                   failed:
@@ -352,16 +360,8 @@ stepFunctions:
                               InputSwitchSettings:
                                 InputAttachmentNameReference.$: $[0].RtmpResult.Input.Name
                     End: true
-              - StartAt: ExtractMediaStoreDomain
+              - StartAt: CreateDistribution
                 States:
-                  ExtractMediaStoreDomain:
-                    Type: Task
-                    Comment: ライブ配信 - MediaStoreのドメイン名を抽出
-                    InputPath: $
-                    Resource:
-                      Fn::GetAtt: [extractMediaStoreDomain, Arn]
-                    ResultPath: $[2].ContainerStatus.Container.Endpoint
-                    Next: CreateDistribution
                   CreateDistribution:
                     Type: Task
                     Comment: ライブ配信 - MediaStoreをオリジンにするCloudFrontディストリビューションを作成
