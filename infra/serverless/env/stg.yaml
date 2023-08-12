@@ -1,9 +1,9 @@
 region: ap-northeast-1
+accountId: 386661535629
 
 vpc:
   securityGroups:
-    - "4361039"
+    - sg-01cfea94a0afdf30c
   subnetIds:
-    - subnet-0e3b0b0b0b0b0b0b0
-    - subnet-0e3b0b0b0b0b0b0b0
-    - subnet-0e3b0b0b0b0b0b0b0
+    - subnet-09b8bfdc572de7830
+    - subnet-05312c36321ff8221
