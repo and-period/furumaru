@@ -142,7 +142,7 @@ stepFunctions:
                       Name.$: States.UUID()
                       Type: RTMP_PUSH
                       Destinations:
-                        - StreamName: live/a
+                        - StreamName.$: $.StreamName
                       InputSecurityGroups:
                         - '4361039'
               - StartAt: CreateInput(MP4)
@@ -241,7 +241,7 @@ stepFunctions:
                       Destinations:
                         - Id: MediaStore
                           Settings:
-                            - Url.$: States.Format('mediastoressl://{}/live/a', $[2].ContainerStatus.Container.Endpoint)
+                            - Url.$: States.Format('mediastoressl://{}{}', $[2].ContainerStatus.Container.Endpoint, $[0].RtmpInput.StreamName)
                       EncoderSettings:
                         GlobalConfiguration:
                           InputEndAction: NONE
