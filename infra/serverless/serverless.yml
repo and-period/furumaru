@@ -62,6 +62,7 @@ resources:
                     - mediaStore:PutContainerPolicy
                     - mediaStore:PutCorsPolicy
                     - mediaStore:PutLifecyclePolicy
+                    - cloudfront:CreateOriginAccessControl
                     - cloudFront:CreateDistribution
                     - iam:PassRole
                   Resource:
@@ -362,8 +363,22 @@ stepFunctions:
                               InputSwitchSettings:
                                 InputAttachmentNameReference.$: $[0].RtmpResult.Input.Name
                     End: true
-              - StartAt: CreateDistribution
+              - StartAt: CreateOriginAccessControl
                 States:
+                  CreateOriginAccessControl:
+                    Type: Task
+                    Comment: ライブ配信 - CloudFrontのOriginAccessControlを作成
+                    InputPath: $
+                    ResultPath: $[2].OriginAccessControlResult
+                    Resource: arn:aws:states:::aws-sdk:cloudfront:createOriginAccessControl
+                    Parameters:
+                      OriginAccessControlConfig:
+                        Name.$: States.Format('ForMediaStoreOrigin-{}', States.UUID())
+                        Description: MediaStoreをオリジンにするCloudFrontディストリビューション用
+                        OriginAccessControlOriginType: mediastore
+                        SigningBehavior: always
+                        SigningProtocol: sigv4
+                    Next: CreateDistribution
                   CreateDistribution:
                     Type: Task
                     Comment: ライブ配信 - MediaStoreをオリジンにするCloudFrontディストリビューションを作成
@@ -385,6 +400,7 @@ stepFunctions:
                               HttpPort: 80
                               HttpsPort: 443
                               OriginProtocolPolicy: https-only
+                            OriginAccessControlId.$: $[2].OriginAccessControlResult.OriginAccessControl.Id
                         DefaultCacheBehavior:
                           TargetOriginId.$: States.Format('{}.data.mediastore.ap-northeast-1.amazonaws.com', $[2].ContainerResult.Container.Name)
                           ViewerProtocolPolicy: redirect-to-https
