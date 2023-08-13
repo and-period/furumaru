@@ -100,6 +100,20 @@ func (mr *MockBroadcastMockRecorder) GetByScheduleID(ctx, scheduleID interface{}
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByScheduleID", reflect.TypeOf((*MockBroadcast)(nil).GetByScheduleID), varargs...)
 }
 
+// Update mocks base method.
+func (m *MockBroadcast) Update(ctx context.Context, broadcastID string, params *database.UpdateBroadcastParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", ctx, broadcastID, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockBroadcastMockRecorder) Update(ctx, broadcastID, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockBroadcast)(nil).Update), ctx, broadcastID, params)
+}
+
 // MockCategory is a mock of Category interface.
 type MockCategory struct {
 	ctrl     *gomock.Controller

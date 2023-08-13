@@ -60,6 +60,7 @@ type Address interface {
 
 type Broadcast interface {
 	GetByScheduleID(ctx context.Context, scheduleID string, fields ...string) (*entity.Broadcast, error)
+	Update(ctx context.Context, broadcastID string, params *UpdateBroadcastParams) error
 }
 
 type Category interface {
@@ -156,6 +157,21 @@ type Shipping interface {
 /**
  * params
  */
+type UpdateBroadcastParams struct {
+	Status entity.BroadcastStatus
+	InitializeBroadcastParams
+}
+
+type InitializeBroadcastParams struct {
+	InputURL                  string
+	OutputURL                 string
+	CloudFrontDistributionArn string
+	MediaLiveChannelArn       string
+	MediaLiveRTMPInputArn     string
+	MediaLiveMP4InputArn      string
+	MediaStoreContainerArn    string
+}
+
 type ListCategoriesParams struct {
 	Name   string
 	Limit  int
@@ -387,8 +403,24 @@ type UpdatePromotionParams struct {
 }
 
 type ListSchedulesParams struct {
-	Limit  int
-	Offset int
+	StartAtGte time.Time
+	EndAtGte   time.Time
+	EndAtLt    time.Time
+	Limit      int
+	Offset     int
+}
+
+func (p *ListSchedulesParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if !p.StartAtGte.IsZero() {
+		stmt = stmt.Where("start_at >= ?", p.StartAtGte)
+	}
+	if !p.EndAtGte.IsZero() {
+		stmt = stmt.Where("end_at >= ?", p.EndAtGte)
+	}
+	if !p.EndAtLt.IsZero() {
+		stmt = stmt.Where("end_at < ?", p.EndAtLt)
+	}
+	return stmt
 }
 
 type UpdateScheduleParams struct {

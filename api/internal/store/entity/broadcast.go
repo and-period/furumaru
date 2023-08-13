@@ -19,13 +19,19 @@ const (
 
 // Broadcast - ライブ配信情報
 type Broadcast struct {
-	ID         string          `gorm:"primaryKey;<-:create"` // ライブ配信ID
-	ScheduleID string          `gorm:""`                     // 開催スケジュールID
-	Status     BroadcastStatus `gorm:""`                     // ライブ配信状況
-	InputURL   string          `gorm:""`                     // ライブ配信URL(入力)
-	OutputURL  string          `gorm:""`                     // ライブ配信URL(出力)
-	CreatedAt  time.Time       `gorm:"<-:create"`            // 登録日時
-	UpdatedAt  time.Time       `gorm:""`                     // 更新日時
+	ID                        string          `gorm:"primaryKey;<-:create"` // ライブ配信ID
+	ScheduleID                string          `gorm:""`                     // 開催スケジュールID
+	Status                    BroadcastStatus `gorm:""`                     // ライブ配信状況
+	InputURL                  string          `gorm:""`                     // ライブ配信URL(入力)
+	OutputURL                 string          `gorm:""`                     // ライブ配信URL(出力)
+	ArchiveURL                string          `gorm:""`                     // アーカイブ配信URL
+	CloudFrontDistributionArn string          `gorm:"default:null"`         // CloudFrontディストリビューションARN
+	MediaLiveChannelArn       string          `gorm:"default:null"`         // MediaLiveチャンネルARN
+	MediaLiveRTMPInputArn     string          `gorm:"default:null"`         // MediaLiveインプットARN(RTMP)
+	MediaLiveMP4InputArn      string          `gorm:"default:null"`         // MediaLiveインプットARN(MP4)
+	MediaStoreContainerArn    string          `gorm:"default:null"`         // MediaStoreコンテナARN
+	CreatedAt                 time.Time       `gorm:"<-:create"`            // 登録日時
+	UpdatedAt                 time.Time       `gorm:""`                     // 更新日時
 }
 
 type Broadcasts []*Broadcast
@@ -40,4 +46,20 @@ func NewBroadcast(params *NewBroadcastParams) *Broadcast {
 		ScheduleID: params.ScheduleID,
 		Status:     BroadcastStatusDisabled,
 	}
+}
+
+type BroadcastResourceParams struct {
+	CloudFrontDistributionArn string
+	MediaLiveChannelArn       string
+	MediaLiveRTMPInputArn     string
+	MediaLiveMP4InputArn      string
+	MediaStoreContainerArn    string
+}
+
+func (b *Broadcast) SetResource(params *BroadcastResourceParams) {
+	b.CloudFrontDistributionArn = params.CloudFrontDistributionArn
+	b.MediaLiveChannelArn = params.MediaLiveChannelArn
+	b.MediaLiveRTMPInputArn = params.MediaLiveRTMPInputArn
+	b.MediaLiveMP4InputArn = params.MediaLiveMP4InputArn
+	b.MediaStoreContainerArn = params.MediaStoreContainerArn
 }

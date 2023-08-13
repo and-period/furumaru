@@ -1,0 +1,76 @@
+name: '[Backend] Deploy Store Updater for main'
+on:
+  push:
+    branches:
+    - 'main'
+    paths:
+    - '.github/workflows/cd-store-updater-for-main.yaml'
+    - 'api/**'
+    - 'infra/docker/api/**'
+    - 'infra/kubernetes/**'
+
+env:
+  TZ: 'Asia/Tokyo'
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+  ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_STORE_UPDATER }}
+  ECR_IMAGE_TAG: ${{ github.sha }}
+  LAMBDA_CREATER_FUNCTION: ${{ secrets.STG_LAMBDA_FUNCTION_STORE_CREATE_SCHEDULER }}
+  LAMBDA_REMOVER_FUNCTION: ${{ secrets.STG_LAMBDA_FUNCTION_STORE_REMOVE_SCHEDULER }}
+  IMAGE_PATH: ./infra/docker/api/store/updater/Dockerfile
+
+jobs:
+  build_and_deploy:
+    name: deploy and deploy
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      matrix:
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+
+    - name: Set ECR_REPOSITORY_URL
+      run: |
+        echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
+
+    - name: Configure AWS credentials from IAM Role
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        role-to-assume: ${{ env.AWS_ROLE_ARN }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      run: |
+        ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}
+        docker build -f ${IMAGE_PATH} -t ${ECR_REPOSITORY_URL} .
+        docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}
+        docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:latest
+        docker push -a ${ECR_REPOSITORY_URL}
+
+    - name: Deploy AWS Lambda creater function
+      run: |
+        aws lambda update-function-code \
+          --function-name="${LAMBDA_CREATER_FUNCTION}" \
+          --image-uri="${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" \
+        | jq '. | del(.Environment)'
+
+    - name: Deploy AWS Lambda remover function
+      run: |
+        aws lambda update-function-code \
+          --function-name="${LAMBDA_REMOVER_FUNCTION}" \
+          --image-uri="${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" \
+        | jq '. | del(.Environment)'

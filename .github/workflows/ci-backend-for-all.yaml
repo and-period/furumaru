@@ -129,6 +129,12 @@ jobs:
     - name: Build media resizer
       run: make build SERVICE=media/resizer
 
+    - name: Build store scheduler
+      run: make build SERVICE=store/scheduler
+
+    - name: Build store updater
+      run: make build SERVICE=store/updater
+
   test:
     name: test
     needs: setup
