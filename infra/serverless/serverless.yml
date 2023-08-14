@@ -208,7 +208,7 @@ stepFunctions:
             Next: CreateStreamingResoures
           CreateStreamingResoures:
             Type: Parallel
-            End: true
+            Next: RegisterResoursesInfo
             Comment: 配信リソースの作成を並列で実行
             InputPath: $
             ResultSelector:
@@ -480,6 +480,13 @@ stepFunctions:
                       ContainerName.$: $[2].ContainerResult.Container.Name
                       LifecyclePolicy:  {"rules":[{"definition":{"path":[{"wildcard":"*"}],"days_since_create":[{"numeric":[">",1]}]},"action":"EXPIRE"}]}
                     End: true
+          RegisterResoursesInfo:
+            Type: Task
+            Comment: リソース情報を登録
+            InputPath: $
+            ResultPath: $.RegisterResoursesInfoResult
+            Resource: arn:aws:lambda:ap-northeast-1:386661535629:function:furumaru-broadcast-create-updater-stg
+            End: True
 
 plugins:
   - serverless-step-functions
