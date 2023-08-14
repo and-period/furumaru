@@ -5,6 +5,7 @@ export interface PurchaseInnerItemMock {
   boxSize: number
   useRate: number
   items: CartItemMock[]
+  recommendItems: CartItemMock[]
 }
 
 export interface PurchaseMock {
@@ -40,6 +41,22 @@ export const MOCK_PURCHASE_ITEMS: PurchaseMock[] = [
             imgSrc: '/img/recommend/6.png',
           },
         ],
+        recommendItems: [
+          {
+            id: '3',
+            name: 'アスパラ 500g',
+            inventory: 10,
+            price: 3000,
+            imgSrc: '/img/recommend/3.png',
+          },
+          {
+            id: '4',
+            name: '無農薬レモン 500g',
+            inventory: 10,
+            price: 3000,
+            imgSrc: '/img/recommend/4.png',
+          },
+        ],
       },
       {
         boxType: '常温・冷蔵',
@@ -52,6 +69,29 @@ export const MOCK_PURCHASE_ITEMS: PurchaseMock[] = [
             inventory: 10,
             price: 3000,
             imgSrc: '/img/recommend/5.png',
+          },
+        ],
+        recommendItems: [
+          {
+            id: '5',
+            name: '卵 500g',
+            inventory: 10,
+            price: 3000,
+            imgSrc: '/img/recommend/5.png',
+          },
+          {
+            id: '3',
+            name: 'アスパラ 500g',
+            inventory: 10,
+            price: 3000,
+            imgSrc: '/img/recommend/3.png',
+          },
+          {
+            id: '4',
+            name: '無農薬レモン 500g',
+            inventory: 10,
+            price: 3000,
+            imgSrc: '/img/recommend/4.png',
           },
         ],
       },
@@ -73,6 +113,15 @@ export const MOCK_PURCHASE_ITEMS: PurchaseMock[] = [
             inventory: 10,
             price: 3000,
             imgSrc: '/img/recommend/2.png',
+          },
+        ],
+        recommendItems: [
+          {
+            id: '4',
+            name: '無農薬レモン 500g',
+            inventory: 10,
+            price: 3000,
+            imgSrc: '/img/recommend/4.png',
           },
         ],
       },

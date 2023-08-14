@@ -143,6 +143,27 @@ const totalPrice = computed(() => {
               </button>
             </div>
           </div>
+          <div class="mt-10 rounded-2xl bg-base p-6">
+            <div>
+              <p class="text-[16px] tracking-[1.6px]">
+                この箱には
+                <span class="text-orange">{{ 100 - cartItem.useRate }}％</span>
+                の空きがあります。
+              </p>
+              <p class="mt-1 text-[12px] tracking-[1.2px]">
+                残りのスペースにはこちらの商品が同梱できます。ご一緒にいかがですか？
+              </p>
+            </div>
+            <div class="mt-6 grid grid-cols-3 gap-4">
+              <the-recommend-item
+                v-for="(recommendItem, n) in cartItem.recommendItems"
+                :key="n"
+                :img-src="recommendItem.imgSrc"
+                :name="recommendItem.name"
+                :price="recommendItem.price"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
