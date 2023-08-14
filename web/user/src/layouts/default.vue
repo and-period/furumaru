@@ -113,6 +113,10 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('scroll', onScroll)
 })
+
+const handleClickBuyButton = () => {
+  router.push('/purchase')
+}
 </script>
 
 <template>
@@ -133,6 +137,7 @@ onUnmounted(() => {
         :cart-menu-message="cartMenuMessage"
         :sp-menu-items="spModeMenuItems"
         :footer-menu-items="footerMenuList"
+        @click:buy-button="handleClickBuyButton"
       />
     </div>
     <main class="grow overflow-hidden">
