@@ -118,7 +118,7 @@ functions:
 stepFunctions:
   stateMachines:
     mediaLiveStateMachine:
-      name: mediaLiveStepFunction
+      name: mediaLiveStepFunction-${self:provider.stage}
       role:
         Fn::GetAtt: [defaultRole, Arn]
       definition:
