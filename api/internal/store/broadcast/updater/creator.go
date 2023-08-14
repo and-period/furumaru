@@ -10,7 +10,7 @@ import (
 	"go.uber.org/zap"
 )
 
-type creater struct {
+type creator struct {
 	now        func() time.Time
 	logger     *zap.Logger
 	waitGroup  *sync.WaitGroup
@@ -18,7 +18,7 @@ type creater struct {
 	maxRetries int64
 }
 
-func NewStarter(params *Params, opts ...Option) Updater {
+func NewCreator(params *Params, opts ...Option) Updater {
 	dopts := &options{
 		logger:     zap.NewNop(),
 		maxRetries: 3,
@@ -26,7 +26,7 @@ func NewStarter(params *Params, opts ...Option) Updater {
 	for i := range opts {
 		opts[i](dopts)
 	}
-	return &creater{
+	return &creator{
 		now:        jst.Now,
 		logger:     dopts.logger,
 		waitGroup:  params.WaitGroup,
@@ -35,7 +35,7 @@ func NewStarter(params *Params, opts ...Option) Updater {
 	}
 }
 
-func (c *creater) Lambda(ctx context.Context, event interface{}) error {
+func (c *creator) Lambda(_ context.Context, event interface{}) error {
 	c.logger.Debug("Received event", zap.Any("event", event))
 	// TODO: 取得内容が分かり次第、詳細の実装
 	return nil

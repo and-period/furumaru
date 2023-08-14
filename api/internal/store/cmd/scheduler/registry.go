@@ -70,9 +70,9 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}
 	var job scheduler.Scheduler
 	switch conf.RunType {
-	case "STARTER":
+	case "START":
 		job = scheduler.NewStarter(jobParams, scheduler.WithLogger(logger))
-	case "CLOSER":
+	case "CLOSE":
 		job = scheduler.NewCloser(jobParams, scheduler.WithLogger(logger))
 	default:
 		return nil, fmt.Errorf("cmd: unknown scheduler type. type=%s", conf.RunType)

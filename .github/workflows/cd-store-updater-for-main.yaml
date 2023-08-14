@@ -16,7 +16,7 @@ env:
   ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
   ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_STORE_UPDATER }}
   ECR_IMAGE_TAG: ${{ github.sha }}
-  LAMBDA_CREATER_FUNCTION: ${{ secrets.STG_LAMBDA_FUNCTION_STORE_CREATE_SCHEDULER }}
+  LAMBDA_CREATOR_FUNCTION: ${{ secrets.STG_LAMBDA_FUNCTION_STORE_CREATE_SCHEDULER }}
   LAMBDA_REMOVER_FUNCTION: ${{ secrets.STG_LAMBDA_FUNCTION_STORE_REMOVE_SCHEDULER }}
   IMAGE_PATH: ./infra/docker/api/store/updater/Dockerfile
 
@@ -61,10 +61,10 @@ jobs:
         docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:latest
         docker push -a ${ECR_REPOSITORY_URL}
 
-    - name: Deploy AWS Lambda creater function
+    - name: Deploy AWS Lambda creatr function
       run: |
         aws lambda update-function-code \
-          --function-name="${LAMBDA_CREATER_FUNCTION}" \
+          --function-name="${LAMBDA_CREATOR_FUNCTION}" \
           --image-uri="${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" \
         | jq '. | del(.Environment)'
 

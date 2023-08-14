@@ -70,9 +70,9 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}
 	var job updater.Updater
 	switch conf.RunType {
-	case "CREATER":
-		job = updater.NewStarter(jobParams, updater.WithLogger(logger))
-	case "REMOVER":
+	case "CREATE":
+		job = updater.NewCreator(jobParams, updater.WithLogger(logger))
+	case "REMOVE":
 		job = updater.NewRemover(jobParams, updater.WithLogger(logger))
 	default:
 		return nil, fmt.Errorf("cmd: unknown scheduler type. type=%s", conf.RunType)

@@ -35,7 +35,7 @@ func NewRemover(params *Params, opts ...Option) Updater {
 	}
 }
 
-func (r *remover) Lambda(ctx context.Context, event interface{}) error {
+func (r *remover) Lambda(_ context.Context, event interface{}) error {
 	r.logger.Debug("Received event", zap.Any("event", event))
 	// TODO: 取得内容が分かり次第、詳細の実装
 	return nil
