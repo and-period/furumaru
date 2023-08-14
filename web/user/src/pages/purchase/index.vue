@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { MOCK_CART_ITEMS } from '~/constants/mock'
+import { MOCK_PURCHASE_ITEMS } from '~/constants/mock'
 
-const cartItems = MOCK_CART_ITEMS
+const cartItems = MOCK_PURCHASE_ITEMS
 </script>
 
 <template>
@@ -26,9 +26,9 @@ const cartItems = MOCK_CART_ITEMS
         v-for="(cartItem, i) in cartItems"
         :key="i"
         :marche="cartItem.marche"
-        :box-type="cartItem.boxType"
-        :box-size="cartItem.boxSize"
-        :items="cartItem.items"
+        :address="cartItem.address"
+        :sender="cartItem.sender"
+        :cart-items="cartItem.cartItems"
       />
     </div>
   </div>

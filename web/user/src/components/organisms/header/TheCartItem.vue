@@ -9,6 +9,12 @@ interface Props {
 
 const props = defineProps<Props>()
 
+interface Emits {
+  (e: 'click:buyButton'): void
+}
+
+const emits = defineEmits<Emits>()
+
 const boxSizeIs60 = computed<boolean>(() => {
   return props.boxSize === 60
 })
@@ -33,6 +39,10 @@ const useRate = computed<number>(() => {
       return 0
   }
 })
+
+const handleClick = () => {
+  emits('click:buyButton')
+}
 </script>
 
 <template>
@@ -90,7 +100,9 @@ const useRate = computed<number>(() => {
         <hr class="my-2 border-dashed border-main" />
       </div>
 
-      <button class="w-full bg-main py-1 text-white">ログインして購入</button>
+      <button class="w-full bg-main py-1 text-white" @click="handleClick">
+        ログインして購入
+      </button>
     </div>
   </div>
 </template>
