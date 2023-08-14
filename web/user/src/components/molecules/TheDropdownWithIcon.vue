@@ -1,4 +1,8 @@
 <script lang="ts" setup>
+interface Expose {
+  close: () => void
+}
+
 const isShow = ref<boolean>(false)
 
 const handleIconClick = () => {
@@ -25,6 +29,10 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   removeEventListener('click', clickOutside)
+})
+
+defineExpose<Expose>({
+  close: handleCloseIconClick,
 })
 </script>
 
