@@ -212,6 +212,7 @@ stepFunctions:
             Comment: 配信リソースの作成を並列で実行
             InputPath: $
             ResultSelector:
+              ScheduleId.$: $[0][0].ScheduleId
               CloudFrontUrl.$: $[1][2].DistributionResult.Location
               CloudFrontDistributionArn.$: $[1][2].DistributionResult.Distribution.Arn
               MediaLiveRtmpInputArn.$: $[0][0].RtmpResult.Input.Arn
