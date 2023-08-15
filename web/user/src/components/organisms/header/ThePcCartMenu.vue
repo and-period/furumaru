@@ -8,16 +8,29 @@ interface Props {
 
 defineProps<Props>()
 
+interface Emits {
+  (e: 'click:buyButton'): void
+}
+
+const emits = defineEmits<Emits>()
+
+const area = ref<{ close: () => void }>({ close: () => {} })
+
 const totalPrice = computed(() => {
   return new Intl.NumberFormat('ja-JP', {
     style: 'currency',
     currency: 'JPY',
   }).format(18000)
 })
+
+const handleClickBuyButton = () => {
+  emits('click:buyButton')
+  area.value.close()
+}
 </script>
 
 <template>
-  <the-dropdown-with-icon>
+  <the-dropdown-with-icon ref="area">
     <template #icon>
       <the-cart-icon id="header-cart-icon" fill="#604C3F" />
     </template>
@@ -35,7 +48,12 @@ const totalPrice = computed(() => {
             {{ totalPrice }}
           </p>
         </div>
-        <button class="w-full bg-main py-1 text-white">ログインして購入</button>
+        <button
+          class="w-full bg-main py-1 text-white"
+          @click="handleClickBuyButton"
+        >
+          ログインして購入
+        </button>
 
         <div class="border border-orange p-3 text-sm text-orange">
           現在のカゴの数: {{ cartItems.length }}
@@ -56,6 +74,7 @@ const totalPrice = computed(() => {
           :box-type="item.boxType"
           :box-size="item.boxSize"
           :items="item.items"
+          @click:buy-button="handleClickBuyButton"
         />
       </div>
     </template>

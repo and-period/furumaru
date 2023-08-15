@@ -32,6 +32,7 @@ func (s *schedule) List(ctx context.Context, params *ListSchedulesParams, fields
 	var schedules entity.Schedules
 
 	stmt := s.db.Statement(ctx, s.db.DB, scheduleTable, fields...)
+	stmt = params.stmt(stmt)
 	if params.Limit > 0 {
 		stmt = stmt.Limit(params.Limit)
 	}

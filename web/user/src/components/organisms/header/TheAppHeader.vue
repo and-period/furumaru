@@ -20,6 +20,12 @@ interface Props {
 
 defineProps<Props>()
 
+interface Emits {
+  (e: 'click:buyButton'): void
+}
+
+const emits = defineEmits<Emits>()
+
 const spMenuOpen = ref<boolean>(false)
 
 const handleClickMenuIconButton = () => {
@@ -32,6 +38,11 @@ const closeSpMenu = () => {
 
 const handleClickMenuItem = (item: HeaderMenuItem | FooterMenuItem) => {
   item.onClick()
+  closeSpMenu()
+}
+
+const handleClickBuyButton = () => {
+  emits('click:buyButton')
   closeSpMenu()
 }
 </script>
@@ -81,6 +92,7 @@ const handleClickMenuItem = (item: HeaderMenuItem | FooterMenuItem) => {
           :cart-is-empty="cartIsEmpty"
           :cart-menu-message="cartMenuMessage"
           :cart-items="cartItems"
+          @click:buy-button="handleClickBuyButton"
         />
 
         <the-icon-button
