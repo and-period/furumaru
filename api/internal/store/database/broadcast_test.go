@@ -205,7 +205,7 @@ func TestBroadcast_Update(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := delete(ctx, tt.args.broadcastID)
+			err := delete(ctx, broadcastTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)

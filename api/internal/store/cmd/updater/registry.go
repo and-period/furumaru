@@ -55,7 +55,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}
 
 	// Databaseの設定
-	dbClient, err := newDatabase("messengers", params)
+	dbClient, err := newDatabase("stores", params)
 	if err != nil {
 		return nil, err
 	}
