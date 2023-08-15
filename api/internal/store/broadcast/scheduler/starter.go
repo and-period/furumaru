@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/sfn"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/semaphore"
@@ -19,6 +20,7 @@ type starter struct {
 	waitGroup *sync.WaitGroup
 	semaphore *semaphore.Weighted
 	db        *database.Database
+	sfn       sfn.StepFunction
 }
 
 func NewStarter(params *Params, opts ...Option) Scheduler {
@@ -35,6 +37,7 @@ func NewStarter(params *Params, opts ...Option) Scheduler {
 		waitGroup: params.WaitGroup,
 		semaphore: semaphore.NewWeighted(dopts.concurrency),
 		db:        params.Database,
+		sfn:       params.StepFunction,
 	}
 }
 
@@ -129,7 +132,23 @@ func (s *starter) createChannel(ctx context.Context, target time.Time) error {
 			if broadcast.Status != entity.BroadcastStatusDisabled {
 				return nil // リソース未作成の場合のみ、作成処理を進める
 			}
-			// TODO: ライブ配信リソースの作成処理
+			payload := &CreatePayload{
+				ScheduleID: broadcast.ScheduleID,
+				ChannelInput: &CreateChannelPayload{
+					Name:                   schedule.ID,
+					StartTime:              schedule.StartAt.Format(time.RFC3339),
+					InputLossImageSlateURI: schedule.ImageURL,
+				},
+				MP4Input: &CreateMp4Payload{
+					OpeningVideoURL: schedule.OpeningVideoURL,
+				},
+				RtmpInput: &CreateRtmpPayload{
+					StreamName: streamName,
+				},
+			}
+			if err := s.sfn.StartExecution(ectx, payload); err != nil {
+				return err
+			}
 			params := &database.UpdateBroadcastParams{
 				Status: entity.BroadcastStatusWaiting,
 			}

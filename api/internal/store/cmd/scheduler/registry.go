@@ -11,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/secret"
+	"github.com/and-period/furumaru/api/pkg/sfn"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"go.uber.org/zap"
 )
@@ -54,6 +55,12 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		return nil, err
 	}
 
+	// AWS Step Functionsの設定
+	sfnParams := &sfn.Params{
+		StateMachineARN: conf.StepFunctionARN,
+	}
+	sfnClient := sfn.NewStepFunction(awscfg, sfnParams, sfn.WithLogger(logger))
+
 	// Databaseの設定
 	dbClient, err := newDatabase("stores", params)
 	if err != nil {
@@ -65,8 +72,9 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		Database: dbClient,
 	}
 	jobParams := &scheduler.Params{
-		WaitGroup: params.waitGroup,
-		Database:  storedb.NewDatabase(dbParams),
+		WaitGroup:    params.waitGroup,
+		Database:     storedb.NewDatabase(dbParams),
+		StepFunction: sfnClient,
 	}
 	var job scheduler.Scheduler
 	switch conf.RunType {
