@@ -2,10 +2,12 @@ package updater
 
 import (
 	"context"
+	"errors"
 	"sync"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/store/database"
+	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"go.uber.org/zap"
 )
@@ -35,8 +37,20 @@ func NewRemover(params *Params, opts ...Option) Updater {
 	}
 }
 
-func (r *remover) Lambda(_ context.Context, event interface{}) error {
-	r.logger.Debug("Received event", zap.Any("event", event))
-	// TODO: 取得内容が分かり次第、詳細の実装
+func (r *remover) Lambda(ctx context.Context, event interface{}) error {
+	payload, ok := event.(RemovePayload)
+	if !ok {
+		r.logger.Error("Received unexpected event format", zap.Any("event", event))
+		return errors.New("updater: received unexpected event format")
+	}
+	r.logger.Debug("Received event", zap.Any("event", payload))
+	params := &database.UpdateBroadcastParams{
+		Status: entity.BroadcastStatusDisabled,
+	}
+	if err := r.db.Broadcast.Update(ctx, payload.ScheduleID, params); err != nil {
+		r.logger.Error("Failed to update broadcast", zap.Error(err), zap.String("scheduleId", payload.ScheduleID))
+		return err
+	}
+	r.logger.Info("Succeeded to update broadcast", zap.String("scheduleId", payload.ScheduleID))
 	return nil
 }
