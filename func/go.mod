@@ -17,7 +17,7 @@ require (
 require (
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.4.12 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.13.31 // indirect
-	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.13.7 // indirect
+	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.13.8 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.38 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.32 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.36 // indirect
