@@ -5394,9 +5394,9 @@ bindings@^1.4.0:
     file-uri-to-path "1.0.0"
 
 birpc@^0.2.11:
-  version "0.2.11"
-  resolved "https://registry.yarnpkg.com/birpc/-/birpc-0.2.11.tgz#fcf5cc60dd5ba69bf640a40373437fe358e16c4f"
-  integrity sha512-OcUm84SBHRsmvSQhOLZRt5Awmw8WVknVcMDMaPE8GPwYxzc4mGE0EIytkWXayPjheGvm7s/Ci1wQZGwk7YPU6A==
+  version "0.2.12"
+  resolved "https://registry.yarnpkg.com/birpc/-/birpc-0.2.12.tgz#5b0e2a154e0a000f8696b1ccef0a16b8639896aa"
+  integrity sha512-6Wz9FXuJ/FE4gDH+IGQhrYdalAvAQU1Yrtcu1UlMk3+9mMXxIRXiL+MxUcGokso42s+Fy+YoUXGLOdOs0siV3A==
 
 bl@^4.0.3:
   version "4.1.0"
