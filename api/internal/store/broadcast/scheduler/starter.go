@@ -65,8 +65,8 @@ func (s *starter) run(ctx context.Context, target time.Time) error {
 // startChannel - ライブ配信を開始 (5分前)
 func (s *starter) startChannel(ctx context.Context, target time.Time) error {
 	params := &database.ListSchedulesParams{
-		StartAtGte: target.Add(-5 * time.Minute), // マルシェ開催開始5分前〜
-		EndAtLt:    target,                       // マルシェ開催終了前
+		StartAtLt: target.Add(-5 * time.Minute), // マルシェ開催開始5分前〜
+		EndAtGte:  target,                       // マルシェ開催終了前
 	}
 	schedules, err := s.db.Schedule.List(ctx, params)
 	if err != nil {
@@ -105,8 +105,8 @@ func (s *starter) startChannel(ctx context.Context, target time.Time) error {
 // createChannel - ライブ配信リソースの作成を開始 (30分前)
 func (s *starter) createChannel(ctx context.Context, target time.Time) error {
 	params := &database.ListSchedulesParams{
-		StartAtGte: target.Add(-30 * time.Minute), // マルシェ開催開始30分前〜
-		EndAtLt:    target,                        // マルシェ開催終了前
+		StartAtLt: target.Add(-30 * time.Minute), // マルシェ開催開始30分前〜
+		EndAtGte:  target,                        // マルシェ開催終了前
 	}
 	schedules, err := s.db.Schedule.List(ctx, params)
 	if err != nil {

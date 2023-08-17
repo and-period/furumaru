@@ -404,6 +404,7 @@ type UpdatePromotionParams struct {
 
 type ListSchedulesParams struct {
 	StartAtGte time.Time
+	StartAtLt  time.Time
 	EndAtGte   time.Time
 	EndAtLt    time.Time
 	Limit      int
@@ -413,6 +414,9 @@ type ListSchedulesParams struct {
 func (p *ListSchedulesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if !p.StartAtGte.IsZero() {
 		stmt = stmt.Where("start_at >= ?", p.StartAtGte)
+	}
+	if !p.StartAtLt.IsZero() {
+		stmt = stmt.Where("start_at < ?", p.StartAtGte)
 	}
 	if !p.EndAtGte.IsZero() {
 		stmt = stmt.Where("end_at >= ?", p.EndAtGte)
