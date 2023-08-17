@@ -416,7 +416,7 @@ func (p *ListSchedulesParams) stmt(stmt *gorm.DB) *gorm.DB {
 		stmt = stmt.Where("start_at >= ?", p.StartAtGte)
 	}
 	if !p.StartAtLt.IsZero() {
-		stmt = stmt.Where("start_at < ?", p.StartAtGte)
+		stmt = stmt.Where("start_at < ?", p.StartAtLt)
 	}
 	if !p.EndAtGte.IsZero() {
 		stmt = stmt.Where("end_at >= ?", p.EndAtGte)
