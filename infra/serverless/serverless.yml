@@ -330,39 +330,6 @@ stepFunctions:
                                   - オーディオ
                                 CaptionDescriptionNames: []
                                 VideoDescriptionName: 動画
-                    Next: CalculateMP4StartTime
-                  CalculateMP4StartTime:
-                    Type: Task
-                    Comment: ライブ配信 - オープニング動画の開始時間を計算
-                    InputPath: $
-                    ResultPath: $[0].ChannelInput.MP4StartTime
-                    Resource:
-                      Fn::GetAtt: [calculateMP4StartTime, Arn]
-                    Next: BatchUpdateSchedule
-                  BatchUpdateSchedule:
-                    Type: Task
-                    Comment: ライブ配信 - 配信スケジュールを更新
-                    InputPath: $
-                    ResultPath: $[0].ChannelResult.Schedule
-                    Resource: arn:aws:states:::aws-sdk:medialive:batchUpdateSchedule
-                    Parameters:
-                      ChannelId.$: $[0].ChannelResult.Channel.Id
-                      Creates:
-                        ScheduleActions:
-                          - ActionName: StartMP4
-                            ScheduleActionStartSettings:
-                              FixedModeScheduleActionStartSettings:
-                                Time.$: $[0].ChannelInput.MP4StartTime
-                            ScheduleActionSettings:
-                              InputSwitchSettings:
-                                InputAttachmentNameReference.$: $[1].MP4Result.Input.Name
-                          - ActionName: StartLive
-                            ScheduleActionStartSettings:
-                              FixedModeScheduleActionStartSettings:
-                                Time.$: $[0].ChannelInput.StartTime
-                            ScheduleActionSettings:
-                              InputSwitchSettings:
-                                InputAttachmentNameReference.$: $[0].RtmpResult.Input.Name
                     End: true
               - StartAt: CreateOriginAccessControl
                 States:
