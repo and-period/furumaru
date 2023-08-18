@@ -2,6 +2,9 @@ package updater
 
 import (
 	"context"
+	"fmt"
+	"net/url"
+	"path"
 	"sync"
 	"time"
 
@@ -42,11 +45,17 @@ func NewCreator(params *Params, opts ...Option) Creator {
 
 func (c *creator) Lambda(ctx context.Context, payload CreatePayload) error {
 	c.logger.Debug("Received event", zap.Any("payload", payload))
+	u, err := url.Parse(payload.CloudFrontURL)
+	if err != nil {
+		c.logger.Error("Failed to parse cloudfront url", zap.Error(err), zap.String("scheduleId", payload.ScheduleID))
+		return err
+	}
+	u.Path = path.Join(u.Path, payload.MediaLiveRtmpStreamName)
 	params := &database.UpdateBroadcastParams{
 		Status: entity.BroadcastStatusIdle,
 		InitializeBroadcastParams: &database.InitializeBroadcastParams{
 			InputURL:                  payload.MediaLiveRtmpInputURL,
-			OutputURL:                 payload.CloudFrontURL,
+			OutputURL:                 fmt.Sprintf("%s.m3u8", u.String()),
 			CloudFrontDistributionArn: payload.CloudFrontDistributionARN,
 			MediaLiveChannelArn:       payload.MediaLiveChannelARN,
 			MediaLiveChannelID:        payload.MediaLiveChannelID,

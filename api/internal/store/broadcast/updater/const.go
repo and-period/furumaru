@@ -12,6 +12,7 @@ type CreatePayload struct {
 	MediaLiveRtmpInputARN     string `json:"MediaLiveRtmpInputArn"`
 	MediaLiveRtmpInputName    string `json:"MediaLiveRtmpInputName"`
 	MediaLiveRtmpInputURL     string `json:"MediaLiveRtmpInputUrl"`
+	MediaLiveRtmpStreamName   string `json:"MediaLiveRtmpStreamName"`
 	MediaStoreContainerARN    string `json:"MediaStoreContainerArn"`
 }
 
