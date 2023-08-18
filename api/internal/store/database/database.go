@@ -167,8 +167,11 @@ type InitializeBroadcastParams struct {
 	OutputURL                 string
 	CloudFrontDistributionArn string
 	MediaLiveChannelArn       string
+	MediaLiveChannelID        string
 	MediaLiveRTMPInputArn     string
+	MediaLiveRTMPInputName    string
 	MediaLiveMP4InputArn      string
+	MediaLiveMP4InputName     string
 	MediaStoreContainerArn    string
 }
 

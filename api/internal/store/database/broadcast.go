@@ -54,8 +54,11 @@ func (b *broadcast) Update(ctx context.Context, broadcastID string, params *Upda
 			updates["output_url"] = params.OutputURL
 			updates["cloud_front_distribution_arn"] = params.CloudFrontDistributionArn
 			updates["media_live_channel_arn"] = params.MediaLiveChannelArn
+			updates["media_live_channel_id"] = params.MediaLiveChannelID
 			updates["media_live_rtmp_input_arn"] = params.MediaLiveRTMPInputArn
+			updates["media_live_rtmp_input_name"] = params.MediaLiveRTMPInputName
 			updates["media_live_mp4_input_arn"] = params.MediaLiveMP4InputArn
+			updates["media_live_mp4_input_name"] = params.MediaLiveMP4InputName
 			updates["media_store_container_arn"] = params.MediaStoreContainerArn
 		}
 		if params.Status == entity.BroadcastStatusDisabled {

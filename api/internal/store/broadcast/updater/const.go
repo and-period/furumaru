@@ -6,8 +6,11 @@ type CreatePayload struct {
 	CloudFrontDistributionARN string `json:"CloudFrontDistributionArn"`
 	CloudFrontURL             string `json:"CloudFrontUrl"`
 	MediaLiveChannelARN       string `json:"MediaLiveChannelArn"`
+	MediaLiveChannelID        string `json:"MediaLiveChannelId"`
 	MediaLiveMp4InputARN      string `json:"MediaLiveMp4InputArn"`
+	MediaLiveMp4InputName     string `json:"MediaLiveMp4InputName"`
 	MediaLiveRtmpInputARN     string `json:"MediaLiveRtmpInputArn"`
+	MediaLiveRtmpInputName    string `json:"MediaLiveRtmpInputName"`
 	MediaLiveRtmpInputURL     string `json:"MediaLiveRtmpInputUrl"`
 	MediaStoreContainerARN    string `json:"MediaStoreContainerArn"`
 }

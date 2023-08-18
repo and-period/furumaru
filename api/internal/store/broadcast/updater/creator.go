@@ -49,8 +49,11 @@ func (c *creator) Lambda(ctx context.Context, payload CreatePayload) error {
 			OutputURL:                 payload.CloudFrontURL,
 			CloudFrontDistributionArn: payload.CloudFrontDistributionARN,
 			MediaLiveChannelArn:       payload.MediaLiveChannelARN,
+			MediaLiveChannelID:        payload.MediaLiveChannelID,
 			MediaLiveRTMPInputArn:     payload.MediaLiveRtmpInputARN,
+			MediaLiveRTMPInputName:    payload.MediaLiveRtmpInputName,
 			MediaLiveMP4InputArn:      payload.MediaLiveMp4InputARN,
+			MediaLiveMP4InputName:     payload.MediaLiveMp4InputName,
 			MediaStoreContainerArn:    payload.MediaStoreContainerARN,
 		},
 	}

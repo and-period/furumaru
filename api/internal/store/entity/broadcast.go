@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"strings"
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/uuid"
@@ -28,8 +27,11 @@ type Broadcast struct {
 	ArchiveURL                string          `gorm:""`                     // アーカイブ配信URL
 	CloudFrontDistributionArn string          `gorm:"default:null"`         // CloudFrontディストリビューションARN
 	MediaLiveChannelArn       string          `gorm:"default:null"`         // MediaLiveチャンネルARN
+	MediaLiveChannelID        string          `gorm:"default:null"`         // MediaLiveチャンネルID
 	MediaLiveRTMPInputArn     string          `gorm:"default:null"`         // MediaLiveインプットARN(RTMP)
+	MediaLiveRTMPInputName    string          `gorm:"default:null"`         // MediaLiveインプット名(RTMP)
 	MediaLiveMP4InputArn      string          `gorm:"default:null"`         // MediaLiveインプットARN(MP4)
+	MediaLiveMP4InputName     string          `gorm:"default:null"`         // MediaLiveインプット名(MP4)
 	MediaStoreContainerArn    string          `gorm:"default:null"`         // MediaStoreコンテナARN
 	CreatedAt                 time.Time       `gorm:"<-:create"`            // 登録日時
 	UpdatedAt                 time.Time       `gorm:""`                     // 更新日時
@@ -47,37 +49,4 @@ func NewBroadcast(params *NewBroadcastParams) *Broadcast {
 		ScheduleID: params.ScheduleID,
 		Status:     BroadcastStatusDisabled,
 	}
-}
-
-func (b *Broadcast) MediaLiveChannelID() string {
-	if b == nil {
-		return ""
-	}
-	strs := strings.Split(b.MediaLiveChannelArn, ":")
-	if len(strs) == 0 {
-		return ""
-	}
-	return strs[len(strs)-1]
-}
-
-func (b *Broadcast) MediaLiveRTMPInputID() string {
-	if b == nil {
-		return ""
-	}
-	strs := strings.Split(b.MediaLiveRTMPInputArn, ":")
-	if len(strs) == 0 {
-		return ""
-	}
-	return strs[len(strs)-1]
-}
-
-func (b *Broadcast) MediaLiveMP4InputID() string {
-	if b == nil {
-		return ""
-	}
-	strs := strings.Split(b.MediaLiveMP4InputArn, ":")
-	if len(strs) == 0 {
-		return ""
-	}
-	return strs[len(strs)-1]
 }

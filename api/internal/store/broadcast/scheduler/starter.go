@@ -113,24 +113,24 @@ func (s *starter) startChannel(ctx context.Context, target time.Time) error {
 			}
 
 			actions := s.newStartActions(schedule, broadcast)
-			channelID := broadcast.MediaLiveChannelID()
-			if channelID == "" {
-				s.logger.Error("Empty media live channel id",
-					zap.String("scheduleId", schedule.ID), zap.Any("actions", actions))
+			if broadcast.MediaLiveChannelID == "" {
+				s.logger.Error("Empty media live channel id", zap.String("scheduleId", schedule.ID))
 				return fmt.Errorf("unexpected media live channel arn format. arn=%s", broadcast.MediaLiveChannelArn)
 			}
 
 			s.logger.Info("Calling to create media live schedule", zap.String("scheduleId", schedule.ID))
-			if err := s.media.CreateSchedule(ctx, channelID, actions...); err != nil {
+			if err := s.media.CreateSchedule(ctx, broadcast.MediaLiveChannelID, actions...); err != nil {
 				s.logger.Error("Failed to create media live schedule",
-					zap.String("scheduleId", schedule.ID), zap.String("channelId", channelID),
-					zap.Any("actions", actions), zap.Error(err))
+					zap.String("scheduleId", schedule.ID),
+					zap.String("channelId", broadcast.MediaLiveChannelID),
+					zap.Any("actions", actions),
+					zap.Error(err))
 				return err
 			}
 			s.logger.Info("Succeeded to create media live schedule", zap.String("scheduleId", schedule.ID))
 
 			s.logger.Info("Calling to start media live", zap.String("scheduleId", schedule.ID))
-			if err := s.media.StartChannel(ctx, channelID); err != nil {
+			if err := s.media.StartChannel(ctx, broadcast.MediaLiveChannelID); err != nil {
 				s.logger.Error("Failed to start media live", zap.String("scheduleId", schedule.ID), zap.Error(err))
 				return err
 			}
@@ -156,7 +156,7 @@ func (s *starter) newStartActions(schedule *entity.Schedule, broadcast *entity.B
 				},
 				ScheduleActionSettings: &types.ScheduleActionSettings{
 					InputSwitchSettings: &types.InputSwitchScheduleActionSettings{
-						InputAttachmentNameReference: aws.String(broadcast.MediaLiveRTMPInputID()),
+						InputAttachmentNameReference: aws.String(broadcast.MediaLiveRTMPInputName),
 					},
 				},
 			},
@@ -171,7 +171,7 @@ func (s *starter) newStartActions(schedule *entity.Schedule, broadcast *entity.B
 				},
 				ScheduleActionSettings: &types.ScheduleActionSettings{
 					InputSwitchSettings: &types.InputSwitchScheduleActionSettings{
-						InputAttachmentNameReference: aws.String(broadcast.MediaLiveMP4InputID()),
+						InputAttachmentNameReference: aws.String(broadcast.MediaLiveMP4InputName),
 					},
 				},
 			},
@@ -184,7 +184,7 @@ func (s *starter) newStartActions(schedule *entity.Schedule, broadcast *entity.B
 				},
 				ScheduleActionSettings: &types.ScheduleActionSettings{
 					InputSwitchSettings: &types.InputSwitchScheduleActionSettings{
-						InputAttachmentNameReference: aws.String(broadcast.MediaLiveRTMPInputID()),
+						InputAttachmentNameReference: aws.String(broadcast.MediaLiveRTMPInputName),
 					},
 				},
 			},
