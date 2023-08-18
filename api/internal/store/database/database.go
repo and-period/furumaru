@@ -159,7 +159,7 @@ type Shipping interface {
  */
 type UpdateBroadcastParams struct {
 	Status entity.BroadcastStatus
-	InitializeBroadcastParams
+	*InitializeBroadcastParams
 }
 
 type InitializeBroadcastParams struct {

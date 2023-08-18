@@ -49,7 +49,7 @@ func (b *broadcast) Update(ctx context.Context, broadcastID string, params *Upda
 			"status":     params.Status,
 			"updated_at": b.now(),
 		}
-		if params.Status == entity.BroadcastStatusActive {
+		if params.InitializeBroadcastParams != nil {
 			updates["input_url"] = params.InputURL
 			updates["output_url"] = params.OutputURL
 			updates["cloud_front_distribution_arn"] = params.CloudFrontDistributionArn

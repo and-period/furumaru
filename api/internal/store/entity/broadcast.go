@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"strings"
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/uuid"
@@ -48,18 +49,35 @@ func NewBroadcast(params *NewBroadcastParams) *Broadcast {
 	}
 }
 
-type BroadcastResourceParams struct {
-	CloudFrontDistributionArn string
-	MediaLiveChannelArn       string
-	MediaLiveRTMPInputArn     string
-	MediaLiveMP4InputArn      string
-	MediaStoreContainerArn    string
+func (b *Broadcast) MedialiveChannelID() string {
+	if b == nil {
+		return ""
+	}
+	strs := strings.Split(":", b.MediaLiveChannelArn)
+	if len(strs) == 0 {
+		return ""
+	}
+	return strs[len(strs)-1]
 }
 
-func (b *Broadcast) SetResource(params *BroadcastResourceParams) {
-	b.CloudFrontDistributionArn = params.CloudFrontDistributionArn
-	b.MediaLiveChannelArn = params.MediaLiveChannelArn
-	b.MediaLiveRTMPInputArn = params.MediaLiveRTMPInputArn
-	b.MediaLiveMP4InputArn = params.MediaLiveMP4InputArn
-	b.MediaStoreContainerArn = params.MediaStoreContainerArn
+func (b *Broadcast) MediaLiveRTMPInputID() string {
+	if b == nil {
+		return ""
+	}
+	strs := strings.Split(":", b.MediaLiveRTMPInputArn)
+	if len(strs) == 0 {
+		return ""
+	}
+	return strs[len(strs)-1]
+}
+
+func (b *Broadcast) MediaLiveMP4InputID() string {
+	if b == nil {
+		return ""
+	}
+	strs := strings.Split(":", b.MediaLiveMP4InputArn)
+	if len(strs) == 0 {
+		return ""
+	}
+	return strs[len(strs)-1]
 }

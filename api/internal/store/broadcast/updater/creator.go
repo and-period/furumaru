@@ -44,7 +44,7 @@ func (c *creator) Lambda(ctx context.Context, payload CreatePayload) error {
 	c.logger.Debug("Received event", zap.Any("payload", payload))
 	params := &database.UpdateBroadcastParams{
 		Status: entity.BroadcastStatusIdle,
-		InitializeBroadcastParams: database.InitializeBroadcastParams{
+		InitializeBroadcastParams: &database.InitializeBroadcastParams{
 			InputURL:                  payload.MediaLiveRtmpInputURL,
 			OutputURL:                 payload.CloudFrontURL,
 			CloudFrontDistributionArn: payload.CloudFrontDistributionARN,
