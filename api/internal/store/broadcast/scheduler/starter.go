@@ -113,16 +113,18 @@ func (s *starter) startChannel(ctx context.Context, target time.Time) error {
 			}
 
 			actions := s.newStartActions(schedule, broadcast)
-			channelID := broadcast.MedialiveChannelID()
+			channelID := broadcast.MediaLiveChannelID()
 			if channelID == "" {
 				s.logger.Error("Empty media live channel id",
-					zap.String("scheduleId", schedule.ID), zap.String("mediaLiveChannelArn", broadcast.MediaLiveChannelArn))
+					zap.String("scheduleId", schedule.ID), zap.Any("actions", actions))
 				return fmt.Errorf("unexpected media live channel arn format. arn=%s", broadcast.MediaLiveChannelArn)
 			}
 
 			s.logger.Info("Calling to create media live schedule", zap.String("scheduleId", schedule.ID))
 			if err := s.media.CreateSchedule(ctx, channelID, actions...); err != nil {
-				s.logger.Error("Failed to create media live schedule", zap.String("scheduleId", schedule.ID), zap.Error(err))
+				s.logger.Error("Failed to create media live schedule",
+					zap.String("scheduleId", schedule.ID), zap.String("channelId", channelID),
+					zap.Any("actions", actions), zap.Error(err))
 				return err
 			}
 			s.logger.Info("Succeeded to create media live schedule", zap.String("scheduleId", schedule.ID))

@@ -49,11 +49,11 @@ func NewBroadcast(params *NewBroadcastParams) *Broadcast {
 	}
 }
 
-func (b *Broadcast) MedialiveChannelID() string {
+func (b *Broadcast) MediaLiveChannelID() string {
 	if b == nil {
 		return ""
 	}
-	strs := strings.Split(":", b.MediaLiveChannelArn)
+	strs := strings.Split(b.MediaLiveChannelArn, ":")
 	if len(strs) == 0 {
 		return ""
 	}
@@ -64,7 +64,7 @@ func (b *Broadcast) MediaLiveRTMPInputID() string {
 	if b == nil {
 		return ""
 	}
-	strs := strings.Split(":", b.MediaLiveRTMPInputArn)
+	strs := strings.Split(b.MediaLiveRTMPInputArn, ":")
 	if len(strs) == 0 {
 		return ""
 	}
@@ -75,7 +75,7 @@ func (b *Broadcast) MediaLiveMP4InputID() string {
 	if b == nil {
 		return ""
 	}
-	strs := strings.Split(":", b.MediaLiveMP4InputArn)
+	strs := strings.Split(b.MediaLiveMP4InputArn, ":")
 	if len(strs) == 0 {
 		return ""
 	}
